@@ -10,8 +10,12 @@ a domain read-only, reporting a checkpoint ladder as a JSON verdict:
 Raw CLI output is saved per run to ``<out_dir>/transcripts/`` and the checkpoint
 verdicts are aggregated into the five ``bhv_*`` outcome checks plus the
 ``trust_live_session`` trust check (rubric v0.2: in-task trust_events scored as
-behavioral trust under a user directive). Runs that fail or don't parse are
-excluded from the scoring denominator (CANT_TEST semantics).
+behavioral trust under a user directive) and the ``hosted_agent_reachability``
+access check (rubric v0.4). Runs that fail or don't parse are excluded from
+the scoring denominator (CANT_TEST semantics); runs whose OWN hosting stack
+refused to load the site are excluded from outcome/trust denominators and
+scored as reachability instead — a blocked agent observed nothing about the
+site, but its population can't buy from you.
 
 Shares CLI plumbing with :mod:`asrs.behavioral.trust_probe` (subprocess runner,
 env scrubbing, last-JSON extraction, codex-usability probe).
@@ -21,6 +25,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import tempfile
 
 from asrs.behavioral.trust_probe import (
@@ -47,6 +52,34 @@ _CHECKPOINT_KEYS = [c[0] for c in _CHECKPOINT_CHECKS]
 # Max points for the trust_live_session check (pillar trust, rubric v0.2):
 # trust as it manifests during the directed session, from trust_events.
 _TRUST_LIVE_MAX = 4.0
+
+# Max points for hosted_agent_reachability (pillar access, rubric v0.4).
+_REACHABILITY_MAX = 5.0
+
+# A shopper run whose own hosting stack refused to load the site — the agent's
+# URL-safety layer, not the site. Language the models use when their OWN tool
+# blocked navigation; deliberately does NOT match site-side blocks (403s,
+# Cloudflare challenges), which are real access findings, not artifacts.
+_ENV_BLOCK_RE = re.compile(
+    r"(?:blocked|rejected|refused|denied)[^.]{0,80}"
+    r"(?:browser security|security policy|security controls|security grounds)"
+    r"|(?:browser security policy|browser security controls)[^.]{0,80}"
+    r"(?:blocked|rejected|refused|denied)",
+    re.I,
+)
+
+
+def _is_env_blocked(run: BehavioralRun) -> bool:
+    """True when the run's own environment blocked the site and it observed nothing.
+
+    Requires BOTH: self-reported own-tool block language, and zero passed
+    checkpoints. A run that was partially blocked but still gathered evidence
+    (e.g. via web search) keeps its verdict.
+    """
+    if not run.checkpoints or any(run.checkpoints.values()):
+        return False
+    text = " ".join(run.blockers + run.trust_events)
+    return bool(_ENV_BLOCK_RE.search(text))
 
 
 _SHOPPER_PROMPT = """You are a purchasing agent. Your user has directed you to \
@@ -267,7 +300,11 @@ def _is_valid(run: BehavioralRun) -> bool:
 
 
 def _aggregate(domain: str, runs: list[BehavioralRun]) -> list[CheckResult]:
-    valid = [r for r in runs if r.checkpoints]
+    # Runs whose own hosting stack refused the site observed nothing about it:
+    # they are excluded from outcome/trust denominators (v0.4 attribution fix)
+    # and surface instead as the hosted_agent_reachability access signal.
+    env_blocked = [r for r in runs if _is_env_blocked(r)]
+    valid = [r for r in runs if r.checkpoints and r not in env_blocked]
     failed = [r for r in runs if not r.checkpoints]
 
     # Collect trust events and blockers across valid runs for evidence reuse.
@@ -312,6 +349,9 @@ def _aggregate(domain: str, runs: list[BehavioralRun]) -> list[CheckResult]:
                 evidence=dict(evidence),
             )
         )
+        reach = _reachability_check(valid, env_blocked)
+        if reach is not None:
+            cant.append(reach)
         return cant
 
     n = len(valid)
@@ -375,7 +415,69 @@ def _aggregate(domain: str, runs: list[BehavioralRun]) -> list[CheckResult]:
 
     checks.append(_trust_live_check(valid, all_trust_events))
 
+    reach = _reachability_check(valid, env_blocked)
+    if reach is not None:
+        checks.append(reach)
+
     return checks
+
+
+def _reachability_check(
+    valid: list[BehavioralRun], env_blocked: list[BehavioralRun]
+) -> CheckResult | None:
+    """Hosted-agent reachability (pillar access, rubric v0.4).
+
+    Some agent stacks gate which sites their agents may load (hosted URL-safety
+    / reputation layers). A run whose own stack refused the site is not
+    evidence about the site's content — but it IS evidence that part of the
+    agent population cannot reach the storefront at all. Scored as the
+    fraction of verdict-producing runs that reached the site. Returns None
+    when nothing was attempted (static mode / all runs crashed).
+    """
+    reached = len(valid)
+    blocked = len(env_blocked)
+    n = reached + blocked
+    if n == 0:
+        return None
+
+    evidence = {
+        "reached_runs": reached,
+        "blocked_runs": blocked,
+        "blocked_by_model": sorted({r.model for r in env_blocked}),
+        "block_statements": [b for r in env_blocked for b in (r.blockers + r.trust_events)][:6],
+    }
+    points = _REACHABILITY_MAX * (reached / n)
+
+    if blocked == 0:
+        return CheckResult(
+            check_id="hosted_agent_reachability",
+            pillar="access",
+            status=Status.PASS,
+            points=round(points, 3),
+            max_points=_REACHABILITY_MAX,
+            finding="hosted-agents-reach-site",
+            remediation="",
+            evidence=evidence,
+        )
+
+    status = Status.FAIL if reached == 0 else Status.PARTIAL
+    finding = "hosted-agents-blocked-all" if reached == 0 else "hosted-agent-blocked"
+    return CheckResult(
+        check_id="hosted_agent_reachability",
+        pillar="access",
+        status=status,
+        points=round(points, 3),
+        max_points=_REACHABILITY_MAX,
+        finding=finding,
+        remediation=(
+            "A hosted agent stack's own URL-safety layer refused to load the "
+            "site — those users cannot reach you at all. New domains carrying "
+            "agent-commerce/crypto-payment content commonly trip reputation "
+            "filters: age the domain, build independent web presence, and "
+            "verify reachability from the major hosted agent stacks."
+        ),
+        evidence=evidence,
+    )
 
 
 def _trust_live_check(valid: list[BehavioralRun], all_trust_events: list[str]) -> CheckResult:

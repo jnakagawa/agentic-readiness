@@ -1,6 +1,15 @@
-# Agentic Selling Readiness Score — rubric v0.3 (2026-07-22)
+# Agentic Selling Readiness Score — rubric v0.4 (2026-07-22)
 # The rubric is versioned; every report embeds this version. Scores are only
 # comparable within a rubric version (SSL Labs / Euro NCAP pattern).
+#
+# v0.4 (2026-07-22): environment-failure attribution + hosted-agent
+#   reachability. A shopper run whose OWN hosting stack refused to load the
+#   site (hosted URL-safety/reputation layer; self-reported "blocked by
+#   browser security policy" language + zero observed checkpoints) is no
+#   longer counted as site evidence — it is excluded from outcome and
+#   live-trust denominators, and surfaces instead as a new access check,
+#   hosted_agent_reachability (max 5): the fraction of verdict-producing
+#   runs that could reach the storefront at all.
 #
 # v0.3 (2026-07-22): rescored for agentic SERVICES, not retail webshops. The
 #   organizing question is now "does implementing agent-native rails let an
@@ -31,7 +40,7 @@
 #   cap. New trust_live_session check scores the shopper panel's in-task
 #   trust_events (warnings surfaced while actually working the site).
 # v0.1 (2026-07-22): initial rubric.
-version: "0.3"
+version: "0.4"
 
 # Pillar weights for the overall score. If a pillar is entirely
 # NA/CANT_TEST (e.g. outcome in static-only mode), it is dropped and the
@@ -71,6 +80,13 @@ checks:
     max_points: 10
     desc: Fetch key pages with agent user-agents vs a browser UA; detect
       block/challenge (403s, Cloudflare challenge markers) applied only to agents.
+  - id: hosted_agent_reachability
+    pillar: access
+    max_points: 5
+    desc: BEHAVIORAL — fraction of shopper runs whose hosting stack allowed
+      the site to load at all. Hosted agent platforms gate navigation with
+      their own URL-safety/reputation layers; a storefront those layers
+      refuse is unreachable to that agent population regardless of its rails.
 
   # ---- legibility ----
   - id: llms_txt

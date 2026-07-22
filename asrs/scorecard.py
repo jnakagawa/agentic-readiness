@@ -121,7 +121,8 @@ h1,h2,h3{font-family:var(--font-display);margin:0}
 .alert .icon{color:var(--error);font-weight:700;font-family:var(--font-display)}
 .alert b{font-family:var(--font-display)}
 .pillars{display:flex;flex-direction:column;gap:14px}
-.pillar-row{display:grid;grid-template-columns:150px 1fr 52px;gap:12px;
+.pillar-row{display:grid;grid-template-columns:150px 1fr 52px;gap:12px;}
+.pillar-row.wd{grid-template-columns:150px 1fr 52px 52px;
   align-items:center}
 .pillar-row .name{font-weight:500;color:var(--text-secondary)}
 .pillar-row .name small{display:block;font-weight:400;font-size:12px;
@@ -161,18 +162,8 @@ td.impact.minor{color:var(--warning)}
 .mini-dot.skip{background:var(--bg-quaternary)}
 .blockers{margin:4px 0 0;padding-left:18px;font-size:13px;line-height:19px;
   color:var(--text-quaternary)}
-.deltas{display:flex;flex-direction:column;gap:10px;max-width:560px}
-.delta-line.head{border-bottom:1px solid var(--border-secondary);
-  padding-bottom:8px}
-.delta-line.head .n,.delta-line.head .d{font-family:var(--font-mono);
-  font-size:11px;color:var(--text-quaternary);font-weight:400}
-.delta-line{display:grid;grid-template-columns:1fr auto auto auto;gap:10px;
-  align-items:center;font-size:13px}
-.delta-line .p{color:var(--text-secondary)}
-.delta-line .n{font-family:var(--font-display);font-weight:600;text-align:right;
-  min-width:38px}
-.delta-line .d{min-width:52px;text-align:right;font-weight:600;
-  font-family:var(--font-display)}
+.pillar-row .d{text-align:right;font-weight:600;font-family:var(--font-display);
+  font-size:13px}
 .d.up{color:var(--success)}.d.down{color:var(--error)}.d.flat{color:var(--text-quaternary)}
 footer{color:var(--text-quaternary);font-size:12px;line-height:18px;
   padding:0 4px 16px}
@@ -215,25 +206,8 @@ def _hero(reports: list[dict], labels: list[str | None]) -> str:
         return f'<div class="card"><div class="hero single">{_score_box(reports[0], labels[0])}</div></div>'
     a, b = reports
     d = b["overall_score"] - a["overall_score"]
-    dcls = "up" if d > 0 else ("down" if d < 0 else "flat")
-    lines = [
-        '<div class="delta-line head"><span class="p"></span>'
-        f'<span class="n">{_esc(a["domain"])}</span>'
-        f'<span class="n">{_esc(b["domain"])}</span>'
-        '<span class="d">&Delta;</span></div>'
-    ]
-    for p in PILLAR_LABELS:
-        sa, sb = a["pillar_scores"].get(p), b["pillar_scores"].get(p)
-        if sa is None and sb is None:
-            continue
-        pd = (sb or 0) - (sa or 0)
-        pcls = "up" if pd > 0 else ("down" if pd < 0 else "flat")
-        lines.append(
-            f'<div class="delta-line"><span class="p">{PILLAR_LABELS[p]}</span>'
-            f'<span class="n num">{"—" if sa is None else f"{sa:.0f}"}</span>'
-            f'<span class="n num">{"—" if sb is None else f"{sb:.0f}"}</span>'
-            f'<span class="d num {pcls}">{pd:+.0f}</span></div>'
-        )
+    # Per-pillar deltas render inline in the right domain column (baseline
+    # deltas next to the bars), so the hero carries only the overall delta.
     return (
         '<div class="card"><div class="hero">'
         + _score_box(a, labels[0] or "Without")
@@ -241,11 +215,7 @@ def _hero(reports: list[dict], labels: list[str | None]) -> str:
         f'<span class="pill {"good" if d > 0 else "bad" if d < 0 else "neutral"}">'
         f'<span class="dot"></span><span class="num">{d:+.1f}</span></span></div>'
         + _score_box(b, labels[1] or "With")
-        + "</div>"
-        + '<div class="card-body" style="border-top:1px solid var(--border-secondary)">'
-        + '<div class="deltas">'
-        + "".join(lines)
-        + "</div></div></div>"
+        + "</div></div>"
     )
 
 
@@ -261,17 +231,30 @@ def _caps_alerts(rep: dict) -> str:
     return "".join(out)
 
 
-def _pillars(rep: dict) -> str:
+def _pillars(rep: dict, baseline: dict | None = None) -> str:
+    """Pillar bar rows. With ``baseline``, each row also shows the per-pillar
+    delta vs the baseline report (the compare card's right column)."""
     rows = []
     for p, label in PILLAR_LABELS.items():
         s = rep["pillar_scores"].get(p)
         band = _band(s)
         width = 0 if s is None else max(2, round(s))
         val = '<span class="val na">n/a</span>' if s is None else f'<span class="val num">{s:.0f}</span>'
+        delta = ""
+        row_cls = "pillar-row"
+        if baseline is not None:
+            row_cls = "pillar-row wd"
+            sb = baseline["pillar_scores"].get(p)
+            if s is None or sb is None:
+                delta = '<span class="d flat num"></span>'
+            else:
+                d = s - sb
+                dcls = "up" if d > 0 else ("down" if d < 0 else "flat")
+                delta = f'<span class="d {dcls} num">{d:+.0f}</span>'
         rows.append(
-            f'<div class="pillar-row"><span class="name">{label}'
+            f'<div class="{row_cls}"><span class="name">{label}'
             f"<small>{PILLAR_QUESTIONS[p]}</small></span>"
-            f'<div class="track"><div class="fill {band}" style="width:{width}%"></div></div>{val}</div>'
+            f'<div class="track"><div class="fill {band}" style="width:{width}%"></div></div>{val}{delta}</div>'
         )
     return f'<div class="pillars">{"".join(rows)}</div>'
 
@@ -384,7 +367,7 @@ def _checkpoints(rep: dict) -> str:
     )
 
 
-def _domain_column(rep: dict, label: str | None) -> str:
+def _domain_column(rep: dict, label: str | None, baseline: dict | None = None) -> str:
     title = f'{_esc(rep["domain"])}'
     sub = f'{_esc(label)} · scored {rep["generated_at"][:10]}' if label else f'scored {rep["generated_at"][:10]}'
     caps = _caps_alerts(rep)
@@ -394,7 +377,7 @@ def _domain_column(rep: dict, label: str | None) -> str:
         f'<div class="desc">{sub}</div></div>{_grade_pill(rep["grade"])}</div>'
         '<div class="card-body" style="display:flex;flex-direction:column;gap:16px">'
         + caps
-        + _pillars(rep)
+        + _pillars(rep, baseline=baseline)
         + "</div></div>"
         + f'<div class="card"><div class="card-header"><div><h2>Recommendations</h2>'
         f'<div class="desc">Sorted by score impact — each finding names its fix.</div></div></div>'
@@ -417,7 +400,12 @@ def build_scorecard(
         labels.append(None)
 
     if len(reports) == 2:
-        columns = f'<div class="grid2">{_domain_column(reports[0], labels[0])}{_domain_column(reports[1], labels[1])}</div>'
+        columns = (
+            '<div class="grid2">'
+            + _domain_column(reports[0], labels[0])
+            + _domain_column(reports[1], labels[1], baseline=reports[0])
+            + "</div>"
+        )
         title = f'{reports[0]["domain"]} vs {reports[1]["domain"]}'
     else:
         columns = _domain_column(reports[0], labels[0])

@@ -114,16 +114,16 @@ h1,h2,h3{font-family:var(--font-display);margin:0}
   box-shadow:inset 0 0 0 1px var(--border-secondary)}
 .chip{font-family:var(--font-mono);font-size:12px;background:var(--bg-secondary);
   box-shadow:inset 0 0 0 1px var(--border-secondary);border-radius:6px;
-  padding:2px 8px;color:var(--text-secondary);white-space:nowrap}
+  padding:2px 8px;color:var(--text-secondary);overflow-wrap:anywhere}
 .alert{display:flex;gap:12px;padding:14px 16px;border-radius:12px;
   background:var(--error-bg);box-shadow:inset 0 0 0 1px #fda29b;
   color:var(--text-primary)}
 .alert .icon{color:var(--error);font-weight:700;font-family:var(--font-display)}
 .alert b{font-family:var(--font-display)}
 .pillars{display:flex;flex-direction:column;gap:14px}
-.pillar-row{display:grid;grid-template-columns:150px 1fr 52px;gap:12px;}
-.pillar-row.wd{grid-template-columns:150px 1fr 52px 52px;
+.pillar-row{display:grid;grid-template-columns:150px 1fr 52px;gap:12px;
   align-items:center}
+.pillar-row.wd{grid-template-columns:150px 1fr 52px 52px}
 .pillar-row .name{font-weight:500;color:var(--text-secondary)}
 .pillar-row .name small{display:block;font-weight:400;font-size:12px;
   color:var(--text-quaternary)}
@@ -138,12 +138,13 @@ table{width:100%;border-collapse:collapse}
 th{font-size:12px;font-weight:600;color:var(--text-quaternary);text-align:left;
   padding:10px 16px;border-bottom:1px solid var(--border-secondary)}
 td{font-size:14px;color:var(--text-tertiary);padding:12px 16px;
-  border-bottom:1px solid var(--border-secondary);vertical-align:top}
+  border-bottom:1px solid var(--border-secondary);vertical-align:top;
+  overflow-wrap:break-word}
 tr:last-child td{border-bottom:none}
 td.impact{font-family:var(--font-display);font-weight:600;white-space:nowrap;
   color:var(--error)}
 td.impact.minor{color:var(--warning)}
-td.pillar-tag{color:var(--text-secondary);font-size:12px;white-space:nowrap}
+td.pillar-tag{color:var(--text-secondary);font-size:12px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
 .stack{display:flex;flex-direction:column;gap:24px;min-width:0}
 .verdict{display:flex;flex-direction:column;gap:8px;padding:14px 16px;
@@ -154,6 +155,7 @@ td.pillar-tag{color:var(--text-secondary);font-size:12px;white-space:nowrap}
 .verdict ul{margin:0;padding-left:18px;color:var(--text-tertiary);
   font-size:13px;line-height:19px;display:flex;flex-direction:column;gap:4px}
 .verdicts{display:flex;flex-direction:column;gap:12px}
+table.checks{display:block;overflow-x:auto}
 .checks td,.checks th{text-align:center;padding:10px 8px}
 .checks td:first-child,.checks th:first-child{text-align:left;
   font-family:var(--font-mono);font-size:13px}
@@ -168,6 +170,7 @@ td.pillar-tag{color:var(--text-secondary);font-size:12px;white-space:nowrap}
 .d.up{color:var(--success)}.d.down{color:var(--error)}.d.flat{color:var(--text-quaternary)}
 footer{color:var(--text-quaternary);font-size:12px;line-height:18px;
   padding:0 4px 16px}
+footer a{color:var(--text-secondary)}
 details summary{cursor:pointer;color:var(--text-quaternary);font-size:13px;
   padding:10px 16px}
 @media (max-width:900px){.grid2{grid-template-columns:1fr}
@@ -178,6 +181,62 @@ details summary{cursor:pointer;color:var(--text-quaternary);font-size:13px;
 
 def _esc(s: str) -> str:
     return html.escape(str(s), quote=True)
+
+
+def _write_rubric_page(out_dir: Path) -> str:
+    """Render the bundled rubric YAML as rubric.html next to the card.
+
+    The YAML's changelog comments ARE the scoring-logic documentation, so the
+    page shows a short orientation followed by the rubric verbatim.
+    """
+    from .scoring import DEFAULT_RUBRIC_PATH, load_rubric
+
+    yaml_text = Path(DEFAULT_RUBRIC_PATH).read_text()
+    version = load_rubric().get("version", "")
+    doc = f"""<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ASRS rubric v{_esc(version)} — scoring logic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{{--text-primary:#0c111d;--text-secondary:#475467;--text-tertiary:#667085;
+--border:#e5e5e5;--bg:#fafafa}}
+body{{margin:0;background:var(--bg);color:var(--text-primary);
+font:400 15px/23px Inter,sans-serif}}
+.wrap{{max-width:860px;margin:0 auto;padding:40px 20px}}
+h1{{font:700 24px/30px "DM Sans",sans-serif;margin:0 0 6px}}
+.sub{{color:var(--text-secondary);margin:0 0 24px}}
+.card{{background:#fff;border:1px solid var(--border);border-radius:12px;
+padding:20px 24px;margin-bottom:20px}}
+h2{{font:600 16px/22px "DM Sans",sans-serif;margin:0 0 8px}}
+p{{margin:0 0 10px;color:var(--text-secondary)}}
+pre{{font:400 12px/19px "DM Mono",monospace;white-space:pre-wrap;
+overflow-wrap:anywhere;background:#fff;border:1px solid var(--border);
+border-radius:12px;padding:20px 24px;margin:0}}
+a{{color:var(--text-secondary)}}
+</style></head><body><div class="wrap">
+<h1>ASRS — Agentic Selling Readiness Score</h1>
+<p class="sub">Rubric v{_esc(version)} · how the score works</p>
+<div class="card">
+<h2>Reading a score</h2>
+<p>Five pillars, each scored 0&ndash;100 from named checks, then combined by
+the pillar weights below. Checks that could not be tested shrink their
+pillar&rsquo;s denominator &mdash; a site is never punished for what
+couldn&rsquo;t be observed. Critical failures cap the letter grade regardless
+of points. Scores are comparable only within a rubric version.</p>
+<p>Static checks probe the site directly; BEHAVIORAL checks come from live
+shopper and trust panels (headless agents working the site under a user
+directive), including one real zero-value free-tier transaction where the
+site advertises an allowance.</p>
+</div>
+<h2 style="margin:0 0 10px">The rubric, verbatim</h2>
+<pre>{html.escape(yaml_text)}</pre>
+<p class="sub" style="margin-top:16px"><a href="javascript:history.back()">&larr; back to the scorecard</a></p>
+</div></body></html>"""
+    path = out_dir / "rubric.html"
+    path.write_text(doc)
+    return str(path)
 
 
 def _band(score: float | None) -> str:
@@ -370,26 +429,54 @@ def _checkpoints(rep: dict) -> str:
     )
 
 
-def _domain_column(rep: dict, label: str | None, baseline: dict | None = None) -> str:
+def _overview_card(rep: dict, label: str | None, baseline: dict | None = None) -> str:
     title = f'{_esc(rep["domain"])}'
     sub = f'{_esc(label)} · scored {rep["generated_at"][:10]}' if label else f'scored {rep["generated_at"][:10]}'
-    caps = _caps_alerts(rep)
     return (
-        '<div class="stack">'
         f'<div class="card"><div class="card-header"><div><h2>{title}</h2>'
         f'<div class="desc">{sub}</div></div>{_grade_pill(rep["grade"])}</div>'
         '<div class="card-body" style="display:flex;flex-direction:column;gap:16px">'
-        + caps
+        + _caps_alerts(rep)
         + _pillars(rep, baseline=baseline)
         + "</div></div>"
-        + f'<div class="card"><div class="card-header"><div><h2>Recommendations</h2>'
-        f'<div class="desc">Sorted by score impact — each finding names its fix.</div></div></div>'
+    )
+
+
+def _recs_card(rep: dict) -> str:
+    return (
+        '<div class="card"><div class="card-header"><div><h2>Recommendations</h2>'
+        '<div class="desc">Sorted by score impact — each finding names its fix.</div></div></div>'
         + _recommendations(rep)
         + "</div>"
+    )
+
+
+def _domain_column(rep: dict, label: str | None, baseline: dict | None = None) -> str:
+    return (
+        '<div class="stack">'
+        + _overview_card(rep, label, baseline)
+        + _recs_card(rep)
         + _trust_panel(rep)
         + _checkpoints(rep)
         + "</div>"
     )
+
+
+def _section_rows(a: dict, b: dict, labels: list[str | None]) -> str:
+    """Compare layout: one grid row per SECTION so panels sit side by side
+    even when one is taller than the other (top-aligned per row)."""
+    sections = [
+        (_overview_card(a, labels[0]), _overview_card(b, labels[1], baseline=a)),
+        (_recs_card(a), _recs_card(b)),
+        (_trust_panel(a), _trust_panel(b)),
+        (_checkpoints(a), _checkpoints(b)),
+    ]
+    rows = []
+    for left, right in sections:
+        if not left and not right:
+            continue
+        rows.append(f'<div class="grid2">{left or "<div></div>"}{right or "<div></div>"}</div>')
+    return "".join(rows)
 
 
 def build_scorecard(
@@ -403,12 +490,7 @@ def build_scorecard(
         labels.append(None)
 
     if len(reports) == 2:
-        columns = (
-            '<div class="grid2">'
-            + _domain_column(reports[0], labels[0])
-            + _domain_column(reports[1], labels[1], baseline=reports[0])
-            + "</div>"
-        )
+        columns = _section_rows(reports[0], reports[1], labels)
         title = f'{reports[0]["domain"]} vs {reports[1]["domain"]}'
     else:
         columns = _domain_column(reports[0], labels[0])
@@ -432,11 +514,15 @@ def build_scorecard(
 {columns}
 <footer>ASRS rubric v{_esc(rv)} — scores are comparable only within a rubric
 version. Grade caps apply for critical failures regardless of points.
-Pillar scores exclude checks that could not be tested.{_esc(panel_note)}</footer>
+Pillar scores exclude checks that could not be tested.{_esc(panel_note)}
+&nbsp;<a href="rubric.html">Read the full rubric &amp; scoring logic &rarr;</a></footer>
 </div></body></html>"""
 
     if out_path is None:
         out_path = str(Path("runs") / f"scorecard_{'_vs_'.join(r['domain'].replace('.', '_') for r in reports)}.html")
     Path(out_path).parent.mkdir(parents=True, exist_ok=True)
     Path(out_path).write_text(doc)
+    # The footer links to rubric.html — publish it next to every card so the
+    # scoring logic ships with the score (locally and when hosted).
+    _write_rubric_page(Path(out_path).parent)
     return out_path

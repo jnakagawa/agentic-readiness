@@ -188,6 +188,15 @@ def _cmd_compare(args) -> int:
     return 0
 
 
+def _cmd_scorecard(args) -> int:
+    from . import scorecard
+
+    labels = [l.strip() or None for l in args.labels.split(",")] if args.labels else None
+    path = scorecard.build_scorecard(args.reports, labels=labels, out_path=args.out)
+    print(path)
+    return 0
+
+
 def _add_common_options(p) -> None:
     p.add_argument(
         "--behavioral", action="store_true",
@@ -244,6 +253,21 @@ def build_parser() -> argparse.ArgumentParser:
     )
     _add_common_options(p_cmp)
     p_cmp.set_defaults(func=_cmd_compare)
+
+    p_card = sub.add_parser(
+        "scorecard",
+        help="render saved report JSON(s) as an on-brand HTML scorecard",
+    )
+    p_card.add_argument(
+        "reports", nargs="+",
+        help="one report JSON (single card) or two (side-by-side delta card)",
+    )
+    p_card.add_argument(
+        "--labels", default=None,
+        help='comma-separated column labels, e.g. "Without ZeroClick,With ZeroClick"',
+    )
+    p_card.add_argument("--out", default=None, help="output HTML path")
+    p_card.set_defaults(func=_cmd_scorecard)
 
     return parser
 

@@ -747,7 +747,8 @@ def probe_free_tier(ctx, out_dir: str = "runs") -> ProbeOutcome:
 
     # -- the documented free-mode call --
     call_headers = {header_name: header_value, "Content-Type": "application/json"}
-    body = _example_body(manifest, disc)
+    body = _steer_body_to_free_slug(session, _example_body(manifest, disc), disc, endpoint)
+    out.evidence["request_body"] = body
     try:
         r = session.post(endpoint, headers=call_headers, data=json.dumps(body), timeout=_HTTP_TIMEOUT_S)
     except requests.exceptions.RequestException as exc:
@@ -939,6 +940,72 @@ def _example_body(manifest: Any | None, disc: FreeTierDiscovery) -> dict:
     # Generic last resort: most text-in APIs accept a bare prompt; anything
     # tier- or model-specific must come from the target's own example.
     return {"prompt": "a simple test image of a paper airplane"}
+
+
+def _steer_body_to_free_slug(
+    session: requests.Session, body: dict, disc: FreeTierDiscovery, endpoint: str
+) -> dict:
+    """Point the trial request at a free-covered meter, generically.
+
+    The free allowance covers specific service/meter slugs; an underspecified
+    body routes to the endpoint's DEFAULT meter, which may be paid — the
+    challenge then prices nonzero and the probe (correctly) refuses to sign,
+    reading as free-tier-not-zero-cost when the free tier actually works.
+    If the endpoint's own OpenAPI request schema has an enum property that
+    contains a free slug, set it: the target's schema names the property and
+    the value, not us.
+    """
+    slugs = {s.lower() for s in disc.free_slugs if s}
+    if not slugs or not disc.openapi_ref:
+        return body
+    # Already steered: some body value matches a free slug.
+    if any(str(v).lower() in slugs for v in body.values()):
+        return body
+    enums = _openapi_body_enums(session, disc.openapi_ref, endpoint)
+    for prop, values in enums.items():
+        for v in values:
+            if str(v).lower() in slugs:
+                steered = dict(body)
+                steered[prop] = v
+                return steered
+    return body
+
+
+def _openapi_body_enums(
+    session: requests.Session, spec_url: str, endpoint: str
+) -> dict[str, list]:
+    """Enum-typed request-body properties for *endpoint*'s POST op (best-effort)."""
+    from urllib.parse import urlparse
+
+    status, text = _fetch_text(session, spec_url)
+    if status != 200 or not text.strip():
+        return {}
+    try:
+        spec = json.loads(text)
+    except (ValueError, TypeError):
+        return {}
+    paths = spec.get("paths")
+    if not isinstance(paths, dict):
+        return {}
+    want = urlparse(endpoint).path
+    op = None
+    for p, ops in paths.items():
+        if isinstance(p, str) and isinstance(ops, dict) and p == want:
+            op = {k.lower(): v for k, v in ops.items()}.get("post")
+            break
+    if not isinstance(op, dict):
+        return {}
+    try:
+        schema = op["requestBody"]["content"]["application/json"]["schema"]
+        props = schema.get("properties") or {}
+    except (KeyError, TypeError, AttributeError):
+        return {}
+    out: dict[str, list] = {}
+    if isinstance(props, dict):
+        for name, pschema in props.items():
+            if isinstance(pschema, dict) and isinstance(pschema.get("enum"), list):
+                out[name] = pschema["enum"]
+    return out
 
 
 def _find_example_body(obj: Any, _depth: int = 0) -> dict | None:

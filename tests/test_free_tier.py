@@ -256,6 +256,49 @@ def test_full_delivery_passes() -> None:
     _check(check.evidence["content_field"] == "imageUrl", "content field surfaced in evidence")
 
 
+# ---- steering: underspecified body routes to the free meter via OpenAPI enums
+def test_steer_body_to_free_slug():
+    from asrs.behavioral.free_tier import FreeTierDiscovery, _steer_body_to_free_slug
+
+    SPEC = {
+        "paths": {
+            "/v1/images/generate": {
+                "post": {
+                    "requestBody": {"content": {"application/json": {"schema": {
+                        "properties": {
+                            "prompt": {"type": "string"},
+                            "model": {"type": "string", "enum": ["sketch", "studio", "gallery"]},
+                        }}}}}
+                }
+            }
+        }
+    }
+
+    class FakeResp:
+        status_code = 200
+        text = __import__("json").dumps(SPEC)
+
+    class FakeSession:
+        def get(self, url, timeout=None):
+            return FakeResp()
+
+    disc = FreeTierDiscovery()
+    disc.free_slugs = ["images", "sketch"]
+    disc.openapi_ref = "https://api.example.com/openapi.json"
+    ep = "https://agents.example.com/v1/images/generate"
+
+    steered = _steer_body_to_free_slug(FakeSession(), {"prompt": "x"}, disc, ep)
+    assert steered == {"prompt": "x", "model": "sketch"}, steered
+    # already steered -> unchanged
+    same = _steer_body_to_free_slug(FakeSession(), {"prompt": "x", "model": "sketch"}, disc, ep)
+    assert same == {"prompt": "x", "model": "sketch"}
+    # no openapi ref -> unchanged
+    disc2 = FreeTierDiscovery()
+    disc2.free_slugs = ["sketch"]
+    assert _steer_body_to_free_slug(FakeSession(), {"prompt": "x"}, disc2, ep) == {"prompt": "x"}
+    print("  ok: steering to free meter via openapi enums")
+
+
 def main() -> int:
     tests = [
         test_zero_value_signs_and_recovers,
@@ -265,6 +308,7 @@ def main() -> int:
         test_exhausted_allowance_finding,
         test_not_zero_cost_finding,
         test_full_delivery_passes,
+        test_steer_body_to_free_slug,
     ]
     failed = 0
     for t in tests:

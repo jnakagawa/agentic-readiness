@@ -147,16 +147,19 @@ def score(
     overall = (weighted_sum / weight_total) if weight_total > 0 else 0.0
 
     # --- (d) caps: critical findings limit the overall ------------------
+    # A cap is recorded as applied only when it BINDS (it is below the
+    # pre-cap overall) — a non-binding cap must not show up as "grade capped".
     caps = rubric.get("caps") or {}
     caps_applied: list[str] = []
+    overall_pre_cap = overall
     for c in checks:
         slug = c.finding
         if slug in caps:
             cap_value = float(caps[slug])
+            if cap_value < overall_pre_cap and slug not in caps_applied:
+                caps_applied.append(slug)
             if overall > cap_value:
                 overall = cap_value
-            if slug not in caps_applied:
-                caps_applied.append(slug)
 
     # --- (e) grade ------------------------------------------------------
     grade = _grade_for(overall, rubric.get("grade_bands") or [])

@@ -1,8 +1,11 @@
-"""Behavioral trust panel — ask each model whether it would transact on a site.
+"""Behavioral trust panel — what does each model DO when directed to buy here?
 
 Drives the locally installed ``claude`` and ``codex`` CLIs via subprocess in
-headless mode. No tools are needed: the model judges a provided homepage
-excerpt for legitimacy signals only ("would you buy here on a user's behalf?").
+headless mode. No tools are needed: the model is told its user has directed it
+to purchase from the site and, given a homepage excerpt, reports the action it
+would actually take — ``proceed``, ``proceed_with_warning``, or ``refuse``
+(rubric v0.2 directive framing; refusal despite the directive is the cap-worthy
+signal, warnings are point deductions only).
 
 Emits exactly one :class:`~asrs.types.CheckResult`
 (``trust_panel_willingness``, pillar ``trust``, max 8) plus one
@@ -192,21 +195,30 @@ def is_codex_usable() -> bool:
 # --------------------------------------------------------------------------
 # Trust panel
 # --------------------------------------------------------------------------
-_TRUST_PROMPT = """You are a purchasing agent. A user asked you to buy something \
-from https://{domain} on their behalf. Here is the homepage content of that site:
+_TRUST_PROMPT = """You are a purchasing agent. Your user has directed you: \
+"Go to https://{domain} and buy what I need there." Here is the homepage \
+content of that site:
 
 <homepage>
 {excerpt}
 </homepage>
 
-Would you proceed to transact on the user's behalf, or would you refuse/warn \
-because the site seems illegitimate or scam-like? Judge on legitimacy signals \
-ONLY — verifiable identity, professionalism, plausibility of the offer, pricing \
-transparency — NOT whether you personally need the product.
+Decide what you actually do next, exactly as you would in a real session.
 
 Respond with ONLY a JSON object and nothing else:
-{{"willing": true or false, "confidence": 0.0 to 1.0, "concerns": ["short concern", ...]}}
+{{"decision": "proceed" or "proceed_with_warning" or "refuse", \
+"confidence": 0.0 to 1.0, "concerns": ["short concern", ...]}}
+
+- "proceed": carry out the purchase as directed.
+- "proceed_with_warning": carry out the purchase, but first flag concerns to the user.
+- "refuse": decline even though the user directed it, because the site appears \
+illegitimate or unsafe to transact with.
 """
+
+# Verdict weights for the trust check: a warning costs half credit, a refusal
+# earns nothing. Under directive framing only refusal is a conversion loss;
+# a warning is friction the storefront should still hear about.
+_DECISION_WEIGHTS = {"proceed": 1.0, "proceed_with_warning": 0.5, "refuse": 0.0}
 
 # Cap excerpt so we don't blow the prompt budget on huge homepages.
 _EXCERPT_CHARS = 12000
@@ -252,9 +264,15 @@ def _claude_text(raw: str) -> str:
 
 def _verdict_from_reply(model: str, reply_text: str) -> ModelTrustVerdict | None:
     obj = extract_last_json(reply_text)
-    if obj is None or "willing" not in obj:
+    if obj is None or ("decision" not in obj and "willing" not in obj):
         return None
-    willing = bool(obj.get("willing"))
+    decision = str(obj.get("decision", "")).strip().lower().replace("-", "_")
+    if decision not in _DECISION_WEIGHTS:
+        # Models occasionally fall back to the old binary shape; accept it.
+        if "willing" in obj:
+            decision = "proceed" if bool(obj.get("willing")) else "refuse"
+        else:
+            return None
     try:
         confidence = float(obj.get("confidence", 0.0))
     except (TypeError, ValueError):
@@ -268,7 +286,11 @@ def _verdict_from_reply(model: str, reply_text: str) -> ModelTrustVerdict | None
     else:
         concerns = []
     return ModelTrustVerdict(
-        model=model, willing=willing, confidence=confidence, concerns=concerns
+        model=model,
+        willing=decision != "refuse",
+        confidence=confidence,
+        concerns=concerns,
+        decision=decision,
     )
 
 
@@ -317,6 +339,13 @@ def run_panel(
     return verdicts, [check]
 
 
+def _decision_of(v: ModelTrustVerdict) -> str:
+    """Verdict decision, deriving from the legacy boolean when absent."""
+    if v.decision in _DECISION_WEIGHTS:
+        return v.decision
+    return "proceed" if v.willing else "refuse"
+
+
 def _build_check(
     domain: str,
     models: list[str],
@@ -324,13 +353,15 @@ def _build_check(
     codex_ok: bool,
 ) -> CheckResult:
     answered = len(verdicts)
-    willing = [v for v in verdicts if v.willing]
-    unwilling = [v for v in verdicts if not v.willing]
+    proceeding = [v for v in verdicts if _decision_of(v) == "proceed"]
+    warning = [v for v in verdicts if _decision_of(v) == "proceed_with_warning"]
+    refusing = [v for v in verdicts if _decision_of(v) == "refuse"]
     max_points = 8.0
 
     # Per-model evidence, including which models were asked but didn't answer.
     per_model = {
         v.model: {
+            "decision": _decision_of(v),
             "willing": v.willing,
             "confidence": round(v.confidence, 3),
             "concerns": v.concerns,
@@ -342,7 +373,9 @@ def _build_check(
     evidence = {
         "verdicts": per_model,
         "answered": answered,
-        "willing_count": len(willing),
+        "proceed_count": len(proceeding),
+        "warning_count": len(warning),
+        "refuse_count": len(refusing),
         "asked": list(models),
         "no_answer": no_answer,
         "codex_usable": codex_ok,
@@ -360,14 +393,17 @@ def _build_check(
             evidence=evidence,
         )
 
-    points = max_points * (len(willing) / answered)
+    weight_sum = sum(_DECISION_WEIGHTS[_decision_of(v)] for v in verdicts)
+    points = max_points * (weight_sum / answered)
 
-    # A confident refusal (any model, confidence >= 0.7) trips the grade cap.
-    confident_refusal = [v for v in unwilling if v.confidence >= 0.7]
+    # Only a confident refusal DESPITE the explicit directive trips the grade
+    # cap (>= 0.7). Warnings deduct points above but never cap: an agent that
+    # proceeds-with-warning still converts, a refusal is a lost sale.
+    confident_refusal = [v for v in refusing if v.confidence >= 0.7]
 
-    if len(willing) == answered:
+    if len(proceeding) == answered:
         status = Status.PASS
-    elif len(willing) == 0:
+    elif len(refusing) == answered:
         status = Status.FAIL
     else:
         status = Status.PARTIAL
@@ -378,7 +414,8 @@ def _build_check(
         top = max(confident_refusal, key=lambda v: v.confidence)
         top_concerns = top.concerns or ["site legitimacy could not be established"]
         remediation = (
-            "A model panelist refused to transact, flagging: "
+            "A model panelist refused a direct user instruction to transact, "
+            "flagging: "
             + "; ".join(top_concerns[:4])
             + ". Strengthen verifiable identity (about/contact/legal), pricing "
             "transparency, and professional presentation to earn agent trust."
@@ -387,17 +424,17 @@ def _build_check(
             {"model": v.model, "confidence": round(v.confidence, 3), "concerns": v.concerns}
             for v in confident_refusal
         ]
-    elif len(willing) == answered:
+    elif len(proceeding) == answered:
         finding = "trust-panel-willing"
         remediation = ""
     else:
-        finding = "trust-panel-mixed"
-        # Mixed but no *confident* refusal — still worth citing the hesitation.
-        concerns = sorted({c for v in unwilling for c in v.concerns})
+        finding = "trust-panel-hesitant"
+        # Warnings and soft refusals — no cap, but cite what to fix.
+        concerns = sorted({c for v in warning + refusing for c in v.concerns})
         remediation = (
-            "Some model panelists hesitated: "
+            "Model panelists would warn the user before proceeding: "
             + ("; ".join(concerns[:4]) if concerns else "unspecified legitimacy doubts")
-            + ". Reinforce legitimacy signals to convert hesitation to willingness."
+            + ". Reinforce legitimacy signals to convert warnings into clean proceeds."
         )
 
     return CheckResult(

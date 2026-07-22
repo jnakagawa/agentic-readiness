@@ -2,14 +2,30 @@
 # The rubric is versioned; every report embeds this version. Scores are only
 # comparable within a rubric version (SSL Labs / Euro NCAP pattern).
 #
-# v0.4 (2026-07-22): environment-failure attribution + hosted-agent
-#   reachability. A shopper run whose OWN hosting stack refused to load the
-#   site (hosted URL-safety/reputation layer; self-reported "blocked by
-#   browser security policy" language + zero observed checkpoints) is no
-#   longer counted as site evidence — it is excluded from outcome and
-#   live-trust denominators, and surfaces instead as a new access check,
-#   hosted_agent_reachability (max 5): the fraction of verdict-producing
-#   runs that could reach the storefront at all.
+# v0.4 (2026-07-22), two features:
+#   (a) Free-tier transaction probe — the first check that actually TRANSACTS
+#   instead of doing read-only recon. New bhv_free_tier_transaction (pillar
+#   outcome, max 5, behavioral mode only): exercise an ADVERTISED $0 allowance
+#   end to end the way a real agent trials a service before spending —
+#   discover the free allowance from the target's own docs, make the documented
+#   call, receive the HTTP 402 zero-value identity challenge, settle it with a
+#   ZERO-VALUE signed authorization from a fresh EPHEMERAL wallet, and verify a
+#   real 200 with actual content. Checkpoint partial credit within the check
+#   (advertised 1 -> challenge received 1 -> settled $0 2 -> content delivered 1).
+#   Safety property: the probe parses the challenge amount and NEVER signs unless
+#   it is exactly zero (a nonzero challenge records free-tier-not-zero-cost). No
+#   free tier advertised => NA (never punished for its absence). At most ONE
+#   attempt per scoring run (it consumes the allowance); --trials never
+#   multiplies it. Vendor-neutral: the opt-in header and allowance count are
+#   discovered from the agent-surface docs, not hardcoded.
+#   (b) Environment-failure attribution + hosted-agent reachability. A shopper
+#   run whose OWN hosting stack refused to load the site (hosted URL-safety/
+#   reputation layer; self-reported "blocked by browser security policy"
+#   language + zero observed checkpoints) is no longer counted as site
+#   evidence — it is excluded from outcome and live-trust denominators, and
+#   surfaces instead as a new access check, hosted_agent_reachability (max 5):
+#   the fraction of verdict-producing runs that could reach the storefront
+#   at all.
 #
 # v0.3 (2026-07-22): rescored for agentic SERVICES, not retail webshops. The
 #   organizing question is now "does implementing agent-native rails let an
@@ -21,11 +37,8 @@
 #   agent); commerce_protocol_signals folded into x402_probe as partial credit
 #   (for services the 402 handshake IS the commerce protocol); self_serve_payg
 #   restacked — full marks now require NO-SIGNUP provisioning (signup+API-key
-#   self-serve is the middle tier, not the top).
-#   Planned v0.4: free-tier transaction probe — live end-to-end exercise of an
-#   advertised $0 allowance (identity-challenge settle + real response), the
-#   Execution/Outcome rungs measured for real, the way an actual agent would
-#   trial a service before spending.
+#   self-serve is the middle tier, not the top). (The v0.4 free-tier
+#   transaction probe promised here shipped in v0.4 above.)
 #
 # v0.2 (2026-07-22): x402 probe follows same-domain agent-surface links (the
 #   llms.txt breadcrumb to agents.<domain>), reads that surface's discovery
@@ -199,3 +212,17 @@ checks:
     desc: No human-only gate (CAPTCHA, KYC/identity verification, email
       confirmation loop, sales call) blocks the path. The Exa lesson —
       business-rule gates are readiness factors.
+  - id: bhv_free_tier_transaction
+    pillar: outcome
+    max_points: 5
+    desc: >-
+      BEHAVIORAL — live end-to-end exercise of an ADVERTISED free tier, the one
+      check that actually transacts. Discover the free allowance from the
+      target's own docs, make the documented call, receive the HTTP 402
+      zero-value identity challenge, settle it with a ZERO-VALUE signed
+      authorization from a fresh ephemeral wallet, and verify a real 200 with
+      content. Checkpoint partial credit — advertised (1), challenge received
+      (1), settled $0 (2), real content delivered (1). NA when no free tier is
+      advertised (never a defect). It never signs a nonzero authorization (a
+      nonzero challenge is free-tier-not-zero-cost). At most ONE attempt per
+      scoring run (it consumes the allowance).

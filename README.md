@@ -53,9 +53,22 @@ Reports land in `runs/` as JSON; a report card renders to the terminal.
   a score. Every check is worded by capability, not by vendor.
 - **Behavioral layer** drives headless `claude -p` and `codex exec` as the
   shopper/trust panel — the two model families expected to carry most real
-  agent traffic. v0 runs are read-only recon (no accounts created, no payments).
-  Planned v0.4: a live free-tier transaction probe (exercise an advertised $0
-  allowance end-to-end, the way a real agent would trial a service).
+  agent traffic. The panels are read-only recon (no accounts created, no
+  payments).
+- **Free-tier transaction probe** (rubric v0.4) is the one check that actually
+  *transacts* — it exercises an ADVERTISED free tier end-to-end the way a real
+  agent trials a service before spending: discover the free allowance from the
+  target's own docs → make the documented call → receive the HTTP 402
+  zero-value identity challenge → settle it with a **ZERO-VALUE** signed
+  authorization from a **fresh ephemeral wallet** → verify a real 200 with
+  content. Checkpoint partial credit (advertised → challenge → settled $0 →
+  content). Safety property, enforced in code and unit-tested: it parses the
+  challenge amount and **never signs unless it is exactly zero** — a nonzero
+  challenge records `free-tier-not-zero-cost`, and there is no code path that
+  signs a nonzero-value authorization. No free tier advertised ⇒ NA (never a
+  defect). One attempt per run (it consumes the target's allowance); `--trials`
+  does not multiply it. Vendor-neutral: the opt-in header and allowance count
+  are discovered from the agent-surface docs, not hardcoded.
 
 ## Layout
 

@@ -56,12 +56,18 @@ class CliResult:
     reason: str  # short failure slug when not ok, else ""
 
 
-def run_cli(cmd: list[str], timeout_s: int, stdin: str | None = None) -> CliResult:
+def run_cli(
+    cmd: list[str],
+    timeout_s: int,
+    stdin: str | None = None,
+    cwd: str | None = None,
+) -> CliResult:
     """Run a CLI command with a hard timeout and scrubbed env.
 
     Never raises: a timeout, non-zero exit, or missing binary is turned into a
     ``CliResult(ok=False, reason=...)``. ``raw`` always carries whatever bytes
-    we managed to capture so transcripts are useful even on failure.
+    we managed to capture so transcripts are useful even on failure. ``cwd``
+    scopes workspace-write sandboxes (codex) to a scratch dir.
     """
     binary = cmd[0]
     if shutil.which(binary) is None and not os.path.isabs(binary):
@@ -69,11 +75,15 @@ def run_cli(cmd: list[str], timeout_s: int, stdin: str | None = None) -> CliResu
     try:
         proc = subprocess.run(
             cmd,
-            input=stdin,
+            # Always provide input so the child gets a CLOSED stdin pipe.
+            # codex exec reads piped stdin to append it to the prompt and
+            # hangs forever post-turn if the pipe never sends EOF.
+            input=stdin if stdin is not None else "",
             capture_output=True,
             text=True,
             timeout=timeout_s,
             env=scrub_env(),
+            cwd=cwd,
         )
     except subprocess.TimeoutExpired as exc:
         partial = ""

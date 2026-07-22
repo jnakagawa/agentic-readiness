@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import json
 import os
+import tempfile
 
 from asrs.behavioral.trust_probe import (
     extract_last_json,
@@ -90,14 +91,22 @@ def _claude_cmd(prompt: str) -> list[str]:
 
 
 def _codex_cmd(prompt: str) -> list[str]:
-    # Read-only sandbox; codex may itself have network disabled — we detect
-    # usability up front and, on a run, treat inability to reach the net as a
-    # failed run (excluded), never a fabricated result.
+    # Model a full-auto codex agent: live web search plus real network access.
+    # read-only sandboxing also cuts the network, so codex could only see its
+    # search index — mock/unindexed storefronts looked blank ("blocked by
+    # browser security policy"). workspace-write + the network_access override
+    # turns the network on while keeping file writes confined to the cwd
+    # (run_panel runs codex from a scratch dir).
     return [
         "codex",
         "exec",
         "--sandbox",
-        "read-only",
+        "workspace-write",
+        "-c",
+        "sandbox_workspace_write.network_access=true",
+        # --search is top-level-only in codex 0.145; exec takes the config key.
+        "-c",
+        "tools.web_search=true",
         "--skip-git-repo-check",
         "--color",
         "never",
@@ -170,7 +179,9 @@ def _run_one(
                 trust_events=[],
                 transcript_path="",
             )
-        res = run_cli(_codex_cmd(prompt), SHOPPER_TIMEOUT_S)
+        # Scratch cwd: workspace-write confines codex's file writes here.
+        scratch = tempfile.mkdtemp(prefix="asrs-codex-")
+        res = run_cli(_codex_cmd(prompt), SHOPPER_TIMEOUT_S, cwd=scratch)
         reply_text = res.raw
     else:
         return BehavioralRun(

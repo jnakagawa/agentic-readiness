@@ -51,11 +51,17 @@ def run(ctx: FetchContext) -> list[CheckResult]:
     docs = _fetch_docs_pages(ctx, home)
     llms = ctx.get("/llms.txt", ua="browser")
     corpus = _corpus(home, docs, llms)
+    # Agent-surface subdomains (agents.<domain> etc.) referenced from the
+    # homepage or llms.txt — where sites like the ZeroClick template keep the
+    # actual payment rails. Follow the breadcrumbs the way an agent would.
+    agent_bases = _agent_surface_bases(ctx, home, llms)
+    agent_pages = _fetch_agent_surface_pages(ctx, agent_bases)
+    corpus = "\n".join([corpus] + [p.text or "" for p in agent_pages])
     # self_serve_payg looks at homepage + pricing pages specifically.
     pricing = _fetch_pricing_pages(ctx, home)
     payg_corpus = "\n".join([corpus] + [p.text or "" for p in pricing])
     return [
-        _x402_probe(ctx, home, docs, corpus),
+        _x402_probe(ctx, home, docs, corpus, agent_bases, agent_pages),
         _mcp_surface(ctx, corpus),
         _commerce_protocol_signals(ctx, home, corpus),
         _self_serve_payg(ctx, home, pricing, payg_corpus),
@@ -67,19 +73,41 @@ def run(ctx: FetchContext) -> list[CheckResult]:
 # ---------------------------------------------------------------------------
 
 
-def _x402_probe(ctx: FetchContext, home: FetchResult, docs: list[FetchResult], corpus: str) -> CheckResult:
+def _x402_probe(
+    ctx: FetchContext,
+    home: FetchResult,
+    docs: list[FetchResult],
+    corpus: str,
+    agent_bases: list[str] | None = None,
+    agent_pages: list[FetchResult] | None = None,
+) -> CheckResult:
     max_points, check_id = 6.0, "x402_probe"
+    agent_bases = agent_bases or []
+    agent_pages = agent_pages or []
 
     targets = ["/api", "/api/v1", "/v1"]
     targets += _api_bases_from_docs(docs)
     targets += _paths_near_keyword(corpus, "x402")
+    # Concrete endpoints on the agent surface: API paths named in its
+    # discovery docs ("POST /generate", openapi paths), joined to each base.
+    agent_targets = _agent_surface_targets(ctx, agent_bases, agent_pages)
+    targets += agent_targets
     targets = _dedupe(targets)
+
+    # Payment-gated endpoints usually challenge only on their real (POST)
+    # method — a GET just 404s. Empty-body POST is a safe handshake probe,
+    # but only where the surface itself documents x402 (an expected 402).
+    surface_documents_x402 = "x402" in "\n".join(p.text or "" for p in agent_pages).lower()
+    post_ok = set(agent_targets) if surface_documents_x402 else set()
 
     probed: list[dict] = []
     saw_402 = False
-    for target in targets[:12]:
+    for target in targets[:16]:
         res = ctx.get(target, ua="browser")
-        probed.append({"url": res.url, "status": res.status})
+        probed.append({"url": res.url, "status": res.status, "method": "GET"})
+        if res.status != 402 and target in post_ok:
+            res = ctx.post_empty(target, ua="browser")
+            probed.append({"url": res.url, "status": res.status, "method": "POST"})
         if res.status == 402:
             saw_402 = True
             payload = _parse_x402(res)
@@ -399,6 +427,100 @@ def _self_serve_payg(
 # ---------------------------------------------------------------------------
 # shared helpers
 # ---------------------------------------------------------------------------
+
+
+_ABS_URL_RE = re.compile(r"https?://[^\s\"'<>)\]]+")
+# "POST /generate", "ANY /<path>" style method+path mentions in agent docs.
+_METHOD_PATH_RE = re.compile(r"\b(?:GET|POST|PUT|PATCH|ANY)\s+(/[A-Za-z0-9_\-/.]*[A-Za-z0-9])")
+# Discovery docs an agent surface serves at well-known paths.
+_AGENT_SURFACE_DOCS = ("/llms.txt", "/llms-full.txt", "/manifest.json")
+
+
+def _agent_surface_bases(ctx: FetchContext, home: FetchResult, llms: FetchResult) -> list[str]:
+    """Same-registrable-domain subdomain origins linked from homepage/llms.txt.
+
+    agents.<domain> and friends — where the ZeroClick template (and pattern-
+    alike storefronts) keep the actual agent rails. Never leaves the scored
+    domain: a host qualifies only when it is a subdomain of the apex.
+    """
+    apex = ctx.domain.lower()
+    if apex.startswith("www."):
+        apex = apex[4:]
+    skip_hosts = {apex, f"www.{apex}", urlparse(ctx.base_url).netloc.lower()}
+
+    candidates = list(_all_links(home))
+    if llms.ok and llms.status == 200:
+        candidates += [m.group(0) for m in _ABS_URL_RE.finditer(llms.text or "")]
+
+    bases: list[str] = []
+    for url in candidates:
+        parsed = urlparse(url)
+        host = parsed.netloc.lower()
+        if not host or host in skip_hosts or not host.endswith(f".{apex}"):
+            continue
+        bases.append(f"{parsed.scheme or 'https'}://{host}")
+    # agents.* first — the conventional home for the payment surface.
+    bases = sorted(_dedupe(bases), key=lambda b: (0 if urlparse(b).netloc.startswith("agent") else 1, b))
+    return bases[:3]
+
+
+def _fetch_agent_surface_pages(ctx: FetchContext, bases: list[str]) -> list[FetchResult]:
+    """Fetch each agent base's discovery docs (llms.txt / llms-full.txt / manifest.json)."""
+    out: list[FetchResult] = []
+    for base in bases:
+        for path in _AGENT_SURFACE_DOCS:
+            res = ctx.get(base + path, ua="browser")
+            if res.ok and res.status == 200 and (res.text or "").strip():
+                out.append(res)
+    return out
+
+
+def _agent_surface_targets(
+    ctx: FetchContext, bases: list[str], pages: list[FetchResult]
+) -> list[str]:
+    """Concrete probe-able endpoints on the agent surface.
+
+    Pulls API paths the surface's own docs name — "POST /generate" mentions,
+    absolute URLs on an agent host, and paths from a referenced openapi.json —
+    and joins the relative ones to each base.
+    """
+    if not bases:
+        return []
+    text = "\n".join(p.text or "" for p in pages)
+    base_hosts = {urlparse(b).netloc for b in bases}
+
+    paths = [m.group(1) for m in _METHOD_PATH_RE.finditer(text)]
+
+    targets: list[str] = []
+    for m in _ABS_URL_RE.finditer(text):
+        parsed = urlparse(m.group(0))
+        if parsed.netloc in base_hosts and len(parsed.path.strip("/")) > 0:
+            # Their own docs pages aren't API endpoints.
+            if not any(parsed.path.endswith(d) for d in _AGENT_SURFACE_DOCS):
+                targets.append(f"{parsed.scheme}://{parsed.netloc}{parsed.path}")
+        elif "openapi" in parsed.path.lower() and parsed.path.lower().endswith(".json"):
+            paths += _openapi_paths(ctx, m.group(0))
+
+    for base in bases:
+        for path in _dedupe(paths)[:5]:
+            if "{" not in path and "<" not in path:
+                targets.append(base + path)
+    return _dedupe(targets)[:8]
+
+
+def _openapi_paths(ctx: FetchContext, url: str) -> list[str]:
+    """Operation paths from an openapi.json the agent surface references."""
+    res = ctx.get(url, ua="browser")
+    if not (res.ok and res.status == 200):
+        return []
+    try:
+        spec = json.loads(res.text or "")
+    except (ValueError, TypeError):
+        return []
+    paths = spec.get("paths")
+    if not isinstance(paths, dict):
+        return []
+    return [p for p in list(paths.keys())[:5] if isinstance(p, str) and p.startswith("/")]
 
 
 def _fetch_docs_pages(ctx: FetchContext, home: FetchResult) -> list[FetchResult]:

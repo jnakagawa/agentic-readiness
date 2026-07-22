@@ -76,7 +76,7 @@ class FetchContext:
         # guess from the domain so relative paths still resolve.
         self.base_url = f"https://{self.domain}"
         self._base_resolved = False
-        self._cache: dict[tuple[str, str], FetchResult] = {}
+        self._cache: dict[tuple[str, str, str], FetchResult] = {}
         self._session = requests.Session()
 
     # -- public API ---------------------------------------------------------
@@ -84,16 +84,29 @@ class FetchContext:
     def get(self, path_or_url: str, ua: str = "browser") -> FetchResult:
         """Fetch a path (resolved against base_url) or an absolute URL.
 
-        Caches per (final-requested-url, ua). Never raises: network problems
-        return a FetchResult with error set and status None.
+        Caches per (method, final-requested-url, ua). Never raises: network
+        problems return a FetchResult with error set and status None.
         """
+        return self._request("GET", path_or_url, ua)
+
+    def post_empty(self, path_or_url: str, ua: str = "browser") -> FetchResult:
+        """POST an empty JSON object to elicit a payment/identity challenge.
+
+        Used by the x402 probe: payment-gated endpoints often challenge only
+        on their real (POST) method — a GET just 404s. The `{}` body carries
+        no work request; a payment gate rejects it with a 402 before anything
+        executes, so this stays a read-only handshake probe.
+        """
+        return self._request("POST", path_or_url, ua)
+
+    def _request(self, method: str, path_or_url: str, ua: str) -> FetchResult:
         ua = ua if ua in USER_AGENTS else "browser"
         url = self._resolve(path_or_url)
-        cache_key = (url, ua)
+        cache_key = (method, url, ua)
         cached = self._cache.get(cache_key)
         if cached is not None:
             return cached
-        result = self._fetch(url, ua)
+        result = self._fetch(url, ua, method=method)
         self._cache[cache_key] = result
         return result
 
@@ -116,18 +129,24 @@ class FetchContext:
             base = base + "/"
         return urljoin(base, path_or_url.lstrip("/"))
 
-    def _fetch(self, url: str, ua: str) -> FetchResult:
+    def _fetch(self, url: str, ua: str, method: str = "GET") -> FetchResult:
         headers = {
             "User-Agent": USER_AGENTS[ua],
             "Accept": "*/*",
             "Accept-Language": "en-US,en;q=0.9",
         }
+        kwargs: dict = {}
+        if method == "POST":
+            headers["Content-Type"] = "application/json"
+            kwargs["data"] = "{}"
         try:
-            resp = self._session.get(
+            resp = self._session.request(
+                method,
                 url,
                 headers=headers,
                 timeout=self.timeout,
                 allow_redirects=True,
+                **kwargs,
             )
         except requests.exceptions.RequestException as exc:
             return FetchResult(

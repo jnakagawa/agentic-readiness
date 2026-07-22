@@ -2,6 +2,11 @@
 # The rubric is versioned; every report embeds this version. Scores are only
 # comparable within a rubric version (SSL Labs / Euro NCAP pattern).
 #
+# v0.2 (2026-07-22): x402 probe follows same-domain agent-surface links (the
+#   llms.txt breadcrumb to agents.<domain>), reads that surface's discovery
+#   docs into the corpus, and elicits the 402 with an empty-body POST where the
+#   surface documents x402 — fixes the apex-only false negative (no-x402-surface
+#   on a fully x402-payable storefront).
 # v0.2 (2026-07-22): trust pillar reframed to DIRECTIVE framing — the panel is
 #   asked what it does when the user has already said "go use this site", not
 #   whether the site looks scam-like in the abstract. Three-way verdict

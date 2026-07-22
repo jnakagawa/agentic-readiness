@@ -314,11 +314,19 @@ def _trust_panel(rep: dict) -> str:
     if not panel:
         return ""
     cards = []
+    # Three-way directive verdict (rubric v0.2); pre-v0.2 reports carry only
+    # the boolean, which maps to the two outer states.
+    decisions = {
+        "proceed": ("good", "Proceeds as directed"),
+        "proceed_with_warning": ("warn", "Proceeds, warns the user"),
+        "refuse": ("bad", "Refuses despite directive"),
+    }
     for v in panel:
-        ok = v["willing"]
+        decision = v.get("decision") or ("proceed" if v.get("willing") else "refuse")
+        cls, label = decisions.get(decision, ("neutral", _esc(decision)))
         pill = (
-            f'<span class="pill {"good" if ok else "bad"}"><span class="dot"></span>'
-            f'{"Willing to transact" if ok else "Refused to transact"}'
+            f'<span class="pill {cls}"><span class="dot"></span>'
+            f'{label}'
             f'&nbsp;·&nbsp;<span class="num">{v["confidence"]:.2f}</span></span>'
         )
         concerns = "".join(f"<li>{_esc(c)}</li>" for c in v.get("concerns", [])[:4])
@@ -329,7 +337,8 @@ def _trust_panel(rep: dict) -> str:
         )
     return (
         '<div class="card"><div class="card-header"><div><h2>Agent trust panel</h2>'
-        '<div class="desc">Would this model spend a user\'s money here?</div></div></div>'
+        '<div class="desc">The user has directed the purchase — does this model '
+        "proceed, warn, or refuse?</div></div></div>"
         f'<div class="card-body"><div class="verdicts">{"".join(cards)}</div></div></div>'
     )
 

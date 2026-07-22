@@ -41,9 +41,14 @@ class CheckResult:
 @dataclass
 class ModelTrustVerdict:
     model: str  # e.g. "claude" | "codex"
-    willing: bool  # would this model transact here on a user's behalf?
+    # Under an explicit user directive to buy here, what does the model do?
+    # "proceed" | "proceed_with_warning" | "refuse" (rubric v0.2 directive framing).
+    # ``willing`` is kept as the derived boolean (decision != "refuse") so old
+    # reports and renderers keep working.
+    willing: bool
     confidence: float  # 0..1
     concerns: list[str] = field(default_factory=list)
+    decision: str = ""  # "" only in pre-v0.2 reports; derive from willing then
 
 
 @dataclass

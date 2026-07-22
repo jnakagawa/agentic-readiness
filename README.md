@@ -9,7 +9,7 @@ roll findings into a 0-100 score + letter grade across five pillars:
 | Access | Can an agent get in at all? (bot walls, robots.txt AI policy) |
 | Legibility | Can an agent understand what's for sale? (llms.txt, schema.org, machine-readable pricing) |
 | Transactability | Can an agent pay programmatically? (x402, MCP, ACP/UCP, self-serve PAYG) |
-| Trust | Will an agent believe this site is legitimate? (static signals + live model panel: "would you buy here?") |
+| Trust | When a user directs an agent to buy here, does it proceed, warn, or refuse? (static signals + directive-framed model panel + in-session trust events) |
 | Outcome | Do shopper agents actually get the job done, repeatedly? (checkpoint ladder, multi-trial) |
 
 The flagship use case is the **delta**: score a storefront's legacy surface vs
@@ -33,7 +33,14 @@ Reports land in `runs/` as JSON; a report card renders to the terminal.
 - **Rubric is versioned** (`rubric/rubric_v0.yaml`); every report embeds the
   version. Scores are only comparable within a version.
 - **Critical failures cap the grade** (SSL Labs pattern) — a bot wall or a
-  panel-model scam refusal limits the grade no matter the points.
+  panel-model refusal limits the grade no matter the points. Only caps that
+  actually bind (lower the pre-cap score) are reported as applied.
+- **Trust is measured under a directive** (rubric v0.2) — the panel is told the
+  user already said "go buy here" and reports what it does next: `proceed`,
+  `proceed_with_warning`, or `refuse`. Refusal-despite-directive caps the
+  grade; warnings only deduct. The shopper's in-task `trust_events` are scored
+  too (`trust_live_session`) — live evidence can resolve concerns a static
+  homepage excerpt cannot, matching how real directed sessions behave.
 - **Can't-test is first-class** — `not_applicable` / `cant_test` shrink the
   denominator instead of counting as failures (OpenSSF Scorecard pattern).
 - **Every failed check is a named finding with a remediation**

@@ -1,7 +1,16 @@
-# Agentic Selling Readiness Score — rubric v0.1 (2026-07-22)
+# Agentic Selling Readiness Score — rubric v0.2 (2026-07-22)
 # The rubric is versioned; every report embeds this version. Scores are only
 # comparable within a rubric version (SSL Labs / Euro NCAP pattern).
-version: "0.1"
+#
+# v0.2 (2026-07-22): trust pillar reframed to DIRECTIVE framing — the panel is
+#   asked what it does when the user has already said "go use this site", not
+#   whether the site looks scam-like in the abstract. Three-way verdict
+#   (proceed / proceed_with_warning / refuse) replaces the binary willing flag;
+#   only a confident refusal-despite-directive trips the trust-panel-refusal
+#   cap. New trust_live_session check scores the shopper panel's in-task
+#   trust_events (warnings surfaced while actually working the site).
+# v0.1 (2026-07-22): initial rubric.
+version: "0.2"
 
 # Pillar weights for the overall score. If a pillar is entirely
 # NA/CANT_TEST (e.g. outcome in static-only mode), it is dropped and the
@@ -18,7 +27,7 @@ pillar_weights:
 caps:
   agent-ua-hard-blocked: 69        # bot wall blocks agent UAs while browsers pass -> max D
   no-https: 59                     # -> F (no HTTPS cannot pass in 2026)
-  trust-panel-refusal: 69          # a panel model confidently refuses as likely-scam -> max D
+  trust-panel-refusal: 69          # a panel model confidently refuses DESPITE an explicit user directive -> max D
   human-gate-required: 79          # purchase impossible without human-only step -> max C
 
 grade_bands:  # lower bound -> grade
@@ -110,9 +119,19 @@ checks:
   - id: trust_panel_willingness
     pillar: trust
     max_points: 8
-    desc: BEHAVIORAL — fraction of the model panel (Claude, Codex) willing to
-      transact here on a user's behalf. Any confident refusal also triggers
-      the trust-panel-refusal cap.
+    desc: BEHAVIORAL — the model panel (Claude, Codex) is told the user has
+      DIRECTED it to buy here and asked what it actually does next. Weighted
+      per verdict (proceed=1, proceed_with_warning=0.5, refuse=0). Only a
+      confident refusal-despite-directive triggers the trust-panel-refusal cap;
+      warnings deduct points but never cap.
+  - id: trust_live_session
+    pillar: trust
+    max_points: 4
+    desc: BEHAVIORAL — trust as it manifests during the live shopper session
+      under a user directive. A run is clean when it reports no trust_events
+      (hesitation / would-warn-user moments while working the site); runs with
+      events earn half weight. Live evidence (working docs, rails that respond)
+      can resolve concerns a static excerpt judge cannot.
 
   # ---- outcome (behavioral only; NA in static mode) ----
   - id: bhv_found_product

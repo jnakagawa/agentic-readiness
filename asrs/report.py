@@ -171,9 +171,15 @@ def render(report) -> str:
     # -- trust panel --
     if report.trust_panel:
         lines.append("")
-        lines.append("  TRUST PANEL (would you transact here?)")
+        lines.append("  TRUST PANEL (user directed the purchase — what does the agent do?)")
+        decision_labels = {
+            "proceed": "proceed",
+            "proceed_with_warning": "warn+go",
+            "refuse": "refused",
+        }
         for v in report.trust_panel:
-            verdict = "willing" if v.willing else "refused"
+            decision = getattr(v, "decision", "") or ("proceed" if v.willing else "refuse")
+            verdict = decision_labels.get(decision, decision)
             concerns = "; ".join(v.concerns) if v.concerns else "none"
             lines.append(
                 f"    {v.model:<8} {verdict:<8} "

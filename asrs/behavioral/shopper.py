@@ -8,8 +8,10 @@ a domain read-only, reporting a checkpoint ladder as a JSON verdict:
     machine_payable_path, no_human_gate
 
 Raw CLI output is saved per run to ``<out_dir>/transcripts/`` and the checkpoint
-verdicts are aggregated into the five ``bhv_*`` outcome checks. Runs that fail
-or don't parse are excluded from the scoring denominator (CANT_TEST semantics).
+verdicts are aggregated into the five ``bhv_*`` outcome checks plus the
+``trust_live_session`` trust check (rubric v0.2: in-task trust_events scored as
+behavioral trust under a user directive). Runs that fail or don't parse are
+excluded from the scoring denominator (CANT_TEST semantics).
 
 Shares CLI plumbing with :mod:`asrs.behavioral.trust_probe` (subprocess runner,
 env scrubbing, last-JSON extraction, codex-usability probe).
@@ -42,9 +44,14 @@ _CHECKPOINT_CHECKS: list[tuple[str, str, int]] = [
 ]
 _CHECKPOINT_KEYS = [c[0] for c in _CHECKPOINT_CHECKS]
 
+# Max points for the trust_live_session check (pillar trust, rubric v0.2):
+# trust as it manifests during the directed session, from trust_events.
+_TRUST_LIVE_MAX = 4.0
 
-_SHOPPER_PROMPT = """You are a purchasing agent evaluating whether https://{domain} \
-can sell to AI agents. Task: "{task}".
+
+_SHOPPER_PROMPT = """You are a purchasing agent. Your user has directed you to \
+use https://{domain} for this task: "{task}". Work out whether you could \
+complete that directive end-to-end as an agent.
 
 Investigate the site READ-ONLY (fetch pages and docs, follow links, search the \
 web for its API/pricing/docs). STRICT RULES: do NOT create accounts, do NOT \
@@ -68,8 +75,9 @@ PROGRAMMATICALLY (an API plus programmatic payment, e.g. x402 or a checkout API)
 — NOT a browser-only checkout.
 - no_human_gate: NO CAPTCHA, KYC/identity verification, email-confirmation loop, \
 or sales call is required to complete the path.
-- trust_events: any moments you hesitated or would warn the user the site might \
-be illegitimate (empty list if none).
+- trust_events: any moments you hesitated, would warn the user the site might \
+be illegitimate, or would refuse to continue despite the user's directive \
+(empty list if none).
 """
 
 
@@ -233,11 +241,12 @@ def run_panel(
     models: list[str] = ["claude", "codex"],
     out_dir: str = "runs",
 ) -> tuple[list[BehavioralRun], list[CheckResult]]:
-    """Run the shopper panel and aggregate outcome checks.
+    """Run the shopper panel and aggregate outcome + live-trust checks.
 
     Returns ``(runs, checks)`` where ``checks`` are the five ``bhv_*`` outcome
-    checks computed over VALID runs (a valid run parsed a verdict; failed runs
-    carry ``blockers=["run-failed: ..."]`` and are excluded from denominators).
+    checks plus ``trust_live_session``, computed over VALID runs (a valid run
+    parsed a verdict; failed runs carry ``blockers=["run-failed: ..."]`` and
+    are excluded from denominators).
     """
     codex_ok = is_codex_usable() if "codex" in models else False
 
@@ -278,7 +287,7 @@ def _aggregate(domain: str, runs: list[BehavioralRun]) -> list[CheckResult]:
                 for r in runs
             ],
         }
-        return [
+        cant = [
             CheckResult(
                 check_id=check_id,
                 pillar="outcome",
@@ -291,6 +300,19 @@ def _aggregate(domain: str, runs: list[BehavioralRun]) -> list[CheckResult]:
             )
             for (_key, check_id, max_pts) in _CHECKPOINT_CHECKS
         ]
+        cant.append(
+            CheckResult(
+                check_id="trust_live_session",
+                pillar="trust",
+                status=Status.CANT_TEST,
+                points=0.0,
+                max_points=_TRUST_LIVE_MAX,
+                finding="behavioral-runs-failed",
+                remediation="",
+                evidence=dict(evidence),
+            )
+        )
+        return cant
 
     n = len(valid)
     checks: list[CheckResult] = []
@@ -351,7 +373,63 @@ def _aggregate(domain: str, runs: list[BehavioralRun]) -> list[CheckResult]:
             )
         )
 
+    checks.append(_trust_live_check(valid, all_trust_events))
+
     return checks
+
+
+def _trust_live_check(valid: list[BehavioralRun], all_trust_events: list[str]) -> CheckResult:
+    """Trust as it manifested DURING the live directed session (rubric v0.2).
+
+    A run is clean when it reported no trust_events; a run that hesitated or
+    would warn the user earns half weight. Warnings never FAIL this check —
+    under directive framing a warning still converts; refusal signal lives in
+    the trust panel's cap.
+    """
+    n = len(valid)
+    clean = [r for r in valid if not r.trust_events]
+    warned = [r for r in valid if r.trust_events]
+    weight = (len(clean) + 0.5 * len(warned)) / n
+    points = _TRUST_LIVE_MAX * weight
+
+    evidence = {
+        "valid_runs": n,
+        "clean_runs": len(clean),
+        "warned_runs": len(warned),
+        "trust_events": all_trust_events,
+        "by_run": [
+            {"model": r.model, "trial": r.trial, "trust_events": r.trust_events}
+            for r in valid
+        ],
+    }
+
+    if not warned:
+        return CheckResult(
+            check_id="trust_live_session",
+            pillar="trust",
+            status=Status.PASS,
+            points=round(points, 3),
+            max_points=_TRUST_LIVE_MAX,
+            finding="trust-live-clean",
+            remediation="",
+            evidence=evidence,
+        )
+
+    return CheckResult(
+        check_id="trust_live_session",
+        pillar="trust",
+        status=Status.PARTIAL,
+        points=round(points, 3),
+        max_points=_TRUST_LIVE_MAX,
+        finding="trust-live-warnings",
+        remediation=(
+            "Shopper agents surfaced trust concerns while working the site: "
+            + ("; ".join(all_trust_events[:4]) if all_trust_events else "unspecified")
+            + ". Address these so a directed agent completes the task without "
+            "warning its user."
+        ),
+        evidence=evidence,
+    )
 
 
 def _finding_for(

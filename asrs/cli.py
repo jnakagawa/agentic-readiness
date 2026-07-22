@@ -82,9 +82,10 @@ def _homepage_excerpt(ctx) -> str:
 
 
 def _run_behavioral(domain, ctx, task, trials, models):
-    """Run the trust panel + shopper panel. Returns (checks, verdicts, runs).
+    """Run the trust panel + shopper panel + free-tier transaction probe.
 
-    Each panel is guarded; a missing/crashing module contributes nothing.
+    Returns (checks, verdicts, runs). Each panel/probe is guarded; a
+    missing/crashing module contributes nothing.
     """
     import importlib
 
@@ -116,6 +117,21 @@ def _run_behavioral(domain, ctx, task, trials, models):
     except Exception as exc:
         print(
             f"[asrs] warning: shopper panel unavailable "
+            f"({type(exc).__name__}: {exc}) — skipped",
+            file=sys.stderr,
+        )
+
+    # -- free-tier transaction probe (rubric v0.4) --
+    # Runs AFTER the shopper panel. At most ONE transaction attempt per scoring
+    # run (it consumes the target's free allowance) — ``trials`` never
+    # multiplies it. Guarded like the panels above.
+    try:
+        ft = importlib.import_module("asrs.behavioral.free_tier")
+        ft_checks = ft.run_probe(ctx, out_dir="runs")
+        checks.extend(ft_checks or [])
+    except Exception as exc:
+        print(
+            f"[asrs] warning: free-tier probe unavailable "
             f"({type(exc).__name__}: {exc}) — skipped",
             file=sys.stderr,
         )

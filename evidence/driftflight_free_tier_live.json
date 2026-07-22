@@ -1,0 +1,141 @@
+{
+  "captured_at_utc": "2026-07-22T23:29:13.400863Z",
+  "target": "agents.driftflight.com",
+  "note": "ASRS v0.4 free-tier transaction probe \u2014 live end-to-end evidence. All data public. Ephemeral wallet is single-use and discarded (address only).",
+  "ephemeral_address": "0x47994F5C776599993B94473cbea660aE867C394b",
+  "step_1_free_mode_call": {
+    "request": {
+      "method": "POST",
+      "url": "https://agents.driftflight.com/v1/images/generate",
+      "headers": {
+        "zc-mode": "free",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "prompt": "a paper airplane over mountains, minimal line sketch",
+        "model": "sketch"
+      }
+    },
+    "response_status": 402,
+    "response_challenge_json": {
+      "x402Version": 2,
+      "error": "payment_required",
+      "resource": {
+        "url": "https://agents.driftflight.com/v1/images/generate",
+        "description": "AI image generation with style presets: production-quality text-to-image for campaigns, catalogs, and editorial. Three tiers (sketch, studio, gallery), commercial licence and C2PA credentials on every render.",
+        "mimeType": "application/json",
+        "serviceName": "Driftflight"
+      },
+      "accepts": [
+        {
+          "scheme": "exact",
+          "network": "eip155:8453",
+          "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+          "amount": "0",
+          "payTo": "0x0000000000000000000000000000000000000000",
+          "maxTimeoutSeconds": 300,
+          "extra": {
+            "name": "USD Coin",
+            "version": "2",
+            "zeroclick": {
+              "kind": "identity"
+            },
+            "billing": {
+              "model": "prepaid",
+              "description": "amount is the price and is charged in full when you pay; a failed delivery is credited back in full. (Exact entries appear only on fixed-price requests - ceiling-priced requests are offered the reserve-and-pay-actual entry instead.)"
+            }
+          }
+        }
+      ],
+      "reason": "identity_required",
+      "protocols": {
+        "mpp": {
+          "challengeId": "npxwcEWrKDJI3hLZcAD_CCAACFHRaBZHckG6It_mgmM",
+          "method": "tempo",
+          "intent": "charge"
+        },
+        "x402": {
+          "x402Version": 2,
+          "network": "eip155:8453",
+          "scheme": "exact",
+          "amount": "0",
+          "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+        }
+      }
+    }
+  },
+  "step_2_signed_zero_value_payload": {
+    "x402Version": 2,
+    "payload": {
+      "signature": "0xe6a9b602875a430688035b6646f5afaa86637e465959ed7394bd2a633c8449a022a6ed9e70362a0c85eb79ef79f6ab60b931e5515718e79d8929d2ccce3b33ef1b",
+      "authorization": {
+        "from": "0x47994F5C776599993B94473cbea660aE867C394b",
+        "to": "0x0000000000000000000000000000000000000000",
+        "value": "0",
+        "validAfter": "0",
+        "validBefore": "1784763246",
+        "nonce": "0xd1a9c321666c5ec0b9a2996e107f0a5d4beb93cdb275427d0d5f4d0f4409cf97"
+      }
+    },
+    "accepted": {
+      "scheme": "exact",
+      "network": "eip155:8453",
+      "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "amount": "0",
+      "payTo": "0x0000000000000000000000000000000000000000",
+      "maxTimeoutSeconds": 300,
+      "extra": {
+        "name": "USD Coin",
+        "version": "2",
+        "zeroclick": {
+          "kind": "identity"
+        },
+        "billing": {
+          "model": "prepaid",
+          "description": "amount is the price and is charged in full when you pay; a failed delivery is credited back in full. (Exact entries appear only on fixed-price requests - ceiling-priced requests are offered the reserve-and-pay-actual entry instead.)"
+        }
+      }
+    }
+  },
+  "step_3_settle_retry": {
+    "request_added_header": "x-payment (base64 x402 v2 PaymentPayload)",
+    "response_status": 200,
+    "response_headers": {
+      "Date": "Wed, 22 Jul 2026 23:29:13 GMT",
+      "Content-Type": "application/json",
+      "Transfer-Encoding": "chunked",
+      "Connection": "keep-alive",
+      "access-control-allow-credentials": "true",
+      "alt-svc": "h3=\":443\"; ma=86400",
+      "content-security-policy": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests",
+      "cross-origin-opener-policy": "same-origin",
+      "cross-origin-resource-policy": "same-origin",
+      "nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+      "origin-agent-cluster": "?1",
+      "referrer-policy": "no-referrer",
+      "report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=dU07AClbXGEojXDvOz2hKd9s6gilAYxIwtQUzoFsKamOrcOruIGLnzymgwEnmUxEUtAshxBwLFCYxQImGd39ANpAiGm77nyg2yrwPejQ%2F6kb55%2Fj5ux600M3XwJl0kIGHe3%2BpPnz\"}]}",
+      "rndr-id": "1fc08179-e164-45ed",
+      "Server": "cloudflare",
+      "strict-transport-security": "max-age=31536000; includeSubDomains",
+      "vary": "Origin, accept-encoding",
+      "x-content-type-options": "nosniff",
+      "x-dns-prefetch-control": "off",
+      "x-download-options": "noopen",
+      "x-frame-options": "SAMEORIGIN",
+      "x-permitted-cross-domain-policies": "none",
+      "x-render-origin-server": "cloudflare",
+      "x-xss-protection": "0",
+      "zc-usage-error": "invalid_usage_header",
+      "cf-cache-status": "DYNAMIC",
+      "Content-Encoding": "gzip",
+      "CF-RAY": "a1f639be5900192c-LAX"
+    },
+    "response_body_json": {
+      "imageUrl": "https://api.driftflight.com/r/D82hOS2m430D",
+      "model": "sketch",
+      "preset": null,
+      "licence": "commercial",
+      "credits": "C2PA content credentials embedded"
+    }
+  }
+}

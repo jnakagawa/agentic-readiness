@@ -1,10 +1,12 @@
-"""Transactability pillar probes: can an agent pay programmatically?
+"""Transactability pillar probes: can an agent pay + provision WITHOUT a human?
 
-Checks:
-  - x402_probe                — live HTTP 402 x402 handshake, or documented x402
-  - mcp_surface               — MCP server discoverable
-  - commerce_protocol_signals — ACP/UCP markers, or platform inheritance (Shopify)
-  - self_serve_payg           — self-serve pay-as-you-go path vs sales-gated only
+Checks (rubric v0.3 — scored for agentic services, not retail webshops):
+  - x402_probe     — agent-native payment: live HTTP 402 handshake (full), or
+                     documented x402 / ACP/UCP commerce surface (partial)
+  - mcp_surface    — BONUS: MCP server discoverable (worth little; a per-service
+                     MCP server duplicates generic HTTP + a 402 handshake)
+  - self_serve_payg — provisioning tiers: no-signup (full) > self-serve signup
+                     (partial) > sales-gated (fail)
 
 All emit pillar="transactability". Network failure/ambiguity => CANT_TEST.
 """
@@ -25,10 +27,9 @@ _DOCS_LINK_RE = re.compile(r"/?(docs|api|developer|developers|reference)\b", re.
 
 
 _PROTOCOL_CHECKS = (
-    ("x402_probe", 6.0),
-    ("mcp_surface", 5.0),
-    ("commerce_protocol_signals", 4.0),
-    ("self_serve_payg", 5.0),
+    ("x402_probe", 8.0),
+    ("mcp_surface", 2.0),
+    ("self_serve_payg", 6.0),
 )
 
 
@@ -57,14 +58,15 @@ def run(ctx: FetchContext) -> list[CheckResult]:
     agent_bases = _agent_surface_bases(ctx, home, llms)
     agent_pages = _fetch_agent_surface_pages(ctx, agent_bases)
     corpus = "\n".join([corpus] + [p.text or "" for p in agent_pages])
-    # self_serve_payg looks at homepage + pricing pages specifically.
+    # self_serve_payg looks at homepage + pricing pages specifically, and a
+    # live 402 handshake is itself proof of no-signup provisioning.
     pricing = _fetch_pricing_pages(ctx, home)
     payg_corpus = "\n".join([corpus] + [p.text or "" for p in pricing])
+    x402 = _x402_probe(ctx, home, docs, corpus, agent_bases, agent_pages)
     return [
-        _x402_probe(ctx, home, docs, corpus, agent_bases, agent_pages),
+        x402,
         _mcp_surface(ctx, corpus),
-        _commerce_protocol_signals(ctx, home, corpus),
-        _self_serve_payg(ctx, home, pricing, payg_corpus),
+        _self_serve_payg(ctx, home, pricing, payg_corpus, x402_live=x402.finding == "x402-live"),
     ]
 
 
@@ -81,7 +83,7 @@ def _x402_probe(
     agent_bases: list[str] | None = None,
     agent_pages: list[FetchResult] | None = None,
 ) -> CheckResult:
-    max_points, check_id = 6.0, "x402_probe"
+    max_points, check_id = 8.0, "x402_probe"
     agent_bases = agent_bases or []
     agent_pages = agent_pages or []
 
@@ -120,7 +122,7 @@ def _x402_probe(
 
     if saw_402:
         return CheckResult(
-            check_id, PILLAR, Status.PARTIAL, 3.0, max_points,
+            check_id, PILLAR, Status.PARTIAL, 4.0, max_points,
             finding="http-402-no-x402-payload",
             remediation="An endpoint returns HTTP 402 but without a parseable x402 "
             "payment-requirements payload; emit the accepts/payTo/maxAmountRequired body.",
@@ -128,17 +130,33 @@ def _x402_probe(
         )
     if "x402" in corpus.lower():
         return CheckResult(
-            check_id, PILLAR, Status.PARTIAL, 3.0, max_points,
+            check_id, PILLAR, Status.PARTIAL, 4.0, max_points,
             finding="x402-documented-not-probed",
             remediation="x402 is mentioned in your docs but no probed endpoint "
             "returned a live 402; expose a discoverable x402-gated endpoint.",
             evidence={"probed": probed[:8], "mention": _mention_snippet(corpus, "x402")},
         )
+
+    # ACP/UCP commerce protocols earn partial credit here (for services the
+    # 402 handshake IS the commerce protocol; these are the retail-side kin).
+    commerce = _commerce_protocol_evidence(ctx, home, corpus)
+    if commerce is not None:
+        finding, pts, ev = commerce
+        return CheckResult(
+            check_id, PILLAR, Status.PARTIAL, pts, max_points,
+            finding=finding,
+            remediation="A commerce-protocol surface exists but there is no "
+            "agent-native payment handshake; expose an HTTP-402 payment-"
+            "requirements endpoint (x402/MPP) so agents can pay per-request.",
+            evidence={**ev, "probed": probed[:8]},
+        )
+
     return CheckResult(
         check_id, PILLAR, Status.FAIL, 0.0, max_points,
-        finding="no-x402-surface",
-        remediation="Offer an x402-payable endpoint (HTTP 402 + payment-requirements) "
-        "so agents can pay per-request without an account.",
+        finding="no-agent-native-payment",
+        remediation="Offer an agent-native payment endpoint (HTTP 402 + "
+        "payment-requirements, x402/MPP) so agents can pay per-request "
+        "without an account.",
         evidence={"probed": probed[:8]},
     )
 
@@ -179,7 +197,10 @@ def _parse_x402(res: FetchResult) -> dict | None:
 
 
 def _mcp_surface(ctx: FetchContext, corpus: str) -> CheckResult:
-    max_points, check_id = 5.0, "mcp_surface"
+    # BONUS check (v0.3): a per-service MCP server mostly duplicates what
+    # generic HTTP + a 402 handshake gives an agent — detect it, reward it a
+    # little, never treat its absence as a defect.
+    max_points, check_id = 2.0, "mcp_surface"
 
     probed: list[dict] = []
 
@@ -207,7 +228,7 @@ def _mcp_surface(ctx: FetchContext, corpus: str) -> CheckResult:
 
     if _mentions_mcp(corpus):
         return CheckResult(
-            check_id, PILLAR, Status.PARTIAL, 2.5, max_points,
+            check_id, PILLAR, Status.PARTIAL, 1.0, max_points,
             finding="mcp-documented-only",
             remediation="MCP is referenced in your docs but no MCP endpoint was "
             "discoverable; publish /.well-known/mcp.json or a live /mcp handshake.",
@@ -216,8 +237,9 @@ def _mcp_surface(ctx: FetchContext, corpus: str) -> CheckResult:
     return CheckResult(
         check_id, PILLAR, Status.FAIL, 0.0, max_points,
         finding="no-mcp-surface",
-        remediation="Expose an MCP server (e.g. /.well-known/mcp.json or a /mcp "
-        "endpoint) so agents can call your tools programmatically.",
+        remediation="Optional: expose an MCP server (/.well-known/mcp.json or a "
+        "/mcp endpoint). Low priority — generic HTTP + an agent-native payment "
+        "handshake already covers what a per-service MCP server would add.",
         evidence={"probed": probed},
     )
 
@@ -257,45 +279,38 @@ _COMMERCE_PHRASES = (
 )
 
 
-def _commerce_protocol_signals(ctx: FetchContext, home: FetchResult, corpus: str) -> CheckResult:
-    max_points, check_id = 4.0, "commerce_protocol_signals"
+def _commerce_protocol_evidence(
+    ctx: FetchContext, home: FetchResult, corpus: str
+) -> tuple[str, float, dict] | None:
+    """ACP/UCP surface evidence for x402_probe partial credit (v0.3).
 
-    # Well-known commerce profiles.
+    Returns ``(finding, points, evidence)`` or None. For services the 402
+    handshake is the commerce protocol; the retail-side protocols earn
+    partial credit on the same check instead of their own line.
+    """
     for path in ("/.well-known/ucp", "/.well-known/agentic-commerce"):
         res = ctx.get(path, ua="browser")
         if res.ok and res.status == 200 and len((res.text or "").strip()) > 10:
-            return CheckResult(
-                check_id, PILLAR, Status.PASS, max_points, max_points,
-                finding="commerce-protocol-well-known", remediation="",
-                evidence={"url": res.final_url or res.url},
+            return (
+                "commerce-protocol-only", 4.0,
+                {"url": res.final_url or res.url},
             )
 
     low = corpus.lower()
     matched_phrase = next((p for p in _COMMERCE_PHRASES if p in low), None)
     if matched_phrase:
-        return CheckResult(
-            check_id, PILLAR, Status.PASS, max_points, max_points,
-            finding="commerce-protocol-documented", remediation="",
-            evidence={"phrase": matched_phrase, "mention": _mention_snippet(corpus, matched_phrase)},
+        return (
+            "commerce-protocol-only", 4.0,
+            {"phrase": matched_phrase, "mention": _mention_snippet(corpus, matched_phrase)},
         )
 
     # Shopify platform fingerprint => inherits UCP/catalog rails.
     if _is_shopify(home):
-        return CheckResult(
-            check_id, PILLAR, Status.PARTIAL, 2.0, max_points,
-            finding="commerce-protocol-via-platform",
-            remediation="Storefront runs on Shopify (inherits agentic-commerce/catalog "
-            "rails); enable/advertise the agentic checkout surface explicitly to score full.",
-            evidence={"platform": "shopify", "signals": _shopify_signals(home)},
+        return (
+            "commerce-protocol-via-platform", 3.0,
+            {"platform": "shopify", "signals": _shopify_signals(home)},
         )
-
-    return CheckResult(
-        check_id, PILLAR, Status.FAIL, 0.0, max_points,
-        finding="no-commerce-protocol-signals",
-        remediation="Adopt an agentic commerce protocol (ACP/UCP checkout-session "
-        "endpoints or a well-known profile) so agents can complete purchases.",
-        evidence={"probed": ["/.well-known/ucp", "/.well-known/agentic-commerce"]},
-    )
+    return None
 
 
 def _is_shopify(home: FetchResult) -> bool:
@@ -356,12 +371,35 @@ _SALES_PHRASES = (
     "get a quote",
     "contact us for pricing",
 )
+# Language promising provisioning with no account at all — the top tier.
+# Deliberately excludes "no api key" alone: it appears in signup-flow copy
+# ("No API key yet? Sign up") and false-positives sites with account gates.
+_NO_SIGNUP_PHRASES = (
+    "no signup",
+    "no sign-up",
+    "no sign up",
+    "without signup",
+    "without a signup",
+    "no account required",
+    "without an account",
+    "no registration",
+)
 
 
 def _self_serve_payg(
-    ctx: FetchContext, home: FetchResult, pricing: list[FetchResult], corpus: str
+    ctx: FetchContext,
+    home: FetchResult,
+    pricing: list[FetchResult],
+    corpus: str,
+    x402_live: bool = False,
 ) -> CheckResult:
-    max_points, check_id = 5.0, "self_serve_payg"
+    """Provisioning tiers (v0.3): no-signup > self-serve signup > sales-gated.
+
+    Full marks are reserved for a path where an agent can pay and call with no
+    account creation at all — the thing that lets it transact where it
+    otherwise couldn't. A live 402 handshake is itself proof of that tier.
+    """
+    max_points, check_id = 6.0, "self_serve_payg"
 
     if not home.ok:
         return CheckResult(
@@ -376,6 +414,7 @@ def _self_serve_payg(
     # pricing pages, plus any self-serve hrefs and stripe checkout links.
     visible = _visible_text(corpus).lower()
     low = corpus.lower()
+    no_signup = [p for p in _NO_SIGNUP_PHRASES if p in visible]
     self_serve = [p for p in _SELF_SERVE_PHRASES if p in visible]
     has_stripe = "stripe.com/checkout" in low or "checkout.stripe.com" in low or "buy.stripe.com" in low
     link_pool = list(_all_links(home))
@@ -386,6 +425,8 @@ def _self_serve_payg(
 
     self_serve_present = bool(self_serve or has_stripe or cta_links)
     ev = {
+        "x402_live": x402_live,
+        "no_signup_phrases": no_signup[:5],
         "self_serve_phrases": self_serve[:5],
         "stripe_checkout": has_stripe,
         "cta_links": cta_links[:5],
@@ -393,25 +434,27 @@ def _self_serve_payg(
         "pricing_pages": [p.final_url or p.url for p in pricing][:3],
     }
 
-    if self_serve_present and not sales:
+    if x402_live or no_signup:
         return CheckResult(
             check_id, PILLAR, Status.PASS, max_points, max_points,
-            finding="self-serve-payg", remediation="", evidence=ev,
+            finding="no-signup-provisioning", remediation="", evidence=ev,
         )
-    if self_serve_present and sales:
+    if self_serve_present:
         return CheckResult(
-            check_id, PILLAR, Status.PARTIAL, 2.5, max_points,
-            finding="self-serve-plus-sales-gate",
-            remediation="Some tiers are self-serve but a sales gate is also present; "
-            "ensure at least one full purchase path needs no human contact.",
+            check_id, PILLAR, Status.PARTIAL, 3.0, max_points,
+            finding="self-serve-signup",
+            remediation="Self-serve exists but requires creating an account first; "
+            "add a no-signup programmatic path (HTTP-402 payment challenges) so "
+            "an agent can transact without provisioning an identity.",
             evidence=ev,
         )
-    if sales and not self_serve_present:
+    if sales:
         return CheckResult(
             check_id, PILLAR, Status.FAIL, 0.0, max_points,
             finding="sales-gated-only",
-            remediation="Add a self-serve purchase path (checkout or API-key buy) so "
-            "agents can transact without a 'contact sales' step.",
+            remediation="Add a self-serve purchase path (ideally no-signup via "
+            "HTTP-402; at minimum checkout or API-key buy) so agents can "
+            "transact without a 'contact sales' step.",
             evidence=ev,
         )
     # Neither signal present: can't tell what the purchase path is.
@@ -436,7 +479,7 @@ _METHOD_PATH_RE = re.compile(r"\b(?:GET|POST|PUT|PATCH|ANY)\s+(/[A-Za-z0-9_\-/.]
 _AGENT_SURFACE_DOCS = ("/llms.txt", "/llms-full.txt", "/manifest.json")
 
 
-def _agent_surface_bases(ctx: FetchContext, home: FetchResult, llms: FetchResult) -> list[str]:
+def _agent_surface_bases(ctx: FetchContext, home: FetchResult, llms: FetchResult | None) -> list[str]:
     """Same-registrable-domain subdomain origins linked from homepage/llms.txt.
 
     agents.<domain> and friends — where the ZeroClick template (and pattern-
@@ -449,7 +492,7 @@ def _agent_surface_bases(ctx: FetchContext, home: FetchResult, llms: FetchResult
     skip_hosts = {apex, f"www.{apex}", urlparse(ctx.base_url).netloc.lower()}
 
     candidates = list(_all_links(home))
-    if llms.ok and llms.status == 200:
+    if llms is not None and llms.ok and llms.status == 200:
         candidates += [m.group(0) for m in _ABS_URL_RE.finditer(llms.text or "")]
 
     bases: list[str] = []

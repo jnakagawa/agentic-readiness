@@ -7,8 +7,8 @@ roll findings into a 0-100 score + letter grade across five pillars:
 | Pillar | Question |
 |---|---|
 | Access | Can an agent get in at all? (bot walls, robots.txt AI policy) |
-| Legibility | Can an agent understand what's for sale? (llms.txt, schema.org, machine-readable pricing) |
-| Transactability | Can an agent pay programmatically? (x402, MCP, ACP/UCP, self-serve PAYG) |
+| Legibility | Can an agent understand what's for sale? (llms.txt, machine-readable offer catalog by any convention, server-rendered pricing) |
+| Transactability | Can an agent pay + provision WITHOUT a human? (live 402 payment handshake, no-signup provisioning; MCP is a minor bonus) |
 | Trust | When a user directs an agent to buy here, does it proceed, warn, or refuse? (static signals + directive-framed model panel + in-session trust events) |
 | Outcome | Do shopper agents actually get the job done, repeatedly? (checkpoint ladder, multi-trial) |
 
@@ -45,9 +45,17 @@ Reports land in `runs/` as JSON; a report card renders to the terminal.
   denominator instead of counting as failures (OpenSSF Scorecard pattern).
 - **Every failed check is a named finding with a remediation**
   (Mozilla Observatory pattern) — the report doubles as a fix list.
+- **Scored for agentic services, not retail webshops** (rubric v0.3) — the
+  organizing question is "does this site let an agent do things it otherwise
+  couldn't?". Agent-native payment (a live HTTP-402 handshake) and no-signup
+  provisioning carry the most weight; retail-web artifacts (schema.org SKU
+  markup, per-service MCP servers, checkout protocols) count but can't carry
+  a score. Every check is worded by capability, not by vendor.
 - **Behavioral layer** drives headless `claude -p` and `codex exec` as the
   shopper/trust panel — the two model families expected to carry most real
   agent traffic. v0 runs are read-only recon (no accounts created, no payments).
+  Planned v0.4: a live free-tier transaction probe (exercise an advertised $0
+  allowance end-to-end, the way a real agent would trial a service).
 
 ## Layout
 

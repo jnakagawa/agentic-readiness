@@ -1,6 +1,22 @@
-# Agentic Selling Readiness Score — rubric v0.2 (2026-07-22)
+# Agentic Selling Readiness Score — rubric v0.3 (2026-07-22)
 # The rubric is versioned; every report embeds this version. Scores are only
 # comparable within a rubric version (SSL Labs / Euro NCAP pattern).
+#
+# v0.3 (2026-07-22): rescored for agentic SERVICES, not retail webshops. The
+#   organizing question is now "does implementing agent-native rails let an
+#   agent do things it otherwise couldn't?": transactability weight 0.20->0.30
+#   (access 0.20->0.15, legibility 0.25->0.20); product_schema generalized to
+#   offer_catalog (a pricing/catalog manifest JSON or priced OpenAPI counts,
+#   not just schema.org JSON-LD); mcp_surface demoted 5->2 (a per-service MCP
+#   server duplicates what generic HTTP + a 402 handshake already gives every
+#   agent); commerce_protocol_signals folded into x402_probe as partial credit
+#   (for services the 402 handshake IS the commerce protocol); self_serve_payg
+#   restacked — full marks now require NO-SIGNUP provisioning (signup+API-key
+#   self-serve is the middle tier, not the top).
+#   Planned v0.4: free-tier transaction probe — live end-to-end exercise of an
+#   advertised $0 allowance (identity-challenge settle + real response), the
+#   Execution/Outcome rungs measured for real, the way an actual agent would
+#   trial a service before spending.
 #
 # v0.2 (2026-07-22): x402 probe follows same-domain agent-surface links (the
 #   llms.txt breadcrumb to agents.<domain>), reads that surface's discovery
@@ -15,16 +31,16 @@
 #   cap. New trust_live_session check scores the shopper panel's in-task
 #   trust_events (warnings surfaced while actually working the site).
 # v0.1 (2026-07-22): initial rubric.
-version: "0.2"
+version: "0.3"
 
 # Pillar weights for the overall score. If a pillar is entirely
 # NA/CANT_TEST (e.g. outcome in static-only mode), it is dropped and the
 # remaining weights are renormalized.
 pillar_weights:
-  access: 0.20          # can an agent get in at all
-  legibility: 0.25      # can an agent understand what's for sale
-  transactability: 0.20 # can an agent pay programmatically
-  trust: 0.15           # will an agent believe this is legitimate
+  access: 0.15          # can an agent get in at all (table stakes)
+  legibility: 0.20      # can an agent understand what's for sale
+  transactability: 0.30 # can an agent pay + provision WITHOUT a human — the heart of the score
+  trust: 0.15           # directed to buy here, does the agent proceed
   outcome: 0.20         # did shopper agents actually get the job done, repeatedly
 
 # Grade caps: critical failures LIMIT the grade regardless of points
@@ -59,20 +75,23 @@ checks:
   # ---- legibility ----
   - id: llms_txt
     pillar: legibility
-    max_points: 5
-    desc: /llms.txt or /llms-full.txt present and non-trivial.
+    max_points: 6
+    desc: /llms.txt or /llms-full.txt present and non-trivial — the agent's
+      front door, and how agent-surface rails get discovered.
   - id: sitemap
     pillar: legibility
-    max_points: 3
+    max_points: 2
     desc: sitemap.xml discoverable (directly or via robots.txt).
-  - id: product_schema
+  - id: offer_catalog
     pillar: legibility
-    max_points: 8
-    desc: schema.org Product/Offer/Service JSON-LD with price/availability on
-      homepage or discovered product/pricing pages.
+    max_points: 6
+    desc: A machine-readable offer catalog by ANY convention — schema.org
+      Product/Offer/Service JSON-LD with price, OR a pricing/catalog manifest
+      JSON endpoint (services/meters/plans with prices), OR a priced OpenAPI.
+      Services sell metered calls, not SKUs; any parseable catalog counts.
   - id: pricing_machine_readable
     pillar: legibility
-    max_points: 5
+    max_points: 4
     desc: A pricing/product page reachable and parseable without JS rendering
       (server-rendered price visible in HTML).
   - id: api_docs_surface
@@ -84,24 +103,26 @@ checks:
   # ---- transactability ----
   - id: x402_probe
     pillar: transactability
-    max_points: 6
-    desc: Live x402 handshake — any probed endpoint returns HTTP 402 with
-      payment-requirements payload; or documented x402 support.
+    max_points: 8
+    desc: Agent-native payment. Full — a live HTTP 402 handshake with a
+      payment-requirements payload (x402/MPP) on the site or its agent
+      surface. Partial — x402 documented but not elicited, a 402 without a
+      parseable payload, or an ACP/UCP commerce-protocol surface. This is the
+      strongest "an agent can act here autonomously" proof in the rubric.
   - id: mcp_surface
     pillar: transactability
-    max_points: 5
-    desc: MCP server discoverable (/.well-known/mcp.json, /mcp, /api/mcp
-      handshake, MCP server card).
-  - id: commerce_protocol_signals
-    pillar: transactability
-    max_points: 4
-    desc: ACP/UCP adoption markers (checkout-session endpoints, well-known
-      profiles, platform inheritance e.g. Shopify).
+    max_points: 2
+    desc: BONUS — MCP server discoverable (/.well-known/mcp.json, /mcp
+      handshake). A per-service MCP server mostly duplicates what generic
+      HTTP plus a 402 handshake already gives an agent, so this is worth
+      little; its absence is not a defect.
   - id: self_serve_payg
     pillar: transactability
-    max_points: 5
-    desc: Self-serve pay-as-you-go path exists (checkout/API-key purchase
-      without sales contact). "Contact sales" only = fail.
+    max_points: 6
+    desc: Provisioning tiers. Full — NO-SIGNUP provisioning (an agent can pay
+      and call with no account creation; a live 402 handshake proves this).
+      Partial — self-serve signup + API key. Fail — sales-gated only. The top
+      tier is what lets an agent transact where it otherwise couldn't.
 
   # ---- trust (static half; behavioral half below) ----
   - id: https_hsts

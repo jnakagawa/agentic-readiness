@@ -3,7 +3,9 @@
 Checks:
   - llms_txt                 — /llms.txt or /llms-full.txt present + non-trivial
   - sitemap                  — sitemap.xml discoverable (direct or via robots)
-  - product_schema           — schema.org Product/Offer/Service JSON-LD w/ price
+  - offer_catalog            — machine-readable catalog by ANY convention:
+                               schema.org JSON-LD w/ price, or a pricing/catalog
+                               manifest JSON (services/meters/plans + prices)
   - pricing_machine_readable — a price visible in server-rendered HTML (no JS)
   - api_docs_surface         — public docs/API reference discoverable
 
@@ -38,10 +40,10 @@ _PRODUCT_LD_TYPES = {"product", "offer", "aggregateoffer", "service", "softwarea
 
 
 _LEGIBILITY_CHECKS = (
-    ("llms_txt", 5.0),
-    ("sitemap", 3.0),
-    ("product_schema", 8.0),
-    ("pricing_machine_readable", 5.0),
+    ("llms_txt", 6.0),
+    ("sitemap", 2.0),
+    ("offer_catalog", 6.0),
+    ("pricing_machine_readable", 4.0),
     ("api_docs_surface", 4.0),
 )
 
@@ -68,7 +70,7 @@ def run(ctx: FetchContext) -> list[CheckResult]:
     return [
         _llms_txt(llms),
         _sitemap(ctx, robots),
-        _product_schema(ctx, candidates),
+        _offer_catalog(ctx, home, llms, candidates),
         _pricing_machine_readable(ctx, candidates),
         _api_docs_surface(ctx, home),
     ]
@@ -89,7 +91,7 @@ def _fetch_llms(ctx: FetchContext) -> FetchResult | None:
 
 
 def _llms_txt(llms: FetchResult | None) -> CheckResult:
-    max_points, check_id, pillar = 5.0, "llms_txt", "legibility"
+    max_points, check_id, pillar = 6.0, "llms_txt", "legibility"
     if llms is None:
         return CheckResult(
             check_id, pillar, Status.FAIL, 0.0, max_points,
@@ -102,7 +104,7 @@ def _llms_txt(llms: FetchResult | None) -> CheckResult:
     ev = {"url": llms.final_url or llms.url, "length": len(body), "snippet": body[:300]}
     if len(body) < 200:
         return CheckResult(
-            check_id, pillar, Status.PARTIAL, 2.5, max_points,
+            check_id, pillar, Status.PARTIAL, 3.0, max_points,
             finding="llms-txt-trivial",
             remediation="Expand /llms.txt with concrete product, pricing, and "
             "navigation detail (it is currently near-empty).",
@@ -120,7 +122,7 @@ def _llms_txt(llms: FetchResult | None) -> CheckResult:
 
 
 def _sitemap(ctx: FetchContext, robots: FetchResult) -> CheckResult:
-    max_points, check_id, pillar = 3.0, "sitemap", "legibility"
+    max_points, check_id, pillar = 2.0, "sitemap", "legibility"
 
     # 1) Sitemap: directive in robots.txt.
     robots_sitemaps: list[str] = []
@@ -155,22 +157,34 @@ def _sitemap(ctx: FetchContext, robots: FetchResult) -> CheckResult:
 
 
 # ---------------------------------------------------------------------------
-# product_schema
+# offer_catalog — machine-readable catalog by ANY convention (v0.3)
 # ---------------------------------------------------------------------------
 
+# Structure keys that make a JSON document a catalog, and value fragments that
+# make it priced. Services sell metered calls, not SKUs — a pricing manifest
+# (services/meters/plans + amounts) is as legible as schema.org markup.
+_CATALOG_STRUCTURE_KEYS = {"plans", "meters", "services", "products", "offers", "pricing", "skus", "catalog", "tiers"}
+_CATALOG_PRICE_RE = re.compile(r'"(?:price|amount|amountusd|usd|priceusd|unitprice|cost)[^"]*"', re.I)
 
-def _product_schema(ctx: FetchContext, candidates: list[FetchResult]) -> CheckResult:
-    max_points, check_id, pillar = 8.0, "product_schema", "legibility"
+
+def _offer_catalog(
+    ctx: FetchContext,
+    home: FetchResult,
+    llms: FetchResult | None,
+    candidates: list[FetchResult],
+) -> CheckResult:
+    max_points, check_id, pillar = 6.0, "offer_catalog", "legibility"
 
     if not candidates:
         return CheckResult(
             check_id, pillar, Status.CANT_TEST, 0.0, max_points,
             finding="pages-unreachable",
             remediation="No candidate product/pricing page could be fetched to "
-            "inspect for structured data; confirm those pages are reachable.",
+            "inspect for a machine-readable catalog; confirm those pages are reachable.",
             evidence={},
         )
 
+    # Convention 1: schema.org Product/Offer/Service JSON-LD with a price.
     any_jsonld = False
     for res in candidates:
         blocks = _extract_jsonld(res.text)
@@ -180,29 +194,91 @@ def _product_schema(ctx: FetchContext, candidates: list[FetchResult]) -> CheckRe
             if found_type:
                 return CheckResult(
                     check_id, pillar, Status.PASS, max_points, max_points,
-                    finding="product-schema-present", remediation="",
+                    finding="offer-catalog-present", remediation="",
                     evidence={
+                        "convention": "schema.org JSON-LD",
                         "page": res.final_url or res.url,
                         "type": found_type,
                         "snippet": json.dumps(obj)[:300],
                     },
                 )
 
+    # Convention 2: a pricing/catalog manifest JSON — on the apex or on a
+    # linked agent-surface subdomain (where service storefronts keep it).
+    manifest = _find_catalog_manifest(ctx, home, llms)
+    if manifest is not None:
+        return CheckResult(
+            check_id, pillar, Status.PASS, max_points, max_points,
+            finding="offer-catalog-present", remediation="",
+            evidence={
+                "convention": "catalog manifest JSON",
+                "url": manifest.final_url or manifest.url,
+                "snippet": (manifest.text or "")[:300],
+            },
+        )
+
     if any_jsonld:
         return CheckResult(
-            check_id, pillar, Status.PARTIAL, 4.0, max_points,
+            check_id, pillar, Status.PARTIAL, 3.0, max_points,
             finding="jsonld-present-no-offer",
-            remediation="Add schema.org Product/Offer JSON-LD with a price to your "
-            "product/pricing pages (JSON-LD is present but has no offer/price).",
+            remediation="JSON-LD is present but carries no offer/price; add a "
+            "priced Product/Offer object, or publish a pricing manifest JSON.",
             evidence={"pages": [r.final_url or r.url for r in candidates][:5]},
         )
     return CheckResult(
         check_id, pillar, Status.FAIL, 0.0, max_points,
-        finding="no-structured-product-data",
-        remediation="Add schema.org Product/Offer/Service JSON-LD (with price and "
-        "availability) so agents can parse what you sell.",
+        finding="no-machine-readable-offer-catalog",
+        remediation="Publish a machine-readable offer catalog by any convention: "
+        "schema.org Product/Offer/Service JSON-LD with a price, or a pricing/"
+        "catalog manifest JSON endpoint (services, meters, plans with amounts).",
         evidence={"pages_checked": [r.final_url or r.url for r in candidates][:5]},
     )
+
+
+def _find_catalog_manifest(
+    ctx: FetchContext, home: FetchResult, llms: FetchResult | None
+) -> FetchResult | None:
+    """First reachable priced catalog manifest on the apex or agent surface."""
+    from asrs.probes.protocols import _agent_surface_bases
+
+    targets = ["/manifest.json", "/pricing.json", "/catalog.json"]
+    if llms is not None:
+        for url in _urls_in_text(llms.text):
+            if url.lower().endswith((".json",)) and any(
+                k in url.lower() for k in ("manifest", "pricing", "catalog")
+            ):
+                targets.append(url)
+    for base in _agent_surface_bases(ctx, home, llms):
+        targets.append(base + "/manifest.json")
+
+    seen: set[str] = set()
+    for target in targets[:8]:
+        if target in seen:
+            continue
+        seen.add(target)
+        res = ctx.get(target, ua="browser")
+        if not (res.ok and res.status == 200):
+            continue
+        if _is_priced_catalog(res.text or ""):
+            return res
+    return None
+
+
+def _is_priced_catalog(text: str) -> bool:
+    """JSON with catalog structure keys AND price-ish fields."""
+    try:
+        data = json.loads(text)
+    except (ValueError, TypeError):
+        return False
+    if not isinstance(data, dict):
+        return False
+    keys = {str(k).lower() for k in data.keys()}
+    for v in data.values():
+        if isinstance(v, dict):
+            keys |= {str(k).lower() for k in v.keys()}
+    if not (keys & _CATALOG_STRUCTURE_KEYS):
+        return False
+    return bool(_CATALOG_PRICE_RE.search(text))
 
 
 # ---------------------------------------------------------------------------
@@ -211,7 +287,7 @@ def _product_schema(ctx: FetchContext, candidates: list[FetchResult]) -> CheckRe
 
 
 def _pricing_machine_readable(ctx: FetchContext, candidates: list[FetchResult]) -> CheckResult:
-    max_points, check_id, pillar = 5.0, "pricing_machine_readable", "legibility"
+    max_points, check_id, pillar = 4.0, "pricing_machine_readable", "legibility"
 
     # Whether any candidate is actually a pricing/product-ish page.
     priced_pages = [c for c in candidates if _is_product_url(c.final_url or c.url)]
@@ -282,6 +358,10 @@ def _api_docs_surface(ctx: FetchContext, home: FetchResult) -> CheckResult:
         "/.well-known/api-catalog) so agents can learn how to integrate.",
         evidence={"probed": checked[:8]},
     )
+
+
+# NOTE: pre-v0.3 this module emitted `product_schema`; `offer_catalog` is its
+# generalization (any machine-readable priced catalog, not just schema.org).
 
 
 # ---------------------------------------------------------------------------

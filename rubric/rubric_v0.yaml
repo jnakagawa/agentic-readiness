@@ -1,0 +1,140 @@
+# Agentic Selling Readiness Score — rubric v0.1 (2026-07-22)
+# The rubric is versioned; every report embeds this version. Scores are only
+# comparable within a rubric version (SSL Labs / Euro NCAP pattern).
+version: "0.1"
+
+# Pillar weights for the overall score. If a pillar is entirely
+# NA/CANT_TEST (e.g. outcome in static-only mode), it is dropped and the
+# remaining weights are renormalized.
+pillar_weights:
+  access: 0.20          # can an agent get in at all
+  legibility: 0.25      # can an agent understand what's for sale
+  transactability: 0.20 # can an agent pay programmatically
+  trust: 0.15           # will an agent believe this is legitimate
+  outcome: 0.20         # did shopper agents actually get the job done, repeatedly
+
+# Grade caps: critical failures LIMIT the grade regardless of points
+# (SSL Labs pattern — averages hide showstoppers). Keyed by finding slug.
+caps:
+  agent-ua-hard-blocked: 69        # bot wall blocks agent UAs while browsers pass -> max D
+  no-https: 59                     # -> F (no HTTPS cannot pass in 2026)
+  trust-panel-refusal: 69          # a panel model confidently refuses as likely-scam -> max D
+  human-gate-required: 79          # purchase impossible without human-only step -> max C
+
+grade_bands:  # lower bound -> grade
+  - [95, "A+"]
+  - [90, "A"]
+  - [80, "B"]
+  - [70, "C"]
+  - [60, "D"]
+  - [0,  "F"]
+
+checks:
+  # ---- access ----
+  - id: robots_ai_crawlers
+    pillar: access
+    max_points: 10
+    desc: robots.txt policy for major AI agents (GPTBot, ClaudeBot, Claude-User,
+      OAI-SearchBot, PerplexityBot, Google-Extended). Unspecified = allowed.
+  - id: agent_ua_reachability
+    pillar: access
+    max_points: 10
+    desc: Fetch key pages with agent user-agents vs a browser UA; detect
+      block/challenge (403s, Cloudflare challenge markers) applied only to agents.
+
+  # ---- legibility ----
+  - id: llms_txt
+    pillar: legibility
+    max_points: 5
+    desc: /llms.txt or /llms-full.txt present and non-trivial.
+  - id: sitemap
+    pillar: legibility
+    max_points: 3
+    desc: sitemap.xml discoverable (directly or via robots.txt).
+  - id: product_schema
+    pillar: legibility
+    max_points: 8
+    desc: schema.org Product/Offer/Service JSON-LD with price/availability on
+      homepage or discovered product/pricing pages.
+  - id: pricing_machine_readable
+    pillar: legibility
+    max_points: 5
+    desc: A pricing/product page reachable and parseable without JS rendering
+      (server-rendered price visible in HTML).
+  - id: api_docs_surface
+    pillar: legibility
+    max_points: 4
+    desc: Public docs/API reference discoverable (/docs, /api, openapi spec,
+      /.well-known/api-catalog).
+
+  # ---- transactability ----
+  - id: x402_probe
+    pillar: transactability
+    max_points: 6
+    desc: Live x402 handshake — any probed endpoint returns HTTP 402 with
+      payment-requirements payload; or documented x402 support.
+  - id: mcp_surface
+    pillar: transactability
+    max_points: 5
+    desc: MCP server discoverable (/.well-known/mcp.json, /mcp, /api/mcp
+      handshake, MCP server card).
+  - id: commerce_protocol_signals
+    pillar: transactability
+    max_points: 4
+    desc: ACP/UCP adoption markers (checkout-session endpoints, well-known
+      profiles, platform inheritance e.g. Shopify).
+  - id: self_serve_payg
+    pillar: transactability
+    max_points: 5
+    desc: Self-serve pay-as-you-go path exists (checkout/API-key purchase
+      without sales contact). "Contact sales" only = fail.
+
+  # ---- trust (static half; behavioral half below) ----
+  - id: https_hsts
+    pillar: trust
+    max_points: 5
+    desc: Valid HTTPS; HSTS header present.
+  - id: org_identity
+    pillar: trust
+    max_points: 4
+    desc: Verifiable org identity — about/contact/legal pages with a real
+      company name and reachable contact.
+  - id: policies_present
+    pillar: trust
+    max_points: 3
+    desc: Terms of service, privacy policy, refund/cancellation policy exist.
+  - id: reputation_signals
+    pillar: trust
+    max_points: 3
+    desc: Reviews/AggregateRating markup or credible third-party presence.
+  - id: trust_panel_willingness
+    pillar: trust
+    max_points: 8
+    desc: BEHAVIORAL — fraction of the model panel (Claude, Codex) willing to
+      transact here on a user's behalf. Any confident refusal also triggers
+      the trust-panel-refusal cap.
+
+  # ---- outcome (behavioral only; NA in static mode) ----
+  - id: bhv_found_product
+    pillar: outcome
+    max_points: 4
+    desc: Shopper runs located the product/service matching the task.
+  - id: bhv_understood_pricing
+    pillar: outcome
+    max_points: 3
+    desc: Shopper runs extracted concrete price/terms.
+  - id: bhv_purchase_path
+    pillar: outcome
+    max_points: 4
+    desc: Shopper runs identified a concrete purchase/provisioning path.
+  - id: bhv_machine_payable
+    pillar: outcome
+    max_points: 5
+    desc: That path is machine-payable (API + programmatic payment), not
+      browser-checkout-only.
+  - id: bhv_no_human_gate
+    pillar: outcome
+    max_points: 4
+    desc: No human-only gate (CAPTCHA, KYC/identity verification, email
+      confirmation loop, sales call) blocks the path. The Exa lesson —
+      business-rule gates are readiness factors.

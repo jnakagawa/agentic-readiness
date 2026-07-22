@@ -143,6 +143,7 @@ tr:last-child td{border-bottom:none}
 td.impact{font-family:var(--font-display);font-weight:600;white-space:nowrap;
   color:var(--error)}
 td.impact.minor{color:var(--warning)}
+td.pillar-tag{color:var(--text-secondary);font-size:12px;white-space:nowrap}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
 .stack{display:flex;flex-direction:column;gap:24px;min-width:0}
 .verdict{display:flex;flex-direction:column;gap:8px;padding:14px 16px;
@@ -272,13 +273,15 @@ def _recommendations(rep: dict, fold_after: int = 7) -> str:
     def row(c):
         lost = c["max_points"] - c["points"]
         minor = " minor" if lost < 3 else ""
+        pillar = PILLAR_LABELS.get(c["pillar"], c["pillar"])
         return (
             f'<tr><td class="impact num{minor}">&minus;{lost:g} pts</td>'
+            f'<td class="pillar-tag">{_esc(pillar)}</td>'
             f'<td><span class="chip">{_esc(c["finding"])}</span></td>'
             f"<td>{_esc(c['remediation'])}</td></tr>"
         )
 
-    head = "<tr><th>Impact</th><th>Finding</th><th>Recommendation</th></tr>"
+    head = "<tr><th>Impact</th><th>Pillar</th><th>Finding</th><th>Recommendation</th></tr>"
     top = "".join(row(c) for c in items[:fold_after])
     rest = items[fold_after:]
     fold = ""

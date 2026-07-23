@@ -532,7 +532,8 @@ def build_scorecard(
 <footer>ASRS rubric v{_esc(rv)} — scores are comparable only within a rubric
 version. Grade caps apply for critical failures regardless of points.
 Pillar scores exclude checks that could not be tested.{_esc(panel_note)}
-&nbsp;<a href="rubric.html">Read the full rubric &amp; scoring logic &rarr;</a></footer>
+&nbsp;<a href="rubric.html">Read the full rubric &amp; scoring logic &rarr;</a>
+&nbsp;&middot;&nbsp;<a href="https://github.com/piedotorg/agentic-readiness">Run this yourself &rarr;</a></footer>
 </div></body></html>"""
 
     if out_path is None:

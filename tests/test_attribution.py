@@ -62,6 +62,7 @@ def _by_id(checks) -> dict:
 # 1. Positive classification: own-stack refusals, both phrase orderings and
 #    across the security-* vocabulary the regex covers, whether the language
 #    lands in blockers OR in trust_events (a codex refusal can surface as either).
+#    The sibling "safety"-phrased family (v0.6) is pinned separately in #9.
 # ---------------------------------------------------------------------------
 def test_env_block_positive_phrasings() -> None:
     print("test_env_block_positive_phrasings")
@@ -233,6 +234,49 @@ def test_reputation_gate_phrasing_is_current_coverage_gap() -> None:
                f"reputation-gate phrasing is the KNOWN coverage gap: {phrase!r}")
 
 
+# ---------------------------------------------------------------------------
+# 9. v0.6: the "safety"-phrased sibling of the browser-security family. The SAME
+#    hosted-browser URL-safety layer surfaces its block as either word — codex on
+#    the canonical .org reported "blocked by browser safety controls" in one trial
+#    while its siblings on the same domain said "security". Fixtures are the LITERAL
+#    committed transcript strings (runs/local/trial_stability_20260723T064359Z.json),
+#    per invariant #3. Before v0.6 this all-false verdict LEAKED into the outcome
+#    denominator (invariant #4 violation); pin BOTH that it now classifies as
+#    env-blocked AND that it routes to reachability, not outcome/trust.
+# ---------------------------------------------------------------------------
+def test_env_block_safety_phrasing_covered() -> None:
+    print("test_env_block_safety_phrasing_covered")
+    # Drawn verbatim from the committed trial-stability artifact (codex t3).
+    safety_blocker = "drift-flight.org was blocked by browser safety controls"
+    safety_trust = "Browser safety controls explicitly blocked the domain."
+    # positive classification, in blockers AND as a trust_event
+    _check(S._is_env_blocked(_run(model="codex", trial=3, blockers=[safety_blocker])),
+           f"safety blocker classified env-blocked: {safety_blocker!r}")
+    _check(S._is_env_blocked(_run(model="codex", trial=3, trust_events=[safety_trust])),
+           f"safety trust_event classified env-blocked: {safety_trust!r}")
+    # other phrase orderings of the same family
+    for phrase in ("refused to continue on browser safety grounds",
+                   "the page load was denied by the browser safety policy"):
+        _check(S._is_env_blocked(_run(model="codex", blockers=[phrase])),
+               f"safety-family phrasing classified env-blocked: {phrase!r}")
+
+    # denominator routing: one valid claude run + one safety-blocked codex run ->
+    # outcome computed over n=1 (a passed checkpoint reads PASS, not PARTIAL), and
+    # the blocked run surfaces as reachability. Mirrors #5 for the safety family.
+    valid = _run(model="claude", trial=1, found_product=True)
+    blocked = _run(model="codex", trial=3, blockers=[safety_blocker])
+    checks = _by_id(S._aggregate("drift-flight.org", [valid, blocked]))
+    _check(checks["bhv_found_product"].status == Status.PASS,
+           "found_product PASS — safety-blocked run excluded from denominator (n=1)")
+    _check(checks["bhv_found_product"].evidence["valid_runs"] == 1,
+           "outcome denominator counts only the 1 valid run")
+    reach = checks["hosted_agent_reachability"]
+    _check(reach.status == Status.PARTIAL and reach.evidence["blocked_runs"] == 1,
+           "safety-blocked codex run counted as reachability, not site evidence")
+    _check("codex" in reach.evidence["blocked_by_model"],
+           "the safety-blocked model is attributed in reachability evidence")
+
+
 def main() -> int:
     tests = [
         test_env_block_positive_phrasings,
@@ -243,6 +287,7 @@ def main() -> int:
         test_all_env_blocked_is_cant_test_not_fail,
         test_all_reached_full_reachability,
         test_reputation_gate_phrasing_is_current_coverage_gap,
+        test_env_block_safety_phrasing_covered,
     ]
     failed = 0
     for t in tests:

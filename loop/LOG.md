@@ -354,3 +354,59 @@ COVERAGE next: the `--battery` wiring (synthetic-panel testable in-cloud) is the
 oldest COVERAGE follow-up and would let a per-task quotability/reliability grid
 travel with the score — the natural COVERAGE companion to this cycle's METHOD
 gate.
+
+## Local cycle — 2026-07-23T05:52Z — METHOD (merge-verify; no code change)
+
+**What.** Discharged the oldest P0: the `[LOCAL]` merge-time canonical re-score
+for PR [#1](https://github.com/jnakagawa/agentic-readiness/pull/1)
+(`loop/not-scorable-attribution`, v0.5 NOT SCORABLE), which was peer-gated and
+merged 2026-07-23T03:00:15Z **without** its required live canonical-delta
+verification — the cloud env has no outbound network to the canonical domains,
+so that sensitive-class merge check was queued for a networked operator. This
+local (networked) fire ran it deliberately and live.
+
+**Why.** v0.5 was a scoring-semantics/aggregation change. The playbook's
+sensitive-class rule (weights/caps/removals + version bump) requires the live
+canonical-delta effect be shown at merge time; it had only ever been argued
+by construction + the automated hourly runner, never recorded as the deliberate
+peer-gate verification. Recording it closes the audit gap for a merged
+scoring-semantics PR.
+
+**Method + evidence.**
+- Full suite GREEN 42/42 (`.venv`, eth-account present locally): test_battery
+  6/6, test_free_tier 8/8, test_quotability 8/8, test_readout 5/5,
+  test_reliability 8/8, test_scoring 7/7.
+- Live static re-score (this machine; both domains HTTP 200 in <1s):
+  drift-flight.org **46.1 F** (scored) vs driftflight.com **85.5 B** (scored),
+  delta **+39.4**. Reachable domains score NORMALLY — not NOT-SCORABLE —
+  proving the v0.5 change is a no-op for them.
+- Unreachable-domain CONTROL (`*.invalid`): overall=None, grade=N/A,
+  scored=False -> NOT SCORABLE. Demonstrates the v0.5 path fires ONLY when no
+  pillar is observable (the change's exact claimed semantics).
+- Evidence: `runs/local/merge_verify_pr1_20260723T055000Z.json`; report blobs
+  `runs/drift-flight_org_20260723T054805.json`,
+  `runs/driftflight_com_20260723T054811.json`,
+  `runs/asrs-nonexistent-control-20260723_invalid_20260723T054831.json`.
+
+**Canonical pair (regression signal).** 46.1 F / 85.5 B, delta +39.4 — matches
+the freshest hourly verify artifact (`verify_20260723T040757Z.json`) exactly and
+sits within static variance of the loop-start baseline +40.6. No regression;
+delta explained in capability terms — access/trust identical (100/60 each on
+both), the +39.4 is entirely the .com's agent-native legibility (90.9 vs 36.4)
+and transactability (87.5 vs 18.8) the .org lacks.
+
+**Ship.** Direct-to-main (verification + evidence artifact + LOG/STATE/BACKLOG
+only; `asrs/` untouched — no source/scoring change). Oldest P0 removed from
+BACKLOG. Cloud cycle counter (5) and focus pointer (COVERAGE) unchanged — a
+local fire executes queued `[LOCAL]` work, it does not rotate the cloud track.
+
+**Cost finding (steers the next local fire).** `SHOPPER_TIMEOUT_S = 300` per
+model×trial makes the queued behavioral experiments multi-cycle-scale: the
+N-sweep item as written (N=2,3,5 × claude,codex on both domains) is ~100 min and
+~20 codex invocations — over both the "one behavioral pair run" and "~10 codex"
+budgets. Recommend the next local fire take a SINGLE scoped datapoint
+(drift-flight.org, `--trials 2`, claude,codex ≈ 15-20 min) — the first N=2
+reliability + quotability observation on LIVE data (validating the Cycle 3-5
+metrics for the first time on real panels) — and split the N-sweep across fires.
+Run drift-flight.org (the codex-refusal-free canonical domain) first so codex
+browser refusals don't confound the timing.

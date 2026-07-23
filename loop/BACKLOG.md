@@ -5,19 +5,11 @@ design in-cloud, execute locally.
 
 ## P0
 
-- **[LOCAL] Merge-time canonical re-score for PR loop/not-scorable-attribution**
-  (METHOD, Cycle 1 follow-up). The cloud env can't reach the canonical domains,
-  so the regression re-score for the v0.5 NOT-SCORABLE PR must run on Jonah's
-  networked machine before merge. Exact commands:
-  ```
-  git checkout loop/not-scorable-attribution
-  python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
-  .venv/bin/python tests/test_scoring.py && .venv/bin/python tests/test_free_tier.py
-  .venv/bin/python -m asrs compare drift-flight.org driftflight.com --json-only
-  # Expect: both domains still score normally (delta ~ +40.6 static-equivalent),
-  # NOT "not scorable" — proving the change is a no-op for reachable domains.
-  ```
-  Delete this item once the re-score is recorded and the PR merges.
+<!-- DONE 2026-07-23T05:52Z (local fire): "[LOCAL] Merge-time canonical re-score
+     for PR loop/not-scorable-attribution" discharged. Both reachable canonical
+     domains re-scored normally (46.1 F / 85.5 B, delta +39.4, NOT not-scorable);
+     unreachable-domain control returned NOT SCORABLE (grade N/A, scored=False).
+     Evidence: runs/local/merge_verify_pr1_20260723T055000Z.json. See LOG. -->
 
 - **Task battery — wire `--battery` into the pipeline** (COVERAGE, Cycle 2
   follow-up). Format + loader + cross-task aggregation SHIPPED Cycle 2
@@ -54,17 +46,22 @@ design in-cloud, execute locally.
 - **[LOCAL] What trial count N stabilizes the panel** (TRUTH/METHOD, Cycle 3
   follow-up): the reliability metric now quantifies flips, but the empirical
   answer to "what N drives `verdict_stability` above ~0.8" needs real multi-trial
-  runs. Exact commands (networked machine w/ claude+codex CLIs):
+  runs. SCOPING (local fire 2026-07-23T05:52Z cost finding): `SHOPPER_TIMEOUT_S
+  =300`/trial makes the full N=2,3,5 × both-domains sweep ~100 min / ~20 codex
+  invocations — over the "one behavioral pair run" + "~10 codex" per-cycle
+  budget. Split it: ONE scoped datapoint per local fire, starting with N=2 on
+  drift-flight.org (the codex-refusal-free canonical domain, so codex browser
+  refusals don't confound timing). Per-fire command (networked, claude+codex):
   ```
   git checkout main && git pull
   python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
-  for N in 2 3 5; do
-    .venv/bin/python -m asrs score drift-flight.org --behavioral \
-      --models claude,codex --trials $N
-  done
-  # Read the PANEL RELIABILITY section per N; record verdict_stability(N) and
-  # flipped_checkpoints. Report the smallest N with stability >= 0.8 for each
-  # canonical domain. Feeds the "trials >= 2 default" METHOD item above.
+  .venv/bin/python -m asrs score drift-flight.org --behavioral \
+    --models claude,codex --trials 2   # then 3, then 5 on subsequent fires
+  # Read PANEL RELIABILITY + QUOTABILITY per run; record verdict_stability(N),
+  # flipped_checkpoints, and whether the headline is CITABLE/PROVISIONAL. This
+  # is also the FIRST live-data validation of the Cycle 3-5 reliability +
+  # quotability code. Report the smallest N with stability >= 0.8 per domain.
+  # Feeds the "trials >= 2 default" METHOD item above.
   ```
 
 ## P1

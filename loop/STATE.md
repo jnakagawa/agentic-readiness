@@ -27,12 +27,18 @@
   attach is the natural next READOUT step (mirrors the reliability Cycle-3 -> 4
   pattern). NOT a scoring-semantics change — no version bump, scoring.py/rubric/
   types.py byte-for-byte unchanged.
-- Canonical pair (freshest local-verify artifact verify_20260723T040757Z.json):
-  drift-flight.org 46.1 F vs driftflight.com 85.5 B — delta +39.4. Runner
-  healthy (~1h old at Cycle 5). Loop-start behavioral baseline was +40.6.
-- Open PRs: none. PR #1 (Cycle 1 v0.5 NOT-SCORABLE fix) merged 2026-07-23.
-  Its [LOCAL] merge-time canonical re-score verification stays queued in
-  BACKLOG until a networked operator records it (cloud env can't re-score).
+- Canonical pair: drift-flight.org 46.1 F vs driftflight.com 85.5 B — delta
+  +39.4. Confirmed LIVE this local fire (2026-07-23T05:52Z, both HTTP 200),
+  matching the freshest hourly verify artifact verify_20260723T040757Z.json
+  exactly. Loop-start behavioral baseline was +40.6 (delta within static
+  variance). Hourly runner healthy (~1.6h old at the local fire).
+- Open PRs: none. PR #1 (Cycle 1 v0.5 NOT-SCORABLE fix) merged
+  2026-07-23T03:00:15Z. Its [LOCAL] merge-time canonical re-score is now
+  DISCHARGED: local fire 2026-07-23T05:52Z re-scored both reachable domains
+  normally (46.1 F / 85.5 B, delta +39.4, NOT not-scorable) and confirmed the
+  NOT-SCORABLE path via an unreachable-domain control (grade N/A, scored=False)
+  — proving v0.5 is a no-op for reachable domains. Evidence:
+  runs/local/merge_verify_pr1_20260723T055000Z.json. BACKLOG item removed.
   https://github.com/jnakagawa/agentic-readiness/pull/1
 
 ## Environment constraint (IMPORTANT — affects every cycle)
@@ -66,4 +72,8 @@ web host (403 "policy denial"). Confirmed 2026-07-23 via `asrs.fetch` and
   (`asrs/reliability.py` `verdict_stability` / `trust_event_agreement`) that
   makes the flip visible; the EMPIRICAL question — what trial count N drives
   `verdict_stability` above ~0.8 on the canonical pair — needs a [LOCAL]
-  multi-trial run (queued in BACKLOG).
+  multi-trial run (queued in BACKLOG). COST FINDING (local fire 05:52Z):
+  `SHOPPER_TIMEOUT_S=300`/trial makes the full N=2,3,5 × both-domains sweep
+  ~100 min / ~20 codex invocations — over the one-pair-run + ~10-codex budget.
+  Next local fire should take ONE scoped datapoint (drift-flight.org, the
+  codex-refusal-free domain, --trials 2) and split the sweep across fires.

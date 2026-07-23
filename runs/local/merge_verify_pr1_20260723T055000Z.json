@@ -1,0 +1,71 @@
+{
+ "ts": "20260723T055000Z",
+ "kind": "merge-verify",
+ "cycle": 6,
+ "track": "METHOD",
+ "subject_pr": 1,
+ "subject": "loop/not-scorable-attribution (v0.5 NOT SCORABLE) \u2014 merged 2026-07-23T03:00:15Z",
+ "purpose": "Deliberate live canonical-delta verification the cloud env could not run for the peer-gated v0.5 scoring-semantics PR: prove reachable domains still score normally (change is a no-op for them) and the NOT-SCORABLE path fires only when no pillar is observable.",
+ "network_ok": true,
+ "tests": {
+  "suite": "tests/test_*.py",
+  "result": "42/42 passed",
+  "files": [
+   "test_battery 6/6",
+   "test_free_tier 8/8",
+   "test_quotability 8/8",
+   "test_readout 5/5",
+   "test_reliability 8/8",
+   "test_scoring 7/7"
+  ]
+ },
+ "canonical_rescore": {
+  "drift-flight.org": {
+   "domain": "drift-flight.org",
+   "overall_score": 46.1,
+   "grade": "F",
+   "scored": true,
+   "rubric_version": "0.5",
+   "pillar_scores": {
+    "access": 100.0,
+    "legibility": 36.364,
+    "transactability": 18.75,
+    "trust": 60.0,
+    "outcome": null
+   },
+   "report_path": null
+  },
+  "driftflight.com": {
+   "domain": "driftflight.com",
+   "overall_score": 85.5,
+   "grade": "B",
+   "scored": true,
+   "rubric_version": "0.5",
+   "pillar_scores": {
+    "access": 100.0,
+    "legibility": 90.909,
+    "transactability": 87.5,
+    "trust": 60.0,
+    "outcome": null
+   },
+   "report_path": null
+  },
+  "delta": 39.4,
+  "baseline_static_delta": 40.6,
+  "hourly_runner_delta_same_day": 39.4
+ },
+ "unreachable_control": {
+  "domain": "asrs-nonexistent-control-20260723.invalid",
+  "overall_score": null,
+  "grade": "N/A",
+  "scored": false,
+  "expected": "NOT SCORABLE (grade N/A, scored=False) \u2014 no pillar observable",
+  "pass": true
+ },
+ "report_paths": {
+  "drift-flight.org": "runs/drift-flight_org_20260723T054805.json",
+  "driftflight.com": "runs/driftflight_com_20260723T054811.json",
+  "unreachable_control": "runs/asrs-nonexistent-control-20260723_invalid_20260723T054831.json"
+ },
+ "verdict": "PASS \u2014 reachable canonical pair scores normally (delta +39.4, within static variance of the +40.6 baseline); NOT-SCORABLE fires only for the unobservable domain. v0.5 change confirmed a no-op for reachable domains. Peer-gate merge-time verification for PR #1 discharged."
+}

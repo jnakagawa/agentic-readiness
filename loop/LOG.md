@@ -1165,3 +1165,65 @@ docs when its browser gate fires, mark the run `assisted`, and keep it OUT of th
 unassisted reachability denominator) — design in-cloud from these committed
 transcripts, execute `[LOCAL]`. Separately, COVERAGE's second `cross_task_spread`
 datapoint no longer needs codex (claude reaches both domains), so it stays runnable.
+
+## Cycle 12 — 2026-07-23T12:18Z — READOUT (direct to main)
+
+**First duty.** No open peer-gated PR (PR #2 merged 09:47Z; PR #1 merged 03:00Z).
+Nothing to review — proceeded to the one improvement.
+
+**Track.** READOUT (rotation: …Cycle 11 TRUTH → Cycle 12 READOUT). Focus pointer
+in STATE named READOUT for this cycle.
+
+**What.** The task battery's cross-intent readout (`battery_summary`) now renders on
+the HTML scorecard. It already shipped terminal (Cycle 6) + JSON (`Report.battery_summary`,
+types.py) but stopped at the HTML card — so the one place a leaderboard reader looks
+never saw whether a site's readiness holds across intents. Added `scorecard._battery(rep)`:
+a "Task battery" card with (a) a cross-task-spread verdict pill (Consistent /
+Somewhat intent-dependent / Intent-dependent, thresholds 0.15/0.35 **mirroring the
+terminal `report._battery_lines` exactly**), (b) a per-intent coverage grid (intent,
+archetype chip, completion bar + %, valid-run count; no-signal intents shown as "no
+signal", never a site failure), (c) the Cycle-10 `per_kind` by-archetype rollup
+(completion + within-kind spread + intents), shown only when the battery spans >1
+kind — same suppression the terminal uses. Wired into BOTH layouts (`_domain_column`
+single, `_section_rows` compare), placed after Panel reliability. Same
+terminal→JSON→HTML deferral quotability (Cycle 8) and reliability (Cycle 3→4) took.
+
+**Why.** North-star readout clarity + storefront-type flexibility: the cross_task_spread
+signal (whether the single-task headline overstates readiness) and the per-archetype
+slice ("strong on digital_service, weak on physical_good") now travel with the score
+everywhere it goes — terminal, JSON, and the hosted card — instead of only the two
+machine-readable surfaces. The battery card was the last diagnostic still terminal/JSON-only.
+
+**Invariants.** Additive/display-only. rubric **v0.6 UNCHANGED** — scoring.py, the
+rubric YAML, probes, and payment/signing code are byte-for-byte untouched (`git diff
+--name-only` = asrs/scorecard.py + tests/test_readout.py only). NOT a scoring-semantics
+change → no version bump, no peer gate; direct-to-main per the readout+tests rule.
+Capability-worded, vendor-neutral (no domain/vendor special-casing; renders whatever
+`battery_summary` the pipeline produced). Evidence: the card reads only the additive
+`battery_summary` dict the Report already carries — nothing invented.
+
+**Tests.** `tests/test_readout.py` 8/8 → **12/12** (+4): battery_summary round-trips
+through JSON; multi-kind battery renders header + each intent row + By-archetype rollup
++ each archetype + the spread value; single-kind battery renders the card but suppresses
+the rollup (mirrors terminal); absent/None battery_summary → empty string (no card).
+Fixtures built through the real `asrs.battery.aggregate_battery` on synthetic runs, not
+hand-typed dicts, so the render test tracks the true aggregation shape. Full suite
+64 → **68/68** (all files green; free-tier 8/8 with eth-account installed in a fresh
+.venv). End-to-end `build_scorecard` sanity: battery card renders in single + compare
+layouts, and a report WITHOUT a battery correctly renders no battery card.
+
+**Canonical pair (regression signal).** UNCHANGED BY CONSTRUCTION — display-only,
+scoring path byte-for-byte untouched, so the static delta cannot move. In-cloud live
+re-score remains blocked (network policy denies canonical domains); the standing live
+signal is the manual local fires: drift-flight.org **46.1 F** / driftflight.com
+**85.5 B**, delta **+39.4** on rubric v0.6 (STATE, re-confirmed live 11:50Z). Runner
+still DOWN (newest verify_20260723T040757Z, 04:07Z, now ~8h old — past 6h); to be
+flagged in the next post-16:00 Slack digest per comms policy (this fire is before 16:00 UTC).
+
+**Ship.** Direct-to-main: readout + tests + LOG/STATE/BACKLOG, no scoring semantics.
+
+**Next hypothesis.** The battery card now needs REAL multi-kind battery data to prove
+itself on a hosted card — the queued [LOCAL] second cross_task_spread datapoint (driftflight.com
+or the full 5-intent battery on drift-flight.org) will be the first live run whose report
+carries per_kind, so the by-archetype grid can be eyeballed on an actual scorecard. No
+new code needed for that; it exercises this cycle's render path on live data.

@@ -598,6 +598,151 @@ def _reliability(rep: dict) -> str:
     )
 
 
+# Cross-task spread band -> (pill css class, pill label). Lower spread is BETTER
+# (the site behaves the same whatever the agent was sent to do), so a small
+# spread is the "good" band. Thresholds mirror the terminal `report._battery_lines`
+# exactly so the two readouts never disagree on the verdict.
+_BATTERY_SPREAD_BANDS = [
+    (0.15, "good", "Consistent"),
+    (0.35, "warn", "Somewhat intent-dependent"),
+    (float("inf"), "bad", "Intent-dependent"),
+]
+
+
+def _battery_spread_band(spread: float) -> tuple[str, str]:
+    for thresh, cls, label in _BATTERY_SPREAD_BANDS:
+        if spread < thresh:
+            return cls, label
+    return "bad", "Intent-dependent"
+
+
+def _battery(rep: dict) -> str:
+    """Cross-intent coverage + reliability card from a task battery.
+
+    Reads the ADDITIVE ``battery_summary`` dict the Report carries (the
+    :class:`asrs.battery.BatterySummary`). Absent (single-task / static report)
+    -> no card. Diagnostic only — never part of the score; it tells a reader
+    whether a site's readiness holds across intents or whether the headline
+    (one task) overstates it. Mirrors the terminal ``report._battery_lines`` so
+    the HTML and terminal readouts never diverge on interpretation.
+    """
+    summary = rep.get("battery_summary")
+    if not summary:
+        return ""
+    n = summary.get("n_tasks", 0)
+    signal = summary.get("tasks_with_signal", 0)
+
+    spread = summary.get("cross_task_spread")
+    if isinstance(spread, (int, float)):
+        band_cls, band_label = _battery_spread_band(spread)
+        pill = (
+            f'<span class="pill {band_cls}"><span class="dot"></span>{band_label}'
+            f'&nbsp;·&nbsp;<span class="num">{spread:.2f}</span></span>'
+        )
+        if spread < 0.15:
+            interp = "behaves consistently whatever the agent was sent to do."
+        elif spread < 0.35:
+            interp = "is somewhat intent-dependent — some intents fare better than others."
+        else:
+            interp = (
+                "is strongly intent-dependent — the single-task headline "
+                "overstates readiness."
+            )
+        foot = (
+            f'<div class="desc">Cross-task spread <b class="num">{spread:.2f}</b> '
+            f"&mdash; 0 means identical across every intent. This site {interp}</div>"
+        )
+    else:
+        pill = '<span class="pill neutral"><span class="dot"></span>n/a</span>'
+        foot = (
+            '<div class="desc">Fewer than one intent was observed, so cross-task '
+            "spread could not be assessed.</div>"
+        )
+
+    # Per-intent coverage grid: one row per battery task, a bar for how far
+    # agents got. No-signal intents show "no signal" (never a site failure).
+    rows = []
+    for tr in summary.get("per_task", []) or []:
+        tid = _esc(tr.get("task_id", "?"))
+        kind = _esc(tr.get("kind", "") or "unspecified")
+        mc = tr.get("mean_completion")
+        if tr.get("valid_runs", 0) > 0 and isinstance(mc, (int, float)):
+            pct = round(mc * 100)
+            bar = (
+                f'<div class="track"><div class="fill {_band(pct)}" '
+                f'style="width:{max(2, pct)}%"></div></div>'
+            )
+            comp = f'<span class="num">{pct}%</span>'
+            valid = f'<span class="num">{tr.get("valid_runs")}</span>'
+        else:
+            bar = '<div class="track"><div class="fill na" style="width:0%"></div></div>'
+            comp = '<span class="val na">no signal</span>'
+            valid = '<span class="val na">0</span>'
+        rows.append(
+            f'<tr><td>{tid}</td><td><span class="chip">{kind}</span></td>'
+            f"<td>{bar}</td><td style=\"text-align:right\">{comp}</td>"
+            f'<td style="text-align:right">{valid}</td></tr>'
+        )
+    grid = (
+        '<table><tr><th>Intent</th><th>Archetype</th><th>Coverage</th>'
+        '<th style="text-align:right">Completion</th>'
+        '<th style="text-align:right">Valid runs</th></tr>'
+        + "".join(rows)
+        + "</table>"
+    )
+
+    # Per-storefront-archetype rollup — only when the battery spans >1 kind
+    # (with a single kind this just restates the battery-wide number), mirroring
+    # the terminal "by archetype:" sub-block.
+    per_kind = summary.get("per_kind", []) or []
+    per_kind_html = ""
+    if len(per_kind) > 1:
+        krows = []
+        for kr in per_kind:
+            kind = _esc(kr.get("kind", "") or "unspecified")
+            mc = kr.get("mean_completion")
+            ks = kr.get("cross_task_spread")
+            if kr.get("tasks_with_signal", 0) > 0 and isinstance(mc, (int, float)):
+                comp = f'<span class="num">{round(mc * 100)}%</span>'
+                spread_txt = (
+                    f'<span class="num">{ks:.2f}</span>'
+                    if isinstance(ks, (int, float))
+                    else '<span class="val na">n/a</span>'
+                )
+            else:
+                comp = '<span class="val na">no signal</span>'
+                spread_txt = '<span class="val na">n/a</span>'
+            intents = f'{kr.get("tasks_with_signal", 0)}/{kr.get("n_tasks", 0)}'
+            krows.append(
+                f'<tr><td><span class="chip">{kind}</span></td>'
+                f'<td style="text-align:right">{comp}</td>'
+                f'<td style="text-align:right">{spread_txt}</td>'
+                f'<td style="text-align:right"><span class="num">{_esc(intents)}</span></td></tr>'
+            )
+        per_kind_html = (
+            '<div><div class="desc" style="margin-bottom:8px;font-weight:600">'
+            "By archetype</div>"
+            '<table><tr><th>Archetype</th>'
+            '<th style="text-align:right">Completion</th>'
+            '<th style="text-align:right">Within-kind spread</th>'
+            '<th style="text-align:right">Intents</th></tr>'
+            + "".join(krows)
+            + "</table></div>"
+        )
+
+    return (
+        '<div class="card"><div class="card-header"><div><h2>Task battery</h2>'
+        f'<div class="desc">Does readiness hold across intents? '
+        f'{signal}/{n} intent{"s" if n != 1 else ""} observed.</div>'
+        f"</div>{pill}</div>"
+        '<div class="card-body" style="display:flex;flex-direction:column;gap:16px">'
+        + grid
+        + per_kind_html
+        + foot
+        + "</div></div>"
+    )
+
+
 def _overview_card(rep: dict, label: str | None, baseline: dict | None = None) -> str:
     title = f'{_esc(rep["domain"])}'
     sub = f'{_esc(label)} · scored {rep["generated_at"][:10]}' if label else f'scored {rep["generated_at"][:10]}'
@@ -630,6 +775,7 @@ def _domain_column(rep: dict, label: str | None, baseline: dict | None = None) -
         + _trust_panel(rep)
         + _checkpoints(rep)
         + _reliability(rep)
+        + _battery(rep)
         + "</div>"
     )
 
@@ -646,6 +792,7 @@ def _section_rows(a: dict, b: dict, labels: list[str | None]) -> str:
         (_trust_panel(a), _trust_panel(b)),
         (_checkpoints(a), _checkpoints(b)),
         (_reliability(a), _reliability(b)),
+        (_battery(a), _battery(b)),
     ]
     rows = []
     for left, right in sections:

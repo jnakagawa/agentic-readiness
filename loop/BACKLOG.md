@@ -182,14 +182,24 @@ design in-cloud, execute locally.
      Display-only, rubric stays v0.5, scoring source byte-for-byte unchanged.
      tests/test_readout.py 8/8 (+3); suite 54 -> 57. See LOG Cycle 8. -->
 
-- **Task battery on the HTML card** (READOUT, Cycle 6/10 follow-up): the
-  `battery_summary` ships terminal + JSON only. Render a per-intent coverage grid
-  + `cross_task_spread` pill on the HTML scorecard (`scorecard._reliability` is
-  the template; both layouts) — same terminal-first-then-HTML deferral quotability
-  took. Additive, no version bump. NOW ALSO render the Cycle-10 `per_kind`
-  by-archetype rollup (mean completion + within-kind spread per storefront type),
-  shown only when the battery spans >1 kind — mirrors the terminal
-  `by archetype:` sub-block (`report._battery_lines`).
+<!-- DONE 2026-07-23T12:18Z (Cycle 12, READOUT): "Task battery on the HTML card"
+     SHIPPED. `scorecard._battery(rep)` renders a "Task battery" card — cross-task-spread
+     verdict pill (Consistent/Somewhat/Intent-dependent, thresholds 0.15/0.35 mirroring
+     the terminal `report._battery_lines`), a per-intent coverage grid (intent, archetype
+     chip, completion bar + %, valid-run count; no-signal -> "no signal"), AND the Cycle-10
+     `per_kind` by-archetype rollup (completion + within-kind spread + intents), shown only
+     when >1 kind. Wired into BOTH layouts (`_domain_column`, `_section_rows`), after Panel
+     reliability. Additive/display-only, rubric stays v0.6, scoring path byte-for-byte
+     untouched (canonical delta unchanged by construction); direct-to-main.
+     tests/test_readout.py 8/8 -> 12/12; suite 64 -> 68. Live-data follow-up folded into
+     the [LOCAL] second cross_task_spread datapoint (P0) — the first live report to carry
+     per_kind, so the by-archetype grid can be eyeballed on a real card. See LOG Cycle 12. -->
+
+- **[LOCAL] Eyeball the battery card on a real multi-kind report** (READOUT, Cycle 12
+  follow-up): the HTML battery card now exists but has only ever rendered synthetic
+  fixtures. When the [LOCAL] second cross_task_spread datapoint runs (below/P0), pass its
+  report through `scorecard.build_scorecard` and confirm the per-intent grid + by-archetype
+  rollup read correctly on real multi-kind data. No new code — a render + visual check.
 
 - **Evidence links on the card** (READOUT): each check row links to its
   evidence blob; publish evidence alongside the hosted card.

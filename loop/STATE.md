@@ -1,13 +1,14 @@
 # Loop state
 
-- Cycle counter: 11
+- Cycle counter: 12
 - Started: 2026-07-23 (UTC)
-- Focus pointer: READOUT (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
   pinning) + local fire 11:42Z TRUTH (codex reachability investigation, ran
-  concurrently); next cycle takes READOUT.)
+  concurrently), Cycle 12 READOUT (task-battery card on the HTML scorecard);
+  next cycle takes METHOD.)
 - Rubric: **v0.6 on main** (PR #2 MERGED 2026-07-23T~09:47Z, merge commit 8fe9f46,
   clean fast-forward). v0.6 broadens the env-block classifier to recognize
   "safety"-phrased hosted-browser refusals (aggregation rule → version bump).
@@ -40,7 +41,8 @@
   whole battery). Evidence:
   `runs/local/battery_trimmed_driftflightorg_20260723T101121Z.{json,card.txt}`.
   REMAINING: a SECOND cross_task_spread datapoint (driftflight.com / the full
-  5-intent battery — P0 [LOCAL]) and the HTML scorecard battery card (P2 READOUT).
+  5-intent battery — P0 [LOCAL]). The HTML scorecard battery card SHIPPED Cycle 12
+  (see below), so the only battery gap left is live multi-kind data on a real card.
   Cycle 10 (COVERAGE) added the PER-ARCHETYPE (`kind`) rollup the module docstring
   + battery YAML had promised but never implemented: `BatteryKindResult` +
   additive `BatterySummary.per_kind` (`asrs/battery.py` `_per_kind_results` /
@@ -51,6 +53,20 @@
   v0.6, scoring.py/static path untouched → canonical delta unchanged by
   construction); direct-to-main. `tests/test_battery.py` 6/6 → 8/8; suite 58 → 60.
   Per-kind ships terminal + JSON; the HTML by-archetype grid joins the queued P2.
+- Task-battery HTML card (Cycle 12, READOUT): `scorecard._battery(rep)` renders the
+  additive `battery_summary` on the HTML scorecard — a "Task battery" card with a
+  cross-task-spread verdict pill (Consistent / Somewhat / Intent-dependent, thresholds
+  0.15/0.35 mirroring the terminal `report._battery_lines`), a per-intent coverage grid
+  (intent, archetype chip, completion bar + %, valid-run count; no-signal -> "no signal"),
+  and the Cycle-10 `per_kind` by-archetype rollup (completion + within-kind spread +
+  intents), shown only when >1 kind. Wired into BOTH layouts (`_domain_column`,
+  `_section_rows`), placed after Panel reliability. Same terminal->JSON->HTML deferral
+  quotability/reliability took; the battery card was the last diagnostic still
+  terminal/JSON-only. Additive/display-only -> rubric stays v0.6, scoring path
+  byte-for-byte untouched (canonical delta unchanged by construction); direct-to-main.
+  `tests/test_readout.py` 8/8 -> 12/12; suite 64 -> 68. The queued [LOCAL] second
+  cross_task_spread datapoint will be the first live report carrying per_kind, so the
+  by-archetype grid can finally be eyeballed on a real card.
 - Attribution boundary (Cycle 7, TRUTH): `tests/test_attribution.py` (8/8) pins
   invariant #4 directly for the first time — `asrs/behavioral/shopper._is_env_blocked`
   (`_ENV_BLOCK_RE`) + `_aggregate` denominator routing. Adds the previously-zero

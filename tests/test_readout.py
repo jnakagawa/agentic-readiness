@@ -203,6 +203,65 @@ def test_html_quotability_suppressed() -> None:
            "not-scorable tag -> no card (grade already says N/A)")
 
 
+# ---------------------------------------------------------------------------
+# Task battery card (Cycle 12, READOUT): the battery_summary that already ships
+# terminal + JSON now renders on the HTML scorecard too.
+# ---------------------------------------------------------------------------
+def _battery_summary(multi_kind: bool = True):
+    """A faithful battery_summary built through asrs.battery.aggregate_battery
+    on synthetic runs — not a hand-typed dict — so the rendering test tracks the
+    real aggregation shape (per_task, per_kind, cross_task_spread)."""
+    from asrs import battery as bt
+
+    tasks = [bt.BatteryTask(id="buy_image", kind="digital_service", intent="buy one image")]
+    runs_by_task = {
+        "buy_image": [_run(found_product=True, understood_pricing=True),
+                      _run(found_product=True, understood_pricing=True, trial=2)],
+    }
+    if multi_kind:
+        tasks.append(bt.BatteryTask(id="order_widget", kind="physical_good", intent="order the widget"))
+        runs_by_task["order_widget"] = [_run(found_product=True), _run(trial=2)]
+    b = bt.Battery(id="t", description="", tasks=tasks)
+    return bt.aggregate_battery(b, runs_by_task).to_dict()
+
+
+def test_json_carries_battery() -> None:
+    print("test_json_carries_battery")
+    summary = _battery_summary()
+    rep = _report([_run(found_product=True)])
+    rep.battery_summary = summary
+    loaded = json.loads(rep.to_json())
+    _check("battery_summary" in loaded, "battery_summary key present in JSON")
+    _check(loaded["battery_summary"] == summary, "battery_summary round-trips through JSON unchanged")
+
+
+def test_html_renders_battery() -> None:
+    print("test_html_renders_battery")
+    summary = _battery_summary(multi_kind=True)
+    html = scorecard._battery({"battery_summary": summary})
+    _check("Task battery" in html, "battery card header renders")
+    _check("buy_image" in html and "order_widget" in html, "each intent row renders")
+    _check("By archetype" in html, "multi-kind battery renders the per-archetype rollup")
+    _check("digital_service" in html and "physical_good" in html, "each archetype renders")
+    spread = summary["cross_task_spread"]
+    _check(f"{spread:.2f}" in html, "cross-task spread value renders in the pill/footer")
+
+
+def test_html_battery_single_kind_no_rollup() -> None:
+    print("test_html_battery_single_kind_no_rollup")
+    html = scorecard._battery({"battery_summary": _battery_summary(multi_kind=False)})
+    _check("Task battery" in html, "single-kind battery still renders the card")
+    _check("By archetype" not in html, "single kind -> no per-archetype rollup (mirrors terminal)")
+
+
+def test_html_battery_absent_renders_nothing() -> None:
+    print("test_html_battery_absent_renders_nothing")
+    _check(scorecard._battery({"domain": "x"}) == "",
+           "absent battery_summary key -> empty string (no card)")
+    _check(scorecard._battery({"battery_summary": None}) == "",
+           "explicit None -> empty string (no card)")
+
+
 def main() -> int:
     tests = [
         test_json_carries_reliability,
@@ -213,6 +272,10 @@ def main() -> int:
         test_json_carries_quotability,
         test_html_renders_quotability_pill,
         test_html_quotability_suppressed,
+        test_json_carries_battery,
+        test_html_renders_battery,
+        test_html_battery_single_kind_no_rollup,
+        test_html_battery_absent_renders_nothing,
     ]
     failed = 0
     for t in tests:

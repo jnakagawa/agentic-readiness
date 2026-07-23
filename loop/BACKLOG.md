@@ -5,6 +5,20 @@ design in-cloud, execute locally.
 
 ## P0
 
+- **[LOCAL] Merge-time canonical re-score for PR loop/not-scorable-attribution**
+  (METHOD, Cycle 1 follow-up). The cloud env can't reach the canonical domains,
+  so the regression re-score for the v0.5 NOT-SCORABLE PR must run on Jonah's
+  networked machine before merge. Exact commands:
+  ```
+  git checkout loop/not-scorable-attribution
+  python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+  .venv/bin/python tests/test_scoring.py && .venv/bin/python tests/test_free_tier.py
+  .venv/bin/python -m asrs compare drift-flight.org driftflight.com --json-only
+  # Expect: both domains still score normally (delta ~ +40.6 static-equivalent),
+  # NOT "not scorable" — proving the change is a no-op for reachable domains.
+  ```
+  Delete this item once the re-score is recorded and the PR merges.
+
 - **Task battery** (COVERAGE): score across a battery of diverse purchase
   intents (image generation, translation, data enrichment, a physical-goods
   intent, an API subscription) instead of a single task. Per-task checkpoint
@@ -45,4 +59,13 @@ design in-cloud, execute locally.
   (query param, path-based), non-EVM zero-value schemes.
 - **Methodology prose page** (READOUT): how the panels work, refusal
   semantics, attribution rules, what CANT_TEST means — the "read the paper"
-  page behind the rubric page.
+  page behind the rubric page. NOTE: now also document NOT-SCORABLE (v0.5) —
+  the difference between "F" and "N/A".
+
+- **Coverage-warning noise** (READOUT/METHOD, Cycle 1 observation): scoring
+  prints one stderr line per absent rubric check on every run. In static mode
+  ALL behavioral checks are legitimately absent, so a normal run emits ~12
+  warnings — noise that will bury genuinely-unexpected gaps. Suppress
+  expected-absent warnings (behavioral checks when not in --behavioral mode);
+  keep warnings only for a check that's absent when it should have run. Small,
+  direct-to-main safe (no scoring-semantics change).

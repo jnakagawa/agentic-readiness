@@ -1,11 +1,32 @@
 # Loop state
 
-- Cycle counter: 0 (no cycles run yet)
+- Cycle counter: 1
 - Started: 2026-07-23 (UTC)
-- Focus pointer: METHOD (rotate METHOD → COVERAGE → TRUTH → READOUT)
-- Rubric at loop start: v0.4
+- Focus pointer: COVERAGE (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 1 was METHOD; next cycle takes COVERAGE.)
+- Rubric: v0.5 (pending PR merge; v0.4 on main until then)
 - Canonical pair at loop start (behavioral, reports T233804/T235048):
   drift-flight.org 45.7 F vs driftflight.com 86.3 B — delta +40.6
+- Open PRs: #1 loop/not-scorable-attribution (Cycle 1, human gate) — v0.5
+  NOT-SCORABLE fix; awaiting Jonah review + [LOCAL] merge-time re-score.
+  https://github.com/jnakagawa/agentic-readiness/pull/1
+
+## Environment constraint (IMPORTANT — affects every cycle)
+
+This cloud loop has **NO outbound network to external domains**: the agent
+proxy denies CONNECT to drift-flight.org / driftflight.com / example.com / any
+web host (403 "policy denial"). Confirmed 2026-07-23 via `asrs.fetch` and
+`curl $HTTPS_PROXY/__agentproxy/status`. Consequences:
+- The playbook's per-cycle LIVE static re-score of the canonical pair CANNOT
+  run in-cloud. In-cloud, both canonical domains return NOT SCORABLE.
+- Regression signal must therefore be argued by construction + offline unit
+  tests in-cloud, and the LIVE delta re-score queued [LOCAL] for Jonah.
+- Reachable from Python: pypi/github/anthropic infra only. Claude-side
+  WebFetch/WebSearch tools route separately and DO work for research.
+- Open question for Jonah: is this the intended network policy for the loop
+  env, or should the canonical domains be allowlisted so in-cloud re-scores
+  work? If not allowlistable, the "re-score every shipping cycle" rule needs a
+  cloud-adapted form (offline regression tests as the in-cloud proxy).
 
 ## Open questions
 

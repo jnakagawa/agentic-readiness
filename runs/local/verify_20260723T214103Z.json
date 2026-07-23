@@ -1,0 +1,90 @@
+{
+ "ts": "20260723T214103Z",
+ "kind": "local-verify",
+ "git_pull": {
+  "ok": true,
+  "tail": "         |  22 ++++++-\n tests/test_canonical_replay.py | 134 +++++++++++++++++++++++++++++++++++++++++\n 4 files changed, 243 insertions(+), 5 deletions(-)\nFrom https://github.com/jnakagawa/agentic-readiness\n * branch            main       -> FETCH_HEAD\n   65db000..b0c9199  main       -> origin/main\n"
+ },
+ "tests": {
+  "test_attribution.py": {
+   "ok": true,
+   "tail": "nominator counts only the 1 valid run\n  ok: safety-blocked codex run counted as reachability, not site evidence\n  ok: the safety-blocked model is attributed in reachability evidence\n\n9/9 tests passed\n"
+  },
+  "test_battery.py": {
+   "ok": true,
+   "tail": "651\n  ok: type-specialized site -> sizeable between-archetype spread, got 0.4109609335312651\n  ok: between_kind_spread survives to_dict()\n  ok: no signal -> between_kind_spread None\n\n9/9 tests passed\n"
+  },
+  "test_battery_wiring.py": {
+   "ok": true,
+   "tail": "preted for the reader\n  ok: no battery_summary -> no TASK BATTERY section\n\n4/4 tests passed\n[asrs] warning: --battery has no effect without --behavioral (static probes are task-independent) \u2014 ignored\n"
+  },
+  "test_canonical_replay.py": {
+   "ok": true,
+   "tail": "\u2014 absent (pillar max shrinks)\nrubric check 'hosted_agent_reachability' has no result \u2014 absent (pillar max shrinks)\nrubric check 'hosted_agent_reachability' has no result \u2014 absent (pillar max shrinks)\n"
+  },
+  "test_fetch_replay.py": {
+   "ok": true,
+   "tail": "no-agent-native-payment, got no-agent-native-payment\n  ok: bare side zero transactability points, got 0.0\n  ok: x402 capability delta is the full 8.0 (rails earns it, bare does not)\n\n3/3 tests passed\n"
+  },
+  "test_free_tier.py": {
+   "ok": true,
+   "tail": "ot 2.0\ntest_full_delivery_passes\n  ok: full delivery => PASS\n  ok: full credit = 5.0, got 5.0\n  ok: content field surfaced in evidence\n  ok: steering to free meter via openapi enums\n\n8/8 tests passed\n"
+  },
+  "test_protocols.py": {
+   "ok": true,
+   "tail": "st_reverse_domain_capability_ids\n  ok: reverse-domain cap -> ucp, got {'protocol': 'ucp', 'fields': ['capabilities'], 'snippet': '{\"data\": {\"caps\": [\"dev.ucp.shopping.checkout\"]}}'}\n\n7/7 tests passed\n"
+  },
+  "test_quotability.py": {
+   "ok": true,
+   "tail": "ngle-trial card shows the PROVISIONAL verdict\n  ok: behavioral overall score unchanged too\ntest_cli_trials_default_is_two\n  ok: default --trials is 2 (multi-trial by default), got 2\n\n8/8 tests passed\n"
+  },
+  "test_readout.py": {
+   "ok": true,
+   "tail": "hes_and_links_methodology\n  ok: methodology.html published next to the card\n  ok: rubric.html still published (unchanged behaviour)\n  ok: the card footer links to methodology.html\n\n16/16 tests passed\n"
+  },
+  "test_reliability.py": {
+   "ok": true,
+   "tail": " clean), got 0.5\ntest_mixed_band\n  ok: two checkpoints flipped, got ['machine_payable_path', 'no_human_gate']\n  ok: stability in mixed band, got 0.733\n  ok: label mixed, got 'mixed'\n\n8/8 tests passed\n"
+  },
+  "test_scoring.py": {
+   "ok": true,
+   "tail": "' has no result \u2014 absent (pillar max shrinks)\nrubric check 'policies_present' has no result \u2014 absent (pillar max shrinks)\nrubric check 'reputation_signals' has no result \u2014 absent (pillar max shrinks)\n"
+  },
+  "test_trial_stability_v06.py": {
+   "ok": true,
+   "tail": "2 unchanged by the fix (both 0.8)\n  ok: N>=3 readings moved after the fix (committed curve superseded), moved=[3, 4, 5]\n  ok: committed pre-v0.6 N=3 was mixed (0.6 < 0.8) \u2014 the leak\n\n4/4 tests passed\n"
+  }
+ },
+ "tests_ok": true,
+ "scores": {
+  "drift-flight.org": {
+   "ok": true,
+   "overall": 46.1,
+   "grade": "F",
+   "rubric": "0.7",
+   "scored": true,
+   "pillars": {
+    "access": 100.0,
+    "legibility": 36.36363636363637,
+    "transactability": 18.75,
+    "trust": 60.0,
+    "outcome": null
+   }
+  },
+  "driftflight.com": {
+   "ok": true,
+   "overall": 85.5,
+   "grade": "B",
+   "rubric": "0.7",
+   "scored": true,
+   "pillars": {
+    "access": 100.0,
+    "legibility": 90.9090909090909,
+    "transactability": 87.5,
+    "trust": 60.0,
+    "outcome": null
+   }
+  }
+ },
+ "delta": 39.4
+}

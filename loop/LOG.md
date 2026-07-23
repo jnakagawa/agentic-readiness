@@ -2097,3 +2097,7 @@ once its fixture is captured [LOCAL] (example.com, P2) — or the cloud half of 
 "live handshakes for other rails" item (ACP `checkout_sessions` elicitation
 parsing) that doesn't require live network. The between-type pill still wants live
 multi-kind data — folded into the [LOCAL] second cross_task_spread datapoint (P0).
+
+## Local verification — 20260723T214103Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260723T214103Z.json

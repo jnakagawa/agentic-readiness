@@ -12,7 +12,8 @@ Stdlib + requests only.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+import json
+from dataclasses import asdict, dataclass, field
 from urllib.parse import urljoin, urlparse
 
 import requests
@@ -68,7 +69,7 @@ class FetchResult:
 class FetchContext:
     """Per-domain HTTP client with per-UA fetching and an in-memory cache."""
 
-    def __init__(self, domain: str, timeout: float = 15.0) -> None:
+    def __init__(self, domain: str, timeout: float = 15.0, replay: bool = False) -> None:
         self.domain = _normalize_domain(domain)
         self.timeout = timeout
         # base_url is resolved lazily on the first homepage fetch (following
@@ -78,6 +79,12 @@ class FetchContext:
         self._base_resolved = False
         self._cache: dict[tuple[str, str, str], FetchResult] = {}
         self._session = requests.Session()
+        # Replay mode (offline regression signal): serve only recorded
+        # responses from the cache; a cache miss returns a replay-miss error
+        # (status None) instead of touching the network, so a replayed crawl is
+        # a closed world — a miss means the probe changed WHAT it fetches, which
+        # is itself a signal, and no external request ever escapes.
+        self._replay = replay
 
     # -- public API ---------------------------------------------------------
 
@@ -117,6 +124,51 @@ class FetchContext:
         result = self.get(self.base_url, ua=ua)
         return result
 
+    # -- record / replay ----------------------------------------------------
+
+    FIXTURE_VERSION = 1
+
+    def save_fixture(self, path: str) -> int:
+        """Serialize every cached response to a JSON fixture; return the count.
+
+        Captures the exact ``FetchResult`` each ``(method, url, ua)`` produced
+        during a live crawl so it can be replayed offline as a deterministic
+        regression signal (the in-cloud proxy for the live canonical re-score
+        the network policy blocks). Call after a full scoring run.
+        """
+        entries = [
+            {"method": method, "url": url, "ua": ua, "result": asdict(result)}
+            for (method, url, ua), result in self._cache.items()
+        ]
+        payload = {
+            "fixture_version": self.FIXTURE_VERSION,
+            "domain": self.domain,
+            "base_url": self.base_url,
+            "entries": entries,
+        }
+        with open(path, "w", encoding="utf-8") as fh:
+            json.dump(payload, fh, ensure_ascii=False, indent=1)
+        return len(entries)
+
+    @classmethod
+    def from_fixture(cls, path: str, timeout: float = 15.0) -> "FetchContext":
+        """Build a replay-mode context prepopulated from a saved fixture.
+
+        The returned context never touches the network: recorded requests
+        return their exact recorded ``FetchResult``; anything else is a
+        replay-miss. ``base_url`` is restored from the fixture so probe path
+        resolution reproduces the original cache keys.
+        """
+        with open(path, encoding="utf-8") as fh:
+            payload = json.load(fh)
+        ctx = cls(payload["domain"], timeout=timeout, replay=True)
+        ctx.base_url = payload["base_url"]
+        ctx._base_resolved = True
+        for entry in payload.get("entries", []):
+            key = (entry["method"], entry["url"], entry["ua"])
+            ctx._cache[key] = FetchResult(**entry["result"])
+        return ctx
+
     # -- internals ----------------------------------------------------------
 
     def _resolve(self, path_or_url: str) -> str:
@@ -130,6 +182,17 @@ class FetchContext:
         return urljoin(base, path_or_url.lstrip("/"))
 
     def _fetch(self, url: str, ua: str, method: str = "GET") -> FetchResult:
+        if self._replay:
+            # No recorded response for this (method, url, ua): a closed-world
+            # miss. Never touch the network in replay mode.
+            return FetchResult(
+                url=url,
+                final_url="",
+                status=None,
+                headers={},
+                text="",
+                error=f"replay-miss: {method} {url}",
+            )
         headers = {
             "User-Agent": USER_AGENTS[ua],
             "Accept": "*/*",

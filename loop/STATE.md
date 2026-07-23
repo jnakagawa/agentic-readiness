@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 14
+- Cycle counter: 15
 - Started: 2026-07-23 (UTC)
-- Focus pointer: TRUTH (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -11,8 +11,10 @@
   Cycle 13 METHOD (coverage-warning noise fixed at source — logging + behavioral-only
   classifier; unblocks the local runner's re-score capture),
   Cycle 14 COVERAGE (commerce-protocol ACP/UCP credit requires a validated manifest —
-  peer-gated PR #3, rubric v0.6→v0.7); next cycle takes TRUTH — BUT its FIRST duty is
-  the fresh-context adversarial review + self-merge of PR #3 before picking TRUTH work.)
+  peer-gated PR #3, rubric v0.6→v0.7),
+  Cycle 15 TRUTH (FetchContext record/replay — `save_fixture`/`from_fixture` + a `replay`
+  mode, the offline in-cloud proxy for the network-blocked canonical re-score; first duty
+  = post-merge sanity check of v0.7/PR #3 → RETAIN); next cycle takes READOUT.)
 - Rubric: **v0.6 on main** (PR #2 MERGED 2026-07-23T~09:47Z, merge commit 8fe9f46,
   clean fast-forward). v0.6 broadens the env-block classifier to recognize
   "safety"-phrased hosted-browser refusals (aggregation rule → version bump).
@@ -85,6 +87,23 @@
   the math; scoring arithmetic byte-for-byte unchanged, rubric stays v0.6, canonical delta
   unchanged by construction); direct-to-main. `tests/test_scoring.py` 7/7 → 11/11 (+4,
   logger-capture handler); suite 68 → 72.
+- Fetch record/replay (Cycle 15, TRUTH): `asrs/fetch.py` `FetchContext` grew a faithful
+  record/replay capability — `save_fixture(path)` serializes the per-`(method,url,ua)`
+  response cache to JSON, `from_fixture(path)` reconstructs a `replay=True` context that
+  serves recorded `FetchResult`s byte-identically and returns a clean `replay-miss` (status
+  None, error set) on any unrecorded request WITHOUT touching the network. This is the
+  enabling infra for the loop's standing open question ("offline regression tests as the
+  in-cloud proxy" for the network-blocked canonical re-score): a canonical-pair fixture
+  captured [LOCAL] once can be re-scored in-cloud EVERY cycle as a deterministic executable
+  guard, replacing the per-cycle prose "delta unchanged by construction" argument. NOT a
+  scoring-semantics change — `asrs/scoring.py` + `rubric/` byte-for-byte untouched, `replay`
+  defaults False so every live/static path is byte-identical (canonical delta unchanged by
+  construction); direct-to-main. `tests/test_fetch_replay.py` (3/3, new): round-trip
+  fidelity, clean replay-miss (GET+POST), and an END-TO-END proxy replaying a recorded x402
+  handshake through the REAL `protocols.run` → `x402-live` PASS 8.0 vs a bare homepage →
+  `no-agent-native-payment` FAIL 0.0 (the 8.0 capability delta pinned offline). Suite
+  79 → 82. NEXT: [LOCAL] capture `fixtures/canonical/{drift-flight.org,driftflight.com}.json`,
+  then a cloud cycle wires `test_canonical_replay.py` asserting 46.1 F / 85.5 B / +39.4 on v0.7.
 - Attribution boundary (Cycle 7, TRUTH): `tests/test_attribution.py` (8/8) pins
   invariant #4 directly for the first time — `asrs/behavioral/shopper._is_env_blocked`
   (`_ENV_BLOCK_RE`) + `_aggregate` denominator routing. Adds the previously-zero
@@ -142,6 +161,12 @@
   ~7h08m old. RE-CONFIRMED DOWN Cycle 13 (13:18Z): newest still verify_20260723T040757Z,
   now **~9.2h old** (past 6h); still before 16:00 UTC so no digest yet — folds into the
   next post-16:00 Slack digest.
+  RE-CONFIRMED DOWN Cycle 15 (15:18Z): newest STILL verify_20260723T040757Z, now **~11.2h
+  old**; still before 16:00 UTC (this fire 15:18Z) so no digest yet — the next fire after
+  16:00 UTC carries the digest and MUST flag the runner-down + the queued [LOCAL] v0.7 live
+  re-score. NOTE: the Cycle-15 record/replay infra is the durable fix for this class of pain
+  — once a canonical fixture is captured [LOCAL], the in-cloud canonical re-score no longer
+  depends on the launchd runner being up at all.
   SEPARATE BUG (the coverage-warning stderr leak): FIXED AT SOURCE Cycle 13. The runner's
   `scores` block recorded FileNotFoundError because `[asrs.scoring]` stderr coverage-warning
   lines leaked into the score-path argument; `asrs/scoring.py` no longer prints those lines
@@ -191,13 +216,19 @@
   (stronger than the veto-silence the playbook relies on), so this is not a bypass on the
   loop's part. RECONCILED post-merge THIS fire: pulled main, full suite **79/79 green** on
   the merge commit, v0.7 + `_parse_commerce_manifest` confirmed on main. Because the
-  fresh-context review was pre-empted, it converts to a POST-merge duty for the NEXT cycle's
-  FIRST duty: adversarially sanity-check v0.7 (retain-or-revert, not a pre-merge gate) AND
-  run the queued P0 **[LOCAL] live v0.7 canonical re-score** (confirm 46.1 F / 85.5 B,
-  +39.4, reports embed 0.7, no `commerce-protocol-*` on either canonical domain). Delta
-  argued UNCHANGED by committed evidence (.com→x402-live never reaches the branch;
-  .org→FAIL 0.0 no-agent-native-payment, `_commerce_protocol_evidence` already None); LIVE
-  confirmation is the remaining check. https://github.com/jnakagawa/agentic-readiness/pull/3
+  fresh-context review was pre-empted, it converted to a POST-merge duty. **DISCHARGED
+  Cycle 15 (first duty): the fresh-context adversarial sanity check of v0.7 SURVIVED →
+  RETAIN** — vendor-neutral (`_parse_commerce_manifest` keys only on protocol STRUCTURE,
+  no vendor/domain string), direction monotone non-increasing (only the bare-200 false
+  positive loses credit), `$0`-only intact (parser only GETs), test coverage complete
+  (`test_protocols.py` 7/7), and canonical delta UNCHANGED confirmed by COMMITTED evidence
+  (.org report shows `x402_probe` FAIL 0.0 → `_commerce_protocol_evidence` already None
+  under v0.6, so v0.7 still None; .com earns x402-live before the commerce branch). See
+  LOG Cycle 15. The queued P0 **[LOCAL] live v0.7 canonical re-score** (confirm 46.1 F /
+  85.5 B, +39.4, reports embed 0.7, no `commerce-protocol-*` on either canonical domain)
+  REMAINS — it is network-blocked in-cloud; the Cycle-15 record/replay infra (below) is the
+  path to making it an in-cloud offline guard once the fixture is captured [LOCAL].
+  https://github.com/jnakagawa/agentic-readiness/pull/3
 - Prior PRs closed: PR #2 `loop/env-block-safety-phrasing` (Cycle 9, METHOD,
   sensitive class: aggregation rule + v0.5→v0.6) MERGED 2026-07-23T~09:47Z
   (commit 8fe9f46) by THIS local cycle's first-duty peer-gate review (adversarial

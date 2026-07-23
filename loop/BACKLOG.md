@@ -5,22 +5,49 @@ design in-cloud, execute locally.
 
 ## P0
 
+<!-- SANITY-CHECK HALF DONE 2026-07-23T15:18Z (Cycle 15, first duty): the fresh-context
+     adversarial POST-merge sanity check of v0.7 (PR #3) SURVIVED → RETAIN — vendor-neutral,
+     monotone non-increasing, $0-only intact, test_protocols.py 7/7, canonical delta unchanged
+     confirmed by committed evidence (.org report x402_probe FAIL 0.0 → _commerce_protocol_evidence
+     already None under v0.6, so v0.7 still None; .com x402-live before the commerce branch). See
+     LOG Cycle 15. The LIVE re-score half remains below. -->
 - **[LOCAL] POST-merge live canonical re-score for v0.7 (PR #3, MERGED 72a2e5b)** (COVERAGE
-  — now the NEXT cycle's FIRST duty as a post-merge retain-or-revert sanity check, since the
-  external merge pre-empted the fresh-context pre-merge review). v0.7 is on main; delta argued
-  UNCHANGED by committed evidence (.com→x402-live never reaches the commerce branch; .org→FAIL
-  0.0 no-agent-native-payment, `_commerce_protocol_evidence` already None). Confirm LIVE on
-  main: re-score both domains, verify overall 46.1 F / 85.5 B, delta **+39.4**, reports embed
-  rubric "0.7", and that the `x402_probe` findings are unchanged (no `commerce-protocol-*` on
-  either — .com is x402-live, .org is no-agent-native-payment). Also spot-check that no OTHER
-  real domain in reach loses credit from the tightening (regression on the false-positive
-  removal is the whole point). If the live delta MOVES unexpectedly → revert first, investigate
-  second (sensitive-class post-merge rule).
+  — the retain-or-revert sanity check is DONE (Cycle 15, RETAIN); only the LIVE re-score half
+  remains, network-blocked in-cloud). Confirm LIVE on main: re-score both domains, verify
+  overall 46.1 F / 85.5 B, delta **+39.4**, reports embed rubric "0.7", and that the
+  `x402_probe` findings are unchanged (no `commerce-protocol-*` on either — .com is x402-live,
+  .org is no-agent-native-payment). Also spot-check that no OTHER real domain in reach loses
+  credit from the tightening (regression on the false-positive removal is the whole point). If
+  the live delta MOVES unexpectedly → revert first, investigate second (sensitive-class
+  post-merge rule). BEST DONE via the Cycle-15 fixture-capture item below (`save_fixture`), which
+  makes this an in-cloud offline guard forever after instead of a one-off local re-score.
   ```
   git checkout main && git pull origin main
   .venv/bin/python -m asrs.cli score drift-flight.org
   .venv/bin/python -m asrs.cli score driftflight.com
   ```
+
+- **[LOCAL] Capture the canonical-pair replay fixtures** (TRUTH, P0 — unlocks the in-cloud
+  canonical regression guard; enabled by the Cycle-15 `FetchContext.save_fixture` infra). Do
+  ONE full live scoring crawl of each canonical domain and dump its fetch cache to a committed
+  fixture, so a cloud cycle can then replay both offline and re-score them with NO network.
+  Requires a tiny wiring of `save_fixture` into the score path (a `--record-fixture <path>`
+  flag on `asrs.cli score`, or a 6-line script that builds the `FetchContext`, runs the
+  probes, and calls `ctx.save_fixture(...)`). Commit to `fixtures/canonical/` (NOT gitignored,
+  unlike `runs/`). Exact intent:
+  ```
+  git checkout main && git pull origin main
+  # add/using a --record-fixture hook (design in a cloud cycle first), then:
+  .venv/bin/python -m asrs.cli score drift-flight.org  --record-fixture fixtures/canonical/drift-flight.org.json
+  .venv/bin/python -m asrs.cli score driftflight.com   --record-fixture fixtures/canonical/driftflight.com.json
+  git add fixtures/canonical/*.json && git commit && git push
+  ```
+  Budget: two static crawls, $0, no codex/wallet. Fixtures are recorded HTTP responses only
+  (no secrets) — safe to commit. Once landed, the NEXT cloud cycle wires
+  `tests/test_canonical_replay.py` (replay each fixture through the CURRENT scoring pipeline,
+  assert overall 46.1 F / 85.5 B / delta +39.4 on rubric v0.7) — the durable in-cloud proxy
+  for the live re-score the network policy blocks, and the permanent regression guard the
+  playbook's "re-score every shipping cycle" rule needs in cloud-adapted form.
 
 <!-- DONE 2026-07-23T05:52Z (local fire): "[LOCAL] Merge-time canonical re-score
      for PR loop/not-scorable-attribution" discharged. Both reachable canonical
@@ -153,6 +180,14 @@ design in-cloud, execute locally.
 
 ## P1
 
+- **`--record-fixture` CLI hook (cloud-doable half of the canonical-replay guard)**
+  (TRUTH/plumbing, Cycle-15 follow-up). Wire `FetchContext.save_fixture` into the score
+  path: add a `--record-fixture <path>` flag on `asrs.cli score` that, after a live crawl,
+  dumps the context's fetch cache to the given path. Additive, dormant unless the flag is
+  passed (no scoring semantics, no rubric touch) → direct-to-main; testable in-cloud with a
+  replay round-trip (no network needed for the test — feed a replay ctx, assert the dumped
+  fixture reloads identically). Landing this in a cloud cycle means the [LOCAL] fixture
+  capture (P0 above) is a one-line command instead of a bespoke script.
 - **Calibration population** (TRUTH): weekly static sweep of 15–20 real
   domains (exa.ai, deepai.org, perplexity.ai, a Shopify store, a mainstream
   retailer, agentic-native services) committed as a dated dataset +

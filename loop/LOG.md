@@ -1409,3 +1409,100 @@ live v0.7 canonical re-score. Canonical delta still argued UNCHANGED by committe
 v0.7 re-score is the remaining confirmation. No Slack DM for the merge itself — the actor
 IS the DM recipient, so a "your PR merged" ping would be noise; it folds into the next
 post-16:00 UTC digest. Session auto-unsubscribed from PR #3 activity (merged = final).
+
+## Cycle 15 — 2026-07-23T15:18Z — TRUTH (direct to main)
+
+**First duty — post-merge sanity check of v0.7 (PR #3), RETAIN.** PR #3
+(commerce-manifest validation, v0.6→v0.7) was MERGED EXTERNALLY during the Cycle-14
+fire (commit 72a2e5b), pre-empting the mandated fresh-context pre-merge review — so per
+STATE it converts to this cycle's FIRST duty as a POST-merge retain-or-revert sanity
+check. Ran it from fresh context and it SURVIVES → RETAIN:
+- **Vendor-neutral / capability-worded.** `_parse_commerce_manifest` keys ONLY on
+  protocol STRUCTURE: `_UCP_MANIFEST_KEYS` (services/capabilities/payment[s]/endpoints)
+  and `_ACP_PAYLOAD_KEYS` (line_items/payment_provider/checkout_session*), plus
+  reverse-domain `dev.ucp.*` capability ids. No vendor or domain string anywhere; `ucp`/
+  `acp` are protocol identifiers like the existing `x402`/`mcp`. Passes the "would a
+  critic call this vendor-rigged?" test.
+- **Direction monotone NON-INCREASING** on the well-known branch — a genuine manifest
+  still earns 4.0; only the bare-200 false positive loses it. No domain with a real
+  manifest can lose credit. `$0`-only intact (parser only GETs + JSON-parses; no POST/
+  signing added). Ceiling unchanged (4.0 partial).
+- **Test coverage complete.** `tests/test_protocols.py` (7/7): validated UCP→live 4.0,
+  validated ACP→live 4.0, bare-200 SPA index→no credit (the fix), random/array/empty/
+  non-200→not a manifest, doc-phrase marker preserved, canonical `.org` shape→None,
+  reverse-domain caps recognized.
+- **Canonical delta unchanged — confirmed by COMMITTED evidence, not just construction.**
+  The committed `.org` report
+  (`runs/local/battery_trimmed_driftflightorg_20260723T101121Z.json`) shows `x402_probe`
+  = FAIL 0.0 / `no-agent-native-payment` — i.e. `_commerce_protocol_evidence` already
+  returned None under v0.6 (no validated OR bare manifest served at the well-known paths;
+  they 404). So under v0.7 it still returns None → still FAIL 0.0. `.com` (85.5 B) earns
+  `x402-live` and returns from `_x402_probe` BEFORE the commerce branch → unaffected.
+  Static delta **+39.4** cannot move. Pinned by `test_canonical_org_unchanged`. LIVE v0.7
+  re-score on main stays the queued [LOCAL] P0 (network-blocked in-cloud).
+- Full suite **79/79 green** on the merge commit at cycle start.
+
+**Track.** TRUTH (rotation: …Cycle 14 COVERAGE → Cycle 15 TRUTH). Focus pointer in STATE
+named TRUTH for this cycle.
+
+**What.** Built a faithful **record/replay** capability on `asrs.fetch.FetchContext` so a
+live crawl's response cache can be serialized to a fixture (`save_fixture`) and replayed
+offline with byte-for-byte fidelity and ZERO network (`from_fixture` → replay mode). A
+new `replay: bool` (default False) makes `_fetch` return a clean `replay-miss` FetchResult
+(status None, error set) on any unrecorded request instead of touching the network — a
+replayed crawl is a closed world, and a miss is itself a signal that a probe changed WHAT
+it fetches. `save_fixture`/`from_fixture` round-trip the cache (`(method, url, ua)` →
+`FetchResult`) through JSON, restoring `base_url` so probe path resolution reproduces the
+original cache keys.
+
+**Why.** This directly discharges the loop's standing OPEN QUESTION (STATE): the cloud
+env has no outbound network, so the playbook's per-cycle LIVE canonical re-score cannot
+run in-cloud and the regression signal has been HAND-ARGUED "by construction" every cycle.
+Record/replay is the enabling infrastructure for the cloud-adapted form the playbook calls
+for — "offline regression tests as the in-cloud proxy": a canonical-pair fixture captured
+[LOCAL] once can be re-scored in-cloud EVERY cycle as a deterministic, executable guard,
+converting the prose argument into a test that fails if a scoring/probe change moves the
+delta against frozen inputs. North-star rigor: reproducible, evidence-linked, network-free.
+
+**Invariants.** NOT a scoring-semantics change — `asrs/scoring.py` and `rubric/` are
+byte-for-byte untouched (`git status` clean on both), so the canonical delta is unchanged
+BY CONSTRUCTION AND the new code is dormant on every existing path (`replay` defaults
+False; live/static fetching is byte-identical). (#1 $0-only) replay NEVER opens a socket;
+a POST miss is a clean replay-miss, no handshake escapes. (#3 evidence) the mechanism is
+verified end-to-end below; the REAL canonical fixture capture is queued [LOCAL]. No
+version bump (no rubric semantics touched). Direct-to-main (fetch-layer plumbing + tests).
+
+**Tests.** `tests/test_fetch_replay.py` (**3/3**, new): (1) round-trip fidelity —
+save→from_fixture reproduces every result byte-identically and restores base_url; (2)
+replay-miss is clean — an unrecorded GET/POST returns status None + `replay-miss` error,
+never a crash, never a network call; (3) END-TO-END regression proxy — replaying a
+recorded x402 handshake through the REAL `protocols.run` pipeline yields `x402-live` PASS
+8.0, replaying a bare homepage yields `no-agent-native-payment` FAIL 0.0, and the x402
+capability delta (the thing the benchmark exists to measure — rails side earns the payment
+capability, bare side does not) is pinned at the full 8.0 OFFLINE. Full suite 79 → **82**
+(11 files all green; free-tier 8/8 in a fresh `.venv` with eth-account).
+
+**Canonical pair (regression signal) — UNCHANGED, by construction.** In-cloud live
+re-score network-blocked (both canonical domains NOT SCORABLE in-cloud). scoring.py +
+rubric v0.7 + probes/protocols.py all byte-for-byte unchanged this cycle → delta cannot
+move. Last committed live signal: `.org` 46.1 F / `.com` 85.5 B, delta **+39.4** (rubric
+0.5 verify artifact `verify_20260723T040757Z.json`; re-confirmed +39.4 on v0.6 at the
+10:13Z local merge-verify; argued unchanged on v0.7 above).
+
+**Runner health — STILL DOWN (>11h).** Newest committed `verify_*.json` is
+verify_20260723T040757Z (04:07Z, rubric 0.5) — now ~11.2h old, well past the 6h
+threshold; no `:41` artifact since 04:00Z. This fire is at 15:18Z (BEFORE 16:00 UTC) → to
+be flagged in the next post-16:00 UTC Slack daily digest per comms policy, together with
+the queued [LOCAL] v0.7 live re-score.
+
+**Ship.** Direct-to-main (no scoring semantics; additive fetch-layer capability + tests).
+No Slack DM: not a sensitive-class change, not a score change, and before 16:00 UTC — it
+folds into the next digest. No CI configured in the repo.
+
+**Next hypothesis.** (1) [LOCAL] capture the canonical-pair fixtures — one full scoring
+crawl each of drift-flight.org and driftflight.com with `save_fixture`, committed to
+`fixtures/canonical/` — so a cloud cycle can then wire `test_canonical_replay.py` that
+replays both through the CURRENT scoring pipeline and asserts overall 46.1 F / 85.5 B /
+delta +39.4 on rubric v0.7. That is the true in-cloud proxy for the live re-score the
+playbook wants. (2) Once the fixture lands, EVERY future scoring-semantics change gets an
+executable canonical regression guard instead of a prose "by construction" argument.

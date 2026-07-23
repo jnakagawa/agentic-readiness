@@ -1305,3 +1305,88 @@ into a path arg) is a belt-and-suspenders [LOCAL] fix once the runner is restart
 (2) the P1 "nested shopper spawns the full user MCP fleet" cleanliness fix is the next
 METHOD-flavored measurement-hygiene win (direct-to-main plumbing, [LOCAL] panel to
 verify identical checkpoints).
+
+## Cycle 14 — 2026-07-23T14:22Z — COVERAGE (peer-gated PR #3)
+
+**First duty.** No open peer-gated PR at cycle start (`list_pull_requests` open = [];
+PR #2 merged 09:47Z, PR #1 merged 03:00Z). Nothing to review — proceeded to the one
+improvement. (PR #3, below, is THIS cycle's output; it is reviewed+merged NEXT cycle,
+never in the same fire.)
+
+**Track.** COVERAGE (rotation: …Cycle 13 METHOD → Cycle 14 COVERAGE). Focus pointer in
+STATE named COVERAGE for this cycle.
+
+**What.** Gave the ACP/UCP payment rail parity in KIND with the x402 handshake: the
+commerce-protocol partial on `x402_probe` now REQUIRES a validated manifest, not any
+HTTP 200. `asrs.probes.protocols._commerce_protocol_evidence` previously awarded 4.0
+whenever `/.well-known/ucp` or `/.well-known/agentic-commerce` returned a 200 with >10
+chars of ANY body — a catch-all SPA index or soft-404 page served at those paths
+false-positived as a live commerce rail. New `_parse_commerce_manifest` (mirroring
+`_parse_x402`) grants credit only when the body parses as a real UCP service/capability
+manifest (`services`/`capabilities`/`payment`/`endpoints`, or reverse-domain `dev.ucp.*`
+capability ids) or an ACP checkout payload (`line_items`/`payment_provider`/
+`checkout_session*`) — grounded in the published specs (Google "Under the Hood: UCP" +
+ucp.dev; Stripe ACP + OpenAI Agentic Checkout). A validated hit is relabeled
+`commerce-protocol-live` (an ELICITED manifest, parity in kind with `x402-live`); the
+marker tiers `commerce-protocol-only` (doc phrase) and `commerce-protocol-via-platform`
+(Shopify fingerprint) are UNCHANGED. Points ceiling unchanged (still 4.0 partial — the
+rubric reserves full `x402_probe` marks for a live x402 handshake).
+
+**Why.** North-star measurement coverage/flexibility (many payment rails) + rigor. This
+is the standing P1 COVERAGE item ("ACP/UCP checkout-session … parity with the x402 probe,
+currently markers/partial credit only"), scoped to its smallest scientifically meaningful
+slice. Capability lens: a machine can only transact against a commerce protocol if the
+merchant serves a real, parseable manifest; a bare 200 at a well-known path gives an agent
+nothing to act on, so crediting it OVERSTATED readiness. The fix measures the rail's
+actual capability (does it serve a validated manifest?) and removes an inflating false
+positive as the dividend.
+
+**Invariants.** (#2 versioned comparability) partial-credit rule changed → rubric
+**v0.6 → v0.7** with a dated changelog; pillar weights, caps, grade bands, and the
+`x402_probe` ceiling untouched. (#1 $0-only) NO POST/signing added — the parser only GETs
+and JSON-parses well-known paths. Vendor-neutral / capability-worded: keys on protocol
+manifest STRUCTURE only, never a vendor or domain (`ucp`/`acp` are protocol identifiers
+like the existing `x402`/`mcp`). Direction MONOTONE NON-INCREASING on the well-known
+branch — no domain with a genuine manifest loses credit.
+
+**Tests.** `tests/test_protocols.py` (**7/7**, new — no dedicated protocols test existed
+before): validated UCP manifest → `commerce-protocol-live` 4.0; validated ACP payload →
+live 4.0; **bare-200 SPA index → no credit** (the false-positive fix, was 4.0);
+non-commerce JSON / array / empty / non-200 → not a manifest; doc-phrase marker tier
+preserved; canonical `.org` shape → `None` (FAIL 0.0 upstream); reverse-domain `dev.ucp.*`
+ids recognized. Fixtures fake, grounded in the published UCP/ACP shapes. Full suite
+72 → **79/79** (all files green; free-tier 8/8 with eth-account in a fresh `.venv`).
+
+**Canonical pair (regression signal) — UNCHANGED, by COMMITTED EVIDENCE (not just
+construction).** In-cloud live re-score blocked by network policy (external domains
+denied; re-confirmed this fire: both canonical domains return NOT SCORABLE, `x402_probe`
+= site-unreachable, report embeds rubric v0.7 once the branch is checked out). But the
+delta is provably unmoved from committed reports:
+- **driftflight.com** (85.5 B) earns `x402-live` (transactability 87.5%) and returns from
+  `_x402_probe` BEFORE reaching the commerce branch → unaffected.
+- **drift-flight.org** (46.1 F) already scores `x402_probe` = FAIL 0.0 /
+  no-agent-native-payment (`runs/local/battery_trimmed_driftflightorg_20260723T101121Z.json`)
+  — i.e. `_commerce_protocol_evidence` is already `None` for it (no well-known manifest, no
+  phrases, not Shopify), today AND after. Pinned by `test_canonical_org_unchanged`.
+So the static delta **+39.4** cannot move. A LIVE pair re-score on v0.7 is requested at
+merge-time review (peer cycle with network) / queued `[LOCAL]`.
+
+**Runner health — STILL DOWN (>10h).** Newest `verify_*.json` is verify_20260723T040757Z
+(04:07Z, rubric 0.5), now ~10.3h old at this fire — well past the 6h threshold; no :41
+artifact since 04:00Z. This fire is BEFORE 16:00 UTC → to be folded into the next
+post-16:00 Slack daily digest per comms policy.
+
+**Ship.** Peer-gated PR #3 `loop/commerce-manifest-validation` (scoring-semantics: a
+partial-credit rule + rubric version bump — sensitive class). Opened this fire; the NEXT
+cycle's first duty is the fresh-context adversarial review + self-merge. No CI configured
+in the repo (no `.github/workflows`), so no CI gate to drive. Loop bookkeeping
+(LOG/STATE/BACKLOG) direct to main so the next cycle sees the open PR. Slack DM sent
+(sensitive-class PR opened — visibility for veto, not approval).
+https://github.com/jnakagawa/agentic-readiness/pull/3
+
+**Next hypothesis.** (1) Next cycle reviews+merges PR #3 (run the live pair re-score on
+v0.7 if networked — confirm +39.4 holds and reports embed 0.7). (2) The BROADENING
+direction of this rail (catch MORE real ACP/UCP surfaces that currently score 0 — more
+well-known paths, a live ACP `checkout_sessions` elicitation) is score-INCREASING and
+needs live verification on 2+ real domains → a distinct [LOCAL]-verified follow-up, not
+folded here (this cycle was deliberately the non-inflating, offline-verifiable half).

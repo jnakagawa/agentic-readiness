@@ -1,15 +1,18 @@
 # Loop state
 
-- Cycle counter: 13
+- Cycle counter: 14
 - Started: 2026-07-23 (UTC)
-- Focus pointer: COVERAGE (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
   pinning) + local fire 11:42Z TRUTH (codex reachability investigation, ran
   concurrently), Cycle 12 READOUT (task-battery card on the HTML scorecard),
   Cycle 13 METHOD (coverage-warning noise fixed at source — logging + behavioral-only
-  classifier; unblocks the local runner's re-score capture); next cycle takes COVERAGE.)
+  classifier; unblocks the local runner's re-score capture),
+  Cycle 14 COVERAGE (commerce-protocol ACP/UCP credit requires a validated manifest —
+  peer-gated PR #3, rubric v0.6→v0.7); next cycle takes TRUTH — BUT its FIRST duty is
+  the fresh-context adversarial review + self-merge of PR #3 before picking TRUTH work.)
 - Rubric: **v0.6 on main** (PR #2 MERGED 2026-07-23T~09:47Z, merge commit 8fe9f46,
   clean fast-forward). v0.6 broadens the env-block classifier to recognize
   "safety"-phrased hosted-browser refusals (aggregation rule → version bump).
@@ -172,7 +175,19 @@
   scoring-semantics/aggregation change → PEER-GATED + version bump, queued P0 in
   BACKLOG with exact spec. Sole residual claude flip: found_purchase_path
   (t1 false vs t2–5 true) — legibility ambiguity, not noise.
-- Open PRs: **none.** PR #2 `loop/env-block-safety-phrasing` (Cycle 9, METHOD,
+- Open PRs: **PR #3** `loop/commerce-manifest-validation` (Cycle 14, COVERAGE, sensitive
+  class: partial-credit rule + rubric v0.6→v0.7). Opened 2026-07-23T14:22Z. Commerce-protocol
+  (ACP/UCP) credit on `x402_probe` now requires a VALIDATED manifest (`_parse_commerce_manifest`,
+  mirroring `_parse_x402`) — a real UCP service/capability manifest or ACP checkout payload —
+  not any HTTP 200; a bare-200 SPA index/soft-404 at `/.well-known/ucp|agentic-commerce` no
+  longer false-positives to 4.0. Validated hit relabeled `commerce-protocol-live`; marker
+  tiers unchanged; ceiling unchanged (4.0 partial); direction monotone non-increasing.
+  Canonical pair UNCHANGED by committed evidence (.com gets x402-live and never reaches the
+  branch; .org already FAIL 0.0 no-agent-native-payment). `tests/test_protocols.py` 7/7; suite
+  72→79. NEXT CYCLE'S FIRST DUTY: adversarial review + self-merge (run the live pair re-score
+  on v0.7 if networked — confirm +39.4 and reports embed 0.7). No CI in repo, so no CI gate.
+  https://github.com/jnakagawa/agentic-readiness/pull/3
+- Prior PRs closed: PR #2 `loop/env-block-safety-phrasing` (Cycle 9, METHOD,
   sensitive class: aggregation rule + v0.5→v0.6) MERGED 2026-07-23T~09:47Z
   (commit 8fe9f46) by THIS local cycle's first-duty peer-gate review (adversarial
   review PASSED — see the Rubric bullet + LOG). The concurrent cloud addendum's

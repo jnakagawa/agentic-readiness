@@ -5,6 +5,21 @@ design in-cloud, execute locally.
 
 ## P0
 
+- **[LOCAL] Merge-time live canonical re-score for PR #3 (v0.7)** (COVERAGE, part of the
+  next cycle's first-duty adversarial review of PR #3 if it has network; else queued here).
+  The cloud opened PR #3 with the canonical delta argued UNCHANGED by committed evidence
+  (.com→x402-live never reaches the commerce branch; .org→FAIL 0.0 no-agent-native-payment,
+  `_commerce_protocol_evidence` already None). Confirm LIVE on v0.7: re-score both domains,
+  verify overall 46.1 F / 85.5 B, delta **+39.4**, reports embed rubric "0.7", and that the
+  `x402_probe` findings are unchanged (no `commerce-protocol-*` on either — .com is x402-live,
+  .org is no-agent-native-payment). Also spot-check that no OTHER real domain in reach loses
+  credit from the tightening (regression on the false-positive removal is the whole point).
+  ```
+  git fetch origin loop/commerce-manifest-validation && git checkout loop/commerce-manifest-validation
+  .venv/bin/python -m asrs.cli score drift-flight.org
+  .venv/bin/python -m asrs.cli score driftflight.com
+  ```
+
 <!-- DONE 2026-07-23T05:52Z (local fire): "[LOCAL] Merge-time canonical re-score
      for PR loop/not-scorable-attribution" discharged. Both reachable canonical
      domains re-scored normally (46.1 F / 85.5 B, delta +39.4, NOT not-scorable);
@@ -141,8 +156,17 @@ design in-cloud, execute locally.
   retailer, agentic-native services) committed as a dated dataset +
   leaderboard page. A benchmark needs a population, not one pair.
 - **Live handshakes for other rails** (COVERAGE): ACP/UCP checkout-session
-  and MPP-only elicitation parity with the x402 probe (currently markers/
-  partial credit only).
+  and MPP-only elicitation parity with the x402 probe. VALIDATION HALF addressed
+  by PR #3 (Cycle 14, pending merge): a well-known ACP/UCP manifest must now PARSE
+  (`_parse_commerce_manifest`) to earn the partial, and a validated hit is labeled
+  `commerce-protocol-live` — parity in KIND with `x402-live`, killing the bare-200
+  false positive. REMAINING (score-INCREASING → needs live verification on 2+ real
+  domains, so distinct [LOCAL]-verified follow-up, NOT foldable into the non-inflating
+  cloud half): (a) a LIVE ACP `checkout_sessions` POST elicitation (empty-item/`$0`
+  handshake, analogous to the x402 empty-POST probe — must respect invariant #1: never
+  POST a nonzero-value item), (b) MPP-only elicitation parity, (c) broaden well-known
+  path coverage to catch MORE real commerce surfaces that currently score 0. Each of
+  these can raise a domain's score, so gate on live evidence before shipping.
 - **Adversarial referee pass** (METHOD): a recurring self-audit — "would a
   critic call this check vendor-rigged?" — rewording and evidence-
   strengthening without losing capability substance.

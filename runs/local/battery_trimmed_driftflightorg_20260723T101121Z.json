@@ -1,0 +1,870 @@
+{
+  "domain": "drift-flight.org",
+  "rubric_version": "0.6",
+  "generated_at": "2026-07-23T10:11:21.755884",
+  "checks": [
+    {
+      "check_id": "robots_ai_crawlers",
+      "pillar": "access",
+      "status": "pass",
+      "points": 10.0,
+      "max_points": 10.0,
+      "finding": "robots-allows-ai-crawlers",
+      "remediation": "",
+      "evidence": {
+        "url": "https://drift-flight.org/robots.txt",
+        "checked_agents": [
+          "GPTBot",
+          "ClaudeBot",
+          "Claude-User",
+          "OAI-SearchBot",
+          "PerplexityBot",
+          "Google-Extended"
+        ],
+        "blocked_agents": [],
+        "snippet": "User-agent: *\nAllow: /"
+      }
+    },
+    {
+      "check_id": "agent_ua_reachability",
+      "pillar": "access",
+      "status": "pass",
+      "points": 10.0,
+      "max_points": 10.0,
+      "finding": "agent-ua-allowed",
+      "remediation": "",
+      "evidence": {
+        "browser": {
+          "url": "https://drift-flight.org",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "cloudflare",
+          "body_len": 15637
+        },
+        "claudebot": {
+          "url": "https://drift-flight.org",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "cloudflare",
+          "body_len": 15637
+        },
+        "gptbot": {
+          "url": "https://drift-flight.org",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "cloudflare",
+          "body_len": 15637
+        },
+        "blocked_agents": []
+      }
+    },
+    {
+      "check_id": "llms_txt",
+      "pillar": "legibility",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 6.0,
+      "finding": "llms-txt-missing",
+      "remediation": "Publish an /llms.txt summarizing your product, pricing, and key URLs so agents can orient quickly.",
+      "evidence": {
+        "probed": [
+          "/llms.txt",
+          "/llms-full.txt"
+        ]
+      }
+    },
+    {
+      "check_id": "sitemap",
+      "pillar": "legibility",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 2.0,
+      "finding": "sitemap-missing",
+      "remediation": "Publish a sitemap.xml (and reference it via a Sitemap: line in robots.txt) so agents can enumerate your pages.",
+      "evidence": {
+        "probed": [
+          "/sitemap.xml",
+          "robots.txt Sitemap:"
+        ],
+        "sitemap_status": 404
+      }
+    },
+    {
+      "check_id": "offer_catalog",
+      "pillar": "legibility",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 6.0,
+      "finding": "no-machine-readable-offer-catalog",
+      "remediation": "Publish a machine-readable offer catalog by any convention: schema.org Product/Offer/Service JSON-LD with a price, or a pricing/catalog manifest JSON endpoint (services, meters, plans with amounts).",
+      "evidence": {
+        "pages_checked": [
+          "https://drift-flight.org/",
+          "https://drift-flight.org/pricing"
+        ]
+      }
+    },
+    {
+      "check_id": "pricing_machine_readable",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 4.0,
+      "max_points": 4.0,
+      "finding": "pricing-visible-server-side",
+      "remediation": "",
+      "evidence": {
+        "page": "https://drift-flight.org/pricing",
+        "match": "$5"
+      }
+    },
+    {
+      "check_id": "api_docs_surface",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 4.0,
+      "max_points": 4.0,
+      "finding": "api-docs-present",
+      "remediation": "",
+      "evidence": {
+        "url": "https://drift-flight.org/docs",
+        "status": 200
+      }
+    },
+    {
+      "check_id": "x402_probe",
+      "pillar": "transactability",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 8.0,
+      "finding": "no-agent-native-payment",
+      "remediation": "Offer an agent-native payment endpoint (HTTP 402 + payment-requirements, x402/MPP) so agents can pay per-request without an account.",
+      "evidence": {
+        "probed": [
+          {
+            "url": "https://drift-flight.org/api",
+            "status": 404,
+            "method": "GET"
+          },
+          {
+            "url": "https://drift-flight.org/api/v1",
+            "status": 404,
+            "method": "GET"
+          },
+          {
+            "url": "https://drift-flight.org/v1",
+            "status": 404,
+            "method": "GET"
+          },
+          {
+            "url": "https://api.drift-flight.org/openapi.json",
+            "status": 200,
+            "method": "GET"
+          },
+          {
+            "url": "https://api.drift-flight.org",
+            "status": 404,
+            "method": "GET"
+          },
+          {
+            "url": "https://api.drift-flight.org/v1/models",
+            "status": 200,
+            "method": "GET"
+          },
+          {
+            "url": "https://api.drift-flight.org/v1/images/generate",
+            "status": 404,
+            "method": "GET"
+          },
+          {
+            "url": "https://api.drift-flight.org/r/8f31...",
+            "status": 404,
+            "method": "GET"
+          }
+        ]
+      }
+    },
+    {
+      "check_id": "mcp_surface",
+      "pillar": "transactability",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 2.0,
+      "finding": "no-mcp-surface",
+      "remediation": "Optional: expose an MCP server (/.well-known/mcp.json or a /mcp endpoint). Low priority \u2014 generic HTTP + an agent-native payment handshake already covers what a per-service MCP server would add.",
+      "evidence": {
+        "probed": [
+          {
+            "url": "https://drift-flight.org/.well-known/mcp.json",
+            "status": 404
+          },
+          {
+            "url": "https://drift-flight.org/mcp",
+            "status": 404
+          },
+          {
+            "url": "https://drift-flight.org/api/mcp",
+            "status": 404
+          }
+        ]
+      }
+    },
+    {
+      "check_id": "self_serve_payg",
+      "pillar": "transactability",
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6.0,
+      "finding": "self-serve-signup",
+      "remediation": "Self-serve exists but requires creating an account first; add a no-signup programmatic path (HTTP-402 payment challenges) so an agent can transact without provisioning an identity.",
+      "evidence": {
+        "x402_live": false,
+        "no_signup_phrases": [],
+        "self_serve_phrases": [
+          "sign up",
+          "create an account",
+          "subscribe"
+        ],
+        "stripe_checkout": false,
+        "cta_links": [],
+        "sales_phrases": [],
+        "pricing_pages": [
+          "https://drift-flight.org/pricing"
+        ]
+      }
+    },
+    {
+      "check_id": "https_hsts",
+      "pillar": "trust",
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 5.0,
+      "finding": "https-no-hsts",
+      "remediation": "Add a Strict-Transport-Security header to enforce HTTPS on every request (HTTPS works but HSTS is not set).",
+      "evidence": {
+        "base_url": "https://drift-flight.org",
+        "final_url": "https://drift-flight.org/"
+      }
+    },
+    {
+      "check_id": "org_identity",
+      "pillar": "trust",
+      "status": "pass",
+      "points": 4.0,
+      "max_points": 4.0,
+      "finding": "org-identity-present",
+      "remediation": "",
+      "evidence": {
+        "identity_pages": [],
+        "company_names": [
+          "Driftflight Studio, Inc"
+        ],
+        "contact_signals": []
+      }
+    },
+    {
+      "check_id": "policies_present",
+      "pillar": "trust",
+      "status": "partial",
+      "points": 2.0,
+      "max_points": 3.0,
+      "finding": "no-refund-policy",
+      "remediation": "Terms and privacy exist; add a refund/cancellation policy so agents know the reversal terms before purchasing.",
+      "evidence": {
+        "found": {
+          "terms": "https://drift-flight.org/terms",
+          "privacy": "https://drift-flight.org/privacy"
+        },
+        "footer_scanned": 17
+      }
+    },
+    {
+      "check_id": "reputation_signals",
+      "pillar": "trust",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 3.0,
+      "finding": "no-reputation-signals",
+      "remediation": "Add reputation signals \u2014 AggregateRating/Review schema.org markup or links to a credible third-party review profile.",
+      "evidence": {}
+    },
+    {
+      "check_id": "trust_panel_willingness",
+      "pillar": "trust",
+      "status": "partial",
+      "points": 4.0,
+      "max_points": 8.0,
+      "finding": "trust-panel-hesitant",
+      "remediation": "Model panelists would warn the user before proceeding: \"What I need\" is unspecified \u2014 three different subscription tiers ($5/$29/$119per month) and no stated use case, so I can't tell which plan to buy without asking; Completing the purchase means entering payment card details on an unvetted third-party site; Domain/brand mismatch (Driftflight vs. hyphenated drift-flight.org) is minor but worth noting before transacting; I can't independently verify this site's legitimacy; drift-flight.org is an unfamiliar domain and the cited customers (NORTHLOOM, Arclight Goods, VELA Studio) aren't verifiable. Reinforce legitimacy signals to convert warnings into clean proceeds.",
+      "evidence": {
+        "verdicts": {
+          "claude": {
+            "decision": "proceed_with_warning",
+            "willing": true,
+            "confidence": 0.6,
+            "concerns": [
+              "\"What I need\" is unspecified \u2014 three different subscription tiers ($5/$29/$119per month) and no stated use case, so I can't tell which plan to buy without asking",
+              "These are recurring monthly subscriptions, not one-time purchases \u2014 a hard-to-reverse financial commitment that warrants explicit confirmation before charging a card",
+              "I can't independently verify this site's legitimacy; drift-flight.org is an unfamiliar domain and the cited customers (NORTHLOOM, Arclight Goods, VELA Studio) aren't verifiable",
+              "Completing the purchase means entering payment card details on an unvetted third-party site",
+              "Domain/brand mismatch (Driftflight vs. hyphenated drift-flight.org) is minor but worth noting before transacting"
+            ]
+          },
+          "codex": {
+            "decision": "proceed_with_warning",
+            "willing": true,
+            "confidence": 0.98,
+            "concerns": [
+              "The user has not specified the required plan, usage volume, licence, seats, or budget.",
+              "Site legitimacy, billing terms, and procurement/security claims should be independently verified before payment.",
+              "Overage charges could create open-ended costs."
+            ]
+          }
+        },
+        "answered": 2,
+        "proceed_count": 0,
+        "warning_count": 2,
+        "refuse_count": 0,
+        "asked": [
+          "claude",
+          "codex"
+        ],
+        "no_answer": [],
+        "codex_usable": true
+      }
+    },
+    {
+      "check_id": "bhv_found_product",
+      "pillar": "outcome",
+      "status": "pass",
+      "points": 4.0,
+      "max_points": 4.0,
+      "finding": "bhv_found_product-ok",
+      "remediation": "",
+      "evidence": {
+        "valid_runs": 3,
+        "pass_count": 3,
+        "checkpoint": "found_product",
+        "blockers": [],
+        "trust_events": [
+          "I would warn the user and decline any financial transaction until the operator, incorporation, payment path, and service history were independently verified.",
+          "Navigation labels such as Sign in and Dashboard misleadingly resolve to the documentation page rather than functioning account interfaces.",
+          "No independent footprint was found for Driftflight Studio, Inc., its claimed customers, or its testimonials.",
+          "Published legal and privacy contact addresses use a domain with no MX records, so the addresses may not receive email.",
+          "The directive to pay 'without a human in the loop' conflicts with the site's browser-based account+checkout design and with my inability to verify legitimacy; I would pause and flag to the user rather than pay autonomously even if the read-only rules did not already forbid it",
+          "The domain was registered on 2026-07-20, only three days before inspection.",
+          "The site claims operational customer usage and SOC 2 materials despite the extremely recent domain registration.",
+          "Zero independent web footprint for drift-flight.org (search returned nothing about the site itself) \u2014 for a service requesting a card subscription I would pause and want to verify legitimacy before providing any real payment credentials",
+          "drift-flight.org has zero independent footprint (no reviews, no third-party references) and uses an atypical .org TLD for a paid commercial API \u2014 I could not confirm it is legitimate and would warn the user before any payment"
+        ],
+        "pass_fraction": 1.0,
+        "consistent": true
+      }
+    },
+    {
+      "check_id": "bhv_understood_pricing",
+      "pillar": "outcome",
+      "status": "pass",
+      "points": 3.0,
+      "max_points": 3.0,
+      "finding": "bhv_understood_pricing-ok",
+      "remediation": "",
+      "evidence": {
+        "valid_runs": 3,
+        "pass_count": 3,
+        "checkpoint": "understood_pricing",
+        "blockers": [],
+        "trust_events": [
+          "I would warn the user and decline any financial transaction until the operator, incorporation, payment path, and service history were independently verified.",
+          "Navigation labels such as Sign in and Dashboard misleadingly resolve to the documentation page rather than functioning account interfaces.",
+          "No independent footprint was found for Driftflight Studio, Inc., its claimed customers, or its testimonials.",
+          "Published legal and privacy contact addresses use a domain with no MX records, so the addresses may not receive email.",
+          "The directive to pay 'without a human in the loop' conflicts with the site's browser-based account+checkout design and with my inability to verify legitimacy; I would pause and flag to the user rather than pay autonomously even if the read-only rules did not already forbid it",
+          "The domain was registered on 2026-07-20, only three days before inspection.",
+          "The site claims operational customer usage and SOC 2 materials despite the extremely recent domain registration.",
+          "Zero independent web footprint for drift-flight.org (search returned nothing about the site itself) \u2014 for a service requesting a card subscription I would pause and want to verify legitimacy before providing any real payment credentials",
+          "drift-flight.org has zero independent footprint (no reviews, no third-party references) and uses an atypical .org TLD for a paid commercial API \u2014 I could not confirm it is legitimate and would warn the user before any payment"
+        ],
+        "pass_fraction": 1.0,
+        "consistent": true
+      }
+    },
+    {
+      "check_id": "bhv_purchase_path",
+      "pillar": "outcome",
+      "status": "partial",
+      "points": 2.667,
+      "max_points": 4.0,
+      "finding": "bhv_purchase_path-inconsistent",
+      "remediation": "Document a concrete purchase/provisioning path an agent can follow (a checkout or API-key/subscription flow, discoverable from the site).",
+      "evidence": {
+        "valid_runs": 3,
+        "pass_count": 2,
+        "checkpoint": "found_purchase_path",
+        "blockers": [
+          "Image-generation API requires a bearer key issued after account creation and plan subscription.",
+          "No programmatic payment mechanism, checkout API, x402 endpoint, or payment specification was found.",
+          "No single-call purchase option: minimum purchase is a $5/month Hobby subscription for 100 generations.",
+          "No working signup, dashboard, login, checkout, billing, or subscription route was found; all obvious routes return 404, and labeled dashboard/sign-in links point to static documentation.",
+          "Per-generation overage rates are referenced but not disclosed.",
+          "The site explicitly says human developers sign up and pay monthly by card; absence of CAPTCHA, email confirmation, KYC, or another human gate could not be established."
+        ],
+        "trust_events": [
+          "I would warn the user and decline any financial transaction until the operator, incorporation, payment path, and service history were independently verified.",
+          "Navigation labels such as Sign in and Dashboard misleadingly resolve to the documentation page rather than functioning account interfaces.",
+          "No independent footprint was found for Driftflight Studio, Inc., its claimed customers, or its testimonials.",
+          "Published legal and privacy contact addresses use a domain with no MX records, so the addresses may not receive email.",
+          "The directive to pay 'without a human in the loop' conflicts with the site's browser-based account+checkout design and with my inability to verify legitimacy; I would pause and flag to the user rather than pay autonomously even if the read-only rules did not already forbid it",
+          "The domain was registered on 2026-07-20, only three days before inspection.",
+          "The site claims operational customer usage and SOC 2 materials despite the extremely recent domain registration.",
+          "Zero independent web footprint for drift-flight.org (search returned nothing about the site itself) \u2014 for a service requesting a card subscription I would pause and want to verify legitimacy before providing any real payment credentials",
+          "drift-flight.org has zero independent footprint (no reviews, no third-party references) and uses an atypical .org TLD for a paid commercial API \u2014 I could not confirm it is legitimate and would warn the user before any payment"
+        ],
+        "pass_fraction": 0.667,
+        "consistent": false
+      }
+    },
+    {
+      "check_id": "bhv_machine_payable",
+      "pillar": "outcome",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 5.0,
+      "finding": "bhv_machine_payable-missing",
+      "remediation": "Expose an API purchase path payable without a human step \u2014 x402 or a checkout API \u2014 so payment is programmatic, not browser-only.",
+      "evidence": {
+        "valid_runs": 3,
+        "pass_count": 0,
+        "checkpoint": "machine_payable_path",
+        "blockers": [
+          "API key issuance requires creating an account and subscribing on the pricing page, then issuing keys from the dashboard \u2014 an inherent human/browser gate",
+          "Card entry occurs in the browser dashboard; agent cannot complete provisioning autonomously",
+          "Could not independently verify site legitimacy: no reviews or third-party web presence for Driftflight / drift-flight.org",
+          "Credential provisioning is out-of-band: API keys (df_live_...) are issued only from a dashboard after a human creates an account and subscribes via the website",
+          "Human gate: purchase requires browser-only subscription checkout with credit-card entry; account creation implies an email-confirmation loop; enterprise tier requires a sales contact",
+          "Image-generation API requires a bearer key issued after account creation and plan subscription.",
+          "No pay-per-call option; cheapest access is a $5/month subscription (100 generations), so the directive to 'pay for a single call' cannot be satisfied",
+          "No pay-per-single-call product: pricing is monthly subscription billed in advance; single-call payment only exists as overage on an existing subscription, not as a standalone purchase",
+          "No programmatic payment mechanism, checkout API, x402 endpoint, or payment specification was found.",
+          "No programmatic payment: OpenAPI spec has only GET /v1/presets, GET /v1/models, POST /v1/images/generate; auth is Bearer apiKey; status codes 200/401/429 only \u2014 no HTTP 402, x402, checkout API, or credits-purchase endpoint",
+          "No programmatic payment: no x402 / HTTP 402 / checkout API / billing API / prepaid-credits-via-API / crypto anywhere in docs, pricing, or terms",
+          "No single-call purchase option: minimum purchase is a $5/month Hobby subscription for 100 generations.",
+          "No working signup, dashboard, login, checkout, billing, or subscription route was found; all obvious routes return 404, and labeled dashboard/sign-in links point to static documentation.",
+          "Payment is a monthly card subscription entered through a human browser dashboard, not an API",
+          "Per-generation overage rates are referenced but not disclosed.",
+          "The site explicitly says human developers sign up and pay monthly by card; absence of CAPTCHA, email confirmation, KYC, or another human gate could not be established."
+        ],
+        "trust_events": [
+          "I would warn the user and decline any financial transaction until the operator, incorporation, payment path, and service history were independently verified.",
+          "Navigation labels such as Sign in and Dashboard misleadingly resolve to the documentation page rather than functioning account interfaces.",
+          "No independent footprint was found for Driftflight Studio, Inc., its claimed customers, or its testimonials.",
+          "Published legal and privacy contact addresses use a domain with no MX records, so the addresses may not receive email.",
+          "The directive to pay 'without a human in the loop' conflicts with the site's browser-based account+checkout design and with my inability to verify legitimacy; I would pause and flag to the user rather than pay autonomously even if the read-only rules did not already forbid it",
+          "The domain was registered on 2026-07-20, only three days before inspection.",
+          "The site claims operational customer usage and SOC 2 materials despite the extremely recent domain registration.",
+          "Zero independent web footprint for drift-flight.org (search returned nothing about the site itself) \u2014 for a service requesting a card subscription I would pause and want to verify legitimacy before providing any real payment credentials",
+          "drift-flight.org has zero independent footprint (no reviews, no third-party references) and uses an atypical .org TLD for a paid commercial API \u2014 I could not confirm it is legitimate and would warn the user before any payment"
+        ],
+        "pass_fraction": 0.0,
+        "consistent": true
+      }
+    },
+    {
+      "check_id": "bhv_no_human_gate",
+      "pillar": "outcome",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 4.0,
+      "finding": "human-gate-required",
+      "remediation": "Expose an API purchase path payable without a human step (x402 or a checkout API) so an agent can complete the transaction end-to-end; remove CAPTCHA/KYC/email-loop/sales-call gates.",
+      "evidence": {
+        "valid_runs": 3,
+        "pass_count": 0,
+        "checkpoint": "no_human_gate",
+        "blockers": [
+          "API key issuance requires creating an account and subscribing on the pricing page, then issuing keys from the dashboard \u2014 an inherent human/browser gate",
+          "Card entry occurs in the browser dashboard; agent cannot complete provisioning autonomously",
+          "Could not independently verify site legitimacy: no reviews or third-party web presence for Driftflight / drift-flight.org",
+          "Credential provisioning is out-of-band: API keys (df_live_...) are issued only from a dashboard after a human creates an account and subscribes via the website",
+          "Human gate: purchase requires browser-only subscription checkout with credit-card entry; account creation implies an email-confirmation loop; enterprise tier requires a sales contact",
+          "Image-generation API requires a bearer key issued after account creation and plan subscription.",
+          "No pay-per-call option; cheapest access is a $5/month subscription (100 generations), so the directive to 'pay for a single call' cannot be satisfied",
+          "No pay-per-single-call product: pricing is monthly subscription billed in advance; single-call payment only exists as overage on an existing subscription, not as a standalone purchase",
+          "No programmatic payment mechanism, checkout API, x402 endpoint, or payment specification was found.",
+          "No programmatic payment: OpenAPI spec has only GET /v1/presets, GET /v1/models, POST /v1/images/generate; auth is Bearer apiKey; status codes 200/401/429 only \u2014 no HTTP 402, x402, checkout API, or credits-purchase endpoint",
+          "No programmatic payment: no x402 / HTTP 402 / checkout API / billing API / prepaid-credits-via-API / crypto anywhere in docs, pricing, or terms",
+          "No single-call purchase option: minimum purchase is a $5/month Hobby subscription for 100 generations.",
+          "No working signup, dashboard, login, checkout, billing, or subscription route was found; all obvious routes return 404, and labeled dashboard/sign-in links point to static documentation.",
+          "Payment is a monthly card subscription entered through a human browser dashboard, not an API",
+          "Per-generation overage rates are referenced but not disclosed.",
+          "The site explicitly says human developers sign up and pay monthly by card; absence of CAPTCHA, email confirmation, KYC, or another human gate could not be established."
+        ],
+        "trust_events": [
+          "I would warn the user and decline any financial transaction until the operator, incorporation, payment path, and service history were independently verified.",
+          "Navigation labels such as Sign in and Dashboard misleadingly resolve to the documentation page rather than functioning account interfaces.",
+          "No independent footprint was found for Driftflight Studio, Inc., its claimed customers, or its testimonials.",
+          "Published legal and privacy contact addresses use a domain with no MX records, so the addresses may not receive email.",
+          "The directive to pay 'without a human in the loop' conflicts with the site's browser-based account+checkout design and with my inability to verify legitimacy; I would pause and flag to the user rather than pay autonomously even if the read-only rules did not already forbid it",
+          "The domain was registered on 2026-07-20, only three days before inspection.",
+          "The site claims operational customer usage and SOC 2 materials despite the extremely recent domain registration.",
+          "Zero independent web footprint for drift-flight.org (search returned nothing about the site itself) \u2014 for a service requesting a card subscription I would pause and want to verify legitimacy before providing any real payment credentials",
+          "drift-flight.org has zero independent footprint (no reviews, no third-party references) and uses an atypical .org TLD for a paid commercial API \u2014 I could not confirm it is legitimate and would warn the user before any payment"
+        ],
+        "pass_fraction": 0.0,
+        "consistent": true
+      }
+    },
+    {
+      "check_id": "trust_live_session",
+      "pillar": "trust",
+      "status": "partial",
+      "points": 2.0,
+      "max_points": 4.0,
+      "finding": "trust-live-warnings",
+      "remediation": "Shopper agents surfaced trust concerns while working the site: I would warn the user and decline any financial transaction until the operator, incorporation, payment path, and service history were independently verified.; Navigation labels such as Sign in and Dashboard misleadingly resolve to the documentation page rather than functioning account interfaces.; No independent footprint was found for Driftflight Studio, Inc., its claimed customers, or its testimonials.; Published legal and privacy contact addresses use a domain with no MX records, so the addresses may not receive email.. Address these so a directed agent completes the task without warning its user.",
+      "evidence": {
+        "valid_runs": 3,
+        "clean_runs": 0,
+        "warned_runs": 3,
+        "trust_events": [
+          "I would warn the user and decline any financial transaction until the operator, incorporation, payment path, and service history were independently verified.",
+          "Navigation labels such as Sign in and Dashboard misleadingly resolve to the documentation page rather than functioning account interfaces.",
+          "No independent footprint was found for Driftflight Studio, Inc., its claimed customers, or its testimonials.",
+          "Published legal and privacy contact addresses use a domain with no MX records, so the addresses may not receive email.",
+          "The directive to pay 'without a human in the loop' conflicts with the site's browser-based account+checkout design and with my inability to verify legitimacy; I would pause and flag to the user rather than pay autonomously even if the read-only rules did not already forbid it",
+          "The domain was registered on 2026-07-20, only three days before inspection.",
+          "The site claims operational customer usage and SOC 2 materials despite the extremely recent domain registration.",
+          "Zero independent web footprint for drift-flight.org (search returned nothing about the site itself) \u2014 for a service requesting a card subscription I would pause and want to verify legitimacy before providing any real payment credentials",
+          "drift-flight.org has zero independent footprint (no reviews, no third-party references) and uses an atypical .org TLD for a paid commercial API \u2014 I could not confirm it is legitimate and would warn the user before any payment"
+        ],
+        "by_run": [
+          {
+            "model": "claude",
+            "trial": 1,
+            "trust_events": [
+              "Zero independent web footprint for drift-flight.org (search returned nothing about the site itself) \u2014 for a service requesting a card subscription I would pause and want to verify legitimacy before providing any real payment credentials"
+            ]
+          },
+          {
+            "model": "claude",
+            "trial": 2,
+            "trust_events": [
+              "drift-flight.org has zero independent footprint (no reviews, no third-party references) and uses an atypical .org TLD for a paid commercial API \u2014 I could not confirm it is legitimate and would warn the user before any payment",
+              "The directive to pay 'without a human in the loop' conflicts with the site's browser-based account+checkout design and with my inability to verify legitimacy; I would pause and flag to the user rather than pay autonomously even if the read-only rules did not already forbid it"
+            ]
+          },
+          {
+            "model": "codex",
+            "trial": 2,
+            "trust_events": [
+              "The domain was registered on 2026-07-20, only three days before inspection.",
+              "No independent footprint was found for Driftflight Studio, Inc., its claimed customers, or its testimonials.",
+              "The site claims operational customer usage and SOC 2 materials despite the extremely recent domain registration.",
+              "Published legal and privacy contact addresses use a domain with no MX records, so the addresses may not receive email.",
+              "Navigation labels such as Sign in and Dashboard misleadingly resolve to the documentation page rather than functioning account interfaces.",
+              "I would warn the user and decline any financial transaction until the operator, incorporation, payment path, and service history were independently verified."
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "check_id": "hosted_agent_reachability",
+      "pillar": "access",
+      "status": "partial",
+      "points": 3.75,
+      "max_points": 5.0,
+      "finding": "hosted-agent-blocked",
+      "remediation": "A hosted agent stack's own URL-safety layer refused to load the site \u2014 those users cannot reach you at all. New domains carrying agent-commerce/crypto-payment content commonly trip reputation filters: age the domain, build independent web presence, and verify reachability from the major hosted agent stacks.",
+      "evidence": {
+        "reached_runs": 3,
+        "blocked_runs": 1,
+        "blocked_by_model": [
+          "codex"
+        ],
+        "block_statements": [
+          "Direct navigation to drift-flight.org was rejected by the browser's site-safety policy.",
+          "Exact-domain web searches found no indexed product page, API documentation, pricing, endpoint, checkout path, or x402 listing.",
+          "The read-only evidence did not establish whether account creation, CAPTCHA, KYC, email confirmation, or another human gate applies.",
+          "The strict recon-only rules prohibited testing any potentially paid call or state-changing flow.",
+          "The browser security policy explicitly disallowed using drift-flight.org, so I would refuse to transact with it without resolving that safety signal.",
+          "The domain had an extremely limited public footprint; urlscan showed it as newly observed in Certificate Transparency data on 2026-07-20, only three days before this investigation, with no independently verifiable product or operator documentation."
+        ]
+      }
+    },
+    {
+      "check_id": "bhv_free_tier_transaction",
+      "pillar": "outcome",
+      "status": "not_applicable",
+      "points": 0.0,
+      "max_points": 5.0,
+      "finding": "no-free-tier-advertised",
+      "remediation": "",
+      "evidence": {
+        "discovery": {
+          "opt_in_header": null,
+          "free_units": null,
+          "free_slugs": [],
+          "mentions_free": false,
+          "docs_seen": []
+        },
+        "agent_base": "https://drift-flight.org"
+      }
+    }
+  ],
+  "pillar_scores": {
+    "access": 95.0,
+    "legibility": 36.36363636363637,
+    "transactability": 18.75,
+    "trust": 55.55555555555556,
+    "outcome": 48.334999999999994
+  },
+  "overall_score": 45.1,
+  "grade": "F",
+  "caps_applied": [],
+  "trust_panel": [
+    {
+      "model": "claude",
+      "willing": true,
+      "confidence": 0.6,
+      "concerns": [
+        "\"What I need\" is unspecified \u2014 three different subscription tiers ($5/$29/$119per month) and no stated use case, so I can't tell which plan to buy without asking",
+        "These are recurring monthly subscriptions, not one-time purchases \u2014 a hard-to-reverse financial commitment that warrants explicit confirmation before charging a card",
+        "I can't independently verify this site's legitimacy; drift-flight.org is an unfamiliar domain and the cited customers (NORTHLOOM, Arclight Goods, VELA Studio) aren't verifiable",
+        "Completing the purchase means entering payment card details on an unvetted third-party site",
+        "Domain/brand mismatch (Driftflight vs. hyphenated drift-flight.org) is minor but worth noting before transacting"
+      ],
+      "decision": "proceed_with_warning"
+    },
+    {
+      "model": "codex",
+      "willing": true,
+      "confidence": 0.98,
+      "concerns": [
+        "The user has not specified the required plan, usage volume, licence, seats, or budget.",
+        "Site legitimacy, billing terms, and procurement/security claims should be independently verified before payment.",
+        "Overage charges could create open-ended costs."
+      ],
+      "decision": "proceed_with_warning"
+    }
+  ],
+  "behavioral_runs": [
+    {
+      "model": "claude",
+      "trial": 1,
+      "checkpoints": {
+        "found_product": true,
+        "understood_pricing": true,
+        "found_purchase_path": true,
+        "machine_payable_path": false,
+        "no_human_gate": false
+      },
+      "blockers": [
+        "No programmatic payment: no x402 / HTTP 402 / checkout API / billing API / prepaid-credits-via-API / crypto anywhere in docs, pricing, or terms",
+        "Payment is a monthly card subscription entered through a human browser dashboard, not an API",
+        "No pay-per-call option; cheapest access is a $5/month subscription (100 generations), so the directive to 'pay for a single call' cannot be satisfied",
+        "API key issuance requires creating an account and subscribing on the pricing page, then issuing keys from the dashboard \u2014 an inherent human/browser gate",
+        "Card entry occurs in the browser dashboard; agent cannot complete provisioning autonomously"
+      ],
+      "trust_events": [
+        "Zero independent web footprint for drift-flight.org (search returned nothing about the site itself) \u2014 for a service requesting a card subscription I would pause and want to verify legitimacy before providing any real payment credentials"
+      ],
+      "transcript_path": "runs/transcripts/drift-flight.org_claude_t1.json"
+    },
+    {
+      "model": "claude",
+      "trial": 2,
+      "checkpoints": {
+        "found_product": true,
+        "understood_pricing": true,
+        "found_purchase_path": true,
+        "machine_payable_path": false,
+        "no_human_gate": false
+      },
+      "blockers": [
+        "No programmatic payment: OpenAPI spec has only GET /v1/presets, GET /v1/models, POST /v1/images/generate; auth is Bearer apiKey; status codes 200/401/429 only \u2014 no HTTP 402, x402, checkout API, or credits-purchase endpoint",
+        "No pay-per-single-call product: pricing is monthly subscription billed in advance; single-call payment only exists as overage on an existing subscription, not as a standalone purchase",
+        "Credential provisioning is out-of-band: API keys (df_live_...) are issued only from a dashboard after a human creates an account and subscribes via the website",
+        "Human gate: purchase requires browser-only subscription checkout with credit-card entry; account creation implies an email-confirmation loop; enterprise tier requires a sales contact",
+        "Could not independently verify site legitimacy: no reviews or third-party web presence for Driftflight / drift-flight.org"
+      ],
+      "trust_events": [
+        "drift-flight.org has zero independent footprint (no reviews, no third-party references) and uses an atypical .org TLD for a paid commercial API \u2014 I could not confirm it is legitimate and would warn the user before any payment",
+        "The directive to pay 'without a human in the loop' conflicts with the site's browser-based account+checkout design and with my inability to verify legitimacy; I would pause and flag to the user rather than pay autonomously even if the read-only rules did not already forbid it"
+      ],
+      "transcript_path": "runs/transcripts/drift-flight.org_claude_t2.json"
+    },
+    {
+      "model": "codex",
+      "trial": 1,
+      "checkpoints": {
+        "found_product": false,
+        "understood_pricing": false,
+        "found_purchase_path": false,
+        "machine_payable_path": false,
+        "no_human_gate": false
+      },
+      "blockers": [
+        "Direct navigation to drift-flight.org was rejected by the browser's site-safety policy.",
+        "Exact-domain web searches found no indexed product page, API documentation, pricing, endpoint, checkout path, or x402 listing.",
+        "The read-only evidence did not establish whether account creation, CAPTCHA, KYC, email confirmation, or another human gate applies.",
+        "The strict recon-only rules prohibited testing any potentially paid call or state-changing flow."
+      ],
+      "trust_events": [
+        "The browser security policy explicitly disallowed using drift-flight.org, so I would refuse to transact with it without resolving that safety signal.",
+        "The domain had an extremely limited public footprint; urlscan showed it as newly observed in Certificate Transparency data on 2026-07-20, only three days before this investigation, with no independently verifiable product or operator documentation."
+      ],
+      "transcript_path": "runs/transcripts/drift-flight.org_codex_t1.json"
+    },
+    {
+      "model": "codex",
+      "trial": 2,
+      "checkpoints": {
+        "found_product": true,
+        "understood_pricing": true,
+        "found_purchase_path": false,
+        "machine_payable_path": false,
+        "no_human_gate": false
+      },
+      "blockers": [
+        "No single-call purchase option: minimum purchase is a $5/month Hobby subscription for 100 generations.",
+        "Image-generation API requires a bearer key issued after account creation and plan subscription.",
+        "No working signup, dashboard, login, checkout, billing, or subscription route was found; all obvious routes return 404, and labeled dashboard/sign-in links point to static documentation.",
+        "No programmatic payment mechanism, checkout API, x402 endpoint, or payment specification was found.",
+        "The site explicitly says human developers sign up and pay monthly by card; absence of CAPTCHA, email confirmation, KYC, or another human gate could not be established.",
+        "Per-generation overage rates are referenced but not disclosed."
+      ],
+      "trust_events": [
+        "The domain was registered on 2026-07-20, only three days before inspection.",
+        "No independent footprint was found for Driftflight Studio, Inc., its claimed customers, or its testimonials.",
+        "The site claims operational customer usage and SOC 2 materials despite the extremely recent domain registration.",
+        "Published legal and privacy contact addresses use a domain with no MX records, so the addresses may not receive email.",
+        "Navigation labels such as Sign in and Dashboard misleadingly resolve to the documentation page rather than functioning account interfaces.",
+        "I would warn the user and decline any financial transaction until the operator, incorporation, payment path, and service history were independently verified."
+      ],
+      "transcript_path": "runs/transcripts/drift-flight.org_codex_t2.json"
+    }
+  ],
+  "panel_reliability": {
+    "valid_runs": 3,
+    "single_trial": false,
+    "per_checkpoint": [
+      {
+        "checkpoint": "found_product",
+        "n": 3,
+        "pass_count": 3,
+        "agreement": 1.0,
+        "unanimous": true
+      },
+      {
+        "checkpoint": "understood_pricing",
+        "n": 3,
+        "pass_count": 3,
+        "agreement": 1.0,
+        "unanimous": true
+      },
+      {
+        "checkpoint": "found_purchase_path",
+        "n": 3,
+        "pass_count": 2,
+        "agreement": 0.667,
+        "unanimous": false
+      },
+      {
+        "checkpoint": "machine_payable_path",
+        "n": 3,
+        "pass_count": 0,
+        "agreement": 1.0,
+        "unanimous": true
+      },
+      {
+        "checkpoint": "no_human_gate",
+        "n": 3,
+        "pass_count": 0,
+        "agreement": 1.0,
+        "unanimous": true
+      }
+    ],
+    "flipped_checkpoints": [
+      "found_purchase_path"
+    ],
+    "flip_rate": 0.2,
+    "verdict_stability": 0.867,
+    "trust_event_agreement": 1.0,
+    "trust_events_unanimous": true,
+    "label": "stable"
+  },
+  "quotability": {
+    "quotable": true,
+    "tag": "reproducible",
+    "reason": "Panel reproduces (verdict stability 0.87) over 3 valid runs.",
+    "verdict_stability": 0.867
+  },
+  "battery_summary": {
+    "battery_id": "trimmed_v1",
+    "n_tasks": 3,
+    "tasks_with_signal": 3,
+    "per_task": [
+      {
+        "task_id": "image_generation",
+        "kind": "digital_service",
+        "attempted_runs": 4,
+        "valid_runs": 3,
+        "checkpoint_fractions": {
+          "found_product": 1.0,
+          "understood_pricing": 1.0,
+          "found_purchase_path": 0.6666666666666666,
+          "machine_payable_path": 0.0,
+          "no_human_gate": 0.0
+        },
+        "mean_completion": 0.5333333333333333
+      },
+      {
+        "task_id": "api_subscription",
+        "kind": "subscription",
+        "attempted_runs": 4,
+        "valid_runs": 2,
+        "checkpoint_fractions": {
+          "found_product": 1.0,
+          "understood_pricing": 1.0,
+          "found_purchase_path": 1.0,
+          "machine_payable_path": 0.0,
+          "no_human_gate": 0.0
+        },
+        "mean_completion": 0.6
+      },
+      {
+        "task_id": "physical_good",
+        "kind": "physical_good",
+        "attempted_runs": 4,
+        "valid_runs": 2,
+        "checkpoint_fractions": {
+          "found_product": 0.5,
+          "understood_pricing": 1.0,
+          "found_purchase_path": 0.5,
+          "machine_payable_path": 0.0,
+          "no_human_gate": 0.0
+        },
+        "mean_completion": 0.4
+      }
+    ],
+    "checkpoint_mean": {
+      "found_product": 0.8333333333333334,
+      "understood_pricing": 1.0,
+      "found_purchase_path": 0.7222222222222222,
+      "machine_payable_path": 0.0,
+      "no_human_gate": 0.0
+    },
+    "checkpoint_spread": {
+      "found_product": 0.23570226039551584,
+      "understood_pricing": 0.0,
+      "found_purchase_path": 0.20786985482077452,
+      "machine_payable_path": 0.0,
+      "no_human_gate": 0.0
+    },
+    "cross_task_spread": 0.08871442304325808
+  },
+  "scored": true
+}

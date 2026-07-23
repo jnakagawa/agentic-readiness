@@ -19,25 +19,34 @@ design in-cloud, execute locally.
      tests/test_battery_wiring.py 4/4 (synthetic panel). No version bump.
      Only the [LOCAL] behavioral execution (below) and the HTML card (P2) remain. -->
 
-- **[LOCAL] Task battery — first live behavioral run** (COVERAGE, Cycle 6
-  follow-up; UNBLOCKED by the Cycle-6 `--battery` wiring). Produces the first
-  real `cross_task_spread` on a live storefront — is a site's readiness
-  intent-dependent, or does it hold across "buy the primary product" /
-  "subscribe" / "order the physical good"? Run drift-flight.org first (the
-  codex-refusal-free canonical domain) so browser refusals don't confound the
-  per-intent grid. Budget note: 5 intents × claude,codex × 2 trials is up to 20
-  panels — over the "one behavioral pair run" budget; scope to ONE domain per
-  fire and, if needed, a trimmed 3-intent battery first.
-  ```
-  git checkout main && git pull
-  python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
-  .venv/bin/python -m asrs score drift-flight.org --behavioral \
-    --battery batteries/default_v1.yaml --models claude,codex --trials 2
-  # Expect: TASK BATTERY section with per-intent completion + a cross_task_spread
-  # number; EXACTLY ONE free-tier transaction attempt in runs/ for the whole
-  # battery (grep runs/ for the free-tier blob — invariant #1 check). Record
-  # cross_task_spread + which intents produced signal in the LOG.
-  ```
+<!-- DONE 2026-07-23T10:13Z (local cycle, COVERAGE): "[LOCAL] Task battery — first
+     live behavioral run" EXECUTED on drift-flight.org. Budget-trimmed to a new
+     3-archetype battery (batteries/trimmed_v1.yaml: digital_service / subscription
+     / physical_good) × {claude,codex} × 2 trials = 12 panels / 6 codex (under cap).
+     FIRST live cross_task_spread = 0.089 ("consistent across intents"): readiness
+     holds across intents (image_generation 53% / api_subscription 60% /
+     physical_good 40% avg checkpoint completion; 3/3 intents observed). Primary
+     (image_generation) overall 45.1 F (rubric 0.6), panel_reliability 0.87 stable,
+     quotability = CITABLE (reproducible). Invariant #1 verified: EXACTLY ONE
+     free-tier transaction for the whole battery (blob count 7->8). Also live-validated
+     the just-merged v0.6: codex#1's "rejected by the browser's site-safety policy"
+     was correctly excluded from the denominator (4->3 valid) and routed to
+     hosted-agent reachability. NOTE: run predates the Cycle-10 per_kind rollup (its
+     report has no per_kind block; cross_task_spread is unaffected). Evidence
+     (force-added; runs/ is gitignored):
+     runs/local/battery_trimmed_driftflightorg_20260723T101121Z.{json,card.txt}.
+     See LOG. Follow-up candidate below. -->
+- **[LOCAL] Second cross_task_spread datapoint** (COVERAGE, follow-up to the first
+  live battery run): one datapoint is not a population. Re-run the battery on (a)
+  the canonical `.com` (driftflight.com — does the with-rails side hold the same
+  cross-intent consistency, and at what completion level? one pair of spreads makes
+  the delta a STRUCTURAL claim, not a per-task artifact) and/or (b) the full
+  5-intent `batteries/default_v1.yaml` on drift-flight.org for the two dropped
+  archetypes (text_translation, data_enrichment). This ALSO exercises the Cycle-10
+  `per_kind` rollup on live multi-kind data for the first time. Budget: ONE domain
+  per fire, trimmed battery preferred. Reuse the first-run pattern (`--battery <yaml>
+  --models claude,codex --trials 2`); force-add the report to `runs/local/`
+  (`runs/` is gitignored).
 - **Codex reachability investigation** (TRUTH): characterize the hosted-
   browser refusal — determinism, domain features (age, TLD, content
   patterns), retry behavior. Build the control-storefront attribution fix
@@ -62,33 +71,43 @@ design in-cloud, execute locally.
   green, and update test #8 in lockstep. The regex change is scoring-adjacent
   (moves runs between denominators) → peer-gated PR, not direct-to-main.
   NOTE: the NARROW lexical subset — "browser **safety** controls" (same env-block
-  family as "security", not a semantic reputation gate) — SHIPPED in PR #2
-  (Cycle 9, v0.6, awaiting merge). This item retains ONLY the HARDER semantic
-  reputation-gate case (test #8: "flagged as unsafe" / "unable to browse"), which
-  still needs a committed codex transcript before its regex fixture can be added.
-<!-- MERGED 2026-07-23 (PR #2, commit 8fe9f46): "Env-block attribution leak —
-     broaden `_ENV_BLOCK_RE` to cover 'safety' phrasing" is now on main as rubric
-     v0.6. Regex extended so "safety" is a sibling of "security" in both
-     alternations; tests/test_attribution.py +test #9 (fixtures verbatim from
-     runs/local/trial_stability_20260723T064359Z.json). Suite 58/58 on merged main.
-     NOTE: merged externally mid-fire, so the loop's fresh-context peer review was
-     bypassed — hence the post-merge sanity check below. -->
-- **Post-merge adversarial sanity check for v0.6 (PR #2)** (METHOD, peer-gate
-  hygiene). PR #2 was merged externally before the loop's fresh-context review
-  could run. Next cycle (or whenever convenient) should adversarially re-verify
-  from scratch: (a) vendor-neutral wording — keys on phrasing, never a domain;
-  (b) negative direction intact — site-side 403/Cloudflare/429/CAPTCHA/robots and
-  reputation-gate phrasings ("flagged as unsafe"/"unable to browse") still NOT
-  excused (tests #2/#8 green); (c) fixtures trace to committed evidence; (d) static
-  canonical delta unchanged (scoring.py never imports the classifier). If a real
-  defect surfaces, revert on main (invariant #5: revert, never force-push) and
-  reopen as a fresh PR. Cheap — offline, no network.
-- **[LOCAL] Live behavioral re-score of v0.6** (METHOD follow-up; v0.6 is now on
-  main): run one behavioral panel on a domain and confirm a "safety"-blocked codex
-  run routes to `hosted_agent_reachability` (not outcome) LIVE, and that
-  `panel_reliability` on the drift-flight.org trial-count panel reads
-  stable/monotone (N=2 0.80 → 5 0.92) rather than "mixed". Reuse
-  `experiments/trial_count_N.py`. Budget: one panel.
+  family as "security", not a semantic reputation gate) — SHIPPED as PR #2 (Cycle 9,
+  v0.6) and is now MERGED to main (reviewed + merged by the 10:13Z local cycle;
+  live-validated same fire — codex "site-safety policy" routed to reachability).
+  This item retains ONLY the HARDER semantic reputation-gate case (test #8:
+  "flagged as unsafe" / "unable to browse"), which still needs a committed codex
+  transcript before its regex fixture can be added. NEW EVIDENCE (10:13Z battery
+  run): codex#2 REACHED drift-flight.org normally on the same fire codex#1 was
+  safety-blocked — so the `.org` reputation gate is NON-DETERMINISTIC per-trial,
+  not a hard block (updates the open question).
+<!-- MERGED 2026-07-23T~09:47Z (PR #2, commit 8fe9f46): "Env-block attribution leak
+     — broaden `_ENV_BLOCK_RE` to cover 'safety' phrasing" is on main as rubric v0.6.
+     Regex extended so "safety" is a sibling of "security" in both alternations;
+     tests/test_attribution.py +test #9 (fixtures verbatim from
+     runs/local/trial_stability_20260723T064359Z.json). Suite 58/58 at merge (60 after
+     Cycle 10). Reviewed + merged by the 10:13Z local cycle's first-duty peer-gate
+     review (the concurrent cloud addendum's "merged externally / review bypassed"
+     framing is superseded — the review WAS performed; see the DONE note below). -->
+<!-- DONE 2026-07-23T10:13Z (local cycle): "Post-merge adversarial sanity check for
+     v0.6 (PR #2)" DISCHARGED — this WAS the local fire's first-duty peer-gate
+     review (not a bypassed merge). Verified from fresh context: (a) vendor-neutral
+     (keys on phrasing, no domain/vendor); (b) NEGATIVE DIRECTION intact — a LIVE
+     old-vs-new regex A/B confirmed committed site-side blocks
+     (403/CF/429/CAPTCHA/robots/WAF) AND reputation-gate phrasings ("flagged as
+     unsafe"/"unable to browse") stay NOT-excused (tests #2/#8 green); (c) both
+     test #9 fixtures trace VERBATIM to runs/local/trial_stability_20260723T064359Z.json
+     (invariant #3); (d) LIVE static canonical re-score unchanged (46.1/85.5, +39.4;
+     reports now embed rubric "0.6"). One residual → P1 (site-side "…safety/security
+     policy" false-positive is pre-existing/symmetric, not a regression). Verdict:
+     SURVIVED → merged. See LOG. -->
+- **[LOCAL] Confirm the trial-count panel reads stable post-v0.6** (METHOD
+  follow-up; PARTIALLY DISCHARGED 2026-07-23T10:13Z). The "safety"-blocked-codex →
+  `hosted_agent_reachability` routing is now CONFIRMED LIVE (the 10:13Z battery run:
+  codex#1 "site-safety policy" excluded, surfaced as reachability, primary panel
+  read 0.87 stable — not corrupted). REMAINING: re-run `experiments/trial_count_N.py`
+  on the drift-flight.org 5-trial panel and confirm the verdict-stability curve now
+  reads monotone/stable (N=2 0.80 → 5 0.92) end-to-end under merged v0.6, rather
+  than the pre-fix "mixed". Budget: one panel (reuses the ONE-run N-curve harness).
 
 <!-- EXECUTED 2026-07-23T07:50Z (local fire): "[LOCAL] What trial count N
      stabilizes the panel" — ran a live claude+codex×5 panel on drift-flight.org
@@ -123,6 +142,31 @@ design in-cloud, execute locally.
 - **Adversarial referee pass** (METHOD): a recurring self-audit — "would a
   critic call this check vendor-rigged?" — rewording and evidence-
   strengthening without losing capability substance.
+- **Env-block classifier: harden against site-side "safety/security policy"**
+  (METHOD, attribution honesty — residual from the PR #2 adversarial review,
+  2026-07-23T10:13Z). The review confirmed `_ENV_BLOCK_RE` correctly rejects the
+  committed site-side fixtures (403/Cloudflare/429/CAPTCHA/robots/WAF) AND that the
+  "safety" broadening is symmetric with the already-shipped "security" handling —
+  but a HYPOTHETICAL site-side block worded "…blocked by our safety policy" /
+  "…security controls" would still be mis-excused as environment. This is a
+  PRE-EXISTING approximation (not introduced by v0.6): the classifier reads the
+  agent's narration of ITS OWN tool gate, and genuine site blocks narrate as
+  HTTP-status/CF/CAPTCHA (test #2). Hardening idea: require agent-tool
+  self-reference proximity (anchor "browser"/"my browser"/tool name near the block
+  phrase) so "OUR safety policy" (site-side) is distinguished from "the BROWSER's
+  safety policy" (agent-side). Scoring-adjacent → peer-gated + version bump when
+  done. Low urgency (no observed real mis-attribution yet), but it is the honest
+  known limit of the classifier.
+- **Nested shopper spawns the full user MCP fleet** (METHOD/efficiency, observed
+  2026-07-23T10:13Z during the battery run). Each `claude -p` shopper subprocess
+  (`asrs.behavioral.shopper._claude_cmd`) inherits the operator's full MCP config —
+  it was seen spawning trigger.dev, mcp-for-unity, linear, and motherduck servers
+  before browsing, adding ~1 min of startup PER PANEL (12 panels ≈ 12 min of pure
+  MCP boot) and pulling unrelated external connections into the measurement
+  environment. The shopper only needs to browse a storefront; it should run with a
+  minimal/empty MCP config (`--mcp-config` none / `--strict-mcp-config`) for speed
+  AND cleanliness. Behavioral-execution-only (no scoring semantics) →
+  direct-to-main safe; verify a panel still produces identical checkpoints after.
 
 ## P2
 

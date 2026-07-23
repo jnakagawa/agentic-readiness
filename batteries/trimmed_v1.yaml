@@ -1,0 +1,38 @@
+# ASRS task battery — trimmed_v1 (2026-07-23)
+#
+# A budget-bounded 3-intent subset of default_v1, one intent per distinct
+# storefront archetype (digital_service / subscription / physical_good), for
+# the FIRST live cross_task_spread datapoint under the local-cycle budget
+# ("at most one behavioral pair run / ~10 codex invocations"): 3 intents ×
+# {claude,codex} × 2 trials = 12 panels (6 codex, under the cap), vs. 20 for
+# the full five. Breadth-across-archetypes is preserved (the cross-task
+# reliability question is "does readiness hold across the KINDS of job an agent
+# might be sent to do") while within-archetype redundancy is dropped first.
+#
+# Same discipline as default_v1: rubric stays TASK-AGNOSTIC (no check added,
+# removed, or reweighted), intents are worded by CAPABILITY and vendor-neutral,
+# and a task with zero valid runs is "no signal", never a site failure. Intent
+# strings are copied VERBATIM from batteries/default_v1.yaml so the two batteries
+# never diverge on wording.
+
+id: trimmed_v1
+description: >-
+  Three archetype-diverse agent intents (a metered digital service call, an API
+  subscription, and a physical good) — a budget-bounded cross_task_spread probe.
+
+tasks:
+  - id: image_generation
+    kind: digital_service
+    intent: >-
+      generate an image from a text prompt and pay for that single call as an
+      autonomous agent, without a human in the loop
+  - id: api_subscription
+    kind: subscription
+    intent: >-
+      provision ongoing programmatic access to the service's primary API on a
+      metered or subscription plan, as an autonomous agent, without a sales call
+  - id: physical_good
+    kind: physical_good
+    intent: >-
+      purchase one unit of the site's primary physical product and complete
+      payment programmatically as an autonomous agent

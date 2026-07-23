@@ -898,3 +898,112 @@ terminal-first-then-HTML deferral quotability/reliability took. Empirically, onc
 the [LOCAL] first live battery run executes, the per-kind spread should reveal
 whether drift-flight.org's readiness is archetype-dependent (digital_service vs
 physical_good) — a sharper reliability read than the single battery-wide spread.
+
+## Local cycle — 2026-07-23T10:13Z — first duty: review+merge PR #2; then COVERAGE ([LOCAL] battery first live run)
+
+**Reconciliation note (read first).** This local fire ran concurrently with the
+Cycle-9 addendum and Cycle 10 (both above). The addendum labeled PR #2 "merged
+externally / fresh-context peer review bypassed" — that is SUPERSEDED: PR #2 was
+reviewed AND merged BY THIS LOCAL FIRE as its playbook-mandated first duty (the
+local cycle's job is to "adversarially review + merge any open peer-gated PR").
+The full fresh-context adversarial review DID run (below); the "post-merge sanity
+check" P0 the addendum queued is DISCHARGED here, not deferred. The addendum's and
+Cycle 10's append-only LOG entries stay as the historical record; only the living
+STATE/BACKLOG lines were corrected. Cycle 10 (per-kind rollup) landed on main
+mid-fire and was integrated cleanly (additive; my `cross_task_spread` is unaffected).
+
+**First duty — adversarial review + MERGE of peer-gated PR #2**
+(`loop/env-block-safety-phrasing`, Cycle 9, sensitive class: aggregation rule +
+v0.5→v0.6). From fresh context, with the network the authoring cloud cycle lacked:
+- **Invariant #3 (evidence)**: both test #9 fixtures ("blocked by browser safety
+  controls" / "Browser safety controls explicitly blocked the domain") appear
+  VERBATIM in runs/local/trial_stability_20260723T064359Z.json (grep-confirmed;
+  2 "safety" / 8 "security" mentions). Not fabricated.
+- **Full suite 58/58** on the branch (attribution 9/9). [60 on main after Cycle 10.]
+- **Invariant #4 negative direction (LIVE regex A/B)**: ran old (v0.5) vs new
+  (v0.6) `_ENV_BLOCK_RE` side by side. Committed site-side blocks
+  (403/Cloudflare/429/CAPTCHA/robots/WAF) stay `False` on NEW; reputation-gate
+  phrasings ("flagged as unsafe"/"unable to browse") stay `False`; the four
+  committed "safety" fixtures flip `False→True` as intended.
+- **Live static re-score (merge gate)**: drift-flight.org 46.1 F / driftflight.com
+  85.5 B, delta **+39.4** — identical to baseline; reports now embed rubric "0.6".
+  Static delta unchanged, version bump propagates.
+- **Residual (non-blocking, logged BACKLOG P1)**: a hypothetical site-side block
+  worded "…blocked by our safety policy" WOULD be mis-excused — but this is
+  PRE-EXISTING and SYMMETRIC (the identical "…security policy" already matches on
+  v0.5), not a regression from v0.6, and the classifier reads the agent's narration
+  of its OWN tool gate (real site blocks narrate as HTTP/CF/CAPTCHA, pinned by
+  test #2). Future hardening: agent-tool self-reference proximity anchor.
+- **Verdict: SURVIVES → MERGED** (merge commit 8fe9f46; branch deleted). v0.6 on
+  main. Slack DM sent (sensitive-class merge — visibility for veto, not approval).
+
+**What (the [LOCAL] item).** Executed the oldest P0 `[LOCAL]` — "Task battery —
+first live behavioral run" (COVERAGE). Budget-trimmed to a NEW 3-archetype battery
+`batteries/trimmed_v1.yaml` (image_generation / api_subscription / physical_good —
+one intent per distinct storefront kind) × {claude,codex} × 2 trials = 12 panels /
+6 codex (under the ~10 cap; the full 5-intent battery would be 20 panels / 10 codex,
+at the cap). Ran on drift-flight.org.
+
+**Why.** A single shopper task is one draw from a wide distribution. The battery
+turns "did it work once" into the benchmark's first `cross_task_spread` — is a
+site's readiness intent-dependent, or does it hold across the KINDS of job an agent
+might be sent to do? Measurement-flexibility + rigor (both north-star axes), and it
+validates the Cycle-2/6 battery machinery on real panel data for the first time.
+
+**Results.**
+- **First live `cross_task_spread` = 0.089** ("consistent across intents"):
+  drift-flight.org's readiness holds across intents — it is uniformly a
+  subscription-gated, human-checkout storefront regardless of the job. Per-intent
+  avg checkpoint completion: image_generation 53% (3 valid), api_subscription 60%
+  (2 valid), physical_good 40% (2 valid); 3/3 intents observed (none "no signal").
+- Primary task (image_generation): overall **45.1 F** (rubric 0.6),
+  `panel_reliability` **0.87 stable** over 3 valid runs, quotability **CITABLE**
+  (reproducible). (45.1 behavioral vs 46.1 static — outcome pillar drags slightly;
+  no autonomous purchase possible, only human-browser card subscription.)
+- **Invariant #1 verified**: EXACTLY ONE free-tier transaction for the whole
+  3-intent battery (free-tier blob count 7→8; one `free_tier` reference in report).
+- **v0.6 live-validated same fire**: codex#1 reported "rejected by the browser's
+  site-safety policy" — a "safety" phrasing — and the merged v0.6 classifier
+  correctly EXCLUDED it from the outcome denominator (4→3 valid) and surfaced it as
+  a `hosted-agent-blocked` reachability finding, NOT a site FAIL. The exact leak the
+  PR fixed, confirmed on live data.
+- **Codex reachability datapoint**: codex#2 REACHED drift-flight.org normally
+  (found product + price) on the same fire codex#1 was safety-blocked → the
+  reputation gate is NON-DETERMINISTIC per-trial, not a hard per-domain block.
+- The run predates Cycle 10's `per_kind` rollup, so its report has no per_kind block
+  (cross_task_spread unaffected). The queued second datapoint will exercise per_kind
+  on live multi-kind data.
+
+**Evidence.** `batteries/trimmed_v1.yaml` (new, vendor-neutral, capability-worded,
+intent strings verbatim from default_v1); report + terminal card force-added
+(runs/ is gitignored):
+runs/local/battery_trimmed_driftflightorg_20260723T101121Z.{json,card.txt}.
+
+**Canonical pair (regression signal).** UNCHANGED — 46.1 F / 85.5 B, delta
+**+39.4** (the merge-gate live re-score above). v0.6 is behavioral-only; static
+delta cannot move.
+
+**Runner health — DOWN (>6h).** Already flagged by Cycle 10; re-confirmed here:
+newest `verify_*.json` is verify_20260723T040757Z (04:07Z), 6.10h old at 10:13Z.
+Folded into this fire's Slack DM alongside the v0.6-merge notice. I did NOT chase
+the launchd runner — outside the one-item mandate and the repo checkout.
+
+**New observations → BACKLOG.** (1) The nested `claude -p` shopper spawns the
+operator's FULL MCP fleet (trigger.dev/unity/linear/motherduck) before browsing —
+~1 min startup per panel + unrelated external connections in the measurement
+environment; should run minimal/empty MCP config. (2) The env-block "safety/
+security policy" site-side hardening residual from the PR #2 review.
+
+**Ship.** Direct-to-main: the battery execution is COVERAGE `[LOCAL]` work over an
+already-shipped task-agnostic diagnostic (no scoring semantics; `trimmed_v1.yaml`
+is a data file), plus LOG/STATE/BACKLOG + force-added evidence + ledger
+reconciliation. The v0.6 merge (sensitive class) landed via the peer gate as the
+first duty. Slack DM sent (v0.6 merged + first cross_task_spread + runner-down).
+
+**Next hypothesis.** A SECOND `cross_task_spread` datapoint on driftflight.com (the
+with-rails side) is the highest-value COVERAGE follow-up: if the rails side's
+spread is also ~0 but at much higher completion, that is the cleanest statement of
+the capability delta — "consistently ready across every intent" vs "consistently
+gated across every intent" — and it exercises the Cycle-10 per_kind rollup on live
+multi-kind data. One pair of spreads makes readiness intent-STABILITY a structural
+claim, not a per-task artifact.

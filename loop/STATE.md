@@ -6,17 +6,22 @@
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE; next cycle takes TRUTH.)
-- Rubric: **v0.6 on main** (PR #2 MERGED 2026-07-23, merge commit 8fe9f46,
-  clean fast-forward; suite 58/58 green on merged main). v0.6 broadens the
-  env-block classifier to recognize "safety"-phrased hosted-browser refusals
-  (aggregation rule → version bump). CAVEAT: PR #2 was merged EXTERNALLY during
-  the Cycle-9 fire (Jonah's prerogative / repo automation — NOT a loop self-merge),
-  so the playbook's fresh-context adversarial peer-review did NOT run pre-merge.
-  Authoring-time self-review was thorough (regex A/B across all cases, negative
-  direction verified, fixtures traced to committed evidence, 58/58) and merged main
-  is green, so risk is low — but the next cycle should still do a POST-MERGE
-  adversarial sanity check and revert (invariant #5 allows revert, not force-push)
-  if it finds a real defect. Rubric was UNCHANGED by Cycles 2–4/6/8
+- Rubric: **v0.6 on main** (PR #2 MERGED 2026-07-23T~09:47Z, merge commit 8fe9f46,
+  clean fast-forward). v0.6 broadens the env-block classifier to recognize
+  "safety"-phrased hosted-browser refusals (aggregation rule → version bump).
+  RECONCILED (10:13Z local cycle): PR #2 was reviewed + merged by THIS LOCAL FIRE's
+  first-duty peer-gate review — the playbook-mandated fresh-context adversarial
+  review DID run (fixtures traced to committed evidence per invariant #3, full
+  suite 58/58 on the branch, a LIVE old-vs-new regex A/B confirming the negative
+  direction — site-side 403/CF/429/CAPTCHA/robots/WAF + reputation-gate phrasings
+  still NOT excused, and a LIVE static re-score 46.1/85.5 delta +39.4 with reports
+  now embedding "0.6"). The concurrent Cycle-9 cloud addendum (a70923f, fired
+  ~simultaneously at 09:47Z) labeled the merge "external / peer-review bypassed"
+  because it could not observe the local review; that characterization is
+  SUPERSEDED — the review was performed, and the post-merge sanity-check P0 it
+  queued is DISCHARGED (see LOG + BACKLOG). One residual (site-side "…safety/
+  security policy" false-positive surface) is pre-existing/symmetric with the
+  shipped "security" handling, logged P1. Rubric was UNCHANGED by Cycles 2–4/6/8
   (diagnostic/readout layers, not scoring-semantics changes).
 - Task battery: format + aggregation landed Cycle 2; `--battery` CLI wiring +
   additive `Report.battery_summary` + terminal `TASK BATTERY` section landed
@@ -24,9 +29,16 @@
   once per intent, first task = primary scoring run, free-tier once for the whole
   battery; `asrs/report.py _battery_lines`; `tests/test_battery_wiring.py` 4/4,
   synthetic panel). NOT a scoring-semantics change (rubric stays v0.5, scoring.py
-  untouched). REMAINING: [LOCAL] behavioral execution on the canonical pair (now
-  unblocked — queued P0) produces the first live `cross_task_spread`; HTML
-  scorecard battery card is queued P2 READOUT (terminal-first, like quotability).
+  untouched). FIRST LIVE RUN DONE (local cycle 2026-07-23T10:13Z): a trimmed
+  3-archetype battery (`batteries/trimmed_v1.yaml`) × {claude,codex} × 2 trials on
+  drift-flight.org produced the benchmark's first `cross_task_spread` = **0.089**
+  ("consistent across intents"; image_generation 53% / api_subscription 60% /
+  physical_good 40% avg completion, 3/3 observed; primary 45.1 F / panel 0.87
+  stable / quotability CITABLE; invariant #1 held — exactly 1 free-tier tx for the
+  whole battery). Evidence:
+  `runs/local/battery_trimmed_driftflightorg_20260723T101121Z.{json,card.txt}`.
+  REMAINING: a SECOND cross_task_spread datapoint (driftflight.com / the full
+  5-intent battery — P0 [LOCAL]) and the HTML scorecard battery card (P2 READOUT).
   Cycle 10 (COVERAGE) added the PER-ARCHETYPE (`kind`) rollup the module docstring
   + battery YAML had promised but never implemented: `BatteryKindResult` +
   additive `BatterySummary.per_kind` (`asrs/battery.py` `_per_kind_results` /
@@ -77,7 +89,10 @@
   verify_20260723T040757Z.json. Loop-start behavioral baseline was +40.6 (delta
   within static variance). UNCHANGED BY CONSTRUCTION at Cycle 8, Cycle 9 (PR #2
   behavioral-only), and Cycle 10 (per-kind battery rollup is diagnostic-only;
-  scoring.py/static path untouched → static delta cannot move). RUNNER HEALTH
+  scoring.py/static path untouched → static delta cannot move). The 10:13Z local
+  cycle re-confirmed the delta LIVE on the v0.6 PR branch as the merge-gate
+  re-score (46.1 F / 85.5 B, +39.4; reports now embed rubric "0.6", version bump
+  propagates). RUNNER HEALTH
   (Cycle 10, 10:12Z): **RUNNER DOWN.** Newest verify artifact is STILL
   verify_20260723T040714Z (04:07Z) — now **~6h05m old, PAST the 6h threshold**;
   no :41 artifact at 05/06/07/08/09/10. The local `local_verify.py` runner
@@ -105,10 +120,14 @@
   BACKLOG with exact spec. Sole residual claude flip: found_purchase_path
   (t1 false vs t2–5 true) — legibility ambiguity, not noise.
 - Open PRs: **none.** PR #2 `loop/env-block-safety-phrasing` (Cycle 9, METHOD,
-  sensitive class: aggregation rule + v0.5→v0.6) MERGED 2026-07-23 (commit 8fe9f46).
-  Merged externally mid-fire, so the pre-merge peer-gate review was bypassed — the
-  post-merge sanity check + live behavioral re-score are queued (see BACKLOG P0).
-  https://github.com/jnakagawa/agentic-readiness/pull/2
+  sensitive class: aggregation rule + v0.5→v0.6) MERGED 2026-07-23T~09:47Z
+  (commit 8fe9f46) by THIS local cycle's first-duty peer-gate review (adversarial
+  review PASSED — see the Rubric bullet + LOG). The concurrent cloud addendum's
+  "merged externally / review bypassed" note is superseded; the post-merge
+  sanity-check P0 it queued is DISCHARGED. The [LOCAL] live behavioral re-score is
+  now PARTIALLY discharged (this fire's battery run confirmed a "safety"-blocked
+  codex run routes to reachability live); the trial-count-panel-stable confirmation
+  remains queued. https://github.com/jnakagawa/agentic-readiness/pull/2
 - PR #1 (Cycle 1 v0.5 NOT-SCORABLE fix) merged
   2026-07-23T03:00:15Z. Its [LOCAL] merge-time canonical re-score is now
   DISCHARGED: local fire 2026-07-23T05:52Z re-scored both reachable domains
@@ -149,6 +168,14 @@ web host (403 "policy denial"). Confirmed 2026-07-23 via `asrs.fetch` and
   "codex-refusal-free" control. Root cause + attribution control (feed codex
   pre-fetched content when its browser is gated, marked assisted) still needed —
   and is now the blocker on any cross-model panel-stability measurement.
+  UPDATE (10:13Z battery run): on drift-flight.org codex was safety-blocked on
+  trial 1 ("rejected by the browser's site-safety policy") but REACHED normally on
+  trial 2 (found product + price) — so the reputation gate is NON-DETERMINISTIC
+  per-trial, not a hard per-domain block. The merged v0.6 classifier correctly
+  excluded the blocked trial (routed to reachability). Still missing for the harder
+  test-#8 case: a committed FULL transcript of a SEMANTIC reputation-gate refusal
+  ("flagged as unsafe" / "unable to browse", which lack the browser-{security,
+  safety} vocabulary).
 - Panel verdict variance: EMPIRICAL question — what trial count N drives
   `verdict_stability` above ~0.8 on the canonical pair — got its first LIVE
   datapoint (07:50Z fire, drift-flight.org). ANSWER (claude-only, codex fully

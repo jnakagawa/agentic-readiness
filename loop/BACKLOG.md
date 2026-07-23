@@ -11,32 +11,33 @@ design in-cloud, execute locally.
      unreachable-domain control returned NOT SCORABLE (grade N/A, scored=False).
      Evidence: runs/local/merge_verify_pr1_20260723T055000Z.json. See LOG. -->
 
-- **Task battery — wire `--battery` into the pipeline** (COVERAGE, Cycle 2
-  follow-up). Format + loader + cross-task aggregation SHIPPED Cycle 2
-  (`asrs/battery.py`, `batteries/default_v1.yaml`, `tests/test_battery.py`).
-  Remaining, IN-CLOUD-testable with a synthetic panel (monkeypatch
-  `shopper.run_panel`):
-  - Add `--battery <path>` to `score`/`compare`. In behavioral mode: run static
-    probes ONCE, run the shopper panel ONCE PER TASK, run the free-tier
-    transaction probe AT MOST ONCE for the whole battery (it consumes the
-    allowance — invariant #1; do NOT loop it per task). In static mode
-    `--battery` is a no-op (static probes are task-independent) — warn + proceed.
-  - Attach the `BatterySummary` to `Report` as a NEW additive field (like
-    `trust_panel`/`behavioral_runs`) — additive, NOT a scoring-semantics change,
-    NO version bump. Render a reliability row (`cross_task_spread` + per-task
-    completion) in `report.render` and the HTML scorecard — mirror the Cycle-4
-    `panel_reliability` surfacing (additive `Report` field populated in
-    `cli._evaluate`; `scorecard._reliability` card wired into both layouts) as
-    the template for a `BatterySummary` field + card.
-  - `[LOCAL]` behavioral execution once wired:
-    ```
-    git checkout main && git pull
-    python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
-    .venv/bin/python -m asrs score drift-flight.org --behavioral \
-      --battery batteries/default_v1.yaml --models claude,codex --trials 2
-    # Expect: per-task checkpoint grid + a cross_task_spread reliability number;
-    # exactly ONE free-tier transaction attempt in runs/ for the whole battery.
-    ```
+<!-- DONE 2026-07-23T06:15Z (Cycle 6, COVERAGE): "Task battery — wire --battery
+     into the pipeline" in-cloud parts SHIPPED. `--battery` on score/compare;
+     shopper panel once per intent; first task = primary scoring run; free-tier
+     once for the whole battery; static-mode no-op; additive
+     `Report.battery_summary` + terminal `TASK BATTERY` section.
+     tests/test_battery_wiring.py 4/4 (synthetic panel). No version bump.
+     Only the [LOCAL] behavioral execution (below) and the HTML card (P2) remain. -->
+
+- **[LOCAL] Task battery — first live behavioral run** (COVERAGE, Cycle 6
+  follow-up; UNBLOCKED by the Cycle-6 `--battery` wiring). Produces the first
+  real `cross_task_spread` on a live storefront — is a site's readiness
+  intent-dependent, or does it hold across "buy the primary product" /
+  "subscribe" / "order the physical good"? Run drift-flight.org first (the
+  codex-refusal-free canonical domain) so browser refusals don't confound the
+  per-intent grid. Budget note: 5 intents × claude,codex × 2 trials is up to 20
+  panels — over the "one behavioral pair run" budget; scope to ONE domain per
+  fire and, if needed, a trimmed 3-intent battery first.
+  ```
+  git checkout main && git pull
+  python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+  .venv/bin/python -m asrs score drift-flight.org --behavioral \
+    --battery batteries/default_v1.yaml --models claude,codex --trials 2
+  # Expect: TASK BATTERY section with per-intent completion + a cross_task_spread
+  # number; EXACTLY ONE free-tier transaction attempt in runs/ for the whole
+  # battery (grep runs/ for the free-tier blob — invariant #1 check). Record
+  # cross_task_spread + which intents produced signal in the LOG.
+  ```
 - **Codex reachability investigation** (TRUTH): characterize the hosted-
   browser refusal — determinism, domain features (age, TLD, content
   patterns), retry behavior. Build the control-storefront attribution fix
@@ -86,6 +87,12 @@ design in-cloud, execute locally.
   the Cycle-3→4 reliability pattern (`scorecard._reliability` is the template).
   Additive, no version bump; so a leaderboard consumer sees "is this citable?"
   next to the number, not only a terminal a human ran once.
+
+- **Task battery on the HTML card** (READOUT, Cycle 6 follow-up): the
+  `battery_summary` ships terminal + JSON only. Render a per-intent coverage grid
+  + `cross_task_spread` pill on the HTML scorecard (`scorecard._reliability` is
+  the template; both layouts) — same terminal-first-then-HTML deferral quotability
+  took. Additive, no version bump.
 
 - **Evidence links on the card** (READOUT): each check row links to its
   evidence blob; publish evidence alongside the hosted card.

@@ -85,6 +85,13 @@ class Report:
     # consumers see reproducibility, not only the terminal card. Stored as a dict
     # (not the dataclass) to keep this module stdlib-only and dependency-free.
     panel_reliability: dict[str, Any] | None = None
+    # Cross-intent coverage/reliability from a task battery (the
+    # :class:`asrs.battery.BatterySummary` as a plain dict, or None when the run
+    # was not a battery run). ADDITIVE diagnostic — the battery runs the shopper
+    # panel once per intent and reports per-task completion plus the cross-task
+    # spread; it does NOT feed the overall score and bumps NO rubric version. A
+    # single-task or static run leaves this None (nothing multi-intent to report).
+    battery_summary: dict[str, Any] | None = None
     # False when no pillar was observable (every check NA/CANT_TEST/absent):
     # the report carries no score, only findings. Attribution honesty — a site
     # is never punished for what couldn't be observed (rubric invariant).

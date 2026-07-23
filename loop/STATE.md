@@ -1,17 +1,23 @@
 # Loop state
 
-- Cycle counter: 5
+- Cycle counter: 6
 - Started: 2026-07-23 (UTC)
-- Focus pointer: COVERAGE (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
-  Cycle 5 METHOD; next cycle takes COVERAGE.)
+  Cycle 5 METHOD, Cycle 6 COVERAGE; next cycle takes TRUTH.)
 - Rubric: v0.5 on main (PR #1 merged 2026-07-23 via the Cycle-2 peer-gate).
   UNCHANGED by Cycles 2–4 (task battery, panel-reliability, and the reliability
   readout-surfacing are diagnostic layers over already-collected runs, not
   scoring-semantics changes).
-- Task battery: format + aggregation landed on main (Cycle 2). `--battery` CLI
-  wiring + behavioral execution queued [LOCAL] in BACKLOG. Battery attach to the
-  JSON/HTML Report waits on that wiring (no populated source in-cloud yet).
+- Task battery: format + aggregation landed Cycle 2; `--battery` CLI wiring +
+  additive `Report.battery_summary` + terminal `TASK BATTERY` section landed
+  Cycle 6 (`asrs/cli.py` `_run_behavioral(..., battery=)` runs the shopper panel
+  once per intent, first task = primary scoring run, free-tier once for the whole
+  battery; `asrs/report.py _battery_lines`; `tests/test_battery_wiring.py` 4/4,
+  synthetic panel). NOT a scoring-semantics change (rubric stays v0.5, scoring.py
+  untouched). REMAINING: [LOCAL] behavioral execution on the canonical pair (now
+  unblocked — queued P0) produces the first live `cross_task_spread`; HTML
+  scorecard battery card is queued P2 READOUT (terminal-first, like quotability).
 - Panel reliability: `asrs/reliability.py` (within-panel verdict-stability) +
   render section landed Cycle 3. Cycle 4 attached it to the JSON `Report`
   (additive `panel_reliability` field, populated in `cli._evaluate`) and the HTML

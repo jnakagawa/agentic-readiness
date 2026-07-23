@@ -410,3 +410,71 @@ reliability + quotability observation on LIVE data (validating the Cycle 3-5
 metrics for the first time on real panels) — and split the N-sweep across fires.
 Run drift-flight.org (the codex-refusal-free canonical domain) first so codex
 browser refusals don't confound the timing.
+
+## Cycle 6 — 2026-07-23T06:15Z — COVERAGE (direct to main)
+
+**What.** Wired `--battery <path>` into the `score`/`compare` pipeline, closing
+the Cycle-2 follow-up: the battery MATH (`asrs/battery.py`, shipped Cycle 2) now
+has a runner. In behavioral mode with `--battery`, the shopper panel runs ONCE
+PER intent, the first task is the primary scoring run, and the additive
+`Report.battery_summary` (the `BatterySummary` as a plain dict) travels with the
+JSON + a new terminal `TASK BATTERY` section. This is the COVERAGE capability the
+loop's north star names — "many task intents" — made executable end-to-end.
+
+**Why.** A single shopper task is one draw from a wide intent distribution; "buy
+an image" says little about "subscribe to the API" or "order the physical good".
+The battery turns that into per-intent coverage + a cross-task reliability spread
+(0 = readiness holds across intents; high = the best single run overstates it).
+Until this cycle the aggregation existed but nothing fed it — a measurement
+capability with no pipeline. Mirrors the Cycle 3→4 reliability pattern (metric
+first, then attach-to-Report + render).
+
+**How (invariants honoured).**
+- Shopper panel runs once per battery task (each task's `intent`); the FIRST
+  task's runs are the primary scoring run, so `scoring.score()` sees a single
+  real task panel — UNCHANGED semantics, no aggregation over a new run
+  population, no version bump.
+- Free-tier transaction probe fires AT MOST ONCE for the whole battery
+  (invariant #1 — it consumes the target's allowance); the per-task loop never
+  multiplies it. Trust panel runs once (site-trust is task-independent).
+- `--battery` in STATIC mode is a no-op (warn + proceed) — static probes are
+  task-independent. A malformed battery file raises loud (loader `ValueError`),
+  never silently scores fewer intents.
+- Additive-only: `battery_summary` defaults None; scoring.py, the rubric, and
+  every scoring field of types.py are byte-for-byte unchanged.
+
+**Evidence.**
+- New `tests/test_battery_wiring.py` (4/4) — SYNTHETIC panel (monkeypatched
+  shopper/trust/free-tier, no network/CLIs): asserts one panel per intent, first
+  task is primary, free-tier fires exactly once, trust once, summary attached +
+  populated, static-mode no-op, and the `TASK BATTERY` render section appears
+  only when a summary is present.
+- Full suite: test_battery 6/6, test_battery_wiring 4/4, test_quotability 8/8,
+  test_readout 5/5, test_reliability 8/8, test_scoring 7/7. test_free_tier 7/8 —
+  the single miss is `test_zero_value_signs_and_recovers`, which needs
+  `eth-account` (absent in this cloud env; the local venv has it → 8/8).
+  PRE-EXISTING and env-only: reproduced on a clean `git stash` tree; my diff
+  touches none of the free-tier path.
+- `python -m asrs score --help` shows the `--battery` option; `asrs.{cli,report,
+  battery,types}` import clean.
+
+**Canonical pair (regression signal).** Live in-cloud re-score is blocked (no
+outbound network to the canonical domains — see STATE). Regression BY
+CONSTRUCTION: the canonical pair is scored STATICALLY (no `--behavioral`, no
+`--battery`), a path that never enters the battery code — `battery_summary`
+stays None → the render section emits nothing, and scoring.py/rubric are
+untouched. Delta unchanged from the freshest live signal
+(`runs/local/merge_verify_pr1_20260723T055000Z.json`): drift-flight.org **46.1 F**
+vs driftflight.com **85.5 B**, delta **+39.4**. `test_no_battery_single_panel`
+proves the non-battery behavioral path is byte-identical to prior behaviour.
+
+**Ship.** Direct-to-main — additive diagnostic field + CLI flag + render + tests;
+no scoring-semantics change, no version bump (rubric stays v0.5). Per the
+playbook's Cycle-protocol ship rules (additive `Report` field mirroring
+`panel_reliability`).
+
+**Next hypothesis.** The HTML scorecard should carry a battery card too (READOUT
+follow-up, queued P2 — same terminal-first-then-HTML deferral quotability took).
+And the `[LOCAL]` behavioral execution of `--battery` (real per-intent panels on
+the canonical pair) is now UNBLOCKED by this wiring — queued P0 with the exact
+command; it will produce the first real `cross_task_spread` on a live storefront.

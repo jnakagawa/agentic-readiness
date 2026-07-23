@@ -203,8 +203,56 @@ def render(report) -> str:
         lines.extend(_behavioral_table(report.behavioral_runs))
         lines.extend(_reliability_lines(report.behavioral_runs))
 
+    # -- task battery (cross-intent coverage/reliability) --
+    battery = getattr(report, "battery_summary", None)
+    if battery:
+        lines.extend(_battery_lines(battery))
+
     lines.append("")
     return "\n".join(lines)
+
+
+def _battery_lines(summary) -> list[str]:
+    """Cross-intent coverage + reliability from a task battery.
+
+    A single shopper task is one draw from a wide distribution of intents; the
+    battery ran the panel once per intent so a site's readiness can be read per
+    intent and, across them, as a reliability spread. Diagnostic only — it does
+    not feed the score (the header number came from the primary task). The math
+    lives in :mod:`asrs.battery`; this only prints the already-aggregated dict.
+    """
+    n = summary.get("n_tasks", 0)
+    signal = summary.get("tasks_with_signal", 0)
+    out = [
+        "",
+        f"  TASK BATTERY (does readiness hold across intents?  "
+        f"{signal}/{n} intents observed)",
+    ]
+    for tr in summary.get("per_task", []) or []:
+        tid = tr.get("task_id", "?")
+        kind = tr.get("kind", "") or "unspecified"
+        if tr.get("valid_runs", 0) > 0:
+            mc = tr.get("mean_completion")
+            frac = f"{mc:.0%}" if isinstance(mc, (int, float)) else "n/a"
+            detail = f"{frac} avg checkpoint completion ({tr.get('valid_runs')} valid)"
+        else:
+            detail = "no signal (no valid run — not a site failure)"
+        out.append(f"    {tid:<20} [{kind}]  {detail}")
+
+    spread = summary.get("cross_task_spread")
+    if isinstance(spread, (int, float)):
+        # 0 = identical across intents; higher = readiness is intent-dependent
+        # and the best single run overstates it.
+        if spread < 0.15:
+            interp = "consistent across intents"
+        elif spread < 0.35:
+            interp = "somewhat intent-dependent"
+        else:
+            interp = "strongly intent-dependent — single-task scores overstate readiness"
+        out.append(f"    cross-task spread {spread:.2f} — {interp}")
+    else:
+        out.append("    cross-task spread: n/a (fewer than 1 intent observed)")
+    return out
 
 
 def _quotability_lines(report) -> list[str]:

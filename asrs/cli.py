@@ -81,21 +81,32 @@ def _homepage_excerpt(ctx) -> str:
     return report_mod.strip_tags(text)[:_EXCERPT_CHARS]
 
 
-def _run_behavioral(domain, ctx, task, trials, models):
-    """Run the trust panel + shopper panel + free-tier transaction probe.
+def _run_behavioral(domain, ctx, task, trials, models, battery=None):
+    """Run the trust panel + shopper panel(s) + free-tier transaction probe.
 
-    Returns (checks, verdicts, runs). Each panel/probe is guarded; a
-    missing/crashing module contributes nothing.
+    Returns ``(checks, verdicts, runs, battery_summary)``. Each panel/probe is
+    guarded; a missing/crashing module contributes nothing.
+
+    Without ``battery`` this runs the shopper panel ONCE on ``task`` and the
+    fourth return value is None. With a :class:`asrs.battery.Battery`, the
+    shopper panel runs ONCE PER battery task (each task's ``intent`` is the
+    prompt); the FIRST task's runs become the primary scoring run (``runs`` and
+    the ``bhv_*`` outcome checks come from it, exactly as a single-task run
+    would), and every task's runs feed the additive ``battery_summary``. The
+    trust panel and the free-tier transaction probe still run AT MOST ONCE for
+    the whole battery — the free-tier probe consumes the target's allowance
+    (invariant #1) and must never loop per task.
     """
     import importlib
 
     checks: list = []
     verdicts: list = []
     runs: list = []
+    battery_summary = None
 
     excerpt = _homepage_excerpt(ctx)
 
-    # -- trust panel --
+    # -- trust panel (once; site-trust is task-independent) --
     try:
         tp = importlib.import_module("asrs.behavioral.trust_probe")
         verdicts, tp_checks = tp.run_panel(domain, excerpt, models=models)
@@ -107,13 +118,36 @@ def _run_behavioral(domain, ctx, task, trials, models):
             file=sys.stderr,
         )
 
-    # -- shopper panel --
+    # -- shopper panel(s) --
     try:
         sh = importlib.import_module("asrs.behavioral.shopper")
-        runs, sh_checks = sh.run_panel(
-            domain, task, trials=trials, models=models, out_dir="runs"
-        )
-        checks.extend(sh_checks or [])
+        if battery is None:
+            runs, sh_checks = sh.run_panel(
+                domain, task, trials=trials, models=models, out_dir="runs"
+            )
+            checks.extend(sh_checks or [])
+        else:
+            # One panel per intent. The first task is the primary scoring run so
+            # the score is computed from a single real task panel (unchanged
+            # semantics); all tasks feed the battery summary.
+            runs_by_task: dict = {}
+            for i, bt in enumerate(battery.tasks):
+                t_runs, t_checks = sh.run_panel(
+                    domain, bt.intent, trials=trials, models=models, out_dir="runs"
+                )
+                runs_by_task[bt.id] = t_runs
+                if i == 0:
+                    runs = t_runs
+                    checks.extend(t_checks or [])
+            try:
+                bt_mod = importlib.import_module("asrs.battery")
+                battery_summary = bt_mod.aggregate_battery(battery, runs_by_task).to_dict()
+            except Exception as exc:
+                print(
+                    f"[asrs] warning: battery aggregation failed "
+                    f"({type(exc).__name__}: {exc}) — summary omitted",
+                    file=sys.stderr,
+                )
     except Exception as exc:
         print(
             f"[asrs] warning: shopper panel unavailable "
@@ -123,8 +157,8 @@ def _run_behavioral(domain, ctx, task, trials, models):
 
     # -- free-tier transaction probe (rubric v0.4) --
     # Runs AFTER the shopper panel. At most ONE transaction attempt per scoring
-    # run (it consumes the target's free allowance) — ``trials`` never
-    # multiplies it. Guarded like the panels above.
+    # run (it consumes the target's free allowance) — neither ``trials`` nor the
+    # battery's per-task loop multiplies it. Guarded like the panels above.
     try:
         ft = importlib.import_module("asrs.behavioral.free_tier")
         ft_checks = ft.run_probe(ctx, out_dir="runs")
@@ -136,7 +170,30 @@ def _run_behavioral(domain, ctx, task, trials, models):
             file=sys.stderr,
         )
 
-    return checks, verdicts, runs
+    return checks, verdicts, runs, battery_summary
+
+
+def _load_battery_arg(args):
+    """Load the ``--battery`` file into a Battery, or return None.
+
+    Returns None when no battery was requested. In static mode a battery is a
+    no-op — the static probes are task-independent — so we warn and proceed
+    rather than fail. A structurally invalid battery file raises loud (the
+    loader's ValueError) so a typo can't silently score fewer intents.
+    """
+    path = getattr(args, "battery", None)
+    if not path:
+        return None
+    if not args.behavioral:
+        print(
+            "[asrs] warning: --battery has no effect without --behavioral "
+            "(static probes are task-independent) — ignored",
+            file=sys.stderr,
+        )
+        return None
+    from .battery import load_battery
+
+    return load_battery(path)
 
 
 def _evaluate(domain, args, rubric):
@@ -149,15 +206,25 @@ def _evaluate(domain, args, rubric):
 
     verdicts: list = []
     runs: list = []
+    battery_summary = None
+    battery = _load_battery_arg(args)  # None (+ warn) in static mode
     if args.behavioral:
-        bhv_checks, verdicts, runs = _run_behavioral(
-            domain, ctx, args.task, args.trials, _parse_models(args.models)
+        bhv_checks, verdicts, runs, battery_summary = _run_behavioral(
+            domain, ctx, args.task, args.trials, _parse_models(args.models),
+            battery=battery,
         )
         checks.extend(bhv_checks)
 
     report = scoring.score(
         checks, rubric, domain, trust_panel=verdicts, behavioral_runs=runs
     )
+
+    # Attach the cross-intent battery summary additively (like panel_reliability
+    # below): the score is already computed from the primary task; this only
+    # annotates the report so JSON/HTML consumers see per-intent coverage and the
+    # cross-task reliability spread. None on a single-task or static run.
+    if battery_summary is not None:
+        report.battery_summary = battery_summary
 
     # Attach within-panel reproducibility as an ADDITIVE diagnostic so JSON /
     # HTML consumers carry it, not just the terminal card. Computed from the same
@@ -245,6 +312,14 @@ def _add_common_options(p) -> None:
     p.add_argument(
         "--models", default="claude,codex",
         help="comma-separated model panel (default: claude,codex)",
+    )
+    p.add_argument(
+        "--battery", default=None,
+        help="path to a task-battery YAML (behavioral mode): run the shopper "
+        "panel once per intent and attach a cross-intent coverage/reliability "
+        "summary. The score still comes from the first task; the free-tier "
+        "transaction probe still fires at most once for the whole battery. "
+        "No effect in static mode.",
     )
     p.add_argument(
         "--rubric", default=None,

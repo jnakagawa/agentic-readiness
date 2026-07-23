@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 17
+- Cycle counter: 18
 - Started: 2026-07-23 (UTC)
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -40,6 +40,20 @@
   COVERAGE. NOTE: `test_free_tier.py` needs optional `eth-account` (fresh cloud checkout lacks
   it → 7/8; `pip install eth-account` → 8/8) — a missing-dependency ENV gap (invariant #4),
   pre-existing and unrelated to this change.
+  Cycle 18 COVERAGE (storefront-TYPE specialization signal for the task battery):
+  `BatterySummary.between_kind_spread` (`asrs/battery.py` `_between_kind_spread`) = population
+  stddev of the per-kind `mean_completion` across signal archetypes. Decomposes the battery-wide
+  `cross_task_spread` into WITHIN-type noise (existing `per_kind[].cross_task_spread` = reliability)
+  vs BETWEEN-type specialization (this = "does readiness depend on which storefront TYPE"), the
+  north-star many-storefront-types axis. None when <2 archetypes have signal (between-type variance
+  is unobservable with one type observed → honest None, not a measured-uniform 0.0). Terminal line
+  `between-archetype spread X.XX — <verdict>` shown only when ≥2 archetypes have signal; JSON via
+  asdict; HTML card pill queued P2. Diagnostic-only (battery feeds no score) → rubric stays v0.7,
+  scoring.py/rubric byte-for-byte untouched, canonical delta unchanged by construction AND measured
+  (in-cloud replay guard 46.1 F / 85.5 B / +39.4, 0 replay-miss); direct-to-main. `test_battery.py`
+  8/8 → 9/9; suite 88 → 89. No Slack (diagnostic, moves no score, digest already sent Cycle 16, not
+  a new digest window at 18:18Z). First duty: no open peer-gated PR (verified []). Next cycle takes
+  TRUTH.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity
@@ -234,6 +248,9 @@
   manual local fire.
   RE-CONFIRMED DOWN Cycle 17 (17:15Z): newest STILL verify_20260723T040757Z, now ~13.1h old.
   Already flagged in Cycle 16's digest; folds into the next post-16:00-UTC digest if still down.
+  RE-CONFIRMED DOWN Cycle 18 (18:18Z): newest STILL verify_20260723T040757Z, now ~14.2h old.
+  Already flagged (Cycle 16 digest); the Cycle-17 replay guard means the in-cloud canonical signal
+  no longer depends on it. Folds into the next post-16:00-UTC digest if still down at that fire.
   NOTE: the Cycle-17 canonical replay guard (`tests/test_canonical_replay.py`) now runs the
   canonical re-score OFFLINE in-cloud every cycle from the committed fixtures — the in-cloud
   regression signal no longer depends on the launchd runner at all; the runner remains only for

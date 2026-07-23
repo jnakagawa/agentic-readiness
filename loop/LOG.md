@@ -1783,3 +1783,85 @@ METHOD follow-up (future): extend the same fixture-replay pattern to a THIRD con
 baseline too, not just the canonical pair — but capture is [LOCAL]. For COVERAGE, the live
 ACP `checkout_sessions` $0 elicitation parity (P1) remains the highest-leverage rail item,
 though its score-increasing half needs [LOCAL] live verification.
+
+## Cycle 18 — 2026-07-23T18:18Z — COVERAGE (direct to main)
+
+**What.** Storefront-TYPE specialization signal for the task battery. New
+`BatterySummary.between_kind_spread` (`asrs/battery.py` `_between_kind_spread`):
+the population stddev of the per-kind `mean_completion` values across archetypes
+with signal. It decomposes the battery-wide `cross_task_spread` — which conflated
+two different variance sources — into its two named halves: WITHIN-type noise
+(the existing `per_kind[].cross_task_spread`, "does the site vary across intents
+of the SAME kind" = reliability) and BETWEEN-type specialization (this, "does
+readiness DEPEND on which storefront type the agent was sent to buy"). Terminal
+readout gains a `between-archetype spread X.XX — <verdict>` line (uniform
+generalist <0.15 / somewhat type-dependent <0.35 / type-specialized) rendered
+only when ≥2 archetypes produced signal; JSON carries it via `asdict`.
+
+**Why (north star).** The benchmark's storefront-type flexibility axis. A site
+that is uniformly strong on digital metered services and uniformly weak on
+physical goods shows a HIGH battery-wide spread that reads as "unreliable" when
+it is actually "type-specialized" — a real, citable property an overall number
+hides. Separating between-type from within-type variance lets a reader ask "is
+this a generalist or a specialist storefront?", which is exactly the question a
+population of many storefront types will need answered. Renders correctly on a
+synthetic 3-archetype site (digital 100% / data_job 40% / physical 0%):
+within-kind spreads all 0.00, between-archetype spread **0.41** → "type-
+specialized", vs the battery-wide 0.47 that alone couldn't attribute the cause.
+
+**Attribution honesty (invariant #4).** `between_kind_spread` is None when fewer
+than 2 archetypes have signal — with a single storefront type observed,
+between-type variance is not a measurable property, so None (unobservable) rather
+than a 0.0 that would read as "measured uniform across types". Deliberately
+different from the within-checkpoint convention (single task → defined 0.0),
+documented in code and pinned by test.
+
+**Invariant discipline.** Diagnostic-only: the battery adds no check/weight/cap
+and never feeds the overall score (it aggregates already-collected `BehavioralRun`
+records). `asrs/scoring.py` + `rubric/` byte-for-byte untouched → rubric stays
+**v0.7**, NO version bump, canonical delta unchanged BY CONSTRUCTION. Direct to
+main (new diagnostic field + math + report line + tests; no scoring semantics, no
+payment/signing code). Pure stdlib aggregation, unit-tested with synthetic runs —
+the established `test_battery.py` pattern; invariant #3's "new PROBES verified
+live on 2 real domains" governs fetching probes, not a pure aggregation (same as
+`cross_task_spread`/`per_kind` shipped Cycles 2/10 without live domains).
+
+**Scope.** `asrs/battery.py` (field + `_between_kind_spread` helper + wire into
+`aggregate_battery`), `asrs/report.py` (`_battery_lines` +1 conditional line),
+`tests/test_battery.py` (+1 test, +assertions in 2 existing tests).
+
+**Evidence.**
+- `python tests/test_battery.py` 8/8 → **9/9** (`test_between_kind_spread` pins:
+  per-kind 1.0/0.4/0.0 → pstdev 0.411; single signal archetype → None; no signal
+  → None; survives `to_dict()`).
+- Full suite **88 → 89** (12 files, 0 failing). `test_free_tier.py` 8/8 with
+  `eth-account` installed (the pre-existing optional-dependency env gap; 7/8 in a
+  bare checkout — invariant #4, not a code regression).
+- Terminal render verified: the new line appears after `by archetype:` and before
+  `cross-task spread`, suppressed when <2 archetypes have signal.
+
+**Canonical pair (regression signal).** In-cloud replay guard
+(`tests/test_canonical_replay.py`, the Cycle-17 executable re-score):
+drift-flight.org **46.1 F** / driftflight.com **85.5 B**, delta **+39.4** on
+rubric v0.7, 0 replay-miss on either domain — UNCHANGED, measured (not just
+argued): the scoring path is byte-for-byte untouched so the delta cannot move,
+and the guard confirms it.
+
+**Ship.** Direct-to-main. No Slack DM — diagnostic-only, moves no score, adds no
+capability check; the daily digest was already sent by Cycle 16 (first cycle
+after 16:00 UTC) and this fire is not a new digest window.
+
+**Runner health.** Newest verify artifact still `verify_20260723T040757Z` (04:07Z,
+rubric 0.5) — now ~13h+ old, STILL DOWN; already flagged in Cycle 16's digest,
+and the Cycle-17 replay guard means the in-cloud canonical signal no longer
+depends on it. Folds into the next post-16:00-UTC digest if still down.
+
+**Next hypothesis.** TRUTH next cycle (rotation METHOD→COVERAGE→**TRUTH**→READOUT).
+The between-archetype spread is a construct that wants live multi-kind data to
+mean anything — its first real number needs the [LOCAL] second cross_task_spread
+datapoint (P0), which will be the first live report to carry per_kind AND now
+between_kind_spread. A cloud-doable TRUTH follow-up: add a THIRD control-domain
+replay fixture case (example.com, 22.5 F) to the canonical guard once the fixture
+is captured [LOCAL], widening the offline regression signal to a low-capability
+baseline. The HTML battery card should surface between_kind_spread as a pill —
+queued P2 (same terminal→JSON→HTML deferral per_kind took Cycle 10→12).

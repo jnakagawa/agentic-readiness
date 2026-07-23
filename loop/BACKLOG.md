@@ -98,8 +98,10 @@ design in-cloud, execute locally.
   the delta a STRUCTURAL claim, not a per-task artifact) and/or (b) the full
   5-intent `batteries/default_v1.yaml` on drift-flight.org for the two dropped
   archetypes (text_translation, data_enrichment). This ALSO exercises the Cycle-10
-  `per_kind` rollup on live multi-kind data for the first time. Budget: ONE domain
-  per fire, trimmed battery preferred. Reuse the first-run pattern (`--battery <yaml>
+  `per_kind` rollup AND the Cycle-18 `between_kind_spread` (storefront-type
+  specialization signal) on live multi-kind data for the first time — a multi-kind
+  live report is the ONLY way either construct earns a real number. Budget: ONE
+  domain per fire, trimmed battery preferred. Reuse the first-run pattern (`--battery <yaml>
   --models claude,codex --trials 2`); force-add the report to `runs/local/`
   (`runs/` is gitignored).
 <!-- DONE 2026-07-23T11:42Z (local fire, TRUTH): "Codex reachability investigation —
@@ -281,6 +283,14 @@ design in-cloud, execute locally.
   inflates a bare site), not just the +39.4 pair. Capture is [LOCAL] (live crawl); the test
   wiring is cloud-doable once the fixture lands.
 
+- **HTML battery card: between-archetype spread pill** (READOUT, Cycle-18 follow-up):
+  `between_kind_spread` (storefront-type specialization) ships terminal + JSON but the HTML
+  `scorecard._battery` card doesn't render it yet. Add a small pill next to the cross-task-spread
+  verdict — "generalist" (<0.15) / "somewhat type-dependent" (<0.35) / "type-specialized" —
+  shown only when the field is non-None (≥2 signal archetypes). Same terminal→JSON→HTML deferral
+  `per_kind` took (Cycle 10 → 12). Additive/display-only, no scoring semantics; direct-to-main.
+  Best eyeballed together with the [LOCAL] second cross_task_spread datapoint (first live report
+  to carry the field).
 - **Evidence links on the card** (READOUT): each check row links to its
   evidence blob; publish evidence alongside the hosted card.
 - **Score-over-time trend page** (READOUT): per-domain history from the

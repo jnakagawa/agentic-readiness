@@ -2179,3 +2179,65 @@ verification is queued [LOCAL] (P1, under the free-tier generalization item).
 ## Local verification — 20260723T224105Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260723T224105Z.json
+
+## Cycle 23 — 2026-07-23T23:14Z — TRUTH
+
+**What/why.** The canonical delta is now defended as EARNED, not an attribution
+artifact — invariant #4 (attribution honesty) made executable ON the +39.4.
+`tests/test_canonical_replay.py` +1 test (`test_canonical_delta_is_earned_dominance`,
+7→8). A delta can be inflated two dishonest ways that leave the headline numbers
+looking fine: (i) DIFFERENTIAL OBSERVABILITY — the two sides scored over different
+check sets, or (ii) MIS-ATTRIBUTED ABSENCE — a genuinely-missing capability
+recorded as CANT_TEST (absence-of-evidence, EXCLUDED from the denominator) on one
+side but FAIL (evidence-of-absence, scored 0 IN the denominator) on the other.
+The new guard replays both committed fixtures through the REAL
+`from_fixture → _run_probes → scoring.score` path and pins three facts from the
+recorded evidence: (a) FULL OBSERVABILITY — no static check on EITHER canonical
+domain is CANT_TEST or NA (clean HTTP-200 crawls), so every recorded FAIL is
+genuine evidence-of-absence in the denominator, nothing excused as un-observable;
+(b) LIKE-FOR-LIKE DENOMINATOR — both domains scored over the IDENTICAL check_id
+set, so +39.4 compares the same checks on both sides; (c) CHECK-BY-CHECK
+DOMINANCE, NO INVERSION — at every matched check the with-rails capability rank
+(PASS>PARTIAL>FAIL) is ≥ the no-rails rank, strictly greater at ≥1 check. Result:
+the with-rails side is a capability SUPERSET at matched, fully-observed checks
+(strict wins: llms_txt, offer_catalog, self_serve_payg, x402_probe) — the delta is
+not a single pillar masking a regression, not a rounding tie, not a scoring-
+denominator asymmetry. Worded by capability throughout ("was this observed, which
+side ranks higher?"), never by vendor. Complements the Cycle-19 capability-payment
+guard (one pillar) and the Cycle-21 relabel-invariance guard (identity-neutrality)
+with a THIRD, distinct axis: attribution-honesty of the delta.
+
+**Non-vacuous (negative controls).** Two committed mis-attributions were verified
+to trip the guard: (1) re-labeling the no-rails `x402_probe` FAIL as CANT_TEST
+(excusing the missing payment as unobserved) is CAUGHT by (a); (2) inverting one
+check so the no-rails side outranks the with-rails side is CAUGHT by (c). Both
+slip the aggregate-only number guards but fail here.
+
+**Evidence.** `tests/test_canonical_replay.py` (8/8). Full suite 95 → 96, all
+green (`eth-account` installed for free_tier 9/9 — pre-existing env gap,
+invariant #4). Tests-only: `git diff --stat` = 1 file, +94 lines;
+scoring.py/rubric/probes/fetch.py byte-for-byte untouched.
+
+**Canonical pair.** Re-measured by the replay guard itself this fire, rubric
+v0.7: drift-flight.org **46.1 F** / driftflight.com **85.5 B**, delta **+39.4**,
+0 replay-miss on either — UNCHANGED by construction (no scoring path touched) AND
+executed. Corroborated by the local runner's newest artifact
+`runs/local/verify_20260723T224105Z.json` (22:41Z) = 46.1 F / 85.5 B / +39.4.
+
+**Infra health (self-healing check, ran first).** Runner HEALTHY: newest artifact
+`verify_20260723T224105Z.json` (22:41Z) is ~31 min old at fire time, well under
+the 6h threshold — heartbeating since the Cycle-19 recovery. No repair needed. No
+open peer-gated PR (`list_pull_requests state=open` → []) → first-duty review had
+nothing pending. Bench UP (96/96), bookkeeping consistent with git history.
+
+**Ship.** Direct-to-main. No Slack DM — tests-only, moves no score, not a
+sensitive class; the daily digest was already sent Cycle 16 and this fire
+(23:14Z) is not a new digest window.
+
+**Next hypothesis.** READOUT next cycle (rotation METHOD→COVERAGE→TRUTH→READOUT;
+this was TRUTH → next is **READOUT**). Cloud-doable READOUT candidates: anchor-link
+the card's cap chips to the methodology cap rows (Cycle-16 follow-up, P2); or
+surface the earned-dominance / observability property on the methodology page's
+FAIL-vs-CANT_TEST section as a worked canonical example. The [LOCAL] items
+(third-control-domain fixture, second cross_task_spread datapoint, query-param
+live wiring) remain queued for a networked fire.

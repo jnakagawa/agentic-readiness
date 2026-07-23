@@ -352,6 +352,14 @@ design in-cloud, execute locally.
   datapoint runs (P0), pass its report through `scorecard.build_scorecard` and confirm the between-pill
   + interpretation line read correctly on real multi-kind data. No new code — a render + visual check
   (fold into the existing "[LOCAL] Eyeball the battery card" item above).
+- **Surface the earned-dominance / observability property in the readout** (READOUT,
+  Cycle-23 follow-up): Cycle 23 made "the +39.4 is EARNED, not an attribution artifact"
+  an executable guard (`test_canonical_delta_is_earned_dominance` — full observability +
+  like-for-like denominator + check-by-check dominance). The methodology page's
+  FAIL-vs-CANT_TEST section explains the semantics abstractly; add a worked canonical
+  example there (or a small card annotation) showing the no-rails deficit is genuine
+  evidence-of-absence at matched, fully-observed checks, not un-observability. Display-only,
+  no scoring semantics; direct-to-main.
 - **Evidence links on the card** (READOUT): each check row links to its
   evidence blob; publish evidence alongside the hosted card.
 - **Score-over-time trend page** (READOUT): per-domain history from the

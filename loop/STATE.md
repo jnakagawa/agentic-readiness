@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 22
+- Cycle counter: 23
 - Started: 2026-07-23 (UTC)
 - Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
@@ -120,6 +120,25 @@
   (newest verify_20260723T214103Z, 21:41Z, ~30 min old). The live wiring (fold opt_in_query into
   `advertised` + the free-mode call) + 2-domain verification is queued [LOCAL] (score-increasing,
   invariant #3); path-based opt-in is the next COVERAGE increment. Next cycle takes TRUTH.
+  Cycle 23 TRUTH (canonical delta defended as EARNED — attribution honesty made executable on +39.4):
+  `tests/test_canonical_replay.py` +1 test (`test_canonical_delta_is_earned_dominance`, 7→8). Replays
+  both committed fixtures through the REAL `from_fixture → _run_probes → scoring.score` path and pins
+  three facts from recorded evidence that the aggregate-only guards can't: (a) FULL OBSERVABILITY — no
+  static check on either canonical domain is CANT_TEST/NA (clean HTTP-200 crawls) → every FAIL is
+  evidence-of-absence scored 0 in the denominator, nothing excused as un-observable; (b) LIKE-FOR-LIKE
+  DENOMINATOR — identical scored check_id set on both sides → +39.4 compares the same checks;
+  (c) CHECK-BY-CHECK DOMINANCE, NO INVERSION — with-rails capability rank (PASS>PARTIAL>FAIL) ≥ no-rails
+  at every matched check, strictly greater at ≥1 (strict wins: llms_txt, offer_catalog, self_serve_payg,
+  x402_probe). Proves the delta is a capability SUPERSET at matched/observed checks, not differential
+  observability, a masked inversion, or a rounding tie — a THIRD distinct axis complementing Cycle-19
+  (capability-payment, one pillar) + Cycle-21 (relabel-invariance, identity). NON-VACUOUS: mis-attributing
+  the no-rails `x402_probe` FAIL→CANT_TEST is caught by (a); inverting one check is caught by (c) — both
+  slip the number-only guards. Worded by capability, never by vendor. Tests-only:
+  scoring.py/rubric/probes/fetch.py byte-for-byte untouched → rubric stays v0.7, canonical delta
+  unchanged by construction AND re-measured (replay guard 46.1 F / 85.5 B / +39.4, 0 replay-miss).
+  Direct-to-main. Suite 95 → 96. No Slack (tests-only, moves no score, digest already sent Cycle 16, not
+  a new digest window at 23:14Z). First duty: no open peer-gated PR (verified []); infra health check ran
+  first — runner HEALTHY (newest verify_20260723T224105Z, 22:41Z, ~31 min old). Next cycle takes READOUT.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity

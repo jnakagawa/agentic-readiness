@@ -361,6 +361,99 @@ def test_relabeled_delta_still_39_4() -> None:
     )
 
 
+# ---------------------------------------------------------------------------
+# 5. The delta is EARNED, not an attribution artifact — the executable form of
+#    invariant #4 (attribution honesty) applied to the canonical delta. Guards
+#    1–4 pin the numbers, the payment capability, and vendor-neutrality. This
+#    guard pins the TRUTH-track calibration question ("does the score reflect a
+#    real capability gap, or an accounting one?"): a delta can be inflated two
+#    dishonest ways that leave the headline numbers looking fine —
+#      (i) DIFFERENTIAL OBSERVABILITY — the no-rails side is scored against a
+#          DIFFERENT (smaller) set of checks than the with-rails side, so the
+#          two overalls are not like-for-like; or
+#      (ii) MIS-ATTRIBUTED ABSENCE — a capability the no-rails side genuinely
+#           lacks is recorded as CANT_TEST (absence-of-evidence, EXCLUDED from
+#           the denominator) on ONE side but FAIL (evidence-of-absence, scored
+#           0 IN the denominator) on the other, silently penalizing one side for
+#           a gap the other is excused for.
+#    Neither can happen here, and this proves it from the committed evidence:
+#      (a) FULL OBSERVABILITY — no static check on EITHER canonical domain is
+#          CANT_TEST or NA (both fixtures are clean live crawls, HTTP 200), so
+#          every recorded FAIL is genuine evidence-of-absence in the denominator,
+#          never a gap excused as un-observable.
+#      (b) LIKE-FOR-LIKE DENOMINATOR — both domains are scored over the IDENTICAL
+#          set of scored check_ids, so +39.4 compares the same checks on both
+#          sides, not one side over fewer checks.
+#      (c) CHECK-BY-CHECK DOMINANCE, NO INVERSION — at every matched check the
+#          with-rails side's capability rank (PASS>PARTIAL>FAIL) is >= the
+#          no-rails side's, and STRICTLY greater at >=1 check. The advantage is a
+#          capability SUPERSET at matched, fully-observed checks — not a single
+#          pillar masking a regression elsewhere, and not a tie the rounding
+#          inflated.
+#    A probe that mis-attributed the no-rails side's missing payment as CANT_TEST
+#    (excusing it) instead of FAIL would still leave the pillar arithmetic looking
+#    plausible but would FAIL (a) here; a check that inverted (no-rails beating
+#    with-rails somewhere) would slip the aggregate-only guards but FAIL (c).
+#    Worded by capability throughout — it asks "was this capability observed, and
+#    which side ranks higher?", never "is this domain X?".
+# ---------------------------------------------------------------------------
+# Capability ranking for a like-for-like comparison. NA / CANT_TEST are NOT in
+# this map on purpose: they are "unobserved" (excluded from scoring), and (a)
+# below asserts they never occur on the canonical pair — so reaching them here
+# is itself a failure, not a rank.
+_CAP_RANK = {Status.PASS: 2, Status.PARTIAL: 1, Status.FAIL: 0}
+_UNOBSERVED = {Status.NA, Status.CANT_TEST}
+
+
+def test_canonical_delta_is_earned_dominance() -> None:
+    print("test_canonical_delta_is_earned_dominance")
+    com, com_misses = _score_fixture("driftflight.com")   # with agent-native rails
+    org, org_misses = _score_fixture("drift-flight.org")  # no agent-native rails
+    _check(not com_misses and not org_misses, "no replay-miss on either domain")
+
+    com_status = {c.check_id: c.status for c in com.checks}
+    org_status = {c.check_id: c.status for c in org.checks}
+
+    # (a) Full observability — nothing on either side is excused as un-observable,
+    # so every recorded FAIL is scored evidence-of-absence, not excluded absence.
+    com_unobserved = {k for k, s in com_status.items() if s in _UNOBSERVED}
+    org_unobserved = {k for k, s in org_status.items() if s in _UNOBSERVED}
+    _check(
+        not com_unobserved and not org_unobserved,
+        "no canonical check is CANT_TEST/NA on either side "
+        f"(com {com_unobserved}, org {org_unobserved}) — the delta rests on "
+        "observed evidence, not differential observability",
+    )
+
+    # (b) Like-for-like denominator — both sides scored over the SAME check_ids.
+    _check(
+        set(com_status) == set(org_status),
+        "both canonical domains are scored over the identical check_id set "
+        f"(com-only {set(com_status) - set(org_status)}, "
+        f"org-only {set(org_status) - set(com_status)})",
+    )
+
+    # (c) Check-by-check dominance with no inversion, strict at >=1 check.
+    inversions = {}
+    strict_wins = []
+    for cid in set(com_status) & set(org_status):
+        rc, ro = _CAP_RANK[com_status[cid]], _CAP_RANK[org_status[cid]]
+        if rc < ro:
+            inversions[cid] = (org_status[cid].name, com_status[cid].name)  # org beats com
+        elif rc > ro:
+            strict_wins.append(cid)
+    _check(
+        not inversions,
+        f"with-rails side dominates at every matched check — no inversion "
+        f"(checks where no-rails outranks with-rails: {inversions})",
+    )
+    _check(
+        len(strict_wins) >= 1,
+        "the delta is driven by matched-check capability gaps — with-rails "
+        f"strictly outranks no-rails at >=1 check (strict wins: {sorted(strict_wins)})",
+    )
+
+
 def main() -> int:
     tests = [
         test_canonical_org_replays_46_1,
@@ -370,6 +463,7 @@ def main() -> int:
         test_relabel_invariance_org,
         test_relabel_invariance_com,
         test_relabeled_delta_still_39_4,
+        test_canonical_delta_is_earned_dominance,
     ]
     failed = 0
     for t in tests:

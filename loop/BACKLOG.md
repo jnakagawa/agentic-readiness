@@ -61,40 +61,26 @@ design in-cloud, execute locally.
   URL" — never by vendor), keeping test #2 (site-side 403/Cloudflare NOT excused)
   green, and update test #8 in lockstep. The regex change is scoring-adjacent
   (moves runs between denominators) → peer-gated PR, not direct-to-main.
-  NOTE (07:50Z local fire): the NARROW lexical subset — "browser **safety**
-  controls" (same env-block family as "security", not a semantic reputation gate)
-  — now HAS committed transcript evidence and is split out as its own P0 directly
-  below; this item retains the HARDER semantic reputation-gate case (test #8).
-- **Env-block attribution leak — broaden `_ENV_BLOCK_RE` to cover "safety"
-  phrasing** (METHOD, attribution honesty; PEER-GATED scoring-semantics change).
-  DISCOVERED 2026-07-23T07:50Z local fire via the trial-count run (see LOG +
-  `experiments/trial_count_N_analysis.py`). `asrs/behavioral/shopper.py`
-  `_ENV_BLOCK_RE` matches only "security" phrasings, so a codex run that reported
-  its browser "**safety** controls" blocked the site (codex t3 on drift-flight.org)
-  is NOT recognized as env-blocked → its all-false verdict (the agent observed
-  NOTHING) leaks into the outcome/trust scoring denominators instead of the
-  reachability signal. Invariant #4 violation; it under-credits the site and
-  corrupts `panel_reliability` (turned a stable claude-only panel "mixed").
-  - FIX (exact): extend the regex so "safety" is a sibling of "security"
-    (`browser (?:security|safety)` and `(?:security|safety) (?:policy|controls|
-    grounds)`) in BOTH alternations. The validated pattern is in
-    `experiments/trial_count_N_analysis.py` (`_ENV_BLOCK_FIXED`); it re-classifies
-    codex t3 as env-blocked and makes the drift-flight.org curve monotone/stable
-    (N=2 0.80 → 5 0.92). Keep it vendor-neutral: it keys on the block phrasing,
-    never a domain.
-  - TEST: add to `tests/test_reliability.py` (or a shopper test) a run whose
-    blocker says "blocked by browser safety controls" with all-false checkpoints →
-    assert `_is_env_blocked` True and that it is excluded from `_valid_runs` /
-    outcome denominators and counted in `hosted_agent_reachability`.
-  - WHY PEER-GATED: `_is_env_blocked` gates which runs enter the behavioral
-    scoring denominator — an aggregation rule. Per invariant #2 this bumps the
-    rubric version (v0.5 → v0.6, dated changelog: "env-block attribution now
-    recognizes 'safety'-phrased hosted-browser refusals, not only 'security'").
-    Behavioral-only: the canonical STATIC delta (+39.4) is unaffected by
-    construction (static mode runs no panel) — show that in the PR.
-  - Open PR `loop/env-block-safety-phrasing` with the analysis artifact as
-    evidence; next cycle adversarially reviews + self-merges. Slack heads-up on
-    open (sensitive class: aggregation + version bump).
+  NOTE: the NARROW lexical subset — "browser **safety** controls" (same env-block
+  family as "security", not a semantic reputation gate) — SHIPPED in PR #2
+  (Cycle 9, v0.6, awaiting merge). This item retains ONLY the HARDER semantic
+  reputation-gate case (test #8: "flagged as unsafe" / "unable to browse"), which
+  still needs a committed codex transcript before its regex fixture can be added.
+<!-- OPEN AS PR #2 2026-07-23T09:15Z (Cycle 9, METHOD): "Env-block attribution leak
+     — broaden `_ENV_BLOCK_RE` to cover 'safety' phrasing" implemented on branch
+     loop/env-block-safety-phrasing. Regex extended so "safety" is a sibling of
+     "security" in both alternations; rubric v0.5→v0.6 (dated changelog);
+     tests/test_attribution.py +test #9 (fixtures verbatim from
+     runs/local/trial_stability_20260723T064359Z.json). Suite 58/58; negative
+     direction (site-side blocks, reputation-gate) preserved. AWAITING next-cycle
+     adversarial review + self-merge (peer gate). https://github.com/jnakagawa/agentic-readiness/pull/2
+     Remove this note once PR #2 is merged or closed. -->
+- **[LOCAL] Live behavioral re-score after PR #2 merges** (METHOD follow-up):
+  once v0.6 is on main, run one behavioral panel on a domain and confirm a
+  "safety"-blocked codex run routes to `hosted_agent_reachability` (not outcome)
+  live, and that `panel_reliability` on the drift-flight.org trial-count panel
+  reads stable/monotone (N=2 0.80 → 5 0.92) rather than "mixed". Reuse
+  `experiments/trial_count_N.py`. Budget: one panel.
 
 <!-- EXECUTED 2026-07-23T07:50Z (local fire): "[LOCAL] What trial count N
      stabilizes the panel" — ran a live claude+codex×5 panel on drift-flight.org

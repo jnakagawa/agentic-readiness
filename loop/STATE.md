@@ -1,15 +1,17 @@
 # Loop state
 
-- Cycle counter: 8
+- Cycle counter: 9
 - Started: 2026-07-23 (UTC)
-- Focus pointer: METHOD (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
-  Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT;
-  next cycle takes METHOD.)
-- Rubric: v0.5 on main (PR #1 merged 2026-07-23 via the Cycle-2 peer-gate).
-  UNCHANGED by Cycles 2–4 (task battery, panel-reliability, and the reliability
-  readout-surfacing are diagnostic layers over already-collected runs, not
-  scoring-semantics changes).
+  Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
+  Cycle 9 METHOD; next cycle takes COVERAGE.)
+- Rubric: v0.5 on main; **v0.6 PROPOSED in open PR #2** (Cycle 9, METHOD).
+  PR #2 broadens the env-block classifier to recognize "safety"-phrased
+  hosted-browser refusals (aggregation rule → version bump). Awaiting the NEXT
+  cycle's FIRST-duty adversarial review + self-merge. UNTIL MERGED, main is
+  still v0.5. Rubric was UNCHANGED by Cycles 2–4/6/8 (diagnostic/readout layers,
+  not scoring-semantics changes).
 - Task battery: format + aggregation landed Cycle 2; `--battery` CLI wiring +
   additive `Report.battery_summary` + terminal `TASK BATTERY` section landed
   Cycle 6 (`asrs/cli.py` `_run_behavioral(..., battery=)` runs the shopper panel
@@ -57,12 +59,13 @@
   +39.4. Confirmed LIVE again this local fire (2026-07-23T07:50Z, both HTTP 200),
   identical to the 05:52Z merge-verify and the hourly verify artifact
   verify_20260723T040757Z.json. Loop-start behavioral baseline was +40.6 (delta
-  within static variance). UNCHANGED BY CONSTRUCTION at Cycle 8 (no scoring source
-  touched; quotability is display-only). RUNNER HEALTH (Cycle 8, 08:15Z): hourly
-  verify runner's newest artifact is STILL verify_20260723T040757Z (04:07Z,
-  ~4.1h old); no :41 artifact at 05/06/07/08 — under 6h but escalating WATCH: if
-  the next cloud fire (~09:xx) still sees 04:07Z it crosses 6h -> flag "runner
-  down" in next Slack digest. SEPARATE BUG found this fire: the runner's `scores`
+  within static variance). UNCHANGED BY CONSTRUCTION at Cycle 8, and again at
+  Cycle 9 (PR #2 is behavioral-only; static delta cannot move). RUNNER HEALTH
+  (Cycle 9, 09:15Z): newest verify artifact is STILL verify_20260723T040714Z
+  (04:07Z), now ~5h08m old; no :41 artifact at 05/06/07/08/09 — under 6h but ONE
+  HOUR from crossing: the next cloud fire (~10:xx) that still sees 04:07Z MUST flag
+  "runner down" in the Slack digest. Folded into the Cycle-9 sensitive-PR DM for
+  early visibility. SEPARATE BUG (persists): the runner's `scores`
   block records FileNotFoundError because `[asrs.scoring]` stderr coverage-warning
   lines leak into the score-path argument — its live re-score capture is BROKEN
   (its TEST block is green; the live delta is still confirmed by the 05:52Z/07:50Z
@@ -82,7 +85,16 @@
   scoring-semantics/aggregation change → PEER-GATED + version bump, queued P0 in
   BACKLOG with exact spec. Sole residual claude flip: found_purchase_path
   (t1 false vs t2–5 true) — legibility ambiguity, not noise.
-- Open PRs: none. PR #1 (Cycle 1 v0.5 NOT-SCORABLE fix) merged
+- Open PRs: **PR #2 `loop/env-block-safety-phrasing`** (Cycle 9, METHOD, sensitive
+  class: aggregation rule + v0.5→v0.6). Broadens `_ENV_BLOCK_RE` to cover
+  "safety"-phrased hosted-browser refusals (invariant #4 leak found in the 07:50Z
+  local trial-count fire). Full evidence + reviewer checklist in the PR body;
+  fixtures verbatim from `runs/local/trial_stability_20260723T064359Z.json`.
+  Suite 58/58. Static delta unchanged by construction (behavioral-only). No CI on
+  the repo. NEXT cycle's first duty: adversarially review + self-merge (and run the
+  live behavioral re-score if it has network; else keep it [LOCAL]). Slack heads-up
+  sent on open. https://github.com/jnakagawa/agentic-readiness/pull/2
+- PR #1 (Cycle 1 v0.5 NOT-SCORABLE fix) merged
   2026-07-23T03:00:15Z. Its [LOCAL] merge-time canonical re-score is now
   DISCHARGED: local fire 2026-07-23T05:52Z re-scored both reachable domains
   normally (46.1 F / 85.5 B, delta +39.4, NOT not-scorable) and confirmed the

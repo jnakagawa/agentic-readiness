@@ -725,3 +725,80 @@ template now has two examples: `_reliability` and `_quotability`). (2) The
 P0 peer-gated `_ENV_BLOCK_RE` "safety" fix (v0.5→v0.6) is still queued and is
 the next scoring-semantics PR. (3) Fix the local verify runner's stderr→score-path
 leak (the coverage-warning suppression P2 would also fix it at the source).
+
+## Cycle 9 — 2026-07-23T09:15Z — METHOD (peer-gated PR #2)
+
+**First duty (open-PR review).** None open at fire start (PR #1 merged; STATE
+confirmed, `list_pull_requests` empty). Proceeded to pick work.
+
+**What.** Broadened the env-block attribution classifier
+(`asrs.behavioral.shopper._ENV_BLOCK_RE`) so `"safety"`-phrased hosted-browser
+refusals are recognized as environment blocks, not only `"security"` ones.
+`"safety"` is now a lexical sibling of `"security"` in BOTH alternations
+(`browser (?:security|safety)` and `(?:security|safety) (?:policy|controls|
+grounds)`). Rubric bumped **v0.5 → v0.6** (aggregation-rule change; dated
+changelog). Opened as peer-gated PR #2 `loop/env-block-safety-phrasing` for
+next-cycle adversarial review + self-merge.
+
+**Why (METHOD, attribution honesty — invariant #4).** `_is_env_blocked` gates
+which shopper runs enter the outcome/trust scoring denominator vs. route to
+`hosted_agent_reachability`. The SAME hosted-browser URL-safety layer surfaces
+its block as either word: committed evidence
+(`runs/local/trial_stability_20260723T064359Z.json`) shows codex on the
+canonical `.org` reporting *"blocked by browser safety controls"* /
+*"Browser safety controls explicitly blocked the domain."* in one trial while
+its sibling trials on the same domain said *"security"*. Under the old regex
+that one all-false verdict (the agent saw NOTHING about the site) LEAKED into
+the outcome/trust pool — under-crediting the site (invariant #4 violation) and
+corrupting `panel_reliability`. Discovered in the 07:50Z local trial-count fire;
+validated pattern is `experiments/trial_count_N_analysis.py::_ENV_BLOCK_FIXED`.
+This is the narrow, evidence-backed subset of Cycle 7's deferred broadening
+(test #8) — the "safety" family, same env-block family as "security", NOT the
+harder semantic reputation-gate ("flagged as unsafe" / "unable to browse"),
+which stays out of scope and with the `[LOCAL]` codex-reachability item.
+
+**Negative direction preserved (verified).** Site-side blocks (403 / Cloudflare
+/ 429 / CAPTCHA / robots.txt) are STILL NOT excused as environment, and
+reputation-gate phrasings lacking the `browser-{security,safety}` vocabulary
+remain out of scope. Confirmed by a pre-edit regex A/B (both old+new reject all
+five site-side and both reputation-gate fixtures) and by test #2 / test #8
+staying green.
+
+**Evidence.** `asrs/behavioral/shopper.py` (regex + comment), `rubric/rubric_v0.yaml`
+(v0.6 changelog + `version: "0.6"`), `tests/test_attribution.py` (+test #9
+`test_env_block_safety_phrasing_covered`, fixtures VERBATIM from the committed
+trial-stability artifact per invariant #3; asserts positive classification in
+both orderings × {blockers, trust_events} AND denominator routing). Full suite
+**58/58** (attribution 9/9 was 8/8; free-tier 8/8 after `pip install eth-account`
+in the cloud venv — the sole prior failure was a missing dep, pre-existing on
+main, not a regression).
+
+**Canonical pair (regression signal).** UNCHANGED BY CONSTRUCTION. Behavioral-
+only: static mode runs no panel, and `asrs/scoring.py` never imports the
+classifier (it consumes a pre-computed `behavioral_runs` list), so the static
+delta cannot move — the only change to a static report is the embedded
+`rubric_version` string. Last confirmed live static delta (07:50Z local fire):
+drift-flight.org **46.1 F** / driftflight.com **85.5 B**, delta **+39.4**.
+In-cloud live re-score network-blocked; by-construction argument is the cloud-
+adapted regression proof (playbook §Ship). Live BEHAVIORAL re-score on a
+codex-reachable domain is queued `[LOCAL]`.
+
+**Runner health (WATCH → near-threshold).** Newest hourly `verify_*.json` is
+still `verify_20260723T040714Z` (04:07Z) at this fire (09:15Z) — ~5h08m old, no
+`:41` artifact at 05/06/07/08/09. Under the 6h "runner down" threshold but one
+hour from crossing it; the next cloud fire (~10:xx) that still sees 04:07Z
+should flag "runner down" in the Slack digest. Also the known coverage-warning
+leak bug persists: this artifact's `scores` block is `FileNotFoundError` (the
+`[asrs.scoring]` stderr lines leak into the score-path arg), so it yields NO
+usable live delta regardless of age — the P2 coverage-warning suppression fixes
+it at the source. Both noted in the sensitive-PR Slack DM for Jonah's visibility.
+
+**Ship.** Peer-gated PR #2 (aggregation rule + version bump — sensitive class).
+Bookkeeping (LOG/STATE/BACKLOG) direct-to-main. Slack DM sent (sensitive-class
+PR opened — visibility for veto, not approval; runner-health folded in).
+
+**Next hypothesis.** Once PR #2 merges (next cycle's first duty), `panel_reliability`
+on the drift-flight.org trial-count panel should read stable/monotone
+(N=2 0.80 → 5 0.92) instead of "mixed" — the leak fix is what makes the Cycle 3–5
+reliability code report the true single-model curve. The cross-model N-curve
+stays blocked on codex reachability.

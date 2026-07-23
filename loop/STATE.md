@@ -1,10 +1,13 @@
 # Loop state
 
-- Cycle counter: 1
+- Cycle counter: 2
 - Started: 2026-07-23 (UTC)
-- Focus pointer: COVERAGE (rotate METHOD → COVERAGE → TRUTH → READOUT)
-  (Cycle 1 was METHOD; next cycle takes COVERAGE.)
-- Rubric: v0.5 (pending PR merge; v0.4 on main until then)
+- Focus pointer: TRUTH (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 1 METHOD, Cycle 2 COVERAGE; next cycle takes TRUTH.)
+- Rubric: v0.5 (pending PR #1 merge; v0.4 on main until then) — UNCHANGED by
+  Cycle 2 (task battery is a diagnostic layer, not a scoring-semantics change).
+- Task battery: format + aggregation landed on main (Cycle 2). `--battery` CLI
+  wiring + behavioral execution queued [LOCAL] in BACKLOG.
 - Canonical pair at loop start (behavioral, reports T233804/T235048):
   drift-flight.org 45.7 F vs driftflight.com 86.3 B — delta +40.6
 - Open PRs: #1 loop/not-scorable-attribution (Cycle 1, human gate) — v0.5

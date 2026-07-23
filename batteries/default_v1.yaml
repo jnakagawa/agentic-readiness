@@ -1,0 +1,52 @@
+# ASRS task battery — default_v1 (2026-07-23)
+#
+# A battery is a set of DIVERSE purchase/provisioning intents scored against the
+# SAME storefront. A single task can flatter or punish a site by accident (the
+# one product it happens to surface well, or the one it hides); scoring a spread
+# of intents turns "did it work once" into "how RELIABLY does it work across the
+# things an agent might actually be sent to do." Cross-task variance is the
+# reliability signal (asrs/battery.py) — a site that aces one intent and fails
+# another is less agent-ready than its best single run suggests.
+#
+# The rubric stays TASK-AGNOSTIC: the battery does not add, remove, or reweight
+# any check. It runs the existing shopper panel once per task and aggregates the
+# resulting checkpoint ladders. Behavioral execution is [LOCAL] (needs the
+# claude/codex CLIs); this file + asrs/battery.py define the format + math.
+#
+# Tasks are worded by CAPABILITY and are vendor-neutral: each `intent` is a
+# generic agent job, never a named product or domain. `kind` groups intents by
+# storefront archetype so a site can be read per-archetype as well as overall.
+# A storefront legitimately serves only some kinds; a task with zero valid runs
+# is reported as "no signal" for that task, never as a failure of the site.
+
+id: default_v1
+description: >-
+  Five diverse agent purchase intents spanning digital metered services, a
+  subscription, a data job, and a physical good — breadth over any single SKU.
+
+tasks:
+  - id: image_generation
+    kind: digital_service
+    intent: >-
+      generate an image from a text prompt and pay for that single call as an
+      autonomous agent, without a human in the loop
+  - id: text_translation
+    kind: digital_service
+    intent: >-
+      translate a short document between two languages and pay per call as an
+      autonomous agent, without a human in the loop
+  - id: data_enrichment
+    kind: data_job
+    intent: >-
+      enrich a list of records against the service's data and pay for the job
+      programmatically as an autonomous agent
+  - id: api_subscription
+    kind: subscription
+    intent: >-
+      provision ongoing programmatic access to the service's primary API on a
+      metered or subscription plan, as an autonomous agent, without a sales call
+  - id: physical_good
+    kind: physical_good
+    intent: >-
+      purchase one unit of the site's primary physical product and complete
+      payment programmatically as an autonomous agent

@@ -50,3 +50,64 @@ rubric check, every run) is noise that will drown real signal once the battery
 lands — a static-mode run legitimately omits all behavioral checks. Candidate
 READOUT/METHOD cycle: suppress expected-absent warnings (behavioral checks in
 static mode), keep only genuinely-unexpected ones.
+
+## Cycle 2 — 2026-07-23T02:16Z — COVERAGE (direct to main)
+
+**What.** Task-battery foundation: a battery file format + loader + cross-task
+aggregation math, with tests. New `batteries/default_v1.yaml` (5 diverse
+vendor-neutral intents: image gen, translation, data enrichment, API
+subscription, physical good), `asrs/battery.py` (`load_battery`,
+`aggregate_battery`, `Battery`/`BatteryTaskResult`/`BatterySummary`), and
+`tests/test_battery.py` (6 tests). This is step one of the P0 COVERAGE battery
+item ("design the format + aggregation first"); behavioral execution + the
+`--battery` CLI flag stay [LOCAL] (need the claude/codex CLIs).
+
+**Why.** A single shopper task is one draw from a wide distribution — a site's
+readiness for "buy an image" says little about "subscribe to the API" or "order
+the physical good." The battery turns "did it work once" into two signals a
+single run can't give: COVERAGE (per-task, per-archetype checkpoint attainment)
+and RELIABILITY (cross-task variance of each checkpoint). `cross_task_spread`
+is the headline: 0 = the site behaves the same whatever the agent was sent to
+do; higher = readiness is intent-dependent and the best single run overstates
+it. Moves measurement flexibility (many intents) and rigor (variance-aware) at
+once — both north-star axes.
+
+**Invariant discipline.** Rubric is TASK-AGNOSTIC and UNCHANGED — the battery
+adds NO check, weight, or cap and does not feed the overall score; it is a
+diagnostic layer over the `BehavioralRun` records the shopper panel already
+emits. So NO rubric version bump, and this is direct-to-main (new module +
+data + tests, no scoring-semantics change, no payment/signing code). "Valid
+run" + the checkpoint ladder are imported from `shopper` (single source of
+truth) so the battery and the per-task score never diverge on what counts as
+observing the site. The $0-only / one-free-tier-attempt property is untouched:
+aggregation consumes already-collected runs. The [LOCAL] runner design (queued)
+pins the constraint that the free-tier transaction probe fires at most ONCE per
+battery while the shopper panel runs per task.
+
+**Scope.** `asrs/battery.py` (new), `batteries/default_v1.yaml` (new),
+`tests/test_battery.py` (new). No edits to scoring/cli/rubric/types/report — the
+scoring path is byte-for-byte unchanged.
+
+**Evidence.**
+- Tests: `tests/test_battery.py` 6/6 PASS, `tests/test_free_tier.py` 8/8 PASS.
+- Aggregation math pinned: env-blocked + failed runs excluded from valid (mirror
+  of `shopper._aggregate`); no-valid-run task = "no signal" (None fractions),
+  dropped from cross-task mean/spread, never a site failure; `pstdev` reliability
+  spread (found_product identical across intents -> 0.0; 1.0-vs-0.0 intent split
+  -> 0.5); single signal task -> spread 0.0 not a crash; missing task in runs
+  map -> attempted 0 (no crash).
+- Battery vendor-neutrality asserted in-test: no intent names a domain or brand.
+
+**Canonical pair (regression signal).** UNCHANGED by construction, not merely
+unmeasured. The scoring path imports nothing from `asrs/battery.py`; scoring.py,
+cli.py, rubric_v0.yaml, types.py, report.py are untouched this cycle. No domain's
+overall/pillars/delta can move. (Live re-score remains BLOCKED in-cloud per
+STATE network policy; last known static-equivalent delta +40.6, queued [LOCAL].)
+
+**Next hypothesis.** The battery only pays off once it runs. Next COVERAGE cycle
+(after the TRUTH slot): wire `--battery <path>` into the behavioral pipeline —
+static probes once, free-tier probe ONCE, shopper panel per task — attach the
+`BatterySummary` to the Report as an additive field, and render the reliability
+row. That touches the behavioral orchestration near the free-tier probe, so it
+wants care but is still not a scoring-semantics change. Behavioral execution is
+[LOCAL]; the CLI orchestration is testable in-cloud with a synthetic panel.

@@ -60,10 +60,17 @@ _REACHABILITY_MAX = 5.0
 # URL-safety layer, not the site. Language the models use when their OWN tool
 # blocked navigation; deliberately does NOT match site-side blocks (403s,
 # Cloudflare challenges), which are real access findings, not artifacts.
+# "safety" is a sibling of "security" here (v0.6): the SAME hosted-browser
+# URL-safety layer surfaces its block as either word — codex on the canonical
+# .org reported "blocked by browser safety controls" in one trial and "browser
+# security controls" in its siblings on the same domain. Both name the agent's
+# own navigation gate, not the site. Reputation-gate phrasings that lack this
+# browser-{security,safety} vocabulary ("flagged as unsafe", "unable to browse")
+# remain deliberately out of scope (see tests/test_attribution.py #8).
 _ENV_BLOCK_RE = re.compile(
     r"(?:blocked|rejected|refused|denied)[^.]{0,80}"
-    r"(?:browser security|security policy|security controls|security grounds)"
-    r"|(?:browser security policy|browser security controls)[^.]{0,80}"
+    r"(?:browser (?:security|safety)|(?:security|safety) (?:policy|controls|grounds))"
+    r"|(?:browser (?:security|safety) (?:policy|controls))[^.]{0,80}"
     r"(?:blocked|rejected|refused|denied)",
     re.I,
 )

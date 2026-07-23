@@ -1,6 +1,30 @@
-# Agentic Selling Readiness Score — rubric v0.5 (2026-07-23)
+# Agentic Selling Readiness Score — rubric v0.6 (2026-07-23)
 # The rubric is versioned; every report embeds this version. Scores are only
 # comparable within a rubric version (SSL Labs / Euro NCAP pattern).
+#
+# v0.6 (2026-07-23): env-block attribution now recognizes 'safety'-phrased
+#   hosted-browser refusals, not only 'security' (aggregation rule / behavioral
+#   only). The environment-block classifier (asrs.behavioral.shopper._ENV_BLOCK_RE,
+#   which routes a shopper run OUT of the outcome/trust denominators and INTO
+#   hosted_agent_reachability, invariant #4) previously keyed only on
+#   "browser security"/"security policy|controls|grounds" phrasing. The SAME
+#   hosted-browser URL-safety layer also surfaces its block as "browser safety
+#   controls" — committed evidence: codex reported exactly that on the canonical
+#   .org in one trial while its sibling trials on the same domain said "security"
+#   (runs/local/trial_stability_20260723T064359Z.json). Under the old regex that
+#   one all-false verdict LEAKED into the outcome/trust scoring pool — the agent
+#   observed nothing about the site, yet its zeros under-credited the site
+#   (invariant #4 violation) and corrupted panel_reliability. v0.6 adds "safety"
+#   as a lexical sibling of "security" in both alternations; it keys on the
+#   block phrasing, never on a vendor or domain. NEGATIVE direction preserved:
+#   site-side blocks (403 / Cloudflare / 429 / CAPTCHA / robots) are still NOT
+#   excused, and reputation-gate phrasings without the browser-{security,safety}
+#   vocabulary ("flagged as unsafe", "unable to browse") remain out of scope
+#   (that harder case stays the [LOCAL] codex-reachability item). Behavioral-only:
+#   static mode runs no panel, so the canonical STATIC delta (+39.4) is unchanged
+#   by construction — the version bump exists because an aggregation rule (which
+#   runs enter the behavioral denominator) changed and scores must stay
+#   comparable within a version.
 #
 # v0.5 (2026-07-23): NOT-SCORABLE attribution fix (aggregation rule). When NO
 #   pillar is observable — every check came back NA/CANT_TEST/absent, e.g. a
@@ -67,7 +91,7 @@
 #   cap. New trust_live_session check scores the shopper panel's in-task
 #   trust_events (warnings surfaced while actually working the site).
 # v0.1 (2026-07-22): initial rubric.
-version: "0.5"
+version: "0.6"
 
 # Pillar weights for the overall score. If a pillar is entirely
 # NA/CANT_TEST (e.g. outcome in static-only mode), it is dropped and the

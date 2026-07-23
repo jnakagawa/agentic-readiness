@@ -40,6 +40,42 @@ design in-cloud, execute locally.
   archetypes only; a retail storefront shows the inverse. Card and terminal
   readouts show NA archetypes as "not offered".
 
+  PROGRESS — BRICK 1 (relevance discovery) SHIPPED 2026-07-23T23:49Z (local fire,
+  COVERAGE/METHOD, direct-to-main, score-neutral). `asrs/offering.py`:
+  `discover_offering(ctx)` reads a storefront's own surfaces (homepage + llms.txt /
+  llms-full.txt / manifest.json, $0 GETs) and `classify_offering(domain, surfaces)`
+  (pure) emits `OfferingProfile` — which capability ARCHETYPES the site CLAIMS to
+  serve, from the fixed template bank `metered_api / subscription / digital_good /
+  physical_good / service_booking / data_retrieval`, each with QUOTED machine
+  evidence + source surface; `.unclaimed` = the NA complement. Precision-first,
+  vendor-neutral; the metaphorical-"ship" physical_good false-positive is guarded
+  (requires unambiguous fulfillment nouns). LIVE-VALIDATED on 4 real domains
+  (invariant #3): drift-flight.org {metered_api,subscription,digital_good} +
+  driftflight.com {metered_api,digital_good,subscription} both physical_good=NA
+  (acceptance met); example.com {} (null); books.toscrape.com {physical_good}
+  (inverse). `test_offering.py` 7/7; suite 96→103. Evidence:
+  runs/local/offering_discovery_20260723T234942Z.json. See LOG (Local cycle 23:49Z).
+  REMAINING bricks (next increments, in order):
+  - **BRICK 2 — intent instantiation** (COVERAGE, cloud-doable): parameterize the
+    fixed archetype TEMPLATE bank with the discovered offering to generate each
+    site's task prompts, and reconcile battery `kind` ↔ `offering.ARCHETYPES` (the
+    battery YAML uses digital_service/data_job; offering uses metered_api/
+    digital_good/data_retrieval — pick ONE canonical vocabulary or add a mapping).
+    Discovery already emits the archetypes; this wires them into task generation.
+    Still score-neutral (task SELECTION only) until brick 3.
+  - **BRICK 3 — NA-aware aggregation** (METHOD, PEER-GATED + version bump): mark
+    unclaimed archetypes NA and EXCLUDE them from `mean_completion`,
+    `cross_task_spread`, and `between_kind_spread` (asrs/battery.py). This changes
+    the battery math → sensitive class → peer-gated PR. (The battery still feeds no
+    overall score, but the aggregation-rule change is the operator's stated
+    peer-gated part.)
+  - **BRICK 4 — out-of-scope legibility** (unscored diagnostic, optional) +
+    **BRICK 5 — comparability readout** (name WHICH archetypes were assessed) — per
+    the directive; design after bricks 2–3 land.
+  - **[LOCAL] acceptance rerun**: once bricks 2–3 land, rerun the canonical
+    batteries and confirm driftflight physical_good = NA with spreads over claimed
+    archetypes only, a retail storefront the inverse, and NA shown as "not offered".
+
 <!-- DONE 2026-07-23 (two complementary fires): "[LOCAL] POST-merge live canonical re-score
      for v0.7 (PR #3, MERGED 72a2e5b)" FULLY DISCHARGED.
      (a) SANITY-CHECK HALF — 2026-07-23T15:18Z (Cycle 15, first duty): fresh-context

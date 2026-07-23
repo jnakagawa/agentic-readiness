@@ -2245,3 +2245,87 @@ live wiring) remain queued for a networked fire.
 ## Local verification — 20260723T234102Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260723T234102Z.json
+
+## Local cycle — 2026-07-23T23:49Z — COVERAGE/METHOD ([LOCAL] operator directive brick 1: offering relevance discovery)
+
+**First duty.** No open peer-gated PR (`gh pr list --state open` → empty) → the
+mandated fresh-context adversarial review had nothing pending. Infra health check
+ran first: runner HEALTHY — newest artifact `verify_20260723T234102Z.json`
+(23:41Z) is ~8 min old at fire time, well under the 6h threshold, delta +39.4;
+bench UP (103/103 after this change), bookkeeping consistent with git history.
+
+**What.** First brick of the **operator directive** (Jonah, 2026-07-23: "the
+battery must be OFFERING-RELATIVE, not fixed"). New module `asrs/offering.py`:
+`discover_offering(ctx)` reads a storefront's own agent surfaces (homepage +
+`/llms.txt` / `/llms-full.txt` / `/manifest.json`, $0 GETs only) and
+`classify_offering(domain, surfaces)` (pure) decides which capability ARCHETYPES
+the site CLAIMS to serve — from a fixed template bank `metered_api / subscription
+/ digital_good / physical_good / service_booking / data_retrieval` — each backed
+by QUOTED machine evidence (the matched phrase + which surface it came from).
+`OfferingProfile.unclaimed` is the exact NA complement of `claimed`: the
+archetypes a later offering-relative battery would mark NA (excluded from
+completion means + both spreads, never penalized). This is brick 1 of the
+directive's five (relevance discovery); bricks 2 (intent instantiation) + 3
+(NA-aware aggregation, the peer-gated part) are queued as the next increments.
+
+**Why.** The current battery judges every site against ONE static intent list, so
+an image-generation API gets probed with "order a physical good" and its partial
+completion pollutes the completion means and both spread signals — measuring the
+battery's MISMATCH, not the site's readiness. Offering discovery is the input that
+lets the battery instantiate only the intents a site actually claims to serve.
+North-star many-storefront-types axis.
+
+**Precision-first, vendor-neutral.** A FALSE archetype claim would make the
+battery run an irrelevant intent (the very pollution we are removing); a MISSED
+one only leaves a servable intent untested (conservative). So signals are anchored
+and specific. THE load-bearing precision guard: both canonical homepages say "one
+visual language for every image you **ship**" / "Teams that **ship** images daily"
+— metaphorical "ship" that must NOT read as physical fulfillment. `physical_good`
+requires unambiguous fulfillment nouns ("free shipping" / "add to cart" / "in
+stock" / SKU / fulfillment), so it does NOT fire on the canonical pair. Every
+claim carries the exact quoted evidence so a skeptic can audit it; archetypes are
+named by CAPABILITY, never by vendor/domain.
+
+**Live-validated on 4 real domains (invariant #3, this fire has network):**
+- drift-flight.org (no-rails, homepage only — llms.txt 404): claimed
+  `{metered_api, subscription, digital_good}`, **physical_good NA**.
+- driftflight.com (with-rails, homepage + llms.txt): claimed
+  `{metered_api, digital_good, subscription}`, **physical_good NA** — the
+  operator's acceptance criterion met exactly.
+- example.com (null control): claims NOTHING (not a storefront).
+- books.toscrape.com (physical-retail inverse control): claims `{physical_good}`
+  ONLY (via "In stock" + "Add to basket") — the inverse the directive asked for.
+Evidence: `runs/local/offering_discovery_20260723T234942Z.json` (force-added;
+`runs/` is gitignored).
+
+**Discovery-only / score-neutral by construction.** Adds NO check, weight, cap, or
+aggregation rule; does not feed the overall score or the battery math yet (same
+shape as the Cycle-22 free-tier query-param discovery half). `git status` = two
+NEW files only (`asrs/offering.py`, `tests/test_offering.py`); ZERO tracked-file
+modifications → scoring.py/rubric/probes/battery.py byte-for-byte untouched →
+rubric stays **v0.7**, canonical delta unchanged by construction AND re-measured
+(replay guard `test_canonical_replay.py` 8/8 = 46.1 F / 85.5 B / +39.4, 0
+replay-miss; corroborated by `verify_20260723T234102Z.json`). Direct-to-main.
+
+**Evidence.** `tests/test_offering.py` (7/7, synthetic surfaces, no network):
+agent-native storefront claims metered_api/digital_good/subscription and NOT
+physical_good (the metaphorical-"ship" precision guard baked into the fixture);
+physical retail is the inverse (physical_good only, others NA); service_booking +
+data_retrieval each fire on their own language; non-storefront claims nothing;
+strength counts DISTINCT signal labels + orders claims; evidence is quoted, HTML
+stripped, surface-tagged; strip_html drops script/style/tags. Full suite 96 → 103.
+
+**Ship.** Direct-to-main. No Slack DM — discovery-only, moves no score, not a
+sensitive class; the daily digest was already sent Cycle 16 and this fire
+(23:49Z) is not a new digest window.
+
+**Next hypothesis.** Brick 2 (intent instantiation): parameterize the fixed
+archetype template bank with the discovered offering to generate each site's task
+prompts, and map battery `kind` ↔ archetype so the battery consumes the profile.
+Brick 3 (NA-aware aggregation: unclaimed archetypes excluded from completion means
++ both spreads) is the scoring-semantics change → PEER-GATED when it lands. The
+cloud rotation is unaffected (next cloud cycle still takes READOUT).
+
+## Local verification — 20260723T234942Z (offering-discovery live)
+
+offering brick 1 live-validated | drift-flight.org: {metered_api,subscription,digital_good} physical_good=NA | driftflight.com: {metered_api,digital_good,subscription} physical_good=NA | example.com: {} | books.toscrape.com: {physical_good} | suite 103/103 | canonical 46.1 F / 85.5 B / +39.4 (replay guard, unchanged) | artifact runs/local/offering_discovery_20260723T234942Z.json

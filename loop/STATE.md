@@ -139,6 +139,22 @@
   Direct-to-main. Suite 95 → 96. No Slack (tests-only, moves no score, digest already sent Cycle 16, not
   a new digest window at 23:14Z). First duty: no open peer-gated PR (verified []); infra health check ran
   first — runner HEALTHY (newest verify_20260723T224105Z, 22:41Z, ~31 min old). Next cycle takes READOUT.
+  Local fire 2026-07-23T23:49Z COVERAGE/METHOD (operator-directive brick 1): shipped `asrs/offering.py`
+  — offering RELEVANCE DISCOVERY, the input the offering-relative battery needs. `discover_offering(ctx)`
+  reads a storefront's own surfaces ($0 GETs) and `classify_offering` (pure) decides which capability
+  ARCHETYPES it CLAIMS to serve (`metered_api/subscription/digital_good/physical_good/service_booking/
+  data_retrieval`), each with QUOTED machine evidence; `OfferingProfile.unclaimed` = the NA complement.
+  Precision-first + vendor-neutral: the load-bearing guard is that both canonical homepages' metaphorical
+  "every image you **ship**" does NOT trip `physical_good` (requires "free shipping"/"add to cart"/"in
+  stock"/SKU). Live-validated on 4 real domains (invariant #3): drift-flight.org
+  {metered_api,subscription,digital_good} + driftflight.com {metered_api,digital_good,subscription} both
+  physical_good=NA (operator acceptance met); example.com {} (null); books.toscrape.com {physical_good}
+  (inverse control). Discovery-only/score-neutral — TWO new files only, scoring.py/rubric/probes/battery.py
+  byte-for-byte untouched → rubric stays v0.7, canonical delta unchanged (replay guard 46.1 F/85.5 B/+39.4,
+  0 replay-miss) AND corroborated by verify_20260723T234102Z. Direct-to-main. `test_offering.py` 7/7; suite
+  96 → 103. First duty: no open peer-gated PR (verified []); runner HEALTHY (verify_20260723T234102Z, 23:41Z,
+  ~8 min old). Evidence: runs/local/offering_discovery_20260723T234942Z.json. Bricks 2 (intent
+  instantiation) + 3 (NA-aware aggregation, PEER-GATED) are the next increments; cloud rotation unaffected.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity

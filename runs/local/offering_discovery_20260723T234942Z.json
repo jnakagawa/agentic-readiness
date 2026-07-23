@@ -1,0 +1,219 @@
+{
+  "ts": "20260723T234942Z",
+  "kind": "offering-discovery-live-validation",
+  "note": "Brick 1 of the offering-relative battery (operator directive). Discovery-only, score-neutral; validates asrs/offering.discover_offering live.",
+  "domains": {
+    "drift-flight.org": {
+      "surfaces_seen": [
+        "homepage"
+      ],
+      "claimed": [
+        "metered_api",
+        "subscription",
+        "digital_good"
+      ],
+      "unclaimed": [
+        "physical_good",
+        "service_booking",
+        "data_retrieval"
+      ],
+      "evidence": {
+        "claimed": [
+          {
+            "archetype": "metered_api",
+            "strength": 5,
+            "labels": [
+              "billed-per",
+              "per-unit-rate",
+              "post-endpoint",
+              "qualified-api",
+              "usage-based"
+            ],
+            "sample_quote": "est shape, typical latency 2-9 seconds. POST https://api.drift-flight.org/v1/images/generate Authorization: Bearer df_live_4kq2... {",
+            "surfaces": [
+              "homepage"
+            ]
+          },
+          {
+            "archetype": "subscription",
+            "strength": 3,
+            "labels": [
+              "annual-billing",
+              "per-month",
+              "per-month-price"
+            ],
+            "sample_quote": "Pricing Plans for every pipeline Hobby $5 per month 100 generations / month sketch tier (10",
+            "surfaces": [
+              "homepage"
+            ]
+          },
+          {
+            "archetype": "digital_good",
+            "strength": 3,
+            "labels": [
+              "generations",
+              "hosted-output",
+              "render"
+            ],
+            "sample_quote": "r every pipeline Hobby $5 per month 100 generations / month sketch tier (1024px) All shared",
+            "surfaces": [
+              "homepage"
+            ]
+          }
+        ],
+        "unclaimed": [
+          "physical_good",
+          "service_booking",
+          "data_retrieval"
+        ],
+        "surfaces_seen": [
+          "homepage"
+        ]
+      }
+    },
+    "driftflight.com": {
+      "surfaces_seen": [
+        "homepage",
+        "/llms.txt"
+      ],
+      "claimed": [
+        "metered_api",
+        "digital_good",
+        "subscription"
+      ],
+      "unclaimed": [
+        "physical_good",
+        "service_booking",
+        "data_retrieval"
+      ],
+      "evidence": {
+        "claimed": [
+          {
+            "archetype": "metered_api",
+            "strength": 6,
+            "labels": [
+              "api-reference",
+              "billed-per",
+              "per-unit-rate",
+              "post-endpoint",
+              "qualified-api",
+              "usage-based"
+            ],
+            "sample_quote": "est shape, typical latency 2-9 seconds. POST https://api.driftflight.com/v1/images/generate Authorization: Bearer df_live_4kq2... {",
+            "surfaces": [
+              "/llms.txt",
+              "homepage"
+            ]
+          },
+          {
+            "archetype": "digital_good",
+            "strength": 4,
+            "labels": [
+              "generation",
+              "generations",
+              "hosted-output",
+              "render"
+            ],
+            "sample_quote": "r every pipeline Hobby $5 per month 100 generations / month sketch tier (1024px) All shared",
+            "surfaces": [
+              "/llms.txt",
+              "homepage"
+            ]
+          },
+          {
+            "archetype": "subscription",
+            "strength": 3,
+            "labels": [
+              "annual-billing",
+              "per-month",
+              "per-month-price"
+            ],
+            "sample_quote": "Pricing Plans for every pipeline Hobby $5 per month 100 generations / month sketch tier (10",
+            "surfaces": [
+              "/llms.txt",
+              "homepage"
+            ]
+          }
+        ],
+        "unclaimed": [
+          "physical_good",
+          "service_booking",
+          "data_retrieval"
+        ],
+        "surfaces_seen": [
+          "homepage",
+          "/llms.txt"
+        ]
+      }
+    },
+    "example.com": {
+      "surfaces_seen": [
+        "homepage"
+      ],
+      "claimed": [],
+      "unclaimed": [
+        "metered_api",
+        "subscription",
+        "digital_good",
+        "physical_good",
+        "service_booking",
+        "data_retrieval"
+      ],
+      "evidence": {
+        "claimed": [],
+        "unclaimed": [
+          "metered_api",
+          "subscription",
+          "digital_good",
+          "physical_good",
+          "service_booking",
+          "data_retrieval"
+        ],
+        "surfaces_seen": [
+          "homepage"
+        ]
+      }
+    },
+    "books.toscrape.com": {
+      "surfaces_seen": [
+        "homepage"
+      ],
+      "claimed": [
+        "physical_good"
+      ],
+      "unclaimed": [
+        "metered_api",
+        "subscription",
+        "digital_good",
+        "service_booking",
+        "data_retrieval"
+      ],
+      "evidence": {
+        "claimed": [
+          {
+            "archetype": "physical_good",
+            "strength": 2,
+            "labels": [
+              "add-to-cart",
+              "stock"
+            ],
+            "sample_quote": "ng. A Light in the ... \u00c2\u00a351.77 In stock Add to basket Tipping the Velvet \u00c2\u00a353.74 In stock Add",
+            "surfaces": [
+              "homepage"
+            ]
+          }
+        ],
+        "unclaimed": [
+          "metered_api",
+          "subscription",
+          "digital_good",
+          "service_booking",
+          "data_retrieval"
+        ],
+        "surfaces_seen": [
+          "homepage"
+        ]
+      }
+    }
+  }
+}

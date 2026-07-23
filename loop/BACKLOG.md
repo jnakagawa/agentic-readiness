@@ -100,14 +100,20 @@ design in-cloud, execute locally.
      reports now embed rubric "0.6"). One residual → P1 (site-side "…safety/security
      policy" false-positive is pre-existing/symmetric, not a regression). Verdict:
      SURVIVED → merged. See LOG. -->
-- **[LOCAL] Confirm the trial-count panel reads stable post-v0.6** (METHOD
-  follow-up; PARTIALLY DISCHARGED 2026-07-23T10:13Z). The "safety"-blocked-codex →
-  `hosted_agent_reachability` routing is now CONFIRMED LIVE (the 10:13Z battery run:
-  codex#1 "site-safety policy" excluded, surfaced as reachability, primary panel
-  read 0.87 stable — not corrupted). REMAINING: re-run `experiments/trial_count_N.py`
-  on the drift-flight.org 5-trial panel and confirm the verdict-stability curve now
-  reads monotone/stable (N=2 0.80 → 5 0.92) end-to-end under merged v0.6, rather
-  than the pre-fix "mixed". Budget: one panel (reuses the ONE-run N-curve harness).
+<!-- OFFLINE HALF DONE 2026-07-23T11:15Z (Cycle 11, TRUTH): the data-recompute half
+     of "Confirm the trial-count panel reads stable post-v0.6" is DISCHARGED in-cloud.
+     tests/test_trial_stability_v06.py (4/4) recomputes the committed 06:44Z panel
+     through the SHIPPED panel_reliability/_is_env_blocked: all 5 codex runs (incl.
+     t3, the original leak) env-blocked, valid pool claude-only, corrected curve
+     monotone + "stable" at every N>=2 (0.80 → 0.867 → 0.90 → 0.92), superseding the
+     artifact's pre-v0.6 curve at N>=3. trial_count_N_analysis.py de-staled. See LOG. -->
+- **[LOCAL] Fresh live 5-trial panel post-v0.6** (METHOD follow-up; the LIVE half
+  remaining after Cycle 11 pinned the offline recompute). Re-run
+  `experiments/trial_count_N.py` on a NEW drift-flight.org 5-trial panel and confirm
+  the verdict-stability curve reads monotone/stable END-TO-END under merged v0.6 on
+  fresh runs (not just recomputed from the 06:44Z artifact). Distinct value over the
+  offline pin: catches any live env-block phrasing the fixture set doesn't cover.
+  Budget: one panel (reuses the ONE-run N-curve harness).
 
 <!-- EXECUTED 2026-07-23T07:50Z (local fire): "[LOCAL] What trial count N
      stabilizes the panel" — ran a live claude+codex×5 panel on drift-flight.org

@@ -6,20 +6,29 @@ Deterministic, $0, no network: reconstructs the ``BehavioralRun`` records the
 verdict-stability curve with the SHIPPED metric — so the finding rests on
 recomputation, not on trusting an orphaned artifact from an interrupted fire.
 
-Three things it proves:
-  1. Reproduction — the committed curve (valid_runs / verdict_stability per N)
-     is exactly what ``asrs.reliability.panel_reliability`` yields over the
-     nested first-N subsamples. The artifact was not fabricated.
-  2. The leak — the non-monotonic curve (N=2 stable 0.80 -> N=3 mixed 0.60) is
-     driven by ONE env-blocked codex run leaking into the valid pool: codex
-     trial 3 said its browser "safety controls" blocked the site, but
-     ``shopper._ENV_BLOCK_RE`` only matches "security" phrasings, so that
-     all-false verdict (the agent observed NOTHING) is scored as a site verdict.
-     Invariant #4 violation (agent-side env failure scored as site evidence).
-  3. The fix, simulated — re-running the curve with an env-block predicate that
-     also covers "safety controls/grounds/policy" (NOT edited into source here;
-     that is a peer-gated scoring-semantics change, queued in BACKLOG) makes the
-     curve monotone and stable, confirming the leak was the whole story.
+HISTORY: the panel was captured BEFORE rubric v0.6. At capture time
+``shopper._ENV_BLOCK_RE`` matched only "security" phrasings, so codex trial 3
+("browser safety controls") leaked into the valid pool as an all-false SITE
+verdict — an invariant #4 violation that made the committed ``curve`` block
+non-monotonic (N=2 stable 0.80 -> N=3 mixed 0.60). v0.6 broadened the
+classifier so "safety" is a sibling of "security"; that fix is NOW SHIPPED to
+``shopper._ENV_BLOCK_RE``, so the "proposed" predicate below is identical to
+the live one and codex t3 is env-blocked at the source.
+
+What this script shows against the SHIPPED classifier:
+  1. Supersession — section (1) recomputes ``asrs.reliability.panel_reliability``
+     over the nested first-N subsamples and reports MISMATCH vs the committed
+     curve at N>=3. That is EXPECTED and correct: the committed curve is a
+     superseded pre-v0.6 snapshot (the evidence file is append-only, invariant
+     #5, so it stays as the historical record); the fix moved the reading.
+  2. No leak — section (2) confirms 0 codex runs leak: the shipped regex now
+     catches all five, including t3.
+  3. The corrected curve — section (3) is monotone and stable at every N>=2
+     (0.80 -> 0.867 -> 0.90 -> 0.92), the claude-only reading once codex (which
+     never observed the domain) routes out.
+
+The post-v0.6 reading is pinned as a regression test in
+``tests/test_trial_stability_v06.py``; this script is the narrated derivation.
 
 Run: ``.venv/bin/python -m experiments.trial_count_N_analysis`` from repo root.
 """
@@ -37,9 +46,10 @@ from asrs.types import BehavioralRun
 ARTIFACT = "runs/local/trial_stability_20260723T064359Z.json"
 SUBSAMPLE_NS = [2, 3, 4, 5]
 
-# PROPOSED (not shipped) env-block predicate: the current regex plus "safety"
-# as a sibling of "security". Mirror-image of _ENV_BLOCK_RE; kept here only to
-# simulate the peer-gated fix's effect on the curve.
+# The env-block predicate the fix landed: the base regex plus "safety" as a
+# sibling of "security". As of v0.6 this is IDENTICAL to the shipped
+# ``_ENV_BLOCK_RE`` — kept as a local mirror only so section (3) is legible
+# side-by-side with the shipped ``_is_env_blocked`` used everywhere else here.
 _ENV_BLOCK_FIXED = re.compile(
     r"(?:blocked|rejected|refused|denied)[^.]{0,80}"
     r"(?:browser (?:security|safety)|(?:security|safety) (?:policy|controls|grounds))"
@@ -79,24 +89,24 @@ def main() -> int:
 
     print(f"artifact: {ARTIFACT}  ({art['domain']}, {art['models']} x {art['max_trials']})\n")
 
-    # (1) reproduce the committed curve exactly.
-    print("(1) REPRODUCE committed curve with shipped panel_reliability:")
+    # (1) recompute vs the committed (pre-v0.6) curve. MISMATCH at N>=3 is the
+    #     EXPECTED post-fix supersession, not a fabrication.
+    print("(1) RECOMPUTE with shipped panel_reliability vs committed pre-v0.6 curve:")
     print("    N  valid  stability  label   | committed(valid, stability)")
-    ok = True
     for c in art["curve"]:
         n = c["trials_per_model"]
         rel = panel_reliability(_first_n(runs, n))
         match = rel.valid_runs == c["valid_runs"] and rel.verdict_stability == c["verdict_stability"]
-        ok = ok and match
         print(
             f"    {n}  {rel.valid_runs:>3}    {str(rel.verdict_stability):>6}   "
             f"{rel.label:<8}| ({c['valid_runs']}, {c['verdict_stability']})  "
-            f"{'OK' if match else 'MISMATCH'}"
+            f"{'same' if match else 'SUPERSEDED (v0.6 fix)'}"
         )
-    print(f"    => reproduction {'CONFIRMED' if ok else 'FAILED'}\n")
+    print("    => N=2 agrees (already claude-only); N>=3 superseded by the v0.6")
+    print("       env-block fix (committed curve is the append-only pre-fix record)\n")
 
     # (2) the leak: which codex runs does the shipped filter miss?
-    print("(2) ENV-BLOCK ATTRIBUTION per codex run (shipped regex):")
+    print("(2) ENV-BLOCK ATTRIBUTION per codex run (shipped v0.6 regex; expect 0 leaks):")
     for r in runs:
         if r.model != "codex":
             continue
@@ -109,8 +119,8 @@ def main() -> int:
     print(f"    => {len(leaked)} codex run(s) leak as all-false site verdicts: "
           f"{[f'codex t{r.trial}' for r in leaked]}\n")
 
-    # (3) simulate the fix: recompute the curve excluding safety-phrased blocks.
-    print("(3) CORRECTED curve (proposed regex also excludes 'safety' blocks):")
+    # (3) the corrected curve: shipped regex excludes safety-phrased blocks too.
+    print("(3) CORRECTED curve (shipped v0.6 regex excludes 'safety' blocks):")
     print("    N  valid  stability  label")
     for n in SUBSAMPLE_NS:
         subset = [r for r in _first_n(runs, n) if not _env_blocked_fixed(r)]

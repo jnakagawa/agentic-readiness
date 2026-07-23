@@ -1,11 +1,11 @@
 # Loop state
 
-- Cycle counter: 10
+- Cycle counter: 11
 - Started: 2026-07-23 (UTC)
-- Focus pointer: TRUTH (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: READOUT (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
-  Cycle 9 METHOD, Cycle 10 COVERAGE; next cycle takes TRUTH.)
+  Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH; next cycle takes READOUT.)
 - Rubric: **v0.6 on main** (PR #2 MERGED 2026-07-23T~09:47Z, merge commit 8fe9f46,
   clean fast-forward). v0.6 broadens the env-block classifier to recognize
   "safety"-phrased hosted-browser refusals (aggregation rule → version bump).
@@ -99,12 +99,26 @@
   (launchd, hourly :41 on Jonah's machine) appears stopped. To be flagged in the
   next Slack daily digest (first cycle after 16:00 UTC) per the comms policy — the
   next live canonical re-score signal depends on it or on a manual local fire.
+  RE-CONFIRMED DOWN Cycle 11 (11:15Z): newest still verify_20260723T040757Z, now
+  ~7h08m old.
   SEPARATE BUG (persists): the runner's `scores`
   block records FileNotFoundError because `[asrs.scoring]` stderr coverage-warning
   lines leak into the score-path argument — its live re-score capture is BROKEN
   (its TEST block is green; the live delta is still confirmed by the 05:52Z/07:50Z
   manual local fires). Queued in BACKLOG; the P2 coverage-warning suppression
   fixes it at the source.
+- Trial-count post-v0.6 (Cycle 11, TRUTH): the OFFLINE (data-recompute) half of
+  the "confirm the trial-count panel reads stable post-v0.6" P0 is now DISCHARGED
+  in-cloud and pinned. `tests/test_trial_stability_v06.py` (4/4) recomputes the
+  committed 06:44Z panel through the SHIPPED `panel_reliability`/`_is_env_blocked`:
+  all 5 codex runs (incl. t3, the original "safety controls" leak) are env-blocked,
+  valid pool is claude-only, and the corrected curve is monotone + "stable" at every
+  N>=2 (0.80 → 0.867 → 0.90 → 0.92) — vs the artifact's superseded pre-v0.6 curve
+  (0.80 → 0.60 → 0.68 → 0.733) at N>=3. `experiments/trial_count_N_analysis.py`
+  de-staled (its "proposed (not shipped)" fix is now the shipped regex; section (1)
+  reads "SUPERSEDED (v0.6 fix)" not "reproduction FAILED"). No scoring semantics;
+  suite 60 → 64; direct-to-main. REMAINING [LOCAL]: a FRESH live 5-trial panel and
+  the still-open CROSS-MODEL question (codex has never reached a canonical domain).
 - Trial-count / panel-stability (local fire 2026-07-23T07:50Z, TRUTH/METHOD):
   executed the P0 [LOCAL] N-sweep item via an orphaned live claude+codex×5 panel
   on drift-flight.org (interrupted ~06:44Z fire; artifact adopted after

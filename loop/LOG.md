@@ -1007,3 +1007,65 @@ the capability delta — "consistently ready across every intent" vs "consistent
 gated across every intent" — and it exercises the Cycle-10 per_kind rollup on live
 multi-kind data. One pair of spreads makes readiness intent-STABILITY a structural
 claim, not a per-task artifact.
+
+## Cycle 11 — 2026-07-23T11:15Z — TRUTH (direct to main)
+
+**First duty (peer gate).** No open PRs (PR #1, PR #2 both merged). Nothing to review.
+
+**What.** Pinned the POST-v0.6 reading of the committed trial-count panel as a
+regression test on real panel data, and de-staled the analysis script that still
+narrated the v0.6 fix as "proposed (not shipped)".
+- NEW `tests/test_trial_stability_v06.py` (4/4): loads the append-only 06:44Z
+  artifact `runs/local/trial_stability_20260723T064359Z.json`, reconstructs its
+  `BehavioralRun`s, and recomputes the panel through the SHIPPED
+  `asrs.reliability.panel_reliability` / `shopper._is_env_blocked`. Pins: (a) all
+  5 codex runs — including t3, the former "browser safety controls" leak — are now
+  env-blocked; (b) the valid pool is claude-only (codex observed nothing); (c) the
+  corrected trial-count curve is monotone non-decreasing and "stable" at every N>=2
+  (0.80 → 0.867 → 0.90 → 0.92); (d) it DIFFERS from the artifact's committed
+  pre-v0.6 curve at N>=3 (documents supersession without editing the evidence file).
+- Updated `experiments/trial_count_N_analysis.py` docstring + section labels: the
+  "proposed" env-block predicate is now identical to the shipped `_ENV_BLOCK_RE`;
+  section (1)'s prior "reproduction FAILED" now correctly reads "N>=3 SUPERSEDED
+  (v0.6 fix)" — the committed curve is the append-only pre-fix record, not a
+  fabrication. No behavior change to the derivation.
+
+**Why (TRUTH).** v0.6 shipped the env-block "safety" broadening as a peer-gated
+scoring-semantics change, but its effect had only been *simulated* offline
+(analysis script) and *live-validated* on ONE new codex trial (the 10:13Z battery,
+which routed a fresh "site-safety policy" refusal to reachability). The original
+corrupting datapoint — codex t3 of the trial-count panel that first exposed the
+leak — had never been re-read through the shipped classifier. This closes that
+loop: the exact run that motivated v0.6 now reads correctly under v0.6, on
+committed data, pinned so a future regex regression re-breaks the test. It also
+converts the P0 "confirm the trial-count panel reads stable post-v0.6" from a
+narrative claim into an executable one for the offline (data-recompute) half; only
+a FRESH live 5-trial panel remains genuinely [LOCAL].
+
+**Evidence.** `tests/test_trial_stability_v06.py` (new, 4/4);
+`experiments/trial_count_N_analysis.py` (updated); source artifact
+`runs/local/trial_stability_20260723T064359Z.json` (unchanged, append-only).
+Full suite 60 → 64.
+
+**Canonical pair (regression signal).** UNCHANGED BY CONSTRUCTION — this cycle
+touches only `tests/` and `experiments/`; `scoring.py`, the rubric, and the static
+scoring path are byte-for-byte untouched, so the static delta cannot move. Last
+confirmed live: 46.1 F / 85.5 B, delta **+39.4** (10:13Z local merge-gate re-score,
+rubric 0.6). In-cloud live re-score remains network-blocked (policy denial).
+
+**Runner health — STILL DOWN (>7h).** Newest `verify_*.json` is
+verify_20260723T040757Z (04:07Z) — 7h08m old at 11:15Z, no :41 artifact since.
+Already flagged in STATE; belongs in the next Slack daily digest (first cycle after
+16:00 UTC). Its live-re-score capture also remains broken by the coverage-warning
+stderr leak (BACKLOG P2/coverage-warning).
+
+**Ship.** Direct to main: tests + experiment-script narration, no scoring
+semantics, no version bump. Not a capability/score change and pre-16:00 UTC → no
+Slack DM (comms policy: quiet).
+
+**Next hypothesis.** The offline half of the post-v0.6 stability confirmation is now
+pinned; the remaining open TRUTH question is CROSS-MODEL — codex has never reached a
+canonical domain in a full panel, so every stability curve to date is single-model
+(claude-only) reproducibility. The codex-reachability/control-storefront attribution
+fix (feed codex pre-fetched content when its browser is gated, marked assisted) is
+the blocker; until it lands, "N stabilizes the panel" is answered only for claude.

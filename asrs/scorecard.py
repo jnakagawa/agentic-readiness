@@ -466,6 +466,97 @@ def _checkpoints(rep: dict) -> str:
     )
 
 
+_RELIABILITY_BANDS = {
+    "stable": ("good", "Stable"),
+    "mixed": ("warn", "Mixed"),
+    "unstable": ("bad", "Unstable"),
+    "single-trial": ("neutral", "Single trial"),
+    "no-signal": ("neutral", "No signal"),
+}
+_CHECKPOINT_LABEL_BY_KEY = dict(CHECKPOINT_LABELS)
+
+
+def _reliability(rep: dict) -> str:
+    """Within-panel reproducibility card: did the runs agree on the same task?
+
+    Reads the ADDITIVE ``panel_reliability`` dict the Report now carries (the
+    :class:`asrs.reliability.PanelReliability`). Absent (static-only report) ->
+    no card. Diagnostic only — never part of the score; it tells a reader whether
+    a quoted number rests on runs that reproduce or runs that flip between trials.
+    """
+    rel = rep.get("panel_reliability")
+    if not rel:
+        return ""
+
+    band_cls, band_label = _RELIABILITY_BANDS.get(rel.get("label", ""), ("neutral", "—"))
+
+    if rel.get("single_trial"):
+        n = rel.get("valid_runs", 0)
+        if n == 0:
+            body = (
+                '<div class="desc">No run observed the site, so reproducibility '
+                "could not be assessed.</div>"
+            )
+        else:
+            body = (
+                '<div class="desc">Only one run observed the site — reproducibility '
+                "is not assessed from a single draw. Re-run with more trials to quote "
+                "a stability number.</div>"
+            )
+        pill = f'<span class="pill {band_cls}"><span class="dot"></span>{band_label}</span>'
+        return (
+            '<div class="card"><div class="card-header"><div><h2>Panel reliability</h2>'
+            '<div class="desc">Do the shopper runs reproduce on the same task?</div>'
+            f"</div>{pill}</div>"
+            f'<div class="card-body">{body}</div></div>'
+        )
+
+    stability = rel.get("verdict_stability")
+    stability_str = "n/a" if stability is None else f"{stability:.2f}"
+    n = rel.get("valid_runs", 0)
+    pill = (
+        f'<span class="pill {band_cls}"><span class="dot"></span>{band_label}'
+        f'&nbsp;·&nbsp;<span class="num">{stability_str}</span></span>'
+    )
+
+    flipped = rel.get("flipped_checkpoints") or []
+    if flipped:
+        chips = "".join(
+            f'<span class="chip">{_esc(_CHECKPOINT_LABEL_BY_KEY.get(k, k))}</span>'
+            for k in flipped
+        )
+        flipped_html = (
+            '<div style="display:flex;flex-direction:column;gap:6px">'
+            '<div class="desc">Flipped between runs (a checkpoint that passed in one '
+            "run and failed in another):</div>"
+            f'<div style="display:flex;flex-wrap:wrap;gap:6px">{chips}</div></div>'
+        )
+    else:
+        flipped_html = '<div class="desc">Every checkpoint was unanimous across the runs.</div>'
+
+    trust_html = ""
+    if rel.get("trust_events_unanimous") is False:
+        agree = rel.get("trust_event_agreement")
+        agree_str = "" if agree is None else f" (agreement {agree:.2f})"
+        trust_html = (
+            f'<div class="desc">Trust signal flipped{agree_str} — some runs raised a '
+            "trust concern during the session, others did not.</div>"
+        )
+
+    body = (
+        '<div style="display:flex;flex-direction:column;gap:12px">'
+        f'<div class="desc">Verdict stability <b class="num">{stability_str}</b> over '
+        f"{n} valid runs &mdash; 1.0 means every run agreed on every checkpoint.</div>"
+        f"{flipped_html}{trust_html}</div>"
+    )
+    return (
+        '<div class="card"><div class="card-header"><div><h2>Panel reliability</h2>'
+        '<div class="desc">Do the shopper runs reproduce on the same task?</div>'
+        f"</div>{pill}</div>"
+        f'<div class="card-body">{body}</div></div>'
+    )
+
+
 def _overview_card(rep: dict, label: str | None, baseline: dict | None = None) -> str:
     title = f'{_esc(rep["domain"])}'
     sub = f'{_esc(label)} · scored {rep["generated_at"][:10]}' if label else f'scored {rep["generated_at"][:10]}'
@@ -496,6 +587,7 @@ def _domain_column(rep: dict, label: str | None, baseline: dict | None = None) -
         + _recs_card(rep)
         + _trust_panel(rep)
         + _checkpoints(rep)
+        + _reliability(rep)
         + "</div>"
     )
 
@@ -510,6 +602,7 @@ def _section_rows(a: dict, b: dict, labels: list[str | None]) -> str:
         (_recs_card(a, titled=True), _recs_card(b, titled=True)),
         (_trust_panel(a), _trust_panel(b)),
         (_checkpoints(a), _checkpoints(b)),
+        (_reliability(a), _reliability(b)),
     ]
     rows = []
     for left, right in sections:

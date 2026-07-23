@@ -198,3 +198,75 @@ tests_ok=True | drift-flight.org: ERR | driftflight.com: ERR | artifact runs/loc
 ## Local verification — 20260723T040757Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260723T040757Z.json
+
+## Cycle 4 — 2026-07-23T04:15Z — READOUT (direct to main)
+
+**What.** Surfaced the within-panel verdict-reliability metric — computed only
+inside the terminal renderer since Cycle 3 — in the JSON `Report` and the HTML
+scorecard. `Report` gains one ADDITIVE field, `panel_reliability: dict | None`
+(the `asrs.reliability.PanelReliability` as a plain dict). `cli._evaluate`
+populates it after scoring from the SAME `behavioral_runs` via the SAME pure
+`panel_reliability()` the terminal calls, so JSON/HTML and the terminal card
+never diverge. `scorecard._reliability(rep)` renders a brand-styled "Panel
+reliability" card (stability number + band pill, flipped checkpoints shown by
+human label, the trust-signal flip note) wired into both the single-domain
+column and the side-by-side compare layout. `tests/test_readout.py` (5 tests).
+
+**Why (READOUT).** The reliability signal answered "does the panel reproduce on
+the same task?" but only in the terminal — the JSON a leaderboard/consumer reads
+and the hosted HTML card carried the high-delta number with no reproducibility
+context beside it. A quoted stability that lives only in a terminal a human ran
+once is not a benchmark readout. This puts reproducibility next to the score
+everywhere the score travels, so a reader sees whether a number rests on runs
+that agree or runs that flip between trials. Serves readout clarity directly.
+
+**Scope decision (why reliability only, not battery too).** The backlog item
+paired reliability + battery attach. `BatterySummary` has NO populated source in
+the current pipeline — `--battery` wiring is `[LOCAL]`-gated behavioral work — so
+attaching it now would create a permanently-null dead field. `PanelReliability`
+is genuinely populatable in-cloud today (`behavioral_runs` sit on every
+behavioral Report), so it is the smallest scientifically meaningful unit that
+actually carries data. Battery-attach stays queued behind `--battery`.
+
+**Invariant discipline.** Rubric UNCHANGED — adds NO check, weight, or cap and
+does NOT feed the overall score. `git diff --stat asrs/scoring.py rubric/` is
+EMPTY (byte-for-byte). The new `types.py` field is optional, default None,
+scoring-irrelevant → NO rubric version bump, direct-to-main. Vendor-neutral: the
+card is pure arithmetic over checkpoint booleans, no domain/brand string; the
+smoke render used driftflight.com only as a fixture label. $0-only / free-tier
+path untouched (consumes already-collected runs). Static reports carry
+`panel_reliability = None` — no invented reproducibility for a panel that never
+ran (attribution honesty).
+
+**Evidence.**
+- Full suite GREEN 34/34: test_readout 5/5, test_reliability 8/8, test_battery
+  6/6, test_scoring 7/7, test_free_tier 8/8 (free_tier needed `pip install -r
+  requirements.txt` — `eth-account` absent in the fresh cloud container, the
+  same pre-existing env gap logged in Cycle 3; 7/8 before install, 8/8 after).
+- test_readout pins: a 2-run panel (one checkpoint split) round-trips through
+  `to_json`/`json.loads` with `verdict_stability` 0.8 and
+  `flipped_checkpoints == ["machine_payable_path"]`; the stored dict is
+  byte-for-byte `panel_reliability(runs).to_dict()` (one source of truth); a
+  static report serializes `panel_reliability = None`; the HTML card shows
+  "0.80"/"Stable"/"Machine-payable" and never leaks the raw key; single-trial →
+  "Single trial"/"not assessed" (no fake number); absent field → empty string
+  (static scorecards byte-identical).
+- End-to-end smoke: `build_scorecard` on a synthetic behavioral report emits the
+  "Panel reliability" card with stability 0.80 and the flipped-checkpoint chip.
+
+**Canonical pair (regression signal).** UNCHANGED by construction: the scoring
+path (scoring.py, rubric, plus the scoring-relevant types.py fields) is
+byte-for-byte untouched, so no domain's overall/pillar/delta can move. LIVE
+signal from the freshest local-verify artifact (runs/local/verify_20260723T040757Z.json,
+~7 min old at cycle time — runner healthy): drift-flight.org 46.1 F vs
+driftflight.com 85.5 B, delta +39.4 — matching the by-construction expectation
+of no movement.
+
+**Next hypothesis (METHOD is next in rotation).** With reproducibility now
+visible in the JSON, the natural METHOD step is to make trials>=2 the behavioral
+default and gate the QUOTABILITY of a single number on `single_trial` /
+`verdict_stability` (a readout-level "provisional (single trial)" tag, NOT a
+score change). Open [LOCAL] science question unchanged: what trial count N drives
+`verdict_stability` above ~0.8 on the canonical pair. Battery attach remains
+queued behind `--battery` wiring (COVERAGE, partially in-cloud testable with a
+synthetic panel).

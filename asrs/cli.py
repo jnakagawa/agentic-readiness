@@ -155,9 +155,22 @@ def _evaluate(domain, args, rubric):
         )
         checks.extend(bhv_checks)
 
-    return scoring.score(
+    report = scoring.score(
         checks, rubric, domain, trust_panel=verdicts, behavioral_runs=runs
     )
+
+    # Attach within-panel reproducibility as an ADDITIVE diagnostic so JSON /
+    # HTML consumers carry it, not just the terminal card. Computed from the same
+    # runs by the same pure function the terminal uses, so the two never diverge.
+    # Non-scoring: score() already ran; this only annotates the report. Left None
+    # when no panel ran (static-only) — a static report has no reproducibility to
+    # report, distinct from a panel that ran and produced no valid run.
+    if runs:
+        from .reliability import panel_reliability
+
+        report.panel_reliability = panel_reliability(runs).to_dict()
+
+    return report
 
 
 def _cmd_score(args) -> int:

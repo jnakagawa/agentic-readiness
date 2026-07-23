@@ -32,7 +32,10 @@ design in-cloud, execute locally.
   - Attach the `BatterySummary` to `Report` as a NEW additive field (like
     `trust_panel`/`behavioral_runs`) — additive, NOT a scoring-semantics change,
     NO version bump. Render a reliability row (`cross_task_spread` + per-task
-    completion) in `report.render` and the HTML scorecard.
+    completion) in `report.render` and the HTML scorecard — mirror the Cycle-4
+    `panel_reliability` surfacing (additive `Report` field populated in
+    `cli._evaluate`; `scorecard._reliability` card wired into both layouts) as
+    the template for a `BatterySummary` field + card.
   - `[LOCAL]` behavioral execution once wired:
     ```
     git checkout main && git pull
@@ -56,15 +59,6 @@ design in-cloud, execute locally.
   the QUOTABILITY of a single number on `verdict_stability`/`single_trial` (a
   readout-level "provisional (single trial)" tag, NOT a score change). Observed
   same-day refuse↔warn flip at equal confidence — a single trial is not quotable.
-
-- **Surface reliability + battery in JSON/HTML** (READOUT, Cycle 3 follow-up):
-  `panel_reliability` is computed only in `report.render` today; the JSON
-  `Report` and the HTML scorecard carry neither it nor Cycle 2's
-  `BatterySummary`. Attach both to `Report` as NEW additive fields (like
-  `trust_panel`/`behavioral_runs` — additive, NOT scoring-semantics, NO version
-  bump), populate them in `cli._evaluate`, and render a reliability row on the
-  HTML card. In-cloud testable (synthetic runs; no network). This is the
-  natural next READOUT cycle.
 
 - **[LOCAL] What trial count N stabilizes the panel** (TRUTH/METHOD, Cycle 3
   follow-up): the reliability metric now quantifies flips, but the empirical

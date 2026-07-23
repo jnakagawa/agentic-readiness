@@ -78,6 +78,13 @@ class Report:
     caps_applied: list[str] = field(default_factory=list)  # cap slugs that limited the grade
     trust_panel: list[ModelTrustVerdict] = field(default_factory=list)
     behavioral_runs: list[BehavioralRun] = field(default_factory=list)
+    # Within-panel verdict reproducibility over ``behavioral_runs`` (the
+    # :class:`asrs.reliability.PanelReliability` as a plain dict, or None when no
+    # behavioral panel ran). ADDITIVE diagnostic — does NOT feed the score and
+    # bumps NO rubric version; it just travels with the JSON so leaderboard/HTML
+    # consumers see reproducibility, not only the terminal card. Stored as a dict
+    # (not the dataclass) to keep this module stdlib-only and dependency-free.
+    panel_reliability: dict[str, Any] | None = None
     # False when no pillar was observable (every check NA/CANT_TEST/absent):
     # the report carries no score, only findings. Attribution honesty — a site
     # is never punished for what couldn't be observed (rubric invariant).

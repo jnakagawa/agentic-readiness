@@ -194,3 +194,7 @@ empirical answer to "what N stabilizes it".
 ## Local verification — 20260723T040714Z
 
 tests_ok=True | drift-flight.org: ERR | driftflight.com: ERR | artifact runs/local/verify_20260723T040714Z.json
+
+## Local verification — 20260723T040757Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260723T040757Z.json

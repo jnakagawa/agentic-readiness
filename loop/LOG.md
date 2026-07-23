@@ -2024,3 +2024,76 @@ tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4
 ## Local verification — 20260723T204104Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260723T204104Z.json
+
+## Cycle 21 — 2026-07-23T21:13Z — METHOD (direct to main)
+
+**What.** Made the VENDOR-NEUTRALITY invariant executable for the first time —
+"checks worded by capability, never by vendor; no special-casing any domain,
+favorable or hostile". Added 3 domain-relabeling INVARIANCE tests to the
+canonical-guard family (`tests/test_canonical_replay.py`, 4→7). Each relabels a
+committed canonical fixture's host — in the request keys AND every response byte
+(URLs, `final_url`, headers, bodies), a whole-fixture string substitution to a
+neutral `.test` placeholder of a DIFFERENT length — writes it to a temp file, and
+replays it through the REAL `FetchContext.from_fixture → _run_probes →
+scoring.score` pipeline (the same path guards 1–3 use). A capability-only scorer
+MUST return the identical overall / grade / all five pillars / every check status;
+renaming the shop changes nothing. `test_relabel_invariance_org` (46.1 F),
+`test_relabel_invariance_com` (85.5 B), and `test_relabeled_delta_still_39_4`
+(relabel EACH side to a distinct anonymous host → delta still +39.4, so the delta
+is a property of the recorded evidence, not of the two famous names).
+
+**Why (METHOD).** This was the METHOD candidate Cycle 20's "next hypothesis"
+named — the adversarial-referee "would a critic call this vendor-rigged?" audit,
+but converted from prose into a tripwire (the same move Cycle 17 made for "delta
+unchanged" and Cycle 19 for "delta in capability terms"). Guards 1–3 pin that the
+recorded EVIDENCE produces the canonical numbers; this new guard pins that the
+numbers depend ONLY on the evidence, never on the storefront's IDENTITY. It is
+the executable proof of the capability lens: the +39.4 delta comes from what
+agent-native rails let an agent DO, not from special-casing driftflight.com
+favorably or drift-flight.org hostilely. NON-VACUOUS: verified by a negative
+control — a monkeypatched favorable special-case (bump `x402_probe`→PASS only when
+the literal canonical host is cached) is CAUGHT by the per-check-status assertion
+(`x402_probe: PASS→FAIL` base-vs-relabel diff), and note it slipped the numeric
+pillar checks in that rig, so the status assertion earns its place beyond the
+overall/pillar equalities.
+
+**Invariant discipline.** Tests-only. `asrs/scoring.py`, `rubric/`, every probe,
+and `asrs/fetch.py` are byte-for-byte untouched — the relabel is a pure string
+substitution over a fixture COPY (temp file, unlinked in `finally`); no committed
+fixture is modified (invariant #5, append-only). No check add/remove, no
+weight/cap change, no version bump → rubric stays **v0.7**. $0-only intact (no
+network, no payment path). Diff is 1 file (`test_canonical_replay.py`).
+
+**Tests.** Full suite green, 12/12 files: attribution 9, battery 9,
+battery_wiring 4, **canonical_replay 7** (was 4, +3 relabel-invariance),
+fetch_replay 3, free_tier 8 (eth-account installed), protocols 7, quotability 8,
+readout 16, reliability 8, scoring 11, trial_stability_v06 4. Suite **91 → 94**.
+
+**Canonical pair (regression signal).** In-cloud replay guard, rubric v0.7:
+drift-flight.org **46.1 F** / driftflight.com **85.5 B**, delta **+39.4**, 0
+replay-miss on either — UNCHANGED and re-measured (scoring path byte-for-byte
+untouched; the change is test-only). Corroborated by the local runner's newest
+artifact `runs/local/verify_20260723T204104Z.json` (20:41Z) = 46.1 F / 85.5 B /
++39.4. NEW this cycle: the delta is now also pinned as IDENTITY-INVARIANT — two
+anonymized storefronts with the same recorded capabilities reproduce +39.4.
+
+**Infra health (self-healing check, ran first).** Runner HEALTHY: newest
+artifact `verify_20260723T204104Z.json` (20:41Z) is ~32 min old at fire time,
+well under the 6h threshold — still heartbeating since the Cycle-19 recovery. No
+repair needed. No open peer-gated PR (`list_pull_requests state=open` → []) →
+first-duty review has nothing pending. Was in detached HEAD on checkout; reset to
+`main` and fast-forwarded before working. Installed `eth-account` (pre-existing
+env gap, invariant #4) → free_tier 8/8.
+
+**Ship.** Direct-to-main. No Slack DM — tests-only, moves no score, adds no
+capability check; the daily digest was already sent Cycle 16 and this fire
+(21:13Z) is not a new digest window.
+
+**Next hypothesis.** COVERAGE next cycle (rotation
+METHOD→COVERAGE→TRUTH→READOUT; this was METHOD → next is **COVERAGE**). The
+identity-invariance guard now covers only the canonical PAIR; a cloud-doable
+COVERAGE candidate is extending the replay-guard family to a THIRD control domain
+once its fixture is captured [LOCAL] (example.com, P2) — or the cloud half of the
+"live handshakes for other rails" item (ACP `checkout_sessions` elicitation
+parsing) that doesn't require live network. The between-type pill still wants live
+multi-kind data — folded into the [LOCAL] second cross_task_spread datapoint (P0).

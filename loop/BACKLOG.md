@@ -216,9 +216,19 @@ design in-cloud, execute locally.
   POST a nonzero-value item), (b) MPP-only elicitation parity, (c) broaden well-known
   path coverage to catch MORE real commerce surfaces that currently score 0. Each of
   these can raise a domain's score, so gate on live evidence before shipping.
-- **Adversarial referee pass** (METHOD): a recurring self-audit — "would a
-  critic call this check vendor-rigged?" — rewording and evidence-
-  strengthening without losing capability substance.
+- **Adversarial referee pass** (METHOD, recurring): a self-audit — "would a
+  critic call this check vendor-rigged?" — rewording and evidence-strengthening
+  without losing capability substance. PROGRESS 2026-07-23T21:13Z (Cycle 21):
+  shipped the FIRST EXECUTABLE instance — domain-relabeling invariance
+  (`tests/test_canonical_replay.py`, +3 tests). Relabeling a canonical fixture's
+  host everywhere and re-scoring yields the IDENTICAL score/pillars/statuses,
+  proving the +39.4 delta is a property of the capability EVIDENCE, not the
+  storefront's identity ("no special-casing any domain, favorable or hostile" is
+  now a tripwire, non-vacuous per a negative control). REMAINING (still recurring):
+  a prose re-read of each check's WORDING for vendor-leaning phrasing (the
+  invariance guard proves the SCORING is neutral, not that the DESCRIPTIONS read
+  neutrally to a skeptic); and extend the invariance guard to more fixtures as
+  they land (see the third-control-domain P2 item).
 - **Env-block classifier: harden against site-side "safety/security policy"**
   (METHOD, attribution honesty — residual from the PR #2 adversarial review,
   2026-07-23T10:13Z). The review confirmed `_ENV_BLOCK_RE` correctly rejects the
@@ -284,6 +294,9 @@ design in-cloud, execute locally.
   `commerce-protocol-*`/`x402-live`) — guards against a probe that spuriously INFLATES a bare
   site with payment credit it hasn't earned, the mirror of the +39.4 pair's capability guard.
   Capture is [LOCAL] (live crawl); the test wiring is cloud-doable once the fixture lands.
+  ALSO (Cycle-21 follow-up): add a domain-relabeling invariance case for it too
+  (`_assert_relabel_invariant("example.com")`), so the vendor-neutrality tripwire covers a
+  non-storefront control, not just the canonical pair.
 
 <!-- DONE 2026-07-23T20:12Z (Cycle 20, READOUT): "HTML battery card: between-archetype spread pill"
      SHIPPED. `asrs/scorecard.py`: `_battery_between_band` (Generalist <0.15 / Somewhat type-dependent

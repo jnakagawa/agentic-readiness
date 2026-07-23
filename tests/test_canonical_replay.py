@@ -33,8 +33,10 @@ loudly rather than silently rescore against a partial fixture).
 
 from __future__ import annotations
 
+import json
 import os
 import sys
+import tempfile
 
 # Make the worktree's asrs importable when run as a bare script.
 _REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -230,12 +232,144 @@ def test_canonical_delta_is_agent_native_payment() -> None:
     )
 
 
+# ---------------------------------------------------------------------------
+# 4. Domain-relabeling INVARIANCE — the executable form of the vendor-neutrality
+#    invariant ("checks worded by capability, never by vendor; no special-casing
+#    any domain, favorable or hostile"). Guards 1–3 pin that the recorded EVIDENCE
+#    produces the canonical numbers; this pins that the numbers depend ONLY on the
+#    evidence, never on the storefront's IDENTITY. We relabel a canonical fixture's
+#    host — in the request keys AND every response byte (URLs, final_url, headers,
+#    bodies) — to a neutral placeholder, then re-score. A capability-only scorer
+#    MUST return the identical overall/grade/pillars/per-check-status: renaming the
+#    shop changes nothing. If any probe or scoring branch keyed on the literal
+#    domain (a favorable OR hostile special-case), the relabeled run would diverge
+#    and fail HERE — the first executable test of vendor-neutrality, complementing
+#    the capability-delta guard above.
+#
+#    Faithfulness: the relabel is a whole-fixture string substitution (so a probe
+#    that follows a body-embedded absolute URL still hits the rewritten cache — no
+#    replay-miss), written to a temp file and replayed through the REAL
+#    ``FetchContext.from_fixture`` → ``_run_probes`` → ``scoring.score`` path, the
+#    same pipeline guards 1–3 use. The neutral host is a different LENGTH than the
+#    original, so the invariance is not a same-length coincidence.
+# ---------------------------------------------------------------------------
+_NEUTRAL_HOST = "neutral-storefront.test"  # reserved .test TLD; not a real domain
+
+
+def _score_relabeled(domain: str, new_host: str):
+    """Replay ``<domain>.json`` with its host relabeled to ``new_host`` everywhere.
+
+    Returns ``(report, replay_misses)``. The substitution rewrites request keys
+    and response bytes together, so evidence is byte-identical up to the host
+    label; a capability-only scorer must reproduce the un-relabeled score.
+    """
+    path = os.path.join(_FIXTURE_DIR, f"{domain}.json")
+    with open(path, encoding="utf-8") as fh:
+        raw = fh.read()
+    relabeled = raw.replace(domain, new_host)
+    _check(
+        domain not in relabeled,
+        f"{domain}: every occurrence of the original host was relabeled",
+    )
+    tmp = tempfile.NamedTemporaryFile(
+        "w", suffix=".json", delete=False, encoding="utf-8"
+    )
+    try:
+        tmp.write(relabeled)
+        tmp.close()
+        ctx = FetchContext.from_fixture(tmp.name)
+        checks = _run_probes(ctx)
+        report = scoring.score(checks, scoring.load_rubric(None), new_host)
+    finally:
+        os.unlink(tmp.name)
+    misses = [
+        key for key, res in ctx._cache.items()
+        if res.error and "replay-miss" in res.error
+    ]
+    return report, misses
+
+
+def _assert_relabel_invariant(domain: str) -> None:
+    exp = EXPECTED[domain]
+    base, base_misses = _score_fixture(domain)
+    relab, relab_misses = _score_relabeled(domain, _NEUTRAL_HOST)
+
+    _check(
+        not base_misses and not relab_misses,
+        f"{domain}: no replay-miss before or after relabeling",
+    )
+    # Headline number and grade are identical — and equal to the pinned canonical
+    # value, so this also re-affirms guards 1–2 through the relabeled path.
+    _check(
+        relab.overall_score == base.overall_score == exp["overall"],
+        f"{domain}: overall_score invariant under relabel "
+        f"(base {base.overall_score}, relabel {relab.overall_score}, pinned {exp['overall']})",
+    )
+    _check(
+        relab.grade == base.grade == exp["grade"],
+        f"{domain}: grade invariant under relabel "
+        f"(base {base.grade!r}, relabel {relab.grade!r})",
+    )
+    # Every pillar is bit-for-bit identical — a finer signal than the roll-up.
+    for pillar in exp["pillars"]:
+        b = base.pillar_scores.get(pillar)
+        r = relab.pillar_scores.get(pillar)
+        _check(
+            b == r,
+            f"{domain}: pillar {pillar} invariant under relabel (base {b}, relabel {r})",
+        )
+    # Every check's STATUS is unchanged — no probe flipped on the host label.
+    base_status = {c.check_id: c.status for c in base.checks}
+    relab_status = {c.check_id: c.status for c in relab.checks}
+    status_diffs = {
+        k: (base_status[k].name, relab_status[k].name if k in relab_status else None)
+        for k in set(base_status) | set(relab_status)
+        if base_status.get(k) != relab_status.get(k)
+    }
+    _check(
+        not status_diffs,
+        f"{domain}: every check status invariant under relabel (diffs: {status_diffs})",
+    )
+
+
+def test_relabel_invariance_org() -> None:
+    print("test_relabel_invariance_org")
+    _assert_relabel_invariant("drift-flight.org")
+
+
+def test_relabel_invariance_com() -> None:
+    print("test_relabel_invariance_com")
+    _assert_relabel_invariant("driftflight.com")
+
+
+def test_relabeled_delta_still_39_4() -> None:
+    """The capability delta is a property of the EVIDENCE, not the two famous names.
+
+    Relabel each side to a DISTINCT neutral host and confirm the with-rails side
+    still beats the no-rails side by exactly +39.4. Two anonymous storefronts with
+    the same recorded capabilities reproduce the delta — it cannot be an artifact
+    of the specific domains ``drift-flight.org`` / ``driftflight.com``.
+    """
+    print("test_relabeled_delta_still_39_4")
+    com, com_misses = _score_relabeled("driftflight.com", "rails-anon.test")
+    org, org_misses = _score_relabeled("drift-flight.org", "norails-anon.test")
+    _check(not com_misses and not org_misses, "no replay-miss on either relabeled domain")
+    delta = round(com.overall_score - org.overall_score, 1)
+    _check(
+        delta == EXPECTED_DELTA,
+        f"relabeled canonical delta == {EXPECTED_DELTA} (got {delta})",
+    )
+
+
 def main() -> int:
     tests = [
         test_canonical_org_replays_46_1,
         test_canonical_com_replays_85_5,
         test_canonical_delta_is_39_4,
         test_canonical_delta_is_agent_native_payment,
+        test_relabel_invariance_org,
+        test_relabel_invariance_com,
+        test_relabeled_delta_still_39_4,
     ]
     failed = 0
     for t in tests:

@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 20
+- Cycle counter: 21
 - Started: 2026-07-23 (UTC)
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -82,6 +82,24 @@
   Cycle 16, not a new digest window at 20:12Z). First duty: no open peer-gated PR (verified []); infra
   health check ran first — runner HEALTHY (newest verify_20260723T194101Z, 19:41Z, ~31 min old).
   Next cycle takes METHOD.
+  Cycle 21 METHOD (VENDOR-NEUTRALITY made executable — domain-relabeling invariance):
+  `tests/test_canonical_replay.py` +3 tests (4→7). Each relabels a committed canonical fixture's host
+  (request keys AND every response byte — URLs/final_url/headers/bodies, whole-fixture string sub to a
+  different-length neutral `.test` host, temp-file copy, no committed fixture touched) and replays through
+  the REAL `from_fixture → _run_probes → scoring.score` path, asserting overall/grade/ALL five pillars/
+  every check STATUS are IDENTICAL to the un-relabeled run. `test_relabel_invariance_org` (46.1 F),
+  `_com` (85.5 B), `test_relabeled_delta_still_39_4` (each side to a distinct anon host → delta still +39.4).
+  Converts the "no special-casing any domain, favorable or hostile" invariant from prose into a tripwire
+  (same move Cycle 17 made for "delta unchanged", Cycle 19 for "delta in capability terms"): proves the
+  +39.4 comes from EVIDENCE, not the storefront's IDENTITY. NON-VACUOUS — negative control: a monkeypatched
+  favorable special-case (x402_probe→PASS only when the literal canonical host is cached) is CAUGHT by the
+  per-check-status assertion (PASS→FAIL diff), and it slipped the numeric pillar checks in that rig, so the
+  status assertion earns its place. Tests-only: scoring.py/rubric/probes/fetch.py byte-for-byte untouched →
+  rubric stays v0.7, canonical delta unchanged by construction AND re-measured (in-cloud replay guard
+  46.1 F / 85.5 B / +39.4, 0 replay-miss). Direct-to-main. Suite 91 → 94. No Slack (tests-only, moves no
+  score, digest already sent Cycle 16, not a new digest window at 21:13Z). First duty: no open peer-gated
+  PR (verified []); infra health check ran first — runner HEALTHY (newest verify_20260723T204104Z, 20:41Z,
+  ~32 min old). Next cycle takes COVERAGE.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity

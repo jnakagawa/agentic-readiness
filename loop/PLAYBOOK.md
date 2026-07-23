@@ -5,10 +5,9 @@ prompt. One cycle = one fire of the hourly routine. Read STATE.md and
 BACKLOG.md after this file, then run exactly one cycle.
 
 Division of labor: hourly cycles run on Opus and do the improvement work;
-architecture and scoring-semantics decisions land through the human-gated
-PRs, reviewed by Jonah (driving Fable in-session). If a cycle finds itself
-redesigning the rubric's structure rather than improving within it, that is
-a PR + Slack flag, not a cycle ship.
+structural redesigns of the rubric go through peer-gated PRs like any other
+scoring change (with a Slack note for visibility). Jonah is informed, never
+waited on — he vetoes by commenting or reverting, and silence is consent.
 
 ## North star
 
@@ -76,30 +75,39 @@ never manufacture it:
 4. Validate: static-score the canonical pair; record overall, pillars, and
    delta in the LOG entry. If the change touches probes, also verify against
    2+ unrelated live domains.
-5. Ship rules (three tiers — most changes must NOT wait on Jonah):
+5. Ship rules (two tiers — NOTHING waits on Jonah's approval; he holds a
+   veto, not a gate):
    - **Direct to main**: docs, readout, tests, backlog/log/state, probe
      bug-fixes that don't change scoring semantics.
-   - **Peer gate (next-cycle review, then SELF-MERGE)**: scoring-semantics
-     changes that are not human-gated below — check additions, aggregation
-     refinements, rubric version bumps that accompany them. Open a PR named
-     `loop/<slug>` with full evidence. The NEXT cycle's FIRST duty, before
-     picking new work: adversarially review every open peer-gated PR from
-     its fresh context — actively try to refute it against the invariants
-     (vendor-neutrality, capability wording, attribution honesty, canonical-
-     delta explanation, test coverage; run the live re-scores the authoring
-     cycle couldn't if the environment allows). If it survives, MERGE it and
-     record the review verdict in LOG.md; if not, request changes or close
-     with reasons. Never review-and-merge your own cycle's PR in the same
-     fire. A PR that Jonah has commented on is FROZEN until his comment is
-     resolved. A peer-gated PR still open after 3 cycles = escalate in the
-     next Slack digest.
-   - **Human gate (Jonah merges)**: payment/signing code or anything
-     touching the $0-only property; pillar weight changes; cap value
-     changes; check REMOVALS. These are identity-level decisions.
+   - **Peer gate (next-cycle review, then SELF-MERGE)**: ALL scoring-
+     semantics changes — check additions AND removals, aggregation
+     refinements, pillar weight changes, cap changes, rubric version bumps,
+     and payment/signing code. Open a PR named `loop/<slug>` with full
+     evidence. The NEXT cycle's FIRST duty, before picking new work:
+     adversarially review every open peer-gated PR from its fresh context —
+     actively try to refute it against the invariants (vendor-neutrality,
+     capability wording, attribution honesty, canonical-delta explanation,
+     test coverage; run the live re-scores the authoring cycle couldn't if
+     the environment allows). If it survives, MERGE it and record the
+     review verdict in LOG.md; if not, request changes or close with
+     reasons. Never review-and-merge your own cycle's PR in the same fire.
+     A peer-gated PR still open after 3 cycles = escalate in the next
+     Slack digest.
+   Extra rigor for the sensitive classes (peer-gated, never human-blocked):
+   - **Payment/signing code**: the reviewer must independently re-derive
+     that no nonzero-signing path exists and that the refusal unit tests
+     cover the change; post-merge, queue a `[LOCAL]` live $0 verification —
+     if it ever fails, revert first, investigate second.
+   - **Weights/caps/removals**: the LOG entry must argue the change in
+     capability terms and show the canonical-delta effect (live when
+     networked, by construction + tests when not).
+   Jonah's veto: a PR or commit he comments on is FROZEN/revertable until
+   resolved — but silence is consent; never wait for his approval.
    When in-cloud network policy blocks live re-scoring, the in-cloud
    standard is regression-by-construction plus offline tests, and the live
    canonical re-score becomes part of the merge-time review (peer cycle if
-   it has network, otherwise a `[LOCAL]` reviewer).
+   it has network, otherwise queued `[LOCAL]` as post-merge monitoring —
+   not a pre-merge block).
 6. Append a LOG.md entry: cycle number, track, what/why, evidence paths,
    canonical-pair numbers, next hypothesis. Update STATE.md (counter, focus
    pointer, open questions). Prune BACKLOG.md — delete stale items, add new
@@ -110,7 +118,8 @@ never manufacture it:
 ## Comms (keep it quiet)
 
 Slack DM to U07PEGPSZD3 (channel D07PH9VLZEX) ONLY when:
-- a human gate is needed (include the PR link and the one-paragraph case),
+- a sensitive-class PR (payment/signing, weights, caps, removals) is opened
+  or merged — visibility so Jonah can veto, never a request for approval,
 - something shipped that changes scores or adds a capability worth knowing,
 - it is the first cycle after 16:00 UTC (daily digest: cycles run, shipped
   items, canonical delta trend, top open question).

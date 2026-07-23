@@ -1865,3 +1865,7 @@ replay fixture case (example.com, 22.5 F) to the canonical guard once the fixtur
 is captured [LOCAL], widening the offline regression signal to a low-capability
 baseline. The HTML battery card should surface between_kind_spread as a pill —
 queued P2 (same terminal→JSON→HTML deferral per_kind took Cycle 10→12).
+
+## Local verification — 20260723T184927Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260723T184927Z.json

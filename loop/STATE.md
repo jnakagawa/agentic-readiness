@@ -175,18 +175,29 @@
   scoring-semantics/aggregation change → PEER-GATED + version bump, queued P0 in
   BACKLOG with exact spec. Sole residual claude flip: found_purchase_path
   (t1 false vs t2–5 true) — legibility ambiguity, not noise.
-- Open PRs: **PR #3** `loop/commerce-manifest-validation` (Cycle 14, COVERAGE, sensitive
-  class: partial-credit rule + rubric v0.6→v0.7). Opened 2026-07-23T14:22Z. Commerce-protocol
-  (ACP/UCP) credit on `x402_probe` now requires a VALIDATED manifest (`_parse_commerce_manifest`,
-  mirroring `_parse_x402`) — a real UCP service/capability manifest or ACP checkout payload —
-  not any HTTP 200; a bare-200 SPA index/soft-404 at `/.well-known/ucp|agentic-commerce` no
-  longer false-positives to 4.0. Validated hit relabeled `commerce-protocol-live`; marker
-  tiers unchanged; ceiling unchanged (4.0 partial); direction monotone non-increasing.
-  Canonical pair UNCHANGED by committed evidence (.com gets x402-live and never reaches the
-  branch; .org already FAIL 0.0 no-agent-native-payment). `tests/test_protocols.py` 7/7; suite
-  72→79. NEXT CYCLE'S FIRST DUTY: adversarial review + self-merge (run the live pair re-score
-  on v0.7 if networked — confirm +39.4 and reports embed 0.7). No CI in repo, so no CI gate.
-  https://github.com/jnakagawa/agentic-readiness/pull/3
+- Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T~14:2xZ, merge commit 72a2e5b).
+  v0.7 requires a VALIDATED commerce manifest for the ACP/UCP partial on `x402_probe`
+  (`_parse_commerce_manifest`, mirroring `_parse_x402`) — a real UCP service/capability
+  manifest or ACP checkout payload, not any HTTP 200; a bare-200 SPA index/soft-404 at
+  `/.well-known/ucp|agentic-commerce` no longer false-positives to 4.0. Validated hit
+  relabeled `commerce-protocol-live`; marker tiers + ceiling unchanged; direction monotone
+  non-increasing. (Rubric title-comment de-staled v0.6→v0.7 post-merge, same commit as this
+  reconcile — the `version:` field was already 0.7.)
+- Open PRs: **none.** PR #3 `loop/commerce-manifest-validation` (Cycle 14, COVERAGE,
+  sensitive class: partial-credit rule + rubric v0.6→v0.7) was **MERGED EXTERNALLY**
+  2026-07-23T~14:2xZ (commit 72a2e5b) — Jonah/an operator merged it directly during the
+  SAME cloud fire that opened it, BEFORE the mandated next-cycle fresh-context adversarial
+  review could run (exactly the Cycle-9/PR-#2 pattern). An external merge is ACTIVE consent
+  (stronger than the veto-silence the playbook relies on), so this is not a bypass on the
+  loop's part. RECONCILED post-merge THIS fire: pulled main, full suite **79/79 green** on
+  the merge commit, v0.7 + `_parse_commerce_manifest` confirmed on main. Because the
+  fresh-context review was pre-empted, it converts to a POST-merge duty for the NEXT cycle's
+  FIRST duty: adversarially sanity-check v0.7 (retain-or-revert, not a pre-merge gate) AND
+  run the queued P0 **[LOCAL] live v0.7 canonical re-score** (confirm 46.1 F / 85.5 B,
+  +39.4, reports embed 0.7, no `commerce-protocol-*` on either canonical domain). Delta
+  argued UNCHANGED by committed evidence (.com→x402-live never reaches the branch;
+  .org→FAIL 0.0 no-agent-native-payment, `_commerce_protocol_evidence` already None); LIVE
+  confirmation is the remaining check. https://github.com/jnakagawa/agentic-readiness/pull/3
 - Prior PRs closed: PR #2 `loop/env-block-safety-phrasing` (Cycle 9, METHOD,
   sensitive class: aggregation rule + v0.5→v0.6) MERGED 2026-07-23T~09:47Z
   (commit 8fe9f46) by THIS local cycle's first-duty peer-gate review (adversarial

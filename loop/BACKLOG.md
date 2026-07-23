@@ -5,17 +5,19 @@ design in-cloud, execute locally.
 
 ## P0
 
-- **[LOCAL] Merge-time live canonical re-score for PR #3 (v0.7)** (COVERAGE, part of the
-  next cycle's first-duty adversarial review of PR #3 if it has network; else queued here).
-  The cloud opened PR #3 with the canonical delta argued UNCHANGED by committed evidence
-  (.com→x402-live never reaches the commerce branch; .org→FAIL 0.0 no-agent-native-payment,
-  `_commerce_protocol_evidence` already None). Confirm LIVE on v0.7: re-score both domains,
-  verify overall 46.1 F / 85.5 B, delta **+39.4**, reports embed rubric "0.7", and that the
-  `x402_probe` findings are unchanged (no `commerce-protocol-*` on either — .com is x402-live,
-  .org is no-agent-native-payment). Also spot-check that no OTHER real domain in reach loses
-  credit from the tightening (regression on the false-positive removal is the whole point).
+- **[LOCAL] POST-merge live canonical re-score for v0.7 (PR #3, MERGED 72a2e5b)** (COVERAGE
+  — now the NEXT cycle's FIRST duty as a post-merge retain-or-revert sanity check, since the
+  external merge pre-empted the fresh-context pre-merge review). v0.7 is on main; delta argued
+  UNCHANGED by committed evidence (.com→x402-live never reaches the commerce branch; .org→FAIL
+  0.0 no-agent-native-payment, `_commerce_protocol_evidence` already None). Confirm LIVE on
+  main: re-score both domains, verify overall 46.1 F / 85.5 B, delta **+39.4**, reports embed
+  rubric "0.7", and that the `x402_probe` findings are unchanged (no `commerce-protocol-*` on
+  either — .com is x402-live, .org is no-agent-native-payment). Also spot-check that no OTHER
+  real domain in reach loses credit from the tightening (regression on the false-positive
+  removal is the whole point). If the live delta MOVES unexpectedly → revert first, investigate
+  second (sensitive-class post-merge rule).
   ```
-  git fetch origin loop/commerce-manifest-validation && git checkout loop/commerce-manifest-validation
+  git checkout main && git pull origin main
   .venv/bin/python -m asrs.cli score drift-flight.org
   .venv/bin/python -m asrs.cli score driftflight.com
   ```

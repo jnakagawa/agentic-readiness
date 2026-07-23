@@ -1390,3 +1390,22 @@ direction of this rail (catch MORE real ACP/UCP surfaces that currently score 0 
 well-known paths, a live ACP `checkout_sessions` elicitation) is score-INCREASING and
 needs live verification on 2+ real domains → a distinct [LOCAL]-verified follow-up, not
 folded here (this cycle was deliberately the non-inflating, offline-verifiable half).
+
+### Cycle 14 addendum — 2026-07-23T~14:3xZ — PR #3 merged externally (same fire)
+
+PR #3 (commerce-manifest validation, v0.6→v0.7) was **MERGED during this same fire**
+(merge commit 72a2e5b), before the mandated next-cycle fresh-context adversarial review
+could run — Jonah/an operator merged it directly. This is the exact Cycle-9/PR-#2 pattern.
+An external merge is ACTIVE consent (stronger than the veto-silence the playbook relies
+on), so it is not a bypass on the loop's part; I did NOT merge my own fire's PR.
+Post-merge reconciliation THIS fire (bookkeeping only, not a second improvement cycle):
+pulled main, ran the FULL suite on the merge commit → **79/79 green**; confirmed v0.7 and
+`_parse_commerce_manifest` on main. De-staled the rubric title comment v0.6→v0.7 (the
+`version:` field was already 0.7; header line lagged). Because the fresh-context review
+was pre-empted, it converts to the NEXT cycle's FIRST duty as a POST-merge sanity check
+(retain-or-revert, per the sensitive-class post-merge rule) PLUS the queued P0 [LOCAL]
+live v0.7 canonical re-score. Canonical delta still argued UNCHANGED by committed evidence
+(.com→x402-live never reaches the branch; .org→FAIL 0.0 no-agent-native-payment); the LIVE
+v0.7 re-score is the remaining confirmation. No Slack DM for the merge itself — the actor
+IS the DM recipient, so a "your PR merged" ping would be noise; it folds into the next
+post-16:00 UTC digest. Session auto-unsubscribed from PR #3 activity (merged = final).

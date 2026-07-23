@@ -190,3 +190,7 @@ so JSON/leaderboard consumers see reproducibility, not just the terminal. Still
 additive, no version bump. Open science question for a [LOCAL] run: what trial
 count N drives `verdict_stability` above ~0.8 on the canonical pair — the
 empirical answer to "what N stabilizes it".
+
+## Local verification — 20260723T040714Z
+
+tests_ok=True | drift-flight.org: ERR | driftflight.com: ERR | artifact runs/local/verify_20260723T040714Z.json

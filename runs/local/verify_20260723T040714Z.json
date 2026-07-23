@@ -1,0 +1,37 @@
+{
+ "ts": "20260723T040714Z",
+ "kind": "local-verify",
+ "git_pull": {
+  "ok": true,
+  "tail": "++++++++++++++++\n 6 files changed, 542 insertions(+), 9 deletions(-)\n create mode 100644 asrs/reliability.py\n create mode 100644 tests/test_reliability.py\nFrom https://github.com/jnakagawa/agentic-readiness\n * branch            main       -> FETCH_HEAD\n   b1361f3..dd2a711  main       -> origin/main\n"
+ },
+ "tests": {
+  "test_battery.py": {
+   "ok": true,
+   "tail": "  ok: no_human_gate mean 0.5\n  ok: cross_task_spread 0.1, got 0.1\ntest_missing_task_runs\n  ok: missing task -> 0/0\n  ok: no signal anywhere\n  ok: no signal -> cross_task_spread None\n\n6/6 tests passed\n"
+  },
+  "test_free_tier.py": {
+   "ok": true,
+   "tail": "ot 2.0\ntest_full_delivery_passes\n  ok: full delivery => PASS\n  ok: full credit = 5.0, got 5.0\n  ok: content field surfaced in evidence\n  ok: steering to free meter via openapi enums\n\n8/8 tests passed\n"
+  },
+  "test_reliability.py": {
+   "ok": true,
+   "tail": " clean), got 0.5\ntest_mixed_band\n  ok: two checkpoints flipped, got ['machine_payable_path', 'no_human_gate']\n  ok: stability in mixed band, got 0.733\n  ok: label mixed, got 'mixed'\n\n8/8 tests passed\n"
+  },
+  "test_scoring.py": {
+   "ok": true,
+   "tail": "ing] warning: rubric check 'bhv_no_human_gate' has no result \u2014 absent (pillar max shrinks)\n[asrs.scoring] warning: rubric check 'bhv_free_tier_transaction' has no result \u2014 absent (pillar max shrinks)\n"
+  }
+ },
+ "tests_ok": true,
+ "scores": {
+  "drift-flight.org": {
+   "ok": false,
+   "error": "FileNotFoundError: [Errno 2] No such file or directory: \"/Users/jonahnakagawa/github/agentic-readiness/[asrs.scoring] warning: rubric check 'bhv_free_tier_transaction' has no result \u2014 absent (pillar max shrinks)\""
+  },
+  "driftflight.com": {
+   "ok": false,
+   "error": "FileNotFoundError: [Errno 2] No such file or directory: \"/Users/jonahnakagawa/github/agentic-readiness/[asrs.scoring] warning: rubric check 'bhv_free_tier_transaction' has no result \u2014 absent (pillar max shrinks)\""
+  }
+ }
+}

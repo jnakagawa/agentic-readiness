@@ -1945,6 +1945,78 @@ fixture is captured [LOCAL] — it would pin that a LOW-capability baseline earn
 NO agent-native payment credit, guarding against a probe that spuriously inflates
 a bare site.
 
+## Cycle 20 — 2026-07-23T20:12Z — READOUT (direct to main)
+
+**What.** Surfaced the storefront-TYPE specialization signal
+(`between_kind_spread`, shipped terminal + JSON in Cycle 18) on the HTML
+scorecard's Task-battery card. `asrs/scorecard.py`: a new `_battery_between_band`
+helper (bands `Generalist` <0.15 / `Somewhat type-dependent` <0.35 /
+`Type-specialized` ≥0.35, css good/warn/bad) drives a second header pill next to
+the cross-task-spread pill, plus a one-line interpretation appended to the
+by-archetype sub-block ("Between-archetype spread X.XX — how much of the variance
+is storefront-TYPE specialization vs within-type noise. This site is …"). Both
+render ONLY when `between_kind_spread` is non-None — i.e. ≥2 archetypes produced
+signal — so the honest-None (unobservable-with-one-type) case shows no pill,
+mirroring the aggregation and the terminal readout exactly.
+
+**Why (READOUT).** This was the exact cloud-doable candidate Cycle 19's
+"next hypothesis" named. Cycle 18 added the between-type decomposition — the
+north-star many-storefront-types axis — but it lived only on the terminal card
+and in JSON; a reader looking at the hosted HTML scorecard couldn't see whether a
+site is a generalist or type-specialized. This closes the last terminal→JSON→HTML
+gap for the battery diagnostics, following the same deferral `per_kind` took
+(Cycle 10 terminal → Cycle 12 HTML). Thresholds and wording are copied from the
+terminal `report._battery_lines` between-archetype line so the two readouts can
+never disagree on the verdict.
+
+**Invariant discipline.** Display-only. `asrs/scoring.py`, `rubric/`, every
+probe, and `asrs/battery.py` (the aggregation) are byte-for-byte untouched — this
+only READS the additive `battery_summary` dict and renders it. No check
+add/remove, no weight/cap change, no version bump → rubric stays **v0.7**,
+canonical delta unchanged BY CONSTRUCTION and re-measured green. No
+payment/signing code. Diff is 2 files (`scorecard.py` render + `test_readout.py`),
++93/-3. Direct to main (readout/display, no scoring semantics).
+
+**Evidence.**
+- `python tests/test_readout.py` 15/15 → **16/16** (new `test_html_battery_between_kind_pill`:
+  value + band label driven off the aggregation, not hand-typed; band thresholds
+  pinned to the terminal's; `test_html_battery_single_kind_no_rollup` extended to
+  assert NO between pill when the spread is honest-None).
+- Full suite **90 → 91** (12 files, 0 failing): attribution 9, battery 9,
+  battery_wiring 4, canonical_replay 4, fetch_replay 3, free_tier 8 (eth-account
+  installed), protocols 7, quotability 8, readout **16**, reliability 8, scoring 11,
+  trial_stability_v06 4.
+
+**Canonical pair (regression signal).** In-cloud replay guard, rubric v0.7:
+drift-flight.org **46.1 F** / driftflight.com **85.5 B**, delta **+39.4**, 0
+replay-miss on either — UNCHANGED and re-measured (scoring path byte-for-byte
+untouched; the change is render-only). Corroborated by the local runner's newest
+artifact `runs/local/verify_20260723T194101Z.json` (19:41Z) = 46.1 F / 85.5 B /
++39.4.
+
+**Infra health (self-healing check, ran first).** Runner HEALTHY: newest
+artifact `verify_20260723T194101Z.json` (19:41Z) is ~31 min old at fire time,
+well under the 6h threshold — the runner recovered Cycle 19 and is still
+heartbeating. No repair needed. No open peer-gated PR
+(`list_pull_requests state=open` → []) → first-duty review has nothing pending.
+Was in detached HEAD on checkout; reset to `main` and fast-forwarded before
+working. Installed `eth-account` (pre-existing env gap, invariant #4) → free_tier
+8/8.
+
+**Ship.** Direct-to-main. No Slack DM — display-only, moves no score, adds no
+capability check; the daily digest was already sent Cycle 16 and this fire
+(20:12Z) is not a new digest window.
+
+**Next hypothesis.** METHOD next cycle (rotation
+METHOD→COVERAGE→TRUTH→READOUT; this was READOUT → next is **METHOD**).
+Cloud-doable METHOD candidate: the "Adversarial referee pass" (P1) — a recurring
+self-audit that re-reads the shipped checks asking "would a critic call this
+vendor-rigged?", strengthening wording/evidence without losing capability
+substance; tests-only or docs, direct-to-main. The between-type pill now wants
+live multi-kind data to be eyeballed — folded into the [LOCAL] second
+cross_task_spread datapoint (P0), the first live report to carry the field on a
+real card.
+
 ## Local verification — 20260723T194101Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260723T194101Z.json

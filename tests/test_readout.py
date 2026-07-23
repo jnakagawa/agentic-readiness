@@ -249,9 +249,41 @@ def test_html_renders_battery() -> None:
 
 def test_html_battery_single_kind_no_rollup() -> None:
     print("test_html_battery_single_kind_no_rollup")
-    html = scorecard._battery({"battery_summary": _battery_summary(multi_kind=False)})
+    summary = _battery_summary(multi_kind=False)
+    html = scorecard._battery({"battery_summary": summary})
     _check("Task battery" in html, "single-kind battery still renders the card")
     _check("By archetype" not in html, "single kind -> no per-archetype rollup (mirrors terminal)")
+    # A single kind has an unobservable between-type spread (None) -> no pill,
+    # matching the aggregation's honest None (attribution honesty).
+    _check(summary["between_kind_spread"] is None,
+           "single-kind fixture has no between-archetype spread (unobservable)")
+    _check("Between-archetype spread" not in html,
+           "single kind -> no between-archetype pill/desc (nothing to specialize between)")
+
+
+def test_html_battery_between_kind_pill() -> None:
+    print("test_html_battery_between_kind_pill")
+    # Cycle 20 (READOUT): the storefront-TYPE specialization signal
+    # (between_kind_spread) that already ships terminal + JSON (Cycle 18) now
+    # renders as an HTML pill + interpretation line, only when >=2 archetypes had
+    # signal. Assert the value and the band label are driven off the aggregation,
+    # not hand-typed, so the pill can't drift from the number.
+    summary = _battery_summary(multi_kind=True)
+    bks = summary["between_kind_spread"]
+    _check(isinstance(bks, (int, float)),
+           "multi-kind fixture produces an observable between-archetype spread")
+    html = scorecard._battery({"battery_summary": summary})
+    _check(f"{bks:.2f}" in html, "between-archetype spread value renders")
+    _check("Between-archetype spread" in html, "between-archetype interpretation line renders")
+    _cls, label = scorecard._battery_between_band(bks)
+    _check(label in html, f"between-archetype pill carries the {label!r} band label")
+    # The band thresholds/labels must match the terminal readout exactly.
+    _check(scorecard._battery_between_band(0.10) == ("good", "Generalist"),
+           "low between-spread -> Generalist (mirrors terminal <0.15)")
+    _check(scorecard._battery_between_band(0.25) == ("warn", "Somewhat type-dependent"),
+           "mid between-spread -> Somewhat type-dependent (mirrors terminal <0.35)")
+    _check(scorecard._battery_between_band(0.50) == ("bad", "Type-specialized"),
+           "high between-spread -> Type-specialized (mirrors terminal >=0.35)")
 
 
 def test_html_battery_absent_renders_nothing() -> None:
@@ -330,6 +362,7 @@ def main() -> int:
         test_json_carries_battery,
         test_html_renders_battery,
         test_html_battery_single_kind_no_rollup,
+        test_html_battery_between_kind_pill,
         test_html_battery_absent_renders_nothing,
         test_methodology_page_written_and_covers_semantics,
         test_methodology_page_tracks_live_rubric,

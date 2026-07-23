@@ -831,6 +831,26 @@ def _battery_spread_band(spread: float) -> tuple[str, str]:
     return "bad", "Intent-dependent"
 
 
+# Between-archetype (storefront-TYPE) spread band -> (pill css class, label).
+# Decomposes the battery-wide cross-task spread into within-type noise vs
+# between-type SPECIALIZATION. Lower = a generalist (readiness is uniform across
+# storefront types); higher = type-specialized (an overall number hides which
+# types work). Thresholds/wording mirror the terminal `report._battery_lines`
+# between-archetype line exactly so the two readouts never disagree.
+_BATTERY_BETWEEN_BANDS = [
+    (0.15, "good", "Generalist"),
+    (0.35, "warn", "Somewhat type-dependent"),
+    (float("inf"), "bad", "Type-specialized"),
+]
+
+
+def _battery_between_band(spread: float) -> tuple[str, str]:
+    for thresh, cls, label in _BATTERY_BETWEEN_BANDS:
+        if spread < thresh:
+            return cls, label
+    return "bad", "Type-specialized"
+
+
 def _battery(rep: dict) -> str:
     """Cross-intent coverage + reliability card from a task battery.
 
@@ -873,6 +893,20 @@ def _battery(rep: dict) -> str:
             '<div class="desc">Fewer than one intent was observed, so cross-task '
             "spread could not be assessed.</div>"
         )
+
+    # Between-archetype spread pill (Cycle 20, READOUT): the storefront-TYPE
+    # specialization signal that already ships terminal + JSON (Cycle 18). Only a
+    # number when >=2 archetypes had signal (between-type variance is unobservable
+    # from a single type observed), so the pill renders only when it's non-None.
+    bks = summary.get("between_kind_spread")
+    if isinstance(bks, (int, float)):
+        bcls, blabel = _battery_between_band(bks)
+        between_pill = (
+            f'<span class="pill {bcls}"><span class="dot"></span>{blabel}'
+            f'&nbsp;·&nbsp;<span class="num">{bks:.2f}</span></span>'
+        )
+    else:
+        between_pill = ""
 
     # Per-intent coverage grid: one row per battery task, a bar for how far
     # agents got. No-signal intents show "no signal" (never a site failure).
@@ -934,6 +968,27 @@ def _battery(rep: dict) -> str:
                 f'<td style="text-align:right">{spread_txt}</td>'
                 f'<td style="text-align:right"><span class="num">{_esc(intents)}</span></td></tr>'
             )
+        # Between-archetype interpretation, adjacent to the by-archetype table it
+        # summarizes. Only when >=2 archetypes had signal (bks non-None) — mirrors
+        # the terminal "between-archetype spread X.XX — <verdict>" line.
+        if isinstance(bks, (int, float)):
+            if bks < 0.15:
+                binterp = "uniform across storefront types — a generalist."
+            elif bks < 0.35:
+                binterp = "somewhat type-dependent."
+            else:
+                binterp = (
+                    "type-specialized — an overall number hides which storefront "
+                    "types work."
+                )
+            between_desc = (
+                f'<div class="desc">Between-archetype spread '
+                f'<b class="num">{bks:.2f}</b> &mdash; how much of the variance is '
+                f"storefront-<i>type</i> specialization vs within-type noise. "
+                f"This site is {binterp}</div>"
+            )
+        else:
+            between_desc = ""
         per_kind_html = (
             '<div><div class="desc" style="margin-bottom:8px;font-weight:600">'
             "By archetype</div>"
@@ -942,14 +997,16 @@ def _battery(rep: dict) -> str:
             '<th style="text-align:right">Within-kind spread</th>'
             '<th style="text-align:right">Intents</th></tr>'
             + "".join(krows)
-            + "</table></div>"
+            + "</table>"
+            + between_desc
+            + "</div>"
         )
 
     return (
         '<div class="card"><div class="card-header"><div><h2>Task battery</h2>'
         f'<div class="desc">Does readiness hold across intents? '
         f'{signal}/{n} intent{"s" if n != 1 else ""} observed.</div>'
-        f"</div>{pill}</div>"
+        f"</div>{pill}{between_pill}</div>"
         '<div class="card-body" style="display:flex;flex-direction:column;gap:16px">'
         + grid
         + per_kind_html

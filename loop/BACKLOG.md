@@ -285,14 +285,25 @@ design in-cloud, execute locally.
   site with payment credit it hasn't earned, the mirror of the +39.4 pair's capability guard.
   Capture is [LOCAL] (live crawl); the test wiring is cloud-doable once the fixture lands.
 
-- **HTML battery card: between-archetype spread pill** (READOUT, Cycle-18 follow-up):
-  `between_kind_spread` (storefront-type specialization) ships terminal + JSON but the HTML
-  `scorecard._battery` card doesn't render it yet. Add a small pill next to the cross-task-spread
-  verdict — "generalist" (<0.15) / "somewhat type-dependent" (<0.35) / "type-specialized" —
-  shown only when the field is non-None (≥2 signal archetypes). Same terminal→JSON→HTML deferral
-  `per_kind` took (Cycle 10 → 12). Additive/display-only, no scoring semantics; direct-to-main.
-  Best eyeballed together with the [LOCAL] second cross_task_spread datapoint (first live report
-  to carry the field).
+<!-- DONE 2026-07-23T20:12Z (Cycle 20, READOUT): "HTML battery card: between-archetype spread pill"
+     SHIPPED. `asrs/scorecard.py`: `_battery_between_band` (Generalist <0.15 / Somewhat type-dependent
+     <0.35 / Type-specialized ≥0.35, css good/warn/bad — thresholds/wording copied from the terminal
+     report._battery_lines between-archetype line) drives a second header pill next to the cross-task
+     pill + a one-line interpretation under the by-archetype sub-block. Both render ONLY when
+     between_kind_spread is non-None (≥2 signal archetypes) → honest-None single-type case shows no
+     pill, mirroring the aggregation and the terminal readout. Closes the last terminal→JSON→HTML gap
+     for the battery diagnostics (same deferral per_kind took, Cycle 10→12). Display-only:
+     scoring.py/rubric/probes/battery.py byte-for-byte untouched → rubric stays v0.7, canonical delta
+     unchanged by construction AND re-measured (replay guard 46.1 F / 85.5 B / +39.4, 0 replay-miss);
+     direct-to-main. test_readout.py 15 → 16 (+between-kind pill test; single-kind test extended to
+     assert no pill on honest-None); suite 90 → 91. See LOG Cycle 20. The live-data eyeball folds into
+     the [LOCAL] second cross_task_spread datapoint (P0) — the first live report to carry the field. -->
+
+- **Battery card between-pill: live-data eyeball** (READOUT, Cycle-20 follow-up): the between-archetype
+  pill now renders but has only ever seen synthetic fixtures. When the [LOCAL] second cross_task_spread
+  datapoint runs (P0), pass its report through `scorecard.build_scorecard` and confirm the between-pill
+  + interpretation line read correctly on real multi-kind data. No new code — a render + visual check
+  (fold into the existing "[LOCAL] Eyeball the battery card" item above).
 - **Evidence links on the card** (READOUT): each check row links to its
   evidence blob; publish evidence alongside the hosted card.
 - **Score-over-time trend page** (READOUT): per-domain history from the

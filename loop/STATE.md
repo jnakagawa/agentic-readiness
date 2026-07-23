@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 19
+- Cycle counter: 20
 - Started: 2026-07-23 (UTC)
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -67,6 +67,21 @@
   direct-to-main. Suite 89 → 90. No Slack (tests-only, moves no score, not a digest window at 19:12Z).
   First duty: no open peer-gated PR (verified []); infra health check ran first — RUNNER RECOVERED
   (see runner-health note below). Next cycle takes READOUT.
+  Cycle 20 READOUT (storefront-TYPE specialization on the HTML card — the between-archetype pill):
+  `scorecard._battery` now renders `between_kind_spread` (shipped terminal+JSON Cycle 18) as a second
+  header pill (`_battery_between_band`: Generalist <0.15 / Somewhat type-dependent <0.35 /
+  Type-specialized ≥0.35, css good/warn/bad — thresholds/wording copied from the terminal
+  `report._battery_lines`) + a one-line interpretation under the by-archetype sub-block. Both render
+  ONLY when between_kind_spread is non-None (≥2 signal archetypes) → the honest-None single-type case
+  shows no pill, mirroring the aggregation. Closes the last terminal→JSON→HTML gap for the battery
+  diagnostics (same deferral `per_kind` took, Cycle 10→12). Display-only: scoring.py/rubric/probes/
+  battery.py byte-for-byte untouched → rubric stays v0.7, canonical delta unchanged by construction
+  AND re-measured (in-cloud replay guard 46.1 F / 85.5 B / +39.4, 0 replay-miss); direct-to-main.
+  `test_readout.py` 15/15 → 16/16 (+1 between-kind pill test, single-kind test extended to assert no
+  pill on honest-None); suite 90 → 91. No Slack (display-only, moves no score, digest already sent
+  Cycle 16, not a new digest window at 20:12Z). First duty: no open peer-gated PR (verified []); infra
+  health check ran first — runner HEALTHY (newest verify_20260723T194101Z, 19:41Z, ~31 min old).
+  Next cycle takes METHOD.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity

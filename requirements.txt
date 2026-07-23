@@ -1,0 +1,5 @@
+requests>=2.31
+PyYAML>=6.0
+# Only needed for the free-tier transaction probe (behavioral mode);
+# everything else runs without it.
+eth-account>=0.13

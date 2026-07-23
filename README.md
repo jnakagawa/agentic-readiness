@@ -19,14 +19,26 @@ the quantified version of the demo.zeroclick.io comparison.
 ## Quickstart
 
 ```bash
+python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+
 .venv/bin/python -m asrs score example.com                # static probes only
 .venv/bin/python -m asrs score example.com --behavioral \
     --task "buy an AI-generated image" --trials 2         # + live shopper panel
 .venv/bin/python -m asrs compare deepai.org driftflight.com \
     --task "get an AI-generated image"                    # side-by-side + delta
+.venv/bin/python -m asrs scorecard runs/<a>.json runs/<b>.json \
+    --labels "Without,With"                               # on-brand HTML card
 ```
 
-Reports land in `runs/` as JSON; a report card renders to the terminal.
+Reports land in `runs/` as JSON; a report card renders to the terminal, and
+`scorecard` builds a shareable HTML page (plus `rubric.html` documenting the
+scoring logic). Example output: the drift-flight.org vs driftflight.com card at
+https://cdn.withzero.xyz/EAOjJxtl/asrs-driftflight/
+
+Static mode needs only Python. `--behavioral` additionally drives the
+`claude` and `codex` CLIs (install and authenticate them yourself); the
+free-tier transaction probe needs `eth-account` and only ever signs
+zero-value authorizations from a throwaway in-process key.
 
 ## Design notes
 

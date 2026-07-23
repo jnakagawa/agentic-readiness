@@ -1668,3 +1668,57 @@ in-cloud canonical replay guard the playbook's re-score rule needs). A future RE
 add a short prose intro block to the top of the methodology page's rendered form, or link
 each card check row to its evidence blob (the P2 evidence-links item) — but the [LOCAL]
 canonical fixture + runner restart remain the top operational priorities.
+
+## Local cycle — 2026-07-23T16:46Z — TRUTH
+
+**What.** Captured the canonical-pair replay fixtures (the top P0 `[LOCAL]`) — the missing
+input for the in-cloud canonical regression guard. Wired a dormant `--record-fixture <path>`
+hook into `asrs.cli score` (this ALSO discharges the P1 "`--record-fixture` CLI hook" item),
+then did ONE live static crawl of each canonical domain, dumping its per-`(method,url,ua)`
+fetch cache to a committed fixture via the Cycle-15 `FetchContext.save_fixture`.
+
+**Why.** The playbook's per-cycle LIVE canonical re-score cannot run in-cloud (network policy
+denies CONNECT to the canonical hosts). Cycle 15 built `FetchContext` record/replay as the
+offline proxy but had no recorded canonical responses to replay. This fire — the networked
+half — supplies them: a cloud cycle can now `from_fixture` + `_run_probes` + `scoring.score`
+and reproduce 46.1 / 85.5 / +39.4 with NO network, replacing the per-cycle "delta unchanged
+by construction" prose with an executable guard.
+
+**Scope.** `asrs/cli.py` (+1 dormant flag on `score`, +1 post-scoring `save_fixture` call in
+`_evaluate` guarded by `getattr(args, "record_fixture", None)`),
+`fixtures/canonical/{drift-flight.org,driftflight.com}.json` (new, committed — NOT gitignored).
+No edits to `scoring.py` / `rubric/` / probes.
+
+**Evidence.**
+- Fixtures: `fixtures/canonical/drift-flight.org.json` (37 entries), `.../driftflight.com.json`
+  (48 entries). Recorded HTTP RESPONSES only — the auth-looking strings are the storefronts'
+  OWN public homepage API-doc examples (`Authorization: Bearer df_live_4kq2...`, a truncated
+  placeholder) and the x402 `402` `www-authenticate: Payment id=… realm=agents.driftflight.com`
+  challenge header any client receives — i.e. the legibility/protocol evidence itself, not
+  secrets (scrubbing them would break score reproduction).
+- Live crawl (this fire, both HTTP 200): `.org` 46.1 F, `.com` 85.5 B on **rubric v0.7**.
+- OFFLINE replay validation (`FetchContext.from_fixture` → `_run_probes` → `scoring.score`,
+  never touches the network): reproduces overall **46.1 F / 85.5 B**, delta **+39.4** EXACTLY,
+  pillars identical (access 100/100, legibility 36.36/90.91, transactability 18.75/87.5,
+  trust 60/60, outcome None/None), and **0 replay-miss on both** — every probe request was
+  recorded, so the fixtures are complete, not partial.
+- Full suite **85/85** (11 files) green after the change; dormant path confirmed (a `score`
+  run WITHOUT the flag writes no fixture; the hook runs strictly AFTER `scoring.score()` → it
+  cannot move a score).
+
+**Canonical pair (regression signal).** 46.1 F / 85.5 B, delta **+39.4** on v0.7 — UNCHANGED,
+now BOTH measured LIVE this fire AND pinned as a committed offline fixture that reproduces it
+byte-faithfully. Scoring path byte-for-byte unchanged (additive dormant CLI hook) → the delta
+cannot move by construction either.
+
+**Ship.** Direct-to-main (additive dormant CLI hook + committed public-response fixtures; no
+scoring semantics, rubric stays v0.7). No Slack DM — not a sensitive-class change and it does
+not move any score; the daily digest was already sent by Cycle 16 (first cycle after 16:00
+UTC). Runner STILL DOWN (>12h; newest `verify_20260723T040757Z`) — already flagged in Cycle
+16's digest; folds into the next digest if still down.
+
+**Next hypothesis.** One cloud step remains to make this permanent: wire
+`tests/test_canonical_replay.py` (replay each committed fixture through the CURRENT pipeline,
+assert 46.1 F / 85.5 B / +39.4 on v0.7). That converts these fixtures into a CI-style
+regression guard the playbook's "re-score every shipping cycle" rule needs in cloud-adapted
+form. Queued P0.

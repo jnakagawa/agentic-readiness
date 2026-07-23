@@ -249,6 +249,22 @@ def _evaluate(domain, args, rubric):
 
     report.quotability = quotability(report).to_dict()
 
+    # Record the fetch cache to a replay fixture when --record-fixture is set.
+    # Dormant otherwise: this runs AFTER scoring so it can never move the score,
+    # and only serializes ctx's recorded HTTP responses (no secrets). Replaying
+    # the fixture offline through this same probe path reproduces the score with
+    # NO network — the in-cloud proxy for the canonical re-score the network
+    # policy blocks (see asrs.fetch.FetchContext.save_fixture / from_fixture).
+    # For a canonical regression fixture, record a STATIC crawl: in behavioral
+    # mode the free-tier probe's POSTs land in the same cache.
+    fixture_path = getattr(args, "record_fixture", None)
+    if fixture_path:
+        n = ctx.save_fixture(fixture_path)
+        print(
+            f"[asrs] recorded {n} fetch entries -> {fixture_path}",
+            file=sys.stderr,
+        )
+
     return report
 
 
@@ -355,6 +371,13 @@ def build_parser() -> argparse.ArgumentParser:
         "score", help="score a single domain and print a report card"
     )
     p_score.add_argument("domain", help="domain to score (URL or bare host)")
+    p_score.add_argument(
+        "--record-fixture", default=None, metavar="PATH",
+        help="after the crawl, dump the fetch cache to PATH as a replay fixture "
+        "(asrs.fetch.FetchContext.save_fixture) — the offline regression signal "
+        "for the canonical re-score. Record a STATIC crawl for a clean fixture. "
+        "No effect on the score.",
+    )
     _add_common_options(p_score)
     p_score.set_defaults(func=_cmd_score)
 

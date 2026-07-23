@@ -26,27 +26,32 @@ design in-cloud, execute locally.
      in-cloud offline guard instead of a per-fire manual re-score. -->
 
 
-- **[LOCAL] Capture the canonical-pair replay fixtures** (TRUTH, P0 — unlocks the in-cloud
-  canonical regression guard; enabled by the Cycle-15 `FetchContext.save_fixture` infra). Do
-  ONE full live scoring crawl of each canonical domain and dump its fetch cache to a committed
-  fixture, so a cloud cycle can then replay both offline and re-score them with NO network.
-  Requires a tiny wiring of `save_fixture` into the score path (a `--record-fixture <path>`
-  flag on `asrs.cli score`, or a 6-line script that builds the `FetchContext`, runs the
-  probes, and calls `ctx.save_fixture(...)`). Commit to `fixtures/canonical/` (NOT gitignored,
-  unlike `runs/`). Exact intent:
-  ```
-  git checkout main && git pull origin main
-  # add/using a --record-fixture hook (design in a cloud cycle first), then:
-  .venv/bin/python -m asrs.cli score drift-flight.org  --record-fixture fixtures/canonical/drift-flight.org.json
-  .venv/bin/python -m asrs.cli score driftflight.com   --record-fixture fixtures/canonical/driftflight.com.json
-  git add fixtures/canonical/*.json && git commit && git push
-  ```
-  Budget: two static crawls, $0, no codex/wallet. Fixtures are recorded HTTP responses only
-  (no secrets) — safe to commit. Once landed, the NEXT cloud cycle wires
-  `tests/test_canonical_replay.py` (replay each fixture through the CURRENT scoring pipeline,
-  assert overall 46.1 F / 85.5 B / delta +39.4 on rubric v0.7) — the durable in-cloud proxy
-  for the live re-score the network policy blocks, and the permanent regression guard the
-  playbook's "re-score every shipping cycle" rule needs in cloud-adapted form.
+<!-- DONE 2026-07-23T16:46Z (local fire, TRUTH): "[LOCAL] Capture the canonical-pair replay
+     fixtures" EXECUTED. Landed a dormant `--record-fixture <path>` hook on `asrs.cli score`
+     (asrs/cli.py; also discharges the P1 CLI-hook item below), then did ONE live static crawl
+     of each canonical domain and dumped its fetch cache. Committed:
+     fixtures/canonical/drift-flight.org.json (37 entries), driftflight.com.json (48 entries) —
+     recorded HTTP responses only (the Bearer/Authorization strings are the storefronts' OWN
+     public API-doc examples + the x402 402 www-authenticate challenge = scoring evidence, not
+     secrets). Live crawl 46.1 F / 85.5 B on v0.7. OFFLINE replay validation (FetchContext.
+     from_fixture → _run_probes → scoring.score, no network) reproduces 46.1 F / 85.5 B / +39.4
+     EXACTLY with 0 replay-miss on both (fixtures complete). Suite 85/85 green; dormant path
+     confirmed (no flag → no fixture; hook runs after scoring.score so it can't move a score).
+     See LOG (Local cycle — 16:46Z). The cloud test-wiring follow-up is now the top P0 below. -->
+
+- **Wire `tests/test_canonical_replay.py`** (TRUTH, P0 — the last step to a permanent in-cloud
+  canonical regression guard; cloud-doable, no network needed). The committed
+  `fixtures/canonical/{drift-flight.org,driftflight.com}.json` (local fire 16:46Z) replay
+  byte-faithfully through the current pipeline. Add a test that, for each fixture:
+  `ctx = FetchContext.from_fixture(path)` → `checks = asrs.cli._run_probes(ctx)` →
+  `rep = scoring.score(checks, load_rubric(None), domain)`, then asserts `rep.overall_score`
+  == 46.1 (`.org`) / 85.5 (`.com`), grade F/B, `rubric_version == "0.7"`, delta +39.4, AND
+  that no cache entry carries a `replay-miss` error (proves the fixture still covers every
+  probe request — a miss means a probe changed WHAT it fetches, which must fail loudly). This
+  is the executable in-cloud proxy for the network-blocked live re-score, and the permanent
+  form of the playbook's "re-score every shipping cycle" rule. Tests-only, no scoring
+  semantics → direct-to-main. When a rubric version bump legitimately moves the canonical
+  score, the fixtures are re-captured [LOCAL] and the asserted numbers updated in the same PR.
 
 <!-- DONE 2026-07-23T05:52Z (local fire): "[LOCAL] Merge-time canonical re-score
      for PR loop/not-scorable-attribution" discharged. Both reachable canonical
@@ -179,14 +184,13 @@ design in-cloud, execute locally.
 
 ## P1
 
-- **`--record-fixture` CLI hook (cloud-doable half of the canonical-replay guard)**
-  (TRUTH/plumbing, Cycle-15 follow-up). Wire `FetchContext.save_fixture` into the score
-  path: add a `--record-fixture <path>` flag on `asrs.cli score` that, after a live crawl,
-  dumps the context's fetch cache to the given path. Additive, dormant unless the flag is
-  passed (no scoring semantics, no rubric touch) → direct-to-main; testable in-cloud with a
-  replay round-trip (no network needed for the test — feed a replay ctx, assert the dumped
-  fixture reloads identically). Landing this in a cloud cycle means the [LOCAL] fixture
-  capture (P0 above) is a one-line command instead of a bespoke script.
+<!-- DONE 2026-07-23T16:46Z (local fire, TRUTH): "`--record-fixture` CLI hook" LANDED as part
+     of the canonical-fixture capture (P0 above). `asrs/cli.py`: `--record-fixture <path>` on
+     the `score` subparser + a post-scoring `ctx.save_fixture(path)` in `_evaluate` guarded by
+     `getattr(args, "record_fixture", None)`. Additive/dormant (no scoring semantics, rubric
+     untouched), verified the no-flag path writes nothing and the hook runs after scoring.score
+     so it can't move a score; suite 85/85. Direct-to-main. See LOG (Local cycle — 16:46Z). -->
+
 - **Calibration population** (TRUTH): weekly static sweep of 15–20 real
   domains (exa.ai, deepai.org, perplexity.ai, a Shopify store, a mainstream
   retailer, agentic-native services) committed as a dated dataset +

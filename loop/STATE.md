@@ -23,6 +23,12 @@
   weights/caps/bands pulled live from load_rubric so it can't drift; display-only, rubric
   stays v0.7, canonical delta unchanged by construction; direct to main. First cycle after
   16:00 UTC → daily digest DM sent); next cycle takes METHOD.
+  Local fire 2026-07-23T16:46Z TRUTH (the networked half of the canonical-replay guard):
+  executed the top P0 [LOCAL] — captured `fixtures/canonical/{drift-flight.org,driftflight.com}.json`
+  via a new dormant `--record-fixture` hook on `asrs.cli score` (also discharges the P1 CLI-hook
+  item). Live crawl 46.1 F / 85.5 B on v0.7; OFFLINE replay through the real probe path
+  reproduces 46.1 / 85.5 / +39.4 EXACTLY with 0 replay-miss on both. One cloud step left:
+  `tests/test_canonical_replay.py` (now the top P0).
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity

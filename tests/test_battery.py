@@ -199,6 +199,76 @@ def test_missing_task_runs() -> None:
     _check(summ.cross_task_spread is None, "no signal -> cross_task_spread None")
 
 
+# ---------------------------------------------------------------------------
+# 7. Per-archetype (kind) rollup: same run, read one storefront type at a time.
+# ---------------------------------------------------------------------------
+def test_per_kind_rollup() -> None:
+    print("test_per_kind_rollup")
+    # Two digital_service intents (one perfectly reliable, one intent-dependent)
+    # and one physical_good intent — the classic "strong on X, weak on Y" split.
+    bat = Battery(id="t", description="", tasks=[
+        BatteryTask("t1", "digital_service", "a"),
+        BatteryTask("t2", "digital_service", "b"),
+        BatteryTask("t3", "physical_good", "c"),
+    ])
+    runs = {
+        # t1: found_product + no_human_gate both 1.0 -> mean_completion 0.4
+        "t1": [_run(found_product=True, no_human_gate=True),
+               _run(found_product=True, no_human_gate=True)],
+        # t2: found_product 1.0 only -> mean_completion 0.2
+        "t2": [_run(found_product=True), _run(found_product=True)],
+        # t3: nothing reached -> mean_completion 0.0
+        "t3": [_run(), _run()],
+    }
+    summ = B.aggregate_battery(bat, runs)
+    pk = {kr.kind: kr for kr in summ.per_kind}
+    _check(set(pk) == {"digital_service", "physical_good"}, f"two archetypes, got {sorted(pk)}")
+    # Insertion order preserved (digital_service first appears before physical_good).
+    _check([kr.kind for kr in summ.per_kind] == ["digital_service", "physical_good"],
+           "per_kind ordered by first appearance")
+
+    ds = pk["digital_service"]
+    _check(ds.n_tasks == 2 and ds.tasks_with_signal == 2, "digital_service: 2/2 signal")
+    # mean_completion = mean(0.4, 0.2) = 0.3
+    _check(abs(ds.mean_completion - 0.3) < 1e-9, f"digital_service mean_completion 0.3, got {ds.mean_completion}")
+    # Within-kind spread: no_human_gate differs (1.0 vs 0.0) -> pstdev 0.5;
+    # found_product identical (1.0 vs 1.0) -> 0; others 0. mean over 5 keys = 0.1.
+    _check(abs(ds.cross_task_spread - 0.1) < 1e-9,
+           f"digital_service within-kind spread 0.1, got {ds.cross_task_spread}")
+
+    pg = pk["physical_good"]
+    _check(pg.n_tasks == 1 and pg.tasks_with_signal == 1, "physical_good: 1/1 signal")
+    _check(pg.mean_completion == 0.0, f"physical_good mean_completion 0.0, got {pg.mean_completion}")
+    # A single signal task in the archetype -> spread 0.0 (no variance yet), not None/crash.
+    _check(pg.cross_task_spread == 0.0, f"single-task kind spread 0.0, got {pg.cross_task_spread}")
+
+
+# ---------------------------------------------------------------------------
+# 8. A kind whose only intents had no valid run is reported, never a failure.
+# ---------------------------------------------------------------------------
+def test_per_kind_no_signal() -> None:
+    print("test_per_kind_no_signal")
+    bat = Battery(id="t", description="", tasks=[
+        BatteryTask("t1", "digital_service", "a"),
+        BatteryTask("t2", "physical_good", "b"),
+    ])
+    runs = {
+        "t1": [_run(found_product=True), _run(found_product=True)],  # signal
+        "t2": [_env_blocked_run(), _failed_run()],                   # no signal
+    }
+    summ = B.aggregate_battery(bat, runs)
+    pk = {kr.kind: kr for kr in summ.per_kind}
+    _check(set(pk) == {"digital_service", "physical_good"},
+           "both archetypes present even when one has no signal")
+    pg = pk["physical_good"]
+    _check(pg.n_tasks == 1 and pg.tasks_with_signal == 0, "physical_good: 0/1 signal")
+    _check(pg.mean_completion is None, "no-signal kind mean_completion None")
+    _check(pg.cross_task_spread is None, "no-signal kind cross_task_spread None (not 0.0)")
+    # Serialization carries per_kind (JSON Report surfacing).
+    _check(any(k.get("kind") == "physical_good" for k in summ.to_dict()["per_kind"]),
+           "per_kind survives to_dict()")
+
+
 def main() -> int:
     tests = [
         test_load_default_battery,
@@ -207,6 +277,8 @@ def main() -> int:
         test_no_signal_task,
         test_cross_task_spread,
         test_missing_task_runs,
+        test_per_kind_rollup,
+        test_per_kind_no_signal,
     ]
     failed = 0
     for t in tests:

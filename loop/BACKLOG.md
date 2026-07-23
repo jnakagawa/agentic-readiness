@@ -134,11 +134,14 @@ design in-cloud, execute locally.
      Display-only, rubric stays v0.5, scoring source byte-for-byte unchanged.
      tests/test_readout.py 8/8 (+3); suite 54 -> 57. See LOG Cycle 8. -->
 
-- **Task battery on the HTML card** (READOUT, Cycle 6 follow-up): the
+- **Task battery on the HTML card** (READOUT, Cycle 6/10 follow-up): the
   `battery_summary` ships terminal + JSON only. Render a per-intent coverage grid
   + `cross_task_spread` pill on the HTML scorecard (`scorecard._reliability` is
   the template; both layouts) — same terminal-first-then-HTML deferral quotability
-  took. Additive, no version bump.
+  took. Additive, no version bump. NOW ALSO render the Cycle-10 `per_kind`
+  by-archetype rollup (mean completion + within-kind spread per storefront type),
+  shown only when the battery spans >1 kind — mirrors the terminal
+  `by archetype:` sub-block (`report._battery_lines`).
 
 - **Evidence links on the card** (READOUT): each check row links to its
   evidence blob; publish evidence alongside the hosted card.

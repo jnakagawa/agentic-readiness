@@ -1,11 +1,11 @@
 # Loop state
 
-- Cycle counter: 9
+- Cycle counter: 10
 - Started: 2026-07-23 (UTC)
-- Focus pointer: COVERAGE (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
-  Cycle 9 METHOD; next cycle takes COVERAGE.)
+  Cycle 9 METHOD, Cycle 10 COVERAGE; next cycle takes TRUTH.)
 - Rubric: **v0.6 on main** (PR #2 MERGED 2026-07-23, merge commit 8fe9f46,
   clean fast-forward; suite 58/58 green on merged main). v0.6 broadens the
   env-block classifier to recognize "safety"-phrased hosted-browser refusals
@@ -27,6 +27,16 @@
   untouched). REMAINING: [LOCAL] behavioral execution on the canonical pair (now
   unblocked — queued P0) produces the first live `cross_task_spread`; HTML
   scorecard battery card is queued P2 READOUT (terminal-first, like quotability).
+  Cycle 10 (COVERAGE) added the PER-ARCHETYPE (`kind`) rollup the module docstring
+  + battery YAML had promised but never implemented: `BatteryKindResult` +
+  additive `BatterySummary.per_kind` (`asrs/battery.py` `_per_kind_results` /
+  shared `_cross_task_spread` helper) + a `by archetype:` terminal sub-block
+  (`report._battery_lines`, shown only when >1 kind). Lets the SAME run read
+  "strong on digital_service, weak on physical_good" instead of one battery-wide
+  spread — north-star storefront-type flexibility. Diagnostic-only (rubric stays
+  v0.6, scoring.py/static path untouched → canonical delta unchanged by
+  construction); direct-to-main. `tests/test_battery.py` 6/6 → 8/8; suite 58 → 60.
+  Per-kind ships terminal + JSON; the HTML by-archetype grid joins the queued P2.
 - Attribution boundary (Cycle 7, TRUTH): `tests/test_attribution.py` (8/8) pins
   invariant #4 directly for the first time — `asrs/behavioral/shopper._is_env_blocked`
   (`_ENV_BLOCK_RE`) + `_aggregate` denominator routing. Adds the previously-zero
@@ -65,13 +75,16 @@
   +39.4. Confirmed LIVE again this local fire (2026-07-23T07:50Z, both HTTP 200),
   identical to the 05:52Z merge-verify and the hourly verify artifact
   verify_20260723T040757Z.json. Loop-start behavioral baseline was +40.6 (delta
-  within static variance). UNCHANGED BY CONSTRUCTION at Cycle 8, and again at
-  Cycle 9 (PR #2 is behavioral-only; static delta cannot move). RUNNER HEALTH
-  (Cycle 9, 09:15Z): newest verify artifact is STILL verify_20260723T040714Z
-  (04:07Z), now ~5h08m old; no :41 artifact at 05/06/07/08/09 — under 6h but ONE
-  HOUR from crossing: the next cloud fire (~10:xx) that still sees 04:07Z MUST flag
-  "runner down" in the Slack digest. Folded into the Cycle-9 sensitive-PR DM for
-  early visibility. SEPARATE BUG (persists): the runner's `scores`
+  within static variance). UNCHANGED BY CONSTRUCTION at Cycle 8, Cycle 9 (PR #2
+  behavioral-only), and Cycle 10 (per-kind battery rollup is diagnostic-only;
+  scoring.py/static path untouched → static delta cannot move). RUNNER HEALTH
+  (Cycle 10, 10:12Z): **RUNNER DOWN.** Newest verify artifact is STILL
+  verify_20260723T040714Z (04:07Z) — now **~6h05m old, PAST the 6h threshold**;
+  no :41 artifact at 05/06/07/08/09/10. The local `local_verify.py` runner
+  (launchd, hourly :41 on Jonah's machine) appears stopped. To be flagged in the
+  next Slack daily digest (first cycle after 16:00 UTC) per the comms policy — the
+  next live canonical re-score signal depends on it or on a manual local fire.
+  SEPARATE BUG (persists): the runner's `scores`
   block records FileNotFoundError because `[asrs.scoring]` stderr coverage-warning
   lines leak into the score-path argument — its live re-score capture is BROKEN
   (its TEST block is green; the live delta is still confirmed by the 05:52Z/07:50Z

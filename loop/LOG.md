@@ -819,3 +819,82 @@ rewrite). The [LOCAL] live behavioral re-score of v0.6 is queued as the empirica
 confirmation. No new Slack DM (the sensitive-PR DM already sent on open covers the
 change; the merge is Jonah's own action). Ledger reconciled; this remains ONE
 improvement for the fire.
+
+## Cycle 10 — 2026-07-23T10:12Z — COVERAGE
+
+**First duty (open-PR review).** None open at fire start (`list_pull_requests`
+empty; STATE confirmed PR #1/#2 both merged). Proceeded to pick work on the
+COVERAGE track.
+
+**What.** Added a per-storefront-archetype (`kind`) rollup to the task battery.
+`asrs/battery.py`: new `BatteryKindResult` dataclass + additive
+`BatterySummary.per_kind` field, populated by `_per_kind_results` (groups the
+per-task results by `kind`, insertion-ordered by first appearance, computes each
+archetype's mean completion and within-archetype reliability spread over its
+SIGNAL tasks only). Factored the battery-wide spread math into a shared
+`_cross_task_spread` helper so a per-kind slice is computed identically to the
+whole. `asrs/report.py`: `_battery_lines` prints a `by archetype:` sub-block
+when the battery spans >1 kind (suppressed for a single archetype, where it would
+just restate the battery-wide number). `tests/test_battery.py`: +2 tests
+(`test_per_kind_rollup`, `test_per_kind_no_signal`) — grouping/order,
+mean_completion, within-kind spread (single-task kind -> 0.0, no-signal kind ->
+None not 0.0), and `to_dict()` serialization.
+
+**Why (COVERAGE — north star "many storefront types").** The battery module
+docstring AND `batteries/default_v1.yaml` both PROMISED a site could be read
+"per storefront archetype (`kind`)" — but `kind` was only stored per task and
+never rolled up; the implementation delivered per-task and battery-wide numbers
+only. A site is rarely uniformly agent-ready (it can ace digital metered
+services yet stumble on physical goods); the per-kind rollup lets the SAME run
+be read one archetype at a time ("strong on digital_service, weak on
+physical_good") instead of collapsing to one battery-wide spread. Closes the gap
+between the documented design and the code, and makes the benchmark more flexible
+across storefront types — exactly the north star's coverage axis. Attribution
+honesty preserved: an archetype whose only intents produced no valid run is
+reported as 0-signal with None stats, never charged completion or variance for an
+intent nobody could observe (mirrors the battery-wide "no signal" convention).
+
+**Evidence.** `asrs/battery.py` (BatteryKindResult, per_kind, _per_kind_results,
+_cross_task_spread), `asrs/report.py` (`_battery_lines` by-archetype block),
+`tests/test_battery.py` (+2 tests; 6/6 -> 8/8). Full suite **60/60**
+(was 58/58 on merged main; +2 battery tests). eth-account installed into the
+cloud `.venv` so test_free_tier is 8/8 (the sole non-installed-dep failure is a
+fresh-container env artifact, not a regression — matches Cycle 9's note).
+Render smoke: a synthetic 3-archetype battery renders the `by archetype:` block
+and serializes `per_kind` to JSON correctly.
+
+**Canonical pair (regression signal).** UNCHANGED BY CONSTRUCTION. The battery is
+a diagnostic layer that does NOT feed the overall score, and static mode runs no
+battery at all; `asrs/scoring.py` and the rubric are untouched (stays **v0.6**,
+no version bump — additive/diagnostic, not a scoring-semantics change). A static
+score of either canonical domain is therefore byte-for-byte unchanged. Last
+confirmed LIVE static delta (07:50Z local fire): drift-flight.org **46.1 F** /
+driftflight.com **85.5 B**, delta **+39.4**. In-cloud live re-score remains
+network-blocked (agent proxy denies CONNECT to external hosts); by-construction +
+offline tests are the cloud-adapted regression proof (playbook §Ship). No new
+[LOCAL] live re-score is queued for this change — the static path cannot move.
+
+**Runner health (CROSSED THRESHOLD).** Newest hourly `runs/local/verify_*.json` is
+STILL `verify_20260723T040714Z` (04:07Z). At this fire (10:12Z) that is
+**~6h05m old — past the 6h "runner down" threshold** the playbook sets. No `:41`
+artifact appeared at 05/06/07/08/09/10. The local `local_verify.py` runner
+(launchd on Jonah's machine, hourly :41) appears DOWN. Recorded in STATE; will be
+flagged in the next Slack daily digest (first cycle after 16:00 UTC) per the
+comms policy — not a standalone DM (runner-health goes in the digest). The
+separate pre-existing bug (its `scores` block records FileNotFoundError because
+`[asrs.scoring]` stderr coverage-warning lines leak into the score-path argument)
+still stands; the P2 coverage-warning suppression fixes it at the source.
+
+**Ship.** Direct-to-main (additive diagnostic field + terminal render + tests; no
+scoring semantics, no payment/signing, no version bump — squarely the
+direct-to-main tier). Bookkeeping (LOG/STATE/BACKLOG) same commit. No Slack:
+not a sensitive-class PR, not a score change, and 10:12Z is not the first cycle
+after 16:00Z (no digest due yet — the runner-down flag rides the 16:00 digest).
+
+**Next hypothesis.** The per-kind rollup is terminal + JSON now; the natural
+READOUT follow-up (queued P2, alongside the existing "Task battery on the HTML
+card") is to render the by-archetype grid on the HTML scorecard — same
+terminal-first-then-HTML deferral quotability/reliability took. Empirically, once
+the [LOCAL] first live battery run executes, the per-kind spread should reveal
+whether drift-flight.org's readiness is archetype-dependent (digital_service vs
+physical_good) — a sharper reliability read than the single battery-wide spread.

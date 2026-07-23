@@ -239,6 +239,24 @@ def _battery_lines(summary) -> list[str]:
             detail = "no signal (no valid run — not a site failure)"
         out.append(f"    {tid:<20} [{kind}]  {detail}")
 
+    # Per storefront archetype: a site can be strong on one kind and weak on
+    # another; only print the rollup when it splits into >1 archetype (with a
+    # single kind the per-kind line just restates the battery-wide number).
+    per_kind = summary.get("per_kind", []) or []
+    if len(per_kind) > 1:
+        out.append("    by archetype:")
+        for kr in per_kind:
+            kind = kr.get("kind", "") or "unspecified"
+            if kr.get("tasks_with_signal", 0) > 0:
+                mc = kr.get("mean_completion")
+                frac = f"{mc:.0%}" if isinstance(mc, (int, float)) else "n/a"
+                ks = kr.get("cross_task_spread")
+                spread_txt = f", spread {ks:.2f}" if isinstance(ks, (int, float)) else ""
+                detail = f"{frac} avg completion ({kr.get('tasks_with_signal')}/{kr.get('n_tasks')} intents{spread_txt})"
+            else:
+                detail = f"no signal (0/{kr.get('n_tasks')} intents observed)"
+            out.append(f"      {kind:<18} {detail}")
+
     spread = summary.get("cross_task_spread")
     if isinstance(spread, (int, float)):
         # 0 = identical across intents; higher = readiness is intent-dependent

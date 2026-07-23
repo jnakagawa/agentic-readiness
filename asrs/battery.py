@@ -130,11 +130,37 @@ class BatteryTaskResult:
 
 
 @dataclass
+class BatteryKindResult:
+    """Per-storefront-archetype rollup (``kind``) across the battery.
+
+    A site is rarely uniformly agent-ready: it can ace digital metered services
+    yet stumble on physical goods. Grouping the per-task results by ``kind`` lets
+    the same run be read per archetype — "great at digital_service, weak at
+    physical_good" — instead of collapsing to one battery-wide number. Same
+    diagnostic status as the rest of the battery: no check, weight, or cap.
+    """
+    kind: str
+    n_tasks: int
+    tasks_with_signal: int
+    # Mean of the per-task ``mean_completion`` over this kind's signal tasks —
+    # how far agents got, on average, on this archetype. None when no signal.
+    mean_completion: float | None = None
+    # Reliability spread WITHIN this archetype (mean per-checkpoint stddev over
+    # the kind's signal tasks). 0.0 for a single signal task (no variance to
+    # observe yet); None when the archetype produced no signal.
+    cross_task_spread: float | None = None
+
+
+@dataclass
 class BatterySummary:
     battery_id: str
     n_tasks: int
     tasks_with_signal: int
     per_task: list[BatteryTaskResult] = field(default_factory=list)
+    # Per storefront archetype (``kind``): the battery-wide numbers, sliced so a
+    # site can be read one archetype at a time. Insertion-ordered by first
+    # appearance in the battery.
+    per_kind: list[BatteryKindResult] = field(default_factory=list)
     # Across tasks-with-signal, per checkpoint: mean pass fraction and the
     # population stddev of the per-task fractions (the reliability spread).
     checkpoint_mean: dict[str, float | None] = field(default_factory=dict)
@@ -188,6 +214,60 @@ def _task_result(task: BatteryTask, runs: list[BehavioralRun]) -> BatteryTaskRes
     )
 
 
+def _cross_task_spread(signal_results: list[BatteryTaskResult]) -> float | None:
+    """Mean per-checkpoint reliability spread over a set of signal task results.
+
+    The same math the battery-wide ``cross_task_spread`` uses, factored out so a
+    per-archetype slice is computed identically to the whole. Population stddev
+    per checkpoint (a single signal task has spread 0.0, not undefined), averaged
+    across the checkpoints that any of these tasks observed. None when the set is
+    empty (no signal to observe).
+    """
+    spreads: list[float] = []
+    for key in _CHECKPOINT_KEYS:
+        vals = [
+            tr.checkpoint_fractions.get(key)
+            for tr in signal_results
+            if tr.checkpoint_fractions.get(key) is not None
+        ]
+        if vals:
+            spreads.append(statistics.pstdev(vals) if len(vals) > 1 else 0.0)
+    return statistics.fmean(spreads) if spreads else None
+
+
+def _per_kind_results(per_task: list[BatteryTaskResult]) -> list[BatteryKindResult]:
+    """Roll the per-task results up per storefront archetype (``kind``).
+
+    Grouped by first appearance so the readout order is stable. Stats are over
+    each kind's SIGNAL tasks only (an archetype is never charged completion or
+    variance for an intent nobody could observe), mirroring the battery-wide
+    rollup exactly.
+    """
+    order: list[str] = []
+    by_kind: dict[str, list[BatteryTaskResult]] = {}
+    for tr in per_task:
+        if tr.kind not in by_kind:
+            by_kind[tr.kind] = []
+            order.append(tr.kind)
+        by_kind[tr.kind].append(tr)
+
+    out: list[BatteryKindResult] = []
+    for kind in order:
+        group = by_kind[kind]
+        signal = [tr for tr in group if tr.has_signal]
+        completions = [tr.mean_completion for tr in signal if tr.mean_completion is not None]
+        out.append(
+            BatteryKindResult(
+                kind=kind,
+                n_tasks=len(group),
+                tasks_with_signal=len(signal),
+                mean_completion=statistics.fmean(completions) if completions else None,
+                cross_task_spread=_cross_task_spread(signal),
+            )
+        )
+    return out
+
+
 def aggregate_battery(
     battery: Battery, runs_by_task: dict[str, list[BehavioralRun]]
 ) -> BatterySummary:
@@ -227,6 +307,7 @@ def aggregate_battery(
         n_tasks=len(battery.tasks),
         tasks_with_signal=len(signal),
         per_task=per_task,
+        per_kind=_per_kind_results(per_task),
         checkpoint_mean=checkpoint_mean,
         checkpoint_spread=checkpoint_spread,
         cross_task_spread=cross_task_spread,

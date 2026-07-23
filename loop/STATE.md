@@ -1,10 +1,11 @@
 # Loop state
 
-- Cycle counter: 7
+- Cycle counter: 8
 - Started: 2026-07-23 (UTC)
-- Focus pointer: READOUT (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
-  Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH; next cycle takes READOUT.)
+  Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT;
+  next cycle takes METHOD.)
 - Rubric: v0.5 on main (PR #1 merged 2026-07-23 via the Cycle-2 peer-gate).
   UNCHANGED by Cycles 2–4 (task battery, panel-reliability, and the reliability
   readout-surfacing are diagnostic layers over already-collected runs, not
@@ -40,17 +41,33 @@
   provisional-single-trial / provisional-unstable / behavioral-unobserved /
   not-scorable). Surfaced as one `QUOTABILITY:` line under OVERALL in the terminal
   card (`report._quotability_lines`). `--trials` default 1 -> 2 (multi-trial by
-  default; free-tier probe still runs once). Terminal-only so far; JSON/HTML
-  attach is the natural next READOUT step (mirrors the reliability Cycle-3 -> 4
-  pattern). NOT a scoring-semantics change — no version bump, scoring.py/rubric/
-  types.py byte-for-byte unchanged.
+  default; free-tier probe still runs once). NOT a scoring-semantics change — no
+  version bump, scoring.py/rubric untouched.
+  Cycle 8 (READOUT) attached it to the JSON `Report` (additive `quotability` field,
+  populated in `cli._evaluate` from the same pure function for every mode) and the
+  HTML scorecard (`scorecard._quotability` + `_QUOTABILITY_BANDS`: a Citable/
+  Provisional pill card under the overview in BOTH layouts; not-scorable/absent ->
+  no card). Same terminal->JSON->HTML deferral the reliability metric took
+  (Cycle 3->4). Additive/display-only; rubric stays v0.5, scoring source
+  byte-for-byte unchanged (score-unchanged pinned by test_quotability + an
+  end-to-end smoke). tests/test_readout.py now 8/8 (+3 quotability surfacing
+  tests). Suite 54 -> 57. The quotability code path is now fully surfaced
+  everywhere the score travels (terminal + JSON + HTML), matching reliability.
 - Canonical pair: drift-flight.org 46.1 F vs driftflight.com 85.5 B — delta
   +39.4. Confirmed LIVE again this local fire (2026-07-23T07:50Z, both HTTP 200),
   identical to the 05:52Z merge-verify and the hourly verify artifact
   verify_20260723T040757Z.json. Loop-start behavioral baseline was +40.6 (delta
-  within static variance). NOTE: hourly verify runner's newest artifact is 04:07Z
-  (~3.7h old at this fire); no :41 artifact appeared at 05/06 — under the 6h
-  "runner down" threshold but WATCH; flag in next Slack digest if it crosses 6h.
+  within static variance). UNCHANGED BY CONSTRUCTION at Cycle 8 (no scoring source
+  touched; quotability is display-only). RUNNER HEALTH (Cycle 8, 08:15Z): hourly
+  verify runner's newest artifact is STILL verify_20260723T040757Z (04:07Z,
+  ~4.1h old); no :41 artifact at 05/06/07/08 — under 6h but escalating WATCH: if
+  the next cloud fire (~09:xx) still sees 04:07Z it crosses 6h -> flag "runner
+  down" in next Slack digest. SEPARATE BUG found this fire: the runner's `scores`
+  block records FileNotFoundError because `[asrs.scoring]` stderr coverage-warning
+  lines leak into the score-path argument — its live re-score capture is BROKEN
+  (its TEST block is green; the live delta is still confirmed by the 05:52Z/07:50Z
+  manual local fires). Queued in BACKLOG; the P2 coverage-warning suppression
+  fixes it at the source.
 - Trial-count / panel-stability (local fire 2026-07-23T07:50Z, TRUTH/METHOD):
   executed the P0 [LOCAL] N-sweep item via an orphaned live claude+codex×5 panel
   on drift-flight.org (interrupted ~06:44Z fire; artifact adopted after

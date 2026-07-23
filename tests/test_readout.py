@@ -16,6 +16,17 @@ CLIs, no scoring-semantics assertions — the metric math itself lives in
   - the HTML card renders the stability number + flipped checkpoints for a real
     panel, the honest "single trial" note for one draw, and NOTHING when the
     field is absent (so static scorecards are unchanged).
+
+Cycle 8 (READOUT) attached the companion ``quotability`` verdict the same way —
+the one-bit "is the headline number safe to cite?" the terminal card already
+computed, now on the JSON ``Report`` and the HTML scorecard (the classifier math
+lives in ``test_quotability.py``):
+  - a Report round-trips ``quotability`` through JSON, byte-for-byte the pure
+    ``quotability()`` output (one source of truth), for static and panel modes;
+  - the HTML card renders a Citable pill for a static/reproducible report and a
+    Provisional pill for a single-trial one, showing the reason;
+  - a not-scorable verdict and an absent field both render NOTHING (the grade
+    already carries N/A — same suppression as the terminal line).
 """
 
 from __future__ import annotations
@@ -27,7 +38,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from asrs import scorecard  # noqa: E402
-from asrs.reliability import panel_reliability  # noqa: E402
+from asrs.reliability import panel_reliability, quotability  # noqa: E402
 from asrs.types import BehavioralRun, Report  # noqa: E402
 
 _KEYS = ["found_product", "understood_pricing", "found_purchase_path",
@@ -55,6 +66,9 @@ def _report(runs) -> Report:
                  behavioral_runs=runs, overall_score=50.0, grade="F")
     if runs:
         rep.panel_reliability = panel_reliability(runs).to_dict()
+    # cli._evaluate attaches quotability for every mode -> mirror it here so the
+    # fixture stays faithful to the pipeline.
+    rep.quotability = quotability(rep).to_dict()
     return rep
 
 
@@ -133,6 +147,62 @@ def test_html_absent_renders_nothing() -> None:
            "explicit None -> empty string (no card)")
 
 
+# ---------------------------------------------------------------------------
+# 6. quotability round-trips through JSON, byte-for-byte the pure metric.
+# ---------------------------------------------------------------------------
+def test_json_carries_quotability() -> None:
+    print("test_json_carries_quotability")
+    # Static (no runs) -> deterministic / citable.
+    static = _report([])
+    loaded = json.loads(static.to_json())
+    _check("quotability" in loaded, "quotability key present in JSON")
+    q = loaded["quotability"]
+    _check(q is not None, "quotability populated for a static report")
+    _check(q["tag"] == "static-deterministic", f"static tag, got {q['tag']!r}")
+    _check(q["quotable"] is True, "static score is citable")
+    _check(q == quotability(static).to_dict(),
+           "stored dict is byte-for-byte the pure quotability() output")
+
+    # A stable 2-run panel -> reproducible / citable, stability carried through.
+    allpass = dict.fromkeys(_KEYS, True)
+    rep = _report([_run(trial=1, **allpass), _run(model="codex", **allpass)])
+    q2 = json.loads(rep.to_json())["quotability"]
+    _check(q2["tag"] == "reproducible", f"reproducible tag, got {q2['tag']!r}")
+    _check(q2["verdict_stability"] == 1.0, f"stability carried, got {q2['verdict_stability']}")
+
+
+# ---------------------------------------------------------------------------
+# 7. HTML card renders a Citable / Provisional pill with its reason.
+# ---------------------------------------------------------------------------
+def test_html_renders_quotability_pill() -> None:
+    print("test_html_renders_quotability_pill")
+    # Static report -> Citable pill.
+    static_html = scorecard._quotability(json.loads(_report([]).to_json()))
+    _check("Quotability" in static_html, "card title present")
+    _check("Citable" in static_html, "Citable pill rendered for a static report")
+    _check("pill good" in static_html, "citable uses the good band")
+    _check("Provisional" not in static_html, "static is not flagged provisional")
+
+    # Single-trial panel -> Provisional pill.
+    prov_html = scorecard._quotability(json.loads(_report([_run(found_product=True)]).to_json()))
+    _check("Provisional" in prov_html, "Provisional pill rendered for a single trial")
+    _check("pill warn" in prov_html, "single-trial provisional uses the warn band")
+    _check("--trials" in prov_html, "reason (re-run with more trials) is shown")
+
+
+# ---------------------------------------------------------------------------
+# 8. not-scorable + absent field -> no card (grade already carries N/A).
+# ---------------------------------------------------------------------------
+def test_html_quotability_suppressed() -> None:
+    print("test_html_quotability_suppressed")
+    _check(scorecard._quotability({"domain": "x"}) == "",
+           "absent quotability key -> empty string (no card)")
+    _check(scorecard._quotability({"quotability": None}) == "",
+           "explicit None -> empty string (no card)")
+    _check(scorecard._quotability({"quotability": {"tag": "not-scorable", "quotable": False}}) == "",
+           "not-scorable tag -> no card (grade already says N/A)")
+
+
 def main() -> int:
     tests = [
         test_json_carries_reliability,
@@ -140,6 +210,9 @@ def main() -> int:
         test_html_renders_panel,
         test_html_single_trial_note,
         test_html_absent_renders_nothing,
+        test_json_carries_quotability,
+        test_html_renders_quotability_pill,
+        test_html_quotability_suppressed,
     ]
     failed = 0
     for t in tests:

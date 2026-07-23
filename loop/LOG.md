@@ -652,3 +652,76 @@ codex-reachability/control-storefront item (feed codex pre-fetched content when 
 browser is gated, marked assisted). (3) Verify runner: newest `verify_*.json` is
 04:07Z (~3.7h at this fire); no :41 artifact at 05/06 — watch, flag if >6h next
 fire.
+
+## Cycle 8 — 2026-07-23T08:15Z — READOUT (direct to main)
+
+**What.** Surfaced the quotability verdict — the one-bit "is the headline number
+safe to CITE?" — to the JSON `Report` and the HTML scorecard. It shipped
+terminal-only in Cycle 5; this is the same terminal→JSON→HTML deferral the
+reliability metric took in Cycles 3→4. Three additive edits: (1) `Report`
+gains a `quotability: dict | None` field (`asrs/types.py`); (2) `cli._evaluate`
+populates it from the SAME pure `asrs.reliability.quotability(report)` the
+terminal card uses, for every mode (static→`static-deterministic`, panel→
+`reproducible`/`provisional-*`, unscorable→`not-scorable`); (3) a new
+`scorecard._quotability(rep)` renders a **Citable / Provisional** pill + reason
+card, placed right under the overview so the citability verdict sits next to the
+grade, wired into BOTH layouts (`_domain_column` single + `_section_rows`
+compare). not-scorable and an absent field render no card (the grade already
+carries N/A — same suppression as the terminal line).
+
+**Why (READOUT, north-star: readout clarity).** A leaderboard/HTML consumer
+could already see the number and its reproducibility band, but not the single
+bit a citer actually needs before quoting it. Quotability collapses reliability
++ mode into Citable-or-Provisional; travelling with the JSON means an automated
+consumer (future leaderboard, trend page) gets the same gate a human running the
+terminal got, so a provisional single-trial number can't be quoted as settled.
+
+**Not a scoring-semantics change.** Display-only and additive by construction:
+`scoring.py`, the rubric, `types.py`'s scoring fields, and all probes are
+byte-for-byte untouched (`git diff --name-only` = types/cli/scorecard/test only).
+`quotability()` reads `overall_score`/`scored`/`behavioral_runs` and returns a
+classification — it never writes the score back. Rubric stays **v0.5**, no
+version bump. `test_quotability` already pins "OVERALL unchanged by the
+annotation"; the smoke below re-confirms scores 46.1/85.5 survive the attach.
+
+**Evidence.** `asrs/types.py` (+field), `asrs/cli.py` (+attach, mirrors the
+reliability attach), `asrs/scorecard.py` (`_quotability` + `_QUOTABILITY_BANDS`
++ both layout insertions), `tests/test_readout.py` (+3 tests: JSON round-trip
+byte-for-byte the pure metric for static & panel modes; Citable/Provisional pill
+render; not-scorable/absent → no card). Full suite **57/57** (was 54; +3).
+End-to-end scorecard smoke: single layout → Quotability card + Citable pill, not
+provisional; compare layout → 2 quotability cards, 2 Citable pills; overall
+scores 46.1 / 85.5 intact through the attach.
+
+**Canonical pair (regression signal).** UNCHANGED BY CONSTRUCTION — this cycle
+touched no scoring source and quotability is display-only, so the STATIC delta
+cannot move. Last live re-score (07:50Z local fire, LOG above + newest scoreable
+signal): drift-flight.org **46.1 F** / driftflight.com **85.5 B**, delta
+**+39.4**. In-cloud live re-score remains network-blocked; the by-construction
+argument (no scoring.py/rubric/probe bytes changed; score-unchanged pinned by
+test_quotability + the smoke) is the in-cloud regression proof per the playbook's
+cloud-adapted rule.
+
+**Runner health.** Newest hourly `runs/local/verify_*.json` is
+`verify_20260723T040757Z` (04:07Z), ~4.1h old at this fire (08:15Z) — under the
+6h "runner down" threshold but WATCH: no :41 artifact appeared at 05/06/07/08.
+Also NOTE a pre-existing bug in that runner's score capture: its `scores` block
+records `FileNotFoundError` because the `[asrs.scoring]` stderr coverage-warning
+lines (the P2 "coverage-warning noise" backlog item) leak into the score path
+argument. The runner's TEST block is green and its live re-score is separately
+confirmed by the 05:52Z/07:50Z manual local fires, so the canonical signal is
+intact — but the automated score capture is broken and should be fixed. Queued
+observation in BACKLOG. If the next cloud fire still sees a 04:07Z artifact,
+it crosses 6h → flag "runner down" in the next Slack digest.
+
+**Ship.** Direct-to-main (readout + additive field + tests; no scoring semantics,
+no payment/signing, no version bump — squarely in the direct-to-main tier). No
+Slack: not a sensitive-class PR, not a score/capability change, and 08:15Z is not
+the first cycle after 16:00Z (no daily digest due).
+
+**Next.** (1) READOUT track next rotates in 4 cycles; the sibling P2 "Task battery
+on the HTML card" is the natural next terminal→HTML lift (same `scorecard`
+template now has two examples: `_reliability` and `_quotability`). (2) The
+P0 peer-gated `_ENV_BLOCK_RE` "safety" fix (v0.5→v0.6) is still queued and is
+the next scoring-semantics PR. (3) Fix the local verify runner's stderr→score-path
+leak (the coverage-warning suppression P2 would also fix it at the source).

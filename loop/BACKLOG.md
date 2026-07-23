@@ -132,13 +132,13 @@ design in-cloud, execute locally.
 
 ## P2
 
-- **Quotability on the JSON/HTML card** (READOUT, Cycle 5 follow-up): the
-  quotability gate (`asrs.reliability.quotability`) ships terminal-only. Attach
-  it to `Report` as an additive field (populate in `cli._evaluate` from the same
-  function) and render a CITABLE/PROVISIONAL pill on the HTML scorecard — exactly
-  the Cycle-3→4 reliability pattern (`scorecard._reliability` is the template).
-  Additive, no version bump; so a leaderboard consumer sees "is this citable?"
-  next to the number, not only a terminal a human ran once.
+<!-- DONE 2026-07-23T08:15Z (Cycle 8, READOUT): "Quotability on the JSON/HTML card"
+     SHIPPED. Additive `Report.quotability` field (asrs/types.py), populated in
+     cli._evaluate from the same pure `asrs.reliability.quotability` for every mode;
+     `scorecard._quotability` + `_QUOTABILITY_BANDS` render a Citable/Provisional
+     pill card under the overview in BOTH layouts (not-scorable/absent -> no card).
+     Display-only, rubric stays v0.5, scoring source byte-for-byte unchanged.
+     tests/test_readout.py 8/8 (+3); suite 54 -> 57. See LOG Cycle 8. -->
 
 - **Task battery on the HTML card** (READOUT, Cycle 6 follow-up): the
   `battery_summary` ships terminal + JSON only. Render a per-intent coverage grid
@@ -164,3 +164,12 @@ design in-cloud, execute locally.
   expected-absent warnings (behavioral checks when not in --behavioral mode);
   keep warnings only for a check that's absent when it should have run. Small,
   direct-to-main safe (no scoring-semantics change).
+  ESCALATED (Cycle 8): this noise now causes a DOWNSTREAM BUG, not just clutter.
+  The hourly `loop/local_verify.py` runner's live-re-score capture is BROKEN — its
+  `scores` block records `FileNotFoundError` because the `[asrs.scoring] warning:`
+  stderr lines leak into the score-path argument it passes (seen in
+  verify_20260723T040714Z / …040757Z.json). The runner's TEST block is green and
+  the live delta is still confirmed by manual local fires, but its automated
+  canonical re-score is non-functional. Suppressing the expected-absent warnings
+  (route them through a logger, not raw stderr, or gate on --behavioral) fixes the
+  runner AT THE SOURCE — bumped in priority for that reason.

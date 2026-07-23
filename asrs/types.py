@@ -85,6 +85,16 @@ class Report:
     # consumers see reproducibility, not only the terminal card. Stored as a dict
     # (not the dataclass) to keep this module stdlib-only and dependency-free.
     panel_reliability: dict[str, Any] | None = None
+    # The one-bit "is the headline number safe to cite?" verdict (the
+    # :class:`asrs.reliability.Quotability` as a plain dict). ADDITIVE diagnostic,
+    # a companion to ``panel_reliability``: reliability measures *how* reproducible
+    # the panel is, quotability turns that into citable-or-provisional. Populated
+    # for every mode (static -> deterministic/citable; panel -> reproducible/
+    # provisional; not-scorable -> no number to quote). It does NOT feed the score
+    # and bumps NO rubric version — it only annotates whether the number the report
+    # already computed is quotable, so JSON/HTML consumers carry the same one-bit
+    # verdict the terminal card prints, not only a human who ran it once.
+    quotability: dict[str, Any] | None = None
     # Cross-intent coverage/reliability from a task battery (the
     # :class:`asrs.battery.BatterySummary` as a plain dict, or None when the run
     # was not a battery run). ADDITIVE diagnostic — the battery runs the shopper

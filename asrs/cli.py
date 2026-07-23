@@ -237,6 +237,18 @@ def _evaluate(domain, args, rubric):
 
         report.panel_reliability = panel_reliability(runs).to_dict()
 
+    # Attach the quotability verdict as an ADDITIVE diagnostic (mirrors
+    # panel_reliability above): the one-bit "is this number citable?" the terminal
+    # card already computes, now travelling with the JSON/HTML so a leaderboard
+    # consumer sees it next to the number, not only a human who ran the terminal.
+    # Same pure function the terminal uses -> the two never diverge. Populated for
+    # every mode (static -> static-deterministic; panel -> reproducible/provisional;
+    # not-scorable -> not-scorable). Non-scoring: score() already ran; this only
+    # annotates the report the same way as reliability/battery.
+    from .reliability import quotability
+
+    report.quotability = quotability(report).to_dict()
+
     return report
 
 

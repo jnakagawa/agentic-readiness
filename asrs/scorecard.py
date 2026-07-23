@@ -476,6 +476,47 @@ _RELIABILITY_BANDS = {
 _CHECKPOINT_LABEL_BY_KEY = dict(CHECKPOINT_LABELS)
 
 
+# Quotability tag -> (pill css class, pill label). "Citable" vs "Provisional" is
+# the one bit a reader needs; the tag names WHY. not-scorable is not in the map —
+# it renders no card at all (the grade already says N/A; a second "no number to
+# quote" pill would be noise, mirroring the terminal's suppression).
+_QUOTABILITY_BANDS = {
+    "static-deterministic": ("good", "Citable"),
+    "reproducible": ("good", "Citable"),
+    "provisional-single-trial": ("warn", "Provisional"),
+    "behavioral-unobserved": ("warn", "Provisional"),
+    "provisional-unstable": ("bad", "Provisional"),
+}
+
+
+def _quotability(rep: dict) -> str:
+    """Is-this-number-citable card: the one-bit verdict, placed by the headline.
+
+    Reads the ADDITIVE ``quotability`` dict the Report now carries (the
+    :class:`asrs.reliability.Quotability`). Diagnostic only — never part of the
+    score; it tells a leaderboard reader whether the number above is reproducible
+    enough to cite or still provisional. A not-scorable report (or one with the
+    field absent, e.g. an older JSON) renders no card — the grade already carries
+    that, exactly like the terminal card's suppression.
+    """
+    q = rep.get("quotability")
+    if not q:
+        return ""
+    tag = q.get("tag", "")
+    band = _QUOTABILITY_BANDS.get(tag)
+    if band is None:  # not-scorable or an unknown tag -> no card
+        return ""
+    band_cls, band_label = band
+    pill = f'<span class="pill {band_cls}"><span class="dot"></span>{band_label}</span>'
+    reason = _esc(q.get("reason", ""))
+    return (
+        '<div class="card"><div class="card-header"><div><h2>Quotability</h2>'
+        '<div class="desc">Is the headline number safe to cite?</div>'
+        f"</div>{pill}</div>"
+        f'<div class="card-body"><div class="desc">{reason}</div></div></div>'
+    )
+
+
 def _reliability(rep: dict) -> str:
     """Within-panel reproducibility card: did the runs agree on the same task?
 
@@ -584,6 +625,7 @@ def _domain_column(rep: dict, label: str | None, baseline: dict | None = None) -
     return (
         '<div class="stack">'
         + _overview_card(rep, label, baseline)
+        + _quotability(rep)
         + _recs_card(rep)
         + _trust_panel(rep)
         + _checkpoints(rep)
@@ -599,6 +641,7 @@ def _section_rows(a: dict, b: dict, labels: list[str | None]) -> str:
     tables need the room; half-width forces heavy wrapping."""
     sections = [
         (_overview_card(a, labels[0]), _overview_card(b, labels[1], baseline=a)),
+        (_quotability(a), _quotability(b)),
         (_recs_card(a, titled=True), _recs_card(b, titled=True)),
         (_trust_panel(a), _trust_panel(b)),
         (_checkpoints(a), _checkpoints(b)),

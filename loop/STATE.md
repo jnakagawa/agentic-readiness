@@ -1,14 +1,15 @@
 # Loop state
 
-- Cycle counter: 12
+- Cycle counter: 13
 - Started: 2026-07-23 (UTC)
-- Focus pointer: METHOD (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
   pinning) + local fire 11:42Z TRUTH (codex reachability investigation, ran
-  concurrently), Cycle 12 READOUT (task-battery card on the HTML scorecard);
-  next cycle takes METHOD.)
+  concurrently), Cycle 12 READOUT (task-battery card on the HTML scorecard),
+  Cycle 13 METHOD (coverage-warning noise fixed at source — logging + behavioral-only
+  classifier; unblocks the local runner's re-score capture); next cycle takes COVERAGE.)
 - Rubric: **v0.6 on main** (PR #2 MERGED 2026-07-23T~09:47Z, merge commit 8fe9f46,
   clean fast-forward). v0.6 broadens the env-block classifier to recognize
   "safety"-phrased hosted-browser refusals (aggregation rule → version bump).
@@ -67,6 +68,20 @@
   `tests/test_readout.py` 8/8 -> 12/12; suite 64 -> 68. The queued [LOCAL] second
   cross_task_spread datapoint will be the first live report carrying per_kind, so the
   by-archetype grid can finally be eyeballed on a real card.
+- Coverage-warning noise (Cycle 13, METHOD): fixed AT THE SOURCE. `asrs/scoring.py`
+  no longer `print(..., file=sys.stderr)`s coverage warnings — they route through
+  `logging.getLogger("asrs.scoring")`, and the noisy "absent rubric check" warning is
+  split by a new `_is_behavioral_only(check)` classifier (whole `outcome` pillar +
+  `trust_panel_willingness`/`trust_live_session`): behavioral-only absences → DEBUG
+  (expected in static mode, silent under Python's default WARNING-level lastResort),
+  genuine static gaps → WARNING (still on stderr, unchanged). A realistic static run now
+  emits ZERO warning lines (was ~12), so real gaps aren't buried AND the `local_verify.py`
+  runner's stderr-into-score-path leak (the ESCALATED Cycle-8 downstream bug) has no
+  source to leak — WHEN the runner is restarted its live re-score capture will work.
+  NOT a scoring-semantics change (warning routing + a verbosity classifier never read by
+  the math; scoring arithmetic byte-for-byte unchanged, rubric stays v0.6, canonical delta
+  unchanged by construction); direct-to-main. `tests/test_scoring.py` 7/7 → 11/11 (+4,
+  logger-capture handler); suite 68 → 72.
 - Attribution boundary (Cycle 7, TRUTH): `tests/test_attribution.py` (8/8) pins
   invariant #4 directly for the first time — `asrs/behavioral/shopper._is_env_blocked`
   (`_ENV_BLOCK_RE`) + `_aggregate` denominator routing. Adds the previously-zero
@@ -121,13 +136,16 @@
   next Slack daily digest (first cycle after 16:00 UTC) per the comms policy — the
   next live canonical re-score signal depends on it or on a manual local fire.
   RE-CONFIRMED DOWN Cycle 11 (11:15Z): newest still verify_20260723T040757Z, now
-  ~7h08m old.
-  SEPARATE BUG (persists): the runner's `scores`
-  block records FileNotFoundError because `[asrs.scoring]` stderr coverage-warning
-  lines leak into the score-path argument — its live re-score capture is BROKEN
-  (its TEST block is green; the live delta is still confirmed by the 05:52Z/07:50Z
-  manual local fires). Queued in BACKLOG; the P2 coverage-warning suppression
-  fixes it at the source.
+  ~7h08m old. RE-CONFIRMED DOWN Cycle 13 (13:18Z): newest still verify_20260723T040757Z,
+  now **~9.2h old** (past 6h); still before 16:00 UTC so no digest yet — folds into the
+  next post-16:00 Slack digest.
+  SEPARATE BUG (the coverage-warning stderr leak): FIXED AT SOURCE Cycle 13. The runner's
+  `scores` block recorded FileNotFoundError because `[asrs.scoring]` stderr coverage-warning
+  lines leaked into the score-path argument; `asrs/scoring.py` no longer prints those lines
+  on a normal static run (routed to logging; behavioral-only absences → DEBUG). So WHEN the
+  launchd runner is restarted, its live re-score capture will work. Its TEST block was
+  already green; the live delta stays confirmed by the manual local fires. Residual belt-
+  and-suspenders (runner should not merge stderr into a path arg) is a [LOCAL] follow-up.
 - Trial-count post-v0.6 (Cycle 11, TRUTH): the OFFLINE (data-recompute) half of
   the "confirm the trial-count panel reads stable post-v0.6" P0 is now DISCHARGED
   in-cloud and pinned. `tests/test_trial_stability_v06.py` (4/4) recomputes the

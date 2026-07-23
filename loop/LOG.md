@@ -1227,3 +1227,81 @@ itself on a hosted card — the queued [LOCAL] second cross_task_spread datapoin
 or the full 5-intent battery on drift-flight.org) will be the first live run whose report
 carries per_kind, so the by-archetype grid can be eyeballed on an actual scorecard. No
 new code needed for that; it exercises this cycle's render path on live data.
+
+## Cycle 13 — 2026-07-23T13:18Z — METHOD (direct to main)
+
+**First duty.** No open peer-gated PR (`list_pull_requests` open = []; PR #2 merged
+09:47Z, PR #1 merged 03:00Z). Nothing to review — proceeded to the one improvement.
+
+**Track.** METHOD (rotation: …Cycle 12 READOUT → Cycle 13 METHOD). Focus pointer in
+STATE named METHOD for this cycle.
+
+**What.** Fixed the coverage-warning noise AT THE SOURCE (`asrs/scoring.py`). The
+roll-up emitted one raw `print(..., file=sys.stderr)` per rubric check with no result;
+in a static run ALL ~8 behavioral-only checks are legitimately absent, so every static
+run spewed ~12 `[asrs.scoring] warning:` stderr lines — noise that buried genuinely-
+unexpected gaps AND leaked into the local verify runner's captured score-path argument
+(the ESCALATED Cycle-8 downstream bug). Change: route the three coverage warnings
+through `logging.getLogger("asrs.scoring")` instead of raw stderr, and split the
+"absent rubric check" warning by a new `_is_behavioral_only(check)` classifier —
+behavioral-only checks (the whole `outcome` pillar, per the rubric's own "outcome
+(behavioral only)" structure, plus `trust_panel_willingness` / `trust_live_session`
+from the live panel) log at DEBUG (expected absent in static mode); a genuine static
+gap still logs at WARNING. Under Python's default logging (no basicConfig, WARNING-level
+lastResort handler → stderr), DEBUG is dropped and WARNING still reaches stderr — so a
+realistic static run now emits ZERO warning lines while genuine gaps stay visible,
+unchanged. No `basicConfig` added; visibility of real warnings is preserved exactly.
+
+**Why.** North-star methodological rigor + measurement-infra reliability. (1) Legibility:
+a normal run's stderr no longer carries ~12 false-alarm lines, so a real coverage gap
+(a crashed static probe, an unknown pillar, a result not in the rubric) is no longer
+buried. (2) It fixes the hourly `local_verify.py` runner's broken live-canonical re-score
+capture at the source — its `scores` block recorded FileNotFoundError because those
+`[asrs.scoring] warning:` lines leaked into the path it passed; a normal static score
+now produces zero such lines. (Any residual runner-side robustness — the runner should
+not merge stderr into a path arg — is a separate item, but the noise SOURCE is gone.)
+
+**Invariants.** (#2 versioned comparability) NOT a scoring-semantics change — this
+touches ONLY warning routing (print→logger) + a warning-verbosity classifier that is
+NEVER read by the scoring math. rubric **v0.6 UNCHANGED**; `git diff` on the scoring
+arithmetic is empty (verified: every changed line is a warning/logger/comment/blank —
+no weight, max_points, cap, aggregation, or renormalization line touched). Scores are
+byte-for-byte identical (pinned by new test #11 + the existing regression tests #3–#6,
+all green). Capability-worded, vendor-neutral (the classifier keys on pillar/check-id
+structure, no domain or vendor). (#3 evidence) new tests trace to the bundled rubric's
+real check set, not hand-typed. Direct-to-main per the "probe bug-fixes that don't
+change scoring semantics" + tests rule.
+
+**Tests.** `tests/test_scoring.py` 7/7 → **11/11** (+4, framework-free capture handler on
+the `asrs.scoring` logger): (a) a realistic full static run emits ZERO warnings and the
+behavioral-only absences are still recorded at DEBUG (visible under -v, not swallowed);
+(b) an absent STATIC check (x402_probe dropped) STILL warns, and behavioral-only checks
+never warn even alongside other absences; (c) a result not in the rubric AND an unknown
+pillar both still warn (genuinely-unexpected → loud); (d) warning routing does not change
+the score (71.4 for the same observable pillars). Empirically confirmed out-of-band: a
+realistic static score (all 15 static checks present, all behavioral absent) prints an
+EMPTY stderr. Full suite 68 → **72/72** (all files green; free-tier 8/8 with eth-account
+0.13.7 installed).
+
+**Canonical pair (regression signal).** UNCHANGED BY CONSTRUCTION — warning-routing-only,
+scoring arithmetic byte-for-byte untouched, so the static delta cannot move. In-cloud
+live re-score remains blocked (network policy denies canonical domains); the standing
+live signal is the manual local fires: drift-flight.org **46.1 F** / driftflight.com
+**85.5 B**, delta **+39.4** on rubric v0.6 (STATE, last live-confirmed 11:50Z).
+
+**Runner health — STILL DOWN (>6h).** Newest `verify_*.json` is verify_20260723T040757Z
+(04:07Z, rubric 0.5) — **9.2h old at this fire** (measured 13:18Z), well past the 6h
+threshold; no :41 artifact since 04:00Z. This fire is BEFORE 16:00 UTC → no digest yet;
+to be folded into the next post-16:00 Slack digest per comms policy. This cycle's fix
+means that WHEN the launchd runner is restarted, its live re-score capture will work (the
+stderr leak source is removed) — a concrete unblock for the runner, not just cleanup.
+
+**Ship.** Direct-to-main: scoring warning-routing bug-fix + tests + LOG/STATE/BACKLOG,
+no scoring semantics. No Slack DM (no sensitive PR, no score/capability change, before
+16:00 UTC) per the quiet-comms policy.
+
+**Next hypothesis.** Two follow-ons: (1) the runner-side robustness (don't merge stderr
+into a path arg) is a belt-and-suspenders [LOCAL] fix once the runner is restarted;
+(2) the P1 "nested shopper spawns the full user MCP fleet" cleanliness fix is the next
+METHOD-flavored measurement-hygiene win (direct-to-main plumbing, [LOCAL] panel to
+verify identical checkpoints).

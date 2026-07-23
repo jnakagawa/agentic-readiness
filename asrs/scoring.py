@@ -16,10 +16,13 @@ Scoring rules (see README "Design notes"):
 
 from __future__ import annotations
 
-import sys
+import logging
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+
+logger = logging.getLogger("asrs.scoring")
 
 
 DEFAULT_RUBRIC_PATH = Path(__file__).resolve().parent.parent / "rubric" / "rubric_v0.yaml"
@@ -28,6 +31,29 @@ DEFAULT_RUBRIC_PATH = Path(__file__).resolve().parent.parent / "rubric" / "rubri
 # are excluded from both numerator and denominator (they shrink the pillar,
 # never punish it).
 _SCORED_STATUSES = frozenset({"pass", "partial", "fail"})
+
+# Trust checks that only a LIVE behavioral panel can produce (the static trust
+# probe emits the rest). Used ONLY to route the "absent rubric check" coverage
+# warning to debug vs warning — NEVER read by the scoring math, so scores are
+# byte-for-byte identical with or without this set.
+_BEHAVIORAL_ONLY_TRUST_CHECKS = frozenset({
+    "trust_panel_willingness",  # asrs.behavioral.trust_probe
+    "trust_live_session",       # asrs.behavioral.shopper
+})
+
+
+def _is_behavioral_only(check: dict) -> bool:
+    """True if this rubric check can only come from a behavioral run.
+
+    The whole ``outcome`` pillar is behavioral-only (rubric: "outcome
+    (behavioral only; NA in static mode)"), plus two trust checks produced by
+    the live panel. In a static run these are LEGITIMATELY absent — their
+    absence is expected, not a coverage gap, so it should not warn.
+    """
+    return (
+        check.get("pillar") == "outcome"
+        or check.get("id") in _BEHAVIORAL_ONLY_TRUST_CHECKS
+    )
 
 
 def load_rubric(path: str | Path | None = None) -> dict:
@@ -90,20 +116,31 @@ def score(
     result_id_set = set(result_ids)
     for cid in result_ids:
         if cid not in checks_by_id:
-            print(
-                f"[asrs.scoring] warning: check_id {cid!r} not in rubric "
-                f"(version {rubric.get('version')!r}) — its points are still counted",
-                file=sys.stderr,
+            logger.warning(
+                "check_id %r not in rubric (version %r) — its points are still counted",
+                cid, rubric.get("version"),
             )
     for rid in checks_by_id:
         if rid not in result_id_set:
-            # Missing rubric checks are simply absent — their pillar max
-            # shrinks. Not an error, but worth surfacing.
-            print(
-                f"[asrs.scoring] warning: rubric check {rid!r} has no result "
-                "— absent (pillar max shrinks)",
-                file=sys.stderr,
-            )
+            if _is_behavioral_only(checks_by_id[rid]):
+                # Expected in a static run — no panel ran, so behavioral-only
+                # checks are legitimately absent. Debug, not warning: this used
+                # to emit ~one stderr line per behavioral check on every static
+                # run, burying genuinely-unexpected gaps (and leaking into the
+                # local verify runner's captured output).
+                logger.debug(
+                    "rubric check %r has no result — behavioral-only, "
+                    "expected absent in static mode",
+                    rid,
+                )
+            else:
+                # A static (or otherwise-expected) check produced no result —
+                # its pillar max shrinks. Not an error, but a real coverage gap
+                # worth surfacing.
+                logger.warning(
+                    "rubric check %r has no result — absent (pillar max shrinks)",
+                    rid,
+                )
 
     # --- (b) per-pillar scores ------------------------------------------
     pillar_scores: dict[str, float | None] = {}
@@ -115,10 +152,8 @@ def score(
         if pillar not in earned:
             # A check for an unknown pillar — count it under its own bucket
             # so it isn't silently dropped, and warn.
-            print(
-                f"[asrs.scoring] warning: check {c.check_id!r} has unknown "
-                f"pillar {pillar!r}",
-                file=sys.stderr,
+            logger.warning(
+                "check %r has unknown pillar %r", c.check_id, pillar,
             )
             earned.setdefault(pillar, 0.0)
             possible.setdefault(pillar, 0.0)

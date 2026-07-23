@@ -163,6 +163,116 @@ def test_not_scorable_json_roundtrips() -> None:
     _check(data["grade"] == "N/A", "grade serializes as N/A")
 
 
+# ---------------------------------------------------------------------------
+# 6. Coverage-warning routing: behavioral-only checks are expected-absent in a
+#    static run (debug, not warning), while a genuine static gap still warns.
+#    This is the fix for the ~12 stderr lines a static run used to emit — noise
+#    that buried real gaps and leaked into the local verify runner's captured
+#    output. It changes NO score (asserted alongside).
+# ---------------------------------------------------------------------------
+import logging  # noqa: E402
+
+
+class _CaptureHandler(logging.Handler):
+    """Collect log records so a test can assert on level + message."""
+
+    def __init__(self) -> None:
+        super().__init__(level=logging.DEBUG)
+        self.records: list[logging.LogRecord] = []
+
+    def emit(self, record: logging.LogRecord) -> None:
+        self.records.append(record)
+
+
+def _score_capturing(checks, rubric, domain):
+    """Run score() with every asrs.scoring log record captured.
+
+    Returns (report, records). Sets the logger level to DEBUG so behavioral
+    debug lines are observable, and restores it after.
+    """
+    log = logging.getLogger("asrs.scoring")
+    handler = _CaptureHandler()
+    prev_level = log.level
+    log.addHandler(handler)
+    log.setLevel(logging.DEBUG)
+    try:
+        rep = scoring.score(checks, rubric, domain)
+    finally:
+        log.removeHandler(handler)
+        log.setLevel(prev_level)
+    return rep, handler.records
+
+
+def _full_static_checks(rubric):
+    """One CheckResult for every NON-behavioral rubric check (a realistic
+    static run: static probes always emit a result, even CANT_TEST)."""
+    return [
+        _cr(c["id"], c["pillar"], Status.CANT_TEST, 0.0, float(c.get("max_points", 1)))
+        for c in rubric["checks"]
+        if not scoring._is_behavioral_only(c)
+    ]
+
+
+def test_behavioral_absence_is_silent_in_static() -> None:
+    print("test_behavioral_absence_is_silent_in_static")
+    rubric = _rubric()
+    checks = _full_static_checks(rubric)
+    _rep, records = _score_capturing(checks, rubric, "static.example")
+    warns = [r for r in records if r.levelno >= logging.WARNING]
+    _check(warns == [], f"a realistic static run emits ZERO warnings, got {[r.getMessage() for r in warns]}")
+    # The behavioral-only absences are still logged — at DEBUG (visible under -v),
+    # not silently swallowed.
+    debug_msgs = " ".join(r.getMessage() for r in records if r.levelno == logging.DEBUG)
+    _check("bhv_found_product" in debug_msgs, "behavioral-only absence recorded at debug")
+    _check("trust_live_session" in debug_msgs, "behavioral trust absence recorded at debug")
+    _check("trust_panel_willingness" in debug_msgs, "behavioral trust-panel absence recorded at debug")
+
+
+def test_static_gap_still_warns() -> None:
+    print("test_static_gap_still_warns")
+    rubric = _rubric()
+    # Drop one STATIC check (x402_probe) from an otherwise-complete static run:
+    # a genuine coverage gap that must still surface.
+    checks = [c for c in _full_static_checks(rubric)
+              if getattr(c, "check_id", None) != "x402_probe"]
+    _rep, records = _score_capturing(checks, rubric, "gap.example")
+    warns = [r.getMessage() for r in records if r.levelno >= logging.WARNING]
+    _check(any("x402_probe" in m for m in warns),
+           f"an absent STATIC check still warns, got {warns}")
+    _check(not any("bhv_" in m for m in warns),
+           "behavioral-only checks never warn even when other checks are absent")
+
+
+def test_unknown_pillar_and_extra_check_warn() -> None:
+    print("test_unknown_pillar_and_extra_check_warn")
+    rubric = _rubric()
+    # A result for a check id NOT in the rubric, and a result on an unknown
+    # pillar — both are genuinely unexpected and must stay loud.
+    checks = _full_static_checks(rubric) + [
+        _cr("not_a_real_check", "access", Status.PASS, 1.0, 1.0),
+        _cr("robots_ai_crawlers", "made_up_pillar", Status.PASS, 1.0, 1.0),
+    ]
+    _rep, records = _score_capturing(checks, rubric, "weird.example")
+    warns = " ".join(r.getMessage() for r in records if r.levelno >= logging.WARNING)
+    _check("not_a_real_check" in warns, "result not in rubric warns")
+    _check("made_up_pillar" in warns, "unknown pillar warns")
+
+
+def test_warning_routing_does_not_change_score() -> None:
+    print("test_warning_routing_does_not_change_score")
+    # The SAME observable pillars must score identically whether or not the
+    # behavioral checks are present as absent rubric entries (they always are,
+    # via the bundled rubric). Warning routing is orthogonal to the math.
+    checks = [
+        _cr("robots_ai_crawlers", "access", Status.PASS, 10.0, 10.0),
+        _cr("agent_ua_reachability", "access", Status.PASS, 10.0, 10.0),
+        _cr("llms_txt", "legibility", Status.PARTIAL, 3.0, 6.0),
+    ]
+    rep, _records = _score_capturing(checks, _rubric(), "score.example")
+    # access 100 (w .15), legibility 50 (w .20) -> (15 + 10) / .35 = 71.43
+    _check(abs(rep.overall_score - 71.4) < 0.1, f"score unaffected by routing, got {rep.overall_score}")
+
+
 def main() -> int:
     tests = [
         test_all_cant_test_is_not_scorable,
@@ -172,6 +282,10 @@ def main() -> int:
         test_mixed_pillars_scored_and_weighted,
         test_cap_still_binds_when_scorable,
         test_not_scorable_json_roundtrips,
+        test_behavioral_absence_is_silent_in_static,
+        test_static_gap_still_warns,
+        test_unknown_pillar_and_extra_check_warn,
+        test_warning_routing_does_not_change_score,
     ]
     failed = 0
     for t in tests:

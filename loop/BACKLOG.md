@@ -212,19 +212,25 @@ design in-cloud, execute locally.
   page behind the rubric page. NOTE: now also document NOT-SCORABLE (v0.5) —
   the difference between "F" and "N/A".
 
-- **Coverage-warning noise** (READOUT/METHOD, Cycle 1 observation): scoring
-  prints one stderr line per absent rubric check on every run. In static mode
-  ALL behavioral checks are legitimately absent, so a normal run emits ~12
-  warnings — noise that will bury genuinely-unexpected gaps. Suppress
-  expected-absent warnings (behavioral checks when not in --behavioral mode);
-  keep warnings only for a check that's absent when it should have run. Small,
-  direct-to-main safe (no scoring-semantics change).
-  ESCALATED (Cycle 8): this noise now causes a DOWNSTREAM BUG, not just clutter.
-  The hourly `loop/local_verify.py` runner's live-re-score capture is BROKEN — its
-  `scores` block records `FileNotFoundError` because the `[asrs.scoring] warning:`
-  stderr lines leak into the score-path argument it passes (seen in
-  verify_20260723T040714Z / …040757Z.json). The runner's TEST block is green and
-  the live delta is still confirmed by manual local fires, but its automated
-  canonical re-score is non-functional. Suppressing the expected-absent warnings
-  (route them through a logger, not raw stderr, or gate on --behavioral) fixes the
-  runner AT THE SOURCE — bumped in priority for that reason.
+<!-- DONE 2026-07-23T13:18Z (Cycle 13, METHOD): "Coverage-warning noise" fixed AT SOURCE.
+     asrs/scoring.py routes the three coverage warnings through logging.getLogger(
+     "asrs.scoring") instead of raw print(file=sys.stderr); the noisy "absent rubric check"
+     warning is split by _is_behavioral_only(check) (whole outcome pillar +
+     trust_panel_willingness/trust_live_session) → behavioral-only absences at DEBUG
+     (expected absent in static, silent under Python's default WARNING lastResort), genuine
+     static gaps at WARNING (still on stderr). A realistic static run now emits ZERO warning
+     lines (was ~12) → real gaps un-buried AND the local_verify.py stderr→score-path leak
+     (the escalated Cycle-8 downstream bug) has no source; the runner's re-score capture will
+     work when it's restarted. NOT a scoring-semantics change (arithmetic byte-for-byte
+     unchanged, rubric v0.6, canonical delta unchanged by construction); direct-to-main.
+     tests/test_scoring.py 7/7 → 11/11 (+4, logger-capture handler); suite 68 → 72. See LOG. -->
+
+- **[LOCAL] Runner robustness: don't merge stderr into the score-path arg** (METHOD,
+  Cycle 13 follow-up — belt-and-suspenders after the source fix above). The Cycle-13 fix
+  removed the coverage-warning SOURCE, so a normal static run's stderr is now clean and the
+  `local_verify.py` re-score capture should succeed. But the runner is still fragile: it
+  builds the score-path from captured output, so ANY future stderr line (a genuine coverage
+  WARNING, a probe-crash line, a deprecation) would re-break it. Harden the runner to read
+  the score JSON from a known path / stdout-only channel rather than parsing mixed
+  stdout+stderr. Needs the runner restarted first (currently DOWN, >9h). Execute [LOCAL] on
+  Jonah's machine.

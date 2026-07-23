@@ -1,0 +1,328 @@
+{
+  "domain": "driftflight.com",
+  "rubric_version": "0.7",
+  "generated_at": "2026-07-23T15:43:48.753736",
+  "checks": [
+    {
+      "check_id": "robots_ai_crawlers",
+      "pillar": "access",
+      "status": "pass",
+      "points": 10.0,
+      "max_points": 10.0,
+      "finding": "robots-allows-ai-crawlers",
+      "remediation": "",
+      "evidence": {
+        "url": "https://driftflight.com/robots.txt",
+        "checked_agents": [
+          "GPTBot",
+          "ClaudeBot",
+          "Claude-User",
+          "OAI-SearchBot",
+          "PerplexityBot",
+          "Google-Extended"
+        ],
+        "blocked_agents": [],
+        "snippet": "User-agent: *\nAllow: /"
+      }
+    },
+    {
+      "check_id": "agent_ua_reachability",
+      "pillar": "access",
+      "status": "pass",
+      "points": 10.0,
+      "max_points": 10.0,
+      "finding": "agent-ua-allowed",
+      "remediation": "",
+      "evidence": {
+        "browser": {
+          "url": "https://driftflight.com",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "cloudflare",
+          "body_len": 18020
+        },
+        "claudebot": {
+          "url": "https://driftflight.com",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "cloudflare",
+          "body_len": 18020
+        },
+        "gptbot": {
+          "url": "https://driftflight.com",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "cloudflare",
+          "body_len": 18020
+        },
+        "blocked_agents": []
+      }
+    },
+    {
+      "check_id": "llms_txt",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 6.0,
+      "max_points": 6.0,
+      "finding": "llms-txt-present",
+      "remediation": "",
+      "evidence": {
+        "url": "https://driftflight.com/llms.txt",
+        "length": 1510,
+        "snippet": "# Driftflight\n\n> Driftflight is an AI image generation studio: text-to-image over a simple\n> HTTP API, with hosted output URLs, style presets, and commercial licensing.\n> Operated by Driftflight Studio, Inc.\n\n## Agentic commerce\n\n- [Driftflight agent storefront](https://agents.driftflight.com/llms.t"
+      }
+    },
+    {
+      "check_id": "sitemap",
+      "pillar": "legibility",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 2.0,
+      "finding": "sitemap-missing",
+      "remediation": "Publish a sitemap.xml (and reference it via a Sitemap: line in robots.txt) so agents can enumerate your pages.",
+      "evidence": {
+        "probed": [
+          "/sitemap.xml",
+          "robots.txt Sitemap:"
+        ],
+        "sitemap_status": 404
+      }
+    },
+    {
+      "check_id": "offer_catalog",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 6.0,
+      "max_points": 6.0,
+      "finding": "offer-catalog-present",
+      "remediation": "",
+      "evidence": {
+        "convention": "catalog manifest JSON",
+        "url": "https://agents.driftflight.com/manifest.json",
+        "snippet": "{\"agentNote\":\"No wallet or payment method? You are not blocked: an autonomous agent can create one with no signup at no cost, or hand off to a human - either path works. See https://agents.driftflight.com/llms.txt. Some pay-as-you-go prices include free units per account (prices[].includedUnits); th"
+      }
+    },
+    {
+      "check_id": "pricing_machine_readable",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 4.0,
+      "max_points": 4.0,
+      "finding": "pricing-visible-server-side",
+      "remediation": "",
+      "evidence": {
+        "page": "https://driftflight.com/pricing",
+        "match": "$5"
+      }
+    },
+    {
+      "check_id": "api_docs_surface",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 4.0,
+      "max_points": 4.0,
+      "finding": "api-docs-present",
+      "remediation": "",
+      "evidence": {
+        "url": "https://driftflight.com/docs",
+        "status": 200
+      }
+    },
+    {
+      "check_id": "x402_probe",
+      "pillar": "transactability",
+      "status": "pass",
+      "points": 8.0,
+      "max_points": 8.0,
+      "finding": "x402-live",
+      "remediation": "",
+      "evidence": {
+        "url": "https://agents.driftflight.com/extend",
+        "x402": {
+          "body": {
+            "x402Version": 2,
+            "error": "payment_required",
+            "resource": {
+              "url": "https://agents.driftflight.com/extend",
+              "description": "AI image generation with style presets: production-quality text-to-image for campaigns, catalogs, and editorial. Three tiers (sketch, studio, gallery), commercial licence and C2PA credentials on every render.",
+              "mimeType": "application/json",
+              "serviceName": "Driftflight"
+            },
+            "accepts": [
+              {
+                "scheme": "exact",
+                "network": "eip155:8453",
+                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                "amount": "0",
+                "payTo": "0x0000000000000000000000000000000000000000",
+                "maxTimeoutSeconds": 300,
+                "extra": {
+                  "name": "USD Coin",
+                  "version": "2",
+                  "zeroclick": {
+                    "kind": "identity"
+                  },
+                  "billing": {
+                    "model": "prepaid",
+                    "description": "amount is the price and is charged in full when you pay; a failed delivery is credited back in full. (Exact entries appear only on fixed-price requests - ceiling-priced requests are offered the reserve-and-pay-actual entry instead.)"
+                  }
+                }
+              }
+            ],
+            "reason": "identity_required",
+            "protocols": {
+              "mpp": {
+                "challengeId": "EjWiLS1NuO0iMxbPXGo7TyOl2GvUa4dEmOiAinLxQLk",
+                "method": "tempo",
+                "intent": "charge"
+              },
+              "x402": {
+                "x402Version": 2,
+                "network": "eip155:8453",
+                "scheme": "exact",
+                "amount": "0",
+                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+              }
+            }
+          },
+          "snippet": "{\"x402Version\": 2, \"error\": \"payment_required\", \"resource\": {\"url\": \"https://agents.driftflight.com/extend\", \"description\": \"AI image generation with style presets: production-quality text-to-image for campaigns, catalogs, and editorial. Three tiers (sketch, studio, gallery), commercial licence and ",
+          "headers": {
+            "payment-required": "eyJ4NDAyVmVyc2lvbiI6MiwiZXJyb3IiOiJBdXRoZW50aWNhdGlvbiByZXF1aXJlZCIsInJlc291cmNlIjp7InVybCI6Imh0dHBzOi8vYWdlbnRzLmRyaWZ0ZmxpZ2h0LmNvbS9leHRlbmQiLCJkZXNjcmlwdGlvbiI6IkFJIGltYWdlIGdlbmVyYXRpb24gd2l0aCBzdHlsZSBwcmVzZXRzOiBwcm9kdWN0aW9uLXF1YWxpdHkgdGV4dC10by1pbWFnZSBmb3IgY2FtcGFpZ25zLCBjYXRhbG9ncywgYW5kIGVkaXRvcmlhbC4gVGhyZWUgdGllcnMgKHNrZXRjaCwgc3R1ZGlvLCBnYWxsZXJ5KSwgY29tbWVyY2lhbCBsaWNlbmNlIGFuZCBDMlBBIGNyZWRlbnRpYWxzIG9uIGV2ZXJ5IHJlbmRlci4iLCJtaW1lVHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJzZXJ2aWNlTmFtZSI6IkRyaWZ0ZmxpZ2h0In0sImFjY2VwdHMiOlt7InNjaGVtZSI6ImV4YWN0IiwibmV0d29yayI6ImVpcDE1NTo4NDUzIiwiYXNzZXQiOiIweDgzMzU4OWZDRDZlRGI2RTA4ZjRjN0MzMkQ0ZjcxYjU0YmRBMDI5MTMiLCJhbW91bnQiOiIwIiwicGF5VG8iOiIweDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAiLCJtYXhUaW1lb3V0U2Vjb25kcyI6MzAwLCJleHRyYSI6eyJuYW1lIjoiVVNEIENvaW4iLCJ2ZXJzaW9uIjoiMiIsInplcm9jbGljayI6eyJraW5kIjoiaWRlbnRpdHkifSwiYmlsbGluZyI6eyJtb2RlbCI6InByZXBhaWQiLCJkZXNjcmlwdGlvbiI6ImFtb3VudCBpcyB0aGUgcHJpY2UgYW5kIGlzIGNoYXJnZWQgaW4gZnVsbCB3aGVuIHlvdSBwYXk7IGEgZmFpbGVkIGRlbGl2ZXJ5IGlzIGNyZWRpdGVkIGJhY2sgaW4gZnVsbC4gKEV4YWN0IGVudHJpZXMgYXBwZWFyIG9ubHkgb24gZml4ZWQtcHJpY2UgcmVxdWVzdHMgLSBjZWlsaW5nLXByaWNlZCByZXF1ZXN0cyBhcmUgb2ZmZXJlZCB0aGUgcmVzZXJ2ZS1hbmQtcGF5LWFjdHVhbCBlbnRyeSBpbnN0ZWFkLikifX19XX0="
+          }
+        }
+      }
+    },
+    {
+      "check_id": "mcp_surface",
+      "pillar": "transactability",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 2.0,
+      "finding": "no-mcp-surface",
+      "remediation": "Optional: expose an MCP server (/.well-known/mcp.json or a /mcp endpoint). Low priority \u2014 generic HTTP + an agent-native payment handshake already covers what a per-service MCP server would add.",
+      "evidence": {
+        "probed": [
+          {
+            "url": "https://driftflight.com/.well-known/mcp.json",
+            "status": 404
+          },
+          {
+            "url": "https://driftflight.com/mcp",
+            "status": 404
+          },
+          {
+            "url": "https://driftflight.com/api/mcp",
+            "status": 404
+          }
+        ]
+      }
+    },
+    {
+      "check_id": "self_serve_payg",
+      "pillar": "transactability",
+      "status": "pass",
+      "points": 6.0,
+      "max_points": 6.0,
+      "finding": "no-signup-provisioning",
+      "remediation": "",
+      "evidence": {
+        "x402_live": true,
+        "no_signup_phrases": [
+          "no signup"
+        ],
+        "self_serve_phrases": [
+          "pay as you go",
+          "pay-as-you-go",
+          "sign up",
+          "signup",
+          "create an account"
+        ],
+        "stripe_checkout": false,
+        "cta_links": [],
+        "sales_phrases": [],
+        "pricing_pages": [
+          "https://driftflight.com/pricing"
+        ]
+      }
+    },
+    {
+      "check_id": "https_hsts",
+      "pillar": "trust",
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 5.0,
+      "finding": "https-no-hsts",
+      "remediation": "Add a Strict-Transport-Security header to enforce HTTPS on every request (HTTPS works but HSTS is not set).",
+      "evidence": {
+        "base_url": "https://driftflight.com",
+        "final_url": "https://driftflight.com/"
+      }
+    },
+    {
+      "check_id": "org_identity",
+      "pillar": "trust",
+      "status": "pass",
+      "points": 4.0,
+      "max_points": 4.0,
+      "finding": "org-identity-present",
+      "remediation": "",
+      "evidence": {
+        "identity_pages": [],
+        "company_names": [
+          "Driftflight Studio, Inc"
+        ],
+        "contact_signals": []
+      }
+    },
+    {
+      "check_id": "policies_present",
+      "pillar": "trust",
+      "status": "partial",
+      "points": 2.0,
+      "max_points": 3.0,
+      "finding": "no-refund-policy",
+      "remediation": "Terms and privacy exist; add a refund/cancellation policy so agents know the reversal terms before purchasing.",
+      "evidence": {
+        "found": {
+          "terms": "https://driftflight.com/terms",
+          "privacy": "https://driftflight.com/privacy"
+        },
+        "footer_scanned": 19
+      }
+    },
+    {
+      "check_id": "reputation_signals",
+      "pillar": "trust",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 3.0,
+      "finding": "no-reputation-signals",
+      "remediation": "Add reputation signals \u2014 AggregateRating/Review schema.org markup or links to a credible third-party review profile.",
+      "evidence": {}
+    }
+  ],
+  "pillar_scores": {
+    "access": 100.0,
+    "legibility": 90.9090909090909,
+    "transactability": 87.5,
+    "trust": 60.0,
+    "outcome": null
+  },
+  "overall_score": 85.5,
+  "grade": "B",
+  "caps_applied": [],
+  "trust_panel": [],
+  "behavioral_runs": [],
+  "panel_reliability": null,
+  "quotability": {
+    "quotable": true,
+    "tag": "static-deterministic",
+    "reason": "Static score \u2014 deterministic probes, no panel variance to reproduce.",
+    "verdict_stability": null
+  },
+  "battery_summary": null,
+  "scored": true
+}

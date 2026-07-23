@@ -5,27 +5,26 @@ design in-cloud, execute locally.
 
 ## P0
 
-<!-- SANITY-CHECK HALF DONE 2026-07-23T15:18Z (Cycle 15, first duty): the fresh-context
-     adversarial POST-merge sanity check of v0.7 (PR #3) SURVIVED → RETAIN — vendor-neutral,
-     monotone non-increasing, $0-only intact, test_protocols.py 7/7, canonical delta unchanged
-     confirmed by committed evidence (.org report x402_probe FAIL 0.0 → _commerce_protocol_evidence
-     already None under v0.6, so v0.7 still None; .com x402-live before the commerce branch). See
-     LOG Cycle 15. The LIVE re-score half remains below. -->
-- **[LOCAL] POST-merge live canonical re-score for v0.7 (PR #3, MERGED 72a2e5b)** (COVERAGE
-  — the retain-or-revert sanity check is DONE (Cycle 15, RETAIN); only the LIVE re-score half
-  remains, network-blocked in-cloud). Confirm LIVE on main: re-score both domains, verify
-  overall 46.1 F / 85.5 B, delta **+39.4**, reports embed rubric "0.7", and that the
-  `x402_probe` findings are unchanged (no `commerce-protocol-*` on either — .com is x402-live,
-  .org is no-agent-native-payment). Also spot-check that no OTHER real domain in reach loses
-  credit from the tightening (regression on the false-positive removal is the whole point). If
-  the live delta MOVES unexpectedly → revert first, investigate second (sensitive-class
-  post-merge rule). BEST DONE via the Cycle-15 fixture-capture item below (`save_fixture`), which
-  makes this an in-cloud offline guard forever after instead of a one-off local re-score.
-  ```
-  git checkout main && git pull origin main
-  .venv/bin/python -m asrs.cli score drift-flight.org
-  .venv/bin/python -m asrs.cli score driftflight.com
-  ```
+<!-- DONE 2026-07-23 (two complementary fires): "[LOCAL] POST-merge live canonical re-score
+     for v0.7 (PR #3, MERGED 72a2e5b)" FULLY DISCHARGED.
+     (a) SANITY-CHECK HALF — 2026-07-23T15:18Z (Cycle 15, first duty): fresh-context
+     adversarial post-merge sanity check of v0.7 SURVIVED → RETAIN — vendor-neutral, monotone
+     non-increasing, $0-only intact, test_protocols.py 7/7, canonical delta unchanged by
+     committed evidence (.org x402_probe FAIL 0.0 → _commerce_protocol_evidence already None
+     under v0.6 so v0.7 still None; .com x402-live before the commerce branch). See LOG Cycle 15.
+     (b) LIVE RE-SCORE HALF — 2026-07-23T15:43Z (local fire): re-scored both canonical domains
+     LIVE on v0.7 (now on main). Suite 79/79 green pre-flight. drift-flight.org 46.1 F
+     (x402_probe → no-agent-native-payment, NO commerce-protocol-*), driftflight.com 85.5 B
+     (x402-live, NO commerce-protocol-*), delta +39.4 UNCHANGED; reports embed rubric "0.7".
+     Third-domain spot-check example.com 22.5 F, v0.7, NO commerce-protocol-*/x402-live — probe
+     path clean, no spurious credit. Monotone non-increasing by construction so only
+     bare-200-false-positive domains lose credit; valid-manifest domains keep it
+     (test_protocols.py). Evidence: runs/local/merge_verify_pr3_v07_driftflight{org,com}_
+     20260723T154332Z.json. See LOG (Local cycle — 15:43Z). Also reconciled the stale
+     bookkeeping (STATE listed PR #3 "Open"). The durable follow-up is the Cycle-15
+     fixture-capture item below (`save_fixture`), which converts this into a permanent
+     in-cloud offline guard instead of a per-fire manual re-score. -->
+
 
 - **[LOCAL] Capture the canonical-pair replay fixtures** (TRUTH, P0 — unlocks the in-cloud
   canonical regression guard; enabled by the Cycle-15 `FetchContext.save_fixture` infra). Do

@@ -14,9 +14,23 @@
   peer-gated PR #3, rubric v0.6→v0.7),
   Cycle 15 TRUTH (FetchContext record/replay — `save_fixture`/`from_fixture` + a `replay`
   mode, the offline in-cloud proxy for the network-blocked canonical re-score; first duty
-  = post-merge sanity check of v0.7/PR #3 → RETAIN); next cycle takes READOUT.)
-- Rubric: **v0.6 on main** (PR #2 MERGED 2026-07-23T~09:47Z, merge commit 8fe9f46,
-  clean fast-forward). v0.6 broadens the env-block classifier to recognize
+  = post-merge sanity check of v0.7/PR #3 → RETAIN); next cycle takes READOUT.
+  Local fire 2026-07-23T15:43Z TRUTH (complementary to cloud Cycle 15): ran the NETWORKED
+  half cloud Cycle 15 could not — the LIVE post-merge canonical re-score on v0.7
+  (46.1 F / 85.5 B, +39.4 unchanged) — and reconciled the stale "PR #3 Open" bookkeeping.
+  No open peer-gated PR remains.)
+- Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
+  merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
+  pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity
+  check → RETAIN; the merge commit carries a peer-gate verdict). v0.7 requires a VALIDATED
+  ACP/UCP manifest for commerce-protocol partial credit (kills the bare-200 false positive;
+  see the Cycle-14 note below). INDEPENDENTLY RE-VERIFIED LIVE 2026-07-23T15:43Z (local
+  fire, the queued post-merge `[LOCAL]` live re-score): both canonical domains re-scored
+  LIVE on v0.7 — 46.1 F / 85.5 B, delta +39.4 unchanged, reports embed rubric "0.7", NO
+  `commerce-protocol-*` false positive on either (.org no-agent-native-payment / .com
+  x402-live), example.com spot-check clean (22.5 F, no spurious commerce credit).
+  PRIOR: v0.6 (PR #2 MERGED 2026-07-23T~09:47Z, merge commit 8fe9f46,
+  clean fast-forward) broadened the env-block classifier to recognize
   "safety"-phrased hosted-browser refusals (aggregation rule → version bump).
   RECONCILED (10:13Z local cycle): PR #2 was reviewed + merged by THIS LOCAL FIRE's
   first-duty peer-gate review — the playbook-mandated fresh-context adversarial
@@ -167,6 +181,14 @@
   re-score. NOTE: the Cycle-15 record/replay infra is the durable fix for this class of pain
   — once a canonical fixture is captured [LOCAL], the in-cloud canonical re-score no longer
   depends on the launchd runner being up at all.
+  RE-CONFIRMED LIVE + RUNNER STILL DOWN (local fire 2026-07-23T15:43Z): the queued [LOCAL]
+  v0.7 live re-score above is now DONE — canonical delta **+39.4** measured LIVE on v0.7
+  (46.1 F / 85.5 B, both HTTP 200) as the PR #3 post-merge re-score; the merged
+  commerce-manifest tightening moved no canonical score (monotone non-increasing by
+  construction AND measured). Newest verify artifact STILL verify_20260723T040757Z (04:07Z,
+  rubric 0.5), now **~11.6h old**; no :41 artifact 05:00–15:00Z. This fire (15:43Z) is
+  ~17 min BEFORE 16:00 UTC → the down-runner flag + v0.7 delta trend fold into the next
+  post-16:00 Slack daily digest (first cycle after 16:00 UTC), not yet due.
   SEPARATE BUG (the coverage-warning stderr leak): FIXED AT SOURCE Cycle 13. The runner's
   `scores` block recorded FileNotFoundError because `[asrs.scoring]` stderr coverage-warning
   lines leaked into the score-path argument; `asrs/scoring.py` no longer prints those lines
@@ -200,34 +222,29 @@
   scoring-semantics/aggregation change → PEER-GATED + version bump, queued P0 in
   BACKLOG with exact spec. Sole residual claude flip: found_purchase_path
   (t1 false vs t2–5 true) — legibility ambiguity, not noise.
-- Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T~14:2xZ, merge commit 72a2e5b).
-  v0.7 requires a VALIDATED commerce manifest for the ACP/UCP partial on `x402_probe`
-  (`_parse_commerce_manifest`, mirroring `_parse_x402`) — a real UCP service/capability
-  manifest or ACP checkout payload, not any HTTP 200; a bare-200 SPA index/soft-404 at
-  `/.well-known/ucp|agentic-commerce` no longer false-positives to 4.0. Validated hit
-  relabeled `commerce-protocol-live`; marker tiers + ceiling unchanged; direction monotone
-  non-increasing. (Rubric title-comment de-staled v0.6→v0.7 post-merge, same commit as this
-  reconcile — the `version:` field was already 0.7.)
-- Open PRs: **none.** PR #3 `loop/commerce-manifest-validation` (Cycle 14, COVERAGE,
-  sensitive class: partial-credit rule + rubric v0.6→v0.7) was **MERGED EXTERNALLY**
-  2026-07-23T~14:2xZ (commit 72a2e5b) — Jonah/an operator merged it directly during the
-  SAME cloud fire that opened it, BEFORE the mandated next-cycle fresh-context adversarial
-  review could run (exactly the Cycle-9/PR-#2 pattern). An external merge is ACTIVE consent
-  (stronger than the veto-silence the playbook relies on), so this is not a bypass on the
-  loop's part. RECONCILED post-merge THIS fire: pulled main, full suite **79/79 green** on
-  the merge commit, v0.7 + `_parse_commerce_manifest` confirmed on main. Because the
-  fresh-context review was pre-empted, it converted to a POST-merge duty. **DISCHARGED
-  Cycle 15 (first duty): the fresh-context adversarial sanity check of v0.7 SURVIVED →
-  RETAIN** — vendor-neutral (`_parse_commerce_manifest` keys only on protocol STRUCTURE,
-  no vendor/domain string), direction monotone non-increasing (only the bare-200 false
-  positive loses credit), `$0`-only intact (parser only GETs), test coverage complete
-  (`test_protocols.py` 7/7), and canonical delta UNCHANGED confirmed by COMMITTED evidence
-  (.org report shows `x402_probe` FAIL 0.0 → `_commerce_protocol_evidence` already None
-  under v0.6, so v0.7 still None; .com earns x402-live before the commerce branch). See
-  LOG Cycle 15. The queued P0 **[LOCAL] live v0.7 canonical re-score** (confirm 46.1 F /
-  85.5 B, +39.4, reports embed 0.7, no `commerce-protocol-*` on either canonical domain)
-  REMAINS — it is network-blocked in-cloud; the Cycle-15 record/replay infra (below) is the
-  path to making it an in-cloud offline guard once the fixture is captured [LOCAL].
+- Open PRs: **NONE** (`gh pr list --state open` empty at 2026-07-23T15:43Z). PR #3
+  `loop/commerce-manifest-validation` (Cycle 14, COVERAGE, sensitive class: partial-credit
+  rule + rubric v0.6→v0.7) was **MERGED EXTERNALLY** 2026-07-23T14:45:30Z (commit 72a2e5b)
+  — an operator merged it directly during the SAME cloud fire that opened it, BEFORE the
+  mandated next-cycle fresh-context adversarial review could run (the Cycle-9/PR-#2
+  pattern). An external merge is ACTIVE consent (stronger than veto-silence), so not a
+  bypass on the loop's part. Because the pre-merge review was pre-empted, it converted to a
+  POST-merge duty, now FULLY DISCHARGED across two complementary fires:
+  **(a) OFFLINE — Cycle 15 (first duty): fresh-context adversarial sanity check of v0.7
+  SURVIVED → RETAIN** — vendor-neutral (`_parse_commerce_manifest` keys only on protocol
+  STRUCTURE, no vendor/domain string), direction monotone non-increasing (only the bare-200
+  false positive loses credit), `$0`-only intact (parser only GETs), test coverage complete
+  (`test_protocols.py` 7/7), canonical delta UNCHANGED by COMMITTED evidence (.org report
+  `x402_probe` FAIL 0.0 → `_commerce_protocol_evidence` already None under v0.6, so v0.7
+  still None; .com earns x402-live before the commerce branch). See LOG Cycle 15.
+  **(b) LIVE — local fire 2026-07-23T15:43Z: the queued P0 [LOCAL] live v0.7 canonical
+  re-score DISCHARGED** — 46.1 F / 85.5 B, delta +39.4 unchanged on v0.7, reports embed
+  rubric "0.7", NO `commerce-protocol-*` false positive on either canonical domain (.org
+  no-agent-native-payment / .com x402-live), example.com spot-check clean (22.5 F). Suite
+  79/79 green pre-flight. Evidence:
+  `runs/local/merge_verify_pr3_v07_driftflight{org,com}_20260723T154332Z.json`. See LOG
+  (Local cycle — 15:43Z). The Cycle-15 record/replay infra remains the path to making this
+  a permanent in-cloud offline guard once the canonical fixture is captured [LOCAL].
   https://github.com/jnakagawa/agentic-readiness/pull/3
 - Prior PRs closed: PR #2 `loop/env-block-safety-phrasing` (Cycle 9, METHOD,
   sensitive class: aggregation rule + v0.5→v0.6) MERGED 2026-07-23T~09:47Z

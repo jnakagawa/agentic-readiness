@@ -1,0 +1,315 @@
+{
+  "domain": "drift-flight.org",
+  "rubric_version": "0.7",
+  "generated_at": "2026-07-23T15:43:32.070924",
+  "checks": [
+    {
+      "check_id": "robots_ai_crawlers",
+      "pillar": "access",
+      "status": "pass",
+      "points": 10.0,
+      "max_points": 10.0,
+      "finding": "robots-allows-ai-crawlers",
+      "remediation": "",
+      "evidence": {
+        "url": "https://drift-flight.org/robots.txt",
+        "checked_agents": [
+          "GPTBot",
+          "ClaudeBot",
+          "Claude-User",
+          "OAI-SearchBot",
+          "PerplexityBot",
+          "Google-Extended"
+        ],
+        "blocked_agents": [],
+        "snippet": "User-agent: *\nAllow: /"
+      }
+    },
+    {
+      "check_id": "agent_ua_reachability",
+      "pillar": "access",
+      "status": "pass",
+      "points": 10.0,
+      "max_points": 10.0,
+      "finding": "agent-ua-allowed",
+      "remediation": "",
+      "evidence": {
+        "browser": {
+          "url": "https://drift-flight.org",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "cloudflare",
+          "body_len": 15637
+        },
+        "claudebot": {
+          "url": "https://drift-flight.org",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "cloudflare",
+          "body_len": 15637
+        },
+        "gptbot": {
+          "url": "https://drift-flight.org",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "cloudflare",
+          "body_len": 15637
+        },
+        "blocked_agents": []
+      }
+    },
+    {
+      "check_id": "llms_txt",
+      "pillar": "legibility",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 6.0,
+      "finding": "llms-txt-missing",
+      "remediation": "Publish an /llms.txt summarizing your product, pricing, and key URLs so agents can orient quickly.",
+      "evidence": {
+        "probed": [
+          "/llms.txt",
+          "/llms-full.txt"
+        ]
+      }
+    },
+    {
+      "check_id": "sitemap",
+      "pillar": "legibility",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 2.0,
+      "finding": "sitemap-missing",
+      "remediation": "Publish a sitemap.xml (and reference it via a Sitemap: line in robots.txt) so agents can enumerate your pages.",
+      "evidence": {
+        "probed": [
+          "/sitemap.xml",
+          "robots.txt Sitemap:"
+        ],
+        "sitemap_status": 404
+      }
+    },
+    {
+      "check_id": "offer_catalog",
+      "pillar": "legibility",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 6.0,
+      "finding": "no-machine-readable-offer-catalog",
+      "remediation": "Publish a machine-readable offer catalog by any convention: schema.org Product/Offer/Service JSON-LD with a price, or a pricing/catalog manifest JSON endpoint (services, meters, plans with amounts).",
+      "evidence": {
+        "pages_checked": [
+          "https://drift-flight.org/",
+          "https://drift-flight.org/pricing"
+        ]
+      }
+    },
+    {
+      "check_id": "pricing_machine_readable",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 4.0,
+      "max_points": 4.0,
+      "finding": "pricing-visible-server-side",
+      "remediation": "",
+      "evidence": {
+        "page": "https://drift-flight.org/pricing",
+        "match": "$5"
+      }
+    },
+    {
+      "check_id": "api_docs_surface",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 4.0,
+      "max_points": 4.0,
+      "finding": "api-docs-present",
+      "remediation": "",
+      "evidence": {
+        "url": "https://drift-flight.org/docs",
+        "status": 200
+      }
+    },
+    {
+      "check_id": "x402_probe",
+      "pillar": "transactability",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 8.0,
+      "finding": "no-agent-native-payment",
+      "remediation": "Offer an agent-native payment endpoint (HTTP 402 + payment-requirements, x402/MPP) so agents can pay per-request without an account.",
+      "evidence": {
+        "probed": [
+          {
+            "url": "https://drift-flight.org/api",
+            "status": 404,
+            "method": "GET"
+          },
+          {
+            "url": "https://drift-flight.org/api/v1",
+            "status": 404,
+            "method": "GET"
+          },
+          {
+            "url": "https://drift-flight.org/v1",
+            "status": 404,
+            "method": "GET"
+          },
+          {
+            "url": "https://api.drift-flight.org/openapi.json",
+            "status": 200,
+            "method": "GET"
+          },
+          {
+            "url": "https://api.drift-flight.org",
+            "status": 404,
+            "method": "GET"
+          },
+          {
+            "url": "https://api.drift-flight.org/v1/models",
+            "status": 200,
+            "method": "GET"
+          },
+          {
+            "url": "https://api.drift-flight.org/v1/images/generate",
+            "status": 404,
+            "method": "GET"
+          },
+          {
+            "url": "https://api.drift-flight.org/r/8f31...",
+            "status": 404,
+            "method": "GET"
+          }
+        ]
+      }
+    },
+    {
+      "check_id": "mcp_surface",
+      "pillar": "transactability",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 2.0,
+      "finding": "no-mcp-surface",
+      "remediation": "Optional: expose an MCP server (/.well-known/mcp.json or a /mcp endpoint). Low priority \u2014 generic HTTP + an agent-native payment handshake already covers what a per-service MCP server would add.",
+      "evidence": {
+        "probed": [
+          {
+            "url": "https://drift-flight.org/.well-known/mcp.json",
+            "status": 404
+          },
+          {
+            "url": "https://drift-flight.org/mcp",
+            "status": 404
+          },
+          {
+            "url": "https://drift-flight.org/api/mcp",
+            "status": 404
+          }
+        ]
+      }
+    },
+    {
+      "check_id": "self_serve_payg",
+      "pillar": "transactability",
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6.0,
+      "finding": "self-serve-signup",
+      "remediation": "Self-serve exists but requires creating an account first; add a no-signup programmatic path (HTTP-402 payment challenges) so an agent can transact without provisioning an identity.",
+      "evidence": {
+        "x402_live": false,
+        "no_signup_phrases": [],
+        "self_serve_phrases": [
+          "sign up",
+          "create an account",
+          "subscribe"
+        ],
+        "stripe_checkout": false,
+        "cta_links": [],
+        "sales_phrases": [],
+        "pricing_pages": [
+          "https://drift-flight.org/pricing"
+        ]
+      }
+    },
+    {
+      "check_id": "https_hsts",
+      "pillar": "trust",
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 5.0,
+      "finding": "https-no-hsts",
+      "remediation": "Add a Strict-Transport-Security header to enforce HTTPS on every request (HTTPS works but HSTS is not set).",
+      "evidence": {
+        "base_url": "https://drift-flight.org",
+        "final_url": "https://drift-flight.org/"
+      }
+    },
+    {
+      "check_id": "org_identity",
+      "pillar": "trust",
+      "status": "pass",
+      "points": 4.0,
+      "max_points": 4.0,
+      "finding": "org-identity-present",
+      "remediation": "",
+      "evidence": {
+        "identity_pages": [],
+        "company_names": [
+          "Driftflight Studio, Inc"
+        ],
+        "contact_signals": []
+      }
+    },
+    {
+      "check_id": "policies_present",
+      "pillar": "trust",
+      "status": "partial",
+      "points": 2.0,
+      "max_points": 3.0,
+      "finding": "no-refund-policy",
+      "remediation": "Terms and privacy exist; add a refund/cancellation policy so agents know the reversal terms before purchasing.",
+      "evidence": {
+        "found": {
+          "terms": "https://drift-flight.org/terms",
+          "privacy": "https://drift-flight.org/privacy"
+        },
+        "footer_scanned": 17
+      }
+    },
+    {
+      "check_id": "reputation_signals",
+      "pillar": "trust",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 3.0,
+      "finding": "no-reputation-signals",
+      "remediation": "Add reputation signals \u2014 AggregateRating/Review schema.org markup or links to a credible third-party review profile.",
+      "evidence": {}
+    }
+  ],
+  "pillar_scores": {
+    "access": 100.0,
+    "legibility": 36.36363636363637,
+    "transactability": 18.75,
+    "trust": 60.0,
+    "outcome": null
+  },
+  "overall_score": 46.1,
+  "grade": "F",
+  "caps_applied": [],
+  "trust_panel": [],
+  "behavioral_runs": [],
+  "panel_reliability": null,
+  "quotability": {
+    "quotable": true,
+    "tag": "static-deterministic",
+    "reason": "Static score \u2014 deterministic probes, no panel variance to reproduce.",
+    "verdict_stability": null
+  },
+  "battery_summary": null,
+  "scored": true
+}

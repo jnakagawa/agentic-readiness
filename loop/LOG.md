@@ -1506,3 +1506,85 @@ replays both through the CURRENT scoring pipeline and asserts overall 46.1 F / 8
 delta +39.4 on rubric v0.7. That is the true in-cloud proxy for the live re-score the
 playbook wants. (2) Once the fixture lands, EVERY future scoring-semantics change gets an
 executable canonical regression guard instead of a prose "by construction" argument.
+## Local cycle — 2026-07-23T15:43Z — TRUTH (PR #3 LIVE re-score half)
+
+**Reconciliation with the concurrent cloud Cycle 15 (15:18Z).** This local fire started
+from a checkout that predated cloud Cycle 15's push; on rebase they merged cleanly and
+COMPLEMENTARILY. Cloud Cycle 15 did the OFFLINE half of the PR #3 post-merge verification
+(fresh-context sanity check → RETAIN, argued by committed evidence) and built the
+`FetchContext` record/replay infra so a future canonical fixture can guard the delta
+in-cloud with no network. This local fire does the half the cloud cannot: the NETWORKED
+LIVE re-score. Together they fully discharge the PR #3 post-merge P0 (offline RETAIN +
+live confirmation).
+
+**First duty (peer gate) — NOTHING open.** PR #3 `loop/commerce-manifest-validation`
+(Cycle 14, v0.6→v0.7 commerce-manifest validation) is **already MERGED**
+(2026-07-23T14:45:30Z, merge commit `72a2e5b`, `gh` state MERGED). Per the Cycle-14
+addendum it was merged EXTERNALLY (operator, active consent — stronger than veto-silence),
+pre-empting the pre-merge review, which converted to cloud Cycle 15's post-merge
+retain-or-revert sanity check (RETAIN). The merge commit message carries a peer-gate
+verdict either way. No other open PRs (`gh pr list --state open` empty) — first duty
+discharged, nothing to review this fire.
+
+**What.** Executed the LIVE half of the post-merge P0 `[LOCAL]` — the canonical re-score
+for PR #3 on **v0.7 (now on main)** — independently, from fresh context (playbook: "post-
+merge, queue a `[LOCAL]` live verification"). Ran the full suite, then static-scored both
+canonical domains + one third-domain spot-check.
+
+**What.** Executed the oldest P0 `[LOCAL]` — the merge-time LIVE canonical re-score for
+PR #3 on **v0.7 (now on main)** — independently, from fresh context, discharging the
+queued post-merge verification (playbook: "post-merge, queue a `[LOCAL]` live
+verification"). Ran the full suite, then static-scored both canonical domains + one
+third-domain spot-check.
+
+**Why.** TRUTH / live calibration. The merge commit CLAIMED the delta was unchanged on
+v0.7; an independent post-merge re-score confirms the merge was sound and — with the local
+`local_verify.py` runner DOWN (>11h) — produces a fresh LIVE canonical signal the down
+runner isn't emitting. Also confirms PR #3's tightening (commerce-protocol credit now
+requires a VALIDATED manifest, not a bare 200) introduced no regression and no false
+positive on reachable domains.
+
+**Evidence.**
+- Full suite **79/79** green pre-flight (attribution 9, battery 8, battery_wiring 4,
+  free_tier 8, protocols 7, quotability 8, readout 12, reliability 8, scoring 11,
+  trial_stability_v06 4).
+- Live static re-scores (both HTTP 200, rubric **v0.7** embedded, `scored=True`):
+  `runs/local/merge_verify_pr3_v07_driftflightorg_20260723T154332Z.json` (46.1 F),
+  `runs/local/merge_verify_pr3_v07_driftflightcom_20260723T154332Z.json` (85.5 B).
+- `x402_probe` findings UNCHANGED and NO `commerce-protocol-*` false positive on either:
+  `.org` → `no-agent-native-payment` (FAIL 0.0, falls through the commerce branch → None,
+  no `x402-live`, no `commerce-protocol-*`); `.com` → `x402-live` (transactability 87.5%,
+  returns before the commerce branch, no `commerce-protocol-*`). Confirmed by JSON token
+  scan.
+- Third-domain spot-check (regression on the false-positive removal): `example.com` →
+  22.5 F, rubric v0.7, `scored=True`, NO `commerce-protocol-*`, NO `x402-live` — the v0.7
+  probe path runs cleanly on an unrelated reachable non-commerce domain and awards no
+  spurious commerce credit.
+
+**Canonical pair (regression signal).** drift-flight.org **46.1 F** / driftflight.com
+**85.5 B**, delta **+39.4** — LIVE on v0.7 at 15:43Z, IDENTICAL to the v0.6 delta and every
+prior fire (loop-start behavioral +40.6, within static variance). The commerce-manifest
+tightening is monotone non-increasing by construction (new credit-set ⊆ old) and pinned by
+`tests/test_protocols.py` (`test_canonical_org_unchanged`); the ONLY domains that can lose
+credit are those relying on the removed bare-200 false positive, so a valid-manifest domain
+keeps its credit. Delta confirmed unmoved LIVE, not just by construction.
+
+**Runner health — STILL DOWN (>11h).** Newest `verify_*.json` is verify_20260723T040757Z
+(04:07Z, rubric 0.5), ~11.6h old at this fire — well past the 6h threshold; no :41
+artifact since 04:00Z. This fire (15:43Z) is BEFORE 16:00 UTC → folds into the next
+post-16:00 Slack daily digest per comms policy (down-runner flag + v0.7 delta trend).
+
+**Ship.** Direct to main — this cycle is a live verification + loop bookkeeping
+(LOG/STATE/BACKLOG), no scoring-semantics change (scoring source byte-for-byte untouched;
+rubric stays v0.7). No Slack DM (nothing sensitive opened/merged this fire; before 16:00
+UTC so no digest yet).
+
+**Next hypothesis.** With PR #3's merge independently verified, the next TRUTH/COVERAGE
+leverage is the score-INCREASING half of the commerce rail (live ACP `checkout_sessions`
+$0 elicitation + broader well-known path coverage, needs 2+ live real domains) and the
+still-open second `cross_task_spread` datapoint (structural cross-intent claim). Both are
+`[LOCAL]` P0/P1. The down runner remains the top operational risk — a manual local fire is
+the only live canonical signal until launchd `:41` is restarted. Also: cloud Cycle 15's
+`save_fixture` infra means the very next `[LOCAL]` win is capturing the canonical-pair
+fixtures (`fixtures/canonical/`) so this live re-score becomes a permanent in-cloud replay
+guard instead of a per-fire manual run.

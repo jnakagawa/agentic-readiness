@@ -4,14 +4,16 @@
 - Started: 2026-07-23 (UTC)
 - Focus pointer: TRUTH (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE; next cycle takes TRUTH.)
-- Rubric: v0.5 (pending PR #1 merge; v0.4 on main until then) — UNCHANGED by
-  Cycle 2 (task battery is a diagnostic layer, not a scoring-semantics change).
+- Rubric: v0.5 on main (PR #1 merged 2026-07-23 via the Cycle-2 peer-gate).
+  UNCHANGED by Cycle 2 (task battery is a diagnostic layer, not a
+  scoring-semantics change).
 - Task battery: format + aggregation landed on main (Cycle 2). `--battery` CLI
   wiring + behavioral execution queued [LOCAL] in BACKLOG.
 - Canonical pair at loop start (behavioral, reports T233804/T235048):
   drift-flight.org 45.7 F vs driftflight.com 86.3 B — delta +40.6
-- Open PRs: #1 loop/not-scorable-attribution (Cycle 1, human gate) — v0.5
-  NOT-SCORABLE fix; awaiting Jonah review + [LOCAL] merge-time re-score.
+- Open PRs: none. PR #1 (Cycle 1 v0.5 NOT-SCORABLE fix) merged 2026-07-23.
+  Its [LOCAL] merge-time canonical re-score verification stays queued in
+  BACKLOG until a networked operator records it (cloud env can't re-score).
   https://github.com/jnakagawa/agentic-readiness/pull/1
 
 ## Environment constraint (IMPORTANT — affects every cycle)

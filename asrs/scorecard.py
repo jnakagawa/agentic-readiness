@@ -71,7 +71,7 @@ CSS = """
 body{margin:0;background:var(--bg-secondary);color:var(--text-primary);
   font-family:var(--font-body);font-size:14px;line-height:20px;
   -webkit-font-smoothing:antialiased}
-.page{max-width:1280px;margin:0 auto;padding:32px;display:flex;
+.page{max-width:none;margin:0 auto;padding:32px;display:flex;
   flex-direction:column;gap:24px}
 .num{font-variant-numeric:tabular-nums}
 h1,h2,h3{font-family:var(--font-display);margin:0}
@@ -309,7 +309,9 @@ def _pillars(rep: dict, baseline: dict | None = None) -> str:
     rows = []
     for p, label in PILLAR_LABELS.items():
         s = rep["pillar_scores"].get(p)
-        band = _band(s)
+        # Bars stay band-colored (score quality); the pillar TITLE carries the
+        # category hue, matching the recommendation tags.
+        fill_cls = _band(s)
         width = 0 if s is None else max(2, round(s))
         val = '<span class="val na">n/a</span>' if s is None else f'<span class="val num">{s:.0f}</span>'
         delta = ""
@@ -324,9 +326,9 @@ def _pillars(rep: dict, baseline: dict | None = None) -> str:
                 dcls = "up" if d > 0 else ("down" if d < 0 else "flat")
                 delta = f'<span class="d {dcls} num">{d:+.0f}</span>'
         rows.append(
-            f'<div class="{row_cls}"><span class="name">{label}'
+            f'<div class="{row_cls}"><span class="name"><span class="ptag {_esc(p)}">{label}</span>'
             f"<small>{PILLAR_QUESTIONS[p]}</small></span>"
-            f'<div class="track"><div class="fill {band}" style="width:{width}%"></div></div>{val}{delta}</div>'
+            f'<div class="track"><div class="fill {fill_cls}" style="width:{width}%"></div></div>{val}{delta}</div>'
         )
     return f'<div class="pillars">{"".join(rows)}</div>'
 
@@ -482,15 +484,12 @@ def _section_rows(a: dict, b: dict, labels: list[str | None]) -> str:
     tables need the room; half-width forces heavy wrapping."""
     sections = [
         (_overview_card(a, labels[0]), _overview_card(b, labels[1], baseline=a)),
+        (_recs_card(a, titled=True), _recs_card(b, titled=True)),
         (_trust_panel(a), _trust_panel(b)),
         (_checkpoints(a), _checkpoints(b)),
     ]
     rows = []
-    for left, right in sections[:1]:
-        rows.append(f'<div class="grid2">{left}{right}</div>')
-    rows.append(_recs_card(a, titled=True))
-    rows.append(_recs_card(b, titled=True))
-    for left, right in sections[1:]:
+    for left, right in sections:
         if not left and not right:
             continue
         rows.append(f'<div class="grid2">{left or "<div></div>"}{right or "<div></div>"}</div>')

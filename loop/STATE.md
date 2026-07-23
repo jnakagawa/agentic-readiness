@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 16
+- Cycle counter: 17
 - Started: 2026-07-23 (UTC)
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -28,7 +28,18 @@
   via a new dormant `--record-fixture` hook on `asrs.cli score` (also discharges the P1 CLI-hook
   item). Live crawl 46.1 F / 85.5 B on v0.7; OFFLINE replay through the real probe path
   reproduces 46.1 / 85.5 / +39.4 EXACTLY with 0 replay-miss on both. One cloud step left:
-  `tests/test_canonical_replay.py` (now the top P0).
+  `tests/test_canonical_replay.py`.
+  Cycle 17 METHOD (canonical replay guard COMPLETED — the network-blocked per-cycle re-score is
+  now EXECUTABLE in-cloud): `tests/test_canonical_replay.py` (3 tests) replays each committed
+  canonical fixture through `from_fixture → _run_probes → scoring.score` and asserts overall
+  (46.1/85.5), grade (F/B), rubric_version "0.7", scored, all five pillar_scores, delta +39.4,
+  AND no replay-miss. Converts 16 cycles of "delta unchanged by construction" PROSE into a
+  tripwire. Tests-only, scoring path byte-for-byte untouched, rubric stays v0.7, canonical delta
+  unchanged; direct-to-main. Suite 85 → 88. No Slack (not sensitive, moves no score, digest
+  already sent Cycle 16). First duty: no open peer-gated PR (verified []). Next cycle takes
+  COVERAGE. NOTE: `test_free_tier.py` needs optional `eth-account` (fresh cloud checkout lacks
+  it → 7/8; `pip install eth-account` → 8/8) — a missing-dependency ENV gap (invariant #4),
+  pre-existing and unrelated to this change.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity
@@ -221,6 +232,12 @@
   policy — carries the runner-down flag AND the still-queued [LOCAL] canonical-fixture
   capture. Next live canonical signal depends on the launchd :41 runner being restarted or a
   manual local fire.
+  RE-CONFIRMED DOWN Cycle 17 (17:15Z): newest STILL verify_20260723T040757Z, now ~13.1h old.
+  Already flagged in Cycle 16's digest; folds into the next post-16:00-UTC digest if still down.
+  NOTE: the Cycle-17 canonical replay guard (`tests/test_canonical_replay.py`) now runs the
+  canonical re-score OFFLINE in-cloud every cycle from the committed fixtures — the in-cloud
+  regression signal no longer depends on the launchd runner at all; the runner remains only for
+  a FRESH live re-capture when a version bump legitimately moves a canonical score.
   SEPARATE BUG (the coverage-warning stderr leak): FIXED AT SOURCE Cycle 13. The runner's
   `scores` block recorded FileNotFoundError because `[asrs.scoring]` stderr coverage-warning
   lines leaked into the score-path argument; `asrs/scoring.py` no longer prints those lines

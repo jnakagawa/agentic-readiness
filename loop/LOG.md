@@ -1722,3 +1722,64 @@ UTC). Runner STILL DOWN (>12h; newest `verify_20260723T040757Z`) — already fla
 assert 46.1 F / 85.5 B / +39.4 on v0.7). That converts these fixtures into a CI-style
 regression guard the playbook's "re-score every shipping cycle" rule needs in cloud-adapted
 form. Queued P0.
+
+## Cycle 17 — 2026-07-23T17:15Z — METHOD (direct to main)
+
+**Track.** METHOD (rotation: Cycle 16 READOUT → this cycle METHOD; next COVERAGE).
+
+**First duty.** No open peer-gated PR (`list_pull_requests state=open` → `[]`; STATE
+already showed NONE). Nothing to adversarially review/merge → proceeded to work.
+
+**What.** Wired `tests/test_canonical_replay.py` (3 tests, +3 → suite 85→88) — the last
+step turning the [LOCAL]-captured canonical fixtures into a PERMANENT in-cloud regression
+guard. For each committed `fixtures/canonical/{drift-flight.org,driftflight.com}.json`:
+`FetchContext.from_fixture(path)` → `asrs.cli._run_probes(ctx)` → `scoring.score(checks,
+load_rubric(None), domain)`, then asserts overall_score (46.1 / 85.5), grade (F / B),
+`rubric_version == "0.7"`, `scored is True`, all five pillar_scores (finer than the roll-up
+— a probe change could move a pillar while leaving the rounded overall equal), the capability
+DELTA (+39.4), AND that no cache entry carries a `replay-miss` error (proves the fixture still
+covers every probe request — a miss = a probe changed WHAT it fetches, must fail loudly).
+
+**Why.** The playbook's per-cycle rule is to LIVE-re-score the canonical pair every shipping
+cycle as a regression signal. The cloud loop has no outbound network (STATE env constraint),
+so that re-score has been argued "by construction + prose" in-cloud for 16 cycles. Cycle 15
+built record/replay; the 16:46Z local fire captured the fixtures; this cycle makes the
+re-score EXECUTABLE — the cloud-adapted form of "re-score every shipping cycle". Any future
+scoring/probe change that would move the canonical score now trips a test instead of shipping
+silently. The docstring pins the maintenance contract: when a version bump LEGITIMATELY moves
+the score, re-capture the fixtures [LOCAL] and update the EXPECTED numbers in the SAME PR — the
+guard tracks intended change, it does not forbid it.
+
+**Scope.** `tests/test_canonical_replay.py` (new, 1 file). No edits to `asrs/` — scoring path
+byte-for-byte untouched.
+
+**Evidence.**
+- New test green: `python3 tests/test_canonical_replay.py` → 3/3 (both domains + delta).
+- Full suite **88/88** (12 files, 0 failing). Note: `test_free_tier.py` needs the optional
+  `eth-account` dependency (ephemeral $0-signer path); absent by default in this fresh cloud
+  checkout → `pip install eth-account` (pypi reachable) makes it 8/8. That failure was a
+  MISSING-DEPENDENCY environment gap (invariant #4: agent-side env failure, never scored as
+  evidence), pre-existing and unrelated to this tests-only change.
+
+**Canonical pair (regression signal).** 46.1 F / 85.5 B, delta **+39.4** on rubric v0.7,
+0 replay-miss on either domain — UNCHANGED, and now pinned as an EXECUTABLE offline re-score
+that runs every cloud cycle (no longer prose). Scoring path untouched → delta cannot move by
+construction; the new test is the tripwire if that construction is ever violated.
+
+**Ship.** Direct-to-main (tests-only, no scoring semantics, rubric stays v0.7). No Slack DM —
+not a sensitive-class change, moves no score; the daily digest was already sent by Cycle 16
+(first cycle after 16:00 UTC), and 17:15Z is not a new digest window.
+
+**Runner health.** Newest verify artifact still `verify_20260723T040757Z` (04:07Z, rubric
+0.5) — now ~13.1h old, well past 6h. STILL DOWN; already flagged in Cycle 16's digest. Folds
+into the next post-16:00-UTC digest if still down. (The canonical replay guard shipped this
+cycle is the durable mitigation — the in-cloud canonical re-score no longer depends on the
+launchd runner being up at all.)
+
+**Next hypothesis.** COVERAGE next cycle. The replay guard is now permanent; the remaining
+canonical-re-score fragility is entirely operational (runner restart), not code. A natural
+METHOD follow-up (future): extend the same fixture-replay pattern to a THIRD control domain
+(e.g. example.com, already spot-checked 22.5 F [LOCAL]) so the guard pins a NON-storefront
+baseline too, not just the canonical pair — but capture is [LOCAL]. For COVERAGE, the live
+ACP `checkout_sessions` $0 elicitation parity (P1) remains the highest-leverage rail item,
+though its score-increasing half needs [LOCAL] live verification.

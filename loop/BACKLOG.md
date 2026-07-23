@@ -39,19 +39,26 @@ design in-cloud, execute locally.
      confirmed (no flag → no fixture; hook runs after scoring.score so it can't move a score).
      See LOG (Local cycle — 16:46Z). The cloud test-wiring follow-up is now the top P0 below. -->
 
-- **Wire `tests/test_canonical_replay.py`** (TRUTH, P0 — the last step to a permanent in-cloud
-  canonical regression guard; cloud-doable, no network needed). The committed
-  `fixtures/canonical/{drift-flight.org,driftflight.com}.json` (local fire 16:46Z) replay
-  byte-faithfully through the current pipeline. Add a test that, for each fixture:
-  `ctx = FetchContext.from_fixture(path)` → `checks = asrs.cli._run_probes(ctx)` →
-  `rep = scoring.score(checks, load_rubric(None), domain)`, then asserts `rep.overall_score`
-  == 46.1 (`.org`) / 85.5 (`.com`), grade F/B, `rubric_version == "0.7"`, delta +39.4, AND
-  that no cache entry carries a `replay-miss` error (proves the fixture still covers every
-  probe request — a miss means a probe changed WHAT it fetches, which must fail loudly). This
-  is the executable in-cloud proxy for the network-blocked live re-score, and the permanent
-  form of the playbook's "re-score every shipping cycle" rule. Tests-only, no scoring
-  semantics → direct-to-main. When a rubric version bump legitimately moves the canonical
-  score, the fixtures are re-captured [LOCAL] and the asserted numbers updated in the same PR.
+<!-- DONE 2026-07-23T17:15Z (Cycle 17, METHOD): "Wire tests/test_canonical_replay.py" SHIPPED —
+     the network-blocked per-cycle canonical re-score is now EXECUTABLE in-cloud. 3 tests replay
+     each committed fixtures/canonical/{drift-flight.org,driftflight.com}.json through
+     from_fixture → asrs.cli._run_probes → scoring.score(load_rubric(None)) and assert
+     overall_score 46.1(.org)/85.5(.com), grade F/B, rubric_version "0.7", scored True, all five
+     pillar_scores (finer than the roll-up), delta +39.4, AND no cache entry carries a replay-miss
+     (fixture still covers every probe request — a miss = a probe changed WHAT it fetches, fails
+     loudly). Docstring pins the maintenance contract: a legitimate version-bump score move =
+     re-capture [LOCAL] + update EXPECTED in the same PR. Tests-only, scoring path byte-for-byte
+     untouched, rubric stays v0.7, canonical delta unchanged; direct-to-main. Suite 85 → 88.
+     See LOG Cycle 17. This is the permanent cloud-adapted form of "re-score every shipping
+     cycle" — the in-cloud regression signal no longer depends on the launchd runner. -->
+
+- **[LOCAL] Re-capture canonical fixtures on any version-bump score move** (METHOD, standing
+  maintenance for the Cycle-17 replay guard). `tests/test_canonical_replay.py` pins 46.1/85.5/
+  +39.4 on v0.7. When a peer-gated scoring change LEGITIMATELY moves a canonical score, the
+  guard will (correctly) go red until the fixtures are re-captured and EXPECTED updated in the
+  SAME PR: `asrs.cli score <domain> --record-fixture fixtures/canonical/<domain>.json` (LIVE,
+  needs network → [LOCAL]), then update the numbers. This is not pending work — it is the
+  documented upkeep step so a future cycle knows the red is intended, not a regression.
 
 <!-- DONE 2026-07-23T05:52Z (local fire): "[LOCAL] Merge-time canonical re-score
      for PR loop/not-scorable-attribution" discharged. Both reachable canonical
@@ -264,6 +271,15 @@ design in-cloud, execute locally.
   fixtures. When the [LOCAL] second cross_task_spread datapoint runs (below/P0), pass its
   report through `scorecard.build_scorecard` and confirm the per-intent grid + by-archetype
   rollup read correctly on real multi-kind data. No new code — a render + visual check.
+
+- **[LOCAL] Third-control-domain replay fixture** (METHOD, Cycle-17 follow-up): the
+  canonical replay guard pins only the storefront PAIR. Capture a fixture for a NON-storefront
+  control (example.com, already spot-checked 22.5 F [LOCAL] 15:43Z) via
+  `asrs.cli score example.com --record-fixture fixtures/canonical/example.com.json`, then add a
+  small `test_canonical_replay` case pinning 22.5 F / no commerce credit. Widens the offline
+  regression signal to a low-capability baseline (guards against a probe that spuriously
+  inflates a bare site), not just the +39.4 pair. Capture is [LOCAL] (live crawl); the test
+  wiring is cloud-doable once the fixture lands.
 
 - **Evidence links on the card** (READOUT): each check row links to its
   evidence blob; publish evidence alongside the hosted card.

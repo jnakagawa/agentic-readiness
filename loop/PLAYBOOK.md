@@ -76,12 +76,30 @@ never manufacture it:
 4. Validate: static-score the canonical pair; record overall, pillars, and
    delta in the LOG entry. If the change touches probes, also verify against
    2+ unrelated live domains.
-5. Ship rules:
+5. Ship rules (three tiers — most changes must NOT wait on Jonah):
    - **Direct to main**: docs, readout, tests, backlog/log/state, probe
      bug-fixes that don't change scoring semantics.
-   - **Branch + PR + Slack flag (human gate)**: rubric version/weight/cap
-     changes, check additions/removals, anything touching payment/signing or
-     the $0-only property. Name branches `loop/<slug>`.
+   - **Peer gate (next-cycle review, then SELF-MERGE)**: scoring-semantics
+     changes that are not human-gated below — check additions, aggregation
+     refinements, rubric version bumps that accompany them. Open a PR named
+     `loop/<slug>` with full evidence. The NEXT cycle's FIRST duty, before
+     picking new work: adversarially review every open peer-gated PR from
+     its fresh context — actively try to refute it against the invariants
+     (vendor-neutrality, capability wording, attribution honesty, canonical-
+     delta explanation, test coverage; run the live re-scores the authoring
+     cycle couldn't if the environment allows). If it survives, MERGE it and
+     record the review verdict in LOG.md; if not, request changes or close
+     with reasons. Never review-and-merge your own cycle's PR in the same
+     fire. A PR that Jonah has commented on is FROZEN until his comment is
+     resolved. A peer-gated PR still open after 3 cycles = escalate in the
+     next Slack digest.
+   - **Human gate (Jonah merges)**: payment/signing code or anything
+     touching the $0-only property; pillar weight changes; cap value
+     changes; check REMOVALS. These are identity-level decisions.
+   When in-cloud network policy blocks live re-scoring, the in-cloud
+   standard is regression-by-construction plus offline tests, and the live
+   canonical re-score becomes part of the merge-time review (peer cycle if
+   it has network, otherwise a `[LOCAL]` reviewer).
 6. Append a LOG.md entry: cycle number, track, what/why, evidence paths,
    canonical-pair numbers, next hypothesis. Update STATE.md (counter, focus
    pointer, open questions). Prune BACKLOG.md — delete stale items, add new

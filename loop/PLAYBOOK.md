@@ -135,6 +135,33 @@ Local-only constraints (non-negotiable):
 - Touch nothing outside the repo checkout (no ~/.zero, keychains, browser
   profiles, other repos).
 
+## Self-healing (infrastructure breakage outranks new work)
+
+The loop maintains itself. At the start of EVERY fire (cloud and local),
+before picking new work, run the infra health check:
+
+- Newest `runs/local/verify_*.json` older than 6 hours → the verify floor is
+  down.
+- Full test suite unrunnable (missing dep, broken import) → the bench is down.
+- Last cycle's push failed, or LOG/STATE inconsistent with git history →
+  bookkeeping is down.
+
+If something is broken and repairable with this fire's capabilities:
+**repair it FIRST, verify the repair actually ran (execute it, don't assume),
+and LOG the diagnosis + fix.** A repair under ~15 minutes does not consume
+the cycle's one-improvement budget; a larger repair IS the cycle's item.
+If it is not repairable here (e.g. cloud can't reach the local machine),
+queue it P0 `[LOCAL]` with the diagnosis and flag it in the next digest.
+
+Lessons already paid for (don't relearn them):
+- The pinned local runner must never derive paths from `__file__` — it lives
+  outside the repo. Repo location comes from `ASRS_REPO` env or the default.
+- Silent success and silent failure look identical — every scheduled
+  component must heartbeat to its log on every fire.
+- Local cycles may resync the pinned runner (`~/.local/bin/`) from the repo
+  copy ONLY when the repo copy changed in a shipped, reviewed commit; record
+  the resync in LOG.
+
 ## Live canonical signal (local verification artifacts)
 
 A local companion runner (`loop/local_verify.py`, launchd on Jonah's machine,

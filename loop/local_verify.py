@@ -18,14 +18,23 @@ from __future__ import annotations
 
 import glob
 import json
+import os
 import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-REPO = Path(__file__).resolve().parent.parent
+# The runner is PINNED outside the repo (~/.local/bin), so the repo location
+# must not be derived from __file__ — that resolved to ~/.local and sent every
+# launchd fire into a silent no-op (the 2026-07-23 "floor down" incident).
+REPO = Path(os.environ.get("ASRS_REPO", str(Path.home() / "github" / "agentic-readiness")))
 PY = REPO / ".venv" / "bin" / "python"
 PAIR = ("drift-flight.org", "driftflight.com")
+
+
+def log(msg: str) -> None:
+    """Heartbeat to stdout — the launchd log must never be silently empty."""
+    print(f"[{datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}] {msg}", flush=True)
 
 
 def run(cmd: list[str], timeout: int = 600) -> tuple[int, str]:
@@ -42,20 +51,28 @@ def run_stdout(cmd: list[str], timeout: int = 600) -> tuple[int, str]:
 def main() -> int:
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     out: dict = {"ts": ts, "kind": "local-verify"}
+    log(f"start — repo={REPO}")
+    if not (REPO / ".git").is_dir():
+        log(f"FATAL: {REPO} is not a git checkout")
+        out["fatal"] = f"{REPO} is not a git checkout"
+        _write(out)
+        return 1
 
-    rc, log = run(["git", "pull", "--ff-only", "origin", "main"])
-    out["git_pull"] = {"ok": rc == 0, "tail": log[-300:]}
+    rc, tail = run(["git", "pull", "--ff-only", "origin", "main"])
+    out["git_pull"] = {"ok": rc == 0, "tail": tail[-300:]}
     if rc != 0:
         # Do not verify a tree we couldn't sync; report and bail.
+        log(f"git pull failed: {tail[-160:]}")
         _write(out)
         return 1
 
     tests = {}
     for suite in sorted(glob.glob(str(REPO / "tests" / "test_*.py"))):
-        rc, log = run([str(PY), suite])
-        tests[Path(suite).name] = {"ok": rc == 0, "tail": log[-200:]}
+        rc, tail = run([str(PY), suite])
+        tests[Path(suite).name] = {"ok": rc == 0, "tail": tail[-200:]}
     out["tests"] = tests
     out["tests_ok"] = all(t["ok"] for t in tests.values())
+    log(f"tests_ok={out['tests_ok']} ({len(tests)} suites)")
 
     scores = {}
     for domain in PAIR:
@@ -95,8 +112,9 @@ def main() -> int:
 
     run(["git", "add", "loop/LOG.md", f"runs/local/verify_{ts}.json", "-f"])
     run(["git", "commit", "-m", f"loop: local verification {ts}"])
-    rc, log = run(["git", "push", "origin", "main"])
+    rc, tail = run(["git", "push", "origin", "main"])
     out["pushed"] = rc == 0
+    log(f"done — delta={out.get('delta', 'n/a')} pushed={out['pushed']}")
     return 0 if out["tests_ok"] else 2
 
 
@@ -107,4 +125,13 @@ def _write(out: dict) -> None:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except Exception as exc:  # noqa: BLE001 — a crash must still leave a trace
+        log(f"CRASH: {type(exc).__name__}: {exc}")
+        try:
+            _write({"ts": datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ"),
+                    "kind": "local-verify", "crash": f"{type(exc).__name__}: {exc}"})
+        except Exception:
+            pass
+        sys.exit(3)

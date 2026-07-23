@@ -2175,3 +2175,7 @@ vendor-leaning phrasing (the recurring adversarial-referee prose pass — the
 Cycle-21 invariance guard proves the SCORING is neutral, not that the
 DESCRIPTIONS read neutrally). The query-param opt-in's live wiring + 2-domain
 verification is queued [LOCAL] (P1, under the free-tier generalization item).
+
+## Local verification — 20260723T224105Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260723T224105Z.json

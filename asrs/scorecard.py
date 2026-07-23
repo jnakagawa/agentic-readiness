@@ -145,11 +145,18 @@ tr:last-child td{border-bottom:none}
 td.impact{font-family:var(--font-display);font-weight:600;white-space:nowrap;
   color:var(--error)}
 td.impact.minor{color:var(--warning)}
-td.pillar-tag{color:var(--text-secondary);font-size:12px}
+td.pillar-tag{font-size:12px;white-space:nowrap}
+.ptag{display:inline-block;font:500 12px/18px Inter,sans-serif;
+  padding:2px 10px;border-radius:9999px}
+.ptag.access{background:#eff8ff;color:#175cd3;box-shadow:inset 0 0 0 1px #b2ddff}
+.ptag.legibility{background:#f9f5ff;color:#6941c6;box-shadow:inset 0 0 0 1px #e9d7fe}
+.ptag.transactability{background:#f0fdf9;color:#107569;box-shadow:inset 0 0 0 1px #99f6e0}
+.ptag.trust{background:#fdf2fa;color:#c11574;box-shadow:inset 0 0 0 1px #fcceee}
+.ptag.outcome{background:#eef4ff;color:#3538cd;box-shadow:inset 0 0 0 1px #c7d7fe}
 table.recs{table-layout:fixed}
 table.recs th:nth-child(1){width:62px}
-table.recs th:nth-child(2){width:112px}
-table.recs th:nth-child(3){width:28%}
+table.recs th:nth-child(2){width:130px}
+table.recs th:nth-child(3){width:26%}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
 .stack{display:flex;flex-direction:column;gap:24px;min-width:0}
 .verdict{display:flex;flex-direction:column;gap:8px;padding:14px 16px;
@@ -340,7 +347,7 @@ def _recommendations(rep: dict, fold_after: int = 7) -> str:
         pillar = PILLAR_LABELS.get(c["pillar"], c["pillar"])
         return (
             f'<tr><td class="impact num{minor}">&minus;{lost:g} pts</td>'
-            f'<td class="pillar-tag">{_esc(pillar)}</td>'
+            f'<td class="pillar-tag"><span class="ptag {_esc(c["pillar"])}">{_esc(pillar)}</span></td>'
             f'<td><span class="chip">{_esc(c["finding"])}</span></td>'
             f"<td>{_esc(c['remediation'])}</td></tr>"
         )
@@ -447,9 +454,10 @@ def _overview_card(rep: dict, label: str | None, baseline: dict | None = None) -
     )
 
 
-def _recs_card(rep: dict) -> str:
+def _recs_card(rep: dict, titled: bool = False) -> str:
+    title = f'Recommendations — {_esc(rep["domain"])}' if titled else "Recommendations"
     return (
-        '<div class="card"><div class="card-header"><div><h2>Recommendations</h2>'
+        f'<div class="card"><div class="card-header"><div><h2>{title}</h2>'
         '<div class="desc">Sorted by score impact — each finding names its fix.</div></div></div>'
         + _recommendations(rep)
         + "</div>"
@@ -469,15 +477,20 @@ def _domain_column(rep: dict, label: str | None, baseline: dict | None = None) -
 
 def _section_rows(a: dict, b: dict, labels: list[str | None]) -> str:
     """Compare layout: one grid row per SECTION so panels sit side by side
-    even when one is taller than the other (top-aligned per row)."""
+    even when one is taller than the other (top-aligned per row).
+    Recommendations go full-width (one card per domain, stacked) — their
+    tables need the room; half-width forces heavy wrapping."""
     sections = [
         (_overview_card(a, labels[0]), _overview_card(b, labels[1], baseline=a)),
-        (_recs_card(a), _recs_card(b)),
         (_trust_panel(a), _trust_panel(b)),
         (_checkpoints(a), _checkpoints(b)),
     ]
     rows = []
-    for left, right in sections:
+    for left, right in sections[:1]:
+        rows.append(f'<div class="grid2">{left}{right}</div>')
+    rows.append(_recs_card(a, titled=True))
+    rows.append(_recs_card(b, titled=True))
+    for left, right in sections[1:]:
         if not left and not right:
             continue
         rows.append(f'<div class="grid2">{left or "<div></div>"}{right or "<div></div>"}</div>')

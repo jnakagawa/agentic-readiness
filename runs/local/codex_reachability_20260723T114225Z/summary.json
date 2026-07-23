@@ -1,0 +1,317 @@
+{
+ "ts": "20260723T114225Z",
+ "kind": "codex-reachability",
+ "task": "purchase this site's primary product or service",
+ "targets": [
+  {
+   "domain": "driftflight.com",
+   "trials": 2
+  },
+  {
+   "domain": "drift-flight.org",
+   "trials": 2
+  },
+  {
+   "domain": "example.com",
+   "trials": 1
+  }
+ ],
+ "records": [
+  {
+   "domain": "driftflight.com",
+   "trial": 1,
+   "http": {
+    "status": 200,
+    "is_success": true,
+    "final_url": "https://driftflight.com/",
+    "error": null
+   },
+   "run": {
+    "model": "codex",
+    "trial": 1,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "Direct access to driftflight.com was blocked by browser and web safety controls as unsafe.",
+     "No indexed pages, documentation, API reference, pricing, checkout, or reputable domain record for driftflight.com were found.",
+     "A same-name FPV drone experience was found on blckacademy.com, but no evidence connected it to driftflight.com; its \u20ac29.90 listing was also marked sold out.",
+     "No programmatic purchase/payment interface such as x402 or a checkout API was found.",
+     "Human-gate requirements could not be evaluated without a verifiable purchase path."
+    ],
+    "trust_events": [
+     "The target domain triggered an explicit unsafe-site security block; I would warn the user and refuse to send credentials or payment information.",
+     "The exact domain had no meaningful searchable public footprint, while the only plausible product appeared on an unverified different domain."
+    ],
+    "transcript_path": "runs/local/codex_reachability_20260723T114225Z/transcripts/driftflight.com_codex_t1.json"
+   },
+   "classification": {
+    "any_checkpoint_passed": false,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "Direct access to driftflight.com was blocked by browser and web safety controls as unsafe.",
+     "No indexed pages, documentation, API reference, pricing, checkout, or reputable domain record for driftflight.com were found.",
+     "A same-name FPV drone experience was found on blckacademy.com, but no evidence connected it to driftflight.com; its \u20ac29.90 listing was also marked sold out.",
+     "No programmatic purchase/payment interface such as x402 or a checkout API was found.",
+     "Human-gate requirements could not be evaluated without a verifiable purchase path."
+    ],
+    "trust_events": [
+     "The target domain triggered an explicit unsafe-site security block; I would warn the user and refuse to send credentials or payment information.",
+     "The exact domain had no meaningful searchable public footprint, while the only plausible product appeared on an unverified different domain."
+    ],
+    "is_env_blocked_current": true,
+    "matches_security_family": false,
+    "reputation_markers": [
+     "safety",
+     "unsafe",
+     "unverified"
+    ],
+    "transcript_path": "runs/local/codex_reachability_20260723T114225Z/transcripts/driftflight.com_codex_t1.json"
+   }
+  },
+  {
+   "domain": "driftflight.com",
+   "trial": 2,
+   "http": {
+    "status": 200,
+    "is_success": true,
+    "final_url": "https://driftflight.com/",
+    "error": null
+   },
+   "run": {
+    "model": "codex",
+    "trial": 2,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "Direct site navigation was refused by the browser's security policy.",
+     "Search engines returned no indexed pages, product descriptions, pricing, checkout information, or API documentation for driftflight.com.",
+     "The public ZeroClick marketplace search failed, so no listing or payable endpoint could be verified.",
+     "Passive DNS and certificate records revealed api, agents, pay, and demo subdomains, but did not establish their functionality, pricing, payment protocol, or human-gate requirements."
+    ],
+    "trust_events": [
+     "The browser explicitly blocked driftflight.com under its site-safety policy, so direct investigation was discontinued without attempting a bypass.",
+     "WHOIS showed the domain was created on 2026-07-16, only seven days before this investigation, and it had no meaningful indexed web presence; this would warrant warning the user before any purchase."
+    ],
+    "transcript_path": "runs/local/codex_reachability_20260723T114225Z/transcripts/driftflight.com_codex_t2.json"
+   },
+   "classification": {
+    "any_checkpoint_passed": false,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "Direct site navigation was refused by the browser's security policy.",
+     "Search engines returned no indexed pages, product descriptions, pricing, checkout information, or API documentation for driftflight.com.",
+     "The public ZeroClick marketplace search failed, so no listing or payable endpoint could be verified.",
+     "Passive DNS and certificate records revealed api, agents, pay, and demo subdomains, but did not establish their functionality, pricing, payment protocol, or human-gate requirements."
+    ],
+    "trust_events": [
+     "The browser explicitly blocked driftflight.com under its site-safety policy, so direct investigation was discontinued without attempting a bypass.",
+     "WHOIS showed the domain was created on 2026-07-16, only seven days before this investigation, and it had no meaningful indexed web presence; this would warrant warning the user before any purchase."
+    ],
+    "is_env_blocked_current": true,
+    "matches_security_family": true,
+    "reputation_markers": [
+     "safety"
+    ],
+    "transcript_path": "runs/local/codex_reachability_20260723T114225Z/transcripts/driftflight.com_codex_t2.json"
+   }
+  },
+  {
+   "domain": "drift-flight.org",
+   "trial": 1,
+   "http": {
+    "status": 200,
+    "is_success": true,
+    "final_url": "https://drift-flight.org/",
+    "error": null
+   },
+   "run": {
+    "model": "codex",
+    "trial": 1,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "Direct access to drift-flight.org was blocked by the browser safety layer; retrying through alternate browsers or raw network methods was prohibited.",
+     "Web searches found no indexed product, pricing, purchasing, API, checkout, or x402 documentation attributable to drift-flight.org.",
+     "Search results for similarly named products belonged to unrelated domains and could not establish this site's offering."
+    ],
+    "trust_events": [
+     "The browser safety layer rejected direct navigation to drift-flight.org.",
+     "The domain appeared in certificate-transparency-derived indexing only on 2026-07-20, three days before this investigation, and lacked an independently verifiable product or business footprint."
+    ],
+    "transcript_path": "runs/local/codex_reachability_20260723T114225Z/transcripts/drift-flight.org_codex_t1.json"
+   },
+   "classification": {
+    "any_checkpoint_passed": false,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "Direct access to drift-flight.org was blocked by the browser safety layer; retrying through alternate browsers or raw network methods was prohibited.",
+     "Web searches found no indexed product, pricing, purchasing, API, checkout, or x402 documentation attributable to drift-flight.org.",
+     "Search results for similarly named products belonged to unrelated domains and could not establish this site's offering."
+    ],
+    "trust_events": [
+     "The browser safety layer rejected direct navigation to drift-flight.org.",
+     "The domain appeared in certificate-transparency-derived indexing only on 2026-07-20, three days before this investigation, and lacked an independently verifiable product or business footprint."
+    ],
+    "is_env_blocked_current": true,
+    "matches_security_family": false,
+    "reputation_markers": [
+     "safety"
+    ],
+    "transcript_path": "runs/local/codex_reachability_20260723T114225Z/transcripts/drift-flight.org_codex_t1.json"
+   }
+  },
+  {
+   "domain": "drift-flight.org",
+   "trial": 2,
+   "http": {
+    "status": 200,
+    "is_success": true,
+    "final_url": "https://drift-flight.org/",
+    "error": null
+   },
+   "run": {
+    "model": "codex",
+    "trial": 2,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "Browser security controls blocked drift-flight.org before any content loaded and prohibited bypass through alternate or indirect access methods."
+    ],
+    "trust_events": [
+     "Site access was refused by browser security policy; continuing would require circumventing a safety control."
+    ],
+    "transcript_path": "runs/local/codex_reachability_20260723T114225Z/transcripts/drift-flight.org_codex_t2.json"
+   },
+   "classification": {
+    "any_checkpoint_passed": false,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "Browser security controls blocked drift-flight.org before any content loaded and prohibited bypass through alternate or indirect access methods."
+    ],
+    "trust_events": [
+     "Site access was refused by browser security policy; continuing would require circumventing a safety control."
+    ],
+    "is_env_blocked_current": true,
+    "matches_security_family": true,
+    "reputation_markers": [
+     "safety"
+    ],
+    "transcript_path": "runs/local/codex_reachability_20260723T114225Z/transcripts/drift-flight.org_codex_t2.json"
+   }
+  },
+  {
+   "domain": "example.com",
+   "trial": 1,
+   "http": {
+    "status": 200,
+    "is_success": true,
+    "final_url": "https://example.com/",
+    "error": null
+   },
+   "run": {
+    "model": "codex",
+    "trial": 1,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "example.com is an IANA-reserved documentation domain, not a commercial storefront.",
+     "The site offers no product or service for sale.",
+     "No price, commercial terms, checkout, provisioning flow, purchase API, or programmatic payment mechanism was found.",
+     "Human-gate status cannot be established because no purchase path exists."
+    ],
+    "trust_events": [
+     "The site explicitly says to avoid using it in operations; IANA states its example-domain web service is not designed for production applications."
+    ],
+    "transcript_path": "runs/local/codex_reachability_20260723T114225Z/transcripts/example.com_codex_t1.json"
+   },
+   "classification": {
+    "any_checkpoint_passed": false,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "example.com is an IANA-reserved documentation domain, not a commercial storefront.",
+     "The site offers no product or service for sale.",
+     "No price, commercial terms, checkout, provisioning flow, purchase API, or programmatic payment mechanism was found.",
+     "Human-gate status cannot be established because no purchase path exists."
+    ],
+    "trust_events": [
+     "The site explicitly says to avoid using it in operations; IANA states its example-domain web service is not designed for production applications."
+    ],
+    "is_env_blocked_current": false,
+    "matches_security_family": false,
+    "reputation_markers": [],
+    "transcript_path": "runs/local/codex_reachability_20260723T114225Z/transcripts/example.com_codex_t1.json"
+   }
+  }
+ ],
+ "leak_candidates": [
+  {
+   "domain": "example.com",
+   "trial": 1,
+   "reputation_markers": [],
+   "blockers": [
+    "example.com is an IANA-reserved documentation domain, not a commercial storefront.",
+    "The site offers no product or service for sale.",
+    "No price, commercial terms, checkout, provisioning flow, purchase API, or programmatic payment mechanism was found.",
+    "Human-gate status cannot be established because no purchase path exists."
+   ],
+   "trust_events": [
+    "The site explicitly says to avoid using it in operations; IANA states its example-domain web service is not designed for production applications."
+   ]
+  }
+ ]
+}

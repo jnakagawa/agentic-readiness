@@ -47,39 +47,37 @@ design in-cloud, execute locally.
   per fire, trimmed battery preferred. Reuse the first-run pattern (`--battery <yaml>
   --models claude,codex --trials 2`); force-add the report to `runs/local/`
   (`runs/` is gitignored).
-- **Codex reachability investigation** (TRUTH): characterize the hosted-
-  browser refusal — determinism, domain features (age, TLD, content
-  patterns), retry behavior. Build the control-storefront attribution fix
-  from the v0 notes (feed codex pre-fetched content when its browser is
-  gated, marked as assisted). Repro matrix is `[LOCAL]`; analysis + design
-  in-cloud from committed transcripts.
-  NOW HAS AN EXECUTABLE SPEC (Cycle 7): `tests/test_attribution.py::
-  test_reputation_gate_phrasing_is_current_coverage_gap` pins that codex
-  REPUTATION-gate refusals ("flagged as unsafe" / "unable to browse") are
-  currently NOT caught by `_ENV_BLOCK_RE` (they lack the security-* vocabulary),
-  so such a run is mis-scored as a site FAIL rather than reachability. FIRST
-  `[LOCAL]` step is now tiny and precise:
-  ```
-  # 1 codex exec against the canonical .com, capture RAW refusal text, COMMIT it:
-  codex exec --model o4 'Browse https://driftflight.com read-only and report
-    whether an agent could purchase there; if you cannot browse it, say why.' \
-    > runs/local/codex_refusal_driftflightcom_<ts>.txt
-  ```
-  Then extend `_ENV_BLOCK_RE` with a fixture drawn from the committed transcript
-  (worded by CAPABILITY — "the hosting stack's own reputation layer refused the
-  URL" — never by vendor), keeping test #2 (site-side 403/Cloudflare NOT excused)
-  green, and update test #8 in lockstep. The regex change is scoring-adjacent
-  (moves runs between denominators) → peer-gated PR, not direct-to-main.
-  NOTE: the NARROW lexical subset — "browser **safety** controls" (same env-block
-  family as "security", not a semantic reputation gate) — SHIPPED as PR #2 (Cycle 9,
-  v0.6) and is now MERGED to main (reviewed + merged by the 10:13Z local cycle;
-  live-validated same fire — codex "site-safety policy" routed to reachability).
-  This item retains ONLY the HARDER semantic reputation-gate case (test #8:
-  "flagged as unsafe" / "unable to browse"), which still needs a committed codex
-  transcript before its regex fixture can be added. NEW EVIDENCE (10:13Z battery
-  run): codex#2 REACHED drift-flight.org normally on the same fire codex#1 was
-  safety-blocked — so the `.org` reputation gate is NON-DETERMINISTIC per-trial,
-  not a hard block (updates the open question).
+<!-- DONE 2026-07-23T11:42Z (local fire, TRUTH): "Codex reachability investigation —
+     CHARACTERIZE" discharged via experiments/codex_reachability.py (committed;
+     5 codex invocations, canonical pair ×2 + example.com control ×1, all HTTP 200).
+     FINDINGS: (1) codex refused 4/4 canonical trials, every refusal a REPUTATION
+     gate (domain age .com 7d/.org 3d + absent footprint) but ALWAYS surfaced with
+     browser-{safety,security} vocabulary. (2) v0.6 caught 4/4 (_is_env_blocked True
+     → reachability, none mis-scored FAIL) — first LIVE validation of v0.6 on fresh
+     transcripts. (3) Reputable control example.com NOT blocked (browser works) → the
+     refusals are codex's own reputation gate, not a broken browser. (4) NO pure
+     semantic-reputation phrasing captured → test #8 stays open; NO regex broadening
+     warranted (v0.6 sufficient; blind broadening would risk excusing real site
+     blocks). (5) The harness's "1 leak candidate" was a FALSE POSITIVE (example.com;
+     report-only heuristic over-catches "nothing to buy" runs — diagnostic-only, not
+     scoring). Evidence: runs/local/codex_reachability_20260723T114225Z/
+     {summary.json,transcripts/}. See LOG. REMAINING work (the BUILD) is now its own
+     item below; the test-#8 regex fixture stays PARKED until a semantic transcript
+     appears (none across all fires to date). -->
+- **[LOCAL] Build the codex control-storefront / pre-fetched-content attribution
+  fix** (TRUTH; unblocks the cross-model N-curve). The 11:42Z characterization
+  proved codex's browser WORKS on a reputable domain (example.com) and gates BOTH
+  fresh canonical domains — so the variable is domain reputation, not codex. Build
+  the v0-notes fix: when codex's browser gate fires (`_is_env_blocked` True), feed
+  it the statically-fetched homepage + docs (via `asrs.fetch`), mark the run
+  `assisted`, and keep assisted runs OUT of the UNASSISTED reachability denominator
+  (do not let assisted evidence inflate a site's autonomous-reachability score).
+  Design in-cloud from the committed transcripts; execute `[LOCAL]`. This is
+  scoring-adjacent (adds an evidence provenance dimension) → likely peer-gated when
+  the scoring path changes; the fetch-and-mark plumbing itself can land direct.
+  test-#8 regex fixture stays PARKED — no semantic reputation-gate transcript
+  ("flagged as unsafe"/"unable to browse" WITHOUT browser-safety words) has ever
+  been observed; do NOT broaden `_ENV_BLOCK_RE` on speculation.
 <!-- MERGED 2026-07-23T~09:47Z (PR #2, commit 8fe9f46): "Env-block attribution leak
      — broaden `_ENV_BLOCK_RE` to cover 'safety' phrasing" is on main as rubric v0.6.
      Regex extended so "safety" is a sibling of "security" in both alternations;
@@ -126,10 +124,10 @@ design in-cloud, execute locally.
   the trial-count item): the 07:50Z run measured claude-only reproducibility
   because codex env-blocked drift-flight.org on all 5 trials. The CROSS-MODEL
   agreement question (do claude and codex converge on the same verdict, and at
-  what N) is unmeasured and BLOCKED on codex reachability — do the
-  codex-reachability/control-storefront item FIRST (feed codex pre-fetched content
-  when its browser is gated, marked assisted), then re-run the nested-subsample
-  harness on a domain codex can actually reach:
+  what N) is unmeasured and BLOCKED on codex reachability — RE-CONFIRMED blocked
+  at 11:42Z (codex gated 4/4 on BOTH canonical domains). Do the "Build the codex
+  control-storefront / pre-fetched-content attribution fix" item above FIRST, then
+  re-run the nested-subsample harness on a domain codex can actually reach:
   ```
   git checkout main && git pull
   .venv/bin/python -m experiments.trial_count_N   # reuse the ONE-run N-curve harness

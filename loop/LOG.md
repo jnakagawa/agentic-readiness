@@ -1069,3 +1069,99 @@ canonical domain in a full panel, so every stability curve to date is single-mod
 (claude-only) reproducibility. The codex-reachability/control-storefront attribution
 fix (feed codex pre-fetched content when its browser is gated, marked assisted) is
 the blocker; until it lands, "N stabilizes the panel" is answered only for claude.
+
+## Local cycle — 2026-07-23T11:42Z — TRUTH ([LOCAL] codex reachability investigation)
+
+**First duty — peer-gated PR review.** NONE open (PR #2 merged last fire, #1
+earlier). Nothing to review/merge; proceeded to the one `[LOCAL]` item.
+
+**What.** Executed the oldest P0 `[LOCAL]` TRUTH item — "Codex reachability
+investigation" — via the committed harness `experiments/codex_reachability.py`
+(previously written but uncommitted in the tree). It runs codex through the SAME
+scorer path (`shopper._run_one → _codex_cmd`, network on, web_search on) against
+the canonical pair ×2 each + a reputable control (example.com ×1) = **5 codex
+invocations** (under the ~10 cap), records each domain's live HTTP status, and
+classifies every refusal against (a) the SHIPPED `_ENV_BLOCK_RE` and (b) a
+report-only reputation-marker lexicon. $0 read-only recon — no free-tier probe,
+no zero CLI, no signing path, no regex/scoring change.
+
+**Why.** The standing TRUTH open question ("codex hosted-browser refusal —
+determinism, domain features, is it a reputation gate?") blocked the cross-model
+panel-stability N-curve and had only anecdotal datapoints. Attribution honesty
+(invariant #4) needs the characterization to come from the REAL code path on
+COMMITTED transcripts, not hand-rolled prose — so a mis-attributed refusal can
+never leak into a scoring denominator.
+
+**Results (all 5 domains returned HTTP 200 — sites are UP).**
+- **codex refused ALL 4 canonical trials** (driftflight.com t1/t2, drift-flight.org
+  t1/t2). Every refusal is a REPUTATION gate keyed on domain age + absent footprint
+  — trust_events cite ".com created 2026-07-16, seven days" and ".org indexed only
+  2026-07-20, three days … no independently verifiable footprint" — but the BLOCK
+  itself always narrates with browser-{safety,security} vocabulary ("blocked by
+  browser and web safety controls as unsafe", "refused by the browser's security
+  policy", "blocked by the browser safety layer", "Browser security controls
+  blocked …"). The reputation assessment and the browser-safety block are the SAME
+  surfaced mechanism, not two separable phrasings.
+- **v0.6 classifier caught 4/4** (`_is_env_blocked` True on every canonical trial)
+  → all routed to hosted-agent reachability, NONE mis-scored as a site FAIL. First
+  LIVE validation of the merged v0.6 "safety" broadening on FRESH transcripts
+  (2 trials narrate "safety" only [sec_family False], 2 narrate "security" — v0.6
+  catches both alternations; v0.5 would have leaked the two "safety"-only trials).
+- **Reputable control (example.com) NOT blocked** (`_is_env_blocked` False, zero
+  reputation markers): codex browsed it fine and correctly reported "IANA-reserved
+  documentation domain … no product for sale." This is the crux control — codex's
+  browser WORKS on a trusted domain, so the canonical refusals are its own
+  REPUTATION gate (fresh domain / no footprint), not a broken browser.
+- **No pure semantic reputation-gate phrasing captured** (the test #8 case:
+  "flagged as unsafe" / "unable to browse" WITHOUT browser-safety vocabulary).
+  Every observed refusal carries the browser-{security,safety} vocabulary v0.6
+  already covers → NO regex broadening is warranted from this evidence, and blindly
+  adding bare "unsafe"/"flagged" would risk excusing real site blocks (the exact
+  hazard STATE flagged). Test #8 stays an open spec awaiting a committed transcript
+  of the harder case; this run did not produce one.
+- **"1 leak candidate" is a FALSE POSITIVE of the report-only leak heuristic** — it
+  is example.com (the control), flagged only because it is up + observed-nothing +
+  not-env-blocked + not-security-family. But example.com is NOT a refusal (codex
+  correctly found no storefront). NOT a real attribution leak; `_is_env_blocked`
+  behaves correctly (example.com was never blocked). The heuristic's `or not
+  matches_security_family` clause over-catches legitimate "nothing to buy" runs —
+  a diagnostic-only weakness, noted for the harness, not a scoring bug.
+
+**Determinism update.** At the 10:13Z battery fire codex REACHED drift-flight.org
+on one trial → "non-deterministic per-trial". At 11:42Z BOTH canonical domains were
+gated on 100% of trials (4/4). So the gate is time-varying but currently CLOSED on
+both — neither canonical domain is codex-reachable right now. Cross-model panel
+stability stays BLOCKED on the control-storefront / pre-fetched-content fix; the
+example.com control now proves that fix's premise (codex's browser works on
+reputable domains → the variable is domain reputation, addressable by a reputable
+agent-native control storefront or marked-assisted pre-fetched content).
+
+**Canonical pair (regression signal).** Fresh LIVE static re-score this fire
+(11:50Z, both HTTP 200): drift-flight.org **46.1 F** / driftflight.com **85.5 B**,
+delta **+39.4** — identical to the 10:13Z merge-gate score; reports embed rubric
+"0.6". This diagnostic experiment touches no scoring code, so the delta is unchanged
+by construction AND re-confirmed live. Doubles as a fresh live canonical signal
+while the launchd runner is down (see below).
+
+**Runner health — STILL DOWN (>6h).** Newest `verify_*.json` is verify_20260723T040757Z
+(04:07Z, rubric 0.5) — ~7.7h old at this fire, well past the 6h threshold; no :41
+artifact 05:00–11:00Z. This fire is BEFORE 16:00 UTC, so no digest yet; to be folded
+into the next post-16:00 Slack digest per comms policy. Did NOT chase the launchd
+runner (outside the one-item mandate / repo checkout).
+
+**Evidence.** Harness committed: `experiments/codex_reachability.py`. Artifacts
+force-added (runs/ is gitignored): `runs/local/codex_reachability_20260723T114225Z/
+summary.json` + 5 raw codex transcripts under `.../transcripts/`.
+
+**Ship.** Direct-to-main: evidence-gathering + a new experiment harness + LOG/STATE/
+BACKLOG. NO scoring semantics changed (no regex change — the run's finding is that
+v0.6 is SUFFICIENT for every observed refusal; scoring.py/`_ENV_BLOCK_RE`
+byte-for-byte unchanged, full suite 60/60 green pre-commit).
+
+**Next hypothesis.** The cross-model N-curve cannot advance until codex can reach a
+storefront. Highest-value next TRUTH step is to BUILD the control-storefront /
+pre-fetched-content attribution fix (feed codex the statically-fetched homepage +
+docs when its browser gate fires, mark the run `assisted`, and keep it OUT of the
+unassisted reachability denominator) — design in-cloud from these committed
+transcripts, execute `[LOCAL]`. Separately, COVERAGE's second `cross_task_spread`
+datapoint no longer needs codex (claude reaches both domains), so it stays runnable.

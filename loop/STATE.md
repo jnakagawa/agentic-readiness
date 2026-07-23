@@ -5,7 +5,9 @@
 - Focus pointer: READOUT (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
-  Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH; next cycle takes READOUT.)
+  Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
+  pinning) + local fire 11:42Z TRUTH (codex reachability investigation, ran
+  concurrently); next cycle takes READOUT.)
 - Rubric: **v0.6 on main** (PR #2 MERGED 2026-07-23T~09:47Z, merge commit 8fe9f46,
   clean fast-forward). v0.6 broadens the env-block classifier to recognize
   "safety"-phrased hosted-browser refusals (aggregation rule → version bump).
@@ -92,10 +94,13 @@
   scoring.py/static path untouched → static delta cannot move). The 10:13Z local
   cycle re-confirmed the delta LIVE on the v0.6 PR branch as the merge-gate
   re-score (46.1 F / 85.5 B, +39.4; reports now embed rubric "0.6", version bump
-  propagates). RUNNER HEALTH
-  (Cycle 10, 10:12Z): **RUNNER DOWN.** Newest verify artifact is STILL
-  verify_20260723T040714Z (04:07Z) — now **~6h05m old, PAST the 6h threshold**;
-  no :41 artifact at 05/06/07/08/09/10. The local `local_verify.py` runner
+  propagates). RE-CONFIRMED AGAIN LIVE 2026-07-23T11:50Z (local fire, both HTTP
+  200): 46.1 F / 85.5 B, delta **+39.4** on rubric v0.6 — the codex-reachability
+  experiment touched no scoring code, so the delta is unchanged by construction AND
+  measured; doubles as a fresh live signal while the runner is down. RUNNER HEALTH
+  (11:42Z, re-confirmed): **STILL DOWN.** Newest verify artifact is
+  verify_20260723T040757Z (04:07Z, rubric 0.5) — now **~7.7h old, well past the 6h
+  threshold**; no :41 artifact 05:00–11:00Z. The local `local_verify.py` runner
   (launchd, hourly :41 on Jonah's machine) appears stopped. To be flagged in the
   next Slack daily digest (first cycle after 16:00 UTC) per the comms policy — the
   next live canonical re-score signal depends on it or on a manual local fire.
@@ -185,11 +190,25 @@ web host (403 "policy denial"). Confirmed 2026-07-23 via `asrs.fetch` and
   UPDATE (10:13Z battery run): on drift-flight.org codex was safety-blocked on
   trial 1 ("rejected by the browser's site-safety policy") but REACHED normally on
   trial 2 (found product + price) — so the reputation gate is NON-DETERMINISTIC
-  per-trial, not a hard per-domain block. The merged v0.6 classifier correctly
-  excluded the blocked trial (routed to reachability). Still missing for the harder
-  test-#8 case: a committed FULL transcript of a SEMANTIC reputation-gate refusal
-  ("flagged as unsafe" / "unable to browse", which lack the browser-{security,
-  safety} vocabulary).
+  per-trial, not a hard per-domain block.
+  CHARACTERIZED (11:42Z local fire, `experiments/codex_reachability.py`, 5 codex
+  invocations, all domains HTTP 200): codex refused **4/4 canonical trials** (both
+  domains ×2), every refusal a REPUTATION gate keyed on domain age (.com 7d / .org
+  3d) + absent footprint but ALWAYS surfaced with browser-{safety,security}
+  vocabulary. **v0.6 caught 4/4** (`_is_env_blocked` True → routed to reachability,
+  none mis-scored as FAIL) — first LIVE validation of the v0.6 broadening on FRESH
+  transcripts. **Reputable control example.com was NOT blocked** (browser works,
+  correctly reported "no storefront") → the canonical refusals are codex's own
+  reputation gate, not a broken browser. NO pure semantic-reputation phrasing
+  ("flagged as unsafe"/"unable to browse" WITHOUT browser-safety words) was captured
+  → test #8 stays an open spec, and NO regex broadening is warranted (v0.6 is
+  sufficient for every observed refusal; broadening blindly would risk excusing real
+  site blocks). The gate is now CLOSED on BOTH canonical domains this fire (was
+  per-trial-open at 10:13Z → time-varying, currently fully gated). Evidence:
+  `runs/local/codex_reachability_20260723T114225Z/{summary.json,transcripts/}`.
+  Still missing for the harder test-#8 case: a committed FULL transcript of a
+  SEMANTIC reputation-gate refusal that lacks the browser-{security,safety}
+  vocabulary — none observed yet across all live fires.
 - Panel verdict variance: EMPIRICAL question — what trial count N drives
   `verdict_stability` above ~0.8 on the canonical pair — got its first LIVE
   datapoint (07:50Z fire, drift-flight.org). ANSWER (claude-only, codex fully
@@ -198,7 +217,12 @@ web host (403 "policy denial"). Confirmed 2026-07-23 via `asrs.fetch` and
   quotability code on real panel data for the first time. STILL OPEN: the
   CROSS-MODEL agreement question is unmeasured — codex never reached the site, so
   this is single-model reproducibility only. It is now GATED on codex
-  reachability (the control-storefront/pre-fetched-content fix). Cost still holds:
+  reachability (the control-storefront/pre-fetched-content fix) — RE-CONFIRMED
+  blocked at 11:42Z: codex gated on BOTH canonical domains (4/4), so no cross-model
+  panel can be run on either right now. The 11:42Z example.com control PROVES the
+  fix's premise — codex's browser works on a reputable domain, so the variable is
+  domain reputation, addressable by a reputable agent-native control storefront or
+  marked-assisted pre-fetched content. Cost still holds:
   `SHOPPER_TIMEOUT_S=300`/trial; the nested first-N subsample design
   (`experiments/trial_count_N.py`) gets the whole N-curve from ONE 5-trial run
   (~5 codex + 5 claude), not 2+3+5 separate runs — reuse it for the next domain.

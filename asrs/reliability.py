@@ -84,6 +84,101 @@ class PanelReliability:
         return asdict(self)
 
 
+@dataclass
+class Quotability:
+    """Is the report's quoted number safe to CITE, given how the evidence held up?
+
+    A companion readout to :class:`PanelReliability`. Reliability measures *how*
+    reproducible the panel is; quotability turns that into the one bit a reader
+    actually needs before citing a headline number: reproducible, or provisional.
+
+    Display-only (never a score gate). The overall score itself is unchanged in
+    every case — this only annotates whether that number is quotable yet. The
+    honest states, in words a card can print:
+      - ``reproducible`` — a multi-trial panel that agreed; cite it.
+      - ``provisional-single-trial`` — one valid draw; reproducibility unmeasured
+        (the observed same-day refuse<->warn flip is exactly this risk).
+      - ``provisional-unstable`` — a multi-trial panel whose runs disagreed; the
+        number is a point estimate over a flipping distribution.
+      - ``behavioral-unobserved`` — ``--behavioral`` was asked for but every run
+        was env-blocked/failed, so the behavioral pillars rest on nothing; the
+        behavioral dimension is not quotable (the static floor is not judged here).
+      - ``static-deterministic`` — no behavioral panel; the score is static
+        probes only, reproducible by construction; quotable.
+      - ``not-scorable`` — no observable pillar; there is no number to quote.
+    """
+
+    quotable: bool
+    tag: str
+    reason: str
+    # Carried through when a multi-trial panel ran, else None (single/no panel).
+    verdict_stability: float | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+def quotability(report: Any) -> Quotability:
+    """Classify whether ``report``'s headline number is reproducible enough to cite.
+
+    Duck-typed over the Report (``overall_score``, ``scored``, ``behavioral_runs``)
+    so :mod:`asrs.reliability` stays free of a scoring/report import. Pure over the
+    already-collected runs — reads state, never a network or the score itself.
+    """
+    scored = getattr(report, "scored", True) and getattr(report, "overall_score", None) is not None
+    if not scored:
+        return Quotability(
+            quotable=False,
+            tag="not-scorable",
+            reason="No observable pillar — there is no number to quote.",
+        )
+
+    runs = list(getattr(report, "behavioral_runs", None) or [])
+    if not runs:
+        # No panel ran: the overall rests on deterministic static probes, which
+        # reproduce by construction. Quotable — and NOT flagged provisional.
+        return Quotability(
+            quotable=True,
+            tag="static-deterministic",
+            reason="Static score — deterministic probes, no panel variance to reproduce.",
+        )
+
+    rel = panel_reliability(runs)
+    if rel.valid_runs == 0:
+        # --behavioral was requested but nothing observed the site (all runs
+        # env-blocked/failed). Attribution honesty: this judges only the
+        # behavioral dimension, NOT the static floor the overall degrades to.
+        return Quotability(
+            quotable=False,
+            tag="behavioral-unobserved",
+            reason="Behavioral panel produced no valid run — the behavioral "
+            "dimension was not observed (all runs env-blocked or failed).",
+        )
+    if rel.single_trial:
+        return Quotability(
+            quotable=False,
+            tag="provisional-single-trial",
+            reason="Single valid trial — reproducibility unmeasured; re-run with "
+            "--trials>=2 before quoting the behavioral number.",
+        )
+    if rel.verdict_stability is not None and rel.verdict_stability < _STABLE_MIN:
+        return Quotability(
+            quotable=False,
+            tag="provisional-unstable",
+            reason=f"Panel unstable (verdict stability {rel.verdict_stability:.2f} "
+            f"< {_STABLE_MIN:.2f}) — the runs disagree, so the number is a point "
+            "estimate over a flipping distribution.",
+            verdict_stability=rel.verdict_stability,
+        )
+    return Quotability(
+        quotable=True,
+        tag="reproducible",
+        reason=f"Panel reproduces (verdict stability {rel.verdict_stability:.2f}) "
+        f"over {rel.valid_runs} valid runs.",
+        verdict_stability=rel.verdict_stability,
+    )
+
+
 def _valid_runs(runs: list[BehavioralRun]) -> list[BehavioralRun]:
     """Runs that observed the site: a parsed verdict AND not env-blocked.
 

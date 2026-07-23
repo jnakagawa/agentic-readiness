@@ -51,15 +51,6 @@ design in-cloud, execute locally.
   from the v0 notes (feed codex pre-fetched content when its browser is
   gated, marked as assisted). Repro matrix is `[LOCAL]`; analysis + design
   in-cloud from committed transcripts.
-- **trials ≥ 2 + variance readout** (METHOD): make multi-trial the scored
-  default for anything quoted. The verdict-stability metric itself SHIPPED
-  Cycle 3 (`asrs/reliability.py`: `verdict_stability`, `flip_rate`,
-  `flipped_checkpoints`, `trust_event_agreement`; rendered in the report card).
-  Remaining METHOD work: default `--trials` to ≥2 in behavioral mode and gate
-  the QUOTABILITY of a single number on `verdict_stability`/`single_trial` (a
-  readout-level "provisional (single trial)" tag, NOT a score change). Observed
-  same-day refuse↔warn flip at equal confidence — a single trial is not quotable.
-
 - **[LOCAL] What trial count N stabilizes the panel** (TRUTH/METHOD, Cycle 3
   follow-up): the reliability metric now quantifies flips, but the empirical
   answer to "what N drives `verdict_stability` above ~0.8" needs real multi-trial
@@ -90,6 +81,14 @@ design in-cloud, execute locally.
   strengthening without losing capability substance.
 
 ## P2
+
+- **Quotability on the JSON/HTML card** (READOUT, Cycle 5 follow-up): the
+  quotability gate (`asrs.reliability.quotability`) ships terminal-only. Attach
+  it to `Report` as an additive field (populate in `cli._evaluate` from the same
+  function) and render a CITABLE/PROVISIONAL pill on the HTML scorecard — exactly
+  the Cycle-3→4 reliability pattern (`scorecard._reliability` is the template).
+  Additive, no version bump; so a leaderboard consumer sees "is this citable?"
+  next to the number, not only a terminal a human ran once.
 
 - **Evidence links on the card** (READOUT): each check row links to its
   evidence blob; publish evidence alongside the hosted card.

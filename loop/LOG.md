@@ -270,3 +270,87 @@ score change). Open [LOCAL] science question unchanged: what trial count N drive
 `verdict_stability` above ~0.8 on the canonical pair. Battery attach remains
 queued behind `--battery` wiring (COVERAGE, partially in-cloud testable with a
 synthetic panel).
+
+## Cycle 5 — 2026-07-23T05:20Z — METHOD (direct to main)
+
+**What.** A quotability gate: a display-only readout that tells a reader, in one
+bit, whether a Report's headline number is safe to CITE or only PROVISIONAL,
+and defaulted behavioral `--trials` to 2 so a quoted behavioral number is
+reproducibility-checked by default instead of a single draw. New pure function
+`asrs.reliability.quotability(report)` -> `Quotability(quotable, tag, reason,
+verdict_stability)`, classifying six honest states over the runs the score
+already used: `static-deterministic` (no panel -> reproducible by construction ->
+CITABLE), `reproducible` (multi-trial panel agreed -> CITABLE), `provisional-
+single-trial` (one valid draw -> reproducibility unmeasured), `provisional-
+unstable` (multi-trial panel whose runs disagree, `verdict_stability` < 0.8),
+`behavioral-unobserved` (`--behavioral` asked but every run env-blocked/failed),
+`not-scorable` (no observable pillar -> no number to quote). Surfaced as one
+`QUOTABILITY:` line under the OVERALL header in the terminal card
+(`report._quotability_lines`). `--trials` default 1 -> 2.
+
+**Why (METHOD).** The Cycle-3/4 reliability metric made verdict flips *visible*
+but left the interpretation to the reader: a card could print a high delta next
+to a stability of 0.0 and still read as authoritative. This operationalizes the
+loop's own finding — the observed same-day refuse<->warn flip at equal
+confidence proves a single trial is not quotable — into a verdict the readout
+states itself. "Multi-trial the scored default for anything quoted" (backlog
+METHOD item) is now the literal default: a bare `--behavioral` run collects 2
+trials, and if it still can't reproduce, the number self-flags PROVISIONAL. This
+is the honest gate between "we measured it once" and "cite this."
+
+**Invariant discipline.** NOT a scoring-semantics change -> NO version bump,
+direct-to-main. `git diff --stat asrs/scoring.py rubric/` is EMPTY (byte-for-
+byte); `types.py` untouched. Quotability does NOT feed the score — `render`
+shows the SAME `overall_score`, asserted unchanged in-test. Vendor-neutral: pure
+arithmetic over checkpoint booleans + panel counts, no domain/brand string.
+$0-only preserved: `--trials 2` repeats ONLY the read-only shopper panel; the
+free-tier transaction probe still runs at most ONCE per scoring run (it sits
+outside the trials loop in `cli._run_behavioral`; help text now says so
+explicitly). Attribution honesty: a static-only score is `static-deterministic`
+(CITABLE, never flagged), and an all-env-blocked panel is scoped to
+`behavioral-unobserved` — it judges the behavioral dimension, NOT the static
+floor the overall degrades to; a not-scorable report prints no quotability line.
+Terminal-only this cycle (mirrors the Cycle-3 reliability pattern: metric +
+terminal card first, JSON/HTML attach next READOUT cycle) — JSON `to_json()`
+byte-identical, so the local-verify artifact contract is unchanged.
+
+**Scope.** `asrs/reliability.py` (+`Quotability` dataclass + `quotability()`),
+`asrs/report.py` (`_quotability_lines`, one line under the header),
+`asrs/cli.py` (`--trials` default 1->2 + help text), `tests/test_quotability.py`
+(new, 8 tests). 3 source files + 1 test; scoring.py/rubric/types.py/scorecard.py
+UNCHANGED.
+
+**Evidence.**
+- Full suite GREEN 42/42: test_quotability 8/8, test_readout 5/5,
+  test_reliability 8/8, test_battery 6/6, test_scoring 7/7, test_free_tier 8/8
+  (free_tier needs `pip install -r requirements.txt` — `eth-account` absent in
+  the fresh cloud container, the same pre-existing env gap logged Cycles 3-4).
+- Render smoke (LOG evidence): a static B report prints "QUOTABILITY: CITABLE
+  (static-deterministic)" beside an unchanged "OVERALL 85.5/100"; a single-trial
+  behavioral report prints "QUOTABILITY: PROVISIONAL (provisional-single-trial)
+  … re-run with --trials>=2"; a two-run disagreeing panel prints "PROVISIONAL
+  (provisional-unstable) — verdict stability 0.00 < 0.80".
+- test_quotability pins: static -> CITABLE/no stability; not-scorable -> no
+  QUOTABILITY line in the card; 1 valid run -> provisional-single-trial with the
+  --trials>=2 pointer; 2 disagreeing runs -> provisional-unstable carrying
+  stability 0.0; 2 agreeing runs -> reproducible carrying 1.0; all-env-blocked ->
+  behavioral-unobserved scoped to the behavioral dimension; overall score
+  byte-unchanged in the rendered card; CLI `--trials` default parses to 2.
+
+**Canonical pair (regression signal).** UNCHANGED by construction: scoring.py,
+rubric, and types.py are byte-for-byte untouched, so no domain's overall/pillar/
+delta can move. LIVE signal from the freshest local-verify artifact
+(runs/local/verify_20260723T040757Z.json, ~1h old at cycle time — runner
+healthy): drift-flight.org 46.1 F vs driftflight.com 85.5 B, delta +39.4 —
+matching the by-construction expectation of no movement (both re-scored static:
+outcome pillar None on each, so both read `static-deterministic` / CITABLE, and
+the delta is unaffected). Live in-cloud re-score remains BLOCKED (network policy);
+`[LOCAL]` re-score stays queued.
+
+**Next hypothesis (COVERAGE is next in rotation).** With quotability + trials>=2
+default landed, the outstanding METHOD `[LOCAL]` question is empirical: what
+trial count N drives `verdict_stability` >= 0.8 on the canonical pair (queued).
+COVERAGE next: the `--battery` wiring (synthetic-panel testable in-cloud) is the
+oldest COVERAGE follow-up and would let a per-task quotability/reliability grid
+travel with the score — the natural COVERAGE companion to this cycle's METHOD
+gate.

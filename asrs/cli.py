@@ -236,8 +236,11 @@ def _add_common_options(p) -> None:
         help="shopper task prompt (behavioral mode)",
     )
     p.add_argument(
-        "--trials", type=int, default=1,
-        help="shopper trials per model (behavioral mode)",
+        "--trials", type=int, default=2,
+        help="shopper trials per model (behavioral mode); default 2 so a quoted "
+        "number is reproducibility-checked, not a single draw. The free-tier "
+        "transaction probe still runs at most ONCE per scoring run regardless "
+        "(invariant #1) — only the read-only shopper panel repeats.",
     )
     p.add_argument(
         "--models", default="claude,codex",

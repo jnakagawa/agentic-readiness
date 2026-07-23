@@ -1,10 +1,10 @@
 # Loop state
 
-- Cycle counter: 4
+- Cycle counter: 5
 - Started: 2026-07-23 (UTC)
-- Focus pointer: METHOD (rotate METHOD → COVERAGE → TRUTH → READOUT)
-  (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT; next
-  cycle takes METHOD.)
+- Focus pointer: COVERAGE (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
+  Cycle 5 METHOD; next cycle takes COVERAGE.)
 - Rubric: v0.5 on main (PR #1 merged 2026-07-23 via the Cycle-2 peer-gate).
   UNCHANGED by Cycles 2–4 (task battery, panel-reliability, and the reliability
   readout-surfacing are diagnostic layers over already-collected runs, not
@@ -17,9 +17,19 @@
   (additive `panel_reliability` field, populated in `cli._evaluate`) and the HTML
   scorecard (`scorecard._reliability`, both layouts). Reproducibility now travels
   with the score everywhere it goes.
+- Quotability gate (Cycle 5, METHOD): `asrs.reliability.quotability(report)` ->
+  `Quotability(quotable, tag, reason, verdict_stability)` classifies whether the
+  headline number is CITABLE or PROVISIONAL (static-deterministic / reproducible /
+  provisional-single-trial / provisional-unstable / behavioral-unobserved /
+  not-scorable). Surfaced as one `QUOTABILITY:` line under OVERALL in the terminal
+  card (`report._quotability_lines`). `--trials` default 1 -> 2 (multi-trial by
+  default; free-tier probe still runs once). Terminal-only so far; JSON/HTML
+  attach is the natural next READOUT step (mirrors the reliability Cycle-3 -> 4
+  pattern). NOT a scoring-semantics change — no version bump, scoring.py/rubric/
+  types.py byte-for-byte unchanged.
 - Canonical pair (freshest local-verify artifact verify_20260723T040757Z.json):
   drift-flight.org 46.1 F vs driftflight.com 85.5 B — delta +39.4. Runner
-  healthy (~7 min old at Cycle 4). Loop-start behavioral baseline was +40.6.
+  healthy (~1h old at Cycle 5). Loop-start behavioral baseline was +40.6.
 - Open PRs: none. PR #1 (Cycle 1 v0.5 NOT-SCORABLE fix) merged 2026-07-23.
   Its [LOCAL] merge-time canonical re-score verification stays queued in
   BACKLOG until a networked operator records it (cloud env can't re-score).

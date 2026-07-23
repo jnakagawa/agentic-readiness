@@ -128,6 +128,10 @@ def render(report) -> str:
     lines.append(
         f"  rubric v{report.rubric_version}   {report.generated_at}"
     )
+    # -- quotability: is the headline number reproducible enough to cite? --
+    # Display-only annotation (never a score gate); makes a single-trial or
+    # unstable panel self-flag as provisional right next to the number it taints.
+    lines.extend(_quotability_lines(report))
     lines.append(_rule("="))
 
     # -- caps --
@@ -201,6 +205,23 @@ def render(report) -> str:
 
     lines.append("")
     return "\n".join(lines)
+
+
+def _quotability_lines(report) -> list[str]:
+    """One-line 'is this number quotable?' verdict under the header.
+
+    Reads the same runs the score used; the classification lives in
+    :mod:`asrs.reliability`. Prints nothing for a not-scorable report — that
+    header already says NOT SCORABLE, and a second 'no number to quote' line
+    would be noise.
+    """
+    from .reliability import quotability  # lazy: keep report import light
+
+    q = quotability(report)
+    if q.tag == "not-scorable":
+        return []
+    tag = "CITABLE" if q.quotable else "PROVISIONAL"
+    return [f"  QUOTABILITY: {tag} ({q.tag}) — {q.reason}"]
 
 
 def _reliability_lines(runs) -> list[str]:

@@ -197,9 +197,50 @@ def render(report) -> str:
         lines.append("")
         lines.append("  BEHAVIORAL CHECKPOINTS")
         lines.extend(_behavioral_table(report.behavioral_runs))
+        lines.extend(_reliability_lines(report.behavioral_runs))
 
     lines.append("")
     return "\n".join(lines)
+
+
+def _reliability_lines(runs) -> list[str]:
+    """Within-panel verdict reproducibility over the valid shopper runs.
+
+    A diagnostic view, not a score input: how much did the panel's runs agree
+    when pointed at the same task? A high-delta number built on runs that flip
+    between trials is overstated confidence, and this section makes that visible.
+    Rendered from the same runs; the pure metric lives in :mod:`asrs.reliability`.
+    """
+    from .reliability import panel_reliability  # lazy: keep report import light
+
+    rel = panel_reliability(runs)
+    out = ["", "  PANEL RELIABILITY (do the runs reproduce on the same task?)"]
+    if rel.single_trial:
+        if rel.valid_runs == 0:
+            out.append("    no valid runs — nothing observed to assess.")
+        else:
+            out.append(
+                "    single trial (1 valid run) — reproducibility NOT assessed; "
+                "re-run with --trials>=2 to quote."
+            )
+        return out
+
+    out.append(
+        f"    verdict stability {rel.verdict_stability:.2f} ({rel.label}) over "
+        f"{rel.valid_runs} valid runs   [1.0 = every run agreed]"
+    )
+    if rel.flipped_checkpoints:
+        out.append(
+            "    flipped between runs: " + ", ".join(rel.flipped_checkpoints)
+        )
+    else:
+        out.append("    all checkpoints unanimous across runs.")
+    if rel.trust_events_unanimous is False:
+        out.append(
+            f"    trust signal flipped (agreement {rel.trust_event_agreement:.2f}) "
+            "— some runs raised a trust concern, others did not."
+        )
+    return out
 
 
 def _behavioral_table(runs) -> list[str]:

@@ -123,3 +123,70 @@ live (unreachable domain now reports NOT SCORABLE instead of 0.0/F).
 Refutation attempts: vendor-neutrality (clean — no domain named), attribution
 honesty (this IS the invariant, aggregate level), version discipline (v0.5
 bump + dated changelog present). Merged.
+
+## Cycle 3 — 2026-07-23T03:16Z — TRUTH (direct to main)
+
+**What.** Within-panel verdict-stability metric: `asrs/reliability.py`
+(`panel_reliability(runs) -> PanelReliability`) + `tests/test_reliability.py`
+(8 tests) + a PANEL RELIABILITY section in `report.render`. Over the VALID
+shopper runs for one task (all model x trial draws that observed the site), it
+computes per-checkpoint agreement (`max(pass, n-pass)/n`), a headline
+`verdict_stability = 1 - 2*mean(minority_fraction)` in [0,1], the list of
+`flipped_checkpoints`, `flip_rate`, and a separate `trust_event_agreement`
+(the refuse/warn <-> clean flip). < 2 valid runs -> `single_trial`, all metrics
+None, label `single-trial`/`no-signal` — the honest "not quotable yet" state.
+
+**Why (TRUTH).** The open question in STATE: a same-day codex trust verdict
+flipped refuse(0.97) <-> warn(0.97), and checkpoints can pass one trial and fail
+the next. When the valid runs disagree, the aggregate the overall score quotes
+is a point estimate over an unstable distribution and a single-trial number
+overstates its own confidence. This makes reproducibility a first-class, visible
+readout: does the panel say the same thing when you just run it again? It is the
+WITHIN-PANEL complement to Cycle 2's CROSS-TASK battery spread — battery asks
+"does readiness depend on the intent", reliability asks "does it reproduce on the
+same intent". Directly serves "does the score predict what an agent experiences".
+
+**Invariant discipline (mirrors Cycle 2 battery).** Rubric UNCHANGED — adds NO
+check, weight, or cap and does NOT feed the overall score; a diagnostic layer
+over the `BehavioralRun` records the panel already emits, so NO version bump and
+direct-to-main. "Valid run" is imported from `asrs.behavioral.shopper`
+(`_is_env_blocked`, `_CHECKPOINT_KEYS`) — single source of truth, so reliability
+and the per-task score never diverge on what observed the site (env-blocked +
+failed runs excluded identically). Vendor-neutral: no domain/brand string
+anywhere; metric is pure arithmetic over checkpoint booleans. $0-only / free-tier
+path untouched (consumes already-collected runs). Display-only render change.
+
+**Scope.** `asrs/reliability.py` (new), `tests/test_reliability.py` (new),
+`asrs/report.py` (render: new `_reliability_lines`, called after the behavioral
+table). scoring.py / rubric_v0.yaml / types.py / cli.py / scorecard.py
+byte-for-byte UNCHANGED (`git diff --stat` empty for all five).
+
+**Evidence.**
+- Full suite GREEN: test_scoring 7/7, test_free_tier 8/8, test_battery 6/6,
+  test_reliability 8/8 (29/29). (free_tier needed `pip install -r
+  requirements.txt` — `eth-account` absent in the fresh cloud container; a
+  pre-existing env gap, not this change: 7/8 on clean main before install too.)
+- Math pinned in-test: 2 unanimous runs -> stability 1.0 / flip_rate 0; one
+  split checkpoint (1/2) -> stability 0.8, that checkpoint in `flipped_checkpoints`
+  (ladder order); all-5-split -> 0.0; 3-run 2-split -> 0.733 "mixed"; trust flip
+  is a SEPARATE dimension (checkpoints unanimous -> stability still 1.0);
+  env-blocked + failed runs excluded from the valid denominator (mirrors shopper).
+- Render smoke: a 2-run panel with one checkpoint + the trust signal flipping
+  renders "verdict stability 0.80 (stable)", "flipped between runs:
+  machine_payable_path", "trust signal flipped (agreement 0.50)".
+
+**Canonical pair (regression signal).** UNCHANGED by construction, not merely
+unmeasured: the scoring path (scoring.py, rubric, types.py, cli.py, scorecard.py)
+is byte-for-byte untouched this cycle, so no domain's overall/pillars/delta can
+move. Live in-cloud re-score remains BLOCKED (agent proxy denies external
+CONNECT, STATE network policy); last known static-equivalent delta +40.6, live
+re-score queued [LOCAL].
+
+**Next hypothesis (READOUT is next in rotation).** Reliability is computed only
+in `render` today — the JSON Report and the HTML scorecard don't carry it.
+Next READOUT cycle: attach `PanelReliability` (and the Cycle-2 `BatterySummary`)
+to `Report` as additive fields and surface a reliability row on the HTML card,
+so JSON/leaderboard consumers see reproducibility, not just the terminal. Still
+additive, no version bump. Open science question for a [LOCAL] run: what trial
+count N drives `verdict_stability` above ~0.8 on the canonical pair — the
+empirical answer to "what N stabilizes it".

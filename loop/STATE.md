@@ -1,14 +1,17 @@
 # Loop state
 
-- Cycle counter: 2
+- Cycle counter: 3
 - Started: 2026-07-23 (UTC)
-- Focus pointer: TRUTH (rotate METHOD → COVERAGE → TRUTH → READOUT)
-  (Cycle 1 METHOD, Cycle 2 COVERAGE; next cycle takes TRUTH.)
+- Focus pointer: READOUT (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH; next cycle takes READOUT.)
 - Rubric: v0.5 on main (PR #1 merged 2026-07-23 via the Cycle-2 peer-gate).
-  UNCHANGED by Cycle 2 (task battery is a diagnostic layer, not a
-  scoring-semantics change).
+  UNCHANGED by Cycles 2–3 (task battery and panel-reliability are diagnostic
+  layers over already-collected runs, not scoring-semantics changes).
 - Task battery: format + aggregation landed on main (Cycle 2). `--battery` CLI
   wiring + behavioral execution queued [LOCAL] in BACKLOG.
+- Panel reliability: `asrs/reliability.py` (within-panel verdict-stability) +
+  render section landed on main (Cycle 3). Not yet attached to the JSON Report
+  or HTML scorecard — queued as the next READOUT cycle in BACKLOG.
 - Canonical pair at loop start (behavioral, reports T233804/T235048):
   drift-flight.org 45.7 F vs driftflight.com 86.3 B — delta +40.6
 - Open PRs: none. PR #1 (Cycle 1 v0.5 NOT-SCORABLE fix) merged 2026-07-23.
@@ -43,4 +46,8 @@ web host (403 "policy denial"). Confirmed 2026-07-23 via `asrs.fetch` and
   on 2026-07-22; drift-flight.org unaffected in the same invocation, then
   blocked in a later one). Root cause + attribution control needed.
 - Panel verdict variance: codex trust verdict flipped refuse(0.97) ↔
-  warn(0.97) on the .org between same-day runs. What N stabilizes it?
+  warn(0.97) on the .org between same-day runs. Cycle 3 shipped the METRIC
+  (`asrs/reliability.py` `verdict_stability` / `trust_event_agreement`) that
+  makes the flip visible; the EMPIRICAL question — what trial count N drives
+  `verdict_stability` above ~0.8 on the canonical pair — needs a [LOCAL]
+  multi-trial run (queued in BACKLOG).

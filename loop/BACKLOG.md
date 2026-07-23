@@ -49,9 +49,38 @@ design in-cloud, execute locally.
   gated, marked as assisted). Repro matrix is `[LOCAL]`; analysis + design
   in-cloud from committed transcripts.
 - **trials ≥ 2 + variance readout** (METHOD): make multi-trial the scored
-  default for anything quoted; verdict-stability metric (flip rate) on the
-  card. Observed same-day refuse↔warn flip at equal confidence — a single
-  trial is not quotable.
+  default for anything quoted. The verdict-stability metric itself SHIPPED
+  Cycle 3 (`asrs/reliability.py`: `verdict_stability`, `flip_rate`,
+  `flipped_checkpoints`, `trust_event_agreement`; rendered in the report card).
+  Remaining METHOD work: default `--trials` to ≥2 in behavioral mode and gate
+  the QUOTABILITY of a single number on `verdict_stability`/`single_trial` (a
+  readout-level "provisional (single trial)" tag, NOT a score change). Observed
+  same-day refuse↔warn flip at equal confidence — a single trial is not quotable.
+
+- **Surface reliability + battery in JSON/HTML** (READOUT, Cycle 3 follow-up):
+  `panel_reliability` is computed only in `report.render` today; the JSON
+  `Report` and the HTML scorecard carry neither it nor Cycle 2's
+  `BatterySummary`. Attach both to `Report` as NEW additive fields (like
+  `trust_panel`/`behavioral_runs` — additive, NOT scoring-semantics, NO version
+  bump), populate them in `cli._evaluate`, and render a reliability row on the
+  HTML card. In-cloud testable (synthetic runs; no network). This is the
+  natural next READOUT cycle.
+
+- **[LOCAL] What trial count N stabilizes the panel** (TRUTH/METHOD, Cycle 3
+  follow-up): the reliability metric now quantifies flips, but the empirical
+  answer to "what N drives `verdict_stability` above ~0.8" needs real multi-trial
+  runs. Exact commands (networked machine w/ claude+codex CLIs):
+  ```
+  git checkout main && git pull
+  python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+  for N in 2 3 5; do
+    .venv/bin/python -m asrs score drift-flight.org --behavioral \
+      --models claude,codex --trials $N
+  done
+  # Read the PANEL RELIABILITY section per N; record verdict_stability(N) and
+  # flipped_checkpoints. Report the smallest N with stability >= 0.8 for each
+  # canonical domain. Feeds the "trials >= 2 default" METHOD item above.
+  ```
 
 ## P1
 

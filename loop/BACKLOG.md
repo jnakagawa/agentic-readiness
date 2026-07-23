@@ -5,6 +5,41 @@ design in-cloud, execute locally.
 
 ## P0
 
+- **[OPERATOR DIRECTIVE — Jonah, 2026-07-23] The battery must be
+  OFFERING-RELATIVE, not fixed.** Observed: the current battery judges every
+  site against one static intent list — an image-generation API gets probed
+  with "order a physical good" and its partial completion (40% on the .org
+  run) pollutes the completion means and both spread signals. That measures
+  the battery's mismatch, not the site's readiness. Jonah's requirement:
+  "super flexible and generalized — not specific to this instance."
+  Redesign (COVERAGE + METHOD; the aggregation-semantics part is peer-gated):
+  1. **Relevance discovery**: classify what the storefront CLAIMS to sell
+     from its own surfaces (llms.txt, manifest/catalog, OpenAPI, homepage)
+     into capability archetypes (metered API call, subscription, digital
+     good, physical fulfillment, service booking, data retrieval, ...).
+     Machine evidence required (quoted fields/lines); vendor-neutral.
+  2. **Intent instantiation**: keep a fixed archetype TEMPLATE bank for
+     cross-site comparability, but generate each site's task prompts by
+     parameterizing templates with the DISCOVERED offering ("buy an
+     AI-generated image" for an image API; "order <their product>" for a
+     shop) — no static per-product YAML.
+  3. **NA semantics**: archetypes the site does not claim to serve are NA —
+     excluded from completion means, cross_task_spread, and
+     between_kind_spread. Never penalized, never counted as signal. (Same
+     attribution-honesty invariant as everywhere else, applied to tasks.)
+  4. **Out-of-scope handling (unscored diagnostic, optional)**: when an
+     agent asks for something the site does not sell, does it fail legibly
+     (clear machine-readable decline) or garden-path the agent? Evidence
+     only — a real readiness signal, but do not score it without a
+     separate proposal.
+  5. **Comparability**: every battery readout must name WHICH archetypes
+     were assessed, so numbers compare within-archetype across sites, never
+     as raw means over different task sets.
+  Acceptance: rerun the canonical batteries — driftflight.com shows
+  physical_good = NA (not a completion number) with spreads over claimed
+  archetypes only; a retail storefront shows the inverse. Card and terminal
+  readouts show NA archetypes as "not offered".
+
 <!-- DONE 2026-07-23 (two complementary fires): "[LOCAL] POST-merge live canonical re-score
      for v0.7 (PR #3, MERGED 72a2e5b)" FULLY DISCHARGED.
      (a) SANITY-CHECK HALF — 2026-07-23T15:18Z (Cycle 15, first duty): fresh-context

@@ -2241,3 +2241,7 @@ surface the earned-dominance / observability property on the methodology page's
 FAIL-vs-CANT_TEST section as a worked canonical example. The [LOCAL] items
 (third-control-domain fixture, second cross_task_spread datapoint, query-param
 live wiring) remain queued for a networked fire.
+
+## Local verification — 20260723T234102Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260723T234102Z.json

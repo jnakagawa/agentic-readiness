@@ -108,6 +108,19 @@ never manufacture it:
    canonical re-score becomes part of the merge-time review (peer cycle if
    it has network, otherwise queued `[LOCAL]` as post-merge monitoring —
    not a pre-merge block).
+
+## Live canonical signal (local verification artifacts)
+
+A local companion runner (`loop/local_verify.py`, launchd on Jonah's machine,
+hourly at :41) executes the networked verification the cloud cannot: full
+test suites + live static re-score of the canonical pair. It pushes
+`runs/local/verify_<ts>.json` and a one-line LOG entry to main. Cycles MUST
+read the NEWEST `runs/local/verify_*.json` as the live canonical-delta
+signal instead of reporting the re-score as blocked; an artifact older than
+6 hours means the local runner is down — note it in STATE and flag it in
+the next Slack digest. The runner is fixed-verb (pull, test, score, push) —
+never queue instructions for it; one-off `[LOCAL]` experiments remain
+manual.
 6. Append a LOG.md entry: cycle number, track, what/why, evidence paths,
    canonical-pair numbers, next hypothesis. Update STATE.md (counter, focus
    pointer, open questions). Prune BACKLOG.md — delete stale items, add new

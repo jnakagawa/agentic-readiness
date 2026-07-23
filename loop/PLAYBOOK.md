@@ -4,6 +4,12 @@ This file is the loop's constitution. It is authoritative over the routine
 prompt. One cycle = one fire of the hourly routine. Read STATE.md and
 BACKLOG.md after this file, then run exactly one cycle.
 
+Division of labor: hourly cycles run on Opus and do the improvement work;
+architecture and scoring-semantics decisions land through the human-gated
+PRs, reviewed by Jonah (driving Fable in-session). If a cycle finds itself
+redesigning the rubric's structure rather than improving within it, that is
+a PR + Slack flag, not a cycle ship.
+
 ## North star
 
 Make ASRS the **go-to, scientifically credible benchmark for agentic-commerce

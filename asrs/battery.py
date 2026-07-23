@@ -169,6 +169,17 @@ class BatterySummary:
     # 0.0 = the site behaves identically across every intent; higher = its
     # readiness is intent-dependent. None when < 1 task has signal.
     cross_task_spread: float | None = None
+    # Variance ATTRIBUTABLE to storefront type: the population stddev of the
+    # per-kind mean_completion values across archetypes with signal. Decomposes
+    # the battery-wide cross_task_spread into two named sources — within-type
+    # noise (per_kind[].cross_task_spread) vs between-type SPECIALIZATION (this).
+    # 0.0 = readiness is uniform across storefront types (a generalist); higher
+    # = the site is type-specialized (strong on some archetypes, weak on
+    # others) and an overall number hides it. None when fewer than 2 archetypes
+    # have signal — between-type variance is unobservable with a single type
+    # observed (deliberately None, not a measured-uniform 0.0: attribution
+    # honesty — never report a spread that couldn't be observed).
+    between_kind_spread: float | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -268,6 +279,23 @@ def _per_kind_results(per_task: list[BatteryTaskResult]) -> list[BatteryKindResu
     return out
 
 
+def _between_kind_spread(per_kind: list[BatteryKindResult]) -> float | None:
+    """Reliability spread ATTRIBUTABLE to storefront type.
+
+    Population stddev of the per-kind ``mean_completion`` values over the
+    archetypes that produced signal — the "is this site a generalist or
+    type-specialized?" number. None when fewer than 2 archetypes have signal:
+    with a single storefront type observed, between-type variance is not a
+    measurable property (unlike a within-checkpoint spread over one task, which
+    is a defined 0), so None is the honest reading rather than a 0.0 that would
+    read as "measured uniform across types".
+    """
+    completions = [kr.mean_completion for kr in per_kind if kr.mean_completion is not None]
+    if len(completions) < 2:
+        return None
+    return statistics.pstdev(completions)
+
+
 def aggregate_battery(
     battery: Battery, runs_by_task: dict[str, list[BehavioralRun]]
 ) -> BatterySummary:
@@ -281,6 +309,7 @@ def aggregate_battery(
     """
     per_task = [_task_result(t, runs_by_task.get(t.id, [])) for t in battery.tasks]
     signal = [tr for tr in per_task if tr.has_signal]
+    per_kind = _per_kind_results(per_task)
 
     checkpoint_mean: dict[str, float | None] = {}
     checkpoint_spread: dict[str, float | None] = {}
@@ -307,8 +336,9 @@ def aggregate_battery(
         n_tasks=len(battery.tasks),
         tasks_with_signal=len(signal),
         per_task=per_task,
-        per_kind=_per_kind_results(per_task),
+        per_kind=per_kind,
         checkpoint_mean=checkpoint_mean,
         checkpoint_spread=checkpoint_spread,
         cross_task_spread=cross_task_spread,
+        between_kind_spread=_between_kind_spread(per_kind),
     )

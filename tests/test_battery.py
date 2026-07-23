@@ -156,6 +156,10 @@ def test_no_signal_task() -> None:
     # Cross-task stats computed over the ONE signal task -> spread 0.
     _check(summ.checkpoint_mean["found_product"] == 1.0, "mean over signal tasks only")
     _check(summ.cross_task_spread == 0.0, "single signal task -> spread 0.0, not crash")
+    # Only one archetype (digital_service) produced signal -> between-kind
+    # spread is unobservable -> None (not a measured-uniform 0.0).
+    _check(summ.between_kind_spread is None,
+           "single signal archetype -> between_kind_spread None (unobservable)")
 
 
 # ---------------------------------------------------------------------------
@@ -242,6 +246,12 @@ def test_per_kind_rollup() -> None:
     # A single signal task in the archetype -> spread 0.0 (no variance yet), not None/crash.
     _check(pg.cross_task_spread == 0.0, f"single-task kind spread 0.0, got {pg.cross_task_spread}")
 
+    # Between-archetype spread decomposes storefront-TYPE specialization:
+    # per-kind completions are digital_service 0.3 vs physical_good 0.0 ->
+    # pstdev([0.3, 0.0]) = 0.15 (mean 0.15, each 0.15 off).
+    _check(abs(summ.between_kind_spread - 0.15) < 1e-9,
+           f"between_kind_spread over 0.3/0.0 archetypes -> 0.15, got {summ.between_kind_spread}")
+
 
 # ---------------------------------------------------------------------------
 # 8. A kind whose only intents had no valid run is reported, never a failure.
@@ -269,6 +279,45 @@ def test_per_kind_no_signal() -> None:
            "per_kind survives to_dict()")
 
 
+# ---------------------------------------------------------------------------
+# 9. Between-archetype spread: the storefront-type specialization signal.
+# ---------------------------------------------------------------------------
+def test_between_kind_spread() -> None:
+    print("test_between_kind_spread")
+    # Three archetypes with DIFFERENT completion levels — a type-specialized
+    # site (aces digital, so-so on data, misses physical).
+    bat = Battery(id="t", description="", tasks=[
+        BatteryTask("t1", "digital_service", "a"),
+        BatteryTask("t2", "data_job", "b"),
+        BatteryTask("t3", "physical_good", "c"),
+    ])
+    runs = {
+        # digital_service: all 5 checkpoints -> mean_completion 1.0
+        "t1": [_run(**{k: True for k in _KEYS}), _run(**{k: True for k in _KEYS})],
+        # data_job: found_product + understood_pricing -> mean_completion 0.4
+        "t2": [_run(found_product=True, understood_pricing=True),
+               _run(found_product=True, understood_pricing=True)],
+        # physical_good: nothing reached -> mean_completion 0.0
+        "t3": [_run(), _run()],
+    }
+    summ = B.aggregate_battery(bat, runs)
+    # per-kind completions 1.0 / 0.4 / 0.0 -> pstdev = 0.4 (mean 0.4666..).
+    import statistics as _stat
+    expected = _stat.pstdev([1.0, 0.4, 0.0])
+    _check(abs(summ.between_kind_spread - expected) < 1e-9,
+           f"between_kind_spread over 1.0/0.4/0.0 archetypes -> {expected:.4f}, got {summ.between_kind_spread}")
+    # Positive and substantial: this site's readiness clearly depends on
+    # storefront type (1.0 vs 0.4 vs 0.0 per archetype).
+    _check(summ.between_kind_spread > 0.3,
+           f"type-specialized site -> sizeable between-archetype spread, got {summ.between_kind_spread}")
+    # Serialization carries the new field.
+    _check("between_kind_spread" in summ.to_dict(), "between_kind_spread survives to_dict()")
+
+    # No signal anywhere -> None (not 0.0).
+    empty = B.aggregate_battery(bat, {})
+    _check(empty.between_kind_spread is None, "no signal -> between_kind_spread None")
+
+
 def main() -> int:
     tests = [
         test_load_default_battery,
@@ -279,6 +328,7 @@ def main() -> int:
         test_missing_task_runs,
         test_per_kind_rollup,
         test_per_kind_no_signal,
+        test_between_kind_spread,
     ]
     failed = 0
     for t in tests:

@@ -257,6 +257,19 @@ def _battery_lines(summary) -> list[str]:
                 detail = f"no signal (0/{kr.get('n_tasks')} intents observed)"
             out.append(f"      {kind:<18} {detail}")
 
+    # Between-archetype spread: how much of the variance is storefront-TYPE
+    # specialization vs within-type noise. Only a number when >=2 archetypes had
+    # signal (you can't observe type-specialization from a single type).
+    bks = summary.get("between_kind_spread")
+    if isinstance(bks, (int, float)):
+        if bks < 0.15:
+            kinterp = "uniform across storefront types (generalist)"
+        elif bks < 0.35:
+            kinterp = "somewhat type-dependent"
+        else:
+            kinterp = "type-specialized — an overall number hides which storefront types work"
+        out.append(f"    between-archetype spread {bks:.2f} — {kinterp}")
+
     spread = summary.get("cross_task_spread")
     if isinstance(spread, (int, float)):
         # 0 = identical across intents; higher = readiness is intent-dependent

@@ -2,6 +2,32 @@
 # The rubric is versioned; every report embeds this version. Scores are only
 # comparable within a rubric version (SSL Labs / Euro NCAP pattern).
 #
+# v0.7 (2026-07-23): commerce-protocol (ACP/UCP) credit on x402_probe now
+#   requires a VALIDATED manifest, not any 200 (credit-gate tightening / partial-
+#   credit rule). The x402_probe partial for a non-x402 commerce surface
+#   (asrs.probes.protocols._commerce_protocol_evidence) previously awarded 4.0
+#   whenever /.well-known/ucp or /.well-known/agentic-commerce returned HTTP 200
+#   with >10 chars of ANY body — a catch-all SPA index or a soft-404 page served
+#   at those paths false-positived as a live commerce rail. v0.7 parses the
+#   response (_parse_commerce_manifest, mirroring _parse_x402): credit is granted
+#   only when the body is a real UCP service/capability manifest (services/
+#   capabilities/payment/endpoints, or reverse-domain dev.ucp.* capability ids)
+#   or an ACP checkout payload (line_items/payment_provider/checkout_session*),
+#   and the finding is relabeled commerce-protocol-live (an ELICITED manifest,
+#   parity in KIND with x402-live) vs the marker tiers commerce-protocol-only
+#   (doc phrase) / commerce-protocol-via-platform (Shopify fingerprint), which
+#   are UNCHANGED. Points ceiling unchanged (still 4.0 partial — the rubric
+#   reserves full x402_probe marks for a live x402 handshake); this only removes
+#   an inflating false positive, so the direction is monotone non-increasing.
+#   Vendor-neutral: keys on protocol manifest STRUCTURE, never a vendor/domain.
+#   Canonical pair UNCHANGED (committed evidence, not just construction):
+#   driftflight.com earns x402-live and never reaches the commerce branch;
+#   drift-flight.org already returns no-agent-native-payment (FAIL 0.0 — it
+#   serves no well-known manifest, so _commerce_protocol_evidence is None today
+#   AND after). The version bump exists because a partial-credit rule changed and
+#   scores must stay comparable within a version; no domain with a genuine
+#   manifest loses credit.
+#
 # v0.6 (2026-07-23): env-block attribution now recognizes 'safety'-phrased
 #   hosted-browser refusals, not only 'security' (aggregation rule / behavioral
 #   only). The environment-block classifier (asrs.behavioral.shopper._ENV_BLOCK_RE,
@@ -91,7 +117,7 @@
 #   cap. New trust_live_session check scores the shopper panel's in-task
 #   trust_events (warnings surfaced while actually working the site).
 # v0.1 (2026-07-22): initial rubric.
-version: "0.6"
+version: "0.7"
 
 # Pillar weights for the overall score. If a pillar is entirely
 # NA/CANT_TEST (e.g. outcome in static-only mode), it is dropped and the
@@ -174,7 +200,8 @@ checks:
     desc: Agent-native payment. Full — a live HTTP 402 handshake with a
       payment-requirements payload (x402/MPP) on the site or its agent
       surface. Partial — x402 documented but not elicited, a 402 without a
-      parseable payload, or an ACP/UCP commerce-protocol surface. This is the
+      parseable payload, or a VALIDATED ACP/UCP commerce-protocol manifest
+      (a well-known manifest that actually parses, not any 200). This is the
       strongest "an agent can act here autonomously" proof in the rubric.
   - id: mcp_surface
     pillar: transactability

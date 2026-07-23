@@ -278,22 +278,87 @@ _COMMERCE_PHRASES = (
     "/checkout_sessions",
 )
 
+# Well-known commerce-manifest paths, and the structural keys each protocol's
+# own published manifest carries. Keyed by the protocol's capability shape,
+# never by a vendor. Grounded in the published specs:
+#   UCP  — /.well-known/ucp declares services/capabilities/payment/endpoints,
+#          capabilities named reverse-domain (e.g. dev.ucp.shopping.checkout)
+#          (developers.googleblog.com "Under the Hood: UCP"; ucp.dev).
+#   ACP  — checkout payload carries line_items/payment_provider/currency+status
+#          (docs.stripe.com/agentic-commerce; developers.openai.com/commerce).
+_COMMERCE_WELL_KNOWN = ("/.well-known/ucp", "/.well-known/agentic-commerce")
+_UCP_MANIFEST_KEYS = frozenset(
+    {"capabilities", "services", "payment", "payments", "endpoints"}
+)
+_ACP_PAYLOAD_KEYS = frozenset(
+    {"line_items", "payment_provider", "checkout_session",
+     "checkout_sessions", "checkout_session_id"}
+)
+
+
+def _parse_commerce_manifest(res: FetchResult) -> dict | None:
+    """Validate that a well-known response is a real commerce-protocol manifest.
+
+    Returns the identifying structural fields (bounded) or None. A well-known
+    path that merely 200s (a catch-all SPA index, a soft-404 page) is NOT a
+    commerce surface; credit requires the response to actually parse as a
+    UCP service/capability manifest or an ACP checkout payload. Mirrors the
+    way ``_parse_x402`` validates a 402 body rather than trusting the status.
+    Keys on protocol structure only — no vendor or domain string.
+    """
+    if not (res.ok and res.status == 200):
+        return None
+    text = (res.text or "").strip()
+    if not text:
+        return None
+    try:
+        data = json.loads(text)
+    except (ValueError, TypeError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    keys_lower = {k.lower() for k in data}
+    protocol: str | None = None
+    matched: list[str] = []
+    if keys_lower & _UCP_MANIFEST_KEYS:
+        protocol, matched = "ucp", sorted(keys_lower & _UCP_MANIFEST_KEYS)
+    elif keys_lower & _ACP_PAYLOAD_KEYS:
+        protocol, matched = "acp", sorted(keys_lower & _ACP_PAYLOAD_KEYS)
+    elif "dev.ucp." in json.dumps(data).lower():
+        # Reverse-domain UCP capability identifiers nested anywhere in the body.
+        protocol, matched = "ucp", ["capabilities"]
+    if protocol is None:
+        return None
+    out: dict = {"protocol": protocol, "fields": matched}
+    for k in data:
+        if k.lower() in ("version", "protocol_version", "ucp_version"):
+            out["version"] = str(data[k])[:40]
+            break
+    out["snippet"] = json.dumps(data)[:300]
+    return out
+
 
 def _commerce_protocol_evidence(
     ctx: FetchContext, home: FetchResult, corpus: str
 ) -> tuple[str, float, dict] | None:
-    """ACP/UCP surface evidence for x402_probe partial credit (v0.3).
+    """ACP/UCP surface evidence for x402_probe partial credit (v0.3, v0.7).
 
     Returns ``(finding, points, evidence)`` or None. For services the 402
     handshake is the commerce protocol; the retail-side protocols earn
     partial credit on the same check instead of their own line.
+
+    v0.7 tightens the well-known branch: a validated commerce manifest earns
+    the partial as ``commerce-protocol-live`` (elicited, like x402-live), while
+    a bare 200 at a well-known path no longer counts (it was a false positive —
+    a catch-all index that 200s /.well-known/ucp is not a commerce surface).
     """
-    for path in ("/.well-known/ucp", "/.well-known/agentic-commerce"):
+    for path in _COMMERCE_WELL_KNOWN:
         res = ctx.get(path, ua="browser")
-        if res.ok and res.status == 200 and len((res.text or "").strip()) > 10:
+        manifest = _parse_commerce_manifest(res)
+        if manifest is not None:
             return (
-                "commerce-protocol-only", 4.0,
-                {"url": res.final_url or res.url},
+                "commerce-protocol-live", 4.0,
+                {"url": res.final_url or res.url, "manifest": manifest},
             )
 
     low = corpus.lower()

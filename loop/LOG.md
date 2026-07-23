@@ -2101,3 +2101,77 @@ multi-kind data — folded into the [LOCAL] second cross_task_spread datapoint (
 ## Local verification — 20260723T214103Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260723T214103Z.json
+
+## Cycle 22 — 2026-07-23T22:12Z — COVERAGE (direct to main)
+
+**What.** Broadened free-tier opt-in DISCOVERY to a second convention: a URL
+**query parameter** (e.g. `?tier=free` / `?mode=free` / `?free=true`), alongside
+the request header the probe already recognized. Added `_scan_query_param_instruction(text)`
+(mirrors `_scan_header_instruction`: a `[?&]name=value` token, gated on nearby
+free-allowance language, skipping a plumbing-param denylist — `api_key`, `page`,
+`token`, `signature`, …; requires an explicit "free" hint in the name or value so
+`?plan=pro` / `?tier=starter` near free prose are never mistaken for an opt-in),
+a new additive `FreeTierDiscovery.opt_in_query: tuple[str,str] | None` field, and
+an `opt_in_query` evidence key. `discover_free_tier` now populates it.
+`tests/test_free_tier.py` +1 test (`test_query_param_optin_discovery`, 8→9):
+extraction (name-hint / value-hint), four negative controls (non-free value,
+plumbing param, denylisted `api_key`, non-free name near free prose), evidence
+surfacing, and the load-bearing SCORE-NEUTRALITY assertions.
+
+**Why (COVERAGE).** Real agent-native storefronts advertise the free tier by
+query param, not only by header; such a site currently discovers as
+"opt-in-undiscoverable" (a soft site-defect nudge) even though it DID document a
+machine-usable opt-in — a false negative in measurement coverage, on the
+north-star "many conventions / many rails" axis. This cycle lands the DISCOVERY
++ evidence-recording half in-cloud (recognizing and reporting the convention);
+acting on it (the live free-mode call + folding it into `advertised`) is
+score-INCREASING and must be verified live on ≥2 real domains per invariant #3 —
+queued `[LOCAL]`.
+
+**Invariants / ship class.** DELIBERATELY SCORE-NEUTRAL by construction: the new
+field is recorded but is NOT part of the `advertised` gate and is NOT consumed by
+the live-call path, so no behavioral outcome can move on its account. Pinned by
+test — a query-param opt-in with no header and no manifest units keeps
+`advertised=False`, and adding a `?tier=free` line to the header-based fixture
+leaves `advertised` identical. NOT signing/payment code: the diff is confined to
+the discovery region (constants + `FreeTierDiscovery` + `discover_free_tier` +
+the new scanner); `parse_challenge`, the settle/sign path, amount handling, and
+the nonzero-refusal safety property are byte-for-byte untouched (sentinel grep:
+no added line touches any sign/settle/amount/authorize symbol; the only "sign"
+hits are the word "signal", the denylisted param name "signature", and a
+docstring). No scoring semantics, no version bump → rubric stays **v0.7**;
+additive discovery capability that doesn't change scoring → direct-to-main tier.
+$0-only intact (no network, no payment path exercised). Diff is 2 files.
+
+**Tests.** Full suite green, 12/12 files: attribution 9, battery 9,
+battery_wiring 4, canonical_replay 7, fetch_replay 3, **free_tier 9** (was 8,
++query-param discovery; eth-account installed), protocols 7, quotability 8,
+readout 16, reliability 8, scoring 11, trial_stability_v06 4. Suite **94 → 95**.
+
+**Canonical pair (regression signal).** In-cloud replay guard (`test_canonical_replay.py`
+7/7), rubric v0.7: drift-flight.org **46.1 F** / driftflight.com **85.5 B**, delta
+**+39.4**, 0 replay-miss on either — UNCHANGED and re-measured. The change is
+behavioral (outcome pillar); static canonical mode has `outcome=null`, so the
+static score cannot move by construction, and the replay guard confirms it
+byte-for-byte. Corroborated by the local runner's newest artifact
+`runs/local/verify_20260723T214103Z.json` (21:41Z) = 46.1 F / 85.5 B / +39.4.
+
+**Infra health (self-healing check, ran first).** Runner HEALTHY: newest artifact
+`verify_20260723T214103Z.json` (21:41Z) is ~30 min old at fire time, well under
+the 6h threshold — still heartbeating since the Cycle-19 recovery. No repair
+needed. No open peer-gated PR (`list_pull_requests state=open` → []) → first-duty
+review had nothing pending. Installed `eth-account` (pre-existing env gap,
+invariant #4) → free_tier 9/9.
+
+**Ship.** Direct-to-main. No Slack DM — score-neutral additive discovery, moves no
+score, not a sensitive class; the daily digest was already sent Cycle 16 and this
+fire (22:12Z) is not a new digest window.
+
+**Next hypothesis.** TRUTH next cycle (rotation METHOD→COVERAGE→TRUTH→READOUT;
+this was COVERAGE → next is **TRUTH**). Cloud-doable TRUTH candidates: extend the
+canonical replay guard to a third control domain once its fixture is captured
+[LOCAL] (example.com, P2); or a fresh-context re-read of check WORDING for
+vendor-leaning phrasing (the recurring adversarial-referee prose pass — the
+Cycle-21 invariance guard proves the SCORING is neutral, not that the
+DESCRIPTIONS read neutrally). The query-param opt-in's live wiring + 2-domain
+verification is queued [LOCAL] (P1, under the free-tier generalization item).

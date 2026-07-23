@@ -192,6 +192,77 @@ def test_discovery_from_docs() -> None:
 
 
 # ---------------------------------------------------------------------------
+# 3b. Query-param opt-in convention discovery (COVERAGE, additive/score-neutral).
+#     A second opt-in convention alongside the request header: storefronts that
+#     document `?tier=free` rather than a header. Discovery-only — recording it
+#     does NOT gate `advertised` or the live call yet (that is a live-verified
+#     [LOCAL] follow-up), so it must not move any score.
+# ---------------------------------------------------------------------------
+QUERY_OPTIN_DOCS = (
+    "# Sketchbird\n\n"
+    "## Free allowance\n"
+    "Every account gets a free tier of 5 included images. To use it, append the "
+    "`?tier=free` query parameter to your request; no header, no signup.\n\n"
+    "POST https://api.sketchbird.example/v1/render?tier=free\n"
+)
+
+
+def test_query_param_optin_discovery() -> None:
+    print("test_query_param_optin_discovery")
+    # Direct scanner unit: extracts the documented (name, value).
+    _check(ft._scan_query_param_instruction(QUERY_OPTIN_DOCS) == ("tier", "free"),
+           "?tier=free extracted from prose")
+    # Value-hint and name-hint variants both count.
+    _check(ft._scan_query_param_instruction(
+        "free allowance: call with ?mode=free to opt in") == ("mode", "free"),
+        "?mode=free (value hint) extracted")
+    _check(ft._scan_query_param_instruction(
+        "free tier: pass ?free=true on the request") == ("free", "true"),
+        "?free=true (name hint) extracted")
+
+    # Noise the scanner must NOT mistake for an opt-in:
+    #   - a non-free plan value near free-tier prose (?plan=pro)
+    _check(ft._scan_query_param_instruction(
+        "the free tier is generous; upgrade later with ?plan=pro") is None,
+        "?plan=pro near free prose is not an opt-in")
+    #   - ordinary plumbing params (?page, ?api_key) even worded with 'free'
+    _check(ft._scan_query_param_instruction(
+        "free tier docs, paginate with ?page=1") is None,
+        "?page=1 (plumbing) skipped")
+    _check(ft._scan_query_param_instruction(
+        "free allowance; auth via ?api_key=free_key_123") is None,
+        "?api_key= (denylisted) skipped even with 'free' in value")
+    #   - a non-free param name/value sitting near free-tier prose is not grabbed
+    #     (neither name nor value literally hints "free")
+    _check(ft._scan_query_param_instruction(
+        "the free allowance is generous; select a plan via ?tier=starter") is None,
+        "?tier=starter near free prose is not an opt-in (no free hint)")
+
+    # Surfaced through discover_free_tier, into evidence.
+    disc = ft.discover_free_tier({"/llms.txt": QUERY_OPTIN_DOCS}, None)
+    _check(disc.opt_in_query == ("tier", "free"),
+           f"opt_in_query populated by discovery: {disc.opt_in_query}")
+    _check(disc.evidence.get("opt_in_query") == ["tier", "free"],
+           "opt_in_query surfaced in discovery evidence")
+
+    # SCORE-NEUTRALITY (the load-bearing invariant of this additive change):
+    # a query-param opt-in with NO header and NO manifest unit count must NOT
+    # flip `advertised` — advertised stays exactly what it was before the field
+    # existed (False here), so no behavioral score can move on its account.
+    _check(not disc.advertised,
+           "query-param opt-in alone does NOT make the tier 'advertised' (score-neutral)")
+    _check(disc.opt_in_header is None, "query-only doc surfaces no header")
+
+    # And adding a query param to the header-based doc leaves `advertised`
+    # identical — the gate is byte-for-byte independent of the new field.
+    base = ft.discover_free_tier({"/llms.txt": LLMS_TXT}, MANIFEST)
+    plus_q = ft.discover_free_tier(
+        {"/llms.txt": LLMS_TXT + "\nAlternatively append ?tier=free.\n"}, MANIFEST)
+    _check(base.advertised == plus_q.advertised is True,
+           "adding a documented query-param opt-in does not change `advertised`")
+
+
+# ---------------------------------------------------------------------------
 # 4. No free tier advertised -> the check is NA.
 # ---------------------------------------------------------------------------
 def test_no_free_tier_is_na() -> None:
@@ -304,6 +375,7 @@ def main() -> int:
         test_zero_value_signs_and_recovers,
         test_nonzero_challenge_refuses_to_sign,
         test_discovery_from_docs,
+        test_query_param_optin_discovery,
         test_no_free_tier_is_na,
         test_exhausted_allowance_finding,
         test_not_zero_cost_finding,

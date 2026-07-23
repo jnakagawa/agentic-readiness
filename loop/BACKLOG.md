@@ -322,7 +322,20 @@ design in-cloud, execute locally.
 - **Score-over-time trend page** (READOUT): per-domain history from the
   dated reports; error bars once trials ≥ 2 lands.
 - **Free-tier probe generalization** (COVERAGE): more opt-in conventions
-  (query param, path-based), non-EVM zero-value schemes.
+  (query param, path-based), non-EVM zero-value schemes. PROGRESS 2026-07-23T22:12Z
+  (Cycle 22): the **query-param** opt-in DISCOVERY half SHIPPED in-cloud (direct-to-main,
+  score-neutral). `asrs/behavioral/free_tier.py` now scans doc prose for a documented
+  `?tier=free`/`?mode=free`/`?free=true` opt-in (`_scan_query_param_instruction`) and records
+  it as `FreeTierDiscovery.opt_in_query` + an `opt_in_query` evidence key — but does NOT yet
+  gate `advertised` or drive the live free-mode call (deliberately score-neutral, test-pinned).
+  REMAINING: (a) **[LOCAL], score-increasing → invariant #3 live-verify on ≥2 real domains**
+  — wire `opt_in_query` into the `advertised` gate AND the live call path (append the param to
+  the request URL instead of / alongside the header; keep the $0-only settle safety byte-for-byte
+  intact), then confirm on ≥2 real storefronts that document a query-param free tier that the
+  probe opts in and exercises the $0 allowance correctly; likely peer-gated when the scoring path
+  changes. (b) **path-based** opt-in convention (e.g. a documented `/free/…` or `/v1/free/…`
+  endpoint) — the next in-cloud COVERAGE increment, same discovery-only/score-neutral shape as the
+  query-param half, follow-up live-wiring [LOCAL]. (c) **non-EVM zero-value schemes** (still open).
 <!-- DONE 2026-07-23T16:11Z (Cycle 16, READOUT): "Methodology prose page" SHIPPED as
      methodology.html. `scorecard._write_methodology_page(out_dir)` renders the "read the
      paper" doc behind the rubric page — ten sections: capability lens; five pillars +

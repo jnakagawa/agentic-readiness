@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 21
+- Cycle counter: 22
 - Started: 2026-07-23 (UTC)
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -100,6 +100,26 @@
   score, digest already sent Cycle 16, not a new digest window at 21:13Z). First duty: no open peer-gated
   PR (verified []); infra health check ran first — runner HEALTHY (newest verify_20260723T204104Z, 20:41Z,
   ~32 min old). Next cycle takes COVERAGE.
+  Cycle 22 METHOD→COVERAGE (free-tier opt-in DISCOVERY broadened to a second convention —
+  the URL query parameter): `asrs/behavioral/free_tier.py` `_scan_query_param_instruction`
+  (mirrors `_scan_header_instruction`: `[?&]name=value` token, free-context window, plumbing-param
+  denylist, requires an explicit "free" hint in name/value → `?plan=pro`/`?tier=starter` near free
+  prose rejected) + additive `FreeTierDiscovery.opt_in_query` field + `opt_in_query` evidence key,
+  populated by `discover_free_tier`. Recognizes+records that a site advertises its free tier by
+  query param (currently mis-discovered as "opt-in-undiscoverable") — north-star many-conventions
+  axis. DELIBERATELY SCORE-NEUTRAL: the field is NOT in the `advertised` gate and NOT consumed by
+  the live-call path (test-pinned: query-only doc keeps advertised=False; adding `?tier=free` to the
+  header fixture leaves advertised identical). NOT signing/payment code — diff confined to the
+  discovery region; `parse_challenge`/settle/sign/amount + the nonzero-refusal safety property
+  byte-for-byte untouched (sentinel grep clean). No scoring semantics, rubric stays v0.7; canonical
+  delta unchanged by construction AND re-measured (in-cloud replay guard 46.1 F / 85.5 B / +39.4,
+  0 replay-miss). Direct-to-main. `test_free_tier.py` 8→9 (+query-param discovery test: extraction,
+  4 negative controls, evidence surfacing, score-neutrality); suite 94 → 95. No Slack (score-neutral
+  additive discovery, moves no score, digest already sent Cycle 16, not a new digest window at 22:12Z).
+  First duty: no open peer-gated PR (verified []); infra health check ran first — runner HEALTHY
+  (newest verify_20260723T214103Z, 21:41Z, ~30 min old). The live wiring (fold opt_in_query into
+  `advertised` + the free-mode call) + 2-domain verification is queued [LOCAL] (score-increasing,
+  invariant #3); path-based opt-in is the next COVERAGE increment. Next cycle takes TRUTH.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity

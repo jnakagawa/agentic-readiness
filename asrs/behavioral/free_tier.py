@@ -110,6 +110,41 @@ _HEADER_NAME_DENYLIST = frozenset(
     }
 )
 
+# Query-param opt-in instruction, discovered from docs prose. Some agent-native
+# storefronts document the free tier as a URL query parameter (e.g. "append
+# ``?tier=free`` to the request" or "call with ``?free=true``") instead of a
+# request header. Same shape as the header scanner: a ``[?&]name=value`` token,
+# gated on nearby free-allowance language, skipping obvious plumbing params.
+_QUERY_PARAM_INSTRUCTION_RE = re.compile(
+    r"[?&]([A-Za-z][A-Za-z0-9_-]{0,40})=([A-Za-z0-9_.-]{1,40})",
+)
+# Query-param names that are ordinary request plumbing, never an opt-in signal
+# even when they appear near "free".
+_PARAM_NAME_DENYLIST = frozenset(
+    {
+        "api_key",
+        "apikey",
+        "key",
+        "token",
+        "access_token",
+        "format",
+        "page",
+        "limit",
+        "offset",
+        "sort",
+        "order",
+        "v",
+        "version",
+        "lang",
+        "locale",
+        "callback",
+        "sig",
+        "signature",
+        "timestamp",
+        "nonce",
+    }
+)
+
 
 # ---------------------------------------------------------------------------
 # Discovery
@@ -127,6 +162,10 @@ class FreeTierDiscovery:
 
     advertised: bool = False
     opt_in_header: tuple[str, str] | None = None
+    # A documented query-param opt-in convention (name, value), e.g.
+    # ("tier", "free"). Recorded as evidence; does NOT (yet) gate ``advertised``
+    # or the live call — wiring that in is a live-verified [LOCAL] follow-up.
+    opt_in_query: tuple[str, str] | None = None
     free_units: int | None = None
     endpoint_hint: str | None = None  # best documented POST path for the free tier
     free_slugs: list[str] = field(default_factory=list)
@@ -186,6 +225,34 @@ def _scan_header_instruction(text: str) -> tuple[str, str] | None:
     return None
 
 
+def _scan_query_param_instruction(text: str) -> tuple[str, str] | None:
+    """Scan doc prose for a free-tier opt-in URL query parameter.
+
+    A second opt-in convention (alongside the request header): storefronts that
+    document ``?tier=free`` / ``?mode=free`` / ``?free=true`` rather than a
+    header. Same guards as :func:`_scan_header_instruction` — the ``name=value``
+    token must sit near free-allowance language, skip plumbing param names, and
+    either the name or the value must literally hint "free" (so ``?tier=pro`` and
+    ``?page=1`` are never mistaken for an opt-in). Returns ``(name, value)`` or
+    None. Discovery-only: recording this does not sign or call anything.
+    """
+    if not text:
+        return None
+    for m in _QUERY_PARAM_INSTRUCTION_RE.finditer(text):
+        name, value = m.group(1), m.group(2)
+        if name.lower() in _PARAM_NAME_DENYLIST:
+            continue
+        window = text[max(0, m.start() - 100): m.end() + 100]
+        if not _FREE_CONTEXT_RE.search(window):
+            continue
+        # Require an explicit "free" hint in the name or value — stricter than
+        # the header scanner (no "mode" fallback) so a neighbouring "?plan=pro"
+        # near free-tier prose is not misread as the free opt-in.
+        if "free" in value.lower() or "free" in name.lower():
+            return (name, value)
+    return None
+
+
 def discover_free_tier(docs: dict[str, str], manifest: Any | None) -> FreeTierDiscovery:
     """Decide whether a free tier is advertised, from the target's own docs.
 
@@ -197,6 +264,7 @@ def discover_free_tier(docs: dict[str, str], manifest: Any | None) -> FreeTierDi
 
     free_units = _find_free_quantity(manifest) if manifest is not None else None
     header = _scan_header_instruction(corpus)
+    query = _scan_query_param_instruction(corpus)
     mentions_free = bool(
         re.search(r"free\s+(allowance|tier|image|unit|includ|call)", corpus, re.I)
         or re.search(r"included\s*units", corpus, re.I)
@@ -204,8 +272,14 @@ def discover_free_tier(docs: dict[str, str], manifest: Any | None) -> FreeTierDi
 
     # A free tier is "advertised" when the docs describe a free allowance AND
     # give us a way to opt in (a header instruction) or a positive unit count.
+    # NOTE: ``query`` (the query-param opt-in convention) is DISCOVERED and
+    # recorded for evidence but deliberately NOT part of the ``advertised`` gate
+    # yet — wiring it into the gate + the live free-mode call is score-affecting
+    # and must be verified live on ≥2 real domains first (queued [LOCAL]). Until
+    # then this addition is score-neutral by construction.
     disc.advertised = bool((header is not None or (free_units and free_units > 0)) and mentions_free)
     disc.opt_in_header = header
+    disc.opt_in_query = query
     disc.free_units = free_units
     disc.free_slugs = _free_slugs(manifest)
     disc.candidate_paths = _all_post_paths(corpus)
@@ -215,6 +289,7 @@ def discover_free_tier(docs: dict[str, str], manifest: Any | None) -> FreeTierDi
     disc.endpoint_hint = _rank_endpoint(disc.candidate_paths, disc.free_slugs)
     disc.evidence = {
         "opt_in_header": list(header) if header else None,
+        "opt_in_query": list(query) if query else None,
         "free_units": free_units,
         "free_slugs": disc.free_slugs,
         "mentions_free": mentions_free,

@@ -111,3 +111,15 @@ static probes once, free-tier probe ONCE, shopper panel per task — attach the
 row. That touches the behavioral orchestration near the free-tier probe, so it
 wants care but is still not a scoring-semantics change. Behavioral execution is
 [LOCAL]; the CLI orchestration is testable in-cloud with a synthetic panel.
+
+## Merge review — PR #1 (loop/not-scorable-attribution) — 2026-07-23T03:05Z
+
+Reviewed and merged by the local operator (Fable session, networked machine)
+under the new peer-gate policy. Live verification the authoring cycle could
+not run in-cloud: tests 7/7 + 8/8 PASS on the branch; canonical pair static
+re-score UNCHANGED vs the v0.4 baseline (drift-flight.org 46.1 F,
+driftflight.com 85.5 B — exact no-op confirmed); degenerate case verified
+live (unreachable domain now reports NOT SCORABLE instead of 0.0/F).
+Refutation attempts: vendor-neutrality (clean — no domain named), attribution
+honesty (this IS the invariant, aggregate level), version discipline (v0.5
+bump + dated changelog present). Merged.

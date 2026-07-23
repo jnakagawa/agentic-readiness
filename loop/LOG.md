@@ -556,3 +556,99 @@ attribution question left, and it is now a precise `[LOCAL]` target: one codex
 calibrate a vendor-neutral pattern extension (worded by capability — "the
 hosting stack's own reputation layer refused the URL" — never by vendor). Queued
 in BACKLOG. Next cycle rotates to READOUT.
+
+## Local cycle — 2026-07-23T07:50Z — TRUTH/METHOD (trial-count run: env-block attribution leak found)
+
+**What.** Executed the oldest P0 `[LOCAL]` item — "what trial count N stabilizes
+the panel" — by adopting and adversarially verifying an ORPHANED result from the
+interrupted ~06:44Z fire: `runs/local/trial_stability_20260723T064359Z.json` +
+`experiments/trial_count_N.py`, both uncommitted (`runs/` is gitignored, so a
+`git clean` would have destroyed them). That fire ran a live claude+codex ×5
+shopper panel on drift-flight.org and computed a nested first-N verdict-stability
+curve, then died before committing/logging. Verifying it surfaced a real
+attribution bug in the shopper's env-block filter.
+
+**Provenance (adversarial check before trusting orphaned work).**
+- Artifact `ts` (06:43:59Z) is stamped at `main()` start; transcripts were written
+  live 06:46–07:02Z UTC during the run (machine is PDT −0700, reconciling the
+  apparent 7h mtime gap). The claude_t1 transcript's embedded verdict matches
+  artifact `run[0]` in substance — a real live panel, not a replay.
+- `experiments/trial_count_N_analysis.py` (committed, deterministic, $0)
+  reconstructs the `BehavioralRun` records from the artifact and re-derives the
+  whole curve with the SHIPPED `panel_reliability`: reproduction CONFIRMED —
+  valid_runs 2/4/5/6, stability 0.80/0.60/0.68/0.733 exactly. Not fabricated.
+
+**Finding (the real story behind a non-monotonic curve).** The curve looked
+paradoxical — N=2 "stable" 0.80 → N=3 "mixed" 0.60, i.e. MORE trials → LESS
+stable. Cause: exactly one env-blocked codex run leaks into the valid pool.
+Codex trial 3 reported its browser "**safety** controls" blocked the site, but
+`shopper._ENV_BLOCK_RE` only matches "security" phrasings (`browser security` /
+`security policy|controls|grounds`), NOT "safety". So codex t3's all-false
+verdict — from an agent that observed NOTHING (its own URL-safety layer refused
+navigation) — is scored as a site verdict, dragging down found_product /
+understood_pricing / found_purchase_path. That is an **invariant #4** violation
+(agent-side env failure scored as site evidence). With the leak correctly
+excluded (proposed regex also covering "safety"), the curve is monotone and
+stable: N=2 0.80 → 3 0.867 → 4 0.90 → 5 0.92.
+
+**Answer to the standing open question (with caveat).** On drift-flight.org the
+panel is verdict-stable (≥0.8) from N=2 upward and CONVERGES with N once the leak
+is removed — the sole residual flip is `found_purchase_path` (claude t1=false vs
+t2–t5=true), a genuine legibility ambiguity, not noise. CAVEAT: codex's hosted
+browser env-blocked drift-flight.org on ALL 5 trials, so this is claude-only
+(single-model) reproducibility, NOT cross-model panel agreement. STATE's premise
+that drift-flight.org is "codex-refusal-free" is now FALSE — codex refused it as a
+2-day-old domain (registered 2026-07-20). The cross-model N-curve stays blocked on
+codex reachability.
+
+**Direction of the fix.** Broadening the env-block regex only ever stops
+UNDER-crediting a site for an agent that never saw it (moves codex t3 from the
+outcome denominator to the reachability signal); it is behavioral-only and
+vendor-neutral (keys on block phrasing, not the domain). It is a
+scoring-semantics/aggregation change → **peer-gated + rubric version bump**,
+queued with exact spec in BACKLOG (P0). NOT applied this fire (one-item
+discipline; local fires surface + queue scoring-semantics changes, they do not
+push them to main).
+
+**Ties to Cycle 7 (rebased onto this fire).** Cycle 7 pinned invariant #4 in
+`tests/test_attribution.py` and left test #8 as an executable spec for the OPEN
+gap: codex refusals that lack the "security-*" vocabulary are not yet env-blocked,
+and it deliberately did NOT broaden `_ENV_BLOCK_RE` in-cloud because "blind
+broadening risks excusing real site blocks" without a committed transcript. This
+fire supplies that committed transcript evidence — but for the SAFE lexical subset:
+"browser **safety** controls" is the same env-block family as "browser security
+controls" (confirmed by the same codex agent's sibling trials t1/t2/t4/t5 on the
+same domain all saying "security"), NOT the harder semantic reputation-gate
+phrasings ("flagged as unsafe" / "unable to browse") that test #8 targets. So the
+queued fix is the narrow, evidence-backed first step of Cycle 7's deferred
+broadening; the reputation-gate remainder stays with the codex-reachability item.
+
+**Canonical pair (regression signal).** Static re-score this fire (both HTTP 200):
+drift-flight.org **46.1 F** / driftflight.com **85.5 B**, delta **+39.4** —
+identical to `verify_20260723T040757Z.json` and the 05:52Z merge-verify, within
+static variance of the +40.6 loop-start baseline. No regression; this fire touched
+no `asrs/` code (experiments/ + docs only), so scores are unchanged by
+construction. Access/trust identical on both (100/60); the +39.4 is entirely the
+.com's legibility (90.9 vs 36.4) and transactability (87.5 vs 18.8).
+
+**Evidence.** `runs/local/trial_stability_20260723T064359Z.json` (force-added),
+`experiments/trial_count_N.py`, `experiments/trial_count_N_analysis.py`;
+transcripts on local disk (gitignored, established practice) at
+`runs/transcripts/drift-flight.org_{claude,codex}_t{1..5}.json`. Full suite GREEN
+54/54 (post-rebase onto Cycle 6/7: incl. test_attribution 8/8, test_battery_wiring
+4/4).
+
+**Ship.** Direct-to-main (experiment harness + analysis + evidence artifact +
+LOG/STATE/BACKLOG; no scoring source touched). Rebased onto Cycle 6/7 before push;
+cloud cycle counter (7) and focus pointer (READOUT) unchanged — a local fire
+executes queued `[LOCAL]` work, it does not rotate the cloud track. No Slack
+(before 16:00Z; no sensitive PR opened/merged; no score change shipped — the fix's
+Slack visibility comes when its peer-gated PR opens).
+
+**Next.** (1) Peer-gate the `_ENV_BLOCK_RE` "safety" fix (P0, queued with exact
+regex + test + version-bump note; resolves the safe subset of Cycle 7's test #8
+spec). (2) Cross-model N-curve needs codex to reach the site — blocked on the
+codex-reachability/control-storefront item (feed codex pre-fetched content when its
+browser is gated, marked assisted). (3) Verify runner: newest `verify_*.json` is
+04:07Z (~3.7h at this fire); no :41 artifact at 05/06 — watch, flag if >6h next
+fire.

@@ -1,0 +1,293 @@
+{
+ "ts": "20260723T064359Z",
+ "kind": "trial-count-stability",
+ "domain": "drift-flight.org",
+ "task": "purchase this site's primary product or service",
+ "models": [
+  "claude",
+  "codex"
+ ],
+ "max_trials": 5,
+ "stable_min": 0.8,
+ "smallest_stable_n": 2,
+ "curve": [
+  {
+   "trials_per_model": 2,
+   "attempted_runs": 4,
+   "valid_runs": 2,
+   "verdict_stability": 0.8,
+   "flip_rate": 0.2,
+   "flipped_checkpoints": [
+    "found_purchase_path"
+   ],
+   "trust_event_agreement": 1.0,
+   "trust_events_unanimous": true,
+   "label": "stable"
+  },
+  {
+   "trials_per_model": 3,
+   "attempted_runs": 6,
+   "valid_runs": 4,
+   "verdict_stability": 0.6,
+   "flip_rate": 0.6,
+   "flipped_checkpoints": [
+    "found_product",
+    "understood_pricing",
+    "found_purchase_path"
+   ],
+   "trust_event_agreement": 1.0,
+   "trust_events_unanimous": true,
+   "label": "mixed"
+  },
+  {
+   "trials_per_model": 4,
+   "attempted_runs": 8,
+   "valid_runs": 5,
+   "verdict_stability": 0.68,
+   "flip_rate": 0.6,
+   "flipped_checkpoints": [
+    "found_product",
+    "understood_pricing",
+    "found_purchase_path"
+   ],
+   "trust_event_agreement": 1.0,
+   "trust_events_unanimous": true,
+   "label": "mixed"
+  },
+  {
+   "trials_per_model": 5,
+   "attempted_runs": 10,
+   "valid_runs": 6,
+   "verdict_stability": 0.733,
+   "flip_rate": 0.6,
+   "flipped_checkpoints": [
+    "found_product",
+    "understood_pricing",
+    "found_purchase_path"
+   ],
+   "trust_event_agreement": 1.0,
+   "trust_events_unanimous": true,
+   "label": "mixed"
+  }
+ ],
+ "runs": [
+  {
+   "model": "claude",
+   "trial": 1,
+   "checkpoints": {
+    "found_product": true,
+    "understood_pricing": true,
+    "found_purchase_path": false,
+    "machine_payable_path": false,
+    "no_human_gate": false
+   },
+   "blockers": [
+    "No programmatic purchase/billing API: openapi.json (v2.4.0) exposes only /v1/presets, /v1/models, POST /v1/images/generate \u2014 no signup/subscribe/checkout endpoint",
+    "Purchase requires a human browser flow ('create an account, subscribe to a plan, issue keys from the dashboard'), which cannot be done via API",
+    "The referenced dashboard is unreachable/nonexistent: app/dashboard/login/account/billing subdomains do not resolve, and the 'Sign in' link points to /docs \u2014 no working signup or checkout page exists",
+    "No programmatic payment rail: no /.well-known/x402, no HTTP 402 flow, no crypto, and no Stripe/Paddle/checkout links in the site markup",
+    "API key is gated behind an active paid subscription (401: 'Subscribe at https://drift-flight.org to get one'), obtainable only through the (nonexistent) dashboard"
+   ],
+   "trust_events": [
+    "Hesitated to treat this as a transactable vendor: the entire site is a static marketing page whose purchase flow dead-ends (the 'Sign in' CTA links to /docs, no dashboard/checkout/signup URL resolves, no payment processor is present), plus a commercial SaaS on a .org TLD with no company/contact/legal-entity info \u2014 it appears to be a demo/placeholder or non-operational site, so I would warn the user and decline to attempt a purchase rather than proceed."
+   ],
+   "transcript_path": "runs/transcripts/drift-flight.org_claude_t1.json"
+  },
+  {
+   "model": "claude",
+   "trial": 2,
+   "checkpoints": {
+    "found_product": true,
+    "understood_pricing": true,
+    "found_purchase_path": true,
+    "machine_payable_path": false,
+    "no_human_gate": false
+   },
+   "blockers": [
+    "No programmatic payment: billing is 'monthly by card' via a browser dashboard; no checkout API, HTTP 402/x402, or crypto documented",
+    "No programmatic account or API-key provisioning: docs state keys are issued manually from the dashboard; API exposes only image-generation endpoints (/v1/images/generate, /v1/models, /v1/presets)",
+    "Signup is an explicit browser 'dashboard' flow for 'human developers' with card entry \u2014 a human-oriented gate that an agent cannot complete headlessly",
+    "Could not confirm absence of email-confirmation/CAPTCHA during signup without attempting a prohibited write action"
+   ],
+   "trust_events": [
+    "drift-flight.org has no external web/search footprint and is not indexed; no third-party corroboration of the site or operator 'Driftflight Studio, Inc.'",
+    "SOC 2 / procurement / C2PA assurances are offered only 'on request' and are unverifiable in read-only recon",
+    "I would warn the user and pause before entering payment card details on this unverifiable vendor despite the purchase directive"
+   ],
+   "transcript_path": "runs/transcripts/drift-flight.org_claude_t2.json"
+  },
+  {
+   "model": "claude",
+   "trial": 3,
+   "checkpoints": {
+    "found_product": true,
+    "understood_pricing": true,
+    "found_purchase_path": true,
+    "machine_payable_path": false,
+    "no_human_gate": false
+   },
+   "blockers": [
+    "No programmatic purchase/subscription: billing is a web checkout on the /pricing page; docs say 'create an account, subscribe on the pricing page, issue keys from the dashboard' \u2014 browser + dashboard only",
+    "No x402 / HTTP 402 / pay-per-call / crypto / checkout-API support; the only API (POST /v1/images/generate) authenticates a pre-existing Bearer key and does not sell access",
+    "Path requires interactive account creation + browser checkout that cannot be completed programmatically; a self-serve SaaS email-confirmation step could not be ruled out read-only",
+    "Enterprise tier (25k+/mo) requires sales contact"
+   ],
+   "trust_events": [
+    "No independent web footprint corroborating Driftflight as a real vendor (searches returned only unrelated 'Drift' products); no company/legal entity identified on-site \u2014 I would warn the user it may not be a legitimate/established seller before authorizing payment"
+   ],
+   "transcript_path": "runs/transcripts/drift-flight.org_claude_t3.json"
+  },
+  {
+   "model": "claude",
+   "trial": 4,
+   "checkpoints": {
+    "found_product": true,
+    "understood_pricing": true,
+    "found_purchase_path": true,
+    "machine_payable_path": false,
+    "no_human_gate": false
+   },
+   "blockers": [
+    "No programmatic purchase/billing path: API exposes only generation endpoints (POST /v1/images/generate, GET /v1/models, GET /v1/presets); no signup/subscription/billing/checkout or HTTP 402/x402 endpoint. Docs state account creation and subscription are web-dashboard features external to the API.",
+    "Payment is browser-only monthly card billing ('usage bills monthly by card') \u2014 no x402, crypto, or checkout API an agent could invoke.",
+    "FAQ explicitly gates signup to humans: 'Human developers sign up on the dashboard for an API key' \u2014 interactive dashboard account creation + card entry stands between an agent and an API key.",
+    "Could not verify signup gating: /signup and /login return HTTP 404, so presence/absence of CAPTCHA, email-confirmation loop, or KYC on the actual flow is unconfirmed (recon-only, no form submission)."
+   ],
+   "trust_events": [
+    "Zero independent web presence: web search returns nothing for Driftflight/drift-flight.org (only the unrelated 'Drift' live-chat product). A vendor selling commercial-licensed image generation with no third-party indexing, reviews, or corporate footprint is unverifiable \u2014 I would warn you before entering a card or paying.",
+    "Unverified trust claims: site advertises C2PA credentials, commercial licensing, and 'SOC 2 report available on request,' none independently corroborated \u2014 I'd flag these before purchase."
+   ],
+   "transcript_path": "runs/transcripts/drift-flight.org_claude_t4.json"
+  },
+  {
+   "model": "claude",
+   "trial": 5,
+   "checkpoints": {
+    "found_product": true,
+    "understood_pricing": true,
+    "found_purchase_path": true,
+    "machine_payable_path": false,
+    "no_human_gate": false
+   },
+   "blockers": [
+    "No programmatic payment: OpenAPI spec exposes only /v1/presets, /v1/models, /v1/images/generate \u2014 no billing, subscription, checkout, or key-provisioning endpoint",
+    "No x402 / HTTP 402 'Payment Required' support anywhere on the API or site",
+    "Purchase/provisioning is browser-dashboard-only: 'Create an account, subscribe to a plan on the pricing page, and issue keys from the dashboard' \u2014 an API key is issued only after a manual card-based subscription",
+    "Account creation is required (manual browser step); could not confirm absence of email-confirmation/CAPTCHA because the dashboard surface is unreachable read-only (/dashboard \u2192 404, 'Sign in' links to /docs)",
+    "Payment method/processor undocumented (no stated card processor, invoicing, or agent-payment option)"
+   ],
+   "trust_events": [
+    "Zero independent web footprint \u2014 no search results, reviews, or third-party corroboration for a paid service claiming SOC 2, C2PA, and commercial licensing; I would warn the user the site may be illegitimate before entering payment details",
+    "Broken/inconsistent purchase surface \u2014 /dashboard returns 404 and the 'Sign in' link points to /docs rather than a real login/checkout, undermining confidence the checkout actually functions"
+   ],
+   "transcript_path": "runs/transcripts/drift-flight.org_claude_t5.json"
+  },
+  {
+   "model": "codex",
+   "trial": 1,
+   "checkpoints": {
+    "found_product": false,
+    "understood_pricing": false,
+    "found_purchase_path": false,
+    "machine_payable_path": false,
+    "no_human_gate": false
+   },
+   "blockers": [
+    "Direct navigation to drift-flight.org was rejected by the browser security policy before the site loaded; bypassing that restriction was prohibited.",
+    "Public searches found no indexed product, pricing, API documentation, checkout, provisioning flow, or x402/programmatic-payment path.",
+    "No evidence was available to determine whether CAPTCHA, KYC, email confirmation, or another human gate applies."
+   ],
+   "trust_events": [
+    "The browser security policy explicitly blocked drift-flight.org, so continuing directly or through an indirect site-access workaround would be unsafe.",
+    "The only domain-specific independent result identified drift-flight.org as a recently observed hostname on 2026-07-20; the domain otherwise lacked a corroborating public product or business footprint."
+   ],
+   "transcript_path": "runs/transcripts/drift-flight.org_codex_t1.json"
+  },
+  {
+   "model": "codex",
+   "trial": 2,
+   "checkpoints": {
+    "found_product": false,
+    "understood_pricing": false,
+    "found_purchase_path": false,
+    "machine_payable_path": false,
+    "no_human_gate": false
+   },
+   "blockers": [
+    "Direct access to drift-flight.org was rejected by the browser security policy before the site loaded.",
+    "Passive web searches found no indexed product, pricing, checkout, API, or x402 documentation."
+   ],
+   "trust_events": [
+    "Browser security controls blocked the domain, so proceeding with a purchase would require warning the user and refusing to bypass the block.",
+    "The only relevant public footprint found was a certificate-transparency/urlscan hostname observation dated 2026-07-20; no verifiable business or product information was indexed."
+   ],
+   "transcript_path": "runs/transcripts/drift-flight.org_codex_t2.json"
+  },
+  {
+   "model": "codex",
+   "trial": 3,
+   "checkpoints": {
+    "found_product": false,
+    "understood_pricing": false,
+    "found_purchase_path": false,
+    "machine_payable_path": false,
+    "no_human_gate": false
+   },
+   "blockers": [
+    "Direct navigation to drift-flight.org was blocked by browser safety controls; bypasses and alternate browser surfaces were not attempted.",
+    "Public searches found no indexed product, pricing, purchase, API, checkout, or x402 documentation.",
+    "Human-gate requirements could not be verified."
+   ],
+   "trust_events": [
+    "Browser safety controls explicitly blocked the domain.",
+    "The domain was registered on 2026-07-20, only two days before this investigation, and remained in the registry add period.",
+    "The newly registered domain had no discoverable independent product or commercial footprint."
+   ],
+   "transcript_path": "runs/transcripts/drift-flight.org_codex_t3.json"
+  },
+  {
+   "model": "codex",
+   "trial": 4,
+   "checkpoints": {
+    "found_product": false,
+    "understood_pricing": false,
+    "found_purchase_path": false,
+    "machine_payable_path": false,
+    "no_human_gate": false
+   },
+   "blockers": [
+    "Direct navigation was blocked by browser security policy.",
+    "Search indexes exposed no attributable product, pricing, API documentation, or purchase/provisioning path for the domain.",
+    "Human-gate requirements could not be verified."
+   ],
+   "trust_events": [
+    "Browser security controls rejected direct access to drift-flight.org.",
+    "A passive urlscan.io result indicated the domain was newly observed in certificate-transparency logs on 2026-07-20, only two days before this investigation.",
+    "The domain had virtually no independent indexed footprint, so its identity and legitimacy could not be established."
+   ],
+   "transcript_path": "runs/transcripts/drift-flight.org_codex_t4.json"
+  },
+  {
+   "model": "codex",
+   "trial": 5,
+   "checkpoints": {
+    "found_product": false,
+    "understood_pricing": false,
+    "found_purchase_path": false,
+    "machine_payable_path": false,
+    "no_human_gate": false
+   },
+   "blockers": [
+    "Direct domain access was blocked by browser security policy.",
+    "Search results exposed no indexed product, pricing, checkout, API, x402, or provisioning documentation for this domain.",
+    "Human-gate requirements could not be verified."
+   ],
+   "trust_events": [
+    "Browser security controls explicitly rejected navigation to drift-flight.org and prohibited circumvention.",
+    "The domain appeared only as a newly observed hostname dated 2026-07-20 in third-party certificate-transparency data, with no established independent business footprint.",
+    "Search results primarily confused the domain with unrelated products and sites, so purchasing would be unsafe without stronger verification."
+   ],
+   "transcript_path": "runs/transcripts/drift-flight.org_codex_t5.json"
+  }
+ ]
+}

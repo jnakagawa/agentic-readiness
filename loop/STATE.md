@@ -45,10 +45,26 @@
   pattern). NOT a scoring-semantics change — no version bump, scoring.py/rubric/
   types.py byte-for-byte unchanged.
 - Canonical pair: drift-flight.org 46.1 F vs driftflight.com 85.5 B — delta
-  +39.4. Confirmed LIVE this local fire (2026-07-23T05:52Z, both HTTP 200),
-  matching the freshest hourly verify artifact verify_20260723T040757Z.json
-  exactly. Loop-start behavioral baseline was +40.6 (delta within static
-  variance). Hourly runner healthy (~1.6h old at the local fire).
+  +39.4. Confirmed LIVE again this local fire (2026-07-23T07:50Z, both HTTP 200),
+  identical to the 05:52Z merge-verify and the hourly verify artifact
+  verify_20260723T040757Z.json. Loop-start behavioral baseline was +40.6 (delta
+  within static variance). NOTE: hourly verify runner's newest artifact is 04:07Z
+  (~3.7h old at this fire); no :41 artifact appeared at 05/06 — under the 6h
+  "runner down" threshold but WATCH; flag in next Slack digest if it crosses 6h.
+- Trial-count / panel-stability (local fire 2026-07-23T07:50Z, TRUTH/METHOD):
+  executed the P0 [LOCAL] N-sweep item via an orphaned live claude+codex×5 panel
+  on drift-flight.org (interrupted ~06:44Z fire; artifact adopted after
+  adversarial provenance + deterministic reproduction — see LOG + experiments/).
+  FINDING: the panel's verdict-stability curve was corrupted by an env-block
+  attribution LEAK — codex trial 3 said its browser "safety controls" blocked the
+  site, but `shopper._ENV_BLOCK_RE` matches only "security" phrasings, so that
+  all-false verdict (agent saw NOTHING) leaked into the scoring pool (invariant #4
+  violation). With the leak excluded the curve is monotone + stable
+  (N=2 0.80 → 5 0.92); drift-flight.org converges from N=2 (claude-only, since
+  codex was fully env-blocked). Fix (broaden the regex to cover "safety") is a
+  scoring-semantics/aggregation change → PEER-GATED + version bump, queued P0 in
+  BACKLOG with exact spec. Sole residual claude flip: found_purchase_path
+  (t1 false vs t2–5 true) — legibility ambiguity, not noise.
 - Open PRs: none. PR #1 (Cycle 1 v0.5 NOT-SCORABLE fix) merged
   2026-07-23T03:00:15Z. Its [LOCAL] merge-time canonical re-score is now
   DISCHARGED: local fire 2026-07-23T05:52Z re-scored both reachable domains
@@ -80,17 +96,24 @@ web host (403 "policy denial"). Confirmed 2026-07-23 via `asrs.fetch` and
 - Does the cloud environment have a usable `claude` CLI for nested shopper
   panels? Test cheaply in an early cycle; if yes, behavioral experiments
   partially unblock in-cloud (codex still local-only).
-- Codex hosted-browser refusal of driftflight.com: OpenAI-side reputation
-  gate, non-deterministic (browsed fine 22:28 UTC, blocked 22:53/22:58/23:21
-  on 2026-07-22; drift-flight.org unaffected in the same invocation, then
-  blocked in a later one). Root cause + attribution control needed.
-- Panel verdict variance: codex trust verdict flipped refuse(0.97) ↔
-  warn(0.97) on the .org between same-day runs. Cycle 3 shipped the METRIC
-  (`asrs/reliability.py` `verdict_stability` / `trust_event_agreement`) that
-  makes the flip visible; the EMPIRICAL question — what trial count N drives
-  `verdict_stability` above ~0.8 on the canonical pair — needs a [LOCAL]
-  multi-trial run (queued in BACKLOG). COST FINDING (local fire 05:52Z):
-  `SHOPPER_TIMEOUT_S=300`/trial makes the full N=2,3,5 × both-domains sweep
-  ~100 min / ~20 codex invocations — over the one-pair-run + ~10-codex budget.
-  Next local fire should take ONE scoped datapoint (drift-flight.org, the
-  codex-refusal-free domain, --trials 2) and split the sweep across fires.
+- Codex hosted-browser refusal: OpenAI-side reputation gate, non-deterministic.
+  driftflight.com blocked 22:53/22:58/23:21 on 2026-07-22. UPDATE (07:50Z fire):
+  drift-flight.org is NO LONGER refusal-free — codex env-blocked it on ALL 5
+  trials of the ~06:44Z panel, citing it as a 2-day-old domain (registered
+  2026-07-20) with no independent footprint. So BOTH canonical domains now trip
+  the codex reputation gate; drift-flight.org can no longer be used as the
+  "codex-refusal-free" control. Root cause + attribution control (feed codex
+  pre-fetched content when its browser is gated, marked assisted) still needed —
+  and is now the blocker on any cross-model panel-stability measurement.
+- Panel verdict variance: EMPIRICAL question — what trial count N drives
+  `verdict_stability` above ~0.8 on the canonical pair — got its first LIVE
+  datapoint (07:50Z fire, drift-flight.org). ANSWER (claude-only, codex fully
+  env-blocked): stable from N=2, converging 0.80 → 0.92 by N=5 once the
+  env-block leak (above) is removed. This validates the Cycle 3–5 reliability +
+  quotability code on real panel data for the first time. STILL OPEN: the
+  CROSS-MODEL agreement question is unmeasured — codex never reached the site, so
+  this is single-model reproducibility only. It is now GATED on codex
+  reachability (the control-storefront/pre-fetched-content fix). Cost still holds:
+  `SHOPPER_TIMEOUT_S=300`/trial; the nested first-N subsample design
+  (`experiments/trial_count_N.py`) gets the whole N-curve from ONE 5-trial run
+  (~5 codex + 5 claude), not 2+3+5 separate runs — reuse it for the next domain.

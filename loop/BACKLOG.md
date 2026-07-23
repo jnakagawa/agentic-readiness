@@ -61,25 +61,60 @@ design in-cloud, execute locally.
   URL" — never by vendor), keeping test #2 (site-side 403/Cloudflare NOT excused)
   green, and update test #8 in lockstep. The regex change is scoring-adjacent
   (moves runs between denominators) → peer-gated PR, not direct-to-main.
-- **[LOCAL] What trial count N stabilizes the panel** (TRUTH/METHOD, Cycle 3
-  follow-up): the reliability metric now quantifies flips, but the empirical
-  answer to "what N drives `verdict_stability` above ~0.8" needs real multi-trial
-  runs. SCOPING (local fire 2026-07-23T05:52Z cost finding): `SHOPPER_TIMEOUT_S
-  =300`/trial makes the full N=2,3,5 × both-domains sweep ~100 min / ~20 codex
-  invocations — over the "one behavioral pair run" + "~10 codex" per-cycle
-  budget. Split it: ONE scoped datapoint per local fire, starting with N=2 on
-  drift-flight.org (the codex-refusal-free canonical domain, so codex browser
-  refusals don't confound timing). Per-fire command (networked, claude+codex):
+  NOTE (07:50Z local fire): the NARROW lexical subset — "browser **safety**
+  controls" (same env-block family as "security", not a semantic reputation gate)
+  — now HAS committed transcript evidence and is split out as its own P0 directly
+  below; this item retains the HARDER semantic reputation-gate case (test #8).
+- **Env-block attribution leak — broaden `_ENV_BLOCK_RE` to cover "safety"
+  phrasing** (METHOD, attribution honesty; PEER-GATED scoring-semantics change).
+  DISCOVERED 2026-07-23T07:50Z local fire via the trial-count run (see LOG +
+  `experiments/trial_count_N_analysis.py`). `asrs/behavioral/shopper.py`
+  `_ENV_BLOCK_RE` matches only "security" phrasings, so a codex run that reported
+  its browser "**safety** controls" blocked the site (codex t3 on drift-flight.org)
+  is NOT recognized as env-blocked → its all-false verdict (the agent observed
+  NOTHING) leaks into the outcome/trust scoring denominators instead of the
+  reachability signal. Invariant #4 violation; it under-credits the site and
+  corrupts `panel_reliability` (turned a stable claude-only panel "mixed").
+  - FIX (exact): extend the regex so "safety" is a sibling of "security"
+    (`browser (?:security|safety)` and `(?:security|safety) (?:policy|controls|
+    grounds)`) in BOTH alternations. The validated pattern is in
+    `experiments/trial_count_N_analysis.py` (`_ENV_BLOCK_FIXED`); it re-classifies
+    codex t3 as env-blocked and makes the drift-flight.org curve monotone/stable
+    (N=2 0.80 → 5 0.92). Keep it vendor-neutral: it keys on the block phrasing,
+    never a domain.
+  - TEST: add to `tests/test_reliability.py` (or a shopper test) a run whose
+    blocker says "blocked by browser safety controls" with all-false checkpoints →
+    assert `_is_env_blocked` True and that it is excluded from `_valid_runs` /
+    outcome denominators and counted in `hosted_agent_reachability`.
+  - WHY PEER-GATED: `_is_env_blocked` gates which runs enter the behavioral
+    scoring denominator — an aggregation rule. Per invariant #2 this bumps the
+    rubric version (v0.5 → v0.6, dated changelog: "env-block attribution now
+    recognizes 'safety'-phrased hosted-browser refusals, not only 'security'").
+    Behavioral-only: the canonical STATIC delta (+39.4) is unaffected by
+    construction (static mode runs no panel) — show that in the PR.
+  - Open PR `loop/env-block-safety-phrasing` with the analysis artifact as
+    evidence; next cycle adversarially reviews + self-merges. Slack heads-up on
+    open (sensitive class: aggregation + version bump).
+
+<!-- EXECUTED 2026-07-23T07:50Z (local fire): "[LOCAL] What trial count N
+     stabilizes the panel" — ran a live claude+codex×5 panel on drift-flight.org
+     (nested first-N subsample design, experiments/trial_count_N.py). Answered
+     for the single-model case: drift-flight.org is verdict-stable from N=2,
+     converging 0.80→0.92 by N=5 once the env-block leak above is fixed. The run
+     ALSO surfaced that leak (now the P0 above). Evidence:
+     runs/local/trial_stability_20260723T064359Z.json. REMAINING work below. -->
+- **[LOCAL] Cross-model panel-stability N-curve** (TRUTH/METHOD, remaining half of
+  the trial-count item): the 07:50Z run measured claude-only reproducibility
+  because codex env-blocked drift-flight.org on all 5 trials. The CROSS-MODEL
+  agreement question (do claude and codex converge on the same verdict, and at
+  what N) is unmeasured and BLOCKED on codex reachability — do the
+  codex-reachability/control-storefront item FIRST (feed codex pre-fetched content
+  when its browser is gated, marked assisted), then re-run the nested-subsample
+  harness on a domain codex can actually reach:
   ```
   git checkout main && git pull
-  python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
-  .venv/bin/python -m asrs score drift-flight.org --behavioral \
-    --models claude,codex --trials 2   # then 3, then 5 on subsequent fires
-  # Read PANEL RELIABILITY + QUOTABILITY per run; record verdict_stability(N),
-  # flipped_checkpoints, and whether the headline is CITABLE/PROVISIONAL. This
-  # is also the FIRST live-data validation of the Cycle 3-5 reliability +
-  # quotability code. Report the smallest N with stability >= 0.8 per domain.
-  # Feeds the "trials >= 2 default" METHOD item above.
+  .venv/bin/python -m experiments.trial_count_N   # reuse the ONE-run N-curve harness
+  # (edit DOMAIN to a codex-reachable storefront; ~5 codex + 5 claude, within budget)
   ```
 
 ## P1

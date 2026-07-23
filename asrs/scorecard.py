@@ -114,7 +114,8 @@ h1,h2,h3{font-family:var(--font-display);margin:0}
   box-shadow:inset 0 0 0 1px var(--border-secondary)}
 .chip{font-family:var(--font-mono);font-size:12px;background:var(--bg-secondary);
   box-shadow:inset 0 0 0 1px var(--border-secondary);border-radius:6px;
-  padding:2px 8px;color:var(--text-secondary);overflow-wrap:anywhere}
+  padding:2px 8px;color:var(--text-secondary);display:inline-block;
+  overflow-wrap:anywhere;max-width:100%;box-sizing:border-box}
 .alert{display:flex;gap:12px;padding:14px 16px;border-radius:12px;
   background:var(--error-bg);box-shadow:inset 0 0 0 1px #fda29b;
   color:var(--text-primary)}
@@ -145,6 +146,10 @@ td.impact{font-family:var(--font-display);font-weight:600;white-space:nowrap;
   color:var(--error)}
 td.impact.minor{color:var(--warning)}
 td.pillar-tag{color:var(--text-secondary);font-size:12px}
+table.recs{table-layout:fixed}
+table.recs th:nth-child(1){width:62px}
+table.recs th:nth-child(2){width:112px}
+table.recs th:nth-child(3){width:28%}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
 .stack{display:flex;flex-direction:column;gap:24px;min-width:0}
 .verdict{display:flex;flex-direction:column;gap:8px;padding:14px 16px;
@@ -347,11 +352,11 @@ def _recommendations(rep: dict, fold_after: int = 7) -> str:
     if rest:
         fold = (
             f"<details><summary>{len(rest)} more lower-impact recommendation"
-            f'{"s" if len(rest) > 1 else ""}</summary><table>'
+            f'{"s" if len(rest) > 1 else ""}</summary><table class="recs">'
             + "".join(row(c) for c in rest)
             + "</table></details>"
         )
-    return f"<table>{head}{top}</table>{fold}"
+    return f'<table class="recs">{head}{top}</table>{fold}'
 
 
 def _trust_panel(rep: dict) -> str:

@@ -1,6 +1,20 @@
-# Agentic Selling Readiness Score — rubric v0.4 (2026-07-22)
+# Agentic Selling Readiness Score — rubric v0.5 (2026-07-23)
 # The rubric is versioned; every report embeds this version. Scores are only
 # comparable within a rubric version (SSL Labs / Euro NCAP pattern).
+#
+# v0.5 (2026-07-23): NOT-SCORABLE attribution fix (aggregation rule). When NO
+#   pillar is observable — every check came back NA/CANT_TEST/absent, e.g. a
+#   domain that never responded to any probe — the report no longer collapses
+#   to a misleading overall 0.0 / grade F (the worst possible storefront).
+#   Instead it is reported as NOT SCORABLE: overall_score null, grade "N/A",
+#   a new report field scored=false. This is the aggregate-level expression of
+#   the attribution-honesty invariant the per-check layer already honored (a
+#   site is never punished for what couldn't be observed). No numeric change
+#   for any domain with >=1 observable pillar — the branch is unreachable when
+#   weight_total > 0 — so real scores, including the canonical pair, are
+#   unchanged; the version bump exists only because the degenerate-case output
+#   changed and scores must stay comparable within a version. "N/A" is a
+#   non-band grade sentinel outside grade_bands (which govern scorable domains).
 #
 # v0.4 (2026-07-22), two features:
 #   (a) Free-tier transaction probe — the first check that actually TRANSACTS
@@ -53,7 +67,7 @@
 #   cap. New trust_live_session check scores the shopper panel's in-task
 #   trust_events (warnings surfaced while actually working the site).
 # v0.1 (2026-07-22): initial rubric.
-version: "0.4"
+version: "0.5"
 
 # Pillar weights for the overall score. If a pillar is entirely
 # NA/CANT_TEST (e.g. outcome in static-only mode), it is dropped and the

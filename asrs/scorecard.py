@@ -258,16 +258,28 @@ def _band(score: float | None) -> str:
 
 
 def _grade_pill(grade: str) -> str:
-    cls = "good" if grade in ("A+", "A", "B") else ("warn" if grade == "C" else "bad")
-    return f'<span class="pill {cls}"><span class="dot"></span>Grade {_esc(grade)}</span>'
+    if grade in ("A+", "A", "B"):
+        cls = "good"
+    elif grade == "C":
+        cls = "warn"
+    elif grade in ("N/A", "", None):
+        # Not scorable — neutral, not a red "bad" grade.
+        cls = "neutral"
+    else:
+        cls = "bad"
+    return f'<span class="pill {cls}"><span class="dot"></span>Grade {_esc(grade or "N/A")}</span>'
 
 
 def _score_box(rep: dict, label: str | None) -> str:
     label_html = f'<div class="label">{_esc(label)}</div>' if label else ""
+    ov = rep.get("overall_score")
+    # None (scored is False) -> the domain had no observable pillar; show "n/a"
+    # rather than a punitive 0. Attribution honesty.
+    value_html = f"{ov:.0f}" if ov is not None else "n/a"
     return (
         f'<div class="scorebox">{label_html}'
         f'<div class="domain">{_esc(rep["domain"])}</div>'
-        f'<div class="score-lockup"><span class="value num">{rep["overall_score"]:.0f}</span>'
+        f'<div class="score-lockup"><span class="value num">{value_html}</span>'
         f'<span class="of">/ 100</span></div>'
         f"<div>{_grade_pill(rep['grade'])}</div></div>"
     )
@@ -277,15 +289,26 @@ def _hero(reports: list[dict], labels: list[str | None]) -> str:
     if len(reports) == 1:
         return f'<div class="card"><div class="hero single">{_score_box(reports[0], labels[0])}</div></div>'
     a, b = reports
-    d = b["overall_score"] - a["overall_score"]
+    oa, ob = a.get("overall_score"), b.get("overall_score")
+    # A delta is only meaningful between two scored domains; if either side had
+    # no observable pillar, show a neutral "n/a" rather than an invented number.
+    if oa is not None and ob is not None:
+        d = ob - oa
+        delta_pill = (
+            f'<span class="pill {"good" if d > 0 else "bad" if d < 0 else "neutral"}">'
+            f'<span class="dot"></span><span class="num">{d:+.1f}</span></span>'
+        )
+    else:
+        delta_pill = (
+            '<span class="pill neutral"><span class="dot"></span>'
+            '<span class="num">n/a</span></span>'
+        )
     # Per-pillar deltas render inline in the right domain column (baseline
     # deltas next to the bars), so the hero carries only the overall delta.
     return (
         '<div class="card"><div class="hero">'
         + _score_box(a, labels[0] or "Without")
-        + f'<div class="delta-arrow"><span>&#8594;</span>'
-        f'<span class="pill {"good" if d > 0 else "bad" if d < 0 else "neutral"}">'
-        f'<span class="dot"></span><span class="num">{d:+.1f}</span></span></div>'
+        + f'<div class="delta-arrow"><span>&#8594;</span>{delta_pill}</div>'
         + _score_box(b, labels[1] or "With")
         + "</div></div>"
     )

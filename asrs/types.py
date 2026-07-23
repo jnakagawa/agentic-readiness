@@ -71,11 +71,17 @@ class Report:
     generated_at: str  # ISO 8601 UTC
     checks: list[CheckResult] = field(default_factory=list)
     pillar_scores: dict[str, float | None] = field(default_factory=dict)  # 0-100; None = pillar entirely NA
-    overall_score: float = 0.0  # 0-100, reweighted over applicable pillars
-    grade: str = ""  # A+ .. F
+    # None (with scored=False) when NO pillar was observable — the domain could
+    # not be scored at all, distinct from a real 0.0. See scoring.py.
+    overall_score: float | None = 0.0  # 0-100, reweighted over applicable pillars
+    grade: str = ""  # A+ .. F, or "N/A" when not scorable
     caps_applied: list[str] = field(default_factory=list)  # cap slugs that limited the grade
     trust_panel: list[ModelTrustVerdict] = field(default_factory=list)
     behavioral_runs: list[BehavioralRun] = field(default_factory=list)
+    # False when no pillar was observable (every check NA/CANT_TEST/absent):
+    # the report carries no score, only findings. Attribution honesty — a site
+    # is never punished for what couldn't be observed (rubric invariant).
+    scored: bool = True
 
     def to_json(self) -> str:
         return json.dumps(asdict(self), indent=2, default=str)

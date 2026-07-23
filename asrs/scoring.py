@@ -144,7 +144,30 @@ def score(
         weighted_sum += w * pscore
         weight_total += w
 
-    overall = (weighted_sum / weight_total) if weight_total > 0 else 0.0
+    # No pillar was observable (every check NA/CANT_TEST/absent) -> the domain
+    # could not be scored at all. Attribution honesty (rubric invariant): a
+    # site is never punished for what couldn't be observed, so this is reported
+    # as NOT SCORABLE (overall None, grade "N/A", scored False) rather than a
+    # misleading 0.0/F that reads as the worst possible storefront. A domain
+    # with >=1 observable pillar never reaches this branch, so real scores —
+    # including the canonical pair — are unchanged.
+    scorable = weight_total > 0
+    if not scorable:
+        return Report(
+            domain=domain,
+            rubric_version=str(rubric.get("version", "")),
+            generated_at=datetime.now(timezone.utc).replace(tzinfo=None).isoformat(),
+            checks=checks,
+            pillar_scores=pillar_scores,
+            overall_score=None,
+            grade="N/A",
+            caps_applied=[],
+            trust_panel=trust_panel,
+            behavioral_runs=behavioral_runs,
+            scored=False,
+        )
+
+    overall = weighted_sum / weight_total
 
     # --- (d) caps: critical findings limit the overall ------------------
     # A cap is recorded as applied only when it BINDS (it is below the
@@ -176,4 +199,5 @@ def score(
         caps_applied=caps_applied,
         trust_panel=trust_panel,
         behavioral_runs=behavioral_runs,
+        scored=True,
     )

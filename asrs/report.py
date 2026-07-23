@@ -116,9 +116,15 @@ def render(report) -> str:
     # -- header --
     lines.append(_rule("="))
     lines.append(f"  ASRS  {report.domain}")
-    lines.append(
-        f"  OVERALL {report.overall_score:.1f}/100   GRADE {report.grade or '?'}"
-    )
+    if getattr(report, "scored", True) and report.overall_score is not None:
+        lines.append(
+            f"  OVERALL {report.overall_score:.1f}/100   GRADE {report.grade or '?'}"
+        )
+    else:
+        # No observable pillar — not scorable (never a punitive 0.0/F).
+        lines.append(
+            "  NOT SCORABLE — no observable pillars (every check NA/CANT_TEST)"
+        )
     lines.append(
         f"  rubric v{report.rubric_version}   {report.generated_at}"
     )
@@ -229,15 +235,26 @@ def _behavioral_table(runs) -> list[str]:
 def render_compare(a, b, label_a: str = "without", label_b: str = "with") -> str:
     """Side-by-side delta between two reports."""
     lines: list[str] = []
-    delta = b.overall_score - a.overall_score
+
+    def _overall_str(rep) -> str:
+        if getattr(rep, "scored", True) and rep.overall_score is not None:
+            return f"{rep.overall_score:.1f} ({rep.grade or '?'})"
+        return "n/a (not scorable)"
+
+    a_ok = getattr(a, "scored", True) and a.overall_score is not None
+    b_ok = getattr(b, "scored", True) and b.overall_score is not None
 
     lines.append(_rule("="))
     lines.append("  ASRS DELTA")
     lines.append(
-        f"  {label_a} {a.domain} = {a.overall_score:.1f} ({a.grade or '?'})"
-        f"  ->  {label_b} {b.domain} = {b.overall_score:.1f} ({b.grade or '?'})"
+        f"  {label_a} {a.domain} = {_overall_str(a)}"
+        f"  ->  {label_b} {b.domain} = {_overall_str(b)}"
     )
-    lines.append(f"  (delta {delta:+.1f})")
+    if a_ok and b_ok:
+        # A delta is only meaningful between two scored domains.
+        lines.append(f"  (delta {b.overall_score - a.overall_score:+.1f})")
+    else:
+        lines.append("  (delta n/a — a side was not scorable)")
     lines.append(_rule("="))
 
     # -- per-pillar two-column table --

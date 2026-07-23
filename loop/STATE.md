@@ -1,10 +1,10 @@
 # Loop state
 
-- Cycle counter: 6
+- Cycle counter: 7
 - Started: 2026-07-23 (UTC)
-- Focus pointer: TRUTH (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: READOUT (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
-  Cycle 5 METHOD, Cycle 6 COVERAGE; next cycle takes TRUTH.)
+  Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH; next cycle takes READOUT.)
 - Rubric: v0.5 on main (PR #1 merged 2026-07-23 via the Cycle-2 peer-gate).
   UNCHANGED by Cycles 2–4 (task battery, panel-reliability, and the reliability
   readout-surfacing are diagnostic layers over already-collected runs, not
@@ -18,6 +18,17 @@
   untouched). REMAINING: [LOCAL] behavioral execution on the canonical pair (now
   unblocked — queued P0) produces the first live `cross_task_spread`; HTML
   scorecard battery card is queued P2 READOUT (terminal-first, like quotability).
+- Attribution boundary (Cycle 7, TRUTH): `tests/test_attribution.py` (8/8) pins
+  invariant #4 directly for the first time — `asrs/behavioral/shopper._is_env_blocked`
+  (`_ENV_BLOCK_RE`) + `_aggregate` denominator routing. Adds the previously-zero
+  negative-direction coverage (site-side 403/Cloudflare/429/CAPTCHA NOT excused as
+  environment) and pins the v0.4 env-blocked→reachability routing + all-blocked→
+  CANT_TEST-not-FAIL. Test #8 documents the OPEN gap as an executable spec: codex
+  hosted-browser REPUTATION-gate refusals ("flagged as unsafe" / "unable to browse")
+  lack the security-* vocabulary and are NOT yet classified env-blocked — deliberately
+  not regex-broadened in-cloud (no committed transcript; blind broadening risks
+  excusing real site blocks). Tests-only, no scoring-semantics change, rubric stays
+  v0.5. Resolving #8 is the queued [LOCAL] codex investigation.
 - Panel reliability: `asrs/reliability.py` (within-panel verdict-stability) +
   render section landed Cycle 3. Cycle 4 attached it to the JSON `Report`
   (additive `panel_reliability` field, populated in `cli._evaluate`) and the HTML

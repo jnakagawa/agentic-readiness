@@ -44,6 +44,23 @@ design in-cloud, execute locally.
   from the v0 notes (feed codex pre-fetched content when its browser is
   gated, marked as assisted). Repro matrix is `[LOCAL]`; analysis + design
   in-cloud from committed transcripts.
+  NOW HAS AN EXECUTABLE SPEC (Cycle 7): `tests/test_attribution.py::
+  test_reputation_gate_phrasing_is_current_coverage_gap` pins that codex
+  REPUTATION-gate refusals ("flagged as unsafe" / "unable to browse") are
+  currently NOT caught by `_ENV_BLOCK_RE` (they lack the security-* vocabulary),
+  so such a run is mis-scored as a site FAIL rather than reachability. FIRST
+  `[LOCAL]` step is now tiny and precise:
+  ```
+  # 1 codex exec against the canonical .com, capture RAW refusal text, COMMIT it:
+  codex exec --model o4 'Browse https://driftflight.com read-only and report
+    whether an agent could purchase there; if you cannot browse it, say why.' \
+    > runs/local/codex_refusal_driftflightcom_<ts>.txt
+  ```
+  Then extend `_ENV_BLOCK_RE` with a fixture drawn from the committed transcript
+  (worded by CAPABILITY — "the hosting stack's own reputation layer refused the
+  URL" — never by vendor), keeping test #2 (site-side 403/Cloudflare NOT excused)
+  green, and update test #8 in lockstep. The regex change is scoring-adjacent
+  (moves runs between denominators) → peer-gated PR, not direct-to-main.
 - **[LOCAL] What trial count N stabilizes the panel** (TRUTH/METHOD, Cycle 3
   follow-up): the reliability metric now quantifies flips, but the empirical
   answer to "what N drives `verdict_stability` above ~0.8" needs real multi-trial

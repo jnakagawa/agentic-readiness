@@ -478,3 +478,81 @@ follow-up, queued P2 — same terminal-first-then-HTML deferral quotability took
 And the `[LOCAL]` behavioral execution of `--battery` (real per-intent panels on
 the canonical pair) is now UNBLOCKED by this wiring — queued P0 with the exact
 command; it will produce the first real `cross_task_spread` on a live storefront.
+
+## Cycle 7 — 2026-07-23T07:16Z — TRUTH (direct to main)
+
+**What.** A dedicated regression suite (`tests/test_attribution.py`, 8/8) for
+the behavioral **attribution boundary** — invariant #4 (agent-side environment
+failures are never scored as site evidence; site failures are never excused as
+environment; when in doubt, CANT_TEST). It pins two load-bearing but previously
+untested pieces of `asrs/behavioral/shopper.py`: the `_is_env_blocked`
+classifier (`_ENV_BLOCK_RE`) and `_aggregate`'s denominator routing.
+
+**Why (TRUTH).** This boundary is the mechanism that makes a behavioral score
+*truthful about the site rather than the agent's environment* — a mis-attributed
+codex hosted-browser refusal either punishes a healthy storefront (error #1) or
+excuses a genuinely agent-hostile one (error #2, which silently inflates the
+score and is the more corrosive failure for a benchmark's credibility). Yet the
+classifier was exercised only INDIRECTLY — through reliability/quotability/
+battery consumers — all reusing a single happy-path phrase ("navigation blocked
+by browser security policy"). The negative direction (a 403 / Cloudflare / 429 /
+CAPTCHA is a REAL access finding and must NOT be excused) had zero coverage, and
+the v0.4 denominator-routing fix (env-blocked runs leave outcome/trust, surface
+as `hosted_agent_reachability`) was asserted nowhere directly. Untested
+invariant code regresses silently; this makes the boundary a hard, executable
+contract.
+
+**What the suite pins (synthetic `BehavioralRun` fixtures — no network/CLI).**
+1. Positive classification across the security-* vocabulary and BOTH phrase
+   orderings, whether the refusal lands in `blockers` OR `trust_events` (a codex
+   refusal can surface as either).
+2. **Negative (new coverage):** site-side blocks — 403, Cloudflare challenge,
+   429, robots disallow, CAPTCHA wall — are NOT excused as environment.
+3. Guard: a run that passed any checkpoint keeps its verdict despite block
+   language (a partial block ≠ a full block).
+4. A crashed/unparsed run (no checkpoints dict) is a plain failure, not an
+   env-block, even if its error text says "security".
+5. **Denominator routing:** 1 valid (2 checkpoints) + 1 env-blocked → outcome
+   fractions over n=1 (passed checkpoint reads PASS, not the 1/2 PARTIAL a leak
+   would give); the env-blocked run surfaces as `hosted_agent_reachability`
+   PARTIAL with the blocked model attributed.
+6. **All env-blocked → CANT_TEST, never FAIL:** every outcome check + trust
+   CANT_TEST, reachability FAIL/0 — invariant #4 "when in doubt, CANT_TEST"
+   applied end-to-end.
+7. All reached → reachability full PASS, full valid denominator.
+8. **Documented coverage boundary (feeds the [LOCAL] codex investigation):** a
+   hosted-browser REPUTATION-gate refusal ("this domain is flagged as unsafe" /
+   "I'm unable to browse that URL") lacks the security-* vocabulary and is
+   currently NOT classified env-blocked. Pinned DELIBERATELY: broadening the
+   regex blind — without the real codex transcript — would risk error #2 (test
+   #2). Resolving it is `[LOCAL]`: capture the transcript, extend the pattern
+   with a fixture from it, and update this assertion in lockstep — its failure
+   is the intended signal that the boundary moved. This converts the STATE
+   open-question ("root cause + attribution control needed") into an executable
+   spec with the exact input the [LOCAL] work must supply.
+
+**Evidence.**
+- `tests/test_attribution.py` 8/8.
+- Full suite GREEN: test_attribution 8/8, test_battery 6/6, test_battery_wiring
+  4/4, test_quotability 8/8, test_readout 5/5, test_reliability 8/8, test_scoring
+  7/7. test_free_tier 7/8 — the single miss is `test_zero_value_signs_and_recovers`
+  (needs `eth-account`, absent in this cloud env; local venv → 8/8). PRE-EXISTING,
+  env-only, and untouched by this diff (which adds one file under `tests/`).
+
+**Canonical pair (regression signal).** In-cloud live re-score blocked (no
+outbound network to the canonical domains — STATE). Regression BY CONSTRUCTION:
+the diff is a single new file under `tests/`; `asrs/` (scoring.py, rubric,
+shopper.py, types.py) is byte-for-byte unchanged, so no scored path can move.
+Delta unchanged from the freshest live artifact
+(`runs/local/verify_20260723T040757Z.json`): drift-flight.org **46.1 F** vs
+driftflight.com **85.5 B**, delta **+39.4**.
+
+**Ship.** Direct-to-main — tests only, no scoring semantics, no version bump
+(rubric stays v0.5). Per the Cycle-protocol ship rules (tests are direct-to-main).
+
+**Next hypothesis.** The reputation-gate gap (test #8) is the highest-leverage
+attribution question left, and it is now a precise `[LOCAL]` target: one codex
+`exec` against driftflight.com capturing the raw refusal text is enough to
+calibrate a vendor-neutral pattern extension (worded by capability — "the
+hosting stack's own reputation layer refused the URL" — never by vendor). Queued
+in BACKLOG. Next cycle rotates to READOUT.

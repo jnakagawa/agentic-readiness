@@ -1944,3 +1944,7 @@ here also wants a THIRD control-domain case (example.com, 22.5 F) once that
 fixture is captured [LOCAL] — it would pin that a LOW-capability baseline earns
 NO agent-native payment credit, guarding against a probe that spuriously inflates
 a bare site.
+
+## Local verification — 20260723T194101Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260723T194101Z.json

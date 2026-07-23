@@ -1588,3 +1588,83 @@ the only live canonical signal until launchd `:41` is restarted. Also: cloud Cyc
 `save_fixture` infra means the very next `[LOCAL]` win is capturing the canonical-pair
 fixtures (`fixtures/canonical/`) so this live re-score becomes a permanent in-cloud replay
 guard instead of a per-fire manual run.
+
+## Cycle 16 — 2026-07-23T16:11Z — READOUT (direct to main)
+
+**First duty (peer gate) — NOTHING open.** `list_pull_requests(state=open)` empty
+(re-confirmed via GitHub MCP). PR #3 already MERGED (72a2e5b, v0.7); its post-merge
+verification was fully discharged across Cycle 15 (offline RETAIN) + the 15:43Z local fire
+(LIVE re-score, +39.4 on v0.7). No open peer-gated PR to review — first duty discharged.
+
+**Track.** READOUT (rotation: …Cycle 15 TRUTH → Cycle 16 READOUT). Focus pointer in STATE
+named READOUT for this cycle. Next cycle takes METHOD.
+
+**What.** Shipped the **methodology page** (`methodology.html`) — the "read the paper" doc
+behind the rubric page (long-standing P2 READOUT item). The rubric page shows WHAT is
+scored (checks + weights, YAML verbatim); this new page explains the MEASUREMENT SEMANTICS
+a critic needs before trusting the number, in ten sections: the capability lens; the five
+pillars + weights; pillar/overall aggregation + weight renormalization; **FAIL vs
+CANT_TEST** (evidence-of-absence scores 0 in the denominator; absence-of-evidence shrinks
+the pillar, excluded from both numerator AND denominator — "never punished for what
+couldn't be observed"); **NOT SCORABLE vs an F** (N/A grade when no pillar was observable,
+vs a measured worst-storefront F); **attribution honesty** (agent-side hosting-stack
+blocks routed to hosted-agent-reachability, site-side 403/CF/CAPTCHA/429/WAF scored as site
+evidence); the shopper + trust panels and **refusal semantics** (directed-refusal caps,
+warnings only deduct); reproducibility (trials / verdict stability / **quotability**
+Citable-vs-Provisional); grade bands + the four caps; the **$0 free-tier probe**; and
+versioned comparability + evidence traceability. Implemented as `scorecard.
+_write_methodology_page(out_dir)`, published next to every card by `build_scorecard`
+alongside `rubric.html`; cross-linked both directions (card footer → methodology + rubric;
+rubric page → methodology; methodology → rubric + back-to-card). Weights, caps, and grade
+bands are pulled **LIVE from `load_rubric()`** — nothing hardcoded, so the page reflows on
+any version bump and can never drift from the scoring it documents.
+
+**Why.** North-star readout clarity + scientific credibility. The single most common way a
+benchmark misleads is conflating "tested and absent" (FAIL) with "couldn't observe"
+(CANT_TEST), and inventing a 0/F where the honest answer is N/A. ASRS keeps those strictly
+separate in code; until now that rigor was invisible to anyone reading a card. This page is
+the citable artifact that lets a skeptic verify the measurement is honest — the "read the
+paper" surface a go-to benchmark needs.
+
+**Invariants.** Display-only — `asrs/scoring.py`, `rubric/`, and every probe are
+byte-for-byte UNTOUCHED this cycle (`git status`: only `asrs/scorecard.py` +
+`tests/test_readout.py` modified). No new scored claim, no weight/cap/check/version change
+→ NO version bump (rubric stays **v0.7**); canonical delta unchanged BY CONSTRUCTION.
+(#2 versioned comparability) the page READS the version, never sets it. (#3 evidence) the
+page documents existing semantics; it makes no scored claim of its own. (#5 no rewrites)
+append-only. Direct-to-main (readout/docs, no scoring semantics).
+
+**Tests.** `tests/test_readout.py` 12 → **15** (+3): (1) the page is written as
+`methodology.html` and documents the credibility-critical distinctions by name (FAIL,
+CANT_TEST, NOT SCORABLE, agent-side, site-side, $0, "comparable only", capability);
+(2) it tracks the LIVE rubric — the version string, the transactability weight rendered as
+a %, and every cap slug all pulled from `load_rubric()`, so a future version bump can't
+leave the page stale; (3) `build_scorecard` publishes `methodology.html` next to the card
+(and still `rubric.html`), and the card footer links to it. Full suite **82 → 85**, all 11
+files green (free-tier 8/8 after `pip install eth-account` in this cloud python — the sole
+red before install was the missing optional signer dep, unrelated to this display change).
+
+**Canonical pair (regression signal) — UNCHANGED, by construction.** In-cloud live re-score
+network-blocked (both domains NOT SCORABLE in-cloud, unchanged env policy). scoring.py +
+rubric v0.7 + probes byte-for-byte unchanged this cycle → delta cannot move. Last LIVE
+signal: `.org` 46.1 F / `.com` 85.5 B, delta **+39.4** on v0.7 (local fire 2026-07-23T15:43Z
+merge-verify; also every prior fire). The Cycle-15 record/replay infra + the queued [LOCAL]
+canonical-fixture capture remain the path to making this an executable in-cloud guard.
+
+**Runner health — STILL DOWN (>12h).** Newest committed `verify_*.json` is
+verify_20260723T040757Z (04:07Z, rubric 0.5) — now ~12.1h old at this fire (16:11Z), well
+past the 6h threshold; no `:41` artifact since 04:00Z. FLAGGED in this cycle's Slack daily
+digest (this is the first cycle after 16:00 UTC).
+
+**Ship.** Direct-to-main (readout/docs + tests; no scoring semantics). Slack DM SENT — this
+is the first cycle after 16:00 UTC, so the daily digest is due (cycles run, shipped items,
+canonical delta trend, top open question) AND it carries the mandated runner-down flag +
+the queued [LOCAL] v0.7 live re-score note. No CI configured in the repo.
+
+**Next hypothesis.** METHOD next cycle. Highest-leverage cloud-doable items: the P1
+`--record-fixture` CLI hook (wires `FetchContext.save_fixture` into the score path so the
+[LOCAL] canonical-fixture capture becomes a one-liner — the last cloud-side step before the
+in-cloud canonical replay guard the playbook's re-score rule needs). A future READOUT could
+add a short prose intro block to the top of the methodology page's rendered form, or link
+each card check row to its evidence blob (the P2 evidence-links item) — but the [LOCAL]
+canonical fixture + runner restart remain the top operational priorities.

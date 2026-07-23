@@ -242,12 +242,227 @@ shopper and trust panels (headless agents working the site under a user
 directive), including one real zero-value free-tier transaction where the
 site advertises an allowance.</p>
 </div>
+<p class="sub" style="margin:-14px 0 24px"><a href="methodology.html">New here? Read how the score is measured &rarr;</a></p>
 <h2 style="margin:0 0 10px">The rubric, verbatim</h2>
 <pre>{html.escape(yaml_text)}</pre>
 <p class="sub" style="margin-top:16px"><a href="javascript:history.back()">&larr; back to the scorecard</a></p>
 </div></body></html>"""
     path = out_dir / "rubric.html"
     path.write_text(doc)
+    return str(path)
+
+
+# Shared shell for the two prose pages (rubric + methodology) so they read as
+# siblings. Kept minimal and self-contained — same look as _write_rubric_page.
+_PROSE_HEAD = """<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{title}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{{--text-primary:#0c111d;--text-secondary:#475467;--text-tertiary:#667085;
+--border:#e5e5e5;--bg:#fafafa}}
+*{{box-sizing:border-box}}
+body{{margin:0;background:var(--bg);color:var(--text-primary);
+font:400 15px/23px Inter,sans-serif}}
+.wrap{{max-width:860px;margin:0 auto;padding:40px 20px}}
+h1{{font:700 24px/30px "DM Sans",sans-serif;margin:0 0 6px}}
+.sub{{color:var(--text-secondary);margin:0 0 24px}}
+.card{{background:#fff;border:1px solid var(--border);border-radius:12px;
+padding:20px 24px;margin-bottom:20px}}
+h2{{font:600 16px/22px "DM Sans",sans-serif;margin:0 0 8px}}
+h2 .n{{color:var(--text-tertiary);font-weight:500;margin-right:8px}}
+p{{margin:0 0 10px;color:var(--text-secondary)}}
+p:last-child{{margin-bottom:0}}
+b{{color:var(--text-primary)}}
+table{{width:100%;border-collapse:collapse;margin:4px 0 2px}}
+td,th{{text-align:left;padding:7px 10px;border-bottom:1px solid var(--border);
+vertical-align:top}}
+td.num{{text-align:right;font:500 14px/20px "DM Mono",monospace;white-space:nowrap}}
+.q{{color:var(--text-tertiary);font-size:13px;line-height:18px}}
+.chip{{font:500 12px/18px "DM Mono",monospace;background:#f2f4f7;
+border-radius:6px;padding:1px 7px;color:var(--text-secondary)}}
+a{{color:var(--text-secondary)}}
+.nav{{margin:0 0 20px;font-size:14px}}
+.nav a{{margin-right:14px}}
+</style></head><body><div class="wrap">"""
+
+
+def _write_methodology_page(out_dir: Path) -> str:
+    """Render methodology.html — the "read the paper" page behind the rubric.
+
+    The rubric page shows WHAT is scored (checks + weights, the YAML verbatim).
+    This page explains the MEASUREMENT SEMANTICS a critic needs before trusting
+    the number: the capability lens, how pillars aggregate and renormalize, the
+    difference between a check that FAILS and one that CANT_TEST, NOT SCORABLE
+    vs an F grade, attribution honesty (agent-side vs site-side blocks), how the
+    behavioral panels and refusal semantics work, reproducibility (trials /
+    verdict stability / quotability), the grade caps, and the $0 free-tier probe.
+
+    Pillar weights, caps, and grade bands are pulled LIVE from the loaded rubric
+    so the page can never drift from the scoring it documents — a version bump
+    reflows this page automatically. Display-only; no scoring semantics here.
+    """
+    from .scoring import load_rubric
+
+    rubric = load_rubric()
+    version = rubric.get("version", "")
+    weights = rubric.get("pillar_weights", {})
+    caps = rubric.get("caps", {})
+    bands = rubric.get("grade_bands", [])
+
+    def grade_for(score: float) -> str:
+        for lb, g in bands:
+            if score >= lb:
+                return g
+        return "F"
+
+    pillar_rows = "".join(
+        f'<tr><td><b>{_esc(PILLAR_LABELS.get(p, p))}</b>'
+        f'<div class="q">{_esc(PILLAR_QUESTIONS.get(p, ""))}</div></td>'
+        f'<td class="num">{w:.0%}</td></tr>'
+        for p, w in sorted(weights.items(), key=lambda kv: -kv[1])
+    )
+    cap_rows = "".join(
+        f'<tr><td><span class="chip">{_esc(slug)}</span></td>'
+        f'<td class="num">&le; {_esc(limit)} &middot; max {_esc(grade_for(limit))}</td>'
+        f'<td>{_esc(CAP_EXPLANATIONS.get(slug, ""))}</td></tr>'
+        for slug, limit in caps.items()
+    )
+    band_str = " &middot; ".join(f"{_esc(g)}&nbsp;&ge;&nbsp;{_esc(lb)}" for lb, g in bands)
+
+    head = _PROSE_HEAD.format(
+        title=f"ASRS methodology — how the score is measured (v{_esc(version)})"
+    )
+    body = f"""
+<div class="nav"><a href="javascript:history.back()">&larr; Back to the scorecard</a>
+<a href="rubric.html">Rubric &amp; checks</a></div>
+<h1>How ASRS measures agentic selling readiness</h1>
+<p class="sub">Methodology behind the number &middot; rubric v{_esc(version)}</p>
+
+<div class="card">
+<h2>What the score answers</h2>
+<p>ASRS asks one question: <b>can an AI agent, acting for a person, actually
+sell-side interact with this storefront &mdash; reach it, understand the offer,
+pay programmatically, provision without a human, and finish the job?</b>
+Every check is worded by <b>capability</b>, never by vendor: no domain, product,
+or payment brand is special-cased, favorable or hostile. An implementation
+scores well only because it delivers those capabilities to an agent.</p>
+</div>
+
+<div class="card">
+<h2><span class="n">1</span>The five pillars</h2>
+<p>Each pillar is scored 0&ndash;100 from its named checks, then combined by the
+weights below. Transactability carries the most weight because paying and
+provisioning without a human is the heart of agentic commerce.</p>
+<table><tr><th>Pillar</th><th class="num">Weight</th></tr>{pillar_rows}</table>
+</div>
+
+<div class="card">
+<h2><span class="n">2</span>How a pillar and the overall score are computed</h2>
+<p>A pillar score is <b>points earned &divide; points applicable</b>. Only checks
+with a real observation count toward the denominator. The overall is the
+weight-renormalized average of the pillars that were observable: if a whole
+pillar could not be tested (e.g. the <b>outcome</b> pillar in static-only mode,
+with no live shopper panel), its weight is <b>dropped and the remaining weights
+renormalize</b> &mdash; the score is always over what was actually measured,
+never diluted by blanks.</p>
+</div>
+
+<div class="card">
+<h2><span class="n">3</span>FAIL vs CANT_TEST &mdash; the two ways a check can not-pass</h2>
+<p>A <b>FAIL</b> is evidence: the capability was tested and is absent. It earns
+0 points and <b>stays in the denominator</b>, so it pulls the pillar down.</p>
+<p>A <b>CANT_TEST</b> (or NA) is the absence of evidence: the probe could not
+observe the capability at all. It is excluded from <b>both</b> the numerator and
+the denominator &mdash; it shrinks the pillar rather than scoring it. A site is
+<b>never punished for what couldn&rsquo;t be observed</b>. Confusing these two is
+the most common way benchmarks lie; ASRS keeps them strictly separate.</p>
+</div>
+
+<div class="card">
+<h2><span class="n">4</span>NOT SCORABLE vs an F</h2>
+<p>An <b>F</b> is the worst kind of real storefront: it was measured and largely
+cannot serve an agent. <b>NOT SCORABLE</b> (grade <span class="chip">N/A</span>,
+overall shown as <b>n/a</b>) is different &mdash; it means <b>no pillar was
+observable at all</b> (for example, a domain that never loaded in static-only
+mode). Reporting that as a 0/F would invent a verdict the evidence doesn&rsquo;t
+support, so ASRS shows N/A instead. Any domain with even one observable pillar
+gets a real score, so this path never touches normally-reachable sites.</p>
+</div>
+
+<div class="card">
+<h2><span class="n">5</span>Attribution honesty &mdash; agent-side vs site-side</h2>
+<p>Behavioral runs use headless shopper agents. When an agent&rsquo;s <b>own
+hosting stack</b> refuses to load the site (its browser sandbox blocks the
+navigation), that run observed <b>nothing about the site</b>. It is excluded
+from the outcome and trust denominators and surfaced instead as a
+<b>hosted-agent-reachability</b> access signal &mdash; an agent-side failure is
+never scored as if it were the site&rsquo;s fault.</p>
+<p>The reverse is enforced just as hard: a <b>site-side</b> block &mdash; a 403
+to agent user-agents, a Cloudflare challenge, a CAPTCHA wall, a 429, a WAF
+rule &mdash; <b>is</b> the site&rsquo;s evidence and is scored as such. When in
+doubt, a run is CANT_TEST, never a fabricated FAIL.</p>
+</div>
+
+<div class="card">
+<h2><span class="n">6</span>The behavioral panels &amp; refusal semantics</h2>
+<p>The <b>shopper panel</b> is a set of headless agents given a real buying
+directive; their run produces the outcome checkpoints (found product, understood
+pricing, found a purchase path, a machine-payable path, no human gate). The
+<b>trust panel</b> asks whether an agent, explicitly <b>directed by its user to
+buy here</b>, will proceed. A confident refusal <b>despite that directive</b> is
+a genuine trust signal and caps the grade (see below); a mere warning deducts
+points but never caps. Refusals caused by the agent&rsquo;s own environment are
+attribution-routed per section 5, not counted as the site refusing.</p>
+</div>
+
+<div class="card">
+<h2><span class="n">7</span>Reproducibility &mdash; is the number safe to cite?</h2>
+<p>Behavioral panels run <b>multiple trials by default</b>. ASRS reports a
+within-panel <b>verdict stability</b> (do the trials agree on the same task
+outcome?) and a one-bit <b>quotability</b> verdict &mdash; <b>Citable</b> when
+the headline is static-deterministic or reproducible across trials,
+<b>Provisional</b> when it rests on a single trial or an unstable panel. The
+number travels with its own reproducibility so a reader knows how much to lean
+on it. (The one real free-tier transaction still runs only once per scored run,
+regardless of trial count &mdash; see section 9.)</p>
+</div>
+
+<div class="card">
+<h2><span class="n">8</span>Grade bands &amp; caps</h2>
+<p>Points map to a letter grade by these bands: {band_str}. But critical
+failures <b>cap</b> the grade regardless of points &mdash; averages hide
+showstoppers, so a single fatal defect limits the letter (the SSL&nbsp;Labs
+pattern):</p>
+<table><tr><th>Cap finding</th><th class="num">Grade ceiling</th><th>Why</th></tr>{cap_rows}</table>
+</div>
+
+<div class="card">
+<h2><span class="n">9</span>The $0 free-tier probe</h2>
+<p>Where a site advertises a free-tier or zero-value allowance, one scored run
+may make <b>exactly one real transaction &mdash; and only at $0</b>. No code path
+signs a nonzero-value authorization, funds a wallet, or creates an account;
+probe keys are ephemeral. This keeps the transactability evidence real (an
+agent genuinely completed a machine-payable path) without ever spending money or
+leaving a footprint on the merchant.</p>
+</div>
+
+<div class="card">
+<h2><span class="n">10</span>Versioned comparability &amp; evidence</h2>
+<p>Every report embeds the rubric version, and <b>scores are comparable only
+within a version</b> (the SSL&nbsp;Labs / Euro&nbsp;NCAP pattern): any change to
+a weight, cap, or check bumps the version with a dated changelog entry. Every
+scored claim traces to a committed artifact &mdash; a probe report, a panel
+transcript, or a test. If it wasn&rsquo;t observed, it wasn&rsquo;t scored.</p>
+</div>
+
+<p class="sub" style="margin-top:16px">
+<a href="rubric.html">Read the rubric &amp; every check, verbatim &rarr;</a></p>
+</div></body></html>"""
+    path = out_dir / "methodology.html"
+    path.write_text(head + body)
     return str(path)
 
 
@@ -838,7 +1053,8 @@ def build_scorecard(
 <footer>ASRS rubric v{_esc(rv)} — scores are comparable only within a rubric
 version. Grade caps apply for critical failures regardless of points.
 Pillar scores exclude checks that could not be tested.{_esc(panel_note)}
-&nbsp;<a href="rubric.html">Read the full rubric &amp; scoring logic &rarr;</a>
+&nbsp;<a href="methodology.html">How the score is measured &rarr;</a>
+&nbsp;&middot;&nbsp;<a href="rubric.html">The full rubric &amp; every check &rarr;</a>
 &nbsp;&middot;&nbsp;<a href="https://github.com/jnakagawa/agentic-readiness">Run this yourself &rarr;</a></footer>
 </div></body></html>"""
 
@@ -846,7 +1062,9 @@ Pillar scores exclude checks that could not be tested.{_esc(panel_note)}
         out_path = str(Path("runs") / f"scorecard_{'_vs_'.join(r['domain'].replace('.', '_') for r in reports)}.html")
     Path(out_path).parent.mkdir(parents=True, exist_ok=True)
     Path(out_path).write_text(doc)
-    # The footer links to rubric.html — publish it next to every card so the
-    # scoring logic ships with the score (locally and when hosted).
+    # The footer links to the rubric and methodology pages — publish both next
+    # to every card so the scoring logic AND its measurement semantics ship with
+    # the score (locally and when hosted).
     _write_rubric_page(Path(out_path).parent)
+    _write_methodology_page(Path(out_path).parent)
     return out_path

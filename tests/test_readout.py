@@ -262,6 +262,61 @@ def test_html_battery_absent_renders_nothing() -> None:
            "explicit None -> empty string (no card)")
 
 
+# ---------------------------------------------------------------------------
+# Cycle 16 (READOUT): the methodology page — the "read the paper" doc behind the
+# rubric page. Display-only; these tests pin that it renders the measurement
+# semantics a critic needs and stays in sync with the LIVE rubric (weights /
+# caps / grade bands / version pulled from load_rubric, never hardcoded), and
+# that build_scorecard publishes it next to every card and links to it. No
+# scoring-semantics assertions — this page has none.
+# ---------------------------------------------------------------------------
+import tempfile  # noqa: E402
+from pathlib import Path  # noqa: E402
+
+from asrs.scoring import load_rubric  # noqa: E402
+
+
+def test_methodology_page_written_and_covers_semantics() -> None:
+    print("test_methodology_page_written_and_covers_semantics")
+    with tempfile.TemporaryDirectory() as d:
+        path = scorecard._write_methodology_page(Path(d))
+        _check(Path(path).name == "methodology.html", "writes methodology.html")
+        text = Path(path).read_text()
+    # The distinctions that make ASRS credible must be documented by name.
+    for phrase in ("FAIL", "CANT_TEST", "NOT SCORABLE", "agent-side",
+                   "site-side", "$0", "comparable only", "capability"):
+        _check(phrase in text, f"methodology documents {phrase!r}")
+
+
+def test_methodology_page_tracks_live_rubric() -> None:
+    print("test_methodology_page_tracks_live_rubric")
+    rubric = load_rubric()
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    _check(f"v{rubric['version']}" in text, "shows the live rubric version")
+    # Weights are rendered as percentages straight from the rubric.
+    tw = rubric["pillar_weights"]["transactability"]
+    _check(f"{tw:.0%}" in text, "renders the live transactability weight")
+    # Every cap slug from the rubric appears (pulled live, not hardcoded).
+    for slug in rubric["caps"]:
+        _check(slug in text, f"lists cap {slug!r} from the live rubric")
+
+
+def test_build_scorecard_publishes_and_links_methodology() -> None:
+    print("test_build_scorecard_publishes_and_links_methodology")
+    rep = _report([])  # static report, no panel — the common hosted case
+    with tempfile.TemporaryDirectory() as d:
+        rp = Path(d) / "rep.json"
+        rp.write_text(rep.to_json())
+        out = scorecard.build_scorecard([str(rp)], out_path=str(Path(d) / "card.html"))
+        _check((Path(d) / "methodology.html").exists(),
+               "methodology.html published next to the card")
+        _check((Path(d) / "rubric.html").exists(),
+               "rubric.html still published (unchanged behaviour)")
+        _check('href="methodology.html"' in Path(out).read_text(),
+               "the card footer links to methodology.html")
+
+
 def main() -> int:
     tests = [
         test_json_carries_reliability,
@@ -276,6 +331,9 @@ def main() -> int:
         test_html_renders_battery,
         test_html_battery_single_kind_no_rollup,
         test_html_battery_absent_renders_nothing,
+        test_methodology_page_written_and_covers_semantics,
+        test_methodology_page_tracks_live_rubric,
+        test_build_scorecard_publishes_and_links_methodology,
     ]
     failed = 0
     for t in tests:

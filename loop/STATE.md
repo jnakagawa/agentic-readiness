@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 15
+- Cycle counter: 16
 - Started: 2026-07-23 (UTC)
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -18,7 +18,11 @@
   Local fire 2026-07-23T15:43Z TRUTH (complementary to cloud Cycle 15): ran the NETWORKED
   half cloud Cycle 15 could not — the LIVE post-merge canonical re-score on v0.7
   (46.1 F / 85.5 B, +39.4 unchanged) — and reconciled the stale "PR #3 Open" bookkeeping.
-  No open peer-gated PR remains.)
+  No open peer-gated PR remains.
+  Cycle 16 READOUT (methodology page — the "read the paper" doc behind the rubric page;
+  weights/caps/bands pulled live from load_rubric so it can't drift; display-only, rubric
+  stays v0.7, canonical delta unchanged by construction; direct to main. First cycle after
+  16:00 UTC → daily digest DM sent); next cycle takes METHOD.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity
@@ -87,6 +91,23 @@
   `tests/test_readout.py` 8/8 -> 12/12; suite 64 -> 68. The queued [LOCAL] second
   cross_task_spread datapoint will be the first live report carrying per_kind, so the
   by-archetype grid can finally be eyeballed on a real card.
+- Methodology page (Cycle 16, READOUT): `scorecard._write_methodology_page(out_dir)` renders
+  `methodology.html` — the "read the paper" doc behind the rubric page (long-standing P2). Ten
+  sections explain the MEASUREMENT SEMANTICS: capability lens; five pillars + weights; pillar/
+  overall aggregation + renormalization; FAIL vs CANT_TEST (evidence-of-absence scores 0 in the
+  denominator vs absence-of-evidence excluded from both numerator+denominator); NOT SCORABLE vs
+  an F (N/A when no pillar observable); attribution honesty (agent-side hosting block → hosted-
+  agent-reachability, site-side 403/CF/CAPTCHA/429/WAF → site evidence); shopper+trust panels +
+  refusal semantics (directed-refusal caps, warnings only deduct); reproducibility (trials/
+  verdict-stability/quotability); grade bands + caps; the $0 free-tier probe; versioned
+  comparability + evidence. `build_scorecard` publishes it next to every card alongside
+  `rubric.html`; cross-linked both ways (card footer → methodology + rubric; rubric page →
+  methodology; methodology → rubric + back-to-card). Weights/caps/grade-bands pulled LIVE from
+  `load_rubric()` (nothing hardcoded → reflows on any version bump, can't drift). Display-only:
+  scoring.py/rubric/probes byte-for-byte untouched → rubric stays v0.6→**v0.7** unchanged,
+  canonical delta unchanged by construction; direct-to-main. `tests/test_readout.py` 12 → 15
+  (+3: page-written+covers-semantics, tracks-live-rubric, build_scorecard-publishes+links);
+  suite 82 → 85.
 - Coverage-warning noise (Cycle 13, METHOD): fixed AT THE SOURCE. `asrs/scoring.py`
   no longer `print(..., file=sys.stderr)`s coverage warnings — they route through
   `logging.getLogger("asrs.scoring")`, and the noisy "absent rubric check" warning is
@@ -189,6 +210,11 @@
   rubric 0.5), now **~11.6h old**; no :41 artifact 05:00–15:00Z. This fire (15:43Z) is
   ~17 min BEFORE 16:00 UTC → the down-runner flag + v0.7 delta trend fold into the next
   post-16:00 Slack daily digest (first cycle after 16:00 UTC), not yet due.
+  RE-CONFIRMED DOWN + FLAGGED Cycle 16 (16:11Z, first cycle after 16:00 UTC): newest STILL
+  verify_20260723T040757Z, now **~12.1h old**. Daily digest DM SENT this fire per comms
+  policy — carries the runner-down flag AND the still-queued [LOCAL] canonical-fixture
+  capture. Next live canonical signal depends on the launchd :41 runner being restarted or a
+  manual local fire.
   SEPARATE BUG (the coverage-warning stderr leak): FIXED AT SOURCE Cycle 13. The runner's
   `scores` block recorded FileNotFoundError because `[asrs.scoring]` stderr coverage-warning
   lines leaked into the score-path argument; `asrs/scoring.py` no longer prints those lines

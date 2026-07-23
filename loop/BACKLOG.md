@@ -267,10 +267,27 @@ design in-cloud, execute locally.
   dated reports; error bars once trials ≥ 2 lands.
 - **Free-tier probe generalization** (COVERAGE): more opt-in conventions
   (query param, path-based), non-EVM zero-value schemes.
-- **Methodology prose page** (READOUT): how the panels work, refusal
-  semantics, attribution rules, what CANT_TEST means — the "read the paper"
-  page behind the rubric page. NOTE: now also document NOT-SCORABLE (v0.5) —
-  the difference between "F" and "N/A".
+<!-- DONE 2026-07-23T16:11Z (Cycle 16, READOUT): "Methodology prose page" SHIPPED as
+     methodology.html. `scorecard._write_methodology_page(out_dir)` renders the "read the
+     paper" doc behind the rubric page — ten sections: capability lens; five pillars +
+     weights; aggregation + renormalization; FAIL vs CANT_TEST; NOT SCORABLE vs an F;
+     attribution honesty (agent-side vs site-side); shopper+trust panels + refusal semantics;
+     reproducibility (trials/verdict-stability/quotability); grade bands + caps; the $0
+     free-tier probe; versioned comparability + evidence. Published next to every card by
+     build_scorecard alongside rubric.html; cross-linked both ways. Weights/caps/grade-bands
+     pulled LIVE from load_rubric() (nothing hardcoded → can't drift on a version bump).
+     Display-only: scoring.py/rubric/probes byte-for-byte untouched, rubric stays v0.7,
+     canonical delta unchanged by construction; direct-to-main. tests/test_readout.py 12 → 15;
+     suite 82 → 85. See LOG Cycle 16. FOLLOW-UP candidate below (evidence-links + a top-of-page
+     prose intro remain separate READOUT items). -->
+
+- **Methodology page follow-ups** (READOUT, Cycle-16 follow-up): the methodology page exists
+  and documents the semantics, but (a) it renders straight to `methodology.html` with no
+  hosted deploy step of its own — fine while it ships next to the card; and (b) each scorecard
+  check ROW still doesn't link to its evidence blob (the separate P2 "Evidence links on the
+  card" item) nor to the relevant methodology section. Small next unit: anchor-link the four
+  cap chips on a card's "grade capped" alert to the corresponding methodology cap row, so a
+  reader who sees a cap can jump straight to why it caps. No scoring semantics; direct-to-main.
 
 <!-- DONE 2026-07-23T13:18Z (Cycle 13, METHOD): "Coverage-warning noise" fixed AT SOURCE.
      asrs/scoring.py routes the three coverage warnings through logging.getLogger(

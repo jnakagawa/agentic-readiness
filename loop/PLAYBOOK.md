@@ -109,6 +109,32 @@ never manufacture it:
    it has network, otherwise queued `[LOCAL]` as post-merge monitoring —
    not a pre-merge block).
 
+## Local cycle (the networked half of the loop — an LLM, not a cron script)
+
+An hourly HEADLESS agent cycle runs on Jonah's machine (launchd, :41, Opus)
+with what the cloud lacks: outbound network, the codex CLI, and the zero
+CLI. It is governed by this same playbook — same invariants, same tracks,
+same ship rules, same LOG/STATE/BACKLOG discipline. Per fire:
+
+1. The verification artifact for this hour is already produced (the launcher
+   runs `local_verify.py` first — a deterministic floor that exists even if
+   this cycle fails). Do not repeat it; read it.
+2. FIRST duty, same as cloud: adversarially review + merge any open
+   peer-gated PR (you have the network to run its live re-scores).
+3. Then execute exactly ONE `[LOCAL]` backlog item — behavioral panel runs,
+   codex reachability experiments, live probe validation, anything the cloud
+   designed but could not execute. Prefer the oldest P0.
+4. LOG the cycle as `## Local cycle — <ts>`; update STATE/BACKLOG; push.
+
+Local-only constraints (non-negotiable):
+- **Spend nothing.** The zero CLI may be used for $0 operations only
+  (free-tier probes, search/get). Never a paid capability call, never
+  wallet funding, never a nonzero `--max-pay`.
+- Budget: at most ONE full behavioral pair run per cycle; at most ~10 codex
+  invocations per cycle.
+- Touch nothing outside the repo checkout (no ~/.zero, keychains, browser
+  profiles, other repos).
+
 ## Live canonical signal (local verification artifacts)
 
 A local companion runner (`loop/local_verify.py`, launchd on Jonah's machine,

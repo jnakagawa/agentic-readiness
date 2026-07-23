@@ -6,12 +6,18 @@
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD; next cycle takes COVERAGE.)
-- Rubric: v0.5 on main; **v0.6 PROPOSED in open PR #2** (Cycle 9, METHOD).
-  PR #2 broadens the env-block classifier to recognize "safety"-phrased
-  hosted-browser refusals (aggregation rule → version bump). Awaiting the NEXT
-  cycle's FIRST-duty adversarial review + self-merge. UNTIL MERGED, main is
-  still v0.5. Rubric was UNCHANGED by Cycles 2–4/6/8 (diagnostic/readout layers,
-  not scoring-semantics changes).
+- Rubric: **v0.6 on main** (PR #2 MERGED 2026-07-23, merge commit 8fe9f46,
+  clean fast-forward; suite 58/58 green on merged main). v0.6 broadens the
+  env-block classifier to recognize "safety"-phrased hosted-browser refusals
+  (aggregation rule → version bump). CAVEAT: PR #2 was merged EXTERNALLY during
+  the Cycle-9 fire (Jonah's prerogative / repo automation — NOT a loop self-merge),
+  so the playbook's fresh-context adversarial peer-review did NOT run pre-merge.
+  Authoring-time self-review was thorough (regex A/B across all cases, negative
+  direction verified, fixtures traced to committed evidence, 58/58) and merged main
+  is green, so risk is low — but the next cycle should still do a POST-MERGE
+  adversarial sanity check and revert (invariant #5 allows revert, not force-push)
+  if it finds a real defect. Rubric was UNCHANGED by Cycles 2–4/6/8
+  (diagnostic/readout layers, not scoring-semantics changes).
 - Task battery: format + aggregation landed Cycle 2; `--battery` CLI wiring +
   additive `Report.battery_summary` + terminal `TASK BATTERY` section landed
   Cycle 6 (`asrs/cli.py` `_run_behavioral(..., battery=)` runs the shopper panel
@@ -85,15 +91,11 @@
   scoring-semantics/aggregation change → PEER-GATED + version bump, queued P0 in
   BACKLOG with exact spec. Sole residual claude flip: found_purchase_path
   (t1 false vs t2–5 true) — legibility ambiguity, not noise.
-- Open PRs: **PR #2 `loop/env-block-safety-phrasing`** (Cycle 9, METHOD, sensitive
-  class: aggregation rule + v0.5→v0.6). Broadens `_ENV_BLOCK_RE` to cover
-  "safety"-phrased hosted-browser refusals (invariant #4 leak found in the 07:50Z
-  local trial-count fire). Full evidence + reviewer checklist in the PR body;
-  fixtures verbatim from `runs/local/trial_stability_20260723T064359Z.json`.
-  Suite 58/58. Static delta unchanged by construction (behavioral-only). No CI on
-  the repo. NEXT cycle's first duty: adversarially review + self-merge (and run the
-  live behavioral re-score if it has network; else keep it [LOCAL]). Slack heads-up
-  sent on open. https://github.com/jnakagawa/agentic-readiness/pull/2
+- Open PRs: **none.** PR #2 `loop/env-block-safety-phrasing` (Cycle 9, METHOD,
+  sensitive class: aggregation rule + v0.5→v0.6) MERGED 2026-07-23 (commit 8fe9f46).
+  Merged externally mid-fire, so the pre-merge peer-gate review was bypassed — the
+  post-merge sanity check + live behavioral re-score are queued (see BACKLOG P0).
+  https://github.com/jnakagawa/agentic-readiness/pull/2
 - PR #1 (Cycle 1 v0.5 NOT-SCORABLE fix) merged
   2026-07-23T03:00:15Z. Its [LOCAL] merge-time canonical re-score is now
   DISCHARGED: local fire 2026-07-23T05:52Z re-scored both reachable domains

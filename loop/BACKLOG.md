@@ -66,20 +66,28 @@ design in-cloud, execute locally.
   (Cycle 9, v0.6, awaiting merge). This item retains ONLY the HARDER semantic
   reputation-gate case (test #8: "flagged as unsafe" / "unable to browse"), which
   still needs a committed codex transcript before its regex fixture can be added.
-<!-- OPEN AS PR #2 2026-07-23T09:15Z (Cycle 9, METHOD): "Env-block attribution leak
-     — broaden `_ENV_BLOCK_RE` to cover 'safety' phrasing" implemented on branch
-     loop/env-block-safety-phrasing. Regex extended so "safety" is a sibling of
-     "security" in both alternations; rubric v0.5→v0.6 (dated changelog);
-     tests/test_attribution.py +test #9 (fixtures verbatim from
-     runs/local/trial_stability_20260723T064359Z.json). Suite 58/58; negative
-     direction (site-side blocks, reputation-gate) preserved. AWAITING next-cycle
-     adversarial review + self-merge (peer gate). https://github.com/jnakagawa/agentic-readiness/pull/2
-     Remove this note once PR #2 is merged or closed. -->
-- **[LOCAL] Live behavioral re-score after PR #2 merges** (METHOD follow-up):
-  once v0.6 is on main, run one behavioral panel on a domain and confirm a
-  "safety"-blocked codex run routes to `hosted_agent_reachability` (not outcome)
-  live, and that `panel_reliability` on the drift-flight.org trial-count panel
-  reads stable/monotone (N=2 0.80 → 5 0.92) rather than "mixed". Reuse
+<!-- MERGED 2026-07-23 (PR #2, commit 8fe9f46): "Env-block attribution leak —
+     broaden `_ENV_BLOCK_RE` to cover 'safety' phrasing" is now on main as rubric
+     v0.6. Regex extended so "safety" is a sibling of "security" in both
+     alternations; tests/test_attribution.py +test #9 (fixtures verbatim from
+     runs/local/trial_stability_20260723T064359Z.json). Suite 58/58 on merged main.
+     NOTE: merged externally mid-fire, so the loop's fresh-context peer review was
+     bypassed — hence the post-merge sanity check below. -->
+- **Post-merge adversarial sanity check for v0.6 (PR #2)** (METHOD, peer-gate
+  hygiene). PR #2 was merged externally before the loop's fresh-context review
+  could run. Next cycle (or whenever convenient) should adversarially re-verify
+  from scratch: (a) vendor-neutral wording — keys on phrasing, never a domain;
+  (b) negative direction intact — site-side 403/Cloudflare/429/CAPTCHA/robots and
+  reputation-gate phrasings ("flagged as unsafe"/"unable to browse") still NOT
+  excused (tests #2/#8 green); (c) fixtures trace to committed evidence; (d) static
+  canonical delta unchanged (scoring.py never imports the classifier). If a real
+  defect surfaces, revert on main (invariant #5: revert, never force-push) and
+  reopen as a fresh PR. Cheap — offline, no network.
+- **[LOCAL] Live behavioral re-score of v0.6** (METHOD follow-up; v0.6 is now on
+  main): run one behavioral panel on a domain and confirm a "safety"-blocked codex
+  run routes to `hosted_agent_reachability` (not outcome) LIVE, and that
+  `panel_reliability` on the drift-flight.org trial-count panel reads
+  stable/monotone (N=2 0.80 → 5 0.92) rather than "mixed". Reuse
   `experiments/trial_count_N.py`. Budget: one panel.
 
 <!-- EXECUTED 2026-07-23T07:50Z (local fire): "[LOCAL] What trial count N

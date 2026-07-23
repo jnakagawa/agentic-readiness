@@ -802,3 +802,20 @@ on the drift-flight.org trial-count panel should read stable/monotone
 (N=2 0.80 → 5 0.92) instead of "mixed" — the leak fix is what makes the Cycle 3–5
 reliability code report the true single-model curve. The cross-model N-curve
 stays blocked on codex reachability.
+
+### Cycle 9 addendum — 2026-07-23T09:2xZ — PR #2 merged externally (same fire)
+
+PR #2 (env-block "safety" phrasing, v0.5→v0.6) was MERGED during this same fire
+(merge commit 8fe9f46, clean fast-forward) — NOT by a loop self-merge; the
+webhook reported it merged and auto-unsubscribed. v0.6 is now on main; full suite
+re-run on merged main is **58/58** green. CAVEAT recorded in STATE + BACKLOG: the
+external merge bypassed the playbook's fresh-context adversarial peer review (which
+was to be the next cycle's first duty). Authoring-time self-review was thorough
+(regex A/B across positive/negative/reputation-gate cases, fixtures traced to
+committed evidence, static-isolation by construction) and merged main is green, so
+risk is low — but a POST-MERGE adversarial sanity check is queued P0 (revert on
+main per invariant #5 if any real defect surfaces; no force-push, no history
+rewrite). The [LOCAL] live behavioral re-score of v0.6 is queued as the empirical
+confirmation. No new Slack DM (the sensitive-PR DM already sent on open covers the
+change; the merge is Jonah's own action). Ledger reconciled; this remains ONE
+improvement for the fire.

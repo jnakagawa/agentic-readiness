@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 18
+- Cycle counter: 19
 - Started: 2026-07-23 (UTC)
-- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -54,6 +54,19 @@
   8/8 → 9/9; suite 88 → 89. No Slack (diagnostic, moves no score, digest already sent Cycle 16, not
   a new digest window at 18:18Z). First duty: no open peer-gated PR (verified []). Next cycle takes
   TRUTH.
+  Cycle 19 TRUTH (canonical replay guard now defends the delta IN CAPABILITY TERMS):
+  `tests/test_canonical_replay.py` +1 test (`test_canonical_delta_is_agent_native_payment`, 3/3→4/4)
+  replays both committed fixtures and asserts the CAPABILITY FACTS behind +39.4 — with-rails
+  driftflight.com delivers agent-native payment (`x402_probe` PASS, `self_serve_payg` x402_live=True),
+  no-rails drift-flight.org does not (`x402_probe` not-PASS, x402_live=False), transactability gap
+  exactly 68.75. Converts the playbook's per-cycle "explain the delta in capability terms" from LOG
+  prose into an executable tripwire; agent-native payment is the single largest delta driver
+  (transactability weight 0.30 → ~25.8 of 39.4 weighted pts, ~65%). Worded by capability, never by
+  vendor. Tests-only, scoring.py/rubric/probes byte-for-byte untouched, rubric stays v0.7, canonical
+  delta unchanged by construction AND re-measured (46.1 F / 85.5 B / +39.4, 0 replay-miss);
+  direct-to-main. Suite 89 → 90. No Slack (tests-only, moves no score, not a digest window at 19:12Z).
+  First duty: no open peer-gated PR (verified []); infra health check ran first — RUNNER RECOVERED
+  (see runner-health note below). Next cycle takes READOUT.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity
@@ -251,6 +264,19 @@
   RE-CONFIRMED DOWN Cycle 18 (18:18Z): newest STILL verify_20260723T040757Z, now ~14.2h old.
   Already flagged (Cycle 16 digest); the Cycle-17 replay guard means the in-cloud canonical signal
   no longer depends on it. Folds into the next post-16:00-UTC digest if still down at that fire.
+  **RUNNER RECOVERED Cycle 19 (19:12Z).** Root cause was FIXED on main (commit 5f4e4c0,
+  `loop: fix verify-floor path bug + self-healing law`, authored 11:50 local): the pinned
+  `local_verify.py` derived REPO from `__file__` → resolved to `~/.local` when pinned, so every
+  :41 fire git-pulled in a non-repo, failed silently, and wrote failure artifacts to `~/.local/runs/`
+  with zero log output — the 15h silent outage. Fix: repo path from `ASRS_REPO` env (default
+  `~/github/agentic-readiness`) + hard is-a-repo check, per-fire heartbeat logging (silence now
+  impossible), crash wrapper that always leaves an artifact, pinned copy resynced. The runner is
+  HEARTBEATING again: newest artifact `verify_20260723T184927Z.json` (18:49Z) is ~23 min old at
+  this fire — well under 6h. Live delta on it: 46.1 F / 85.5 B / +39.4, matching the in-cloud replay
+  guard. No further flag needed (self-healed on main, logged there); the runner-down thread is
+  CLOSED. NOTE: even with the runner back, the Cycle-17 replay guard remains the primary in-cloud
+  canonical signal — the runner is now the FRESH-recapture path for legitimate version-bump score
+  moves, not the per-cycle regression check.
   NOTE: the Cycle-17 canonical replay guard (`tests/test_canonical_replay.py`) now runs the
   canonical re-score OFFLINE in-cloud every cycle from the committed fixtures — the in-cloud
   regression signal no longer depends on the launchd runner at all; the runner remains only for

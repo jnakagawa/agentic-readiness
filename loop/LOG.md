@@ -1869,3 +1869,78 @@ queued P2 (same terminal→JSON→HTML deferral per_kind took Cycle 10→12).
 ## Local verification — 20260723T184927Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260723T184927Z.json
+
+## Cycle 19 — 2026-07-23T19:12Z — TRUTH (direct to main)
+
+**What.** Made the canonical replay guard defend the delta IN CAPABILITY TERMS,
+not just as a number. `tests/test_canonical_replay.py` gains a 4th test,
+`test_canonical_delta_is_agent_native_payment`: it replays both committed
+fixtures through the real probe+scoring pipeline (no network) and asserts the
+CAPABILITY FACTS that produce the +39.4 — the with-rails fixture
+(driftflight.com) delivers agent-native programmatic payment (`x402_probe` PASS,
+`self_serve_payg` evidence `x402_live=True`); the no-rails fixture
+(drift-flight.org) does not (`x402_probe` not-PASS, `x402_live=False`); and the
+capability gap manifests as a transactability pillar gap of exactly 68.75.
+
+**Why (TRUTH).** The playbook's capability lens requires every shipping cycle's
+canonical re-score to explain the delta "in capability terms — or the change
+does not ship." Until now that explanation lived only as prose in each LOG
+entry; the executable guard (Cycle 17) pinned the aggregate numbers
+(overall/grade/pillars/delta) but was silent on WHICH capability produced them.
+Those two facts can drift apart: a probe change that flips which capability
+fires while arithmetic happens to preserve a rounded pillar total would pass the
+number-only guards yet break the honest story. This closes that gap — the
+"with-rails wins because it can pay programmatically" claim is now a tripwire,
+not an assertion of good faith. Agent-native payment is the single largest
+driver of the delta: transactability (weight 0.30, the heaviest observed pillar
+with `outcome` unobservable on both) contributes ~25.8 of the 39.4 weighted
+points (~65%; legibility carries the rest). Worded by capability throughout —
+the test asks "is agent-native payment present?", never "is this domain X?".
+
+**Invariant discipline.** Tests-only. `asrs/scoring.py`, `rubric/`, and every
+probe are byte-for-byte untouched — the new test only READS the scored report's
+`.checks`/`.pillar_scores`. No check add/remove, no weight/cap change, no
+version bump → rubric stays **v0.7**, canonical delta unchanged BY CONSTRUCTION
+and re-measured green. No payment/signing code (the test asserts ABSENCE of a
+nonzero path is irrelevant here — it reads recorded fixture responses only).
+Direct to main (tests + docstring; no scoring semantics).
+
+**Evidence.**
+- `python tests/test_canonical_replay.py` 3/3 → **4/4** (new capability test
+  green: `.com` x402 PASS + x402_live=True; `.org` x402 not-PASS + x402_live=False;
+  transactability gap 68.75).
+- Full suite **89 → 90** (12 files, 0 failing): attribution 9, battery 9,
+  battery_wiring 4, canonical_replay 4, fetch_replay 3, free_tier 8 (eth-account
+  installed), protocols 7, quotability 8, readout 15, reliability 8, scoring 11,
+  trial_stability_v06 4.
+
+**Canonical pair (regression signal).** In-cloud replay guard, rubric v0.7:
+drift-flight.org **46.1 F** / driftflight.com **85.5 B**, delta **+39.4**, 0
+replay-miss on either — UNCHANGED and re-measured (scoring path byte-for-byte
+untouched). Independently corroborated by the freshly-recovered local runner:
+`runs/local/verify_20260723T184927Z.json` (18:49Z) reads 46.1 F / 85.5 B / +39.4.
+
+**Infra health (self-healing check, ran first).** Runner RECOVERED: the
+15-hour floor outage (`__file__`-derived repo path in the pinned runner) was
+fixed on main (commit 5f4e4c0, `loop: fix verify-floor path bug + self-healing
+law`) and the runner is heartbeating again — newest artifact
+`verify_20260723T184927Z.json` is ~23 min old at fire time (was >14h stale
+through Cycle 18), well under the 6h threshold. No repair needed this fire. No
+open peer-gated PR (`list_pull_requests state=open` → []). Was in detached HEAD
+on checkout; reset to `main` and fast-forwarded 43 commits before working.
+
+**Ship.** Direct-to-main. No Slack DM — tests-only, moves no score, adds no
+capability check; the daily digest was already sent Cycle 16 and this fire
+(19:12Z) is not a new digest window. (The runner-recovery is good news but not a
+human-gate/notable-ship/digest trigger — it self-healed on main, already logged
+there.)
+
+**Next hypothesis.** READOUT next cycle (rotation
+METHOD→COVERAGE→TRUTH→**READOUT**). Cloud-doable READOUT candidate: the
+`between_kind_spread` HTML pill (Cycle-18 follow-up, P2) — surface the
+storefront-type specialization signal on the scorecard battery card, same
+terminal→JSON→HTML deferral `per_kind` took. The capability-guard pattern shipped
+here also wants a THIRD control-domain case (example.com, 22.5 F) once that
+fixture is captured [LOCAL] — it would pin that a LOW-capability baseline earns
+NO agent-native payment credit, guarding against a probe that spuriously inflates
+a bare site.

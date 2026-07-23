@@ -274,14 +274,16 @@ design in-cloud, execute locally.
   report through `scorecard.build_scorecard` and confirm the per-intent grid + by-archetype
   rollup read correctly on real multi-kind data. No new code — a render + visual check.
 
-- **[LOCAL] Third-control-domain replay fixture** (METHOD, Cycle-17 follow-up): the
-  canonical replay guard pins only the storefront PAIR. Capture a fixture for a NON-storefront
+- **[LOCAL] Third-control-domain replay fixture** (METHOD/TRUTH, Cycle-17 + Cycle-19 follow-up):
+  the canonical replay guard pins only the storefront PAIR. Capture a fixture for a NON-storefront
   control (example.com, already spot-checked 22.5 F [LOCAL] 15:43Z) via
   `asrs.cli score example.com --record-fixture fixtures/canonical/example.com.json`, then add a
-  small `test_canonical_replay` case pinning 22.5 F / no commerce credit. Widens the offline
-  regression signal to a low-capability baseline (guards against a probe that spuriously
-  inflates a bare site), not just the +39.4 pair. Capture is [LOCAL] (live crawl); the test
-  wiring is cloud-doable once the fixture lands.
+  small `test_canonical_replay` case pinning 22.5 F / no commerce credit. NOW ALSO extend the
+  Cycle-19 CAPABILITY-assertion pattern to it: pin that this low-capability baseline earns NO
+  agent-native payment (`x402_probe` not-PASS, `self_serve_payg` x402_live=False, NO
+  `commerce-protocol-*`/`x402-live`) — guards against a probe that spuriously INFLATES a bare
+  site with payment credit it hasn't earned, the mirror of the +39.4 pair's capability guard.
+  Capture is [LOCAL] (live crawl); the test wiring is cloud-doable once the fixture lands.
 
 - **HTML battery card: between-archetype spread pill** (READOUT, Cycle-18 follow-up):
   `between_kind_spread` (storefront-type specialization) ships terminal + JSON but the HTML

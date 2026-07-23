@@ -43,6 +43,7 @@ sys.path.insert(0, _REPO_ROOT)
 from asrs import scoring  # noqa: E402
 from asrs.cli import _run_probes  # noqa: E402
 from asrs.fetch import FetchContext  # noqa: E402
+from asrs.types import Status  # noqa: E402
 
 _FIXTURE_DIR = os.path.join(_REPO_ROOT, "fixtures", "canonical")
 
@@ -170,11 +171,71 @@ def test_canonical_delta_is_39_4() -> None:
     )
 
 
+# ---------------------------------------------------------------------------
+# 3. The delta is defended IN CAPABILITY TERMS, not merely as a number. The
+#    playbook's capability lens requires every canonical re-score to explain
+#    the delta by what agent-native rails let an agent actually DO — and the
+#    single largest driver of this +39.4 is the ability to PAY PROGRAMMATICALLY
+#    (transactability, weight 0.30 — the heaviest observed pillar — contributes
+#    ~26 of the 39.4 weighted points). Guards 1–2 pin the numbers; this pins the
+#    CAPABILITY behind them as an executable fact, so the LOG's "with-rails wins
+#    because it delivers agent-native payment" stops being unverifiable prose:
+#    the with-rails fixture delivers agent-native payment (x402 live), the
+#    no-rails fixture does not. A probe change that flipped WHICH capability
+#    fires while arithmetic happened to preserve a pillar total would slip past
+#    the number-only guards above but fail HERE. Worded by capability, never by
+#    vendor — it asks "is agent-native payment present?", not "is this domain X?".
+# ---------------------------------------------------------------------------
+def _by_id(report, check_id):
+    for c in report.checks:
+        if c.check_id == check_id:
+            return c
+    raise AssertionError(f"check {check_id!r} absent from {report.domain} report")
+
+
+def test_canonical_delta_is_agent_native_payment() -> None:
+    print("test_canonical_delta_is_agent_native_payment")
+    com, com_misses = _score_fixture("driftflight.com")   # with agent-native rails
+    org, org_misses = _score_fixture("drift-flight.org")  # no agent-native rails
+    _check(not com_misses and not org_misses, "no replay-miss on either domain")
+
+    # With-rails side: agent-native programmatic payment is PRESENT.
+    _check(
+        _by_id(com, "x402_probe").status is Status.PASS,
+        "driftflight.com: x402_probe PASSES — agent-native payment reachable",
+    )
+    _check(
+        _by_id(com, "self_serve_payg").evidence.get("x402_live") is True,
+        "driftflight.com: self_serve_payg records x402_live=True",
+    )
+
+    # No-rails side: agent-native programmatic payment is ABSENT (the capability
+    # gap, not an environment failure — the fixture is a clean live crawl).
+    _check(
+        _by_id(org, "x402_probe").status is not Status.PASS,
+        "drift-flight.org: x402_probe does NOT pass — no agent-native payment",
+    )
+    _check(
+        _by_id(org, "self_serve_payg").evidence.get("x402_live") is False,
+        "drift-flight.org: self_serve_payg records x402_live=False",
+    )
+
+    # The capability gap manifests as the transactability pillar gap — pin that
+    # the with-rails side strictly dominates by the recorded margin, so a future
+    # probe change can't quietly rebalance the pillar while the overall holds.
+    gap = round(com.pillar_scores["transactability"] - org.pillar_scores["transactability"], 2)
+    _check(
+        gap == 68.75,
+        f"transactability capability gap (.com - .org) == 68.75 (got {gap})",
+    )
+
+
 def main() -> int:
     tests = [
         test_canonical_org_replays_46_1,
         test_canonical_com_replays_85_5,
         test_canonical_delta_is_39_4,
+        test_canonical_delta_is_agent_native_payment,
     ]
     failed = 0
     for t in tests:

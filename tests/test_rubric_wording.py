@@ -85,26 +85,38 @@ from asrs.scoring import load_rubric  # noqa: E402
 _SCORED_STOREFRONT_NAMES = ["exa", "driftflight", "drift-flight"]
 
 
+def _scan_text_for_scored_storefront(text: str) -> list[str]:
+    """Return every denylisted scored-storefront name present in free text.
+
+    Word-boundary, case-insensitive: matches "Exa" in "The Exa lesson" but not
+    "exa" inside "example"/"Texas"/"hexadecimal". This is the SINGLE matching
+    primitive — the parsed-check scanner below delegates to it, and the
+    rendered-readout wording guard (``tests/test_readout_wording.py``) imports it
+    so both surfaces test vendor-neutrality with byte-identical matching logic
+    against the ONE denylist above.
+    """
+    return [
+        name
+        for name in _SCORED_STOREFRONT_NAMES
+        if re.search(r"\b" + re.escape(name) + r"\b", text, re.IGNORECASE)
+    ]
+
+
 def _scan_checks_for_scored_storefront(checks: list[dict]) -> list[tuple[str, str]]:
     """Return (check_id, offending_term) for every denylisted name found in a
     check's ``id`` or ``desc``.
 
-    Word-boundary, case-insensitive: matches "Exa" in "The Exa lesson" but not
-    "exa" inside "example"/"Texas"/"hexadecimal". This is the SINGLE scanner used
-    by both the real-rubric assertion and the negative control, so the control
-    validates the same code the guard relies on.
+    Delegates the actual matching to ``_scan_text_for_scored_storefront`` so the
+    real-rubric assertion, the negative control, and the readout-wording guard
+    all share one matcher — a control that validates the same code the guards
+    rely on.
     """
-    patterns = [
-        (name, re.compile(r"\b" + re.escape(name) + r"\b", re.IGNORECASE))
-        for name in _SCORED_STOREFRONT_NAMES
-    ]
     hits: list[tuple[str, str]] = []
     for check in checks:
         cid = str(check.get("id", ""))
         text = f"{cid} {check.get('desc', '')}"
-        for name, pat in patterns:
-            if pat.search(text):
-                hits.append((cid, name))
+        for name in _scan_text_for_scored_storefront(text):
+            hits.append((cid, name))
     return hits
 
 

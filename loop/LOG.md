@@ -3283,3 +3283,71 @@ pair (reputation gate, 4/4 at 11:42Z), but a claude-only `--battery auto` on the
 `driftflight.com` (claims {metered_api, subscription, digital_good}) is now the cheapest way to
 exercise the full offering-relative pipeline live + eyeball the NA-naming card. Cloud rotation
 unaffected (next cloud cycle METHOD).
+
+## Cycle 33 (METHOD) — 2026-07-24T09:12Z — vendor-neutral WORDING guard extended from the parsed rubric to the RENDERED readout prose
+
+**Track.** METHOD (measurement rigor: the vendor-neutrality invariant, made a tripwire on
+the surface a reader actually sees — the standing "Adversarial referee pass" item's READOUT half).
+
+**What / why.** Cycle 29 made the capability-lens WORDING invariant ("checks are worded by
+capability, never by vendor; no special-casing any domain or product") executable for the
+PARSED rubric — `tests/test_rubric_wording.py` scans every scored check's id/desc for a
+scored-storefront/product name and caught + drove the fix of the one live violation ("The Exa
+lesson —"). But that guard covers only the machine-parsed `checks:` list. The HAND-AUTHORED
+readout PROSE the public reads — the "read the paper" `methodology.html` and the card's own
+`<div class="desc">` explanation strings (`asrs/scorecard.py`) — was UNguarded, i.e. exactly
+the kind of surface the "Exa lesson" leak lived on. This cycle converts the standing manual
+prose re-read into an executable tripwire for that readout layer.
+
+`tests/test_readout_wording.py` (4 tests) renders the full public readout set for a NEUTRAL
+placeholder domain (`example.test`, not on the denylist) via `scorecard.build_scorecard` and
+scans the rendered `methodology.html` + card `card.html` with the SAME denylist + SAME matcher
+Cycle 29 uses — factored into a shared `_scan_text_for_scored_storefront(text)` in
+`test_rubric_wording.py` (behavior-preserving refactor: `_scan_checks_for_scored_storefront`
+now delegates to it, existing 4/4 unchanged), imported by the new module so ONE denylist +
+ONE matching primitive back both surfaces. Asserts no scored-storefront name appears.
+
+Two design points that make the guard honest:
+- **DOMAIN-AS-DATA → neutral domain.** A card is ABOUT a storefront, so that domain
+  legitimately appears as DATA (title/hero/column). Scanning a canonical-pair card would
+  drown in true positives. Rendering for `example.test` means any denylisted hit can only come
+  from hand-authored TEMPLATE prose — precisely the leak we want.
+- **rubric.html DELIBERATELY EXCLUDED, and reused as a LIVE non-vacuous control.**
+  `_write_rubric_page` renders the rubric YAML verbatim, changelog comments and all; those
+  comments name the canonical pair (+ "Shopify") to DOCUMENT mechanism / score-neutrality —
+  the engineering-history category Cycle 29 already carved out (it scans `checks:`, never the
+  comments). Scanning verbatim YAML would flag legitimate history. Instead the test ASSERTS the
+  scanner fires on the rendered rubric.html (its changelog trips it: `['driftflight',
+  'drift-flight']`) — live proof the matcher actually fires on rendered HTML, so the clean
+  card/methodology runs mean the prose is neutral, not that the matcher is dead. A second
+  non-vacuous leg: a synthetic `<div class="desc">…The Exa lesson…</div>` blob is flagged by
+  the shared matcher. A `test_readout_surfaces_are_substantive` guard pins methodology + card
+  render ≥4000 chars so an empty/degenerate render can't vacuously pass.
+
+**Validation / regression.** `git diff --name-only -- asrs/ rubric/` EMPTY — scoring.py /
+rubric / probes / fetch / protocols / offering / battery / scorecard byte-for-byte untouched
+(the whole change is `tests/test_rubric_wording.py` refactor + new `tests/test_readout_wording.py`)
+→ rubric stays **v0.7**, canonical delta unchanged by construction AND re-measured (in-cloud
+replay guard `test_canonical_replay.py` 8/8, **46.1 F / 85.5 B / +39.4**, 0 replay-miss;
+live-corroborated by `verify_20260724T084104Z` 08:41Z). Vendor-neutral by construction (keys on
+the SAME capability-invariant denylist, worded by capability). Not payment/signing code.
+
+**Ship.** Direct to main (tests-only, no scoring semantics — per playbook ship rules).
+
+**Evidence.** `tests/test_readout_wording.py` 4/4 (new); `tests/test_rubric_wording.py` 4/4
+(unchanged after the shared-matcher refactor); full suite **141 → 145**; all 18 test files pass.
+
+**First duty.** No open peer-gated PR (verified `list_pull_requests` state=open → `[]`). Infra
+health check ran first — runner HEALTHY (newest `verify_20260724T084104Z`, 08:41Z, ~31 min old
+at fire, 46.1 F / 85.5 B / +39.4); bench 141/141 pre-change; git realigned (detached HEAD from a
+forced origin/main update `0b0ad41` → checked out `main` = origin/main).
+
+**Comms.** No Slack — tests-only, moves no score, not a sensitive-class PR; not a digest window
+(09:12Z, before 16:00 UTC; digest last sent Cycle 16).
+
+**Next hypothesis.** The vendor-neutrality invariant is now a tripwire on THREE layers — scoring
+(relabel-invariance, Cycle 21), the parsed rubric wording (Cycle 29), and now the rendered
+readout prose (this cycle). The remaining referee-pass increment is to extend BOTH relabel
+guards AND both wording denylists as new scored storefronts/fixtures land (add each new name to
+`_SCORED_STOREFRONT_NAMES`; wire the third-control-domain `example.com` fixture once captured
+[LOCAL]). Next cloud cycle takes COVERAGE.

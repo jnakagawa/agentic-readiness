@@ -360,13 +360,20 @@ design in-cloud, execute locally.
   appear; it caught + drove the fix of the one live violation ("The Exa lesson —" in
   `bhv_no_human_gate.desc`, reworded to capability language), and is non-vacuous
   (negative control), anti-vacuous (full parsed set), and false-positive-guarded
-  (instrument/crawler names not flagged). REMAINING (still recurring): (a) a prose
-  re-read of the HAND-AUTHORED readout strings the parsed-rubric guard does NOT cover
-  — the methodology-page prose (`scorecard._write_methodology_page`) and the card
-  `<div class="desc">` strings in scorecard.py — for the same vendor-leaning lens;
-  (b) extend BOTH the relabel-invariance guard AND this wording denylist to more
-  fixtures/storefronts as they land (see the third-control-domain P2 item; add any
-  newly-scored storefront's name to `_SCORED_STOREFRONT_NAMES`). PROGRESS
+  (instrument/crawler names not flagged). REMAINING half (a) — the HAND-AUTHORED-readout
+  prose re-read — is now EXECUTABLE (Cycle 33, see below), not a manual pass. STILL recurring:
+  (b) extend BOTH the relabel-invariance guard AND BOTH wording denylists (parsed-check +
+  the new readout scanner) to more fixtures/storefronts as they land (see the third-control-domain
+  P2 item; add any newly-scored storefront's name to `_SCORED_STOREFRONT_NAMES` — the ONE denylist
+  now backs both wording surfaces). PROGRESS 2026-07-24T09:12Z (Cycle 33, METHOD): the
+  HAND-AUTHORED-readout half of (a) shipped as `tests/test_readout_wording.py` (4 tests) —
+  renders the public readout for a NEUTRAL domain (`example.test`) via `build_scorecard` and scans
+  the rendered `methodology.html` + card `card.html` with the SAME denylist + matcher (factored
+  into a shared `_scan_text_for_scored_storefront` in `test_rubric_wording.py`, behavior-preserving).
+  Domain-as-data handled by the neutral domain; rubric.html deliberately excluded (verbatim-YAML
+  changelog names = the Cycle-29 engineering-history category) AND reused as a LIVE non-vacuous
+  control (scanner asserted to FIRE on it: `['driftflight','drift-flight']`). Score-neutral
+  (git diff -- asrs/ rubric/ EMPTY; rubric v0.7, replay guard 8/8 / +39.4); suite 141→145. PROGRESS
   2026-07-24T07:20Z (Cycle 31, TRUTH): relabel-invariance now covers a SECOND
   LAYER — the OFFERING classifier / task-selection path, not just scoring.
   `tests/test_offering_canonical.py` +3 (4→7): relabel each committed canonical

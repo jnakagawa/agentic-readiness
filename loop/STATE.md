@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 32
+- Cycle counter: 33
 - Started: 2026-07-23 (UTC)
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -395,6 +395,29 @@
   (verified []); runner HEALTHY (verify_20260724T084104Z, 08:41Z, ~1 min old at fire). This
   de-contaminates + speeds EVERY future behavioral run — the honest prerequisite for the top-P0
   operator `--battery auto` acceptance rerun (now runs hermetic + faster). Cloud rotation unaffected.
+  Cycle 33 METHOD (vendor-neutral WORDING invariant extended from the parsed rubric to the RENDERED
+  readout prose — the referee-pass READOUT half): `tests/test_readout_wording.py` (4 tests) renders the
+  public readout for a NEUTRAL domain (`example.test`) via `build_scorecard` and scans the rendered
+  `methodology.html` + card `card.html` for scored-storefront names using the SAME denylist + matcher
+  Cycle 29 uses — factored into a shared `_scan_text_for_scored_storefront(text)` in
+  `test_rubric_wording.py` (behavior-preserving: `_scan_checks_for_scored_storefront` delegates, 4/4
+  unchanged). Cycle 29 guarded the parsed `checks:` list only; the HAND-AUTHORED methodology prose + card
+  `<div class="desc">` strings (the surface the "Exa lesson" leak lived on) were unguarded. DOMAIN-AS-DATA
+  handled by the neutral domain (a card is ABOUT a storefront -> its domain appears as data; a denylisted
+  hit for `example.test` can only be baked-in template prose). rubric.html DELIBERATELY EXCLUDED (renders
+  YAML verbatim incl. changelog comments that legitimately name the canonical pair — Cycle-29's
+  engineering-history category) AND reused as a LIVE non-vacuous control: the test asserts the scanner
+  FIRES on rubric.html (`['driftflight','drift-flight']`) -> proof the matcher fires on rendered HTML, so
+  the clean card/methodology zeros are meaningful; second non-vacuous leg = synthetic "The Exa lesson"
+  desc blob flagged; substantiveness guard (>=4000 chars) blocks an empty-render vacuous pass. Tests-only:
+  `git diff --name-only -- asrs/ rubric/` EMPTY -> scoring.py/rubric/probes/scorecard byte-for-byte
+  untouched, rubric stays v0.7, canonical delta unchanged by construction AND re-measured (replay guard
+  8/8, 46.1 F / 85.5 B / +39.4, 0 replay-miss; verify_20260724T084104Z live-corroborates). Direct-to-main.
+  `test_readout_wording.py` 4/4 (new) + `test_rubric_wording.py` 4/4 (refactor); suite 141 -> 145 (17 -> 18
+  files). No Slack (tests-only, moves no score, before the 16:00 UTC digest window, digest last sent
+  Cycle 16). First duty: no open peer-gated PR (verified []); infra health check ran first — runner
+  HEALTHY (verify_20260724T084104Z, 08:41Z, ~31 min old, 46.1 F / 85.5 B / +39.4); git realigned (detached
+  HEAD from forced origin/main update 0b0ad41 -> main = origin/main). Next cycle takes COVERAGE.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity

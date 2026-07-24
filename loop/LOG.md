@@ -3059,3 +3059,7 @@ window (07:20Z, before 16:00 UTC; digest last sent Cycle 16).
 remaining relabel-coverage gap is a NON-STOREFRONT control (example.com) and a retail
 INVERSE (books.toscrape.com) — both need a [LOCAL] fixture capture (queued P2), after which
 this same offering relabel guard extends to them in-cloud. Next cloud cycle takes READOUT.
+
+## Local verification — 20260724T074105Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260724T074105Z.json

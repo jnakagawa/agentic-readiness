@@ -50,6 +50,20 @@ from asrs.types import BehavioralRun
 
 DEFAULT_BATTERY_PATH = Path(__file__).resolve().parent.parent / "batteries" / "default_v1.yaml"
 
+# Version of the battery's AGGREGATION semantics — how per-task runs are rolled
+# up into completion means and spreads. It is DELIBERATELY SEPARATE from the
+# rubric version (:data:`asrs.scoring` load_rubric): the battery is a diagnostic
+# layer that feeds no overall score, so a change to how it aggregates must NOT
+# move the rubric version (that would falsely signal the SCORED number changed
+# and break canonical comparability). Instead battery numbers are comparable only
+# within a battery-semantics version, tracked here.
+#   b1 — NA-aware aggregation (operator directive brick 3): archetypes a site does
+#        not CLAIM to serve are marked NA and excluded from mean_completion,
+#        cross_task_spread, and between_kind_spread, distinct from "no signal"
+#        (an offered intent nobody could observe). Before b1 the battery had no
+#        NA concept — every task, offered or not, counted toward the spreads.
+BATTERY_SEMANTICS_VERSION = "b1"
+
 
 # --------------------------------------------------------------------------
 # battery definition (the input file)
@@ -275,10 +289,20 @@ class BatteryTaskResult:
     # Mean of the checkpoint fractions — a single 0..1 "how far did agents get"
     # for this intent. None when no valid run.
     mean_completion: float | None = None
+    # NA = the site does not CLAIM this archetype (from offering discovery), so
+    # the intent is not applicable and is never assessed. Distinct from "no
+    # signal" (an offered intent every run env-blocked): NA is a structural
+    # not-offered, no-signal is an unobserved-but-offered. NA tasks are excluded
+    # from every mean/spread and are never a site failure. False unless an
+    # offering profile marks it (offering-relative aggregation, brick 3).
+    na: bool = False
 
     @property
     def has_signal(self) -> bool:
-        return self.valid_runs > 0
+        # NA tasks never count as signal even if a stray run attached to them
+        # (a garden-path completion of an intent the site does not offer is not
+        # readiness for an offered archetype).
+        return self.valid_runs > 0 and not self.na
 
 
 @dataclass
@@ -308,6 +332,23 @@ class BatterySummary:
     battery_id: str
     n_tasks: int
     tasks_with_signal: int
+    # Battery-diagnostic aggregation-semantics version (NOT the rubric version):
+    # battery numbers are comparable only within this version. See
+    # :data:`BATTERY_SEMANTICS_VERSION`.
+    battery_semantics_version: str = BATTERY_SEMANTICS_VERSION
+    # Archetypes the site does NOT claim to serve (offering discovery) — marked
+    # NA and excluded from every mean/spread, recorded here so the readout can
+    # name them "not offered" rather than silently dropping them. Empty when
+    # aggregation ran without an offering profile (no discovery → nothing known
+    # to be un-offered; the honest reading is "not assessed for NA", not "all
+    # offered"). ARCHETYPES order.
+    na_archetypes: list[str] = field(default_factory=list)
+    # The storefront archetypes (``kind``) that actually produced signal — what
+    # every completion mean and spread below is computed OVER. Naming this makes
+    # the numbers comparable WITHIN archetype across sites, never as raw means
+    # over different task sets (operator directive, comparability requirement).
+    # First-appearance order in the battery.
+    assessed_archetypes: list[str] = field(default_factory=list)
     per_task: list[BatteryTaskResult] = field(default_factory=list)
     # Per storefront archetype (``kind``): the battery-wide numbers, sliced so a
     # site can be read one archetype at a time. Insertion-ordered by first
@@ -346,7 +387,25 @@ def _valid_runs(runs: list[BehavioralRun]) -> list[BehavioralRun]:
     return [r for r in runs if r.checkpoints and not _is_env_blocked(r)]
 
 
-def _task_result(task: BatteryTask, runs: list[BehavioralRun]) -> BatteryTaskResult:
+def _task_result(
+    task: BatteryTask, runs: list[BehavioralRun], *, na: bool = False
+) -> BatteryTaskResult:
+    # NA (the site does not offer this archetype): not applicable, never
+    # assessed. Record it as an explicit not-offered placeholder — attempted
+    # runs preserved for the audit trail, but no completion measured — so it is
+    # excluded from every mean/spread and named in the readout, distinct from a
+    # no-signal task the site DID offer but nobody could observe.
+    if na:
+        return BatteryTaskResult(
+            task_id=task.id,
+            kind=task.kind,
+            attempted_runs=len(runs),
+            valid_runs=0,
+            checkpoint_fractions={k: None for k in _CHECKPOINT_KEYS},
+            mean_completion=None,
+            na=True,
+        )
+
     valid = _valid_runs(runs)
     n = len(valid)
     if n == 0:
@@ -449,7 +508,10 @@ def _between_kind_spread(per_kind: list[BatteryKindResult]) -> float | None:
 
 
 def aggregate_battery(
-    battery: Battery, runs_by_task: dict[str, list[BehavioralRun]]
+    battery: Battery,
+    runs_by_task: dict[str, list[BehavioralRun]],
+    *,
+    profile: OfferingProfile | None = None,
 ) -> BatterySummary:
     """Roll per-task shopper runs up into a battery summary.
 
@@ -458,10 +520,28 @@ def aggregate_battery(
     treated as attempted-with-zero-runs (no signal). Tasks with no valid run are
     excluded from the cross-task mean/spread — a site is never charged variance
     for an intent nobody could observe.
+
+    ``profile`` (optional) makes the aggregation OFFERING-RELATIVE (operator
+    directive brick 3): a task whose ``kind`` is an archetype the profile does
+    not claim is marked NA and excluded from every mean/spread — the battery
+    measures the site's readiness for what it OFFERS, not its mismatch with
+    intents it never advertised. Every archetype the profile leaves unclaimed is
+    recorded in ``na_archetypes`` (named "not offered" in the readout), and the
+    archetypes that produced signal are recorded in ``assessed_archetypes`` so
+    the numbers are read WITHIN archetype, never as raw means over different task
+    sets. Without a profile the aggregation is byte-for-byte the pre-brick-3
+    behaviour (no task is NA, ``na_archetypes`` empty) — an offering profile is
+    the only thing that establishes what a site does not offer.
     """
-    per_task = [_task_result(t, runs_by_task.get(t.id, [])) for t in battery.tasks]
+    na_kinds = set(profile.unclaimed) if profile is not None else set()
+    per_task = [
+        _task_result(t, runs_by_task.get(t.id, []), na=(t.kind in na_kinds))
+        for t in battery.tasks
+    ]
     signal = [tr for tr in per_task if tr.has_signal]
-    per_kind = _per_kind_results(per_task)
+    # NA tasks are recorded but never rolled into the per-kind / spread math.
+    applicable = [tr for tr in per_task if not tr.na]
+    per_kind = _per_kind_results(applicable)
 
     checkpoint_mean: dict[str, float | None] = {}
     checkpoint_spread: dict[str, float | None] = {}
@@ -483,10 +563,25 @@ def aggregate_battery(
     spreads = [s for s in checkpoint_spread.values() if s is not None]
     cross_task_spread = statistics.fmean(spreads) if (spreads and len(signal) >= 1) else None
 
+    # NA archetypes = everything the profile leaves unclaimed (ARCHETYPES order),
+    # recorded even when they never appeared as tasks so the readout can name a
+    # not-offered archetype for an offering-relative battery too. Empty without a
+    # profile — with no discovery we cannot honestly assert what a site does not
+    # offer.
+    na_archetypes = list(profile.unclaimed) if profile is not None else []
+    # Assessed = the kinds that produced signal, first-appearance order — the
+    # exact set the means/spreads above are computed over.
+    assessed_archetypes: list[str] = []
+    for tr in signal:
+        if tr.kind not in assessed_archetypes:
+            assessed_archetypes.append(tr.kind)
+
     return BatterySummary(
         battery_id=battery.id,
         n_tasks=len(battery.tasks),
         tasks_with_signal=len(signal),
+        na_archetypes=na_archetypes,
+        assessed_archetypes=assessed_archetypes,
         per_task=per_task,
         per_kind=per_kind,
         checkpoint_mean=checkpoint_mean,

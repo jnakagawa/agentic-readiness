@@ -239,6 +239,19 @@ def _battery_lines(summary) -> list[str]:
             detail = "no signal (no valid run — not a site failure)"
         out.append(f"    {tid:<20} [{kind}]  {detail}")
 
+    # Offering-relative comparability (brick 3): when discovery drove the
+    # battery, name WHICH archetypes the numbers are over and which the site does
+    # not offer, so a mean is never read across mismatched task sets. Both lines
+    # render only when an offering profile marked something NA (na_archetypes
+    # populated) — a hand-authored battery with no discovery prints neither.
+    na = summary.get("na_archetypes", []) or []
+    if na:
+        assessed = summary.get("assessed_archetypes", []) or []
+        out.append(
+            "    assessed over: " + (", ".join(assessed) if assessed else "none")
+        )
+        out.append("    not offered (NA, excluded): " + ", ".join(na))
+
     # Per storefront archetype: a site can be strong on one kind and weak on
     # another; only print the rollup when it splits into >1 archetype (with a
     # single kind the per-kind line just restates the battery-wide number).

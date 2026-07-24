@@ -2913,3 +2913,7 @@ guard's scope), and extending the relabel-invariance guard to the [LOCAL]
 third-control fixture once captured. If the 01–04:41Z verify gap persists past 6h at
 the next fire, flag the runner in STATE + the post-16:00 digest. Next cloud cycle
 takes COVERAGE.
+
+## Local verification — 20260724T054104Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260724T054104Z.json

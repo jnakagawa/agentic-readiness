@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import html
 import json
+import re
 from pathlib import Path
 
 PILLAR_LABELS = {
@@ -41,6 +42,17 @@ CAP_EXPLANATIONS = {
     "trust-panel-refusal": "A panel model confidently refused to transact here on a user's behalf.",
     "human-gate-required": "Purchase is impossible without a human-only step.",
 }
+
+
+def _cap_anchor(slug: str) -> str:
+    """The methodology-page fragment id for a cap slug. ONE source of truth so
+    the card's "Grade capped" link and the methodology cap-row id can never
+    drift: the methodology row sets ``id=_cap_anchor(slug)`` and the card links
+    to ``methodology.html#{_cap_anchor(slug)}``. Slug is lowercased and any
+    non-alphanumeric run collapses to a single '-' so a future odd slug still
+    yields a valid, matching anchor on both sides."""
+    frag = re.sub(r"[^a-z0-9]+", "-", str(slug).lower()).strip("-")
+    return f"cap-{frag}"
 
 ZERO_MARK = (
     '<svg viewBox="0 0 364 364" fill="none" xmlns="http://www.w3.org/2000/svg" class="mark">'
@@ -115,7 +127,8 @@ h1,h2,h3{font-family:var(--font-display);margin:0}
 .chip{font-family:var(--font-mono);font-size:12px;background:var(--bg-secondary);
   box-shadow:inset 0 0 0 1px var(--border-secondary);border-radius:6px;
   padding:2px 8px;color:var(--text-secondary);display:inline-block;
-  overflow-wrap:anywhere;max-width:100%;box-sizing:border-box}
+  overflow-wrap:anywhere;max-width:100%;box-sizing:border-box;text-decoration:none}
+a.chip:hover{box-shadow:inset 0 0 0 1px var(--text-tertiary);color:var(--text-primary)}
 .chip.na{color:var(--text-quaternary);opacity:.7;background:transparent}
 .chip-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:4px}
 .alert{display:flex;gap:12px;padding:14px 16px;border-radius:12px;
@@ -331,7 +344,7 @@ def _write_methodology_page(out_dir: Path) -> str:
         for p, w in sorted(weights.items(), key=lambda kv: -kv[1])
     )
     cap_rows = "".join(
-        f'<tr><td><span class="chip">{_esc(slug)}</span></td>'
+        f'<tr id="{_cap_anchor(slug)}"><td><span class="chip">{_esc(slug)}</span></td>'
         f'<td class="num">&le; {_esc(limit)} &middot; max {_esc(grade_for(limit))}</td>'
         f'<td>{_esc(CAP_EXPLANATIONS.get(slug, ""))}</td></tr>'
         for slug, limit in caps.items()
@@ -563,9 +576,15 @@ def _caps_alerts(rep: dict) -> str:
     out = []
     for slug in rep.get("caps_applied", []):
         why = CAP_EXPLANATIONS.get(slug, "")
+        # Link the cap chip to its row in the methodology page so a reader who
+        # sees a capped grade can jump straight to why that finding caps.
+        chip = (
+            f'<a class="chip" href="methodology.html#{_cap_anchor(slug)}">'
+            f"{_esc(slug)}</a>"
+        )
         out.append(
             f'<div class="alert"><span class="icon">!</span><div>'
-            f"<b>Grade capped</b> by <span class=\"chip\">{_esc(slug)}</span> — {_esc(why)}"
+            f"<b>Grade capped</b> by {chip} — {_esc(why)}"
             "</div></div>"
         )
     return "".join(out)

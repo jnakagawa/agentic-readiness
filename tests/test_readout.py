@@ -434,6 +434,64 @@ def test_build_scorecard_publishes_and_links_methodology() -> None:
                "the card footer links to methodology.html")
 
 
+# Cycle 32 (READOUT): a "Grade capped" chip on a card links to the cap's row in
+# the methodology page, so a reader who sees a capped grade can jump straight to
+# why that finding caps. The methodology row's id and the card link's fragment
+# both come from the ONE helper `_cap_anchor` — these tests pin that they render,
+# that they can't drift, and that a no-cap card still emits nothing.
+
+
+def test_cap_anchor_helper_is_stable_and_sanitizing() -> None:
+    print("test_cap_anchor_helper_is_stable_and_sanitizing")
+    # Clean slugs pass through as cap-<slug>.
+    _check(scorecard._cap_anchor("no-https") == "cap-no-https", "clean slug -> cap-no-https")
+    # A future odd slug still yields a valid, matching fragment on both sides.
+    _check(scorecard._cap_anchor("Weird Slug!!") == "cap-weird-slug",
+           "odd slug lowercased + non-alnum runs collapsed to '-'")
+    _check(scorecard._cap_anchor("a__b") == "cap-a-b", "underscore run collapses")
+
+
+def test_methodology_cap_rows_carry_anchor_ids() -> None:
+    print("test_methodology_cap_rows_carry_anchor_ids")
+    rubric = load_rubric()
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    # Every live cap slug has an addressable row id, so a link can target it.
+    for slug in rubric["caps"]:
+        anchor = scorecard._cap_anchor(slug)
+        _check(f'id="{anchor}"' in text, f"methodology cap row carries id={anchor!r}")
+
+
+def test_caps_alert_chip_links_to_methodology() -> None:
+    print("test_caps_alert_chip_links_to_methodology")
+    # No cap applied -> no alert, no link (byte-for-byte the pre-change no-op).
+    _check(scorecard._caps_alerts({"caps_applied": []}) == "", "no cap -> empty")
+    slug = "no-https"
+    html_out = scorecard._caps_alerts({"caps_applied": [slug]})
+    anchor = scorecard._cap_anchor(slug)
+    _check(f'href="methodology.html#{anchor}"' in html_out,
+           "capped chip links to the methodology cap anchor")
+    _check('<a class="chip"' in html_out, "the cap chip is rendered as a link")
+    _check("Grade capped" in html_out, "the alert still reads 'Grade capped'")
+
+
+def test_cap_link_and_methodology_anchor_cannot_drift() -> None:
+    # The load-bearing assertion: for every cap the rubric can apply, the
+    # fragment the CARD links to must resolve to an id actually PRESENT in the
+    # methodology page. Ties the two rendered surfaces, not just the helper.
+    print("test_cap_link_and_methodology_anchor_cannot_drift")
+    rubric = load_rubric()
+    with tempfile.TemporaryDirectory() as d:
+        methodology = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    for slug in rubric["caps"]:
+        alert = scorecard._caps_alerts({"caps_applied": [slug]})
+        frag = f"methodology.html#{scorecard._cap_anchor(slug)}"
+        _check(frag in alert, f"card links {frag!r} for cap {slug!r}")
+        target_id = frag.split("#", 1)[1]
+        _check(f'id="{target_id}"' in methodology,
+               f"the linked fragment {target_id!r} resolves to a methodology row")
+
+
 def main() -> int:
     tests = [
         test_json_carries_reliability,
@@ -455,6 +513,10 @@ def main() -> int:
         test_methodology_documents_earned_dominance,
         test_methodology_page_tracks_live_rubric,
         test_build_scorecard_publishes_and_links_methodology,
+        test_cap_anchor_helper_is_stable_and_sanitizing,
+        test_methodology_cap_rows_carry_anchor_ids,
+        test_caps_alert_chip_links_to_methodology,
+        test_cap_link_and_methodology_anchor_cannot_drift,
     ]
     failed = 0
     for t in tests:

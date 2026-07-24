@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 31
+- Cycle counter: 32
 - Started: 2026-07-23 (UTC)
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -358,6 +358,24 @@
   (verify_20260724T074105Z, 07:41Z, ~40s old at fire). The offering acceptance criterion is now
   guarded in-cloud on BOTH sides; the last offering-layer fixture gap is the example.com
   non-storefront control (empty offering), folded into the Third-control-domain [LOCAL] item.
+  Cycle 32 READOUT (methodology page made navigable FROM a card's cap alert — the long-standing
+  cap-chip anchor-link follow-up): each `methodology.html` §8 cap row now carries `id="cap-<slug>"`
+  and a card's "Grade capped by <slug>" chip renders as `<a class="chip"
+  href="methodology.html#cap-<slug>">`, so a reader who sees a capped grade jumps straight to why
+  it caps. ONE source of truth (`scorecard._cap_anchor`, sanitizing + shared by both surfaces →
+  can't drift) + a `.chip` `text-decoration:none`/`a.chip:hover` affordance. Display-only:
+  `git diff --name-only` = scorecard.py + test_readout.py ONLY; scoring.py/rubric/probes/fetch/
+  protocols/behavioral/offering/battery 0 files changed → rubric stays v0.7, canonical delta
+  unchanged by construction AND re-measured (replay guard 8/8, 46.1 F / 85.5 B / +39.4, 0
+  replay-miss; corroborated by verify_20260724T074105Z). Vendor-neutral (links key on the
+  rubric's own capability-worded cap slugs, no domain/vendor string). Direct-to-main.
+  `test_readout.py` 19 → 23 (+4: sanitizer, methodology rows carry ids, card chip links + no-cap
+  no-op, and the load-bearing CANNOT-DRIFT test tying each rubric cap's rendered card link to an
+  id present in the rendered methodology page); suite 133 → 137. No Slack (display-only, moves no
+  score, before the 16:00 UTC digest window at 08:12Z, digest last sent Cycle 16). First duty: no
+  open peer-gated PR (verified []); infra health check ran first — runner HEALTHY
+  (verify_20260724T074105Z, 07:41Z, ~31 min old, 46.1 F / 85.5 B / +39.4); git realigned (stale
+  Jul-22 divergent local `main` tip `2e66201` reset to origin `0cf1a98`). Next cycle takes METHOD.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity

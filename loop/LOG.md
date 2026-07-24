@@ -3138,3 +3138,52 @@ window (07:47Z, before 16:00 UTC; digest last sent Cycle 16).
 control (example.com) replay + relabel case (P2), and — the operator directive's crown jewel
 — the end-to-end LIVE `--battery auto --models claude,codex` acceptance rerun, still gated on
 codex reachability for the canonical pair. Cloud rotation unaffected (next cloud cycle READOUT).
+
+
+## Cycle 32 (READOUT) — 2026-07-24T08:12Z — link "Grade capped" chips to their methodology cap row
+
+**Track.** READOUT (rotation: Cycle 31 TRUTH → this READOUT; next METHOD).
+
+**First duty / infra health.** Git realigned: the fresh cloud checkout's local `main`
+had DIVERGED (a stale Jul-22 lineage tip `2e66201` "encode the Opus-cycles / Fable-
+architecture division", 22/53 split vs origin) while detached HEAD sat on origin's real
+tip `0cf1a98`; that Jul-22 playbook edit is superseded by origin's reconciled version, so
+`git reset --hard origin/main` → `0cf1a98`. No open peer-gated PR (`list_pull_requests`
+state=open → `[]`). Infra health: newest `runs/local/verify_20260724T074105Z.json` (07:41Z)
+~31 min old at fire — runner HEALTHY, live 46.1 F / 85.5 B / +39.4 on v0.7. Suite green
+baseline (16 files) after `pip install -r requirements.txt` (eth-account present → 9/9 free-tier).
+
+**What / why.** The methodology page (Cycle 16) documents WHY each critical finding caps the
+grade (section 8), but a card's "Grade capped by <slug>" alert (Cycle-earlier `_caps_alerts`)
+was a dead chip — a reader seeing a capped grade had no path to the explanation. Closes the
+long-standing READOUT follow-up (methodology-page cap-chip anchor-link, queued P2 twice):
+each cap row in `methodology.html` section 8 now carries `id="cap-<slug>"`, and the card's
+capped chip renders as `<a class="chip" href="methodology.html#cap-<slug>">` pointing at it.
+SINGLE SOURCE OF TRUTH: a new module-level `_cap_anchor(slug)` computes the fragment for BOTH
+surfaces (the Cycle-16/20 anti-drift pattern), lowercasing + collapsing any non-alnum run so a
+future odd slug still yields a valid, matching anchor on both sides. Added `text-decoration:none`
+to `.chip` + an `a.chip:hover` affordance so the chip-link reads as a chip, not a blue underline.
+
+**Regression / invariants.** `git diff --name-only` = `asrs/scorecard.py` + `tests/test_readout.py`
+ONLY; scoring.py / rubric / probes / fetch / protocols / behavioral / offering.py / battery.py
+0 files changed → display-only, rubric stays **v0.7**, canonical delta unchanged by construction
+AND re-measured (in-cloud replay guard `test_canonical_replay.py` 8/8, **46.1 F / 85.5 B / +39.4**,
+0 replay-miss; live-corroborated by `verify_20260724T074105Z`). Vendor-neutral: the link keys on
+the rubric's own capability-worded cap slugs, no domain/vendor string. $0-only untouched (no
+payment/signing code in scope).
+
+**Evidence.** `tests/test_readout.py` 19 → 23 (+4: `_cap_anchor` sanitizer, methodology rows carry
+anchor ids, the card chip links to the anchor + no-cap → empty no-op, and the load-bearing
+CANNOT-DRIFT test tying every rubric cap's rendered card link to an id actually present in the
+rendered methodology page). Full suite **133 → 137**; all 16 files pass. Rendered smoke:
+`<a class="chip" href="methodology.html#cap-no-https">no-https</a>`.
+
+**Ship.** Direct to main (display-only readout, no scoring semantics — per playbook ship rules).
+
+**Comms.** No Slack — display-only, moves no score, not a sensitive-class PR, before the 16:00 UTC
+digest window (fire 08:12Z; digest last sent Cycle 16).
+
+**Next hypothesis.** The methodology page is now navigable FROM a card's cap alert; the symmetric
+remaining READOUT nicety is a per-check-row → methodology-section / evidence-blob link ("Evidence
+links on the card", still P2), and the compare-card delta → earned-dominance section link (Cycle-24
+follow-up). Next cloud cycle METHOD.

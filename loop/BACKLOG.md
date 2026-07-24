@@ -510,8 +510,12 @@ design in-cloud, execute locally.
   small next unit would anchor-link a compared-pair card's overview (or the delta shown on a
   `compare` card) to that methodology sub-section, so a reader looking at a large delta can jump
   straight to "why this delta is earned, not a blind spot". No scoring semantics; direct-to-main.
-  Low priority — the prose exists; this is a navigation nicety, adjacent to the cap-chip anchor-link
-  item below.
+  Low priority — the prose exists; this is a navigation nicety. The SIBLING cap-chip anchor-link
+  (link a card's "Grade capped" chip to its methodology §8 cap row) is now DONE — Cycle 32
+  (READOUT, direct-to-main): `scorecard._cap_anchor` (one source of truth for both surfaces) +
+  `id="cap-<slug>"` on each methodology cap row + `<a class="chip" href="methodology.html#cap-<slug>">`
+  on the card alert; `test_readout.py` 19→23 (incl. a cannot-drift test), suite 133→137, replay
+  guard 8/8 / +39.4. This compare-card-delta half remains as the last cross-link nicety.
 - **Evidence links on the card** (READOUT): each check row links to its
   evidence blob; publish evidence alongside the hosted card.
 - **Score-over-time trend page** (READOUT): per-domain history from the
@@ -558,9 +562,11 @@ design in-cloud, execute locally.
   and documents the semantics, but (a) it renders straight to `methodology.html` with no
   hosted deploy step of its own — fine while it ships next to the card; and (b) each scorecard
   check ROW still doesn't link to its evidence blob (the separate P2 "Evidence links on the
-  card" item) nor to the relevant methodology section. Small next unit: anchor-link the four
-  cap chips on a card's "grade capped" alert to the corresponding methodology cap row, so a
-  reader who sees a cap can jump straight to why it caps. No scoring semantics; direct-to-main.
+  card" item) nor to the relevant methodology section. DONE (the cap-chip half): Cycle 32
+  (READOUT) anchor-linked a card's "Grade capped" chip to its methodology §8 cap row via the
+  shared `scorecard._cap_anchor` (can't drift; `test_readout.py` 19→23 with a cannot-drift
+  test, suite 133→137, replay guard 8/8 / +39.4). REMAINING: the per-check-ROW → evidence-blob /
+  methodology-section link (folds into "Evidence links on the card"). No scoring semantics; direct-to-main.
 
 <!-- DONE 2026-07-23T13:18Z (Cycle 13, METHOD): "Coverage-warning noise" fixed AT SOURCE.
      asrs/scoring.py routes the three coverage warnings through logging.getLogger(

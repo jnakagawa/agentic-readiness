@@ -3351,3 +3351,7 @@ readout prose (this cycle). The remaining referee-pass increment is to extend BO
 guards AND both wording denylists as new scored storefronts/fixtures land (add each new name to
 `_SCORED_STOREFRONT_NAMES`; wire the third-control-domain `example.com` fixture once captured
 [LOCAL]). Next cloud cycle takes COVERAGE.
+
+## Local verification — 20260724T094103Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260724T094103Z.json

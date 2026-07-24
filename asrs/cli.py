@@ -81,7 +81,7 @@ def _homepage_excerpt(ctx) -> str:
     return report_mod.strip_tags(text)[:_EXCERPT_CHARS]
 
 
-def _run_behavioral(domain, ctx, task, trials, models, battery=None):
+def _run_behavioral(domain, ctx, task, trials, models, battery=None, profile=None):
     """Run the trust panel + shopper panel(s) + free-tier transaction probe.
 
     Returns ``(checks, verdicts, runs, battery_summary)``. Each panel/probe is
@@ -96,6 +96,12 @@ def _run_behavioral(domain, ctx, task, trials, models, battery=None):
     trust panel and the free-tier transaction probe still run AT MOST ONCE for
     the whole battery — the free-tier probe consumes the target's allowance
     (invariant #1) and must never loop per task.
+
+    ``profile`` (an :class:`asrs.offering.OfferingProfile`, from ``--battery
+    auto`` discovery) makes the battery aggregation OFFERING-RELATIVE: archetypes
+    the site does not CLAIM are NA-excluded from the spreads (brick 3), not
+    scored as mismatched completions. None (hand-authored / no battery) keeps the
+    aggregation byte-for-byte pre-brick-3.
     """
     import importlib
 
@@ -141,7 +147,9 @@ def _run_behavioral(domain, ctx, task, trials, models, battery=None):
                     checks.extend(t_checks or [])
             try:
                 bt_mod = importlib.import_module("asrs.battery")
-                battery_summary = bt_mod.aggregate_battery(battery, runs_by_task).to_dict()
+                battery_summary = bt_mod.aggregate_battery(
+                    battery, runs_by_task, profile=profile
+                ).to_dict()
             except Exception as exc:
                 print(
                     f"[asrs] warning: battery aggregation failed "
@@ -173,27 +181,64 @@ def _run_behavioral(domain, ctx, task, trials, models, battery=None):
     return checks, verdicts, runs, battery_summary
 
 
-def _load_battery_arg(args):
-    """Load the ``--battery`` file into a Battery, or return None.
+_AUTO_BATTERY = "auto"
 
-    Returns None when no battery was requested. In static mode a battery is a
-    no-op — the static probes are task-independent — so we warn and proceed
-    rather than fail. A structurally invalid battery file raises loud (the
-    loader's ValueError) so a typo can't silently score fewer intents.
+
+def _resolve_battery(args, ctx):
+    """Resolve the ``--battery`` argument into ``(Battery | None, profile | None)``.
+
+    Three shapes:
+
+      * no ``--battery`` -> ``(None, None)``.
+      * ``--battery <path>`` -> the static YAML battery, ``profile`` None. The
+        aggregation stays byte-for-byte pre-brick-3 (a hand-authored battery
+        carries no offering profile, so nothing is marked NA). A structurally
+        invalid file raises loud (the loader's ValueError) so a typo can't
+        silently score fewer intents.
+      * ``--battery auto`` -> DISCOVERY-DRIVEN (operator directive): read the
+        storefront's own surfaces ($0 read-only GETs), classify what it CLAIMS
+        to sell (:func:`asrs.offering.discover_offering`), and instantiate an
+        offering-relative battery (:func:`asrs.battery.instantiate_battery`) —
+        one task per claimed archetype, none for the unclaimed. The returned
+        profile threads through to :func:`asrs.battery.aggregate_battery` so
+        unclaimed archetypes are NA-excluded from the spreads (brick 3), never
+        scored as mismatched completions.
+
+    In static mode a battery is a no-op (the static probes are task-independent)
+    -> warn and return ``(None, None)``. An ``auto`` battery that discovers no
+    archetypes (a site that claims to sell nothing) warns and returns the empty
+    battery + profile, so the summary still records every archetype as NA rather
+    than silently dropping the run.
     """
     path = getattr(args, "battery", None)
     if not path:
-        return None
+        return None, None
     if not args.behavioral:
         print(
             "[asrs] warning: --battery has no effect without --behavioral "
             "(static probes are task-independent) — ignored",
             file=sys.stderr,
         )
-        return None
+        return None, None
+
+    if path == _AUTO_BATTERY:
+        from .offering import discover_offering
+        from .battery import instantiate_battery
+
+        profile = discover_offering(ctx)  # never raises; $0 read-only surfaces
+        battery = instantiate_battery(profile)
+        if not battery.tasks:
+            print(
+                f"[asrs] warning: --battery auto discovered no offering "
+                f"archetypes for {getattr(ctx, 'domain', path)!r} — empty "
+                f"battery (every archetype recorded NA)",
+                file=sys.stderr,
+            )
+        return battery, profile
+
     from .battery import load_battery
 
-    return load_battery(path)
+    return load_battery(path), None
 
 
 def _evaluate(domain, args, rubric):
@@ -207,11 +252,11 @@ def _evaluate(domain, args, rubric):
     verdicts: list = []
     runs: list = []
     battery_summary = None
-    battery = _load_battery_arg(args)  # None (+ warn) in static mode
+    battery, profile = _resolve_battery(args, ctx)  # (None, None) + warn in static mode
     if args.behavioral:
         bhv_checks, verdicts, runs, battery_summary = _run_behavioral(
             domain, ctx, args.task, args.trials, _parse_models(args.models),
-            battery=battery,
+            battery=battery, profile=profile,
         )
         checks.extend(bhv_checks)
 
@@ -342,12 +387,15 @@ def _add_common_options(p) -> None:
         help="comma-separated model panel (default: claude,codex)",
     )
     p.add_argument(
-        "--battery", default=None,
-        help="path to a task-battery YAML (behavioral mode): run the shopper "
-        "panel once per intent and attach a cross-intent coverage/reliability "
-        "summary. The score still comes from the first task; the free-tier "
-        "transaction probe still fires at most once for the whole battery. "
-        "No effect in static mode.",
+        "--battery", default=None, metavar="PATH|auto",
+        help="task battery (behavioral mode): run the shopper panel once per "
+        "intent and attach a cross-intent coverage/reliability summary. Pass a "
+        "YAML PATH for a fixed battery, or 'auto' to DISCOVER what the storefront "
+        "claims to sell and build an offering-relative battery (one task per "
+        "claimed archetype; archetypes it does not offer are marked NA, not "
+        "scored as mismatches). The score still comes from the first task; the "
+        "free-tier transaction probe still fires at most once for the whole "
+        "battery. No effect in static mode.",
     )
     p.add_argument(
         "--rubric", default=None,

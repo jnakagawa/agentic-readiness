@@ -2571,3 +2571,105 @@ merged tip bec1dc0: bench 115/115 green, canonical replay guard 8/8 (46.1 F /
 85.5 B / +39.4, 0 replay-miss) — the battery change is decoupled from scoring as
 designed, canonical delta unchanged. Session auto-unsubscribed from PR #4 activity;
 not reopening. STATE + BACKLOG reconciled below.
+
+## Cycle 26 — 2026-07-24T02:12Z — COVERAGE (direct to main)
+
+**First duty (peer-gate review + merge).** One open peer-gated PR at fire start:
+**PR #4** `loop/na-aware-battery-aggregation` (Cycle 25, METHOD — NA-aware battery
+aggregation, brick 3). A different fire from the authoring cycle, so the mandated
+fresh-context adversarial review ran and I merged on survival. Re-derived all four
+reviewer-checklist items independently: (1) **`profile=None` == pre-brick-3** — by
+construction (`na_kinds` empty → every `na=False` → `applicable`==all tasks → per-kind /
+spread math unchanged) AND pinned by `test_na_profile_none_is_backward_compatible`
+(`cross_task_spread=0.1` on the existing fixture, byte-for-byte). (2) **NA vendor-neutral**
+— `na_kinds = set(profile.unclaimed)`; verified `OfferingProfile.unclaimed = [a for a in
+ARCHETYPES if a not in served]` is a strict subset of `ARCHETYPES`, so a non-canonical
+hand-authored kind (e.g. `digital_service`) can NEVER be NA (pinned by test 12); no
+domain/vendor string. (3) **canonical delta unchanged** — diff touches only
+`asrs/battery.py` + `asrs/report.py` + `tests/test_battery.py`; `scoring.py`/`rubric/`/
+`probes`/`fetch.py` untouched; replay guard `test_canonical_replay.py` 8/8 green
+(46.1 F / 85.5 B / +39.4, 0 replay-miss). (4) **versioning** — `battery_semantics_version
+= "b1"`, rubric stays v0.7: correct, the battery feeds no overall score so a rubric bump
+would falsely signal a scored-number move. **Non-vacuous**: test 11 pins that NA exclusion
+ACTUALLY changes `between_kind_spread` (`>1e-6`, pstdev[0.4,1.0] vs pstdev[0.4,1.0,0.2]),
+not a no-op. Ran the full suite on the branch: **115/115 green**. Verdict: **SURVIVED →
+MERGED** (merge commit `bec1dc0`, standard merge; no CI on repo). Post-merge suite 115/115
+on main. No open peer-gated PR remains.
+
+**Bookkeeping reconciliation.** A concurrent local fire (session `018Gu9…`, the PR-#4
+authoring session) pushed `5ddb89a loop: reconcile PR #4 external merge` ~5 min after my
+merge, reading `bec1dc0` as an EXTERNAL operator merge and queuing a next-cycle post-merge
+sanity check (its append-only merge note is kept verbatim above). That reading is
+SUPERSEDED: `bec1dc0` was THIS Cycle 26 fire's own mandated fresh-context review-then-merge
+(the normal peer-gate flow), not an external merge — so no separate post-merge sanity check
+is pending. My Cycle 26 commit was rebased onto `5ddb89a`; the STATE/BACKLOG "Open PRs" +
+brick-3 lines resolve to this accurate account.
+
+**Infra health check (ran first).** ALL GREEN. Runner HEALTHY — newest artifact
+`verify_20260724T004105Z.json` (00:41Z) ~1.6h old at fire (02:12Z), well under 6h; scores
+block CLEAN (46.1 F / 85.5 B, tests_ok True). Bench UP: full suite green after
+`pip install -r requirements.txt`. Bookkeeping: the ephemeral cloud checkout's local `main`
+was again the stale pre-loop lineage (`2e66201`); realigned to authoritative `origin/main`
+(`ca3ed86`) via `git checkout -B main origin/main` — no un-pushed work on local main, NOT a
+published-history rewrite (recurring cloud-checkout quirk, same as Cycle 25).
+
+**What / why (the improvement — operator directive, `--battery auto` wiring).** Bricks 1–3
+(discover → instantiate → NA-aware aggregate) were all on main after the PR #4 merge, but
+NOTHING called them together — the CLI `--battery` flag still loaded a STATIC YAML only, so
+the offering-relative battery existed as three library functions with no run path. This
+cycle wires the discovery-driven mode end-to-end: `--battery auto` →
+`discover_offering(ctx)` (the storefront's own surfaces, $0 read-only) →
+`instantiate_battery(profile)` (one task per CLAIMED archetype) →
+`aggregate_battery(battery, runs_by_task, profile=profile)` (unclaimed archetypes
+NA-excluded from the spreads). This is the operator directive's core deliverable made real:
+an image API discovered as `{metered_api, digital_good}` runs exactly those two intents and
+NO physical-good task, and its summary records `physical_good` (+ the rest) NA rather than
+polluting the completion means with a mismatch.
+
+**Change.** `asrs/cli.py`: `_load_battery_arg(args)` → `_resolve_battery(args, ctx)`
+returning `(Battery|None, OfferingProfile|None)` — three shapes: no `--battery` →
+`(None,None)`; `--battery <path>` → `(load_battery(path), None)` (no profile → aggregation
+stays byte-for-byte pre-brick-3); `--battery auto` → discover + instantiate + return the
+profile so it threads to `aggregate_battery`. `_run_behavioral(..., profile=None)` passes
+`profile=` into `aggregate_battery`. `_evaluate` calls `_resolve_battery(args, ctx)` (ctx
+already built before the battery resolve) and threads `profile`. `--battery` help updated to
+`PATH|auto`. An `auto` battery that discovers nothing warns + returns the empty battery +
+profile (honest "nothing to assess", every archetype recorded NA — never a fabricated task).
+
+**Invariants.** $0-only: no payment/signing code touched; `discover_offering` does read-only
+$0 GETs; free-tier probe still fires AT MOST ONCE for the whole battery (unchanged loop).
+Vendor-neutral: discovery keys on archetype-claim structure (offering.py, already reviewed);
+no domain/vendor special-casing added. Score-neutral: `scoring.py`/`rubric/`/`probes`/
+`fetch.py`/`protocols.py` byte-for-byte untouched (`git diff --name-only` clean of all
+scoring-path files) → **rubric stays v0.7**; the overall score still comes from the first
+task's panel (unchanged); the battery summary is an additive diagnostic (feeds no score).
+Canonical delta unchanged by construction AND re-measured — replay guard 8/8
+(46.1 F / 85.5 B / +39.4, 0 replay-miss) + newest verify artifact 00:41Z live-confirms the
+same on v0.7. Behavioral execution of `--battery auto` is [LOCAL] (needs claude/codex +
+network) — queued, not run in-cloud.
+
+**Scope / ship.** `asrs/cli.py` + `tests/test_battery_wiring.py` only. No scoring semantics,
+behavioral task-selection + CLI wiring → **direct to main**.
+
+**Evidence.** `tests/test_battery_wiring.py` 4 → 7 (+3): (5) `--battery auto` discovers →
+one task per claimed archetype in template-bank order, profile threaded back, unclaimed
+archetypes available to mark NA; (6) end-to-end — the profile threads into
+`aggregate_battery` so a site not claiming physical_good gets no physical-good task AND the
+summary records it NA with `battery_semantics_version="b1"`; (7) null offering → empty
+battery (no fabricated task) + profile still threaded. Updated the renamed-function test #3
+to the `(battery, profile)` tuple contract (static-mode `(None,None)`; YAML path →
+`(battery, None)`). `asrs score --help` renders `--battery PATH|auto`. Full suite
+**115 → 118**, all green (canonical replay guard 8/8 included).
+
+**Comms.** No Slack — direct-to-main, score-neutral, moves no score; not a sensitive-class
+PR; not a digest window (02:12Z, before 16:00 UTC; digest last sent Cycle 16). The PR #4
+merge is peer-gate follow-through visibility, already Slack-flagged at open (Cycle 25).
+
+**Next hypothesis.** With the `auto` run path wired, the remaining operator-directive work is
+[LOCAL] execution: run `asrs score <domain> --behavioral --battery auto` live on the
+canonical pair + a retail control and confirm the acceptance criteria on real data
+(driftflight physical_good = NA with spreads over claimed archetypes only; a shop the
+inverse; NA shown "not offered" on card + terminal). Cloud-side, brick 5's HTML half
+(surface `na_archetypes`/`assessed_archetypes` on `scorecard._battery`) is the next READOUT
+increment, and brick 4 (out-of-scope legibility, unscored diagnostic) the next COVERAGE.
+Next cloud cycle takes TRUTH.

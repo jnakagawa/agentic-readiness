@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 25
+- Cycle counter: 26
 - Started: 2026-07-23 (UTC)
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -210,10 +210,25 @@
   next cycle's first duty reviews+merges. No CI on repo (get_status total_count 0). `test_battery.py` 9→12; suite
   112→115. Slack DM SENT (sensitive-class PR visibility). Infra health check ran first — ALL GREEN (runner
   HEALTHY, verify_20260724T004105Z 00:41Z ~31 min old + clean scores; bench 112/112; ephemeral local-main
-  divergence realigned to origin d33129f). PR #4 was then MERGED EXTERNALLY (bec1dc0, "peer-gate SURVIVED")
-  shortly after opening → pre-merge review pre-empted (active consent), CONVERTS to next cycle's first-duty
-  post-merge retain-or-revert sanity check; post-merge health green (115/115, replay 8/8, delta unchanged).
-  Next cycle takes COVERAGE (after the post-merge sanity check).
+  divergence realigned to origin d33129f). Next cycle takes COVERAGE.
+  Cycle 26 COVERAGE (operator directive — `--battery auto` run-path wiring, direct to main): first duty
+  MERGED peer-gated PR #4 (NA-aware battery aggregation, brick 3) after fresh-context adversarial review —
+  all four checklist items re-derived independently (profile=None byte-for-byte pre-brick-3; NA keys only on
+  `profile.unclaimed` ⊆ ARCHETYPES so non-canonical kinds never NA, vendor-neutral; replay guard 8/8 delta
+  unchanged; battery_semantics_version b1 not rubric); non-vacuous (spread-change >1e-6 pinned); suite 115/115
+  on branch → SURVIVED → merge commit bec1dc0. Then the improvement: bricks 1–3 were all on main but nothing
+  CALLED them together — `--battery` still loaded a static YAML only. `asrs/cli.py` `_load_battery_arg(args)`
+  → `_resolve_battery(args, ctx)` returning `(Battery|None, OfferingProfile|None)`: `--battery auto` runs
+  `discover_offering → instantiate_battery` and threads the profile into
+  `aggregate_battery(..., profile=)` (NA-aware); `--battery <path>` stays `(battery, None)` (aggregation
+  byte-for-byte pre-brick-3); empty offering → empty battery + profile (honest "nothing to assess", every
+  archetype NA, no fabricated task). Makes the offering-relative battery REAL end-to-end (operator directive
+  core deliverable). Behavioral execution of `--battery auto` is [LOCAL]. Score-neutral: scoring.py/rubric/
+  probes/fetch/protocols byte-for-byte untouched → rubric stays v0.7, canonical delta unchanged by
+  construction AND re-measured (replay guard 46.1 F / 85.5 B / +39.4, 0 replay-miss; verify_20260724T004105Z
+  live-confirms). `asrs/cli.py` + `tests/test_battery_wiring.py` only; direct-to-main. `test_battery_wiring.py`
+  4→7 (+3 auto-mode: discovery→instantiate, end-to-end NA threading, null offering); suite 115→118. No Slack
+  (direct-to-main, score-neutral, not sensitive, not a digest window at 02:12Z). Next cycle takes TRUTH.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity
@@ -461,18 +476,18 @@
   scoring-semantics/aggregation change → PEER-GATED + version bump, queued P0 in
   BACKLOG with exact spec. Sole residual claude flip: found_purchase_path
   (t1 false vs t2–5 true) — legibility ambiguity, not noise.
-- Open PRs: **NONE.** PR #4 `loop/na-aware-battery-aggregation` (Cycle 25, METHOD, sensitive class:
-  battery aggregation-semantics — NA-aware exclusion + `battery_semantics_version` b1) was **MERGED
-  EXTERNALLY 2026-07-24 (merge commit bec1dc0, "peer-gate SURVIVED")** shortly after opening — the
-  same active-consent pattern as PR #2/#3. External merge = ACTIVE consent, pre-empting (not
-  bypassing) the mandated fresh-context review → CONVERTS to a POST-merge retain-or-revert sanity
-  check = **NEXT cloud cycle's FIRST DUTY** (before COVERAGE work): adversarially re-derive from
-  fresh context that `profile=None` == pre-brick-3 byte-for-byte, NA keys only on archetype-claim
-  structure (vendor-neutral), the battery stays decoupled from scoring (canonical delta unchanged),
-  and the battery-semantics-version-not-rubric-version call is sound; RETAIN or revert-with-reasons,
-  record verdict in LOG. Immediate post-merge health on bec1dc0: bench 115/115, replay guard 8/8
-  (46.1 F / 85.5 B / +39.4, 0 replay-miss). No fixture re-capture needed (battery moves no canonical
-  score). Session auto-unsubscribed. https://github.com/jnakagawa/agentic-readiness/pull/4
+- Open PRs: **NONE.** PR #4 `loop/na-aware-battery-aggregation` (Cycle 25, METHOD, sensitive
+  class: battery aggregation-semantics — NA-aware exclusion + `battery_semantics_version` b1) was
+  **MERGED Cycle 26 (2026-07-24T02:12Z, merge commit bec1dc0)** as the first-duty peer-gate review.
+  SURVIVED fresh-context adversarial review: all four checklist items re-derived independently
+  (profile=None byte-for-byte pre-brick-3, pinned; NA keys only on `profile.unclaimed` ⊆ ARCHETYPES
+  → non-canonical kinds never NA, vendor-neutral; replay guard 8/8 delta unchanged = battery
+  decoupled from scoring; battery-semantics version b1 not rubric = correct, battery feeds no score);
+  non-vacuous (spread-change >1e-6 pinned); suite 115/115 on branch. No CI on repo. Was Slack-flagged
+  at open (veto visibility, not approval). (A concurrent local fire `5ddb89a` read bec1dc0 as an
+  "external merge" needing a future post-merge sanity check — SUPERSEDED: bec1dc0 was Cycle 26's own
+  mandated fresh-context review-then-merge, the normal peer-gate flow; nothing pending. See LOG Cycle
+  26 reconciliation.) https://github.com/jnakagawa/agentic-readiness/pull/4
   PRIOR (all closed): PR #3
   `loop/commerce-manifest-validation` (Cycle 14, COVERAGE, sensitive class: partial-credit
   rule + rubric v0.6→v0.7) was **MERGED EXTERNALLY** 2026-07-23T14:45:30Z (commit 72a2e5b)

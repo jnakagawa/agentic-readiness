@@ -74,9 +74,12 @@ design in-cloud, execute locally.
   46.1 F / 85.5 B / +39.4). `test_battery_instantiate.py` 8/8; suite 104 → 112.
   Evidence: runs/local/offering_battery_instantiate_20260724T004927Z.json. See LOG
   (Local cycle 00:49Z).
-  BRICK 3 — NA-aware aggregation: **MERGED 2026-07-24 (Cycle 25, METHOD, PEER-GATED PR #4,
-  merge commit bec1dc0 — merged EXTERNALLY, "peer-gate SURVIVED"; pre-merge review pre-empted by
-  active consent → next cycle's FIRST DUTY is the post-merge retain-or-revert sanity check).** `aggregate_battery(..., *, profile=OfferingProfile|None)`
+  BRICK 3 — NA-aware aggregation: **MERGED 2026-07-24T02:12Z (Cycle 26 first-duty peer-gate review,
+  merge commit bec1dc0 — SURVIVED fresh-context adversarial review; PR #4, authored Cycle 25).**
+  (A concurrent local fire pushed a `reconcile PR #4 external merge` note reading bec1dc0 as an
+  external operator merge; that is superseded — the merge WAS Cycle 26's mandated fresh-context
+  review, not an external merge, so no separate post-merge sanity check is pending.)
+  `aggregate_battery(..., *, profile=OfferingProfile|None)`
   marks archetypes a site does NOT claim (`profile.unclaimed`) NA and EXCLUDES them from
   `mean_completion`/`cross_task_spread`/`between_kind_spread`; NA is DISTINCT from no-signal
   (structural not-offered vs offered-but-unobserved) and recorded (`na_archetypes` /
@@ -95,16 +98,26 @@ design in-cloud, execute locally.
     **BRICK 5 — comparability readout** (name WHICH archetypes were assessed — brick 2
     already stabilizes this by using archetype names as task ids; this brick surfaces
     them in the terminal/HTML readout) — per the directive; design after brick 3 lands.
-  - **[LOCAL] wire instantiate_battery into the --battery run path** (COVERAGE,
-    cloud-designable / [LOCAL]-executable): the CLI `--battery` flag still loads a
-    STATIC YAML (`load_battery`). Add a discovery-driven mode (e.g. `--battery auto`)
-    that calls `discover_offering → instantiate_battery` so a live run actually uses
-    the offering-relative task set. Behavioral execution is [LOCAL]. Score-neutral
-    (task selection) until brick 3.
-  - **[LOCAL] acceptance rerun**: once brick 3 lands (and the --battery wiring above),
-    rerun the canonical batteries end-to-end and confirm driftflight physical_good =
-    NA with spreads over claimed archetypes only, a retail storefront the inverse, and
-    NA shown as "not offered" on the card + terminal.
+  - **`--battery auto` run-path wiring: SHIPPED 2026-07-24T02:12Z (Cycle 26, COVERAGE,
+    direct to main).** `asrs/cli.py` `_resolve_battery(args, ctx)` (replacing
+    `_load_battery_arg`) returns `(Battery|None, OfferingProfile|None)`: `--battery auto`
+    runs `discover_offering → instantiate_battery` and threads the profile into
+    `aggregate_battery(..., profile=)` (NA-aware, brick 3); `--battery <path>` stays
+    `(battery, None)` (aggregation byte-for-byte pre-brick-3); empty offering → empty
+    battery + profile (honest "nothing to assess"). `--battery` help now `PATH|auto`.
+    Score-neutral (task selection + CLI wiring; scoring/rubric/probes untouched → rubric
+    v0.7, replay guard 46.1 F / 85.5 B / +39.4). `test_battery_wiring.py` 4→7; suite
+    115→118. The BEHAVIORAL EXECUTION of `--battery auto` is [LOCAL] (needs claude/codex
+    + network) — the acceptance rerun below.
+  - **[LOCAL] acceptance rerun** (now unblocked — bricks 1–3 merged + `auto` wiring shipped):
+    run `asrs score <domain> --behavioral --battery auto --models claude,codex --trials 2`
+    LIVE on the canonical pair + a retail control, and confirm the operator acceptance
+    criteria on REAL data — driftflight physical_good = NA with spreads over claimed
+    archetypes only, a retail storefront the inverse, and NA shown as "not offered" on the
+    card + terminal. Force-add the reports to `runs/local/` (`runs/` is gitignored). This
+    is the first end-to-end offering-relative live battery; it also finally eyeballs the
+    per-intent grid / by-archetype + between-archetype pills on real multi-kind data
+    (folds in the two "[LOCAL] Eyeball the battery card" P2 items).
 
 <!-- DONE 2026-07-23 (two complementary fires): "[LOCAL] POST-merge live canonical re-score
      for v0.7 (PR #3, MERGED 72a2e5b)" FULLY DISCHARGED.

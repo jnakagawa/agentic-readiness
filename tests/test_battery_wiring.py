@@ -30,6 +30,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from asrs import cli  # noqa: E402
 from asrs.battery import Battery, BatteryTask  # noqa: E402
+from asrs.offering import ArchetypeClaim, OfferingProfile  # noqa: E402
 from asrs.types import BehavioralRun, Report  # noqa: E402
 
 _KEYS = ["found_product", "understood_pricing", "found_purchase_path",
@@ -154,23 +155,37 @@ def test_no_battery_single_panel() -> None:
 
 
 # ---------------------------------------------------------------------------
-# 3. --battery in static mode is a no-op (warn + None), not a failure.
+# 3. --battery in static mode is a no-op (warn + (None, None)), not a failure.
+#    A YAML path in behavioral mode resolves to (battery, None) — no profile, so
+#    the aggregation stays byte-for-byte pre-brick-3 (nothing marked NA).
 # ---------------------------------------------------------------------------
 def test_static_mode_battery_noop() -> None:
     print("test_static_mode_battery_noop")
 
+    default_path = str(
+        __import__("asrs.battery", fromlist=["DEFAULT_BATTERY_PATH"]).DEFAULT_BATTERY_PATH
+    )
+
     class _Args:
-        battery = str(__import__("asrs.battery", fromlist=["DEFAULT_BATTERY_PATH"]).DEFAULT_BATTERY_PATH)
+        battery = default_path
         behavioral = False
 
-    out = cli._load_battery_arg(_Args())
-    _check(out is None, "static-mode --battery returns None (no-op)")
+    bat, prof = cli._resolve_battery(_Args(), _FakeCtx())
+    _check(bat is None and prof is None, "static-mode --battery returns (None, None) (no-op)")
 
     class _Args2:
         battery = None
         behavioral = True
 
-    _check(cli._load_battery_arg(_Args2()) is None, "no --battery -> None")
+    _check(cli._resolve_battery(_Args2(), _FakeCtx()) == (None, None), "no --battery -> (None, None)")
+
+    class _Args3:
+        battery = default_path
+        behavioral = True
+
+    bat3, prof3 = cli._resolve_battery(_Args3(), _FakeCtx())
+    _check(bat3 is not None and bat3.tasks, "YAML path in behavioral mode loads a battery")
+    _check(prof3 is None, "a static YAML battery carries no offering profile (aggregation stays pre-brick-3)")
 
 
 # ---------------------------------------------------------------------------
@@ -207,12 +222,130 @@ def test_render_includes_battery_section() -> None:
            "no battery_summary -> no TASK BATTERY section")
 
 
+# ---------------------------------------------------------------------------
+# 5. --battery auto: discovery -> offering-relative battery (+ profile).
+#    Wires discover_offering -> instantiate_battery: one task per CLAIMED
+#    archetype, in template-bank order, and the profile is threaded back so the
+#    aggregation can NA-exclude the unclaimed archetypes (brick 3).
+# ---------------------------------------------------------------------------
+class _AutoCtx:
+    domain = "shop.example"
+
+
+def _patch_discovery(profile):
+    """Monkeypatch asrs.offering.discover_offering to return ``profile``.
+
+    ``_resolve_battery`` does ``from .offering import discover_offering`` per
+    call, so patching the module attribute is picked up. Returns a restore().
+    """
+    import asrs.offering as off
+
+    orig = off.discover_offering
+    off.discover_offering = lambda ctx: profile
+    return lambda: setattr(off, "discover_offering", orig)
+
+
+def _image_api_profile() -> OfferingProfile:
+    # A discovered image API: claims metered_api + digital_good, nothing else.
+    return OfferingProfile(
+        domain="shop.example",
+        claimed=[ArchetypeClaim(archetype="metered_api"),
+                 ArchetypeClaim(archetype="digital_good")],
+    )
+
+
+def test_battery_auto_discovers_offering_relative() -> None:
+    print("test_battery_auto_discovers_offering_relative")
+    profile = _image_api_profile()
+    restore = _patch_discovery(profile)
+    try:
+        class _Args:
+            battery = "auto"
+            behavioral = True
+
+        battery, prof = cli._resolve_battery(_Args(), _AutoCtx())
+    finally:
+        restore()
+    kinds = [t.kind for t in battery.tasks]
+    _check(kinds == ["metered_api", "digital_good"],
+           f"one task per claimed archetype, template-bank order, got {kinds}")
+    _check(all(t.intent for t in battery.tasks), "each generated task carries a non-empty intent")
+    _check(prof is profile, "the discovered profile is threaded back for NA-aware aggregation")
+    _check("physical_good" in prof.unclaimed,
+           "unclaimed archetypes (e.g. physical_good) available to mark NA")
+
+
+# ---------------------------------------------------------------------------
+# 6. --battery auto end-to-end: the profile threads into aggregate_battery, so a
+#    site that does not claim physical_good never gets a physical-good task AND
+#    the summary records the unclaimed archetypes NA (operator directive: the
+#    battery measures readiness for what a site OFFERS, not its mismatch).
+# ---------------------------------------------------------------------------
+def test_battery_auto_threads_na_into_summary() -> None:
+    print("test_battery_auto_threads_na_into_summary")
+    profile = _image_api_profile()
+    restore = _patch_discovery(profile)
+    try:
+        class _Args:
+            battery = "auto"
+            behavioral = True
+
+        battery, prof = cli._resolve_battery(_Args(), _AutoCtx())
+        with _Recorder() as rec:
+            checks, verdicts, runs, summary = cli._run_behavioral(
+                "shop.example", _FakeCtx(), "IGNORED", trials=1,
+                models=["claude"], battery=battery, profile=prof,
+            )
+    finally:
+        restore()
+    # Only the claimed archetypes ran as tasks — no mismatched intent to score.
+    _check(rec.shopper_tasks == [t.intent for t in battery.tasks],
+           "shopper ran once per claimed-archetype intent")
+    _check("physical_good" not in [t.kind for t in battery.tasks],
+           "no physical-good task for a site that does not claim it")
+    # ...and the summary marks every unclaimed archetype NA (brick 3 end-to-end).
+    _check(summary is not None, "battery_summary attached")
+    _check("physical_good" in summary["na_archetypes"],
+           f"unclaimed physical_good recorded NA, got {summary['na_archetypes']}")
+    _check(set(summary["assessed_archetypes"]) <= {"metered_api", "digital_good"},
+           f"assessed names claimed archetypes only, got {summary['assessed_archetypes']}")
+    _check(summary["battery_semantics_version"] == "b1",
+           "offering-relative aggregation stamps battery_semantics_version b1")
+
+
+# ---------------------------------------------------------------------------
+# 7. --battery auto with a null offering: empty battery + profile, not a crash.
+#    A site that claims nothing yields zero tasks; the profile still records
+#    every archetype as unclaimed so the run is honest ("nothing to assess"),
+#    never a fabricated task.
+# ---------------------------------------------------------------------------
+def test_battery_auto_empty_offering() -> None:
+    print("test_battery_auto_empty_offering")
+    profile = OfferingProfile(domain="bare.example", claimed=[])
+    restore = _patch_discovery(profile)
+    try:
+        class _Args:
+            battery = "auto"
+            behavioral = True
+
+        battery, prof = cli._resolve_battery(_Args(), _AutoCtx())
+    finally:
+        restore()
+    _check(battery is not None and battery.tasks == [],
+           "null offering -> empty battery (no fabricated tasks)")
+    _check(prof is profile and len(prof.unclaimed) > 0,
+           "profile still threaded so the summary can record every archetype NA")
+
+
 def main() -> int:
     tests = [
         test_battery_runs_panel_per_task,
         test_no_battery_single_panel,
         test_static_mode_battery_noop,
         test_render_includes_battery_section,
+        test_battery_auto_discovers_offering_relative,
+        test_battery_auto_threads_na_into_summary,
+        test_battery_auto_empty_offering,
     ]
     failed = 0
     for t in tests:

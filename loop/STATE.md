@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 23
+- Cycle counter: 24
 - Started: 2026-07-23 (UTC)
-- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -155,6 +155,24 @@
   96 → 103. First duty: no open peer-gated PR (verified []); runner HEALTHY (verify_20260723T234102Z, 23:41Z,
   ~8 min old). Evidence: runs/local/offering_discovery_20260723T234942Z.json. Bricks 2 (intent
   instantiation) + 3 (NA-aware aggregation, PEER-GATED) are the next increments; cloud rotation unaffected.
+  Cycle 24 READOUT (earned-dominance property surfaced in the methodology readout — the READOUT
+  complement to Cycle-23's TRUTH guard): `methodology.html` section 3 (FAIL vs CANT_TEST) gains a
+  "worked example — when is a low score earned evidence, not a blind spot?" sub-section naming the three
+  facts that make a two-site delta trustworthy in the SAME capability language as
+  `test_canonical_delta_is_earned_dominance` — full observability / like-for-like denominator /
+  check-by-check dominance-no-inversion (capability SUPERSET) — and stating the property is pinned by an
+  executable regression test (enforced, not asserted). Vendor-neutral by construction: the reference pair
+  is described by capability, no domain/product/brand named (test-pinned: `drift-flight`/`driftflight`
+  never appear on the page). Closes the Cycle-23 follow-up. `asrs/scorecard.py` (methodology prose +
+  minimal h3/ul/li styling in the shared `_PROSE_HEAD`) + `tests/test_readout.py` only; scoring.py/rubric/
+  probes/fetch.py/protocols.py/battery.py byte-for-byte untouched (grep clean) → display-only, rubric
+  stays v0.7, canonical delta unchanged by construction AND re-measured (replay guard 46.1 F / 85.5 B /
+  +39.4, 0 replay-miss). Direct-to-main. `test_readout.py` 16 → 17; suite 103 → 104. No Slack (display-only,
+  moves no score, before the next 16:00 UTC digest window). First duty: no open peer-gated PR (verified
+  `[]`); infra health check ran first — runner HEALTHY (newest verify_20260723T234102Z, 23:41Z, ~31 min
+  old). NOTE: fresh cloud checkout now runs `test_free_tier.py` 9/9 once `pip install -r requirements.txt`
+  installs `eth-account` (requirements pins it) — the invariant-#4 env gap noted at Cycle 17 is closed by
+  the requirements install. Next cycle takes METHOD.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity

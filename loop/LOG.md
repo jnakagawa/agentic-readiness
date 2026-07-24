@@ -2329,3 +2329,63 @@ cloud rotation is unaffected (next cloud cycle still takes READOUT).
 ## Local verification — 20260723T234942Z (offering-discovery live)
 
 offering brick 1 live-validated | drift-flight.org: {metered_api,subscription,digital_good} physical_good=NA | driftflight.com: {metered_api,digital_good,subscription} physical_good=NA | example.com: {} | books.toscrape.com: {physical_good} | suite 103/103 | canonical 46.1 F / 85.5 B / +39.4 (replay guard, unchanged) | artifact runs/local/offering_discovery_20260723T234942Z.json
+
+## Cycle 24 — 2026-07-24T00:17Z — READOUT (direct to main)
+
+**First duty.** No open peer-gated PR (`list_pull_requests state=open` → `[]`) →
+the mandated fresh-context adversarial review had nothing pending. Infra health
+check ran first: runner HEALTHY — newest artifact `verify_20260723T234102Z.json`
+(23:41Z) is ~31 min old at fire time, well under the 6h threshold; bench UP
+(103/103 on a fresh checkout after `pip install -r requirements.txt`; note the
+`test_free_tier.py` `eth-account` dependency, invariant-#4 env gap, is now
+installed from requirements so the fresh cloud checkout runs 9/9 not 7/8);
+bookkeeping consistent with git history (HEAD = local fire 23:49Z, STATE/LOG
+match). Canonical replay guard green pre-flight: 46.1 F / 85.5 B / +39.4, 0
+replay-miss.
+
+**What/why.** The READOUT complement to Cycle 23's TRUTH work. Cycle 23 made the
+"earned-dominance / observability" property an executable guard
+(`test_canonical_delta_is_earned_dominance`), but a critic reading the score has
+no prose that explains it — the methodology page's section 3 (FAIL vs CANT_TEST)
+defines the two states abstractly and stops there. This cycle surfaces the
+property in `methodology.html`: a "worked example — when is a low score earned
+evidence, not a blind spot?" sub-section under section 3 that names the three facts
+which make a delta between two sites trustworthy, in the SAME capability language
+as the test: (a) full observability (every check on the lower side actually
+observed → each 0 is a tested-and-absent FAIL, not an un-observed check held
+against the site), (b) like-for-like denominator (both scored over the identical
+check set), (c) check-by-check dominance / no inversion (the higher side ranks ≥
+at every shared check, strictly higher on ≥1 → a capability SUPERSET, not a
+net-out of wins and losses). Closes the Cycle-23 follow-up ("add a worked
+canonical example there"). Moves the north-star READOUT-clarity axis: the number's
+credibility argument is now legible to a reader, not just enforced in CI.
+
+**Vendor-neutral by construction.** The worked example describes the reference
+pair by CAPABILITY ("two storefronts", "the lower-scoring side") and names no
+domain, product, or brand — a test assertion pins that `drift-flight`/`driftflight`
+never appear on the page. It also states the property is "pinned by an executable
+regression test, enforced every cycle" so the reader knows it is a guarantee, not
+a claim.
+
+**Scope / ship.** `asrs/scorecard.py` only (the methodology-page prose + minimal
+`h3`/`ul`/`li` styling added to the shared `_PROSE_HEAD` — neither prose page used
+those tags before; browser-default otherwise) + `tests/test_readout.py`. `git diff
+--name-only` touches NEITHER scoring.py / rubric / probes / fetch.py / protocols.py
+/ battery.py (grep clean) → **display-only, no scoring semantics, rubric stays
+v0.7**, canonical delta unchanged by construction AND re-measured (replay guard
+`test_canonical_replay.py` 8/8 = 46.1 F / 85.5 B / +39.4, 0 replay-miss).
+Direct-to-main per the ship rules (readout + tests).
+
+**Evidence.** `tests/test_readout.py` 16 → 17 (+`test_methodology_documents_earned_dominance`:
+asserts the worked example names full-observability / like-for-like-denominator /
+no-inversion / superset / earned / blind-spot AND that no vendor/domain string
+appears). Rendered the page and eyeballed the section-3 region. Full suite 103 → 104.
+
+**Ship / comms.** Direct-to-main. No Slack DM — display-only, moves no score, not
+a sensitive class; the daily digest was already sent Cycle 16 and this fire
+(00:17Z) is before the next 16:00 UTC digest window.
+
+**Next hypothesis.** READOUT track has more Cycle-16/20/23 follow-ups queued:
+anchor-link a card's cap chips to the methodology cap rows (a reader who sees a
+"grade capped" alert can jump to why), and evidence-blob links on each check row.
+Next cloud cycle takes METHOD.

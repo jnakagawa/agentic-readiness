@@ -320,6 +320,23 @@ def test_methodology_page_written_and_covers_semantics() -> None:
         _check(phrase in text, f"methodology documents {phrase!r}")
 
 
+def test_methodology_documents_earned_dominance() -> None:
+    # Cycle 24 (READOUT): the worked example that surfaces the earned-dominance /
+    # observability property (made an executable guard in Cycle 23) in prose a
+    # critic can read. It must name the three facts that make a delta trustworthy
+    # and stay vendor-neutral (no domain/product/brand named on the page).
+    print("test_methodology_documents_earned_dominance")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    for phrase in ("worked example", "Full observability",
+                   "Like-for-like denominator", "no inversion",
+                   "superset", "earned", "blind spot"):
+        _check(phrase in text, f"methodology documents earned-dominance: {phrase!r}")
+    # Vendor-neutral: the reference pair is described by capability, never named.
+    for banned in ("drift-flight", "driftflight"):
+        _check(banned not in text, f"methodology names no vendor/domain ({banned!r})")
+
+
 def test_methodology_page_tracks_live_rubric() -> None:
     print("test_methodology_page_tracks_live_rubric")
     rubric = load_rubric()
@@ -365,6 +382,7 @@ def main() -> int:
         test_html_battery_between_kind_pill,
         test_html_battery_absent_renders_nothing,
         test_methodology_page_written_and_covers_semantics,
+        test_methodology_documents_earned_dominance,
         test_methodology_page_tracks_live_rubric,
         test_build_scorecard_publishes_and_links_methodology,
     ]

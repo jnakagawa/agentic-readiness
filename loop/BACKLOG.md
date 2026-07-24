@@ -388,14 +388,27 @@ design in-cloud, execute locally.
   datapoint runs (P0), pass its report through `scorecard.build_scorecard` and confirm the between-pill
   + interpretation line read correctly on real multi-kind data. No new code — a render + visual check
   (fold into the existing "[LOCAL] Eyeball the battery card" item above).
-- **Surface the earned-dominance / observability property in the readout** (READOUT,
-  Cycle-23 follow-up): Cycle 23 made "the +39.4 is EARNED, not an attribution artifact"
-  an executable guard (`test_canonical_delta_is_earned_dominance` — full observability +
-  like-for-like denominator + check-by-check dominance). The methodology page's
-  FAIL-vs-CANT_TEST section explains the semantics abstractly; add a worked canonical
-  example there (or a small card annotation) showing the no-rails deficit is genuine
-  evidence-of-absence at matched, fully-observed checks, not un-observability. Display-only,
-  no scoring semantics; direct-to-main.
+<!-- DONE 2026-07-24T00:17Z (Cycle 24, READOUT): "Surface the earned-dominance / observability
+     property in the readout" SHIPPED. methodology.html section 3 (FAIL vs CANT_TEST) gains a
+     "worked example — when is a low score earned evidence, not a blind spot?" sub-section naming
+     the three facts that make a two-site delta trustworthy, in the SAME capability language as
+     Cycle-23's test_canonical_delta_is_earned_dominance: full observability (each 0 is a
+     tested-and-absent FAIL, not an un-observed check) / like-for-like denominator / check-by-check
+     dominance-no-inversion (capability SUPERSET) — and states the property is pinned by an
+     executable regression test (enforced, not asserted). Vendor-neutral: reference pair described
+     by capability, no domain/product/brand named (test-pinned drift-flight/driftflight absent).
+     asrs/scorecard.py (prose + minimal h3/ul/li styling in shared _PROSE_HEAD) + tests/test_readout.py
+     only; scoring.py/rubric/probes/fetch/protocols/battery byte-for-byte untouched → display-only,
+     rubric stays v0.7, canonical delta unchanged (replay guard 46.1 F / 85.5 B / +39.4, 0 replay-miss).
+     Direct-to-main. test_readout.py 16 → 17; suite 103 → 104. See LOG Cycle 24. -->
+
+- **Worked-observability example: card annotation cross-link** (READOUT, Cycle-24 follow-up,
+  OPTIONAL): the methodology page now carries the earned-dominance worked example (section 3). A
+  small next unit would anchor-link a compared-pair card's overview (or the delta shown on a
+  `compare` card) to that methodology sub-section, so a reader looking at a large delta can jump
+  straight to "why this delta is earned, not a blind spot". No scoring semantics; direct-to-main.
+  Low priority — the prose exists; this is a navigation nicety, adjacent to the cap-chip anchor-link
+  item below.
 - **Evidence links on the card** (READOUT): each check row links to its
   evidence blob; publish evidence alongside the hosted card.
 - **Score-over-time trend page** (READOUT): per-domain history from the

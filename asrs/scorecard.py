@@ -275,6 +275,10 @@ h2{{font:600 16px/22px "DM Sans",sans-serif;margin:0 0 8px}}
 h2 .n{{color:var(--text-tertiary);font-weight:500;margin-right:8px}}
 p{{margin:0 0 10px;color:var(--text-secondary)}}
 p:last-child{{margin-bottom:0}}
+h3{{font:600 14px/20px "DM Sans",sans-serif;margin:16px 0 6px;color:var(--text-primary)}}
+ul{{margin:0 0 10px;padding-left:20px;color:var(--text-secondary)}}
+li{{margin:0 0 6px}}
+li:last-child{{margin-bottom:0}}
 b{{color:var(--text-primary)}}
 table{{width:100%;border-collapse:collapse;margin:4px 0 2px}}
 td,th{{text-align:left;padding:7px 10px;border-bottom:1px solid var(--border);
@@ -379,6 +383,30 @@ observe the capability at all. It is excluded from <b>both</b> the numerator and
 the denominator &mdash; it shrinks the pillar rather than scoring it. A site is
 <b>never punished for what couldn&rsquo;t be observed</b>. Confusing these two is
 the most common way benchmarks lie; ASRS keeps them strictly separate.</p>
+<h3>A worked example &mdash; when is a low score earned evidence, not a blind spot?</h3>
+<p>Suppose two storefronts are compared and one scores far below the other. That
+gap only means something if the low number is <b>earned evidence</b> and not the
+probe&rsquo;s own blind spot. ASRS treats a delta between two sites as
+trustworthy only when three properties hold together:</p>
+<ul>
+<li><b>Full observability.</b> Every check on the lower-scoring side was actually
+observed (a clean crawl, nothing CANT_TEST). So each 0 is a
+<b>tested-and-absent</b> capability &mdash; a FAIL above, evidence of absence
+&mdash; never an <b>un-observed</b> check quietly held against the site.</li>
+<li><b>Like-for-like denominator.</b> Both sides are scored over the
+<b>identical set of checks</b>, so the gap compares the same capabilities on
+each, not a different question asked of one and not the other.</li>
+<li><b>Check-by-check dominance, no inversion.</b> The higher-scoring side ranks
+at least as high (PASS&nbsp;&gt;&nbsp;PARTIAL&nbsp;&gt;&nbsp;FAIL) at
+<b>every</b> shared check, and strictly higher on at least one. The gap is a
+capability <b>superset</b> &mdash; the lower side does nothing the higher side
+doesn&rsquo;t &mdash; not a mix of wins and losses that happens to net out.</li>
+</ul>
+<p>Together these say a large delta is an <b>earned</b> capability difference at
+matched, fully-observed checks, not an artifact of differential observability or
+a masked inversion. On the benchmark&rsquo;s reference pair this property is
+pinned by an executable regression test, so it is <b>enforced every cycle</b>,
+not merely asserted.</p>
 </div>
 
 <div class="card">

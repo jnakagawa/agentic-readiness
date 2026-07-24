@@ -2996,3 +2996,66 @@ cycle takes TRUTH.
 ## Local verification — 20260724T064105Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260724T064105Z.json
+
+## Cycle 31 (TRUTH) — 2026-07-24T07:20Z — offering-classifier vendor-neutrality (domain-relabeling invariance)
+
+**Track / item.** TRUTH. Backlog "Adversarial referee pass" (recurring METHOD/TRUTH) +
+the standing "extend the relabel-invariance guard to more layers/storefronts" follow-up.
+Cycle 21 made vendor-neutrality an executable tripwire for the SCORING path
+(`test_canonical_replay.py` relabel-invariance); the OFFERING classifier — which drives
+the operator directive's TASK SELECTION and NA semantics — carried no equivalent guard.
+
+**What.** `tests/test_offering_canonical.py` +3 tests (4 → 7). Each relabels a committed
+canonical fixture's host to a neutral placeholder (`vendor-neutral.test`) — request keys
+AND every response byte, a whole-fixture string sub, temp file, replayed through the REAL
+`FetchContext.from_fixture -> discover_offering` path — and asserts the CLAIMED archetype
+list (ORDERED — order is the fixed template-bank task order, cross-site comparability) and
+the UNCLAIMED/NA set are IDENTICAL to the un-relabeled discovery, and that the relabeled
+claimed set still equals the [LOCAL]-validated `{metered_api, subscription, digital_good}`.
+`test_offering_relabel_invariance_org` / `_com` + `test_offering_relabel_negative_control`.
+
+**Why (capability lens).** `classify_offering(domain, surfaces)` takes the domain as an
+argument and the host string appears INSIDE the classifier's own matched evidence (the
+`metered_api` "post-endpoint" quote is `POST https://<host>/…` — 2 such quotes on .org, 4
+on .com). If classification ever keyed on the domain — a favorable OR hostile special-case
+— a site's TASK SET (which archetypes it is judged on vs excused as NA) would depend on its
+NAME, not what it claims to sell: exactly the vendor-rigging the directive's "vendor-neutral,
+never a vendor or domain string" boundary forbids, at the battery-selection layer. This
+proves the claimed/NA partition is a property of the EVIDENCE, not the storefront's identity
+— the offering-layer complement to Cycle 21's scoring relabel guard. Worded by capability,
+never by vendor.
+
+**Non-vacuous.** (i) Each invariance test first asserts the host appears in the base
+profile's matched evidence, so the relabel genuinely changes the text classification reads
+(not a no-op). (ii) The neutral host is a different LENGTH and carries no archetype-signal
+word, so invariance is neither a same-length coincidence nor a neutral-host artifact.
+(iii) `test_offering_relabel_negative_control` monkeypatches a FAVORABLE identity-keyed
+special-case (force-add `physical_good` when `"driftflight" in domain`) and confirms the
+relabel-invariance assertion CATCHES it — base (canonical identity) claims physical_good,
+neutral-host run does not, claimed sets diverge — then restores the real classifier and
+asserts the restore. So the assertion has teeth.
+
+**Regression / invariants.** Tests-only: `git diff --stat` = `tests/test_offering_canonical.py`
+only; scoring.py / rubric / probes / fetch / offering.py byte-for-byte untouched
+(`git diff --name-only -- asrs/ rubric/` empty) → rubric stays **v0.7**, canonical delta
+unchanged by construction AND re-measured (in-cloud replay guard `test_canonical_replay.py`
+8/8, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; corroborated live by
+`verify_20260724T064105Z` 06:41Z). Score-neutral (the offering pipeline feeds no score /
+no aggregation math). $0-only intact (discovery is read-only GETs, replayed offline).
+
+**Ship.** Direct to main (TRUTH, tests-only, no scoring semantics).
+
+**Evidence.** Full suite **129 → 132** (+3). `python tests/test_offering_canonical.py`
+4/4 → 7/7. Canonical replay guard 8/8 (delta +39.4, 0 replay-miss). All 16 test files pass.
+First duty: no open peer-gated PR (verified `[]` via list_pull_requests). Infra health check
+ran first — runner HEALTHY: newest `verify_20260724T064105Z` (06:41Z, 46.1 F / 85.5 B /
++39.4) ~30 min old at this fire, well under the 6h floor.
+
+**Comms.** No Slack — tests-only, moves no score, not a sensitive-class PR; not a digest
+window (07:20Z, before 16:00 UTC; digest last sent Cycle 16).
+
+**Next hypothesis.** The vendor-neutrality tripwire now covers BOTH the scoring path
+(Cycle 21) and the offering/task-selection path (this cycle) on the canonical pair. The
+remaining relabel-coverage gap is a NON-STOREFRONT control (example.com) and a retail
+INVERSE (books.toscrape.com) — both need a [LOCAL] fixture capture (queued P2), after which
+this same offering relabel guard extends to them in-cloud. Next cloud cycle takes READOUT.

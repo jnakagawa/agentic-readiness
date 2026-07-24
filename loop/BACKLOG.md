@@ -366,7 +366,18 @@ design in-cloud, execute locally.
   `<div class="desc">` strings in scorecard.py — for the same vendor-leaning lens;
   (b) extend BOTH the relabel-invariance guard AND this wording denylist to more
   fixtures/storefronts as they land (see the third-control-domain P2 item; add any
-  newly-scored storefront's name to `_SCORED_STOREFRONT_NAMES`).
+  newly-scored storefront's name to `_SCORED_STOREFRONT_NAMES`). PROGRESS
+  2026-07-24T07:20Z (Cycle 31, TRUTH): relabel-invariance now covers a SECOND
+  LAYER — the OFFERING classifier / task-selection path, not just scoring.
+  `tests/test_offering_canonical.py` +3 (4→7): relabel each committed canonical
+  fixture's host to `vendor-neutral.test` and assert the CLAIMED archetype list
+  (ordered) + NA set are identical through the REAL `from_fixture ->
+  discover_offering` path — the claimed/NA partition (which archetypes get tasks
+  vs are excused NA) keys on EVIDENCE, not identity. Non-vacuous (host appears in
+  the classifier's own matched evidence) + a negative control (an identity-keyed
+  favorable special-case is CAUGHT). Score-neutral, rubric v0.7, replay guard 8/8
+  / +39.4. Still recurring: (a) the hand-authored-prose re-read; (b) extend BOTH
+  layers' relabel guards to the [LOCAL] control/inverse fixtures below.
 - **Env-block classifier: harden against site-side "safety/security policy"**
   (METHOD, attribution honesty — residual from the PR #2 adversarial review,
   2026-07-23T10:13Z). The review confirmed `_ENV_BLOCK_RE` correctly rejects the

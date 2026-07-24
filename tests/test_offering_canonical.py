@@ -61,13 +61,21 @@ from __future__ import annotations
 import os
 import re
 import sys
+import tempfile
 
 # Make the worktree's asrs importable when run as a bare script.
 _REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, _REPO_ROOT)
 
+import asrs.offering as _offering  # noqa: E402
 from asrs.fetch import FetchContext  # noqa: E402
-from asrs.offering import ARCHETYPES, discover_offering, strip_html  # noqa: E402
+from asrs.offering import (  # noqa: E402
+    ARCHETYPES,
+    ArchetypeClaim,
+    ArchetypeSignal,
+    discover_offering,
+    strip_html,
+)
 
 _FIXTURE_DIR = os.path.join(_REPO_ROOT, "fixtures", "canonical")
 
@@ -188,12 +196,188 @@ def test_canonical_metaphorical_ship_stays_na_com() -> None:
     _assert_metaphorical_ship_not_physical("driftflight.com")
 
 
+# ---------------------------------------------------------------------------
+# Vendor-neutrality of the OFFERING classifier — domain-relabeling invariance.
+#
+# `tests/test_canonical_replay.py` (Cycle 21) made vendor-neutrality an executable
+# tripwire for the SCORING path: relabel a canonical fixture's host everywhere and
+# the overall/pillars/per-check-status are identical, proving the +39.4 rests on
+# EVIDENCE, not the storefront's IDENTITY. The OFFERING classifier — which drives
+# the operator directive's task SELECTION (which archetypes get intents) and NA
+# semantics (which are excluded from every mean/spread, never penalized) — carried
+# no such guard, even though `classify_offering(domain, surfaces)` takes the domain
+# as an argument and the host string appears inside the classifier's own matched
+# evidence (e.g. the `metered_api` "post-endpoint" quote is `POST https://<host>/…`).
+# If classification ever keyed on the domain — a favorable OR hostile special-case —
+# a site's TASK SET (and thus which archetypes it is judged on vs excused as NA)
+# would depend on its NAME, not what it actually claims to sell. That is exactly the
+# vendor-rigging the directive's "vendor-neutral, never a vendor or domain string"
+# boundary forbids, applied to the battery-selection layer.
+#
+# This relabels each canonical fixture's host to a neutral placeholder — request
+# keys AND response bytes together, a whole-fixture string sub (so a body-embedded
+# absolute URL still resolves against the rewritten cache), written to a temp file
+# and replayed through the REAL `FetchContext.from_fixture -> discover_offering`
+# path — and asserts the CLAIMED archetype list (ordered — order drives the fixed
+# template-bank task order for cross-site comparability) and the UNCLAIMED/NA set
+# are IDENTICAL to the un-relabeled discovery. Renaming the shop changes nothing.
+#
+# NON-VACUOUS by substrate: the base discovery's own evidence quotes contain the
+# host (asserted below), so the relabel genuinely changes the text the classifier
+# reads; the neutral host is a different LENGTH and carries no archetype-signal
+# word, so invariance is neither a same-length coincidence nor a neutral-host
+# artifact. And `test_offering_relabel_negative_control` proves the assertion has
+# teeth: a monkeypatched identity-keyed special-case IS caught by it.
+# ---------------------------------------------------------------------------
+_NEUTRAL_HOST = "vendor-neutral.test"  # reserved .test TLD; no archetype-signal word
+
+
+def _discover_relabeled(domain: str, new_host: str):
+    """Replay ``<domain>.json`` with its host relabeled to ``new_host`` everywhere.
+
+    The substitution rewrites the stored ``domain`` field, request keys, and
+    response bytes together, so ``FetchContext.from_fixture`` reconstructs a
+    context whose ``domain`` is ``new_host`` and whose cache serves the same
+    surfaces byte-identically up to the host label. A vendor-neutral classifier
+    must reproduce the un-relabeled claimed/unclaimed partition.
+    """
+    path = os.path.join(_FIXTURE_DIR, f"{domain}.json")
+    with open(path, encoding="utf-8") as fh:
+        raw = fh.read()
+    relabeled = raw.replace(domain, new_host)
+    _check(
+        domain not in relabeled,
+        f"{domain}: every occurrence of the original host was relabeled",
+    )
+    tmp = tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8")
+    try:
+        tmp.write(relabeled)
+        tmp.close()
+        ctx = FetchContext.from_fixture(tmp.name)
+        return discover_offering(ctx)
+    finally:
+        os.unlink(tmp.name)
+
+
+def _assert_offering_relabel_invariant(domain: str) -> None:
+    base, _ = _discover(domain)
+    exp = EXPECTED_CLAIMED[domain]
+
+    # Non-vacuity: the classifier's OWN matched evidence contains the host, so
+    # relabeling genuinely changes the text classification reads (not a no-op).
+    host_in_evidence = any(
+        domain in s.quote for c in base.claimed for s in c.signals
+    )
+    _check(
+        host_in_evidence,
+        f"{domain}: the host appears in the classifier's matched evidence "
+        "(relabeling genuinely changes classifier input — the test is non-vacuous)",
+    )
+
+    relab = _discover_relabeled(domain, _NEUTRAL_HOST)
+
+    # Ordered claimed list identical — order is the fixed template-bank task order
+    # (cross-site comparability), so an order flip would reorder the battery too.
+    _check(
+        relab.archetypes == base.archetypes,
+        f"{domain}: claimed archetypes (ordered) invariant under relabel "
+        f"(base {base.archetypes}, relabel {relab.archetypes})",
+    )
+    # ...and equal to the [LOCAL]-validated set, re-affirming it through the
+    # relabeled path (mirrors the scoring relabel guard re-affirming the number).
+    _check(
+        set(relab.archetypes) == exp,
+        f"{domain}: relabeled claimed set == {sorted(exp)} "
+        f"(got {sorted(set(relab.archetypes))})",
+    )
+    # The NA set (excluded from every mean/spread, never penalized) is invariant —
+    # the operator directive's NA assignment depends on evidence, not identity.
+    _check(
+        set(relab.unclaimed) == set(base.unclaimed),
+        f"{domain}: NA/unclaimed set invariant under relabel "
+        f"(base {sorted(base.unclaimed)}, relabel {sorted(relab.unclaimed)})",
+    )
+
+
+def test_offering_relabel_invariance_org() -> None:
+    print("test_offering_relabel_invariance_org")
+    _assert_offering_relabel_invariant("drift-flight.org")
+
+
+def test_offering_relabel_invariance_com() -> None:
+    print("test_offering_relabel_invariance_com")
+    _assert_offering_relabel_invariant("driftflight.com")
+
+
+def test_offering_relabel_negative_control() -> None:
+    """The invariance assertion has teeth: an identity-keyed special-case is caught.
+
+    Monkeypatch a FAVORABLE special-case into the classifier — when the domain is
+    the canonical storefront's identity, force-add a ``physical_good`` claim it did
+    not earn from evidence. The base (canonical-host) discovery then claims
+    physical_good; the relabeled (neutral-host) discovery does not — so the claimed
+    sets DIVERGE, which is exactly what ``_assert_offering_relabel_invariant`` asserts
+    against. If relabel-invariance were vacuous (e.g. discovery ignored the input, or
+    the relabel were a no-op) this divergence would NOT appear and the guard would be
+    worthless. Restores the real classifier in a finally block.
+    """
+    print("test_offering_relabel_negative_control")
+    real = _offering.classify_offering
+
+    def rigged(domain, surfaces):
+        prof = real(domain, surfaces)
+        # Keyed on the storefront's IDENTITY, not its evidence — the anti-pattern.
+        if "driftflight" in domain.replace("-", "") and not prof.claims("physical_good"):
+            prof.claimed.append(
+                ArchetypeClaim(
+                    archetype="physical_good",
+                    signals=[
+                        ArchetypeSignal(
+                            archetype="physical_good",
+                            surface="homepage",
+                            label="rigged-identity",
+                            quote="special-cased on domain identity",
+                        )
+                    ],
+                )
+            )
+        return prof
+
+    _offering.classify_offering = rigged
+    try:
+        base, _ = _discover("driftflight.com")
+        relab = _discover_relabeled("driftflight.com", _NEUTRAL_HOST)
+        _check(
+            base.claims("physical_good"),
+            "rig active: base (canonical identity) is special-cased to claim physical_good",
+        )
+        _check(
+            not relab.claims("physical_good"),
+            "neutral-host run is NOT special-cased (classification keyed on identity)",
+        )
+        _check(
+            set(base.archetypes) != set(relab.archetypes),
+            "the identity-keyed special-case is CAUGHT — claimed sets diverge under "
+            "relabel, so the invariance assertion is non-vacuous",
+        )
+    finally:
+        _offering.classify_offering = real
+    # And the real classifier is restored (guard against leaking the rig).
+    _check(
+        _offering.classify_offering is real,
+        "real classify_offering restored after the negative control",
+    )
+
+
 def main() -> int:
     tests = [
         test_canonical_org_offering,
         test_canonical_com_offering,
         test_canonical_metaphorical_ship_stays_na_org,
         test_canonical_metaphorical_ship_stays_na_com,
+        test_offering_relabel_invariance_org,
+        test_offering_relabel_invariance_com,
+        test_offering_relabel_negative_control,
     ]
     failed = 0
     for t in tests:

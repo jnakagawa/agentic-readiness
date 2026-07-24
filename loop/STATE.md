@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 30
+- Cycle counter: 31
 - Started: 2026-07-23 (UTC)
-- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -318,6 +318,29 @@
   health check ran first — runner RECOVERED (newest verify_20260724T054104Z, 05:41Z, ~31 min old,
   46.1 F / 85.5 B / +39.4) → the 01–04:41Z stall Cycle 28/29 flagged has self-cleared; runner-stall
   watch CLOSED. Next cycle takes TRUTH.
+  Cycle 31 TRUTH (offering-classifier VENDOR-NEUTRALITY made executable — domain-relabeling
+  invariance for the task-selection layer): `tests/test_offering_canonical.py` +3 tests (4->7).
+  Cycle 21 made vendor-neutral SCORING a tripwire (relabel-invariance in test_canonical_replay);
+  the OFFERING classifier — which drives the operator directive's TASK SELECTION + NA semantics —
+  was unguarded, even though `classify_offering(domain, surfaces)` takes the domain and the host
+  string sits INSIDE the classifier's own matched evidence (`metered_api` post-endpoint quote =
+  `POST https://<host>/…`, 2 quotes .org / 4 .com). Each new test relabels a committed canonical
+  fixture's host to `vendor-neutral.test` (request keys + response bytes, whole-fixture sub, temp
+  file, REAL `from_fixture -> discover_offering`) and asserts the CLAIMED archetype list (ordered)
+  + UNCLAIMED/NA set are IDENTICAL to the un-relabeled discovery — proving the claimed/NA partition
+  keys on EVIDENCE, not identity (a site's task set can't depend on its NAME). NON-VACUOUS: each
+  test first asserts the host appears in the base evidence (relabel genuinely changes classifier
+  input); neutral host is a different length + carries no signal word; and
+  `test_offering_relabel_negative_control` monkeypatches a FAVORABLE identity-keyed special-case
+  (force-add physical_good when "driftflight" in domain) -> CAUGHT (claimed sets diverge), then
+  restores + asserts the restore. Worded by capability, never by vendor. Tests-only: git diff =
+  test_offering_canonical.py only; scoring.py/rubric/probes/fetch/offering.py byte-for-byte
+  untouched (`git diff --name-only -- asrs/ rubric/` empty) -> rubric stays v0.7, canonical delta
+  unchanged by construction AND re-measured (replay guard 8/8, 46.1 F / 85.5 B / +39.4, 0
+  replay-miss). Direct-to-main. Suite 129 -> 132. No Slack (tests-only, moves no score, before the
+  16:00 UTC digest window). First duty: no open peer-gated PR (verified []); infra health check ran
+  first — runner HEALTHY (newest verify_20260724T064105Z, 06:41Z, ~30 min old, 46.1 F / 85.5 B /
+  +39.4). Next cycle takes READOUT.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity

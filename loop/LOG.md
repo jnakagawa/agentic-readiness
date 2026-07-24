@@ -2673,3 +2673,85 @@ inverse; NA shown "not offered" on card + terminal). Cloud-side, brick 5's HTML 
 (surface `na_archetypes`/`assessed_archetypes` on `scorecard._battery`) is the next READOUT
 increment, and brick 4 (out-of-scope legibility, unscored diagnostic) the next COVERAGE.
 Next cloud cycle takes TRUTH.
+
+---
+
+## Cycle 27 — 2026-07-24T03:12Z (TRUTH)
+
+**One-liner.** The operator directive's CORE acceptance criterion —
+`driftflight.com physical_good = NA` — is now an EXECUTABLE in-cloud regression
+guard, replayed offline from the committed canonical fixtures. Until now it lived
+only in a [LOCAL] run log; a signal-bank change that spuriously flipped physical_good
+on the canonical pair would have shipped silently.
+
+**Track / why.** TRUTH — calibration against reality: does the offering-relative
+machinery classify the canonical storefronts the way live discovery did, and does
+the operator's acceptance criterion hold as a tripwire? The offering bricks (1–3 +
+`--battery auto`) were live-validated [LOCAL] on 4 domains, but the canonical
+physical_good=NA outcome had NO in-cloud guard. This converts the per-directive
+acceptance prose into an offline executable check, the same move Cycles 17/19/21/23
+made for the SCORING re-score (delta / capability-payment / relabel-invariance /
+earned-dominance).
+
+**What shipped.** `tests/test_offering_canonical.py` (4 tests). Replays each committed
+`fixtures/canonical/{drift-flight.org,driftflight.com}.json` through the REAL discovery
+path (`FetchContext.from_fixture → discover_offering`, no network) and pins:
+- (a) the exact CLAIMED archetype SET `{metered_api, subscription, digital_good}` on both
+  (exact equality, not subset — a spurious ADDED archetype, the pollution the directive
+  removes, OR a DROPPED one both fail);
+- claimed ∪ unclaimed partition the fixed template bank with no overlap;
+- (b) the OPERATOR ACCEPTANCE CRITERION: `{physical_good, service_booking, data_retrieval}`
+  are all NA/unclaimed on BOTH canonical domains, `physical_good` called out explicitly.
+
+**Non-vacuous by substrate.** Both flight-themed homepages literally say "ship" three
+times ("for every image you **ship**", "Teams that **ship** images daily") — all
+metaphorical (shipping software output, not fulfillment). Two extra tests assert the
+homepage prose CONTAINS the trap word yet physical_good stays NA — the precision-critical
+false positive `asrs.offering` is built to avoid, exercised on REAL captured evidence
+(not the synthetic surfaces `test_offering.py` uses). NEGATIVE CONTROL (offline, not
+committed): appending a relaxed `bare-ship` physical_good signal flips BOTH canonical
+domains to physical_good=CLAIMED — caught by both the exact-set and the NA assertions, so
+the guard earns its place.
+
+**Discovery-only / score-neutral.** Reads the same committed fixtures as
+`test_canonical_replay.py` but exercises the SCORE-NEUTRAL offering pipeline (no check,
+weight, cap, or aggregation rule). `git diff --stat` empty except the new test file;
+scoring.py/rubric/probes/fetch.py/offering.py byte-for-byte untouched → **rubric stays
+v0.7**, canonical delta unchanged by construction AND re-measured — replay guard 8/8
+(46.1 F / 85.5 B / +39.4, 0 replay-miss); newest verify artifact
+`verify_20260724T004105Z` (00:41Z, ~2.5h old) live-confirms the same on v0.7.
+
+**Fixture-coverage note.** Discovery TOLERATES a missing surface by design (a
+404/error/replay-miss surface is simply absent), so this guard pins the classification
+OUTCOME, not fixture coverage — the canonical fixtures were captured for the SCORING
+crawl, so a discovery-only surface (driftflight.com `/llms-full.txt`) is legitimately
+absent (1 harmless replay-miss in the .com cache) without changing the claimed set.
+Deliberately NOT asserting "no replay-miss" for discovery (that would couple the test to
+what the scoring crawl happened to fetch); the scoring guard's no-miss assertion is the
+right place for coverage.
+
+**Maintenance contract.** Mirrors `test_canonical_replay`: a signal-bank change that
+LEGITIMATELY changes what a canonical domain claims re-captures fixtures [LOCAL] and
+updates `EXPECTED_CLAIMED` in the SAME PR. A canonical domain gaining physical_good
+absent new fulfillment evidence is NOT legitimate — it is the regression this guard
+catches.
+
+**Scope / ship.** `tests/test_offering_canonical.py` only — tests-only, no scoring
+semantics → **direct to main**. First duty: no open peer-gated PR (verified `[]`). Infra
+health check ran first — runner HEALTHY (`verify_20260724T004105Z`, 00:41Z, ~2.5h old),
+bench 118/118 pre-change, git realigned (ephemeral local-main divergence reset to
+origin/main `6f49f4b`).
+
+**Evidence.** Full suite **118 → 122** (+4). `python tests/test_offering_canonical.py`
+4/4; canonical replay guard 8/8 (delta +39.4).
+
+**Comms.** No Slack — tests-only, moves no score, not a sensitive-class PR; not a digest
+window (03:12Z, before 16:00 UTC; digest last sent Cycle 16).
+
+**Next hypothesis.** The offering-discovery guard pins the CANONICAL pair; the
+[LOCAL] acceptance rerun (live `--battery auto` on the pair + a retail control) remains
+the end-to-end validation on real data. Cloud-side, extend this guard to the retail
+INVERSE once a `books.toscrape.com`-class fixture is captured [LOCAL] (asserting
+physical_good CLAIMED + the API archetypes NA — the operator's "a shop shows the inverse"
+half), and brick 5's HTML readout (`na_archetypes`/`assessed_archetypes` on
+`scorecard._battery`) is the next READOUT increment. Next cloud cycle takes READOUT.

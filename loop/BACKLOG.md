@@ -40,6 +40,17 @@ design in-cloud, execute locally.
   archetypes only; a retail storefront shows the inverse. Card and terminal
   readouts show NA archetypes as "not offered".
 
+  ACCEPTANCE GUARD (canonical NA half) NOW EXECUTABLE IN-CLOUD — Cycle 27 (TRUTH,
+  direct-to-main): `tests/test_offering_canonical.py` (4 tests) replays both committed
+  canonical fixtures through the REAL discovery path and pins the classification —
+  exact claimed SET `{metered_api,subscription,digital_good}` on both + `physical_good`
+  (and service_booking, data_retrieval) NA on BOTH, so the directive's
+  `driftflight.com physical_good = NA` is a per-cycle tripwire, not a [LOCAL] run-log
+  fact. Non-vacuous: metaphorical "ship" ×3 on both flight-themed homepages stays NA
+  (precision guard on real evidence); negative control (bare-"ship" signal) flips both
+  → caught. Score-neutral (rubric v0.7, replay guard 8/8 / +39.4). Suite 118→122. The
+  RETAIL-INVERSE half still needs live data / a fixture (see the P2 item below).
+
   PROGRESS — BRICK 1 (relevance discovery) SHIPPED 2026-07-23T23:49Z (local fire,
   COVERAGE/METHOD, direct-to-main, score-neutral). `asrs/offering.py`:
   `discover_offering(ctx)` reads a storefront's own surfaces (homepage + llms.txt /
@@ -398,6 +409,16 @@ design in-cloud, execute locally.
   report through `scorecard.build_scorecard` and confirm the per-intent grid + by-archetype
   rollup read correctly on real multi-kind data. No new code — a render + visual check.
 
+- **[LOCAL] Retail-INVERSE offering fixture** (TRUTH, Cycle-27 follow-up — the operator's
+  "a shop shows the inverse" half). Cycle 27 pinned the canonical NA half in-cloud
+  (`tests/test_offering_canonical.py`). The mirror is unpinned: capture a fixture for a
+  retail storefront (e.g. `books.toscrape.com`, already [LOCAL]-validated → physical_good
+  CLAIMED) via `asrs.cli score books.toscrape.com --record-fixture fixtures/canonical/
+  books.toscrape.com.json` (LIVE, needs network → [LOCAL]), then add a cloud-doable case to
+  `test_offering_canonical.py` asserting the INVERSE — physical_good CLAIMED and the
+  API/subscription archetypes NA — so the vendor-neutral "storefront TYPE drives the
+  claimed set, not the domain" property is a tripwire in BOTH directions. Capture is
+  [LOCAL]; the test wiring is cloud-doable once the fixture lands.
 - **[LOCAL] Third-control-domain replay fixture** (METHOD/TRUTH, Cycle-17 + Cycle-19 follow-up):
   the canonical replay guard pins only the storefront PAIR. Capture a fixture for a NON-storefront
   control (example.com, already spot-checked 22.5 F [LOCAL] 15:43Z) via

@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 26
+- Cycle counter: 27
 - Started: 2026-07-23 (UTC)
-- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -229,6 +229,25 @@
   live-confirms). `asrs/cli.py` + `tests/test_battery_wiring.py` only; direct-to-main. `test_battery_wiring.py`
   4→7 (+3 auto-mode: discovery→instantiate, end-to-end NA threading, null offering); suite 115→118. No Slack
   (direct-to-main, score-neutral, not sensitive, not a digest window at 02:12Z). Next cycle takes TRUTH.
+  Cycle 27 TRUTH (operator ACCEPTANCE CRITERION made an executable in-cloud guard):
+  `tests/test_offering_canonical.py` (4 tests) replays each committed canonical fixture through the REAL
+  discovery path (`FetchContext.from_fixture -> discover_offering`, no network) and pins the classification:
+  exact claimed SET `{metered_api,subscription,digital_good}` on both (exact equality -> a spurious ADDED or
+  DROPPED archetype fails), claimed-union-unclaimed partition the template bank, and the operator's criterion —
+  `{physical_good,service_booking,data_retrieval}` all NA on BOTH (physical_good called out). Converts the
+  directive's `driftflight.com physical_good = NA` from a [LOCAL] run-log fact into a per-cycle tripwire
+  (same move Cycles 17/19/21/23 made for the SCORING re-score). NON-VACUOUS: both flight-themed homepages
+  say metaphorical "ship" x3 yet physical_good stays NA (the precision-critical false positive, on REAL
+  captured evidence) — 2 extra tests pin it; negative control (offline, uncommitted) appending a bare-"ship"
+  physical_good signal flips BOTH to CLAIMED -> caught. Discovery-only/score-neutral: `git diff --stat` empty
+  but the new test; scoring.py/rubric/probes/fetch/offering.py byte-for-byte untouched -> rubric stays v0.7,
+  canonical delta unchanged by construction AND re-measured (replay guard 8/8, 46.1 F / 85.5 B / +39.4,
+  0 replay-miss; verify_20260724T004105Z 00:41Z ~2.5h live-confirms). Direct-to-main. Suite 118->122. No Slack
+  (tests-only, moves no score, before the 16:00 UTC digest window). First duty: no open peer-gated PR
+  (verified []); infra health check ran first — runner HEALTHY (verify_20260724T004105Z, 00:41Z, ~2.5h old),
+  bench 118/118, ephemeral local-main divergence reset to origin/main 6f49f4b. NOTE: the retail-INVERSE half
+  (a `books.toscrape.com`-class fixture pinning physical_good CLAIMED + API archetypes NA — the operator's
+  "a shop shows the inverse") needs a [LOCAL] fixture capture; queued. Next cycle takes READOUT.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity

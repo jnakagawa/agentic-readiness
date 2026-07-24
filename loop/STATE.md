@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 24
+- Cycle counter: 25
 - Started: 2026-07-23 (UTC)
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -193,6 +193,24 @@
   open peer-gated PR (verified empty); runner HEALTHY (verify_20260724T004105Z, 00:41Z, ~8 min old). Brick 3
   (NA-aware aggregation, PEER-GATED) + the [LOCAL] acceptance rerun are the next increments; cloud rotation
   unaffected (still METHOD).
+  Cycle 25 METHOD (operator directive BRICK 3 — NA-aware battery aggregation, PEER-GATED PR #4):
+  `aggregate_battery(..., *, profile=OfferingProfile|None)` marks archetypes a site does NOT claim
+  (`profile.unclaimed`) NA and EXCLUDES them from `mean_completion`/`cross_task_spread`/`between_kind_spread`
+  — the operator's image-API-vs-physical-good complaint made a tripwire. NA (structural not-offered) is DISTINCT
+  from no-signal (offered-but-unobserved); both excluded, readout names which (`assessed_archetypes` = what the
+  numbers are over, `na_archetypes` = not offered). `BatteryTaskResult.na`; `BatterySummary` +na_archetypes/
+  assessed_archetypes/`battery_semantics_version="b1"`; `report._battery_lines` names both (offering-relative
+  mode only). WITHOUT a profile the aggregation is byte-for-byte the pre-brick-3 behaviour (backward-compat
+  pinned). VERSIONING: bumps the BATTERY-diagnostic semantics version (b1), DELIBERATELY not the rubric version —
+  the battery feeds no score, so a rubric bump would falsely signal the scored number moved (flagged in PR for
+  reviewer). Vendor-neutral (NA keys on archetype-claim structure, no domain/vendor string; non-canonical kinds
+  never NA). scoring.py/rubric/probes/fetch/offering.py byte-for-byte untouched → rubric stays v0.7, canonical
+  delta unchanged by construction AND re-measured (replay guard 46.1 F / 85.5 B / +39.4, 0 replay-miss).
+  PEER-GATED → branch `loop/na-aware-battery-aggregation`, PR #4 opened with reviewer checklist, NOT self-merged;
+  next cycle's first duty reviews+merges. No CI on repo (get_status total_count 0). `test_battery.py` 9→12; suite
+  112→115. Slack DM SENT (sensitive-class PR visibility). Infra health check ran first — ALL GREEN (runner
+  HEALTHY, verify_20260724T004105Z 00:41Z ~31 min old + clean scores; bench 112/112; ephemeral local-main
+  divergence realigned to origin d33129f). Next cycle takes COVERAGE.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity
@@ -440,7 +458,15 @@
   scoring-semantics/aggregation change → PEER-GATED + version bump, queued P0 in
   BACKLOG with exact spec. Sole residual claude flip: found_purchase_path
   (t1 false vs t2–5 true) — legibility ambiguity, not noise.
-- Open PRs: **NONE** (`gh pr list --state open` empty at 2026-07-23T15:43Z). PR #3
+- Open PRs: **PR #4** `loop/na-aware-battery-aggregation` (Cycle 25, METHOD, sensitive class:
+  battery aggregation-semantics change — NA-aware exclusion + `battery_semantics_version` b1).
+  Opened 2026-07-24T01:12Z, NOT self-merged. Next cycle's FIRST DUTY: fresh-context adversarial
+  review against invariants (backward-compat `profile=None` == pre-brick-3 byte-for-byte; NA keys
+  only on archetype-claim structure = vendor-neutral; canonical delta unchanged = battery decoupled
+  from scoring; the versioning decision — battery-semantics version, NOT rubric version). If it
+  survives → MERGE + record verdict in LOG; else request changes. No CI on repo. Slack-flagged for
+  visibility (veto, not approval). https://github.com/jnakagawa/agentic-readiness/pull/4
+  PRIOR (all closed): PR #3
   `loop/commerce-manifest-validation` (Cycle 14, COVERAGE, sensitive class: partial-credit
   rule + rubric v0.6→v0.7) was **MERGED EXTERNALLY** 2026-07-23T14:45:30Z (commit 72a2e5b)
   — an operator merged it directly during the SAME cloud fire that opened it, BEFORE the

@@ -74,14 +74,22 @@ design in-cloud, execute locally.
   46.1 F / 85.5 B / +39.4). `test_battery_instantiate.py` 8/8; suite 104 → 112.
   Evidence: runs/local/offering_battery_instantiate_20260724T004927Z.json. See LOG
   (Local cycle 00:49Z).
-  REMAINING bricks (next increments, in order):
-  - **BRICK 3 — NA-aware aggregation** (METHOD, PEER-GATED + version bump): mark
-    unclaimed archetypes NA and EXCLUDE them from `mean_completion`,
-    `cross_task_spread`, and `between_kind_spread` (asrs/battery.py). Brick 2 already
-    omits unclaimed archetypes from the task SET (so they contribute no signal), but
-    this brick makes NA an EXPLICIT, recorded state in `BatterySummary` (readout +
-    aggregation), which is the operator's stated scoring-semantics change → sensitive
-    class → peer-gated PR. (The battery still feeds no overall score.)
+  BRICK 3 — NA-aware aggregation: **SHIPPED (pending merge) 2026-07-24T01:12Z (Cycle 25,
+  METHOD, PEER-GATED PR #4).** `aggregate_battery(..., *, profile=OfferingProfile|None)`
+  marks archetypes a site does NOT claim (`profile.unclaimed`) NA and EXCLUDES them from
+  `mean_completion`/`cross_task_spread`/`between_kind_spread`; NA is DISTINCT from no-signal
+  (structural not-offered vs offered-but-unobserved) and recorded (`na_archetypes` /
+  `assessed_archetypes`) so the readout names both. `BatteryTaskResult.na`;
+  `battery_semantics_version="b1"` (battery-diagnostic version, DELIBERATELY not the rubric
+  version — flagged in PR); `report._battery_lines` names assessed + not-offered (offering-
+  relative mode only). WITHOUT a profile = byte-for-byte pre-brick-3 (backward-compat pinned).
+  Vendor-neutral (NA keys on archetype-claim structure; non-canonical kinds never NA).
+  scoring.py/rubric/probes/fetch/offering.py untouched → rubric v0.7, canonical delta unchanged
+  (replay guard 46.1 F / 85.5 B / +39.4, 0 replay-miss). `test_battery.py` 9→12; suite 112→115.
+  PR: https://github.com/jnakagawa/agentic-readiness/pull/4 — next cycle's first duty reviews +
+  merges. See LOG Cycle 25. NOTE (brick 5 partial): the terminal readout now names NA/assessed;
+  the HTML battery-card equivalent (`scorecard._battery`) is the remaining READOUT increment.
+  REMAINING bricks (next increments, in order — AFTER PR #4 merges):
   - **BRICK 4 — out-of-scope legibility** (unscored diagnostic, optional) +
     **BRICK 5 — comparability readout** (name WHICH archetypes were assessed — brick 2
     already stabilizes this by using archetype names as task ids; this brick surfaces

@@ -2475,3 +2475,83 @@ plus the brick-5 comparability readout naming WHICH archetypes were assessed. Th
 the `[LOCAL]` acceptance rerun (rerun the canonical batteries end-to-end via the
 instantiated task set and confirm driftflight physical_good shows as NA, not a
 number). Cloud rotation unaffected (next cloud cycle still takes METHOD).
+
+## Cycle 25 — 2026-07-24T01:12Z — METHOD (peer-gated PR #4)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests
+state=open` → `[]`) → the mandated fresh-context adversarial review had nothing
+pending. Infra health check ran first: **all green.** Runner HEALTHY — newest
+artifact `verify_20260724T004105Z.json` (00:41Z) is ~31 min old at fire (01:12Z),
+well under 6h, and its scores block is CLEAN (46.1 F / 85.5 B, tests_ok True) — the
+Cycle-13/19 source fix + runner recovery hold. Bench UP: full suite 112/112 on a
+fresh checkout after `.venv` + `pip install -r requirements.txt` (eth-account
+present → test_free_tier 9/9). Bookkeeping: the ephemeral cloud checkout's local
+`main` was a stale divergent lineage ("ahead 22, behind 52"); realigned it to the
+authoritative `origin/main` tip (d33129f, Cycle 24 + local fire 00:49Z) via
+`git reset --hard FETCH_HEAD` — no un-pushed work on local main (all cycle work is
+on the pushed branch), NOT a published-history rewrite. Canonical replay guard green
+pre-flight on realigned main: 8/8 (46.1 F / 85.5 B / +39.4, 0 replay-miss).
+
+**What/why (operator directive P0, brick 3 — NA-aware aggregation).** Bricks 1
+(offering discovery) and 2 (offering-relative intent instantiation) shipped [LOCAL].
+Brick 3 is the METHOD/peer-gated increment: make the battery OFFERING-RELATIVE *at
+aggregation time*. An archetype a site does NOT claim to serve (from the brick-1
+`OfferingProfile`) is now marked **NA** and EXCLUDED from `mean_completion`,
+`cross_task_spread`, and `between_kind_spread`. This is the operator's exact
+complaint made a tripwire: an image-generation API probed with "order a physical
+good" no longer lets that mismatched partial completion pollute the spreads — the
+battery measures readiness for what the site OFFERS, not its mismatch with intents it
+never advertised. NA is DISTINCT from "no signal": NA = structural not-offered;
+no-signal = an offered intent every run env-blocked (unobserved-but-offered). Both
+are excluded, for different reasons, and the readout now names which is which
+(comparability requirement #5: `assessed_archetypes` names what the numbers are over,
+`na_archetypes` names what was not offered).
+
+**Change.** `asrs/battery.py`: `BatteryTaskResult.na` (structural not-offered; never
+counts as signal even if a garden-path run attaches); `BatterySummary` gains
+`na_archetypes`, `assessed_archetypes`, `battery_semantics_version="b1"`;
+`aggregate_battery(..., *, profile=OfferingProfile|None)` — with a profile, tasks whose
+`kind` is `profile.unclaimed` are NA-excluded and per_kind/spreads compute over the
+applicable set; **without a profile, byte-for-byte the pre-brick-3 aggregation** (a
+profile is the only thing that establishes what a site does not offer). Non-canonical
+hand-authored kinds (e.g. `digital_service`) are never NA. `asrs/report.py
+_battery_lines` names assessed + not-offered archetypes (offering-relative mode only).
+
+**Versioning decision.** Versions the BATTERY diagnostic semantics
+(`battery_semantics_version="b1"`), DELIBERATELY NOT the rubric version. The battery
+feeds no overall score, so moving the rubric version (v0.7) would falsely signal the
+SCORED number changed and break canonical comparability. Invariant #2's intent
+("aggregation-rule change → versioned comparability") is honored on the right artifact.
+Flagged in the PR for the reviewing cycle to sanity-check.
+
+**Vendor-neutral / attribution-honest.** NA keys ONLY on archetype-claim structure
+from discovery — no domain/vendor/product string (tested: non-canonical kind never NA,
+claimed archetypes never NA). NA is never a site failure (`has_signal=False`, no
+completion charged) — recorded, not silently dropped.
+
+**Scope / ship.** `asrs/battery.py` + `asrs/report.py` + `tests/test_battery.py` only.
+`scoring.py`/`rubric/`/`protocols.py`/`fetch.py`/`offering.py` byte-for-byte untouched
+(sentinel `git diff --quiet` clean) → **rubric stays v0.7, canonical delta unchanged by
+construction AND re-measured** (replay guard 8/8 = 46.1 F / 85.5 B / +39.4, 0
+replay-miss). **Peer-gated** (aggregation-semantics change) → branch
+`loop/na-aware-battery-aggregation`, **PR #4** opened with full evidence + reviewer
+checklist; NOT self-merged this cycle. No CI configured on the repo (`get_status`
+total_count 0). Next cycle's first duty adversarially reviews + merges if it survives.
+
+**Evidence.** `tests/test_battery.py` 9 → 12 (+3): (10) `profile=None` reproduces the
+pinned `cross_task_spread=0.1` fixture byte-for-byte and marks nothing NA; (11) the
+operator's image-API-vs-physical-good scenario — physical_good NA-excluded, claimed
+archetypes keep IDENTICAL numbers, `between_kind_spread` demonstrably changes when the
+mismatch is removed (pstdev[0.4,1.0]=0.30 vs pstdev[0.4,1.0,0.2]); (12) NA vs no-signal
+vs non-canonical-kind. Full suite 112 → 115. PR: https://github.com/jnakagawa/agentic-readiness/pull/4
+
+**Ship / comms.** Slack DM SENT — sensitive-class (aggregation-semantics) PR opened,
+visibility per comms policy so Jonah can veto (not an approval request). Not a digest
+window (01:12Z, before 16:00 UTC).
+
+**Next hypothesis.** After brick 3 merges: brick 5 (surface NA/assessed on the HTML
+battery card — READOUT), and the [LOCAL] `--battery auto` wiring so a live run uses
+`discover_offering → instantiate_battery → aggregate_battery(profile=...)` end-to-end,
+then the [LOCAL] acceptance rerun (driftflight physical_good = NA with spreads over
+claimed archetypes only; a retail storefront the inverse). Next cloud cycle takes
+COVERAGE.

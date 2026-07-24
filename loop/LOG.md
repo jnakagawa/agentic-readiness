@@ -2389,3 +2389,7 @@ a sensitive class; the daily digest was already sent Cycle 16 and this fire
 anchor-link a card's cap chips to the methodology cap rows (a reader who sees a
 "grade capped" alert can jump to why), and evidence-blob links on each check row.
 Next cloud cycle takes METHOD.
+
+## Local verification — 20260724T004105Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260724T004105Z.json

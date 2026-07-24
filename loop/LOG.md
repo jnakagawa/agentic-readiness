@@ -3191,3 +3191,95 @@ follow-up). Next cloud cycle METHOD.
 ## Local verification — 20260724T084104Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260724T084104Z.json
+
+## Local cycle — 20260724T085240Z (METHOD) — hermetic nested claude panels: stop the shopper/trust subprocess inheriting the operator's MCP fleet
+
+**First duty.** No open peer-gated PR (verified `gh pr list --state open --json …` → `[]`).
+Nothing to review/merge.
+
+**Infra health check (ran first).** ALL GREEN. Newest verify artifact
+`verify_20260724T084104Z` (08:41Z) was ~1 min old at this fire — well under the 6h floor
+(runner HEALTHY). Full suite runnable (16 files pre-change, all pass). Bookkeeping consistent:
+Cycle 32 + its verify pushed cleanly, LOG/STATE match `git log` (HEAD `0f3695a`). Canonical
+delta live-stable on the artifact: 46.1 F / 85.5 B / +39.4 on v0.7. No repair needed.
+
+**Item (the ONE [LOCAL] backlog item).** "Nested shopper spawns the full user MCP fleet" (P1,
+METHOD/efficiency — observed 2026-07-23T10:13Z during the battery run). Verifying it requires a
+live `claude -p` panel, so it is [LOCAL]. Chosen over the heavier P0 behavioral items
+DELIBERATELY and recorded as the honest sequencing: the top P0 is the operator-directive
+end-to-end `--battery auto --models claude,codex` acceptance rerun — but that rerun's shopper
+subprocesses inherit the very MCP-fleet contamination fixed here, so running the flagship
+operator-acceptance validation FIRST would produce a slow (~1 min/panel MCP boot) and
+measurement-CONTAMINATED artifact (unrelated trigger/unity/linear/motherduck connections pulled
+into the environment). This fix is the honest prerequisite: a $0, in-budget, direct-to-main
+measurement-VALIDITY unit that makes the next acceptance rerun both hermetic and faster. (The
+canonical-pair NA + retail-inverse acceptance halves are already guarded in-cloud, Cycles 27 /
+local-07:47Z, so no acceptance coverage is lost by sequencing the environment fix first.)
+
+**Root cause (confirmed in code + config).** Both behavioral panels build a headless
+`claude -p` command — `asrs/behavioral/shopper._claude_cmd` (the shopper) and
+`asrs/behavioral/trust_probe._claude_cmd` (the trust probe) — and NEITHER passed
+`--strict-mcp-config`, so each subprocess loaded the operator's filesystem MCP configuration.
+`~/.claude.json` `mcpServers` (GLOBAL, applies from any cwd) is exactly
+`['trigger','unityMCP','linear-server','hex','posthog','motherduck']` — the same fleet the
+10:13Z run was seen booting before it browsed. The shopper's only capabilities are
+`--allowedTools WebFetch WebSearch`; it needs ZERO MCP servers.
+
+**What.** Added `--strict-mcp-config` to BOTH `_claude_cmd` builders (claude: "Only use MCP
+servers from --mcp-config, ignoring all other MCP configurations"). Passed WITHOUT any
+`--mcp-config`, it yields an EMPTY MCP fleet — a hermetic panel. New
+`tests/test_shopper_hermetic.py` (4 tests) pins the contract on both builders: each carries
+`--strict-mcp-config` and NO `--mcp-config` (so strict == empty fleet), and the rest of the
+panel command is intact (`claude -p`, `--output-format json`, `--model opus`, shopper still
+WebFetch/WebSearch-only). Non-vacuous by construction — the pre-fix builders (no flag) fail
+every `--strict-mcp-config` assertion.
+
+**Why (measurement rigor).** The shopper measures a STOREFRONT's agent-readiness; the trust
+probe measures a panel's willingness. Neither should be measured through — or slowed by — the
+operator's incidental MCP setup. Booting 6 unrelated servers per panel (~1 min each) both
+inflated wall-time (12 panels ≈ 12 min of pure MCP boot in the 10:13Z battery) and pulled
+external connections into the measurement environment. Hermetic panels are the north-star
+"more rigorous" axis applied to the harness itself: the same storefront, measured in a clean,
+reproducible environment.
+
+**Live verification (this fire, on Jonah's machine — networked).** (a) MECHANISM: the fixed
+command carries `--strict-mcp-config` (`SH._claude_cmd(...)` asserted True live). (b) FUNCTIONAL
+— the backlog item's explicit "a panel still produces valid checkpoints after": ran ONE live
+`shopper._run_one("driftflight.com", …, "claude", trial 1)` through the fixed path — it browsed
+successfully (10 turns, 131s of BROWSING not boot), emitted all five checkpoints TRUE
+(found_product / understood_pricing / found_purchase_path / machine_payable_path / no_human_gate)
+with coherent, specific blockers (USDC-on-Base/Tempo wallet funding; the `df_live_` upstream key
+is a browser signup gate; recon-only, nothing settled) — a fully-functional panel, not a
+run-failure. (c) HERMETIC PROOF on the REAL panel transcript: `mcp_servers == []` — zero
+trigger/unity/linear/motherduck/hex/posthog booted on the actual fixed code path, live.
+(A trivial `-p` timing A/B could not reproduce the boot delta because this headless subprocess
+env surfaced `mcp_servers=[]` even pre-flag; the 10:13Z run already empirically documented the
+fleet boot, and `~/.claude.json` confirms the global config is present.)
+
+**Regression / invariants.** `git diff --name-only` = `asrs/behavioral/shopper.py`,
+`asrs/behavioral/trust_probe.py`, `tests/test_shopper_hermetic.py` only —
+scoring.py / rubric / probes / fetch / offering / battery byte-for-byte untouched → rubric
+stays **v0.7**, canonical delta unchanged by construction AND re-measured (in-cloud replay
+guard `test_canonical_replay.py` 8/8, **46.1 F / 85.5 B / +39.4**, 0 replay-miss;
+live-corroborated by `verify_20260724T084104Z`). Behavioral-execution plumbing only (a CLI
+flag on the nested agent), NOT a scoring-semantics change and NOT payment/signing code. $0-only
+intact (the verification panel is recon-only — did not register, call, or settle; invariant #1).
+
+**Ship.** Direct to main (behavioral-execution plumbing + tests, no scoring semantics — per
+playbook ship rules; the P1 item itself is annotated "direct-to-main safe").
+
+**Evidence.** `tests/test_shopper_hermetic.py` 4/4 (new); full suite **137 → 141**; all 17 test
+files pass. Live panel run (force-added): `runs/local/hermetic_shopper_verify_20260724T084946Z/
+transcripts/driftflight.com_claude_t1.json` (`mcp_servers: []`, 5/5 checkpoints, no secret
+tokens — public-storefront recon).
+
+**Comms.** No Slack — behavioral plumbing, moves no score, not a sensitive-class PR; not a
+digest window (08:52Z, before 16:00 UTC; digest last sent Cycle 16).
+
+**Next hypothesis.** The measurement environment is now hermetic, so the operator-directive
+crown jewel — the end-to-end LIVE `--battery auto` acceptance rerun (top P0) — will run clean
+and ~1 min/panel faster next local fire. It stays gated on codex reachability for the canonical
+pair (reputation gate, 4/4 at 11:42Z), but a claude-only `--battery auto` on the with-rails
+`driftflight.com` (claims {metered_api, subscription, digital_good}) is now the cheapest way to
+exercise the full offering-relative pipeline live + eyeball the NA-naming card. Cloud rotation
+unaffected (next cloud cycle METHOD).

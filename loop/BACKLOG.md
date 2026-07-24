@@ -393,16 +393,26 @@ design in-cloud, execute locally.
   safety policy" (agent-side). Scoring-adjacent → peer-gated + version bump when
   done. Low urgency (no observed real mis-attribution yet), but it is the honest
   known limit of the classifier.
-- **Nested shopper spawns the full user MCP fleet** (METHOD/efficiency, observed
-  2026-07-23T10:13Z during the battery run). Each `claude -p` shopper subprocess
-  (`asrs.behavioral.shopper._claude_cmd`) inherits the operator's full MCP config —
-  it was seen spawning trigger.dev, mcp-for-unity, linear, and motherduck servers
-  before browsing, adding ~1 min of startup PER PANEL (12 panels ≈ 12 min of pure
-  MCP boot) and pulling unrelated external connections into the measurement
-  environment. The shopper only needs to browse a storefront; it should run with a
-  minimal/empty MCP config (`--mcp-config` none / `--strict-mcp-config`) for speed
-  AND cleanliness. Behavioral-execution-only (no scoring semantics) →
-  direct-to-main safe; verify a panel still produces identical checkpoints after.
+<!-- DONE 2026-07-24T08:52Z (local fire, METHOD): "Nested shopper spawns the full user MCP
+     fleet" FIXED. Both `asrs/behavioral/shopper._claude_cmd` AND `trust_probe._claude_cmd`
+     now pass `--strict-mcp-config`, so the nested `claude -p` panels no longer inherit the
+     operator's GLOBAL `~/.claude.json` MCP fleet (`trigger/unityMCP/linear-server/hex/posthog/
+     motherduck` — the exact set the 10:13Z battery saw booting ~1 min/panel). Strict + no
+     `--mcp-config` == empty fleet; the shopper needs only WebFetch/WebSearch. Behavioral-
+     execution plumbing only (a CLI flag) → scoring.py/rubric/probes untouched, rubric v0.7,
+     canonical delta unchanged (replay guard 8/8, 46.1 F / 85.5 B / +39.4). Direct-to-main.
+     `tests/test_shopper_hermetic.py` 4/4 (new, non-vacuous — pre-fix builders fail it); suite
+     137 → 141. LIVE-verified: one real `shopper._run_one` on driftflight.com browsed fine
+     (10 turns, 5/5 checkpoints) and its transcript shows `mcp_servers == []` — hermetic on the
+     actual fixed path. This de-contaminates + speeds EVERY future behavioral run (the honest
+     prerequisite for the top-P0 `--battery auto` acceptance rerun). Evidence:
+     runs/local/hermetic_shopper_verify_20260724T084946Z/. See LOG (Local cycle — 08:52Z). -->
+- **[LOCAL] Wall-clock A/B of the hermetic fix on the operator's real fleet** (METHOD, optional
+  follow-up to the 08:52Z hermetic fix). This fire's live proof was the panel transcript's
+  `mcp_servers == []`; a headless `-p` timing A/B could not reproduce the boot delta because that
+  subprocess env surfaced `mcp_servers=[]` even pre-flag. When a full `--battery auto` acceptance
+  rerun runs next, capture the per-panel wall time and confirm the ~1 min/panel MCP-boot savings
+  the 10:13Z observation implied (folds into the acceptance-rerun P0; no new code — a timing note).
 
 ## P2
 

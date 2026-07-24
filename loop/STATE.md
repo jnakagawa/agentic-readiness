@@ -376,6 +376,25 @@
   open peer-gated PR (verified []); infra health check ran first — runner HEALTHY
   (verify_20260724T074105Z, 07:41Z, ~31 min old, 46.1 F / 85.5 B / +39.4); git realigned (stale
   Jul-22 divergent local `main` tip `2e66201` reset to origin `0cf1a98`). Next cycle takes METHOD.
+  Local fire 2026-07-24T08:52Z METHOD (complementary to the cloud rotation; cloud still takes
+  METHOD next): executed the P1 [LOCAL] "Nested shopper spawns the full user MCP fleet" — made the
+  nested `claude -p` panels HERMETIC. Both `asrs/behavioral/shopper._claude_cmd` AND
+  `trust_probe._claude_cmd` now pass `--strict-mcp-config`, so a shopper/trust subprocess no longer
+  inherits the operator's GLOBAL `~/.claude.json` MCP fleet
+  (`trigger/unityMCP/linear-server/hex/posthog/motherduck` — the exact set the 10:13Z battery saw
+  booting ~1 min/panel before browsing). The shopper needs only WebFetch/WebSearch; strict + no
+  `--mcp-config` == empty fleet. LIVE-verified on Jonah's machine: one real `shopper._run_one`
+  on driftflight.com browsed fine (10 turns, all 5 checkpoints TRUE, coherent wallet/browser-gate
+  blockers) and its REAL panel transcript shows `mcp_servers == []` — hermetic on the actual fixed
+  path. Behavioral-execution plumbing only (a CLI flag on the nested agent): git diff = shopper.py
+  + trust_probe.py + new `tests/test_shopper_hermetic.py` (4 tests) — scoring.py/rubric/probes/
+  fetch/offering/battery byte-for-byte untouched → rubric stays v0.7, canonical delta unchanged by
+  construction AND re-measured (replay guard 8/8, 46.1 F / 85.5 B / +39.4, 0 replay-miss;
+  live-corroborated by verify_20260724T084104Z). Direct-to-main. Suite 137 → 141 (16 → 17 files).
+  Evidence: runs/local/hermetic_shopper_verify_20260724T084946Z/. First duty: no open peer-gated PR
+  (verified []); runner HEALTHY (verify_20260724T084104Z, 08:41Z, ~1 min old at fire). This
+  de-contaminates + speeds EVERY future behavioral run — the honest prerequisite for the top-P0
+  operator `--battery auto` acceptance rerun (now runs hermetic + faster). Cloud rotation unaffected.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity

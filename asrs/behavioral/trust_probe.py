@@ -235,6 +235,10 @@ def _claude_cmd(prompt: str) -> list[str]:
         "json",
         "--max-turns",
         "1",
+        # Hermetic panel: same rationale as the shopper (asrs.behavioral.shopper
+        # ._claude_cmd) — ignore the operator's filesystem MCP config so the
+        # trust probe does not boot the machine's MCP fleet before answering.
+        "--strict-mcp-config",
     ]
 
 

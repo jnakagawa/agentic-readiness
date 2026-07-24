@@ -132,6 +132,13 @@ def _claude_cmd(prompt: str) -> list[str]:
         "json",
         "--max-turns",
         str(CLAUDE_MAX_TURNS),
+        # Hermetic panel: ignore the operator's filesystem MCP config so the
+        # shopper does NOT boot the machine's full MCP fleet (trigger/unity/
+        # linear/motherduck/...) before browsing. Those servers add ~1 min of
+        # startup PER PANEL and pull unrelated external connections into the
+        # measurement environment; the shopper only needs WebFetch/WebSearch
+        # (below). --strict-mcp-config + no --mcp-config == zero MCP servers.
+        "--strict-mcp-config",
         "--allowedTools",
         "WebFetch",
         "WebSearch",

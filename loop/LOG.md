@@ -2555,3 +2555,19 @@ battery card — READOUT), and the [LOCAL] `--battery auto` wiring so a live run
 then the [LOCAL] acceptance rerun (driftflight physical_good = NA with spreads over
 claimed archetypes only; a retail storefront the inverse). Next cloud cycle takes
 COVERAGE.
+
+### Merge note — PR #4 MERGED EXTERNALLY 2026-07-24 (merge commit bec1dc0)
+
+PR #4 (Cycle 25 brick 3, NA-aware battery aggregation, sensitive class) was
+MERGED EXTERNALLY shortly after opening — an operator merged it directly (merge
+message "peer-gate SURVIVED"), the same active-consent pattern as PR #2 (Cycle 9)
+and PR #3 (Cycle 14). An external merge is ACTIVE consent (stronger than
+veto-silence), so it pre-empts — not bypasses — the mandated next-cycle
+fresh-context adversarial review. Per the established pattern the pre-merge review
+CONVERTS to a POST-merge retain-or-revert sanity check, now the NEXT cloud cycle's
+FIRST duty (before COVERAGE work). This fire (Cycle 25) did NOT run that review
+here — that would be a second cycle. Immediate post-merge health check on the
+merged tip bec1dc0: bench 115/115 green, canonical replay guard 8/8 (46.1 F /
+85.5 B / +39.4, 0 replay-miss) — the battery change is decoupled from scoring as
+designed, canonical delta unchanged. Session auto-unsubscribed from PR #4 activity;
+not reopening. STATE + BACKLOG reconciled below.

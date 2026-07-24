@@ -210,7 +210,10 @@
   next cycle's first duty reviews+merges. No CI on repo (get_status total_count 0). `test_battery.py` 9→12; suite
   112→115. Slack DM SENT (sensitive-class PR visibility). Infra health check ran first — ALL GREEN (runner
   HEALTHY, verify_20260724T004105Z 00:41Z ~31 min old + clean scores; bench 112/112; ephemeral local-main
-  divergence realigned to origin d33129f). Next cycle takes COVERAGE.
+  divergence realigned to origin d33129f). PR #4 was then MERGED EXTERNALLY (bec1dc0, "peer-gate SURVIVED")
+  shortly after opening → pre-merge review pre-empted (active consent), CONVERTS to next cycle's first-duty
+  post-merge retain-or-revert sanity check; post-merge health green (115/115, replay 8/8, delta unchanged).
+  Next cycle takes COVERAGE (after the post-merge sanity check).
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity
@@ -458,14 +461,18 @@
   scoring-semantics/aggregation change → PEER-GATED + version bump, queued P0 in
   BACKLOG with exact spec. Sole residual claude flip: found_purchase_path
   (t1 false vs t2–5 true) — legibility ambiguity, not noise.
-- Open PRs: **PR #4** `loop/na-aware-battery-aggregation` (Cycle 25, METHOD, sensitive class:
-  battery aggregation-semantics change — NA-aware exclusion + `battery_semantics_version` b1).
-  Opened 2026-07-24T01:12Z, NOT self-merged. Next cycle's FIRST DUTY: fresh-context adversarial
-  review against invariants (backward-compat `profile=None` == pre-brick-3 byte-for-byte; NA keys
-  only on archetype-claim structure = vendor-neutral; canonical delta unchanged = battery decoupled
-  from scoring; the versioning decision — battery-semantics version, NOT rubric version). If it
-  survives → MERGE + record verdict in LOG; else request changes. No CI on repo. Slack-flagged for
-  visibility (veto, not approval). https://github.com/jnakagawa/agentic-readiness/pull/4
+- Open PRs: **NONE.** PR #4 `loop/na-aware-battery-aggregation` (Cycle 25, METHOD, sensitive class:
+  battery aggregation-semantics — NA-aware exclusion + `battery_semantics_version` b1) was **MERGED
+  EXTERNALLY 2026-07-24 (merge commit bec1dc0, "peer-gate SURVIVED")** shortly after opening — the
+  same active-consent pattern as PR #2/#3. External merge = ACTIVE consent, pre-empting (not
+  bypassing) the mandated fresh-context review → CONVERTS to a POST-merge retain-or-revert sanity
+  check = **NEXT cloud cycle's FIRST DUTY** (before COVERAGE work): adversarially re-derive from
+  fresh context that `profile=None` == pre-brick-3 byte-for-byte, NA keys only on archetype-claim
+  structure (vendor-neutral), the battery stays decoupled from scoring (canonical delta unchanged),
+  and the battery-semantics-version-not-rubric-version call is sound; RETAIN or revert-with-reasons,
+  record verdict in LOG. Immediate post-merge health on bec1dc0: bench 115/115, replay guard 8/8
+  (46.1 F / 85.5 B / +39.4, 0 replay-miss). No fixture re-capture needed (battery moves no canonical
+  score). Session auto-unsubscribed. https://github.com/jnakagawa/agentic-readiness/pull/4
   PRIOR (all closed): PR #3
   `loop/commerce-manifest-validation` (Cycle 14, COVERAGE, sensitive class: partial-credit
   rule + rubric v0.6→v0.7) was **MERGED EXTERNALLY** 2026-07-23T14:45:30Z (commit 72a2e5b)

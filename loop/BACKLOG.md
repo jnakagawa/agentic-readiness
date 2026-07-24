@@ -74,8 +74,9 @@ design in-cloud, execute locally.
   46.1 F / 85.5 B / +39.4). `test_battery_instantiate.py` 8/8; suite 104 → 112.
   Evidence: runs/local/offering_battery_instantiate_20260724T004927Z.json. See LOG
   (Local cycle 00:49Z).
-  BRICK 3 — NA-aware aggregation: **SHIPPED (pending merge) 2026-07-24T01:12Z (Cycle 25,
-  METHOD, PEER-GATED PR #4).** `aggregate_battery(..., *, profile=OfferingProfile|None)`
+  BRICK 3 — NA-aware aggregation: **MERGED 2026-07-24 (Cycle 25, METHOD, PEER-GATED PR #4,
+  merge commit bec1dc0 — merged EXTERNALLY, "peer-gate SURVIVED"; pre-merge review pre-empted by
+  active consent → next cycle's FIRST DUTY is the post-merge retain-or-revert sanity check).** `aggregate_battery(..., *, profile=OfferingProfile|None)`
   marks archetypes a site does NOT claim (`profile.unclaimed`) NA and EXCLUDES them from
   `mean_completion`/`cross_task_spread`/`between_kind_spread`; NA is DISTINCT from no-signal
   (structural not-offered vs offered-but-unobserved) and recorded (`na_archetypes` /

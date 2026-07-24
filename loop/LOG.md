@@ -3498,3 +3498,7 @@ storefronts + one retail shop) with capability + vendor-neutrality tripwires on 
 remaining TRUTH frontier is the example.com non-storefront control (a fourth point, the
 zero-commerce baseline — still needs a [LOCAL] fixture capture; the test wiring is cloud-doable
 once it lands). Next cycle takes READOUT.
+
+## Local verification — 20260724T114105Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260724T114105Z.json

@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 33
+- Cycle counter: 34
 - Started: 2026-07-23 (UTC)
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -418,6 +418,32 @@
   Cycle 16). First duty: no open peer-gated PR (verified []); infra health check ran first — runner
   HEALTHY (verify_20260724T084104Z, 08:41Z, ~31 min old, 46.1 F / 85.5 B / +39.4); git realigned (detached
   HEAD from forced origin/main update 0b0ad41 -> main = origin/main). Next cycle takes COVERAGE.
+  Cycle 34 COVERAGE (offering discovery reads the OpenAPI / Swagger spec — the operator
+  directive's FOURTH named surface): `asrs/offering._SURFACE_DOCS` gains `/openapi.json`,
+  `/.well-known/openapi.json`, `/swagger.json`. Brick 1 covered homepage + the natural-language
+  docs (llms.txt/llms-full/manifest) but NOT the machine API CONTRACT the directive names
+  ("llms.txt, manifest/catalog, OpenAPI, homepage") — the surface an API-FIRST storefront is
+  most likely to expose (a metered-API product may serve no homepage/llms.txt, only its spec →
+  was classified from homepage alone, mis-readable as offering nothing). NO new signal needed:
+  the spec's servers URLs / path list / operation summaries carry exactly the vendor-neutral
+  "qualified API"/"pay-per-*"/usage-based/generated-media/x402 language the signal bank already
+  anchors on — only the surface had to be READ; a spec that 404s is simply absent (discovery
+  tolerates a missing surface). SCORE-NEUTRAL by construction: `discover_offering` is called ONLY
+  from `cli._resolve_battery` (`--battery auto`), NEVER on the scoring path (grep-verified); the
+  commerce-manifest SCORING probe keeps its OWN separate `protocols._AGENT_SURFACE_DOCS` (original
+  three docs, DELIBERATELY untouched — OpenAPI there would be score-increasing + peer-gated).
+  `git diff --name-only -- asrs/scoring.py rubric/ asrs/probes/ asrs/fetch.py` EMPTY → rubric stays
+  v0.7; canonical delta unchanged by construction AND re-measured (replay guard 8/8, 46.1 F /
+  85.5 B / +39.4, 0 replay-miss) AND the canonical OFFERING guard `test_offering_canonical.py` 8/8
+  UNCHANGED (added surfaces absent from the committed fixtures → replay-miss → absent → canonical
+  classification byte-identical); live-corroborated by verify_20260724T094103Z (09:41Z). Not
+  payment/signing code. Direct-to-main. `test_offering.py` 7→9 (+OpenAPI-spec-only classification
+  test on 6 distinct spec signals with physical_good/subscription correctly NA; +structural wiring
+  guard); suite 145 → 147 (all 18 files exit 0). No Slack (score-neutral additive discovery, moves
+  no score, before the 16:00 UTC digest window, digest last sent Cycle 16). First duty: no open
+  peer-gated PR (verified []); infra health check ran first — runner HEALTHY
+  (verify_20260724T094103Z, 09:41Z, ~31 min old, 46.1 F / 85.5 B / +39.4); git on main =
+  origin/main (dcb2a90, detached HEAD from the local-verify push realigned). Next cycle takes TRUTH.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity

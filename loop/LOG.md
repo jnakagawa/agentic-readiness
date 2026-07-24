@@ -3355,3 +3355,72 @@ guards AND both wording denylists as new scored storefronts/fixtures land (add e
 ## Local verification — 20260724T094103Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260724T094103Z.json
+
+## Cycle 34 (COVERAGE) — 2026-07-24T10:12Z — offering discovery reads the OpenAPI / Swagger spec (the operator directive's fourth surface)
+
+**Track.** COVERAGE (measurement coverage/flexibility: broadens the offering-relevance
+discovery surface set toward the north-star "many storefront types" axis).
+
+**What / why.** The operator directive (2026-07-23, BACKLOG P0) names the discovery surfaces
+explicitly: "classify what the storefront CLAIMS to sell from its own surfaces (llms.txt,
+manifest/catalog, **OpenAPI**, homepage)". Brick 1 (`asrs/offering.py`, local fire 23:49Z)
+covered the homepage + the natural-language docs (`/llms.txt` / `/llms-full.txt` /
+`/manifest.json`) but NOT the machine API CONTRACT — the OpenAPI / Swagger spec — even though
+it is the surface an API-FIRST storefront is most likely to expose. A metered-API product may
+serve no marketing homepage and no llms.txt, only its spec; without reading it such a site is
+classified from its homepage alone and can be mis-read as offering nothing (the exact
+under-coverage that pollutes the offering-relative battery from the other direction — a servable
+archetype left untested / mis-marked NA). This cycle adds the spec to the discovery surface set.
+
+`asrs/offering._SURFACE_DOCS` gains `/openapi.json`, `/.well-known/openapi.json`, `/swagger.json`
+(well-known JSON conventions, most-specific first). NO new signal is needed: an OpenAPI spec's
+own `servers` URLs, path list, and operation summaries/descriptions are exactly the
+vendor-neutral "qualified API" / "pay-per-*" / usage-based / generated-media / x402 language the
+existing signal bank already anchors on — the surface only needed to be READ. A spec that 404s
+is simply absent (discovery tolerates a missing surface by design, same as any other doc).
+
+**Vendor-neutral / precision.** Signals key on capability language, never a vendor/domain string;
+a JSON API contract with no "add to cart"/"$X per month" prose does NOT trip physical_good or
+subscription (pinned). The change is purely which paths are fetched — the classification logic is
+untouched.
+
+**Score-neutral by construction.** `asrs/offering.discover_offering` is called ONLY from
+`asrs/cli.py:_resolve_battery` (the `--battery auto` path) — verified by grep — and NEVER on the
+scoring path. The commerce-manifest SCORING probe uses its own separate
+`asrs/probes/protocols._AGENT_SURFACE_DOCS` (still the original three docs, DELIBERATELY not
+touched — adding OpenAPI there would be score-increasing + peer-gated). `git diff --name-only --
+asrs/scoring.py rubric/ asrs/probes/ asrs/fetch.py` EMPTY → rubric stays **v0.7**.
+
+**Validation / regression.** Full suite **145 → 147**, all 18 files pass (exit 0). `test_offering.py`
+7 → 9 (+`test_openapi_spec_alone_classifies_api_first_storefront`: an OpenAPI-spec-ONLY surface map,
+no homepage/llms.txt, classifies metered_api + digital_good on 6 distinct spec signals, physical_good
++ subscription correctly NA; +`test_openapi_surface_is_wired_for_live_discovery`: structural guard the
+three OpenAPI conventions are in `_SURFACE_DOCS` and the natural-language surfaces did not regress).
+Canonical delta unchanged by construction AND re-measured: in-cloud replay guard
+`test_canonical_replay.py` **8/8, 46.1 F / 85.5 B / +39.4**, 0 replay-miss; canonical OFFERING guard
+`test_offering_canonical.py` **8/8 UNCHANGED** — the added surfaces are absent from the committed
+canonical fixtures (replay-miss → absent), so the canonical classification
+`{metered_api,subscription,digital_good}` / physical_good NA is byte-identical; live-corroborated by
+`verify_20260724T094103Z` (09:41Z, 46.1 F / 85.5 B / +39.4). Not payment/signing code (offering
+discovery is read-only $0 GETs; no parse_challenge/settle/sign path touched).
+
+**Ship.** Direct to main (discovery-surface addition to a diagnostic-only module that feeds no
+score — score-neutral, not scoring semantics, per playbook ship rules).
+
+**Evidence.** `git diff --stat` = `asrs/offering.py` + `tests/test_offering.py` only (2 files,
++94/−7). Suite 145 → 147.
+
+**First duty.** No open peer-gated PR (verified `list_pull_requests` state=open → `[]`). Infra
+health check ran first — runner HEALTHY (newest `verify_20260724T094103Z`, 09:41Z, ~31 min old at
+fire, 46.1 F / 85.5 B / +39.4, all tests green); git on `main` = origin/main (`dcb2a90`, detached
+HEAD from the local-verify push realigned).
+
+**Comms.** No Slack — score-neutral additive discovery, moves no score, not a sensitive-class PR;
+not a digest window (10:12Z, before 16:00 UTC; digest last sent Cycle 16).
+
+**Next hypothesis.** The three DOCUMENTED opt-in free-tier conventions are DISCOVERED and all four
+offering surfaces are now read; the remaining COVERAGE frontiers are the [LOCAL] score-increasing
+live-wiring (free-tier opt_in_query/opt_in_path into the `advertised` gate; ACP/UCP live handshake
+parity) and non-EVM zero-value schemes. A cloud-doable next COVERAGE increment: an [LOCAL] fixture
+capture of an OpenAPI-spec-only storefront would let an in-cloud test pin live spec-driven
+classification end-to-end (queued P2). Next cycle takes TRUTH.

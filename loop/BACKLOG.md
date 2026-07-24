@@ -66,6 +66,18 @@ design in-cloud, execute locally.
   (acceptance met); example.com {} (null); books.toscrape.com {physical_good}
   (inverse). `test_offering.py` 7/7; suite 96→103. Evidence:
   runs/local/offering_discovery_20260723T234942Z.json. See LOG (Local cycle 23:49Z).
+  SURFACE COVERAGE COMPLETED — Cycle 34 (COVERAGE, direct-to-main, score-neutral): the
+  directive's FOURTH named surface, the OpenAPI / Swagger spec, is now read.
+  `asrs/offering._SURFACE_DOCS` gains `/openapi.json`, `/.well-known/openapi.json`,
+  `/swagger.json` — so an API-FIRST storefront that exposes only its machine contract (no
+  homepage/llms.txt) is classified from the spec, not mis-read as offering nothing. No new
+  signal needed (the spec's servers/paths/summaries carry the vendor-neutral qualified-API /
+  pay-per / generated-media / x402 language the bank already anchors). Score-neutral
+  (`discover_offering` is off the scoring path — grep-verified; commerce-manifest scoring probe
+  keeps its own untouched `protocols._AGENT_SURFACE_DOCS`); rubric v0.7, replay guard 8/8 /
+  +39.4, canonical OFFERING guard 8/8 unchanged (surfaces absent from committed fixtures).
+  `test_offering.py` 7→9; suite 145→147. All FOUR directive surfaces (homepage / natural-language
+  docs / OpenAPI / — the manifest) now read. See LOG Cycle 34.
   PROGRESS — BRICK 2 (intent instantiation) SHIPPED 2026-07-24T00:49Z (local fire,
   COVERAGE, direct-to-main, score-neutral). `asrs/battery.py`
   `instantiate_battery(profile)` + a fixed per-archetype intent TEMPLATE bank
@@ -488,6 +500,19 @@ design in-cloud, execute locally.
   `test_offering_canonical` case replaying it through `discover_offering` and asserting
   `profile.archetypes == []` and `set(profile.unclaimed) == set(ARCHETYPES)`. Cloud-doable
   once the one example.com fixture lands — capture it once, wire all three test cases.
+
+- **[LOCAL] OpenAPI-spec-only storefront fixture** (COVERAGE/TRUTH, Cycle-34 follow-up): Cycle 34
+  added `/openapi.json` / `/.well-known/openapi.json` / `/swagger.json` to
+  `asrs/offering._SURFACE_DOCS`, unit-tested on a SYNTHETIC spec surface. To pin live spec-driven
+  classification end-to-end, capture a fixture for a real storefront whose machine contract is an
+  OpenAPI spec (ideally one that serves the spec but a thin/absent homepage) via
+  `asrs.cli score <domain> --record-fixture fixtures/canonical/<domain>.json` (LIVE, needs
+  network → [LOCAL]), then add a `test_offering_canonical` case replaying it through
+  `discover_offering` and asserting the spec surface was READ (`"/openapi.json" in
+  profile.surfaces_seen` or equivalent) and drove the claimed archetypes. Capture is [LOCAL]; the
+  test wiring is cloud-doable once the fixture lands. Distinct value: the current guards replay
+  fixtures captured BEFORE the OpenAPI surface existed (so the spec is a replay-miss/absent on
+  them — the coverage is verified only against synthetic surfaces in-cloud today).
 
 <!-- DONE 2026-07-23T20:12Z (Cycle 20, READOUT): "HTML battery card: between-archetype spread pill"
      SHIPPED. `asrs/scorecard.py`: `_battery_between_band` (Generalist <0.15 / Somewhat type-dependent

@@ -99,6 +99,30 @@ Agents can purchase autonomously through an x402 handshake; live per-generation
 pricing at /plans.
 """
 
+# A machine API CONTRACT (OpenAPI spec) served WITHOUT any llms.txt or marketing
+# homepage — the API-first storefront that motivates adding the OpenAPI surface:
+# its only machine-readable self-description is the spec. Vendor-neutral commerce
+# language lives in the operation summary / description and the pricing note; no
+# new signal is needed, only for the surface to be read.
+API_OPENAPI = """
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Northlight Imaging",
+    "description": "A text-to-image inference API. Agents pay-per-generation via an x402 handshake; no account required."
+  },
+  "servers": [{"url": "https://api.northlight.test/v1"}],
+  "paths": {
+    "/images/generate": {
+      "post": {
+        "summary": "Generate an image from a prompt",
+        "description": "Returns a hosted output URL. Billed per generation (usage-based)."
+      }
+    }
+  }
+}
+"""
+
 
 def test_api_storefront_claims_agent_native_not_physical():
     prof = classify_offering("example-imaging.test", {"homepage": API_HOMEPAGE})
@@ -178,6 +202,44 @@ def test_evidence_is_quoted_and_surface_tagged():
     print("  ok: every claim carries a quoted, HTML-free, surface-tagged evidence snippet")
 
 
+def test_openapi_spec_alone_classifies_api_first_storefront():
+    # The coverage gap the OpenAPI surface closes: a storefront whose ONLY
+    # machine-readable surface is its API spec (no llms.txt, no marketing
+    # homepage). Before OpenAPI was a discovered surface such a site was
+    # classified from its homepage alone and could be mis-read as offering
+    # nothing. The spec's own summary/description carry the vendor-neutral
+    # "inference API" / "pay-per-generation" / "generate an image" / x402 /
+    # usage-based language the existing signal bank already anchors on.
+    prof = classify_offering("northlight.test", {"/openapi.json": API_OPENAPI})
+    assert prof.surfaces_seen == ["/openapi.json"], prof.surfaces_seen
+    claimed = set(prof.archetypes)
+    assert "metered_api" in claimed, prof.archetypes
+    assert "digital_good" in claimed, prof.archetypes
+    print(f"  ok: an OpenAPI-spec-only storefront is classified, got {prof.archetypes}")
+    # Precision holds: a JSON API contract is NOT physical fulfillment or a
+    # subscription (no "add to cart" / "$X per month" language in the spec).
+    assert not prof.claims("physical_good"), prof.archetypes
+    assert not prof.claims("subscription"), prof.archetypes
+    # The metered_api claim rests on real anchored evidence from the spec surface.
+    metered = next(c for c in prof.claimed if c.archetype == "metered_api")
+    assert all(s.surface == "/openapi.json" for s in metered.signals), metered.signals
+    assert metered.strength >= 2, metered.strength
+    print(f"  ok: metered_api rests on {metered.strength} distinct spec signals (x402/pay-per/qualified-api)")
+
+
+def test_openapi_surface_is_wired_for_live_discovery():
+    # A structural guard: the OpenAPI conventions are actually in the surface
+    # list `discover_offering` fetches live (not merely handled by the pure
+    # classifier). Without this, a spec-only site would never be READ. The
+    # natural-language docs remain covered too (no regression to the surface set).
+    docs = offering._SURFACE_DOCS
+    for path in ("/openapi.json", "/.well-known/openapi.json", "/swagger.json"):
+        assert path in docs, f"{path} missing from discovery surfaces: {docs}"
+    for path in ("/llms.txt", "/llms-full.txt", "/manifest.json"):
+        assert path in docs, f"regressed natural-language surface {path}: {docs}"
+    print(f"  ok: OpenAPI/Swagger surfaces wired for live discovery, got {docs}")
+
+
 def test_strip_html_drops_script_style_and_tags():
     out = strip_html(API_HOMEPAGE)
     # The <script>/<style> commerce-word noise must NOT survive stripping — else
@@ -197,6 +259,8 @@ def main() -> int:
         test_non_storefront_claims_nothing,
         test_strength_counts_distinct_signals_and_orders_claims,
         test_evidence_is_quoted_and_surface_tagged,
+        test_openapi_spec_alone_classifies_api_first_storefront,
+        test_openapi_surface_is_wired_for_live_discovery,
         test_strip_html_drops_script_style_and_tags,
     ]
     failed = 0

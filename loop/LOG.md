@@ -3502,3 +3502,91 @@ once it lands). Next cycle takes READOUT.
 ## Local verification — 20260724T114105Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260724T114105Z.json
+
+## Local cycle — 2026-07-24T11:48Z — TRUTH: the FOURTH real domain lands — a zero-commerce non-storefront baseline (example.com), captured [LOCAL] + wired in-cloud
+
+**Track.** TRUTH (calibration against reality) — the networked half the cloud cannot run:
+captured a live fixture, then converted it into four executable regression guards. Executes the
+exact `[LOCAL]` item Cycle 35's "Next hypothesis" named: "the example.com non-storefront control
+(a fourth point, the zero-commerce baseline — still needs a [LOCAL] fixture capture; the test
+wiring is cloud-doable once it lands)."
+
+**First duty.** No open peer-gated PR (`gh pr list --state open` → `[]`), so no review/merge.
+Infra health check ran first — ALL GREEN: newest `verify_20260724T114105Z` (11:41:05Z) was ~36s
+old at fire (well under the 6h floor), `tests_ok=true`, live canonical 46.1 F / 85.5 B / +39.4 on
+v0.7; full suite green; `main == origin/main` (clean tree). No self-heal needed.
+
+**What / why.** The replay regression guard and the offering-classifier guard both spanned three
+real domains (two API storefronts + a retail shop, Cycle 35) — all sites that SELL something. A
+benchmark needs the honest floor too: a bare site that sells NOTHING, so the with-rails +39.4
+delta is measured against a real low anchor, not just against other storefronts. This lands that
+fourth point.
+
+Captured `fixtures/canonical/example.com.json` via a STATIC $0 crawl
+(`asrs.cli score example.com --record-fixture …`) — **41 GET / 0 POST, no auth/secret/cookie
+tokens** (the plain IANA example page). Live static score **22.5 F** on rubric v0.7, matching the
+15:43Z [LOCAL] spot-check. Then wired it into the two in-cloud guards (no new probe/scoring code —
+all existing `_assert_domain` / `_by_id` / `_assert_relabel_invariant` / `_discover` machinery):
+
+`tests/test_canonical_replay.py` **11 → 14** (guards 9–11):
+1. **`test_nonstorefront_replays_22_5`** — pins overall **22.5 F**, rubric 0.7, all five pillars
+   (access 100 / legibility 0.0 / transactability 0.0 / trust 20.0 / outcome None), 0 replay-miss.
+   A non-commercial page is now in the regression signal.
+2. **`test_nonstorefront_earns_no_agent_native_payment`** — the extreme case of the capability
+   mirror: a site with no storefront earns **EXACTLY 0 transactability** and NO payment credit
+   (`x402_probe` FAIL not PASS; `self_serve_payg` evidence records no live x402; no
+   `commerce-protocol-*`/`x402-live`). Guards against a probe hallucinating an agent-native rail
+   from a bare page. Attribution-honesty detail pinned in the docstring: `self_serve_payg` is
+   CANT_TEST here (no purchase path to evaluate → honestly EXCLUDED, never penalized), yet
+   transactability is still 0 because the payment probe FAILs on recorded evidence-of-absence —
+   absence excused where unobservable, scored where observed (invariant #4, both directions).
+3. **`test_relabel_invariance_nonstorefront`** — vendor-neutrality (Cycle 21 relabel) extended to
+   the fourth domain: relabeling the host everywhere reproduces identical 22.5 / F / pillars /
+   per-check statuses (0 replay-miss). Even the floor score keys on evidence, not identity.
+
+`tests/test_offering_canonical.py` **8 → 9** (`test_nonstorefront_empty_offering`): the
+offering-layer companion — a site that sells nothing → **EMPTY offering** (0 archetypes claimed,
+all six NA), so the offering-relative battery is honestly empty (no fabricated task, no penalty).
+Guards the precision-first classifier against inventing an offering from generic prose.
+
+All facts were pinned to the ACTUAL replayed evidence, not the backlog's guess: the backlog
+predicted `self_serve_payg` FAIL with `x402_live=False`; the real replay shows it CANT_TEST
+(purchase-path-indeterminate) with evidence `x402_live=False` — so the guard asserts the honest
+"no live x402 payment" (`is not True`) and the CANT_TEST-but-still-zero attribution nuance above.
+
+**Validation / regression.** Full suite **150 → 154** assertions, all 18 files exit 0.
+`test_canonical_replay.py` 11 → 14, `test_offering_canonical.py` 8 → 9. Relabel invariance for
+example.com verified empirically before pinning (22.5 F base == relabel, identical
+pillars/statuses, 0 replay-miss; offering [] base == relabel). Scoring path byte-for-byte
+untouched — `git diff --name-only -- asrs/ rubric/` EMPTY → rubric stays v0.7; canonical PAIR
+unchanged by construction AND re-measured (46.1 F / 85.5 B / +39.4, 0 replay-miss;
+`verify_20260724T114105Z` live-corroborates).
+
+**Ship.** Direct to main (tests + one committed fixture; no scoring semantics). Not
+payment/signing code (the fixture is GET-only, $0). `git diff --stat` = the two test files
+(+150) + the new fixture only.
+
+**Budget / constraints.** $0 (one static $0 crawl, zero codex, zero behavioral panels). Nothing
+touched outside the repo checkout.
+
+**Evidence.** `fixtures/canonical/example.com.json` (41 GET / 0 POST, committed);
+`tests/test_canonical_replay.py`, `tests/test_offering_canonical.py`.
+
+**Comms.** No Slack — tests + fixture, moves no score, not a sensitive-class PR; not a digest
+window (11:48Z, before 16:00 UTC; digest last sent Cycle 16).
+
+**Next hypothesis.** The regression + vendor-neutrality signal now spans FOUR real domains across
+the full commerce spectrum: two agent-native API storefronts (46.1 / 85.5), a human-only retail
+shop (29.5, transactability floor), and a zero-commerce non-storefront (22.5, the honest bottom).
+Each carries a capability tripwire + a relabel-invariance tripwire; the offering layer carries the
+matching classification guard (physical_good NA / CLAIMED / empty). The remaining offering-layer
+gaps are the OpenAPI-spec-only storefront fixture (Cycle-34 follow-up, still synthetic-only
+in-cloud) and extending the OFFERING relabel guard to the retail + non-storefront domains. The
+top operator P0 — the `--battery auto` behavioral acceptance rerun — remains [LOCAL]: it is over
+the ~10-codex budget as specified AND codex env-blocks both canonical domains (adds no battery
+data), so a claude-only scoped slice on driftflight.com + a retail control is the budget-respecting
+form for a future fire.
+
+## Local verification — 20260724T124104Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260724T124104Z.json

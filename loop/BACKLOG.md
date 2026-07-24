@@ -433,16 +433,24 @@ design in-cloud, execute locally.
   report through `scorecard.build_scorecard` and confirm the per-intent grid + by-archetype
   rollup read correctly on real multi-kind data. No new code — a render + visual check.
 
-- **[LOCAL] Retail-INVERSE offering fixture** (TRUTH, Cycle-27 follow-up — the operator's
-  "a shop shows the inverse" half). Cycle 27 pinned the canonical NA half in-cloud
-  (`tests/test_offering_canonical.py`). The mirror is unpinned: capture a fixture for a
-  retail storefront (e.g. `books.toscrape.com`, already [LOCAL]-validated → physical_good
-  CLAIMED) via `asrs.cli score books.toscrape.com --record-fixture fixtures/canonical/
-  books.toscrape.com.json` (LIVE, needs network → [LOCAL]), then add a cloud-doable case to
-  `test_offering_canonical.py` asserting the INVERSE — physical_good CLAIMED and the
-  API/subscription archetypes NA — so the vendor-neutral "storefront TYPE drives the
-  claimed set, not the domain" property is a tripwire in BOTH directions. Capture is
-  [LOCAL]; the test wiring is cloud-doable once the fixture lands.
+<!-- DONE 2026-07-24T07:47Z (local fire, TRUTH): "[LOCAL] Retail-INVERSE offering fixture"
+     EXECUTED — the operator's "a shop shows the inverse" acceptance half is now an in-cloud
+     tripwire. Captured fixtures/canonical/books.toscrape.com.json via a STATIC $0 crawl
+     (asrs.cli score books.toscrape.com --record-fixture … — 41 GET entries, 0 POST, public
+     book-catalog sandbox, no secrets), then wired test_retail_inverse_offering into
+     tests/test_offering_canonical.py (7 → 8): replays the committed fixture through the REAL
+     FetchContext.from_fixture → discover_offering path (no network) and asserts the MIRROR of
+     the canonical NA guard — claimed == {physical_good} EXACTLY, and {metered_api, subscription,
+     digital_good} (exactly what the canonical pair CLAIMS) all NA. Non-vacuous: physical_good
+     rests on ANCHORED fulfillment evidence (labels add-to-cart + stock from "In stock"/"Add to
+     basket"), pinned explicitly — the exact complement of the canonical pair's metaphorical-
+     "ship" NA case. (No relabel case added: the host is absent from physical_good's prose
+     evidence → relabel would be vacuous here; the canonical pair's relabel guard covers
+     identity-independence where non-vacuous.) Score-neutral: git diff -- asrs/ rubric/ EMPTY →
+     rubric v0.7, canonical delta unchanged (replay guard 8/8, 46.1 F / 85.5 B / +39.4). Direct
+     to main. Suite 132 → 133. See LOG (Local cycle — 07:47Z). The example.com non-storefront
+     control replay/relabel case (P2 below) remains the last offering-layer fixture gap. -->
+
 - **[LOCAL] Third-control-domain replay fixture** (METHOD/TRUTH, Cycle-17 + Cycle-19 follow-up):
   the canonical replay guard pins only the storefront PAIR. Capture a fixture for a NON-storefront
   control (example.com, already spot-checked 22.5 F [LOCAL] 15:43Z) via
@@ -456,6 +464,13 @@ design in-cloud, execute locally.
   ALSO (Cycle-21 follow-up): add a domain-relabeling invariance case for it too
   (`_assert_relabel_invariant("example.com")`), so the vendor-neutrality tripwire covers a
   non-storefront control, not just the canonical pair.
+  ALSO (offering-layer, 2026-07-24 local-fire follow-up — now that BOTH the canonical NA half
+  AND the retail-inverse half are pinned in `test_offering_canonical.py`): the SAME example.com
+  fixture also pins the offering-layer THIRD case — a site that sells NOTHING → EMPTY offering
+  (no archetype claimed → every archetype NA → honest empty battery). Add a
+  `test_offering_canonical` case replaying it through `discover_offering` and asserting
+  `profile.archetypes == []` and `set(profile.unclaimed) == set(ARCHETYPES)`. Cloud-doable
+  once the one example.com fixture lands — capture it once, wire all three test cases.
 
 <!-- DONE 2026-07-23T20:12Z (Cycle 20, READOUT): "HTML battery card: between-archetype spread pill"
      SHIPPED. `asrs/scorecard.py`: `_battery_between_band` (Generalist <0.15 / Somewhat type-dependent

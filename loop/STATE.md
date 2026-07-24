@@ -341,6 +341,23 @@
   16:00 UTC digest window). First duty: no open peer-gated PR (verified []); infra health check ran
   first — runner HEALTHY (newest verify_20260724T064105Z, 06:41Z, ~30 min old, 46.1 F / 85.5 B /
   +39.4). Next cycle takes READOUT.
+  Local fire 2026-07-24T07:47Z TRUTH (complementary to the cloud rotation; cloud still on
+  READOUT): executed the [LOCAL] "Retail-INVERSE offering fixture" item — the operator
+  acceptance criterion's OTHER named half ("a retail storefront shows the inverse"), now an
+  in-cloud tripwire. Captured `fixtures/canonical/books.toscrape.com.json` via a STATIC $0
+  crawl (41 GET, 0 POST, public book-catalog sandbox, no secrets) + wired
+  `test_retail_inverse_offering` into `tests/test_offering_canonical.py` (7 → 8): replays the
+  committed fixture through the REAL `from_fixture → discover_offering` path and asserts the
+  MIRROR of Cycle-27's canonical NA guard — claimed == {physical_good} EXACTLY, {metered_api,
+  subscription, digital_good} (what the canonical pair CLAIMS) all NA; non-vacuous on ANCHORED
+  fulfillment evidence (add-to-cart + stock from "In stock"/"Add to basket"), the exact
+  complement of the pair's metaphorical-"ship" NA case. Score-neutral: `git diff -- asrs/
+  rubric/` empty → rubric v0.7, canonical delta unchanged (replay guard 8/8, 46.1 F / 85.5 B /
+  +39.4; corroborated by verify_20260724T074105Z). Direct-to-main. Suite 132 → 133. First duty:
+  no open peer-gated PR (verified []); infra health check ran first — runner HEALTHY
+  (verify_20260724T074105Z, 07:41Z, ~40s old at fire). The offering acceptance criterion is now
+  guarded in-cloud on BOTH sides; the last offering-layer fixture gap is the example.com
+  non-storefront control (empty offering), folded into the Third-control-domain [LOCAL] item.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity

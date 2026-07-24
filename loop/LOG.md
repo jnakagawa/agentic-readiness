@@ -3063,3 +3063,78 @@ this same offering relabel guard extends to them in-cloud. Next cloud cycle take
 ## Local verification — 20260724T074105Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260724T074105Z.json
+
+## Local cycle — 20260724T074745Z (TRUTH) — retail-INVERSE offering fixture: the operator acceptance criterion's OTHER half, made an in-cloud tripwire
+
+**First duty.** No open peer-gated PR (verified `gh pr list --state open` → empty). Nothing
+to review/merge.
+
+**Infra health check (ran first).** ALL GREEN. Newest verify artifact
+`verify_20260724T074105Z` (07:41Z) was ~40s old at this fire — well under the 6h floor
+(runner HEALTHY; the 01–04:41Z stall Cycle 28/29 flagged self-cleared by Cycle 30, watch
+CLOSED). Full suite runnable (16 files, all pass). Bookkeeping consistent: last cycle (31)
++ its verify pushed cleanly, LOG/STATE match `git log`. Canonical delta live-stable on the
+artifact: 46.1 F / 85.5 B / +39.4. No repair needed.
+
+**Item (the ONE [LOCAL] backlog item).** "[LOCAL] Retail-INVERSE offering fixture" (P2,
+Cycle-27 follow-up) — the operator directive's acceptance criterion is two-sided:
+"driftflight.com shows physical_good = NA …; **a retail storefront shows the inverse.**"
+Cycle 27 pinned the canonical NA half in-cloud (`test_offering_canonical.py`); the retail
+inverse lived only as a [LOCAL] run-log fact with no in-cloud guard. This closes that gap.
+Chosen over the heavier P0 behavioral items because those are either codex-blocked on the
+canonical pair (reputation gate, 4/4) or budget-busting for one headless fire; a $0 static
+fixture capture + cloud-doable test wiring is the highest-certainty unit that advances the
+same operator directive, and it delivers a DURABLE tripwire rather than a one-off artifact.
+
+**What.** (1) Captured `fixtures/canonical/books.toscrape.com.json` via a STATIC $0 crawl
+(`asrs.cli score books.toscrape.com --record-fixture …` — 41 GET entries, 0 POST, no
+secrets: a public book-catalog scraping sandbox). (2) Wired `test_retail_inverse_offering`
+into `tests/test_offering_canonical.py` (7 → 8 tests): replays the committed fixture through
+the REAL `FetchContext.from_fixture → discover_offering` path (no network) and asserts the
+MIRROR image of the canonical guard — claimed set == `{physical_good}` EXACTLY, and
+`{metered_api, subscription, digital_good}` (exactly what the canonical pair CLAIMS) all
+NA/unclaimed; plus the claimed+unclaimed partition of the archetype bank.
+
+**Why (capability lens).** The operator directive removes battery pollution by making the
+task set OFFERING-RELATIVE: a site is probed only for what it CLAIMS to sell, and unclaimed
+archetypes are NA (excluded from every mean/spread, never penalized). Cycle 27 proved that
+an agent-native image API → physical_good NA on real evidence. This proves the OTHER
+direction on real evidence: a real retail catalog → physical_good CLAIMED, API/subscription/
+digital NA. Same `discover_offering` pipeline, opposite verdict — demonstrating the
+claimed/NA partition tracks the storefront's TYPE (what it sells), not its identity. The
+acceptance criterion now has an executable tripwire on BOTH sides.
+
+**Non-vacuous.** The physical_good claim rests on ANCHORED fulfillment evidence — labels
+`add-to-cart` + `stock` from "In stock" / "Add to basket" on the homepage — the specific
+signals the precision guard requires, asserted explicitly (`{add-to-cart, stock} <= labels`).
+This is the exact complement of the canonical pair's metaphorical-"ship" NA case: books.
+toscrape.com genuinely fulfills a physical good and the classifier says so from evidence,
+where the flight-themed pair's metaphorical "ship" correctly does NOT trip physical_good.
+(Deliberately did NOT add a relabel-invariance case for this fixture: the host string does
+not appear in physical_good's prose evidence, so relabeling would be VACUOUS here — the
+canonical pair's relabel guard already covers identity-independence where it is non-vacuous.)
+
+**Regression / invariants.** `git diff --name-only -- asrs/ rubric/` EMPTY — scoring.py /
+rubric / probes / fetch / offering.py byte-for-byte untouched → rubric stays **v0.7**,
+canonical delta unchanged by construction AND re-measured (in-cloud replay guard
+`test_canonical_replay.py` 8/8, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; live-corroborated
+by `verify_20260724T074105Z`). Score-neutral (offering pipeline feeds no score / no
+aggregation math). $0-only intact (static read-only GET crawl, replayed offline). Fixture
+carries no secrets (public sandbox, all GET, secret-string scan → only book titles e.g.
+"The Dirty Little Secrets of Getting Your Dream Job").
+
+**Ship.** Direct to main (tests + a replay fixture, NOT a scoring-semantics change — per
+playbook ship rules).
+
+**Evidence.** `tests/test_offering_canonical.py` 7/7 → 8/8; full suite **132 → 133**. All 16
+test files pass. New fixture: `fixtures/canonical/books.toscrape.com.json`. (Live run report
+`runs/books_toscrape_com_20260724T074402.json` is gitignored.)
+
+**Comms.** No Slack — tests + fixture, moves no score, not a sensitive-class PR; not a digest
+window (07:47Z, before 16:00 UTC; digest last sent Cycle 16).
+
+**Next hypothesis.** The offering acceptance criterion is now guarded in-cloud on BOTH sides
+(canonical NA + retail inverse). The remaining offering-layer [LOCAL] gaps: the non-storefront
+control (example.com) replay + relabel case (P2), and — the operator directive's crown jewel
+— the end-to-end LIVE `--battery auto --models claude,codex` acceptance rerun, still gated on
+codex reachability for the canonical pair. Cloud rotation unaffected (next cloud cycle READOUT).

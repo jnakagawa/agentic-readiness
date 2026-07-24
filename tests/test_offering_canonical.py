@@ -26,6 +26,16 @@ spuriously flipped physical_good to CLAIMED on the canonical pair — the exact
 pollution the operator directive removes — fails a test in-cloud instead of
 shipping silently.
 
+The acceptance criterion has TWO named halves — "driftflight.com shows
+physical_good = NA ...; a retail storefront shows the inverse." The canonical
+half is pinned above; the RETAIL INVERSE is pinned by
+`test_retail_inverse_offering` below, replaying a committed static-crawl fixture
+of a real book-catalog storefront (books.toscrape.com) and asserting the mirror
+image — physical_good CLAIMED (on anchored "In stock"/"Add to basket" evidence,
+never bare "ship") and the API/subscription/digital archetypes (exactly the ones
+the canonical pair CLAIMS) all NA. Same offering pipeline, opposite verdict,
+proving the claimed/NA partition tracks the storefront TYPE, not the domain.
+
 NON-VACUOUS by substrate: both canonical homepages are flight-/shipping-themed
 and literally say "ship" three times ("for every image you ship", "Teams that
 ship images daily") — all metaphorical (shipping software output, not physical
@@ -194,6 +204,105 @@ def test_canonical_metaphorical_ship_stays_na_org() -> None:
 def test_canonical_metaphorical_ship_stays_na_com() -> None:
     print("test_canonical_metaphorical_ship_stays_na_com")
     _assert_metaphorical_ship_not_physical("driftflight.com")
+
+
+# ---------------------------------------------------------------------------
+# The RETAIL INVERSE — the operator directive's OTHER named acceptance case.
+#
+# The directive's acceptance criterion is two-sided: "driftflight.com shows
+# physical_good = NA ...; a retail storefront shows the inverse." The guards
+# above pin the first half (an agent-native image API -> physical_good NA). This
+# pins the SECOND: a real retail storefront -> physical_good CLAIMED and the
+# API / subscription / digital-good archetypes — exactly the ones the canonical
+# pair CLAIMS — all NA. Same discover_offering pipeline, opposite verdict, so the
+# claimed/NA partition demonstrably tracks the storefront's TYPE (what it sells),
+# not its identity.
+#
+# Fixture captured [LOCAL] 2026-07-24 via a STATIC $0 crawl of books.toscrape.com
+# (a stable, public book-catalog scraping sandbox — no API, no subscription, no
+# generated media), replayed here through the REAL discovery path with NO network.
+# Its homepage lists priced catalog items with unambiguous fulfillment language
+# ("In stock" / "Add to basket") — the exact anchored signals `physical_good`
+# requires — which is why the metaphorical-"ship" false positive the canonical
+# pair guards against does NOT apply here: this storefront genuinely fulfills a
+# physical good, and the classifier says so from evidence.
+#
+# Maintenance contract mirrors the canonical guard: if a signal-bank change
+# LEGITIMATELY moves what this fixture claims, re-capture it [LOCAL]
+# (`asrs.cli score books.toscrape.com --record-fixture
+# fixtures/canonical/books.toscrape.com.json`) and update the expected sets below
+# in the SAME PR.
+# ---------------------------------------------------------------------------
+_RETAIL = "books.toscrape.com"
+# What the retail storefront CLAIMS: physical fulfillment only.
+_RETAIL_CLAIMED = {"physical_good"}
+# The MIRROR of the canonical `_MUST_BE_NA`: the archetypes the agent-native
+# canonical pair CLAIMS are all NA on the retail storefront (it sells none of them).
+_RETAIL_MUST_BE_NA = {"metered_api", "subscription", "digital_good"}
+# The anchored fulfillment signals that make physical_good non-vacuous here (the
+# specific labels the precision guard requires — never bare "ship").
+_RETAIL_PHYSICAL_LABELS = {"add-to-cart", "stock"}
+
+
+def _assert_retail_inverse() -> None:
+    profile, _ = _discover(_RETAIL)
+    claimed = set(profile.archetypes)
+    unclaimed = set(profile.unclaimed)
+
+    _check(
+        "homepage" in profile.surfaces_seen,
+        f"{_RETAIL}: homepage surface was read (discovery had real evidence)",
+    )
+
+    # (a) The claimed SET is exactly physical_good — no spurious API/subscription
+    # claim. Exact equality is the regression signal in BOTH directions: a
+    # dropped physical_good OR a spurious API claim both fail here.
+    _check(
+        claimed == _RETAIL_CLAIMED,
+        f"{_RETAIL}: claimed archetypes == {sorted(_RETAIL_CLAIMED)} (got {sorted(claimed)})",
+    )
+
+    # claimed and unclaimed partition the fixed template bank exactly (no leaks).
+    _check(
+        claimed | unclaimed == set(ARCHETYPES) and not (claimed & unclaimed),
+        f"{_RETAIL}: claimed+unclaimed partition the archetype bank "
+        f"(claimed {sorted(claimed)}, unclaimed {sorted(unclaimed)})",
+    )
+
+    # (b) The INVERSE of the canonical acceptance criterion: the archetypes the
+    # agent-native canonical pair CLAIMS are all NA on the retail storefront.
+    _check(
+        _RETAIL_MUST_BE_NA <= unclaimed,
+        f"{_RETAIL}: {sorted(_RETAIL_MUST_BE_NA)} are all NA/unclaimed "
+        f"(got unclaimed {sorted(unclaimed)}) — a book catalog exposes no API, "
+        "subscription, or generated-media surface",
+    )
+    _check(
+        profile.claims("physical_good"),
+        f"{_RETAIL}: physical_good CLAIMED (operator acceptance, inverse half) — "
+        "a book catalog fulfills a physical good",
+    )
+    _check(
+        not profile.claims("metered_api"),
+        f"{_RETAIL}: metered_api = NA — a retail catalog is not a programmatic API",
+    )
+
+    # Non-vacuous: the physical_good claim rests on ANCHORED fulfillment evidence
+    # ("In stock" / "Add to basket"), the specific signals the precision guard
+    # requires — NOT bare "ship" (which stays NA on the canonical pair above). So
+    # this is a genuine physical storefront, not a same-word coincidence.
+    phys = next(c for c in profile.claimed if c.archetype == "physical_good")
+    labels = {s.label for s in phys.signals}
+    _check(
+        _RETAIL_PHYSICAL_LABELS <= labels,
+        f"{_RETAIL}: physical_good rests on anchored fulfillment evidence "
+        f"{sorted(_RETAIL_PHYSICAL_LABELS)} (got labels {sorted(labels)})",
+    )
+
+
+def test_retail_inverse_offering() -> None:
+    print("test_retail_inverse_offering")
+    _assert_retail_inverse()
 
 
 # ---------------------------------------------------------------------------
@@ -375,6 +484,7 @@ def main() -> int:
         test_canonical_com_offering,
         test_canonical_metaphorical_ship_stays_na_org,
         test_canonical_metaphorical_ship_stays_na_com,
+        test_retail_inverse_offering,
         test_offering_relabel_invariance_org,
         test_offering_relabel_invariance_com,
         test_offering_relabel_negative_control,

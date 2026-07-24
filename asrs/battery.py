@@ -31,6 +31,7 @@ Pure stdlib + dataclasses; unit-testable with synthetic runs, no network.
 
 from __future__ import annotations
 
+import re
 import statistics
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
@@ -40,6 +41,10 @@ from typing import Any
 # that actually observed the site. Importing the shopper's definitions (rather
 # than re-listing them) keeps the battery and the per-task score in lockstep.
 from asrs.behavioral.shopper import _CHECKPOINT_KEYS, _is_env_blocked
+# The offering-relative battery (operator directive): discovery decides WHICH
+# archetype intents run against a site. offering.py imports nothing from asrs, so
+# this dependency is one-directional (no cycle).
+from asrs.offering import ARCHETYPES, ArchetypeClaim, OfferingProfile
 from asrs.types import BehavioralRun
 
 
@@ -103,6 +108,153 @@ def load_battery(path: str | Path | None = None) -> Battery:
     return Battery(
         id=str(raw.get("id") or battery_path.stem),
         description=str(raw.get("description") or "").strip(),
+        tasks=tasks,
+    )
+
+
+# --------------------------------------------------------------------------
+# offering-relative instantiation (operator directive, brick 2)
+# --------------------------------------------------------------------------
+#
+# A hand-authored battery YAML runs the SAME fixed intent list against every
+# site, so an image-generation API gets probed with "order a physical good" and
+# its partial completion pollutes the means and both spreads — the battery's
+# mismatch, not the site's readiness (operator directive, 2026-07-23). Brick 1
+# (:mod:`asrs.offering`) discovers which capability ARCHETYPES a site CLAIMS to
+# serve. This brick turns that discovery into the battery's task set: a FIXED
+# per-archetype intent template bank (for cross-site comparability), instantiated
+# for a site by keeping only the archetypes it claims. An image API gets the
+# metered/digital/subscription intents and NO physical-good task; a shop gets the
+# inverse; neither is charged for an archetype it does not offer.
+#
+# VOCABULARY RECONCILIATION: the canonical task vocabulary is now
+# ``offering.ARCHETYPES`` (metered_api / subscription / digital_good /
+# physical_good / service_booking / data_retrieval) — the operator directive's
+# taxonomy and the discovery output. An instantiated task's ``id`` AND ``kind``
+# are the archetype name, so the per-``kind`` rollup groups by archetype and the
+# same archetype id lines up across sites (brick 5 comparability). Hand-authored
+# YAMLs keep their free-form ``kind`` grouping labels (digital_service / data_job
+# / ...) and still load unchanged; only the GENERATED batteries adopt the
+# canonical archetype vocabulary.
+#
+# SCORE-NEUTRAL: this is task SELECTION only — it constructs a :class:`Battery`,
+# it does not touch the aggregation math, any check, weight, cap, or the rubric.
+# The NA-aware aggregation (unclaimed archetypes recorded NA and excluded from
+# the means/spreads) is the later, peer-gated brick 3; here an unclaimed
+# archetype is simply not a task, so it already never contributes signal.
+
+# Fixed archetype intent template bank. Each intent is a self-contained,
+# vendor-neutral capability job that references the site's OWN offering
+# generically ("the service's metered API", "the site's primary physical
+# product"), never a named product or domain. Intent wording for the archetypes
+# that also appear in ``default_v1.yaml`` is kept in step with that file so the
+# generated and hand-authored batteries do not diverge on phrasing.
+_ARCHETYPE_INTENTS: dict[str, str] = {
+    "metered_api": (
+        "invoke the service's metered API once and pay for that single call "
+        "programmatically as an autonomous agent, without a human in the loop"
+    ),
+    "subscription": (
+        "provision ongoing programmatic access to the service's primary API on a "
+        "metered or subscription plan, as an autonomous agent, without a sales call"
+    ),
+    # digital_good carries a {descriptor} slot filled from discovered, vendor-
+    # neutral media language (see :func:`_digital_good_descriptor`).
+    "digital_good": (
+        "obtain one {descriptor} from the service and pay for that single output "
+        "programmatically as an autonomous agent, without a human in the loop"
+    ),
+    "physical_good": (
+        "purchase one unit of the site's primary physical product and complete "
+        "payment programmatically as an autonomous agent"
+    ),
+    "service_booking": (
+        "book one unit of the site's primary service — an appointment, "
+        "reservation, or time slot — and complete payment or confirmation "
+        "programmatically as an autonomous agent"
+    ),
+    "data_retrieval": (
+        "enrich a list of records against the service's data and pay for the job "
+        "programmatically as an autonomous agent"
+    ),
+}
+
+# Generic media nouns (never a vendor term) used to specialize the digital_good
+# intent from the archetype's own fired signals — the operator's example of
+# "buy an AI-generated image" for an image API, derived from OUR signal bank
+# rather than from injected raw site text.
+_MEDIA_RE = re.compile(r"\b(image|video|audio|art)\b", re.IGNORECASE)
+
+
+def _digital_good_descriptor(claim: ArchetypeClaim | None) -> str:
+    """A short, vendor-neutral noun for what the digital_good intent should buy.
+
+    Derived only from the archetype's fired signal labels/quotes (generic media
+    words from :mod:`asrs.offering`'s own bank), never from arbitrary injected
+    site prose, so it stays vendor-neutral and injection-safe. Falls back to the
+    generic "digital output" when discovery gives no cleaner media hint.
+    """
+    if claim is None:
+        return "digital output"
+    labels = {s.label for s in claim.signals}
+    if "translation" in labels:
+        return "translated document"
+    for sig in claim.signals:
+        m = _MEDIA_RE.search(sig.quote)
+        if m:
+            return f"generated {m.group(1).lower()}"
+    return "digital output"
+
+
+def _intent_for(archetype: str, claim: ArchetypeClaim | None) -> str:
+    """Fill the archetype's template, parameterized by the discovered offering."""
+    template = _ARCHETYPE_INTENTS[archetype]
+    if "{descriptor}" in template:
+        return template.format(descriptor=_digital_good_descriptor(claim))
+    return template
+
+
+def instantiate_battery(
+    profile: OfferingProfile,
+    *,
+    battery_id: str | None = None,
+    description: str | None = None,
+) -> Battery:
+    """Build an OFFERING-RELATIVE battery from a discovered offering profile.
+
+    Emits one :class:`BatteryTask` per archetype the site CLAIMS (in fixed
+    template-bank order for a stable, comparable readout), with ``id`` and
+    ``kind`` set to the archetype name and the intent drawn from the fixed
+    template bank, parameterized by the site's discovered evidence. Archetypes
+    the site does not claim are omitted — an image API yields no physical-good
+    task, a shop no metered-API task — so the battery only ever runs intents the
+    site actually offers. A profile that claims nothing yields an empty battery
+    (an honest "nothing to assess", never a fabricated task).
+
+    Score-neutral: constructs a battery definition; does not touch scoring or the
+    aggregation math.
+    """
+    by_archetype = {c.archetype: c for c in profile.claimed}
+    tasks: list[BatteryTask] = [
+        BatteryTask(
+            id=archetype,
+            kind=archetype,
+            intent=_intent_for(archetype, by_archetype[archetype]),
+        )
+        for archetype in ARCHETYPES
+        if archetype in by_archetype
+    ]
+    domain = profile.domain or "site"
+    return Battery(
+        id=battery_id or f"offering_{domain}",
+        description=(
+            description
+            if description is not None
+            else (
+                "Offering-relative battery: one intent per archetype "
+                f"{domain} claims to serve ({', '.join(t.kind for t in tasks) or 'none'})."
+            )
+        ),
         tasks=tasks,
     )
 

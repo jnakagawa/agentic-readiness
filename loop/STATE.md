@@ -173,6 +173,26 @@
   old). NOTE: fresh cloud checkout now runs `test_free_tier.py` 9/9 once `pip install -r requirements.txt`
   installs `eth-account` (requirements pins it) — the invariant-#4 env gap noted at Cycle 17 is closed by
   the requirements install. Next cycle takes METHOD.
+  Local fire 2026-07-24T00:49Z COVERAGE ([LOCAL] operator directive BRICK 2 — offering-relative intent
+  instantiation): shipped `asrs/battery.py` `instantiate_battery(profile)` + a fixed per-archetype intent
+  TEMPLATE bank (`_ARCHETYPE_INTENTS`). Turns brick-1 discovery into the battery's TASK SET: one `BatteryTask`
+  per CLAIMED archetype (id=kind=archetype, fixed template-bank order for cross-site comparability), omitting
+  unclaimed archetypes — so an image API gets metered/subscription/digital intents and NO physical-good task,
+  a shop the inverse, a null site an empty battery. Vocabulary reconciled: canonical task vocab is now
+  `offering.ARCHETYPES`; generated tasks use archetype names, hand-authored YAMLs keep their free-form `kind`
+  labels and still load. Parameterized (not just selected): digital_good `{descriptor}` slot filled from the
+  archetype's own vendor-neutral media signals -> "obtain one generated image ..." (operator's literal
+  example), translation -> "translated document", else "digital output"; injection-safe (from OUR signal
+  labels, never raw site prose). SCORE-NEUTRAL (task selection only; `aggregate_battery`/scoring.py/rubric/
+  probes byte-for-byte untouched -> rubric stays v0.7, canonical delta unchanged by construction AND
+  re-measured — replay guard 46.1 F / 85.5 B / +39.4, 0 replay-miss; corroborated by verify_20260724T004105Z).
+  Direct-to-main. `test_battery_instantiate.py` 8/8; suite 104 -> 112. LIVE-validated on 4 real domains
+  (invariant #3): both driftflight domains -> NO physical_good task (operator acceptance met),
+  books.toscrape.com -> physical_good task (inverse control), example.com -> empty battery; all 4 acceptance
+  assertions pass. Evidence: runs/local/offering_battery_instantiate_20260724T004927Z.json. First duty: no
+  open peer-gated PR (verified empty); runner HEALTHY (verify_20260724T004105Z, 00:41Z, ~8 min old). Brick 3
+  (NA-aware aggregation, PEER-GATED) + the [LOCAL] acceptance rerun are the next increments; cloud rotation
+  unaffected (still METHOD).
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity

@@ -2393,3 +2393,85 @@ Next cloud cycle takes METHOD.
 ## Local verification — 20260724T004105Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260724T004105Z.json
+
+## Local cycle — 2026-07-24T00:49Z — COVERAGE ([LOCAL] operator directive brick 2: offering-relative intent instantiation)
+
+**First duty.** No open peer-gated PR (`gh pr list --state open` → empty) → the
+mandated fresh-context adversarial review had nothing pending. Infra health check
+ran first: runner HEALTHY — newest artifact `verify_20260724T004105Z.json`
+(00:41Z) is ~0–8 min old at fire time, well under the 6h threshold; delta +39.4;
+bench UP (112/112 after this change); bookkeeping consistent with git history.
+
+**What.** Second brick of the **operator directive** (Jonah, 2026-07-23: "the
+battery must be OFFERING-RELATIVE, not fixed"). `asrs/battery.py` gains
+`instantiate_battery(profile)` + a FIXED per-archetype intent TEMPLATE bank
+(`_ARCHETYPE_INTENTS`, one capability-worded, vendor-neutral intent per archetype
+in `offering.ARCHETYPES`). Given a brick-1 `OfferingProfile`, it emits ONE
+`BatteryTask` per archetype the site CLAIMS — in fixed template-bank order, `id`
+and `kind` both set to the archetype name — and OMITS the archetypes the site
+does not claim. So an image API yields the metered/subscription/digital intents
+and NO physical-good task; a shop yields the inverse; a site that claims nothing
+yields an empty battery. This is the discovery→task-set wiring brick 1 set up.
+
+**Vocabulary reconciliation** (the directive's explicit brick-2 ask): the
+canonical task vocabulary is now `offering.ARCHETYPES` (metered_api / subscription
+/ digital_good / physical_good / service_booking / data_retrieval). Generated
+tasks use archetype names as BOTH `id` and `kind`, so the per-`kind` rollup groups
+by archetype and the same archetype id lines up across sites (brick-5
+comparability). Hand-authored YAMLs keep their free-form `kind` labels
+(digital_service / data_job / …) and still load unchanged — only GENERATED
+batteries adopt the archetype vocabulary.
+
+**Parameterized by the discovered offering** (not just selected): the digital_good
+intent carries a `{descriptor}` slot filled from the archetype's OWN fired signal
+labels/quotes — the operator's literal example, "obtain one **generated image**",
+derived from `offering.py`'s vendor-neutral media bank (image/video/audio/art →
+"generated <noun>"; translation → "translated document"; else generic "digital
+output"). Injection-safe: the descriptor comes from OUR signal labels, never from
+arbitrary injected raw site prose. The generated intents never name the site's own
+domain (asserted).
+
+**Live-validated on 4 real domains (invariant #3, this fire has network):**
+`discover_offering → instantiate_battery`:
+- drift-flight.org → tasks `{metered_api, subscription, digital_good}`,
+  **NO physical_good task**; digital_good intent = "obtain one generated image …".
+- driftflight.com → tasks `{metered_api, subscription, digital_good}`,
+  **NO physical_good task** — the operator's acceptance ("driftflight.com shows
+  physical_good = NA, not a completion number") met exactly, in task-selection
+  terms; digital_good = "obtain one generated image …".
+- books.toscrape.com (physical-retail inverse control) → `{physical_good}` task
+  ("purchase one unit of the site's primary physical product …").
+- example.com (null control) → EMPTY battery (claims nothing → nothing to assess).
+All 4 acceptance assertions PASS. Evidence:
+`runs/local/offering_battery_instantiate_20260724T004927Z.json` (force-added;
+`runs/` is gitignored).
+
+**Score-neutral by construction.** Task SELECTION only — constructs a `Battery`,
+does not touch `aggregate_battery`, any check, weight, cap, or the rubric. The
+diff is confined to `asrs/battery.py`'s new instantiation section + a new test
+file; scoring.py/rubric/probes/fetch.py/protocols.py byte-for-byte untouched →
+rubric stays **v0.7**, canonical delta unchanged by construction AND re-measured
+(replay guard `test_canonical_replay.py` 8/8 = 46.1 F / 85.5 B / +39.4, 0
+replay-miss; corroborated by `verify_20260724T004105Z.json`). Direct-to-main
+(same class as brick 1). The NA-aware AGGREGATION (unclaimed archetypes excluded
+from means + both spreads) is the scoring-semantics change → brick 3, PEER-GATED.
+
+**Evidence.** `tests/test_battery_instantiate.py` (8/8, synthetic profiles, no
+network): image API → metered/subscription/digital tasks + NO physical (operator
+acceptance) + "generated image" descriptor; retail is the inverse; empty profile →
+empty battery; generated intents vendor-neutral (no domain leak); ids ARE
+archetypes in fixed template-bank order (not claim-strength order) →
+cross-site comparability; digital_good descriptor branches
+(translation/media/fallback/None-safe). Full suite 104 → 112.
+
+**Ship.** Direct-to-main. No Slack DM — score-neutral task selection, moves no
+score, not a sensitive class; daily digest already sent Cycle 16 and this fire
+(00:49Z) is not a new digest window (before the next 16:00 UTC digest).
+
+**Next hypothesis.** Brick 3 (NA-aware aggregation) is the peer-gated increment:
+record unclaimed archetypes as NA in `BatterySummary` and formalize their
+exclusion from `mean_completion` / `cross_task_spread` / `between_kind_spread`,
+plus the brick-5 comparability readout naming WHICH archetypes were assessed. Then
+the `[LOCAL]` acceptance rerun (rerun the canonical batteries end-to-end via the
+instantiated task set and confirm driftflight physical_good shows as NA, not a
+number). Cloud rotation unaffected (next cloud cycle still takes METHOD).

@@ -55,26 +55,47 @@ design in-cloud, execute locally.
   (acceptance met); example.com {} (null); books.toscrape.com {physical_good}
   (inverse). `test_offering.py` 7/7; suite 96→103. Evidence:
   runs/local/offering_discovery_20260723T234942Z.json. See LOG (Local cycle 23:49Z).
+  PROGRESS — BRICK 2 (intent instantiation) SHIPPED 2026-07-24T00:49Z (local fire,
+  COVERAGE, direct-to-main, score-neutral). `asrs/battery.py`
+  `instantiate_battery(profile)` + a fixed per-archetype intent TEMPLATE bank
+  (`_ARCHETYPE_INTENTS`) turn brick-1 discovery into the battery's TASK SET: one
+  `BatteryTask` per CLAIMED archetype (id=kind=archetype, fixed template-bank order
+  for cross-site comparability), omitting unclaimed archetypes. Vocabulary
+  RECONCILED: canonical task vocab is now `offering.ARCHETYPES`; generated tasks use
+  archetype names, hand-authored YAMLs keep their free-form `kind` labels and still
+  load. Parameterized: digital_good `{descriptor}` slot filled from the archetype's
+  own vendor-neutral media signals ("obtain one generated image …" — operator's
+  example; translation → "translated document"; else "digital output"),
+  injection-safe. LIVE-validated on 4 real domains (invariant #3): both driftflight
+  domains → NO physical_good task (operator acceptance met), books.toscrape.com →
+  physical_good task (inverse), example.com → empty battery; all 4 acceptance
+  assertions pass. Score-neutral (task selection only; `aggregate_battery`/scoring.py/
+  rubric/probes untouched → rubric v0.7, canonical delta unchanged, replay guard
+  46.1 F / 85.5 B / +39.4). `test_battery_instantiate.py` 8/8; suite 104 → 112.
+  Evidence: runs/local/offering_battery_instantiate_20260724T004927Z.json. See LOG
+  (Local cycle 00:49Z).
   REMAINING bricks (next increments, in order):
-  - **BRICK 2 — intent instantiation** (COVERAGE, cloud-doable): parameterize the
-    fixed archetype TEMPLATE bank with the discovered offering to generate each
-    site's task prompts, and reconcile battery `kind` ↔ `offering.ARCHETYPES` (the
-    battery YAML uses digital_service/data_job; offering uses metered_api/
-    digital_good/data_retrieval — pick ONE canonical vocabulary or add a mapping).
-    Discovery already emits the archetypes; this wires them into task generation.
-    Still score-neutral (task SELECTION only) until brick 3.
   - **BRICK 3 — NA-aware aggregation** (METHOD, PEER-GATED + version bump): mark
     unclaimed archetypes NA and EXCLUDE them from `mean_completion`,
-    `cross_task_spread`, and `between_kind_spread` (asrs/battery.py). This changes
-    the battery math → sensitive class → peer-gated PR. (The battery still feeds no
-    overall score, but the aggregation-rule change is the operator's stated
-    peer-gated part.)
+    `cross_task_spread`, and `between_kind_spread` (asrs/battery.py). Brick 2 already
+    omits unclaimed archetypes from the task SET (so they contribute no signal), but
+    this brick makes NA an EXPLICIT, recorded state in `BatterySummary` (readout +
+    aggregation), which is the operator's stated scoring-semantics change → sensitive
+    class → peer-gated PR. (The battery still feeds no overall score.)
   - **BRICK 4 — out-of-scope legibility** (unscored diagnostic, optional) +
-    **BRICK 5 — comparability readout** (name WHICH archetypes were assessed) — per
-    the directive; design after bricks 2–3 land.
-  - **[LOCAL] acceptance rerun**: once bricks 2–3 land, rerun the canonical
-    batteries and confirm driftflight physical_good = NA with spreads over claimed
-    archetypes only, a retail storefront the inverse, and NA shown as "not offered".
+    **BRICK 5 — comparability readout** (name WHICH archetypes were assessed — brick 2
+    already stabilizes this by using archetype names as task ids; this brick surfaces
+    them in the terminal/HTML readout) — per the directive; design after brick 3 lands.
+  - **[LOCAL] wire instantiate_battery into the --battery run path** (COVERAGE,
+    cloud-designable / [LOCAL]-executable): the CLI `--battery` flag still loads a
+    STATIC YAML (`load_battery`). Add a discovery-driven mode (e.g. `--battery auto`)
+    that calls `discover_offering → instantiate_battery` so a live run actually uses
+    the offering-relative task set. Behavioral execution is [LOCAL]. Score-neutral
+    (task selection) until brick 3.
+  - **[LOCAL] acceptance rerun**: once brick 3 lands (and the --battery wiring above),
+    rerun the canonical batteries end-to-end and confirm driftflight physical_good =
+    NA with spreads over claimed archetypes only, a retail storefront the inverse, and
+    NA shown as "not offered" on the card + terminal.
 
 <!-- DONE 2026-07-23 (two complementary fires): "[LOCAL] POST-merge live canonical re-score
      for v0.7 (PR #3, MERGED 72a2e5b)" FULLY DISCHARGED.

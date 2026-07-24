@@ -1,0 +1,111 @@
+{
+  "ts": "20260724T004927Z",
+  "kind": "offering-battery-instantiation-live-validation",
+  "note": "Brick 2 (operator directive): instantiate_battery generates the battery task set from discovered offering archetypes. Score-neutral (task selection only). Validates asrs.battery.instantiate_battery live on real offerings.",
+  "domains": {
+    "drift-flight.org": {
+      "claimed": [
+        "metered_api",
+        "subscription",
+        "digital_good"
+      ],
+      "unclaimed_NA": [
+        "physical_good",
+        "service_booking",
+        "data_retrieval"
+      ],
+      "battery_id": "offering_drift-flight.org",
+      "tasks": [
+        {
+          "id": "metered_api",
+          "kind": "metered_api",
+          "intent": "invoke the service's metered API once and pay for that single call programmatically as an autonomous agent, without a human in the loop"
+        },
+        {
+          "id": "subscription",
+          "kind": "subscription",
+          "intent": "provision ongoing programmatic access to the service's primary API on a metered or subscription plan, as an autonomous agent, without a sales call"
+        },
+        {
+          "id": "digital_good",
+          "kind": "digital_good",
+          "intent": "obtain one generated image from the service and pay for that single output programmatically as an autonomous agent, without a human in the loop"
+        }
+      ],
+      "physical_good_is_a_task": false
+    },
+    "driftflight.com": {
+      "claimed": [
+        "metered_api",
+        "digital_good",
+        "subscription"
+      ],
+      "unclaimed_NA": [
+        "physical_good",
+        "service_booking",
+        "data_retrieval"
+      ],
+      "battery_id": "offering_driftflight.com",
+      "tasks": [
+        {
+          "id": "metered_api",
+          "kind": "metered_api",
+          "intent": "invoke the service's metered API once and pay for that single call programmatically as an autonomous agent, without a human in the loop"
+        },
+        {
+          "id": "subscription",
+          "kind": "subscription",
+          "intent": "provision ongoing programmatic access to the service's primary API on a metered or subscription plan, as an autonomous agent, without a sales call"
+        },
+        {
+          "id": "digital_good",
+          "kind": "digital_good",
+          "intent": "obtain one generated image from the service and pay for that single output programmatically as an autonomous agent, without a human in the loop"
+        }
+      ],
+      "physical_good_is_a_task": false
+    },
+    "example.com": {
+      "claimed": [],
+      "unclaimed_NA": [
+        "metered_api",
+        "subscription",
+        "digital_good",
+        "physical_good",
+        "service_booking",
+        "data_retrieval"
+      ],
+      "battery_id": "offering_example.com",
+      "tasks": [],
+      "physical_good_is_a_task": false
+    },
+    "books.toscrape.com": {
+      "claimed": [
+        "physical_good"
+      ],
+      "unclaimed_NA": [
+        "metered_api",
+        "subscription",
+        "digital_good",
+        "service_booking",
+        "data_retrieval"
+      ],
+      "battery_id": "offering_books.toscrape.com",
+      "tasks": [
+        {
+          "id": "physical_good",
+          "kind": "physical_good",
+          "intent": "purchase one unit of the site's primary physical product and complete payment programmatically as an autonomous agent"
+        }
+      ],
+      "physical_good_is_a_task": true
+    }
+  },
+  "acceptance": {
+    "driftflight.org: physical_good is NA (not a task)": true,
+    "driftflight.com: physical_good is NA (not a task)": true,
+    "books.toscrape.com: physical_good IS a task (inverse control)": true,
+    "example.com: empty battery (claims nothing)": true
+  },
+  "acceptance_all_pass": true
+}

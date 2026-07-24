@@ -25,6 +25,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from asrs import battery as B  # noqa: E402
 from asrs.battery import Battery, BatteryTask  # noqa: E402
+from asrs.offering import ArchetypeClaim, OfferingProfile  # noqa: E402
 from asrs.types import BehavioralRun  # noqa: E402
 
 _KEYS = ["found_product", "understood_pricing", "found_purchase_path",
@@ -56,6 +57,18 @@ def _failed_run(model="codex", trial=1) -> BehavioralRun:
     """No verdict -> empty checkpoints -> excluded."""
     return BehavioralRun(model=model, trial=trial, checkpoints={},
                          blockers=["run-failed: cli-error"])
+
+
+def _profile(*claimed: str, domain: str = "site") -> OfferingProfile:
+    """A minimal offering profile claiming exactly the named archetypes.
+
+    ``.unclaimed`` (the rest of the template bank) is what the NA-aware
+    aggregation marks not-offered — no signals needed for that.
+    """
+    return OfferingProfile(
+        domain=domain,
+        claimed=[ArchetypeClaim(archetype=a) for a in claimed],
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -318,6 +331,131 @@ def test_between_kind_spread() -> None:
     _check(empty.between_kind_spread is None, "no signal -> between_kind_spread None")
 
 
+# ---------------------------------------------------------------------------
+# 10. NA-aware aggregation (brick 3): no profile == pre-brick-3 behaviour.
+# ---------------------------------------------------------------------------
+def test_na_profile_none_is_backward_compatible() -> None:
+    print("test_na_profile_none_is_backward_compatible")
+    # The exact fixture of test_cross_task_spread (whose numbers are pinned):
+    # aggregating WITHOUT a profile must reproduce them byte-for-byte, and mark
+    # nothing NA — an offering profile is the ONLY thing that establishes what a
+    # site does not offer.
+    bat = Battery(id="t", description="", tasks=[
+        BatteryTask("t1", "digital_service", "a"),
+        BatteryTask("t2", "physical_good", "b"),
+    ])
+    runs = {
+        "t1": [_run(found_product=True, no_human_gate=True),
+               _run(found_product=True, no_human_gate=True)],
+        "t2": [_run(found_product=True, no_human_gate=False),
+               _run(found_product=True, no_human_gate=False)],
+    }
+    summ = B.aggregate_battery(bat, runs)  # no profile
+    _check(abs(summ.cross_task_spread - 0.1) < 1e-9,
+           f"cross_task_spread unchanged at 0.1, got {summ.cross_task_spread}")
+    _check(summ.na_archetypes == [], "no profile -> nothing marked NA")
+    _check(all(not tr.na for tr in summ.per_task), "no profile -> no task is NA")
+    _check(summ.battery_semantics_version == "b1",
+           f"battery semantics version recorded, got {summ.battery_semantics_version}")
+    _check("na_archetypes" in summ.to_dict() and "assessed_archetypes" in summ.to_dict(),
+           "new fields survive to_dict()")
+
+
+# ---------------------------------------------------------------------------
+# 11. NA-aware aggregation (brick 3): the operator's exact complaint.
+#     An image-generation API probed with "order a physical good" must NOT let
+#     the physical-good partial completion pollute the spreads — physical_good is
+#     NA (not offered), excluded and recorded, while the CLAIMED archetypes keep
+#     the identical numbers they had without the mismatched task.
+# ---------------------------------------------------------------------------
+def test_na_excludes_unoffered_archetype() -> None:
+    print("test_na_excludes_unoffered_archetype")
+    # An image API: claims metered_api + digital_good. It does NOT sell physical
+    # goods — but a static battery still ran a physical_good intent, which the
+    # agent PARTIALLY completed (garden-pathed), polluting the numbers.
+    bat = Battery(id="t", description="", tasks=[
+        BatteryTask("metered_api", "metered_api", "call the API"),
+        BatteryTask("digital_good", "digital_good", "buy an image"),
+        BatteryTask("physical_good", "physical_good", "order the physical good"),
+    ])
+    runs = {
+        "metered_api": [_run(found_product=True, understood_pricing=True),   # mean 0.4
+                        _run(found_product=True, understood_pricing=True)],
+        "digital_good": [_run(**{k: True for k in _KEYS}),                    # mean 1.0
+                         _run(**{k: True for k in _KEYS})],
+        "physical_good": [_run(found_product=True),                          # mean 0.2 (partial)
+                          _run(found_product=True)],
+    }
+    prof = _profile("metered_api", "digital_good")  # physical_good UNCLAIMED
+
+    without = B.aggregate_battery(bat, runs)              # pre-brick-3: all 3 count
+    withp = B.aggregate_battery(bat, runs, profile=prof)  # brick-3: physical_good NA
+
+    # physical_good is marked NA, excluded, recorded — never a site failure.
+    pg = next(tr for tr in withp.per_task if tr.task_id == "physical_good")
+    _check(pg.na is True, "physical_good task flagged NA under an image-API profile")
+    _check(pg.has_signal is False, "NA task never counts as signal")
+    _check(pg.mean_completion is None, "NA task carries no completion number")
+    _check("physical_good" in withp.na_archetypes, "physical_good recorded in na_archetypes")
+    _check("physical_good" not in [kr.kind for kr in withp.per_kind],
+           "NA archetype dropped from per_kind rollup")
+    _check(withp.assessed_archetypes == ["metered_api", "digital_good"],
+           f"assessed names the offered archetypes only, got {withp.assessed_archetypes}")
+    _check(withp.tasks_with_signal == 2, f"2 offered tasks assessed, got {withp.tasks_with_signal}")
+
+    # The CLAIMED archetypes keep the IDENTICAL numbers they'd have with the
+    # mismatched task absent — NA exclusion perturbs nothing it excludes.
+    _check(abs(withp.between_kind_spread - _stdev([0.4, 1.0])) < 1e-9,
+           f"between_kind over CLAIMED only (0.4/1.0)={_stdev([0.4,1.0]):.4f}, got {withp.between_kind_spread}")
+    # And that differs from the polluted, un-profiled reading over all three.
+    _check(abs(without.between_kind_spread - _stdev([0.4, 1.0, 0.2])) < 1e-9,
+           "un-profiled between_kind still spans the mismatched archetype")
+    _check(abs(withp.between_kind_spread - without.between_kind_spread) > 1e-6,
+           "the NA exclusion actually changes the spread (mismatch removed)")
+    # NA (not offered) is DISTINCT from no-signal (offered, unobserved): the
+    # unclaimed set names physical_good but not the claimed archetypes.
+    _check("metered_api" not in withp.na_archetypes and "digital_good" not in withp.na_archetypes,
+           "claimed archetypes are never NA")
+
+
+# ---------------------------------------------------------------------------
+# 12. NA is structural (not-offered), no-signal is unobserved — both handled,
+#     and a non-canonical hand-authored kind is NEVER NA.
+# ---------------------------------------------------------------------------
+def test_na_distinct_from_no_signal_and_noncanonical() -> None:
+    print("test_na_distinct_from_no_signal_and_noncanonical")
+    bat = Battery(id="t", description="", tasks=[
+        BatteryTask("metered_api", "metered_api", "call"),          # offered, signal
+        BatteryTask("service_booking", "service_booking", "book"),  # NOT offered -> NA
+        BatteryTask("legacy", "digital_service", "x"),              # non-canonical kind
+    ])
+    runs = {
+        "metered_api": [_run(found_product=True), _run(found_product=True)],
+        "service_booking": [_run(found_product=True), _run(found_product=True)],  # would score if not NA
+        "legacy": [_env_blocked_run(), _failed_run()],  # offered-ish label, but no signal
+    }
+    prof = _profile("metered_api")  # claims ONLY metered_api; digital_service isn't an archetype
+
+    summ = B.aggregate_battery(bat, runs, profile=prof)
+    sb = next(tr for tr in summ.per_task if tr.task_id == "service_booking")
+    lg = next(tr for tr in summ.per_task if tr.task_id == "legacy")
+    _check(sb.na is True, "service_booking is NA (unclaimed archetype)")
+    _check(lg.na is False, "non-canonical kind 'digital_service' is NOT NA")
+    _check(not lg.has_signal, "legacy has no signal (env-blocked + failed), but that's no-signal not NA")
+    _check("service_booking" in summ.na_archetypes, "NA archetype recorded")
+    _check("digital_service" not in summ.na_archetypes, "non-canonical kind never recorded NA")
+    _check(summ.assessed_archetypes == ["metered_api"],
+           f"only the offered+observed archetype assessed, got {summ.assessed_archetypes}")
+    # ARCHETYPES order for na_archetypes (subscription < service_booking < ...).
+    _check(summ.na_archetypes == list(prof.unclaimed),
+           f"na_archetypes == profile.unclaimed in ARCHETYPES order, got {summ.na_archetypes}")
+
+
+def _stdev(vals):
+    import statistics as _s
+    return _s.pstdev(vals)
+
+
 def main() -> int:
     tests = [
         test_load_default_battery,
@@ -329,6 +467,9 @@ def main() -> int:
         test_per_kind_rollup,
         test_per_kind_no_signal,
         test_between_kind_spread,
+        test_na_profile_none_is_backward_compatible,
+        test_na_excludes_unoffered_archetype,
+        test_na_distinct_from_no_signal_and_noncanonical,
     ]
     failed = 0
     for t in tests:

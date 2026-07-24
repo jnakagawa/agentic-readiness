@@ -3424,3 +3424,7 @@ live-wiring (free-tier opt_in_query/opt_in_path into the `advertised` gate; ACP/
 parity) and non-EVM zero-value schemes. A cloud-doable next COVERAGE increment: an [LOCAL] fixture
 capture of an OpenAPI-spec-only storefront would let an in-cloud test pin live spec-driven
 classification end-to-end (queued P2). Next cycle takes TRUTH.
+
+## Local verification — 20260724T104103Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260724T104103Z.json

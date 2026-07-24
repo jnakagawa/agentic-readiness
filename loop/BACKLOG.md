@@ -395,8 +395,11 @@ design in-cloud, execute locally.
   vs are excused NA) keys on EVIDENCE, not identity. Non-vacuous (host appears in
   the classifier's own matched evidence) + a negative control (an identity-keyed
   favorable special-case is CAUGHT). Score-neutral, rubric v0.7, replay guard 8/8
-  / +39.4. Still recurring: (a) the hand-authored-prose re-read; (b) extend BOTH
-  layers' relabel guards to the [LOCAL] control/inverse fixtures below.
+  / +39.4. PROGRESS 2026-07-24T11:12Z (Cycle 35, TRUTH): the SCORING-layer relabel guard now
+  covers a THIRD real domain — the retail storefront `books.toscrape.com`
+  (`test_relabel_invariance_retail`, 29.5 F identity-invariant). Still recurring: (a) the
+  hand-authored-prose re-read (EXECUTABLE since Cycle 33); (b) the OFFERING-layer relabel guard
+  still covers only the pair — extend it to books.toscrape.com + the [LOCAL] example.com control.
 - **Env-block classifier: harden against site-side "safety/security policy"**
   (METHOD, attribution honesty — residual from the PR #2 adversarial review,
   2026-07-23T10:13Z). The review confirmed `_ENV_BLOCK_RE` correctly rejects the
@@ -481,7 +484,13 @@ design in-cloud, execute locally.
      control replay/relabel case (P2 below) remains the last offering-layer fixture gap. -->
 
 - **[LOCAL] Third-control-domain replay fixture** (METHOD/TRUTH, Cycle-17 + Cycle-19 follow-up):
-  the canonical replay guard pins only the storefront PAIR. Capture a fixture for a NON-storefront
+  UPDATE — Cycle 35 (TRUTH) already grew the SCORING replay guard beyond the pair to a THIRD real
+  domain using a fixture we already held: `books.toscrape.com` (a RETAIL storefront) is now wired
+  into `test_canonical_replay.py` (8→11 tests) — pinned 29.5 F on v0.7, the transactability FLOOR
+  (earns 0, strictly below the no-rails .org's 18.75; the capability-lens MIRROR of the +39.4 delta),
+  plus relabel-invariance. So this item is now SPECIFICALLY about the example.com NON-storefront /
+  zero-commerce baseline (a distinct FOURTH datapoint: a site that sells nothing at all, vs the
+  retail shop that sells to humans but not to agents). Capture a fixture for the NON-storefront
   control (example.com, already spot-checked 22.5 F [LOCAL] 15:43Z) via
   `asrs.cli score example.com --record-fixture fixtures/canonical/example.com.json`, then add a
   small `test_canonical_replay` case pinning 22.5 F / no commerce credit. NOW ALSO extend the

@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 34
+- Cycle counter: 35
 - Started: 2026-07-23 (UTC)
 - Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
@@ -444,6 +444,31 @@
   peer-gated PR (verified []); infra health check ran first — runner HEALTHY
   (verify_20260724T094103Z, 09:41Z, ~31 min old, 46.1 F / 85.5 B / +39.4); git on main =
   origin/main (dcb2a90, detached HEAD from the local-verify push realigned). Next cycle takes TRUTH.
+  Cycle 35 TRUTH (the canonical replay REGRESSION guard grows a THIRD real domain — a retail
+  storefront as the transactability FLOOR): `tests/test_canonical_replay.py` +3 tests (8→11), wiring
+  the already-committed `fixtures/canonical/books.toscrape.com.json` ([LOCAL] 07:47Z capture, until
+  now used ONLY by the offering-classifier guard) into the SCORING replay path. (6)
+  `test_retail_storefront_replays_29_5` pins overall 29.5 F / rubric 0.7 / all 5 pillars / 0
+  replay-miss — a browser-checkout SHOP (structurally ≠ the two API storefronts) now in the
+  regression signal, so a benchmark claim rests on >1 pair. (7)
+  `test_retail_storefront_earns_no_agent_native_payment` — the MIRROR of the +39.4 capability guard
+  (Cycle 19/23): a genuine physical-goods storefront (physical_good CLAIMED) earns EXACTLY 0
+  transactability (x402_probe FAIL, self_serve_payg no live x402, NO commerce-protocol-*/x402-live);
+  scored over the IDENTICAL 14-check set as the no-rails canonical .org yet STRICTLY LOWER (0.0 vs
+  18.75 — .org keeps a residual PARTIAL self-serve signal) → the site that most obviously "sells
+  things" is the transactability floor, proving the pillar is capability-gated (can an agent pay
+  programmatically?), not store-type-gated; catches a probe that credited "looks-like-a-shop" as
+  payability. (8) `test_relabel_invariance_retail` extends the Cycle-21 vendor-neutrality relabel
+  tripwire to the third domain (29.5 F identity-invariant). Worded by capability, never by vendor.
+  Tests-only: `git diff -- asrs/ rubric/` EMPTY → scoring path byte-for-byte untouched, rubric stays
+  v0.7, canonical PAIR unchanged by construction AND re-measured (replay guard 46.1 F / 85.5 B /
+  +39.4, 0 replay-miss; verify_20260724T104103Z 10:41Z live-corroborates). Direct-to-main. Suite
+  147 → 150. No Slack (tests-only, moves no score, before the 16:00 UTC digest window, digest last
+  sent Cycle 16). First duty: no open peer-gated PR (verified []); infra health check ran first —
+  runner HEALTHY (verify_20260724T104103Z, 10:41Z, ~31 min old, 46.1 F / 85.5 B / +39.4); git
+  realigned to origin/main (3e12924, detached HEAD from the forced-update local-verify push reset to
+  main). REMAINING TRUTH frontier: the example.com non-storefront control (fourth point, zero-commerce
+  baseline — needs a [LOCAL] fixture capture; test wiring cloud-doable once it lands). Next cycle takes READOUT.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity

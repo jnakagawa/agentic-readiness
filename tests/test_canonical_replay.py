@@ -77,6 +77,29 @@ EXPECTED = {
             "outcome": None,
         },
     },
+    # A THIRD real-domain calibration datapoint — a traditional RETAIL storefront
+    # (a public book catalog, captured LIVE [LOCAL] 2026-07-24T07:47Z, 41 GET / 0
+    # POST). It GENUINELY sells physical goods (the offering layer classifies it
+    # physical_good = CLAIMED — see test_offering_canonical) yet exposes NO
+    # agent-native payment rail, so it earns 0 transactability. It broadens the
+    # regression guard past the single canonical pair to a structurally DIFFERENT
+    # site type (a browser-checkout shop, not an API storefront), and it is the
+    # capability-lens MIRROR of the +39.4 pair: proof that transactability credit
+    # is gated on agent-native CAPABILITY (can an agent pay programmatically?), not
+    # on whether the site sells things. Re-capture + update together on a version
+    # bump, same contract as the pair above.
+    "books.toscrape.com": {
+        "overall": 29.5,
+        "grade": "F",
+        "rubric_version": "0.7",
+        "pillars": {
+            "access": 100.0,
+            "legibility": 18.181818181818183,
+            "transactability": 0.0,
+            "trust": 33.333333333333336,
+            "outcome": None,
+        },
+    },
 }
 EXPECTED_DELTA = 39.4  # driftflight.com (rails) - drift-flight.org (no rails)
 
@@ -454,6 +477,108 @@ def test_canonical_delta_is_earned_dominance() -> None:
     )
 
 
+# ---------------------------------------------------------------------------
+# 6. THIRD-DOMAIN CALIBRATION — the guard beyond the pair. Guards 1–5 pin the two
+#    canonical storefronts; a benchmark needs more than one pair to claim it
+#    measures a real, transferable capability. This replays a committed fixture
+#    for a traditional RETAIL storefront (a public book catalog) through the same
+#    real pipeline and pins its score on rubric v0.7 — a structurally different
+#    site type (browser-checkout shop, not an API storefront) in the regression
+#    signal, so a probe/scoring change that quietly moved a real retail site's
+#    number fails here too, not only on the two API storefronts.
+# ---------------------------------------------------------------------------
+def test_retail_storefront_replays_29_5() -> None:
+    print("test_retail_storefront_replays_29_5")
+    _assert_domain("books.toscrape.com")
+
+
+# ---------------------------------------------------------------------------
+# 7. The MIRROR capability guard — transactability credit is gated on agent-native
+#    CAPABILITY, not on whether a site sells things. Guard 3 pins that the
+#    with-rails canonical side EARNS agent-native payment (x402 live). This pins
+#    the complement, on a real domain that would break a store-type heuristic: a
+#    genuine retail storefront (it sells physical books — the offering layer
+#    classifies it physical_good = CLAIMED) that exposes NO agent-native payment
+#    rail earns EXACTLY 0 transactability. A probe that credited "looks like a
+#    shop" (product pages, prices, add-to-cart) as programmatic payability would
+#    inflate this site and slip guards 1–6 (the overall could still round plausibly)
+#    but FAIL here. The attribution-honesty flip side of the +39.4 delta: this
+#    retail shop — the site that most obviously "sells things" — is the
+#    transactability FLOOR, earning EXACTLY 0 and scoring even LOWER than the
+#    no-rails API storefront (which retains a partial self-serve pay-as-you-go
+#    signal). Both are scored over the IDENTICAL check set, so the gap is a
+#    capability fact, not a denominator artifact: a browser-checkout shop offers
+#    an agent nothing to pay with programmatically. Worded by capability
+#    throughout — it asks "is agent-native payment present?", never "is this
+#    domain X?".
+# ---------------------------------------------------------------------------
+def test_retail_storefront_earns_no_agent_native_payment() -> None:
+    print("test_retail_storefront_earns_no_agent_native_payment")
+    retail, retail_misses = _score_fixture("books.toscrape.com")
+    org, org_misses = _score_fixture("drift-flight.org")  # no-rails API storefront
+    _check(not retail_misses and not org_misses, "no replay-miss on either domain")
+
+    # No agent-native programmatic payment is reachable — x402 does not pass and
+    # the pay-as-you-go check records no live x402 payment (evidence-of-absence).
+    _check(
+        _by_id(retail, "x402_probe").status is not Status.PASS,
+        "books.toscrape.com: x402_probe does NOT pass — no agent-native payment",
+    )
+    _check(
+        _by_id(retail, "self_serve_payg").evidence.get("x402_live") is not True,
+        "books.toscrape.com: self_serve_payg records no live x402 payment",
+    )
+
+    # No probe awarded live programmatic-commerce credit anywhere (no validated
+    # commerce-protocol manifest, no x402-live label) — a genuine shop is NOT
+    # mistaken for an agent-native-payable one.
+    retail_ids = {c.check_id for c in retail.checks}
+    _check(
+        not any("commerce-protocol" in cid or cid == "x402-live" for cid in retail_ids),
+        "books.toscrape.com: no commerce-protocol-*/x402-live credit awarded to a "
+        "browser-checkout retail shop",
+    )
+
+    # The capability gap manifests as an EXACTLY-zero transactability pillar — a
+    # real storefront that sells things but cannot be paid programmatically.
+    _check(
+        retail.pillar_scores["transactability"] == 0.0,
+        f"books.toscrape.com: transactability == 0.0 "
+        f"(got {retail.pillar_scores['transactability']})",
+    )
+
+    # Attribution-honesty flip side of the delta: the retail shop and the no-rails
+    # API storefront are scored over the IDENTICAL check set, so the comparison is
+    # like-for-like — yet the shop, the site that most obviously "sells things",
+    # scores STRICTLY LOWER on transactability (it is the floor: 0 vs the .org's
+    # residual partial self-serve signal). The pillar keys on agent-native payment
+    # presence, not on whether the site is a store.
+    _check(
+        {c.check_id for c in retail.checks} == {c.check_id for c in org.checks},
+        "retail shop and no-rails API storefront scored over the identical check "
+        "set (like-for-like transactability comparison)",
+    )
+    _check(
+        retail.pillar_scores["transactability"] < org.pillar_scores["transactability"],
+        "books.toscrape.com is the transactability floor — scores strictly lower "
+        f"than the no-rails API storefront ({retail.pillar_scores['transactability']} "
+        f"< {org.pillar_scores['transactability']}); selling things != agent-native payable",
+    )
+
+
+# ---------------------------------------------------------------------------
+# 8. Vendor-neutrality extended to the third domain — the relabel-invariance
+#    tripwire (guard 4) applied to the retail storefront, so "no special-casing
+#    any domain, favorable or hostile" is enforced on a real site OUTSIDE the
+#    famous canonical pair. Relabeling the shop's host everywhere reproduces the
+#    identical 29.5 / F / pillars / per-check statuses: its score depends on the
+#    recorded capability evidence, not on its identity.
+# ---------------------------------------------------------------------------
+def test_relabel_invariance_retail() -> None:
+    print("test_relabel_invariance_retail")
+    _assert_relabel_invariant("books.toscrape.com")
+
+
 def main() -> int:
     tests = [
         test_canonical_org_replays_46_1,
@@ -464,6 +589,9 @@ def main() -> int:
         test_relabel_invariance_com,
         test_relabeled_delta_still_39_4,
         test_canonical_delta_is_earned_dominance,
+        test_retail_storefront_replays_29_5,
+        test_retail_storefront_earns_no_agent_native_payment,
+        test_relabel_invariance_retail,
     ]
     failed = 0
     for t in tests:

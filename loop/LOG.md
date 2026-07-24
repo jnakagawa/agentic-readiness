@@ -3428,3 +3428,73 @@ classification end-to-end (queued P2). Next cycle takes TRUTH.
 ## Local verification — 20260724T104103Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260724T104103Z.json
+
+## Cycle 35 (TRUTH) — 2026-07-24T11:12Z — the replay regression guard grows a THIRD real domain: a retail storefront as the transactability floor
+
+**Track.** TRUTH (calibration against reality: does the score reflect what an agent
+experiences? — extends the in-cloud regression signal beyond the single canonical pair to a
+third, structurally different real domain, and pins the capability-lens claim that
+transactability credit tracks agent-native payability, not "is this a store").
+
+**What / why.** The canonical replay guard (`tests/test_canonical_replay.py`) pinned only the
+two-domain PAIR (drift-flight.org vs driftflight.com). A benchmark that claims to measure a
+real, transferable capability needs more than one pair. We ALREADY hold a committed fixture for
+a third real domain — `fixtures/canonical/books.toscrape.com.json`, captured LIVE [LOCAL]
+2026-07-24T07:47Z (41 GET / 0 POST, public book catalog) — but it was wired ONLY into the
+offering-classifier guard (`test_offering_canonical`, physical_good CLAIMED), never into the
+SCORING replay guard. This cycle wires it into the scoring path.
+
+Three tests added (guards 6–8), all reusing the existing `_assert_domain` / `_by_id` /
+`_assert_relabel_invariant` machinery, zero new probe/scoring code:
+
+1. **`test_retail_storefront_replays_29_5`** — third-domain calibration pin. Replays the retail
+   fixture through the REAL `from_fixture → _run_probes → scoring.score` path and pins overall
+   **29.5 F**, rubric **0.7**, all five pillars (access 100 / legibility 18.18 / transactability
+   0.0 / trust 33.33 / outcome None), 0 replay-miss. A browser-checkout SHOP (not an API
+   storefront) is now in the regression signal, so a scoring change that quietly moved a real
+   retail site's number fails here too.
+2. **`test_retail_storefront_earns_no_agent_native_payment`** — the MIRROR of the +39.4
+   capability guard (Cycle 19/23). A genuine storefront that sells physical goods
+   (`physical_good` CLAIMED at the offering layer) earns **EXACTLY 0 transactability** because it
+   exposes no agent-native payment rail: `x402_probe` FAIL (not PASS), `self_serve_payg`
+   evidence records no live x402, and NO `commerce-protocol-*`/`x402-live` credit is awarded.
+   Sharpest fact: scored over the IDENTICAL 14-check set as the no-rails canonical `.org`, the
+   retail shop is the transactability FLOOR — it scores STRICTLY LOWER (0.0) than even the
+   no-rails API storefront (18.75, which keeps a residual PARTIAL self-serve pay-as-you-go
+   signal). The site that most obviously "sells things" earns the LEAST agent-native payability
+   → the pillar is capability-gated, not store-type-gated. A probe that credited
+   "looks-like-a-shop" (product pages, prices, add-to-cart) as programmatic payability would
+   inflate this domain and slip the aggregate guards but FAIL here. Worded by capability, never
+   by vendor ("is agent-native payment present?", never "is this domain X?").
+3. **`test_relabel_invariance_retail`** — vendor-neutrality (Cycle 21 relabel-invariance)
+   extended to the third domain. Relabeling the shop's host everywhere reproduces the identical
+   29.5 / F / pillars / per-check statuses (0 replay-miss) → its score depends on recorded
+   capability evidence, not identity; discharges the recurring "extend the relabel guard to more
+   storefronts" referee-pass item for this real domain.
+
+**Validation / regression.** Full suite **147 → 150**, all 18 files pass (exit 0).
+`test_canonical_replay.py` **8/8 → 11/11**. Canonical PAIR unchanged by construction (scoring
+path byte-for-byte untouched) AND re-measured: replay guard **46.1 F / 85.5 B / +39.4**, 0
+replay-miss; live-corroborated by `verify_20260724T104103Z` (10:41Z, 46.1 F / 85.5 B / +39.4).
+The third-domain 29.5 F was independently reproduced offline before pinning (0 replay-miss;
+relabel invariance verified: 29.5 F base == relabel, identical pillars/statuses).
+
+**Ship.** Direct to main (tests-only; no scoring semantics — `git diff -- asrs/ rubric/` EMPTY,
+rubric stays v0.7). Not payment/signing code.
+
+**Evidence.** `git diff --stat` = `tests/test_canonical_replay.py` ONLY (1 file, +128).
+Fixture already committed (books.toscrape.com.json, [LOCAL] 07:47Z). Suite 147 → 150.
+
+**First duty.** No open peer-gated PR (verified `list_pull_requests` state=open → `[]`). Infra
+health check ran first — runner HEALTHY (newest `verify_20260724T104103Z`, 10:41Z, ~31 min old at
+fire, 46.1 F / 85.5 B / +39.4, tests_ok); git realigned to origin/main (`3e12924`; detached HEAD
+from the forced-update local-verify push reset to `main`).
+
+**Comms.** No Slack — tests-only, moves no score, not a sensitive-class PR; not a digest window
+(11:12Z, before 16:00 UTC; digest last sent Cycle 16).
+
+**Next hypothesis.** The replay regression guard now spans THREE real domains (two API
+storefronts + one retail shop) with capability + vendor-neutrality tripwires on each. The
+remaining TRUTH frontier is the example.com non-storefront control (a fourth point, the
+zero-commerce baseline — still needs a [LOCAL] fixture capture; the test wiring is cloud-doable
+once it lands). Next cycle takes READOUT.

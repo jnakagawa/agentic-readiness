@@ -2992,3 +2992,7 @@ score-increasing: fold `opt_in_query` AND `opt_in_path` into the `advertised` ga
 live free-mode call (append the param / route to the path), verified on ≥2 real domains,
 likely peer-gated; and (b) non-EVM zero-value settlement schemes (still open). Next cloud
 cycle takes TRUTH.
+
+## Local verification — 20260724T064105Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260724T064105Z.json

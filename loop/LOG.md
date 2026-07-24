@@ -3187,3 +3187,7 @@ digest window (fire 08:12Z; digest last sent Cycle 16).
 remaining READOUT nicety is a per-check-row → methodology-section / evidence-blob link ("Evidence
 links on the card", still P2), and the compare-card delta → earned-dominance section link (Cycle-24
 follow-up). Next cloud cycle METHOD.
+
+## Local verification — 20260724T084104Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260724T084104Z.json

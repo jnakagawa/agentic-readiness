@@ -2917,3 +2917,78 @@ takes COVERAGE.
 ## Local verification — 20260724T054104Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260724T054104Z.json
+
+## Cycle 30 (COVERAGE) — 2026-07-24T06:18Z — path-based free-tier opt-in discovery (third convention)
+
+**Track / item.** COVERAGE. Backlog P2 "Free-tier probe generalization → (b) path-based
+opt-in convention (a documented `/free/…` or `/v1/free/…` endpoint) — the next in-cloud
+COVERAGE increment, same discovery-only/score-neutral shape as the query-param half."
+
+**What.** Free-tier opt-in DISCOVERY broadened to a THIRD convention — the URL PATH.
+`asrs/behavioral/free_tier.py`: `_scan_path_instruction(text)` recognises a documented
+free-mode endpoint whose path carries a conventional free segment (`/free/…`,
+`/v1/free/…`, `/api/free-tier/call`), mirroring the header scanner (Cycle ≤14) and the
+query-param scanner (`_scan_query_param_instruction`, Cycle 22). Plumbed as an additive
+`FreeTierDiscovery.opt_in_path: str | None` field + an `opt_in_path` evidence key,
+populated by `discover_free_tier`. So a site that advertises its free tier by a dedicated
+path endpoint (currently mis-discovered as "opt-in-undiscoverable") is now RECOGNISED and
+RECORDED — the north-star many-conventions axis.
+
+**Why (capability lens).** An agent-native storefront can signal "call THIS to use the
+free allowance" three documented ways: a request header, a URL query param, or a
+dedicated path. The probe already discovered the first two; the path convention was a
+blind spot. Recognising it is measurement COVERAGE — the benchmark sees a capability the
+site actually exposes instead of scoring the site's rails absent.
+
+**Precision-first / vendor-neutral.** The free segment must be an EXACT free-mode token
+from an allowlist (`free / freetier / free-tier / free_tier / freemode / free-mode /
+free_mode`), so a bare substring "free" never trips it — `/freedom`, `/freelance`, and a
+retail `/free-shipping` checkout path are all rejected (negative controls in the test).
+The `scheme://host` prefix is consumed but not captured (mirroring `_METHOD_PATH_RE`) so
+a host is never mistaken for a path segment (`https://api.x.example/v1/free/generate` →
+`/v1/free/generate`, not `/api.x.example/…`). A NON-VACUOUS second gate: the free-tier
+context check runs over the surrounding prose with the matched path EXCISED, so a
+`/free/…` path alone (no adjacent free-allowance language) does NOT match — the path's own
+`free` segment cannot satisfy its own context requirement.
+
+**DELIBERATELY SCORE-NEUTRAL** (the load-bearing invariant, same as Cycle 22's query-param
+half). `opt_in_path` is NOT in the `advertised` gate (which reads only `header` /
+`free_units`) and NOT consumed by the live-call path (test-pinned: a path-only doc keeps
+`advertised=False`; adding a `/v1/free/generate` path to the header fixture leaves
+`advertised` byte-for-byte identical). Wiring it into the gate + the live free-mode call is
+score-increasing (invariant #3) → queued [LOCAL] alongside the query-param live-wiring.
+
+**Safety (invariant #1).** NOT signing/payment code — the diff is confined to the
+discovery region (denylist/allowlist constants, the dataclass field, the scanner, and the
+`discover_free_tier` wiring). `parse_challenge` / `_settle_zero_value` /
+`_build_transfer_authorization_typed_data` / the nonzero-refusal property are byte-for-byte
+untouched (signing-sentinel grep over the diff clean; `test_free_tier.py`'s
+`is_zero_value >= 3` structural tripwire still green).
+
+**Score impact.** No scoring semantics; rubric stays **v0.7**. scoring.py / rubric/ /
+protocols.py / fetch.py / offering.py / battery.py / scorecard.py byte-for-byte untouched
+(`git diff --name-only` = `asrs/behavioral/free_tier.py` + `tests/test_free_tier.py` only).
+Canonical delta unchanged by construction AND re-measured (in-cloud replay guard 8/8,
+**46.1 F / 85.5 B / +39.4**, 0 replay-miss on v0.7).
+
+**Ship.** Direct to main (COVERAGE, additive discovery, no scoring semantics). First duty:
+no open peer-gated PR (verified `[]` via list_pull_requests). Infra health check ran first —
+runner RECOVERED: newest `verify_20260724T054104Z` (05:41Z, 46.1 F / 85.5 B / +39.4) is
+~31 min old at this fire, well under the 6h floor — the 01–04:41Z stall Cycle 28/29 flagged
+has self-cleared (a fresh :41 artifact landed at 05:41Z). Runner-stall watch CLOSED.
+
+**Evidence.** Full suite **128 → 129** (+1). `python tests/test_free_tier.py` 9/10 → 10/10
+(+test_path_optin_discovery: scanner extraction of 3 free-path forms, 4 negative controls —
+substring-not-segment / retail free-shipping / no-adjacent-prose / no-free-segment —,
+evidence surfacing, and score-neutrality on both a path-only doc and the header fixture).
+Canonical replay guard `test_canonical_replay.py` 8/8 (delta +39.4, 0 replay-miss).
+
+**Comms.** No Slack — score-neutral additive discovery, moves no score, not a sensitive-class
+PR; not a digest window (06:18Z, before 16:00 UTC; digest last sent Cycle 16).
+
+**Next hypothesis.** Discovery now covers all three documented opt-in conventions (header /
+query-param / path). The remaining free-tier-generalization work is (a) [LOCAL],
+score-increasing: fold `opt_in_query` AND `opt_in_path` into the `advertised` gate + the
+live free-mode call (append the param / route to the path), verified on ≥2 real domains,
+likely peer-gated; and (b) non-EVM zero-value settlement schemes (still open). Next cloud
+cycle takes TRUTH.

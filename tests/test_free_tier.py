@@ -263,6 +263,81 @@ def test_query_param_optin_discovery() -> None:
 
 
 # ---------------------------------------------------------------------------
+# 3c. Path-based opt-in convention discovery (COVERAGE, additive/score-neutral).
+#     A THIRD opt-in convention alongside the header and query param: storefronts
+#     that route the free tier through a dedicated URL path segment (`/free/…`,
+#     `/v1/free/…`) rather than a header or query param. Discovery-only — like
+#     `opt_in_query`, recording it does NOT gate `advertised` or the live call
+#     yet (a live-verified [LOCAL] follow-up), so it must not move any score.
+# ---------------------------------------------------------------------------
+PATH_OPTIN_DOCS = (
+    "# Paperwing\n\n"
+    "## Free allowance\n"
+    "New agents get a free tier of 5 included images with no signup. To use it, "
+    "call the dedicated free endpoint:\n\n"
+    "POST https://api.paperwing.example/v1/free/generate\n"
+)
+
+
+def test_path_optin_discovery() -> None:
+    print("test_path_optin_discovery")
+    # Direct scanner unit: extracts the documented free-mode path.
+    _check(ft._scan_path_instruction(PATH_OPTIN_DOCS) == "/v1/free/generate",
+           "/v1/free/generate extracted from prose")
+    # A bare `/free/…` and `-`/`_`-joined free-mode variants all count.
+    _check(ft._scan_path_instruction(
+        "free allowance: POST /free/render to try it") == "/free/render",
+        "/free/render extracted")
+    _check(ft._scan_path_instruction(
+        "the free tier lives at /api/free-tier/call") == "/api/free-tier/call",
+        "/api/free-tier/call (hyphen variant) extracted")
+
+    # Noise the scanner must NOT mistake for a free-mode opt-in path:
+    #   - a substring "free" that is NOT an exact free-mode segment
+    _check(ft._scan_path_instruction(
+        "the free tier is generous; read /freedom/manifesto") is None,
+        "/freedom (substring, not a free-mode segment) is not an opt-in path")
+    #   - a retail free-shipping checkout path near free-tier prose
+    _check(ft._scan_path_instruction(
+        "free shipping on all orders via /cart/free-shipping/apply") is None,
+        "/free-shipping (retail, not in the allowlist) is not an opt-in path")
+    #   - a free-mode path with NO adjacent free-allowance prose (the path's own
+    #     'free' segment is excised from the context window, so it cannot count)
+    _check(ft._scan_path_instruction("GET /v1/free/generate") is None,
+        "/v1/free/generate with no adjacent free-tier prose is not matched")
+    #   - a plain endpoint with no free segment at all
+    _check(ft._scan_path_instruction(
+        "free allowance docs; call POST /v1/images/generate") is None,
+        "/v1/images/generate (no free segment) is not matched")
+
+    # Surfaced through discover_free_tier, into evidence.
+    disc = ft.discover_free_tier({"/llms.txt": PATH_OPTIN_DOCS}, None)
+    _check(disc.opt_in_path == "/v1/free/generate",
+           f"opt_in_path populated by discovery: {disc.opt_in_path}")
+    _check(disc.evidence.get("opt_in_path") == "/v1/free/generate",
+           "opt_in_path surfaced in discovery evidence")
+
+    # SCORE-NEUTRALITY (the load-bearing invariant of this additive change):
+    # a path-based opt-in with NO header and NO manifest unit count must NOT flip
+    # `advertised` — it stays exactly what it was before the field existed
+    # (False here), so no behavioral score can move on its account.
+    _check(not disc.advertised,
+           "path-based opt-in alone does NOT make the tier 'advertised' (score-neutral)")
+    _check(disc.opt_in_header is None, "path-only doc surfaces no header")
+
+    # And adding a free-mode path to the header-based doc leaves `advertised`
+    # identical — the gate is byte-for-byte independent of the new field.
+    base = ft.discover_free_tier({"/llms.txt": LLMS_TXT}, MANIFEST)
+    plus_p = ft.discover_free_tier(
+        {"/llms.txt": LLMS_TXT + "\nOr call the free endpoint POST /v1/free/generate.\n"},
+        MANIFEST)
+    _check(base.advertised == plus_p.advertised is True,
+           "adding a documented path-based opt-in does not change `advertised`")
+    _check(plus_p.opt_in_path == "/v1/free/generate",
+           "the added free-mode path is still discovered alongside the header")
+
+
+# ---------------------------------------------------------------------------
 # 4. No free tier advertised -> the check is NA.
 # ---------------------------------------------------------------------------
 def test_no_free_tier_is_na() -> None:
@@ -376,6 +451,7 @@ def main() -> int:
         test_nonzero_challenge_refuses_to_sign,
         test_discovery_from_docs,
         test_query_param_optin_discovery,
+        test_path_optin_discovery,
         test_no_free_tier_is_na,
         test_exhausted_allowance_finding,
         test_not_zero_cost_finding,

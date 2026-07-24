@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 29
+- Cycle counter: 30
 - Started: 2026-07-23 (UTC)
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -292,6 +292,32 @@
   (display-only, moves no score, before the 16:00 UTC digest window). First duty: no open peer-gated PR
   (verified []); infra health check ran first — runner STALLED-BUT-UNDER-FLOOR (see runner note below).
   Next cycle takes COVERAGE.
+  Cycle 30 COVERAGE (free-tier opt-in DISCOVERY broadened to a THIRD convention — the URL PATH):
+  `asrs/behavioral/free_tier.py` `_scan_path_instruction` recognises a documented free-mode
+  endpoint whose path carries a conventional free segment (`/free/…`, `/v1/free/…`,
+  `/api/free-tier/call`), mirroring the header scanner + the query-param scanner (Cycle 22).
+  Additive `FreeTierDiscovery.opt_in_path: str|None` + `opt_in_path` evidence key, populated by
+  `discover_free_tier`. So a site advertising its free tier by a dedicated path endpoint (currently
+  mis-discovered as "opt-in-undiscoverable") is now RECOGNISED — north-star many-conventions axis.
+  PRECISION-FIRST/vendor-neutral: exact free-mode ALLOWLIST (`free/freetier/free-tier/free_tier/
+  freemode/free-mode/free_mode`) so a bare substring "free" never trips (`/freedom`, `/freelance`,
+  retail `/free-shipping` rejected); `scheme://host` prefix consumed-not-captured (host never a path
+  segment); NON-VACUOUS context gate — free-tier prose checked with the matched path EXCISED, so a
+  `/free/…` path alone (no adjacent free language) does NOT match. DELIBERATELY SCORE-NEUTRAL: not in
+  the `advertised` gate (reads only header/free_units), not consumed by the live call (test-pinned:
+  path-only doc keeps advertised=False; adding a free path to the header fixture leaves advertised
+  byte-for-byte identical) — live wiring is score-increasing → queued [LOCAL] with the query-param
+  half. NOT signing/payment code (diff confined to discovery region; parse_challenge/settle/sign +
+  nonzero-refusal byte-for-byte untouched, sentinel grep clean). No scoring semantics, rubric stays
+  v0.7; scoring.py/rubric/probes/protocols/fetch/offering/battery/scorecard untouched (git diff =
+  free_tier.py + test_free_tier.py only); canonical delta unchanged by construction AND re-measured
+  (in-cloud replay guard 8/8, 46.1 F / 85.5 B / +39.4, 0 replay-miss). Direct-to-main.
+  `test_free_tier.py` 9→10 (+path-discovery test: 3 extraction forms, 4 negative controls, evidence
+  surfacing, score-neutrality); suite 128 → 129. No Slack (score-neutral additive discovery, moves no
+  score, before the 16:00 UTC digest window). First duty: no open peer-gated PR (verified []); infra
+  health check ran first — runner RECOVERED (newest verify_20260724T054104Z, 05:41Z, ~31 min old,
+  46.1 F / 85.5 B / +39.4) → the 01–04:41Z stall Cycle 28/29 flagged has self-cleared; runner-stall
+  watch CLOSED. Next cycle takes TRUTH.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity

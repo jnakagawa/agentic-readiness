@@ -145,6 +145,34 @@ _PARAM_NAME_DENYLIST = frozenset(
     }
 )
 
+# Path-based opt-in instruction, discovered from docs prose. A third opt-in
+# convention (alongside the request header and the query parameter): some
+# agent-native storefronts route the free tier through a dedicated URL PATH
+# SEGMENT — a documented ``/free/…`` or ``/v1/free/…`` endpoint — instead of a
+# header or query param. The signal is a path one of whose segments is a
+# conventional free-mode token. An optional ``scheme://host`` prefix is consumed
+# but NOT captured (mirroring ``_METHOD_PATH_RE``) so the host is never mistaken
+# for a path segment; group(1) is the path, sliced into "/"-segments by the
+# scanner.
+_PATH_TOKEN_RE = re.compile(
+    r"(?:https?://[A-Za-z0-9.\-]+)?(/[A-Za-z0-9][A-Za-z0-9_.\-/]{0,120})"
+)
+# Precision-first ALLOWLIST of free-mode path segments. A segment must equal one
+# of these EXACTLY, so ``/freedom`` / ``/freelance`` / a retail ``/free-shipping``
+# checkout path never read as an API free-tier opt-in (substring "free" is not
+# enough — only the recognised free-mode conventions count).
+_FREE_PATH_SEGMENTS = frozenset(
+    {
+        "free",
+        "freetier",
+        "free-tier",
+        "free_tier",
+        "freemode",
+        "free-mode",
+        "free_mode",
+    }
+)
+
 
 # ---------------------------------------------------------------------------
 # Discovery
@@ -166,6 +194,10 @@ class FreeTierDiscovery:
     # ("tier", "free"). Recorded as evidence; does NOT (yet) gate ``advertised``
     # or the live call — wiring that in is a live-verified [LOCAL] follow-up.
     opt_in_query: tuple[str, str] | None = None
+    # A documented path-based opt-in convention, e.g. "/v1/free/generate".
+    # Recorded as evidence like ``opt_in_query``; does NOT (yet) gate
+    # ``advertised`` or the live call — the same live-verified [LOCAL] follow-up.
+    opt_in_path: str | None = None
     free_units: int | None = None
     endpoint_hint: str | None = None  # best documented POST path for the free tier
     free_slugs: list[str] = field(default_factory=list)
@@ -253,6 +285,40 @@ def _scan_query_param_instruction(text: str) -> tuple[str, str] | None:
     return None
 
 
+def _scan_path_instruction(text: str) -> str | None:
+    """Scan doc prose for a free-tier opt-in URL path.
+
+    A third opt-in convention (alongside the header and query-param scanners):
+    a documented endpoint whose path carries a conventional free-mode segment
+    (``/free/…`` / ``/v1/free/…``). Returns the matched path (e.g.
+    ``/v1/free/generate``) or None. Same rigour as the sibling scanners:
+      * the free segment must be an EXACT free-mode token (an allowlist), so
+        ``/freedom`` / ``/freelance`` / a retail ``/free-shipping`` never match
+        (a bare substring "free" is not enough);
+      * the surrounding prose — with the matched path itself EXCISED, so its own
+        ``free`` segment cannot trivially satisfy the check — must still mention
+        a free allowance/tier/trial, so a stray ``/free/`` in unrelated prose is
+        not read as the opt-in path.
+    Discovery-only: recording this does not sign or call anything.
+    """
+    if not text:
+        return None
+    for m in _PATH_TOKEN_RE.finditer(text):
+        path = m.group(1).rstrip("/.,)")
+        segments = [s for s in path.split("/") if s]
+        if not any(s.lower() in _FREE_PATH_SEGMENTS for s in segments):
+            continue
+        # Free-allowance context must appear ADJACENT to the path, NOT inside it
+        # — the matched path is excised so its own "free" segment does not make
+        # the check vacuous. This is the non-vacuous second gate.
+        prefix = text[max(0, m.start() - 120): m.start()]
+        suffix = text[m.end(): m.end() + 120]
+        if not _FREE_CONTEXT_RE.search(prefix + " " + suffix):
+            continue
+        return path
+    return None
+
+
 def discover_free_tier(docs: dict[str, str], manifest: Any | None) -> FreeTierDiscovery:
     """Decide whether a free tier is advertised, from the target's own docs.
 
@@ -265,6 +331,7 @@ def discover_free_tier(docs: dict[str, str], manifest: Any | None) -> FreeTierDi
     free_units = _find_free_quantity(manifest) if manifest is not None else None
     header = _scan_header_instruction(corpus)
     query = _scan_query_param_instruction(corpus)
+    path = _scan_path_instruction(corpus)
     mentions_free = bool(
         re.search(r"free\s+(allowance|tier|image|unit|includ|call)", corpus, re.I)
         or re.search(r"included\s*units", corpus, re.I)
@@ -272,14 +339,16 @@ def discover_free_tier(docs: dict[str, str], manifest: Any | None) -> FreeTierDi
 
     # A free tier is "advertised" when the docs describe a free allowance AND
     # give us a way to opt in (a header instruction) or a positive unit count.
-    # NOTE: ``query`` (the query-param opt-in convention) is DISCOVERED and
-    # recorded for evidence but deliberately NOT part of the ``advertised`` gate
-    # yet — wiring it into the gate + the live free-mode call is score-affecting
-    # and must be verified live on ≥2 real domains first (queued [LOCAL]). Until
-    # then this addition is score-neutral by construction.
+    # NOTE: ``query`` (query-param) and ``path`` (path-based) opt-in conventions
+    # are DISCOVERED and recorded for evidence but deliberately NOT part of the
+    # ``advertised`` gate yet — wiring either into the gate + the live free-mode
+    # call is score-affecting and must be verified live on ≥2 real domains first
+    # (queued [LOCAL]). Until then both additions are score-neutral by
+    # construction (the gate reads only ``header`` and ``free_units``).
     disc.advertised = bool((header is not None or (free_units and free_units > 0)) and mentions_free)
     disc.opt_in_header = header
     disc.opt_in_query = query
+    disc.opt_in_path = path
     disc.free_units = free_units
     disc.free_slugs = _free_slugs(manifest)
     disc.candidate_paths = _all_post_paths(corpus)
@@ -290,6 +359,7 @@ def discover_free_tier(docs: dict[str, str], manifest: Any | None) -> FreeTierDi
     disc.evidence = {
         "opt_in_header": list(header) if header else None,
         "opt_in_query": list(query) if query else None,
+        "opt_in_path": path,
         "free_units": free_units,
         "free_slugs": disc.free_slugs,
         "mentions_free": mentions_free,

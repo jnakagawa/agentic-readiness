@@ -497,14 +497,23 @@ design in-cloud, execute locally.
   `?tier=free`/`?mode=free`/`?free=true` opt-in (`_scan_query_param_instruction`) and records
   it as `FreeTierDiscovery.opt_in_query` + an `opt_in_query` evidence key — but does NOT yet
   gate `advertised` or drive the live free-mode call (deliberately score-neutral, test-pinned).
+  PROGRESS 2026-07-24T06:18Z (Cycle 30): the **path-based** opt-in DISCOVERY half SHIPPED
+  in-cloud (direct-to-main, score-neutral). `asrs/behavioral/free_tier.py`
+  `_scan_path_instruction` recognises a documented free-mode endpoint whose path carries a
+  conventional free segment (`/free/…`, `/v1/free/…`, `/api/free-tier/call`) → additive
+  `FreeTierDiscovery.opt_in_path` + an `opt_in_path` evidence key; precision-first exact
+  free-mode ALLOWLIST (bare substring "free" never trips — `/freedom`/`/free-shipping`
+  rejected), host consumed-not-captured, non-vacuous context gate (path excised). Like the
+  query-param half it does NOT gate `advertised` or drive the live call (test-pinned
+  score-neutral). `test_free_tier.py` 9→10; suite 128→129.
   REMAINING: (a) **[LOCAL], score-increasing → invariant #3 live-verify on ≥2 real domains**
-  — wire `opt_in_query` into the `advertised` gate AND the live call path (append the param to
-  the request URL instead of / alongside the header; keep the $0-only settle safety byte-for-byte
-  intact), then confirm on ≥2 real storefronts that document a query-param free tier that the
-  probe opts in and exercises the $0 allowance correctly; likely peer-gated when the scoring path
-  changes. (b) **path-based** opt-in convention (e.g. a documented `/free/…` or `/v1/free/…`
-  endpoint) — the next in-cloud COVERAGE increment, same discovery-only/score-neutral shape as the
-  query-param half, follow-up live-wiring [LOCAL]. (c) **non-EVM zero-value schemes** (still open).
+  — wire `opt_in_query` AND `opt_in_path` into the `advertised` gate AND the live call path
+  (append the query param / route to the free path instead of / alongside the header; keep the
+  $0-only settle safety byte-for-byte intact), then confirm on ≥2 real storefronts documenting
+  a query-param- or path-based free tier that the probe opts in and exercises the $0 allowance
+  correctly; likely peer-gated when the scoring path changes. (b) **non-EVM zero-value schemes**
+  (still open). All three DOCUMENTED opt-in conventions (header/query-param/path) are now
+  DISCOVERED in-cloud; the remaining generalization is the shared [LOCAL] live-wiring + non-EVM.
 <!-- DONE 2026-07-23T16:11Z (Cycle 16, READOUT): "Methodology prose page" SHIPPED as
      methodology.html. `scorecard._write_methodology_page(out_dir)` renders the "read the
      paper" doc behind the rubric page — ten sections: capability lens; five pillars +

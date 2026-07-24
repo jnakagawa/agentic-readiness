@@ -2826,3 +2826,90 @@ multi-kind offering-relative data (the acceptance rerun) — the card has still 
 rendered synthetic NA fixtures. If the 01/02/03:41Z verify gap persists past 6h at
 the next fire, flag the runner in STATE and fold into the post-16:00 digest. Next
 cloud cycle takes METHOD.
+
+## Cycle 29 — 2026-07-24T05:12Z — METHOD (direct to main)
+
+**One-liner.** The capability lens's vendor-neutral WORDING invariant ("checks are
+worded by capability, never by vendor; no special-casing any domain or product")
+is now an executable tripwire — and the one live violation is fixed: the
+`bhv_no_human_gate` check description named a scored commercial storefront ("The
+Exa lesson —") in text the rubric page renders verbatim to the public. Reworded to
+capability language; guarded so it cannot silently return.
+
+**Track / why.** METHOD — the "Adversarial referee pass" remaining half. Cycle 21
+made the vendor-neutral SCORING invariant executable (relabel-invariance: relabel a
+canonical fixture's host everywhere → byte-identical score/pillars/statuses, proving
+the +39.4 delta is a property of capability EVIDENCE, not identity). But that guard
+proves the MATH is identity-blind; it says nothing about whether the check
+DESCRIPTIONS read neutrally. Those descriptions are user-facing:
+`asrs.scorecard._write_rubric_page` renders the rubric YAML **verbatim** (scorecard.py
+:249). The wording half was unguarded and had drifted — `bhv_no_human_gate.desc`
+carried "The Exa lesson —", naming a specific scored storefront in a scored check's
+wording, exactly the "special-casing a domain or product" the invariant forbids.
+
+**What shipped.**
+1. **Reword** (`rubric/rubric_v0.yaml`, `bhv_no_human_gate.desc` only): "The Exa
+   lesson — business-rule gates are readiness factors." → "Business-rule gates — a
+   mandatory sales call or identity check — stop an agent as surely as a technical
+   one, so they count as readiness factors too." Preserves the exact capability
+   substance (business-rule gates, not just technical ones, are readiness factors)
+   with no vendor named. `git diff` = the desc prose lines ONLY (3 ins / 2 del);
+   `id`/`pillar`/`max_points` untouched, `version: "0.7"` untouched, no
+   weights/caps/grade_bands/check add-remove.
+2. **Executable tripwire** (`tests/test_rubric_wording.py`, 4 tests): a shared
+   `_scan_checks_for_scored_storefront` scans every SCORED check's `id`+`desc` (the
+   `checks:` list `scoring.load_rubric` parses and the rubric page renders) for a
+   word-boundary, case-insensitive denylist of SCORED STOREFRONT/PRODUCT names
+   (`exa`, `driftflight`, `drift-flight` — the storefronts we score, plus the name
+   that leaked). Tests: (a) the real rubric names none; (b) NON-VACUOUS negative
+   control — the SAME scanner flags an injected "The Exa lesson" desc (so green =
+   clean wording, not a scanner that never fires); (c) anti-vacuous structural check
+   (parsed set == scoring index, ≥20 checks, every desc non-empty); (d) the denylist
+   does NOT flag the MEASUREMENT INSTRUMENT — panel model names (Claude, Codex) or
+   crawler UA tokens (GPTBot/ClaudeBot/OAI-SearchBot/PerplexityBot/Google-Extended)
+   name the apparatus / crawler population measured symmetrically, not a scored
+   storefront; flagging them would be a false positive.
+
+**Scope note (why comments are out of scope).** `load_rubric` parses `checks:`, not
+the YAML changelog comments. Those comments DO name the canonical pair and "Shopify"
+— to DOCUMENT mechanism and score-neutrality (why a change is monotone / why the
+canonical delta is unchanged), engineering history, a distinct category from wording
+a SCORED check around a storefront. The guard keys on the parsed, scored text — the
+crisp boundary matching what the scorer sees. Honest limit: this is a denylist
+tripwire against RE-INTRODUCING a KNOWN name, not a proof of universal prose
+neutrality (a novel vendor name off-list would pass); it complements, not replaces,
+the relabel-invariance guard and the standing prose re-read.
+
+**Display-only / score-neutral.** `desc` is rendered on the rubric page but never
+read by `scoring.score` (which keys on `id`/`pillar`/`max_points`; `load_rubric`
+indexes checks by `id` only). scoring.py/probes/fetch/protocols/battery/offering
+byte-for-byte untouched → rubric stays **v0.7**, canonical delta unchanged by
+construction AND re-measured (in-cloud replay guard 8/8, **46.1 F / 85.5 B /
++39.4**, 0 replay-miss).
+
+**Ship.** Direct to main (METHOD, no scoring semantics — a display-string reword +
+tests). First duty: no open peer-gated PR (verified `[]` via list_pull_requests).
+Infra health check ran first — runner STALLED-BUT-UNDER-FLOOR: newest
+`verify_20260724T004105Z` (00:41Z) is ~4h31m old at this 05:12Z fire, still under
+the 6h floor, but the :41 fires at 01/02/03/04:41Z produced NO artifact (4
+consecutive gaps — the fresh stall Cycle 28 flagged to watch). At the next fire the
+00:41Z artifact will be ~5.5h; the fire after, >6h → if still gapped then, flag +
+fold into the post-16:00 digest. The Cycle-17 replay guard remains the primary
+in-cloud canonical signal regardless. Git realigned (origin/main force-updated to
+`339698a` = Cycle 28; detached HEAD reset to it).
+
+**Evidence.** Full suite **124 → 128** (+4). `python tests/test_rubric_wording.py`
+4/4; canonical replay guard 8/8 (delta +39.4, 0 replay-miss); rubric diff confined
+to the desc prose (verified `git diff` — semantics lines untouched).
+
+**Comms.** No Slack — display-only, moves no score, not a sensitive-class PR; not a
+digest window (05:12Z, before 16:00 UTC; digest last sent Cycle 16).
+
+**Next hypothesis.** The wording invariant now has a floor tripwire and a prose
+reference (methodology page, Cycle 16/24). The remaining referee-pass work is a
+prose re-read of the METHODOLOGY page + card `desc` strings in scorecard.py for the
+same lens (those are hand-authored HTML, not the parsed rubric, so out of this
+guard's scope), and extending the relabel-invariance guard to the [LOCAL]
+third-control fixture once captured. If the 01–04:41Z verify gap persists past 6h at
+the next fire, flag the runner in STATE + the post-16:00 digest. Next cloud cycle
+takes COVERAGE.

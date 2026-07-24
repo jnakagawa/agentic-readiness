@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 28
+- Cycle counter: 29
 - Started: 2026-07-23 (UTC)
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -268,6 +268,30 @@
   BUT the :41 fires at 01/02/03:41Z produced NO artifact (3 consecutive gaps — not yet past the 6h floor, a
   possible fresh runner stall to WATCH; if still gapped past 6h next fire, flag + fold into post-16:00 digest).
   git realigned (origin/main force-updated to f48e2fd = Cycle 27; detached HEAD reset to it). Next cycle takes METHOD.
+  Cycle 29 METHOD (vendor-neutral WORDING invariant made executable — the "Adversarial referee pass"
+  wording half): `tests/test_rubric_wording.py` (4 tests) + a one-line rubric reword. Cycle 21 made
+  vendor-neutral SCORING a tripwire (relabel-invariance); the WORDING half — "checks are worded by
+  capability, never by vendor; no special-casing any domain or product" — was unguarded and had drifted:
+  `bhv_no_human_gate.desc` carried "The Exa lesson —", naming a SCORED storefront in text
+  `scorecard._write_rubric_page` renders VERBATIM to the public. Reworded to capability language
+  ("Business-rule gates — a mandatory sales call or identity check — stop an agent as surely as a
+  technical one …"), then guarded: a shared `_scan_checks_for_scored_storefront` scans every scored
+  check's id+desc (the `checks:` list load_rubric parses) for a word-boundary denylist of SCORED
+  storefront/product names (exa/driftflight/drift-flight). NON-VACUOUS (same scanner flags an injected
+  "The Exa lesson" desc), anti-vacuous (scan covers the full parsed set == scoring index, ≥20 checks),
+  and false-positive-guarded (does NOT flag the MEASUREMENT INSTRUMENT — panel models Claude/Codex or
+  crawler tokens GPTBot/ClaudeBot/… which name the apparatus/crawler population, not a scored storefront).
+  Scope = parsed scored checks only, NOT the changelog comments (which legitimately name the canonical
+  pair + Shopify to document mechanism/score-neutrality). Honest limit: denylist tripwire against
+  RE-INTRODUCING a KNOWN name, not a proof of universal neutrality — complements, not replaces, the
+  relabel guard + standing prose re-read. Display-only: `desc` is rendered but never read by
+  `scoring.score` (keys on id/pillar/max_points); scoring.py/probes/fetch/protocols/battery/offering
+  byte-for-byte untouched → rubric stays v0.7, canonical delta unchanged by construction AND re-measured
+  (replay guard 8/8, 46.1 F / 85.5 B / +39.4, 0 replay-miss). git diff = the desc prose lines only
+  (version/max_points/weights/caps/grade_bands untouched). Direct-to-main. Suite 124 → 128. No Slack
+  (display-only, moves no score, before the 16:00 UTC digest window). First duty: no open peer-gated PR
+  (verified []); infra health check ran first — runner STALLED-BUT-UNDER-FLOOR (see runner note below).
+  Next cycle takes COVERAGE.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity
@@ -482,6 +506,12 @@
   canonical re-score OFFLINE in-cloud every cycle from the committed fixtures — the in-cloud
   regression signal no longer depends on the launchd runner at all; the runner remains only for
   a FRESH live re-capture when a version bump legitimately moves a canonical score.
+  RUNNER STALL WATCH (Cycle 29, 05:12Z): newest artifact STILL `verify_20260724T004105Z` (00:41Z,
+  46.1 F / 85.5 B / +39.4) — now ~4h31m old, STILL UNDER the 6h floor, but the :41 fires at
+  01/02/03/04:41Z produced NO artifact (4 consecutive gaps — the fresh stall Cycle 28 flagged). At
+  the next fire the 00:41Z artifact is ~5.5h; the fire after, >6h → if still gapped THEN, this
+  crosses the floor: flag the runner in STATE + fold into the post-16:00 UTC digest. The Cycle-17
+  replay guard is the primary in-cloud canonical signal regardless, so no work is blocked.
   SEPARATE BUG (the coverage-warning stderr leak): FIXED AT SOURCE Cycle 13. The runner's
   `scores` block recorded FileNotFoundError because `[asrs.scoring]` stderr coverage-warning
   lines leaked into the score-path argument; `asrs/scoring.py` no longer prints those lines

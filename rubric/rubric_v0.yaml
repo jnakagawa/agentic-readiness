@@ -275,8 +275,9 @@ checks:
     pillar: outcome
     max_points: 4
     desc: No human-only gate (CAPTCHA, KYC/identity verification, email
-      confirmation loop, sales call) blocks the path. The Exa lesson —
-      business-rule gates are readiness factors.
+      confirmation loop, sales call) blocks the path. Business-rule gates —
+      a mandatory sales call or identity check — stop an agent as surely as a
+      technical one, so they count as readiness factors too.
   - id: bhv_free_tier_transaction
     pillar: outcome
     max_points: 5

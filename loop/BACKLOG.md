@@ -353,11 +353,20 @@ design in-cloud, execute locally.
   host everywhere and re-scoring yields the IDENTICAL score/pillars/statuses,
   proving the +39.4 delta is a property of the capability EVIDENCE, not the
   storefront's identity ("no special-casing any domain, favorable or hostile" is
-  now a tripwire, non-vacuous per a negative control). REMAINING (still recurring):
-  a prose re-read of each check's WORDING for vendor-leaning phrasing (the
-  invariance guard proves the SCORING is neutral, not that the DESCRIPTIONS read
-  neutrally to a skeptic); and extend the invariance guard to more fixtures as
-  they land (see the third-control-domain P2 item).
+  now a tripwire, non-vacuous per a negative control). PROGRESS 2026-07-24T05:12Z
+  (Cycle 29): the vendor-neutral WORDING half of the referee pass is now EXECUTABLE
+  for the PARSED RUBRIC — `tests/test_rubric_wording.py` (4 tests) scans every scored
+  check's id+desc for a denylist of scored storefront/product names and asserts none
+  appear; it caught + drove the fix of the one live violation ("The Exa lesson —" in
+  `bhv_no_human_gate.desc`, reworded to capability language), and is non-vacuous
+  (negative control), anti-vacuous (full parsed set), and false-positive-guarded
+  (instrument/crawler names not flagged). REMAINING (still recurring): (a) a prose
+  re-read of the HAND-AUTHORED readout strings the parsed-rubric guard does NOT cover
+  — the methodology-page prose (`scorecard._write_methodology_page`) and the card
+  `<div class="desc">` strings in scorecard.py — for the same vendor-leaning lens;
+  (b) extend BOTH the relabel-invariance guard AND this wording denylist to more
+  fixtures/storefronts as they land (see the third-control-domain P2 item; add any
+  newly-scored storefront's name to `_SCORED_STOREFRONT_NAMES`).
 - **Env-block classifier: harden against site-side "safety/security policy"**
   (METHOD, attribution honesty — residual from the PR #2 adversarial review,
   2026-07-23T10:13Z). The review confirmed `_ENV_BLOCK_RE` correctly rejects the

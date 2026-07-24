@@ -294,6 +294,74 @@ def test_html_battery_absent_renders_nothing() -> None:
            "explicit None -> empty string (no card)")
 
 
+# Offering-relative comparability on the HTML card (operator directive brick 5,
+# READOUT): the terminal readout already names WHICH archetypes were assessed and
+# which the site does not offer (brick 3, na_archetypes / assessed_archetypes);
+# the HTML battery card now mirrors it. Built through the REAL aggregation WITH an
+# OfferingProfile so the NA/assessed lists are populated the production way.
+def _offering_battery_summary():
+    from asrs import battery as bt
+    from asrs import offering as off
+
+    tasks = [
+        bt.BatteryTask(id="digital_good", kind="digital_good",
+                       intent="obtain one generated image"),
+        bt.BatteryTask(id="physical_good", kind="physical_good",
+                       intent="order the widget"),
+    ]
+    runs_by_task = {
+        "digital_good": [_run(found_product=True, understood_pricing=True),
+                         _run(found_product=True, understood_pricing=True, trial=2)],
+        "physical_good": [_run(found_product=True), _run(trial=2)],
+    }
+    b = bt.Battery(id="t", description="", tasks=tasks)
+    # Site claims digital_good only -> physical_good and the rest of the template
+    # bank are NA. The claim is built through the real dataclass so `unclaimed`
+    # derives from offering.ARCHETYPES, never a hand-typed complement.
+    profile = off.OfferingProfile(
+        domain="example.test",
+        claimed=[off.ArchetypeClaim(
+            archetype="digital_good",
+            signals=[off.ArchetypeSignal(
+                archetype="digital_good", surface="homepage",
+                label="generated-media", quote="every generated image")],
+        )],
+    )
+    return bt.aggregate_battery(b, runs_by_task, profile=profile).to_dict()
+
+
+def test_html_battery_offering_relative_names_na() -> None:
+    print("test_html_battery_offering_relative_names_na")
+    summary = _offering_battery_summary()
+    na = summary["na_archetypes"]
+    assessed = summary["assessed_archetypes"]
+    _check(bool(na), "offering-relative fixture marks unclaimed archetypes NA")
+    _check("physical_good" in na, "physical_good is NA (site claims digital only)")
+    _check(assessed == ["digital_good"], "only the claimed archetype is assessed")
+    html = scorecard._battery({"battery_summary": summary})
+    _check("Assessed over" in html, "HTML names which archetypes were assessed")
+    _check("Not offered" in html, "HTML names the not-offered archetypes (brick 5)")
+    # Every NA archetype from the summary renders — driven off the aggregation, not
+    # hand-typed, so the readout can't drift from the numbers. The archetypes with
+    # no task (metered_api, subscription, service_booking, data_retrieval) appear
+    # ONLY via this block, so their presence is a non-trivial assertion.
+    for a in na:
+        _check(a in html, f"not-offered archetype {a!r} renders")
+    _check("chip na" in html, "not-offered archetypes use the dimmed NA chip class")
+
+
+def test_html_battery_no_offering_no_na_block() -> None:
+    print("test_html_battery_no_offering_no_na_block")
+    # Without an offering profile the aggregation is pre-brick-3: na_archetypes is
+    # empty, so the offering-relative naming block does NOT render — mirroring the
+    # terminal readout, which prints neither line for a hand-authored battery.
+    summary = _battery_summary(multi_kind=True)
+    _check(summary["na_archetypes"] == [], "no-profile fixture has no NA archetypes")
+    html = scorecard._battery({"battery_summary": summary})
+    _check("Not offered" not in html, "no profile -> no not-offered block")
+    _check("Offering-relative" not in html, "no profile -> no offering-relative header")
+
+
 # ---------------------------------------------------------------------------
 # Cycle 16 (READOUT): the methodology page — the "read the paper" doc behind the
 # rubric page. Display-only; these tests pin that it renders the measurement
@@ -381,6 +449,8 @@ def main() -> int:
         test_html_battery_single_kind_no_rollup,
         test_html_battery_between_kind_pill,
         test_html_battery_absent_renders_nothing,
+        test_html_battery_offering_relative_names_na,
+        test_html_battery_no_offering_no_na_block,
         test_methodology_page_written_and_covers_semantics,
         test_methodology_documents_earned_dominance,
         test_methodology_page_tracks_live_rubric,

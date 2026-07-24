@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 27
+- Cycle counter: 28
 - Started: 2026-07-23 (UTC)
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -248,6 +248,26 @@
   bench 118/118, ephemeral local-main divergence reset to origin/main 6f49f4b. NOTE: the retail-INVERSE half
   (a `books.toscrape.com`-class fixture pinning physical_good CLAIMED + API archetypes NA — the operator's
   "a shop shows the inverse") needs a [LOCAL] fixture capture; queued. Next cycle takes READOUT.
+  Cycle 28 READOUT (operator directive BRICK 5 — comparability naming on the HTML battery card):
+  `scorecard._battery` now renders an "Offering-relative" sub-block — "Assessed over" (claimed archetype
+  chips) + "Not offered (NA — excluded from every mean/spread, never penalized)" (dimmed `.chip.na`) + a
+  one-line interpretation — driven off `summary["na_archetypes"]`/`["assessed_archetypes"]` (brick 3,
+  merged Cycle 26), placed after the per-intent grid, mirroring the terminal `report._battery_lines` order
+  (Cycle 25). Renders ONLY when na_archetypes is populated (offering-relative discovery drove the battery);
+  a hand-authored `--battery <path>` run has na_archetypes empty -> neither block renders = byte-for-byte the
+  pre-brick-3 readout. Closes the last terminal->HTML gap for the NA-aware battery (same deferral per_kind
+  Cycle 10->12 / between_kind_spread Cycle 18->20 took). Non-vacuous: the NA-naming test asserts every NA
+  archetype renders including metered_api/subscription/service_booking/data_retrieval which have NO task and
+  appear ONLY via this block; negative test pins na_archetypes==[] -> neither block. Display-only:
+  `git diff --name-only` = scorecard.py + test_readout.py ONLY; scoring.py/rubric/probes/fetch/protocols/
+  battery.py/offering.py/report.py byte-for-byte untouched -> rubric stays v0.7, canonical delta unchanged by
+  construction AND re-measured (in-cloud replay guard 8/8, 46.1 F / 85.5 B / +39.4, 0 replay-miss).
+  Direct-to-main. `test_readout.py` 17 -> 19; suite 122 -> 124. No Slack (display-only, moves no score, not a
+  digest window at 04:12Z, digest last sent Cycle 16). First duty: no open peer-gated PR (verified []); infra
+  health check ran first — runner HEALTHY (verify_20260724T004105Z, 00:41Z, ~3.5h old, 46.1 F/85.5 B/+39.4)
+  BUT the :41 fires at 01/02/03:41Z produced NO artifact (3 consecutive gaps — not yet past the 6h floor, a
+  possible fresh runner stall to WATCH; if still gapped past 6h next fire, flag + fold into post-16:00 digest).
+  git realigned (origin/main force-updated to f48e2fd = Cycle 27; detached HEAD reset to it). Next cycle takes METHOD.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity

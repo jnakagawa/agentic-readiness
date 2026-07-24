@@ -101,14 +101,18 @@ design in-cloud, execute locally.
   Vendor-neutral (NA keys on archetype-claim structure; non-canonical kinds never NA).
   scoring.py/rubric/probes/fetch/offering.py untouched → rubric v0.7, canonical delta unchanged
   (replay guard 46.1 F / 85.5 B / +39.4, 0 replay-miss). `test_battery.py` 9→12; suite 112→115.
-  PR: https://github.com/jnakagawa/agentic-readiness/pull/4 — next cycle's first duty reviews +
-  merges. See LOG Cycle 25. NOTE (brick 5 partial): the terminal readout now names NA/assessed;
-  the HTML battery-card equivalent (`scorecard._battery`) is the remaining READOUT increment.
-  REMAINING bricks (next increments, in order — AFTER PR #4 merges):
-  - **BRICK 4 — out-of-scope legibility** (unscored diagnostic, optional) +
-    **BRICK 5 — comparability readout** (name WHICH archetypes were assessed — brick 2
-    already stabilizes this by using archetype names as task ids; this brick surfaces
-    them in the terminal/HTML readout) — per the directive; design after brick 3 lands.
+  PR: https://github.com/jnakagawa/agentic-readiness/pull/4 — MERGED Cycle 26. See LOG Cycle 25/26.
+  BRICK 5 — comparability readout: **DONE across two surfaces.** Terminal (`report._battery_lines`
+  names "assessed over" / "not offered (NA, excluded)") shipped with brick 3 (Cycle 25). HTML
+  (`scorecard._battery` "Offering-relative" sub-block — Assessed-over chips + dimmed Not-offered
+  `.chip.na` chips + interpretation, driven off `na_archetypes`/`assessed_archetypes`, renders only
+  in offering-relative mode) shipped **Cycle 28 (READOUT, direct-to-main, display-only, score-neutral;
+  `test_readout.py` 17→19, suite 122→124, replay guard 8/8 / +39.4)**. The directive's requirement 5
+  ("every battery readout must name WHICH archetypes were assessed") now holds on terminal AND card.
+  REMAINING brick (next increment):
+  - **BRICK 4 — out-of-scope legibility** (unscored diagnostic, optional): when an agent asks for
+    something the site does not sell, does it fail legibly (machine-readable decline) or garden-path
+    the agent? Evidence-only per the directive; design a separate proposal before scoring anything.
   - **`--battery auto` run-path wiring: SHIPPED 2026-07-24T02:12Z (Cycle 26, COVERAGE,
     direct to main).** `asrs/cli.py` `_resolve_battery(args, ctx)` (replacing
     `_load_battery_arg`) returns `(Battery|None, OfferingProfile|None)`: `--battery auto`

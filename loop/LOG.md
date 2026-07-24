@@ -2755,3 +2755,74 @@ INVERSE once a `books.toscrape.com`-class fixture is captured [LOCAL] (asserting
 physical_good CLAIMED + the API archetypes NA — the operator's "a shop shows the inverse"
 half), and brick 5's HTML readout (`na_archetypes`/`assessed_archetypes` on
 `scorecard._battery`) is the next READOUT increment. Next cloud cycle takes READOUT.
+
+## Cycle 28 — 2026-07-24T04:12Z — READOUT (direct to main)
+
+**One-liner.** The operator directive's comparability requirement (brick 5 —
+"every battery readout must name WHICH archetypes were assessed") now holds on
+the HTML battery card, not just the terminal. Closes the last terminal→HTML gap
+for the NA-aware battery: a reader looking at the card can no longer mistake an
+offering-relative mean for a mean across intents the site never advertised.
+
+**Track / why.** READOUT — readout clarity. Brick 3 (NA-aware aggregation, PR #4,
+merged Cycle 26) made `aggregate_battery(..., profile=)` record `na_archetypes`
+(structurally not-offered, excluded) and `assessed_archetypes` (what the numbers
+are over), and `report._battery_lines` names both in the terminal. The HTML
+`scorecard._battery` did NOT — it showed the spreads and per-archetype rollup but
+never named which archetypes were assessed vs not-offered, so the HTML card alone
+could not tell a reader the mean is offering-relative. Same terminal→JSON→HTML
+deferral `per_kind` (Cycle 10→12) and `between_kind_spread` (Cycle 18→20) took;
+this is the mirror of the terminal block Cycle 25 shipped.
+
+**What shipped.** `asrs/scorecard.py`:
+- `_battery` renders an "Offering-relative" sub-block — "Assessed over" (the
+  claimed archetype chips) + "Not offered (NA — excluded from every mean and
+  spread, never penalized)" (dimmed NA chips) + a one-line interpretation —
+  driven off `summary["na_archetypes"]` / `["assessed_archetypes"]`. Placed after
+  the per-intent grid, before the by-archetype rollup, mirroring the terminal
+  order in `report._battery_lines`.
+- Renders ONLY when `na_archetypes` is populated (offering-relative discovery
+  drove the battery). A hand-authored `--battery <path>` run has `na_archetypes`
+  empty → neither block renders, byte-for-byte the pre-brick-3 readout (mirrors
+  the terminal, which prints neither line without a profile).
+- New CSS: `.chip.na` (dimmed/transparent, distinguishes not-offered from
+  assessed at a glance) + a `.chip-row` flex wrapper. No other card touched.
+
+**Non-vacuous.** `test_html_battery_offering_relative_names_na` builds the summary
+through the REAL `aggregate_battery(..., profile=OfferingProfile)` with a
+`digital_good`-only claim, then asserts every NA archetype from the summary
+renders — including `metered_api`/`subscription`/`service_booking`/`data_retrieval`,
+which have NO task and appear ONLY via this block, so their presence is a
+non-trivial assertion (not the per-task grid leaking through). The chips are
+driven off the aggregation's own lists, so the readout can't drift from the
+numbers. `test_html_battery_no_offering_no_na_block` pins the negative: a
+no-profile summary has `na_archetypes == []` and renders neither "Not offered"
+nor "Offering-relative" (mirrors the terminal).
+
+**Display-only / score-neutral.** `git diff --name-only`: `asrs/scorecard.py` +
+`tests/test_readout.py` ONLY. scoring.py/rubric/probes/fetch/protocols/battery.py/
+offering.py/report.py byte-for-byte untouched (grep clean) → rubric stays **v0.7**,
+canonical delta unchanged by construction AND re-measured (in-cloud replay guard
+8/8, **46.1 F / 85.5 B / +39.4**, 0 replay-miss).
+
+**Ship.** Direct to main (READOUT, no scoring semantics). First duty: no open
+peer-gated PR (verified `[]`). Infra health check ran first — runner HEALTHY
+(`verify_20260724T004105Z`, 00:41Z, ~3.5h old, 46.1 F / 85.5 B / +39.4 live);
+NOTE the :41 fires at 01/02/03:41Z produced no artifact (3 consecutive gaps) —
+not yet past the 6h floor, but a possible fresh runner stall to watch. Git
+realigned (origin/main force-updated to `f48e2fd` = Cycle 27; detached HEAD reset
+to it).
+
+**Evidence.** Full suite **122 → 124** (+2). `python tests/test_readout.py`
+17 → 19; canonical replay guard 8/8 (delta +39.4, 0 replay-miss). Rendered-block
+eyeball confirmed: assessed=`digital_good` chip, not-offered=5 dimmed NA chips.
+
+**Comms.** No Slack — display-only, moves no score, not a sensitive-class PR; not
+a digest window (04:12Z, before 16:00 UTC; digest last sent Cycle 16).
+
+**Next hypothesis.** Brick 5's readout is now complete in both surfaces; the
+remaining offering-directive readout work is the [LOCAL] eyeball on REAL
+multi-kind offering-relative data (the acceptance rerun) — the card has still only
+rendered synthetic NA fixtures. If the 01/02/03:41Z verify gap persists past 6h at
+the next fire, flag the runner in STATE and fold into the post-16:00 digest. Next
+cloud cycle takes METHOD.

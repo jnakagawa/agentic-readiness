@@ -116,6 +116,8 @@ h1,h2,h3{font-family:var(--font-display);margin:0}
   box-shadow:inset 0 0 0 1px var(--border-secondary);border-radius:6px;
   padding:2px 8px;color:var(--text-secondary);display:inline-block;
   overflow-wrap:anywhere;max-width:100%;box-sizing:border-box}
+.chip.na{color:var(--text-quaternary);opacity:.7;background:transparent}
+.chip-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:4px}
 .alert{display:flex;gap:12px;padding:14px 16px;border-radius:12px;
   background:var(--error-bg);box-shadow:inset 0 0 0 1px #fda29b;
   color:var(--text-primary)}
@@ -968,6 +970,37 @@ def _battery(rep: dict) -> str:
         + "</table>"
     )
 
+    # Offering-relative comparability (operator directive brick 5, READOUT): when
+    # discovery drove the battery, name WHICH archetypes the numbers are over and
+    # which the site does not offer, so a reader never reads a mean across
+    # mismatched task sets. Renders ONLY when an offering profile marked something
+    # NA (na_archetypes populated) — a hand-authored battery with no discovery has
+    # na_archetypes empty and shows neither, mirroring the terminal
+    # report._battery_lines. Not-offered archetypes are excluded from every
+    # mean/spread, never penalized (attribution honesty applied to tasks).
+    na = summary.get("na_archetypes", []) or []
+    offering_html = ""
+    if na:
+        assessed = summary.get("assessed_archetypes", []) or []
+        assessed_chips = (
+            "".join(f'<span class="chip">{_esc(a)}</span>' for a in assessed)
+            if assessed
+            else '<span class="val na">none</span>'
+        )
+        na_chips = "".join(f'<span class="chip na">{_esc(a)}</span>' for a in na)
+        offering_html = (
+            '<div><div class="desc" style="margin-bottom:8px;font-weight:600">'
+            "Offering-relative</div>"
+            '<div class="desc"><b>Assessed over</b>'
+            f'<div class="chip-row">{assessed_chips}</div></div>'
+            '<div class="desc" style="margin-top:8px"><b>Not offered</b> '
+            "(NA &mdash; excluded from every mean and spread, never penalized)"
+            f'<div class="chip-row">{na_chips}</div></div>'
+            '<div class="desc" style="margin-top:8px">Readiness is measured '
+            "within the archetypes this site claims to serve; a mean is never "
+            "read across intents it never advertised.</div></div>"
+        )
+
     # Per-storefront-archetype rollup — only when the battery spans >1 kind
     # (with a single kind this just restates the battery-wide number), mirroring
     # the terminal "by archetype:" sub-block.
@@ -1037,6 +1070,7 @@ def _battery(rep: dict) -> str:
         f"</div>{pill}{between_pill}</div>"
         '<div class="card-body" style="display:flex;flex-direction:column;gap:16px">'
         + grid
+        + offering_html
         + per_kind_html
         + foot
         + "</div></div>"

@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 37
+- Cycle counter: 38
 - Started: 2026-07-23 (UTC)
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -502,6 +502,29 @@
   156 → 160. No Slack (score-neutral/non-sensitive; fire 15:14Z before the 16:00 UTC digest window — the open live
   drift + this ship fold into that digest). First duty: no open peer-gated PR (verified []); infra health check ran
   first — runner HEALTHY (verify_20260727T134147Z, 13:41Z, ~1.5h old). Next cycle takes COVERAGE.
+  Cycle 38 COVERAGE (free-tier opt-in DISCOVERY broadened to a FOURTH convention — the JSON REQUEST-BODY field):
+  `asrs/behavioral/free_tier.py` `_scan_body_field_instruction` recognises a storefront that documents its free tier as
+  a JSON body field (`{"tier":"free"}`/`{"mode":"free"}`/`{"free_tier":true}`), mirroring the header/query-param/path
+  scanners → additive `FreeTierDiscovery.opt_in_body: tuple[str,str]|None` + an `opt_in_body` evidence key, populated by
+  `discover_free_tier`. Precision-first/vendor-neutral: the load-bearing distinguisher from the header scanner (bare
+  `Name: value`) is the IN-OBJECT gate — a body field must be a DOUBLE-QUOTED JSON key inside an open `{…}` object (so a
+  header `` `zc-mode: free` `` and a query `?tier=free` are never misread → both verified None); free-context gate +
+  explicit "free" hint in name/value (no "mode" fallback, so `{"tier":"starter"}` near free prose is not the opt-in);
+  plumbing-field denylist (`{"model":"free-tier-v2"}` skipped). DELIBERATELY SCORE-NEUTRAL (same as Cycles 22/30): not in
+  the `advertised` gate (reads only header/free_units), not consumed by the live call — test-pinned via the
+  `{"free_tier":true}` fixture the HEADER scanner does NOT also catch: body-only doc keeps advertised=False; adding a body
+  field to the header+manifest fixture leaves advertised byte-identical. OBSERVATION (queued P1, not fixed): the existing
+  header scanner OVER-CATCHES a `{"tier":"free"}` body field as a header (pre-existing; opt_in_body never read by the gate
+  so moves no score; disambiguation is score-affecting → peer-gated/[LOCAL]). NOT signing/payment code (parse_challenge/
+  settle/sign/probe byte-for-byte unchanged, sentinel grep of the diff clean). No scoring semantics, rubric stays v0.7;
+  git diff over scoring.py/rubric/probes/fetch/protocols/offering/battery/scorecard EMPTY → canonical delta unchanged by
+  construction AND re-measured (in-cloud replay guard 11/11, 46.1 F / 85.5 B / +39.4, 0 replay-miss; free_tier is
+  behavioral-only, off the static replay path). Direct-to-main (git diff --stat = free_tier.py + test_free_tier.py only).
+  `test_free_tier.py` 10→11 (+body-field discovery test: 3 extraction forms, 5 negative controls, evidence surfacing,
+  score-neutrality pair); suite 160 → 161. First duty: no open peer-gated PR (verified []); infra health check ran first —
+  runner HEALTHY (verify_20260727T134147Z, 13:41Z, ~2.5h old). DAILY DIGEST DM SENT this fire (first cycle after 16:00 UTC,
+  16:13Z) — carries the open LIVE CANONICAL DRIFT + this ship. Live-wiring (fold query/path/body into advertised + the
+  free-mode call) remains the shared [LOCAL] score-increasing follow-up. Next cycle takes TRUTH.
 - **LIVE CANONICAL DRIFT (open, for the next post-16:00 UTC digest) — surfaced by the Cycle-36 history readout.**
   The live canonical delta held **+39.4** (46.1 F / 85.5 B) for days through `verify_20260727T054339Z`, then MOVED:
   07:40Z fire driftflight.com collapsed to 50.0 F (delta +3.9 — transient error crawl, transactability CANT_TEST /
@@ -518,7 +541,12 @@
   `attribution (vs last in-band 2026-07-27T05:43Z): driftflight.com legibility fell 90.9 → 63.6 (-27.3) — the
   largest pillar move`, so the "which pillar" fact is read live off the committed series, not hand-written.
   Decision (a) — canonical fixture re-capture — remains deferred [LOCAL] until the site reads in-band-stable at a
-  new level (do NOT re-capture while fluctuating). Still owed to the next post-16:00 UTC digest.
+  new level (do NOT re-capture while fluctuating).
+  FLAGGED in the 2026-07-27T16:13Z daily digest (Cycle 38, first cycle after 16:00 UTC). Live state at that fire:
+  `.com` 78.7 C, delta +32.6, DRIFTING (3 consecutive out-of-band re-scores; `.com` legibility 90.9 → 63.6 the named
+  mover), `.org` flat at 46.1 F — the delta narrowed because the RAILS side softened, a real-world site change, not a
+  code regression; committed fixtures still pin +39.4 so the replay guard is (correctly) green. Decision (a) still
+  deferred [LOCAL] until stable; will re-flag in the next digest if still open.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity

@@ -338,6 +338,109 @@ def test_path_optin_discovery() -> None:
 
 
 # ---------------------------------------------------------------------------
+# 3d. Request-body-field opt-in convention discovery (COVERAGE, additive/
+#     score-neutral). A FOURTH opt-in convention alongside the header, query
+#     param, and path: storefronts that document a JSON body field
+#     (`{"tier": "free"}` / `{"free_tier": true}`) rather than a header, query
+#     param, or path. Discovery-only — like `opt_in_query`/`opt_in_path`,
+#     recording it does NOT gate `advertised` or the live call yet (a
+#     live-verified [LOCAL] follow-up), so it must not move any score.
+# ---------------------------------------------------------------------------
+BODY_OPTIN_DOCS = (
+    "# Kitewheel\n\n"
+    "## Free allowance\n"
+    "Every new agent gets a free tier of 5 included images with no signup. To "
+    "use it, set the free-mode flag in your JSON request body:\n\n"
+    "    POST https://api.kitewheel.example/v1/render\n"
+    '    {"tier": "free", "prompt": "a paper airplane"}\n'
+)
+
+# A body-field-only doc whose field the HEADER scanner does NOT also catch
+# (`{"free_tier": true}` — the header regex needs `name: value` and stops at the
+# underscore), so this fixture isolates the body-field convention for the
+# score-neutrality assertion below.
+BODY_ONLY_NEUTRAL_DOCS = (
+    "# Kitewheel\n\n"
+    "## Free allowance\n"
+    "Every new agent gets a free tier of 5 included images, no signup. Set the "
+    "flag in your JSON request body:\n\n"
+    "    POST https://api.kitewheel.example/v1/render\n"
+    '    {"free_tier": true, "prompt": "a paper airplane"}\n'
+)
+
+
+def test_body_field_optin_discovery() -> None:
+    print("test_body_field_optin_discovery")
+    # Direct scanner unit: extracts the documented (name, value) from a JSON body.
+    _check(ft._scan_body_field_instruction(BODY_OPTIN_DOCS) == ("tier", "free"),
+           '{"tier": "free"} body field extracted from prose')
+    # Value-hint and name-hint (boolean) variants both count.
+    _check(ft._scan_body_field_instruction(
+        'free allowance: send {"mode": "free"}') == ("mode", "free"),
+        '{"mode": "free"} (value hint) extracted')
+    _check(ft._scan_body_field_instruction(
+        'free tier: pass {"free_tier": true}') == ("free_tier", "true"),
+        '{"free_tier": true} (name hint, boolean) extracted')
+
+    # Noise the scanner must NOT mistake for a body-field opt-in:
+    #   - a HEADER instruction (`Name: value`, not double-quoted, not in braces)
+    _check(ft._scan_body_field_instruction(
+        "free allowance: send the `zc-mode: free` header") is None,
+        "a header instruction is not read as a body field (in-object gate)")
+    #   - a QUERY-param instruction (`?name=value`, no double-quoted key/braces)
+    _check(ft._scan_body_field_instruction(
+        "free tier: append ?tier=free") is None,
+        "a query-param instruction is not read as a body field")
+    #   - a double-quoted `"name": "value"` that is NOT inside a `{…}` object
+    #     (the load-bearing in-object gate: only a real request BODY counts)
+    _check(ft._scan_body_field_instruction(
+        'free allowance; set "tier": "free" on the call') is None,
+        '"tier": "free" outside any {…} object is not a body field')
+    #   - a plumbing body field (denylisted) even worded with 'free'
+    _check(ft._scan_body_field_instruction(
+        'free tier: {"model": "free-tier-v2", "prompt": "x"}') is None,
+        '{"model": …} (denylisted plumbing) skipped even with free in value')
+    #   - a non-free field inside an object near free prose (no free hint)
+    _check(ft._scan_body_field_instruction(
+        'the free tier is generous; {"tier": "starter"}') is None,
+        '{"tier": "starter"} near free prose is not an opt-in (no free hint)')
+
+    # Surfaced through discover_free_tier, into evidence.
+    disc = ft.discover_free_tier({"/llms.txt": BODY_OPTIN_DOCS}, None)
+    _check(disc.opt_in_body == ("tier", "free"),
+           f"opt_in_body populated by discovery: {disc.opt_in_body}")
+    _check(disc.evidence.get("opt_in_body") == ["tier", "free"],
+           "opt_in_body surfaced in discovery evidence")
+
+    # SCORE-NEUTRALITY (the load-bearing invariant of this additive change):
+    # a body-field opt-in with NO header and NO manifest unit count must NOT flip
+    # `advertised`. Uses the `{"free_tier": true}` fixture the header scanner does
+    # not also catch, so `advertised` stays exactly what it was before the field
+    # existed (False here) — no behavioral score can move on the body field's
+    # account. (Note: the header scanner DOES over-catch a `{"tier": "free"}`
+    # body field as a header today — a pre-existing imprecision, not introduced
+    # here; opt_in_body itself is never read by the gate regardless.)
+    dn = ft.discover_free_tier({"/llms.txt": BODY_ONLY_NEUTRAL_DOCS}, None)
+    _check(dn.opt_in_body == ("free_tier", "true"),
+           "body-only neutral doc surfaces the body field")
+    _check(dn.opt_in_header is None,
+           "body-only neutral doc surfaces no header (isolates the body field)")
+    _check(not dn.advertised,
+           "body-field opt-in alone does NOT make the tier 'advertised' (score-neutral)")
+
+    # And adding a body field to the header-based doc leaves `advertised`
+    # identical — the gate is byte-for-byte independent of the new field.
+    base = ft.discover_free_tier({"/llms.txt": LLMS_TXT}, MANIFEST)
+    plus_b = ft.discover_free_tier(
+        {"/llms.txt": LLMS_TXT + '\nOr set {"free_tier": true} in the body.\n'},
+        MANIFEST)
+    _check(base.advertised == plus_b.advertised is True,
+           "adding a documented body-field opt-in does not change `advertised`")
+    _check(plus_b.opt_in_body == ("free_tier", "true"),
+           "the added body field is still discovered alongside the header")
+
+
+# ---------------------------------------------------------------------------
 # 4. No free tier advertised -> the check is NA.
 # ---------------------------------------------------------------------------
 def test_no_free_tier_is_na() -> None:
@@ -452,6 +555,7 @@ def main() -> int:
         test_discovery_from_docs,
         test_query_param_optin_discovery,
         test_path_optin_discovery,
+        test_body_field_optin_discovery,
         test_no_free_tier_is_na,
         test_exhausted_allowance_finding,
         test_not_zero_cost_finding,

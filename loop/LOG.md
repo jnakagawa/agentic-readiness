@@ -3944,3 +3944,85 @@ attribution rendered into the scorecard / a standalone page). (2) [LOCAL] decisi
 still deferred: whether to re-capture the `.com` canonical fixture once the live
 series reads in-band-stable at a NEW level for several consecutive fires (do NOT
 re-capture while fluctuating).
+
+## Cycle 38 (COVERAGE) — 2026-07-27T16:13Z — free-tier opt-in DISCOVERY broadened to a FOURTH convention: the JSON request-body field
+
+**Track.** COVERAGE (measurement coverage/flexibility — the north-star
+many-conventions axis). Three DOCUMENTED opt-in conventions were already
+discovered in-cloud, score-neutral: the request header (pre-Cycle-22), the URL
+query parameter (Cycle 22, `_scan_query_param_instruction`), and the URL path
+segment (Cycle 30, `_scan_path_instruction`). A real fourth convention — a
+storefront that documents its free tier as a JSON field in the REQUEST BODY
+(`{"tier": "free"}` / `{"mode": "free"}` / `{"free_tier": true}`) — was
+UNRECOGNISED (currently mis-discovered as "opt-in-undiscoverable"). This cycle
+adds `asrs/behavioral/free_tier.py` `_scan_body_field_instruction` + an additive
+`FreeTierDiscovery.opt_in_body: tuple[str,str]|None` field + an `opt_in_body`
+evidence key, populated by `discover_free_tier`.
+
+**What / why.** Precision-first, vendor-neutral, mirroring the sibling scanners:
+- The load-bearing distinguisher from the header scanner (which reads a bare
+  `Name: value`) is the **in-object gate** — a body field must be a
+  DOUBLE-QUOTED JSON key sitting inside an open `{…}` object literal (nearest
+  unmatched brace before it is a `{`). So a header `` `zc-mode: free` `` and a
+  query `?tier=free` are never misread as a body field (verified: both → None).
+- Free-context gate (must sit near free-allowance prose) + an explicit "free"
+  hint in name or value (stricter, like the query-param scanner — no "mode"
+  fallback), so `{"tier": "starter"}` near free prose is NOT the opt-in.
+- Plumbing body-field denylist (`prompt`/`model`/`api_key`/…) so
+  `{"model": "free-tier-v2"}` is skipped even worded with "free".
+
+**DELIBERATELY SCORE-NEUTRAL** (the load-bearing invariant, same as Cycles
+22/30): `opt_in_body` is NOT in the `advertised` gate and NOT consumed by the
+live-call path — the gate reads only `header` + `free_units`. Test-pinned via the
+`{"free_tier": true}` fixture the HEADER scanner does NOT also catch (its regex
+needs `name: value` and stops at the underscore): body-only doc keeps
+`advertised=False`; adding a body field to the header+manifest fixture leaves
+`advertised` byte-for-byte identical (True→True). Live wiring (fold `opt_in_body`
+into `advertised` + the free-mode call) is score-INCREASING → queued [LOCAL]
+alongside the query-param/path halves (invariant #3, verify on ≥2 real domains).
+
+**OBSERVATION (queued, not fixed here).** The existing HEADER scanner
+OVER-CATCHES a `{"tier": "free"}` body field as a header (its `name: value` regex
+matches a double-quoted JSON key too). This is PRE-EXISTING (not introduced here)
+and `opt_in_body` is never read by the gate regardless, so it moves no score —
+but disambiguating the header scanner from JSON body fields is score-affecting
+(header IS gated) → queued P1 as a peer-gated/[LOCAL] follow-up.
+
+**Not payment/signing code.** Diff confined to the discovery region;
+`parse_challenge`/`_settle_zero_value`/`_build_transfer_authorization_typed_data`/
+`new_ephemeral_address_and_signer`/`probe_free_tier` byte-for-byte unchanged (the
+$0-only nonzero-refusal safety property untouched — grep of the diff over those
+fns empty; the "sign"/"amount" hits in the diff are all new comments).
+
+**Canonical pair.** No scoring semantics, rubric stays **v0.7**. `git diff
+--name-only` over scoring.py/rubric/probes/fetch/protocols/offering/battery/
+scorecard EMPTY → canonical delta unchanged by construction AND re-measured
+(in-cloud replay guard 11/11, **46.1 F / 85.5 B / +39.4**, 0 replay-miss).
+free_tier runs only in behavioral mode (off the static scoring path the replay
+guard exercises). LIVE `.com` drift (78.7 C, delta +32.6, DRIFTING) unchanged by
+this cycle — see the open note in STATE / the digest below.
+
+**Tests.** `tests/test_free_tier.py` 10 → 11 (+`test_body_field_optin_discovery`:
+3 extraction forms, 5 negative controls — header/query/not-in-object/plumbing/
+non-free-field, evidence surfacing, and the score-neutrality pair). Suite
+160 → 161 (19 files, all exit 0).
+
+**Ship.** Direct to main (additive discovery, no scoring semantics, not payment/
+signing; `git diff --stat` = free_tier.py + test_free_tier.py only). Per playbook
+ship rules (probe additions that don't change scoring semantics → direct).
+
+**First duty.** No open peer-gated PR (`list_pull_requests` state=open → `[]`).
+Infra health check ran FIRST — ALL GREEN: runner HEALTHY (newest
+`verify_20260727T134147Z`, 13:41Z, ~2.5h old at fire); bench runnable, full suite
+160/160 pre-change (now 161/161); git realigned to origin/main (`f4cb756` =
+Cycle 37; detached HEAD after the forced-update local-verify push reset to `main`).
+
+**Comms.** DAILY DIGEST DM SENT this fire — first cycle after 16:00 UTC
+(16:13Z; Cycle 37 was 15:14Z, before the window). Carries the still-open LIVE
+CANONICAL DRIFT (open since Cycle 36) + this ship.
+
+**Next hypothesis.** COVERAGE frontier remaining after all four DOCUMENTED opt-in
+conventions (header/query/path/body) are now discovered in-cloud: (1) the shared
+[LOCAL] live-wiring (fold query/path/body into `advertised` + the live call,
+verify ≥2 domains); (2) non-EVM zero-value schemes (still open); (3) the P1
+header-scanner-vs-JSON-body disambiguation surfaced above. Next cycle takes TRUTH.

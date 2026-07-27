@@ -173,6 +173,50 @@ _FREE_PATH_SEGMENTS = frozenset(
     }
 )
 
+# Request-body-field opt-in instruction, discovered from docs prose. A FOURTH
+# opt-in convention (alongside the request header, the query param, and the URL
+# path): some agent-native storefronts document the free tier as a JSON field in
+# the REQUEST BODY — ``{"tier": "free"}`` / ``{"mode": "free"}`` /
+# ``{"free_tier": true}`` — instead of a header, query param, or path. The
+# distinguishing signal from the header scanner (which reads a bare
+# ``Name: value``) is that a body field is a DOUBLE-QUOTED JSON key sitting
+# INSIDE a ``{…}`` object literal; that in-object gate (enforced by the scanner)
+# is what makes this a request BODY field and not a header instruction.
+_BODY_FIELD_RE = re.compile(
+    r'"([A-Za-z][A-Za-z0-9_-]{0,40})"\s*:\s*(?:"([A-Za-z0-9_.\-]{1,40})"|(true|false))'
+)
+# How far back to look for the enclosing ``{`` (the in-object gate). A JSON body
+# example keeps its opening brace within a short distance of any field.
+_BODY_OBJECT_WINDOW = 400
+# Body-field names that are ordinary request payload, never an opt-in signal even
+# when they appear near "free" (e.g. ``{"prompt": "make it free"}``).
+_BODY_FIELD_DENYLIST = frozenset(
+    {
+        "prompt",
+        "model",
+        "input",
+        "messages",
+        "message",
+        "stream",
+        "temperature",
+        "max_tokens",
+        "maxtokens",
+        "n",
+        "size",
+        "quality",
+        "format",
+        "seed",
+        "api_key",
+        "apikey",
+        "key",
+        "token",
+        "content",
+        "role",
+        "user",
+        "system",
+    }
+)
+
 
 # ---------------------------------------------------------------------------
 # Discovery
@@ -198,6 +242,11 @@ class FreeTierDiscovery:
     # Recorded as evidence like ``opt_in_query``; does NOT (yet) gate
     # ``advertised`` or the live call — the same live-verified [LOCAL] follow-up.
     opt_in_path: str | None = None
+    # A documented request-body-field opt-in convention (name, value), e.g.
+    # ("tier", "free") from ``{"tier": "free"}``. Recorded as evidence like the
+    # sibling ``opt_in_query``/``opt_in_path``; does NOT (yet) gate ``advertised``
+    # or the live call — the same live-verified [LOCAL] follow-up.
+    opt_in_body: tuple[str, str] | None = None
     free_units: int | None = None
     endpoint_hint: str | None = None  # best documented POST path for the free tier
     free_slugs: list[str] = field(default_factory=list)
@@ -319,6 +368,49 @@ def _scan_path_instruction(text: str) -> str | None:
     return None
 
 
+def _scan_body_field_instruction(text: str) -> tuple[str, str] | None:
+    """Scan doc prose for a free-tier opt-in JSON REQUEST-BODY field.
+
+    A fourth opt-in convention (alongside the header, query-param, and path
+    scanners): storefronts that document ``{"tier": "free"}`` / ``{"mode":
+    "free"}`` / ``{"free_tier": true}`` in the request body rather than a header,
+    query param, or path. Same rigour as the sibling scanners:
+      * the field must be a DOUBLE-QUOTED JSON key sitting INSIDE a ``{…}`` object
+        literal (the in-object gate) — this is what distinguishes a request BODY
+        field from a bare ``Name: value`` header instruction, so ``zc-mode: free``
+        and ``?tier=free`` are never misread as a body field;
+      * it must sit near free-allowance language (the free-context gate);
+      * either the name or the value must literally hint "free" (stricter, like
+        the query-param scanner — no "mode" fallback), so ``{"tier": "starter"}``
+        near free prose is not the opt-in;
+      * plumbing body fields (``prompt``/``model``/``api_key``/…) are skipped even
+        when they sit near "free".
+    Returns ``(name, value)`` or None. Discovery-only: recording this does not
+    sign or call anything.
+    """
+    if not text:
+        return None
+    for m in _BODY_FIELD_RE.finditer(text):
+        name = m.group(1)
+        value = m.group(2) if m.group(2) is not None else m.group(3)
+        if name.lower() in _BODY_FIELD_DENYLIST:
+            continue
+        # In-object gate: the field must be inside an open ``{…}`` object — the
+        # nearest unmatched brace before it is a ``{``. This is the non-vacuous
+        # signal that it is a request BODY field, not a header (``Name: value``)
+        # or a query param (``?name=value``), neither of which double-quotes the
+        # key inside braces.
+        prefix = text[max(0, m.start() - _BODY_OBJECT_WINDOW): m.start()]
+        if prefix.rfind("{") <= prefix.rfind("}"):
+            continue
+        window = text[max(0, m.start() - 120): m.end() + 120]
+        if not _FREE_CONTEXT_RE.search(window):
+            continue
+        if "free" in value.lower() or "free" in name.lower():
+            return (name, value)
+    return None
+
+
 def discover_free_tier(docs: dict[str, str], manifest: Any | None) -> FreeTierDiscovery:
     """Decide whether a free tier is advertised, from the target's own docs.
 
@@ -332,6 +424,7 @@ def discover_free_tier(docs: dict[str, str], manifest: Any | None) -> FreeTierDi
     header = _scan_header_instruction(corpus)
     query = _scan_query_param_instruction(corpus)
     path = _scan_path_instruction(corpus)
+    body_field = _scan_body_field_instruction(corpus)
     mentions_free = bool(
         re.search(r"free\s+(allowance|tier|image|unit|includ|call)", corpus, re.I)
         or re.search(r"included\s*units", corpus, re.I)
@@ -339,16 +432,18 @@ def discover_free_tier(docs: dict[str, str], manifest: Any | None) -> FreeTierDi
 
     # A free tier is "advertised" when the docs describe a free allowance AND
     # give us a way to opt in (a header instruction) or a positive unit count.
-    # NOTE: ``query`` (query-param) and ``path`` (path-based) opt-in conventions
-    # are DISCOVERED and recorded for evidence but deliberately NOT part of the
-    # ``advertised`` gate yet — wiring either into the gate + the live free-mode
-    # call is score-affecting and must be verified live on ≥2 real domains first
-    # (queued [LOCAL]). Until then both additions are score-neutral by
-    # construction (the gate reads only ``header`` and ``free_units``).
+    # NOTE: ``query`` (query-param), ``path`` (path-based), and ``body_field``
+    # (request-body-field) opt-in conventions are DISCOVERED and recorded for
+    # evidence but deliberately NOT part of the ``advertised`` gate yet — wiring
+    # any of them into the gate + the live free-mode call is score-affecting and
+    # must be verified live on ≥2 real domains first (queued [LOCAL]). Until then
+    # all three additions are score-neutral by construction (the gate reads only
+    # ``header`` and ``free_units``).
     disc.advertised = bool((header is not None or (free_units and free_units > 0)) and mentions_free)
     disc.opt_in_header = header
     disc.opt_in_query = query
     disc.opt_in_path = path
+    disc.opt_in_body = body_field
     disc.free_units = free_units
     disc.free_slugs = _free_slugs(manifest)
     disc.candidate_paths = _all_post_paths(corpus)
@@ -360,6 +455,7 @@ def discover_free_tier(docs: dict[str, str], manifest: Any | None) -> FreeTierDi
         "opt_in_header": list(header) if header else None,
         "opt_in_query": list(query) if query else None,
         "opt_in_path": path,
+        "opt_in_body": list(body_field) if body_field else None,
         "free_units": free_units,
         "free_slugs": disc.free_slugs,
         "mentions_free": mentions_free,

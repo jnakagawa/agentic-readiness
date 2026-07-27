@@ -625,14 +625,37 @@ design in-cloud, execute locally.
   rejected), host consumed-not-captured, non-vacuous context gate (path excised). Like the
   query-param half it does NOT gate `advertised` or drive the live call (test-pinned
   score-neutral). `test_free_tier.py` 9→10; suite 128→129.
+  PROGRESS 2026-07-27T16:13Z (Cycle 38): the **request-body-field** opt-in DISCOVERY half
+  SHIPPED in-cloud (direct-to-main, score-neutral). `asrs/behavioral/free_tier.py`
+  `_scan_body_field_instruction` recognises a documented JSON body-field free-mode opt-in
+  (`{"tier":"free"}`/`{"mode":"free"}`/`{"free_tier":true}`) → additive
+  `FreeTierDiscovery.opt_in_body` + an `opt_in_body` evidence key. Precision-first: the IN-OBJECT
+  gate (double-quoted JSON key inside an open `{…}`) distinguishes a request BODY field from a
+  header (`Name: value`) or query (`?name=value`) — both verified None; free-context + explicit
+  free-hint gates; plumbing-field denylist. Like the query/path halves it does NOT gate
+  `advertised` or drive the live call (test-pinned via the `{"free_tier":true}` fixture the header
+  scanner does not also catch). `test_free_tier.py` 10→11; suite 160→161.
   REMAINING: (a) **[LOCAL], score-increasing → invariant #3 live-verify on ≥2 real domains**
-  — wire `opt_in_query` AND `opt_in_path` into the `advertised` gate AND the live call path
-  (append the query param / route to the free path instead of / alongside the header; keep the
-  $0-only settle safety byte-for-byte intact), then confirm on ≥2 real storefronts documenting
-  a query-param- or path-based free tier that the probe opts in and exercises the $0 allowance
-  correctly; likely peer-gated when the scoring path changes. (b) **non-EVM zero-value schemes**
-  (still open). All three DOCUMENTED opt-in conventions (header/query-param/path) are now
-  DISCOVERED in-cloud; the remaining generalization is the shared [LOCAL] live-wiring + non-EVM.
+  — wire `opt_in_query` AND `opt_in_path` AND `opt_in_body` into the `advertised` gate AND the
+  live call path (append the query param / route to the free path / add the body field alongside
+  the header; keep the $0-only settle safety byte-for-byte intact), then confirm on ≥2 real
+  storefronts that the probe opts in and exercises the $0 allowance correctly; likely peer-gated
+  when the scoring path changes. (b) **non-EVM zero-value schemes** (still open). All FOUR
+  DOCUMENTED opt-in conventions (header/query-param/path/body-field) are now DISCOVERED in-cloud;
+  the remaining generalization is the shared [LOCAL] live-wiring + non-EVM.
+
+- **Header scanner over-catches JSON body fields** (METHOD/attribution precision, Cycle-38
+  observation; P1). The existing `_scan_header_instruction` `name: value` regex ALSO matches a
+  double-quoted JSON body field like `{"tier": "free"}` (returning it as `opt_in_header`), because
+  it allows optional quotes around the name and does not require the field be OUTSIDE a `{…}`
+  object. Pre-existing (not introduced by Cycle 38's body-field scanner), and `opt_in_body` itself
+  is never read by the `advertised` gate so it moves no score — BUT `opt_in_header` IS gated, so a
+  body-only storefront can currently read as header-advertised. Disambiguation (require the header
+  match NOT sit inside a `{…}` object, symmetric with the body scanner's in-object gate) is
+  score-AFFECTING → peer-gated + [LOCAL] live-verify on ≥2 real domains that the header gate is
+  unchanged for genuine header docs and only tightened for JSON-body-only docs. Low urgency (no
+  observed real mis-attribution — the canonical pair documents a real header), but it is the honest
+  known imprecision of the header/body boundary.
 <!-- DONE 2026-07-23T16:11Z (Cycle 16, READOUT): "Methodology prose page" SHIPPED as
      methodology.html. `scorecard._write_methodology_page(out_dir)` renders the "read the
      paper" doc behind the rubric page — ten sections: capability lens; five pillars +

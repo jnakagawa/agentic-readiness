@@ -391,6 +391,123 @@ def test_divergence_cause_on_real_series() -> None:
     _check("driver:" in ch.render(hist), "the render names the driver on the real series")
 
 
+def test_recapture_advice_baseline_valid_when_in_band() -> None:
+    print("test_recapture_advice_baseline_valid_when_in_band")
+    # in-band series -> the pinned fixture still represents the true gap; no action.
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [
+            _artifact("20260727T010000Z", 46.1, 85.5, 39.4),
+            _artifact("20260727T020000Z", 46.1, 85.0, 38.9),  # within jitter
+        ]
+        _write_series(tmp, rows)
+        hist = ch.load_history(tmp)
+        adv = hist.recapture
+        _check(adv is not None, "an in-band series still gets a recommendation")
+        _check(adv.code == ch.REC_VALID, f"in-band -> baseline-valid, got {adv.code}")
+        out = ch.render(hist)
+        _check("re-capture:" in out, "render names the re-capture recommendation")
+        _check("baseline valid" in out, "render labels the in-band case baseline-valid")
+
+
+def test_recapture_advice_waits_when_not_yet_sustained() -> None:
+    print("test_recapture_advice_waits_when_not_yet_sustained")
+    # out of band, but only 2 trailing readings (< _SUSTAINED_MIN) -> could be
+    # jitter, so WAIT, not act. A single blip must never trigger a re-capture.
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [_artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4) for i in range(1, 5)]
+        rows += [
+            _artifact("20260727T050000Z", 46.1, 78.0, 31.9),  # drifting
+            _artifact("20260727T060000Z", 46.1, 78.7, 32.6),  # drifting
+        ]
+        _write_series(tmp, rows)
+        hist = ch.load_history(tmp)
+        _check(hist.consecutive_out_of_band == 2, "two trailing out-of-band readings")
+        _check(2 < ch._SUSTAINED_MIN, "two is below the sustained cutoff")
+        _check(hist.recapture.code == ch.REC_WAIT, f"not-yet-sustained -> wait, got {hist.recapture.code}")
+        _check("wait" in ch.render(hist), "render labels the not-yet-sustained case wait")
+
+
+def test_recapture_advice_defers_on_reference_softening() -> None:
+    print("test_recapture_advice_defers_on_reference_softening")
+    # THE load-bearing case, the 2026-07-27 real drift shape: sustained (3+) out of
+    # band, driven by the with-rails reference SOFTENING (.org flat, .com falls). The
+    # pinned fixture still represents the true gap -> DEFER re-capture, do not chase
+    # the dip. This is the decision the STATE drift note reasoned out by hand each
+    # fire; the site's later recovery vindicated exactly this recommendation.
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [_artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4) for i in range(1, 5)]
+        rows += [
+            _artifact("20260727T050000Z", 46.1, 80.0, 33.9),   # drifting
+            _artifact("20260727T060000Z", 46.1, 79.0, 32.9),   # drifting
+            _artifact("20260727T070000Z", 46.1, 78.7, 32.6),   # drifting, 3rd in a row
+        ]
+        _write_series(tmp, rows)
+        hist = ch.load_history(tmp)
+        _check(hist.consecutive_out_of_band == 3, f"three trailing out-of-band, got {hist.consecutive_out_of_band}")
+        _check(hist.divergence_cause.reference_degraded is True, "the with-rails reference softened")
+        _check(hist.recapture.code == ch.REC_DEFER, f"reference-softening -> defer, got {hist.recapture.code}")
+        out = ch.render(hist)
+        _check("defer re-capture" in out, "render labels the softening case defer")
+        _check("DEFER re-capture" in out, "render reason says to defer, not act")
+
+
+def test_recapture_advice_recommends_recapture_when_baseline_moved() -> None:
+    print("test_recapture_advice_recommends_recapture_when_baseline_moved")
+    # NON-VACUOUS opposite: sustained out of band because the NO-RAILS floor GAINED
+    # capability (the bare storefront durably improved), with-rails flat. That is a
+    # real capability-gap change, not a reference outage -> RE-CAPTURE candidate. A
+    # recommendation blind to direction would (wrongly) DEFER here too.
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [_artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4) for i in range(1, 5)]
+        rows += [
+            _artifact("20260727T050000Z", 52.0, 85.5, 33.5),   # bare side rose
+            _artifact("20260727T060000Z", 53.0, 85.5, 32.5),
+            _artifact("20260727T070000Z", 54.0, 85.5, 31.5),   # 3rd in a row
+        ]
+        _write_series(tmp, rows)
+        hist = ch.load_history(tmp)
+        _check(hist.consecutive_out_of_band == 3, "sustained out of band")
+        _check(hist.divergence_cause.driver == ch.CANONICAL_NO_RAILS, "the no-rails side drove it")
+        _check(hist.divergence_cause.reference_degraded is False, "no-rails gaining is not reference degradation")
+        _check(
+            hist.recapture.code == ch.REC_RECAPTURE,
+            f"durable baseline move -> recapture-candidate, got {hist.recapture.code}",
+        )
+        _check("re-capture candidate" in ch.render(hist), "render labels the durable-move case a re-capture candidate")
+
+
+def test_recapture_advice_reviews_when_no_anchor() -> None:
+    print("test_recapture_advice_reviews_when_no_anchor")
+    # sustained out of band but the ENTIRE series is out of band -> no in-band anchor
+    # to attribute against -> REVIEW (a human look), never a blind re-capture.
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [_artifact(f"20260727T0{i}0000Z", 46.1, 70.0, 23.9) for i in range(1, 5)]
+        _write_series(tmp, rows)
+        hist = ch.load_history(tmp)
+        _check(hist.consecutive_out_of_band == len(hist.points), "the whole series is out of band")
+        _check(hist.divergence_cause is None, "no in-band anchor -> no cause")
+        _check(hist.recapture.code == ch.REC_REVIEW, f"no anchor -> review, got {hist.recapture.code}")
+        _check("review" in ch.render(hist), "render labels the no-anchor case review")
+
+
+def test_recapture_advice_on_real_series_is_coherent() -> None:
+    print("test_recapture_advice_on_real_series_is_coherent")
+    # End-to-end on the REAL committed series: the recommendation must be present,
+    # a known code, and CONSISTENT with the band — in-band <-> baseline-valid, and
+    # any out-of-band code never claims baseline-valid. Recovery-tolerant: the site
+    # recovered 2026-07-27 so this currently reads baseline-valid, but the assertion
+    # holds whichever way the live series sits.
+    hist = ch.load_history()
+    adv = hist.recapture
+    _check(adv is not None, "the real series gets a recommendation")
+    _check(adv.code in ch._REC_LABEL, f"a known recommendation code, got {adv.code}")
+    if hist.band == ch.BAND_IN:
+        _check(adv.code == ch.REC_VALID, f"in-band real series -> baseline-valid, got {adv.code}")
+    else:
+        _check(adv.code != ch.REC_VALID, f"out-of-band real series is not baseline-valid, got {adv.code}")
+    _check("re-capture:" in ch.render(hist), "the real render carries the recommendation line")
+
+
 def test_runs_against_real_committed_series() -> None:
     print("test_runs_against_real_committed_series")
     hist = ch.load_history()  # default runs/local in this checkout
@@ -415,6 +532,12 @@ def main() -> int:
         test_divergence_cause_names_the_softening_side,
         test_divergence_cause_none_when_in_band,
         test_divergence_cause_on_real_series,
+        test_recapture_advice_baseline_valid_when_in_band,
+        test_recapture_advice_waits_when_not_yet_sustained,
+        test_recapture_advice_defers_on_reference_softening,
+        test_recapture_advice_recommends_recapture_when_baseline_moved,
+        test_recapture_advice_reviews_when_no_anchor,
+        test_recapture_advice_on_real_series_is_coherent,
         test_runs_against_real_committed_series,
     ]
     failed = 0

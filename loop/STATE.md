@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 42
+- Cycle counter: 43
 - Started: 2026-07-23 (UTC)
 - Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
@@ -680,6 +680,31 @@
   20:41Z in-band); four committed domains' offering classification byte-identical. Suite 177→179 (all 19 exit
   0). First duty: no open peer-gated PR (`[]`); infra HEALTHY (verify_20260727T204103Z, ~35 s old at fire).
   Cloud rotation unaffected (still TRUTH next).
+  Cycle 43 TRUTH (the canonical re-capture DECISION is now COMPUTED, not hand-reasoned — the capstone of the
+  Cycles 36→41 drift-diagnostic arc): new pure `asrs/canonical_history.recapture_advice(history) ->
+  RecaptureAdvice(code, reason)`, stored on `CanonicalHistory.recapture` in `summarize`, rendered as a
+  `re-capture:` line. Every prior layer (band 36 / pillar attribution 37 / side-cause 39 / HTML 40) feeds ONE
+  decision — does the committed fixture still represent the true capability gap, or should the pinned delta be
+  re-captured [LOCAL]? — which the STATE drift note hand-reasoned FIVE times during the 07-27 `.com` drift. Now
+  synthesized into five honest codes (NEVER an action; moving the pinned baseline is [LOCAL]/comparability-
+  affecting): `baseline-valid` (in-band, no re-capture) / `wait-not-yet-sustained` (out of band, run < 3, could
+  be jitter) / `defer-reference-degraded` (sustained, with-rails reference SOFTENED = real-world site change,
+  pinned fixture still the true gap → DEFER — the load-bearing 07-27 case, VINDICATED by the Cycle-41 recovery) /
+  `recapture-candidate` (sustained AND the baseline genuinely moved — no-rails gaining or reference durably
+  improving → a [LOCAL] re-capture re-pins it) / `review-no-anchor` (sustained but no in-band anchor in the
+  series → human look). Refactored the render's literal `3` → `_SUSTAINED_MIN` (behavior-preserving, one source
+  of truth). Read-only diagnostic: `git diff --name-only` = canonical_history.py + test ONLY; scoring.py/rubric/
+  probes/fetch/protocols/battery/offering/behavioral/scorecard byte-for-byte untouched → rubric stays v0.7,
+  canonical PAIR unchanged by construction AND re-measured (replay guard 14/14, 46.1 F / 85.5 B / +39.4, 0
+  replay-miss; verify_20260727T204103Z 20:41Z in-band). On the REAL committed series (69 points) the
+  recommendation reads `baseline-valid` — the honest no-action state matching the recovered drift. Direct-to-
+  main. `test_canonical_history.py` 13→19 (+6: one per code incl. a NON-VACUOUS direction control that a
+  direction-blind recommendation would fail + a recovery-tolerant real-series code↔band coherence test); suite
+  179→185. No Slack (read-only diagnostic + tests, moves no score, digest already sent Cycle 38 16:13Z, not a new
+  window at 21:17Z). First duty: no open peer-gated PR (verified []); infra health check ran first — runner
+  HEALTHY (verify_20260727T204103Z, 20:41Z, ~37 min old, +39.4 in-band); git realigned to origin/main 4b1d1e3.
+  Next cycle takes READOUT. Follow-up (queued P2 READOUT): surface `recapture` on `canonical-history.html`
+  (Cycle-40 page) — the same terminal→HTML deferral the battery diagnostics took.
 - **LIVE CANONICAL DRIFT (open, for the next post-16:00 UTC digest) — surfaced by the Cycle-36 history readout.**
   The live canonical delta held **+39.4** (46.1 F / 85.5 B) for days through `verify_20260727T054339Z`, then MOVED:
   07:40Z fire driftflight.com collapsed to 50.0 F (delta +3.9 — transient error crawl, transactability CANT_TEST /

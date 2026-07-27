@@ -51,6 +51,24 @@ BAND_IN = "in-band"
 BAND_DRIFTING = "drifting"
 BAND_DIVERGED = "diverged"
 
+# A trailing out-of-band run of this length is treated as SUSTAINED (a real-world
+# move) rather than jitter — the same cutoff the render's "sustained"/"recent"
+# wording uses, and the gate the re-capture recommendation waits on before advising
+# any action on the pinned baseline.
+_SUSTAINED_MIN = 3
+
+# Re-capture recommendation codes — the DECISION the drift diagnostics feed: given
+# the live series, does the committed canonical fixture still represent the true
+# capability gap, or should it be re-captured [LOCAL]? Synthesizes band +
+# sustained-run + divergence CAUSE; never re-captures anything itself (moving the
+# pinned baseline is a [LOCAL], comparability-affecting step), only advises.
+REC_NO_DATA = "no-data"
+REC_VALID = "baseline-valid"
+REC_WAIT = "wait-not-yet-sustained"
+REC_DEFER = "defer-reference-degraded"
+REC_RECAPTURE = "recapture-candidate"
+REC_REVIEW = "review-no-anchor"
+
 _SPARK = "▁▂▃▄▅▆▇█"
 
 
@@ -181,6 +199,24 @@ class DivergenceCause:
 
 
 @dataclass
+class RecaptureAdvice:
+    """Whether the pinned canonical fixture still represents the true gap.
+
+    The single DECISION the drift diagnostics (band, sustained run, pillar
+    attribution, side/direction cause) exist to inform: is the committed fixture
+    baseline still faithful to the real capability gap, or has the reference pair
+    moved durably enough that the pinned delta should be re-captured [LOCAL]? This
+    computes the recommendation the operator has been reasoning out by hand every
+    time the live series drifts. It NEVER re-captures anything — moving the pinned
+    baseline is a [LOCAL], comparability-affecting step (the maintenance contract
+    ``test_canonical_replay`` documents) — it only names the honest recommendation.
+    """
+
+    code: str
+    reason: str
+
+
+@dataclass
 class CanonicalHistory:
     points: list[CanonicalPoint] = field(default_factory=list)
     baseline_delta: float = FIXTURE_BASELINE_DELTA
@@ -197,6 +233,9 @@ class CanonicalHistory:
     # which SIDE drove the latest divergence (no-rails gaining vs with-rails
     # softening) — same anchor/gate as ``attribution``; None on the same conditions.
     divergence_cause: DivergenceCause | None = None
+    # the synthesized re-capture recommendation (baseline-valid / wait / defer /
+    # recapture-candidate / review) — always present once there is a latest point.
+    recapture: RecaptureAdvice | None = None
 
 
 def _band_for(abs_divergence: float) -> str:
@@ -318,6 +357,7 @@ def summarize(
     hist.consecutive_out_of_band = run
     hist.attribution = _attribute(points, run, latest)
     hist.divergence_cause = _cause(points, run, latest)
+    hist.recapture = recapture_advice(hist)
     return hist
 
 
@@ -382,6 +422,77 @@ def _cause(
             latest.with_rails_overall - anchor.with_rails_overall, 4
         ),
     )
+
+
+def recapture_advice(history: CanonicalHistory) -> RecaptureAdvice:
+    """Recommend whether the pinned canonical fixture should be re-captured.
+
+    Pure synthesis of the already-computed drift signals — a decision, never an
+    action (re-capture is a [LOCAL], baseline-moving step). The honest cases:
+
+      - in-band -> ``REC_VALID``: the live delta reproduces the pinned delta, so
+        the committed baseline still represents the true capability gap.
+      - out of band but the trailing run is shorter than ``_SUSTAINED_MIN`` ->
+        ``REC_WAIT``: could be live/static jitter; not yet a real move, so wait.
+      - sustained out of band, driven by the WITH-RAILS reference SOFTENING
+        (``reference_degraded``) -> ``REC_DEFER``: a real-world site change, not the
+        capability gap closing; the pinned fixture still represents the true gap, so
+        DEFER re-capture until the reference recovers. (This is the case the live
+        2026-07-27 drift kept hitting — and the site did recover, vindicating it.)
+      - sustained out of band, the baseline genuinely moved (no-rails gaining, or
+        the reference durably improving) -> ``REC_RECAPTURE``: a real capability-gap
+        change, so a [LOCAL] re-capture would re-pin the baseline.
+      - sustained out of band but no in-band anchor exists in the live series to
+        attribute against -> ``REC_REVIEW``: needs a human look before any action.
+    """
+    latest = history.latest
+    if latest is None:
+        return RecaptureAdvice(REC_NO_DATA, "no live re-scores recorded yet")
+    if history.band == BAND_IN:
+        return RecaptureAdvice(
+            REC_VALID,
+            "the live delta reproduces the pinned fixture delta — the committed "
+            "baseline still represents the true capability gap; no re-capture",
+        )
+    n = history.consecutive_out_of_band
+    if n < _SUSTAINED_MIN:
+        return RecaptureAdvice(
+            REC_WAIT,
+            f"the live delta is out of band but only {n} consecutive re-score(s) — "
+            f"not yet sustained ({_SUSTAINED_MIN}+); could be live/static jitter, wait",
+        )
+    cause = history.divergence_cause
+    if cause is None:
+        return RecaptureAdvice(
+            REC_REVIEW,
+            "sustained out of band, but no in-band anchor exists in the live series "
+            "to attribute the move against — a human look is needed before re-capture",
+        )
+    if cause.reference_degraded:
+        return RecaptureAdvice(
+            REC_DEFER,
+            f"sustained out of band, but the {cause.driver} reference SOFTENED "
+            f"({cause.driver_change:+.1f}) — a real-world site change, not the "
+            "capability gap closing; the pinned fixture still represents the true "
+            "gap, so DEFER re-capture until the reference recovers",
+        )
+    return RecaptureAdvice(
+        REC_RECAPTURE,
+        f"sustained out of band and the baseline genuinely moved ({cause.driver} "
+        f"{cause.driver_change:+.1f}) — a durable capability-gap change, not a "
+        "reference outage; a [LOCAL] fixture re-capture would re-pin the baseline "
+        "(comparability-affecting: it moves the pinned delta the replay guard asserts)",
+    )
+
+
+_REC_LABEL = {
+    REC_NO_DATA: "no data",
+    REC_VALID: "baseline valid",
+    REC_WAIT: "wait",
+    REC_DEFER: "defer re-capture",
+    REC_RECAPTURE: "re-capture candidate",
+    REC_REVIEW: "review",
+}
 
 
 def load_history(runs_dir: str | None = None) -> CanonicalHistory:
@@ -485,7 +596,7 @@ def render(history: CanonicalHistory, window: int = 24) -> str:
     )
     if history.consecutive_out_of_band >= 1:
         n = history.consecutive_out_of_band
-        kind = "sustained" if n >= 3 else "recent"
+        kind = "sustained" if n >= _SUSTAINED_MIN else "recent"
         lines.append(
             f"{kind}: {n} consecutive re-score(s) out of band "
             f"(|delta - baseline| > {_BAND_IN:.1f})"
@@ -517,6 +628,9 @@ def render(history: CanonicalHistory, window: int = 24) -> str:
     cause = history.divergence_cause
     if cause is not None:
         lines.append(f"driver: {cause_verdict(cause)}")
+    adv = history.recapture
+    if adv is not None and adv.code != REC_NO_DATA:
+        lines.append(f"re-capture: {_REC_LABEL.get(adv.code, adv.code)} — {adv.reason}")
     tail = pts[-window:]
     lines.append(
         f"delta trend (last {len(tail)}): {_spark([p.delta for p in tail])}"

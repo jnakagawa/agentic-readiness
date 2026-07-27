@@ -648,6 +648,14 @@ design in-cloud, execute locally.
      + scorecard.py + test_readout.py ONLY; scoring/rubric/probes/… untouched → rubric v0.7, replay guard
      11/11, 46.1 F / 85.5 B / +39.4. `test_readout.py` 23→29; suite 164→170. See LOG Cycle 40. This discharges
      remaining item (a) of the "Score-over-time trend page" P2 below. -->
+- **Surface the re-capture recommendation on the canonical-history HTML page** (READOUT, Cycle-43
+  follow-up, direct-to-main): Cycle 43 added `canonical_history.recapture_advice` + a `re-capture:`
+  line to the TERMINAL readout, but the Cycle-40 `canonical-history.html` page
+  (`scorecard._write_canonical_history_page`) does not yet render it — the same terminal→HTML
+  deferral the battery diagnostics took (Cycles 10→12, 18→20). Add the recommendation (code label +
+  reason) to the diagnostic card, colored by code (baseline-valid good / wait+defer warn /
+  recapture-candidate+review bad, matching the band inks). Display-only, score-neutral, `test_readout.py`
+  +1–2. The `re-capture:` line reads off `hist.recapture.{code,reason}`; the page already has `hist`.
 - **[LOCAL] Eyeball the canonical-history card on the operator's hosted deploy** (READOUT, Cycle-40 follow-up,
   optional): the HTML canonical-history page renders correctly in-cloud (Chromium screenshot, real committed
   series). A next visual check would confirm it reads well hosted next to a real published scorecard, and that
@@ -669,6 +677,16 @@ design in-cloud, execute locally.
   overall fell -6.8, `.org` flat). Only when the cause flips to the no-rails side GAINING capability
   (`reference_degraded=False`, a genuine gap-closing) — or `.com` settles durably at a new in-band
   level — is a re-capture warranted.
+  DECISION NOW COMPUTED (Cycle 43, TRUTH): `asrs canonical-history` prints a `re-capture:` line —
+  `canonical_history.recapture_advice(history) -> RecaptureAdvice(code, reason)` synthesizes band +
+  sustained-run + `divergence_cause` into the single recommendation this item asks a human to make:
+  `baseline-valid` (in-band, no action) / `wait-not-yet-sustained` / `defer-reference-degraded`
+  (the reference softened — WAIT) / `recapture-candidate` (durable baseline move — DO the [LOCAL]
+  re-capture above) / `review-no-anchor`. It NEVER re-captures (that stays [LOCAL]); it names the
+  call. STATUS as of Cycle 41: the drift RECOVERED — `.com` back at 85.5 B, delta +39.4 in-band —
+  so the recommendation now reads `baseline-valid`: **no re-capture, the pinned fixture is faithful.**
+  This item stays [LOCAL]-parked as the standing playbook for the NEXT drift; the recommendation
+  tells the operator which branch to take.
 - **Free-tier probe generalization** (COVERAGE): more opt-in conventions
   (query param, path-based), non-EVM zero-value schemes. PROGRESS 2026-07-23T22:12Z
   (Cycle 22): the **query-param** opt-in DISCOVERY half SHIPPED in-cloud (direct-to-main,

@@ -580,14 +580,24 @@ design in-cloud, execute locally.
   history beyond the canonical pair (needs committed dated reports for other
   domains — currently only the verify series is committed); (c) error bars once
   multi-trial series land.
-- **Canonical-history pillar attribution** (READOUT/METHOD, Cycle-36 follow-up):
-  extend `asrs/canonical_history.py` to name WHICH pillar drove a divergence
-  (the verify artifacts carry per-domain `pillars`), so the playbook's per-cycle
-  "explain the delta in capability terms" duty is COMPUTED, not hand-written.
-  Current live drift is a `.com` LEGIBILITY drop (90.9 → 63.6) — the readout
-  should say that, not just "delta −6.8". Reads committed evidence only; direct
-  to main. Smallest unit: compare the latest point's per-pillar overalls against
-  the last in-band point's, surface the largest mover.
+<!-- DONE 2026-07-27T15:14Z (Cycle 37, METHOD): "Canonical-history pillar attribution" SHIPPED,
+     direct-to-main, score-neutral. `asrs/canonical_history.py`: `CanonicalPoint` now carries
+     `no_rails_pillars`/`with_rails_pillars` (per-side per-pillar overalls, NUMERIC entries only —
+     `None` pillars dropped, attribution honesty at the pillar layer); `PillarMove`/
+     `PillarAttribution` (`anchor_ts`, `moves` largest-|change|-first, `.top`); `summarize` computes
+     `attribution` via `_attribute` ONLY when latest is out of band AND an in-band anchor exists
+     (`points[-(run+1)]`), else honest None; `render` names the top mover (+ up to 2 secondary).
+     On the REAL committed series it reproduces the Cycle-36 hand-written note EXACTLY:
+     `driftflight.com legibility fell 90.9 → 63.6 (-27.3) — the largest pillar move`. So the
+     playbook's "explain the delta in capability terms" duty is now COMPUTED. Reads committed
+     evidence only; imports no scoring code; vendor-neutral. scoring.py/rubric/probes/… untouched →
+     rubric v0.7, canonical pair 46.1 F / 85.5 B / +39.4, replay guard 11/11. `test_canonical_history.py`
+     6→10; suite 156→160. See LOG Cycle 37. -->
+- **Canonical-history attribution: HTML trend surface** (READOUT, Cycle-37 follow-up): the pillar
+  attribution now prints in the TERMINAL block (`asrs canonical-history`). Render the trend +
+  attribution into an HTML surface (the scorecard or a standalone page) so a reader eyeballs the
+  curve + the named mover, not just the terminal. Folds into the P2 "Score-over-time trend page"
+  item (a) below. No scoring semantics; direct-to-main.
 - **[LOCAL] Decide on canonical fixture re-capture once driftflight.com settles**
   (TRUTH, Cycle-36 follow-up to the LIVE CANONICAL DRIFT). The live `.com`
   score has drifted below the pinned fixture (85.5 B → ~78.7 C, legibility

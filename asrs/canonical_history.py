@@ -54,6 +54,13 @@ BAND_DIVERGED = "diverged"
 _SPARK = "▁▂▃▄▅▆▇█"
 
 
+# A per-pillar move smaller than this (in pillar-score points, 0–100) is treated
+# as noise and not reported as a "mover" — keeps the attribution to the pillar(s)
+# that actually shifted, not float dust. Pillar overalls are exact renormalized
+# ratios, so real moves are many points; this only filters exact-0.0 no-movers.
+_PILLAR_MOVE_EPS = 0.1
+
+
 @dataclass
 class CanonicalPoint:
     """One live re-score of the reference pair, from a verify_<ts>.json artifact."""
@@ -64,6 +71,42 @@ class CanonicalPoint:
     with_rails_overall: float
     with_rails_grade: str
     delta: float  # with_rails - no_rails, as recorded by the runner
+    # Per-pillar overalls (0–100) for each side, NUMERIC entries only — a pillar
+    # recorded None (unobserved: outcome in static, or a pillar that CANT_TEST on
+    # an error crawl) is dropped, never attributed a move. Empty on pre-pillar
+    # artifacts. Keys: access/legibility/transactability/trust/outcome.
+    no_rails_pillars: dict[str, float] = field(default_factory=dict)
+    with_rails_pillars: dict[str, float] = field(default_factory=dict)
+
+
+@dataclass
+class PillarMove:
+    """One pillar's score change on one side of the pair, anchor -> latest."""
+
+    domain: str
+    pillar: str
+    before: float
+    after: float
+    change: float  # after - before (signed)
+
+
+@dataclass
+class PillarAttribution:
+    """Which pillar(s) drove the latest divergence, vs the last in-band reading.
+
+    Computed only when the latest reading is out of band AND an earlier in-band
+    reading exists to anchor against — the live series' own pre-drift baseline.
+    ``moves`` lists the pillars that shifted appreciably, largest |change| first;
+    ``top`` is the single largest mover (None only if no pillar moved, e.g. the
+    overall shifted but every pillar was unobserved on one side).
+    """
+
+    anchor_ts: str
+    moves: list[PillarMove] = field(default_factory=list)
+
+    @property
+    def top(self) -> PillarMove | None:
+        return self.moves[0] if self.moves else None
 
 
 @dataclass
@@ -76,6 +119,10 @@ class CanonicalHistory:
     # trailing run of readings whose |delta - baseline| exceeds the in-band
     # threshold — 1 reading is jitter, N>=3 is a sustained real-world move.
     consecutive_out_of_band: int = 0
+    # which pillar(s) drove the latest divergence, vs the last in-band reading;
+    # None when in-band (nothing to explain) or when no in-band anchor exists in
+    # the live series (we never observed a stable baseline to attribute against).
+    attribution: PillarAttribution | None = None
 
 
 def _band_for(abs_divergence: float) -> str:
@@ -123,7 +170,29 @@ def _point_from_artifact(obj: dict) -> CanonicalPoint | None:
         with_rails_overall=float(with_o),
         with_rails_grade=str(with_rails.get("grade", "?")),
         delta=float(delta),
+        no_rails_pillars=_numeric_pillars(no_rails),
+        with_rails_pillars=_numeric_pillars(with_rails),
     )
+
+
+def _numeric_pillars(side: dict) -> dict[str, float]:
+    """Extract a side's pillar overalls, keeping only NUMERIC entries.
+
+    A pillar recorded None (outcome in static mode, or a pillar that came back
+    CANT_TEST on an error crawl) is dropped — attribution honesty: a pillar we
+    couldn't observe is not credited a move. Non-dict / absent -> {} (pre-pillar
+    artifacts simply contribute no attribution, never a fabricated zero).
+    """
+    pillars = side.get("pillars")
+    if not isinstance(pillars, dict):
+        return {}
+    out: dict[str, float] = {}
+    for name, value in pillars.items():
+        if isinstance(value, bool):  # guard: bools are ints in Python
+            continue
+        if isinstance(value, (int, float)):
+            out[str(name)] = float(value)
+    return out
 
 
 def load_points(runs_dir: str | None = None) -> list[CanonicalPoint]:
@@ -162,7 +231,48 @@ def summarize(
         else:
             break
     hist.consecutive_out_of_band = run
+    hist.attribution = _attribute(points, run, latest)
     return hist
+
+
+def _pillar_moves(
+    domain: str, before: dict[str, float], after: dict[str, float]
+) -> list[PillarMove]:
+    """Per-pillar score changes for one side, for pillars numeric in BOTH readings."""
+    moves: list[PillarMove] = []
+    for pillar, b in before.items():
+        a = after.get(pillar)
+        if a is None:  # pillar unobserved in the latest reading -> no attribution
+            continue
+        change = round(a - b, 4)
+        if abs(change) > _PILLAR_MOVE_EPS:
+            moves.append(PillarMove(domain, pillar, b, a, change))
+    return moves
+
+
+def _attribute(
+    points: list[CanonicalPoint], run: int, latest: CanonicalPoint
+) -> PillarAttribution | None:
+    """Attribute the latest divergence to the pillar(s) that moved vs the last
+    in-band reading.
+
+    Only meaningful when the latest reading is out of band (run >= 1) and an
+    earlier IN-BAND reading exists to anchor against — ``points[-(run+1)]`` is the
+    reading immediately before the trailing out-of-band run, in-band by that run's
+    stopping condition. When the entire series is out of band (run == len), there
+    is no observed stable baseline in the live series, so we make no claim (honest
+    None), the same attribution discipline the loader applies to unobserved runs.
+    """
+    if run < 1 or run >= len(points):
+        return None
+    anchor = points[-(run + 1)]
+    moves = _pillar_moves(
+        CANONICAL_NO_RAILS, anchor.no_rails_pillars, latest.no_rails_pillars
+    ) + _pillar_moves(
+        CANONICAL_WITH_RAILS, anchor.with_rails_pillars, latest.with_rails_pillars
+    )
+    moves.sort(key=lambda m: abs(m.change), reverse=True)
+    return PillarAttribution(anchor_ts=anchor.ts, moves=moves)
 
 
 def load_history(runs_dir: str | None = None) -> CanonicalHistory:
@@ -237,6 +347,30 @@ def render(history: CanonicalHistory, window: int = 24) -> str:
             f"{kind}: {n} consecutive re-score(s) out of band "
             f"(|delta - baseline| > {_BAND_IN:.1f})"
         )
+    attr = history.attribution
+    if attr is not None:
+        top = attr.top
+        if top is not None:
+            verb = "fell" if top.change < 0 else "rose"
+            lines.append(
+                f"attribution (vs last in-band {_short_ts(attr.anchor_ts)}): "
+                f"{top.domain} {top.pillar} {verb} "
+                f"{top.before:.1f} → {top.after:.1f} ({top.change:+.1f}) "
+                f"— the largest pillar move"
+            )
+            others = attr.moves[1:3]
+            if others:
+                more = "; ".join(
+                    f"{m.domain} {m.pillar} {m.before:.1f}→{m.after:.1f} ({m.change:+.1f})"
+                    for m in others
+                )
+                lines.append(f"  also: {more}")
+        else:
+            lines.append(
+                f"attribution (vs last in-band {_short_ts(attr.anchor_ts)}): "
+                f"overall delta moved but no single pillar isolated "
+                f"(pillar(s) unobserved on one side)"
+            )
     tail = pts[-window:]
     lines.append(
         f"delta trend (last {len(tail)}): {_spark([p.delta for p in tail])}"

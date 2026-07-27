@@ -3866,3 +3866,81 @@ readout to name WHICH pillar drove the delta move (here: `.com` legibility), so 
 [LOCAL] decision, once the `.com` site settles, on whether to re-capture the
 canonical fixture (moving the pinned baseline) — deliberately NOT done while the
 site is still fluctuating.
+
+## Cycle 37 (METHOD) — 2026-07-27T15:14Z — pillar-level ATTRIBUTION of a canonical divergence: WHICH pillar drove the delta move, computed not hand-written
+
+**Track.** METHOD (measurement rigor — attribution). Cycle 36 surfaced a live
+canonical DRIFT and hand-wrote its cause in STATE ("`.com` legibility fell
+90.9 → 63.6"). The playbook's per-cycle duty is to "explain the delta in
+capability terms" — but that explanation was PROSE a human typed, not a computed
+fact. This cycle makes it computed: the readout now names the pillar(s) that
+moved, so the attribution is reproducible and cannot silently disagree with the
+data.
+
+**What / why.** Extended the read-only diagnostic `asrs/canonical_history.py`
+(shipped Cycle 36) so a divergence is attributed to the pillar that drove it:
+- `CanonicalPoint` now carries `no_rails_pillars` / `with_rails_pillars` — each
+  side's per-pillar overalls (0–100), parsed via `_numeric_pillars`, keeping
+  NUMERIC entries only. A pillar recorded `None` (outcome in static mode, or a
+  pillar that came back CANT_TEST on an error crawl — e.g. the 07:40Z transient
+  where `.com` legibility/transactability were both `None`) is DROPPED, never
+  credited a move. Attribution honesty applied to the pillar layer.
+- `PillarMove` (domain, pillar, before→after, signed change) + `PillarAttribution`
+  (`anchor_ts`, `moves` largest-|change|-first, `.top`).
+- `summarize()` computes `CanonicalHistory.attribution` via `_attribute`: ONLY
+  when the latest reading is out of band (run ≥ 1) AND an earlier IN-BAND reading
+  exists to anchor against — `points[-(run+1)]`, the reading immediately before
+  the trailing out-of-band run, in-band by that run's stopping condition. When the
+  ENTIRE series is out of band (no stable baseline ever observed live), or the
+  latest is in-band (nothing to explain), attribution is honest `None` — the same
+  discipline the loader applies to unobserved runs.
+- `render()` adds an `attribution (vs last in-band <ts>): <domain> <pillar>
+  fell/rose X → Y (±Δ) — the largest pillar move` line (+ up to 2 secondary
+  movers), only when attribution is present.
+
+**Validation.** Run against the REAL committed 66-artifact series, the computed
+attribution reproduces the Cycle-36 hand-written note EXACTLY:
+`attribution (vs last in-band 2026-07-27T05:43Z): driftflight.com legibility fell
+90.9 → 63.6 (-27.3) — the largest pillar move`. The flat pillars (`.org` all
+pillars, `.com` transactability/access/trust) are correctly NOT reported as movers.
+
+**Canonical pair.** Score-neutral: `git diff --name-only` = `asrs/canonical_history.py`
++ `tests/test_canonical_history.py` ONLY; scoring.py/rubric/probes/fetch/protocols/
+behavioral/offering/battery byte-for-byte untouched (`git diff` over them empty) →
+rubric stays **v0.7**, canonical PAIR unchanged by construction AND re-measured
+(in-cloud replay guard 11/11, **46.1 F / 85.5 B / +39.4**, 0 replay-miss). The
+LIVE `.com` drift (78.7 C, delta +32.6, DRIFTING) is unchanged by this cycle — the
+fixture guard is (correctly) blind to it; this cycle just makes the readout NAME
+its cause. `asrs/canonical_history.py` imports no scoring code (read-only over
+committed artifacts); the reference-pair hosts appear only as DATA (existing module
+constants), never as scored-check wording — vendor-neutral.
+
+**Tests.** `test_canonical_history.py` 6 → 10 (+4): (1) a synthetic mirror of the
+real drift asserts the top mover is `.com` legibility −27.3 and the flat pillars
+are NOT movers (non-vacuous); (2) an in-band series → attribution `None`, render
+omits it; (3) a latest reading with legibility `None` (unobserved) → legibility is
+NOT attributed, the next observed mover wins, AND an all-out-of-band series → honest
+`None` (no anchor); (4) the REAL committed series, guarded, fingers `.com` as the
+drifting side (skips cleanly if the site recovers to in-band). Suite 156 → 160.
+
+**Ship.** Direct to main (READOUT/METHOD diagnostic + tests; no scoring semantics,
+not payment/signing). Per playbook ship rules (docs/readout/tests → direct).
+
+**Comms.** No Slack this fire: score-neutral/non-sensitive. This fire is 15:14Z;
+the first-cycle-after-16:00-UTC daily digest still owes a report on the live
+canonical drift (open since Cycle 36) + this computed-attribution ship — folded
+into that digest when the next cycle crosses the window.
+
+**First duty.** No open peer-gated PR (`list_pull_requests` state=open → `[]`).
+Infra health check ran FIRST — ALL GREEN: runner HEALTHY (newest
+`verify_20260727T134147Z`, 13:41Z, ~1.5h old at fire, tests_ok, 66 usable points);
+bench runnable, full suite 156/156 pre-change (now 160/160); git realigned to
+origin/main (`dd449d4` = Cycle 36; detached HEAD after the forced-update local-verify
+push reset to `main`).
+
+**Next hypothesis.** (1) Surface the computed attribution on an HTML trend surface
+(the Cycle-36 "score-over-time trend page" READOUT item — the terminal block +
+attribution rendered into the scorecard / a standalone page). (2) [LOCAL] decision,
+still deferred: whether to re-capture the `.com` canonical fixture once the live
+series reads in-band-stable at a NEW level for several consecutive fires (do NOT
+re-capture while fluctuating).

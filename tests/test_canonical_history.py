@@ -42,16 +42,27 @@ def _check(cond: bool, msg: str) -> None:
     print(f"  ok: {msg}")
 
 
-def _artifact(ts: str, org: float, com: float, delta, ok: bool = True) -> dict:
-    def side(overall, grade):
-        return {"ok": ok, "overall": overall, "grade": grade, "scored": True}
+def _artifact(
+    ts: str,
+    org: float,
+    com: float,
+    delta,
+    ok: bool = True,
+    org_pillars: dict | None = None,
+    com_pillars: dict | None = None,
+) -> dict:
+    def side(overall, grade, pillars):
+        s = {"ok": ok, "overall": overall, "grade": grade, "scored": True}
+        if pillars is not None:
+            s["pillars"] = pillars
+        return s
     return {
         "ts": ts,
         "kind": "local-verify",
         "tests_ok": True,
         "scores": {
-            ch.CANONICAL_NO_RAILS: side(org, "F"),
-            ch.CANONICAL_WITH_RAILS: side(com, "B"),
+            ch.CANONICAL_NO_RAILS: side(org, "F", org_pillars),
+            ch.CANONICAL_WITH_RAILS: side(com, "B", com_pillars),
         },
         "delta": delta,
     }
@@ -165,6 +176,134 @@ def test_baseline_cannot_drift_from_replay_guard() -> None:
     )
 
 
+def _com_pillars(legibility, transactability=87.5):
+    # a full driftflight.com pillar block; access/trust flat, outcome unobserved
+    return {
+        "access": 100.0,
+        "legibility": legibility,
+        "transactability": transactability,
+        "trust": 60.0,
+        "outcome": None,
+    }
+
+
+def _org_pillars():
+    # drift-flight.org stays flat at 46.1 F throughout the live drift
+    return {
+        "access": 100.0,
+        "legibility": 36.36363636363637,
+        "transactability": 18.75,
+        "trust": 60.0,
+        "outcome": None,
+    }
+
+
+def test_attribution_names_the_moving_pillar() -> None:
+    print("test_attribution_names_the_moving_pillar")
+    # Mirror the real 2026-07-27 live drift: .org flat, .com legibility collapses
+    # 90.9 -> 63.6 while transactability holds -> the delta narrows and the pillar
+    # attribution must finger .com legibility, not the flat pillars.
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [
+            _artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4,
+                      org_pillars=_org_pillars(), com_pillars=_com_pillars(90.9090909090909))
+            for i in range(1, 5)
+        ]
+        rows.append(
+            _artifact("20260727T130000Z", 46.1, 78.7, 32.6,
+                      org_pillars=_org_pillars(), com_pillars=_com_pillars(63.63636363636363))
+        )
+        _write_series(tmp, rows)
+        hist = ch.load_history(tmp)
+        attr = hist.attribution
+        _check(attr is not None, "an out-of-band latest with an in-band anchor gets attribution")
+        _check(attr.anchor_ts == "20260727T040000Z", f"anchor is the last in-band reading, got {attr.anchor_ts}")
+        top = attr.top
+        _check(top is not None, "there is a top mover")
+        _check(top.domain == ch.CANONICAL_WITH_RAILS, f"the mover is the with-rails side, got {top.domain}")
+        _check(top.pillar == "legibility", f"the mover is legibility, got {top.pillar}")
+        _check(abs(top.change - (-27.27)) < 0.01, f"change is 90.9->63.6 = -27.27, got {top.change}")
+        # non-vacuous: the FLAT pillars are NOT reported as movers
+        moved = {(m.domain, m.pillar) for m in attr.moves}
+        _check((ch.CANONICAL_WITH_RAILS, "transactability") not in moved, "flat .com transactability is not a mover")
+        _check((ch.CANONICAL_NO_RAILS, "legibility") not in moved, "flat .org legibility is not a mover")
+        out = ch.render(hist)
+        _check("attribution" in out, "the render names the attribution")
+        _check("legibility" in out, "the render names the moving pillar")
+
+
+def test_attribution_none_when_in_band() -> None:
+    print("test_attribution_none_when_in_band")
+    # nothing has drifted -> nothing to attribute (honest None, not a fabricated move)
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [
+            _artifact("20260727T010000Z", 46.1, 85.5, 39.4,
+                      org_pillars=_org_pillars(), com_pillars=_com_pillars(90.9090909090909)),
+            _artifact("20260727T020000Z", 46.1, 85.0, 38.9,
+                      org_pillars=_org_pillars(), com_pillars=_com_pillars(90.9090909090909)),
+        ]
+        _write_series(tmp, rows)
+        hist = ch.load_history(tmp)
+        _check(hist.band == ch.BAND_IN, "series is in-band")
+        _check(hist.attribution is None, "in-band series has no attribution")
+        _check("attribution" not in ch.render(hist), "render omits attribution when in-band")
+
+
+def test_attribution_skips_unobserved_pillar_and_needs_an_anchor() -> None:
+    print("test_attribution_skips_unobserved_pillar_and_needs_an_anchor")
+    # (a) latest legibility unobserved (None, an error crawl) -> legibility is NOT
+    # attributed a move; the next-largest OBSERVED mover (transactability) wins.
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [
+            _artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4,
+                      org_pillars=_org_pillars(), com_pillars=_com_pillars(90.9090909090909, 87.5))
+            for i in range(1, 5)
+        ]
+        # latest: legibility None (unobserved), transactability dropped 87.5 -> 50.0
+        rows.append(
+            _artifact("20260727T130000Z", 46.1, 70.0, 23.9,
+                      org_pillars=_org_pillars(), com_pillars=_com_pillars(None, 50.0))
+        )
+        _write_series(tmp, rows)
+        hist = ch.load_history(tmp)
+        attr = hist.attribution
+        _check(attr is not None, "out-of-band with anchor -> attribution")
+        moved = {(m.domain, m.pillar) for m in attr.moves}
+        _check((ch.CANONICAL_WITH_RAILS, "legibility") not in moved, "unobserved legibility is not attributed a move")
+        _check(attr.top.pillar == "transactability", f"the observed mover wins, got {attr.top.pillar}")
+    # (b) the ENTIRE series is out of band -> no in-band anchor observed -> honest None
+    with tempfile.TemporaryDirectory() as tmp2:
+        rows2 = [
+            _artifact("20260727T010000Z", 46.1, 60.0, 13.9,
+                      org_pillars=_org_pillars(), com_pillars=_com_pillars(70.0)),
+            _artifact("20260727T020000Z", 46.1, 65.0, 18.9,
+                      org_pillars=_org_pillars(), com_pillars=_com_pillars(75.0)),
+        ]
+        _write_series(tmp2, rows2)
+        h2 = ch.load_history(tmp2)
+        _check(h2.consecutive_out_of_band == 2, "both readings out of band")
+        _check(h2.attribution is None, "no in-band anchor in the series -> no attribution claim")
+
+
+def test_attribution_on_real_series_fingers_com_legibility() -> None:
+    print("test_attribution_on_real_series_fingers_com_legibility")
+    # Non-vacuous end-to-end: the REAL committed series' current drift must
+    # attribute to driftflight.com legibility (the 2026-07-27 real-world site
+    # change STATE.md hand-wrote — now COMPUTED). Guarded so it only asserts the
+    # attribution WHEN the live series is actually out of band; if the site
+    # recovers to in-band, attribution is correctly None and we skip the claim.
+    hist = ch.load_history()
+    if hist.band == ch.BAND_IN or hist.attribution is None:
+        _check(True, "live series is in-band -> no attribution to check (site recovered)")
+        return
+    top = hist.attribution.top
+    _check(top is not None, "the drifting real series isolates a top mover")
+    _check(
+        top.domain == ch.CANONICAL_WITH_RAILS,
+        f"the real drift is on the with-rails side, got {top.domain}",
+    )
+
+
 def test_runs_against_real_committed_series() -> None:
     print("test_runs_against_real_committed_series")
     hist = ch.load_history()  # default runs/local in this checkout
@@ -182,6 +321,10 @@ def main() -> int:
         test_sustained_drift_counts_trailing_run,
         test_render_substantive_and_empty_safe,
         test_baseline_cannot_drift_from_replay_guard,
+        test_attribution_names_the_moving_pillar,
+        test_attribution_none_when_in_band,
+        test_attribution_skips_unobserved_pillar_and_needs_an_anchor,
+        test_attribution_on_real_series_fingers_com_legibility,
         test_runs_against_real_committed_series,
     ]
     failed = 0

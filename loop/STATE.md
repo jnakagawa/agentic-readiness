@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 36
+- Cycle counter: 37
 - Started: 2026-07-23 (UTC)
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -483,6 +483,25 @@
   PR (verified []); infra health check ran first — runner HEALTHY (verify_20260727T134147Z, 13:41Z, ~33 min old). NOTE:
   no CLOUD cycle fired between Cycle 35 (07-24T11:12Z) and this fire (07-27T14:21Z) — only the local verify runner
   heartbeated for ~3 days; cloud loop resumed this fire. Next cycle takes METHOD.
+  Cycle 37 METHOD (pillar-level ATTRIBUTION of a canonical divergence — the "explain the delta in capability terms"
+  duty is now COMPUTED, not hand-written): extended the read-only `asrs/canonical_history.py` (Cycle 36) so a
+  divergence is attributed to the pillar that drove it. `CanonicalPoint` now carries `no_rails_pillars`/
+  `with_rails_pillars` (per-side per-pillar overalls, NUMERIC entries only — a `None` pillar, e.g. the 07:40Z
+  transient's CANT_TEST legibility/transactability, is DROPPED, never credited a move → attribution honesty at the
+  pillar layer); `PillarMove`/`PillarAttribution` (`anchor_ts`, `moves` largest-|change|-first, `.top`);
+  `summarize` computes `attribution` via `_attribute` ONLY when latest is out of band AND an earlier in-band anchor
+  exists (`points[-(run+1)]`) — else honest `None` (in-band = nothing to explain; whole series OOB = no stable
+  baseline observed live). `render` names it. On the REAL committed series the computed line reproduces the Cycle-36
+  HAND-WRITTEN note EXACTLY: `driftflight.com legibility fell 90.9 → 63.6 (-27.3) — the largest pillar move`; flat
+  pillars correctly not movers. Score-neutral (`git diff --name-only` = canonical_history.py + test only;
+  scoring.py/rubric/probes/fetch/protocols/behavioral/offering/battery byte-for-byte untouched → rubric v0.7,
+  canonical PAIR unchanged by construction AND re-measured — replay guard 11/11, 46.1 F / 85.5 B / +39.4, 0
+  replay-miss). Vendor-neutral (imports no scoring code; reference-pair hosts as DATA via existing constants).
+  Direct-to-main. `test_canonical_history.py` 6 → 10 (+4: real-drift mirror w/ flat-pillar non-vacuous control;
+  in-band → None; unobserved-pillar-skip + no-anchor → None; real series fingers `.com`, recovery-guarded); suite
+  156 → 160. No Slack (score-neutral/non-sensitive; fire 15:14Z before the 16:00 UTC digest window — the open live
+  drift + this ship fold into that digest). First duty: no open peer-gated PR (verified []); infra health check ran
+  first — runner HEALTHY (verify_20260727T134147Z, 13:41Z, ~1.5h old). Next cycle takes COVERAGE.
 - **LIVE CANONICAL DRIFT (open, for the next post-16:00 UTC digest) — surfaced by the Cycle-36 history readout.**
   The live canonical delta held **+39.4** (46.1 F / 85.5 B) for days through `verify_20260727T054339Z`, then MOVED:
   07:40Z fire driftflight.com collapsed to 50.0 F (delta +3.9 — transient error crawl, transactability CANT_TEST /
@@ -495,6 +514,11 @@
   `python -m asrs canonical-history`. Decisions deferred until the site settles: (a) whether to re-capture the canonical
   fixture (moves the pinned baseline — [LOCAL], deliberately NOT while fluctuating); (b) pillar-level attribution in the
   readout (name WHICH pillar drove the move — here `.com` legibility). To be flagged in the next daily digest.
+  UPDATE (Cycle 37, METHOD): pillar-level attribution (b) is now COMPUTED — `asrs canonical-history` prints
+  `attribution (vs last in-band 2026-07-27T05:43Z): driftflight.com legibility fell 90.9 → 63.6 (-27.3) — the
+  largest pillar move`, so the "which pillar" fact is read live off the committed series, not hand-written.
+  Decision (a) — canonical fixture re-capture — remains deferred [LOCAL] until the site reads in-band-stable at a
+  new level (do NOT re-capture while fluctuating). Still owed to the next post-16:00 UTC digest.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity

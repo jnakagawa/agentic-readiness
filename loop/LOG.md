@@ -4614,3 +4614,7 @@ clean READOUT follow-up (queued P2). Cloud rotation → READOUT next.
 ## Local verification — 20260727T214106Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260727T214106Z.json
+
+## Local verification — 20260727T215839Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260727T215839Z.json

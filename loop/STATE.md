@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 44
+- Cycle counter: 45
 - Started: 2026-07-23 (UTC)
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -728,6 +728,34 @@
   label); suite 185→187. No Slack (display-only, moves no score, digest already sent Cycle 38 16:13Z,
   not a new window at ~22:2xZ). First duty: no open peer-gated PR (verified []); infra health check ran
   first — runner HEALTHY (verify_20260727T215839Z, 21:58Z, fresh, +39.4 in-band). Next cycle takes METHOD.
+  Cycle 45 METHOD (the divergence band's noise assumption made a MEASURED, guarded number — the first
+  variance/calibration guard in the repo): the drift arc (Cycles 36→44) rests on the bands
+  `_BAND_IN=2.0`/`_BAND_DRIFT=8.0`, ASSUMED constants justified only by the docstring's "within ordinary
+  static/live jitter" prose with NO test validating them against the series' actual observed noise —
+  a distinct KIND of rigor (all prior arc work was diagnostics, none calibration-validation). New
+  read-only `NoiseFloor` + `noise_floor(points, baseline)` (`asrs/canonical_history.py`) measures the
+  AT-REST dispersion of the delta over the readings the band already calls in-band
+  (`|delta-baseline|<=_BAND_IN`): `n_in_band`, population `stddev`, `max_abs_divergence`; properties
+  `deterministic` (σ+worst|div| ≤ `_NOISE_EPS=1e-6`) and `band_well_separated` (3σ fits `_BAND_IN` →
+  noise can't be misread as drift; False = TOO TIGHT). Wired into `summarize` as
+  `CanonicalHistory.noise_floor` (None <2 in-band, honest-None); `noise floor:` render line. THE FINDING
+  on the committed 72-point series: all **68 in-band re-scores reproduce +39.4 EXACTLY** (σ=0.00, worst
+  |div|=0.00, deterministic) — the static canonical re-score is deterministic at rest, so the in-band
+  band demonstrably absorbs real-world site TRANSIENTS (the 4 OOB readings 3.9/30.1/32.6, the 07-27 `.com`
+  outage), NOT measurement noise; the docstring's bare "ordinary jitter" claim is now a measured fact.
+  Read-only diagnostic: `git diff --name-only` = canonical_history.py + test ONLY; scoring.py/rubric/
+  probes/fetch/protocols/battery/offering/behavioral/scorecard byte-for-byte untouched → rubric stays
+  v0.7, canonical PAIR unchanged by construction AND re-measured (replay guard 14/14, 46.1 F / 85.5 B /
+  +39.4, 0 replay-miss; verify_20260727T224106Z 22:41Z in-band). Vendor-neutral (imports no scoring code;
+  reference-pair hosts as DATA). Direct-to-main. `test_canonical_history.py` 19→24 (+5: real-series
+  deterministic finding; calibration validation both directions — 3σ fits the band AND real transients
+  are signal-not-noise; NON-VACUOUS synthetic-jitter σ>0; too-tight-band alarm makes band_well_separated
+  non-vacuous; honest-None <2 in-band); suite 187→192 (test_free_tier 11/11 after
+  `pip install -r requirements.txt` closes the known eth-account env gap). No Slack (METHOD tests +
+  read-only diagnostic, moves no score, digest already sent Cycle 38 16:13Z, not a new window at ~23:1xZ).
+  First duty: no open peer-gated PR (verified []); infra health check ran first — runner HEALTHY
+  (verify_20260727T224106Z, 22:41Z, ~31 min old, +39.4 in-band); git reset to origin/main 5411e2b. Next
+  cycle takes COVERAGE.
 - **LIVE CANONICAL DRIFT (open, for the next post-16:00 UTC digest) — surfaced by the Cycle-36 history readout.**
   The live canonical delta held **+39.4** (46.1 F / 85.5 B) for days through `verify_20260727T054339Z`, then MOVED:
   07:40Z fire driftflight.com collapsed to 50.0 F (delta +3.9 — transient error crawl, transactability CANT_TEST /

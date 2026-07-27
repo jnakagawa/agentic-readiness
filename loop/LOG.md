@@ -4678,3 +4678,75 @@ links on the card. Cloud rotation → METHOD next.
 ## Local verification — 20260727T224106Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260727T224106Z.json
+
+## Cycle 45 (METHOD) — 2026-07-27T23:1xZ — the divergence band's noise assumption made a MEASURED number
+
+**Track.** METHOD (rotate METHOD→COVERAGE→TRUTH→READOUT; Cycle 44 READOUT → this METHOD).
+
+**What / why.** The canonical-history drift arc (Cycles 36→44: band → sustained run → pillar
+attribution → side/cause → re-capture decision → HTML) rests on the divergence bands
+(`_BAND_IN=2.0`, `_BAND_DRIFT=8.0`). Those thresholds were ASSUMED constants justified only by the
+docstring's prose — "within ordinary static/live jitter of the pinned delta" — with NO test
+validating them against the actual observed noise of the committed series. That is an unguarded
+methodological assumption, and a distinct KIND of rigor from everything the arc had added so far
+(all diagnostics; none calibration-validation). This cycle turns the assumption into a measured,
+guarded number — the first variance/calibration guard in the repo.
+
+`asrs/canonical_history.py` (read-only, imports no scoring code): new `NoiseFloor` dataclass +
+`noise_floor(points, baseline)` measures the AT-REST dispersion of the delta over the readings the
+band already calls in-band (`|delta - baseline| <= _BAND_IN`): `n_in_band`, population `stddev`, and
+`max_abs_divergence` (worst at-rest |div|). Properties: `deterministic` (σ and worst |div| both ≤
+`_NOISE_EPS=1e-6` → every in-band re-score reproduced the pinned delta exactly) and
+`band_well_separated` (3σ of the at-rest jitter still fits inside `_BAND_IN` → ordinary noise can't be
+misread as drift; False = the band is TOO TIGHT for the measured noise). Wired into `summarize` as
+`CanonicalHistory.noise_floor` (None when < 2 in-band readings — dispersion undefined, the same
+honest-None discipline attribution uses); rendered as a `noise floor:` line. Honest limit documented:
+the in-band clip makes this a truncated (lower-biased) estimate of true jitter — fine as a calibration
+FLOOR (if even the clipped dispersion crowds the band, the band is certainly too tight).
+
+**The finding.** On the committed 72-point series, all **68 in-band re-scores reproduce +39.4
+EXACTLY** — σ=0.00, worst |div|=0.00, `deterministic=True`. The static canonical re-score is
+deterministic at rest, so the in-band band is demonstrably absorbing real-world site TRANSIENTS (the 4
+out-of-band readings: deltas 3.9 / 30.1 / 32.6, the 2026-07-27 `.com` outage) — NOT measurement noise.
+The docstring's bare "ordinary jitter" claim is now a measured fact. Render:
+`noise floor: 68 in-band re-scores  σ=0.00  worst |div|=0.00  → DETERMINISTIC at rest — the ±2.0 band
+absorbs site transients, not measurement noise`.
+
+**Evidence / validation.** `tests/test_canonical_history.py` 19 → 24 (+5):
+(1) `test_noise_floor_is_deterministic_on_real_series` — the load-bearing finding on the REAL series
+(σ=0, worst |div|=0, deterministic, render says DETERMINISTIC);
+(2) `test_band_clears_the_observed_noise_and_the_real_transients_are_signal` — calibration validation
+both directions: 3σ of at-rest jitter fits the in-band band (not miscalibrated-too-tight) AND every
+real out-of-band transient's |div| sits far above the noise floor (genuine SIGNAL, never a noise
+false-alarm), non-vacuous when the committed series carries the transients;
+(3) `test_noise_floor_measures_synthetic_jitter` — NON-VACUOUS: in-band deltas that genuinely vary
+(±0.8, still in-band) report positive σ, matching worst |div|, `deterministic=False` (the measure
+isn't hard-coded to 0);
+(4) `test_noise_floor_flags_a_too_tight_band` — makes `band_well_separated` non-vacuous: ±1.9 jitter
+crowding the whole band → 3σ > `_BAND_IN` → `band_well_separated=False`, render raises "TOO TIGHT";
+(5) `test_noise_floor_none_below_two_in_band` — honest None for < 2 in-band readings (all-OOB and a
+lone in-band reading).
+
+**Canonical pair.** drift-flight.org **46.1 F** / driftflight.com **85.5 B** / delta **+39.4** —
+unchanged by construction AND re-measured: in-cloud replay guard `test_canonical_replay.py` 14/14
+(0 replay-miss), live-corroborated by `verify_20260727T224106Z` (22:41Z, in-band). `git diff
+--name-only` = `asrs/canonical_history.py` + `tests/test_canonical_history.py` ONLY; scoring.py/rubric/
+probes/fetch/protocols/battery/offering/behavioral/scorecard byte-for-byte untouched (verified empty
+diff over the scoring path) → rubric stays **v0.7**. Read-only diagnostic (measures an already-committed
+series, moves no score, touches no rubric); direct-to-main. Reference-pair hosts appear only as DATA
+(same engineering-history category as the rest of the module).
+
+**Suite.** 187 → 192 (all 19 files exit 0; `test_free_tier.py` 11/11 after `pip install -r
+requirements.txt` closes the known `eth-account` env gap).
+
+**Comms.** No Slack (METHOD tests + read-only diagnostic, moves no score, not sensitive; daily digest
+already sent Cycle 38 16:13Z, this fire ~23:1xZ is not a new digest window).
+
+**First duty.** No open peer-gated PR (`list_pull_requests state=open` → `[]`). Infra health check ran
+first — runner HEALTHY (`verify_20260727T224106Z`, 22:41Z, ~31 min old; 46.1 F / 85.5 B / +39.4
+in-band, drift stayed recovered), bench green; git reset to origin/main `5411e2b`.
+
+**Next hypothesis.** The noise floor validates the in-band band; the drifting/diverged cutoffs
+(`_BAND_DRIFT=8.0`) are still assumed. A next METHOD unit could measure the observed transient
+magnitudes to check the drifting/diverged split is calibrated too, OR surface `noise_floor` on
+`canonical-history.html` (READOUT, the same terminal→HTML deferral). Cloud rotation → COVERAGE next.

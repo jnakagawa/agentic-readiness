@@ -26,6 +26,7 @@ import glob
 import json
 import os
 from dataclasses import dataclass, field
+from statistics import pstdev
 
 # The committed-fixture canonical delta the in-cloud replay guard pins
 # (driftflight.com rails - drift-flight.org no-rails). Kept as a plain constant
@@ -43,6 +44,10 @@ CANONICAL_WITH_RAILS = "driftflight.com"
 # in-band  : within ordinary static/live jitter of the pinned delta
 # drifting : a notable but partial move (one pillar softened, or mid-deploy)
 # diverged : a large move — the reference pair no longer reproduces the delta live
+# The in-band width is not just an assumption: ``noise_floor`` measures the actual
+# at-rest dispersion of the in-band readings, and on the committed series every
+# in-band re-score reproduces the pinned delta EXACTLY (σ=0), so the band is
+# absorbing real-world site transients, not measurement noise — see NoiseFloor.
 _BAND_IN = 2.0
 _BAND_DRIFT = 8.0
 
@@ -77,6 +82,12 @@ _SPARK = "▁▂▃▄▅▆▇█"
 # that actually shifted, not float dust. Pillar overalls are exact renormalized
 # ratios, so real moves are many points; this only filters exact-0.0 no-movers.
 _PILLAR_MOVE_EPS = 0.1
+
+# Dispersion at or below this (in overall-score points) is treated as no measurable
+# noise — the in-band re-score reproduced the pinned delta exactly. Small because the
+# static re-score is a deterministic function of the crawl; genuine jitter, when it
+# exists, is a whole point or more (a pillar softening), never float dust.
+_NOISE_EPS = 1e-6
 
 
 @dataclass
@@ -199,6 +210,51 @@ class DivergenceCause:
 
 
 @dataclass
+class NoiseFloor:
+    """The measured MEASUREMENT-noise floor of the live re-score, from the readings
+    the band already calls in-band.
+
+    The divergence bands (``_BAND_IN`` etc.) assume a separation between ordinary
+    measurement jitter and a real site move. This turns that assumption into a
+    measured number: over the readings within the in-band width
+    (``|delta - baseline| <= _BAND_IN``), how much does the delta ACTUALLY vary? The
+    static canonical re-score is a deterministic function of the live crawl, so at
+    rest — when the reference sites are up and unchanged — every re-score should
+    reproduce the pinned delta exactly, i.e. the at-rest dispersion should be ~0.
+    When it is, the band is demonstrably absorbing real-world site TRANSIENTS (the
+    out-of-band readings), not measurement noise — the honest reading of what the
+    band is for, replacing the docstring's bare assertion of "ordinary jitter".
+
+    ``n_in_band`` : how many in-band readings the floor is measured over (>= 2).
+    ``stddev``    : population stddev of their delta values (the at-rest dispersion).
+    ``max_abs_divergence`` : the worst |delta - baseline| observed at rest.
+
+    Read-only, no score. The bands are clipped, so this dispersion is a truncated
+    (lower-biased) estimate of true jitter — fine as a calibration floor: if even
+    the clipped at-rest dispersion crowds the band, the band is certainly too tight.
+    """
+
+    n_in_band: int
+    stddev: float
+    max_abs_divergence: float
+
+    @property
+    def deterministic(self) -> bool:
+        """True iff the in-band re-score shows no measurable dispersion — every
+        in-band reading reproduced the pinned delta exactly. When true, the band is
+        absorbing real-world site TRANSIENTS, not measurement noise."""
+        return self.stddev <= _NOISE_EPS and self.max_abs_divergence <= _NOISE_EPS
+
+    @property
+    def band_well_separated(self) -> bool:
+        """True iff the in-band threshold comfortably clears observed jitter — three
+        sigma of the at-rest dispersion still fits inside the in-band width, so
+        ordinary noise cannot be misread as drift. Trivially true when deterministic;
+        False would mean the band is calibrated TOO TIGHT for the measured noise."""
+        return 3.0 * self.stddev <= _BAND_IN
+
+
+@dataclass
 class RecaptureAdvice:
     """Whether the pinned canonical fixture still represents the true gap.
 
@@ -236,6 +292,10 @@ class CanonicalHistory:
     # the synthesized re-capture recommendation (baseline-valid / wait / defer /
     # recapture-candidate / review) — always present once there is a latest point.
     recapture: RecaptureAdvice | None = None
+    # the measured measurement-noise floor over the in-band readings — validates
+    # that the in-band band absorbs site transients, not measurement jitter. None
+    # when fewer than 2 in-band readings exist (dispersion is undefined).
+    noise_floor: NoiseFloor | None = None
 
 
 def _band_for(abs_divergence: float) -> str:
@@ -358,7 +418,29 @@ def summarize(
     hist.attribution = _attribute(points, run, latest)
     hist.divergence_cause = _cause(points, run, latest)
     hist.recapture = recapture_advice(hist)
+    hist.noise_floor = noise_floor(points, baseline_delta)
     return hist
+
+
+def noise_floor(
+    points: list[CanonicalPoint], baseline_delta: float = FIXTURE_BASELINE_DELTA
+) -> NoiseFloor | None:
+    """Measure the at-rest measurement-noise floor over the in-band readings.
+
+    Dispersion of the delta among the readings the band calls in-band
+    (``|delta - baseline| <= _BAND_IN``). None when fewer than 2 such readings exist
+    — dispersion is undefined for a single point, and we make no measured claim we
+    can't support (the same honest-None discipline attribution applies). Pure, no
+    score, no side effects.
+    """
+    in_band = [p.delta for p in points if abs(p.delta - baseline_delta) <= _BAND_IN]
+    if len(in_band) < 2:
+        return None
+    return NoiseFloor(
+        n_in_band=len(in_band),
+        stddev=round(pstdev(in_band), 6),
+        max_abs_divergence=round(max(abs(d - baseline_delta) for d in in_band), 6),
+    )
 
 
 def _pillar_moves(
@@ -601,6 +683,21 @@ def render(history: CanonicalHistory, window: int = 24) -> str:
             f"{kind}: {n} consecutive re-score(s) out of band "
             f"(|delta - baseline| > {_BAND_IN:.1f})"
         )
+    nf = history.noise_floor
+    if nf is not None:
+        if nf.deterministic:
+            lines.append(
+                f"noise floor: {nf.n_in_band} in-band re-scores  σ={nf.stddev:.2f}  "
+                f"worst |div|={nf.max_abs_divergence:.2f}  → DETERMINISTIC at rest — "
+                f"the ±{_BAND_IN:.1f} band absorbs site transients, not measurement noise"
+            )
+        else:
+            sep = "well-separated" if nf.band_well_separated else "TOO TIGHT for observed noise"
+            lines.append(
+                f"noise floor: {nf.n_in_band} in-band re-scores  σ={nf.stddev:.2f}  "
+                f"worst |div|={nf.max_abs_divergence:.2f}  "
+                f"(±{_BAND_IN:.1f} in-band band {sep})"
+            )
     attr = history.attribution
     if attr is not None:
         top = attr.top

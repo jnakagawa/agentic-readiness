@@ -508,6 +508,109 @@ def test_recapture_advice_on_real_series_is_coherent() -> None:
     _check("re-capture:" in ch.render(hist), "the real render carries the recommendation line")
 
 
+def test_noise_floor_is_deterministic_on_real_series() -> None:
+    print("test_noise_floor_is_deterministic_on_real_series")
+    # THE load-bearing calibration finding: on the committed live series every
+    # in-band re-score reproduces the pinned +39.4 delta EXACTLY (σ=0, worst |div|=0)
+    # — the static canonical re-score is deterministic at rest, so the in-band band
+    # is demonstrably absorbing real-world site TRANSIENTS (the out-of-band readings),
+    # not measurement noise. This turns the band docstring's bare "ordinary jitter"
+    # assertion into a measured number.
+    hist = ch.load_history()
+    nf = hist.noise_floor
+    _check(nf is not None, "the real series has >= 2 in-band re-scores -> a noise floor")
+    _check(nf.n_in_band >= 2, f"measured over the in-band readings, got {nf.n_in_band}")
+    _check(nf.stddev == 0.0, f"in-band dispersion is exactly 0 (deterministic re-score), got {nf.stddev}")
+    _check(nf.max_abs_divergence == 0.0, f"worst at-rest |div| is 0, got {nf.max_abs_divergence}")
+    _check(nf.deterministic is True, "the at-rest re-score is deterministic")
+    _check(nf.band_well_separated is True, "a deterministic floor is trivially well-separated")
+    out = ch.render(hist)
+    _check("noise floor" in out, "the render surfaces the noise floor")
+    _check("DETERMINISTIC" in out, "the render names the deterministic-at-rest finding")
+
+
+def test_band_clears_the_observed_noise_and_the_real_transients_are_signal() -> None:
+    print("test_band_clears_the_observed_noise_and_the_real_transients_are_signal")
+    # Calibration validation, both directions:
+    #  (a) the in-band band is NOT miscalibrated-too-tight: 3-sigma of the measured
+    #      at-rest jitter fits inside the in-band width, so ordinary noise can never
+    #      be misread as drift.
+    #  (b) the real out-of-band transients are genuine SIGNAL, not noise false-alarms:
+    #      every out-of-band reading's |div| sits far above the measured noise floor.
+    hist = ch.load_history()
+    nf = hist.noise_floor
+    _check(nf is not None, "the real series has a measured noise floor")
+    _check(3.0 * nf.stddev <= ch._BAND_IN, f"3-sigma jitter fits the in-band band, got {3.0*nf.stddev}")
+    _check(nf.max_abs_divergence < ch._BAND_IN, f"worst at-rest |div| is inside the band, got {nf.max_abs_divergence}")
+    oob = [p for p in hist.points if abs(p.delta - hist.baseline_delta) > ch._BAND_IN]
+    if oob:  # the committed series carries the 2026-07-27 transients; non-vacuous when present
+        worst_noise = nf.max_abs_divergence
+        for p in oob:
+            div = abs(p.delta - hist.baseline_delta)
+            _check(
+                div > worst_noise + ch._BAND_IN,
+                f"transient {p.ts} |div|={div:.1f} is far above the noise floor {worst_noise:.2f}",
+            )
+
+
+def test_noise_floor_measures_synthetic_jitter() -> None:
+    print("test_noise_floor_measures_synthetic_jitter")
+    # Non-vacuous: the measure is NOT hard-coded to 0. A series whose in-band deltas
+    # genuinely vary (all still within +/-2.0 of the baseline) must report a positive
+    # stddev, a matching worst |div|, and deterministic=False.
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [
+            _artifact("20260727T010000Z", 46.1, 85.5, 39.4),   # div 0.0
+            _artifact("20260727T020000Z", 46.1, 86.3, 40.2),   # div +0.8 (in-band)
+            _artifact("20260727T030000Z", 46.1, 84.7, 38.6),   # div -0.8 (in-band)
+        ]
+        _write_series(tmp, rows)
+        nf = ch.load_history(tmp).noise_floor
+        _check(nf is not None, "three in-band readings -> a noise floor")
+        _check(nf.n_in_band == 3, f"all three are in-band, got {nf.n_in_band}")
+        _check(nf.stddev > 0.0, f"varying in-band deltas -> positive dispersion, got {nf.stddev}")
+        _check(abs(nf.max_abs_divergence - 0.8) < 1e-6, f"worst |div| is 0.8, got {nf.max_abs_divergence}")
+        _check(nf.deterministic is False, "measurable dispersion -> not deterministic")
+        _check(nf.band_well_separated is True, "0.8-scale jitter still fits the +/-2.0 band at 3-sigma")
+
+
+def test_noise_floor_flags_a_too_tight_band() -> None:
+    print("test_noise_floor_flags_a_too_tight_band")
+    # Makes band_well_separated non-vacuous: in-band deltas that crowd the whole
+    # +/-2.0 width (so 3-sigma of the at-rest jitter exceeds the band) must report
+    # band_well_separated=False and render "TOO TIGHT" — the miscalibration alarm.
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [
+            _artifact("20260727T010000Z", 46.1, 87.3, 41.3),   # div +1.9 (just in-band)
+            _artifact("20260727T020000Z", 46.1, 83.7, 37.5),   # div -1.9 (just in-band)
+        ]
+        _write_series(tmp, rows)
+        hist = ch.load_history(tmp)
+        nf = hist.noise_floor
+        _check(nf is not None, "two in-band readings -> a noise floor")
+        _check(nf.deterministic is False, "1.9-point jitter is not deterministic")
+        _check(3.0 * nf.stddev > ch._BAND_IN, f"3-sigma exceeds the band, got {3.0*nf.stddev}")
+        _check(nf.band_well_separated is False, "the band is too tight for this jitter")
+        _check("TOO TIGHT" in ch.render(hist), "the render raises the too-tight alarm")
+
+
+def test_noise_floor_none_below_two_in_band() -> None:
+    print("test_noise_floor_none_below_two_in_band")
+    # Honest None: dispersion is undefined for < 2 in-band readings. A series that is
+    # entirely out of band (no at-rest reading) has no measurable floor.
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [
+            _artifact("20260727T010000Z", 46.1, 60.0, 13.9),   # out of band
+            _artifact("20260727T020000Z", 46.1, 65.0, 18.9),   # out of band
+        ]
+        _write_series(tmp, rows)
+        _check(ch.load_history(tmp).noise_floor is None, "no in-band readings -> no noise floor")
+    # a lone in-band reading is also < 2 -> undefined dispersion -> None
+    with tempfile.TemporaryDirectory() as tmp2:
+        _write_series(tmp2, [_artifact("20260727T010000Z", 46.1, 85.5, 39.4)])
+        _check(ch.load_history(tmp2).noise_floor is None, "a single in-band reading -> no dispersion, None")
+
+
 def test_runs_against_real_committed_series() -> None:
     print("test_runs_against_real_committed_series")
     hist = ch.load_history()  # default runs/local in this checkout
@@ -538,6 +641,11 @@ def main() -> int:
         test_recapture_advice_recommends_recapture_when_baseline_moved,
         test_recapture_advice_reviews_when_no_anchor,
         test_recapture_advice_on_real_series_is_coherent,
+        test_noise_floor_is_deterministic_on_real_series,
+        test_band_clears_the_observed_noise_and_the_real_transients_are_signal,
+        test_noise_floor_measures_synthetic_jitter,
+        test_noise_floor_flags_a_too_tight_band,
+        test_noise_floor_none_below_two_in_band,
         test_runs_against_real_committed_series,
     ]
     failed = 0

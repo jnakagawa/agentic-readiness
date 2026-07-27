@@ -618,6 +618,22 @@ design in-cloud, execute locally.
   history beyond the canonical pair (needs committed dated reports for other
   domains — currently only the verify series is committed); (c) error bars once
   multi-trial series land.
+- **Noise-floor on `canonical-history.html`** (READOUT, Cycle-45 follow-up): the measured
+  measurement-noise floor (`CanonicalHistory.noise_floor` — `n_in_band`, σ, worst |div|,
+  deterministic / band_well_separated) now renders in the TERMINAL `asrs canonical-history`
+  block but not on the HTML page. Surface it on `canonical-history.html`
+  (`scorecard._write_canonical_history_page`) — the same terminal→HTML deferral the drift
+  diagnostics took (pillar/side/re-capture, Cycles 37/39/43 → 40/44). Display-only,
+  score-neutral, direct-to-main; a render + a `test_readout.py` case.
+- **Validate the drifting/diverged cutoffs against observed transient magnitudes** (METHOD,
+  Cycle-45 follow-up): Cycle 45 measured the AT-REST noise floor (σ=0 → the in-band `_BAND_IN=2.0`
+  band is well-separated from measurement noise). The `_BAND_DRIFT=8.0` cutoff that splits
+  "drifting" from "diverged" is still an ASSUMED constant. Measure the distribution of the
+  observed OUT-OF-BAND transient magnitudes (the committed series carries the 07-27 `.com`
+  outage: |div| 3.9→? / 30.1 / 32.6) and check the drifting/diverged split is calibrated to real
+  transient sizes rather than picked. Read-only diagnostic on `canonical_history`, score-neutral,
+  direct-to-main. Honest caveat: only ~4 transients observed so far — a small sample; the guard
+  should be a coherence check (all observed transients land in a sane band), not an over-fit.
 <!-- DONE 2026-07-27T15:14Z (Cycle 37, METHOD): "Canonical-history pillar attribution" SHIPPED,
      direct-to-main, score-neutral. `asrs/canonical_history.py`: `CanonicalPoint` now carries
      `no_rails_pillars`/`with_rails_pillars` (per-side per-pillar overalls, NUMERIC entries only —

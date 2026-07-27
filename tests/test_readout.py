@@ -634,6 +634,50 @@ def test_canonical_history_names_reference_pair_as_data() -> None:
            "the page names both reference-pair hosts as data")
 
 
+def test_canonical_history_page_renders_recapture_defer() -> None:
+    # Cycle 43 computed the re-capture DECISION on the terminal readout; the HTML page
+    # must surface it too. On the drifting series (with-rails reference SOFTENED, 3
+    # in a row) the honest recommendation is DEFER — a real-world site change, not the
+    # gap closing, so the pinned fixture still represents the true gap; do NOT chase it.
+    print("test_canonical_history_page_renders_recapture_defer")
+    hist = _drifting_history()
+    _check(hist.recapture is not None and hist.recapture.code == ch.REC_DEFER,
+           "the drifting series's recommendation is DEFER (sanity on the fixture)")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_canonical_history_page(Path(d), history=hist)).read_text()
+    _check("Re-capture decision" in text, "the page renders the re-capture decision card")
+    _check(ch._REC_LABEL[ch.REC_DEFER] in text, "names the DEFER recommendation label")
+    _check("DEFER re-capture until the reference recovers" in text,
+           "surfaces the decision reason (defer until the reference recovers)")
+    # The chip is coloured by the code, and the [LOCAL] framing (a decision, not an
+    # action) is stated — re-capture is never performed by this page.
+    _check(scorecard._HISTORY_REC_COLOR[ch.REC_DEFER] in text,
+           "the recommendation chip is coloured by its code")
+    _check("[LOCAL]" in text, "names re-capture as a [LOCAL], comparability-affecting step")
+
+
+def test_canonical_history_recapture_is_data_driven() -> None:
+    # Non-vacuous: an in-band series (live delta reproduces the pinned +39.4) renders
+    # the BASELINE-VALID recommendation, NOT the DEFER prose — proving the decision
+    # card is earned by the data, not baked into the template.
+    print("test_canonical_history_recapture_is_data_driven")
+    no_pil = {"access": 100.0, "legibility": 36.4}
+    with_pil = {"access": 100.0, "legibility": 90.9}
+    pts = [
+        _hist_point("20260727T050000Z", 46.1, "F", 85.5, "B", no_pil, with_pil),
+        _hist_point("20260727T060000Z", 46.1, "F", 85.5, "B", no_pil, with_pil),
+    ]
+    hist = ch.summarize(pts)
+    _check(hist.recapture is not None and hist.recapture.code == ch.REC_VALID,
+           "an in-band series recommends BASELINE-VALID (sanity)")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_canonical_history_page(Path(d), history=hist)).read_text()
+    _check("Re-capture decision" in text, "the decision card renders on the in-band series too")
+    _check(ch._REC_LABEL[ch.REC_VALID] in text, "names the BASELINE-VALID recommendation")
+    _check(ch._REC_LABEL[ch.REC_DEFER] not in text,
+           "does NOT show the DEFER label on an in-band series (data-driven, not templated)")
+
+
 def main() -> int:
     tests = [
         test_json_carries_reliability,
@@ -665,6 +709,8 @@ def main() -> int:
         test_canonical_history_trend_svg_colors_by_band,
         test_canonical_history_empty_series_renders_gracefully,
         test_canonical_history_names_reference_pair_as_data,
+        test_canonical_history_page_renders_recapture_defer,
+        test_canonical_history_recapture_is_data_driven,
     ]
     failed = 0
     for t in tests:

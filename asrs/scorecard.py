@@ -524,6 +524,20 @@ _HISTORY_BAND_LABEL = {
     "diverged": "Diverged",
 }
 
+# Colour for the synthesized re-capture recommendation chip, keyed on the
+# canonical_history REC_* code. Reuses the band inks so the surface reads as one
+# system: green = no action (baseline valid), amber = hold (jitter not yet
+# sustained, or defer to a recovering reference), red = a real move that is a
+# [LOCAL] re-capture candidate, neutral = needs a human look. Never colour-alone —
+# the label text and the full reason always render alongside it.
+_HISTORY_REC_COLOR = {
+    "baseline-valid": "#067647",
+    "wait-not-yet-sustained": "#b54708",
+    "defer-reference-degraded": "#b54708",
+    "recapture-candidate": "#b42318",
+    "review-no-anchor": "#667085",
+}
+
 
 def _history_trend_svg(points: list, baseline: float) -> str:
     """A single-series change-over-time trend: the live canonical delta per re-score,
@@ -760,10 +774,33 @@ its divergence band; hover a point for its timestamp and value.</p>
             diag_card += f'<p><b>Side:</b> {_esc(ch.cause_verdict(cause))}.</p>'
         diag_card += "</div>"
 
+    # The synthesized DECISION the drift diagnostics feed (Cycle 43): given the live
+    # series, does the committed fixture still represent the true capability gap, or
+    # should the pinned delta be re-captured [LOCAL]? Surfaced here so the HTML page
+    # shows the same `re-capture:` line the terminal readout does — the recommendation,
+    # never an action (moving the pinned baseline is a [LOCAL], comparability-affecting
+    # step). Rendered whenever there is a reading (any code but the no-data sentinel).
+    rec_card = ""
+    adv = hist.recapture
+    if adv is not None and adv.code != ch.REC_NO_DATA:
+        rec_color = _HISTORY_REC_COLOR.get(adv.code, "#667085")
+        rec_label = ch._REC_LABEL.get(adv.code, adv.code)
+        rec_card = f"""<div class="card">
+<h2>Re-capture decision</h2>
+<p>Does the committed fixture still represent the true capability gap, or has the
+reference pair moved durably enough that the pinned delta should be re-captured?
+This synthesizes the band, sustained-run, pillar and side diagnostics above into one
+recommendation &mdash; a decision, never an action (re-capturing the pinned baseline
+is a <span class="chip">[LOCAL]</span>, comparability-affecting step).</p>
+<p style="margin-top:12px"><b style="color:{rec_color}">{_esc(rec_label)}</b>
+&mdash; {_esc(adv.reason)}.</p>
+</div>"""
+
     body = f"""{nav}{intro}
 {latest_card}
 {chart_card}
 {diag_card}
+{rec_card}
 <p class="sub" style="margin-top:16px">
 Read this live in a terminal: <span class="chip">python -m asrs canonical-history</span>
 &middot; <a href="methodology.html">How the score is measured &rarr;</a></p>

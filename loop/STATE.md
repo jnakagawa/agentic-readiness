@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 43
+- Cycle counter: 44
 - Started: 2026-07-23 (UTC)
-- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -705,6 +705,29 @@
   HEALTHY (verify_20260727T204103Z, 20:41Z, ~37 min old, +39.4 in-band); git realigned to origin/main 4b1d1e3.
   Next cycle takes READOUT. Follow-up (queued P2 READOUT): surface `recapture` on `canonical-history.html`
   (Cycle-40 page) — the same terminal→HTML deferral the battery diagnostics took.
+  Cycle 44 READOUT (the Cycle-43 re-capture DECISION surfaced on `canonical-history.html` — the last
+  terminal→HTML gap for the drift arc): `scorecard._write_canonical_history_page` gains a "Re-capture
+  decision" card driven off `hist.recapture` (computed in `summarize`, Cycle 43) — the recommendation
+  label (`ch._REC_LABEL`) + full reason, rendered whenever there is a reading (any code but the
+  `REC_NO_DATA` sentinel). New `_HISTORY_REC_COLOR` colours the label chip by code, REUSING the band inks
+  so the surface reads as one system (green `baseline-valid` no-action / amber `wait`+`defer` hold / red
+  `recapture-candidate` a `[LOCAL]` re-capture candidate / neutral `review`); NEVER colour-alone — label
+  text + full reason always render alongside. Card states in prose that re-capture is a DECISION not an
+  action (moving the pinned baseline is a `[LOCAL]`, comparability-affecting step). Closes the same
+  deferral the battery diagnostics took (per_kind 10→12, between_kind 18→20, NA-naming 25→28), now for
+  the Cycles-36→43 drift arc (trend+band+sustained+pillar+side/cause were on the page; the DECISION they
+  feed was terminal-only). Display-only: `git diff --name-only` = scorecard.py + test_readout.py ONLY;
+  scoring.py/rubric/probes/fetch/protocols/battery/offering/behavioral/canonical_history byte-for-byte
+  untouched (verified empty diff) → rubric stays v0.7, canonical PAIR unchanged by construction AND
+  re-measured (replay guard 14/14, 46.1 F / 85.5 B / +39.4, 0 replay-miss; verify_20260727T215839Z 21:58Z
+  in-band live-corroborates). Reference-pair hosts as DATA (same engineering-history category as
+  rubric.html, out of scope for the wording scanner; `test_readout_wording` unchanged/green). LIVE page
+  off the committed 69-point series reads `baseline-valid` (green) — the honest no-action state matching
+  the recovered/stable drift. Direct-to-main. `test_readout.py` 29→31 (+recapture-DEFER render on the
+  drifting series; +NON-VACUOUS data-driven control — in-band renders `baseline valid`, NOT the DEFER
+  label); suite 185→187. No Slack (display-only, moves no score, digest already sent Cycle 38 16:13Z,
+  not a new window at ~22:2xZ). First duty: no open peer-gated PR (verified []); infra health check ran
+  first — runner HEALTHY (verify_20260727T215839Z, 21:58Z, fresh, +39.4 in-band). Next cycle takes METHOD.
 - **LIVE CANONICAL DRIFT (open, for the next post-16:00 UTC digest) — surfaced by the Cycle-36 history readout.**
   The live canonical delta held **+39.4** (46.1 F / 85.5 B) for days through `verify_20260727T054339Z`, then MOVED:
   07:40Z fire driftflight.com collapsed to 50.0 F (delta +3.9 — transient error crawl, transactability CANT_TEST /

@@ -4618,3 +4618,59 @@ tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4
 ## Local verification — 20260727T215839Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260727T215839Z.json
+
+## Cycle 44 (READOUT) — 2026-07-27T22:2xZ — re-capture recommendation surfaced on canonical-history.html
+
+**Track.** READOUT (rotate METHOD→COVERAGE→TRUTH→READOUT; Cycle 43 TRUTH → this READOUT).
+
+**What / why.** Cycle 43 made the canonical re-capture DECISION computed
+(`canonical_history.recapture_advice` → `RecaptureAdvice`, rendered as the terminal `re-capture:`
+line). But that decision — the synthesized answer to "does the committed fixture still represent the
+true capability gap, or should the pinned delta be re-captured `[LOCAL]`?" — was TERMINAL-ONLY; the
+Cycle-40 HTML `canonical-history.html` page rendered the band, sustained run, pillar attribution and
+side/direction cause but NOT the decision they all feed. This closes that last terminal→HTML gap for
+the benchmark reading its own regression signal — the SAME deferral the battery diagnostics took
+(per_kind Cycle 10→12, between_kind_spread Cycle 18→20, NA-naming Cycle 25→28), now for the drift arc.
+
+`_write_canonical_history_page` gains a "Re-capture decision" card driven off `hist.recapture`
+(computed in `summarize`): the recommendation label (`ch._REC_LABEL`) + full reason, rendered
+whenever there is a reading (any code but the `REC_NO_DATA` sentinel). A new `_HISTORY_REC_COLOR`
+map colours the label chip by code, reusing the band inks so the surface reads as one system —
+green `baseline-valid` (no action) / amber `wait`+`defer` (hold) / red `recapture-candidate` (a real
+move, a `[LOCAL]` re-capture candidate) / neutral `review`. NEVER colour-alone: the label text and
+the full reason always render alongside the chip. The card states in prose that re-capture is a
+DECISION, never an action (moving the pinned baseline is a `[LOCAL]`, comparability-affecting step) —
+the page performs nothing.
+
+**Evidence / validation.** `tests/test_readout.py` 29→31 (+2): `test_canonical_history_page_renders_
+recapture_defer` (the drifting series → `REC_DEFER`: names the "defer re-capture" label, the
+"DEFER … until the reference recovers" reason, the code-keyed chip colour, and the `[LOCAL]` framing)
++ `test_canonical_history_recapture_is_data_driven` (NON-VACUOUS — an in-band series renders
+`baseline valid` and does NOT show the DEFER label → the card is earned by the data, not templated).
+Rendered the LIVE page off the committed 69-point series: recommendation reads `baseline-valid`
+(green) — the honest no-action state matching the recovered/stable drift (Cycle 41).
+
+**Canonical pair.** drift-flight.org **46.1 F** / driftflight.com **85.5 B** / delta **+39.4** —
+unchanged by construction AND re-measured: in-cloud replay guard `test_canonical_replay.py` 14/14
+(0 replay-miss), live-corroborated by `verify_20260727T215839Z` (21:58Z, in-band). `git diff
+--name-only` = `asrs/scorecard.py` + `tests/test_readout.py` ONLY; scoring.py/rubric/probes/fetch/
+protocols/battery/offering/behavioral/canonical_history byte-for-byte untouched (verified empty diff)
+→ rubric stays **v0.7**. Display-only (renders an already-computed read-only diagnostic, moves no
+score, touches no rubric); direct-to-main. The reference-pair hosts appear only as DATA — the SAME
+engineering-history category as rubric.html, deliberately out of scope for the wording scanner
+(`test_readout_wording` unchanged/green).
+
+**Suite.** 185 → 187 (all 19 files exit 0).
+
+**Comms.** No Slack (READOUT display-only + tests, moves no score, not sensitive; daily digest
+already sent Cycle 38 16:13Z, this fire ~22:2xZ is not a new digest window).
+
+**First duty.** No open peer-gated PR (`list_pull_requests state=open` → `[]`). Infra health check
+ran first — runner HEALTHY (`verify_20260727T215839Z`, 21:58Z, fresh; 46.1 F / 85.5 B / +39.4
+in-band, drift stayed recovered), bench 185/185 pre-change (after `pip install -r requirements.txt`),
+git realigned to origin/main `53ed513` (detached HEAD from the local-verify push reset to main).
+
+**Next hypothesis.** The canonical-history HTML surface is now complete (trend + band + sustained
+run + pillar + side/cause + re-capture decision). READOUT frontier moves elsewhere: the compare-card
+delta → methodology earned-dominance cross-link (P2, the last cross-link nicety), or evidence-blob
+links on the card. Cloud rotation → METHOD next.

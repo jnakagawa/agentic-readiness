@@ -648,14 +648,18 @@ design in-cloud, execute locally.
      + scorecard.py + test_readout.py ONLY; scoring/rubric/probes/… untouched → rubric v0.7, replay guard
      11/11, 46.1 F / 85.5 B / +39.4. `test_readout.py` 23→29; suite 164→170. See LOG Cycle 40. This discharges
      remaining item (a) of the "Score-over-time trend page" P2 below. -->
-- **Surface the re-capture recommendation on the canonical-history HTML page** (READOUT, Cycle-43
-  follow-up, direct-to-main): Cycle 43 added `canonical_history.recapture_advice` + a `re-capture:`
-  line to the TERMINAL readout, but the Cycle-40 `canonical-history.html` page
-  (`scorecard._write_canonical_history_page`) does not yet render it — the same terminal→HTML
-  deferral the battery diagnostics took (Cycles 10→12, 18→20). Add the recommendation (code label +
-  reason) to the diagnostic card, colored by code (baseline-valid good / wait+defer warn /
-  recapture-candidate+review bad, matching the band inks). Display-only, score-neutral, `test_readout.py`
-  +1–2. The `re-capture:` line reads off `hist.recapture.{code,reason}`; the page already has `hist`.
+<!-- DONE 2026-07-27T22:2xZ (Cycle 44, READOUT, direct-to-main, display-only): "Surface the re-capture
+     recommendation on the canonical-history HTML page" SHIPPED. `_write_canonical_history_page` gains a
+     "Re-capture decision" card driven off `hist.recapture` (code label via `ch._REC_LABEL` + full reason),
+     rendered whenever there is a reading (any code but the REC_NO_DATA sentinel); a new `_HISTORY_REC_COLOR`
+     colours the label chip by code (green baseline-valid / amber wait+defer / red recapture-candidate /
+     neutral review — reusing the band inks so the surface reads as one system), NEVER colour-alone (label +
+     reason always render). The card states re-capture is a DECISION not an action ([LOCAL], comparability-
+     affecting). Closes the last terminal→HTML gap for the Cycles-36→43 drift arc (same deferral the battery
+     diagnostics took, 10→12 / 18→20 / 25→28). Display-only: git diff = scorecard.py + test_readout.py ONLY;
+     scoring.py/rubric/probes/canonical_history byte-for-byte untouched → rubric v0.7, replay guard 14/14 /
+     +39.4. LIVE 69-point series reads `baseline-valid` (green). `test_readout.py` 29→31 (+DEFER render on the
+     drifting series; +NON-VACUOUS in-band data-driven control); suite 185→187. See LOG Cycle 44. -->
 - **[LOCAL] Eyeball the canonical-history card on the operator's hosted deploy** (READOUT, Cycle-40 follow-up,
   optional): the HTML canonical-history page renders correctly in-cloud (Chromium screenshot, real committed
   series). A next visual check would confirm it reads well hosted next to a real published scorecard, and that

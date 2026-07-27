@@ -3786,3 +3786,7 @@ tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 50.0 F | delta +3.9 
 ## Local verification — 20260727T095143Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260727T095143Z.json
+
+## Local verification — 20260727T134147Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 78.7 C | delta +32.6 | artifact runs/local/verify_20260727T134147Z.json

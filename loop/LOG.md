@@ -4461,3 +4461,7 @@ spec/descriptor-driven classification end-to-end on a REAL site, not just synthe
 surfaces — the committed fixtures predate both surfaces), or the operator directive's
 BRICK 4 (out-of-scope legibility diagnostic — needs a separate proposal + behavioral
 runs, [LOCAL]). Next cycle takes TRUTH.
+
+## Local verification — 20260727T204103Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260727T204103Z.json

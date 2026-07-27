@@ -4674,3 +4674,7 @@ git realigned to origin/main `53ed513` (detached HEAD from the local-verify push
 run + pillar + side/cause + re-capture decision). READOUT frontier moves elsewhere: the compare-card
 delta → methodology earned-dominance cross-link (P2, the last cross-link nicety), or evidence-blob
 links on the card. Cloud rotation → METHOD next.
+
+## Local verification — 20260727T224106Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260727T224106Z.json

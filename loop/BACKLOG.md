@@ -78,6 +78,16 @@ design in-cloud, execute locally.
   +39.4, canonical OFFERING guard 8/8 unchanged (surfaces absent from committed fixtures).
   `test_offering.py` 7→9; suite 145→147. All FOUR directive surfaces (homepage / natural-language
   docs / OpenAPI / — the manifest) now read. See LOG Cycle 34.
+  FIFTH SURFACE (beyond the directive's named four) — Cycle 42 (COVERAGE, direct-to-main,
+  score-neutral): the agent-plugin descriptor `/.well-known/ai-plugin.json` is now read.
+  `asrs/offering._SURFACE_DOCS` gains it — the open, vendor-neutral manifest a storefront publishes
+  so an AI agent knows what it is / how to use it; its `description_for_model`/`description_for_human`
+  carry the SAME natural-language capability prose the bank already anchors on, so a descriptor-only
+  site (no homepage/llms.txt/reachable spec) is no longer mis-read as offering nothing (the exact
+  Cycle-34 failure mode, for the descriptor surface). No new signal. Score-neutral (off the scoring
+  path — grep-verified; commerce-manifest scoring probe's `protocols._AGENT_SURFACE_DOCS` untouched);
+  rubric v0.7, replay guard 14/14 / +39.4, canonical OFFERING guard 11/11 unchanged (surface absent
+  from committed fixtures). `test_offering.py` 9→10; suite 176→177. See LOG Cycle 42.
   PROGRESS — BRICK 2 (intent instantiation) SHIPPED 2026-07-24T00:49Z (local fire,
   COVERAGE, direct-to-main, score-neutral). `asrs/battery.py`
   `instantiate_battery(profile)` + a fixed per-archetype intent TEMPLATE bank
@@ -515,18 +525,20 @@ design in-cloud, execute locally.
      the referee-pass entry: the OpenAPI-spec-only fixture, and extending the OFFERING-layer relabel
      guard to the retail + non-storefront domains (only the SCORING-layer relabel covers all four). -->
 
-- **[LOCAL] OpenAPI-spec-only storefront fixture** (COVERAGE/TRUTH, Cycle-34 follow-up): Cycle 34
-  added `/openapi.json` / `/.well-known/openapi.json` / `/swagger.json` to
-  `asrs/offering._SURFACE_DOCS`, unit-tested on a SYNTHETIC spec surface. To pin live spec-driven
-  classification end-to-end, capture a fixture for a real storefront whose machine contract is an
-  OpenAPI spec (ideally one that serves the spec but a thin/absent homepage) via
+- **[LOCAL] Machine-surface-only storefront fixture (OpenAPI spec + ai-plugin descriptor)**
+  (COVERAGE/TRUTH, Cycle-34 + Cycle-42 follow-up): Cycle 34 added `/openapi.json` /
+  `/.well-known/openapi.json` / `/swagger.json` and Cycle 42 added `/.well-known/ai-plugin.json` to
+  `asrs/offering._SURFACE_DOCS`, each unit-tested on a SYNTHETIC surface only. To pin live
+  machine-surface-driven classification end-to-end, capture a fixture for a real storefront whose
+  agent-facing self-description is its OpenAPI spec and/or ai-plugin descriptor (ideally one that
+  serves the machine surface but a thin/absent homepage) via
   `asrs.cli score <domain> --record-fixture fixtures/canonical/<domain>.json` (LIVE, needs
   network → [LOCAL]), then add a `test_offering_canonical` case replaying it through
-  `discover_offering` and asserting the spec surface was READ (`"/openapi.json" in
-  profile.surfaces_seen` or equivalent) and drove the claimed archetypes. Capture is [LOCAL]; the
-  test wiring is cloud-doable once the fixture lands. Distinct value: the current guards replay
-  fixtures captured BEFORE the OpenAPI surface existed (so the spec is a replay-miss/absent on
-  them — the coverage is verified only against synthetic surfaces in-cloud today).
+  `discover_offering` and asserting the surface was READ (`"/openapi.json"` or
+  `"/.well-known/ai-plugin.json" in profile.surfaces_seen`) and drove the claimed archetypes.
+  Capture is [LOCAL]; the test wiring is cloud-doable once the fixture lands. Distinct value: the
+  current committed fixtures were captured BEFORE either surface existed (both are a replay-miss/
+  absent on them — the coverage is verified only against synthetic surfaces in-cloud today).
 
 <!-- DONE 2026-07-23T20:12Z (Cycle 20, READOUT): "HTML battery card: between-archetype spread pill"
      SHIPPED. `asrs/scorecard.py`: `_battery_between_band` (Generalist <0.15 / Somewhat type-dependent

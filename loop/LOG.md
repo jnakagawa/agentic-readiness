@@ -4393,3 +4393,71 @@ Next cycle takes COVERAGE.
 ## Local verification — 20260727T194100Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260727T194100Z.json
+
+## Cycle 42 — 2026-07-27T20:16Z — COVERAGE
+
+**What.** Offering relevance discovery now reads a FIFTH agent-facing surface —
+the agent-plugin descriptor `/.well-known/ai-plugin.json`. `asrs/offering._SURFACE_DOCS`
+gains that path (ordered after the natural-language docs, before the OpenAPI
+contract). Brick 1 read the homepage + natural-language docs (llms.txt / llms-full /
+manifest); Cycle 34 added the machine API CONTRACT (OpenAPI / Swagger). The
+descriptor is a distinct surface CLASS: the open, vendor-neutral manifest a
+storefront publishes so an AI agent knows what it is and how to use it. Its
+`description_for_model` / `description_for_human` fields are a hand-written,
+model-facing SUMMARY of the offering — exactly the natural-language commerce /
+capability prose ("inference API", "generate an image", "pay-per-generation",
+"usage-based", x402) the existing signal bank already anchors on. So the surface
+only had to be READ; it needs NO new signal. A storefront may serve a rich
+descriptor even when its OpenAPI summaries are one-liners, so reading it improves
+recall for the north-star "reach the site, understand the offer" capability.
+
+**Why.** The operator directive (2026-07-23) wants offering discovery "super flexible
+and generalized". An agent-native storefront's FIRST self-description to an agent is
+increasingly its plugin/tool descriptor, not a marketing homepage — and a
+descriptor-only site (no homepage/llms.txt/reachable spec) was classified from
+whatever else it served and could be mis-read as offering nothing (the exact
+mis-classification Cycle 34's OpenAPI addition fixed for spec-only sites). This is
+the same failure mode for the descriptor surface.
+
+**Score-neutral by construction.** `discover_offering` is called ONLY from
+`cli._resolve_battery` (`--battery auto`), NEVER on the scoring path
+(grep-verified: not referenced in `scoring.py` or `probes/`; the commerce-manifest
+SCORING probe keeps its own separate `protocols._AGENT_SURFACE_DOCS`, deliberately
+untouched — adding a surface there would be score-increasing + peer-gated).
+`git diff --name-only -- asrs/scoring.py rubric/ asrs/probes/ asrs/fetch.py
+asrs/protocols.py asrs/battery.py` EMPTY → rubric stays **v0.7**. Not payment/signing
+code — discovery is read-only `ctx.get` GETs ($0, invariant #1 clean; no POST/sign/
+settle added, diff grep clean). Direct-to-main.
+
+**Canonical pair.** drift-flight.org **46.1 F** / driftflight.com **85.5 B** / delta
+**+39.4** — unchanged by construction AND re-measured: in-cloud replay guard
+`test_canonical_replay.py` 14/14 (0 replay-miss), live-corroborated by
+`verify_20260727T194100Z` (19:41Z, in-band). The committed canonical fixtures were
+captured before this surface existed, so `/.well-known/ai-plugin.json` is a
+replay-miss (absent) on them → the canonical OFFERING guard `test_offering_canonical.py`
+is byte-identically **11/11 UNCHANGED** (same property Cycle 34 relied on).
+
+**Scope / evidence.** `asrs/offering.py` (surface list + docstrings) +
+`tests/test_offering.py` ONLY. `test_offering.py` 9 → 10 (+`test_ai_plugin_descriptor_alone_classifies_storefront`:
+a descriptor-only storefront classifies metered_api + digital_good from real anchored
+descriptor evidence — 5 distinct signals — with physical_good / subscription correctly
+NOT claimed; the wiring guard `test_openapi_surface_is_wired_for_live_discovery`
+extended to assert `/.well-known/ai-plugin.json` is in the live surface set). Full suite
+**176 → 177** (all 19 files exit 0).
+
+**Comms.** No Slack (score-neutral additive discovery, moves no score, not sensitive;
+daily digest already sent Cycle 38 16:13Z, this fire 20:16Z is not a new digest window).
+
+**First duty.** No open peer-gated PR (`list_pull_requests state=open` → `[]`). Infra
+health check ran first — runner HEALTHY (`verify_20260727T194100Z`, 19:41Z, fresh;
+46.1 F / 85.5 B / +39.4 in-band, drift recovered); bench runnable 176/176 pre-change;
+git bookkeeping consistent (HEAD reset detached → main = origin/main `9c276d7`).
+
+**Next hypothesis.** All FIVE agent-facing surface classes the directive's spirit
+names (homepage / natural-language docs / agent-plugin descriptor / OpenAPI contract /
+manifest) are now read. Next COVERAGE frontier that isn't score-neutral bookkeeping:
+either the [LOCAL] OpenAPI-spec-only + ai-plugin-descriptor live fixture captures (pin
+spec/descriptor-driven classification end-to-end on a REAL site, not just synthetic
+surfaces — the committed fixtures predate both surfaces), or the operator directive's
+BRICK 4 (out-of-scope legibility diagnostic — needs a separate proposal + behavioral
+runs, [LOCAL]). Next cycle takes TRUTH.

@@ -9,8 +9,9 @@ directive, 2026-07-23).
 
 The fix makes the battery OFFERING-RELATIVE. This module is its foundational
 brick: given a storefront's own agent-facing surfaces (homepage, ``llms.txt`` /
-``llms-full.txt``, ``manifest.json``, and its OpenAPI / Swagger spec — the four
-surface classes the operator directive names), decide which capability ARCHETYPES
+``llms-full.txt``, ``manifest.json``, its ``.well-known/ai-plugin.json`` agent
+descriptor, and its OpenAPI / Swagger spec — the surface classes the operator
+directive names, plus the agent-plugin manifest), decide which capability ARCHETYPES
 the site claims to serve — a metered API call, a subscription, a digital good, a
 physical good, a service booking, a data-retrieval job — each backed by QUOTED
 machine evidence from the site's own text. A later brick instantiates the fixed
@@ -64,19 +65,32 @@ ARCHETYPES: tuple[str, ...] = (
 # The operator directive (2026-07-23) names the discovery surfaces explicitly:
 # "llms.txt, manifest/catalog, OpenAPI, homepage". The natural-language docs
 # (llms.txt / manifest) and the homepage were covered from brick 1; the machine
-# API CONTRACT — an OpenAPI / Swagger spec — is added here. It is the surface an
+# API CONTRACT — an OpenAPI / Swagger spec — was added next. It is the surface an
 # API-FIRST storefront is most likely to expose (a metered-API product may serve
 # NO llms.txt or marketing homepage, only its spec), so without it such a site is
 # classified from its homepage alone and can be mis-read as offering nothing. The
 # spec's own path list, `servers` URLs, and operation summaries are exactly the
 # vendor-neutral "qualified API" / "pay-per-*" / generated-media language the
 # signal bank already anchors on, so it needs no new signals — only to be read.
-# Well-known JSON conventions, most-specific first; a spec that 404s is simply
+#
+# The AGENT-PLUGIN DESCRIPTOR (`/.well-known/ai-plugin.json`) is added here: the
+# open, vendor-neutral manifest a storefront publishes to tell an AI agent what it
+# is and how to use it. Unlike the OpenAPI spec (a terse machine CONTRACT — paths
+# and operations), the descriptor carries a hand-written model-facing SUMMARY of
+# the offering (`description_for_model` / `description_for_human`) in exactly the
+# natural-language commerce/capability prose the signal bank anchors on. It is a
+# distinct surface: a site may serve a rich descriptor even when its spec summaries
+# are one-liners, so reading it improves recall for the "understand the offer"
+# capability without any new signal. Same tolerance as every other doc — a 404 is
+# simply an absent surface.
+#
+# Well-known JSON conventions, most-specific first; a surface that 404s is simply
 # absent (discovery tolerates a missing surface, same as any other doc).
 _SURFACE_DOCS: tuple[str, ...] = (
     "/llms.txt",
     "/llms-full.txt",
     "/manifest.json",
+    "/.well-known/ai-plugin.json",
     "/openapi.json",
     "/.well-known/openapi.json",
     "/swagger.json",
@@ -306,12 +320,14 @@ def discover_offering(ctx) -> OfferingProfile:
     """Fetch a storefront's surfaces and classify what it claims to sell.
 
     Reads the homepage plus the agent-surface docs (``llms.txt`` /
-    ``llms-full.txt`` / ``manifest.json``) and the machine API contract
+    ``llms-full.txt`` / ``manifest.json``), the agent-plugin descriptor
+    (``.well-known/ai-plugin.json``), and the machine API contract
     (``openapi.json`` / ``.well-known/openapi.json`` / ``swagger.json``) via the
     shared :class:`FetchContext` — read-only, $0. Surfaces that 404 or error are
     simply absent (a site that only serves a homepage is classified from the
-    homepage alone; a site that only serves an OpenAPI spec is classified from
-    it). Never raises: a fetch failure yields an empty surface, not an exception.
+    homepage alone; a site that only serves an OpenAPI spec or a plugin descriptor
+    is classified from it). Never raises: a fetch failure yields an empty surface,
+    not an exception.
     """
     domain = getattr(ctx, "domain", "") or ""
     surfaces: dict[str, str] = {}

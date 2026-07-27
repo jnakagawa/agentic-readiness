@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 41
+- Cycle counter: 42
 - Started: 2026-07-23 (UTC)
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -628,6 +628,33 @@
   90.9 / transactability 87.5 at baseline, delta +39.4 in-band — self-cleared from ~78.7 C); bench green
   after `pip install -r requirements.txt` closed the known eth-account gap (test_free_tier 10/11→11/11).
   Next cycle takes COVERAGE.
+  Cycle 42 COVERAGE (offering discovery reads a FIFTH agent-facing surface — the agent-plugin descriptor
+  `/.well-known/ai-plugin.json`): `asrs/offering._SURFACE_DOCS` gains that path (ordered after the
+  natural-language docs, before the OpenAPI contract). Brick 1 read homepage + natural-language docs
+  (llms.txt/llms-full/manifest); Cycle 34 added the machine API CONTRACT (OpenAPI/Swagger); this adds the
+  open, vendor-neutral manifest a storefront publishes so an AI agent knows what it is / how to use it. Its
+  `description_for_model`/`description_for_human` are a hand-written model-facing SUMMARY of the offering in
+  exactly the natural-language commerce/capability prose ("inference API"/"generate an image"/
+  "pay-per-generation"/"usage-based"/x402) the signal bank already anchors on → NO new signal, only the
+  surface had to be READ; a descriptor-only site (no homepage/llms.txt/reachable spec) was previously
+  mis-readable as offering nothing (the exact failure Cycle 34's OpenAPI addition fixed for spec-only sites).
+  SCORE-NEUTRAL by construction: `discover_offering` is called ONLY from `cli._resolve_battery`
+  (`--battery auto`), NEVER on the scoring path (grep-verified: absent from scoring.py/probes/; the
+  commerce-manifest SCORING probe keeps its own separate `protocols._AGENT_SURFACE_DOCS`, DELIBERATELY
+  untouched — a surface there would be score-increasing + peer-gated). `git diff --name-only -- scoring.py
+  rubric/ probes/ fetch.py protocols.py battery.py` EMPTY → rubric stays v0.7; not payment/signing code
+  (read-only `ctx.get` GETs, $0/invariant-#1 clean, no POST/sign added). Committed canonical fixtures predate
+  this surface → replay-miss/absent on them → canonical delta unchanged by construction AND re-measured
+  (replay guard 14/14, 46.1 F / 85.5 B / +39.4, 0 replay-miss; verify_20260727T194100Z 19:41Z in-band
+  live-corroborates) AND `test_offering_canonical.py` byte-identically 11/11 UNCHANGED (same property Cycle 34
+  relied on). Direct-to-main. `test_offering.py` 9→10 (+descriptor-only classification test on 5 distinct
+  descriptor signals, physical_good/subscription correctly NOT claimed; wiring guard extended to assert the
+  ai-plugin path is in the live surface set); suite 176 → 177 (all 19 files exit 0). No Slack (score-neutral
+  additive discovery, moves no score, digest already sent Cycle 38 16:13Z, not a new window at 20:16Z). First
+  duty: no open peer-gated PR (verified []); infra health check ran first — runner HEALTHY
+  (verify_20260727T194100Z, 19:41Z, fresh, delta +39.4 in-band). All FIVE agent-facing surface classes
+  (homepage / natural-language docs / agent-plugin descriptor / OpenAPI contract / manifest) now read. Next
+  cycle takes TRUTH.
 - **LIVE CANONICAL DRIFT (open, for the next post-16:00 UTC digest) — surfaced by the Cycle-36 history readout.**
   The live canonical delta held **+39.4** (46.1 F / 85.5 B) for days through `verify_20260727T054339Z`, then MOVED:
   07:40Z fire driftflight.com collapsed to 50.0 F (delta +3.9 — transient error crawl, transactability CANT_TEST /

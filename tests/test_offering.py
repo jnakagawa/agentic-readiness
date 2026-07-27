@@ -124,6 +124,26 @@ API_OPENAPI = """
 """
 
 
+# An AGENT-PLUGIN DESCRIPTOR (`/.well-known/ai-plugin.json`) served WITHOUT a
+# marketing homepage, llms.txt, or OpenAPI spec — the open, vendor-neutral
+# manifest a storefront publishes so an AI agent knows what it is and how to use
+# it. Its `description_for_model` is a hand-written model-facing SUMMARY of the
+# offering in exactly the natural-language commerce prose the signal bank anchors
+# on; distinct from the terse OpenAPI contract. No new signal is needed, only for
+# the surface to be read.
+API_AI_PLUGIN = """
+{
+  "schema_version": "v1",
+  "name_for_model": "northgale_imaging",
+  "name_for_human": "Northgale Imaging",
+  "description_for_human": "Generate on-brand images from a prompt.",
+  "description_for_model": "A text-to-image inference API for agents. Generate an image from a prompt and receive a hosted output URL. Usage-based: agents pay-per-generation via an x402 handshake, no account required.",
+  "api": {"type": "openapi", "url": "https://api.northgale.test/openapi.json"},
+  "contact_email": "support@northgale.test"
+}
+"""
+
+
 def test_api_storefront_claims_agent_native_not_physical():
     prof = classify_offering("example-imaging.test", {"homepage": API_HOMEPAGE})
     claimed = set(prof.archetypes)
@@ -227,17 +247,46 @@ def test_openapi_spec_alone_classifies_api_first_storefront():
     print(f"  ok: metered_api rests on {metered.strength} distinct spec signals (x402/pay-per/qualified-api)")
 
 
+def test_ai_plugin_descriptor_alone_classifies_storefront():
+    # The coverage gap the agent-plugin descriptor closes: a storefront whose
+    # agent-facing self-description is its `/.well-known/ai-plugin.json` manifest
+    # (no marketing homepage, no llms.txt, no reachable OpenAPI spec). The
+    # descriptor's `description_for_model` carries the vendor-neutral "inference
+    # API" / "generate an image" / "pay-per-generation" / x402 / usage-based prose
+    # the existing signal bank already anchors on — so the surface only had to be
+    # read; it needs no new signal.
+    prof = classify_offering(
+        "northgale.test", {"/.well-known/ai-plugin.json": API_AI_PLUGIN}
+    )
+    assert prof.surfaces_seen == ["/.well-known/ai-plugin.json"], prof.surfaces_seen
+    claimed = set(prof.archetypes)
+    assert "metered_api" in claimed, prof.archetypes
+    assert "digital_good" in claimed, prof.archetypes
+    print(f"  ok: an ai-plugin-descriptor-only storefront is classified, got {prof.archetypes}")
+    # Precision holds: a plugin manifest is NOT physical fulfillment (no
+    # "add to cart" / stock language) nor a subscription (no "$X per month").
+    assert not prof.claims("physical_good"), prof.archetypes
+    assert not prof.claims("subscription"), prof.archetypes
+    # The metered_api claim rests on real anchored evidence FROM the descriptor.
+    metered = next(c for c in prof.claimed if c.archetype == "metered_api")
+    assert all(s.surface == "/.well-known/ai-plugin.json" for s in metered.signals), metered.signals
+    assert metered.strength >= 2, metered.strength
+    print(f"  ok: metered_api rests on {metered.strength} distinct descriptor signals (x402/pay-per/usage-based)")
+
+
 def test_openapi_surface_is_wired_for_live_discovery():
-    # A structural guard: the OpenAPI conventions are actually in the surface
-    # list `discover_offering` fetches live (not merely handled by the pure
-    # classifier). Without this, a spec-only site would never be READ. The
-    # natural-language docs remain covered too (no regression to the surface set).
+    # A structural guard: the OpenAPI conventions AND the agent-plugin descriptor
+    # are actually in the surface list `discover_offering` fetches live (not merely
+    # handled by the pure classifier). Without this, a spec-only or descriptor-only
+    # site would never be READ. The natural-language docs remain covered too (no
+    # regression to the surface set).
     docs = offering._SURFACE_DOCS
     for path in ("/openapi.json", "/.well-known/openapi.json", "/swagger.json"):
         assert path in docs, f"{path} missing from discovery surfaces: {docs}"
+    assert "/.well-known/ai-plugin.json" in docs, f"ai-plugin descriptor missing: {docs}"
     for path in ("/llms.txt", "/llms-full.txt", "/manifest.json"):
         assert path in docs, f"regressed natural-language surface {path}: {docs}"
-    print(f"  ok: OpenAPI/Swagger surfaces wired for live discovery, got {docs}")
+    print(f"  ok: OpenAPI/Swagger + ai-plugin surfaces wired for live discovery, got {docs}")
 
 
 def test_strip_html_drops_script_style_and_tags():
@@ -260,6 +309,7 @@ def main() -> int:
         test_strength_counts_distinct_signals_and_orders_claims,
         test_evidence_is_quoted_and_surface_tagged,
         test_openapi_spec_alone_classifies_api_first_storefront,
+        test_ai_plugin_descriptor_alone_classifies_storefront,
         test_openapi_surface_is_wired_for_live_discovery,
         test_strip_html_drops_script_style_and_tags,
     ]

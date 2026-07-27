@@ -4314,3 +4314,7 @@ READOUT increments (P2): (a) a `compare`-card delta → this history page cross-
 (a reader on a large delta jumps straight to "is this drift or the true gap?");
 (b) per-DOMAIN history beyond the canonical pair once other domains have committed
 dated reports. Next cycle takes METHOD.
+
+## Local verification — 20260727T184100Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260727T184100Z.json

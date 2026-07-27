@@ -4389,3 +4389,7 @@ JSON-body over-catch disambiguation (P1, score-affecting → peer-gated + [LOCAL
 live-verify) and the env-block site-side "safety policy" hardening (P1, peer-gated +
 version bump) are the next METHOD units, both needing more than a tests-only ship.
 Next cycle takes COVERAGE.
+
+## Local verification — 20260727T194100Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260727T194100Z.json

@@ -114,7 +114,12 @@ def main() -> int:
     run(["git", "commit", "-m", f"loop: local verification {ts}"])
     rc, tail = run(["git", "push", "origin", "main"])
     out["pushed"] = rc == 0
-    log(f"done — delta={out.get('delta', 'n/a')} pushed={out['pushed']}")
+    # Mirror to the org repo (visibility copy; origin stays canonical because
+    # the cloud loop's push access is proven there). Failure is logged, never
+    # fatal — the mirror lags rather than blocking verification.
+    rc_m, _ = run(["git", "push", "piedotorg", "main"])
+    out["mirrored"] = rc_m == 0
+    log(f"done — delta={out.get('delta', 'n/a')} pushed={out['pushed']} mirrored={out['mirrored']}")
     return 0 if out["tests_ok"] else 2
 
 

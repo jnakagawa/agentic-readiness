@@ -4610,3 +4610,7 @@ push reset to main).
 canonical-history page does NOT yet surface it — the same terminal→HTML deferral the battery
 diagnostics took (Cycles 10→12, 18→20). Surfacing `recapture` on `canonical-history.html` is a
 clean READOUT follow-up (queued P2). Cloud rotation → READOUT next.
+
+## Local verification — 20260727T214106Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260727T214106Z.json

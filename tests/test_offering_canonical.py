@@ -527,6 +527,114 @@ def test_offering_relabel_negative_control() -> None:
     )
 
 
+# ---------------------------------------------------------------------------
+# Relabel-invariance EXTENDED to the retail + non-storefront domains.
+#
+# The two invariance tests above cover only the canonical PAIR, because their
+# non-vacuity mechanism ("the host appears in the classifier's matched evidence
+# QUOTE") holds only there — the `metered_api` post-endpoint quote is literally
+# `POST https://<host>/…`. The retail storefront's physical_good rests on prose
+# anchors ("In stock" / "Add to basket") that carry no host, and the
+# non-storefront claims nothing at all, so neither has the host in its evidence
+# quotes. That is why the retail-inverse fixture landed WITHOUT a relabel case
+# (documented in the [LOCAL] 2026-07-24 capture): a quote-anchored relabel would
+# be vacuous there.
+#
+# But the vendor-neutrality property still MUST hold for them — a book catalog's
+# task set (physical_good, everything else NA) and a bare page's honest-empty
+# offering must not depend on the domain NAME any more than the pair's does. The
+# SCORING-layer relabel guard (`tests/test_canonical_replay.py`) already spans all
+# four real domains (org/com/retail/non-storefront); the OFFERING/task-selection
+# layer lagged at two. This closes that gap with an honest, domain-appropriate
+# non-vacuity: the host really is present in the FETCHED SURFACES the classifier
+# reads (the homepage URL/response in the fixture), and the relabel rewrites every
+# occurrence, so the classifier's input genuinely changes — the invariance is not
+# a no-op. (The identity-keyed special-case is still proven catchable by
+# `test_offering_relabel_negative_control` above, which uses the same
+# `_discover` / `_discover_relabeled` divergence these tests rely on.)
+# ---------------------------------------------------------------------------
+
+
+def _assert_offering_relabel_general(domain: str, expected_claimed: set) -> None:
+    """Relabel-invariance with SURFACE-presence non-vacuity (host not in evidence quote).
+
+    Unlike ``_assert_offering_relabel_invariant`` (which anchors non-vacuity on the
+    host appearing inside a matched evidence quote — true only for the API pair),
+    this anchors it on the host appearing in the fixture surfaces the classifier
+    fetches, then asserts the claimed (ordered) and NA sets are invariant under a
+    whole-fixture relabel to a neutral host. Used for domains whose classification
+    evidence is host-free (retail prose anchors, or nothing at all).
+    """
+    path = os.path.join(_FIXTURE_DIR, f"{domain}.json")
+    with open(path, encoding="utf-8") as fh:
+        raw = fh.read()
+    # Non-vacuity: the host is genuinely present in the surfaces the classifier
+    # reads, so relabeling rewrites real classifier input (not a no-op). Without
+    # this, a host absent from the fixture would make the relabel — and the
+    # invariance below — vacuously true.
+    _check(
+        domain in raw,
+        f"{domain}: host present in the fixture surfaces (relabel rewrites real "
+        "classifier input — the test is non-vacuous)",
+    )
+
+    base, _ = _discover(domain)
+    _check(
+        set(base.archetypes) == expected_claimed,
+        f"{domain}: base claimed == {sorted(expected_claimed)} (got {sorted(base.archetypes)})",
+    )
+
+    relab = _discover_relabeled(domain, _NEUTRAL_HOST)
+    # Ordered claimed list invariant — order drives the fixed template-bank task
+    # order (cross-site comparability), so a reorder would reorder the battery.
+    _check(
+        relab.archetypes == base.archetypes,
+        f"{domain}: claimed archetypes (ordered) invariant under relabel "
+        f"(base {base.archetypes}, relabel {relab.archetypes})",
+    )
+    _check(
+        set(relab.archetypes) == expected_claimed,
+        f"{domain}: relabeled claimed set == {sorted(expected_claimed)} "
+        f"(got {sorted(set(relab.archetypes))})",
+    )
+    # The NA set (excluded from every mean/spread, never penalized) is invariant —
+    # which archetypes the site is judged on vs excused as NA depends on evidence,
+    # not identity.
+    _check(
+        set(relab.unclaimed) == set(base.unclaimed),
+        f"{domain}: NA/unclaimed set invariant under relabel "
+        f"(base {sorted(base.unclaimed)}, relabel {sorted(relab.unclaimed)})",
+    )
+
+
+def test_offering_relabel_invariance_retail() -> None:
+    """A retail storefront's task set (physical_good, all else NA) is identity-invariant."""
+    print("test_offering_relabel_invariance_retail")
+    _assert_offering_relabel_general(_RETAIL, _RETAIL_CLAIMED)
+
+
+def test_offering_relabel_invariance_nonstorefront() -> None:
+    """A non-storefront's honest-empty offering is identity-invariant.
+
+    Renaming a bare documentation page must not conjure an offering: the relabeled
+    discovery claims NOTHING and every archetype stays NA, exactly as the un-relabeled
+    run. The concrete full-NA structure asserted here (all six archetypes unclaimed,
+    both before and after) is non-empty and specific — and the retail/pair invariance
+    tests in this same suite prove the classifier is NOT a constant all-NA function, so
+    this is invariance of a real classification, not a degenerate constant.
+    """
+    print("test_offering_relabel_invariance_nonstorefront")
+    _assert_offering_relabel_general(_NONSTOREFRONT, set())
+    # The full-NA partition is invariant too (renaming invents no offering).
+    relab = _discover_relabeled(_NONSTOREFRONT, _NEUTRAL_HOST)
+    _check(
+        set(relab.unclaimed) == set(ARCHETYPES),
+        f"{_NONSTOREFRONT}: every archetype stays NA under relabel "
+        f"(got {sorted(relab.unclaimed)}, want {sorted(ARCHETYPES)}) — renaming a "
+        "bare page invents no offering",
+    )
+
+
 def main() -> int:
     tests = [
         test_canonical_org_offering,
@@ -537,6 +645,8 @@ def main() -> int:
         test_nonstorefront_empty_offering,
         test_offering_relabel_invariance_org,
         test_offering_relabel_invariance_com,
+        test_offering_relabel_invariance_retail,
+        test_offering_relabel_invariance_nonstorefront,
         test_offering_relabel_negative_control,
     ]
     failed = 0

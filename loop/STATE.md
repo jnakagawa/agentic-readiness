@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 40
+- Cycle counter: 41
 - Started: 2026-07-23 (UTC)
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -603,6 +603,31 @@
   runner's :41 failures are a TRANSIENT github.com DNS block, not a code stall — supersedes the "stall
   persists" read above. Its example.com baseline ship also moved the pre-change suite baseline: 168, not
   164 — so this cycle's true suite move is 168 → 174 after the +6 readout tests.)
+  Cycle 41 METHOD (OFFERING-layer vendor-neutrality guard extended to all FOUR real domains — the
+  adversarial-referee-pass leg (b)): `tests/test_offering_canonical.py` +2 (9→11).
+  `test_offering_relabel_invariance_retail` (books.toscrape.com → claimed {physical_good}, all else NA,
+  identity-invariant) + `test_offering_relabel_invariance_nonstorefront` (example.com → honest-empty
+  offering, every archetype NA, invariant — renaming a bare page invents no offering), via a shared
+  `_assert_offering_relabel_general(domain, expected_claimed)` that relabels the whole fixture to
+  `vendor-neutral.test` and asserts CLAIMED (ordered) + NA sets identical through the REAL
+  `from_fixture → discover_offering` path. The SCORING-layer relabel guard (test_canonical_replay) has
+  spanned all four since Cycle 35+18:11Z; the OFFERING/task-selection classifier was relabel-guarded only
+  on the pair (Cycle 31) — now matched. HONEST non-vacuity: the pair anchors on host-in-evidence-QUOTE
+  (metered_api `POST https://<host>/…`), which does NOT hold for retail (host-free "In stock"/"Add to
+  basket" prose) or the empty non-storefront — so the new helper anchors non-vacuity on the host being
+  present in the FETCHED SURFACES (`domain in raw` + `_discover_relabeled` rewrites every occurrence);
+  the empty case additionally pins the full-NA partition (all six archetypes unclaimed before AND after,
+  a concrete non-empty structure, and the retail/pair tests prove the classifier isn't constant all-NA);
+  the pre-existing negative control (identity-keyed special-case CAUGHT) still gives the shared machinery
+  teeth. Tests-only: `git diff -- asrs/ rubric/` EMPTY → scoring.py/rubric/probes/fetch/offering.py
+  byte-for-byte untouched → rubric v0.7, canonical PAIR unchanged by construction AND re-measured (replay
+  guard 14/14, 46.1 F / 85.5 B / +39.4, 0 replay-miss). Direct-to-main. Full suite 174 → 176. No Slack
+  (tests-only, moves no score, digest already sent Cycle 38 16:13Z, not a new window). First duty: no open
+  peer-gated PR (verified []); infra health check ran first — runner HEALTHY (verify_20260727T184100Z,
+  18:41Z, fresh) AND the LIVE CANONICAL DRIFT RECOVERED (that artifact reads .com back at 85.5 B, legibility
+  90.9 / transactability 87.5 at baseline, delta +39.4 in-band — self-cleared from ~78.7 C); bench green
+  after `pip install -r requirements.txt` closed the known eth-account gap (test_free_tier 10/11→11/11).
+  Next cycle takes COVERAGE.
 - **LIVE CANONICAL DRIFT (open, for the next post-16:00 UTC digest) — surfaced by the Cycle-36 history readout.**
   The live canonical delta held **+39.4** (46.1 F / 85.5 B) for days through `verify_20260727T054339Z`, then MOVED:
   07:40Z fire driftflight.com collapsed to 50.0 F (delta +3.9 — transient error crawl, transactability CANT_TEST /
@@ -633,6 +658,14 @@
   mover), `.org` flat at 46.1 F — the delta narrowed because the RAILS side softened, a real-world site change, not a
   code regression; committed fixtures still pin +39.4 so the replay guard is (correctly) green. Decision (a) still
   deferred [LOCAL] until stable; will re-flag in the next digest if still open.
+  UPDATE (Cycle 41, 2026-07-27 ~19:30Z): **DRIFT RECOVERED / IN-BAND.** `verify_20260727T184100Z` (18:41Z) reads
+  driftflight.com back at **85.5 B** — legibility RECOVERED 63.6 → 90.9 and transactability 87.5, both at the pinned
+  baseline — so the live delta is **+39.4** in-band again (drift-flight.org flat at 46.1 F throughout). The site
+  change was TRANSIENT (a real-world deploy/availability blip), not a durable regression, which VINDICATES the
+  Cycle-39 decision to keep the fixture pinned (`reference_degraded=True` said the with-rails side softened; it has
+  now un-softened). Decision (a) [LOCAL] canonical fixture re-capture: NO ACTION needed — the site returned to the
+  pinned level, so the committed +39.4 baseline still represents the true capability gap. This note is CLOSED unless
+  the live series diverges again; a positive (not flag) mention for the next digest.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity

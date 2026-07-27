@@ -4318,3 +4318,74 @@ dated reports. Next cycle takes METHOD.
 ## Local verification — 20260727T184100Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260727T184100Z.json
+
+## Cycle 41 (METHOD) — 2026-07-27T~19:30Z — offering-layer vendor-neutrality guard extended to all four real domains
+
+**What.** The domain-relabeling invariance (vendor-neutrality) guard on the
+OFFERING / task-selection layer now covers all four committed real domains, not
+just the canonical pair. `tests/test_offering_canonical.py` +2 tests (9 → 11):
+`test_offering_relabel_invariance_retail` (books.toscrape.com → claimed
+`{physical_good}`, all else NA, identity-invariant) and
+`test_offering_relabel_invariance_nonstorefront` (example.com → honest-empty
+offering, every archetype NA, identity-invariant — renaming a bare page invents
+no offering). A new shared helper `_assert_offering_relabel_general(domain,
+expected_claimed)` relabels the whole fixture to `vendor-neutral.test` and asserts
+the CLAIMED (ordered) + NA sets are byte-identical to the un-relabeled discovery
+through the REAL `FetchContext.from_fixture → discover_offering` path.
+
+**Why.** METHOD / recurring adversarial-referee-pass leg (b). The SCORING-layer
+relabel guard (`test_canonical_replay.py`) already spans all four real domains
+(org/com/retail/non-storefront) since Cycle 35 + the 18:11Z reconcile, but the
+OFFERING classifier — which drives the operator directive's task SELECTION (which
+archetypes get intents) and NA semantics (which are excused, never penalized) —
+was relabel-guarded only on the pair (Cycle 31). A book catalog's task set and a
+bare page's empty offering must be identity-independent exactly as the pair's is;
+this makes "no special-casing any domain, favorable or hostile" an executable
+tripwire on the task-selection layer for all four.
+
+**Honest non-vacuity (why the form differs from the pair).** The pair's invariance
+tests anchor non-vacuity on the host appearing inside a matched evidence QUOTE (the
+`metered_api` post-endpoint quote is literally `POST https://<host>/…`). That does
+NOT hold for the two new domains — retail `physical_good` rests on host-free prose
+anchors ("In stock" / "Add to basket") and the non-storefront claims nothing — which
+is exactly why the retail-inverse fixture originally landed WITHOUT a relabel case
+(a quote-anchored relabel would be vacuous there). The new helper anchors non-vacuity
+honestly on the FETCHED SURFACES the classifier reads: it asserts the host is present
+in the fixture (`domain in raw`) and that `_discover_relabeled` rewrites every
+occurrence, so the relabel genuinely changes classifier input. The empty-offering
+test additionally pins the full-NA partition invariant (all six archetypes unclaimed
+before AND after) — a concrete non-empty structure, not a degenerate constant, and
+the retail/pair invariance tests in the SAME suite prove the classifier is not a
+constant all-NA function. The pre-existing `test_offering_relabel_negative_control`
+(an identity-keyed special-case IS caught by the `_discover` vs `_discover_relabeled`
+divergence these tests share) continues to give the machinery teeth.
+
+**Validate.** Tests-only: `git diff --stat` = `tests/test_offering_canonical.py`
+only (+110); `git diff --name-only -- asrs/ rubric/` EMPTY → scoring.py/rubric/
+probes/fetch/offering.py byte-for-byte untouched → rubric stays v0.7, canonical
+PAIR unchanged by construction AND re-measured (in-cloud replay guard 14/14,
+**drift-flight.org 46.1 F / driftflight.com 85.5 B / delta +39.4**, 0 replay-miss).
+`test_offering_canonical.py` 9 → 11; full suite **174 → 176** (all 19 files exit 0).
+Direct-to-main.
+
+**First duty.** No open peer-gated PR (`list_pull_requests` state=open → `[]`).
+Infra health check ran FIRST — runner HEALTHY (newest `verify_20260727T184100Z`,
+18:41Z, fresh, well under the 6h floor) AND the LIVE CANONICAL DRIFT has RECOVERED:
+that artifact reads driftflight.com back at **85.5 B** (legibility 90.9,
+transactability 87.5 — both at baseline), delta **+39.4** in-band, self-cleared from
+the ~78.7 C drift. Bench runnable after `pip install -r requirements.txt` closed the
+known `eth-account` env gap (`test_free_tier.py` 10/11 → 11/11 — invariant-#4 env
+gap, pre-existing, unrelated to this change). git realigned (detached HEAD from the
+forced origin/main verify push reset to main = `da99fb7`).
+
+**Comms.** No Slack (METHOD tests-only, moves no score, not sensitive; the daily
+digest was already sent Cycle 38 at 16:13Z — this fire is not a new digest window).
+The live drift RECOVERY (now in-band +39.4) is a positive note for the next digest,
+not a flag.
+
+**Next hypothesis.** The OFFERING-layer relabel guard now matches the SCORING-layer
+guard's four-domain coverage. Remaining referee-pass frontier: the header-scanner /
+JSON-body over-catch disambiguation (P1, score-affecting → peer-gated + [LOCAL]
+live-verify) and the env-block site-side "safety policy" hardening (P1, peer-gated +
+version bump) are the next METHOD units, both needing more than a tests-only ship.
+Next cycle takes COVERAGE.

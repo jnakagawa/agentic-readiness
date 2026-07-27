@@ -397,9 +397,19 @@ design in-cloud, execute locally.
   favorable special-case is CAUGHT). Score-neutral, rubric v0.7, replay guard 8/8
   / +39.4. PROGRESS 2026-07-24T11:12Z (Cycle 35, TRUTH): the SCORING-layer relabel guard now
   covers a THIRD real domain — the retail storefront `books.toscrape.com`
-  (`test_relabel_invariance_retail`, 29.5 F identity-invariant). Still recurring: (a) the
-  hand-authored-prose re-read (EXECUTABLE since Cycle 33); (b) the OFFERING-layer relabel guard
-  still covers only the pair — extend it to books.toscrape.com + the [LOCAL] example.com control.
+  (`test_relabel_invariance_retail`, 29.5 F identity-invariant). PROGRESS 2026-07-27T~19:30Z
+  (Cycle 41, METHOD): leg (b) DISCHARGED for the cloud-doable domains — the OFFERING-layer relabel
+  guard now spans ALL FOUR real domains, matching the scoring-layer guard.
+  `tests/test_offering_canonical.py` +2 (9→11): `test_offering_relabel_invariance_retail`
+  (books.toscrape.com → {physical_good}, all else NA, invariant) +
+  `test_offering_relabel_invariance_nonstorefront` (example.com → honest-empty offering, all NA,
+  invariant) via a shared `_assert_offering_relabel_general`. Honest non-vacuity anchored on
+  fixture-SURFACE presence (the pair's host-in-evidence-QUOTE mechanism doesn't hold for host-free
+  retail prose or the empty non-storefront); the empty case pins the full-NA partition invariant.
+  Tests-only, score-neutral (rubric v0.7, replay guard 14/14 / +39.4); suite 174→176. Still
+  recurring: (a) the hand-authored-prose re-read (EXECUTABLE since Cycle 33 — run it when new
+  readout prose lands); extend BOTH the relabel guards AND the wording denylist to any NEWLY-scored
+  storefront/fixture as they land.
 - **Env-block classifier: harden against site-side "safety/security policy"**
   (METHOD, attribution honesty — residual from the PR #2 adversarial review,
   2026-07-23T10:13Z). The review confirmed `_ENV_BLOCK_RE` correctly rejects the

@@ -100,6 +100,29 @@ EXPECTED = {
             "outcome": None,
         },
     },
+    # A FOURTH real-domain calibration datapoint — the ZERO-COMMERCE baseline. Not
+    # a storefront at all: a bare documentation page (the IANA example domain) that
+    # sells NOTHING (the offering layer classifies it as claiming NO archetype — see
+    # test_offering_canonical), captured LIVE [LOCAL] 2026-07-24 via a static $0
+    # crawl (41 GET / 0 POST, no secrets). Distinct from books.toscrape.com: the
+    # retail shop sells physical goods to humans but not to agents; this site sells
+    # to no one. Both sit at the transactability FLOOR (0), but this one earns it
+    # from the total absence of any commerce surface — the honest bottom of the
+    # scale a benchmark needs so the with-rails delta is measured against a real
+    # low anchor, not just other storefronts. Re-capture + update together on a
+    # version bump, same contract as the domains above.
+    "example.com": {
+        "overall": 22.5,
+        "grade": "F",
+        "rubric_version": "0.7",
+        "pillars": {
+            "access": 100.0,
+            "legibility": 0.0,
+            "transactability": 0.0,
+            "trust": 20.0,
+            "outcome": None,
+        },
+    },
 }
 EXPECTED_DELTA = 39.4  # driftflight.com (rails) - drift-flight.org (no rails)
 
@@ -579,6 +602,80 @@ def test_relabel_invariance_retail() -> None:
     _assert_relabel_invariant("books.toscrape.com")
 
 
+# ---------------------------------------------------------------------------
+# 9. ZERO-COMMERCE BASELINE — a fourth real domain, the honest bottom anchor.
+#    Guards 1–8 pin two API storefronts and a retail shop; all three are places
+#    that sell something. A benchmark also needs the floor: a bare site that sells
+#    NOTHING, so the with-rails delta is measured against a real low anchor, not
+#    only against other storefronts. This replays a committed fixture for a plain
+#    documentation page (the IANA example domain) and pins its score on rubric
+#    v0.7 — a structurally different, non-commercial site in the regression signal.
+# ---------------------------------------------------------------------------
+def test_nonstorefront_replays_22_5() -> None:
+    print("test_nonstorefront_replays_22_5")
+    _assert_domain("example.com")
+
+
+# ---------------------------------------------------------------------------
+# 10. The MIRROR capability guard on the zero-commerce baseline — a bare site is
+#     not spuriously credited with payment capability it never had. Guard 3 pins
+#     the with-rails side EARNS agent-native payment; guard 7 pins a real retail
+#     shop earns 0. This pins the extreme case: a site with no storefront at all
+#     earns EXACTLY 0 transactability and NO payment credit of any kind. A probe
+#     that hallucinated an agent-native rail from a bare page (e.g. mis-reading a
+#     generic 402/401 or a stray link as a payment handshake) would inflate this
+#     site and slip guards 1–9 but FAIL here. Attribution-honesty detail worth
+#     pinning: the pay-as-you-go check is CANT_TEST (the bare site has no purchase
+#     path to evaluate — honestly EXCLUDED, never penalized), yet transactability
+#     is still 0 because the agent-native-payment probe FAILs on recorded
+#     evidence-of-absence — absence excused where unobservable, scored where
+#     observed. Worded by capability throughout.
+# ---------------------------------------------------------------------------
+def test_nonstorefront_earns_no_agent_native_payment() -> None:
+    print("test_nonstorefront_earns_no_agent_native_payment")
+    bare, bare_misses = _score_fixture("example.com")
+    _check(not bare_misses, "example.com: no replay-miss")
+
+    # No agent-native programmatic payment is reachable.
+    _check(
+        _by_id(bare, "x402_probe").status is not Status.PASS,
+        "example.com: x402_probe does NOT pass — no agent-native payment",
+    )
+    _check(
+        _by_id(bare, "self_serve_payg").evidence.get("x402_live") is not True,
+        "example.com: self_serve_payg records no live x402 payment",
+    )
+
+    # No probe awarded live programmatic-commerce credit anywhere — a bare page is
+    # not mistaken for an agent-native-payable storefront.
+    bare_ids = {c.check_id for c in bare.checks}
+    _check(
+        not any("commerce-protocol" in cid or cid == "x402-live" for cid in bare_ids),
+        "example.com: no commerce-protocol-*/x402-live credit awarded to a "
+        "non-commercial page",
+    )
+
+    # The capability floor manifests as an EXACTLY-zero transactability pillar.
+    _check(
+        bare.pillar_scores["transactability"] == 0.0,
+        f"example.com: transactability == 0.0 "
+        f"(got {bare.pillar_scores['transactability']})",
+    )
+
+
+# ---------------------------------------------------------------------------
+# 11. Vendor-neutrality extended to the fourth domain — the relabel-invariance
+#     tripwire (guard 4) applied to the zero-commerce baseline, so "no
+#     special-casing any domain, favorable or hostile" is enforced on a
+#     non-storefront too. Relabeling the host everywhere reproduces the identical
+#     22.5 / F / pillars / per-check statuses: even the floor score depends on the
+#     recorded evidence, not on the domain's identity.
+# ---------------------------------------------------------------------------
+def test_relabel_invariance_nonstorefront() -> None:
+    print("test_relabel_invariance_nonstorefront")
+    _assert_relabel_invariant("example.com")
+
+
 def main() -> int:
     tests = [
         test_canonical_org_replays_46_1,
@@ -592,6 +689,9 @@ def main() -> int:
         test_retail_storefront_replays_29_5,
         test_retail_storefront_earns_no_agent_native_payment,
         test_relabel_invariance_retail,
+        test_nonstorefront_replays_22_5,
+        test_nonstorefront_earns_no_agent_native_payment,
+        test_relabel_invariance_nonstorefront,
     ]
     failed = 0
     for t in tests:

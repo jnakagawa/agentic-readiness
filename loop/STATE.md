@@ -548,6 +548,32 @@
   (verify_20260727T134147Z, 13:41Z, ~3.5h old, under 6h floor) BUT the 14/15/16:41Z fires produced NO
   artifact (3 consecutive gaps, as at Cycle 28 — a possible fresh runner stall to WATCH; flag if still
   gapped past 6h next fire). Next cycle takes READOUT.
+  Local fire 2026-07-27T18:11Z TRUTH (BOOKKEEPING RECONCILIATION + ship — the networked/self-healing
+  half): landed the example.com zero-commerce baseline whose CODE was lost on 07-24. Root cause: the
+  2026-07-24T11:48Z local fire authored + validated `fixtures/canonical/example.com.json` + the four
+  test cases and wrote its LOG entry, but its CODE commit never happened — only LOG.md was swept up by
+  the 12:41Z verify runner (commit 2cf0cef), so the committed LOG claimed a ship whose tests/fixture sat
+  UNCOMMITTED in the working tree for ~3 days (the cloud loop was paused 07-24→07-27; only the verify
+  runner heartbeated). Bookkeeping-down per self-healing → repaired FIRST: re-validated the surviving WIP
+  against the CURRENT suite (all green), then committed it, making git history consistent with the
+  already-committed 07-24 LOG (append-only respected — the 07-24 entry is UNEDITED; a new LOG entry
+  documents the reconcile). Landed `test_canonical_replay.py` 11→14 (nonstorefront replays 22.5 F /
+  earns-no-agent-native-payment capability-floor mirror / relabel-invariance) + `test_offering_canonical.py`
+  8→9 (nonstorefront empty offering). Score-neutral: `git diff -- asrs/ rubric/` EMPTY → rubric v0.7,
+  canonical PAIR unchanged by construction AND re-measured (replay guard 14/14, 46.1 F / 85.5 B / +39.4,
+  0 replay-miss); fixture is 41 GET / 0 POST (invariant #1 clean). Full suite 164→168. Direct-to-main.
+  The regression + vendor-neutrality signal now spans FOUR real domains (two API storefronts 46.1/85.5,
+  a retail floor 29.5, this zero-commerce baseline 22.5). First duty: no open peer-gated PR
+  (`gh pr list --state open` → []). Git hygiene: local main was 4 commits behind (Cycles 36–39 shipped
+  while this checkout sat at the 13:41Z verify commit); stashed the WIP, fast-forwarded to origin
+  (0757fa1), restored the WIP cleanly (origin never touched the three WIP files), then shipped.
+  INFRA WATCH (not a floor breach yet): the verify runner's last three fires (14:44/16:56/17:41Z) FAILED
+  `git_pull` with "Could not resolve host: github.com" (transient machine DNS/network — github is reachable
+  again this fire) so they could not push; newest SUCCESSFULLY-pushed verify is verify_20260727T134147Z
+  (13:41Z), ~4.5h old at this fire — still UNDER the 6h floor. If the runner's next :41 fire still can't
+  pull and the 13:41Z artifact crosses 6h, flag it. No code repair (Cycle-19 crash-wrapper/heartbeat is
+  working — it correctly recorded the failures; the block is transient network, self-clearing). The
+  Cycle-17 replay guard is the in-cloud canonical signal regardless. Cloud rotation unaffected (still READOUT).
 - **LIVE CANONICAL DRIFT (open, for the next post-16:00 UTC digest) — surfaced by the Cycle-36 history readout.**
   The live canonical delta held **+39.4** (46.1 F / 85.5 B) for days through `verify_20260727T054339Z`, then MOVED:
   07:40Z fire driftflight.com collapsed to 50.0 F (delta +3.9 — transient error crawl, transactability CANT_TEST /

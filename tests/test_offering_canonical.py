@@ -306,6 +306,55 @@ def test_retail_inverse_offering() -> None:
 
 
 # ---------------------------------------------------------------------------
+# The EMPTY offering — a site that sells nothing. The two guards above pin the
+# poles of the classifier (an agent-native API -> physical_good NA; a retail shop
+# -> physical_good CLAIMED, APIs NA). This pins the THIRD, degenerate case the
+# operator directive's NA semantics must handle honestly: a non-storefront that
+# claims NO archetype at all. Its battery is legitimately EMPTY — every archetype
+# NA, excluded from every mean/spread, never a fabricated task or a penalty. This
+# is the offering-layer companion to the zero-commerce scoring baseline in
+# test_canonical_replay (example.com, 22.5 F): the same committed static-crawl
+# fixture, read through the offering pipeline, must produce nothing to assess.
+#
+# Regression value: a signal-bank change that started matching generic prose
+# (an over-eager archetype anchor) would spuriously CLAIM an archetype on a bare
+# documentation page and fail here — the classifier must stay precision-first,
+# emitting an honest empty profile rather than inventing an offering.
+#
+# Fixture captured [LOCAL] 2026-07-24 via `asrs.cli score example.com
+# --record-fixture fixtures/canonical/example.com.json` (static $0 crawl).
+# ---------------------------------------------------------------------------
+_NONSTOREFRONT = "example.com"
+
+
+def test_nonstorefront_empty_offering() -> None:
+    print("test_nonstorefront_empty_offering")
+    profile, _ = _discover(_NONSTOREFRONT)
+
+    # Discovery drew on real evidence (the homepage was read), so an empty result
+    # is a genuine "nothing offered", not a failed/empty crawl.
+    _check(
+        "homepage" in profile.surfaces_seen,
+        f"{_NONSTOREFRONT}: homepage surface was read (discovery had real evidence)",
+    )
+
+    # No archetype is claimed — the site sells nothing the battery can instantiate.
+    _check(
+        profile.archetypes == [],
+        f"{_NONSTOREFRONT}: claims NO archetype (got {profile.archetypes}) — a bare "
+        "documentation page is not a storefront",
+    )
+
+    # Every archetype is therefore NA: the whole template bank is unclaimed, so the
+    # offering-relative battery is honestly empty (no fabricated task, no penalty).
+    _check(
+        set(profile.unclaimed) == set(ARCHETYPES),
+        f"{_NONSTOREFRONT}: every archetype is NA/unclaimed "
+        f"(got {sorted(profile.unclaimed)}, want {sorted(ARCHETYPES)})",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Vendor-neutrality of the OFFERING classifier — domain-relabeling invariance.
 #
 # `tests/test_canonical_replay.py` (Cycle 21) made vendor-neutrality an executable
@@ -485,6 +534,7 @@ def main() -> int:
         test_canonical_metaphorical_ship_stays_na_org,
         test_canonical_metaphorical_ship_stays_na_com,
         test_retail_inverse_offering,
+        test_nonstorefront_empty_offering,
         test_offering_relabel_invariance_org,
         test_offering_relabel_invariance_com,
         test_offering_relabel_negative_control,

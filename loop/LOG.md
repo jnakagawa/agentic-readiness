@@ -4115,3 +4115,114 @@ band, sustained-drift run, PILLAR attribution (Cycle 37), and SIDE/direction cau
 HTML surface (the scorecard / a standalone page) so a reader eyeballs the curve +
 the named mover, not just the terminal (P2 "Score-over-time trend page" (a) /
 Cycle-37 follow-up). Next cycle takes READOUT.
+
+## Local cycle — 2026-07-27T18:11Z — TRUTH: reconcile a lost ship — the zero-commerce baseline (example.com) code lands (its LOG was committed 07-24, its code was not)
+
+**Track.** TRUTH (calibration against reality) via SELF-HEALING (bookkeeping
+repair). This fire's one item was to reconcile a LOG/git inconsistency and ship
+the code the committed history already claimed — the exact `[LOCAL]`
+"Third-control-domain replay fixture" backlog item, whose fixture capture is the
+networked half only a local fire can do.
+
+**Root cause (what was inconsistent).** The committed `loop/LOG.md` carries a
+detailed `## Local cycle — 2026-07-24T11:48Z` entry describing the example.com
+zero-commerce baseline as SHIPPED (fixture + four test cases, suite 150→154). But
+the actual code was never committed: that 07-24 fire authored `fixtures/canonical/
+example.com.json` + the tests and wrote its LOG entry to disk, then only `LOG.md`
+was swept into a commit — by the fixed-verb verify runner's `2cf0cef "loop: local
+verification 20260724T124104Z"` (which force-adds `loop/*.md` + its `runs/local/
+verify_*.json`), NOT by the fire itself. `git log -S test_nonstorefront_replays_22_5`
+resolves ONLY to `2cf0cef` because the test *names are quoted in the LOG prose*; no
+commit on any branch ever added the test *file* change or the fixture. The cloud loop
+was then paused ~3 days (07-24→07-27; Cycle 36's note confirms no cloud cycle fired
+between Cycle 35 and 14:21Z today), so the WIP sat uncommitted in the working tree
+while the committed LOG claimed the ship — a bookkeeping-down condition
+(LOG/STATE inconsistent with git history) the self-healing law says to repair FIRST.
+
+**First duty.** No open peer-gated PR (`gh pr list --state open` → `[]`) — nothing
+to review/merge. Infra health: see INFRA WATCH below.
+
+**Git hygiene (handled before any edit).** This checkout's `main` was 4 commits
+behind — cloud Cycles 36 (READOUT canonical-delta history), 37 (METHOD pillar
+attribution), 38 (COVERAGE free-tier body-field discovery), 39 (TRUTH divergence
+side/direction) had shipped to `origin/main` (0757fa1) while local sat at the 13:41Z
+verify commit (7393cc3). Confirmed origin does NOT already carry the example.com
+work (no duplicate), stashed the WIP (incl. the untracked fixture), fast-forwarded
+to origin/main, restored the WIP cleanly (origin never touched any of the three WIP
+files → no conflict).
+
+**What / why.** Re-validated the surviving WIP against the CURRENT suite (not just
+07-24's), then committed it. The regression + vendor-neutrality signal now spans
+FOUR real domains across the full commerce spectrum — two agent-native API
+storefronts (46.1 / 85.5), a human-only retail shop (29.5, transactability floor),
+and a zero-commerce non-storefront (22.5, the honest bottom anchor) — so the
+with-rails +39.4 delta is measured against a real low anchor, not only other
+storefronts. Landed exactly as the 07-24 entry described:
+
+`tests/test_canonical_replay.py` **11 → 14**:
+1. `test_nonstorefront_replays_22_5` — pins overall **22.5 F**, rubric 0.7, all five
+   pillars (access 100 / legibility 0.0 / transactability 0.0 / trust 20.0 / outcome
+   None), 0 replay-miss. A non-commercial page joins the regression signal.
+2. `test_nonstorefront_earns_no_agent_native_payment` — the capability-floor MIRROR:
+   a site with no storefront earns EXACTLY 0 transactability and NO payment credit
+   (`x402_probe` not PASS; `self_serve_payg` records no live x402; no
+   `commerce-protocol-*`/`x402-live`). Attribution-honesty nuance pinned: here
+   `self_serve_payg` is CANT_TEST (no purchase path → honestly EXCLUDED, never
+   penalized) yet transactability is still 0 because the payment probe FAILs on
+   recorded evidence-of-absence — absence excused where unobservable, scored where
+   observed (invariant #4, both directions). Verified live in the test run.
+3. `test_relabel_invariance_nonstorefront` — vendor-neutrality (Cycle 21 relabel)
+   extended to the fourth domain: relabeling the host everywhere reproduces identical
+   22.5 / F / pillars / per-check statuses, 0 replay-miss.
+
+`tests/test_offering_canonical.py` **8 → 9** (`test_nonstorefront_empty_offering`):
+the offering-layer companion — a site that sells nothing → EMPTY offering
+(`archetypes == []`, all six NA), so the offering-relative battery is honestly empty
+(no fabricated task, no penalty); guards the precision-first classifier against
+inventing an offering from generic prose.
+
+**Fixture provenance / safety.** `fixtures/canonical/example.com.json` — 41 GET /
+**0 POST** (a pure static $0 crawl of the plain IANA example page), all requests
+on-domain (example.com), secret-pattern scan clean (no `sk-`/`AKIA`/`ghp_`/PRIVATE
+KEY). Invariant #1 clean — GET-only, no signing/payment path. Not re-captured this
+fire (the committed fixture replays deterministically; spending nothing, and the
+canonical-drift lesson "don't re-capture while a signal fluctuates" applies to live
+signals, not to a stable committed control).
+
+**Validation / regression.** Full suite **164 → 168** individual tests, all 19 files
+exit 0 (`test_canonical_replay.py` 11→14, `test_offering_canonical.py` 8→9; every
+other file unchanged). Scoring path byte-for-byte untouched —
+`git diff --name-only -- asrs/ rubric/` EMPTY → rubric stays **v0.7**; canonical
+PAIR unchanged by construction AND re-measured (replay guard 14/14, **46.1 F /
+85.5 B / +39.4**, 0 replay-miss). Orthogonal to the open LIVE CANONICAL DRIFT: that
+is a real-world change in the with-rails `.com` site read off the LIVE verify series;
+this touches no canonical fixture and no scoring code, so it neither affects nor is
+affected by the drift decision (fixture re-capture stays deferred [LOCAL]).
+
+**Ship.** Direct to main (tests + one committed fixture; no scoring semantics; not a
+sensitive class). Files: `tests/test_canonical_replay.py`, `tests/test_offering_canonical.py`,
+`fixtures/canonical/example.com.json`, plus bookkeeping (`loop/{LOG,STATE,BACKLOG}.md`).
+The 07-24 LOG entry is left UNEDITED (invariant #5, append-only); this entry records
+the reconciliation.
+
+**Budget / constraints.** $0 — zero codex, zero behavioral panels, zero live crawls
+(offline replay validation only). Nothing touched outside the repo checkout.
+
+**Evidence.** `fixtures/canonical/example.com.json` (41 GET / 0 POST, committed this
+fire); the two test files; suite output 168/168; `git diff -- asrs/ rubric/` empty.
+
+**Comms.** No Slack — tests + fixture, moves no score, not a sensitive-class PR; the
+daily digest already went out Cycle 38 (16:13Z today), and the canonical drift it
+carried is unchanged by this fire. The verify-runner git_pull failures are a transient
+network blip (github reachable again this fire), under the 6h floor — a STATE watch,
+not yet a flag.
+
+**Next hypothesis.** With the four-domain scoring-layer guards complete, the nearest
+TRUTH/METHOD frontier is the OFFERING-layer relabel guard, which still covers only the
+canonical pair — extend `test_offering_canonical` relabel-invariance to
+`books.toscrape.com` (retail) and `example.com` (non-storefront), now that both
+fixtures are committed and cloud-doable (no capture needed). Separately, the top
+operator P0 — the `--battery auto` behavioral acceptance rerun — remains [LOCAL] and
+is best run as a budget-respecting claude-only slice once the with-rails `.com` site
+settles out of its current live drift (running it mid-drift would fold real-world
+`.com` softening into the acceptance read).

@@ -483,32 +483,27 @@ design in-cloud, execute locally.
      to main. Suite 132 → 133. See LOG (Local cycle — 07:47Z). The example.com non-storefront
      control replay/relabel case (P2 below) remains the last offering-layer fixture gap. -->
 
-- **[LOCAL] Third-control-domain replay fixture** (METHOD/TRUTH, Cycle-17 + Cycle-19 follow-up):
-  UPDATE — Cycle 35 (TRUTH) already grew the SCORING replay guard beyond the pair to a THIRD real
-  domain using a fixture we already held: `books.toscrape.com` (a RETAIL storefront) is now wired
-  into `test_canonical_replay.py` (8→11 tests) — pinned 29.5 F on v0.7, the transactability FLOOR
-  (earns 0, strictly below the no-rails .org's 18.75; the capability-lens MIRROR of the +39.4 delta),
-  plus relabel-invariance. So this item is now SPECIFICALLY about the example.com NON-storefront /
-  zero-commerce baseline (a distinct FOURTH datapoint: a site that sells nothing at all, vs the
-  retail shop that sells to humans but not to agents). Capture a fixture for the NON-storefront
-  control (example.com, already spot-checked 22.5 F [LOCAL] 15:43Z) via
-  `asrs.cli score example.com --record-fixture fixtures/canonical/example.com.json`, then add a
-  small `test_canonical_replay` case pinning 22.5 F / no commerce credit. NOW ALSO extend the
-  Cycle-19 CAPABILITY-assertion pattern to it: pin that this low-capability baseline earns NO
-  agent-native payment (`x402_probe` not-PASS, `self_serve_payg` x402_live=False, NO
-  `commerce-protocol-*`/`x402-live`) — guards against a probe that spuriously INFLATES a bare
-  site with payment credit it hasn't earned, the mirror of the +39.4 pair's capability guard.
-  Capture is [LOCAL] (live crawl); the test wiring is cloud-doable once the fixture lands.
-  ALSO (Cycle-21 follow-up): add a domain-relabeling invariance case for it too
-  (`_assert_relabel_invariant("example.com")`), so the vendor-neutrality tripwire covers a
-  non-storefront control, not just the canonical pair.
-  ALSO (offering-layer, 2026-07-24 local-fire follow-up — now that BOTH the canonical NA half
-  AND the retail-inverse half are pinned in `test_offering_canonical.py`): the SAME example.com
-  fixture also pins the offering-layer THIRD case — a site that sells NOTHING → EMPTY offering
-  (no archetype claimed → every archetype NA → honest empty battery). Add a
-  `test_offering_canonical` case replaying it through `discover_offering` and asserting
-  `profile.archetypes == []` and `set(profile.unclaimed) == set(ARCHETYPES)`. Cloud-doable
-  once the one example.com fixture lands — capture it once, wire all three test cases.
+<!-- DONE 2026-07-27T18:11Z (local fire — RECONCILIATION ship): "[LOCAL] Third-control-domain
+     replay fixture" LANDED. The fixture capture + all four test cases were authored + validated by
+     the 2026-07-24T11:48Z local fire (see LOG that date), but that fire's CODE commit was lost — only
+     its LOG.md entry was swept up by the 12:41Z verify runner (2cf0cef), leaving the tests + fixture
+     uncommitted in the working tree while the committed LOG claimed the ship. This fire re-validated
+     the surviving WIP against the CURRENT suite and committed it, reconciling git history with the
+     already-committed 07-24 LOG entry. Landed: `fixtures/canonical/example.com.json` (41 GET / 0 POST,
+     the plain IANA example page, no auth/secret tokens) + `test_canonical_replay.py` 11→14
+     (`test_nonstorefront_replays_22_5` pins 22.5 F / access 100 / legibility 0 / transactability 0 /
+     trust 20 / outcome None, 0 replay-miss; `test_nonstorefront_earns_no_agent_native_payment` — the
+     capability-floor MIRROR: no storefront earns EXACTLY 0 transactability + no `commerce-protocol-*`/
+     `x402-live`, with the honest CANT_TEST-self_serve_payg-yet-still-0 attribution nuance;
+     `test_relabel_invariance_nonstorefront`) + `test_offering_canonical.py` 8→9
+     (`test_nonstorefront_empty_offering` — sells nothing → `archetypes == []`, all six NA). The
+     regression + vendor-neutrality signal now spans FOUR real domains across the commerce spectrum
+     (46.1 / 85.5 API storefronts, 29.5 retail floor, 22.5 zero-commerce baseline). Score-neutral:
+     `git diff -- asrs/ rubric/` EMPTY → rubric v0.7, canonical PAIR unchanged by construction AND
+     re-measured (replay guard now 14/14, 46.1 F / 85.5 B / +39.4, 0 replay-miss). Full suite 164→168.
+     Direct-to-main. See LOG (Local cycle — 18:11Z). REMAINING follow-ups are distinct items below/at
+     the referee-pass entry: the OpenAPI-spec-only fixture, and extending the OFFERING-layer relabel
+     guard to the retail + non-storefront domains (only the SCORING-layer relabel covers all four). -->
 
 - **[LOCAL] OpenAPI-spec-only storefront fixture** (COVERAGE/TRUTH, Cycle-34 follow-up): Cycle 34
   added `/openapi.json` / `/.well-known/openapi.json` / `/swagger.json` to

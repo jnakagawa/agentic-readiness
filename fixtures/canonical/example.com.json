@@ -1,0 +1,956 @@
+{
+ "fixture_version": 1,
+ "domain": "example.com",
+ "base_url": "https://example.com",
+ "entries": [
+  {
+   "method": "GET",
+   "url": "https://example.com",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com",
+    "final_url": "https://example.com/",
+    "status": 200,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:32 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "last-modified": "Mon, 20 Jul 2026 07:16:20 GMT",
+     "allow": "GET, HEAD",
+     "age": "13326",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac6dbc7d4b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/robots.txt",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/robots.txt",
+    "final_url": "https://example.com/robots.txt",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:32 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7138",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac6dfd454b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com",
+   "ua": "claudebot",
+   "result": {
+    "url": "https://example.com",
+    "final_url": "https://example.com/",
+    "status": 200,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:32 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "last-modified": "Mon, 20 Jul 2026 07:16:20 GMT",
+     "allow": "GET, HEAD",
+     "age": "13326",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac6e3e0b4b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com",
+   "ua": "gptbot",
+   "result": {
+    "url": "https://example.com",
+    "final_url": "https://example.com/",
+    "status": 200,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "last-modified": "Mon, 20 Jul 2026 07:16:20 GMT",
+     "allow": "GET, HEAD",
+     "age": "13326",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac6e7ebf4b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/llms.txt",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/llms.txt",
+    "final_url": "https://example.com/llms.txt",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7138",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac6ebf9c4b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/llms-full.txt",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/llms-full.txt",
+    "final_url": "https://example.com/llms-full.txt",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7138",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac6ee84e4b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/sitemap.xml",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/sitemap.xml",
+    "final_url": "https://example.com/sitemap.xml",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7138",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac6f28de4b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/manifest.json",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/manifest.json",
+    "final_url": "https://example.com/manifest.json",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7138",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac6f69b64b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/pricing.json",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/pricing.json",
+    "final_url": "https://example.com/pricing.json",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7138",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac6fbaa24b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/catalog.json",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/catalog.json",
+    "final_url": "https://example.com/catalog.json",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7138",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac6ffb464b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/docs",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/docs",
+    "final_url": "https://example.com/docs",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7138",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac703c214b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/api",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/api",
+    "final_url": "https://example.com/api",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7138",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac706cb54b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/docs/api",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/docs/api",
+    "final_url": "https://example.com/docs/api",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7138",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac709d4b4b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/openapi.json",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/openapi.json",
+    "final_url": "https://example.com/openapi.json",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7138",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac70ddff4b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/.well-known/api-catalog",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/.well-known/api-catalog",
+    "final_url": "https://example.com/.well-known/api-catalog",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7138",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac712f224b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/developers",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/developers",
+    "final_url": "https://example.com/developers",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7138",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac716fd34b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/pricing",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/pricing",
+    "final_url": "https://example.com/pricing",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7138",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac71a8a14b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/plans",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/plans",
+    "final_url": "https://example.com/plans",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7138",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac71f9654b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/api/v1",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/api/v1",
+    "final_url": "https://example.com/api/v1",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7138",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac7239e64b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/v1",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/v1",
+    "final_url": "https://example.com/v1",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7138",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac727a8b4b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/.well-known/ucp",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/.well-known/ucp",
+    "final_url": "https://example.com/.well-known/ucp",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7138",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac72bb274b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/.well-known/agentic-commerce",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/.well-known/agentic-commerce",
+    "final_url": "https://example.com/.well-known/agentic-commerce",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7138",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac72ebbc4b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/.well-known/mcp.json",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/.well-known/mcp.json",
+    "final_url": "https://example.com/.well-known/mcp.json",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7138",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac732c734b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/mcp",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/mcp",
+    "final_url": "https://example.com/mcp",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7139",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac736d3c4b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/api/mcp",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/api/mcp",
+    "final_url": "https://example.com/api/mcp",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7139",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac73adfa4b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/about",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/about",
+    "final_url": "https://example.com/about",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7139",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac73ee9d4b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/contact",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/contact",
+    "final_url": "https://example.com/contact",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7139",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac742f3a4b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/company",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/company",
+    "final_url": "https://example.com/company",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:33 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7139",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac74680c4b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/legal",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/legal",
+    "final_url": "https://example.com/legal",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:34 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7139",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac74a8ef4b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/imprint",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/imprint",
+    "final_url": "https://example.com/imprint",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:34 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7139",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac74e9a74b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/terms",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/terms",
+    "final_url": "https://example.com/terms",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:34 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7139",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac752a704b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/tos",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/tos",
+    "final_url": "https://example.com/tos",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:34 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7139",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac756b3e4b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/terms-of-service",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/terms-of-service",
+    "final_url": "https://example.com/terms-of-service",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:34 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7139",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac75abef4b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/terms-and-conditions",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/terms-and-conditions",
+    "final_url": "https://example.com/terms-and-conditions",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:34 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7139",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac75fcd34b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/privacy",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/privacy",
+    "final_url": "https://example.com/privacy",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:34 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7139",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac762d554b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/privacy-policy",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/privacy-policy",
+    "final_url": "https://example.com/privacy-policy",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:34 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7139",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac766e024b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/refund",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/refund",
+    "final_url": "https://example.com/refund",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:34 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7139",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac76ae954b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/refunds",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/refunds",
+    "final_url": "https://example.com/refunds",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:34 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7139",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac76ff634b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/refund-policy",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/refund-policy",
+    "final_url": "https://example.com/refund-policy",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:34 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7139",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac772fec4b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/cancellation",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/cancellation",
+    "final_url": "https://example.com/cancellation",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:34 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7139",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac77689a4b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://example.com/returns",
+   "ua": "browser",
+   "result": {
+    "url": "https://example.com/returns",
+    "final_url": "https://example.com/returns",
+    "status": 404,
+    "headers": {
+     "date": "Fri, 24 Jul 2026 11:44:34 GMT",
+     "content-type": "text/html",
+     "transfer-encoding": "chunked",
+     "connection": "keep-alive",
+     "server": "cloudflare",
+     "age": "7139",
+     "cf-cache-status": "HIT",
+     "content-encoding": "gzip",
+     "cf-ray": "a202ac77a94e4b1f-LAX"
+    },
+    "text": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+    "error": null
+   }
+  }
+ ]
+}

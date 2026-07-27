@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 35
+- Cycle counter: 36
 - Started: 2026-07-23 (UTC)
-- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -469,6 +469,32 @@
   realigned to origin/main (3e12924, detached HEAD from the forced-update local-verify push reset to
   main). REMAINING TRUTH frontier: the example.com non-storefront control (fourth point, zero-commerce
   baseline — needs a [LOCAL] fixture capture; test wiring cloud-doable once it lands). Next cycle takes READOUT.
+  Cycle 36 READOUT (canonical-delta HISTORY readout — the benchmark can now READ its own regression signal over time):
+  new pure/stdlib/read-only `asrs/canonical_history.py` (`load_points`/`summarize`/`render` + `asrs canonical-history`
+  CLI) reads the 66 committed `runs/local/verify_*.json` live re-scores into a `CanonicalHistory` — latest point,
+  `divergence` = live delta − fixture baseline (+39.4), 3-band verdict (in-band ≤2.0 / drifting ≤8.0 / diverged), a
+  TRAILING `consecutive_out_of_band` run (1=jitter, N≥3=sustained real move), and a delta sparkline. Skips malformed
+  artifacts (pre-Cycle-13 FileNotFoundError / non-ok domains) — attribution honesty applied to the history. Baseline
+  constant cross-checked against `test_canonical_replay.EXPECTED_DELTA` (can't silently drift). **This immediately
+  surfaced a LIVE CANONICAL DRIFT — see the prominent note below.** Score-neutral (git diff -- scoring.py/rubric/probes/
+  fetch/behavioral/offering/battery EMPTY → rubric v0.7, replay guard 11/11, canonical PAIR 46.1 F / 85.5 B / +39.4
+  unchanged by construction). Direct-to-main. `test_canonical_history.py` 6/6 (new); suite 150 → 156. No Slack (score-
+  neutral ship; live drift folds into the next post-16:00 UTC digest, this fire 14:21Z). First duty: no open peer-gated
+  PR (verified []); infra health check ran first — runner HEALTHY (verify_20260727T134147Z, 13:41Z, ~33 min old). NOTE:
+  no CLOUD cycle fired between Cycle 35 (07-24T11:12Z) and this fire (07-27T14:21Z) — only the local verify runner
+  heartbeated for ~3 days; cloud loop resumed this fire. Next cycle takes METHOD.
+- **LIVE CANONICAL DRIFT (open, for the next post-16:00 UTC digest) — surfaced by the Cycle-36 history readout.**
+  The live canonical delta held **+39.4** (46.1 F / 85.5 B) for days through `verify_20260727T054339Z`, then MOVED:
+  07:40Z fire driftflight.com collapsed to 50.0 F (delta +3.9 — transient error crawl, transactability CANT_TEST /
+  legibility 0), recovering to 76.2 C (09:51Z, +30.1) and **78.7 C (13:41Z, +32.6)**. Current `.com` state:
+  transactability RECOVERED to 87.5 (= baseline) but **legibility fell 90.9 → 63.6**, and pillars still fluctuate
+  fire-to-fire → a REAL-WORLD site change (deploy / intermittent availability), NOT a code regression. drift-flight.org
+  flat at 46.1 F throughout — the delta narrowed because the RAILS side softened, not the no-rails side improving. The
+  committed fixtures still pin 46.1/85.5/+39.4 so the in-cloud replay guard is green and the PAIR is unchanged BY
+  CONSTRUCTION; this is a LIVE-signal divergence the fixture guard is (correctly) blind to. Read it live any cycle:
+  `python -m asrs canonical-history`. Decisions deferred until the site settles: (a) whether to re-capture the canonical
+  fixture (moves the pinned baseline — [LOCAL], deliberately NOT while fluctuating); (b) pillar-level attribution in the
+  readout (name WHICH pillar drove the move — here `.com` legibility). To be flagged in the next daily digest.
 - Rubric: **v0.7 on main** (PR #3 MERGED 2026-07-23T14:45:30Z, merge commit 72a2e5b —
   merged EXTERNALLY during the Cycle-14 fire (operator/active consent), pre-empting the
   pre-merge review, which converted to cloud Cycle 15's post-merge retain-or-revert sanity

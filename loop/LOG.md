@@ -3790,3 +3790,79 @@ tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1
 ## Local verification — 20260727T134147Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 78.7 C | delta +32.6 | artifact runs/local/verify_20260727T134147Z.json
+
+## Cycle 36 (READOUT) — 2026-07-27T14:21Z — canonical-delta HISTORY readout over the committed live-verify series (+ surfaces a live delta DRIFT)
+
+**Track.** READOUT (readout clarity: turn the 66-artifact committed live-verify
+series into a legible canonical-delta TREND with a sustained-drift alert — the
+benchmark had no way to READ its own regression signal over time, only per-fire
+LOG lines).
+
+**What / why.** The local runner commits `runs/local/verify_<ts>.json` every fire
+(a live static re-score of the reference pair). 66 usable artifacts (2026-07-23 →
+07-27) are committed, but nothing READ them as a series — a delta move showed up
+only as scattered one-line LOG entries. New pure, stdlib-only, read-only module
+`asrs/canonical_history.py`:
+- `load_points(runs_dir)` parses each verify artifact, SKIPPING malformed ones
+  (early pre-Cycle-13 FileNotFoundError artifacts with no `delta`; any run where a
+  domain isn't `ok`) — attribution honesty applied to the history (a re-score we
+  couldn't observe is not a data point, never a scored zero).
+- `summarize()` → `CanonicalHistory`: latest point, `divergence` = live delta −
+  fixture baseline (+39.4), a 3-band verdict (in-band ≤2.0 / drifting ≤8.0 /
+  diverged), and `consecutive_out_of_band` = the TRAILING run of readings past the
+  in-band threshold (1 = jitter, N≥3 = a sustained real-world move — the signal
+  that separates a blip from a site change).
+- `render()` → terminal block + a delta sparkline; `asrs canonical-history` CLI.
+Baseline is a plain constant `FIXTURE_BASELINE_DELTA = 39.4` cross-checked by test
+against `test_canonical_replay.EXPECTED_DELTA` (single source of truth — a fixture
+re-capture that legitimately moves the delta turns THAT test red, the documented
+maintenance contract, so the constant can't silently drift).
+
+**LIVE CANONICAL DRIFT surfaced (capability terms).** The new readout immediately
+makes visible a real move: from loop-start through `verify_20260727T054339Z` the
+live delta held **+39.4** (46.1 F / 85.5 B) for days; then at the **07:40Z fire
+today** driftflight.com collapsed to 50.0 F (delta +3.9, a transient error crawl —
+transactability CANT_TEST, legibility 0), recovering to 76.2 C (09:51Z, +30.1) and
+**78.7 C (13:41Z, +32.6)**. Latest state: `.com` transactability RECOVERED to 87.5
+(= baseline) but **legibility fell 90.9 → 63.6** — the with-rails storefront lost
+machine-legibility credit; pillars are still fluctuating fire-to-fire → a
+real-world site change (deploy / intermittent availability), NOT a code regression.
+drift-flight.org is flat at 46.1 F throughout, so the delta narrowed because the
+RAILS side softened, not because the no-rails side improved. Truth outranks the
+pitch — this is an honest, legible signal, now a first-class readout. The committed
+fixtures STILL pin 46.1/85.5/+39.4, so the in-cloud replay guard is green and the
+canonical delta is unchanged BY CONSTRUCTION; this is a LIVE-signal divergence the
+fixture-based guard is (correctly) blind to — exactly the gap this readout fills.
+
+**Validation / regression.** Full suite **150 → 156** (new `tests/test_canonical_history.py`
+6/6). `test_canonical_replay.py` **11/11** unchanged (canonical PAIR re-measured
+46.1 F / 85.5 B / **+39.4**, 0 replay-miss). Scoring path byte-for-byte untouched:
+`git diff --name-only -- asrs/scoring.py asrs/probes asrs/fetch.py rubric/
+asrs/behavioral asrs/offering.py asrs/battery.py` EMPTY → rubric stays **v0.7**.
+Free-tier test 10/10 after `pip install -r requirements.txt` (eth-account). CLI
+smoke: `asrs canonical-history` renders the 66-point series, flags "DRIFTING —
+3 consecutive re-scores out of band".
+
+**Ship.** Direct to main (new READOUT diagnostic + CLI + tests; no scoring
+semantics, not payment/signing). `git diff --stat` = `asrs/cli.py` (+ subcommand)
++ new `asrs/canonical_history.py` + new `tests/test_canonical_history.py`.
+
+**Comms.** No Slack this fire: the SHIP is score-neutral/non-sensitive, and the
+live drift is not "something we shipped" — per the playbook comms policy it folds
+into the next post-16:00 UTC daily digest (this fire is 14:21Z, before the window).
+Recorded prominently in STATE for that digest.
+
+**First duty.** No open peer-gated PR (verified `list_pull_requests` state=open →
+`[]`). Infra health check ran first — runner HEALTHY (newest
+`verify_20260727T134147Z`, 13:41Z, ~33 min old at fire, tests_ok). NOTE: no CLOUD
+cycle fired between Cycle 35 (2026-07-24T11:12Z) and this fire — only the local
+verify runner heartbeated for ~3 days; the cloud loop resumed this fire (Cycle 36).
+git realigned to origin/main (`7393cc3`; detached HEAD after a forced origin/main
+update reset to `main`).
+
+**Next hypothesis.** (1) Pillar-level ATTRIBUTION of a divergence — extend the
+readout to name WHICH pillar drove the delta move (here: `.com` legibility), so the
+"explain the delta in capability terms" duty is computed, not hand-written. (2) A
+[LOCAL] decision, once the `.com` site settles, on whether to re-capture the
+canonical fixture (moving the pinned baseline) — deliberately NOT done while the
+site is still fluctuating.

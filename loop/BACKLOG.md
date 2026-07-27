@@ -570,7 +570,35 @@ design in-cloud, execute locally.
 - **Evidence links on the card** (READOUT): each check row links to its
   evidence blob; publish evidence alongside the hosted card.
 - **Score-over-time trend page** (READOUT): per-domain history from the
-  dated reports; error bars once trials ≥ 2 lands.
+  dated reports; error bars once trials ≥ 2 lands. PROGRESS 2026-07-27T14:21Z
+  (Cycle 36): the CANONICAL-PAIR half landed as a TERMINAL readout — `asrs
+  canonical-history` (`asrs/canonical_history.py`) reads the committed
+  `runs/local/verify_*.json` series into a delta trend + sustained-drift alert
+  vs the fixture baseline (+39.4), with a sparkline. REMAINING: (a) an HTML
+  trend surface (the terminal block rendered into the scorecard / a standalone
+  page, so a reader eyeballs the curve, not just the terminal); (b) per-DOMAIN
+  history beyond the canonical pair (needs committed dated reports for other
+  domains — currently only the verify series is committed); (c) error bars once
+  multi-trial series land.
+- **Canonical-history pillar attribution** (READOUT/METHOD, Cycle-36 follow-up):
+  extend `asrs/canonical_history.py` to name WHICH pillar drove a divergence
+  (the verify artifacts carry per-domain `pillars`), so the playbook's per-cycle
+  "explain the delta in capability terms" duty is COMPUTED, not hand-written.
+  Current live drift is a `.com` LEGIBILITY drop (90.9 → 63.6) — the readout
+  should say that, not just "delta −6.8". Reads committed evidence only; direct
+  to main. Smallest unit: compare the latest point's per-pillar overalls against
+  the last in-band point's, surface the largest mover.
+- **[LOCAL] Decide on canonical fixture re-capture once driftflight.com settles**
+  (TRUTH, Cycle-36 follow-up to the LIVE CANONICAL DRIFT). The live `.com`
+  score has drifted below the pinned fixture (85.5 B → ~78.7 C, legibility
+  regressed) and is still fluctuating fire-to-fire. Do NOT re-capture while
+  unstable. When the live series reads in-band-stable for several consecutive
+  fires at a NEW level (watch `asrs canonical-history`), decide whether the site
+  change is durable; if so, re-capture (`asrs.cli score driftflight.com
+  --record-fixture fixtures/canonical/driftflight.com.json`, LIVE → [LOCAL]) and
+  update EXPECTED in `test_canonical_replay.py` + `FIXTURE_BASELINE_DELTA` in
+  `canonical_history.py` in the SAME commit (the documented drift-move contract).
+  If the drift is transient and the site recovers to 85.5 B, no action.
 - **Free-tier probe generalization** (COVERAGE): more opt-in conventions
   (query param, path-based), non-EVM zero-value schemes. PROGRESS 2026-07-23T22:12Z
   (Cycle 22): the **query-param** opt-in DISCOVERY half SHIPPED in-cloud (direct-to-main,

@@ -366,6 +366,14 @@ def _cmd_scorecard(args) -> int:
     return 0
 
 
+def _cmd_canonical_history(args) -> int:
+    from . import canonical_history
+
+    hist = canonical_history.load_history(args.runs_dir)
+    print(canonical_history.render(hist))
+    return 0
+
+
 def _add_common_options(p) -> None:
     p.add_argument(
         "--behavioral", action="store_true",
@@ -458,6 +466,17 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p_card.add_argument("--out", default=None, help="output HTML path")
     p_card.set_defaults(func=_cmd_scorecard)
+
+    p_hist = sub.add_parser(
+        "canonical-history",
+        help="read the committed live-verify series and print the canonical "
+        "delta trend + a drift alert vs the pinned fixture baseline",
+    )
+    p_hist.add_argument(
+        "--runs-dir", default=None, metavar="DIR",
+        help="directory of verify_<ts>.json artifacts (default: runs/local)",
+    )
+    p_hist.set_defaults(func=_cmd_canonical_history)
 
     return parser
 

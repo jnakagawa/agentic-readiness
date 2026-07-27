@@ -304,6 +304,93 @@ def test_attribution_on_real_series_fingers_com_legibility() -> None:
     )
 
 
+def test_divergence_cause_names_the_softening_side() -> None:
+    print("test_divergence_cause_names_the_softening_side")
+    # (a) the REAL 2026-07-27 shape: .org flat at 46.1, .com falls 85.5 -> 78.7.
+    # The gap narrows -6.8, and the CAUSE must be the with-rails reference SOFTENING
+    # (a real-world site regression), NOT the no-rails side gaining capability — the
+    # distinction STATE.md hand-wrote ("the delta narrowed because the RAILS side
+    # softened, not the no-rails side improving"), now COMPUTED.
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [_artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4) for i in range(1, 5)]
+        rows += [
+            _artifact("20260727T050000Z", 46.1, 80.0, 33.9),   # drifting
+            _artifact("20260727T060000Z", 46.1, 78.7, 32.6),   # drifting
+        ]
+        _write_series(tmp, rows)
+        hist = ch.load_history(tmp)
+        cause = hist.divergence_cause
+        _check(cause is not None, "out-of-band latest with an in-band anchor gets a cause")
+        _check(cause.anchor_ts == "20260727T040000Z", f"cause anchors on the last in-band reading, got {cause.anchor_ts}")
+        _check(cause.driver == ch.CANONICAL_WITH_RAILS, f"the with-rails side drove it, got {cause.driver}")
+        _check(abs(cause.no_rails_change - 0.0) < 1e-9, f"no-rails flat, got {cause.no_rails_change}")
+        _check(abs(cause.with_rails_change - (-6.8)) < 1e-9, f"with-rails fell -6.8, got {cause.with_rails_change}")
+        _check(abs(cause.gap_change - (-6.8)) < 1e-9, f"gap narrowed -6.8, got {cause.gap_change}")
+        _check(cause.reference_degraded is True, "with-rails softening -> reference_degraded True")
+        out = ch.render(hist)
+        _check("driver:" in out, "render names the driver")
+        _check("SOFTENED" in out, "render says the reference softened, not the gap closing")
+    # (b) NON-VACUOUS opposite case: the gap narrows because the NO-RAILS side
+    # GAINED capability (the bare storefront improved), with-rails flat. The cause
+    # must read the gap as GENUINELY CLOSING (a real benchmark movement), NOT as
+    # reference degradation — the opposite conclusion the honesty of this signal
+    # rests on. A cause blind to direction would call both "the gap narrowed".
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [_artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4) for i in range(1, 5)]
+        rows += [
+            _artifact("20260727T050000Z", 52.0, 85.5, 33.5),   # bare side rose
+            _artifact("20260727T060000Z", 53.0, 85.5, 32.5),
+        ]
+        _write_series(tmp, rows)
+        hist = ch.load_history(tmp)
+        cause = hist.divergence_cause
+        _check(cause is not None, "the opposite drift also has a cause")
+        _check(cause.driver == ch.CANONICAL_NO_RAILS, f"the no-rails side drove it, got {cause.driver}")
+        _check(abs(cause.with_rails_change - 0.0) < 1e-9, f"with-rails flat, got {cause.with_rails_change}")
+        _check(cause.reference_degraded is False, "no-rails GAINING is not reference degradation")
+        out = ch.render(hist)
+        _check("GAINED capability" in out, "render reads the gap as genuinely closing")
+        _check("real benchmark movement" in out, "render distinguishes real movement from a reference outage")
+
+
+def test_divergence_cause_none_when_in_band() -> None:
+    print("test_divergence_cause_none_when_in_band")
+    # nothing has drifted -> no side to blame (honest None, mirroring attribution)
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [
+            _artifact("20260727T010000Z", 46.1, 85.5, 39.4),
+            _artifact("20260727T020000Z", 46.1, 85.0, 38.9),  # within jitter
+        ]
+        _write_series(tmp, rows)
+        hist = ch.load_history(tmp)
+        _check(hist.band == ch.BAND_IN, "series is in-band")
+        _check(hist.divergence_cause is None, "in-band series has no divergence cause")
+        _check("driver:" not in ch.render(hist), "render omits the driver line when in-band")
+
+
+def test_divergence_cause_on_real_series() -> None:
+    print("test_divergence_cause_on_real_series")
+    # Recovery-guarded end-to-end: WHEN the REAL committed series is out of band, the
+    # cause must name the with-rails reference softening (the 2026-07-27 real-world
+    # drift STATE.md hand-wrote — .org flat, .com fell, so the gap narrowed from the
+    # RAILS side, not the floor rising). If the site recovers to in-band, the cause
+    # is correctly None and the claim is skipped.
+    hist = ch.load_history()
+    if hist.band == ch.BAND_IN or hist.divergence_cause is None:
+        _check(True, "live series is in-band -> no cause to check (site recovered)")
+        return
+    cause = hist.divergence_cause
+    _check(
+        cause.driver == ch.CANONICAL_WITH_RAILS,
+        f"the real drift is driven by the with-rails side, got {cause.driver}",
+    )
+    _check(
+        cause.reference_degraded is True,
+        "the real drift is the reference softening, not the capability gap closing",
+    )
+    _check("driver:" in ch.render(hist), "the render names the driver on the real series")
+
+
 def test_runs_against_real_committed_series() -> None:
     print("test_runs_against_real_committed_series")
     hist = ch.load_history()  # default runs/local in this checkout
@@ -325,6 +412,9 @@ def main() -> int:
         test_attribution_none_when_in_band,
         test_attribution_skips_unobserved_pillar_and_needs_an_anchor,
         test_attribution_on_real_series_fingers_com_legibility,
+        test_divergence_cause_names_the_softening_side,
+        test_divergence_cause_none_when_in_band,
+        test_divergence_cause_on_real_series,
         test_runs_against_real_committed_series,
     ]
     failed = 0

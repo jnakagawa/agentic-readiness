@@ -110,6 +110,77 @@ class PillarAttribution:
 
 
 @dataclass
+class DivergenceCause:
+    """Which SIDE of the pair drove the latest divergence, and what it means.
+
+    ``PillarAttribution`` says WHAT changed on a domain (which pillar); this says
+    which DOMAIN moved the delta and in which direction — a distinct fact the
+    benchmark's credibility turns on. The reference delta can narrow two OPPOSITE
+    ways, and conflating them mis-tells an operator what to do:
+
+      - the no-rails side GAINING capability (the real capability gap is genuinely
+        closing — a benchmark movement; a durable move is a re-capture candidate), or
+      - the with-rails side LOSING ground (a real-world site regression on the
+        reference storefront — the pinned fixture still represents the TRUE gap, so
+        re-capture should WAIT for the site to recover, not chase the dip).
+
+    Computed on the SAME anchor as ``PillarAttribution`` (the last in-band reading),
+    from each side's OVERALL score — numeric on every scored artifact, so unlike the
+    pillar attribution this is never None-on-one-side. Vendor-neutral: the host names
+    are the module's existing reference-pair constants, used only as data.
+    """
+
+    anchor_ts: str
+    no_rails_change: float  # latest.no_rails_overall - anchor.no_rails_overall
+    with_rails_change: float  # latest.with_rails_overall - anchor.with_rails_overall
+
+    @property
+    def gap_change(self) -> float:
+        """Change in the delta (with_rails - no_rails), anchor -> latest.
+
+        Negative = the gap narrowed; positive = the gap widened. Equals the change
+        in ``divergence`` by construction.
+        """
+        return round(self.with_rails_change - self.no_rails_change, 4)
+
+    @property
+    def driver(self) -> str:
+        """The domain whose OVERALL score moved more, anchor -> latest.
+
+        Ties resolve to the no-rails (capability-floor) side, so an ambiguous move
+        is read conservatively as gap movement rather than reference degradation.
+        Because the driver is the dominant side, ``sign(gap_change)`` is fixed by
+        the driver's own direction (no-rails up / with-rails down both NARROW).
+        """
+        return (
+            CANONICAL_WITH_RAILS
+            if abs(self.with_rails_change) > abs(self.no_rails_change)
+            else CANONICAL_NO_RAILS
+        )
+
+    @property
+    def driver_change(self) -> float:
+        return (
+            self.with_rails_change
+            if self.driver == CANONICAL_WITH_RAILS
+            else self.no_rails_change
+        )
+
+    @property
+    def reference_degraded(self) -> bool:
+        """True iff the divergence is driven by the WITH-RAILS reference LOSING
+        ground (the gap narrowing from the top, not the floor rising).
+
+        This is the case where the pinned fixture still represents the true
+        capability gap and a re-capture should wait for the site to recover — as
+        opposed to the no-rails side gaining capability, where the real gap is
+        genuinely closing. The single crispest signal for the deferred re-capture
+        decision (the P2 canonical-fixture item).
+        """
+        return self.driver == CANONICAL_WITH_RAILS and self.with_rails_change < 0
+
+
+@dataclass
 class CanonicalHistory:
     points: list[CanonicalPoint] = field(default_factory=list)
     baseline_delta: float = FIXTURE_BASELINE_DELTA
@@ -123,6 +194,9 @@ class CanonicalHistory:
     # None when in-band (nothing to explain) or when no in-band anchor exists in
     # the live series (we never observed a stable baseline to attribute against).
     attribution: PillarAttribution | None = None
+    # which SIDE drove the latest divergence (no-rails gaining vs with-rails
+    # softening) — same anchor/gate as ``attribution``; None on the same conditions.
+    divergence_cause: DivergenceCause | None = None
 
 
 def _band_for(abs_divergence: float) -> str:
@@ -232,6 +306,7 @@ def summarize(
             break
     hist.consecutive_out_of_band = run
     hist.attribution = _attribute(points, run, latest)
+    hist.divergence_cause = _cause(points, run, latest)
     return hist
 
 
@@ -275,6 +350,29 @@ def _attribute(
     return PillarAttribution(anchor_ts=anchor.ts, moves=moves)
 
 
+def _cause(
+    points: list[CanonicalPoint], run: int, latest: CanonicalPoint
+) -> DivergenceCause | None:
+    """Attribute the latest divergence to a SIDE (no-rails vs with-rails), from
+    each side's OVERALL score change vs the last in-band reading.
+
+    Same gate as ``_attribute``: only when the latest reading is out of band and an
+    earlier in-band anchor exists (``points[-(run+1)]``). Uses OVERALL scores, which
+    are numeric on every scored artifact, so this is defined even on pre-pillar
+    artifacts where per-pillar attribution is empty.
+    """
+    if run < 1 or run >= len(points):
+        return None
+    anchor = points[-(run + 1)]
+    return DivergenceCause(
+        anchor_ts=anchor.ts,
+        no_rails_change=round(latest.no_rails_overall - anchor.no_rails_overall, 4),
+        with_rails_change=round(
+            latest.with_rails_overall - anchor.with_rails_overall, 4
+        ),
+    )
+
+
 def load_history(runs_dir: str | None = None) -> CanonicalHistory:
     return summarize(load_points(runs_dir))
 
@@ -291,6 +389,40 @@ def _spark(values: list[float]) -> str:
         idx = int((v - lo) / span * (len(_SPARK) - 1) + 0.5)
         out.append(_SPARK[idx])
     return "".join(out)
+
+
+def cause_verdict(cause: DivergenceCause) -> str:
+    """A capability-lens sentence naming which SIDE drove the divergence.
+
+    Keys on (driver side, driver direction) — the four honest cases. Because the
+    driver is the dominant side, its direction fixes whether the gap narrowed or
+    widened, so the sentence never contradicts ``gap_change``.
+    """
+    driver = cause.driver
+    change = cause.driver_change
+    verb = "fell" if change < 0 else "rose"
+    if driver == CANONICAL_NO_RAILS:
+        if change > 0:
+            meaning = (
+                "the capability gap narrowed because the no-rails reference GAINED "
+                "capability — a real benchmark movement, not a reference outage"
+            )
+        else:
+            meaning = (
+                "the gap widened because the no-rails reference LOST ground"
+            )
+    else:  # with-rails driver
+        if change < 0:
+            meaning = (
+                "the gap narrowed because the with-rails reference SOFTENED "
+                "(a real-world site change), not because the no-rails side gained "
+                "capability — the pinned fixture still represents the true gap"
+            )
+        else:
+            meaning = (
+                "the gap widened because the with-rails reference GAINED capability"
+            )
+    return f"{driver} overall {verb} {change:+.1f} — {meaning}"
 
 
 _BAND_VERDICT = {
@@ -371,6 +503,9 @@ def render(history: CanonicalHistory, window: int = 24) -> str:
                 f"overall delta moved but no single pillar isolated "
                 f"(pillar(s) unobserved on one side)"
             )
+    cause = history.divergence_cause
+    if cause is not None:
+        lines.append(f"driver: {cause_verdict(cause)}")
     tail = pts[-window:]
     lines.append(
         f"delta trend (last {len(tail)}): {_spark([p.delta for p in tail])}"

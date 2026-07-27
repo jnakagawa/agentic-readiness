@@ -593,11 +593,14 @@ design in-cloud, execute locally.
      evidence only; imports no scoring code; vendor-neutral. scoring.py/rubric/probes/… untouched →
      rubric v0.7, canonical pair 46.1 F / 85.5 B / +39.4, replay guard 11/11. `test_canonical_history.py`
      6→10; suite 156→160. See LOG Cycle 37. -->
-- **Canonical-history attribution: HTML trend surface** (READOUT, Cycle-37 follow-up): the pillar
-  attribution now prints in the TERMINAL block (`asrs canonical-history`). Render the trend +
-  attribution into an HTML surface (the scorecard or a standalone page) so a reader eyeballs the
-  curve + the named mover, not just the terminal. Folds into the P2 "Score-over-time trend page"
-  item (a) below. No scoring semantics; direct-to-main.
+- **Canonical-history attribution: HTML trend surface** (READOUT, Cycle-37/39 follow-up): the
+  TERMINAL block (`asrs canonical-history`) now computes the full diagnosis — delta trend, band,
+  sustained-drift run, PILLAR attribution (Cycle 37, WHICH pillar) AND the SIDE/direction cause
+  (Cycle 39, `DivergenceCause` — no-rails gaining vs with-rails softening, with `reference_degraded`).
+  Render all of it into an HTML surface (the scorecard or a standalone page) so a reader eyeballs the
+  curve + the named mover + which side drove it, not just the terminal. Folds into the P2
+  "Score-over-time trend page" item (a) below. No scoring semantics; direct-to-main. This is the
+  natural next READOUT increment (Cycle 39 flagged it as the next-cycle hypothesis).
 - **[LOCAL] Decide on canonical fixture re-capture once driftflight.com settles**
   (TRUTH, Cycle-36 follow-up to the LIVE CANONICAL DRIFT). The live `.com`
   score has drifted below the pinned fixture (85.5 B → ~78.7 C, legibility
@@ -608,7 +611,13 @@ design in-cloud, execute locally.
   --record-fixture fixtures/canonical/driftflight.com.json`, LIVE → [LOCAL]) and
   update EXPECTED in `test_canonical_replay.py` + `FIXTURE_BASELINE_DELTA` in
   `canonical_history.py` in the SAME commit (the documented drift-move contract).
-  If the drift is transient and the site recovers to 85.5 B, no action.
+  If the drift is transient and the site recovers to 85.5 B, no action. DECISION AID (Cycle 39):
+  `asrs canonical-history` now COMPUTES `divergence_cause.reference_degraded` — True means the gap
+  narrowed from the WITH-RAILS reference softening (a real-world regression), so the pinned fixture
+  still represents the true capability gap and re-capture should WAIT; it is currently True (`.com`
+  overall fell -6.8, `.org` flat). Only when the cause flips to the no-rails side GAINING capability
+  (`reference_degraded=False`, a genuine gap-closing) — or `.com` settles durably at a new in-band
+  level — is a re-capture warranted.
 - **Free-tier probe generalization** (COVERAGE): more opt-in conventions
   (query param, path-based), non-EVM zero-value schemes. PROGRESS 2026-07-23T22:12Z
   (Cycle 22): the **query-param** opt-in DISCOVERY half SHIPPED in-cloud (direct-to-main,

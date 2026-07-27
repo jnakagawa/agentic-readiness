@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 38
+- Cycle counter: 39
 - Started: 2026-07-23 (UTC)
 - Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
@@ -525,6 +525,29 @@
   runner HEALTHY (verify_20260727T134147Z, 13:41Z, ~2.5h old). DAILY DIGEST DM SENT this fire (first cycle after 16:00 UTC,
   16:13Z) — carries the open LIVE CANONICAL DRIFT + this ship. Live-wiring (fold query/path/body into advertised + the
   free-mode call) remains the shared [LOCAL] score-increasing follow-up. Next cycle takes TRUTH.
+  Cycle 39 TRUTH (canonical divergence attributed to a SIDE — no-rails gaining vs with-rails softening,
+  computed not hand-written): extended read-only `asrs/canonical_history.py` (Cycle 36/37). Cycle 37 made
+  the PILLAR computed (`.com` legibility fell 90.9→63.6); the STATE drift note still HAND-WROTE the layer
+  above — "the delta narrowed because the RAILS side softened, not the no-rails side improving." The delta
+  can narrow two OPPOSITE ways (no-rails floor GAINING capability = real gap closing, a re-capture candidate;
+  vs with-rails reference LOSING ground = a real-world site regression, pinned fixture still the TRUE gap →
+  wait). `DivergenceCause` (`no_rails_change`/`with_rails_change` overall moves vs the last in-band anchor;
+  `gap_change`, `driver`, `driver_change`, `reference_degraded`) + `_cause` (SAME anchor/gate as `_attribute`,
+  from OVERALL scores so never None-on-one-side) + `cause_verdict` (4 honest cases keyed on driver+direction)
+  + a `driver:` render line. On the REAL series reproduces STATE EXACTLY: `driftflight.com overall fell -6.8
+  — the gap narrowed because the with-rails reference SOFTENED …, the pinned fixture still represents the
+  true gap` (no-rails 0.0, with-rails -6.8, reference_degraded True). Non-vacuous: +test pins the OPPOSITE
+  case (no-rails RISES → driver no-rails, reference_degraded False, "GAINED capability — a real benchmark
+  movement"); in-band → cause None, no `driver:` line; real-series recovery-guarded. Vendor-neutral (imports
+  no scoring code; hosts as DATA via existing `CANONICAL_*` constants). Score-neutral: `git diff --name-only`
+  = canonical_history.py + test only; scoring.py/rubric/probes/… byte-for-byte untouched → rubric v0.7,
+  canonical delta unchanged by construction AND re-measured (replay guard 11/11, 46.1 F / 85.5 B / +39.4,
+  0 replay-miss). Direct-to-main. `test_canonical_history.py` 10→13; suite 161→164. No Slack (tests +
+  read-only diagnostic, moves no score, digest already sent Cycle 38 16:13Z, this fire 17:13Z not a new
+  window). First duty: no open peer-gated PR (verified []); infra health check ran first — runner HEALTHY
+  (verify_20260727T134147Z, 13:41Z, ~3.5h old, under 6h floor) BUT the 14/15/16:41Z fires produced NO
+  artifact (3 consecutive gaps, as at Cycle 28 — a possible fresh runner stall to WATCH; flag if still
+  gapped past 6h next fire). Next cycle takes READOUT.
 - **LIVE CANONICAL DRIFT (open, for the next post-16:00 UTC digest) — surfaced by the Cycle-36 history readout.**
   The live canonical delta held **+39.4** (46.1 F / 85.5 B) for days through `verify_20260727T054339Z`, then MOVED:
   07:40Z fire driftflight.com collapsed to 50.0 F (delta +3.9 — transient error crawl, transactability CANT_TEST /
@@ -542,6 +565,14 @@
   largest pillar move`, so the "which pillar" fact is read live off the committed series, not hand-written.
   Decision (a) — canonical fixture re-capture — remains deferred [LOCAL] until the site reads in-band-stable at a
   new level (do NOT re-capture while fluctuating).
+  UPDATE (Cycle 39, TRUTH): the SIDE-and-direction of the drift is now COMPUTED too — `asrs canonical-history`
+  prints `driver: driftflight.com overall fell -6.8 — the gap narrowed because the with-rails reference SOFTENED
+  (a real-world site change), not because the no-rails side gained capability — the pinned fixture still
+  represents the true gap` (`reference_degraded=True`). This is the decision-relevant read for (a): the gap
+  narrowed from the RAILS side softening, NOT the no-rails floor rising, so the pinned fixture still represents
+  the true capability gap → re-capture stays deferred until the site recovers or settles durably at a new level.
+  The drift is now fully diagnosed in-cloud off the committed series: band + sustained run + PILLAR (Cycle 37,
+  `.com` legibility) + SIDE/direction (this cycle).
   FLAGGED in the 2026-07-27T16:13Z daily digest (Cycle 38, first cycle after 16:00 UTC). Live state at that fire:
   `.com` 78.7 C, delta +32.6, DRIFTING (3 consecutive out-of-band re-scores; `.com` legibility 90.9 → 63.6 the named
   mover), `.org` flat at 46.1 F — the delta narrowed because the RAILS side softened, a real-world site change, not a

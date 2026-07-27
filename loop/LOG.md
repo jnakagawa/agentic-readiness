@@ -4026,3 +4026,92 @@ conventions (header/query/path/body) are now discovered in-cloud: (1) the shared
 [LOCAL] live-wiring (fold query/path/body into `advertised` + the live call,
 verify ≥2 domains); (2) non-EVM zero-value schemes (still open); (3) the P1
 header-scanner-vs-JSON-body disambiguation surfaced above. Next cycle takes TRUTH.
+
+## Cycle 39 (TRUTH) — 2026-07-27T17:13Z — canonical divergence attributed to a SIDE: no-rails gaining vs with-rails softening, computed not hand-written
+
+**Track.** TRUTH (calibration against reality — does the score honestly explain
+what changed under the benchmark?). The playbook's per-cycle duty is to "explain
+the delta in capability terms." Cycle 37 made the PILLAR computed (`.com`
+legibility fell 90.9→63.6). But the STATE drift note still HAND-WROTE the
+credibility-critical fact one layer up: *"the delta narrowed because the RAILS
+side softened, not the no-rails side improving."* The reference delta can narrow
+two OPPOSITE ways — (a) the no-rails floor GAINING capability (the real gap is
+genuinely closing → a benchmark movement, a re-capture candidate when durable),
+or (b) the with-rails reference LOSING ground (a real-world site regression → the
+pinned fixture still represents the TRUE gap, so re-capture should WAIT for
+recovery). Conflating them mis-tells the operator what to do. This cycle makes
+the SIDE-and-direction attribution COMPUTED.
+
+**What shipped.** Extended the read-only `asrs/canonical_history.py` (Cycle 36/37):
+- `DivergenceCause` (`anchor_ts`, `no_rails_change`, `with_rails_change` — each
+  side's OVERALL score move vs the last in-band reading) with properties
+  `gap_change` (= change in the delta, sign = narrow/widen), `driver` (the side
+  whose overall moved more; ties → no-rails, read conservatively as gap movement),
+  `driver_change`, and `reference_degraded` (True iff the with-rails reference LOST
+  ground — the crisp signal for the deferred re-capture decision).
+- `_cause(points, run, latest)` — SAME anchor/gate as `_attribute` (out of band +
+  an in-band anchor exists), from each side's OVERALL score (numeric on every
+  scored artifact, so it's defined even where per-pillar attribution is empty →
+  never None-on-one-side). `CanonicalHistory.divergence_cause`.
+- `cause_verdict(cause)` — a capability-lens sentence keyed on (driver, direction),
+  the four honest cases; because the driver dominates, its direction fixes
+  narrow/widen so the sentence never contradicts `gap_change`. `render` prints a
+  `driver:` line after the attribution line.
+
+On the REAL committed series it reproduces the Cycle-36/STATE hand-write EXACTLY:
+`driver: driftflight.com overall fell -6.8 — the gap narrowed because the
+with-rails reference SOFTENED (a real-world site change), not because the no-rails
+side gained capability — the pinned fixture still represents the true gap`
+(no-rails change 0.0, with-rails change -6.8, gap_change -6.8, reference_degraded
+True). So the "which side, and does the gap really close" duty is now COMPUTED,
+not hand-written — the same move Cycle 37 made for the pillar.
+
+**Non-vacuous.** A cause blind to DIRECTION would call both narrowing cases "the
+gap narrowed." The +test pins the OPPOSITE case (no-rails side RISES 46.1→53.0,
+with-rails flat) → `driver == no-rails`, `reference_degraded False`, render reads
+"GAINED capability — a real benchmark movement, not a reference outage." In-band
+series → `divergence_cause None`, render omits the `driver:` line. Real-series
+test is recovery-guarded (asserts the with-rails softening only WHILE out of band).
+
+**Vendor-neutral.** Imports no scoring code; the reference-pair hosts appear only
+as DATA via the module's existing `CANONICAL_*` constants (the series is *about*
+those two domains, exactly as the committed fixtures name them) — never as
+scored-check wording.
+
+**Canonical pair.** Score-neutral: `git diff --name-only` = `canonical_history.py`
++ `test_canonical_history.py` ONLY; scoring.py/rubric/probes/fetch/protocols/
+behavioral/offering/battery/scorecard byte-for-byte untouched → rubric stays
+**v0.7**, canonical delta unchanged by construction AND re-measured (in-cloud
+replay guard 11/11, **46.1 F / 85.5 B / +39.4**, 0 replay-miss). The LIVE `.com`
+drift (78.7 C, delta +32.6, DRIFTING) is unchanged by this cycle — this ships the
+computed READING of it, not a change to it.
+
+**Tests.** `tests/test_canonical_history.py` 10 → 13 (+`test_divergence_cause_
+names_the_softening_side` w/ the opposite-direction non-vacuous control,
+`test_divergence_cause_none_when_in_band`, `test_divergence_cause_on_real_series`
+recovery-guarded). Suite 161 → 164 (19 files, all exit 0). NOTE: fresh cloud
+checkout runs `test_free_tier.py` 11/11 only after `pip install eth-account`
+(requirements pins it) — the standing invariant-#4 env gap, closed by the install.
+
+**Ship.** Direct to main (read-only diagnostic / READOUT-layer, no scoring
+semantics, not payment/signing). Per playbook ship rules (readout + tests → direct).
+
+**First duty.** No open peer-gated PR (`list_pull_requests` state=open → `[]`).
+Infra health check ran FIRST — runner HEALTHY (newest `verify_20260727T134147Z`,
+13:41Z, ~3.5h old at fire, under the 6h floor); bench runnable, full suite
+161/161 pre-change (now 164/164); replay guard 11/11 / +39.4. WATCH: the :41
+fires at 14/15/16:41Z produced no artifact (3 consecutive gaps at this fire, as at
+Cycle 28) — still under the 6h floor, a possible fresh runner stall to watch; if
+still gapped past 6h next fire, flag + fold into the next digest.
+
+**Comms.** No Slack (tests + read-only diagnostic, moves no score, not sensitive;
+the daily digest was already sent Cycle 38 at 16:13Z — this fire 17:13Z is not a
+new digest window). The open LIVE CANONICAL DRIFT is now more fully diagnosed
+in-cloud (side + direction + pillar all computed) for the NEXT digest.
+
+**Next hypothesis.** The canonical-history readout now computes: delta trend,
+band, sustained-drift run, PILLAR attribution (Cycle 37), and SIDE/direction cause
+(this cycle). READOUT frontier: render this trend + attribution + cause into an
+HTML surface (the scorecard / a standalone page) so a reader eyeballs the curve +
+the named mover, not just the terminal (P2 "Score-over-time trend page" (a) /
+Cycle-37 follow-up). Next cycle takes READOUT.

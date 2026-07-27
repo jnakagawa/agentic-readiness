@@ -142,7 +142,21 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
         ("add-to-cart", re.compile(r"\badd to (cart|bag|basket)\b|\bshopping cart\b", _F)),
         ("stock", re.compile(r"\b(in|out of|back in) stock\b", _F)),
         ("fulfillment", re.compile(r"\bfulfil?lment\b|\bwarehouse\b|\bdelivery address\b|\bhome delivery\b|\btracking number\b", _F)),
-        ("sku-inventory", re.compile(r"\bSKU\b|\binventory\b", _F)),
+        # SKU / inventory, RETAIL sense only. A bare "\bSKU\b" over-matched the
+        # COMPUTE sense — an inference API's OpenAPI spec says "The SKU for the
+        # hardware used to run the model" (a GPU/hardware SKU), and bare
+        # "inventory" reads on a data/API product ("inventory API") — both would
+        # falsely claim physical_good and run an irrelevant fulfillment intent
+        # (the pollution this module removes). Anchor to unambiguous retail
+        # phrasing instead (surfaced live on api.replicate.com, 2026-07-27); a
+        # real shop trips add-to-cart / stock / shipping anyway, so the recall
+        # loss on a bare token is immaterial.
+        ("sku-inventory", re.compile(
+            r"\b(product|item|per|each|retail)\s+SKUs?\b"
+            r"|\bSKUs?\s+(number|code|count|list|catalog)\b"
+            r"|\binventory\s+(count|levels?|on[- ]hand|management|status)\b"
+            r"|\b(manage|track|update|check|low|remaining|out of)\s+inventory\b"
+            r"|\bin[- ]stock\s+inventory\b", _F)),
         ("returns", re.compile(r"\breturns? (policy|&|and) (exchanges?|refunds?)\b|\breturn policy\b", _F)),
         ("physical-descriptor", re.compile(r"\bphysical (product|good|item)s?\b", _F)),
     ],

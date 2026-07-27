@@ -355,6 +355,93 @@ def test_nonstorefront_empty_offering() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Machine-surface-FIRST storefront — the OpenAPI spec IS the agent-facing
+# self-description, pinned on REAL captured data.
+#
+# `_SURFACE_DOCS` grew to read the machine API CONTRACT (/openapi.json, Cycle 34)
+# and the agent-plugin descriptor (/.well-known/ai-plugin.json, Cycle 42) so an
+# API-FIRST storefront that serves NO marketing homepage or llms.txt — only its
+# spec — is classified from that surface, not mis-read as offering nothing. Until
+# now that path was exercised only against SYNTHETIC surfaces (test_offering.py);
+# the committed canonical fixtures predate both surfaces (a replay-miss on them).
+# This replays a committed fixture of a REAL such storefront — api.replicate.com,
+# a metered model-inference API whose homepage is a bare `{}` and whose only
+# agent-facing self-description is its /openapi.json — captured [LOCAL] 2026-07-27,
+# and pins that the spec was READ and DROVE the classification.
+#
+# It also pins a PRECISION FIX the live capture surfaced: Replicate's spec says
+# "The SKU for the hardware used to run the model" — a COMPUTE/GPU hardware SKU.
+# The old `sku-inventory` signal matched a bare "\bSKU\b", so it falsely claimed
+# physical_good on a pure API storefront (an irrelevant fulfillment intent — the
+# battery pollution the operator directive removes). The signal now anchors to
+# unambiguous RETAIL phrasing, so physical_good stays NA. NON-VACUOUS: the
+# compute-SKU trap phrase is asserted PRESENT in the surface below, so the guard
+# proves the fix keeps physical_good NA, not that the trap phrase is absent.
+#
+# Maintenance: like the canonical fixtures, if a legitimate signal-bank change
+# alters what this storefront claims, re-capture the fixture [LOCAL] and update
+# the expectation here in the same PR.
+# ---------------------------------------------------------------------------
+_MACHINE_SURFACE = "api.replicate.com"
+
+
+def test_machine_surface_openapi_storefront() -> None:
+    print("test_machine_surface_openapi_storefront")
+    profile, ctx = _discover(_MACHINE_SURFACE)
+    claimed = set(profile.archetypes)
+
+    # The machine API CONTRACT was read (the surface Cycle 34 added), on REAL data.
+    _check(
+        "/openapi.json" in profile.surfaces_seen,
+        f"{_MACHINE_SURFACE}: /openapi.json surface was READ "
+        f"(got surfaces_seen {profile.surfaces_seen})",
+    )
+
+    # A metered API is claimed — and the OpenAPI spec DROVE it: this storefront's
+    # homepage is a bare `{}`, so classification rests on the machine surface.
+    _check(
+        claimed == {"metered_api"},
+        f"{_MACHINE_SURFACE}: claimed == {{'metered_api'}} (got {sorted(claimed)}) — "
+        "an API-first storefront classified from its spec alone",
+    )
+    metered = profile.claimed[0]
+    _check(
+        any(s.surface == "/openapi.json" for s in metered.signals),
+        f"{_MACHINE_SURFACE}: the metered_api claim is driven by the /openapi.json "
+        f"surface (signal surfaces {sorted({s.surface for s in metered.signals})})",
+    )
+
+    # Machine-surface-FIRST: the homepage was fetched but carries NO archetype
+    # signal (it is a bare `{}`), so the classification rests entirely on the spec.
+    _check(
+        "homepage" in profile.surfaces_seen,
+        f"{_MACHINE_SURFACE}: homepage was fetched (discovery had real evidence)",
+    )
+    home_signals = [
+        s.label for c in profile.claimed for s in c.signals if s.surface == "homepage"
+    ]
+    _check(
+        home_signals == [],
+        f"{_MACHINE_SURFACE}: no archetype signal comes from the thin homepage "
+        f"(got {home_signals}) — the spec is the agent-facing self-description",
+    )
+
+    # THE precision guard (surfaced live): a compute/GPU hardware "SKU" must NOT
+    # read as a physical good. NON-VACUOUS — the trap phrase is present in the spec.
+    spec_text = ctx.get("/openapi.json", ua="browser").text
+    _check(
+        "SKU for the hardware" in spec_text,
+        f"{_MACHINE_SURFACE}: the compute-SKU trap phrase is present in the spec "
+        "(so the physical_good=NA assertion below is non-vacuous)",
+    )
+    _check(
+        not profile.claims("physical_good"),
+        f"{_MACHINE_SURFACE}: physical_good = NA despite 'The SKU for the hardware' "
+        "— a compute/GPU hardware SKU is not retail inventory (precision fix)",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Vendor-neutrality of the OFFERING classifier — domain-relabeling invariance.
 #
 # `tests/test_canonical_replay.py` (Cycle 21) made vendor-neutrality an executable
@@ -643,6 +730,7 @@ def main() -> int:
         test_canonical_metaphorical_ship_stays_na_com,
         test_retail_inverse_offering,
         test_nonstorefront_empty_offering,
+        test_machine_surface_openapi_storefront,
         test_offering_relabel_invariance_org,
         test_offering_relabel_invariance_com,
         test_offering_relabel_invariance_retail,

@@ -655,6 +655,31 @@
   (verify_20260727T194100Z, 19:41Z, fresh, delta +39.4 in-band). All FIVE agent-facing surface classes
   (homepage / natural-language docs / agent-plugin descriptor / OpenAPI contract / manifest) now read. Next
   cycle takes TRUTH.
+  Local fire 2026-07-27T20:54Z TRUTH (machine-surface fixture + offering-classifier precision fix,
+  direct-to-main, score-neutral): executed the [LOCAL] "Machine-surface-only storefront fixture" item —
+  the calibration follow-up to Cycles 34 (OpenAPI) + 42 (ai-plugin), whose surface-reading was tested only
+  synthetically (committed fixtures predate both). Live-probed real API-first storefronts; captured
+  `fixtures/canonical/api.replicate.com.json` (8 GET / 0 POST, homepage `{}` + 92 KB public OpenAPI spec, no
+  secrets — Authorization strings are `$REPLICATE_API_TOKEN` placeholders, blobs are public spec examples).
+  The live crawl SURFACED A FALSE POSITIVE: `discover_offering` classified api.replicate.com
+  `['metered_api','physical_good']` because the `sku-inventory` signal (bare `\bSKU\b|\binventory\b`) matched
+  "The SKU for the hardware used to run the model" — a COMPUTE/GPU hardware SKU, not retail inventory (a
+  physical_good task there would garden-path an agent, the exact battery pollution the operator directive
+  removes). FIXED `asrs/offering.py`: re-anchored `sku-inventory` to the RETAIL sense only (product/item/per/
+  each SKU; SKU number/code/count; inventory count/levels/on-hand/management; manage/track/check inventory;
+  in-stock inventory) — every compute-SKU form now rejected, every retail form kept; nearly-redundant for
+  recall (books.toscrape.com's physical_good rests on add-to-cart+stock; sku-inventory fires on NONE of the
+  four committed fixtures). api.replicate.com now `['metered_api']`, driven by `/openapi.json`. Tests:
+  `test_offering_canonical.py` 11→12 (`test_machine_surface_openapi_storefront` — openapi READ + DROVE
+  classification, machine-surface-first with a zero-signal homepage, physical_good=NA NON-VACUOUS on the
+  trap phrase asserted present); `test_offering.py` 10→11 (synthetic compute-vs-retail SKU precision).
+  Score-neutral: `discover_offering`/`classify_offering` off the scoring path (grep-verified);
+  `git diff --name-only -- asrs/scoring.py rubric/ asrs/probes/ asrs/fetch.py asrs/protocols.py asrs/battery.py
+  asrs/behavioral/` EMPTY → rubric v0.7, no `battery_semantics_version` bump. Canonical pair 46.1 F / 85.5 B /
+  +39.4 unchanged by construction AND re-measured (replay guard 14/14, 0 replay-miss; verify_20260727T204103Z
+  20:41Z in-band); four committed domains' offering classification byte-identical. Suite 177→179 (all 19 exit
+  0). First duty: no open peer-gated PR (`[]`); infra HEALTHY (verify_20260727T204103Z, ~35 s old at fire).
+  Cloud rotation unaffected (still TRUTH next).
 - **LIVE CANONICAL DRIFT (open, for the next post-16:00 UTC digest) — surfaced by the Cycle-36 history readout.**
   The live canonical delta held **+39.4** (46.1 F / 85.5 B) for days through `verify_20260727T054339Z`, then MOVED:
   07:40Z fire driftflight.com collapsed to 50.0 F (delta +3.9 — transient error crawl, transactability CANT_TEST /

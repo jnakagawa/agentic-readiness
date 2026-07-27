@@ -171,6 +171,52 @@ def test_retail_storefront_is_the_inverse():
     print(f"  ok: unclaimed = NA complement, got {prof.unclaimed}")
 
 
+def test_sku_inventory_is_retail_sense_not_compute():
+    # PRECISION (surfaced live on api.replicate.com, 2026-07-27): a COMPUTE/GPU
+    # hardware "SKU" must not read as a physical good. An inference API's OpenAPI
+    # spec says "The SKU for the hardware used to run the model"; the old
+    # bare-"\bSKU\b" signal falsely claimed physical_good, running an irrelevant
+    # fulfillment intent on a pure API storefront — the exact battery pollution
+    # the operator directive removes. `test_offering_canonical.py` pins this on
+    # the real captured fixture; here it is pinned on a synthetic surface.
+    compute = classify_offering(
+        "compute-api.test",
+        {
+            "/openapi.json": (
+                '{"info":{"description":"A text-to-image inference API, billed per '
+                'generation."},"components":{"schemas":{"hardware":{"description":'
+                '"The SKU for the hardware used to run the model."}}}}'
+            )
+        },
+    )
+    assert compute.claims("metered_api"), compute.archetypes
+    assert not compute.claims("physical_good"), (
+        "compute/GPU hardware SKU falsely read as a physical good"
+    )
+    print("  ok: a compute hardware 'SKU' does NOT trigger physical_good (precision)")
+
+    # The RETAIL sense still fires via sku-inventory alone (no add-to-cart / stock
+    # / shipping present), so the precision tightening did not gut recall.
+    retail = classify_offering(
+        "catalog.test",
+        {
+            "homepage": (
+                "Browse our catalog. Every product SKU is listed; check inventory "
+                "levels before you order."
+            )
+        },
+    )
+    assert retail.claims("physical_good"), retail.archetypes
+    labels = {
+        s.label
+        for c in retail.claimed
+        if c.archetype == "physical_good"
+        for s in c.signals
+    }
+    assert "sku-inventory" in labels, labels
+    print("  ok: retail 'product SKU' / 'inventory levels' still fires sku-inventory")
+
+
 def test_booking_and_data_archetypes_fire():
     booking = classify_offering("harbor.test", {"homepage": BOOKING_HOMEPAGE})
     assert booking.claims("service_booking"), booking.archetypes
@@ -304,6 +350,7 @@ def main() -> int:
     tests = [
         test_api_storefront_claims_agent_native_not_physical,
         test_retail_storefront_is_the_inverse,
+        test_sku_inventory_is_retail_sense_not_compute,
         test_booking_and_data_archetypes_fire,
         test_non_storefront_claims_nothing,
         test_strength_counts_distinct_signals_and_orders_claims,

@@ -525,20 +525,38 @@ design in-cloud, execute locally.
      the referee-pass entry: the OpenAPI-spec-only fixture, and extending the OFFERING-layer relabel
      guard to the retail + non-storefront domains (only the SCORING-layer relabel covers all four). -->
 
-- **[LOCAL] Machine-surface-only storefront fixture (OpenAPI spec + ai-plugin descriptor)**
-  (COVERAGE/TRUTH, Cycle-34 + Cycle-42 follow-up): Cycle 34 added `/openapi.json` /
-  `/.well-known/openapi.json` / `/swagger.json` and Cycle 42 added `/.well-known/ai-plugin.json` to
-  `asrs/offering._SURFACE_DOCS`, each unit-tested on a SYNTHETIC surface only. To pin live
-  machine-surface-driven classification end-to-end, capture a fixture for a real storefront whose
-  agent-facing self-description is its OpenAPI spec and/or ai-plugin descriptor (ideally one that
-  serves the machine surface but a thin/absent homepage) via
-  `asrs.cli score <domain> --record-fixture fixtures/canonical/<domain>.json` (LIVE, needs
-  network → [LOCAL]), then add a `test_offering_canonical` case replaying it through
-  `discover_offering` and asserting the surface was READ (`"/openapi.json"` or
-  `"/.well-known/ai-plugin.json" in profile.surfaces_seen`) and drove the claimed archetypes.
-  Capture is [LOCAL]; the test wiring is cloud-doable once the fixture lands. Distinct value: the
-  current committed fixtures were captured BEFORE either surface existed (both are a replay-miss/
-  absent on them — the coverage is verified only against synthetic surfaces in-cloud today).
+<!-- OpenAPI HALF DONE 2026-07-27T20:54Z (local fire, TRUTH, direct-to-main, score-neutral): the
+     machine-surface-only storefront fixture landed for the OPENAPI surface, and live calibration
+     surfaced + fixed a precision bug. Captured `fixtures/canonical/api.replicate.com.json` — a REAL
+     API-first storefront (metered model-inference API, homepage a bare `{}`, agent-facing
+     self-description IS its /openapi.json; 8 GET / 0 POST, 92 KB public spec, no secrets). The live
+     crawl caught a FALSE POSITIVE: `discover_offering` classified it `['metered_api','physical_good']`
+     because the `sku-inventory` signal (bare `\bSKU\b|\binventory\b`) matched "The SKU for the hardware
+     used to run the model" — a COMPUTE/GPU hardware SKU, not retail inventory. Fixed `asrs/offering.py`:
+     re-anchored `sku-inventory` to the RETAIL sense only (product/item/per/each SKU; SKU number/code/
+     count; inventory count/levels/on-hand/management; manage/track/check inventory; in-stock inventory).
+     Nearly redundant for recall (books.toscrape.com's physical_good rests on add-to-cart+stock;
+     sku-inventory fires on NONE of the four committed fixtures) → no real recall lost; api.replicate.com
+     now `['metered_api']`, driven by /openapi.json. Tests: `test_offering_canonical.py` 11→12
+     (`test_machine_surface_openapi_storefront` — /openapi.json READ + DROVE classification,
+     machine-surface-first with a zero-signal homepage, physical_good=NA NON-VACUOUS on the trap phrase
+     asserted present), `test_offering.py` 10→11 (synthetic compute-vs-retail SKU precision). Score-neutral
+     (classify/discover off the scoring path; git diff -- scoring.py/rubric/probes/fetch/protocols/battery/
+     behavioral EMPTY → rubric v0.7, no battery_semantics_version bump); canonical pair 46.1 F / 85.5 B /
+     +39.4 unchanged (replay guard 14/14, verify_20260727T204103Z in-band); suite 177→179. See LOG
+     (Local cycle — 20:54Z). REMAINING — the ai-plugin-DESCRIPTOR half — is the narrowed item below. -->
+- **[LOCAL] ai-plugin-DESCRIPTOR-only storefront fixture** (TRUTH, Cycle-42 + 2026-07-27 follow-up):
+  the OpenAPI machine surface now has a real-data guard (api.replicate.com, above), but Cycle 42's
+  `/.well-known/ai-plugin.json` descriptor surface is still verified only against a SYNTHETIC surface
+  (`test_offering.py::test_ai_plugin_descriptor_alone_classifies_storefront`). Capture a fixture for a
+  real storefront whose agent-facing self-description is its ai-plugin descriptor (ideally a thin/absent
+  homepage) — probe candidates with `FetchContext(dom).get("/.well-known/ai-plugin.json")` for a 200
+  application/json with capability prose, then capture via a live `discover_offering` + `ctx.save_fixture(
+  "fixtures/canonical/<domain>.json")` (LIVE, [LOCAL]). Add a `test_offering_canonical` case replaying it
+  and asserting `"/.well-known/ai-plugin.json" in profile.surfaces_seen` drove the claimed archetypes.
+  NOTE: post-ChatGPT-plugins many ai-plugin.json endpoints are dead — the 2026-07-27 probe sweep found
+  openrouter.ai served an HTML SPA fallback (not real JSON) at that path; budget a short candidate search
+  and, if none is cleanly reachable, log the miss rather than force a bad fixture.
 
 <!-- DONE 2026-07-23T20:12Z (Cycle 20, READOUT): "HTML battery card: between-archetype spread pill"
      SHIPPED. `asrs/scorecard.py`: `_battery_between_band` (Generalist <0.15 / Somewhat type-dependent

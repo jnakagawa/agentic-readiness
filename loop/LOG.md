@@ -4465,3 +4465,87 @@ runs, [LOCAL]). Next cycle takes TRUTH.
 ## Local verification — 20260727T204103Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260727T204103Z.json
+
+## Local cycle — 2026-07-27T20:54Z  (TRUTH — machine-surface fixture + offering-classifier precision fix, direct-to-main, score-neutral)
+
+**Track / item.** TRUTH. Executed the [LOCAL] "Machine-surface-only storefront fixture
+(OpenAPI spec + ai-plugin descriptor)" item (P2) — the named calibration follow-up to the
+two most recent ships, Cycle 34 (OpenAPI surface) and Cycle 42 (ai-plugin descriptor),
+whose surface-reading had been tested ONLY on synthetic surfaces (the committed canonical
+fixtures predate both surfaces → replay-miss/absent on them). This is the local cycle's
+mandate: live probe validation the cloud designed but could not execute. Chosen over the
+oldest-P0 behavioral acceptance rerun because that run exceeds this fire's codex budget
+(pair + retail ≈ 12 codex vs ~10 cap), codex reputation-gates the canonical domains
+(degrading its cross-model value), and a 12-panel behavioral run carries real hang/timeout
+risk — deferring it one fire is low-cost; the acceptance rerun stays queued as oldest P0.
+
+**What live calibration surfaced (the TRUTH payoff).** Probed real API-first storefronts
+for a root-level machine surface ($0 GETs): `api.replicate.com/openapi.json` (200,
+application/json, 92 KB) is a genuine metered model-inference storefront whose homepage is a
+bare `{}` — its agent-facing self-description IS its spec. Running `discover_offering` LIVE
+on it classified it `['metered_api', 'physical_good']` — and the **physical_good was a FALSE
+POSITIVE**: the `sku-inventory` signal matched `"hardware":{"description":"The SKU for the
+hardware used to run the model."`, i.e. a COMPUTE/GPU hardware SKU, not retail inventory.
+The old signal was a bare `\bSKU\b|\binventory\b`, exactly the kind of loose match the
+module's own precision-first doctrine forbids ("require unambiguous fulfillment nouns"). A
+`physical_good` task on Replicate would garden-path an agent — the precise battery pollution
+the operator's offering-relative directive exists to remove. Calibration against reality
+caught a measurement error → fixed it.
+
+**Fix (`asrs/offering.py`, the one code change).** Re-anchored `sku-inventory` to the RETAIL
+sense only — `product/item/per/each/retail SKU`, `SKU number/code/count/list/catalog`,
+`inventory count/levels/on-hand/management/status`, `manage/track/update/check/low/out-of
+inventory`, `in-stock inventory` — dropping the bare-token arm. Verified on a pos/neg corpus:
+every compute-SKU form ("The SKU for the hardware", "hardware SKU: a100", "the SKU of the
+compute instance") and bare "inventory API" now DO NOT match; every retail form still does.
+`sku-inventory` is nearly redundant for recall (a real shop trips add-to-cart / stock /
+shipping anyway — books.toscrape.com's physical_good rests on add-to-cart + stock, sku-inventory
+fires on NONE of the four committed fixtures), so the tightening loses no real recall.
+`api.replicate.com` now classifies **`['metered_api']`**, driven by the `/openapi.json` surface.
+
+**Fixture (live evidence → permanent in-cloud guard).** Captured
+`fixtures/canonical/api.replicate.com.json` (8 GET / 0 POST — invariant #1 trivially clean;
+homepage `{}` + the 92 KB public OpenAPI spec + the 404 surfaces). Secret-scanned: the only
+Authorization strings are placeholders (`$REPLICATE_API_TOKEN`); the long hex/base64 blobs are
+public OpenAPI example values (a spec version id, a pagination cursor, an example image UUID) —
+no credentials, same category as the canonical fixtures' public API-doc examples.
+
+**Tests.** `tests/test_offering_canonical.py` 11 → 12: `test_machine_surface_openapi_storefront`
+replays the committed fixture through the REAL `from_fixture → discover_offering` path (no
+network) and pins — (a) `/openapi.json` was READ; (b) claimed == `{metered_api}` exactly, the
+spec DROVE it (≥1 metered signal with surface `/openapi.json`); (c) machine-surface-FIRST — the
+homepage was fetched but carries ZERO archetype signal; (d) `physical_good` = NA, NON-VACUOUS —
+it first asserts the trap phrase "SKU for the hardware" IS present in the spec, so the guard
+proves the FIX keeps it NA, not that the trap is absent. `tests/test_offering.py` 10 → 11:
+`test_sku_inventory_is_retail_sense_not_compute` pins the same precision on a synthetic surface
+(compute-SKU spec → metered_api, NOT physical_good; retail "product SKU" / "inventory levels" →
+physical_good via the sku-inventory label — recall retained).
+
+**Score-neutrality.** `classify_offering` / `discover_offering` is OFF the scoring path (called
+only from `cli._resolve_battery` for `--battery auto` — grep-verified: absent from scoring.py /
+probes/ / protocols.py). `git diff --name-only -- asrs/scoring.py rubric/ asrs/probes/
+asrs/fetch.py asrs/protocols.py asrs/battery.py asrs/behavioral/` EMPTY → rubric stays **v0.7**,
+no `battery_semantics_version` bump (aggregation untouched). A discovery precision fix, same
+class as Cycles 34/42 → direct-to-main, not payment/signing.
+
+**Canonical pair.** drift-flight.org **46.1 F** / driftflight.com **85.5 B** / delta **+39.4** —
+unchanged by construction AND re-measured: in-cloud replay guard `test_canonical_replay.py`
+14/14 (0 replay-miss), live-corroborated by `verify_20260727T204103Z` (20:41Z, in-band). The
+offering classification of the four committed domains is byte-identical (books.toscrape.com still
+`physical_good`, canonical pair `{metered_api,subscription,digital_good}`, example.com empty) —
+the fix touches no fixture's evidence.
+
+**Suite.** 177 → 179 (all 19 files exit 0).
+
+**Comms.** No Slack (score-neutral discovery precision fix, moves no score, not sensitive; daily
+digest already sent Cycle 38 16:13Z, this fire 20:54Z is not a new digest window).
+
+**First duty.** No open peer-gated PR (`gh pr list --state open` → `[]`). Infra health check ran
+first — runner HEALTHY (`verify_20260727T204103Z`, 20:41Z, ~35 s old at fire; 46.1 F / 85.5 B /
++39.4 in-band, drift stayed recovered), bench 177/177 pre-change, git clean on main `9567edc`.
+
+**Next hypothesis.** The offering classifier is now calibrated against a real machine-surface
+storefront on BOTH axes — surface-reading (openapi DROVE classification) and precision (compute
+SKU ≠ physical good). Remaining machine-surface calibration gap: a real ai-plugin-DESCRIPTOR-only
+storefront fixture (Cycle 42's surface still has no real-data guard). The oldest-P0 behavioral
+`--battery auto` acceptance rerun remains queued. Cloud rotation unaffected (still TRUTH next).

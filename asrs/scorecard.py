@@ -509,6 +509,270 @@ transcript, or a test. If it wasn&rsquo;t observed, it wasn&rsquo;t scored.</p>
     return str(path)
 
 
+# Status inks for the canonical-delta bands — reserved status colors (never a
+# categorical series hue), each shipped WITH its band label so the encoding is
+# never color-alone. Read straight off canonical_history's band names.
+_HISTORY_BAND_COLOR = {
+    "in-band": "#067647",   # green — live delta reproduces the pinned fixture delta
+    "drifting": "#b54708",  # amber — notable but partial move off the baseline
+    "diverged": "#b42318",  # red — live delta no longer reproduces the pinned delta
+    "no-data": "#667085",   # neutral tertiary — no reading
+}
+_HISTORY_BAND_LABEL = {
+    "in-band": "In-band",
+    "drifting": "Drifting",
+    "diverged": "Diverged",
+}
+
+
+def _history_trend_svg(points: list, baseline: float) -> str:
+    """A single-series change-over-time trend: the live canonical delta per re-score,
+    with the pinned-fixture baseline as a dashed reference line. One series, so no
+    legend for identity; each point is colored by its divergence BAND (a reserved
+    status encoding, named in the band legend below the chart, never color-alone).
+    """
+    from . import canonical_history as ch
+
+    if not points:
+        return ""
+    W, H = 780.0, 220.0
+    padL, padR, padT, padB = 48.0, 18.0, 16.0, 30.0
+    deltas = [p.delta for p in points]
+    vals = deltas + [baseline]
+    lo, hi = min(vals), max(vals)
+    if hi - lo < 1e-9:
+        lo, hi = lo - 1.0, hi + 1.0
+    pad = (hi - lo) * 0.10
+    lo, hi = lo - pad, hi + pad
+    span = hi - lo
+    n = len(points)
+
+    def x_of(i: int) -> float:
+        if n == 1:
+            return (padL + (W - padR)) / 2.0
+        return padL + (W - padR - padL) * i / (n - 1)
+
+    def y_of(v: float) -> float:
+        return (H - padB) - (v - lo) / span * (H - padB - padT)
+
+    # y-axis reference labels: the plot floor, the baseline, and the plot ceiling.
+    yticks = sorted({lo + pad, baseline, hi - pad})
+    axis = "".join(
+        f'<line x1="{padL:.1f}" y1="{y_of(t):.1f}" x2="{W - padR:.1f}" '
+        f'y2="{y_of(t):.1f}" stroke="#eef0f3" stroke-width="1"/>'
+        f'<text x="{padL - 6:.1f}" y="{y_of(t) + 3.5:.1f}" text-anchor="end" '
+        f'font-family="DM Mono,monospace" font-size="10" fill="#667085">'
+        f'{t:+.1f}</text>'
+        for t in yticks
+    )
+    # Baseline (pinned-fixture delta) as a dashed reference line, labeled at the end.
+    base_y = y_of(baseline)
+    baseline_mark = (
+        f'<line x1="{padL:.1f}" y1="{base_y:.1f}" x2="{W - padR:.1f}" '
+        f'y2="{base_y:.1f}" stroke="#98a2b3" stroke-width="1.5" '
+        f'stroke-dasharray="5 4"/>'
+        f'<text x="{W - padR:.1f}" y="{base_y - 6:.1f}" text-anchor="end" '
+        f'font-family="Inter,sans-serif" font-size="11" fill="#667085">'
+        f'baseline {baseline:+.1f}</text>'
+    )
+    # The delta series: a recessive connecting line, then a status-colored dot per
+    # reading. 2px surface ring on each dot so overlapping points stay separable.
+    poly = " ".join(f"{x_of(i):.1f},{y_of(p.delta):.1f}" for i, p in enumerate(points))
+    line = (
+        f'<polyline points="{poly}" fill="none" stroke="#d0d5dd" stroke-width="2" '
+        f'stroke-linejoin="round" stroke-linecap="round"/>'
+    )
+    dots = []
+    for i, p in enumerate(points):
+        band = ch.band_for_delta(p.delta, baseline)
+        color = _HISTORY_BAND_COLOR.get(band, "#667085")
+        last = i == n - 1
+        r = 4.5 if last else 3.0
+        dots.append(
+            f'<circle cx="{x_of(i):.1f}" cy="{y_of(p.delta):.1f}" r="{r:.1f}" '
+            f'fill="{color}" stroke="#fff" stroke-width="2">'
+            f'<title>{_esc(ch._short_ts(p.ts))}: delta {p.delta:+.1f} '
+            f'({_HISTORY_BAND_LABEL.get(band, band)})</title></circle>'
+        )
+    # Direct-label the latest point only (never a number on every point).
+    lastp = points[-1]
+    lx, ly = x_of(n - 1), y_of(lastp.delta)
+    anchor = "end" if n > 1 else "middle"
+    lxoff = -8 if n > 1 else 0
+    last_label = (
+        f'<text x="{lx + lxoff:.1f}" y="{ly - 9:.1f}" text-anchor="{anchor}" '
+        f'font-family="DM Mono,monospace" font-size="11" font-weight="500" '
+        f'fill="#0c111d">{lastp.delta:+.1f}</text>'
+    )
+    return (
+        f'<svg viewBox="0 0 {W:.0f} {H:.0f}" width="100%" '
+        f'style="max-width:{W:.0f}px;height:auto" role="img" '
+        f'aria-label="Live canonical delta per re-score versus the pinned '
+        f'fixture baseline of {baseline:+.1f}">'
+        f'{axis}{baseline_mark}{line}{"".join(dots)}{last_label}</svg>'
+    )
+
+
+def _write_canonical_history_page(out_dir: Path, history=None) -> str:
+    """Render canonical-history.html — the HTML surface for the live canonical-delta
+    trend the terminal ``asrs canonical-history`` computes.
+
+    The local verify runner commits a live static re-score of the benchmark's own
+    reference pair every fire; ``asrs.canonical_history`` reads that committed series
+    into a delta trend, a divergence band, a sustained-drift run, PILLAR attribution
+    (which pillar moved) and a SIDE/direction cause (no-rails gaining vs with-rails
+    softening). That whole diagnosis was terminal-only; this renders it so a reader
+    eyeballs the curve, the named mover, and which side drove it.
+
+    Reference-pair host names appear here only as DATA — the page is literally ABOUT
+    those two domains, exactly as the committed fixtures, the verify series, and
+    ``test_canonical_replay`` name them. This is the SAME engineering-history category
+    as ``rubric.html`` (whose changelog names the pair): both are deliberately OUT OF
+    SCOPE for the vendor-neutral-wording scanner, which guards the capability-worded
+    CHECK prose (methodology + card), not pages that report on the reference pair.
+    Display-only: imports no scoring code, moves no score, rubric untouched.
+    """
+    from . import canonical_history as ch
+
+    hist = history if history is not None else ch.load_history()
+    head = _PROSE_HEAD.format(title="ASRS — live canonical-delta history")
+    nav = (
+        '<div class="nav"><a href="javascript:history.back()">&larr; Back to the '
+        'scorecard</a><a href="methodology.html">Methodology</a>'
+        '<a href="rubric.html">Rubric &amp; checks</a></div>'
+    )
+    intro = f"""<h1>Live canonical-delta history</h1>
+<p class="sub">The benchmark reading its own regression signal over time</p>
+<div class="card">
+<h2>What this tracks</h2>
+<p>Every hour a companion runner re-scores the benchmark&rsquo;s reference pair
+live &mdash; a storefront <b>without</b> agent-native rails against one <b>with</b>
+them &mdash; and commits the result. The gap between them (the <b>delta</b>) is the
+benchmark&rsquo;s headline claim; the committed fixtures pin it at
+<span class="chip">{ch._fmt_delta(hist.baseline_delta)}</span>. This page reads that
+committed series and asks one question a single reading can&rsquo;t answer: is a move
+off the pinned delta ordinary live/static <b>jitter</b>, or a <b>sustained</b>
+real-world change under the benchmark? One out-of-band reading is jitter; several in
+a row is a real move.</p>
+<p>A move is read in <b>capability terms</b>, not by identity: which pillar shifted,
+and which <b>side</b> drove it &mdash; the no-rails floor <b>gaining</b> capability
+(the real gap closing) or the with-rails reference <b>softening</b> (a site
+regression, where the pinned fixture still represents the true gap). The pinned
+delta is unchanged by this page; the in-cloud replay guard reproduces it from the
+committed fixtures regardless of what the live site does today.</p>
+</div>"""
+
+    if hist.latest is None:
+        body = f"""{nav}{intro}
+<div class="card"><h2>No readings yet</h2>
+<p>No usable live re-score artifacts were found, so there is no trend to show.</p></div>
+<p class="sub" style="margin-top:16px">
+<a href="methodology.html">How the score is measured &rarr;</a></p>
+</div></body></html>"""
+        path = out_dir / "canonical-history.html"
+        path.write_text(head + body)
+        return str(path)
+
+    latest = hist.latest
+    div = hist.divergence
+    band = hist.band
+    band_color = _HISTORY_BAND_COLOR.get(band, "#667085")
+    verdict = ch._BAND_VERDICT.get(band, "")
+    window = 60
+    tail = hist.points[-window:]
+    chart = _history_trend_svg(tail, hist.baseline_delta)
+
+    # Band legend — the reserved status encoding, named so the chart is never
+    # color-alone (the one accessibility obligation of a status-colored series).
+    legend_items = "".join(
+        f'<span style="display:inline-flex;align-items:center;margin-right:16px;'
+        f'font-size:12px;color:#475467"><span style="width:10px;height:10px;'
+        f'border-radius:50%;background:{_HISTORY_BAND_COLOR[k]};'
+        f'display:inline-block;margin-right:6px"></span>{_esc(v)}</span>'
+        for k, v in _HISTORY_BAND_LABEL.items()
+    )
+
+    latest_card = f"""<div class="card">
+<h2>Latest reading</h2>
+<p style="margin-bottom:14px">{_esc(ch._short_ts(latest.ts))} &middot;
+{len(hist.points)} live re-scores over
+{_esc(ch._short_ts(hist.points[0].ts))} &rarr; {_esc(ch._short_ts(latest.ts))}</p>
+<table>
+<tr><th>Side</th><th class="num">Overall</th><th>Grade</th></tr>
+<tr><td>{_esc(ch.CANONICAL_NO_RAILS)} <span class="q">(no rails)</span></td>
+<td class="num">{latest.no_rails_overall:.1f}</td><td>{_esc(latest.no_rails_grade)}</td></tr>
+<tr><td>{_esc(ch.CANONICAL_WITH_RAILS)} <span class="q">(with rails)</span></td>
+<td class="num">{latest.with_rails_overall:.1f}</td><td>{_esc(latest.with_rails_grade)}</td></tr>
+<tr><td><b>Delta</b> <span class="q">(with &minus; without)</span></td>
+<td class="num"><b>{ch._fmt_delta(latest.delta)}</b></td><td></td></tr>
+</table>
+<p style="margin-top:12px">Divergence from the pinned baseline
+<span class="chip">{ch._fmt_delta(hist.baseline_delta)}</span>:
+<b style="color:{band_color}">{ch._fmt_delta(div)}</b> &mdash;
+<b style="color:{band_color}">{_esc(_HISTORY_BAND_LABEL.get(band, band.upper()))}</b>,
+{_esc(verdict)}.</p>"""
+    if hist.consecutive_out_of_band >= 1:
+        nrun = hist.consecutive_out_of_band
+        kind = "sustained" if nrun >= 3 else "recent"
+        latest_card += (
+            f'<p><b>{_esc(kind.title())}:</b> {nrun} consecutive re-score(s) '
+            f'out of band (|delta &minus; baseline| &gt; {ch._BAND_IN:.1f}).</p>'
+        )
+    latest_card += "</div>"
+
+    chart_card = f"""<div class="card">
+<h2>Delta trend</h2>
+<p style="margin-bottom:10px">Live canonical delta per re-score (last
+{len(tail)}), against the dashed pinned-fixture baseline. Each point is colored by
+its divergence band; hover a point for its timestamp and value.</p>
+{chart}
+<div style="margin-top:10px">{legend_items}</div>
+</div>"""
+
+    diag_card = ""
+    attr = hist.attribution
+    cause = hist.divergence_cause
+    if attr is not None or cause is not None:
+        diag_card = '<div class="card"><h2>What moved, and which side</h2>'
+        if attr is not None and attr.top is not None:
+            top = attr.top
+            verb = "fell" if top.change < 0 else "rose"
+            diag_card += (
+                f'<p><b>Pillar:</b> {_esc(top.domain)} {_esc(top.pillar)} {verb} '
+                f'{top.before:.1f} &rarr; {top.after:.1f} '
+                f'({top.change:+.1f}) &mdash; the largest pillar move '
+                f'(vs the last in-band reading {_esc(ch._short_ts(attr.anchor_ts))}).</p>'
+            )
+            others = attr.moves[1:3]
+            if others:
+                more = "; ".join(
+                    f"{_esc(m.domain)} {_esc(m.pillar)} "
+                    f"{m.before:.1f}&rarr;{m.after:.1f} ({m.change:+.1f})"
+                    for m in others
+                )
+                diag_card += f'<p class="q">Also: {more}</p>'
+        elif attr is not None:
+            diag_card += (
+                '<p><b>Pillar:</b> the overall delta moved but no single pillar '
+                'isolated (a pillar was unobserved on one side).</p>'
+            )
+        if cause is not None:
+            diag_card += f'<p><b>Side:</b> {_esc(ch.cause_verdict(cause))}.</p>'
+        diag_card += "</div>"
+
+    body = f"""{nav}{intro}
+{latest_card}
+{chart_card}
+{diag_card}
+<p class="sub" style="margin-top:16px">
+Read this live in a terminal: <span class="chip">python -m asrs canonical-history</span>
+&middot; <a href="methodology.html">How the score is measured &rarr;</a></p>
+</div></body></html>"""
+    path = out_dir / "canonical-history.html"
+    path.write_text(head + body)
+    return str(path)
+
+
 def _band(score: float | None) -> str:
     if score is None:
         return "na"
@@ -1193,6 +1457,7 @@ version. Grade caps apply for critical failures regardless of points.
 Pillar scores exclude checks that could not be tested.{_esc(panel_note)}
 &nbsp;<a href="methodology.html">How the score is measured &rarr;</a>
 &nbsp;&middot;&nbsp;<a href="rubric.html">The full rubric &amp; every check &rarr;</a>
+&nbsp;&middot;&nbsp;<a href="canonical-history.html">Live canonical-delta trend &rarr;</a>
 &nbsp;&middot;&nbsp;<a href="https://github.com/jnakagawa/agentic-readiness">Run this yourself &rarr;</a></footer>
 </div></body></html>"""
 
@@ -1205,4 +1470,5 @@ Pillar scores exclude checks that could not be tested.{_esc(panel_note)}
     # the score (locally and when hosted).
     _write_rubric_page(Path(out_path).parent)
     _write_methodology_page(Path(out_path).parent)
+    _write_canonical_history_page(Path(out_path).parent)
     return out_path

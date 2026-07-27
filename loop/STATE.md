@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 39
+- Cycle counter: 40
 - Started: 2026-07-23 (UTC)
-- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -574,6 +574,35 @@
   pull and the 13:41Z artifact crosses 6h, flag it. No code repair (Cycle-19 crash-wrapper/heartbeat is
   working — it correctly recorded the failures; the block is transient network, self-clearing). The
   Cycle-17 replay guard is the in-cloud canonical signal regardless. Cloud rotation unaffected (still READOUT).
+  Cycle 40 READOUT (the canonical-history diagnosis becomes an HTML SURFACE — the last terminal→HTML gap
+  for the benchmark reading its own regression signal): new `scorecard._write_canonical_history_page`
+  renders `canonical-history.html` next to every card (published by `build_scorecard` alongside rubric/
+  methodology, footer cross-link) surfacing the FULL `asrs canonical-history` diagnosis off the committed
+  `runs/local/verify_*.json` series — latest reading, divergence + band verdict, sustained-drift run,
+  PILLAR attribution (Cycle 37) AND SIDE/direction cause (Cycle 39) — plus a single-series delta-over-time
+  SVG trend (`_history_trend_svg`: live delta per re-score vs a dashed pinned-fixture baseline, each point
+  colored by its divergence BAND, latest direct-labeled, band legend). New public
+  `canonical_history.band_for_delta` (one source of truth for the point-band thresholds, shared by terminal
+  + chart). dataviz skill loaded: form = change-over-time/ONE series → no identity legend; per-point band =
+  reserved STATUS encoding shipped WITH a named legend (never color-alone); status inks in-band #067647 /
+  drifting #b54708 / diverged #b42318; rendered + eyeballed via Chromium (SVG coords within plot bounds).
+  Vendor-neutral: names the reference pair as DATA (page is ABOUT those two domains) — SAME
+  engineering-history category as rubric.html, deliberately OUT OF SCOPE for the wording scanner (guards
+  capability-worded CHECK prose on methodology+card); `test_readout_wording` unchanged/green. Score-neutral:
+  `git diff --name-only` = canonical_history.py + scorecard.py + test_readout.py ONLY; scoring.py/rubric/
+  probes/fetch/protocols/battery/offering/behavioral byte-for-byte untouched → rubric stays v0.7, canonical
+  PAIR unchanged by construction AND re-measured (replay guard 11/11, 46.1 F / 85.5 B / +39.4, 0 replay-miss).
+  Direct-to-main. `test_readout.py` 23→29 (+6: written+linked, drift diagnosis rendered, in-band non-vacuous
+  control, SVG band-coloring+baseline+latest-label, empty-series graceful, names-pair-as-data); suite 164→170.
+  No Slack (READOUT display-only + tests, moves no score, digest already sent Cycle 38 16:13Z, this fire
+  ~18:14Z not a new window). First duty: no open peer-gated PR (verified []); infra health check ran first —
+  runner HEALTHY (verify_20260727T134147Z, 13:41Z, ~4.5h old, under 6h floor) BUT the 14/15/16/17:41Z fires
+  produced NO artifact (4 consecutive gaps — the Cycle-39 stall persists; still under 6h, flag if past 6h
+  next fire); git realigned (detached HEAD from forced origin/main update reset to main = 0757fa1). Next
+  cycle takes METHOD. (Rebased onto the concurrent 18:11Z local fire; its more-informed infra note — the
+  runner's :41 failures are a TRANSIENT github.com DNS block, not a code stall — supersedes the "stall
+  persists" read above. Its example.com baseline ship also moved the pre-change suite baseline: 168, not
+  164 — so this cycle's true suite move is 168 → 174 after the +6 readout tests.)
 - **LIVE CANONICAL DRIFT (open, for the next post-16:00 UTC digest) — surfaced by the Cycle-36 history readout.**
   The live canonical delta held **+39.4** (46.1 F / 85.5 B) for days through `verify_20260727T054339Z`, then MOVED:
   07:40Z fire driftflight.com collapsed to 50.0 F (delta +3.9 — transient error crawl, transactability CANT_TEST /

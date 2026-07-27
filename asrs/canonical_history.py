@@ -207,6 +207,17 @@ def _band_for(abs_divergence: float) -> str:
     return BAND_DIVERGED
 
 
+def band_for_delta(
+    delta: float, baseline_delta: float = FIXTURE_BASELINE_DELTA
+) -> str:
+    """Band a SINGLE delta reading against the baseline — the band a readout should
+    color one point by. Same thresholds ``summarize`` bands the latest reading with,
+    kept here so the terminal block and any other surface (the HTML trend) classify a
+    point identically instead of re-deriving the cutoffs. Read-only, no score.
+    """
+    return _band_for(abs(delta - baseline_delta))
+
+
 def _repo_root() -> str:
     # This module lives INSIDE the repo (asrs/), so deriving the root from
     # __file__ is safe here — unlike the pinned local runner, which lives

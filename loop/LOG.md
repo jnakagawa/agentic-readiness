@@ -4226,3 +4226,91 @@ operator P0 — the `--battery auto` behavioral acceptance rerun — remains [LO
 is best run as a budget-respecting claude-only slice once the with-rails `.com` site
 settles out of its current live drift (running it mid-drift would fold real-world
 `.com` softening into the acceptance read).
+
+## Cycle 40 (READOUT) — 2026-07-27T18:14Z — live canonical-delta HISTORY as an HTML surface
+
+**What.** The `asrs canonical-history` diagnosis is now an HTML page, not
+terminal-only. New `asrs/scorecard.py` `_write_canonical_history_page(out_dir,
+history=None)` renders `canonical-history.html` next to every card (published by
+`build_scorecard` alongside rubric/methodology, cross-linked from the card
+footer). It surfaces the FULL diagnosis the read-only `asrs.canonical_history`
+module computes off the committed `runs/local/verify_*.json` series: latest
+reading (both sides + grades + delta), divergence from the pinned-fixture
+baseline + band verdict, the sustained-drift run, PILLAR attribution (Cycle 37 —
+which pillar moved) AND the SIDE/direction cause (Cycle 39 — no-rails gaining vs
+with-rails softening). Plus a single-series delta-over-time SVG trend
+(`_history_trend_svg`): the live delta per re-score against a dashed
+pinned-fixture baseline, each point colored by its divergence BAND, latest point
+direct-labeled, band legend below. Added a public `canonical_history.band_for_delta`
+so the terminal block and the chart classify a point by the SAME thresholds (one
+source of truth).
+
+**Why.** READOUT north star: the benchmark can now READ its own regression signal
+over time, but only in a terminal. This lets a reader EYEBALL the curve, the named
+pillar mover, and which SIDE drove the drift — the last terminal→HTML gap for the
+canonical-history diagnostic (the same terminal→JSON→HTML deferral per_kind /
+between_kind / NA-block took). Cycle 39 flagged this as the next-cycle hypothesis.
+
+**Design (dataviz skill loaded).** Form = change-over-time, ONE series → no legend
+for identity (title names it); per-point BAND is a reserved STATUS encoding, so it
+ships with a named band legend (never color-alone). Status inks in-band #067647 /
+drifting #b54708 / diverged #b42318, distinct + labeled. Baseline as a dashed
+reference line; recessive connecting line; 2px white ring per dot; direct-label
+the latest point only. Rendered + eyeballed via Chromium (SVG coords verified
+within plot bounds; no collisions/overflow).
+
+**Vendor-neutrality.** The page names the reference-pair hosts as DATA — it is
+literally ABOUT those two domains, exactly as the committed fixtures, the verify
+series, and `test_canonical_replay` name them. SAME engineering-history category
+as `rubric.html`: deliberately OUT OF SCOPE for the vendor-neutral-wording scanner
+(which guards capability-worded CHECK prose on methodology + card, NOT pages that
+report on the reference pair). `test_readout_wording` unchanged and still green
+(it scans card/methodology, uses rubric.html as its non-vacuous control); the new
+page is documented + test-pinned as intended-naming so a future cycle doesn't
+mis-fold it into the scanner.
+
+**Validate.** Score-neutral: `git diff --name-only` = `asrs/canonical_history.py`
++ `asrs/scorecard.py` + `tests/test_readout.py` ONLY; scoring.py/rubric/probes/
+fetch/protocols/battery/offering/behavioral byte-for-byte untouched (grep clean)
+→ rubric stays v0.7, canonical PAIR unchanged by construction AND re-measured
+(in-cloud replay guard 11/11, **drift-flight.org 46.1 F / driftflight.com 85.5 B /
+delta +39.4**, 0 replay-miss). `canonical_history.py` change is additive
+(`band_for_delta`, read-only, imports no scoring code). `test_readout.py` 23 → 29
+(+6: page written+linked by build_scorecard; drift diagnosis rendered; in-band
+non-vacuous control shows no drift/attribution markup; SVG band-coloring +
+baseline + latest-label; empty-series graceful; names-pair-as-data). Full suite
+**168 → 174** (all 19 files exit 0; the +6 is this cycle's readout tests — the
+168 base already includes the concurrent 18:11Z local fire's example.com +4,
+rebased under this commit; in isolation off the pre-local-fire 164 base this
+change is 164 → 170).
+
+**Live-signal note (unchanged by this cycle).** The page reads the LIVE series:
+current `.com` 78.7 C, delta **+32.6**, DRIFTING (3 consecutive out-of-band; `.com`
+legibility 90.9 → 63.6 the named mover; with-rails side SOFTENED). Committed
+fixtures still pin +39.4 so the replay guard is (correctly) green; this is a
+LIVE-signal divergence the fixture guard is blind to by construction — the open
+drift, now readable both in-terminal and on the card.
+
+**Ship.** Direct to main (READOUT, display-only, no scoring semantics, not
+payment/signing). Per playbook ship rules (readout + tests → direct).
+
+**First duty.** No open peer-gated PR (`list_pull_requests` state=open → `[]`).
+Infra health check ran FIRST — runner HEALTHY (newest `verify_20260727T134147Z`,
+13:41Z, ~4.5h old at fire, under the 6h floor); bench runnable, full suite
+168/168 pre-change post-rebase (now 174/174); replay guard 11/11 / +39.4. git realigned
+(detached HEAD from a forced origin/main update reset to main = origin/main
+`0757fa1`). WATCH: the :41 fires at 14/15/16/17:41Z produced no artifact (4
+consecutive gaps at this fire — the stall Cycle 39 flagged persists) but newest is
+still only ~4.5h old, under the 6h floor; if still gapped past 6h next fire, flag
++ fold into the next digest.
+
+**Comms.** No Slack (READOUT display-only + tests, moves no score, not sensitive;
+the daily digest was already sent Cycle 38 at 16:13Z — this fire ~18:14Z is not a
+new digest window). The open LIVE CANONICAL DRIFT (now surfaced on the card too)
+folds into the next digest.
+
+**Next hypothesis.** The canonical-history diagnosis now ships on the card. Next
+READOUT increments (P2): (a) a `compare`-card delta → this history page cross-link
+(a reader on a large delta jumps straight to "is this drift or the true gap?");
+(b) per-DOMAIN history beyond the canonical pair once other domains have committed
+dated reports. Next cycle takes METHOD.

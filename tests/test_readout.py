@@ -492,6 +492,148 @@ def test_cap_link_and_methodology_anchor_cannot_drift() -> None:
                f"the linked fragment {target_id!r} resolves to a methodology row")
 
 
+# ---------------------------------------------------------------------------
+# Cycle 40 (READOUT): the live canonical-delta HISTORY as an HTML surface.
+# `asrs canonical-history` computes the whole diagnosis — delta trend, divergence
+# band, sustained-drift run, PILLAR attribution (which pillar moved) and a
+# SIDE/direction cause (no-rails gaining vs with-rails softening) — but that was
+# terminal-only. `_write_canonical_history_page` renders it so a reader eyeballs the
+# curve, the named mover, and which side drove it. Display-only: no scoring path.
+# ---------------------------------------------------------------------------
+from asrs import canonical_history as ch  # noqa: E402
+
+
+def _hist_point(ts, no_o, no_g, with_o, with_g, no_pil, with_pil) -> ch.CanonicalPoint:
+    return ch.CanonicalPoint(
+        ts=ts,
+        no_rails_overall=no_o,
+        no_rails_grade=no_g,
+        with_rails_overall=with_o,
+        with_rails_grade=with_g,
+        delta=round(with_o - no_o, 4),
+        no_rails_pillars=no_pil,
+        with_rails_pillars=with_pil,
+    )
+
+
+def _drifting_history() -> ch.CanonicalHistory:
+    """A synthetic series: an in-band anchor at the pinned +39.4, then 3 out-of-band
+    readings where the WITH-RAILS side's legibility softened (delta narrows to
+    +32.6) — the real-world scenario the committed series is in, made deterministic.
+    """
+    no_pil = {"access": 100.0, "legibility": 36.4, "transactability": 18.75,
+              "trust": 60.0}
+    anchor_with = {"access": 100.0, "legibility": 90.9, "transactability": 87.5,
+                   "trust": 60.0}
+    drift_with = {"access": 100.0, "legibility": 63.6, "transactability": 87.5,
+                  "trust": 60.0}
+    pts = [
+        _hist_point("20260727T050000Z", 46.1, "F", 85.5, "B", no_pil, anchor_with),
+        _hist_point("20260727T060000Z", 46.1, "F", 78.7, "C", no_pil, drift_with),
+        _hist_point("20260727T070000Z", 46.1, "F", 78.7, "C", no_pil, drift_with),
+        _hist_point("20260727T080000Z", 46.1, "F", 78.7, "C", no_pil, drift_with),
+    ]
+    return ch.summarize(pts)
+
+
+def test_canonical_history_page_written_and_links() -> None:
+    print("test_canonical_history_page_written_and_links")
+    rep = _report([])  # static report — the common hosted case
+    with tempfile.TemporaryDirectory() as d:
+        rp = Path(d) / "rep.json"
+        rp.write_text(rep.to_json())
+        out = scorecard.build_scorecard([str(rp)], out_path=str(Path(d) / "card.html"))
+        _check((Path(d) / "canonical-history.html").exists(),
+               "canonical-history.html published next to the card")
+        # Unchanged behaviour: the two prior prose pages still ship.
+        _check((Path(d) / "methodology.html").exists(), "methodology.html still published")
+        _check((Path(d) / "rubric.html").exists(), "rubric.html still published")
+        _check('href="canonical-history.html"' in Path(out).read_text(),
+               "the card footer links to canonical-history.html")
+
+
+def test_canonical_history_page_renders_drift_diagnosis() -> None:
+    # The page must surface the SAME diagnosis the terminal computes: band verdict,
+    # divergence value, the pillar mover, and the side/direction cause.
+    print("test_canonical_history_page_renders_drift_diagnosis")
+    hist = _drifting_history()
+    with tempfile.TemporaryDirectory() as d:
+        path = scorecard._write_canonical_history_page(Path(d), history=hist)
+        _check(Path(path).name == "canonical-history.html", "writes canonical-history.html")
+        text = Path(path).read_text()
+    _check("Drifting" in text, "names the DRIFTING band")
+    _check("-6.8" in text, "shows the divergence value (-6.8)")
+    _check("Sustained" in text, "flags the sustained (3-in-a-row) out-of-band run")
+    # Pillar attribution: the with-rails legibility move is named as the top mover.
+    _check("legibility" in text and "90.9" in text and "63.6" in text,
+           "names the with-rails legibility pillar move (90.9 -> 63.6)")
+    # Side/direction cause: the with-rails reference softened (not the floor rising).
+    _check("SOFTENED" in text, "names the with-rails-softened cause")
+    _check("<svg" in text and text.count("<circle") == 4,
+           "renders the 4-point trend chart")
+
+
+def test_canonical_history_in_band_shows_no_drift() -> None:
+    # Non-vacuous: an in-band series (live delta reproduces the pinned +39.4) shows
+    # the IN-BAND verdict and NO drift/attribution/cause markup — the drift prose in
+    # the test above is earned by the data, not baked into the template.
+    print("test_canonical_history_in_band_shows_no_drift")
+    no_pil = {"access": 100.0, "legibility": 36.4}
+    with_pil = {"access": 100.0, "legibility": 90.9}
+    pts = [
+        _hist_point("20260727T050000Z", 46.1, "F", 85.5, "B", no_pil, with_pil),
+        _hist_point("20260727T060000Z", 46.1, "F", 85.5, "B", no_pil, with_pil),
+    ]
+    hist = ch.summarize(pts)
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_canonical_history_page(Path(d), history=hist)).read_text()
+    _check("In-band" in text, "names the IN-BAND band on an in-band series")
+    # The band legend always lists all three band names, so assert on the drift
+    # PROSE (the sustained-run line + the attribution/cause card), not the labels.
+    _check("consecutive re-score(s) out of band" not in text,
+           "no sustained/recent out-of-band line when in-band")
+    _check("What moved, and which side" not in text,
+           "no attribution/cause card when there is nothing to explain")
+
+
+def test_canonical_history_trend_svg_colors_by_band() -> None:
+    # The chart is a single series, so identity needs no legend; but each point is
+    # colored by its divergence BAND (a reserved status encoding). Pin that an
+    # in-band point is green and a diverged point is red, and that the baseline
+    # reference line + latest direct-label render — non-vacuous status coloring.
+    print("test_canonical_history_trend_svg_colors_by_band")
+    p_in = _hist_point("20260727T050000Z", 46.1, "F", 85.5, "B", {}, {})   # +39.4 in-band
+    p_div = _hist_point("20260727T060000Z", 46.1, "F", 60.0, "F", {}, {})  # +13.9 diverged
+    svg = scorecard._history_trend_svg([p_in, p_div], ch.FIXTURE_BASELINE_DELTA)
+    _check(scorecard._HISTORY_BAND_COLOR["in-band"] in svg, "in-band point drawn green")
+    _check(scorecard._HISTORY_BAND_COLOR["diverged"] in svg, "diverged point drawn red")
+    _check("stroke-dasharray" in svg, "the pinned-fixture baseline is a dashed line")
+    _check(">+13.9<" in svg, "the latest point is direct-labeled with its delta")
+
+
+def test_canonical_history_empty_series_renders_gracefully() -> None:
+    print("test_canonical_history_empty_series_renders_gracefully")
+    hist = ch.summarize([])
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_canonical_history_page(Path(d), history=hist)).read_text()
+    _check("No readings yet" in text, "empty series renders the no-data card")
+    _check("<svg" not in text, "no chart drawn with no data")
+    _check(text.rstrip().endswith("</html>"), "still a well-formed page")
+
+
+def test_canonical_history_names_reference_pair_as_data() -> None:
+    # This page is ABOUT the reference pair, so it names both hosts as DATA — the
+    # SAME engineering-history category as rubric.html, deliberately OUT OF SCOPE for
+    # the vendor-neutral-wording scanner (which guards capability-worded CHECK prose
+    # on methodology + card). Pinning it here documents that the naming is intended.
+    print("test_canonical_history_names_reference_pair_as_data")
+    hist = _drifting_history()
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_canonical_history_page(Path(d), history=hist)).read_text()
+    _check(ch.CANONICAL_NO_RAILS in text and ch.CANONICAL_WITH_RAILS in text,
+           "the page names both reference-pair hosts as data")
+
+
 def main() -> int:
     tests = [
         test_json_carries_reliability,
@@ -517,6 +659,12 @@ def main() -> int:
         test_methodology_cap_rows_carry_anchor_ids,
         test_caps_alert_chip_links_to_methodology,
         test_cap_link_and_methodology_anchor_cannot_drift,
+        test_canonical_history_page_written_and_links,
+        test_canonical_history_page_renders_drift_diagnosis,
+        test_canonical_history_in_band_shows_no_drift,
+        test_canonical_history_trend_svg_colors_by_band,
+        test_canonical_history_empty_series_renders_gracefully,
+        test_canonical_history_names_reference_pair_as_data,
     ]
     failed = 0
     for t in tests:

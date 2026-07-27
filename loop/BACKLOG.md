@@ -570,8 +570,11 @@ design in-cloud, execute locally.
   canonical-history` (`asrs/canonical_history.py`) reads the committed
   `runs/local/verify_*.json` series into a delta trend + sustained-drift alert
   vs the fixture baseline (+39.4), with a sparkline. REMAINING: (a) an HTML
-  trend surface (the terminal block rendered into the scorecard / a standalone
-  page, so a reader eyeballs the curve, not just the terminal); (b) per-DOMAIN
+  trend surface — **DONE 2026-07-27T18:14Z (Cycle 40, READOUT)**: `canonical-history.html`
+  (`scorecard._write_canonical_history_page`) renders the full diagnosis — delta trend SVG,
+  band, sustained-drift run, PILLAR attribution + SIDE/direction cause — next to every card,
+  footer cross-linked (see the DONE note above; `test_readout.py` 23→29, suite 164→170,
+  replay guard 11/11 / +39.4). REMAINING: (b) per-DOMAIN
   history beyond the canonical pair (needs committed dated reports for other
   domains — currently only the verify series is committed); (c) error bars once
   multi-trial series land.
@@ -588,14 +591,27 @@ design in-cloud, execute locally.
      evidence only; imports no scoring code; vendor-neutral. scoring.py/rubric/probes/… untouched →
      rubric v0.7, canonical pair 46.1 F / 85.5 B / +39.4, replay guard 11/11. `test_canonical_history.py`
      6→10; suite 156→160. See LOG Cycle 37. -->
-- **Canonical-history attribution: HTML trend surface** (READOUT, Cycle-37/39 follow-up): the
-  TERMINAL block (`asrs canonical-history`) now computes the full diagnosis — delta trend, band,
-  sustained-drift run, PILLAR attribution (Cycle 37, WHICH pillar) AND the SIDE/direction cause
-  (Cycle 39, `DivergenceCause` — no-rails gaining vs with-rails softening, with `reference_degraded`).
-  Render all of it into an HTML surface (the scorecard or a standalone page) so a reader eyeballs the
-  curve + the named mover + which side drove it, not just the terminal. Folds into the P2
-  "Score-over-time trend page" item (a) below. No scoring semantics; direct-to-main. This is the
-  natural next READOUT increment (Cycle 39 flagged it as the next-cycle hypothesis).
+<!-- DONE 2026-07-27T18:14Z (Cycle 40, READOUT, direct-to-main, display-only/score-neutral):
+     "Canonical-history attribution: HTML trend surface" SHIPPED. `scorecard._write_canonical_history_page`
+     renders `canonical-history.html` next to every card (published by `build_scorecard` alongside rubric/
+     methodology, footer cross-link) surfacing the FULL `asrs canonical-history` diagnosis off the committed
+     verify series — latest reading, divergence + band verdict, sustained-drift run, PILLAR attribution
+     (Cycle 37) AND SIDE/direction cause (Cycle 39) — plus a single-series delta-over-time SVG trend
+     (`_history_trend_svg`: live delta per re-score vs a dashed pinned-fixture baseline, each point colored
+     by its divergence BAND, latest direct-labeled, band legend). New public `canonical_history.band_for_delta`
+     = one source of truth for the point-band thresholds (terminal + chart classify identically). dataviz
+     skill loaded (ONE series → no identity legend; per-point band = reserved STATUS encoding shipped WITH a
+     named legend, never color-alone); rendered + eyeballed via Chromium. Vendor-neutral: names the reference
+     pair as DATA (page is ABOUT those two domains) — SAME engineering-history category as rubric.html,
+     deliberately OUT OF SCOPE for the wording scanner (which guards capability-worded CHECK prose on
+     methodology+card); `test_readout_wording` unchanged/green. Score-neutral: git diff = canonical_history.py
+     + scorecard.py + test_readout.py ONLY; scoring/rubric/probes/… untouched → rubric v0.7, replay guard
+     11/11, 46.1 F / 85.5 B / +39.4. `test_readout.py` 23→29; suite 164→170. See LOG Cycle 40. This discharges
+     remaining item (a) of the "Score-over-time trend page" P2 below. -->
+- **[LOCAL] Eyeball the canonical-history card on the operator's hosted deploy** (READOUT, Cycle-40 follow-up,
+  optional): the HTML canonical-history page renders correctly in-cloud (Chromium screenshot, real committed
+  series). A next visual check would confirm it reads well hosted next to a real published scorecard, and that
+  the footer cross-link resolves. No new code — a render + visual check.
 - **[LOCAL] Decide on canonical fixture re-capture once driftflight.com settles**
   (TRUTH, Cycle-36 follow-up to the LIVE CANONICAL DRIFT). The live `.com`
   score has drifted below the pinned fixture (85.5 B → ~78.7 C, legibility

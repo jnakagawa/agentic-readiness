@@ -5533,3 +5533,24 @@ large delta jumps straight to the two "why it's earned / why it's not the weight
 sub-sections — the last cross-link after the Cycle-32 cap-chip anchor. Or the
 TRUTH-side extension Cycle 55 queued (population-wide weight-robustness) whose
 prose would then also live in this same sub-section.
+
+### Cycle 56 — bookkeeping correction (append-only; the entry above understated the git recovery)
+
+The Cycle-56 entry's "git bookkeeping UP (pull clean)" was OPTIMISTIC and is
+corrected here honestly. This fire hit the exact Cycle-52 orphan-main trap: the
+opening `git pull --ff-only` printed "Already up to date" (after an
+`+ 2e66201...6c7087e main -> origin/main (forced update)` line) while local
+`main`/HEAD was silently the STALE ORPHAN `2e66201`, NOT origin/main `6c7087e`.
+So `git commit` landed my change (`dc043bc`) on top of the orphan, and
+`git push` was REJECTED non-fast-forward. Recovery followed the Cycle-52 lesson
+exactly: `git checkout -B main origin/main`, then `git cherry-pick dc043bc` (my
+commit's diff vs its orphan parent = exactly the 5 intended files, no PLAYBOOK
+conflict) → clean apply as `e7bebf7` on top of `6c7087e` (Cycle 55) → pushed
+`6c7087e..e7bebf7`. Post-push: `git rev-parse main == origin/main == e7bebf7`,
+full suite 216/216 on the realigned tree. NO history rewritten (invariant #5):
+the orphan commit was abandoned, not force-pushed; the real history only
+fast-forwarded. RE-CONFIRMED LESSON (from Cycle 52/55, and I failed to apply it
+at fire start): after the fresh-checkout `git pull`, VERIFY `git rev-parse main`
+== `git rev-parse origin/main` BEFORE editing/committing; if local `main` is the
+orphan `2e66201`, realign FIRST (`git checkout -B main origin/main`). Next cycle:
+do this check as literally the first git action.

@@ -24,6 +24,7 @@ the offline test tracks what the live classifier actually sees.
 
 from __future__ import annotations
 
+import json
 import os
 import sys
 
@@ -31,7 +32,28 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from asrs import offering  # noqa: E402
+from asrs.fetch import FetchContext  # noqa: E402
 from asrs.offering import ARCHETYPES, classify_offering, strip_html  # noqa: E402
+
+_FIXTURE_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "fixtures", "canonical"
+)
+
+
+def _fixture_entry_text(domain: str, url_suffix: str) -> str:
+    """Recorded response text of the committed fixture GET entry whose URL ends with ``url_suffix``.
+
+    Reads the fixture's raw recorded responses directly (not through
+    ``FetchContext.get``) so a surface captured on a docs SUBDOMAIN — which live
+    discovery does not currently crawl — is still available as REAL captured bytes
+    for classifier-layer tests.
+    """
+    with open(os.path.join(_FIXTURE_DIR, f"{domain}.json"), encoding="utf-8") as fh:
+        data = json.load(fh)
+    for entry in data["entries"]:
+        if entry.get("method", "GET") == "GET" and entry.get("url", "").endswith(url_suffix):
+            return (entry.get("result") or {}).get("text", "") or ""
+    return ""
 
 
 # --- Fixtures: synthetic surfaces mirroring real archetypes -------------------
@@ -243,6 +265,88 @@ def test_sku_inventory_is_retail_sense_not_compute():
     print("  ok: retail 'product SKU' / 'inventory levels' still fires sku-inventory")
 
 
+def test_credit_metered_precision_synthetic():
+    # Credit-based metering — prepay a balance, spend N credits per call — is the
+    # dominant billing convention for generative / agent-native APIs, but bare
+    # "credit(s)" is a false-positive minefield. Each POSITIVE is a real credit-
+    # billing phrasing that must claim metered_api via the new credit-metered
+    # signal; each NEGATIVE is credit-shaped noise (the C2PA metadata field, a
+    # wallet balance, a refund, feature-flag names, the payment instrument, store
+    # credit) that must NOT fire credit-metered. The negatives are drawn from the
+    # exact traps present in the committed canonical fixtures.
+    positives = {
+        "buy a credit plan": "Prepay once: buy a credit plan and call until it runs out.",
+        "credit ran out": "Error usage_exhausted: your plan's credit ran out. Top up to continue.",
+        "credits per call": "Metered billing: 1 credit per API call, deducted from your balance.",
+        "purchase credits": "Purchase credits in bundles; no subscription required.",
+        "credit balance": "Check your credit balance before a large batch job.",
+        "credit-based": "Simple credit-based pricing — spend credits as you go.",
+        "api credits": "Agents authenticate and spend API credits per request.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("metered.test", {"homepage": text})
+        assert prof.claims("metered_api"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "metered_api"
+            for s in c.signals
+        }
+        assert "credit-metered" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real credit-billing phrasings each fire credit-metered")
+
+    negatives = {
+        "C2PA metadata field": '{"licence":"commercial","credits":"C2PA content credentials embedded"}',
+        "wallet balance": "An unspent ceiling can never get stuck as seller credit.",
+        "camelCase field": '{"includedCreditUsd":null,"remainingCreditUsd":"25.000000"}',
+        "refund": "A failed delivery is credited back in full.",
+        "feature-flag name": '{"name":"credits-v2-jul-2026","enabled":true}',
+        "flag exhaustion": '{"name":"disable-workflows-on-credit-exhaustion"}',
+        "payment instrument": "We accept any major credit card at checkout.",
+        "store credit": "Refunds are issued as store credit toward your next order.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "credit-metered" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} credit-shaped noise strings do NOT fire credit-metered (precision)"
+    )
+
+
+def test_credit_metered_fires_on_real_captured_billing_prose():
+    # Real-evidence, NON-VACUOUS validation of the credit-metered signal — it fires
+    # on GENUINE credit-billing prose captured live from a real storefront, and does
+    # NOT fire on that SAME storefront's credit-shaped metadata trap.
+    #
+    # driftflight.com documents credit billing on its agent docs: "buy a credit or
+    # subscription plan", "your plan's credit ran out", "minimumUsd for credit
+    # plans" — captured in the committed canonical fixture (on the docs subdomain
+    # agents.driftflight.com/llms-full.txt, which discover_offering does not
+    # currently crawl — a separate COVERAGE gap; here we exercise the classifier on
+    # the captured bytes, the surface the signal actually reads).
+    billing = _fixture_entry_text("driftflight.com", "/llms-full.txt")
+    assert "credit" in billing.lower(), "fixture llms-full.txt lost its credit-billing prose"
+    prof = classify_offering("driftflight.com", {"/llms-full.txt": billing})
+    assert prof.claims("metered_api"), prof.archetypes
+    metered = next(c for c in prof.claimed if c.archetype == "metered_api")
+    cred = [s for s in metered.signals if s.label == "credit-metered"]
+    assert cred, {s.label for s in metered.signals}
+    assert "credit" in cred[0].quote.lower(), cred[0].quote
+    print(f"  ok: credit-metered fires on REAL captured billing prose — quote: {cred[0].quote!r}")
+
+    # Precision on real noise: the committed homepage carries the C2PA metadata
+    # field ('"credits": "C2PA content credentials embedded"') — captured live — and
+    # that credit-shaped text must NOT read as credit metering.
+    ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "driftflight.com.json"))
+    home = ctx.homepage(ua="browser").text or ""
+    assert "credit" in home.lower(), "homepage lost its credit-shaped C2PA trap"
+    home_prof = classify_offering("driftflight.com", {"homepage": home})
+    home_labels = {s.label for c in home_prof.claimed for s in c.signals}
+    assert "credit-metered" not in home_labels, home_labels
+    print("  ok: the homepage C2PA 'credits' metadata does NOT fire credit-metered (real-data precision)")
+
+
 def test_booking_and_data_archetypes_fire():
     booking = classify_offering("harbor.test", {"homepage": BOOKING_HOMEPAGE})
     assert booking.claims("service_booking"), booking.archetypes
@@ -410,6 +514,8 @@ def main() -> int:
         test_api_storefront_claims_agent_native_not_physical,
         test_retail_storefront_is_the_inverse,
         test_sku_inventory_is_retail_sense_not_compute,
+        test_credit_metered_precision_synthetic,
+        test_credit_metered_fires_on_real_captured_billing_prose,
         test_booking_and_data_archetypes_fire,
         test_non_storefront_claims_nothing,
         test_strength_counts_distinct_signals_and_orders_claims,

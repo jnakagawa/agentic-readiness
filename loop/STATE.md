@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 49
+- Cycle counter: 50
 - Started: 2026-07-23 (UTC)
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -855,6 +855,35 @@
   in-band), the 23:41/00:41/01:41/02:41Z fires produced NO artifact (4 consecutive gaps, Cycle-48 watch
   persists), STILL under 6h at 03:20Z — flag if the next fire shows no newer artifact and 22:41Z crosses 6h.
   Next cycle takes COVERAGE.
+  Cycle 50 COVERAGE (offering discovery recognises CREDIT-BASED metering — the dominant billing convention for
+  generative / agent-native APIs, the north-star many-billing-conventions axis): `asrs/offering.py` new
+  `credit-metered` signal in the `metered_api` bank. The bank captured pay-as-you-go / pay-per / billed-per /
+  per-unit / usage-based / x402 but NOT the credit model, so a storefront metering ONLY as "buy a credit plan …
+  your plan's credit ran out" recorded no credit evidence for the understand-the-offer capability (the credit
+  sibling of the free-tier discovery conventions, Cycles 22/30/38). PRECISION-FIRST: bare `\bcredits?\b` is a
+  false-positive minefield present in the very fixtures we validate on — C2PA metadata (`"credits": "C2PA content
+  credentials"`), wallet balance (`seller credit`, camelCase `includedCreditUsd`), refund (`credited back`),
+  feature-flag names (`credits-v2-jul-2026`), and `credit card` — so anchor to billing CONTEXT (a credit + a
+  metering word per/plan/balance/pack/based/ran-out, or a spend/buy verb buy/purchase/prepay/redeem/spend
+  credits); all that noise is correctly skipped (`credit card`, `store credit` stay silent). Vendor-neutral
+  (worded by capability, keys on generic prose). SCORE-NEUTRAL: `discover_offering`/`classify_offering` OFF the
+  scoring path (grep-verified; called only from `cli._resolve_battery` for `--battery auto`); commerce-manifest
+  SCORING probe's separate `protocols._AGENT_SURFACE_DOCS` untouched. `git diff --name-only` = offering.py +
+  test_offering.py ONLY; `git diff -- asrs/scoring.py rubric/ asrs/probes/ asrs/fetch.py asrs/protocols.py
+  asrs/battery.py` EMPTY → rubric stays v0.7. Canonical PAIR unchanged: metered_api is already the strongest claim
+  on both (org strength 5, com 6, template index 0) so a new signal can't reorder the claimed list, AND
+  credit-metered fires on NEITHER canonical DISCOVERY surface (org has no billing prose; com's billing docs live
+  on the agents.* subdomain discovery does not crawl) → claimed SETS + ORDER byte-identical (canonical offering
+  guard 12/12); replay guard re-measured 46.1 F / 85.5 B / +39.4, 0 replay-miss; verify_20260727T224106Z (22:41Z)
+  corroborates in-band. EVIDENCE (real-data, non-vacuous): `test_offering.py` 12→14 — synthetic precision battery
+  (7 real credit-billing phrasings fire, 8 credit-shaped noise strings don't) + a REAL-captured test reading the
+  committed driftflight.com `/llms-full.txt` bytes (credit-metered fires on `"minimumUsd for credit plans"`) and
+  asserting the same storefront's HOMEPAGE C2PA metadata trap does NOT fire. Full suite 200→202 (all 19 files exit
+  0). Direct-to-main. No Slack (score-neutral additive discovery, moves no score, not sensitive, not a digest
+  window at 04:12Z). First duty: no open peer-gated PR (verified []); infra health check ran first — runner WATCH
+  PERSISTS: newest verify_20260727T224106Z (22:41Z), ~5.5h old at 04:12Z, the 23:41–03:41Z :41 fires produced NO
+  artifact (5 consecutive gaps, closest to the 6h floor yet) — if the next fire shows no newer artifact, 22:41Z
+  crosses 6h → flag loudly + fold into the next digest. Next cycle takes TRUTH.
 - **LIVE CANONICAL DRIFT (open, for the next post-16:00 UTC digest) — surfaced by the Cycle-36 history readout.**
   The live canonical delta held **+39.4** (46.1 F / 85.5 B) for days through `verify_20260727T054339Z`, then MOVED:
   07:40Z fire driftflight.com collapsed to 50.0 F (delta +3.9 — transient error crawl, transactability CANT_TEST /

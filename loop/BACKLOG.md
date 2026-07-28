@@ -482,6 +482,27 @@ design in-cloud, execute locally.
 
 ## P2
 
+- **Offering discovery reads conventional DOC SUBDOMAINS** (COVERAGE, surfaced Cycle 50).
+  `discover_offering` fetches each surface on the storefront's OWN host (`<host>/llms.txt`,
+  `<host>/llms-full.txt`, …). But a real, common pattern for API-first storefronts is to
+  host agent docs on a `docs.`/`agents.`/`developers.`/`api.` SUBDOMAIN — driftflight.com
+  serves its rich agent docs (including its credit-billing prose, Cycle 50) at
+  `agents.driftflight.com/llms-full.txt`, which discovery never crawls, so it classifies the
+  storefront from its bare apex + on-host `/llms.txt` alone (a thin subset). A site whose
+  ONLY agent-facing self-description lives on a doc subdomain is under-classified. Cloud-doable
+  increment: teach discovery to ALSO try `_SURFACE_DOCS` on a small allowlist of conventional
+  same-registrable-domain subdomains (`docs`/`agents`/`developers`/`api`), still $0 GETs, off
+  the scoring path. PRECISION-FIRST: only same-registrable-domain subdomains (never an
+  arbitrary `url` field from a fetched surface — that would let a page redirect discovery to
+  any host); a subdomain that 404s is simply absent, same tolerance as any surface. Validate
+  offline against the committed driftflight.com fixture (the `/llms-full.txt` on `agents.*` is
+  already captured) — a discovery that reaches it would pick up the credit-metered signal live,
+  and the canonical OFFERING guard would need its EXPECTED updated IF the claimed SET changes
+  (it should NOT — metered_api already claimed; only strength/labels grow). Note the fixture
+  base-host routing: `FetchContext.from_fixture` keys on recorded URLs, so a subdomain fetch
+  must map to the recorded `agents.driftflight.com` entries — confirm the fixture path resolves
+  before asserting.
+
 - **Per-side noise floor: verify it stays SILENT under a real transient** (TRUTH, Cycle-47
   follow-up — PARKED until a fresh OOB stretch lands). Cycle 47 added
   `NoiseFloor.no_rails_stddev`/`with_rails_stddev` + `sides_deterministic`, proving on the committed

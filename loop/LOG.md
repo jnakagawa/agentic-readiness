@@ -4997,3 +4997,82 @@ ordering, a fifth capability tier (metered-API-first storefront) refines the
 spectrum. Candidate METHOD follow-up: pin that the ordering is invariant under
 relabeling ALL four hosts simultaneously (population-level vendor-neutrality) — the
 per-domain relabel guards exist, the joint one does not.
+
+## Cycle 50 — 2026-07-28T04:1xZ — COVERAGE
+
+**What.** Offering discovery now recognises CREDIT-BASED metering — the dominant
+billing convention for generative / agent-native APIs (prepay a credit balance,
+spend N credits per call). `asrs/offering.py`: a new `credit-metered` signal in the
+`metered_api` bank. Until now the bank captured pay-as-you-go / pay-per /
+billed-per / per-unit / usage-based / x402, but NOT the credit model, so a
+storefront that documents its metering ONLY as "buy a credit plan … your plan's
+credit ran out" recorded no credit evidence for the "understand the offer"
+capability. This adds it — the north-star many-billing-conventions axis, the credit
+sibling of the free-tier discovery conventions (header/query/path/body, Cycles
+22/30/38).
+
+**Why it is safe (precision-first).** Bare `\bcredits?\b` is a false-positive
+minefield present in the very fixtures we validate on: the C2PA metadata field
+(`"credits": "C2PA content credentials"`), a wallet balance (`seller credit`,
+camelCase `includedCreditUsd`), a refund (`credited back in full`), feature-flag
+names (`credits-v2-jul-2026`, `disable-workflows-on-credit-exhaustion`), and the
+ubiquitous payment instrument (`credit card`). The signal instead anchors to
+billing CONTEXT: a credit followed by a metering word (per / plan / balance / pack
+/ based / ran out) or a verb that spends/buys it (buy / purchase / prepay / redeem
+/ spend credits). All the noise above is correctly skipped; `credit card` and
+`store credit` (a retail refund concept) both stay silent.
+
+**Vendor-neutral.** Worded by capability (credit-based metering), never by vendor
+or domain string; the signal keys on generic commerce prose, same as every other
+signal in the bank.
+
+**Ship.** Direct-to-main — score-neutral, not sensitive, not payment/signing code.
+`discover_offering` / `classify_offering` are OFF the scoring path (grep-verified;
+called only from `cli._resolve_battery` for `--battery auto`); the commerce-manifest
+SCORING probe keeps its own separate `protocols._AGENT_SURFACE_DOCS`, untouched.
+`git diff --name-only` = `asrs/offering.py` + `tests/test_offering.py` ONLY;
+`git diff -- asrs/scoring.py rubric/ asrs/probes/ asrs/fetch.py asrs/protocols.py
+asrs/battery.py` EMPTY → rubric stays v0.7.
+
+**Evidence (real-data, non-vacuous).** `tests/test_offering.py` 12→14:
+(1) `test_credit_metered_precision_synthetic` — 7 real credit-billing phrasings each
+fire credit-metered on metered_api; 8 credit-shaped noise strings (the exact traps
+in the committed fixtures) do NOT. (2)
+`test_credit_metered_fires_on_real_captured_billing_prose` — reads the committed
+driftflight.com fixture's `/llms-full.txt` (REAL captured bytes) and asserts
+credit-metered fires with a real quote (`"minimumUsd for credit plans"`), AND that
+the same storefront's committed HOMEPAGE — which carries the C2PA `credits` metadata
+trap — does NOT fire it. Full suite 200→202 (all 19 files exit 0).
+
+**Canonical pair (regression signal).** metered_api is already the strongest claim
+on both canonical domains (org strength 5, com 6; template index 0), so adding a
+signal cannot flip the ordered claimed list. Verified: the credit-metered signal
+does NOT fire on either canonical DISCOVERY surface (drift-flight.org has no billing
+prose; driftflight.com's billing docs live on the agents.* subdomain discovery does
+not crawl — see backlog), so the claimed SETS and ORDER are byte-identical.
+Canonical replay guard re-measured this fire: 46.1 F (drift-flight.org) / 85.5 B
+(driftflight.com), delta **+39.4**, 0 replay-miss — UNCHANGED. Canonical OFFERING
+guard 12/12 (claimed sets unchanged). Live-signal corroboration: newest
+`runs/local/verify_20260727T224106Z.json` (22:41Z) reads 46.1 F / 85.5 B / +39.4
+in-band.
+
+**Infra health.** First duty: no open peer-gated PR (`list_pull_requests
+state=open` → []). Bench up (fresh venv + `pip install -r requirements.txt`, all 19
+files green). Runner WATCH persists: newest verify is 22:41Z, ~5.5h old at this fire
+(04:12Z) — the 23:41/00:41/01:41/02:41/03:41Z :41 fires produced NO artifact (5
+consecutive gaps, Cycle-48/49 watch continues), still under the 6h floor but the
+closest yet; if the next fire shows no newer artifact, 22:41Z crosses 6h → flag it
+loudly + fold into the next digest.
+
+**Comms.** No Slack — score-neutral additive discovery (moves no score), not a
+sensitive-class change, and 04:12Z is not the first-cycle-after-16:00-UTC digest
+window.
+
+**Next hypothesis.** TRUTH next. The credit-billing prose driftflight.com serves
+lives on the docs SUBDOMAIN `agents.driftflight.com/llms-full.txt`, which
+`discover_offering` does not crawl (it fetches `<host>/llms-full.txt` only) — a real
+COVERAGE gap now queued: an API-first storefront that hosts its agent docs on a
+`docs.`/`agents.` subdomain is classified from its bare apex alone. A cloud-doable
+next increment could teach discovery to try a small set of conventional doc
+subdomains (still $0 GETs, off the scoring path); design it precision-first (only
+same-registrable-domain subdomains, never an arbitrary host) before shipping.

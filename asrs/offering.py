@@ -132,6 +132,26 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
         ("billed-per", re.compile(r"\bbilled per [a-z]+\b", _F)),
         ("per-unit-rate", re.compile(r"\bper[- ](generation|call|request|token|render|unit)\b", _F)),
         ("usage-based", re.compile(r"\b(usage[- ]based|metered|overage)\b", _F)),
+        # Credit-based metering — the dominant billing convention for generative
+        # and agent-native APIs (prepay a credit balance, spend N credits per
+        # call/image/generation). PRECISION-CRITICAL: bare "\bcredits?\b" is a
+        # false-positive minefield present in the very fixtures we validate on —
+        # the C2PA metadata field ("credits": "C2PA content credentials"), a wallet
+        # balance ("seller credit", camelCase "includedCreditUsd"), a refund
+        # ("credited back in full"), feature-flag names ("credits-v2-jul-2026"),
+        # and the ubiquitous payment instrument ("credit card"). So anchor to
+        # billing CONTEXT: a credit followed by a metering word (per / plan /
+        # balance / pack / based / ran out) or a verb that spends/buys it
+        # (buy / purchase / prepay / redeem / spend credits). Real credit-billing
+        # prose ("buy a credit plan", "your plan's credit ran out") matches; the
+        # metadata/wallet/card noise does not.
+        ("credit-metered", re.compile(
+            r"\bcredits?\s+(?:per|remaining|left|pack|bundle|balance)\b"
+            r"|\b(?:buy|buys|buying|purchas(?:e|es|ing)|prepay|prepaid|redeem|spend|top[- ]?up|out of|remaining|low on)\s+credits?\b"
+            r"|\bcredit\s+(?:plan|plans|balance|pricing|bundle|pack)\b"
+            r"|\bcredits?\s+(?:ran|runs?|running)\s+out\b"
+            r"|\bapi\s+credits?\b"
+            r"|\bcredit[- ]based\b", _F)),
         # Agent-native payment rail.
         ("x402", re.compile(r"\b(x402|HTTP\s*402)\b", _F)),
     ],

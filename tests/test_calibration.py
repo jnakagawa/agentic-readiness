@@ -268,11 +268,81 @@ def test_behavioral_corroboration_is_reproducible() -> None:
     )
 
 
+# ---------------------------------------------------------------------------
+# 4. The calibration rests on a SHARED STATIC BASE, not just a matching name.
+#    "Prediction == experience" is only meaningful if the two measurements score
+#    the SAME static evidence.  Tests 1-3 pin domain + rubric_version STRING
+#    equality — but two runs can share those and still have scored different
+#    crawls (e.g. a behavioral run whose transactability differs from the fixture
+#    would make "the score predicts 87.5 payability" corroborate a run that
+#    actually saw something else).  Pin that every STATIC-OBSERVABLE pillar the
+#    two measurements share is IDENTICAL, so the prediction the anchor corroborates
+#    is the very number the static guard pins — and note the reliability corollary:
+#    the payability magnitude (transactability 87.5) is reproduced across TWO
+#    INDEPENDENT crawls (the committed fixture capture and the 18:55Z behavioral
+#    crawl), so it is crawl-stable, not a lucky snapshot.
+# ---------------------------------------------------------------------------
+
+# The pillars both measurements compute from the same static crawl.  Excluded:
+# ``outcome`` (behavioral-only — the static replay scores it None) and ``trust``
+# (the behavioral run augments it with a LIVE trust panel), which is exactly why
+# they anchor the non-vacuity check below — the behavioral report is a genuine
+# augmented SUPERSET, not the static fixture re-dumped.
+_SHARED_STATIC_PILLARS = ("access", "legibility", "transactability")
+
+
+def test_calibration_rests_on_a_shared_static_base() -> None:
+    print("test_calibration_rests_on_a_shared_static_base")
+    static, misses = _static_report(_ANCHOR_DOMAIN)
+    bhv = _load_behavioral()
+    _check(not misses, f"{_ANCHOR_DOMAIN}: static replay has no replay-miss (like-for-like)")
+
+    bhv_pillars = bhv["pillar_scores"]
+
+    # SHARED STATIC BASE: every static-observable pillar is IDENTICAL across the
+    # two independent measurements — the anchor corroborates the SAME static
+    # evidence the score predicts on, not a differently-scored run that merely
+    # shares a name.  Includes transactability, so the payability PREDICTION
+    # magnitude (87.5) the calibration rests on is provably the one the static
+    # replay guard pins — and it reproduces across two independent crawls.
+    for pillar in _SHARED_STATIC_PILLARS:
+        s = static.pillar_scores[pillar]
+        b = bhv_pillars[pillar]
+        _check(
+            s is not None and b is not None and abs(s - b) < 1e-9,
+            f"shared static base: {pillar} identical across static replay and "
+            f"behavioral run (static={s}, behavioral={b})",
+        )
+
+    # NON-VACUOUS: the behavioral report is a genuine augmented SUPERSET, not the
+    # static fixture re-dumped — the identical static pillars above are an
+    # agreement between two DISTINCT measurements, not a tautology.
+    # (a) the Outcome pillar is SCORED behaviorally but NULL in the static replay.
+    _check(
+        static.pillar_scores["outcome"] is None,
+        "static replay scores Outcome null (behavioral-only pillar)",
+    )
+    _check(
+        isinstance(bhv_pillars.get("outcome"), (int, float)),
+        f"behavioral run SCORES the Outcome pillar the static replay lacks "
+        f"(got {bhv_pillars.get('outcome')}) — genuine behavioral superset",
+    )
+    # (b) the Trust pillar DIFFERS — the behavioral run adds a LIVE trust panel,
+    #     so the two reports are distinct runs, not the same file twice.
+    _check(
+        static.pillar_scores["trust"] is not None
+        and abs(static.pillar_scores["trust"] - bhv_pillars["trust"]) > 1e-9,
+        f"Trust differs (static={static.pillar_scores['trust']}, "
+        f"behavioral={bhv_pillars['trust']}) — behavioral augments it with a live panel",
+    )
+
+
 def main() -> int:
     tests = [
         test_static_payment_prediction_is_behaviorally_corroborated,
         test_calibration_anchor_is_discriminating,
         test_behavioral_corroboration_is_reproducible,
+        test_calibration_rests_on_a_shared_static_base,
     ]
     failed = 0
     for t in tests:

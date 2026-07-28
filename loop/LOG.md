@@ -6731,3 +6731,68 @@ committed moleskine report — static `no-agent-native-payment` (x402_probe not-
 x402_live=False → transactability 18.8) → behavioral `machine_payable_path`/`no_human_gate` FALSE,
 reproducibly — the executable mirror of Cycle 67's positive anchor, turning calibration into a
 two-sided validity property in-cloud.
+
+## Cycle 69 — 2026-07-28T23:1xZ — METHOD (direct to main)
+
+**What.** Widened the static-vs-behavioral CALIBRATION guard (`tests/test_calibration.py`,
+Cycle 67) with a fourth test — `test_calibration_rests_on_a_shared_static_base` — that pins
+the calibration comparison to a like-for-like STATIC BASE, not just a matching
+domain/rubric_version string. Calibration 3→4.
+
+**Why.** The guard's whole claim is *"prediction == experience"*: the static score for
+driftflight.com predicts agent-native payability (transactability 87.5) and the committed
+18:55Z behavioral run corroborates it (Outcome payment checks PASS). But that comparison is
+only meaningful if the two measurements scored the SAME static evidence. Tests 1–3 assert only
+STRING equality — `bhv["domain"] == static.domain` and `rubric_version == "0.7"`. Two runs can
+share both and still have crawled different content: a future behavioral run whose static
+transactability differed from the committed fixture (18.75 instead of 87.5, say) would slip
+every existing like-for-like check, and the guard would then "corroborate" a payability number
+the behavioral run never actually saw — a silent calibration defect. The string checks pin the
+LABEL, not the EVIDENCE.
+
+**The property (in-cloud, deterministic, no network).** Replays
+`fixtures/canonical/driftflight.com.json` through the real pipeline (same offline path as
+`test_canonical_replay`) and asserts every STATIC-OBSERVABLE pillar both measurements compute
+from the same crawl — **access, legibility, transactability** — is IDENTICAL (`abs(s-b) <
+1e-9`) between the static replay and the committed behavioral report
+(access 100.0 = 100.0, legibility 90.909… = 90.909…, transactability 87.5 = 87.5). So the
+payability PREDICTION magnitude the anchor corroborates (87.5) is provably the very number the
+static replay guard pins — and, as a reliability corollary, it is reproduced across TWO
+INDEPENDENT crawls (the committed fixture capture and the live 18:55Z behavioral crawl), so the
+signal is crawl-stable, not a lucky snapshot.
+
+**Non-vacuous.** The identical static pillars are an agreement between two DISTINCT
+measurements, not the fixture re-dumped: (a) the behavioral report SCORES the Outcome pillar
+(100.0) that the static replay leaves null — a genuine behavioral superset; (b) the Trust
+pillar DIFFERS (static 60.0 vs behavioral 55.56) because the behavioral run augments it with a
+live trust panel. Excluding outcome/trust from the shared set and asserting their divergence is
+what makes the equal-static-pillars claim earned rather than tautological.
+
+**Invariants / regression.** Tests-only. `git diff --name-only` = `tests/test_calibration.py`
+ONLY; `git diff -- asrs/ rubric/ fixtures/` EMPTY → scoring path byte-for-byte untouched,
+rubric stays **v0.7**, canonical PAIR unchanged by construction AND re-measured (in-cloud
+replay guard **24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss**). Live canonical signal
+corroborated by `runs/local/verify_20260728T224103Z.json` (22:41Z, healthy, 46.1/85.5/+39.4).
+Vendor-neutral: the shared-base property is worded by capability; the only domain named is the
+committed anchor's own storefront (driftflight.com is the subject of the report, present as
+data, not as a special-case). `test_calibration.py` 3→4; full suite 21/21 files green
+(`test_free_tier` 11/11 with eth-account from requirements).
+
+**First duty.** No open peer-gated PR (verified `list_pull_requests` state=open → `[]`). Infra
+health: runner **HEALTHY** — newest `verify_20260728T224103Z` (22:41Z, ~31 min old at fire,
+`git_pull.ok=true attempts=1`), 46.1 F / 85.5 B / +39.4; bench UP (21/21 files, replay 24/24).
+Git: fresh checkout landed detached at real tip `93b267a`; `git checkout -B main origin/main`
+(== `93b267a` == remote head, no orphan-`2e66201` trap) before committing.
+
+**Slack.** None — tests-only, score-neutral, non-sensitive; the daily digest was already sent
+by Cycle 62 (16:21Z, first cloud cycle after 16:00 UTC today), so this 23:1xZ fire is not a
+digest window and nothing here is human-gated.
+
+**Next hypothesis.** The calibration guard now pins (Cycle 67) the positive payability
+prediction is behaviorally real, (Cycle 68) documents it in the methodology readout, and (this
+cycle) rests it on a proven-shared static base. The remaining widenings are BLOCKED on a second
+committed behavioral artifact: the NEGATIVE half (a no-rails/retail run where the agent hits
+the wall the score predicts — the [LOCAL] retail-inverse acceptance P0) would let a cloud cycle
+wire a cross-domain behavioral DIRECTION guard (high static transactability → Outcome PASS;
+zero static transactability → Outcome payment FAIL). Until that lands, the in-cloud
+calibration frontier is saturated; COVERAGE (rotation next) has open signal/archetype work.

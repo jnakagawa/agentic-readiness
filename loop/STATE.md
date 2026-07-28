@@ -1,8 +1,21 @@
 # Loop state
 
-- Cycle counter: 68
+- Cycle counter: 69
 - Started: 2026-07-23 (UTC)
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 69 METHOD — widened the static-vs-behavioral CALIBRATION guard (Cycle 67) with a 4th
+  test test_calibration_rests_on_a_shared_static_base: pins that every STATIC-OBSERVABLE pillar
+  both measurements compute (access/legibility/transactability) is IDENTICAL between the fixture
+  replay and the committed 18:55Z behavioral report (abs<1e-9), so "prediction==experience" rests
+  on the SAME evidence, not just matching domain/rubric_version STRINGS (tests 1-3's only
+  like-for-like). The payability magnitude 87.5 is thus the very number the static guard pins AND
+  reproduced across TWO independent crawls (fixture capture + behavioral crawl) = crawl-stable.
+  Non-vacuous: behavioral SCORES Outcome (static null) + Trust DIFFERS 60→55.56 (live panel) =
+  genuine augmented superset, not the fixture re-dumped. Tests-only, scoring path byte-for-byte
+  untouched, rubric v0.7, replay 24/24 / 46.1 F / 85.5 B / +39.4; test_calibration 3→4, suite
+  21/21; direct-to-main. In-cloud calibration frontier now saturated — the negative/cross-domain
+  behavioral DIRECTION guard is BLOCKED on a second committed behavioral artifact ([LOCAL]
+  retail-inverse acceptance P0). Next COVERAGE.)
   (Cycle 68 READOUT — the READOUT complement to Cycle 67's calibration guard: new methodology
   §8 "Calibration — does the score predict what an agent experiences?" surfaces the
   static-vs-behavioral VALIDITY property in critic-readable capability prose (agent-native-payment

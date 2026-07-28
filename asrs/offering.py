@@ -84,6 +84,20 @@ ARCHETYPES: tuple[str, ...] = (
 # capability without any new signal. Same tolerance as every other doc — a 404 is
 # simply an absent surface.
 #
+# The A2A (Agent2Agent) AGENT CARD (`/.well-known/agent.json`, and the newer
+# `/.well-known/agent-card.json`) is added next: the open, vendor-neutral manifest
+# an agent-native storefront publishes at a well-known URI so ANOTHER agent can
+# discover what it does and how to reach it. It carries a top-level `description`
+# plus a list of `skills`, each with its own name/description — a hand-written,
+# model-facing account of the offering in the same natural-language capability prose
+# the signal bank already anchors on (an image-generation agent's card says
+# "generate an image", a data agent's says "enrich records against a dataset").
+# As agent-to-agent commerce grows, a storefront may expose ONLY its agent card
+# (no marketing homepage, no llms.txt, no OpenAPI spec) — the exact "classified from
+# the homepage alone, mis-read as offering nothing" failure the OpenAPI/ai-plugin
+# surfaces fixed, now for the agent-card surface. No new signal is needed, only for
+# the surface to be read; a 404 is simply an absent surface as always.
+#
 # Well-known JSON conventions, most-specific first; a surface that 404s is simply
 # absent (discovery tolerates a missing surface, same as any other doc).
 _SURFACE_DOCS: tuple[str, ...] = (
@@ -91,6 +105,8 @@ _SURFACE_DOCS: tuple[str, ...] = (
     "/llms-full.txt",
     "/manifest.json",
     "/.well-known/ai-plugin.json",
+    "/.well-known/agent.json",
+    "/.well-known/agent-card.json",
     "/openapi.json",
     "/.well-known/openapi.json",
     "/swagger.json",
@@ -335,13 +351,14 @@ def discover_offering(ctx) -> OfferingProfile:
 
     Reads the homepage plus the agent-surface docs (``llms.txt`` /
     ``llms-full.txt`` / ``manifest.json``), the agent-plugin descriptor
-    (``.well-known/ai-plugin.json``), and the machine API contract
-    (``openapi.json`` / ``.well-known/openapi.json`` / ``swagger.json``) via the
-    shared :class:`FetchContext` — read-only, $0. Surfaces that 404 or error are
-    simply absent (a site that only serves a homepage is classified from the
-    homepage alone; a site that only serves an OpenAPI spec or a plugin descriptor
-    is classified from it). Never raises: a fetch failure yields an empty surface,
-    not an exception.
+    (``.well-known/ai-plugin.json``), the A2A agent card
+    (``.well-known/agent.json`` / ``.well-known/agent-card.json``), and the machine
+    API contract (``openapi.json`` / ``.well-known/openapi.json`` / ``swagger.json``)
+    via the shared :class:`FetchContext` — read-only, $0. Surfaces that 404 or error
+    are simply absent (a site that only serves a homepage is classified from the
+    homepage alone; a site that only serves an OpenAPI spec, a plugin descriptor, or
+    an agent card is classified from it). Never raises: a fetch failure yields an
+    empty surface, not an exception.
     """
     domain = getattr(ctx, "domain", "") or ""
     surfaces: dict[str, str] = {}

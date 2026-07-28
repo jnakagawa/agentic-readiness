@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 45
+- Cycle counter: 46
 - Started: 2026-07-23 (UTC)
 - Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
@@ -756,6 +756,29 @@
   First duty: no open peer-gated PR (verified []); infra health check ran first — runner HEALTHY
   (verify_20260727T224106Z, 22:41Z, ~31 min old, +39.4 in-band); git reset to origin/main 5411e2b. Next
   cycle takes COVERAGE.
+  Cycle 46 COVERAGE (offering discovery reads the A2A / Agent2Agent AGENT CARD — the open agent-to-agent
+  self-description surface): `asrs/offering._SURFACE_DOCS` gains `/.well-known/agent.json` +
+  `/.well-known/agent-card.json`. Brick-1's directive surfaces (homepage / llms.txt / manifest / OpenAPI,
+  Cycle 34) + the ai-plugin descriptor (Cycle 42) covered marketing + machine-contract + plugin self-desc;
+  the A2A agent card is the vendor-neutral manifest an agent-native storefront publishes at a well-known
+  URI so ANOTHER agent discovers what it does (top-level `description` + `skills[]` each with name/desc, in
+  the same natural-language capability prose the signal bank anchors) → a card-ONLY storefront (no homepage/
+  llms.txt/spec) is no longer mis-read as offering nothing (the exact Cycle-34/42 failure mode, for the
+  agent-card surface). No new signal — surface only had to be READ. SCORE-NEUTRAL by construction:
+  discover_offering/_SURFACE_DOCS reachable ONLY from cli.py (--battery auto), NEVER scoring.py/probes/
+  protocols (grep-verified; commerce-manifest scoring probe's separate `protocols._AGENT_SURFACE_DOCS`
+  DELIBERATELY untouched — adding a surface THERE is score-increasing + peer-gated). `git diff --name-only`
+  = offering.py + test_offering.py ONLY → rubric stays v0.7; added surfaces absent from all committed
+  fixtures (captured pre-existence → replay-miss → absent → classification byte-identical) so replay guard
+  stays 14/14 (46.1 F / 85.5 B / +39.4, 0 replay-miss) AND canonical OFFERING guard 12/12 unchanged;
+  verify_20260727T224106Z (22:41Z) live-corroborates in-band. Vendor-neutral (A2A = open Linux-Foundation
+  protocol, not a vendor; synthetic neutral `.test` host). Not payment/signing. Direct-to-main.
+  `test_offering.py` 11→12 (+A2A-card-only DATA/metered storefront classifies {metered_api,data_retrieval}
+  from the card, anchored evidence, physical/subscription/digital/booking NOT claimed; wiring guard asserts
+  both card paths in _SURFACE_DOCS); suite 192→193. No Slack (score-neutral additive discovery, moves no
+  score, digest already sent Cycle 38 16:13Z, not a new window at ~00:2xZ). First duty: no open peer-gated
+  PR (verified []); infra health check ran first — runner HEALTHY (verify_20260727T224106Z, 22:41Z, ~1.5h
+  old, +39.4 in-band), suite green; git synced origin/main 0d524cb. Next cycle takes TRUTH.
 - **LIVE CANONICAL DRIFT (open, for the next post-16:00 UTC digest) — surfaced by the Cycle-36 history readout.**
   The live canonical delta held **+39.4** (46.1 F / 85.5 B) for days through `verify_20260727T054339Z`, then MOVED:
   07:40Z fire driftflight.com collapsed to 50.0 F (delta +3.9 — transient error crawl, transactability CANT_TEST /

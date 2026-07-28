@@ -78,6 +78,20 @@ design in-cloud, execute locally.
   +39.4, canonical OFFERING guard 8/8 unchanged (surfaces absent from committed fixtures).
   `test_offering.py` 7→9; suite 145→147. All FOUR directive surfaces (homepage / natural-language
   docs / OpenAPI / — the manifest) now read. See LOG Cycle 34.
+  SIXTH SURFACE — Cycle 46 (COVERAGE, direct-to-main, score-neutral): the A2A / Agent2Agent
+  AGENT CARD `/.well-known/agent.json` + `/.well-known/agent-card.json` is now read.
+  `asrs/offering._SURFACE_DOCS` gains both — the open, vendor-neutral manifest an agent-native
+  storefront publishes at a well-known URI so ANOTHER agent discovers what it does (top-level
+  `description` + `skills[]` each with name/desc, in the SAME natural-language capability prose the
+  bank already anchors); a card-ONLY storefront (no homepage/llms.txt/spec/descriptor) is no longer
+  mis-read as offering nothing (the Cycle-34/42 failure mode, for the agent-card surface). No new
+  signal. Score-neutral (off the scoring path — grep-verified; scoring probe's separate
+  `protocols._AGENT_SURFACE_DOCS` untouched); rubric v0.7, replay guard 14/14 / +39.4, canonical
+  OFFERING guard 12/12 unchanged (surfaces absent from committed fixtures). Vendor-neutral (A2A =
+  open Linux-Foundation protocol, not a vendor). `test_offering.py` 11→12; suite 192→193. See LOG
+  Cycle 46. The agentic-commerce landscape's published self-description surfaces (homepage / llms.txt /
+  manifest / OpenAPI / ai-plugin / A2A agent card) are now ALL read; remaining COVERAGE frontier is
+  score-increasing ([LOCAL] free-tier live-wiring, ACP/UCP/MPP handshakes) or a new archetype/signal.
   FIFTH SURFACE (beyond the directive's named four) — Cycle 42 (COVERAGE, direct-to-main,
   score-neutral): the agent-plugin descriptor `/.well-known/ai-plugin.json` is now read.
   `asrs/offering._SURFACE_DOCS` gains it — the open, vendor-neutral manifest a storefront publishes

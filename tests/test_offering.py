@@ -144,6 +144,32 @@ API_AI_PLUGIN = """
 """
 
 
+# An A2A (Agent2Agent) AGENT CARD served WITHOUT a marketing homepage, llms.txt,
+# OpenAPI spec, or ai-plugin descriptor — the open, vendor-neutral manifest an
+# agent-native storefront publishes at a well-known URI so another agent can
+# discover what it does. Its top-level `description` + per-`skill` descriptions are
+# a hand-written, model-facing account of the offering in exactly the natural-
+# language capability prose the signal bank anchors on. A DATA/metered agent here
+# (distinct from the imaging descriptor above), so the surface is exercised on more
+# than one archetype. No new signal is needed, only for the surface to be read.
+DATA_AGENT_CARD = """
+{
+  "protocolVersion": "0.3.0",
+  "name": "Ledger Enrichment Agent",
+  "description": "An agent that enriches company records against a proprietary dataset. Look up a firm by domain and receive structured fields. Metered API: agents pay-per-request via an x402 handshake, usage-based, no account required.",
+  "url": "https://api.ledgerenrich.test/a2a",
+  "skills": [
+    {
+      "id": "enrich_company",
+      "name": "Enrich company",
+      "description": "Enrich a company record and query the dataset over a REST API.",
+      "tags": ["data", "enrichment"]
+    }
+  ]
+}
+"""
+
+
 def test_api_storefront_claims_agent_native_not_physical():
     prof = classify_offering("example-imaging.test", {"homepage": API_HOMEPAGE})
     claimed = set(prof.archetypes)
@@ -320,19 +346,52 @@ def test_ai_plugin_descriptor_alone_classifies_storefront():
     print(f"  ok: metered_api rests on {metered.strength} distinct descriptor signals (x402/pay-per/usage-based)")
 
 
+def test_a2a_agent_card_alone_classifies_storefront():
+    # The coverage gap the A2A agent card closes: an agent-native storefront whose
+    # only self-description is its `/.well-known/agent.json` card (no marketing
+    # homepage, no llms.txt, no OpenAPI spec, no ai-plugin descriptor). The card's
+    # top-level `description` + per-skill descriptions carry the vendor-neutral
+    # "enrich records" / "dataset" / "query" / "REST API" / "pay-per-request" / x402
+    # / usage-based prose the existing signal bank already anchors on — so the
+    # surface only had to be read; it needs no new signal.
+    prof = classify_offering(
+        "ledgerenrich.test", {"/.well-known/agent.json": DATA_AGENT_CARD}
+    )
+    assert prof.surfaces_seen == ["/.well-known/agent.json"], prof.surfaces_seen
+    claimed = set(prof.archetypes)
+    assert "metered_api" in claimed, prof.archetypes
+    assert "data_retrieval" in claimed, prof.archetypes
+    print(f"  ok: an agent-card-only storefront is classified, got {prof.archetypes}")
+    # Precision holds: a data/API agent card is NOT physical fulfillment (no
+    # "add to cart" / stock language), a subscription (no "$X per month"), or
+    # digital media generation (no "generate an image" / render / translate).
+    assert not prof.claims("physical_good"), prof.archetypes
+    assert not prof.claims("subscription"), prof.archetypes
+    assert not prof.claims("digital_good"), prof.archetypes
+    assert not prof.claims("service_booking"), prof.archetypes
+    # Both claims rest on real anchored evidence FROM the agent-card surface.
+    for arch in ("metered_api", "data_retrieval"):
+        claim = next(c for c in prof.claimed if c.archetype == arch)
+        assert all(s.surface == "/.well-known/agent.json" for s in claim.signals), claim.signals
+        assert claim.strength >= 2, (arch, claim.strength)
+    print("  ok: metered_api + data_retrieval each rest on >=2 distinct card signals")
+
+
 def test_openapi_surface_is_wired_for_live_discovery():
-    # A structural guard: the OpenAPI conventions AND the agent-plugin descriptor
-    # are actually in the surface list `discover_offering` fetches live (not merely
-    # handled by the pure classifier). Without this, a spec-only or descriptor-only
-    # site would never be READ. The natural-language docs remain covered too (no
-    # regression to the surface set).
+    # A structural guard: the OpenAPI conventions, the agent-plugin descriptor, AND
+    # the A2A agent card are actually in the surface list `discover_offering`
+    # fetches live (not merely handled by the pure classifier). Without this, a
+    # spec-only / descriptor-only / agent-card-only site would never be READ. The
+    # natural-language docs remain covered too (no regression to the surface set).
     docs = offering._SURFACE_DOCS
     for path in ("/openapi.json", "/.well-known/openapi.json", "/swagger.json"):
         assert path in docs, f"{path} missing from discovery surfaces: {docs}"
     assert "/.well-known/ai-plugin.json" in docs, f"ai-plugin descriptor missing: {docs}"
+    for path in ("/.well-known/agent.json", "/.well-known/agent-card.json"):
+        assert path in docs, f"A2A agent card {path} missing from discovery surfaces: {docs}"
     for path in ("/llms.txt", "/llms-full.txt", "/manifest.json"):
         assert path in docs, f"regressed natural-language surface {path}: {docs}"
-    print(f"  ok: OpenAPI/Swagger + ai-plugin surfaces wired for live discovery, got {docs}")
+    print(f"  ok: OpenAPI/Swagger + ai-plugin + A2A agent-card surfaces wired, got {docs}")
 
 
 def test_strip_html_drops_script_style_and_tags():
@@ -357,6 +416,7 @@ def main() -> int:
         test_evidence_is_quoted_and_surface_tagged,
         test_openapi_spec_alone_classifies_api_first_storefront,
         test_ai_plugin_descriptor_alone_classifies_storefront,
+        test_a2a_agent_card_alone_classifies_storefront,
         test_openapi_surface_is_wired_for_live_discovery,
         test_strip_html_drops_script_style_and_tags,
     ]

@@ -4750,3 +4750,67 @@ in-band, drift stayed recovered), bench green; git reset to origin/main `5411e2b
 (`_BAND_DRIFT=8.0`) are still assumed. A next METHOD unit could measure the observed transient
 magnitudes to check the drifting/diverged split is calibrated too, OR surface `noise_floor` on
 `canonical-history.html` (READOUT, the same terminal→HTML deferral). Cloud rotation → COVERAGE next.
+
+---
+
+## Cycle 46 — 2026-07-28T00:2xZ (COVERAGE)
+
+**Track.** COVERAGE (rotation after Cycle 45 METHOD).
+
+**What / why.** Offering-relevance discovery now reads the **A2A (Agent2Agent) protocol
+Agent Card** surface — `/.well-known/agent.json` and the newer `/.well-known/agent-card.json`
+added to `asrs/offering._SURFACE_DOCS`. The operator directive's original four surfaces
+(homepage / natural-language docs / OpenAPI / manifest) plus the Cycle-42 ai-plugin descriptor
+covered marketing + machine-contract + plugin self-description; the A2A agent card is the OPEN,
+vendor-neutral manifest an agent-native storefront publishes at a well-known URI so ANOTHER agent
+can discover what it does — a top-level `description` + a `skills[]` list, each skill carrying its
+own name/description, in exactly the natural-language capability prose the signal bank already
+anchors on. As agent-to-agent commerce grows, a storefront may expose ONLY its agent card (no
+homepage / llms.txt / OpenAPI spec) — the exact "classified from the homepage alone, mis-read as
+offering nothing" failure the OpenAPI (Cycle 34) and ai-plugin (Cycle 42) surfaces already fixed,
+now closed for the agent-card surface. No new signal — only the surface had to be READ.
+
+**Score-neutral by construction.** `discover_offering` / `_SURFACE_DOCS` are reachable ONLY from
+`asrs/cli.py` (`--battery auto`), NEVER from `scoring.py` / `probes/` / `protocols.py`
+(grep-verified: the commerce-manifest SCORING probe keeps its OWN separate
+`protocols._AGENT_SURFACE_DOCS` = the original three docs, DELIBERATELY untouched — adding a surface
+there would be score-increasing + peer-gated). `git diff --name-only` = `asrs/offering.py` +
+`tests/test_offering.py` ONLY; scoring.py/rubric/probes/fetch/protocols/battery/behavioral/scorecard
+byte-for-byte untouched → rubric stays **v0.7**. Not payment/signing code. Direct-to-main.
+
+**Canonical pair.** Unchanged by construction AND re-measured — the added surfaces are absent from
+all committed fixtures (captured before they existed → replay-miss → absent → classification
+byte-identical), so the in-cloud replay guard `test_canonical_replay.py` stays **14/14
+(46.1 F / 85.5 B / +39.4, 0 replay-miss)** and the canonical OFFERING guard
+`test_offering_canonical.py` stays **12/12** unchanged. Live-corroborated by
+`verify_20260727T224106Z` (22:41Z, 46.1 F / 85.5 B / +39.4 in-band).
+
+**Vendor-neutral.** A2A is an open protocol (Linux Foundation Agent2Agent), not a vendor; the
+agent card is a standard convention. The new test's storefront is a synthetic neutral `.test`
+host; no scored-storefront name introduced.
+
+**Tests.** `tests/test_offering.py` 11 → 12 (+`test_a2a_agent_card_alone_classifies_storefront`:
+an agent-card-ONLY DATA/metered storefront — distinct archetype pair from the imaging descriptor
+test — classifies `{metered_api, data_retrieval}` from the card, driven by anchored evidence
+FROM the card surface, with physical_good / subscription / digital_good / service_booking all
+correctly NOT claimed; structural wiring guard extended to assert both agent-card paths are in
+`_SURFACE_DOCS`). Suite 192 → 193 (all 19 files exit 0).
+
+**Comms.** No Slack (score-neutral additive discovery, moves no score, not sensitive; daily digest
+already sent Cycle 38 16:13Z, this fire ~00:2xZ is not a new digest window — the 16:00 UTC window
+already passed for 07-27, next is 07-28 16:00Z).
+
+**First duty.** No open peer-gated PR (`list_pull_requests state=open` → `[]`). Infra health check
+ran first — runner HEALTHY (`verify_20260727T224106Z`, 22:41Z, ~1.5h old; 46.1 F / 85.5 B / +39.4
+in-band), full suite runnable + green (19 files after `pip install -r requirements.txt`); git synced
+to origin/main `0d524cb`.
+
+**Next hypothesis.** All offering discovery surfaces the agentic-commerce landscape publishes
+(homepage / llms.txt / manifest / OpenAPI / ai-plugin / A2A agent card) are now read. The remaining
+COVERAGE frontier is score-INCREASING and thus [LOCAL]: the shared free-tier opt-in live-wiring
+(header/query/path/body → `advertised` gate + live call, 2-domain verify) and the ACP/UCP/MPP live
+handshakes. A cloud-doable next COVERAGE increment: a new capability ARCHETYPE for a storefront type
+the current six can't express (e.g. content-licensing / rights), OR broadening a signal within an
+existing archetype for a precision-safe recall gap (validate against all committed fixtures — a
+signal that fires on one breaks the canonical offering guard, which is the precision tripwire).
+Cloud rotation → TRUTH next.

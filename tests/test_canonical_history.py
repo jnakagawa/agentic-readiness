@@ -28,6 +28,7 @@ import json
 import os
 import sys
 import tempfile
+from datetime import datetime, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -653,6 +654,82 @@ def test_noise_floor_none_below_two_in_band() -> None:
         _check(ch.load_history(tmp2).noise_floor is None, "a single in-band reading -> no dispersion, None")
 
 
+def test_liveness_none_without_now() -> None:
+    print("test_liveness_none_without_now")
+    with tempfile.TemporaryDirectory() as tmp:
+        _write_series(tmp, [_artifact("20260728T040000Z", 46.1, 85.5, 39.4)])
+        hist = ch.load_history(tmp)  # no `now` -> pure summary, no clock claim
+        _check(hist.liveness is None, "no `now` -> liveness is None (pure summary)")
+        _check(
+            "live signal:" not in ch.render(hist),
+            "render omits the live-signal line when freshness is unknown",
+        )
+
+
+def test_liveness_fresh_when_within_floor() -> None:
+    print("test_liveness_fresh_when_within_floor")
+    with tempfile.TemporaryDirectory() as tmp:
+        _write_series(tmp, [_artifact("20260728T040000Z", 46.1, 85.5, 39.4)])
+        now = datetime(2026, 7, 28, 5, 0, 0, tzinfo=timezone.utc)  # 1h after
+        hist = ch.load_history(tmp, now=now)
+        _check(hist.liveness is not None, "liveness computed when `now` supplied")
+        _check(abs(hist.liveness.age_hours - 1.0) < 1e-6, f"age 1.0h, got {hist.liveness.age_hours}")
+        _check(hist.liveness.fresh, "1h-old re-score is FRESH (within the 6h floor)")
+        _check("FRESH" in ch.render(hist), "render names it FRESH")
+
+
+def test_liveness_stale_past_floor_warns_verdict_is_old() -> None:
+    print("test_liveness_stale_past_floor_warns_verdict_is_old")
+    with tempfile.TemporaryDirectory() as tmp:
+        # a perfectly in-band latest reading — the verdict looks healthy...
+        _write_series(tmp, [_artifact("20260727T220000Z", 46.1, 85.5, 39.4)])
+        now = datetime(2026, 7, 28, 5, 0, 0, tzinfo=timezone.utc)  # 7h after
+        hist = ch.load_history(tmp, now=now)
+        _check(hist.band == ch.BAND_IN, "the latest reading is itself in-band (healthy-looking)")
+        _check(hist.liveness is not None and not hist.liveness.fresh, "...but 7h old -> STALE")
+        _check(abs(hist.liveness.age_hours - 7.0) < 1e-6, f"age 7.0h, got {hist.liveness.age_hours}")
+        out = ch.render(hist)
+        # the stale warning fires DESPITE the in-band verdict — age is not confirmation
+        _check("STALE" in out, "render warns STALE")
+        _check("runner may be down" in out, "render names the likely runner stall")
+
+
+def test_liveness_future_artifact_clamps_to_zero() -> None:
+    print("test_liveness_future_artifact_clamps_to_zero")
+    with tempfile.TemporaryDirectory() as tmp:
+        _write_series(tmp, [_artifact("20260728T060000Z", 46.1, 85.5, 39.4)])
+        now = datetime(2026, 7, 28, 5, 0, 0, tzinfo=timezone.utc)  # artifact is 1h ahead
+        hist = ch.load_history(tmp, now=now)
+        _check(hist.liveness.age_hours == 0.0, f"future ts clamps to age 0, got {hist.liveness.age_hours}")
+        _check(hist.liveness.fresh, "a future-dated artifact is trivially fresh, never negative-age")
+
+
+def test_liveness_none_on_unparseable_ts() -> None:
+    print("test_liveness_none_on_unparseable_ts")
+    pt = ch.CanonicalPoint(
+        ts="not-a-timestamp",
+        no_rails_overall=46.1, no_rails_grade="F",
+        with_rails_overall=85.5, with_rails_grade="B", delta=39.4,
+    )
+    now = datetime(2026, 7, 28, 5, 0, 0, tzinfo=timezone.utc)
+    _check(ch.liveness(pt, now) is None, "unparseable ts -> no freshness claim (honest None)")
+    _check(ch._parse_ts("not-a-timestamp") is None, "_parse_ts rejects a bad ts")
+    _check(ch._parse_ts("20260728T050000Z") is not None, "_parse_ts accepts the real format")
+
+
+def test_liveness_on_real_committed_series_is_coherent() -> None:
+    print("test_liveness_on_real_committed_series_is_coherent")
+    now = datetime.now(timezone.utc)
+    hist = ch.load_history(now=now)  # default committed runs/local
+    _check(hist.liveness is not None, "the real series has a parseable latest ts")
+    _check(hist.liveness.age_hours >= 0.0, f"age is non-negative, got {hist.liveness.age_hours}")
+    # fresh is exactly the floor comparison — no drift between flag and number
+    _check(
+        hist.liveness.fresh == (hist.liveness.age_hours <= ch._STALE_FLOOR_HOURS),
+        "fresh flag matches the age-vs-floor comparison",
+    )
+
+
 def test_runs_against_real_committed_series() -> None:
     print("test_runs_against_real_committed_series")
     hist = ch.load_history()  # default runs/local in this checkout
@@ -690,6 +767,12 @@ def main() -> int:
         test_noise_floor_measures_synthetic_jitter,
         test_noise_floor_flags_a_too_tight_band,
         test_noise_floor_none_below_two_in_band,
+        test_liveness_none_without_now,
+        test_liveness_fresh_when_within_floor,
+        test_liveness_stale_past_floor_warns_verdict_is_old,
+        test_liveness_future_artifact_clamps_to_zero,
+        test_liveness_none_on_unparseable_ts,
+        test_liveness_on_real_committed_series_is_coherent,
         test_runs_against_real_committed_series,
     ]
     failed = 0

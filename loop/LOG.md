@@ -5076,3 +5076,86 @@ COVERAGE gap now queued: an API-first storefront that hosts its agent docs on a
 next increment could teach discovery to try a small set of conventional doc
 subdomains (still $0 GETs, off the scoring path); design it precision-first (only
 same-registrable-domain subdomains, never an arbitrary host) before shipping.
+
+## Cycle 51 (TRUTH) — 2026-07-28T05:1xZ — live-signal FRESHNESS made an executable, surfaced fact
+
+**What.** The canonical-delta history readout (`asrs/canonical_history.py`, read-only
+diagnostic) now knows and says how CURRENT its newest live re-score is. New `Liveness`
+dataclass (`latest_ts` / `age_hours` / `stale_floor_hours=6.0`, `fresh` = age ≤ floor),
+`_parse_ts` (parses the `YYYYMMDDTHHMMSSZ` verify timestamp; honest-None on a malformed
+ts), `liveness(latest, now)`, a `now`-optional `summarize` / `load_history`, a render
+line, and `cli._cmd_canonical_history` passing `datetime.now(timezone.utc)`.
+
+**Why.** Every existing field in `CanonicalHistory` describes the latest READING — its
+band, its re-capture advice, which side moved — but NONE said how long ago that reading
+was taken. The local verify runner can stall (machine asleep / launchd not firing) while
+the last thing it recorded was perfectly in-band, leaving a healthy-looking
+"IN-BAND / baseline-valid" verdict that is hours stale. A reader (or a future cycle
+reading this as the live canonical signal, as the playbook mandates) could mistake AGE
+for CONFIRMATION and treat a stale all-clear as a fresh one. This is a calibration-
+against-reality (TRUTH) gap: honesty about whether the live signal is even current. The
+fix reuses the SAME 6-hour floor the playbook self-healing law uses to declare the runner
+down, applied to the calibration signal itself, and when stale prints an explicit warning
+("the verdict below describes an OLD crawl, not the pair now — the runner may be down").
+
+**Purity / honest-None.** `summarize` stays a pure function of the point series when
+`now` is None (no clock-dependent claim it can't support — the same discipline
+attribution and the noise floor already follow); only the CLI supplies the wall clock. An
+unparseable latest ts yields no freshness claim (None), not a guess. A future-dated
+artifact clamps to age 0 rather than reporting a negative age.
+
+**Live demonstration (this fire).** The feature fired for real on the committed series:
+newest re-score `verify_20260727T224106Z` (22:41Z) reads IN-BAND (+39.4, σ=0 both sides —
+a healthy-looking verdict), yet `asrs canonical-history` now correctly prints
+`live signal: newest re-score 6.6h old — STALE (past the 6h floor): the verdict below
+describes an OLD crawl …`. Exactly the failure mode the feature guards against, caught
+live — because the runner is in fact stalled past 6h this fire (see Infra health).
+
+**Ship.** Direct-to-main (read-only diagnostic + CLI wiring + tests; no scoring
+semantics, not sensitive, not payment/signing). `git diff --name-only` =
+`asrs/canonical_history.py` + `asrs/cli.py` (the `canonical-history` command only) +
+`tests/test_canonical_history.py`; `git diff -- asrs/scoring.py rubric/ asrs/probes/
+asrs/fetch.py asrs/protocols.py asrs/battery.py asrs/offering.py` EMPTY → rubric stays
+v0.7. Vendor-neutral: the reference-pair host names appear only as the module's existing
+DATA constants, never as scored-check wording.
+
+**Evidence.** `tests/test_canonical_history.py` 26→32 (+6): none-without-now (pure, no
+`live signal:` line rendered), fresh-within-floor (1h → FRESH), STALE-despite-in-band
+(a 7h-old but perfectly in-band reading is flagged STALE with the runner-down warning —
+the load-bearing case: age is not confirmation), future-artifact-clamps-to-0,
+unparseable-ts → honest-None + `_parse_ts` accept/reject, and real-series coherence
+(fresh flag == age-vs-floor comparison, no drift between flag and number). Full suite
+202→208 (all 19 files exit 0).
+
+**Canonical pair (regression signal).** Replay guard re-measured this fire: 46.1 F
+(drift-flight.org) / 85.5 B (driftflight.com), delta **+39.4**, 0 replay-miss —
+UNCHANGED by construction (read-only diagnostic, scoring path byte-for-byte untouched)
+AND re-measured green. Canonical OFFERING guard 12/12 (claimed sets unchanged). The
+newest committed live re-score (22:41Z) reads +39.4 in-band — but is now correctly
+flagged 6.6h STALE (see Infra health).
+
+**Infra health.** First duty: no open peer-gated PR (`list_pull_requests state=open` →
+[]). Bench up (fresh venv + `pip install -r requirements.txt`, all 19 files green,
+`test_free_tier` 11/11). **RUNNER STALLED PAST THE 6h FLOOR**: newest verify is
+`verify_20260727T224106Z` (22:41Z), ~6h32m old at this fire (05:13Z) — the Cycle 48/49/50
+watch (six consecutive :41 gaps, 23:41→04:41Z) has crossed the 6h floor. Mirrors the
+Cycle-28 stall (self-cleared by Cycle 30) — likely the same intermittent launchd stall on
+Jonah's machine, NOT repairable from the cloud (can't reach the local machine). The loop
+is DEGRADED, not down: the in-cloud replay guard IS the standing regression signal and ran
+green this fire, so cycles are not blocked. Queued P0 [LOCAL] with the diagnosis;
+**flagged for the next post-16:00 UTC Slack digest** per the self-healing law (note in
+STATE + flag in next digest — not an immediate DM, per the comms policy: a runner stall is
+neither a sensitive-class PR nor a score move nor a digest window at 05:1xZ). Fittingly,
+THIS cycle's own improvement is what makes the stale live signal loud in the readout.
+Git realigned first (fresh cloud checkout's `main` was a stale orphan tip 2e66201 with an
+unrelated history; reset to origin/main bbf5645, the canonical 50-cycle line).
+
+**Comms.** No Slack this fire — score-neutral read-only diagnostic (moves no score), not
+sensitive, and 05:1xZ is not the first-cycle-after-16:00-UTC digest window. The runner
+stall + the open canonical drift both fold into the next digest.
+
+**Next hypothesis.** READOUT next. The freshness fact now exists in the terminal render;
+the natural READOUT complement is to surface it on `canonical-history.html` (a stale-signal
+banner on the trend page, mirroring the terminal STALE line) so a web reader of the
+canonical history is warned identically — the same terminal→HTML deferral pattern per_kind
+(Cycle 10→12) and between_kind_spread (Cycle 18→20) took. Queued.

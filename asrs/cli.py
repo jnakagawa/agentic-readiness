@@ -367,9 +367,16 @@ def _cmd_scorecard(args) -> int:
 
 
 def _cmd_canonical_history(args) -> int:
+    from datetime import datetime, timezone
+
     from . import canonical_history
 
-    hist = canonical_history.load_history(args.runs_dir)
+    # Pass the wall clock so the readout flags whether the newest live re-score is
+    # still fresh (within the 6h floor) — a stalled runner leaves a stale in-band
+    # verdict that must not read as a current all-clear.
+    hist = canonical_history.load_history(
+        args.runs_dir, now=datetime.now(timezone.utc)
+    )
     print(canonical_history.render(hist))
     return 0
 

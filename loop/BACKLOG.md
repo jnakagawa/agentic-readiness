@@ -5,6 +5,24 @@ design in-cloud, execute locally.
 
 ## P0
 
+- **[LOCAL] Local verify runner STALLED past the 6h floor (diagnosed Cycle 51,
+  2026-07-28T05:13Z).** Newest artifact `runs/local/verify_20260727T224106Z.json`
+  (22:41Z) is ~6h32m old at the 05:13Z fire — the six consecutive :41 gaps
+  (23:41→04:41Z 07-27/28) the Cycle 48/49/50 watch tracked have crossed the 6h floor.
+  NOT repairable from the cloud (can't reach Jonah's machine). Mirrors the Cycle-28
+  stall, which self-cleared by Cycle 30 — most likely the launchd runner on Jonah's
+  machine not firing (machine asleep / launchd unloaded). LOCAL FIX: on Jonah's
+  machine, check the runner is loaded + firing — `launchctl list | grep -i asrs`
+  (or the loop's launchd label), inspect its stderr/stdout log for the last heartbeat,
+  and `launchctl kickstart -k <gui/UID/label>` (or reload the plist) if it's wedged;
+  confirm a fresh `runs/local/verify_<ts>.json` pushes to main. The loop is only
+  DEGRADED, not blocked — the in-cloud replay guard (16/16, +39.4) is the standing
+  regression signal — but the LIVE canonical re-score capability is down until the
+  runner heartbeats again. FLAG this in the next post-16:00 UTC Slack digest. If a
+  cloud cycle sees a newer artifact first, the stall self-cleared → delete this item.
+  (Cycle 51's own ship makes the staleness loud in `asrs canonical-history`: it now
+  prints "newest re-score 6.6h old — STALE … the runner may be down".)
+
 - **[OPERATOR DIRECTIVE — Jonah, 2026-07-23] The battery must be
   OFFERING-RELATIVE, not fixed.** Observed: the current battery judges every
   site against one static intent list — an image-generation API gets probed
@@ -481,6 +499,17 @@ design in-cloud, execute locally.
   the 10:13Z observation implied (folds into the acceptance-rerun P0; no new code — a timing note).
 
 ## P2
+
+- **Live-signal FRESHNESS banner on canonical-history.html** (READOUT, Cycle-51 follow-up).
+  Cycle 51 made the newest live re-score's AGE an executable, surfaced fact in the terminal
+  readout (`asrs/canonical_history.py` `Liveness`; `asrs canonical-history` now prints a
+  FRESH/STALE line against the 6h floor). The HTML trend page `canonical-history.html` does
+  not yet carry it — a web reader of the canonical history still sees the latest verdict with
+  no age qualifier. Cloud-doable increment: render a STALE banner (mirroring the terminal
+  STALE line + the runner-down warning) on the HTML surface, driven off the same
+  `history.liveness` field, shown only when `not fresh`. Same terminal→HTML deferral pattern
+  per_kind (Cycle 10→12) / between_kind_spread (Cycle 18→20) took. Display-only, off the
+  scoring path; pass the wall clock through the scorecard builder the same way the CLI does.
 
 - **Offering discovery reads conventional DOC SUBDOMAINS** (COVERAGE, surfaced Cycle 50).
   `discover_offering` fetches each surface on the storefront's OWN host (`<host>/llms.txt`,

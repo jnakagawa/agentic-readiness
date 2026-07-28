@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 50
+- Cycle counter: 51
 - Started: 2026-07-23 (UTC)
-- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -884,6 +884,40 @@
   PERSISTS: newest verify_20260727T224106Z (22:41Z), ~5.5h old at 04:12Z, the 23:41–03:41Z :41 fires produced NO
   artifact (5 consecutive gaps, closest to the 6h floor yet) — if the next fire shows no newer artifact, 22:41Z
   crosses 6h → flag loudly + fold into the next digest. Next cycle takes TRUTH.
+  Cycle 51 TRUTH (LIVE-SIGNAL FRESHNESS made an executable, surfaced fact — the canonical-history readout no
+  longer presents a STALE re-score's verdict as a current all-clear): read-only `asrs/canonical_history.py`
+  gains a `Liveness` dataclass (`latest_ts`/`age_hours`/`stale_floor_hours=6.0` + `fresh` = age ≤ floor),
+  `_parse_ts` (parses the `YYYYMMDDTHHMMSSZ` verify ts, honest-None on a bad ts), `liveness(latest, now)`, a
+  `now`-optional `summarize`/`load_history`, a render line, and `cli._cmd_canonical_history` passing the wall
+  clock. Every other history field describes the latest READING (band, re-capture advice, which side moved);
+  NONE said how OLD that reading is — so a stalled runner leaves a healthy-looking "in-band / baseline-valid"
+  verdict that is hours stale, and a reader could mistake AGE for CONFIRMATION. Now the readout flags STALE
+  (past the same 6h floor the playbook self-healing law uses to declare the runner down) with an explicit "the
+  verdict below describes an OLD crawl, not the pair now — the runner may be down" warning. PURE when `now` is
+  None (no clock-dependent claim — same honest-None discipline as attribution/noise-floor); the CLI supplies
+  the clock. THIS FIRE'S LIVE RUN demonstrates it end-to-end: newest re-score 22:41Z reads IN-BAND (+39.4,
+  σ=0 both sides) yet the render now correctly prints "newest re-score 6.6h old — STALE …". Read-only
+  diagnostic, OFF the scoring path: `git diff --name-only` = canonical_history.py + cli.py (canonical-history
+  cmd only) + test_canonical_history.py; `git diff -- asrs/scoring.py rubric/ asrs/probes/ asrs/fetch.py
+  asrs/protocols.py asrs/battery.py asrs/offering.py` EMPTY → rubric stays v0.7, canonical delta unchanged by
+  construction AND re-measured (replay guard 16/16, 46.1 F / 85.5 B / +39.4, 0 replay-miss; canonical offering
+  guard 12/12). Vendor-neutral (host names as existing DATA constants). Direct-to-main.
+  `test_canonical_history.py` 26→32 (+6: none-without-now/pure, fresh, STALE-despite-in-band, future-clamp,
+  unparseable-ts honest-None, real-series coherence); full suite 202→208 (all 19 files exit 0). No Slack
+  (score-neutral read-only diagnostic, moves no score, 05:1xZ is not a digest window). First duty: no open
+  peer-gated PR (verified []); infra health check ran first — **RUNNER STALLED PAST THE 6h FLOOR** (see runner
+  note below). Next cycle takes READOUT.
+- **RUNNER STALL — CROSSED THE 6h FLOOR (Cycle 51, 2026-07-28T05:13Z).** Newest verify artifact is
+  `verify_20260727T224106Z.json` (22:41Z); at this fire (05:13Z) it is ~6h32m old — PAST the playbook's 6h
+  self-healing floor. The Cycle 48/49/50 watch (23:41/00:41/01:41/02:41/03:41/04:41Z :41 fires produced NO
+  artifact — 6 consecutive gaps) has now tipped over. Mirrors the Cycle-28 stall (which self-cleared by
+  Cycle 30) — likely the same launchd-on-Jonah's-machine intermittent stall (machine asleep / launchd not
+  firing), NOT repairable from the cloud (can't reach the local machine). Loop is DEGRADED, not down: the
+  in-cloud replay guard (16/16, +39.4) is the standing regression signal and ran green this fire, so cycles
+  are NOT blocked. Queued P0 [LOCAL] with the diagnosis; **flag in the next post-16:00 UTC Slack digest** per
+  the self-healing law (note in STATE + flag in next digest, not an immediate DM — comms policy). If a newer
+  artifact appears next fire, the stall self-cleared → close this watch; if still gapped, escalate harder in
+  the digest.
 - **LIVE CANONICAL DRIFT (open, for the next post-16:00 UTC digest) — surfaced by the Cycle-36 history readout.**
   The live canonical delta held **+39.4** (46.1 F / 85.5 B) for days through `verify_20260727T054339Z`, then MOVED:
   07:40Z fire driftflight.com collapsed to 50.0 F (delta +3.9 — transient error crawl, transactability CANT_TEST /

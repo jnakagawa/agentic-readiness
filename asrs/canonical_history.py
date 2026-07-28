@@ -26,6 +26,7 @@ import glob
 import json
 import os
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from statistics import pstdev
 
 # The committed-fixture canonical delta the in-cloud replay guard pins
@@ -88,6 +89,16 @@ _PILLAR_MOVE_EPS = 0.1
 # static re-score is a deterministic function of the crawl; genuine jitter, when it
 # exists, is a whole point or more (a pillar softening), never float dust.
 _NOISE_EPS = 1e-6
+
+# A live re-score older than this (hours) means the newest observation is no longer
+# current, so the latest reading's verdict (band, re-capture advice) describes a
+# STALE crawl, not the reference pair's state right now. This is the SAME 6-hour
+# floor the playbook's self-healing law uses to declare the local verify runner
+# down ("newest runs/local/verify_*.json older than 6 hours → the verify floor is
+# down"). Surfacing it here keeps the history readout from presenting a stale
+# in-band all-clear as a fresh one — the runner can stall while the last thing it
+# saw was healthy, and a reader must not mistake age for confirmation.
+_STALE_FLOOR_HOURS = 6.0
 
 
 @dataclass
@@ -282,6 +293,45 @@ class NoiseFloor:
 
 
 @dataclass
+class Liveness:
+    """How CURRENT the latest live re-score is — is the newest observation fresh
+    enough that its verdict describes the reference pair NOW, or stale?
+
+    Every other field in ``CanonicalHistory`` describes the latest READING (its
+    band, its re-capture advice, which side moved). None of them say how long ago
+    that reading was taken. But the local verify runner can stall (or the machine
+    sleep) while the last thing it recorded was perfectly in-band — leaving a
+    healthy-looking "baseline valid" verdict that is hours old. A reader who acts on
+    that verdict is trusting an observation that may no longer hold. This makes the
+    age of the newest re-score an explicit, honest fact: the same 6-hour floor the
+    playbook uses to declare the runner down (``_STALE_FLOOR_HOURS``), applied to
+    the calibration signal itself.
+
+    Computed only when the caller supplies a reference ``now`` (the CLI passes the
+    wall clock); the core ``summarize`` stays a pure function of the point series
+    when ``now`` is None, making no clock-dependent claim it cannot support — the
+    same honest-None discipline attribution and the noise floor already follow.
+
+    ``latest_ts``         : the newest re-score's timestamp (as recorded).
+    ``age_hours``         : hours between that timestamp and ``now`` (>= 0; a
+        future-dated artifact clamps to 0 rather than reporting a negative age).
+    ``stale_floor_hours`` : the freshness floor this age is judged against.
+    """
+
+    latest_ts: str
+    age_hours: float
+    stale_floor_hours: float = _STALE_FLOOR_HOURS
+
+    @property
+    def fresh(self) -> bool:
+        """True iff the newest re-score is within the freshness floor — its verdict
+        is a current observation. False = STALE: the verdict describes an old crawl
+        and the local verify runner may be down; do not read it as a fresh
+        confirmation of the reference pair's present state."""
+        return self.age_hours <= self.stale_floor_hours
+
+
+@dataclass
 class RecaptureAdvice:
     """Whether the pinned canonical fixture still represents the true gap.
 
@@ -323,6 +373,10 @@ class CanonicalHistory:
     # that the in-band band absorbs site transients, not measurement jitter. None
     # when fewer than 2 in-band readings exist (dispersion is undefined).
     noise_floor: NoiseFloor | None = None
+    # how current the latest re-score is (fresh within the 6h floor vs stale). None
+    # when no reference ``now`` was supplied (a pure point-series summary) or the
+    # latest timestamp is unparseable — never a fabricated freshness claim.
+    liveness: Liveness | None = None
 
 
 def _band_for(abs_divergence: float) -> str:
@@ -424,10 +478,46 @@ def load_points(runs_dir: str | None = None) -> list[CanonicalPoint]:
     return points
 
 
+def _parse_ts(ts: str) -> datetime | None:
+    """Parse a ``YYYYMMDDTHHMMSSZ`` verify-artifact timestamp to a UTC datetime, or
+    None if it doesn't match (never guesses — an unparseable ts yields no freshness
+    claim, the same honest-None the loader applies to unusable artifacts)."""
+    try:
+        return datetime.strptime(ts, "%Y%m%dT%H%M%SZ").replace(tzinfo=timezone.utc)
+    except (ValueError, TypeError):
+        return None
+
+
+def liveness(latest: CanonicalPoint | None, now: datetime | None) -> Liveness | None:
+    """How current the newest re-score is, judged against ``_STALE_FLOOR_HOURS``.
+
+    None when there is no latest point, no reference ``now`` (a pure point-series
+    summary makes no clock-dependent claim), or the latest timestamp is unparseable.
+    A future-dated artifact clamps to age 0 rather than reporting a negative age.
+    Pure given ``now``; no side effects, no score.
+    """
+    if latest is None or now is None:
+        return None
+    when = _parse_ts(latest.ts)
+    if when is None:
+        return None
+    if now.tzinfo is None:
+        now = now.replace(tzinfo=timezone.utc)
+    age_hours = max(0.0, (now - when).total_seconds() / 3600.0)
+    return Liveness(latest_ts=latest.ts, age_hours=round(age_hours, 3))
+
+
 def summarize(
-    points: list[CanonicalPoint], baseline_delta: float = FIXTURE_BASELINE_DELTA
+    points: list[CanonicalPoint],
+    baseline_delta: float = FIXTURE_BASELINE_DELTA,
+    *,
+    now: datetime | None = None,
 ) -> CanonicalHistory:
-    """Roll a point series up into a CanonicalHistory (latest + drift verdict)."""
+    """Roll a point series up into a CanonicalHistory (latest + drift verdict).
+
+    ``now`` (optional, tz-aware UTC) enables the freshness check on the latest
+    re-score; omit it for a pure, clock-independent summary of the series.
+    """
     hist = CanonicalHistory(points=list(points), baseline_delta=baseline_delta)
     if not points:
         return hist
@@ -446,6 +536,7 @@ def summarize(
     hist.divergence_cause = _cause(points, run, latest)
     hist.recapture = recapture_advice(hist)
     hist.noise_floor = noise_floor(points, baseline_delta)
+    hist.liveness = liveness(latest, now)
     return hist
 
 
@@ -607,8 +698,10 @@ _REC_LABEL = {
 }
 
 
-def load_history(runs_dir: str | None = None) -> CanonicalHistory:
-    return summarize(load_points(runs_dir))
+def load_history(
+    runs_dir: str | None = None, *, now: datetime | None = None
+) -> CanonicalHistory:
+    return summarize(load_points(runs_dir), now=now)
 
 
 def _spark(values: list[float]) -> str:
@@ -701,6 +794,20 @@ def render(history: CanonicalHistory, window: int = 24) -> str:
         f"{CANONICAL_WITH_RAILS} {latest.with_rails_overall:.1f} {latest.with_rails_grade}  |  "
         f"delta {_fmt_delta(latest.delta)}"
     )
+    live = history.liveness
+    if live is not None:
+        if live.fresh:
+            lines.append(
+                f"live signal: newest re-score {live.age_hours:.1f}h old "
+                f"— FRESH (within the {live.stale_floor_hours:.0f}h floor)"
+            )
+        else:
+            lines.append(
+                f"live signal: newest re-score {live.age_hours:.1f}h old "
+                f"— STALE (past the {live.stale_floor_hours:.0f}h floor): the verdict "
+                f"below describes an OLD crawl, not the pair now — the local verify "
+                f"runner may be down"
+            )
     div = history.divergence
     lines.append(
         f"divergence from baseline: {_fmt_delta(div)}  "

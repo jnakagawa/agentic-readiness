@@ -6,7 +6,7 @@ design in-cloud, execute locally.
 ## P0
 
 - **[LOCAL] Local verify runner STALLED past the 6h floor (diagnosed Cycle 51,
-  2026-07-28T05:13Z; STILL STALLED at Cycle 52, 06:1xZ — no newer artifact, ~7.6h old).**
+  2026-07-28T05:13Z; STILL STALLED at Cycle 53, 07:1xZ — no newer artifact, ~8.5h old).**
   Newest artifact `runs/local/verify_20260727T224106Z.json`
   (22:41Z) is ~6h32m old at the 05:13Z fire — the six consecutive :41 gaps
   (23:41→04:41Z 07-27/28) the Cycle 48/49/50 watch tracked have crossed the 6h floor.
@@ -460,9 +460,21 @@ design in-cloud, execute locally.
   even after the exact-number expectations are updated to match); guard 13 proves the order is NOT a
   transactability artifact (the two payment-floor sites tie at 0 tx yet the tail order is preserved by
   legibility). Non-vacuous (reversed-spectrum negative control fails). First cross-domain ordering
-  property in the repo. NEXT METHOD candidate: a JOINT population-level relabel-invariance guard —
-  relabel ALL FOUR hosts simultaneously and assert the ordering (not just per-domain scores) is
-  identity-invariant; per-domain relabel guards exist (guards 4/6/8/11), the joint one does not.
+  property in the repo. PROGRESS 2026-07-28T07:1xZ (Cycle 53, METHOD): the JOINT population-level
+  relabel-invariance guard SHIPPED — `tests/test_canonical_replay.py` +1 (16→17), guard 14
+  `test_population_ordering_is_identity_invariant`. Relabels ALL FOUR fixtures simultaneously to DISTINCT
+  neutral hosts and asserts the strict monotone capability ordering (guard 12) survives AND each relabeled
+  overall equals its pinned value — the ORDERING, not just per-domain scores, is identity-invariant.
+  Non-vacuous BEYOND the per-domain guards: the four hosts differ only in leading letter, assigned
+  REVERSE-lexical to capability (top→`zeutral-storefront.test`, floor→`aeutral-storefront.test`), so a
+  host-string sorter would reverse the population and fail here while every single-host per-domain guard
+  passes; the reverse-lexical + distinct + no-canonical-name conditions are themselves asserted executable.
+  First CROSS-DOMAIN identity-invariance property. Tests-only, score-neutral (git diff -- asrs/ rubric/
+  EMPTY; rubric v0.7, replay guard 17/17 / +39.4, offering guard 12/12); suite 211→212. NEXT METHOD
+  candidate: extend the joint guard to also pin per-check STATUS identity-invariance across the population
+  (guard 14 pins overall+ordering; a joint per-check-status assertion would catch a probe flipping a status
+  on one host in a way that happens to preserve the overall), or add the joint guard's negative control as a
+  committed monkeypatch (a host-string-keyed reorder) mirroring the offering-layer negative control.
 - **Env-block classifier: harden against site-side "safety/security policy"**
   (METHOD, attribution honesty — residual from the PR #2 adversarial review,
   2026-07-23T10:13Z). The review confirmed `_ENV_BLOCK_RE` correctly rejects the
@@ -515,6 +527,22 @@ design in-cloud, execute locally.
      end-to-end on the REAL committed series (STALE banner "7.6h old" while verdict In-band).
      `test_readout.py` 34→37; suite 208→211. See LOG Cycle 52. -->
 
+- **`_score_relabeled` host-sensitivity: whole-fixture substitution trips a spurious replay-miss on
+  a shorter/extra-hyphen neutral host** (METHOD/test-hygiene, surfaced Cycle 53 — LOW urgency, not a
+  scoring bug). `tests/test_canonical_replay._score_relabeled` does a naive `raw.replace(domain, new_host)`
+  over the whole fixture. On the `driftflight.com` fixture this rewrites the recorded
+  `api.driftflight.com/openapi.json` SUBDOMAIN-surface reference; a probe then reconstructs a fetch whose
+  URL only stays in-cache when the new host is (empirically) as long as the original AND has the same hyphen
+  count — a shorter or extra-hyphen host produces `https://<host>/api.<host>/openapi.json`, an un-recorded
+  fetch → a replay-miss ARTIFACT of the relabel. It does NOT move the score (85.5 in every case — the
+  OpenAPI subdomain surface is unscored), but it trips the file's "no replay-miss" convention, so guard 14
+  (and any future relabel) must hand-pick neutral hosts derived from the known-good `neutral-storefront.test`.
+  Cloud-doable hardening idea: make `_score_relabeled` substitute ONLY the host in the recorded request KEYS
+  and response `final_url`/URL fields (a structured relabel keyed on the fixture's URL schema), not a blind
+  whole-string `.replace`, so ANY neutral host relabels byte-clean and the host-length/hyphen constraint
+  disappears. Then guard 4/6/8/11/14 could use arbitrary neutral hosts and the reverse-lexical assignment
+  wouldn't need the length caveat. Test-helper only (no `asrs/` change) → direct-to-main when done; verify
+  all existing relabel guards stay green + 0 replay-miss across a range of host lengths.
 - **Offering discovery reads conventional DOC SUBDOMAINS** (COVERAGE, surfaced Cycle 50).
   `discover_offering` fetches each surface on the storefront's OWN host (`<host>/llms.txt`,
   `<host>/llms-full.txt`, …). But a real, common pattern for API-first storefronts is to

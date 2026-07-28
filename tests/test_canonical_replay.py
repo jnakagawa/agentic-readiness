@@ -792,6 +792,91 @@ def test_population_ordering_is_not_a_transactability_artifact() -> None:
     )
 
 
+# ---------------------------------------------------------------------------
+# 14. JOINT POPULATION RELABEL-INVARIANCE — the population ORDERING (guard 12),
+#     not just each score in isolation (guards 4/6/8/11), is a property of the
+#     recorded capability EVIDENCE, never of the four hosts' identities. Guard 12
+#     pins the strict capability ordering on the REAL hosts; guards 4/6/8/11 pin
+#     each domain's score under relabel ONE AT A TIME. Neither pins the
+#     RELATIONSHIP the benchmark exists to produce under a SIMULTANEOUS relabel of
+#     the whole population. This guard relabels all four fixtures at once to
+#     DISTINCT neutral hosts and asserts the benchmark's central claim — the strict
+#     monotone capability ordering — survives, and each relabeled overall still
+#     equals its pinned value (tying the population claim back to guards 1/9/12).
+#
+#     Non-vacuous BEYOND the per-domain guards: the neutral hosts are assigned so
+#     their LEXICOGRAPHIC order is the REVERSE of the capability order — the most
+#     agent-capable storefront gets the alphabetically-LAST host, the zero-commerce
+#     floor the FIRST. A scorer that secretly ranked the population by host string
+#     (a "sort the domains and assign tiers" bug) rather than by evidence would
+#     REVERSE the ordering under this relabel and FAIL here — yet every per-domain
+#     guard (a single fixed host, no cross-host comparison) would still pass, since
+#     none of them ever compares one host against another. Worded by capability
+#     tier, never by vendor: the same four fixture keys guards 1–12 already use.
+# ---------------------------------------------------------------------------
+# (domain, capability tier, neutral host) in capability-DESCENDING order. Each
+# neutral host is the per-domain guards' known-miss-free ``neutral-storefront.test``
+# with ONLY its leading letter varied, so the four are DISTINCT yet each behaves
+# identically to a host the per-domain relabel guards already prove byte-clean on
+# every fixture (same length + hyphen structure — the whole-fixture string
+# substitution is sensitive to both: a shorter or extra-hyphenated host rewrites a
+# subdomain surface reference into an un-recorded fetch, a replay-miss artifact of
+# the relabel, not a scoring change). The leading letters are host-DESCENDING
+# (z > s > g > a) as capability descends, so the hosts' lexical order is the
+# REVERSE of capability (the floor's host sorts FIRST, the top's LAST) — the
+# property that makes this guard catch a host-string sorter the per-domain guards
+# cannot.
+_JOINT_RELABEL = [
+    ("driftflight.com", "with-rails API storefront (agent-native payment present)", "zeutral-storefront.test"),
+    ("drift-flight.org", "no-rails API storefront (API legible, no agent-native payment)", "seutral-storefront.test"),
+    ("books.toscrape.com", "human-only retail shop (sells goods, not agent-payable)", "geutral-storefront.test"),
+    ("example.com", "zero-commerce baseline (sells nothing)", "aeutral-storefront.test"),
+]
+
+
+def test_population_ordering_is_identity_invariant() -> None:
+    print("test_population_ordering_is_identity_invariant")
+    scored = []
+    for dom, tier, host in _JOINT_RELABEL:
+        rep, misses = _score_relabeled(dom, host)
+        _check(not misses, f"{dom}->{host}: no replay-miss under relabel")
+        # Each relabeled score equals the pinned canonical value — the population
+        # claim rests on the same numbers guards 1/9/12 pin individually.
+        _check(
+            rep.overall_score == EXPECTED[dom]["overall"],
+            f"{dom} relabeled to {host}: overall == {EXPECTED[dom]['overall']} "
+            f"(got {rep.overall_score})",
+        )
+        scored.append((dom, host, tier, rep.overall_score))
+
+    # The benchmark's central claim — the strict monotone capability ordering
+    # (guard 12) — survives the SIMULTANEOUS relabel of the whole population.
+    for (hd, hh, ht, hs), (ld, lh, lt, ls) in zip(scored, scored[1:]):
+        _check(
+            hs > ls,
+            f"ordering identity-invariant: {hd}->{hh} ({ht}) {hs} > "
+            f"{ld}->{lh} ({lt}) {ls}",
+        )
+
+    # Non-vacuous vs the per-domain guards: confirm the neutral hosts really are
+    # assigned in the REVERSE lexicographic order of capability (capability-
+    # descending == host-ascending), so a host-string sorter would reorder the
+    # population here even though it slips every single-host per-domain guard.
+    hosts_in_cap_order = [h for _, h, _, _ in scored]
+    _check(
+        hosts_in_cap_order == sorted(hosts_in_cap_order, reverse=True),
+        f"neutral hosts assigned reverse-lexical to capability (a host-string "
+        f"sorter would reorder the population): {hosts_in_cap_order}",
+    )
+    # Four distinct anonymous hosts, none carrying a canonical domain name.
+    canon_names = {d for d, _, _, _ in scored}
+    _check(
+        len(set(hosts_in_cap_order)) == 4
+        and not any(cn in h for h in hosts_in_cap_order for cn in canon_names),
+        "four distinct neutral hosts, none carrying a canonical domain name",
+    )
+
+
 def main() -> int:
     tests = [
         test_canonical_org_replays_46_1,
@@ -810,6 +895,7 @@ def main() -> int:
         test_relabel_invariance_nonstorefront,
         test_population_overall_tracks_capability_ordering,
         test_population_ordering_is_not_a_transactability_artifact,
+        test_population_ordering_is_identity_invariant,
     ]
     failed = 0
     for t in tests:

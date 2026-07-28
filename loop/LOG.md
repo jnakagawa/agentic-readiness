@@ -5219,3 +5219,81 @@ PR, and 06:1xZ is not the first-cycle-after-16:00-UTC digest window. The persist
 relabel-invariance guard queued at Cycle 49 (relabel ALL FOUR canonical hosts simultaneously and
 assert the population ORDERING — not just per-domain scores — is identity-invariant; per-domain
 relabel guards exist as guards 4/6/8/11, the joint one does not).
+
+## Cycle 53 (METHOD) — 2026-07-28T07:1xZ — joint population-level relabel-invariance guard
+
+**What.** `tests/test_canonical_replay.py` +1 test (16 → 17), guard 14
+`test_population_ordering_is_identity_invariant`. The benchmark's central claim —
+the strict monotone capability ordering over the committed population
+(with-rails API 85.5 > no-rails API 46.1 > human-only retail 29.5 > zero-commerce
+22.5, guard 12, Cycle 49) — is now pinned as IDENTITY-INVARIANT under a
+SIMULTANEOUS relabel of all four canonical hosts. Guard 12 asserts the ordering
+on the REAL hosts; guards 4/6/8/11 assert each domain's score under relabel ONE
+AT A TIME. Neither pins the ORDERING itself under a joint relabel of the whole
+population. Guard 14 relabels all four fixtures at once to DISTINCT neutral hosts,
+asserts each relabeled overall still equals its pinned value (46.1/85.5/29.5/22.5),
+and asserts the strict monotone chain survives byte-for-byte.
+
+**Why (non-vacuity — the value beyond the per-domain guards).** The four neutral
+hosts differ ONLY in their leading letter and are assigned in the REVERSE
+lexicographic order of capability (top storefront → alphabetically-LAST host
+`zeutral-storefront.test`, zero-commerce floor → FIRST `aeutral-storefront.test`).
+A scorer that secretly ranked the population by host STRING (a "sort the domains
+and assign tiers" bug) rather than by evidence would REVERSE the ordering under
+this relabel and FAIL here — yet every per-domain guard (a single fixed host, no
+cross-host comparison) would still pass, since none of them ever compares one host
+against another. The guard also asserts the reverse-lexical assignment holds
+(`hosts == sorted(hosts, reverse=True)`), so the non-vacuity condition is itself
+executable, and that the four hosts are distinct and carry no canonical name.
+This is the first CROSS-DOMAIN identity-invariance property (the per-domain
+relabel guards are within-domain); it converts the queued Cycle-49/52 METHOD
+hypothesis into a tripwire. Worded by capability tier, never by vendor — the same
+four fixture keys guards 1–12 already use.
+
+**Engineering note (host choice).** Each neutral host is the per-domain guards'
+known-miss-free `neutral-storefront.test` with only its leading letter varied, so
+each behaves identically to a host the existing relabel guards already prove
+byte-clean on every fixture. This matters because `_score_relabeled`'s
+whole-fixture string substitution is sensitive to host length AND hyphen
+structure: a host SHORTER than the original, or with an extra hyphen, rewrites the
+`.com` fixture's recorded `api.driftflight.com/openapi.json` subdomain surface
+reference into an un-recorded fetch → a replay-miss ARTIFACT of the relabel (the
+overall stays 85.5 — the OpenAPI subdomain surface is unscored — so it never moves
+a score, but it trips the "no replay-miss" convention). Verified empirically
+before choosing the letter-varied set; all four relabel byte-clean, 0 replay-miss.
+(Documented so a future cycle re-picking hosts knows the constraint; the
+underlying `_score_relabeled` fragility is a test-helper property, not a scoring
+bug — filed as a P2 observation.)
+
+**Validation.** `git diff --name-only` = `tests/test_canonical_replay.py` ONLY;
+`git diff -- asrs/ rubric/` EMPTY → scoring path byte-for-byte untouched, rubric
+stays v0.7. Canonical delta unchanged by construction AND re-measured green: the
+in-cloud replay guard is 17/17 (drift-flight.org 46.1 F / driftflight.com 85.5 B /
+delta +39.4, 0 replay-miss), canonical OFFERING guard 12/12 (claimed sets
+unchanged). Full suite 211 → 212 (all 19 files green with `eth-account` installed
+via `pip install -r requirements.txt`; without it `test_free_tier` is 10/11 — the
+standing invariant-#4 env gap, pre-existing and unrelated to this tests-only
+change). Direct-to-main (tests-only, off the scoring path, not sensitive).
+
+**Infra health.** First duty: no open peer-gated PR (`list_pull_requests
+state=open` → []). Bench up (19 files, 212 tests green with the dependency).
+**RUNNER STILL STALLED PAST THE 6h FLOOR** — newest verify artifact is
+`verify_20260727T224106Z` (22:41Z), ~8.5h old at this fire (07:1xZ), unchanged
+since Cycle 51/52. No newer artifact, so the stall has NOT self-cleared. NOT
+repairable from the cloud (can't reach Jonah's machine); remains P0 [LOCAL] with
+the diagnosis. Loop is DEGRADED not down — the in-cloud replay guard IS the
+standing regression signal and ran green (17/17, +39.4). Flag in the next
+post-16:00 UTC Slack digest per the self-healing law. Git: local `main` started at
+the stale orphan tip `2e66201` (as the Cycle-52 note warned) — realigned to
+origin/main `7858bc0` before committing.
+
+**Comms.** No Slack this fire — tests-only METHOD ship (moves no score), not a
+sensitive-class PR, and 07:1xZ is not the first-cycle-after-16:00-UTC digest
+window. The persistent runner stall folds into the next digest.
+
+**Next hypothesis.** COVERAGE next. Candidate: the P2 "offering discovery reads
+conventional DOC SUBDOMAINS" item (Cycle 50) — teach `discover_offering` to try
+`_SURFACE_DOCS` on a small allowlist of same-registrable-domain subdomains
+(`docs`/`agents`/`developers`/`api`), off the scoring path, validated offline
+against the committed `agents.driftflight.com/llms-full.txt` fixture entry.
+Precision-first (same-registrable-domain only, never an arbitrary fetched `url`).

@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 52
+- Cycle counter: 53
 - Started: 2026-07-23 (UTC)
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -927,13 +927,37 @@
   failure closed. Direct-to-main. No Slack (display-only READOUT, moves no score, 06:1xZ not a digest window).
   First duty: no open peer-gated PR (verified []); infra health check ran first — RUNNER STILL STALLED PAST 6h
   (see runner note below, unchanged from Cycle 51 — no newer artifact). Next cycle takes METHOD.
-- **RUNNER STALL — STILL STALLED PAST THE 6h FLOOR (updated Cycle 52, 2026-07-28T06:1xZ; crossed Cycle 51
+  Cycle 53 METHOD (JOINT population-level relabel-invariance guard — the queued Cycle-49/52 hypothesis, now a
+  tripwire): `tests/test_canonical_replay.py` +1 (16→17), guard 14 `test_population_ordering_is_identity_invariant`.
+  Guard 12 pins the strict monotone capability ordering (with-rails API 85.5 > no-rails API 46.1 > human-only retail
+  29.5 > zero-commerce 22.5) on the REAL hosts; guards 4/6/8/11 pin each domain's score under relabel ONE AT A TIME;
+  neither pins the ORDERING under a SIMULTANEOUS relabel of the whole population. Guard 14 relabels all four fixtures
+  at once to DISTINCT neutral hosts, asserts each relabeled overall still equals its pinned value AND the strict
+  monotone chain survives. NON-VACUOUS beyond the per-domain guards: the four neutral hosts differ only in leading
+  letter and are assigned REVERSE-lexical to capability (top→alphabetically-last `zeutral-storefront.test`,
+  floor→first `aeutral-storefront.test`), so a scorer that ranked the population by host STRING would REVERSE the
+  order and FAIL here while every single-host per-domain guard still passes (none compares hosts). The reverse-lexical
+  condition is itself asserted executable (`hosts==sorted(reverse=True)`) + distinct + no canonical name. First
+  CROSS-DOMAIN identity-invariance property (per-domain guards are within-domain). Host choice: each neutral host is
+  the per-domain guards' known-miss-free `neutral-storefront.test` with only its leading letter varied (same
+  length+hyphen structure), because `_score_relabeled`'s whole-fixture substitution trips a replay-miss ARTIFACT on a
+  shorter/extra-hyphen host — the `.com` fixture's recorded `api.driftflight.com/openapi.json` subdomain surface
+  rewrites to an un-recorded fetch (score stays 85.5, surface unscored; filed P2 as a test-helper property, not a
+  scoring bug). Tests-only: `git diff --name-only` = test_canonical_replay.py ONLY, `git diff -- asrs/ rubric/` EMPTY
+  → scoring path byte-for-byte untouched, rubric stays v0.7, canonical delta unchanged by construction AND re-measured
+  (replay guard 17/17, 46.1 F / 85.5 B / +39.4, 0 replay-miss; canonical OFFERING guard 12/12). Direct-to-main. Full
+  suite 211→212. No Slack (tests-only, moves no score, 07:1xZ not a digest window). First duty: no open peer-gated PR
+  (verified []); infra health check ran first — RUNNER STILL STALLED PAST 6h (unchanged, no newer artifact); git
+  realigned local `main` from stale orphan `2e66201` → origin/main `7858bc0` before committing. Next cycle takes
+  COVERAGE.
+- **RUNNER STALL — STILL STALLED PAST THE 6h FLOOR (updated Cycle 53, 2026-07-28T07:1xZ; crossed Cycle 51
   05:13Z).** Newest verify artifact is still `verify_20260727T224106Z.json` (22:41Z) — NO newer artifact
-  appeared between Cycle 51 (05:13Z) and this fire (06:1xZ), so at ~7.6h old the stall has NOT self-cleared
+  appeared between Cycle 51 (05:13Z) and this fire (07:1xZ), so at ~8.5h old the stall has NOT self-cleared
   (contrast the Cycle-28 stall, which cleared by Cycle 30). The Cycle 48/49/50 watch (six consecutive :41 gaps,
-  23:41→04:41Z) tipped over at Cycle 51 and persists. Mirrors the Cycle-28 stall mechanism — likely the same
-  launchd-on-Jonah's-machine intermittent stall (machine asleep / launchd not firing), NOT repairable from the
-  cloud (can't reach the local machine). Loop is DEGRADED, not down: the in-cloud replay guard (16/16, +39.4) is
+  23:41→04:41Z) tipped over at Cycle 51 and persists across Cycles 52–53. Mirrors the Cycle-28 stall mechanism —
+  likely the same launchd-on-Jonah's-machine intermittent stall (machine asleep / launchd not firing), NOT
+  repairable from the cloud (can't reach the local machine). Loop is DEGRADED, not down: the in-cloud replay guard
+  (now 17/17, +39.4) is
   the standing regression signal and ran green this fire, so cycles are NOT blocked. Queued P0 [LOCAL] with the
   diagnosis; **flag in the next post-16:00 UTC Slack digest** per the self-healing law (note in STATE + flag in
   next digest, not an immediate DM — comms policy). If a newer artifact appears next fire, the stall

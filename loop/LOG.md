@@ -6574,3 +6574,69 @@ report lands.
 ## Local verification — 20260728T214104Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260728T214104Z.json
+
+## Cycle 68 — 2026-07-28T22:1xZ — READOUT (direct to main)
+
+**What.** The READOUT complement to Cycle 67's calibration guard. A new methodology
+section 8 — *"Calibration — does the score predict what an agent experiences?"* — surfaces,
+in prose a critic can read, the static-vs-behavioral VALIDITY property that
+`tests/test_calibration.py` made an executable in-cloud tripwire last cycle.
+
+**Why.** The methodology page argued only two kinds of credibility: internal-consistency
+(section 3's earned-dominance worked example + the weight-robustness subsection) and
+reproducibility (section 7 = reliability, *"is the number stable?"*). NONE surfaced the
+distinct measurement virtue Cycle 67 made executable — validity, *"does a static score from a
+storefront's published surfaces predict what a live agent encounters?"*. Reliability and
+validity are the two classic measurement virtues; the new section sits right after
+reproducibility so they read as a pair.
+
+**The prose (capability-worded, vendor-neutral).** Four paragraphs: (1) frames the validity
+question and names the *"the number is astrology"* objection ASRS answers by holding a static
+prediction against a real behavioral run; (2) the load-bearing static claim is **agent-native
+payment**, behaviorally corroborated at the live outcome checkpoints (found a purchase path,
+reached a **machine-payable path**, no human gate, a real free-tier transaction all PASS) —
+the number matches the experience; (3) the agreement is **discriminating**, not a rubber
+stamp — the same run carries genuine FAILs so the payment passes are earned, and the
+prediction **separates tiers** (a no-rails storefront predicted to have no agent-native
+payment, exactly where a live agent hits a wall), reproducible across both trials; (4) two
+**honest limits** — anchored on ONE with-rails storefront (positive-prediction only; the
+retail-inverse/negative behavioral mirror is not yet run end-to-end and is not claimed), and
+bounded to the **$0 free tier** (invariant #1 — no nonzero authorization). Closes with the
+property being pinned by an **executable regression test**, "checked, not asserted".
+
+**Mechanics.** Inserted as section 8; renumbered the subsequent caps / $0-probe / versioning
+sections 8→9, 9→10, 10→11 and fixed section 7's free-tier cross-reference (`section 9`→`10`).
+No test asserts on the visible section numbers, and the cap-row anchor ids key on
+`_cap_anchor(slug)` not section numbers, so the renumber is display-only. Rendered page shows
+sections 1–11 sequential.
+
+**Invariants / regression.** Display-only. `git diff --name-only` = `asrs/scorecard.py` +
+`tests/test_readout.py` ONLY; `git diff -- asrs/scoring.py rubric/ asrs/probes/ asrs/fetch.py
+asrs/protocols.py asrs/offering.py asrs/battery.py` EMPTY → scoring path byte-for-byte
+untouched, rubric stays **v0.7**, canonical PAIR unchanged by construction AND re-measured
+(in-cloud replay guard **24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss**). Live canonical
+signal corroborated by `runs/local/verify_20260728T214104Z.json` (21:41Z, healthy,
+46.1/85.5/+39.4). Vendor-neutral: no domain named on the page — enforced by the new test's
+`drift-flight`/`driftflight` assertions + standing `test_readout_wording` 4/4 and
+`test_rubric_wording` 4/4. `test_readout.py` 39→40 (`test_methodology_documents_calibration`);
+full suite 21/21 files green (`test_free_tier` 11/11 with eth-account from requirements).
+
+**First duty.** No open peer-gated PR (verified `list_pull_requests` state=open → `[]`). Infra
+health: runner **HEALTHY** — newest `verify_20260728T214104Z` (21:41Z, ~31 min old at fire),
+46.1 F / 85.5 B / +39.4; bench UP (21/21 files, replay 24/24). Git: fresh checkout landed on
+detached HEAD at real tip `bc86a7d`; `git checkout -B main origin/main` (both == `bc86a7d` ==
+remote `refs/heads/main`, no orphan-`2e66201` trap this fire) before committing. Pushed
+`bc86a7d..37ba0b7`.
+
+**Slack.** None — display-only, score-neutral, non-sensitive; the daily digest was already
+sent by Cycle 62 (16:21Z, first cloud cycle after 16:00 UTC today), so this 22:1xZ fire is not
+a digest window and nothing here is human-gated.
+
+**Next hypothesis.** The methodology page now documents both measurement virtues (reliability
+§7, validity §8). The calibration story's remaining READOUT surface is the HTML card / rubric
+page — e.g. once a SECOND committed behavioral report lands (the [LOCAL] retail-inverse /
+negative-half acceptance, P0), the card could carry a small "behaviorally corroborated" badge
+next to a payment-capable transactability pill, closing the terminal→JSON→HTML gap the earlier
+readout constructs (per_kind, between_kind, NA) each took. Until then the in-cloud
+calibration-adjacent work is METHOD (widen the guard's committed assertions), which the
+rotation reaches next.

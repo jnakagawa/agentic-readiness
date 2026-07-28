@@ -574,6 +574,18 @@ design in-cloud, execute locally.
 
 ## P2
 
+- **[CANDIDATE, READOUT] Card-level "behaviorally corroborated" calibration badge** (follow-up to
+  Cycle 68). Cycle 68 documented the static-vs-behavioral VALIDITY property in methodology-page
+  PROSE (§8). The terminal→JSON→HTML surface it doesn't yet reach is the CARD: a payment-capable
+  storefront whose static transactability prediction is behaviorally confirmed (Outcome payment
+  checkpoints PASS across trials) could carry a small "behaviorally corroborated" affordance next to
+  the transactability pill — the same terminal→JSON→HTML closure per_kind (Cycle 10→12),
+  between_kind_spread (18→20), and NA (25→28) each took. Display-only/score-neutral when done. BLOCKED
+  on a report shape decision + ideally a SECOND committed behavioral report (the [LOCAL] retail-inverse
+  / negative-half acceptance P0) so the badge can also render its ABSENCE honestly (a no-rails site:
+  predicted no payment, no corroboration to show) rather than only the positive case. Until the second
+  report lands, keep it prose-only (§8) — a one-sided badge would over-claim.
+
 <!-- DONE 2026-07-28T16:21Z (Cycle 62, COVERAGE, direct-to-main, score-neutral):
      "[CANDIDATE] Offering discovery should read the /docs API-docs surface" SHIPPED. `/docs`
      (+`/api-docs`, `/reference`) added to `asrs/offering._SURFACE_DOCS`; `classify_offering` now

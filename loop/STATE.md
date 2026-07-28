@@ -1,8 +1,17 @@
 # Loop state
 
-- Cycle counter: 67
+- Cycle counter: 68
 - Started: 2026-07-23 (UTC)
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 68 READOUT — the READOUT complement to Cycle 67's calibration guard: new methodology
+  §8 "Calibration — does the score predict what an agent experiences?" surfaces the
+  static-vs-behavioral VALIDITY property in critic-readable capability prose (agent-native-payment
+  prediction behaviorally corroborated at the live outcome checkpoints; DISCRIMINATING — real FAILs
+  + separates tiers; honest ONE-DOMAIN/$0-free-tier scope; test-pinned). Reliability §7 + validity
+  §8 = the two measurement virtues, now both documented. Renumbered caps/$0-probe/versioning
+  8-10→9-11 (display-only; anchor ids key on _cap_anchor not §#). Vendor-neutral (no domain named).
+  Display-only, scoring path byte-for-byte untouched, rubric v0.7, replay 24/24 / 46.1 F / 85.5 B /
+  +39.4; test_readout 39→40, suite 21/21; direct-to-main (37ba0b7). Next METHOD.)
   (Cycle 66 COVERAGE — signal bank +tiered-volume +seat-licensing; Cycle 67 TRUTH — the
   FIRST CALIBRATION guard: tests/test_calibration.py (3) holds the static score against the
   committed LIVE behavioral acceptance run (driftflight.com 18:55Z) and asserts static

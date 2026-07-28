@@ -61,6 +61,16 @@ design in-cloud, execute locally.
   the shopper checkpoints there would be mostly N — pick a real shop with a browsable product/checkout so
   the behavioral half is meaningful; the STRUCTURE (physical_good claimed + API NA rendering), not any
   specific vendor, is the target.
+  NOW ALSO THE NEGATIVE CALIBRATION HALF (added Cycle 67): `tests/test_calibration.py` shipped the FIRST
+  static-vs-behavioral VALIDITY guard, but as a ONE-DOMAIN WITH-RAILS anchor — it proves the score's
+  POSITIVE payability prediction is behaviorally real on driftflight.com (static x402/self_serve_payg →
+  the live shopper actually reached the machine-payable path, reproducibly). The MISSING half is the
+  NEGATIVE: a live behavioral run on a no-rails or retail storefront proving the score predicts where the
+  agent HITS A WALL (no agent-native payment → the shopper CANNOT complete a machine-payable path). Running
+  this retail-inverse behavioral acceptance and force-committing the report gives the cloud a second
+  committed behavioral artifact to wire a negative-side calibration guard against (static predicts 0
+  transactability → behavioral machine_payable_path FALSE). So this P0 now discharges BOTH the operator
+  retail-inverse acceptance AND the calibration negative half.
 
 - **[OPERATOR DIRECTIVE — Jonah, 2026-07-23] The battery must be
   OFFERING-RELATIVE, not fixed.** Observed: the current battery judges every

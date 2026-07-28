@@ -6498,3 +6498,75 @@ increasing rail work (free-tier live-wiring, ACP/UCP/MPP handshakes) remains [LO
 ## Local verification — 20260728T205027Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260728T205027Z.json
+
+## Cycle 67 — 2026-07-28T21:1xZ — TRUTH (direct to main)
+
+**What.** The FIRST calibration guard: `tests/test_calibration.py` (3 tests) holds the
+STATIC score up against a committed LIVE behavioral run and asserts they AGREE where the
+score makes a falsifiable claim. Every prior in-cloud regression guard
+(`test_canonical_replay`, 24 guards) is static-vs-static — stability, earned-dominance,
+identity-invariance, weight-robustness. NONE answers the benchmark's north-star VALIDITY
+question: *does the static score predict what an agent actually experiences?* This does.
+
+**The anchor.** The 2026-07-28T18:55Z [LOCAL] fire ran the operator-directive acceptance
+battery — the first end-to-end offering-relative LIVE behavioral run — against the
+with-rails API storefront driftflight.com (`asrs score driftflight.com --behavioral
+--battery auto --models claude --trials 2`) and force-committed the report under
+`runs/local/acceptance_battery_driftflightcom_20260728T184325Z.report.json` (git-tracked →
+this guard is deterministic in-cloud, no network). Its static half is the committed
+`fixtures/canonical/driftflight.com.json` replay pinned at 85.5 B.
+
+**The claim under test.** (1) `test_static_payment_prediction_is_behaviorally_corroborated`
+— the STATIC score PREDICTS agent-native payment (`x402_probe` PASS + `self_serve_payg`
+`x402_live=True` → transactability 87.5); the LIVE shopper CORROBORATES it — the Outcome
+checks that operationalize the prediction (`bhv_purchase_path`, `bhv_machine_payable`,
+`bhv_no_human_gate`, `bhv_free_tier_transaction`) all PASS. Prediction == experience,
+like-for-like (same domain, same rubric v0.7 on both halves — asserted). (2)
+`test_calibration_anchor_is_discriminating` — non-vacuity: the behavioral report is NOT
+all-pass (real FAILs: sitemap, mcp_surface, reputation_signals — the payment PASSes are
+earned), and the static prediction SEPARATES tiers (the no-rails drift-flight.org fixture is
+predicted NO agent-native payment: `x402_probe` not-PASS, `x402_live=False`), so "the score
+predicts payability" distinguishes .com from .org, not a universal pass that agrees with
+anything. (3) `test_behavioral_corroboration_is_reproducible` — the anchor is citable, not a
+one-run fluke: BOTH trials independently reached the machine-payable path with no human gate,
+verdict_stability 1.0 / quotable. A distinct axis from the whole static guard family: those
+refute internal-consistency objections; this refutes the "the number is astrology" objection.
+
+**Honest scope (attribution invariant, applied to calibration).** ONE-DOMAIN anchor on the
+WITH-RAILS side — it proves the score's POSITIVE payability claim is behaviorally real on the
+domain that makes it; it does NOT yet prove the no-rails/retail sides fail behaviorally where
+the score predicts they will (the symmetric half needs a live behavioral run on a no-rails or
+retail storefront → the retail-inverse behavioral acceptance item, [LOCAL], un-runnable
+in-cloud). The corroboration is precisely scoped to what the agent DID: reached the
+machine-payable PATH and completed the FREE-tier transaction (invariant #1 — no nonzero call;
+both trials' blockers record a paid call needs a funded wallet). "Payment REACHABLE", never
+"a paid purchase executed".
+
+**Validate.** Tests-only: `git diff -- asrs/ rubric/` EMPTY, `git diff --name-only` =
+`tests/test_calibration.py` ONLY (a new file) → scoring.py/rubric/probes/fetch/protocols/
+behavioral/offering/battery byte-for-byte untouched → rubric stays **v0.7**, canonical PAIR
+unchanged by construction AND re-measured (in-cloud replay guard **24/24, 46.1 F / 85.5 B /
++39.4, 0 replay-miss**). Live canonical signal corroborated by
+`runs/local/verify_20260728T205027Z.json` (20:50Z, healthy, 46.1/85.5/+39.4). New file 3/3;
+full suite 20→21 files (all green; `test_free_tier.py` needs `pip install -r requirements.txt`
+for eth-account → 11/11, the standing invariant-#4 env gap).
+
+**First duty.** No open peer-gated PR (verified `list_pull_requests` state=open → `[]`). Infra
+health: runner **HEALTHY** — newest `verify_20260728T205027Z` (20:50Z, ~21 min old at fire),
+46.1 F / 85.5 B / +39.4; bench UP (20/20 files pre-change, replay 24/24). Git: HEAD ==
+origin/main == `25c6ae8` at fetch (no orphan-`2e66201` trap this fire — the fresh checkout
+landed on the real tip); realigned n/a.
+
+**Slack.** None — tests-only, score-neutral, non-sensitive; the daily digest was already sent
+by Cycle 62 (16:21Z, first cloud cycle after 16:00 UTC today), so this 21:1xZ fire is not a
+digest window and nothing here is human-gated.
+
+**Next hypothesis.** The calibration axis now has ONE with-rails anchor. Its two open frontiers
+are both [LOCAL] (no network / no nested-panel CLI in-cloud): (a) the NEGATIVE half — a live
+behavioral run on a no-rails or retail storefront to prove the score predicts where the agent
+HITS A WALL, not just where it succeeds (folds into the retail-inverse behavioral acceptance
+P0); (b) a SECOND with-rails anchor / different model to move the anchor from n=1 toward a
+population. In-cloud, the next calibration-adjacent unit is to widen the anchor's committed
+assertions (e.g. pin that the Outcome pillar's behavioral overall tracks the static
+transactability direction across whatever committed behavioral reports exist) once a second
+report lands.

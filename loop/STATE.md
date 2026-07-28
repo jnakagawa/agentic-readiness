@@ -1,12 +1,17 @@
 # Loop state
 
-- Cycle counter: 66
+- Cycle counter: 67
 - Started: 2026-07-23 (UTC)
-- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
-  (Cycle 65 METHOD — guard 20 input-order invariance; Cycle 66 COVERAGE — offering
-  signal bank +tiered-volume (metered_api) +seat-licensing (subscription), precision
-  batteries + tiered-volume real-captured on the pair, score-neutral/off-scoring-path,
-  rubric v0.7, replay 24/24 / +39.4, offering guard 12/12; direct-to-main. Next TRUTH.)
+- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 66 COVERAGE — signal bank +tiered-volume +seat-licensing; Cycle 67 TRUTH — the
+  FIRST CALIBRATION guard: tests/test_calibration.py (3) holds the static score against the
+  committed LIVE behavioral acceptance run (driftflight.com 18:55Z) and asserts static
+  agent-native-payment PREDICTION == behavioral EXPERIENCE (Outcome payment checks all PASS),
+  DISCRIMINATING (report has real FAILs; prediction separates .com from no-rails .org) and
+  REPRODUCIBLE (both trials machine-payable+no-human-gate, verdict_stability 1.0). First
+  static-vs-behavioral VALIDITY axis, distinct from the 24-guard static-vs-static family.
+  ONE-DOMAIN with-rails anchor (negative/retail-inverse behavioral half is [LOCAL]).
+  Tests-only/score-neutral, rubric v0.7, replay 24/24 / +39.4; direct-to-main. Next READOUT.)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -1315,6 +1320,29 @@
   (verified []); infra health check ran first — runner HEALTHY, bench UP (20/20); git realigned the stale-orphan
   `2e66201` trap (both local main AND origin/main stale at orphan; `git fetch origin main` force-updated
   origin/main→0b32656, `checkout -B main origin/main` before editing). Next cycle takes COVERAGE.
+  Cycle 67 TRUTH (the FIRST CALIBRATION guard — does the static score predict what an agent EXPERIENCES?):
+  new `tests/test_calibration.py` (3 tests). Every prior in-cloud guard (`test_canonical_replay`, 24 guards) is
+  static-vs-static (stability/earned/identity/weight-robust); NONE answers the north-star VALIDITY question. This
+  holds the static score against the committed LIVE behavioral acceptance run
+  (`runs/local/acceptance_battery_driftflightcom_20260728T184325Z.report.json`, the 18:55Z [LOCAL] fire, git-tracked
+  → deterministic in-cloud) and asserts they AGREE where the score makes a falsifiable claim. (1) STATIC PREDICTION
+  agent-native payment (x402_probe PASS + self_serve_payg x402_live=True → transactability 87.5) is BEHAVIORALLY
+  CORROBORATED — the Outcome checks operationalizing it (bhv_purchase_path/machine_payable/no_human_gate/
+  free_tier_transaction) all PASS; like-for-like (same domain, rubric v0.7 both halves, asserted). (2)
+  DISCRIMINATING/non-vacuous — the behavioral report has real FAILs (sitemap/mcp_surface/reputation_signals) so the
+  payment PASSes are earned, and the prediction SEPARATES tiers (no-rails drift-flight.org predicted no payment:
+  x402_probe not-PASS, x402_live=False). (3) REPRODUCIBLE — both trials machine-payable + no-human-gate,
+  verdict_stability 1.0, quotable (not a one-run fluke). Refutes the "the number is astrology" objection, a NEW axis
+  vs the static family's internal-consistency objections. HONEST SCOPE: ONE-DOMAIN with-rails anchor (proves the
+  POSITIVE payability claim is behaviorally real; the negative/retail-inverse behavioral half is [LOCAL], un-runnable
+  in-cloud); corroboration scoped to the FREE tier (invariant #1 — no nonzero call; blockers record a paid call needs
+  a funded wallet). Tests-only: `git diff -- asrs/ rubric/` EMPTY, git diff --name-only = test_calibration.py ONLY
+  (new file) → scoring path byte-for-byte untouched → rubric stays v0.7, canonical PAIR unchanged by construction AND
+  re-measured (replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; verify_20260728T205027Z 20:50Z ~21 min old
+  live-corroborates). Direct-to-main. New file 3/3; suite 20→21 files (test_free_tier 11/11 with eth-account). No Slack
+  (tests-only/score-neutral/non-sensitive; digest already sent Cycle 62 16:21Z, not a digest window at 21:1xZ). First
+  duty: no open peer-gated PR (verified []); infra health check ran first — runner HEALTHY (verify_20260728T205027Z,
+  20:50Z, ~21 min old); no orphan-2e66201 trap this fire (HEAD == origin/main == 25c6ae8 at fetch). Next cycle takes READOUT.
 - **RUNNER STALL — ROOT-CAUSED + FIXED (local fire 2026-07-28T17:27Z). CLOSED.** The cloud's
   Cycle-51→62 diagnosis ("launchd not firing / machine asleep") was WRONG — only a local fire could
   see the truth. The runner's heartbeat log (`~/Library/Logs/asrs-local-verify.log`) shows the launchd

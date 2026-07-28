@@ -6640,3 +6640,7 @@ next to a payment-capable transactability pill, closing the terminal→JSON→HT
 readout constructs (per_kind, between_kind, NA) each took. Until then the in-cloud
 calibration-adjacent work is METHOD (widen the guard's committed assertions), which the
 rotation reaches next.
+
+## Local verification — 20260728T224103Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260728T224103Z.json

@@ -5715,3 +5715,102 @@ month"), or a new offering SURFACE. Also still open: whether discovery should re
 the `/docs` API-docs surface (this cycle's rate-limit evidence lives there and is
 uncrawled) — a candidate COVERAGE surface add. TRUTH-side: the P2 population-wide
 weight-robustness (extend guard 15 down the whole spectrum).
+
+## Cycle 59 — 2026-07-28T13:2xZ — TRUTH (direct to main)
+
+**What.** Weight-robustness (Cycle-55 guard 15) is now proven for the WHOLE
+capability population, not just the head pair. `tests/test_canonical_replay.py` +1
+(19→20), guard 17 `test_population_ordering_is_weight_robust`. Replays all FOUR
+committed fixtures through the REAL `from_fixture → _run_probes → scoring.score`
+path and pins, from recorded evidence, that the benchmark's central ordering
+(guard 12: com > org > retail > bare) holds under EVERY reasonable pillar
+weighting, not just the one hand-tuned vector:
+- **Precondition A** — NO domain is grade-capped (`caps_applied == []` on all
+  four), so each overall IS a pure renormalized weighted mean of its applicable
+  pillars (a binding cap would clamp a site and break its rung's invariance
+  argument).
+- **Precondition B** — IDENTICAL applicable-pillar set across the WHOLE population
+  ({access, legibility, transactability, trust}; outcome None on all four) —
+  like-for-like denominator at the pillar layer, chain-wide.
+- **(a) ADJACENT PILLAR-WISE DOMINANCE** — at EVERY rung the higher site ≥ the
+  lower on every applicable pillar, strictly > on ≥1: com⪰org strict on
+  {legibility, transactability}; org⪰retail strict on {legibility, transactability,
+  trust}; retail⪰bare strict on {legibility, trust}. A TOTAL pillar-wise dominance
+  chain — the load-bearing tripwire (an inversion at any single pillar of any rung
+  breaks it).
+- **(b) FAITHFULNESS** — the real rubric weight vector reproduces every shipped
+  overall from these pillars alone (85.5 / 46.1 / 29.5 / 22.5), proving
+  `_renorm_weighted_mean` IS the scorer's aggregation on each site, not a lookalike.
+- **(c) WEIGHT-ROBUSTNESS** — across a family of ADVERSARIAL weightings (real
+  rubric, uniform, and each unit-basis vector: all-access / all-legibility /
+  all-transactability / all-trust) the whole chain's weighted means are
+  non-increasing at every rung, and strictly decreasing at a rung whenever the
+  weighting touches a pillar where that rung is strict. Includes the extremes most
+  hostile to the pitch (all-weight-on-access, the pillar tied at 100 across the
+  population, where each rung's gap collapses to exactly 0 yet never INVERTS).
+- **(d) NON-VACUOUS** negative control — a synthetic access-inverted floor site
+  (bare's access raised above the retail shop's) WOULD top the retail shop under
+  all-access weighting → the chain check is single-rung-inversion-sensitive, so the
+  all-pass is meaningful.
+
+**HONEST FINDING (pinned in the guard's docstring).** There is NO adjacent rung
+that is only weight-DEPENDENTLY ordered. The one a-priori suspect (Cycle-55's next
+hypothesis flagged it) was org-vs-retail on trust, but the no-rails API storefront
+dominates the retail shop on trust too (60.0 > 33.3) as well as legibility and
+transactability — hence a total pillar-wise dominance chain. Had any rung been only
+weight-dependently ordered (pillar-wise incomparable), the (a) dominance assertion
+would have FAILED on that rung and surfaced it — a weight-dependent rank is a real
+calibration finding about the benchmark, not a bug to hide. Truth outranks the
+pitch: this cycle confirms the stronger claim (whole-chain weight-robust) is the
+TRUE one, on real evidence.
+
+**Why.** Guard 15 refuted the "you rigged the weights" AGGREGATION objection for
+the +39.4 PAIR. This lifts that refutation from the pair to the whole population:
+the benchmark's entire ranking — the thing it exists to produce — is invariant to
+the weight choice, a much stronger calibration claim than the head delta alone.
+Completes the Cycle-55 → Cycle-56 (readout) → this arc as the TRUTH complement.
+Worded by capability, never by vendor: sites compared by pillar scores (what an
+agent can DO), never by identity; the four fixture keys are guards 1–16's own.
+
+**Verification (non-vacuity).** Confirmed the (d) negative control prints `ok`
+(the access-inverted floor site tops the retail shop under all-access weighting —
+the inversion the (c) chain check catches on real data). All dominance /
+faithfulness / weight-family branches print `ok` on the real evidence; the guard
+reads scores from the LIVE replay pipeline, never from the pinned EXPECTED
+constants.
+
+**Scope.** `tests/test_canonical_replay.py` ONLY (+145 lines: guard 17 reuses the
+module-level `_renorm_weighted_mean` helper + `_CAPABILITY_SPECTRUM` from guards
+12/15; added to the runner list). `git diff --stat` = that one file.
+`git diff -- asrs/ rubric/` EMPTY → scoring.py / rubric / probes / fetch.py /
+protocols / behavioral / offering / battery byte-for-byte UNTOUCHED → rubric stays
+v0.7, canonical delta unchanged by construction.
+
+**Evidence.** Full suite 19/19 test files green (0 real failures by exit code);
+suite 219 → 220. `tests/test_canonical_replay.py` 19→20 (20/20).
+
+**Canonical pair (regression signal).** In-cloud replay guard re-measured:
+drift-flight.org 46.1 F / driftflight.com 85.5 B / delta +39.4, 0 replay-miss on
+both. (Live re-score BLOCKED in-cloud — no outbound network; the offline replay
+guard is the in-cloud regression signal per STATE. Newest local verify artifact
+`verify_20260727T224106Z` is ~14.7h old at this 13:21Z fire → the launchd runner is
+STILL STALLED past the 6h floor, tracked P0, not cloud-repairable; flag in the next
+16:00Z digest.)
+
+**First duty.** No open peer-gated PR (verified `list_pull_requests` state=open →
+`[]`). Infra health: bench UP (19/19 files, 220/220 after this change), git
+bookkeeping — applied the orphan-main lesson at fire START: local `main` was the
+stale orphan `2e66201` immediately after `git fetch`, realigned
+`git checkout -B main origin/main` (de4ab39 = Cycle 58 tip) BEFORE editing.
+Runner STILL STALLED past the 6h floor (P0-tracked, not cloud-repairable).
+
+**No Slack.** Tests-only TRUTH ship, moves no score, not sensitive; fire 13:2xZ
+before the 16:00 UTC digest window (runner stall + LIVE-drift status fold into that
+digest per the standing P0/drift watches).
+
+**Next hypothesis.** READOUT complement — surface the whole-chain weight-robustness
+finding in the methodology page's §3 "But couldn't you re-weight the pillars…"
+sub-section (Cycle 56 stated the PAIR result there; the P2 item asks the population
+extension land in the SAME sub-section so guard and readout stay in lockstep). Also
+still open TRUTH-side: population-wide observability/like-for-like at the CHECK
+layer (guard 8 lifted to the whole chain, not just the pair).

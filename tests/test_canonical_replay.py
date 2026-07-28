@@ -1087,6 +1087,150 @@ def test_population_relabel_negative_control() -> None:
     )
 
 
+# ---------------------------------------------------------------------------
+# 17. POPULATION-WIDE WEIGHT-ROBUSTNESS — the WHOLE capability ordering (guard 12),
+#     not just the head pair (guard 15), is invariant to the pillar weight vector.
+#     Guard 15 refutes the "you rigged the weights" objection for the +39.4 PAIR:
+#     the with-rails side dominates the no-rails side PILLAR-BY-PILLAR over a shared
+#     applicable set, so no non-negative reweighting inverts that one rung. This
+#     guard extends the refutation to the ENTIRE population — on the recorded
+#     evidence EVERY adjacent rung of the capability spectrum is a pillar-wise
+#     dominance step (the higher site is >= the lower on every applicable pillar,
+#     strictly > on at least one), so the whole chain (com >= org >= retail >= bare)
+#     is non-increasing under ANY non-negative pillar weighting, and strictly
+#     decreasing at a rung whenever the weighting places positive weight on a pillar
+#     where that rung is strict. The benchmark's central ordering (guard 12) is
+#     therefore a property of the capability evidence under every reasonable
+#     weighting, not of one hand-tuned weight vector — the aggregation-level analogue
+#     of guard 15, lifted from the pair to the population.
+#
+#     HONEST FINDING pinned here: there is NO adjacent rung that is only weight-
+#     DEPENDENTLY ordered. The one a-priori suspect was org-vs-retail on trust, but
+#     the no-rails API storefront dominates the retail shop on trust (60.0 > 33.3)
+#     as well as legibility and transactability — a TOTAL pillar-wise dominance
+#     chain. Were any rung only weight-dependently ordered (pillar-wise
+#     incomparable), the dominance assertion in (a) would fail on that rung and
+#     surface it — a weight-dependent rank is a real calibration finding about the
+#     benchmark, not a bug to suppress.
+#
+#     Worded by capability throughout: sites are compared by what an agent can DO
+#     (their pillar scores), never by identity; the four fixture keys are the same
+#     guards 1-16 already use, read from the LIVE replay pipeline.
+# ---------------------------------------------------------------------------
+def test_population_ordering_is_weight_robust() -> None:
+    print("test_population_ordering_is_weight_robust")
+    order = [d for d, _ in _CAPABILITY_SPECTRUM]
+    reps = {}
+    for dom in order:
+        rep, misses = _score_fixture(dom)
+        _check(not misses, f"{dom}: no replay-miss")
+        reps[dom] = rep
+
+    # Precondition A — no grade cap binds on ANY domain, so each overall IS a pure
+    # renormalized weighted mean of its applicable pillars (a binding cap would clamp
+    # a site's overall and break the weight-invariance argument for its rung).
+    for dom in order:
+        _check(
+            not reps[dom].caps_applied,
+            f"{dom} is not grade-capped ({reps[dom].caps_applied}) — overall is a "
+            "pure weighted pillar mean",
+        )
+
+    # Precondition B — IDENTICAL applicable-pillar set across the WHOLE population
+    # (numeric on every domain). Like-for-like denominator at the pillar layer: the
+    # reweighting family below reweights the SAME pillars on every site, never a
+    # different set on one rung.
+    appl_sets = [
+        frozenset(p for p, s in reps[dom].pillar_scores.items() if s is not None)
+        for dom in order
+    ]
+    _check(
+        len(set(appl_sets)) == 1 and len(appl_sets[0]) >= 2,
+        f"identical applicable-pillar set across the population "
+        f"({sorted(appl_sets[0])})",
+    )
+    applicable = sorted(appl_sets[0])
+
+    # (a) ADJACENT PILLAR-WISE DOMINANCE — at every rung the higher site is >= the
+    # lower on EVERY applicable pillar, strictly > on at least one. The load-bearing
+    # tripwire: an inversion on any single pillar at any rung (a probe change letting
+    # a lower-tier site out-score a higher one somewhere) breaks it — and would be
+    # the HONEST signal that that rung's rank is weight-dependent, not a bug to hide.
+    strict_by_rung = {}
+    for hi, lo in zip(order, order[1:]):
+        ph, pl = reps[hi].pillar_scores, reps[lo].pillar_scores
+        strict = []
+        for p in applicable:
+            _check(
+                ph[p] >= pl[p] - 1e-9,
+                f"{hi} >= {lo} on {p} ({ph[p]:.3f} >= {pl[p]:.3f}) — rung is "
+                "pillar-wise ordered, not weight-dependent",
+            )
+            if ph[p] > pl[p] + 1e-9:
+                strict.append(p)
+        _check(
+            len(strict) >= 1,
+            f"{hi} strictly exceeds {lo} on >=1 pillar (strict: {strict})",
+        )
+        strict_by_rung[(hi, lo)] = strict
+
+    # (b) FAITHFULNESS — the real rubric weight vector reproduces every shipped
+    # overall from these pillars alone, so ``_renorm_weighted_mean`` IS the scorer's
+    # aggregation and the reweighting family below re-runs the real overall
+    # computation on each site, not a lookalike.
+    rubric_w = scoring.load_rubric(None).get("pillar_weights") or {}
+    for dom in order:
+        recomputed = round(_renorm_weighted_mean(reps[dom].pillar_scores, rubric_w), 1)
+        _check(
+            abs(recomputed - reps[dom].overall_score) < 1e-9,
+            f"rubric weights reproduce {dom} overall from pillars "
+            f"({recomputed} == {reps[dom].overall_score})",
+        )
+
+    # (c) WEIGHT-ROBUSTNESS — across a family of ADVERSARIAL weight vectors the WHOLE
+    # chain's weighted means are non-increasing (every rung holds), and strictly
+    # decreasing at a rung whenever the weighting touches a pillar where that rung is
+    # strict. The family: the real rubric weights, a uniform weighting, and each
+    # unit-basis vector (ALL weight on one pillar) — including the extremes most
+    # hostile to the pitch (all weight on a TIED pillar like access, where a rung's
+    # gap can collapse to exactly 0 but must never INVERT).
+    families = {"rubric": rubric_w, "uniform": {p: 1.0 for p in applicable}}
+    for p in applicable:
+        families[f"all-{p}"] = {p: 1.0}
+    for name, w in families.items():
+        means = {dom: _renorm_weighted_mean(reps[dom].pillar_scores, w) for dom in order}
+        for hi, lo in zip(order, order[1:]):
+            _check(
+                means[hi] >= means[lo] - 1e-9,
+                f"weighting '{name}': {hi} mean {means[hi]:.3f} >= {lo} "
+                f"{means[lo]:.3f} — the ordering never inverts at this rung",
+            )
+            if any(w.get(p, 0.0) > 0 for p in strict_by_rung[(hi, lo)]):
+                _check(
+                    means[hi] > means[lo] + 1e-9,
+                    f"weighting '{name}' touches a dominated pillar at rung "
+                    f"{hi}>{lo} -> strictly ordered ({means[hi]:.3f} > {means[lo]:.3f})",
+                )
+
+    # (d) NON-VACUOUS — the chain-wide check IS sensitive to a single-rung inversion,
+    # so the all-pass above is meaningful. Inject an inversion at ONE rung on the
+    # tied 'access' pillar (give the LOWER site of the retail>bare rung more access
+    # than the higher) and confirm the all-access weighting would then rank the floor
+    # site ABOVE the retail shop — exactly the inversion this guard's (c) check
+    # catches at that rung on real data. Synthetic pillars only; real reports untouched.
+    if "access" in applicable and len(order) >= 4:
+        retail, bare = order[2], order[3]
+        rigged_bare = dict(reps[bare].pillar_scores)
+        rigged_bare["access"] = reps[retail].pillar_scores["access"] + 10.0
+        w_access = {"access": 1.0}
+        _check(
+            _renorm_weighted_mean(rigged_bare, w_access)
+            > _renorm_weighted_mean(reps[retail].pillar_scores, w_access),
+            "negative control: an access-inverted floor site WOULD top the retail "
+            "shop under all-access weighting (the chain check is inversion-sensitive)",
+        )
+
+
 def main() -> int:
     tests = [
         test_canonical_org_replays_46_1,
@@ -1108,6 +1252,7 @@ def main() -> int:
         test_population_ordering_is_identity_invariant,
         test_canonical_delta_is_weight_robust,
         test_population_relabel_negative_control,
+        test_population_ordering_is_weight_robust,
     ]
     failed = 0
     for t in tests:

@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 58
+- Cycle counter: 59
 - Started: 2026-07-23 (UTC)
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -1082,9 +1082,40 @@
   origin/main` = Cycle-57 tip 073b53c BEFORE editing), runner STILL STALLED past 6h (newest
   verify_20260727T224106Z ~13.6h old at 12:18Z, unchanged since Cycle 51 — P0-tracked, not cloud-repairable,
   flag in next digest). Next cycle takes TRUTH.
-- **RUNNER STALL — STILL STALLED PAST THE 6h FLOOR (updated Cycle 58, 2026-07-28T12:18Z; crossed Cycle 51
+  Cycle 59 TRUTH (weight-robustness lifted from the head PAIR to the WHOLE population — the Cycle-55
+  next-hypothesis delivered): `tests/test_canonical_replay.py` +1 (19→20), guard 17
+  `test_population_ordering_is_weight_robust`. Cycle 55 (guard 15) proved the +39.4 pair delta is
+  weight-robust (with-rails dominates no-rails pillar-by-pillar over a shared applicable set → no
+  non-negative reweighting inverts it); this lifts that refutation to the benchmark's CENTRAL ordering
+  (guard 12: com>org>retail>bare). Replays ALL FOUR committed fixtures through the REAL
+  `from_fixture→_run_probes→scoring.score` path and pins: (A) no domain grade-capped → each overall a pure
+  renormalized weighted mean; (B) IDENTICAL applicable-pillar set chain-wide ({access,legibility,
+  transactability,trust}, outcome None on all four); (a) ADJACENT PILLAR-WISE DOMINANCE at every rung
+  (higher ⪰ lower on every applicable pillar, strict on ≥1 — com⪰org strict{leg,tx}, org⪰retail
+  strict{leg,tx,trust}, retail⪰bare strict{leg,trust}: a TOTAL dominance chain); (b) FAITHFULNESS (rubric
+  weights reproduce all four overalls 85.5/46.1/29.5/22.5 from pillars alone); (c) WEIGHT-ROBUSTNESS across
+  an adversarial weight family (rubric, uniform, each unit-basis vector incl. all-access where every rung's
+  gap → exactly 0 but never INVERTS) — chain non-increasing at every rung, strict where the weighting touches
+  a strict pillar; (d) NON-VACUOUS negative control — an access-inverted floor site WOULD top the retail shop
+  under all-access weighting → chain check is single-rung-inversion-sensitive. HONEST FINDING (docstring):
+  NO rung is only weight-DEPENDENTLY ordered — the a-priori suspect org-vs-retail on trust is actually
+  DOMINATED (org 60.0 > retail 33.3), so the whole chain is weight-robust; had any rung been pillar-wise
+  incomparable the (a) assertion would FAIL and surface it (a weight-dependent rank = a real calibration
+  finding, not a bug to hide — truth outranks the pitch, and the stronger claim is the true one). Worded by
+  capability, never by vendor (pillar comparison, never identity; four fixture keys guards 1–16's own).
+  Tests-only: `git diff --stat` = test_canonical_replay.py ONLY (+145), `git diff -- asrs/ rubric/` EMPTY →
+  scoring.py/rubric/probes/fetch/protocols/behavioral/offering/battery byte-for-byte untouched → rubric stays
+  v0.7, canonical delta unchanged by construction AND re-measured (replay guard 20/20, 46.1 F / 85.5 B /
+  +39.4, 0 replay-miss). Direct-to-main. Suite 219→220. No Slack (tests-only, moves no score, not sensitive,
+  fire 13:21Z before the 16:00 UTC digest window — runner stall + LIVE-drift fold into that digest). First
+  duty: no open peer-gated PR (verified []); infra health check ran first — bench UP (220/220), git bookkeeping
+  applied the orphan-main lesson at fire START (local `main` was stale orphan `2e66201`, realigned
+  `git checkout -B main origin/main` = Cycle-58 tip de4ab39 BEFORE editing), runner STILL STALLED past 6h
+  (newest verify_20260727T224106Z ~14.7h old at 13:21Z, unchanged since Cycle 51 — P0-tracked, not
+  cloud-repairable, flag in next digest). Next cycle takes READOUT.
+- **RUNNER STALL — STILL STALLED PAST THE 6h FLOOR (updated Cycle 59, 2026-07-28T13:21Z; crossed Cycle 51
   05:13Z).** Newest verify artifact is still `verify_20260727T224106Z.json` (22:41Z) — NO newer artifact
-  appeared between Cycle 51 (05:13Z) and this fire (12:18Z), so at ~13.6h old the stall has NOT self-cleared
+  appeared between Cycle 51 (05:13Z) and this fire (13:21Z), so at ~14.7h old the stall has NOT self-cleared
   (contrast the Cycle-28 stall, which cleared by Cycle 30). The Cycle 48/49/50 watch (six consecutive :41 gaps,
   23:41→04:41Z) tipped over at Cycle 51 and persists across Cycles 52–58. Mirrors the Cycle-28 stall mechanism —
   likely the same launchd-on-Jonah's-machine intermittent stall (machine asleep / launchd not firing), NOT

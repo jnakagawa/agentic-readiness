@@ -544,24 +544,38 @@ design in-cloud, execute locally.
   verify canonical set/order unchanged (subscription is already claimed on the pair → strength-only, but
   CHECK it does not overtake metered_api).
 
-- **Population-wide WEIGHT-ROBUSTNESS** (TRUTH, follow-up to Cycle-55 guard 15). Cycle 55 pinned
-  that the +39.4 PAIR delta is weight-robust: the with-rails side dominates the no-rails side
-  PILLAR-BY-PILLAR over an identical uncapped applicable-pillar set, so no non-negative reweighting
-  inverts the sign (`tests/test_canonical_replay.py` guard 15, 17→18). The natural extension: does
-  pillar-wise dominance hold down the WHOLE capability spectrum (com ⪰ org ⪰ retail ⪰ bare)? If so,
-  the entire population ordering (guard 12) is weight-robust, not just the head delta — a much
-  stronger calibration claim. Watch the tail: retail (books.toscrape.com) and bare (example.com) TIE
-  at 0 transactability and 100 access, so their order rests on legibility/trust — likely still
-  pillar-wise comparable (retail ≥ bare on both), but org-vs-retail may NOT dominate on trust
-  (org 60 > retail 33.3) while retail could... check the real numbers: org dominates retail on every
-  pillar (leg 36.4>18.2, tx 18.75>0, trust 60>33.3, access tie) → the whole chain is very likely a
-  total pillar-wise dominance order. If ANY adjacent pair is only weight-DEPENDENTLY ordered (not
-  pillar-wise comparable), surface that HONESTLY — it is a real finding that that rung's rank depends
-  on the weight choice, not a bug to hide. Cloud-doable from the four committed fixtures; tests-only,
-  score-neutral, direct-to-main. READOUT NOTE: the PAIR's weight-robustness is now surfaced in prose
-  on the methodology page (Cycle 56, §3 "But couldn't you re-weight the pillars…"). When this
-  population extension lands, its finding (whole-chain weight-robust, or a named weight-dependent
-  rung) belongs in that SAME sub-section so the guard and the readout stay in lockstep.
+- **[READOUT — surface the whole-chain weight-robustness finding on the methodology page]** (follow-up
+  to Cycle 59). The TRUTH half is DONE (see below); the READOUT complement is the remaining increment.
+  The methodology page's §3 "But couldn't you re-weight the pillars…" sub-section currently states the
+  PAIR result (Cycle 56). Extend that SAME sub-section with the population finding — the WHOLE ordering
+  (com>org>retail>bare) is weight-robust because it is a TOTAL pillar-wise dominance chain (every rung
+  higher ⪰ lower on all four applicable pillars), so no non-negative reweighting inverts ANY rung, not
+  just the head delta. State it test-pinned (guard 17). Vendor-neutral (no domain named); display-only,
+  score-neutral, direct-to-main. Keeps guard and readout in lockstep.
+  <!-- TRUTH HALF DONE 2026-07-28T13:2xZ (Cycle 59, TRUTH, direct-to-main, tests-only, score-neutral):
+       "Population-wide WEIGHT-ROBUSTNESS" SHIPPED as `tests/test_canonical_replay.py` guard 17
+       `test_population_ordering_is_weight_robust` (19→20). Confirmed EMPIRICALLY the Cycle-55 next-
+       hypothesis: pillar-wise dominance holds down the WHOLE capability spectrum — com⪰org (strict
+       leg,tx), org⪰retail (strict leg,tx,trust), retail⪰bare (strict leg,trust), a TOTAL dominance
+       chain over an identical uncapped applicable-pillar set ({access,legibility,transactability,trust},
+       outcome None on all four). So the entire population ordering (guard 12) is weight-robust: chain
+       non-increasing under EVERY non-negative weighting (rubric/uniform/each unit-basis incl. the
+       all-access extreme where each rung's gap→0 but never inverts), strict where the weighting touches
+       a strict pillar. HONEST FINDING: the a-priori suspect org-vs-retail on trust is DOMINATED (org 60
+       > retail 33.3), NOT weight-dependent → no rung is merely weight-dependently ordered (the guard's
+       (a) assertion would have surfaced it if one were). Faithfulness leg pins the rubric weights
+       reproduce all four overalls (85.5/46.1/29.5/22.5); (d) non-vacuous negative control (access-
+       inverted floor site tops retail under all-access). git diff -- asrs/ rubric/ EMPTY → rubric v0.7,
+       replay guard 20/20 / +39.4 / 0 replay-miss. Suite 219→220. See LOG Cycle 59. -->
+- **Population-wide observability / like-for-like at the CHECK layer** (TRUTH, natural next after Cycle 59).
+  Guard 8 (`test_canonical_delta_is_earned_dominance`) pins full observability + like-for-like denominator +
+  check-by-check dominance-no-inversion for the PAIR. Cycle 59 lifted the AGGREGATION-level guard (15→17)
+  from pair to population; the CHECK-level guard 8 is still pair-only. Lift it: is every domain in the
+  spectrum fully observed (no CANT_TEST/NA masking a FAIL) and is each adjacent rung a check-status SUPERSET
+  (no inversion at the check layer, not just the pillar layer)? Watch the tail — retail/bare may legitimately
+  differ in observed check SETS (a shop exposes commerce checks a bare page doesn't), so "like-for-like" may
+  need per-rung scoped-check intersection rather than a single global set; surface any genuine set difference
+  honestly rather than forcing it. Cloud-doable from the four committed fixtures; tests-only, score-neutral.
 
 <!-- DONE 2026-07-28T06:1xZ (Cycle 52, READOUT, direct-to-main, display-only, score-neutral):
      "Live-signal FRESHNESS banner on canonical-history.html" SHIPPED. `asrs/scorecard.py`

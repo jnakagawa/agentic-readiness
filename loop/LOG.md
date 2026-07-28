@@ -6196,3 +6196,7 @@ be a paid/external call, barred by the $0-only rule). No DM sent. The resolution
 STATE (runner-stall bullet flipped to CLOSED) + BACKLOG (DONE) for the cloud loop — which owns
 comms — to fold into its next post-16:00 UTC digest. Not attention-worthy enough for a
 PushNotification (routine self-healing)._
+
+## Local verification — 20260728T174106Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260728T174106Z.json

@@ -5554,3 +5554,82 @@ at fire start): after the fresh-checkout `git pull`, VERIFY `git rev-parse main`
 == `git rev-parse origin/main` BEFORE editing/committing; if local `main` is the
 orphan `2e66201`, realign FIRST (`git checkout -B main origin/main`). Next cycle:
 do this check as literally the first git action.
+
+## Cycle 57 — 2026-07-28T11:1xZ — METHOD (direct to main)
+
+**What.** Guard 14 (joint population relabel-invariance) now carries a COMMITTED
+negative control, so its non-vacuity is DEMONSTRATED, not merely argued.
+`tests/test_canonical_replay.py` +1 (18→19), guard 16
+`test_population_relabel_negative_control`. Guard 14 proves the population
+ORDERING (com > org > retail > bare) survives a simultaneous relabel of all four
+fixtures to distinct neutral hosts, and defended its non-vacuity only with a
+CONSTRUCTION argument (the neutral hosts are asserted reverse-lexical to
+capability, so "a host-string sorter WOULD reorder the population"). It never
+injected such a sorter and showed the ordering check actually CATCHES it — the one
+invariance guard in the file whose teeth were asserted, not exercised. This closes
+that gap the way every sibling guard already does: guard 15(d) synthesizes a pillar
+inversion; the offering-layer relabel guard (`test_offering_canonical.py`)
+monkeypatches an identity-keyed special-case; Cycle-29/33 wording guards inject a
+scored-storefront name. Guard 16 monkeypatches the exact "sort the domains
+alphabetically and assign tiers" bug into the scorer — `overall_score` becomes a
+monotone function of the fixture host's ASCENDING lexical rank (alphabetically-
+earliest host → highest score), keyed on the host STRING not the evidence. Because
+guard 14 assigns the neutral hosts reverse-lexical to capability (floor host sorts
+first, top host last), this rig REVERSES the population, so replaying the four
+relabeled fixtures through the rigged scorer and applying guard 14's OWN strict-
+decreasing ordering check must FAIL. The bug flows through the REAL
+`_score_relabeled → scoring.score` path guard 14 uses (monkeypatch on
+`scoring.score`, restored in a finally block + a restore-assertion so the rig never
+leaks into later tests).
+
+**Why.** METHOD/measurement rigor: the joint population ordering (guard 14, Cycle
+53) is the benchmark's CENTRAL identity-invariance claim, yet it was the only
+invariance guard whose non-vacuity rested on a setup argument rather than a
+committed injection. Uniform rigor across the invariance-guard family means every
+one of them provably catches the anti-pattern it names — a critic auditing the
+suite can no longer say "guard 14 might be vacuous, nothing shows it fires."
+Worded by capability throughout: the rig keys on the host string, the exact
+anti-pattern the benchmark must never exhibit; the four fixture keys are the ones
+guards 1–15 already use.
+
+**Verification (non-vacuity of the control itself).** On the REAL scorer guard 14
+passes (population strictly monotone). Under the rig the rigged overalls in
+capability order are `[zeutral 70, seutral 80, geutral 90, aeutral 100]` — strictly
+INCREASING, so guard 14's strict-DECREASING check is False and the control's
+`not monotone` assertion holds. Pre-verified the reversal arithmetic offline before
+wiring. `scoring.score is real_score` re-asserted after the finally block.
+
+**Scope.** `tests/test_canonical_replay.py` ONLY (+67 lines: guard 16 + added to
+the runner list). `git diff --name-only -- asrs/ rubric/` EMPTY → scoring.py /
+rubric / probes / fetch.py / protocols / behavioral / offering / battery
+byte-for-byte UNTOUCHED. Rubric stays v0.7; canonical delta unchanged by
+construction AND re-measured (replay guard 19/19: 46.1 F / 85.5 B / +39.4, 0
+replay-miss on both). Direct-to-main. `test_canonical_replay.py` 18 → 19; suite
+216 → 217.
+
+**Canonical pair (regression signal).** In-cloud replay guard re-measured:
+drift-flight.org 46.1 F / driftflight.com 85.5 B / delta +39.4, 0 replay-miss on
+both. Live re-score BLOCKED in-cloud (no outbound network); the offline replay
+guard is the in-cloud regression signal. Newest local verify artifact
+`verify_20260727T224106Z` is ~12.6h old at this fire → the launchd runner is STILL
+STALLED past the 6h floor, tracked P0, NOT cloud-repairable; flag in the next
+16:00Z digest.
+
+**First duty.** No open peer-gated PR (verified `list_pull_requests` state=open →
+`[]`). Infra health: bench UP (19/19 files, 217/217), git bookkeeping — applied
+the Cycle-52/55/56 lesson at fire START this time: verified local `main` was the
+stale orphan `2e66201` immediately after `git fetch` and realigned
+`git checkout -B main a72c42c` (origin/main = Cycle 56 tip) BEFORE editing, so no
+orphan-parent commit this cycle. Runner DOWN (~12.6h, P0-tracked).
+
+**No Slack.** Tests-only, moves no score, not sensitive; fire 11:1xZ before the
+16:00 UTC digest window (runner stall + this ship fold into that digest).
+
+**Next hypothesis.** METHOD frontier on the invariance-guard family is now
+UNIFORM (every guard carries a committed negative control). Next candidates: the
+TRUTH-side population-wide weight-robustness (Cycle-55 queue / P2) — extend guard
+15's pillar-wise dominance down the whole spectrum (com ⪰ org ⪰ retail ⪰ bare),
+making the entire ordering guard 12 weight-robust, or honestly surface any
+weight-DEPENDENTLY-ordered rung; OR the test-hygiene `_score_relabeled` structured
+host substitution (P2) that would let relabel guards use arbitrary neutral hosts
+without the length/hyphen caveat.

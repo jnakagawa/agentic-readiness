@@ -470,11 +470,24 @@ design in-cloud, execute locally.
   host-string sorter would reverse the population and fail here while every single-host per-domain guard
   passes; the reverse-lexical + distinct + no-canonical-name conditions are themselves asserted executable.
   First CROSS-DOMAIN identity-invariance property. Tests-only, score-neutral (git diff -- asrs/ rubric/
-  EMPTY; rubric v0.7, replay guard 17/17 / +39.4, offering guard 12/12); suite 211→212. NEXT METHOD
-  candidate: extend the joint guard to also pin per-check STATUS identity-invariance across the population
-  (guard 14 pins overall+ordering; a joint per-check-status assertion would catch a probe flipping a status
-  on one host in a way that happens to preserve the overall), or add the joint guard's negative control as a
-  committed monkeypatch (a host-string-keyed reorder) mirroring the offering-layer negative control.
+  EMPTY; rubric v0.7, replay guard 17/17 / +39.4, offering guard 12/12); suite 211→212.
+  PROGRESS 2026-07-28T11:1xZ (Cycle 57, METHOD): the SECOND Cycle-53 candidate — guard 14's COMMITTED
+  NEGATIVE CONTROL — SHIPPED. `tests/test_canonical_replay.py` +1 (18→19), guard 16
+  `test_population_relabel_negative_control` monkeypatches the "sort the domains alphabetically and assign
+  tiers" bug into `scoring.score` (overall keyed on the host's ASCENDING lexical rank, not the evidence);
+  because guard 14 assigns the neutral hosts reverse-lexical to capability, the rig REVERSES the population,
+  so guard 14's own strict-decreasing ordering check FAILS on it (proven by contrast: guard 14 passes on the
+  real scorer). Brings the invariance-guard family to UNIFORM rigor — every guard (15(d) pillar inversion,
+  offering-layer identity special-case, Cycle-29/33 wording injections, now guard 14) carries a committed
+  injection proving it catches the anti-pattern it names, not just a construction argument. Restored in a
+  finally + restore-assertion so the rig never leaks. Tests-only, score-neutral (git diff -- asrs/ rubric/
+  EMPTY; rubric v0.7, replay guard 19/19 / +39.4); suite 216→217.
+  The FIRST Cycle-53 candidate (joint per-check STATUS identity-invariance) is DE-PRIORITIZED as largely
+  redundant: `_score_relabeled` scores each fixture INDEPENDENTLY (own temp file + own FetchContext, no
+  cross-fixture state), so a "joint" per-check-status assertion equals the per-domain per-check-status the
+  relabel guards 4/6/8/11 (`_assert_relabel_invariant`) already assert one host at a time — the joint form
+  adds no NEW coverage over the scoring path. Not worth a cycle unless the scoring path ever gains
+  cross-domain state.
 - **Env-block classifier: harden against site-side "safety/security policy"**
   (METHOD, attribution honesty — residual from the PR #2 adversarial review,
   2026-07-23T10:13Z). The review confirmed `_ENV_BLOCK_RE` correctly rejects the

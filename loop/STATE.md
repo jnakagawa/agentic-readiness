@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 56
+- Cycle counter: 57
 - Started: 2026-07-23 (UTC)
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -1025,11 +1025,39 @@
   PR (verified []); infra health check ran first — bench UP (216/216), git bookkeeping UP (pull clean, main ==
   origin/main 6c7087e = Cycle 55), runner STILL STALLED PAST 6h (newest verify_20260727T224106Z ~11.6h old,
   unchanged — P0-tracked, not cloud-repairable, flag in the next digest). Next cycle takes METHOD.
-- **RUNNER STALL — STILL STALLED PAST THE 6h FLOOR (updated Cycle 54, 2026-07-28T08:1xZ; crossed Cycle 51
+  Cycle 57 METHOD (guard 14's NEGATIVE CONTROL now COMMITTED — the joint population relabel-invariance
+  guard's non-vacuity is demonstrated, not argued): `tests/test_canonical_replay.py` +1 (18→19), guard 16
+  `test_population_relabel_negative_control`. Guard 14 (Cycle 53) proves the population ordering
+  (com>org>retail>bare) survives a simultaneous relabel of all four fixtures to distinct neutral hosts, but
+  defended its non-vacuity ONLY with a construction argument (hosts asserted reverse-lexical to capability →
+  "a host-string sorter would reorder the population") — it never injected such a sorter to show the ordering
+  check CATCHES it, the one invariance guard in the file whose teeth were asserted, not exercised (guard 15(d)
+  injects a pillar inversion; the offering-layer relabel guard monkeypatches an identity-keyed special-case;
+  Cycle-29/33 wording guards inject a scored-storefront name). Guard 16 monkeypatches the exact "sort the
+  domains alphabetically and assign tiers" bug — `overall_score` becomes a monotone function of the host's
+  ASCENDING lexical rank (alphabetically-earliest host → highest score), keyed on the host STRING not the
+  evidence; because guard 14 assigns the neutral hosts reverse-lexical to capability, the rig REVERSES the
+  population, so replaying the four relabeled fixtures through the REAL `_score_relabeled → scoring.score` path
+  and applying guard 14's OWN strict-decreasing ordering check must FAIL (rigged overalls in capability order
+  [zeutral 70, seutral 80, geutral 90, aeutral 100] — strictly increasing). Monkeypatch on `scoring.score`,
+  restored in a finally + a restore-assertion so the rig never leaks. Non-vacuous BY CONTRAST: guard 14 itself
+  passes on the real scorer (strictly monotone), the rig reverses it. Worded by capability (the rig keys on
+  the host string, the anti-pattern to never exhibit). Tests-only: `git diff --name-only -- asrs/ rubric/`
+  EMPTY → scoring.py/rubric/probes/fetch/protocols/behavioral/offering/battery byte-for-byte untouched →
+  rubric stays v0.7, canonical delta unchanged by construction AND re-measured (replay guard 19/19, 46.1 F /
+  85.5 B / +39.4, 0 replay-miss). Direct-to-main. Suite 216→217. No Slack (tests-only, moves no score, fire
+  11:1xZ before the 16:00 UTC digest window — runner stall flags there). First duty: no open peer-gated PR
+  (verified []); infra health check ran first — bench UP (217/217), git bookkeeping UP (applied the
+  Cycle-52/55/56 orphan-main lesson at fire START: verified local `main` == stale orphan `2e66201`
+  immediately after fetch, realigned `git checkout -B main a72c42c` = origin/main Cycle-56 tip BEFORE editing,
+  so NO orphan-parent commit this cycle), runner STILL STALLED PAST 6h (newest verify_20260727T224106Z
+  ~12.6h old, unchanged — P0-tracked, not cloud-repairable, flag in the next digest). The invariance-guard
+  family is now UNIFORM (every guard carries a committed negative control). Next cycle takes COVERAGE.
+- **RUNNER STALL — STILL STALLED PAST THE 6h FLOOR (updated Cycle 57, 2026-07-28T11:1xZ; crossed Cycle 51
   05:13Z).** Newest verify artifact is still `verify_20260727T224106Z.json` (22:41Z) — NO newer artifact
-  appeared between Cycle 51 (05:13Z) and this fire (08:1xZ), so at ~9.5h old the stall has NOT self-cleared
+  appeared between Cycle 51 (05:13Z) and this fire (11:1xZ), so at ~12.6h old the stall has NOT self-cleared
   (contrast the Cycle-28 stall, which cleared by Cycle 30). The Cycle 48/49/50 watch (six consecutive :41 gaps,
-  23:41→04:41Z) tipped over at Cycle 51 and persists across Cycles 52–53. Mirrors the Cycle-28 stall mechanism —
+  23:41→04:41Z) tipped over at Cycle 51 and persists across Cycles 52–57. Mirrors the Cycle-28 stall mechanism —
   likely the same launchd-on-Jonah's-machine intermittent stall (machine asleep / launchd not firing), NOT
   repairable from the cloud (can't reach the local machine). Loop is DEGRADED, not down: the in-cloud replay guard
   (now 17/17, +39.4) is

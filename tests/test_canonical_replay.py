@@ -1021,6 +1021,72 @@ def test_canonical_delta_is_weight_robust() -> None:
         )
 
 
+# ---------------------------------------------------------------------------
+# 16. GUARD 14'S NEGATIVE CONTROL — the joint ordering-invariance assertion has
+#     teeth, demonstrated not merely argued. Guard 14 proves the population
+#     ORDERING survives a simultaneous relabel, and defends its non-vacuity with a
+#     CONSTRUCTION argument: the neutral hosts are assigned REVERSE-lexical to
+#     capability, so "a host-string sorter would reorder the population." Every
+#     other invariance guard in this file backs its non-vacuity with a committed
+#     INJECTION (guard 15(d) synthesizes a pillar inversion; the offering-layer
+#     relabel guard monkeypatches an identity-keyed special-case) — guard 14 was
+#     the one that only asserted its setup was correct, never that its ordering
+#     check actually CATCHES the bug it names. This closes that gap.
+#
+#     Monkeypatch the exact "sort the domains alphabetically and assign tiers" bug
+#     into the scorer: overall_score becomes a monotone function of the fixture
+#     host's lexical rank (alphabetically-EARLIEST host -> HIGHEST score),
+#     independent of the capability evidence. Because guard 14 assigns the neutral
+#     hosts reverse-lexical to capability (floor host sorts first, top host last),
+#     this bug REVERSES the population — so replaying the four relabeled fixtures
+#     through the rigged scorer and applying guard 14's OWN strict-decreasing
+#     ordering check must FAIL. If the ordering guard were vacuous (never actually
+#     comparing one host's score against another's) this reversal would slip
+#     through. The bug flows through the REAL ``_score_relabeled`` -> ``scoring.score``
+#     path guard 14 uses, and the real scorer is restored in a finally block.
+#     Worded by capability throughout — the rig keys on the host STRING, the
+#     anti-pattern the benchmark must never exhibit.
+# ---------------------------------------------------------------------------
+def test_population_relabel_negative_control() -> None:
+    print("test_population_relabel_negative_control")
+    real_score = scoring.score
+    # Assign overalls by ASCENDING lexical rank of the neutral host — the
+    # alphabetically-first host earns the top score, keyed on identity not evidence.
+    ascending = sorted(host for _, _, host in _JOINT_RELABEL)
+    rigged_overall = {h: 100.0 - 10.0 * i for i, h in enumerate(ascending)}
+
+    def rigged(checks, rubric, domain):
+        report = real_score(checks, rubric, domain)
+        if domain in rigged_overall:  # host-string-keyed override — the anti-pattern
+            report.overall_score = rigged_overall[domain]
+        return report
+
+    scoring.score = rigged
+    try:
+        scored = []
+        for dom, tier, host in _JOINT_RELABEL:
+            rep, misses = _score_relabeled(dom, host)
+            _check(not misses, f"{dom}->{host}: no replay-miss (rig only touches overall)")
+            scored.append((dom, host, rep.overall_score))
+        # Guard 14's OWN strict-decreasing ordering check, applied to the rigged
+        # scores, must NOT hold — the host-string sorter reversed the population.
+        monotone = all(hi[2] > lo[2] for hi, lo in zip(scored, scored[1:]))
+        _check(
+            not monotone,
+            "negative control: a host-string-keyed scorer reverses the population, "
+            "so guard 14's strict-decreasing ordering assertion FAILS on it "
+            f"(rigged overalls in capability order: {[(h, s) for _, h, s in scored]}) "
+            "— the ordering guard is non-vacuous",
+        )
+    finally:
+        scoring.score = real_score
+    # Guard against leaking the rig into later tests.
+    _check(
+        scoring.score is real_score,
+        "real scoring.score restored after the negative control",
+    )
+
+
 def main() -> int:
     tests = [
         test_canonical_org_replays_46_1,
@@ -1041,6 +1107,7 @@ def main() -> int:
         test_population_ordering_is_not_a_transactability_artifact,
         test_population_ordering_is_identity_invariant,
         test_canonical_delta_is_weight_robust,
+        test_population_relabel_negative_control,
     ]
     failed = 0
     for t in tests:

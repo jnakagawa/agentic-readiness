@@ -606,10 +606,13 @@ design in-cloud, execute locally.
      into a total-superset claim. Complements guard 17 (pillar-wise TOTAL dominance): dominance is a
      PILLAR property; at the check layer that rung is a majority. Guard 20 catches a mis-attribution
      (tail CANT_TEST→FAIL) rig. Score-neutral (git diff -- asrs/ rubric/ EMPTY; rubric v0.7, replay
-     guard 23/23 / +39.4 / 0 replay-miss); suite 223→225. See LOG Cycle 63. FOLLOW-ONS: READOUT the
-     honest check-layer refinement on the methodology page (Cycle-64 candidate, in LOG next-hypothesis);
-     extend guard 19 to the 5th committed fixture (api.replicate.com) once its tier + expected statuses
-     are pinned. -->
+     guard 23/23 / +39.4 / 0 replay-miss); suite 223→225. See LOG Cycle 63. FOLLOW-ONS: the READOUT of
+     the honest check-layer refinement on the methodology page is DONE (Cycle 64, direct-to-main,
+     display-only: `_write_methodology_page` gains the pillar-layer-vs-per-check paragraph naming the one
+     absorbed https_hsts minority reversal in capability terms; test_readout.py 38→39
+     test_methodology_documents_check_layer_honesty; scoring untouched, rubric v0.7, replay 23/23 / +39.4;
+     commit 6bb6ef3; see LOG Cycle 64). REMAINING follow-on: extend guard 19 to the 5th committed fixture
+     (api.replicate.com) once its tier + expected statuses are pinned. -->
 - **[CANDIDATE, TRUTH] Extend guard 19 (population check-layer earned-dominance) to `api.replicate.com`**
   — a 5th real fixture (`fixtures/canonical/api.replicate.com.json`) is already committed but not in the
   capability-spectrum guards (12/17/19). Pin its capability tier + expected per-check statuses (a real

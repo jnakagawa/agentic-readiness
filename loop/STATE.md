@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 63
+- Cycle counter: 64
 - Started: 2026-07-23 (UTC)
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -1231,6 +1231,36 @@
   The resolution is recorded loudly here + in LOG/BACKLOG; the next cloud cycle's infra health check sees a
   FRESH verify artifact + the CLOSED runner-stall bullet and can fold "runner stall resolved" into its next
   post-16:00 UTC digest (Cycle 62's digest opened the flag this morning).
+  Cycle 64 READOUT (the honest per-CHECK refinement surfaced on the methodology page — the READOUT
+  complement to Cycle 63's guard 19): `asrs/scorecard._write_methodology_page` gains one paragraph in the
+  "But couldn't you re-weight the pillars…" card, after the Cycle-60 population weight-robustness paragraph.
+  Cycles 56/60 put the PILLAR-layer total-dominance-chain on the page ("… on every applicable pillar") —
+  true, but it would read to a careful critic as a total PER-CHECK superset, which Cycle 63 proved is NOT so
+  one rung down (org>retail carries the https_hsts inversion). The new prose distinguishes the layers:
+  dominance as used above is a PILLAR-layer property; at the finer per-check layer the head delta is still a
+  clean superset, but a lower rung need not be — a lower-ranked storefront can out-rank a higher-ranked one on
+  a single check yet still lose that check's pillar; names the spectrum's one honest MINORITY REVERSAL in
+  capability terms (a human-checkout retail shop's HTTPS/HSTS out-ranks a no-rails API storefront's, yet the
+  API wins the trust pillar overall, ranking preserved); punchline — rolling checks up into pillars is what
+  ABSORBS the lone reversal (robust BECAUSE the aggregation outvotes an honest local tie, not because every
+  check marches in lockstep), and ASRS SURFACES the inversion (pinned check-by-check by guard 19), not hides
+  it behind a false "wins every check" claim. Truth outranks the pitch. Vendor-neutral (tiers by capability,
+  no domain named — enforced by the new test's drift-flight/driftflight assertions + standing
+  test_readout_wording 4/4 + test_rubric_wording 4/4). Display-only: git diff --name-only = scorecard.py +
+  test_readout.py ONLY; `git diff -- asrs/scoring.py rubric/ asrs/probes/ asrs/fetch.py asrs/protocols.py
+  asrs/offering.py asrs/battery.py` EMPTY → scoring path byte-for-byte untouched, rubric stays v0.7, canonical
+  pair unchanged by construction AND re-measured (in-cloud replay guard 23/23, 46.1 F / 85.5 B / +39.4,
+  0 replay-miss; live-corroborated by verify_20260728T174106Z, 17:41Z ~32 min old). Direct-to-main (commit
+  6bb6ef3). `test_readout.py` 38→39 (test_methodology_documents_check_layer_honesty); suite 20/20 files green.
+  First duty: no open peer-gated PR (verified []); infra health check ran first — runner HEALTHY
+  (verify_20260728T174106Z, 17:41Z, ~32 min old; the ~18.5h stall CLEARED by the 17:27Z self-healing fire),
+  bench UP (20/20). GIT TRAP (Cycle-52 lesson, recurred + WORSE): the fresh checkout's local `main` AND the
+  local `origin/main` remote-tracking ref were BOTH stale at the orphan `2e66201`, so `git checkout -B main
+  origin/main` landed ON the orphan; `git fetch origin main` force-updated origin/main 2e66201→3d1c107 (real
+  tip) and realigned BEFORE editing. LESSON UPDATE: after the fresh-checkout pull, `git fetch origin main`
+  FIRST (the remote-tracking ref itself can be stale), then verify `git rev-parse main == origin/main` against
+  the FETCHED tip. No Slack (display-only/score-neutral/non-sensitive; digest already sent Cycle 62 16:21Z, not
+  a digest window at 18:1xZ). Next cycle takes METHOD.
 - **RUNNER STALL — ROOT-CAUSED + FIXED (local fire 2026-07-28T17:27Z). CLOSED.** The cloud's
   Cycle-51→62 diagnosis ("launchd not firing / machine asleep") was WRONG — only a local fire could
   see the truth. The runner's heartbeat log (`~/Library/Logs/asrs-local-verify.log`) shows the launchd

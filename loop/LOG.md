@@ -6200,3 +6200,75 @@ PushNotification (routine self-healing)._
 ## Local verification — 20260728T174106Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260728T174106Z.json
+
+## Cycle 64 — 2026-07-28T18:1xZ — READOUT (direct to main)
+
+**What.** Surfaced Cycle 63's honest per-CHECK refinement on the public
+methodology page. `asrs/scorecard._write_methodology_page` gains one paragraph in
+the "But couldn't you re-weight the pillars…" card, after the population
+weight-robustness paragraph (Cycle 60). The prose distinguishes the two layers
+the guards now separate: dominance as used above is a **pillar-layer** property;
+at the finer **per-check** layer the head delta is still a clean superset, but a
+rung lower in the chain need not be — a lower-ranked storefront can out-rank a
+higher-ranked one on a single check yet still lose the pillar that check belongs
+to. It names the reference spectrum's one such **minority reversal** in capability
+terms — a human-checkout retail shop presents stronger transport security
+(HTTPS/HSTS) than a legible API storefront with no agent-native payment, yet the
+API storefront still wins the **trust** pillar overall, so the ranking holds —
+and the punchline: rolling checks up into pillars is exactly what **absorbs** that
+lone reversal (the ordering is robust *because* the aggregation outvotes an honest
+local tie, not because every check marches in lockstep); ASRS **surfaces** the
+inversion, pinned check-by-check by the same executable regression test (guard
+19), rather than hiding it behind a false "wins every check" claim.
+
+**Why.** North-star readout clarity + honesty. Cycles 56/60 put the PILLAR-layer
+weight-robustness on the page as a "total dominance chain … on every applicable
+pillar" — true, but it would read as a total per-check superset to a careful
+critic, which Cycle 63 proved is NOT the case one rung down (org>retail carries
+the https_hsts inversion). Leaving that unstated is the kind of over-claim the
+capability lens forbids; stating it — and explaining WHY the aggregation makes the
+ordering robust to it — is strictly more credible than a tidy but false superset
+story. Truth outranks the pitch.
+
+**Vendor-neutral / capability lens.** The tiers are named by capability (agent-
+native rails / legible API with no agent-native payment / human-checkout retail
+shop / sells-nothing page), never by domain — enforced by the new test's
+drift-flight/driftflight-not-in-text assertions AND the standing
+`test_readout_wording.py` (4/4) + `test_rubric_wording.py` (4/4) scanners over the
+rendered page.
+
+**Score-neutral / canonical delta.** `git diff --name-only` = `asrs/scorecard.py`
++ `tests/test_readout.py` ONLY; `git diff --name-only -- asrs/scoring.py rubric/
+asrs/probes/ asrs/fetch.py asrs/protocols.py asrs/offering.py asrs/battery.py`
+EMPTY → scoring path byte-for-byte untouched, rubric stays **v0.7**, canonical
+pair unchanged by construction AND re-measured (in-cloud replay guard **23/23,
+46.1 F / 85.5 B / +39.4, 0 replay-miss**). Live canonical signal corroborated by
+`runs/local/verify_20260728T174106Z.json` (17:41Z, ~32 min old at fire).
+
+**Ship.** Direct-to-main (READOUT, display-only prose + its pinning test, no
+scoring semantics, not payment/signing) — same tier as Cycles 24/56/60. Commit
+`6bb6ef3`. `test_readout.py` 38→39
+(`test_methodology_documents_check_layer_honesty`); suite 20/20 files green.
+
+**First duty.** No open peer-gated PR (verified `list_pull_requests` state=open →
+`[]`). Infra health: bench UP (20/20 files, replay 23/23); runner **HEALTHY** —
+newest `verify_20260728T174106Z` is ~32 min old at this 18:1xZ fire (the ~18.5h
+stall Cycles 51→63 tracked is CLEARED, per the 17:27Z local self-healing fire that
+fixed the wake/network race). Git: fresh checkout again had the stale-orphan
+`2e66201` trap — the local `origin/main` remote-tracking ref was ALSO stale at the
+orphan (a `git checkout -B main origin/main` landed on it); `git fetch origin main`
+force-updated `origin/main` 2e66201→3d1c107 (real tip), realigned before editing
+per the Cycle-52 lesson.
+
+**Slack.** None — display-only, score-neutral, non-sensitive; the daily digest was
+already sent by Cycle 62 (16:21Z, first cloud cycle after 16:00 UTC today), so this
+18:1xZ fire is not a digest window and nothing here is human-gated.
+
+**Next hypothesis.** READOUT frontier: the canonical-history page (Cycle 36/51) and
+the card are mature; the biggest remaining readout gap is the **leaderboard /
+calibration-population page** (P1) — a benchmark cites a population, not one pair,
+and the four committed fixtures (com/org/retail/bare) are already an ordered
+spectrum the methodology prose now leans on. A static, evidence-linked four-row
+leaderboard rendering guard-12's ordering + each row's earned/absorbed story would
+turn the prose into a browsable artifact. Needs a small render + a wording-guarded
+test; no scoring change.

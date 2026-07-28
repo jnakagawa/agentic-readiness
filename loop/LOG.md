@@ -6272,3 +6272,7 @@ spectrum the methodology prose now leans on. A static, evidence-linked four-row
 leaderboard rendering guard-12's ordering + each row's earned/absorbed story would
 turn the prose into a browsable artifact. Needs a small render + a wording-guarded
 test; no scoring change.
+
+## Local verification — 20260728T184104Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260728T184104Z.json

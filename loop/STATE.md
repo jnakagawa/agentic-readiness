@@ -1261,6 +1261,31 @@
   FIRST (the remote-tracking ref itself can be stale), then verify `git rev-parse main == origin/main` against
   the FETCHED tip. No Slack (display-only/score-neutral/non-sensitive; digest already sent Cycle 62 16:21Z, not
   a digest window at 18:1xZ). Next cycle takes METHOD.
+  Local fire 2026-07-28T18:55Z COVERAGE (operator-directive acceptance, complementary to the cloud
+  rotation; cloud still takes METHOD next): executed the top-P0 [LOCAL] item — the FIRST end-to-end
+  offering-relative LIVE battery. `asrs score driftflight.com --behavioral --battery auto --models
+  claude --trials 2` (claude-only: codex reputation-gates BOTH canonical domains 4/4, and the
+  offering-relative STRUCTURE under test does not need cross-model — backlog explicitly authorizes it).
+  OVERALL 87.8 B, rubric v0.7, CITABLE (verdict stability 1.00, 2 valid runs). OPERATOR ACCEPTANCE
+  CONFIRMED on REAL data, all three criteria on BOTH surfaces: (1) driftflight.com physical_good = NA
+  (live discovery claimed {metered_api,subscription,digital_good}; na_archetypes =
+  {physical_good,service_booking,data_retrieval}); (2) spreads over CLAIMED archetypes only
+  (cross-task 0.00, between-archetype 0.00 "generalist", each over the 3 claimed; NA excluded from every
+  mean/spread); (3) NA shown "not offered" on terminal TASK BATTERY block AND HTML card
+  Offering-relative sub-block (chip na = the 3 NA archetypes). First LIVE between_kind_spread (0.00,
+  generalist) + all 3 intents 100% completion on real multi-kind data. Trust 55.6 behavioral vs 60.0
+  static (live panel warn+go conf 0.65: zero web footprint + underspecified directive — honest
+  measurement). Hermetic fix (Cycle 32) confirmed LIVE (--strict-mcp-config on the panel subprocess).
+  Invariant #1 held: agent reached only the FREE tier (3 free images), blockers note a paid call needs a
+  funded wallet, free-tier probe fired once. Score-neutral [LOCAL] EXECUTION (git diff -- asrs/ rubric/
+  tests/ EMPTY, ran shipped pipeline) → rubric v0.7; canonical PAIR unchanged (18:41Z verify 46.1 F /
+  85.5 B / +39.4, replay guard green; behavioral 87.8 is the --behavioral superset of the static 85.5:
+  +Outcome pillar 100.0 + live trust panel, does NOT move the static delta). Evidence force-added:
+  runs/local/acceptance_battery_driftflightcom_20260728T184325Z.{report.json,log,card.html}. First duty:
+  no open peer-gated PR (verified []); runner HEALTHY (verify_20260728T184104Z, 18:41Z, ~1 min old at
+  fire), bench 20/20, main == origin/main. The operator-directive P0 acceptance is DISCHARGED on the
+  with-rails API side; the retail-INVERSE behavioral half (guarded in-cloud, never run live) is the next
+  [LOCAL] increment.
 - **RUNNER STALL — ROOT-CAUSED + FIXED (local fire 2026-07-28T17:27Z). CLOSED.** The cloud's
   Cycle-51→62 diagnosis ("launchd not firing / machine asleep") was WRONG — only a local fire could
   see the truth. The runner's heartbeat log (`~/Library/Logs/asrs-local-verify.log`) shows the launchd

@@ -26,16 +26,41 @@ design in-cloud, execute locally.
      runner-health STATE note, not a fresh P0): a wake with a very slow (>60s) network would still
      miss — watch the artifact `attempts` field over the next day; escalate to a longer/adaptive
      backoff or a DNS pre-flight only if it recurs. -->
-- **[LOCAL] acceptance rerun — offering-relative live battery (operator directive P0, NOW the oldest
-  live P0).** Run `asrs score <domain> --behavioral --battery auto --models claude,codex --trials 2`
-  LIVE on the canonical pair + a retail control and confirm the operator acceptance on REAL data —
-  driftflight.com physical_good = NA with spreads over CLAIMED archetypes only, a retail storefront the
-  inverse, and NA shown as "not offered" on the card + terminal. First end-to-end offering-relative live
-  battery; also eyeballs the per-intent grid / by-archetype + between-archetype pills on real multi-kind
-  data (folds in the two "[LOCAL] Eyeball the battery card" P2 items + the between-pill live-eyeball +
-  the hermetic-fix wall-clock A/B). Budget: ONE domain per fire (claude-only if codex reputation-gates
-  the canonical domains, as it has repeatedly — the offering-relative STRUCTURE doesn't need codex);
-  force-add the report to runs/local/. Was blocked behind the runner-stall P0 above (now cleared).
+<!-- DONE 2026-07-28T18:55Z (local fire, COVERAGE, direct-to-main, score-neutral): "[LOCAL] acceptance
+     rerun — offering-relative live battery" DISCHARGED on the WITH-RAILS API side — the FIRST end-to-end
+     offering-relative LIVE battery. `asrs score driftflight.com --behavioral --battery auto --models
+     claude --trials 2` (claude-only: codex reputation-gates BOTH canonical domains 4/4 per the 11:42Z
+     characterization, and the offering-relative STRUCTURE under test does not need cross-model — the item
+     authorized exactly this). OVERALL 87.8 B / rubric v0.7 / CITABLE (verdict stability 1.00, 2 valid
+     runs). OPERATOR ACCEPTANCE CONFIRMED on REAL data, all three criteria on BOTH surfaces:
+     (1) driftflight.com physical_good = NA (live discovery claimed {metered_api,subscription,digital_good};
+     na_archetypes {physical_good,service_booking,data_retrieval}); (2) spreads over CLAIMED archetypes ONLY
+     (cross-task 0.00, between-archetype 0.00 "generalist", NA excluded from every mean/spread);
+     (3) NA shown "not offered" on the terminal TASK BATTERY block AND the HTML card Offering-relative
+     sub-block (chip na = the 3 NA archetypes). First LIVE between_kind_spread (0.00) + all 3 intents 100%
+     completion on real multi-kind data — folds in the two "[LOCAL] Eyeball the battery card" P2 items + the
+     between-pill live-eyeball. Hermetic fix (Cycle 32) LIVE-confirmed (--strict-mcp-config, empty fleet).
+     Invariant #1 held (agent reached only the FREE tier — 3 free images — blockers note a paid call needs a
+     funded wallet, free-tier probe fired once, no nonzero auth). Score-neutral: git diff -- asrs/ rubric/
+     tests/ EMPTY (ran the shipped pipeline) → rubric v0.7; canonical PAIR unchanged (18:41Z verify 46.1 F /
+     85.5 B / +39.4, replay guard green; behavioral 87.8 is the --behavioral superset of static 85.5:
+     +Outcome pillar 100.0 + live trust panel, does NOT move the static delta). Evidence (force-added):
+     runs/local/acceptance_battery_driftflightcom_20260728T184325Z.{report.json,log,card.html}. See LOG
+     (Local cycle — 18:55Z). The RETAIL-INVERSE behavioral half is the new P0 below. -->
+- **[LOCAL] acceptance rerun — the RETAIL-INVERSE half (the operator's OTHER named acceptance criterion;
+  NOW the oldest live P0).** The with-rails API side is discharged (above): driftflight.com
+  physical_good = NA confirmed LIVE. The operator directive's other named half — "a retail storefront
+  shows the inverse" — is guarded at the DISCOVERY layer in-cloud
+  (`test_offering_canonical.test_retail_inverse_offering`, the committed `books.toscrape.com` fixture:
+  physical_good CLAIMED, API archetypes NA) but has NEVER been run BEHAVIORALLY live end-to-end. Run
+  `asrs score <retail-domain> --behavioral --battery auto --models claude --trials 2` on a REAL retail
+  storefront claude can reach, and confirm the INVERSE of the 18:55Z .com run: physical_good is a
+  CLAIMED/assessed archetype (not NA), the API archetypes render NA "not offered" on card + terminal, and
+  the spreads compute over the claimed set. Budget: ONE domain per fire, claude-only; force-add the report
+  to runs/local/. NOTE: `books.toscrape.com` is a static scrape-sandbox with no real purchase path, so
+  the shopper checkpoints there would be mostly N — pick a real shop with a browsable product/checkout so
+  the behavioral half is meaningful; the STRUCTURE (physical_good claimed + API NA rendering), not any
+  specific vendor, is the target.
 
 - **[OPERATOR DIRECTIVE — Jonah, 2026-07-23] The battery must be
   OFFERING-RELATIVE, not fixed.** Observed: the current battery judges every

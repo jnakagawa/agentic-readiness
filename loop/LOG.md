@@ -6276,3 +6276,79 @@ test; no scoring change.
 ## Local verification — 20260728T184104Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260728T184104Z.json
+
+## Local cycle — 2026-07-28T18:55Z — COVERAGE (operator-directive acceptance, direct-to-main)
+
+**What.** The operator directive's top-P0 `[LOCAL]` acceptance rerun EXECUTED —
+the FIRST end-to-end offering-relative **LIVE** battery, on the operator's named
+target `driftflight.com`:
+`asrs score driftflight.com --behavioral --battery auto --models claude --trials 2`.
+**claude-only** (STATE re-confirms codex reputation-gates BOTH canonical domains
+repeatedly — 4/4 at the 11:42Z characterization, keyed on domain age; the
+offering-relative STRUCTURE under test does not need cross-model, and the backlog
+item explicitly authorizes claude-only for this reason — running codex would add
+~6 refusal panels of reachability noise, no structural signal). Result: **OVERALL
+87.8 B, rubric v0.7**, QUOTABILITY CITABLE (verdict stability 1.00 over 2 valid
+runs).
+
+**Acceptance — CONFIRMED on REAL data, all three criteria, on BOTH surfaces:**
+1. `driftflight.com` **physical_good = NA** — live discovery classified it as
+   claiming `{metered_api, subscription, digital_good}`; `na_archetypes =
+   {physical_good, service_booking, data_retrieval}`.
+2. **spreads over CLAIMED archetypes only** — `assessed_archetypes =
+   {metered_api, subscription, digital_good}`; cross-task spread 0.00,
+   between-archetype spread 0.00 ("generalist"), each over the 3 claimed only;
+   the 3 NA archetypes excluded from every mean/spread.
+3. **NA shown as "not offered"** on the terminal TASK BATTERY block AND the HTML
+   card's "Offering-relative" sub-block (`chip na` = physical_good /
+   service_booking / data_retrieval under "Not offered (NA, excluded)").
+
+**Live signals (first on real multi-kind data).** All 3 intents 100% avg
+checkpoint completion (2 valid each); by-archetype 100% each, spread 0.00; the
+first LIVE `between_kind_spread` = 0.00 → "generalist". Trust pillar 55.6
+(behavioral) vs 60.0 (static) — the live claude panel `warn+go` (conf 0.65)
+flagged zero independent web footprint + an underspecified "buy what I need"
+directive, then would proceed: honest measurement, not a bug. Hermetic-shopper
+fix (Cycle 32) confirmed LIVE — the panel subprocess ran with `--strict-mcp-config`
+(no operator MCP fleet booted).
+
+**Invariant #1 ($0-only) held.** Both claude trials' blockers explicitly note a
+genuinely PAID call needs a funded USDC wallet; the agent reached only the FREE
+tier (3 free sketch images) — no nonzero authorization ever attempted. The
+free-tier transaction probe fired at most once for the whole battery.
+
+**Score-neutral / regression.** `[LOCAL]` EXECUTION ONLY — `git diff -- asrs/
+rubric/ tests/` EMPTY (ran the shipped pipeline, changed no code) → rubric v0.7.
+Canonical PAIR unchanged: the 18:41Z verify artifact re-measures **46.1 F /
+85.5 B / +39.4** with the in-cloud replay guard green. The behavioral 87.8 B is
+the `--behavioral` SUPERSET of the static 85.5 (adds the Outcome pillar 100.0 +
+the live trust panel) — it does NOT move the static canonical delta.
+
+**Evidence (force-added; `runs/` gitignored).**
+- `runs/local/acceptance_battery_driftflightcom_20260728T184325Z.report.json`
+- `…_20260728T184325Z.log` (terminal card + TASK BATTERY block)
+- `…_20260728T184325Z.card.html` (rendered scorecard — NA chips verified)
+
+**First duty.** No open peer-gated PR (verified `gh pr list --state open` → `[]`).
+Infra health check ran first — runner **HEALTHY** (newest `verify_20260728T184104Z`,
+18:41Z, ~1 min old at this 18:4xZ fire; tests_ok, 46.1/85.5/+39.4), bench UP
+(20/20 files green), git `main == origin/main`. Nothing to review/merge → straight
+to the oldest live P0.
+
+**Ship.** Direct-to-main (evidence + LOG/STATE/BACKLOG; no scoring semantics, not
+payment/signing).
+
+**Slack.** None — score-neutral acceptance validation of already-merged code; the
+daily digest was already sent by Cycle 62 (16:21Z), so this 18:5xZ fire is not a
+digest window and nothing here is human-gated.
+
+**Next hypothesis.** The offering-relative live battery is now validated on the
+with-rails API storefront. The remaining acceptance half — "a retail storefront
+shows the INVERSE" (physical_good CLAIMED, API archetypes NA) — is guarded
+in-cloud by `test_offering_canonical.test_retail_inverse_offering` on the
+`books.toscrape.com` fixture, but has never been run BEHAVIORALLY live end-to-end.
+A next `[LOCAL]` fire should run `--battery auto --behavioral` on a real retail
+domain claude can reach and confirm the inverse NA-block renders on LIVE retail
+data (the true mirror of this fire). The cross-model N-curve remains blocked on a
+codex-reachable storefront (codex gated both canonical domains again here by
+construction — claude-only).

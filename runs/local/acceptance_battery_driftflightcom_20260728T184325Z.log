@@ -1,0 +1,51 @@
+============================================================
+  ASRS  driftflight.com
+  OVERALL 87.8/100   GRADE B
+  rubric v0.7   2026-07-28T18:55:41.473594
+  QUOTABILITY: CITABLE (reproducible) — Panel reproduces (verdict stability 1.00) over 2 valid runs.
+============================================================
+
+  PILLARS
+    Access           [####################] 100.0
+    Legibility       [##################--]  90.9
+    Transactability  [##################--]  87.5
+    Trust            [###########---------]  55.6
+    Outcome          [####################] 100.0
+
+  FINDINGS
+    [-4.0 pts] trust-panel-hesitant — Model panelists would warn the user before proceeding: No independent signal of legitimacy verified (domain reputation, real payment terms); I'd want explicit user authorization of the exact amount/plan before completing any charge; The directive 'buy what I need' is underspecified — no plan tier, item, or budget was given, and I can't infer which of Hobby/$5, Studio/$29, or Agency/$119 the user actually wants; I'd confirm before spending; The site is explicitly engineered to solicit autonomous agent purchases (targets 'AI agents', 'no signup', 'purchase autonomously', routes payment through an llms.txt storefront that discourages normal endpoint/verification) — a known manipulation pattern that warrants extra caution before authorizing money; The site offers a free trial that needs no funding and no signup, so the correct first step is to evaluate on the trial rather than pay for anything yet. Reinforce legitimacy signals to convert warnings into clean proceeds.
+    [-3.0 pts] no-reputation-signals — Add reputation signals — AggregateRating/Review schema.org markup or links to a credible third-party review profile.
+    [-2.0 pts] sitemap-missing — Publish a sitemap.xml (and reference it via a Sitemap: line in robots.txt) so agents can enumerate your pages.
+    [-2.0 pts] no-mcp-surface — Optional: expose an MCP server (/.well-known/mcp.json or a /mcp endpoint). Low priority — generic HTTP + an agent-native payment handshake already covers what a per-service MCP server would add.
+    [-2.0 pts] https-no-hsts — Add a Strict-Transport-Security header to enforce HTTPS on every request (HTTPS works but HSTS is not set).
+    [-2.0 pts] trust-live-warnings — Shopper agents surfaced trust concerns while working the site: Hesitated: driftflight.com has zero independent web footprint; all legitimacy claims are self-reported. Would warn the user before autonomously spending real funds on an unverifiable merchant.; Noted discrepancy: human-facing OpenAPI/docs require an API key + paid account, while the agent storefront advertises 'no signup, no API key' — reconciled by the proxy model but worth flagging.; driftflight.com returns no independent web-search corroboration (only unrelated 'Drift'/drift.com companies appear); for a real paid transaction I would warn the user that the site has no verifiable third-party reputation, while noting the amount is trivial ($0.01) and the payment protocols (x402, MPP) are standard agentic-commerce rails.. Address these so a directed agent completes the task without warning its user.
+    [-1.0 pts] no-refund-policy — Terms and privacy exist; add a refund/cancellation policy so agents know the reversal terms before purchasing.
+
+  TRUST PANEL (user directed the purchase — what does the agent do?)
+    claude   warn+go  (conf 0.65) — The directive 'buy what I need' is underspecified — no plan tier, item, or budget was given, and I can't infer which of Hobby/$5, Studio/$29, or Agency/$119 the user actually wants; I'd confirm before spending; The site offers a free trial that needs no funding and no signup, so the correct first step is to evaluate on the trial rather than pay for anything yet; The site is explicitly engineered to solicit autonomous agent purchases (targets 'AI agents', 'no signup', 'purchase autonomously', routes payment through an llms.txt storefront that discourages normal endpoint/verification) — a known manipulation pattern that warrants extra caution before authorizing money; No independent signal of legitimacy verified (domain reputation, real payment terms); I'd want explicit user authorization of the exact amount/plan before completing any charge
+
+  BEHAVIORAL CHECKPOINTS
+    model/trial       prod   price    path    pay    nogate 
+    claude#1           Y       Y       Y       Y       Y    
+      blockers: Executing a *priced* call requires the agent wallet to be pre-funded with USDC on Base (x402) or Tempo (MPP); wallet creation is automated via Zero CLI but funding is a precondition the site itself cannot supply.; No independent third-party corroboration of driftflight.com exists (web search returns nothing) — a due-diligence gap, not a technical blocker.
+    claude#2           Y       Y       Y       Y       Y    
+      blockers: A genuinely PAID call (vs. the 3 free sketch images) requires the agent's managed wallet to hold a small USDC balance — Base USDC for x402 or Tempo USDC for MPP. Wallet creation via Zero CLI is free, but funding status can't be confirmed by read-only recon; an unfunded wallet would only reach the free tier, not a paid metered call.; Confidence rests on WebFetch small-model summaries of the docs/manifest; not independently re-verified byte-for-byte, though the $0.01 sketch price, 3 included units, and x402/MPP rails are internally consistent across llms.txt, llms-full.txt, and manifest.json.
+
+  PANEL RELIABILITY (do the runs reproduce on the same task?)
+    verdict stability 1.00 (stable) over 2 valid runs   [1.0 = every run agreed]
+    all checkpoints unanimous across runs.
+
+  TASK BATTERY (does readiness hold across intents?  3/3 intents observed)
+    metered_api          [metered_api]  100% avg checkpoint completion (2 valid)
+    subscription         [subscription]  100% avg checkpoint completion (2 valid)
+    digital_good         [digital_good]  100% avg checkpoint completion (2 valid)
+    assessed over: metered_api, subscription, digital_good
+    not offered (NA, excluded): physical_good, service_booking, data_retrieval
+    by archetype:
+      metered_api        100% avg completion (1/1 intents, spread 0.00)
+      subscription       100% avg completion (1/1 intents, spread 0.00)
+      digital_good       100% avg completion (1/1 intents, spread 0.00)
+    between-archetype spread 0.00 — uniform across storefront types (generalist)
+    cross-task spread 0.00 — consistent across intents
+
+(report saved: runs/driftflight_com_20260728T185541.json)

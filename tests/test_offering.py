@@ -44,9 +44,9 @@ def _fixture_entry_text(domain: str, url_suffix: str) -> str:
     """Recorded response text of the committed fixture GET entry whose URL ends with ``url_suffix``.
 
     Reads the fixture's raw recorded responses directly (not through
-    ``FetchContext.get``) so a surface captured on a docs SUBDOMAIN — which live
-    discovery does not currently crawl — is still available as REAL captured bytes
-    for classifier-layer tests.
+    ``FetchContext.get``) so any surface — including one only reachable through a
+    ``FetchContext`` path/URL resolution — is available as REAL captured bytes for
+    classifier-layer tests.
     """
     with open(os.path.join(_FIXTURE_DIR, f"{domain}.json"), encoding="utf-8") as fh:
         data = json.load(fh)
@@ -321,10 +321,10 @@ def test_credit_metered_fires_on_real_captured_billing_prose():
     #
     # driftflight.com documents credit billing on its agent docs: "buy a credit or
     # subscription plan", "your plan's credit ran out", "minimumUsd for credit
-    # plans" — captured in the committed canonical fixture (on the docs subdomain
-    # agents.driftflight.com/llms-full.txt, which discover_offering does not
-    # currently crawl — a separate COVERAGE gap; here we exercise the classifier on
-    # the captured bytes, the surface the signal actually reads).
+    # plans" — captured in the committed canonical fixture on the docs subdomain
+    # agents.driftflight.com/llms-full.txt. discover_offering now crawls that doc
+    # subdomain (see test_doc_subdomain_surfaces_are_read_live); here we exercise
+    # the classifier directly on the captured bytes, the surface the signal reads.
     billing = _fixture_entry_text("driftflight.com", "/llms-full.txt")
     assert "credit" in billing.lower(), "fixture llms-full.txt lost its credit-billing prose"
     prof = classify_offering("driftflight.com", {"/llms-full.txt": billing})
@@ -509,6 +509,78 @@ def test_strip_html_drops_script_style_and_tags():
     print("  ok: strip_html removes script/style/tags, passes plain text through")
 
 
+def test_doc_subdomain_helper_is_precise_and_ssrf_safe():
+    # The doc-subdomain expansion is constructed HERE from the site's own host, so
+    # it must (a) attach the allowlisted subdomains to the REGISTRABLE host (www.
+    # dropped), (b) never STACK a subdomain onto a host already on one (no
+    # api.api.x.com), (c) stay entirely within the storefront's own registrable
+    # domain (SSRF-safe — never an arbitrary host), and (d) label each surface
+    # host-qualified so it can't overwrite an apex surface of the same path.
+    surfaces_n = len(offering._SURFACE_DOCS)
+    subs = set(offering._DOC_SUBDOMAINS)
+
+    apex = offering._doc_subdomain_surfaces("https://driftflight.com")
+    hosts = {label.split("/")[0] for label, _ in apex}
+    assert hosts == {f"{s}.driftflight.com" for s in subs}, hosts
+    assert len(apex) == len(subs) * surfaces_n, (len(apex), len(subs), surfaces_n)
+    # (a) www. is dropped so the subdomain attaches to the registrable host.
+    www = offering._doc_subdomain_surfaces("https://www.driftflight.com")
+    assert {l.split("/")[0] for l, _ in www} == hosts, www
+    # (c) every constructed URL is https and stays within the registrable domain —
+    # nothing can point discovery at a third-party host.
+    for label, url in apex:
+        assert url.startswith("https://"), url
+        host = url.split("://", 1)[1].split("/", 1)[0]
+        assert host.endswith(".driftflight.com"), host
+        # (d) host-qualified label, distinct from any bare apex path.
+        assert label.startswith(host) and label not in offering._SURFACE_DOCS, label
+    print(f"  ok: doc-subdomain expansion is registrable-host-only + host-qualified ({len(apex)} urls)")
+
+    # (b) a host already ON an allowlisted subdomain does not stack it onto itself.
+    onapi = offering._doc_subdomain_surfaces("https://api.replicate.com")
+    onapi_hosts = {l.split("/")[0] for l, _ in onapi}
+    assert "api.api.replicate.com" not in onapi_hosts, onapi_hosts
+    assert onapi_hosts == {f"{s}.api.replicate.com" for s in subs if s != "api"}, onapi_hosts
+    print("  ok: a host already on an allowlisted subdomain is not stacked (no api.api.*)")
+
+    # A hostless / dotless base yields nothing to try (no bare-host expansion).
+    assert offering._doc_subdomain_surfaces("") == []
+    assert offering._doc_subdomain_surfaces("https://localhost") == []
+    print("  ok: hostless / dotless base -> no subdomain surfaces")
+
+
+def test_doc_subdomain_surfaces_are_read_live():
+    # END-TO-END, on REAL captured bytes: discovery now reads the surface docs on
+    # the storefront's conventional doc subdomains, not just its apex. The canonical
+    # driftflight.com serves its rich agent docs (with credit-billing prose) at
+    # agents.driftflight.com/llms-full.txt — a surface the apex crawl never reached.
+    ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "driftflight.com.json"))
+    prof = offering.discover_offering(ctx)
+
+    # The doc-subdomain surface was READ (it is in surfaces_seen, host-qualified).
+    assert "agents.driftflight.com/llms-full.txt" in prof.surfaces_seen, prof.surfaces_seen
+
+    # NON-VACUOUS: `credit-metered` is present ONLY in the subdomain llms-full.txt
+    # (the apex /llms.txt and the homepage do NOT carry it — the homepage's C2PA
+    # 'credits' metadata is precision-guarded, see
+    # test_credit_metered_fires_on_real_captured_billing_prose). So finding it in the
+    # DISCOVERED profile proves the subdomain content actually reached classification
+    # — before this surface was crawled, discovery could not have seen it.
+    metered = next(c for c in prof.claimed if c.archetype == "metered_api")
+    cred = [s for s in metered.signals if s.label == "credit-metered"]
+    assert cred, {s.label for s in metered.signals}
+    assert cred[0].surface == "agents.driftflight.com/llms-full.txt", cred[0].surface
+    assert "credit" in cred[0].quote.lower(), cred[0].quote
+    print(f"  ok: doc-subdomain agent docs reach classification (credit-metered from {cred[0].surface})")
+
+    # SCORE-NEUTRAL by construction: reading richer docs can only REINFORCE archetypes
+    # the storefront already documents — the claimed SET is unchanged (the exact
+    # regression the canonical offering guard pins). No new archetype, no false
+    # physical_good/service_booking/data_retrieval from the extra prose.
+    assert set(prof.archetypes) == {"metered_api", "subscription", "digital_good"}, prof.archetypes
+    print("  ok: the richer doc-subdomain evidence does NOT change the claimed set (score-neutral)")
+
+
 def main() -> int:
     tests = [
         test_api_storefront_claims_agent_native_not_physical,
@@ -524,6 +596,8 @@ def main() -> int:
         test_ai_plugin_descriptor_alone_classifies_storefront,
         test_a2a_agent_card_alone_classifies_storefront,
         test_openapi_surface_is_wired_for_live_discovery,
+        test_doc_subdomain_helper_is_precise_and_ssrf_safe,
+        test_doc_subdomain_surfaces_are_read_live,
         test_strip_html_drops_script_style_and_tags,
     ]
     failed = 0

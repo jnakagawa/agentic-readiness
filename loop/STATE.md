@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 53
+- Cycle counter: 54
 - Started: 2026-07-23 (UTC)
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -950,9 +950,36 @@
   (verified []); infra health check ran first — RUNNER STILL STALLED PAST 6h (unchanged, no newer artifact); git
   realigned local `main` from stale orphan `2e66201` → origin/main `7858bc0` before committing. Next cycle takes
   COVERAGE.
-- **RUNNER STALL — STILL STALLED PAST THE 6h FLOOR (updated Cycle 53, 2026-07-28T07:1xZ; crossed Cycle 51
+  Cycle 54 COVERAGE (offering discovery reads conventional DOC SUBDOMAINS — the queued Cycle-50/53 candidate, now
+  shipped): `asrs/offering.py` `discover_offering` reads each `_SURFACE_DOCS` surface on the apex host AND on a small
+  allowlist of same-registrable-host doc subdomains `agents.`/`docs.`/`developers.`/`api.` (new `_DOC_SUBDOMAINS` +
+  `_doc_subdomain_surfaces(base_url)`). API-first storefronts commonly serve rich agent docs on a doc subdomain, not
+  the apex; until now discovery read only the bare apex, so such a site was under-classified — the canonical
+  `driftflight.com` serves its credit-billing agent docs at `agents.driftflight.com/llms-full.txt`, never crawled
+  before. PRECISION-FIRST/SSRF-safe: subdomains constructed from the site's OWN resolved host (`base_url`), never an
+  arbitrary fetched `url` → discovery can only reach the storefront's own registrable domain; `www.` dropped so the
+  subdomain attaches to the registrable host; a host already on an allowlisted subdomain is NOT self-stacked
+  (`api.replicate.com` → no `api.api.replicate.com`); surface labels host-qualified (`agents.<host>/llms.txt`) so a
+  subdomain surface never overwrites an apex path; a subdomain that 404s/does-not-resolve is simply absent. SCORE-NEUTRAL:
+  `discover_offering` is off the scoring path (`--battery auto` only); `git diff --name-only` = offering.py +
+  test_offering.py ONLY, `git diff -- asrs/scoring.py asrs/probes/ asrs/fetch.py rubric/` EMPTY → rubric stays v0.7,
+  canonical delta unchanged by construction AND re-measured (replay guard 17/17, 46.1 F / 85.5 B / +39.4, 0 replay-miss).
+  Canonical OFFERING guard `test_offering_canonical.py` stays 12/12: subdomain surfaces on BOTH canonical domains carry
+  only metered_api/subscription/digital_good signals (NO physical_good/service_booking/data_retrieval), so the claimed
+  SET is byte-for-byte `{metered_api,subscription,digital_good}` — only strength/labels grow (P2 prediction confirmed).
+  Vendor-neutral (generic-convention allowlist; relabel-invariance guards stay green — the whole-fixture relabel rewrites
+  `agents.driftflight.com` → `agents.<neutral>` consistently). Not payment/signing code. `test_offering.py` 14→16
+  (+`test_doc_subdomain_helper_is_precise_and_ssrf_safe` unit-pinning the helper; +`test_doc_subdomain_surfaces_are_read_live`
+  replaying the committed `.com` fixture and asserting `agents.driftflight.com/llms-full.txt` ∈ surfaces_seen AND the
+  `credit-metered` signal — present ONLY in that subdomain surface — now reaches the DISCOVERED metered_api claim, a
+  non-vacuous witness the subdomain content reached classification, claimed set unchanged). Full suite 212→214.
+  Direct-to-main (score-neutral discovery off the scoring path, precedent Cycles 34/42/46). No Slack (score-neutral,
+  not sensitive, 08:1xZ not a digest window). First duty: no open peer-gated PR (verified []); infra health check ran
+  first — RUNNER STILL STALLED PAST 6h (unchanged, no newer artifact, ~9.5h old); git realigned local `main` from stale
+  orphan `2e66201` → origin/main `dfb7f47` (Cycle 53) before committing. Next cycle takes TRUTH.
+- **RUNNER STALL — STILL STALLED PAST THE 6h FLOOR (updated Cycle 54, 2026-07-28T08:1xZ; crossed Cycle 51
   05:13Z).** Newest verify artifact is still `verify_20260727T224106Z.json` (22:41Z) — NO newer artifact
-  appeared between Cycle 51 (05:13Z) and this fire (07:1xZ), so at ~8.5h old the stall has NOT self-cleared
+  appeared between Cycle 51 (05:13Z) and this fire (08:1xZ), so at ~9.5h old the stall has NOT self-cleared
   (contrast the Cycle-28 stall, which cleared by Cycle 30). The Cycle 48/49/50 watch (six consecutive :41 gaps,
   23:41→04:41Z) tipped over at Cycle 51 and persists across Cycles 52–53. Mirrors the Cycle-28 stall mechanism —
   likely the same launchd-on-Jonah's-machine intermittent stall (machine asleep / launchd not firing), NOT

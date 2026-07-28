@@ -46,6 +46,7 @@ from __future__ import annotations
 import re
 from dataclasses import asdict, dataclass, field
 from typing import Any
+from urllib.parse import urlparse
 
 # The fixed archetype template bank (the operator directive's taxonomy). Order
 # is the stable readout order; it is also the tie-break when two archetypes have
@@ -111,6 +112,29 @@ _SURFACE_DOCS: tuple[str, ...] = (
     "/.well-known/openapi.json",
     "/swagger.json",
 )
+
+# Conventional agent/API DOC SUBDOMAINS. A real, common pattern for API-first
+# storefronts is to serve their rich agent docs on a dedicated subdomain of their
+# OWN registrable domain (agents. / docs. / developers. / api.) rather than the
+# apex — e.g. a storefront whose apex is marketing prose but whose llms-full.txt /
+# OpenAPI spec / billing docs live on ``agents.<domain>`` / ``api.<domain>``. Until
+# now :func:`discover_offering` read ``_SURFACE_DOCS`` only on the storefront's apex
+# host, so such a site was classified from its bare apex + on-apex ``/llms.txt``
+# alone — a thin subset of what it actually publishes (the canonical driftflight.com
+# serves its credit-billing agent docs at ``agents.driftflight.com/llms-full.txt``,
+# never crawled). Discovery now ALSO tries ``_SURFACE_DOCS`` on a small allowlist of
+# these conventional subdomains, so a site whose only rich self-description lives on
+# a doc subdomain is no longer under-classified.
+#
+# PRECISION-FIRST / SSRF-safe: the subdomains are constructed HERE from the site's
+# OWN resolved host, never from a ``url`` field in fetched page content (which could
+# redirect discovery to an arbitrary third-party host). A subdomain that does not
+# resolve or 404s is simply an absent surface — the same tolerance every other doc
+# gets. Score-neutral: discovery is off the scoring path (``--battery auto`` only);
+# adding surfaces can only reinforce archetypes the site already documents, and on
+# the canonical pair the claimed SET is unchanged (guarded by
+# tests/test_offering_canonical.py).
+_DOC_SUBDOMAINS: tuple[str, ...] = ("agents", "docs", "developers", "api")
 
 _F = re.IGNORECASE
 
@@ -366,6 +390,38 @@ def classify_offering(domain: str, surfaces: dict[str, str]) -> OfferingProfile:
 # ---------------------------------------------------------------------------
 # live discovery (network, $0 GETs only)
 # ---------------------------------------------------------------------------
+def _doc_subdomain_surfaces(base_url: str) -> list[tuple[str, str]]:
+    """``(surface-label, absolute-url)`` pairs to try on conventional doc subdomains.
+
+    For each prefix in :data:`_DOC_SUBDOMAINS` and each path in
+    :data:`_SURFACE_DOCS`, build the absolute URL on a subdomain of the site's OWN
+    resolved host (a leading ``www.`` is dropped so the subdomain attaches to the
+    registrable host, and a host already ON one of these subdomains is not stacked
+    onto itself — ``api.x.com`` does not spawn ``api.api.x.com``). The surface label
+    is host-qualified (``agents.<host>/llms.txt``) so a subdomain surface is DISTINCT
+    from — and never silently overwrites — an apex surface of the same path.
+
+    Constructed purely from ``base_url``; never follows a URL taken from fetched
+    page content, so discovery can only reach the storefront's own registrable
+    domain (SSRF-safe). Returns ``[]`` for a hostless/dotless base (nothing to try).
+    """
+    parsed = urlparse(base_url or "")
+    scheme = parsed.scheme or "https"
+    host = parsed.netloc
+    if not host or "." not in host:
+        return []
+    base_host = host[4:] if host.startswith("www.") else host
+    first_label = base_host.split(".")[0]
+    out: list[tuple[str, str]] = []
+    for sub in _DOC_SUBDOMAINS:
+        if first_label == sub:  # already on this subdomain — don't stack it
+            continue
+        sub_host = f"{sub}.{base_host}"
+        for path in _SURFACE_DOCS:
+            out.append((f"{sub_host}{path}", f"{scheme}://{sub_host}{path}"))
+    return out
+
+
 def discover_offering(ctx) -> OfferingProfile:
     """Fetch a storefront's surfaces and classify what it claims to sell.
 
@@ -374,11 +430,15 @@ def discover_offering(ctx) -> OfferingProfile:
     (``.well-known/ai-plugin.json``), the A2A agent card
     (``.well-known/agent.json`` / ``.well-known/agent-card.json``), and the machine
     API contract (``openapi.json`` / ``.well-known/openapi.json`` / ``swagger.json``)
-    via the shared :class:`FetchContext` — read-only, $0. Surfaces that 404 or error
-    are simply absent (a site that only serves a homepage is classified from the
-    homepage alone; a site that only serves an OpenAPI spec, a plugin descriptor, or
-    an agent card is classified from it). Never raises: a fetch failure yields an
-    empty surface, not an exception.
+    via the shared :class:`FetchContext` — read-only, $0. Each surface doc is read
+    on the storefront's apex host AND on a small allowlist of conventional doc
+    SUBDOMAINS of the same registrable host (``agents.`` / ``docs.`` / ``developers.``
+    / ``api.``), so a site whose rich agent docs live on a doc subdomain is not
+    under-classified from its bare apex alone. Surfaces that 404 or error are simply
+    absent (a site that only serves a homepage is classified from the homepage alone;
+    a site that only serves an OpenAPI spec, a plugin descriptor, or an agent card is
+    classified from it). Never raises: a fetch failure yields an empty surface, not
+    an exception.
     """
     domain = getattr(ctx, "domain", "") or ""
     surfaces: dict[str, str] = {}
@@ -397,5 +457,17 @@ def discover_offering(ctx) -> OfferingProfile:
             continue
         if getattr(r, "is_success", False) and getattr(r, "text", "").strip():
             surfaces[path] = r.text
+
+    # Also read the surface docs on conventional doc subdomains of the same
+    # registrable host (agents. / docs. / developers. / api.). A subdomain that
+    # does not resolve or 404s is simply absent — same tolerance as any apex doc.
+    base_url = getattr(ctx, "base_url", "") or (f"https://{domain}" if domain else "")
+    for label, url in _doc_subdomain_surfaces(base_url):
+        try:
+            r = ctx.get(url, ua="browser")
+        except Exception:
+            continue
+        if getattr(r, "is_success", False) and getattr(r, "text", "").strip():
+            surfaces[label] = r.text
 
     return classify_offering(domain, surfaces)

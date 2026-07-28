@@ -543,26 +543,24 @@ design in-cloud, execute locally.
   disappears. Then guard 4/6/8/11/14 could use arbitrary neutral hosts and the reverse-lexical assignment
   wouldn't need the length caveat. Test-helper only (no `asrs/` change) → direct-to-main when done; verify
   all existing relabel guards stay green + 0 replay-miss across a range of host lengths.
-- **Offering discovery reads conventional DOC SUBDOMAINS** (COVERAGE, surfaced Cycle 50).
-  `discover_offering` fetches each surface on the storefront's OWN host (`<host>/llms.txt`,
-  `<host>/llms-full.txt`, …). But a real, common pattern for API-first storefronts is to
-  host agent docs on a `docs.`/`agents.`/`developers.`/`api.` SUBDOMAIN — driftflight.com
-  serves its rich agent docs (including its credit-billing prose, Cycle 50) at
-  `agents.driftflight.com/llms-full.txt`, which discovery never crawls, so it classifies the
-  storefront from its bare apex + on-host `/llms.txt` alone (a thin subset). A site whose
-  ONLY agent-facing self-description lives on a doc subdomain is under-classified. Cloud-doable
-  increment: teach discovery to ALSO try `_SURFACE_DOCS` on a small allowlist of conventional
-  same-registrable-domain subdomains (`docs`/`agents`/`developers`/`api`), still $0 GETs, off
-  the scoring path. PRECISION-FIRST: only same-registrable-domain subdomains (never an
-  arbitrary `url` field from a fetched surface — that would let a page redirect discovery to
-  any host); a subdomain that 404s is simply absent, same tolerance as any surface. Validate
-  offline against the committed driftflight.com fixture (the `/llms-full.txt` on `agents.*` is
-  already captured) — a discovery that reaches it would pick up the credit-metered signal live,
-  and the canonical OFFERING guard would need its EXPECTED updated IF the claimed SET changes
-  (it should NOT — metered_api already claimed; only strength/labels grow). Note the fixture
-  base-host routing: `FetchContext.from_fixture` keys on recorded URLs, so a subdomain fetch
-  must map to the recorded `agents.driftflight.com` entries — confirm the fixture path resolves
-  before asserting.
+<!-- DONE 2026-07-28T08:1xZ (Cycle 54, COVERAGE, direct-to-main, score-neutral): "Offering discovery
+     reads conventional DOC SUBDOMANS" SHIPPED. `asrs/offering.py` `discover_offering` now reads each
+     `_SURFACE_DOCS` surface on the apex host AND on a small allowlist of same-registrable-host doc
+     subdomains `agents.`/`docs.`/`developers.`/`api.` (new `_DOC_SUBDOMAINS` +
+     `_doc_subdomain_surfaces(base_url)`). PRECISION-FIRST/SSRF-safe exactly as scoped: subdomains built
+     from the site's OWN resolved host (never a fetched `url`), `www.` dropped to attach to the
+     registrable host, no self-stacking (`api.replicate.com` → no `api.api.*`), host-qualified surface
+     labels so subdomain surfaces don't overwrite apex paths, a non-resolving/404 subdomain simply absent.
+     The P2 prediction held: on driftflight.com the subdomain `agents.driftflight.com/llms-full.txt` is now
+     READ (credit-metered signal reaches the DISCOVERED metered_api claim) but the claimed SET is UNCHANGED
+     `{metered_api,subscription,digital_good}` (subdomain surfaces on both canonical domains carry only
+     those three archetypes' signals) — so the canonical OFFERING guard stays 12/12 with NO EXPECTED update
+     needed, and the fixture base-host routing resolved as noted (`FetchContext.from_fixture` served the
+     recorded `agents.driftflight.com`/`api.driftflight.com` entries). Score-neutral (off the scoring path;
+     `git diff -- asrs/scoring.py asrs/probes/ asrs/fetch.py rubric/` EMPTY; rubric v0.7, replay guard 17/17
+     / +39.4). `test_offering.py` 14→16 (+helper precision/SSRF unit test, +live-read non-vacuity test on the
+     committed fixture); suite 212→214. See LOG Cycle 54. Follow-up candidate (TRUTH): a canonical OFFERING
+     guard asserting the subdomain surface is read on the pair (mirror of the new live-read test). -->
 
 - **Per-side noise floor: verify it stays SILENT under a real transient** (TRUTH, Cycle-47
   follow-up — PARKED until a fresh OOB stretch lands). Cycle 47 added

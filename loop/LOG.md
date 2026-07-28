@@ -5297,3 +5297,100 @@ conventional DOC SUBDOMAINS" item (Cycle 50) — teach `discover_offering` to tr
 (`docs`/`agents`/`developers`/`api`), off the scoring path, validated offline
 against the committed `agents.driftflight.com/llms-full.txt` fixture entry.
 Precision-first (same-registrable-domain only, never an arbitrary fetched `url`).
+
+## Cycle 54 (COVERAGE) — 2026-07-28T08:1xZ — offering discovery reads conventional doc SUBDOMAINS
+
+**What.** `asrs/offering.py`: `discover_offering` now reads each `_SURFACE_DOCS`
+surface not only on the storefront's apex host but also on a small allowlist of
+conventional agent/API DOC SUBDOMAINS of the same registrable host —
+`agents.` / `docs.` / `developers.` / `api.` (new `_DOC_SUBDOMAINS` +
+`_doc_subdomain_surfaces(base_url)` helper). A real, common pattern for API-first
+storefronts is to serve their rich agent docs (llms-full.txt, OpenAPI spec,
+credit-billing prose) on a dedicated subdomain rather than the apex; until now
+discovery read only the bare apex, so such a site was under-classified from a thin
+subset of what it actually publishes. The canonical `driftflight.com` is exactly
+this case: it serves its credit-billing agent docs at
+`agents.driftflight.com/llms-full.txt`, which the apex crawl never reached (the
+COVERAGE gap surfaced Cycle 50, and noted in `test_offering.py`'s credit-metered
+test since Cycle ~48).
+
+**Why (north star — many-conventions/many-surfaces axis).** The published
+agent-facing self-description surfaces are now read wherever a storefront
+conventionally puts them: apex OR doc subdomain. A site whose ONLY rich
+self-description lives on `agents.<domain>`/`api.<domain>` is no longer mis-read
+as offering a thin subset — the "classified from the apex alone" failure the
+OpenAPI/ai-plugin/A2A surface additions (Cycles 34/42/46) fixed for surface KIND,
+now fixed for surface HOST.
+
+**Precision-first / SSRF-safe.** The subdomains are constructed in
+`_doc_subdomain_surfaces` from the site's OWN resolved host (`base_url`), never
+from a `url` field in fetched page content — so discovery can only ever reach the
+storefront's own registrable domain, never an arbitrary third-party host a page
+could redirect it to. A leading `www.` is dropped so the subdomain attaches to the
+registrable host; a host already ON an allowlisted subdomain is not stacked onto
+itself (`api.replicate.com` does not spawn `api.api.replicate.com` — the `api`
+prefix is skipped). Each subdomain surface is labeled host-qualified
+(`agents.<host>/llms.txt`) so it is DISTINCT from — and never silently overwrites —
+an apex surface of the same path. A subdomain that does not resolve or 404s is
+simply an absent surface, the same tolerance every apex doc already gets.
+
+**Score-neutral by construction AND re-measured.** `discover_offering` is called
+ONLY from `cli._resolve_battery` (`--battery auto`), NEVER on the scoring path
+(unchanged since brick 1). `git diff --name-only` = `asrs/offering.py` +
+`tests/test_offering.py` ONLY; `git diff -- asrs/scoring.py asrs/probes/
+asrs/fetch.py rubric/` EMPTY → rubric stays v0.7. Canonical delta unchanged by
+construction AND re-measured green: in-cloud replay guard 17/17
+(drift-flight.org 46.1 F / driftflight.com 85.5 B / delta +39.4, 0 replay-miss).
+Critically, the canonical OFFERING guard `test_offering_canonical.py` stays 12/12:
+reading the richer doc-subdomain evidence only REINFORCES archetypes the canonical
+pair already claims (verified — the subdomain surfaces on both `.com` and `.org`
+carry only metered_api/subscription/digital_good signals; NO
+physical_good/service_booking/data_retrieval), so the claimed SET is byte-for-byte
+`{metered_api, subscription, digital_good}` on both — the exact-equality regression
+the offering guard pins holds. Vendor-neutral (subdomain allowlist is generic
+convention, no domain/vendor string; relabel-invariance guards stay green because
+the whole-fixture relabel rewrites `agents.driftflight.com` → `agents.<neutral>`
+consistently, so the relabeled subdomain fetch still resolves against the rewritten
+cache). Not payment/signing code.
+
+**Evidence (invariant #3).** `tests/test_offering.py` 14 → 16 (+2):
+(1) `test_doc_subdomain_helper_is_precise_and_ssrf_safe` — unit-pins the helper's
+registrable-host-only expansion, www-stripping, no-self-stacking, host-qualified
+distinct labels, and the hostless/dotless → `[]` guard;
+(2) `test_doc_subdomain_surfaces_are_read_live` — replays the committed
+`driftflight.com` fixture through the REAL `from_fixture → discover_offering` path
+and asserts `agents.driftflight.com/llms-full.txt` is in `surfaces_seen` AND that
+`credit-metered` (present ONLY in that subdomain surface — the apex `/llms.txt` and
+the homepage's precision-guarded C2PA `credits` metadata do NOT carry it) now
+appears in the DISCOVERED metered_api claim tagged to that surface — a NON-VACUOUS
+witness that the subdomain content actually reached classification, and that the
+claimed SET is still exactly `{metered_api, subscription, digital_good}`
+(score-neutral). Also de-staled the two `test_offering.py` comments that said
+discovery "does not currently crawl" the doc subdomain. Full suite 212 → 214 (all
+19 files green with `eth-account` from `pip install -r requirements.txt`).
+Direct-to-main (score-neutral discovery, off the scoring path, not sensitive —
+precedent: Cycles 34/42/46).
+
+**Infra health.** First duty: no open peer-gated PR (`list_pull_requests
+state=open` → []). Bench up (19 files, 214 tests green). **RUNNER STILL STALLED
+PAST THE 6h FLOOR** — newest verify artifact is `verify_20260727T224106Z` (22:41Z),
+~9.5h old at this fire (08:1xZ), unchanged since Cycle 51/52/53. No newer artifact
+→ stall has NOT self-cleared. NOT repairable from the cloud (can't reach Jonah's
+machine); remains P0 [LOCAL]. Loop DEGRADED not down — the in-cloud replay guard IS
+the standing regression signal and ran green (17/17, +39.4). Flag in the next
+post-16:00 UTC Slack digest. Git: local `main` started at the stale orphan tip
+`2e66201` (as the Cycle-52 note warned) — realigned to origin/main `dfb7f47`
+(Cycle 53) before committing.
+
+**Comms.** No Slack this fire — score-neutral COVERAGE discovery ship (moves no
+score), not a sensitive-class PR, and 08:1xZ is not the first-cycle-after-16:00-UTC
+digest window. The persistent runner stall folds into the next digest.
+
+**Next hypothesis.** TRUTH next. Candidate: add an in-cloud OFFERING guard that the
+doc-subdomain surfaces are read on the canonical pair (extend
+`test_offering_canonical.py` to assert `agents.driftflight.com/llms-full.txt` ∈
+`surfaces_seen` AND the claimed set is still exactly the pinned set — the canonical
+mirror of the new `test_offering.py` live-read test, so the score-neutral surface
+addition is pinned on the SAME fixture the operator acceptance criterion uses).
+Alternatively, the [LOCAL] free-tier live-wiring or an ACP/UCP live handshake (both
+score-increasing → [LOCAL]-gated).

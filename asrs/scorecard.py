@@ -519,11 +519,47 @@ the headline is static-deterministic or reproducible across trials,
 <b>Provisional</b> when it rests on a single trial or an unstable panel. The
 number travels with its own reproducibility so a reader knows how much to lean
 on it. (The one real free-tier transaction still runs only once per scored run,
-regardless of trial count &mdash; see section 9.)</p>
+regardless of trial count &mdash; see section 10.)</p>
 </div>
 
 <div class="card">
-<h2><span class="n">8</span>Grade bands &amp; caps</h2>
+<h2><span class="n">8</span>Calibration &mdash; does the score predict what an agent experiences?</h2>
+<p>Section&nbsp;7 asks whether the number is <b>stable</b> &mdash; do repeated
+trials agree? A harder question is whether it is <b>valid</b>: does a static score
+computed from a storefront&rsquo;s <b>published surfaces</b> actually predict what
+a <b>live agent encounters</b> when it tries to buy? A benchmark can be perfectly
+reproducible and still measure the wrong thing &mdash; the <i>&ldquo;the number is
+astrology&rdquo;</i> objection. ASRS answers it by holding a static prediction up
+against a real behavioral run and checking the two <b>agree</b>.</p>
+<p>The load-bearing static claim is <b>agent-native payment</b>: the
+transactability signal predicts an agent can pay programmatically. On a reference
+storefront the static score marks payment-capable, a live shopper panel is run and
+its outcome checkpoints &mdash; found a purchase path, reached a
+<b>machine-payable path</b>, hit no human gate, completed a real free-tier
+transaction &mdash; all <b>pass</b>. The static prediction is
+<b>behaviorally corroborated</b>, not merely internally consistent: the number
+matches the experience.</p>
+<p>The agreement is <b>discriminating</b>, not a rubber stamp. The same behavioral
+run carries genuine <b>failures</b> on other checks, so the payment passes are
+<b>earned</b> rather than a panel that approves everything; and the static
+prediction <b>separates tiers</b> &mdash; a no-rails storefront is predicted to
+have <b>no</b> agent-native payment, which is exactly where a live agent hits a
+wall. The corroboration is itself reproducible: both trials agreed on the
+machine-payable verdict.</p>
+<p>Two honest limits keep this from over-claiming. The calibration is anchored on
+<b>one with-rails storefront</b> &mdash; it proves the <i>positive</i> prediction
+is behaviorally real; the mirror case (a live run confirming that a
+no-agent-native-payment prediction is exactly where an agent stalls) is not yet
+run end-to-end and is not claimed. And the whole check stays inside the
+<b>$0 free tier</b> (section&nbsp;10): the agent completes a real machine-payable
+path without
+ever signing a nonzero-value authorization. Within that scope the property is
+pinned by an <b>executable regression test</b>, enforced every cycle &mdash; so
+&ldquo;the score predicts the experience&rdquo; is <b>checked, not asserted</b>.</p>
+</div>
+
+<div class="card">
+<h2><span class="n">9</span>Grade bands &amp; caps</h2>
 <p>Points map to a letter grade by these bands: {band_str}. But critical
 failures <b>cap</b> the grade regardless of points &mdash; averages hide
 showstoppers, so a single fatal defect limits the letter (the SSL&nbsp;Labs
@@ -532,7 +568,7 @@ pattern):</p>
 </div>
 
 <div class="card">
-<h2><span class="n">9</span>The $0 free-tier probe</h2>
+<h2><span class="n">10</span>The $0 free-tier probe</h2>
 <p>Where a site advertises a free-tier or zero-value allowance, one scored run
 may make <b>exactly one real transaction &mdash; and only at $0</b>. No code path
 signs a nonzero-value authorization, funds a wallet, or creates an account;
@@ -542,7 +578,7 @@ leaving a footprint on the merchant.</p>
 </div>
 
 <div class="card">
-<h2><span class="n">10</span>Versioned comparability &amp; evidence</h2>
+<h2><span class="n">11</span>Versioned comparability &amp; evidence</h2>
 <p>Every report embeds the rubric version, and <b>scores are comparable only
 within a version</b> (the SSL&nbsp;Labs / Euro&nbsp;NCAP pattern): any change to
 a weight, cap, or check bumps the version with a dated changelog entry. Every

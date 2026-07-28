@@ -465,6 +465,34 @@ def test_methodology_documents_check_layer_honesty() -> None:
         _check(banned not in text, f"methodology names no vendor/domain ({banned!r})")
 
 
+def test_methodology_documents_calibration() -> None:
+    # Cycle 68 (READOUT): the READOUT complement to Cycle 67's calibration guard
+    # (tests/test_calibration.py — the first static-vs-behavioral VALIDITY axis).
+    # Every prior methodology argument is internal-consistency (earned-dominance,
+    # weight-robustness) or reproducibility (section 7 = reliability, "is the
+    # number stable?"). None surfaces the distinct VALIDITY question Cycle 67 made
+    # executable: does the static score PREDICT what a live agent experiences? The
+    # page must now name, in prose a critic can read, that the static agent-native
+    # payment prediction is behaviorally corroborated at the outcome checkpoints,
+    # that the agreement is discriminating (real FAILs + separates tiers), the
+    # honest one-domain/$0 scope, and that it is test-pinned. Vendor-neutral.
+    print("test_methodology_documents_calibration")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    for phrase in ("Calibration", "valid", "astrology", "agent-native payment",
+                   "machine-payable path", "behaviorally corroborated",
+                   "discriminating", "separates tiers", "one with-rails storefront",
+                   "free tier", "executable regression test"):
+        _check(phrase in text, f"methodology documents calibration: {phrase!r}")
+    # It must frame the number-vs-experience agreement as the validity claim, and
+    # state the honest scope (positive-only anchor, $0-bounded).
+    _check("predict" in text, "calibration framed as prediction/validity")
+    _check("$0 free" in text, "calibration scope bounded to the $0 free tier")
+    # Vendor-neutral: no domain/product/brand named on the page.
+    for banned in ("drift-flight", "driftflight"):
+        _check(banned not in text, f"methodology names no vendor/domain ({banned!r})")
+
+
 def test_methodology_page_tracks_live_rubric() -> None:
     print("test_methodology_page_tracks_live_rubric")
     rubric = load_rubric()
@@ -886,6 +914,7 @@ def main() -> int:
         test_methodology_documents_earned_dominance,
         test_methodology_documents_weight_robustness,
         test_methodology_documents_check_layer_honesty,
+        test_methodology_documents_calibration,
         test_methodology_page_tracks_live_rubric,
         test_build_scorecard_publishes_and_links_methodology,
         test_cap_anchor_helper_is_stable_and_sanitizing,

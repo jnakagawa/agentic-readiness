@@ -877,6 +877,150 @@ def test_population_ordering_is_identity_invariant() -> None:
     )
 
 
+# ---------------------------------------------------------------------------
+# 15. WEIGHT-ROBUSTNESS — the with-rails advantage is NOT an artifact of the
+#     pillar weight vector. The single most common critique of a rails-favouring
+#     benchmark is "you rigged the weights so the agent-native rail wins." Guards
+#     3/8 refute the EVIDENCE objection (the delta is earned check-by-check); this
+#     refutes the AGGREGATION objection. On the recorded evidence the with-rails
+#     side DOMINATES the no-rails side PILLAR-BY-PILLAR: it is >= on every observed
+#     pillar (strictly > on the two benchmark-defining pillars, legibility and
+#     transactability; tied on access and trust). Both sides expose the IDENTICAL
+#     applicable-pillar set (like-for-like denominator at the pillar layer — the
+#     aggregation-level analogue of guard 8's like-for-like checks), and NEITHER
+#     side hits a grade cap, so each overall equals a pure renormalized weighted
+#     mean of those pillars. Pillar-wise dominance over a shared applicable set
+#     therefore makes the sign of (with-rails − no-rails) INVARIANT to the weight
+#     vector: under ANY non-negative pillar weighting the with-rails mean is >= the
+#     no-rails mean, and strictly > whenever the weighting places positive weight on
+#     a strictly-dominated pillar. This guard demonstrates it across a family of
+#     ADVERSARIAL weightings — including the two extremes most hostile to the pitch
+#     (all weight on trust / all weight on access, the TIED pillars, where the delta
+#     collapses to exactly 0) — where the with-rails side is NEVER worse. The delta
+#     is a property of the capability evidence under every reasonable weighting, not
+#     of one hand-tuned weight vector.
+#
+#     Worded by capability, never by vendor: the two fixture keys are the same the
+#     pair guards already use; the property is stated over pillars (what an agent
+#     can DO), never over identities.
+# ---------------------------------------------------------------------------
+def _renorm_weighted_mean(pillars: dict, weights: dict) -> float:
+    """Renormalized weighted mean over pillars carrying BOTH a numeric score and a
+    positive weight — the exact (uncapped) overall aggregation ``asrs.scoring.score``
+    uses. Raises if no positive weight applies (callers guarantee it does)."""
+    num = 0.0
+    den = 0.0
+    for p, s in pillars.items():
+        if s is None:
+            continue
+        w = float(weights.get(p, 0.0))
+        num += w * s
+        den += w
+    if den <= 0:
+        raise ValueError("no positive weight over applicable pillars")
+    return num / den
+
+
+def test_canonical_delta_is_weight_robust() -> None:
+    print("test_canonical_delta_is_weight_robust")
+    com, com_miss = _score_fixture("driftflight.com")
+    org, org_miss = _score_fixture("drift-flight.org")
+    _check(not com_miss and not org_miss, "canonical pair: no replay-miss")
+
+    # Precondition A — no grade cap binds on either side, so each overall IS a pure
+    # renormalized weighted mean of its applicable pillars (a binding cap could
+    # otherwise clamp the top and break the weight-invariance argument).
+    _check(
+        not com.caps_applied and not org.caps_applied,
+        f"neither canonical side is grade-capped (com {com.caps_applied}, "
+        f"org {org.caps_applied}) — overall is a pure weighted pillar mean",
+    )
+
+    # Precondition B — identical applicable-pillar set (numeric on BOTH). Like-for-
+    # like denominator at the pillar layer: the reweighting family below reweights
+    # the SAME pillars on each side, never a different set.
+    com_appl = {p for p, s in com.pillar_scores.items() if s is not None}
+    org_appl = {p for p, s in org.pillar_scores.items() if s is not None}
+    _check(
+        com_appl == org_appl and len(com_appl) >= 2,
+        f"identical applicable-pillar set on both sides ({sorted(com_appl)})",
+    )
+    applicable = sorted(com_appl)
+
+    # (a) PILLAR-WISE DOMINANCE — with-rails >= no-rails on EVERY applicable pillar,
+    # strictly > on at least one. The load-bearing tripwire: an inversion on any
+    # single pillar (a probe change letting the no-rails side out-score the
+    # with-rails side somewhere) breaks it.
+    strict = []
+    for p in applicable:
+        cs, os_ = com.pillar_scores[p], org.pillar_scores[p]
+        _check(cs >= os_ - 1e-9, f"with-rails >= no-rails on {p} ({cs} >= {os_})")
+        if cs > os_ + 1e-9:
+            strict.append(p)
+    _check(
+        len(strict) >= 1,
+        f"with-rails strictly exceeds no-rails on >=1 pillar (strict: {strict})",
+    )
+    # The strict wins are the benchmark-defining capability pillars — named so a
+    # regression that narrowed dominance to only the TIED pillars is caught here.
+    for p in ("legibility", "transactability"):
+        if p in applicable:
+            _check(p in strict, f"with-rails strictly dominates on {p} (capability pillar)")
+
+    # (b) FAITHFULNESS — the real rubric weight vector reproduces the shipped
+    # overalls from these pillars alone, so ``_renorm_weighted_mean`` IS the
+    # scorer's aggregation and the reweighting family below re-runs the real overall
+    # computation, not a lookalike.
+    rubric_w = scoring.load_rubric(None).get("pillar_weights") or {}
+    for rep, side in ((com, "with-rails"), (org, "no-rails")):
+        recomputed = round(_renorm_weighted_mean(rep.pillar_scores, rubric_w), 1)
+        _check(
+            abs(recomputed - rep.overall_score) < 1e-9,
+            f"rubric weights reproduce {side} overall from pillars "
+            f"({recomputed} == {rep.overall_score})",
+        )
+
+    # (c) WEIGHT-ROBUSTNESS — across a family of ADVERSARIAL weight vectors the
+    # with-rails mean is NEVER below the no-rails mean. The family: the real rubric
+    # weights, a uniform weighting, and each unit-basis vector (ALL weight on one
+    # pillar) — the unit vectors include the extremes most hostile to the pitch
+    # (all weight on a TIED pillar, where the delta collapses to exactly 0).
+    families = {"rubric": rubric_w, "uniform": {p: 1.0 for p in applicable}}
+    for p in applicable:
+        families[f"all-{p}"] = {p: 1.0}
+    for name, w in families.items():
+        cm = _renorm_weighted_mean(com.pillar_scores, w)
+        om = _renorm_weighted_mean(org.pillar_scores, w)
+        _check(
+            cm >= om - 1e-9,
+            f"weighting '{name}': with-rails mean {cm:.3f} >= no-rails {om:.3f} "
+            f"(the delta never inverts under this reweighting)",
+        )
+        # Any weighting that touches a strictly-dominated pillar is STRICTLY pro-rails.
+        if any(w.get(p, 0.0) > 0 for p in strict):
+            _check(
+                cm > om + 1e-9,
+                f"weighting '{name}' touches a dominated pillar -> strictly "
+                f"pro-rails ({cm:.3f} > {om:.3f})",
+            )
+
+    # (d) NON-VACUOUS — the aggregation IS sensitive to an inversion, so the
+    # all-pass above is meaningful (not a helper that always returns the same sign).
+    # Synthesize a no-rails variant that BEATS the with-rails side on the tied
+    # 'trust' pillar and confirm the all-trust weighting would then favour the
+    # synthetic side — exactly the inversion this guard catches on real data.
+    if "trust" in applicable:
+        inverted = dict(org.pillar_scores)
+        inverted["trust"] = com.pillar_scores["trust"] + 10.0
+        w_trust = {"trust": 1.0}
+        _check(
+            _renorm_weighted_mean(inverted, w_trust)
+            > _renorm_weighted_mean(com.pillar_scores, w_trust),
+            "negative control: a trust-inverted no-rails side WOULD top the "
+            "with-rails side under all-trust weighting (guard is inversion-sensitive)",
+        )
+
+
 def main() -> int:
     tests = [
         test_canonical_org_replays_46_1,
@@ -896,6 +1040,7 @@ def main() -> int:
         test_population_overall_tracks_capability_ordering,
         test_population_ordering_is_not_a_transactability_artifact,
         test_population_ordering_is_identity_invariant,
+        test_canonical_delta_is_weight_robust,
     ]
     failed = 0
     for t in tests:

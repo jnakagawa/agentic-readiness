@@ -5394,3 +5394,80 @@ mirror of the new `test_offering.py` live-read test, so the score-neutral surfac
 addition is pinned on the SAME fixture the operator acceptance criterion uses).
 Alternatively, the [LOCAL] free-tier live-wiring or an ACP/UCP live handshake (both
 score-increasing → [LOCAL]-gated).
+
+## Cycle 55 — 2026-07-28T09:2xZ — TRUTH (direct to main)
+
+**What.** The canonical +39.4 delta is now defended on a FOURTH distinct
+credibility axis — WEIGHT-ROBUSTNESS — as an executable guard.
+`tests/test_canonical_replay.py` +1 (17→18), guard 15
+`test_canonical_delta_is_weight_robust`. Replays both committed canonical
+fixtures through the REAL `from_fixture → _run_probes → scoring.score` path and
+pins, from recorded evidence, that the with-rails advantage is a property of the
+capability evidence under EVERY reasonable pillar weighting, not an artifact of
+the one hand-tuned weight vector:
+- **Precondition A** — neither side is grade-capped (`caps_applied == []`), so
+  each overall IS a pure renormalized weighted mean of its applicable pillars (a
+  binding cap could clamp the top and break the invariance argument).
+- **Precondition B** — IDENTICAL applicable-pillar set on both sides
+  ({access, legibility, transactability, trust}; outcome None) — like-for-like
+  denominator at the pillar layer, the aggregation-level analogue of guard 8's
+  like-for-like checks.
+- **(a) PILLAR-WISE DOMINANCE** — with-rails ≥ no-rails on EVERY applicable
+  pillar (access 100=100, legibility 90.9>36.4, transactability 87.5>18.75,
+  trust 60=60), strictly > on the two benchmark-defining pillars (legibility,
+  transactability). The load-bearing tripwire.
+- **(b) FAITHFULNESS** — the real rubric weight vector reproduces the shipped
+  overalls from these pillars alone (85.5 / 46.1), proving the reweighting helper
+  IS the scorer's aggregation, not a lookalike.
+- **(c) WEIGHT-ROBUSTNESS** — across a family of ADVERSARIAL weightings (real
+  rubric, uniform, and each unit-basis vector) the with-rails mean is NEVER below
+  the no-rails mean; strictly > for every weighting that touches a dominated
+  pillar. Includes the two extremes most hostile to the pitch — all-weight-on-trust
+  and all-weight-on-access (the TIED pillars), where the delta collapses to
+  exactly 0 yet never inverts.
+- **(d) NON-VACUOUS** negative control — a synthetic trust-inverted no-rails side
+  WOULD top the with-rails side under all-trust weighting → the aggregation is
+  inversion-sensitive, so the all-pass is meaningful.
+
+**Why.** The single most common critique of a rails-favouring benchmark is "you
+rigged the weights so the agent-native rail wins." Guards 3/8 refute the EVIDENCE
+objection (delta earned check-by-check, full observability, dominance-no-inversion);
+guard 15 refutes the AGGREGATION objection — a genuinely distinct axis
+complementing Cycle-19 (capability-payment, one pillar), Cycle-21 (relabel/identity),
+and Cycle-23 (earned dominance, observability). Protects the delta's credibility
+per the capability lens ("never manufacture it") in a way no prior guard did.
+Worded by capability, never by vendor: the two fixture keys are the pair guards'
+own; the property is stated over pillars (what an agent can DO), never identities.
+
+**Verification (non-vacuity).** Injected a transactability inversion
+(no-rails 99.0 > with-rails 87.5) via a monkeypatched `_score_fixture` — guard 15
+CAUGHT it at the pillar-wise-dominance assertion. All 6 weighting-family branches
+plus the negative control print `ok` on the real evidence.
+
+**Scope.** `tests/test_canonical_replay.py` ONLY (+145 lines: guard 15 +
+module-level `_renorm_weighted_mean` helper + added to the runner list).
+`git diff --stat` = that one file. scoring.py / rubric / probes / fetch.py /
+protocols / behavioral / offering / battery byte-for-byte UNTOUCHED → rubric
+stays v0.7, canonical delta unchanged by construction.
+
+**Evidence.** Full suite 19/19 test files green; suite 214 → 215.
+`tests/test_canonical_replay.py` 17→18 (18/18).
+
+**Canonical pair (regression signal).** In-cloud replay guard re-measured:
+drift-flight.org 46.1 F / driftflight.com 85.5 B / delta +39.4, 0 replay-miss on
+both. (Live re-score BLOCKED in-cloud — no outbound network; the offline replay
+guard is the in-cloud regression signal per STATE. Newest local verify artifact
+`verify_20260727T224106Z` is ~10.5h old → the launchd runner is STILL STALLED
+past the 6h floor, tracked P0, not cloud-repairable; flag in the 16:00Z digest.)
+
+**First duty.** No open peer-gated PR (verified `list_pull_requests` state=open →
+`[]`). Infra health: bench UP (19/19 files), git bookkeeping UP (local `main`
+realigned from stale orphan `2e66201` to origin `f90fa66` = Cycle 54, per the
+Cycle-52 lesson; last push landed), runner DOWN (10.5h, P0-tracked).
+
+**Next hypothesis.** Extend weight-robustness to the FULL population, not just the
+pair: pillar-wise dominance is a partial order — does it hold down the whole
+capability spectrum (com ⪰ org ⪰ retail ⪰ bare pillar-wise)? If so the entire
+population ordering (guard 12) is weight-robust, not just the head delta; if a
+pair is NOT pillar-wise comparable (an ordering that depends on the weights),
+that is itself worth surfacing honestly. Cloud-doable from the committed fixtures.

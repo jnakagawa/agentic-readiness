@@ -513,6 +513,22 @@ design in-cloud, execute locally.
 
 ## P2
 
+- **Population-wide WEIGHT-ROBUSTNESS** (TRUTH, follow-up to Cycle-55 guard 15). Cycle 55 pinned
+  that the +39.4 PAIR delta is weight-robust: the with-rails side dominates the no-rails side
+  PILLAR-BY-PILLAR over an identical uncapped applicable-pillar set, so no non-negative reweighting
+  inverts the sign (`tests/test_canonical_replay.py` guard 15, 17→18). The natural extension: does
+  pillar-wise dominance hold down the WHOLE capability spectrum (com ⪰ org ⪰ retail ⪰ bare)? If so,
+  the entire population ordering (guard 12) is weight-robust, not just the head delta — a much
+  stronger calibration claim. Watch the tail: retail (books.toscrape.com) and bare (example.com) TIE
+  at 0 transactability and 100 access, so their order rests on legibility/trust — likely still
+  pillar-wise comparable (retail ≥ bare on both), but org-vs-retail may NOT dominate on trust
+  (org 60 > retail 33.3) while retail could... check the real numbers: org dominates retail on every
+  pillar (leg 36.4>18.2, tx 18.75>0, trust 60>33.3, access tie) → the whole chain is very likely a
+  total pillar-wise dominance order. If ANY adjacent pair is only weight-DEPENDENTLY ordered (not
+  pillar-wise comparable), surface that HONESTLY — it is a real finding that that rung's rank depends
+  on the weight choice, not a bug to hide. Cloud-doable from the four committed fixtures; tests-only,
+  score-neutral, direct-to-main.
+
 <!-- DONE 2026-07-28T06:1xZ (Cycle 52, READOUT, direct-to-main, display-only, score-neutral):
      "Live-signal FRESHNESS banner on canonical-history.html" SHIPPED. `asrs/scorecard.py`
      `_write_canonical_history_page` renders a liveness element off `hist.liveness` (the Cycle-51

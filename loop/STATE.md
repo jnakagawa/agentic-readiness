@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 54
+- Cycle counter: 55
 - Started: 2026-07-23 (UTC)
 - Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
@@ -977,6 +977,36 @@
   not sensitive, 08:1xZ not a digest window). First duty: no open peer-gated PR (verified []); infra health check ran
   first — RUNNER STILL STALLED PAST 6h (unchanged, no newer artifact, ~9.5h old); git realigned local `main` from stale
   orphan `2e66201` → origin/main `dfb7f47` (Cycle 53) before committing. Next cycle takes TRUTH.
+  Cycle 55 TRUTH (the canonical +39.4 delta defended on a FOURTH credibility axis — WEIGHT-ROBUSTNESS —
+  made executable): `tests/test_canonical_replay.py` +1 (17→18), guard 15 `test_canonical_delta_is_weight_robust`.
+  Replays both committed canonical fixtures through the REAL `from_fixture → _run_probes → scoring.score` path
+  and pins that the with-rails advantage is a property of the capability evidence under EVERY reasonable pillar
+  weighting, not the one hand-tuned weight vector. PILLAR-WISE DOMINANCE: with-rails ≥ no-rails on every
+  applicable pillar (access 100=100, legibility 90.9>36.4, transactability 87.5>18.75, trust 60=60), strictly > on
+  the two benchmark-defining pillars. Both sides expose the IDENTICAL applicable-pillar set (like-for-like
+  denominator at the pillar layer, the aggregation analogue of guard 8's like-for-like checks) AND neither hits a
+  grade cap (`caps_applied == []`) → each overall is a pure renormalized weighted mean, so pillar dominance makes
+  the sign of (com−org) INVARIANT to the weight vector. Demonstrated across an adversarial weighting family (real
+  rubric, uniform, each unit-basis vector) — the with-rails mean is NEVER below the no-rails mean, strictly > for
+  any weighting touching a dominated pillar, and never inverts even under the two extremes most hostile to the
+  pitch (all-weight-on-trust / all-weight-on-access, the TIED pillars, delta→0). FAITHFULNESS anchor: rubric
+  weights reproduce the shipped overalls (85.5/46.1) from the pillars alone, proving the reweighting helper IS the
+  scorer's aggregation. NON-VACUOUS: a synthetic trust-inverted no-rails side WOULD top the with-rails side under
+  all-trust weighting (verified by monkeypatch injecting a transactability inversion → guard CAUGHT it at the
+  dominance assertion). A distinct axis complementing Cycle-19 (capability-payment) / Cycle-21 (relabel/identity)
+  / Cycle-23 (earned dominance/observability): refutes the AGGREGATION objection ("you rigged the weights"), not
+  the evidence objection. Worded by capability, never by vendor (fixture keys are the pair guards' own; property
+  stated over pillars). Tests-only: `git diff --stat` = test_canonical_replay.py ONLY (+145);
+  scoring.py/rubric/probes/fetch/protocols/behavioral/offering/battery byte-for-byte UNTOUCHED → rubric stays
+  v0.7, canonical delta unchanged by construction AND re-measured (replay guard 46.1 F / 85.5 B / +39.4, 0
+  replay-miss). Direct-to-main. Suite 214 → 215. No Slack (tests-only, moves no score, 09:2xZ before the 16:00 UTC
+  digest window). First duty: no open peer-gated PR (verified []); infra health check ran first — RUNNER STILL
+  STALLED PAST 6h (newest verify_20260727T224106Z ~10.5h old, unchanged — P0-tracked, not cloud-repairable, flag
+  in the next digest); git realigned local `main` from stale orphan `2e66201` → origin/main `f90fa66` (Cycle 54)
+  before committing. Next cycle takes READOUT. NEXT TRUTH candidate: extend weight-robustness to the FULL
+  population (does pillar-wise dominance hold down the whole capability spectrum com⪰org⪰retail⪰bare, making the
+  entire ordering guard 12 weight-robust — or is some pair only weight-dependently ordered, worth surfacing
+  honestly). Cloud-doable from committed fixtures.
 - **RUNNER STALL — STILL STALLED PAST THE 6h FLOOR (updated Cycle 54, 2026-07-28T08:1xZ; crossed Cycle 51
   05:13Z).** Newest verify artifact is still `verify_20260727T224106Z.json` (22:41Z) — NO newer artifact
   appeared between Cycle 51 (05:13Z) and this fire (08:1xZ), so at ~9.5h old the stall has NOT self-cleared

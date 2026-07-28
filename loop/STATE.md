@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 62
+- Cycle counter: 63
 - Started: 2026-07-23 (UTC)
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -1181,6 +1181,31 @@
   61 tip) BEFORE editing; runner STILL STALLED past 6h (newest verify_20260727T224106Z ~17.5h old at 16:21Z,
   unchanged since Cycle 51 — P0-tracked, not cloud-repairable). SLACK DAILY DIGEST SENT (first cloud cycle
   after 16:00 UTC on 07-28). Next cycle takes TRUTH.
+  Cycle 63 TRUTH (earned-dominance lifted from the PAIR to the four-domain POPULATION at the per-CHECK layer):
+  `tests/test_canonical_replay.py` +2 (21→23). Guard 19 `test_population_delta_is_earned_at_the_check_layer`
+  lifts guard 8's per-check argument (full observability + like-for-like + check dominance) across the whole
+  capability spectrum, from the LIVE replay pipeline: (a) identical scored 14-check set on all four (population
+  like-for-like — per-rung scoped intersection NOT needed, an empirical result); (b) HONEST tail-favouring
+  observability — head pair (com/org) fully observed, tail (retail/bare) each excuse exactly one absent check
+  (self_serve_payg CANT_TEST, never mis-scored FAIL, no NA anywhere), which EXCLUDES it from the denominator
+  and can only RAISE the tail's score, yet the strict ordering holds → not a head-inflating differential-
+  observability artifact; (c) LOAD-BEARING NEW FINDING — the population is NOT a clean check-by-check superset
+  chain like the pair: com>org and retail>bare are clean supersets, but org>retail carries EXACTLY ONE honest
+  inversion, https_hsts (trust — the human-only retail shop's HTTPS out-ranks the no-rails API's), ABSORBED by
+  the trust pillar (org trust 60.0 > 33.3, aggregate 46.1 > 29.5), so it never flips the ordering; exact
+  inversion set pinned per rung → a NEW check-layer inversion fails HERE. Complements guard 17 (pillar-wise
+  TOTAL dominance): dominance is a PILLAR property; at the CHECK layer org>retail is a majority not a superset,
+  and the aggregation is exactly what makes the ordering robust to it. Guard 20 = committed negative control
+  (Cycle-57 uniform-rigor): a scorer that mis-attributes the tail's absent surface CANT_TEST→FAIL is CAUGHT by
+  19(b), restored in finally. Vendor-neutral (asks "observed? which tier ranks higher?", never "is this domain
+  X?"; same four fixture keys). Tests-only: git diff -- asrs/ rubric/ EMPTY → scoring.py/rubric/probes
+  byte-for-byte untouched, rubric stays v0.7, canonical pair unchanged AND re-measured (replay guard 23/23,
+  46.1 F / 85.5 B / +39.4, 0 replay-miss; population 85.5>46.1>29.5>22.5 re-pinned). Direct-to-main (commit
+  4dac5b2). Suite 223→225 (all 19 files exit 0). First duty: no open peer-gated PR (verified []); infra —
+  bench UP (23/23), git realigned local `main` off the stale orphan `2e66201` to origin/main (45c806c = Cycle
+  62 tip) BEFORE editing; runner STILL STALLED past 6h (newest verify_20260727T224106Z ~18.5h old at 17:1xZ,
+  unchanged since Cycle 51 — P0-tracked, not cloud-repairable, already flagged in Cycle 62's digest). No Slack
+  (tests-only/score-neutral, digest already sent Cycle 62). Next cycle takes READOUT.
 - **RUNNER STALL — STILL STALLED PAST THE 6h FLOOR (updated Cycle 62, 2026-07-28T16:21Z; crossed Cycle 51
   05:13Z).** Newest verify artifact is still `verify_20260727T224106Z.json` (22:41Z) — NO newer artifact
   appeared between Cycle 51 (05:13Z) and this fire (16:21Z), so at ~17.5h old the stall has NOT self-cleared

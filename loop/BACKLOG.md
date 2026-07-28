@@ -576,15 +576,35 @@ design in-cloud, execute locally.
        reproduce all four overalls (85.5/46.1/29.5/22.5); (d) non-vacuous negative control (access-
        inverted floor site tops retail under all-access). git diff -- asrs/ rubric/ EMPTY → rubric v0.7,
        replay guard 20/20 / +39.4 / 0 replay-miss. Suite 219→220. See LOG Cycle 59. -->
-- **Population-wide observability / like-for-like at the CHECK layer** (TRUTH, natural next after Cycle 59).
-  Guard 8 (`test_canonical_delta_is_earned_dominance`) pins full observability + like-for-like denominator +
-  check-by-check dominance-no-inversion for the PAIR. Cycle 59 lifted the AGGREGATION-level guard (15→17)
-  from pair to population; the CHECK-level guard 8 is still pair-only. Lift it: is every domain in the
-  spectrum fully observed (no CANT_TEST/NA masking a FAIL) and is each adjacent rung a check-status SUPERSET
-  (no inversion at the check layer, not just the pillar layer)? Watch the tail — retail/bare may legitimately
-  differ in observed check SETS (a shop exposes commerce checks a bare page doesn't), so "like-for-like" may
-  need per-rung scoped-check intersection rather than a single global set; surface any genuine set difference
-  honestly rather than forcing it. Cloud-doable from the four committed fixtures; tests-only, score-neutral.
+<!-- DONE 2026-07-28T17:1xZ (Cycle 63, TRUTH, direct-to-main, tests-only, score-neutral):
+     "Population-wide observability / like-for-like at the CHECK layer" SHIPPED as
+     `tests/test_canonical_replay.py` guard 19 `test_population_delta_is_earned_at_the_check_layer`
+     + guard 20 its committed negative control (21→23). Lifts guard 8's per-CHECK earned-dominance
+     argument from the PAIR to the four-domain population from the LIVE pipeline: (a) identical
+     scored 14-check set on all four (population like-for-like — the "watch the tail, may need
+     per-rung scoped intersection" caveat resolved by MEASUREMENT: the sets are in fact identical,
+     no intersection needed); (b) honest tail-favouring observability — head fully observed, tail
+     each excuse exactly one absent check (self_serve_payg CANT_TEST, never mis-scored FAIL, no NA
+     anywhere), which can only RAISE the tail's score yet the ordering holds → no head-inflating
+     observability artifact; (c) LOAD-BEARING FINDING — the population is NOT a clean check-by-check
+     superset chain like the pair: com>org & retail>bare are clean supersets but org>retail carries
+     EXACTLY ONE honest inversion, https_hsts (trust, retail HTTPS > no-rails API HTTPS), ABSORBED
+     by the trust pillar (60.0 > 33.3) so it never flips the ordering — surfaced honestly, not forced
+     into a total-superset claim. Complements guard 17 (pillar-wise TOTAL dominance): dominance is a
+     PILLAR property; at the check layer that rung is a majority. Guard 20 catches a mis-attribution
+     (tail CANT_TEST→FAIL) rig. Score-neutral (git diff -- asrs/ rubric/ EMPTY; rubric v0.7, replay
+     guard 23/23 / +39.4 / 0 replay-miss); suite 223→225. See LOG Cycle 63. FOLLOW-ONS: READOUT the
+     honest check-layer refinement on the methodology page (Cycle-64 candidate, in LOG next-hypothesis);
+     extend guard 19 to the 5th committed fixture (api.replicate.com) once its tier + expected statuses
+     are pinned. -->
+- **[CANDIDATE, TRUTH] Extend guard 19 (population check-layer earned-dominance) to `api.replicate.com`**
+  — a 5th real fixture (`fixtures/canonical/api.replicate.com.json`) is already committed but not in the
+  capability-spectrum guards (12/17/19). Pin its capability tier + expected per-check statuses (a real
+  agent-native / metered API storefront), slot it into `_CAPABILITY_SPECTRUM`, and re-derive guard 19's
+  per-rung inversion sets. Adds a SECOND API-storefront data point to the population, strengthening the
+  ordering + earned-dominance claims beyond the single synthetic canonical pair. Cloud-doable from the
+  committed fixture; tests-only, score-neutral — but verify its overall/pillars/statuses live first
+  (the fixture may not yet have a pinned EXPECTED entry).
 
 <!-- DONE 2026-07-28T06:1xZ (Cycle 52, READOUT, direct-to-main, display-only, score-neutral):
      "Live-signal FRESHNESS banner on canonical-history.html" SHIPPED. `asrs/scorecard.py`

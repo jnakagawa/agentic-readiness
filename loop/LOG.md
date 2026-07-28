@@ -6030,3 +6030,93 @@ page may legitimately differ in observed check SETS (per-rung scoped intersectio
 not a single global set). COVERAGE-side follow-on: the further metered/subscription
 billing conventions candidate (seat-based / committed-use / tiered-volume), same
 precision discipline as the `rate-limited` signal.
+
+## Cycle 63 — 2026-07-28T17:1xZ — TRUTH (direct to main)
+
+**What.** Lifted the earned-dominance argument from the canonical PAIR to the full
+four-domain capability population, at the finest (per-CHECK) layer.
+`tests/test_canonical_replay.py` +2 (21→23): guard 19
+`test_population_delta_is_earned_at_the_check_layer` + guard 20 its committed
+negative control. Guard 8 pins the +39.4 pair is earned at the check layer (full
+observability + like-for-like denominator + check-by-check dominance, no
+inversion); guards 12/17 lift the ORDERING and its weight-robustness to the
+population but only at the aggregate/PILLAR layer. Guard 19 lifts guard 8's
+per-CHECK argument to the population — three legs mirroring guard 8's (a)(b)(c),
+adapted to the population's real (non-uniform) observability, ALL read from the
+LIVE replay pipeline:
+  (a) POPULATION LIKE-FOR-LIKE DENOMINATOR — all four domains scored over the
+      IDENTICAL 14-check set, so every rung of the guard-12 ordering compares the
+      same checks (stronger than guard 8(b), which pins like-for-like for the head
+      pair only).
+  (b) HONEST, TAIL-FAVOURING OBSERVABILITY — the head pair (com/org, where the delta
+      lives) is FULLY observed, so guard 8(a) still holds there; the tail (retail,
+      bare) each have EXACTLY ONE unobserved check — `self_serve_payg`
+      (transactability) — recorded CANT_TEST because they expose no pay-as-you-go
+      surface to probe, EXCUSED per invariant #4, never mis-scored FAIL; no check is
+      NA anywhere. The attribution-honesty punchline: excusal EXCLUDES a check from
+      that site's denominator, which can only RAISE the tail's score — so honest
+      observability FAVOURS the losers, yet the strict ordering still holds → the
+      ordering is not a head-inflating differential-observability artifact.
+  (c) CHECK-LAYER DOMINANCE IS A PILLAR-ABSORBED MAJORITY, NOT A TOTAL SUPERSET — the
+      honest lift of guard 8(c), and the load-bearing NEW finding. Over each rung's
+      shared, mutually-OBSERVED checks: com>org and retail>bare are CLEAN
+      check-by-check supersets (0 inversions, ≥1 strict win each); org>retail carries
+      EXACTLY ONE honest inversion — `https_hsts` (trust): the human-only retail
+      shop's HTTPS/HSTS strictly out-ranks the no-rails API storefront's — which the
+      TRUST pillar ABSORBS (no-rails API still wins trust 60.0 > 33.3 and the
+      aggregate 46.1 > 29.5), so it never flips the ordering. That rung's gap is
+      earned by a capability MAJORITY, surfaced honestly, not forced into a false
+      total-superset claim. Exact inversion set pinned per rung → a NEW check-layer
+      inversion anywhere fails HERE (a real calibration finding, not a bug to hide).
+
+**Why.** North-star methodological rigor + TRUTH calibration. It answers the exact
+"watch the tail — a retail shop and a bare page may legitimately differ in observed
+checks" caveat the backlog flagged, by MEASUREMENT: the four fixtures actually share
+the identical scored-check set (so per-rung scoped intersection was NOT needed — an
+honest empirical result, not an assumption), and the only cross-tier check inversion
+(retail HTTPS > no-rails API HTTPS) is real and absorbed. Complements, does not
+contradict, guard 17 (pillar-wise TOTAL dominance): dominance is a PILLAR-layer
+property; at the finer CHECK layer the org>retail rung is a majority, not a superset,
+and the pillar aggregation is exactly what makes the ordering robust to it.
+
+**Vendor-neutral / capability lens.** Every assertion asks "was this capability
+observed, and which tier ranks higher?", never "is this domain X?". The four fixture
+keys are the same guards 1–18 already use; no domain/vendor string in any assertion
+message beyond the existing fixture-key data.
+
+**Score-neutral / canonical delta.** `git diff --stat` = `tests/test_canonical_replay.py`
+ONLY (+233); `git diff --name-only -- asrs/ rubric/` EMPTY → scoring.py/rubric/probes
+byte-for-byte untouched, rubric stays **v0.7**, canonical pair unchanged by
+construction AND re-measured (in-cloud replay guard **23/23, 46.1 F / 85.5 B / +39.4,
+0 replay-miss**; population 85.5 > 46.1 > 29.5 > 22.5 all re-pinned).
+
+**Evidence (invariant #3).** Empirically dumped all four committed fixtures' per-check
+statuses + pillar scores before writing a line (scratchpad probe): identical 14-check
+set on all four; head fully observed; tail each one CANT_TEST self_serve_payg; org>retail
+https_hsts inversion (trust) absorbed by trust pillar 60.0 > 33.3. Guard 20 (committed
+negative control, Cycle-57 uniform-rigor standard): monkeypatches `scoring.score` to
+mis-attribute the tail's absent surface CANT_TEST→FAIL and confirms guard 19(b)'s
+CANT_TEST-excusal assertion CATCHES it; restored in finally + restore assertion.
+
+**Ship.** Direct-to-main (TRUTH, tests-only, no scoring semantics, not payment/signing)
+— same tier as Cycles 17/19/21/23/35/49/53/57/59. Commit `4dac5b2`.
+`test_canonical_replay.py` 21→23; suite 223→225 (all 19 files exit 0).
+
+**First duty.** No open peer-gated PR (verified `list_pull_requests` state=open → `[]`).
+Infra health: bench UP (19/19 files green, replay 23/23); git — fresh checkout had local
+`main` at the stale orphan `2e66201` (again), realigned `git checkout -B main origin/main`
+(45c806c = Cycle 62 tip) BEFORE editing per the Cycle-52 lesson. Runner STILL STALLED past
+the 6h floor — newest `verify_20260727T224106Z` is ~18.5h old at this 17:1xZ fire, unchanged
+since Cycle 51; P0-tracked, NOT cloud-repairable, already flagged in Cycle 62's 16:21Z digest
+(no re-flag this fire).
+
+**Slack.** None — tests-only, score-neutral, non-sensitive; the daily digest was already
+sent by Cycle 62 (16:21Z, first cloud cycle after 16:00 UTC today), so this fire is not a
+digest window.
+
+**Next hypothesis.** READOUT-side (Cycle 64): surface this honest check-layer refinement on
+the methodology page — the population ordering is a PILLAR-layer dominance chain (guard 17)
+whose finer check layer carries one absorbed inversion (retail HTTPS > no-rails API HTTPS),
+so "earned dominance" means pillar-superset + majority-at-checks, not a universal per-check
+superset. TRUTH follow-on: extend guard 19 to the 5th committed fixture (api.replicate.com)
+once its capability tier + expected statuses are pinned [LOCAL/cloud].

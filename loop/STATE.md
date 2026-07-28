@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 64
+- Cycle counter: 65
 - Started: 2026-07-23 (UTC)
 - Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
@@ -1286,6 +1286,31 @@
   fire), bench 20/20, main == origin/main. The operator-directive P0 acceptance is DISCHARGED on the
   with-rails API side; the retail-INVERSE behavioral half (guarded in-cloud, never run live) is the next
   [LOCAL] increment.
+  Cycle 65 METHOD (scorer INVARIANCE TO CHECK-INPUT ORDER — the reproducibility rung guard 18
+  NAMES but never tests): `tests/test_canonical_replay.py` +1 (23→24), guard 20
+  `test_scorer_is_invariant_to_check_input_order`. For every domain in the capability spectrum,
+  replay the committed fixture then re-score the SAME CheckResults PERMUTED (reversed) through
+  `scoring.score` and assert the full scored surface (overall/grade/version/every pillar/every check
+  status+points) is byte-identical. Guard 18 (Cycle 61) pins determinism UNDER REPETITION — it replays
+  each fixture twice through the DETERMINISTIC `from_fixture→_run_probes` pipeline, so checks reach
+  `scoring.score` in the SAME order both passes; its own docstring hypothesizes "a set() in aggregation
+  whose iteration order perturbed a float sum" but that failure is INPUT-ORDER-dependence, which guard 18
+  is structurally blind to. Real hazards: pillar earned-sum `earned[pillar] += c.points` (float add not
+  associative) + the `caps_applied` list, built in check-ARRIVAL order — both stable run-to-run yet
+  move under a reordering. Completes the reproducibility family (guard 18 = repetition; canonical_history
+  noise-floor Cycle 47 = cross-artifact live series; guard 20 = input permutation). NON-VACUOUS: negative
+  control rigs `scoring.score` to nudge overall +0.1 when the first check out-ranks the last by id (stand-in
+  for arrival-order sensitivity); reversing flips it → forward/reversed diverge → CAUGHT (passes on the real
+  scorer); rig flows through the real scorer, restored in finally + restore assertion (guards 16/18 discipline).
+  Worded by measurement, no domain named in an assertion; reads from the live pipeline. Tests-only:
+  `git diff --name-only` = test_canonical_replay.py ONLY, `git diff -- asrs/ rubric/` EMPTY → scoring path
+  byte-for-byte untouched, rubric stays v0.7, canonical pair unchanged by construction AND re-measured
+  (replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; verify_20260728T184104Z 18:41Z ~31 min old
+  live-corroborates). Direct-to-main. Suite 20/20 files. No Slack (tests-only/score-neutral/non-sensitive;
+  digest already sent Cycle 62 16:21Z, not a digest window at 19:1xZ). First duty: no open peer-gated PR
+  (verified []); infra health check ran first — runner HEALTHY, bench UP (20/20); git realigned the stale-orphan
+  `2e66201` trap (both local main AND origin/main stale at orphan; `git fetch origin main` force-updated
+  origin/main→0b32656, `checkout -B main origin/main` before editing). Next cycle takes COVERAGE.
 - **RUNNER STALL — ROOT-CAUSED + FIXED (local fire 2026-07-28T17:27Z). CLOSED.** The cloud's
   Cycle-51→62 diagnosis ("launchd not firing / machine asleep") was WRONG — only a local fire could
   see the truth. The runner's heartbeat log (`~/Library/Logs/asrs-local-verify.log`) shows the launchd

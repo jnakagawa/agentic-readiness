@@ -1552,6 +1552,84 @@ def test_replay_pipeline_is_deterministic() -> None:
     )
 
 
+# ---------------------------------------------------------------------------
+# 19. THE SCORER IS INVARIANT TO CHECK-INPUT ORDER — the reproducibility axis
+#     guard 18's own docstring HYPOTHESIZES ("a set() in aggregation whose
+#     iteration order perturbed a float sum") but does NOT actually test. Guard 18
+#     replays each fixture TWICE through from_fixture -> _run_probes, a
+#     deterministic pipeline, so the checks reach scoring.score in the SAME order on
+#     both passes: an aggregation sensitive to check-INPUT order — the pillar
+#     earned-sum ``earned[pillar] += c.points`` (float addition is not associative),
+#     or the ``caps_applied`` list, which scoring.score builds in check-ARRIVAL
+#     order — would be perfectly stable run-to-run yet CHANGE if the probes emitted
+#     their checks in a different order, and guard 18 is structurally blind to it. A
+#     per-cycle re-score number is only "reproducible" (the North Star axis) if it
+#     does not depend on the order the probes happened to emit their checks; this
+#     guard pins that missing rung. Score each committed fixture, then re-score the
+#     SAME CheckResults PERMUTED (reversed) and assert the full scored surface
+#     (overall/grade/version/pillars/every check status+points) is byte-identical.
+#     Read from the live pipeline; worded by measurement, not by vendor.
+# ---------------------------------------------------------------------------
+def test_scorer_is_invariant_to_check_input_order() -> None:
+    print("test_scorer_is_invariant_to_check_input_order")
+    rubric = scoring.load_rubric(None)
+    # (a) Every domain in the population: reversing the check-input order leaves the
+    # scored report byte-identical over its full scored surface.
+    for dom, _tier in _CAPABILITY_SPECTRUM:
+        rep, misses = _score_fixture(dom)
+        _check(not misses, f"{dom}: no replay-miss")
+        checks = list(rep.checks)
+        _check(
+            len(checks) >= 2 and checks[0].check_id != checks[-1].check_id,
+            f"{dom}: >=2 checks with distinct end ids, so reversing is a real "
+            f"reordering ({len(checks)} checks)",
+        )
+        forward = scoring.score(checks, rubric, dom)
+        reverse = scoring.score(list(reversed(checks)), rubric, dom)
+        _assert_reports_identical(f"{dom} (reversed check-input order)", forward, reverse)
+
+    # (b) NON-VACUOUS negative control — the reversed-order identity check actually
+    # CATCHES a scorer whose output depends on check-input order (the exact failure
+    # this guard exists to detect, and the one guard 18 cannot see). Rig
+    # scoring.score so the overall picks up a hair whenever the FIRST check out-ranks
+    # the LAST by id — a stand-in for any arrival-order-sensitive aggregation;
+    # reversing the input flips that comparison, so forward and reversed diverge and
+    # _assert_reports_identical must raise. The rig flows through the REAL scorer and
+    # is restored in a finally + a restore assertion so it never leaks (guards 16/18).
+    com_checks = list(_score_fixture("driftflight.com")[0].checks)
+    real_score = scoring.score
+
+    def order_sensitive(checks, rubric_, domain):
+        rep = real_score(checks, rubric_, domain)
+        checks = list(checks or [])
+        if rep.overall_score is not None and len(checks) >= 2:
+            bump = 0.1 if checks[0].check_id > checks[-1].check_id else 0.0
+            rep = dataclasses.replace(rep, overall_score=rep.overall_score + bump)
+        return rep
+
+    scoring.score = order_sensitive
+    try:
+        fwd = scoring.score(com_checks, rubric, "driftflight.com")
+        rev = scoring.score(list(reversed(com_checks)), rubric, "driftflight.com")
+        caught = False
+        try:
+            _assert_reports_identical("driftflight.com", fwd, rev)
+        except AssertionError:
+            caught = True
+        _check(
+            caught,
+            "negative control: an input-order-sensitive scorer is CAUGHT by the "
+            "reversed-order identity check (so the all-identical result on the real "
+            "scorer is meaningful)",
+        )
+    finally:
+        scoring.score = real_score
+    _check(
+        scoring.score is real_score,
+        "the real scorer is restored after the input-order negative control",
+    )
+
+
 def main() -> int:
     tests = [
         test_canonical_org_replays_46_1,
@@ -1577,6 +1655,7 @@ def main() -> int:
         test_population_delta_is_earned_at_the_check_layer,
         test_population_check_layer_negative_control,
         test_replay_pipeline_is_deterministic,
+        test_scorer_is_invariant_to_check_input_order,
     ]
     failed = 0
     for t in tests:

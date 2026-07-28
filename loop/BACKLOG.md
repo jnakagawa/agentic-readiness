@@ -647,6 +647,16 @@ design in-cloud, execute locally.
   committed fixture; tests-only, score-neutral — but verify its overall/pillars/statuses live first
   (the fixture may not yet have a pinned EXPECTED entry).
 
+- **[CANDIDATE, METHOD] Exercise the `caps_applied` arrival-order path directly** (reproducibility,
+  follow-up to Cycle 65's guard 20). Guard 20 pins that `scoring.score` is invariant to check-INPUT
+  order over the full scored surface, but its caps leg is LATENT: no grade cap binds on any committed
+  domain (the weight-robust guard's precondition A confirms `not com.caps_applied and not org.caps_applied`),
+  so `caps_applied` — which `scoring.score` builds in check-ARRIVAL order — is empty everywhere and its
+  order-sensitivity is never actually driven. Build a small synthetic fixture (or a unit test feeding a
+  hand-built `CheckResult` list) whose rubric forces TWO caps to bind, then assert `caps_applied` is a
+  SET-equal (not order-sensitive) output under a reversed input. Cloud-doable, tests-only, score-neutral;
+  low urgency (caps don't bind on any committed domain today, so this is latent-not-live).
+
 <!-- DONE 2026-07-28T06:1xZ (Cycle 52, READOUT, direct-to-main, display-only, score-neutral):
      "Live-signal FRESHNESS banner on canonical-history.html" SHIPPED. `asrs/scorecard.py`
      `_write_canonical_history_page` renders a liveness element off `hist.liveness` (the Cycle-51

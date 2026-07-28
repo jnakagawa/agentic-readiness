@@ -6352,3 +6352,74 @@ domain claude can reach and confirm the inverse NA-block renders on LIVE retail
 data (the true mirror of this fire). The cross-model N-curve remains blocked on a
 codex-reachable storefront (codex gated both canonical domains again here by
 construction — claude-only).
+
+## Cycle 65 — 2026-07-28T19:1xZ — METHOD (direct to main)
+
+**What.** Closed the reproducibility rung guard 18 (Cycle 61) NAMES but does not
+test. `tests/test_canonical_replay.py` +1 (23→24), guard 20
+`test_scorer_is_invariant_to_check_input_order`: for every domain in the capability
+spectrum, replay the committed fixture, then re-score the SAME `CheckResult`s
+PERMUTED (reversed) through `scoring.score` and assert the full scored surface
+(overall / grade / rubric_version / every pillar / every check status+points) is
+byte-identical. Guard 18 pins determinism UNDER REPETITION — it replays each fixture
+twice through the deterministic `from_fixture → _run_probes` pipeline, so the checks
+reach `scoring.score` in the SAME order both passes; its own docstring hypothesizes
+"a set() in aggregation whose iteration order perturbed a float sum" as the failure
+it catches, but that failure is INPUT-ORDER-dependence, which guard 18 is
+structurally blind to (identical order both times). The real hazards are concrete:
+the pillar earned-sum `earned[pillar] += c.points` (float addition is not
+associative) and the `caps_applied` list, which `scoring.score` builds in
+check-ARRIVAL order — both would be stable run-to-run yet move if the probes emitted
+checks in a different order. Guard 20 is the missing tripwire.
+
+**Why.** North-star "reproducible" axis, at the level of the offline replay
+instrument itself. While the launchd live runner's stall was the standing risk (now
+CLEARED, 17:27Z self-heal) the in-cloud replay was the SOLE canonical regression
+signal; a re-score number is only reproducible if it does not depend on the order
+the probes happened to emit their checks. Guard 20 completes the reproducibility
+family: guard 18 = determinism under repetition (same input, same output);
+`canonical_history` noise-floor (Cycle 47) = cross-artifact live-series determinism;
+guard 20 = invariance under input permutation. On the real scorer the property HOLDS
+(pillar sums over integer-ish points are exact; caps don't bind on the canonical
+population so no arrival-order list manifests) — the guard freezes that.
+
+**Non-vacuous.** Negative control rigs `scoring.score` to nudge the overall by +0.1
+whenever the FIRST check out-ranks the LAST by id — a stand-in for any
+arrival-order-sensitive aggregation. Reversing the input flips that comparison, so
+forward and reversed diverge and the reversed-order identity check CATCHES it
+(proven by contrast: it passes on the real scorer). Rig flows through the REAL
+scorer, restored in a `finally` + a restore assertion so it never leaks (same
+discipline as guards 16/18).
+
+**Score-neutral / canonical delta.** `git diff --name-only` = `tests/test_canonical_replay.py`
+ONLY; `git diff --stat -- asrs/ rubric/` EMPTY → scoring path byte-for-byte
+untouched, rubric stays **v0.7**, canonical pair unchanged by construction AND
+re-measured (in-cloud replay guard **24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss**).
+Live canonical signal corroborated by `runs/local/verify_20260728T184104Z.json`
+(18:41Z, ~31 min old at fire). Vendor-neutral: worded by measurement; reads from the
+live pipeline, uses the four fixture keys guards 1–19 already use, no domain named in
+an assertion.
+
+**Ship.** Direct-to-main (tests-only, no scoring semantics, not payment/signing).
+`test_canonical_replay.py` 23→24; suite 20/20 files green.
+
+**First duty.** No open peer-gated PR (verified `list_pull_requests` state=open →
+`[]`). Infra health: bench UP (20/20 files, replay 24/24); runner **HEALTHY** —
+newest `verify_20260728T184104Z` is ~31 min old at this 19:1xZ fire (the ~18.5h stall
+Cycles 51→63 tracked is CLEARED per the 17:27Z self-healing fire). Git: fresh checkout
+again hit the stale-orphan `2e66201` trap — BOTH local `main` and the `origin/main`
+remote-tracking ref were stale at the orphan; `git fetch origin main` force-updated
+`origin/main` 2e66201→0b32656 (real tip) and `git checkout -B main origin/main`
+realigned before editing, per the Cycle-52/64 lesson.
+
+**Slack.** None — tests-only, score-neutral, non-sensitive; the daily digest was
+already sent by Cycle 62 (16:21Z, first cloud cycle after 16:00 UTC today), so this
+19:1xZ fire is not a digest window and nothing here is human-gated.
+
+**Next hypothesis.** The reproducibility family is now complete at the offline layer.
+The next METHOD frontier the replay file does NOT yet cover: `caps_applied`
+arrival-order is untested by construction (no cap binds on the canonical population,
+so guard 20's caps leg is latent) — a synthetic fixture whose rubric forces two caps
+to bind would exercise the caps-ordering path directly and pin that `caps_applied`
+is a SET-equal, not order-sensitive, output. Low urgency (caps don't bind on any
+committed domain), design-only until a capped fixture exists.

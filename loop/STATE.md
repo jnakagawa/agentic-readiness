@@ -1283,6 +1283,22 @@
   runs/local/merge_verify_pr1_20260723T055000Z.json. BACKLOG item removed.
   https://github.com/jnakagawa/agentic-readiness/pull/1
 
+## Git bookkeeping note (Cycle 52, 2026-07-28T06:2xZ)
+
+The fresh cloud checkout started with local branch `main` at the STALE ORPHAN tip
+`2e66201` (unrelated history — same one Cycle 51 flagged), while origin/main was the real
+line. Cycle 52's commit `c2b389d` was authored correctly (parent = origin/main `ca62669`)
+but on a DETACHED HEAD, so `git push origin main` initially pushed the ORPHAN local `main`
+over the real history → a genuine (self-inflicted) non-fast-forward rejection that LOOKED
+like a server anomaly. Fix: `git checkout -B main c2b389d` then push (clean ff
+`ca62669..c2b389d`). LESSON for next cycle: after the fresh-checkout `git pull`, VERIFY
+`git rev-parse main` == `git rev-parse origin/main` before committing; if local `main` is
+the orphan `2e66201`, realign first (`git checkout -B main origin/main`) so pushes target
+the real history. Also: this relay REJECTS branch DELETES ("remote end hung up") — two
+harmless redundant refs `loop/cycle52-probe` and `loop/cycle52-freshness-banner` (both ==
+`c2b389d` == current main) were left on the server; delete them from Jonah's machine or via
+the GitHub UI when convenient (they clutter the branch list but affect nothing).
+
 ## Environment constraint (IMPORTANT — affects every cycle)
 
 This cloud loop has **NO outbound network to external domains**: the agent

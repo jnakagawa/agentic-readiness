@@ -214,6 +214,22 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"|\bcredits?\s+(?:ran|runs?|running)\s+out\b"
             r"|\bapi\s+credits?\b"
             r"|\bcredit[- ]based\b", _F)),
+        # Committed-use / tiered-volume billing — usage-metered pricing that scales
+        # with committed or cumulative volume (a committed-use discount, a volume /
+        # usage tier, a per-tier price). A defining convention for a metered API's
+        # billing, distinct from the flat per-call rate above: a metered storefront
+        # that meters by volume tier ("never counted against volume tiers") documents
+        # its offer this way, and until now that prose was invisible to discovery.
+        # PRECISION: anchor "volume"/"tier" to a pricing word so "volume control" /
+        # "tier 1 support" / "top tier" never fire, and require "committed use" to be
+        # adjacent (not "committed to use").
+        ("tiered-volume", re.compile(
+            r"\bcommitted[- ]use\b"
+            r"|\bvolume\s+(?:discount|pricing|tiers?|based|commitment)\b"
+            r"|\btiered\s+(?:pricing|rates?|billing|usage)\b"
+            r"|\busage\s+tiers?\b"
+            r"|\bpricing\s+tiers?\b"
+            r"|\btier\s+\d+\s*[:\-–]\s*\$", _F)),
         # Agent-native payment rail.
         ("x402", re.compile(r"\b(x402|HTTP\s*402)\b", _F)),
     ],
@@ -223,6 +239,23 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
         ("per-month", re.compile(r"\bper month\b|\b/mo\b|\bmonthly\b", _F)),
         ("recurring", re.compile(r"\brecurring\b", _F)),
         ("annual-billing", re.compile(r"\bannual billing\b|\bbilling cycle\b", _F)),
+        # Seat / per-user licensing — the dominant SaaS-subscription billing
+        # convention (a recurring price per user seat), distinct from the
+        # per-month / annual signals above: a seat-priced plan may quote only a
+        # per-SEAT rate ("$10 per seat", "per-seat pricing", "5 seats included")
+        # and never say "month", so without this it is not recognised as a
+        # subscription at all. PRECISION: "seat" is a false-positive minefield (a
+        # window seat, a seat belt, "take a seat", "8 seats at the table"), so
+        # anchor it to a pricing PERIOD, a PRICE, a per-USER basis, or an explicit
+        # licensing word — a bare seat count near none of these never fires.
+        ("seat-licensing", re.compile(
+            r"\bper[- ]seat\s+(?:per\s+)?(?:month|year|user|licen[cs]e[ds]?)\b"
+            r"|\bper\s+user\s+per\s+(?:month|year)\b"
+            r"|\$\s?\d[\d,.]*\s*(?:/|per)\s*(?:seat|user)\b"
+            r"|\bper[- ]seat\s+(?:pricing|plan|billing|subscription)\b"
+            r"|\bseat[- ]based\s+(?:pricing|billing|subscription|licen[cs])"
+            r"|\blicen[cs]e[ds]?\s+per[- ]seat\b"
+            r"|\b\d+\s+seats?\s+(?:included|per\s+(?:month|year))\b", _F)),
     ],
     "digital_good": [
         ("generation", re.compile(r"\b(text-to-image|image|video|audio|art)\s+generation\b", _F)),

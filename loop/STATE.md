@@ -1,8 +1,12 @@
 # Loop state
 
-- Cycle counter: 65
+- Cycle counter: 66
 - Started: 2026-07-23 (UTC)
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 65 METHOD — guard 20 input-order invariance; Cycle 66 COVERAGE — offering
+  signal bank +tiered-volume (metered_api) +seat-licensing (subscription), precision
+  batteries + tiered-volume real-captured on the pair, score-neutral/off-scoring-path,
+  rubric v0.7, replay 24/24 / +39.4, offering guard 12/12; direct-to-main. Next TRUTH.)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel

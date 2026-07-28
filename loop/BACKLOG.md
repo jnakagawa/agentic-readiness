@@ -577,13 +577,29 @@ design in-cloud, execute locally.
      byte-for-byte untouched. `test_offering.py` 18→20 (synthetic /docs-only non-vacuous-on-strip +
      end-to-end live-read on the canonical fixture); wiring guard extended; stale Cycle-58 comment fixed.
      Commit f9459a8. See LOG Cycle 62. -->
-- **[CANDIDATE, COVERAGE] Further metered/subscription billing conventions** (offering signal bank,
-  precedent Cycles 50/58). Not yet captured: seat-based subscription (`per seat` / `per user per month` /
-  `N seats`), committed-use / tiered-volume pricing (`committed use` / `volume discount` / `tier N: $X`).
-  Same discipline as rate-limited: precision-first (anchor `seat` to a pricing verb/period so a "window
-  seat" never fires), vendor-neutral, synthetic precision battery + a real-captured non-vacuity test,
-  verify canonical set/order unchanged (subscription is already claimed on the pair → strength-only, but
-  CHECK it does not overtake metered_api).
+<!-- DONE 2026-07-28T20:1xZ (Cycle 66, COVERAGE, direct-to-main, score-neutral): "Further
+     metered/subscription billing conventions" SHIPPED. `asrs/offering._SIGNALS` gains
+     `tiered-volume` (metered_api: committed-use / volume|usage|pricing tiers / per-tier price) and
+     `seat-licensing` (subscription: per-seat / per-user recurring pricing). Precision-first exactly as
+     the item asked: `volume`/`tier` anchored to a pricing word ("volume control" / "tier 1 support" /
+     "committed **to** use" never fire); `seat` anchored to a period/price/per-user/licensing word (a
+     window seat, a seat belt, "8 seats at the table" never fire). VALIDATED: `tiered-volume` fires on
+     the pair (real captured "never counted against **volume tiers**" on driftflight.com homepage) but
+     only DEEPENS metered_api — already the strongest claim → canonical OFFERING guard 12/12 UNCHANGED,
+     SET+ORDER `{metered_api,subscription,digital_good}` did NOT reorder (did not overtake, as the item
+     flagged to check); `seat-licensing` does not fire on the pair. Off the scoring path (grep-verified;
+     scoring probe's `protocols._AGENT_SURFACE_DOCS` untouched) → rubric v0.7, replay guard 24/24 / +39.4
+     / 0 replay-miss, scoring path byte-for-byte untouched. `test_offering.py` 20→23 (+tiered-volume
+     precision battery 9 pos/6 neg, +tiered-volume real-captured on the fixture, +seat-licensing precision
+     battery 7 pos/6 neg); suite 231→234. See LOG Cycle 66. FOLLOW-UP below (seat real-data leg). -->
+- **[LOCAL / CANDIDATE, COVERAGE] Real-data non-vacuity leg for `seat-licensing`** (follow-up to Cycle 66).
+  `tiered-volume` earned a real-captured non-vacuity test (fires on the committed driftflight.com
+  homepage's "volume tiers" prose), but `seat-licensing` shipped with the SYNTHETIC precision battery
+  ONLY — no committed fixture carries seat/per-user licensing prose. When a seat-priced SaaS storefront
+  is captured (a real per-seat plan, e.g. via `asrs.cli score <domain> --record-fixture
+  fixtures/canonical/<domain>.json` [LOCAL]), add a real-captured test mirroring
+  `test_tiered_volume_fires_on_real_captured_billing_prose`. Low urgency; the synthetic battery already
+  pins precision on the named traps.
 
 <!-- DONE 2026-07-28T14:2xZ (Cycle 60, READOUT, direct-to-main, display-only, score-neutral):
      "[READOUT — surface the whole-chain weight-robustness finding on the methodology page]" SHIPPED,

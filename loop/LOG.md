@@ -6427,3 +6427,70 @@ committed domain), design-only until a capped fixture exists.
 ## Local verification — 20260728T194100Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260728T194100Z.json
+
+## Cycle 66 — 2026-07-28T20:1xZ — COVERAGE (direct to main)
+
+**What.** Offering discovery's billing-convention signal bank gains two vendor-neutral
+conventions (precedent Cycles 50/58 rate-limited / credit-metered): `tiered-volume`
+under `metered_api` (committed-use discounts, volume/usage/pricing tiers, per-tier
+prices) and `seat-licensing` under `subscription` (per-seat / per-user recurring
+pricing). Both are precision-anchored: `volume`/`tier` must sit next to a pricing word
+(so audio "volume control", "tier 1 support", "top tier", "committed **to** use" never
+fire); `seat` must sit next to a pricing PERIOD, a PRICE, a per-USER basis, or a
+licensing word (so a window seat, a seat belt, "take a seat", "8 seats at the table"
+never fire). `asrs/offering._SIGNALS` only — the archetype taxonomy, aggregation, and
+every other signal are byte-for-byte unchanged.
+
+**Why.** North-star many-conventions axis: a storefront that meters by volume tier
+("never counted against volume tiers") or prices a subscription per seat ("$10 per
+seat", "5 seats included", no "month") documents its offer in prose the bank could not
+read, so an offering-relative battery under-classified it. `seat-licensing` in
+particular adds real recall — a pure seat-priced plan that never says "month" was not
+recognised as a subscription at all.
+
+**Non-vacuous / real-captured.** `tiered-volume` gets BOTH legs the backlog asked for:
+a synthetic precision battery (9 positives fire, 6 volume/tier-shaped negatives do not)
+AND a real-captured non-vacuity test — it fires on the GENUINE canonical driftflight.com
+homepage bytes ("Refused content is never billed and never counted against **volume
+tiers**", captured verbatim in the committed fixture). `seat-licensing` gets the
+synthetic battery only (7 positives / 6 negatives) — no committed fixture carries seat
+prose, so a real-data leg is honestly deferred until a seat-priced fixture lands (queued
+below). Both batteries cover the exact false-positive traps named in the signal comments.
+
+**Score-neutral / canonical delta.** Discovery is OFF the scoring path (`--battery auto`
+only — grep-verified; the commerce-manifest scoring probe keeps its own separate
+`protocols._AGENT_SURFACE_DOCS`). `git diff --stat -- asrs/scoring.py rubric/ asrs/probes/
+asrs/fetch.py` EMPTY → rubric stays **v0.7**, canonical pair unchanged by construction AND
+re-measured (in-cloud replay guard **24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss**).
+The canonical OFFERING guard is **12/12 UNCHANGED**: `tiered-volume` fires on the pair but
+only DEEPENS metered_api's evidence — already the strongest claim on both domains — so the
+claimed SET+ORDER `{metered_api, subscription, digital_good}` never moves; `seat-licensing`
+does not fire on the pair at all. Live canonical signal corroborated by
+`runs/local/verify_20260728T194100Z.json` (19:41Z, healthy). Vendor-neutral: generic
+billing prose, no domain/vendor string in a pattern.
+
+**Ship.** Direct-to-main (discovery-only, no scoring semantics, no version bump, not
+payment/signing). `git diff --name-only` = `asrs/offering.py` + `tests/test_offering.py`
+ONLY. `test_offering.py` 20→23 (+tiered-volume precision battery, +tiered-volume
+real-captured, +seat-licensing precision battery); suite 231→234, 20/20 files green.
+
+**First duty.** No open peer-gated PR (verified `list_pull_requests` state=open → `[]`).
+Infra health: bench UP (20/20 files, replay 24/24); runner **HEALTHY** — newest
+`verify_20260728T194100Z` (19:41Z), 46.1 F / 85.5 B / +39.4, <1.5h old at this fire (the
+~18.5h stall Cycles 51→63 tracked stays CLEARED per the 17:27Z self-healing fire). Git:
+fresh checkout again started with local `main` at the stale-orphan `2e66201`; realigned
+`git checkout -B main origin/main` (= `2c6685d`) before editing, per the Cycle-52/64/65
+lesson. `test_free_tier.py` needed `pip install -r requirements.txt` (eth-account) to reach
+11/11 — the standing invariant-#4 env gap, closed by the requirements install as always.
+
+**Slack.** None — discovery-only, score-neutral, non-sensitive; the daily digest was
+already sent by Cycle 62 (16:21Z, first cloud cycle after 16:00 UTC today), so this 20:1xZ
+fire is not a digest window and nothing here is human-gated.
+
+**Next hypothesis.** The published-self-description SURFACES are fully read (Cycle 46) and
+the metered/subscription billing-convention vocabulary is now broad (rate-limited /
+credit-metered / tiered-volume / seat-licensing). The next COVERAGE frontier that is
+in-cloud-doable is a NEW archetype or a new intent-template, not another billing phrase —
+e.g. a `usage_bundle` / prepaid-package archetype, or capturing a seat-priced SaaS fixture
+so `seat-licensing` earns a real-data non-vacuity leg (queued [LOCAL] below). Score-
+increasing rail work (free-tier live-wiring, ACP/UCP/MPP handshakes) remains [LOCAL].

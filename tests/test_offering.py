@@ -449,6 +449,122 @@ def test_rate_limit_fires_on_real_captured_api_docs():
     print(f"  ok: rate-limited fires on REAL captured API-docs prose — quote: {rl[0].quote!r}")
 
 
+def test_tiered_volume_metering_precision_synthetic():
+    # Committed-use / tiered-volume pricing is a defining metered-API billing
+    # convention (billing scales with committed or cumulative volume), distinct
+    # from the flat per-call rate. Each POSITIVE is real volume/tier billing prose
+    # that must claim metered_api via the new tiered-volume signal; each NEGATIVE
+    # is volume/tier-SHAPED noise that must NOT fire it (the precision traps: audio
+    # "volume control", a support "tier 1", "top tier", "committed to use").
+    positives = {
+        "committed use": "Prepay a committed-use plan for a lower per-call rate.",
+        "committed use spaced": "Save with committed use discounts on annual spend.",
+        "volume discount": "High callers get an automatic volume discount at scale.",
+        "volume tiers": "Refused content is never counted against volume tiers.",
+        "volume pricing": "Ask about volume pricing for over 1M generations/month.",
+        "tiered pricing": "Simple tiered pricing: pay less per unit as you grow.",
+        "usage tiers": "Billing moves through usage tiers as monthly calls rise.",
+        "pricing tiers": "Three pricing tiers scale the per-request price down.",
+        "tier price": "tier 3: $0.002 per image once you pass 500k generations.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("metered.test", {"homepage": text})
+        assert prof.claims("metered_api"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "metered_api"
+            for s in c.signals
+        }
+        assert "tiered-volume" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real volume/tier billing phrasings each fire tiered-volume")
+
+    negatives = {
+        "volume control": "A slider in the corner adjusts the playback volume control.",
+        "high volume of": "We process a high volume of images every hour.",
+        "tier 1 support": "Paid plans include tier 1 support and a shared inbox.",
+        "top tier": "A top tier design studio trusts our brand kit.",
+        "committed to use": "Our team is committed to use only renewable power.",
+        "first tier bare": "The first tier of the cake was three layers tall.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "tiered-volume" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} volume/tier-shaped noise strings do NOT fire tiered-volume (precision)"
+    )
+
+
+def test_tiered_volume_fires_on_real_captured_billing_prose():
+    # Real-evidence, NON-VACUOUS validation: the tiered-volume signal fires on the
+    # GENUINE volume-tier billing language captured live from the canonical
+    # driftflight.com homepage — "Refused content is never billed and never counted
+    # against volume tiers" — a real usage-metered-by-volume-tier statement,
+    # captured verbatim in the committed fixture. Exercise the classifier directly
+    # on those captured bytes, the same real-data non-vacuity move
+    # test_rate_limit_fires_on_real_captured_api_docs makes.
+    #
+    # SCORE-NEUTRAL by construction: metered_api is ALREADY the strongest claim on
+    # the canonical pair, so a new metered_api signal only DEEPENS its evidence — it
+    # never adds an archetype or reorders the claimed set (pinned green by
+    # tests/test_offering_canonical.py). Discovery is off the scoring path, so the
+    # scored canonical delta is untouched.
+    home = _fixture_entry_text("driftflight.com", "driftflight.com")
+    assert "volume tier" in home.lower(), "fixture homepage lost its volume-tier billing prose"
+    prof = classify_offering("driftflight.com", {"homepage": home})
+    assert prof.claims("metered_api"), prof.archetypes
+    metered = next(c for c in prof.claimed if c.archetype == "metered_api")
+    tv = [s for s in metered.signals if s.label == "tiered-volume"]
+    assert tv, {s.label for s in metered.signals}
+    assert "volume tier" in tv[0].quote.lower(), tv[0].quote
+    print(f"  ok: tiered-volume fires on REAL captured billing prose — quote: {tv[0].quote!r}")
+
+
+def test_seat_licensing_subscription_precision_synthetic():
+    # Seat / per-user licensing is the dominant SaaS-subscription billing
+    # convention (a recurring price per user seat). Each POSITIVE is real seat /
+    # per-user licensing prose that must claim subscription via the new
+    # seat-licensing signal; each NEGATIVE is seat-SHAPED noise that must NOT fire
+    # it (the precision traps: a window seat, a seat belt, theatre seats).
+    positives = {
+        "per seat month": "Team plan: $12 per seat per month, billed to the org.",
+        "per user per month": "Pro is priced per user per month with no minimum.",
+        "dollar per seat": "$8 per seat unlocks the shared workspace.",
+        "per-seat pricing": "We use simple per-seat pricing — add users as you grow.",
+        "seat-based billing": "Seat-based billing scales with your team size.",
+        "seats included": "The Growth plan has 10 seats included, add more anytime.",
+        "per seat license": "Enterprise is licensed per seat with SSO.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("saas.test", {"homepage": text})
+        assert prof.claims("subscription"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "subscription"
+            for s in c.signals
+        }
+        assert "seat-licensing" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real seat/per-user licensing phrasings each fire seat-licensing")
+
+    negatives = {
+        "window seat": "Choose a window seat for the best view on your flight.",
+        "seat belt": "Fasten your seat belt before the aircraft departs.",
+        "take a seat": "Take a seat in the lobby and we will call your name.",
+        "seats at table": "The venue has 8 seats at the table for your party.",
+        "front seat": "The front seat reclines fully for the red-eye leg.",
+        "reserve a seat": "Reserve a seat on the 9am departure.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "seat-licensing" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} seat-shaped noise strings do NOT fire seat-licensing (precision)"
+    )
+
+
 def test_booking_and_data_archetypes_fire():
     booking = classify_offering("harbor.test", {"homepage": BOOKING_HOMEPAGE})
     assert booking.claims("service_booking"), booking.archetypes
@@ -758,6 +874,9 @@ def main() -> int:
         test_credit_metered_fires_on_real_captured_billing_prose,
         test_rate_limit_metering_precision_synthetic,
         test_rate_limit_fires_on_real_captured_api_docs,
+        test_tiered_volume_metering_precision_synthetic,
+        test_tiered_volume_fires_on_real_captured_billing_prose,
+        test_seat_licensing_subscription_precision_synthetic,
         test_booking_and_data_archetypes_fire,
         test_non_storefront_claims_nothing,
         test_strength_counts_distinct_signals_and_orders_claims,

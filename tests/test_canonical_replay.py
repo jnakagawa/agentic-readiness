@@ -1233,6 +1233,237 @@ def test_population_ordering_is_weight_robust() -> None:
 
 
 # ---------------------------------------------------------------------------
+# 19. THE DELTA IS EARNED AT THE CHECK LAYER — ACROSS THE WHOLE POPULATION.
+#     Guard 8 (``test_canonical_delta_is_earned_dominance``) proves the +39.4 PAIR
+#     is earned, not an accounting artifact, at the finest (per-check) layer:
+#     full observability + like-for-like denominator + check-by-check dominance,
+#     no inversion. Guards 12/17 already lift the ORDERING and its weight-robustness
+#     to the four-domain population — but only at the aggregate/PILLAR layer. This
+#     guard lifts guard 8's per-CHECK earned-ness argument to the population, and in
+#     doing so surfaces an HONEST refinement the pillar-layer guards cannot see: the
+#     population is NOT a clean check-by-check dominance chain the way the pair is.
+#
+#       (a) POPULATION LIKE-FOR-LIKE DENOMINATOR — all four domains are scored over
+#           the IDENTICAL scored check_id set, so every rung of the spectrum
+#           ordering (guard 12) compares the SAME checks, not one tier over fewer
+#           checks. Stronger than guard 8(b), which pins like-for-like for the head
+#           pair only.
+#       (b) HONEST, TAIL-FAVOURING OBSERVABILITY — guard 8(a) pins FULL observability
+#           on the head pair (where the delta lives), and that still holds here. But
+#           the tail is NOT fully observed, and that is honest, not a defect: the two
+#           non-API sites each have EXACTLY ONE unobserved check — ``self_serve_payg``
+#           (transactability) — recorded CANT_TEST because they expose no
+#           pay-as-you-go surface to probe, EXCUSED per invariant #4, never mis-scored
+#           FAIL. No check is NA on any domain (nothing structurally masked). The key
+#           attribution-honesty property: excusing a check EXCLUDES it from that
+#           site's denominator, which can only RAISE the tail's score — so the honest
+#           observability handling FAVOURS the lower-capability sites, yet the strict
+#           capability ordering (guard 12, read live) still holds. The ordering
+#           therefore cannot be a differential-observability artifact inflating the
+#           head: the excusal helps the losers and they lose anyway.
+#       (c) CHECK-LAYER DOMINANCE IS A PILLAR-ABSORBED MAJORITY, NOT A TOTAL SUPERSET
+#           — the honest lift of guard 8(c). Over each adjacent rung's shared,
+#           mutually-OBSERVED checks: the head pair (com>org) and the tail rung
+#           (retail>bare) are CLEAN check-by-check supersets (zero inversions, >=1
+#           strict win each). The middle rung (org>retail) carries EXACTLY ONE honest
+#           inversion — ``https_hsts`` (trust): the human-only retail shop's HTTPS/HSTS
+#           strictly out-ranks the no-rails API storefront's — which the TRUST-pillar
+#           aggregation ABSORBS (the no-rails API still wins the trust pillar,
+#           60.0 > 33.3, and the aggregate, 46.1 > 29.5). So that rung's aggregate gap
+#           is earned by a capability MAJORITY, surfaced honestly, not a superset. This
+#           is exactly the "watch the tail — rungs may legitimately differ" caveat the
+#           backlog flagged, resolved by measurement rather than forced into a false
+#           total-superset claim. Pinning the exact inversion set per rung makes it a
+#           tripwire: a probe change that introduced a NEW check-layer inversion at
+#           any rung, or a scoring change that let an absorbed inversion flip its
+#           pillar/aggregate, fails HERE — and is a real calibration finding, not a
+#           bug to hide.
+#
+#     Read from the LIVE replay pipeline (never the pinned constants); worded by
+#     capability tier throughout — the four fixture keys guards 1-17 already use.
+# ---------------------------------------------------------------------------
+_HEAD_DOMAINS = ("driftflight.com", "drift-flight.org")  # API storefronts, fully observed
+_TAIL_DOMAINS = ("books.toscrape.com", "example.com")    # non-API, one excused check each
+# The single honest check-layer inversion, by rung (higher -> lower). The retail
+# shop's HTTPS/HSTS out-ranks the no-rails API's; the trust pillar absorbs it.
+_EXPECTED_INVERSIONS = {
+    ("driftflight.com", "drift-flight.org"): frozenset(),
+    ("drift-flight.org", "books.toscrape.com"): frozenset({"https_hsts"}),
+    ("books.toscrape.com", "example.com"): frozenset(),
+}
+
+
+def _observed_status_map(report):
+    """{check_id: status} for a scored report."""
+    return {c.check_id: c.status for c in report.checks}
+
+
+def _rung_inversions(hi_status, lo_status):
+    """Over checks OBSERVED (ranked) on BOTH sides, return (inversions, strict_wins).
+
+    ``inversions`` = checks where the lower rung out-ranks the higher (capability
+    rank PASS>PARTIAL>FAIL); ``strict_wins`` = checks where the higher strictly
+    out-ranks the lower. CANT_TEST/NA are unobserved and skipped (guard 8's
+    ``_UNOBSERVED``): a like-for-like check-layer comparison only ranks checks both
+    sides actually exposed.
+    """
+    inv, strict = {}, []
+    for cid in set(hi_status) & set(lo_status):
+        hs, ls = hi_status[cid], lo_status[cid]
+        if hs in _UNOBSERVED or ls in _UNOBSERVED:
+            continue
+        rh, rl = _CAP_RANK[hs], _CAP_RANK[ls]
+        if rh < rl:
+            inv[cid] = (ls.name, hs.name)  # lower rung beats higher
+        elif rh > rl:
+            strict.append(cid)
+    return inv, strict
+
+
+def test_population_delta_is_earned_at_the_check_layer() -> None:
+    print("test_population_delta_is_earned_at_the_check_layer")
+    order = [d for d, _ in _CAPABILITY_SPECTRUM]
+    reps, status = {}, {}
+    for dom in order:
+        rep, misses = _score_fixture(dom)
+        _check(not misses, f"{dom}: no replay-miss")
+        reps[dom] = rep
+        status[dom] = _observed_status_map(rep)
+
+    # (a) POPULATION LIKE-FOR-LIKE DENOMINATOR — identical scored check_id set on
+    # all four, so the ordering compares the same checks at every rung.
+    sets = [frozenset(status[dom]) for dom in order]
+    _check(
+        len(set(sets)) == 1,
+        "all four domains are scored over the identical check_id set — the "
+        f"population ordering is like-for-like (per-domain sets differ: "
+        f"{[(dom, sorted(set(sets[0]) ^ frozenset(status[dom]))) for dom in order if frozenset(status[dom]) != sets[0]]})",
+    )
+
+    # (b) HONEST, TAIL-FAVOURING OBSERVABILITY.
+    # No check is NA anywhere — nothing structurally masked.
+    na = {dom: {k for k, s in status[dom].items() if s is Status.NA} for dom in order}
+    _check(
+        not any(na.values()),
+        f"no check is NA on any domain (structural masking would hide a FAIL): {na}",
+    )
+    # The head pair (where the delta lives) is FULLY observed — guard 8(a) holds here.
+    for dom in _HEAD_DOMAINS:
+        unobs = {k for k, s in status[dom].items() if s in _UNOBSERVED}
+        _check(
+            not unobs,
+            f"{dom} (API storefront) is fully observed — every recorded FAIL is "
+            f"scored evidence-of-absence, not an excused gap (unobserved: {unobs})",
+        )
+    # The tail's ONLY unobserved status is CANT_TEST on the absent pay-as-you-go
+    # surface — honestly excused (invariant #4), never mis-scored FAIL.
+    for dom in _TAIL_DOMAINS:
+        unobs = {k for k, s in status[dom].items() if s in _UNOBSERVED}
+        _check(
+            unobs == {"self_serve_payg"},
+            f"{dom} (non-API site) has exactly one unobserved check, the absent "
+            f"self-serve pay-as-you-go surface (unobserved: {unobs})",
+        )
+        _check(
+            status[dom]["self_serve_payg"] is Status.CANT_TEST,
+            f"{dom}: the absent pay-as-you-go surface is EXCUSED as CANT_TEST "
+            f"(excluded from the denominator), not penalised FAIL "
+            f"(got {status[dom]['self_serve_payg'].name})",
+        )
+    # The excusal FAVOURS the tail (raises its score by shrinking its denominator),
+    # yet the strict ordering holds — so it is not a head-inflating observability
+    # artifact. Read the ordering live.
+    for hi, lo in zip(order, order[1:]):
+        _check(
+            reps[hi].overall_score > reps[lo].overall_score,
+            f"strict ordering holds despite tail-favouring excusal: {hi} "
+            f"{reps[hi].overall_score} > {lo} {reps[lo].overall_score}",
+        )
+
+    # (c) CHECK-LAYER DOMINANCE — a pillar-absorbed majority, not a total superset.
+    for hi, lo in zip(order, order[1:]):
+        inv, strict = _rung_inversions(status[hi], status[lo])
+        want = _EXPECTED_INVERSIONS[(hi, lo)]
+        _check(
+            frozenset(inv) == want,
+            f"rung {hi}>{lo}: check-layer inversion set == {sorted(want)} "
+            f"(got {inv}) — a NEW inversion here is a real calibration finding",
+        )
+        # Every rung is still driven UP by capability: at least one strict win.
+        _check(
+            len(strict) >= 1,
+            f"rung {hi}>{lo}: the higher tier strictly out-ranks the lower at >=1 "
+            f"observed check (strict wins: {sorted(strict)})",
+        )
+    # The middle rung's inversion is NON-EMPTY (so the clean-superset claim at the
+    # other two rungs is a real, discriminating condition, not vacuously true) AND
+    # ABSORBED by the trust pillar — org still wins trust and the aggregate.
+    mid = ("drift-flight.org", "books.toscrape.com")
+    mid_inv, _ = _rung_inversions(status[mid[0]], status[mid[1]])
+    _check(
+        len(mid_inv) == 1 and set(mid_inv) == {"https_hsts"},
+        f"the org>retail rung has exactly one honest check-layer inversion, "
+        f"https_hsts (retail HTTPS out-ranks the no-rails API's): {mid_inv}",
+    )
+    _check(
+        reps[mid[0]].pillar_scores["trust"] > reps[mid[1]].pillar_scores["trust"],
+        f"the inversion is pillar-ABSORBED: the no-rails API still wins the trust "
+        f"pillar ({reps[mid[0]].pillar_scores['trust']} > "
+        f"{reps[mid[1]].pillar_scores['trust']}), so it does not flip the ordering",
+    )
+
+
+# ---------------------------------------------------------------------------
+# 20. GUARD 19'S NEGATIVE CONTROL — the observability-honesty leg (b) is a real
+#     tripwire against MIS-ATTRIBUTED ABSENCE (invariant #4), not a construction
+#     argument. The dishonest move guard 19(b) forbids: score a capability a site
+#     genuinely cannot expose as FAIL (evidence-of-absence, scored 0 IN the
+#     denominator) instead of CANT_TEST (excused, EXCLUDED) — penalising a site for
+#     what could not be observed. This monkeypatches ``scoring.score`` to rewrite the
+#     tail's excused ``self_serve_payg`` CANT_TEST -> FAIL and confirms guard 19(b)'s
+#     "the tail's absent surface is CANT_TEST" assertion FAILS on it — so the clean
+#     pass on the real scorer is meaningful. The bug flows through the REAL
+#     ``_score_fixture`` -> ``scoring.score`` path guard 19 uses; the real scorer is
+#     restored in a finally + a restore assertion so the rig never leaks (same
+#     discipline as guards 16/18).
+# ---------------------------------------------------------------------------
+def test_population_check_layer_negative_control() -> None:
+    print("test_population_check_layer_negative_control")
+    real_score = scoring.score
+
+    def rigged(checks, rubric, domain):
+        report = real_score(checks, rubric, domain)
+        if domain in _TAIL_DOMAINS:  # mis-attribute the absent surface as a failure
+            for c in report.checks:
+                if c.check_id == "self_serve_payg" and c.status is Status.CANT_TEST:
+                    c.status = Status.FAIL
+        return report
+
+    scoring.score = rigged
+    try:
+        caught = False
+        for dom in _TAIL_DOMAINS:
+            rep, _ = _score_fixture(dom)
+            st = _observed_status_map(rep)
+            # Guard 19(b)'s own assertion: the tail's absent surface must be CANT_TEST.
+            if st.get("self_serve_payg") is not Status.CANT_TEST:
+                caught = True
+        _check(
+            caught,
+            "negative control: a scorer that mis-attributes the tail's absent "
+            "pay-as-you-go surface as FAIL is CAUGHT by guard 19(b)'s "
+            "CANT_TEST-excusal assertion — the observability-honesty leg is "
+            "non-vacuous",
+        )
+    finally:
+        scoring.score = real_score
+    _check(
+        scoring.score is real_score,
+        "the real scorer is restored after the check-layer negative control",
+    )
+
+
+# ---------------------------------------------------------------------------
 # 18. THE OFFLINE REPLAY INSTRUMENT IS DETERMINISTIC — the in-cloud regression
 #     signal reproduces itself run-to-run. Every shipping cycle re-measures the
 #     canonical population by replaying the committed fixtures through the REAL
@@ -1343,6 +1574,8 @@ def main() -> int:
         test_canonical_delta_is_weight_robust,
         test_population_relabel_negative_control,
         test_population_ordering_is_weight_robust,
+        test_population_delta_is_earned_at_the_check_layer,
+        test_population_check_layer_negative_control,
         test_replay_pipeline_is_deterministic,
     ]
     failed = 0

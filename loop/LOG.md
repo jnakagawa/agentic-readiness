@@ -6796,3 +6796,7 @@ the wall the score predicts — the [LOCAL] retail-inverse acceptance P0) would 
 wire a cross-domain behavioral DIRECTION guard (high static transactability → Outcome PASS;
 zero static transactability → Outcome payment FAIL). Until that lands, the in-cloud
 calibration frontier is saturated; COVERAGE (rotation next) has open signal/archetype work.
+
+## Local verification — 20260728T234102Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260728T234102Z.json

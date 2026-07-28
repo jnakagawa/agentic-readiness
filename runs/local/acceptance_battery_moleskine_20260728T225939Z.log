@@ -1,0 +1,58 @@
+============================================================
+  ASRS  www.moleskine.com
+  OVERALL 38.8/100   GRADE F
+  rubric v0.7   2026-07-28T23:06:54.070306
+  QUOTABILITY: CITABLE (reproducible) — Panel reproduces (verdict stability 1.00) over 2 valid runs.
+============================================================
+
+  PILLARS
+    Access           [####################] 100.0
+    Legibility       [########------------]  40.9
+    Transactability  [####----------------]  18.8
+    Trust            [#############-------]  66.7
+    Outcome          [--------------------]   0.0
+
+  FINDINGS
+    [-8.0 pts] no-agent-native-payment — Offer an agent-native payment endpoint (HTTP 402 + payment-requirements, x402/MPP) so agents can pay per-request without an account.
+    [-6.0 pts] llms-txt-missing — Publish an /llms.txt summarizing your product, pricing, and key URLs so agents can orient quickly.
+    [-5.0 pts] bhv_machine_payable-missing — Expose an API purchase path payable without a human step — x402 or a checkout API — so payment is programmatic, not browser-only.
+    [-4.0 pts] no-api-docs-surface — Publish public API docs (e.g. /docs, an OpenAPI spec, or /.well-known/api-catalog) so agents can learn how to integrate.
+    [-4.0 pts] trust-panel-hesitant — Model panelists would warn the user before proceeding: No budget or spending limit was given, and no payment method or shipping address was authorized for this specific purchase; Site is legitimate (official Moleskine store), but the instruction is critically underspecified — 'what I need' names no product, quantity, or size; Would confirm the exact items and total cost with the user before completing checkout rather than guessing what they need. Reinforce legitimacy signals to convert warnings into clean proceeds.
+    [-4.0 pts] bhv_found_product-missing — Make the product/service matching common agent tasks discoverable (clear product pages, llms.txt, schema.org Product).
+    [-4.0 pts] bhv_purchase_path-missing — Document a concrete purchase/provisioning path an agent can follow (a checkout or API-key/subscription flow, discoverable from the site).
+    [-4.0 pts] human-gate-required — Expose an API purchase path payable without a human step (x402 or a checkout API) so an agent can complete the transaction end-to-end; remove CAPTCHA/KYC/email-loop/sales-call gates.
+    [-3.0 pts] jsonld-present-no-offer — JSON-LD is present but carries no offer/price; add a priced Product/Offer object, or publish a pricing manifest JSON.
+    [-3.0 pts] self-serve-signup — Self-serve exists but requires creating an account first; add a no-signup programmatic path (HTTP-402 payment challenges) so an agent can transact without provisioning an identity.
+    [-3.0 pts] no-reputation-signals — Add reputation signals — AggregateRating/Review schema.org markup or links to a credible third-party review profile.
+    [-3.0 pts] bhv_understood_pricing-missing — Publish concrete, machine-readable pricing (server-rendered price in HTML or a pricing API) rather than 'contact us'.
+    [-2.0 pts] no-mcp-surface — Optional: expose an MCP server (/.well-known/mcp.json or a /mcp endpoint). Low priority — generic HTTP + an agent-native payment handshake already covers what a per-service MCP server would add.
+    [-1.0 pts] no-refund-policy — Terms and privacy exist; add a refund/cancellation policy so agents know the reversal terms before purchasing.
+    [-1.0 pts] trust-live-warnings — Shopper agents surfaced trust concerns while working the site: No illegitimacy concerns — Moleskine is a legitimate, established brand. I would, however, warn the user that the directive rests on a false premise: there is no Moleskine API to provision, so the task cannot be completed as specified regardless of agent capabilities.. Address these so a directed agent completes the task without warning its user.
+
+  TRUST PANEL (user directed the purchase — what does the agent do?)
+    claude   warn+go  (conf 0.80) — Site is legitimate (official Moleskine store), but the instruction is critically underspecified — 'what I need' names no product, quantity, or size; No budget or spending limit was given, and no payment method or shipping address was authorized for this specific purchase; Would confirm the exact items and total cost with the user before completing checkout rather than guessing what they need
+
+  BEHAVIORAL CHECKPOINTS
+    model/trial       prod   price    path    pay    nogate 
+    claude#1           .       .       .       .       .    
+      blockers: Moleskine offers no developer/primary API at all — no developer portal, no API docs, no api.moleskine.com or developers.moleskine.com, and no API pricing; Moleskine's digital offerings are end-user consumer subscription apps (Timepage, Flow, Actions, Moleskine Journey), not programmatically callable APIs; The 'Smart Writing' ecosystem integrates third-party SDKs (MyScript, Adobe Creative SDK, NeoLAB) internally; Moleskine does not re-expose these as a public API; No purchase/provisioning path exists to buy API access via any method (browser or programmatic); Directive premise is unsatisfiable at this vendor: the requested product category (a metered/subscription API) does not exist
+    claude#2           .       .       .       .       .    
+      blockers: Moleskine is a consumer stationery/retail brand, not an API or SaaS vendor — no 'primary API' product exists to provision; No developer API, developer portal, API docs, or SDK offered to third parties (only an internal Adobe Creative SDK dependency inside the consumer Notes app); No API pricing, metered plan, or API subscription terms published anywhere on the site or web; No purchase/provisioning path for programmatic access exists; the only checkout is a browser-based e-commerce flow for physical goods; No machine-payable path (no x402, no checkout/provisioning API) — retail purchases are browser-only; Consumer app subscriptions (e.g., Moleskine Journey) are gated through Apple App Store / Google Play in-app purchase, not an agent-accessible API
+
+  PANEL RELIABILITY (do the runs reproduce on the same task?)
+    verdict stability 1.00 (stable) over 2 valid runs   [1.0 = every run agreed]
+    all checkpoints unanimous across runs.
+    trust signal flipped (agreement 0.50) — some runs raised a trust concern, others did not.
+
+  TASK BATTERY (does readiness hold across intents?  2/2 intents observed)
+    subscription         [subscription]  0% avg checkpoint completion (2 valid)
+    physical_good        [physical_good]  60% avg checkpoint completion (2 valid)
+    assessed over: subscription, physical_good
+    not offered (NA, excluded): metered_api, digital_good, service_booking, data_retrieval
+    by archetype:
+      subscription       0% avg completion (1/1 intents, spread 0.00)
+      physical_good      60% avg completion (1/1 intents, spread 0.00)
+    between-archetype spread 0.30 — somewhat type-dependent
+    cross-task spread 0.30 — somewhat intent-dependent
+
+(report saved: runs/www_moleskine_com_20260728T230654.json)

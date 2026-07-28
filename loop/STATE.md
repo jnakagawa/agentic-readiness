@@ -1352,6 +1352,44 @@
   (tests-only/score-neutral/non-sensitive; digest already sent Cycle 62 16:21Z, not a digest window at 21:1xZ). First
   duty: no open peer-gated PR (verified []); infra health check ran first — runner HEALTHY (verify_20260728T205027Z,
   20:50Z, ~21 min old); no orphan-2e66201 trap this fire (HEAD == origin/main == 25c6ae8 at fetch). Next cycle takes READOUT.
+  Local fire 2026-07-28T23:10Z COVERAGE+TRUTH (operator retail-INVERSE acceptance + the calibration
+  NEGATIVE half; complementary to the cloud rotation — cloud stays METHOD next, local fires don't advance
+  the pointer/counter): executed the oldest live P0 — the directive's OTHER named acceptance half
+  ("a retail storefront shows the inverse"), guarded in-cloud at DISCOVERY
+  (`test_offering_canonical.test_retail_inverse_offering`) but never run BEHAVIORALLY, which also carries
+  the Cycle-67 NEGATIVE calibration half. Domain selection was the work: a run needs a domain reachable by
+  BOTH the python discovery path AND the shopper's WebFetch path, with NO agentic rails, a REAL checkout
+  (backlog steered away from the books.toscrape sandbox). Screened 12+ real retailers — most block agent
+  fetchers (lush WebFetch-403; uniqlo agent-ua-hard-blocked -10 + WebFetch-timeout; thriftbooks python-406;
+  hydroflask 403) or have added rails (deathwishcoffee UCP/MCP/Shop-Pay → metered_api; warbyparker
+  ai-plugin/agent-card; muji/allbirds/misen/leatherman llms.txt → metered_api). Picked `www.moleskine.com`
+  (both gates 200, no llms.txt/no rails, Access 100 = agent-UA reachable NOT env-blocked, physical_good
+  CLAIMED on real free-shipping/stock nouns, API archetypes NA). `asrs score www.moleskine.com --behavioral
+  --battery auto --models claude --trials 2` → OVERALL 38.8 F, rubric v0.7, CITABLE (verdict stability 1.00,
+  2 valid). OPERATOR RETAIL-INVERSE ACCEPTANCE CONFIRMED, all three criteria on BOTH surfaces (the mirror of
+  18:55Z .com): (1) physical_good CLAIMED/assessed (60% completion), NOT NA — the inverse of the API canonical
+  where physical_good was NA (subscription also claimed; na_archetypes = {metered_api, digital_good,
+  service_booking, data_retrieval}); (2) spreads over the CLAIMED set only (cross-task 0.30, between-archetype
+  0.30 "somewhat type-dependent", NA excluded); (3) NA shown "not offered" on the terminal TASK BATTERY block
+  AND the HTML card Offering-relative sub-block (chip na = the 4 NA archetypes, verified in the rendered card).
+  CALIBRATION NEGATIVE HALF CONFIRMED (mirror of Cycle 67's positive with-rails anchor): static predicted
+  no-agent-native-payment FAIL / transactability 18.8 → behavioral machine_payable_path FALSE + no_human_gate
+  FALSE, Outcome 0.0, REPRODUCIBLY (both trials unanimous "no machine-payable path — retail purchases are
+  browser-only"). Non-vacuous: the physical_good battery intent reached 60% (found product/pricing/purchase-path
+  — the agent CAN browse the store) yet hit the machine-payable + human-gate walls; the primary default-task run
+  scored 0 (no agent-purchasable primary product exists). Gives the cloud a SECOND committed behavioral artifact
+  to wire a negative-side calibration guard against (the missing half Cycle 67 flagged) — calibration becomes a
+  two-sided VALIDITY property. Invariant #1 held (no advertised free tier / no x402 → free-tier probe found
+  nothing to call, x402_live=false, no settle/authorization/max_pay/paid; read-only hermetic shopper). Score-neutral
+  [LOCAL] EXECUTION: git diff -- asrs/ rubric/ tests/ EMPTY (ran the shipped pipeline) → rubric v0.7; canonical
+  PAIR unchanged (verify_20260728T224103Z 46.1 F / 85.5 B / +39.4; replay guard 24/24, offering guard 12/12
+  re-run green); behavioral 38.8 < static 49.8 is the +Outcome-pillar-0.0 superset, does NOT move the static
+  delta. Evidence force-added: runs/local/acceptance_battery_moleskine_20260728T225939Z.{report.json,log,card.html}.
+  First duty: no open peer-gated PR (verified []); runner HEALTHY (verify_20260728T224103Z, 22:41Z, ~29 min old at
+  fire), bench 20/20, main == origin/main. Direct-to-main, no Slack (score-neutral [LOCAL], non-sensitive, not a
+  digest window; digest sent Cycle 62 16:21Z). The operator-directive P0 acceptance is now DISCHARGED on BOTH named
+  halves; the next in-cloud TRUTH increment is a negative calibration guard in test_calibration.py against this
+  moleskine report. Cloud rotation unaffected (still METHOD next).
 - **RUNNER STALL — ROOT-CAUSED + FIXED (local fire 2026-07-28T17:27Z). CLOSED.** The cloud's
   Cycle-51→62 diagnosis ("launchd not firing / machine asleep") was WRONG — only a local fire could
   see the truth. The runner's heartbeat log (`~/Library/Logs/asrs-local-verify.log`) shows the launchd

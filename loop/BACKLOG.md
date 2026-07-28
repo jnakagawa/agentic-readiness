@@ -47,30 +47,50 @@ design in-cloud, execute locally.
      +Outcome pillar 100.0 + live trust panel, does NOT move the static delta). Evidence (force-added):
      runs/local/acceptance_battery_driftflightcom_20260728T184325Z.{report.json,log,card.html}. See LOG
      (Local cycle — 18:55Z). The RETAIL-INVERSE behavioral half is the new P0 below. -->
-- **[LOCAL] acceptance rerun — the RETAIL-INVERSE half (the operator's OTHER named acceptance criterion;
-  NOW the oldest live P0).** The with-rails API side is discharged (above): driftflight.com
-  physical_good = NA confirmed LIVE. The operator directive's other named half — "a retail storefront
-  shows the inverse" — is guarded at the DISCOVERY layer in-cloud
-  (`test_offering_canonical.test_retail_inverse_offering`, the committed `books.toscrape.com` fixture:
-  physical_good CLAIMED, API archetypes NA) but has NEVER been run BEHAVIORALLY live end-to-end. Run
-  `asrs score <retail-domain> --behavioral --battery auto --models claude --trials 2` on a REAL retail
-  storefront claude can reach, and confirm the INVERSE of the 18:55Z .com run: physical_good is a
-  CLAIMED/assessed archetype (not NA), the API archetypes render NA "not offered" on card + terminal, and
-  the spreads compute over the claimed set. Budget: ONE domain per fire, claude-only; force-add the report
-  to runs/local/. NOTE: `books.toscrape.com` is a static scrape-sandbox with no real purchase path, so
-  the shopper checkpoints there would be mostly N — pick a real shop with a browsable product/checkout so
-  the behavioral half is meaningful; the STRUCTURE (physical_good claimed + API NA rendering), not any
-  specific vendor, is the target.
-  NOW ALSO THE NEGATIVE CALIBRATION HALF (added Cycle 67): `tests/test_calibration.py` shipped the FIRST
-  static-vs-behavioral VALIDITY guard, but as a ONE-DOMAIN WITH-RAILS anchor — it proves the score's
-  POSITIVE payability prediction is behaviorally real on driftflight.com (static x402/self_serve_payg →
-  the live shopper actually reached the machine-payable path, reproducibly). The MISSING half is the
-  NEGATIVE: a live behavioral run on a no-rails or retail storefront proving the score predicts where the
-  agent HITS A WALL (no agent-native payment → the shopper CANNOT complete a machine-payable path). Running
-  this retail-inverse behavioral acceptance and force-committing the report gives the cloud a second
-  committed behavioral artifact to wire a negative-side calibration guard against (static predicts 0
-  transactability → behavioral machine_payable_path FALSE). So this P0 now discharges BOTH the operator
-  retail-inverse acceptance AND the calibration negative half.
+<!-- DONE 2026-07-28T23:10Z (local fire, COVERAGE+TRUTH, direct-to-main, score-neutral): "[LOCAL] acceptance
+     rerun — the RETAIL-INVERSE half" + "the calibration NEGATIVE half" BOTH DISCHARGED in one run on a REAL
+     no-rails retail store. Domain selection was the work: a run needs a domain reachable by BOTH the python
+     discovery path AND the shopper's WebFetch path, with NO agentic rails, a REAL checkout (backlog steered
+     away from the books.toscrape sandbox's fake basket). Screened 12+ real retailers — most block agent
+     fetchers (lush WebFetch-403; uniqlo agent-ua-hard-blocked -10 + WebFetch-timeout; thriftbooks python-406;
+     hydroflask 403) or have ADDED agentic rails (deathwishcoffee llms.txt advertises a UCP merchant profile +
+     MCP endpoint + Shop Pay agent checkout → claims metered_api; warbyparker ai-plugin/agent-card/openapi;
+     muji/allbirds/misen/leatherman llms.txt → metered_api). Picked `www.moleskine.com` (both gates HTTP 200,
+     no llms.txt/no rails, Access 100 = agent-UA reachable NOT env-blocked, physical_good CLAIMED on real
+     free-shipping/stock nouns, API archetypes NA; static 49.8 F, transactability 18.8, no-agent-native-payment
+     FAIL = the no-rails shape). `asrs score www.moleskine.com --behavioral --battery auto --models claude
+     --trials 2` → OVERALL 38.8 F, rubric v0.7, CITABLE (verdict stability 1.00, 2 valid). OPERATOR
+     RETAIL-INVERSE ACCEPTANCE CONFIRMED, all three criteria on BOTH surfaces (mirror of 18:55Z .com):
+     (1) physical_good CLAIMED/assessed (60% completion), NOT NA (subscription also claimed; na_archetypes =
+     {metered_api,digital_good,service_booking,data_retrieval}); (2) spreads over the CLAIMED set only
+     (cross-task 0.30, between-archetype 0.30 "somewhat type-dependent", NA excluded); (3) NA shown "not
+     offered" on terminal TASK BATTERY block AND HTML card Offering-relative sub-block (chip na = 4 NA
+     archetypes, verified in rendered card). CALIBRATION NEGATIVE HALF CONFIRMED (mirror of Cycle 67's positive
+     with-rails anchor): static no-agent-native-payment FAIL / transactability 18.8 → behavioral
+     machine_payable_path FALSE + no_human_gate FALSE, Outcome 0.0, REPRODUCIBLY (both trials unanimous "no
+     machine-payable path — retail purchases are browser-only"). Non-vacuous: physical_good battery intent
+     reached 60% (agent CAN browse the store) yet hit the machine-payable + human-gate walls. Invariant #1 held
+     (no free tier / no x402 → free-tier probe found nothing to call, x402_live=false, no
+     settle/authorization/max_pay/paid; read-only hermetic shopper). Score-neutral (git diff -- asrs/ rubric/
+     tests/ EMPTY, ran shipped pipeline) → rubric v0.7; canonical PAIR unchanged (verify_20260728T224103Z
+     46.1 F / 85.5 B / +39.4; replay guard 24/24, offering guard 12/12). Evidence force-added:
+     runs/local/acceptance_battery_moleskine_20260728T225939Z.{report.json,log,card.html}. See LOG (Local cycle
+     — 23:10Z). The cloud-doable follow-up (wire the negative calibration guard against this committed report)
+     is the new P0 below. -->
+- **Wire the NEGATIVE calibration guard into `tests/test_calibration.py`** (TRUTH, CLOUD-DOABLE — no network
+  needed; the committed `runs/local/acceptance_battery_moleskine_20260728T225939Z.report.json` is git-tracked).
+  Cycle 67 shipped the FIRST static-vs-behavioral VALIDITY guard but as a ONE-DOMAIN WITH-RAILS anchor — it
+  proves the POSITIVE payability prediction is behaviorally real on driftflight.com. The 23:10Z local fire
+  force-committed the missing NEGATIVE-side artifact: moleskine.com, a no-rails retail store where static
+  predicts NO agent-native payment. Add a test that replays this committed behavioral report and asserts the
+  NEGATIVE prediction is behaviorally corroborated + DISCRIMINATING: static no-agent-native-payment (x402_probe
+  not-PASS, self_serve_payg x402_live=False → transactability 18.8) → behavioral `machine_payable_path` FALSE
+  AND `no_human_gate` FALSE, reproducibly (verdict_stability 1.0, both trials unanimous), Outcome pillar 0.0;
+  physical_good CLAIMED (the retail-inverse, na_archetypes = the 4 API archetypes) so the run is a genuine
+  retail storefront, not an unreachable/env-blocked null (Access 100). This turns calibration into a TWO-SIDED
+  property (positive payability real on driftflight.com; negative wall real on moleskine.com) — the executable
+  mirror of Cycle 67. Like-for-like: same rubric v0.7 both halves; assert it. Keep it vendor-neutral in the
+  ASSERTIONS (key on the checks/pillars, name the domain only as the committed-artifact path, as Cycle 67 did).
 
 - **[OPERATOR DIRECTIVE — Jonah, 2026-07-23] The battery must be
   OFFERING-RELATIVE, not fixed.** Observed: the current battery judges every

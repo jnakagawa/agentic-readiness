@@ -6189,3 +6189,10 @@ escalate to a longer/adaptive backoff or a DNS pre-flight probe only if it recur
 network work minutes later, by which time the network is up (this fire itself demonstrated). The
 next live P0 (now unblocked and promoted to the top of BACKLOG P0) is the operator-directive
 `--battery auto` acceptance rerun.
+
+_Addendum (same fire): the "Slack" line above anticipated a DM, but this local fire has no
+connected Slack tool (no MCP slack in-session, no repo helper; a zero-CLI Slack capability would
+be a paid/external call, barred by the $0-only rule). No DM sent. The resolution is recorded in
+STATE (runner-stall bullet flipped to CLOSED) + BACKLOG (DONE) for the cloud loop — which owns
+comms — to fold into its next post-16:00 UTC digest. Not attention-worthy enough for a
+PushNotification (routine self-healing)._

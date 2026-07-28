@@ -1226,8 +1226,11 @@
   Suite 19→20 files (+test_local_verify, 4 tests). First duty: no open peer-gated PR
   (`gh pr list --state open` → []); local `main` was ~18 cloud cycles behind (at Cycle 44) → `git pull
   --ff-only` to Cycle 62 before editing, then the runner's own pull picked up Cycle 63. Cloud rotation
-  unaffected (still READOUT next). Slack: brief follow-up DM closing the runner-stall flag Cycle 62's
-  digest opened this morning.
+  unaffected (still READOUT next). Slack: NONE — this local fire has no connected Slack tool (no MCP, no
+  repo helper; zero-CLI Slack would be a paid/external call, barred by $0-only), and the cloud owns comms.
+  The resolution is recorded loudly here + in LOG/BACKLOG; the next cloud cycle's infra health check sees a
+  FRESH verify artifact + the CLOSED runner-stall bullet and can fold "runner stall resolved" into its next
+  post-16:00 UTC digest (Cycle 62's digest opened the flag this morning).
 - **RUNNER STALL — ROOT-CAUSED + FIXED (local fire 2026-07-28T17:27Z). CLOSED.** The cloud's
   Cycle-51→62 diagnosis ("launchd not firing / machine asleep") was WRONG — only a local fire could
   see the truth. The runner's heartbeat log (`~/Library/Logs/asrs-local-verify.log`) shows the launchd

@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 61
+- Cycle counter: 62
 - Started: 2026-07-23 (UTC)
 - Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
@@ -1153,9 +1153,37 @@
   bench UP (19/19 files, 222/222), git realigned local `main` to origin/main (309d404 = Cycle 60 tip) at fire
   START before editing; runner STILL STALLED past 6h (newest verify_20260727T224106Z ~16.5h old at 15:13Z,
   unchanged since Cycle 51 — P0-tracked, not cloud-repairable, flag in next digest). Next cycle takes COVERAGE.
-- **RUNNER STALL — STILL STALLED PAST THE 6h FLOOR (updated Cycle 61, 2026-07-28T15:13Z; crossed Cycle 51
+  Cycle 62 COVERAGE (offering discovery reads the rendered HTML `/docs` API-docs page — the P2 candidate
+  surfaced Cycle 58): `asrs/offering._SURFACE_DOCS` gains `/docs` (+`/api-docs`, `/reference`), so an
+  API-first storefront whose rate limits / endpoints / billing prose live on its documentation page — not
+  on any well-known JSON doc — is classified from that surface. On the canonical pair the `rate-limited`
+  evidence is literally the `<h2 id="rate-limits">Rate limits</h2>` block on `driftflight.com/docs` (a real
+  HTTP-200 page in BOTH committed fixtures, never crawled until now). Because `/docs` is HTML,
+  `classify_offering` now HTML-STRIPS any HTML-document surface (not only the homepage) via a new
+  `_is_html_document` detector keyed on the `<!doctype html>`/`<html` prologue — LOAD-BEARING: a real docs
+  page's `<script>`/`<style>` retail decoy words ("out of stock"/"shopping cart"/"shipping address", the
+  exact shape on the canonical `/docs`) scanned RAW would false-positive `physical_good` on a pure API
+  storefront (the battery pollution the directive removes); stripped, they never reach the scanner. JSON/
+  plain-text surfaces (llms.txt/openapi.json/agent cards) don't start with an HTML prologue → unaffected.
+  Vendor-neutral (surface by convention, same generic API/billing prose the bank anchors, no new signal, no
+  domain string — precedent Cycles 34/42/46/54). SCORE-NEUTRAL: discovery is OFF the scoring path
+  (`--battery auto` only, grep-verified not imported by scoring.py/probes/protocols); `git diff --name-only`
+  = offering.py + test_offering.py ONLY, scoring.py/rubric/probes/protocols/fetch/battery byte-for-byte
+  untouched → rubric stays v0.7, canonical delta unchanged by construction AND re-measured (replay guard
+  21/21, 46.1 F / 85.5 B / +39.4, 0 replay-miss). Claimed SET+ORDER unchanged on BOTH domains
+  (`[metered_api, digital_good, subscription]`, measured live through full `discover_offering` incl. doc
+  subdomains); canonical OFFERING guard 12/12 UNCHANGED. `test_offering.py` 18→20 (+synthetic /docs-only
+  storefront non-vacuous on the strip — fails pre-change; +end-to-end live-read on the canonical fixture,
+  /docs in surfaces_seen, HTML-free evidence, set/order unchanged); wiring guard extended; stale Cycle-58
+  "does NOT crawl /docs" comment fixed. Suite all 19 files green (223 by direct file-sum, +2). Direct-to-main
+  (commit f9459a8, pushed bfe1402..f9459a8). First duty: no open peer-gated PR (verified []); infra health —
+  bench UP (19/19), git realigned local `main` off the stale orphan `2e66201` to origin/main (bfe1402 = Cycle
+  61 tip) BEFORE editing; runner STILL STALLED past 6h (newest verify_20260727T224106Z ~17.5h old at 16:21Z,
+  unchanged since Cycle 51 — P0-tracked, not cloud-repairable). SLACK DAILY DIGEST SENT (first cloud cycle
+  after 16:00 UTC on 07-28). Next cycle takes TRUTH.
+- **RUNNER STALL — STILL STALLED PAST THE 6h FLOOR (updated Cycle 62, 2026-07-28T16:21Z; crossed Cycle 51
   05:13Z).** Newest verify artifact is still `verify_20260727T224106Z.json` (22:41Z) — NO newer artifact
-  appeared between Cycle 51 (05:13Z) and this fire (15:13Z), so at ~16.5h old the stall has NOT self-cleared
+  appeared between Cycle 51 (05:13Z) and this fire (16:21Z), so at ~17.5h old the stall has NOT self-cleared
   (contrast the Cycle-28 stall, which cleared by Cycle 30). The Cycle 48/49/50 watch (six consecutive :41 gaps,
   23:41→04:41Z) tipped over at Cycle 51 and persists across Cycles 52–61. Mirrors the Cycle-28 stall mechanism —
   likely the same launchd-on-Jonah's-machine intermittent stall (machine asleep / launchd not firing), NOT

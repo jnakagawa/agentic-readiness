@@ -526,16 +526,19 @@ design in-cloud, execute locally.
 
 ## P2
 
-- **[CANDIDATE, COVERAGE] Offering discovery should read the `/docs` API-docs surface** (surfaced
-  Cycle 58). The canonical `rate-limited` evidence (the `<h2 id="rate-limits">Rate limits</h2>` block)
-  lives on `driftflight.com/docs`, which `discover_offering` does NOT crawl — it reads homepage +
-  `_SURFACE_DOCS` (llms.txt / manifest / ai-plugin / agent-card / openapi) on the apex + doc subdomains.
-  A conventional `/docs` (and `/api-docs`, `/reference`) human/agent API-docs page is a common surface an
-  API-first storefront exposes its rate limits / examples on. Adding it to `_SURFACE_DOCS` is score-neutral
-  (off the scoring path, precedent Cycles 34/42/46/54) BUT would newly crawl rich prose on the canonical
-  pair — verify it does NOT reorder the claimed set (metered_api already top → very likely 12/12 stays, but
-  CHECK) before shipping; if it adds an archetype anywhere, the canonical OFFERING guard EXPECTED must be
-  re-derived in the same commit. Cloud-doable from the committed fixtures (both carry a `/docs` entry).
+<!-- DONE 2026-07-28T16:21Z (Cycle 62, COVERAGE, direct-to-main, score-neutral):
+     "[CANDIDATE] Offering discovery should read the /docs API-docs surface" SHIPPED. `/docs`
+     (+`/api-docs`, `/reference`) added to `asrs/offering._SURFACE_DOCS`; `classify_offering` now
+     HTML-strips ANY HTML-document surface (new `_is_html_document` detector on the `<!doctype html>`/
+     `<html` prologue), not only the homepage — load-bearing because a real docs page's `<script>`/
+     `<style>` retail decoys ("out of stock"/"shopping cart") scanned RAW would false-positive
+     physical_good. VERIFIED on the committed pair: claimed SET+ORDER unchanged on BOTH domains
+     (`[metered_api, digital_good, subscription]` via full discover_offering incl. doc subdomains), so
+     the canonical OFFERING guard EXPECTED needed NO re-derivation (12/12 unchanged). Off the scoring
+     path (grep-verified) → rubric v0.7, replay guard 21/21 / +39.4 / 0 replay-miss, scoring path
+     byte-for-byte untouched. `test_offering.py` 18→20 (synthetic /docs-only non-vacuous-on-strip +
+     end-to-end live-read on the canonical fixture); wiring guard extended; stale Cycle-58 comment fixed.
+     Commit f9459a8. See LOG Cycle 62. -->
 - **[CANDIDATE, COVERAGE] Further metered/subscription billing conventions** (offering signal bank,
   precedent Cycles 50/58). Not yet captured: seat-based subscription (`per seat` / `per user per month` /
   `N seats`), committed-use / tiered-volume pricing (`committed use` / `volume discount` / `tier N: $X`).

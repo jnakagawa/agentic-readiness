@@ -5951,3 +5951,82 @@ adjacent rung a check-status superset — watching the tail where a retail shop 
 bare page may legitimately differ in observed check SETS). COVERAGE-side (Cycle 62):
 the offering `/docs` API-docs surface candidate (P2), cloud-doable from the committed
 fixtures.
+
+## Cycle 62 — 2026-07-28T16:21Z — COVERAGE
+
+**What.** Added the rendered HTML API-docs page (`/docs`, plus the conventional
+`/api-docs` / `/reference` variants) to `asrs/offering._SURFACE_DOCS`, so an
+API-first storefront whose rate limits / endpoints / billing prose live on its
+documentation page — not on any well-known JSON doc — is classified from that
+surface. On the canonical pair the `rate-limited` evidence is literally the
+`<h2 id="rate-limits">Rate limits</h2>` block on `driftflight.com/docs`, a real
+HTTP-200 page in both committed fixtures that discovery never crawled. Because
+`/docs` is HTML, `classify_offering` now HTML-STRIPS any HTML-document surface
+(not only the homepage) before scanning, via a new `_is_html_document` detector
+keyed on the leading `<!doctype html>`/`<html` prologue.
+
+**Why.** North-star measurement-coverage: the published self-description surface
+an agent-callable storefront most commonly exposes is its `/docs` reference, and
+until now discovery read only the homepage + JSON well-known docs (apex + doc
+subdomains). The HTML-strip is LOAD-BEARING, not cosmetic: a real docs page's
+`<script>`/`<style>` blocks carry retail decoy words ("out of stock", "shopping
+cart", "shipping address") — present in the exact shape on the canonical `/docs`
+`<script>` — that, scanned raw, would false-positive `physical_good` on a pure
+API storefront (the battery pollution the offering directive removes). Stripping
+keeps them out of the scanner; JSON/plain-text surfaces (llms.txt, openapi.json,
+agent cards) don't start with an HTML prologue so are unaffected.
+
+**Capability lens / vendor-neutral.** The surface is named by convention
+(`/docs`), the signals are the same generic API/billing/generated-media prose the
+bank already anchors on — no new signal, no domain/vendor string, no special-case.
+Precedent: Cycles 34 (OpenAPI), 42 (ai-plugin), 46 (A2A card), 54.
+
+**Score-neutral / canonical delta.** Discovery is OFF the scoring path
+(`--battery auto` only; grep-verified not imported by scoring.py/probes/
+protocols). `git diff --name-only` = `asrs/offering.py` + `tests/test_offering.py`
+ONLY; scoring.py/rubric/probes/protocols/fetch/battery byte-for-byte untouched →
+rubric stays **v0.7**, canonical delta unchanged BY CONSTRUCTION AND re-measured
+(in-cloud replay guard **21/21, 46.1 F / 85.5 B / +39.4, 0 replay-miss**). On BOTH
+canonical domains the claimed SET AND ORDER are unchanged
+(`[metered_api, digital_good, subscription]`, measured live through the full
+`discover_offering` path incl. doc subdomains) — the richer `/docs` prose only
+deepens already-claimed evidence, adds no archetype, reorders nothing. Canonical
+OFFERING guard `test_offering_canonical.py` 12/12 UNCHANGED (set equality).
+
+**Evidence (invariant #3).** Verified on the 2 real committed canonical fixtures
+(driftflight.com + drift-flight.org, both carry a real `/docs` API-reference
+page). `tests/test_offering.py` 18→20: (a) `test_html_docs_page_alone_classifies_
+storefront` — a synthetic `/docs`-only HTML storefront, NON-VACUOUS on the strip
+(its `<script>`/`<style>` retail decoys stay NA ONLY because the page is stripped;
+scanned raw they claim physical_good — pre-change behaviour, so the test fails on
+the old code); (b) `test_docs_surface_is_read_live` — end-to-end on the canonical
+fixture: `/docs` in `surfaces_seen`, every `/docs`-sourced evidence quote HTML-free
+(9 signals), claimed set/order unchanged. Wiring guard extended to assert
+`/docs`/`/api-docs`/`/reference` ∈ `_SURFACE_DOCS`; the stale Cycle-58
+"discover_offering does NOT crawl /docs" comment in
+`test_rate_limit_fires_on_real_captured_api_docs` updated. Full suite: all 19
+files green (223 tests by direct file-sum; +2 from this cycle).
+
+**Ship.** Direct-to-main (score-neutral discovery surface, no scoring semantics,
+not payment/signing) — same tier as Cycles 34/42/46/54. Commit `f9459a8`, pushed
+`bfe1402..f9459a8`.
+
+**First duty.** No open peer-gated PR (verified `list_pull_requests` state=open →
+`[]`). Infra health: bench UP (19/19 files green); git bookkeeping — fresh
+checkout had local `main` at the stale orphan `2e66201` again, realigned
+`git checkout -B main origin/main` (bfe1402 = Cycle 61 tip) BEFORE editing per the
+Cycle-52 lesson. Runner STILL STALLED past the 6h floor — newest
+`verify_20260727T224106Z` is ~17.5h old at this 16:21Z fire, unchanged since
+Cycle 51; P0-tracked, NOT cloud-repairable; flagged in this fire's digest.
+
+**Slack.** DAILY DIGEST sent — first cloud cycle after 16:00 UTC on 2026-07-28
+(prior cycles 59/60/61 fired 13:2x/14:2x/15:1xZ, before the window). Carries the
+runner-stall flag (self-healing law) + this ship; canonical delta in-band +39.4.
+
+**Next hypothesis.** TRUTH-side (Cycle 63): population-wide observability /
+like-for-like at the CHECK layer — lift guard 8 (earned-dominance for the pair) to
+the whole four-domain spectrum, watching the tail where a retail shop and a bare
+page may legitimately differ in observed check SETS (per-rung scoped intersection,
+not a single global set). COVERAGE-side follow-on: the further metered/subscription
+billing conventions candidate (seat-based / committed-use / tiered-volume), same
+precision discipline as the `rate-limited` signal.

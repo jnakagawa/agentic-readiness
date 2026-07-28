@@ -6124,3 +6124,68 @@ once its capability tier + expected statuses are pinned [LOCAL/cloud].
 ## Local verification — 20260728T172734Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260728T172734Z.json
+
+## Local cycle — 2026-07-28T17:30Z (SELF-HEALING / METHOD) — verify runner wake/network-race root-caused + fixed
+
+**Infra breakage outranks new work (self-healing law).** The top P0 this fire was the
+verify-runner stall: the last SUCCESSFUL committed verify was `verify_20260727T224106Z`
+(22:41Z 07-27), ~18.5h old — past the 6h floor. Cloud Cycles 51→62 diagnosed it as
+"launchd not firing / machine asleep" and flagged it (this morning's digest) as
+not-cloud-repairable. That diagnosis was **wrong**, and only a local fire — with the
+network AND the machine — could see it.
+
+**Evidence the runner IS firing.** The heartbeat log
+(`~/Library/Logs/asrs-local-verify.log`) shows the launchd job `org.pie.asrs-local-cycle`
+(StartCalendarInterval :41) fires reliably every wake, and the local
+`runs/local/verify_*.json` artifacts prove it — `234101Z / 034100Z / 110146Z / 170500Z`
+all exist, each with `git_pull.ok=false`, `"Could not resolve host: github.com"`. They
+were never pushed (github unreachable at fire time), so the cloud, which only sees pushed
+artifacts, read the runner as dead.
+
+**Root cause — a wake/network race.** launchd runs the *missed* :41 job on machine WAKE
+(hence artifacts at odd minutes 14:44 / 16:56 / 11:01 / 17:05 = wake instants, not :41),
+before WiFi/DNS is up. `git pull` then fails in the SAME SECOND it starts (vs a ~5s delay
+on successful fires when the network is up), and the runner bailed on that first miss with
+ZERO retry — writing a git-pull-failed artifact it also couldn't push. My own shell reached
+github fine at 17:18Z, 13 min after the 17:05Z runner fire failed → the network simply
+was not up yet at wake.
+
+**Fix (durable, testable).** `loop/local_verify.py`: new `git_pull_with_retry` (bounded
+wait-for-network — 5 attempts, 15s apart, ~60s worst case) wraps the initial pull;
+`_pull_once` keeps it fast-forward-only `origin main` (verb unchanged). Returns early on the
+first success (network up → `attempts_made=1`, no waiting) and records `attempts` in the
+artifact. Still fixed-verb (pull → test → score → push); only `pull` is hardened.
+`tests/test_local_verify.py` (4) pins: success-on-first-attempt never sleeps; the exact bug
+shape (2 cold-network misses then recover) waits `[15,15]` and succeeds on attempt 3;
+persistent failure bails after the budget (no infinite loop, tail preserved); `_pull_once`
+stays ff-only. Resynced the pinned `~/.local/bin/asrs_local_verify.py` from the committed
+repo copy (was IDENTICAL pre-fix; self-healing law permits resync from a shipped commit).
+
+**Executed the repair — did not assume it (self-healing law).** Ran the fixed runner live at
+17:27Z: `git pull` succeeded on attempt 1 (its pull even fast-forwarded in the just-shipped
+Cycle 63), 20 suites green, canonical pair re-scored LIVE **46.1 F / 85.5 B / delta +39.4**,
+artifact `verify_20260728T172734Z.json` (records `attempts:1`) pushed to main + mirror. The
+~18.5h stall is CLEARED and the live canonical re-score capability is restored.
+
+**Score-neutral.** `git diff --name-only -- asrs/ rubric/` EMPTY → scoring.py/rubric/probes
+byte-for-byte untouched, rubric stays v0.7, canonical PAIR unchanged by construction AND
+re-measured (replay guard 23/23 after Cycle 63, 46.1 F / 85.5 B / +39.4, 0 replay-miss; the
+17:27Z live verify corroborates). Direct-to-main (infra/tooling bug-fix — not scoring
+semantics, not payment/signing; ship tier: docs/tooling/tests). Full suite 19→20 files
+(223→227 tests; +`test_local_verify` 4).
+
+**First duty.** No open peer-gated PR (`gh pr list --state open` → `[]`; the `loop/cycle52-*`
+remote branches carry no open PR). Git: local `main` was ~18 cloud cycles behind (at Cycle 44,
+`5411e2b`) — `git pull --ff-only` fast-forwarded to Cycle 62 (`45c806c`) before any edit; the
+fixed runner's own pull then picked up Cycle 63.
+
+**Slack.** Brief follow-up DM to close the runner-stall flag Cycle 62's digest opened this
+morning — visibility (Jonah holds a veto on the runner change), not approval; not a new digest.
+
+**Next hypothesis.** If a wake ever brings the network up slower than the ~60s retry budget
+(rare), the runner would still miss — watch the new artifact `attempts` field over the next day;
+escalate to a longer/adaptive backoff or a DNS pre-flight probe only if it recurs. The launcher
+(`asrs_local_cycle.sh`) needs no change — the Opus cycle starts seconds after wake and does its
+network work minutes later, by which time the network is up (this fire itself demonstrated). The
+next live P0 (now unblocked and promoted to the top of BACKLOG P0) is the operator-directive
+`--battery auto` acceptance rerun.

@@ -5,24 +5,37 @@ design in-cloud, execute locally.
 
 ## P0
 
-- **[LOCAL] Local verify runner STALLED past the 6h floor (diagnosed Cycle 51,
-  2026-07-28T05:13Z; STILL STALLED at Cycle 61, 15:13Z — no newer artifact, ~16.5h old).**
-  Newest artifact `runs/local/verify_20260727T224106Z.json`
-  (22:41Z) is ~6h32m old at the 05:13Z fire — the six consecutive :41 gaps
-  (23:41→04:41Z 07-27/28) the Cycle 48/49/50 watch tracked have crossed the 6h floor.
-  NOT repairable from the cloud (can't reach Jonah's machine). Mirrors the Cycle-28
-  stall, which self-cleared by Cycle 30 — most likely the launchd runner on Jonah's
-  machine not firing (machine asleep / launchd unloaded). LOCAL FIX: on Jonah's
-  machine, check the runner is loaded + firing — `launchctl list | grep -i asrs`
-  (or the loop's launchd label), inspect its stderr/stdout log for the last heartbeat,
-  and `launchctl kickstart -k <gui/UID/label>` (or reload the plist) if it's wedged;
-  confirm a fresh `runs/local/verify_<ts>.json` pushes to main. The loop is only
-  DEGRADED, not blocked — the in-cloud replay guard (16/16, +39.4) is the standing
-  regression signal — but the LIVE canonical re-score capability is down until the
-  runner heartbeats again. FLAG this in the next post-16:00 UTC Slack digest. If a
-  cloud cycle sees a newer artifact first, the stall self-cleared → delete this item.
-  (Cycle 51's own ship makes the staleness loud in `asrs canonical-history`: it now
-  prints "newest re-score 6.6h old — STALE … the runner may be down".)
+<!-- DONE 2026-07-28T17:27Z (local fire, SELF-HEALING/METHOD, direct-to-main): "[LOCAL] Local
+     verify runner STALLED past the 6h floor" ROOT-CAUSED + FIXED. The cloud's Cycle-51→62
+     diagnosis ("launchd not firing / machine asleep") was WRONG — only a local fire could see it.
+     The runner's heartbeat log + the unpushed local runs/local/verify_*.json artifacts
+     (234101Z/034100Z/110146Z/170500Z) prove the launchd job (org.pie.asrs-local-cycle, :41) FIRES
+     every wake; each artifact carries git_pull.ok=false, "Could not resolve host: github.com".
+     ROOT CAUSE — a WAKE/NETWORK RACE: launchd runs the missed :41 job on machine WAKE (artifacts at
+     odd minutes 14:44/16:56/11:01/17:05 = wake instants), before WiFi/DNS is up, so `git pull` fails
+     in the SAME SECOND it starts (vs ~5s on a successful fire) and the runner bailed on that first
+     miss with ZERO retry — writing a git-pull-failed artifact it also couldn't push. FIX:
+     loop/local_verify.py git_pull_with_retry (bounded wait-for-network, 5×15s ≈60s; still fixed-verb,
+     only `pull` hardened) + tests/test_local_verify.py (4). Resynced the pinned
+     ~/.local/bin/asrs_local_verify.py from the committed repo copy (self-healing law). EXECUTED the
+     repair live (not assumed): the fixed runner pulled on attempt 1 (fast-forwarded Cycle 63), 20
+     suites green, canonical 46.1 F / 85.5 B / +39.4, artifact verify_20260728T172734Z.json
+     (records attempts:1) pushed + mirrored → the ~18.5h stall CLEARED, live canonical signal restored.
+     Score-neutral (git diff -- asrs/ rubric/ EMPTY; rubric v0.7; replay guard 23/23 / +39.4).
+     Suite 19→20 files (+test_local_verify, 4). See LOG (Local cycle — 17:27Z). WATCH (folded into the
+     runner-health STATE note, not a fresh P0): a wake with a very slow (>60s) network would still
+     miss — watch the artifact `attempts` field over the next day; escalate to a longer/adaptive
+     backoff or a DNS pre-flight only if it recurs. -->
+- **[LOCAL] acceptance rerun — offering-relative live battery (operator directive P0, NOW the oldest
+  live P0).** Run `asrs score <domain> --behavioral --battery auto --models claude,codex --trials 2`
+  LIVE on the canonical pair + a retail control and confirm the operator acceptance on REAL data —
+  driftflight.com physical_good = NA with spreads over CLAIMED archetypes only, a retail storefront the
+  inverse, and NA shown as "not offered" on the card + terminal. First end-to-end offering-relative live
+  battery; also eyeballs the per-intent grid / by-archetype + between-archetype pills on real multi-kind
+  data (folds in the two "[LOCAL] Eyeball the battery card" P2 items + the between-pill live-eyeball +
+  the hermetic-fix wall-clock A/B). Budget: ONE domain per fire (claude-only if codex reputation-gates
+  the canonical domains, as it has repeatedly — the offering-relative STRUCTURE doesn't need codex);
+  force-add the report to runs/local/. Was blocked behind the runner-stall P0 above (now cleared).
 
 - **[OPERATOR DIRECTIVE — Jonah, 2026-07-23] The battery must be
   OFFERING-RELATIVE, not fixed.** Observed: the current battery judges every

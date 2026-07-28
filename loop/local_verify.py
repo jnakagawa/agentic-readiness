@@ -21,6 +21,7 @@ import json
 import os
 import subprocess
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -48,6 +49,33 @@ def run_stdout(cmd: list[str], timeout: int = 600) -> tuple[int, str]:
     return p.returncode, p.stdout.strip()
 
 
+def _pull_once() -> tuple[int, str]:
+    return run(["git", "pull", "--ff-only", "origin", "main"])
+
+
+def git_pull_with_retry(pull=_pull_once, attempts: int = 5, delay: int = 15,
+                        sleep=time.sleep) -> tuple[int, str, int]:
+    """Pull with bounded retry over transient wake/network races.
+
+    launchd runs a missed :41 job on machine WAKE, when WiFi/DNS may not be up
+    yet, so the first `git pull` fails instantly with 'Could not resolve host'
+    and the runner used to bail — writing a useless git-pull-failed artifact it
+    also couldn't push (the 2026-07-27/28 ~18h "runner stalled" incident: the
+    launchd job fired reliably every wake, but raced the network with no retry).
+    A few short waits let the network associate before giving up. Returns
+    (rc, tail, attempts_made); attempts_made == 1 when the network is already up.
+    """
+    rc, tail = 1, ""
+    for i in range(attempts):
+        rc, tail = pull()
+        if rc == 0:
+            return rc, tail, i + 1
+        log(f"git pull attempt {i + 1}/{attempts} failed: {tail[-120:].strip()}")
+        if i < attempts - 1:
+            sleep(delay)
+    return rc, tail, attempts
+
+
 def main() -> int:
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     out: dict = {"ts": ts, "kind": "local-verify"}
@@ -58,11 +86,11 @@ def main() -> int:
         _write(out)
         return 1
 
-    rc, tail = run(["git", "pull", "--ff-only", "origin", "main"])
-    out["git_pull"] = {"ok": rc == 0, "tail": tail[-300:]}
+    rc, tail, tries = git_pull_with_retry()
+    out["git_pull"] = {"ok": rc == 0, "attempts": tries, "tail": tail[-300:]}
     if rc != 0:
         # Do not verify a tree we couldn't sync; report and bail.
-        log(f"git pull failed: {tail[-160:]}")
+        log(f"git pull failed after {tries} attempts: {tail[-160:]}")
         _write(out)
         return 1
 

@@ -1206,18 +1206,47 @@
   62 tip) BEFORE editing; runner STILL STALLED past 6h (newest verify_20260727T224106Z ~18.5h old at 17:1xZ,
   unchanged since Cycle 51 — P0-tracked, not cloud-repairable, already flagged in Cycle 62's digest). No Slack
   (tests-only/score-neutral, digest already sent Cycle 62). Next cycle takes READOUT.
-- **RUNNER STALL — STILL STALLED PAST THE 6h FLOOR (updated Cycle 62, 2026-07-28T16:21Z; crossed Cycle 51
-  05:13Z).** Newest verify artifact is still `verify_20260727T224106Z.json` (22:41Z) — NO newer artifact
-  appeared between Cycle 51 (05:13Z) and this fire (16:21Z), so at ~17.5h old the stall has NOT self-cleared
-  (contrast the Cycle-28 stall, which cleared by Cycle 30). The Cycle 48/49/50 watch (six consecutive :41 gaps,
-  23:41→04:41Z) tipped over at Cycle 51 and persists across Cycles 52–61. Mirrors the Cycle-28 stall mechanism —
-  likely the same launchd-on-Jonah's-machine intermittent stall (machine asleep / launchd not firing), NOT
-  repairable from the cloud (can't reach the local machine). Loop is DEGRADED, not down: the in-cloud replay guard
-  (now 21/21, +39.4) is
-  the standing regression signal and ran green this fire, so cycles are NOT blocked. Queued P0 [LOCAL] with the
-  diagnosis; **flag in the next post-16:00 UTC Slack digest** per the self-healing law (note in STATE + flag in
-  next digest, not an immediate DM — comms policy). If a newer artifact appears next fire, the stall
-  self-cleared → close this watch; if still gapped, escalate harder in the digest.
+  Local fire 2026-07-28T17:27Z SELF-HEALING/METHOD (infra breakage outranks new work — the verify-runner
+  stall ROOT-CAUSED + FIXED, the top P0): a local fire has the network + the machine, so it saw what
+  Cycles 51→62 could not. The cloud's "launchd not firing / machine asleep" guess was WRONG — the runner's
+  heartbeat log (`~/Library/Logs/asrs-local-verify.log`) + the unpushed local `verify_*.json` artifacts
+  (234101Z/034100Z/110146Z/170500Z) prove the launchd job fires every wake but its `git pull` fails
+  INSTANTLY with "Could not resolve host: github.com" — a WAKE/NETWORK RACE: launchd runs the missed :41
+  job on wake before WiFi/DNS is up (artifacts land at odd minutes 14:44/16:56/11:01/17:05 = wake instants),
+  and the runner bailed on that first miss with zero retry, writing a git-pull-failed artifact it also
+  couldn't push. FIX: `loop/local_verify.py` `git_pull_with_retry` (bounded wait-for-network, 5×15s ≈60s;
+  still fixed-verb, only `pull` hardened) + `tests/test_local_verify.py` (4). Resynced the pinned
+  `~/.local/bin/asrs_local_verify.py` from the committed repo copy (self-healing law). Executed the repair
+  live (not assumed): the fixed runner pulled on attempt 1 (its pull even fast-forwarded Cycle 63), 20
+  suites green, canonical 46.1 F / 85.5 B / +39.4, artifact `verify_20260728T172734Z.json` (records
+  `attempts:1`) pushed + mirrored → the ~18.5h stall is CLEARED, live canonical signal restored.
+  Score-neutral: `git diff -- asrs/ rubric/` EMPTY → scoring.py/rubric/probes byte-for-byte untouched,
+  rubric v0.7, canonical PAIR unchanged by construction AND re-measured (replay guard green 23/23 after
+  Cycle 63's pull, +39.4). Direct-to-main (infra/tooling, not scoring semantics, not payment/signing).
+  Suite 19→20 files (+test_local_verify, 4 tests). First duty: no open peer-gated PR
+  (`gh pr list --state open` → []); local `main` was ~18 cloud cycles behind (at Cycle 44) → `git pull
+  --ff-only` to Cycle 62 before editing, then the runner's own pull picked up Cycle 63. Cloud rotation
+  unaffected (still READOUT next). Slack: brief follow-up DM closing the runner-stall flag Cycle 62's
+  digest opened this morning.
+- **RUNNER STALL — ROOT-CAUSED + FIXED (local fire 2026-07-28T17:27Z). CLOSED.** The cloud's
+  Cycle-51→62 diagnosis ("launchd not firing / machine asleep") was WRONG — only a local fire could
+  see the truth. The runner's heartbeat log (`~/Library/Logs/asrs-local-verify.log`) shows the launchd
+  job (`org.pie.asrs-local-cycle`, StartCalendarInterval :41) fires RELIABLY every wake, and the local
+  `runs/local/verify_*.json` artifacts (234101Z/034100Z/110146Z/170500Z — never pushed) each carry
+  `git_pull.ok=false`, `"Could not resolve host: github.com"`. **Root cause: a wake/network race.**
+  launchd runs the missed :41 job on machine WAKE (hence artifacts at odd minutes 14:44/16:56/11:01/17:05
+  = wake instants, not :41), before WiFi/DNS is up; `git pull` then failed in the SAME SECOND it started
+  (vs a ~5s delay on successful fires), and the runner bailed on that first miss with ZERO retry —
+  writing a git-pull-failed artifact it also couldn't push. (My own shell reached github fine at 17:18Z,
+  13 min after the 17:05Z runner fire failed — the network was simply not up yet at wake.) **Fix:**
+  `loop/local_verify.py` `git_pull_with_retry` (5 attempts, 15s apart, ~60s worst case; still fixed-verb,
+  only `pull` hardened) + `tests/test_local_verify.py` (4). Resynced the pinned
+  `~/.local/bin/asrs_local_verify.py` from the committed repo copy (self-healing law). **Executed the
+  repair, did not assume it:** ran the fixed runner live at 17:27Z — pull succeeded on attempt 1 (its
+  pull even fast-forwarded in Cycle 63), 20 suites green, canonical 46.1 F / 85.5 B / +39.4, artifact
+  `verify_20260728T172734Z.json` (records `attempts:1`) pushed + mirrored. The ~18.5h stall is CLEARED;
+  the live canonical re-score capability is restored. Residual to watch (LOG next-hypothesis): a wake with
+  a very slow (>60s) network would still fail — watch the artifact `attempts` field over the next day.
 - **LIVE CANONICAL DRIFT (open, for the next post-16:00 UTC digest) — surfaced by the Cycle-36 history readout.**
   The live canonical delta held **+39.4** (46.1 F / 85.5 B) for days through `verify_20260727T054339Z`, then MOVED:
   07:40Z fire driftflight.com collapsed to 50.0 F (delta +3.9 — transient error crawl, transactability CANT_TEST /

@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 55
+- Cycle counter: 56
 - Started: 2026-07-23 (UTC)
-- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -1007,6 +1007,24 @@
   population (does pillar-wise dominance hold down the whole capability spectrum com⪰org⪰retail⪰bare, making the
   entire ordering guard 12 weight-robust — or is some pair only weight-dependently ordered, worth surfacing
   honestly). Cloud-doable from committed fixtures.
+  Cycle 56 READOUT (the READOUT complement to Cycle-55's weight-robustness TRUTH guard — the same
+  guard→prose move Cycle 24 made for Cycle-23's earned-dominance guard): the methodology page's §3 worked
+  example gains a second sub-section "But couldn't you re-weight the pillars to get the answer you want?"
+  that names the SECOND credibility objection in plain prose — the delta's SIGN is invariant to the pillar
+  weighting because the higher side is PILLAR-WISE DOMINANT (≥ every exposed pillar, strictly > one) over the
+  SAME applicable-pillar set with NEITHER grade capped, so each overall is a renormalized weighted mean of the
+  same pillars and a non-negative-weight average can't rank a dominated side above its dominator → sign holds
+  under every reasonable weighting (rubric/uniform/single-pillar extremes); weights set gap SIZE, not which
+  side leads. Stated test-pinned, matching the earned-dominance paragraph. Display-only: git diff = scorecard.py
+  (methodology prose) + test_readout.py ONLY; scoring.py/rubric/probes/fetch/protocols/behavioral/offering/
+  battery byte-for-byte untouched → rubric stays v0.7, canonical delta unchanged by construction AND re-measured
+  (replay guard 18/18, 46.1 F / 85.5 B / +39.4, 0 replay-miss). Vendor-neutral (no domain named; new test asserts
+  drift-flight/driftflight absent + readout-wording guard 4/4). NON-VACUOUS: reverting the prose alone fails the
+  new test (37/38 → 38/38 restored). `test_readout.py` 37→38; suite 215→216. No Slack (display-only, moves no
+  score, 10:2xZ before the 16:00 UTC digest window — runner stall flags there). First duty: no open peer-gated
+  PR (verified []); infra health check ran first — bench UP (216/216), git bookkeeping UP (pull clean, main ==
+  origin/main 6c7087e = Cycle 55), runner STILL STALLED PAST 6h (newest verify_20260727T224106Z ~11.6h old,
+  unchanged — P0-tracked, not cloud-repairable, flag in the next digest). Next cycle takes METHOD.
 - **RUNNER STALL — STILL STALLED PAST THE 6h FLOOR (updated Cycle 54, 2026-07-28T08:1xZ; crossed Cycle 51
   05:13Z).** Newest verify artifact is still `verify_20260727T224106Z.json` (22:41Z) — NO newer artifact
   appeared between Cycle 51 (05:13Z) and this fire (08:1xZ), so at ~9.5h old the stall has NOT self-cleared

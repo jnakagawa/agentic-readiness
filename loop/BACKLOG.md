@@ -527,7 +527,10 @@ design in-cloud, execute locally.
   total pillar-wise dominance order. If ANY adjacent pair is only weight-DEPENDENTLY ordered (not
   pillar-wise comparable), surface that HONESTLY — it is a real finding that that rung's rank depends
   on the weight choice, not a bug to hide. Cloud-doable from the four committed fixtures; tests-only,
-  score-neutral, direct-to-main.
+  score-neutral, direct-to-main. READOUT NOTE: the PAIR's weight-robustness is now surfaced in prose
+  on the methodology page (Cycle 56, §3 "But couldn't you re-weight the pillars…"). When this
+  population extension lands, its finding (whole-chain weight-robust, or a named weight-dependent
+  rung) belongs in that SAME sub-section so the guard and the readout stay in lockstep.
 
 <!-- DONE 2026-07-28T06:1xZ (Cycle 52, READOUT, direct-to-main, display-only, score-neutral):
      "Live-signal FRESHNESS banner on canonical-history.html" SHIPPED. `asrs/scorecard.py`
@@ -724,10 +727,12 @@ design in-cloud, execute locally.
      Direct-to-main. test_readout.py 16 → 17; suite 103 → 104. See LOG Cycle 24. -->
 
 - **Worked-observability example: card annotation cross-link** (READOUT, Cycle-24 follow-up,
-  OPTIONAL): the methodology page now carries the earned-dominance worked example (section 3). A
-  small next unit would anchor-link a compared-pair card's overview (or the delta shown on a
-  `compare` card) to that methodology sub-section, so a reader looking at a large delta can jump
-  straight to "why this delta is earned, not a blind spot". No scoring semantics; direct-to-main.
+  OPTIONAL): the methodology page now carries the earned-dominance worked example AND (Cycle 56)
+  a weight-robustness sub-section (§3, both answering "is this delta rigged?" — observation half +
+  aggregation-weights half). A small next unit would anchor-link a compared-pair card's overview (or
+  the delta shown on a `compare` card) to that methodology section, so a reader looking at a large
+  delta can jump straight to "why this delta is earned, not a blind spot, and not a weight artifact".
+  No scoring semantics; direct-to-main.
   Low priority — the prose exists; this is a navigation nicety. The SIBLING cap-chip anchor-link
   (link a card's "Grade capped" chip to its methodology §8 cap row) is now DONE — Cycle 32
   (READOUT, direct-to-main): `scorecard._cap_anchor` (one source of truth for both surfaces) +

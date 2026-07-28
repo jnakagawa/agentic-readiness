@@ -5471,3 +5471,65 @@ capability spectrum (com ⪰ org ⪰ retail ⪰ bare pillar-wise)? If so the ent
 population ordering (guard 12) is weight-robust, not just the head delta; if a
 pair is NOT pillar-wise comparable (an ordering that depends on the weights),
 that is itself worth surfacing honestly. Cloud-doable from the committed fixtures.
+
+## Cycle 56 — 2026-07-28T10:2xZ — READOUT
+
+**What.** The READOUT complement to Cycle 55's weight-robustness guard (guard 15,
+`tests/test_canonical_replay`) — the same move Cycle 24 made for Cycle 23's
+earned-dominance guard. The methodology page's section-3 worked example (which
+answers *"did you rig which checks you observe?"*) gained a second sub-section,
+**"But couldn't you re-weight the pillars to get the answer you want?"**, that
+names the distinct credibility objection in prose a critic can read: because the
+higher-scoring side is **pillar-wise dominant** (≥ on every pillar both sides
+expose, strictly > on at least one) over the **same applicable-pillar set** with
+**neither grade capped**, each overall is a renormalized weighted mean of the
+same pillars — and a weighted average with **non-negative weights** can never
+rank a dominated side above the side that dominates it. So the delta keeps its
+sign under **every reasonable weighting** (rubric, uniform, single-pillar
+extremes); the weights set how large the gap is, they **cannot flip** which side
+is ahead. Stated as test-pinned ("executable regression test … adversarial family
+of weightings"), matching the earned-dominance paragraph's language.
+
+**Why.** Cycle 55 made weight-robustness an executable TRUTH guard but left it
+unstated on the public "read the paper" page. The methodology worked example
+named three earned-dominance facts (observability / like-for-like / no inversion)
+— all answering the "you rigged the observation" objection — but nothing answered
+the "you rigged the aggregation weights" objection, the last step a skeptic
+attacks. Naming it in the same capability language closes the loop between the
+guard and the readout (north star: readout clarity; each executable credibility
+axis gets a plain-prose complement on the methodology page).
+
+**Scope.** `asrs/scorecard.py` (methodology prose only) + `tests/test_readout.py`
+(new `test_methodology_documents_weight_robustness` + runner-list entry).
+`git diff --name-only` = those two files ONLY. scoring.py / rubric / probes /
+fetch.py / protocols / behavioral / offering / battery byte-for-byte UNTOUCHED →
+display-only, rubric stays v0.7, canonical delta unchanged by construction.
+
+**Verification (non-vacuity).** Reverting the prose alone (HEAD scorecard.py,
+new test kept) makes the new test FAIL (37/38: "documents weight-robustness:
+'re-weight the pillars'"); restoring it → 38/38. The vendor-neutral readout guard
+`test_readout_wording.py` 4/4 (no scored-storefront name leaked into the rendered
+page — the new test also asserts `drift-flight`/`driftflight` absent).
+
+**Evidence.** Full suite 19/19 test files green; suite 215 → 216.
+`tests/test_readout.py` 37 → 38 (38/38).
+
+**Canonical pair (regression signal).** In-cloud replay guard re-measured:
+drift-flight.org 46.1 F / driftflight.com 85.5 B / delta +39.4, 0 replay-miss on
+both (`test_canonical_replay.py` 18/18). (Live re-score BLOCKED in-cloud — no
+outbound network; the offline replay guard is the in-cloud regression signal.
+Newest local verify artifact `verify_20260727T224106Z` is ~11.6h old at this fire
+→ the launchd runner is STILL STALLED past the 6h floor, tracked P0, not
+cloud-repairable; flag in the 16:00Z digest.)
+
+**First duty.** No open peer-gated PR (verified `list_pull_requests` state=open →
+`[]`). Infra health: bench UP (19/19 files, 216/216), git bookkeeping UP
+(`git pull` clean, main == origin/main 6c7087e = Cycle 55), runner DOWN
+(~11.6h, P0-tracked).
+
+**Next hypothesis.** The sibling READOUT nicety remains: cross-link a `compare`
+card's shown delta to the methodology worked example (§3), so a reader seeing a
+large delta jumps straight to the two "why it's earned / why it's not the weights"
+sub-sections — the last cross-link after the Cycle-32 cap-chip anchor. Or the
+TRUTH-side extension Cycle 55 queued (population-wide weight-robustness) whose
+prose would then also live in this same sub-section.

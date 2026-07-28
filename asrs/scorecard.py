@@ -423,6 +423,24 @@ matched, fully-observed checks, not an artifact of differential observability or
 a masked inversion. On the benchmark&rsquo;s reference pair this property is
 pinned by an executable regression test, so it is <b>enforced every cycle</b>,
 not merely asserted.</p>
+<h3>But couldn&rsquo;t you re-weight the pillars to get the answer you want?</h3>
+<p>The worked example above answers <i>&ldquo;did you rig which checks you
+observe?&rdquo;</i>. A separate objection targets the last step: the overall is a
+<b>weighted average of the pillars</b> (see section&nbsp;1) &mdash; so could the
+weights themselves be tuned to hand one side the win? For a delta to be credible,
+its <b>sign</b> must not depend on that choice.</p>
+<p>It does not, and for a structural reason. When the higher-scoring side is
+<b>pillar-wise dominant</b> &mdash; at least as high on <b>every</b> pillar both
+sides actually expose, strictly higher on at least one &mdash; over the
+<b>same applicable-pillar set</b>, with <b>neither side&rsquo;s grade capped</b>,
+then each overall is a plain renormalized weighted mean of the <i>same</i>
+pillars. A weighted average with non-negative weights can never rank a
+dominated side above the side that dominates it. So the delta keeps its sign
+under <b>every reasonable weighting</b> &mdash; not just the rubric&rsquo;s, but
+the uniform weighting and even the extremes that pile all the weight onto a
+single pillar. The weights set how <i>large</i> the gap is; they cannot flip
+<i>which</i> side is ahead. This too is pinned by an executable regression test
+on the reference pair, including an adversarial family of weightings.</p>
 </div>
 
 <div class="card">

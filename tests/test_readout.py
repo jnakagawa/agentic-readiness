@@ -405,6 +405,30 @@ def test_methodology_documents_earned_dominance() -> None:
         _check(banned not in text, f"methodology names no vendor/domain ({banned!r})")
 
 
+def test_methodology_documents_weight_robustness() -> None:
+    # Cycle 56 (READOUT): the READOUT complement to Cycle 55's weight-robustness
+    # guard (guard 15, test_canonical_replay) — the same move Cycle 24 made for
+    # Cycle 23's earned-dominance guard. The worked example must name, in prose a
+    # critic can read, the SECOND credibility objection (the delta's sign is
+    # invariant to the pillar weighting because the higher side is pillar-wise
+    # dominant over an identical, uncapped applicable-pillar set), stay
+    # vendor-neutral, and say it is test-pinned.
+    print("test_methodology_documents_weight_robustness")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    for phrase in ("re-weight the pillars", "pillar-wise dominant",
+                   "same applicable-pillar set", "non-negative weights",
+                   "every reasonable weighting", "cannot flip"):
+        _check(phrase in text, f"methodology documents weight-robustness: {phrase!r}")
+    # It must claim the property is enforced, not merely asserted (mirrors the
+    # earned-dominance paragraph's "executable regression test" language).
+    _check("executable regression test" in text,
+           "weight-robustness is stated as test-pinned")
+    # Vendor-neutral: the reference pair is described by capability, never named.
+    for banned in ("drift-flight", "driftflight"):
+        _check(banned not in text, f"methodology names no vendor/domain ({banned!r})")
+
+
 def test_methodology_page_tracks_live_rubric() -> None:
     print("test_methodology_page_tracks_live_rubric")
     rubric = load_rubric()
@@ -824,6 +848,7 @@ def main() -> int:
         test_html_battery_no_offering_no_na_block,
         test_methodology_page_written_and_covers_semantics,
         test_methodology_documents_earned_dominance,
+        test_methodology_documents_weight_robustness,
         test_methodology_page_tracks_live_rubric,
         test_build_scorecard_publishes_and_links_methodology,
         test_cap_anchor_helper_is_stable_and_sanitizing,

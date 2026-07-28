@@ -6570,3 +6570,7 @@ population. In-cloud, the next calibration-adjacent unit is to widen the anchor'
 assertions (e.g. pin that the Outcome pillar's behavioral overall tracks the static
 transactability direction across whatever committed behavioral reports exist) once a second
 report lands.
+
+## Local verification — 20260728T214104Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260728T214104Z.json

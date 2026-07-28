@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 51
+- Cycle counter: 52
 - Started: 2026-07-23 (UTC)
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -907,17 +907,37 @@
   (score-neutral read-only diagnostic, moves no score, 05:1xZ is not a digest window). First duty: no open
   peer-gated PR (verified []); infra health check ran first — **RUNNER STALLED PAST THE 6h FLOOR** (see runner
   note below). Next cycle takes READOUT.
-- **RUNNER STALL — CROSSED THE 6h FLOOR (Cycle 51, 2026-07-28T05:13Z).** Newest verify artifact is
-  `verify_20260727T224106Z.json` (22:41Z); at this fire (05:13Z) it is ~6h32m old — PAST the playbook's 6h
-  self-healing floor. The Cycle 48/49/50 watch (23:41/00:41/01:41/02:41/03:41/04:41Z :41 fires produced NO
-  artifact — 6 consecutive gaps) has now tipped over. Mirrors the Cycle-28 stall (which self-cleared by
-  Cycle 30) — likely the same launchd-on-Jonah's-machine intermittent stall (machine asleep / launchd not
-  firing), NOT repairable from the cloud (can't reach the local machine). Loop is DEGRADED, not down: the
-  in-cloud replay guard (16/16, +39.4) is the standing regression signal and ran green this fire, so cycles
-  are NOT blocked. Queued P0 [LOCAL] with the diagnosis; **flag in the next post-16:00 UTC Slack digest** per
-  the self-healing law (note in STATE + flag in next digest, not an immediate DM — comms policy). If a newer
-  artifact appears next fire, the stall self-cleared → close this watch; if still gapped, escalate harder in
-  the digest.
+  Cycle 52 READOUT (the Cycle-51 live-signal freshness fact, now on the HTML trend surface — the terminal→HTML
+  close-out): `asrs/scorecard.py` `_write_canonical_history_page` renders a liveness element off `hist.liveness`
+  — a prominent STALE warning CARD ABOVE the latest-reading card when the newest re-score is past the 6h floor
+  ("⚠ Live signal STALE — newest re-score X.Xh old … the verdict below describes an OLD crawl, not the pair now;
+  the runner may be down"), a quiet one-line age note when FRESH. The live build path loads WITH the wall clock
+  (`ch.load_history(now=datetime.now(timezone.utc))`, mirroring `cli._cmd_canonical_history`) so the check runs
+  on the hosted card; a caller passing its own `history` controls its own liveness (tests), a clock-free summary
+  carries `liveness=None` → NO banner (honest-None). Closes the last terminal-only gap for the freshness signal
+  (same deferral per_kind Cycle 10→12 / between_kind_spread 18→20 / noise floor 47→48 took). Display-only:
+  `git diff --name-only` = scorecard.py + test_readout.py ONLY; scoring.py/rubric/probes/fetch/protocols/battery/
+  offering/canonical_history.py byte-for-byte untouched → rubric stays v0.7, canonical delta unchanged by
+  construction AND re-measured (replay guard 16/16, 46.1 F / 85.5 B / +39.4, 0 replay-miss; canonical offering
+  guard 12/12). Vendor-neutral (host names as DATA, engineering-history category). `test_readout.py` 34→37 (+3:
+  STALE-despite-in-band w/ banner-before-verdict ordering, FRESH-shows-age-no-banner non-vacuous, no-clock →
+  neither element honest-None); full suite 208→211 (18 of 19 files green in-cloud; `test_free_tier` 11/11 after
+  `pip install -r requirements.txt` supplies `eth-account`). END-TO-END on the REAL committed series: live-load
+  render prints "newest re-score 7.6h old — STALE" (runner stalled) despite the In-band verdict — exactly the
+  failure closed. Direct-to-main. No Slack (display-only READOUT, moves no score, 06:1xZ not a digest window).
+  First duty: no open peer-gated PR (verified []); infra health check ran first — RUNNER STILL STALLED PAST 6h
+  (see runner note below, unchanged from Cycle 51 — no newer artifact). Next cycle takes METHOD.
+- **RUNNER STALL — STILL STALLED PAST THE 6h FLOOR (updated Cycle 52, 2026-07-28T06:1xZ; crossed Cycle 51
+  05:13Z).** Newest verify artifact is still `verify_20260727T224106Z.json` (22:41Z) — NO newer artifact
+  appeared between Cycle 51 (05:13Z) and this fire (06:1xZ), so at ~7.6h old the stall has NOT self-cleared
+  (contrast the Cycle-28 stall, which cleared by Cycle 30). The Cycle 48/49/50 watch (six consecutive :41 gaps,
+  23:41→04:41Z) tipped over at Cycle 51 and persists. Mirrors the Cycle-28 stall mechanism — likely the same
+  launchd-on-Jonah's-machine intermittent stall (machine asleep / launchd not firing), NOT repairable from the
+  cloud (can't reach the local machine). Loop is DEGRADED, not down: the in-cloud replay guard (16/16, +39.4) is
+  the standing regression signal and ran green this fire, so cycles are NOT blocked. Queued P0 [LOCAL] with the
+  diagnosis; **flag in the next post-16:00 UTC Slack digest** per the self-healing law (note in STATE + flag in
+  next digest, not an immediate DM — comms policy). If a newer artifact appears next fire, the stall
+  self-cleared → close this watch; if still gapped, escalate harder in the digest.
 - **LIVE CANONICAL DRIFT (open, for the next post-16:00 UTC digest) — surfaced by the Cycle-36 history readout.**
   The live canonical delta held **+39.4** (46.1 F / 85.5 B) for days through `verify_20260727T054339Z`, then MOVED:
   07:40Z fire driftflight.com collapsed to 50.0 F (delta +3.9 — transient error crawl, transactability CANT_TEST /

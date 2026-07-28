@@ -6,7 +6,8 @@ design in-cloud, execute locally.
 ## P0
 
 - **[LOCAL] Local verify runner STALLED past the 6h floor (diagnosed Cycle 51,
-  2026-07-28T05:13Z).** Newest artifact `runs/local/verify_20260727T224106Z.json`
+  2026-07-28T05:13Z; STILL STALLED at Cycle 52, 06:1xZ — no newer artifact, ~7.6h old).**
+  Newest artifact `runs/local/verify_20260727T224106Z.json`
   (22:41Z) is ~6h32m old at the 05:13Z fire — the six consecutive :41 gaps
   (23:41→04:41Z 07-27/28) the Cycle 48/49/50 watch tracked have crossed the 6h floor.
   NOT repairable from the cloud (can't reach Jonah's machine). Mirrors the Cycle-28
@@ -500,16 +501,19 @@ design in-cloud, execute locally.
 
 ## P2
 
-- **Live-signal FRESHNESS banner on canonical-history.html** (READOUT, Cycle-51 follow-up).
-  Cycle 51 made the newest live re-score's AGE an executable, surfaced fact in the terminal
-  readout (`asrs/canonical_history.py` `Liveness`; `asrs canonical-history` now prints a
-  FRESH/STALE line against the 6h floor). The HTML trend page `canonical-history.html` does
-  not yet carry it — a web reader of the canonical history still sees the latest verdict with
-  no age qualifier. Cloud-doable increment: render a STALE banner (mirroring the terminal
-  STALE line + the runner-down warning) on the HTML surface, driven off the same
-  `history.liveness` field, shown only when `not fresh`. Same terminal→HTML deferral pattern
-  per_kind (Cycle 10→12) / between_kind_spread (Cycle 18→20) took. Display-only, off the
-  scoring path; pass the wall clock through the scorecard builder the same way the CLI does.
+<!-- DONE 2026-07-28T06:1xZ (Cycle 52, READOUT, direct-to-main, display-only, score-neutral):
+     "Live-signal FRESHNESS banner on canonical-history.html" SHIPPED. `asrs/scorecard.py`
+     `_write_canonical_history_page` renders a liveness element off `hist.liveness` (the Cycle-51
+     `Liveness`): a prominent STALE warning CARD above the latest-reading card when the newest
+     re-score is past the 6h floor (runner-down warning + "OLD crawl, not the pair now"), a quiet
+     age note when FRESH. Live build path loads WITH the wall clock (mirroring
+     `cli._cmd_canonical_history`); clock-free summary → liveness None → no banner (honest-None).
+     Closes the last terminal-only gap for the freshness signal (same terminal→HTML deferral
+     per_kind Cycle 10→12 / noise floor 47→48 took). Display-only: git diff = scorecard.py +
+     test_readout.py only; scoring/rubric/probes/offering/canonical_history.py untouched → rubric
+     v0.7, replay guard 16/16 (46.1 F / 85.5 B / +39.4), offering guard 12/12. Demonstrated
+     end-to-end on the REAL committed series (STALE banner "7.6h old" while verdict In-band).
+     `test_readout.py` 34→37; suite 208→211. See LOG Cycle 52. -->
 
 - **Offering discovery reads conventional DOC SUBDOMAINS** (COVERAGE, surfaced Cycle 50).
   `discover_offering` fetches each surface on the storefront's OWN host (`<host>/llms.txt`,

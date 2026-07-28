@@ -5159,3 +5159,63 @@ the natural READOUT complement is to surface it on `canonical-history.html` (a s
 banner on the trend page, mirroring the terminal STALE line) so a web reader of the
 canonical history is warned identically — the same terminal→HTML deferral pattern per_kind
 (Cycle 10→12) and between_kind_spread (Cycle 18→20) took. Queued.
+
+## Cycle 52 (READOUT) — 2026-07-28T06:1xZ — live-signal freshness banner on canonical-history.html
+
+**What.** The Cycle-51 live-signal freshness fact, until now terminal-only, is now on the
+HTML trend surface. `asrs/scorecard.py` `_write_canonical_history_page` renders a
+liveness element driven off `hist.liveness` (the `Liveness` Cycle 51 shipped): when the
+newest re-score is STALE (past the 6h floor) a prominent warning CARD renders ABOVE the
+latest-reading card — "⚠ Live signal STALE — newest re-score X.Xh old … the verdict below
+describes an OLD crawl, not the reference pair now; the local verify runner may be down";
+when FRESH, a quiet one-line age note. The live build path now loads the series WITH the
+wall clock (`ch.load_history(now=datetime.now(timezone.utc))`, mirroring
+`cli._cmd_canonical_history`) so the freshness check runs on the hosted card; a caller that
+passes its own `history` controls its own liveness (tests), and a series summarized without
+a clock carries `liveness=None` → NO banner (honest — no clock-dependent claim).
+
+**Why.** Cycle 51 closed the freshness gap in the terminal readout only; a WEB reader of
+`canonical-history.html` still saw the latest verdict (band, re-capture advice, which side
+moved) with NO age qualifier — so a stalled runner's healthy-looking, hours-old "IN-BAND /
+baseline-valid" verdict read as a current all-clear on the page. This is the same
+terminal→HTML close-out per_kind (Cycle 10→12), between_kind_spread (Cycle 18→20) and the
+noise floor (Cycle 47→48) took: surface a diagnostic the terminal already computes so a
+reader who never opens a terminal is warned identically. The STALE banner sits ABOVE the
+verdict deliberately — warn before the (stale) content.
+
+**Validation.** `git diff --name-only` = `asrs/scorecard.py` + `tests/test_readout.py` ONLY;
+`git diff -- asrs/scoring.py rubric/ asrs/probes/ asrs/fetch.py asrs/protocols.py
+asrs/battery.py asrs/offering.py asrs/canonical_history.py` EMPTY → display-only, rubric
+stays v0.7, canonical delta UNCHANGED by construction AND re-measured green: in-cloud replay
+guard 16/16 (46.1 F / 85.5 B / +39.4, 0 replay-miss), canonical OFFERING guard 12/12 (claimed
+sets unchanged). `test_readout.py` 34 → 37 (+3): STALE banner on a 7.5h-old but IN-BAND series
+(staleness earned by AGE, not drift; banner-before-verdict ordering pinned), FRESH signal shows
+age + NO stale banner (non-vacuous), and no-clock summary renders NEITHER liveness element
+(honest-None, driven by the supplied wall clock not the series). Full suite 208 → 211 (18 of 19
+files green in-cloud; `test_free_tier` 11/11 after `pip install -r requirements.txt` supplies
+`eth-account` — the standing invariant-#4 env gap, unrelated to this change). END-TO-END on the
+REAL committed series: the live-load render prints the STALE banner "newest re-score 7.6h old"
+because the runner is currently stalled (see Infra health) even though the verdict is In-band —
+exactly the failure this closes. Vendor-neutral (reference-pair host names appear only as DATA,
+same engineering-history category as rubric.html; the page is literally about the pair).
+Direct-to-main (display-only, off the scoring path, not sensitive).
+
+**Infra health.** First duty: no open peer-gated PR (`list_pull_requests state=open` → []).
+Bench up (all 19 files green with `eth-account` installed). **RUNNER STILL STALLED PAST THE 6h
+FLOOR**: newest verify is unchanged from Cycle 51 — `verify_20260727T224106Z` (22:41Z), ~7.6h
+old at this fire (06:1xZ). No newer artifact appeared since Cycle 51, so the stall has NOT
+self-cleared (contrast the Cycle-28 stall, which cleared by Cycle 30). NOT repairable from the
+cloud (can't reach Jonah's machine); remains P0 [LOCAL] with the diagnosis. The loop is DEGRADED
+not down — the in-cloud replay guard IS the standing regression signal and ran green this fire.
+**Flag in the next post-16:00 UTC Slack digest** per the self-healing law. Git synced to
+origin/main (ca62669, Cycle 51) at the start of the fire.
+
+**Comms.** No Slack this fire — display-only READOUT ship (moves no score), not a sensitive-class
+PR, and 06:1xZ is not the first-cycle-after-16:00-UTC digest window. The persistent runner stall
++ (now-closed/positive) canonical drift fold into the next digest.
+
+**Next hypothesis.** METHOD next. The freshness/liveness signal is now complete on BOTH surfaces
+(terminal Cycle 51, HTML this cycle). A candidate METHOD increment: the JOINT population-level
+relabel-invariance guard queued at Cycle 49 (relabel ALL FOUR canonical hosts simultaneously and
+assert the population ORDERING — not just per-domain scores — is identity-invariant; per-domain
+relabel guards exist as guards 4/6/8/11, the joint one does not).

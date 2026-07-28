@@ -500,6 +500,8 @@ def test_cap_link_and_methodology_anchor_cannot_drift() -> None:
 # terminal-only. `_write_canonical_history_page` renders it so a reader eyeballs the
 # curve, the named mover, and which side drove it. Display-only: no scoring path.
 # ---------------------------------------------------------------------------
+from datetime import datetime, timedelta, timezone  # noqa: E402
+
 from asrs import canonical_history as ch  # noqa: E402
 
 
@@ -738,6 +740,71 @@ def test_canonical_history_noise_card_absent_without_floor() -> None:
            "no noise-floor card when the floor is unmeasurable")
 
 
+def _in_band_pts() -> list:
+    """Two in-band readings at the pinned +39.4 — a healthy verdict, so the STALE
+    banner's warning is earned by AGE alone, not by any drift."""
+    no_pil = {"access": 100.0, "legibility": 36.4}
+    with_pil = {"access": 100.0, "legibility": 90.9}
+    return [
+        _hist_point("20260727T050000Z", 46.1, "F", 85.5, "B", no_pil, with_pil),
+        _hist_point("20260727T224106Z", 46.1, "F", 85.5, "B", no_pil, with_pil),
+    ]
+
+
+def test_canonical_history_stale_banner_when_signal_old() -> None:
+    # The Cycle-51 terminal freshness signal, now on the HTML surface: when the
+    # newest re-score is past the 6h floor, a prominent STALE banner warns the
+    # reader BEFORE the (old) verdict — even though the verdict itself is a perfectly
+    # healthy IN-BAND +39.4 (staleness is about AGE, not drift). Mirrors the terminal
+    # "STALE despite in-band" case (test_canonical_history STALE test).
+    print("test_canonical_history_stale_banner_when_signal_old")
+    latest = datetime(2026, 7, 27, 22, 41, 6, tzinfo=timezone.utc)
+    now = latest + timedelta(hours=7, minutes=30)  # 7.5h old -> past the 6h floor
+    hist = ch.summarize(_in_band_pts(), now=now)
+    _check(hist.band == "in-band", "verdict itself is a healthy in-band reading")
+    _check(hist.liveness is not None and not hist.liveness.fresh,
+           "liveness reads STALE at 7.5h")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_canonical_history_page(Path(d), history=hist)).read_text()
+    _check("Live signal STALE" in text, "renders the STALE banner heading")
+    _check("7.5h old" in text, "names the age of the newest re-score")
+    _check("verify runner may be down" in text,
+           "warns the runner may be down (the runner-down warning)")
+    _check("describes an OLD crawl" in text,
+           "warns the verdict below is an old crawl, not the pair now")
+    # The banner sits ABOVE the latest-reading card (warn before the stale content).
+    _check(text.index("Live signal STALE") < text.index("Latest reading"),
+           "the STALE banner renders before the latest-reading card")
+
+
+def test_canonical_history_fresh_shows_age_no_stale_banner() -> None:
+    # Non-vacuous: a FRESH newest re-score (within the floor) shows a quiet age note
+    # and NO stale warning — the STALE prose is earned by age, not baked in.
+    print("test_canonical_history_fresh_shows_age_no_stale_banner")
+    latest = datetime(2026, 7, 27, 22, 41, 6, tzinfo=timezone.utc)
+    now = latest + timedelta(hours=1)  # 1.0h old -> fresh
+    hist = ch.summarize(_in_band_pts(), now=now)
+    _check(hist.liveness is not None and hist.liveness.fresh, "liveness reads FRESH at 1h")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_canonical_history_page(Path(d), history=hist)).read_text()
+    _check("Live signal STALE" not in text, "no STALE banner on a fresh signal")
+    _check("1.0h old" in text and "fresh (within the 6h floor)" in text,
+           "shows the quiet fresh age note")
+
+
+def test_canonical_history_no_liveness_line_without_clock() -> None:
+    # Honest-None: a series summarized WITHOUT a clock makes no freshness claim, so
+    # NEITHER the stale banner nor the fresh age note renders — the age qualifier is
+    # driven by the supplied wall clock, never fabricated from the series alone.
+    print("test_canonical_history_no_liveness_line_without_clock")
+    hist = ch.summarize(_in_band_pts())  # no now= -> liveness is None
+    _check(hist.liveness is None, "no clock -> liveness None")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_canonical_history_page(Path(d), history=hist)).read_text()
+    _check("Live signal STALE" not in text and "Live signal: newest re-score" not in text,
+           "no liveness markup at all when the summary carries no clock")
+
+
 def main() -> int:
     tests = [
         test_json_carries_reliability,
@@ -774,6 +841,9 @@ def main() -> int:
         test_canonical_history_page_renders_per_side_determinism,
         test_canonical_history_per_side_claim_withheld_on_cancellation,
         test_canonical_history_noise_card_absent_without_floor,
+        test_canonical_history_stale_banner_when_signal_old,
+        test_canonical_history_fresh_shows_age_no_stale_banner,
+        test_canonical_history_no_liveness_line_without_clock,
     ]
     failed = 0
     for t in tests:

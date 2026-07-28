@@ -13,6 +13,7 @@ from __future__ import annotations
 import html
 import json
 import re
+from datetime import datetime, timezone
 from pathlib import Path
 
 PILLAR_LABELS = {
@@ -648,7 +649,17 @@ def _write_canonical_history_page(out_dir: Path, history=None) -> str:
     """
     from . import canonical_history as ch
 
-    hist = history if history is not None else ch.load_history()
+    # When loading the live series ourselves (the hosted build_scorecard path),
+    # supply the wall clock so the freshness check runs — the same clock the CLI
+    # passes to ``asrs canonical-history``. A caller that hands us a ``history``
+    # controls its own liveness (tests summarize with an explicit ``now``); a
+    # series summarized without a clock carries liveness=None and shows no age
+    # qualifier (honest — no clock-dependent claim).
+    hist = (
+        history
+        if history is not None
+        else ch.load_history(now=datetime.now(timezone.utc))
+    )
     head = _PROSE_HEAD.format(title="ASRS — live canonical-delta history")
     nav = (
         '<div class="nav"><a href="javascript:history.back()">&larr; Back to the '
@@ -705,6 +716,43 @@ committed fixtures regardless of what the live site does today.</p>
         f'display:inline-block;margin-right:6px"></span>{_esc(v)}</span>'
         for k, v in _HISTORY_BAND_LABEL.items()
     )
+
+    # Cycle 51 made the newest re-score's AGE an executable, surfaced fact in the
+    # TERMINAL readout: a stalled verify runner can leave a healthy-looking, in-band
+    # verdict that is hours stale, and a reader who mistakes AGE for CONFIRMATION is
+    # trusting an observation that may no longer hold. That freshness signal was
+    # terminal-only. Surface it here so a web reader sees the same qualifier BEFORE
+    # the (possibly stale) verdict — the same terminal->HTML close-out per_kind
+    # (Cycle 10->12), between_kind_spread (Cycle 18->20) and the noise floor
+    # (Cycle 47->48) took. Renders only when the caller supplied a clock (liveness
+    # computed); a pure point-series summary makes no clock-dependent claim, so no
+    # banner. STALE is a prominent warning card ABOVE the latest reading (warn
+    # before the stale content); FRESH is a quiet one-line age note.
+    liveness_banner = ""
+    live = hist.liveness
+    if live is not None:
+        floor = live.stale_floor_hours
+        if not live.fresh:
+            stale_color = _HISTORY_BAND_COLOR["diverged"]
+            liveness_banner = (
+                f'<div class="card" style="border-color:{stale_color};'
+                f'background:#fffafa">'
+                f'<h2 style="color:{stale_color}">&#9888; Live signal STALE '
+                f'&mdash; newest re-score {live.age_hours:.1f}h old</h2>'
+                f'<p>The newest live re-score is past the {floor:.0f}h freshness '
+                f'floor &mdash; the same floor the playbook uses to declare the '
+                f'verify runner down. <b>The verdict below describes an OLD crawl, '
+                f'not the reference pair now</b>; the local verify runner may be '
+                f'down. Read the age, not just the band.</p></div>'
+            )
+        else:
+            in_color = _HISTORY_BAND_COLOR["in-band"]
+            liveness_banner = (
+                f'<p class="sub" style="margin:-6px 0 20px;color:{in_color}">'
+                f'Live signal: newest re-score {live.age_hours:.1f}h old '
+                f'&mdash; fresh (within the {floor:.0f}h floor); the verdict below '
+                f'is a current reading.</p>'
+            )
 
     latest_card = f"""<div class="card">
 <h2>Latest reading</h2>
@@ -844,6 +892,7 @@ is a <span class="chip">[LOCAL]</span>, comparability-affecting step).</p>
 </div>"""
 
     body = f"""{nav}{intro}
+{liveness_banner}
 {latest_card}
 {chart_card}
 {noise_card}

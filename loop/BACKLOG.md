@@ -472,6 +472,18 @@ design in-cloud, execute locally.
 
 ## P2
 
+- **Per-side noise floor: verify it stays SILENT under a real transient** (TRUTH, Cycle-47
+  follow-up — PARKED until a fresh OOB stretch lands). Cycle 47 added
+  `NoiseFloor.no_rails_stddev`/`with_rails_stddev` + `sides_deterministic`, proving on the committed
+  series that each reference storefront reproduces its pinned overall EXACTLY at rest (σ=0), so the
+  deterministic delta is genuine per-side determinism, not two lock-step drifts cancelling. By
+  construction an out-of-band reading is EXCLUDED from the in-band set, so a genuine site transient can
+  never inflate the at-rest per-side σ — but the existing 07-27 transient already recovered, so a test
+  asserting "per-side σ stays 0 even while an OOB reading is present in the series" is vacuous on the
+  current series. When the live series next carries an OOB stretch alongside in-band readings, add a
+  real-series case pinning that the per-side floor is measured only over the in-band subset (a transient
+  is signal excluded from the floor, not noise inflating it). No new code — a test + a fresh artifact.
+
 <!-- DONE 2026-07-23T08:15Z (Cycle 8, READOUT): "Quotability on the JSON/HTML card"
      SHIPPED. Additive `Report.quotability` field (asrs/types.py), populated in
      cli._evaluate from the same pure `asrs.reliability.quotability` for every mode;

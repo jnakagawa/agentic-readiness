@@ -4814,3 +4814,60 @@ the current six can't express (e.g. content-licensing / rights), OR broadening a
 existing archetype for a precision-safe recall gap (validate against all committed fixtures — a
 signal that fires on one breaks the canonical offering guard, which is the precision tripwire).
 Cloud rotation → TRUTH next.
+
+## Cycle 47 (TRUTH) — 2026-07-28T01:2xZ — the deterministic delta proven PER-SIDE, not a cancellation
+
+**Track.** TRUTH (calibration against reality — the noise assumption behind the drift arc).
+
+**What/why.** Cycle 45 measured the at-rest noise floor of the canonical DELTA over the in-band
+readings and found it deterministic (σ=0 — every in-band re-score reproduces +39.4 EXACTLY). But a
+deterministic *delta* is consistent with two OPPOSITE realities the delta-only measure cannot tell
+apart: (a) each reference storefront reproduces its pinned overall exactly at rest, OR (b) both
+sides jitter in lock-step so their difference cancels. A critic can fairly object to a "stable
+benchmark delta" on exactly ground (b). This cycle closes that gap by MEASURING the per-side at-rest
+dispersion. Extended read-only `asrs/canonical_history.py`: `NoiseFloor` gains `no_rails_stddev` /
+`with_rails_stddev` (population stddev of EACH side's overall over the SAME in-band readings) +
+property `sides_deterministic` (both ≤ `_NOISE_EPS`). Since `delta = with_rails − no_rails`, per-side
+determinism IMPLIES delta determinism but not vice-versa → `sides_deterministic` is the strictly
+STRONGER calibration fact. **THE FINDING on the committed 72-point series: all 68 in-band re-scores
+reproduce BOTH pinned overalls EXACTLY — drift-flight.org σ=0.00 (46.1 constant), driftflight.com
+σ=0.00 (85.5 constant)** → the stable delta is genuine per-side determinism, storefront by storefront,
+NOT a lucky cancellation of correlated drifts. `render` names it on the deterministic line ("both
+sides exact (σ …) — the stable delta is genuine per-side determinism, not two drifts cancelling").
+
+**Score-neutral / read-only diagnostic.** `git diff --name-only` = `asrs/canonical_history.py` +
+`tests/test_canonical_history.py` ONLY; scoring.py/rubric/probes/fetch/protocols/battery/offering/
+behavioral/scorecard byte-for-byte untouched (verified empty diff over every scoring surface) →
+rubric stays **v0.7**. Imports no scoring code; reference-pair hosts appear only as DATA via the
+module's existing `CANONICAL_*` constants (vendor-neutral). Not payment/signing. Direct-to-main.
+
+**Canonical pair.** Unchanged by construction AND re-measured — the in-cloud replay guard
+`test_canonical_replay.py` stays **14/14 (46.1 F / 85.5 B / +39.4, 0 replay-miss)**;
+`verify_20260727T224106Z` (22:41Z, 46.1 F / 85.5 B / +39.4 in-band) live-corroborates.
+
+**Tests.** `tests/test_canonical_history.py` 24 → 26 (+2):
+`test_noise_floor_sides_are_deterministic_on_real_series` — on the real committed series both side
+stddevs are exactly 0, `sides_deterministic` True, and it implies `deterministic` True (the stronger
+fact subsumes the weaker); render surfaces "both sides exact".
+`test_noise_floor_sides_catch_a_cancelling_drift_the_delta_misses` — NON-VACUOUS + the whole point:
+a synthetic series where both sides move in lock-step (46.1/85.5 → 47.1/86.5 → 45.1/84.5, delta
+constant 39.4) reads `deterministic` True (delta σ=0) but `sides_deterministic` False (each side
+σ>0) — the cancellation the delta-only measure is blind to, caught. Suite 193 → 195 (all 19 files
+exit 0 after `pip install -r requirements.txt` closes the known eth-account env gap → test_free_tier
+11/11).
+
+**Comms.** No Slack (TRUTH tests + read-only diagnostic, moves no score, not sensitive; daily digest
+already sent Cycle 38 16:13Z — this fire ~01:2xZ is not a new digest window, next is 07-28 16:00Z).
+
+**First duty.** No open peer-gated PR (`list_pull_requests state=open` → `[]`). Infra health check
+ran first — runner HEALTHY (`verify_20260727T224106Z`, 22:41Z, ~2.5h old, 46.1 F / 85.5 B / +39.4
+in-band), full suite runnable + green (19 files); git synced to origin/main `f91d3d6`.
+
+**Next hypothesis.** The drift arc's calibration layer is now two-sided: the delta is deterministic
+at rest AND each side is (Cycle 45 + this). A natural TRUTH follow-up when the live series next drifts
+out of band: verify the per-side dispersion measure stays SILENT under a real transient (an OOB
+reading is excluded from the in-band set by construction, so a genuine site move never inflates the
+at-rest per-side σ) — but that needs a fresh OOB stretch in the committed series to be non-vacuous, so
+it PARKS until one appears (the 07-27 transient already recovered). Otherwise the calibration frontier
+moves to a real calibration POPULATION (P1 TRUTH: a dated 15–20-domain static sweep + leaderboard) so
+the benchmark rests on more than one reference pair. Cloud rotation → READOUT next.

@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 46
+- Cycle counter: 47
 - Started: 2026-07-23 (UTC)
 - Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
@@ -779,6 +779,32 @@
   score, digest already sent Cycle 38 16:13Z, not a new window at ~00:2xZ). First duty: no open peer-gated
   PR (verified []); infra health check ran first — runner HEALTHY (verify_20260727T224106Z, 22:41Z, ~1.5h
   old, +39.4 in-band), suite green; git synced origin/main 0d524cb. Next cycle takes TRUTH.
+  Cycle 47 TRUTH (the deterministic canonical delta proven PER-SIDE, not a cancellation — the
+  second-order calibration guard on the Cycle-45 noise floor): extended read-only
+  `asrs/canonical_history.py`. Cycle 45 measured the DELTA's at-rest dispersion (σ=0 over 68 in-band
+  readings → deterministic). But a deterministic delta is consistent with BOTH sides being fixed at rest
+  AND with both sides jittering in lock-step so the difference cancels — a critic's fair objection to a
+  "stable benchmark delta" the delta-only measure cannot answer. `NoiseFloor` gains
+  `no_rails_stddev`/`with_rails_stddev` (population stddev of EACH side's overall over the SAME in-band
+  readings) + property `sides_deterministic` (both ≤ `_NOISE_EPS`); since `delta = with_rails − no_rails`,
+  per-side determinism IMPLIES delta determinism but not vice-versa → strictly STRONGER. THE FINDING on
+  the committed 72-point series: all 68 in-band re-scores reproduce BOTH pinned overalls EXACTLY
+  (drift-flight.org σ=0.00 @46.1, driftflight.com σ=0.00 @85.5) → the stable delta is genuine per-side
+  determinism, storefront by storefront, NOT correlated drifts cancelling. `render` names it ("both sides
+  exact (σ …) — the stable delta is genuine per-side determinism, not two drifts cancelling"). Read-only
+  diagnostic: `git diff --name-only` = canonical_history.py + test ONLY; scoring.py/rubric/probes/fetch/
+  protocols/battery/offering/behavioral/scorecard byte-for-byte untouched → rubric stays v0.7, canonical
+  PAIR unchanged by construction AND re-measured (replay guard 14/14, 46.1 F / 85.5 B / +39.4, 0
+  replay-miss; verify_20260727T224106Z 22:41Z in-band). Vendor-neutral (imports no scoring code;
+  reference-pair hosts as DATA via existing constants). Direct-to-main. `test_canonical_history.py` 24→26
+  (+2: real-series per-side determinism, implies delta-deterministic + render names it; NON-VACUOUS
+  cancellation control — a lock-step synthetic series reads deterministic-delta True yet
+  sides_deterministic False, the cancellation the delta is blind to, caught); suite 193→195 (test_free_tier
+  11/11 after `pip install -r requirements.txt` closes the known eth-account env gap). No Slack (TRUTH
+  tests + read-only diagnostic, moves no score, digest already sent Cycle 38 16:13Z, not a new window at
+  ~01:2xZ). First duty: no open peer-gated PR (verified []); infra health check ran first — runner HEALTHY
+  (verify_20260727T224106Z, 22:41Z, ~2.5h old, +39.4 in-band); git synced origin/main f91d3d6. Next cycle
+  takes READOUT.
 - **LIVE CANONICAL DRIFT (open, for the next post-16:00 UTC digest) — surfaced by the Cycle-36 history readout.**
   The live canonical delta held **+39.4** (46.1 F / 85.5 B) for days through `verify_20260727T054339Z`, then MOVED:
   07:40Z fire driftflight.com collapsed to 50.0 F (delta +3.9 — transient error crawl, transactability CANT_TEST /

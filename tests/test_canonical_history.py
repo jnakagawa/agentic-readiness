@@ -529,6 +529,48 @@ def test_noise_floor_is_deterministic_on_real_series() -> None:
     _check("DETERMINISTIC" in out, "the render names the deterministic-at-rest finding")
 
 
+def test_noise_floor_sides_are_deterministic_on_real_series() -> None:
+    print("test_noise_floor_sides_are_deterministic_on_real_series")
+    # The stronger calibration fact behind the deterministic delta: on the committed
+    # series NOT ONLY the delta but EACH SIDE reproduces its pinned overall exactly
+    # across the in-band readings (σ=0 per side). This refutes the "two correlated
+    # drifts that cancel in the difference" reading a critic could give a stable delta
+    # — the stability is genuine per-side determinism, storefront by storefront.
+    hist = ch.load_history()
+    nf = hist.noise_floor
+    _check(nf is not None, "the real series has a measured noise floor")
+    _check(nf.no_rails_stddev == 0.0, f"no-rails side dispersion is exactly 0, got {nf.no_rails_stddev}")
+    _check(nf.with_rails_stddev == 0.0, f"with-rails side dispersion is exactly 0, got {nf.with_rails_stddev}")
+    _check(nf.sides_deterministic is True, "both reference storefronts are deterministic at rest")
+    # per-side determinism is strictly stronger — it must imply the delta is deterministic
+    _check(nf.deterministic is True, "sides-deterministic implies delta-deterministic")
+    out = ch.render(hist)
+    _check("both sides exact" in out, "the render names the per-side determinism finding")
+
+
+def test_noise_floor_sides_catch_a_cancelling_drift_the_delta_misses() -> None:
+    print("test_noise_floor_sides_catch_a_cancelling_drift_the_delta_misses")
+    # NON-VACUOUS + the whole point of the per-side measure: a series whose DELTA is
+    # deterministic (σ=0, both sides move in lock-step so the difference is constant)
+    # but whose SIDES genuinely vary. The delta-only measure reads "deterministic";
+    # the per-side measure correctly reads "not sides-deterministic" — the cancellation
+    # the delta is blind to.
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [
+            _artifact("20260727T010000Z", 46.1, 85.5, 39.4),   # delta 39.4
+            _artifact("20260727T020000Z", 47.1, 86.5, 39.4),   # both +1.0, delta unchanged
+            _artifact("20260727T030000Z", 45.1, 84.5, 39.4),   # both -1.0, delta unchanged
+        ]
+        _write_series(tmp, rows)
+        nf = ch.load_history(tmp).noise_floor
+        _check(nf is not None, "three in-band readings -> a noise floor")
+        _check(nf.stddev == 0.0, f"the DELTA is deterministic (constant 39.4), got σ={nf.stddev}")
+        _check(nf.deterministic is True, "delta-only measure reads deterministic")
+        _check(nf.no_rails_stddev > 0.0, f"the no-rails SIDE varies, got {nf.no_rails_stddev}")
+        _check(nf.with_rails_stddev > 0.0, f"the with-rails SIDE varies, got {nf.with_rails_stddev}")
+        _check(nf.sides_deterministic is False, "the cancelling per-side drift is caught")
+
+
 def test_band_clears_the_observed_noise_and_the_real_transients_are_signal() -> None:
     print("test_band_clears_the_observed_noise_and_the_real_transients_are_signal")
     # Calibration validation, both directions:
@@ -642,6 +684,8 @@ def main() -> int:
         test_recapture_advice_reviews_when_no_anchor,
         test_recapture_advice_on_real_series_is_coherent,
         test_noise_floor_is_deterministic_on_real_series,
+        test_noise_floor_sides_are_deterministic_on_real_series,
+        test_noise_floor_sides_catch_a_cancelling_drift_the_delta_misses,
         test_band_clears_the_observed_noise_and_the_real_transients_are_signal,
         test_noise_floor_measures_synthetic_jitter,
         test_noise_floor_flags_a_too_tight_band,

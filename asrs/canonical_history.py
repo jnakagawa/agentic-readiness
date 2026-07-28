@@ -228,6 +228,19 @@ class NoiseFloor:
     ``n_in_band`` : how many in-band readings the floor is measured over (>= 2).
     ``stddev``    : population stddev of their delta values (the at-rest dispersion).
     ``max_abs_divergence`` : the worst |delta - baseline| observed at rest.
+    ``no_rails_stddev`` / ``with_rails_stddev`` : population stddev of EACH SIDE's
+        overall score over the same in-band readings — the at-rest dispersion of the
+        two storefronts individually, not just their difference.
+
+    Why measure the sides, not only the delta: a deterministic delta (``stddev``≈0)
+    is consistent with BOTH sides being fixed at rest AND with both sides jittering
+    in lock-step so their difference cancels — the delta-only measure cannot tell
+    those apart. Since ``delta = with_rails - no_rails``, per-side determinism
+    (both side stddevs ≈ 0) IMPLIES delta determinism but not vice versa, so the
+    per-side measure is the strictly stronger calibration fact: it refutes the
+    "two correlated drifts that cancel" hypothesis a critic could raise about a
+    stable delta, proving each reference storefront reproduces its pinned overall
+    exactly at rest rather than the pair merely reproducing its gap.
 
     Read-only, no score. The bands are clipped, so this dispersion is a truncated
     (lower-biased) estimate of true jitter — fine as a calibration floor: if even
@@ -237,6 +250,8 @@ class NoiseFloor:
     n_in_band: int
     stddev: float
     max_abs_divergence: float
+    no_rails_stddev: float
+    with_rails_stddev: float
 
     @property
     def deterministic(self) -> bool:
@@ -244,6 +259,18 @@ class NoiseFloor:
         in-band reading reproduced the pinned delta exactly. When true, the band is
         absorbing real-world site TRANSIENTS, not measurement noise."""
         return self.stddev <= _NOISE_EPS and self.max_abs_divergence <= _NOISE_EPS
+
+    @property
+    def sides_deterministic(self) -> bool:
+        """True iff BOTH sides show no measurable at-rest dispersion — each
+        reference storefront reproduced its pinned overall exactly across the
+        in-band readings. Strictly stronger than ``deterministic``: it implies the
+        delta is deterministic AND that the delta's stability is genuine per-side
+        determinism, not two lock-step drifts cancelling in the difference."""
+        return (
+            self.no_rails_stddev <= _NOISE_EPS
+            and self.with_rails_stddev <= _NOISE_EPS
+        )
 
     @property
     def band_well_separated(self) -> bool:
@@ -433,13 +460,16 @@ def noise_floor(
     can't support (the same honest-None discipline attribution applies). Pure, no
     score, no side effects.
     """
-    in_band = [p.delta for p in points if abs(p.delta - baseline_delta) <= _BAND_IN]
+    in_band = [p for p in points if abs(p.delta - baseline_delta) <= _BAND_IN]
     if len(in_band) < 2:
         return None
+    deltas = [p.delta for p in in_band]
     return NoiseFloor(
         n_in_band=len(in_band),
-        stddev=round(pstdev(in_band), 6),
-        max_abs_divergence=round(max(abs(d - baseline_delta) for d in in_band), 6),
+        stddev=round(pstdev(deltas), 6),
+        max_abs_divergence=round(max(abs(d - baseline_delta) for d in deltas), 6),
+        no_rails_stddev=round(pstdev([p.no_rails_overall for p in in_band]), 6),
+        with_rails_stddev=round(pstdev([p.with_rails_overall for p in in_band]), 6),
     )
 
 
@@ -686,10 +716,18 @@ def render(history: CanonicalHistory, window: int = 24) -> str:
     nf = history.noise_floor
     if nf is not None:
         if nf.deterministic:
+            sides = (
+                f"  both sides exact (σ {CANONICAL_NO_RAILS}={nf.no_rails_stddev:.2f}, "
+                f"{CANONICAL_WITH_RAILS}={nf.with_rails_stddev:.2f}) — the stable delta "
+                f"is genuine per-side determinism, not two drifts cancelling"
+                if nf.sides_deterministic
+                else ""
+            )
             lines.append(
                 f"noise floor: {nf.n_in_band} in-band re-scores  σ={nf.stddev:.2f}  "
                 f"worst |div|={nf.max_abs_divergence:.2f}  → DETERMINISTIC at rest — "
                 f"the ±{_BAND_IN:.1f} band absorbs site transients, not measurement noise"
+                f"{sides}"
             )
         else:
             sep = "well-separated" if nf.band_well_separated else "TOO TIGHT for observed noise"

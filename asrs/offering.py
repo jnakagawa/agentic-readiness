@@ -156,6 +156,23 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
         ("billed-per", re.compile(r"\bbilled per [a-z]+\b", _F)),
         ("per-unit-rate", re.compile(r"\bper[- ](generation|call|request|token|render|unit)\b", _F)),
         ("usage-based", re.compile(r"\b(usage[- ]based|metered|overage)\b", _F)),
+        # Documented RATE LIMITS / request quotas — a metered programmatic API
+        # publishes how fast/how often an agent may call it (rate limits, requests
+        # per minute, an API/request quota) so the agent can plan its usage. This
+        # is the "understand the offer" capability for a metered API: it is a
+        # defining feature of an agent-callable HTTP API, distinct from the BILLING
+        # signals above (a site can document rate limits without naming a price).
+        # PRECISION: bare "quota" is a false-positive minefield (disk/storage/free
+        # quota, "no quota use"), so anchor the quota sense to an API prefix
+        # (api/request/usage/monthly/daily/rate quota) or a metering suffix (quota
+        # per/of/resets/remaining/exceeded); and "rate" must be adjacent to "limit"
+        # so "flat rate pricing" / "unlimited" / "at a steady rate" never fire.
+        ("rate-limited", re.compile(
+            r"\brate[- ]?limit(?:s|ed|ing)?\b"
+            r"|\brequests?\s+per\s+(?:second|minute|hour|day|month)\b"
+            r"|\b\d+\s*(?:requests?|reqs?|calls?)\s*/\s*(?:s|sec|second|min|minute|hr|hour|day|month)\b"
+            r"|\b(?:api|request|usage|monthly|daily|rate)\s+quota\b"
+            r"|\bquota\s+(?:per|of|resets?|remaining|exceeded)\b", _F)),
         # Credit-based metering — the dominant billing convention for generative
         # and agent-native APIs (prepay a credit balance, spend N credits per
         # call/image/generation). PRECISION-CRITICAL: bare "\bcredits?\b" is a

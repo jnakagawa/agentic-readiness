@@ -5633,3 +5633,85 @@ making the entire ordering guard 12 weight-robust, or honestly surface any
 weight-DEPENDENTLY-ordered rung; OR the test-hygiene `_score_relabeled` structured
 host substitution (P2) that would let relabel guards use arbitrary neutral hosts
 without the length/hyphen caveat.
+
+## Cycle 58 — 2026-07-28T12:2xZ — COVERAGE (direct to main)
+
+**What.** Offering discovery recognises a metered-API's DOCUMENTED RATE LIMITS /
+REQUEST QUOTA — a defining "understand the offer" feature the signal bank missed.
+`asrs/offering._SIGNALS["metered_api"]` gains a `rate-limited` signal (placed with
+the usage-metering group, after `usage-based`). A metered programmatic API
+publishes how fast / how often an agent may call it — a `rate limit(s)` /
+`rate-limited` section, `requests per minute`, `100 req/s`, `500 calls/day`, an
+`API/request/monthly quota`, `quota resets` — so the agent can plan its usage.
+This is distinct from the BILLING signals already in the bank (pay-per / usage-
+based / credit-metered): a site can document rate limits without naming a price,
+and both drift-flight domains do exactly that (a `<h2 id="rate-limits">Rate
+limits</h2>` block on their `/docs` surface, captured verbatim in the committed
+fixtures).
+
+PRECISION-FIRST / vendor-neutral (the Cycle-50 credit-metered discipline): bare
+`quota` is a false-positive minefield (disk/storage/free quota, the sandbox
+"no quota use" comment), so the quota sense is anchored to an API prefix
+(`api/request/usage/monthly/daily/rate quota`) or a metering suffix
+(`quota per/of/resets/remaining/exceeded`); and `rate` must be adjacent to `limit`
+so `flat rate pricing`, `unlimited`, `at a steady rate`, and `exchange rate` never
+fire. Worded by capability, keys on generic API prose, no vendor/domain string.
+
+**Why.** COVERAGE / the north-star many-billing-and-metering-conventions axis (the
+sibling of the free-tier discovery conventions, Cycles 22/30/38, and the offering
+billing signals, Cycle 50). Before this, an API that advertised only its call
+limits ("20 requests/minute on the free tier; overage billed") recorded no
+metered_api evidence for that convention, even though a rate limit is one of the
+clearest agent-facing signals that a site IS a callable metered API.
+
+**Evidence / score-neutrality.** `discover_offering`/`classify_offering` are OFF
+the scoring path (grep of `asrs/scoring.py asrs/probes/ asrs/protocols.py` for
+`discover_offering|classify_offering|offering` → EMPTY; reachable only from
+`cli._resolve_battery` for `--battery auto`); the commerce-manifest SCORING probe
+keeps its own separate `protocols._AGENT_SURFACE_DOCS`, untouched. `git diff
+--name-only` = `asrs/offering.py` + `tests/test_offering.py` ONLY; `git diff --
+asrs/scoring.py rubric/ asrs/probes/ asrs/fetch.py asrs/protocols.py
+asrs/battery.py` EMPTY → rubric stays **v0.7**. The rate-limit evidence lives on
+the canonical `/docs` surface, which discovery does NOT crawl (it reads homepage +
+`_SURFACE_DOCS` on apex + doc subdomains), so the canonical DISCOVERY
+classification is byte-identical: **canonical OFFERING guard 12/12 UNCHANGED, no
+EXPECTED update needed** — AND metered_api is already the strongest claim on the
+pair, so even a crawled hit could only deepen its evidence, never add an archetype
+or reorder. Canonical PAIR unchanged by construction AND re-measured — in-cloud
+replay guard **19/19, drift-flight.org 46.1 F / driftflight.com 85.5 B / +39.4, 0
+replay-miss**. Not payment/signing code (read-only, no POST/sign added). Live
+static re-score BLOCKED in-cloud (no outbound network); the offline replay guard
+is the in-cloud regression signal.
+
+`tests/test_offering.py` 16→18: `test_rate_limit_metering_precision_synthetic`
+(7 real rate-limit/quota phrasings each fire; 6 rate/quota-shaped noise strings —
+flat rate, unlimited, steady rate, disk quota, bare free quota, exchange rate — do
+NOT) + `test_rate_limit_fires_on_real_captured_api_docs` (NON-VACUOUS: reads the
+committed driftflight.com `/docs` bytes and asserts rate-limited fires on
+metered_api on GENUINE captured API-docs prose, the same real-data move Cycle 50's
+credit-metered test makes on `/llms-full.txt`). Full suite **217→219** (all 19
+files exit 0; `test_free_tier` 11/11 after `pip install -r requirements.txt`
+supplies `eth-account`).
+
+**Ship.** Direct-to-main (score-neutral discovery signal off the scoring path;
+precedent Cycles 34/42/46/50/54).
+
+**First duty.** No open peer-gated PR (verified `list_pull_requests` state=open →
+`[]`). Infra health: bench UP (19/19 files, 219/219 after this change), git
+bookkeeping — applied the orphan-main lesson at fire START: local `main` was the
+stale orphan `2e66201` immediately after `git fetch`, realigned
+`git checkout -B main origin/main` (073b53c = Cycle 57 tip) BEFORE editing.
+Runner STILL STALLED past the 6h floor — newest `verify_20260727T224106Z` ~13.6h
+old at this 12:18Z fire, unchanged since Cycle 51; P0-tracked, NOT cloud-repairable;
+flag in the next 16:00Z digest.
+
+**No Slack.** Score-neutral additive discovery, moves no score, not sensitive; fire
+12:2xZ before the 16:00 UTC digest window (runner stall + this ship fold into that
+digest).
+
+**Next hypothesis.** COVERAGE frontier: further metered/billing conventions
+(tiered/committed-use pricing, seat-based subscription "per seat / per user per
+month"), or a new offering SURFACE. Also still open: whether discovery should read
+the `/docs` API-docs surface (this cycle's rate-limit evidence lives there and is
+uncrawled) — a candidate COVERAGE surface add. TRUTH-side: the P2 population-wide
+weight-robustness (extend guard 15 down the whole spectrum).

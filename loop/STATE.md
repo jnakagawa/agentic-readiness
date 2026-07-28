@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 57
+- Cycle counter: 58
 - Started: 2026-07-23 (UTC)
 - Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
@@ -1053,14 +1053,43 @@
   so NO orphan-parent commit this cycle), runner STILL STALLED PAST 6h (newest verify_20260727T224106Z
   ~12.6h old, unchanged — P0-tracked, not cloud-repairable, flag in the next digest). The invariance-guard
   family is now UNIFORM (every guard carries a committed negative control). Next cycle takes COVERAGE.
-- **RUNNER STALL — STILL STALLED PAST THE 6h FLOOR (updated Cycle 57, 2026-07-28T11:1xZ; crossed Cycle 51
+  Cycle 58 COVERAGE (offering discovery recognises a metered-API's DOCUMENTED RATE LIMITS / REQUEST QUOTA —
+  the many-metering-conventions axis, sibling of the free-tier conventions Cycles 22/30/38 and the billing
+  signals Cycle 50): `asrs/offering._SIGNALS["metered_api"]` gains a `rate-limited` signal (with the
+  usage-metering group, after `usage-based`). A metered programmatic API publishes how fast/how often an agent
+  may call it — `rate limit(s)`/`rate-limited`, `requests per minute`, `100 req/s`, `500 calls/day`, an
+  `API/request/monthly quota`, `quota resets` — the "understand the offer" capability, DISTINCT from the
+  billing signals (a site documents rate limits without naming a price; both drift-flight domains do exactly
+  that in a `<h2 id="rate-limits">Rate limits</h2>` block on `/docs`). PRECISION-FIRST/vendor-neutral (Cycle-50
+  discipline): bare `quota` anchored to an API prefix (api/request/usage/monthly/daily/rate quota) or metering
+  suffix (quota per/of/resets/remaining/exceeded); `rate` must be adjacent to `limit` so `flat rate pricing`/
+  `unlimited`/`steady rate`/`exchange rate` never fire. SCORE-NEUTRAL: discover_offering/classify_offering OFF
+  the scoring path (grep of scoring.py/probes/protocols.py EMPTY; called only from cli._resolve_battery for
+  `--battery auto`); `git diff --name-only` = offering.py + test_offering.py ONLY, `git diff -- asrs/scoring.py
+  rubric/ asrs/probes/ asrs/fetch.py asrs/protocols.py asrs/battery.py` EMPTY → rubric stays v0.7. The rate-limit
+  evidence lives on the canonical `/docs` surface, which discovery does NOT crawl (homepage + _SURFACE_DOCS on
+  apex + doc subdomains) → canonical DISCOVERY classification byte-identical: canonical OFFERING guard 12/12
+  UNCHANGED, NO EXPECTED update; metered_api is also already the strongest claim on the pair so even a crawled
+  hit could only deepen evidence, never add an archetype or reorder. Canonical PAIR unchanged by construction AND
+  re-measured (replay guard 19/19, 46.1 F / 85.5 B / +39.4, 0 replay-miss). Not payment/signing code. Direct-to-
+  main. `test_offering.py` 16→18 (+synthetic precision battery: 7 real rate-limit/quota phrasings fire, 6
+  rate/quota-shaped noise strings don't; +NON-VACUOUS real-captured test reading committed driftflight.com `/docs`
+  bytes — rate-limited fires on metered_api on genuine API-docs prose, the Cycle-50 real-data move). Full suite
+  217→219 (all 19 files exit 0). No Slack (score-neutral additive discovery, moves no score, not sensitive, fire
+  12:2xZ before the 16:00 UTC digest window — runner stall + this ship fold into that digest). First duty: no open
+  peer-gated PR (verified []); infra health check ran first — bench UP (219/219), git bookkeeping — applied the
+  orphan-main lesson at fire START (local `main` was stale orphan `2e66201`, realigned `git checkout -B main
+  origin/main` = Cycle-57 tip 073b53c BEFORE editing), runner STILL STALLED past 6h (newest
+  verify_20260727T224106Z ~13.6h old at 12:18Z, unchanged since Cycle 51 — P0-tracked, not cloud-repairable,
+  flag in next digest). Next cycle takes TRUTH.
+- **RUNNER STALL — STILL STALLED PAST THE 6h FLOOR (updated Cycle 58, 2026-07-28T12:18Z; crossed Cycle 51
   05:13Z).** Newest verify artifact is still `verify_20260727T224106Z.json` (22:41Z) — NO newer artifact
-  appeared between Cycle 51 (05:13Z) and this fire (11:1xZ), so at ~12.6h old the stall has NOT self-cleared
+  appeared between Cycle 51 (05:13Z) and this fire (12:18Z), so at ~13.6h old the stall has NOT self-cleared
   (contrast the Cycle-28 stall, which cleared by Cycle 30). The Cycle 48/49/50 watch (six consecutive :41 gaps,
-  23:41→04:41Z) tipped over at Cycle 51 and persists across Cycles 52–57. Mirrors the Cycle-28 stall mechanism —
+  23:41→04:41Z) tipped over at Cycle 51 and persists across Cycles 52–58. Mirrors the Cycle-28 stall mechanism —
   likely the same launchd-on-Jonah's-machine intermittent stall (machine asleep / launchd not firing), NOT
   repairable from the cloud (can't reach the local machine). Loop is DEGRADED, not down: the in-cloud replay guard
-  (now 17/17, +39.4) is
+  (now 19/19, +39.4) is
   the standing regression signal and ran green this fire, so cycles are NOT blocked. Queued P0 [LOCAL] with the
   diagnosis; **flag in the next post-16:00 UTC Slack digest** per the self-healing law (note in STATE + flag in
   next digest, not an immediate DM — comms policy). If a newer artifact appears next fire, the stall

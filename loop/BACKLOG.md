@@ -526,6 +526,24 @@ design in-cloud, execute locally.
 
 ## P2
 
+- **[CANDIDATE, COVERAGE] Offering discovery should read the `/docs` API-docs surface** (surfaced
+  Cycle 58). The canonical `rate-limited` evidence (the `<h2 id="rate-limits">Rate limits</h2>` block)
+  lives on `driftflight.com/docs`, which `discover_offering` does NOT crawl — it reads homepage +
+  `_SURFACE_DOCS` (llms.txt / manifest / ai-plugin / agent-card / openapi) on the apex + doc subdomains.
+  A conventional `/docs` (and `/api-docs`, `/reference`) human/agent API-docs page is a common surface an
+  API-first storefront exposes its rate limits / examples on. Adding it to `_SURFACE_DOCS` is score-neutral
+  (off the scoring path, precedent Cycles 34/42/46/54) BUT would newly crawl rich prose on the canonical
+  pair — verify it does NOT reorder the claimed set (metered_api already top → very likely 12/12 stays, but
+  CHECK) before shipping; if it adds an archetype anywhere, the canonical OFFERING guard EXPECTED must be
+  re-derived in the same commit. Cloud-doable from the committed fixtures (both carry a `/docs` entry).
+- **[CANDIDATE, COVERAGE] Further metered/subscription billing conventions** (offering signal bank,
+  precedent Cycles 50/58). Not yet captured: seat-based subscription (`per seat` / `per user per month` /
+  `N seats`), committed-use / tiered-volume pricing (`committed use` / `volume discount` / `tier N: $X`).
+  Same discipline as rate-limited: precision-first (anchor `seat` to a pricing verb/period so a "window
+  seat" never fires), vendor-neutral, synthetic precision battery + a real-captured non-vacuity test,
+  verify canonical set/order unchanged (subscription is already claimed on the pair → strength-only, but
+  CHECK it does not overtake metered_api).
+
 - **Population-wide WEIGHT-ROBUSTNESS** (TRUTH, follow-up to Cycle-55 guard 15). Cycle 55 pinned
   that the +39.4 PAIR delta is weight-robust: the with-rails side dominates the no-rails side
   PILLAR-BY-PILLAR over an identical uncapped applicable-pillar set, so no non-negative reweighting

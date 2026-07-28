@@ -347,6 +347,78 @@ def test_credit_metered_fires_on_real_captured_billing_prose():
     print("  ok: the homepage C2PA 'credits' metadata does NOT fire credit-metered (real-data precision)")
 
 
+def test_rate_limit_metering_precision_synthetic():
+    # A documented rate limit / request quota is a defining feature of a metered
+    # programmatic API — it tells an agent how fast/how often it may call, the
+    # "understand the offer" capability. Each POSITIVE is real API rate-limit /
+    # quota language that must claim metered_api via the new rate-limited signal;
+    # each NEGATIVE is rate/quota-SHAPED noise that must NOT fire it (the precision
+    # traps: "flat rate", "unlimited", a disk/storage/free quota, a steady rate).
+    positives = {
+        "rate limits heading": "Rate limits: Hobby tier allows 2 concurrent renders.",
+        "rate-limited": "The endpoint is rate-limited to protect shared capacity.",
+        "requests per minute": "Free tier: 20 requests per minute; Pro lifts the cap.",
+        "req/s notation": "Sustained throughput up to 100 req/s on the growth plan.",
+        "calls slash day": "Sandbox keys are capped at 500 calls/day.",
+        "api quota": "Each key carries a monthly API quota; overage is billed.",
+        "quota resets": "Your quota resets at 00:00 UTC every day.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("metered.test", {"homepage": text})
+        assert prof.claims("metered_api"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "metered_api"
+            for s in c.signals
+        }
+        assert "rate-limited" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real rate-limit/quota phrasings each fire rate-limited")
+
+    negatives = {
+        "flat rate pricing": "Simple flat rate pricing — one price, no surprises.",
+        "unlimited requests": "Unlimited image downloads on every paid plan.",
+        "steady rate": "Frames render at a steady rate throughout the job.",
+        "disk quota": "Each workspace ships with a 10 GB disk quota for assets.",
+        "free quota bare": "Try it within your free quota; no card required.",
+        "exchange rate": "Prices shown convert at the daily exchange rate.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "rate-limited" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} rate/quota-shaped noise strings do NOT fire rate-limited (precision)"
+    )
+
+
+def test_rate_limit_fires_on_real_captured_api_docs():
+    # Real-evidence, NON-VACUOUS validation: the rate-limited signal fires on the
+    # GENUINE "Rate limits" API-docs section captured live from a real storefront —
+    # driftflight.com publishes a `<h2 id="rate-limits">Rate limits</h2>` block
+    # (per-tier concurrent-render limits, "no quota use") on its /docs surface,
+    # captured verbatim in the committed canonical fixture. Exercise the classifier
+    # directly on those captured bytes (the surface the signal reads), the same
+    # real-data non-vacuity move test_credit_metered_fires_on_real_captured_billing_prose
+    # makes on /llms-full.txt.
+    #
+    # SCORE-NEUTRAL by construction: this evidence lives on /docs, which
+    # discover_offering does NOT crawl (it reads the homepage + _SURFACE_DOCS on the
+    # apex and doc subdomains), so the canonical discovery classification is
+    # byte-identical (pinned green by tests/test_offering_canonical.py, 12/12);
+    # metered_api is also already the strongest claim on the pair, so even a
+    # crawled hit could only deepen its evidence, never add an archetype or reorder.
+    docs = _fixture_entry_text("driftflight.com", "/docs")
+    assert "rate limit" in docs.lower(), "fixture /docs lost its Rate limits section"
+    prof = classify_offering("driftflight.com", {"/docs": docs})
+    assert prof.claims("metered_api"), prof.archetypes
+    metered = next(c for c in prof.claimed if c.archetype == "metered_api")
+    rl = [s for s in metered.signals if s.label == "rate-limited"]
+    assert rl, {s.label for s in metered.signals}
+    assert "rate" in rl[0].quote.lower() or "quota" in rl[0].quote.lower(), rl[0].quote
+    print(f"  ok: rate-limited fires on REAL captured API-docs prose — quote: {rl[0].quote!r}")
+
+
 def test_booking_and_data_archetypes_fire():
     booking = classify_offering("harbor.test", {"homepage": BOOKING_HOMEPAGE})
     assert booking.claims("service_booking"), booking.archetypes
@@ -588,6 +660,8 @@ def main() -> int:
         test_sku_inventory_is_retail_sense_not_compute,
         test_credit_metered_precision_synthetic,
         test_credit_metered_fires_on_real_captured_billing_prose,
+        test_rate_limit_metering_precision_synthetic,
+        test_rate_limit_fires_on_real_captured_api_docs,
         test_booking_and_data_archetypes_fire,
         test_non_storefront_claims_nothing,
         test_strength_counts_distinct_signals_and_orders_claims,

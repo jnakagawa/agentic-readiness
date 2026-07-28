@@ -424,6 +424,16 @@ def test_methodology_documents_weight_robustness() -> None:
     # earned-dominance paragraph's "executable regression test" language).
     _check("executable regression test" in text,
            "weight-robustness is stated as test-pinned")
+    # Cycle 60 (READOUT): the READOUT complement to Cycle 59's POPULATION-wide
+    # weight-robustness guard (guard 17, test_canonical_replay) — the same move
+    # Cycle 56 made for the PAIR (guard 15). The sub-section must now also state,
+    # in prose a critic can read, that the WHOLE ranking (not just the head delta)
+    # is weight-robust because the population is a total pillar-wise dominance
+    # chain, and that this too is test-pinned over the reference spectrum.
+    for phrase in ("whole ranking", "total dominance chain", "any</b> rung",
+                   "reference spectrum"):
+        _check(phrase in text,
+               f"methodology documents population weight-robustness: {phrase!r}")
     # Vendor-neutral: the reference pair is described by capability, never named.
     for banned in ("drift-flight", "driftflight"):
         _check(banned not in text, f"methodology names no vendor/domain ({banned!r})")

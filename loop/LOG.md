@@ -5814,3 +5814,72 @@ sub-section (Cycle 56 stated the PAIR result there; the P2 item asks the populat
 extension land in the SAME sub-section so guard and readout stay in lockstep). Also
 still open TRUTH-side: population-wide observability/like-for-like at the CHECK
 layer (guard 8 lifted to the whole chain, not just the pair).
+
+## Cycle 60 — 2026-07-28T14:2xZ — READOUT (direct to main)
+
+**What.** The READOUT complement to Cycle-59's POPULATION-wide weight-robustness
+guard (guard 17). The methodology page's §3 sub-section "But couldn't you re-weight
+the pillars to get the answer you want?" previously stated only the PAIR result
+(Cycle 56, guard 15): a single delta's sign is invariant to the pillar weighting
+because the higher side is pillar-wise dominant. Extended that SAME sub-section with
+one paragraph (`asrs/scorecard.py` `_write_methodology_page` prose) stating the
+population finding in critic-readable terms: when the WHOLE population forms a
+**total dominance chain** (each rung ≥ the next on every applicable pillar, strictly
+higher on ≥1, over the same uncapped pillar set), no non-negative reweighting inverts
+ANY rung — so the entire ranking, not just the head delta, is weight-robust
+(non-increasing under the rubric / uniform / every unit-basis weighting, strictly
+decreasing where the weighting touches a genuinely-dominated pillar). Stated
+test-pinned "over the reference spectrum" so guard 17 and the readout stay in
+lockstep (the same move Cycle 24→23, Cycle 56→55 made).
+
+**Why.** Guard 17 lifted the weight-robustness credibility argument from the pair to
+the whole leaderboard shape, but the public-facing methodology prose still only
+defended the head delta. A critic reading the page could accept "you can't re-weight
+to flip the top comparison" yet still suspect the middle/tail ranks are weight-tuned.
+The paragraph closes that gap in the reader's language — the credibility of the
+leaderboard's SHAPE, not just its top pair, is enforced every cycle.
+
+**Scope.** `asrs/scorecard.py` (methodology prose only) + `tests/test_readout.py`
+(extended `test_methodology_documents_weight_robustness` with 4 population-prose
+assertions + a Cycle-60 comment). `git diff --name-only` = those two files ONLY.
+`git diff --name-only -- asrs/scoring.py rubric/ asrs/probes/ asrs/fetch.py
+asrs/protocols.py asrs/offering.py asrs/battery.py` EMPTY → scoring path
+byte-for-byte UNTOUCHED. Display-only: the methodology `desc` prose is rendered but
+never read by `scoring.score` → rubric stays v0.7. Vendor-neutral: the four
+capability tiers are described by capability (full agent-native rails / legible API
+no agent-native payment / human-checkout retail / sells nothing), NO domain named —
+enforced by the existing `("drift-flight","driftflight") not in text` assertions in
+the same test + the neutral-render scan in `test_readout_wording.py` (4/4).
+
+**Evidence.** Full suite 19/19 test files green (0 real failures by exit code);
+suite 220 → 221 (test_readout.py assertions added to an existing test, file count
+unchanged, 38/38). Wording guards clean (test_readout_wording 4/4, test_rubric_wording
+4/4).
+
+**Canonical pair (regression signal).** In-cloud replay guard re-measured 20/20:
+drift-flight.org 46.1 F / driftflight.com 85.5 B / delta +39.4, 0 replay-miss on
+both — unchanged by construction (display-only, no scoring path touched). (Live
+re-score BLOCKED in-cloud — no outbound network; the offline replay guard is the
+in-cloud regression signal per STATE. Newest local verify artifact
+`verify_20260727T224106Z` is ~15.5h old at this 14:14Z fire → the launchd runner is
+STILL STALLED past the 6h floor, tracked P0, not cloud-repairable; flag in the next
+16:00Z digest.)
+
+**First duty.** No open peer-gated PR (verified `list_pull_requests` state=open →
+`[]`). Infra health: bench UP (19/19 files, 221/221 after this change); git
+bookkeeping — applied the orphan-main lesson at fire START: local `main` was the
+stale orphan `2e66201` immediately after `git fetch`, realigned
+`git checkout -B main origin/main` (eeabdbe = Cycle 59 tip) BEFORE editing. Runner
+STILL STALLED past the 6h floor (P0-tracked, not cloud-repairable, ~15.5h old).
+
+**No Slack.** Display-only READOUT ship, moves no score, not sensitive; fire 14:2xZ
+before the 16:00 UTC digest window (runner stall + LIVE-drift status fold into that
+digest per the standing P0/drift watches).
+
+**Next hypothesis.** TRUTH-side, the natural next: population-wide observability /
+like-for-like at the CHECK layer — guard 8 (earned-dominance for the pair) lifted to
+the whole spectrum (is every rung fully observed with no CANT_TEST masking a FAIL,
+and is each adjacent rung a check-status superset, watching the tail where a retail
+shop and a bare page may legitimately differ in observed check SETS). READOUT-side,
+the offering `/docs` API-docs surface candidate (P2) is cloud-doable from the
+committed fixtures.

@@ -441,6 +441,20 @@ the uniform weighting and even the extremes that pile all the weight onto a
 single pillar. The weights set how <i>large</i> the gap is; they cannot flip
 <i>which</i> side is ahead. This too is pinned by an executable regression test
 on the reference pair, including an adversarial family of weightings.</p>
+<p>The same reasoning scales past a single pair to the <b>whole ranking</b>.
+When a population of storefronts &mdash; from full agent-native rails, down
+through a legible API with no agent-native payment, a human-checkout retail
+shop, to a page that sells nothing &mdash; forms a <b>total dominance chain</b>
+(each rung at least as high as the next on <b>every</b> applicable pillar,
+strictly higher on at least one, over the same uncapped pillar set), then no
+non-negative reweighting can invert <b>any</b> rung, not merely the head delta.
+The entire ordering &mdash; not just who wins the headline comparison &mdash; is
+weight-robust: non-increasing under the rubric weighting, the uniform weighting,
+and every unit-basis extreme, and strictly decreasing wherever the weighting
+touches a pillar on which a rung genuinely dominates. This population-wide
+property has its own executable regression test over the reference spectrum, so
+the credibility of the leaderboard&rsquo;s <i>shape</i>, not just its top pair,
+is enforced every cycle.</p>
 </div>
 
 <div class="card">

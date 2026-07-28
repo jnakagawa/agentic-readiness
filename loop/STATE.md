@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 59
+- Cycle counter: 60
 - Started: 2026-07-23 (UTC)
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -1113,14 +1113,34 @@
   `git checkout -B main origin/main` = Cycle-58 tip de4ab39 BEFORE editing), runner STILL STALLED past 6h
   (newest verify_20260727T224106Z ~14.7h old at 13:21Z, unchanged since Cycle 51 — P0-tracked, not
   cloud-repairable, flag in next digest). Next cycle takes READOUT.
-- **RUNNER STALL — STILL STALLED PAST THE 6h FLOOR (updated Cycle 59, 2026-07-28T13:21Z; crossed Cycle 51
+  Cycle 60 READOUT (the READOUT complement to Cycle-59's population-wide weight-robustness guard 17):
+  the methodology page's §3 "But couldn't you re-weight the pillars…" sub-section previously stated only the
+  PAIR result (Cycle 56, guard 15 — a single delta's sign is weighting-invariant because the higher side is
+  pillar-wise dominant); extended that SAME sub-section with one paragraph (`asrs/scorecard.py`
+  `_write_methodology_page` prose) stating the POPULATION finding in critic-readable terms — when the whole
+  population forms a TOTAL DOMINANCE CHAIN (each rung ≥ the next on every applicable pillar, strict on ≥1, over
+  the same uncapped set) no non-negative reweighting inverts ANY rung, so the whole ranking (not just the head
+  delta) is weight-robust; stated test-pinned "over the reference spectrum" so guard 17 + readout stay in
+  lockstep. Vendor-neutral (four tiers described by capability, no domain named — enforced by the same test's
+  drift-flight/driftflight-not-in-text assertions + test_readout_wording 4/4). Display-only: `git diff
+  --name-only` = scorecard.py + test_readout.py ONLY; scoring.py/rubric/probes/fetch/protocols/offering/battery
+  byte-for-byte untouched → rubric stays v0.7, canonical delta unchanged by construction AND re-measured (replay
+  guard 20/20, 46.1 F / 85.5 B / +39.4, 0 replay-miss). Direct-to-main. `test_readout.py`
+  `test_methodology_documents_weight_robustness` +4 population-prose assertions (38/38); suite 220→221. No Slack
+  (display-only, moves no score, not sensitive, fire 14:2xZ before the 16:00 UTC digest window — runner stall
+  folds into that digest). First duty: no open peer-gated PR (verified []); infra health check ran first — bench
+  UP (221/221), git bookkeeping applied the orphan-main lesson at fire START (local `main` was stale orphan
+  `2e66201`, realigned `git checkout -B main origin/main` = Cycle-59 tip eeabdbe BEFORE editing), runner STILL
+  STALLED past 6h (newest verify_20260727T224106Z ~15.5h old at 14:14Z, unchanged since Cycle 51 — P0-tracked,
+  not cloud-repairable, flag in next digest). Next cycle takes METHOD.
+- **RUNNER STALL — STILL STALLED PAST THE 6h FLOOR (updated Cycle 60, 2026-07-28T14:14Z; crossed Cycle 51
   05:13Z).** Newest verify artifact is still `verify_20260727T224106Z.json` (22:41Z) — NO newer artifact
-  appeared between Cycle 51 (05:13Z) and this fire (13:21Z), so at ~14.7h old the stall has NOT self-cleared
+  appeared between Cycle 51 (05:13Z) and this fire (14:14Z), so at ~15.5h old the stall has NOT self-cleared
   (contrast the Cycle-28 stall, which cleared by Cycle 30). The Cycle 48/49/50 watch (six consecutive :41 gaps,
-  23:41→04:41Z) tipped over at Cycle 51 and persists across Cycles 52–58. Mirrors the Cycle-28 stall mechanism —
+  23:41→04:41Z) tipped over at Cycle 51 and persists across Cycles 52–60. Mirrors the Cycle-28 stall mechanism —
   likely the same launchd-on-Jonah's-machine intermittent stall (machine asleep / launchd not firing), NOT
   repairable from the cloud (can't reach the local machine). Loop is DEGRADED, not down: the in-cloud replay guard
-  (now 19/19, +39.4) is
+  (now 20/20, +39.4) is
   the standing regression signal and ran green this fire, so cycles are NOT blocked. Queued P0 [LOCAL] with the
   diagnosis; **flag in the next post-16:00 UTC Slack digest** per the self-healing law (note in STATE + flag in
   next digest, not an immediate DM — comms policy). If a newer artifact appears next fire, the stall

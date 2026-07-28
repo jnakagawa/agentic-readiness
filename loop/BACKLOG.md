@@ -544,14 +544,20 @@ design in-cloud, execute locally.
   verify canonical set/order unchanged (subscription is already claimed on the pair → strength-only, but
   CHECK it does not overtake metered_api).
 
-- **[READOUT — surface the whole-chain weight-robustness finding on the methodology page]** (follow-up
-  to Cycle 59). The TRUTH half is DONE (see below); the READOUT complement is the remaining increment.
-  The methodology page's §3 "But couldn't you re-weight the pillars…" sub-section currently states the
-  PAIR result (Cycle 56). Extend that SAME sub-section with the population finding — the WHOLE ordering
-  (com>org>retail>bare) is weight-robust because it is a TOTAL pillar-wise dominance chain (every rung
-  higher ⪰ lower on all four applicable pillars), so no non-negative reweighting inverts ANY rung, not
-  just the head delta. State it test-pinned (guard 17). Vendor-neutral (no domain named); display-only,
-  score-neutral, direct-to-main. Keeps guard and readout in lockstep.
+<!-- DONE 2026-07-28T14:2xZ (Cycle 60, READOUT, direct-to-main, display-only, score-neutral):
+     "[READOUT — surface the whole-chain weight-robustness finding on the methodology page]" SHIPPED,
+     completing the follow-up to Cycle 59 (TRUTH half was guard 17, below). The methodology §3
+     "But couldn't you re-weight the pillars…" sub-section stated only the PAIR result (Cycle 56);
+     `asrs/scorecard._write_methodology_page` gains one paragraph extending it to the POPULATION —
+     when the whole population is a TOTAL DOMINANCE CHAIN (each rung ≥ next on every applicable pillar,
+     strict on ≥1, over the same uncapped set) no non-negative reweighting inverts ANY rung, so the
+     whole ranking (not just the head delta) is weight-robust; stated test-pinned "over the reference
+     spectrum" so guard 17 + readout stay in lockstep. Vendor-neutral (four tiers by capability, no
+     domain named — enforced by the test's drift-flight/driftflight-not-in-text assertions +
+     test_readout_wording 4/4). Display-only: git diff = scorecard.py + test_readout.py ONLY;
+     scoring/rubric/probes/offering/battery untouched → rubric v0.7, replay guard 20/20 / +39.4 / 0
+     replay-miss. `test_readout.py` `test_methodology_documents_weight_robustness` +4 assertions (38/38);
+     suite 220→221. See LOG Cycle 60. -->
   <!-- TRUTH HALF DONE 2026-07-28T13:2xZ (Cycle 59, TRUTH, direct-to-main, tests-only, score-neutral):
        "Population-wide WEIGHT-ROBUSTNESS" SHIPPED as `tests/test_canonical_replay.py` guard 17
        `test_population_ordering_is_weight_robust` (19→20). Confirmed EMPIRICALLY the Cycle-55 next-

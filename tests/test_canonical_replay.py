@@ -676,6 +676,122 @@ def test_relabel_invariance_nonstorefront() -> None:
     _assert_relabel_invariant("example.com")
 
 
+# ---------------------------------------------------------------------------
+# 12. POPULATION ORDERING — the benchmark's central claim, made executable across
+#     the whole committed population. Guards 1–11 pin each domain's score
+#     individually and compare the pair / retail / baseline in isolation; none
+#     asserts the RELATIONSHIP the benchmark exists to produce. This guard pins it:
+#     the overall score is strictly MONOTONE along the agent-native-commerce
+#     capability spectrum — with-rails API storefront > no-rails API storefront >
+#     human-only retail shop > zero-commerce baseline. It reads the scores from the
+#     LIVE replay pipeline (never from the pinned EXPECTED constants), so a scoring/
+#     probe change that reordered any pair — e.g. crediting a browser-checkout shop
+#     above an API storefront — fails HERE even if a maintainer updated the
+#     exact-number expectations to match the bug. The individual-number guards track
+#     intended change; this ordering guard tracks the intended CLAIM, which must
+#     survive any legitimate re-capture or version bump. Worded by capability tier,
+#     never by vendor: the sites are ranked by what an agent can DO with them, not
+#     by their identity — the same four fixture keys guards 1–11 already use.
+# ---------------------------------------------------------------------------
+# Ordered most- to least-capable for agent-native commerce, by recorded evidence.
+_CAPABILITY_SPECTRUM = [
+    ("driftflight.com", "with-rails API storefront (agent-native payment present)"),
+    ("drift-flight.org", "no-rails API storefront (API legible, no agent-native payment)"),
+    ("books.toscrape.com", "human-only retail shop (sells goods, not agent-payable)"),
+    ("example.com", "zero-commerce baseline (sells nothing)"),
+]
+
+
+def test_population_overall_tracks_capability_ordering() -> None:
+    print("test_population_overall_tracks_capability_ordering")
+    scored = []
+    for dom, tier in _CAPABILITY_SPECTRUM:
+        rep, misses = _score_fixture(dom)
+        _check(not misses, f"{dom}: no replay-miss")
+        scored.append((dom, tier, rep.overall_score))
+
+    # The overall score STRICTLY decreases at every step down the spectrum — the
+    # benchmark ranks the population by agent-native capability, not by chance.
+    for (hd, ht, hs), (ld, lt, ls) in zip(scored, scored[1:]):
+        _check(
+            hs > ls,
+            f"overall strictly decreases: {hd} ({ht}) {hs} > {ld} ({lt}) {ls}",
+        )
+
+    # Non-vacuous: four DISTINCT domains spanning a real range (top >> floor), so
+    # the chain above is an ordering over a genuine spread, not a near-tie artifact.
+    _check(len({d for d, _, _ in scored}) == 4, "four distinct domains in the spectrum")
+    _check(
+        scored[0][2] - scored[-1][2] >= 40.0,
+        f"the spectrum spans a real range (top {scored[0][2]} − floor "
+        f"{scored[-1][2]} = {round(scored[0][2] - scored[-1][2], 1)} >= 40.0)",
+    )
+
+
+# ---------------------------------------------------------------------------
+# 13. THE ORDERING IS NOT A TRANSACTABILITY ARTIFACT — the honest decomposition
+#     behind guard 12. Transactability (agent-native payment) is the heaviest,
+#     benchmark-defining pillar, so a critic could dismiss the whole ordering as
+#     "you just measured who takes x402". This guard refutes that from the recorded
+#     evidence: transactability is non-increasing along the same spectrum AND the
+#     with-rails side strictly tops it (payment capability is what earns the #1
+#     slot) — but the two payment-FLOOR sites (retail shop, bare page) TIE at 0
+#     transactability, yet the overall order between them is still preserved, driven
+#     by OTHER observed capability (the shop's product legibility over the bare
+#     page's none). So the benchmark separates two equally-unpayable sites by a
+#     different, real capability, in the sensible direction — the ordering is a
+#     multi-capability judgement, not a single-pillar proxy. Read from the live
+#     pipeline; worded by capability throughout.
+# ---------------------------------------------------------------------------
+def test_population_ordering_is_not_a_transactability_artifact() -> None:
+    print("test_population_ordering_is_not_a_transactability_artifact")
+    tx, ov, leg = {}, {}, {}
+    for dom, _tier in _CAPABILITY_SPECTRUM:
+        rep, misses = _score_fixture(dom)
+        _check(not misses, f"{dom}: no replay-miss")
+        tx[dom] = rep.pillar_scores["transactability"]
+        ov[dom] = rep.overall_score
+        leg[dom] = rep.pillar_scores["legibility"]
+    order = [d for d, _ in _CAPABILITY_SPECTRUM]
+
+    # (a) transactability is non-increasing along the same capability ordering.
+    for hi, lo in zip(order, order[1:]):
+        _check(
+            tx[hi] >= tx[lo],
+            f"transactability non-increasing: {hi} {tx[hi]} >= {lo} {tx[lo]}",
+        )
+
+    # (b) agent-native payment is what earns the top slot: the with-rails side's
+    # transactability STRICTLY exceeds every other domain's.
+    top = order[0]
+    for other in order[1:]:
+        _check(
+            tx[top] > tx[other],
+            f"{top} transactability strictly tops {other} ({tx[top]} > {tx[other]})",
+        )
+
+    # (c) the two payment-floor sites tie at 0 transactability, yet the overall
+    # order between them is preserved — so the tail ranking is NOT a transactability
+    # artifact. It is driven by OTHER observed capability: the retail shop's product
+    # legibility strictly exceeds the bare page's, in the sensible direction.
+    retail, bare = order[2], order[3]
+    _check(
+        tx[retail] == 0.0 and tx[bare] == 0.0,
+        f"both floor sites are payment-floor (0 transactability: "
+        f"{retail} {tx[retail]}, {bare} {tx[bare]})",
+    )
+    _check(
+        ov[retail] > ov[bare],
+        f"tail overall order preserved despite equal transactability: "
+        f"{retail} {ov[retail]} > {bare} {ov[bare]}",
+    )
+    _check(
+        leg[retail] > leg[bare],
+        f"the tail is separated by a DIFFERENT capability — legibility: "
+        f"{retail} {leg[retail]:.2f} > {bare} {leg[bare]:.2f}",
+    )
+
+
 def main() -> int:
     tests = [
         test_canonical_org_replays_46_1,
@@ -692,6 +808,8 @@ def main() -> int:
         test_nonstorefront_replays_22_5,
         test_nonstorefront_earns_no_agent_native_payment,
         test_relabel_invariance_nonstorefront,
+        test_population_overall_tracks_capability_ordering,
+        test_population_ordering_is_not_a_transactability_artifact,
     ]
     failed = 0
     for t in tests:

@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 48
+- Cycle counter: 49
 - Started: 2026-07-23 (UTC)
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -828,6 +828,33 @@
   (verify_20260727T224106Z, 22:41Z, ~3.5h old, +39.4 in-band) BUT the :41 fires at 23:41/00:41/01:41Z produced
   NO artifact (3 consecutive gaps, still under the 6h floor at 02:12Z — a possible fresh runner stall to WATCH;
   if still gapped past 6h next fire, flag + fold into the next digest). Next cycle takes METHOD.
+  Cycle 49 METHOD (the benchmark's POPULATION ORDERING made an executable calibration control — the first
+  cross-domain ordering property in the repo): `tests/test_canonical_replay.py` +2 (14→16). Guards 1–11 pin
+  each of the four committed real-domain fixtures INDIVIDUALLY + compare pair/retail/baseline in isolation;
+  none asserted the RELATIONSHIP the benchmark exists to produce. Guard 12
+  (`test_population_overall_tracks_capability_ordering`) reads all four overalls from the LIVE replay pipeline
+  (never the pinned EXPECTED constants) and asserts the overall STRICTLY decreases down the
+  agent-native-commerce spectrum — with-rails API 85.5 > no-rails API 46.1 > human-only retail 29.5 >
+  zero-commerce baseline 22.5 (+ non-vacuity floor: 4 distinct domains, top−floor ≥40.0). Guard 13
+  (`test_population_ordering_is_not_a_transactability_artifact`) refutes "you just measured who takes x402":
+  transactability is non-increasing along the SAME ordering AND the with-rails side strictly tops it (payment
+  earns #1), BUT the two payment-FLOOR sites TIE at 0 transactability yet the tail overall order (retail 29.5 >
+  bare 22.5) is preserved, driven by a DIFFERENT observed capability (legibility 18.18 > 0.00) → the population
+  order is a multi-capability judgement, not a single-pillar proxy. The individual-number guards track intended
+  CHANGE (updated on re-capture); this tracks the CLAIM — a maintainer who re-captured to buggy reordered
+  numbers would update the exact-number expectations to match and every existing guard would still pass, this
+  one fails. NON-VACUOUS: a reversed-spectrum negative control makes the strict-decrease guard FAIL (verified
+  this fire); scores read from the live pipeline, not a tautology over constants. Worded by capability tier,
+  never by vendor (domains appear only as the same fixture keys guards 1–11 use). Tests-only:
+  `git diff --name-only` = test_canonical_replay.py ONLY; `git diff -- asrs/ rubric/` EMPTY →
+  scoring.py/rubric/probes/fetch/protocols/battery/offering byte-for-byte untouched → rubric stays v0.7,
+  canonical PAIR unchanged by construction AND re-measured (replay guard 16/16, 46.1 F / 85.5 B / +39.4, 0
+  replay-miss). Direct-to-main. Suite 198→200 (all 19 files exit 0). No Slack (tests-only, moves no score,
+  digest last sent Cycle 38 16:13Z, not a new window at 03:2xZ). First duty: no open peer-gated PR (verified
+  []); infra health check ran first — runner WATCH: newest verify_20260727T224106Z (22:41Z, ~4.5h old, +39.4
+  in-band), the 23:41/00:41/01:41/02:41Z fires produced NO artifact (4 consecutive gaps, Cycle-48 watch
+  persists), STILL under 6h at 03:20Z — flag if the next fire shows no newer artifact and 22:41Z crosses 6h.
+  Next cycle takes COVERAGE.
 - **LIVE CANONICAL DRIFT (open, for the next post-16:00 UTC digest) — surfaced by the Cycle-36 history readout.**
   The live canonical delta held **+39.4** (46.1 F / 85.5 B) for days through `verify_20260727T054339Z`, then MOVED:
   07:40Z fire driftflight.com collapsed to 50.0 F (delta +3.9 — transient error crawl, transactability CANT_TEST /

@@ -433,7 +433,17 @@ design in-cloud, execute locally.
   Tests-only, score-neutral (rubric v0.7, replay guard 14/14 / +39.4); suite 174→176. Still
   recurring: (a) the hand-authored-prose re-read (EXECUTABLE since Cycle 33 — run it when new
   readout prose lands); extend BOTH the relabel guards AND the wording denylist to any NEWLY-scored
-  storefront/fixture as they land.
+  storefront/fixture as they land. PROGRESS 2026-07-28T03:20Z (Cycle 49, METHOD): the benchmark's
+  POPULATION ORDERING is now an executable calibration control — `tests/test_canonical_replay.py` +2
+  (14→16). Guard 12 pins the overall STRICTLY decreasing down the agent-native-commerce spectrum
+  (with-rails API 85.5 > no-rails API 46.1 > human-only retail 29.5 > zero-commerce 22.5), read from
+  the LIVE pipeline not the pinned constants (so a re-capture to buggy reordered numbers fails HERE
+  even after the exact-number expectations are updated to match); guard 13 proves the order is NOT a
+  transactability artifact (the two payment-floor sites tie at 0 tx yet the tail order is preserved by
+  legibility). Non-vacuous (reversed-spectrum negative control fails). First cross-domain ordering
+  property in the repo. NEXT METHOD candidate: a JOINT population-level relabel-invariance guard —
+  relabel ALL FOUR hosts simultaneously and assert the ordering (not just per-domain scores) is
+  identity-invariant; per-domain relabel guards exist (guards 4/6/8/11), the joint one does not.
 - **Env-block classifier: harden against site-side "safety/security policy"**
   (METHOD, attribution honesty — residual from the PR #2 adversarial review,
   2026-07-23T10:13Z). The review confirmed `_ENV_BLOCK_RE` correctly rejects the

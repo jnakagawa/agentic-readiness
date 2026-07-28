@@ -4929,3 +4929,71 @@ noise-floor+per-side / pillar+side / re-capture) — the last terminal→HTML ga
 The READOUT frontier moves off the canonical-history page: either the P1 calibration POPULATION leaderboard
 (a dated 15–20-domain sweep needs a READOUT home) or a real multi-kind battery card eyeball ([LOCAL]
 acceptance rerun). Cloud rotation → METHOD next.
+
+## Cycle 49 — 2026-07-28T03:20Z — METHOD
+
+**What.** POPULATION-ORDERING calibration control on the canonical replay guard.
+`tests/test_canonical_replay.py` +2 tests (14→16). The guard already pins each of
+the four committed real-domain fixtures individually and compares the pair /
+retail / baseline in isolation, but NO test asserted the RELATIONSHIP the
+benchmark exists to produce — that the overall score tracks a monotone capability
+ordering across the whole committed population. Guard 12
+(`test_population_overall_tracks_capability_ordering`) reads all four scores from
+the LIVE replay pipeline (never the pinned `EXPECTED` constants) and asserts the
+overall STRICTLY decreases down the agent-native-commerce spectrum —
+with-rails API storefront (85.5) > no-rails API storefront (46.1) > human-only
+retail shop (29.5) > zero-commerce baseline (22.5) — plus a non-vacuity floor
+(four distinct domains, top−floor ≥ 40.0). Guard 13
+(`test_population_ordering_is_not_a_transactability_artifact`) refutes the critic's
+"you just measured who takes x402": transactability is non-increasing along the
+same ordering AND the with-rails side strictly tops it (payment earns the #1
+slot), BUT the two payment-FLOOR sites tie at 0 transactability, yet the tail
+overall order (retail 29.5 > bare 22.5) is preserved and driven by a DIFFERENT
+observed capability (legibility 18.18 > 0.00) — so the population order is a
+multi-capability judgement, not a single-pillar proxy.
+
+**Why.** The individual-number guards (1–11) track intended CHANGE — on a
+legitimate re-capture/version bump they get updated to whatever the new numbers
+are. The ordering guard tracks the intended CLAIM: a maintainer who re-captured
+fixtures to buggy numbers that reorder the spectrum (e.g. crediting a
+browser-checkout shop above an API storefront) would update the exact-number
+expectations to match and every existing guard would still pass — this one fails.
+It converts "does the score predict the capability spectrum?" (the TRUTH/METHOD
+calibration question) from prose + isolated datapoints into one executable
+monotonicity tripwire over the committed population. First cross-domain ordering
+property in the repo; distinct KIND of rigor from the isolated per-domain pins.
+Worded by capability tier, never by vendor (sites ranked by what an agent can DO;
+domains appear only as the same fixture keys guards 1–11 use).
+
+**Ship.** Direct-to-main (tests-only). `git diff --name-only` =
+`tests/test_canonical_replay.py` ONLY; `git diff -- asrs/ rubric/` EMPTY →
+scoring.py/rubric/probes/fetch/protocols/battery/offering byte-for-byte untouched
+→ rubric stays v0.7.
+
+**Evidence.** `tests/test_canonical_replay.py` 14→16 PASS; full suite 198→200
+(all 19 files exit 0). NON-VACUOUS: a reversed-spectrum negative control makes the
+strict-decrease guard FAIL (verified this fire). Scores read from the live replay
+pipeline, so the ordering is grounded in scoring output, not a tautology over the
+pinned constants.
+
+**Canonical pair (regression signal).** Replay guard re-measured this fire: 46.1 F
+(drift-flight.org) / 85.5 B (driftflight.com), delta **+39.4**, 0 replay-miss —
+UNCHANGED by construction (tests-only) AND re-measured green. Live-signal
+corroboration: newest `runs/local/verify_20260727T224106Z.json` (22:41Z) reads
++39.4 in-band (~4.5h old at fire, under the 6h floor).
+
+**Infra health.** No open peer-gated PR (`list_pull_requests state=open` → []).
+Bench up (venv + `pip install -r requirements.txt`, all 19 files green,
+`test_free_tier` 11/11 once eth-account installed). Runner WATCH: newest verify is
+22:41Z, ~4.5h old — the 23:41/00:41/01:41/02:41Z :41 fires produced NO artifact
+(4 consecutive gaps, Cycle-48's watch persists), still under 6h at 03:20Z; if the
+next fire still shows no newer artifact and 22:41Z crosses 6h, flag it + fold into
+the next digest.
+
+**Next hypothesis.** COVERAGE next. The population-ordering guard now spans four
+domains; when the [LOCAL] machine-surface fixtures (api.replicate.com is captured
+but scored only via the offering layer) get wired into the SCORING replay + the
+ordering, a fifth capability tier (metered-API-first storefront) refines the
+spectrum. Candidate METHOD follow-up: pin that the ordering is invariant under
+relabeling ALL four hosts simultaneously (population-level vendor-neutrality) — the
+per-domain relabel guards exist, the joint one does not.

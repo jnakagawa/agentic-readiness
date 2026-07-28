@@ -6494,3 +6494,7 @@ in-cloud-doable is a NEW archetype or a new intent-template, not another billing
 e.g. a `usage_bundle` / prepaid-package archetype, or capturing a seat-priced SaaS fixture
 so `seat-licensing` earns a real-data non-vacuity leg (queued [LOCAL] below). Score-
 increasing rail work (free-tier live-wiring, ACP/UCP/MPP handshakes) remains [LOCAL].
+
+## Local verification — 20260728T205027Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260728T205027Z.json

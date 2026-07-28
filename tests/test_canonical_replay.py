@@ -33,6 +33,7 @@ loudly rather than silently rescore against a partial fixture).
 
 from __future__ import annotations
 
+import dataclasses
 import json
 import os
 import sys
@@ -1231,6 +1232,95 @@ def test_population_ordering_is_weight_robust() -> None:
         )
 
 
+# ---------------------------------------------------------------------------
+# 18. THE OFFLINE REPLAY INSTRUMENT IS DETERMINISTIC — the in-cloud regression
+#     signal reproduces itself run-to-run. Every shipping cycle re-measures the
+#     canonical population by replaying the committed fixtures through the REAL
+#     from_fixture -> _run_probes -> scoring.score path; while the launchd live
+#     runner is down (P0-tracked) this offline replay is the SOLE canonical
+#     regression signal. A regression signal is only trustworthy if the instrument
+#     that produces it is reproducible — the North Star's "reproducible" axis, at
+#     the level of the OFFLINE measurement itself. `canonical_history`'s noise-floor
+#     determinism (Cycle 47) pins the LIVE runner's cross-artifact series; this pins
+#     the complementary fact the runner can't: that a SINGLE in-cloud replay is
+#     deterministic run-to-run over the FULL scored output — overall, grade, rubric
+#     version, every pillar, AND every check's (status, points, max_points). If a
+#     future scoring/probe change introduced order-dependence (e.g. a set() in
+#     aggregation whose iteration order perturbed a float sum), every per-cycle
+#     re-score number would silently become non-reproducible; this guard is the
+#     tripwire. Read from the live pipeline; worded by measurement, not by vendor.
+# ---------------------------------------------------------------------------
+def _report_fingerprint(report) -> tuple:
+    """The full SCORED surface of a report, in a canonical, comparison-stable form."""
+    checks = tuple(
+        sorted(
+            (c.check_id, c.status.name, c.points, c.max_points)
+            for c in report.checks
+        )
+    )
+    pillars = tuple(sorted(report.pillar_scores.items()))
+    return (report.overall_score, report.grade, report.rubric_version, pillars, checks)
+
+
+def _assert_reports_identical(domain: str, a, b) -> None:
+    fa, fb = _report_fingerprint(a), _report_fingerprint(b)
+    _check(
+        fa == fb,
+        f"{domain}: two independent replays produce a byte-identical scored report "
+        f"(overall/grade/version/pillars/every check status+points)",
+    )
+
+
+def test_replay_pipeline_is_deterministic() -> None:
+    print("test_replay_pipeline_is_deterministic")
+    # (a) Each fixture scored TWICE through INDEPENDENT from_fixture -> _run_probes
+    # -> scoring.score passes (fresh FetchContext each time, no shared cache) yields
+    # the identical scored output — the whole population's re-score is reproducible.
+    for dom, _tier in _CAPABILITY_SPECTRUM:
+        r1, m1 = _score_fixture(dom)
+        r2, m2 = _score_fixture(dom)
+        _check(not m1 and not m2, f"{dom}: no replay-miss on either pass")
+        _assert_reports_identical(dom, r1, r2)
+
+    # (b) NON-VACUOUS negative control — the identical-report check actually CATCHES
+    # a scorer whose output VARIES run-to-run (the exact failure a determinism guard
+    # exists to detect). Wrap scoring.score so every 2nd call perturbs the overall by
+    # a hair; because guard 18(a) compares the FULL scored surface, the two passes now
+    # diverge and _assert_reports_identical must raise. Monkeypatch on scoring.score
+    # (the attribute _score_fixture calls), restored in a finally + a restore
+    # assertion so the rig never leaks into later tests (same discipline as guard 16).
+    real_score = scoring.score
+    calls = {"n": 0}
+
+    def flaky_score(checks, rubric, domain):
+        rep = real_score(checks, rubric, domain)
+        calls["n"] += 1
+        if calls["n"] % 2 == 0 and rep.overall_score is not None:
+            rep = dataclasses.replace(rep, overall_score=rep.overall_score + 0.1)
+        return rep
+
+    scoring.score = flaky_score
+    try:
+        r1, _ = _score_fixture("driftflight.com")
+        r2, _ = _score_fixture("driftflight.com")
+        caught = False
+        try:
+            _assert_reports_identical("driftflight.com", r1, r2)
+        except AssertionError:
+            caught = True
+        _check(
+            caught,
+            "negative control: a run-varying scorer is CAUGHT by the determinism "
+            "check (so the all-identical result on the real scorer is meaningful)",
+        )
+    finally:
+        scoring.score = real_score
+    _check(
+        scoring.score is real_score,
+        "the real scorer is restored after the determinism negative control",
+    )
+
+
 def main() -> int:
     tests = [
         test_canonical_org_replays_46_1,
@@ -1253,6 +1343,7 @@ def main() -> int:
         test_canonical_delta_is_weight_robust,
         test_population_relabel_negative_control,
         test_population_ordering_is_weight_robust,
+        test_replay_pipeline_is_deterministic,
     ]
     failed = 0
     for t in tests:

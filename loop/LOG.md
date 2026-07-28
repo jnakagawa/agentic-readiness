@@ -5883,3 +5883,71 @@ and is each adjacent rung a check-status superset, watching the tail where a ret
 shop and a bare page may legitimately differ in observed check SETS). READOUT-side,
 the offering `/docs` API-docs surface candidate (P2) is cloud-doable from the
 committed fixtures.
+
+## Cycle 61 — 2026-07-28T15:1xZ — METHOD (direct to main)
+
+**What.** The OFFLINE replay instrument — the sole in-cloud canonical regression
+signal while the live runner is down — is now guarded as DETERMINISTIC run-to-run.
+`tests/test_canonical_replay.py` +1 (20→21), guard 18
+`test_replay_pipeline_is_deterministic`. For each of the four committed fixtures the
+guard scores the population TWICE through INDEPENDENT `from_fixture → _run_probes →
+scoring.score` passes (a fresh `FetchContext` each time, no shared cache) and asserts
+the FULL scored surface is byte-identical across the two passes via
+`_report_fingerprint` — overall_score, grade, rubric_version, every pillar, AND every
+check's `(check_id, status, points, max_points)`. Not just the headline: the complete
+measurement output the per-cycle re-score reads.
+
+**Why.** METHOD / reproducibility — the North Star's "reproducible" axis, applied to
+the OFFLINE measurement itself. Every shipping cycle re-measures the canonical
+population by replaying the fixtures; with the launchd live runner STALLED (P0,
+~16.5h at this fire) this offline replay is the ONLY canonical regression signal the
+loop has. A regression signal is only trustworthy if the instrument producing it is
+reproducible. `canonical_history`'s noise-floor determinism (Cycle 47) pins the LIVE
+runner's cross-artifact series — but the runner is down, and that guard measures a
+different thing (across-time series stability, not a single replay's run-to-run
+determinism). Guard 18 pins the complementary fact the runner cannot: a SINGLE
+in-cloud replay is deterministic over the full scored output. If a future
+scoring/probe change introduced order-dependence (e.g. a `set()` in aggregation whose
+iteration order perturbed a float sum), every per-cycle re-score number would silently
+become non-reproducible — this guard is the tripwire.
+
+**Verification (non-vacuity of the control itself).** (b) COMMITTED negative control,
+matching the file's uniform-rigor discipline (Cycle 57): wrap `scoring.score` (the
+attribute `_score_fixture` calls) so every 2nd call perturbs `overall_score` by +0.1;
+because guard 18(a) compares the full scored surface, the two passes now diverge and
+`_assert_reports_identical` must raise — asserted `caught` True. The rig is monkeypatched
+on `scoring.score`, restored in a `finally`, and `scoring.score is real_score`
+re-asserted after, so it never leaks into later tests. On the REAL scorer all four
+fixtures scored twice are byte-identical (guard passes), so the all-identical result is
+meaningful, not vacuous.
+
+**Scope.** `tests/test_canonical_replay.py` ONLY (+`import dataclasses`; guard 18 +
+helpers `_report_fingerprint`/`_assert_reports_identical`; added to the runner list).
+`git diff --name-only -- asrs/ rubric/` EMPTY → scoring.py / rubric / probes / fetch.py
+/ protocols / behavioral / offering / battery byte-for-byte UNTOUCHED. Rubric stays
+v0.7; canonical delta unchanged by construction AND re-measured. Direct-to-main.
+`test_canonical_replay.py` 20 → 21; suite 221 → 222.
+
+**Canonical pair (regression signal).** In-cloud replay guard re-measured:
+drift-flight.org 46.1 F / driftflight.com 85.5 B / delta +39.4; books.toscrape.com
+29.5 F, example.com 22.5 F; 0 replay-miss on all four. Live re-score BLOCKED in-cloud
+(no outbound network); the offline replay guard is the in-cloud regression signal —
+and this cycle's whole point is that that instrument is now proven reproducible.
+
+**First duty.** No open peer-gated PR (verified `list_pull_requests` state=open → `[]`).
+Infra health: bench UP (19/19 files, 222/222 after this change); git bookkeeping —
+realigned local `main` to `origin/main` (309d404 = Cycle 60 tip) at fire START before
+editing. Runner STILL STALLED past the 6h floor — newest `verify_20260727T224106Z` is
+~16.5h old at this 15:13Z fire, unchanged since Cycle 51; P0-tracked, NOT
+cloud-repairable; flag in the next 16:00Z digest.
+
+**No Slack.** Tests-only METHOD ship, moves no score, not sensitive; fire 15:1xZ before
+the 16:00 UTC digest window (runner stall + this ship fold into that digest).
+
+**Next hypothesis.** TRUTH-side (Cycle 63): population-wide observability / like-for-like
+at the CHECK layer — guard 8 (earned-dominance for the pair) lifted to the whole
+spectrum (is every rung fully observed with no CANT_TEST masking a FAIL, and is each
+adjacent rung a check-status superset — watching the tail where a retail shop and a
+bare page may legitimately differ in observed check SETS). COVERAGE-side (Cycle 62):
+the offering `/docs` API-docs surface candidate (P2), cloud-doable from the committed
+fixtures.

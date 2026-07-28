@@ -6,7 +6,7 @@ design in-cloud, execute locally.
 ## P0
 
 - **[LOCAL] Local verify runner STALLED past the 6h floor (diagnosed Cycle 51,
-  2026-07-28T05:13Z; STILL STALLED at Cycle 53, 07:1xZ — no newer artifact, ~8.5h old).**
+  2026-07-28T05:13Z; STILL STALLED at Cycle 61, 15:13Z — no newer artifact, ~16.5h old).**
   Newest artifact `runs/local/verify_20260727T224106Z.json`
   (22:41Z) is ~6h32m old at the 05:13Z fire — the six consecutive :41 gaps
   (23:41→04:41Z 07-27/28) the Cycle 48/49/50 watch tracked have crossed the 6h floor.

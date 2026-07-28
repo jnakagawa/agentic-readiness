@@ -439,6 +439,32 @@ def test_methodology_documents_weight_robustness() -> None:
         _check(banned not in text, f"methodology names no vendor/domain ({banned!r})")
 
 
+def test_methodology_documents_check_layer_honesty() -> None:
+    # Cycle 64 (READOUT): the READOUT complement to Cycle 63's per-CHECK
+    # population earned-dominance guard (guard 19, test_canonical_replay). The
+    # weight-robustness sub-section states the chain is a TOTAL dominance chain at
+    # the PILLAR layer; Cycle 63 established that at the finer per-CHECK layer one
+    # rung is an honest MAJORITY with a single inversion (a human-checkout retail
+    # shop's HTTPS/HSTS out-ranks a no-rails API's, absorbed by the trust pillar).
+    # The page must surface that refinement in prose a critic can read — that
+    # dominance is a pillar-layer property, that the aggregation ABSORBS a lone
+    # minority reversal, and that the reversal is surfaced (test-pinned), not
+    # hidden — and stay vendor-neutral.
+    print("test_methodology_documents_check_layer_honesty")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    for phrase in ("pillar-layer", "per-check", "minority", "absorbs",
+                   "HTTPS", "trust", "surfaces", "executable regression test"):
+        _check(phrase in text,
+               f"methodology documents check-layer honesty: {phrase!r}")
+    # It must frame the reversal as disclosed, not hidden (the honesty punchline).
+    _check("honest reversal" in text,
+           "check-layer refinement frames the inversion as disclosed")
+    # Vendor-neutral: no domain/product/brand named on the page.
+    for banned in ("drift-flight", "driftflight"):
+        _check(banned not in text, f"methodology names no vendor/domain ({banned!r})")
+
+
 def test_methodology_page_tracks_live_rubric() -> None:
     print("test_methodology_page_tracks_live_rubric")
     rubric = load_rubric()
@@ -859,6 +885,7 @@ def main() -> int:
         test_methodology_page_written_and_covers_semantics,
         test_methodology_documents_earned_dominance,
         test_methodology_documents_weight_robustness,
+        test_methodology_documents_check_layer_honesty,
         test_methodology_page_tracks_live_rubric,
         test_build_scorecard_publishes_and_links_methodology,
         test_cap_anchor_helper_is_stable_and_sanitizing,

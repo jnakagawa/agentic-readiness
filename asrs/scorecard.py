@@ -455,6 +455,22 @@ touches a pillar on which a rung genuinely dominates. This population-wide
 property has its own executable regression test over the reference spectrum, so
 the credibility of the leaderboard&rsquo;s <i>shape</i>, not just its top pair,
 is enforced every cycle.</p>
+<p>One honest refinement keeps that chain from over-claiming. Dominance as used
+above is a <b>pillar-layer</b> property &mdash; it compares the rolled-up pillar
+scores. At the finer <b>per-check</b> layer the head delta is still a clean
+superset, but a rung lower down the chain need not be: a lower-ranked storefront
+can out-rank a higher-ranked one on a single check yet still lose the pillar that
+check belongs to. On the reference spectrum exactly one such <b>minority
+reversal</b> occurs &mdash; a human-checkout retail shop presents stronger
+transport security (HTTPS&nbsp;/&nbsp;HSTS) than a legible API storefront that
+offers no agent-native payment, yet the API storefront still wins the <b>trust</b>
+pillar overall, so the ranking holds. Rolling checks up into pillars is exactly
+what <b>absorbs</b> that lone reversal &mdash; the ordering is robust <i>because</i>
+the aggregation outvotes an honest local tie, not because every check marches in
+lockstep. ASRS <b>surfaces</b> the inversion, pinned check by check by the same
+executable regression test, rather than hiding it behind a false
+&ldquo;wins&nbsp;every&nbsp;check&rdquo; claim; a benchmark that reports its one
+honest reversal earns more trust than one that pretends none exists.</p>
 </div>
 
 <div class="card">

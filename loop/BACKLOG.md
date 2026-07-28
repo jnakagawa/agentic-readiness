@@ -644,13 +644,23 @@ design in-cloud, execute locally.
   history beyond the canonical pair (needs committed dated reports for other
   domains — currently only the verify series is committed); (c) error bars once
   multi-trial series land.
-- **Noise-floor on `canonical-history.html`** (READOUT, Cycle-45 follow-up): the measured
-  measurement-noise floor (`CanonicalHistory.noise_floor` — `n_in_band`, σ, worst |div|,
-  deterministic / band_well_separated) now renders in the TERMINAL `asrs canonical-history`
-  block but not on the HTML page. Surface it on `canonical-history.html`
-  (`scorecard._write_canonical_history_page`) — the same terminal→HTML deferral the drift
-  diagnostics took (pillar/side/re-capture, Cycles 37/39/43 → 40/44). Display-only,
-  score-neutral, direct-to-main; a render + a `test_readout.py` case.
+<!-- DONE 2026-07-28T02:2xZ (Cycle 48, READOUT, direct-to-main, display-only, score-neutral):
+     "Noise-floor on canonical-history.html" SHIPPED — and extended to the Cycle-47 PER-SIDE
+     determinism finding, closing the LAST terminal→HTML gap on that surface.
+     `scorecard._write_canonical_history_page` gains an "Is the band real noise, or transient
+     absorption?" card (between the trend chart and the diagnosis card), driven off
+     `hist.noise_floor`: reports n_in_band / σ / worst|div|, the DETERMINISTIC-at-rest verdict,
+     and — ONLY when `sides_deterministic` — the strictly-stronger per-side sentence (both
+     reference storefronts reproduce their pinned overall exactly at rest → genuine per-side
+     determinism, not two lock-step drifts cancelling). Delta-deterministic-but-sides-not (the
+     cancellation Cycle 47 guards) shows the delta verdict and WITHHOLDS the per-side claim;
+     non-deterministic → well-separated/too-tight band read; <2 in-band → card SILENT (honest).
+     Wording copied verbatim from the terminal `render`. Rendered on the REAL committed 72-point
+     series (68 in-band, σ=0.00, both sides exact). git diff = scorecard.py + test_readout.py ONLY
+     → rubric v0.7, replay guard 14/14 / +39.4, readout/rubric-wording 4/4 each. test_readout.py
+     31→34 (per-side strong claim; NON-VACUOUS lock-step cancellation control; card-absent-<2-in-band);
+     suite 195→198. See LOG Cycle 48. REMAINING noise-floor follow-ups distinct: the drifting/diverged
+     cutoff calibration (below) + the per-side-silent-under-transient guard (P2, parked). -->
 - **Validate the drifting/diverged cutoffs against observed transient magnitudes** (METHOD,
   Cycle-45 follow-up): Cycle 45 measured the AT-REST noise floor (σ=0 → the in-band `_BAND_IN=2.0`
   band is well-separated from measurement noise). The `_BAND_DRIFT=8.0` cutoff that splits

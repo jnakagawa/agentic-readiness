@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 47
+- Cycle counter: 48
 - Started: 2026-07-23 (UTC)
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
   (Cycle 1 METHOD, Cycle 2 COVERAGE, Cycle 3 TRUTH, Cycle 4 READOUT,
   Cycle 5 METHOD, Cycle 6 COVERAGE, Cycle 7 TRUTH, Cycle 8 READOUT,
   Cycle 9 METHOD, Cycle 10 COVERAGE, Cycle 11 TRUTH (cloud: trial-count panel
@@ -805,6 +805,29 @@
   ~01:2xZ). First duty: no open peer-gated PR (verified []); infra health check ran first — runner HEALTHY
   (verify_20260727T224106Z, 22:41Z, ~2.5h old, +39.4 in-band); git synced origin/main f91d3d6. Next cycle
   takes READOUT.
+  Cycle 48 READOUT (the noise-floor / per-side-determinism calibration finding surfaced on
+  `canonical-history.html` — the last terminal→HTML gap on that surface): `scorecard._write_canonical_history_page`
+  gains an "Is the band real noise, or transient absorption?" card between the trend chart and the diagnosis
+  card, driven off `hist.noise_floor` (`NoiseFloor`, Cycle 45/47). Reports n_in_band/σ/worst|div|, the
+  DETERMINISTIC-at-rest verdict, and — ONLY when `sides_deterministic` — the strictly-stronger per-side sentence
+  (both reference storefronts reproduce their pinned overall exactly at rest → the stable delta is genuine
+  per-side determinism, not two lock-step drifts cancelling). When the delta is deterministic but the SIDES are
+  not (the cancellation Cycle 47 guards), the card shows the delta-level verdict and WITHHOLDS the per-side claim;
+  non-deterministic floors render the well-separated/too-tight band read; <2 in-band readings → card SILENT
+  (honest, no fabricated determinism). Wording copied verbatim from the terminal `render` (can't diverge).
+  Rendered against the REAL committed 72-point series (68 in-band, σ=0.00, both sides exact). Display-only:
+  `git diff --name-only` = scorecard.py + test_readout.py ONLY; scoring.py/rubric/probes/fetch/protocols/battery/
+  offering/canonical_history/behavioral byte-for-byte untouched → rubric stays v0.7, canonical delta unchanged by
+  construction AND re-measured (in-cloud replay guard 14/14, 46.1 F / 85.5 B / +39.4, 0 replay-miss; live
+  canonical-history reads IN-BAND +39.4). Vendor-neutral (page names the pair as DATA, Cycle-40
+  engineering-history category out of scope for the wording scanner; readout/rubric-wording guards 4/4 each
+  unchanged). Direct-to-main. `test_readout.py` 31→34 (+per-side determinism strong claim; +NON-VACUOUS
+  lock-step cancellation control withholds the per-side sentence; +card absent with <2 in-band); suite 195→198.
+  No Slack (display-only, moves no score, not a digest window at ~02:2xZ, digest last sent Cycle 38 16:13Z).
+  First duty: no open peer-gated PR (verified []); infra health check ran first — runner HEALTHY
+  (verify_20260727T224106Z, 22:41Z, ~3.5h old, +39.4 in-band) BUT the :41 fires at 23:41/00:41/01:41Z produced
+  NO artifact (3 consecutive gaps, still under the 6h floor at 02:12Z — a possible fresh runner stall to WATCH;
+  if still gapped past 6h next fire, flag + fold into the next digest). Next cycle takes METHOD.
 - **LIVE CANONICAL DRIFT (open, for the next post-16:00 UTC digest) — surfaced by the Cycle-36 history readout.**
   The live canonical delta held **+39.4** (46.1 F / 85.5 B) for days through `verify_20260727T054339Z`, then MOVED:
   07:40Z fire driftflight.com collapsed to 50.0 F (delta +3.9 — transient error crawl, transactability CANT_TEST /

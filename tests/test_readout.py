@@ -678,6 +678,66 @@ def test_canonical_history_recapture_is_data_driven() -> None:
            "does NOT show the DEFER label on an in-band series (data-driven, not templated)")
 
 
+def test_canonical_history_page_renders_per_side_determinism() -> None:
+    # Cycle 45/47 measured whether the ±band is transient-absorption vs measurement
+    # noise, and (stronger) whether the stable delta is PER-SIDE determinism or two
+    # drifts cancelling. That was terminal-only; the page must surface it. A 2-reading
+    # in-band series where BOTH sides are exact at rest earns the strong per-side claim.
+    print("test_canonical_history_page_renders_per_side_determinism")
+    no_pil = {"access": 100.0, "legibility": 36.4}
+    with_pil = {"access": 100.0, "legibility": 90.9}
+    pts = [
+        _hist_point("20260727T050000Z", 46.1, "F", 85.5, "B", no_pil, with_pil),
+        _hist_point("20260727T060000Z", 46.1, "F", 85.5, "B", no_pil, with_pil),
+    ]
+    hist = ch.summarize(pts)
+    _check(hist.noise_floor is not None and hist.noise_floor.sides_deterministic,
+           "the fixture is per-side deterministic (sanity)")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_canonical_history_page(Path(d), history=hist)).read_text()
+    _check("Is the band real noise, or transient absorption?" in text,
+           "renders the noise-floor calibration card")
+    _check("DETERMINISTIC at rest" in text, "names the at-rest determinism verdict")
+    _check("genuine per-side determinism, not two drifts cancelling" in text,
+           "names the strictly-stronger per-side determinism finding")
+    _check("2</b> in-band re-scores" in text, "reports the in-band sample size")
+
+
+def test_canonical_history_per_side_claim_withheld_on_cancellation() -> None:
+    # NON-VACUOUS: two in-band readings whose sides jitter in LOCK-STEP (both +2.0)
+    # keep the delta deterministic (σ=0) yet are NOT per-side deterministic — the exact
+    # cancellation Cycle 47's guard exists for. The card must show the delta-deterministic
+    # headline but WITHHOLD the per-side claim; otherwise the strong sentence is templated,
+    # not earned.
+    print("test_canonical_history_per_side_claim_withheld_on_cancellation")
+    pil = {"access": 100.0, "legibility": 90.9}
+    pts = [
+        _hist_point("20260727T050000Z", 46.1, "F", 85.5, "B", pil, pil),   # +39.4 in-band
+        _hist_point("20260727T060000Z", 48.1, "F", 87.5, "B", pil, pil),   # +39.4 in-band, both sides moved
+    ]
+    hist = ch.summarize(pts)
+    nf = hist.noise_floor
+    _check(nf is not None and nf.deterministic and not nf.sides_deterministic,
+           "the fixture has a deterministic delta but NON-deterministic sides (cancellation)")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_canonical_history_page(Path(d), history=hist)).read_text()
+    _check("DETERMINISTIC at rest" in text, "still names the delta-level determinism")
+    _check("genuine per-side determinism" not in text,
+           "WITHHOLDS the per-side claim when sides are not exact (cancellation not ruled out)")
+
+
+def test_canonical_history_noise_card_absent_without_floor() -> None:
+    # Honest silence: with < 2 in-band readings there is no measurable floor, so the
+    # calibration card must not render at all (never a fabricated determinism claim).
+    print("test_canonical_history_noise_card_absent_without_floor")
+    hist = _drifting_history()  # 1 in-band anchor + 3 out-of-band -> no floor
+    _check(hist.noise_floor is None, "the drifting fixture has < 2 in-band readings (no floor)")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_canonical_history_page(Path(d), history=hist)).read_text()
+    _check("Is the band real noise, or transient absorption?" not in text,
+           "no noise-floor card when the floor is unmeasurable")
+
+
 def main() -> int:
     tests = [
         test_json_carries_reliability,
@@ -711,6 +771,9 @@ def main() -> int:
         test_canonical_history_names_reference_pair_as_data,
         test_canonical_history_page_renders_recapture_defer,
         test_canonical_history_recapture_is_data_driven,
+        test_canonical_history_page_renders_per_side_determinism,
+        test_canonical_history_per_side_claim_withheld_on_cancellation,
+        test_canonical_history_noise_card_absent_without_floor,
     ]
     failed = 0
     for t in tests:

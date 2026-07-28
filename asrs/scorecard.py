@@ -743,6 +743,53 @@ its divergence band; hover a point for its timestamp and value.</p>
 <div style="margin-top:10px">{legend_items}</div>
 </div>"""
 
+    # Cycle 45 measured whether the ±band is genuine site-transient absorption or just
+    # measurement noise; Cycle 47 measured the strictly stronger fact — whether the
+    # stable delta is PER-SIDE determinism or two lock-step drifts merely cancelling in
+    # the difference (the fair objection a critic raises about any "stable benchmark
+    # delta"). That whole calibration was terminal-only. Surface it here so a reader who
+    # never opens a terminal sees WHY the band is trustworthy. Renders whenever the floor
+    # is measurable (>= 2 in-band readings); silent otherwise (honest — no floor to show).
+    noise_card = ""
+    nf = hist.noise_floor
+    if nf is not None:
+        if nf.deterministic:
+            headline = (
+                f'<b style="color:{_HISTORY_BAND_COLOR["in-band"]}">DETERMINISTIC at rest'
+                f'</b> &mdash; the &plusmn;{ch._BAND_IN:.1f} band absorbs real-world site '
+                f'transients, not measurement noise'
+            )
+            # Per-side determinism is STRICTLY STRONGER than a deterministic delta: a
+            # deterministic delta is also consistent with two lock-step drifts cancelling,
+            # which the delta-only measure cannot rule out. Only claim it when BOTH sides
+            # are exact; otherwise stay silent on it (the cancellation case Cycle 47 guards).
+            sides = ""
+            if nf.sides_deterministic:
+                sides = (
+                    f'<p style="margin-top:10px"><b>Per-side:</b> both reference '
+                    f'storefronts reproduce their pinned overall <b>exactly</b> at rest '
+                    f'(&sigma; {_esc(ch.CANONICAL_NO_RAILS)}={nf.no_rails_stddev:.2f}, '
+                    f'{_esc(ch.CANONICAL_WITH_RAILS)}={nf.with_rails_stddev:.2f}) &mdash; '
+                    f'the stable delta is genuine per-side determinism, not two drifts '
+                    f'cancelling in the difference.</p>'
+                )
+        else:
+            sep = (
+                "comfortably clears the observed jitter"
+                if nf.band_well_separated
+                else "is <b>too tight</b> for the observed jitter"
+            )
+            headline = f'the &plusmn;{ch._BAND_IN:.1f} in-band band {sep}'
+            sides = ""
+        noise_card = f"""<div class="card">
+<h2>Is the band real noise, or transient absorption?</h2>
+<p>A single reading can&rsquo;t say whether a move off the pinned delta is measurement
+noise or a real change. This measures the at-rest dispersion of the reference pair over
+its <b>{nf.n_in_band}</b> in-band re-scores: &sigma;={nf.stddev:.2f}, worst divergence
+{nf.max_abs_divergence:.2f}. {headline}.</p>
+{sides}
+</div>"""
+
     diag_card = ""
     attr = hist.attribution
     cause = hist.divergence_cause
@@ -799,6 +846,7 @@ is a <span class="chip">[LOCAL]</span>, comparability-affecting step).</p>
     body = f"""{nav}{intro}
 {latest_card}
 {chart_card}
+{noise_card}
 {diag_card}
 {rec_card}
 <p class="sub" style="margin-top:16px">

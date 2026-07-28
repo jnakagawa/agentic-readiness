@@ -4871,3 +4871,61 @@ at-rest per-side σ) — but that needs a fresh OOB stretch in the committed ser
 it PARKS until one appears (the 07-27 transient already recovered). Otherwise the calibration frontier
 moves to a real calibration POPULATION (P1 TRUTH: a dated 15–20-domain static sweep + leaderboard) so
 the benchmark rests on more than one reference pair. Cloud rotation → READOUT next.
+
+
+## Cycle 48 (READOUT) — 2026-07-28T02:2xZ — the noise-floor / per-side-determinism finding on canonical-history.html
+
+**Track.** READOUT (card / rubric page / leaderboard / evidence links / prose).
+
+**What/why.** `asrs canonical-history` (terminal) surfaces the whole drift diagnosis; Cycle 40 gave it
+an HTML surface (`canonical-history.html`) and Cycles 44 (re-capture decision) closed the terminal→HTML
+gaps one by one. But the CALIBRATION finding — Cycle 45's at-rest noise floor of the delta AND Cycle 47's
+strictly-stronger PER-SIDE determinism (each reference storefront reproduces its pinned overall exactly at
+rest → the stable delta is genuine per-side determinism, not two lock-step drifts cancelling in the
+difference) — was still TERMINAL-ONLY. That is the single most credibility-relevant fact on the page: it
+answers a critic's fair objection to any "stable benchmark delta" (is the ±band real transient-absorption
+or measurement noise; is the stable delta genuine or a cancellation?). This cycle renders it — the same
+recurring terminal→JSON→HTML pattern the loop keeps closing (per_kind 10→12, between_kind 18→20, NA-block
+25→28, re-capture 43→44).
+
+**Change.** `asrs/scorecard.py` `_write_canonical_history_page` gains a "Is the band real noise, or
+transient absorption?" card between the trend chart and the diagnosis card (mirroring the terminal order:
+latest → divergence → sustained → noise floor → attribution → cause → re-capture). Driven off
+`hist.noise_floor` (`NoiseFloor`, Cycle 45/47): reports n_in_band / σ / worst |div|, then the DETERMINISTIC-
+at-rest verdict, and — only when `sides_deterministic` — the per-side sentence (both sides exact, σ per side).
+When the delta is deterministic but the SIDES are not (the lock-step cancellation Cycle 47 guards), the card
+shows the delta-level verdict and WITHHOLDS the per-side claim. Non-deterministic floors render the
+well-separated / too-tight band-width read. Renders only when the floor is measurable (≥2 in-band readings);
+silent otherwise (honest — no fabricated determinism claim). Wording copied verbatim from the terminal
+`render` so the two surfaces can't diverge.
+
+**Evidence.** Rendered against the REAL committed 72-point series (68 in-band): the card reads
+"σ=0.00, worst divergence 0.00 · DETERMINISTIC at rest · both reference storefronts reproduce their pinned
+overall exactly at rest (σ drift-flight.org=0.00, driftflight.com=0.00) — genuine per-side determinism, not
+two drifts cancelling." `tests/test_readout.py` 31 → 34: (+per-side determinism renders the strong claim on
+a 2-reading exact series; +NON-VACUOUS cancellation control — two in-band readings with sides moving in
+lock-step keep delta σ=0 yet withhold the per-side claim; +the card is ABSENT with <2 in-band readings).
+Full suite 195 → 198 (all 19 files exit 0).
+
+**Canonical pair.** `git diff --name-only` = `asrs/scorecard.py` + `tests/test_readout.py` ONLY;
+scoring.py / rubric / probes / fetch / protocols / battery / offering / canonical_history / behavioral
+byte-for-byte untouched → display-only, rubric stays **v0.7**, canonical delta unchanged by construction
+AND re-measured (in-cloud replay guard 14/14, **46.1 F / 85.5 B / +39.4**, 0 replay-miss;
+`python -m asrs canonical-history` reads live IN-BAND +39.4, 68 in-band re-scores σ=0.00). Vendor-neutral:
+the page names the reference pair as DATA (the Cycle-40 engineering-history category, out of scope for the
+wording scanner) — readout-wording + rubric-wording guards 4/4 each unchanged.
+
+**Comms.** No Slack (display-only, moves no score, not sensitive; daily digest already sent Cycle 38
+16:13Z — this fire ~02:2xZ is not a new digest window, next is 07-28 16:00Z).
+
+**First duty.** No open peer-gated PR (`list_pull_requests state=open` → `[]`). Infra health check ran
+first — runner HEALTHY (`verify_20260727T224106Z`, 22:41Z, ~3.5h old, 46.1 F / 85.5 B / +39.4 in-band),
+full suite runnable + green; git synced to origin/main. WATCH: the :41 fires at 23:41 / 00:41 / 01:41Z
+produced no artifact (3 consecutive gaps, still under the 6h floor at 02:12Z) — a possible fresh runner
+stall; if still gapped past 6h next fire, flag + fold into the next digest.
+
+**Next hypothesis.** The canonical-history page now surfaces the FULL terminal diagnosis (latest / trend /
+noise-floor+per-side / pillar+side / re-capture) — the last terminal→HTML gap on that surface is closed.
+The READOUT frontier moves off the canonical-history page: either the P1 calibration POPULATION leaderboard
+(a dated 15–20-domain sweep needs a READOUT home) or a real multi-kind battery card eyeball ([LOCAL]
+acceptance rerun). Cloud rotation → METHOD next.

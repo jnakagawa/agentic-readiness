@@ -99,6 +99,24 @@ ARCHETYPES: tuple[str, ...] = (
 # surfaces fixed, now for the agent-card surface. No new signal is needed, only for
 # the surface to be read; a 404 is simply an absent surface as always.
 #
+# The human/agent API-DOCS PAGE (`/docs`, and the conventional `/api-docs` /
+# `/reference` variants) is added last: the rendered documentation page an
+# API-first storefront most commonly exposes for a developer OR an agent to read
+# its endpoints, examples, and — crucially — its RATE LIMITS / request quotas. That
+# "understand the offer" prose (how fast/how often an agent may call, per-call
+# billing, generated-media output) is exactly the vendor-neutral language the
+# signal bank already anchors on, and on the canonical pair it lives on
+# `/docs`, NOT on any well-known JSON doc (the `rate-limited` evidence is the
+# `<h2 id="rate-limits">Rate limits</h2>` block on `driftflight.com/docs`). Unlike
+# the JSON docs above, this surface is HTML — so :func:`classify_offering`
+# HTML-STRIPS any HTML-document surface (not just the homepage) before scanning, or
+# `<script>`/`<style>` decoy words ("out of stock", "shopping cart") on a real docs
+# page would leak into evidence and false-positive an archetype. No new signal; a
+# 404 is an absent surface as always. Score-neutral (off the scoring path); on the
+# canonical pair the claimed SET and ORDER are unchanged — reading richer docs only
+# reinforces already-claimed archetypes (guarded by tests/test_offering_canonical.py
+# and tests/test_offering.py::test_docs_surface_is_read_live).
+#
 # Well-known JSON conventions, most-specific first; a surface that 404s is simply
 # absent (discovery tolerates a missing surface, same as any other doc).
 _SURFACE_DOCS: tuple[str, ...] = (
@@ -111,6 +129,9 @@ _SURFACE_DOCS: tuple[str, ...] = (
     "/openapi.json",
     "/.well-known/openapi.json",
     "/swagger.json",
+    "/docs",
+    "/api-docs",
+    "/reference",
 )
 
 # Conventional agent/API DOC SUBDOMAINS. A real, common pattern for API-first
@@ -336,6 +357,21 @@ def strip_html(text: str) -> str:
     return _WS_RE.sub(" ", stripped).strip()
 
 
+def _is_html_document(text: str) -> bool:
+    """True if ``text`` looks like a full HTML page (so it should be HTML-stripped).
+
+    Keys on the leading bytes only — a ``<!doctype html>`` / ``<html`` prologue —
+    so it fires on a rendered docs/API-reference page but NOT on a JSON surface
+    (``{`` first) or a plain-text ``llms.txt`` (text first), both of which must
+    pass through unstripped. This lets :func:`classify_offering` strip markup from
+    an HTML doc-page surface (e.g. ``/docs``) exactly as it does the homepage,
+    keeping ``<script>``/``<style>`` decoy words out of the scanned prose, without
+    disturbing the non-HTML surfaces whose bytes carry the signal directly.
+    """
+    head = (text or "").lstrip()[:256].lower()
+    return head.startswith("<!doctype html") or head.startswith("<html") or "<html" in head
+
+
 def _quote(text: str, start: int, end: int, pad: int = 40) -> str:
     """A short, whitespace-normalized window around a match, for evidence."""
     window = text[max(0, start - pad): end + pad]
@@ -373,7 +409,12 @@ def classify_offering(domain: str, surfaces: dict[str, str]) -> OfferingProfile:
     scanned: dict[str, list[ArchetypeSignal]] = {}
     seen: list[str] = []
     for surface, text in surfaces.items():
-        prose = strip_html(text) if surface == "homepage" else (text or "")
+        raw = text or ""
+        # Strip markup to visible prose for the homepage AND any HTML-document
+        # surface (a rendered /docs API-reference page); plain-text and JSON
+        # surfaces (llms.txt, manifest.json, openapi.json, agent cards) carry the
+        # signal directly and pass through unchanged.
+        prose = strip_html(raw) if (surface == "homepage" or _is_html_document(raw)) else raw
         if not prose:
             continue
         seen.append(surface)
@@ -445,8 +486,10 @@ def discover_offering(ctx) -> OfferingProfile:
     Reads the homepage plus the agent-surface docs (``llms.txt`` /
     ``llms-full.txt`` / ``manifest.json``), the agent-plugin descriptor
     (``.well-known/ai-plugin.json``), the A2A agent card
-    (``.well-known/agent.json`` / ``.well-known/agent-card.json``), and the machine
-    API contract (``openapi.json`` / ``.well-known/openapi.json`` / ``swagger.json``)
+    (``.well-known/agent.json`` / ``.well-known/agent-card.json``), the machine
+    API contract (``openapi.json`` / ``.well-known/openapi.json`` / ``swagger.json``),
+    and the rendered API-docs page (``/docs`` / ``/api-docs`` / ``/reference`` — HTML,
+    so it is HTML-stripped like the homepage before scanning)
     via the shared :class:`FetchContext` — read-only, $0. Each surface doc is read
     on the storefront's apex host AND on a small allowlist of conventional doc
     SUBDOMAINS of the same registrable host (``agents.`` / ``docs.`` / ``developers.``

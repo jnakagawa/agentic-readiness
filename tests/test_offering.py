@@ -192,6 +192,35 @@ DATA_AGENT_CARD = """
 """
 
 
+# A rendered HTML API-REFERENCE PAGE served at /docs — the human/agent-facing
+# docs an API-first storefront most commonly exposes at a conventional /docs (or
+# /api-docs, /reference) path, distinct from the machine well-known JSON docs. It
+# is HTML, so discover_offering must HTML-STRIP it (as it does the homepage)
+# before scanning. NON-VACUOUS on the strip: the <style>/<script> blocks carry
+# RETAIL DECOY words ("out of stock", "shopping cart") — exactly the shape present
+# on the real canonical /docs page — which, scanned RAW, would false-positive
+# physical_good on a pure API storefront (the battery pollution the directive
+# removes); stripped, they never reach the scanner. The visible prose documents a
+# metered API (endpoints + rate limits + per-generation billing) and image
+# generation (digital_good).
+DOCS_HTML = """
+<!doctype html><html><head>
+<title>Northpeak API reference</title>
+<style>.cart::after{content:"add to cart"} /* out of stock decoy */</style>
+<script>var x = "shopping cart checkout, out of stock, shipping address";</script>
+</head><body>
+<main>
+<h1 id="overview">Northpeak API</h1>
+<p>Generate an image from a text prompt over a simple REST API. POST
+https://api.northpeak.test/v1/images/generate with a prompt and receive a hosted
+output URL. Billed per generation; usage-based.</p>
+<h2 id="rate-limits">Rate limits</h2>
+<p>Free tier: 20 requests per minute. Bursts beyond the limit queue.</p>
+</main>
+</body></html>
+"""
+
+
 def test_api_storefront_claims_agent_native_not_physical():
     prof = classify_offering("example-imaging.test", {"homepage": API_HOMEPAGE})
     claimed = set(prof.archetypes)
@@ -402,12 +431,13 @@ def test_rate_limit_fires_on_real_captured_api_docs():
     # real-data non-vacuity move test_credit_metered_fires_on_real_captured_billing_prose
     # makes on /llms-full.txt.
     #
-    # SCORE-NEUTRAL by construction: this evidence lives on /docs, which
-    # discover_offering does NOT crawl (it reads the homepage + _SURFACE_DOCS on the
-    # apex and doc subdomains), so the canonical discovery classification is
-    # byte-identical (pinned green by tests/test_offering_canonical.py, 12/12);
-    # metered_api is also already the strongest claim on the pair, so even a
-    # crawled hit could only deepen its evidence, never add an archetype or reorder.
+    # SCORE-NEUTRAL by construction: this evidence lives on /docs. discover_offering
+    # now DOES crawl /docs (added to _SURFACE_DOCS this cycle — HTML-stripped like the
+    # homepage), so the canonical discovery classification is UNCHANGED: metered_api is
+    # already the strongest claim on the pair, so the crawled hit only deepens its
+    # evidence, never adds an archetype or reorders (the claimed SET+ORDER are pinned
+    # green by tests/test_offering_canonical.py (12/12) and test_docs_surface_is_read_live
+    # below). This test exercises the classifier directly on the captured /docs bytes.
     docs = _fixture_entry_text("driftflight.com", "/docs")
     assert "rate limit" in docs.lower(), "fixture /docs lost its Rate limits section"
     prof = classify_offering("driftflight.com", {"/docs": docs})
@@ -553,21 +583,56 @@ def test_a2a_agent_card_alone_classifies_storefront():
     print("  ok: metered_api + data_retrieval each rest on >=2 distinct card signals")
 
 
+def test_html_docs_page_alone_classifies_storefront():
+    # The coverage gap the /docs API-docs page closes: a storefront whose
+    # agent-facing self-description is its rendered HTML documentation page (no
+    # llms.txt, no reachable JSON well-known doc, a thin marketing homepage). The
+    # page's endpoints / rate limits / per-generation billing prose is the same
+    # vendor-neutral language the signal bank already anchors on — so the surface
+    # only had to be READ and (being HTML) HTML-STRIPPED; it needs no new signal.
+    prof = classify_offering("northpeak.test", {"/docs": DOCS_HTML})
+    assert prof.surfaces_seen == ["/docs"], prof.surfaces_seen
+    claimed = set(prof.archetypes)
+    assert "metered_api" in claimed, prof.archetypes
+    assert "digital_good" in claimed, prof.archetypes
+    print(f"  ok: an HTML /docs-page-only storefront is classified, got {prof.archetypes}")
+    # THE load-bearing guard: the /docs page is HTML-STRIPPED, so the <style>/
+    # <script> retail decoy words ("out of stock" / "shopping cart" / "shipping
+    # address") do NOT read as physical fulfillment. Scanned RAW they WOULD — this
+    # is precisely why an HTML doc surface must be stripped, not read verbatim.
+    assert not prof.claims("physical_good"), (
+        "raw <script>/<style> retail decoys leaked as physical_good — /docs not stripped"
+    )
+    # Evidence is HTML-free: tags are stripped from the /docs surface, not only the
+    # homepage (mirrors test_evidence_is_quoted_and_surface_tagged for a doc page).
+    for c in prof.claimed:
+        for s in c.signals:
+            assert "<" not in s.quote and ">" not in s.quote, s.quote
+    # The rate-limits section drove the metered_api rate-limited signal, from /docs.
+    metered = next(c for c in prof.claimed if c.archetype == "metered_api")
+    m_labels = {s.label for s in metered.signals}
+    assert "rate-limited" in m_labels, m_labels
+    print("  ok: /docs is HTML-stripped — retail decoys stay NA, rate-limits drives metered_api")
+
+
 def test_openapi_surface_is_wired_for_live_discovery():
-    # A structural guard: the OpenAPI conventions, the agent-plugin descriptor, AND
-    # the A2A agent card are actually in the surface list `discover_offering`
-    # fetches live (not merely handled by the pure classifier). Without this, a
-    # spec-only / descriptor-only / agent-card-only site would never be READ. The
-    # natural-language docs remain covered too (no regression to the surface set).
+    # A structural guard: the OpenAPI conventions, the agent-plugin descriptor, the
+    # A2A agent card, AND the rendered HTML API-docs page are actually in the surface
+    # list `discover_offering` fetches live (not merely handled by the pure
+    # classifier). Without this, a spec-only / descriptor-only / agent-card-only /
+    # docs-page-only site would never be READ. The natural-language docs remain
+    # covered too (no regression to the surface set).
     docs = offering._SURFACE_DOCS
     for path in ("/openapi.json", "/.well-known/openapi.json", "/swagger.json"):
         assert path in docs, f"{path} missing from discovery surfaces: {docs}"
     assert "/.well-known/ai-plugin.json" in docs, f"ai-plugin descriptor missing: {docs}"
     for path in ("/.well-known/agent.json", "/.well-known/agent-card.json"):
         assert path in docs, f"A2A agent card {path} missing from discovery surfaces: {docs}"
+    for path in ("/docs", "/api-docs", "/reference"):
+        assert path in docs, f"HTML API-docs page {path} missing from discovery surfaces: {docs}"
     for path in ("/llms.txt", "/llms-full.txt", "/manifest.json"):
         assert path in docs, f"regressed natural-language surface {path}: {docs}"
-    print(f"  ok: OpenAPI/Swagger + ai-plugin + A2A agent-card surfaces wired, got {docs}")
+    print(f"  ok: OpenAPI/Swagger + ai-plugin + A2A agent-card + /docs surfaces wired, got {docs}")
 
 
 def test_strip_html_drops_script_style_and_tags():
@@ -653,6 +718,37 @@ def test_doc_subdomain_surfaces_are_read_live():
     print("  ok: the richer doc-subdomain evidence does NOT change the claimed set (score-neutral)")
 
 
+def test_docs_surface_is_read_live():
+    # END-TO-END, on REAL captured bytes: discovery now reads the rendered HTML
+    # API-docs page (/docs) added to _SURFACE_DOCS this cycle. The canonical
+    # driftflight.com serves a `<h2 id="rate-limits">Rate limits</h2>` API-reference
+    # at /docs — a surface the apex JSON-docs crawl never reached — and it is HTML,
+    # so it is HTML-stripped before scanning.
+    ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "driftflight.com.json"))
+    prof = offering.discover_offering(ctx)
+
+    # The /docs surface was READ (it is in surfaces_seen).
+    assert "/docs" in prof.surfaces_seen, prof.surfaces_seen
+
+    # NON-VACUOUS: the /docs page really did reach classification — its evidence
+    # appears in the discovered profile (at least one signal is surface-tagged /docs),
+    # and every /docs-sourced evidence quote is HTML-FREE (the page was stripped, not
+    # scanned raw — so its <script>/<style> decoy words never entered evidence).
+    docs_sigs = [s for c in prof.claimed for s in c.signals if s.surface == "/docs"]
+    assert docs_sigs, "no /docs-sourced signal reached classification"
+    for s in docs_sigs:
+        assert "<" not in s.quote and ">" not in s.quote, s.quote
+    print(f"  ok: /docs reaches classification, HTML-stripped ({len(docs_sigs)} signals)")
+
+    # SCORE-NEUTRAL by construction: reading the richer /docs prose can only REINFORCE
+    # archetypes the storefront already documents — the claimed SET AND ORDER are
+    # unchanged (the exact regression the canonical offering guard pins). No new
+    # archetype, no false physical_good from the docs page's retail decoy words.
+    assert prof.archetypes == ["metered_api", "digital_good", "subscription"], prof.archetypes
+    assert not prof.claims("physical_good"), prof.archetypes
+    print("  ok: /docs evidence does NOT change the claimed set/order (score-neutral)")
+
+
 def main() -> int:
     tests = [
         test_api_storefront_claims_agent_native_not_physical,
@@ -669,9 +765,11 @@ def main() -> int:
         test_openapi_spec_alone_classifies_api_first_storefront,
         test_ai_plugin_descriptor_alone_classifies_storefront,
         test_a2a_agent_card_alone_classifies_storefront,
+        test_html_docs_page_alone_classifies_storefront,
         test_openapi_surface_is_wired_for_live_discovery,
         test_doc_subdomain_helper_is_precise_and_ssrf_safe,
         test_doc_subdomain_surfaces_are_read_live,
+        test_docs_surface_is_read_live,
         test_strip_html_drops_script_style_and_tags,
     ]
     failed = 0

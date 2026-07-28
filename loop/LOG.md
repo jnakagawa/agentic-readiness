@@ -6423,3 +6423,7 @@ so guard 20's caps leg is latent) — a synthetic fixture whose rubric forces tw
 to bind would exercise the caps-ordering path directly and pin that `caps_applied`
 is a SET-equal, not order-sensitive, output. Low urgency (caps don't bind on any
 committed domain), design-only until a capped fixture exists.
+
+## Local verification — 20260728T194100Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260728T194100Z.json

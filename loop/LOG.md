@@ -6120,3 +6120,7 @@ whose finer check layer carries one absorbed inversion (retail HTTPS > no-rails 
 so "earned dominance" means pillar-superset + majority-at-checks, not a universal per-check
 superset. TRUTH follow-on: extend guard 19 to the 5th committed fixture (api.replicate.com)
 once its capability tier + expected statuses are pinned [LOCAL/cloud].
+
+## Local verification — 20260728T172734Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260728T172734Z.json

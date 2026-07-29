@@ -7819,3 +7819,58 @@ Candidate: a fresh executable-invariant increment on the offering/battery path (
 an aggregation- or classification-layer invariant not yet pinned), or extend the
 calibration/relabel guard family as new fixtures land. First duty next cycle: review
 any open peer-gated PR.
+
+## Cycle 85 — 2026-07-29T15:12Z — METHOD
+
+**What.** Pinned the scorer's MULTI-CAP ORDER-INVARIANCE. `asrs/scoring.score`
+builds `caps_applied` by iterating the checks in ARRIVAL order
+(`for c in checks: ... caps_applied.append(slug)`) and the capped `overall` as a
+repeated `min(overall, cap_value)`. The min is order-independent, but when TWO caps
+bind, permuting the check input permutes the `caps_applied` LIST. New
+`tests/test_scoring.py::test_multi_cap_order_invariance` (test_scoring 11→12) scores a
+synthetic two-binding-cap report (`human-gate-required` cap 79 + `no-https` cap 59,
+attached to otherwise-PASS checks so the pre-cap overall is 100 and both bind) under
+FOUR deterministic arrival orders (identity, reverse, two rotations) and asserts the
+METRIC-BEARING surface is byte-identical — capped overall 59.0, grade F, the SET of
+binding caps `{human-gate-required, no-https}`, and every pillar score — while
+HONESTLY SCOPING the `caps_applied` LIST order as a readout detail that legitimately
+varies (non-vacuity: ≥2 distinct list orders observed, so the set-invariance assertion
+is doing real work). The scoring-path analog of the battery presentation-order
+invariance (Cycle 73, per_kind readout order may move / numbers may not) and the
+leaderboard ranking permutation-invariance (Cycle 77).
+
+**Why.** A capped grade must be a property of WHICH critical findings were observed,
+not the ORDER the probes emitted them — the North Star's reproducibility axis at the
+cap layer. This rung was genuinely MISSING: the canonical-replay input-order guard
+(`test_canonical_replay` guard 19) compares a fingerprint that DELIBERATELY OMITS
+`caps_applied`, and NO committed canonical fixture binds any cap
+(`test_canonical_delta_is_weight_robust` asserts `not com.caps_applied and not
+org.caps_applied`) — so the multi-cap ordering behavior that guard 19's OWN docstring
+names ("the `caps_applied` list, which scoring.score builds in check-ARRIVAL order")
+was unexercised anywhere. The only way to reach the ≥2-binding-cap case is a synthetic
+report, added here. Worded by measurement, never by vendor.
+
+**Scope.** Tests-only. `git diff --name-only` = `tests/test_scoring.py` ONLY;
+`git diff -- asrs/ rubric/ fixtures/ batteries/` EMPTY → scoring path byte-for-byte
+untouched → rubric v0.7 (the test PINS existing behavior, changes none). Off the
+scoring path.
+
+**Canonical pair (regression signal).** UNCHANGED and re-measured: in-cloud replay
+guard `tests/test_canonical_replay.py` 24/24, overall 46.1 F (.org) / 85.5 B (.com),
+delta +39.4, 0 replay-miss. test_scoring 11→12; full suite 22 files green
+(test_free_tier 11/11 with eth-account installed). LOCAL verify runner STILL GAPPED
+(`verify_20260728T234102Z.json` 23:41Z Jul-28, ~15.5h old at the 15:12Z fire — past the
+6h floor; the in-cloud replay guard is the independent live regression signal meanwhile
+→ flag in the next 16:00 UTC digest).
+
+**Ship.** Cloud bridge blocks direct main push → branch loop/multi-cap-order-invariance
++ PR #20 + self-merge (squash, 76f83cb; NOT peer-gated — tests-only, off scoring path,
+pins existing behavior). No Slack (tests-only, moves no score, this 15:12Z fire is
+before the 16:00 UTC digest window). First duty: no open peer-gated PR ([]); realigned
+detached HEAD (164babe) to origin/main (76f83cb after merge).
+
+**Next hypothesis.** COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT).
+Candidate: a new archetype/signal for `classify_offering`, or a per-segment leaderboard
+summary once the [LOCAL] calibration population grows; the in-cloud COVERAGE frontier
+is thin (structured catalog/pricing JSON are [LOCAL], 404 on fixtures). First duty next
+cycle: review any open peer-gated PR, then the 16:00 UTC digest (flag the runner gap).

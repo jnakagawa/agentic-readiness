@@ -507,6 +507,17 @@ design in-cloud, execute locally.
      Tests-only, git diff -- asrs/ rubric/ fixtures/ batteries/ EMPTY → rubric v0.7, replay guard 24/24 /
      46.1 F / 85.5 B / +39.4. See LOG Cycle 75. Folds into the recurring "extend relabel-invariance to
      more fixtures as they land" item. -->
+<!-- DONE 2026-07-29 (Cycle 85, METHOD, branch+PR+self-merge, tests-only, off scoring path): the scorer's
+     MULTI-CAP ORDER-INVARIANCE is now pinned. `test_scoring.py::test_multi_cap_order_invariance` (11→12)
+     scores a synthetic two-binding-cap report under FOUR deterministic arrival orders and asserts the
+     metric-bearing surface (capped overall 59.0, grade F, SET of binding caps, pillar scores) is byte-
+     identical, honestly scoping the `caps_applied` LIST order as a readout detail that varies. Closes the
+     rung the canonical-replay input-order guard (guard 19) names but cannot reach — its fingerprint omits
+     caps_applied and no committed fixture binds a cap. Rubric v0.7, replay 24/24 / 46.1 F / 85.5 B / +39.4.
+     PR #20 (squash 76f83cb). NOTE for a future cycle: do NOT "tighten guard 19's fingerprint to include
+     sorted(caps_applied)" — it would be VACUOUS on the canonical population (caps_applied is empty on all
+     four fixtures), which is exactly why the ≥2-binding-cap case needs a synthetic report; guard 19 stays
+     as-is. See LOG Cycle 85. -->
 - **Extend relabel-invariance as new offering fixtures land** (TRUTH/METHOD, cloud-doable, recurring —
   sub-item of the Adversarial referee pass). `test_offering_canonical.py`'s relabel family now covers all
   FIVE committed offering fixtures (pair + machine quote-anchored; retail + non-storefront surface-presence,

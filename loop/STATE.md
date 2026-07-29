@@ -1,10 +1,10 @@
 # Loop state
 
-- Cycle counter: 80
+- Cycle counter: 81
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-29T10:11Z, Cycle 80; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-29T11:12Z, Cycle 81; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~10h31m old at the 10:11Z fire; no newer :41 artifact through 09:41Z Jul-29 (11 consecutive
+  Jul-28 = ~11h31m old at the 11:12Z fire; no newer :41 artifact through 10:41Z Jul-29 (12 consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine → FLAG in the next 16:00 UTC digest (the
   10:11Z fire is before the digest window); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
@@ -25,7 +25,33 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 81 METHOD — made the offering CLASSIFICATION's SURFACE-READ-ORDER INVARIANCE an executable
+  tripwire. New `test_classification_is_surface_read_order_invariant` (test_offering 27→28) runs
+  `classify_offering` on the same synthetic surfaces in two genuinely-distinct insertion orders (forward
+  vs reversed) and asserts the metric-bearing classification is IDENTICAL: claimed archetypes IN RANK
+  ORDER, each strength, each claim's distinct labels + source surfaces, the NA/unclaimed complement, and
+  the SET of surfaces read. Discovery-layer analog of the battery presentation-order invariance (Cycle 73)
+  and the leaderboard permutation-invariance (Cycle 77): a readiness classification is a property of WHAT
+  a storefront's surfaces declare, not the ORDER an agent fetched them — the offering-relative battery's
+  cross-site comparability rests on it (two crawls that read `/pricing` before/after the homepage must
+  classify identically). The ranking IS order-invariant by construction (`(-strength, ARCHETYPES.index)`
+  over a set-union of signals) but nothing pinned it against a future parallel-fetch/reorder refactor.
+  NON-VACUOUS + honest scope: fixture built so subscription is declared on BOTH surfaces (reorder genuinely
+  permutes accumulation) and TIES service_booking at strength 2 (tie broken purely by ARCHETYPES.index
+  1<4, stable in both runs); the test PROVES the permutation is real+observable (`surfaces_seen` LIST
+  differs AND the two-surface subscription `sample_quote` flips), then honestly scopes it — `sample_quote`
+  is a first-observed DISPLAY sample, deliberately NOT claimed order-invariant (measurement invariant, one
+  human-readable sample is not; same Cycle-79 honest-robustness precedent). Tests-only: git diff -- asrs/
+  rubric/ fixtures/ batteries/ EMPTY → scoring AND offering/battery code byte-for-byte untouched, rubric
+  v0.7, off the scoring path. Canonical PAIR unchanged AND re-measured (replay guard 24/24 incl. the
+  input-order negative control, 46.1 F / 85.5 B / +39.4, 0 replay-miss; offering-canonical guard 14/14).
+  test_offering 27→28; full suite 22 files green (test_free_tier 11/11 with eth-account). Cloud bridge
+  blocks direct main push → branch loop/offering-order-invariance + PR + self-merge (squash; NOT
+  peer-gated — tests-only, off scoring path). No Slack (moves no score, before 16:00 UTC digest). First
+  duty: no open peer-gated PR ([]). RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z ~11h31m old, past
+  6h floor — flag in next digest). Next COVERAGE — candidate: a new archetype/signal for classify_offering,
+  or a per-segment leaderboard summary once the [LOCAL] calibration population grows.)
   (Cycle 80 READOUT — surfaced the north-star "many payment rails" flexibility axis in the PUBLIC readout,
   the READOUT complement to the Cycle 78 (COVERAGE) + Cycle 79 (TRUTH) `agent-payment-rail` arc. Added one
   capability-worded, vendor-neutral paragraph to the methodology "What the score answers" card

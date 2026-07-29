@@ -7550,3 +7550,62 @@ floor — flag in the 16:00 UTC digest).
 **Next hypothesis.** METHOD next (rotate). Cloud-doable candidate: a fresh executable-invariant
 increment on the offering/battery path, or extend the calibration/relabel guard family as
 new fixtures land. First duty next cycle: review any open peer-gated PR.
+
+## Cycle 81 — 2026-07-29T11:12Z — METHOD (branch+PR+self-merge; NOT peer-gated)
+
+**What.** Made the offering CLASSIFICATION's SURFACE-READ-ORDER INVARIANCE an
+executable tripwire. New `tests/test_offering.py::test_classification_is_surface_read_order_invariant`
+(test_offering 27→28) runs `classify_offering` on the same synthetic surfaces in
+two genuinely-distinct insertion orders (forward vs reversed) and asserts the
+metric-bearing classification is IDENTICAL: claimed archetypes IN RANK ORDER,
+each claim's strength, its distinct labels, its source surfaces, the NA/unclaimed
+complement, and the SET of surfaces read. The discovery-layer analog of the
+battery presentation-order invariance (Cycle 73) and the leaderboard
+permutation-invariance (Cycle 77): a readiness classification is a property of
+WHAT a storefront's surfaces declare, not the ORDER an agent fetched them in.
+
+**Why.** The offering-relative battery's cross-site comparability rests on this —
+two crawls of the same site that read `/pricing` before or after the homepage
+must classify identically, or the "assessed-over" archetype set (and the NA set
+excluded from every mean/spread) would depend on crawl timing. `classify_offering`
+accumulates per-archetype signals in surface-iteration order and ranks by
+`(-strength, ARCHETYPES.index)`; the ranking IS order-invariant by construction,
+but nothing pinned it — a future refactor (parallel fetch, dict-comprehension
+reorder) could silently make it order-dependent. This converts that latent
+guarantee into a regression tripwire.
+
+**Non-vacuity + honest scope.** The fixture is built so a reorder genuinely
+permutes accumulation, not just the dict: subscription is declared on BOTH
+surfaces, and it TIES service_booking at strength 2 (a tie broken purely by
+ARCHETYPES.index 1<4, never by which surface arrived first — asserted stable in
+both runs). The test PROVES the permutation is real and observable — `surfaces_seen`
+is a different LIST between runs AND the two-surface subscription claim's
+`sample_quote` genuinely flips — then honestly scopes the invariance: `sample_quote`
+is a first-observed DISPLAY sample, deliberately NOT claimed order-invariant (the
+measurement is invariant; one human-readable evidence sample is not). Same
+honest-robustness precedent as Cycle 79 (assert the robust invariant, name what
+isn't).
+
+**Scope.** `tests/test_offering.py` ONLY. `git diff -- asrs/ rubric/ fixtures/
+batteries/` EMPTY → scoring AND offering/battery code byte-for-byte untouched,
+rubric stays v0.7 (test pins existing behaviour). Off the scoring path.
+
+**Evidence.** `tests/test_offering.py` 27→28 PASS; full suite 22/22 files green
+(test_free_tier 11/11 with eth-account). Canonical-replay guard 24/24 (incl. the
+input-order negative control), offering-canonical guard 14/14.
+
+**Canonical pair (regression signal).** UNCHANGED and re-measured via the in-cloud
+replay guard: **46.1 F / 85.5 B / delta +39.4**, 0 replay-miss. LOCAL live runner
+STILL GAPPED (newest `runs/local/verify_20260728T234102Z.json` 23:41Z Jul-28,
+~11h31m old at the 11:12Z fire, past the 6h floor) — the replay guard is the
+independent live signal meanwhile; flag in the next 16:00 UTC digest.
+
+**Ship.** Cloud bridge blocks direct main push → branch
+`loop/offering-order-invariance` + PR + self-merge (squash). NOT peer-gated
+(tests-only, off scoring path, moves no score). No Slack (moves no score, before
+the 16:00 UTC digest window). First duty: no open peer-gated PR ([]).
+
+**Next hypothesis.** COVERAGE next (rotate). Cloud-doable candidate: a new
+archetype/signal for classify_offering, or a per-segment leaderboard summary once
+the [LOCAL] calibration population grows. First duty next cycle: review any open
+peer-gated PR.

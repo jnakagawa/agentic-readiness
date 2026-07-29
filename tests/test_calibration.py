@@ -34,19 +34,39 @@ pillar's payment checks all PASS — reproducibly across both trials.  Predictio
 evidence the behavioral run contradicts (or vice versa), that mismatch is a
 calibration defect this guard fails on.
 
+THE NEGATIVE ANCHOR (the symmetric half — landed).  Calibration is only
+trustworthy if the score's NEGATIVE prediction is also behaviorally real: a site
+the score says an agent CANNOT pay programmatically must actually stop the agent.
+On 2026-07-28T23:10Z a [LOCAL] fire ran the same offering-relative acceptance
+battery against a no-rails retail storefront (``www.moleskine.com``) and
+force-committed the report.  Its static half predicts NO agent-native payment
+(``x402_probe`` does not pass, ``self_serve_payg`` records x402_live=False,
+transactability at the no-rails floor); its behavioral half CORROBORATES the
+wall (``machine_payable_path`` and ``no_human_gate`` FALSE across both trials,
+Outcome pillar 0.0), reproducibly.  Prediction == experience on the negative
+side too.  Together the two anchors make calibration a TWO-SIDED property:
+positive payability real on the with-rails API storefront, negative wall real on
+the no-rails retail storefront — a prediction that points OPPOSITE ways on the
+two, not a universal pass that would "agree" with anything.
+
 HONEST SCOPE (attribution invariant, applied to calibration).
-- This is a ONE-DOMAIN anchor on the WITH-RAILS side.  It proves the score's
-  positive payability claim is behaviorally real on the domain that makes it; it
-  does NOT yet prove the no-rails / retail sides fail behaviorally where the
-  score predicts they will.  That symmetric half needs a live behavioral run on
-  a no-rails or retail storefront — queued [LOCAL] (the retail-inverse behavioral
-  acceptance item), un-runnable in-cloud (no network / no claude CLI for nested
-  panels).
-- The corroboration is precisely scoped to what the agent DID: it reached the
-  machine-payable PATH and completed the FREE-tier transaction (invariant #1 —
-  no nonzero-value call was made; both trials' blockers record that a paid call
-  needs a funded wallet).  "Agent-native payment REACHABLE", never "a paid
-  purchase was executed".
+- The negative anchor has no committed static fixture (moleskine.com is not in
+  ``fixtures/canonical/``; capturing one needs network -> [LOCAL]).  Its static
+  PREDICTION is therefore read from the static checks embedded in the behavioral
+  report's own full-probe crawl, not cross-validated against a separate offline
+  replay the way the with-rails anchor is (tests 1/4).  Capturing the fixture to
+  give the negative side the same two-crawl cross-validation is a [LOCAL]
+  follow-up, not a blocker on the two-sided property.
+- The negative FAILs are attribution-honest: Access is fully credited (the agent
+  reached the site) and the physical_good battery intent reached partial
+  completion (the agent BROWSED the store) — the wall is the payment path, not
+  un-reachability.  A no-rails retailer has no free tier, so
+  bhv_free_tier_transaction is (honestly) not_applicable, not a scored FAIL.
+- The positive corroboration is precisely scoped to what the agent DID: it
+  reached the machine-payable PATH and completed the FREE-tier transaction
+  (invariant #1 — no nonzero-value call was made; both trials' blockers record
+  that a paid call needs a funded wallet).  "Agent-native payment REACHABLE",
+  never "a paid purchase was executed".
 """
 
 from __future__ import annotations
@@ -91,6 +111,32 @@ _PAYMENT_OUTCOME_CHECKS = (
     "bhv_free_tier_transaction",
 )
 
+# The committed LIVE behavioral NEGATIVE anchor — a no-rails retail storefront
+# where the static score predicts NO agent-native payment (force-added at the
+# 2026-07-28T23:10Z local fire; ``runs/`` is otherwise gitignored).  Same rubric
+# v0.7 as the positive anchor, so the two are like-for-like.  moleskine.com has
+# NO committed static fixture (capturing one needs network -> [LOCAL]), so its
+# static prediction is read from the static checks embedded in this behavioral
+# report rather than from a separate offline replay.
+_NEGATIVE_REPORT = os.path.join(
+    _REPO_ROOT,
+    "runs",
+    "local",
+    "acceptance_battery_moleskine_20260728T225939Z.report.json",
+)
+_NEGATIVE_DOMAIN = "www.moleskine.com"
+
+# The Outcome checks that OPERATIONALIZE the NEGATIVE "an agent CANNOT pay
+# programmatically here" prediction — the shopper hitting the wall the score
+# predicts.  bhv_free_tier_transaction is DELIBERATELY excluded: a no-rails
+# retailer has no free tier, so that check is honestly not_applicable, not a FAIL
+# — asserting it FAILs would misattribute a structural NA as a payment wall.
+_NEGATIVE_PAYMENT_OUTCOME_CHECKS = (
+    "bhv_purchase_path",
+    "bhv_machine_payable",
+    "bhv_no_human_gate",
+)
+
 
 def _check(cond: bool, msg: str) -> None:
     if not cond:
@@ -123,6 +169,11 @@ def _static_check(report, check_id):
 
 def _load_behavioral():
     with open(_BEHAVIORAL_REPORT, encoding="utf-8") as fh:
+        return json.load(fh)
+
+
+def _load_negative():
+    with open(_NEGATIVE_REPORT, encoding="utf-8") as fh:
         return json.load(fh)
 
 
@@ -337,12 +388,204 @@ def test_calibration_rests_on_a_shared_static_base() -> None:
     )
 
 
+# ---------------------------------------------------------------------------
+# 5. THE NEGATIVE HALF (mirror of test 1).  Calibration is only trustworthy if
+#    the score's NEGATIVE prediction is also behaviorally real.  On the no-rails
+#    retail anchor the static score claims NO agent-native payment; the live
+#    shopper actually hit the wall — no machine-payable path, a human gate,
+#    Outcome pillar 0.  Prediction == experience on the negative side too.
+# ---------------------------------------------------------------------------
+def test_static_no_payment_prediction_is_behaviorally_corroborated() -> None:
+    print("test_static_no_payment_prediction_is_behaviorally_corroborated")
+    neg = _load_negative()
+
+    # LIKE-FOR-LIKE with the positive anchor: SAME rubric version, so "the score
+    # predicts no payability" is measured on the same scale as the with-rails
+    # "the score predicts payability".  (The static prediction is read from the
+    # report's own embedded static checks — moleskine.com has no committed static
+    # fixture; see the module docstring's HONEST SCOPE.)
+    _check(
+        neg["domain"] == _NEGATIVE_DOMAIN,
+        f"negative anchor describes {_NEGATIVE_DOMAIN!r} (got {neg['domain']!r})",
+    )
+    _check(
+        neg["rubric_version"] == "0.7",
+        f"negative anchor shares rubric_version 0.7 with the positive anchor "
+        f"(got {neg['rubric_version']!r})",
+    )
+
+    # STATIC PREDICTION: the score claims NO agent-native programmatic payment —
+    # x402_probe does NOT pass and self_serve_payg records no live x402 rail, so
+    # transactability credits no agent-native payment (the no-rails floor, well
+    # below the with-rails anchor's 87.5).
+    _check(
+        _bhv_check(neg, "x402_probe")["status"] != "pass",
+        "static PREDICTION: x402_probe does NOT pass — score claims no agent-native payment",
+    )
+    _check(
+        (_bhv_check(neg, "self_serve_payg").get("evidence") or {}).get("x402_live") is False,
+        "static PREDICTION: self_serve_payg records x402_live=False",
+    )
+    _check(
+        neg["pillar_scores"]["transactability"] < 87.5,
+        "static PREDICTION: transactability credits no agent-native payment "
+        f"(got {neg['pillar_scores']['transactability']}, << with-rails 87.5)",
+    )
+
+    # BEHAVIORAL EXPERIENCE: the shopper hit the wall the score predicts — no
+    # machine-payable path, a human gate — so every Outcome check that
+    # operationalizes the negative prediction FAILS, and the Outcome pillar is 0.
+    for cid in _NEGATIVE_PAYMENT_OUTCOME_CHECKS:
+        bc = _bhv_check(neg, cid)
+        _check(
+            bc["pillar"] == "outcome" and bc["status"] == "fail",
+            f"behavioral EXPERIENCE: {cid} FAILS (agent hit the wall the score predicted)",
+        )
+    _check(
+        neg["pillar_scores"]["outcome"] == 0.0,
+        f"behavioral EXPERIENCE: Outcome pillar 0.0 (got {neg['pillar_scores']['outcome']})",
+    )
+    # ATTRIBUTION HONESTY (invariant #1/#4): a no-rails retailer has no free tier,
+    # so bhv_free_tier_transaction is not_applicable — NOT a scored FAIL.  The
+    # wall is the payment path, not a missing $0 probe.
+    _check(
+        _bhv_check(neg, "bhv_free_tier_transaction")["status"] == "not_applicable",
+        "attribution: bhv_free_tier_transaction is NA (no free tier), not scored as a wall",
+    )
+
+    _check(
+        True,
+        "AGREEMENT: static NO-payability prediction == behavioral NO-payability experience",
+    )
+
+
+# ---------------------------------------------------------------------------
+# 6. The negative anchor is a GENUINE, REACHABLE retail storefront — the
+#    offering-relative INVERSE of the API anchor — not an unreachable/env-blocked
+#    null that would "fail" trivially.  Attribution honesty applied to the
+#    negative side: the FAILs are a real payment wall, not un-observability.
+# ---------------------------------------------------------------------------
+def test_negative_anchor_is_a_genuine_reachable_retail_storefront() -> None:
+    print("test_negative_anchor_is_a_genuine_reachable_retail_storefront")
+    neg = _load_negative()
+
+    # REACHABLE, not env-blocked: Access fully credited.  The downstream Outcome
+    # FAILs are evidence of a missing PAYMENT capability, not of un-observability
+    # (invariant #4 — a site is never punished for what couldn't be seen).
+    _check(
+        neg["pillar_scores"]["access"] == 100.0,
+        f"negative anchor is reachable, not env-blocked (access={neg['pillar_scores']['access']})",
+    )
+
+    # RETAIL INVERSE of the API anchor: physical_good is CLAIMED/assessed and the
+    # API archetypes are NA.  So "no agent-native payment" is measured against a
+    # storefront that really sells something (a shop), not a null/non-storefront.
+    bs = neg["battery_summary"]
+    _check(
+        "physical_good" in bs["assessed_archetypes"],
+        f"negative anchor CLAIMS physical_good (retail inverse) "
+        f"(assessed={bs['assessed_archetypes']})",
+    )
+    _check(
+        set(bs["na_archetypes"]) >= {"metered_api", "digital_good", "data_retrieval"},
+        f"the API archetypes are NA on the retail inverse (na={bs['na_archetypes']})",
+    )
+
+    # NON-VACUOUS: the agent actually BROWSED the store — the physical_good intent
+    # reached partial completion — yet still hit the payment wall.  The negative
+    # calibration is 'browsed but cannot pay programmatically', not 'never got in'.
+    pg = next(k for k in bs["per_kind"] if k["kind"] == "physical_good")
+    _check(
+        pg["mean_completion"] > 0.0,
+        f"agent made real progress on the store (physical_good completion "
+        f"{pg['mean_completion']}) — the wall is payment, not reachability",
+    )
+
+
+# ---------------------------------------------------------------------------
+# 7. The negative corroboration is REPRODUCIBLE (mirror of test 3).  One unlucky
+#    browse is not a calibration signal; a wall that both trials hit with a
+#    stable verdict is.
+# ---------------------------------------------------------------------------
+def test_negative_corroboration_is_reproducible() -> None:
+    print("test_negative_corroboration_is_reproducible")
+    neg = _load_negative()
+
+    runs = neg.get("behavioral_runs", [])
+    _check(len(runs) >= 2, f"the negative anchor rests on >=2 behavioral trials (got {len(runs)})")
+
+    # Both trials independently FAILED to reach a machine-payable path and both
+    # hit a human gate — the wall is stable across runs, not one unlucky browse.
+    for i, run in enumerate(runs):
+        cps = run.get("checkpoints", {})
+        _check(
+            cps.get("machine_payable_path") is False,
+            f"trial {i} (model={run.get('model')}): no machine_payable_path (reproducible wall)",
+        )
+        _check(
+            cps.get("no_human_gate") is False,
+            f"trial {i} (model={run.get('model')}): human gate present (reproducible wall)",
+        )
+
+    quot = neg.get("quotability") or {}
+    _check(quot.get("quotable") is True, f"the negative anchor is quotable/citable ({quot})")
+    _check(
+        quot.get("verdict_stability") == 1.0,
+        f"verdict_stability == 1.0 across the trials (got {quot.get('verdict_stability')})",
+    )
+
+
+# ---------------------------------------------------------------------------
+# 8. THE TWO-SIDED PROPERTY (the capstone).  With both anchors in hand,
+#    calibration is no longer one-sided: at the SAME payment Outcome checkpoints,
+#    the with-rails anchor PASSES and the no-rails retail anchor FAILS.  The
+#    score's payability prediction points OPPOSITE ways on the two storefronts —
+#    it is not a universal pass that would "agree" with any behavioral run — and
+#    live behavior confirms BOTH directions.
+# ---------------------------------------------------------------------------
+def test_calibration_is_two_sided() -> None:
+    print("test_calibration_is_two_sided")
+    pos = _load_behavioral()
+    neg = _load_negative()
+
+    # Both anchors on the SAME rubric version — positive and negative calibration
+    # claims are measured on one scale (like-for-like).
+    _check(
+        pos["rubric_version"] == neg["rubric_version"] == "0.7",
+        f"both anchors on rubric 0.7 (pos={pos['rubric_version']}, neg={neg['rubric_version']})",
+    )
+
+    # OPPOSITE DIRECTIONS at the SAME checkpoints: with-rails PASSES, no-rails
+    # retail FAILS.  The prediction discriminates; behavior confirms both sides.
+    for cid in _NEGATIVE_PAYMENT_OUTCOME_CHECKS:
+        _check(
+            _bhv_check(pos, cid)["status"] == "pass",
+            f"with-rails anchor: {cid} PASSES",
+        )
+        _check(
+            _bhv_check(neg, cid)["status"] == "fail",
+            f"no-rails retail anchor: {cid} FAILS (opposite direction, same checkpoint)",
+        )
+
+    # And the pillar-level summary agrees: Outcome fully credited on one, zero on
+    # the other — the two-sided calibration property in one line.
+    _check(
+        pos["pillar_scores"]["outcome"] == 100.0 and neg["pillar_scores"]["outcome"] == 0.0,
+        f"Outcome pillar: with-rails {pos['pillar_scores']['outcome']} vs "
+        f"no-rails {neg['pillar_scores']['outcome']}",
+    )
+
+
 def main() -> int:
     tests = [
         test_static_payment_prediction_is_behaviorally_corroborated,
         test_calibration_anchor_is_discriminating,
         test_behavioral_corroboration_is_reproducible,
         test_calibration_rests_on_a_shared_static_base,
+        test_static_no_payment_prediction_is_behaviorally_corroborated,
+        test_negative_anchor_is_a_genuine_reachable_retail_storefront,
+        test_negative_corroboration_is_reproducible,
+        test_calibration_is_two_sided,
     ]
     failed = 0
     for t in tests:

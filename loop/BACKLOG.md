@@ -77,20 +77,28 @@ design in-cloud, execute locally.
      runs/local/acceptance_battery_moleskine_20260728T225939Z.{report.json,log,card.html}. See LOG (Local cycle
      — 23:10Z). The cloud-doable follow-up (wire the negative calibration guard against this committed report)
      is the new P0 below. -->
-- **Wire the NEGATIVE calibration guard into `tests/test_calibration.py`** (TRUTH, CLOUD-DOABLE — no network
-  needed; the committed `runs/local/acceptance_battery_moleskine_20260728T225939Z.report.json` is git-tracked).
-  Cycle 67 shipped the FIRST static-vs-behavioral VALIDITY guard but as a ONE-DOMAIN WITH-RAILS anchor — it
-  proves the POSITIVE payability prediction is behaviorally real on driftflight.com. The 23:10Z local fire
-  force-committed the missing NEGATIVE-side artifact: moleskine.com, a no-rails retail store where static
-  predicts NO agent-native payment. Add a test that replays this committed behavioral report and asserts the
-  NEGATIVE prediction is behaviorally corroborated + DISCRIMINATING: static no-agent-native-payment (x402_probe
-  not-PASS, self_serve_payg x402_live=False → transactability 18.8) → behavioral `machine_payable_path` FALSE
-  AND `no_human_gate` FALSE, reproducibly (verdict_stability 1.0, both trials unanimous), Outcome pillar 0.0;
-  physical_good CLAIMED (the retail-inverse, na_archetypes = the 4 API archetypes) so the run is a genuine
-  retail storefront, not an unreachable/env-blocked null (Access 100). This turns calibration into a TWO-SIDED
-  property (positive payability real on driftflight.com; negative wall real on moleskine.com) — the executable
-  mirror of Cycle 67. Like-for-like: same rubric v0.7 both halves; assert it. Keep it vendor-neutral in the
-  ASSERTIONS (key on the checks/pillars, name the domain only as the committed-artifact path, as Cycle 67 did).
+<!-- DONE 2026-07-29T01:1xZ (Cycle 71, TRUTH, direct-to-main, tests-only/score-neutral): "Wire the NEGATIVE
+     calibration guard" SHIPPED. `tests/test_calibration.py` +4 (4→8), the executable mirror of Cycle 67's
+     positive with-rails anchor, replaying the committed moleskine.com no-rails retail behavioral report:
+     (5) negative prediction behaviorally corroborated (static x402_probe not-PASS / x402_live=False /
+     transactability 18.75 → NO agent-native payment; behavioral purchase_path/machine_payable/no_human_gate
+     all FAIL, Outcome 0.0; free_tier_transaction NA not a wall); (6) genuine reachable retail not a null
+     (Access 100, physical_good CLAIMED + API archetypes NA, agent browsed 60% yet hit the payment wall —
+     invariant #4); (7) reproducible (both trials FALSE, verdict_stability 1.0); (8) TWO-SIDED capstone (same
+     payment checkpoints PASS with-rails / FAIL no-rails, both rubric v0.7, Outcome 100.0 vs 0.0). Calibration
+     is now a two-sided property. Tests-only, git diff -- asrs/ rubric/ fixtures/ EMPTY → rubric v0.7, replay
+     guard 24/24 / 46.1 F / 85.5 B / +39.4. Suite 240→244. See LOG Cycle 71. The static-fixture cross-validation
+     for the negative side is the [LOCAL] follow-up below. -->
+- **[LOCAL] Capture a moleskine.com static fixture for the negative calibration anchor** (TRUTH, follow-up to
+  Cycle 71). The negative calibration guard (Cycle 71) reads moleskine.com's STATIC prediction from the static
+  checks embedded in the committed behavioral report — it has no separate offline replay to cross-validate
+  against, unlike the with-rails anchor (tests 1/4 replay `fixtures/canonical/driftflight.com.json`). Capture
+  the fixture LIVE — `asrs.cli score www.moleskine.com --record-fixture fixtures/canonical/www.moleskine.com.json`
+  (static $0 crawl, needs network → [LOCAL]) — then extend `test_calibration.py` so the negative side gets the
+  SAME two-crawl cross-validation: a `_static_report("www.moleskine.com")` replay whose static-observable
+  pillars (access/legibility/transactability) match the behavioral report's within 1e-9 (the negative mirror of
+  `test_calibration_rests_on_a_shared_static_base`). This proves the negative prediction rests on the same
+  static evidence across two independent crawls, closing the honest-scope gap the docstring names.
 
 - **[OPERATOR DIRECTIVE — Jonah, 2026-07-23] The battery must be
   OFFERING-RELATIVE, not fixed.** Observed: the current battery judges every

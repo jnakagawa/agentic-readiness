@@ -6932,3 +6932,67 @@ so reading them is unverifiable in-cloud: queue a [LOCAL] item to capture a fixt
 serves a structured catalog/pricing JSON, then wire + verify recall the same way `/pricing` was. Cloud
 rotation next = TRUTH (the top P0 negative-calibration guard against the committed moleskine report is
 the natural pick).
+
+## Cycle 71 — 2026-07-29T01:1xZ — TRUTH (direct to main)
+
+**First duty.** No open peer-gated PR (verified `list_pull_requests state=open` → `[]`). Infra health
+check ran first — runner **HEALTHY**: newest `runs/local/verify_20260728T234102Z.json` (23:41Z,
+`git_pull.ok=true attempts=1`, ~1h30m old at fire), all 20 verify suites green, canonical
+46.1 F / 85.5 B / +39.4. Bench UP: full suite ran locally, 21/21 files green (244 tests) after
+`pip install eth-account` closed the known `eth-account` env gap (invariant-#4, pre-existing,
+`test_free_tier` 10→11 — unrelated to this tests-only change). `main` realigned to `origin/main`
+(ede4892; the fire opened on the detached `HEAD` left by the local-verify push — the standing
+ephemeral-divergence pattern, not a bookkeeping break). No self-healing needed.
+
+**Why this item, why now.** Focus pointer = TRUTH (Cycle 70 COVERAGE). Top P0, cloud-doable, no network:
+wire the NEGATIVE calibration guard. Cycle 67 shipped the FIRST static-vs-behavioral VALIDITY guard but
+as a ONE-DOMAIN WITH-RAILS anchor — it proves the POSITIVE payability prediction is behaviorally real on
+driftflight.com. Its own docstring named the missing half: the score's NEGATIVE prediction (a site the
+score says an agent CANNOT pay programmatically) had no behavioral corroboration. The 2026-07-28T23:10Z
+local fire force-committed exactly that missing artifact — `www.moleskine.com`, a no-rails retail store
+where static predicts NO agent-native payment — so the negative half is now cloud-doable off git-tracked
+evidence. Making calibration a TWO-SIDED property is the single highest-leverage TRUTH increment
+available in-cloud.
+
+**What shipped.** `tests/test_calibration.py` +4 tests (4→8), the executable MIRROR of Cycle 67's positive
+anchor, replaying the committed `runs/local/acceptance_battery_moleskine_20260728T225939Z.report.json`:
+- **(5) negative prediction behaviorally corroborated** — STATIC PREDICTION (read from the report's own
+  embedded static checks): `x402_probe` does NOT pass, `self_serve_payg` x402_live=False, transactability
+  18.75 << with-rails 87.5 → score claims NO agent-native payment. BEHAVIORAL EXPERIENCE: `bhv_purchase_path`
+  / `bhv_machine_payable` / `bhv_no_human_gate` all FAIL, Outcome pillar 0.0. Attribution-honest: a no-rails
+  retailer has no free tier, so `bhv_free_tier_transaction` is not_applicable, NOT a scored FAIL. Prediction
+  == experience on the negative side.
+- **(6) genuine reachable retail storefront, not a null** — Access 100.0 (reachable, not env-blocked;
+  invariant #4: the Outcome FAILs are a missing PAYMENT capability, not un-observability). Retail INVERSE of
+  the API anchor: physical_good CLAIMED/assessed, the API archetypes NA. NON-VACUOUS: the agent actually
+  BROWSED (physical_good intent 60% completion) yet still hit the payment wall — 'browsed but cannot pay',
+  not 'never got in'.
+- **(7) reproducible** — both trials FALSE on machine_payable_path AND no_human_gate; quotable, verdict_stability 1.0.
+- **(8) TWO-SIDED capstone** — at the SAME payment Outcome checkpoints the with-rails anchor PASSES and the
+  no-rails retail anchor FAILS; both on rubric 0.7; Outcome pillar 100.0 vs 0.0. The prediction points
+  OPPOSITE ways on the two storefronts — not a universal pass that would "agree" with any run — and behavior
+  confirms both directions.
+
+**Honest scope.** moleskine.com has NO committed static fixture (capturing one needs network → [LOCAL]), so
+its static prediction is read from the static checks embedded in the behavioral report rather than
+cross-validated against a separate offline replay (as tests 1/4 do for the with-rails anchor). Capturing
+that fixture to give the negative side the same two-crawl cross-validation is a [LOCAL] follow-up, not a
+blocker on the two-sided property. Documented in the module docstring's HONEST SCOPE.
+
+**Invariants / regression.** Tests-only: `git diff --stat` = `tests/test_calibration.py` (+255/−12) ONLY;
+`git diff --name-only -- asrs/ rubric/ fixtures/` EMPTY → scoring path byte-for-byte untouched, rubric
+stays **v0.7**; canonical PAIR unchanged by construction AND re-measured (replay guard 24/24, 46.1 F /
+85.5 B / +39.4, 0 replay-miss; verify `20260728T234102Z` live-corroborates). Vendor-neutral in the
+ASSERTIONS: keys on checks/pillars/archetypes; the domain appears only as the committed-artifact path and a
+like-for-like `_NEGATIVE_DOMAIN` constant (domain-as-data, as Cycle 67 does for `_ANCHOR_DOMAIN`). Not
+payment/signing code. `test_calibration.py` 4→8; suite 240→244 tests, 21/21 files green. Direct-to-main
+(tests-only, moves no score). No Slack (tests-only, non-sensitive; 01:1xZ is before the 16:00 UTC digest
+window — digest last sent Cycle 62 16:21Z).
+
+**Next hypothesis.** Cloud rotation next = READOUT. The natural pick is the calibration READOUT complement:
+the methodology page's §8 "Calibration" (Cycle 68) still describes calibration as one-domain/with-rails —
+now that the negative anchor + two-sided property have landed as executable guards, the readout should say
+so in capability prose (positive payability real on with-rails, negative wall real on no-rails retail,
+opposite directions at the same checkpoints, test-pinned). The [LOCAL] follow-up is capturing a
+moleskine.com static fixture to give the negative anchor the two-crawl cross-validation the with-rails side
+has (queued below).

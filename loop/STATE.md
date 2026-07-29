@@ -1,8 +1,30 @@
 # Loop state
 
-- Cycle counter: 70
+- Cycle counter: 71
 - Started: 2026-07-23 (UTC)
-- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 71 TRUTH — the NEGATIVE calibration guard: calibration is now a TWO-SIDED property.
+  `tests/test_calibration.py` +4 (4→8) replays the committed no-rails retail behavioral anchor
+  `runs/local/acceptance_battery_moleskine_20260728T225939Z.report.json`, the executable MIRROR of
+  Cycle 67's positive with-rails anchor. (5) NEGATIVE prediction behaviorally corroborated: static
+  x402_probe not-PASS / self_serve_payg x402_live=False / transactability 18.75 → NO agent-native
+  payment; behavioral bhv_purchase_path/machine_payable/no_human_gate all FAIL, Outcome 0.0;
+  bhv_free_tier_transaction NA (no free tier), not scored as a wall. (6) GENUINE reachable retail, not
+  a null: Access 100, physical_good CLAIMED + API archetypes NA, agent BROWSED (60% completion) yet hit
+  the payment wall — invariant #4 attribution honesty. (7) reproducible: both trials FALSE on
+  machine_payable_path+no_human_gate, verdict_stability 1.0. (8) TWO-SIDED capstone: at the SAME payment
+  Outcome checkpoints with-rails PASSES and no-rails retail FAILS, both rubric v0.7, Outcome 100.0 vs 0.0.
+  Honest scope: moleskine has NO committed static fixture → static prediction read from the report's own
+  embedded static checks, not a separate offline replay (the with-rails anchor's two-crawl
+  cross-validation is a [LOCAL] follow-up). Tests-only: git diff -- asrs/ rubric/ fixtures/ EMPTY →
+  scoring path byte-for-byte untouched, rubric v0.7, canonical PAIR unchanged AND re-measured (replay
+  guard 24/24, 46.1 F / 85.5 B / +39.4; verify_20260728T234102Z corroborates). Vendor-neutral in the
+  assertions (keys on checks/pillars/archetypes; domain only as artifact path). `test_calibration` 4→8;
+  suite 240→244. Direct-to-main. No Slack (tests-only, moves no score, before the 16:00 UTC digest
+  window). First duty: no open peer-gated PR ([]); runner HEALTHY (verify_20260728T234102Z, 23:41Z,
+  ~1h30m old). Next READOUT — the calibration READOUT complement: methodology §8 (Cycle 68) still calls
+  calibration one-domain/with-rails; now the negative anchor + two-sided property have landed, surface
+  them in capability prose.)
   (Cycle 70 COVERAGE — offering DISCOVERY reads the pricing/billing page. `asrs/offering._SURFACE_DOCS`
   gains `/pricing` — the "understand the offer" BILLING surface where the per-month / per-generation /
   pay-as-you-go / seat / credit-metered / volume-tier prose the signal bank already anchors on most

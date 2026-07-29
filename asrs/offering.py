@@ -251,6 +251,27 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"|\btier\s+\d+\s*[:\-–]\s*\$", _F)),
         # Agent-native payment rail.
         ("x402", re.compile(r"\b(x402|HTTP\s*402)\b", _F)),
+        # Agent-native payment rail, BEYOND the lone x402 above. Agentic commerce
+        # is standardizing on SEVERAL open, vendor-neutral payment/settlement
+        # protocols an agent can drive programmatically — x402, MPP, ACP, UCP, AP2 —
+        # and a storefront may advertise more than one ("payment methods today are
+        # x402 (Base USDC) and MPP (Tempo USDC)") or declare them structurally in a
+        # manifest (`"paymentProtocols":[{"protocol":"x402",...},{"protocol":"mpp",
+        # ...}]`). Recognising only x402 under-classified a site's agent-native
+        # payment capability to a single rail; this signal captures the "many rails"
+        # axis (north star) as one more piece of machine evidence that an agent can
+        # PAY here without a human. Like `x402`, these are PROTOCOL/standard names
+        # (not vendors) — the same category as REST/GraphQL/OpenAPI already in this
+        # bank. PRECISION-CRITICAL: MPP/ACP/UCP/AP2 are 3-4 char acronyms that collide
+        # with unrelated senses (a Member of Parliament, an inflation index, a medical
+        # guideline). So do NOT match a bare acronym — anchor to one of two
+        # high-precision forms: a STRUCTURED `"protocol":"<rail>"` declaration in a
+        # manifest/descriptor, or a rail name paired with its on-chain SETTLEMENT
+        # asset in a `(… USDC/USDT/stablecoin …)` parenthetical. Both are unambiguous
+        # agent-payment machine evidence; the collision senses trip neither.
+        ("agent-payment-rail", re.compile(
+            r'"protocol"\s*:\s*"(?:x402|mpp|acp|ucp|ap2)"'
+            r"|\b(?:x402|mpp|acp|ucp|ap2)\b\s*\([^)]*\b(?:usdc|usdt|stablecoin)\b[^)]*\)", _F)),
     ],
     "subscription": [
         ("subscription", re.compile(r"\bsubscription\b|\bsubscribe\b", _F)),

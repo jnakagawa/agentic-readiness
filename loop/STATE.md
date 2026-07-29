@@ -1,11 +1,11 @@
 # Loop state
 
-- Cycle counter: 77
+- Cycle counter: 78
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-29T07:12Z, Cycle 77; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-29T08:12Z, Cycle 78; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~7h31m old at the 07:12Z fire; no newer :41 artifact through 06:41Z Jul-29. Cloud CANNOT
-  repair the local machine → FLAG in the next 16:00 UTC digest (the 07:12Z fire is before the digest
+  Jul-28 = ~8h31m old at the 08:12Z fire; no newer :41 artifact through 07:41Z Jul-29. Cloud CANNOT
+  repair the local machine → FLAG in the next 16:00 UTC digest (the 08:12Z fire is before the digest
   window); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
   is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
@@ -25,7 +25,34 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 78 COVERAGE — offering discovery now recognises open agent-native PAYMENT RAILS BEYOND the lone
+  `x402`. New `agent-payment-rail` signal in `_SIGNALS["metered_api"]` (`asrs/offering.py`) matches the
+  other open, vendor-neutral agent-payment/settlement protocols the landscape is standardizing on —
+  x402 / MPP / ACP / UCP / AP2 — in two HIGH-PRECISION forms: a STRUCTURED `"protocol":"<rail>"`
+  declaration (a manifest `paymentProtocols` entry) OR a rail name paired with its on-chain SETTLEMENT
+  asset in a `(… USDC/USDT/stablecoin …)` parenthetical. North-star "many payment rails" flexibility axis:
+  recognising only `x402` under-classified agent-native payment to one rail; a with-rails site commonly
+  advertises several ("x402 (Base USDC) and MPP (Tempo USDC)"). Rail names are PROTOCOL/standard names
+  (not vendors) — same category as REST/GraphQL/OpenAPI/x402 already in the bank. PRECISION: never matches
+  a bare acronym (MPP/ACP/UCP/AP2 collide with Member-of-Parliament / inflation-index / medical-guideline /
+  exam-code senses) — 8 collision negatives all reject; fires on ZERO of the no-rails/retail/control/machine
+  fixtures (drift-flight.org/example.com/books.toscrape.com/api.replicate.com) = the offering-layer mirror of
+  the scoring-path x402 delta. Score-neutral VERIFIED NON-VACUOUS: driftflight.com's metered_api is ALREADY
+  its strongest claim → distinct-label count 12→13, claimed SET+ORDER unchanged
+  `['metered_api','digital_good','subscription']` on both; evidence fires on 2 real read surfaces
+  (agents.driftflight.com/llms-full.txt + /manifest.json). Discovery-only: git diff = asrs/offering.py +
+  tests/test_offering.py ONLY; scoring/probes/rubric/protocols/battery/fetch/fixtures byte-for-byte untouched
+  → rubric v0.7. Canonical PAIR unchanged AND re-measured (replay guard 24/24, 46.1 F / 85.5 B / +39.4,
+  0 replay-miss; offering guard 13/13). test_offering 24→27; full suite 22 files green (test_free_tier with
+  eth-account). Cloud bridge blocks direct main push → branch loop/agent-payment-rail-signal + PR +
+  self-merge (squash; NOT peer-gated — off scoring path, score-neutral). No Slack (score-neutral, moves no
+  score, before 16:00 UTC digest). First duty: no open peer-gated PR ([]); realigned ephemeral local-main
+  divergence (22 stale foundational commits ahead / 50 behind) to origin/main 70373af (hard reset, origin
+  authoritative). RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z ~8h31m old at 08:12Z, past 6h floor —
+  flag in next digest). Next TRUTH — candidate: a relabel-invariance case for the new agent-payment-rail
+  signal (recurring P1; evidence quote embeds rail names/structure, not a vendor), or extend the calibration
+  two-sided guard once the [LOCAL] moleskine static fixture lands.)
   (Cycle 77 METHOD — made the calibration LEADERBOARD ranking PERMUTATION-INVARIANT. `_write_calibration_page`
   (Cycle 76) sorted scored members with a plain STABLE sort on `overall` alone, so two members with an EQUAL
   overall kept their INPUT ROW ORDER — the rendered ranking depended on the sweep's row order, not purely on

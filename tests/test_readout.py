@@ -494,6 +494,45 @@ def test_methodology_documents_payment_rail_neutrality() -> None:
         _check(banned not in text, f"methodology names no vendor/domain ({banned!r})")
 
 
+def test_methodology_documents_async_job_contract() -> None:
+    # Cycle 84 (READOUT): the READOUT complement to Cycle 82's async-job COVERAGE
+    # (offering discovery recognizing the asynchronous long-running-job contract of
+    # a metered API) and Cycle 83's SIGNAL-level relabel-invariance TRUTH guard.
+    # The capability chain already names "finish the job"; this makes concrete, in
+    # prose a critic can read, the growing class of long-running agent-native APIs
+    # (image/video gen, training runs, batch inference) whose result is collected
+    # AFTER the request that starts them. It must (a) name the long-running-job
+    # class; (b) name the two vendor-neutral collection mechanisms (webhook callback
+    # / poll a status endpoint); (c) say recognition keys on the CONTRACT STRUCTURE
+    # not the API's name and is pinned by an identity-relabel guard; and (d) stay
+    # HONEST about scope — this offering read is diagnostic, off the scoring path,
+    # not a scored pillar (the same scored-vs-diagnostic line the leaderboard prose
+    # keeps). Vendor-neutral throughout.
+    print("test_methodology_documents_async_job_contract")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    # The methodology HTML is a multi-line string literal that preserves its source
+    # newlines verbatim, so a multi-word phrase can straddle a line break in the
+    # rendered output. Match on the whitespace-collapsed text (same technique as
+    # test_methodology_documents_calibration) so wording, not source wrapping, is
+    # what the guard pins.
+    collapsed = " ".join(text.split())
+    for phrase in ("long-running jobs", "webhook callback",
+                   "polling a status endpoint", "asynchronous contract",
+                   "shape of the contract, not the name",
+                   "relabels the API", "executable regression test",
+                   "off the scoring path", "diagnostic"):
+        _check(phrase in collapsed,
+               f"methodology documents async-job contract: {phrase!r}")
+    # The vendor-neutral machine-integration vocabulary the offering signal bank
+    # anchors on must appear as open convention, never a vendor product.
+    for token in ("webhook", "async endpoint", "poll"):
+        _check(token in collapsed, f"methodology names async vocabulary {token!r}")
+    # Vendor-neutral: no scored domain/product/brand named on the page.
+    for banned in ("drift-flight", "driftflight"):
+        _check(banned not in text, f"async-job prose names no vendor/domain ({banned!r})")
+
+
 def test_methodology_documents_calibration() -> None:
     # Cycle 68 (READOUT): the READOUT complement to Cycle 67's calibration guard
     # (tests/test_calibration.py — the first static-vs-behavioral VALIDITY axis).
@@ -1162,6 +1201,8 @@ def main() -> int:
         test_methodology_documents_earned_dominance,
         test_methodology_documents_weight_robustness,
         test_methodology_documents_check_layer_honesty,
+        test_methodology_documents_payment_rail_neutrality,
+        test_methodology_documents_async_job_contract,
         test_methodology_documents_calibration,
         test_methodology_page_tracks_live_rubric,
         test_build_scorecard_publishes_and_links_methodology,

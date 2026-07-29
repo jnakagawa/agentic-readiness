@@ -383,6 +383,24 @@ is favored by name. Recognition keys on <b>what</b> a storefront declares, never
 on <b>who</b> declares it: that property is pinned by an <b>executable regression
 test</b> that relabels the storefront&rsquo;s identity end-to-end and confirms the
 rail is still recognized, unchanged, with the vendor&rsquo;s name gone.</p>
+<p><b>Finishing the job</b> has the same shape on the offer side, and it is
+where a metered API can quietly strand an agent. Many agent-native offers are
+<b>long-running jobs</b> &mdash; image or video generation, a training run, a
+batch-inference request &mdash; whose work does not finish inside the request
+that starts it: the agent submits the job and must then <b>collect the
+result</b>, either from a <b>webhook callback</b> the API delivers or by
+<b>polling a status endpoint</b> until the job completes. An offer that
+documents that <b>asynchronous contract</b> is more agent-completable than one
+that leaves the agent holding a job id it never learns how to redeem &mdash; so
+ASRS reads the contract as part of understanding the offer, keyed on
+vendor-neutral machine-integration vocabulary (a webhook, an async endpoint,
+polling a status URL), the same category of open convention as REST, GraphQL or
+OpenAPI. Recognition keys on the <b>shape of the contract, not the name of the
+API</b>: that property is pinned by an <b>executable regression test</b> that
+relabels the API&rsquo;s identity end-to-end and confirms the async contract is
+still recognized, unchanged, with the vendor&rsquo;s name gone. This read is
+<b>diagnostic</b> &mdash; it names what the offer requires, <b>off the scoring
+path</b> &mdash; not a scored pillar.</p>
 </div>
 
 <div class="card">

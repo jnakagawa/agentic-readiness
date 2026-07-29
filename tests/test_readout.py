@@ -975,6 +975,74 @@ def test_calibration_page_ranks_scored_by_overall() -> None:
     _check("3 scored" in text, "leaderboard names how many scored members it ranks")
 
 
+def test_calibration_ranking_is_permutation_invariant() -> None:
+    # Cycle 77 (METHOD): a readiness RANKING is a property of the scores, not of the
+    # order the sweep happened to record its rows in — the READOUT analog of the
+    # battery aggregation's presentation-order invariance (Cycle 73). The page's own
+    # comment claims the ranking is "reproducible from the raw data"; this pins it as
+    # an executable invariant, INCLUDING the tie case a plain stable sort would leak:
+    # two members with the SAME overall must rank deterministically (by domain), not
+    # echo whichever arrived first in `rows`.
+    print("test_calibration_ranking_is_permutation_invariant")
+
+    def _sweep(order):
+        # Two GENUINELY TIED members (both 61.9) plus a clear top and a not-scorable
+        # member — the tie is the load-bearing case: a stable sort on overall alone
+        # would order the tied pair by input position, so the ranking would depend on
+        # `order`. `by[d]` is rebuilt per call so no dict is shared across renders.
+        by = {
+            "top.test": {"domain": "top.test", "segment": "s", "scored": True,
+                         "overall": 85.0, "grade": "B",
+                         "pillars": {"access": 100.0, "legibility": 90.0,
+                                     "transactability": 87.0, "trust": 60.0, "outcome": None},
+                         "claimed_archetypes": [], "error": None},
+            "aaa.test": {"domain": "aaa.test", "segment": "s", "scored": True,
+                         "overall": 61.9, "grade": "D",
+                         "pillars": {"access": 100.0, "legibility": 70.0,
+                                     "transactability": 40.0, "trust": 55.0, "outcome": None},
+                         "claimed_archetypes": [], "error": None},
+            "zzz.test": {"domain": "zzz.test", "segment": "s", "scored": True,
+                         "overall": 61.9, "grade": "D",
+                         "pillars": {"access": 100.0, "legibility": 70.0,
+                                     "transactability": 40.0, "trust": 55.0, "outcome": None},
+                         "claimed_archetypes": [], "error": None},
+            "gone.test": {"domain": "gone.test", "segment": "s", "scored": False,
+                          "overall": None, "grade": "N/A", "pillars": None,
+                          "claimed_archetypes": [], "error": None},
+        }
+        return {"ts": "20260728T000000Z", "rubric_version": "0.7",
+                "rows": [by[d] for d in order]}
+
+    scored_doms = ["top.test", "aaa.test", "zzz.test"]
+
+    def _ranked(order):
+        with tempfile.TemporaryDirectory() as d:
+            text = Path(scorecard._write_calibration_page(Path(d), sweep=_sweep(order))).read_text()
+        # The ranked order is the order the scored domains appear in the rendered page.
+        return sorted(scored_doms, key=lambda x: text.index(x))
+
+    # Several genuinely-different input row orders, including the tie pair swapped.
+    orders = [
+        ["top.test", "aaa.test", "zzz.test", "gone.test"],
+        ["zzz.test", "aaa.test", "gone.test", "top.test"],  # tied pair swapped
+        ["gone.test", "zzz.test", "top.test", "aaa.test"],
+        ["aaa.test", "gone.test", "zzz.test", "top.test"],
+    ]
+    # Non-vacuity: the input orders really do differ (so a PASS is not because we fed
+    # identical inputs), and at least one swaps the tied pair's arrival order.
+    _check(len({tuple(o) for o in orders}) == len(orders),
+           "the permutation inputs are genuinely distinct row orders")
+
+    rankings = [_ranked(o) for o in orders]
+    first = rankings[0]
+    _check(all(r == first for r in rankings),
+           f"ranking is identical under every row permutation, got {rankings}")
+    # And it is the CORRECT deterministic ranking: top by overall, tie broken by
+    # domain ASC (aaa before zzz) — a property of the data, not the input order.
+    _check(first == ["top.test", "aaa.test", "zzz.test"],
+           f"tie broken deterministically by domain (overall DESC, domain ASC), got {first}")
+
+
 def test_calibration_page_separates_not_scorable() -> None:
     # Attribution honesty (invariant #4): an unreachable member is NEVER in the
     # ranking and NEVER gets a rank number — it is named in its own section as a
@@ -1087,6 +1155,7 @@ def main() -> int:
         test_canonical_history_fresh_shows_age_no_stale_banner,
         test_canonical_history_no_liveness_line_without_clock,
         test_calibration_page_ranks_scored_by_overall,
+        test_calibration_ranking_is_permutation_invariant,
         test_calibration_page_separates_not_scorable,
         test_calibration_page_bands_live_and_version_flagged,
         test_calibration_page_empty_renders_gracefully,

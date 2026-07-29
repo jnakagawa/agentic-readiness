@@ -1083,8 +1083,12 @@ $0 sweep; this page renders the newest one.</p></div>
     not_scorable = [r for r in rows if not (r.get("scored") and r.get("overall") is not None)]
     # Re-derive the ranking from the rows themselves (highest overall first) rather
     # than trusting a pre-computed order — the page's ranking is a property of the
-    # scores, reproducible from the raw data.
-    scored.sort(key=lambda r: r["overall"], reverse=True)
+    # scores, reproducible from the raw data. A plain stable sort on overall alone
+    # would leave EQUAL-overall members in their input row order, so two datasets
+    # that differ only in row order would render different rankings for a tie; the
+    # secondary domain-ASC key makes rank a PURE function of the data (overall DESC,
+    # then domain), so the leaderboard is invariant under any permutation of `rows`.
+    scored.sort(key=lambda r: (-r["overall"], str(r.get("domain", ""))))
 
     version_note = ""
     if sweep_version and sweep_version != live_version:

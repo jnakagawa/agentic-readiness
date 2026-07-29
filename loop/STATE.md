@@ -1,8 +1,27 @@
 # Loop state
 
-- Cycle counter: 69
+- Cycle counter: 70
 - Started: 2026-07-23 (UTC)
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 70 COVERAGE — offering DISCOVERY reads the pricing/billing page. `asrs/offering._SURFACE_DOCS`
+  gains `/pricing` — the "understand the offer" BILLING surface where the per-month / per-generation /
+  pay-as-you-go / seat / credit-metered / volume-tier prose the signal bank already anchors on most
+  conventionally lives; a site that documents billing ONLY there was under-classified. HTML-stripped
+  (same `_is_html_document` path as `/docs`), read through the SAME precision-guarded signal bank (no new
+  signal), vendor-neutral (universal web convention). Off the scoring path (called ONLY from
+  `cli._resolve_battery`/`--battery auto`; scoring probe keeps its own untouched
+  `protocols._AGENT_SURFACE_DOCS`). VERIFIED score-neutral on committed evidence NON-VACUOUSLY: real
+  `discover_offering` through `from_fixture` BEFORE/AFTER — canonical `/pricing` is a real 200, IS read
+  (surfaces_seen gains it), reinforces the three already-claimed archetypes; claimed SET+ORDER
+  byte-identical `['metered_api','digital_good','subscription']` on both, no new physical/booking/data.
+  New guard `test_offering.py::test_pricing_surface_is_read_live` (read-live, HTML-free evidence,
+  metered+subscription both carry a /pricing signal, set+order unchanged) + wiring test extended.
+  `git diff -- asrs/scoring.py rubric/ asrs/probes/` EMPTY → rubric v0.7; canonical PAIR unchanged AND
+  re-measured (live replay 46.1 F / 85.5 B / +39.4; replay guard 24/24, offering guard 12/12).
+  `test_offering` 23→24; suite 21 files / 240 tests. Direct-to-main. No Slack (score-neutral, before the
+  16:00 UTC digest window). Chose it because it's the one COVERAGE increment BOTH cloud-verifiable AND
+  non-speculative — structured `/catalog.json`//pricing.json//plans are 404 on all fixtures → queued
+  [LOCAL]. Next TRUTH (top P0 = negative-calibration guard against the committed moleskine report).)
   (Cycle 69 METHOD — widened the static-vs-behavioral CALIBRATION guard (Cycle 67) with a 4th
   test test_calibration_rests_on_a_shared_static_base: pins that every STATIC-OBSERVABLE pillar
   both measurements compute (access/legibility/transactability) is IDENTICAL between the fixture

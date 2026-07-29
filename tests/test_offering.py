@@ -746,9 +746,10 @@ def test_openapi_surface_is_wired_for_live_discovery():
         assert path in docs, f"A2A agent card {path} missing from discovery surfaces: {docs}"
     for path in ("/docs", "/api-docs", "/reference"):
         assert path in docs, f"HTML API-docs page {path} missing from discovery surfaces: {docs}"
+    assert "/pricing" in docs, f"pricing/billing page missing from discovery surfaces: {docs}"
     for path in ("/llms.txt", "/llms-full.txt", "/manifest.json"):
         assert path in docs, f"regressed natural-language surface {path}: {docs}"
-    print(f"  ok: OpenAPI/Swagger + ai-plugin + A2A agent-card + /docs surfaces wired, got {docs}")
+    print(f"  ok: OpenAPI/Swagger + ai-plugin + A2A agent-card + /docs + /pricing surfaces wired, got {docs}")
 
 
 def test_strip_html_drops_script_style_and_tags():
@@ -865,6 +866,47 @@ def test_docs_surface_is_read_live():
     print("  ok: /docs evidence does NOT change the claimed set/order (score-neutral)")
 
 
+def test_pricing_surface_is_read_live():
+    # END-TO-END, on REAL captured bytes: discovery now reads the rendered HTML
+    # PRICING page (/pricing) added to _SURFACE_DOCS this cycle — the "understand
+    # the offer" BILLING surface where a storefront states how it charges. The
+    # canonical driftflight.com serves a real 200 /pricing page (per-month /
+    # per-generation / usage-based billing prose); it is HTML, so it is HTML-stripped
+    # before scanning. NON-VACUOUS unlike a 404-absent surface: /pricing genuinely
+    # reaches classification here.
+    ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "driftflight.com.json"))
+    prof = offering.discover_offering(ctx)
+
+    # The /pricing surface was READ (it is in surfaces_seen) — a real 200, not absent.
+    assert "/pricing" in prof.surfaces_seen, prof.surfaces_seen
+
+    # NON-VACUOUS: the /pricing page really did reach classification — its evidence
+    # appears in the discovered profile (at least one signal is surface-tagged
+    # /pricing), and every /pricing-sourced evidence quote is HTML-FREE (the page was
+    # stripped, not scanned raw — so its <script>/<style> decoy words never entered
+    # evidence).
+    pricing_sigs = [s for c in prof.claimed for s in c.signals if s.surface == "/pricing"]
+    assert pricing_sigs, "no /pricing-sourced signal reached classification"
+    for s in pricing_sigs:
+        assert "<" not in s.quote and ">" not in s.quote, s.quote
+    print(f"  ok: /pricing reaches classification, HTML-stripped ({len(pricing_sigs)} signals)")
+
+    # The billing prose reinforces the BILLING archetypes — metered_api and
+    # subscription both carry a /pricing-sourced signal (this is the recall the
+    # surface adds: a site that documents its billing only on /pricing is no longer
+    # under-classified).
+    pricing_archetypes = {s.archetype for s in pricing_sigs}
+    assert {"metered_api", "subscription"} <= pricing_archetypes, pricing_archetypes
+
+    # SCORE-NEUTRAL by construction AND re-measured: reading the richer /pricing prose
+    # can only REINFORCE archetypes the storefront already documents — the claimed SET
+    # AND ORDER are unchanged (the exact regression the canonical offering guard pins).
+    # No new archetype, no false physical_good from the pricing page's decoy words.
+    assert prof.archetypes == ["metered_api", "digital_good", "subscription"], prof.archetypes
+    assert not prof.claims("physical_good"), prof.archetypes
+    print("  ok: /pricing evidence does NOT change the claimed set/order (score-neutral)")
+
+
 def main() -> int:
     tests = [
         test_api_storefront_claims_agent_native_not_physical,
@@ -889,6 +931,7 @@ def main() -> int:
         test_doc_subdomain_helper_is_precise_and_ssrf_safe,
         test_doc_subdomain_surfaces_are_read_live,
         test_docs_surface_is_read_live,
+        test_pricing_surface_is_read_live,
         test_strip_html_drops_script_style_and_tags,
     ]
     failed = 0

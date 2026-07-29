@@ -6867,3 +6867,68 @@ physical_good/service_booking from its rich docs, a diagnostic-only false-positi
 pass. The sweep also gives the two-sided calibration story a POPULATION context: the negative wall
 (moleskine) and positive payability (driftflight.com) now sit inside a 13-domain spread, not in
 isolation.
+
+## Cycle 70 — 2026-07-29T00:1xZ — COVERAGE (direct to main)
+
+**First duty.** No open peer-gated PR (verified `list_pull_requests state=open` → `[]`). Infra health
+check ran first — runner **HEALTHY**: newest `runs/local/verify_20260728T234102Z.json` (23:41Z,
+`git_pull.ok=true attempts=1`, ~31 min old at fire), all 20 verify suites green, canonical
+46.1 F / 85.5 B / +39.4. Bench UP: full suite ran locally, 21/21 files green (240 tests) after
+`pip install -r requirements.txt` closed the known `eth-account` env gap (invariant-#4, pre-existing,
+`test_free_tier` 10→11). `main` realigned to `origin/main` (190b9b7; the fire opened on the detached
+`HEAD` left by the local-verify push — the standing ephemeral-divergence pattern, not a bookkeeping
+break). No self-healing needed.
+
+**Why this item, why now.** Focus pointer = COVERAGE (Cycle 69 METHOD). The in-cloud COVERAGE frontier
+is mostly score-INCREASING ([LOCAL] free-tier live-wiring, ACP/UCP/MPP live handshakes — all gated on
+live 2-domain verification the cloud can't run) or a new archetype/signal (speculative without a live
+domain to validate recall). The one COVERAGE increment that is BOTH cloud-verifiable AND non-speculative
+is a new offering DISCOVERY surface whose effect I can measure on committed fixtures. The operator
+directive named the discovery surfaces as "llms.txt, manifest/catalog, OpenAPI, homepage"; the pricing/
+billing page — the single most conventional home for the per-month / per-generation / pay-as-you-go /
+seat / credit-metered / volume-tier prose the signal bank already anchors on — was NOT read. A site very
+commonly documents its billing ONLY on `/pricing` (thin marketing homepage, no billing detail in
+llms.txt/OpenAPI), so it was under-classified. Crucially, I could VERIFY the surface works and is
+score-neutral on real committed evidence (the canonical `/pricing` is a real 200), unlike a speculative
+`/catalog.json` / `/pricing.json` (404 on every committed fixture → unverifiable-absent, deferred).
+
+**What shipped.** `asrs/offering._SURFACE_DOCS` gains `/pricing` — the rendered HTML pricing/billing
+"understand the offer" surface. Like `/docs` it is HTML, so it is HTML-STRIPPED (via the same
+`_is_html_document` path) before scanning, else `<script>`/`<style>` retail decoy words on a pricing
+page would false-positive physical fulfillment. It reads through the SAME precision-guarded signal
+bank — a pure-API pricing page trips only its metered/subscription billing signals; a retail pricing
+page saying "free shipping" correctly claims physical_good. No new signal. Vendor-neutral (a universal
+web convention, no domain/vendor named). NOT signing/payment code (offering discovery, off the scoring
+path).
+
+**Verified score-neutral on committed evidence (non-vacuously).** Ran the REAL `discover_offering` through
+`FetchContext.from_fixture` BEFORE/AFTER on all five committed fixtures. On the canonical pair `/pricing`
+IS read (it is a real 200 — `surfaces_seen` gains `/pricing`) and fires signals for exactly the THREE
+already-claimed archetypes (metered_api: billed-per/per-unit-rate/usage-based/api-reference,
+subscription: per-month/per-month-price/annual-billing, digital_good: generations) — the claimed SET
+**and ORDER** are byte-identical: `['metered_api','digital_good','subscription']` on both; NO new
+physical_good/service_booking/data_retrieval. books.toscrape.com / api.replicate.com / example.com:
+`/pricing` 404 → absent, no change. This is a REAL read-live reinforcement, not a vacuous 404-absent
+case. New guard `test_offering.py::test_pricing_surface_is_read_live` pins it end-to-end on real bytes
+(surface read, ≥1 /pricing-sourced signal reaches classification, every /pricing quote HTML-free,
+metered_api+subscription both carry a /pricing signal = the recall added, claimed set+order unchanged);
+`test_openapi_surface_is_wired_for_live_discovery` extended to assert `/pricing` is wired.
+
+**Invariants / regression.** Off the scoring path — `discover_offering`/`_SURFACE_DOCS` are called ONLY
+from `cli._resolve_battery` (`--battery auto`), NEVER from `scoring.py`/`probes/` (grep-verified); the
+commerce-manifest SCORING probe keeps its OWN separate `protocols._AGENT_SURFACE_DOCS` (three docs,
+untouched). `git diff --stat` = `asrs/offering.py` (+19, surface + comment) and `tests/test_offering.py`
+(+45, wiring + read-live guard) ONLY; `git diff -- asrs/scoring.py rubric/ asrs/probes/` EMPTY → rubric
+stays **v0.7**; canonical PAIR unchanged by construction AND re-measured (live replay 46.1 F / 85.5 B /
++39.4, v0.7; replay guard 24/24, canonical OFFERING guard 12/12 — claimed set+order invariant — both
+green; verify `20260728T234102Z` live-corroborates). `test_offering.py` 23→24; suite 21/21 files, 240
+tests green. Direct-to-main (score-neutral discovery recall off the scoring path, not scoring semantics).
+No Slack (score-neutral, non-sensitive; 00:1xZ is before the 16:00 UTC digest window — digest last sent
+Cycle 62 16:21Z).
+
+**Next hypothesis.** The remaining directive-adjacent structured surfaces — `/catalog.json` (the
+"manifest/catalog" the directive names), `/pricing.json`, `/plans` — are 404 on every committed fixture,
+so reading them is unverifiable in-cloud: queue a [LOCAL] item to capture a fixture from a site that
+serves a structured catalog/pricing JSON, then wire + verify recall the same way `/pricing` was. Cloud
+rotation next = TRUTH (the top P0 negative-calibration guard against the committed moleskine report is
+the natural pick).

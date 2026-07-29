@@ -117,6 +117,24 @@ ARCHETYPES: tuple[str, ...] = (
 # reinforces already-claimed archetypes (guarded by tests/test_offering_canonical.py
 # and tests/test_offering.py::test_docs_surface_is_read_live).
 #
+# The PRICING PAGE (`/pricing`) is added next: the rendered page where a storefront
+# states HOW it charges — the "understand the offer" BILLING surface. It is the most
+# conventional home for the per-month / per-generation / pay-as-you-go / seat-priced
+# / credit-metered / volume-tier prose the signal bank already anchors on, and a site
+# very commonly documents its billing ONLY there (a thin marketing homepage that
+# links to `/pricing`, no billing detail in llms.txt or the OpenAPI spec). Like
+# `/docs` it is HTML, so it is HTML-STRIPPED (via the same `_is_html_document` path)
+# before scanning — else `<script>`/`<style>` retail decoy words on a pricing page
+# would false-positive physical fulfillment. It reads through the SAME precision-
+# guarded signal bank, so a pure-API pricing page trips only its metered/subscription
+# billing signals (no spurious physical_good/service_booking), and a retail pricing
+# page that says "free shipping" correctly claims physical_good. No new signal; a 404
+# is an absent surface as always. Score-neutral, VERIFIED on committed evidence: on
+# the canonical pair `/pricing` IS read (it is a real 200) and reinforces the three
+# already-claimed archetypes — the claimed SET AND ORDER are unchanged (guarded by
+# tests/test_offering_canonical.py and test_offering.py::test_pricing_surface_is_read_live,
+# a non-vacuous read-live guard, not a vacuous 404-absent case).
+#
 # Well-known JSON conventions, most-specific first; a surface that 404s is simply
 # absent (discovery tolerates a missing surface, same as any other doc).
 _SURFACE_DOCS: tuple[str, ...] = (
@@ -132,6 +150,7 @@ _SURFACE_DOCS: tuple[str, ...] = (
     "/docs",
     "/api-docs",
     "/reference",
+    "/pricing",
 )
 
 # Conventional agent/API DOC SUBDOMAINS. A real, common pattern for API-first

@@ -179,6 +179,28 @@ design in-cloud, execute locally.
   Cycle 46. The agentic-commerce landscape's published self-description surfaces (homepage / llms.txt /
   manifest / OpenAPI / ai-plugin / A2A agent card) are now ALL read; remaining COVERAGE frontier is
   score-increasing ([LOCAL] free-tier live-wiring, ACP/UCP/MPP handshakes) or a new archetype/signal.
+  SEVENTH SURFACE — Cycle 70 (COVERAGE, direct-to-main, score-neutral): the PRICING / BILLING page
+  `/pricing` is now read. `asrs/offering._SURFACE_DOCS` gains it — the "understand the offer" surface
+  where the per-month / per-generation / pay-as-you-go / seat / credit-metered / volume-tier billing
+  prose the signal bank already anchors on most conventionally lives; a site that documents its billing
+  ONLY on `/pricing` (thin homepage, no billing detail in llms.txt/OpenAPI) was under-classified. HTML,
+  so HTML-stripped (same `_is_html_document` path as `/docs`); SAME precision-guarded signal bank, no new
+  signal. Score-neutral VERIFIED NON-VACUOUSLY on committed evidence (unlike a 404-absent surface): the
+  canonical `/pricing` is a real 200 — `discover_offering` through `from_fixture` reads it (surfaces_seen
+  gains `/pricing`) and reinforces the three already-claimed archetypes, claimed SET+ORDER byte-identical
+  `['metered_api','digital_good','subscription']` on both. Off the scoring path (grep-verified; scoring
+  probe's `protocols._AGENT_SURFACE_DOCS` untouched); rubric v0.7, replay guard 24/24 / +39.4, canonical
+  OFFERING guard 12/12 unchanged. New guard `test_pricing_surface_is_read_live` + wiring test extended;
+  `test_offering.py` 23→24; suite 240 tests. See LOG Cycle 70.
+
+- **[LOCAL] Wire + verify the STRUCTURED catalog / pricing JSON surfaces** (COVERAGE, follow-up to Cycle
+  70's `/pricing`). The directive names "manifest/**catalog**"; `/catalog.json`, `/pricing.json`, `/plans`
+  are conventional structured-JSON offering/billing docs but 404 on EVERY committed fixture, so adding them
+  is UNVERIFIABLE in-cloud (a vacuous absent case — cannot prove the read works or is score-neutral).
+  Capture a fixture from a real site that serves a structured catalog or pricing JSON (`asrs.cli score
+  <domain> --record-fixture fixtures/canonical/<domain>.json`, LIVE → [LOCAL]), then add the path(s) to
+  `_SURFACE_DOCS` and wire a read-live guard the same way `/pricing` was (surface read, ≥1 sourced signal
+  reaches classification, claimed set unchanged on the canonical pair). Off the scoring path, score-neutral.
   FIFTH SURFACE (beyond the directive's named four) — Cycle 42 (COVERAGE, direct-to-main,
   score-neutral): the agent-plugin descriptor `/.well-known/ai-plugin.json` is now read.
   `asrs/offering._SURFACE_DOCS` gains it — the open, vendor-neutral manifest a storefront publishes

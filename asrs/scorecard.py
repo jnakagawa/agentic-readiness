@@ -419,6 +419,27 @@ relabels the API&rsquo;s identity end-to-end and confirms the async contract is
 still recognized, unchanged, with the vendor&rsquo;s name gone. This read is
 <b>diagnostic</b> &mdash; it names what the offer requires, <b>off the scoring
 path</b> &mdash; not a scored pillar.</p>
+<p><b>Recovering from a failed call</b> is the last leg of finishing, and it is
+where an agent that has done everything else right still strands: calls fail
+&mdash; a credential expires, a rate limit trips, a request is malformed &mdash;
+and an agent can only <b>recover autonomously</b> if it can read <b>what went
+wrong</b> in a form it did not have to guess. An offer that documents its
+<b>error contract</b> &mdash; the <b>4xx/5xx</b> responses a call can return
+&mdash; is more agent-completable than one that answers a failure with an opaque
+body: an HTTP <b>status code</b> tells the agent whether to refresh a credential
+(on a <code>401</code>), back off and retry (on a <code>429</code>), or surface a
+clear failure; an <b>RFC&nbsp;7807</b> <code>application/problem+json</code> body,
+or a machine-readable <b>error code</b> (a status paired with a
+<code>snake_case</code> identifier such as <code>invalid_request</code>), tells it
+<b>why</b>. So ASRS reads the documented error contract as part of understanding
+the offer, keyed on vendor-neutral machine conventions (an HTTP status code, an
+RFC&nbsp;7807 problem body, a named error code), the same category of open
+convention as REST, GraphQL or OpenAPI. Recognition keys on the <b>declared
+contract, not who declares it</b>: that property is pinned by an <b>executable
+regression test</b> that relabels the API&rsquo;s identity end-to-end and confirms
+the error contract is still recognized, unchanged, with the vendor&rsquo;s name
+gone. This read is <b>diagnostic</b> &mdash; it names how the offer reports a
+failure, <b>off the scoring path</b> &mdash; not a scored pillar.</p>
 </div>
 
 <div class="card">

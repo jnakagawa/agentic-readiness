@@ -1,13 +1,13 @@
 # Loop state
 
-- Cycle counter: 89
+- Cycle counter: 90
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-29T19:1xZ, Cycle 89; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-29T21:12Z, Cycle 90; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~19h31m old at the 19:1xZ fire; no newer :41 artifact through 18:41Z Jul-29 (20 consecutive
+  Jul-28 = ~21h31m old at the 21:12Z fire; no newer :41 artifact through 20:41Z Jul-29 (22 consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine → FLAGGED in the Cycle-86 16:00 UTC digest
   (the 16:12Z fire was the FIRST cycle after 16:00Z; the ~16.5h runner gap was flagged loudly there;
-  the Cycle-87 17:12Z, Cycle-88 18:1xZ, and this Cycle-89 19:1xZ fires are NOT the first-after-16:00 cycle,
+  the Cycle-87 17:12Z through this Cycle-90 21:12Z fires are NOT the first-after-16:00 cycle,
   so no re-digest — keep flagging in each daily digest until it clears); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
   is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
@@ -27,7 +27,36 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 90 COVERAGE — offering discovery now recognises a storefront's documented machine-readable ERROR
+  CONTRACT, the "complete the job" RELIABILITY capability the metered_api signal bank was missing. New
+  `error-contract` signal in `_SIGNALS["metered_api"]` (`asrs/offering.py`), grouped after `async-job`:
+  matches the 4xx/5xx error responses an agent must handle to RECOVER from a failed call — an OpenAPI
+  status-keyed response object (`"429":{"description"…`), the IETF RFC 7807 `application/problem+json`
+  media type, or a status code paired with a snake_case error code (`400 invalid_request`). CAPABILITY:
+  an agent that cannot read the error contract cannot recover autonomously (refresh a credential on 401,
+  back off/retry on 429, surface a clear failure on 4xx/5xx) → distinct from `rate-limited` (limits EXIST)
+  and `async-job` (how results come back). PRECISION: never matches a bare 4xx/5xx number (a quantity
+  "500-image run", a price "$499", a phone/room number "call 411"/"room 404") nor a 2xx/3xx success status;
+  7 number-shaped negatives reject. NON-VACUOUS end-to-end (`from_fixture → discover_offering`) on ALL THREE
+  metered_api fixtures (canonical pair /docs error table + OpenAPI 401/429 responses; api.replicate.com
+  `application/problem+json` 4xx) and ZERO retail/null fixtures = offering-layer mirror of the metered/
+  non-metered split. SCORE-NEUTRAL: every site where it fires ALREADY claims metered_api → claimed SET+ORDER
+  byte-identical; git diff --name-only = offering.py + test_offering.py ONLY; git diff over
+  scoring.py/rubric/fixtures/batteries/protocols.py/battery.py/probes/fetch.py EMPTY → scoring path
+  byte-for-byte untouched → rubric v0.7 (discovery off the scoring path). Canonical PAIR unchanged AND
+  re-measured (replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss). Vendor-neutral (only OpenAPI /
+  RFC 7807 / HTTP status codes named). test_offering 32→34; full suite 22 files green (test_free_tier 11/11
+  with eth-account); offering-canonical 16/16, battery-instantiate-canonical 6/6. Cloud bridge blocks direct
+  main push → branch loop/error-contract-signal + PR #30 + self-merge (squash ec56c13; NOT peer-gated —
+  discovery-only, off scoring path, score-neutral). First duty: no open peer-gated PR ([]); realigned main to
+  origin/main ec56c13 after merge. No Slack (score-neutral, moves no score; this 21:12Z fire is after the
+  Cycle-86 16:12Z daily digest, so not the first-after-16:00 cycle). RUNNER STILL GAPPED
+  (verify_20260728T234102Z 23:41Z ~21.5h old). Next TRUTH — candidate: a SIGNAL-level relabel-invariance
+  guard for the new `error-contract` signal (an error contract keys on what a storefront DECLARES — status
+  codes, problem+json — not WHO declares it), the recurring "extend relabel-invariance as new signals land"
+  item (Cycle 79 payment-rail / 83 async-job / 87 api-auth); error-contract evidence is largely host-FREE →
+  a clean surface-presence / structural-re-match case like async-job, not quote-anchored.)
   (Cycle 89 METHOD — pinned NA-CONTENT INVARIANCE, the operator directive's core claim made executable at
   its strongest. New `test_na_content_invariance` (`tests/test_battery.py` 13→14): whatever an agent did on
   an intent the site does NOT offer — failed flat (`runs_fail` mean 0.0) or garden-pathed to full completion

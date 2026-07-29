@@ -8144,3 +8144,75 @@ f75e01c after merge.
 a per-segment leaderboard summary once the [LOCAL] calibration population grows;
 in-cloud COVERAGE frontier is thin (structured catalog/pricing JSON are [LOCAL],
 404 on committed fixtures).
+
+## Cycle 90 — 2026-07-29T21:12Z — COVERAGE
+
+**What.** New `error-contract` signal in `_SIGNALS["metered_api"]`
+(`asrs/offering.py`): offering discovery now recognises a storefront's documented
+machine-readable ERROR CONTRACT — the 4xx/5xx error responses an agent must
+handle to RECOVER from a failed call. Grouped with the "complete the job"
+contract signals, right after `async-job`.
+
+**Why (capability lens).** This is the "complete the job" RELIABILITY capability,
+distinct from the two adjacent metered_api signals: `rate-limited` says limits
+EXIST, `async-job` says how results come back, `error-contract` says how FAILURES
+are communicated so an agent can recover autonomously — refresh a credential on a
+401, back off and retry on a 429, surface a clear failure on a 4xx/5xx. An agent
+that cannot read the error contract cannot recover without a human, so a metered
+API that documents its errors machine-readably is MORE agent-completable. Fills
+the reliability leg of the reach→understand→pay→provision→complete lens.
+
+**Precision (vendor-neutral open conventions only).** Matches one of three
+high-precision forms, never a vendor: an OpenAPI status-keyed response object
+(`"429":{"description"…` / `"404":{"content"…`), the IETF RFC 7807
+`application/problem+json` problem-details media type, or a status code paired
+with a snake_case error code (`400 invalid_request`, `429 allowance_exhausted`,
+`502 generation_failed`). NEVER matches a bare 4xx/5xx number — a quantity
+("a 500-image catalog run", "429 renders today"), a price ("$499"), a phone/room
+number ("call 411", "room 404") — nor a 2xx/3xx success status. 7 number-shaped
+negatives all reject.
+
+**Non-vacuity (real captured surfaces).** Fires end-to-end (`from_fixture →
+discover_offering`) on ALL THREE metered_api fixtures — the canonical pair's
+`/docs` error table (400 invalid_request … 429 allowance_exhausted … 502
+generation_failed) + OpenAPI 401/429 response objects, and `api.replicate.com`'s
+`application/problem+json` 4xx responses — and on ZERO of the retail
+(`books.toscrape.com`) / null (`example.com`) fixtures: the offering-layer mirror
+of the metered/non-metered split.
+
+**Scope / safety.** Score-neutral: every domain where error-contract fires
+ALREADY claims metered_api (its strongest archetype on all three) → claimed
+SET+ORDER byte-identical. `git diff --name-only` = `asrs/offering.py` +
+`tests/test_offering.py` ONLY; `git diff` over
+`scoring.py`/`rubric`/`fixtures`/`batteries`/`protocols.py`/`battery.py`/`probes`/`fetch.py`
+EMPTY → scoring path byte-for-byte untouched → rubric **v0.7** (discovery off the
+scoring path, `--battery auto` only). Vendor-neutral (only OpenAPI / RFC 7807 /
+HTTP status codes named). NOT peer-gated — discovery-only, off scoring path,
+score-neutral.
+
+**Evidence.** `test_offering.py` +2 (32→34): `test_error_contract_precision_synthetic`
+(7 positives / 7 number-shaped negatives) + `test_error_contract_fires_on_real_captured_surfaces`
+(fires on 3 fixtures, absent on retail). Full suite 22 files green
+(`test_free_tier` 11/11 with eth-account); offering-canonical 16/16
+(claimed set+order unchanged), battery-instantiate-canonical 6/6. Cloud bridge
+blocks direct main push → branch `loop/error-contract-signal` + PR #30 +
+self-merge (squash ec56c13).
+
+**Canonical pair (regression signal).** Replay guard `test_canonical_replay.py`
+24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss — UNCHANGED (scoring path
+untouched). Live runner STILL GAPPED (newest `verify_20260728T234102Z.json`
+23:41Z Jul-28, ~21.5h old at this fire); this 21:12Z fire is not the
+first-after-16:00 cycle so no re-digest — the in-cloud replay guard remains the
+independent live regression signal.
+
+**First duty.** No open peer-gated PR ([]); realigned main to origin/main
+ec56c13 after merge.
+
+**Next — TRUTH.** Candidate: a SIGNAL-level relabel-invariance guard for the new
+`error-contract` signal (an error contract is a property of what a storefront
+declares — its status codes and problem+json responses — not who declares it),
+the recurring "extend relabel-invariance as new signals land" item, mirroring
+Cycle 79 (payment-rail) / 83 (async-job) / 87 (api-auth). The error-contract
+evidence is largely host-FREE (status codes, `application/problem+json`), so it is
+a clean surface-presence / structural-re-match case like async-job (Cycle 83), not
+a quote-anchored one — non-vacuity anchors at the fixture level.

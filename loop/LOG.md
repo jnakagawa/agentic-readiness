@@ -7311,3 +7311,57 @@ watch — if a fresh artifact lands next fire, watch its `attempts` field; if st
 gapped, escalate in the 16:00 UTC digest. Cloud-doable METHOD candidate: a fresh
 executable-invariant increment on the offering/battery path, or extend the
 calibration READOUT with a per-segment summary once the population grows.
+
+## Cycle 77 — 2026-07-29T07:1xZ — METHOD
+
+**What.** Made the calibration LEADERBOARD ranking permutation-invariant.
+`_write_calibration_page` (Cycle 76) sorted scored members with a plain STABLE
+sort on `overall` alone (`scored.sort(key=lambda r: r["overall"], reverse=True)`),
+so two members with an EQUAL overall retained their INPUT ROW ORDER — the rendered
+ranking depended on the order the sweep recorded its rows in, not purely on the
+scores, directly contradicting the function's own comment ("the page's ranking is
+a property of the scores, reproducible from the raw data"). Fix: a deterministic
+secondary key — `scored.sort(key=lambda r: (-r["overall"], str(r.get("domain",
+""))))` — so rank is a PURE function of (overall DESC, domain ASC), invariant under
+any permutation of `rows`. Added guard `test_calibration_ranking_is_permutation_
+invariant`: renders the page under four genuinely-distinct row orders (including
+the tied pair swapped) and asserts the ranked scored-domain sequence is IDENTICAL
+across all four AND the tie breaks by domain (aaa before zzz).
+
+**Why (METHOD).** A readiness ranking is a property of the scores, not of the
+order the sweep happened to record its rows — the READOUT analog of the battery
+aggregation's presentation-order invariance (Cycle 73). This converts the
+docstring claim from prose into an executable tripwire, closing the one case a
+stable sort silently leaks (ties). NON-VACUOUS: verified the guard FAILS against
+the old stable-sort behavior — the tied pair (both 61.9) flips aaa/zzz between two
+input orders under the old code (order A → [top,aaa,zzz], order B → [top,zzz,aaa]),
+and is stable under the fix; the four permutation inputs are asserted distinct so a
+PASS is not from feeding identical rows.
+
+**Ship.** Display-only: `git diff` = `asrs/scorecard.py` (leaderboard rendering,
+off the scoring path) + `tests/test_readout.py` ONLY; `git diff --stat --
+asrs/scoring.py rubric/ asrs/probes/ asrs/offering.py asrs/battery.py asrs/fetch.py
+asrs/protocols.py` EMPTY → rubric stays **v0.7**. NOT peer-gated (moves no score).
+Cloud bridge blocks direct main push → branch `loop/leaderboard-ranking-
+permutation-invariance` + PR #10 + self-merge (squash, 3fc79df). No Slack
+(display-only, moves no score, before the 16:00 UTC digest window).
+
+**Evidence.** `tests/test_readout.py` 45→46. Full suite **22 files green**
+(`test_free_tier` 11/11 once `eth-account` installed). First duty: no open
+peer-gated PR (`list_pull_requests state=open` → []).
+
+**Canonical pair (regression signal).** Scoring path byte-for-byte untouched →
+delta unchanged BY CONSTRUCTION AND re-measured by the in-cloud replay guard
+(`test_canonical_replay` 24/24, relabel-invariance held): **46.1 F / 85.5 B /
++39.4**, 0 replay-miss; offering guard 13/13. Live signal: newest
+`runs/local/verify_20260728T234102Z.json` (23:41Z Jul-28) is **~7h31m old at the
+07:12Z fire — still PAST the 6h floor** (no newer :41 artifact through 06:41Z Jul-29).
+The runner stall flagged Cycle 76 persists; cloud can't repair the local machine.
+The in-cloud replay guard remains the live regression signal, independent of the
+runner, so benchmark integrity is intact — a heartbeat gap, not a scoring outage.
+
+**Next hypothesis.** COVERAGE next (rotate). The runner-stall is the standing
+infra watch → FLAG in the 16:00 UTC digest if still gapped. Cloud-doable COVERAGE
+frontier is thin (structured catalog/pricing JSON are [LOCAL], 404 on fixtures);
+candidate: a new archetype/signal for `classify_offering`, or a per-segment summary
+on the leaderboard once the population grows.

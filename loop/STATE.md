@@ -1,16 +1,16 @@
 # Loop state
 
-- Cycle counter: 76
+- Cycle counter: 77
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (2026-07-29T06:12Z, Cycle 76): the LOCAL verify runner has BREACHED the 6h floor.
-  Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z Jul-28 = ~6h31m old at the 06:12Z fire;
-  six consecutive :41 fires 00:41–05:41Z Jul-29 produced NO newer artifact. This is the escalation
-  threshold STATE set at Cycle 75. Cloud CANNOT repair the local machine → FLAG in the next 16:00 UTC
-  digest; queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
+- RUNNER STALL (STILL GAPPED at 2026-07-29T07:12Z, Cycle 77; first breached Cycle 76 06:12Z): the LOCAL
+  verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
+  Jul-28 = ~7h31m old at the 07:12Z fire; no newer :41 artifact through 06:41Z Jul-29. Cloud CANNOT
+  repair the local machine → FLAG in the next 16:00 UTC digest (the 07:12Z fire is before the digest
+  window); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
-  is intact — this is a heartbeat gap, not a scoring problem. Likely the same wake/network race the
-  Cycle-63 local fire root-caused (a >60s slow-network wake still misses the 5×15s retry) OR the machine
-  is simply asleep/offline. If a fresh artifact lands next fire, watch its `attempts` field; if still
+  is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
+  local fire root-caused (a >60s slow-network wake still misses the 5×15s retry) OR the machine is
+  simply asleep/offline. If a fresh artifact lands next fire, watch its `attempts` field; if still
   gapped, escalate loudly in the digest.
 - INFRA (2026-07-29T04:2xZ, Cycle 74): the CLOUD git bridge now REFUSES direct pushes to `main`
   (branch-protected) — a `git push origin main` of a legitimate fast-forward is rejected with a
@@ -25,7 +25,26 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 77 METHOD — made the calibration LEADERBOARD ranking PERMUTATION-INVARIANT. `_write_calibration_page`
+  (Cycle 76) sorted scored members with a plain STABLE sort on `overall` alone, so two members with an EQUAL
+  overall kept their INPUT ROW ORDER — the rendered ranking depended on the sweep's row order, not purely on
+  the scores, contradicting the function's own "reproducible from the raw data" comment. Fix: deterministic
+  secondary key `scored.sort(key=lambda r: (-r["overall"], str(r.get("domain", ""))))` → rank is a PURE
+  function of (overall DESC, domain ASC), invariant under any permutation of `rows`. Guard
+  `test_calibration_ranking_is_permutation_invariant` renders the page under four genuinely-distinct row orders
+  (incl. the tied pair swapped) and asserts identical ranked sequence + tie broken by domain. NON-VACUOUS:
+  verified the guard FAILS on the old stable-sort (tied pair 61.9 flips aaa/zzz between orders A/B); the four
+  permutation inputs asserted distinct. READOUT analog of the battery presentation-order invariance (Cycle 73).
+  Display-only: git diff = scorecard.py + test_readout.py ONLY; scoring/offering/battery/probe/fetch/protocols
+  byte-for-byte untouched → rubric v0.7. Canonical PAIR unchanged AND re-measured (replay guard 24/24, 46.1 F /
+  85.5 B / +39.4, 0 replay-miss; offering guard 13/13). Full suite 22 files green (test_free_tier 11/11 with
+  eth-account). Cloud bridge blocks direct main push → branch loop/leaderboard-ranking-permutation-invariance
+  + PR #10 + self-merge (squash, 3fc79df; NOT peer-gated). No Slack (display-only, moves no score, before
+  16:00 UTC digest). First duty: no open peer-gated PR ([]). RUNNER STILL GAPPED (verify_20260728T234102Z
+  23:41Z ~7h31m old at 07:12Z, past 6h floor — flag in next digest). Next COVERAGE — cloud frontier thin
+  (structured catalog/pricing JSON [LOCAL]); candidate: a new archetype/signal for classify_offering, or a
+  per-segment leaderboard summary once the population grows.)
   (Cycle 76 READOUT — the calibration LEADERBOARD page, the cloud-doable half of the "calibration
   population + leaderboard" item. `asrs/scorecard.py` `_write_calibration_page(out_dir, sweep=None)` +
   `_load_calibration_sweep()` render the newest committed `runs/local/calibration_sweep_*.json` as a

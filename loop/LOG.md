@@ -7247,3 +7247,67 @@ calibration leaderboard page off the committed `calibration_sweep_*.json` (P1
 backlog item) — render the population as an HTML/terminal leaderboard, pillars +
 segment + claimed archetypes + grade, NOT-SCORABLE members named separately,
 weights/bands pulled live from `load_rubric`.
+
+## Cycle 76 — 2026-07-29T06:1xZ — READOUT
+
+**What.** The calibration LEADERBOARD page — the cloud-doable half of the
+"calibration population + leaderboard" item (P1). `asrs/scorecard.py`
+`_write_calibration_page(out_dir, sweep=None)` + `_load_calibration_sweep()`
+render the newest committed `runs/local/calibration_sweep_*.json` as a ranked
+HTML leaderboard (`calibration.html`), published next to every scorecard and
+linked in the footer. Scored members are ranked by overall DESC — the order is
+re-derived from the raw rows, not an echoed pre-computed list, so the ranking is
+a reproducible property of the scores — with grade, overall, all five pillars
+(outcome always `—` in a static $0 sweep: never a scored 0), and the offering
+classifier's vendor-neutral claimed-archetype set. NOT-SCORABLE members are named
+in a SEPARATE section with NO rank, framed as reachability not a site failure.
+
+**Why.** A benchmark needs a POPULATION, not one pair (north-star: measurement
+coverage + readout clarity). The local runner already commits a dated static $0
+sweep of real domains scored through the SAME probe path as every card; that data
+had no HTML surface. This renders where real storefronts land on the scale —
+agent-native anchors through emerging-rails retail to no-rails retail and
+non-storefront controls — in one ranked view.
+
+**Attribution honesty (invariant #4)** is the load-bearing design choice: only
+reachable members are ranked. An unreachable member is NOT SCORABLE — a fact about
+the observation, never a site FAILURE — listed separately, never mixed into the
+ranking or scored as a zero. **No drift:** grade bands come LIVE from `load_rubric`
+(the on-page legend can't drift from the scoring); a dataset scored on a different
+rubric version than the current one is flagged for comparability. **Vendor-neutral:**
+domains appear only as DATA (the page is literally ABOUT this population), the same
+scanner-scope category as `canonical-history.html`/`rubric.html` — no scored-check
+prose touched; the wording scanner (`test_rubric_wording` 4/4) stays green.
+
+**Ship.** Display-only. `git diff --stat` = `asrs/scorecard.py` +
+`tests/test_readout.py` only; scoring / offering / battery / probe code
+byte-for-byte untouched (`git diff -- asrs/scoring.py rubric/ asrs/probes/
+asrs/protocols.py asrs/offering.py asrs/battery.py asrs/fetch.py` EMPTY) → rubric
+stays **v0.7**. Cloud git bridge refuses direct main pushes → branch
+`loop/calibration-leaderboard-page` + PR [#8] + self-merge (squash, commit
+62e7b43). NOT peer-gated (no scoring-semantics/payment change). No Slack
+(display-only, moves no score, before the 16:00 UTC daily-digest window).
+
+**Evidence.** `tests/test_readout.py` 40→45 (+5: ranking-by-overall,
+not-scorable-separation, live-bands/version-flag, empty-dataset, publish+link).
+Full suite **22 files green** (`test_free_tier` 11/11 once `eth-account` installed).
+Renders the committed `runs/local/calibration_sweep_20260728T234815Z.json` (13
+scored / 1 not-scorable, rubric v0.7). First duty: no open peer-gated PR
+(`list_pull_requests state=open` → []).
+
+**Canonical pair (regression signal).** Scoring path byte-for-byte untouched →
+delta unchanged **by construction** AND re-measured by the in-cloud replay guard
+(`test_canonical_replay` 24/24, relabel-invariance held): **46.1 F / 85.5 B /
++39.4**, 0 replay-miss; offering guard 13/13. Live signal: newest
+`runs/local/verify_20260728T234102Z.json` delta 39.4 (23:41Z) is **~6h31m old at
+the 06:12Z fire — PAST the 6h floor.** The local runner has now breached the floor
+as STATE predicted (six consecutive :41 fires 00:41–05:41Z Jul-29 produced no newer
+artifact); cloud can't repair the local machine → flag in the next digest, queued
+below. The in-cloud replay guard remains the live regression signal, independent of
+the runner, so benchmark integrity is intact.
+
+**Next hypothesis.** METHOD next (rotate). The runner-stall is the standing infra
+watch — if a fresh artifact lands next fire, watch its `attempts` field; if still
+gapped, escalate in the 16:00 UTC digest. Cloud-doable METHOD candidate: a fresh
+executable-invariant increment on the offering/battery path, or extend the
+calibration READOUT with a per-segment summary once the population grows.

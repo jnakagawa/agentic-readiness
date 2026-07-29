@@ -465,6 +465,35 @@ def test_methodology_documents_check_layer_honesty() -> None:
         _check(banned not in text, f"methodology names no vendor/domain ({banned!r})")
 
 
+def test_methodology_documents_payment_rail_neutrality() -> None:
+    # Cycle 80 (READOUT): the READOUT complement to Cycle 78's agent-payment-rail
+    # COVERAGE (offering discovery recognizing open rails beyond x402) and Cycle
+    # 79's SIGNAL-level relabel-invariance TRUTH guard. The capability lens already
+    # says "no payment brand is special-cased"; this makes that concrete for the
+    # north-star "many payment rails" flexibility axis in prose a critic can read.
+    # It must (a) frame agent-native payment as a CAPABILITY, not a single rail;
+    # (b) name the open rail landscape as OPEN STANDARDS (not vendors); (c) say
+    # recognition keys on protocol/settlement STRUCTURE so every rail is read on
+    # equal terms; and (d) say the "what is declared, not who declares it" property
+    # is test-pinned by an identity-relabel guard — while staying vendor-neutral.
+    print("test_methodology_documents_payment_rail_neutrality")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    for phrase in ("open payment protocols", "not a rail", "more than one",
+                   "protocol and settlement structure", "equal terms",
+                   "open standards", "relabels the storefront",
+                   "executable regression test"):
+        _check(phrase in text,
+               f"methodology documents payment-rail neutrality: {phrase!r}")
+    # The rail landscape must be named as open standards (the same protocol names
+    # the offering signal bank recognizes) — protocol names, never a vendor brand.
+    for rail in ("x402", "MPP", "ACP", "UCP", "AP2"):
+        _check(rail in text, f"methodology names the open rail {rail!r}")
+    # Vendor-neutral: no scored domain/product/brand named on the page.
+    for banned in ("drift-flight", "driftflight"):
+        _check(banned not in text, f"methodology names no vendor/domain ({banned!r})")
+
+
 def test_methodology_documents_calibration() -> None:
     # Cycle 68 (READOUT): the READOUT complement to Cycle 67's calibration guard
     # (tests/test_calibration.py — the first static-vs-behavioral VALIDITY axis).

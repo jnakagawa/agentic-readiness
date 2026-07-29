@@ -369,6 +369,20 @@ pay programmatically, provision without a human, and finish the job?</b>
 Every check is worded by <b>capability</b>, never by vendor: no domain, product,
 or payment brand is special-cased, favorable or hostile. An implementation
 scores well only because it delivers those capabilities to an agent.</p>
+<p><b>Agent-native payment</b> makes that neutrality concrete, because payment is
+where a benchmark is most tempted to pick a winner. Paying programmatically is a
+<b>capability</b>, not a rail: agentic commerce is standardizing on <b>several
+open payment protocols</b> &mdash; x402, MPP, ACP, UCP and AP2 are open standards,
+not any one vendor&rsquo;s product &mdash; and a with-rails storefront commonly
+advertises <b>more than one</b> (for example an <code>x402 (Base&nbsp;USDC)</code>
+rail alongside an <code>MPP (Tempo&nbsp;USDC)</code> one). ASRS recognizes a
+declared rail by its <b>protocol and settlement structure</b> &mdash; a
+<code>&quot;protocol&quot;</code> declaration, or a rail named with its on-chain
+settlement asset &mdash; so every open rail is read on <b>equal terms</b> and none
+is favored by name. Recognition keys on <b>what</b> a storefront declares, never
+on <b>who</b> declares it: that property is pinned by an <b>executable regression
+test</b> that relabels the storefront&rsquo;s identity end-to-end and confirms the
+rail is still recognized, unchanged, with the vendor&rsquo;s name gone.</p>
 </div>
 
 <div class="card">

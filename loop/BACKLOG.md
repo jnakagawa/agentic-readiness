@@ -483,6 +483,35 @@ design in-cloud, execute locally.
 
 ## P1
 
+- **Relabel-invariance for the api.replicate.com machine-surface fixture** (TRUTH/METHOD, cloud-doable,
+  observation from Cycle 74). `test_offering_canonical.py`'s relabel-invariance family (Cycle 21/31) covers
+  the driftflight pair, the retail inverse (books.toscrape), and the non-storefront (example.com) — but NOT
+  the machine-surface-first storefront (api.replicate.com), the one committed offering fixture whose
+  metered_api claim is driven by the `/openapi.json` surface and whose "post-endpoint" evidence quote
+  embeds the host (`POST https://api.replicate.com/…`). Add `test_offering_relabel_invariance_machine`
+  mirroring the existing relabel tests: relabel the host to `vendor-neutral.test` everywhere and assert the
+  claimed archetype list (`[metered_api]`) + NA set are identical — proving the metered_api claim keys on
+  the endpoint STRUCTURE, not the vendor's name, on a REAL third-party API driven by the machine contract.
+  Cloud-doable (committed fixture, no network), tests-only, score-neutral. NON-VACUOUS by the same substrate
+  as the other relabel tests (the host appears in the base evidence). Folds into the "Adversarial referee
+  pass → extend relabel-invariance to more fixtures as they land" recurring item.
+
+<!-- DONE 2026-07-29T04:1xZ (Cycle 74, COVERAGE, direct-to-main, tests-only/score-neutral): the
+     offering-relative BATTERY-INSTANTIATION layer (`battery.instantiate_battery`, the operator directive's
+     core task-selection deliverable) is now pinned END-TO-END on the REAL committed fixtures. New
+     `tests/test_battery_instantiate_canonical.py` (6 tests) replays each committed fixture through
+     `from_fixture → discover_offering → instantiate_battery` and pins the TASK SET per storefront type:
+     image-gen API pair → [metered_api,subscription,digital_good] (NO physical/booking/data task; digital_good
+     intent parameterized to "generated image" from real media evidence, NOT the "digital output" fallback);
+     retail books.toscrape → ONLY physical_good; machine-surface api.replicate.com → ONLY metered_api;
+     example.com → empty battery. Plus cross-site comparability (metered_api intent identical across
+     driftflight.com vs api.replicate.com). Converts the operator acceptance criterion at the INSTANTIATION
+     layer from synthetic-only (test_battery_instantiate) + transient [LOCAL] run logs into an in-cloud
+     per-cycle tripwire — the same move Cycle 27 made for the DISCOVERY layer. Tests-only, git diff -- asrs/
+     rubric/ EMPTY → rubric v0.7, replay guard 24/24 / 46.1 F / 85.5 B / +39.4. Suite 21→22 files. See LOG
+     Cycle 74. This further discharges the operator directive's "[LOCAL] acceptance rerun" verification for
+     the task-selection layer (the BEHAVIORAL half remains [LOCAL], but the STRUCTURE is now guarded in-cloud). -->
+
 <!-- DONE 2026-07-23T16:46Z (local fire, TRUTH): "`--record-fixture` CLI hook" LANDED as part
      of the canonical-fixture capture (P0 above). `asrs/cli.py`: `--record-fixture <path>` on
      the `score` subparser + a post-scoring `ctx.save_fixture(path)` in `_evaluate` guarded by

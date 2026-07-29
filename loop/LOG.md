@@ -7109,3 +7109,78 @@ in-cloud COVERAGE frontier is thin (structured `/catalog.json`//pricing.json are
 fixtures). The population-leaderboard READOUT page (off the committed `calibration_sweep_*.json`) remains
 the next big cloud-doable READOUT deliverable. The [LOCAL] moleskine static fixture (negative-calibration
 two-crawl cross-validation) stays queued.
+
+## Cycle 74 — 2026-07-29T04:1xZ — COVERAGE (direct to main)
+
+**What.** The operator directive's CORE DELIVERABLE — offering-relative task SELECTION
+(`battery.instantiate_battery`) — is now pinned END-TO-END on the REAL committed fixtures, as a
+per-cycle in-cloud tripwire. New `tests/test_battery_instantiate_canonical.py` (6 tests) replays each
+committed fixture through the FULL real pipeline (`FetchContext.from_fixture → discover_offering →
+instantiate_battery`, no network) and pins the generated TASK SET per storefront TYPE:
+- the agent-native image-gen API pair (drift-flight.org / driftflight.com) → tasks
+  `[metered_api, subscription, digital_good]`, NO physical_good/service_booking/data_retrieval task
+  (the operator's "physical_good = NA, not a completion number" — enforced at the TASK layer, not just
+  discovery classification), and the digital_good intent PARAMETERIZED to "generated image" from the
+  site's OWN discovered media evidence (the operator's literal "buy an AI-generated image" example);
+- the retail book catalog (books.toscrape.com) → ONLY a `physical_good` task ("a retail storefront
+  shows the inverse");
+- the generic model-inference API (api.replicate.com, machine-surface-first) → ONLY a `metered_api`
+  task — the compute-SKU precision boundary (`test_offering_canonical`) carried through to task
+  selection, so a model platform gets no spurious fulfillment intent;
+- the non-storefront doc page (example.com) → an EMPTY battery (honest "nothing to assess").
+Plus a cross-site comparability check: the `metered_api` intent is byte-identical across two REAL API
+storefronts (driftflight.com vs api.replicate.com), so their metered-call readiness numbers compare
+like-for-like.
+
+**Why (COVERAGE, task-battery breadth on real storefront TYPES).** Discovery classification was already
+guarded on the committed fixtures (Cycle 27/31, `test_offering_canonical`), and the aggregation math is
+guarded synthetically (Cycle 25/73, `test_battery`). But the INSTANTIATION step — the one that turns the
+operator criterion into the battery an agent actually runs — was pinned only against SYNTHETIC profiles
+(`test_battery_instantiate.py`, hand-built homepage strings) and end-to-end on real storefronts only in
+transient [LOCAL] behavioral run logs (`runs/local/acceptance_battery_*`, gitignored). This closes that
+gap the same way Cycle 27 closed it for discovery: the acceptance criterion is now an executable per-cycle
+guard on real evidence, not a run-log fact, across four real storefront types.
+
+**NON-VACUOUS.** The digital_good descriptor is asserted to be the evidence-derived "generated image" and
+explicitly NOT the generic "digital output" fallback — proving the intent was parameterized from the
+DISCOVERED offering, not a static template. The retail/replicate/empty cases prove the pipeline is not a
+constant function (physical-only, metered-only, empty — three distinct outcomes). Two real bugs in the
+test draft were caught and fixed before shipping: (a) discovery orders claims by STRENGTH while
+instantiation uses fixed template-bank order — the task-set/claimed-set identity must compare as SETS, not
+ordered lists; (b) api.replicate.com's first host label is the generic word "api", which legitimately
+appears in "metered API" — the vendor-neutrality check keys on the DISTINCTIVE second-level label
+(replicate / driftflight / drift-flight / toscrape), never a generic subdomain prefix.
+
+**Vendor-neutral.** Assertions key on archetype task kinds; domains appear only as committed fixture PATHS
+(the same domain-as-data pattern as `test_offering_canonical`), never as scored-check prose. The test
+also asserts every generated intent is itself vendor-neutral (no domain/host/vendor token in the intent
+text — intents say "the service", "the site's primary physical product"). `test_rubric_wording` 4/4 +
+`test_readout_wording` 4/4 unaffected (this touches neither the parsed rubric nor the rendered readout).
+
+**Invariants / regression.** Tests-only: `git status` = one new untracked file
+(`tests/test_battery_instantiate_canonical.py`); `git diff --stat -- asrs/ rubric/ fixtures/ batteries/`
+EMPTY → scoring path AND the offering/battery code byte-for-byte untouched, rubric stays **v0.7**
+(`instantiate_battery` is task selection only, off the scoring path). Canonical PAIR unchanged by
+construction AND re-measured: replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; verify
+`20260728T234102Z` (23:41Z, ~4.5h old at fire, under the 6h floor) live-corroborates. Not payment/signing
+code (no settle/sign/authorize/max_pay touched). Direct-to-main (tests-only, moves no score).
+
+**Validation.** New file 6/6 tests green. Full suite **22/22 files** (21→22, +`test_battery_instantiate_
+canonical`). `test_free_tier` 11/11 once `pip install -r requirements.txt` installs `eth-account` (the
+standing invariant-#4 env gap, closed by the requirements install).
+
+**Comms.** No Slack (tests-only, non-sensitive, moves no score; 04:1xZ is before the 16:00 UTC daily-digest
+window).
+
+**First duty.** Infra health check ran first: no open peer-gated PR (`list_pull_requests` = []); runner
+HEALTHY (`verify_20260728T234102Z`, 23:41Z, ~4.5h old, under the 6h floor — the 00:41–03:41Z Jul-29 :41
+fires produced no newer artifact, a possible wake/network gap to WATCH, but still under floor, not yet a
+flag); bench up (22/22 files); git clean, HEAD at Cycle 73 `2d71784`.
+
+**Next hypothesis.** Cloud rotation next = TRUTH. Candidates: the population-leaderboard is a READOUT
+follow-up; for TRUTH the open cloud-doable thread is thin — most calibration/real-domain work now needs a
+committed fixture ([LOCAL] moleskine static fixture for the negative-calibration two-crawl
+cross-validation; [LOCAL] exa.ai over-claim precision pass). A cloud-doable TRUTH increment: extend the
+relabel-invariance vendor-neutrality guard to the api.replicate.com machine-surface fixture (its
+metered_api evidence quote embeds the host in `POST https://<host>/…`, so it is the one committed offering
+fixture NOT yet covered by `test_offering_canonical`'s relabel family).

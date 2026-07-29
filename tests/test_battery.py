@@ -545,6 +545,116 @@ def test_aggregation_is_presentation_order_invariant() -> None:
            f"cross_task_spread is real (>0), got {base.cross_task_spread}")
 
 
+# ---------------------------------------------------------------------------
+# 14. NA-CONTENT invariance (METHOD rigor tripwire; the operator directive made
+#     executable at its strongest). The directive's core complaint was that an
+#     agent's PARTIAL COMPLETION on an intent the site does not offer "pollutes
+#     the completion means and both spread signals — that measures the battery's
+#     mismatch, not the site's readiness". NA exclusion must therefore be TOTAL:
+#     whatever the agent DID on a not-offered intent — failed flat, garden-pathed
+#     partway, or (implausibly) succeeded — the ASSESSED readiness numbers must be
+#     byte-identical. This is invariant #4 (attribution honesty) applied to tasks
+#     and made into a data-perturbation tripwire: presentation-order invariance
+#     (test 13) permutes the ORDER of the SAME observations; this permutes the
+#     CONTENT of the NA task's observations and asserts nothing assessed moves.
+#     Catches a future regression that leaks NA content into a mean/spread (an
+#     "include attempted-but-NA completions for context" shortcut, say).
+# ---------------------------------------------------------------------------
+def test_na_content_invariance() -> None:
+    print("test_na_content_invariance")
+    tasks = [
+        BatteryTask("metered_api", "metered_api", "call the API"),
+        BatteryTask("digital_good", "digital_good", "buy an image"),
+        BatteryTask("physical_good", "physical_good", "order the physical good"),
+    ]
+    # The CLAIMED archetypes' runs are FIXED across both variants, with real
+    # per-checkpoint variance so the protected spreads are non-zero (a leak into
+    # an all-zero spread would pass vacuously): metered_api mean 0.3, digital_good
+    # mean 0.8.
+    claimed_runs = {
+        "metered_api": [_run(found_product=True, understood_pricing=True),
+                        _run(found_product=True)],
+        "digital_good": [_run(**{k: True for k in _KEYS}),
+                         _run(found_product=True, understood_pricing=True,
+                              found_purchase_path=True)],
+    }
+    # Two genuinely different observations on the NOT-OFFERED physical_good intent,
+    # SAME run COUNT (2) so even the NA audit record is identical: the agent failed
+    # flat vs (garden-pathed all the way to) full completion.
+    runs_fail = {**claimed_runs,
+                 "physical_good": [_run(), _run()]}                      # mean 0.0
+    runs_pass = {**claimed_runs,
+                 "physical_good": [_run(**{k: True for k in _KEYS}),
+                                   _run(**{k: True for k in _KEYS})]}    # mean 1.0
+
+    prof_na = _profile("metered_api", "digital_good")          # physical_good NA
+    prof_claimed = _profile("metered_api", "digital_good", "physical_good")
+
+    def _bat() -> Battery:
+        return Battery(id="t", description="", tasks=list(tasks))
+
+    # (a) Non-vacuity: when physical_good IS claimed (assessed), the two content
+    # variants produce DIFFERENT assessed numbers — proving the perturbation is
+    # real and genuinely moves metrics when it is not excluded.
+    claimed_fail = B.aggregate_battery(_bat(), runs_fail, profile=prof_claimed)
+    claimed_pass = B.aggregate_battery(_bat(), runs_pass, profile=prof_claimed)
+    _check(not _eq(claimed_fail.between_kind_spread, claimed_pass.between_kind_spread),
+           "non-vacuous: when physical_good is CLAIMED, its content moves between_kind_spread "
+           f"({claimed_fail.between_kind_spread} vs {claimed_pass.between_kind_spread})")
+    _check(not _eq(claimed_fail.checkpoint_mean["no_human_gate"],
+                   claimed_pass.checkpoint_mean["no_human_gate"]),
+           "non-vacuous: when CLAIMED, its content moves a checkpoint mean too")
+
+    # (b) Invariance: when physical_good is NA, EVERY assessed statistic is
+    # byte-identical across the two content variants — the not-offered intent's
+    # observations are excluded totally, not partially.
+    na_fail = B.aggregate_battery(_bat(), runs_fail, profile=prof_na)
+    na_pass = B.aggregate_battery(_bat(), runs_pass, profile=prof_na)
+
+    _check(_eq(na_fail.cross_task_spread, na_pass.cross_task_spread),
+           f"cross_task_spread NA-content-invariant: {na_fail.cross_task_spread} vs {na_pass.cross_task_spread}")
+    _check(_eq(na_fail.between_kind_spread, na_pass.between_kind_spread),
+           f"between_kind_spread NA-content-invariant: {na_fail.between_kind_spread} vs {na_pass.between_kind_spread}")
+    for key in _KEYS:
+        _check(_eq(na_fail.checkpoint_mean[key], na_pass.checkpoint_mean[key]),
+               f"checkpoint_mean[{key}] NA-content-invariant")
+        _check(_eq(na_fail.checkpoint_spread[key], na_pass.checkpoint_spread[key]),
+               f"checkpoint_spread[{key}] NA-content-invariant")
+    fail_k = {kr.kind: kr for kr in na_fail.per_kind}
+    pass_k = {kr.kind: kr for kr in na_pass.per_kind}
+    _check(set(fail_k) == set(pass_k) == {"metered_api", "digital_good"},
+           f"per_kind covers the claimed archetypes only, got {set(fail_k)}")
+    for kind in fail_k:
+        _check(_eq(fail_k[kind].mean_completion, pass_k[kind].mean_completion),
+               f"per_kind[{kind}].mean_completion NA-content-invariant")
+        _check(_eq(fail_k[kind].cross_task_spread, pass_k[kind].cross_task_spread),
+               f"per_kind[{kind}].cross_task_spread NA-content-invariant")
+    _check(na_fail.assessed_archetypes == na_pass.assessed_archetypes == ["metered_api", "digital_good"],
+           f"assessed set NA-content-invariant, got {na_fail.assessed_archetypes}")
+    _check(na_fail.tasks_with_signal == na_pass.tasks_with_signal == 2,
+           f"tasks_with_signal NA-content-invariant, got {na_fail.tasks_with_signal}")
+    _check(na_fail.na_archetypes == na_pass.na_archetypes,
+           f"na_archetypes NA-content-invariant, got {na_fail.na_archetypes}")
+    _check("physical_good" in na_fail.na_archetypes, "physical_good stays NA under both variants")
+
+    # (c) Even the NA task's own audit record is byte-identical (same run count,
+    # no completion measured) — the not-offered task carries no observation-derived
+    # number that could differ between the variants.
+    pg_fail = next(tr for tr in na_fail.per_task if tr.task_id == "physical_good")
+    pg_pass = next(tr for tr in na_pass.per_task if tr.task_id == "physical_good")
+    _check(pg_fail.na is pg_pass.na is True, "physical_good NA in both variants")
+    _check(pg_fail.mean_completion is None and pg_pass.mean_completion is None,
+           "NA task carries no completion in either variant")
+    _check(pg_fail.attempted_runs == pg_pass.attempted_runs == 2,
+           "NA audit record identical (same attempted-run count, no completion)")
+
+    # (d) Non-vacuous magnitude: the protected spreads are real, not a trivial 0.
+    _check(na_fail.between_kind_spread is not None and na_fail.between_kind_spread > 0.2,
+           f"between_kind_spread is real (>0.2), got {na_fail.between_kind_spread}")
+    _check(na_fail.cross_task_spread is not None and na_fail.cross_task_spread > 0.0,
+           f"cross_task_spread is real (>0), got {na_fail.cross_task_spread}")
+
+
 def _eq(a, b) -> bool:
     """Scalar equality tolerant of None and float noise."""
     if a is None or b is None:
@@ -572,6 +682,7 @@ def main() -> int:
         test_na_excludes_unoffered_archetype,
         test_na_distinct_from_no_signal_and_noncanonical,
         test_aggregation_is_presentation_order_invariant,
+        test_na_content_invariance,
     ]
     failed = 0
     for t in tests:

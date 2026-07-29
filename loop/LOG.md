@@ -8028,3 +8028,58 @@ header / API key / OpenAPI securityScheme / OAuth2 as open conventions, keyed on
 the SCHEME not the vendor), the READOUT complement to the Cycle-86 COVERAGE +
 this-cycle TRUTH api-auth arc — mirroring the Cycle-80 payment-rail and Cycle-84
 async-job READOUT paragraphs.
+
+## Cycle 88 — 2026-07-29T18:1xZ — READOUT
+
+**What.** Surfaced the API-AUTH credential-scheme recognition in the PUBLIC
+methodology prose — the READOUT complement to Cycle 86's `api-auth` COVERAGE
+signal and Cycle 87's signal-level relabel-invariance TRUTH guard (COVERAGE →
+TRUTH → READOUT closed, mirroring the Cycle-78/79/80 payment-rail and
+Cycle-82/83/84 async-job arcs). Added ONE capability-worded, vendor-neutral
+paragraph to the methodology "What the score answers" card
+(`_write_methodology_page`, `asrs/scorecard.py`), placed between the payment-rail
+paragraph (pay) and the async-job paragraph (finish) so the prose follows the
+intro's reach→understand→**pay→provision→finish** order. It surfaces the
+"PROVISION without a human" leg: a metered API is only callable by an agent that
+can PRESENT THE RIGHT CREDENTIAL, over open machine conventions — an HTTP
+`Authorization: Bearer` header, an `X-API-Key` header or named API key, an OpenAPI
+`securityScheme` declaration, or an OAuth2 flow; an offer that documents its auth
+scheme is more agent-completable than one that leaves the agent holding an
+endpoint it never learns how to enter. Recognition keys on the SCHEME NOT THE
+VENDOR — the same open-convention category as REST/GraphQL/OpenAPI — pinned by the
+identity-relabel guard; HONESTLY SCOPED as diagnostic, off the scoring path, not a
+scored pillar.
+
+**Guard.** New `test_methodology_documents_api_auth_scheme` (test_readout, matched
+on whitespace-collapsed text like the async-job guard) asserts the provision
+framing ("Provisioning without a human", "present the right credential"), the
+vendor-neutral credential schemes (Authorization: Bearer / X-API-Key / API key /
+securityScheme / OAuth2), the scheme-not-vendor relabel pin + executable
+regression test, the honest off-scoring-path/diagnostic scope, and the
+vendor-neutral denylist. REGISTERED in `main()` (no pytest auto-discovery in-cloud
+— the "silent success/failure look identical" law). test_readout 48→49.
+
+**Evidence / invariants.** Display-only + tests-only: `git diff --name-only` =
+`asrs/scorecard.py` + `tests/test_readout.py`; git diff over
+scoring.py/probes/rubric/offering.py/battery.py/fixtures/batteries EMPTY → scoring
+path byte-for-byte untouched → **rubric v0.7**. Vendor-neutral (only open
+standards named; wording scanner 4/4 green). Full suite 22 files green
+(test_free_tier 11/11 with eth-account installed).
+
+**Canonical pair.** Unchanged AND re-measured — replay guard 24/24, **46.1 F /
+85.5 B / +39.4**, 0 replay-miss. RUNNER STILL GAPPED (newest
+`verify_20260728T234102Z.json` 23:41Z ~18.6h old at the 18:1xZ fire; past the 6h
+floor — this fire is NOT the first-after-16:00 cycle, so no re-digest; keep
+flagging each daily digest until it clears).
+
+**Ship.** Cloud bridge blocks direct main push → branch loop/api-auth-scheme-readout
++ PR #26 + self-merge (squash 7b63849; NOT peer-gated — display-only, off scoring
+path). First duty: no open peer-gated PR ([]); realigned main to origin/main
+7b63849 after merge. No Slack (display-only, moves no score; this 18:1xZ fire is
+after the Cycle-86 16:12Z daily digest, so not the first-after-16:00 cycle).
+
+**Next.** METHOD (rotate READOUT → METHOD) — candidate: a fresh executable-invariant
+increment on the offering/battery path, or extend the calibration/relabel guard
+family as new fixtures land. The three recently-landed metered_api signals
+(payment-rail, async-job, api-auth) now each have the full COVERAGE→TRUTH→READOUT
+arc closed.

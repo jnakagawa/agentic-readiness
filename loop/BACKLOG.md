@@ -666,11 +666,13 @@ design in-cloud, execute locally.
   storefront whose static transactability prediction is behaviorally confirmed (Outcome payment
   checkpoints PASS across trials) could carry a small "behaviorally corroborated" affordance next to
   the transactability pill — the same terminal→JSON→HTML closure per_kind (Cycle 10→12),
-  between_kind_spread (18→20), and NA (25→28) each took. Display-only/score-neutral when done. BLOCKED
-  on a report shape decision + ideally a SECOND committed behavioral report (the [LOCAL] retail-inverse
-  / negative-half acceptance P0) so the badge can also render its ABSENCE honestly (a no-rails site:
-  predicted no payment, no corroboration to show) rather than only the positive case. Until the second
-  report lands, keep it prose-only (§8) — a one-sided badge would over-claim.
+  between_kind_spread (18→20), and NA (25→28) each took. Display-only/score-neutral when done.
+  NOW UNBLOCKED (2026-07-29): the SECOND committed behavioral report landed — the no-rails retail negative
+  anchor (moleskine, committed 2026-07-28T23:10Z) is now wired into the two-sided calibration guard
+  (Cycle 71) AND surfaced in §8 prose (Cycle 72). The badge can therefore render BOTH the positive
+  corroboration (with-rails: payment checkpoints PASS) AND its honest ABSENCE (no-rails: predicted no
+  payment, live wall confirmed — no corroboration to show), so it no longer over-claims. Remaining work is
+  the report-shape decision + the terminal→JSON→HTML closure; a strong future READOUT pick.
 
 <!-- DONE 2026-07-28T16:21Z (Cycle 62, COVERAGE, direct-to-main, score-neutral):
      "[CANDIDATE] Offering discovery should read the /docs API-docs surface" SHIPPED. `/docs`

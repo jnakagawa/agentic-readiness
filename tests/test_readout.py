@@ -476,18 +476,36 @@ def test_methodology_documents_calibration() -> None:
     # payment prediction is behaviorally corroborated at the outcome checkpoints,
     # that the agreement is discriminating (real FAILs + separates tiers), the
     # honest one-domain/$0 scope, and that it is test-pinned. Vendor-neutral.
+    # Cycle 72 (READOUT): the negative anchor landed (Cycle 71's two-sided
+    # calibration guard — moleskine no-rails retail behaviorally FAILS the same
+    # payment checkpoints the with-rails side PASSES), so the page must now surface
+    # calibration as a TWO-SIDED property, not positive-only.
     print("test_methodology_documents_calibration")
     with tempfile.TemporaryDirectory() as d:
         text = Path(scorecard._write_methodology_page(Path(d))).read_text()
     for phrase in ("Calibration", "valid", "astrology", "agent-native payment",
                    "machine-payable path", "behaviorally corroborated",
-                   "discriminating", "separates tiers", "one with-rails storefront",
+                   "discriminating", "separates tiers", "two-sided",
+                   "no-rails retail storefront",
                    "free tier", "executable regression test"):
         _check(phrase in text, f"methodology documents calibration: {phrase!r}")
+    # The two-sided claim must be explicit: prediction tracks experience both ways.
+    collapsed = " ".join(text.split())
+    _check("tracks the experience in" in collapsed and "both directions" in collapsed,
+           "calibration states the prediction tracks experience in both directions")
     # It must frame the number-vs-experience agreement as the validity claim, and
-    # state the honest scope (positive-only anchor, $0-bounded).
+    # state the honest scope (two-sided anchors, one storefront per direction, $0).
     _check("predict" in text, "calibration framed as prediction/validity")
     _check("$0 free" in text, "calibration scope bounded to the $0 free tier")
+    # The negative direction must be behaviorally CONFIRMED, not merely a stalled
+    # prediction: a legible FAIL (evidence of absence), not an untestable blank.
+    _check("legible, not a blank" in text,
+           "negative calibration failure framed as legible evidence, not a null")
+    # The old positive-only honest limit must be GONE (the mirror case now runs).
+    _check("one with-rails storefront" not in collapsed,
+           "stale positive-only anchor claim removed")
+    _check("not yet run end-to-end" not in collapsed,
+           "stale 'mirror case not yet run' claim removed")
     # Vendor-neutral: no domain/product/brand named on the page.
     for banned in ("drift-flight", "driftflight"):
         _check(banned not in text, f"methodology names no vendor/domain ({banned!r})")

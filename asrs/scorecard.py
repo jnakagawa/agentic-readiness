@@ -546,16 +546,26 @@ prediction <b>separates tiers</b> &mdash; a no-rails storefront is predicted to
 have <b>no</b> agent-native payment, which is exactly where a live agent hits a
 wall. The corroboration is itself reproducible: both trials agreed on the
 machine-payable verdict.</p>
-<p>Two honest limits keep this from over-claiming. The calibration is anchored on
-<b>one with-rails storefront</b> &mdash; it proves the <i>positive</i> prediction
-is behaviorally real; the mirror case (a live run confirming that a
-no-agent-native-payment prediction is exactly where an agent stalls) is not yet
-run end-to-end and is not claimed. And the whole check stays inside the
-<b>$0 free tier</b> (section&nbsp;10): the agent completes a real machine-payable
-path without
-ever signing a nonzero-value authorization. Within that scope the property is
-pinned by an <b>executable regression test</b>, enforced every cycle &mdash; so
-&ldquo;the score predicts the experience&rdquo; is <b>checked, not asserted</b>.</p>
+<p>The check is now <b>two-sided</b>. The mirror case has been run end-to-end: on a
+<b>no-rails retail storefront</b> the static score predicts <b>no</b> agent-native
+payment, and a live shopper panel confirms it &mdash; the agent genuinely browses
+the store but hits a <b>machine-payable</b> wall and a <b>human gate</b>, both
+outcome checkpoints <b>fail</b>, reproducibly across trials. That failure is
+<b>legible, not a blank</b>: the storefront is reachable and the agent completes
+real browsing, so the stall is <i>evidence</i> the site lacks agent-native payment,
+never something that couldn&rsquo;t be observed. At the <b>same payment
+checkpoints</b>, the with-rails storefront <b>passes</b> and the no-rails one
+<b>fails</b> &mdash; the prediction tracks the experience in <b>both
+directions</b>.</p>
+<p>Two honest limits keep this from over-claiming. Each direction is anchored on
+<b>one storefront</b> &mdash; a single with-rails run and a single no-rails run
+&mdash; so the property is corroborated both ways but not yet across a population.
+And the whole check stays inside the <b>$0 free tier</b> (section&nbsp;10): the
+agent completes a real machine-payable path, or is confirmed to have none, without
+ever signing a nonzero-value authorization. Within that scope the two-sided
+property is pinned by an <b>executable regression test</b>, enforced every cycle
+&mdash; so &ldquo;the score predicts the experience&rdquo; is <b>checked, not
+asserted</b>.</p>
 </div>
 
 <div class="card">

@@ -6996,3 +6996,60 @@ so in capability prose (positive payability real on with-rails, negative wall re
 opposite directions at the same checkpoints, test-pinned). The [LOCAL] follow-up is capturing a
 moleskine.com static fixture to give the negative anchor the two-crawl cross-validation the with-rails side
 has (queued below).
+
+## Cycle 72 — 2026-07-29T02:1xZ — READOUT (direct to main)
+
+**First duty.** No open peer-gated PR (verified `list_pull_requests state=open` → `[]`). Infra health
+check ran first — runner **HEALTHY**: newest `runs/local/verify_20260728T234102Z.json` (23:41Z,
+`git_pull.ok=true`, all 20 verify suites green, canonical 46.1 F / 85.5 B / +39.4; ~2h30m old at fire,
+under the 6h floor). Bench UP: full suite ran locally, 20/20 files green (244 tests) after
+`pip install eth-account` closed the known `eth-account` env gap (invariant-#4, pre-existing,
+`test_free_tier` 10→11 — unrelated to this display-only change). `main` on `origin/main` (8851f91 Cycle 71).
+No self-healing needed.
+
+**Why this item, why now.** Focus pointer = READOUT (Cycle 71 TRUTH). This is the exact teed-up
+"Next hypothesis" from Cycle 71: the methodology page's §8 "Calibration — does the score predict what an
+agent experiences?" (shipped Cycle 68) still described calibration as anchored on **one with-rails
+storefront** with the mirror case "not yet run end-to-end and not claimed." But Cycle 71 shipped the
+negative anchor as an executable guard (`tests/test_calibration.py` 4→8, replaying the committed no-rails
+retail behavioral report — static predicts NO agent-native payment → behavioral machine_payable + no_human_gate
+both FAIL, Outcome 0.0, reproducibly; two-sided capstone: same checkpoints PASS with-rails / FAIL no-rails).
+The public readout prose was stale relative to the landed guard — surfacing the two-sided property in
+capability prose is the highest-leverage READOUT increment, and closes the README/methodology-vs-guard gap.
+
+**What shipped.** `asrs/scorecard.py` §8 "honest limits" paragraph rewritten into TWO paragraphs:
+- A new **two-sided** paragraph: the mirror case *has* been run end-to-end — on a no-rails retail storefront
+  the static score predicts no agent-native payment and a live shopper panel confirms it (the agent genuinely
+  browses but hits a machine-payable wall + a human gate, both checkpoints FAIL, reproducibly across trials).
+  The failure is framed as **legible, not a blank** — the storefront is reachable and the agent completes real
+  browsing, so the stall is *evidence of absence*, never something un-observable (invariant #4 attribution
+  honesty, in reader prose). At the **same payment checkpoints** the with-rails side PASSES and the no-rails
+  side FAILS — "the prediction tracks the experience in **both directions**."
+- A revised **honest limits** paragraph: each direction is anchored on ONE storefront (a single with-rails
+  run + a single no-rails run) — corroborated both ways but not yet across a population; still bounded to the
+  $0 free tier; the two-sided property pinned by the executable regression test, "checked, not asserted."
+
+**Validation.** `tests/test_readout.py::test_methodology_documents_calibration` extended (not a new test):
+asserts the new phrases (`two-sided`, `no-rails retail storefront`, `legible, not a blank`,
+"tracks the experience in … both directions"), that the stale positive-only claims are GONE
+(`one with-rails storefront`, `not yet run end-to-end` both absent), all on collapsed-whitespace text so
+line-wrap can't make it brittle. `test_readout.py` 40/40 (test count unchanged — existing test extended).
+Vendor-neutrality guards green: `test_readout_wording.py` 4/4 + `test_rubric_wording.py` 4/4 — no
+domain/product/brand named on the page (the negative anchor is worded "no-rails retail storefront," never
+by name; `drift-flight`/`driftflight` still absent).
+
+**Invariants / regression.** Display-only: `git diff --name-only` = `asrs/scorecard.py` + `tests/test_readout.py`
+ONLY; `git diff --name-only -- asrs/scoring.py rubric/ asrs/probes/ fixtures/` EMPTY → scoring path
+byte-for-byte untouched, rubric stays **v0.7**; the `desc`/methodology prose is rendered but never read by
+`scoring.score` (keys on id/pillar/max_points). Canonical PAIR unchanged by construction AND re-measured
+(replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; verify `20260728T234102Z` live-corroborates).
+Not payment/signing code. Suite 244 tests, 20/20 files green. Direct-to-main (display-only, moves no score).
+No Slack (display-only, non-sensitive; 02:1xZ is before the 16:00 UTC digest window — digest last sent
+Cycle 62 16:21Z).
+
+**Next hypothesis.** Cloud rotation next = METHOD. Reliability §7 and validity §8 are now both current in the
+readout; the calibration frontier in-cloud is saturated on the two-sided property. Candidate METHOD picks:
+(a) extend the two-sided calibration guard's rigor once the [LOCAL] moleskine static fixture lands (gives the
+negative side the two-crawl cross-validation the with-rails side has — the queued follow-up), or (b) a fresh
+executable-invariant increment on the offering/battery path. The population-leaderboard READOUT page (off the
+committed `calibration_sweep_*.json`) remains the next big READOUT deliverable.

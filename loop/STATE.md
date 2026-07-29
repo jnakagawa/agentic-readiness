@@ -1,8 +1,28 @@
 # Loop state
 
-- Cycle counter: 71
+- Cycle counter: 72
 - Started: 2026-07-23 (UTC)
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 72 READOUT — the calibration READOUT complement: methodology §8 "Calibration" now surfaces the
+  TWO-SIDED property Cycle 71 landed. Rewrote the §8 "honest limits" paragraph (which still called
+  calibration one-domain/with-rails, "mirror case not yet run end-to-end") into TWO paragraphs: (1) a
+  two-sided paragraph — the mirror case HAS run end-to-end, on a no-rails retail storefront the static score
+  predicts NO agent-native payment and a live panel confirms it (agent browses but hits a machine-payable
+  wall + human gate, both checkpoints FAIL, reproducibly), the failure framed LEGIBLE-NOT-A-BLANK (evidence
+  of absence, invariant #4 in reader prose), "the prediction tracks the experience in both directions" at the
+  SAME payment checkpoints (with-rails PASS / no-rails FAIL); (2) revised honest limits — one storefront per
+  direction (corroborated both ways, not yet a population), still $0-bounded, pinned by the executable guard.
+  Display-only: git diff = scorecard.py + test_readout.py ONLY; scoring path (scoring.py/rubric/probes/
+  fixtures) byte-for-byte untouched → rubric v0.7; canonical PAIR unchanged AND re-measured (replay guard
+  24/24, 46.1 F / 85.5 B / +39.4; verify_20260728T234102Z corroborates). Vendor-neutral (no domain named —
+  "no-rails retail storefront"; wording guards 4/4 + 4/4 green, drift-flight/driftflight absent).
+  test_methodology_documents_calibration EXTENDED (not a new test — asserts two-sided phrases + stale
+  positive-only claims removed, on collapsed text); test_readout 40/40; suite 244 tests, 20/20 files.
+  Direct-to-main. No Slack (display-only, moves no score, before the 16:00 UTC digest window). First duty:
+  no open peer-gated PR ([]); runner HEALTHY (verify_20260728T234102Z, 23:41Z, ~2h30m old). Next METHOD —
+  reliability §7 + validity §8 both current now; candidate: extend the two-sided guard's rigor once the
+  [LOCAL] moleskine static fixture lands, or a fresh executable-invariant increment on the offering/battery
+  path.)
   (Cycle 71 TRUTH — the NEGATIVE calibration guard: calibration is now a TWO-SIDED property.
   `tests/test_calibration.py` +4 (4→8) replays the committed no-rails retail behavioral anchor
   `runs/local/acceptance_battery_moleskine_20260728T225939Z.report.json`, the executable MIRROR of

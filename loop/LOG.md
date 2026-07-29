@@ -7498,3 +7498,55 @@ STILL GAPPED (newest `verify_20260728T234102Z.json` 23:41Z Jul-28 ≈ 9h31m old 
 agent-payment-rail "many rails" recognition in the methodology/offering readout prose
 (capability-worded), or a per-segment leaderboard summary once the [LOCAL] population
 grows. First duty next cycle: review any open peer-gated PR ([] this cycle).
+
+## Cycle 80 — 2026-07-29T10:1xZ — READOUT
+
+**What / why.** The READOUT complement to the Cycle 78 (COVERAGE) + Cycle 79 (TRUTH)
+`agent-payment-rail` arc: the offering classifier now recognizes the open agent-native
+payment landscape beyond the lone x402 (78) and that recognition is identity-invariant
+under host relabel (79), but nothing in the PUBLIC readout surfaced the north-star
+"many payment rails" flexibility axis. Added one capability-worded, vendor-neutral
+paragraph to the methodology page's "What the score answers" card (`_write_methodology_page`,
+`asrs/scorecard.py`), right after the existing "no payment brand is special-cased"
+sentence it extends. It states, in critic-readable prose: (a) agent-native payment is a
+CAPABILITY, not a single rail; (b) agentic commerce is standardizing on SEVERAL open
+payment protocols — x402 / MPP / ACP / UCP / AP2, named as OPEN STANDARDS not vendors —
+and a with-rails storefront commonly advertises more than one (`x402 (Base USDC)`
+alongside `MPP (Tempo USDC)`); (c) ASRS recognizes a declared rail by its PROTOCOL and
+SETTLEMENT STRUCTURE, so every open rail is read on EQUAL TERMS and none is favored by
+name; (d) recognition keys on WHAT a storefront declares, never WHO declares it — a
+property pinned by an EXECUTABLE regression test that relabels the storefront's identity
+end-to-end (the Cycle 79 guard, surfaced in prose). Ties the READOUT back to the TRUTH
+guard, mirroring the earned-dominance (Cycle 24) and calibration (Cycle 68/72) READOUT
+complements.
+
+**Ship class.** Display-only. `git diff --name-only` = `asrs/scorecard.py` +
+`tests/test_readout.py` ONLY; scoring path (scoring.py, probes/, rubric/, offering.py,
+battery.py, fixtures/, batteries/) byte-for-byte untouched → rubric **v0.7**. NOT
+peer-gated (adds no check, weight, cap, aggregation rule, or payment/signing code; the
+methodology page is rendered but never read by `scoring.score`). Cloud bridge blocks
+direct main push → branch `loop/payment-rail-neutrality-readout` + PR + self-merge (squash).
+
+**Evidence.** New guard `test_methodology_documents_payment_rail_neutrality`
+(`tests/test_readout.py`) asserts the paragraph names the capability-not-a-rail framing,
+the open rail landscape as OPEN STANDARDS (all five rail names present), the
+protocol/settlement-structure equal-terms recognition, and the identity-relabel test-pin —
+and re-runs the vendor-neutral denylist (no drift-flight/driftflight). `test_readout.py`
++ `test_readout_wording.py` + `test_rubric_wording.py` 55/55 PASS (rendered methodology
+page clean under the Cycle-29 scanner). Full suite **263 passed** (22 files, +1 over 262;
+test_free_tier 11/11 with eth-account). Rail names x402/MPP/ACP/UCP/AP2 are protocol
+STANDARD names — not on the scored-storefront denylist `['exa','driftflight','drift-flight']`.
+
+**Canonical pair (regression signal).** UNCHANGED and re-measured — in-cloud replay guard
+`tests/test_canonical_replay.py` 24/24 PASS pins **46.1 F / 85.5 B / +39.4** (0 replay-miss);
+offering guard 14/14. Display-only, no scoring semantics touched → delta unchanged by
+construction AND re-affirmed by the passing guard. RUNNER STILL GAPPED (newest
+`verify_20260728T234102Z.json` 23:41Z Jul-28 ≈ 10h31m old at the 10:11Z fire, past the 6h
+floor — flag in the 16:00 UTC digest).
+
+**First duty.** No open peer-gated PR ([]). Realigned the stale ephemeral local-main
+(22 ahead / 50 behind) to origin/main 1dc66e3 (hard reset, origin authoritative).
+
+**Next hypothesis.** METHOD next (rotate). Cloud-doable candidate: a fresh executable-invariant
+increment on the offering/battery path, or extend the calibration/relabel guard family as
+new fixtures land. First duty next cycle: review any open peer-gated PR.

@@ -1,12 +1,12 @@
 # Loop state
 
-- Cycle counter: 79
+- Cycle counter: 80
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-29T09:12Z, Cycle 79; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-29T10:11Z, Cycle 80; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~9h31m old at the 09:12Z fire; no newer :41 artifact through 08:41Z Jul-29. Cloud CANNOT
-  repair the local machine → FLAG in the next 16:00 UTC digest (the 08:12Z fire is before the digest
-  window); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
+  Jul-28 = ~10h31m old at the 10:11Z fire; no newer :41 artifact through 09:41Z Jul-29 (11 consecutive
+  :41 fires gapped). Cloud CANNOT repair the local machine → FLAG in the next 16:00 UTC digest (the
+  10:11Z fire is before the digest window); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
   is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
   local fire root-caused (a >60s slow-network wake still misses the 5×15s retry) OR the machine is
@@ -25,7 +25,29 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 80 READOUT — surfaced the north-star "many payment rails" flexibility axis in the PUBLIC readout,
+  the READOUT complement to the Cycle 78 (COVERAGE) + Cycle 79 (TRUTH) `agent-payment-rail` arc. Added one
+  capability-worded, vendor-neutral paragraph to the methodology "What the score answers" card
+  (`_write_methodology_page`, `asrs/scorecard.py`), extending the existing "no payment brand is special-cased"
+  sentence: agent-native payment is a CAPABILITY not a single rail; agentic commerce is standardizing on
+  SEVERAL open payment protocols (x402 / MPP / ACP / UCP / AP2, named as OPEN STANDARDS not vendors) and a
+  with-rails site commonly advertises more than one (`x402 (Base USDC)` + `MPP (Tempo USDC)`); ASRS recognizes
+  a declared rail by its PROTOCOL and SETTLEMENT STRUCTURE so every rail is read on EQUAL TERMS, none favored by
+  name; recognition keys on WHAT a storefront declares not WHO — pinned by an executable identity-relabel test
+  (the Cycle 79 guard, surfaced in prose). New guard `test_methodology_documents_payment_rail_neutrality`
+  (test_readout) asserts the capability-not-a-rail framing, all five rail names, protocol/settlement equal-terms
+  wording, the relabel test-pin, and the vendor-neutral denylist. Display-only: git diff --name-only =
+  scorecard.py + test_readout.py ONLY; scoring path (scoring/probes/rubric/offering/battery/fixtures/batteries)
+  byte-for-byte untouched → rubric v0.7. Canonical PAIR unchanged AND re-measured (replay guard 24/24, 46.1 F /
+  85.5 B / +39.4, 0 replay-miss; offering guard 14/14). Readout+wording guards 55/55; full suite 263 passed
+  (22 files, +1; test_free_tier 11/11 with eth-account). Cloud bridge blocks direct main push → branch
+  loop/payment-rail-neutrality-readout + PR + self-merge (squash; NOT peer-gated — display-only, off scoring
+  path). No Slack (display-only, moves no score, before 16:00 UTC digest). First duty: no open peer-gated PR
+  ([]); realigned stale ephemeral local-main (22 ahead / 50 behind) to origin/main 1dc66e3 (hard reset).
+  RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z ~10h31m old, past 6h floor — flag in next digest).
+  Next METHOD — candidate: a fresh executable-invariant increment on the offering/battery path, or extend the
+  calibration/relabel guard family as new fixtures land.)
   (Cycle 79 TRUTH — relabel-invariance made executable at the SIGNAL level for the new `agent-payment-rail`
   metered_api signal (Cycle 78). New `test_offering_relabel_invariance_payment_rail` (test_offering_canonical
   13→14) replays `fixtures/canonical/driftflight.com.json` through the REAL discovery path, relabels the host

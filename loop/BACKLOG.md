@@ -565,15 +565,24 @@ design in-cloud, execute locally.
   Cycle 87. The signal-level relabel family now covers all THREE recently-landed metered_api signals
   (payment-rail, async-job, api-auth). Item stays OPEN for the NEXT new offering fixture (structured-catalog
   capture / new archetype anchor) or new signal.
-  NEXT CANDIDATE (Cycle 90 COVERAGE landed a new signal — TRUTH next): the `error-contract` metered_api
-  signal (documented machine-readable 4xx/5xx error responses; `asrs/offering.py`). Add
-  `test_offering_relabel_invariance_error_contract` (test_offering_canonical 16→17): relabel the host
-  everywhere and assert the error-contract signal survives with the same match count + host-normalized
-  surfaces, each relabeled quote still matching the live regex, vendor host absent from the evidence —
-  proving an error contract keys on WHAT is declared (status codes, `application/problem+json`, snake_case
-  error codes) not WHO declares it. The evidence is largely host-FREE (status codes / RFC 7807 media type),
-  so this is a clean SURFACE-PRESENCE / structural-re-match case like async-job (Cycle 83), not a
-  quote-anchored one — non-vacuity anchors at the FIXTURE level (host present in the fetched surfaces).
+  DONE 2026-07-29 (Cycle 91, TRUTH, branch+PR+self-merge, tests-only/score-neutral): the Cycle-90
+  `error-contract` candidate SHIPPED as a SIGNAL-level relabel guard —
+  `test_offering_relabel_invariance_error_contract` (test_offering_canonical 16→17) relabels driftflight.com's
+  host everywhere and asserts the error-contract signal survives with the same match count (3), the same
+  host-normalized surfaces (signal did not migrate), each relabeled quote still matching the live
+  `error-contract` regex, and the vendor host gone from every piece of error-contract evidence — proving a
+  documented error contract keys on WHAT is declared (status codes / `application/problem+json` / snake_case
+  error codes) not WHO declares it. SURFACE-PRESENCE like async-job (host-free QUOTES) but a STRONGER case:
+  two of the three firing surfaces embed the host in the surface KEY
+  (`agents.driftflight.com/llms-full.txt`, `api.driftflight.com/openapi.json`; the third `/docs` is
+  host-free), so the whole-fixture relabel genuinely rewrites the surface keys the signal reads and the
+  host-normalization step does real work (unlike async-job's lone host-free `/openapi.json`). Both host-free
+  structural forms exercised (OpenAPI status-keyed response object + status code paired with a snake_case
+  error code). Tests-only, rubric v0.7, replay guard 24/24 / 46.1 F / 85.5 B / +39.4. PR #32 (squash
+  be61b99). See LOG Cycle 91. The signal-level relabel family now covers all FOUR recently-landed metered_api
+  signals (payment-rail, async-job, api-auth, error-contract). Item stays OPEN for the NEXT new offering
+  fixture (structured-catalog capture / new archetype anchor) or new signal — none currently pending
+  in-cloud (the next COVERAGE signal is [LOCAL]-gated on a fixture capture; the in-cloud frontier is thin).
 
 <!-- DONE 2026-07-29T04:1xZ (Cycle 74, COVERAGE, direct-to-main, tests-only/score-neutral): the
      offering-relative BATTERY-INSTANTIATION layer (`battery.instantiate_battery`, the operator directive's

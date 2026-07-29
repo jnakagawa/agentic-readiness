@@ -877,6 +877,124 @@ def test_offering_relabel_invariance_async_job() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Relabel-invariance at the SIGNAL level — the programmatic API-AUTH scheme.
+#
+# The third signal-level companion to the payment-rail and async-job guards
+# above, for the metered_api signal that landed most recently: `api-auth`
+# (Cycle 86 — how an agent GETS/PRESENTS a credential to CALL the API: the HTTP
+# `Authorization: Bearer` header, a "Bearer token", an `X-API-Key` header, an
+# "API key", an OpenAPI `"securitySchemes"`/`bearerAuth` declaration, an OAuth2
+# flow, or "authenticated WITH/VIA/USING an api key/bearer/token"). It is the
+# "provision without a human" leg of the reach->understand->pay->provision->
+# complete lens: an agent that cannot read the auth scheme cannot invoke the API
+# at all. An access/auth scheme is a property of what a storefront declares
+# programmatically, never of who declares it, so the signal must be
+# identity-invariant.
+#
+# QUOTE-ANCHORED non-vacuity, like payment-rail (NOT surface-presence like
+# async-job): the api-auth signal fires on driftflight.com's homepage with the
+# host literally inside the matched evidence quote — `.../api.driftflight.com/v1/
+# images/generate Authorization: Bearer df_live_...` — so a whole-fixture host
+# relabel genuinely rewrites the text the classifier matched, not just a surface
+# key it fetched. (It is an HONEST mixed case: this signal also fires on
+# host-free surfaces like `/docs` — "authenticated with an API key sent as a
+# Bearer token" — and on host-embedding surfaces like `api.driftflight.com/
+# openapi.json`; the non-vacuity anchor is the QUOTE that embeds the host, the
+# strongest of the three, asserted below.) Under relabel the signal must survive
+# with the SAME match count, on the SAME host-normalized surfaces, each quote
+# still satisfying the live api-auth regex, with the vendor host gone from every
+# piece of auth evidence.
+#
+# Byte-equality of the quotes modulo the host is NOT asserted (the host-length
+# change `driftflight.com` 15 -> `vendor-neutral.test` 19 shifts the fixed-width
+# quote window); the structural invariant — the fired form is still a valid
+# api-auth match, re-verified by re-running the live signal regex on each
+# relabeled quote — is the honest, robust assertion. This drops the relabel
+# family one more layer, to the specific "provision" signal an agent needs to
+# authenticate a metered call, the same move Cycle 79 made for `agent-payment-rail`
+# and Cycle 83 for `async-job`.
+# ---------------------------------------------------------------------------
+_AUTH_LABEL = "api-auth"
+
+
+def _auth_signals(prof) -> list:
+    """The (surface, quote) pairs where the api-auth signal fired, sorted."""
+    return sorted(
+        (s.surface, s.quote)
+        for c in prof.claimed
+        for s in c.signals
+        if s.label == _AUTH_LABEL
+    )
+
+
+def test_offering_relabel_invariance_api_auth() -> None:
+    """The programmatic API-auth scheme keys on scheme structure, not host."""
+    print("test_offering_relabel_invariance_api_auth")
+    base, _ = _discover("driftflight.com")
+    base_auth = _auth_signals(base)
+
+    # The signal genuinely fires on real captured evidence — and BOTH high-precision
+    # credential forms are exercised (an HTTP Authorization/Bearer header + an API key).
+    _check(
+        len(base_auth) >= 2,
+        "api-auth fires on >=2 real driftflight.com surfaces "
+        f"(got {len(base_auth)}: {[s for s, _ in base_auth]})",
+    )
+    joined = " ".join(q for _, q in base_auth).lower()
+    _check(
+        "authorization" in joined or "bearer" in joined,
+        "an HTTP Authorization/Bearer credential form is among the auth evidence",
+    )
+    _check(
+        "api key" in joined or "api-key" in joined or "x-api-key" in joined,
+        "an API-key credential form is among the auth evidence",
+    )
+
+    # Non-vacuity (QUOTE-anchored, like payment-rail): the host appears INSIDE at
+    # least one matched evidence quote (the homepage `Authorization: Bearer` quote
+    # embeds `api.driftflight.com/v1/...`), so the whole-fixture relabel genuinely
+    # rewrites the very text the classifier matched — not merely a surface key.
+    _check(
+        any("driftflight.com" in q for _, q in base_auth),
+        "the host appears inside an api-auth evidence quote — relabel rewrites "
+        "matched classifier input (quote-anchored non-vacuity)",
+    )
+
+    relab = _discover_relabeled("driftflight.com", _NEUTRAL_HOST)
+    relab_auth = _auth_signals(relab)
+
+    # (1) Same number of auth matches — the signal is neither lost nor conjured.
+    _check(
+        len(relab_auth) == len(base_auth),
+        "api-auth match count invariant under relabel "
+        f"(base {len(base_auth)}, relabel {len(relab_auth)})",
+    )
+    # (2) The SAME logical surfaces carry the signal once the host label is
+    # normalized away — the signal did not migrate to a different surface.
+    base_surf = sorted(s.replace("driftflight.com", _NEUTRAL_HOST) for s, _ in base_auth)
+    relab_surf = sorted(s for s, _ in relab_auth)
+    _check(
+        relab_surf == base_surf,
+        "api-auth fires on the same (host-normalized) surfaces under relabel "
+        f"(base {base_surf}, relabel {relab_surf})",
+    )
+    # (3) Each relabeled quote STILL satisfies the live api-auth regex (proving the
+    # fired form is structural — an Authorization header / Bearer token / API key /
+    # securityScheme / OAuth2) and names no vendor host — the match keyed on the
+    # credential SCHEME, not identity.
+    auth_re = dict(_offering._SIGNALS["metered_api"])[_AUTH_LABEL]
+    for surf, quote in relab_auth:
+        _check(
+            auth_re.search(quote) is not None,
+            f"relabeled api-auth quote still matches the scheme-structural signal: {quote!r}",
+        )
+        _check(
+            "driftflight.com" not in quote and "driftflight.com" not in surf,
+            f"vendor host absent from relabeled api-auth evidence (surface {surf!r})",
+        )
+
+
+# ---------------------------------------------------------------------------
 # Relabel-invariance EXTENDED to the retail + non-storefront domains.
 #
 # The two invariance tests above cover only the canonical PAIR, because their
@@ -998,6 +1116,7 @@ def main() -> int:
         test_offering_relabel_invariance_machine,
         test_offering_relabel_invariance_payment_rail,
         test_offering_relabel_invariance_async_job,
+        test_offering_relabel_invariance_api_auth,
         test_offering_relabel_invariance_retail,
         test_offering_relabel_invariance_nonstorefront,
         test_offering_relabel_negative_control,

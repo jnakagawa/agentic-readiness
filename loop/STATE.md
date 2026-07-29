@@ -1,18 +1,18 @@
 # Loop state
 
-- Cycle counter: 85
+- Cycle counter: 86
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-29T15:12Z, Cycle 85; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-29T16:12Z, Cycle 86; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~15h31m old at the 15:12Z fire; no newer :41 artifact through 14:41Z Jul-29 (16 consecutive
-  :41 fires gapped). Cloud CANNOT repair the local machine → FLAG in the next 16:00 UTC digest (the
-  15:12Z fire is STILL before the digest window; the digest is due the first cycle after 16:00Z today —
-  flag the ~15.5h+ runner gap loudly there, likely the very next fire); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
+  Jul-28 = ~16h31m old at the 16:12Z fire; no newer :41 artifact through 15:41Z Jul-29 (17 consecutive
+  :41 fires gapped). Cloud CANNOT repair the local machine → FLAGGED in the Cycle-86 16:00 UTC digest
+  (the 16:12Z fire is the FIRST cycle after 16:00Z; the ~16.5h runner gap was flagged loudly there);
+  queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
   is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
   local fire root-caused (a >60s slow-network wake still misses the 5×15s retry) OR the machine is
   simply asleep/offline. If a fresh artifact lands next fire, watch its `attempts` field; if still
-  gapped, escalate loudly in the digest.
+  gapped, keep flagging in each daily digest.
 - INFRA (2026-07-29T04:2xZ, Cycle 74): the CLOUD git bridge now REFUSES direct pushes to `main`
   (branch-protected) — a `git push origin main` of a legitimate fast-forward is rejected with a
   MISLEADING "non-fast-forward" even when the read replica, the write primary (receive-pack
@@ -26,7 +26,40 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 86 COVERAGE — offering discovery now recognises programmatic API AUTHENTICATION, the "provision
+  without a human" capability the signal bank was missing entirely. New `api-auth` signal in
+  `_SIGNALS["metered_api"]` (`asrs/offering.py`), grouped with the callable-API signals after
+  `api-reference`: matches HOW an agent gets/presents credentials to CALL an API — the HTTP
+  `Authorization: Bearer` header, a "Bearer token", an `X-API-Key` header, an "API key", an OpenAPI
+  `"securitySchemes"`/`bearerAuth`/`bearerFormat`/`"type":"apiKey"` declaration, an OAuth2 flow, or
+  "authenticated WITH/VIA/USING an api key/bearer/token". CAPABILITY: an agent that cannot read the auth
+  scheme cannot invoke the API at all → a metered API documenting its auth is MORE agent-completable;
+  distinct from `post-endpoint` (an endpoint EXISTS) and the billing signals (how you're CHARGED) — this
+  is how you're ALLOWED to call, filling the "provision" leg of the reach→understand→pay→provision→complete
+  lens. PRECISION: bare "authenticate" REJECTED (a retail login would else falsely claim a metered API);
+  "Bearer" must be the `Authorization: Bearer` header or "Bearer token" (not "the bearer of…"); "key" must
+  be an "API key"/"X-API-Key" (not a house key/turnkey); OAuth anchored to the versioned standard — 7
+  auth-shaped noise strings all reject. NON-VACUOUS on REAL committed evidence: fires end-to-end
+  (`from_fixture → discover_offering`) on BOTH canonical domains (`Authorization: Bearer` homepage +
+  "authenticated with an API key sent as a Bearer token" /docs) AND api.replicate.com's `securitySchemes`
+  bearer scheme — three different surfaces; fires on ZERO of the retail/null fixtures. SCORE-NEUTRAL: every
+  site where it fires ALREADY claims metered_api → claimed SET+ORDER byte-identical
+  (`['metered_api','digital_good','subscription']` pair, `['metered_api']` replicate, `['physical_good']`
+  retail); `git diff --name-only` = offering.py + test_offering.py ONLY; git diff over
+  scoring.py/probes/rubric/fixtures/batteries/battery.py/protocols.py/fetch.py EMPTY → scoring path
+  byte-for-byte untouched → rubric v0.7 (discovery off the scoring path). Canonical PAIR unchanged AND
+  re-measured (replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss). test_offering 30→32; full suite
+  22 files green (test_free_tier 11/11 with eth-account). Cloud bridge blocks direct main push → branch
+  loop/api-auth-signal + PR #22 + self-merge (squash c353b15; NOT peer-gated — discovery-only, off scoring
+  path, score-neutral). First duty: no open peer-gated PR ([]); realigned main to origin/main c353b15 after
+  merge. FIRST cycle after 16:00 UTC → daily digest DM SENT (flagged the ~16.5h runner gap loudly). RUNNER
+  STILL GAPPED (verify_20260728T234102Z 23:41Z ~16.5h old). Next TRUTH — candidate: a SIGNAL-level
+  relabel-invariance guard for the new `api-auth` signal (an access/auth scheme is a property of what a
+  storefront declares programmatically, not who declares it), the recurring "extend relabel-invariance as
+  new signals land" item — mirrors Cycle-79 payment-rail + Cycle-83 async-job. NOTE: the api-auth evidence
+  quote embeds the host (`api.driftflight.com/v1/... Authorization: Bearer`), so it is a QUOTE-ANCHORED
+  non-vacuity case like payment-rail, not host-free like async-job.)
   (Cycle 85 METHOD — pinned the scorer's MULTI-CAP ORDER-INVARIANCE, an unexercised rung named by the
   canonical-replay input-order guard's OWN docstring. `asrs/scoring.score` builds `caps_applied` in check-
   ARRIVAL order and the capped `overall` as a repeated `min`; when TWO caps bind, permuting the check input

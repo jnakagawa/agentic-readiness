@@ -213,6 +213,32 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"|\b\d+\s*(?:requests?|reqs?|calls?)\s*/\s*(?:s|sec|second|min|minute|hr|hour|day|month)\b"
             r"|\b(?:api|request|usage|monthly|daily|rate)\s+quota\b"
             r"|\bquota\s+(?:per|of|resets?|remaining|exceeded)\b", _F)),
+        # Asynchronous long-running job — submit a request, then RETRIEVE the
+        # result later via a webhook CALLBACK or by POLLING a status endpoint. This
+        # is the defining contract of an agent-native API whose work does not finish
+        # in the request/response round-trip (image/video generation, a training run,
+        # a batch inference job). It is a "complete the job" capability distinct from
+        # the BILLING signals above and from `rate-limited`: an agent that cannot read
+        # this contract submits a job and never collects its output, so a metered API
+        # that documents an async/webhook/poll flow is more agent-completable, not
+        # less. Vendor-neutral machine-integration vocabulary (a webhook, an async
+        # endpoint, polling a status URL) — the same category as REST/GraphQL/OpenAPI
+        # already in this bank, never a vendor.
+        # PRECISION: bare "poll" is a false-positive minefield (an opinion poll, a
+        # polling place, a reader poll), so anchor the poll sense to an API object —
+        # "poll ... endpoint" within a short same-line window, or "poll for/until"
+        # (poll for the result / poll until complete); "async" must name an API noun
+        # (async job / asynchronous prediction endpoint) so a bare "async is nice"
+        # never fires; and "webhook" must be paired with an integration noun
+        # (webhook url/endpoint/notification/callback) or an integration verb
+        # (receive/send/deliver/register/configure/via a webhook) so a passing
+        # "webhook-free" mention does not trip it.
+        ("async-job", re.compile(
+            r"\bwebhooks?\s+(?:url|endpoint|events?|notifications?|callbacks?|payload)\b"
+            r"|\b(?:receiv\w+|send\w*|deliver\w*|register\w*|configur\w*|via|through|using)\s+(?:an?\s+)?webhooks?\b"
+            r"|\bpoll(?:ing)?\s+(?:the\s+|for\s+|your\s+)?[^\n]{0,50}?\bendpoint\b"
+            r"|\bpoll(?:ing)?\s+(?:for|until)\b"
+            r"|\basync(?:hronous)?\s+(?:api|jobs?|requests?|predictions?|endpoint|calls?|inference|processing|tasks?|mode)\b", _F)),
         # Credit-based metering — the dominant billing convention for generative
         # and agent-native APIs (prepay a credit balance, spend N credits per
         # call/image/generation). PRECISION-CRITICAL: bare "\bcredits?\b" is a

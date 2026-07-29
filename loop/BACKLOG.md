@@ -6,8 +6,8 @@ design in-cloud, execute locally.
 ## P0
 
 - **[LOCAL] Local verify runner STALLED past the 6h floor again** (SELF-HEALING, flagged Cycle 76,
-  still gapped through Cycle 81 2026-07-29T11:12Z). Newest artifact `runs/local/verify_20260728T234102Z.json`
-  (23:41Z Jul-28) is ~11h31m old; twelve consecutive :41 fires 00:41–10:41Z Jul-29 produced NO newer artifact. The cloud cannot
+  still gapped through Cycle 82 2026-07-29T12:14Z). Newest artifact `runs/local/verify_20260728T234102Z.json`
+  (23:41Z Jul-28) is ~12h33m old; thirteen consecutive :41 fires 00:41–11:41Z Jul-29 produced NO newer artifact. The cloud cannot
   reach Jonah's machine to diagnose. On the next LOCAL fire: read the runner heartbeat log + any unpushed
   `runs/local/verify_*.json`, check `attempts` on the newest artifact. If it's the Cycle-63 wake/network
   race recurring (a >60s slow-network wake outlasting the 5×15s `git_pull_with_retry`), escalate to a
@@ -526,6 +526,14 @@ design in-cloud, execute locally.
   host is deliberately not asserted (host-length change shifts the fixed-width window). Tests-only, rubric
   v0.7, replay guard 24/24 / 46.1 F / 85.5 B / +39.4. See LOG Cycle 79. Item stays OPEN for the NEXT new
   offering fixture (structured-catalog capture / new archetype anchor).
+  NEXT-TRUTH CANDIDATE (Cycle 82 COVERAGE added the `async-job` metered_api signal — webhook/poll/async
+  long-running-job contract, fires on the committed `api.replicate.com` `/openapi.json`): add a SIGNAL-level
+  relabel case for `async-job` the same way Cycle 79 did for `agent-payment-rail`. The async-job evidence
+  quote ("An HTTPS URL for receiving a webhook when the prediction has new output", "poll the … endpoint")
+  does NOT embed the storefront host, so it is a clean surface-presence / structural-re-match invariance
+  (relabel `api.replicate.com` → `vendor-neutral.test`, assert the `async-job` label still fires with the
+  same match count and the relabeled quote still matches the live regex) — proving the async-contract claim
+  keys on the CONTRACT STRUCTURE (webhook/poll vocabulary), not the vendor. Cloud-doable, tests-only.
 
 <!-- DONE 2026-07-29T04:1xZ (Cycle 74, COVERAGE, direct-to-main, tests-only/score-neutral): the
      offering-relative BATTERY-INSTANTIATION layer (`battery.instantiate_battery`, the operator directive's

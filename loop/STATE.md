@@ -1,12 +1,12 @@
 # Loop state
 
-- Cycle counter: 81
+- Cycle counter: 82
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-29T11:12Z, Cycle 81; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-29T12:14Z, Cycle 82; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~11h31m old at the 11:12Z fire; no newer :41 artifact through 10:41Z Jul-29 (12 consecutive
+  Jul-28 = ~12h33m old at the 12:14Z fire; no newer :41 artifact through 11:41Z Jul-29 (13 consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine → FLAG in the next 16:00 UTC digest (the
-  10:11Z fire is before the digest window); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
+  12:14Z fire is before the digest window); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
   is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
   local fire root-caused (a >60s slow-network wake still misses the 5×15s retry) OR the machine is
@@ -25,7 +25,35 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 82 COVERAGE — offering discovery now recognises the ASYNCHRONOUS LONG-RUNNING JOB contract, a
+  metered API whose work does not finish in the request/response round-trip (submit → retrieve the result
+  via a webhook CALLBACK or by POLLING a status endpoint). New `async-job` signal in
+  `_SIGNALS["metered_api"]` (`asrs/offering.py`), grouped with the API-contract "understand the offer"
+  signals after `rate-limited`. CAPABILITY: the "complete the job" capability for the growing class of
+  long-running agent-native APIs (image/video gen, training runs, batch inference) — an agent that cannot
+  read the async/webhook/poll contract submits a job and never collects its output, so documenting it makes
+  a metered API MORE agent-completable; distinct from BILLING (how you're charged) and `rate-limited` (how
+  fast you may call) — this is how you GET YOUR RESULT BACK. Vendor-neutral machine-integration vocabulary
+  (webhook / async endpoint / poll a status URL), same category as REST/GraphQL/OpenAPI/x402. PRECISION:
+  bare "poll" anchored to an API object ("poll ... endpoint" same-line window, or "poll for/until"); "async"
+  must name an API noun; "webhook" must pair with an integration noun/verb — 8 collision/noise negatives all
+  reject (opinion poll, polling place, reader poll, bare async, webhook-free, retail cart). NON-VACUOUS on
+  REAL committed evidence: fires end-to-end (`from_fixture → discover_offering`) on `api.replicate.com`
+  `/openapi.json`'s genuine async contract ("An HTTPS URL for receiving a webhook when the prediction has new
+  output", "poll the ... endpoint until it"); fires on ZERO of the other four fixtures (canonical pair
+  documents no async flow). Score-neutral: api.replicate.com already claims ONLY metered_api → claimed set
+  stays `['metered_api']` (deepened evidence, no new archetype); `git diff --name-only` = asrs/offering.py +
+  tests/test_offering.py ONLY; scoring/probes/rubric/protocols/fetch/battery/fixtures byte-for-byte untouched
+  → rubric v0.7 (discovery off the scoring path, `--battery auto` only). Canonical PAIR unchanged AND
+  re-measured (replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; offering-canonical guard 14/14).
+  test_offering 28→30; full suite 22 files green (test_free_tier 11/11 with eth-account). Cloud bridge blocks
+  direct main push → branch loop/async-job-signal + PR + self-merge (squash; NOT peer-gated — discovery-only,
+  off scoring path, score-neutral). No Slack (moves no score, before 16:00 UTC digest). First duty: no open
+  peer-gated PR ([]); realigned detached HEAD to origin/main d774e9f. RUNNER STILL GAPPED
+  (verify_20260728T234102Z 23:41Z ~12.5h old, past 6h floor — flag in next digest). Next TRUTH — candidate: a
+  relabel-invariance case for the new async-job signal (contract-structure not vendor), extending the recurring
+  "extend relabel-invariance as new signals land" item.)
   (Cycle 81 METHOD — made the offering CLASSIFICATION's SURFACE-READ-ORDER INVARIANCE an executable
   tripwire. New `test_classification_is_surface_read_order_invariant` (test_offering 27→28) runs
   `classify_offering` on the same synthetic surfaces in two genuinely-distinct insertion orders (forward

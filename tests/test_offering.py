@@ -1072,6 +1072,93 @@ def test_pricing_surface_is_read_live():
     print("  ok: /pricing evidence does NOT change the claimed set/order (score-neutral)")
 
 
+def test_async_job_metering_precision_synthetic():
+    # An asynchronous long-running job — submit, then retrieve the result via a
+    # webhook callback or by polling a status endpoint — is the defining contract of
+    # an agent-native API whose work does not finish in the request/response
+    # round-trip (image/video generation, a training run, a batch job). It is the
+    # "complete the job" capability, so it must claim metered_api via the new
+    # async-job signal. Each POSITIVE is real async/webhook/poll API vocabulary; each
+    # NEGATIVE is poll/async-SHAPED noise that must NOT fire it (the precision traps:
+    # an opinion poll, a polling place, a reader poll, a bare "async is nice").
+    positives = {
+        "receive a webhook": "An HTTPS URL for receiving a webhook when the render is ready.",
+        "webhook url": "Configure a webhook URL to be notified when the job completes.",
+        "webhook notifications": "We send webhook notifications for every prediction event.",
+        "poll the endpoint": "Or poll the get-a-prediction endpoint until it finishes.",
+        "poll for result": "Submit the job, then poll for the result every few seconds.",
+        "poll until": "Long jobs run in the background; polling until complete is fine.",
+        "async prediction": "Start an asynchronous prediction endpoint for batch work.",
+        "async job": "Every request is an async job with an id you fetch later.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("metered.test", {"homepage": text})
+        assert prof.claims("metered_api"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "metered_api"
+            for s in c.signals
+        }
+        assert "async-job" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real async/webhook/poll phrasings each fire async-job")
+
+    negatives = {
+        "opinion poll": "The latest opinion poll shows renewed optimism this quarter.",
+        "polling place": "Head to your polling place before 8pm to cast your vote.",
+        "poll results": "Reader poll results were released on the blog this morning.",
+        "reader poll": "Take our reader poll and tell us which cover you prefer.",
+        "bare async": "The async workflow of our design team is honestly a joy.",
+        "webhook-free": "A webhook-free integration is not something we offer today.",
+        "retail cart": "Add to cart, then check out — free shipping on every order.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "async-job" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} poll/async-shaped noise strings do NOT fire async-job (precision)"
+    )
+
+
+def test_async_job_fires_on_real_captured_openapi():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the async-job signal fires on the
+    # GENUINE async-prediction contract captured live from a real machine-surface
+    # storefront — api.replicate.com's /openapi.json documents a `webhook` field ("An
+    # HTTPS URL for receiving a webhook when the prediction has new output") and a
+    # `poll the ... endpoint` flow, captured verbatim in the committed fixture. Run the
+    # REAL discovery path (from_fixture -> discover_offering) so the signal is exercised
+    # exactly as a live crawl would, the same real-data non-vacuity move
+    # test_agent_payment_rail_fires_on_real_captured_surfaces makes.
+    #
+    # SCORE-NEUTRAL by construction: api.replicate.com already claims ONLY metered_api
+    # (its strongest and only archetype), so an async contract on its spec can only
+    # deepen that claim's evidence — never add an archetype or reorder. The classifier
+    # is off the scoring path; the canonical pair (which does NOT document an async
+    # flow) is unchanged (async-job fires on neither driftflight surface — pinned by
+    # tests/test_offering_canonical.py and the canonical replay guard).
+    openapi = _fixture_entry_text("api.replicate.com", "/openapi.json")
+    assert "webhook" in openapi.lower(), "fixture /openapi.json lost its webhook contract"
+
+    ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "api.replicate.com.json"))
+    prof = offering.discover_offering(ctx)
+
+    assert prof.claims("metered_api"), prof.archetypes
+    metered = next(c for c in prof.claimed if c.archetype == "metered_api")
+    aj = [s for s in metered.signals if s.label == "async-job"]
+    assert aj, {s.label for s in metered.signals}
+    quote = aj[0].quote.lower()
+    assert "webhook" in quote or "poll" in quote or "async" in quote, aj[0].quote
+    print(f"  ok: async-job fires on REAL captured OpenAPI contract — quote: {aj[0].quote!r}")
+
+    # NON-VACUOUS + score-neutral: the machine storefront's claimed SET is exactly
+    # [metered_api] — the async contract deepened the metered_api evidence without
+    # adding a spurious archetype (no false digital_good/service_booking from "render"
+    # or "training" prose reaching a wrong bank).
+    assert prof.archetypes == ["metered_api"], prof.archetypes
+    print("  ok: async-job evidence does NOT change the claimed set (score-neutral)")
+
+
 def main() -> int:
     tests = [
         test_api_storefront_claims_agent_native_not_physical,
@@ -1101,6 +1188,8 @@ def main() -> int:
         test_agent_payment_rail_fires_on_real_captured_surfaces,
         test_no_rails_side_claims_no_agent_payment_rail,
         test_pricing_surface_is_read_live,
+        test_async_job_metering_precision_synthetic,
+        test_async_job_fires_on_real_captured_openapi,
         test_strip_html_drops_script_style_and_tags,
     ]
     failed = 0

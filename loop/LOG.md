@@ -7609,3 +7609,78 @@ the 16:00 UTC digest window). First duty: no open peer-gated PR ([]).
 archetype/signal for classify_offering, or a per-segment leaderboard summary once
 the [LOCAL] calibration population grows. First duty next cycle: review any open
 peer-gated PR.
+
+
+## Cycle 82 — 2026-07-29T12:1xZ — COVERAGE (branch+PR+self-merge; NOT peer-gated)
+
+**What.** Offering discovery now recognises the ASYNCHRONOUS LONG-RUNNING JOB
+contract — a metered API whose work does not finish in the request/response
+round-trip, where an agent submits a job then RETRIEVES the result via a webhook
+CALLBACK or by POLLING a status endpoint. New `async-job` signal in
+`_SIGNALS["metered_api"]` (`asrs/offering.py`), grouped with the other
+API-contract "understand the offer" signals right after `rate-limited`.
+
+**Why (capability lens).** This is the "complete the job" capability for the
+large and growing class of agent-native APIs that run long jobs — image/video
+generation, a training run, a batch inference job. An agent that cannot read the
+async/webhook/poll contract submits a job and never collects its output, so a
+metered API that documents this flow is MORE agent-completable, not less. It was
+previously invisible to discovery. Distinct from the BILLING signals (pay-per /
+credit-metered / tiered-volume) and from `rate-limited`: those say how you're
+charged / how fast you may call; this says how you GET YOUR RESULT BACK.
+Vendor-neutral machine-integration vocabulary (a webhook, an async endpoint,
+polling a status URL) — the same category as REST/GraphQL/OpenAPI/x402 already in
+the bank, never a vendor.
+
+**Precision.** Bare "poll" is a false-positive minefield (an opinion poll, a
+polling place, a reader poll), so the poll sense is anchored to an API object —
+"poll ... endpoint" within a short same-line window, or "poll for/until"; "async"
+must name an API noun (async job / asynchronous prediction endpoint) so a bare
+"async is nice" never fires; and "webhook" must be paired with an integration
+noun (webhook url/endpoint/notification/callback) or verb
+(receive/send/deliver/register/configure/via a webhook) so a passing "webhook-free"
+mention does not trip it. 8 collision/noise negatives all reject.
+
+**Non-vacuous on REAL committed evidence.** The signal fires end-to-end through the
+real discovery path (`from_fixture → discover_offering`) on the committed
+`api.replicate.com` `/openapi.json` — its genuine async contract ("An HTTPS URL for
+receiving a webhook when the prediction has new output", "poll the ... endpoint
+until it") — quote surfaced in the test. Fires on ZERO of the other four committed
+fixtures (drift-flight.org / driftflight.com / books.toscrape.com / example.com):
+the canonical pair documents no async flow, so it does not fire there.
+
+**Score-neutral, off the scoring path.** `api.replicate.com` already claims ONLY
+`metered_api`, so the async contract deepens that claim's evidence without adding
+an archetype or reordering — claimed SET stays `['metered_api']`. `git diff
+--name-only` = `asrs/offering.py` + `tests/test_offering.py` ONLY; `git diff --
+asrs/scoring.py asrs/probes/ rubric/ asrs/protocols.py asrs/fetch.py asrs/battery.py
+fixtures/ batteries/` EMPTY → scoring/probes/rubric/protocols/fetch/battery/
+fixtures byte-for-byte untouched → rubric v0.7. Discovery is off the scoring path
+(`--battery auto` only; the scoring commerce-manifest probe keeps its own untouched
+`protocols._AGENT_SURFACE_DOCS`).
+
+**Evidence.** `tests/test_offering.py` 28→30 (+`test_async_job_metering_precision_synthetic`
+8 pos / 7 neg, +`test_async_job_fires_on_real_captured_openapi` end-to-end on the
+committed fixture); full suite 22 files green (test_free_tier 11/11 with
+eth-account). Canonical OFFERING guard 14/14 (claimed set/order unchanged on the
+pair), canonical-replay guard 24/24, 0 replay-miss.
+
+**Canonical pair (regression signal).** UNCHANGED and re-measured: **46.1 F /
+85.5 B / delta +39.4**, rubric v0.7 (both the replay guard and an explicit
+`_run_probes → score` re-measure). LOCAL live runner STILL GAPPED (newest
+`runs/local/verify_20260728T234102Z.json` 23:41Z Jul-28, ~12.5h old at the 12:14Z
+fire, past the 6h floor) — the replay guard is the independent live signal
+meanwhile; FLAG in the next 16:00 UTC digest.
+
+**Ship.** Cloud bridge blocks direct main push → branch `loop/async-job-signal` +
+PR + self-merge (squash). NOT peer-gated (discovery-only, off the scoring path,
+score-neutral — no scoring semantics / weights / caps / payment code). No Slack
+(moves no score, before the 16:00 UTC digest window). First duty: no open
+peer-gated PR ([]); realigned detached HEAD / stale ephemeral local-main to
+origin/main d774e9f.
+
+**Next hypothesis.** TRUTH next (rotate). Cloud-doable candidate: a relabel-invariance
+case for the new `async-job` signal (its evidence quote embeds no host — the rail
+family's precedent — but pins that the async-contract claim keys on the CONTRACT
+structure, not the vendor), extending the recurring "extend relabel-invariance as
+new signals land" item. First duty next cycle: review any open peer-gated PR.

@@ -7874,3 +7874,85 @@ Candidate: a new archetype/signal for `classify_offering`, or a per-segment lead
 summary once the [LOCAL] calibration population grows; the in-cloud COVERAGE frontier
 is thin (structured catalog/pricing JSON are [LOCAL], 404 on fixtures). First duty next
 cycle: review any open peer-gated PR, then the 16:00 UTC digest (flag the runner gap).
+
+## Cycle 86 — 2026-07-29T16:12Z — COVERAGE
+
+**What.** Offering discovery now recognises programmatic API AUTHENTICATION —
+the "provision without a human" capability at the offering-understanding layer.
+New `api-auth` signal in `_SIGNALS["metered_api"]` (`asrs/offering.py`), grouped
+with the callable-API signals right after `api-reference`. It matches HOW an
+agent obtains and presents credentials to CALL an API, in high-precision,
+vendor-neutral forms: the HTTP `Authorization: Bearer` header, a "Bearer token",
+an `X-API-Key` header, an "API key", an OpenAPI `"securitySchemes"` /
+`bearerAuth`/`bearerFormat` / `"type":"apiKey"` declaration, an OAuth2 flow, or
+"authenticated WITH/VIA/USING an api key / bearer / token".
+
+**Why.** The signal bank had NO authentication signal at all — yet an agent that
+cannot read the auth scheme cannot invoke the API, so a metered API that
+documents its auth is MORE agent-completable. This is distinct from
+`post-endpoint` (that an endpoint EXISTS) and from the billing signals (how you
+are CHARGED): `api-auth` is how you are ALLOWED to call. It fills the "provision
+without a human" leg of the capability lens (reach → understand → pay →
+provision → complete). Rail names / open standards, not vendors — same category
+as REST/GraphQL/OpenAPI/x402 already in the bank.
+
+**Precision.** Bare `authenticate` is a false-positive minefield (ANY site with a
+user LOGIN — "authenticate your account" on a retail store — would falsely claim
+a metered API and run an irrelevant intent, the exact pollution this module
+removes), so "authenticate" must NAME an API credential; "Bearer" must be the
+`Authorization: Bearer` header or a "Bearer token" (never "the bearer of ...");
+"key" must be an "API key" / "X-API-Key" (never a house key / turnkey solution);
+OAuth is anchored to the versioned standard. 7 auth-shaped noise strings all
+reject (retail login, bearer-of-news, house key, keychain, OAuthenticate typo,
+turnkey, retail cart).
+
+**Non-vacuous on REAL committed evidence.** Fires end-to-end via the real
+discovery path (`from_fixture → discover_offering`) on BOTH canonical domains
+(`Authorization: Bearer <token>` on the homepage, "authenticated with an API key
+sent as a Bearer token" on `/docs`, plus the api/agent doc-subdomains) and on
+`api.replicate.com`'s `"securitySchemes":{"bearerAuth":...}` — three genuinely
+different surfaces. Fires on ZERO of the retail/null fixtures
+(`books.toscrape.com` / `example.com` document no API auth) = the offering-layer
+mirror of the scoring-path asymmetry (agent-callable API sites document auth, a
+browser-only shop does not).
+
+**Score-neutral.** Every domain where `api-auth` fires ALREADY claims
+`metered_api` (its strongest archetype on all three), so the signal deepens that
+claim's evidence without adding an archetype or reordering — claimed SET+ORDER
+byte-identical `['metered_api','digital_good','subscription']` on the pair,
+`['metered_api']` on replicate, `['physical_good']` on retail. `git diff
+--name-only` = `asrs/offering.py` + `tests/test_offering.py` ONLY; git diff over
+`scoring.py`/probes/`rubric/`/`fixtures/`/`batteries/`/`battery.py`/`protocols.py`/
+`fetch.py` EMPTY → scoring path byte-for-byte untouched → rubric v0.7 (discovery
+off the scoring path, `--battery auto` only).
+
+**Tests.** `tests/test_offering.py` +2 (30→32): `test_api_auth_precision_synthetic`
+(8 real API-auth phrasings each fire, 7 auth-shaped noise strings reject) and
+`test_api_auth_fires_on_real_captured_surfaces` (fires on all three metered
+sites via the real discovery path, absent on a real no-API retail storefront —
+non-vacuous both directions). Full suite 22 files green (test_free_tier 11/11
+with eth-account installed).
+
+**Canonical pair (regression signal).** UNCHANGED and re-measured: in-cloud
+replay guard `tests/test_canonical_replay.py` 24/24, overall 46.1 F (.org) /
+85.5 B (.com), delta +39.4, 0 replay-miss. LOCAL verify runner STILL GAPPED
+(`verify_20260728T234102Z.json` 23:41Z Jul-28, ~16.5h old at the 16:12Z fire —
+past the 6h floor; the in-cloud replay guard is the independent live regression
+signal meanwhile, so benchmark integrity is intact — a heartbeat gap, not a
+scoring problem). Cloud cannot reach Jonah's machine → flagged in this cycle's
+16:00 UTC digest.
+
+**Ship.** Cloud bridge blocks direct main push → branch loop/api-auth-signal +
+PR #22 + self-merge (squash, c353b15; NOT peer-gated — discovery-only, off the
+scoring path, score-neutral). First duty: no open peer-gated PR ([]); realigned
+main to origin/main (c353b15 after merge). This is the FIRST cycle after 16:00
+UTC → daily digest DM sent (flagging the ~16.5h runner gap loudly).
+
+**Next hypothesis.** TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT).
+Candidate: a signal-level relabel-invariance guard for the new `api-auth` signal
+(a payment/access scheme is a property of what a storefront declares
+programmatically, not who declares it — the recurring "extend relabel-invariance
+as new signals land" item), mirroring the Cycle-79 payment-rail and Cycle-83
+async-job signal-level relabel guards. Note the `api-auth` evidence quote embeds
+the host (`api.driftflight.com/v1/... Authorization: Bearer`), so it is a
+quote-anchored non-vacuity case like payment-rail, not host-free like async-job.

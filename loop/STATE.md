@@ -1,13 +1,13 @@
 # Loop state
 
-- Cycle counter: 90
+- Cycle counter: 91
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-29T21:12Z, Cycle 90; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-29T22:12Z, Cycle 91; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~21h31m old at the 21:12Z fire; no newer :41 artifact through 20:41Z Jul-29 (22 consecutive
+  Jul-28 = ~22h31m old at the 22:12Z fire; no newer :41 artifact through 21:41Z Jul-29 (23 consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine → FLAGGED in the Cycle-86 16:00 UTC digest
   (the 16:12Z fire was the FIRST cycle after 16:00Z; the ~16.5h runner gap was flagged loudly there;
-  the Cycle-87 17:12Z through this Cycle-90 21:12Z fires are NOT the first-after-16:00 cycle,
+  the Cycle-87 17:12Z through this Cycle-91 22:12Z fires are NOT the first-after-16:00 cycle,
   so no re-digest — keep flagging in each daily digest until it clears); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
   is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
@@ -27,7 +27,38 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 91 TRUTH — relabel-invariance made executable at the SIGNAL level for the Cycle-90
+  `error-contract` metered_api signal (the 4xx/5xx error responses an agent must read to RECOVER from a
+  failed call). New `test_offering_relabel_invariance_error_contract` (`tests/test_offering_canonical.py`
+  16→17) replays the committed `driftflight.com` fixture through the REAL discovery path, relabels the host
+  everywhere (`driftflight.com` → `vendor-neutral.test`), and asserts the signal is IDENTITY-invariant: SAME
+  match count (3), SAME host-normalized surfaces (signal did not migrate), each relabeled quote STILL
+  matching the live `error-contract` regex, vendor host GONE from every piece of error-contract evidence —
+  proving a documented error contract keys on what a storefront DECLARES (status codes / problem+json /
+  snake_case error codes) not WHO declares it. Fourth signal-level companion to the payment-rail (Cycle 79)
+  / async-job (Cycle 83) / api-auth (Cycle 87) guards — the relabel family now covers ALL FOUR recently-landed
+  metered_api signals. SURFACE-PRESENCE (not quote-anchored) like async-job — the error-contract vocabulary is
+  host-free by nature so the fired QUOTES carry no host — but a STRONGER surface-presence case: TWO of the
+  three firing surfaces embed the host in the surface KEY (`agents.driftflight.com/llms-full.txt`,
+  `api.driftflight.com/openapi.json`; the third `/docs` is host-free), so the whole-fixture relabel genuinely
+  rewrites the surface keys the signal reads and the host-normalization step does real work (unlike
+  async-job's lone host-free `/openapi.json`). Both host-free structural forms exercised (OpenAPI status-keyed
+  response object + status code paired with a snake_case error code). Tests-only, off scoring path: git diff
+  -- asrs/ rubric/ fixtures/ batteries/ EMPTY → scoring path byte-for-byte untouched → rubric v0.7. Canonical
+  PAIR unchanged AND re-measured (replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss).
+  test_offering_canonical 16→17; full suite 22 files green (test_free_tier 11/11 with eth-account). Cloud
+  bridge blocks direct main push → branch loop/relabel-error-contract-signal + PR #32 + self-merge (squash
+  be61b99; NOT peer-gated — tests-only, off scoring path, pins existing behaviour). First duty: no open
+  peer-gated PR ([]); realigned main to origin/main be61b99 after merge. No Slack (tests-only, moves no score;
+  this 22:1xZ fire is after the Cycle-86 16:12Z daily digest, so not the first-after-16:00 cycle). RUNNER
+  STILL GAPPED (verify_20260728T234102Z 23:41Z ~22.5h old). The signal-level relabel family now covers all
+  FOUR recently-landed metered_api signals (payment-rail, async-job, api-auth, error-contract). Next READOUT —
+  candidate: surface the error-contract "recover from a failed call" RELIABILITY recognition in the PUBLIC
+  methodology prose (capability-worded, vendor-neutral — HTTP status codes / RFC 7807 problem+json / error
+  codes as open conventions, keyed on the DECLARED contract not the vendor), the READOUT complement to the
+  Cycle-90 COVERAGE + this-cycle TRUTH error-contract arc, closing the fourth COVERAGE→TRUTH→READOUT arc
+  (mirroring Cycle-80 payment-rail / Cycle-84 async-job / Cycle-88 api-auth).)
   (Cycle 90 COVERAGE — offering discovery now recognises a storefront's documented machine-readable ERROR
   CONTRACT, the "complete the job" RELIABILITY capability the metered_api signal bank was missing. New
   `error-contract` signal in `_SIGNALS["metered_api"]` (`asrs/offering.py`), grouped after `async-job`:

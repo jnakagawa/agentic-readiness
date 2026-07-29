@@ -8216,3 +8216,55 @@ Cycle 79 (payment-rail) / 83 (async-job) / 87 (api-auth). The error-contract
 evidence is largely host-FREE (status codes, `application/problem+json`), so it is
 a clean surface-presence / structural-re-match case like async-job (Cycle 83), not
 a quote-anchored one — non-vacuity anchors at the fixture level.
+
+## Cycle 91 — 2026-07-29T22:12Z — TRUTH (branch+PR+self-merge; tests-only, off scoring path)
+
+**What.** Relabel-invariance made executable at the SIGNAL level for the Cycle-90
+`error-contract` metered_api signal (the 4xx/5xx error responses an agent must
+read to RECOVER from a failed call). New
+`test_offering_relabel_invariance_error_contract` (`tests/test_offering_canonical.py`
+16→17) replays the committed `driftflight.com` fixture through the REAL discovery
+path, relabels the host everywhere (`driftflight.com` → `vendor-neutral.test`) via
+the existing `_discover_relabeled`, and asserts the `error-contract` signal is
+IDENTITY-invariant: SAME match count (3), SAME host-normalized surfaces (signal did
+not migrate), each relabeled quote STILL matching the live `error-contract` regex
+(re-run per quote), vendor host GONE from every piece of error-contract evidence.
+
+**Why.** Fourth signal-level companion to the payment-rail (Cycle 79) / async-job
+(Cycle 83) / api-auth (Cycle 87) guards — the recurring "extend relabel-invariance
+as new signals land" item, now covering ALL FOUR recently-landed metered_api
+signals. A documented error contract keys on what a storefront DECLARES — status
+codes, `application/problem+json`, snake_case error codes — never on WHO declares
+it. SURFACE-PRESENCE (not quote-anchored) like async-job: the error-contract
+vocabulary is host-free by nature, so the fired QUOTES carry no host (asserted). But
+a STRONGER surface-presence case than async-job — two of the three firing surfaces
+embed the host in the surface KEY (`agents.driftflight.com/llms-full.txt`,
+`api.driftflight.com/openapi.json`; the third `/docs` is host-free), so the
+whole-fixture relabel genuinely rewrites the surface keys the signal reads and the
+host-normalization step of the surface assertion does real work (unlike async-job's
+lone host-free `/openapi.json`). Both host-free structural forms exercised (OpenAPI
+status-keyed response object + status code paired with a snake_case error code).
+
+**Evidence.** `tests/test_offering_canonical.py` (new test, registered in `main()`).
+Full suite 22 files green: test_offering_canonical 16→17, test_canonical_replay 24/24
+(the live regression signal), test_free_tier 11/11 with eth-account.
+
+**Canonical pair.** UNCHANGED and re-measured: drift-flight.org 46.1 F /
+driftflight.com 85.5 B / delta **+39.4**, 0 replay-miss, relabel-invariant. rubric
+v0.7 (git diff -- asrs/ rubric/ fixtures/ batteries/ EMPTY → scoring path
+byte-for-byte untouched; discovery is off the scoring path).
+
+**Ship.** Cloud bridge blocks direct main push → branch `loop/relabel-error-contract-signal`
++ PR #32 + self-merge (squash be61b99). NOT peer-gated — tests-only, off scoring
+path, pins existing behaviour. First duty: no open peer-gated PR ([]); realigned main
+to origin/main be61b99 after merge. No Slack (tests-only, moves no score; this 22:1xZ
+fire is after the Cycle-86 16:12Z daily digest, so not the first-after-16:00 cycle).
+RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z ~22.5h old).
+
+**Next hypothesis.** READOUT — surface the error-contract "recover from a failed call"
+RELIABILITY recognition in the PUBLIC methodology prose (capability-worded,
+vendor-neutral: HTTP status codes / RFC 7807 problem+json / error codes as open
+conventions, keyed on the DECLARED contract not the vendor), the READOUT complement
+to the Cycle-90 COVERAGE + this-cycle TRUTH error-contract arc — mirroring the
+Cycle-80 payment-rail / Cycle-84 async-job / Cycle-88 api-auth READOUT paragraphs,
+closing the fourth COVERAGE→TRUTH→READOUT arc.

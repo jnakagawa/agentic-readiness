@@ -1,8 +1,28 @@
 # Loop state
 
-- Cycle counter: 72
+- Cycle counter: 73
 - Started: 2026-07-23 (UTC)
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 73 METHOD — presentation-order INVARIANCE tripwire for the battery aggregation. `test_battery.py`
+  +1 (12→13) `test_aggregation_is_presentation_order_invariant`: reorder the battery's tasks AND reverse
+  each task's run list, re-aggregate with the same profile, and assert every SCALAR (cross_task_spread,
+  between_kind_spread, all 5 checkpoint_mean/spread, each per_kind mean_completion/cross_task_spread matched
+  BY KIND) is byte-identical within 1e-12 — only the READOUT order (per_kind/assessed_archetypes) may move.
+  The aggregation-layer analog of the relabel-invariance guards (Cycles 21/31): a readiness number is a
+  property of what was OBSERVED, not the order it arrived in. `test_per_kind_rollup` pinned order is
+  PRESERVED; nothing pinned the numbers DON'T move under a different order — this catches a future
+  order-dependent regression (running stat, "first task is primary" shortcut). NON-VACUOUS: (a) per_kind
+  order genuinely differs under the permutation (permutation is real, observable in output); (b) the
+  protected spreads are real — between_kind 0.294 (>0.25), cross_task 0.317 (>0), not a trivially-zero pass;
+  plus NA (physical_good, unclaimed) stays NA under permutation and na_archetypes keys on profile not order.
+  Tests-only: git diff = tests/test_battery.py ONLY; git diff -- asrs/ rubric/ fixtures/ batteries/ EMPTY →
+  aggregation code unchanged (test pins existing behaviour), rubric v0.7; canonical PAIR unchanged AND
+  re-measured (replay guard 46.1 F / 85.5 B / +39.4, 0 replay-miss; verify_20260728T234102Z corroborates,
+  ~3h31m old at 03:12Z fire, under the 6h floor). Vendor-neutral (keys on kinds/checkpoints; wording guards
+  4/4 + 4/4 green). Direct-to-main. No Slack (tests-only, moves no score, before the 16:00 UTC digest
+  window). First duty: no open peer-gated PR ([]); runner HEALTHY. Next COVERAGE — new archetype/signal for
+  classify_offering, or the population-leaderboard READOUT page off the committed calibration_sweep_*.json;
+  in-cloud COVERAGE frontier is thin (structured catalog/pricing JSON are [LOCAL], 404 on fixtures).)
   (Cycle 72 READOUT — the calibration READOUT complement: methodology §8 "Calibration" now surfaces the
   TWO-SIDED property Cycle 71 landed. Rewrote the §8 "honest limits" paragraph (which still called
   calibration one-domain/with-rails, "mirror case not yet run end-to-end") into TWO paragraphs: (1) a

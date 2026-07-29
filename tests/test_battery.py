@@ -14,6 +14,9 @@ Covers the load-bearing behaviours with synthetic ``BehavioralRun`` fixtures
   - cross-task spread is the reliability signal: 0 when a checkpoint behaves
     identically across intents, positive when it is intent-dependent;
   - a single signal task has spread 0 (no variance to observe yet), not a crash.
+  - the scalar readiness statistics are PRESENTATION-ORDER INVARIANT: reordering
+    tasks/runs moves only the readout order, never a mean or spread (a readiness
+    number is a property of what was observed, not the order it arrived in).
 """
 
 from __future__ import annotations
@@ -451,6 +454,104 @@ def test_na_distinct_from_no_signal_and_noncanonical() -> None:
            f"na_archetypes == profile.unclaimed in ARCHETYPES order, got {summ.na_archetypes}")
 
 
+# ---------------------------------------------------------------------------
+# 13. Presentation-order invariance (METHOD rigor tripwire): the battery's
+#     scalar readiness statistics are a property of the OBSERVATIONS, not the
+#     accident of the order tasks/runs were presented in. This is the
+#     measurement-rigor analog of the relabel-invariance guards (a score is a
+#     property of the evidence, not the domain's identity): a readiness NUMBER
+#     is a property of what was observed, not the order it arrived in. Reorder
+#     the battery's tasks AND reverse each task's run list, and every mean/
+#     spread must be byte-identical; only the READOUT order (per_kind /
+#     assessed_archetypes, which follow first-appearance) may move. Catches a
+#     future regression that leaks order-dependence into the aggregation (an
+#     incremental/running statistic, a "first task is primary" shortcut).
+# ---------------------------------------------------------------------------
+def test_aggregation_is_presentation_order_invariant() -> None:
+    print("test_aggregation_is_presentation_order_invariant")
+    # Three claimed archetypes with DIFFERENT completion levels and REAL
+    # per-checkpoint variance (so the spreads below are non-zero — a permutation
+    # that left an all-zero spread unchanged would pass vacuously), plus one
+    # NA archetype (physical_good, unclaimed) so NA exclusion is exercised under
+    # permutation too.
+    tasks = [
+        BatteryTask("metered_api", "metered_api", "call the API"),
+        BatteryTask("digital_good", "digital_good", "buy an image"),
+        BatteryTask("subscription", "subscription", "subscribe"),
+        BatteryTask("physical_good", "physical_good", "order the physical good"),
+    ]
+    runs = {
+        # metered_api: found_product both, understood_pricing split -> mean 0.3
+        "metered_api": [_run(found_product=True, understood_pricing=True),
+                        _run(found_product=True)],
+        # digital_good: full then partial -> mean 0.8
+        "digital_good": [_run(**{k: True for k in _KEYS}),
+                         _run(found_product=True, understood_pricing=True,
+                              found_purchase_path=True)],
+        # subscription: partial then nothing -> mean 0.1
+        "subscription": [_run(found_product=True), _run()],
+        # physical_good: NA (unclaimed) — garden-pathed, must never leak in.
+        "physical_good": [_run(found_product=True), _run(found_product=True)],
+    }
+    prof = _profile("metered_api", "digital_good", "subscription")  # physical_good NA
+
+    base = B.aggregate_battery(
+        Battery(id="t", description="", tasks=list(tasks), ), runs, profile=prof)
+
+    # Permute: tasks in a different order AND each task's run list reversed.
+    perm_tasks = [tasks[3], tasks[2], tasks[0], tasks[1]]  # NA first, then reordered claimed
+    perm_runs = {tid: list(reversed(rs)) for tid, rs in runs.items()}
+    perm = B.aggregate_battery(
+        Battery(id="t", description="", tasks=perm_tasks), perm_runs, profile=prof)
+
+    # (a) The permutation was REAL and observable: readout order differs.
+    _check([kr.kind for kr in base.per_kind] != [kr.kind for kr in perm.per_kind],
+           "the permutation genuinely reorders per_kind (non-vacuous)")
+    # (b) ...yet the SET of assessed archetypes is identical.
+    _check(set(base.assessed_archetypes) == set(perm.assessed_archetypes)
+           == {"metered_api", "digital_good", "subscription"},
+           "same archetypes assessed regardless of order")
+
+    # (c) Every SCALAR statistic is byte-identical under the permutation.
+    _check(_eq(base.cross_task_spread, perm.cross_task_spread),
+           f"cross_task_spread order-invariant: {base.cross_task_spread} vs {perm.cross_task_spread}")
+    _check(_eq(base.between_kind_spread, perm.between_kind_spread),
+           f"between_kind_spread order-invariant: {base.between_kind_spread} vs {perm.between_kind_spread}")
+    for key in _KEYS:
+        _check(_eq(base.checkpoint_mean[key], perm.checkpoint_mean[key]),
+               f"checkpoint_mean[{key}] order-invariant")
+        _check(_eq(base.checkpoint_spread[key], perm.checkpoint_spread[key]),
+               f"checkpoint_spread[{key}] order-invariant")
+    # Per-kind stats matched BY KIND (not by position, which the permutation moved).
+    base_k = {kr.kind: kr for kr in base.per_kind}
+    perm_k = {kr.kind: kr for kr in perm.per_kind}
+    for kind in base_k:
+        _check(_eq(base_k[kind].mean_completion, perm_k[kind].mean_completion),
+               f"per_kind[{kind}].mean_completion order-invariant")
+        _check(_eq(base_k[kind].cross_task_spread, perm_k[kind].cross_task_spread),
+               f"per_kind[{kind}].cross_task_spread order-invariant")
+
+    # (d) NA archetypes key on the profile, never on order.
+    _check(base.na_archetypes == perm.na_archetypes,
+           f"na_archetypes order-invariant, got {base.na_archetypes} vs {perm.na_archetypes}")
+    _check("physical_good" in base.na_archetypes, "physical_good stays NA under permutation")
+
+    # (e) Non-vacuous magnitude: the spreads the invariance protects are real,
+    # not a trivially-zero pass. between_kind over 0.3/0.8/0.1 is sizeable and
+    # cross_task variance exists (understood_pricing split within metered_api).
+    _check(base.between_kind_spread is not None and base.between_kind_spread > 0.25,
+           f"between_kind_spread is real (>0.25), got {base.between_kind_spread}")
+    _check(base.cross_task_spread is not None and base.cross_task_spread > 0.0,
+           f"cross_task_spread is real (>0), got {base.cross_task_spread}")
+
+
+def _eq(a, b) -> bool:
+    """Scalar equality tolerant of None and float noise."""
+    if a is None or b is None:
+        return a is b
+    return abs(a - b) < 1e-12
+
+
 def _stdev(vals):
     import statistics as _s
     return _s.pstdev(vals)
@@ -470,6 +571,7 @@ def main() -> int:
         test_na_profile_none_is_backward_compatible,
         test_na_excludes_unoffered_archetype,
         test_na_distinct_from_no_signal_and_noncanonical,
+        test_aggregation_is_presentation_order_invariant,
     ]
     failed = 0
     for t in tests:

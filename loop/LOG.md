@@ -7053,3 +7053,59 @@ readout; the calibration frontier in-cloud is saturated on the two-sided propert
 negative side the two-crawl cross-validation the with-rails side has — the queued follow-up), or (b) a fresh
 executable-invariant increment on the offering/battery path. The population-leaderboard READOUT page (off the
 committed `calibration_sweep_*.json`) remains the next big READOUT deliverable.
+
+## Cycle 73 — 2026-07-29T03:1xZ — METHOD (direct to main)
+
+**First duty.** No open peer-gated PR (verified `list_pull_requests state=open` → `[]`). Infra health
+check ran first — runner **HEALTHY**: newest `runs/local/verify_20260728T234102Z.json` (23:41Z,
+`git_pull.ok=true`, all 20 verify suites green, canonical 46.1 F / 85.5 B / +39.4; ~3h31m old at fire
+03:12Z, under the 6h floor). Bench UP: full suite ran locally, 21/21 files green after
+`pip install -r requirements.txt` closed the known `eth-account` env gap (invariant-#4, pre-existing,
+`test_free_tier` 10→11 — unrelated to this change). `main` fast-forwarded to `origin/main` c87bbf9
+(Cycle 72); detached-HEAD + stale local `main` (a forced tracking-ref update on pull) realigned to
+origin. No self-healing needed.
+
+**Why this item, why now.** Focus pointer = METHOD (Cycle 72 READOUT). Cycle 72's teed-up candidate (b)
+was "a fresh executable-invariant increment on the offering/battery path" (candidate (a), extending the
+two-sided calibration guard, is BLOCKED on the [LOCAL] moleskine static fixture). The battery aggregation
+had a real measurement-rigor gap: `test_per_kind_rollup` pins that the readout ORDER is *preserved*
+(first-appearance), but NOTHING pinned that the scalar readiness statistics are *invariant* when that
+order changes. A benchmark number that silently moved with the accident of task/run presentation order
+would be a measurement artifact, not a property of the site. This is the aggregation-layer analog of the
+relabel-invariance guards (Cycles 21/31 — a score is a property of the evidence, not the domain's
+identity): a readiness number is a property of what was OBSERVED, not the order it arrived in.
+
+**What shipped.** `tests/test_battery.py` +1 test `test_aggregation_is_presentation_order_invariant`
+(12→13). Builds a 4-task battery (3 claimed archetypes with distinct completion levels 0.3/0.8/0.1 and
+real per-checkpoint variance, + 1 unclaimed physical_good = NA), aggregates it, then aggregates a PERMUTED
+copy (tasks reordered — NA task moved to front — AND each task's run list reversed) with the same profile,
+and asserts: (a) the permutation is REAL and observable — `per_kind` order genuinely differs
+(non-vacuous); (b) the SET of assessed archetypes is identical; (c) every SCALAR is byte-identical within
+1e-12 — `cross_task_spread`, `between_kind_spread`, all 5 `checkpoint_mean`/`checkpoint_spread`, and each
+`per_kind` `mean_completion`/`cross_task_spread` matched BY KIND (not by position, which the permutation
+moved); (d) `na_archetypes` keys on the profile, never on order, and physical_good stays NA under
+permutation; (e) NON-VACUOUS magnitude — `between_kind_spread` 0.294 (>0.25) and `cross_task_spread`
+0.317 (>0) are real, so equal spreads across a real permutation are meaningful, not a trivially-zero pass.
+Catches a future regression that leaks order-dependence into the aggregation (an incremental/running
+statistic, a "first task is primary" shortcut). Module docstring extended with the new invariant bullet.
+
+**Validation.** `test_battery.py` 12→13 (24 new `ok` assertions, all green). Full suite 21/21 files,
+244→245 individual tests. Vendor-neutral by construction: assertions key on archetype kinds/checkpoints,
+no domain/product/brand named (`test_rubric_wording` 4/4 + `test_readout_wording` 4/4 still green — this
+change touches neither the parsed rubric nor the rendered readout).
+
+**Invariants / regression.** Tests-only: `git diff --name-only` = `tests/test_battery.py` ONLY;
+`git diff --name-only -- asrs/ rubric/ fixtures/ batteries/` EMPTY → scoring path byte-for-byte untouched,
+rubric stays **v0.7**; the aggregation code is unchanged (the test pins existing behaviour as a tripwire).
+Canonical PAIR unchanged by construction AND re-measured (replay guard: 46.1 F / 85.5 B / +39.4, 0
+replay-miss on both; verify `20260728T234102Z` live-corroborates). Not payment/signing code.
+Direct-to-main (tests-only, moves no score). No Slack (tests-only, non-sensitive; 03:1xZ is before the
+16:00 UTC digest window — digest last sent Cycle 62 16:21Z).
+
+**Next hypothesis.** Cloud rotation next = COVERAGE. Candidates: a new archetype/signal for
+`offering.classify_offering` (the [LOCAL] exa.ai over-claim precision pass is score-neutral but needs a
+2-domain live check → [LOCAL]); the published-self-description surfaces are all read, so the remaining
+in-cloud COVERAGE frontier is thin (structured `/catalog.json`//pricing.json are [LOCAL], 404 on all
+fixtures). The population-leaderboard READOUT page (off the committed `calibration_sweep_*.json`) remains
+the next big cloud-doable READOUT deliverable. The [LOCAL] moleskine static fixture (negative-calibration
+two-crawl cross-validation) stays queued.

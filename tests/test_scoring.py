@@ -148,6 +148,97 @@ def test_cap_still_binds_when_scorable() -> None:
 
 
 # ---------------------------------------------------------------------------
+# 4b. MULTI-CAP ORDER-INVARIANCE — a capped grade is a property of WHICH critical
+#     findings were observed, not the ORDER the probes emitted them. `score` builds
+#     `caps_applied` by iterating the checks in ARRIVAL order (`for c in checks:
+#     ... caps_applied.append(slug)`), and the capped overall by repeatedly taking
+#     `min(overall, cap_value)`. The min is order-independent, but the caps_applied
+#     LIST is arrival-ordered — so when TWO caps bind, permuting the check input
+#     permutes the caps_applied list. This is the scoring-path analog of the
+#     battery presentation-order invariance (canonical guard: per_kind readout
+#     order may move, the numbers may not) and the leaderboard ranking permutation-
+#     invariance: the METRIC-BEARING content — the SET of binding caps, the capped
+#     overall, the grade, the pillar scores — must be invariant to check-input
+#     order; the caps_applied LIST ORDER is an honest readout detail and is NOT
+#     claimed invariant.
+#
+#     Why this rung is missing: the canonical-replay input-order guard
+#     (test_canonical_replay guard 19) compares a fingerprint that deliberately
+#     OMITS caps_applied, and NO committed canonical fixture binds any cap
+#     (test_canonical_delta_is_weight_robust asserts `not com.caps_applied and not
+#     org.caps_applied`) — so the multi-cap ordering behavior that guard 19's own
+#     docstring names ("the caps_applied list, which scoring.score builds in
+#     check-ARRIVAL order") is unexercised anywhere. This pins it with a synthetic
+#     two-cap report — the only way to reach the ≥2-binding-cap case. Worded by
+#     measurement, never by vendor.
+# ---------------------------------------------------------------------------
+def _permutations(seq):
+    """A few DETERMINISTIC reorderings of ``seq`` (no RNG — reproducible): the
+    identity, the reverse, and two fixed rotations. Enough distinct arrival
+    orders to exercise caps_applied's arrival-order accumulation."""
+    n = len(seq)
+    return [
+        list(seq),
+        list(reversed(seq)),
+        seq[n // 2:] + seq[: n // 2],   # rotate by half
+        seq[1:] + seq[:1],              # rotate by one
+    ]
+
+
+def test_multi_cap_order_invariance() -> None:
+    print("test_multi_cap_order_invariance")
+    # A report whose every pillar is PASS (pre-cap overall 100), carrying TWO
+    # binding cap findings on otherwise-passing checks: human-gate-required (cap 79)
+    # and no-https (cap 59). Both bind against the pre-cap 100; the lower (59) is the
+    # floor, so overall == 59.0 / grade F regardless of order. (The cap logic keys on
+    # the `finding` slug alone, so attaching a cap finding to a PASS check keeps the
+    # pre-cap overall high while still triggering the cap — same idiom as
+    # test_cap_still_binds_when_scorable.)
+    checks = [
+        _cr("robots_ai_crawlers", "access", Status.PASS, 10.0, 10.0, "robots-allows-ai-crawlers"),
+        _cr("agent_ua_reachability", "access", Status.PASS, 10.0, 10.0, "agent-ua-ok"),
+        _cr("llms_txt", "legibility", Status.PASS, 6.0, 6.0, "llms-present"),
+        _cr("self_serve_payg", "transactability", Status.PASS, 8.0, 8.0, "human-gate-required"),
+        _cr("https_hsts", "trust", Status.PASS, 5.0, 5.0, "no-https"),
+    ]
+    rubric = _rubric()
+    reps = [scoring.score(list(p), rubric, "multicap.example") for p in _permutations(checks)]
+
+    # (a) The metric-bearing surface is byte-identical across every arrival order:
+    # capped overall, grade, the SET of binding caps, and every pillar score.
+    ref = reps[0]
+    _check(ref.overall_score == 59.0, f"overall capped to the lower cap 59.0, got {ref.overall_score}")
+    _check(ref.grade == "F", f"grade F under the binding caps, got {ref.grade!r}")
+    ref_capset = frozenset(ref.caps_applied)
+    _check(
+        ref_capset == {"human-gate-required", "no-https"},
+        f"both caps bind (set), got {sorted(ref_capset)}",
+    )
+    for i, rep in enumerate(reps[1:], start=1):
+        _check(rep.overall_score == ref.overall_score,
+               f"perm {i}: capped overall invariant ({rep.overall_score} == {ref.overall_score})")
+        _check(rep.grade == ref.grade,
+               f"perm {i}: grade invariant ({rep.grade!r} == {ref.grade!r})")
+        _check(frozenset(rep.caps_applied) == ref_capset,
+               f"perm {i}: SET of binding caps invariant ({sorted(frozenset(rep.caps_applied))})")
+        _check(rep.pillar_scores == ref.pillar_scores,
+               f"perm {i}: pillar scores invariant")
+
+    # (b) NON-VACUOUS — the permutations genuinely permute caps_applied, so the
+    # set-invariance above is doing real work (not vacuously comparing identical
+    # lists). At least two arrival orders must produce DIFFERENT caps_applied LIST
+    # orders; the reverse of a two-cap list is always a distinct order. This is also
+    # the honest-scope statement: the LIST order is a readout detail that DOES move
+    # with arrival order — only its SET (and the resulting score) is invariant.
+    list_orders = {tuple(rep.caps_applied) for rep in reps}
+    _check(
+        len(list_orders) >= 2,
+        f"the caps_applied LIST order genuinely varies with arrival order "
+        f"(observed orders: {sorted(list_orders)}) — set-invariance is non-vacuous",
+    )
+
+
+# ---------------------------------------------------------------------------
 # 5. to_json survives a null overall (machine consumers read scored/None).
 # ---------------------------------------------------------------------------
 def test_not_scorable_json_roundtrips() -> None:
@@ -281,6 +372,7 @@ def main() -> int:
         test_single_pillar_unchanged,
         test_mixed_pillars_scored_and_weighted,
         test_cap_still_binds_when_scorable,
+        test_multi_cap_order_invariance,
         test_not_scorable_json_roundtrips,
         test_behavioral_absence_is_silent_in_static,
         test_static_gap_still_warns,

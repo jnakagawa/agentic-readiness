@@ -1,8 +1,38 @@
 # Loop state
 
-- Cycle counter: 73
+- Cycle counter: 74
 - Started: 2026-07-23 (UTC)
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 74 COVERAGE — the operator directive's CORE DELIVERABLE, offering-relative task SELECTION
+  (`battery.instantiate_battery`), now pinned END-TO-END on the REAL committed fixtures. New
+  `tests/test_battery_instantiate_canonical.py` +6 replays each committed fixture through the FULL real
+  pipeline (`from_fixture → discover_offering → instantiate_battery`, no network) and pins the generated
+  TASK SET per storefront TYPE: the image-gen API pair → `[metered_api,subscription,digital_good]`, NO
+  physical/booking/data task (the operator's "physical_good = NA, not a completion number" at the TASK
+  layer) + digital_good intent PARAMETERIZED to "generated image" from the site's OWN discovered media
+  evidence; retail books.toscrape → ONLY physical_good (the inverse); machine-surface api.replicate.com →
+  ONLY metered_api (compute-SKU precision boundary carried into task selection); example.com → EMPTY
+  battery. Plus cross-site comparability: metered_api intent byte-identical across driftflight.com vs
+  api.replicate.com. Extends the offering-relative battery's verified coverage from synthetic profiles +
+  [LOCAL] run logs to REAL storefront types in-cloud — the same move Cycle 27 made for discovery
+  classification. NON-VACUOUS: descriptor asserted = evidence-derived "generated image" NOT the generic
+  "digital output" fallback; retail/replicate/empty prove the pipeline is not a constant function; TWO real
+  test-draft bugs caught+fixed (task-set vs claimed-set compared as SETS not ordered lists — discovery sorts
+  by strength, instantiation by template-bank order; vendor-neutrality keys on the DISTINCTIVE second-level
+  label, not the generic "api" subdomain prefix that appears in "metered API"). Tests-only: git status = one
+  new untracked file; git diff -- asrs/ rubric/ fixtures/ batteries/ EMPTY → scoring AND offering/battery
+  code byte-for-byte untouched, rubric v0.7 (instantiate_battery is task selection, off the scoring path).
+  Canonical PAIR unchanged AND re-measured (replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss;
+  verify_20260728T234102Z 23:41Z ~4.5h old at 04:1xZ fire, under the 6h floor). Vendor-neutral (assertions
+  key on archetype kinds; domains only as fixture PATHS; intents asserted vendor-neutral; wording guards
+  4/4 + 4/4 green). New file 6/6; full suite 21→22 files. Direct-to-main. No Slack (tests-only, moves no
+  score, before the 16:00 UTC digest window). First duty: no open peer-gated PR ([]); runner HEALTHY (but
+  WATCH: 00:41–03:41Z Jul-29 :41 fires produced no newer artifact than 23:41Z — under floor, not yet
+  flagged). Next TRUTH — cloud-doable thread is thin (most calibration/real-domain work needs a committed
+  fixture: [LOCAL] moleskine static fixture, [LOCAL] exa.ai over-claim); a cloud-doable TRUTH increment is
+  extending relabel-invariance to the api.replicate.com machine-surface fixture (its metered_api quote
+  embeds the host in `POST https://<host>/…` — the one committed offering fixture not yet in the relabel
+  family).)
   (Cycle 73 METHOD — presentation-order INVARIANCE tripwire for the battery aggregation. `test_battery.py`
   +1 (12→13) `test_aggregation_is_presentation_order_invariant`: reorder the battery's tasks AND reverse
   each task's run list, re-aggregate with the same profile, and assert every SCALAR (cross_task_spread,

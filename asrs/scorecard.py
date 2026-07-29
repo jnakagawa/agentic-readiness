@@ -383,6 +383,24 @@ is favored by name. Recognition keys on <b>what</b> a storefront declares, never
 on <b>who</b> declares it: that property is pinned by an <b>executable regression
 test</b> that relabels the storefront&rsquo;s identity end-to-end and confirms the
 rail is still recognized, unchanged, with the vendor&rsquo;s name gone.</p>
+<p><b>Provisioning without a human</b> sits between paying and finishing, and it
+is the leg an agent silently fails before it can do either: a metered API is only
+callable by an agent that can <b>present the right credential</b>. Agent-native
+offers hand that credential over open machine conventions &mdash; an HTTP
+<code>Authorization: Bearer</code> header, an <code>X-API-Key</code> header or a
+named API key, an OpenAPI <code>securityScheme</code> declaration, or an
+<b>OAuth2</b> flow &mdash; standards for how a caller authenticates, not any one
+vendor&rsquo;s login. An offer that <b>documents its auth scheme</b> is more
+agent-completable than one that leaves the agent holding an endpoint it never
+learns how to enter &mdash; so ASRS reads the credential scheme as part of
+provisioning the offer, keyed on the vendor-neutral <b>access convention</b> (a
+bearer token, an API key, an OpenAPI security scheme, OAuth2), the same category
+of open convention as REST, GraphQL or OpenAPI. Recognition keys on the
+<b>scheme, not the vendor</b>: that property is pinned by an <b>executable
+regression test</b> that relabels the API&rsquo;s identity end-to-end and confirms
+the auth scheme is still recognized, unchanged, with the vendor&rsquo;s name gone.
+This read is <b>diagnostic</b> &mdash; it names how the offer is entered, <b>off
+the scoring path</b> &mdash; not a scored pillar.</p>
 <p><b>Finishing the job</b> has the same shape on the offer side, and it is
 where a metered API can quietly strand an agent. Many agent-native offers are
 <b>long-running jobs</b> &mdash; image or video generation, a training run, a

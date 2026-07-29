@@ -1403,6 +1403,33 @@
   digest window; digest sent Cycle 62 16:21Z). The operator-directive P0 acceptance is now DISCHARGED on BOTH named
   halves; the next in-cloud TRUTH increment is a negative calibration guard in test_calibration.py against this
   moleskine report. Cloud rotation unaffected (still METHOD next).
+  Local fire 2026-07-28T23:57Z TRUTH (the calibration POPULATION static sweep — complementary to the cloud
+  rotation; cloud stays COVERAGE next, local fires don't advance the pointer/counter): executed the P1
+  "Calibration population" north-star item — a benchmark needs a population, not one pair. New
+  `experiments/calibration_sweep.py` runs the SHIPPED static path (`_run_probes → scoring.score`, no
+  `--behavioral`) across a curated 14-domain population spanning the agentic-commerce spectrum
+  (api-storefront anchors / api-services / retail:emerging-rails / retail:no-rails / non-storefront
+  controls) and commits the first dated population dataset. 13/14 scored on rubric v0.7; rei.com NOT
+  SCORABLE (env-blocked — recorded as reachability, NOT a site FAIL, invariant #4). INTEGRITY: the anchors
+  reproduce the pinned baseline EXACTLY (driftflight.com 85.5 B / drift-flight.org 46.1 F = a LIVE
+  corroboration of the replay guard, off the real network), moleskine.com 49.8 F matches its 23:10Z static
+  read, example.com 22.5 F matches baseline. Leaderboard (overall desc): rails anchor 85.5 B tops it; top
+  REAL agent-native domain exa.ai 78.1 C; the emerging-rails retail cluster deathwishcoffee 65.8 /
+  warbyparker 64.2 / allbirds 61.9 sits D-band; no-rails moleskine 49.8 F and no-rails anchor drift-flight.org
+  46.1 F cluster near the floor, above the non-storefront controls wikipedia 41.1 / example 22.5. Honest
+  reality-check readings the population surfaces: big-AI marketing homepages score modestly (openai.com 64.5 D,
+  anthropic.com 58.5 F, perplexity.ai 41.3 F ≈ the wikipedia control) — the score tracks agent-native
+  legibility/transactability, not brand. Vendor-neutral: every domain scored through the SAME probes, the
+  `segment` label is read-only context, never a scoring input. $0/invariant #1: static-only → NO free-tier
+  probe fired, no zero CLI, no signing path. Score-neutral: `git diff -- asrs/ rubric/` EMPTY, only the new
+  experiment file added → rubric v0.7, canonical PAIR unchanged (verify_20260728T234102Z 46.1 F / 85.5 B /
+  +39.4; replay guard 24/24 green in the 21/21-file suite). Direct-to-main (read-only experiment tooling +
+  committed evidence, no scoring semantics), no Slack (score-neutral/non-sensitive; digest sent Cycle 62
+  16:21Z, not a digest window). Evidence force-added: runs/local/calibration_sweep_20260728T234815Z.json.
+  First duty: no open peer-gated PR (verified []); infra health check ran first — runner HEALTHY
+  (verify_20260728T234102Z, 23:41Z, ~6 min old at fire, 46.1 F / 85.5 B / +39.4), bench 21/21, main ==
+  origin/main. Follow-ups queued: a cloud READOUT leaderboard page over this dataset + a weekly-cadence
+  standing item; a classifier-precision observation (exa.ai over-claimed all 6 archetypes from rich docs).
 - **RUNNER STALL — ROOT-CAUSED + FIXED (local fire 2026-07-28T17:27Z). CLOSED.** The cloud's
   Cycle-51→62 diagnosis ("launchd not firing / machine asleep") was WRONG — only a local fire could
   see the truth. The runner's heartbeat log (`~/Library/Logs/asrs-local-verify.log`) shows the launchd

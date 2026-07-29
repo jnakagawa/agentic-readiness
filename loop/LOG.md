@@ -6800,3 +6800,70 @@ calibration frontier is saturated; COVERAGE (rotation next) has open signal/arch
 ## Local verification — 20260728T234102Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260728T234102Z.json
+
+## Local cycle — 20260728T235720Z
+
+**Track: TRUTH.** The calibration POPULATION static sweep — the first multi-domain population
+artifact for the benchmark. Executed the P1 "Calibration population" north-star item ("a benchmark
+needs a population, not one pair"); complementary to the cloud rotation (cloud stays COVERAGE next —
+local fires don't advance the counter/pointer).
+
+**First duty.** No open peer-gated PR (verified `gh pr list --state open` → `[]`). Infra health check
+ran first — runner **HEALTHY**: newest `runs/local/verify_20260728T234102Z.json` (23:41Z, ~6 min old at
+fire, `git_pull.ok=true attempts=1`), all 20 verify suites green, canonical 46.1 F / 85.5 B / +39.4.
+Bench UP (21/21 test files locally). `main == origin/main` (cb655ed at fetch); no orphan-`2e66201` trap.
+No self-healing needed.
+
+**Why this item, why now.** The oldest [LOCAL] P0s are exhausted or obsoleted: the operator-directive
+acceptance is DISCHARGED on both halves (18:55Z with-rails, 23:10Z retail-inverse); "Second
+cross_task_spread datapoint" is superseded (the offering-relative `--battery auto` replaced the fixed
+5-intent YAML — forcing the old YAML would REGRESS to the pre-directive battery-mismatch the operator
+fixed); "Cross-model N-curve" stays blocked on codex reachability; the fresh-5-trial-panel P0 is low
+value (Cycle 11 already pinned the curve offline). The negative-calibration guard (top P0) is
+CLOUD-DOABLE and STATE reserves it as the cloud's next TRUTH increment — a local fire should not burn
+its network on cloud work. That leaves the highest-leverage feasible $0 item: the P1 population sweep,
+which genuinely NEEDS the local network (the cloud env can reach neither the canonical pair nor most
+real hosts) and directly serves the north star.
+
+**What shipped.** New `experiments/calibration_sweep.py` — a read-only harness that runs the SHIPPED
+static pipeline (`asrs.cli._run_probes → asrs.scoring.score`, the exact path `asrs score <domain>` uses
+with no `--behavioral`) across a curated 14-domain population spanning the agentic-commerce spectrum,
+and commits a dated dataset. Segments (context only, never a scoring input): api-storefront anchors,
+api-services, retail:emerging-rails, retail:no-rails, non-storefront controls. Best-effort offering
+discovery annotates each member's claimed archetypes. Attribution honesty (invariant #4): an
+unreachable/env-blocked domain records `scored=False` (NOT SCORABLE) and is kept OUT of the leaderboard.
+
+**Result (rubric v0.7, 13/14 scored, 1 NOT SCORABLE, 0 error).** INTEGRITY — the anchors reproduce the
+pinned baseline EXACTLY: driftflight.com **85.5 B**, drift-flight.org **46.1 F** (delta +39.4) — a LIVE
+corroboration of the in-cloud replay guard, run against the real network; moleskine.com **49.8 F**
+matches its 23:10Z static read; example.com **22.5 F** matches baseline. Leaderboard (overall desc):
+driftflight.com 85.5 B (rails anchor) › exa.ai 78.1 C (top REAL agent-native) › deathwishcoffee.com
+65.8 D › openai.com 64.5 D › warbyparker.com 64.2 D › allbirds.com 61.9 D › anthropic.com 58.5 F ›
+deepai.org 55.2 F › moleskine.com 49.8 F › drift-flight.org 46.1 F › perplexity.ai 41.3 F ›
+wikipedia.org 41.1 F › example.com 22.5 F. rei.com → NOT SCORABLE (agent-fetch env-blocked). Reading
+the spread: the with-rails anchor beats every real domain; the emerging-rails retail cluster
+(deathwishcoffee/warbyparker/allbirds) lands D-band above the no-rails retail floor; the no-rails
+anchor drift-flight.org sits mid-cluster among real no-rails sites (a sanity check the anchor is not an
+outlier); big-AI marketing homepages score modestly (perplexity.ai 41.3 ≈ the wikipedia control) — the
+score tracks agent-native legibility/transactability, not brand reputation. This is the "does the score
+predict what an agent experiences" reality-check the population exists to provide.
+
+**Invariants / regression.** $0/invariant #1: static-only, no `--behavioral` → NO free-tier transaction
+fired, no zero CLI, no signing path. Vendor-neutral: every domain scored through the SAME probes with no
+special-casing. Score-neutral: `git diff -- asrs/ rubric/` EMPTY; `git status` = the new experiment file
+ONLY → scoring path byte-for-byte untouched, rubric stays **v0.7**, canonical PAIR unchanged (verify
+`20260728T234102Z` 46.1 / 85.5 / +39.4; replay guard 24/24 inside the 21/21-file suite, all green).
+Direct-to-main (read-only experiment tooling + committed evidence, not scoring semantics). No Slack
+(score-neutral, non-sensitive; daily digest already sent Cycle 62 16:21Z, not a digest window at 23:5xZ).
+
+**Evidence.** `runs/local/calibration_sweep_20260728T234815Z.json` (force-added; runs/ is gitignored) +
+`experiments/calibration_sweep.py`.
+
+**Next hypothesis.** The population dataset is the raw material for two follow-ups queued in BACKLOG:
+(1) a cloud READOUT leaderboard page rendering this dataset (the item's "+ leaderboard page" half —
+now cloud-doable off the committed JSON), plus promoting the sweep to a standing weekly cadence; (2) a
+classifier-precision observation — exa.ai (a search API) over-claimed all six archetypes including
+physical_good/service_booking from its rich docs, a diagnostic-only false-positive worth a precision
+pass. The sweep also gives the two-sided calibration story a POPULATION context: the negative wall
+(moleskine) and positive payability (driftflight.com) now sit inside a 13-domain spread, not in
+isolation.

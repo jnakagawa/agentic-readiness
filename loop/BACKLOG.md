@@ -343,19 +343,27 @@ design in-cloud, execute locally.
      (force-added; runs/ is gitignored):
      runs/local/battery_trimmed_driftflightorg_20260723T101121Z.{json,card.txt}.
      See LOG. Follow-up candidate below. -->
-- **[LOCAL] Second cross_task_spread datapoint** (COVERAGE, follow-up to the first
-  live battery run): one datapoint is not a population. Re-run the battery on (a)
-  the canonical `.com` (driftflight.com — does the with-rails side hold the same
-  cross-intent consistency, and at what completion level? one pair of spreads makes
-  the delta a STRUCTURAL claim, not a per-task artifact) and/or (b) the full
-  5-intent `batteries/default_v1.yaml` on drift-flight.org for the two dropped
-  archetypes (text_translation, data_enrichment). This ALSO exercises the Cycle-10
-  `per_kind` rollup AND the Cycle-18 `between_kind_spread` (storefront-type
-  specialization signal) on live multi-kind data for the first time — a multi-kind
-  live report is the ONLY way either construct earns a real number. Budget: ONE
-  domain per fire, trimmed battery preferred. Reuse the first-run pattern (`--battery <yaml>
-  --models claude,codex --trials 2`); force-add the report to `runs/local/`
-  (`runs/` is gitignored).
+<!-- SUPERSEDED 2026-07-28T23:57Z (local fire) — "[LOCAL] Second cross_task_spread datapoint" is
+     obsoleted by the offering-relative `--battery auto` work. Its goal (a SECOND live spread datapoint,
+     exercising per_kind + between_kind_spread on multi-kind data) is DISCHARGED: the 18:55Z with-rails
+     driftflight.com run gave between_kind_spread 0.00 ("generalist", 3 claimed archetypes) and the 23:10Z
+     moleskine run gave 0.30 ("somewhat type-dependent", 2 claimed archetypes) — a live PAIR of spreads
+     across two storefront TYPES. Its remaining sub-goal (b) — force the fixed 5-intent
+     `batteries/default_v1.yaml` on drift-flight.org for text_translation/data_enrichment — would REGRESS
+     to the pre-directive battery-mismatch the operator explicitly fixed (probing a 3-archetype API with
+     tasks it does not claim pollutes the means); NOT worth running. Fixed-YAML multi-kind coverage of the
+     two never-claimed archetypes is only meaningful on a site that genuinely CLAIMS them — fold into a
+     future population member that does, not a forced mismatch. -->
+- **[LOCAL] Grow the calibration population + re-run the sweep on a cadence** (TRUTH, follow-up to the
+  first population dataset shipped 2026-07-28T23:57Z, `runs/local/calibration_sweep_20260728T234815Z.json`).
+  The first sweep landed 13 scored real domains (rubric v0.7) via `experiments/calibration_sweep.py`. Two
+  increments: (a) broaden `POPULATION` toward the item's 15–20 target and better spectrum coverage — add
+  more genuine agent-native storefronts (ACP/UCP/MPP merchants, x402-live sites) and more no-rails
+  retailers that are agent-fetch reachable (rei.com env-blocked this run; several retailers block agent
+  UAs — record which, it is itself a reachability signal); (b) re-run on a weekly cadence and diff against
+  the prior dated dataset so population DRIFT is visible (a domain adding/removing rails moves its score).
+  Static $0, reuse the shipped harness (`.venv/bin/python -m experiments.calibration_sweep`); force-add the
+  dated JSON to `runs/local/`. Keep it vendor-neutral (uniform probes; `segment` is read-only context).
 <!-- DONE 2026-07-23T11:42Z (local fire, TRUTH): "Codex reachability investigation —
      CHARACTERIZE" discharged via experiments/codex_reachability.py (committed;
      5 codex invocations, canonical pair ×2 + example.com control ×1, all HTTP 200).
@@ -456,6 +464,34 @@ design in-cloud, execute locally.
   domains (exa.ai, deepai.org, perplexity.ai, a Shopify store, a mainstream
   retailer, agentic-native services) committed as a dated dataset +
   leaderboard page. A benchmark needs a population, not one pair.
+  FIRST DATASET SHIPPED 2026-07-28T23:57Z (local fire, TRUTH, direct-to-main, score-neutral).
+  `experiments/calibration_sweep.py` runs the shipped static path (`_run_probes → scoring.score`,
+  no `--behavioral`, so $0 / no free-tier probe / invariant #1 by construction) across a curated
+  14-domain population spanning the spectrum (api-storefront anchors / api-services /
+  retail:emerging-rails / retail:no-rails / non-storefront controls). 13/14 scored on rubric v0.7,
+  rei.com NOT SCORABLE (env-blocked — reachability, not a site FAIL, invariant #4). Anchors reproduce
+  the pinned baseline EXACTLY (driftflight.com 85.5 B / drift-flight.org 46.1 F = live replay-guard
+  corroboration); leaderboard tops at the rails anchor 85.5, top real agent-native exa.ai 78.1 C,
+  emerging-rails retail D-band (deathwishcoffee 65.8 / warbyparker 64.2 / allbirds 61.9), no-rails floor
+  moleskine 49.8 / drift-flight.org 46.1 above the non-storefront controls (wikipedia 41.1 / example
+  22.5). Vendor-neutral (uniform probes; `segment` is read-only context). Evidence:
+  `runs/local/calibration_sweep_20260728T234815Z.json`. See LOG (Local cycle — 20260728T235720Z). The
+  GROW-the-population + re-run-on-a-cadence half is the new [LOCAL] P0 above; the "+ leaderboard page"
+  half is the cloud READOUT follow-up below.
+- **Calibration leaderboard READOUT page** (READOUT, CLOUD-DOABLE off the committed dataset — the
+  "+ leaderboard page" half of the population item above). Render the committed
+  `runs/local/calibration_sweep_*.json` (newest) as an HTML/terminal leaderboard: rank scored domains by
+  overall, show pillars + segment + claimed archetypes + grade, and name NOT-SCORABLE members separately
+  (attribution honesty — never mixed into the ranking). Pull weights/bands live from `load_rubric` (same
+  no-drift discipline as the methodology/rubric pages). Vendor-neutral: domains appear as DATA (the page is
+  ABOUT them), not as scored-check prose — no denylist change needed. Display-only, no scoring semantics.
+- **[LOCAL] Offering-classifier precision — the exa.ai over-claim** (COVERAGE/METHOD, observation from
+  the 23:57Z sweep). `discover_offering` classified exa.ai (a search/retrieval API) as claiming ALL SIX
+  archetypes incl. physical_good + service_booking, from its rich docs. Diagnostic-only (offering feeds no
+  score — the sweep row is unaffected), but a false-positive worth a precision pass: the physical_good /
+  service_booking signals likely over-trigger on marketing prose. Design a tighter guard (as the
+  metaphorical-"ship" physical_good guard already does for the canonical pair), verify on 2+ real domains,
+  keep it off the scoring path. Not urgent (score-neutral); catch it before the population grows.
 - **Live handshakes for other rails** (COVERAGE): ACP/UCP checkout-session
   and MPP-only elicitation parity with the x402 probe. VALIDATION HALF addressed
   by PR #3 (Cycle 14, pending merge): a well-known ACP/UCP manifest must now PARSE

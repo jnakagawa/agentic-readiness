@@ -1,14 +1,14 @@
 # Loop state
 
-- Cycle counter: 88
+- Cycle counter: 89
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-29T18:1xZ, Cycle 88; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-29T19:1xZ, Cycle 89; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~18h31m old at the 18:1xZ fire; no newer :41 artifact through 17:41Z Jul-29 (19 consecutive
+  Jul-28 = ~19h31m old at the 19:1xZ fire; no newer :41 artifact through 18:41Z Jul-29 (20 consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine → FLAGGED in the Cycle-86 16:00 UTC digest
   (the 16:12Z fire was the FIRST cycle after 16:00Z; the ~16.5h runner gap was flagged loudly there;
-  the Cycle-87 17:12Z and this Cycle-88 18:1xZ fires are NOT the first-after-16:00 cycle, so no re-digest
-  — keep flagging in each daily digest until it clears); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
+  the Cycle-87 17:12Z, Cycle-88 18:1xZ, and this Cycle-89 19:1xZ fires are NOT the first-after-16:00 cycle,
+  so no re-digest — keep flagging in each daily digest until it clears); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
   is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
   local fire root-caused (a >60s slow-network wake still misses the 5×15s retry) OR the machine is
@@ -27,7 +27,32 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 89 METHOD — pinned NA-CONTENT INVARIANCE, the operator directive's core claim made executable at
+  its strongest. New `test_na_content_invariance` (`tests/test_battery.py` 13→14): whatever an agent did on
+  an intent the site does NOT offer — failed flat (`runs_fail` mean 0.0) or garden-pathed to full completion
+  (`runs_pass` mean 1.0, SAME run count) — every ASSESSED statistic is byte-identical (cross_task_spread,
+  between_kind_spread, all 5 checkpoint_mean/spread, per-kind mean_completion/cross_task_spread BY KIND,
+  assessed_archetypes, tasks_with_signal, na_archetypes, and the NA task's own audit record). This is
+  invariant #4 (attribution honesty) applied to TASKS and made a DATA-PERTURBATION tripwire, complementing
+  test 13 (presentation-order invariance permutes the ORDER of the SAME observations; this permutes the
+  CONTENT of the NA task's observations). The three existing NA tests pin the taxonomy + a single
+  hand-computed metric; none proved the exclusion is TOTAL. Holds by construction today (`signal`/`applicable`
+  drop NA tasks) → catches a future leak of NA content into a mean/spread. NON-VACUOUS: sub-check (a) with the
+  SAME archetype CLAIMED (assessed), the two variants produce a DIFFERENT between_kind_spread + checkpoint_mean
+  (perturbation is real, mirrors test 13's "the permutation was REAL" step); sub-check (d) protected spreads
+  real (between_kind 0.25, cross_task 0.25). Tests-only: git diff --name-only = tests/test_battery.py ONLY;
+  git diff -- asrs/ rubric/ fixtures/ batteries/ EMPTY → scoring path byte-for-byte untouched → rubric v0.7.
+  Vendor-neutral (generic archetype names only). Canonical PAIR unchanged AND re-measured (replay guard 24/24,
+  46.1 F / 85.5 B / +39.4, 0 replay-miss). test_battery 13→14; full suite 22 files green (test_free_tier 11/11
+  with eth-account). Cloud bridge blocks direct main push → branch loop/na-content-invariance + PR #28 +
+  self-merge (squash f75e01c; NOT peer-gated — tests-only, off scoring path, pins existing behaviour). First
+  duty: no open peer-gated PR ([]); realigned main to origin/main f75e01c after merge. No Slack (tests-only,
+  moves no score; this 19:1xZ fire is after the Cycle-86 16:12Z daily digest, so not the first-after-16:00
+  cycle). RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z ~19.5h old). Next COVERAGE — candidate: a new
+  archetype/signal for classify_offering, or a per-segment leaderboard summary once the [LOCAL] calibration
+  population grows; in-cloud COVERAGE frontier is thin (structured catalog/pricing JSON are [LOCAL], 404 on
+  committed fixtures).)
   (Cycle 88 READOUT — surfaced the API-AUTH credential-scheme recognition in the PUBLIC methodology prose,
   the READOUT complement to the Cycle-86 COVERAGE + Cycle-87 TRUTH api-auth arc (COVERAGE → TRUTH → READOUT
   closed, mirroring the Cycle-78/79/80 payment-rail and Cycle-82/83/84 async-job arcs). Added ONE

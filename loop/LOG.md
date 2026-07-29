@@ -8083,3 +8083,64 @@ increment on the offering/battery path, or extend the calibration/relabel guard
 family as new fixtures land. The three recently-landed metered_api signals
 (payment-rail, async-job, api-auth) now each have the full COVERAGE→TRUTH→READOUT
 arc closed.
+
+## Cycle 89 — 2026-07-29T19:1xZ — METHOD
+
+**What.** New executable rigor tripwire `test_na_content_invariance`
+(`tests/test_battery.py` 13→14): the operator directive's core claim made
+executable at its strongest. The directive fixed the battery-mismatch where an
+agent's PARTIAL COMPLETION on a not-offered intent "pollutes the completion
+means and both spread signals — that measures the battery's mismatch, not the
+site's readiness." This test pins that the NA exclusion is TOTAL, not partial:
+whatever the agent did on an intent the site does NOT offer — failed flat
+(`runs_fail`, mean 0.0) or garden-pathed to full completion (`runs_pass`, mean
+1.0, same run count) — every ASSESSED statistic is byte-identical
+(cross_task_spread, between_kind_spread, all 5 checkpoint_mean/spread, per-kind
+mean_completion/cross_task_spread by kind, assessed_archetypes,
+tasks_with_signal, na_archetypes, and the NA task's own audit record).
+
+**Why.** This is invariant #4 (attribution honesty) applied to TASKS and made a
+DATA-PERTURBATION tripwire, complementing the existing NA family: test 13
+(presentation-order invariance) permutes the ORDER of the SAME observations;
+this permutes the CONTENT of the NA task's observations and asserts nothing
+assessed moves. The three existing NA tests
+(`test_na_profile_none_is_backward_compatible`,
+`test_na_excludes_unoffered_archetype`,
+`test_na_distinct_from_no_signal_and_noncanonical`) pin the taxonomy and a
+single hand-computed metric; none proves that WHATEVER the agent observed on a
+not-offered intent is excluded totally. The invariant holds by construction
+today (`signal`/`applicable` drop NA tasks), so this catches a future regression
+that leaks NA content into a mean/spread (an "include attempted-but-NA
+completions for context" shortcut, say).
+
+**Non-vacuity.** Sub-check (a): with the SAME archetype CLAIMED (assessed rather
+than NA), the two content variants produce a different between_kind_spread AND a
+different checkpoint_mean — proving the perturbation genuinely moves metrics when
+it is not excluded (mirrors test 13's "the permutation was REAL" step). Sub-check
+(d): the protected spreads are real (between_kind 0.25, cross_task 0.25), not a
+trivially-zero pass.
+
+**Scope / safety.** Tests-only: `git diff --name-only` = `tests/test_battery.py`
+ONLY; `git diff -- asrs/ rubric/ fixtures/ batteries/` EMPTY → scoring path
+byte-for-byte untouched → rubric **v0.7** (test pins existing behaviour).
+Vendor-neutral (generic archetype names only; no domain/vendor named). NOT
+peer-gated (tests-only, off scoring path).
+
+**Evidence.** `tests/test_battery.py` 14/14 PASS. Full suite 22 files green
+(`test_free_tier` 11/11 with eth-account). Cloud bridge blocks direct main push →
+branch `loop/na-content-invariance` + PR #28 + self-merge (squash f75e01c).
+
+**Canonical pair (regression signal).** Replay guard `test_canonical_replay.py`
+24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss — UNCHANGED (scoring path
+untouched). Live runner STILL GAPPED (newest `verify_20260728T234102Z.json`
+23:41Z Jul-28, ~19.5h old at this fire); this 19:1xZ fire is not the
+first-after-16:00 cycle so no re-digest — the in-cloud replay guard remains the
+independent live regression signal.
+
+**First duty.** No open peer-gated PR ([]); realigned main to origin/main
+f75e01c after merge.
+
+**Next — COVERAGE.** Candidate: a new archetype/signal for classify_offering, or
+a per-segment leaderboard summary once the [LOCAL] calibration population grows;
+in-cloud COVERAGE frontier is thin (structured catalog/pricing JSON are [LOCAL],
+404 on committed fixtures).

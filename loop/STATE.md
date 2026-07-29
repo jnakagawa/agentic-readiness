@@ -1,14 +1,14 @@
 # Loop state
 
-- Cycle counter: 87
+- Cycle counter: 88
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-29T17:12Z, Cycle 87; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-29T18:1xZ, Cycle 88; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~17h31m old at the 17:12Z fire; no newer :41 artifact through 16:41Z Jul-29 (18 consecutive
+  Jul-28 = ~18h31m old at the 18:1xZ fire; no newer :41 artifact through 17:41Z Jul-29 (19 consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine → FLAGGED in the Cycle-86 16:00 UTC digest
   (the 16:12Z fire was the FIRST cycle after 16:00Z; the ~16.5h runner gap was flagged loudly there;
-  this 17:12Z fire is NOT the first-after-16:00 cycle, so no re-digest — keep flagging in each daily
-  digest until it clears); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
+  the Cycle-87 17:12Z and this Cycle-88 18:1xZ fires are NOT the first-after-16:00 cycle, so no re-digest
+  — keep flagging in each daily digest until it clears); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
   is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
   local fire root-caused (a >60s slow-network wake still misses the 5×15s retry) OR the machine is
@@ -27,7 +27,35 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 88 READOUT — surfaced the API-AUTH credential-scheme recognition in the PUBLIC methodology prose,
+  the READOUT complement to the Cycle-86 COVERAGE + Cycle-87 TRUTH api-auth arc (COVERAGE → TRUTH → READOUT
+  closed, mirroring the Cycle-78/79/80 payment-rail and Cycle-82/83/84 async-job arcs). Added ONE
+  capability-worded, vendor-neutral paragraph to the methodology "What the score answers" card
+  (`_write_methodology_page`, `asrs/scorecard.py`), placed BETWEEN the payment-rail paragraph (pay) and the
+  async-job paragraph (finish) so the prose follows the intro's reach→understand→pay→PROVISION→finish order.
+  It surfaces the "provision without a human" leg: a metered API is only callable by an agent that can PRESENT
+  THE RIGHT CREDENTIAL, over open machine conventions — an HTTP `Authorization: Bearer` header, an `X-API-Key`
+  header or named API key, an OpenAPI `securityScheme` declaration, or an OAuth2 flow; an offer that documents
+  its auth scheme is more agent-completable than one leaving the agent holding an endpoint it never learns how
+  to enter. Recognition keys on the SCHEME NOT THE VENDOR (same open-convention category as REST/GraphQL/
+  OpenAPI), pinned by the identity-relabel guard; HONESTLY SCOPED diagnostic, off the scoring path, not a
+  scored pillar. New guard `test_methodology_documents_api_auth_scheme` (test_readout, whitespace-collapsed
+  match) asserts the provision framing, the vendor-neutral credential schemes, the scheme-not-vendor relabel
+  pin + executable regression test, the honest off-scoring-path/diagnostic scope, and the vendor-neutral
+  denylist; REGISTERED in `main()` (no pytest auto-discovery in-cloud — the "silent success/failure look
+  identical" law). test_readout 48→49. Display-only + tests-only: git diff --name-only = scorecard.py +
+  test_readout.py ONLY; git diff over scoring.py/probes/rubric/offering.py/battery.py/fixtures/batteries EMPTY
+  → scoring path byte-for-byte untouched → rubric v0.7. Canonical PAIR unchanged AND re-measured (replay guard
+  24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss). Vendor-neutral (only open standards named; wording scanner
+  4/4). Full suite 22 files green (test_free_tier 11/11 with eth-account). Cloud bridge blocks direct main push
+  → branch loop/api-auth-scheme-readout + PR #26 + self-merge (squash 7b63849; NOT peer-gated — display-only,
+  off scoring path). First duty: no open peer-gated PR ([]); realigned main to origin/main 7b63849 after merge.
+  No Slack (display-only, moves no score; this 18:1xZ fire is after the Cycle-86 16:12Z daily digest, so not
+  the first-after-16:00 cycle). RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z ~18.6h old). The three
+  recently-landed metered_api signals (payment-rail, async-job, api-auth) now each have the full
+  COVERAGE→TRUTH→READOUT arc closed. Next METHOD — candidate: a fresh executable-invariant increment on the
+  offering/battery path, or extend the calibration/relabel guard family as new fixtures land.)
   (Cycle 87 TRUTH — relabel-invariance made executable at the SIGNAL level for the Cycle-86 `api-auth`
   metered_api signal (programmatic API authentication / credential provisioning). New
   `test_offering_relabel_invariance_api_auth` (`tests/test_offering_canonical.py` 15→16) replays the

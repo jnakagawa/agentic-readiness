@@ -1,10 +1,10 @@
 # Loop state
 
-- Cycle counter: 91
+- Cycle counter: 92
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-29T22:12Z, Cycle 91; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-29T23:12Z, Cycle 92; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~22h31m old at the 22:12Z fire; no newer :41 artifact through 21:41Z Jul-29 (23 consecutive
+  Jul-28 = ~23h31m old at the 23:12Z fire; no newer :41 artifact through 22:41Z Jul-29 (24 consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine → FLAGGED in the Cycle-86 16:00 UTC digest
   (the 16:12Z fire was the FIRST cycle after 16:00Z; the ~16.5h runner gap was flagged loudly there;
   the Cycle-87 17:12Z through this Cycle-91 22:12Z fires are NOT the first-after-16:00 cycle,
@@ -27,7 +27,33 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 92 READOUT — surfaced the error-contract "recover from a failed call" RELIABILITY recognition
+  in the PUBLIC methodology prose, the READOUT complement to the Cycle-90 COVERAGE signal + Cycle-91
+  TRUTH relabel guard, CLOSING the FOURTH COVERAGE→TRUTH→READOUT arc for the metered_api signal bank
+  (after payment-rail 78/79/80, async-job 82/83/84, api-auth 86/87/88). Added ONE capability-worded,
+  vendor-neutral paragraph to the methodology "What the score answers" card (`_write_methodology_page`,
+  `asrs/scorecard.py`), placed AFTER the Cycle-84 async-job (finishing) paragraph as the RELIABILITY leg
+  of finishing: an agent recovers from a failed call only if the offer's ERROR CONTRACT is
+  machine-readable — an HTTP status code (refresh a credential on 401, back off/retry on 429), an
+  RFC 7807 `application/problem+json` body, or a named `snake_case` error code. Recognition keys on the
+  DECLARED contract, not who declares it (pinned by the Cycle-91 identity-relabel guard); honestly scoped
+  as DIAGNOSTIC, off the scoring path, not a scored pillar. New guard
+  `test_methodology_documents_error_contract` (`tests/test_readout.py` 49→50), registered in `main()`
+  (no pytest auto-discovery in-cloud). Display-only + tests-only: git diff over
+  scoring.py/offering.py/probes/rubric/fixtures/batteries EMPTY → scoring path byte-for-byte untouched →
+  rubric v0.7. Canonical PAIR unchanged AND re-measured (replay guard 24/24, 46.1 F / 85.5 B / +39.4,
+  0 replay-miss). test_readout 49→50; readout+rubric wording scanners 4/4 + 4/4; full suite 22 files green
+  (test_free_tier 11/11 with eth-account). Cloud bridge blocks direct main push → branch
+  loop/error-contract-readout + PR #34 + self-merge (squash 49aff18; NOT peer-gated — display-only, off
+  scoring path). First duty: no open peer-gated PR ([]); realigned main to origin/main 49aff18 after merge.
+  No Slack (display-only, moves no score; this 23:1xZ fire is after the Cycle-86 16:12Z daily digest, so
+  not the first-after-16:00 cycle). RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z ~23.5h old). The
+  four metered_api signals (payment-rail, async-job, api-auth, error-contract) now EACH have the full
+  COVERAGE→TRUTH→READOUT arc closed. Next METHOD — candidate: a fresh executable-invariant increment on the
+  offering/battery path, or extend the calibration/relabel guard family as new fixtures/signals land; the
+  in-cloud COVERAGE frontier for metered_api signals is now well-covered, so the next new COVERAGE would be
+  a NEW archetype/signal or a per-segment leaderboard summary once the [LOCAL] calibration population grows.)
   (Cycle 91 TRUTH — relabel-invariance made executable at the SIGNAL level for the Cycle-90
   `error-contract` metered_api signal (the 4xx/5xx error responses an agent must read to RECOVER from a
   failed call). New `test_offering_relabel_invariance_error_contract` (`tests/test_offering_canonical.py`

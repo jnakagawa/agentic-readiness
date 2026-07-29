@@ -583,6 +583,11 @@ design in-cloud, execute locally.
   signals (payment-rail, async-job, api-auth, error-contract). Item stays OPEN for the NEXT new offering
   fixture (structured-catalog capture / new archetype anchor) or new signal — none currently pending
   in-cloud (the next COVERAGE signal is [LOCAL]-gated on a fixture capture; the in-cloud frontier is thin).
+  ARC NOTE (Cycle 92, READOUT): the READOUT complement for error-contract shipped (PR #34, squash 49aff18,
+  methodology prose paragraph + `test_methodology_documents_error_contract`), so all FOUR metered_api signals
+  now have the full COVERAGE→TRUTH→READOUT arc closed — no in-cloud READOUT candidate remains pending for
+  them. The next READOUT work is a NEW signal's arc or a per-segment leaderboard summary once the [LOCAL]
+  calibration population grows.
 
 <!-- DONE 2026-07-29T04:1xZ (Cycle 74, COVERAGE, direct-to-main, tests-only/score-neutral): the
      offering-relative BATTERY-INSTANTIATION layer (`battery.instantiate_battery`, the operator directive's

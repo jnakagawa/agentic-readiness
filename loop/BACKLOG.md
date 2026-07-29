@@ -6,9 +6,9 @@ design in-cloud, execute locally.
 ## P0
 
 - **[LOCAL] Local verify runner STALLED past the 6h floor again** (SELF-HEALING, flagged Cycle 76,
-  still gapped through Cycle 89 2026-07-29T19:1xZ; FLAGGED in the Cycle-86 16:00 UTC digest). Newest artifact
-  `runs/local/verify_20260728T234102Z.json` (23:41Z Jul-28) is ~19h31m old; twenty consecutive :41 fires
-  00:41–18:41Z Jul-29 produced NO newer artifact. The cloud cannot
+  still gapped through Cycle 90 2026-07-29T21:12Z; FLAGGED in the Cycle-86 16:00 UTC digest). Newest artifact
+  `runs/local/verify_20260728T234102Z.json` (23:41Z Jul-28) is ~21h31m old; twenty-two consecutive :41 fires
+  00:41–20:41Z Jul-29 produced NO newer artifact. The cloud cannot
   reach Jonah's machine to diagnose. On the next LOCAL fire: read the runner heartbeat log + any unpushed
   `runs/local/verify_*.json`, check `attempts` on the newest artifact. If it's the Cycle-63 wake/network
   race recurring (a >60s slow-network wake outlasting the 5×15s `git_pull_with_retry`), escalate to a
@@ -565,6 +565,15 @@ design in-cloud, execute locally.
   Cycle 87. The signal-level relabel family now covers all THREE recently-landed metered_api signals
   (payment-rail, async-job, api-auth). Item stays OPEN for the NEXT new offering fixture (structured-catalog
   capture / new archetype anchor) or new signal.
+  NEXT CANDIDATE (Cycle 90 COVERAGE landed a new signal — TRUTH next): the `error-contract` metered_api
+  signal (documented machine-readable 4xx/5xx error responses; `asrs/offering.py`). Add
+  `test_offering_relabel_invariance_error_contract` (test_offering_canonical 16→17): relabel the host
+  everywhere and assert the error-contract signal survives with the same match count + host-normalized
+  surfaces, each relabeled quote still matching the live regex, vendor host absent from the evidence —
+  proving an error contract keys on WHAT is declared (status codes, `application/problem+json`, snake_case
+  error codes) not WHO declares it. The evidence is largely host-FREE (status codes / RFC 7807 media type),
+  so this is a clean SURFACE-PRESENCE / structural-re-match case like async-job (Cycle 83), not a
+  quote-anchored one — non-vacuity anchors at the FIXTURE level (host present in the fetched surfaces).
 
 <!-- DONE 2026-07-29T04:1xZ (Cycle 74, COVERAGE, direct-to-main, tests-only/score-neutral): the
      offering-relative BATTERY-INSTANTIATION layer (`battery.instantiate_battery`, the operator directive's

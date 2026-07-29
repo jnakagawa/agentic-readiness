@@ -5,6 +5,17 @@ design in-cloud, execute locally.
 
 ## P0
 
+- **[LOCAL] Local verify runner STALLED past the 6h floor again** (SELF-HEALING, flagged Cycle 76,
+  2026-07-29T06:12Z). Newest artifact `runs/local/verify_20260728T234102Z.json` (23:41Z Jul-28) is
+  ~6h31m old; six consecutive :41 fires 00:41–05:41Z Jul-29 produced NO newer artifact. The cloud cannot
+  reach Jonah's machine to diagnose. On the next LOCAL fire: read the runner heartbeat log + any unpushed
+  `runs/local/verify_*.json`, check `attempts` on the newest artifact. If it's the Cycle-63 wake/network
+  race recurring (a >60s slow-network wake outlasting the 5×15s `git_pull_with_retry`), escalate to a
+  longer/adaptive backoff or a DNS pre-flight; if the machine was simply asleep/offline, no code fix — just
+  confirm it self-clears on the next successful wake. The in-cloud replay guard is the independent live
+  regression signal meanwhile (24/24 / 46.1 F / 85.5 B / +39.4), so this is a heartbeat gap, not a scoring
+  outage. FLAG in the 16:00 UTC digest if still gapped.
+
 <!-- DONE 2026-07-28T17:27Z (local fire, SELF-HEALING/METHOD, direct-to-main): "[LOCAL] Local
      verify runner STALLED past the 6h floor" ROOT-CAUSED + FIXED. The cloud's Cycle-51→62
      diagnosis ("launchd not firing / machine asleep") was WRONG — only a local fire could see it.
@@ -545,13 +556,29 @@ design in-cloud, execute locally.
   `runs/local/calibration_sweep_20260728T234815Z.json`. See LOG (Local cycle — 20260728T235720Z). The
   GROW-the-population + re-run-on-a-cadence half is the new [LOCAL] P0 above; the "+ leaderboard page"
   half is the cloud READOUT follow-up below.
-- **Calibration leaderboard READOUT page** (READOUT, CLOUD-DOABLE off the committed dataset — the
-  "+ leaderboard page" half of the population item above). Render the committed
-  `runs/local/calibration_sweep_*.json` (newest) as an HTML/terminal leaderboard: rank scored domains by
-  overall, show pillars + segment + claimed archetypes + grade, and name NOT-SCORABLE members separately
-  (attribution honesty — never mixed into the ranking). Pull weights/bands live from `load_rubric` (same
-  no-drift discipline as the methodology/rubric pages). Vendor-neutral: domains appear as DATA (the page is
-  ABOUT them), not as scored-check prose — no denylist change needed. Display-only, no scoring semantics.
+<!-- DONE 2026-07-29T06:1xZ (Cycle 76, READOUT, branch+PR#8+self-merge 62e7b43, display-only/score-neutral):
+     "Calibration leaderboard READOUT page" SHIPPED (the HTML half). `asrs/scorecard.py`
+     `_write_calibration_page(out_dir, sweep=None)` + `_load_calibration_sweep()` render the newest
+     committed `runs/local/calibration_sweep_*.json` as a ranked `calibration.html`, published next to
+     every card + footer-linked. Scored members rank by overall DESC (order RE-DERIVED from raw rows), with
+     grade/overall/all-5-pillars (outcome `—`, never a scored 0)/vendor-neutral claimed archetypes.
+     NOT-SCORABLE members named in a SEPARATE section, NO rank, framed reachability-not-failure (invariant
+     #4). Grade bands LIVE from load_rubric (no-drift); a dataset on a different rubric version is flagged.
+     Vendor-neutral (domains as DATA, same scanner-scope as canonical-history; wording scanner 4/4). Display-
+     only: git diff = scorecard.py + test_readout.py only; scoring/offering/battery/probe untouched → rubric
+     v0.7, replay guard 24/24 / 46.1 F / 85.5 B / +39.4, offering guard 13/13. test_readout 40→45; suite 22
+     files green. Renders calibration_sweep_20260728T234815Z.json (13 scored / 1 not-scorable). See LOG
+     Cycle 76. TERMINAL leaderboard readout (the "/terminal" half of the original item) not built — the HTML
+     page is the higher-leverage surface; a `python -m asrs calibration` terminal command is a small
+     cloud-doable READOUT follow-up if wanted. A per-segment summary block is a natural next increment once
+     the population grows (kept with the GROW-population [LOCAL] P0). -->
+- **Calibration leaderboard — terminal readout + per-segment summary** (READOUT, cloud-doable follow-ups to
+  Cycle 76's `calibration.html`). Two small optional increments: (a) a `python -m asrs calibration` terminal
+  command rendering the same newest committed sweep as a text leaderboard (mirrors the
+  `canonical-history` terminal/HTML pairing); (b) a per-segment roll-up on the HTML page (median/spread of
+  overall within each `segment`) so the reader sees the rails-anchor vs no-rails-retail vs control bands as
+  aggregates, not just a flat ranking — most valuable once the population passes ~15 members. Both display-
+  only, off the scoring path; render off `_load_calibration_sweep()`.
 - **[LOCAL] Offering-classifier precision — the exa.ai over-claim** (COVERAGE/METHOD, observation from
   the 23:57Z sweep). `discover_offering` classified exa.ai (a search/retrieval API) as claiming ALL SIX
   archetypes incl. physical_good + service_booking, from its rich docs. Diagnostic-only (offering feeds no

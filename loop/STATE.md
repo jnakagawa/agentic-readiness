@@ -1,7 +1,17 @@
 # Loop state
 
-- Cycle counter: 75
+- Cycle counter: 76
 - Started: 2026-07-23 (UTC)
+- RUNNER STALL (2026-07-29T06:12Z, Cycle 76): the LOCAL verify runner has BREACHED the 6h floor.
+  Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z Jul-28 = ~6h31m old at the 06:12Z fire;
+  six consecutive :41 fires 00:41–05:41Z Jul-29 produced NO newer artifact. This is the escalation
+  threshold STATE set at Cycle 75. Cloud CANNOT repair the local machine → FLAG in the next 16:00 UTC
+  digest; queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
+  85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
+  is intact — this is a heartbeat gap, not a scoring problem. Likely the same wake/network race the
+  Cycle-63 local fire root-caused (a >60s slow-network wake still misses the 5×15s retry) OR the machine
+  is simply asleep/offline. If a fresh artifact lands next fire, watch its `attempts` field; if still
+  gapped, escalate loudly in the digest.
 - INFRA (2026-07-29T04:2xZ, Cycle 74): the CLOUD git bridge now REFUSES direct pushes to `main`
   (branch-protected) — a `git push origin main` of a legitimate fast-forward is rejected with a
   MISLEADING "non-fast-forward" even when the read replica, the write primary (receive-pack
@@ -15,7 +25,26 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 76 READOUT — the calibration LEADERBOARD page, the cloud-doable half of the "calibration
+  population + leaderboard" item. `asrs/scorecard.py` `_write_calibration_page(out_dir, sweep=None)` +
+  `_load_calibration_sweep()` render the newest committed `runs/local/calibration_sweep_*.json` as a
+  ranked HTML leaderboard (`calibration.html`), published next to every card + footer-linked. Scored
+  members rank by overall DESC — order RE-DERIVED from the raw rows (a reproducible property of the
+  scores, not an echoed pre-computed list) — with grade, overall, all five pillars (outcome `—` in a
+  static $0 sweep, never a scored 0), and the offering classifier's vendor-neutral claimed-archetype set.
+  NOT-SCORABLE members named in a SEPARATE section, NO rank, framed as reachability not a site failure
+  (invariant #4). No-drift: grade bands LIVE from `load_rubric`; a dataset on a different rubric version
+  is flagged. Vendor-neutral: domains as DATA only (same scanner-scope category as canonical-history) —
+  wording scanner 4/4 green. Display-only: git diff = scorecard.py + test_readout.py only; scoring/
+  offering/battery/probe code byte-for-byte untouched → rubric v0.7. Canonical PAIR unchanged AND
+  re-measured (replay guard 24/24 relabel-invariance held, 46.1 F / 85.5 B / +39.4, 0 replay-miss;
+  offering guard 13/13). Full suite 22 files green (test_free_tier 11/11 with eth-account). Cloud bridge
+  blocks direct main push → branch loop/calibration-leaderboard-page + PR #8 + self-merge (squash,
+  62e7b43; NOT peer-gated). No Slack (display-only, moves no score, before 16:00 UTC digest). First duty:
+  no open peer-gated PR ([]). Renders committed calibration_sweep_20260728T234815Z.json (13 scored / 1
+  not-scorable). Next METHOD — cloud-doable candidate: a fresh executable-invariant increment on the
+  offering/battery path, or a per-segment summary on the leaderboard once the population grows.)
   (Cycle 75 TRUTH — extended the offering-classifier VENDOR-NEUTRALITY tripwire (domain-relabel
   invariance, Cycle 21/31) to the MACHINE-SURFACE-first fixture `api.replicate.com`, the one committed
   offering fixture the relabel family did not cover. New `test_offering_relabel_invariance_machine`

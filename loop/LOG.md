@@ -7365,3 +7365,74 @@ infra watch → FLAG in the 16:00 UTC digest if still gapped. Cloud-doable COVER
 frontier is thin (structured catalog/pricing JSON are [LOCAL], 404 on fixtures);
 candidate: a new archetype/signal for `classify_offering`, or a per-segment summary
 on the leaderboard once the population grows.
+
+## Cycle 78 — 2026-07-29T08:1xZ — COVERAGE
+
+**What.** Offering discovery now recognises open agent-native PAYMENT RAILS
+BEYOND the lone `x402`. New `agent-payment-rail` signal in the
+`_SIGNALS["metered_api"]` bank (`asrs/offering.py`) matches the other open,
+vendor-neutral agent-payment/settlement protocols the agentic-commerce landscape
+is standardizing on — x402 / MPP / ACP / UCP / AP2 — in two high-precision forms:
+a STRUCTURED `"protocol":"<rail>"` declaration (a manifest `paymentProtocols`
+entry) or a rail name paired with its on-chain SETTLEMENT asset in a
+`(… USDC/USDT/stablecoin …)` parenthetical.
+
+**Why (capability lens / north star).** The rubric measures whether an agent can
+PAY programmatically without a human. Agentic commerce is not converging on a
+single rail — a storefront may advertise several ("payment methods today are x402
+(Base USDC) and MPP (Tempo USDC)") or declare them structurally. Recognising only
+the `x402` token under-classified a site's agent-native payment capability to one
+rail; this captures the north-star "many payment rails" flexibility axis as one
+more piece of auditable machine evidence. Like `x402`, these are PROTOCOL/standard
+names (not vendors) — the same category as REST/GraphQL/OpenAPI already in the bank.
+
+**Precision.** MPP/ACP/UCP/AP2 are 3–4 char acronyms that collide with unrelated
+senses (Member of Parliament, an inflation index, a medical guideline, exam codes),
+so the signal never matches a bare acronym — only the structured JSON declaration
+or the settlement-asset parenthetical. Verified: 8 acronym-collision negative
+controls (incl. "MPP (Member of Parliament)", `"protocol":"tls"`, "bare x402 route")
+all reject; the signal fires on ZERO of the no-rails / retail / control /
+machine-surface fixtures (drift-flight.org, example.com, books.toscrape.com,
+api.replicate.com) — the offering-layer mirror of the scoring-path x402 delta
+(with-rails has an agent-payable rail, no-rails does not).
+
+**Scope / score-neutrality.** `git diff --stat` = `asrs/offering.py` (+21) +
+`tests/test_offering.py` (+104) ONLY. Scoring path byte-for-byte untouched
+(`git diff -- asrs/scoring.py asrs/probes/ rubric/ asrs/protocols.py asrs/battery.py
+asrs/fetch.py fixtures/` EMPTY) → rubric stays **v0.7**. Discovery is off the
+scoring path (called only from `--battery auto`; the scoring commerce-manifest probe
+keeps its own untouched `protocols._AGENT_SURFACE_DOCS`). VERIFIED NON-VACUOUS on
+committed evidence (not a vacuous absent case): driftflight.com's `metered_api` is
+ALREADY its strongest claim, so recognising an additional rail only REINFORCES it —
+distinct-signal count 12 → 13, claimed SET AND ORDER unchanged
+`['metered_api','digital_good','subscription']` on both canonical domains; evidence
+fires on 2 real read surfaces (`agents.driftflight.com/llms-full.txt` +
+`agents.driftflight.com/manifest.json`).
+
+**Evidence / tests.** `tests/test_offering.py` 24 → 27 (+`_precision_synthetic`
+[6 positives / 6 collision negatives], +`_fires_on_real_captured_surfaces`
+[non-vacuous read-live, quoted+surface-tagged, claimed set/order unchanged],
++`_no_rails_side_claims_no_agent_payment_rail` [0 fires across the 4 no-rails
+fixtures]). Offering canonical guard 13/13 (claimed sets unchanged). Full suite
+22 files green (`test_free_tier` with eth-account). Live regression signal:
+canonical replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss.
+
+**Canonical pair (regression signal).** Unchanged AND re-measured: 46.1 F / 85.5 B /
+delta +39.4 (in-cloud replay guard, INDEPENDENT of the stalled local runner).
+
+**Ship.** Cloud git bridge blocks direct main push → branch
+`loop/agent-payment-rail-signal` + PR + self-merge (squash). NOT peer-gated
+(discovery-only, off the scoring path, score-neutral, verified non-vacuously).
+No Slack (score-neutral, moves no score, 08:1xZ is before the 16:00 UTC digest).
+
+**Infra.** First duty: no open peer-gated PR ([]). Realigned ephemeral local-main
+divergence (22 stale foundational commits ahead / 50 behind) to origin/main 70373af
+(hard reset — origin authoritative, Cycle 77). Full suite runnable (22/22). RUNNER
+STILL GAPPED: newest committed `verify_20260728T234102Z.json` (23:41Z Jul-28) is
+~8h31m old at 08:12Z, past the 6h floor; cloud cannot reach Jonah's machine → FLAG
+in the 16:00 UTC digest (this fire precedes it).
+
+**Next hypothesis.** TRUTH next (rotate). Cloud-doable candidate: a relabel-invariance
+case for the new `agent-payment-rail` signal (the recurring P1 — its evidence quote
+embeds the rail names/host structure, not a vendor), or extend the calibration
+two-sided guard once the [LOCAL] moleskine static fixture lands.

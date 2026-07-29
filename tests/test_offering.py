@@ -866,6 +866,107 @@ def test_docs_surface_is_read_live():
     print("  ok: /docs evidence does NOT change the claimed set/order (score-neutral)")
 
 
+def test_agent_payment_rail_precision_synthetic():
+    # Agentic commerce is standardizing on SEVERAL open payment/settlement rails an
+    # agent can drive (x402, MPP, ACP, UCP, AP2), not just x402. The new
+    # agent-payment-rail signal recognises them in two high-precision forms — a
+    # structured `"protocol":"<rail>"` declaration, or a rail name paired with its
+    # on-chain settlement asset — so a site advertising MULTIPLE rails is credited
+    # for the "many payment rails" capability. Each POSITIVE is real agent-payment
+    # prose that must fire the signal; each NEGATIVE is an acronym COLLISION that
+    # must NOT (bare MPP/ACP/UCP/AP2 in an unrelated sense — the precision trap).
+    positives = {
+        "structured mpp": '{"protocol":"mpp","asset":"USDC"}',
+        "structured acp": '"paymentProtocols":[{"protocol":"acp"}]',
+        "structured ucp": 'config = {"protocol": "ucp", "network": "base"}',
+        "structured ap2": '{"protocol":"ap2","asset":"USDC"}',
+        "rail plus asset mpp": "Payment methods today are x402 (Base USDC) and MPP (Tempo USDC).",
+        "rail plus asset ucp": "Settle via UCP (USDC) or the legacy card rail.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("rails.test", {"homepage": text})
+        assert prof.claims("metered_api"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "metered_api"
+            for s in c.signals
+        }
+        assert "agent-payment-rail" in labels, (name, labels)
+    print(f"  ok: {len(positives)} agent-payment-rail phrasings each fire the signal")
+
+    negatives = {
+        "member of parliament": "Our MPP (Member of Parliament) endorsed the campaign.",
+        "inflation index": "The UCP inflation index rose 2% last quarter.",
+        "medical guideline": "Follow the ACP anesthesia guidelines during the procedure.",
+        "exam code": "AP2 exam prep bundles ship in the fall catalog.",
+        "wrong protocol value": 'The handshake used {"protocol":"tls"} for transport.',
+        "bare x402 route": "The x402 route returns a friendly not-found page.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "agent-payment-rail" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} acronym-collision noise strings do NOT fire agent-payment-rail (precision)"
+    )
+
+
+def test_agent_payment_rail_fires_on_real_captured_surfaces():
+    # END-TO-END, on REAL captured bytes: the canonical with-rails driftflight.com
+    # advertises MORE than one open agent-native payment rail — its agent docs name
+    # "x402 (Base USDC) and MPP (Tempo USDC)" and its manifest declares a structured
+    # `"protocol":"x402"` paymentProtocols entry. Until this cycle the metered_api
+    # bank recognised only the lone x402 token, so the MPP rail and the structured
+    # multi-rail declaration were invisible to offering discovery.
+    ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "driftflight.com.json"))
+    prof = offering.discover_offering(ctx)
+
+    # NON-VACUOUS: the new signal really fires on the real captured surfaces, and its
+    # evidence is quoted + surface-tagged (auditable machine evidence, not a bare bool).
+    rail_sigs = [
+        s
+        for c in prof.claimed
+        if c.archetype == "metered_api"
+        for s in c.signals
+        if s.label == "agent-payment-rail"
+    ]
+    assert rail_sigs, "agent-payment-rail did not fire on driftflight.com's captured surfaces"
+    for s in rail_sigs:
+        assert s.quote, s
+    print(
+        f"  ok: agent-payment-rail fires on {len({s.surface for s in rail_sigs})} real surface(s) "
+        f"({len(rail_sigs)} signal(s))"
+    )
+
+    # SCORE-NEUTRAL by construction AND re-measured: the with-rails side ALREADY claims
+    # metered_api (its strongest claim), so recognising an additional rail can only
+    # REINFORCE it — the claimed SET AND ORDER are unchanged (the exact regression the
+    # canonical offering guard pins). Discovery is off the scoring path, so the overall
+    # score and the canonical delta are untouched.
+    assert prof.archetypes == ["metered_api", "digital_good", "subscription"], prof.archetypes
+
+
+def test_no_rails_side_claims_no_agent_payment_rail():
+    # The capability CONTRAST that makes the signal meaningful: the no-rails
+    # drift-flight.org serves the SAME product docs but advertises NO agent-native
+    # payment rail — so the agent-payment-rail signal must NOT fire on it (nor on the
+    # retail / control / machine-surface fixtures). This is the offering-layer mirror
+    # of the scoring-path x402 delta: with-rails has an agent-payable rail, no-rails
+    # does not. A false fire here would erase that contrast.
+    for dom in (
+        "drift-flight.org.json",
+        "example.com.json",
+        "books.toscrape.com.json",
+        "api.replicate.com.json",
+    ):
+        ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, dom))
+        prof = offering.discover_offering(ctx)
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "agent-payment-rail" not in labels, (dom, labels, prof.archetypes)
+    print("  ok: agent-payment-rail fires on ZERO no-rails/retail/control/machine fixtures")
+
+
 def test_pricing_surface_is_read_live():
     # END-TO-END, on REAL captured bytes: discovery now reads the rendered HTML
     # PRICING page (/pricing) added to _SURFACE_DOCS this cycle — the "understand
@@ -931,6 +1032,9 @@ def main() -> int:
         test_doc_subdomain_helper_is_precise_and_ssrf_safe,
         test_doc_subdomain_surfaces_are_read_live,
         test_docs_surface_is_read_live,
+        test_agent_payment_rail_precision_synthetic,
+        test_agent_payment_rail_fires_on_real_captured_surfaces,
+        test_no_rails_side_claims_no_agent_payment_rail,
         test_pricing_surface_is_read_live,
         test_strip_html_drops_script_style_and_tags,
     ]

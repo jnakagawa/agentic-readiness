@@ -1,13 +1,13 @@
 # Loop state
 
-- Cycle counter: 84
+- Cycle counter: 85
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-29T14:12Z, Cycle 84; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-29T15:12Z, Cycle 85; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~14h31m old at the 14:12Z fire; no newer :41 artifact through 13:41Z Jul-29 (15 consecutive
+  Jul-28 = ~15h31m old at the 15:12Z fire; no newer :41 artifact through 14:41Z Jul-29 (16 consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine → FLAG in the next 16:00 UTC digest (the
-  14:12Z fire is before the digest window; the digest is due the first cycle after 16:00Z today —
-  flag the ~14.5h+ runner gap loudly there); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
+  15:12Z fire is STILL before the digest window; the digest is due the first cycle after 16:00Z today —
+  flag the ~15.5h+ runner gap loudly there, likely the very next fire); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
   is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
   local fire root-caused (a >60s slow-network wake still misses the 5×15s retry) OR the machine is
@@ -26,7 +26,34 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 85 METHOD — pinned the scorer's MULTI-CAP ORDER-INVARIANCE, an unexercised rung named by the
+  canonical-replay input-order guard's OWN docstring. `asrs/scoring.score` builds `caps_applied` in check-
+  ARRIVAL order and the capped `overall` as a repeated `min`; when TWO caps bind, permuting the check input
+  permutes the `caps_applied` LIST. New `test_scoring.py::test_multi_cap_order_invariance` (test_scoring
+  11→12) scores a synthetic two-binding-cap report (`human-gate-required` cap 79 + `no-https` cap 59 on
+  otherwise-PASS checks → pre-cap overall 100, both bind → capped 59.0/F) under FOUR deterministic arrival
+  orders (identity/reverse/two rotations) and asserts the METRIC-BEARING surface is byte-identical — capped
+  overall, grade, the SET of binding caps, every pillar score — while HONESTLY SCOPING the `caps_applied`
+  LIST order as a readout detail that legitimately varies (non-vacuity: ≥2 distinct list orders observed →
+  set-invariance does real work). Scoring-path analog of the battery presentation-order invariance (Cycle 73)
+  and the leaderboard permutation-invariance (Cycle 77). WHY THIS RUNG WAS MISSING: the canonical-replay
+  input-order guard (test_canonical_replay guard 19) compares a fingerprint that DELIBERATELY OMITS
+  `caps_applied`, and NO committed canonical fixture binds any cap (test_canonical_delta_is_weight_robust
+  asserts both sides' caps_applied empty) → the multi-cap ordering behavior guard 19's own docstring names
+  was unexercised anywhere; the ≥2-binding-cap case is only reachable via a synthetic report. Tests-only:
+  git diff --name-only = tests/test_scoring.py ONLY; git diff -- asrs/ rubric/ fixtures/ batteries/ EMPTY →
+  scoring path byte-for-byte untouched → rubric v0.7 (test pins existing behavior). Canonical PAIR unchanged
+  AND re-measured (replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss). test_scoring 11→12; full
+  suite 22 files green (test_free_tier 11/11 with eth-account). Cloud bridge blocks direct main push → branch
+  loop/multi-cap-order-invariance + PR #20 + self-merge (squash 76f83cb; NOT peer-gated — tests-only, off
+  scoring path, pins existing behavior). No Slack (tests-only, moves no score, this 15:12Z fire is before the
+  16:00 UTC digest window). First duty: no open peer-gated PR ([]); realigned detached HEAD 164babe to
+  origin/main 76f83cb after merge. RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z ~15.5h old, past 6h
+  floor — flag in next digest, likely the very next fire after 16:00Z). Next COVERAGE — candidate: a new
+  archetype/signal for classify_offering, or a per-segment leaderboard summary once the [LOCAL] calibration
+  population grows; in-cloud COVERAGE frontier is thin (structured catalog/pricing JSON are [LOCAL], 404 on
+  fixtures).)
   (Cycle 84 READOUT — surfaced the ASYNC long-running-job contract recognition in the PUBLIC methodology
   prose, the READOUT complement to the Cycle-82 COVERAGE + Cycle-83 TRUTH async-job arc (COVERAGE → TRUTH →
   READOUT closed). Added ONE capability-worded, vendor-neutral paragraph to the methodology "What the score

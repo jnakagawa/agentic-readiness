@@ -6,8 +6,8 @@ design in-cloud, execute locally.
 ## P0
 
 - **[LOCAL] Local verify runner STALLED past the 6h floor again** (SELF-HEALING, flagged Cycle 76,
-  still gapped through Cycle 80 2026-07-29T10:11Z). Newest artifact `runs/local/verify_20260728T234102Z.json`
-  (23:41Z Jul-28) is ~10h31m old; eleven consecutive :41 fires 00:41–09:41Z Jul-29 produced NO newer artifact. The cloud cannot
+  still gapped through Cycle 81 2026-07-29T11:12Z). Newest artifact `runs/local/verify_20260728T234102Z.json`
+  (23:41Z Jul-28) is ~11h31m old; twelve consecutive :41 fires 00:41–10:41Z Jul-29 produced NO newer artifact. The cloud cannot
   reach Jonah's machine to diagnose. On the next LOCAL fire: read the runner heartbeat log + any unpushed
   `runs/local/verify_*.json`, check `attempts` on the newest artifact. If it's the Cycle-63 wake/network
   race recurring (a >60s slow-network wake outlasting the 5×15s `git_pull_with_retry`), escalate to a

@@ -601,6 +601,70 @@ def test_strength_counts_distinct_signals_and_orders_claims():
     print("  ok: x402 agentic-payment rail recorded as metered_api evidence")
 
 
+def test_classification_is_surface_read_order_invariant():
+    # A readiness classification is a property of WHAT a storefront's surfaces
+    # DECLARE, not the ORDER an agent happened to fetch them in. This is the
+    # discovery-layer analog of the battery presentation-order invariance
+    # (test_battery.py) and the leaderboard permutation-invariance
+    # (test_readout.py): the claimed-archetype set, its strength ranking, each
+    # claim's distinct labels and source surfaces, and the NA complement the
+    # offering-relative battery excludes from every mean/spread must ALL be
+    # identical under any permutation of the surface-read order. Cross-site
+    # comparability rests on it — two crawls of the same site that read /pricing
+    # before or after the homepage must classify identically.
+    surfaces = {
+        # subscription is declared on BOTH surfaces (so a reorder genuinely
+        # permutes the per-archetype signal accumulation, not merely the dict);
+        # service_booking ties subscription at strength 2 (a tie broken by
+        # ARCHETYPES.index, never by which surface arrived first); digital_good
+        # is single-surface.
+        "homepage": "Our plans are billed monthly. Book a demo appointment.",
+        "/pricing": "Recurring billing. We generate an image for you.",
+    }
+    forward = classify_offering("shop.test", dict(surfaces))
+    reverse = classify_offering("shop.test", dict(reversed(list(surfaces.items()))))
+
+    def _signature(p):
+        return [
+            (
+                c.archetype,
+                c.strength,
+                tuple(sorted({s.label for s in c.signals})),
+                tuple(sorted({s.surface for s in c.signals})),
+            )
+            for c in p.claimed
+        ]
+
+    # (1) The metric-bearing classification is identical under reorder: claimed
+    # archetypes IN RANK ORDER, each strength, each claim's distinct labels, and
+    # each claim's source surfaces.
+    assert _signature(forward) == _signature(reverse), (_signature(forward), _signature(reverse))
+    # (2) The NA complement (what the offering-relative battery marks NA and
+    # excludes from every mean/spread) is identical — order cannot add or drop a
+    # claim.
+    assert forward.unclaimed == reverse.unclaimed, (forward.unclaimed, reverse.unclaimed)
+    # (3) The SET of surfaces read is identical.
+    assert set(forward.surfaces_seen) == set(reverse.surfaces_seen)
+    # The strength tie is real and broken by taxonomy index, not arrival order:
+    # subscription (ARCHETYPES index 1) and service_booking (index 4) both fire
+    # at strength 2, and subscription ranks first in BOTH runs.
+    strengths = {c.archetype: c.strength for c in forward.claimed}
+    assert strengths.get("subscription") == strengths.get("service_booking") == 2, strengths
+    assert forward.archetypes.index("subscription") < forward.archetypes.index("service_booking")
+    print("  ok: claimed set / rank / strengths / labels / surfaces / NA invariant under surface reorder")
+
+    # NON-VACUITY: the reorder is REAL and OBSERVABLE — surfaces_seen is a
+    # different LIST and the representative sample_quote of the two-surface
+    # subscription claim genuinely flips. sample_quote is a first-observed
+    # DISPLAY sample, deliberately NOT claimed order-invariant (honest scope:
+    # the measurement is invariant; one human-readable evidence sample is not).
+    assert forward.surfaces_seen != reverse.surfaces_seen, "reorder not observable"
+    f_sub = next(c for c in forward.evidence["claimed"] if c["archetype"] == "subscription")
+    r_sub = next(c for c in reverse.evidence["claimed"] if c["archetype"] == "subscription")
+    assert f_sub["sample_quote"] != r_sub["sample_quote"], "expected the sample quote to be order-sensitive"
+    print("  ok: reorder is observable (surfaces_seen list + subscription sample_quote differ) — non-vacuous")
+
+
 def test_evidence_is_quoted_and_surface_tagged():
     prof = classify_offering("example-imaging.test", {"homepage": API_HOMEPAGE})
     for claim in prof.claimed:
@@ -1023,6 +1087,7 @@ def main() -> int:
         test_booking_and_data_archetypes_fire,
         test_non_storefront_claims_nothing,
         test_strength_counts_distinct_signals_and_orders_claims,
+        test_classification_is_surface_read_order_invariant,
         test_evidence_is_quoted_and_surface_tagged,
         test_openapi_spec_alone_classifies_api_first_storefront,
         test_ai_plugin_descriptor_alone_classifies_storefront,

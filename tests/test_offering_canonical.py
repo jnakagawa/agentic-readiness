@@ -647,6 +647,114 @@ def test_offering_relabel_negative_control() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Relabel-invariance at the SIGNAL level — the agent-native payment RAIL claim.
+#
+# The relabel guards above assert the claimed ARCHETYPE partition is
+# identity-invariant. This one drops a layer: the specific `agent-payment-rail`
+# metered_api signal (Cycle 78 — x402/MPP/ACP/UCP/AP2 in two high-precision
+# forms, a structured `"protocol":"<rail>"` manifest entry OR a rail name paired
+# with its on-chain settlement asset in a `(… USDC …)` parenthetical) must key
+# on that PROTOCOL/SETTLEMENT structure, never on who published it. An
+# agent-native payment rail is a property of what a storefront declares
+# programmatically, not of its domain.
+#
+# The rail signal fires on driftflight.com's OWN agent surfaces — the
+# settlement-asset form on `/llms-full.txt` ("x402 (Base USDC) and MPP (Tempo
+# USDC)") and the structured form on `/manifest.json`
+# (`"paymentProtocols":[{"protocol":"x402",…}]`). Those surface KEYS embed the
+# host (`agents.driftflight.com/…`), so a whole-fixture host relabel genuinely
+# rewrites the classifier's input on the very surfaces the signal reads — the
+# non-vacuity anchor. Under relabel the signal must survive with the SAME match
+# count, on the SAME host-normalized surfaces, each quote still satisfying a
+# high-precision protocol form with the vendor host gone.
+#
+# Byte-equality of the quotes modulo the host string is NOT asserted: the host
+# lengths differ (`driftflight.com` 15 chars vs `vendor-neutral.test` 19), which
+# shifts the fixed-width quote WINDOW by a few characters (`.com/openapi.json` ->
+# `test/openapi.json`). The structural invariant — the fired form is still a
+# valid rail match, re-verified by re-running the live signal regex on each
+# relabeled quote — is the honest, robust assertion.
+# ---------------------------------------------------------------------------
+_RAIL_LABEL = "agent-payment-rail"
+
+
+def _rail_signals(prof) -> list:
+    """The (surface, quote) pairs where the agent-payment-rail signal fired, sorted."""
+    return sorted(
+        (s.surface, s.quote)
+        for c in prof.claimed
+        for s in c.signals
+        if s.label == _RAIL_LABEL
+    )
+
+
+def test_offering_relabel_invariance_payment_rail() -> None:
+    """The agent-native payment-rail claim keys on protocol structure, not host."""
+    print("test_offering_relabel_invariance_payment_rail")
+    base, _ = _discover("driftflight.com")
+    base_rails = _rail_signals(base)
+
+    # The signal genuinely fires on real captured evidence — and BOTH high-precision
+    # forms are exercised (structured protocol declaration + settlement-asset name).
+    _check(
+        len(base_rails) >= 2,
+        "agent-payment-rail fires on >=2 real driftflight.com surfaces "
+        f"(got {len(base_rails)}: {[s for s, _ in base_rails]})",
+    )
+    joined = " ".join(q for _, q in base_rails).lower()
+    _check(
+        '"protocol"' in joined,
+        'a structured "protocol":"<rail>" declaration is among the rail evidence',
+    )
+    _check(
+        "usdc" in joined,
+        "a rail name paired with its on-chain settlement asset (USDC) is among the "
+        "rail evidence",
+    )
+
+    # Non-vacuity: the host is present in every surface that carries the rail signal,
+    # so the whole-fixture relabel genuinely rewrites the classifier's input on those
+    # very surfaces (not a no-op).
+    _check(
+        all("driftflight.com" in surf for surf, _ in base_rails),
+        "each rail-signal surface embeds the host — relabel rewrites real input "
+        f"(surfaces {[s for s, _ in base_rails]})",
+    )
+
+    relab = _discover_relabeled("driftflight.com", _NEUTRAL_HOST)
+    relab_rails = _rail_signals(relab)
+
+    # (1) Same number of rail matches — the signal is neither lost nor conjured.
+    _check(
+        len(relab_rails) == len(base_rails),
+        "agent-payment-rail match count invariant under relabel "
+        f"(base {len(base_rails)}, relabel {len(relab_rails)})",
+    )
+    # (2) The SAME logical surfaces carry the signal once the host label is
+    # normalized away — the signal did not migrate to a different surface.
+    base_surf = sorted(s.replace("driftflight.com", _NEUTRAL_HOST) for s, _ in base_rails)
+    relab_surf = sorted(s for s, _ in relab_rails)
+    _check(
+        relab_surf == base_surf,
+        "rail signal fires on the same (host-normalized) surfaces under relabel "
+        f"(base {base_surf}, relabel {relab_surf})",
+    )
+    # (3) Each relabeled quote STILL satisfies a high-precision protocol/settlement
+    # form (re-run the live signal regex to prove the fired form is structural) and
+    # no longer names the vendor host — the match keyed on structure, not identity.
+    rail_re = dict(_offering._SIGNALS["metered_api"])[_RAIL_LABEL]
+    for surf, quote in relab_rails:
+        _check(
+            rail_re.search(quote) is not None,
+            f"relabeled rail quote still matches the protocol-structural signal: {quote!r}",
+        )
+        _check(
+            "driftflight.com" not in quote and "driftflight.com" not in surf,
+            f"vendor host absent from relabeled rail evidence (surface {surf!r})",
+        )
+
+
+# ---------------------------------------------------------------------------
 # Relabel-invariance EXTENDED to the retail + non-storefront domains.
 #
 # The two invariance tests above cover only the canonical PAIR, because their
@@ -766,6 +874,7 @@ def main() -> int:
         test_offering_relabel_invariance_org,
         test_offering_relabel_invariance_com,
         test_offering_relabel_invariance_machine,
+        test_offering_relabel_invariance_payment_rail,
         test_offering_relabel_invariance_retail,
         test_offering_relabel_invariance_nonstorefront,
         test_offering_relabel_negative_control,

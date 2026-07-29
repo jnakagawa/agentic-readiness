@@ -7436,3 +7436,65 @@ in the 16:00 UTC digest (this fire precedes it).
 case for the new `agent-payment-rail` signal (the recurring P1 — its evidence quote
 embeds the rail names/host structure, not a vendor), or extend the calibration
 two-sided guard once the [LOCAL] moleskine static fixture lands.
+
+## Cycle 79 — 2026-07-29T09:12Z — TRUTH
+
+**What.** Relabel-invariance made executable at the SIGNAL level for the new
+`agent-payment-rail` metered_api signal (Cycle 78). New
+`test_offering_relabel_invariance_payment_rail` (test_offering_canonical 13→14)
+replays `fixtures/canonical/driftflight.com.json` through the REAL discovery path
+(`from_fixture → discover_offering`), then relabels the host everywhere
+(`driftflight.com` → `vendor-neutral.test`) via the existing `_discover_relabeled`
+and asserts the rail signal is IDENTITY-invariant: fires with the SAME match count
+(2), on the SAME host-normalized surfaces (`/llms-full.txt` + `/manifest.json`),
+each relabeled quote STILL satisfying a high-precision protocol form — re-verified
+by re-running the live `_SIGNALS["metered_api"]["agent-payment-rail"]` regex on each
+relabeled quote — with the vendor host gone.
+
+**Why.** The relabel family so far asserts the claimed ARCHETYPE partition is
+identity-invariant; this drops a layer to the specific signal the north-star
+"many payment rails" axis rests on. An agent-native payment rail is a property of
+what a storefront declares programmatically (`"protocol":"x402"`, `x402 (Base
+USDC) and MPP (Tempo USDC)`), never of who declares it. The signal fires on
+driftflight.com's own agent surfaces whose KEYS embed the host
+(`agents.driftflight.com/…`) — so the whole-fixture relabel genuinely rewrites the
+classifier's input on the very surfaces the signal reads (non-vacuity anchor),
+yet the signal survives because it keys on the protocol/settlement STRUCTURE.
+Discharges the Cycle-78 next-hypothesis + the recurring P1 relabel-extension
+candidate.
+
+**Design note (honest robustness).** Byte-equality of the quotes modulo the host
+string is NOT asserted: the host lengths differ (15 vs 19 chars), which shifts the
+fixed-width quote WINDOW a few chars (`.com/openapi.json` → `test/openapi.json`).
+The structural invariant — the fired form is still a valid rail match, re-verified
+by the live regex — is the robust assertion. The existing
+`test_offering_relabel_negative_control` (identity-keyed special-case CAUGHT via
+the same `_discover`/`_discover_relabeled` divergence) gives the family teeth.
+
+**Scope.** `tests/test_offering_canonical.py` ONLY (+109 lines). `git diff --stat
+-- asrs/ rubric/ fixtures/ batteries/` EMPTY → scoring/offering code, rubric,
+fixtures, batteries byte-for-byte untouched. Tests-only, score-neutral, off the
+scoring path → rubric v0.7. NOT peer-gated (adds no check, weight, cap, aggregation
+rule, or payment/signing code — pins EXISTING behaviour). Cloud bridge blocks
+direct main push → branch `loop/relabel-payment-rail-signal` + PR + self-merge
+(squash).
+
+**Evidence.** `tests/test_offering_canonical.py` 14/14 PASS (new rail-relabel test
+11 assertions green: 2 real surfaces, both high-precision forms present, host in
+surfaces, count 2→2 invariant, same host-normalized surfaces, each relabeled quote
+re-matches the regex with host gone). Full suite 22/22 files green (test_free_tier
+11/11 with eth-account). Non-vacuity empirically confirmed pre-write: base rails on
+`agents.driftflight.com/{llms-full.txt,manifest.json}`, relabel migrates surfaces
+to `agents.vendor-neutral.test/…` while the protocol tokens survive.
+
+**Canonical pair (regression signal).** UNCHANGED and re-measured — in-cloud replay
+guard `tests/test_canonical_replay.py` 24/24 PASS pins **46.1 F / 85.5 B / +39.4**
+(0 replay-miss); offering guard 14/14. Tests-only, no scoring semantics touched, so
+the delta is unchanged by construction AND re-affirmed by the passing guard. RUNNER
+STILL GAPPED (newest `verify_20260728T234102Z.json` 23:41Z Jul-28 ≈ 9h31m old at the
+09:12Z fire, past the 6h floor — flag in the 16:00 UTC digest).
+
+**Next hypothesis.** READOUT next (rotate). Cloud-doable candidate: surface the
+agent-payment-rail "many rails" recognition in the methodology/offering readout prose
+(capability-worded), or a per-segment leaderboard summary once the [LOCAL] population
+grows. First duty next cycle: review any open peer-gated PR ([] this cycle).

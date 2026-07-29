@@ -190,6 +190,40 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
         ("post-endpoint", re.compile(r"\b(POST|GET|PUT)\s+https?://\S+", _F)),
         ("qualified-api", re.compile(r"\b(text-to-image|HTTP|REST|GraphQL|web|image|inference)\s+API\b", _F)),
         ("api-reference", re.compile(r"\bAPI (reference|endpoint|over a\b)", _F)),
+        # Programmatic AUTHENTICATION / credential provisioning — HOW an agent
+        # obtains and presents credentials to CALL this API. The "provision without
+        # a human" capability at the offering-understanding layer: an agent that
+        # cannot read the auth scheme (an API key presented as a Bearer token, an
+        # OAuth2 flow, an X-API-Key header, or a declared OpenAPI securityScheme)
+        # cannot invoke the API at all, so a metered API that documents its auth is
+        # MORE agent-completable. Distinct from `post-endpoint` (that an endpoint
+        # EXISTS) and from the billing signals below (how you are CHARGED): this is
+        # how you are ALLOWED to call. Vendor-neutral machine-integration vocabulary
+        # (the HTTP Authorization header, an API key, OAuth2, an OpenAPI
+        # securityScheme) — the same open-convention category as REST/GraphQL/OpenAPI
+        # already in this bank, never a vendor.
+        # PRECISION-CRITICAL: bare "authenticate" is a false-positive minefield —
+        # ANY site with a user LOGIN ("authenticate your account" on a retail store)
+        # would falsely claim a metered API and run an irrelevant intent (the exact
+        # pollution this module removes). So "authenticate" must NAME an API
+        # credential (authenticated WITH/VIA/USING an api key / bearer / token);
+        # "Bearer" must be the `Authorization: Bearer` HTTP header or a "Bearer
+        # token" (never "the bearer of ..."); "key" must be an "API key" / "X-API-Key"
+        # (never a house key or a turnkey solution); and OAuth is anchored to the
+        # versioned standard ("OAuth 2" / "OAuth2"). Non-vacuous on real committed
+        # evidence: fires on BOTH canonical domains (`Authorization: Bearer` on the
+        # homepage, "authenticated with an API key sent as a Bearer token" on /docs)
+        # and on api.replicate.com's `"securitySchemes":{"bearerAuth":...}` — all
+        # already-claimed metered_api sites, so it deepens evidence without changing
+        # any claimed set (score-neutral).
+        ("api-auth", re.compile(
+            r"\bAuthorization\s*:\s*Bearer\b"
+            r"|\bBearer\s+tokens?\b"
+            r"|\bX-API-Key\b"
+            r"|\bAPI[- ]keys?\b"
+            r'|"securitySchemes"|\bbearer(?:Auth|Format)\b|"type"\s*:\s*"apiKey"'
+            r"|\bauthenticat\w+\s+(?:with|via|using)\s+(?:an?\s+)?(?:api[- ]?key|bearer|api[- ]?token|access[- ]?token)\b"
+            r"|\bOAuth\s?2(?:\.0)?\b", _F)),
         # Usage-metered billing.
         ("pay-as-you-go", re.compile(r"\bpay[- ]?as[- ]?you[- ]?go\b", _F)),
         ("pay-per", re.compile(r"\bpay[- ]per[- ](call|request|use|token|unit|image|generation)\b", _F)),

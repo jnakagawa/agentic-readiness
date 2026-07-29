@@ -7754,3 +7754,68 @@ machine-integration vocabulary), the READOUT complement to the Cycle-82 COVERAGE
 this-cycle TRUTH async-job arc; or a per-segment leaderboard summary once the
 [LOCAL] calibration population grows. First duty next cycle: review any open
 peer-gated PR.
+
+## Cycle 84 — 2026-07-29T14:1xZ — READOUT
+
+**What.** Surfaced the ASYNCHRONOUS long-running-job contract recognition in the
+public methodology prose — the READOUT complement to Cycle 82's async-job COVERAGE
+(offering discovery recognising the async metered-API contract) and Cycle 83's
+signal-level relabel-invariance TRUTH guard, closing the COVERAGE → TRUTH → READOUT
+arc. Added ONE capability-worded, vendor-neutral paragraph to the methodology "What
+the score answers" card (`_write_methodology_page`, `asrs/scorecard.py`), after the
+Cycle-80 payment-rail paragraph: many agent-native offers are LONG-RUNNING JOBS
+(image/video generation, a training run, a batch-inference request) whose work does
+not finish inside the request that starts it; the agent submits the job and must
+then COLLECT THE RESULT — from a webhook callback the API delivers, or by polling a
+status endpoint until the job completes. An offer that documents that async contract
+is more agent-completable than one that leaves the agent holding a job id it never
+learns how to redeem, so ASRS reads the contract as part of understanding the offer,
+keyed on vendor-neutral machine-integration vocabulary (a webhook, an async endpoint,
+polling a status URL — the same category of open convention as REST/GraphQL/OpenAPI).
+Recognition keys on the SHAPE OF THE CONTRACT, not the name of the API — pinned by
+the Cycle-83 identity-relabel executable regression test. HONESTLY SCOPED: this
+offering read is DIAGNOSTIC, off the scoring path, not a scored pillar (the same
+scored-vs-diagnostic line the leaderboard prose keeps).
+
+**Why.** The capability chain in the card's opening question already names "finish
+the job", but nothing in the prose surfaced the growing class of long-running
+agent-native APIs where "finishing the job" means following an async contract to
+collect a result. This is the north-star readout-clarity move: make the Cycle-82/83
+async-job capability legible to a critic reading the paper, in the same
+capability-worded, vendor-neutral register as the Cycle-80 payment-rail paragraph.
+
+**Also.** Registered `test_methodology_documents_payment_rail_neutrality` in the
+test_readout runner list — the Cycle-80 guard was authored but never wired into the
+`main()` test list, so it silently never ran under the script runner (the runner
+executes the list, there is no pytest auto-discovery in-cloud). A guard that never
+runs is the "silent success/failure look identical" failure mode; a one-line
+registration fix restores it. New guard `test_methodology_documents_async_job_contract`
+matches on whitespace-collapsed text (the methodology HTML preserves source newlines,
+so a multi-word phrase can straddle a line break — same technique as
+test_methodology_documents_calibration).
+
+**Evidence.** `tests/test_readout.py` 46→48 (both the new async-job guard AND the
+newly-wired payment-rail guard now execute; all green). `git diff --name-only` =
+`asrs/scorecard.py` + `tests/test_readout.py` ONLY; `git diff` over asrs/scoring.py,
+asrs/probes/, rubric/, asrs/offering.py, asrs/battery.py, fixtures/, batteries/ EMPTY
+→ scoring path byte-for-byte untouched, rubric v0.7.
+
+**Canonical pair (regression signal).** UNCHANGED and re-measured: in-cloud replay
+guard `tests/test_canonical_replay.py` 24/24, overall 46.1 F (.org) / 85.5 B (.com),
+delta +39.4, 0 replay-miss. Full suite 22 files green (test_free_tier 11/11 with
+eth-account installed). LOCAL verify runner STILL GAPPED (`verify_20260728T234102Z.json`
+23:41Z Jul-28, ~14.5h old at the 14:12Z fire — past the 6h floor; the in-cloud replay
+guard is the independent live regression signal meanwhile → flag in the next 16:00 UTC
+digest).
+
+**Ship.** Cloud bridge blocks direct main push → branch loop/async-job-contract-readout
++ PR #18 + self-merge (squash, 99f232c; NOT peer-gated — display-only + tests-only,
+off scoring path). No Slack (display-only, moves no score, before the 16:00 UTC digest
+window). First duty: no open peer-gated PR ([]); realigned detached HEAD to origin/main
+7389fa2 (Cycle 83).
+
+**Next hypothesis.** METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT).
+Candidate: a fresh executable-invariant increment on the offering/battery path (e.g.
+an aggregation- or classification-layer invariant not yet pinned), or extend the
+calibration/relabel guard family as new fixtures land. First duty next cycle: review
+any open peer-gated PR.

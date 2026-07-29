@@ -1,12 +1,13 @@
 # Loop state
 
-- Cycle counter: 83
+- Cycle counter: 84
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-29T13:16Z, Cycle 83; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-29T14:12Z, Cycle 84; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~13h35m old at the 13:16Z fire; no newer :41 artifact through 12:41Z Jul-29 (14 consecutive
+  Jul-28 = ~14h31m old at the 14:12Z fire; no newer :41 artifact through 13:41Z Jul-29 (15 consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine → FLAG in the next 16:00 UTC digest (the
-  13:16Z fire is before the digest window); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
+  14:12Z fire is before the digest window; the digest is due the first cycle after 16:00Z today —
+  flag the ~14.5h+ runner gap loudly there); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
   is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
   local fire root-caused (a >60s slow-network wake still misses the 5×15s retry) OR the machine is
@@ -25,7 +26,35 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 84 READOUT — surfaced the ASYNC long-running-job contract recognition in the PUBLIC methodology
+  prose, the READOUT complement to the Cycle-82 COVERAGE + Cycle-83 TRUTH async-job arc (COVERAGE → TRUTH →
+  READOUT closed). Added ONE capability-worded, vendor-neutral paragraph to the methodology "What the score
+  answers" card (`_write_methodology_page`, `asrs/scorecard.py`), after the Cycle-80 payment-rail paragraph:
+  many agent-native offers are LONG-RUNNING JOBS (image/video gen, training runs, batch inference) whose work
+  does not finish inside the request that starts it — the agent submits the job then COLLECTS THE RESULT via a
+  webhook callback or by polling a status endpoint; an offer documenting that async contract is more
+  agent-completable, so ASRS reads it as part of understanding the offer, keyed on vendor-neutral
+  machine-integration vocabulary (webhook / async endpoint / poll a status URL — same open-convention category
+  as REST/GraphQL/OpenAPI); recognition keys on the SHAPE OF THE CONTRACT not the API's NAME, pinned by the
+  Cycle-83 identity-relabel guard; HONESTLY SCOPED as DIAGNOSTIC, off the scoring path, not a scored pillar.
+  New guard `test_methodology_documents_async_job_contract` (test_readout, whitespace-collapsed match — the
+  methodology HTML preserves source newlines, same technique as the calibration guard) asserts the
+  long-running-job class, both collection mechanisms, the "shape of the contract, not the name" relabel-pin,
+  the off-scoring-path honest scope, and the vendor-neutral denylist. ALSO registered the Cycle-80
+  `test_methodology_documents_payment_rail_neutrality` in the test_readout runner list — it was authored but
+  never wired into `main()`, so it SILENTLY NEVER RAN under the script runner (no pytest auto-discovery
+  in-cloud); one-line registration restores it (the "silent success/failure look identical" self-healing law).
+  Display-only + tests-only: git diff --name-only = scorecard.py + test_readout.py ONLY; git diff over
+  scoring.py/probes/rubric/offering.py/battery.py/fixtures/batteries EMPTY → scoring path byte-for-byte
+  untouched → rubric v0.7. Canonical PAIR unchanged AND re-measured (replay guard 24/24, 46.1 F / 85.5 B /
+  +39.4, 0 replay-miss). test_readout 46→48; full suite 22 files green (test_free_tier 11/11 with eth-account).
+  Cloud bridge blocks direct main push → branch loop/async-job-contract-readout + PR #18 + self-merge (squash
+  99f232c; NOT peer-gated — display-only, off scoring path). No Slack (display-only, moves no score, before
+  16:00 UTC digest). First duty: no open peer-gated PR ([]); realigned detached HEAD to origin/main 7389fa2.
+  RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z ~14.5h old, past 6h floor — flag in next digest). Next
+  METHOD — candidate: a fresh executable-invariant increment on the offering/battery path, or extend the
+  calibration/relabel guard family as new fixtures land.)
   (Cycle 83 TRUTH — relabel-invariance made executable at the SIGNAL level for the Cycle-82 `async-job`
   metered_api signal (webhook/poll/async long-running-job contract). New
   `test_offering_relabel_invariance_async_job` (test_offering_canonical 14→15) replays the committed

@@ -748,6 +748,16 @@ design in-cloud, execute locally.
 
 ## P2
 
+- **[METHOD, cloud-doable] Audit the test-runner registration lists for authored-but-unregistered
+  guards** (observation, Cycle 84). The in-cloud suites run via each `tests/test_*.py`'s own `main()`
+  test LIST (no pytest auto-discovery — `local_verify.py` invokes `python tests/test_X.py`). Cycle 84
+  found `test_methodology_documents_payment_rail_neutrality` (authored Cycle 80) was never added to
+  test_readout's `main()` list, so it silently never ran for four cycles — the "silent success/failure
+  look identical" failure mode. Fixed for that guard. Sweep the other suites: for each `test_*.py`,
+  diff the set of `def test_*` functions against the names in its `main()` list and register any orphans
+  (or add a tiny meta-guard that asserts the two sets match, so a future orphan fails loudly). Tests-only,
+  off the scoring path.
+
 - **[CANDIDATE, READOUT] Card-level "behaviorally corroborated" calibration badge** (follow-up to
   Cycle 68). Cycle 68 documented the static-vs-behavioral VALIDITY property in methodology-page
   PROSE (§8). The terminal→JSON→HTML surface it doesn't yet reach is the CARD: a payment-capable

@@ -572,6 +572,48 @@ def test_methodology_documents_api_auth_scheme() -> None:
         _check(banned not in text, f"api-auth prose names no vendor/domain ({banned!r})")
 
 
+def test_methodology_documents_error_contract() -> None:
+    # Cycle 92 (READOUT): the READOUT complement to Cycle 90's error-contract
+    # COVERAGE (offering discovery recognizing a metered API's documented 4xx/5xx
+    # error contract) and Cycle 91's SIGNAL-level relabel-invariance TRUTH guard —
+    # closing the fourth COVERAGE->TRUTH->READOUT arc after payment-rail (78/79/80),
+    # async-job (82/83/84) and api-auth (86/87/88). The capability chain names
+    # "finish the job"; async-job prose covers collecting a result, but the
+    # RELIABILITY leg — an agent can only RECOVER from a failed call if the error
+    # contract is machine-readable — was never surfaced in prose a critic can read.
+    # It must (a) frame it as recovering from a failed call / the error contract;
+    # (b) name the vendor-neutral machine-readable forms as open conventions (an
+    # HTTP status code, an RFC 7807 application/problem+json body, a named error
+    # code); (c) say recognition keys on the DECLARED contract not who declares it
+    # and is pinned by an identity-relabel guard; and (d) stay HONEST about scope —
+    # this offering read is diagnostic, off the scoring path, not a scored pillar
+    # (the same scored-vs-diagnostic line the payment-rail/async-job/api-auth prose
+    # keeps). Vendor-neutral throughout.
+    print("test_methodology_documents_error_contract")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    # Match on the whitespace-collapsed text (same technique as the async-job /
+    # api-auth guards) so wording, not source wrapping, is what the guard pins.
+    collapsed = " ".join(text.split())
+    for phrase in ("Recovering from a failed call", "recover autonomously",
+                   "error contract", "declared contract, not who declares it",
+                   "relabels the API", "executable regression test",
+                   "off the scoring path", "diagnostic"):
+        _check(phrase in collapsed,
+               f"methodology documents error-contract: {phrase!r}")
+    # The vendor-neutral machine-readable error forms the offering signal bank
+    # anchors on must appear as open conventions, never a vendor product: an HTTP
+    # status code (4xx/5xx, with 401/429 as the recoverable exemplars), an RFC 7807
+    # problem+json body, and a snake_case error code.
+    for token in ("4xx/5xx", "status code", "401", "429",
+                  "RFC&nbsp;7807", "application/problem+json",
+                  "error code", "invalid_request"):
+        _check(token in collapsed, f"methodology names error form {token!r}")
+    # Vendor-neutral: no scored domain/product/brand named on the page.
+    for banned in ("drift-flight", "driftflight"):
+        _check(banned not in text, f"error-contract prose names no vendor/domain ({banned!r})")
+
+
 def test_methodology_documents_calibration() -> None:
     # Cycle 68 (READOUT): the READOUT complement to Cycle 67's calibration guard
     # (tests/test_calibration.py — the first static-vs-behavioral VALIDITY axis).
@@ -1243,6 +1285,7 @@ def main() -> int:
         test_methodology_documents_payment_rail_neutrality,
         test_methodology_documents_async_job_contract,
         test_methodology_documents_api_auth_scheme,
+        test_methodology_documents_error_contract,
         test_methodology_documents_calibration,
         test_methodology_page_tracks_live_rubric,
         test_build_scorecard_publishes_and_links_methodology,

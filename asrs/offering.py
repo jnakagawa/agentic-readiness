@@ -273,6 +273,37 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"|\bpoll(?:ing)?\s+(?:the\s+|for\s+|your\s+)?[^\n]{0,50}?\bendpoint\b"
             r"|\bpoll(?:ing)?\s+(?:for|until)\b"
             r"|\basync(?:hronous)?\s+(?:api|jobs?|requests?|predictions?|endpoint|calls?|inference|processing|tasks?|mode)\b", _F)),
+        # Documented ERROR CONTRACT — the machine-readable HTTP error responses an
+        # agent must handle to RECOVER from a failed call: the 4xx/5xx status codes
+        # and error identifiers the API returns when a request is rejected. This is
+        # the "complete the job" RELIABILITY capability, distinct from `rate-limited`
+        # (that limits EXIST) and `async-job` (how results come back): an agent that
+        # cannot read the error contract cannot recover autonomously — it does not
+        # know to refresh a credential on a 401, back off and retry on a 429, or
+        # surface a clear failure on a 4xx/5xx — so a metered API that documents its
+        # errors machine-readably is MORE agent-completable. Vendor-neutral open
+        # conventions (an OpenAPI status-keyed response object, the IETF RFC 7807
+        # `application/problem+json` problem-details media type, a documented status
+        # code paired with a snake_case error code) — the same open-convention
+        # category as REST/GraphQL/OpenAPI already in this bank, never a vendor.
+        # PRECISION-CRITICAL: a bare 4xx/5xx number is a false-positive minefield — a
+        # quantity ("a 500-image catalog run", "429 renders today"), a price ("$499"),
+        # a phone/room number ("call 411", "room 404"). So NEVER match a bare number:
+        # require it to be a JSON RESPONSE-OBJECT KEY (`"429":{"description"|"content"|
+        # "$ref"`), the RFC 7807 media type, or a status code IMMEDIATELY followed by
+        # a snake_case error identifier (`400 invalid_request`, `429 allowance_exhausted`,
+        # `502 generation_failed`) — a quantity/price/phone number trips none. Only
+        # ERROR statuses (4xx/5xx) count, never 2xx/3xx success/redirect codes. Fires
+        # non-vacuously on ALL THREE metered_api fixtures (the canonical pair's /docs
+        # error table + OpenAPI 401/429 responses, and api.replicate.com's
+        # `application/problem+json` 4xx responses) and on ZERO of the retail/null
+        # fixtures — the offering-layer mirror of the metered/non-metered split. Every
+        # site where it fires ALREADY claims metered_api, so it deepens evidence
+        # without changing any claimed set (score-neutral).
+        ("error-contract", re.compile(
+            r'"(?:4\d\d|5\d\d)"\s*:\s*\{\s*"(?:description|content|\$ref)"'
+            r"|application/problem\+json"
+            r"|\b(?:4\d\d|5\d\d)\s+[a-z][a-z0-9]*_[a-z0-9_]+\b", _F)),
         # Credit-based metering — the dominant billing convention for generative
         # and agent-native APIs (prepay a credit balance, spend N credits per
         # call/image/generation). PRECISION-CRITICAL: bare "\bcredits?\b" is a

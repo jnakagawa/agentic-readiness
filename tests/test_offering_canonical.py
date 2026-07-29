@@ -755,6 +755,128 @@ def test_offering_relabel_invariance_payment_rail() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Relabel-invariance at the SIGNAL level — the async long-running-job contract.
+#
+# The companion to `test_offering_relabel_invariance_payment_rail` above, for the
+# OTHER metered_api signal that landed recently: `async-job` (Cycle 82 — a
+# webhook CALLBACK / status-endpoint POLL / async-endpoint contract, the "complete
+# the job" capability of an agent-native API whose work does not finish in the
+# request/response round-trip: image/video generation, a training run, a batch
+# inference job). It fires on `api.replicate.com`'s `/openapi.json` — a genuine
+# async prediction contract ("An HTTPS URL for receiving a webhook when the
+# prediction has new output"). A long-running-job contract is a property of the
+# integration STRUCTURE a storefront documents (webhook / poll / async endpoint),
+# never of who published it, so the signal must be identity-invariant.
+#
+# Honest scope — WHY this is surface-presence, not quote-anchored: unlike the
+# payment-rail signal (whose evidence SURFACES embed the host,
+# `agents.driftflight.com/…`), the async-job contract vocabulary is host-free by
+# nature — the fired quote carries webhook/poll/async words, not the vendor's
+# name, and the surface is the relative `/openapi.json`. The non-vacuity anchor is
+# therefore at the FIXTURE level (asserted below): the host IS present in the
+# fixture surfaces the classifier fetches, so a whole-fixture relabel genuinely
+# rewrites the classifier's overall input; the async-contract signal survives
+# because the webhook/poll structure it keys on never named the vendor to begin
+# with. Under relabel the signal must fire the SAME number of times, on the SAME
+# surface, each quote STILL satisfying the live async-job regex, with the vendor
+# host absent from every piece of rail evidence.
+#
+# This drops the machine-surface fixture's relabel coverage (whole-archetype,
+# `test_offering_relabel_invariance_machine`) a layer down to the specific
+# "complete the job" signal the growing class of long-running agent-native APIs
+# rests on — the same move Cycle 79 made for `agent-payment-rail`.
+# ---------------------------------------------------------------------------
+_ASYNC_LABEL = "async-job"
+
+
+def _async_signals(prof) -> list:
+    """The (surface, quote) pairs where the async-job signal fired, sorted."""
+    return sorted(
+        (s.surface, s.quote)
+        for c in prof.claimed
+        for s in c.signals
+        if s.label == _ASYNC_LABEL
+    )
+
+
+def test_offering_relabel_invariance_async_job() -> None:
+    """The async long-running-job claim keys on contract structure, not host."""
+    print("test_offering_relabel_invariance_async_job")
+    base, _ = _discover(_MACHINE_SURFACE)
+    base_async = _async_signals(base)
+
+    # The signal genuinely fires on real captured evidence — the async prediction
+    # contract in the storefront's own OpenAPI spec.
+    _check(
+        len(base_async) >= 1,
+        f"async-job fires on >=1 real {_MACHINE_SURFACE} surface "
+        f"(got {len(base_async)}: {[s for s, _ in base_async]})",
+    )
+    joined = " ".join(q for _, q in base_async).lower()
+    _check(
+        "webhook" in joined or "poll" in joined or "async" in joined,
+        "the async-job evidence carries webhook/poll/async contract vocabulary "
+        f"(got {[q for _, q in base_async]})",
+    )
+
+    # Honest scope: unlike the payment-rail signal, the async-contract evidence is
+    # host-FREE (the fired quote and its relative /openapi.json surface name no
+    # vendor), so non-vacuity cannot anchor on the host being inside the quote.
+    _check(
+        all(
+            _MACHINE_SURFACE not in surf and _MACHINE_SURFACE not in quote
+            for surf, quote in base_async
+        ),
+        "the async-job evidence is host-free (webhook/poll structure, not a vendor "
+        "name) — so this is a surface-presence, not a quote-anchored, invariance",
+    )
+
+    # Non-vacuity anchor (fixture level): the host IS present in the fixture
+    # surfaces the classifier fetches, so a whole-fixture relabel genuinely rewrites
+    # the classifier's overall input — the async-contract signal surviving is not a
+    # no-op over an absent host.
+    path = os.path.join(_FIXTURE_DIR, f"{_MACHINE_SURFACE}.json")
+    with open(path, encoding="utf-8") as fh:
+        raw = fh.read()
+    _check(
+        _MACHINE_SURFACE in raw,
+        f"{_MACHINE_SURFACE}: host present in the fixture surfaces (relabel rewrites "
+        "real classifier input — the test is non-vacuous)",
+    )
+
+    relab = _discover_relabeled(_MACHINE_SURFACE, _NEUTRAL_HOST)
+    relab_async = _async_signals(relab)
+
+    # (1) Same number of async-job matches — the signal is neither lost nor conjured.
+    _check(
+        len(relab_async) == len(base_async),
+        "async-job match count invariant under relabel "
+        f"(base {len(base_async)}, relabel {len(relab_async)})",
+    )
+    # (2) The SAME (host-normalized) surfaces carry the signal — it did not migrate.
+    base_surf = sorted(s.replace(_MACHINE_SURFACE, _NEUTRAL_HOST) for s, _ in base_async)
+    relab_surf = sorted(s for s, _ in relab_async)
+    _check(
+        relab_surf == base_surf,
+        "async-job fires on the same (host-normalized) surfaces under relabel "
+        f"(base {base_surf}, relabel {relab_surf})",
+    )
+    # (3) Each relabeled quote STILL satisfies the live async-job regex (proving the
+    # fired form is structural — webhook/poll/async vocabulary) and names no vendor
+    # host — the match keyed on the integration contract, not identity.
+    async_re = dict(_offering._SIGNALS["metered_api"])[_ASYNC_LABEL]
+    for surf, quote in relab_async:
+        _check(
+            async_re.search(quote) is not None,
+            f"relabeled async-job quote still matches the contract-structural signal: {quote!r}",
+        )
+        _check(
+            _MACHINE_SURFACE not in quote and _MACHINE_SURFACE not in surf,
+            f"vendor host absent from relabeled async-job evidence (surface {surf!r})",
+        )
+
+
+# ---------------------------------------------------------------------------
 # Relabel-invariance EXTENDED to the retail + non-storefront domains.
 #
 # The two invariance tests above cover only the canonical PAIR, because their
@@ -875,6 +997,7 @@ def main() -> int:
         test_offering_relabel_invariance_com,
         test_offering_relabel_invariance_machine,
         test_offering_relabel_invariance_payment_rail,
+        test_offering_relabel_invariance_async_job,
         test_offering_relabel_invariance_retail,
         test_offering_relabel_invariance_nonstorefront,
         test_offering_relabel_negative_control,

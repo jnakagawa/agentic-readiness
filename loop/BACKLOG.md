@@ -526,14 +526,18 @@ design in-cloud, execute locally.
   host is deliberately not asserted (host-length change shifts the fixed-width window). Tests-only, rubric
   v0.7, replay guard 24/24 / 46.1 F / 85.5 B / +39.4. See LOG Cycle 79. Item stays OPEN for the NEXT new
   offering fixture (structured-catalog capture / new archetype anchor).
-  NEXT-TRUTH CANDIDATE (Cycle 82 COVERAGE added the `async-job` metered_api signal — webhook/poll/async
-  long-running-job contract, fires on the committed `api.replicate.com` `/openapi.json`): add a SIGNAL-level
-  relabel case for `async-job` the same way Cycle 79 did for `agent-payment-rail`. The async-job evidence
-  quote ("An HTTPS URL for receiving a webhook when the prediction has new output", "poll the … endpoint")
-  does NOT embed the storefront host, so it is a clean surface-presence / structural-re-match invariance
-  (relabel `api.replicate.com` → `vendor-neutral.test`, assert the `async-job` label still fires with the
-  same match count and the relabeled quote still matches the live regex) — proving the async-contract claim
-  keys on the CONTRACT STRUCTURE (webhook/poll vocabulary), not the vendor. Cloud-doable, tests-only.
+  DONE 2026-07-29 (Cycle 83, TRUTH, branch+PR+self-merge, tests-only/score-neutral): the Cycle-82
+  `async-job` candidate SHIPPED as a SIGNAL-level relabel guard —
+  `test_offering_relabel_invariance_async_job` (test_offering_canonical 14→15) relabels the committed
+  `api.replicate.com` fixture host everywhere and asserts the async-job signal survives with the same match
+  count (1), the same host-normalized surface (`/openapi.json`), each relabeled quote still matching the live
+  async-job regex, vendor host absent from every piece of async evidence — proving the async-contract claim
+  keys on the CONTRACT STRUCTURE (webhook/poll/async vocabulary), not the host/vendor NAME. Clean
+  surface-presence / structural-re-match case: the async-contract quote is host-FREE by nature (webhook/poll
+  words, relative `/openapi.json` surface), so non-vacuity anchors at the FIXTURE level (host present in the
+  fetched surfaces) and the test asserts the host-free nature explicitly rather than overclaiming a quote
+  anchor. Tests-only, rubric v0.7, replay guard 24/24 / 46.1 F / 85.5 B / +39.4. See LOG Cycle 83. Item stays
+  OPEN for the NEXT new offering fixture (structured-catalog capture / new archetype anchor) or new signal.
 
 <!-- DONE 2026-07-29T04:1xZ (Cycle 74, COVERAGE, direct-to-main, tests-only/score-neutral): the
      offering-relative BATTERY-INSTANTIATION layer (`battery.instantiate_battery`, the operator directive's

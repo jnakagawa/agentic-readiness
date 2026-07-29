@@ -7684,3 +7684,73 @@ case for the new `async-job` signal (its evidence quote embeds no host — the r
 family's precedent — but pins that the async-contract claim keys on the CONTRACT
 structure, not the vendor), extending the recurring "extend relabel-invariance as
 new signals land" item. First duty next cycle: review any open peer-gated PR.
+
+## Cycle 83 — 2026-07-29T13:16Z — TRUTH
+
+**What.** Relabel-invariance made executable at the SIGNAL level for the new
+`async-job` metered_api signal (Cycle 82 — a webhook CALLBACK / status-endpoint
+POLL / async-endpoint contract, the "complete the job" capability of an
+agent-native API whose work does not finish in the request/response round-trip).
+New `test_offering_relabel_invariance_async_job` (test_offering_canonical 14→15)
+replays `fixtures/canonical/api.replicate.com.json` through the REAL discovery
+path, relabels the host everywhere (`api.replicate.com` → `vendor-neutral.test`)
+via the existing `_discover_relabeled`, and asserts the async-job signal is
+IDENTITY-invariant: SAME match count (1), SAME host-normalized surface
+(`/openapi.json`), each relabeled quote STILL satisfying the live async-job regex
+(re-run on each relabeled quote), with the vendor host absent from every piece of
+async evidence. Mirrors the Cycle-79 `agent-payment-rail` signal-level relabel
+guard, dropping the machine-surface fixture's whole-archetype relabel coverage
+(`test_offering_relabel_invariance_machine`) a layer down to the specific
+"complete the job" signal the growing class of long-running agent-native APIs
+(image/video gen, training runs, batch inference) rests on.
+
+**Why.** A long-running-job contract is a property of the integration STRUCTURE a
+storefront documents (webhook / poll / async endpoint), never of who published it
+— the same north-star vendor-neutrality the relabel family enforces, now pinned
+for the async signal. Extends the recurring "extend relabel-invariance as new
+offering fixtures/signals land" item to the Cycle-82 async-job signal.
+
+**Honest scope (why surface-presence, not quote-anchored).** Unlike
+`agent-payment-rail` (whose evidence SURFACES embed the host,
+`agents.driftflight.com/…`), the async-job contract vocabulary is host-FREE by
+nature — the fired quote ("An HTTPS URL for receiving a webhook when the
+prediction has new output") carries webhook/poll/async words, not the vendor
+name, and the surface is the relative `/openapi.json`. So non-vacuity anchors at
+the FIXTURE level (host IS present in the fixture surfaces the classifier fetches
+→ whole-fixture relabel genuinely rewrites classifier input; asserted), and the
+async signal survives because the structure it keys on never named the vendor.
+The test asserts the host-free nature explicitly so the scope is documented, not
+overclaimed. Negative control (`test_offering_relabel_negative_control`, an
+identity-keyed special-case CAUGHT) gives the shared `_discover_relabeled`
+machinery teeth.
+
+**Scope.** Tests-only: `git diff --name-only` = `tests/test_offering_canonical.py`
+ONLY; `git diff -- asrs/ rubric/ fixtures/ batteries/` EMPTY → scoring AND
+offering/battery code byte-for-byte untouched, rubric stays v0.7 (discovery is off
+the scoring path; `--battery auto` only).
+
+**Evidence.** `tests/test_offering_canonical.py` 14→15 (all green); pre-commit
+probe confirmed the async-job signal fires once on the base fixture and once on
+the relabeled fixture, re-match True, host absent from quote+surface in both.
+
+**Canonical pair (regression signal).** UNCHANGED and re-measured: in-cloud replay
+guard `tests/test_canonical_replay.py` 24/24, overall 46.1 F (.org) / 85.5 B
+(.com), delta +39.4, 0 replay-miss. Full suite 22 files green (test_free_tier
+11/11 with eth-account installed). LOCAL verify runner STILL GAPPED
+(`verify_20260728T234102Z.json` 23:41Z Jul-28, ~13.6h old at the 13:16Z fire —
+past the 6h floor; the in-cloud replay guard is the independent live regression
+signal meanwhile → flag in the next 16:00 UTC digest).
+
+**Ship.** Cloud bridge blocks direct main push → branch loop/relabel-async-job-signal
++ PR + self-merge (squash; NOT peer-gated — tests-only, off scoring path, pins
+existing behaviour). No Slack (tests-only, moves no score, before the 16:00 UTC
+digest window). First duty: no open peer-gated PR ([]); realigned detached HEAD
+to origin/main de8f118 (Cycle 82).
+
+**Next hypothesis.** READOUT next (rotate). Candidate: surface the async
+long-running-job "complete the job" contract recognition in the methodology /
+offering readout prose (capability-worded, vendor-neutral — webhook/poll/async as
+machine-integration vocabulary), the READOUT complement to the Cycle-82 COVERAGE +
+this-cycle TRUTH async-job arc; or a per-segment leaderboard summary once the
+[LOCAL] calibration population grows. First duty next cycle: review any open
+peer-gated PR.

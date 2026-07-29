@@ -8268,3 +8268,55 @@ conventions, keyed on the DECLARED contract not the vendor), the READOUT complem
 to the Cycle-90 COVERAGE + this-cycle TRUTH error-contract arc — mirroring the
 Cycle-80 payment-rail / Cycle-84 async-job / Cycle-88 api-auth READOUT paragraphs,
 closing the fourth COVERAGE→TRUTH→READOUT arc.
+
+## Cycle 92 — 2026-07-29T23:12Z — READOUT (branch+PR+self-merge; display-only + tests-only, off scoring path)
+
+**What.** Surfaced the error-contract "recover from a failed call" RELIABILITY
+recognition in the PUBLIC methodology prose. Added ONE capability-worded,
+vendor-neutral paragraph to the methodology "What the score answers" card
+(`_write_methodology_page`, `asrs/scorecard.py`), placed AFTER the Cycle-84
+async-job (finishing) paragraph as the RELIABILITY leg of finishing: an agent
+recovers from a failed call only if the offer's ERROR CONTRACT is machine-readable
+— an HTTP status code (refresh a credential on `401`, back off/retry on `429`), an
+RFC 7807 `application/problem+json` body, or a named `snake_case` error code. New
+guard `test_methodology_documents_error_contract` (`tests/test_readout.py` 49→50),
+registered in `main()` (no pytest auto-discovery in-cloud — the "silent
+success/failure look identical" law).
+
+**Why.** The READOUT complement to the Cycle-90 COVERAGE `error-contract` signal +
+the Cycle-91 TRUTH signal-level relabel-invariance guard — closing the FOURTH
+COVERAGE→TRUTH→READOUT arc for the metered_api signal bank, after payment-rail
+(78/79/80), async-job (82/83/84) and api-auth (86/87/88). The
+reach→understand→pay→provision→FINISH lens names "finish the job"; async-job prose
+covers collecting a result, but the RELIABILITY leg — recovering from a failed call
+— was never surfaced in prose a critic can read. Recognition keys on the DECLARED
+contract, not who declares it (pinned by the existing Cycle-91 identity-relabel
+guard); honestly scoped as DIAGNOSTIC, off the scoring path, not a scored pillar
+(the same scored-vs-diagnostic line the sibling paragraphs keep).
+
+**Evidence.** `asrs/scorecard.py` (one prose paragraph) + `tests/test_readout.py`
+(new guard, registered). Full suite 22 files green: test_readout 49→50,
+test_readout_wording 4/4, test_rubric_wording 4/4, test_canonical_replay 24/24 (the
+live regression signal), test_free_tier 11/11 with eth-account.
+
+**Canonical pair.** UNCHANGED and re-measured: drift-flight.org 46.1 F /
+driftflight.com 85.5 B / delta **+39.4**, 0 replay-miss. rubric v0.7 (git diff over
+scoring.py/offering.py/probes/rubric/fixtures/batteries EMPTY → scoring path
+byte-for-byte untouched; the methodology page is display-only).
+
+**Ship.** Cloud bridge blocks direct main push → branch `loop/error-contract-readout`
++ PR #34 + self-merge (squash 49aff18). NOT peer-gated — display-only + tests-only,
+off scoring path. First duty: no open peer-gated PR ([]); realigned main to
+origin/main 49aff18 after merge. No Slack (display-only, moves no score; this 23:1xZ
+fire is after the Cycle-86 16:12Z daily digest, so not the first-after-16:00 cycle).
+RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z ~23.5h old). Vendor-neutral
+(only open standards named — HTTP status codes / RFC 7807 / REST / GraphQL /
+OpenAPI; wording scanners 4/4 + 4/4; no scored domain on the page).
+
+**Next hypothesis.** METHOD — a fresh executable-invariant increment on the
+offering/battery path, or extend the calibration/relabel guard family as new
+fixtures/signals land. The four metered_api signals (payment-rail, async-job,
+api-auth, error-contract) now each have the full COVERAGE→TRUTH→READOUT arc closed,
+so the next COVERAGE frontier is a NEW archetype/signal (the in-cloud metered_api
+signal bank is well-covered) or a per-segment leaderboard summary once the [LOCAL]
+calibration population grows.

@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 
 # Make the worktree's asrs importable when run as a bare script.
@@ -1251,6 +1252,105 @@ def test_api_auth_fires_on_real_captured_surfaces():
     print("  ok: api-auth is ABSENT on a real no-API retail storefront (non-vacuous)")
 
 
+def test_error_contract_precision_synthetic():
+    # A documented ERROR CONTRACT — the machine-readable 4xx/5xx error responses an
+    # agent must handle to recover from a failed call (refresh a credential on a 401,
+    # back off and retry on a 429, surface a clear failure on a 4xx/5xx) — is the
+    # "complete the job" reliability capability at the offering layer: an agent that
+    # cannot read the error contract cannot recover autonomously, so it claims
+    # metered_api via the new error-contract signal. Each POSITIVE is real,
+    # vendor-neutral error-documentation vocabulary (an OpenAPI status-keyed response
+    # object, RFC 7807 problem+json, a status code paired with a snake_case error
+    # code); each NEGATIVE is number-SHAPED noise that must NOT fire it (the precision
+    # traps: a quantity, a price, a phone/room number, a success status).
+    positives = {
+        "openapi 429 response": '"429":{"description":"Plan generation allowance exceeded"}',
+        "openapi 401 response": '"401":{"description":"Missing or invalid API key"}',
+        "openapi 404 content": '"404":{"content":{"application/json":{"schema":{}}}}',
+        "problem+json": "On error the endpoint returns application/problem+json with details.",
+        "error table": "Errors Status Code Meaning 400 invalid_request Missing field",
+        "allowance code": "429 allowance_exhausted Monthly generation allowance used up.",
+        "server error code": "502 generation_failed The render did not complete; retry.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("metered.test", {"homepage": text})
+        assert prof.claims("metered_api"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "metered_api"
+            for s in c.signals
+        }
+        assert "error-contract" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real error-contract phrasings each fire error-contract")
+
+    negatives = {
+        "quantity": "Across a 500-image catalog run we measure the drift.",
+        "throughput quantity": "We processed 500 images and 429 renders today.",
+        "price": "The pro plan is $499 per year, billed once.",
+        "phone number": "Call 411 for support anytime, day or night.",
+        "room number": "Meet us in room 404 down the hall for a demo.",
+        "success status": "Every call returns HTTP 200 OK on success.",
+        "rate limit prose": "You may send 429 requests per minute on this plan.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "error-contract" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} number-shaped noise strings do NOT fire error-contract (precision)"
+    )
+
+
+def test_error_contract_fires_on_real_captured_surfaces():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the error-contract signal fires on the
+    # GENUINE machine-readable error documentation captured live from the real
+    # metered_api storefronts — the canonical pair documents a `Status Code Meaning`
+    # error table on /docs (400 invalid_request, 401 unauthorized, 429
+    # allowance_exhausted, 502 generation_failed) and status-keyed 401/429 response
+    # objects in its OpenAPI spec, and api.replicate.com's /openapi.json returns RFC
+    # 7807 `application/problem+json` 4xx responses — all captured verbatim in the
+    # committed fixtures. Run the REAL discovery path (from_fixture ->
+    # discover_offering) so the signal is exercised exactly as a live crawl would, the
+    # same real-data non-vacuity move test_api_auth_fires_on_real_captured_surfaces
+    # makes.
+    #
+    # SCORE-NEUTRAL by construction: every domain where error-contract fires ALREADY
+    # claims metered_api (its strongest archetype on all three), so a documented error
+    # contract can only deepen that claim's evidence — never add an archetype or
+    # reorder. The classifier is off the scoring path; the canonical pair's claimed
+    # SET+ORDER is unchanged (pinned by tests/test_offering_canonical.py and the
+    # replay guard).
+    for domain in ("driftflight.com", "drift-flight.org", "api.replicate.com"):
+        ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{domain}.json"))
+        prof = offering.discover_offering(ctx)
+        assert prof.claims("metered_api"), (domain, prof.archetypes)
+        metered = next(c for c in prof.claimed if c.archetype == "metered_api")
+        err = [s for s in metered.signals if s.label == "error-contract"]
+        assert err, (domain, {s.label for s in metered.signals})
+        q = err[0].quote.lower()
+        # The matched evidence is a real error-contract form: a status-keyed response
+        # object, the RFC 7807 media type, or a status code + snake_case error code.
+        assert (
+            "problem+json" in q
+            or re.search(r'"(?:4\d\d|5\d\d)"\s*:\s*\{', q)
+            or re.search(r"\b(?:4\d\d|5\d\d)\s+[a-z][a-z0-9]*_[a-z0-9_]+", q)
+        ), (domain, err[0].quote)
+    print("  ok: error-contract fires on REAL captured error docs (both canonical domains + machine surface)")
+
+    # NON-VACUOUS negative: a real retail storefront (books.toscrape.com) documents
+    # NO machine-readable error contract — error-contract must be absent there, so it
+    # is a metered-API signal, not a match-anything token. (Offering-layer mirror of
+    # the scoring-path asymmetry: an agent-callable API documents its errors, a
+    # browser-only shop does not.)
+    ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "books.toscrape.com.json"))
+    retail = offering.discover_offering(ctx)
+    assert retail.archetypes == ["physical_good"], retail.archetypes
+    all_labels = {s.label for c in retail.claimed for s in c.signals}
+    assert "error-contract" not in all_labels, all_labels
+    print("  ok: error-contract is ABSENT on a real no-API retail storefront (non-vacuous)")
+
+
 def main() -> int:
     tests = [
         test_api_storefront_claims_agent_native_not_physical,
@@ -1284,6 +1384,8 @@ def main() -> int:
         test_async_job_fires_on_real_captured_openapi,
         test_api_auth_precision_synthetic,
         test_api_auth_fires_on_real_captured_surfaces,
+        test_error_contract_precision_synthetic,
+        test_error_contract_fires_on_real_captured_surfaces,
         test_strip_html_drops_script_style_and_tags,
     ]
     failed = 0

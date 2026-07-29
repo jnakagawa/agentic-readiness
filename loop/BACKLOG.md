@@ -6,9 +6,9 @@ design in-cloud, execute locally.
 ## P0
 
 - **[LOCAL] Local verify runner STALLED past the 6h floor again** (SELF-HEALING, flagged Cycle 76,
-  still gapped through Cycle 86 2026-07-29T16:12Z; FLAGGED in the Cycle-86 16:00 UTC digest). Newest artifact
-  `runs/local/verify_20260728T234102Z.json` (23:41Z Jul-28) is ~16h31m old; seventeen consecutive :41 fires
-  00:41–15:41Z Jul-29 produced NO newer artifact. The cloud cannot
+  still gapped through Cycle 87 2026-07-29T17:12Z; FLAGGED in the Cycle-86 16:00 UTC digest). Newest artifact
+  `runs/local/verify_20260728T234102Z.json` (23:41Z Jul-28) is ~17h31m old; eighteen consecutive :41 fires
+  00:41–16:41Z Jul-29 produced NO newer artifact. The cloud cannot
   reach Jonah's machine to diagnose. On the next LOCAL fire: read the runner heartbeat log + any unpushed
   `runs/local/verify_*.json`, check `attempts` on the newest artifact. If it's the Cycle-63 wake/network
   race recurring (a >60s slow-network wake outlasting the 5×15s `git_pull_with_retry`), escalate to a
@@ -550,14 +550,21 @@ design in-cloud, execute locally.
   fetched surfaces) and the test asserts the host-free nature explicitly rather than overclaiming a quote
   anchor. Tests-only, rubric v0.7, replay guard 24/24 / 46.1 F / 85.5 B / +39.4. See LOG Cycle 83. Item stays
   OPEN for the NEXT new offering fixture (structured-catalog capture / new archetype anchor) or new signal.
-  NEXT CANDIDATE (Cycle 86 COVERAGE landed the `api-auth` metered_api signal — programmatic API
-  authentication / credential provisioning): a SIGNAL-level relabel guard
-  `test_offering_relabel_invariance_api_auth` — relabel the canonical host everywhere and assert the api-auth
-  signal survives (same match count, each relabeled quote still matching the live `api-auth` regex, vendor
-  host gone) — proving an access/auth scheme keys on the SCHEME STRUCTURE (`Authorization: Bearer`, an
-  API-key header, an OpenAPI securityScheme), not the host/vendor NAME. QUOTE-ANCHORED non-vacuity like
-  payment-rail (the evidence quote embeds `api.driftflight.com/v1/... Authorization: Bearer`), NOT host-free
-  like async-job. This is the natural next TRUTH increment.
+  DONE 2026-07-29 (Cycle 87, TRUTH, branch+PR+self-merge, tests-only/score-neutral): the Cycle-86 `api-auth`
+  candidate SHIPPED as a SIGNAL-level relabel guard — `test_offering_relabel_invariance_api_auth`
+  (test_offering_canonical 15→16) relabels driftflight.com's host everywhere and asserts the api-auth signal
+  survives with the same match count (5), the same host-normalized surfaces (signal did not migrate), each
+  relabeled quote still matching the live `api-auth` regex, and the vendor host gone from every piece of auth
+  evidence — proving an access/auth scheme keys on the SCHEME STRUCTURE (`Authorization: Bearer` header,
+  `X-API-Key`, an OpenAPI securityScheme, OAuth2), not the host/vendor NAME. QUOTE-ANCHORED non-vacuity like
+  payment-rail (the homepage evidence quote embeds `api.driftflight.com/v1/... Authorization: Bearer`); HONEST
+  MIXED CASE (the signal also fires on host-free `/docs` and host-embedding `api.driftflight.com/openapi.json`
+  surfaces — the non-vacuity anchor is the QUOTE that embeds the host). Byte-equality modulo host deliberately
+  not asserted (host-length change shifts the fixed-width window); structural re-match is the robust invariant.
+  Tests-only, rubric v0.7, replay guard 24/24 / 46.1 F / 85.5 B / +39.4. PR #24 (squash d3be0f6). See LOG
+  Cycle 87. The signal-level relabel family now covers all THREE recently-landed metered_api signals
+  (payment-rail, async-job, api-auth). Item stays OPEN for the NEXT new offering fixture (structured-catalog
+  capture / new archetype anchor) or new signal.
 
 <!-- DONE 2026-07-29T04:1xZ (Cycle 74, COVERAGE, direct-to-main, tests-only/score-neutral): the
      offering-relative BATTERY-INSTANTIATION layer (`battery.instantiate_battery`, the operator directive's

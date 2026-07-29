@@ -1,13 +1,14 @@
 # Loop state
 
-- Cycle counter: 86
+- Cycle counter: 87
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-29T16:12Z, Cycle 86; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-29T17:12Z, Cycle 87; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~16h31m old at the 16:12Z fire; no newer :41 artifact through 15:41Z Jul-29 (17 consecutive
+  Jul-28 = ~17h31m old at the 17:12Z fire; no newer :41 artifact through 16:41Z Jul-29 (18 consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine → FLAGGED in the Cycle-86 16:00 UTC digest
-  (the 16:12Z fire is the FIRST cycle after 16:00Z; the ~16.5h runner gap was flagged loudly there);
-  queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
+  (the 16:12Z fire was the FIRST cycle after 16:00Z; the ~16.5h runner gap was flagged loudly there;
+  this 17:12Z fire is NOT the first-after-16:00 cycle, so no re-digest — keep flagging in each daily
+  digest until it clears); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
   is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
   local fire root-caused (a >60s slow-network wake still misses the 5×15s retry) OR the machine is
@@ -26,7 +27,40 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 87 TRUTH — relabel-invariance made executable at the SIGNAL level for the Cycle-86 `api-auth`
+  metered_api signal (programmatic API authentication / credential provisioning). New
+  `test_offering_relabel_invariance_api_auth` (`tests/test_offering_canonical.py` 15→16) replays the
+  committed `driftflight.com` fixture through the REAL discovery path, relabels the host everywhere
+  (`driftflight.com` → `vendor-neutral.test`) via `_discover_relabeled`, and asserts the `api-auth` signal
+  is IDENTITY-invariant: SAME match count (5), SAME host-normalized surfaces (signal did not migrate), each
+  relabeled quote STILL matching the live `api-auth` regex (re-run per quote), vendor host GONE from every
+  piece of auth evidence — proving an access/auth scheme keys on the SCHEME STRUCTURE (`Authorization:
+  Bearer` header, `X-API-Key`, an OpenAPI `securityScheme`, OAuth2), not the host/vendor NAME. Third
+  signal-level companion to the Cycle-79 payment-rail + Cycle-83 async-job guards (the recurring "extend
+  relabel-invariance as new signals land" item). QUOTE-ANCHORED non-vacuity like payment-rail: the host is
+  literally inside a matched evidence quote (the homepage `api.driftflight.com/v1/... Authorization: Bearer`
+  quote), so the whole-fixture relabel genuinely rewrites the classifier's matched input. HONEST MIXED CASE:
+  the signal also fires on host-free surfaces (`/docs`) and host-embedding surfaces
+  (`api.driftflight.com/openapi.json`); the non-vacuity anchor is the QUOTE (strongest of the three).
+  Byte-equality modulo host deliberately NOT asserted (host-length change 15→19 shifts the fixed-width
+  window); the structural re-match is the robust invariant; the existing negative control (identity special-
+  case CAUGHT) gives the machinery teeth. Also asserts both credential forms exercised (Authorization/Bearer
+  header + API key). Tests-only, off scoring path: git diff --name-only = tests/test_offering_canonical.py
+  ONLY; git diff over asrs/rubric/fixtures/batteries EMPTY → rubric v0.7. Canonical PAIR unchanged AND
+  re-measured (replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss). test_offering_canonical 15→16;
+  full suite 22 files green (test_free_tier 11/11 with eth-account). Cloud bridge blocks direct main push →
+  branch loop/relabel-api-auth-signal + PR #24 + self-merge (squash d3be0f6; NOT peer-gated — tests-only,
+  off scoring path, pins existing behaviour). First duty: no open peer-gated PR ([]); realigned main to
+  origin/main d3be0f6 after merge. No Slack (tests-only, moves no score; the 16:00 UTC daily digest was
+  already sent at the Cycle-86 16:12Z fire, so this 17:12Z fire is not the first-after-16:00 cycle). RUNNER
+  STILL GAPPED (verify_20260728T234102Z 23:41Z ~17.5h old). The signal-level relabel family now covers all
+  THREE recently-landed metered_api signals (payment-rail, async-job, api-auth). Next READOUT — candidate:
+  surface the api-auth "provision without a human" / credential-scheme recognition in the PUBLIC methodology
+  prose (capability-worded, vendor-neutral — HTTP Authorization header / API key / OpenAPI securityScheme /
+  OAuth2 as open conventions, keyed on the SCHEME not the vendor), the READOUT complement to the Cycle-86
+  COVERAGE + this-cycle TRUTH api-auth arc, mirroring the Cycle-80 payment-rail + Cycle-84 async-job READOUT
+  paragraphs.)
   (Cycle 86 COVERAGE — offering discovery now recognises programmatic API AUTHENTICATION, the "provision
   without a human" capability the signal bank was missing entirely. New `api-auth` signal in
   `_SIGNALS["metered_api"]` (`asrs/offering.py`), grouped with the callable-API signals after

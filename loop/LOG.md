@@ -7184,3 +7184,66 @@ cross-validation; [LOCAL] exa.ai over-claim precision pass). A cloud-doable TRUT
 relabel-invariance vendor-neutrality guard to the api.replicate.com machine-surface fixture (its
 metered_api evidence quote embeds the host in `POST https://<host>/…`, so it is the one committed offering
 fixture NOT yet covered by `test_offering_canonical`'s relabel family).
+
+## Cycle 75 — 2026-07-29T05:1xZ — TRUTH
+
+**What.** Extended the offering-classifier vendor-neutrality tripwire
+(domain-relabeling invariance, Cycle 21/31) to the machine-surface-first
+storefront `api.replicate.com` — the one committed offering fixture the relabel
+family did not yet cover. New `test_offering_relabel_invariance_machine` in
+`tests/test_offering_canonical.py` (12→13) relabels the host to
+`vendor-neutral.test` everywhere (request keys + response bytes, whole-fixture
+sub, temp file) and replays through the REAL
+`FetchContext.from_fixture → discover_offering` path, asserting the claimed
+archetype list (ordered — `[metered_api]`) and the NA/unclaimed set are identical
+to the un-relabeled discovery. Refactored `_assert_offering_relabel_invariant` to
+take an optional explicit `exp` set (defaults to the canonical-pair
+`EXPECTED_CLAIMED` lookup) so the same quote-anchored helper serves the machine
+fixture.
+
+**Why.** `api.replicate.com`'s metered_api claim is driven by the machine
+CONTRACT (`/openapi.json`), not marketing prose, and its `post-endpoint` evidence
+quote literally embeds the host (`curl -X POST https://api.replicate.com/v1/…`) —
+the SAME quote-anchored non-vacuity substrate as the canonical pair, so relabeling
+genuinely changes the text the classifier reads. This proves the metered_api task
+SELECTION keys on the endpoint STRUCTURE (a POST to a versioned API path), not the
+vendor's NAME — extending the "no special-casing any domain, favorable or hostile"
+invariant from the two flight-themed fixtures to the machine-contract-driven
+storefront, a classification path a homepage-only relabel could not exercise. The
+scoring-layer relabel guard (`test_canonical_replay`) already spans four domains;
+the OFFERING/task-selection layer now covers three (pair + machine) plus the two
+surface-presence cases (retail + non-storefront).
+
+**Non-vacuous.** The base discovery's own `post-endpoint` metered_api quote
+contains the host (asserted before the relabel via `host_in_evidence`), and the
+neutral host is a different length carrying no archetype-signal word, so invariance
+is neither a same-length coincidence nor a neutral-host artifact. The existing
+`test_offering_relabel_negative_control` (a monkeypatched identity-keyed
+special-case → claimed sets diverge, CAUGHT) proves the shared invariance assertion
+has teeth. Empirically confirmed the relabel actually re-runs classification and
+still yields `[metered_api]` before writing.
+
+**Ship.** Tests-only, off the scoring path. `git diff --name-only -- asrs/ rubric/
+fixtures/ batteries/` EMPTY → scoring AND offering/battery code byte-for-byte
+untouched, rubric stays **v0.7**. Cloud git bridge refuses direct main pushes →
+branch `loop/relabel-machine-surface` + PR + self-merge (squash). NOT peer-gated (no
+scoring-semantics/payment change). No Slack (tests-only, moves no score, before the
+16:00 UTC daily-digest window).
+
+**Evidence.** `tests/test_offering_canonical.py` 12→13; full suite 22/22 files
+green (`test_free_tier` 11/11 once `eth-account` from requirements is installed).
+First duty: no open peer-gated PR (`list_pull_requests state=open` → []).
+
+**Canonical pair (regression signal).** Scoring path byte-for-byte untouched →
+delta unchanged **by construction** AND pinned by the in-cloud replay guard
+(`test_canonical_replay` 24/24): **46.1 F / 85.5 B / +39.4**, 0 replay-miss. Live
+signal corroborates: newest `runs/local/verify_20260728T234102Z.json` delta 39.4
+(23:41Z, ~5h31m old at the 05:12Z fire — under the 6h floor but WATCH: five
+consecutive :41 fires 00:41–04:41Z produced no newer artifact; breaches the floor
+~05:41Z → flag in the next digest if still gapped).
+
+**Next hypothesis.** READOUT next (rotate). Cloud-doable READOUT candidate: the
+calibration leaderboard page off the committed `calibration_sweep_*.json` (P1
+backlog item) — render the population as an HTML/terminal leaderboard, pillars +
+segment + claimed archetypes + grade, NOT-SCORABLE members named separately,
+weights/bands pulled live from `load_rubric`.

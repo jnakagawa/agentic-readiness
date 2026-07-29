@@ -504,9 +504,10 @@ def _discover_relabeled(domain: str, new_host: str):
         os.unlink(tmp.name)
 
 
-def _assert_offering_relabel_invariant(domain: str) -> None:
+def _assert_offering_relabel_invariant(domain: str, exp: set | None = None) -> None:
     base, _ = _discover(domain)
-    exp = EXPECTED_CLAIMED[domain]
+    if exp is None:
+        exp = EXPECTED_CLAIMED[domain]
 
     # Non-vacuity: the classifier's OWN matched evidence contains the host, so
     # relabeling genuinely changes the text classification reads (not a no-op).
@@ -552,6 +553,37 @@ def test_offering_relabel_invariance_org() -> None:
 def test_offering_relabel_invariance_com() -> None:
     print("test_offering_relabel_invariance_com")
     _assert_offering_relabel_invariant("driftflight.com")
+
+
+# The machine-surface-FIRST storefront joins the quote-anchored relabel family.
+# The claimed set of `api.replicate.com` (the third committed offering fixture) is
+# {metered_api}.
+_MACHINE_CLAIMED = {"metered_api"}
+
+
+def test_offering_relabel_invariance_machine() -> None:
+    """A machine-surface-first storefront's task set is identity-invariant.
+
+    `api.replicate.com` — a real metered model-inference API whose homepage is a
+    bare `{}` and whose only agent-facing self-description is its /openapi.json — is
+    the one committed offering fixture whose metered_api claim is driven by the
+    machine CONTRACT rather than marketing prose (pinned by
+    `test_machine_surface_openapi_storefront` above). Its `post-endpoint` evidence
+    quote literally embeds the host (`curl -X POST https://api.replicate.com/v1/…`),
+    so it shares the SAME quote-anchored non-vacuity substrate as the canonical pair
+    — the host really is inside the classifier's matched evidence, so relabeling
+    genuinely changes classifier input.
+
+    This proves the metered_api task selection keys on the endpoint STRUCTURE (a POST
+    to a versioned API path), not the vendor's NAME: relabel the host everywhere and
+    the claimed set ([metered_api]) and the NA set (every other archetype, excluded
+    from every mean/spread, never penalized) are byte-identical. The relabel guards
+    above cover the two flight-themed fixtures; this extends the quote-anchored family
+    to the machine-contract-driven storefront, the classification path that a
+    homepage-only relabel could not exercise.
+    """
+    print("test_offering_relabel_invariance_machine")
+    _assert_offering_relabel_invariant(_MACHINE_SURFACE, _MACHINE_CLAIMED)
 
 
 def test_offering_relabel_negative_control() -> None:
@@ -733,6 +765,7 @@ def main() -> int:
         test_machine_surface_openapi_storefront,
         test_offering_relabel_invariance_org,
         test_offering_relabel_invariance_com,
+        test_offering_relabel_invariance_machine,
         test_offering_relabel_invariance_retail,
         test_offering_relabel_invariance_nonstorefront,
         test_offering_relabel_negative_control,

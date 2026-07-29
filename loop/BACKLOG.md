@@ -483,18 +483,26 @@ design in-cloud, execute locally.
 
 ## P1
 
-- **Relabel-invariance for the api.replicate.com machine-surface fixture** (TRUTH/METHOD, cloud-doable,
-  observation from Cycle 74). `test_offering_canonical.py`'s relabel-invariance family (Cycle 21/31) covers
-  the driftflight pair, the retail inverse (books.toscrape), and the non-storefront (example.com) — but NOT
-  the machine-surface-first storefront (api.replicate.com), the one committed offering fixture whose
-  metered_api claim is driven by the `/openapi.json` surface and whose "post-endpoint" evidence quote
-  embeds the host (`POST https://api.replicate.com/…`). Add `test_offering_relabel_invariance_machine`
-  mirroring the existing relabel tests: relabel the host to `vendor-neutral.test` everywhere and assert the
-  claimed archetype list (`[metered_api]`) + NA set are identical — proving the metered_api claim keys on
-  the endpoint STRUCTURE, not the vendor's name, on a REAL third-party API driven by the machine contract.
-  Cloud-doable (committed fixture, no network), tests-only, score-neutral. NON-VACUOUS by the same substrate
-  as the other relabel tests (the host appears in the base evidence). Folds into the "Adversarial referee
-  pass → extend relabel-invariance to more fixtures as they land" recurring item.
+<!-- DONE 2026-07-29T05:1xZ (Cycle 75, TRUTH, branch+PR+self-merge, tests-only/score-neutral):
+     "Relabel-invariance for the api.replicate.com machine-surface fixture" SHIPPED. New
+     `test_offering_relabel_invariance_machine` (test_offering_canonical 12→13) relabels the host to
+     `vendor-neutral.test` everywhere and replays through the REAL `from_fixture → discover_offering`,
+     asserting claimed list (ordered `[metered_api]`) + NA set identical to the un-relabeled run —
+     proving the metered_api task SELECTION keys on the endpoint STRUCTURE (POST to a versioned API path)
+     not the vendor NAME. Quote-anchored non-vacuity (host in the base `post-endpoint` metered_api
+     evidence quote), same substrate as the pair; existing negative-control gives the shared assertion
+     teeth. `_assert_offering_relabel_invariant` refactored to take an optional `exp` set. Offering
+     relabel coverage now 3 quote-anchored (org/com/machine) + 2 surface-presence (retail/nonstorefront).
+     Tests-only, git diff -- asrs/ rubric/ fixtures/ batteries/ EMPTY → rubric v0.7, replay guard 24/24 /
+     46.1 F / 85.5 B / +39.4. See LOG Cycle 75. Folds into the recurring "extend relabel-invariance to
+     more fixtures as they land" item. -->
+- **Extend relabel-invariance as new offering fixtures land** (TRUTH/METHOD, cloud-doable, recurring —
+  sub-item of the Adversarial referee pass). `test_offering_canonical.py`'s relabel family now covers all
+  FIVE committed offering fixtures (pair + machine quote-anchored; retail + non-storefront surface-presence,
+  Cycle 75). When a NEW committed offering fixture lands (e.g. a structured-catalog capture, or a new
+  archetype anchor), add its relabel case — quote-anchored (`_assert_offering_relabel_invariant(domain,
+  exp)`) if the classifier's evidence quote embeds the host, else surface-presence
+  (`_assert_offering_relabel_general`). Keeps the vendor-neutrality tripwire spanning the full fixture set.
 
 <!-- DONE 2026-07-29T04:1xZ (Cycle 74, COVERAGE, direct-to-main, tests-only/score-neutral): the
      offering-relative BATTERY-INSTANTIATION layer (`battery.instantiate_battery`, the operator directive's

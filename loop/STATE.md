@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 74
+- Cycle counter: 75
 - Started: 2026-07-23 (UTC)
 - INFRA (2026-07-29T04:2xZ, Cycle 74): the CLOUD git bridge now REFUSES direct pushes to `main`
   (branch-protected) — a `git push origin main` of a legitimate fast-forward is rejected with a
@@ -15,7 +15,31 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 75 TRUTH — extended the offering-classifier VENDOR-NEUTRALITY tripwire (domain-relabel
+  invariance, Cycle 21/31) to the MACHINE-SURFACE-first fixture `api.replicate.com`, the one committed
+  offering fixture the relabel family did not cover. New `test_offering_relabel_invariance_machine`
+  (test_offering_canonical 12→13) relabels the host to `vendor-neutral.test` everywhere and replays
+  through the REAL `from_fixture → discover_offering`, asserting claimed list (ordered `[metered_api]`)
+  + NA set identical to the un-relabeled run. Refactored `_assert_offering_relabel_invariant` to take an
+  optional `exp` set so the quote-anchored helper serves the machine fixture. Chose it because
+  `api.replicate.com`'s metered_api claim is driven by the machine CONTRACT (/openapi.json) and its
+  `post-endpoint` quote embeds the host (`curl -X POST https://api.replicate.com/v1/…`) = the SAME
+  quote-anchored non-vacuity substrate as the pair → proves the metered_api task SELECTION keys on
+  endpoint STRUCTURE not the vendor NAME. Offering/task-selection relabel coverage now 3 quote-anchored
+  (org/com/machine) + 2 surface-presence (retail/nonstorefront); scoring-layer guard already spans 4.
+  NON-VACUOUS: host asserted present in base metered_api evidence quote, neutral host different length +
+  no signal word; existing negative-control (identity-keyed special-case CAUGHT) gives the shared
+  assertion teeth. Tests-only: git diff -- asrs/ rubric/ fixtures/ batteries/ EMPTY → scoring AND
+  offering/battery code byte-for-byte untouched, rubric v0.7. Canonical PAIR unchanged AND re-measured
+  (replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; verify_20260728T234102Z 23:41Z delta 39.4,
+  ~5h31m old at 05:12Z — under 6h floor). Full suite 22/22 files (test_free_tier 11/11 with eth-account
+  installed). Cloud bridge blocks direct main push → branch loop/relabel-machine-surface + PR + self-merge
+  (NOT peer-gated). No Slack (tests-only, moves no score, before 16:00 UTC digest). First duty: no open
+  peer-gated PR ([]). RUNNER WATCH: five consecutive :41 fires 00:41–04:41Z Jul-29 produced no newer
+  artifact than 23:41Z (still under the 6h floor at the 05:12Z fire, breaches ~05:41Z) — if still gapped
+  next fire, FLAG in the next digest. Next READOUT — cloud-doable candidate: the calibration leaderboard
+  page off the committed calibration_sweep_*.json (P1 backlog).)
   (Cycle 74 COVERAGE — the operator directive's CORE DELIVERABLE, offering-relative task SELECTION
   (`battery.instantiate_battery`), now pinned END-TO-END on the REAL committed fixtures. New
   `tests/test_battery_instantiate_canonical.py` +6 replays each committed fixture through the FULL real

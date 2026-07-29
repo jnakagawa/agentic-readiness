@@ -995,6 +995,134 @@ def test_offering_relabel_invariance_api_auth() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Relabel-invariance at the SIGNAL level — the documented ERROR CONTRACT.
+#
+# The fourth signal-level companion to the payment-rail / async-job / api-auth
+# guards above, for the metered_api signal that landed most recently:
+# `error-contract` (Cycle 90 — the 4xx/5xx error responses an agent must read to
+# RECOVER from a failed call, in three high-precision forms: an OpenAPI
+# status-keyed response object `"429":{"description"…`, the IETF RFC 7807
+# `application/problem+json` media type, or a status code paired with a
+# snake_case error code `400 invalid_request`). It is the "complete the job"
+# RELIABILITY leg: an agent that cannot read the error contract cannot recover
+# autonomously (refresh a credential on 401, back off/retry on 429, surface a
+# clear failure on 4xx/5xx). An error contract is a property of what a storefront
+# DECLARES — status codes, problem+json, error codes — never of WHO declares it,
+# so the signal must be identity-invariant.
+#
+# SURFACE-PRESENCE, not quote-anchored (like async-job, NOT payment-rail): the
+# error-contract vocabulary is host-free by nature — a status code, a media type,
+# and a snake_case error code name no vendor, so the fired QUOTES carry no host
+# (asserted below). But this fixture is a STRONGER surface-presence case than
+# async-job: it fires 3 times on driftflight.com, and TWO of those three surfaces
+# embed the host in the surface KEY (`agents.driftflight.com/llms-full.txt`,
+# `api.driftflight.com/openapi.json`; the third, `/docs`, is host-free). So the
+# whole-fixture relabel genuinely rewrites the surface keys the signal fires on —
+# the host-normalization step of the surface assertion does real work here, unlike
+# async-job's lone host-free `/openapi.json` surface. Under relabel the signal must
+# survive with the SAME match count, on the SAME host-normalized surfaces, each
+# quote STILL satisfying the live error-contract regex, with the vendor host absent
+# from every piece of error-contract evidence.
+#
+# This drops the relabel family one more layer, to the specific "recover from a
+# failed call" signal the growing class of long-running agent-native APIs rests
+# on, the same move Cycle 79 made for `agent-payment-rail`, Cycle 83 for
+# `async-job`, and Cycle 87 for `api-auth`.
+# ---------------------------------------------------------------------------
+_ERROR_LABEL = "error-contract"
+
+
+def _error_signals(prof) -> list:
+    """The (surface, quote) pairs where the error-contract signal fired, sorted."""
+    return sorted(
+        (s.surface, s.quote)
+        for c in prof.claimed
+        for s in c.signals
+        if s.label == _ERROR_LABEL
+    )
+
+
+def test_offering_relabel_invariance_error_contract() -> None:
+    """The documented error contract keys on declared status codes, not host."""
+    print("test_offering_relabel_invariance_error_contract")
+    base, _ = _discover("driftflight.com")
+    base_err = _error_signals(base)
+
+    # The signal genuinely fires on real captured evidence — and BOTH host-free
+    # structural forms are exercised (an OpenAPI status-keyed response object AND a
+    # status code paired with a snake_case error code).
+    _check(
+        len(base_err) >= 2,
+        "error-contract fires on >=2 real driftflight.com surfaces "
+        f"(got {len(base_err)}: {[s for s, _ in base_err]})",
+    )
+    joined = " ".join(q for _, q in base_err)
+    _check(
+        '":{"description"' in joined or '": {"description"' in joined
+        or re.search(r'"(?:4\d\d|5\d\d)"\s*:\s*\{', joined) is not None,
+        "an OpenAPI status-keyed response object is among the error evidence",
+    )
+    _check(
+        re.search(r"\b(?:4\d\d|5\d\d)\s+[a-z][a-z0-9]*_[a-z0-9_]+\b", joined) is not None,
+        "a status code paired with a snake_case error code is among the error evidence",
+    )
+
+    # Honest scope: the error-contract evidence is host-FREE (a status code, a media
+    # type, a snake_case error code name no vendor), so non-vacuity cannot anchor on
+    # the host being inside the quote — this is a surface-presence invariance.
+    _check(
+        all("driftflight.com" not in quote for _, quote in base_err),
+        "the error-contract evidence is host-free (status codes / problem+json / "
+        "error codes, not a vendor name) — so this is a surface-presence, not a "
+        "quote-anchored, invariance",
+    )
+
+    # Non-vacuity anchor (surface level, STRONGER than async-job's fixture-level
+    # anchor): the host is present INSIDE the surface KEYS the signal fires on, so a
+    # whole-fixture relabel genuinely rewrites the very surfaces the signal reads —
+    # the host-normalization step of assertion (2) below does real work, it is not a
+    # no-op over host-free surfaces.
+    _check(
+        any("driftflight.com" in surf for surf, _ in base_err),
+        "the host appears inside >=1 error-contract surface key — relabel rewrites "
+        f"real surface input (surfaces {[s for s, _ in base_err]})",
+    )
+
+    relab = _discover_relabeled("driftflight.com", _NEUTRAL_HOST)
+    relab_err = _error_signals(relab)
+
+    # (1) Same number of error-contract matches — the signal is neither lost nor conjured.
+    _check(
+        len(relab_err) == len(base_err),
+        "error-contract match count invariant under relabel "
+        f"(base {len(base_err)}, relabel {len(relab_err)})",
+    )
+    # (2) The SAME logical surfaces carry the signal once the host label is
+    # normalized away — the signal did not migrate to a different surface.
+    base_surf = sorted(s.replace("driftflight.com", _NEUTRAL_HOST) for s, _ in base_err)
+    relab_surf = sorted(s for s, _ in relab_err)
+    _check(
+        relab_surf == base_surf,
+        "error-contract fires on the same (host-normalized) surfaces under relabel "
+        f"(base {base_surf}, relabel {relab_surf})",
+    )
+    # (3) Each relabeled quote STILL satisfies the live error-contract regex (proving
+    # the fired form is structural — a status-keyed response object / problem+json /
+    # status+error-code) and names no vendor host — the match keyed on the DECLARED
+    # error contract, not identity.
+    err_re = dict(_offering._SIGNALS["metered_api"])[_ERROR_LABEL]
+    for surf, quote in relab_err:
+        _check(
+            err_re.search(quote) is not None,
+            f"relabeled error-contract quote still matches the structural signal: {quote!r}",
+        )
+        _check(
+            "driftflight.com" not in quote and "driftflight.com" not in surf,
+            f"vendor host absent from relabeled error-contract evidence (surface {surf!r})",
+        )
+
+
+# ---------------------------------------------------------------------------
 # Relabel-invariance EXTENDED to the retail + non-storefront domains.
 #
 # The two invariance tests above cover only the canonical PAIR, because their
@@ -1117,6 +1245,7 @@ def main() -> int:
         test_offering_relabel_invariance_payment_rail,
         test_offering_relabel_invariance_async_job,
         test_offering_relabel_invariance_api_auth,
+        test_offering_relabel_invariance_error_contract,
         test_offering_relabel_invariance_retail,
         test_offering_relabel_invariance_nonstorefront,
         test_offering_relabel_negative_control,

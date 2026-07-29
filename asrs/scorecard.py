@@ -1001,6 +1001,197 @@ Read this live in a terminal: <span class="chip">python -m asrs canonical-histor
     return str(path)
 
 
+def _load_calibration_sweep() -> dict | None:
+    """Read the NEWEST committed ``runs/local/calibration_sweep_*.json`` sweep, or
+    None if none is present. The local runner half of the loop commits a dated
+    static $0 population sweep; this module lives inside the repo so deriving the
+    root from ``__file__`` is safe here (unlike the pinned runner)."""
+    runs_dir = Path(__file__).resolve().parent.parent / "runs" / "local"
+    paths = sorted(runs_dir.glob("calibration_sweep_*.json"))
+    if not paths:
+        return None
+    try:
+        return json.loads(paths[-1].read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
+# Static-sweep pillar order for the leaderboard columns — the same five pillars,
+# outcome last (a static $0 sweep never runs a live shopper panel, so outcome is
+# always null here; shown as "—", never a scored 0 — attribution honesty).
+_SWEEP_PILLARS = ("access", "legibility", "transactability", "trust", "outcome")
+
+
+def _write_calibration_page(out_dir: Path, sweep=None) -> str:
+    """Render calibration.html — the population leaderboard behind the reference pair.
+
+    A benchmark needs a POPULATION, not one pair. The local runner commits a dated
+    static $0 sweep of real domains scored through the SAME probe path as every
+    card; this page renders the newest committed dataset as a ranked leaderboard so
+    a reader sees where real storefronts land on the scale, not just the two anchors.
+
+    Attribution honesty (invariant #4) is the load-bearing design choice: only
+    SCORED members are ranked. A member the crawl could not reach is NOT SCORABLE —
+    a reachability fact about the observation, never a site FAILURE — and is named
+    in a SEPARATE section, never mixed into the ranking or given a rank number.
+
+    Grade bands come LIVE from ``load_rubric`` so the on-page legend can never drift
+    from the scoring; the sweep's own recorded ``rubric_version`` is surfaced and, if
+    it differs from the current rubric, the page says so (scores compare only within
+    a version). Domains appear here purely as DATA — the page is literally ABOUT this
+    population, the same engineering-report category as the canonical-history page;
+    this is deliberately out of scope for the vendor-neutral-wording scanner, which
+    guards capability-worded CHECK prose, not pages that report on named domains.
+    Display-only: moves no score, rubric untouched.
+    """
+    from .scoring import load_rubric
+
+    sweep = _load_calibration_sweep() if sweep is None else sweep
+    rubric = load_rubric()
+    live_version = str(rubric.get("version", ""))
+    bands = rubric.get("grade_bands", [])
+    band_legend = " &middot; ".join(
+        f"{_esc(g)}&nbsp;&ge;&nbsp;{_esc(lb)}" for lb, g in bands
+    )
+
+    head = _PROSE_HEAD.format(title="ASRS — calibration leaderboard (population sweep)")
+    nav = (
+        '<div class="nav"><a href="javascript:history.back()">&larr; Back to the '
+        'scorecard</a><a href="methodology.html">Methodology</a>'
+        '<a href="rubric.html">Rubric &amp; checks</a></div>'
+    )
+
+    rows = sweep.get("rows", []) if isinstance(sweep, dict) else []
+    if not isinstance(sweep, dict) or not rows:
+        body = f"""{nav}<h1>Calibration leaderboard</h1>
+<p class="sub">A benchmark needs a population, not one pair</p>
+<div class="card"><h2>No population sweep yet</h2>
+<p>No committed <span class="chip">calibration_sweep_*.json</span> dataset was
+found, so there is no population to rank. The local runner commits a dated static
+$0 sweep; this page renders the newest one.</p></div>
+<p class="sub" style="margin-top:16px">
+<a href="methodology.html">How the score is measured &rarr;</a></p>
+</div></body></html>"""
+        path = out_dir / "calibration.html"
+        path.write_text(head + body)
+        return str(path)
+
+    sweep_version = str(sweep.get("rubric_version", ""))
+    ts = str(sweep.get("ts", ""))
+    ts_disp = f"{ts[:8]} {ts[9:15]}" if len(ts) >= 15 else ts
+    scored = [r for r in rows if r.get("scored") and r.get("overall") is not None]
+    not_scorable = [r for r in rows if not (r.get("scored") and r.get("overall") is not None)]
+    # Re-derive the ranking from the rows themselves (highest overall first) rather
+    # than trusting a pre-computed order — the page's ranking is a property of the
+    # scores, reproducible from the raw data.
+    scored.sort(key=lambda r: r["overall"], reverse=True)
+
+    version_note = ""
+    if sweep_version and sweep_version != live_version:
+        version_note = (
+            f'<p><b>Version note.</b> This dataset was scored on rubric '
+            f'v{_esc(sweep_version)}; the current rubric is v{_esc(live_version)}. '
+            f'Scores are comparable only within a rubric version &mdash; treat the '
+            f'ranking as a v{_esc(sweep_version)} population.</p>'
+        )
+
+    intro = f"""<h1>Calibration leaderboard</h1>
+<p class="sub">Where real storefronts land &middot; static $0 population sweep &middot;
+rubric v{_esc(sweep_version or live_version)}{f" &middot; {_esc(ts_disp)} UTC" if ts_disp else ""}</p>
+<div class="card">
+<h2>What this is</h2>
+<p>A benchmark needs a <b>population</b>, not one reference pair. This is a static,
+<b>$0</b> sweep of {len(rows)} real domains scored through the <b>same probe path</b>
+as every scorecard &mdash; no behavioral panel, so the <b>outcome</b> pillar is not
+measured here (shown as &ldquo;&mdash;&rdquo;, never a scored 0). Domains span the
+spectrum from agent-native storefronts through emerging-rails retail to no-rails
+retail and non-storefront controls; the <b>segment</b> column is read-only context,
+not an input to any score &mdash; every domain gets the <b>identical</b> vendor-neutral
+probes.</p>
+<p><b>Only reachable domains are ranked.</b> A member the crawl could not observe is
+<b>not scorable</b> &mdash; a fact about the observation, never a site failure
+(attribution honesty) &mdash; and is listed separately below, never mixed into the
+ranking.</p>
+{version_note}</div>"""
+
+    def _num(v) -> str:
+        return "&mdash;" if v is None else f"{float(v):.1f}"
+
+    def _pill_cell(v) -> str:
+        if v is None:
+            return '<td class="num" style="color:#98a2b3">&mdash;</td>'
+        cls = _band(v)
+        color = {"good": "#067647", "warn": "#b54708", "bad": "#b42318"}.get(cls, "#475467")
+        return f'<td class="num" style="color:{color}">{float(v):.0f}</td>'
+
+    pillar_head = "".join(
+        f'<th class="num" title="{_esc(PILLAR_QUESTIONS.get(p, ""))}">'
+        f'{_esc(PILLAR_LABELS.get(p, p))}</th>'
+        for p in _SWEEP_PILLARS
+    )
+    lb_rows = ""
+    for i, r in enumerate(scored, 1):
+        pillars = r.get("pillars") or {}
+        pill_cells = "".join(_pill_cell(pillars.get(p)) for p in _SWEEP_PILLARS)
+        archs = r.get("claimed_archetypes") or []
+        arch_html = (
+            "".join(f'<span class="chip">{_esc(a)}</span> ' for a in archs)
+            if archs
+            else '<span style="color:#98a2b3">none claimed</span>'
+        )
+        lb_rows += (
+            f'<tr><td class="num">{i}</td>'
+            f'<td><b>{_esc(r.get("domain", ""))}</b>'
+            f'<div class="q">{_esc(r.get("segment", ""))}</div></td>'
+            f'<td>{_grade_pill(r.get("grade", "N/A"))}</td>'
+            f'<td class="num"><b>{_num(r.get("overall"))}</b></td>'
+            f'{pill_cells}'
+            f'<td style="line-height:22px">{arch_html}</td></tr>'
+        )
+
+    table = f"""<div class="card">
+<h2>Leaderboard <span style="color:#667085;font-weight:500">&middot; {len(scored)} scored</span></h2>
+<div style="overflow-x:auto">
+<table><tr><th class="num">#</th><th>Domain &amp; segment</th><th>Grade</th>
+<th class="num">Overall</th>{pillar_head}<th>Claims to sell</th></tr>
+{lb_rows}</table></div>
+<p style="margin-top:12px;font-size:13px">Grade bands (live from rubric
+v{_esc(live_version)}): {band_legend}. Pillar cells are 0&ndash;100; a green cell is
+&ge;80, amber &ge;60, red below. &ldquo;Claims to sell&rdquo; is the offering
+classifier&rsquo;s vendor-neutral archetype set &mdash; diagnostic context, off the
+scoring path.</p>
+</div>"""
+
+    if not_scorable:
+        ns_rows = "".join(
+            f'<tr><td><b>{_esc(r.get("domain", ""))}</b>'
+            f'<div class="q">{_esc(r.get("segment", ""))}</div></td>'
+            f'<td>{_esc(r.get("error") or "unreachable by the agent crawl")}</td></tr>'
+            for r in not_scorable
+        )
+        ns_card = f"""<div class="card">
+<h2>Not scorable <span style="color:#667085;font-weight:500">&middot; {len(not_scorable)}</span></h2>
+<p>These members could not be observed by the agent crawl (an agent-UA block, a
+timeout, or an environment error). That is a <b>reachability</b> fact, not a site
+<b>failure</b> &mdash; they earn no grade and are <b>excluded from the ranking</b>
+rather than scored as a zero. Whether a store blocks agent user-agents is itself a
+readiness signal, but it is not the same as a low score.</p>
+<table><tr><th>Domain &amp; segment</th><th>Why not scored</th></tr>{ns_rows}</table>
+</div>"""
+    else:
+        ns_card = ""
+
+    body = f"""{nav}{intro}{table}{ns_card}
+<p class="sub" style="margin-top:16px">
+Scores are comparable only within a rubric version.
+&middot; <a href="methodology.html">How the score is measured &rarr;</a>
+&middot; <a href="canonical-history.html">Live canonical-delta trend &rarr;</a></p>
+</div></body></html>"""
+    path = out_dir / "calibration.html"
+    path.write_text(head + body)
+    return str(path)
+
+
 def _band(score: float | None) -> str:
     if score is None:
         return "na"
@@ -1686,6 +1877,7 @@ Pillar scores exclude checks that could not be tested.{_esc(panel_note)}
 &nbsp;<a href="methodology.html">How the score is measured &rarr;</a>
 &nbsp;&middot;&nbsp;<a href="rubric.html">The full rubric &amp; every check &rarr;</a>
 &nbsp;&middot;&nbsp;<a href="canonical-history.html">Live canonical-delta trend &rarr;</a>
+&nbsp;&middot;&nbsp;<a href="calibration.html">Population leaderboard &rarr;</a>
 &nbsp;&middot;&nbsp;<a href="https://github.com/jnakagawa/agentic-readiness">Run this yourself &rarr;</a></footer>
 </div></body></html>"""
 
@@ -1699,4 +1891,5 @@ Pillar scores exclude checks that could not be tested.{_esc(panel_note)}
     _write_rubric_page(Path(out_path).parent)
     _write_methodology_page(Path(out_path).parent)
     _write_canonical_history_page(Path(out_path).parent)
+    _write_calibration_page(Path(out_path).parent)
     return out_path

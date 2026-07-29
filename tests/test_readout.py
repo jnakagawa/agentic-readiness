@@ -911,6 +911,139 @@ def test_canonical_history_no_liveness_line_without_clock() -> None:
            "no liveness markup at all when the summary carries no clock")
 
 
+# ---------------------------------------------------------------------------
+# Cycle 76 (READOUT): the calibration LEADERBOARD page. A benchmark needs a
+# population, not one pair — the local runner commits a dated static $0 sweep of
+# real domains; `_write_calibration_page` renders the newest committed dataset as
+# a ranked leaderboard. These pin the READOUT semantics (the sweep math itself is
+# `experiments/calibration_sweep.py`, a [LOCAL] harness, not asserted here):
+#   - scored members are ranked by overall DESC (a property of the scores);
+#   - a member the crawl could not reach is NOT SCORABLE — named separately, given
+#     NO rank, framed as reachability not a site failure (attribution honesty);
+#   - grade bands come LIVE from load_rubric (no drift), and a dataset scored on a
+#     different rubric version is flagged (comparability only within a version);
+#   - an absent/empty dataset renders an honest "no population yet" card;
+#   - vendor-neutral: domains appear only as DATA, never in scored-check prose.
+
+def _fake_sweep() -> dict:
+    """A synthetic sweep with a deliberate NON-leaderboard row order (so a passing
+    ranking test proves the page re-sorts, not that it echoes input order) plus a
+    not-scorable member — the shapes `_write_calibration_page` must handle."""
+    return {
+        "ts": "20260728T234815Z",
+        "kind": "calibration-sweep",
+        "rubric_version": "0.7",
+        "n_total": 4, "n_scored": 3, "n_not_scorable": 1, "n_error": 0,
+        "rows": [
+            {"domain": "low-store.test", "segment": "control:non-storefront",
+             "scored": True, "overall": 22.5, "grade": "F",
+             "pillars": {"access": 100.0, "legibility": 40.0, "transactability": 0.0,
+                         "trust": 30.0, "outcome": None},
+             "claimed_archetypes": [], "error": None},
+            {"domain": "rails-store.test", "segment": "api-storefront:rails-anchor",
+             "scored": True, "overall": 85.5, "grade": "B",
+             "pillars": {"access": 100.0, "legibility": 90.9, "transactability": 87.5,
+                         "trust": 60.0, "outcome": None},
+             "claimed_archetypes": ["metered_api", "digital_good", "subscription"],
+             "error": None},
+            {"domain": "blocked-store.test", "segment": "retail:no-rails",
+             "scored": False, "overall": None, "grade": "N/A",
+             "pillars": None, "claimed_archetypes": [], "error": None},
+            {"domain": "mid-store.test", "segment": "retail:emerging-rails",
+             "scored": True, "overall": 61.9, "grade": "D",
+             "pillars": {"access": 100.0, "legibility": 72.0, "transactability": 40.0,
+                         "trust": 55.0, "outcome": None},
+             "claimed_archetypes": ["physical_good"], "error": None},
+        ],
+    }
+
+
+def test_calibration_page_ranks_scored_by_overall() -> None:
+    print("test_calibration_page_ranks_scored_by_overall")
+    with tempfile.TemporaryDirectory() as d:
+        path = scorecard._write_calibration_page(Path(d), sweep=_fake_sweep())
+        _check(Path(path).name == "calibration.html", "writes calibration.html")
+        text = Path(path).read_text()
+    _check("Calibration leaderboard" in text, "titled as the calibration leaderboard")
+    # Ranked by overall DESC despite the input row order being low/high/blocked/mid.
+    i_hi, i_mid, i_lo = (text.index("rails-store.test"),
+                         text.index("mid-store.test"), text.index("low-store.test"))
+    _check(i_hi < i_mid < i_lo, "scored rows ranked by overall descending (85.5>61.9>22.5)")
+    # The top row carries its overall, grade, a pillar value and its claimed archetypes.
+    _check("85.5" in text and "metered_api" in text,
+           "top scored row shows overall + claimed archetypes")
+    _check("3 scored" in text, "leaderboard names how many scored members it ranks")
+
+
+def test_calibration_page_separates_not_scorable() -> None:
+    # Attribution honesty (invariant #4): an unreachable member is NEVER in the
+    # ranking and NEVER gets a rank number — it is named in its own section as a
+    # reachability fact, not a site failure.
+    print("test_calibration_page_separates_not_scorable")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_calibration_page(Path(d), sweep=_fake_sweep())).read_text()
+    _check("Not scorable" in text, "a separate Not-scorable section exists")
+    ns_idx = text.index("Not scorable")
+    # The blocked domain appears ONLY after the Not-scorable header, i.e. not in the
+    # ranked leaderboard table above it.
+    _check(text.index("blocked-store.test") > ns_idx,
+           "the unreachable member is listed under Not scorable, not in the ranking")
+    _check("reachability" in text and "not a site" in text,
+           "framed as reachability, not a site failure")
+
+
+def test_calibration_page_bands_live_and_version_flagged() -> None:
+    # Grade bands are pulled LIVE from the rubric (no-drift), and a dataset scored on
+    # a DIFFERENT rubric version than the current one is flagged for comparability.
+    print("test_calibration_page_bands_live_and_version_flagged")
+    from asrs.scoring import load_rubric
+    live_version = str(load_rubric().get("version", ""))
+    # Same-version dataset: no version-mismatch note.
+    same = _fake_sweep()
+    same["rubric_version"] = live_version
+    with tempfile.TemporaryDirectory() as d:
+        text_same = Path(scorecard._write_calibration_page(Path(d), sweep=same)).read_text()
+    _check(f"live from rubric\nv{live_version}" in text_same
+           or f"live from rubric v{live_version}" in text_same,
+           "grade-band legend names the live rubric version")
+    _check("Version note" not in text_same, "no version note when dataset matches live rubric")
+    # Mismatched-version dataset: the comparability note fires.
+    stale = _fake_sweep()
+    stale["rubric_version"] = "0.001"
+    with tempfile.TemporaryDirectory() as d:
+        text_stale = Path(scorecard._write_calibration_page(Path(d), sweep=stale)).read_text()
+    _check("Version note" in text_stale and "0.001" in text_stale,
+           "a dataset on a different rubric version is flagged")
+
+
+def test_calibration_page_empty_renders_gracefully() -> None:
+    # No committed dataset -> an honest "no population yet" card, never a crash or a
+    # fabricated empty ranking.
+    print("test_calibration_page_empty_renders_gracefully")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_calibration_page(Path(d), sweep={"rows": []})).read_text()
+    _check("No population sweep yet" in text, "empty dataset -> honest no-data card")
+    _check("Not scorable" not in text, "no not-scorable section when there is no data")
+
+
+def test_calibration_page_published_and_linked() -> None:
+    # build_scorecard publishes calibration.html next to the card and the footer
+    # links to it — alongside the three existing prose pages (unchanged).
+    print("test_calibration_page_published_and_linked")
+    rep = _report([])
+    with tempfile.TemporaryDirectory() as d:
+        rp = Path(d) / "rep.json"
+        rp.write_text(rep.to_json())
+        out = scorecard.build_scorecard([str(rp)], out_path=str(Path(d) / "card.html"))
+        _check((Path(d) / "calibration.html").exists(),
+               "calibration.html published next to the card")
+        _check((Path(d) / "canonical-history.html").exists(),
+               "canonical-history.html still published (unchanged)")
+        _check((Path(d) / "methodology.html").exists(), "methodology.html still published")
+        _check('href="calibration.html"' in Path(out).read_text(),
+               "the card footer links to calibration.html")
+
+
 def main() -> int:
     tests = [
         test_json_carries_reliability,
@@ -953,6 +1086,11 @@ def main() -> int:
         test_canonical_history_stale_banner_when_signal_old,
         test_canonical_history_fresh_shows_age_no_stale_banner,
         test_canonical_history_no_liveness_line_without_clock,
+        test_calibration_page_ranks_scored_by_overall,
+        test_calibration_page_separates_not_scorable,
+        test_calibration_page_bands_live_and_version_flagged,
+        test_calibration_page_empty_renders_gracefully,
+        test_calibration_page_published_and_linked,
     ]
     failed = 0
     for t in tests:

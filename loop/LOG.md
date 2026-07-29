@@ -7956,3 +7956,75 @@ as new signals land" item), mirroring the Cycle-79 payment-rail and Cycle-83
 async-job signal-level relabel guards. Note the `api-auth` evidence quote embeds
 the host (`api.driftflight.com/v1/... Authorization: Bearer`), so it is a
 quote-anchored non-vacuity case like payment-rail, not host-free like async-job.
+
+## Cycle 87 — 2026-07-29T17:12Z — TRUTH
+
+**What.** Relabel-invariance made executable at the SIGNAL level for the Cycle-86
+`api-auth` metered_api signal (programmatic API authentication / credential
+provisioning). New `test_offering_relabel_invariance_api_auth`
+(`tests/test_offering_canonical.py`, 15→16) replays the committed
+`driftflight.com` fixture through the REAL discovery path, relabels the host
+everywhere (`driftflight.com` → `vendor-neutral.test`) via the existing
+`_discover_relabeled`, and asserts the `api-auth` signal is IDENTITY-invariant:
+SAME match count (5), SAME host-normalized surfaces (the signal did not migrate),
+each relabeled quote STILL matching the live `api-auth` regex (re-run per quote),
+and the vendor host GONE from every piece of auth evidence.
+
+**Why.** This is the third signal-level companion to the Cycle-79 payment-rail
+and Cycle-83 async-job relabel guards, the recurring "extend relabel-invariance
+as new signals land" item. `api-auth` is the "provision without a human" leg of
+the reach→understand→pay→provision→complete lens — an agent that cannot read the
+auth scheme cannot invoke the API at all. An access/auth scheme is a property of
+what a storefront declares programmatically (`Authorization: Bearer`, an
+`X-API-Key` header, an OpenAPI `securityScheme`, OAuth2), never of who declares
+it, so the signal must key on the SCHEME STRUCTURE, not the host/vendor NAME.
+
+**Non-vacuity (QUOTE-anchored, like payment-rail — NOT host-free like async-job).**
+The `api-auth` signal fires on driftflight.com's homepage with the host literally
+inside the matched evidence quote —
+`.../api.driftflight.com/v1/images/generate Authorization: Bearer df_live_...` —
+so a whole-fixture host relabel genuinely rewrites the text the classifier
+matched, not merely a surface key it fetched. HONEST MIXED CASE: this signal also
+fires on host-free surfaces (`/docs` — "authenticated with an API key sent as a
+Bearer token") and on host-embedding surfaces (`api.driftflight.com/openapi.json`,
+`agents.driftflight.com/llms-full.txt`); the non-vacuity anchor is the QUOTE that
+embeds the host (the strongest of the three), asserted explicitly. Quote
+byte-equality modulo host is deliberately NOT asserted (the host-length change
+`driftflight.com` 15 → `vendor-neutral.test` 19 shifts the fixed-width quote
+window); the structural re-match — re-running the live signal regex on each
+relabeled quote — is the robust invariant. The existing
+`test_offering_relabel_negative_control` (identity-keyed special-case CAUGHT)
+gives the shared machinery teeth. Also asserts both high-precision credential
+forms are exercised (an HTTP Authorization/Bearer header + an API key).
+
+**Tests-only, off the scoring path.** `git diff --name-only` =
+`tests/test_offering_canonical.py` ONLY; git diff over `asrs/`/`rubric/`/
+`fixtures/`/`batteries/` EMPTY → scoring AND offering/battery code byte-for-byte
+untouched → rubric v0.7 (discovery off the scoring path). `test_offering_canonical`
+15→16; full suite 22 files green (test_free_tier 11/11 with eth-account installed).
+
+**Canonical pair (regression signal).** UNCHANGED and re-measured: in-cloud
+replay guard `tests/test_canonical_replay.py` 24/24, overall 46.1 F (.org) /
+85.5 B (.com), delta +39.4, 0 replay-miss. LOCAL verify runner STILL GAPPED
+(`verify_20260728T234102Z.json` 23:41Z Jul-28, ~17.5h old at this 17:12Z fire —
+past the 6h floor; the in-cloud replay guard is the independent live regression
+signal meanwhile, so benchmark integrity is intact — a heartbeat gap, not a
+scoring problem). Cloud cannot reach Jonah's machine.
+
+**Ship.** Cloud bridge blocks direct main push → branch
+loop/relabel-api-auth-signal + PR #24 + self-merge (squash, d3be0f6; NOT
+peer-gated — tests-only, off the scoring path, pins existing behaviour). First
+duty: no open peer-gated PR ([]); realigned main to origin/main (d3be0f6 after
+merge). No Slack (tests-only, moves no score; the 16:00 UTC daily digest was
+already sent at the Cycle-86 16:12Z fire, so this 17:12Z fire is not the
+first-after-16:00 cycle).
+
+**Next hypothesis.** READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT).
+The signal-level relabel family now covers all three recently-landed metered_api
+signals (payment-rail, async-job, api-auth). Candidate: surface the api-auth
+"provision without a human" / credential-scheme recognition in the PUBLIC
+methodology prose (capability-worded, vendor-neutral — the HTTP Authorization
+header / API key / OpenAPI securityScheme / OAuth2 as open conventions, keyed on
+the SCHEME not the vendor), the READOUT complement to the Cycle-86 COVERAGE +
+this-cycle TRUTH api-auth arc — mirroring the Cycle-80 payment-rail and Cycle-84
+async-job READOUT paragraphs.

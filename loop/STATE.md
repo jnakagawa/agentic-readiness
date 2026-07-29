@@ -1,10 +1,10 @@
 # Loop state
 
-- Cycle counter: 78
+- Cycle counter: 79
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-29T08:12Z, Cycle 78; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-29T09:12Z, Cycle 79; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~8h31m old at the 08:12Z fire; no newer :41 artifact through 07:41Z Jul-29. Cloud CANNOT
+  Jul-28 = ~9h31m old at the 09:12Z fire; no newer :41 artifact through 08:41Z Jul-29. Cloud CANNOT
   repair the local machine → FLAG in the next 16:00 UTC digest (the 08:12Z fire is before the digest
   window); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
@@ -25,7 +25,33 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 79 TRUTH — relabel-invariance made executable at the SIGNAL level for the new `agent-payment-rail`
+  metered_api signal (Cycle 78). New `test_offering_relabel_invariance_payment_rail` (test_offering_canonical
+  13→14) replays `fixtures/canonical/driftflight.com.json` through the REAL discovery path, relabels the host
+  everywhere (`driftflight.com` → `vendor-neutral.test`) via the existing `_discover_relabeled`, and asserts the
+  rail signal is IDENTITY-invariant: SAME match count (2), SAME host-normalized surfaces (agent
+  `/llms-full.txt` settlement-asset form + `/manifest.json` structured `"protocol":"<rail>"` form), each
+  relabeled quote STILL satisfying a high-precision protocol form — re-verified by re-running the live
+  `_SIGNALS["metered_api"]["agent-payment-rail"]` regex on each relabeled quote — with the vendor host GONE.
+  Drops the relabel family a layer below the claimed-ARCHETYPE partition to the specific signal the north-star
+  "many payment rails" axis rests on: a payment rail is a property of what a storefront declares
+  programmatically (`"protocol":"x402"`, `x402 (Base USDC) and MPP (Tempo USDC)`), never of who declares it.
+  NON-VACUITY: the rail-signal surfaces embed the host (`agents.driftflight.com/…`), so the whole-fixture
+  relabel genuinely rewrites classifier input on the very surfaces the signal reads, yet the signal survives
+  because it keys on PROTOCOL/SETTLEMENT structure. HONEST ROBUSTNESS: quote byte-equality modulo host is NOT
+  asserted — host-length change (15→19) shifts the fixed-width quote WINDOW (`.com/openapi.json` →
+  `test/openapi.json`); the structural regex re-match is the robust invariant; the existing
+  `test_offering_relabel_negative_control` (identity special-case CAUGHT) gives the family teeth. Tests-only:
+  git diff -- asrs/ rubric/ fixtures/ batteries/ EMPTY → rubric v0.7. Canonical PAIR unchanged AND re-measured
+  (replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; offering guard 14/14). Full suite 22 files green
+  (test_free_tier 11/11 with eth-account). Cloud bridge blocks direct main push → branch
+  loop/relabel-payment-rail-signal + PR + self-merge (squash; NOT peer-gated — pins existing behaviour, off
+  scoring path). No Slack (tests-only, moves no score, before 16:00 UTC digest). First duty: no open
+  peer-gated PR ([]). RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z ~9h31m old at 09:12Z, past 6h floor
+  — flag in next digest). Next READOUT — candidate: surface the agent-payment-rail "many rails" recognition in
+  the methodology/offering readout prose (capability-worded), or a per-segment leaderboard summary once the
+  [LOCAL] population grows.)
   (Cycle 78 COVERAGE — offering discovery now recognises open agent-native PAYMENT RAILS BEYOND the lone
   `x402`. New `agent-payment-rail` signal in `_SIGNALS["metered_api"]` (`asrs/offering.py`) matches the
   other open, vendor-neutral agent-payment/settlement protocols the landscape is standardizing on —

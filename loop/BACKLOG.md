@@ -514,11 +514,18 @@ design in-cloud, execute locally.
   archetype anchor), add its relabel case — quote-anchored (`_assert_offering_relabel_invariant(domain,
   exp)`) if the classifier's evidence quote embeds the host, else surface-presence
   (`_assert_offering_relabel_general`). Keeps the vendor-neutrality tripwire spanning the full fixture set.
-  CANDIDATE (Cycle 78, TRUTH-track): the new `agent-payment-rail` metered_api signal (x402/MPP/ACP/UCP/AP2,
-  structured `"protocol":"<rail>"` + settlement-asset forms) fires on driftflight.com's llms-full.txt +
-  manifest.json. Add a relabel-invariance case proving the rail claim keys on the PROTOCOL/settlement
-  STRUCTURE, not the host/vendor NAME — its evidence quote embeds the manifest host + rail names, the same
-  quote-anchored substrate as the pair, so a quote-anchored assertion fits.
+  DONE 2026-07-29 (Cycle 79, TRUTH, branch+PR+self-merge, tests-only/score-neutral): the Cycle-78
+  `agent-payment-rail` candidate SHIPPED as a SIGNAL-level relabel guard —
+  `test_offering_relabel_invariance_payment_rail` (test_offering_canonical 13→14) relabels driftflight.com's
+  host everywhere and asserts the rail signal survives with the same match count (2), the same host-normalized
+  surfaces (agent `/llms-full.txt` settlement-asset form + `/manifest.json` structured `"protocol":"<rail>"`
+  form), each relabeled quote still matching the live signal regex with the vendor host gone — proving the
+  rail claim keys on PROTOCOL/SETTLEMENT structure, not the host/vendor NAME. NOTE: the quote does NOT embed
+  the FULL host (`.com/openapi.json` is a truncated window fragment, not `driftflight.com`); non-vacuity
+  anchors on the rail-signal SURFACES (`agents.driftflight.com/…`) instead, and quote byte-equality modulo
+  host is deliberately not asserted (host-length change shifts the fixed-width window). Tests-only, rubric
+  v0.7, replay guard 24/24 / 46.1 F / 85.5 B / +39.4. See LOG Cycle 79. Item stays OPEN for the NEXT new
+  offering fixture (structured-catalog capture / new archetype anchor).
 
 <!-- DONE 2026-07-29T04:1xZ (Cycle 74, COVERAGE, direct-to-main, tests-only/score-neutral): the
      offering-relative BATTERY-INSTANTIATION layer (`battery.instantiate_battery`, the operator directive's

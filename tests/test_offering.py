@@ -1159,6 +1159,98 @@ def test_async_job_fires_on_real_captured_openapi():
     print("  ok: async-job evidence does NOT change the claimed set (score-neutral)")
 
 
+def test_api_auth_precision_synthetic():
+    # Programmatic AUTHENTICATION / credential provisioning — HOW an agent obtains
+    # and presents credentials to call an API (an API key sent as a Bearer token, an
+    # OAuth2 flow, an X-API-Key header, a declared OpenAPI securityScheme) — is the
+    # "provision without a human" capability at the offering layer: an agent that
+    # cannot read the auth scheme cannot invoke the API at all, so it claims
+    # metered_api via the new api-auth signal. Each POSITIVE is real, vendor-neutral
+    # auth vocabulary; each NEGATIVE is auth-SHAPED noise that must NOT fire it (the
+    # precision traps: a retail LOGIN, "the bearer of ...", a house key, a turnkey
+    # solution, an "OAuthenticate" typo).
+    positives = {
+        "auth header": "POST https://x.test/v1/images/generate Authorization: Bearer df_live_4kq2",
+        "api key prose": "Sign up on the dashboard for an API key; usage bills monthly.",
+        "authenticated with": "Requests are authenticated with an API key sent as a Bearer token.",
+        "bearer token": "Send your credential as a Bearer token in the request header.",
+        "openapi securityschemes": '"securitySchemes":{"bearerAuth":{"bearerFormat":"JWT"}}',
+        "apikey scheme": '"type":"apiKey","in":"header","name":"X-Api-Key"',
+        "x-api-key header": "Pass credentials in the X-API-Key request header.",
+        "oauth2": "Authenticate the agent with an OAuth 2.0 client-credentials flow.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("metered.test", {"homepage": text})
+        assert prof.claims("metered_api"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "metered_api"
+            for s in c.signals
+        }
+        assert "api-auth" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real API-auth phrasings each fire api-auth")
+
+    negatives = {
+        "retail login": "Authenticate your account at checkout to see your saved bag.",
+        "bearer of news": "The courier was the bearer of the invitation to the gala.",
+        "house key": "Leave the spare key with a neighbor; free shipping on all locks.",
+        "keychain": "Our leather keychain holds up to five keys in style.",
+        "oauthenticate typo": "Please OAuthenticate soon (bad marketing copy).",
+        "turnkey": "Turnkey solutions for your whole team, no api involved.",
+        "retail cart": "Add to cart, then check out — free shipping on every order.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "api-auth" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} auth-shaped noise strings do NOT fire api-auth (precision)"
+    )
+
+
+def test_api_auth_fires_on_real_captured_surfaces():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the api-auth signal fires on the
+    # GENUINE authentication contracts captured live from the real metered_api
+    # storefronts — the canonical pair documents `Authorization: Bearer <token>` on
+    # its homepage and "authenticated with an API key sent as a Bearer token" on
+    # /docs, and api.replicate.com's /openapi.json declares a `securitySchemes`
+    # bearer scheme — all captured verbatim in the committed fixtures. Run the REAL
+    # discovery path (from_fixture -> discover_offering) so the signal is exercised
+    # exactly as a live crawl would, the same real-data non-vacuity move
+    # test_async_job_fires_on_real_captured_openapi makes.
+    #
+    # SCORE-NEUTRAL by construction: every domain where api-auth fires ALREADY
+    # claims metered_api (its strongest archetype on all three), so an auth scheme
+    # can only deepen that claim's evidence — never add an archetype or reorder. The
+    # classifier is off the scoring path; the canonical pair's claimed SET+ORDER is
+    # unchanged (pinned by tests/test_offering_canonical.py and the replay guard).
+    for domain in ("driftflight.com", "drift-flight.org", "api.replicate.com"):
+        ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{domain}.json"))
+        prof = offering.discover_offering(ctx)
+        assert prof.claims("metered_api"), (domain, prof.archetypes)
+        metered = next(c for c in prof.claimed if c.archetype == "metered_api")
+        auth = [s for s in metered.signals if s.label == "api-auth"]
+        assert auth, (domain, {s.label for s in metered.signals})
+        q = auth[0].quote.lower()
+        assert (
+            "bearer" in q or "api key" in q or "apikey" in q or "securityscheme" in q
+            or "x-api-key" in q or "oauth" in q
+        ), (domain, auth[0].quote)
+    print("  ok: api-auth fires on REAL captured auth contracts (both canonical domains + machine surface)")
+
+    # NON-VACUOUS negative: a real retail storefront (books.toscrape.com) documents
+    # NO API auth — api-auth must be absent there, so it is a metered-API signal, not
+    # a match-anything token. (This is the offering-layer mirror of the scoring-path
+    # asymmetry: agent-callable API sites document auth, a browser-only shop does not.)
+    ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "books.toscrape.com.json"))
+    retail = offering.discover_offering(ctx)
+    assert retail.archetypes == ["physical_good"], retail.archetypes
+    all_labels = {s.label for c in retail.claimed for s in c.signals}
+    assert "api-auth" not in all_labels, all_labels
+    print("  ok: api-auth is ABSENT on a real no-API retail storefront (non-vacuous)")
+
+
 def main() -> int:
     tests = [
         test_api_storefront_claims_agent_native_not_physical,
@@ -1190,6 +1282,8 @@ def main() -> int:
         test_pricing_surface_is_read_live,
         test_async_job_metering_precision_synthetic,
         test_async_job_fires_on_real_captured_openapi,
+        test_api_auth_precision_synthetic,
+        test_api_auth_fires_on_real_captured_surfaces,
         test_strip_html_drops_script_style_and_tags,
     ]
     failed = 0

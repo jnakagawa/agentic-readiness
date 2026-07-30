@@ -1442,6 +1442,95 @@ def test_generate_media_plural_gap_on_real_captured_docs():
     print("  ok: the canonical /docs plural 'Generated images' fires the broadened generate-media (old: NO match)")
 
 
+def test_output_license_precision_synthetic():
+    # Output USAGE-RIGHTS / license — the "complete the job" RIGHTS leg of a digital
+    # good (the agent obtains a deliverable it may actually USE). Bare
+    # "license"/"licensed" is a false-positive minefield, so each POSITIVE is a real
+    # deliverable-rights grant that must claim digital_good via the new output-license
+    # signal; each NEGATIVE is license-shaped noise — a SOFTWARE licence, a hosted
+    # MODEL's licence, "models you own", a driver's/business licence, a "Licensed and
+    # credentialed" trust badge — that must NOT fire output-license. The model-license
+    # and "models you own" negatives are the exact traps present in the committed
+    # api.replicate.com fixture (a metered_api-ONLY storefront that must not gain
+    # digital_good).
+    positives = {
+        "commercial licence (en)": "Every paid render carries a commercial licence.",
+        "commercial license (us)": "Each generation ships with a commercial license.",
+        "commercial licensing": "Hosted output URLs, style presets, and commercial licensing.",
+        "royalty-free": "All outputs are royalty-free for commercial use.",
+        "usage rights": "You receive full usage rights to every image you generate.",
+        "you own the output": "No attribution required — you own the output.",
+        "you own the renders": "Cancel anytime; you own the renders you create.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("gen.test", {"homepage": text})
+        assert prof.claims("digital_good"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "digital_good"
+            for s in c.signals
+        }
+        assert "output-license" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real deliverable-rights grants each fire output-license")
+
+    negatives = {
+        "software licence (MIT)": "This project is released under the MIT license.",
+        "model's licence": "Check the model's license before you deploy it.",
+        "models you own": "You can only delete models you own.",
+        "driver's licence": "Upload a photo of your driver's license to verify your identity.",
+        "business licence": "We hold a valid business license in every state we operate.",
+        "trust badge": "Licensed and credentialed operators only.",
+        "royalty (not free)": "Contributors receive a royalty on every sale.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "output-license" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} license-shaped noise strings do NOT fire output-license (precision)"
+    )
+
+
+def test_output_license_fires_on_real_captured_surfaces():
+    # Real-evidence, NON-VACUOUS validation of output-license — it fires on GENUINE
+    # deliverable-rights prose captured live from a real generation storefront, and
+    # does NOT fire on a DIFFERENT real storefront's model-license / "models you own"
+    # trap.
+    #
+    # driftflight.com grants a commercial licence on its output: its committed
+    # /llms.txt says "hosted output URLs, style presets, and commercial licensing";
+    # discover_offering reads that surface (see test_doc_subdomain_surfaces_are_read_live),
+    # and both canonical homepages carry "commercial licence on every image" /
+    # "you own the output". The storefront already claims digital_good, so this
+    # DEEPENS its evidence without changing the claimed set (score-neutrality pinned
+    # byte-for-byte by tests/test_offering_canonical.py; classification is off the
+    # scoring path).
+    billing = _fixture_entry_text("driftflight.com", "/llms.txt")
+    assert "commercial licensing" in billing.lower(), "fixture /llms.txt lost its licensing prose"
+    prof = classify_offering("driftflight.com", {"/llms.txt": billing})
+    assert prof.claims("digital_good"), prof.archetypes
+    dg = next(c for c in prof.claimed if c.archetype == "digital_good")
+    lic = [s for s in dg.signals if s.label == "output-license"]
+    assert lic, {s.label for s in dg.signals}
+    assert "licen" in lic[0].quote.lower(), lic[0].quote
+    print(f"  ok: output-license fires on REAL captured licensing prose — quote: {lic[0].quote!r}")
+
+    # Precision on real noise: api.replicate.com — a metered_api-ONLY storefront
+    # (pinned by test_machine_surface_openapi_storefront) — carries BOTH license traps
+    # in its committed OpenAPI spec: "the model's license" (a hosted MODEL's licence,
+    # not the deliverable's) and "delete models you own" (ownership of MODELS, not
+    # output). Neither is a usage-rights grant on a produced deliverable, so
+    # output-license must NOT fire — the spec must not gain a spurious digital_good.
+    spec = _fixture_entry_text("api.replicate.com", "/openapi.json")
+    assert "model's license" in spec and "models you own" in spec, "fixture lost its license traps"
+    spec_prof = classify_offering("api.replicate.com", {"/openapi.json": spec})
+    spec_labels = {s.label for c in spec_prof.claimed for s in c.signals}
+    assert "output-license" not in spec_labels, spec_labels
+    assert not spec_prof.claims("digital_good"), spec_prof.archetypes
+    print("  ok: the model-license / 'models you own' traps do NOT fire output-license (real-data precision)")
+
+
 def main() -> int:
     tests = [
         test_api_storefront_claims_agent_native_not_physical,
@@ -1479,6 +1568,8 @@ def main() -> int:
         test_error_contract_fires_on_real_captured_surfaces,
         test_generate_media_recognizes_plural_and_participle_forms,
         test_generate_media_plural_gap_on_real_captured_docs,
+        test_output_license_precision_synthetic,
+        test_output_license_fires_on_real_captured_surfaces,
         test_strip_html_drops_script_style_and_tags,
     ]
     failed = 0

@@ -415,6 +415,35 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
         ("render", re.compile(r"\brenders?\b|\brendering\b", _F)),
         ("translation", re.compile(r"\btranslat(e|es|ion|ing)\b", _F)),
         ("hosted-output", re.compile(r"\bhosted (output )?URLs?\b|\bimageUrls?\b|\bdownloadable\b", _F)),
+        # Output USAGE-RIGHTS / license — the "complete the job" RIGHTS leg of a
+        # digital good. The existing digital_good signals say WHAT is produced
+        # (`generation` / `generate-media`) and WHERE it is delivered
+        # (`hosted-output`); NONE says whether the agent may USE what it obtains. A
+        # generation storefront that returns a render an agent has no license to use
+        # has NOT completed the commercial job — so a storefront that grants a
+        # commercial-use licence, royalty-free terms, explicit usage rights, or
+        # ownership of the generated output is MORE agent-completable at the
+        # digital-good layer. Vendor-neutral IP/rights vocabulary (a commercial
+        # licence, royalty-free, usage rights, owning the output), never a vendor.
+        # PRECISION-CRITICAL: bare "license"/"licensed" is a false-positive minefield
+        # — a software licence (MIT/Apache), a business/driver's licence, a "Licensed
+        # and credentialed" trust badge, and — the trap this signal must dodge — the
+        # license of a hosted MODEL (api.replicate.com, a metered_api-ONLY storefront,
+        # says "the model's license" and "delete models you own"; neither is a
+        # deliverable-rights grant). So NEVER match bare "license": require
+        # commercial-USE rights ("commercial licence/licensing"), royalty-free terms,
+        # explicit "usage rights", or ownership of the DELIVERABLE ("you own the
+        # output/render/result/image/generation"). The model-license, software-license,
+        # and "models you own" senses trip none of these. Fires on BOTH canonical
+        # domains (drift-flight.org homepage "commercial licence on every image";
+        # driftflight.com /llms-full.txt "a commercial licence …; you own the output")
+        # — both ALREADY claim digital_good, so it deepens evidence without changing
+        # any claimed set (score-neutral) — and on ZERO of the api/retail/null fixtures.
+        ("output-license", re.compile(
+            r"\bcommercial licen[cs](?:e|es|ed|ing)\b"
+            r"|\broyalty[- ]free\b"
+            r"|\busage rights\b"
+            r"|\byou own\s+(?:the\s+)?(?:output|render|renders|result|results|generation|generations|image|images|asset|assets)\b", _F)),
     ],
     "physical_good": [
         # PRECISION-CRITICAL: bare "ship" is metaphorical on many agent-native

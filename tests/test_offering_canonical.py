@@ -1167,6 +1167,172 @@ def test_offering_relabel_invariance_error_contract() -> None:
 
 
 # ---------------------------------------------------------------------------
+# The FIFTH metered_api signal-level relabel guard, for the newest metered_api
+# capability signal: `test-mode` (Cycle 102 — a non-production SANDBOX / test-key /
+# dry-run facility where an agent validates its integration and dry-runs a call at
+# ZERO cost before authorizing anything real — the "provision + complete the job
+# SAFELY, without a human" capability at the offering-understanding layer).
+#
+# The vendor-neutrality worry this guard exists to REFUTE is specific to the
+# API-KEY-CONVENTION branch, `[a-z]{2,6}_(?:test|sandbox)_(?:\.{3}|<digit-stub>)`:
+# on BOTH canonical fixtures test-mode fires on `/docs` via `df_test_...`, and the
+# `df_` prefix genuinely ABBREVIATES the host stem (`drift-flight`/`driftflight` ->
+# `df`). A naive reader could suspect the branch is matching a host-DERIVED prefix
+# — i.e. that a differently-named shop with a different key prefix would score
+# differently. It does not: the `[a-z]{2,6}` class matches ANY 2–6-char lowercase
+# prefix; the signal keys on the `<prefix>_test_<masked-stub>` CONVENTION SHAPE, not
+# on "df" and not on the host.
+#
+# So this guard perturbs BOTH identity axes and pins invariance under each:
+#   (A) HOST relabel (the standard family perturbation): rewrite the host everywhere
+#       -> test-mode fires with the same count on the same surface. For this signal
+#       the fired quote AND surface (`/docs`) are host-FREE, so the host relabel is a
+#       no-op over the test-mode evidence — that is itself the vendor-neutrality
+#       property (the machine-integration convention names no vendor), asserted
+#       honestly rather than dressed up as doing work it does not.
+#   (B) KEY-PREFIX relabel (the perturbation that actually bites): rewrite the key
+#       stem `df_` -> a neutral `kv_` throughout the fixture -> test-mode STILL fires,
+#       same count, same surface, each quote still matching the live regex. THIS is
+#       the non-vacuous half: it genuinely rewrites the matched text, proving the
+#       branch keys on the convention, not on the host-abbreviating "df".
+#
+# Teeth: a convention-LESS stub (`df_test_runner` — no digit body, no `...` mask)
+# does NOT fire, so the guard is not merely rubber-stamping any `<prefix>_test_`.
+# ---------------------------------------------------------------------------
+_TEST_MODE_LABEL = "test-mode"
+
+
+def _test_mode_signals(prof) -> list:
+    """The (surface, quote) pairs where the test-mode signal fired, sorted."""
+    return sorted(
+        (s.surface, s.quote)
+        for c in prof.claimed
+        for s in c.signals
+        if s.label == _TEST_MODE_LABEL
+    )
+
+
+def _discover_prefix_relabeled(domain: str, old_prefix: str, new_prefix: str):
+    """Replay ``<domain>.json`` with the API-key stem ``old_prefix`` -> ``new_prefix``.
+
+    Rewrites only the key-convention stem (e.g. ``df_`` -> ``kv_``) in both the live
+    and test key examples, leaving the host untouched, then replays through the real
+    ``FetchContext.from_fixture -> discover_offering`` path. A convention-keyed signal
+    must fire identically; a signal secretly keyed on the host-abbreviating "df" stem
+    would not.
+    """
+    path = os.path.join(_FIXTURE_DIR, f"{domain}.json")
+    with open(path, encoding="utf-8") as fh:
+        raw = fh.read()
+    relabeled = raw.replace(f"{old_prefix}live_", f"{new_prefix}live_").replace(
+        f"{old_prefix}test_", f"{new_prefix}test_"
+    )
+    _check(
+        relabeled != raw,
+        f"{domain}: the key-prefix relabel {old_prefix!r}->{new_prefix!r} "
+        "genuinely rewrites the fixture (non-vacuous)",
+    )
+    tmp = tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8")
+    try:
+        tmp.write(relabeled)
+        tmp.close()
+        ctx = FetchContext.from_fixture(tmp.name)
+        return discover_offering(ctx)
+    finally:
+        os.unlink(tmp.name)
+
+
+def test_offering_relabel_invariance_test_mode() -> None:
+    """test-mode keys on the ``<prefix>_test_<stub>`` convention, not host or "df"."""
+    print("test_offering_relabel_invariance_test_mode")
+    base, _ = _discover("driftflight.com")
+    base_tm = _test_mode_signals(base)
+    tm_re = dict(_offering._SIGNALS["metered_api"])[_TEST_MODE_LABEL]
+
+    # The signal fires on real captured evidence, via the API-KEY convention branch
+    # (a `<prefix>_test_<masked-stub>` credential), not merely a bare "sandbox"/"test".
+    _check(
+        len(base_tm) >= 1,
+        f"test-mode fires on real driftflight.com evidence (got {len(base_tm)})",
+    )
+    joined = " ".join(q for _, q in base_tm)
+    _check(
+        re.search(r"\b[a-z]{2,6}_test_(?:\.{3}|[A-Za-z0-9]*\d)", joined) is not None,
+        "the fired evidence is the `<prefix>_test_<masked-stub>` key convention "
+        f"(not a bare sandbox/test word): {joined!r}",
+    )
+
+    # Honest scope: the fired quote is host-FREE (a `df_test_...` key credential names
+    # no vendor host), so non-vacuity for this signal cannot anchor on the host being
+    # inside the quote — a plain HOST relabel is a no-op over the test-mode evidence.
+    _check(
+        all("driftflight.com" not in quote for _, quote in base_tm),
+        "the test-mode evidence is host-free (a key-convention credential, not a "
+        "vendor name) — so a host relabel is a no-op here; the KEY-PREFIX relabel "
+        "below is what genuinely perturbs the match",
+    )
+
+    # Non-vacuity substrate for axis (B): the `df_` stem genuinely abbreviates the
+    # host, so the concern the prefix relabel refutes is real, not hypothetical.
+    _check(
+        any("df_test_" in quote for _, quote in base_tm),
+        "the fired credential uses the `df_` prefix, which abbreviates the host stem "
+        "(drift-flight/driftflight -> df) — the exact stem a prefix relabel perturbs",
+    )
+
+    # (A) HOST relabel: the machine-integration convention names no vendor, so the
+    # signal survives a whole-host relabel unchanged (count + surface invariant).
+    host_relab = _test_mode_signals(_discover_relabeled("driftflight.com", _NEUTRAL_HOST))
+    _check(
+        len(host_relab) == len(base_tm),
+        "test-mode match count invariant under HOST relabel "
+        f"(base {len(base_tm)}, relabel {len(host_relab)})",
+    )
+    _check(
+        sorted(s for s, _ in host_relab) == sorted(s for s, _ in base_tm),
+        "test-mode fires on the same surface under HOST relabel "
+        f"(base {[s for s, _ in base_tm]}, relabel {[s for s, _ in host_relab]})",
+    )
+
+    # (B) KEY-PREFIX relabel `df_` -> neutral `kv_` (the code comment's own neutral
+    # example prefix): this genuinely rewrites the matched credential text, so
+    # invariance here proves the branch keys on the CONVENTION SHAPE, not on the
+    # host-abbreviating "df" stem.
+    pref_relab = _test_mode_signals(
+        _discover_prefix_relabeled("driftflight.com", "df_", "kv_")
+    )
+    _check(
+        len(pref_relab) == len(base_tm),
+        "test-mode match count invariant under KEY-PREFIX relabel df_->kv_ "
+        f"(base {len(base_tm)}, relabel {len(pref_relab)})",
+    )
+    _check(
+        sorted(s for s, _ in pref_relab) == sorted(s for s, _ in base_tm),
+        "test-mode fires on the same surface under KEY-PREFIX relabel "
+        f"(base {[s for s, _ in base_tm]}, relabel {[s for s, _ in pref_relab]})",
+    )
+    for surf, quote in pref_relab:
+        _check(
+            tm_re.search(quote) is not None,
+            f"prefix-relabeled test-mode quote still matches the convention signal: {quote!r}",
+        )
+        _check(
+            "df_test_" not in quote,
+            "the prefix-relabeled quote no longer carries the `df_` stem, yet still "
+            f"fires — the match is convention-keyed, not stem-keyed: {quote!r}",
+        )
+
+    # Teeth: a convention-LESS `<prefix>_test_` stub (a plain identifier, no digit
+    # body and no `...` mask) must NOT fire — the guard is not rubber-stamping any
+    # `<prefix>_test_` occurrence.
+    _check(
+        tm_re.search("run the df_test_runner helper before deploy") is None,
+        "a convention-less df_test_runner identifier does NOT fire test-mode "
+        "(the key-convention branch requires a masked/digit-bearing stub)",
+    )
+
+
+# ---------------------------------------------------------------------------
 # The FIRST signal-level companion in the digital_good bank (the four above all
 # live in metered_api): `output-license` (Cycle 98 — the deliverable-RIGHTS leg
 # of a digital good, in four host-free forms: a commercial-use licence
@@ -1554,6 +1720,7 @@ def main() -> int:
         test_offering_relabel_invariance_async_job,
         test_offering_relabel_invariance_api_auth,
         test_offering_relabel_invariance_error_contract,
+        test_offering_relabel_invariance_test_mode,
         test_offering_relabel_invariance_output_license,
         test_offering_surface_order_invariance_output_license,
         test_offering_relabel_invariance_retail,

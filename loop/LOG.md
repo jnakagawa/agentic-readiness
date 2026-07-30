@@ -9487,3 +9487,64 @@ collection to completion" pagination capability in the public methodology prose
 READOUT next), mirroring the four prior metered_api methodology legs. A NEW
 archetype/signal remains open COVERAGE; ACP/UCP/MPP + free-tier live-wiring stays
 [LOCAL].
+
+## Cycle 110 — 2026-07-30T~17:1xZ — COVERAGE
+
+**What/why.** Added a `cancel-job` signal to the `metered_api` bank in
+`asrs/offering.py` (the offering classifier): how an agent ABORTS a long-running
+job it already submitted — a `.../cancel` endpoint on the job resource, a
+`Cancel-After` deadline header, or a documented `canceled` job state. The first
+NEW metered_api capability signal since pagination (Cycle 106). WHY (capability):
+the "complete the job" CONTROL + capital-safety leg for a metered API whose work
+runs long (image/video generation, a training run, a batch inference job) — an
+agent that detects a runaway or wrong generation and CANNOT cancel it keeps
+paying for compute it no longer needs, so a metered API that documents a cancel
+contract lets the agent BOUND its own spend (the same $0-only capital-safety
+ethos ASRS itself holds) and is MORE agent-completable. Distinct from every
+existing metered_api signal — `async-job` is how ONE long job's result comes BACK
+(webhook/poll), `error-contract` how a FAILED call recovers, `rate-limited` how
+fast you may call, `pagination` how a paged collection is walked; NONE said how
+an agent STOPS a job it started. Vendor-neutral open REST conventions (a cancel
+endpoint on a job resource, a `Cancel-After` header, a `canceled` job state),
+never a vendor.
+
+**Precision.** NEVER a bare `cancel` (a false-positive minefield: cancel a
+SUBSCRIPTION / ORDER / BOOKING, a cancellation POLICY, a cancelled flight, "cancel
+culture") — require the `Cancel-After` deadline header, a `cancel` VERB naming an
+async-JOB noun (prediction/job/run/task/request/training/inference/operation/
+generation/batch/workflow), or a `.../cancel` ENDPOINT PATH on a job resource.
+8 negative cases pin the traps; 7 positives pin the real forms.
+
+**Ship class.** COVERAGE, off the scoring path (`scoring.py` does not import
+`offering` — grep-verified; only `battery.py`/`cli.py` do, `--battery auto` task
+selection) → score-neutral, NOT peer-gated. `git diff` over `asrs/scoring.py
+rubric/ fixtures/` EMPTY; `git diff --name-only` = `asrs/offering.py` +
+`tests/test_offering.py`. Cloud bridge blocks direct main push → branch
+loop/cancel-job-metered-signal + PR #69 + self-merge (squash 41dc6e7). First duty:
+no open peer-gated PR ([] at fire start — `list_pull_requests` open = []); realigned
+main to origin/main after merge.
+
+**Evidence / validation.** Fires non-vacuously on the real captured
+`api.replicate.com` `/openapi.json` (the `Cancel-After` header + the
+`predictions/{id}/cancel` endpoint + the `canceled` prediction state) and on ZERO
+of the canonical-pair / retail / null fixtures (the canonical `/cancellation`
+surface is a subscription cancel with no job vocabulary; empirically confirmed
+across all 5 committed fixtures — claimed SETS byte-identical with/without the
+signal). `test_offering.py` 44→46 (`test_cancel_job_metering_precision_synthetic`
++ `test_cancel_job_fires_on_real_captured_openapi`, mirroring the pagination
+pair). Full suite green (22 files; `test_free_tier` 11/11 after `pip install
+eth-account`, environment-only, nothing to commit); offering canonical guard
+25/25. Canonical PAIR unchanged AND re-measured: replay guard 24/24,
+**46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7. RUNNER STILL GAPPED
+(verify_20260728T234102Z 23:41Z, ~41.5h old at fire).
+
+**Next hypothesis.** Focus rotates to TRUTH: pin the Cycle-110 `cancel-job`
+metered_api signal as RELABEL-INVARIANT — the SEVENTH metered_api signal-level
+relabel guard (after payment-rail 79 / async-job 83 / api-auth 87 / error-contract
+91 / test-mode 103 / pagination 107), extending the family to the job-cancellation
+contract. A close mirror of the async-job guard (surface-presence non-vacuity on
+`api.replicate.com`'s `/openapi.json`, host-free contract vocabulary). Then a
+READOUT leg to complete the cancel-job arc (COVERAGE 110 → TRUTH → READOUT),
+surfacing the "abort a runaway job to bound your spend" capability in the public
+methodology prose. A NEW archetype/signal remains open COVERAGE; ACP/UCP/MPP +
+free-tier live-wiring stays [LOCAL].

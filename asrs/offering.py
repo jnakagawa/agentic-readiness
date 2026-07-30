@@ -304,6 +304,46 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r'"(?:4\d\d|5\d\d)"\s*:\s*\{\s*"(?:description|content|\$ref)"'
             r"|application/problem\+json"
             r"|\b(?:4\d\d|5\d\d)\s+[a-z][a-z0-9]*_[a-z0-9_]+\b", _F)),
+        # A TEST / SANDBOX mode — a non-production facility where an agent can
+        # validate its integration and DRY-RUN a call WITHOUT spending real money,
+        # consuming quota, or producing a billable/usable output. This is the
+        # "provision + complete the job SAFELY, without a human" capability at the
+        # offering-understanding layer, and it dovetails with ASRS's own $0-only
+        # ethos: an agent that can obtain a test/sandbox credential (a `..._test_`
+        # key, a "sandbox environment", "test mode") verifies the whole flow at zero
+        # cost before it ever authorizes a real charge, so a metered API that offers
+        # one is MORE agent-completable. Distinct from every existing metered_api
+        # signal: `api-auth` is how you PRESENT credentials, `rate-limited` how fast
+        # you may call, `async-job` how results come back, `error-contract` how you
+        # recover — NONE says whether you can TRY the call safely first. Vendor-neutral
+        # machine-integration vocabulary (a sandbox environment, a test-mode flag, a
+        # test API key / test credentials, a dry-run, the widely-used `<prefix>_test_`
+        # / `<prefix>_sandbox_` key convention) — the same open-convention category as
+        # REST/GraphQL/OpenAPI already in this bank, never a vendor.
+        # PRECISION-CRITICAL: bare "\bsandbox\b" / "\btest\b" is a false-positive
+        # minefield present in the very fixtures we validate on — books.toscrape.com's
+        # page TITLE literally reads "Books to Scrape - Sandbox" (a demo-site name, not
+        # an API sandbox), and elsewhere the word means a sandboxed iframe (an HTML
+        # security attribute), a child's sandbox, or a sandbox game; bare "test" reads
+        # "test drive"/"test the waters"/a `unit_test_runner` filename. So NEVER match
+        # bare "sandbox"/"test": require "sandbox" to name a testing facility
+        # (sandbox mode/environment/api/endpoint/key/token/credentials/url/access),
+        # "test" to name a MODE or a CREDENTIAL (test mode / test api key / test
+        # credentials / test token), an explicit "dry run", or the API-KEY convention
+        # (a short lowercased prefix + `_test_`/`_sandbox_` + a MASKED ellipsis stub
+        # `...` or a digit-bearing key body, so `df_test_...` / `kv_test_a1b2c3…` fire
+        # but `unit_test_runner` — no digit, no ellipsis — does not). Fires on BOTH
+        # canonical domains (the /docs "Keys look like df_live_... (production) or
+        # df_test_... (sandbox: watermarked output, no quota use)" credential
+        # dichotomy) and on ZERO of the api/retail/null fixtures — both already claim
+        # metered_api, so it deepens evidence without changing any claimed set
+        # (score-neutral); books.toscrape's bare-"Sandbox" title is correctly dodged.
+        ("test-mode", re.compile(
+            r"\btest\s+mode\b"
+            r"|\bsandbox\s+(?:mode|environment|env|api|endpoints?|keys?|tokens?|credentials?|url|access|testing)\b"
+            r"|\btest\s+(?:api\s+keys?|credentials?|tokens?)\b"
+            r"|\bdry[- ]?run\b"
+            r"|\b[a-z]{2,6}_(?:test|sandbox)_(?:\.{3}|[A-Za-z0-9]*\d[A-Za-z0-9]{2,})", _F)),
         # Credit-based metering — the dominant billing convention for generative
         # and agent-native APIs (prepay a credit balance, spend N credits per
         # call/image/generation). PRECISION-CRITICAL: bare "\bcredits?\b" is a

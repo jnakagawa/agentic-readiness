@@ -522,6 +522,85 @@ def test_tiered_volume_fires_on_real_captured_billing_prose():
     print(f"  ok: tiered-volume fires on REAL captured billing prose — quote: {tv[0].quote!r}")
 
 
+def test_test_mode_metering_precision_synthetic():
+    # A TEST / SANDBOX mode is a defining agent-completion capability of a metered
+    # API: an agent can validate its integration and dry-run a call at ZERO cost
+    # (no real charge, no quota use) before authorizing anything real — the
+    # "provision + complete the job safely, without a human" capability, aligned
+    # with ASRS's own $0-only ethos. Each POSITIVE is real test/sandbox facility
+    # prose that must claim metered_api via the new test-mode signal; each NEGATIVE
+    # is sandbox/test-SHAPED noise that must NOT fire it (the precision traps: a
+    # demo-site named "Sandbox", a sandboxed iframe, a sandbox game, a
+    # `unit_test_runner` filename, a "test drive").
+    positives = {
+        "test mode": "Flip the API into test mode to validate your integration for free.",
+        "sandbox environment": "A full sandbox environment mirrors production with no billing.",
+        "sandbox api": "Point requests at the sandbox API before you go live.",
+        "sandbox endpoint": "Every route has a sandbox endpoint that returns simulated output.",
+        "test api key": "Generate a test API key from the dashboard to try it.",
+        "sandbox credentials": "Request sandbox credentials to exercise the full flow.",
+        "sandbox key": "Use your sandbox key to preview responses at no charge.",
+        "dry run": "Every call supports a dry run that returns a simulated response.",
+        "dry-run flag": "Add ?dry-run=true to preview a request without charging.",
+        "test key convention": "Test keys look like kv_test_a1b2c3d4e5f6g7h8.",
+        "masked test stub": "Issue keys shaped df_test_... in the sandbox before df_live_....",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("metered.test", {"homepage": text})
+        assert prof.claims("metered_api"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "metered_api"
+            for s in c.signals
+        }
+        assert "test-mode" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real test/sandbox facility phrasings each fire test-mode")
+
+    negatives = {
+        "demo site name": "All products | Books to Scrape - Sandbox",
+        "sandboxed iframe": "The widget renders inside a sandboxed iframe for safety.",
+        "sandbox game": "Our sandbox game lets kids build whole worlds from blocks.",
+        "playground sandbox": "The children played in a sandbox at the park all afternoon.",
+        "unit test file": "Run unit_test_runner and smoke_test_suite before every deploy.",
+        "test drive": "Book a test drive of the new model this weekend.",
+        "test the waters": "Test the water temperature before you dive in.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "test-mode" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} sandbox/test-shaped noise strings do NOT fire test-mode (precision)"
+    )
+
+
+def test_test_mode_fires_on_real_captured_api_docs():
+    # Real-evidence, NON-VACUOUS validation: the test-mode signal fires on the
+    # GENUINE test/live credential dichotomy captured live from the canonical
+    # driftflight.com /docs surface — "Keys look like df_live_... (production) or
+    # df_test_... (sandbox: watermarked output, no quota use)" — a real sandbox /
+    # test-key capability, captured verbatim in the committed fixture. Exercise the
+    # classifier directly on those captured bytes (the surface the signal reads),
+    # the same real-data non-vacuity move test_rate_limit_fires_on_real_captured_api_docs
+    # makes on the same /docs surface.
+    #
+    # SCORE-NEUTRAL by construction: metered_api is ALREADY the strongest claim on
+    # the canonical pair, so a new metered_api signal only DEEPENS its evidence — it
+    # never adds an archetype or reorders the claimed set (pinned green by
+    # tests/test_offering_canonical.py). Discovery is off the scoring path, so the
+    # scored canonical delta is untouched.
+    docs = _fixture_entry_text("driftflight.com", "/docs")
+    assert "df_test_" in docs, "fixture /docs lost its test/sandbox key dichotomy"
+    prof = classify_offering("driftflight.com", {"/docs": strip_html(docs)})
+    assert prof.claims("metered_api"), prof.archetypes
+    metered = next(c for c in prof.claimed if c.archetype == "metered_api")
+    tm = [s for s in metered.signals if s.label == "test-mode"]
+    assert tm, {s.label for s in metered.signals}
+    assert "test" in tm[0].quote.lower() or "sandbox" in tm[0].quote.lower(), tm[0].quote
+    print(f"  ok: test-mode fires on REAL captured /docs prose — quote: {tm[0].quote!r}")
+
+
 def test_seat_licensing_subscription_precision_synthetic():
     # Seat / per-user licensing is the dominant SaaS-subscription billing
     # convention (a recurring price per user seat). Each POSITIVE is real seat /
@@ -1542,6 +1621,8 @@ def main() -> int:
         test_rate_limit_fires_on_real_captured_api_docs,
         test_tiered_volume_metering_precision_synthetic,
         test_tiered_volume_fires_on_real_captured_billing_prose,
+        test_test_mode_metering_precision_synthetic,
+        test_test_mode_fires_on_real_captured_api_docs,
         test_seat_licensing_subscription_precision_synthetic,
         test_booking_and_data_archetypes_fire,
         test_non_storefront_claims_nothing,

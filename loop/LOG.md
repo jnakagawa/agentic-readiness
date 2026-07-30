@@ -9784,3 +9784,63 @@ capability in the public methodology prose. Deeper COVERAGE (service_booking /
 data_retrieval, both 5 legs) remains blocked in-cloud on a committed fixture that
 CLAIMS those archetypes — queued [LOCAL]. ACP/UCP/MPP + free-tier live-wiring stays
 [LOCAL].
+
+## Cycle 115 — 2026-07-30T~19:2xZ — TRUTH (branch+PR+self-merge, tests-only/score-neutral)
+
+**What/why.** Pinned the Cycle-114 `free-trial` subscription signal as
+**RELABEL-INVARIANT**, extending the signal-level relabel family to the
+`subscription` bank — its **third archetype** (after `metered_api`'s seven legs:
+payment-rail 79 / async-job 83 / api-auth 87 / error-contract / test-mode /
+pagination / cancel-job 111, and `digital_good`'s `output-license` 99). A trial
+offer is a property of what a storefront GRANTS — a free trial, a trial
+period/account/allowance, an N-day trial — never of WHO grants it, so the signal
+must key on the trial FORM, not the host. New guard
+`test_offering_relabel_invariance_free_trial` +
+`_free_trial_signals` helper in `tests/test_offering_canonical.py`.
+
+**Why a SYNTHETIC surface (not the real fixture, unlike output-license 99).** The
+`free-trial` vocabulary is host-free by nature ("free trial", "14-day trial
+account"). Verified LIVE on the committed driftflight.com fixture: the signal fires
+on `/llms.txt`, `/pricing`, `homepage` with NEITHER the host in the surface key NOR
+the host in the quote window — so a whole-fixture relabel would leave the free-trial
+evidence byte-identical and the invariance would be VACUOUS. The guard therefore
+scans a synthetic subscription surface that deliberately seats the host INSIDE the
+trial evidence: the host is the surface-key prefix (`agents.<host>/pricing`) AND sits
+adjacent to the trial phrase, so it lands in the padded quote window (asserted
+non-vacuous). Relabel the host everywhere, re-scan, and the free-trial signal
+survives with the SAME match count (1), on the SAME host-normalized surface, its
+quote STILL satisfying the live `free-trial` regex, with the vendor host absent from
+all rewritten evidence. `_scan_surface` on synthetic prose is the same primitive the
+noise-surface guard (113) uses directly.
+
+**Non-vacuity + teeth.** (a) The host is asserted present inside BOTH the surface key
+AND the quote window before relabel, so relabel genuinely rewrites the classifier's
+free-trial input (not a no-op over host-free evidence — the real-fixture failure
+mode, documented in the guard). (b) TEETH: a sibling distractor surface carrying only
+the bare-"trial" false-positive senses the signal must REFUSE — a clinical trial, a
+court trial "on trial", "trial and error" — fires ZERO free-trial signals, proving
+the match keys on the FREE-trial STRUCTURE, not the word "trial", and relabeling the
+host through that distractor never CONJURES a claim.
+
+**Ship class + evidence.** Tests-only, off the scoring path (`scoring.py` does not
+import `offering` — grep-verified 0 refs) → score-neutral, NOT peer-gated. `git diff`
+over `asrs/ rubric/ fixtures/` EMPTY; `git diff --name-only` =
+`tests/test_offering_canonical.py` ONLY. Cloud bridge blocks direct main push →
+branch `loop/free-trial-relabel-invariance` + PR #79 + self-merge (squash f220ea6).
+First duty: no open peer-gated PR (`[]` at fire start). offering canonical guard
+28→29; full suite green (22 files; `test_free_tier` 11/11 after `pip install
+eth-account`, environment-only, nothing to commit). Canonical PAIR unchanged AND
+re-measured: replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss;
+rubric v0.7. RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z, ~43.5h old at
+fire; cloud cannot repair the local machine; NOT the first-after-16:00 digest cycle
+— that was Cycle 109 at 16:12Z).
+
+**Next hypothesis.** Complete the free-trial arc with its READOUT leg (COVERAGE 114
+→ TRUTH 115 → READOUT): surface "evaluate a subscription at $0 before committing" in
+the public methodology prose (`_write_methodology_page`, `asrs/scorecard.py`) with a
+content-presence guard in `tests/test_readout.py` — the first subscription-archetype
+leg of a full COVERAGE→TRUTH→READOUT arc, mirroring the five metered_api arcs. The
+signal-level relabel family now spans three archetypes (metered_api ×7, digital_good
+×1, subscription ×1); deeper subscription/service_booking/data_retrieval signal work
+stays blocked in-cloud on a committed fixture that CLAIMS the thin archetypes —
+queued [LOCAL]. ACP/UCP/MPP + free-tier live-wiring stays [LOCAL].

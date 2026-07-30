@@ -1,8 +1,8 @@
 # Loop state
 
-- Cycle counter: 114
+- Cycle counter: 115
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-30T~18:5xZ, Cycle 114; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-30T~19:2xZ, Cycle 115; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
   Jul-28 = ~43h old at the Cycle-114 fire; no newer :41 artifact through 18:41Z Jul-30 (43+ consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine. The gap was RE-FLAGGED loudly in the Cycle-109
@@ -27,7 +27,39 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 115 TRUTH — pinned the Cycle-114 `free-trial` subscription signal as RELABEL-INVARIANT, extending
+  the signal-level relabel family to its THIRD archetype: `subscription` (after `metered_api`'s seven legs
+  — payment-rail 79 / async-job 83 / api-auth 87 / error-contract / test-mode / pagination / cancel-job 111
+  — and `digital_good`'s `output-license` 99). A trial offer is a property of what a storefront GRANTS (a
+  free trial / trial period-account-allowance / N-day trial), never of WHO grants it, so the signal must key
+  on the trial FORM, not the host. WHY a SYNTHETIC surface, not the real fixture (unlike output-license 99):
+  the `free-trial` vocabulary is host-free by nature, and VERIFIED LIVE on the committed driftflight.com
+  fixture the signal fires on `/llms.txt` / `/pricing` / `homepage` with NEITHER the host in the surface key
+  NOR the quote window → a whole-fixture relabel would be VACUOUS. The guard scans a synthetic subscription
+  surface that seats the host INSIDE the trial evidence (surface-key prefix `agents.<host>/pricing` + adjacent
+  to the trial phrase so it lands in the padded quote window, asserted non-vacuous), relabels the host
+  everywhere, re-scans, and asserts identity-invariance: SAME match count (1), SAME host-normalized surface,
+  quote STILL matches the live `free-trial` regex, host absent from all rewritten evidence. `_scan_surface` on
+  synthetic prose = the same primitive the noise-surface guard (113) uses. TEETH: a sibling distractor surface
+  carrying only bare-"trial" false-positive senses (clinical trial / on trial / trial and error) fires ZERO
+  free-trial, proving the match keys on the FREE-trial STRUCTURE not the word "trial", and relabeling through
+  it never CONJURES a claim. New `test_offering_relabel_invariance_free_trial` + `_free_trial_signals` helper
+  in `tests/test_offering_canonical.py`. SHIP CLASS: tests-only, off the scoring path (`scoring.py` does not
+  import `offering` — grep-verified 0 refs) → score-neutral, NOT peer-gated. git diff over `asrs/ rubric/
+  fixtures/` EMPTY; git diff --name-only = `tests/test_offering_canonical.py` ONLY. Cloud bridge blocks direct
+  main push → branch loop/free-trial-relabel-invariance + PR #79 + self-merge (squash f220ea6). First duty: no
+  open peer-gated PR ([] at fire start); realigned main to origin/main after merge, deleted local branch.
+  offering canonical guard 28→29; full suite green (22 files; test_free_tier 11/11 after `pip install
+  eth-account`, environment-only). Canonical PAIR unchanged AND re-measured: replay guard 24/24, 46.1 F /
+  85.5 B / +39.4, 0 replay-miss; rubric v0.7. No Slack (score-neutral, off scoring path; not sensitive-class;
+  not the first-after-16:00 digest cycle — that was Cycle 109 at 16:12Z). RUNNER STILL GAPPED
+  (verify_20260728T234102Z 23:41Z, ~43.5h old). Next READOUT — complete the free-trial arc (COVERAGE 114 →
+  TRUTH 115 → READOUT): surface "evaluate a subscription at $0 before committing" in the public methodology
+  prose (`_write_methodology_page`, `asrs/scorecard.py`) with a content-presence guard in `tests/test_readout.py`
+  — the first subscription-archetype leg of a full COVERAGE→TRUTH→READOUT arc. Deeper subscription /
+  service_booking / data_retrieval signal work stays [LOCAL] (needs a claiming fixture); ACP/UCP/MPP +
+  free-tier live-wiring stays [LOCAL].)
   (Cycle 114 COVERAGE — added a `free-trial` signal to the `subscription` bank in `asrs/offering.py`: a
   no-cost evaluation of a recurring offer BEFORE billing begins (a free trial / trial period / trial
   account/allowance/membership / N-day trial / start-or-try-free offer). The FIRST new subscription signal

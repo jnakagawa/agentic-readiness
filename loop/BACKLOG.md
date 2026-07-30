@@ -613,22 +613,39 @@ design in-cloud, execute locally.
      three-fold and pair-symmetric, so COVERAGE (a new archetype/signal) now outranks another offering-path
      METHOD mirror. ACP/UCP/MPP + free-tier live-wiring stays [LOCAL]. -->
 
-- **[TRUTH] Pin the new `cancel-job` metered_api signal as RELABEL-INVARIANT** (follow-up to Cycle 110, the
-  SEVENTH metered_api signal-level relabel guard, after payment-rail 79 / async-job 83 / api-auth 87 /
-  error-contract 91 / test-mode 103 / pagination 107). Cycle 110 added `cancel-job` (a job `.../cancel`
-  endpoint / `Cancel-After` deadline header / `canceled` job state — the "abort a long job to bound your
-  spend" capability), COVERAGE only. The natural TRUTH leg mirrors the async-job guard exactly (a
-  close structural twin — both fire on `api.replicate.com`'s `/openapi.json` with HOST-FREE contract
-  vocabulary): add `test_offering_relabel_invariance_cancel_job` to `tests/test_offering_canonical.py`
-  — SURFACE-PRESENCE non-vacuity anchored at the fixture level (the host IS present in the fixture surfaces
-  the classifier fetches), asserting under `api.replicate.com`→`vendor-neutral.test` relabel the signal
-  fires the SAME count, on the SAME host-normalized surface, each quote STILL matching the live cancel-job
-  regex, vendor host absent. WHY: how an agent cancels a running job is a property of the API CONTRACT a
-  storefront documents (a cancel endpoint / a deadline header / a canceled state), never of WHO published
-  it → identity-invariant; makes the Cycle-110 vendor-neutrality claim an executable tripwire. Tests-only,
-  off the scoring path → score-neutral, NOT peer-gated. Then a READOUT leg (surface the "abort a runaway
-  job to bound your spend" capability in the public methodology prose) completes the cancel-job arc
-  (COVERAGE 110 → TRUTH → READOUT), mirroring the six prior full metered_api arcs.
+<!-- DONE 2026-07-30T~17:2xZ (Cycle 111, TRUTH, branch+PR+self-merge, tests-only/score-neutral): "[TRUTH]
+     Pin the new `cancel-job` metered_api signal as RELABEL-INVARIANT" SHIPPED — the SEVENTH metered_api
+     signal-level relabel guard (after payment-rail 79 / async-job 83 / api-auth 87 / error-contract 91 /
+     test-mode 103 / pagination 107), completing the metered_api signal-level relabel family for every
+     signal landed through Cycle 110. New `test_offering_relabel_invariance_cancel_job` in
+     `tests/test_offering_canonical.py`, a close mirror of the pagination/async-job guards (surface-presence,
+     host-free): fires ×1 on `api.replicate.com`'s `/openapi.json` (a real `Cancel-After` header), quote +
+     relative surface name no vendor → non-vacuity anchored at the FIXTURE level (host present in fetched
+     surfaces → whole-fixture relabel to `vendor-neutral.test` genuinely rewrites classifier input); under
+     relabel SAME count (1), SAME host-normalized surface, each quote STILL matching the live cancel-job
+     regex, vendor host absent. Tests-only, off scoring path (`scoring.py` does not import `offering`) →
+     score-neutral, NOT peer-gated: git diff over `asrs/ rubric/ fixtures/` EMPTY, git diff --name-only =
+     `tests/test_offering_canonical.py` ONLY. Cloud bridge blocks direct main push → branch
+     loop/cancel-job-relabel-invariance + PR #71 + self-merge (squash 98f2b27). offering canonical guard
+     25→26; full suite 22 files green (test_free_tier 11/11 after env-only `pip install eth-account`).
+     Canonical PAIR unchanged AND re-measured (replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss;
+     rubric v0.7). See LOG Cycle 111. The READOUT leg below completes the cancel-job arc. -->
+
+- **[READOUT] Surface the `cancel-job` metered_api capability in the public methodology prose** (follow-up
+  to Cycle 110 COVERAGE + Cycle 111 TRUTH-relabel — the READOUT leg CLOSING the cancel-job arc, the SEVENTH
+  metered_api leg to complete a full COVERAGE→TRUTH→READOUT arc after payment-rail 78/79/80, async-job
+  82/83/84, api-auth 86/87/88, error-contract 90/91/92, test-mode 102/103/104, pagination 106/107/108). Add
+  ONE capability-worded, vendor-neutral `<p>` to the methodology "What the score answers" card
+  (`_write_methodology_page`, `asrs/scorecard.py`), alongside the six prior metered_api legs: ASRS reads
+  whether a metered API whose work runs long documents how an agent can ABORT a submitted job (a
+  `Cancel-After` deadline header / a `.../cancel` endpoint on a job resource / a documented `canceled` job
+  state), because an agent that detects a runaway or wrong generation and cannot stop it keeps paying for
+  compute it no longer needs — the same $0-only capital-safety ethos ASRS itself holds. KEEP the precision
+  note (bare `cancel` is no signal — cancel a subscription/order/booking, a cancellation policy, a cancelled
+  flight); name the Cycle-111 identity-relabel regression test; stay HONEST about scope (diagnostic, off the
+  scoring path, not a scored pillar). Add a matching content-presence guard `test_methodology_documents_
+  cancel_job` in `tests/test_readout.py` mirroring `test_methodology_documents_pagination`; keep the
+  rendered-page neutral-scan clean. Display + tests-only, off the scoring path → NOT peer-gated.
 
 <!-- DONE 2026-07-30T06:2xZ (Cycle 99, TRUTH, branch+PR+self-merge, tests-only/score-neutral): "Pin the
      new `output-license` digital_good signal as HOST/VENDOR relabel-invariant" SHIPPED. New guard

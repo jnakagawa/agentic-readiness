@@ -3,6 +3,59 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 111 — 2026-07-30T~17:2xZ — TRUTH (branch+PR+self-merge, tests-only/score-neutral)
+
+**What/why.** Pinned the Cycle-110 `cancel-job` metered_api signal as
+RELABEL-INVARIANT — the SEVENTH metered_api signal-level relabel guard, after
+payment-rail (Cycle 79), async-job (83), api-auth (87), error-contract (91),
+test-mode (103), and pagination (107). Completes the metered_api signal-level
+relabel family for every signal that landed through Cycle 110. New
+`test_offering_relabel_invariance_cancel_job` in `tests/test_offering_canonical.py`,
+a close mirror of the pagination/async-job guards. WHY (capability): the
+`cancel-job` signal recognises how an agent ABORTS a submitted long-running job — a
+`Cancel-After` deadline header, a `cancel` verb naming an async-job noun, or a
+`.../cancel` endpoint path on a job resource. How an agent cancels a job is a
+property of the API CONTRACT a storefront documents, never of WHO published it, so
+the signal must be identity-invariant; this guard makes that an executable
+tripwire.
+
+**Shape (surface-presence, host-free — the async-job/pagination shape, NOT
+payment-rail).** The signal fires on `api.replicate.com`'s `/openapi.json` (a
+genuine `Cancel-After` deadline header); the fired quote and its relative
+`/openapi.json` surface name no vendor, so non-vacuity cannot anchor on the host
+being inside the quote. Non-vacuity is anchored at the FIXTURE level (asserted):
+the host IS present in the fetched fixture surfaces, so a whole-fixture relabel
+(`vendor-neutral.test`) genuinely rewrites the classifier's overall input. Under
+relabel the signal fires the SAME number of times (1), on the SAME host-normalized
+surface (`/openapi.json`), each quote STILL satisfying the live cancel-job regex,
+with the vendor host absent from every piece of cancel evidence.
+
+**Ship class.** Tests-only, off the scoring path (`scoring.py` does not import
+`offering` — grep-verified) → score-neutral, NOT peer-gated. `git diff` over
+`asrs/ rubric/ fixtures/` EMPTY; `git diff --name-only` = `tests/test_offering_
+canonical.py` ONLY. Cloud bridge blocks direct main push → branch
+loop/cancel-job-relabel-invariance + PR #71 + self-merge (squash 98f2b27). First
+duty: no open peer-gated PR (`list_pull_requests` open = [] at fire start);
+realigned main to origin/main after merge.
+
+**Evidence / validation.** Base classify on `api.replicate.com` fires cancel-job
+×1 on `/openapi.json` (the `Cancel-After` header, host-free); relabel to
+`vendor-neutral.test` preserves count, surface, and regex-match, vendor host gone.
+offering canonical guard 25→26; full suite green (22 files; `test_free_tier` 11/11
+after `pip install eth-account`, environment-only, nothing to commit). Canonical
+PAIR unchanged AND re-measured: replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0
+replay-miss; rubric v0.7. RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z,
+~41.5h old at fire; cloud cannot repair; queued P0 [LOCAL]).
+
+**Next hypothesis.** Focus rotates to READOUT: complete the cancel-job arc
+(COVERAGE 110 → TRUTH 111 → READOUT) by surfacing the "abort a runaway job to bound
+your spend" capability in the public methodology prose (`_write_methodology_page`,
+`asrs/scorecard.py`) — the SEVENTH metered_api leg to complete a full
+COVERAGE→TRUTH→READOUT arc (after payment-rail, async-job, api-auth, error-contract,
+test-mode, pagination), with a matching content-presence guard in
+`tests/test_readout.py`. A NEW archetype/signal remains open COVERAGE; ACP/UCP/MPP
++ free-tier live-wiring stays [LOCAL].
+
 ## Cycle 109 — 2026-07-30T16:12Z — METHOD (branch+PR+self-merge, tests-only/score-neutral)
 
 **What.** Pinned the offering classifier as **content-scale-invariant** on the canonical

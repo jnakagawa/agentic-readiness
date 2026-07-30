@@ -1242,6 +1242,150 @@ def test_offering_relabel_invariance_output_license() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Surface-read ORDER invariance — the digital_good deliverable-RIGHTS leg.
+#
+# A fresh perturbation AXIS orthogonal to the relabel/identity family above. The
+# relabel guards (payment-rail 79 / async-job 83 / api-auth 87 / error-contract /
+# output-license 99) pin that a signal keys on its STRUCTURAL form, not the host
+# LABEL. This pins the ORTHOGONAL property for the digital_good rights leg: a
+# readiness classification is a property of WHAT a storefront's surfaces DECLARE,
+# not the ORDER an agent happened to fetch them in — two crawls that read /pricing
+# before or after the apex homepage (or a doc-subdomain surface before the apex)
+# must classify identically. Cross-site comparability rests on it.
+#
+# test_offering.test_classification_is_surface_read_order_invariant already pins
+# surface-read-order invariance GENERICALLY, but on a SYNTHETIC two-surface fixture
+# where digital_good fires a SINGLE signal (generate-media) on ONE surface — an
+# order bystander, not a genuine multi-surface accumulation. The output-license
+# rights leg is the opposite case: on the canonical .com fixture it fires SIX times
+# across SIX distinct surfaces (homepage / /llms.txt / /pricing /
+# agents.<host>/{llms.txt,llms-full.txt,manifest.json}). So a surface-read reorder
+# genuinely permutes the per-archetype signal accumulation for THIS signal on REAL
+# captured evidence — the non-vacuity the generic single-surface test cannot supply
+# for the rights leg. Under a full reversal of the surface-read order, the rights
+# signal's fired COUNT, the SET of surfaces it fires on, and the digital_good claim
+# (strength + distinct labels) must all be identical, and the whole classified
+# profile (ordered claimed list + NA complement) invariant.
+#
+# The maintenance contract matches the other offering guards: a signal-bank change
+# that legitimately alters what driftflight.com claims is re-captured [LOCAL] and
+# EXPECTED updated in the same PR; an order-DEPENDENT classification is the
+# regression this guard exists to catch.
+# ---------------------------------------------------------------------------
+def _captured_surfaces(domain: str) -> dict:
+    """The exact surface-name -> text map (in READ order) discovery feeds the classifier.
+
+    ``discover_offering`` builds its surfaces dict by fetching the fixture in a
+    fixed order and hands it to ``classify_offering``; the surface-read order is
+    that dict's insertion order. Spy on that single call to recover the real,
+    multi-surface map so its order can be permuted deterministically offline — no
+    network, byte-identical to what the live discovery path scanned. Restores the
+    real ``classify_offering`` in a ``finally`` so the patch cannot leak.
+    """
+    path = os.path.join(_FIXTURE_DIR, f"{domain}.json")
+    ctx = FetchContext.from_fixture(path)
+    captured: dict = {}
+    real = _offering.classify_offering
+
+    def _spy(dom, surfaces):
+        captured.clear()
+        captured.update(surfaces)  # dict preserves insertion (read) order
+        return real(dom, surfaces)
+
+    _offering.classify_offering = _spy
+    try:
+        discover_offering(ctx)
+    finally:
+        _offering.classify_offering = real
+    _check(
+        len(captured) >= 2,
+        f"{domain}: discovery read >=2 surfaces (a reorder is meaningful) "
+        f"(got {list(captured)})",
+    )
+    return captured
+
+
+def test_offering_surface_order_invariance_output_license() -> None:
+    """The digital-good rights leg fires the same regardless of surface-read order."""
+    print("test_offering_surface_order_invariance_output_license")
+    surfaces = _captured_surfaces("driftflight.com")
+
+    forward = _offering.classify_offering("driftflight.com", dict(surfaces))
+    reverse = _offering.classify_offering(
+        "driftflight.com", dict(reversed(list(surfaces.items())))
+    )
+
+    fwd_lic = _license_signals(forward)
+    rev_lic = _license_signals(reverse)
+    fwd_surfaces = {s for s, _ in fwd_lic}
+
+    # Non-vacuity (a): the rights signal genuinely fires across MULTIPLE surfaces,
+    # so a reorder permutes a REAL per-archetype accumulation — not a single-surface
+    # bystander as in the generic order-invariance test.
+    _check(
+        len(fwd_surfaces) >= 2,
+        "output-license fires on >=2 distinct surfaces (a real multi-surface "
+        f"accumulation, so the reorder is meaningful) (got {sorted(fwd_surfaces)})",
+    )
+    # Non-vacuity (b): the reorder is REAL and OBSERVABLE — the surface arrival
+    # order actually differs between the two runs. An order-INSENSITIVE reader
+    # (e.g. one that sorted surfaces before scanning) would make the invariance
+    # below vacuously true; surfaces_seen is the read order, and a full reversal
+    # flips it.
+    _check(
+        list(forward.surfaces_seen) != list(reverse.surfaces_seen),
+        "the surface-read order genuinely differs between the two runs "
+        f"(forward head {list(forward.surfaces_seen)[:2]}, reverse head "
+        f"{list(reverse.surfaces_seen)[:2]}) — the invariance is non-vacuous",
+    )
+
+    # (1) The rights signal fires the SAME number of times under reorder — neither
+    # lost nor conjured by which surface arrived first.
+    _check(
+        len(rev_lic) == len(fwd_lic),
+        "output-license match count invariant under surface-read reorder "
+        f"(forward {len(fwd_lic)}, reverse {len(rev_lic)})",
+    )
+    # (2) It fires on the SAME set of surfaces — order cannot migrate the signal to
+    # a different surface.
+    _check(
+        {s for s, _ in rev_lic} == fwd_surfaces,
+        "output-license fires on the same set of surfaces under reorder "
+        f"(forward {sorted(fwd_surfaces)}, reverse {sorted({s for s, _ in rev_lic})})",
+    )
+    # (3) The digital_good CLAIM itself — its distinct-signal strength and the SET
+    # of labels that fired — is order-invariant, and the rights leg is actually part
+    # of it (so the property under test is present, not vacuously absent).
+    dg_f = next(c for c in forward.claimed if c.archetype == "digital_good")
+    dg_r = next(c for c in reverse.claimed if c.archetype == "digital_good")
+    _check(
+        dg_f.strength == dg_r.strength
+        and {s.label for s in dg_f.signals} == {s.label for s in dg_r.signals},
+        "the digital_good claim (strength + distinct labels) is invariant under "
+        f"surface-read reorder (strength {dg_f.strength}/{dg_r.strength})",
+    )
+    _check(
+        _LICENSE_LABEL in {s.label for s in dg_f.signals},
+        "the output-license label is part of the digital_good claim (the leg under "
+        "test is actually present, not a vacuous no-op)",
+    )
+    # (4) The WHOLE classified profile is order-invariant: the claimed archetypes IN
+    # RANK ORDER (which drives the fixed template-bank task order for cross-site
+    # comparability) and the NA complement (excluded from every mean/spread, never
+    # penalized) do not depend on surface-read order.
+    _check(
+        forward.archetypes == reverse.archetypes,
+        "claimed archetypes (ordered) invariant under surface-read reorder "
+        f"(forward {forward.archetypes}, reverse {reverse.archetypes})",
+    )
+    _check(
+        set(forward.unclaimed) == set(reverse.unclaimed),
+        "NA/unclaimed set invariant under surface-read reorder "
+        f"(forward {sorted(forward.unclaimed)}, reverse {sorted(reverse.unclaimed)})",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Relabel-invariance EXTENDED to the retail + non-storefront domains.
 #
 # The two invariance tests above cover only the canonical PAIR, because their
@@ -1366,6 +1510,7 @@ def main() -> int:
         test_offering_relabel_invariance_api_auth,
         test_offering_relabel_invariance_error_contract,
         test_offering_relabel_invariance_output_license,
+        test_offering_surface_order_invariance_output_license,
         test_offering_relabel_invariance_retail,
         test_offering_relabel_invariance_nonstorefront,
         test_offering_relabel_negative_control,

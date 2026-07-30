@@ -1,10 +1,10 @@
 # Loop state
 
-- Cycle counter: 105
+- Cycle counter: 106
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-30T12:2xZ, Cycle 105; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-30T13:22Z, Cycle 106; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~36.5h old at the 12:2xZ fire; no newer :41 artifact through 12:41Z Jul-30 (37+ consecutive
+  Jul-28 = ~37.7h old at the 13:22Z fire; no newer :41 artifact through 13:41Z Jul-30 (38+ consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine → FLAGGED in the Cycle-86 16:00 UTC digest
   (the 16:12Z fire was the FIRST cycle after 16:00Z; the ~16.5h runner gap was flagged loudly there;
   the Cycle-87 17:12Z through this Cycle-103 10:19Z-Jul-30 fires are NOT the first-after-16:00 cycle
@@ -28,7 +28,37 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 106 COVERAGE — added a `pagination` signal to the `metered_api` bank in `asrs/offering.py`:
+  cursor / collection PAGINATION — how an agent retrieves a MULTI-PAGE result set (a list endpoint
+  returns one page plus a cursor / a `next`/`previous` page URL to follow). The first NEW metered_api
+  capability signal since test-mode (Cycle 102). WHY (capability): the "complete the job" capability for
+  a metered API that returns a COLLECTION (list your predictions / models / deployments / records) — an
+  agent that cannot follow the pagination cursor reads only the FIRST page and silently UNDER-completes
+  the retrieval. Distinct from every existing metered_api signal (async-job = one long job's return,
+  error-contract = recovery, rate-limited = speed); NONE said how an agent walks a paged collection to
+  completion. Vendor-neutral open REST conventions (cursor query param, next/previous page URL, paginated
+  collection response). PRECISION: never a bare token — requires `?cursor=`/`&cursor=` with a value,
+  "cursor-based pagination", `paginat(ion|ed)` qualifying a collection/response/list noun, or `next`/
+  `previous` PAGE OF an API collection noun; dodges the RETAIL HTML `<li class="next">` link
+  (books.toscrape), "next campaign" + JS `previousSibling` (canonical homepages), CSS/SQL cursor, "next
+  page of the novel", "repaginated" (9 noise negatives asserted). NON-VACUOUS: fires on the REAL captured
+  api.replicate.com surfaces (`?cursor=…` list URL + "next page of collection objects" paginated schema
+  in /openapi.json) and ZERO of the canonical-pair/retail/null fixtures. api.replicate.com ALREADY claims
+  metered_api (its only archetype) → deepens evidence without adding/reordering any archetype (claimed set
+  stays `[metered_api]`, asserted). SHIP CLASS: COVERAGE signal-add off the scoring path (`scoring.py`
+  does not import `offering` — grep-verified; imported only by battery/cli/report/scorecard) →
+  score-neutral, NOT peer-gated. Cloud bridge blocks direct main push → branch loop/pagination-metered-signal
+  + PR #61 + self-merge (squash 260cc86). First duty: no open peer-gated PR ([] at fire start); realigned
+  main to origin/main after merge. tests/test_offering.py +2 (40→42): pagination_metering_precision_synthetic
+  + pagination_fires_on_real_captured_openapi. Full suite green (22 files; test_free_tier 11/11 after
+  `pip install eth-account`). Canonical PAIR unchanged AND re-measured: replay guard 24/24, 46.1 F / 85.5 B
+  / +39.4, 0 replay-miss; offering canonical guard 22/22; rubric v0.7. No Slack (score-neutral, off scoring
+  path; not sensitive-class; not the first-after-16:00 digest cycle). RUNNER STILL GAPPED
+  (verify_20260728T234102Z 23:41Z ~37.7h old). Next TRUTH — pin `pagination` as relabel-invariant (a sixth
+  metered_api signal-level relabel guard, after payment-rail/async-job/api-auth/error-contract/test-mode);
+  then a READOUT leg surfacing the "walk the paged collection to completion" capability in the methodology
+  prose. A NEW archetype/signal remains open COVERAGE; ACP/UCP/MPP + free-tier live-wiring stays [LOCAL].)
   (Cycle 105 METHOD — mirrored surface-read-ORDER-invariance onto the `.org` half of the canonical
   pair. New `test_offering_surface_order_invariance_org` in `tests/test_offering_canonical.py`
   (21→22 in that file). The existing `test_offering_surface_order_invariance_output_license` pinned

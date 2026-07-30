@@ -548,6 +548,36 @@ storefront&rsquo;s identity end-to-end and confirms the rights grant is still
 recognized, unchanged, with the vendor&rsquo;s name gone. This read is
 <b>diagnostic</b> &mdash; it names whether the offer lets an agent use what it
 buys, <b>off the scoring path</b> &mdash; not a scored pillar.</p>
+<p><b>Evaluating a subscription at $0 first</b> is finishing on the
+<b>subscription</b> side, where the thing an agent must commit to is not a single
+call but a <b>recurring charge</b> that renews on its own. An agent asked to
+provision a plan cannot responsibly authorize open-ended billing it has never
+exercised; a subscription offer that lets it try the plan at <b>zero cost before
+any charge begins</b> &mdash; a <b>free trial</b>, a <b>trial period</b>, an
+<b>N-day trial</b>, or a <b>trial account</b> or allowance &mdash; lets the agent
+evaluate the whole subscription and then decide, rather than commit to
+<b>recurring billing sight-unseen</b>. That is the subscription-side mirror of
+trying a metered call safely first, and it dovetails with ASRS&rsquo;s own
+<b>$0-only</b> ethos: an offer an agent can evaluate at zero cost before it
+commits to a renewing charge is more agent-completable than one whose only door
+is a paid signup. So ASRS reads the documented <b>trial offer</b> as part of
+understanding the subscription offer, keyed on vendor-neutral <b>trial-offer
+vocabulary</b> (a free trial, a trial period, an N-day trial such as a
+<code>14-day free trial</code>, a trial account or allowance, &ldquo;start your
+free trial&rdquo;, &ldquo;try it free for N days&rdquo;), the same category of
+open convention as REST, GraphQL or OpenAPI. The read is
+<b>precision-guarded</b>: a bare <code>trial</code> word is <b>no signal</b>
+&mdash; a <b>clinical trial</b>, a court trial, &ldquo;trial and error&rdquo;,
+&ldquo;trial by fire&rdquo;, or a defendant &ldquo;on trial&rdquo; must never
+trip it &mdash; so the phrasing must name an actual free-trial offer (a free
+trial, a trial period/account/allowance, an N-day trial, or a start/try-free
+offer). Recognition keys on the <b>trial the offer grants, not who grants it</b>:
+that property is pinned by an <b>executable regression test</b> that relabels the
+storefront&rsquo;s identity end-to-end and confirms the trial offer is still
+recognized, unchanged, with the vendor&rsquo;s name gone. This read is
+<b>diagnostic</b> &mdash; it names whether the offer lets an agent evaluate a
+subscription at $0 before committing, <b>off the scoring path</b> &mdash; not a
+scored pillar.</p>
 </div>
 
 <div class="card">

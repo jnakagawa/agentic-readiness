@@ -8897,3 +8897,68 @@ METHOD: a fresh perturbation AXIS on the offering/battery path for the digital_g
 RIGHTS leg (e.g. a rights-signal ORDER-invariance or count-stability guard), or extend
 the descriptor relabel family. Alternatively a NEW archetype/signal remains open
 COVERAGE; ACP/UCP/MPP + free-tier live-wiring stays [LOCAL].
+
+## Cycle 101 — 2026-07-30T08:2xZ — METHOD (branch+PR+self-merge, tests-only / score-neutral)
+
+**What.** Pinned the `digital_good` deliverable-rights leg (`output-license`) as
+surface-read-**ORDER** invariant — a fresh perturbation AXIS orthogonal to the
+relabel/identity family (payment-rail 79 / async-job 83 / api-auth 87 / error-contract /
+output-license 99, all identity-invariance). New guard
+`test_offering_surface_order_invariance_output_license` in
+`tests/test_offering_canonical.py` (18→19). It replays the canonical `driftflight.com`
+fixture through the real discovery path, SPIES on the single `classify_offering` call to
+capture the exact multi-surface read order discovery fed it (byte-identical to the live
+crawl, restored in a `finally`), then re-classifies FORWARD vs a full REVERSAL of the
+surface-read order and asserts the `output-license` signal's fired COUNT, its SET of
+surfaces, and the `digital_good` claim (strength + distinct labels) are all identical —
+plus the whole profile (ordered claimed list + NA complement) invariant.
+
+**Why (capability).** A readiness classification is a property of WHAT a storefront's
+surfaces DECLARE, not the ORDER an agent happened to fetch them in — two crawls that read
+`/pricing` before or after the apex homepage, or a doc-subdomain surface before the apex,
+must classify identically (cross-site comparability rests on it). The generic
+`test_offering.test_classification_is_surface_read_order_invariant` already pins
+order-invariance, but only on a SYNTHETIC two-surface fixture where `digital_good` fires a
+SINGLE signal on ONE surface — an order bystander. The rights leg is the opposite: on the
+canonical `.com` fixture `output-license` fires **6× across 6 distinct surfaces**
+(homepage / /llms.txt / /pricing / agents.<host>/{llms.txt,llms-full.txt,manifest.json}),
+so a reorder genuinely permutes a REAL per-archetype accumulation for THIS signal on REAL
+captured evidence — the non-vacuity the generic single-surface test cannot supply for the
+rights leg.
+
+**Ship class.** Tests-only, off the scoring path → NOT peer-gated (same class as the
+metered_api / output-license relabel guards). `git diff --name-only` =
+`tests/test_offering_canonical.py` ONLY; diff over scoring.py/rubric*/rubric/probes.py/
+protocols.py/fetch.py/offering.py/battery.py/scorecard.py/fixtures/batteries = EMPTY.
+Cloud bridge blocks direct main push → branch `loop/output-license-order-invariance` +
+PR #51 + self-merge (squash 880e0a8). First duty: no open peer-gated PR ([] at fire
+start); realigned main from stale orphan `37965190` to origin/main before starting, and
+back to origin/main `880e0a8` after merge.
+
+**Evidence.** Two explicit non-vacuity checks in the guard: (a) the rights signal fires
+on ≥2 distinct surfaces (a real multi-surface accumulation), and (b) the reorder is
+OBSERVABLE — `surfaces_seen` genuinely flips between the two runs (an order-insensitive
+reader would make the invariance vacuously true). TEETH verified out-of-band: an
+order-dependent reader (early-stop truncation of the reversed read) yields a different
+output-license count (6 vs 5) → the count assertion catches it. `test_offering_canonical`
+19/19; full suite 291 passed (was 290). Canonical PAIR unchanged AND re-measured: replay
+guard (`test_canonical_replay`) 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss —
+rubric v0.7.
+
+**Infra.** LOCAL verify runner STILL GAPPED — newest `runs/local/verify_20260728T234102Z.json`
+23:41Z Jul-28 is ~32.5h old at this ~08:12Z fire, past the 6h floor; cloud cannot repair
+Jonah's machine. The in-cloud replay guard (24/24 / +39.4) is the independent live
+regression signal, so this remains a heartbeat gap, not a scoring outage. This ~08:12Z
+fire is between the Cycle-86 16:12Z daily digest and the next first-after-16:00 cycle
+(~16:12Z Jul-30) → NOT a digest cycle, so no re-flag this fire; keep flagging the runner
+gap in each daily digest until it clears. No Slack (tests-only, moves no score; not a
+sensitive-class PR; not the daily-digest cycle).
+
+**Next hypothesis (COVERAGE).** Rotation advances METHOD → COVERAGE. The `output-license`
+arc is now closed at signal (98), TRUTH-relabel (99), READOUT (100) AND METHOD-order (101).
+The offering/battery perturbation families for the rights leg (relabel + order) are both
+covered; the next order/count-stability axes for other digital_good signals
+(generate-media / render / hosted-output) are candidate METHOD, but a NEW
+archetype/signal is the open COVERAGE frontier. All published self-description surfaces are
+read; the remaining COVERAGE frontier is a new archetype/signal or [LOCAL] free-tier
+live-wiring (ACP/UCP/MPP handshakes).

@@ -653,13 +653,18 @@ design in-cloud, execute locally.
      bridge blocks direct main push → branch loop/cancel-job-methodology-prose + PR #73 + self-merge (squash
      f0e5ba0). Full suite green 306→307 (test_free_tier 11/11 after env-only `pip install eth-account`);
      replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. See LOG Cycle 112. -->
-<!-- P1 FRONTIER (post-Cycle-112): the cancel-job arc is now closed at COVERAGE (110) / TRUTH-relabel (111) /
-     READOUT (112) — the SEVENTH metered_api leg to complete a full COVERAGE→TRUTH→READOUT arc. The
-     metered_api signal-level relabel family now spans every signal through cancel-job, and the offering-path
-     invariance families (ORDER/RELABEL/SCALE) are three-fold and pair-symmetric — so the strongest next
-     leverage is a NEW archetype/signal (COVERAGE) or a genuinely NEW perturbation axis (label/scale) on the
-     offering/battery path, rather than another guard in a complete family. Not yet a firm backlog item;
-     promote when a concrete gap is identified. ACP/UCP/MPP handshakes + free-tier live-wiring stay [LOCAL]. -->
+<!-- P1 FRONTIER (post-Cycle-113): the offering-path invariance family is now FOUR-fold and pair-symmetric —
+     RELABEL (host rename) / ORDER (surface-read reversal) / SCALE (content duplication) / NOISE (Cycle 113:
+     a signal-free added surface leaves the capability profile byte-identical). The genuinely-new-perturbation-
+     axis METHOD lever is now well-exercised; the strongest UNTAPPED leverage has shifted to COVERAGE. Concrete
+     candidate (COVERAGE, next non-METHOD cycle): the metered_api bank has SEVEN offer-side legs
+     (payment-rail / async-job / api-auth / error-contract / test-mode / pagination / cancel-job) each with a
+     full COVERAGE→TRUTH→READOUT arc, while `subscription`, `service_booking`, and `data_retrieval` are
+     THINLY signalled by comparison. Audit `asrs/offering._SIGNALS` for the weakest-covered archetype and add
+     ONE capability-worded, vendor-neutral signal to it (precision-guarded, ≥7 positives / ≥8 negatives,
+     off the scoring path so score-neutral) — this broadens measurement coverage across archetypes instead of
+     deepening the already-deep metered_api bank. Promote to a firm P1 item once the specific archetype+signal
+     is chosen. ACP/UCP/MPP handshakes + free-tier live-wiring stay [LOCAL]. -->
 
 
 <!-- DONE 2026-07-30T06:2xZ (Cycle 99, TRUTH, branch+PR+self-merge, tests-only/score-neutral): "Pin the

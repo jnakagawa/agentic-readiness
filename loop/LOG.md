@@ -3,6 +3,65 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 113 — 2026-07-30T~18:3xZ — METHOD (branch+PR+self-merge, tests-only/score-neutral)
+
+**What/why.** Added the **FOURTH metamorphic axis** on the offering classifier,
+pair-symmetric on the canonical pair: **noise-surface invariance**. Adding a NEW
+readable surface that carries no capability signal — a cookie/privacy notice, a
+careers blurb, a legal footer, metaphorical-"ship" marketing prose — must leave
+the classified capability profile byte-identical (ranked claimed archetypes, full
+`(label, surface, quote)` evidence map, NA/unclaimed set). The three existing
+families perturb the surfaces a site DOES publish (RELABEL rewrites the host
+inside them, ORDER reverses their sequence, SCALE duplicates their bodies); this
+axis is the complement — it ADDS the incidental web chrome every real storefront
+also serves and asserts the score measures what a site DECLARES, not the noise
+around it. WHY (capability): a privacy policy must not conjure an archetype and
+must not retract one; the rank drives the fixed template-bank task order
+(cross-site comparability) and the NA set decides which archetypes a site is
+judged on vs excused, so both must be properties of what the site declares, not of
+how much boilerplate surrounds it. Only `surfaces_seen` (read-provenance, not a
+capability claim) reflects the extra read. New `_assert_noise_surface_invariance`
++ `test_offering_noise_surface_invariance_{org,com}` in
+`tests/test_offering_canonical.py`, mirroring the SCALE test's structure.
+
+**Non-vacuity (three teeth).** (a) the noise surface is genuinely READ — it lands
+in `surfaces_seen` — yet contributes no claim, so the invariance is "noise adds no
+claim", not "an empty surface was skipped"; (b) the distractor fires ZERO signals
+under `_scan_surface` (asserted directly) despite its near-miss traps
+(metaphorical "ship" ×3, cookie/careers/legal chrome), doubling as a precision
+demonstration on realistic prose — if a future signal-bank change makes it fire,
+the assertion fails loudly; (c) a negative control swaps the SAME surface key for
+real fulfillment prose and shows the profile DOES change (physical_good, NA on the
+pair, is conjured), proving the added-surface channel is live. A fourth assertion
+pins the honest scope: `surfaces_seen` grew by EXACTLY the noise surface and
+nothing else.
+
+**Ship class.** Tests-only, off the scoring path (`scoring.py` does not import
+`offering` — grep-verified) → score-neutral, NOT peer-gated. `git diff` over
+`asrs/ rubric/ fixtures/` EMPTY; `git diff --name-only` = `tests/test_offering_canonical.py`
+ONLY. Cloud bridge blocks direct main push → branch loop/noise-surface-invariance
++ PR #75 + self-merge (squash 31becd3). First duty: no open peer-gated PR ([] at
+fire start — `list_pull_requests` open = []); realigned main to origin/main after
+merge, deleted the local branch.
+
+**Evidence / validation.** offering canonical guard 26→28; both new tests green.
+Full suite green (22 test files; test_free_tier 11/11 after `pip install
+eth-account`, environment-only, nothing to commit). Canonical PAIR unchanged AND
+re-measured: replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss;
+rubric v0.7. RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z, ~42.8h old at
+fire; cloud cannot repair the local machine; not a re-flag cycle — last
+first-after-16:00 digest was Cycle 109 at 16:12Z, next is ~16:1xZ Jul-31).
+
+**Next hypothesis.** The offering-path invariance family is now FOUR-fold
+(RELABEL / ORDER / SCALE / NOISE), pair-symmetric. Focus rotates to COVERAGE next.
+The metered_api signal bank is deep (7 offer-side legs, each with a full
+COVERAGE→TRUTH→READOUT arc); the strongest untapped COVERAGE leverage is a NEW
+archetype or a signal on an UNDER-developed archetype (subscription /
+service_booking / data_retrieval have far fewer signals than metered_api), or the
+[LOCAL] ACP/UCP/MPP live handshakes + free-tier live-wiring. Candidate: audit
+which archetypes are thinly signalled and add a capability-worded, vendor-neutral
+signal to the weakest one.
+
 ## Cycle 112 — 2026-07-30T~17:3xZ — READOUT (branch+PR+self-merge, display+tests-only/score-neutral)
 
 **What/why.** Surfaced the `metered_api` **cancel-job** capability in the PUBLIC

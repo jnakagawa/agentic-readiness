@@ -1,13 +1,13 @@
 # Loop state
 
-- Cycle counter: 112
+- Cycle counter: 113
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-30T~17:3xZ, Cycle 112; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-30T~18:3xZ, Cycle 113; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~41.8h old at the Cycle-112 fire; no newer :41 artifact through 17:41Z Jul-30 (42+ consecutive
+  Jul-28 = ~42.8h old at the Cycle-113 fire; no newer :41 artifact through 18:41Z Jul-30 (43+ consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine. The gap was RE-FLAGGED loudly in the Cycle-109
   16:12Z digest (the first cycle after 16:00Z on Jul-30). The NEXT first-after-16:00 fire (~16:1xZ Jul-31)
-  is the next re-flag point; Cycle-110/111/112 onward (17:xxZ Jul-30 … 15:xxZ Jul-31) are NOT first-after-16:00 →
+  is the next re-flag point; Cycle-110/111/112/113 onward (17:xxZ Jul-30 … 15:xxZ Jul-31) are NOT first-after-16:00 →
   no re-digest, but keep noting the gap each fire until it clears; queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
   is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
@@ -27,7 +27,39 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 113 METHOD — added the FOURTH metamorphic axis on the offering classifier, pair-symmetric on the
+  canonical pair: NOISE-SURFACE INVARIANCE. Adding a NEW readable surface that carries no capability signal
+  (a cookie/privacy notice, careers blurb, legal footer, metaphorical-"ship" marketing prose) must leave the
+  classified capability profile byte-identical (ranked claimed archetypes, full (label, surface, quote)
+  evidence map, NA/unclaimed set). The three prior families perturb the surfaces a site DOES publish (RELABEL
+  rewrites the host inside them, ORDER reverses their sequence, SCALE duplicates their bodies); NOISE is the
+  complement — it ADDS the incidental web chrome every real storefront serves and asserts the score measures
+  what a site DECLARES, not the noise around it. WHY (capability): a privacy policy must not conjure an
+  archetype and must not retract one; the rank drives the fixed template-bank task order (cross-site
+  comparability) and the NA set decides which archetypes a site is judged on vs excused, so both must be
+  properties of what the site declares. Only surfaces_seen (read-provenance) reflects the extra read. THREE
+  TEETH: (a) the noise surface is genuinely READ (lands in surfaces_seen) yet contributes no claim; (b) the
+  distractor fires ZERO signals under _scan_surface, asserted directly, despite metaphorical-"ship"×3 +
+  cookie/careers/legal near-miss traps — doubling as a precision demonstration on realistic prose; (c) a
+  negative control swaps the SAME surface key for real fulfillment prose and shows the profile DOES change
+  (physical_good, NA on the pair, conjured), proving the added-surface channel is live. A 4th assertion pins
+  the honest scope: surfaces_seen grew by EXACTLY the noise surface. New `_assert_noise_surface_invariance` +
+  `test_offering_noise_surface_invariance_{org,com}` in `tests/test_offering_canonical.py`. SHIP CLASS:
+  tests-only, off the scoring path (`scoring.py` does not import `offering` — grep-verified) → score-neutral,
+  NOT peer-gated. git diff over `asrs/ rubric/ fixtures/` EMPTY; git diff --name-only =
+  `tests/test_offering_canonical.py` ONLY. Cloud bridge blocks direct main push → branch
+  loop/noise-surface-invariance + PR #75 + self-merge (squash 31becd3). First duty: no open peer-gated PR
+  ([] at fire start); realigned main to origin/main after merge, deleted local branch. offering canonical
+  guard 26→28; full suite green (22 files; test_free_tier 11/11 after `pip install eth-account`,
+  environment-only). Canonical PAIR unchanged AND re-measured: replay guard 24/24, 46.1 F / 85.5 B / +39.4,
+  0 replay-miss; rubric v0.7. No Slack (score-neutral, off scoring path; not sensitive-class; not the
+  first-after-16:00 digest cycle — that was Cycle 109 at 16:12Z). RUNNER STILL GAPPED (verify_20260728T234102Z
+  23:41Z, ~42.8h old). Next COVERAGE — the offering-path invariance family is now four-fold (RELABEL / ORDER /
+  SCALE / NOISE), pair-symmetric, so the strongest untapped leverage is a NEW archetype or a signal on an
+  UNDER-developed archetype: metered_api has 7 offer-side legs while subscription / service_booking /
+  data_retrieval are thinly signalled — audit which is weakest and add ONE capability-worded, vendor-neutral
+  signal; ACP/UCP/MPP live handshakes + free-tier live-wiring stays [LOCAL].)
   (Cycle 112 READOUT — surfaced the `metered_api` `cancel-job` capability in the PUBLIC methodology prose,
   the READOUT leg CLOSING the cancel-job arc (COVERAGE 110 → TRUTH-relabel 111 → READOUT 112) — the SEVENTH
   metered_api offer-side leg to complete the full COVERAGE→TRUTH→READOUT arc (after payment-rail 78/79/80,

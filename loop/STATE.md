@@ -1,10 +1,10 @@
 # Loop state
 
-- Cycle counter: 104
+- Cycle counter: 105
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-30T10:19Z, Cycle 103; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-30T12:2xZ, Cycle 105; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~34.6h old at the 10:19Z fire; no newer :41 artifact through 09:41Z Jul-30 (35+ consecutive
+  Jul-28 = ~36.5h old at the 12:2xZ fire; no newer :41 artifact through 12:41Z Jul-30 (37+ consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine → FLAGGED in the Cycle-86 16:00 UTC digest
   (the 16:12Z fire was the FIRST cycle after 16:00Z; the ~16.5h runner gap was flagged loudly there;
   the Cycle-87 17:12Z through this Cycle-103 10:19Z-Jul-30 fires are NOT the first-after-16:00 cycle
@@ -28,7 +28,32 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 105 METHOD — mirrored surface-read-ORDER-invariance onto the `.org` half of the canonical
+  pair. New `test_offering_surface_order_invariance_org` in `tests/test_offering_canonical.py`
+  (21→22 in that file). The existing `test_offering_surface_order_invariance_output_license` pinned
+  whole-profile order-invariance only on `driftflight.com`; the relabel-invariance family already
+  spanned BOTH halves (`_org`/`_com`), so order-invariance lagged at one — this closes the pair
+  asymmetry. WHY (capability/rigor): a classification is a property of WHAT a surface DECLARES, never
+  of which surface discovery read first, on EITHER canonical domain — same "close the gap" discipline
+  as the Cycle-99/103 offering-layer guards. NON-VACUITY/TEETH: anchor `output-license` fires on .org
+  across ≥2 surfaces (`/pricing`+`homepage`, asserted); `surfaces_seen` genuinely differs fwd/rev
+  (asserted); STRONGER than the .com mirror — assertion (3) pins the COMPLETE per-archetype
+  `(label,surface)` evidence map invariant across the whole profile (verified sensitive: .org map spans
+  all 4 surfaces / 41 pairs, dropping one surface → 41→27, so order-dependent signal loss/migration is
+  caught). DELIBERATELY did NOT ship the STATE-flagged test-mode single-surface order guard (weak
+  non-vacuity, fires ×1 on `/docs`); this .org whole-profile guard is the stronger multi-surface form
+  of the same axis, folding that flagged item into a broader per-signal order-stability property.
+  SHIP CLASS: tests-only, off the scoring path → NOT peer-gated. git diff -- asrs/ rubric/ fixtures/
+  EMPTY; git diff --name-only = tests/test_offering_canonical.py ONLY. Cloud bridge blocks direct main
+  push → branch loop/order-invariance-org + PR #59 + self-merge (squash 89f2636). First duty: no open
+  peer-gated PR ([] at fire start); realigned main to origin/main after merge. Full suite green (22
+  files; test_free_tier 11/11). Canonical PAIR unchanged AND re-measured: replay guard 24/24, 46.1 F /
+  85.5 B / +39.4, 0 replay-miss; rubric v0.7. No Slack (score-neutral, off scoring path; not
+  sensitive-class; not the first-after-16:00 digest cycle). RUNNER STILL GAPPED (verify_20260728T234102Z
+  23:41Z ~36.5h old). Next COVERAGE — the order-/relabel-invariance families are now complete across
+  BOTH pair-halves; candidate: a NEW archetype or metered_api/digital_good signal, or a fresh
+  perturbation axis (label/scale) on the offering path. ACP/UCP/MPP + free-tier live-wiring stays [LOCAL].)
   (Cycle 104 READOUT — surfaced the `test-mode` metered_api "try the call SAFELY first, at $0"
   capability in the PUBLIC methodology prose, the READOUT complement CLOSING the test-mode arc
   (COVERAGE 102 → TRUTH-relabel 103 → READOUT 104 — the fifth metered_api leg to complete the full

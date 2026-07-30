@@ -537,18 +537,29 @@ design in-cloud, execute locally.
      loop/test-mode-methodology-prose + PR + self-merge (squash). Full suite green (test_free_tier 11/11);
      replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. See LOG Cycle 104. -->
 <!-- P1 FRONTIER (post-Cycle-104): the test-mode arc is now closed at COVERAGE (102) / TRUTH-relabel (103)
-     / READOUT (104) — the fifth metered_api leg to complete the full arc. The remaining test-mode item is
-     the surface-read-ORDER-invariance METHOD guard below (fresh axis, but non-vacuity is WEAKER — see its
-     caveat). Beyond that, next candidates are a NEW archetype/signal (COVERAGE) or a fresh perturbation
-     axis on the offering/battery path. -->
+     / READOUT (104) — the fifth metered_api leg to complete the full arc. The test-mode
+     surface-read-ORDER-invariance METHOD guard was SUPERSEDED by Cycle 105's stronger whole-profile `.org`
+     order guard (see the SUPERSEDED note below); the order-/relabel-invariance families are now COMPLETE
+     across both canonical pair-halves. Next candidates are a NEW archetype/signal (COVERAGE) or a
+     genuinely NEW perturbation axis (label/scale) on the offering/battery path. -->
 
-- **[METHOD] test-mode surface-read-ORDER-invariance guard** (fresh axis, orthogonal to Cycle-103's relabel
-  guard). Mirror `test_offering_surface_order_invariance_output_license` (Cycle 101): spy on the single
-  `classify_offering` call, re-classify FORWARD vs full REVERSAL of the discovered surface read order, and
-  assert the test-mode fired count/surface (and the metered_api claim) invariant. NOTE non-vacuity is
-  WEAKER than output-license here (test-mode fires ×1 on a single surface `/docs`, so a reorder cannot
-  migrate it across surfaces) — confirm it exercises a genuine multi-surface read before committing, else
-  fold into a broader per-signal order-stability sweep rather than a single-surface bystander test.
+<!-- SUPERSEDED 2026-07-30T12:2xZ (Cycle 105, METHOD): "[METHOD] test-mode surface-read-ORDER-invariance
+     guard" is FOLDED INTO the stronger whole-profile guard shipped this cycle. As the item itself warned,
+     test-mode's non-vacuity is weak (fires ×1 on a single surface `/docs`, so a reorder cannot migrate it).
+     Rather than a single-surface bystander test, Cycle 105 shipped `test_offering_surface_order_invariance_org`
+     — the "broader per-signal order-stability property" the item named as the alternative: it pins the
+     COMPLETE per-archetype (label, surface) evidence map invariant under full surface-read reversal on
+     drift-flight.org (which reads 4 surfaces / 41 (label,surface) pairs, incl. test-mode on metered_api),
+     so test-mode's order-invariance is now covered AS PART OF the whole-profile map. This also closed the
+     pair asymmetry (whole-profile order-invariance previously only on .com; relabel family already spanned
+     both). Tests-only, off scoring path, rubric v0.7, replay 24/24 / +39.4. PR #59 (squash 89f2636). See
+     LOG Cycle 105. -->
+<!-- INVARIANCE FAMILIES COMPLETE (post-Cycle-105): both canonical pair-halves now carry BOTH
+     whole-profile surface-read-order-invariance AND relabel-invariance at the offering/task-selection
+     layer. Next METHOD candidate is a genuinely NEW perturbation axis (label/scale — e.g. surface-text
+     truncation/duplication stability, or signal-count monotonicity under evidence duplication), NOT
+     another order/relabel single-signal mirror. Promote when a concrete non-vacuous axis is identified. -->
+
 <!-- DONE 2026-07-30T06:2xZ (Cycle 99, TRUTH, branch+PR+self-merge, tests-only/score-neutral): "Pin the
      new `output-license` digital_good signal as HOST/VENDOR relabel-invariant" SHIPPED. New guard
      `test_offering_relabel_invariance_output_license` in `tests/test_offering_canonical.py` (17→18) — the

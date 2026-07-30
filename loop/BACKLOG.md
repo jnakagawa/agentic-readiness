@@ -511,15 +511,28 @@ design in-cloud, execute locally.
   data_retrieval: a `bulk-export`/structured-output-format or a `filter`/query-parameter leg) with the same
   non-vacuous read-live guard the metered_api signals got. Off the scoring path, score-neutral.
 
-- **[TRUTH/READOUT next-cycle work, in-cloud] Complete the free-trial arc** (from Cycle 114). TRUTH: pin the
-  `free-trial` subscription signal as RELABEL-INVARIANT — a synthetic subscription surface that names the host
-  INSIDE the trial evidence, relabel the host everywhere, re-classify, assert the `free-trial` (label,
-  host-normalized surface) evidence is identity-invariant (the subscription-bank analog of the metered_api
-  signal-level relabel family in `test_offering_canonical.py`, extending it to a SECOND archetype). READOUT:
-  surface "evaluate a subscription at $0 before committing" in the public methodology prose
-  (`_write_methodology_page`, `asrs/scorecard.py`) with a content-presence guard in `tests/test_readout.py`,
-  the first subscription-archetype leg of a COVERAGE→TRUTH→READOUT arc. Both tests/display-only, off the
-  scoring path, score-neutral — not [LOCAL].
+<!-- TRUTH HALF DONE 2026-07-30T~19:2xZ (Cycle 115, branch+PR+self-merge, tests-only/score-neutral):
+     "pin `free-trial` as RELABEL-INVARIANT" SHIPPED. `test_offering_relabel_invariance_free_trial` +
+     `_free_trial_signals` in `tests/test_offering_canonical.py` (28→29) extend the signal-level relabel
+     family to its THIRD archetype (subscription), after metered_api ×7 + digital_good's output-license.
+     Because the real-fixture free-trial evidence is host-FREE (verified live: fires on /llms.txt / /pricing
+     / homepage with the host in neither surface key nor quote → a whole-fixture relabel would be VACUOUS),
+     the guard scans a SYNTHETIC subscription surface seating the host inside the trial evidence (surface-key
+     prefix + adjacent to the trial phrase → in the padded quote window), relabels everywhere, and asserts
+     identity-invariance: same match count (1), same host-normalized surface, quote still matches the live
+     `free-trial` regex, host absent. TEETH: bare-"trial" distractor (clinical / on trial / trial and error)
+     fires ZERO. Off scoring path (scoring.py 0 offering refs) → score-neutral, NOT peer-gated; git diff over
+     asrs/ rubric/ fixtures/ EMPTY; PR #79 (squash f220ea6). Replay guard 24/24, 46.1 F / 85.5 B / +39.4;
+     rubric v0.7. See LOG Cycle 115. The READOUT half is the P1 below. -->
+- **[READOUT, in-cloud] Complete the free-trial arc — the READOUT leg** (from Cycle 114; COVERAGE 114 →
+  TRUTH 115 → this). Surface "evaluate a subscription at $0 before committing" in the public methodology
+  prose (`_write_methodology_page`, `asrs/scorecard.py`) with a content-presence guard in
+  `tests/test_readout.py` — the first subscription-archetype leg of a full COVERAGE→TRUTH→READOUT arc
+  (mirroring the five metered_api arcs: payment-rail 78/79/80, async-job 82/83/84, api-auth 86/87/88,
+  error-contract 90/91/92, test-mode 102/103/104). Capability-worded, vendor-neutral (name the open trial-
+  offer conventions: a free trial / trial period / N-day trial / trial account), keep the precision note
+  (bare "trial" — clinical/court/error senses — is no signal), stay honest about scope (diagnostic, off the
+  scoring path). Display + tests-only, off the scoring path, score-neutral — not [LOCAL].
 
 <!-- DONE 2026-07-30T04:16Z (Cycle 97, METHOD, branch+PR+self-merge, tests-only/score-neutral):
      "Pin the digital_good DESCRIPTOR derivation as relabel/identity-invariant" SHIPPED. New guards in

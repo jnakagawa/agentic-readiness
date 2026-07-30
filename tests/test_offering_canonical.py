@@ -306,6 +306,50 @@ def test_retail_inverse_offering() -> None:
 
 
 # ---------------------------------------------------------------------------
+# TEETH for the `test-mode` metered_api signal, on REAL captured evidence.
+#
+# The test-mode signal (an API sandbox / test-key / dry-run capability) keys on
+# a precision-critical word: books.toscrape.com's page TITLE literally reads
+# "Books to Scrape - Sandbox" (a demo-site name, not an API sandbox). A naive
+# `\bsandbox\b` anchor would fire on that title and FALSELY claim metered_api for
+# a pure-retail book catalog — the exact battery-polluting false positive the
+# operator directive removes. The anchored signal must dodge it: this pins that
+# the retail fixture's real bare-"Sandbox" title does NOT trip test-mode (and so
+# does not spuriously add metered_api, already NA via test_retail_inverse_offering).
+# Non-vacuous: the raw trap word IS present (a bare anchor WOULD fire), so the
+# precision guard is doing real work, exercised on captured bytes not a synthetic.
+# ---------------------------------------------------------------------------
+_BARE_SANDBOX_RE = re.compile(r"\bsandbox\b", re.IGNORECASE)
+
+
+def test_retail_sandbox_title_does_not_trip_test_mode() -> None:
+    print("test_retail_sandbox_title_does_not_trip_test_mode")
+    profile, ctx = _discover(_RETAIL)
+    home = ctx.homepage(ua="browser")
+    prose = strip_html(getattr(home, "text", "") or "")
+
+    # The substrate really does contain the trap word (else the test is vacuous):
+    # the "Books to Scrape - Sandbox" page title.
+    _check(
+        bool(_BARE_SANDBOX_RE.search(prose)),
+        f"{_RETAIL}: homepage prose contains the bare 'Sandbox' trap word (the title)",
+    )
+
+    # ...yet no claim on the retail storefront rests on the test-mode signal.
+    fired = {s.label for c in profile.claimed for s in c.signals}
+    _check(
+        "test-mode" not in fired,
+        f"{_RETAIL}: bare 'Sandbox' in the page title does NOT trip test-mode "
+        f"(precision guard holds on real captured evidence; fired labels {sorted(fired)})",
+    )
+    # ...and consequently no spurious metered_api claim from a sandbox title.
+    _check(
+        not profile.claims("metered_api"),
+        f"{_RETAIL}: metered_api stays NA — a demo-site named 'Sandbox' is not an API",
+    )
+
+
+# ---------------------------------------------------------------------------
 # The EMPTY offering — a site that sells nothing. The two guards above pin the
 # poles of the classifier (an agent-native API -> physical_good NA; a retail shop
 # -> physical_good CLAIMED, APIs NA). This pins the THIRD, degenerate case the
@@ -1500,6 +1544,7 @@ def main() -> int:
         test_canonical_metaphorical_ship_stays_na_org,
         test_canonical_metaphorical_ship_stays_na_com,
         test_retail_inverse_offering,
+        test_retail_sandbox_title_does_not_trip_test_mode,
         test_nonstorefront_empty_offering,
         test_machine_surface_openapi_storefront,
         test_offering_relabel_invariance_org,

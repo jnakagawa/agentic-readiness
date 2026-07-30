@@ -9844,3 +9844,62 @@ signal-level relabel family now spans three archetypes (metered_api ×7, digital
 ×1, subscription ×1); deeper subscription/service_booking/data_retrieval signal work
 stays blocked in-cloud on a committed fixture that CLAIMS the thin archetypes —
 queued [LOCAL]. ACP/UCP/MPP + free-tier live-wiring stays [LOCAL].
+
+## Cycle 116 — 2026-07-30T~23:1xZ — READOUT (branch+PR+self-merge, display+tests-only/score-neutral)
+
+**What/why.** Surfaced the `subscription` **free-trial** capability in the PUBLIC
+methodology prose — the READOUT leg CLOSING the free-trial arc (COVERAGE 114 →
+TRUTH-relabel 115 → READOUT 116). This is the **FIRST subscription-archetype**
+offer-side leg to complete a full COVERAGE→TRUTH→READOUT arc; every prior prose leg
+was metered_api (payment-rail 78/79/80, async-job 82/83/84, api-auth 86/87/88,
+error-contract 90/91/92, test-mode 102/103/104, pagination 106/107/108, cancel-job
+110/111/112) plus the digital_good rights leg at Cycle 100. Added ONE
+capability-worded, vendor-neutral `<p>` ("Evaluating a subscription at $0 first") to
+the methodology "What the score answers" card (`_write_methodology_page`,
+`asrs/scorecard.py`), placed after the digital_good "Owning the deliverable"
+paragraph. The paragraph (a) frames trying the RECURRING plan at $0 before any charge
+begins, ties it to ASRS's own `$0-only` ethos, and names the failure (commit to
+recurring billing sight-unseen); (b) names the vendor-neutral trial-offer vocabulary
+as open conventions — a free trial, a trial period, an N-day trial (a `14-day free
+trial`), a trial account/allowance, "start your free trial", "try it free for N
+days" — the same category of open convention as REST/GraphQL/OpenAPI; (c) keeps the
+signal's PRECISION honesty — a bare `trial` word (a clinical trial, a court trial,
+"trial and error", "trial by fire", "on trial") is not a free-trial offer and is read
+as no signal; (d) says recognition keys on the TRIAL the offer grants, not who grants
+it, pinned by an identity-relabel executable regression test that relabels the
+storefront end-to-end; (e) stays HONEST about scope — diagnostic, off the scoring
+path, not a scored pillar. It is the subscription-side MIRROR of metered_api's
+test-mode leg (try the recurring OFFER safely at $0 first vs try the metered CALL
+safely at $0 first).
+
+**Guard.** `test_methodology_documents_free_trial` in `tests/test_readout.py`
+(55→56) — a content-presence guard mirroring the cancel-job/pagination/test-mode
+guards: pins the frame + failure + $0-only tie + recognition-keys clause + relabel +
+executable-regression-test + off-the-scoring-path/diagnostic scope phrases, the four
+trial-offer vocabulary tokens (free trial / trial period / N-day trial / trial
+account), the precision note (bare / no signal / clinical trial / trial and error),
+and page-wide vendor-neutrality (no drift-flight/driftflight/replicate).
+
+**Ship class + evidence.** Display + tests-only, off the scoring path (`scoring.py`
+does not import `offering` — grep-verified 0 refs) → score-neutral, NOT peer-gated.
+`git diff` over `asrs/scoring.py rubric/ fixtures/` EMPTY; `git diff --name-only` =
+`asrs/scorecard.py` + `tests/test_readout.py`. Cloud bridge blocks direct main push →
+branch `loop/free-trial-methodology-readout` + PR #81 + self-merge (squash 3067382;
+merged commit = exactly the 2 files, +88 lines). First duty: no open peer-gated PR
+(`[]` at fire start). Full suite green (22 files; `test_free_tier` 11/11 after `pip
+install -r requirements.txt`, environment-only, nothing to commit). Canonical PAIR
+unchanged AND re-measured: replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0
+replay-miss; rubric v0.7. RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z,
+~47.5h old at fire; cloud cannot repair the local machine; NOT the first-after-16:00
+digest cycle — that was Cycle 109 at 16:12Z).
+
+**Next hypothesis.** With the free-trial arc closed at all three layers (SIGNAL 114,
+RELABEL 115, READOUT 116), the subscription archetype now has one full arc — but
+service_booking / data_retrieval remain the two weakest archetypes (5 legs each) and
+CANNOT be strengthened in-cloud: no committed fixture CLAIMS either, so any new signal
+is unverifiable (vacuous). The next COVERAGE frontier is therefore [LOCAL]-blocked on
+capturing a fixture that genuinely claims service_booking (a booking/reservation API)
+or data_retrieval (a records-enrichment/dataset-query API) — queued P1 [LOCAL]. Rotate
+METHOD next: a fresh perturbation axis on the offering/battery path, OR extend the
+signal-level relabel family, now spanning three archetypes (metered_api ×7,
+digital_good ×1, subscription ×1). ACP/UCP/MPP + free-tier live-wiring stays [LOCAL].

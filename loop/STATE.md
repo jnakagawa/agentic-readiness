@@ -1,13 +1,13 @@
 # Loop state
 
-- Cycle counter: 115
+- Cycle counter: 116
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-30T~19:2xZ, Cycle 115; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-30T~23:1xZ, Cycle 116; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~43h old at the Cycle-114 fire; no newer :41 artifact through 18:41Z Jul-30 (43+ consecutive
+  Jul-28 = ~47.5h old at the Cycle-116 fire; no newer :41 artifact through 23:41Z Jul-30 (47+ consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine. The gap was RE-FLAGGED loudly in the Cycle-109
   16:12Z digest (the first cycle after 16:00Z on Jul-30). The NEXT first-after-16:00 fire (~16:1xZ Jul-31)
-  is the next re-flag point; Cycle-110/111/112/113/114 onward (17:xxZ Jul-30 … 15:xxZ Jul-31) are NOT first-after-16:00 →
+  is the next re-flag point; Cycle-110…116 onward (17:xxZ Jul-30 … 15:xxZ Jul-31) are NOT first-after-16:00 →
   no re-digest, but keep noting the gap each fire until it clears; queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
   is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
@@ -27,7 +27,39 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 116 READOUT — surfaced the `subscription` `free-trial` capability in the PUBLIC methodology prose,
+  the READOUT leg CLOSING the free-trial arc (COVERAGE 114 → TRUTH-relabel 115 → READOUT 116). This is the
+  FIRST subscription-archetype offer-side leg to complete a full COVERAGE→TRUTH→READOUT arc — every prior
+  prose leg was metered_api (payment-rail 78/79/80, async-job 82/83/84, api-auth 86/87/88, error-contract
+  90/91/92, test-mode 102/103/104, pagination 106/107/108, cancel-job 110/111/112) plus the digital_good
+  rights leg at Cycle 100. Added ONE capability-worded, vendor-neutral `<p>` ("Evaluating a subscription at
+  $0 first") to the methodology "What the score answers" card (`_write_methodology_page`,
+  `asrs/scorecard.py`), after the digital_good "Owning the deliverable" paragraph: (a) frames trying the
+  RECURRING plan at $0 before any charge begins, ties it to ASRS's own $0-only ethos, names the failure
+  (commit to recurring billing sight-unseen); (b) names vendor-neutral trial-offer vocabulary as open
+  conventions (a free trial / trial period / N-day trial such as a `14-day free trial` / trial
+  account-allowance / "start your free trial" / "try it free for N days"); (c) keeps the signal's PRECISION
+  honesty — a bare `trial` word (clinical trial / court trial / "trial and error" / "trial by fire" / "on
+  trial") is no signal; (d) recognition keys on the TRIAL the offer grants, not who grants it, pinned by an
+  identity-relabel executable regression test that relabels the storefront end-to-end; (e) HONEST scope —
+  diagnostic, off the scoring path, not a scored pillar. The subscription-side MIRROR of metered_api's
+  test-mode leg. GUARD: `test_methodology_documents_free_trial` in `tests/test_readout.py` (55→56), same
+  content-presence shape as the cancel-job/pagination/test-mode guards. SHIP CLASS: display + tests-only,
+  off the scoring path (`scoring.py` does not import `offering` — grep-verified 0 refs) → score-neutral,
+  NOT peer-gated. git diff over `asrs/scoring.py rubric/ fixtures/` EMPTY; git diff --name-only =
+  `asrs/scorecard.py` + `tests/test_readout.py`. Cloud bridge blocks direct main push → branch
+  loop/free-trial-methodology-readout + PR #81 + self-merge (squash 3067382; merged commit = exactly the 2
+  files, +88 lines). First duty: no open peer-gated PR ([] at fire start); realigned main to origin/main
+  after merge, deleted local branch. Full suite green (22 files; test_free_tier 11/11 after `pip install -r
+  requirements.txt`, environment-only). Canonical PAIR unchanged AND re-measured: replay guard 24/24, 46.1 F
+  / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. No Slack (score-neutral, off scoring path; not
+  sensitive-class; not the first-after-16:00 digest cycle — that was Cycle 109 at 16:12Z). RUNNER STILL
+  GAPPED (verify_20260728T234102Z 23:41Z, ~47.5h old). Next METHOD — a fresh perturbation axis on the
+  offering/battery path OR extend the signal-level relabel family (now spanning three archetypes:
+  metered_api ×7, digital_good ×1, subscription ×1). service_booking / data_retrieval signal work stays
+  [LOCAL] (no committed fixture claims either — any new signal unverifiable in-cloud); ACP/UCP/MPP +
+  free-tier live-wiring stays [LOCAL].)
   (Cycle 115 TRUTH — pinned the Cycle-114 `free-trial` subscription signal as RELABEL-INVARIANT, extending
   the signal-level relabel family to its THIRD archetype: `subscription` (after `metered_api`'s seven legs
   — payment-rail 79 / async-job 83 / api-auth 87 / error-contract / test-mode / pagination / cancel-job 111

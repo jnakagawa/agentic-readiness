@@ -524,15 +524,34 @@ design in-cloud, execute locally.
      fires ZERO. Off scoring path (scoring.py 0 offering refs) → score-neutral, NOT peer-gated; git diff over
      asrs/ rubric/ fixtures/ EMPTY; PR #79 (squash f220ea6). Replay guard 24/24, 46.1 F / 85.5 B / +39.4;
      rubric v0.7. See LOG Cycle 115. The READOUT half is the P1 below. -->
-- **[READOUT, in-cloud] Complete the free-trial arc — the READOUT leg** (from Cycle 114; COVERAGE 114 →
-  TRUTH 115 → this). Surface "evaluate a subscription at $0 before committing" in the public methodology
-  prose (`_write_methodology_page`, `asrs/scorecard.py`) with a content-presence guard in
-  `tests/test_readout.py` — the first subscription-archetype leg of a full COVERAGE→TRUTH→READOUT arc
-  (mirroring the five metered_api arcs: payment-rail 78/79/80, async-job 82/83/84, api-auth 86/87/88,
-  error-contract 90/91/92, test-mode 102/103/104). Capability-worded, vendor-neutral (name the open trial-
-  offer conventions: a free trial / trial period / N-day trial / trial account), keep the precision note
-  (bare "trial" — clinical/court/error senses — is no signal), stay honest about scope (diagnostic, off the
-  scoring path). Display + tests-only, off the scoring path, score-neutral — not [LOCAL].
+<!-- DONE 2026-07-30T~23:1xZ (Cycle 116, READOUT, branch+PR+self-merge, display+tests-only/score-neutral):
+     "Complete the free-trial arc — the READOUT leg" SHIPPED. Added ONE capability-worded, vendor-neutral
+     `<p>` ("Evaluating a subscription at $0 first") to `_write_methodology_page` (`asrs/scorecard.py`) after
+     the digital_good "Owning the deliverable" paragraph + a content-presence guard
+     `test_methodology_documents_free_trial` in `tests/test_readout.py` (55→56). This is the FIRST
+     subscription-archetype offer-side leg to complete a full COVERAGE→TRUTH→READOUT arc (COVERAGE 114 signal
+     → TRUTH 115 relabel-invariance → READOUT 116), after seven metered_api arcs (payment-rail 78/79/80,
+     async-job 82/83/84, api-auth 86/87/88, error-contract 90/91/92, test-mode 102/103/104, pagination
+     106/107/108, cancel-job 110/111/112) + the digital_good rights leg (100). Frames trying the RECURRING
+     plan at $0 before any charge begins tied to the $0-only ethos (failure = commit to recurring billing
+     sight-unseen); names vendor-neutral trial-offer vocabulary as open conventions (free trial / trial
+     period / N-day trial / trial account-allowance / "start your free trial" / "try it free for N days");
+     keeps the bare-`trial` precision note (clinical/court/"trial and error" senses = no signal); recognition
+     keys on the trial the offer grants not who grants it, pinned by an identity-relabel executable
+     regression test; honest scope (diagnostic, off the scoring path). The subscription-side MIRROR of the
+     metered_api test-mode leg. Display + tests-only, off the scoring path (`scoring.py` 0 offering refs) →
+     score-neutral, NOT peer-gated. git diff over `asrs/scoring.py rubric/ fixtures/` EMPTY. PR #81 (squash
+     3067382, merged commit = exactly `asrs/scorecard.py` + `tests/test_readout.py`, +88 lines). Full suite
+     green (22 files); replay guard 24/24, 46.1 F / 85.5 B / +39.4; rubric v0.7. See LOG Cycle 116. The
+     free-trial arc is now closed at ALL THREE layers (signal 114 / relabel 115 / readout 116). Next COVERAGE
+     frontier on the thin archetypes (service_booking / data_retrieval) is [LOCAL]-blocked — see the P1 below. -->
+- **[READOUT, in-cloud] frontier note (post-Cycle-116): the free-trial arc is CLOSED at all three layers**
+  (signal 114 / relabel 115 / readout 116). The subscription archetype now has one full COVERAGE→TRUTH→
+  READOUT arc. The remaining thin archetypes — service_booking (5 legs) and data_retrieval (5 legs) — cannot
+  get a NEW signal (COVERAGE) OR a new methodology leg (READOUT) in-cloud until a committed fixture CLAIMS
+  one of them (see the P1 [LOCAL] fixture-capture item), because a signal/prose leg for a never-claimed
+  archetype is unverifiable here (vacuous). Not a firm in-cloud item; promote a METHOD perturbation-axis or
+  a relabel-family extension instead until the [LOCAL] fixture lands.
 
 <!-- DONE 2026-07-30T04:16Z (Cycle 97, METHOD, branch+PR+self-merge, tests-only/score-neutral):
      "Pin the digital_good DESCRIPTOR derivation as relabel/identity-invariant" SHIPPED. New guards in

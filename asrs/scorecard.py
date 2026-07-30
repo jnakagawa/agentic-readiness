@@ -440,6 +440,28 @@ regression test</b> that relabels the API&rsquo;s identity end-to-end and confir
 the error contract is still recognized, unchanged, with the vendor&rsquo;s name
 gone. This read is <b>diagnostic</b> &mdash; it names how the offer reports a
 failure, <b>off the scoring path</b> &mdash; not a scored pillar.</p>
+<p><b>Owning the deliverable</b> is finishing on the <b>digital-good</b> side,
+where an agent can obtain exactly the render it asked for and still not be able to
+<b>use</b> it. A generation storefront returns an image, a video, an audio clip or
+a document; whether the agent may put that output to work &mdash; ship it in a
+product, resell it, publish it &mdash; turns on the <b>usage rights</b> the offer
+grants. An offer that documents a <b>commercial licence</b> on its output,
+<b>royalty-free</b> terms, explicit <b>usage rights</b>, or plain ownership of the
+deliverable (&ldquo;<b>you own the output</b>&rdquo;) is more agent-completable
+than one that hands back a render the agent has no licence to use &mdash; an agent
+that cannot legally use what it obtained has <b>not completed the commercial
+job</b>. So ASRS reads the documented rights grant as part of understanding the
+digital-good offer, keyed on vendor-neutral <b>rights vocabulary</b> (a commercial
+licence, royalty-free terms, stated usage rights, ownership of the output), never
+on a vendor&rsquo;s name &mdash; and never on a bare <code>license</code> word,
+since a software licence, a business licence, or a hosted <b>model&rsquo;s own
+licence</b> is not a grant of rights in the deliverable and is read as no signal.
+Recognition keys on the <b>rights the offer grants, not who grants them</b>: that
+property is pinned by an <b>executable regression test</b> that relabels the
+storefront&rsquo;s identity end-to-end and confirms the rights grant is still
+recognized, unchanged, with the vendor&rsquo;s name gone. This read is
+<b>diagnostic</b> &mdash; it names whether the offer lets an agent use what it
+buys, <b>off the scoring path</b> &mdash; not a scored pillar.</p>
 </div>
 
 <div class="card">

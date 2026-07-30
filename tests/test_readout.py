@@ -886,6 +886,63 @@ def test_methodology_documents_cancel_job() -> None:
                f"cancel-job prose names no vendor/domain ({banned!r})")
 
 
+def test_methodology_documents_free_trial() -> None:
+    # Cycle 116 (READOUT): the READOUT complement CLOSING the free-trial arc opened by
+    # Cycle 114 (COVERAGE — the `free-trial` offering signal added to the SUBSCRIPTION
+    # archetype bank: a no-cost evaluation of a recurring offer BEFORE billing begins)
+    # and Cycle 115 (TRUTH — the SIGNAL-level relabel-invariance guard for that signal).
+    # This is the FIRST SUBSCRIPTION-archetype leg to complete a full COVERAGE->TRUTH->
+    # READOUT arc — every prior prose leg (payment-rail 78/79/80, async-job 82/83/84,
+    # api-auth 86/87/88, error-contract 90/91/92, test-mode 102/103/104, pagination
+    # 106/107/108, cancel-job 110/111/112) was a metered_api offer-side leg, plus the
+    # digital_good rights leg at Cycle 100. The "evaluate the recurring plan at $0
+    # before committing to billing" leg was pinned in code + tests but NEVER surfaced
+    # in prose a critic can read — a reader could not learn WHY a subscription that lets
+    # an agent try the plan free before any charge is MORE agent-completable, or how it
+    # is the subscription-side mirror of trying a metered call safely first. The
+    # paragraph must (a) frame it as evaluating/trying the recurring subscription at $0
+    # before any charge begins, tie it to the $0-only ethos, and name the failure
+    # (commit to recurring billing sight-unseen); (b) name the vendor-neutral trial-offer
+    # vocabulary the offering signal anchors on as open conventions — a free trial, a
+    # trial period, an N-day trial, a trial account/allowance; (c) keep the signal's
+    # PRECISION honesty — a bare `trial` word (a clinical trial, a court trial, "trial
+    # and error", "trial by fire", "on trial") is not a free-trial offer and is read as
+    # no signal; (d) say recognition keys on the TRIAL the offer grants not who grants
+    # it and is pinned by an identity-relabel executable regression test; and (e) stay
+    # HONEST about scope — this offering read is diagnostic, off the scoring path, not a
+    # scored pillar (the same scored-vs-diagnostic line the sibling offer-side prose
+    # keeps). Vendor-neutral throughout.
+    print("test_methodology_documents_free_trial")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    # Match on the whitespace-collapsed text (same technique as the async-job /
+    # api-auth / error-contract / test-mode / pagination / cancel-job guards) so
+    # wording, not source wrapping, is what the guard pins.
+    collapsed = " ".join(text.split())
+    for phrase in ("Evaluating a subscription at $0 first",
+                   "recurring billing sight-unseen", "$0-only", "trial offer",
+                   "trial the offer grants, not who grants it",
+                   "relabels the storefront", "executable regression test",
+                   "off the scoring path", "diagnostic"):
+        _check(phrase in collapsed,
+               f"methodology documents free-trial: {phrase!r}")
+    # The vendor-neutral trial-offer vocabulary the offering signal bank anchors on
+    # must appear as open subscription conventions, never a vendor product: a free
+    # trial, a trial period, an N-day trial, a trial account/allowance.
+    for token in ("free trial", "trial period", "N-day trial", "trial account"):
+        _check(token in collapsed, f"methodology names trial-offer convention {token!r}")
+    # PRECISION honesty: the prose must preserve the signal's bare-word guard — a bare
+    # `trial` word (a clinical trial, a court trial, "trial and error") is not a
+    # free-trial offer and is read as no signal.
+    for token in ("bare", "no signal", "clinical trial", "trial and error"):
+        _check(token in collapsed,
+               f"methodology keeps free-trial precision note: {token!r}")
+    # Vendor-neutral: no scored domain/product/brand named on the page.
+    for banned in ("drift-flight", "driftflight", "replicate"):
+        _check(banned not in text,
+               f"free-trial prose names no vendor/domain ({banned!r})")
+
+
 def test_methodology_documents_calibration() -> None:
     # Cycle 68 (READOUT): the READOUT complement to Cycle 67's calibration guard
     # (tests/test_calibration.py — the first static-vs-behavioral VALIDITY axis).
@@ -1563,6 +1620,7 @@ def main() -> int:
         test_methodology_documents_test_mode,
         test_methodology_documents_pagination,
         test_methodology_documents_cancel_job,
+        test_methodology_documents_free_trial,
         test_methodology_documents_calibration,
         test_methodology_page_tracks_live_rubric,
         test_build_scorecard_publishes_and_links_methodology,

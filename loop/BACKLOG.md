@@ -516,19 +516,32 @@ design in-cloud, execute locally.
      families are complete, OR a NEW archetype/signal (COVERAGE). Not yet a firm backlog item; promote when
      a concrete gap is identified. -->
 
-- **[READOUT] Surface the `test-mode` metered_api "try the call SAFELY first, at $0" leg in the public
-  methodology prose** (follow-up to Cycle 102 COVERAGE + Cycle 103 TRUTH). The test-mode signal (a
-  sandbox / test-key / dry-run facility, `asrs/offering.py`) is now pinned in code+tests at two layers but
-  has no reader-facing paragraph — a reader cannot learn WHY a metered API that lets an agent validate its
-  integration and dry-run a call at zero cost before authorizing anything real is MORE agent-completable
-  (the "provision + complete the job SAFELY, without a human" capability, which dovetails with ASRS's own
-  $0-only ethos). Add ONE capability-worded, vendor-neutral paragraph to the methodology "What the score
-  answers" card (`_write_methodology_page`, `asrs/scorecard.py`), alongside the four metered_api offer-side
-  legs (payment-rail/auth/async-job/error-contract) and the digital_good output-license leg. Preserve the
-  signal's PRECISION note (never bare `sandbox`/`test`; requires a named facility / test-mode / test
-  credential / dry-run / the `<prefix>_test_<masked-stub>` key convention) and name the identity+prefix
-  relabel executable regression test (Cycle 103). Display+tests-only, off the scoring path → NOT peer-gated;
-  this CLOSES the test-mode COVERAGE→TRUTH→READOUT arc (mirroring output-license 98→99→100).
+<!-- DONE 2026-07-30T11:12Z (Cycle 104, READOUT, branch+PR+self-merge, display+tests-only/
+     score-neutral): "[READOUT] Surface the `test-mode` metered_api 'try the call SAFELY first, at $0'
+     leg in the public methodology prose" SHIPPED — the READOUT complement CLOSING the test-mode arc
+     (COVERAGE 102 → TRUTH-relabel 103 → READOUT 104), the FIFTH metered_api leg to complete the full
+     COVERAGE→TRUTH→READOUT arc (after payment-rail 78/79/80, async-job 82/83/84, api-auth 86/87/88,
+     error-contract 90/91/92). Added ONE capability-worded, vendor-neutral `<p>` to the methodology "What
+     the score answers" card (`_write_methodology_page`, `asrs/scorecard.py`), between the error-contract
+     paragraph and "Owning the deliverable", alongside the four metered_api offer-side legs + the
+     digital_good output-license leg (C100). Frames it as rehearsing the call safely first at $0 before a
+     real charge (tied to ASRS's $0-only ethos); names the vendor-neutral test-facility vocabulary as open
+     conventions (sandbox environment / test-mode flag / test API key / dry-run / `_test_`/`_sandbox_` key
+     convention); KEEPS the precision note (bare `sandbox`/`test` — demo-site title / sandboxed iframe /
+     `unit_test_runner` — is no signal); names the Cycle-103 identity+key-prefix relabel regression test;
+     stays HONEST about scope (diagnostic, off the scoring path, not a scored pillar). New content-presence
+     guard `test_methodology_documents_test_mode` in `tests/test_readout.py` (52→53) mirrors
+     `test_methodology_documents_output_license`; rendered-page neutral-scan stays clean 4/4. Display +
+     tests-only, off the scoring path → NOT peer-gated (git diff --name-only = asrs/scorecard.py +
+     tests/test_readout.py ONLY, scoring-path diff EMPTY). Cloud bridge blocks direct main push → branch
+     loop/test-mode-methodology-prose + PR + self-merge (squash). Full suite green (test_free_tier 11/11);
+     replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. See LOG Cycle 104. -->
+<!-- P1 FRONTIER (post-Cycle-104): the test-mode arc is now closed at COVERAGE (102) / TRUTH-relabel (103)
+     / READOUT (104) — the fifth metered_api leg to complete the full arc. The remaining test-mode item is
+     the surface-read-ORDER-invariance METHOD guard below (fresh axis, but non-vacuity is WEAKER — see its
+     caveat). Beyond that, next candidates are a NEW archetype/signal (COVERAGE) or a fresh perturbation
+     axis on the offering/battery path. -->
+
 - **[METHOD] test-mode surface-read-ORDER-invariance guard** (fresh axis, orthogonal to Cycle-103's relabel
   guard). Mirror `test_offering_surface_order_invariance_output_license` (Cycle 101): spy on the single
   `classify_offering` call, re-classify FORWARD vs full REVERSAL of the discovered surface read order, and

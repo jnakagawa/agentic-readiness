@@ -9102,3 +9102,86 @@ guard for test-mode (METHOD, a fresh axis). A NEW archetype/signal remains open
 COVERAGE; ACP/UCP/MPP + free-tier live-wiring stays [LOCAL]. No Slack
 (score-neutral, off scoring path; not sensitive-class; not the first-after-16:00
 digest cycle — the next first-after-16:00 is ~16:xxZ Jul-30).
+
+## Cycle 104 — 2026-07-30T11:12Z — READOUT (branch+PR+self-merge, display+tests-only / score-neutral)
+
+**What.** Surfaced the `test-mode` metered_api "try the call SAFELY first, at $0"
+capability in the PUBLIC methodology prose — the READOUT complement CLOSING the
+test-mode arc opened by Cycle 102 (COVERAGE — the `test-mode` offering signal: a
+sandbox / test-key / dry-run facility) and Cycle 103 (TRUTH — the signal-level
+HOST + KEY-PREFIX relabel-invariance guard). Added ONE capability-worded,
+vendor-neutral `<p>` to the methodology "What the score answers" card
+(`_write_methodology_page`, `asrs/scorecard.py`), placed alongside the four
+metered_api offer-side legs (payment-rail C80 / api-auth C88 / async-job C84 /
+error-contract C92) and the digital_good output-license leg (C100), between the
+error-contract paragraph and "Owning the deliverable". This was the READOUT
+candidate STATE named after Cycle 103, mirroring the output-license 98→99→100 arc.
+
+**Why (capability).** The four other metered_api legs each earned a reader-facing
+paragraph; the "try the call safely first" leg was pinned in code + tests (C102/
+C103) but a reader could not learn WHY a metered API that lets an agent validate
+its integration and dry-run a call at ZERO cost before authorizing anything real
+is MORE agent-completable — the "provision + complete the job SAFELY, without a
+human" capability, which dovetails with ASRS's own $0-only ethos (an offer an
+agent can exercise at $0 before it authorizes a real charge beats one that forces
+the first call to be a paid one). The paragraph:
+- **Frames** it as rehearsing the call safely first, at zero cost, before a real
+  charge; ties it to the $0-only ethos.
+- **Names** the vendor-neutral test-facility vocabulary as open machine-integration
+  conventions (a sandbox environment, a test-mode flag, a test API key / credential,
+  a dry-run, the `<prefix>_test_`/`<prefix>_sandbox_` key convention), the same
+  open-convention category as REST/GraphQL/OpenAPI the sibling legs anchor on.
+- **Keeps the PRECISION note**: a bare `sandbox`/`test` word (a demo-site title, a
+  sandboxed iframe, a `unit_test_runner` filename) is NOT a test facility and is
+  read as no signal.
+- **Recognition keys on the facility PROVIDED, not who provides it**, pinned by an
+  executable regression test that relabels the API's identity AND its key prefix
+  end-to-end (the Cycle-103 guard) — named in the prose.
+- **Stays HONEST about scope**: diagnostic, off the scoring path, not a scored
+  pillar (the same scored-vs-diagnostic line every sibling offer-side leg keeps).
+
+**Tests.** New content-presence guard `test_methodology_documents_test_mode` in
+`tests/test_readout.py` (mirroring `test_methodology_documents_output_license`):
+pins the capability framing + $0-only tie, the vendor-neutral facility vocabulary
+(sandbox environment / test-mode / test API key / dry-run / `_test_` / `_sandbox_`),
+the precision note (bare / no signal / `unit_test_runner` / "Sandbox"), the
+relabel-including-key-prefix regression-test mention, the diagnostic/off-scoring-
+path scope line, and vendor-neutrality (no `drift-flight`/`driftflight`).
+Whitespace-collapsed match so source wrapping isn't pinned. `test_readout.py`
+52→53. Rendered `methodology.html` neutral-scan (`test_readout_wording.py`) stays
+clean 4/4 (no scored storefront named).
+
+**Ship class.** Display (methodology-page render) + tests-only, off the scoring
+path → NOT peer-gated (same class as the Cycle-100 output-license READOUT). Cloud
+bridge blocks direct main push → branch `loop/test-mode-methodology-prose` + PR +
+self-merge (squash). First duty: no open peer-gated PR ([] at fire start).
+
+**Evidence.** `git diff --name-only` = `asrs/scorecard.py` + `tests/test_readout.py`
+ONLY; `git diff` over scoring.py/rubric*/probes.py/protocols.py/offering.py/
+battery.py/fetch.py/rubric/fixtures/batteries = EMPTY (the change is inside the
+methodology HTML string literal, not any scoring code). Full suite green (all
+`tests/test_*.py` files pass; `test_free_tier` 11/11, `test_readout` 53/53,
+`test_readout_wording` 4/4).
+
+**Canonical pair (regression signal).** Replay guard 24/24 — **46.1 F / 85.5 B /
++39.4**, 0 replay-miss; rubric v0.7. Score-neutral by construction (off the
+scoring path; the methodology page is a static doc, never read by the scorer).
+
+**Infra.** RUNNER STILL GAPPED — newest `runs/local/verify_20260728T234102Z.json`
+(23:41Z Jul-28) is ~35.5h old at this fire; cloud cannot repair the local machine
+(queued P0 [LOCAL], flagged in the Cycle-86 digest; keep flagging in each daily
+digest — next first-after-16:00 is ~16:xxZ Jul-30). The in-cloud replay guard
+remains the live regression signal INDEPENDENT of the runner. Environment needed
+`pip install eth-account` (in requirements.txt) for `test_free_tier` — environment
+-only, nothing to commit.
+
+**Next hypothesis.** METHOD next (rotate READOUT → METHOD). The test-mode arc is
+now closed at COVERAGE (102) / TRUTH-relabel (103) / READOUT (104) — the fifth
+metered_api leg to complete the full arc. Candidate: the test-mode surface-read-
+ORDER-invariance guard STATE flagged (a fresh METHOD axis) — BUT note its
+non-vacuity is WEAKER (test-mode fires ×1 on a single surface `/docs`, so a
+reorder cannot migrate it across surfaces); confirm it exercises a genuine
+multi-surface read before committing, else fold into a broader per-signal
+order-stability sweep. Alternatively a NEW archetype/signal (COVERAGE). ACP/UCP/
+MPP + free-tier live-wiring stays [LOCAL]. No Slack (score-neutral, off scoring
+path; not sensitive-class; not the first-after-16:00 digest cycle).

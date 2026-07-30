@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 103
+- Cycle counter: 104
 - Started: 2026-07-23 (UTC)
 - RUNNER STALL (STILL GAPPED at 2026-07-30T10:19Z, Cycle 103; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
@@ -28,7 +28,38 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 104 READOUT — surfaced the `test-mode` metered_api "try the call SAFELY first, at $0"
+  capability in the PUBLIC methodology prose, the READOUT complement CLOSING the test-mode arc
+  (COVERAGE 102 → TRUTH-relabel 103 → READOUT 104 — the fifth metered_api leg to complete the full
+  arc, after payment-rail 78/79/80, async-job 82/83/84, api-auth 86/87/88, error-contract 90/91/92).
+  Added ONE capability-worded, vendor-neutral `<p>` to the methodology "What the score answers" card
+  (`_write_methodology_page`, `asrs/scorecard.py`), between the error-contract paragraph and "Owning
+  the deliverable", alongside the four metered_api offer-side legs + the digital_good output-license
+  leg (C100). WHY (capability): a metered API that lets an agent obtain a test/sandbox credential and
+  dry-run a call at ZERO cost before authorizing anything real is MORE agent-completable — the
+  "provision + complete the job SAFELY, without a human" capability, dovetailing with ASRS's own
+  $0-only ethos. The paragraph frames it as rehearsing the call safely first at $0; names the
+  vendor-neutral test-facility vocabulary as open conventions (sandbox environment / test-mode flag /
+  test API key / dry-run / `_test_`/`_sandbox_` key convention); KEEPS the precision note (a bare
+  `sandbox`/`test` word — demo-site title / sandboxed iframe / `unit_test_runner` — is no signal);
+  names the Cycle-103 identity+key-prefix relabel regression test; stays HONEST about scope
+  (diagnostic, off the scoring path, not a scored pillar). New content-presence guard
+  `test_methodology_documents_test_mode` in `tests/test_readout.py` (52→53) mirrors
+  `test_methodology_documents_output_license`; rendered-page neutral-scan stays clean 4/4. SHIP
+  CLASS: display (methodology render) + tests-only, off the scoring path → NOT peer-gated (same class
+  as Cycle-100 output-license READOUT); git diff --name-only = asrs/scorecard.py + tests/test_readout.py
+  ONLY, scoring-path diff EMPTY. Cloud bridge blocks direct main push → branch
+  loop/test-mode-methodology-prose + PR #NN + self-merge (squash <sha>). First duty: no open
+  peer-gated PR ([] at fire start). Full suite green (all tests/test_*.py pass; test_free_tier 11/11).
+  Canonical PAIR unchanged AND re-measured: replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss;
+  rubric v0.7. No Slack (score-neutral, off scoring path; not sensitive-class; not the first-after-16:00
+  digest cycle). RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z ~35.5h old). Next METHOD — the
+  test-mode arc is now fully closed; candidate: the surface-read-ORDER-invariance guard for test-mode
+  (fresh axis) BUT its non-vacuity is WEAKER (fires ×1 on a single surface `/docs` — a reorder cannot
+  migrate it across surfaces), so confirm a genuine multi-surface read first else fold into a broader
+  per-signal order-stability sweep; OR a NEW archetype/signal (COVERAGE). ACP/UCP/MPP + free-tier
+  live-wiring stays [LOCAL].)
   (Cycle 103 TRUTH — pinned the Cycle-102 `test-mode` metered_api signal as RELABEL-INVARIANT, the
   FIFTH metered_api signal-level relabel guard (payment-rail 79 / async-job 83 / api-auth 87 /
   error-contract 90 / now test-mode). New `test_offering_relabel_invariance_test_mode` in

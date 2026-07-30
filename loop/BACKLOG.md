@@ -551,6 +551,34 @@ design in-cloud, execute locally.
      46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. See LOG Cycle 100. The output-license
      COVERAGE→TRUTH→READOUT arc is now complete at all three layers (98/99/100), mirroring the four
      metered_api legs. -->
+<!-- DONE 2026-07-30T09:24Z (Cycle 102, COVERAGE, branch+PR+self-merge, score-neutral): "a NEW
+     metered_api signal" SHIPPED — a `test-mode` signal (API SANDBOX / test-key / dry-run facility) in the
+     `metered_api` bank of `asrs/offering.py`, the first new metered_api capability signal since
+     error-contract (the output-license digital_good arc closed at 98–101). An agent that obtains a
+     test/sandbox credential validates its integration + dry-runs a call at ZERO cost before authorizing
+     anything real — the "provision + complete the job safely, without a human" capability, aligned with
+     ASRS's $0-only ethos; distinct from api-auth/rate-limited/async-job/error-contract (none said whether
+     an agent can TRY the call safely first). Vendor-neutral, precision-critical: never matches bare
+     `sandbox`/`test` (books.toscrape's "Books to Scrape - Sandbox" TITLE trips a bare anchor 3×), requires
+     a named testing facility / `test mode` / `dry-run` / the `<prefix>_test_`/`_sandbox_` key convention
+     with a masked-ellipsis or digit-bearing stub (`df_test_...` fires, `unit_test_runner` does not). Fires
+     on BOTH canonical `/docs`, ZERO on api.replicate/books/example. Off scoring path → score-neutral, NOT
+     peer-gated (Cycle-98 class); PR #53 (squash 4da5024). Tests +3 (test_offering 38→40,
+     test_offering_canonical 19→20). Canonical claimed SET+ORDER byte-identical; replay guard 24/24 / 46.1 F
+     / 85.5 B / +39.4. SECRET-SCANNING lesson: initial push declined on a synthetic `sk_test_…` example key
+     → replaced with neutral `kv_test_…`, amended the UNPUBLISHED commit (did NOT bypass the scanner). See
+     LOG Cycle 102. TRUTH follow-up (below). -->
+- **Pin the `test-mode` metered_api signal as HOST/VENDOR relabel-invariant** (TRUTH, follow-up to Cycle
+  102, IN-CLOUD doable — the TRUTH mirror of Cycle 99's output-license guard). The new `test-mode` signal's
+  key-prefix branch matches the canonical `df_test_...` stub, and `df` is the host stem (drift**f**light) —
+  so unlike the surface-presence signals (error-contract/output-license), the FIRED QUOTE here can embed
+  the host. Add `test_offering_relabel_invariance_test_mode` to `tests/test_offering_canonical.py`: replay
+  the canonical driftflight.com fixture, relabel the host everywhere, re-classify, and assert the test-mode
+  signal fires the SAME count on the SAME (host-normalized) surfaces with the digital-good/metered claim
+  invariant — proving the match keys on the DECLARED test/live credential DICHOTOMY, not on the vendor's
+  name. Non-vacuity: the `df_test_`/`df_live_` stubs carry the host stem, so the relabel does real work.
+  Tests-only, off scoring path → NOT peer-gated. Alternatively a surface-read-ORDER-invariance guard (the
+  Cycle-101 axis) for test-mode.
 <!-- P1 FRONTIER (post-Cycle-101): the deliverable-rights (`output-license`) arc is now closed at ALL layers
      — SIGNAL (98), TRUTH-relabel (99), READOUT (100), and METHOD surface-read-ORDER-invariance (Cycle 101,
      `test_offering_surface_order_invariance_output_license`, PR #51 / 880e0a8). The rights leg's two

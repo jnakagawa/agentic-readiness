@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 101
+- Cycle counter: 102
 - Started: 2026-07-23 (UTC)
 - RUNNER STALL (STILL GAPPED at 2026-07-30T07:16Z, Cycle 100; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
@@ -28,7 +28,41 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 102 COVERAGE — added a `test-mode` signal to the `metered_api` bank in `asrs/offering.py`:
+  an API SANDBOX / test-key / dry-run facility, the first NEW metered_api capability signal since
+  error-contract (the output-license digital_good arc closed at Cycles 98–101). An agent that obtains a
+  test/sandbox credential validates its whole integration and dry-runs a call at ZERO cost (no real
+  charge, no quota use) before authorizing anything real — the "provision + complete the job safely,
+  without a human" capability, aligned with ASRS's own $0-only ethos. WHY (capability): distinct from
+  every existing metered_api signal (api-auth = how you present credentials, rate-limited = how fast,
+  async-job = how results return, error-contract = how you recover); NONE said whether an agent can TRY
+  the call safely first. PRECISION-CRITICAL, vendor-neutral: never matches bare `sandbox`/`test` — a
+  demonstrated FP minefield (books.toscrape.com's page TITLE "Books to Scrape - Sandbox" trips a bare
+  `\bsandbox\b` 3×). Requires a named testing facility (sandbox mode/environment/api/key/…), a `test
+  mode`/`test api key`/`test credentials`, an explicit `dry-run`, or the `<prefix>_test_`/`_sandbox_`
+  key convention with a masked ellipsis or digit-bearing stub (so `df_test_...` fires but
+  `unit_test_runner` does not). Validated against ALL 5 committed fixtures: fires once on BOTH canonical
+  `/docs` (`df_live_... (production) or df_test_... (sandbox: watermarked output, no quota use)`), ZERO
+  on api.replicate.com / books.toscrape / example.com. SHIP CLASS: `discover_offering` is OFF the
+  scoring path (grep-verified empty diff over scoring/probes/protocols/fetch), both canonical domains
+  ALREADY claim metered_api → score-neutral, NOT peer-gated (same class as Cycle-98 output-license
+  COVERAGE signal). Cloud bridge blocks direct main push → branch loop/test-mode-signal + PR #53 +
+  self-merge (squash 4da5024). SECRET-SCANNING lesson: initial push declined — a synthetic Stripe-style
+  `sk_test_…` example key tripped GitHub push protection; replaced with a neutral `kv_test_…` and amended
+  the UNPUBLISHED commit (did NOT bypass the scanner; invariant #5 concerns published commits). Tests +3:
+  test_offering `test_test_mode_metering_precision_synthetic` (11 pos / 7 traps) +
+  `test_test_mode_fires_on_real_captured_api_docs`; test_offering_canonical
+  `test_retail_sandbox_title_does_not_trip_test_mode` (teeth — bare-"Sandbox" title stays NA). Full suite
+  22/22 files green. First duty: no open peer-gated PR ([] at fire start). Canonical PAIR unchanged AND
+  re-measured: claimed SET+ORDER byte-identical `['metered_api','digital_good','subscription']` on both,
+  test-mode fires on both; replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. No
+  Slack (score-neutral, off scoring path; not sensitive-class; not the first-after-16:00 digest cycle).
+  RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z ~33.5h old). Next TRUTH — candidate: pin the new
+  `test-mode` signal as HOST/VENDOR relabel-invariant at the signal level (the mirror of Cycle 99's
+  output-license guard — the `df_test_` key-prefix embeds the host stem, so a whole-fixture relabel must
+  preserve the fired count/surfaces), or a surface-read-ORDER-invariance guard for it. A NEW
+  archetype/signal remains open COVERAGE; ACP/UCP/MPP + free-tier live-wiring stays [LOCAL].)
   (Cycle 101 METHOD — pinned the `digital_good` deliverable-rights leg (`output-license`) as
   surface-read-ORDER invariant, a fresh perturbation AXIS orthogonal to the relabel/identity family
   (payment-rail 79 / async-job 83 / api-auth 87 / error-contract / output-license 99). New guard

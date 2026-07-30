@@ -1595,6 +1595,107 @@ def test_offering_surface_order_invariance_output_license() -> None:
     )
 
 
+def test_offering_surface_order_invariance_org() -> None:
+    """Order-invariance mirrored onto the .org half of the canonical pair.
+
+    ``test_offering_surface_order_invariance_output_license`` above pins the
+    surface-read-order-invariance of the WHOLE classified profile — but only on
+    ``driftflight.com``. The relabel-invariance family already spans BOTH halves
+    of the canonical pair (``_org``/``_com``); order-invariance lagged at one.
+    This closes that asymmetry the same way the offering-layer relabel guards
+    closed the two-vs-four gap against the scoring layer: a classification must
+    not depend on which surface the discovery path happened to read first, on
+    EITHER canonical domain.
+
+    Non-vacuity is anchored on ``output-license``, which fires on drift-flight.org
+    across >=2 distinct surfaces (``/pricing`` + ``homepage``), so a full read-order
+    reversal permutes a REAL multi-surface accumulation — not a single-surface
+    bystander. The .org fixture also reads MORE archetypes' multi-surface signals
+    than .com's output-license alone, so the whole-profile assertions below carry
+    genuine teeth on this half.
+    """
+    print("test_offering_surface_order_invariance_org")
+    surfaces = _captured_surfaces("drift-flight.org")
+
+    forward = _offering.classify_offering("drift-flight.org", dict(surfaces))
+    reverse = _offering.classify_offering(
+        "drift-flight.org", dict(reversed(list(surfaces.items())))
+    )
+
+    fwd_lic = _license_signals(forward)
+    rev_lic = _license_signals(reverse)
+    fwd_surfaces = {s for s, _ in fwd_lic}
+
+    # Non-vacuity (a): the anchor signal genuinely fires across MULTIPLE surfaces
+    # on THIS domain, so the reorder permutes a real per-archetype accumulation.
+    _check(
+        len(fwd_surfaces) >= 2,
+        "output-license fires on >=2 distinct surfaces on drift-flight.org (a real "
+        f"multi-surface accumulation, so the reorder is meaningful) (got {sorted(fwd_surfaces)})",
+    )
+    # Non-vacuity (b): the reorder is REAL and OBSERVABLE — surfaces_seen (the read
+    # order) actually differs, so an order-INSENSITIVE reader would NOT make the
+    # invariance below vacuously true.
+    _check(
+        list(forward.surfaces_seen) != list(reverse.surfaces_seen),
+        "the surface-read order genuinely differs between the two runs "
+        f"(forward head {list(forward.surfaces_seen)[:2]}, reverse head "
+        f"{list(reverse.surfaces_seen)[:2]}) — the invariance is non-vacuous",
+    )
+
+    # (1) The anchor signal fires the SAME number of times under reorder.
+    _check(
+        len(rev_lic) == len(fwd_lic),
+        "output-license match count invariant under surface-read reorder "
+        f"(forward {len(fwd_lic)}, reverse {len(rev_lic)})",
+    )
+    # (2) It fires on the SAME set of surfaces — order cannot migrate the signal.
+    _check(
+        {s for s, _ in rev_lic} == fwd_surfaces,
+        "output-license fires on the same set of surfaces under reorder "
+        f"(forward {sorted(fwd_surfaces)}, reverse {sorted({s for s, _ in rev_lic})})",
+    )
+    # (3) STRONGER than the .com mirror: the COMPLETE evidence map — every claimed
+    # archetype's (label, surface) pairs across the WHOLE profile — is invariant
+    # under read-order reversal. No signal on ANY archetype is dropped, conjured,
+    # or migrated to a different surface by which surface arrived first.
+    def _evidence_map(prof):
+        return {
+            c.archetype: {(s.label, s.surface) for s in c.signals}
+            for c in prof.claimed
+        }
+
+    fwd_map, rev_map = _evidence_map(forward), _evidence_map(reverse)
+    _check(
+        fwd_map == rev_map,
+        "the complete per-archetype (label, surface) evidence map is invariant "
+        "under surface-read reorder on drift-flight.org "
+        f"(archetypes forward {sorted(fwd_map)}, reverse {sorted(rev_map)})",
+    )
+    # (4) The WHOLE classified profile is order-invariant: claimed archetypes IN
+    # RANK ORDER (drives the fixed template-bank task order for cross-site
+    # comparability) and the NA complement (excluded from every mean/spread) do
+    # not depend on surface-read order.
+    _check(
+        forward.archetypes == reverse.archetypes,
+        "claimed archetypes (ordered) invariant under surface-read reorder "
+        f"(forward {forward.archetypes}, reverse {reverse.archetypes})",
+    )
+    _check(
+        set(forward.unclaimed) == set(reverse.unclaimed),
+        "NA/unclaimed set invariant under surface-read reorder "
+        f"(forward {sorted(forward.unclaimed)}, reverse {sorted(reverse.unclaimed)})",
+    )
+    # (5) The anchor leg is actually PRESENT (property under test not vacuously
+    # absent): output-license is part of the .org digital_good claim.
+    dg_f = next(c for c in forward.claimed if c.archetype == "digital_good")
+    _check(
+        _LICENSE_LABEL in {s.label for s in dg_f.signals},
+        "the output-license label is part of the drift-flight.org digital_good "
+        "claim (the anchor leg is present, not a vacuous no-op)",
+    )
+
+
 # ---------------------------------------------------------------------------
 # Relabel-invariance EXTENDED to the retail + non-storefront domains.
 #
@@ -1723,6 +1824,7 @@ def main() -> int:
         test_offering_relabel_invariance_test_mode,
         test_offering_relabel_invariance_output_license,
         test_offering_surface_order_invariance_output_license,
+        test_offering_surface_order_invariance_org,
         test_offering_relabel_invariance_retail,
         test_offering_relabel_invariance_nonstorefront,
         test_offering_relabel_negative_control,

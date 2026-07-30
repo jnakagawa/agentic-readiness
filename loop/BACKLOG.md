@@ -495,6 +495,32 @@ design in-cloud, execute locally.
 
 ## P1
 
+- **[LOCAL] Capture a fixture that CLAIMS service_booking and/or data_retrieval** (COVERAGE enabler, from
+  Cycle 114's audit). The two weakest offering archetypes — `service_booking` (5 legs: book / appointment /
+  reservation / schedule / availability) and `data_retrieval` (5 legs: enrich / dataset / lookup /
+  data-service / query-records) — cannot get a NEW capability-worded signal added in-cloud, because NO
+  committed fixture claims either (the canonical pair + api.replicate claim metered_api/subscription/
+  digital_good; books.toscrape claims physical_good; example.com claims nothing). Adding a signal to a
+  never-claimed archetype is UNVERIFIABLE here (a vacuous case — cannot prove it fires non-vacuously or is
+  score-neutral). Capture a fixture LIVE from a real agent-facing site that genuinely claims one of these —
+  a booking/reservation storefront (a hotel/restaurant/appointment API with `book`/`availability`/`time
+  slots`) or a data-enrichment/lookup API (a records-enrichment or dataset-query service) — via
+  `asrs.cli score <domain> --record-fixture fixtures/canonical/<domain>.json` (static $0, needs network →
+  [LOCAL]). Then a future COVERAGE cycle can add ONE capability leg to the claimed archetype (e.g.
+  service_booking: a `confirmation`/booking-reference or a `reschedule`/cancel-booking control leg;
+  data_retrieval: a `bulk-export`/structured-output-format or a `filter`/query-parameter leg) with the same
+  non-vacuous read-live guard the metered_api signals got. Off the scoring path, score-neutral.
+
+- **[TRUTH/READOUT next-cycle work, in-cloud] Complete the free-trial arc** (from Cycle 114). TRUTH: pin the
+  `free-trial` subscription signal as RELABEL-INVARIANT — a synthetic subscription surface that names the host
+  INSIDE the trial evidence, relabel the host everywhere, re-classify, assert the `free-trial` (label,
+  host-normalized surface) evidence is identity-invariant (the subscription-bank analog of the metered_api
+  signal-level relabel family in `test_offering_canonical.py`, extending it to a SECOND archetype). READOUT:
+  surface "evaluate a subscription at $0 before committing" in the public methodology prose
+  (`_write_methodology_page`, `asrs/scorecard.py`) with a content-presence guard in `tests/test_readout.py`,
+  the first subscription-archetype leg of a COVERAGE→TRUTH→READOUT arc. Both tests/display-only, off the
+  scoring path, score-neutral — not [LOCAL].
+
 <!-- DONE 2026-07-30T04:16Z (Cycle 97, METHOD, branch+PR+self-merge, tests-only/score-neutral):
      "Pin the digital_good DESCRIPTOR derivation as relabel/identity-invariant" SHIPPED. New guards in
      `tests/test_battery_instantiate.py` (9→12) classify a synthetic surface that names the host INSIDE the

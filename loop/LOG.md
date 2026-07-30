@@ -9717,3 +9717,70 @@ READOUT leg to complete the cancel-job arc (COVERAGE 110 → TRUTH → READOUT),
 surfacing the "abort a runaway job to bound your spend" capability in the public
 methodology prose. A NEW archetype/signal remains open COVERAGE; ACP/UCP/MPP +
 free-tier live-wiring stays [LOCAL].
+
+## Cycle 114 — 2026-07-30T~18:5xZ — COVERAGE
+
+**What/why.** Added a `free-trial` signal to the `subscription` bank in
+`asrs/offering.py` (the offering classifier): a no-cost evaluation of a recurring
+offer BEFORE any billing begins — a free trial, a trial period/account/allowance/
+membership, an N-day trial, a start/try-free offer. The first NEW subscription
+signal since `seat-licensing`. WHY (capability): the subscription-archetype MIRROR
+of metered_api's `test-mode` — an agent can EVALUATE the recurring offer at $0
+before committing to billing (the "provision the offer safely, without a human"
+capability, aligned with ASRS's own $0-only ethos). STATE's Cycle-114 focus
+pointer directed COVERAGE to strengthen the thinly-signalled archetypes
+(subscription/service_booking/data_retrieval, 6/5/5 legs vs metered_api's ~19);
+only `subscription` is claimed by a committed fixture (the canonical pair), so it
+is the one strengthenable with in-cloud non-vacuous verification. Distinct from
+every existing subscription signal — `subscription`/`recurring` say a plan EXISTS,
+`per-month`/`per-month-price`/`annual-billing` the cadence, `seat-licensing` the
+per-user basis; NONE said whether you can evaluate the plan at no cost first.
+Vendor-neutral trial-offer vocabulary, never a vendor.
+
+**Precision.** NEVER a bare `trial` (a false-positive minefield: a CLINICAL trial,
+a COURT trial, "trial and error", "trial by fire", "on trial") — require a FREE
+trial (`free trial`/`free-trial`), a trial PERIOD/ACCOUNT/ALLOWANCE/MEMBERSHIP, an
+N-DAY trial (`14-day free trial`), or a START/TRY-FREE offer (`start your free
+trial`, `try it free for 14 days`). 8 negative cases pin the traps (incl. "free
+shipping", "free image", "free allowance" — `free` near non-trial words); 10
+positives pin the real forms.
+
+**Ship class.** COVERAGE, off the scoring path (`scoring.py` does not import
+`offering` — grep-verified: 0 references; only `battery.py`/`cli.py` do, `--battery
+auto` task selection) → score-neutral, NOT peer-gated. `git diff` over
+`asrs/scoring.py rubric/ fixtures/` EMPTY; `git diff --name-only` =
+`asrs/offering.py` + `tests/test_offering.py`. Cloud bridge blocks direct main push
+→ branch loop/free-trial-subscription-signal + PR #77 + self-merge (squash
+2092c61). First duty: no open peer-gated PR ([] at fire start — `list_pull_requests`
+open = []); realigned main to origin/main after merge, deleted local branch.
+
+**Evidence / validation.** Fires non-vacuously on driftflight.com's real captured
+homepage / `/llms.txt` / `/pricing` prose ("Driftflight includes a free trial
+allowance, so an agent can evaluate it before any payment — the trial needs no
+funding and no signup") — which ALREADY claims subscription, so subscription
+strength deepens 4→5 while staying LAST (order metered_api 16 > digital_good 6 >
+subscription 5; claimed SET + ORDER byte-unchanged). Fires on ZERO sites that do
+NOT already claim subscription: api.replicate.com (metered-only), books.toscrape.com
+(retail), example.com (null), AND the trial-free drift-flight.org (subscription
+stays strength 4) — so it can never CONJURE a subscription claim (empirically
+confirmed across all 5 committed fixtures). `test_offering.py` 44→46
+(`test_free_trial_subscription_precision_synthetic` +
+`test_free_trial_fires_on_real_captured_subscription_prose`, mirroring the test-mode
+pair). Full suite green (22 files; `test_free_tier` 11/11 after `pip install
+eth-account`, environment-only, nothing to commit); offering canonical guard 28/28.
+Canonical PAIR unchanged AND re-measured: replay guard 24/24,
+**46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7. RUNNER STILL GAPPED
+(verify_20260728T234102Z 23:41Z, ~43h old at fire).
+
+**Next hypothesis.** Focus rotates to TRUTH: pin the Cycle-114 `free-trial`
+subscription signal as RELABEL-INVARIANT — the subscription-bank analog of the
+metered_api signal-level relabel family — by classifying a synthetic subscription
+surface that names the host inside the trial evidence, relabel the host everywhere,
+re-classify, and assert the `free-trial` (label, host-normalized surface) evidence
+is identity-invariant. This extends the relabel family beyond metered_api to a
+second archetype. Then a READOUT leg to complete the free-trial arc (COVERAGE 114 →
+TRUTH → READOUT), surfacing the "evaluate a subscription at $0 before committing"
+capability in the public methodology prose. Deeper COVERAGE (service_booking /
+data_retrieval, both 5 legs) remains blocked in-cloud on a committed fixture that
+CLAIMS those archetypes — queued [LOCAL]. ACP/UCP/MPP + free-tier live-wiring stays
+[LOCAL].

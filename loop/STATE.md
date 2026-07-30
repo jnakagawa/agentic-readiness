@@ -1,13 +1,13 @@
 # Loop state
 
-- Cycle counter: 111
+- Cycle counter: 112
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-30T~17:2xZ, Cycle 111; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-30T~17:3xZ, Cycle 112; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~41.7h old at the Cycle-111 fire; no newer :41 artifact through 16:41Z Jul-30 (41+ consecutive
+  Jul-28 = ~41.8h old at the Cycle-112 fire; no newer :41 artifact through 17:41Z Jul-30 (42+ consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine. The gap was RE-FLAGGED loudly in the Cycle-109
   16:12Z digest (the first cycle after 16:00Z on Jul-30). The NEXT first-after-16:00 fire (~16:1xZ Jul-31)
-  is the next re-flag point; Cycle-110/111 onward (17:xxZ Jul-30 … 15:xxZ Jul-31) are NOT first-after-16:00 →
+  is the next re-flag point; Cycle-110/111/112 onward (17:xxZ Jul-30 … 15:xxZ Jul-31) are NOT first-after-16:00 →
   no re-digest, but keep noting the gap each fire until it clears; queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
   is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
@@ -27,7 +27,37 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 112 READOUT — surfaced the `metered_api` `cancel-job` capability in the PUBLIC methodology prose,
+  the READOUT leg CLOSING the cancel-job arc (COVERAGE 110 → TRUTH-relabel 111 → READOUT 112) — the SEVENTH
+  metered_api offer-side leg to complete the full COVERAGE→TRUTH→READOUT arc (after payment-rail 78/79/80,
+  async-job 82/83/84, api-auth 86/87/88, error-contract 90/91/92, test-mode 102/103/104, pagination
+  106/107/108). Added ONE capability-worded, vendor-neutral `<p>` ("Aborting a runaway job") to the
+  methodology "What the score answers" card (`_write_methodology_page`, `asrs/scorecard.py`), placed after
+  the async-job "Finishing the job" paragraph as the CONTROL leg of the same asynchronous contract. WHY
+  (capability): a long-running job (image/video generation, a training run, a batch-inference request) keeps
+  BILLING for compute while it runs, so an agent that detects a runaway/wrong generation and cannot STOP it
+  keeps paying for work it no longer wants — an offer that documents a cancellation contract lets the agent
+  BOUND its own spend (the same $0-only capital-safety ethos ASRS holds) and is more agent-completable. Names
+  the vendor-neutral REST cancellation vocabulary as open conventions (a `.../cancel` endpoint on a job
+  resource, a `Cancel-After` deadline header, a `canceled` job state); KEEPS the precision note (bare `cancel`
+  — "cancel your subscription", a cancellation policy, "cancel your order", a canceled flight — is no signal);
+  names the Cycle-111 identity-relabel regression test; stays HONEST about scope (diagnostic, off the scoring
+  path, not a scored pillar). New content-presence guard `test_methodology_documents_cancel_job` in
+  `tests/test_readout.py` (53→54) mirrors the pagination/test-mode guards; rendered-page neutral-scan
+  (`test_readout_wording`) stays clean. SHIP CLASS: display + tests-only, off the scoring path → NOT
+  peer-gated (git diff --name-only = asrs/scorecard.py + tests/test_readout.py ONLY; scoring-path diff over
+  asrs/scoring.py asrs/offering.py rubric/ fixtures/ EMPTY). Cloud bridge blocks direct main push → branch
+  loop/cancel-job-methodology-prose + PR #73 + self-merge (squash f0e5ba0). First duty: no open peer-gated PR
+  ([] at fire start); realigned main to origin/main after merge. Full suite green 306→307 (test_free_tier
+  11/11 after `pip install eth-account`, environment-only). Canonical PAIR unchanged AND re-measured: replay
+  guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. No Slack (score-neutral, off scoring
+  path; not sensitive-class; not the first-after-16:00 digest cycle — that was Cycle 109 at 16:12Z). RUNNER
+  STILL GAPPED (verify_20260728T234102Z 23:41Z, ~41.8h old). Next METHOD — the cancel-job arc is closed at
+  all three layers and the metered_api signal-level relabel family + the offering-path invariance families
+  (ORDER/RELABEL/SCALE, pair-symmetric) are complete, so the strongest next leverage is a NEW archetype/signal
+  (COVERAGE) or a genuinely NEW perturbation axis on the offering/battery path rather than another guard in a
+  complete family; ACP/UCP/MPP + free-tier live-wiring stays [LOCAL].)
   (Cycle 111 TRUTH — pinned the Cycle-110 `cancel-job` metered_api signal as RELABEL-INVARIANT, the
   SEVENTH metered_api signal-level relabel guard (after payment-rail 79 / async-job 83 / api-auth 87 /
   error-contract 91 / test-mode 103 / pagination 107) — completing the metered_api signal-level relabel

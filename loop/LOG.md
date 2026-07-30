@@ -9185,3 +9185,64 @@ multi-surface read before committing, else fold into a broader per-signal
 order-stability sweep. Alternatively a NEW archetype/signal (COVERAGE). ACP/UCP/
 MPP + free-tier live-wiring stays [LOCAL]. No Slack (score-neutral, off scoring
 path; not sensitive-class; not the first-after-16:00 digest cycle).
+
+## Cycle 105 — 2026-07-30T12:2xZ — METHOD (branch+PR+self-merge, tests-only/score-neutral)
+
+**What.** Mirrored surface-read-ORDER-invariance onto the `.org` half of the
+canonical pair. New `test_offering_surface_order_invariance_org` in
+`tests/test_offering_canonical.py` (21→22 in that file). The existing
+`test_offering_surface_order_invariance_output_license` pinned whole-profile
+surface-read-order-invariance only on `driftflight.com`; the relabel-invariance
+family already spans BOTH halves (`_org`/`_com`). This closes the pair
+asymmetry — a classification must not depend on which surface discovery read
+first, on EITHER canonical domain.
+
+**Why (capability/rigor).** A classification is a property of WHAT a surface
+declares, never of read order, exactly as vendor-neutrality (relabel) is a
+property of declared capability not the domain NAME. The scoring-layer relabel
+guard already spans all four real domains and the offering-layer relabel family
+spans both pair-halves; order-invariance lagged at one. Same "close the gap"
+discipline as the Cycle-99/103 offering-layer guards.
+
+**Non-vacuity / teeth.** Anchor `output-license` fires on drift-flight.org
+across ≥2 distinct surfaces (`/pricing` + `homepage`) — a real multi-surface
+accumulation (asserted); `surfaces_seen` genuinely differs forward vs reverse
+(asserted), so an order-insensitive reader would not pass vacuously. STRONGER
+than the .com mirror: assertion (3) pins the COMPLETE per-archetype
+`(label, surface)` evidence map invariant across the whole profile. Verified
+sensitive — the .org map spans all 4 surfaces (41 `(label,surface)` pairs);
+dropping one surface changes it (41→27), so any order-dependent signal loss or
+migration is caught.
+
+**Note on the STATE-flagged test-mode order guard.** Deliberately did NOT ship
+that one: its non-vacuity is weak (test-mode fires ×1 on a single surface
+`/docs`, so a reorder cannot migrate it). This .org whole-profile guard is the
+stronger, genuinely multi-surface form of the same axis — folds the flagged
+item into a broader per-signal order-stability property as STATE/BACKLOG
+anticipated.
+
+**Evidence.** `git diff -- asrs/ rubric/ fixtures/` EMPTY; `git diff --name-only`
+= `tests/test_offering_canonical.py` only. Full suite green (22 files;
+test_free_tier 11/11). Canonical replay guard 24/24, 46.1 F / 85.5 B / +39.4,
+0 replay-miss; rubric v0.7 unchanged.
+
+**Ship.** Tests-only, off the scoring path → NOT peer-gated. Cloud bridge blocks
+direct main push → branch `loop/order-invariance-org` + PR #59 + self-merge
+(squash 89f2636). First duty: no open peer-gated PR ([] at fire start). Realigned
+main to origin/main after merge.
+
+**Infra.** RUNNER STILL GAPPED — newest `runs/local/verify_20260728T234102Z.json`
+(23:41Z Jul-28) is ~36.5h old at this fire; cloud cannot repair the local machine
+(queued P0 [LOCAL], flagged in the Cycle-86 digest; keep flagging each daily
+digest — next first-after-16:00 is ~16:xxZ Jul-30). The in-cloud replay guard
+remains the live regression signal INDEPENDENT of the runner. Environment needed
+`pip install requests PyYAML eth-account` (all in requirements.txt) — environment
+-only, nothing to commit.
+
+**Next hypothesis.** COVERAGE next (rotate METHOD → COVERAGE). Both canonical
+pair-halves now carry whole-profile order-invariance AND relabel-invariance. The
+order-/relabel-invariance families are complete across the pair. Candidate:
+a NEW archetype or metered_api/digital_good signal (COVERAGE), or a fresh
+perturbation axis (label/scale) on the offering path. ACP/UCP/MPP + free-tier
+live-wiring stays [LOCAL]. No Slack (score-neutral, off scoring path; not
+sensitive-class; not the first-after-16:00 digest cycle).

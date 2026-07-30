@@ -515,16 +515,34 @@ design in-cloud, execute locally.
      perturbation AXIS on the offering/battery path (label/scale) now the order- + relabel-invariance
      families are complete, OR a NEW archetype/signal (COVERAGE). Not yet a firm backlog item; promote when
      a concrete gap is identified. -->
-- **Pin the new `output-license` digital_good signal as HOST/VENDOR relabel-invariant** (TRUTH, follow-up
-  to Cycle 98). Cycle 98 added `output-license` (a digital_good "complete the job" RIGHTS signal:
-  commercial licence / royalty-free / usage rights / "you own the output"). The metered_api signal family
-  (payment-rail / async-job / api-auth / error-contract) each has a SIGNAL-LEVEL relabel-invariance guard
-  in `tests/test_offering_canonical.py` proving the match keys on structure, not host; the new digital_good
-  signal has none yet. It fires on driftflight.com surfaces whose KEYS embed the host
-  (`agents.driftflight.com/llms.txt`), so it shares the same surface-anchored non-vacuity substrate as the
-  `error-contract` guard — mirror that guard: assert the `output-license` (surface, quote) matches survive a
-  whole-fixture host relabel with the same count, on the same host-normalized surfaces, each quote still
-  matching the live regex, vendor host gone. In-cloud, tests-only, off scoring path, score-neutral.
+<!-- DONE 2026-07-30T06:2xZ (Cycle 99, TRUTH, branch+PR+self-merge, tests-only/score-neutral): "Pin the
+     new `output-license` digital_good signal as HOST/VENDOR relabel-invariant" SHIPPED. New guard
+     `test_offering_relabel_invariance_output_license` in `tests/test_offering_canonical.py` (17→18) — the
+     FIRST extension of the signal-level relabel family (payment-rail C79 / async-job C83 / api-auth C87 /
+     error-contract C90, all metered_api) off metered_api into digital_good. SURFACE-PRESENCE invariance
+     mirroring `error-contract`: rights vocabulary (commercial licence / royalty-free / usage rights / "you
+     own the output") is HOST-FREE so the fired QUOTES carry no host; non-vacuity anchors on the host inside
+     the surface KEYS — `output-license` fires 6× on driftflight.com, 3 surfaces embed the host
+     (`agents.driftflight.com/llms.txt`, `.../llms-full.txt`, `.../manifest.json`), so a whole-fixture relabel
+     rewrites the surfaces the signal reads. Under relabel: same count (6), same host-normalized surfaces,
+     each quote still matching the live regex, vendor host `vendor-neutral.test` absent from all evidence; a
+     commercial-USE licence grant asserted present in base evidence. Tests-only, off scoring path → rubric
+     v0.7 → NOT peer-gated: git diff over scoring/rubric/probes/protocols/fetch/offering/battery/fixtures/
+     batteries EMPTY; git diff --name-only = tests/test_offering_canonical.py ONLY. Cloud bridge blocks direct
+     push → branch loop/output-license-relabel-invariance + PR #47 + self-merge (squash c52f082). Canonical
+     PAIR unchanged AND re-measured (replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss); full suite
+     22 files green (test_free_tier 11/11 after env-only `pip install eth-account`). See LOG Cycle 99. -->
+- **Surface the digital_good `output-license` RIGHTS leg in the public methodology/rubric prose** (READOUT,
+  follow-up to Cycle 99, the READOUT complement CLOSING the deliverable-rights arc — Cycle 98 COVERAGE signal
+  + Cycle 99 TRUTH relabel guard + this READOUT). The signal + its vendor-neutrality are pinned in code +
+  tests but never surfaced in reader-facing prose a critic can read. Add ONE capability-worded,
+  vendor-neutral sentence to methodology/rubric prose (`_write_methodology_page` / rubric page, `asrs/scorecard.py`)
+  naming that ASRS reads whether a storefront grants usage rights on its generated output (a commercial
+  licence / royalty-free terms / ownership of the render) — the "complete the job" RIGHTS leg of the
+  digital-good archetype: an agent that receives a render it has no licence to USE has not completed the
+  commercial job. Pin with an executable readout-wording guard (`test_readout.py` / `test_rubric_wording.py`),
+  the way Cycle 96 surfaced the offering-relative battery. Display-only + tests-only, off scoring path,
+  score-neutral, NOT peer-gated. In-cloud doable.
 - **[LOCAL] Extend descriptor relabel-invariance to a REAL captured fixture** (METHOD, follow-up to Cycle 97,
   optional hardening). Cycle 97 pins descriptor relabel-invariance through a SYNTHETIC surface in
   `test_battery_instantiate.py` (no network). For parity with the signal-level guards — which replay the

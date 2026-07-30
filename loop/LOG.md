@@ -8759,3 +8759,78 @@ surfaces embed the host (`agents.driftflight.com/llms.txt`), so it shares the
 quote/surface-anchored non-vacuity substrate the family requires. Alternatively, a
 NEW archetype/signal remains open COVERAGE; ACP/UCP/MPP + free-tier live-wiring stays
 [LOCAL].
+
+## Cycle 99 — 2026-07-30T06:2xZ — TRUTH (branch+PR+self-merge; tests-only, off scoring path, score-neutral)
+
+**What.** Pinned the Cycle-98 `digital_good` **`output-license`** signal as
+HOST/VENDOR relabel-invariant at the SIGNAL level. New guard
+`test_offering_relabel_invariance_output_license` in `tests/test_offering_canonical.py`
+(17→18) — the FIRST extension of the signal-level relabel family
+(`agent-payment-rail` Cycle 79 / `async-job` 83 / `api-auth` 87 / `error-contract`
+90, all in the `metered_api` bank) off metered_api into `digital_good`.
+
+**Why (capability).** The four metered_api "complete the job" signals each had a
+signal-level guard proving the match keys on the DECLARED structure, not on who
+declared it; the new digital_good rights signal had none. The offering classifier
+drives `--battery auto` task SELECTION, so a signal keying on a vendor's NAME rather
+than the granted right would be vendor-rigging one layer down — this guard makes
+that an executable tripwire, extending the vendor-neutrality invariant to the
+newest signal on the newest-covered bank.
+
+**How (surface-presence invariance, mirroring `error-contract`).** The rights
+vocabulary — "commercial licence", "royalty-free", "usage rights", "you own the
+output" — is HOST-FREE by nature, so the fired QUOTES carry no host (asserted). Like
+`error-contract`, non-vacuity anchors on the host being present inside the surface
+KEYS the signal fires on: `output-license` fires 6× on driftflight.com and three of
+those surfaces embed the host (`agents.driftflight.com/llms.txt`, `.../llms-full.txt`,
+`.../manifest.json`), so a whole-fixture host relabel genuinely rewrites the very
+surfaces the signal reads — the host-normalization step of the surface assertion does
+real work, not a no-op over host-free surfaces. Under relabel the signal must survive
+with (1) the same match count (neither lost nor conjured), (2) the same
+host-normalized surfaces (did not migrate), (3) each quote still satisfying the live
+`output-license` regex with the vendor host absent from every piece of rights
+evidence. A commercial-USE licence grant (the precision-critical form the signal must
+catch WITHOUT firing on a bare software/model licence) is asserted present in the base
+evidence. Empirically confirmed before writing: base 6 fires / host-free quotes /
+host in ≥1 surface key / relabel → 6 fires on the same host-normalized surfaces, all
+matching the regex, `vendor-neutral.test` clean.
+
+**Evidence (non-vacuous on committed data).** `tests/test_offering_canonical.py`
+17→18 passed; the whole file's claimed-set + relabel guards green. Non-vacuity is
+anchored on the host genuinely appearing in the surfaces the signal reads (asserted),
+and the family's established negative control (`test_offering_relabel_negative_control`)
+proves the relabel machinery has teeth (a host-keyed special-case diverges under
+relabel and is caught).
+
+**Canonical pair (regression signal).** UNCHANGED and re-measured — replay guard
+24/24, drift-flight.org 46.1 F / driftflight.com 85.5 B / delta +39.4, 0 replay-miss.
+By construction: scoring path byte-for-byte untouched — `git diff` over
+scoring.py/rubric*/rubric/probes.py/protocols.py/fetch.py/offering.py/battery.py/
+fixtures/batteries is EMPTY; `git diff --name-only` = `tests/test_offering_canonical.py`
+ONLY. Full suite 22 files green (test_free_tier 11/11 after an environment-only
+`pip install eth-account` — the ephemeral container was again missing the optional
+`eth-account` dep from requirements.txt, opened 10/11; nothing to commit).
+
+**Ship.** Cloud bridge blocks direct main push → branch
+`loop/output-license-relabel-invariance` + PR #47 + self-merge (squash c52f082; NOT
+peer-gated — tests-only, off scoring path, same class as the four metered_api
+relabel guards). First duty: no open peer-gated PR ([] at fire start). Realigned main
+to origin/main c52f082 after merge.
+
+**Infra.** LOCAL verify runner STILL GAPPED — `runs/local/verify_20260728T234102Z.json`
+23:41Z Jul-28 is ~30.5h old at the 06:1xZ fire, past the 6h floor; cloud cannot repair
+Jonah's machine. The in-cloud replay guard (`test_canonical_replay` 24/24 / +39.4) is
+the independent live regression signal, so this is a heartbeat gap, not a scoring
+outage. This 06:2xZ fire is after the Cycle-86 16:12Z daily digest and before the next
+first-after-16:00 cycle (~16:12Z Jul-30), so NOT a digest cycle → no re-flag this fire;
+keep flagging the runner gap in each daily digest until it clears. No Slack (tests-only,
+moves no score; not a sensitive-class PR; not the daily-digest cycle).
+
+**Next hypothesis (READOUT).** Rotation advances TRUTH → READOUT. Candidate: surface
+the digital_good "complete the job" RIGHTS leg (`output-license`) in the public
+methodology/rubric prose the way Cycle 96 surfaced the offering-relative battery —
+a capability-worded, vendor-neutral sentence naming that ASRS reads whether a
+storefront grants usage rights on its generated output (a licence / royalty-free /
+ownership), with an executable readout-wording guard, so a critic can read WHY the
+digital-good archetype weighs deliverable rights. Alternatively a NEW archetype/signal
+remains open COVERAGE; ACP/UCP/MPP + free-tier live-wiring stays [LOCAL].

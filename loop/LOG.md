@@ -8834,3 +8834,66 @@ storefront grants usage rights on its generated output (a licence / royalty-free
 ownership), with an executable readout-wording guard, so a critic can read WHY the
 digital-good archetype weighs deliverable rights. Alternatively a NEW archetype/signal
 remains open COVERAGE; ACP/UCP/MPP + free-tier live-wiring stays [LOCAL].
+
+## Cycle 100 — 2026-07-30T07:16Z — READOUT (branch+PR+self-merge, display-only + tests-only / score-neutral)
+
+**What.** Surfaced the `digital_good` **deliverable-rights** ("complete the job") leg
+in the PUBLIC methodology prose — the READOUT complement CLOSING the deliverable-rights
+arc opened by Cycle 98 (COVERAGE — the `output-license` offering signal) and Cycle 99
+(TRUTH — the signal-level HOST/VENDOR relabel-invariance guard). Added one
+capability-worded, vendor-neutral paragraph to the methodology "What the score answers"
+card (`_write_methodology_page`, `asrs/scorecard.py`), placed alongside the four
+metered_api offer-side legs (payment-rail / auth / async-job / error-contract): ASRS
+reads whether a generation storefront grants **usage rights** on its output (a
+commercial licence / royalty-free terms / stated usage rights / ownership — "you own
+the output"), because an agent handed a render it has **no licence to USE has not
+completed the commercial job**. Preserves the signal's bare-`license` PRECISION note (a
+software / business / hosted-model licence is not a deliverable-rights grant and is read
+as no signal) and names the identity-relabel executable regression test that pins
+vendor-neutrality.
+
+**Why (capability).** The metered_api "finish the job" legs each earned a prose
+paragraph a critic can read (payment-rail Cycle 80, auth 88, async-job 84, error-contract
+92); the digital-good RIGHTS leg was pinned in code + tests (Cycle 98/99) but never
+surfaced in reader-facing prose. A reader of the methodology could not learn WHY the
+digital-good archetype weighs deliverable rights, or that "obtain a render" is not the
+whole job — an agent that cannot legally USE what it obtained has not completed the
+commercial job. This closes the honest-scope gap between the shipped signal and the
+public rationale.
+
+**Ship class.** Display-only + tests-only, off the scoring path → NOT peer-gated (same
+class as the Cycle-96 offering-relative-battery READOUT). `git diff` over
+scoring.py/rubric*/rubric/probes.py/protocols.py/fetch.py/offering.py/battery.py/
+fixtures/batteries = EMPTY; `git diff --name-only` = `asrs/scorecard.py` +
+`tests/test_readout.py` ONLY. Cloud bridge blocks direct main push → branch
+`loop/output-license-methodology` + PR #49 + self-merge (squash 40b1ac4). First duty:
+no open peer-gated PR ([] at fire start). Realigned main to origin/main 40b1ac4 after
+merge.
+
+**Evidence.** New guard `test_methodology_documents_output_license` (`test_readout.py`
+51→52) pins (a) the owning/use framing + "not completed the commercial job"; (b) the
+vendor-neutral rights forms (commercial licence / royalty-free / usage rights / "you own
+the output"); (c) the bare-`license` precision note (software/business/model licence =
+no signal); (d) the relabel-keyed "rights the offer grants, not who grants them" +
+executable regression test; (e) the diagnostic/off-scoring-path scope line; and
+vendor-neutrality (no drift-flight/driftflight on the page). Full suite 22 files green
+(`test_free_tier` 11/11 after env-only `pip install eth-account`). Canonical PAIR
+unchanged AND re-measured: replay guard (`test_canonical_replay`) 24/24, **46.1 F /
+85.5 B / +39.4**, 0 replay-miss — rubric v0.7.
+
+**Infra.** LOCAL verify runner STILL GAPPED — `runs/local/verify_20260728T234102Z.json`
+23:41Z Jul-28 is ~31.5h old at the 07:16Z fire, past the 6h floor; cloud cannot repair
+Jonah's machine. The in-cloud replay guard (24/24 / +39.4) is the independent live
+regression signal, so this is a heartbeat gap, not a scoring outage. This 07:16Z fire is
+after the Cycle-86 16:12Z daily digest and before the next first-after-16:00 cycle
+(~16:12Z Jul-30), so NOT a digest cycle → no re-flag this fire; keep flagging the runner
+gap in each daily digest until it clears. No Slack (display+tests-only, moves no score;
+not a sensitive-class PR; not the daily-digest cycle).
+
+**Next hypothesis (METHOD).** Rotation advances READOUT → METHOD. The full
+COVERAGE→TRUTH→READOUT arc for `output-license` is now complete at signal (98), TRUTH
+relabel (99) and readout (100) layers — mirroring the four metered_api legs. Candidate
+METHOD: a fresh perturbation AXIS on the offering/battery path for the digital_good
+RIGHTS leg (e.g. a rights-signal ORDER-invariance or count-stability guard), or extend
+the descriptor relabel family. Alternatively a NEW archetype/signal remains open
+COVERAGE; ACP/UCP/MPP + free-tier live-wiring stays [LOCAL].

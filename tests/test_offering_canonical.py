@@ -2098,6 +2098,175 @@ def test_offering_content_scale_invariance_com() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Noise-surface invariance — the FOURTH metamorphic axis on the classifier.
+#
+# The three families above perturb the surfaces a site DOES publish: RELABEL
+# rewrites the host inside them, ORDER reverses the sequence they arrive in,
+# SCALE duplicates their bodies. This axis is the complement: it ADDS a NEW
+# readable surface that carries NO capability signal — the cookie/privacy notice,
+# the careers blurb, the legal footer, the metaphorical-"ship" marketing prose
+# every real storefront also serves — and asserts the classified CAPABILITY
+# profile is byte-identical. The score must measure what a site DECLARES it can
+# do, not how much incidental web chrome surrounds it; a privacy policy must not
+# conjure an archetype, and it must not retract one. Only ``surfaces_seen`` (a
+# read-provenance record, not a capability claim) may reflect the extra read.
+#
+# Non-vacuity has three teeth, mirroring the SCALE test's structure:
+#   (a) the noise surface is genuinely READ — it lands in ``surfaces_seen`` — so
+#       the invariance is "noise contributes no claim", not "the classifier
+#       skipped an empty surface";
+#   (b) the distractor prose fires ZERO signals under ``_scan_surface`` (asserted
+#       directly), despite being loaded with the exact near-miss traps the
+#       precision guards dodge (metaphorical "ship" ×3, cookie/careers/legal
+#       boilerplate) — so this doubles as a precision demonstration on realistic
+#       chrome;
+#   (c) a negative control swaps the SAME surface key's body for real fulfillment
+#       prose and shows the profile DOES change — proving the added-surface channel
+#       can move the classification, so the invariance for noise is meaningful.
+# ---------------------------------------------------------------------------
+
+# A realistic non-commerce web-chrome blob: cookie/privacy notice, an about/careers
+# page, a legal footer. Loaded with the precision-critical near-miss vocabulary the
+# signal bank must NOT fire on — "ship" three times (all metaphorical: shipping
+# ideas/creativity, never a physical good), "dream", "value", "informational" —
+# yet it declares no archetype. If a future signal-bank change makes this fire, the
+# direct ``_scan_surface`` assertion below fails loudly: that is either a new
+# legitimate signal (re-curate the distractor) or a precision regression (fix it).
+_NOISE_PROSE = (
+    "Privacy & Cookies. We use cookies to remember your preferences and improve "
+    "your experience. By continuing to browse you accept our cookie notice. You "
+    "may adjust your choices at any time from the footer. We never sell your "
+    "personal data.\n\n"
+    "About us. We are a small remote team who love to ship ideas, not boxes — we "
+    "ship creativity and dream big. Our culture is built on curiosity and craft.\n\n"
+    "Careers. We are hiring! Join a friendly, mission-driven crew. We value "
+    "kindness, ownership, and a growth mindset. Read employee stories on our blog.\n\n"
+    "Legal. All trademarks belong to their respective owners. This notice is "
+    "provided for informational purposes only and does not constitute advice."
+)
+# The negative control: real physical-fulfillment prose on the SAME surface key.
+# It MUST fire (physical_good is NA on the canonical pair, so a claim it conjures
+# is unmistakably observable) — proving an added surface can move the profile.
+_NOISE_TEETH_PROSE = (
+    "Add to cart. In stock now — we offer free shipping on all physical orders "
+    "to your shipping address."
+)
+_NOISE_SURFACE = "/privacy"
+
+
+def _assert_noise_surface_invariance(domain: str, expected_claimed: set) -> None:
+    """Adding a signal-free readable surface leaves the capability profile identical."""
+    surfaces = _captured_surfaces(domain)
+    base = _offering.classify_offering(domain, dict(surfaces))
+
+    # The property under test is genuinely present: the domain claims the expected
+    # multi-archetype set, RANKED, so an added surface that perturbed a claim or a
+    # rank would be observable.
+    _check(
+        set(base.archetypes) == expected_claimed,
+        f"{domain}: base claimed set == {sorted(expected_claimed)} "
+        f"(got {sorted(set(base.archetypes))})",
+    )
+    _check(
+        len(base.claimed) >= 2,
+        f"{domain}: >=2 archetypes claimed, so the ranking an added surface could "
+        f"reorder is real (got {base.archetypes})",
+    )
+    # The extra surface key does not collide with a real captured surface (adding it
+    # is a genuine ADDITION, not an overwrite that could hide a change).
+    _check(
+        _NOISE_SURFACE not in surfaces,
+        f"{domain}: the noise surface key {_NOISE_SURFACE!r} is new, not an overwrite "
+        f"(captured surfaces: {list(surfaces)})",
+    )
+
+    # TEETH (b): the distractor carries NO capability signal at all, despite its
+    # near-miss vocabulary. This is what makes the invariance below "noise adds no
+    # claim" rather than "we added a signal that happened to match an existing one".
+    _check(
+        _offering._scan_surface(_NOISE_SURFACE, _NOISE_PROSE) == [],
+        f"{domain}: the distractor prose fires ZERO archetype signals "
+        f"(got {[(s.archetype, s.label) for s in _offering._scan_surface(_NOISE_SURFACE, _NOISE_PROSE)]})",
+    )
+
+    noisy = _offering.classify_offering(
+        domain, {**surfaces, _NOISE_SURFACE: _NOISE_PROSE}
+    )
+
+    # TEETH (a): the noise surface was genuinely READ — it reached the scanner and
+    # landed in the read-provenance record — yet it contributed no claim. So the
+    # invariance is non-vacuous: the classifier ingested the extra input.
+    _check(
+        _NOISE_SURFACE in noisy.surfaces_seen,
+        f"{domain}: the noise surface {_NOISE_SURFACE!r} was read "
+        f"(surfaces_seen {noisy.surfaces_seen})",
+    )
+
+    # (1) The WHOLE classified capability profile is byte-identical: every
+    # archetype's strength AND its complete (label, surface, quote) evidence survive
+    # the added surface unchanged — no signal conjured, no quote drifted, no
+    # archetype added or retracted.
+    _check(
+        _full_evidence_map(noisy) == _full_evidence_map(base),
+        f"{domain}: complete per-archetype (strength, (label, surface, quote)) "
+        "evidence map invariant under a signal-free added surface",
+    )
+    # (2) Claimed archetypes IN RANK ORDER invariant — the rank drives the fixed
+    # template-bank task order (cross-site comparability), so incidental chrome must
+    # not reorder it.
+    _check(
+        noisy.archetypes == base.archetypes,
+        f"{domain}: claimed archetypes (ranked) invariant under a signal-free added "
+        f"surface (base {base.archetypes}, noisy {noisy.archetypes})",
+    )
+    # (3) The NA/unclaimed set (excluded from every mean/spread, never penalized) is
+    # invariant — which archetypes a site is judged on vs excused as NA is a property
+    # of WHAT it declares, not what boilerplate surrounds it.
+    _check(
+        set(noisy.unclaimed) == set(base.unclaimed),
+        f"{domain}: NA/unclaimed set invariant under a signal-free added surface "
+        f"(base {sorted(base.unclaimed)}, noisy {sorted(noisy.unclaimed)})",
+    )
+    # (4) The ONLY thing that changed is the read-provenance: surfaces_seen grew by
+    # exactly the noise surface. This pins the honest scope of the invariance — the
+    # classifier records that it read the extra surface, and records nothing else
+    # from it.
+    _check(
+        set(noisy.surfaces_seen) == set(base.surfaces_seen) | {_NOISE_SURFACE},
+        f"{domain}: surfaces_seen grew by exactly {_NOISE_SURFACE!r} and nothing else "
+        f"(base {sorted(base.surfaces_seen)}, noisy {sorted(noisy.surfaces_seen)})",
+    )
+
+    # TEETH (c): the negative control — swap the SAME surface key for real
+    # fulfillment prose. The profile MUST change (physical_good, NA on the canonical
+    # pair, is conjured), proving an added surface CAN move the classification, so
+    # the invariance for the distractor is meaningful, not a channel the classifier
+    # ignores.
+    teeth = _offering.classify_offering(
+        domain, {**surfaces, _NOISE_SURFACE: _NOISE_TEETH_PROSE}
+    )
+    _check(
+        _full_evidence_map(teeth) != _full_evidence_map(base)
+        and "physical_good" in teeth.archetypes,
+        f"{domain}: a signal-BEARING added surface DOES move the profile "
+        f"(physical_good conjured: {'physical_good' in teeth.archetypes}) — the "
+        "added-surface channel is live, so noise-invariance is non-vacuous",
+    )
+
+
+def test_offering_noise_surface_invariance_org() -> None:
+    """Incidental web chrome (privacy/careers/legal) conjures no archetype (.org)."""
+    print("test_offering_noise_surface_invariance_org")
+    _assert_noise_surface_invariance("drift-flight.org", EXPECTED_CLAIMED["drift-flight.org"])
+
+
+def test_offering_noise_surface_invariance_com() -> None:
+    """Noise-surface invariance mirrored onto the .com half of the canonical pair."""
+    print("test_offering_noise_surface_invariance_com")
+    _assert_noise_surface_invariance("driftflight.com", EXPECTED_CLAIMED["driftflight.com"])
+
+
+# ---------------------------------------------------------------------------
 # Relabel-invariance EXTENDED to the retail + non-storefront domains.
 #
 # The two invariance tests above cover only the canonical PAIR, because their
@@ -2230,6 +2399,8 @@ def main() -> int:
         test_offering_surface_order_invariance_org,
         test_offering_content_scale_invariance_org,
         test_offering_content_scale_invariance_com,
+        test_offering_noise_surface_invariance_org,
+        test_offering_noise_surface_invariance_com,
         test_offering_relabel_invariance_retail,
         test_offering_relabel_invariance_nonstorefront,
         test_offering_relabel_negative_control,

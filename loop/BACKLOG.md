@@ -6,9 +6,9 @@ design in-cloud, execute locally.
 ## P0
 
 - **[LOCAL] Local verify runner STALLED past the 6h floor again** (SELF-HEALING, flagged Cycle 76,
-  still gapped through Cycle 93 2026-07-30T00:12Z; FLAGGED in the Cycle-86 16:00 UTC digest). Newest artifact
-  `runs/local/verify_20260728T234102Z.json` (23:41Z Jul-28) is ~24h31m old; twenty-five consecutive :41 fires
-  00:41–23:41Z Jul-29 produced NO newer artifact. The cloud cannot
+  still gapped through Cycle 98 2026-07-30T05:1xZ; FLAGGED in the Cycle-86 16:00 UTC digest). Newest artifact
+  `runs/local/verify_20260728T234102Z.json` (23:41Z Jul-28) is ~29.5h old; 30+ consecutive :41 fires
+  00:41Z Jul-29 – 04:41Z Jul-30 produced NO newer artifact. The cloud cannot
   reach Jonah's machine to diagnose. On the next LOCAL fire: read the runner heartbeat log + any unpushed
   `runs/local/verify_*.json`, check `attempts` on the newest artifact. If it's the Cycle-63 wake/network
   race recurring (a >60s slow-network wake outlasting the 5×15s `git_pull_with_retry`), escalate to a
@@ -515,6 +515,16 @@ design in-cloud, execute locally.
      perturbation AXIS on the offering/battery path (label/scale) now the order- + relabel-invariance
      families are complete, OR a NEW archetype/signal (COVERAGE). Not yet a firm backlog item; promote when
      a concrete gap is identified. -->
+- **Pin the new `output-license` digital_good signal as HOST/VENDOR relabel-invariant** (TRUTH, follow-up
+  to Cycle 98). Cycle 98 added `output-license` (a digital_good "complete the job" RIGHTS signal:
+  commercial licence / royalty-free / usage rights / "you own the output"). The metered_api signal family
+  (payment-rail / async-job / api-auth / error-contract) each has a SIGNAL-LEVEL relabel-invariance guard
+  in `tests/test_offering_canonical.py` proving the match keys on structure, not host; the new digital_good
+  signal has none yet. It fires on driftflight.com surfaces whose KEYS embed the host
+  (`agents.driftflight.com/llms.txt`), so it shares the same surface-anchored non-vacuity substrate as the
+  `error-contract` guard — mirror that guard: assert the `output-license` (surface, quote) matches survive a
+  whole-fixture host relabel with the same count, on the same host-normalized surfaces, each quote still
+  matching the live regex, vendor host gone. In-cloud, tests-only, off scoring path, score-neutral.
 - **[LOCAL] Extend descriptor relabel-invariance to a REAL captured fixture** (METHOD, follow-up to Cycle 97,
   optional hardening). Cycle 97 pins descriptor relabel-invariance through a SYNTHETIC surface in
   `test_battery_instantiate.py` (no network). For parity with the signal-level guards — which replay the

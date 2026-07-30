@@ -1,15 +1,15 @@
 # Loop state
 
-- Cycle counter: 108
+- Cycle counter: 109
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-30T15:16Z, Cycle 108; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-30T16:12Z, Cycle 109; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~39.6h old at the 15:16Z fire; no newer :41 artifact through 14:41Z Jul-30 (39+ consecutive
-  :41 fires gapped). Cloud CANNOT repair the local machine → FLAGGED in the Cycle-86 16:00 UTC digest
-  (the 16:12Z fire was the FIRST cycle after 16:00Z; the ~16.5h runner gap was flagged loudly there;
-  the Cycle-87 17:12Z through this Cycle-108 15:16Z-Jul-30 fires are NOT the first-after-16:00 cycle
-  (the next first-after-16:00 is ~16:12Z Jul-30 — re-flag the still-open gap there), so no re-digest —
-  keep flagging in each daily digest until it clears); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
+  Jul-28 = ~40.5h old at the 16:12Z fire; no newer :41 artifact through 15:41Z Jul-30 (40+ consecutive
+  :41 fires gapped). Cloud CANNOT repair the local machine → RE-FLAGGED in the Cycle-109 16:12Z digest
+  (this fire is the FIRST cycle after 16:00Z on Jul-30 — the still-open gap was re-flagged loudly in
+  Slack). The NEXT first-after-16:00 fire (~16:1xZ Jul-31) is the next re-flag point; Cycle-110 onward
+  (17:xxZ Jul-30 … 15:xxZ Jul-31) are NOT first-after-16:00 → no re-digest, but keep noting the gap each
+  fire until it clears; queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
   is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
   local fire root-caused (a >60s slow-network wake still misses the 5×15s retry) OR the machine is
@@ -28,7 +28,35 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 109 METHOD — pinned the offering classifier as CONTENT-SCALE-INVARIANT on the canonical pair,
+  a genuinely NEW perturbation axis distinct from surface-read ORDER and host RELABEL. New
+  `_assert_content_scale_invariance(domain, expected)` in `tests/test_offering_canonical.py` duplicates
+  every surface body K=3× and asserts the WHOLE classified profile is byte-identical: claimed archetypes
+  in RANK ORDER, each archetype's `strength` + full `(label, surface, quote)` evidence map, and the
+  NA/unclaimed set. Two wrappers apply it to BOTH pair-halves (`_org`/`_com`) from the start, so this axis
+  does NOT inherit the `.com`-only asymmetry order-invariance had to close in Cycle 105. WHY: an offering
+  claim is QUALITATIVE (does the site claim archetype X?), never QUANTITATIVE — a storefront that repeats
+  its pitch is not "more" of an archetype and must not out-rank/reorder against one that states each
+  capability once. Count-independence rests on two mechanisms this guard pins as an executable tripwire:
+  `_scan_surface` uses `pattern.search` (FIRST match per (archetype,label), not `finditer`) and
+  `ArchetypeClaim.strength` counts DISTINCT LABELS (not raw hits — its docstring names exactly this
+  rationale). TEETH: the anchor's raw regex-match count MULTIPLIES under duplication (1→3 on both domains,
+  `metered_api/post-endpoint`), so a count-based reader WOULD differ; a regression to `finditer` +
+  count-based strength (which would let volume reorder the fixed template-bank task order) fails here. Each
+  half asserts ≥2 claimed archetypes with distinct strengths (.org 11/6/4, .com 16/6/4). SHIP CLASS:
+  tests-only, off scoring path (`scoring.py` does not import `offering` — grep-verified) → score-neutral,
+  NOT peer-gated. git diff -- asrs/ rubric/ fixtures/ EMPTY; git diff --name-only = tests/test_offering_
+  canonical.py ONLY. Cloud bridge blocks direct main push → branch loop/offering-content-scale-invariance
+  + PR #67 + self-merge (squash 926e22f). First duty: no open peer-gated PR ([] at fire start); realigned
+  main to origin/main after merge. Offering canonical guard 23→25; full suite green (22 files;
+  test_free_tier 11/11 after `pip install eth-account`, environment-only). Canonical PAIR unchanged AND
+  re-measured: replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. Slack: daily
+  digest sent (first cycle after 16:00 UTC), re-flagging the still-open runner stall. RUNNER STILL GAPPED
+  (verify_20260728T234102Z 23:41Z ~40.5h old). Next COVERAGE — the offering-path invariance families are
+  now three-fold and pair-symmetric (ORDER / RELABEL / SCALE); stronger next leverage is a NEW archetype
+  or metered_api/digital_good signal, or design-readying a [LOCAL] live-wiring item (ACP/UCP/MPP,
+  free-tier probe). ACP/UCP/MPP + free-tier live-wiring stays [LOCAL].)
   (Cycle 108 READOUT — surfaced the `pagination` metered_api capability in the PUBLIC methodology prose,
   the READOUT leg CLOSING the pagination arc (COVERAGE 106 → TRUTH-relabel 107 → READOUT 108) — the sixth
   metered_api leg to complete the full COVERAGE→TRUTH→READOUT arc (after payment-rail 78/79/80, async-job

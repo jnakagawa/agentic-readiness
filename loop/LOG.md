@@ -3,6 +3,72 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 109 — 2026-07-30T16:12Z — METHOD (branch+PR+self-merge, tests-only/score-neutral)
+
+**What.** Pinned the offering classifier as **content-scale-invariant** on the canonical
+pair — a genuinely NEW perturbation axis on the offering/task-selection path, distinct
+from the surface-read **ORDER** and host **RELABEL** invariance families that are already
+complete across both pair-halves. New `_assert_content_scale_invariance(domain, expected)`
+in `tests/test_offering_canonical.py` duplicates every surface body K=3× and asserts the
+WHOLE classified profile is byte-identical: claimed archetypes in RANK ORDER, each
+archetype's `strength` + its complete `(label, surface, quote)` evidence map, and the
+NA/unclaimed set. Two thin wrappers apply it to BOTH halves
+(`test_offering_content_scale_invariance_org` / `_com`) from the start, so this axis does
+NOT inherit the `.com`-only asymmetry order-invariance had to close in Cycle 105.
+
+**Why (capability/rigor).** An offering claim is QUALITATIVE — does the site claim to
+serve archetype X? — never QUANTITATIVE. A storefront that repeats its pitch (says "per
+month" ten times, duplicates a section across a rebuild, mirrors the same prose on two
+surfaces) is not "more" of an archetype and must not out-rank or reorder against one that
+states each capability once. Two collaborating mechanisms make classification
+count-independent: `_scan_surface` takes the FIRST match per `(archetype, label)` via
+`pattern.search` (not `finditer`), and `ArchetypeClaim.strength` counts DISTINCT signal
+LABELS (not raw hits) — its docstring names exactly the "a page that repeats 'per month'
+ten times does not out-rank" rationale. This guard makes that rationale an executable
+tripwire on REAL canonical evidence.
+
+**Teeth / non-vacuity.** The anchor signal's raw regex-match count genuinely MULTIPLIES
+under duplication (1 → 3 on both domains, measured `metered_api/post-endpoint`), so a
+count-based reader WOULD see a difference — proving the reported invariance is a real
+property of the classifier, not a vacuous no-op. A regression to `finditer` + count-based
+strength (which would let volume reorder the ranking that drives the fixed template-bank
+task order) fails here. Each half also asserts ≥2 claimed archetypes with distinct
+strengths (`.org` 11/6/4, `.com` 16/6/4), so the ranking a volume regression could reorder
+is genuinely present. The K× duplication uses a blank-line separator that cannot bridge
+two copies into a spurious boundary-spanning match and that `strip_html` collapses away.
+
+**Evidence.** Only `tests/test_offering_canonical.py` changed (`git diff --name-only` = that
+one file; scoring-path diff `asrs/` `rubric/` `fixtures/` EMPTY). Off the scoring path
+(`scoring.py` does not import `offering` — grep-verified prior cycles) → score-neutral,
+rubric v0.7, NOT peer-gated. Offering canonical guard 23 → 25. Cloud bridge blocks direct
+main push → branch loop/offering-content-scale-invariance + PR #67 + self-merge (squash
+926e22f). First duty: no open peer-gated PR ([] at fire start; `list_pull_requests` open =
+[]). Realigned main to origin/main after merge.
+
+**Canonical pair.** Unchanged AND re-measured via the in-cloud replay guard:
+`test_canonical_replay` 24/24, drift-flight.org 46.1 F / driftflight.com 85.5 B /
+delta +39.4, 0 replay-miss; rubric v0.7. Full suite green (22 test files; `test_free_tier`
+11/11 after `pip install eth-account`, environment-only — nothing to commit).
+
+**Infra.** RUNNER STILL GAPPED — newest `runs/local/verify_20260728T234102Z.json` (23:41Z
+Jul-28) is ~40.5h old at the 16:12Z fire; no newer :41 artifact through 15:41Z Jul-30.
+Cloud cannot repair the local machine; heartbeat gap, not a scoring outage (the replay
+guard is the independent live regression signal, green). This IS the first-after-16:00
+cycle (16:12Z ≥ 16:00Z) → the still-open runner gap is re-flagged in this fire's daily
+digest (Slack).
+
+**Comms.** Slack DM sent — daily digest (first cycle after 16:00 UTC), re-flagging the
+still-open runner stall. Not sensitive-class (off scoring path).
+
+**Next hypothesis.** The offering-path invariance families are now three-fold and
+pair-symmetric: surface-read ORDER, host RELABEL, and content SCALE, all across both
+canonical halves. The remaining METHOD frontier on this path is thin — a further axis
+(e.g. surface-set robustness: does adding an irrelevant 200 surface perturb the claimed
+set?) is possible but lower-leverage. Stronger next candidates: a NEW archetype or
+metered_api/digital_good signal (COVERAGE), or bring one of the [LOCAL] live-wiring items
+(ACP/UCP/MPP handshakes, free-tier live probe) into design-ready shape. Rotate to COVERAGE
+next.
+
 ## Cycle 108 — 2026-07-30T15:16Z — READOUT (branch+PR+self-merge, display+tests-only/score-neutral)
 
 **What.** Surfaced the `pagination` metered_api capability in the PUBLIC methodology

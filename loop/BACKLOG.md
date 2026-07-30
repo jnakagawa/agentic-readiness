@@ -515,6 +515,27 @@ design in-cloud, execute locally.
      perturbation AXIS on the offering/battery path (label/scale) now the order- + relabel-invariance
      families are complete, OR a NEW archetype/signal (COVERAGE). Not yet a firm backlog item; promote when
      a concrete gap is identified. -->
+
+- **[READOUT] Surface the `test-mode` metered_api "try the call SAFELY first, at $0" leg in the public
+  methodology prose** (follow-up to Cycle 102 COVERAGE + Cycle 103 TRUTH). The test-mode signal (a
+  sandbox / test-key / dry-run facility, `asrs/offering.py`) is now pinned in code+tests at two layers but
+  has no reader-facing paragraph — a reader cannot learn WHY a metered API that lets an agent validate its
+  integration and dry-run a call at zero cost before authorizing anything real is MORE agent-completable
+  (the "provision + complete the job SAFELY, without a human" capability, which dovetails with ASRS's own
+  $0-only ethos). Add ONE capability-worded, vendor-neutral paragraph to the methodology "What the score
+  answers" card (`_write_methodology_page`, `asrs/scorecard.py`), alongside the four metered_api offer-side
+  legs (payment-rail/auth/async-job/error-contract) and the digital_good output-license leg. Preserve the
+  signal's PRECISION note (never bare `sandbox`/`test`; requires a named facility / test-mode / test
+  credential / dry-run / the `<prefix>_test_<masked-stub>` key convention) and name the identity+prefix
+  relabel executable regression test (Cycle 103). Display+tests-only, off the scoring path → NOT peer-gated;
+  this CLOSES the test-mode COVERAGE→TRUTH→READOUT arc (mirroring output-license 98→99→100).
+- **[METHOD] test-mode surface-read-ORDER-invariance guard** (fresh axis, orthogonal to Cycle-103's relabel
+  guard). Mirror `test_offering_surface_order_invariance_output_license` (Cycle 101): spy on the single
+  `classify_offering` call, re-classify FORWARD vs full REVERSAL of the discovered surface read order, and
+  assert the test-mode fired count/surface (and the metered_api claim) invariant. NOTE non-vacuity is
+  WEAKER than output-license here (test-mode fires ×1 on a single surface `/docs`, so a reorder cannot
+  migrate it across surfaces) — confirm it exercises a genuine multi-surface read before committing, else
+  fold into a broader per-signal order-stability sweep rather than a single-surface bystander test.
 <!-- DONE 2026-07-30T06:2xZ (Cycle 99, TRUTH, branch+PR+self-merge, tests-only/score-neutral): "Pin the
      new `output-license` digital_good signal as HOST/VENDOR relabel-invariant" SHIPPED. New guard
      `test_offering_relabel_invariance_output_license` in `tests/test_offering_canonical.py` (17→18) — the

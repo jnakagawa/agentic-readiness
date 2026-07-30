@@ -9034,3 +9034,71 @@ count/surfaces), OR a surface-read-ORDER-invariance guard for it. A NEW
 archetype/signal remains open COVERAGE; ACP/UCP/MPP + free-tier live-wiring stays
 [LOCAL]. No Slack (score-neutral, off scoring path; not sensitive-class; not the
 first-after-16:00 digest cycle).
+
+## Cycle 103 — 2026-07-30T10:19Z — TRUTH (branch+PR+self-merge, tests-only / score-neutral)
+
+**What.** Pinned the Cycle-102 `test-mode` metered_api signal as
+relabel-invariant — the FIFTH metered_api signal-level relabel guard
+(payment-rail C79, async-job C83, api-auth C87, error-contract C90, now
+test-mode). New `test_offering_relabel_invariance_test_mode` in
+`tests/test_offering_canonical.py` perturbs BOTH identity axes and pins
+invariance under each. This was the TRUTH candidate STATE named after Cycle 102.
+
+**Why (capability).** The vendor-neutrality worry is specific to the
+API-key-convention branch `[a-z]{2,6}_(?:test|sandbox)_(?:\.{3}|<digit-stub>)`:
+on BOTH canonical fixtures test-mode fires on `/docs` via `df_test_...`, and the
+`df_` prefix genuinely ABBREVIATES the host stem (`drift-flight`/`driftflight` →
+`df`). A reader could suspect the branch matches a host-DERIVED prefix — i.e.
+that a differently-named shop with a different key prefix would score
+differently. It does not: the `[a-z]{2,6}` class matches ANY 2–6-char lowercase
+prefix; the signal keys on the `<prefix>_test_<masked-stub>` CONVENTION SHAPE,
+not on "df" and not on the host. Cross-site comparability rests on this.
+
+**How.** Two perturbations:
+- **(A) HOST relabel** (the standard family perturbation): rewrite the host
+  everywhere → test-mode fires with the same count on the same surface. For this
+  signal the fired quote AND surface (`/docs`) are host-FREE, so a host relabel is
+  a no-op over the test-mode evidence — asserted HONESTLY as the vendor-neutrality
+  property (the machine-integration convention names no vendor), not dressed up as
+  doing work it does not.
+- **(B) KEY-PREFIX relabel** (the perturbation that actually bites): rewrite the
+  key stem `df_` → a neutral `kv_` (the code comment's own neutral example prefix)
+  throughout the fixture → test-mode STILL fires, same count, same surface, each
+  quote still matching the live regex, with `df_test_` gone from every quote. This
+  is the non-vacuous half: it genuinely rewrites the matched text, proving
+  convention-keying, not stem-keying.
+- **Teeth**: a convention-LESS `df_test_runner` identifier (no digit body, no `...`
+  mask) does NOT fire — the guard is not rubber-stamping any `<prefix>_test_`.
+
+**Ship class.** Tests-only, off the scoring path → NOT peer-gated (same class as
+the Cycle-99 output-license relabel guard). Cloud bridge blocks direct main push
+→ branch `loop/test-mode-relabel-invariance` + PR #55 + self-merge (squash
+6dc574f). First duty: no open peer-gated PR ([] at fire start).
+
+**Evidence.** `git diff --name-only` = `tests/test_offering_canonical.py` ONLY;
+`git diff` over scoring.py/rubric*/rubric/probes.py/protocols.py/fetch.py/
+offering.py/battery.py/fixtures/batteries = EMPTY. `test_offering_canonical`
+20→21; full suite 294→**295 passed**. Empirically verified before writing (both
+canonical domains fire test-mode ×1 on `/docs`; host relabel no-op; prefix
+relabel df_→kv_ still fires ×1; `df_test_runner` does not fire).
+
+**Canonical pair (regression signal).** Replay guard 24/24 — **46.1 F / 85.5 B /
++39.4**, 0 replay-miss; rubric v0.7. Score-neutral by construction (off the
+scoring path).
+
+**Infra.** RUNNER STILL GAPPED — newest `runs/local/verify_20260728T234102Z.json`
+(23:41Z Jul-28) is ~34.6h old at this fire; cloud cannot repair the local machine
+(queued P0 [LOCAL], flagged in the Cycle-86 digest; keep flagging in each daily
+digest). The in-cloud replay guard remains the live regression signal INDEPENDENT
+of the runner. Environment needed a venv + `pip install -r requirements.txt`
+(pytest, requests, PyYAML, eth-account) — environment-only, nothing to commit.
+
+**Next hypothesis.** READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT).
+The test-mode signal is now pinned at COVERAGE (102) + TRUTH-relabel (103);
+candidates: a READOUT paragraph surfacing the `test-mode` "try the call safely
+first" capability in the public methodology prose (the reader-facing complement,
+mirroring the output-license 98→99→100 arc); OR a surface-read-ORDER-invariance
+guard for test-mode (METHOD, a fresh axis). A NEW archetype/signal remains open
+COVERAGE; ACP/UCP/MPP + free-tier live-wiring stays [LOCAL]. No Slack
+(score-neutral, off scoring path; not sensitive-class; not the first-after-16:00
+digest cycle — the next first-after-16:00 is ~16:xxZ Jul-30).

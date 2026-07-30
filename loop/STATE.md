@@ -1,15 +1,15 @@
 # Loop state
 
-- Cycle counter: 102
+- Cycle counter: 103
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-30T07:16Z, Cycle 100; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-30T10:19Z, Cycle 103; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~31.5h old at the 07:16Z fire; no newer :41 artifact through 06:41Z Jul-30 (32+ consecutive
+  Jul-28 = ~34.6h old at the 10:19Z fire; no newer :41 artifact through 09:41Z Jul-30 (35+ consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine → FLAGGED in the Cycle-86 16:00 UTC digest
   (the 16:12Z fire was the FIRST cycle after 16:00Z; the ~16.5h runner gap was flagged loudly there;
-  the Cycle-87 17:12Z through this Cycle-100 07:16Z-Jul-30 fires are NOT the first-after-16:00 cycle
-  (the next first-after-16:00 is ~16:12Z Jul-30), so no re-digest — keep flagging in each daily
-  digest until it clears); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
+  the Cycle-87 17:12Z through this Cycle-103 10:19Z-Jul-30 fires are NOT the first-after-16:00 cycle
+  (the next first-after-16:00 is ~16:12Z Jul-30 — re-flag the still-open gap there), so no re-digest —
+  keep flagging in each daily digest until it clears); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
   is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
   local fire root-caused (a >60s slow-network wake still misses the 5×15s retry) OR the machine is
@@ -28,7 +28,32 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 103 TRUTH — pinned the Cycle-102 `test-mode` metered_api signal as RELABEL-INVARIANT, the
+  FIFTH metered_api signal-level relabel guard (payment-rail 79 / async-job 83 / api-auth 87 /
+  error-contract 90 / now test-mode). New `test_offering_relabel_invariance_test_mode` in
+  `tests/test_offering_canonical.py` (20→21) perturbs BOTH identity axes: (A) a whole-HOST relabel — a
+  no-op over this host-free, convention-keyed evidence, asserted HONESTLY as the vendor-neutrality
+  property (the machine-integration convention names no vendor); (B) a KEY-PREFIX relabel `df_`→neutral
+  `kv_` — the non-vacuous half, since the `df_` stem genuinely ABBREVIATES the host
+  (`drift-flight`/`driftflight` → `df`), so rewriting it proves the API-key-convention branch
+  `[a-z]{2,6}_(?:test|sandbox)_(?:\.{3}|<digit-stub>)` keys on the `<prefix>_test_<masked-stub>`
+  CONVENTION SHAPE, not on "df"/the host (both fire ×1 on `/docs`, same count/surface, each quote still
+  matching the live regex with `df_test_` gone). TEETH: a convention-less `df_test_runner` identifier does
+  NOT fire. WHY (capability): cross-site comparability requires a classification to be a property of WHAT
+  a surface DECLARES, not the storefront's name or its chosen key prefix. SHIP CLASS: tests-only, off the
+  scoring path → NOT peer-gated (same class as Cycle-99's output-license relabel guard); git diff
+  --name-only = tests/test_offering_canonical.py ONLY, scoring-path diff EMPTY. Cloud bridge blocks direct
+  main push → branch loop/test-mode-relabel-invariance + PR #55 + self-merge (squash 6dc574f). First duty:
+  no open peer-gated PR ([] at fire start); realigned main to origin/main 6dc574f after merge. Full suite
+  294→295 passed. Canonical PAIR unchanged AND re-measured: replay guard 24/24, 46.1 F / 85.5 B / +39.4,
+  0 replay-miss; rubric v0.7. No Slack (tests-only, moves no score; not sensitive-class; not the
+  first-after-16:00 digest cycle). RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z ~34.6h old). Next
+  READOUT — the test-mode signal is now pinned at COVERAGE (102) + TRUTH-relabel (103); candidate: a
+  capability-worded, vendor-neutral methodology paragraph surfacing the `test-mode` "try the call SAFELY
+  first, at $0" leg alongside the four metered_api offer-side legs (mirroring the output-license
+  98→99→100 arc's READOUT), OR a surface-read-ORDER-invariance guard for test-mode (METHOD, fresh axis).
+  A NEW archetype/signal remains open COVERAGE; ACP/UCP/MPP + free-tier live-wiring stays [LOCAL].)
   (Cycle 102 COVERAGE — added a `test-mode` signal to the `metered_api` bank in `asrs/offering.py`:
   an API SANDBOX / test-key / dry-run facility, the first NEW metered_api capability signal since
   error-contract (the output-license digital_good arc closed at Cycles 98–101). An agent that obtains a

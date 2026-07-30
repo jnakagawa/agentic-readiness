@@ -771,6 +771,62 @@ def test_methodology_documents_test_mode() -> None:
                f"test-mode prose names no vendor/domain ({banned!r})")
 
 
+def test_methodology_documents_pagination() -> None:
+    # Cycle 108 (READOUT): the READOUT complement CLOSING the pagination arc opened by
+    # Cycle 106 (COVERAGE — the metered_api `pagination` offering signal: a cursor /
+    # next-page URL / paginated collection response an agent follows to walk a
+    # multi-page result set to completion) and Cycle 107 (TRUTH — the SIGNAL-level
+    # HOST relabel-invariance guard for that signal). The four earlier metered_api
+    # offer-side legs each earned a prose paragraph (payment-rail 80, auth 88,
+    # async-job 84, error-contract 92) and the test-mode leg its own at Cycle 104; the
+    # "walk the paged collection to completion" leg was pinned in code + tests but
+    # NEVER surfaced in prose a critic can read — a reader could not learn WHY a
+    # metered API that documents how to page through a collection is MORE
+    # agent-completable, or how an agent that stops at the first page silently
+    # under-completes the retrieval. The paragraph must (a) frame it as walking a
+    # multi-page result set to completion / the pagination contract, and name the
+    # under-completion failure (stop at page one, report a partial answer as whole);
+    # (b) name the vendor-neutral pagination vocabulary the offering signal anchors on
+    # as open conventions — a cursor query parameter, a next/previous page URL, a
+    # paginated collection response; (c) keep the signal's PRECISION honesty — a bare
+    # `next`/`cursor` word (a retail product link, a "next campaign" banner, a text
+    # cursor, the "next page of the novel") is not an API pagination facility and is
+    # read as no signal; (d) say recognition keys on the CONTRACT the API documents
+    # not who published it and is pinned by an identity-relabel executable regression
+    # test; and (e) stay HONEST about scope — this offering read is diagnostic, off the
+    # scoring path, not a scored pillar (the same scored-vs-diagnostic line the sibling
+    # offer-side prose keeps). Vendor-neutral throughout.
+    print("test_methodology_documents_pagination")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    # Match on the whitespace-collapsed text (same technique as the async-job /
+    # api-auth / error-contract / test-mode guards) so wording, not source
+    # wrapping, is what the guard pins.
+    collapsed = " ".join(text.split())
+    for phrase in ("Walking the whole collection", "under-completes the retrieval",
+                   "pagination contract", "contract the API documents, not who published it",
+                   "relabels the API", "executable regression test",
+                   "off the scoring path", "diagnostic"):
+        _check(phrase in collapsed,
+               f"methodology documents pagination: {phrase!r}")
+    # The vendor-neutral pagination vocabulary the offering signal bank anchors on
+    # must appear as open collection conventions, never a vendor product: a cursor
+    # parameter, a next/previous page URL, a paginated collection response.
+    for token in ("cursor", "page URL", "paginated collection response"):
+        _check(token in collapsed, f"methodology names pagination convention {token!r}")
+    # PRECISION honesty: the prose must preserve the signal's bare-word guard — a bare
+    # `next`/`cursor` word (a retail product link, a "next campaign" banner, a text
+    # cursor, the "next page of the novel") is not an API pagination facility and is
+    # read as no signal.
+    for token in ("bare", "no signal", "next campaign", "next page of the novel"):
+        _check(token in collapsed,
+               f"methodology keeps pagination precision note: {token!r}")
+    # Vendor-neutral: no scored domain/product/brand named on the page.
+    for banned in ("drift-flight", "driftflight", "replicate"):
+        _check(banned not in text,
+               f"pagination prose names no vendor/domain ({banned!r})")
+
+
 def test_methodology_documents_calibration() -> None:
     # Cycle 68 (READOUT): the READOUT complement to Cycle 67's calibration guard
     # (tests/test_calibration.py — the first static-vs-behavioral VALIDITY axis).
@@ -1446,6 +1502,7 @@ def main() -> int:
         test_methodology_documents_offering_relative_battery,
         test_methodology_documents_output_license,
         test_methodology_documents_test_mode,
+        test_methodology_documents_pagination,
         test_methodology_documents_calibration,
         test_methodology_page_tracks_live_rubric,
         test_build_scorecard_publishes_and_links_methodology,

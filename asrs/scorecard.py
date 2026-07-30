@@ -440,6 +440,32 @@ regression test</b> that relabels the API&rsquo;s identity end-to-end and confir
 the error contract is still recognized, unchanged, with the vendor&rsquo;s name
 gone. This read is <b>diagnostic</b> &mdash; it names how the offer reports a
 failure, <b>off the scoring path</b> &mdash; not a scored pillar.</p>
+<p><b>Walking the whole collection</b> is the finishing leg for a metered API that
+answers with a <b>list</b> &mdash; your predictions, your models, your deployments,
+your records &mdash; because such an endpoint rarely returns everything at once: it
+hands back <b>one page</b> plus a way to fetch the rest, and an agent that stops at
+the first page silently <b>under-completes the retrieval</b>, reporting a partial
+answer as if it were the whole. An offer that documents its <b>pagination
+contract</b> &mdash; a <b>cursor</b> query parameter to pass back for the next
+slice, a <code>next</code>/<code>previous</code> <b>page URL</b> to follow, or a
+<b>paginated collection response</b> that names where the next page lives &mdash; is
+more agent-completable than one that leaves the agent guessing whether the list it
+received was complete. So ASRS reads the documented pagination contract as part of
+finishing the offer, keyed on vendor-neutral collection conventions (a cursor
+parameter carrying a value, a next/previous page URL, a paginated collection
+response), the same category of open convention as REST, GraphQL or OpenAPI. The
+read is <b>precision-guarded</b>: a bare <code>next</code> or <code>cursor</code>
+word is <b>no signal</b> &mdash; a retail &ldquo;<code>next</code>&rdquo; product
+link, a &ldquo;next campaign&rdquo; banner, a text cursor, or the &ldquo;next page
+of the novel&rdquo; must never trip it &mdash; so the phrasing must name an actual
+API pagination facility (a cursor carrying a value, cursor-based pagination, or a
+next/previous page <b>of an API collection</b>). Recognition keys on the
+<b>contract the API documents, not who published it</b>: that property is pinned by
+an <b>executable regression test</b> that relabels the API&rsquo;s identity
+end-to-end and confirms the pagination contract is still recognized, unchanged,
+with the vendor&rsquo;s name gone. This read is <b>diagnostic</b> &mdash; it names
+whether the offer lets an agent walk a multi-page result set to completion, <b>off
+the scoring path</b> &mdash; not a scored pillar.</p>
 <p><b>Trying the call safely first</b> comes <b>before</b> any of the other legs,
 because an agent that can rehearse the whole flow at <b>zero cost</b> completes
 the job without a human standing by to catch a first-attempt mistake. A metered

@@ -1456,6 +1456,137 @@ def test_offering_relabel_invariance_pagination() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Relabel-invariance at the SIGNAL level — the async job-CANCELLATION contract.
+#
+# The SEVENTH signal-level companion in the metered_api bank (after payment-rail
+# Cycle 79, async-job 83, api-auth 87, error-contract 91, test-mode 103, and
+# pagination 107), for the signal that landed most recently: `cancel-job`
+# (Cycle 110 — how an agent ABORTS a long-running job it already submitted: a
+# `Cancel-After` deadline header, a `cancel` VERB naming an async-job noun
+# (cancel the prediction/job/run/training/...), or a `.../cancel` ENDPOINT PATH
+# on a job resource (`predictions/{id}/cancel`). It is the "complete the job"
+# CONTROL + capital-safety leg for a metered API whose work runs long: an agent
+# that detects a runaway or wrong generation and CANNOT stop it keeps paying for
+# compute it no longer needs, so a metered API that documents a cancel contract
+# lets the agent BOUND its own spend and is more agent-completable. Distinct from
+# async-job (how one long job's result comes BACK), error-contract (how a FAILED
+# call recovers), and pagination (how a paged collection is WALKED).) It fires on
+# `api.replicate.com`'s `/openapi.json` — a genuine `Cancel-After` deadline
+# header. How an agent cancels a submitted job is a property of the API CONTRACT a
+# storefront documents (deadline header / cancel endpoint / cancel verb), never of
+# who published it, so the signal must be identity-invariant.
+#
+# SURFACE-PRESENCE, not quote-anchored (the async-job / pagination shape, NOT
+# payment-rail): the cancel-contract vocabulary is host-free by nature — the fired
+# quote carries the `Cancel-After` header structure, not the vendor's name, and
+# the surface is the relative `/openapi.json`. The non-vacuity anchor is therefore
+# at the FIXTURE level (asserted below): the host IS present in the fixture
+# surfaces the classifier fetches, so a whole-fixture relabel genuinely rewrites
+# the classifier's overall input; the cancel-job signal survives because the
+# deadline-header / cancel-endpoint structure it keys on never named the vendor to
+# begin with. Under relabel the signal must fire the SAME number of times, on the
+# SAME surface, each quote STILL satisfying the live cancel-job regex, with the
+# vendor host absent from every piece of cancel evidence.
+#
+# This drops the machine-surface fixture's relabel coverage (whole-archetype,
+# `test_offering_relabel_invariance_machine`) a layer down to the specific
+# "abort a submitted job" signal a metered API whose work runs long rests on —
+# the same move Cycle 79 made for `agent-payment-rail`, Cycle 83 for `async-job`,
+# and Cycle 107 for `pagination`. It completes the metered_api signal-level
+# relabel family for every signal that landed through Cycle 110.
+# ---------------------------------------------------------------------------
+_CANCEL_LABEL = "cancel-job"
+
+
+def _cancel_signals(prof) -> list:
+    """The (surface, quote) pairs where the cancel-job signal fired, sorted."""
+    return sorted(
+        (s.surface, s.quote)
+        for c in prof.claimed
+        for s in c.signals
+        if s.label == _CANCEL_LABEL
+    )
+
+
+def test_offering_relabel_invariance_cancel_job() -> None:
+    """The async job-cancellation claim keys on contract structure, not host."""
+    print("test_offering_relabel_invariance_cancel_job")
+    base, _ = _discover(_MACHINE_SURFACE)
+    base_cx = _cancel_signals(base)
+
+    # The signal genuinely fires on real captured evidence — the job-cancellation
+    # contract in the storefront's own OpenAPI spec.
+    _check(
+        len(base_cx) >= 1,
+        f"cancel-job fires on >=1 real {_MACHINE_SURFACE} surface "
+        f"(got {len(base_cx)}: {[s for s, _ in base_cx]})",
+    )
+    joined = " ".join(q for _, q in base_cx).lower()
+    _check(
+        "cancel-after" in joined or "/cancel" in joined or "cancel" in joined,
+        "the cancel-job evidence carries cancel-after / cancel-endpoint / cancel-verb "
+        f"contract vocabulary (got {[q for _, q in base_cx]})",
+    )
+
+    # Honest scope: like async-job / pagination (not payment-rail), the cancel-job
+    # evidence is host-FREE (the fired quote and its relative /openapi.json surface
+    # name no vendor), so non-vacuity cannot anchor on the host being inside the quote.
+    _check(
+        all(
+            _MACHINE_SURFACE not in surf and _MACHINE_SURFACE not in quote
+            for surf, quote in base_cx
+        ),
+        "the cancel-job evidence is host-free (deadline-header/cancel-endpoint "
+        "structure, not a vendor name) — so this is a surface-presence, not a "
+        "quote-anchored, invariance",
+    )
+
+    # Non-vacuity anchor (fixture level): the host IS present in the fixture
+    # surfaces the classifier fetches, so a whole-fixture relabel genuinely rewrites
+    # the classifier's overall input — the cancel-job signal surviving is not a
+    # no-op over an absent host.
+    path = os.path.join(_FIXTURE_DIR, f"{_MACHINE_SURFACE}.json")
+    with open(path, encoding="utf-8") as fh:
+        raw = fh.read()
+    _check(
+        _MACHINE_SURFACE in raw,
+        f"{_MACHINE_SURFACE}: host present in the fixture surfaces (relabel rewrites "
+        "real classifier input — the test is non-vacuous)",
+    )
+
+    relab = _discover_relabeled(_MACHINE_SURFACE, _NEUTRAL_HOST)
+    relab_cx = _cancel_signals(relab)
+
+    # (1) Same number of cancel-job matches — the signal is neither lost nor conjured.
+    _check(
+        len(relab_cx) == len(base_cx),
+        "cancel-job match count invariant under relabel "
+        f"(base {len(base_cx)}, relabel {len(relab_cx)})",
+    )
+    # (2) The SAME (host-normalized) surfaces carry the signal — it did not migrate.
+    base_surf = sorted(s.replace(_MACHINE_SURFACE, _NEUTRAL_HOST) for s, _ in base_cx)
+    relab_surf = sorted(s for s, _ in relab_cx)
+    _check(
+        relab_surf == base_surf,
+        "cancel-job fires on the same (host-normalized) surfaces under relabel "
+        f"(base {base_surf}, relabel {relab_surf})",
+    )
+    # (3) Each relabeled quote STILL satisfies the live cancel-job regex (proving the
+    # fired form is structural — a deadline header / cancel endpoint / cancel verb)
+    # and names no vendor host — the match keyed on the job-control contract, not identity.
+    cx_re = dict(_offering._SIGNALS["metered_api"])[_CANCEL_LABEL]
+    for surf, quote in relab_cx:
+        _check(
+            cx_re.search(quote) is not None,
+            f"relabeled cancel-job quote still matches the contract-structural signal: {quote!r}",
+        )
+        _check(
+            _MACHINE_SURFACE not in quote and _MACHINE_SURFACE not in surf,
+            f"vendor host absent from relabeled cancel-job evidence (surface {surf!r})",
+        )
+
+
+# ---------------------------------------------------------------------------
 # The FIRST signal-level companion in the digital_good bank (the four above all
 # live in metered_api): `output-license` (Cycle 98 — the deliverable-RIGHTS leg
 # of a digital good, in four host-free forms: a commercial-use licence
@@ -2093,6 +2224,7 @@ def main() -> int:
         test_offering_relabel_invariance_error_contract,
         test_offering_relabel_invariance_test_mode,
         test_offering_relabel_invariance_pagination,
+        test_offering_relabel_invariance_cancel_job,
         test_offering_relabel_invariance_output_license,
         test_offering_surface_order_invariance_output_license,
         test_offering_surface_order_invariance_org,

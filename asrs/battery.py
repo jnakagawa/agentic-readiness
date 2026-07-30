@@ -196,8 +196,15 @@ _ARCHETYPE_INTENTS: dict[str, str] = {
 # Generic media nouns (never a vendor term) used to specialize the digital_good
 # intent from the archetype's own fired signals — the operator's example of
 # "buy an AI-generated image" for an image API, derived from OUR signal bank
-# rather than from injected raw site text.
-_MEDIA_RE = re.compile(r"\b(image|video|audio|art)\b", re.IGNORECASE)
+# rather than from injected raw site text. The trailing ``s?`` (OUTSIDE the
+# capture group) recognises the PLURAL media noun ("Generated images", "we
+# generate videos") while ``group(1)`` still yields the SINGULAR word, so the
+# descriptor normalises to "generated image" whether the site's fired quote is
+# singular or plural. This keeps the descriptor consistent with the generate-media
+# SIGNAL, which recognises plural/participle forms (asrs/offering.py, Cycle 94):
+# before this, a claim whose only fired media quote was plural fell back to the
+# generic "digital output" descriptor even though the signal had fired.
+_MEDIA_RE = re.compile(r"\b(image|video|audio|art)s?\b", re.IGNORECASE)
 
 
 def _digital_good_descriptor(claim: ArchetypeClaim | None) -> str:

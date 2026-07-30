@@ -495,6 +495,35 @@ design in-cloud, execute locally.
 
 ## P1
 
+- **[METHOD] Pin the digital_good DESCRIPTOR derivation as relabel/identity-invariant** (follow-up to the
+  Cycle 94/95/96 generate-media arc, cloud-doable, tests-only). The signal-level relabel family
+  (`test_offering_canonical.py`) covers offering CLASSIFICATION; the offering-relative BATTERY descriptor
+  (`asrs/battery._digital_good_descriptor` / `_MEDIA_RE`) derives the task noun ("generated image") from the
+  claim's fired signal quotes. Add a guard (in `test_battery_instantiate.py`) that relabels the host
+  everywhere in a digital_good claim's fixture/quotes and asserts the derived descriptor is IDENTITY-invariant
+  — proving the media noun keys on the VOCABULARY a site uses, not the host/vendor (the descriptor-layer
+  analog of the signal-level relabel guards). The methodology prose now CLAIMS the noun "comes from the site,
+  not ASRS" and is "injection-safe" (Cycle 96); this makes that claim an executable tripwire at the
+  descriptor layer. Off scoring path, score-neutral.
+
+<!-- DONE 2026-07-30T03:1xZ (Cycle 96, READOUT, branch+PR+self-merge, display-only + tests-only/score-neutral):
+     "surface the offering-relative digital_good task derivation in public methodology prose" SHIPPED —
+     the READOUT complement CLOSING the generate-media plural/participle arc (Cycle 94 COVERAGE signal +
+     Cycle 95 TRUTH descriptor + this READOUT). Added ONE capability-worded, vendor-neutral paragraph to
+     methodology section 6 (`_write_methodology_page`, `asrs/scorecard.py`): the buying directives are
+     OFFERING-RELATIVE (one task per capability the site CLAIMS to sell, unadvertised archetypes never probed
+     — attribution honesty applied to tasks); the digital-good task is worded in the SITE'S OWN terms
+     ("generated image" comes from the site, drawn from ASRS's vendor-neutral media vocabulary
+     image/video/audio/art or the "digital output" fallback matched to the site, NEVER by injecting arbitrary
+     site prose → injection-safe, no vendor product); recognition is form-normalized (image / images /
+     generating images → same singular task noun) and pinned by an executable regression test; honestly
+     scoped as diagnostic, off the scoring path. Score-neutral: git diff over scoring path
+     (scoring/rubric/probes/offering/battery/fixtures/batteries) EMPTY → rubric v0.7 (not peer-gated);
+     replay guard 24/24, 46.1 F / 85.5 B / +39.4. test_readout 50→51 (new guard
+     test_methodology_documents_offering_relative_battery, registered in main()); readout/rubric wording 4/4
+     each. PR #41 (squash 4f269ed). See LOG Cycle 96. Follow-up (descriptor relabel-invariance) is the P1
+     item above. -->
+
 <!-- DONE 2026-07-30T02:17Z (Cycle 95, TRUTH, branch+PR+self-merge, descriptor-only/score-neutral):
      "digital_good DESCRIPTOR shares the singular-media-noun assumption" CLOSED. Extended
      `asrs/battery._MEDIA_RE` from `\b(image|video|audio|art)\b` to `\b(image|video|audio|art)s?\b` (the

@@ -8529,3 +8529,80 @@ the digital_good task is derived from the site's OWN discovered media language
 why the task says "generated image". Alternatively, the recurring READOUT
 candidate: a per-segment leaderboard summary once the [LOCAL] calibration
 population grows.
+
+## Cycle 96 — 2026-07-30T03:1xZ — READOUT (branch+PR+self-merge; display-only + tests-only, off scoring path, score-neutral)
+
+**What.** Surfaced the OFFERING-RELATIVE task battery in the PUBLIC methodology
+prose — the READOUT complement CLOSING the generate-media plural/participle arc
+(Cycle 94 COVERAGE signal + Cycle 95 TRUTH descriptor + this READOUT). Added ONE
+capability-worded, vendor-neutral paragraph to methodology section 6 ("The
+behavioral panels & refusal semantics", `_write_methodology_page`,
+`asrs/scorecard.py`), placed right after the shopper/trust-panel paragraph so the
+"buying directive" is immediately qualified as offering-relative. It states: the
+directives are OFFERING-RELATIVE not a fixed script — ASRS reads what the
+storefront CLAIMS to sell from its own surfaces and gives the agent one task per
+capability it actually offers, an unadvertised archetype is never probed (so a low
+number is never a task the storefront was never built to answer — attribution
+honesty applied to tasks); the task is worded in the SITE'S OWN terms, a
+digital-good task says "obtain one generated image" only because the site's own
+surfaces describe a generated image (the media noun comes from the site, not
+ASRS); that noun is derived ONLY from ASRS's own vendor-neutral media vocabulary
+(image/video/audio/art, or the "digital output" fallback) matched to the site's
+surfaces, NEVER by pasting arbitrary site prose into the directive (so it is
+injection-safe and names no vendor product); recognition is FORM-NORMALIZED
+(image / images / generating images → the SAME singular task noun, so two
+storefronts offering the same capability get the same task regardless of phrasing)
+and pinned by an executable regression test; honestly scoped as DIAGNOSTIC, off
+the scoring path, not a scored pillar.
+
+**Why (capability).** The offering-relative battery + the singular/plural/
+inflection-normalised digital_good descriptor were pinned in code + tests
+(Cycles 94/95) but NEVER surfaced in prose a critic can read — a reader of the
+methodology could not learn WHY a derived task says "generated image", nor that
+the wording comes from the site rather than from ASRS. Surfacing it is the
+reader-facing statement of the vendor-neutral, injection-safe derivation and
+completes the metered/digital-good arc's third leg (COVERAGE→TRUTH→READOUT) the
+same way the payment-rail (78/79/80), async-job (82/83/84), api-auth (86/87/88),
+and error-contract (90/91/92) signal arcs were each closed.
+
+**Ship class.** Display-only + tests-only, off the scoring path → rubric v0.7 →
+NOT peer-gated. `git diff --stat` over scoring.py/rubric*/rubric/probes.py/
+protocols.py/fetch.py/offering.py/battery.py/fixtures/batteries = EMPTY → scoring
+path byte-for-byte untouched. `git diff --name-only` = scorecard.py +
+test_readout.py ONLY. Cloud bridge blocks direct main push → branch
+loop/offering-relative-battery-readout + PR #41 + self-merge (squash 4f269ed).
+First duty: no open peer-gated PR ([]); realigned main to origin/main 4f269ed
+after merge.
+
+**Evidence.** New guard `test_methodology_documents_offering_relative_battery`
+(`tests/test_readout.py` 50→51), registered in `main()` (no pytest auto-discovery
+in-cloud — the "silent success/failure look identical" law): asserts the
+offering-relative framing, "claims to sell" / "worded in the site" / "never built
+to answer" / "generated image" / "injection-safe" / "form-normalized" / the
+media-vocabulary tokens (image/video/audio/art/digital output) + the
+form-normalization exemplars (images, generating images) / "executable regression
+test" / the honest "off the scoring path" + "diagnostic" scope, and the
+vendor-neutral denylist (no drift-flight/driftflight). Readout wording scanner 4/4
++ rubric wording 4/4 (rendered methodology + card vendor-neutral). Full suite 22
+files green (test_free_tier 11/11 with eth-account in .venv).
+
+**Canonical pair (regression signal).** UNCHANGED and re-measured — replay guard
+24/24, drift-flight.org 46.1 F / driftflight.com 85.5 B / delta +39.4, 0
+replay-miss. By construction: scoring path byte-for-byte untouched (display + test
+prose is never read by `scoring.score`). LOCAL verify runner STILL GAPPED
+(`runs/local/verify_20260728T234102Z.json` 23:41Z Jul-28, ~27.5h old at the
+03:11Z fire, past the 6h floor; cloud cannot repair Jonah's machine) — the
+in-cloud replay guard remains the independent live regression signal, so this is a
+heartbeat gap, not a scoring outage. This 03:1xZ fire is after the Cycle-86 16:12Z
+daily digest, so NOT the first-after-16:00 cycle → no re-digest; keep flagging the
+runner gap in each daily digest until it clears. No Slack (display-only, moves no
+score; not a sensitive-class PR; not the daily-digest cycle).
+
+**Next hypothesis (METHOD).** Rotation returns to METHOD. Candidate: a fresh
+executable-invariant increment on the offering/battery path — e.g. pin that the
+digital_good DESCRIPTOR derivation is itself relabel/identity-invariant (the
+media noun keys on the vocabulary a site uses, not the host), or a fresh
+perturbation AXIS (label/scale) now that the order-invariance family is complete
+across all five measurement surfaces. In-cloud COVERAGE frontier for metered_api
+signals is well-covered; new COVERAGE would be a NEW archetype/signal or a
+per-segment leaderboard summary once the [LOCAL] calibration population grows.

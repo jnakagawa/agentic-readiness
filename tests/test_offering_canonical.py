@@ -1333,6 +1333,129 @@ def test_offering_relabel_invariance_test_mode() -> None:
 
 
 # ---------------------------------------------------------------------------
+# The SIXTH metered_api signal-level relabel guard, for the newest metered_api
+# capability signal: `pagination` (Cycle 106 — a cursor / collection PAGINATION
+# contract: how an agent walks a MULTI-PAGE result set to completion. A list
+# endpoint returns one page plus a cursor / a `next`/`previous` page URL to
+# follow; an agent that cannot follow the cursor reads only the FIRST page and
+# silently UNDER-completes the retrieval. It is the "complete the job" leg for a
+# metered API returning a COLLECTION — distinct from async-job (one long job's
+# return), error-contract (recovery), and api-auth (provision).) It fires on
+# `api.replicate.com`'s `/openapi.json` — a genuine cursor-pagination contract
+# ("A URL pointing to the next page of collection objects"). How an agent
+# paginates a collection is a property of the API CONTRACT a storefront
+# documents (cursor param / next-page URL / paginated response schema), never of
+# who published it, so the signal must be identity-invariant.
+#
+# SURFACE-PRESENCE, not quote-anchored (the async-job / error-contract shape, NOT
+# payment-rail): the pagination contract vocabulary is host-free by nature — the
+# fired quote carries `next page of collection` / a `?cursor=` param, not the
+# vendor's name, and the surface is the relative `/openapi.json`. The non-vacuity
+# anchor is therefore at the FIXTURE level (asserted below): the host IS present
+# in the fixture surfaces the classifier fetches, so a whole-fixture relabel
+# genuinely rewrites the classifier's overall input; the pagination signal
+# survives because the cursor/next-page structure it keys on never named the
+# vendor to begin with. Under relabel the signal must fire the SAME number of
+# times, on the SAME surface, each quote STILL satisfying the live pagination
+# regex, with the vendor host absent from every piece of pagination evidence.
+#
+# This drops the machine-surface fixture's relabel coverage (whole-archetype,
+# `test_offering_relabel_invariance_machine`) a layer down to the specific
+# "walk the paged collection to completion" signal a metered API returning a
+# COLLECTION rests on — the same move Cycle 79 made for `agent-payment-rail`,
+# Cycle 83 for `async-job`, and Cycle 103 for `test-mode`.
+# ---------------------------------------------------------------------------
+_PAGINATION_LABEL = "pagination"
+
+
+def _pagination_signals(prof) -> list:
+    """The (surface, quote) pairs where the pagination signal fired, sorted."""
+    return sorted(
+        (s.surface, s.quote)
+        for c in prof.claimed
+        for s in c.signals
+        if s.label == _PAGINATION_LABEL
+    )
+
+
+def test_offering_relabel_invariance_pagination() -> None:
+    """The cursor/collection pagination claim keys on contract structure, not host."""
+    print("test_offering_relabel_invariance_pagination")
+    base, _ = _discover(_MACHINE_SURFACE)
+    base_pg = _pagination_signals(base)
+
+    # The signal genuinely fires on real captured evidence — the cursor-pagination
+    # contract in the storefront's own OpenAPI spec.
+    _check(
+        len(base_pg) >= 1,
+        f"pagination fires on >=1 real {_MACHINE_SURFACE} surface "
+        f"(got {len(base_pg)}: {[s for s, _ in base_pg]})",
+    )
+    joined = " ".join(q for _, q in base_pg).lower()
+    _check(
+        "cursor=" in joined or "page of" in joined or "paginat" in joined,
+        "the pagination evidence carries cursor / next-page / paginated contract "
+        f"vocabulary (got {[q for _, q in base_pg]})",
+    )
+
+    # Honest scope: like async-job (not payment-rail), the pagination evidence is
+    # host-FREE (the fired quote and its relative /openapi.json surface name no
+    # vendor), so non-vacuity cannot anchor on the host being inside the quote.
+    _check(
+        all(
+            _MACHINE_SURFACE not in surf and _MACHINE_SURFACE not in quote
+            for surf, quote in base_pg
+        ),
+        "the pagination evidence is host-free (cursor/next-page structure, not a "
+        "vendor name) — so this is a surface-presence, not a quote-anchored, invariance",
+    )
+
+    # Non-vacuity anchor (fixture level): the host IS present in the fixture
+    # surfaces the classifier fetches, so a whole-fixture relabel genuinely rewrites
+    # the classifier's overall input — the pagination signal surviving is not a
+    # no-op over an absent host.
+    path = os.path.join(_FIXTURE_DIR, f"{_MACHINE_SURFACE}.json")
+    with open(path, encoding="utf-8") as fh:
+        raw = fh.read()
+    _check(
+        _MACHINE_SURFACE in raw,
+        f"{_MACHINE_SURFACE}: host present in the fixture surfaces (relabel rewrites "
+        "real classifier input — the test is non-vacuous)",
+    )
+
+    relab = _discover_relabeled(_MACHINE_SURFACE, _NEUTRAL_HOST)
+    relab_pg = _pagination_signals(relab)
+
+    # (1) Same number of pagination matches — the signal is neither lost nor conjured.
+    _check(
+        len(relab_pg) == len(base_pg),
+        "pagination match count invariant under relabel "
+        f"(base {len(base_pg)}, relabel {len(relab_pg)})",
+    )
+    # (2) The SAME (host-normalized) surfaces carry the signal — it did not migrate.
+    base_surf = sorted(s.replace(_MACHINE_SURFACE, _NEUTRAL_HOST) for s, _ in base_pg)
+    relab_surf = sorted(s for s, _ in relab_pg)
+    _check(
+        relab_surf == base_surf,
+        "pagination fires on the same (host-normalized) surfaces under relabel "
+        f"(base {base_surf}, relabel {relab_surf})",
+    )
+    # (3) Each relabeled quote STILL satisfies the live pagination regex (proving the
+    # fired form is structural — a cursor param / next-page URL / paginated response)
+    # and names no vendor host — the match keyed on the collection contract, not identity.
+    pg_re = dict(_offering._SIGNALS["metered_api"])[_PAGINATION_LABEL]
+    for surf, quote in relab_pg:
+        _check(
+            pg_re.search(quote) is not None,
+            f"relabeled pagination quote still matches the contract-structural signal: {quote!r}",
+        )
+        _check(
+            _MACHINE_SURFACE not in quote and _MACHINE_SURFACE not in surf,
+            f"vendor host absent from relabeled pagination evidence (surface {surf!r})",
+        )
+
+
+# ---------------------------------------------------------------------------
 # The FIRST signal-level companion in the digital_good bank (the four above all
 # live in metered_api): `output-license` (Cycle 98 — the deliverable-RIGHTS leg
 # of a digital good, in four host-free forms: a commercial-use licence
@@ -1822,6 +1945,7 @@ def main() -> int:
         test_offering_relabel_invariance_api_auth,
         test_offering_relabel_invariance_error_contract,
         test_offering_relabel_invariance_test_mode,
+        test_offering_relabel_invariance_pagination,
         test_offering_relabel_invariance_output_license,
         test_offering_surface_order_invariance_output_license,
         test_offering_surface_order_invariance_org,

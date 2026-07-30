@@ -1,13 +1,13 @@
 # Loop state
 
-- Cycle counter: 99
+- Cycle counter: 100
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-30T06:2xZ, Cycle 99; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-30T07:16Z, Cycle 100; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~30.5h old at the 06:2xZ fire; no newer :41 artifact through 05:41Z Jul-30 (31+ consecutive
+  Jul-28 = ~31.5h old at the 07:16Z fire; no newer :41 artifact through 06:41Z Jul-30 (32+ consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine → FLAGGED in the Cycle-86 16:00 UTC digest
   (the 16:12Z fire was the FIRST cycle after 16:00Z; the ~16.5h runner gap was flagged loudly there;
-  the Cycle-87 17:12Z through this Cycle-99 06:2xZ-Jul-30 fires are NOT the first-after-16:00 cycle
+  the Cycle-87 17:12Z through this Cycle-100 07:16Z-Jul-30 fires are NOT the first-after-16:00 cycle
   (the next first-after-16:00 is ~16:12Z Jul-30), so no re-digest — keep flagging in each daily
   digest until it clears); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
@@ -28,7 +28,39 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 100 READOUT — surfaced the `digital_good` deliverable-rights ("complete the job") leg in the
+  PUBLIC methodology prose, the READOUT complement CLOSING the deliverable-rights arc opened by Cycle 98
+  (COVERAGE — the `output-license` offering signal) and Cycle 99 (TRUTH — signal-level relabel-invariance).
+  Added ONE capability-worded, vendor-neutral paragraph to the methodology "What the score answers" card
+  (`_write_methodology_page`, `asrs/scorecard.py`), placed alongside the four metered_api offer-side legs
+  (payment-rail/auth/async-job/error-contract): ASRS reads whether a generation storefront grants usage
+  rights on its output (a commercial licence / royalty-free terms / stated usage rights / ownership —
+  "you own the output"), because an agent handed a render it has NO licence to USE has not completed the
+  commercial job. Preserves the signal's bare-`license` PRECISION note (a software/business/hosted-model
+  licence is no signal) and names the identity-relabel executable regression test that pins
+  vendor-neutrality. WHY (capability): the four metered_api "finish the job" legs each earned a prose
+  paragraph a critic can read (payment-rail 80/auth 88/async-job 84/error-contract 92); the digital-good
+  RIGHTS leg was pinned in code+tests (98/99) but never in reader-facing prose — a reader could not learn
+  WHY the digital-good archetype weighs deliverable rights, or that "obtain a render" is not the whole job.
+  SHIP CLASS: display-only + tests-only, off the scoring path → NOT peer-gated (same class as Cycle-96's
+  offering-relative-battery READOUT); git diff over scoring.py/rubric*/rubric/probes.py/protocols.py/
+  fetch.py/offering.py/battery.py/fixtures/batteries = EMPTY; git diff --name-only = asrs/scorecard.py +
+  tests/test_readout.py ONLY. Cloud bridge blocks direct main push → branch loop/output-license-methodology
+  + PR #49 + self-merge (squash 40b1ac4; NOT peer-gated). First duty: no open peer-gated PR ([] at fire
+  start); realigned main to origin/main 40b1ac4 after merge. EVIDENCE: new guard
+  `test_methodology_documents_output_license` (test_readout.py 51→52) pins the owning/use framing + "not
+  completed the commercial job", the vendor-neutral rights forms, the bare-`license` precision note, the
+  relabel-keyed "rights the offer grants, not who grants them" + executable regression test, the
+  diagnostic/off-scoring-path scope line, and vendor-neutrality (no drift-flight/driftflight on the page).
+  Full suite 22 files green (test_free_tier 11/11 after env-only `pip install eth-account`). Canonical PAIR
+  unchanged AND re-measured: replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. No
+  Slack (display+tests-only, moves no score; not sensitive-class; not the daily-digest cycle). RUNNER STILL
+  GAPPED (verify_20260728T234102Z 23:41Z ~31.5h old). Next METHOD — the output-license COVERAGE→TRUTH→READOUT
+  arc is now complete at all three layers (98/99/100), mirroring the four metered_api legs; candidate: a
+  fresh perturbation AXIS on the offering/battery path for the digital_good RIGHTS leg (a rights-signal
+  ORDER-invariance or count-stability guard), or extend the descriptor relabel family. A NEW archetype/signal
+  remains open COVERAGE; ACP/UCP/MPP + free-tier live-wiring stays [LOCAL].)
   (Cycle 99 TRUTH — pinned the Cycle-98 `digital_good` `output-license` signal as HOST/VENDOR
   relabel-invariant at the SIGNAL level: new guard `test_offering_relabel_invariance_output_license` in
   `tests/test_offering_canonical.py` (17→18), the FIRST extension of the signal-level relabel family

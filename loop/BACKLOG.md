@@ -532,17 +532,38 @@ design in-cloud, execute locally.
      push → branch loop/output-license-relabel-invariance + PR #47 + self-merge (squash c52f082). Canonical
      PAIR unchanged AND re-measured (replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss); full suite
      22 files green (test_free_tier 11/11 after env-only `pip install eth-account`). See LOG Cycle 99. -->
-- **Surface the digital_good `output-license` RIGHTS leg in the public methodology/rubric prose** (READOUT,
-  follow-up to Cycle 99, the READOUT complement CLOSING the deliverable-rights arc — Cycle 98 COVERAGE signal
-  + Cycle 99 TRUTH relabel guard + this READOUT). The signal + its vendor-neutrality are pinned in code +
-  tests but never surfaced in reader-facing prose a critic can read. Add ONE capability-worded,
-  vendor-neutral sentence to methodology/rubric prose (`_write_methodology_page` / rubric page, `asrs/scorecard.py`)
-  naming that ASRS reads whether a storefront grants usage rights on its generated output (a commercial
-  licence / royalty-free terms / ownership of the render) — the "complete the job" RIGHTS leg of the
-  digital-good archetype: an agent that receives a render it has no licence to USE has not completed the
-  commercial job. Pin with an executable readout-wording guard (`test_readout.py` / `test_rubric_wording.py`),
-  the way Cycle 96 surfaced the offering-relative battery. Display-only + tests-only, off scoring path,
-  score-neutral, NOT peer-gated. In-cloud doable.
+<!-- DONE 2026-07-30T07:16Z (Cycle 100, READOUT, branch+PR+self-merge, display-only + tests-only/
+     score-neutral): "Surface the digital_good `output-license` RIGHTS leg in the public methodology prose"
+     SHIPPED — the READOUT complement CLOSING the deliverable-rights arc (Cycle 98 COVERAGE signal + Cycle 99
+     TRUTH relabel guard + this READOUT). Added ONE capability-worded, vendor-neutral paragraph to the
+     methodology "What the score answers" card (`_write_methodology_page`, `asrs/scorecard.py`), placed
+     alongside the four metered_api offer-side legs (payment-rail/auth/async-job/error-contract): ASRS reads
+     whether a generation storefront grants usage rights on its output (a commercial licence / royalty-free
+     terms / stated usage rights / ownership — "you own the output"), because an agent handed a render it has
+     NO licence to USE has not completed the commercial job. Preserves the signal's bare-`license` PRECISION
+     note (a software/business/hosted-model licence is no signal) and names the identity-relabel executable
+     regression test that pins vendor-neutrality. New guard `test_methodology_documents_output_license`
+     (test_readout.py 51→52). Display+tests-only, off scoring path → NOT peer-gated: git diff over
+     scoring.py/rubric*/rubric/probes.py/protocols.py/fetch.py/offering.py/battery.py/fixtures/batteries
+     EMPTY; git diff --name-only = asrs/scorecard.py + tests/test_readout.py ONLY. Cloud bridge blocks direct
+     main push → branch loop/output-license-methodology + PR #49 + self-merge (squash 40b1ac4). Full suite 22
+     files green (test_free_tier 11/11 after env-only `pip install eth-account`); replay guard 24/24,
+     46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. See LOG Cycle 100. The output-license
+     COVERAGE→TRUTH→READOUT arc is now complete at all three layers (98/99/100), mirroring the four
+     metered_api legs. -->
+<!-- P1 FRONTIER (post-Cycle-100): the deliverable-rights (`output-license`) arc is closed at SIGNAL (98),
+     TRUTH-relabel (99) and READOUT (100). Next METHOD candidate is a fresh perturbation AXIS on the
+     offering/battery path for the digital_good RIGHTS leg (a rights-signal ORDER-invariance or
+     count-stability guard, the digital_good analog of the metered_api signal families), OR a NEW
+     archetype/signal (COVERAGE). Not yet a firm backlog item; promote when a concrete gap is identified. -->
+- **[LOCAL] Cross-validate the `output-license` READOUT + signal on a REAL captured fixture** (TRUTH/METHOD,
+  optional hardening, follow-up to Cycles 98–100). The signal + descriptor + methodology prose are all pinned
+  in-cloud against the committed canonical fixtures + synthetic surfaces. For parity with the negative
+  calibration anchor, capture a fresh generation storefront whose surfaces grant explicit usage rights on
+  their output (`asrs.cli score <domain> --record-fixture fixtures/canonical/<domain>.json`, LIVE → [LOCAL]),
+  and confirm on a THIRD independent crawl that `output-license` fires with a real deliverable-rights quote
+  and that the digital_good task is derived + rights-surfaced end-to-end. Off scoring path, score-neutral.
+  Low priority — the in-cloud guards already exercise the full path; this adds real-crawl substrate.
 - **[LOCAL] Extend descriptor relabel-invariance to a REAL captured fixture** (METHOD, follow-up to Cycle 97,
   optional hardening). Cycle 97 pins descriptor relabel-invariance through a SYNTHETIC surface in
   `test_battery_instantiate.py` (no network). For parity with the signal-level guards — which replay the

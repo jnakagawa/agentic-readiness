@@ -8962,3 +8962,75 @@ covered; the next order/count-stability axes for other digital_good signals
 archetype/signal is the open COVERAGE frontier. All published self-description surfaces are
 read; the remaining COVERAGE frontier is a new archetype/signal or [LOCAL] free-tier
 live-wiring (ACP/UCP/MPP handshakes).
+
+## Cycle 102 — 2026-07-30T09:24Z — COVERAGE (branch+PR+self-merge, score-neutral)
+
+**What.** Added a `test-mode` signal to the `metered_api` bank in
+`asrs/offering.py` — an API **sandbox / test-key / dry-run** facility. An agent
+that can obtain a test/sandbox credential validates its whole integration and
+dry-runs a call at ZERO cost (no real charge, no quota use) before it ever
+authorizes a real charge. NEW COVERAGE frontier after the output-license arc
+closed (Cycles 98–101): the first new metered_api capability signal since
+error-contract.
+
+**Why (capability lens).** Distinct from every existing metered_api signal:
+`api-auth` = how you PRESENT credentials, `rate-limited` = how fast you may call,
+`async-job` = how results return, `error-contract` = how you recover. NONE said
+whether an agent can TRY the call safely first. A metered API that offers a
+sandbox is more agent-completable — the "provision + complete the job safely,
+without a human" capability, aligned with ASRS's own $0-only ethos.
+
+**Precision (vendor-neutral, non-vacuous).** Never matches bare `sandbox`/`test`
+— a demonstrated false-positive minefield: books.toscrape.com's page TITLE reads
+"Books to Scrape - Sandbox" (a demo-site name, not an API sandbox), where a bare
+`\bsandbox\b` fires 3×. The anchored signal requires a named testing facility
+(sandbox mode/environment/api/key/token/credentials/url/access), a `test mode` /
+`test api key` / `test credentials`, an explicit `dry-run`, or the
+`<prefix>_test_`/`_sandbox_` key convention with a masked ellipsis `...` or a
+digit-bearing stub (so `df_test_...` fires but `unit_test_runner` — no digit, no
+ellipsis — does not). Validated against ALL 5 committed fixtures: fires once on
+BOTH canonical `/docs` (`df_live_... (production) or df_test_... (sandbox:
+watermarked output, no quota use)`), ZERO on api.replicate.com / books.toscrape /
+example.com.
+
+**Ship class.** `discover_offering` is OFF the scoring path (not imported by
+scoring.py/probes.py/protocols.py/fetch.py — grep-verified empty diff). Both
+canonical domains ALREADY claim metered_api, so the new signal only deepens
+evidence → score-neutral, NOT peer-gated (same class as Cycle-98's output-license
+COVERAGE signal). Cloud bridge blocks direct main push → branch
+`loop/test-mode-signal` + PR #53 + self-merge (squash 4da5024). SECRET-SCANNING:
+the initial branch push was declined — my synthetic Stripe-style example key
+`sk_test_…` tripped GitHub push protection; replaced with a neutral non-vendor
+`kv_test_a1b2c3d4e5f6g7h8` (still exercises the key-prefix regex) and amended the
+UNPUBLISHED commit (invariant #5 concerns published commits) — did NOT bypass the
+scanner.
+
+**Evidence.** Tests +3: `test_offering.py`
+`test_test_mode_metering_precision_synthetic` (11 positives / 7 traps incl.
+sandboxed-iframe, sandbox-game, `unit_test_runner`, test-drive, "test the waters")
++ `test_test_mode_fires_on_real_captured_api_docs` (real `/docs` non-vacuity);
+`test_offering_canonical.py` `test_retail_sandbox_title_does_not_trip_test_mode`
+(teeth guard — the bare-"Sandbox" title stays NA; a bare anchor WOULD fire).
+`test_offering` 38→40, `test_offering_canonical` 19→20. Full suite 22/22 files
+green (test_free_tier 11/11 after env-only `pip install eth-account`).
+
+**Canonical pair (regression signal).** Claimed SET+ORDER byte-identical:
+`['metered_api','digital_good','subscription']` on BOTH; test-mode fires on both.
+Replay guard 24/24 — **46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7.
+
+**Infra.** First duty: no open peer-gated PR ([] at fire start). RUNNER STILL
+GAPPED — newest `runs/local/verify_20260728T234102Z.json` (23:41Z Jul-28) is
+~33.5h old at this fire; cloud cannot repair the local machine (queued P0
+[LOCAL], flagged in the Cycle-86 digest; keep flagging in each daily digest). The
+in-cloud replay guard remains the live regression signal INDEPENDENT of the
+runner. Environment needed a venv + `pip install -r requirements.txt`
+(eth-account) — environment-only, nothing to commit.
+
+**Next hypothesis.** METHOD next (rotate COVERAGE → TRUTH → READOUT → METHOD).
+Candidate: pin the new `test-mode` signal as HOST/VENDOR relabel-invariant at the
+signal level (the TRUTH mirror of Cycle 99's output-license guard — the key-prefix
+`df_test_` embeds the host stem, so a whole-fixture relabel must preserve the fired
+count/surfaces), OR a surface-read-ORDER-invariance guard for it. A NEW
+archetype/signal remains open COVERAGE; ACP/UCP/MPP + free-tier live-wiring stays
+[LOCAL]. No Slack (score-neutral, off scoring path; not sensitive-class; not the
+first-after-16:00 digest cycle).

@@ -495,17 +495,24 @@ design in-cloud, execute locally.
 
 ## P1
 
-- **digital_good DESCRIPTOR shares the singular-media-noun assumption the generate-media SIGNAL just shed**
-  (TRUTH/METHOD, cloud-doable, follow-up to Cycle 94). Cycle 94 broadened the `generate-media` signal in
-  `asrs/offering.py` to recognise inflected/plural media forms ("we generate videos", "generating images",
-  the canonical `Generated images"). But `asrs/battery._digital_good_descriptor` still derives the
-  intent's `{descriptor}` slot via `_MEDIA_RE = \b(image|video|audio|art)\b` — SINGULAR nouns only — so a
-  claim whose ONLY fired media quote is plural ("Generated images") falls back to the generic "digital
-  output" instead of "generated image". A generation storefront that never uses the singular noun gets a
-  vaguer battery task than it should. Candidate TRUTH increment: extend `_MEDIA_RE` to the plural (`s?`)
-  and add an inflection/plural guard proving the descriptor recovers "generated <noun>" from a plural-only
-  quote. Score-neutral (descriptor is off the scoring path, `--battery auto` only); non-vacuous on the
-  canonical `/docs` "Generated images". Keeps the generate-media SIGNAL and its DESCRIPTOR consistent.
+<!-- DONE 2026-07-30T02:17Z (Cycle 95, TRUTH, branch+PR+self-merge, descriptor-only/score-neutral):
+     "digital_good DESCRIPTOR shares the singular-media-noun assumption" CLOSED. Extended
+     `asrs/battery._MEDIA_RE` from `\b(image|video|audio|art)\b` to `\b(image|video|audio|art)s?\b` (the
+     `s?` OUTSIDE the capture group, so plural forms match while `group(1)` still yields the singular word).
+     A digital_good claim whose ONLY fired media quote is plural (the canonical `/docs` "Generated images",
+     "we generate videos") now yields "generated image" instead of the generic "digital output" fallback —
+     descriptor and the Cycle-94 generate-media SIGNAL now share the same plural/participle awareness.
+     Score-neutral: git diff --stat over scoring.py/rubric*/probes*/offering.py/fixtures/batteries EMPTY →
+     rubric v0.7 (descriptor off the scoring path, `--battery auto` only); replay guard 24/24, 46.1 F /
+     85.5 B / +39.4 (canonical descriptor already "generated image" via its singular quote → unchanged on
+     the pair). test_battery_instantiate 8→9 (non-vacuous: real `/docs` "Generated images" recovers
+     "generated image", pre-fix singular-only pattern proven not to match "images"; plural of each media
+     noun; precision negative for plural non-media nouns; singular pinned). PR #39 (squash ceedf2d). See LOG
+     Cycle 95. NOTE: the generate-media plural/participle arc is now closed at BOTH signal (Cycle 94) and
+     descriptor (Cycle 95) layers; the READOUT complement (surface in methodology prose that the
+     digital_good task is derived from the site's own discovered, singular/plural-normalised media language)
+     is a Cycle-95 "Next READOUT" candidate, not yet a backlog item. -->
+
 
 <!-- DONE 2026-07-30T01:12Z (Cycle 94, COVERAGE, branch+PR+self-merge, discovery-only/score-neutral):
      generate-media plural/participle RECALL GAP closed. Broadened the digital_good generate-media signal

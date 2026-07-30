@@ -1,10 +1,10 @@
 # Loop state
 
-- Cycle counter: 94
+- Cycle counter: 95
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-30T01:12Z, Cycle 94; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-30T02:17Z, Cycle 95; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~25h31m old at the 01:12Z fire; no newer :41 artifact through 00:41Z Jul-30 (26+ consecutive
+  Jul-28 = ~26h36m old at the 02:17Z fire; no newer :41 artifact through 01:41Z Jul-30 (27+ consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine → FLAGGED in the Cycle-86 16:00 UTC digest
   (the 16:12Z fire was the FIRST cycle after 16:00Z; the ~16.5h runner gap was flagged loudly there;
   the Cycle-87 17:12Z through this Cycle-93 00:12Z-Jul-30 fires are NOT the first-after-16:00 cycle
@@ -28,7 +28,40 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 95 TRUTH — made the `digital_good` battery DESCRIPTOR recover PLURAL/participle media nouns
+  (`asrs/battery._MEDIA_RE` / `_digital_good_descriptor`), the descriptor half of the Cycle-94
+  generate-media SIGNAL recall fix. `_MEDIA_RE` matched only the SINGULAR noun
+  (`\b(image|video|audio|art)\b`), so `_digital_good_descriptor` fell back to the generic "digital output"
+  for a claim whose ONLY fired media quote was plural — the canonical `/docs` "Generated images", or "we
+  generate videos" — even though the Cycle-94 signal had already fired on that plural surface. Added a
+  trailing `s?` OUTSIDE the capture group: plural forms match while `group(1)` still yields the singular
+  word, so the descriptor normalises to "generated image" whether the fired quote is singular or plural —
+  descriptor and signal now share the same plural/participle awareness. WHY (capability): the battery task
+  is the site's offering worded back as an agent job; a generation storefront describing its output only in
+  the plural got a vaguer task ("obtain one digital output") than one using the singular ("generated
+  image") — a descriptor/signal inconsistency, not a real offering difference. SCORE-NEUTRAL by construction
+  AND VERIFIED: git diff --stat over scoring.py/rubric*/probes*/protocols.py/fetch.py/offering.py/fixtures/
+  batteries/rubric/ = EMPTY → scoring path byte-for-byte untouched → rubric v0.7 (descriptor off the scoring
+  path, `--battery auto` task text only) → NOT peer-gated; git diff --name-only = battery.py +
+  test_battery_instantiate.py ONLY. NON-VACUOUS: test_battery_instantiate 8→9 —
+  `test_digital_good_descriptor_recovers_plural_media` (real canonical `/docs` "Generated images" recovers
+  "generated image", AND the pre-fix singular-only pattern asserted NOT to match "images" = the gap was real
+  / the test fails against old code; plural of each media noun videos/images/arts → singular descriptor;
+  precision negative — a plural NON-media noun "reports"/"outputs" → "digital output" fallback; singular
+  pinned unchanged). Canonical PAIR unchanged AND re-measured (replay guard 24/24, 46.1 F / 85.5 B / +39.4,
+  0 replay-miss — the canonical descriptor was already "generated image" via its singular quote, so this
+  fix changes nothing on the pair, it helps plural-ONLY storefronts); full suite 22 files green
+  (test_free_tier 11/11 with eth-account). Cloud bridge blocks direct main push → branch
+  loop/descriptor-plural-media + PR #39 + self-merge (squash ceedf2d; NOT peer-gated). First duty: no open
+  peer-gated PR ([]); realigned main to origin/main ceedf2d after merge. No Slack (score-neutral, moves no
+  score; this 02:17Z-Jul-30 fire is after the Cycle-86 16:12Z daily digest, so not the first-after-16:00
+  cycle). RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z ~26.5h old). The generate-media plural/
+  participle arc is now closed at BOTH the SIGNAL (Cycle 94) and the DESCRIPTOR (Cycle 95) layers. Next
+  READOUT — candidate: surface in the public methodology/offering prose that the digital_good task is
+  derived from the site's OWN discovered media language (vendor-neutral, singular/plural-normalised) — the
+  reader-facing statement of why the derived task says "generated image"; or the recurring per-segment
+  leaderboard summary once the [LOCAL] calibration population grows.)
   (Cycle 94 COVERAGE — broadened the `digital_good` GENERATE-MEDIA signal (`asrs/offering.py`) from the
   singular-imperative form only (`generate an image`) to ALL verb inflections (generate/generates/
   generated/generating), the PLURAL media noun (`generate videos`, the canonical pair's `Generated

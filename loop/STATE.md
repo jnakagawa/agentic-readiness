@@ -1,13 +1,13 @@
 # Loop state
 
-- Cycle counter: 95
+- Cycle counter: 96
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-30T02:17Z, Cycle 95; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-30T03:11Z, Cycle 96; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~26h36m old at the 02:17Z fire; no newer :41 artifact through 01:41Z Jul-30 (27+ consecutive
+  Jul-28 = ~27h30m old at the 03:11Z fire; no newer :41 artifact through 02:41Z Jul-30 (28+ consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine → FLAGGED in the Cycle-86 16:00 UTC digest
   (the 16:12Z fire was the FIRST cycle after 16:00Z; the ~16.5h runner gap was flagged loudly there;
-  the Cycle-87 17:12Z through this Cycle-93 00:12Z-Jul-30 fires are NOT the first-after-16:00 cycle
+  the Cycle-87 17:12Z through this Cycle-96 03:11Z-Jul-30 fires are NOT the first-after-16:00 cycle
   (the next first-after-16:00 is ~16:12Z Jul-30), so no re-digest — keep flagging in each daily
   digest until it clears); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
@@ -28,7 +28,46 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 96 READOUT — surfaced the OFFERING-RELATIVE task battery in the PUBLIC methodology prose, the
+  READOUT complement CLOSING the generate-media plural/participle arc (Cycle 94 COVERAGE signal + Cycle 95
+  TRUTH descriptor + this READOUT). Added ONE capability-worded, vendor-neutral paragraph to methodology
+  section 6 ("The behavioral panels & refusal semantics", `_write_methodology_page`, `asrs/scorecard.py`),
+  right after the shopper/trust-panel paragraph so the "buying directive" is immediately qualified: the
+  directives are OFFERING-RELATIVE not a fixed script — ASRS reads what the storefront CLAIMS to sell from
+  its own surfaces and gives the agent one task per capability it offers, an unadvertised archetype is
+  never probed (a low number is never a task the storefront was never built to answer — attribution honesty
+  applied to tasks); the task is worded in the SITE'S OWN terms, a digital-good task says "obtain one
+  generated image" only because the site's own surfaces describe a generated image (the media noun comes
+  from the site, not ASRS); that noun is derived ONLY from ASRS's own vendor-neutral media vocabulary
+  (image/video/audio/art, or the "digital output" fallback) matched to the site's surfaces, NEVER by pasting
+  arbitrary site prose into the directive (injection-safe, names no vendor product); recognition is
+  FORM-NORMALIZED (image / images / generating images → the SAME singular task noun, so two storefronts
+  offering the same capability get the same task regardless of phrasing) and pinned by an executable
+  regression test; honestly scoped as DIAGNOSTIC, off the scoring path, not a scored pillar. WHY: the
+  offering-relative battery + singular/plural/inflection-normalised descriptor were pinned in code + tests
+  (Cycles 94/95) but never surfaced in prose a critic can read — the reader-facing statement of WHY a
+  derived task says "generated image" and that the wording comes from the site not ASRS. Display-only +
+  tests-only, off scoring path → rubric v0.7 → NOT peer-gated: git diff --stat over scoring.py/rubric*/
+  rubric/probes.py/protocols.py/fetch.py/offering.py/battery.py/fixtures/batteries = EMPTY → scoring path
+  byte-for-byte untouched; git diff --name-only = scorecard.py + test_readout.py ONLY. NON-VACUOUS: new
+  guard `test_methodology_documents_offering_relative_battery` (test_readout 50→51), registered in main()
+  (no pytest auto-discovery in-cloud), asserts the offering-relative framing + "claims to sell" / "worded in
+  the site" / "never built to answer" / "generated image" / "injection-safe" / "form-normalized" / the
+  media-vocab tokens (image/video/audio/art/digital output) + form-normalization exemplars (images,
+  generating images) / "executable regression test" / honest off-scoring-path+diagnostic scope, and the
+  vendor-neutral denylist. Readout wording 4/4 + rubric wording 4/4 (rendered methodology + card
+  vendor-neutral). Canonical PAIR unchanged AND re-measured (replay guard 24/24, 46.1 F / 85.5 B / +39.4,
+  0 replay-miss). Full suite 22 files green (test_free_tier 11/11 with eth-account). Cloud bridge blocks
+  direct main push → branch loop/offering-relative-battery-readout + PR #41 + self-merge (squash 4f269ed;
+  NOT peer-gated). First duty: no open peer-gated PR ([]); realigned main to origin/main 4f269ed after merge.
+  No Slack (display-only, moves no score; this 03:11Z-Jul-30 fire is after the Cycle-86 16:12Z daily digest,
+  so not the first-after-16:00 cycle). RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z ~27.5h old). The
+  generate-media plural/participle arc is now closed at ALL THREE layers: SIGNAL (Cycle 94), DESCRIPTOR
+  (Cycle 95), READOUT (Cycle 96). Next METHOD — candidate: pin that the digital_good DESCRIPTOR derivation
+  is itself relabel/identity-invariant (the media noun keys on the vocabulary a site uses, not the host), or
+  a fresh perturbation AXIS (label/scale) now the order-invariance family is complete across all five
+  measurement surfaces; in-cloud COVERAGE frontier for metered_api signals is well-covered.)
   (Cycle 95 TRUTH — made the `digital_good` battery DESCRIPTOR recover PLURAL/participle media nouns
   (`asrs/battery._MEDIA_RE` / `_digital_good_descriptor`), the descriptor half of the Cycle-94
   generate-media SIGNAL recall fix. `_MEDIA_RE` matched only the SINGULAR noun

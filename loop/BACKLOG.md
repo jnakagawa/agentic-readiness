@@ -613,6 +613,23 @@ design in-cloud, execute locally.
      three-fold and pair-symmetric, so COVERAGE (a new archetype/signal) now outranks another offering-path
      METHOD mirror. ACP/UCP/MPP + free-tier live-wiring stays [LOCAL]. -->
 
+- **[TRUTH] Pin the new `cancel-job` metered_api signal as RELABEL-INVARIANT** (follow-up to Cycle 110, the
+  SEVENTH metered_api signal-level relabel guard, after payment-rail 79 / async-job 83 / api-auth 87 /
+  error-contract 91 / test-mode 103 / pagination 107). Cycle 110 added `cancel-job` (a job `.../cancel`
+  endpoint / `Cancel-After` deadline header / `canceled` job state — the "abort a long job to bound your
+  spend" capability), COVERAGE only. The natural TRUTH leg mirrors the async-job guard exactly (a
+  close structural twin — both fire on `api.replicate.com`'s `/openapi.json` with HOST-FREE contract
+  vocabulary): add `test_offering_relabel_invariance_cancel_job` to `tests/test_offering_canonical.py`
+  — SURFACE-PRESENCE non-vacuity anchored at the fixture level (the host IS present in the fixture surfaces
+  the classifier fetches), asserting under `api.replicate.com`→`vendor-neutral.test` relabel the signal
+  fires the SAME count, on the SAME host-normalized surface, each quote STILL matching the live cancel-job
+  regex, vendor host absent. WHY: how an agent cancels a running job is a property of the API CONTRACT a
+  storefront documents (a cancel endpoint / a deadline header / a canceled state), never of WHO published
+  it → identity-invariant; makes the Cycle-110 vendor-neutrality claim an executable tripwire. Tests-only,
+  off the scoring path → score-neutral, NOT peer-gated. Then a READOUT leg (surface the "abort a runaway
+  job to bound your spend" capability in the public methodology prose) completes the cancel-job arc
+  (COVERAGE 110 → TRUTH → READOUT), mirroring the six prior full metered_api arcs.
+
 <!-- DONE 2026-07-30T06:2xZ (Cycle 99, TRUTH, branch+PR+self-merge, tests-only/score-neutral): "Pin the
      new `output-license` digital_good signal as HOST/VENDOR relabel-invariant" SHIPPED. New guard
      `test_offering_relabel_invariance_output_license` in `tests/test_offering_canonical.py` (17→18) — the

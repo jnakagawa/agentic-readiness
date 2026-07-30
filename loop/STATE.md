@@ -1,15 +1,14 @@
 # Loop state
 
-- Cycle counter: 109
+- Cycle counter: 110
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-30T16:12Z, Cycle 109; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-30T~17:1xZ, Cycle 110; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~40.5h old at the 16:12Z fire; no newer :41 artifact through 15:41Z Jul-30 (40+ consecutive
-  :41 fires gapped). Cloud CANNOT repair the local machine → RE-FLAGGED in the Cycle-109 16:12Z digest
-  (this fire is the FIRST cycle after 16:00Z on Jul-30 — the still-open gap was re-flagged loudly in
-  Slack). The NEXT first-after-16:00 fire (~16:1xZ Jul-31) is the next re-flag point; Cycle-110 onward
-  (17:xxZ Jul-30 … 15:xxZ Jul-31) are NOT first-after-16:00 → no re-digest, but keep noting the gap each
-  fire until it clears; queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
+  Jul-28 = ~41.5h old at the Cycle-110 fire; no newer :41 artifact through 16:41Z Jul-30 (41+ consecutive
+  :41 fires gapped). Cloud CANNOT repair the local machine. The gap was RE-FLAGGED loudly in the Cycle-109
+  16:12Z digest (the first cycle after 16:00Z on Jul-30). The NEXT first-after-16:00 fire (~16:1xZ Jul-31)
+  is the next re-flag point; Cycle-110 onward (17:xxZ Jul-30 … 15:xxZ Jul-31) are NOT first-after-16:00 →
+  no re-digest, but keep noting the gap each fire until it clears; queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
   is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
   local fire root-caused (a >60s slow-network wake still misses the 5×15s retry) OR the machine is
@@ -28,7 +27,39 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 110 COVERAGE — added a `cancel-job` signal to the `metered_api` bank in `asrs/offering.py`: how
+  an agent ABORTS a long-running job it already submitted — a `.../cancel` endpoint on the job resource, a
+  `Cancel-After` deadline header, or a documented `canceled` job state. First NEW metered_api signal since
+  pagination (Cycle 106). WHY (capability): the "complete the job" CONTROL + capital-safety leg for a
+  metered API whose work runs long (image/video generation, a training run, a batch inference job) — an
+  agent that detects a runaway/wrong generation and CANNOT cancel it keeps paying for compute it no longer
+  needs, so a metered API that documents a cancel contract lets the agent BOUND its own spend (the same
+  $0-only capital-safety ethos ASRS itself holds) and is MORE agent-completable. Distinct from every
+  existing metered_api signal — `async-job` is how ONE long job's result comes BACK (webhook/poll),
+  `error-contract` how a FAILED call recovers, `rate-limited` how fast you may call, `pagination` how a
+  paged collection is walked; NONE said how an agent STOPS a job it started. Vendor-neutral open REST
+  conventions (a cancel endpoint on a job resource, a `Cancel-After` header, a `canceled` job state),
+  never a vendor. PRECISION: never a bare `cancel` (cancel a SUBSCRIPTION/ORDER/BOOKING, a cancellation
+  POLICY, a cancelled flight, "cancel culture" all dodged) — require the `Cancel-After` header, a `cancel`
+  verb naming an async-JOB noun, or a `.../cancel` endpoint path on a job resource; 8 negatives + 7
+  positives. SHIP CLASS: off the scoring path (`scoring.py` does not import `offering` — grep-verified;
+  only `battery.py`/`cli.py` use it for `--battery auto` task selection) → score-neutral, NOT peer-gated.
+  git diff over `asrs/scoring.py rubric/ fixtures/` EMPTY; git diff --name-only = `asrs/offering.py` +
+  `tests/test_offering.py`. Cloud bridge blocks direct main push → branch loop/cancel-job-metered-signal +
+  PR #69 + self-merge (squash 41dc6e7). First duty: no open peer-gated PR ([] at fire start); realigned
+  main to origin/main after merge. Fires non-vacuously on the real captured `api.replicate.com`
+  `/openapi.json` (`Cancel-After` header + `predictions/{id}/cancel` endpoint + `canceled` state) and on
+  ZERO of the canonical-pair / retail / null fixtures (claimed SETS byte-identical across all 5 fixtures
+  with/without the signal). test_offering.py 44→46; full suite green (22 files; test_free_tier 11/11 after
+  `pip install eth-account`, environment-only); offering canonical guard 25/25. Canonical PAIR unchanged
+  AND re-measured: replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. No Slack
+  (score-neutral, off scoring path; not sensitive-class; not the first-after-16:00 digest cycle — that was
+  Cycle 109 at 16:12Z). RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z ~41.5h old). Next TRUTH — pin
+  cancel-job as RELABEL-INVARIANT (the 7th metered_api signal-level relabel guard, after payment-rail 79 /
+  async-job 83 / api-auth 87 / error-contract 91 / test-mode 103 / pagination 107), a close mirror of the
+  async-job guard; then a READOUT leg to complete the cancel-job arc. A NEW archetype/signal remains open
+  COVERAGE; ACP/UCP/MPP + free-tier live-wiring stays [LOCAL].)
   (Cycle 109 METHOD — pinned the offering classifier as CONTENT-SCALE-INVARIANT on the canonical pair,
   a genuinely NEW perturbation axis distinct from surface-read ORDER and host RELABEL. New
   `_assert_content_scale_invariance(domain, expected)` in `tests/test_offering_canonical.py` duplicates

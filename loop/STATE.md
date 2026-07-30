@@ -50,7 +50,7 @@
   CLASS: display (methodology render) + tests-only, off the scoring path → NOT peer-gated (same class
   as Cycle-100 output-license READOUT); git diff --name-only = asrs/scorecard.py + tests/test_readout.py
   ONLY, scoring-path diff EMPTY. Cloud bridge blocks direct main push → branch
-  loop/test-mode-methodology-prose + PR #NN + self-merge (squash <sha>). First duty: no open
+  loop/test-mode-methodology-prose + PR #57 + self-merge (squash 9bd0cbf). First duty: no open
   peer-gated PR ([] at fire start). Full suite green (all tests/test_*.py pass; test_free_tier 11/11).
   Canonical PAIR unchanged AND re-measured: replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss;
   rubric v0.7. No Slack (score-neutral, off scoring path; not sensitive-class; not the first-after-16:00

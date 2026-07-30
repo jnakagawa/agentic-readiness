@@ -1,13 +1,13 @@
 # Loop state
 
-- Cycle counter: 113
+- Cycle counter: 114
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-30T~18:3xZ, Cycle 113; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-30T~18:5xZ, Cycle 114; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~42.8h old at the Cycle-113 fire; no newer :41 artifact through 18:41Z Jul-30 (43+ consecutive
+  Jul-28 = ~43h old at the Cycle-114 fire; no newer :41 artifact through 18:41Z Jul-30 (43+ consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine. The gap was RE-FLAGGED loudly in the Cycle-109
   16:12Z digest (the first cycle after 16:00Z on Jul-30). The NEXT first-after-16:00 fire (~16:1xZ Jul-31)
-  is the next re-flag point; Cycle-110/111/112/113 onward (17:xxZ Jul-30 … 15:xxZ Jul-31) are NOT first-after-16:00 →
+  is the next re-flag point; Cycle-110/111/112/113/114 onward (17:xxZ Jul-30 … 15:xxZ Jul-31) are NOT first-after-16:00 →
   no re-digest, but keep noting the gap each fire until it clears; queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
   is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
@@ -27,7 +27,42 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 114 COVERAGE — added a `free-trial` signal to the `subscription` bank in `asrs/offering.py`: a
+  no-cost evaluation of a recurring offer BEFORE billing begins (a free trial / trial period / trial
+  account/allowance/membership / N-day trial / start-or-try-free offer). The FIRST new subscription signal
+  since `seat-licensing`, and the subscription-archetype MIRROR of metered_api's `test-mode`: an agent can
+  EVALUATE the recurring offer at $0 before committing to billing (the "provision the offer safely, without
+  a human" capability, aligned with ASRS's $0-only ethos). WHY this archetype: STATE's Cycle-114 pointer
+  directed COVERAGE to strengthen the thinly-signalled archetypes (subscription/service_booking/data_retrieval
+  = 6/5/5 legs vs metered_api's ~19); only `subscription` is CLAIMED by a committed fixture (the canonical
+  pair), so it is the one strengthenable with in-cloud non-vacuous verification (service_booking /
+  data_retrieval need a [LOCAL] fixture that claims them — queued P?/[LOCAL]). Distinct from every existing
+  subscription signal (`subscription`/`recurring` = a plan EXISTS, `per-month`/`per-month-price`/
+  `annual-billing` = cadence, `seat-licensing` = per-user basis; NONE said whether you can evaluate the plan
+  at no cost first). PRECISION: NEVER a bare `trial` (clinical/court trial, "trial and error", "trial by
+  fire", "on trial") — require a FREE trial, a trial PERIOD/ACCOUNT/ALLOWANCE/MEMBERSHIP, an N-DAY trial, or
+  a START/TRY-FREE offer; 8 negatives (incl. "free shipping"/"free image"/"free allowance") + 10 positives.
+  SHIP CLASS: COVERAGE, off the scoring path (`scoring.py` does not import `offering` — grep-verified 0 refs)
+  → score-neutral, NOT peer-gated. git diff over `asrs/scoring.py rubric/ fixtures/` EMPTY; git diff
+  --name-only = `asrs/offering.py` + `tests/test_offering.py`. Cloud bridge blocks direct main push → branch
+  loop/free-trial-subscription-signal + PR #77 + self-merge (squash 2092c61). First duty: no open peer-gated
+  PR ([] at fire start); realigned main to origin/main after merge, deleted local branch. EVIDENCE: fires
+  non-vacuously on driftflight.com's real "free trial allowance, so an agent can evaluate it before any
+  payment" homepage/llms.txt/pricing prose (subscription strength 4→5, still LAST; claimed SET + ORDER
+  byte-unchanged: metered_api 16 > digital_good 6 > subscription 5) and on ZERO sites not already claiming
+  subscription (api.replicate.com / books.toscrape.com / example.com / the trial-free drift-flight.org which
+  stays strength 4) → can never CONJURE a subscription claim. offering canonical guard 28/28; test_offering.py
+  44→46. Full suite green (22 files; test_free_tier 11/11 after `pip install eth-account`, environment-only).
+  Canonical PAIR unchanged AND re-measured: replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss;
+  rubric v0.7. No Slack (score-neutral, off scoring path; not sensitive-class; not the first-after-16:00
+  digest cycle — that was Cycle 109 at 16:12Z). RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z, ~43h
+  old). Next TRUTH — pin `free-trial` as RELABEL-INVARIANT (the subscription-bank analog of the metered_api
+  signal-level relabel family: host-in-trial-evidence → relabel → identity-invariant (label, surface) map),
+  extending the relabel family to a SECOND archetype; then a READOUT leg to complete the free-trial arc
+  (COVERAGE 114 → TRUTH → READOUT) surfacing "evaluate a subscription at $0 before committing" in the public
+  methodology prose. service_booking / data_retrieval signal work stays [LOCAL] (needs a claiming fixture);
+  ACP/UCP/MPP + free-tier live-wiring stays [LOCAL].)
   (Cycle 113 METHOD — added the FOURTH metamorphic axis on the offering classifier, pair-symmetric on the
   canonical pair: NOISE-SURFACE INVARIANCE. Adding a NEW readable surface that carries no capability signal
   (a cookie/privacy notice, careers blurb, legal footer, metaphorical-"ship" marketing prose) must leave the

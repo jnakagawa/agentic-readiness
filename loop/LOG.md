@@ -8320,3 +8320,66 @@ api-auth, error-contract) now each have the full COVERAGE→TRUTH→READOUT arc 
 so the next COVERAGE frontier is a NEW archetype/signal (the in-cloud metered_api
 signal bank is well-covered) or a per-segment leaderboard summary once the [LOCAL]
 calibration population grows.
+
+## Cycle 93 — 2026-07-30T00:12Z — METHOD (branch+PR+self-merge)
+
+**What.** Pinned TRIAL-ORDER INVARIANCE of `asrs.reliability.panel_reliability`
+— the within-panel reproducibility metric whose `verdict_stability` gates the
+CITABLE-vs-PROVISIONAL quotability verdict. New
+`test_panel_reliability_is_trial_order_invariant` (`tests/test_reliability.py`
+8→9 tests) builds a 6-run panel (4 valid + an interleaved env-blocked + failed
+run) constructed so `verdict_stability` is a genuine interior value (0.7, mixed
+band: found_purchase_path 3/4 + machine_payable_path 2/2 flip; the rest
+unanimous) with a split trust signal (0.75, not unanimous), then runs it under
+FOUR deterministic arrival orders (identity / reverse / two rotations) and
+asserts the whole `PanelReliability.to_dict()` is byte-identical across all of
+them — verdict_stability, flip_rate, flipped_checkpoints (list + ladder order),
+trust_event_agreement/unanimity, valid_runs, single_trial, label, AND every
+per_checkpoint row (checkpoint / n / pass_count / agreement / unanimous),
+recursively.
+
+**Why.** METHOD rigor. The presentation-order invariance family already covers
+the battery aggregation (Cycle 73), the leaderboard ranking (Cycle 77), offering
+classification (Cycle 81), and the scorer's multi-cap accumulation (Cycle 85) —
+but never the reliability layer, which is the load-bearing one: a reproducibility
+number is a property of WHAT the valid runs observed, never of the ORDER the
+shopper enumerated its model×trial draws in, and a latent order-dependence here
+would silently corrupt "is this headline safe to cite?". Order-invariant by
+construction today (every metric is a COUNT over the valid runs; the per-checkpoint
+rows follow the fixed `_CHECKPOINT_KEYS` ladder, not run order) — this catches a
+future refactor that leaks run-order into a count, a selection, or a row.
+
+**Non-vacuous + teeth.** (a) valid_runs==4 proves the interleaved excluded runs
+were dropped — the valid-run SELECTION is exercised for order-independence too
+(invariant #4: which draws count must not depend on their position); (b) the
+permutation genuinely reorders the valid runs, checked at the exact selection
+layer (`R._valid_runs`); (c) verdict_stability asserted strictly inside (0,1)
+with a real mix of flipped + unanimous checkpoints. Teeth VERIFIED by injection:
+an order-dependent selection bug (`_valid_runs()[-3:]`) is caught by clause (a);
+a metric that leaks the first-run identity is caught by clause (c). A pure
+rotation of the valid multiset is (correctly) NOT flagged — it preserves every
+count, which is exactly the invariant.
+
+**Scope.** `tests/test_reliability.py` ONLY (module docstring + 1 test + main()
+registration — no pytest auto-discovery in-cloud). `git status` = one file;
+`git diff --stat -- asrs/ rubric/ fixtures/ batteries/ probes/` EMPTY → scoring
+path byte-for-byte untouched → rubric v0.7. Tests-only, off scoring path, pins
+existing behaviour → NOT peer-gated.
+
+**Evidence.** `tests/test_reliability.py` 9/9. Full suite 22 files green
+(test_free_tier 11/11 with eth-account in .venv). Canonical replay guard 24/24.
+
+**Canonical pair (regression signal).** Unchanged AND re-measured via the
+in-cloud replay guard: 46.1 F / 85.5 B / +39.4, 0 replay-miss. Live re-score is
+the LOCAL runner's job; RUNNER STILL GAPPED (newest verify_20260728T234102Z.json
+23:41Z Jul-28, ~24.5h old at this 00:12Z fire — past the 6h floor). First duty:
+no open peer-gated PR ([]).
+
+**Next hypothesis.** COVERAGE next (rotate). In-cloud metered_api signal bank is
+well-covered (payment-rail/async-job/api-auth/error-contract each have the full
+COVERAGE→TRUTH→READOUT arc + signal-level relabel guard); the next COVERAGE would
+be a NEW archetype/signal or a per-segment leaderboard summary once the [LOCAL]
+calibration population grows. The order-invariance family is now COMPLETE across
+all five measurement surfaces (battery / leaderboard / offering / scoring /
+reliability) — a future METHOD candidate is a fresh perturbation AXIS (label /
+scale) rather than another order rung.

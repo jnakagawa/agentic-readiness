@@ -631,21 +631,36 @@ design in-cloud, execute locally.
      Canonical PAIR unchanged AND re-measured (replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss;
      rubric v0.7). See LOG Cycle 111. The READOUT leg below completes the cancel-job arc. -->
 
-- **[READOUT] Surface the `cancel-job` metered_api capability in the public methodology prose** (follow-up
-  to Cycle 110 COVERAGE + Cycle 111 TRUTH-relabel — the READOUT leg CLOSING the cancel-job arc, the SEVENTH
-  metered_api leg to complete a full COVERAGE→TRUTH→READOUT arc after payment-rail 78/79/80, async-job
-  82/83/84, api-auth 86/87/88, error-contract 90/91/92, test-mode 102/103/104, pagination 106/107/108). Add
-  ONE capability-worded, vendor-neutral `<p>` to the methodology "What the score answers" card
-  (`_write_methodology_page`, `asrs/scorecard.py`), alongside the six prior metered_api legs: ASRS reads
-  whether a metered API whose work runs long documents how an agent can ABORT a submitted job (a
-  `Cancel-After` deadline header / a `.../cancel` endpoint on a job resource / a documented `canceled` job
-  state), because an agent that detects a runaway or wrong generation and cannot stop it keeps paying for
-  compute it no longer needs — the same $0-only capital-safety ethos ASRS itself holds. KEEP the precision
-  note (bare `cancel` is no signal — cancel a subscription/order/booking, a cancellation policy, a cancelled
-  flight); name the Cycle-111 identity-relabel regression test; stay HONEST about scope (diagnostic, off the
-  scoring path, not a scored pillar). Add a matching content-presence guard `test_methodology_documents_
-  cancel_job` in `tests/test_readout.py` mirroring `test_methodology_documents_pagination`; keep the
-  rendered-page neutral-scan clean. Display + tests-only, off the scoring path → NOT peer-gated.
+<!-- DONE 2026-07-30T~17:3xZ (Cycle 112, READOUT, branch+PR+self-merge, display+tests-only/score-neutral):
+     "[READOUT] Surface the `cancel-job` metered_api capability in the public methodology prose" SHIPPED —
+     the READOUT leg CLOSING the cancel-job arc (COVERAGE 110 → TRUTH-relabel 111 → READOUT 112), the
+     SEVENTH metered_api offer-side leg to complete the full COVERAGE→TRUTH→READOUT arc (after payment-rail
+     78/79/80, async-job 82/83/84, api-auth 86/87/88, error-contract 90/91/92, test-mode 102/103/104,
+     pagination 106/107/108). Added ONE capability-worded, vendor-neutral `<p>` ("Aborting a runaway job")
+     to the methodology "What the score answers" card (`_write_methodology_page`, `asrs/scorecard.py`),
+     placed after the async-job "Finishing the job" paragraph as the CONTROL leg of the same asynchronous
+     contract: a long-running job keeps BILLING while it runs, so an agent that cannot STOP a runaway/wrong
+     job keeps paying for compute it no longer wants — an offer that documents a cancellation contract lets
+     the agent BOUND its own spend (the same $0-only capital-safety ethos ASRS holds). Names the
+     vendor-neutral REST cancellation vocabulary (a `.../cancel` endpoint on a job resource, a `Cancel-After`
+     deadline header, a `canceled` job state); KEEPS the precision note (bare `cancel` — "cancel your
+     subscription", a cancellation policy, "cancel your order", a canceled flight — is no signal); names the
+     Cycle-111 identity-relabel regression test; HONEST scope (diagnostic, off the scoring path, not a scored
+     pillar). New content-presence guard `test_methodology_documents_cancel_job` (test_readout.py 53→54)
+     mirrors the pagination/test-mode guards; rendered-page neutral-scan (test_readout_wording) stays clean.
+     Display+tests-only, off scoring path → NOT peer-gated: git diff over asrs/scoring.py/asrs/offering.py/
+     rubric/fixtures EMPTY; git diff --name-only = asrs/scorecard.py + tests/test_readout.py ONLY. Cloud
+     bridge blocks direct main push → branch loop/cancel-job-methodology-prose + PR #73 + self-merge (squash
+     f0e5ba0). Full suite green 306→307 (test_free_tier 11/11 after env-only `pip install eth-account`);
+     replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. See LOG Cycle 112. -->
+<!-- P1 FRONTIER (post-Cycle-112): the cancel-job arc is now closed at COVERAGE (110) / TRUTH-relabel (111) /
+     READOUT (112) — the SEVENTH metered_api leg to complete a full COVERAGE→TRUTH→READOUT arc. The
+     metered_api signal-level relabel family now spans every signal through cancel-job, and the offering-path
+     invariance families (ORDER/RELABEL/SCALE) are three-fold and pair-symmetric — so the strongest next
+     leverage is a NEW archetype/signal (COVERAGE) or a genuinely NEW perturbation axis (label/scale) on the
+     offering/battery path, rather than another guard in a complete family. Not yet a firm backlog item;
+     promote when a concrete gap is identified. ACP/UCP/MPP handshakes + free-tier live-wiring stay [LOCAL]. -->
+
 
 <!-- DONE 2026-07-30T06:2xZ (Cycle 99, TRUTH, branch+PR+self-merge, tests-only/score-neutral): "Pin the
      new `output-license` digital_good signal as HOST/VENDOR relabel-invariant" SHIPPED. New guard

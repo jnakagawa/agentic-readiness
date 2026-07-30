@@ -3,6 +3,63 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 112 — 2026-07-30T~17:3xZ — READOUT (branch+PR+self-merge, display+tests-only/score-neutral)
+
+**What/why.** Surfaced the `metered_api` **cancel-job** capability in the PUBLIC
+methodology prose — the READOUT leg CLOSING the cancel-job arc (COVERAGE 110 →
+TRUTH-relabel 111 → READOUT 112), the SEVENTH metered_api offer-side leg to
+complete the full COVERAGE→TRUTH→READOUT arc (after payment-rail 78/79/80,
+async-job 82/83/84, api-auth 86/87/88, error-contract 90/91/92, test-mode
+102/103/104, pagination 106/107/108). Added ONE capability-worded, vendor-neutral
+`<p>` ("Aborting a runaway job") to the methodology "What the score answers" card
+(`_write_methodology_page`, `asrs/scorecard.py`), placed after the async-job
+"Finishing the job" paragraph and before "Recovering from a failed call" — the
+control leg of the same asynchronous contract. Frames it as bounding spend on a
+long-running job that runs away (an image/video generation, a training run, a
+batch-inference request keeps billing for compute while it runs; an agent that
+cannot stop a runaway/wrong job keeps paying for work it no longer wants); names
+the vendor-neutral REST cancellation vocabulary the offering signal anchors on as
+open conventions (a `.../cancel` endpoint on a job resource, a `Cancel-After`
+deadline header, a `canceled` job state); KEEPS the precision note (a bare
+`cancel` word — "cancel your subscription", a cancellation policy, "cancel your
+order", a canceled flight — is no signal); names the Cycle-111 identity-relabel
+regression test; stays HONEST about scope (diagnostic, off the scoring path, not a
+scored pillar). Ties the leg to ASRS's own $0-only capital-safety ethos, the same
+framing the offering signal's own docstring carries.
+
+**Ship class.** Display + tests-only, off the scoring path → NOT peer-gated.
+`git diff` over `asrs/scoring.py asrs/offering.py rubric/ fixtures/` EMPTY; `git
+diff --name-only` = `asrs/scorecard.py` + `tests/test_readout.py` ONLY. Cloud
+bridge blocks direct main push → branch loop/cancel-job-methodology-prose + PR #73
++ self-merge (squash f0e5ba0). First duty: no open peer-gated PR ([] at fire start
+— `list_pull_requests` open = []); realigned main to origin/main after merge.
+
+**Evidence / validation.** New content-presence guard
+`test_methodology_documents_cancel_job` in `tests/test_readout.py` (mirroring the
+pagination/test-mode guards): asserts the capability phrasing ("Aborting a runaway
+job", "bound its own spend", "cancellation contract"), the vendor-neutral
+cancellation vocabulary (a cancel endpoint on a job resource, `Cancel-After`, a
+`canceled` job state), the PRECISION note (bare `cancel` — "cancel your
+subscription", a cancellation policy, a canceled flight — is no signal), the
+identity-relabel regression-test line, the diagnostic/off-the-scoring-path scope
+line, and vendor-neutrality (no `drift-flight`/`driftflight`/`replicate` on the
+page). `test_readout.py` 53→54; rendered-page neutral-scan (`test_readout_wording`)
+stays clean. Full suite green 306→307 (test_free_tier 11/11 after `pip install
+eth-account`, environment-only, nothing to commit). Canonical PAIR unchanged AND
+re-measured: replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric
+v0.7. RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z, ~41.8h old at fire;
+cloud cannot repair the local machine; not a re-flag cycle — the last
+first-after-16:00 digest was Cycle 109 at 16:12Z, next is ~16:1xZ Jul-31).
+
+**Next hypothesis.** The cancel-job arc is now closed at all three layers
+(COVERAGE 110 / TRUTH 111 / READOUT 112), the seventh full metered_api arc. Focus
+rotates to METHOD next. The offering-path invariance families (ORDER / RELABEL /
+SCALE) are three-fold and pair-symmetric, and the metered_api signal-level relabel
+family now spans every signal through cancel-job — so the strongest next leverage
+is a NEW archetype/signal (COVERAGE) or a genuinely NEW perturbation axis on the
+offering/battery path, rather than another guard in a complete family. ACP/UCP/MPP
+handshakes + free-tier live-wiring remain [LOCAL].
+
 ## Cycle 111 — 2026-07-30T~17:2xZ — TRUTH (branch+PR+self-merge, tests-only/score-neutral)
 
 **What/why.** Pinned the Cycle-110 `cancel-job` metered_api signal as

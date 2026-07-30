@@ -1691,6 +1691,89 @@ def test_pagination_fires_on_real_captured_openapi():
     assert "cursor=" in quote or "page of" in quote or "paginat" in quote, pg[0].quote
     print(f"  ok: pagination fires on REAL captured OpenAPI contract — quote: {pg[0].quote!r}")
 
+
+def test_cancel_job_metering_precision_synthetic():
+    # Job CANCELLATION — how an agent ABORTS a long-running job it already submitted
+    # (a `.../cancel` endpoint on the job resource, a `Cancel-After` deadline header,
+    # a documented `canceled` job state) — is the "complete the job" CONTROL +
+    # capital-safety capability for a metered API whose work runs long: an agent that
+    # detects a runaway/wrong generation and cannot cancel it keeps paying for compute
+    # it no longer needs, so it must claim metered_api via the new cancel-job signal.
+    # Each POSITIVE is real, vendor-neutral job-cancellation vocabulary; each NEGATIVE
+    # is cancel-SHAPED noise that must NOT fire it (the precision traps: cancelling a
+    # SUBSCRIPTION, an ORDER, a BOOKING; a cancellation POLICY; a cancelled flight;
+    # "cancel culture").
+    positives = {
+        "cancel-after header": 'The `Cancel-After` header bounds how long the prediction may run.',
+        "cancel the prediction": "POST to abort: cancel the prediction to stop billing immediately.",
+        "cancel a job": "You can cancel a job at any time before it reaches a terminal state.",
+        "cancel a running training": "Send a request to cancel the running training run.",
+        "cancel your queued task": "An agent may cancel your queued task if the deadline slips.",
+        "cancel endpoint path": "Call `POST /v1/predictions/{prediction_id}/cancel` to stop it.",
+        "cancel training url": "The `cancel` field is a URL to cancel the training.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("metered.test", {"homepage": text})
+        assert prof.claims("metered_api"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "metered_api"
+            for s in c.signals
+        }
+        assert "cancel-job" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real job-cancellation phrasings each fire cancel-job")
+
+    negatives = {
+        "cancel subscription": "Cancel your subscription anytime from the billing page.",
+        "cancel anytime": "No contracts — cancel anytime, no questions asked.",
+        "cancel order": "You can cancel your order within 24 hours of purchase.",
+        "cancel booking": "To cancel your booking, call the front desk.",
+        "cancellation policy": "Read our cancellation policy before you reserve a room.",
+        "cancelled flight": "We regret that we canceled the flight due to weather.",
+        "cancel culture": "An essay on cancel culture and public discourse.",
+        "cancel plan": "Downgrade or cancel your plan whenever you like.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "cancel-job" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} cancel-shaped noise strings do NOT fire cancel-job (precision)"
+    )
+
+
+def test_cancel_job_fires_on_real_captured_openapi():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the cancel-job signal fires on the
+    # GENUINE job-cancellation contract captured live from a real machine-surface
+    # storefront — api.replicate.com's /openapi.json documents a `Cancel-After`
+    # deadline header, a `predictions/{id}/cancel` endpoint, and a `canceled`
+    # prediction state, captured verbatim in the committed fixture. Run the REAL
+    # discovery path (from_fixture -> discover_offering) so the signal is exercised
+    # exactly as a live crawl would, the same real-data non-vacuity move
+    # test_pagination_fires_on_real_captured_openapi makes.
+    #
+    # SCORE-NEUTRAL by construction: api.replicate.com already claims ONLY metered_api
+    # (its strongest and only archetype), so a cancellation contract on its spec can
+    # only deepen that claim's evidence — never add an archetype or reorder. The
+    # classifier is off the scoring path; the canonical pair (whose `/cancellation`
+    # surface is a subscription cancel with no job vocabulary) is unchanged (cancel-job
+    # fires on neither driftflight surface — pinned by tests/test_offering_canonical.py
+    # and the canonical replay guard).
+    spec = _fixture_entry_text("api.replicate.com", "/openapi.json")
+    assert "Cancel-After" in spec, "fixture /openapi.json lost its job-cancellation contract"
+
+    ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "api.replicate.com.json"))
+    prof = offering.discover_offering(ctx)
+
+    assert prof.claims("metered_api"), prof.archetypes
+    metered = next(c for c in prof.claimed if c.archetype == "metered_api")
+    cj = [s for s in metered.signals if s.label == "cancel-job"]
+    assert cj, {s.label for s in metered.signals}
+    quote = cj[0].quote.lower()
+    assert "cancel" in quote, cj[0].quote
+    print(f"  ok: cancel-job fires on REAL captured OpenAPI contract — quote: {cj[0].quote!r}")
+
     # NON-VACUOUS + score-neutral: the machine storefront's claimed SET is exactly
     # [metered_api] — the pagination contract deepened the metered_api evidence
     # without adding a spurious archetype (no false data_retrieval from "collection"
@@ -1756,6 +1839,8 @@ def main() -> int:
         test_output_license_fires_on_real_captured_surfaces,
         test_pagination_metering_precision_synthetic,
         test_pagination_fires_on_real_captured_openapi,
+        test_cancel_job_metering_precision_synthetic,
+        test_cancel_job_fires_on_real_captured_openapi,
         test_strip_html_drops_script_style_and_tags,
     ]
     failed = 0

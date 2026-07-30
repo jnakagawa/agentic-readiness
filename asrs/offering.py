@@ -383,6 +383,44 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"|\bcursor[- ]based\s+paginat\w*"
             r"|\bpaginat(?:ion|ed)[_\s]+(?:object|collection|response|results?|list|endpoint)"
             r"|\b(?:next|previous)\s+page\s+of\s+(?:collection|results?|records?|items?|objects?|data|entries)\b", _F)),
+        # Job CANCELLATION — how an agent ABORTS a long-running job it already
+        # submitted: a cancel endpoint on the job resource, a deadline header that
+        # auto-cancels after a bound, or a documented `canceled` terminal state. This
+        # is the "complete the job" CONTROL + capital-safety leg of an agent-native
+        # API whose work does not finish in the request/response round-trip (image /
+        # video generation, a training run, a batch inference job): an agent that
+        # detects a runaway or wrong generation and CANNOT cancel it keeps paying for
+        # compute it no longer needs, so a metered API that documents a cancel
+        # contract lets the agent BOUND its own spend — the same $0-only capital-safety
+        # ethos ASRS itself holds — and is MORE agent-completable. Distinct from every
+        # existing metered_api signal: `async-job` is how ONE long job's result comes
+        # BACK (webhook/poll), `error-contract` how a FAILED call recovers,
+        # `rate-limited` how fast you may call, `pagination` how a paged collection is
+        # walked; NONE says how an agent STOPS a job it started. Vendor-neutral open
+        # REST conventions (a `.../cancel` endpoint on a job resource, a `Cancel-After`
+        # deadline header, a `canceled` job state) — the same open-convention category
+        # as REST/GraphQL/OpenAPI already in this bank, never a vendor.
+        # PRECISION-CRITICAL: bare "cancel" is a false-positive minefield — "cancel
+        # your subscription" / "cancel anytime" (a subscription, NOT a job), "cancel
+        # your order" (retail), "cancellation policy" / "cancel your booking" (a
+        # service booking), "we canceled the flight", "cancel culture". So NEVER match
+        # a bare "cancel": require the `Cancel-After` deadline header, a `cancel` VERB
+        # naming an async-JOB noun (cancel the/a/your ... prediction / job / run / task
+        # / request / training / inference / operation / generation / batch / workflow),
+        # or a `.../cancel` ENDPOINT PATH on a job resource
+        # (`predictions/{id}/cancel`). "cancel your subscription/order/booking",
+        # "cancellation policy", and "cancel the flight" trip none of these. Fires
+        # non-vacuously on the real captured api.replicate.com `/openapi.json` (the
+        # `Cancel-After` header + the `predictions/{id}/cancel` endpoint + the
+        # `canceled` prediction state) and on ZERO of the canonical-pair (whose
+        # `/cancellation` surface is a subscription cancel with no job vocabulary),
+        # retail, or null fixtures. api.replicate.com ALREADY claims metered_api (its
+        # only archetype), so this deepens its evidence without adding or reordering
+        # any archetype (score-neutral); the classifier is off the scoring path.
+        ("cancel-job", re.compile(
+            r"\bCancel-After\b"
+            r"|\bcancel(?:s|ing|led|ed)?\s+(?:(?:the|a|an|your|this|in-progress|running|pending|queued|current)\s+)*(?:prediction|job|run|task|request|training|inference|operation|generation|batch|workflow)s?\b"
+            r"|\b(?:prediction|job|run|task|training|inference|operation)s?/[^\s\"']*?/cancel\b", _F)),
         # Credit-based metering — the dominant billing convention for generative
         # and agent-native APIs (prepay a credit balance, spend N credits per
         # call/image/generation). PRECISION-CRITICAL: bare "\bcredits?\b" is a

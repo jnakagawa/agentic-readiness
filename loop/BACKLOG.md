@@ -578,23 +578,33 @@ design in-cloud, execute locally.
      (squash 94fca4a). Full suite clean; test_free_tier 11/11 (after `pip install eth-account`,
      environment-only). Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. See LOG
      Cycle 107. The READOUT leg closing the arc is the item below. -->
-- **[READOUT] Surface the `pagination` "walk the paged collection to completion" leg in the methodology
-  prose** (follow-up to Cycle 106; the READOUT complement, mirroring the metered_api leg arcs
-  payment-rail 78/79/80 · async-job 82/83/84 · api-auth 86/87/88 · error-contract 90/91/92 · test-mode
-  102/103/104). Add ONE capability-worded, vendor-neutral `<p>` to the methodology "What the score answers"
-  card (`_write_methodology_page`, `asrs/scorecard.py`) alongside the other metered_api offer-side legs:
-  a metered API that returns a COLLECTION and documents how an agent PAGES through it (a cursor / a
-  next-page URL) lets the agent retrieve the FULL result set without a human, vs one where the agent
-  silently stops at page 1. Keep the precision note (a retail HTML `next` link is no signal). New
-  content-presence guard in `tests/test_readout.py` mirroring `test_methodology_documents_test_mode`;
-  rendered-page neutral-scan stays clean. Display + tests-only, off the scoring path → NOT peer-gated.
+<!-- DONE 2026-07-30T15:16Z (Cycle 108, READOUT, branch+PR+self-merge, display+tests-only/score-neutral):
+     "[READOUT] Surface the `pagination` 'walk the paged collection to completion' leg in the methodology
+     prose" SHIPPED — the READOUT complement CLOSING the pagination arc (COVERAGE 106 → TRUTH-relabel 107 →
+     READOUT 108), the SIXTH metered_api leg to complete the full COVERAGE→TRUTH→READOUT arc (after
+     payment-rail 78/79/80, async-job 82/83/84, api-auth 86/87/88, error-contract 90/91/92, test-mode
+     102/103/104). Added ONE capability-worded, vendor-neutral `<p>` ("Walking the whole collection") to the
+     methodology "What the score answers" card (`_write_methodology_page`, `asrs/scorecard.py`), between the
+     error-contract paragraph and "Trying the call safely first". Frames walking a multi-page result set to
+     completion (cursor param carrying a value / next-previous page URL / paginated collection response);
+     names the under-completion failure (stop at page one → partial answer reported as whole); KEEPS the
+     precision note (bare `next`/`cursor` — retail product link / "next campaign" banner / text cursor /
+     "next page of the novel" — is no signal); names the identity-relabel regression test; stays HONEST
+     about scope (diagnostic, off the scoring path, not a scored pillar). New content-presence guard
+     `test_methodology_documents_pagination` in `tests/test_readout.py` (53→54) mirrors
+     `test_methodology_documents_test_mode`; neutral-scan clean. Display + tests-only, off the scoring path
+     → NOT peer-gated (git diff --name-only = asrs/scorecard.py + tests/test_readout.py ONLY; scoring-path
+     diff EMPTY). Cloud bridge blocks direct main push → branch loop/pagination-methodology-prose + PR #65
+     + self-merge (squash 82eacd1). Full suite green (test_free_tier 11/11); replay guard 24/24, 46.1 F /
+     85.5 B / +39.4, 0 replay-miss; rubric v0.7. See LOG Cycle 108. -->
 
-<!-- P1 FRONTIER (post-Cycle-106): the metered_api COLLECTION-retrieval capability (`pagination`) shipped
-     at SIGNAL (C106); its TRUTH-relabel + READOUT legs are queued above (the sixth metered_api leg arc).
-     After that arc closes, remaining COVERAGE frontier is a NEW archetype/signal (the thin service_booking
-     / data_retrieval banks need a fixture that CLAIMS them — [LOCAL] fixture capture — before any signal
-     there is non-vacuous in-cloud) or a fresh METHOD perturbation axis (label/scale). ACP/UCP/MPP +
-     free-tier live-wiring stays [LOCAL]. -->
+<!-- P1 FRONTIER (post-Cycle-108): the metered_api COLLECTION-retrieval (`pagination`) arc is now closed at
+     ALL layers — SIGNAL (C106), TRUTH-relabel (C107), READOUT (C108) — the sixth full metered_api arc. The
+     order-/relabel-invariance families are complete across both canonical pair-halves. Remaining COVERAGE
+     frontier is a NEW archetype/signal (the thin service_booking / data_retrieval banks need a fixture that
+     CLAIMS them — [LOCAL] fixture capture — before any signal there is non-vacuous in-cloud) or a fresh
+     METHOD perturbation axis (label/scale) on the offering/battery path. ACP/UCP/MPP + free-tier
+     live-wiring stays [LOCAL]. -->
 
 <!-- DONE 2026-07-30T06:2xZ (Cycle 99, TRUTH, branch+PR+self-merge, tests-only/score-neutral): "Pin the
      new `output-license` digital_good signal as HOST/VENDOR relabel-invariant" SHIPPED. New guard

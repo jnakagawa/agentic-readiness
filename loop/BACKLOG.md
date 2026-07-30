@@ -560,6 +560,34 @@ design in-cloud, execute locally.
      truncation/duplication stability, or signal-count monotonicity under evidence duplication), NOT
      another order/relabel single-signal mirror. Promote when a concrete non-vacuous axis is identified. -->
 
+- **[TRUTH] Pin the new `pagination` metered_api signal as relabel-invariant** (follow-up to Cycle 106).
+  Add a signal-level relabel guard — the SIXTH in the family (payment-rail C79 / async-job C83 / api-auth
+  C87 / error-contract C90 / test-mode C103, all metered_api). The `pagination` vocabulary (cursor query
+  param, next/previous page URL, paginated collection response) is HOST-FREE convention language, so the
+  fired quotes carry no vendor; the natural non-vacuous anchor is api.replicate.com (where the signal fires
+  on `/openapi.json`), whose recorded fixture embeds the host in surface KEYS (`api.replicate.com`) and in
+  the `?cursor=…` URL. Mirror `test_offering_relabel_invariance_error_contract`: whole-fixture relabel of
+  the host → re-classify → assert the `pagination` label still fires the SAME count on the SAME (relabeled)
+  surface, with teeth (a host-keyed pagination stub IS caught). Tests-only, off the scoring path → NOT
+  peer-gated. In-cloud doable (replicate fixture is committed).
+- **[READOUT] Surface the `pagination` "walk the paged collection to completion" leg in the methodology
+  prose** (follow-up to Cycle 106; the READOUT complement, mirroring the metered_api leg arcs
+  payment-rail 78/79/80 · async-job 82/83/84 · api-auth 86/87/88 · error-contract 90/91/92 · test-mode
+  102/103/104). Add ONE capability-worded, vendor-neutral `<p>` to the methodology "What the score answers"
+  card (`_write_methodology_page`, `asrs/scorecard.py`) alongside the other metered_api offer-side legs:
+  a metered API that returns a COLLECTION and documents how an agent PAGES through it (a cursor / a
+  next-page URL) lets the agent retrieve the FULL result set without a human, vs one where the agent
+  silently stops at page 1. Keep the precision note (a retail HTML `next` link is no signal). New
+  content-presence guard in `tests/test_readout.py` mirroring `test_methodology_documents_test_mode`;
+  rendered-page neutral-scan stays clean. Display + tests-only, off the scoring path → NOT peer-gated.
+
+<!-- P1 FRONTIER (post-Cycle-106): the metered_api COLLECTION-retrieval capability (`pagination`) shipped
+     at SIGNAL (C106); its TRUTH-relabel + READOUT legs are queued above (the sixth metered_api leg arc).
+     After that arc closes, remaining COVERAGE frontier is a NEW archetype/signal (the thin service_booking
+     / data_retrieval banks need a fixture that CLAIMS them — [LOCAL] fixture capture — before any signal
+     there is non-vacuous in-cloud) or a fresh METHOD perturbation axis (label/scale). ACP/UCP/MPP +
+     free-tier live-wiring stays [LOCAL]. -->
+
 <!-- DONE 2026-07-30T06:2xZ (Cycle 99, TRUTH, branch+PR+self-merge, tests-only/score-neutral): "Pin the
      new `output-license` digital_good signal as HOST/VENDOR relabel-invariant" SHIPPED. New guard
      `test_offering_relabel_invariance_output_license` in `tests/test_offering_canonical.py` (17→18) — the

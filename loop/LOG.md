@@ -9246,3 +9246,76 @@ a NEW archetype or metered_api/digital_good signal (COVERAGE), or a fresh
 perturbation axis (label/scale) on the offering path. ACP/UCP/MPP + free-tier
 live-wiring stays [LOCAL]. No Slack (score-neutral, off scoring path; not
 sensitive-class; not the first-after-16:00 digest cycle).
+
+## Cycle 106 — 2026-07-30T13:22Z — COVERAGE
+
+**What.** Added a `pagination` signal to the `metered_api` bank in
+`asrs/offering.py`: cursor / collection PAGINATION — how an agent retrieves a
+MULTI-PAGE result set (a list endpoint returns one page plus a cursor / a
+`next`/`previous` page URL to follow to collect the rest). The first NEW
+metered_api capability signal since test-mode (Cycle 102); the metered_api arc
+now spans call (post-endpoint/qualified-api), auth (api-auth), speed
+(rate-limited), single-job return (async-job), recovery (error-contract), safe
+trial (test-mode), billing (pay-*/credit/tiered), payment rails
+(x402/agent-payment-rail) — and now COLLECTION retrieval.
+
+**Why (capability).** The "complete the job" capability for a metered API that
+returns a COLLECTION (list your predictions / models / deployments / records):
+an agent that cannot follow the pagination cursor reads only the FIRST page and
+silently UNDER-completes the retrieval, so a metered API that documents its
+pagination contract is MORE agent-completable. Distinct from every existing
+metered_api signal — `async-job` is how ONE long job's result comes back
+(webhook/poll), `error-contract` how a failed call recovers, `rate-limited`
+how fast you may call; NONE said how an agent walks a paged collection to
+completion. Vendor-neutral open REST conventions (a cursor query parameter, a
+`next`/`previous` page URL, a paginated collection response) — the same
+open-convention category as REST/GraphQL/OpenAPI already in the bank.
+
+**Precision.** NEVER matches a bare token: requires a cursor QUERY PARAMETER
+(`?cursor=`/`&cursor=` with a value), an explicit "cursor-based pagination", a
+`pagination`/`paginated` immediately qualifying a collection/response/list
+noun, or a `next`/`previous` PAGE OF an API collection noun. Dodges the
+minefield present in the fixtures we validate on — a RETAIL catalog's HTML
+`<li class="next"><a>next</a></li>` (books.toscrape.com), the canonical
+homepages' "next campaign" + JS `previousSibling`, a CSS `cursor: pointer`, a
+database cursor, "the next page of the novel", "repaginated". 9 noise negatives
+asserted non-firing.
+
+**Evidence.** Fires NON-VACUOUSLY on the REAL captured api.replicate.com
+surfaces (the `?cursor=…` list URL + the "next page of collection objects"
+`paginated` response schema in /openapi.json) and on ZERO of the canonical-pair
+/ retail / null fixtures. api.replicate.com ALREADY claims `metered_api` (its
+only archetype), so this deepens its evidence without adding or reordering any
+archetype (claimed set stays exactly `[metered_api]`, asserted). Off the scoring
+path (`scoring.py` does not import `offering` — grep-verified; imported only by
+battery/cli/report/scorecard) → score-neutral. `tests/test_offering.py` +2
+(40→42): `test_pagination_metering_precision_synthetic` (7 positives / 9 noise
+negatives) + `test_pagination_fires_on_real_captured_openapi` (real replicate
+contract + `[metered_api]`-unchanged + retail HTML-`next` precision).
+
+**Ship.** COVERAGE signal-add off the scoring path → NOT peer-gated. Cloud bridge
+blocks direct main push → branch `loop/pagination-metered-signal` + PR #61 +
+self-merge (squash 260cc86). First duty: no open peer-gated PR ([] at fire
+start). Realigned main to origin/main after merge.
+
+**Validation.** Full suite green (22 files; test_offering 40→42; test_free_tier
+11/11 after `pip install eth-account`). Canonical replay guard 24/24, 46.1 F /
+85.5 B / +39.4, 0 replay-miss; offering canonical guard 22/22; rubric v0.7
+unchanged. `git diff --name-only` (pre-merge) = `asrs/offering.py` +
+`tests/test_offering.py` only; scoring-path diff EMPTY.
+
+**Infra.** RUNNER STILL GAPPED — newest `runs/local/verify_20260728T234102Z.json`
+(23:41Z Jul-28) is ~37+h old at this fire; cloud cannot repair the local machine
+(queued P0 [LOCAL], flagged in the Cycle-86 digest; keep flagging each daily
+digest — next first-after-16:00 is ~16:xxZ Jul-30). The in-cloud replay guard
+remains the live regression signal INDEPENDENT of the runner, so benchmark
+integrity is intact — a heartbeat gap, not a scoring problem.
+
+**Next hypothesis.** READOUT next (rotate COVERAGE → TRUTH → READOUT; but the
+pagination signal is now at COVERAGE only). Two complementary follow-ups mirror
+the metered_api leg arcs: (a) TRUTH — pin `pagination` as relabel-invariant (a
+sixth metered_api signal-level relabel guard, after payment-rail/async-job/
+api-auth/error-contract/test-mode); (b) READOUT — surface the "walk the paged
+collection to completion" leg in the public methodology prose alongside the other
+metered_api legs. A NEW archetype/signal remains open COVERAGE; ACP/UCP/MPP +
+free-tier live-wiring stays [LOCAL].

@@ -614,6 +614,56 @@ def test_methodology_documents_error_contract() -> None:
         _check(banned not in text, f"error-contract prose names no vendor/domain ({banned!r})")
 
 
+def test_methodology_documents_offering_relative_battery() -> None:
+    # Cycle 96 (READOUT): the READOUT complement closing the generate-media
+    # plural/participle arc opened by Cycle 94 (COVERAGE — offering discovery
+    # recognizing plural/participle generate-media forms) and Cycle 95 (TRUTH —
+    # the digital_good DESCRIPTOR recovering plural/participle media nouns). The
+    # behavioral battery is OFFERING-RELATIVE (operator directive): tasks are
+    # derived from the storefront's OWN discovered offering, and the digital_good
+    # task descriptor ("generated image") is filled from the site's OWN media
+    # language, normalized across singular/plural/verb-inflection. That derivation
+    # was pinned in code + tests but NEVER surfaced in prose a critic can read —
+    # a reader of the methodology could not learn WHY a derived task says
+    # "generated image" or that the wording comes from the site, not from ASRS.
+    # The paragraph must (a) frame the battery as offering-relative — one task per
+    # capability the site CLAIMS to sell, unadvertised archetypes never probed
+    # (attribution honesty applied to tasks); (b) say the task is worded in the
+    # SITE'S own terms, with "generated image" as the derived example; (c) name
+    # the vendor-neutral media vocabulary the noun is drawn from (image/video/
+    # audio/art, or the "digital output" fallback) and that it is derived from
+    # ASRS's own bank matched to the site, never by injecting arbitrary site prose
+    # — so it is injection-safe and names no vendor product; (d) say recognition
+    # is form-normalized (image / images / generating images -> the SAME singular
+    # task noun) and pinned by an executable regression test; and (e) stay HONEST
+    # about scope — this battery is diagnostic, off the scoring path, not a scored
+    # pillar (the same scored-vs-diagnostic line the sibling prose keeps).
+    # Vendor-neutral throughout.
+    print("test_methodology_documents_offering_relative_battery")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    # Match on the whitespace-collapsed text (same technique as the async-job /
+    # api-auth / error-contract guards) so wording, not source wrapping, is pinned.
+    collapsed = " ".join(text.split())
+    for phrase in ("offering-relative", "claims to sell",
+                   "worded in the site", "generated image",
+                   "never built to answer", "injection-safe",
+                   "form-normalized", "executable regression test",
+                   "off the scoring path", "diagnostic"):
+        _check(phrase in collapsed,
+               f"methodology documents offering-relative battery: {phrase!r}")
+    # The vendor-neutral media vocabulary the digital_good descriptor is drawn
+    # from must appear as generic media nouns + the generic fallback, never a
+    # vendor product; and the form-normalization exemplars must be present.
+    for token in ("image", "video", "audio", "art", "digital output",
+                  "images", "generating images"):
+        _check(token in collapsed, f"methodology names media form {token!r}")
+    # Vendor-neutral: no scored domain/product/brand named on the page.
+    for banned in ("drift-flight", "driftflight"):
+        _check(banned not in text,
+               f"offering-relative-battery prose names no vendor/domain ({banned!r})")
+
+
 def test_methodology_documents_calibration() -> None:
     # Cycle 68 (READOUT): the READOUT complement to Cycle 67's calibration guard
     # (tests/test_calibration.py — the first static-vs-behavioral VALIDITY axis).
@@ -1286,6 +1336,7 @@ def main() -> int:
         test_methodology_documents_async_job_contract,
         test_methodology_documents_api_auth_scheme,
         test_methodology_documents_error_contract,
+        test_methodology_documents_offering_relative_battery,
         test_methodology_documents_calibration,
         test_methodology_page_tracks_live_rubric,
         test_build_scorecard_publishes_and_links_methodology,

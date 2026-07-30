@@ -827,6 +827,65 @@ def test_methodology_documents_pagination() -> None:
                f"pagination prose names no vendor/domain ({banned!r})")
 
 
+def test_methodology_documents_cancel_job() -> None:
+    # Cycle 112 (READOUT): the READOUT complement CLOSING the cancel-job arc opened by
+    # Cycle 110 (COVERAGE — the metered_api `cancel-job` offering signal: how an agent
+    # ABORTS a long-running job it already submitted — a `.../cancel` endpoint on the
+    # job resource, a `Cancel-After` deadline header, or a documented `canceled`
+    # terminal job state) and Cycle 111 (TRUTH — the SIGNAL-level HOST
+    # relabel-invariance guard for that signal). This is the SEVENTH metered_api
+    # offer-side leg to complete the full COVERAGE->TRUTH->READOUT arc (after
+    # payment-rail 78/79/80, async-job 82/83/84, api-auth 86/87/88, error-contract
+    # 90/91/92, test-mode 102/103/104, pagination 106/107/108). The "abort a runaway
+    # job to bound your spend" leg was pinned in code + tests but NEVER surfaced in
+    # prose a critic can read — a reader could not learn WHY a metered API that
+    # documents how to cancel a submitted job is MORE agent-completable, or how an
+    # agent that cannot stop a runaway generation keeps paying for compute it no longer
+    # wants. The paragraph must (a) frame it as aborting a long-running job to bound
+    # spend / the cancellation contract, and name the capital-drain failure (a runaway
+    # or wrong job billing while it runs, no way to stop it); (b) name the
+    # vendor-neutral REST cancellation vocabulary the offering signal anchors on as open
+    # conventions — a `.../cancel` endpoint on a job resource, a `Cancel-After` deadline
+    # header, a `canceled` job state; (c) keep the signal's PRECISION honesty — a bare
+    # `cancel` word ("cancel your subscription", a "cancellation policy", "cancel your
+    # order", a canceled flight) is not a job-cancellation facility and is read as no
+    # signal; (d) say recognition keys on the CONTRACT the API documents not who
+    # published it and is pinned by an identity-relabel executable regression test; and
+    # (e) stay HONEST about scope — this offering read is diagnostic, off the scoring
+    # path, not a scored pillar (the same scored-vs-diagnostic line the sibling
+    # offer-side prose keeps). Vendor-neutral throughout.
+    print("test_methodology_documents_cancel_job")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    # Match on the whitespace-collapsed text (same technique as the async-job /
+    # api-auth / error-contract / test-mode / pagination guards) so wording, not
+    # source wrapping, is what the guard pins.
+    collapsed = " ".join(text.split())
+    for phrase in ("Aborting a runaway job", "bound its own spend",
+                   "cancellation contract",
+                   "contract the API documents, not who published it",
+                   "relabels the API", "executable regression test",
+                   "off the scoring path", "diagnostic"):
+        _check(phrase in collapsed,
+               f"methodology documents cancel-job: {phrase!r}")
+    # The vendor-neutral cancellation vocabulary the offering signal bank anchors on
+    # must appear as open REST conventions, never a vendor product: a cancel endpoint
+    # on a job resource, a Cancel-After deadline header, a canceled job state.
+    for token in ("cancel endpoint on a job resource", "Cancel-After", "job state"):
+        _check(token in collapsed, f"methodology names cancel convention {token!r}")
+    # PRECISION honesty: the prose must preserve the signal's bare-word guard — a bare
+    # `cancel` word ("cancel your subscription", a "cancellation policy", a canceled
+    # flight) is not a job-cancellation facility and is read as no signal.
+    for token in ("bare", "no signal", "cancel your subscription",
+                  "cancellation policy", "flight was canceled"):
+        _check(token in collapsed,
+               f"methodology keeps cancel-job precision note: {token!r}")
+    # Vendor-neutral: no scored domain/product/brand named on the page.
+    for banned in ("drift-flight", "driftflight", "replicate"):
+        _check(banned not in text,
+               f"cancel-job prose names no vendor/domain ({banned!r})")
+
+
 def test_methodology_documents_calibration() -> None:
     # Cycle 68 (READOUT): the READOUT complement to Cycle 67's calibration guard
     # (tests/test_calibration.py — the first static-vs-behavioral VALIDITY axis).
@@ -1503,6 +1562,7 @@ def main() -> int:
         test_methodology_documents_output_license,
         test_methodology_documents_test_mode,
         test_methodology_documents_pagination,
+        test_methodology_documents_cancel_job,
         test_methodology_documents_calibration,
         test_methodology_page_tracks_live_rubric,
         test_build_scorecard_publishes_and_links_methodology,

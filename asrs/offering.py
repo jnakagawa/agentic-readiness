@@ -344,6 +344,45 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"|\btest\s+(?:api\s+keys?|credentials?|tokens?)\b"
             r"|\bdry[- ]?run\b"
             r"|\b[a-z]{2,6}_(?:test|sandbox)_(?:\.{3}|[A-Za-z0-9]*\d[A-Za-z0-9]{2,})", _F)),
+        # Cursor / collection PAGINATION — how an agent retrieves a MULTI-PAGE
+        # result set: a list endpoint returns one page plus a cursor / a `next`
+        # (and `previous`) page URL the agent follows to collect the rest. This is
+        # the "complete the job" capability for a metered API that returns a
+        # COLLECTION (list your predictions / models / deployments / records): an
+        # agent that cannot follow the pagination cursor reads only the first page
+        # and silently UNDER-completes the retrieval, so a metered API that
+        # documents its pagination contract is MORE agent-completable. Distinct from
+        # every existing metered_api signal — `async-job` is how ONE long job's
+        # result comes back (webhook/poll), `error-contract` how a failed call
+        # recovers, `rate-limited` how fast you may call; NONE says how an agent
+        # walks a paged COLLECTION to completion. Vendor-neutral open REST
+        # conventions (a cursor query parameter, a `next`/`previous` page URL, a
+        # paginated collection response) — the same open-convention category as
+        # REST/GraphQL/OpenAPI already in this bank, never a vendor.
+        # PRECISION-CRITICAL: bare "cursor"/"next"/"previous"/"page" is a
+        # false-positive minefield present in the very fixtures we validate on — a
+        # RETAIL catalog paginates its HTML with `<li class="next"><a>next</a></li>`
+        # (books.toscrape.com), the canonical homepages say "your next campaign" and
+        # carry a JS `previousSibling`, and elsewhere the word is a CSS `cursor:
+        # pointer`, a database cursor, or "the next page of the novel". So NEVER
+        # match a bare token: require a cursor QUERY PARAMETER (`?cursor=`/`&cursor=`
+        # with a value), an explicit "cursor-based pagination", a `pagination` /
+        # `paginated` immediately qualifying a collection/response/list noun, or a
+        # `next`/`previous` PAGE OF an API collection noun (page of collection /
+        # results / records / items / objects). The retail "next" link, the marketing
+        # "next campaign", the DOM `previousSibling`, the CSS/SQL cursor, and "next
+        # page of the novel" trip none of these. Fires non-vacuously on the real
+        # captured api.replicate.com surfaces (the `?cursor=…` list URL, the "next
+        # page of collection objects" `paginated` response schema) and on ZERO of the
+        # canonical-pair / retail / null fixtures. api.replicate.com ALREADY claims
+        # metered_api (its only archetype), so this deepens its evidence without
+        # adding or reordering any archetype (score-neutral); the classifier is off
+        # the scoring path.
+        ("pagination", re.compile(
+            r"[?&]cursor=[A-Za-z0-9%._-]{4,}"
+            r"|\bcursor[- ]based\s+paginat\w*"
+            r"|\bpaginat(?:ion|ed)[_\s]+(?:object|collection|response|results?|list|endpoint)"
+            r"|\b(?:next|previous)\s+page\s+of\s+(?:collection|results?|records?|items?|objects?|data|entries)\b", _F)),
         # Credit-based metering — the dominant billing convention for generative
         # and agent-native APIs (prepay a credit balance, spend N credits per
         # call/image/generation). PRECISION-CRITICAL: bare "\bcredits?\b" is a

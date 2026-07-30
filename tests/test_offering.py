@@ -1610,6 +1610,109 @@ def test_output_license_fires_on_real_captured_surfaces():
     print("  ok: the model-license / 'models you own' traps do NOT fire output-license (real-data precision)")
 
 
+def test_pagination_metering_precision_synthetic():
+    # Cursor / collection PAGINATION — how an agent retrieves a MULTI-PAGE result
+    # set (a list endpoint returns one page plus a cursor / a `next`/`previous` page
+    # URL to follow) — is the "complete the job" capability for a metered API that
+    # returns a COLLECTION, so it must claim metered_api via the new pagination
+    # signal. Each POSITIVE is real, vendor-neutral pagination vocabulary; each
+    # NEGATIVE is pagination-SHAPED noise that must NOT fire it (the precision traps:
+    # a RETAIL catalog's HTML `next` link, a marketing "next campaign", a DOM
+    # `previousSibling`, a CSS/SQL cursor, "the next page of the novel").
+    positives = {
+        "cursor param": "Fetch the next page: GET /v1/models?cursor=cD0yMDIzLTA2LTA2",
+        "amp cursor param": "Follow the link &cursor=eyJvZmZzZXQiOjUwfQ== to continue.",
+        "cursor-based": "The list endpoints use cursor-based pagination for large sets.",
+        "pagination object": "The response is a pagination object containing a list of items.",
+        "paginated collection": "Returns a paginated collection response with next/previous URLs.",
+        "next page of collection": "`next`: A URL pointing to the next page of collection objects.",
+        "previous page of results": "`previous`: A URL for the previous page of results, if any.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("metered.test", {"homepage": text})
+        assert prof.claims("metered_api"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "metered_api"
+            for s in c.signals
+        }
+        assert "pagination" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real cursor/pagination phrasings each fire pagination")
+
+    negatives = {
+        "retail next link": '<li class="next"><a href="catalogue/page-2.html">next</a></li>',
+        "next campaign": "Ship your next campaign in formation, ready in 24 hours.",
+        "dom previoussibling": "var g=c.previousSibling,h=0;do{if(c)",
+        "css cursor": "button { cursor: pointer; } .link { cursor: default; }",
+        "sql cursor": "Open a database cursor and iterate over the rows.",
+        "novel page": "Turn to the next page of the novel to find out.",
+        "next steps page": "See the next page for setup, then read the previous chapter.",
+        "repaginated": "The report was repaginated overnight by the layout team.",
+        "retail cart": "Add to cart, then check out — free shipping on every order.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "pagination" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} pagination-shaped noise strings do NOT fire pagination (precision)"
+    )
+
+
+def test_pagination_fires_on_real_captured_openapi():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the pagination signal fires on the
+    # GENUINE cursor-pagination contract captured live from a real machine-surface
+    # storefront — api.replicate.com's /openapi.json documents a `next`/`previous`
+    # paginated collection response ("A URL pointing to the next page of collection
+    # objects") and a `?cursor=…` list URL, captured verbatim in the committed
+    # fixture. Run the REAL discovery path (from_fixture -> discover_offering) so the
+    # signal is exercised exactly as a live crawl would, the same real-data
+    # non-vacuity move test_async_job_fires_on_real_captured_openapi makes.
+    #
+    # SCORE-NEUTRAL by construction: api.replicate.com already claims ONLY metered_api
+    # (its strongest and only archetype), so a pagination contract on its spec can
+    # only deepen that claim's evidence — never add an archetype or reorder. The
+    # classifier is off the scoring path; the canonical pair (which does NOT document
+    # a pagination contract) is unchanged (pagination fires on neither driftflight
+    # surface — pinned by tests/test_offering_canonical.py and the canonical replay
+    # guard).
+    spec = _fixture_entry_text("api.replicate.com", "/openapi.json")
+    assert "next page of collection" in spec.lower(), "fixture /openapi.json lost its pagination contract"
+
+    ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "api.replicate.com.json"))
+    prof = offering.discover_offering(ctx)
+
+    assert prof.claims("metered_api"), prof.archetypes
+    metered = next(c for c in prof.claimed if c.archetype == "metered_api")
+    pg = [s for s in metered.signals if s.label == "pagination"]
+    assert pg, {s.label for s in metered.signals}
+    quote = pg[0].quote.lower()
+    assert "cursor=" in quote or "page of" in quote or "paginat" in quote, pg[0].quote
+    print(f"  ok: pagination fires on REAL captured OpenAPI contract — quote: {pg[0].quote!r}")
+
+    # NON-VACUOUS + score-neutral: the machine storefront's claimed SET is exactly
+    # [metered_api] — the pagination contract deepened the metered_api evidence
+    # without adding a spurious archetype (no false data_retrieval from "collection"
+    # or "records" prose reaching a wrong bank).
+    assert prof.archetypes == ["metered_api"], prof.archetypes
+    print("  ok: pagination evidence does NOT change the claimed set (score-neutral)")
+
+    # Precision on real retail noise: books.toscrape.com paginates its HTML catalog
+    # with `<li class="next"><a href="catalogue/page-2.html">next</a></li>` — a bare
+    # "next" link, NOT an API pagination contract. pagination must NOT fire there, so
+    # the retail storefront keeps its physical_good-only claim and gains no spurious
+    # metered_api.
+    retail = classify_offering(
+        "books.toscrape.com",
+        {"homepage": _fixture_entry_text("books.toscrape.com", "")
+         or '<li class="next"><a href="catalogue/page-2.html">next</a></li>'},
+    )
+    retail_labels = {s.label for c in retail.claimed for s in c.signals}
+    assert "pagination" not in retail_labels, retail_labels
+    print("  ok: the retail HTML 'next' catalog link does NOT fire pagination (real-data precision)")
+
+
 def main() -> int:
     tests = [
         test_api_storefront_claims_agent_native_not_physical,
@@ -1651,6 +1754,8 @@ def main() -> int:
         test_generate_media_plural_gap_on_real_captured_docs,
         test_output_license_precision_synthetic,
         test_output_license_fires_on_real_captured_surfaces,
+        test_pagination_metering_precision_synthetic,
+        test_pagination_fires_on_real_captured_openapi,
         test_strip_html_drops_script_style_and_tags,
     ]
     failed = 0

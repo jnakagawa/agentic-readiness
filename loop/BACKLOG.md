@@ -551,11 +551,18 @@ design in-cloud, execute locally.
      46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. See LOG Cycle 100. The output-license
      COVERAGE→TRUTH→READOUT arc is now complete at all three layers (98/99/100), mirroring the four
      metered_api legs. -->
+<!-- P1 FRONTIER (post-Cycle-101): the deliverable-rights (`output-license`) arc is now closed at ALL layers
+     — SIGNAL (98), TRUTH-relabel (99), READOUT (100), and METHOD surface-read-ORDER-invariance (Cycle 101,
+     `test_offering_surface_order_invariance_output_license`, PR #51 / 880e0a8). The rights leg's two
+     offering/battery perturbation axes (identity-relabel + surface-read-order) are both covered. Next METHOD
+     candidate is an order/count-stability axis for ANOTHER digital_good signal that fires multi-surface
+     (generate-media / render / hosted-output), OR a NEW archetype/signal (COVERAGE — the frontier the
+     rotation now points at). Not yet a firm backlog item; promote when a concrete gap is identified. -->
 <!-- P1 FRONTIER (post-Cycle-100): the deliverable-rights (`output-license`) arc is closed at SIGNAL (98),
      TRUTH-relabel (99) and READOUT (100). Next METHOD candidate is a fresh perturbation AXIS on the
      offering/battery path for the digital_good RIGHTS leg (a rights-signal ORDER-invariance or
-     count-stability guard, the digital_good analog of the metered_api signal families), OR a NEW
-     archetype/signal (COVERAGE). Not yet a firm backlog item; promote when a concrete gap is identified. -->
+     count-stability guard, the digital_good analog of the metered_api signal families) — SHIPPED Cycle 101.
+     Superseded by the post-Cycle-101 frontier note above. -->
 - **[LOCAL] Cross-validate the `output-license` READOUT + signal on a REAL captured fixture** (TRUTH/METHOD,
   optional hardening, follow-up to Cycles 98–100). The signal + descriptor + methodology prose are all pinned
   in-cloud against the committed canonical fixtures + synthetic surfaces. For parity with the negative

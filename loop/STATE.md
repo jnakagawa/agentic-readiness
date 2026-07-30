@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 100
+- Cycle counter: 101
 - Started: 2026-07-23 (UTC)
 - RUNNER STALL (STILL GAPPED at 2026-07-30T07:16Z, Cycle 100; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
@@ -28,7 +28,31 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 101 METHOD — pinned the `digital_good` deliverable-rights leg (`output-license`) as
+  surface-read-ORDER invariant, a fresh perturbation AXIS orthogonal to the relabel/identity family
+  (payment-rail 79 / async-job 83 / api-auth 87 / error-contract / output-license 99). New guard
+  `test_offering_surface_order_invariance_output_license` (test_offering_canonical.py 18→19): replays the
+  canonical driftflight.com fixture, SPIES on the single `classify_offering` call to capture the real
+  multi-surface read order discovery fed it (restored in a `finally`), re-classifies FORWARD vs full
+  REVERSAL, and asserts the output-license fired COUNT, its SET of surfaces, and the digital_good claim
+  (strength + labels) invariant — plus the whole profile (ordered claimed list + NA set). WHY (capability):
+  a classification is a property of WHAT surfaces DECLARE, not the ORDER an agent fetched them in
+  (cross-site comparability rests on it); the generic order-invariance test only exercises a single-surface
+  digital_good bystander, while output-license fires 6× across 6 distinct surfaces on the .com fixture — the
+  non-vacuity the generic test cannot supply for the rights leg. Two non-vacuity checks (≥2 surfaces; the
+  reorder observably flips `surfaces_seen`); TEETH verified (an order-dependent early-stop reader yields 6
+  vs 5 → caught). SHIP CLASS: tests-only, off the scoring path → NOT peer-gated; git diff --name-only =
+  tests/test_offering_canonical.py ONLY, scoring-path diff EMPTY. Cloud bridge blocks direct main push →
+  branch loop/output-license-order-invariance + PR #51 + self-merge (squash 880e0a8). First duty: no open
+  peer-gated PR ([] at fire start); realigned main from stale orphan 37965190 → origin/main before start,
+  and to 880e0a8 after merge. test_offering_canonical 19/19; full suite 291 passed (was 290). Canonical PAIR
+  unchanged AND re-measured: replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. No
+  Slack (tests-only, moves no score; not sensitive-class; not the daily-digest cycle). RUNNER STILL GAPPED
+  (verify_20260728T234102Z 23:41Z ~32.5h old). Next COVERAGE — the output-license arc is now closed at
+  signal (98) / TRUTH-relabel (99) / READOUT (100) / METHOD-order (101); candidate: a NEW archetype/signal
+  for classify_offering, or a fresh order/count-stability axis for another digital_good signal
+  (generate-media / render / hosted-output); ACP/UCP/MPP + free-tier live-wiring stays [LOCAL].)
   (Cycle 100 READOUT — surfaced the `digital_good` deliverable-rights ("complete the job") leg in the
   PUBLIC methodology prose, the READOUT complement CLOSING the deliverable-rights arc opened by Cycle 98
   (COVERAGE — the `output-license` offering signal) and Cycle 99 (TRUTH — signal-level relabel-invariance).

@@ -1706,6 +1706,135 @@ def test_offering_relabel_invariance_output_license() -> None:
 
 
 # ---------------------------------------------------------------------------
+# The SECOND signal-level companion off the metered_api bank — and the THIRD
+# archetype to join the signal-level relabel family (after metered_api's seven
+# legs and digital_good's `output-license`): the subscription bank's `free-trial`
+# (Cycle 114 — a no-cost evaluation of a recurring offer BEFORE billing begins).
+# It is the subscription-archetype "provision the offer safely, without a human"
+# leg: an agent that can start a free trial evaluates the whole recurring plan at
+# $0 before committing to billing, so a subscription offer documenting one is more
+# agent-completable. A trial offer is a property of what a storefront GRANTS — a
+# free trial, a trial period/account/allowance, an N-day trial — never of WHO
+# grants it, so the signal must be identity-invariant under a host relabel.
+#
+# Why a SYNTHETIC surface, not the real fixture (unlike output-license, which
+# rides driftflight.com's captured evidence): the `free-trial` vocabulary is
+# host-free by nature ("free trial", "14-day trial account"), and on the real
+# canonical fixture the signal fires on the /llms.txt, /pricing and homepage
+# surfaces with NEITHER the host in the surface key NOR the host in the quote
+# window (verified live) — so a whole-fixture relabel would leave the free-trial
+# evidence byte-identical and the invariance would be VACUOUS. To make the relabel
+# genuinely rewrite the classifier's input at the free-trial signal, this guard
+# scans a synthetic subscription surface that deliberately seats the host INSIDE
+# the trial evidence: the host is the surface KEY prefix AND sits adjacent to the
+# trial phrase, so it lands inside the padded quote window (asserted non-vacuous
+# below). Relabel the host everywhere, re-scan, and the free-trial signal must
+# survive with the SAME match count, on the SAME host-normalized surface, its quote
+# STILL satisfying the live free-trial regex, with the vendor host absent from all
+# rewritten evidence. `_scan_surface` on synthetic prose is the same primitive the
+# noise-surface guard uses directly.
+#
+# TEETH (precision, the free-trial signal's defining risk): a sibling synthetic
+# surface carrying only the bare-"trial" false-positive senses the signal must
+# REFUSE — a clinical trial, a court trial "on trial", "trial and error" — fires
+# ZERO free-trial signals, proving the match keys on the FREE-trial STRUCTURE (a
+# free / N-day / period-account-allowance trial, or a start/try-free offer), not on
+# the word "trial"; and relabeling the host through that same distractor prose never
+# CONJURES a free-trial claim.
+# ---------------------------------------------------------------------------
+_FREE_TRIAL_LABEL = "free-trial"
+_FT_HOST = "acme-trials.example"  # a host bearing no archetype-signal word
+_FT_SURFACE = f"agents.{_FT_HOST}/pricing"
+# Host seated adjacent to the trial phrase so it lands in the padded quote window.
+_FT_PROSE = (
+    f"Start your {_FT_HOST} free trial today. {_FT_HOST} gives every new agent a "
+    f"14-day trial account at no cost, so an agent can evaluate the {_FT_HOST} plan "
+    f"before any recurring subscription charge begins."
+)
+# The bare-"trial" false-positive senses the free-trial signal must never match.
+_FT_DISTRACTOR_SURFACE = f"agents.{_FT_HOST}/legal"
+_FT_DISTRACTOR_PROSE = (
+    f"The {_FT_HOST} clinical trial began last spring; the defendant remains on "
+    f"trial. {_FT_HOST} learned this the hard way, through trial and error."
+)
+
+
+def _free_trial_signals(surface: str, text: str) -> list:
+    """The (surface, quote) pairs where the subscription free-trial signal fired."""
+    return sorted(
+        (s.surface, s.quote)
+        for s in _offering._scan_surface(surface, text)
+        if s.archetype == "subscription" and s.label == _FREE_TRIAL_LABEL
+    )
+
+
+def test_offering_relabel_invariance_free_trial() -> None:
+    """The subscription free-trial offer keys on the trial form, not the host."""
+    print("test_offering_relabel_invariance_free_trial")
+    base = _free_trial_signals(_FT_SURFACE, _FT_PROSE)
+
+    # The signal genuinely fires on the synthetic subscription evidence.
+    _check(
+        len(base) == 1,
+        f"free-trial fires exactly once on the synthetic subscription surface (got {len(base)})",
+    )
+    base_surf, base_quote = base[0]
+
+    # Non-vacuity: the host sits inside BOTH the surface key AND the padded quote
+    # window, so a host relabel genuinely rewrites the classifier's free-trial input
+    # — this is not a no-op over host-free evidence (the real-fixture failure mode).
+    _check(
+        _FT_HOST in base_surf and _FT_HOST in base_quote,
+        f"the host is inside the free-trial surface key AND quote window — relabel "
+        f"rewrites real signal input (surface {base_surf!r}, quote {base_quote!r})",
+    )
+
+    # TEETH: the bare-"trial" false-positive senses (clinical / court / error) fire
+    # ZERO free-trial — the signal keys on the FREE-trial structure, not "trial".
+    _check(
+        _free_trial_signals(_FT_DISTRACTOR_SURFACE, _FT_DISTRACTOR_PROSE) == [],
+        "bare-'trial' distractor prose (clinical trial / on trial / trial and error) "
+        "fires no free-trial signal — the match is structural, not the word 'trial'",
+    )
+
+    # Relabel the host everywhere (surface key + prose) and re-scan.
+    relab_surface = _FT_SURFACE.replace(_FT_HOST, _NEUTRAL_HOST)
+    relab_prose = _FT_PROSE.replace(_FT_HOST, _NEUTRAL_HOST)
+    _check(
+        _FT_HOST not in relab_surface and _FT_HOST not in relab_prose,
+        "every occurrence of the original host was relabeled out of the synthetic input",
+    )
+    relab = _free_trial_signals(relab_surface, relab_prose)
+
+    # (1) Same match count — the free-trial signal is neither lost nor conjured.
+    _check(
+        len(relab) == len(base) == 1,
+        f"free-trial match count invariant under relabel (base {len(base)}, relabel {len(relab)})",
+    )
+    relab_surf, relab_quote = relab[0]
+
+    # (2) The SAME logical surface carries the signal once the host label is
+    # normalized away — the signal did not migrate to a different surface.
+    _check(
+        relab_surf == base_surf.replace(_FT_HOST, _NEUTRAL_HOST),
+        "free-trial fires on the same (host-normalized) surface under relabel "
+        f"(base {base_surf!r}, relabel {relab_surf!r})",
+    )
+    # (3) The relabeled quote STILL satisfies the live free-trial regex (the fired
+    # form is a structural trial offer — a free / 14-day / trial-account offer, not
+    # the host) and names no vendor host — the match keyed on the GRANTED trial.
+    ft_re = dict(_offering._SIGNALS["subscription"])[_FREE_TRIAL_LABEL]
+    _check(
+        ft_re.search(relab_quote) is not None,
+        f"relabeled free-trial quote still matches the trial-structural signal: {relab_quote!r}",
+    )
+    _check(
+        _FT_HOST not in relab_quote and _FT_HOST not in relab_surf,
+        f"vendor host absent from relabeled free-trial evidence (surface {relab_surf!r})",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Surface-read ORDER invariance — the digital_good deliverable-RIGHTS leg.
 #
 # A fresh perturbation AXIS orthogonal to the relabel/identity family above. The
@@ -2395,6 +2524,7 @@ def main() -> int:
         test_offering_relabel_invariance_pagination,
         test_offering_relabel_invariance_cancel_job,
         test_offering_relabel_invariance_output_license,
+        test_offering_relabel_invariance_free_trial,
         test_offering_surface_order_invariance_output_license,
         test_offering_surface_order_invariance_org,
         test_offering_content_scale_invariance_org,

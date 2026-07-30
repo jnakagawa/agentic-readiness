@@ -554,11 +554,16 @@ design in-cloud, execute locally.
      pair asymmetry (whole-profile order-invariance previously only on .com; relabel family already spanned
      both). Tests-only, off scoring path, rubric v0.7, replay 24/24 / +39.4. PR #59 (squash 89f2636). See
      LOG Cycle 105. -->
-<!-- INVARIANCE FAMILIES COMPLETE (post-Cycle-105): both canonical pair-halves now carry BOTH
-     whole-profile surface-read-order-invariance AND relabel-invariance at the offering/task-selection
-     layer. Next METHOD candidate is a genuinely NEW perturbation axis (label/scale — e.g. surface-text
-     truncation/duplication stability, or signal-count monotonicity under evidence duplication), NOT
-     another order/relabel single-signal mirror. Promote when a concrete non-vacuous axis is identified. -->
+<!-- INVARIANCE FAMILIES COMPLETE (post-Cycle-109): both canonical pair-halves now carry THREE whole-profile
+     invariance axes at the offering/task-selection layer — surface-read ORDER (C105 closed the pair),
+     host RELABEL, and content SCALE. The SCALE axis (the "duplication stability" candidate this note named)
+     SHIPPED Cycle 109: `_assert_content_scale_invariance` (K=3× surface-body duplication → whole profile
+     byte-identical: ranked archetypes + per-archetype strength/(label,surface,quote) map + NA set), on
+     both `_org`/`_com`, with teeth (anchor raw match count 1→3, a count-based reader WOULD differ). PR #67
+     / squash 926e22f; offering canonical guard 23→25. A FURTHER METHOD axis on this path (e.g. surface-set
+     robustness: does adding an irrelevant 200 surface perturb the claimed set? or truncation stability) is
+     possible but lower-leverage than a NEW archetype/signal (COVERAGE). Promote only when a concrete
+     non-vacuous axis is identified — do NOT add another order/relabel/scale single-signal mirror. -->
 
 <!-- DONE 2026-07-30T14:2xZ (Cycle 107, TRUTH, branch+PR+self-merge, tests-only/score-neutral):
      "[TRUTH] Pin the new `pagination` metered_api signal as relabel-invariant" SHIPPED — the SIXTH
@@ -602,9 +607,11 @@ design in-cloud, execute locally.
      ALL layers — SIGNAL (C106), TRUTH-relabel (C107), READOUT (C108) — the sixth full metered_api arc. The
      order-/relabel-invariance families are complete across both canonical pair-halves. Remaining COVERAGE
      frontier is a NEW archetype/signal (the thin service_booking / data_retrieval banks need a fixture that
-     CLAIMS them — [LOCAL] fixture capture — before any signal there is non-vacuous in-cloud) or a fresh
-     METHOD perturbation axis (label/scale) on the offering/battery path. ACP/UCP/MPP + free-tier
-     live-wiring stays [LOCAL]. -->
+     CLAIMS them — [LOCAL] fixture capture — before any signal there is non-vacuous in-cloud). The fresh
+     METHOD perturbation axis this note named (label/scale) was DISCHARGED Cycle 109 (content-SCALE
+     invariance, PR #67) — see the INVARIANCE-FAMILIES-COMPLETE note above; the invariance families are now
+     three-fold and pair-symmetric, so COVERAGE (a new archetype/signal) now outranks another offering-path
+     METHOD mirror. ACP/UCP/MPP + free-tier live-wiring stays [LOCAL]. -->
 
 <!-- DONE 2026-07-30T06:2xZ (Cycle 99, TRUTH, branch+PR+self-merge, tests-only/score-neutral): "Pin the
      new `output-license` digital_good signal as HOST/VENDOR relabel-invariant" SHIPPED. New guard

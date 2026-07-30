@@ -9319,3 +9319,46 @@ api-auth/error-contract/test-mode); (b) READOUT — surface the "walk the paged
 collection to completion" leg in the public methodology prose alongside the other
 metered_api legs. A NEW archetype/signal remains open COVERAGE; ACP/UCP/MPP +
 free-tier live-wiring stays [LOCAL].
+
+## Cycle 107 — 2026-07-30T14:2xZ — TRUTH (branch+PR+self-merge, tests-only/score-neutral)
+
+**What.** Pinned the Cycle-106 `pagination` metered_api signal as RELABEL-INVARIANT
+— the SIXTH metered_api signal-level relabel guard, completing the family
+(payment-rail 79 / async-job 83 / api-auth 87 / error-contract / test-mode 103 /
+now pagination 107). New `test_offering_relabel_invariance_pagination` in
+`tests/test_offering_canonical.py` (22→23 in that file). It is a close mirror of
+the async-job guard: pagination fires on `api.replicate.com`'s `/openapi.json`
+("A URL pointing to the next page of collection objects") with a HOST-FREE quote
+and a relative `/openapi.json` surface, so this is a SURFACE-PRESENCE invariance
+anchored at the FIXTURE level (assert the host IS present in the fixture surfaces
+the classifier fetches, so the whole-fixture relabel does real work). Under a
+`api.replicate.com`→`vendor-neutral.test` relabel the signal must fire the SAME
+count (1), on the SAME host-normalized surface, each quote STILL satisfying the
+live pagination regex, vendor host absent from every piece of evidence.
+
+**Why (capability/rigor).** How an agent walks a paged collection to completion is
+a property of the API CONTRACT a storefront documents (cursor param / next-page
+URL / paginated response schema), never of WHO published it — so the classification
+must be identity-invariant, the same "close the gap" discipline as every prior
+signal-level relabel guard. Makes the Cycle-106 vendor-neutrality claim an
+executable tripwire.
+
+**Ship class.** Tests-only, off the scoring path (`scoring.py` does not import
+`offering` — grep-verified) → score-neutral, NOT peer-gated. `git diff` over
+`asrs/ rubric/ fixtures/` EMPTY; `git diff --name-only` = `tests/test_offering_canonical.py`
+ONLY. Cloud bridge blocks direct main push → branch loop/pagination-relabel-invariance
++ PR #63 + self-merge (squash 94fca4a). First duty: no open peer-gated PR ([] at
+fire start); realigned main to origin/main after merge.
+
+**Evidence / validation.** Offering canonical guard 22→23, all green. Full suite
+clean; `test_free_tier` 11/11 (after `pip install eth-account`, environment-only,
+nothing to commit). Canonical PAIR unchanged AND re-measured: replay guard 24/24,
+**46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7. RUNNER STILL GAPPED
+(verify_20260728T234102Z 23:41Z, ~38.7h old at fire).
+
+**Next hypothesis.** Focus rotates to READOUT: surface the "walk the paged
+collection to completion" pagination capability in the public methodology prose
+(the READOUT leg completing the pagination arc: COVERAGE 106 → TRUTH 107 →
+READOUT next), mirroring the four prior metered_api methodology legs. A NEW
+archetype/signal remains open COVERAGE; ACP/UCP/MPP + free-tier live-wiring stays
+[LOCAL].

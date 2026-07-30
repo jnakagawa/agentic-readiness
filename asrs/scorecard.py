@@ -419,6 +419,36 @@ relabels the API&rsquo;s identity end-to-end and confirms the async contract is
 still recognized, unchanged, with the vendor&rsquo;s name gone. This read is
 <b>diagnostic</b> &mdash; it names what the offer requires, <b>off the scoring
 path</b> &mdash; not a scored pillar.</p>
+<p><b>Aborting a runaway job</b> is the control leg of that same asynchronous
+contract, and it is where a metered API can quietly <b>bleed an agent&rsquo;s
+budget</b>: a long-running job &mdash; an image or video generation, a training
+run, a batch-inference request &mdash; keeps <b>billing for compute</b> while it
+runs, so an agent that detects a <b>runaway or wrong</b> generation and cannot
+<b>stop</b> it keeps paying for work it no longer wants. An offer that documents a
+<b>cancellation contract</b> &mdash; a <code>.../cancel</code> endpoint on the job
+resource, a <b>deadline header</b> that auto-cancels the job after a bound (a
+<code>Cancel-After</code> header), or a documented <b>terminal
+<code>canceled</code> state</b> &mdash; lets an agent <b>bound its own spend</b>
+and is more agent-completable than one that leaves it watching the meter run with
+no way to pull the plug. That capital-safety leg dovetails with ASRS&rsquo;s own
+<b>$0-only</b> ethos: an agent that can call a stop on its own spending is
+finishing the job on its own terms. So ASRS reads the documented cancellation
+contract as part of finishing the offer, keyed on vendor-neutral REST conventions
+(a cancel endpoint on a job resource, a <code>Cancel-After</code> deadline header,
+a <code>canceled</code> job state), the same category of open convention as REST,
+GraphQL or OpenAPI. The read is <b>precision-guarded</b>: a bare <code>cancel</code>
+word is <b>no signal</b> &mdash; &ldquo;cancel your subscription&rdquo;, &ldquo;cancel
+anytime&rdquo;, a retail &ldquo;cancel your order&rdquo;, a <b>cancellation policy</b>,
+&ldquo;cancel your booking&rdquo;, or &ldquo;the flight was canceled&rdquo; must never
+trip it &mdash; so the phrasing must name an actual job-cancellation facility (a
+<code>Cancel-After</code> header, a cancel verb naming an <b>async-job</b> noun, or a
+<code>.../cancel</code> endpoint on a job resource). Recognition keys on the
+<b>contract the API documents, not who published it</b>: that property is pinned by an
+<b>executable regression test</b> that relabels the API&rsquo;s identity end-to-end and
+confirms the cancellation contract is still recognized, unchanged, with the
+vendor&rsquo;s name gone. This read is <b>diagnostic</b> &mdash; it names whether the
+offer lets an agent stop a job it started to bound its spend, <b>off the scoring
+path</b> &mdash; not a scored pillar.</p>
 <p><b>Recovering from a failed call</b> is the last leg of finishing, and it is
 where an agent that has done everything else right still strands: calls fail
 &mdash; a credential expires, a rate limit trips, a request is malformed &mdash;

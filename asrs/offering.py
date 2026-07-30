@@ -390,7 +390,27 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
     ],
     "digital_good": [
         ("generation", re.compile(r"\b(text-to-image|image|video|audio|art)\s+generation\b", _F)),
-        ("generate-media", re.compile(r"\bgenerate(s|d)?\s+(an?\s+)?(image|video|audio|art)\b", _F)),
+        # A verb-phrase claim that the service GENERATES a media deliverable — the
+        # core "digital good" capability (the agent obtains a generated image /
+        # video / audio / art asset). Recall breadth over generation phrasing: the
+        # verb takes ALL its inflections (generate / generates / generated /
+        # generating — "we generate videos", "generating an image", the canonical
+        # pair's "Generated images"), the media noun takes its PLURAL ("generate
+        # videos", "Generated images"), and a leading article/possessive/definite
+        # is optional ("generate an image", "generate your art", "generate the
+        # audio"). Without the inflection+plural breadth a real generation
+        # storefront that says only "we generate videos" fires NO generate-media
+        # signal at all (the singular-imperative form was the only one recognized),
+        # so the digital_good archetype could be missed entirely on plural/participle
+        # copy. PRECISION preserved: the verb must still be `generat...` at a word
+        # boundary (so "regenerate a token" does NOT fire — no boundary before
+        # "generat" inside "regenerate") and the object must still be one of the
+        # media nouns at a word boundary (so "generate imagery" / "generate output"
+        # / "generate a response" / "generate reports" never fire — "imagery" has no
+        # boundary after "image", and "output"/"response"/"reports" are not media
+        # nouns). Vendor-neutral: only the media-category nouns, never a product name.
+        ("generate-media", re.compile(
+            r"\bgenerat(?:e|es|ed|ing)\s+(?:an?\s+|your\s+|the\s+)?(?:image|video|audio|art)s?\b", _F)),
         ("generations", re.compile(r"\bgenerations?\b", _F)),
         ("render", re.compile(r"\brenders?\b|\brendering\b", _F)),
         ("translation", re.compile(r"\btranslat(e|es|ion|ing)\b", _F)),

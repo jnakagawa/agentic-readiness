@@ -1351,6 +1351,97 @@ def test_error_contract_fires_on_real_captured_surfaces():
     print("  ok: error-contract is ABSENT on a real no-API retail storefront (non-vacuous)")
 
 
+def test_generate_media_recognizes_plural_and_participle_forms():
+    # The generate-media digital_good signal is the core "the service GENERATES a
+    # media deliverable" claim. It previously matched ONLY the singular imperative
+    # form ("generate an image"); the inflected verb ("generating", "generates",
+    # "generated") and the PLURAL media noun ("generate videos", "Generated images")
+    # were invisible to it. Each POSITIVE below is a real, common generation phrasing
+    # that must now fire generate-media; each NEGATIVE is generate-shaped noise that
+    # must NOT (a non-media object, or a "generat" substring inside another word).
+    # The verb must still be `generat...` at a word boundary and the object one of
+    # the vendor-neutral media nouns at a word boundary.
+    old = re.compile(r"\bgenerate(s|d)?\s+(an?\s+)?(image|video|audio|art)\b", re.IGNORECASE)
+
+    positives = {
+        "plural imperative": "We generate videos for your storefront on demand.",
+        "participle plural": "Our GPUs are busy generating images right now.",
+        "participle singular": "The endpoint returns while generating an image.",
+        "past-tense plural": "Generated images remain hosted for 90 days.",
+        "possessive object": "Generate your art directly from a text prompt.",
+        "definite object": "Generate the audio track from a script, programmatically.",
+        "plural audio": "The API generates audio clips per request.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("gen.test", {"homepage": text})
+        assert prof.claims("digital_good"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "digital_good"
+            for s in c.signals
+        }
+        assert "generate-media" in labels, (name, labels)
+    print(f"  ok: {len(positives)} inflected/plural generation phrasings each fire generate-media")
+
+    negatives = {
+        "non-media object": "We generate reports and generate revenue every quarter.",
+        "generic output": "Call the endpoint to generate output as JSON.",
+        "response noun": "The model will generate a response to your prompt.",
+        "regenerate token": "Rotate the key: regenerate a token from the dashboard.",
+        "imagery (no boundary)": "The prompt can generate imagery of any style.",
+        "smart-not-art": "Generate a smart summary of the document.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "generate-media" not in labels, (name, labels, prof.archetypes)
+    print(f"  ok: {len(negatives)} generate-shaped noise strings do NOT fire generate-media (precision)")
+
+    # NON-VACUOUS: the broadening does real work. A surface that carries ONLY the
+    # plural/participle form — and NO other digital_good signal (no "generation(s)",
+    # no "render", no "hosted URL") — would have claimed NOTHING under the old
+    # singular-only pattern; it now correctly claims digital_good. Proven by
+    # confirming the OLD pattern misses the very text the new signal fires on, so a
+    # real generation storefront using plural/participle copy is no longer
+    # under-classified to no archetype at all.
+    plural_only = "We generate videos and stream generated images to agents on demand."
+    assert old.search(plural_only) is None, "guard vacuous: old pattern already matched the plural form"
+    prof = classify_offering("plural.test", {"homepage": plural_only})
+    assert prof.archetypes == ["digital_good"], prof.archetypes
+    dg_labels = {s.label for c in prof.claimed for s in c.signals}
+    assert dg_labels == {"generate-media"}, dg_labels
+    print("  ok: a plural/participle-only surface now claims digital_good via generate-media (old pattern: NO match)")
+
+
+def test_generate_media_plural_gap_on_real_captured_docs():
+    # Real-evidence, NON-VACUOUS anchor: the recall gap was real on CAPTURED bytes,
+    # not just synthetic. Both canonical /docs pages carry the plural "Generated
+    # images" (captured verbatim in the committed fixtures) — a media-generation
+    # claim the OLD singular-only generate-media pattern could not match. The
+    # broadened pattern matches it; the old one does not. (The canonical pages ALSO
+    # carry the singular "Generate an image" earlier in the same surface, so this
+    # deepens generate-media's recall without changing the claimed SET, ORDER, or the
+    # first-match evidence quote — score-neutrality is pinned byte-for-byte by
+    # tests/test_offering_canonical.py and the classification is off the scoring path.)
+    old = re.compile(r"\bgenerate(s|d)?\s+(an?\s+)?(image|video|audio|art)\b", re.IGNORECASE)
+    new = dict(offering._SIGNALS["digital_good"])["generate-media"]
+    seen = 0
+    for domain in ("driftflight.com", "drift-flight.org"):
+        docs = _fixture_entry_text(domain, "/docs")
+        prose = strip_html(docs)
+        assert "Generated images" in prose, (domain, "fixture /docs lost its plural media prose")
+        # Isolate the plural claim (drop the singular that also appears on the page)
+        # to prove the broadening — not the pre-existing singular — is what matches it.
+        idx = prose.index("Generated images")
+        window = prose[idx: idx + len("Generated images")]
+        assert new.search(window), (domain, window)
+        assert old.search(window) is None, (domain, "old pattern unexpectedly matched the plural form")
+        seen += 1
+    assert seen == 2
+    print("  ok: the canonical /docs plural 'Generated images' fires the broadened generate-media (old: NO match)")
+
+
 def main() -> int:
     tests = [
         test_api_storefront_claims_agent_native_not_physical,
@@ -1386,6 +1477,8 @@ def main() -> int:
         test_api_auth_fires_on_real_captured_surfaces,
         test_error_contract_precision_synthetic,
         test_error_contract_fires_on_real_captured_surfaces,
+        test_generate_media_recognizes_plural_and_participle_forms,
+        test_generate_media_plural_gap_on_real_captured_docs,
         test_strip_html_drops_script_style_and_tags,
     ]
     failed = 0

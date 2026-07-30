@@ -266,6 +266,129 @@ def test_digital_good_descriptor_recovers_plural_media():
            "the singular media noun still -> 'generated image' (unchanged)")
 
 
+# --- Descriptor relabel-invariance (the descriptor-layer vendor-neutrality guard) -
+#
+# `test_offering_canonical.py` makes the offering CLASSIFIER vendor-neutral an
+# executable tripwire: relabel a fixture's host everywhere and the CLAIMED/NA
+# partition is identical, proving task SELECTION keys on evidence, not identity.
+# The offering-relative digital_good BATTERY task carries a second identity risk
+# one layer down: its {descriptor} slot (`_digital_good_descriptor`) derives the
+# media noun ("generated image" / "translated document") from the fired signal's
+# label + quote — and the host string appears INSIDE that evidence (the canonical
+# generate-media / hosted-output quotes embed `…api.<host>/…`). If the descriptor
+# ever keyed on the host — deriving the task noun from a domain word — two
+# storefronts offering the same capability would get DIFFERENT task text because
+# of their NAMES, the vendor-rigging the directive forbids, applied to the task
+# WORDING rather than task selection. The methodology prose now CLAIMS the noun
+# "comes from the site, not ASRS" and is "injection-safe" (Cycle 96); this makes
+# that claim an executable tripwire at the descriptor layer — the descriptor-level
+# analog of the signal-level relabel guards.
+#
+# Method (mirrors `_assert_offering_relabel_invariant`): classify a synthetic
+# surface that names the host INSIDE the digital_good evidence, extract the real
+# claim, relabel the host everywhere and re-classify, and assert the derived
+# descriptor is byte-identical. NON-VACUOUS by substrate: the host genuinely
+# appears in the base claim's evidence and the relabel genuinely changes the quote
+# text the descriptor reads (both asserted), and the neutral host carries no media
+# word — so invariance is real, not a no-op. `_descriptor_relabel_has_teeth`
+# proves the assertion can fail: a host-keyed descriptor IS caught by it.
+_NEUTRAL_HOST = "vendor-neutral.test"  # reserved .test TLD; no media-bank word
+
+# A generation storefront that names its own host inside the digital_good
+# evidence — so relabeling the host genuinely rewrites the quote the descriptor
+# reads (the media noun "images" is what should drive the descriptor, not the host).
+_MEDIA_HOST_HOMEPAGE = """
+<html><body>
+<h1>Acme — text-to-image API</h1>
+<p>POST https://api.acme-vendor.test/v1/images/generate with a prompt.
+Pay per call. Generated images are returned as hosted URLs from api.acme-vendor.test.</p>
+<p>Subscription $5 per month.</p>
+</body></html>
+"""
+# A translation storefront that names its host inside the digital_good evidence —
+# the "translated document" branch keys on the `translation` LABEL, also not the host.
+_TRANSLATE_HOST_HOMEPAGE = """
+<html><body>
+<h1>Lingua — translation API on api.acme-vendor.test</h1>
+<p>GET https://api.acme-vendor.test/v1/translate — pay per request. We translate a
+short document between two languages at api.acme-vendor.test. Subscription $9 per month.</p>
+</body></html>
+"""
+_HOST = "acme-vendor.test"
+
+
+def _digital_good_claim(domain: str, homepage: str) -> ArchetypeClaim:
+    prof = classify_offering(domain, {"homepage": homepage})
+    claim = next((c for c in prof.claimed if c.archetype == "digital_good"), None)
+    _check(claim is not None, f"{domain}: a digital_good claim is discovered (test substrate is real)")
+    return claim
+
+
+def _assert_descriptor_relabel_invariant(homepage: str, expected: str) -> None:
+    base = _digital_good_claim(f"api.{_HOST}", homepage)
+    base_desc = _digital_good_descriptor(base)
+    _check(base_desc == expected,
+           f"base descriptor is {expected!r} (got {base_desc!r})")
+
+    # Non-vacuity: the host appears in the digital_good evidence the descriptor
+    # reads, so relabeling genuinely changes that input (not a no-op).
+    host_in_evidence = any(_HOST in s.quote or _HOST in s.label for s in base.signals)
+    _check(host_in_evidence,
+           f"the host appears in the digital_good evidence (relabel changes descriptor "
+           "input — the guard is non-vacuous)")
+
+    relabeled_home = homepage.replace(_HOST, _NEUTRAL_HOST)
+    relab = _digital_good_claim(f"api.{_NEUTRAL_HOST}", relabeled_home)
+    _check(all(_HOST not in s.quote for s in relab.signals),
+           "every occurrence of the host was relabeled out of the evidence")
+    _check([s.quote for s in relab.signals] != [s.quote for s in base.signals],
+           "the relabel genuinely changed the evidence quotes (non-vacuous)")
+
+    relab_desc = _digital_good_descriptor(relab)
+    _check(relab_desc == base_desc,
+           f"digital_good descriptor is IDENTITY-invariant under host relabel "
+           f"(base {base_desc!r}, relabel {relab_desc!r}) — the media noun keys on "
+           "the site's VOCABULARY, not its host/vendor")
+
+
+def test_digital_good_descriptor_is_relabel_invariant_media():
+    # The 'generated image' (media-noun) branch: the descriptor keys on the media
+    # word 'images' in the fired quote, not the host embedded alongside it.
+    _assert_descriptor_relabel_invariant(_MEDIA_HOST_HOMEPAGE, "generated image")
+
+
+def test_digital_good_descriptor_is_relabel_invariant_translation():
+    # The 'translated document' branch: the descriptor keys on the `translation`
+    # signal LABEL, not the host embedded in the fired quote.
+    _assert_descriptor_relabel_invariant(_TRANSLATE_HOST_HOMEPAGE, "translated document")
+
+
+def test_descriptor_relabel_has_teeth():
+    # The relabel-invariance assertion is only meaningful if a host-keyed descriptor
+    # WOULD be caught. Simulate one (deriving the noun from the host string) and
+    # confirm base vs relabel descriptors DIFFER under it — so the invariant tests
+    # above are refuting a real failure mode, not asserting a tautology.
+    base = _digital_good_claim(f"api.{_HOST}", _MEDIA_HOST_HOMEPAGE)
+    relab = _digital_good_claim(
+        f"api.{_NEUTRAL_HOST}", _MEDIA_HOST_HOMEPAGE.replace(_HOST, _NEUTRAL_HOST))
+
+    def _host_keyed_descriptor(claim):
+        # A DELIBERATELY vendor-rigged descriptor: the exact failure the real
+        # descriptor must not have — noun taken from a host word in the evidence.
+        for sig in claim.signals:
+            if "acme" in sig.quote:
+                return "acme output"
+            if "neutral" in sig.quote:
+                return "neutral output"
+        return "digital output"
+
+    _check(_host_keyed_descriptor(base) != _host_keyed_descriptor(relab),
+           "a host-keyed descriptor is caught by the relabel comparison (the guard has teeth)")
+    # ...while the REAL descriptor is invariant on the same pair (the property held).
+    _check(_digital_good_descriptor(base) == _digital_good_descriptor(relab),
+           "the real descriptor stays invariant on the same relabel pair the stub flips")
+
+
 def test_instantiation_touches_no_scoring_state():
     # Sanity: instantiate_battery returns a Battery of BatteryTask and nothing
     # more — it constructs a definition, it does not score. (The aggregation math
@@ -285,6 +408,9 @@ def main() -> int:
         test_same_archetype_is_comparable_across_sites,
         test_digital_good_descriptor_branches,
         test_digital_good_descriptor_recovers_plural_media,
+        test_digital_good_descriptor_is_relabel_invariant_media,
+        test_digital_good_descriptor_is_relabel_invariant_translation,
+        test_descriptor_relabel_has_teeth,
         test_instantiation_touches_no_scoring_state,
     ]
     failed = 0

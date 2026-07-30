@@ -200,6 +200,72 @@ def test_digital_good_descriptor_branches():
            "a missing claim -> 'digital output' fallback (never crashes)")
 
 
+def test_digital_good_descriptor_recovers_plural_media():
+    """A PLURAL-only fired media quote yields the SAME singular 'generated <noun>'
+    descriptor as the singular form — the descriptor half of the Cycle-94
+    generate-media plural/participle recall fix.
+
+    Before this, ``_MEDIA_RE`` recognised only the SINGULAR media noun, so a
+    digital_good claim whose ONLY fired quote was plural ("Generated images",
+    "we generate videos") fell back to the generic "digital output" descriptor
+    even though the generate-media SIGNAL (asrs/offering.py) had fired on that
+    same plural surface — a vaguer battery task than the site's own offering
+    warranted. The descriptor now matches the signal: plural in, singular
+    "generated <noun>" out. Off the scoring path (``--battery auto`` task text).
+    """
+    import re as _re
+
+    # (a) The REAL canonical /docs phrasing ("Generated images", Cycle 94) as the
+    #     ONLY fired media quote -> the descriptor recovers "generated image",
+    #     NOT the generic fallback.
+    plural_claim = ArchetypeClaim(
+        archetype="digital_good",
+        signals=[ArchetypeSignal("digital_good", "/docs", "generate-media",
+                                 "Generated images are returned as hosted URLs")],
+    )
+    _check(_digital_good_descriptor(plural_claim) == "generated image",
+           "a plural-only media quote ('Generated images') -> 'generated image' descriptor")
+
+    # TEETH / non-vacuity: the pre-fix SINGULAR-ONLY pattern does NOT match that
+    # quote, so this recovery closes a REAL gap (the test would fail against the
+    # old code — it is not vacuously green).
+    _old_singular_only = _re.compile(r"\b(image|video|audio|art)\b", _re.IGNORECASE)
+    _check(_old_singular_only.search("Generated images are returned as hosted URLs") is None,
+           "the pre-fix singular-only media pattern does NOT match 'images' (the gap was real)")
+
+    # (b) Each media noun recovers its SINGULAR descriptor from the plural form.
+    for quote, noun in (
+        ("we generate videos on demand", "video"),
+        ("stream generated images to agents", "image"),
+        ("a gallery of generative arts", "art"),
+    ):
+        c = ArchetypeClaim(
+            archetype="digital_good",
+            signals=[ArchetypeSignal("digital_good", "homepage", "generate-media", quote)],
+        )
+        _check(_digital_good_descriptor(c) == f"generated {noun}",
+               f"plural in {quote!r} -> 'generated {noun}' descriptor")
+
+    # PRECISION: a plural NON-media noun ('reports'/'outputs') still falls back —
+    # the trailing ``s?`` pluralises only the media bank, it never invents a
+    # media descriptor from a non-media word.
+    non_media = ArchetypeClaim(
+        archetype="digital_good",
+        signals=[ArchetypeSignal("digital_good", "homepage", "hosted-output",
+                                 "generated reports and outputs, downloadable")],
+    )
+    _check(_digital_good_descriptor(non_media) == "digital output",
+           "a plural NON-media noun ('reports'/'outputs') -> 'digital output' fallback (precision)")
+
+    # The SINGULAR form is unchanged (regression pin for the existing branch).
+    singular = ArchetypeClaim(
+        archetype="digital_good",
+        signals=[ArchetypeSignal("digital_good", "homepage", "generate-media", "fast image generation for agents")],
+    )
+    _check(_digital_good_descriptor(singular) == "generated image",
+           "the singular media noun still -> 'generated image' (unchanged)")
+
+
 def test_instantiation_touches_no_scoring_state():
     # Sanity: instantiate_battery returns a Battery of BatteryTask and nothing
     # more — it constructs a definition, it does not score. (The aggregation math
@@ -218,6 +284,7 @@ def main() -> int:
         test_ids_are_archetypes_in_template_bank_order,
         test_same_archetype_is_comparable_across_sites,
         test_digital_good_descriptor_branches,
+        test_digital_good_descriptor_recovers_plural_media,
         test_instantiation_touches_no_scoring_state,
     ]
     failed = 0

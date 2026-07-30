@@ -1,10 +1,10 @@
 # Loop state
 
-- Cycle counter: 93
+- Cycle counter: 94
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-30T00:12Z, Cycle 93; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-30T01:12Z, Cycle 94; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~24h31m old at the 00:12Z fire; no newer :41 artifact through 23:41Z Jul-29 (25 consecutive
+  Jul-28 = ~25h31m old at the 01:12Z fire; no newer :41 artifact through 00:41Z Jul-30 (26+ consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine → FLAGGED in the Cycle-86 16:00 UTC digest
   (the 16:12Z fire was the FIRST cycle after 16:00Z; the ~16.5h runner gap was flagged loudly there;
   the Cycle-87 17:12Z through this Cycle-93 00:12Z-Jul-30 fires are NOT the first-after-16:00 cycle
@@ -28,7 +28,41 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 94 COVERAGE — broadened the `digital_good` GENERATE-MEDIA signal (`asrs/offering.py`) from the
+  singular-imperative form only (`generate an image`) to ALL verb inflections (generate/generates/
+  generated/generating), the PLURAL media noun (`generate videos`, the canonical pair's `Generated
+  images`), and an optional article/possessive/definite object. WHY: generate-media is the core "the
+  service GENERATES a media deliverable" digital-good claim; the old pattern missed the two most common
+  real phrasings (present participle "generating images", plural "we generate videos"), so a generation
+  storefront using only those forms fired NO generate-media signal and — absent another digital_good
+  signal — could miss the digital_good archetype entirely (a real recall gap in coverage of the generation
+  storefront TYPE). Precision preserved: verb stays `generat...` at a word boundary ("regenerate a token"
+  does NOT fire) and object a media noun at a word boundary ("generate imagery/output/response/reports"
+  never fire); 6 negatives reject, vendor-neutral (only media-category nouns). SCORE-NEUTRAL by
+  construction AND VERIFIED: classification byte-identical on ALL FIVE committed fixtures (the singular
+  form already fired on the canonical pair → claimed SET+ORDER+first-match quote unchanged); git diff
+  --name-only = offering.py + test_offering.py ONLY; git diff over scoring.py/rubric/fixtures/batteries/
+  protocols.py/battery.py/probes/fetch.py EMPTY → scoring path byte-for-byte untouched → rubric v0.7
+  (discovery off the scoring path) → NOT peer-gated. NON-VACUOUS: test_offering.py 34→36 —
+  `test_generate_media_recognizes_plural_and_participle_forms` (7 inflected/plural positives fire, 6
+  negatives reject, and a plural/participle-only surface now claims digital_good via generate-media alone
+  while the OLD pattern is asserted to match NOTHING) + `test_generate_media_plural_gap_on_real_captured_docs`
+  (the committed canonical `/docs` plural `Generated images`, isolated from the singular form, fires the
+  broadened signal, old one does not — the gap proven on real captured bytes). Canonical PAIR unchanged
+  AND re-measured (replay guard 46.1 F / 85.5 B / +39.4, 0 replay-miss); offering-canonical 17/17
+  (claimed set + NA unchanged); full suite 22 files green (test_free_tier 11/11 with eth-account). Cloud
+  bridge blocks direct main push → branch loop/generate-media-plural-recall + PR #37 + self-merge (squash
+  e207040; NOT peer-gated). First duty: no open peer-gated PR ([]); realigned main to origin/main e207040
+  after merge. No Slack (score-neutral, moves no score; this 01:12Z-Jul-30 fire is after the Cycle-86
+  16:12Z daily digest, so not the first-after-16:00 cycle). RUNNER STILL GAPPED (verify_20260728T234102Z
+  23:41Z ~25.5h old). Next TRUTH — candidate: a calibration/relabel guard is a weak fit (generate-media is
+  host-free/vendor-neutral); a stronger TRUTH is an inflection/plural guard for the digital_good DESCRIPTOR
+  derivation (`_digital_good_descriptor` / `_MEDIA_RE` in `asrs/battery.py`, which shares the singular-noun
+  assumption — a plural-only quote falls back to the generic "digital output"), or a [LOCAL] calibration
+  confirmation that plural/participle generation storefronts classify digital_good once the population grows.
+  In-cloud offering COVERAGE frontier is otherwise thin (metered_api saturated; service_booking/
+  data_retrieval lack committed evidence → vacuous; structured catalog/pricing JSON are [LOCAL]).)
   (Cycle 93 METHOD — pinned TRIAL-ORDER INVARIANCE of `asrs.reliability.panel_reliability`, the
   within-panel reproducibility metric whose `verdict_stability` gates the CITABLE-vs-PROVISIONAL
   quotability verdict — the LOAD-BEARING member of the presentation-order invariance family that

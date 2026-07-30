@@ -8383,3 +8383,87 @@ calibration population grows. The order-invariance family is now COMPLETE across
 all five measurement surfaces (battery / leaderboard / offering / scoring /
 reliability) — a future METHOD candidate is a fresh perturbation AXIS (label /
 scale) rather than another order rung.
+
+## Cycle 94 — 2026-07-30T01:12Z — COVERAGE (branch+PR+self-merge; discovery-only, off scoring path, score-neutral)
+
+**What.** Broadened the `digital_good` **generate-media** signal in
+`asrs/offering.py` from the singular-imperative form only
+(`\bgenerate(s|d)?\s+(an?\s+)?(image|video|audio|art)\b`) to all verb
+inflections (generate / generates / generated / generating), the PLURAL media
+noun (`generate videos`, the canonical pair's `Generated images`), and an
+optional leading article/possessive/definite:
+`\bgenerat(?:e|es|ed|ing)\s+(?:an?\s+|your\s+|the\s+)?(?:image|video|audio|art)s?\b`.
+
+**Why (capability lens).** generate-media is the core "the service GENERATES a
+media deliverable" claim — the digital-good capability (the agent obtains a
+generated image/video/audio/art asset). The old singular-imperative-only pattern
+missed the two most common real phrasings: the present participle ("generating
+images") and the plural noun ("we generate videos"). A real generation storefront
+whose copy uses only those forms fired NO generate-media signal, and absent
+another digital_good signal could miss the digital_good archetype ENTIRELY — a
+recall gap in measurement coverage of the generation storefront type. Confirmed
+non-vacuously on CAPTURED bytes: both canonical `/docs` pages carry the plural
+`Generated images`, invisible to the old pattern.
+
+**Precision (preserved, vendor-neutral).** The verb must stay `generat...` at a
+word boundary (`regenerate a token` does NOT fire — no boundary before `generat`
+inside `regenerate`) and the object one of the media nouns at a word boundary
+(`generate imagery` / `generate output` / `generate a response` / `generate
+reports` never fire — "imagery" has no boundary after "image"; the others are not
+media nouns). 6 generate-shaped negatives reject; only media-category nouns named,
+never a product.
+
+**Scope / safety.** Score-neutral BY CONSTRUCTION and VERIFIED: classification
+byte-identical on ALL FIVE committed fixtures (snapshot diff empty) — the singular
+form already fired generate-media on the canonical pair, so the claimed SET, ORDER,
+and first-match evidence quote are unchanged. `git diff --name-only` =
+`asrs/offering.py` + `tests/test_offering.py` ONLY; `git diff` over
+`scoring.py`/`rubric`/`fixtures`/`batteries`/`protocols.py`/`battery.py`/`probes`/`fetch.py`
+EMPTY → scoring path byte-for-byte untouched → rubric **v0.7** (discovery off the
+scoring path, `--battery auto` only). NOT peer-gated — discovery-only, off scoring
+path, score-neutral.
+
+**Evidence.** `test_offering.py` +2 (34→36):
+`test_generate_media_recognizes_plural_and_participle_forms` (7 inflected/plural
+positives each fire generate-media; 6 generate-shaped negatives reject; NON-VACUITY
+— a plural/participle-only surface with no other digital_good signal now claims
+digital_good via generate-media alone, and the OLD pattern is asserted to match
+NOTHING on that text) and
+`test_generate_media_plural_gap_on_real_captured_docs` (the committed canonical
+`/docs` plural `Generated images`, isolated from the singular form on the same
+page, fires the broadened signal while the old singular-only pattern does not —
+proving the gap on real captured bytes). Full suite 22 files green
+(`test_free_tier` 11/11 with eth-account); offering-canonical 17/17 (claimed set +
+NA unchanged), battery-instantiate-canonical green.
+
+**Canonical pair (regression signal).** Replay guard `test_canonical_replay.py`,
+**46.1 F / 85.5 B / +39.4**, 0 replay-miss — UNCHANGED (scoring path untouched).
+Cloud bridge blocks direct main push → branch `loop/generate-media-plural-recall`
++ PR #37 + self-merge (squash e207040).
+
+**First duty.** No open peer-gated PR ([]); realigned main to origin/main e207040
+after merge.
+
+**Runner.** STILL GAPPED — newest `runs/local/verify_20260728T234102Z.json` (23:41Z
+Jul-28) is ~25.5h old at this 01:12Z-Jul-30 fire (past the 6h floor; first breached
+Cycle 76). Cloud cannot repair the local machine; flagged in the Cycle-86 16:00 UTC
+digest and re-flagged in each daily digest until it clears. This 01:12Z fire is NOT
+the first-after-16:00 cycle (next is ~16:12Z Jul-30), so no re-digest. The in-cloud
+replay guard remains the independent live regression signal, so benchmark integrity
+is intact — a heartbeat gap, not a scoring outage.
+
+**No Slack** (score-neutral, moves no score; not a sensitive-class PR; not the
+first-after-16:00 digest cycle).
+
+**Next — TRUTH.** Rotation advances METHOD→COVERAGE→**TRUTH**→READOUT. Candidate: a
+relabel/perturbation-invariance guard is not the natural fit here (generate-media
+is host-free and vendor-neutral already). Better TRUTH candidate — an executable
+guard that the broadened generate-media recall is calibrated against REALITY: e.g.
+confirm on the [LOCAL] calibration population (once it grows) that generation
+storefronts using plural/participle copy classify as digital_good, or a
+surface-read-order / inflection-invariance guard for the digital_good descriptor
+derivation (`_digital_good_descriptor` in `asrs/battery.py`, whose `_MEDIA_RE`
+shares the singular-noun assumption — a plural-only quote would fall back to the
+generic "digital output"). The in-cloud offering COVERAGE frontier is otherwise
+thin (metered_api saturated; service_booking/data_retrieval lack committed evidence
+→ vacuous in-cloud; structured catalog/pricing JSON are [LOCAL], 404 on fixtures).

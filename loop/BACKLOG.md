@@ -495,6 +495,29 @@ design in-cloud, execute locally.
 
 ## P1
 
+- **digital_good DESCRIPTOR shares the singular-media-noun assumption the generate-media SIGNAL just shed**
+  (TRUTH/METHOD, cloud-doable, follow-up to Cycle 94). Cycle 94 broadened the `generate-media` signal in
+  `asrs/offering.py` to recognise inflected/plural media forms ("we generate videos", "generating images",
+  the canonical `Generated images"). But `asrs/battery._digital_good_descriptor` still derives the
+  intent's `{descriptor}` slot via `_MEDIA_RE = \b(image|video|audio|art)\b` — SINGULAR nouns only — so a
+  claim whose ONLY fired media quote is plural ("Generated images") falls back to the generic "digital
+  output" instead of "generated image". A generation storefront that never uses the singular noun gets a
+  vaguer battery task than it should. Candidate TRUTH increment: extend `_MEDIA_RE` to the plural (`s?`)
+  and add an inflection/plural guard proving the descriptor recovers "generated <noun>" from a plural-only
+  quote. Score-neutral (descriptor is off the scoring path, `--battery auto` only); non-vacuous on the
+  canonical `/docs` "Generated images". Keeps the generate-media SIGNAL and its DESCRIPTOR consistent.
+
+<!-- DONE 2026-07-30T01:12Z (Cycle 94, COVERAGE, branch+PR+self-merge, discovery-only/score-neutral):
+     generate-media plural/participle RECALL GAP closed. Broadened the digital_good generate-media signal
+     from singular-imperative only (`generate an image`) to all verb inflections + plural media noun +
+     optional article/possessive object. A generation storefront using only "we generate videos" /
+     "generating images" previously fired NO generate-media signal (could miss digital_good entirely); now
+     recognised. Precision preserved (regenerate/imagery/output/response/reports reject). Score-neutral:
+     classification byte-identical on all five committed fixtures (singular already fired on canonical →
+     claimed set/order/quote unchanged); rubric v0.7 untouched, replay guard 46.1 F / 85.5 B / +39.4.
+     test_offering 34→36 (precision+non-vacuity guard + real-captured-/docs plural anchor). PR #37 (squash
+     e207040). See LOG Cycle 94. Follow-up (descriptor plural) is the P1 item above. -->
+
 <!-- DONE 2026-07-29T05:1xZ (Cycle 75, TRUTH, branch+PR+self-merge, tests-only/score-neutral):
      "Relabel-invariance for the api.replicate.com machine-surface fixture" SHIPPED. New
      `test_offering_relabel_invariance_machine` (test_offering_canonical 12→13) relabels the host to

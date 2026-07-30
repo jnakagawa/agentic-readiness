@@ -560,16 +560,24 @@ design in-cloud, execute locally.
      truncation/duplication stability, or signal-count monotonicity under evidence duplication), NOT
      another order/relabel single-signal mirror. Promote when a concrete non-vacuous axis is identified. -->
 
-- **[TRUTH] Pin the new `pagination` metered_api signal as relabel-invariant** (follow-up to Cycle 106).
-  Add a signal-level relabel guard — the SIXTH in the family (payment-rail C79 / async-job C83 / api-auth
-  C87 / error-contract C90 / test-mode C103, all metered_api). The `pagination` vocabulary (cursor query
-  param, next/previous page URL, paginated collection response) is HOST-FREE convention language, so the
-  fired quotes carry no vendor; the natural non-vacuous anchor is api.replicate.com (where the signal fires
-  on `/openapi.json`), whose recorded fixture embeds the host in surface KEYS (`api.replicate.com`) and in
-  the `?cursor=…` URL. Mirror `test_offering_relabel_invariance_error_contract`: whole-fixture relabel of
-  the host → re-classify → assert the `pagination` label still fires the SAME count on the SAME (relabeled)
-  surface, with teeth (a host-keyed pagination stub IS caught). Tests-only, off the scoring path → NOT
-  peer-gated. In-cloud doable (replicate fixture is committed).
+<!-- DONE 2026-07-30T14:2xZ (Cycle 107, TRUTH, branch+PR+self-merge, tests-only/score-neutral):
+     "[TRUTH] Pin the new `pagination` metered_api signal as relabel-invariant" SHIPPED — the SIXTH
+     metered_api signal-level relabel guard, completing the family (payment-rail C79 / async-job C83 /
+     api-auth C87 / error-contract C90 / test-mode C103 / now pagination C107). New
+     `test_offering_relabel_invariance_pagination` in `tests/test_offering_canonical.py` (22→23). It
+     mirrors the async-job guard rather than error-contract as the item first sketched: pagination fires
+     ONCE on `api.replicate.com`'s `/openapi.json` with a HOST-FREE quote ("A URL pointing to the next
+     page of collection objects") AND a relative `/openapi.json` surface, so it is a SURFACE-PRESENCE
+     invariance anchored at the FIXTURE level (assert the host IS present in the fixture surfaces the
+     classifier fetches → the whole-fixture relabel does real work), not a quote-anchored one. Under
+     `api.replicate.com`→`vendor-neutral.test` relabel: SAME count (1), SAME host-normalized surface, each
+     quote STILL matching the live pagination regex, vendor host absent. Tests-only, off the scoring path
+     (`scoring.py` does not import `offering` — grep-verified) → score-neutral, NOT peer-gated. git diff --
+     asrs/ rubric/ fixtures/ EMPTY; git diff --name-only = tests/test_offering_canonical.py ONLY. Cloud
+     bridge blocks direct main push → branch loop/pagination-relabel-invariance + PR #63 + self-merge
+     (squash 94fca4a). Full suite clean; test_free_tier 11/11 (after `pip install eth-account`,
+     environment-only). Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. See LOG
+     Cycle 107. The READOUT leg closing the arc is the item below. -->
 - **[READOUT] Surface the `pagination` "walk the paged collection to completion" leg in the methodology
   prose** (follow-up to Cycle 106; the READOUT complement, mirroring the metered_api leg arcs
   payment-rail 78/79/80 · async-job 82/83/84 · api-auth 86/87/88 · error-contract 90/91/92 · test-mode

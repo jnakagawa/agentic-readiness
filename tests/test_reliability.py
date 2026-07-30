@@ -14,7 +14,13 @@ Covers the load-bearing behaviours with synthetic ``BehavioralRun`` fixtures
     flipped_checkpoints in ladder order and lowers stability by the right amount;
   - the trust-event flip (refuse/warn <-> clean) is a SEPARATE dimension from the
     checkpoint ladder and does not perturb verdict_stability;
-  - the descriptive band label tracks the stability number.
+  - the descriptive band label tracks the stability number;
+  - the panel's reproducibility verdict is TRIAL-ORDER INVARIANT: reproducibility
+    is a property of the SET of run outcomes, not the sequence the shopper
+    enumerated its model x trial draws in (Cycle 93 METHOD rigor tripwire — the
+    reliability-layer member of the presentation-order invariance family that
+    already covers the battery, the leaderboard, offering classification, and the
+    scorer's multi-cap accumulation).
 """
 
 from __future__ import annotations
@@ -187,6 +193,97 @@ def test_mixed_band() -> None:
     _check(rel.label == "mixed", f"label mixed, got {rel.label!r}")
 
 
+# ---------------------------------------------------------------------------
+# 9. Trial-order invariance (METHOD rigor tripwire): the panel's reproducibility
+#    verdict is a property of WHAT the valid runs observed, never of the ORDER the
+#    shopper enumerated its model x trial draws in. This is the reliability-layer
+#    member of the presentation-order invariance family (battery aggregation,
+#    Cycle 73; leaderboard ranking, Cycle 77; offering classification, Cycle 81;
+#    scorer multi-cap accumulation, Cycle 85) — the one place it was never pinned,
+#    and the load-bearing one: verdict_stability gates the CITABLE vs PROVISIONAL
+#    quotability verdict the whole benchmark's credibility rests on, so a latent
+#    order-dependence here would silently corrupt "is this number safe to cite?".
+#    Order-invariant by construction today (every metric is a COUNT over the valid
+#    runs, and the checkpoint rows follow the fixed ladder, not run order); this
+#    catches a future refactor that leaks run-order into a count, a selection, or a
+#    per-checkpoint row. Non-vacuous: the panel is built so verdict_stability is
+#    strictly inside (0, 1) with a genuine mix of unanimous + flipped checkpoints
+#    and a split trust signal, and excluded runs (env-blocked + failed) are
+#    interleaved so the VALID-RUN SELECTION is exercised for order-independence too
+#    (invariant #4 — which draws count must not depend on their arrival position).
+# ---------------------------------------------------------------------------
+def _orderings(seq):
+    """A few DETERMINISTIC reorderings of ``seq`` (no RNG — reproducible): the
+    identity, the full reverse, and two rotations, so the valid runs AND the
+    interleaved excluded runs arrive in genuinely different positions."""
+    s = list(seq)
+    n = len(s)
+    return [
+        list(s),
+        list(reversed(s)),
+        s[n // 2:] + s[: n // 2],
+        s[1:] + s[:1],
+    ]
+
+
+def test_panel_reliability_is_trial_order_invariant() -> None:
+    print("test_panel_reliability_is_trial_order_invariant")
+    base = dict.fromkeys(_KEYS, True)
+    # Four valid runs with a deliberate mix: found_product/understood_pricing
+    # unanimous; found_purchase_path 3/4 (minority .25); machine_payable_path 2/2
+    # (minority .5); no_human_gate unanimous-False. minority_fractions
+    # = [0, 0, .25, .5, 0] -> mean .15 -> verdict_stability 1 - 2*.15 = 0.7 (mixed).
+    # Trust: 3 warned / 1 clean -> agreement .75, not unanimous.
+    v1 = _run("claude", 1, trust_events=["warn: unproven"],
+              **{**base, "no_human_gate": False})
+    v2 = _run("claude", 2, trust_events=["warn: unproven"],
+              **{**base, "machine_payable_path": False, "no_human_gate": False})
+    v3 = _run("codex", 1, trust_events=[],
+              **{**base, "no_human_gate": False})
+    v4 = _run("codex", 2, trust_events=["warn: unproven"],
+              **{**base, "found_purchase_path": False,
+                 "machine_payable_path": False, "no_human_gate": False})
+    # Interleave two runs that observed nothing — their exclusion must not depend
+    # on where they sit in the list.
+    runs = [v1, _env_blocked_run(trial=9), v2, v3, _failed_run(trial=9), v4]
+
+    orderings = _orderings(runs)
+    ref = R.panel_reliability(orderings[0]).to_dict()
+
+    # (a) NON-VACUOUS — the reference metric is a genuine interior value, not a
+    #     trivial 0.0/1.0 an order-dependent bug could not perturb, and the
+    #     valid-run SELECTION really dropped the interleaved excluded runs.
+    _check(ref["valid_runs"] == 4,
+           f"the 4 valid runs count, excluded ones dropped, got {ref['valid_runs']}")
+    _check(0.0 < ref["verdict_stability"] < 1.0,
+           f"verdict_stability strictly interior (non-trivial), got {ref['verdict_stability']}")
+    _check(abs(ref["verdict_stability"] - 0.7) < 1e-9,
+           f"verdict_stability 0.7 as constructed, got {ref['verdict_stability']}")
+    _check(0 < len(ref["flipped_checkpoints"]) < len(_KEYS),
+           f"a genuine mix of flipped + unanimous checkpoints, got {ref['flipped_checkpoints']}")
+    _check(ref["trust_events_unanimous"] is False
+           and 0.5 < ref["trust_event_agreement"] < 1.0,
+           "the trust signal is genuinely split across the runs")
+
+    # (b) NON-VACUOUS — the permutation genuinely reorders the VALID runs (checked
+    #     at the exact selection layer under test), so order-invariance is a real
+    #     claim about the reordered input, not a no-op.
+    def _valid_ids(order):
+        return [(r.model, r.trial) for r in R._valid_runs(order)]
+    _check(_valid_ids(orderings[0]) != _valid_ids(orderings[1]),
+           "the permutation genuinely reorders the valid runs (non-vacuous)")
+
+    # (c) Every metric-bearing field is byte-identical across every arrival order.
+    #     Comparing the full to_dict() covers verdict_stability, flip_rate,
+    #     flipped_checkpoints (list + ladder order), trust_event_agreement /
+    #     unanimity, valid_runs, single_trial, label, AND the per_checkpoint rows
+    #     (each checkpoint / n / pass_count / agreement / unanimous), recursively.
+    for i, order in enumerate(orderings[1:], start=1):
+        got = R.panel_reliability(order).to_dict()
+        _check(got == ref,
+               f"ordering {i}: PanelReliability byte-identical under reordering")
+
+
 def main() -> int:
     tests = [
         test_unanimous,
@@ -197,6 +294,7 @@ def main() -> int:
         test_valid_selection_mirrors_shopper,
         test_trust_event_flip_is_separate,
         test_mixed_band,
+        test_panel_reliability_is_trial_order_invariant,
     ]
     failed = 0
     for t in tests:

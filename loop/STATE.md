@@ -1,14 +1,15 @@
 # Loop state
 
-- Cycle counter: 92
+- Cycle counter: 93
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-29T23:12Z, Cycle 92; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-30T00:12Z, Cycle 93; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~23h31m old at the 23:12Z fire; no newer :41 artifact through 22:41Z Jul-29 (24 consecutive
+  Jul-28 = ~24h31m old at the 00:12Z fire; no newer :41 artifact through 23:41Z Jul-29 (25 consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine → FLAGGED in the Cycle-86 16:00 UTC digest
   (the 16:12Z fire was the FIRST cycle after 16:00Z; the ~16.5h runner gap was flagged loudly there;
-  the Cycle-87 17:12Z through this Cycle-91 22:12Z fires are NOT the first-after-16:00 cycle,
-  so no re-digest — keep flagging in each daily digest until it clears); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
+  the Cycle-87 17:12Z through this Cycle-93 00:12Z-Jul-30 fires are NOT the first-after-16:00 cycle
+  (the next first-after-16:00 is ~16:12Z Jul-30), so no re-digest — keep flagging in each daily
+  digest until it clears); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
   is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
   local fire root-caused (a >60s slow-network wake still misses the 5×15s retry) OR the machine is
@@ -27,7 +28,38 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 93 METHOD — pinned TRIAL-ORDER INVARIANCE of `asrs.reliability.panel_reliability`, the
+  within-panel reproducibility metric whose `verdict_stability` gates the CITABLE-vs-PROVISIONAL
+  quotability verdict — the LOAD-BEARING member of the presentation-order invariance family that
+  was never pinned (the family already covers battery aggregation Cycle 73, leaderboard ranking
+  Cycle 77, offering classification Cycle 81, scorer multi-cap Cycle 85). New
+  `test_panel_reliability_is_trial_order_invariant` (`tests/test_reliability.py` 8→9) builds a 6-run
+  panel (4 valid + interleaved env-blocked + failed) with `verdict_stability` a genuine interior 0.7
+  (mixed band: 2 checkpoints flip, 3 unanimous) and a split trust signal (0.75), runs it under FOUR
+  deterministic arrival orders (identity/reverse/two rotations), and asserts the whole
+  `PanelReliability.to_dict()` is byte-identical across all — verdict_stability, flip_rate,
+  flipped_checkpoints (list+ladder order), trust agreement/unanimity, valid_runs, single_trial, label,
+  AND every per_checkpoint row, recursively. NON-VACUOUS + TEETH VERIFIED by injection: an
+  order-dependent selection bug (`_valid_runs()[-3:]`) caught by clause (a) (valid_runs==4 proves the
+  interleaved excluded runs dropped — the SELECTION is order-independent, invariant #4); a first-run
+  identity leak caught by clause (c) (byte-identity); a pure rotation of the valid multiset correctly
+  NOT flagged (it preserves every count = exactly the invariant). Order-invariant by construction today
+  (metrics are COUNTS over valid runs; per_checkpoint follows the fixed ladder) — catches a future
+  refactor leaking run-order into a count/selection/row. Tests-only: git status = one file; git diff
+  --stat -- asrs/ rubric/ fixtures/ batteries/ probes/ EMPTY → scoring path byte-for-byte untouched →
+  rubric v0.7 → NOT peer-gated. Canonical PAIR unchanged AND re-measured (replay guard 24/24, 46.1 F /
+  85.5 B / +39.4, 0 replay-miss). test_reliability 8→9; full suite 22 files green (test_free_tier 11/11
+  with eth-account in .venv). Cloud bridge blocks direct main push → branch loop/reliability-order-invariance
+  + PR + self-merge (NOT peer-gated — tests-only, off scoring path, pins existing behaviour). First duty:
+  no open peer-gated PR ([]); realigned main to origin/main after merge. No Slack (tests-only, moves no
+  score; this 00:12Z-Jul-30 fire is after the Cycle-86 16:12Z daily digest, so not the first-after-16:00
+  cycle). RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z ~24.5h old). The order-invariance family is
+  now COMPLETE across all five measurement surfaces (battery / leaderboard / offering / scoring /
+  reliability); a future METHOD candidate is a fresh perturbation AXIS (label / scale) rather than another
+  order rung. Next COVERAGE — candidate: a NEW archetype/signal for classify_offering, or a per-segment
+  leaderboard summary once the [LOCAL] calibration population grows; the in-cloud metered_api signal
+  frontier is well-covered.)
   (Cycle 92 READOUT — surfaced the error-contract "recover from a failed call" RELIABILITY recognition
   in the PUBLIC methodology prose, the READOUT complement to the Cycle-90 COVERAGE signal + Cycle-91
   TRUTH relabel guard, CLOSING the FOURTH COVERAGE→TRUTH→READOUT arc for the metered_api signal bank

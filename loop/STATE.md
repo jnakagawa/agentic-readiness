@@ -1,13 +1,13 @@
 # Loop state
 
-- Cycle counter: 96
+- Cycle counter: 97
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-30T03:11Z, Cycle 96; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-30T04:16Z, Cycle 97; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~27h30m old at the 03:11Z fire; no newer :41 artifact through 02:41Z Jul-30 (28+ consecutive
+  Jul-28 = ~28h35m old at the 04:16Z fire; no newer :41 artifact through 03:41Z Jul-30 (29+ consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine → FLAGGED in the Cycle-86 16:00 UTC digest
   (the 16:12Z fire was the FIRST cycle after 16:00Z; the ~16.5h runner gap was flagged loudly there;
-  the Cycle-87 17:12Z through this Cycle-96 03:11Z-Jul-30 fires are NOT the first-after-16:00 cycle
+  the Cycle-87 17:12Z through this Cycle-97 04:16Z-Jul-30 fires are NOT the first-after-16:00 cycle
   (the next first-after-16:00 is ~16:12Z Jul-30), so no re-digest — keep flagging in each daily
   digest until it clears); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
@@ -28,7 +28,37 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 97 METHOD — pinned the offering-relative `digital_good` battery DESCRIPTOR
+  (`asrs/battery._digital_good_descriptor`) as HOST/VENDOR relabel-invariant, the descriptor-layer analog
+  of the signal-level relabel guards in `test_offering_canonical.py` — closing the descriptor-invariance
+  gap named by the Cycle-96 methodology prose ("the noun comes from the site, not ASRS" / "injection-safe").
+  New guards in `tests/test_battery_instantiate.py` (9→12): classify a synthetic surface that names the
+  host INSIDE the digital_good evidence, extract the real claim via `classify_offering`, relabel the host
+  everywhere + re-classify, and assert the derived descriptor is BYTE-IDENTICAL — across the media-noun
+  branch ("generated image") AND the translation-LABEL branch ("translated document"). NON-VACUOUS: the
+  host genuinely appears in the base claim's evidence and the relabel genuinely rewrites the quotes the
+  descriptor reads (both asserted); neutral host `vendor-neutral.test` carries no media word. TEETH:
+  `test_descriptor_relabel_has_teeth` proves a deliberately host-keyed descriptor stub IS caught by the
+  same relabel comparison → the invariants refute a real failure mode, not a tautology. WHY (capability):
+  the offering classifier's vendor-neutrality was an executable tripwire (task SELECTION keys on evidence)
+  but the digital_good task's {descriptor} slot carried a SECOND identity risk one layer down — the host
+  appears inside the fired evidence, so a host-keyed descriptor would give two storefronts offering the
+  SAME capability DIFFERENT task text because of their NAMES (vendor-rigging applied to task WORDING).
+  Tests-only, off scoring path → rubric v0.7 → NOT peer-gated: git diff --stat over scoring.py/rubric*/
+  rubric/probes.py/protocols.py/fetch.py/offering.py/battery.py/fixtures/batteries = EMPTY; git
+  diff --name-only = tests/test_battery_instantiate.py ONLY. Cloud bridge blocks direct main push → branch
+  loop/descriptor-relabel-invariance + PR #43 + self-merge (squash 4340200; NOT peer-gated). First duty:
+  no open peer-gated PR ([] at fire start); realigned main to origin/main 4340200 after merge. INFRA folded
+  in (<15 min): the ephemeral container was missing optional `eth-account` (in requirements.txt) →
+  test_free_tier opened 10/11; `pip install eth-account` → 11/11 (environment-only, nothing to commit).
+  Canonical PAIR unchanged AND re-measured (replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss);
+  full suite 22 files green. No Slack (tests-only, moves no score; this 04:16Z-Jul-30 fire is after the
+  Cycle-86 16:12Z daily digest, so not the first-after-16:00 cycle). RUNNER STILL GAPPED
+  (verify_20260728T234102Z 23:41Z ~28.5h old). Next COVERAGE — candidate: a NEW archetype/signal on the
+  offering path (a capability the template bank does not yet recognise), or the per-segment leaderboard
+  summary once the [LOCAL] calibration population grows toward 15–20; ACP/UCP/MPP + free-tier live-wiring
+  remains [LOCAL].)
   (Cycle 96 READOUT — surfaced the OFFERING-RELATIVE task battery in the PUBLIC methodology prose, the
   READOUT complement CLOSING the generate-media plural/participle arc (Cycle 94 COVERAGE signal + Cycle 95
   TRUTH descriptor + this READOUT). Added ONE capability-worded, vendor-neutral paragraph to methodology

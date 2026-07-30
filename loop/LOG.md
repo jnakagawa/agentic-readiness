@@ -8606,3 +8606,78 @@ perturbation AXIS (label/scale) now that the order-invariance family is complete
 across all five measurement surfaces. In-cloud COVERAGE frontier for metered_api
 signals is well-covered; new COVERAGE would be a NEW archetype/signal or a
 per-segment leaderboard summary once the [LOCAL] calibration population grows.
+
+## Cycle 97 — 2026-07-30T04:16Z — METHOD (branch+PR+self-merge; tests-only, off scoring path, score-neutral)
+
+**What.** Pinned the offering-relative `digital_good` BATTERY descriptor
+(`asrs/battery._digital_good_descriptor`) as HOST/VENDOR relabel-invariant — the
+descriptor-layer analog of the signal-level relabel guards in
+`tests/test_offering_canonical.py`. New guards in `tests/test_battery_instantiate.py`
+classify a synthetic surface that names the host INSIDE the digital_good evidence,
+extract the real claim via `classify_offering`, relabel the host everywhere and
+re-classify, and assert the derived descriptor is BYTE-IDENTICAL — across both the
+media-noun branch ("generated image") and the translation branch ("translated
+document"). Proves the task noun keys on the site's VOCABULARY, not its host/vendor.
+
+**Why (capability).** `test_offering_canonical.py` makes the offering CLASSIFIER
+vendor-neutral an executable tripwire (relabel a fixture's host → CLAIMED/NA
+partition identical → task SELECTION keys on evidence, not identity). The
+digital_good task carried a SECOND identity risk one layer down: its `{descriptor}`
+slot derives the task noun from the fired signal's label + quote, and the host
+string appears INSIDE that evidence (the canonical generate-media / hosted-output
+quotes embed `…api.<host>/…`). If the descriptor ever keyed on the host, two
+storefronts offering the SAME capability would get DIFFERENT task text because of
+their NAMES — the vendor-rigging the directive forbids, applied to task WORDING
+rather than task selection. The Cycle-96 methodology prose CLAIMS the noun "comes
+from the site, not ASRS" and is "injection-safe"; this makes that claim an
+executable tripwire at the descriptor layer, completing the descriptor-invariance
+gap the docstring named.
+
+**Ship class.** Tests-only, off the scoring path → rubric v0.7 → NOT peer-gated.
+`git diff --stat` over scoring.py/rubric.py/probes.py/protocols.py/fetch.py/
+offering.py/battery.py/rubric/fixtures/batteries = EMPTY → scoring path
+byte-for-byte untouched. `git diff --name-only` = tests/test_battery_instantiate.py
+ONLY. Cloud bridge still refuses direct main push → branch
+loop/descriptor-relabel-invariance + PR #43 + self-merge (squash 4340200).
+First duty: no open peer-gated PR ([] at fire start); realigned main to
+origin/main 4340200 after merge.
+
+**Infra (folded in, <15 min).** The ephemeral cloud container was missing the
+optional `eth-account>=0.13` dep (free-tier transaction probe), so
+`tests/test_free_tier.py` opened 10/11 (the `test_zero_value_signs_and_recovers`
+ephemeral-signer path failed). `pip install eth-account` → 11/11. Environment-only
+(the dep is in requirements.txt; not a repo/bookkeeping fault) — nothing to commit,
+suite fully runnable again.
+
+**Evidence.** `tests/test_battery_instantiate.py` 9→12:
+`test_digital_good_descriptor_is_relabel_invariant_media` (host inside the
+generate-media/hosted-output evidence, relabel → descriptor still "generated
+image"), `_...invariant_translation` (translation LABEL branch, relabel →
+"translated document"), and `test_descriptor_relabel_has_teeth` (a deliberately
+host-keyed descriptor stub IS caught by the same relabel comparison, so the
+invariants refute a real failure mode, not a tautology). NON-VACUOUS by substrate:
+the host genuinely appears in the base claim's evidence and the relabel genuinely
+rewrites the quotes the descriptor reads (both asserted); the neutral host
+(`vendor-neutral.test`) carries no media word. Full suite 22 files green
+(test_free_tier 11/11 after the eth-account install above).
+
+**Canonical pair (regression signal).** UNCHANGED and re-measured — replay guard
+24/24, drift-flight.org 46.1 F / driftflight.com 85.5 B / delta +39.4, 0
+replay-miss. By construction: scoring path byte-for-byte untouched (descriptor is
+`--battery auto` task text, never read by `scoring.score`; this guard only adds
+tests). LOCAL verify runner STILL GAPPED (`runs/local/verify_20260728T234102Z.json`
+23:41Z Jul-28, ~28.5h old at the 04:16Z fire, past the 6h floor; cloud cannot repair
+Jonah's machine) — the in-cloud replay guard remains the independent live regression
+signal, so this is a heartbeat gap, not a scoring outage. This 04:16Z fire is after
+the Cycle-86 16:12Z daily digest, so NOT the first-after-16:00 cycle → no re-digest;
+keep flagging the runner gap in each daily digest until it clears. No Slack
+(tests-only, moves no score; not a sensitive-class PR; not the daily-digest cycle).
+
+**Next hypothesis (COVERAGE).** Rotation returns to COVERAGE. The in-cloud offering
+signal frontier for the existing archetypes is well-covered (payment-rail, async-job,
+api-auth, error-contract, generate-media arcs all closed at signal/descriptor/readout
+layers); the next COVERAGE increment is either a NEW archetype/signal on the offering
+path (e.g. a fresh capability the template bank does not yet recognise) or the
+per-segment leaderboard summary once the [LOCAL] calibration population grows toward
+its 15–20 target. Live-wiring / handshake COVERAGE (ACP/UCP/MPP, free-tier) remains
+[LOCAL].

@@ -495,16 +495,35 @@ design in-cloud, execute locally.
 
 ## P1
 
-- **[METHOD] Pin the digital_good DESCRIPTOR derivation as relabel/identity-invariant** (follow-up to the
-  Cycle 94/95/96 generate-media arc, cloud-doable, tests-only). The signal-level relabel family
-  (`test_offering_canonical.py`) covers offering CLASSIFICATION; the offering-relative BATTERY descriptor
-  (`asrs/battery._digital_good_descriptor` / `_MEDIA_RE`) derives the task noun ("generated image") from the
-  claim's fired signal quotes. Add a guard (in `test_battery_instantiate.py`) that relabels the host
-  everywhere in a digital_good claim's fixture/quotes and asserts the derived descriptor is IDENTITY-invariant
-  — proving the media noun keys on the VOCABULARY a site uses, not the host/vendor (the descriptor-layer
-  analog of the signal-level relabel guards). The methodology prose now CLAIMS the noun "comes from the site,
-  not ASRS" and is "injection-safe" (Cycle 96); this makes that claim an executable tripwire at the
-  descriptor layer. Off scoring path, score-neutral.
+<!-- DONE 2026-07-30T04:16Z (Cycle 97, METHOD, branch+PR+self-merge, tests-only/score-neutral):
+     "Pin the digital_good DESCRIPTOR derivation as relabel/identity-invariant" SHIPPED. New guards in
+     `tests/test_battery_instantiate.py` (9→12) classify a synthetic surface that names the host INSIDE the
+     digital_good evidence, extract the real claim via `classify_offering`, relabel the host everywhere +
+     re-classify, and assert the derived descriptor is BYTE-IDENTICAL — the descriptor-layer analog of the
+     signal-level relabel guards in `test_offering_canonical.py`. Covers the media-noun branch (relabel →
+     still "generated image") AND the translation-LABEL branch (relabel → "translated document"); NON-VACUOUS
+     (host genuinely in the base evidence + relabel genuinely rewrites the quotes, both asserted; neutral
+     host carries no media word); TEETH (`test_descriptor_relabel_has_teeth` — a host-keyed descriptor stub
+     IS caught by the same comparison). Makes the Cycle-96 methodology claim ("the noun comes from the site,
+     not ASRS" / "injection-safe") an executable tripwire at the descriptor layer. Tests-only, off scoring
+     path → rubric v0.7, git diff over scoring path EMPTY, git diff --name-only = the one test file. NOT
+     peer-gated; PR #43 (squash 4340200). Replay guard 24/24, 46.1 F / 85.5 B / +39.4. INFRA folded in: the
+     ephemeral container was missing optional `eth-account` (in requirements.txt) → test_free_tier 10/11;
+     `pip install eth-account` → 11/11 (environment-only, nothing to commit). See LOG Cycle 97. -->
+<!-- P1 FRONTIER (post-Cycle-97): the generate-media arc is now closed at ALL layers — SIGNAL (94),
+     DESCRIPTOR (95), READOUT (96), and DESCRIPTOR-RELABEL-INVARIANCE (97). Next METHOD candidate is a fresh
+     perturbation AXIS on the offering/battery path (label/scale) now the order- + relabel-invariance
+     families are complete, OR a NEW archetype/signal (COVERAGE). Not yet a firm backlog item; promote when
+     a concrete gap is identified. -->
+- **[LOCAL] Extend descriptor relabel-invariance to a REAL captured fixture** (METHOD, follow-up to Cycle 97,
+  optional hardening). Cycle 97 pins descriptor relabel-invariance through a SYNTHETIC surface in
+  `test_battery_instantiate.py` (no network). For parity with the signal-level guards — which replay the
+  committed canonical fixtures — capture a real generation storefront's fixture whose digital_good evidence
+  embeds the host in its media quote (`asrs.cli score <domain> --record-fixture
+  fixtures/canonical/<domain>.json`, LIVE → [LOCAL]), then add a fixture-replaying descriptor-invariance
+  guard in `test_offering_canonical.py` alongside the classification-invariance ones. Off scoring path,
+  score-neutral. Low priority — the synthetic guard already exercises the full classify→descriptor path;
+  this only adds real-crawl substrate.
 
 <!-- DONE 2026-07-30T03:1xZ (Cycle 96, READOUT, branch+PR+self-merge, display-only + tests-only/score-neutral):
      "surface the offering-relative digital_good task derivation in public methodology prose" SHIPPED —

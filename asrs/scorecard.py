@@ -579,6 +579,28 @@ buy here</b>, will proceed. A confident refusal <b>despite that directive</b> is
 a genuine trust signal and caps the grade (see below); a mere warning deducts
 points but never caps. Refusals caused by the agent&rsquo;s own environment are
 attribution-routed per section 5, not counted as the site refusing.</p>
+<p>Those directives are <b>offering-relative</b>, not a fixed script. Before the
+panel runs, ASRS reads what the storefront <b>claims to sell</b> from its own
+published surfaces and gives the agent one task per capability it actually offers
+&mdash; an archetype the site does <b>not</b> advertise is never probed, so a low
+number is never a task the storefront was never built to answer (the same
+attribution honesty as section&nbsp;5, applied to tasks). The task is also
+<b>worded in the site&rsquo;s own terms</b>: a digital-good task asks the agent to
+&ldquo;obtain one <b>generated image</b>&rdquo; only because the storefront&rsquo;s
+own surfaces describe a generated image &mdash; the media noun comes from the
+site, not from ASRS. That noun is derived <b>only</b> from ASRS&rsquo;s own
+vendor-neutral media vocabulary (a generic <code>image</code>, <code>video</code>,
+<code>audio</code> or <code>art</code>, or a plain <b>digital output</b> when the
+site gives no cleaner hint) matched against the site&rsquo;s surfaces &mdash; never
+by pasting arbitrary site prose into the agent&rsquo;s directive, so the task stays
+<b>injection-safe</b> and names no vendor product. Recognition is
+<b>form-normalized</b>: a storefront that describes its output as an
+<code>image</code>, as <code>images</code>, or as <code>generating images</code>
+yields the <b>same</b> singular task noun, so two storefronts offering the same
+capability get the <b>same task</b> regardless of how each phrases it &mdash; a
+property pinned by an <b>executable regression test</b>. This battery is
+<b>diagnostic</b> &mdash; it measures readiness within the archetypes a site
+serves, <b>off the scoring path</b> &mdash; not a scored pillar.</p>
 </div>
 
 <div class="card">

@@ -440,6 +440,36 @@ regression test</b> that relabels the API&rsquo;s identity end-to-end and confir
 the error contract is still recognized, unchanged, with the vendor&rsquo;s name
 gone. This read is <b>diagnostic</b> &mdash; it names how the offer reports a
 failure, <b>off the scoring path</b> &mdash; not a scored pillar.</p>
+<p><b>Trying the call safely first</b> comes <b>before</b> any of the other legs,
+because an agent that can rehearse the whole flow at <b>zero cost</b> completes
+the job without a human standing by to catch a first-attempt mistake. A metered
+API that offers a <b>test facility</b> &mdash; a <b>sandbox environment</b>, a
+<b>test-mode</b> flag, a <b>test API key</b> or test credentials, an explicit
+<b>dry-run</b>, or the widely-used <code>&lt;prefix&gt;_test_</code> /
+<code>&lt;prefix&gt;_sandbox_</code> key convention (for example a credential
+dichotomy of a <code>_live_</code> production key beside a <code>_test_</code>
+sandbox one) &mdash; lets an agent <b>validate its integration and dry-run a
+call</b> without spending real money, consuming quota, or producing a billable
+output. That is the <b>provision-and-finish-safely</b> capability read at the
+offer layer, and it dovetails with ASRS&rsquo;s own <b>$0-only</b> ethos: an
+offer that an agent can exercise at zero cost before it authorizes a real charge
+is more agent-completable than one that forces the first call to be a paid one.
+So ASRS reads the documented test facility as part of understanding the metered
+offer, keyed on vendor-neutral machine-integration vocabulary (a sandbox
+environment, a test-mode flag, a test credential, a dry-run, the
+<code>_test_</code>/<code>_sandbox_</code> key convention), the same category of
+open convention as REST, GraphQL or OpenAPI. The read is
+<b>precision-guarded</b>: a bare <code>sandbox</code> or <code>test</code> word
+is <b>no signal</b> &mdash; a demo site titled &ldquo;Sandbox&rdquo;, a sandboxed
+iframe, or a <code>unit_test_runner</code> filename must never trip it &mdash; so
+the word must name an actual testing facility, a mode, a credential, or the
+masked-stub key convention. Recognition keys on the <b>facility the offer
+provides, not who provides it</b>: that property is pinned by an <b>executable
+regression test</b> that relabels the API&rsquo;s identity <b>and its key
+prefix</b> end-to-end and confirms the test facility is still recognized,
+unchanged, with the vendor&rsquo;s name gone. This read is <b>diagnostic</b>
+&mdash; it names whether the offer lets an agent rehearse the call at $0, <b>off
+the scoring path</b> &mdash; not a scored pillar.</p>
 <p><b>Owning the deliverable</b> is finishing on the <b>digital-good</b> side,
 where an agent can obtain exactly the render it asked for and still not be able to
 <b>use</b> it. A generation storefront returns an image, a video, an audio clip or

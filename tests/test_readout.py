@@ -715,6 +715,62 @@ def test_methodology_documents_output_license() -> None:
                f"output-license prose names no vendor/domain ({banned!r})")
 
 
+def test_methodology_documents_test_mode() -> None:
+    # Cycle 104 (READOUT): the READOUT complement CLOSING the test-mode arc opened by
+    # Cycle 102 (COVERAGE — the metered_api `test-mode` offering signal: a sandbox /
+    # test-key / dry-run facility an agent uses to rehearse a call at ZERO cost) and
+    # Cycle 103 (TRUTH — the SIGNAL-level HOST + KEY-PREFIX relabel-invariance guard for
+    # that signal). The four other metered_api offer-side legs each earned a prose
+    # paragraph (payment-rail 80, auth 88, async-job 84, error-contract 92) and the
+    # digital_good rights leg earned one at Cycle 100; the "try the call safely first"
+    # leg was pinned in code + tests but NEVER surfaced in prose a critic can read — a
+    # reader could not learn WHY a metered API that lets an agent validate its
+    # integration and dry-run a call at $0 before authorizing anything real is MORE
+    # agent-completable, or how that dovetails with ASRS's own $0-only ethos. The
+    # paragraph must (a) frame it as trying/rehearsing the call safely first, at zero
+    # cost, before authorizing a real charge, and tie it to the $0-only ethos; (b) name
+    # the vendor-neutral test-facility vocabulary the offering signal anchors on as open
+    # conventions — a sandbox environment, a test-mode flag, a test API key / credential,
+    # a dry-run, the `_test_`/`_sandbox_` key convention; (c) keep the signal's PRECISION
+    # honesty — a bare `sandbox`/`test` word (a demo-site title, a sandboxed iframe, a
+    # unit_test_runner filename) is not a test facility and is read as no signal; (d) say
+    # recognition keys on the facility PROVIDED not who provides it and is pinned by an
+    # identity-relabel executable regression test that relabels the host AND its key
+    # prefix; and (e) stay HONEST about scope — this offering read is diagnostic, off the
+    # scoring path, not a scored pillar (the same scored-vs-diagnostic line the sibling
+    # offer-side prose keeps). Vendor-neutral throughout.
+    print("test_methodology_documents_test_mode")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    # Match on the whitespace-collapsed text (same technique as the async-job /
+    # api-auth / error-contract / output-license guards) so wording, not source
+    # wrapping, is what the guard pins.
+    collapsed = " ".join(text.split())
+    for phrase in ("Trying the call safely first", "zero cost", "$0-only",
+                   "test facility", "facility the offer provides, not who provides it",
+                   "and its key prefix", "executable regression test",
+                   "off the scoring path", "diagnostic"):
+        _check(phrase in collapsed,
+               f"methodology documents test-mode: {phrase!r}")
+    # The vendor-neutral test-facility vocabulary the offering signal bank anchors on
+    # must appear as open machine-integration conventions, never a vendor product: a
+    # sandbox environment, a test-mode flag, a test credential/API key, a dry-run, and
+    # the masked-stub `_test_`/`_sandbox_` key convention.
+    for token in ("sandbox environment", "test-mode", "test API key",
+                  "dry-run", "_test_", "_sandbox_"):
+        _check(token in collapsed, f"methodology names test facility {token!r}")
+    # PRECISION honesty: the prose must preserve the signal's bare-word guard — a bare
+    # `sandbox`/`test` word (a demo-site title, a sandboxed iframe, a unit_test_runner
+    # filename) is not a test facility and is read as no signal.
+    for token in ("bare", "no signal", "unit_test_runner", "Sandbox"):
+        _check(token in collapsed,
+               f"methodology keeps test-mode precision note: {token!r}")
+    # Vendor-neutral: no scored domain/product/brand named on the page.
+    for banned in ("drift-flight", "driftflight"):
+        _check(banned not in text,
+               f"test-mode prose names no vendor/domain ({banned!r})")
+
+
 def test_methodology_documents_calibration() -> None:
     # Cycle 68 (READOUT): the READOUT complement to Cycle 67's calibration guard
     # (tests/test_calibration.py — the first static-vs-behavioral VALIDITY axis).
@@ -1389,6 +1445,7 @@ def main() -> int:
         test_methodology_documents_error_contract,
         test_methodology_documents_offering_relative_battery,
         test_methodology_documents_output_license,
+        test_methodology_documents_test_mode,
         test_methodology_documents_calibration,
         test_methodology_page_tracks_live_rubric,
         test_build_scorecard_publishes_and_links_methodology,

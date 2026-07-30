@@ -1,13 +1,13 @@
 # Loop state
 
-- Cycle counter: 107
+- Cycle counter: 108
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-30T14:12Z, Cycle 107; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-30T15:16Z, Cycle 108; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~38.5h old at the 14:12Z fire; no newer :41 artifact through 13:41Z Jul-30 (38+ consecutive
+  Jul-28 = ~39.6h old at the 15:16Z fire; no newer :41 artifact through 14:41Z Jul-30 (39+ consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine → FLAGGED in the Cycle-86 16:00 UTC digest
   (the 16:12Z fire was the FIRST cycle after 16:00Z; the ~16.5h runner gap was flagged loudly there;
-  the Cycle-87 17:12Z through this Cycle-107 14:12Z-Jul-30 fires are NOT the first-after-16:00 cycle
+  the Cycle-87 17:12Z through this Cycle-108 15:16Z-Jul-30 fires are NOT the first-after-16:00 cycle
   (the next first-after-16:00 is ~16:12Z Jul-30 — re-flag the still-open gap there), so no re-digest —
   keep flagging in each daily digest until it clears); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
@@ -28,7 +28,30 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 108 READOUT — surfaced the `pagination` metered_api capability in the PUBLIC methodology prose,
+  the READOUT leg CLOSING the pagination arc (COVERAGE 106 → TRUTH-relabel 107 → READOUT 108) — the sixth
+  metered_api leg to complete the full COVERAGE→TRUTH→READOUT arc (after payment-rail 78/79/80, async-job
+  82/83/84, api-auth 86/87/88, error-contract 90/91/92, test-mode 102/103/104). Added ONE capability-worded,
+  vendor-neutral `<p>` ("Walking the whole collection") to the methodology "What the score answers" card
+  (`_write_methodology_page`, `asrs/scorecard.py`), between the error-contract paragraph and "Trying the call
+  safely first". Frames walking a multi-page result set to completion (cursor param carrying a value /
+  next-previous page URL / paginated collection response); names the under-completion failure (stop at page
+  one → partial answer reported as whole); KEEPS the precision note (bare `next`/`cursor` — a retail product
+  link, "next campaign" banner, text cursor, "next page of the novel" — is no signal); names the identity
+  relabel regression test; stays HONEST about scope (diagnostic, off the scoring path, not a scored pillar).
+  New content-presence guard `test_methodology_documents_pagination` in `tests/test_readout.py` (53→54)
+  mirrors `test_methodology_documents_test_mode`; rendered-page neutral-scan clean. Display + tests-only, off
+  the scoring path → NOT peer-gated (git diff --name-only = asrs/scorecard.py + tests/test_readout.py ONLY;
+  scoring-path diff EMPTY). Cloud bridge blocks direct main push → branch loop/pagination-methodology-prose
+  + PR #65 + self-merge (squash 82eacd1). First duty: no open peer-gated PR ([] at fire start); realigned
+  main to origin/main after merge. Full suite green (test_free_tier 11/11); replay guard 24/24, 46.1 F /
+  85.5 B / +39.4, 0 replay-miss; rubric v0.7. No Slack (score-neutral, off scoring path; not sensitive-class;
+  not the first-after-16:00 digest cycle — 15:16Z < ~16:12Z). RUNNER STILL GAPPED (verify_20260728T234102Z
+  23:41Z ~39.6h old). Next METHOD — the pagination arc + the order-/relabel-invariance families are now
+  complete across both canonical pair-halves; candidate: a genuinely NEW perturbation axis (label/scale) on
+  the offering/battery path, or a NEW archetype/metered_api/digital_good signal (COVERAGE). ACP/UCP/MPP +
+  free-tier live-wiring stays [LOCAL].)
   (Cycle 107 TRUTH — pinned the Cycle-106 `pagination` metered_api signal as RELABEL-INVARIANT, the
   SIXTH metered_api signal-level relabel guard, completing the family (payment-rail 79 / async-job 83 /
   api-auth 87 / error-contract / test-mode 103 / now pagination 107). New

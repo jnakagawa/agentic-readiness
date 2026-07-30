@@ -3,6 +3,65 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 108 — 2026-07-30T15:16Z — READOUT (branch+PR+self-merge, display+tests-only/score-neutral)
+
+**What.** Surfaced the `pagination` metered_api capability in the PUBLIC methodology
+prose — the READOUT leg CLOSING the pagination arc (COVERAGE 106 → TRUTH-relabel 107 →
+READOUT 108), mirroring the four prior metered_api methodology legs (payment-rail 80,
+auth 88, async-job 84, error-contract 92) plus the test-mode leg (104). Added ONE
+capability-worded, vendor-neutral `<p>` ("Walking the whole collection") to the
+methodology "What the score answers" card (`_write_methodology_page`, `asrs/scorecard.py`),
+between the error-contract paragraph and "Trying the call safely first" (test-mode). It
+(a) frames walking a multi-page result set to completion / the pagination contract and
+names the under-completion failure (an agent that stops at page one reports a partial
+answer as if it were the whole); (b) names the vendor-neutral pagination vocabulary as
+open collection conventions (a cursor parameter carrying a value, a next/previous page
+URL, a paginated collection response), the same category as REST/GraphQL/OpenAPI;
+(c) keeps the signal's PRECISION honesty (a bare `next`/`cursor` word — a retail product
+link, a "next campaign" banner, a text cursor, the "next page of the novel" — is no
+signal); (d) says recognition keys on the contract the API documents, not who published
+it, pinned by an identity-relabel executable regression test; (e) stays HONEST about
+scope (diagnostic, off the scoring path, not a scored pillar).
+
+**Why.** The pagination signal (Cycle 106) and its relabel-invariance (Cycle 107) were
+pinned in code + tests but never surfaced in prose a critic can read — a reader could
+not learn WHY a metered API that documents how to page through a collection is more
+agent-completable. This is the "complete the job" leg for a metered API that answers
+with a collection; distinct from the async-job (one long job's result) / error-contract
+(recovery) / test-mode (rehearse at $0) legs already in prose. Vendor-neutral throughout
+(no scored domain/product/brand named).
+
+**Evidence.** `asrs/scorecard.py` (methodology `<p>` added); new content-presence guard
+`test_methodology_documents_pagination` in `tests/test_readout.py` (53→54), mirroring
+`test_methodology_documents_test_mode`. `git diff --name-only` = those two files ONLY;
+scoring-path diff (`asrs/scoring.py`, `rubric/`, `asrs/offering.py`) EMPTY → score-neutral,
+rubric v0.7, NOT peer-gated. Cloud bridge blocks direct main push → branch
+loop/pagination-methodology-prose + PR #65 + self-merge (squash 82eacd1). First duty:
+no open peer-gated PR ([] at fire start; `list_pull_requests` open = []). Realigned main
+to origin/main after merge.
+
+**Canonical pair.** Unchanged AND re-measured via the in-cloud replay guard:
+`test_canonical_replay` 24/24, drift-flight.org 46.1 F / driftflight.com 85.5 B /
+delta +39.4, 0 replay-miss; rubric v0.7. Full suite green (22 test files; `test_free_tier`
+11/11 after `pip install eth-account`, environment-only — nothing to commit).
+
+**Infra.** RUNNER STILL GAPPED — newest `runs/local/verify_20260728T234102Z.json` (23:41Z
+Jul-28) is ~39.6h old at the 15:16Z fire; no newer :41 artifact. Cloud cannot repair the
+local machine; heartbeat gap, not a scoring outage (the replay guard is the independent
+live regression signal, green). Not the first-after-16:00 cycle (15:16Z < 16:00Z), so no
+re-flag digest this fire; re-flag at the ~16:12Z first-after-16:00 fire per the standing
+STATE note.
+
+**Comms.** No Slack (score-neutral, off scoring path; not sensitive-class; not the
+first-after-16:00 digest cycle).
+
+**Next hypothesis.** The pagination arc is now closed at COVERAGE (106) / TRUTH (107) /
+READOUT (108) — the sixth full metered_api arc. Rotate to METHOD next. The
+order-/relabel-invariance families are complete across both canonical pair-halves;
+candidates: a genuinely NEW perturbation axis (label/scale) on the offering/battery path,
+or a NEW archetype/metered_api/digital_good signal (COVERAGE). ACP/UCP/MPP live handshakes
++ free-tier live-wiring stay [LOCAL].
+
 ## Cycle 1 — 2026-07-23T01:18Z — METHOD (human-gated PR)
 
 **What.** NOT-SCORABLE attribution fix. When NO pillar is observable (every

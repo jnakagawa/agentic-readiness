@@ -1,13 +1,13 @@
 # Loop state
 
-- Cycle counter: 97
+- Cycle counter: 98
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-30T04:16Z, Cycle 97; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-30T05:1xZ, Cycle 98; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~28h35m old at the 04:16Z fire; no newer :41 artifact through 03:41Z Jul-30 (29+ consecutive
+  Jul-28 = ~29.5h old at the 05:1xZ fire; no newer :41 artifact through 04:41Z Jul-30 (30+ consecutive
   :41 fires gapped). Cloud CANNOT repair the local machine → FLAGGED in the Cycle-86 16:00 UTC digest
   (the 16:12Z fire was the FIRST cycle after 16:00Z; the ~16.5h runner gap was flagged loudly there;
-  the Cycle-87 17:12Z through this Cycle-97 04:16Z-Jul-30 fires are NOT the first-after-16:00 cycle
+  the Cycle-87 17:12Z through this Cycle-98 05:1xZ-Jul-30 fires are NOT the first-after-16:00 cycle
   (the next first-after-16:00 is ~16:12Z Jul-30), so no re-digest — keep flagging in each daily
   digest until it clears); queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
@@ -28,7 +28,43 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 98 COVERAGE — added an `output-license` signal to the `digital_good` bank in `asrs/offering.py`:
+  the "complete the job" RIGHTS leg of a digital good. The existing digital_good signals name WHAT is
+  produced (`generation`/`generate-media`) and WHERE it is delivered (`hosted-output`); NONE captured
+  whether the agent may actually USE what it obtains. The signal fires on a commercial-use licence
+  (`commercial licen[cs]e/ing`), royalty-free terms, explicit `usage rights`, or ownership of the
+  DELIVERABLE (`you own the output/render/result/image/generation`). WHY (capability): an agent that
+  receives a generated render it has no licence to use has NOT completed the commercial job — a storefront
+  granting usage rights on its output is MORE agent-completable at the digital-good layer, a readiness axis
+  the template bank did not yet recognise (the digital-good analog of metered_api's async-job/error-contract
+  "complete the job" signals). PRECISION (the license minefield): NEVER matches bare "license" — a software
+  licence (MIT/Apache), a business/driver's licence, a "Licensed and credentialed" trust badge, and — the
+  trap it must dodge — a hosted MODEL's licence all stay NA. api.replicate.com (a `metered_api`-ONLY
+  storefront pinned by `test_machine_surface_openapi_storefront`) says "the model's license" + "delete
+  models you own"; the signal correctly does NOT fire there (no spurious digital_good). Vendor-neutral
+  IP/rights vocabulary, never a vendor. SHIP CLASS: off the scoring path (discovery drives `--battery auto`
+  task SELECTION only, never `scoring.score`) → rubric v0.7 → NOT peer-gated (same class as the
+  Cycle-34/42/46/70/94 offering signal+surface additions); git diff --stat over scoring.py/rubric.py/
+  rubric/probes.py/protocols.py/fetch.py/battery.py/fixtures/batteries = EMPTY; git diff --name-only =
+  asrs/offering.py + tests/test_offering.py ONLY. Cloud bridge blocks direct main push → branch
+  loop/output-license-signal + PR #45 + self-merge (squash e460770; NOT peer-gated). First duty: no open
+  peer-gated PR ([] at fire start); realigned main to origin/main e460770 after merge. EVIDENCE
+  (non-vacuous on committed data): test_offering.py 36→38 — `test_output_license_precision_synthetic`
+  (7 real deliverable-rights grants each fire; 7 license-shaped noise strings each stay NA) +
+  `test_output_license_fires_on_real_captured_surfaces` (fires on driftflight.com's committed /llms.txt
+  "commercial licensing"; does NOT fire on api.replicate.com's committed OpenAPI model-licence traps —
+  real-data precision). Fires on BOTH canonical domains, both already claiming digital_good → deepens
+  evidence without changing any claimed set; ZERO hits on api.replicate.com/books.toscrape.com/example.com.
+  Canonical PAIR unchanged AND re-measured (replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss;
+  test_offering_canonical claimed-set + relabel guards 17/17). Full suite 22 files green (test_free_tier
+  11/11 after `pip install eth-account` — ephemeral container again missing the optional dep from
+  requirements.txt, environment-only, nothing to commit). No Slack (off-scoring COVERAGE, moves no score;
+  not sensitive-class; not the daily-digest cycle). RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z
+  ~29.5h old). Next TRUTH — candidate: pin the new `output-license` signal as HOST/VENDOR relabel-invariant
+  at the SIGNAL level (the digital_good analog of the payment-rail/async-job/api-auth/error-contract relabel
+  guards in test_offering_canonical.py; its driftflight.com evidence surfaces embed the host, so it shares
+  the quote/surface-anchored non-vacuity substrate the family requires).)
   (Cycle 97 METHOD — pinned the offering-relative `digital_good` battery DESCRIPTOR
   (`asrs/battery._digital_good_descriptor`) as HOST/VENDOR relabel-invariant, the descriptor-layer analog
   of the signal-level relabel guards in `test_offering_canonical.py` — closing the descriptor-invariance

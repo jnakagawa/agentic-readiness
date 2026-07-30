@@ -645,6 +645,85 @@ def test_seat_licensing_subscription_precision_synthetic():
     )
 
 
+def test_free_trial_subscription_precision_synthetic():
+    # A FREE TRIAL is the subscription-archetype mirror of metered_api's test-mode:
+    # an agent can EVALUATE the recurring offer at ZERO cost before committing to
+    # billing — the "understand + provision the offer safely, without a human"
+    # capability, aligned with ASRS's $0-only ethos. Each POSITIVE is real trial-offer
+    # prose that must claim subscription via the new free-trial signal; each NEGATIVE
+    # is trial-SHAPED noise that must NOT fire it (the precision traps: a clinical
+    # trial, a court trial, "trial and error", "trial by fire").
+    positives = {
+        "free trial": "Start with a free trial, no card required.",
+        "free-trial hyphen": "Every plan includes a free-trial week.",
+        "trial period": "The trial period runs for 30 days before billing begins.",
+        "trial account": "Create a trial account to explore the workspace.",
+        "trial allowance": "Your trial allowance lets you evaluate it before any payment.",
+        "trial membership": "A trial membership unlocks the library for two weeks.",
+        "n-day trial": "Get a 14-day free trial on the Pro plan.",
+        "n day trial": "Enjoy a 30 day trial with full access.",
+        "start your trial": "Start your free trial and cancel anytime.",
+        "try free for days": "Try it free for 14 days, then $9/month.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("saas.test", {"homepage": text})
+        assert prof.claims("subscription"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "subscription"
+            for s in c.signals
+        }
+        assert "free-trial" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real free-trial phrasings each fire free-trial")
+
+    negatives = {
+        "clinical trial": "The clinical trial enrolled 200 patients last spring.",
+        "court trial": "The court trial lasted a full week in October.",
+        "trial and error": "We found the recipe through trial and error.",
+        "trial by fire": "His first project was a real trial by fire.",
+        "on trial": "The new policy is on trial for the next quarter.",
+        "free shipping": "Enjoy free shipping on every order over $50.",
+        "free image": "Your first generated image is free to download.",
+        "free allowance": "A generous free allowance covers early testing.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "free-trial" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} trial-shaped noise strings do NOT fire free-trial (precision)"
+    )
+
+
+def test_free_trial_fires_on_real_captured_subscription_prose():
+    # Real-evidence, NON-VACUOUS validation: the free-trial signal fires on the
+    # GENUINE trial offer captured live from the canonical driftflight.com homepage
+    # — "Driftflight includes a free trial allowance, so an agent can evaluate it
+    # before any payment - the trial needs no funding and no signup" — a real
+    # evaluate-at-$0-before-committing capability, captured verbatim in the committed
+    # fixture. Exercise the classifier directly on those captured bytes (the surface
+    # the signal reads), the same real-data non-vacuity move the metered_api
+    # _fires_on_real_captured tests make.
+    #
+    # SCORE-NEUTRAL by construction: driftflight.com ALREADY claims subscription, so
+    # a new subscription signal only DEEPENS its evidence — it never adds an archetype
+    # or reorders the claimed set (pinned green by tests/test_offering_canonical.py:
+    # metered_api > digital_good > subscription is unchanged, subscription still last).
+    # The trial-free .org side keeps subscription at its prior strength (asymmetric
+    # evidence, identical claimed set). Discovery is off the scoring path, so the
+    # scored canonical delta is untouched.
+    home = _fixture_entry_text("driftflight.com", "driftflight.com")
+    assert "free trial" in home.lower(), "fixture homepage lost its free-trial offer"
+    prof = classify_offering("driftflight.com", {"homepage": home})
+    assert prof.claims("subscription"), prof.archetypes
+    sub = next(c for c in prof.claimed if c.archetype == "subscription")
+    ft = [s for s in sub.signals if s.label == "free-trial"]
+    assert ft, {s.label for s in sub.signals}
+    assert "trial" in ft[0].quote.lower(), ft[0].quote
+    print(f"  ok: free-trial fires on REAL captured homepage prose — quote: {ft[0].quote!r}")
+
+
 def test_booking_and_data_archetypes_fire():
     booking = classify_offering("harbor.test", {"homepage": BOOKING_HOMEPAGE})
     assert booking.claims("service_booking"), booking.archetypes
@@ -1841,6 +1920,8 @@ def main() -> int:
         test_pagination_fires_on_real_captured_openapi,
         test_cancel_job_metering_precision_synthetic,
         test_cancel_job_fires_on_real_captured_openapi,
+        test_free_trial_subscription_precision_synthetic,
+        test_free_trial_fires_on_real_captured_subscription_prose,
         test_strip_html_drops_script_style_and_tags,
     ]
     failed = 0

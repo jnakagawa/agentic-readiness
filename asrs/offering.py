@@ -504,6 +504,41 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"|\bseat[- ]based\s+(?:pricing|billing|subscription|licen[cs])"
             r"|\blicen[cs]e[ds]?\s+per[- ]seat\b"
             r"|\b\d+\s+seats?\s+(?:included|per\s+(?:month|year))\b", _F)),
+        # A FREE TRIAL — a no-cost evaluation of the offering BEFORE any recurring
+        # charge begins. This is the "understand + provision the offer SAFELY,
+        # without a human" capability for the subscription archetype, and it
+        # dovetails with ASRS's own $0-only ethos: an agent that can start a free
+        # trial evaluates the whole subscription at zero cost before it ever commits
+        # to recurring billing, so a subscription offer that documents one is MORE
+        # agent-completable. It is the subscription-archetype MIRROR of the
+        # metered_api `test-mode` signal (try the metered CALL safely at $0 first) —
+        # here, try the recurring OFFER safely at $0 first — and is distinct from
+        # every existing subscription signal, all of which describe how you are
+        # CHARGED on an ACTIVE plan (`subscription`/`recurring` that a plan exists,
+        # `per-month`/`per-month-price`/`annual-billing` the cadence, `seat-licensing`
+        # the per-user basis); NONE says whether you can EVALUATE the plan at no cost
+        # first. Vendor-neutral trial-offer vocabulary (a free trial, a trial period,
+        # an N-day trial, a trial account/allowance/membership, "start your free
+        # trial", "try it free for N days"), never a vendor.
+        # PRECISION-CRITICAL: bare "\btrial\b" is a false-positive minefield — a
+        # clinical trial, a court trial, "trial and error", "trial by fire", "on
+        # trial". So NEVER match a bare "trial": require it to name a FREE trial
+        # (`free trial` / `free-trial`), a trial PERIOD/ACCOUNT/ALLOWANCE/MEMBERSHIP,
+        # an explicit N-DAY trial (`14-day free trial`), or a START/TRY-FREE offer
+        # (`start your free trial`, `try it free for 14 days`) — the clinical/court/
+        # error/fire senses trip none of these. Fires non-vacuously on driftflight.com
+        # (the homepage / llms.txt / pricing "a free trial allowance, so an agent can
+        # evaluate it before any payment") — which ALREADY claims subscription, so it
+        # deepens evidence without changing any claimed set (score-neutral) — and on
+        # ZERO of the metered-api-only (api.replicate.com), retail (books.toscrape.com),
+        # null (example.com), or trial-free (drift-flight.org) fixtures, so it can
+        # never CONJURE a subscription claim on a site that does not already make one.
+        ("free-trial", re.compile(
+            r"\bfree[- ]trials?\b"
+            r"|\btrial\s+(?:period|account|allowance|membership)\b"
+            r"|\b\d+[- ]days?\s+(?:free\s+)?trial\b"
+            r"|\bstart\s+(?:a|your)\s+(?:free\s+)?trial\b"
+            r"|\btry\s+(?:it\s+)?free\s+for\s+\d+\s+days?\b", _F)),
     ],
     "digital_good": [
         ("generation", re.compile(r"\b(text-to-image|image|video|audio|art)\s+generation\b", _F)),

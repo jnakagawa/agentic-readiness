@@ -8467,3 +8467,65 @@ shares the singular-noun assumption — a plural-only quote would fall back to t
 generic "digital output"). The in-cloud offering COVERAGE frontier is otherwise
 thin (metered_api saturated; service_booking/data_retrieval lack committed evidence
 → vacuous in-cloud; structured catalog/pricing JSON are [LOCAL], 404 on fixtures).
+
+## Cycle 95 — 2026-07-30T02:17Z — TRUTH (branch+PR+self-merge; descriptor-only, off scoring path, score-neutral)
+
+**What.** Made the `digital_good` battery DESCRIPTOR recover PLURAL/participle
+media nouns — the descriptor half of the Cycle-94 generate-media recall fix.
+`asrs/battery._MEDIA_RE` matched only the SINGULAR noun
+(`\b(image|video|audio|art)\b`), so `_digital_good_descriptor` fell back to the
+generic "digital output" for a claim whose ONLY fired media quote was plural —
+the canonical `/docs` "Generated images", or "we generate videos" — even though
+the Cycle-94 SIGNAL had already fired on that plural surface. Added a trailing
+`s?` OUTSIDE the capture group: plural forms match, `group(1)` still yields the
+singular word, so the descriptor normalises to "generated image" whether the
+fired quote is singular or plural. Now the descriptor and the signal share the
+same plural/participle awareness.
+
+**Why (capability terms).** The battery task is the site's own offering worded
+back as an agent job. A generation storefront that describes its output only in
+the plural ("Generated images") was handed a vaguer task ("obtain one digital
+output") than a storefront using the singular ("generated image") — a
+descriptor/signal inconsistency, not a real offering difference. Truth over the
+surface phrasing: the derived task now reflects what the site generates
+regardless of grammatical number.
+
+**Scope / score-neutrality.** `git diff --stat` over `asrs/scoring.py`,
+`asrs/rubric*`, `asrs/probes*`, `asrs/protocols.py`, `asrs/fetch.py`,
+`asrs/offering.py`, `fixtures/`, `batteries/`, `rubric/` = EMPTY → scoring path
+byte-for-byte untouched → rubric **v0.7** (descriptor is off the scoring path,
+`--battery auto` task text only) → NOT peer-gated. `git diff --name-only` =
+`asrs/battery.py` + `tests/test_battery_instantiate.py` ONLY.
+
+**Evidence / tests.** `tests/test_battery_instantiate.py` 8→9 — new
+`test_digital_good_descriptor_recovers_plural_media`, non-vacuous with teeth:
+(a) the REAL canonical `/docs` "Generated images" recovers "generated image",
+and the pre-fix singular-only pattern is asserted NOT to match "images" (the gap
+was real — the test fails against the old code); (b) plural of each media noun
+(videos/images/arts) → singular descriptor; precision negative: a plural
+NON-media noun ("reports"/"outputs") → "digital output" fallback; the singular
+form pinned unchanged. Full suite **22 files green** (test_free_tier 11/11 with
+eth-account in `.venv`).
+
+**Canonical pair.** Unchanged AND re-measured: replay guard **24/24**,
+**46.1 F / 85.5 B / +39.4**, 0 replay-miss. The canonical descriptor was already
+"generated image" via its singular quote (`_digital_good_descriptor` returns on
+the first media match), so this fix changes nothing on the pair — it helps
+plural-ONLY storefronts.
+
+**Ship.** Cloud bridge blocks direct main push → branch
+`loop/descriptor-plural-media` + PR #39 + self-merge (squash ceedf2d; NOT
+peer-gated). First duty: no open peer-gated PR (`[]`); realigned main to
+origin/main ceedf2d after merge. No Slack (score-neutral, moves no score; this
+02:17Z fire is after the Cycle-86 16:12Z daily digest, so not the
+first-after-16:00 cycle). RUNNER STILL GAPPED
+(`verify_20260728T234102Z.json` 23:41Z ~26.5h old).
+
+**Next hypothesis (READOUT).** The generate-media plural/participle arc is now
+closed at both the SIGNAL (Cycle 94) and the DESCRIPTOR (Cycle 95) layers. A
+READOUT complement would surface, in the public methodology/offering prose, that
+the digital_good task is derived from the site's OWN discovered media language
+(vendor-neutral, singular/plural-normalised) — the reader-facing statement of
+why the task says "generated image". Alternatively, the recurring READOUT
+candidate: a per-segment leaderboard summary once the [LOCAL] calibration
+population grows.

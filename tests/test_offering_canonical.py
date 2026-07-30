@@ -1123,6 +1123,125 @@ def test_offering_relabel_invariance_error_contract() -> None:
 
 
 # ---------------------------------------------------------------------------
+# The FIRST signal-level companion in the digital_good bank (the four above all
+# live in metered_api): `output-license` (Cycle 98 — the deliverable-RIGHTS leg
+# of a digital good, in four host-free forms: a commercial-use licence
+# ("commercial licen[cs]e/ing"), royalty-free terms, an explicit "usage rights"
+# grant, or ownership of the produced artifact ("you own the output/render/…")).
+# It is the digital-good "complete the job" RIGHTS leg: an agent that receives a
+# generated render it has no licence to USE has not completed the commercial job,
+# so a storefront granting usage rights on its output is more agent-completable at
+# the digital-good layer. Deliverable rights are a property of what a storefront
+# GRANTS — a licence, royalty-free terms, ownership of the render — never of WHO
+# grants them, so the signal must be identity-invariant.
+#
+# SURFACE-PRESENCE, not quote-anchored (like error-contract / async-job, NOT
+# payment-rail): the rights vocabulary is host-free by nature — "commercial
+# licence", "royalty-free", "you own the output" name no vendor, so the fired
+# QUOTES carry no host (asserted below). But driftflight.com is a STRONG
+# surface-presence case: the signal fires on many surfaces and SEVERAL of them
+# embed the host in the surface KEY (`agents.driftflight.com/llms.txt`,
+# `.../llms-full.txt`, `.../manifest.json`). So the whole-fixture relabel
+# genuinely rewrites the surface keys the signal fires on — the host-normalization
+# step of the surface assertion does real work here, exactly as it does for
+# error-contract, not a no-op over host-free surfaces. Under relabel the signal
+# must survive with the SAME match count, on the SAME host-normalized surfaces,
+# each quote STILL satisfying the live output-license regex, with the vendor host
+# absent from every piece of rights evidence.
+#
+# This is the digital_good analog of the metered_api relabel guards
+# (payment-rail Cycle 79, async-job 83, api-auth 87, error-contract this file):
+# the first extension of the signal-level relabel family off the metered_api bank.
+# ---------------------------------------------------------------------------
+_LICENSE_LABEL = "output-license"
+
+
+def _license_signals(prof) -> list:
+    """The (surface, quote) pairs where the output-license signal fired, sorted."""
+    return sorted(
+        (s.surface, s.quote)
+        for c in prof.claimed
+        for s in c.signals
+        if s.label == _LICENSE_LABEL
+    )
+
+
+def test_offering_relabel_invariance_output_license() -> None:
+    """The digital-good rights grant keys on the licence/ownership form, not host."""
+    print("test_offering_relabel_invariance_output_license")
+    base, _ = _discover("driftflight.com")
+    base_lic = _license_signals(base)
+
+    # The signal genuinely fires on real captured evidence, and a commercial-USE
+    # licence grant (the precision-critical form the signal must catch WITHOUT
+    # firing on a bare software/model licence) is among it.
+    _check(
+        len(base_lic) >= 2,
+        "output-license fires on >=2 real driftflight.com surfaces "
+        f"(got {len(base_lic)}: {[s for s, _ in base_lic]})",
+    )
+    joined = " ".join(q for _, q in base_lic).lower()
+    _check(
+        re.search(r"\bcommercial licen[cs](?:e|es|ed|ing)\b", joined) is not None,
+        "a commercial-use licence grant is among the output-license evidence",
+    )
+
+    # Honest scope: the rights evidence is host-FREE ("commercial licence",
+    # "royalty-free", "you own the output" name no vendor), so non-vacuity cannot
+    # anchor on the host being inside the quote — this is a surface-presence
+    # invariance, like error-contract.
+    _check(
+        all("driftflight.com" not in quote for _, quote in base_lic),
+        "the output-license evidence is host-free (licence / royalty-free / usage "
+        "rights / ownership vocabulary, not a vendor name) — so this is a "
+        "surface-presence, not a quote-anchored, invariance",
+    )
+
+    # Non-vacuity anchor (surface level, as for error-contract): the host is present
+    # INSIDE the surface KEYS the signal fires on, so a whole-fixture relabel
+    # genuinely rewrites the very surfaces the signal reads — the host-normalization
+    # step of assertion (2) below does real work, not a no-op over host-free surfaces.
+    _check(
+        any("driftflight.com" in surf for surf, _ in base_lic),
+        "the host appears inside >=1 output-license surface key — relabel rewrites "
+        f"real surface input (surfaces {[s for s, _ in base_lic]})",
+    )
+
+    relab = _discover_relabeled("driftflight.com", _NEUTRAL_HOST)
+    relab_lic = _license_signals(relab)
+
+    # (1) Same number of output-license matches — the signal is neither lost nor conjured.
+    _check(
+        len(relab_lic) == len(base_lic),
+        "output-license match count invariant under relabel "
+        f"(base {len(base_lic)}, relabel {len(relab_lic)})",
+    )
+    # (2) The SAME logical surfaces carry the signal once the host label is
+    # normalized away — the signal did not migrate to a different surface.
+    base_surf = sorted(s.replace("driftflight.com", _NEUTRAL_HOST) for s, _ in base_lic)
+    relab_surf = sorted(s for s, _ in relab_lic)
+    _check(
+        relab_surf == base_surf,
+        "output-license fires on the same (host-normalized) surfaces under relabel "
+        f"(base {base_surf}, relabel {relab_surf})",
+    )
+    # (3) Each relabeled quote STILL satisfies the live output-license regex (proving
+    # the fired form is a structural rights grant — a commercial licence / royalty-free
+    # / usage rights / ownership of the deliverable) and names no vendor host — the
+    # match keyed on the GRANTED right, not identity.
+    lic_re = dict(_offering._SIGNALS["digital_good"])[_LICENSE_LABEL]
+    for surf, quote in relab_lic:
+        _check(
+            lic_re.search(quote) is not None,
+            f"relabeled output-license quote still matches the rights-structural signal: {quote!r}",
+        )
+        _check(
+            "driftflight.com" not in quote and "driftflight.com" not in surf,
+            f"vendor host absent from relabeled output-license evidence (surface {surf!r})",
+        )
+
+
+# ---------------------------------------------------------------------------
 # Relabel-invariance EXTENDED to the retail + non-storefront domains.
 #
 # The two invariance tests above cover only the canonical PAIR, because their
@@ -1246,6 +1365,7 @@ def main() -> int:
         test_offering_relabel_invariance_async_job,
         test_offering_relabel_invariance_api_auth,
         test_offering_relabel_invariance_error_contract,
+        test_offering_relabel_invariance_output_license,
         test_offering_relabel_invariance_retail,
         test_offering_relabel_invariance_nonstorefront,
         test_offering_relabel_negative_control,

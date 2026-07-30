@@ -1820,6 +1820,153 @@ def test_offering_surface_order_invariance_org() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Content-SCALE invariance — a genuinely NEW perturbation axis on the offering
+# path, distinct from surface-read ORDER (which surface arrives first) and host
+# RELABEL (what the storefront is named). An offering claim is QUALITATIVE — does
+# the site claim to serve archetype X? — never QUANTITATIVE. A storefront that
+# repeats its pitch (says "per month" ten times, duplicates a section across a
+# rebuild, mirrors the same prose on two surfaces) is not "more" of an archetype
+# and MUST NOT out-rank or reorder against one that states each capability once.
+# Two collaborating mechanisms make classification count-independent:
+# `_scan_surface` takes the FIRST match per (archetype, label) via
+# `pattern.search` (not `finditer`), and `ArchetypeClaim.strength` counts DISTINCT
+# signal LABELS (not raw hits) — its docstring names exactly this "a page that
+# repeats 'per month' ten times does not out-rank" rationale. This guard pins that
+# rationale as an executable tripwire on REAL canonical evidence: duplicating every
+# surface body must leave the WHOLE classified profile byte-identical.
+#
+# Teeth: the anchor's raw regex-match count genuinely MULTIPLIES under the
+# duplication (n -> K*n), so a count-based reader WOULD see a difference — proving
+# the reported invariance is a real property of the classifier, not a vacuous
+# no-op. A regression to `finditer` + count-based strength (which would let volume
+# reorder the ranking that drives the fixed template-bank task order) fails here.
+# Mirrored onto BOTH canonical pair-halves from the start, so this axis does not
+# inherit the .com-only asymmetry order-invariance had to close in Cycle 105.
+# ---------------------------------------------------------------------------
+
+_SCALE_K = 3  # duplicate each surface body this many times
+
+
+def _dup_surface(raw: str) -> str:
+    """Repeat a surface body ``_SCALE_K`` times, separated by blank lines.
+
+    The blank-line separator cannot bridge two copies into a spurious new match
+    (signals anchor on contiguous phrases), and ``strip_html`` collapses it away,
+    so the doubled prose simply contains each real signal ``_SCALE_K`` times.
+    """
+    return ("\n\n").join([raw] * _SCALE_K)
+
+
+def _surface_prose(surface: str, raw: str) -> str:
+    """Reproduce ``classify_offering``'s per-surface prose derivation (for teeth counting)."""
+    return (
+        strip_html(raw)
+        if (surface == "homepage" or _offering._is_html_document(raw))
+        else raw
+    )
+
+
+def _signal_pattern(archetype: str, label: str):
+    """The compiled pattern for one ``(archetype, label)`` signal, or ``None``."""
+    for lbl, pat in _offering._SIGNALS[archetype]:
+        if lbl == label:
+            return pat
+    return None
+
+
+def _full_evidence_map(prof) -> dict:
+    """archetype -> (strength, its full sorted (label, surface, quote) evidence)."""
+    return {
+        c.archetype: (
+            c.strength,
+            sorted((s.label, s.surface, s.quote) for s in c.signals),
+        )
+        for c in prof.claimed
+    }
+
+
+def _assert_content_scale_invariance(domain: str, expected_claimed: set) -> None:
+    """Duplicating every surface body leaves the whole classified profile identical."""
+    surfaces = _captured_surfaces(domain)
+    base = _offering.classify_offering(domain, dict(surfaces))
+
+    # The property under test is genuinely present: the domain claims the expected
+    # multi-archetype set, RANKED, so a count-based reorder would be observable.
+    _check(
+        set(base.archetypes) == expected_claimed,
+        f"{domain}: base claimed set == {sorted(expected_claimed)} "
+        f"(got {sorted(set(base.archetypes))})",
+    )
+    _check(
+        len(base.claimed) >= 2,
+        f"{domain}: >=2 archetypes claimed, so the ranking a volume regression could "
+        f"reorder is real (got {base.archetypes})",
+    )
+
+    dup_surfaces = {s: _dup_surface(r) for s, r in surfaces.items()}
+    # Non-vacuity: the duplication genuinely enlarged every surface the classifier
+    # reads — its input really changed.
+    _check(
+        all(len(dup_surfaces[s]) > len(surfaces[s]) for s in surfaces),
+        f"{domain}: every surface body grew under {_SCALE_K}x duplication "
+        "(the perturbation is real, not a no-op)",
+    )
+    # TEETH: a count-based reader WOULD see strictly more. The anchor archetype's
+    # first signal fires K times as many RAW matches after duplication, yet the
+    # classifier below reports the SAME single signal / strength / rank — proving
+    # count-independence is a real property, not a vacuous invariance.
+    anchor = base.claimed[0].signals[0]
+    pat = _signal_pattern(anchor.archetype, anchor.label)
+    _check(pat is not None, f"{domain}: anchor signal pattern resolvable")
+    n_base = len(pat.findall(_surface_prose(anchor.surface, surfaces[anchor.surface])))
+    n_dup = len(pat.findall(_surface_prose(anchor.surface, dup_surfaces[anchor.surface])))
+    _check(
+        n_base >= 1 and n_dup > n_base,
+        f"{domain}: the anchor signal ({anchor.archetype}/{anchor.label}) fires MORE raw "
+        f"matches under duplication ({n_base} -> {n_dup}) — a count-based reader would differ",
+    )
+
+    dup = _offering.classify_offering(domain, dict(dup_surfaces))
+
+    # (1) The WHOLE classified profile is byte-identical: every archetype's strength
+    # AND its complete (label, surface, quote) evidence survive duplication unchanged
+    # — no signal multiplied, no quote drifted, no archetype conjured.
+    _check(
+        _full_evidence_map(dup) == _full_evidence_map(base),
+        f"{domain}: complete per-archetype (strength, (label, surface, quote)) evidence "
+        "map invariant under content duplication",
+    )
+    # (2) Claimed archetypes IN RANK ORDER invariant — the rank drives the fixed
+    # template-bank task order (cross-site comparability), so volume must not
+    # reorder it.
+    _check(
+        dup.archetypes == base.archetypes,
+        f"{domain}: claimed archetypes (ranked) invariant under duplication "
+        f"(base {base.archetypes}, dup {dup.archetypes})",
+    )
+    # (3) The NA/unclaimed set (excluded from every mean/spread, never penalized) is
+    # invariant — which archetypes a site is judged on vs excused as NA is a property
+    # of WHAT it claims, not how many times it says it.
+    _check(
+        set(dup.unclaimed) == set(base.unclaimed),
+        f"{domain}: NA/unclaimed set invariant under duplication "
+        f"(base {sorted(base.unclaimed)}, dup {sorted(dup.unclaimed)})",
+    )
+
+
+def test_offering_content_scale_invariance_org() -> None:
+    """A storefront that repeats its pitch is not "more" of any archetype (.org)."""
+    print("test_offering_content_scale_invariance_org")
+    _assert_content_scale_invariance("drift-flight.org", EXPECTED_CLAIMED["drift-flight.org"])
+
+
+def test_offering_content_scale_invariance_com() -> None:
+    """Content-scale invariance mirrored onto the .com half of the canonical pair."""
+    print("test_offering_content_scale_invariance_com")
+    _assert_content_scale_invariance("driftflight.com", EXPECTED_CLAIMED["driftflight.com"])
+
+
+# ---------------------------------------------------------------------------
 # Relabel-invariance EXTENDED to the retail + non-storefront domains.
 #
 # The two invariance tests above cover only the canonical PAIR, because their
@@ -1949,6 +2096,8 @@ def main() -> int:
         test_offering_relabel_invariance_output_license,
         test_offering_surface_order_invariance_output_license,
         test_offering_surface_order_invariance_org,
+        test_offering_content_scale_invariance_org,
+        test_offering_content_scale_invariance_com,
         test_offering_relabel_invariance_retail,
         test_offering_relabel_invariance_nonstorefront,
         test_offering_relabel_negative_control,

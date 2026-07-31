@@ -1592,6 +1592,143 @@ def test_offering_relabel_invariance_cancel_job() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Relabel-invariance at the SIGNAL level — the streaming-response delivery form.
+#
+# The EIGHTH signal-level companion in the metered_api bank (after payment-rail
+# Cycle 79, async-job 83, api-auth 87, error-contract 91, test-mode 103,
+# pagination 107, and cancel-job 110), for the signal that landed most recently:
+# `streaming-response` (Cycle 126 — how an agent consumes a metered API's output
+# INCREMENTALLY over the OPEN connection as it is produced: the W3C Server-Sent
+# Events standard, its `text/event-stream` media type, a `stream`/`streaming` VERB
+# naming an output noun (stream the output / streaming responses / stream tokens),
+# a `streaming` API/ENDPOINT/MODE, or the `SSE` acronym ONLY in a streaming
+# context. It is the "understand + complete the job" delivery leg for a metered API
+# whose work produces output progressively: an agent that cannot open a documented
+# streaming/SSE flow blocks on a long call it could have consumed incrementally, so
+# a metered API that documents a streaming contract is MORE agent-completable.
+# Distinct from every other metered_api leg — async-job collects a completed job's
+# result OUT of band via webhook/poll; streaming-response is the IN-BAND sibling
+# that delivers partial output WITHIN the same open connection.) It fires on
+# `api.replicate.com`'s `/openapi.json` — a genuine `stream` field documenting
+# "receive streaming output using server-sent events (SSE)". How an agent consumes
+# an API's output as it is produced is a property of the delivery CONTRACT a
+# storefront documents (SSE / text/event-stream / a streaming endpoint), never of
+# who published it, so the signal must be identity-invariant.
+#
+# SURFACE-PRESENCE, not quote-anchored (the async-job / pagination / cancel-job
+# shape, NOT payment-rail): the streaming vocabulary is host-free by nature — the
+# fired quote carries the SSE/streaming-delivery structure, not the vendor's name,
+# and the surface is the relative `/openapi.json`. The non-vacuity anchor is
+# therefore at the FIXTURE level (asserted below): the host IS present in the
+# fixture surfaces the classifier fetches, so a whole-fixture relabel genuinely
+# rewrites the classifier's overall input; the streaming-response signal survives
+# because the SSE/streaming structure it keys on never named the vendor to begin
+# with. Under relabel the signal must fire the SAME number of times, on the SAME
+# surface, each quote STILL satisfying the live streaming-response regex, with the
+# vendor host absent from every piece of streaming evidence.
+#
+# This drops the machine-surface fixture's relabel coverage (whole-archetype,
+# `test_offering_relabel_invariance_machine`) a layer down to the specific
+# "consume output as it streams" signal a metered API whose output is progressive
+# rests on — the same move Cycle 79 made for `agent-payment-rail`, 83 for
+# `async-job`, 107 for `pagination`, and 110 for `cancel-job`. It completes the
+# metered_api signal-level relabel family for every signal that landed through
+# Cycle 126.
+# ---------------------------------------------------------------------------
+_STREAM_LABEL = "streaming-response"
+
+
+def _stream_signals(prof) -> list:
+    """The (surface, quote) pairs where the streaming-response signal fired, sorted."""
+    return sorted(
+        (s.surface, s.quote)
+        for c in prof.claimed
+        for s in c.signals
+        if s.label == _STREAM_LABEL
+    )
+
+
+def test_offering_relabel_invariance_streaming_response() -> None:
+    """The incremental-delivery claim keys on the SSE/streaming contract, not host."""
+    print("test_offering_relabel_invariance_streaming_response")
+    base, _ = _discover(_MACHINE_SURFACE)
+    base_st = _stream_signals(base)
+
+    # The signal genuinely fires on real captured evidence — the streaming-delivery
+    # contract in the storefront's own OpenAPI spec.
+    _check(
+        len(base_st) >= 1,
+        f"streaming-response fires on >=1 real {_MACHINE_SURFACE} surface "
+        f"(got {len(base_st)}: {[s for s, _ in base_st]})",
+    )
+    joined = " ".join(q for _, q in base_st).lower()
+    _check(
+        "sse" in joined or "event-stream" in joined or "stream" in joined,
+        "the streaming-response evidence carries SSE / text-event-stream / "
+        f"streaming-delivery vocabulary (got {[q for _, q in base_st]})",
+    )
+
+    # Honest scope: like async-job / pagination / cancel-job (not payment-rail), the
+    # streaming-response evidence is host-FREE (the fired quote and its relative
+    # /openapi.json surface name no vendor), so non-vacuity cannot anchor on the host
+    # being inside the quote.
+    _check(
+        all(
+            _MACHINE_SURFACE not in surf and _MACHINE_SURFACE not in quote
+            for surf, quote in base_st
+        ),
+        "the streaming-response evidence is host-free (SSE/event-stream/streaming "
+        "delivery structure, not a vendor name) — so this is a surface-presence, not "
+        "a quote-anchored, invariance",
+    )
+
+    # Non-vacuity anchor (fixture level): the host IS present in the fixture surfaces
+    # the classifier fetches, so a whole-fixture relabel genuinely rewrites the
+    # classifier's overall input — the streaming-response signal surviving is not a
+    # no-op over an absent host.
+    path = os.path.join(_FIXTURE_DIR, f"{_MACHINE_SURFACE}.json")
+    with open(path, encoding="utf-8") as fh:
+        raw = fh.read()
+    _check(
+        _MACHINE_SURFACE in raw,
+        f"{_MACHINE_SURFACE}: host present in the fixture surfaces (relabel rewrites "
+        "real classifier input — the test is non-vacuous)",
+    )
+
+    relab = _discover_relabeled(_MACHINE_SURFACE, _NEUTRAL_HOST)
+    relab_st = _stream_signals(relab)
+
+    # (1) Same number of streaming-response matches — neither lost nor conjured.
+    _check(
+        len(relab_st) == len(base_st),
+        "streaming-response match count invariant under relabel "
+        f"(base {len(base_st)}, relabel {len(relab_st)})",
+    )
+    # (2) The SAME (host-normalized) surfaces carry the signal — it did not migrate.
+    base_surf = sorted(s.replace(_MACHINE_SURFACE, _NEUTRAL_HOST) for s, _ in base_st)
+    relab_surf = sorted(s for s, _ in relab_st)
+    _check(
+        relab_surf == base_surf,
+        "streaming-response fires on the same (host-normalized) surfaces under relabel "
+        f"(base {base_surf}, relabel {relab_surf})",
+    )
+    # (3) Each relabeled quote STILL satisfies the live streaming-response regex
+    # (proving the fired form is structural — an SSE/event-stream/streaming-endpoint
+    # delivery contract) and names no vendor host — the match keyed on the delivery
+    # contract, not identity.
+    st_re = dict(_offering._SIGNALS["metered_api"])[_STREAM_LABEL]
+    for surf, quote in relab_st:
+        _check(
+            st_re.search(quote) is not None,
+            f"relabeled streaming-response quote still matches the contract-structural signal: {quote!r}",
+        )
+        _check(
+            _MACHINE_SURFACE not in quote and _MACHINE_SURFACE not in surf,
+            f"vendor host absent from relabeled streaming-response evidence (surface {surf!r})",
+        )
+
+
+# ---------------------------------------------------------------------------
 # The FIRST signal-level companion in the digital_good bank (the four above all
 # live in metered_api): `output-license` (Cycle 98 — the deliverable-RIGHTS leg
 # of a digital good, in four host-free forms: a commercial-use licence
@@ -3232,6 +3369,7 @@ def main() -> int:
         test_offering_relabel_invariance_test_mode,
         test_offering_relabel_invariance_pagination,
         test_offering_relabel_invariance_cancel_job,
+        test_offering_relabel_invariance_streaming_response,
         test_offering_relabel_invariance_output_license,
         test_offering_relabel_invariance_free_trial,
         test_offering_relabel_invariance_content_provenance,

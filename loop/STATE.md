@@ -1,19 +1,25 @@
 # Loop state
 
-- Cycle counter: 125
+- Cycle counter: 126
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-31T08:12Z, Cycle 125; first breached Cycle 76 06:12Z): the LOCAL
-  verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~56.5h old at the Cycle-125 fire (container clock 08:12Z Jul-31); no
-  newer :41 artifact through 08:12Z Jul-31. Cloud CANNOT repair the local machine. The gap was RE-FLAGGED
-  loudly in the Cycle-109 16:12Z digest (the first cycle after 16:00Z on Jul-30). The NEXT first-after-16:00
-  fire (~16:1xZ Jul-31) is the next re-flag point; Cycle 124 at 07:12Z is NOT first-after-16:00 → no
-  re-digest THIS fire, but keep noting the gap until it clears; queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
-  85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
-  is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
-  local fire root-caused (a >60s slow-network wake still misses the 5×15s retry) OR the machine is
-  simply asleep/offline. If a fresh artifact lands next fire, watch its `attempts` field; if still
-  gapped, keep flagging in each daily digest.
+- RUNNER RECOVERED at 2026-07-31T09:12Z (Cycle 126) — the ~56h stall (first breached Cycle 76 06:12Z)
+  CLEARED. Newest artifact `runs/local/verify_20260731T085248Z.json` (08:52Z Jul-31) carries
+  `git_pull.ok=true attempts=1`, tests_ok=true, both canonical domains scored — so the wake/network
+  race the Cycle-63 fire root-caused evidently self-cleared on a successful wake (attempts=1, no
+  slow-network miss); no code fix warranted. WATCH the `attempts` field on future artifacts; if the gap
+  recurs, escalate to a longer/adaptive backoff or a DNS pre-flight as the Cycle-63 note prescribes.
+- LIVE-DELTA DIVERGENCE (record + verify, NOT alarm; opened Cycle 126). The recovered runner's LIVE
+  static re-score diverges from the frozen-fixture replay guard: driftflight.com LIVE 76.2 C (delta
+  +30.1) vs fixture 85.5 B (+39.4). In capability terms the ENTIRE ~9pt drop is transactability
+  87.5 → 62.5 (legibility 90.9 / access 100 / trust 60 all UNCHANGED) — the live with-rails anchor's
+  agent-native payment evidence weakened between the Jul-23 fixture and the Jul-31 live crawl. NOT
+  caused by any in-cloud change (off the scoring path; the in-cloud replay guard is STILL 24/24, 46.1 F
+  / 85.5 B / +39.4 — the independent regression signal is intact). It is a SINGLE datapoint from a
+  just-recovered runner — plausibly a transient partial-fetch of a transactability surface during the
+  wake/network recovery, OR a real change in driftflight.com over the 3-day gap. Queued P0 [LOCAL] to
+  verify next fire; FLAG in the next 16:00 UTC digest (~16:1xZ Jul-31, the next first-after-16:00 fire —
+  which also reports that the runner stall cleared). Cycle 126 at 09:12Z is NOT first-after-16:00 → no
+  digest this fire.
 - INFRA (2026-07-29T04:2xZ, Cycle 74): the CLOUD git bridge now REFUSES direct pushes to `main`
   (branch-protected) — a `git push origin main` of a legitimate fast-forward is rejected with a
   MISLEADING "non-fast-forward" even when the read replica, the write primary (receive-pack
@@ -27,7 +33,37 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 126 COVERAGE — added a NEW capability signal `streaming-response` to the offering classifier's
+  metered_api signal bank (`asrs/offering.py`): how an agent consumes output INCREMENTALLY over the OPEN
+  connection as it is produced (server-sent events / text/event-stream / a streaming API/endpoint that
+  streams the output/tokens) — the IN-BAND sibling of `async-job` (which collects a completed job's
+  result OUT of band via webhook/poll). Distinct from every existing metered_api leg (api-auth /
+  rate-limited / async-job / error-contract / pagination / cancel-job): none describes incremental
+  in-band delivery. Precision-anchored so `application/octet-stream` (a binary-download MIME, verbatim on
+  api.replicate.com's /openapi.json), the SSE acronym collisions (Shanghai Stock Exchange / sum-of-squared
+  -errors), and live-stream/bloodstream/downstream never fire — and a bare SSE can never CONJURE a false
+  metered_api claim. Fires NON-VACUOUSLY on the real captured api.replicate.com /openapi.json streaming
+  contract ("receive streaming output using server-sent events (SSE)" + "An event source to stream the
+  output of the prediction") and on ZERO of the canonical-pair / retail / null fixtures; api.replicate.com
+  ALREADY claims metered_api only → deepens evidence without adding or reordering any archetype. SHIP
+  CLASS: off the scoring path (`scoring.py` 0 offering refs) → score-neutral, NOT peer-gated. git diff over
+  `asrs/scoring.py rubric/ fixtures/` EMPTY; --name-only = `asrs/offering.py` + `tests/test_offering.py`
+  ONLY. First duty: no open peer-gated PR (`[]` at fire start). Cloud bridge blocks direct main push →
+  branch loop/streaming-response-signal + PR #101 + self-merge (squash 02be8d9; merged commit = exactly the
+  two files). Realigned main to origin/main after merge (`git reset --hard origin/main` → 02be8d9, verified
+  `streaming-response` present + offering canonical 34/34 + replay 24/24 on merged main), deleted local
+  branch. `test_offering.py` 52→54; full suite green (22 files, 0 real failures; test_free_tier 11/11 after
+  `pip install -r requirements.txt`, environment-only). Canonical PAIR unchanged (frozen fixtures): replay
+  guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. RUNNER RECOVERED this fire
+  (verify_20260731T085248Z 08:52Z, attempts=1) — but its LIVE re-score shows driftflight.com 76.2 C /
+  +30.1 (transactability 87.5→62.5), a divergence from the frozen fixture recorded + queued P0 [LOCAL] +
+  flagged for the digest (see the LIVE-DELTA DIVERGENCE note above). No Slack (score-neutral, off scoring
+  path; not sensitive-class; 09:12Z is not the first-after-16:00 digest cycle — that is ~16:1xZ Jul-31).
+  Next TRUTH — pin `streaming-response` as RELABEL-INVARIANT (the streaming contract keys on the delivery
+  form, not the host), the eighth metered_api signal-level relabel guard, then a READOUT leg completes the
+  arc. OR, if the live transactability drop persists, the [LOCAL] canonical re-capture is the
+  higher-leverage TRUTH item. Thin archetypes service_booking / data_retrieval remain [LOCAL]-blocked.)
   (Cycle 125 METHOD — added the FIFTH metamorphic-invariance axis on the offering classifier, and the
   FIRST to perturb the order of items WITHIN a single surface rather than the surfaces themselves (the
   four prior axes — relabel / surface-read-order / scale / noise — all operate at surface granularity;

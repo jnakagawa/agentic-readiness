@@ -5,17 +5,24 @@ design in-cloud, execute locally.
 
 ## P0
 
-- **[LOCAL] Local verify runner STALLED past the 6h floor again** (SELF-HEALING, flagged Cycle 76,
-  still gapped through Cycle 98 2026-07-30T05:1xZ; FLAGGED in the Cycle-86 16:00 UTC digest). Newest artifact
-  `runs/local/verify_20260728T234102Z.json` (23:41Z Jul-28) is ~29.5h old; 30+ consecutive :41 fires
-  00:41Z Jul-29 – 04:41Z Jul-30 produced NO newer artifact. The cloud cannot
-  reach Jonah's machine to diagnose. On the next LOCAL fire: read the runner heartbeat log + any unpushed
-  `runs/local/verify_*.json`, check `attempts` on the newest artifact. If it's the Cycle-63 wake/network
-  race recurring (a >60s slow-network wake outlasting the 5×15s `git_pull_with_retry`), escalate to a
-  longer/adaptive backoff or a DNS pre-flight; if the machine was simply asleep/offline, no code fix — just
-  confirm it self-clears on the next successful wake. The in-cloud replay guard is the independent live
-  regression signal meanwhile (24/24 / 46.1 F / 85.5 B / +39.4), so this is a heartbeat gap, not a scoring
-  outage. FLAG in the 16:00 UTC digest if still gapped.
+- **[LOCAL] Verify the driftflight.com LIVE transactability drop (canonical-anchor divergence)** (TRUTH,
+  opened Cycle 126). The LOCAL runner RECOVERED this fire (`runs/local/verify_20260731T085248Z.json`,
+  08:52Z Jul-31, attempts=1) and its LIVE static re-score shows driftflight.com **76.2 C / delta +30.1**
+  vs the frozen fixture's **85.5 B / +39.4** — the entire ~9pt drop is **transactability 87.5 → 62.5**
+  (legibility 90.9 / access 100 / trust 60 all unchanged). This is the live with-rails anchor's
+  agent-native payment evidence weakening between the Jul-23 fixture and the Jul-31 live crawl. n=1 from a
+  just-recovered runner, so it may be a transient partial-fetch during the wake/network recovery OR a real
+  3-day change. NEXT LOCAL FIRE: read the newest 1-2 `verify_*.json` artifacts — (a) if the drop is GONE
+  (transactability back to 87.5), it was transient wake-recovery noise → note + close; (b) if 76.2/62.5
+  PERSISTS, re-score live (`asrs.cli score driftflight.com`) and DIFF the transactability checks against
+  the committed fixture to name WHICH check flipped (candidates: x402-live challenge, a commerce-protocol
+  surface, machine-payable evidence), then capture a fresh fixture
+  (`asrs.cli score driftflight.com --record-fixture fixtures/canonical/driftflight.com.json`) — but note
+  re-capturing MOVES the replay-guard EXPECTED (85.5→~76.2), so it is a peer-gated canonical re-baseline
+  (bump the guard's EXPECTED in the SAME PR per the Cycle-17 maintenance contract) and the LOG must
+  explain the delta move in capability terms. The in-cloud replay guard (24/24, 46.1 F / 85.5 B / +39.4)
+  stays the frozen regression signal until then. FLAG the divergence + the runner recovery in the next
+  16:00 UTC digest (~16:1xZ Jul-31).
 
 <!-- DONE 2026-07-28T17:27Z (local fire, SELF-HEALING/METHOD, direct-to-main): "[LOCAL] Local
      verify runner STALLED past the 6h floor" ROOT-CAUSED + FIXED. The cloud's Cycle-51→62

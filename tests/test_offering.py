@@ -295,6 +295,92 @@ def test_sku_inventory_is_retail_sense_not_compute():
     print("  ok: retail 'product SKU' / 'inventory levels' still fires sku-inventory")
 
 
+def test_priced_listing_precision_synthetic():
+    # PRICED CATALOG LISTING — a concrete decimal price quoted directly beside a
+    # purchasable item's availability / add-to-cart control is the "understand the
+    # offer" price leg for a physical good: an agent must read the item's PRICE to
+    # decide and fulfill a physical purchase, and none of the sibling legs
+    # (add-to-cart = the ACTION, stock = WHETHER available, sku-inventory =
+    # inventory management) guarantees a readable price. Each POSITIVE is a real,
+    # vendor-neutral priced-listing shape; each NEGATIVE is price-SHAPED noise that
+    # must NOT fire it (the precision traps: metered per-call / per-period API
+    # pricing, a subscription fee, a bare marketing price, and "in stock" with no
+    # price — none of which is a priced catalog listing).
+    positives = {
+        "pound in stock": "A Light in the Attic £51.77 In stock",
+        "dollar add to cart": "Ceramic mug $12.99 Add to cart",
+        "euro in stock": "Wool scarf 24,95 In stock",  # comma decimal, no glyph
+        "add to basket": "Field notebook 9.50 Add to basket",
+        "add to bag": "Canvas tote 18.00 Add to bag",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("shop.test", {"homepage": text})
+        assert prof.claims("physical_good"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "physical_good"
+            for s in c.signals
+        }
+        assert "priced-listing" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real priced-listing phrasings each fire priced-listing")
+
+    negatives = {
+        "metered per-call": "Pricing: $0.01 per API call, billed monthly.",
+        "subscription fee": "Just $29.00 / month, cancel anytime.",
+        "per-1k requests": "$5.00 per 1,000 requests on the metered tier.",
+        "bare marketing price": "Pricing starts at $99.99 for the pro plan.",
+        "stock without price": "This model is currently in stock and ready to run.",
+        "price then sentence break": "Total was 19.95. In stock levels vary by region.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "priced-listing" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} price-shaped noise strings do NOT fire priced-listing (precision)"
+    )
+
+
+def test_priced_listing_fires_on_real_captured_retail():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the priced-listing signal fires on the
+    # GENUINE product catalog captured live from a real retail storefront —
+    # books.toscrape.com's homepage lists each in-stock title beside its price
+    # ("£51.77 In stock"), captured verbatim in the committed fixture. Run the REAL
+    # discovery path (from_fixture -> discover_offering) so the signal is exercised
+    # exactly as a live crawl would, the same real-data non-vacuity move
+    # test_pagination_fires_on_real_captured_openapi makes.
+    #
+    # SCORE-NEUTRAL by construction: books.toscrape.com already claims ONLY
+    # physical_good (its strongest and only archetype), so a priced-catalog signal on
+    # its homepage can only deepen that claim's evidence — never add an archetype or
+    # reorder. The classifier is off the scoring path; the canonical pair (which
+    # quotes bare metered per-call prices with NO in-stock listing) is unchanged
+    # (priced-listing fires on neither driftflight surface — pinned by
+    # tests/test_offering_canonical.py and the canonical replay guard).
+    home = _fixture_entry_text("books.toscrape.com", "books.toscrape.com")
+    assert home, "fixture lost its homepage entry"
+    assert "In stock" in strip_html(home), "fixture homepage lost its priced in-stock listings"
+
+    ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "books.toscrape.com.json"))
+    prof = offering.discover_offering(ctx)
+
+    assert prof.claims("physical_good"), prof.archetypes
+    phys = next(c for c in prof.claimed if c.archetype == "physical_good")
+    pl = [s for s in phys.signals if s.label == "priced-listing"]
+    assert pl, {s.label for s in phys.signals}
+    quote = pl[0].quote.lower()
+    assert "in stock" in quote or "add to" in quote, pl[0].quote
+    # The canonical pair carries bare currency amounts but no priced in-stock
+    # listing, so the signal must NOT fire there (non-vacuous NA guard).
+    for api in ("drift-flight.org", "driftflight.com"):
+        actx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{api}.json"))
+        aprof = offering.discover_offering(actx)
+        alabels = {s.label for c in aprof.claimed for s in c.signals}
+        assert "priced-listing" not in alabels, (api, alabels)
+    print(f"  ok: priced-listing fires on REAL captured retail catalog — quote: {pl[0].quote!r}")
+
+
 def test_credit_metered_precision_synthetic():
     # Credit-based metering — prepay a balance, spend N credits per call — is the
     # dominant billing convention for generative / agent-native APIs, but bare
@@ -2015,6 +2101,8 @@ def main() -> int:
         test_cancel_job_fires_on_real_captured_openapi,
         test_free_trial_subscription_precision_synthetic,
         test_free_trial_fires_on_real_captured_subscription_prose,
+        test_priced_listing_precision_synthetic,
+        test_priced_listing_fires_on_real_captured_retail,
         test_strip_html_drops_script_style_and_tags,
     ]
     failed = 0

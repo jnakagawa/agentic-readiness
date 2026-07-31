@@ -1297,10 +1297,16 @@ design in-cloud, execute locally.
   (homepage vs /openapi.json vs /llms.txt) move a multi-surface claim? (partially pinned by
   `test_offering_surface_order_invariance_*` on the org pole — extend to the machine pole); (c) casing
   invariance mirrored onto the retail/machine poles (Cycle 133 covers the org/com prose pair only);
-  (d) the two axes Cycle 132 named alongside casing that are still UNBUILT — cross-signal
-  PRECISION-ISOLATION (proving one archetype's evidence never leaks into another archetype's verdict)
-  and SURFACE-DEDUP invariance (a fixture that serves the same body at two surface keys must not
-  double-count a claim). All tests-only, off the scoring path, in-cloud-doable on committed fixtures.
+  (d) SURFACE-DEDUP invariance (a fixture that serves the same body at two surface keys must not
+  double-count a claim) — the ONE remaining axis of the two Cycle 132 named alongside casing. NOTE
+  `strength` is already distinct-label-count (`ArchetypeClaim.strength = len({s.label ...})`), so a
+  dedup guard is likely a robustness PIN (proving the current design already resists double-counting)
+  rather than a bug-find; still worth pinning so a future strength refactor to raw match count fails
+  loudly. [cross-signal PRECISION-ISOLATION — the sibling axis — SHIPPED Cycle 137: a full 56-signal /
+  6-archetype matrix `test_cross_signal_archetype_isolation` + negative control in
+  `tests/test_offering_canonical.py`, proving each signal's affirmative evidence claims EXACTLY its own
+  archetype and leaks into no other, completeness-enforced.] All tests-only, off the scoring path,
+  in-cloud-doable on committed fixtures.
 
 - **[METHOD, cloud-doable] Audit the test-runner registration lists for authored-but-unregistered
   guards** (observation, Cycle 84). The in-cloud suites run via each `tests/test_*.py`'s own `main()`

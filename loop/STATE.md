@@ -1,13 +1,18 @@
 # Loop state
 
-- Cycle counter: 136
+- Cycle counter: 137
 - Started: 2026-07-23 (UTC)
-- RUNNER RECOVERED at 2026-07-31T09:12Z (Cycle 126) — the ~56h stall (first breached Cycle 76 06:12Z)
-  CLEARED. Newest artifact `runs/local/verify_20260731T085248Z.json` (08:52Z Jul-31) carries
-  `git_pull.ok=true attempts=1`, tests_ok=true, both canonical domains scored — so the wake/network
-  race the Cycle-63 fire root-caused evidently self-cleared on a successful wake (attempts=1, no
-  slow-network miss); no code fix warranted. WATCH the `attempts` field on future artifacts; if the gap
-  recurs, escalate to a longer/adaptive backoff or a DNS pre-flight as the Cycle-63 note prescribes.
+- RUNNER STALE AGAIN at 2026-07-31T20:12Z (Cycle 137) — newest verify
+  `runs/local/verify_20260731T134541Z.json` (13:45Z) is ~6.5h old, BREACHING the 6h floor. The
+  14:41–19:41 launchd fires produced NO artifact — consistent with the machine asleep through the
+  afternoon/evening (the same wake-instant pattern the Cycle-63 fire root-caused, NOT a code
+  regression: the runner RECOVERED cleanly at 08:52Z + 13:45Z this morning with `attempts=1`). Cloud
+  CANNOT repair the local machine. ACTION: flag in the next first-after-16:00 digest (~16:xxZ Aug-1);
+  if the stall persists across the next several fires (i.e. the machine stays asleep / no new
+  `verify_*.json` by ~Aug-1 morning), the Cycle-63 note's escalation (longer/adaptive backoff or DNS
+  pre-flight) does NOT apply — that fix is for the wake/network RACE, not a machine that never wakes;
+  a persistent no-wake is an operator/launchd-plist matter to raise with Jonah. (Prior: RECOVERED at
+  09:12Z Cycle 126 after a ~56h stall; wake/network race self-cleared on a successful wake.)
 - LIVE-DELTA DIVERGENCE (record + verify, NOT alarm; opened Cycle 126). The recovered runner's LIVE
   static re-score diverges from the frozen-fixture replay guard: driftflight.com LIVE 76.2 C (delta
   +30.1) vs fixture 85.5 B (+39.4). In capability terms the ENTIRE ~9pt drop is transactability
@@ -36,15 +41,18 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 136 was
-  READOUT, so Cycle 137 is METHOD). With all ten metered_api signals now carrying the full
-  COVERAGE→TRUTH→READOUT treatment (webhook-verification arc closed this fire), the in-cloud
-  METHOD frontier is Cycle 132's still-unbuilt menu: cross-signal precision-ISOLATION (a matrix
-  guard proving each metered_api signal fires on ITS evidence and stays silent on every sibling's
-  affirmative fixture — no signal poaches another's turf) and surface-DEDUP invariance
-  (duplicate/near-duplicate surfaces don't inflate match counts or strength). Both are tests-only,
-  off the scoring path, NOT peer-gated. New-signal COVERAGE on the unclaimed archetypes
-  (service_booking / data_retrieval) stays [LOCAL]-blocked on a fixture capture (P1).
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 137 was
+  METHOD, so Cycle 138 is COVERAGE). Cycle 137 built the FIRST menu item —
+  cross-signal precision-ISOLATION: a full 56-signal / 6-archetype matrix
+  (`test_cross_signal_archetype_isolation` + negative control in
+  `tests/test_offering_canonical.py`) proving each signal's affirmative evidence claims EXACTLY its
+  own archetype and leaks into no other (the score-relevant no-false-claim property);
+  completeness-enforced so new signals can't escape it. REMAINING in-cloud METHOD sibling:
+  surface-DEDUP invariance (duplicate/near-duplicate surfaces don't inflate match counts or strength
+  — note `strength` is already distinct-label-count, so likely a robustness PIN not a bug-find) —
+  the METHOD fallback if Cycle 138 COVERAGE finds no in-cloud-verifiable unit. New-signal COVERAGE on
+  the unclaimed archetypes (service_booking / data_retrieval) stays [LOCAL]-blocked on a fixture
+  capture (P1); adding a leg to a never-claimed archetype is unverifiable in-cloud.
   (Cycle 136 READOUT — CLOSED the webhook-verification COVERAGE→TRUTH→READOUT arc with its
   methodology PROSE leg: a new paragraph in `_write_methodology_page` (`asrs/scorecard.py`) after
   the streaming-response prose framing trusting the async callback as the SECURITY sibling of

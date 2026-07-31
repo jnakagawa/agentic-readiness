@@ -3,6 +3,69 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 137 — 2026-07-31T20:1xZ — METHOD (branch+PR+self-merge, tests-only/off-scoring-path/score-neutral)
+
+**What/why.** Built the cross-signal precision-ISOLATION matrix — the top item on Cycle 132's
+in-cloud METHOD menu. Every per-signal relabel/precision guard so far pins ONE signal against its
+OWN false-positive minefield; this matrix pins the COMPLEMENTARY property across the WHOLE signal
+bank at once: each signal's affirmative evidence must claim EXACTLY its own archetype and leak into
+NO OTHER. Scientifically the score-relevant direction is cross-ARCHETYPE (not cross-signal WITHIN an
+archetype): a within-archetype co-fire (e.g. `pay-per-call` trips both `pay-per` and `per-unit-rate`,
+both metered_api) only DEEPENS the same claim — harmless, since `strength` is distinct-label count.
+The harm is a signal firing on a DIFFERENT archetype's evidence, which CONJURES a false archetype
+claim → the site is then probed with an intent it never offered → completion means polluted (the
+exact battery-mismatch the offering-relative directive removes). This guard makes that a per-cycle
+tripwire: broaden any regex until it matches a sibling archetype's vocabulary and it fails loudly.
+
+**Design.** `tests/test_offering_canonical.py`: `_ISOLATION_EVIDENCE` — one minimal affirmative
+snippet per signal, drawn from that signal's OWN vendor-neutral vocabulary — plus
+`test_cross_signal_archetype_isolation`. For each of the 56 signals across all 6 archetypes, the
+snippet is scored through the REAL `classify_offering` path (a passthrough `/llms.txt` surface so no
+HTML-strip intervenes) and must (a) claim EXACTLY its own archetype (cross-archetype isolation) and
+(b) fire its OWN signal label (non-vacuity — an affirmative that landed on the right archetype via a
+sibling label would pass a set-only check while proving nothing about the named signal).
+COMPLETENESS-enforced: the evidence map must cover exactly the live bank, so a future COVERAGE cycle
+that adds a signal cannot silently escape the matrix (the map = signal-bank equality is asserted).
+
+**Teeth.** `test_cross_signal_isolation_negative_control`: a deliberately poaching surface
+(`add to cart, then billed per token`) classifies to BOTH physical_good AND metered_api — so
+single-archetype isolation is a falsifiable property, not a degenerate always-one-archetype
+function. (Iteration note: the ONLY leak found while designing was my OWN snippet — "priced per
+render" used `render`, itself a digital_good word; the real classifier had zero cross-archetype
+leaks across all 56 signals, so the matrix passes non-vacuously on the shipped bank.)
+
+**Ship class + evidence.** Tests only. `git diff --name-only` = `tests/test_offering_canonical.py`
+ONLY; `git diff` over `asrs/ rubric/ fixtures/` EMPTY → rubric v0.7, score-neutral, NOT peer-gated.
+First duty: no open peer-gated PR (`list_pull_requests` open = `[]` at fire start). Cloud bridge
+blocks direct main push → branch `loop/cross-signal-isolation-matrix` + PR #123 + self-merge (squash
+af2eeb3; realigned main → af2eeb3 via `git reset --hard origin/main`). Full suite green after
+`pip install eth-account` (environment-only optional dep for the free-tier probe — missing in this
+cloud image, present in `requirements.txt`; not a bench failure): 339 → 341
+(`test_offering_canonical` 40 → 42). `test_offering_canonical.py` run directly 42/42.
+
+**Canonical pair.** Replay guard 24/24 — 46.1 F / 85.5 B / delta **+39.4** UNCHANGED, 0 replay-miss
+(scoring path byte-for-byte untouched); offering-canonical now 42/42; rubric v0.7.
+
+**Infra.** LOCAL RUNNER STALE at fire start — newest verify `runs/local/verify_20260731T134541Z.json`
+(13:45Z) is ~6.5h old at the 20:12Z fire, BREACHING the 6h floor (Cycle 136 predicted the 19:45Z
+breach). The 14:41–19:41 launchd fires produced no artifact — consistent with the machine asleep
+through the afternoon/evening (the same wake-instant pattern the Cycle-63 fire root-caused).
+Cloud cannot repair the local machine → recorded in STATE runner-health; flag in the next
+first-after-16:00 digest (~16:xxZ Aug-1). LIVE-DELTA divergence unchanged (no new verify since
+13:45Z; driftflight.com LIVE 76.2 C / +30.1 / transactability 62.5 across the 08:52Z + 13:45Z
+crawls); in-cloud replay guard STILL 24/24 / +39.4, off scoring path; re-capture/re-baseline is
+[LOCAL]/peer-gated. No Slack this fire (score-neutral, off scoring path, not sensitive-class; 20:1xZ
+is NOT the first-after-16:00 digest — Cycle 133 at 16:1xZ already sent today's).
+
+**Next hypothesis (COVERAGE — Cycle 138).** Rotate to COVERAGE. New-signal COVERAGE on the two
+weakest archetypes (`service_booking` / `data_retrieval`) stays [LOCAL]-blocked on a fixture capture
+(P1) — cannot add a capability leg to a never-claimed archetype and prove it non-vacuous in-cloud.
+The remaining in-cloud METHOD sibling (surface-DEDUP invariance — duplicate/near-duplicate surfaces
+don't inflate match counts or strength; note `strength` is already distinct-label-count so likely a
+robustness PIN, not a bug-find) is a fallback if COVERAGE has no in-cloud unit this rotation. Prefer
+an in-cloud-verifiable COVERAGE unit; else take the METHOD fallback and re-flag the [LOCAL] fixture
+captures (service_booking/data_retrieval, structured catalog/pricing JSON) in the digest.
+
 ## Cycle 136 — 2026-07-31T19:1xZ — READOUT (branch+PR+self-merge, display+tests/off-scoring-path/score-neutral)
 
 **What/why.** CLOSED the `webhook-verification` COVERAGE→TRUTH→READOUT arc (signal Cycle 134,

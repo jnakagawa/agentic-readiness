@@ -3,6 +3,67 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 128 — 2026-07-31T11:12Z — READOUT (branch+PR+self-merge, display+tests-only/score-neutral)
+
+**What/why.** Added ONE capability-worded, vendor-neutral methodology `<p>` ("Consuming the output as
+it streams") to `_write_methodology_page` (`asrs/scorecard.py`), CLOSING the EIGHTH metered_api
+COVERAGE→TRUTH→READOUT arc: the `streaming-response` offering signal added Cycle 126 (COVERAGE) and
+pinned relabel-invariant Cycle 127 (TRUTH) was surfaced in code + tests but had NEVER appeared in prose
+a critic can read. A reader could not learn WHY a metered API that documents how its output streams is
+MORE agent-completable. This is the eighth full arc after payment-rail (78/79/80), async-job (82/83/84),
+api-auth (86/87/88), error-contract (90/91/92), test-mode (102/103/104), pagination (106/107/108), and
+cancel-job (110/111/112), plus the digital_good rights leg (100) and the subscription free-trial leg
+(114/115/116).
+
+**The paragraph.** Frames streaming as the **in-band sibling of async-job** (async collects a completed
+job's result OUT of band via webhook/poll; streaming delivers partial output WITHIN the same request
+over the live connection while the work runs), names the failure (block on a long call it could have
+consumed progressively, or a `stream` URL it never learns how to open), names the vendor-neutral
+open-standard delivery vocabulary as open conventions (W3C server-sent events, the `text/event-stream`
+media type, a streaming endpoint that streams the output/tokens as produced — same category as
+REST/GraphQL/OpenAPI), keeps the signal's PRECISION honesty (a bare `stream`/`SSE` token is no signal —
+`application/octet-stream` MIME, the Shanghai Stock Exchange (SSE), sum of squared errors, a live
+stream, the bloodstream, a "stream of consciousness"; and a bare SSE must never conjure a metered-API
+claim on a stock-exchange page), says recognition keys on the CONTRACT the API documents not who
+published it and is pinned by an identity-relabel executable regression test, and holds the
+diagnostic / off-the-scoring-path scope line the sibling offer-side prose keeps. Placed immediately
+after the async-job paragraph (its in-band sibling) for narrative flow. Guarded by
+`test_methodology_documents_streaming_response` in `tests/test_readout.py` (58→59): pins the theme
+phrases, the streaming vocabulary tokens, the precision-note tokens, and the no-vendor/domain
+negative check.
+
+**Evidence / validation.** `test_readout.py` 59/59 (new streaming test green). Full suite green (22
+files; test_free_tier 11/11 after `pip install -r requirements.txt`, environment-only). Canonical PAIR
+unchanged AND re-measured on merged main: replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0
+replay-miss; offering canonical guard 35/35; rubric v0.7. Overall a/b = 46.1 / 85.5, delta +39.4
+(frozen-fixture regression signal, intact).
+
+**Ship class.** Display + tests-only, off the scoring path (`scoring.py` 0 offering refs) →
+score-neutral, NOT peer-gated. `git diff` over `asrs/scoring.py rubric/ fixtures/` EMPTY; `--name-only`
+= `asrs/scorecard.py` + `tests/test_readout.py` ONLY. First duty: no open peer-gated PR (`[]` at fire
+start). Cloud bridge blocks direct main push → branch `loop/streaming-response-readout` + PR #105 +
+self-merge (squash fa2d096; merged commit = exactly the two files). Realigned main to origin/main after
+merge (`git reset --hard origin/main` → fa2d096, verified the paragraph + the test present + 24/24 on
+merged main), deleted local branch.
+
+**Infra health.** Verify runner HEALTHY: newest `runs/local/verify_20260731T085248Z.json` (08:52Z,
+2.3h old at fire, within the 6h floor); no open peer-gated PRs; last cycle's push landed (cb63d7d).
+LIVE-DELTA DIVERGENCE (driftflight.com LIVE 76.2 C / +30.1 vs fixture 85.5 B / +39.4, transactability
+87.5→62.5) still standing as recorded Cycle 126 — untouched this fire; the [LOCAL] verify item stays
+P0 and is flagged for the ~16:1xZ digest. No new artifact since 08:52Z.
+
+**No Slack** (score-neutral, off scoring path, not sensitive-class; 11:12Z is not the
+first-after-16:00 digest cycle — that is ~16:1xZ Jul-31).
+
+**Next hypothesis (METHOD).** The metered_api bank now has eight signals each with a full
+COVERAGE→TRUTH→READOUT arc. The offering-relative battery's aggregation semantics and the metamorphic
+grid (relabel / surface-read-order / scale / noise / listing-order) are mature on the metered_api and
+retail poles; a METHOD increment could mirror listing-order invariance onto a with-rails MACHINE
+surface (do the metered_api endpoints' ORDER within one OpenAPI spec matter to the claim?), OR — if the
+next verify artifact still shows the driftflight.com transactability drop — the [LOCAL] canonical
+re-capture becomes the higher-leverage TRUTH item. Thin archetypes service_booking / data_retrieval
+remain [LOCAL]-blocked (no committed fixture claims either).
+
 ## Cycle 127 — 2026-07-31T10:12Z — TRUTH (branch+PR+self-merge, tests-only/score-neutral)
 
 **What/why.** Pinned `streaming-response` (the metered_api signal added Cycle 126) as

@@ -3,6 +3,63 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 120 — 2026-07-31T~03:1xZ — READOUT (branch+PR+self-merge, display+tests-only/score-neutral)
+
+**What/why.** CLOSED the **content-provenance** arc at its third and final layer by
+surfacing the capability in the PUBLIC methodology prose. COVERAGE (118) added the
+`content-provenance` signal to the `digital_good` archetype bank (the "verify + trust the
+deliverable" leg, the authenticity mirror of `output-license`'s "rights to USE"); TRUTH
+(119) pinned it RELABEL-INVARIANT; this READOUT leg lets a critic READ *why* a generated
+deliverable carrying embedded provenance is more agent-completable — a fact that lived in
+code + tests but never in prose. This is the **THIRD full COVERAGE→TRUTH→READOUT arc on a
+non-metered_api archetype** (after subscription free-trial 114/115/116 and digital_good's
+own output-license rights leg), and digital_good's SECOND prose leg. Added ONE
+capability-worded, vendor-neutral `<p>` ("**Trusting the deliverable**") to
+`_write_methodology_page` (`asrs/scorecard.py`), placed directly after the digital_good
+"Owning the deliverable" rights paragraph — grouping the two digital_good offer-side legs
+(rights + authenticity) — plus a content-presence guard
+`test_methodology_documents_content_provenance` in `tests/test_readout.py`.
+
+**Prose properties (all guarded).** (a) Frames it as the authenticity mirror of owning the
+deliverable — an agent can hold the render + a licence to use it yet still not prove it
+genuine — and names the failure (a render that cannot be provenance-checked has NOT
+completed the commercial job); (b) names vendor-neutral OPEN-STANDARD vocabulary as open
+conventions (C2PA / Content Credentials / a media-output provenance manifest-metadata
+record, the same category as REST/GraphQL/OpenAPI); (c) keeps the signal's PRECISION
+honesty — a bare `provenance`/`credentials` word (art/wine/supply-chain provenance, data
+provenance, login credentials, a hosted model's "watermarking for provenance" feature) is
+no signal; (d) keys on the provenance the offer grants NOT who grants it, pinned by the
+identity-relabel executable regression test; (e) honest scope — diagnostic, off the scoring
+path, not a scored pillar.
+
+**Ship class + evidence.** Display + tests only; off the scoring path (`scoring.py` imports
+no `offering` — grep-verified 0 refs) → score-neutral, NOT peer-gated. `git diff` over
+`asrs/scoring.py asrs/offering.py rubric/ fixtures/` EMPTY; `git diff --name-only` =
+`asrs/scorecard.py` + `tests/test_readout.py`. Cloud bridge blocks direct main push →
+branch `loop/content-provenance-readout` + PR #89 + self-merge (squash 233e298; merged
+commit = exactly those two files). First duty: no open peer-gated PR
+(`list_pull_requests state=open` → `[]` at fire start). Realigned main to origin/main after
+merge, deleted local branch. `test_readout.py` 56→57; full suite green (22 files;
+`test_free_tier` 11/11 after `pip install -r requirements.txt`, environment-only). Canonical
+PAIR unchanged AND re-measured pre- AND post-merge: replay guard 24/24, **46.1 F / 85.5 B /
++39.4**, 0 replay-miss; rubric v0.7. RUNNER STILL GAPPED (`verify_20260728T234102Z` 23:41Z,
+~51.5h old; cloud cannot repair the local machine; next re-flag is the first-after-16:00
+fire ~16:1xZ Jul-31). No Slack (score-neutral, off scoring path; not sensitive-class; not
+the first-after-16:00 digest cycle).
+
+**Next hypothesis.** Rotate METHOD next (METHOD → COVERAGE → TRUTH → READOUT). The
+in-cloud COVERAGE/TRUTH frontier on the CLAIMED archetypes is now NARROW: metered_api is
+saturated (7 arcs); digital_good has TWO closed arcs (generate-media, output-license) plus
+content-provenance now closed at all three layers; subscription's free-trial arc is closed.
+The thin archetypes (physical_good fulfillment, service_booking, data_retrieval) are all
+`[LOCAL]`-blocked (no rich committed fixture that claims them — queued P1). A METHOD move
+that needs no new claimed archetype: extend a perturbation axis (relabel / order / scale /
+noise-surface) onto a signal or storefront-type it does not yet cover, or add a
+cross-fixture invariant on the now-dense digital_good signal family (three legs: generation,
+output-license, content-provenance). READOUT frontier after that: the offering-relative
+battery readout and canonical-history page are both mature; look for a genuinely
+un-surfaced diagnostic rather than a redundant prose leg.
+
 ## Cycle 119 — 2026-07-31T~02:1xZ — TRUTH (branch+PR+self-merge, tests-only/score-neutral)
 
 **What/why.** Pinned the Cycle-118 `content-provenance` signal (digital_good's

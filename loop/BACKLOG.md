@@ -545,18 +545,21 @@ design in-cloud, execute locally.
      green (22 files); replay guard 24/24, 46.1 F / 85.5 B / +39.4; rubric v0.7. See LOG Cycle 116. The
      free-trial arc is now closed at ALL THREE layers (signal 114 / relabel 115 / readout 116). Next COVERAGE
      frontier on the thin archetypes (service_booking / data_retrieval) is [LOCAL]-blocked — see the P1 below. -->
-- **[in-cloud] frontier note (post-Cycle-119): digital_good's SECOND arc is at its READOUT leg** (content-
-  provenance SIGNAL landed Cycle 118, TRUTH-relabel Cycle 119; only the READOUT leg remains, queued in-cloud
-  above). The free-trial arc (subscription) is CLOSED at all three layers (114/115/116); the generate-media
-  (94/95/96) and output-license (99/100 + prose) digital_good legs likewise. The in-cloud COVERAGE frontier is
-  now NARROW: the CLAIMED archetypes with rich committed evidence are metered_api (saturated, 7 arcs),
-  digital_good (content-provenance arc — READOUT leg remaining), and subscription (free-trial arc closed) — a
+- **[in-cloud] frontier note (post-Cycle-120): digital_good's content-provenance arc is CLOSED at all three
+  layers** (SIGNAL Cycle 118, TRUTH-relabel Cycle 119, READOUT prose Cycle 120). The free-trial arc
+  (subscription 114/115/116), generate-media (94/95/96), and output-license (99/100 + prose) legs are likewise
+  CLOSED. The in-cloud COVERAGE frontier is now NARROW: the CLAIMED archetypes with rich committed evidence are
+  metered_api (saturated, 7 arcs), digital_good (THREE closed arcs — generation / output-license /
+  content-provenance), and subscription (free-trial arc closed) — a
   genuinely NEW capability leg on any of these must fire non-vacuously on committed prose not already matched.
   physical_good (fulfillment legs),
   service_booking (5 legs), and data_retrieval (5 legs) are ALL [LOCAL]-blocked — no committed fixture claims
   them richly enough (see the two P1 [LOCAL] fixture-capture items), so a signal/prose leg for them is
-  unverifiable here (vacuous). Until a [LOCAL] fixture lands, prefer: finish the content-provenance arc
-  (TRUTH→READOUT), a METHOD perturbation-axis, or a relabel-family extension.
+  unverifiable here (vacuous). With every in-cloud CLAIMED-archetype arc now closed (content-provenance done
+  Cycle 120), until a [LOCAL] fixture lands prefer: a METHOD perturbation-axis extension (relabel / order /
+  scale / noise-surface onto a signal or storefront-type not yet covered), a cross-fixture invariant over the
+  now-dense digital_good signal family (generation / output-license / content-provenance), or a READOUT
+  diagnostic that is genuinely un-surfaced (not a redundant prose leg).
 
 <!-- REVISED 2026-07-31 (Cycle 118 COVERAGE finding): "[COVERAGE, in-cloud] a physical_good FULFILLMENT
      leg on the committed retail fixture" (from Cycle 117's audit) was DEMOTED to [LOCAL]. In-cloud

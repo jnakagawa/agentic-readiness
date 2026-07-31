@@ -3,6 +3,60 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 140 — 2026-07-31T23:1xZ — READOUT (branch+PR+self-merge, display+tests/off-scoring-path/score-neutral)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`). Infra health:
+full suite runnable (fresh `.venv` + `requirements.txt` + `pytest`, all 22 test files / 344 tests green
+pre-change); the LOCAL verify runner is STILL stale — newest `runs/local/verify_20260731T134541Z.json`
+(13:45Z) is ~9.5h old, breaching the 6h floor (machine asleep through the afternoon/evening, the
+Cycle-63 wake-instant pattern, NOT a code regression; cloud CANNOT repair the local machine). Already
+flagged in today's 16:1xZ digest (Cycle 133); re-flag in the next first-after-16:00 fire (~Aug-1
+16:xxZ) if unrecovered. Note: `git pull` at fire start reported a `main` forced-update on origin
+(3796519→5b6e45f) with a 50/50 local/remote divergence — this is the expected squash-merge shape (local
+main tracked pre-squash commits from prior cloud cycles); reset `--hard origin/main` to realign, HEAD
+was Cycle-139 bookkeeping (5b6e45f), no history loss, no repair needed.
+
+**What/why.** CLOSED the `output-resolution` COVERAGE→TRUTH→READOUT arc with its methodology PROSE
+leg (Cycle 138 shipped the COVERAGE signal PR #125; Cycle 139 the TRUTH relabel-invariance guard PR
+#127; this is the queued next-hypothesis). New paragraph in `_write_methodology_page`
+(`asrs/scorecard.py`) after the content-provenance ("Trusting the deliverable") prose: frames
+"specify the deliverable's shape / the output-resolution contract" as the digital_good output-SPEC
+sibling of owning/trusting the render — DISTINCT from every existing digital_good leg
+(generation/render say WHAT is produced, hosted-output WHERE delivered, output-license rights,
+content-provenance trust; NONE names the physical SHAPE the agent parameterizes its request with).
+Names the failure (an agent requests a size the API cannot produce — a failed/clipped generation — or
+is handed a deliverable at the wrong resolution for its downstream use, a hero image at thumbnail
+size), the vendor-neutral output-format vocabulary (a `maxResolution` field, an output/render/print
+resolution in pixels, a WxH pixel dimension, an aspect ratio), preserves the bare-`resolution`
+precision guard (dispute/New-Year/DNS resolution, the Super-/enhance-image MODEL-FEATURE trap,
+screen/monitor/display HARDWARE resolution → no signal), pins the identity-relabel regression property,
+stays diagnostic/off-scoring-path. This is the digital_good output-SPEC leg completing a full arc,
+mirroring metered_api webhook-verification (134/135/136) and streaming-response (126/127/128).
+
+**Ship class.** Display + tests only, off the scoring path (`git diff` over `asrs/scoring.py
+asrs/offering.py rubric/ fixtures/` EMPTY; `--name-only` = `asrs/scorecard.py` +
+`tests/test_readout.py` ONLY) → score-neutral, NOT peer-gated. Cloud bridge blocks direct main push →
+branch `loop/output-resolution-readout` + PR #129 + self-merge (squash aeafed4); realigned main →
+aeafed4, verified guard + prose present on merged main, deleted local+remote branch. Guard
+`test_methodology_documents_output_resolution` in `tests/test_readout.py` (61→62), mirroring the
+webhook-verification guard.
+
+**Evidence / canonical numbers.** Full suite 344→345 green (22 files). Replay guard 24/24 — canonical
+PAIR unchanged: 46.1 F / 85.5 B / delta +39.4, 0 replay-miss; offering-canonical 43/43; rubric v0.7.
+Off scoring path → canonical delta unchanged by construction. LIVE-DELTA divergence unchanged (no new
+verify since 13:45Z: driftflight.com LIVE 76.2 C / +30.1 / transactability 62.5 across two crawls; the
+in-cloud replay guard STILL 24/24 / +39.4, off scoring path; re-capture is [LOCAL]/peer-gated).
+
+**Comms.** No Slack (score-neutral, off scoring path, not sensitive-class; 23:1xZ is NOT the
+first-after-16:00 digest — Cycle 133 at 16:1xZ already sent today's; the runner stall + LIVE-DELTA
+divergence stay queued for the next first-after-16:00 fire ~Aug-1 16:xxZ).
+
+**Next hypothesis.** Rotation returns to METHOD (Cycle 141): the unused in-cloud METHOD sibling is
+surface-DEDUP invariance (duplicate/near-duplicate surfaces don't inflate match counts or `strength` —
+`strength` is already a distinct-label count, so likely a robustness PIN not a bug-find). New-signal
+COVERAGE on the two weak unclaimed archetypes (service_booking / data_retrieval) stays [LOCAL]-blocked
+on a fixture capture (P1); adding a leg to a never-claimed archetype is unverifiable in-cloud.
+
 ## Cycle 139 — 2026-07-31T22:1xZ — TRUTH (branch+PR+self-merge, tests-only/off-scoring-path/score-neutral)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`). Infra health:

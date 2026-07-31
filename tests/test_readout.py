@@ -949,6 +949,72 @@ def test_methodology_documents_streaming_response() -> None:
                f"streaming-response prose names no vendor/domain ({banned!r})")
 
 
+def test_methodology_documents_webhook_verification() -> None:
+    # Cycle 136 (READOUT): the READOUT complement CLOSING the webhook-verification arc
+    # opened by Cycle 134 (COVERAGE — the tenth metered_api `webhook-verification`
+    # offering signal: whether an agent can TRUST that an inbound async callback is
+    # GENUINELY from the API rather than a forged/spoofed webhook — a webhook signing
+    # secret, a webhook signature, verifying inbound webhook requests) and Cycle 135
+    # (TRUTH — the SIGNAL-level HOST relabel-invariance guard for that signal). This is
+    # the NINTH metered_api offer-side leg to complete the full COVERAGE->TRUTH->READOUT
+    # arc (after payment-rail 78/79/80, async-job 82/83/84, api-auth 86/87/88,
+    # error-contract 90/91/92, test-mode 102/103/104, pagination 106/107/108, cancel-job
+    # 110/111/112, streaming-response 126/127/128). The webhook-AUTHENTICITY leg was
+    # pinned in code + tests but NEVER surfaced in prose a critic can read — a reader
+    # could not learn WHY a metered API that documents how an agent verifies an inbound
+    # callback is MORE agent-completable, or how it is the SECURITY/TRUST sibling of the
+    # async-job leg (async-job says a webhook DELIVERY channel EXISTS; webhook-
+    # verification says whether the agent can AUTHENTICATE what arrives on it). The
+    # paragraph must (a) frame it as trusting the async callback / verifying an inbound
+    # webhook is authentic, name it the security sibling of async-job, and name the
+    # failure (an agent acts on an unverified "job complete" webhook, is tricked by a
+    # forged/spoofed callback into treating fabricated output as real or releasing a
+    # payment) and its tie to the $0-only capital-safety ethos; (b) name the vendor-
+    # neutral webhook-security vocabulary the offering signal anchors on as open
+    # conventions — a webhook signature, a webhook signing secret, an X-Webhook-Signature
+    # header; (c) keep the signal's PRECISION honesty — a bare `signature`/`signing
+    # secret` (a marketing "signature look", a settlement signature a payment proof
+    # verifies locally, a signed-URL signing secret for file access, a digital signature
+    # on a contract, a webhook that merely EXISTS = async-job's turf) is not webhook
+    # verification and is read as no signal; (d) say recognition keys on the CONTRACT the
+    # API documents not who published it and is pinned by an identity-relabel executable
+    # regression test; and (e) stay HONEST about scope — this offering read is diagnostic,
+    # off the scoring path, not a scored pillar (the same scored-vs-diagnostic line the
+    # sibling offer-side prose keeps). Vendor-neutral throughout.
+    print("test_methodology_documents_webhook_verification")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    # Match on the whitespace-collapsed text (same technique as the async-job /
+    # streaming-response / cancel-job guards) so wording, not source wrapping, is what
+    # the guard pins.
+    collapsed = " ".join(text.split())
+    for phrase in ("Trusting the async callback", "security sibling",
+                   "forged or spoofed callback", "treating fabricated output as real",
+                   "releasing a payment", "verifies an inbound webhook is authentic",
+                   "contract the API documents, not who published it",
+                   "relabels the API", "executable regression test",
+                   "off the scoring path", "diagnostic"):
+        _check(phrase in collapsed,
+               f"methodology documents webhook-verification: {phrase!r}")
+    # The vendor-neutral webhook-security vocabulary the offering signal bank anchors on
+    # must appear as open conventions, never a vendor product: a webhook signature, a
+    # webhook signing secret, an X-Webhook-Signature header.
+    for token in ("webhook signature", "webhook signing secret", "X-Webhook-Signature"):
+        _check(token in collapsed, f"methodology names webhook-security convention {token!r}")
+    # PRECISION honesty: the prose must preserve the signal's bare-word guard — a bare
+    # `signature`/`signing secret` (a settlement signature a payment proof verifies, a
+    # signed-URL signing secret, a digital signature on a contract) is not webhook
+    # verification and is read as no signal.
+    for token in ("bare", "no signal", "settlement signature", "signed-URL",
+                  "digital signature"):
+        _check(token in collapsed,
+               f"methodology keeps webhook-verification precision note: {token!r}")
+    # Vendor-neutral: no scored domain/product/brand named on the page.
+    for banned in ("drift-flight", "driftflight", "replicate"):
+        _check(banned not in text,
+               f"webhook-verification prose names no vendor/domain ({banned!r})")
+
+
 def test_methodology_documents_free_trial() -> None:
     # Cycle 116 (READOUT): the READOUT complement CLOSING the free-trial arc opened by
     # Cycle 114 (COVERAGE — the `free-trial` offering signal added to the SUBSCRIPTION
@@ -1862,6 +1928,7 @@ def main() -> int:
         test_methodology_documents_pagination,
         test_methodology_documents_cancel_job,
         test_methodology_documents_streaming_response,
+        test_methodology_documents_webhook_verification,
         test_methodology_documents_free_trial,
         test_methodology_documents_self_provisioning,
         test_methodology_documents_content_provenance,

@@ -2396,6 +2396,163 @@ def test_offering_noise_surface_invariance_com() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Noise-surface invariance on the NO-RAILS retail store — the credibility-
+# protecting direction of this axis. `_org`/`_com` above prove incidental chrome
+# adds no claim on the WITH-RAILS canonical pair (multi-archetype, ranked). This
+# closes the axis onto the OPPOSITE storefront type: a pure book catalog that
+# claims ONLY physical_good and has EVERY rails archetype NA (metered_api /
+# subscription / digital_good / service_booking / data_retrieval). The property
+# it pins is exactly the "never manufacture the delta" invariant applied to task
+# discovery: bolting incidental web chrome onto a no-rails retailer must not
+# CONJURE a rails claim it does not make — the classified delta between a rails
+# storefront and a no-rails one has to come from real published capability, never
+# from how much boilerplate surrounds the catalog.
+#
+# Two structural differences from the canonical helper force a dedicated test
+# rather than a reuse of `_assert_noise_surface_invariance`:
+#   * the retail store claims a SINGLE archetype, so the helper's `len(claimed)
+#     >= 2` rank-reorder premise does not apply (there is no ranking to perturb —
+#     the guarded property is instead "the NA rails set stays NA");
+#   * the helper's negative control conjures `physical_good`, which is ALREADY
+#     claimed here, so it would be a no-op. The retail-appropriate teeth conjure
+#     `metered_api` — a rails archetype that IS NA on this store — so a signal-
+#     bearing added surface observably moves the profile, proving the added-
+#     surface channel is live and the chrome-invariance below is non-vacuous.
+#
+# Non-vacuity mirrors the canonical guard's three teeth: (a) the noise surface is
+# genuinely READ (lands in surfaces_seen) yet contributes no claim; (b) the
+# distractor prose fires ZERO signals under `_scan_surface`; (c) the metered_api
+# negative control DOES move the profile.
+# ---------------------------------------------------------------------------
+
+# A rails-bearing added surface: real programmatic-API prose (auth + metered
+# billing + rate limits) for a metered_api archetype that is NA on the retail
+# store. It MUST fire (metered_api is NA on a book catalog, so a claim it conjures
+# is unmistakably observable) — proving an added surface can move the profile.
+_RETAIL_NOISE_TEETH_PROSE = (
+    "POST /v1/generate. Authenticate with your API key as a Bearer token. "
+    "Billed per request, metered per API call. Rate limits apply."
+)
+
+
+def test_offering_noise_surface_invariance_retail() -> None:
+    """Incidental web chrome conjures no RAILS claim on a no-rails retail store."""
+    print("test_offering_noise_surface_invariance_retail")
+
+    # Capture the base surfaces exactly as discovery feeds them to the classifier.
+    # (Unlike `_captured_surfaces`, no >=2-surface premise: the retail fixture is a
+    # single-surface homepage catalog, and the noise axis only needs to ADD one
+    # surface to whatever base the store publishes.)
+    path = os.path.join(_FIXTURE_DIR, f"{_RETAIL}.json")
+    ctx = FetchContext.from_fixture(path)
+    captured: dict = {}
+    real = _offering.classify_offering
+
+    def _spy(dom, surfaces):
+        captured.clear()
+        captured.update(surfaces)
+        return real(dom, surfaces)
+
+    _offering.classify_offering = _spy
+    try:
+        _offering.discover_offering(ctx)
+    finally:
+        _offering.classify_offering = real
+
+    base = _offering.classify_offering(_RETAIL, dict(captured))
+
+    # The property under test is genuinely present: the store claims EXACTLY
+    # physical_good, with every rails archetype NA — so a conjured rails claim
+    # would be unmistakably observable.
+    _check(
+        set(base.archetypes) == _RETAIL_CLAIMED,
+        f"{_RETAIL}: base claimed set == {sorted(_RETAIL_CLAIMED)} "
+        f"(got {sorted(set(base.archetypes))})",
+    )
+    _check(
+        _RETAIL_MUST_BE_NA <= set(base.unclaimed),
+        f"{_RETAIL}: the rails archetypes {sorted(_RETAIL_MUST_BE_NA)} are all NA at "
+        f"base (got unclaimed {sorted(base.unclaimed)}) — the no-rails property the "
+        "noise must not overturn is present",
+    )
+    # The extra surface key is a genuine ADDITION, not an overwrite that could hide
+    # a change.
+    _check(
+        _NOISE_SURFACE not in captured,
+        f"{_RETAIL}: the noise surface key {_NOISE_SURFACE!r} is new, not an overwrite "
+        f"(captured surfaces: {list(captured)})",
+    )
+
+    # TEETH (b): the distractor carries NO capability signal, despite its near-miss
+    # vocabulary (metaphorical "ship", cookie/careers/legal chrome) — so the
+    # invariance is "noise adds no claim", not "we matched an existing signal".
+    _check(
+        _offering._scan_surface(_NOISE_SURFACE, _NOISE_PROSE) == [],
+        f"{_RETAIL}: the distractor prose fires ZERO archetype signals "
+        f"(got {[(s.archetype, s.label) for s in _offering._scan_surface(_NOISE_SURFACE, _NOISE_PROSE)]})",
+    )
+
+    noisy = _offering.classify_offering(
+        _RETAIL, {**captured, _NOISE_SURFACE: _NOISE_PROSE}
+    )
+
+    # TEETH (a): the noise surface was genuinely READ — it reached the scanner and
+    # landed in the read-provenance record — yet contributed no claim.
+    _check(
+        _NOISE_SURFACE in noisy.surfaces_seen,
+        f"{_RETAIL}: the noise surface {_NOISE_SURFACE!r} was read "
+        f"(surfaces_seen {noisy.surfaces_seen})",
+    )
+
+    # (1) The WHOLE classified profile is byte-identical: physical_good's strength
+    # AND its complete (label, surface, quote) evidence survive the added surface
+    # unchanged — no signal conjured, no quote drifted, no archetype added.
+    _check(
+        _full_evidence_map(noisy) == _full_evidence_map(base),
+        f"{_RETAIL}: complete per-archetype (strength, (label, surface, quote)) "
+        "evidence map invariant under a signal-free added surface",
+    )
+    # (2) Claimed archetypes invariant (still exactly physical_good — no rails claim
+    # conjured by the chrome).
+    _check(
+        noisy.archetypes == base.archetypes,
+        f"{_RETAIL}: claimed archetypes invariant under a signal-free added surface "
+        f"(base {base.archetypes}, noisy {noisy.archetypes})",
+    )
+    # (3) The rails archetypes stay NA — the "never manufacture the delta" property:
+    # incidental boilerplate cannot push a no-rails store toward a rails claim.
+    _check(
+        _RETAIL_MUST_BE_NA <= set(noisy.unclaimed)
+        and set(noisy.unclaimed) == set(base.unclaimed),
+        f"{_RETAIL}: the rails archetypes stay NA and the whole NA set is invariant "
+        f"under a signal-free added surface (base {sorted(base.unclaimed)}, "
+        f"noisy {sorted(noisy.unclaimed)})",
+    )
+    # (4) The ONLY change is read-provenance: surfaces_seen grew by exactly the noise
+    # surface and nothing else.
+    _check(
+        set(noisy.surfaces_seen) == set(base.surfaces_seen) | {_NOISE_SURFACE},
+        f"{_RETAIL}: surfaces_seen grew by exactly {_NOISE_SURFACE!r} and nothing else "
+        f"(base {sorted(base.surfaces_seen)}, noisy {sorted(noisy.surfaces_seen)})",
+    )
+
+    # TEETH (c): the retail-appropriate negative control — swap the SAME surface key
+    # for real programmatic-API prose. metered_api (NA on this book catalog) MUST be
+    # conjured, proving an added surface CAN move the classification, so the chrome-
+    # invariance above is meaningful, not a channel the classifier ignores.
+    teeth = _offering.classify_offering(
+        _RETAIL, {**captured, _NOISE_SURFACE: _RETAIL_NOISE_TEETH_PROSE}
+    )
+    _check(
+        _full_evidence_map(teeth) != _full_evidence_map(base)
+        and "metered_api" in teeth.archetypes,
+        f"{_RETAIL}: a rails-BEARING added surface DOES move the profile "
+        f"(metered_api conjured: {'metered_api' in teeth.archetypes}) — the "
+        "added-surface channel is live, so noise-invariance is non-vacuous",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Relabel-invariance EXTENDED to the retail + non-storefront domains.
 #
 # The two invariance tests above cover only the canonical PAIR, because their
@@ -2531,6 +2688,7 @@ def main() -> int:
         test_offering_content_scale_invariance_com,
         test_offering_noise_surface_invariance_org,
         test_offering_noise_surface_invariance_com,
+        test_offering_noise_surface_invariance_retail,
         test_offering_relabel_invariance_retail,
         test_offering_relabel_invariance_nonstorefront,
         test_offering_relabel_negative_control,

@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 135
+- Cycle counter: 136
 - Started: 2026-07-23 (UTC)
 - RUNNER RECOVERED at 2026-07-31T09:12Z (Cycle 126) — the ~56h stall (first breached Cycle 76 06:12Z)
   CLEARED. Newest artifact `runs/local/verify_20260731T085248Z.json` (08:52Z Jul-31) carries
@@ -36,13 +36,43 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 135 was
-  TRUTH, so Cycle 136 is READOUT — the natural next unit is the READOUT leg of the
-  webhook-verification arc: one capability-worded, vendor-neutral methodology paragraph in
-  `_write_methodology_page` (`asrs/scorecard.py`) after the async-job / streaming-response prose,
-  framing trusting the async callback (failure = an agent acts on a forged "job complete" webhook),
-  guarded by a content-presence test in `tests/test_readout.py`. Off scoring path, score-neutral,
-  NOT peer-gated — see the P1 backlog item.)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 136 was
+  READOUT, so Cycle 137 is METHOD). With all ten metered_api signals now carrying the full
+  COVERAGE→TRUTH→READOUT treatment (webhook-verification arc closed this fire), the in-cloud
+  METHOD frontier is Cycle 132's still-unbuilt menu: cross-signal precision-ISOLATION (a matrix
+  guard proving each metered_api signal fires on ITS evidence and stays silent on every sibling's
+  affirmative fixture — no signal poaches another's turf) and surface-DEDUP invariance
+  (duplicate/near-duplicate surfaces don't inflate match counts or strength). Both are tests-only,
+  off the scoring path, NOT peer-gated. New-signal COVERAGE on the unclaimed archetypes
+  (service_booking / data_retrieval) stays [LOCAL]-blocked on a fixture capture (P1).
+  (Cycle 136 READOUT — CLOSED the webhook-verification COVERAGE→TRUTH→READOUT arc with its
+  methodology PROSE leg: a new paragraph in `_write_methodology_page` (`asrs/scorecard.py`) after
+  the streaming-response prose framing trusting the async callback as the SECURITY sibling of
+  async-job (async-job says a webhook delivery channel EXISTS; webhook-verification says whether
+  the agent can AUTHENTICATE what arrives — failure = an agent acts on an unverified "job complete"
+  webhook, is tricked by a forged/spoofed callback into treating fabricated output as real or
+  releasing a payment; ties to the $0-only capital-safety ethos). Names the vendor-neutral
+  webhook-security vocabulary (a webhook signature / a webhook signing secret / an
+  X-Webhook-Signature header), preserves the bare-signature precision guard (marketing signature
+  look / settlement signature a payment proof verifies / signed-URL signing secret / digital
+  signature on a contract / webhook that merely EXISTS → no signal), pins the identity-relabel
+  regression property, stays diagnostic/off-scoring-path. NINTH metered_api offer-side leg with a
+  full arc. Guard `test_methodology_documents_webhook_verification` in `tests/test_readout.py`
+  (60→61), mirroring the streaming-response guard. SHIP CLASS: display + tests only, off scoring
+  path (`git diff` over `asrs/scoring.py asrs/offering.py rubric/ fixtures/` EMPTY;
+  `--name-only` = `asrs/scorecard.py` + `tests/test_readout.py` ONLY) → score-neutral, NOT
+  peer-gated. First duty: no open peer-gated PR (`[]` at fire start). Cloud bridge blocks direct
+  main push → branch loop/webhook-verification-readout + PR #121 + self-merge (squash 70f5100;
+  realigned main → 70f5100, verified guard present + test_readout 61/61 + replay 24/24 on merged
+  main, deleted local+remote branch). Full suite green (22 files; test_free_tier 11/11 after
+  `pip install -r requirements.txt`, environment-only). Canonical PAIR unchanged: replay guard
+  24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; offering-canonical 40/40; rubric v0.7. INFRA
+  HEALTHY (verify 20260731T134541Z 13:45Z, ~5.4h old at 19:12Z fire, within 6h floor — breaches
+  ~19:45Z, runner due at :41; no open peer-gated PRs). LIVE-DELTA divergence unchanged — no new
+  verify since 13:45Z (driftflight.com LIVE 76.2 C / +30.1 / transactability 62.5 across two
+  crawls); in-cloud replay guard STILL 24/24 / +39.4, off scoring path; re-capture is
+  [LOCAL]/peer-gated. No Slack (score-neutral, off scoring path, not sensitive-class; 19:1xZ is
+  NOT the first-after-16:00 digest — Cycle 133 at 16:1xZ already sent today's).)
   (Cycle 135 TRUTH — shipped the relabel-invariance guard for Cycle 134's `webhook-verification`
   signal: `test_offering_relabel_invariance_webhook_verification` in `tests/test_offering_canonical.py`
   (39→40). Pins the tenth metered_api signal as identity-invariant — the async-callback TRUST claim

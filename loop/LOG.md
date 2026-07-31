@@ -3,6 +3,65 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 124 — 2026-07-31T07:12Z — READOUT (branch+PR+self-merge, display+tests-only/off-scoring-path/score-neutral)
+
+**What/why.** CLOSED the `priced-listing` arc at its third layer — surfaced the
+physical_good "read the price to decide + fulfill a physical purchase" capability in the
+methodology page's offer-side prose. Added ONE capability-worded, vendor-neutral `<p>`
+("Reading the price to fulfill") to `_write_methodology_page` (`asrs/scorecard.py`) after the
+subscription free-trial paragraph, guarded by `test_methodology_documents_priced_listing` in
+`tests/test_readout.py` (57→58). This **COMPLETES the FIRST full COVERAGE→TRUTH→READOUT arc on
+the physical_good archetype** (COVERAGE 122 priced-listing signal → TRUTH 123 relabel-invariance
+→ READOUT 124), after subscription's free-trial arc (114/115/116) and digital_good's
+output-license (100) + content-provenance (118/119/120) arcs. Executes exactly Cycle 123's
+next-hypothesis. The signal was pinned in code + tests but never surfaced in prose a critic can
+read — a reader could not learn WHY a listing whose price is machine-legible beside its
+availability is more agent-completable.
+
+**The paragraph.** Frames it as finishing on the physical-good side — an agent can browse a
+catalog, read that an item is in stock and see an add-to-cart control, and still not be able to
+DECIDE whether to buy without reading the concrete PRICE; names the failure (a catalog whose
+price an agent cannot read has not completed the commercial job); names the vendor-neutral
+priced-listing SHAPE (a decimal amount adjacent to an in-stock / add-to-cart control); keeps the
+signal's PRECISION honesty (a bare currency amount is no signal — a metered "per API call" price
+or a subscription "per month" fee sits nowhere near availability language → physical_good stays
+NA on an API storefront); says recognition keys on the price the offer lists, not who lists it,
+pinned by the identity-relabel executable regression test; honest scope (diagnostic, off the
+scoring path, not a scored pillar). Vendor-neutral throughout (guard asserts no drift-flight /
+driftflight / replicate / toscrape on the page). The physical_good MIRROR of the sibling
+offer-side prose legs.
+
+**Ship class.** Display + tests-only, off the scoring path (`git diff` over
+`asrs/scoring.py rubric/ fixtures/ asrs/offering.py` EMPTY; `--name-only` = `asrs/scorecard.py`
++ `tests/test_readout.py` ONLY) → score-neutral, NOT peer-gated (same class as the free-trial-116
+/ content-provenance-120 READOUT legs). Cloud bridge blocks direct main push → branch
+loop/priced-listing-readout + PR #97 + self-merge (squash 2ccadae; merged commit = exactly the
+two files). First duty: no open peer-gated PR (`[]` at fire start). Realigned main to origin/main
+after merge (`git reset --hard origin/main` → 2ccadae, verified paragraph present + 58/58 on
+merged main), deleted local branch.
+
+**Validation.** Full suite green (22 files; `test_readout` 58/58; `test_free_tier` 11/11 after
+`pip install -r requirements.txt`, environment-only — eth-account absent in the fresh container).
+Canonical PAIR unchanged AND re-measured on merged main: replay guard 24/24, **46.1 F / 85.5 B /
++39.4**, 0 replay-miss; rubric v0.7. Offering canonical guard 33/33 (physical_good stays NA on the
+canonical pair — operator acceptance preserved).
+
+**Infra.** RUNNER STILL GAPPED (newest `runs/local/verify_20260728T234102Z.json` 23:41Z Jul-28,
+~55.5h old at the 07:12Z fire); cloud cannot repair the local machine; queued P0 [LOCAL]. In-cloud
+replay guard remains the independent live regression signal, so benchmark integrity is intact — a
+heartbeat gap, not a scoring outage. 07:12Z is NOT the first-after-16:00 digest cycle → no re-flag
+this fire (next re-flag ~16:1xZ Jul-31).
+
+**Next hypothesis (METHOD).** With the physical_good arc closed, the offer-side coverage on
+CLAIMED archetypes is broad (metered_api ×7 + digital_good ×2 + subscription ×1 + physical_good
+×1, each now spanning all three layers). Rotate to METHOD: the metamorphic-invariance axis grid
+still has gaps — surface-ORDER invariance covers only output-license + the org pole (com / retail /
+machine poles uncovered per Cycle 121's note). A METHOD move: extend a surface-order or content-
+scale invariance test to an uncovered storefront pole, or add a metamorphic axis to the newest
+physical_good priced-listing signal (does reordering the catalog listings change its physical_good
+strength? it must not). Thin archetypes (service_booking / data_retrieval) remain [LOCAL]-blocked
+(no committed fixture claims either).
+
 ## Cycle 123 — 2026-07-31T06:18Z — TRUTH (branch+PR+self-merge, tests-only/off-scoring-path/score-neutral)
 
 **What/why.** Pinned Cycle 122's new `priced-listing` physical_good signal as

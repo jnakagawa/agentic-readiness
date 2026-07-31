@@ -1,11 +1,11 @@
 # Loop state
 
-- Cycle counter: 121
+- Cycle counter: 122
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-31T04:12Z, Cycle 121; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-31T05:20Z, Cycle 122; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~52.5h old at the Cycle-121 fire (container clock 04:12Z Jul-31); no
-  newer :41 artifact through 04:12Z Jul-31. Cloud CANNOT repair the local machine. The gap was RE-FLAGGED
+  Jul-28 = ~53.7h old at the Cycle-122 fire (container clock 05:20Z Jul-31); no
+  newer :41 artifact through 05:20Z Jul-31. Cloud CANNOT repair the local machine. The gap was RE-FLAGGED
   loudly in the Cycle-109 16:12Z digest (the first cycle after 16:00Z on Jul-30). The NEXT first-after-16:00
   fire (~16:1xZ Jul-31) is the next re-flag point; Cycle 121 at 04:12Z is NOT first-after-16:00 → no
   re-digest THIS fire, but keep noting the gap until it clears; queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
@@ -27,7 +27,38 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 122 COVERAGE — added a `priced-listing` capability signal to the **physical_good** archetype bank
+  (`asrs/offering.py`): the "understand the offer" PRICE leg — a decimal amount quoted directly beside an
+  in-stock / add-to-cart control ("£51.77 In stock", "$12.99 Add to basket") makes the item's price
+  machine-legible on the catalog listing, the capability an agent needs to DECIDE + FULFILL a physical
+  purchase. Executes Cycle 121's flagged next-move (physical_good CATALOG leg beyond add-to-cart/stock,
+  verifiable on books.toscrape.com); FIRST new physical_good leg since sku-inventory (2026-07-27). Distinct
+  from every sibling leg: add-to-cart = buy ACTION, stock = WHETHER available, sku-inventory = inventory
+  MANAGEMENT — none guarantees a readable PRICE. PRECISION-CRITICAL, verified across all 5 fixtures before
+  writing: `\d+[.,]\d{2}\s+(?:in stock|add to (cart|basket|bag))` fires 60× on books.toscrape.com and 0× on
+  api.replicate.com / the canonical pair (which carry 12–17 bare metered per-call currency amounts, ZERO
+  priced in-stock listings) / example.com — so it CANNOT conjure physical_good on an API storefront listing
+  dollar amounts; physical_good stays NA on the canonical pair (operator acceptance preserved). SHIP CLASS:
+  off the scoring path (`scoring.py` 0 offering refs — grep-verified) → score-neutral, NOT peer-gated (same
+  class as all 11 prior offering-signal legs). git diff over `asrs/scoring.py rubric/ fixtures/` EMPTY;
+  --name-only = `asrs/offering.py` + `tests/test_offering.py` + `tests/test_offering_canonical.py`. Cloud
+  bridge blocks direct main push → branch loop/priced-listing-physical-good + PR #93 + self-merge (squash
+  1267137). First duty: no open peer-gated PR (`[]` at fire start). Realigned main to origin/main after merge
+  (local main ref was STALE at Cycle-94 3796519 from a forced-history rewrite — `git reset --hard origin/main`
+  → 1267137, verified priced-listing present on merged main), deleted local branch. `test_offering.py` 48→50
+  (precision-synthetic + real-captured non-vacuity pair); `test_offering_canonical.py` retail-inverse guard
+  now asserts `priced-listing` in `_RETAIL_PHYSICAL_LABELS` (32/32). Full suite green on merged main (22
+  files; test_free_tier 11/11 after `pip install -r requirements.txt`, environment-only). Canonical PAIR
+  unchanged AND re-measured pre/post merge: replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss;
+  rubric v0.7. RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z, ~53.7h old). No Slack (score-neutral, off
+  scoring path; not sensitive-class; 05:20Z is not the first-after-16:00 digest cycle — that is ~16:1xZ
+  Jul-31). Next TRUTH — pin `priced-listing` as RELABEL-INVARIANT (physical_good's FIRST relabel leg; all 10
+  existing relabel legs are metered_api/digital_good/subscription). The real books evidence is host-free → a
+  whole-fixture relabel would be VACUOUS (free-trial-115 / content-provenance-119 failure mode), so scan a
+  SYNTHETIC retail surface seating the host inside a priced listing, relabel end-to-end, assert
+  identity-invariance. Alt READOUT: physical_good has no offer-side methodology paragraph yet — surface "read
+  the price to fulfill" in `_write_methodology_page`.)
   (Cycle 121 METHOD — extended the content-SCALE metamorphic-invariance axis to the NO-RAILS retail pole
   (`books.toscrape.com`), closing the org/com-only-vs-retail asymmetry the SCALE axis carried — exactly the
   gap Cycle 117 closed for the noise-surface axis. `_org`/`_com` prove a WITH-RAILS storefront that repeats

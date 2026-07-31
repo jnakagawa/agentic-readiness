@@ -545,27 +545,54 @@ design in-cloud, execute locally.
      green (22 files); replay guard 24/24, 46.1 F / 85.5 B / +39.4; rubric v0.7. See LOG Cycle 116. The
      free-trial arc is now closed at ALL THREE layers (signal 114 / relabel 115 / readout 116). Next COVERAGE
      frontier on the thin archetypes (service_booking / data_retrieval) is [LOCAL]-blocked — see the P1 below. -->
-- **[READOUT, in-cloud] frontier note (post-Cycle-116): the free-trial arc is CLOSED at all three layers**
-  (signal 114 / relabel 115 / readout 116). The subscription archetype now has one full COVERAGE→TRUTH→
-  READOUT arc. The remaining thin archetypes — service_booking (5 legs) and data_retrieval (5 legs) — cannot
-  get a NEW signal (COVERAGE) OR a new methodology leg (READOUT) in-cloud until a committed fixture CLAIMS
-  one of them (see the P1 [LOCAL] fixture-capture item), because a signal/prose leg for a never-claimed
-  archetype is unverifiable here (vacuous). Not a firm in-cloud item; promote a METHOD perturbation-axis or
-  a relabel-family extension instead until the [LOCAL] fixture lands.
+- **[in-cloud] frontier note (post-Cycle-118): digital_good's SECOND arc is OPEN** (content-provenance
+  SIGNAL landed Cycle 118; its TRUTH-relabel + READOUT legs are queued in-cloud above). The free-trial arc
+  (subscription) is CLOSED at all three layers (114/115/116); the generate-media (94/95/96) and output-license
+  (99/100 + prose) digital_good legs likewise. The in-cloud COVERAGE frontier is now NARROW: the CLAIMED
+  archetypes with rich committed evidence are metered_api (saturated, 7 arcs), digital_good (content-provenance
+  arc in progress), and subscription (free-trial arc closed) — a genuinely NEW capability leg on any of these
+  must fire non-vacuously on committed prose not already matched. physical_good (fulfillment legs),
+  service_booking (5 legs), and data_retrieval (5 legs) are ALL [LOCAL]-blocked — no committed fixture claims
+  them richly enough (see the two P1 [LOCAL] fixture-capture items), so a signal/prose leg for them is
+  unverifiable here (vacuous). Until a [LOCAL] fixture lands, prefer: finish the content-provenance arc
+  (TRUTH→READOUT), a METHOD perturbation-axis, or a relabel-family extension.
 
-- **[COVERAGE, in-cloud] a physical_good FULFILLMENT leg on the committed retail fixture** (from Cycle 117's
-  perturbation-matrix audit; the next COVERAGE brick per STATE). Unlike service_booking / data_retrieval, the
-  `physical_good` archetype IS claimed by a committed fixture (`books.toscrape.com`, the no-rails retail pole),
-  so a NEW capability-worded signal on it is VERIFIABLE in-cloud non-vacuously (it must fire on real retail
-  fulfillment prose and stay silent on the canonical pair + API domains where physical_good is NA). Current
-  physical_good signals are thin (add-to-cart / stock / bare-"ship" precision guard). Candidate legs, all
-  capability-worded + vendor-neutral: a `shipping-address` leg (an agent can supply a delivery destination), an
-  `order-tracking` / `order-status` leg (an agent can confirm fulfillment progress after purchase), or a
-  `returns-policy` / `return-window` leg (an agent can reverse the transaction). Add ONE with the same
-  non-vacuous shape the metered_api legs got: fires on the retail fixture's real prose, silent on the canonical
-  pair, plus a `test_offering.py` positive/negative battery and a signal-level relabel-invariance guard in
-  `test_offering_canonical.py`. Off the scoring path, score-neutral. Precision: a `returns` word must anchor on
-  a genuine return/refund policy, not "returns to the homepage"; `track` on an order, not a music track.
+<!-- REVISED 2026-07-31 (Cycle 118 COVERAGE finding): "[COVERAGE, in-cloud] a physical_good FULFILLMENT
+     leg on the committed retail fixture" (from Cycle 117's audit) was DEMOTED to [LOCAL]. In-cloud
+     verification found the only committed physical_good fixture `books.toscrape.com` is TOO THIN: it trips
+     physical_good with ONLY `add-to-cart` + `stock`, its `/llms.txt` + `/llms-full.txt` are REAL 404s, and it
+     carries none of the shipping-address / order-tracking / order-status / returns-policy prose a fulfillment
+     leg would need (its product-detail inventory tables were not crawled). So a physical_good fulfillment
+     signal is UNVERIFIABLE in-cloud (vacuous — cannot prove non-vacuous firing), the same trap as
+     service_booking / data_retrieval. See the P1 [LOCAL] rich-retail-fixture item below. Cycle 118 pivoted to
+     digital_good `content-provenance` instead (fires non-vacuously on the canonical pair). -->
+- **[LOCAL] Capture a RICH retail fixture for physical_good fulfillment legs** (COVERAGE enabler, from
+  Cycle 118's in-cloud finding). The committed `books.toscrape.com` retail fixture is too thin to add a NEW
+  physical_good signal non-vacuously (only `add-to-cart` + `stock` fire; no shipping/tracking/returns prose;
+  llms.txt 404). Capture a fixture LIVE from a real agent-fetch-reachable retailer with a genuine checkout
+  that documents fulfillment — shipping options / delivery estimate / order confirmation / order tracking /
+  returns policy — via `asrs.cli score <domain> --record-fixture fixtures/canonical/<domain>.json` (static
+  $0, needs network → [LOCAL]; several retailers block agent UAs, so record which — a reachability signal in
+  itself). Then a future in-cloud COVERAGE cycle can add ONE capability-worded, vendor-neutral fulfillment leg
+  to physical_good with the metered_api non-vacuous shape: a `shipping-address` leg (an agent can supply a
+  delivery destination — NB `shipping (address|cost|rates|options|...)` already exists; a NEW leg must be
+  distinct), an `order-tracking` / `order-status` leg (confirm fulfillment progress after purchase — NB
+  `fulfillment` already matches "tracking number"), or a `returns-window` leg. Precision: `returns` must
+  anchor on a genuine return/refund policy, not "returns to the homepage"; `track` on an order, not a music
+  track. Off the scoring path, score-neutral.
+
+- **[TRUTH → READOUT, in-cloud] complete the content-provenance arc** (from Cycle 118 COVERAGE; the next two
+  legs of the digital_good `content-provenance` arc, mirroring free-trial 114→115→116). TRUTH: pin
+  content-provenance as RELABEL-INVARIANT — extend the signal-level relabel family (metered_api ×7,
+  digital_good ×1 output-license, subscription ×1 free-trial) to digital_good's SECOND leg, in
+  `tests/test_offering_canonical.py`. Provenance evidence is host-free by nature (C2PA / content-credentials /
+  "records provenance"), so — like free-trial (115), not output-license (99) — the guard likely needs a
+  SYNTHETIC subscription/digital surface seating the host INSIDE the provenance evidence to be non-vacuous,
+  then assert identity-invariance under end-to-end relabel + TEETH (a bare-"provenance" distractor firing
+  ZERO). READOUT: surface "verify the deliverable's provenance at $0" in the public methodology prose
+  (`_write_methodology_page`, `asrs/scorecard.py`) with a content-presence guard in `tests/test_readout.py`,
+  after the digital_good "Owning the deliverable" (output-license) paragraph. Both off the scoring path,
+  score-neutral, NOT peer-gated.
 
 <!-- DONE 2026-07-30T04:16Z (Cycle 97, METHOD, branch+PR+self-merge, tests-only/score-neutral):
      "Pin the digital_good DESCRIPTOR derivation as relabel/identity-invariant" SHIPPED. New guards in

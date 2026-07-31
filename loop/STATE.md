@@ -1,14 +1,15 @@
 # Loop state
 
-- Cycle counter: 117
+- Cycle counter: 118
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-31T~15:xxZ, Cycle 117; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-31T01:12Z, Cycle 118; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~63h old at the Cycle-117 fire; no newer :41 artifact through 15:xxZ Jul-31 (63+ consecutive
-  :41 fires gapped). Cloud CANNOT repair the local machine. The gap was RE-FLAGGED loudly in the Cycle-109
-  16:12Z digest (the first cycle after 16:00Z on Jul-30). The NEXT first-after-16:00 fire (~16:1xZ Jul-31,
-  the next cloud cycle) is the next re-flag point; Cycle 117 at ~15:xxZ Jul-31 is NOT first-after-16:00 →
-  no re-digest THIS fire, but keep noting the gap until it clears; queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
+  Jul-28 = ~49.5h old at the Cycle-118 fire (the container clock reads 01:12Z Jul-31, correcting the
+  Cycle-117 note's "~15:xxZ / 63h" estimate — the real wall clock is ~49.5h past the last artifact); no
+  newer :41 artifact through 01:12Z Jul-31. Cloud CANNOT repair the local machine. The gap was RE-FLAGGED
+  loudly in the Cycle-109 16:12Z digest (the first cycle after 16:00Z on Jul-30). The NEXT first-after-16:00
+  fire (~16:1xZ Jul-31) is the next re-flag point; Cycle 118 at 01:12Z is NOT first-after-16:00 → no
+  re-digest THIS fire, but keep noting the gap until it clears; queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
   is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
   local fire root-caused (a >60s slow-network wake still misses the 5×15s retry) OR the machine is
@@ -27,7 +28,40 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 118 COVERAGE — added a `content-provenance` capability signal to the **digital_good** archetype
+  bank (`asrs/offering.py`): the "verify + trust the deliverable" leg, the authenticity MIRROR of
+  `output-license` (rights to USE → the MEANS to TRUST). An agent obtaining a generated asset that carries
+  embedded provenance (C2PA content credentials, a provenance manifest/metadata record) can confirm it is
+  genuine and use it in a provenance-aware pipeline — distinct from `generation`/`generate-media` (WHAT),
+  `hosted-output` (WHERE), `output-license` (RIGHTS). PLANNED PIVOT off the Cycle-117 "physical_good
+  fulfillment leg" recommendation: in-cloud verification KILLED that pick — the only committed physical_good
+  fixture `books.toscrape.com` is thin (physical_good fires on ONLY `add-to-cart` + `stock`; its llms.txt
+  are real 404s; no order/tracking/delivery/returns prose), so a fulfillment signal would be VACUOUS →
+  physical_good fulfillment JOINS service_booking / data_retrieval as [LOCAL]-blocked (queued P1). Also
+  rejected: subscription-cancellation (`/cancellation` is a 404 on both canonical domains) and metered_api
+  webhook-signing (fires only on api.replicate; metered_api saturated at 7 arcs). content-provenance instead
+  fires NON-VACUOUSLY on the canonical PAIR (29/24 on .com/.org, both already claim digital_good) and ZERO
+  on api.replicate/books/example — correctly dodging api.replicate's "watermarking for provenance"
+  hosted-MODEL-feature trap, so it never CONJURES a false digital_good claim. Vendor-neutral open-standard
+  vocabulary (C2PA / CAI Content Credentials / media-output provenance metadata-manifest), precision-guarded
+  (never bare "provenance"/"credentials"; art/wine/supply-chain/data provenance dodged). SHIP CLASS:
+  signal-bank + tests only, off the scoring path (`scoring.py` imports no `offering` — grep 0 refs) →
+  score-neutral, NOT peer-gated. git diff over `asrs/scoring.py rubric/ fixtures/` EMPTY; git diff --name-only
+  = `asrs/offering.py` + `tests/test_offering.py` (+135). Cloud bridge blocks direct main push → branch
+  loop/content-provenance-signal + PR #85 + self-merge (squash d3b9d0f). First duty: no open peer-gated PR
+  (`[]` at fire start); realigned main to origin/main after merge, deleted local branch. `test_offering.py`
+  46→48; full suite green (22 files; test_free_tier 11/11 after `pip install -r requirements.txt`,
+  environment-only). Canonical PAIR unchanged AND re-measured pre- and post-merge: replay guard 24/24,
+  46.1 F / 85.5 B / +39.4, 0 replay-miss; claimed sets/order byte-identical on all 5 fixtures; rubric v0.7.
+  No Slack (score-neutral, off scoring path; not sensitive-class; not the first-after-16:00 digest cycle —
+  that is the ~16:1xZ Jul-31 fire). RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z, ~49.5h old). Next
+  TRUTH — pin content-provenance as RELABEL-INVARIANT (COVERAGE 118 → TRUTH → READOUT arc, mirroring
+  free-trial 114/115/116): extend the signal-level relabel family (metered_api ×7, digital_good ×1, subscription
+  ×1) to digital_good's SECOND leg; provenance evidence is host-free by nature (C2PA/content-credentials/
+  "records provenance") so — like free-trial 115 — the guard likely needs a SYNTHETIC surface seating the host
+  INSIDE the provenance evidence, then identity-invariance under end-to-end relabel + a bare-"provenance"
+  distractor firing ZERO. Then READOUT: surface "verify the deliverable's provenance" in the methodology prose.)
   (Cycle 117 METHOD — extended the noise-surface perturbation axis (Cycle 113) onto the OPPOSITE storefront
   type: the no-rails retail store `books.toscrape.com` (claims ONLY physical_good, every rails archetype NA).
   `_org`/`_com` prove incidental web chrome adds no claim on the WITH-RAILS canonical pair; this closes the

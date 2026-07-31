@@ -9964,3 +9964,85 @@ stay [LOCAL]-blocked (no committed fixture claims either — any new signal vacu
 physical_good signal on the retail pole (e.g. a shipping-address / order-tracking /
 returns-policy fulfillment leg) is now the natural next COVERAGE brick, with the retail
 fixture already committed. ACP/UCP/MPP + free-tier live-wiring stays [LOCAL].
+
+---
+
+## Cycle 118 — 2026-07-31 (~01:1xZ) — COVERAGE — content-provenance signal (digital_good)
+
+**Track / rotation.** COVERAGE (focus pointer was "COVERAGE next" after Cycle 117
+METHOD). First duty: no open peer-gated PR (`list_pull_requests state=open` → `[]`).
+Infra health: full suite runnable; LOCAL verify runner STILL GAPPED
+(`verify_20260728T234102Z.json` 23:41Z Jul-28, ~49.5h old at the 01:12Z fire — cloud
+cannot repair the local machine; the in-cloud replay guard is the independent live
+regression signal); NOT the first-after-16:00 digest cycle (01:12Z).
+
+**What.** Added a `content-provenance` capability signal to the **digital_good**
+archetype bank in `asrs/offering.py` — the "verify + trust the deliverable" leg, the
+authenticity MIRROR of `output-license` (rights to USE the deliverable → the MEANS to
+TRUST it). An autonomous agent obtaining a generated asset that carries embedded
+provenance (C2PA content credentials, a provenance manifest/metadata record) can confirm
+the deliverable is genuine and use it in a provenance-aware pipeline (disclosure,
+attribution, downstream trust). Distinct from every existing digital_good signal:
+`generation`/`generate-media` (WHAT is produced), `hosted-output` (WHERE delivered),
+`output-license` (RIGHTS to use) — NONE said whether the agent can VERIFY what it obtained.
+
+**Why (planned pivot from the Cycle-117 "next" note).** Cycle 117 recommended a
+physical_good fulfillment leg (shipping-address / order-tracking / returns-policy) on the
+retail pole "with the retail fixture already committed". IN-CLOUD VERIFICATION KILLED THAT
+as the pick: the only committed physical_good fixture, `books.toscrape.com`, is thin — it
+trips physical_good with ONLY `add-to-cart` + `stock`, and carries none of the
+order-confirmation / tracking / delivery / returns prose a fulfillment leg would need
+(its `/llms.txt` + `/llms-full.txt` are real 404s; its product-detail inventory tables
+were not crawled). Adding a physical_good signal would be VACUOUS in-cloud (unprovable
+non-vacuity), the exact trap the loop keeps re-learning — so physical_good fulfillment
+JOINS service_booking / data_retrieval as `[LOCAL]`-blocked pending a richer retail
+fixture (queued P1, see BACKLOG). Also checked & rejected: a subscription-CANCELLATION
+leg (`/cancellation` is a 404 on both canonical domains → no committed evidence) and a
+metered_api webhook-signing leg (fires only on api.replicate, viable but metered_api is
+saturated at 7 arcs). The winner — digital_good content-provenance — fires NON-VACUOUSLY
+on the canonical PAIR itself (the regression pair), diversifies off metered_api, and adds
+a genuinely new capability dimension.
+
+**Capability wording / vendor-neutrality.** Open-standard provenance vocabulary only —
+C2PA (Coalition for Content Provenance and Authenticity), the CAI "Content Credentials"
+mark, a media/output provenance metadata/manifest — the same open-convention category as
+REST/GraphQL/OpenAPI/x402 already in the bank. Never a vendor or domain string.
+
+**Precision (empirically verified on the committed fixtures).** NEVER matches bare
+`provenance`/`credentials`. Requires the `C2PA` standard name, the `content credentials`
+mark, a media/output noun IMMEDIATELY qualifying `provenance`
+(content/media/image/output/asset/render provenance), `provenance` naming a
+metadata/credential/record/manifest object, or a `records provenance` grant. So
+art / wine / supply-chain / **data** provenance and — the sharp trap —
+api.replicate.com's `"Embed invisible SynthID watermarking for provenance on all
+generated ... images"` (a hosted-MODEL FEATURE, not a deliverable the storefront itself
+vends) do NOT fire. Empirical proof: fires **29 / 24** on driftflight.com /
+drift-flight.org (both already claim digital_good) and **ZERO** on api.replicate.com /
+books.toscrape.com / example.com — so it can never CONJURE a false digital_good claim on
+a site that does not already make one.
+
+**Ship class + evidence.** Signal-bank + tests only; off the scoring path (`scoring.py`
+imports no `offering` — grep-verified 0 refs) → score-neutral, NOT peer-gated (same class
+as every prior COVERAGE signal arc). `git diff` over `asrs/scoring.py rubric/ fixtures/`
+EMPTY; `git diff --name-only` = `asrs/offering.py` + `tests/test_offering.py` (+135
+lines). Cloud bridge blocks direct main push → branch `loop/content-provenance-signal`
++ PR #85 + self-merge (squash d3b9d0f). `tests/test_offering.py` 46→48 (a synthetic
+precision test — 9 positives / 7 provenance-shaped noise negatives incl. the
+watermark-for-provenance model trap — and a real-captured non-vacuous & score-neutral
+test on the canonical pair + the api.replicate.com negative). Canonical offering guard
+30/30; full suite green (22 files; `test_free_tier` 11/11 after `pip install -r
+requirements.txt`, environment-only). Canonical PAIR unchanged AND re-measured pre- AND
+post-merge: replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; claimed
+sets/order byte-identical on all 5 fixtures; rubric v0.7.
+
+**Next hypothesis.** Rotate TRUTH next (COVERAGE 118 → TRUTH → READOUT arc, mirroring the
+free-trial arc 114/115/116). The TRUTH leg: pin content-provenance as RELABEL-INVARIANT —
+extend the signal-level relabel family (now spanning metered_api ×7, digital_good ×1
+output-license, subscription ×1 free-trial) to digital_good's SECOND leg. Provenance
+evidence is host-free by nature (C2PA / content-credentials / "records provenance"), so —
+like free-trial (115) — the guard likely needs a SYNTHETIC surface seating the host
+INSIDE the provenance evidence to be non-vacuous, then assert identity-invariance under
+end-to-end relabel + a bare-"provenance" distractor firing ZERO. Then READOUT: surface
+"verify the deliverable's provenance" in the public methodology prose. COVERAGE frontier
+after that: physical_good fulfillment, service_booking, data_retrieval all `[LOCAL]`-blocked
+(no rich committed fixture); ACP/UCP/MPP + free-tier live-wiring stays `[LOCAL]`.

@@ -1,13 +1,13 @@
 # Loop state
 
-- Cycle counter: 119
+- Cycle counter: 120
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-31T02:11Z, Cycle 119; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-31T03:12Z, Cycle 120; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~50h old at the Cycle-119 fire (container clock 02:11Z Jul-31); no
-  newer :41 artifact through 02:11Z Jul-31. Cloud CANNOT repair the local machine. The gap was RE-FLAGGED
+  Jul-28 = ~51.5h old at the Cycle-120 fire (container clock 03:12Z Jul-31); no
+  newer :41 artifact through 03:12Z Jul-31. Cloud CANNOT repair the local machine. The gap was RE-FLAGGED
   loudly in the Cycle-109 16:12Z digest (the first cycle after 16:00Z on Jul-30). The NEXT first-after-16:00
-  fire (~16:1xZ Jul-31) is the next re-flag point; Cycle 119 at 02:11Z is NOT first-after-16:00 → no
+  fire (~16:1xZ Jul-31) is the next re-flag point; Cycle 120 at 03:12Z is NOT first-after-16:00 → no
   re-digest THIS fire, but keep noting the gap until it clears; queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
   is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
@@ -27,7 +27,38 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 120 READOUT — CLOSED the `content-provenance` arc at its third layer: surfaced the digital_good
+  "verify + trust the deliverable" capability in the PUBLIC methodology prose. Added ONE capability-worded,
+  vendor-neutral `<p>` ("Trusting the deliverable", the authenticity MIRROR of the output-license "Owning
+  the deliverable" leg) to `_write_methodology_page` (`asrs/scorecard.py`), placed directly after the
+  digital_good rights paragraph — grouping the two digital_good offer-side legs (rights + authenticity) —
+  plus a content-presence guard `test_methodology_documents_content_provenance` in `tests/test_readout.py`.
+  THIRD full COVERAGE→TRUTH→READOUT arc on a non-metered_api archetype (after subscription free-trial
+  114/115/116 and digital_good's own output-license), digital_good's SECOND prose leg. Prose (all guarded):
+  frames it as the authenticity mirror of owning the deliverable + names the failure (a render that cannot
+  be provenance-checked has NOT completed the commercial job); names vendor-neutral OPEN-STANDARD vocabulary
+  as open conventions (C2PA / Content Credentials / a media-output provenance manifest-metadata record, same
+  category as REST/GraphQL/OpenAPI); keeps the bare-`provenance`/`credentials` precision note (art/wine/
+  supply-chain/data provenance, login credentials, "watermarking for provenance" model feature = no signal);
+  keys on the provenance the offer grants NOT who grants it, pinned by the identity-relabel regression test;
+  honest scope (diagnostic, off the scoring path). SHIP CLASS: display + tests-only, off the scoring path
+  (`scoring.py` imports no `offering` — grep 0 refs) → score-neutral, NOT peer-gated. git diff over
+  `asrs/scoring.py asrs/offering.py rubric/ fixtures/` EMPTY; --name-only = `asrs/scorecard.py` +
+  `tests/test_readout.py`. Cloud bridge blocks direct main push → branch loop/content-provenance-readout +
+  PR #89 + self-merge (squash 233e298; merged commit = exactly those two files). First duty: no open
+  peer-gated PR (`[]` at fire start); realigned main to origin/main after merge, deleted local branch.
+  `test_readout.py` 56→57; full suite green (22 files; test_free_tier 11/11 after `pip install -r
+  requirements.txt`, environment-only). Canonical PAIR unchanged AND re-measured pre/post merge: replay
+  guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. RUNNER STILL GAPPED
+  (verify_20260728T234102Z 23:41Z, ~51.5h old). No Slack (score-neutral, off scoring path; not
+  sensitive-class; not the first-after-16:00 digest cycle — that is the ~16:1xZ Jul-31 fire). Next METHOD —
+  the in-cloud COVERAGE/TRUTH frontier on CLAIMED archetypes is NARROW (metered_api saturated ×7;
+  digital_good has THREE closed arcs now; subscription free-trial closed); thin archetypes
+  (physical_good fulfillment / service_booking / data_retrieval) are all [LOCAL]-blocked. A METHOD move
+  needing no new claimed archetype: extend a perturbation axis (relabel/order/scale/noise-surface) onto a
+  signal or storefront-type not yet covered, or add a cross-fixture invariant over the now-dense digital_good
+  signal family (generation / output-license / content-provenance).)
   (Cycle 119 TRUTH — pinned the Cycle-118 `content-provenance` signal (digital_good's authenticity leg) as
   RELABEL-INVARIANT: the TRUTH leg of the COVERAGE(118)→TRUTH arc, mirroring free-trial (114→115). Tenth leg
   of the signal-level relabel family (metered_api ×7 + digital_good `output-license` + subscription

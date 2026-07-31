@@ -596,6 +596,48 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"|\broyalty[- ]free\b"
             r"|\busage rights\b"
             r"|\byou own\s+(?:the\s+)?(?:output|render|renders|result|results|generation|generations|image|images|asset|assets)\b", _F)),
+        # Output CONTENT-PROVENANCE — the "verify + trust the deliverable" leg of a
+        # digital good. The existing digital_good signals say WHAT is produced
+        # (`generation` / `generate-media`), WHERE it is delivered (`hosted-output`),
+        # and whether the agent may USE it (`output-license`); NONE says whether the
+        # agent can VERIFY the authenticity and origin of what it obtained. As synthetic
+        # media proliferates, a generated deliverable that carries embedded provenance —
+        # C2PA content credentials, a provenance manifest / metadata that records how it
+        # was made — lets an autonomous agent confirm the asset is genuine and use it in
+        # a provenance-aware pipeline (disclosure, attribution, downstream trust). A
+        # render an agent cannot provenance-check has NOT completed the commercial job
+        # in a world that requires content authenticity, so a storefront that embeds
+        # content credentials / records provenance on its output is MORE agent-completable
+        # at the digital-good layer. It is the trust/authenticity MIRROR of `output-license`
+        # (which grants the RIGHT to use the deliverable — this grants the MEANS to trust
+        # it). Vendor-neutral OPEN-STANDARD provenance vocabulary — C2PA (the Coalition for
+        # Content Provenance and Authenticity standard), the CAI "Content Credentials" mark,
+        # a media/output provenance manifest/metadata record — the same open-convention
+        # category as REST/GraphQL/OpenAPI/x402 already in this bank, never a vendor.
+        # PRECISION-CRITICAL: bare "provenance" is a false-positive minefield — art / wine /
+        # supply-chain provenance, and — the trap this signal must dodge — "data provenance"
+        # (a data_retrieval concern) and a MODEL FEATURE description on a metered_api
+        # marketplace (api.replicate.com's hosted model "Embed invisible SynthID watermarking
+        # for provenance on all generated ... images" describes what a HOSTED MODEL does, not a
+        # deliverable the storefront itself vends — it must NOT conjure a digital_good claim on
+        # a metered-API-only site). So NEVER match a bare "provenance"/"credentials": require
+        # the C2PA standard name, the "content credentials" mark, a media/output noun
+        # IMMEDIATELY qualifying "provenance" (content/media/image/output/asset/render
+        # provenance), "provenance" naming a metadata/credential/record/manifest object, or a
+        # "records provenance" grant. The art/wine/supply-chain/data senses and the
+        # "watermarking for provenance" model-feature phrasing trip none of these. Fires
+        # non-vacuously on BOTH canonical domains (drift-flight.org + driftflight.com — "embedded
+        # C2PA content credentials", "C2PA credentials record provenance") — both ALREADY claim
+        # digital_good, so it deepens evidence without adding or reordering any archetype
+        # (score-neutral) — and on ZERO of the metered-api (api.replicate.com), retail
+        # (books.toscrape.com), or null (example.com) fixtures, so it can never CONJURE a
+        # digital_good claim on a site that does not already make one.
+        ("content-provenance", re.compile(
+            r"\bC2PA\b"
+            r"|\bcontent credentials?\b"
+            r"|\b(?:content|media|image|output|asset|render)\s+provenance\b"
+            r"|\bprovenance\s+(?:metadata|credentials?|records?|manifest)\b"
+            r"|\brecords?\s+provenance\b", _F)),
     ],
     "physical_good": [
         # PRECISION-CRITICAL: bare "ship" is metaphorical on many agent-native

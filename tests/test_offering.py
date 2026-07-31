@@ -1689,6 +1689,97 @@ def test_output_license_fires_on_real_captured_surfaces():
     print("  ok: the model-license / 'models you own' traps do NOT fire output-license (real-data precision)")
 
 
+def test_content_provenance_precision_synthetic():
+    # Output CONTENT-PROVENANCE is the "verify + trust the deliverable" leg of a
+    # digital good — the trust/authenticity mirror of output-license (which grants the
+    # RIGHT to use; this grants the MEANS to trust). An agent that can provenance-check
+    # a generated asset (embedded C2PA content credentials, a provenance manifest /
+    # metadata record) can use it in a provenance-aware pipeline, so it must claim
+    # digital_good via the new content-provenance signal. Each POSITIVE is real
+    # provenance vocabulary; each NEGATIVE is provenance-SHAPED noise that must NOT fire
+    # it (the precision traps: art / wine / supply-chain provenance, "data provenance"
+    # for a data service, and the "watermarking for provenance" MODEL-FEATURE phrasing
+    # on a metered-API marketplace).
+    positives = {
+        "c2pa": "Every render ships with embedded C2PA metadata for authenticity.",
+        "content credentials": "Each image carries Content Credentials so you can verify its origin.",
+        "content credential singular": "A content credential is embedded in every export.",
+        "image provenance": "We attach image provenance to each generated asset.",
+        "output provenance": "The output provenance travels with the file downstream.",
+        "render provenance": "Render provenance is baked into every delivered frame.",
+        "provenance metadata": "Provenance metadata records how the image was produced.",
+        "provenance manifest": "A provenance manifest accompanies each generation.",
+        "records provenance": "Embedded credentials record provenance without limiting your rights.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("studio.test", {"homepage": text})
+        assert prof.claims("digital_good"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "digital_good"
+            for s in c.signals
+        }
+        assert "content-provenance" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real content-provenance phrasings each fire content-provenance")
+
+    negatives = {
+        "art provenance": "The painting's provenance traces back to a 1920s collector.",
+        "wine provenance": "We document the provenance of every bottle in the cellar.",
+        "supply-chain provenance": "Blockchain gives full provenance across the supply chain.",
+        "data provenance": "Our pipeline tracks data provenance for every record.",
+        "watermark-for-provenance model": "The model embeds invisible watermarking for provenance on all generated images.",
+        "bare credentials": "Authenticate with the credentials issued to your account.",
+        "bare content": "This content is available in several languages.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "content-provenance" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} provenance-shaped noise strings do NOT fire content-provenance (precision)"
+    )
+
+
+def test_content_provenance_fires_on_real_captured_surfaces():
+    # Real-evidence, NON-VACUOUS validation of content-provenance — it fires on GENUINE
+    # deliverable-provenance prose captured live from a real generation storefront, and
+    # does NOT fire on a DIFFERENT real storefront's "watermarking for provenance"
+    # MODEL-FEATURE trap.
+    #
+    # BOTH canonical homepages carry embedded content-provenance prose captured live:
+    # "Every paid render carries a commercial licence and embedded C2PA content
+    # credentials" and "C2PA credentials record provenance without limiting your
+    # rights". The storefront already claims digital_good, so this DEEPENS its evidence
+    # without changing the claimed set (score-neutrality pinned byte-for-byte by
+    # tests/test_offering_canonical.py; classification is off the scoring path).
+    for domain in ("driftflight.com", "drift-flight.org"):
+        home = _fixture_entry_text(domain, domain)
+        assert "c2pa" in home.lower(), f"{domain} homepage lost its C2PA provenance prose"
+        prof = classify_offering(domain, {"homepage": home})
+        assert prof.claims("digital_good"), (domain, prof.archetypes)
+        dg = next(c for c in prof.claimed if c.archetype == "digital_good")
+        prov = [s for s in dg.signals if s.label == "content-provenance"]
+        assert prov, (domain, {s.label for s in dg.signals})
+        q = prov[0].quote.lower()
+        assert "c2pa" in q or "provenance" in q or "content credential" in q, prov[0].quote
+        print(f"  ok: content-provenance fires on REAL captured {domain} prose — quote: {prov[0].quote!r}")
+
+    # Precision on real noise: api.replicate.com — a metered_api-ONLY storefront (pinned
+    # by test_machine_surface_openapi_storefront) — describes a HOSTED MODEL that can
+    # "Embed invisible SynthID watermarking for provenance on all generated ... images"
+    # in its committed OpenAPI spec. That is a model FEATURE, not a deliverable the
+    # storefront itself vends, so content-provenance must NOT fire — the spec must not
+    # gain a spurious digital_good.
+    spec = _fixture_entry_text("api.replicate.com", "/openapi.json")
+    assert "watermarking for provenance" in spec, "fixture lost its watermark-for-provenance trap"
+    spec_prof = classify_offering("api.replicate.com", {"/openapi.json": spec})
+    spec_labels = {s.label for c in spec_prof.claimed for s in c.signals}
+    assert "content-provenance" not in spec_labels, spec_labels
+    assert not spec_prof.claims("digital_good"), spec_prof.archetypes
+    print("  ok: the 'watermarking for provenance' model-feature does NOT fire content-provenance (real-data precision)")
+
+
 def test_pagination_metering_precision_synthetic():
     # Cursor / collection PAGINATION — how an agent retrieves a MULTI-PAGE result
     # set (a list endpoint returns one page plus a cursor / a `next`/`previous` page
@@ -1916,6 +2007,8 @@ def main() -> int:
         test_generate_media_plural_gap_on_real_captured_docs,
         test_output_license_precision_synthetic,
         test_output_license_fires_on_real_captured_surfaces,
+        test_content_provenance_precision_synthetic,
+        test_content_provenance_fires_on_real_captured_surfaces,
         test_pagination_metering_precision_synthetic,
         test_pagination_fires_on_real_captured_openapi,
         test_cancel_job_metering_precision_synthetic,

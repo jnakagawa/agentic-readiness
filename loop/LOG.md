@@ -3,6 +3,63 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 125 — 2026-07-31T08:12Z — METHOD (branch+PR+self-merge, tests-only/off-scoring-path/score-neutral)
+
+**What/why.** Added the FIFTH metamorphic-invariance axis on the offering classifier — and
+the FIRST that perturbs the order of items WITHIN a single surface rather than the surfaces
+themselves. The four existing axes all operate at surface granularity: RELABEL rewrites the
+host inside a surface, surface-read ORDER reverses the sequence surfaces arrive in, SCALE
+duplicates a surface body, NOISE adds a signal-free surface. None reorders the catalog listings
+a storefront publishes on one page. A retail catalog lists its goods in SOME order (newest-first,
+best-selling, alphabetical, a per-request shuffle) — a merchandising choice, never a readiness
+property. `test_offering_listing_order_invariance_priced_listing` (in `tests/test_offering_canonical.py`,
+33→34) pins that reordering the priced listings on one catalog page does not move the
+`physical_good` verdict: the distinct-label STRENGTH, the claimed set, and the NA partition are
+all order-invariant. Executes Cycle 124's next-hypothesis (a metamorphic axis on the new
+physical_good priced-listing signal — "reordering catalog listings must not change its strength").
+
+**Non-vacuous by construction.** `_scan_surface` keeps the FIRST match of each signal per surface
+(`pattern.search`), so the sampled `priced-listing` exemplar QUOTE is anchored on whichever priced
+listing appears first. The test asserts the sampled quote genuinely MOVES under reorder
+(£51.77-first → €24.50-first, verified live) — the perturbation is real and observable at THIS
+signal — while the verdict does not. An honest classifier samples a different price to show the
+reader but reaches the same conclusion. A SYNTHETIC multi-listing catalog is the vehicle because
+`strip_html` collapses a committed fixture's prose to a single whitespace-joined line, leaving no
+per-listing boundary to permute (same reason as free-trial-115 / content-provenance-119 /
+priced-listing-122's own relabel guard). TEETH three ways: (a) the reordered catalog bytes differ;
+(b) the sampled priced-listing quote differs between orders; (c) the base claim is a real
+multi-label physical_good (strength 5: add-to-cart / free-shipping / fulfillment / priced-listing /
+stock) with rails (metered_api / subscription / digital_good) NA — so a dropped leg or a conjured
+rail would be unmistakable (the retail-pole credibility direction: the classified delta must come
+from published capability, never from shelf order).
+
+**Ship class.** Tests-only, off the scoring path (`scoring.py` 0 offering refs — grep-verified) →
+score-neutral, NOT peer-gated. `git diff` over `asrs/ rubric/ fixtures/` EMPTY; `--name-only` =
+`tests/test_offering_canonical.py` ONLY. First duty: no open peer-gated PR (`[]` at fire start).
+Cloud bridge blocks direct main push → branch `loop/listing-order-invariance` + PR #99 + self-merge
+(squash 33f188e; merged commit = exactly the one test file). Realigned main to origin/main after
+merge (`git reset --hard origin/main` → 33f188e, verified new test present + 34/34 on merged main),
+deleted local branch.
+
+**Evidence / validation.** `test_offering_canonical.py` 33→34; full suite green (22 files;
+test_free_tier 11/11 after `pip install -r requirements.txt`, environment-only — eth-account absent
+in the fresh container). Canonical PAIR unchanged AND re-measured on merged main: replay guard
+24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. RUNNER STILL GAPPED
+(verify_20260728T234102Z 23:41Z, ~56.5h old — cloud cannot repair Jonah's machine). No Slack
+(score-neutral, off scoring path; not sensitive-class; 08:12Z is not the first-after-16:00 digest
+cycle — that is ~16:1xZ Jul-31).
+
+**Canonical pair.** 46.1 F (drift-flight.org) / 85.5 B (driftflight.com) / delta +39.4 — UNCHANGED
+(off the scoring path).
+
+**Next hypothesis.** Rotate to COVERAGE. The metamorphic axis grid now spans five axes but only
+partially across storefront poles: listing-order invariance is pinned on the synthetic retail
+catalog only — a future METHOD increment could mirror it onto a with-rails MACHINE surface (do the
+metered_api endpoints' ORDER within one OpenAPI spec matter to the claim?). The thin archetypes
+service_booking / data_retrieval remain [LOCAL]-blocked (no committed fixture claims either — see
+P1). Next COVERAGE frontier on CLAIMED archetypes is a new signal leg or the [LOCAL] free-tier
+live-wiring / ACP-UCP-MPP handshakes.
+
 ## Cycle 124 — 2026-07-31T07:12Z — READOUT (branch+PR+self-merge, display+tests-only/off-scoring-path/score-neutral)
 
 **What/why.** CLOSED the `priced-listing` arc at its third layer — surfaced the

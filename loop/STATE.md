@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 128
+- Cycle counter: 129
 - Started: 2026-07-23 (UTC)
 - RUNNER RECOVERED at 2026-07-31T09:12Z (Cycle 126) — the ~56h stall (first breached Cycle 76 06:12Z)
   CLEARED. Newest artifact `runs/local/verify_20260731T085248Z.json` (08:52Z Jul-31) carries
@@ -33,7 +33,38 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 129 METHOD — added the metamorphic INVARIANCE axis
+  `test_offering_endpoint_order_invariance_metered_api` (`tests/test_offering_canonical.py` 35→36), the
+  WITH-RAILS / machine-surface MIRROR of Cycle 125's retail listing-order guard. Reordering the ENDPOINTS
+  within one OpenAPI machine contract (`[0,1,2]→[2,1,0]`) must not move the metered_api verdict — the
+  machine surface being where metered_api is most load-bearing (api.replicate.com earns its whole claim
+  from `/openapi.json` alone). Non-vacuous by the same substrate as the retail leg: `_scan_surface` keeps
+  the FIRST `post-endpoint` match per surface, so the sampled exemplar quote MOVES under reorder
+  (predictions-POST → status-GET, asserted), while metered_api strength (4), its leg set {post-endpoint,
+  api-auth, async-job, rate-limited}, the ordered claimed list, and the whole NA set stay invariant.
+  Vendor-neutral synthetic spec: signal-free host `gridcell.example` + pure open machine-integration
+  vocabulary (POST/GET endpoint, Authorization: Bearer, webhook callback, per-minute rate limit). SHIP
+  CLASS: tests-only, off the scoring path (`scoring.py` 0 offering refs) → score-neutral, NOT peer-gated.
+  git diff over `asrs/ rubric/ fixtures/` EMPTY; --name-only = `tests/test_offering_canonical.py` ONLY.
+  First duty: no open peer-gated PR (`[]` at fire start). Cloud bridge blocks direct main push → branch
+  loop/endpoint-order-invariance + PR #107 + self-merge (squash 00b17e6; merged commit = exactly the one
+  test file). Realigned main to origin/main after merge (`git reset --hard origin/main` → 00b17e6,
+  verified the new test present + 36/36 + replay 24/24 on merged main), deleted local branch. Full suite
+  green (22 files; test_free_tier 11/11 after `pip install -r requirements.txt`, environment-only).
+  Canonical PAIR unchanged: replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; offering
+  canonical 36/36; rubric v0.7. INFRA HEALTHY (verify 20260731T085248Z 08:52Z, 3.4h old at fire, within
+  6h floor; no open peer-gated PRs). The LIVE-DELTA DIVERGENCE (driftflight.com LIVE 76.2 C / +30.1,
+  transactability 87.5→62.5) is unchanged from Cycle 126 — still queued P0 [LOCAL] + flagged for the
+  ~16:1xZ digest. No Slack (score-neutral, off scoring path, not sensitive-class; 12:12Z is not the
+  first-after-16:00 digest — that is ~16:1xZ Jul-31, which also reports the runner-recovery + the
+  live-delta divergence).
+  Next COVERAGE — the metered_api bank has eight fully-arced signals + a metamorphic grid now spanning the
+  listing/endpoint ORDER axis on BOTH poles (retail 125 + machine 129). A COVERAGE increment would add a
+  ninth metered_api leg or deepen a thinner archetype's evidence on a committed fixture. Thin archetypes
+  service_booking / data_retrieval remain [LOCAL]-blocked (no committed fixture claims either). OR, if the
+  next verify artifact still shows the driftflight.com transactability drop, the [LOCAL] canonical
+  re-capture is the higher-leverage item.)
   (Cycle 128 READOUT — completed the EIGHTH metered_api COVERAGE→TRUTH→READOUT arc: added ONE
   capability-worded, vendor-neutral methodology `<p>` ("Consuming the output as it streams") to
   `_write_methodology_page` (`asrs/scorecard.py`), guarded by `test_methodology_documents_streaming_response`

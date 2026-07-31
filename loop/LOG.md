@@ -3,6 +3,65 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 132 — 2026-07-31T15:1xZ — READOUT (branch+PR+self-merge, display+tests-only/off-scoring-path/score-neutral)
+
+**What/why.** Surfaced Cycle 130's `self-provisioning` metered_api signal in the public
+methodology prose — the READOUT leg CLOSING the ninth metered_api COVERAGE→TRUTH→READOUT arc
+(130 signal → 131 relabel-invariance → 132 prose), mirroring free-trial (114/115/116) and
+streaming-response (126/127/128). Added one capability-worded, vendor-neutral paragraph
+**"Onboarding without a human"** to `_write_methodology_page` (`asrs/scorecard.py`), placed
+after the api-auth ("Provisioning without a human") leg it complements: api-auth is how an
+agent PRESENTS a credential it already holds; self-provisioning is whether it can OBTAIN one
+at all with no human onboarding step. That gap was pinned in code + tests (130/131) but never
+surfaced in prose a critic can read — a reader could not learn WHY a metered API whose
+credentials only a human can issue is not agent-completable end-to-end however cleanly it
+documents auth/errors/async.
+
+**The paragraph.** (a) Frames it as obtaining access WITHOUT a human, positioned before the
+credential can be presented, and names the failure (a human must sign up on a dashboard → an
+autonomous agent stranded at the door). (b) Names the vendor-neutral agent-onboarding
+vocabulary the offering signal anchors on as open conventions (no signup, no human account
+creation, an agent provisioning its own identity, a self-provision path). (c) Keeps the
+signal's PRECISION honesty — recognizes ONLY the affirmative agentic path, never the OPPOSITE
+human one: a "sign up on the dashboard for an API key" instruction, a `401 No API key` error,
+and the pricing sense "no signup fees" are named as what the read rejects. (d) Says
+recognition keys on WHETHER A HUMAN MUST ONBOARD THE AGENT, not who runs the API, pinned by an
+identity-relabel executable regression test. (e) Stays honest about scope — diagnostic, off
+the scoring path, not a scored pillar.
+
+**Guard.** `test_methodology_documents_self_provisioning` in `tests/test_readout.py` (59→60),
+mirroring the api-auth / free-trial content-presence guards: matches the collapsed prose for
+the capability framing, the four onboarding conventions, the three OPPOSITE-path precision
+traps, and vendor-neutrality (no drift-flight/driftflight/replicate on the page).
+
+**Ship class + evidence.** Display + tests only, off the scoring path (`scoring.py` 0 offering
+refs) → score-neutral, NOT peer-gated. `git diff` over `asrs/scoring.py rubric/ fixtures/
+asrs/offering.py` EMPTY; `git diff --name-only` = `asrs/scorecard.py` + `tests/test_readout.py`.
+First duty: no open peer-gated PR (`list_pull_requests state=open` → `[]` at fire start). Cloud
+bridge blocks direct main push → branch `loop/self-provisioning-readout` + PR #113 + self-merge
+(squash 518bc94). Realigned main to origin/main after merge (`git reset --hard origin/main` →
+518bc94, verified prose present + readout 60/60 + replay 24/24 on merged main), deleted local
+branch. `tests/test_readout.py` 59→60; full suite green (22 files; `test_free_tier` 11/11 after
+`pip install -r requirements.txt`, environment-only). Canonical PAIR unchanged: replay guard
+24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7. INFRA HEALTHY (verify
+20260731T134541Z 13:45Z, ~1.5h old at fire, within 6h floor; no open peer-gated PRs).
+
+**LIVE-DELTA divergence — still standing, still off the scoring path.** No new verify artifact
+since 13:45Z (driftflight.com LIVE 76.2 C / +30.1 / transactability 62.5, confirmed across the
+08:52Z + 13:45Z crawls). In-cloud replay guard STILL 24/24 / +39.4 — the frozen regression
+signal is intact. Re-capture/re-baseline remains [LOCAL] and peer-gated. This fire (15:1xZ) is
+NOT the first-after-16:00 digest (~16:1xZ Jul-31), so no Slack this cycle; the digest will
+report the runner recovery + this persisting live-delta divergence.
+
+**Next hypothesis.** Rotate METHOD next (METHOD → COVERAGE → TRUTH → READOUT). The ninth
+metered_api arc is now complete on all three tracks. In-cloud COVERAGE/TRUTH frontier for new
+signals is [LOCAL]-blocked (physical_good fulfillment / service_booking / data_retrieval have
+no rich committed fixture that claims them — see the P1 fixture-capture item). A METHOD
+increment (a new metamorphic-invariance axis on an existing signal, e.g. a whitespace/casing
+or surface-dedup invariance, or a cross-signal precision-isolation guard) is the highest-leverage
+in-cloud unit. If the next verify still shows transactability 62.5, the [LOCAL] canonical
+re-capture rises in leverage.
+
 ## Cycle 131 — 2026-07-31T14:1xZ — TRUTH (branch+PR+self-merge, tests-only/off-scoring-path/score-neutral)
 
 **What/why.** Pinned Cycle 130's `self-provisioning` metered_api signal as

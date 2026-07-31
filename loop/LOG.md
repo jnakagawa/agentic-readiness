@@ -3,6 +3,73 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 119 — 2026-07-31T~02:1xZ — TRUTH (branch+PR+self-merge, tests-only/score-neutral)
+
+**What/why.** Pinned the Cycle-118 `content-provenance` signal (digital_good's
+authenticity leg) as **RELABEL-INVARIANT** — the TRUTH leg of the COVERAGE(118)→
+TRUTH arc, mirroring free-trial (114 signal → 115 relabel). This is the **tenth**
+leg of the signal-level relabel family (metered_api ×7 + digital_good's
+`output-license` + subscription's `free-trial` + this), and digital_good's SECOND
+relabel-pinned leg. WHY (capability): provenance is a property of the DELIVERABLE
+— an agent obtaining a render that carries embedded C2PA content credentials / a
+provenance record can verify the asset is genuine regardless of WHO vends it — so
+the recognition must be identity-invariant under a host relabel, or the score
+would credit the vendor's name rather than the deliverable's verifiable origin.
+
+**Why a synthetic surface (verified, not assumed).** The provenance vocabulary
+(C2PA / content credentials / records provenance) is **host-free by nature**. I
+measured this live on all five committed fixtures: content-provenance fires on the
+canonical pair's homepage / /docs / /pricing / /llms.txt surfaces with the host in
+NEITHER the quote window — even on the `agents.driftflight.com/*` surfaces the host
+sits only in the surface KEY, the C2PA quote is host-free. So a whole-fixture
+relabel would leave the provenance evidence byte-identical → the invariance would
+be VACUOUS (the exact free-trial-115 failure mode). The guard therefore scans a
+SYNTHETIC digital_good surface seating the host INSIDE the C2PA evidence (surface
+key prefix + adjacent to the phrase so it lands in the padded quote window,
+asserted non-vacuous: host ∈ surface AND ∈ quote), relabels the host end-to-end,
+and asserts identity-invariance — same match count (1), same host-normalized
+surface, quote still satisfies the live `content-provenance` regex, vendor host
+absent from all rewritten evidence.
+
+**Teeth.** A sibling distractor surface carrying only the bare-`provenance`/
+`credentials` senses the signal must REFUSE — art & wine provenance, "data
+provenance" (a data_retrieval concern), login "credentials", and the
+api.replicate-style "watermarking for provenance" hosted-MODEL-feature phrasing —
+fires ZERO content-provenance signals, proving the match keys on the
+content-authenticity STRUCTURE (C2PA / content credentials / a media-output
+provenance record), not the words "provenance"/"credentials". Near-miss host
+`acme-renders.example` (contains "render", a word in the "render provenance"
+alternative) never leaks a match.
+
+**Ship class.** Tests-only, off the scoring path (`scoring.py` imports no
+`offering` — grep-verified 0 refs) → score-neutral, NOT peer-gated. `git diff`
+over `asrs/ rubric/ fixtures/` EMPTY; `git diff --name-only` =
+`tests/test_offering_canonical.py` ONLY (+140). Cloud bridge blocks direct main
+push → branch loop/relabel-content-provenance-signal + PR #87 + self-merge (squash
+a8363d3; merged commit = exactly the one test file). First duty: no open
+peer-gated PR (`list_pull_requests` open = [] at fire start); realigned main to
+origin/main after merge, deleted the local branch.
+
+**Evidence / validation.** New `test_offering_relabel_invariance_content_provenance`
++ `_provenance_signals`; registered in `main()`. offering canonical guard 30→31;
+re-run on merged main 31/31. Full suite green (22 test files; test_free_tier 11/11
+after `pip install -r requirements.txt`, environment-only, nothing to commit).
+Canonical PAIR unchanged AND re-measured pre- and post-merge: replay guard 24/24,
+**46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7. RUNNER STILL GAPPED
+(verify_20260728T234102Z 23:41Z, ~50h old at the 02:11Z fire; cloud cannot repair
+the local machine; NOT a re-flag cycle — last first-after-16:00 digest was Cycle
+109 at 16:12Z, next is ~16:1xZ Jul-31).
+
+**Next hypothesis.** Focus rotates to READOUT next — CLOSE the content-provenance
+arc at its third layer: surface "verify the deliverable's provenance" in the
+`_write_methodology_page` methodology prose (the third full COVERAGE→TRUTH→READOUT
+arc on a non-metered_api archetype, after free-trial and output-license),
+capability-worded and vendor-neutral (C2PA / content credentials / a media-output
+provenance record as open conventions), with a `test_readout.py` content-presence
+guard. The in-cloud COVERAGE frontier stays NARROW (metered_api saturated;
+digital_good's two arcs now pinned; physical_good fulfillment / service_booking /
+data_retrieval all [LOCAL]-blocked on missing committed fixtures).
+
 ## Cycle 113 — 2026-07-30T~18:3xZ — METHOD (branch+PR+self-merge, tests-only/score-neutral)
 
 **What/why.** Added the **FOURTH metamorphic axis** on the offering classifier,

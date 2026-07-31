@@ -545,13 +545,14 @@ design in-cloud, execute locally.
      green (22 files); replay guard 24/24, 46.1 F / 85.5 B / +39.4; rubric v0.7. See LOG Cycle 116. The
      free-trial arc is now closed at ALL THREE layers (signal 114 / relabel 115 / readout 116). Next COVERAGE
      frontier on the thin archetypes (service_booking / data_retrieval) is [LOCAL]-blocked — see the P1 below. -->
-- **[in-cloud] frontier note (post-Cycle-118): digital_good's SECOND arc is OPEN** (content-provenance
-  SIGNAL landed Cycle 118; its TRUTH-relabel + READOUT legs are queued in-cloud above). The free-trial arc
-  (subscription) is CLOSED at all three layers (114/115/116); the generate-media (94/95/96) and output-license
-  (99/100 + prose) digital_good legs likewise. The in-cloud COVERAGE frontier is now NARROW: the CLAIMED
-  archetypes with rich committed evidence are metered_api (saturated, 7 arcs), digital_good (content-provenance
-  arc in progress), and subscription (free-trial arc closed) — a genuinely NEW capability leg on any of these
-  must fire non-vacuously on committed prose not already matched. physical_good (fulfillment legs),
+- **[in-cloud] frontier note (post-Cycle-119): digital_good's SECOND arc is at its READOUT leg** (content-
+  provenance SIGNAL landed Cycle 118, TRUTH-relabel Cycle 119; only the READOUT leg remains, queued in-cloud
+  above). The free-trial arc (subscription) is CLOSED at all three layers (114/115/116); the generate-media
+  (94/95/96) and output-license (99/100 + prose) digital_good legs likewise. The in-cloud COVERAGE frontier is
+  now NARROW: the CLAIMED archetypes with rich committed evidence are metered_api (saturated, 7 arcs),
+  digital_good (content-provenance arc — READOUT leg remaining), and subscription (free-trial arc closed) — a
+  genuinely NEW capability leg on any of these must fire non-vacuously on committed prose not already matched.
+  physical_good (fulfillment legs),
   service_booking (5 legs), and data_retrieval (5 legs) are ALL [LOCAL]-blocked — no committed fixture claims
   them richly enough (see the two P1 [LOCAL] fixture-capture items), so a signal/prose leg for them is
   unverifiable here (vacuous). Until a [LOCAL] fixture lands, prefer: finish the content-provenance arc
@@ -581,18 +582,34 @@ design in-cloud, execute locally.
   anchor on a genuine return/refund policy, not "returns to the homepage"; `track` on an order, not a music
   track. Off the scoring path, score-neutral.
 
-- **[TRUTH → READOUT, in-cloud] complete the content-provenance arc** (from Cycle 118 COVERAGE; the next two
-  legs of the digital_good `content-provenance` arc, mirroring free-trial 114→115→116). TRUTH: pin
-  content-provenance as RELABEL-INVARIANT — extend the signal-level relabel family (metered_api ×7,
-  digital_good ×1 output-license, subscription ×1 free-trial) to digital_good's SECOND leg, in
-  `tests/test_offering_canonical.py`. Provenance evidence is host-free by nature (C2PA / content-credentials /
-  "records provenance"), so — like free-trial (115), not output-license (99) — the guard likely needs a
-  SYNTHETIC subscription/digital surface seating the host INSIDE the provenance evidence to be non-vacuous,
-  then assert identity-invariance under end-to-end relabel + TEETH (a bare-"provenance" distractor firing
-  ZERO). READOUT: surface "verify the deliverable's provenance at $0" in the public methodology prose
-  (`_write_methodology_page`, `asrs/scorecard.py`) with a content-presence guard in `tests/test_readout.py`,
-  after the digital_good "Owning the deliverable" (output-license) paragraph. Both off the scoring path,
-  score-neutral, NOT peer-gated.
+<!-- TRUTH HALF DONE 2026-07-31T~02:1xZ (Cycle 119, TRUTH, branch+PR+self-merge, tests-only/score-neutral):
+     "pin content-provenance as RELABEL-INVARIANT" SHIPPED. `test_offering_relabel_invariance_content_provenance`
+     + `_provenance_signals` in `tests/test_offering_canonical.py` (30→31) extend the signal-level relabel family
+     to digital_good's SECOND leg (tenth leg overall: metered_api ×7 + output-license + free-trial + this).
+     VERIFIED live that content-provenance evidence (C2PA / content credentials / records provenance) is host-FREE
+     on all five committed fixtures — the host never lands in the quote window (even on `agents.driftflight.com/*`
+     it sits only in the surface KEY) → a whole-fixture relabel would be VACUOUS (free-trial-115 failure mode). So
+     the guard scans a SYNTHETIC digital_good surface (host `acme-renders.example`) seating the host INSIDE the
+     C2PA evidence (surface-key prefix + padded quote window, asserted non-vacuous), relabels end-to-end, asserts
+     identity-invariance (same match count 1, same host-normalized surface, quote still matches the live regex,
+     host absent). TEETH: a bare-`provenance`/`credentials` distractor (art/wine/data provenance, login
+     credentials, api.replicate-style "watermarking for provenance" model-feature) fires ZERO. Off scoring path
+     (`scoring.py` 0 offering refs) → score-neutral, NOT peer-gated; git diff over `asrs/ rubric/ fixtures/`
+     EMPTY; PR #87 (squash a8363d3, merged commit = exactly the one test file). Replay guard 24/24, 46.1 F /
+     85.5 B / +39.4; rubric v0.7. See LOG Cycle 119. The READOUT half is the item below. -->
+- **[READOUT, in-cloud] CLOSE the content-provenance arc — the READOUT leg** (from Cycle 118 COVERAGE / Cycle
+  119 TRUTH; the third and final layer of the digital_good `content-provenance` arc, mirroring free-trial 116 +
+  output-license prose). Surface "verify the deliverable's provenance at $0" in the public methodology prose
+  (`_write_methodology_page`, `asrs/scorecard.py`) — a capability-worded, vendor-neutral `<p>` after the
+  digital_good "Owning the deliverable" (output-license) paragraph: frame an agent confirming a generated
+  render is genuine (C2PA content credentials / a media-output provenance record) before using it in a
+  provenance-aware pipeline; name the open conventions (C2PA / CAI Content Credentials / a media-output
+  provenance manifest) as open, never a vendor; keep the precision honesty (bare "provenance"/"credentials" —
+  art/wine/data provenance, login credentials — is no signal); honest scope (diagnostic, off the scoring path).
+  GUARD: `test_methodology_documents_content_provenance` in `tests/test_readout.py`, same content-presence shape
+  as the free-trial/test-mode/cancel-job guards. Display + tests-only, off the scoring path, score-neutral, NOT
+  peer-gated. This makes content-provenance the THIRD full COVERAGE→TRUTH→READOUT arc on a non-metered_api
+  archetype (after free-trial + output-license) — the natural next READOUT-track pick.
 
 <!-- DONE 2026-07-30T04:16Z (Cycle 97, METHOD, branch+PR+self-merge, tests-only/score-neutral):
      "Pin the digital_good DESCRIPTOR derivation as relabel/identity-invariant" SHIPPED. New guards in

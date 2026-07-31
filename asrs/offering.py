@@ -783,6 +783,56 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"|\b(?:content|media|image|output|asset|render)\s+provenance\b"
             r"|\bprovenance\s+(?:metadata|credentials?|records?|manifest)\b"
             r"|\brecords?\s+provenance\b", _F)),
+        # Output SPECIFICATION — the concrete dimensions of the generated
+        # deliverable an agent must REQUEST and can RELY ON: the maximum output
+        # RESOLUTION / pixel DIMENSIONS / ASPECT RATIO of the produced image /
+        # video / render. This is the "understand + specify the offer" leg of a
+        # digital good, and it is distinct from every existing digital_good signal:
+        # `generation` / `generate-media` / `generations` / `render` say WHAT is
+        # produced, `hosted-output` says WHERE it is delivered, `output-license`
+        # whether the agent may USE it, `content-provenance` whether the agent can
+        # TRUST it — NONE says the physical SHAPE of the deliverable the agent must
+        # parameterize its request with. An autonomous agent that cannot read the
+        # output-resolution contract either requests a size the API cannot produce
+        # (a failed or clipped generation) or gets a deliverable at the wrong
+        # resolution for its downstream use (a hero image delivered at thumbnail
+        # size), so a generation storefront that documents its output resolutions /
+        # dimensions is MORE agent-completable at the digital-good layer. Vendor-
+        # neutral output-format vocabulary (a `maxResolution` field, an output /
+        # render / print resolution in pixels, a WxH pixel dimension, an aspect
+        # ratio) — the same open-convention category as the media nouns already in
+        # this bank, never a vendor.
+        # PRECISION-CRITICAL: bare "\bresolution\b" is a false-positive minefield —
+        # "dispute resolution", a "New Year resolution", "DNS resolution", and — the
+        # trap this signal must dodge on a metered-API marketplace — a hosted MODEL's
+        # FEATURE description ("Super resolution", "Enhance image resolution" appear
+        # verbatim in api.replicate.com's committed /openapi.json; those describe what
+        # a hosted MODEL does, not a deliverable the storefront itself vends, and must
+        # NOT conjure a digital_good claim on a metered_api-only site). A SCREEN /
+        # MONITOR / DISPLAY resolution is the viewer's hardware, not the deliverable's
+        # spec, and must not fire either. So NEVER match a bare "resolution": require
+        # the `maxResolution` output-spec KEY, a `print` resolution, a resolution
+        # expressed as an explicit PIXEL value (`resolution up to 4096px`) but NOT
+        # when preceded by screen/monitor/display, an OUTPUT / RENDER / CANVAS /
+        # GENERATION / TARGET resolution-or-dimensions phrase, a WxH pixel dimension
+        # (`1024x1024 px`), or an `aspect ratio`. The dispute/New-Year/DNS senses, the
+        # Super-/image-resolution model-feature phrasing, and the screen/monitor/
+        # display hardware senses trip none of these. Fires non-vacuously on BOTH
+        # canonical domains (the /docs models block's `"maxResolution":"1024px|2048px|
+        # 4096px"` + the homepage "gallery for hero and print resolution") — both
+        # ALREADY claim digital_good, so it deepens evidence without adding or
+        # reordering any archetype (score-neutral) — and on ZERO of the metered-api
+        # (api.replicate.com, whose "Super resolution" / "Enhance image resolution"
+        # model features are correctly dodged), retail (books.toscrape.com), or null
+        # (example.com) fixtures, so it can never CONJURE a digital_good claim on a
+        # site that does not already make one. The classifier is off the scoring path.
+        ("output-resolution", re.compile(
+            r"\bmaxResolution\b"
+            r"|\bprint\s+resolutions?\b"
+            r"|(?<!screen\s)(?<!monitor\s)(?<!display\s)\bresolutions?\s*(?:up\s+to\s+|of\s+|:\s*|=\s*)?\d{2,5}\s?(?:px|pixels?)\b"
+            r"|\b(?:output|render|canvas|generation|target)\s+(?:resolutions?|dimensions?)\b"
+            r"|\b\d{3,5}\s?[x×]\s?\d{3,5}\s?(?:px|pixels?)\b"
+            r"|\baspect[- ]ratios?\b", _F)),
     ],
     "physical_good": [
         # PRECISION-CRITICAL: bare "ship" is metaphorical on many agent-native

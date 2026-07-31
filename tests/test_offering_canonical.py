@@ -3990,6 +3990,7 @@ _ISOLATION_EVIDENCE: dict[str, str] = {
     "hosted-output": "we return hosted output URLs",
     "output-license": "you own the output you make",
     "content-provenance": "each asset carries content credentials",
+    "output-resolution": "the maximum output resolution is 4096px",
     # physical_good
     "free-shipping": "enjoy free shipping",
     "shipping-noun": "choose a shipping method",

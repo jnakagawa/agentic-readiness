@@ -1866,6 +1866,97 @@ def test_content_provenance_fires_on_real_captured_surfaces():
     print("  ok: the 'watermarking for provenance' model-feature does NOT fire content-provenance (real-data precision)")
 
 
+def test_output_resolution_precision_synthetic():
+    # Output SPECIFICATION is the "understand + specify the offer" leg of a digital
+    # good — the concrete output RESOLUTION / pixel DIMENSIONS / ASPECT RATIO of the
+    # generated deliverable an agent must request and can rely on. An agent that can
+    # read the output-resolution contract requests a producible size at the right
+    # resolution for its downstream use, so it must claim digital_good via the new
+    # output-resolution signal. Each POSITIVE is real output-spec vocabulary; each
+    # NEGATIVE is resolution-SHAPED noise that must NOT fire it (the precision traps:
+    # a SCREEN / MONITOR / DISPLAY hardware resolution, the "Super resolution" /
+    # "Enhance image resolution" MODEL-FEATURE phrasing on a metered-API marketplace,
+    # and the dispute / New-Year / DNS senses of "resolution").
+    positives = {
+        "maxResolution field": 'The models endpoint returns {"maxResolution": "4096px"}.',
+        "output resolution px": "The maximum output resolution is 4096px.",
+        "print resolution": "Use the gallery preset for hero and print resolution.",
+        "render dimensions": "Render dimensions up to 2048px are supported.",
+        "output dimensions": "Choose your output dimensions before generating.",
+        "resolution up to px": "Generations are available at resolution up to 4096px.",
+        "wxh px": "Every export ships at 1024x1024 px.",
+        "aspect ratio": "Pick an aspect ratio of 16:9 for the render.",
+        "canvas dimensions": "Set the canvas dimensions for the generated frame.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("studio.test", {"homepage": text})
+        assert prof.claims("digital_good"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "digital_good"
+            for s in c.signals
+        }
+        assert "output-resolution" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real output-spec phrasings each fire output-resolution")
+
+    negatives = {
+        "screen resolution": "Check your screen resolution of 1920px before starting.",
+        "monitor resolution": "Set your monitor resolution to 2560px.",
+        "display resolution": "The display resolution is 4096px on this laptop.",
+        "super resolution model": "Super resolution upscaling improves old photos.",
+        "enhance image resolution": "The model can enhance image resolution automatically.",
+        "dispute resolution": "See our dispute resolution process for chargebacks.",
+        "new year resolution": "Make a New Year resolution to ship more.",
+        "bare resolution": "We admire your resolution and commitment.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "output-resolution" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} resolution-shaped noise strings do NOT fire output-resolution (precision)"
+    )
+
+
+def test_output_resolution_fires_on_real_captured_surfaces():
+    # Real-evidence, NON-VACUOUS validation of output-resolution — it fires on GENUINE
+    # output-specification prose captured live from a real generation storefront, and
+    # does NOT fire on a DIFFERENT real storefront's "Super resolution" / "Enhance
+    # image resolution" MODEL-FEATURE trap.
+    #
+    # BOTH canonical domains carry captured output-spec prose: the /docs models block
+    # publishes each tier's `"maxResolution": "1024px|2048px|4096px"` and the homepage
+    # says "gallery for hero and print resolution". The storefront already claims
+    # digital_good, so this DEEPENS its evidence without changing the claimed set
+    # (score-neutrality pinned byte-for-byte by tests/test_offering_canonical.py;
+    # classification is off the scoring path).
+    for domain in ("driftflight.com", "drift-flight.org"):
+        docs = _fixture_entry_text(domain, "/docs")
+        assert "maxResolution" in docs, f"{domain} /docs lost its maxResolution output-spec"
+        prof = classify_offering(domain, {"/docs": docs})
+        assert prof.claims("digital_good"), (domain, prof.archetypes)
+        dg = next(c for c in prof.claimed if c.archetype == "digital_good")
+        res = [s for s in dg.signals if s.label == "output-resolution"]
+        assert res, (domain, {s.label for s in dg.signals})
+        assert "resolution" in res[0].quote.lower(), res[0].quote
+        print(f"  ok: output-resolution fires on REAL captured {domain} /docs — quote: {res[0].quote!r}")
+
+    # Precision on real noise: api.replicate.com — a metered_api-ONLY storefront (pinned
+    # by test_machine_surface_openapi_storefront) — hosts models whose committed OpenAPI
+    # spec describes "Super resolution" and "Enhance image resolution" FEATURES. Those are
+    # model features, not a deliverable the storefront itself vends at a documented
+    # output resolution, so output-resolution must NOT fire — the spec must not gain a
+    # spurious digital_good.
+    spec = _fixture_entry_text("api.replicate.com", "/openapi.json")
+    assert "resolution" in spec.lower(), "fixture lost its resolution model-feature trap"
+    spec_prof = classify_offering("api.replicate.com", {"/openapi.json": spec})
+    spec_labels = {s.label for c in spec_prof.claimed for s in c.signals}
+    assert "output-resolution" not in spec_labels, spec_labels
+    assert not spec_prof.claims("digital_good"), spec_prof.archetypes
+    print("  ok: the 'Super/Enhance image resolution' model-features do NOT fire output-resolution (real-data precision)")
+
+
 def test_pagination_metering_precision_synthetic():
     # Cursor / collection PAGINATION — how an agent retrieves a MULTI-PAGE result
     # set (a list endpoint returns one page plus a cursor / a `next`/`previous` page
@@ -2417,6 +2508,8 @@ def main() -> int:
         test_output_license_fires_on_real_captured_surfaces,
         test_content_provenance_precision_synthetic,
         test_content_provenance_fires_on_real_captured_surfaces,
+        test_output_resolution_precision_synthetic,
+        test_output_resolution_fires_on_real_captured_surfaces,
         test_pagination_metering_precision_synthetic,
         test_pagination_fires_on_real_captured_openapi,
         test_cancel_job_metering_precision_synthetic,

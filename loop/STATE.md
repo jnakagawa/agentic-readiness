@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 134
+- Cycle counter: 135
 - Started: 2026-07-23 (UTC)
 - RUNNER RECOVERED at 2026-07-31T09:12Z (Cycle 126) — the ~56h stall (first breached Cycle 76 06:12Z)
   CLEARED. Newest artifact `runs/local/verify_20260731T085248Z.json` (08:52Z Jul-31) carries
@@ -36,9 +36,44 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: METHOD/TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 134 was
-  COVERAGE, so Cycle 135 is TRUTH — the natural next unit is the TRUTH leg of the new
-  webhook-verification arc, its relabel-invariance guard)
+- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 135 was
+  TRUTH, so Cycle 136 is READOUT — the natural next unit is the READOUT leg of the
+  webhook-verification arc: one capability-worded, vendor-neutral methodology paragraph in
+  `_write_methodology_page` (`asrs/scorecard.py`) after the async-job / streaming-response prose,
+  framing trusting the async callback (failure = an agent acts on a forged "job complete" webhook),
+  guarded by a content-presence test in `tests/test_readout.py`. Off scoring path, score-neutral,
+  NOT peer-gated — see the P1 backlog item.)
+  (Cycle 135 TRUTH — shipped the relabel-invariance guard for Cycle 134's `webhook-verification`
+  signal: `test_offering_relabel_invariance_webhook_verification` in `tests/test_offering_canonical.py`
+  (39→40). Pins the tenth metered_api signal as identity-invariant — the async-callback TRUST claim
+  keys on the webhook-AUTHENTICITY structure (a webhook signature / a signing secret FOR a webhook /
+  verifying inbound webhooks), never the vendor host. SYNTHETIC-surface guard (like free-trial 115 /
+  self-provisioning 131): the real api.replicate.com webhook-verification quote is HOST-FREE (host in
+  neither the `/openapi.json` surface key nor the fired quote window — verified live), so a
+  whole-fixture relabel would be VACUOUS; the synthetic surface seats the host inside BOTH the surface
+  key AND the padded quote window so the relabel genuinely rewrites the classifier's input. Asserts
+  same match count (1) / same host-normalized surface / relabeled quote still matches the live regex /
+  host absent under end-to-end relabel. TEETH: signature-shaped distractor prose (brand signature /
+  x402 verify-locally / signed-URL signing secret / register-a-webhook-URL / contract signature) fires
+  ZERO webhook-verification — match keys on webhook-authenticity, not the words "signature"/"signing
+  secret". SHIP CLASS: tests-only, off scoring path (`scoring.py` 0 offering refs) → score-neutral,
+  NOT peer-gated. `git diff --name-only` = `tests/test_offering_canonical.py` ONLY; git diff over
+  `asrs/ rubric/ fixtures/` EMPTY. First duty: no open peer-gated PR (`[]` at fire start). Also
+  realigned the STALE local `main` branch ref (had diverged 50/50 from origin/main — a leftover from
+  the detached-HEAD checkout) via `git reset --hard origin/main` before starting. Cloud bridge blocks
+  direct main push → branch loop/webhook-verification-relabel-invariance + PR #119 + self-merge (squash
+  7438af8; realigned main → 7438af8, verified guard present + offering-canonical 40/40 + replay 24/24
+  on merged main, deleted local+remote branch). Full suite green (22 files; test_free_tier 11/11 after
+  `pip install -r requirements.txt`, environment-only). Canonical PAIR unchanged: replay guard 24/24,
+  46.1 F / 85.5 B / +39.4, 0 replay-miss; offering-canonical 40/40; rubric v0.7. INFRA HEALTHY (verify
+  20260731T134541Z 13:45Z, ~4.5h old at 18:12Z fire, within 6h floor; no open peer-gated PRs).
+  LIVE-DELTA divergence unchanged — no new verify since 13:45Z (driftflight.com LIVE 76.2 C / +30.1 /
+  transactability 62.5 across two crawls); in-cloud replay guard STILL 24/24 / +39.4, off scoring path;
+  re-capture is [LOCAL]/peer-gated. No Slack (score-neutral, off scoring path, not sensitive-class;
+  18:1xZ is NOT the first-after-16:00 digest — Cycle 133 at 16:1xZ already sent today's). Next READOUT
+  — the webhook-verification arc's methodology paragraph, closing a full COVERAGE→TRUTH→READOUT arc.
+  If the next verify still shows transactability 62.5, the [LOCAL] canonical re-capture rises in
+  leverage.)
   (Cycle 134 COVERAGE — added the TENTH metered_api capability leg to the offering classifier
   (`asrs/offering.py`): `webhook-verification` — whether an agent can TRUST that an inbound async
   callback is GENUINELY from the API rather than a forged/spoofed webhook (a webhook signing

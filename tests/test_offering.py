@@ -2052,6 +2052,108 @@ def test_cancel_job_fires_on_real_captured_openapi():
     print("  ok: the retail HTML 'next' catalog link does NOT fire pagination (real-data precision)")
 
 
+def test_streaming_response_metering_precision_synthetic():
+    # STREAMING response delivery — how an agent consumes output INCREMENTALLY over
+    # the OPEN connection as it is produced (token-by-token generation, progressive
+    # job output), the IN-BAND sibling of async-job. A metered API that documents a
+    # streaming / server-sent-events flow is more agent-completable, so it claims
+    # metered_api via the new streaming-response signal. Each POSITIVE is real,
+    # vendor-neutral streaming vocabulary; each NEGATIVE is streaming-SHAPED noise
+    # that must NOT fire it (the precision traps: an `application/octet-stream`
+    # binary-download MIME type, the Shanghai Stock Exchange / "sum of squared
+    # errors" (SSE) acronym collisions, a live stream, the bloodstream, a stream of
+    # consciousness, downstream/upstream).
+    positives = {
+        "server-sent events": "Request a URL to receive streaming output using server-sent events (SSE).",
+        "stream the output": "An event source to stream the output of the prediction via API.",
+        "event-stream media": "Responses use the text/event-stream media type for incremental delivery.",
+        "streaming api": "Use the streaming API to read tokens as they are produced.",
+        "stream tokens": "The endpoint can stream tokens back as the model generates them.",
+        "streaming responses": "Enable streaming responses to consume partial output early.",
+        "via SSE": "Consume the incremental output via SSE from the events endpoint.",
+        "SSE stream noun": "Open an SSE stream to receive tokens live.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("metered.test", {"homepage": text})
+        assert prof.claims("metered_api"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "metered_api"
+            for s in c.signals
+        }
+        assert "streaming-response" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real streaming/SSE phrasings each fire streaming-response")
+
+    negatives = {
+        "octet-stream mime": "The content / MIME type for the file (defaults to application/octet-stream).",
+        "live stream": "Watch our product launch live stream this Friday at noon.",
+        "stock exchange sse": "The Shanghai Stock Exchange (SSE) composite index rose 2% today.",
+        "sum squared errors": "We minimize the SSE (sum of squared errors) during training.",
+        "bloodstream": "Absorbed directly into the bloodstream within minutes.",
+        "stream of consciousness": "The novel is written in a stream of consciousness style.",
+        "downstream": "This affects downstream services and upstream providers.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "streaming-response" not in labels, (name, labels, prof.archetypes)
+    # The acronym-collision negatives must not even CONJURE a metered_api claim —
+    # a bare "SSE" on a stock-exchange page would be worse than noise here.
+    for name in ("stock exchange sse", "sum squared errors"):
+        prof = classify_offering("noise.test", {"homepage": negatives[name]})
+        assert not prof.claims("metered_api"), (name, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} streaming-shaped noise strings do NOT fire streaming-response (precision)"
+    )
+
+
+def test_streaming_response_fires_on_real_captured_openapi():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the streaming-response signal fires on
+    # the GENUINE streaming contract captured live from a real machine-surface
+    # storefront — api.replicate.com's /openapi.json documents a `stream` field whose
+    # description reads "receive streaming output using server-sent events (SSE)" and
+    # "An event source to stream the output of the prediction", captured verbatim in
+    # the committed fixture. Run the REAL discovery path (from_fixture ->
+    # discover_offering) so the signal is exercised exactly as a live crawl would, the
+    # same real-data non-vacuity move test_cancel_job_fires_on_real_captured_openapi
+    # makes.
+    #
+    # SCORE-NEUTRAL by construction: api.replicate.com already claims ONLY metered_api
+    # (its strongest and only archetype), so a streaming contract on its spec can only
+    # deepen that claim's evidence — never add an archetype or reorder. The classifier
+    # is off the scoring path; the canonical pair (whose surfaces document no streaming
+    # flow) is unchanged (streaming-response fires on neither driftflight surface —
+    # pinned by tests/test_offering_canonical.py and the canonical replay guard).
+    spec = _fixture_entry_text("api.replicate.com", "/openapi.json")
+    assert "server-sent events" in spec.lower(), "fixture /openapi.json lost its streaming contract"
+
+    ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "api.replicate.com.json"))
+    prof = offering.discover_offering(ctx)
+
+    assert prof.claims("metered_api"), prof.archetypes
+    metered = next(c for c in prof.claimed if c.archetype == "metered_api")
+    sr = [s for s in metered.signals if s.label == "streaming-response"]
+    assert sr, {s.label for s in metered.signals}
+    quote = sr[0].quote.lower()
+    assert "stream" in quote or "sse" in quote or "server-sent" in quote, sr[0].quote
+    print(f"  ok: streaming-response fires on REAL captured OpenAPI contract — quote: {sr[0].quote!r}")
+
+    # NON-VACUOUS + score-neutral: the machine storefront's claimed SET is exactly
+    # [metered_api] — the streaming contract deepened the metered_api evidence without
+    # adding a spurious archetype (no false digital_good from "output"/"generation"
+    # prose reaching a wrong bank).
+    assert prof.archetypes == ["metered_api"], prof.archetypes
+    print("  ok: streaming-response evidence does NOT change the claimed set (score-neutral)")
+
+    # Precision on real noise: the SAME spec carries `application/octet-stream` (a
+    # binary-download MIME type, NOT a streaming RESPONSE). The streaming-response
+    # quote must be a genuine streaming phrase, never the octet-stream MIME — proof the
+    # signal keys on the streaming CONTRACT, not on any "stream" substring.
+    assert "octet-stream" not in quote, sr[0].quote
+    print("  ok: the octet-stream binary MIME does NOT masquerade as streaming (real-data precision)")
+
+
 def main() -> int:
     tests = [
         test_api_storefront_claims_agent_native_not_physical,
@@ -2099,6 +2201,8 @@ def main() -> int:
         test_pagination_fires_on_real_captured_openapi,
         test_cancel_job_metering_precision_synthetic,
         test_cancel_job_fires_on_real_captured_openapi,
+        test_streaming_response_metering_precision_synthetic,
+        test_streaming_response_fires_on_real_captured_openapi,
         test_free_trial_subscription_precision_synthetic,
         test_free_trial_fires_on_real_captured_subscription_prose,
         test_priced_listing_precision_synthetic,

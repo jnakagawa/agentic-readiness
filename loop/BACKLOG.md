@@ -503,6 +503,19 @@ design in-cloud, execute locally.
 
 ## P1
 
+- **Complete the `webhook-verification` arc — the TRUTH + READOUT legs** (in-cloud, from Cycle 134's
+  COVERAGE ship). Cycle 134 added the tenth metered_api signal `webhook-verification` (offer-side
+  COVERAGE). Two in-cloud follow-ups mirror the prior nine arcs: (a) TRUTH — a relabel-invariance
+  guard `test_offering_relabel_invariance_webhook_verification` in `tests/test_offering_canonical.py`
+  (mirror of self-provisioning 131 / streaming-response 127 / free-trial 115): under a whole-host
+  relabel the webhook-authenticity claim keeps the SAME match count, SAME host-normalized surface,
+  quote STILL matching the live regex, host absent — with TEETH from a synthetic surface seating the
+  host inside the webhook-verification evidence if the real quote is host-free; (b) READOUT — one
+  capability-worded, vendor-neutral paragraph in `_write_methodology_page` (`asrs/scorecard.py`)
+  after the async-job / streaming-response prose, framing trusting the async callback (failure = an
+  agent acts on a forged "job complete" webhook), guarded by a content-presence test in
+  `tests/test_readout.py`. Both off the scoring path, score-neutral, NOT peer-gated.
+
 - **[LOCAL] Capture a fixture that CLAIMS service_booking and/or data_retrieval** (COVERAGE enabler, from
   Cycle 114's audit). The two weakest offering archetypes — `service_booking` (5 legs: book / appointment /
   reservation / schedule / availability) and `data_retrieval` (5 legs: enrich / dataset / lookup /

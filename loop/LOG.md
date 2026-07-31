@@ -3,6 +3,68 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 134 — 2026-07-31T17:1xZ — COVERAGE (branch+PR+self-merge, off-scoring-path/score-neutral)
+
+**What/why.** Added the TENTH capability leg to the `metered_api` archetype in the offering
+classifier (`asrs/offering.py`): **`webhook-verification`** — whether an agent can TRUST that
+an inbound async callback is GENUINELY from the API rather than a forged/spoofed webhook (a
+webhook signing secret, a webhook signature, verifying inbound webhook requests). This is the
+security/TRUST sibling of the existing `async-job` signal: `async-job` captures that a webhook
+DELIVERY channel EXISTS; `webhook-verification` captures whether the agent can AUTHENTICATE
+what arrives on it. An autonomous agent that acts on an UNVERIFIED "job complete" webhook can be
+tricked by a spoofed callback into treating fabricated output as real — or releasing a payment —
+so a documented webhook-verification contract is MORE agent-completable, and it dovetails with
+ASRS's own $0-only capital-safety ethos (never act/pay on a forged callback). Distinct from every
+existing metered_api leg (`async-job` = the channel EXISTS; `api-auth` = how YOU present
+OUTBOUND credentials; `error-contract` = how a failed call recovers) — NONE said how an agent
+verifies an INBOUND webhook is authentic.
+
+**Precision.** Never matches a bare `signature`/`signing secret` — the false-positive minefield
+present in the very fixtures we validate on: the canonical pair's marketing "your palette, your
+signature look", the x402 PAYMENT-proof "ZeroClick verifies the signature locally" (a settlement
+signature, not a webhook), api.replicate.com's Files API SIGNED-URL "signing secret" + `name:
+signature` query param (URL signing, not a webhook), a webhook that only EXISTS (`async-job`'s
+turf), and generic contract/digital-signature senses. The token must NAME a webhook (a `webhook
+signature` / `X-Webhook-Signature`, a `signing secret for/of the ... webhook`, a `verify ...
+webhook`, or `webhook requests/events/payloads are coming/authentic/signed/verified`). Verified:
+6 synthetic positives fire, 6 signature/signing-shaped noise strings do NOT.
+
+**Non-vacuous + score-neutral.** Fires on the real captured `api.replicate.com/openapi.json`
+(the `/webhooks/default/secret` endpoint's "Get the signing secret for the default webhook
+endpoint. This is used to verify that webhook requests are coming from ...") and on ZERO of the
+canonical-pair / retail (books.toscrape.com) / null (example.com) fixtures. api.replicate.com
+ALREADY claims metered_api (its only archetype) → deepens evidence without adding or reordering
+any archetype. Off the scoring path (`scoring.py` has 0 offering refs) → score-neutral, NOT
+peer-gated (same ship class as the prior nine metered_api arcs). `git diff` over
+`asrs/scoring.py rubric/ fixtures/` EMPTY; `--name-only` = `asrs/offering.py` +
+`tests/test_offering.py` ONLY.
+
+**Evidence.** `tests/test_offering.py` 52→54 (`test_webhook_verification_precision_synthetic`
++ `test_webhook_verification_fires_on_real_captured_openapi`, the precision + real-fixture
+read-live guard pair mirroring the cancel-job/streaming-response arcs). Full suite green (22
+files). First duty: no open peer-gated PR (`[]` at fire start). Cloud bridge blocks direct main
+push → branch loop/webhook-verification-signal + PR #117 + self-merge (squash a0bdb50; realigned
+main via `git reset --hard origin/main` → a0bdb50, verified signal present + offering 54/54 +
+replay 24/24 on merged main, deleted local branch).
+
+**Canonical pair.** Replay guard 24/24, drift-flight.org 46.1 F / driftflight.com 85.5 B /
+delta +39.4 UNCHANGED, 0 replay-miss; offering-canonical 39/39 (claimed sets unchanged); rubric
+v0.7. INFRA HEALTHY at fire: newest verify `runs/local/verify_20260731T134541Z.json` (13:45Z,
+~3.4h old, within the 6h floor). LIVE-DELTA divergence unchanged (no new verify since 13:45Z;
+driftflight.com LIVE 76.2 C / +30.1 / transactability 62.5 across two crawls) — still off the
+scoring path; the in-cloud replay guard stays the frozen regression signal until the [LOCAL]
+re-capture/re-baseline. No Slack (score-neutral, off scoring path, not sensitive-class; 17:1xZ is
+NOT first-after-16:00 — Cycle 133 at 16:1xZ already sent today's digest).
+
+**Next hypothesis.** METHOD next (rotate → TRUTH → READOUT to complete this arc). New-signal
+COVERAGE on the three unclaimed archetypes (physical_good / service_booking / data_retrieval)
+stays [LOCAL]-blocked (no committed fixture claims them; see the P1 fixture-capture). In-cloud
+METHOD frontier still open: the TRUTH leg of THIS arc is `webhook-verification`'s relabel-
+invariance guard (mirror of self-provisioning 131 / streaming-response 127), then the READOUT
+leg. Also unbuilt from Cycle 132's menu: cross-signal precision-isolation + surface-dedup
+invariance. If the next verify still shows transactability 62.5, the [LOCAL] canonical re-capture
+rises in leverage.
+
 ## Cycle 133 — 2026-07-31T16:1xZ — METHOD (branch+PR+self-merge, tests-only/off-scoring-path/score-neutral)
 
 **What/why.** Added the FIFTH metamorphic-invariance axis to the offering classifier's test

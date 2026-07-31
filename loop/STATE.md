@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 133
+- Cycle counter: 134
 - Started: 2026-07-23 (UTC)
 - RUNNER RECOVERED at 2026-07-31T09:12Z (Cycle 126) — the ~56h stall (first breached Cycle 76 06:12Z)
   CLEARED. Newest artifact `runs/local/verify_20260731T085248Z.json` (08:52Z Jul-31) carries
@@ -36,7 +36,45 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD/TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 134 was
+  COVERAGE, so Cycle 135 is TRUTH — the natural next unit is the TRUTH leg of the new
+  webhook-verification arc, its relabel-invariance guard)
+  (Cycle 134 COVERAGE — added the TENTH metered_api capability leg to the offering classifier
+  (`asrs/offering.py`): `webhook-verification` — whether an agent can TRUST that an inbound async
+  callback is GENUINELY from the API rather than a forged/spoofed webhook (a webhook signing
+  secret, a webhook signature, verifying inbound webhook requests). The security/TRUST sibling of
+  `async-job` (which captures that a webhook DELIVERY channel EXISTS): an agent that acts on an
+  UNVERIFIED "job complete" webhook can be tricked by a spoofed callback into treating fabricated
+  output as real or releasing a payment, so a documented webhook-verification contract is MORE
+  agent-completable (dovetails with the $0-only capital-safety ethos: never act/pay on a forged
+  callback). Precision-first: NEVER matches a bare `signature`/`signing secret` — the canonical
+  pair's marketing "signature look", the x402 payment-proof "verifies the signature locally",
+  api.replicate.com's Files API SIGNED-URL "signing secret"/`name: signature` query param, a
+  webhook that only EXISTS (`async-job`'s turf), and contract/digital signatures all dodged; the
+  token must NAME a webhook (6 positives fire / 6 signature-shaped noise strings do NOT). Fires
+  non-vacuously on the real captured api.replicate.com `/openapi.json` (`/webhooks/default/secret`
+  "verify that webhook requests are coming from ...") and on ZERO of the canonical-pair / retail /
+  null fixtures; api.replicate.com ALREADY claims metered_api (its only archetype) → deepens
+  evidence without adding/reordering any archetype. SHIP CLASS: off the scoring path (`scoring.py`
+  0 offering refs) → score-neutral, NOT peer-gated (same class as the prior nine metered_api arcs).
+  `git diff` over `asrs/scoring.py rubric/ fixtures/` EMPTY; `--name-only` = `asrs/offering.py` +
+  `tests/test_offering.py` ONLY. First duty: no open peer-gated PR (`[]` at fire start). Cloud
+  bridge blocks direct main push → branch loop/webhook-verification-signal + PR #117 + self-merge
+  (squash a0bdb50; realigned main via `git reset --hard origin/main` → a0bdb50, verified signal
+  present + offering 54/54 + replay 24/24 on merged main, deleted local branch). `test_offering.py`
+  52→54. Full suite green (22 files). Canonical PAIR unchanged: replay guard 24/24, 46.1 F / 85.5 B
+  / +39.4, 0 replay-miss; offering-canonical 39/39 (claimed sets unchanged); rubric v0.7. INFRA
+  HEALTHY (verify 20260731T134541Z 13:45Z, ~3.4h old at fire, within 6h floor; no open peer-gated
+  PRs). LIVE-DELTA divergence unchanged — no new verify since 13:45Z (driftflight.com LIVE 76.2 C /
+  +30.1 / transactability 62.5 across two crawls); in-cloud replay guard STILL 24/24 / +39.4, off
+  scoring path; re-capture is [LOCAL]/peer-gated. No Slack (score-neutral, off scoring path, not
+  sensitive-class; 17:1xZ is NOT the first-after-16:00 digest — Cycle 133 at 16:1xZ already sent
+  today's). Next TRUTH — the webhook-verification arc's relabel-invariance guard (mirror of
+  self-provisioning 131 / streaming-response 127), then its READOUT leg to complete a full
+  COVERAGE→TRUTH→READOUT arc. New-signal COVERAGE on the unclaimed archetypes stays [LOCAL]-blocked
+  (see P1 fixture-capture); other in-cloud METHOD frontier: cross-signal precision-isolation +
+  surface-dedup invariance (Cycle 132's still-unbuilt menu). If the next verify still shows
+  transactability 62.5, the [LOCAL] canonical re-capture rises in leverage.)
   (Cycle 133 METHOD — added the FIFTH metamorphic-invariance axis to the offering classifier's
   harness: TEXT-CASING INVARIANCE (`_assert_casing_invariance` + `_casing_struct` in
   `tests/test_offering_canonical.py`, 37→39). Uppercasing every surface body leaves the classified

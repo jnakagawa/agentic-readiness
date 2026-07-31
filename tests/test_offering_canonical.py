@@ -83,6 +83,7 @@ from asrs.offering import (  # noqa: E402
     ARCHETYPES,
     ArchetypeClaim,
     ArchetypeSignal,
+    classify_offering,
     discover_offering,
     strip_html,
 )
@@ -3923,6 +3924,195 @@ def test_offering_relabel_invariance_nonstorefront() -> None:
     )
 
 
+# ---------------------------------------------------------------------------
+# Cross-signal precision-ISOLATION matrix (METHOD, Cycle 137).
+#
+# Every relabel/precision guard above pins ONE signal against its OWN
+# false-positive minefield. This matrix pins the COMPLEMENTARY property across
+# the WHOLE signal bank at once: each signal's affirmative evidence must claim
+# EXACTLY its own archetype and leak into NO OTHER — no signal poaches a sibling
+# archetype's turf.
+#
+# Why cross-ARCHETYPE (not cross-signal within an archetype): a within-archetype
+# co-fire only DEEPENS the same claim (e.g. "pay-per-call" trips both `pay-per`
+# and `per-unit-rate`, both metered_api — harmless, strength is distinct-label
+# count). The SCORE-RELEVANT harm is a signal firing on a DIFFERENT archetype's
+# evidence, which CONJURES a false archetype claim — the site then gets probed
+# with an intent it never offered, polluting the completion means (the exact
+# battery-mismatch the offering-relative directive removes). This guard makes
+# that failure mode a per-cycle tripwire: broaden any regex until it starts
+# matching a sibling archetype's vocabulary and it fails loudly here.
+#
+# One minimal affirmative snippet per signal, drawn from that signal's OWN
+# vendor-neutral vocabulary. COMPLETENESS is asserted (below): the map must cover
+# exactly the live signal bank, so a newly added signal cannot escape the matrix.
+_ISOLATION_EVIDENCE: dict[str, str] = {
+    # metered_api
+    "post-endpoint": "POST https://api.example.com/v1/generate",
+    "qualified-api": "a REST API for developers",
+    "api-reference": "see the API reference for details",
+    "api-auth": "send the Authorization: Bearer token header",
+    "pay-as-you-go": "simple pay-as-you-go billing",
+    "pay-per": "you are billed pay-per-call",
+    "billed-per": "you are billed per invocation",
+    "per-unit-rate": "priced per token consumed",
+    "usage-based": "usage-based overage applies",
+    "rate-limited": "the endpoint is rate-limited to protect capacity",
+    "async-job": "poll for the outcome until it is ready",
+    "webhook-verification": (
+        "verify that webhook requests are authentic with the "
+        "webhook-signature header"
+    ),
+    "streaming-response": "responses arrive as server-sent events",
+    "error-contract": "on failure the body is application/problem+json",
+    "test-mode": "try calls safely in sandbox mode first",
+    "pagination": "walk results with cursor-based pagination",
+    "cancel-job": "you can cancel a running prediction at any time",
+    "self-provisioning": "an agent can provision its own identity, no sign-up",
+    "credit-metered": "each call spends credits remaining in your balance",
+    "tiered-volume": "committed-use volume discounts apply",
+    "x402": "the endpoint answers with HTTP 402",
+    "agent-payment-rail": "settle via x402 (usdc) on the base network",
+    # subscription
+    "subscription": "start a subscription today",
+    "per-month-price": "$29 per month",
+    "per-month": "billed monthly",
+    "recurring": "a recurring plan",
+    "annual-billing": "your billing cycle renews",
+    "seat-licensing": "$10 per seat per month",
+    "free-trial": "start a free trial",
+    # digital_good
+    "generation": "image generation for creators",
+    "generate-media": "generate an image from a prompt",
+    "generations": "your recent generations",
+    "render": "download the finished render",
+    "translation": "translate the passage",
+    "hosted-output": "we return hosted output URLs",
+    "output-license": "you own the output you make",
+    "content-provenance": "each asset carries content credentials",
+    # physical_good
+    "free-shipping": "enjoy free shipping",
+    "shipping-noun": "choose a shipping method",
+    "add-to-cart": "add to cart",
+    "stock": "in stock now",
+    "priced-listing": "24.99 in stock",
+    "fulfillment": "ships from our warehouse",
+    "sku-inventory": "manage inventory levels",
+    "returns": "see our return policy",
+    "physical-descriptor": "a physical product",
+    # service_booking
+    "book": "book a session online",
+    "appointment": "schedule appointments",
+    "reservation": "make a reservation",
+    "schedule": "schedule your visit",
+    "availability": "check availability",
+    # data_retrieval
+    "enrich": "we enrich your records",
+    "dataset": "download the dataset",
+    "lookup": "a phone lookup service",
+    "data-service": "a data feed for analysts",
+    "query-records": "query records in bulk",
+}
+
+
+def _signal_archetype() -> dict[str, str]:
+    """label -> archetype, over the live signal bank."""
+    return {
+        name: arch
+        for arch, sigs in _offering._SIGNALS.items()
+        for name, _ in sigs
+    }
+
+
+def test_cross_signal_archetype_isolation() -> None:
+    """No metered_api/subscription/... signal poaches a DIFFERENT archetype's turf.
+
+    For every signal in the live bank, its curated affirmative snippet is scored
+    through the REAL ``classify_offering`` path (a passthrough ``/llms.txt``
+    surface, so no HTML-stripping intervenes) and must:
+      (a) claim EXACTLY its own archetype — leaking into no other (the
+          cross-archetype isolation property that protects the claimed SET), and
+      (b) fire its OWN signal label — so the snippet genuinely exercises THIS
+          signal, not merely lands on the right archetype via some sibling
+          (non-vacuity: an affirmative that fired the wrong label would pass a
+          set-only check while proving nothing about the named signal).
+
+    COMPLETENESS is enforced: the evidence map must cover exactly the live signal
+    bank, so a future COVERAGE cycle that adds a signal cannot silently escape the
+    isolation matrix. The companion negative-control test proves the check has
+    teeth (a deliberately poaching snippet claims two archetypes and would fail
+    (a)), so this is isolation of a real, discriminating classifier — not a
+    degenerate always-one-archetype function.
+    """
+    print("test_cross_signal_archetype_isolation")
+    sig_arch = _signal_archetype()
+
+    # COMPLETENESS — the map covers exactly the live bank (no new signal escapes).
+    _check(
+        set(_ISOLATION_EVIDENCE) == set(sig_arch),
+        "isolation evidence covers exactly the live signal bank "
+        f"(missing {sorted(set(sig_arch) - set(_ISOLATION_EVIDENCE))}, "
+        f"extra {sorted(set(_ISOLATION_EVIDENCE) - set(sig_arch))})",
+    )
+
+    cross_leaks: list[str] = []
+    vacuous: list[str] = []
+    for label, arch in sig_arch.items():
+        snippet = _ISOLATION_EVIDENCE[label]
+        prof = classify_offering("iso.example", {"/llms.txt": snippet})
+        claimed = set(prof.archetypes)
+        fired = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == arch
+            for s in c.signals
+        }
+        if claimed != {arch}:
+            cross_leaks.append(f"{arch}/{label}: claimed {sorted(claimed)}")
+        if label not in fired:
+            vacuous.append(f"{arch}/{label}: fired {sorted(fired)}")
+
+    _check(
+        not cross_leaks,
+        "every signal's evidence claims ONLY its own archetype — no "
+        f"cross-archetype poaching (leaks: {cross_leaks})",
+    )
+    _check(
+        not vacuous,
+        "every signal's evidence fires its OWN label (non-vacuous affirmative) "
+        f"(misses: {vacuous})",
+    )
+    _check(
+        len(_ISOLATION_EVIDENCE) == len(sig_arch) >= 55,
+        f"full bank exercised ({len(sig_arch)} signals across "
+        f"{len(set(sig_arch.values()))} archetypes)",
+    )
+
+
+def test_cross_signal_isolation_negative_control() -> None:
+    """TEETH: a deliberately cross-archetype-poaching surface claims MORE than one.
+
+    If the isolation check could never fail, it would prove nothing. A surface
+    that mixes a physical_good phrase ("add to cart") with a metered_api one
+    ("billed per token") must classify to BOTH archetypes — so the isolation
+    assertion (claimed == a single archetype) genuinely discriminates, and a real
+    regex that started matching a sibling archetype's words would be caught.
+    """
+    print("test_cross_signal_isolation_negative_control")
+    prof = classify_offering("neg.example", {"/llms.txt": "add to cart, then billed per token"})
+    claimed = set(prof.archetypes)
+    _check(
+        {"physical_good", "metered_api"} <= claimed,
+        "a mixed-archetype surface claims BOTH physical_good and metered_api "
+        f"(got {sorted(claimed)}) — the isolation check has teeth",
+    )
+    _check(
+        len(claimed) >= 2,
+        f"the poaching surface trips >1 archetype ({sorted(claimed)}), so "
+        "single-archetype isolation is a falsifiable property",
+    )
+
+
 def main() -> int:
     tests = [
         test_canonical_org_offering,
@@ -3965,6 +4155,8 @@ def main() -> int:
         test_offering_relabel_invariance_retail,
         test_offering_relabel_invariance_nonstorefront,
         test_offering_relabel_negative_control,
+        test_cross_signal_archetype_isolation,
+        test_cross_signal_isolation_negative_control,
     ]
     failed = 0
     for t in tests:

@@ -3,6 +3,60 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 127 — 2026-07-31T10:12Z — TRUTH (branch+PR+self-merge, tests-only/score-neutral)
+
+**What/why.** Pinned `streaming-response` (the metered_api signal added Cycle 126) as
+RELABEL-INVARIANT — the EIGHTH signal-level relabel-invariance guard in the metered_api bank, after
+payment-rail (79), async-job (83), api-auth (87), error-contract (91), test-mode (103), pagination
+(107), and cancel-job (110). The incremental-delivery claim keys on the SSE / `text/event-stream` /
+streaming-endpoint DELIVERY CONTRACT a storefront documents — never on WHO published it — so it must
+be identity-invariant. This drops the whole-archetype machine relabel
+(`test_offering_relabel_invariance_machine`) a layer down to the specific "consume output as it
+streams" signal, completing the metered_api signal-level relabel family for every signal that landed
+through Cycle 126.
+
+**How (mirrors cancel-job/pagination model).** `test_offering_relabel_invariance_streaming_response`
+(`tests/test_offering_canonical.py` 34→35) replays api.replicate.com's captured `/openapi.json` (real
+evidence: "receive streaming output using server-sent events (SSE)"), asserts (a) the signal fires
+≥1× on real evidence, (b) the evidence is host-FREE (surface-presence not quote-anchored — the SSE/
+event-stream structure names no vendor, so non-vacuity anchors at the FIXTURE level: the host IS in
+the fixture surfaces, verified, so a whole-fixture relabel genuinely rewrites classifier input), then
+relabels the whole fixture host to the neutral `.test` domain and asserts the signal fires the SAME
+count (1), on the SAME host-normalized surface, each quote STILL matching the live streaming-response
+regex, vendor host absent everywhere. TEETH: base fires non-vacuously on real captured evidence; a
+dropped or migrated signal, or a host leaking into the quote, fails a specific assertion.
+
+**Evidence / validation.** Confirmed pre-flight: signal fires exactly 1× on the machine fixture and
+1× under relabel, host-free. Full suite green (22 files; test_offering_canonical 35/35,
+test_offering 52/52; test_free_tier 11/11 after `pip install -r requirements.txt`, environment-only).
+Canonical PAIR unchanged: replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric
+v0.7. Overall a/b = 46.1 / 85.5, delta +39.4 (frozen-fixture regression signal, intact).
+
+**Ship class.** Tests-only, off the scoring path (`scoring.py` 0 offering refs) → score-neutral, NOT
+peer-gated. `git diff` over `asrs/ rubric/ fixtures/` EMPTY; `--name-only` =
+`tests/test_offering_canonical.py` ONLY. First duty: no open peer-gated PR (`[]` at fire start).
+Cloud bridge blocks direct main push → branch `loop/streaming-response-relabel-invariance` + PR #103
++ self-merge (squash e8b1022; merged commit = exactly the one test file). Realigned main to
+origin/main after merge (`git reset --hard origin/main` → e8b1022, verified new test present + 35/35
++ 24/24 on merged main), deleted local branch.
+
+**Infra health.** Verify runner HEALTHY: newest `runs/local/verify_20260731T085248Z.json` (08:52Z,
+1h20m old at fire, well within the 6h floor); no open peer-gated PRs; last cycle's push landed
+(d1d0911). LIVE-DELTA DIVERGENCE (driftflight.com LIVE 76.2 C / +30.1 vs fixture 85.5 B / +39.4,
+transactability 87.5→62.5) still standing as recorded Cycle 126 — untouched this fire; the [LOCAL]
+verify item stays P0 and is flagged for the ~16:1xZ digest. No new artifact since 08:52Z (only one
+local fire between 08:52 and now).
+
+**No Slack** (score-neutral, off scoring path, not sensitive-class; 10:12Z is not the
+first-after-16:00 digest cycle — that is ~16:1xZ Jul-31).
+
+**Next hypothesis (READOUT).** Complete the streaming-response arc's third layer: add ONE
+capability-worded, vendor-neutral methodology `<p>` ("Consuming the output as it streams") to
+`_write_methodology_page`, guarded by a content-presence test in `test_readout.py` — the READOUT leg
+that closes the eighth metered_api COVERAGE→TRUTH→READOUT arc (COVERAGE 126 → TRUTH 127 → READOUT
+next). OR, if the live transactability drop persists in the next verify artifact, the [LOCAL]
+canonical re-capture is the higher-leverage TRUTH item.
+
 ## Cycle 126 — 2026-07-31T09:12Z — COVERAGE (branch+PR+self-merge, off-scoring-path/score-neutral)
 
 **What/why.** Added a NEW capability signal `streaming-response` to the offering classifier's

@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 126
+- Cycle counter: 127
 - Started: 2026-07-23 (UTC)
 - RUNNER RECOVERED at 2026-07-31T09:12Z (Cycle 126) — the ~56h stall (first breached Cycle 76 06:12Z)
   CLEARED. Newest artifact `runs/local/verify_20260731T085248Z.json` (08:52Z Jul-31) carries
@@ -33,7 +33,32 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 127 TRUTH — pinned `streaming-response` (the metered_api signal added Cycle 126) as
+  RELABEL-INVARIANT: `test_offering_relabel_invariance_streaming_response` (`tests/test_offering_canonical.py`
+  34→35), the EIGHTH signal-level relabel-invariance guard in the metered_api bank (after payment-rail 79 /
+  async-job 83 / api-auth 87 / error-contract 91 / test-mode 103 / pagination 107 / cancel-job 110). Mirrors
+  the cancel-job/pagination model: replays api.replicate.com's captured `/openapi.json` streaming evidence
+  ("receive streaming output using server-sent events (SSE)"), proves the evidence is host-FREE + the fixture
+  host is genuinely present (non-vacuity anchor at the fixture level), then relabels the whole fixture host to
+  the neutral `.test` domain and asserts the signal fires the SAME count (1), on the SAME host-normalized
+  surface, each quote STILL matching the live streaming-response regex, vendor host absent everywhere. TEETH:
+  fires non-vacuously on real captured evidence; a dropped/migrated signal or a leaked host fails a specific
+  assertion. SHIP CLASS: tests-only, off the scoring path (`scoring.py` 0 offering refs) → score-neutral, NOT
+  peer-gated. git diff over `asrs/ rubric/ fixtures/` EMPTY; --name-only = `tests/test_offering_canonical.py`
+  ONLY. First duty: no open peer-gated PR (`[]` at fire start). Cloud bridge blocks direct main push → branch
+  loop/streaming-response-relabel-invariance + PR #103 + self-merge (squash e8b1022; merged commit = exactly
+  the one test file). Realigned main to origin/main after merge (`git reset --hard origin/main` → e8b1022,
+  verified new test present + 35/35 + replay 24/24 on merged main), deleted local branch. Full suite green (22
+  files; test_free_tier 11/11 after `pip install -r requirements.txt`, environment-only). Canonical PAIR
+  unchanged: replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. INFRA HEALTHY (verify
+  20260731T085248Z 08:52Z, 1h20m old at fire, within 6h floor; no open peer-gated PRs). No Slack (score-neutral,
+  off scoring path, not sensitive-class; 10:12Z is not the first-after-16:00 digest — that is ~16:1xZ Jul-31).
+  Next READOUT — complete the eighth metered_api arc's third layer: add ONE capability-worded, vendor-neutral
+  methodology `<p>` ("Consuming the output as it streams") to `_write_methodology_page`, guarded by a
+  content-presence test in `test_readout.py` (COVERAGE 126 → TRUTH 127 → READOUT next). OR, if the live
+  transactability drop persists in the next verify artifact, the [LOCAL] canonical re-capture is the
+  higher-leverage item. Thin archetypes service_booking / data_retrieval remain [LOCAL]-blocked.)
   (Cycle 126 COVERAGE — added a NEW capability signal `streaming-response` to the offering classifier's
   metered_api signal bank (`asrs/offering.py`): how an agent consumes output INCREMENTALLY over the OPEN
   connection as it is produced (server-sent events / text/event-stream / a streaming API/endpoint that

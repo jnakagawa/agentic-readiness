@@ -477,6 +477,37 @@ API&rsquo;s identity end-to-end and confirms the streaming contract is still
 recognized, unchanged, with the vendor&rsquo;s name gone. This read is
 <b>diagnostic</b> &mdash; it names whether the offer lets an agent consume output
 as it is produced, <b>off the scoring path</b> &mdash; not a scored pillar.</p>
+<p><b>Trusting the async callback</b> is the <b>security sibling</b> of collecting
+an async job, and it is where an agent that acts on <b>what arrives</b> can be
+<b>deceived</b>. Where the async-job leg says a webhook <b>delivery channel
+exists</b> &mdash; a callback fires, the agent is notified a job is done &mdash;
+<b>nothing there says whether the agent can authenticate what lands on it</b>. An
+autonomous agent that acts on an <b>unverified &ldquo;job complete&rdquo;
+webhook</b> can be tricked by a <b>forged or spoofed callback</b> into <b>treating
+fabricated output as real</b>, or &mdash; worse &mdash; <b>releasing a payment</b>
+for work that never happened. So an offer that documents how an agent <b>verifies
+an inbound webhook is authentic</b> before acting on it is more agent-completable,
+and it dovetails with the same <b>$0-only capital-safety</b> ethos ASRS itself
+holds: never act, and never pay, on a forged callback. ASRS reads the documented
+verification contract as part of finishing the offer, keyed on vendor-neutral
+<b>webhook-security vocabulary</b> (a <b>webhook signature</b>, a <b>webhook
+signing secret</b> to verify inbound requests, an
+<code>X-Webhook-Signature</code> header, webhook requests that are <b>authentic</b>
+or <b>signed</b>), the same category of open convention as REST, GraphQL or
+OpenAPI. The read is <b>precision-guarded</b>: a <b>bare</b> <code>signature</code>
+or <code>signing secret</code> is <b>no signal</b> &mdash; a marketing
+&ldquo;signature look&rdquo;, a <b>settlement signature</b> a payment proof
+verifies locally, a <b>signed-URL</b> signing secret for file access, a <b>digital
+signature</b> on a contract, and a webhook that merely <b>exists</b> (the
+async-job leg&rsquo;s turf) must never trip it &mdash; so the phrasing must name a
+<b>webhook</b> whose authenticity is being verified, not the words
+&ldquo;signature&rdquo; or &ldquo;signing secret&rdquo; alone. Recognition keys on
+the <b>contract the API documents, not who published it</b>: that property is
+pinned by an <b>executable regression test</b> that relabels the API&rsquo;s
+identity end-to-end and confirms the verification contract is still recognized,
+unchanged, with the vendor&rsquo;s name gone. This read is <b>diagnostic</b>
+&mdash; it names whether the offer lets an agent trust an inbound callback before
+acting on it, <b>off the scoring path</b> &mdash; not a scored pillar.</p>
 <p><b>Aborting a runaway job</b> is the control leg of that same asynchronous
 contract, and it is where a metered API can quietly <b>bleed an agent&rsquo;s
 budget</b>: a long-running job &mdash; an image or video generation, a training

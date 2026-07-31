@@ -3,6 +3,73 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 130 — 2026-07-31T13:1xZ — COVERAGE (branch+PR+self-merge, off-scoring-path/score-neutral)
+
+**What/why.** Added a NINTH metered_api capability leg — the `self-provisioning` signal
+(`asrs/offering.py`) — capturing the PLAYBOOK capability lens's own words, **"provision
+without a human"**: whether an autonomous agent can OBTAIN API access with no signup, no
+human account creation, provisioning its OWN identity. It was UNCAPTURED by the bank
+despite being the load-bearing precondition for every other metered_api leg — an API
+whose credentials only a human can issue (a human signs up on a dashboard) is not
+agent-completable end-to-end no matter how cleanly it documents auth / rate-limits /
+errors / streaming. Distinct from every existing signal: `api-auth` is how you PRESENT
+credentials you ALREADY hold; `test-mode` is whether you can TRY the call safely; NONE
+says whether a HUMAN must onboard you to get credentials at all.
+
+**Capability wording / vendor-neutrality.** Vendor-neutral agent-onboarding vocabulary
+only — no signup / no human account creation / an agent provisions its own identity /
+self-provision — never a vendor or domain string (notably NOT "ZeroClick"; keys on the
+capability, not the rail that delivers it).
+
+**Precision (empirically verified on the committed fixtures).** The sharp trap is present
+verbatim in the fixtures: BOTH canonical domains carry "Human developers sign up on the
+dashboard for an API key" — the OPPOSITE, human-gated capability — and drift-flight.org's
+/docs 401 row reads "No API key, or the key is unknown or revoked" (an error, not a no-key
+capability). A naive `\bsign up\b` would invert the signal's meaning; a bare `no API key`
+would misread the 401. So NEVER matches a bare "sign up" or "no API key": requires the
+NEGATED onboarding (`no signup`/`no sign-up`, with a negative lookahead excluding the
+pricing sense "no signup fees/costs/charges"), an agent PROVISIONING ITS OWN IDENTITY, an
+explicit `self-provision`, or a `no human`/`without a human` signup/account/onboarding
+phrase. Empirical proof via the REAL discovery path: fires **6× on driftflight.com** (apex
+"free trial, no signup" heading + agents.driftflight.com "There is no signup and no API
+key … an autonomous agent can provision its own identity") and is **ABSENT on
+drift-flight.org** (whose ONLY signup prose is the human dashboard path) — the
+discovery-layer echo of the real capability gap — and **ZERO** on api.replicate.com (API
+key required), books.toscrape.com, example.com. So it can never CONJURE a metered_api
+claim on a site that does not already make one.
+
+**Ship class + evidence.** Signal-bank + tests only; off the scoring path (`scoring.py`
+imports no `offering` — grep-verified 0 refs) → score-neutral, NOT peer-gated (same class
+as every prior COVERAGE signal arc). `git diff` over `asrs/scoring.py rubric/ fixtures/`
+EMPTY; `git diff --name-only` = `asrs/offering.py` + `tests/test_offering.py`. Cloud
+bridge blocks direct main push → branch `loop/self-provisioning-signal` + PR #109 +
+self-merge (squash b6a1bb1; merged commit = exactly the two files). Realigned main to
+origin/main after merge (`git reset --hard origin/main` → b6a1bb1, verified signal present
++ offering 54/54 + replay 24/24 on merged main), deleted local branch. `tests/test_offering.py`
+52→54 (a synthetic precision test — 8 positives / 5 onboarding-shaped noise negatives incl.
+the human-signup-path + 401 traps — and a real-captured non-vacuous & score-neutral test
+firing on driftflight.com, ABSENT on drift-flight.org's human path, ABSENT on retail).
+Canonical offering guard 36/36; full suite green (22 files; `test_free_tier` 11/11 after
+`pip install -r requirements.txt`, environment-only). Canonical PAIR unchanged AND
+re-measured post-merge: replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss;
+claimed sets/order byte-identical on all 5 fixtures; rubric v0.7. INFRA HEALTHY (verify
+20260731T085248Z 08:52Z, 4.4h old at fire, within 6h floor; no open peer-gated PRs at fire
+start — `[]`). LIVE-DELTA divergence unchanged (driftflight.com LIVE 76.2 C / +30.1,
+transactability 87.5→62.5) — pre-existing [LOCAL] item, off the scoring path, unaffected by
+this change; still flagged for the ~16:1xZ digest.
+
+**Next hypothesis.** Rotate TRUTH next (the ninth metered_api COVERAGE→TRUTH→READOUT arc).
+TRUTH leg: pin `self-provisioning` as RELABEL-INVARIANT — extend the signal-level relabel
+family (metered_api ×8 + digital_good output-license/content-provenance + subscription
+free-trial) to this ninth metered_api leg. The self-provisioning evidence is host-free by
+nature (no signup / provision own identity), so — like free-trial (115) — the guard likely
+needs a SYNTHETIC surface seating the host INSIDE the evidence to be non-vacuous, then
+assert identity-invariance under end-to-end relabel + a bare human-signup distractor firing
+ZERO. Then READOUT: surface "onboard without a human" in the public methodology prose.
+COVERAGE frontier after that: physical_good fulfillment, service_booking, data_retrieval
+all `[LOCAL]`-blocked (no rich committed fixture); ACP/UCP/MPP + free-tier live-wiring stays
+`[LOCAL]`.
+
 ## Cycle 129 — 2026-07-31T12:12Z — METHOD (branch+PR+self-merge, tests-only/off-scoring-path/score-neutral)
 
 **What/why.** Added the metamorphic INVARIANCE axis `test_offering_endpoint_order_invariance_metered_api`

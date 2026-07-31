@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 129
+- Cycle counter: 130
 - Started: 2026-07-23 (UTC)
 - RUNNER RECOVERED at 2026-07-31T09:12Z (Cycle 126) — the ~56h stall (first breached Cycle 76 06:12Z)
   CLEARED. Newest artifact `runs/local/verify_20260731T085248Z.json` (08:52Z Jul-31) carries
@@ -33,7 +33,42 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 130 COVERAGE — added a NINTH metered_api capability leg, the `self-provisioning` signal
+  (`asrs/offering.py`), capturing the PLAYBOOK capability lens's own words "provision without a
+  human": whether an autonomous agent can OBTAIN API access with no signup / no human account
+  creation / provisioning its OWN identity. Uncaptured yet load-bearing — an API whose credentials
+  only a human can issue is not agent-completable end-to-end regardless of how cleanly it documents
+  auth/rate-limits/errors. Distinct from `api-auth` (present credentials you HAVE) and `test-mode`
+  (try safely); NONE said whether a human must onboard you. Precision-critical: the trap is verbatim
+  in the fixtures — BOTH canonical domains carry "Human developers sign up on the dashboard for an
+  API key" (the OPPOSITE, human-gated capability) and drift-flight.org's /docs 401 "No API key …"
+  error; the signal matches ONLY the affirmative agentic form (`no signup` w/ a negative lookahead
+  excluding "no signup fees"; `provision its own identity`; `self-provision`; `no human`/`without a
+  human` onboarding), never the human path or the 401. Fires 6× on driftflight.com (deepens its
+  existing metered_api claim), ABSENT on drift-flight.org (human-only signup path — the discovery-
+  layer echo of the real capability gap), ZERO on api.replicate.com/retail/null. SHIP CLASS:
+  signal-bank + tests only, off the scoring path (`scoring.py` 0 offering refs) → score-neutral, NOT
+  peer-gated. git diff over `asrs/scoring.py rubric/ fixtures/` EMPTY; --name-only = `asrs/offering.py`
+  + `tests/test_offering.py`. First duty: no open peer-gated PR (`[]` at fire start). Cloud bridge
+  blocks direct main push → branch loop/self-provisioning-signal + PR #109 + self-merge (squash
+  b6a1bb1; merged commit = exactly the two files). Realigned main to origin/main after merge (`git
+  reset --hard origin/main` → b6a1bb1, verified signal present + offering 54/54 + replay 24/24 on
+  merged main), deleted local branch. `test_offering.py` 52→54; canonical offering guard 36/36; full
+  suite green (22 files; test_free_tier 11/11 after `pip install -r requirements.txt`, environment-only).
+  Canonical PAIR unchanged: replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7.
+  INFRA HEALTHY (verify 20260731T085248Z 08:52Z, 4.4h old at fire, within 6h floor; no open peer-gated
+  PRs). No Slack (score-neutral, off scoring path, not sensitive-class; 13:1xZ is not the
+  first-after-16:00 digest — that is ~16:1xZ Jul-31, which also reports the runner-recovery + the
+  live-delta divergence).
+  Next TRUTH — pin `self-provisioning` as RELABEL-INVARIANT (the ninth metered_api arc's TRUTH leg,
+  mirroring free-trial 115 / streaming-response 127). The evidence is host-free by nature, so the guard
+  likely needs a SYNTHETIC surface seating the host INSIDE the self-provisioning evidence to be
+  non-vacuous, then assert identity-invariance under end-to-end relabel + a bare human-signup distractor
+  firing ZERO. Then READOUT: surface "onboard without a human" in the methodology prose. COVERAGE
+  frontier after: physical_good fulfillment / service_booking / data_retrieval all [LOCAL]-blocked; OR if
+  the next verify artifact still shows driftflight.com transactability 87.5→62.5, the [LOCAL] canonical
+  re-capture is higher-leverage.)
   (Cycle 129 METHOD — added the metamorphic INVARIANCE axis
   `test_offering_endpoint_order_invariance_metered_api` (`tests/test_offering_canonical.py` 35→36), the
   WITH-RAILS / machine-surface MIRROR of Cycle 125's retail listing-order guard. Reordering the ENDPOINTS

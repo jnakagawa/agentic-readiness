@@ -3242,6 +3242,143 @@ def test_offering_listing_order_invariance_priced_listing() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Listing-order invariance EXTENDED to the with-rails MACHINE surface.
+#
+# `test_offering_listing_order_invariance_priced_listing` (Cycle 125) pins the
+# RETAIL pole of this metamorphic axis: reordering the priced listings on ONE
+# catalog page does not move the physical_good verdict. This mirrors it onto the
+# WITH-RAILS pole — reordering the ENDPOINTS within ONE OpenAPI machine contract
+# must not move the metered_api verdict. The machine surface is where the
+# metered_api archetype is most load-bearing: the one committed machine-contract
+# storefront (api.replicate.com) earns its metered_api claim from its
+# /openapi.json ALONE (pinned by `test_machine_surface_openapi_storefront`), so an
+# order dependence here would corrupt the archetype on its home turf.
+#
+# Mechanism mirror (same substrate as the retail leg): `_scan_surface` keeps the
+# FIRST regex match per signal in a surface, so which endpoint leads the spec text
+# is OBSERVABLE at `post-endpoint` — moving a different endpoint to the top moves
+# the sampled exemplar quote. The invariance is therefore non-vacuous: a real
+# perturbation the scanner genuinely sees, which must NOT change the claim.
+#
+# Vendor-neutral by construction: the host bears no archetype-signal word and the
+# endpoints carry only open machine-integration vocabulary (a POST/GET endpoint,
+# an Authorization: Bearer credential, a webhook callback, a per-minute rate
+# limit) — the same open-convention category the signal bank already anchors on,
+# never a vendor.
+# ---------------------------------------------------------------------------
+_MO_HOST = "gridcell.example"  # a host bearing no archetype-signal word
+# Three endpoint blocks for one OpenAPI-style machine contract. Each carries a
+# DISTINCT metered_api leg (async webhook / Bearer auth / per-minute rate limit)
+# AND its own POST/GET line, so which endpoint leads the spec is observable at the
+# `post-endpoint` signal. Together they claim metered_api on a multi-label
+# strength with every OTHER archetype NA, so a dropped leg or a conjured non-API
+# archetype under reorder would be unmistakable. Pure machine-integration prose —
+# no fulfillment / booking / dataset / subscription / generation words — so only
+# metered_api fires.
+_MO_ENDPOINTS = [
+    '{"path":"/v1/predictions","op":"POST https://%s/v1/predictions",'
+    '"desc":"Create a prediction, then receive a webhook callback when it completes."}' % _MO_HOST,
+    '{"path":"/v1/completions","op":"POST https://%s/v1/completions",'
+    '"desc":"Call with Authorization: Bearer <api token> to run the model."}' % _MO_HOST,
+    '{"path":"/v1/status","op":"GET https://%s/v1/status",'
+    '"desc":"Poll usage; the rate limit is 60 requests per minute per key."}' % _MO_HOST,
+]
+
+
+def _spec(order: list[int]) -> str:
+    """A synthetic OpenAPI-style machine contract with its endpoints in ``order``."""
+    return (
+        '{"openapi":"3.0.0","info":{"title":"Model service API"},"paths":['
+        + ",".join(_MO_ENDPOINTS[i] for i in order)
+        + "]}"
+    )
+
+
+def _ma_claim(prof):
+    """The metered_api claim on a profile, or ``None`` if unclaimed."""
+    return next((c for c in prof.claimed if c.archetype == "metered_api"), None)
+
+
+def test_offering_endpoint_order_invariance_metered_api() -> None:
+    """Reordering the endpoints within one OpenAPI spec does not move the verdict."""
+    print("test_offering_endpoint_order_invariance_metered_api")
+
+    base_order = [0, 1, 2]
+    reordered = [2, 1, 0]  # a genuine permutation whose leading endpoint differs
+    base = _offering.classify_offering(_MO_HOST, {"/openapi.json": _spec(base_order)})
+    perm = _offering.classify_offering(_MO_HOST, {"/openapi.json": _spec(reordered)})
+
+    # The property under test is genuinely present: the synthetic spec claims
+    # metered_api on a MULTI-leg strength with every OTHER archetype NA — so a
+    # dropped leg or a conjured non-API archetype under reorder would be unmistakable.
+    b, p = _ma_claim(base), _ma_claim(perm)
+    _check(
+        b is not None and b.strength >= 2,
+        f"{_MO_HOST}: base claims metered_api on >=2 distinct legs "
+        f"(strength {b.strength if b else None}, labels "
+        f"{sorted({s.label for s in b.signals}) if b else None})",
+    )
+    _OTHERS = {"subscription", "digital_good", "physical_good", "service_booking", "data_retrieval"}
+    _check(
+        _OTHERS <= set(base.unclaimed),
+        f"{_MO_HOST}: every non-API archetype {sorted(_OTHERS)} is NA at base "
+        f"(got unclaimed {sorted(base.unclaimed)}) — the single-archetype property a "
+        "reorder must not overturn is present",
+    )
+
+    # Non-vacuity (a): the reorder is a REAL perturbation — the spec bytes genuinely
+    # differ, so the classifier reads a different input.
+    _check(
+        _spec(base_order) != _spec(reordered),
+        f"{_MO_HOST}: the reordered spec differs from the base (the perturbation is "
+        "real, not a no-op)",
+    )
+    # Non-vacuity (b): the reorder is OBSERVABLE at this signal — `_scan_surface`
+    # keeps the FIRST `post-endpoint` match per surface, so moving a different
+    # endpoint to the top moves the sampled exemplar quote. If the quotes matched,
+    # the reorder would be invisible to the scanner and the invariance below vacuous.
+    peq = lambda c: next(s.quote for s in c.signals if s.label == "post-endpoint")
+    _check(
+        peq(b) != peq(p),
+        f"{_MO_HOST}: the sampled post-endpoint quote MOVED under reorder "
+        f"(base {peq(b)!r}, reordered {peq(p)!r}) — the first-match exemplar really "
+        "changed, so order-invariance of the verdict is non-vacuous",
+    )
+
+    # (1) The distinct-label STRENGTH of the metered_api claim is invariant — no leg
+    # was lost or gained by reshuffling the endpoint list.
+    _check(
+        p is not None and p.strength == b.strength,
+        f"{_MO_HOST}: metered_api strength invariant under endpoint reorder "
+        f"(base {b.strength}, reordered {p.strength if p else None})",
+    )
+    # (2) The SET of metered_api legs is identical — the same evidence fired, only
+    # its text position moved.
+    _check(
+        {s.label for s in p.signals} == {s.label for s in b.signals},
+        f"{_MO_HOST}: the set of metered_api legs is invariant under reorder "
+        f"(base {sorted({s.label for s in b.signals})}, reordered "
+        f"{sorted({s.label for s in p.signals})})",
+    )
+    # (3) Claimed archetypes IN ORDER invariant — order drives the fixed template-
+    # bank task order (cross-site comparability), so a reorder of the spec must not
+    # reorder the battery.
+    _check(
+        perm.archetypes == base.archetypes,
+        f"{_MO_HOST}: claimed archetypes (ordered) invariant under endpoint reorder "
+        f"(base {base.archetypes}, reordered {perm.archetypes})",
+    )
+    # (4) Every non-API archetype stays NA and the whole NA set is invariant — no
+    # archetype is conjured by how the spec is ordered; the credibility-protecting
+    # direction of this axis.
+    _check(
+        _OTHERS <= set(perm.unclaimed) and set(perm.unclaimed) == set(base.unclaimed),
+        f"{_MO_HOST}: the non-API archetypes stay NA and the whole NA set is invariant "
+        f"under reorder (base {sorted(base.unclaimed)}, reordered {sorted(perm.unclaimed)})",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Relabel-invariance EXTENDED to the retail + non-storefront domains.
 #
 # The two invariance tests above cover only the canonical PAIR, because their
@@ -3383,6 +3520,7 @@ def main() -> int:
         test_offering_noise_surface_invariance_com,
         test_offering_noise_surface_invariance_retail,
         test_offering_listing_order_invariance_priced_listing,
+        test_offering_endpoint_order_invariance_metered_api,
         test_offering_relabel_invariance_retail,
         test_offering_relabel_invariance_nonstorefront,
         test_offering_relabel_negative_control,

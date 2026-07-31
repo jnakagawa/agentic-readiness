@@ -401,6 +401,32 @@ regression test</b> that relabels the API&rsquo;s identity end-to-end and confir
 the auth scheme is still recognized, unchanged, with the vendor&rsquo;s name gone.
 This read is <b>diagnostic</b> &mdash; it names how the offer is entered, <b>off
 the scoring path</b> &mdash; not a scored pillar.</p>
+<p><b>Onboarding without a human</b> comes <b>before</b> a credential can even be
+presented, and it is the leg that decides whether a metered API is
+agent-completable <b>end-to-end</b>: presenting a bearer token or an API key only
+helps an agent that already <b>holds</b> one. If the sole way to obtain that
+credential is a <b>human signing up on a dashboard</b>, an autonomous agent is
+stranded at the door however cleanly the offer documents its auth scheme, its
+errors, or its async contract. An offer that lets the agent <b>provision its own
+access</b> &mdash; <b>no signup</b>, no human account creation, an agent that
+<b>provisions its own identity</b>, an explicit <b>self-provision</b> path, or
+credentials issued <b>without a human</b> in the onboarding loop &mdash; is more
+agent-completable than one whose first step is a person filling in a form. So
+ASRS reads the documented onboarding path as part of provisioning the offer,
+keyed on vendor-neutral <b>agent-onboarding vocabulary</b> (no signup, no human
+account creation, an agent provisioning its own identity, a self-provision path),
+the same category of open convention as REST, GraphQL or OpenAPI. The read is
+<b>precision-guarded</b>: it recognizes <b>only</b> the affirmative agentic path
+and never the OPPOSITE human one &mdash; a &ldquo;<b>sign up on the dashboard for
+an API key</b>&rdquo; instruction, a <code>401 No API key</code> error, or the
+pricing sense &ldquo;<b>no signup fees</b>&rdquo; must never be read as
+self-provisioning. Recognition keys on <b>whether a human must onboard the agent,
+not who runs the API</b>: that property is pinned by an <b>executable regression
+test</b> that relabels the API&rsquo;s identity end-to-end and confirms the
+self-provisioning claim is still recognized, unchanged, with the vendor&rsquo;s
+name gone. This read is <b>diagnostic</b> &mdash; it names whether an agent can
+get in without a human, <b>off the scoring path</b> &mdash; not a scored
+pillar.</p>
 <p><b>Finishing the job</b> has the same shape on the offer side, and it is
 where a metered API can quietly strand an agent. Many agent-native offers are
 <b>long-running jobs</b> &mdash; image or video generation, a training run, a

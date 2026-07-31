@@ -1006,6 +1006,63 @@ def test_methodology_documents_free_trial() -> None:
                f"free-trial prose names no vendor/domain ({banned!r})")
 
 
+def test_methodology_documents_self_provisioning() -> None:
+    # Cycle 132 (READOUT): the READOUT complement CLOSING the ninth metered_api arc,
+    # opened by Cycle 130 (COVERAGE — the `self-provisioning` offering signal: whether
+    # an autonomous agent can OBTAIN API access with no signup / no human account
+    # creation / provisioning its own identity) and Cycle 131 (TRUTH — the SIGNAL-level
+    # relabel-invariance guard for that signal). Self-provisioning is DISTINCT from the
+    # api-auth leg (Cycle 86/87/88 — presenting a credential you already HOLD) and the
+    # test-mode leg (102/103/104 — trying safely first): NONE of the prior legs said
+    # whether a HUMAN must onboard the agent before it can obtain a credential at all. A
+    # metered API whose credentials only a human can issue is not agent-completable
+    # end-to-end however cleanly it documents auth/errors/async — a load-bearing gap that
+    # was pinned in code + tests but never surfaced in prose a critic can read. The
+    # paragraph must (a) frame it as obtaining access WITHOUT a human onboarding step,
+    # positioned before the credential can be presented, and name the failure (a human
+    # must sign up on a dashboard → an autonomous agent stranded at the door); (b) name
+    # the vendor-neutral agent-onboarding vocabulary the offering signal anchors on as
+    # open conventions — no signup, no human account creation, an agent provisioning its
+    # own identity, a self-provision path; (c) keep the signal's PRECISION honesty — it
+    # recognizes ONLY the affirmative agentic path and never the OPPOSITE human one (a
+    # "sign up on the dashboard for an API key" instruction, a 401 No API key error, the
+    # pricing sense "no signup fees"); (d) say recognition keys on WHETHER A HUMAN MUST
+    # ONBOARD the agent not who runs the API, pinned by an identity-relabel executable
+    # regression test; and (e) stay HONEST about scope — this offering read is diagnostic,
+    # off the scoring path, not a scored pillar (the same scored-vs-diagnostic line the
+    # sibling offer-side prose keeps). Vendor-neutral throughout.
+    print("test_methodology_documents_self_provisioning")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    # Match on the whitespace-collapsed text (same technique as the api-auth /
+    # free-trial guards) so wording, not source wrapping, is what the guard pins.
+    collapsed = " ".join(text.split())
+    for phrase in ("Onboarding without a human", "provision its own access",
+                   "provisioning the offer",
+                   "whether a human must onboard the agent, not who runs the API",
+                   "relabels the API", "executable regression test",
+                   "off the scoring path", "diagnostic"):
+        _check(phrase in collapsed,
+               f"methodology documents self-provisioning: {phrase!r}")
+    # The vendor-neutral agent-onboarding vocabulary the offering signal bank anchors
+    # on must appear as open conventions, never a vendor product: no signup, no human
+    # account creation, provisioning its own identity, a self-provision path.
+    for token in ("no signup", "no human account creation",
+                  "provisions its own identity", "self-provision"):
+        _check(token in collapsed, f"methodology names onboarding convention {token!r}")
+    # PRECISION honesty: the prose must preserve the signal's OPPOSITE-path guard — the
+    # human onboarding path, the 401 error, and the pricing sense are NOT
+    # self-provisioning and must be named as what the read rejects.
+    for token in ("precision-guarded", "sign up on the dashboard",
+                  "No API key", "no signup fees"):
+        _check(token in collapsed,
+               f"methodology keeps self-provisioning precision note: {token!r}")
+    # Vendor-neutral: no scored domain/product/brand named on the page.
+    for banned in ("drift-flight", "driftflight", "replicate"):
+        _check(banned not in text,
+               f"self-provisioning prose names no vendor/domain ({banned!r})")
+
+
 def test_methodology_documents_content_provenance() -> None:
     # Cycle 120 (READOUT): the READOUT leg CLOSING the content-provenance arc opened by
     # Cycle 118 (COVERAGE — the `content-provenance` offering signal added to the
@@ -1806,6 +1863,7 @@ def main() -> int:
         test_methodology_documents_cancel_job,
         test_methodology_documents_streaming_response,
         test_methodology_documents_free_trial,
+        test_methodology_documents_self_provisioning,
         test_methodology_documents_content_provenance,
         test_methodology_documents_priced_listing,
         test_methodology_documents_calibration,

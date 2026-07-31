@@ -3,6 +3,75 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 133 — 2026-07-31T16:1xZ — METHOD (branch+PR+self-merge, tests-only/off-scoring-path/score-neutral)
+
+**What/why.** Added the FIFTH metamorphic-invariance axis to the offering classifier's test
+harness: **text-casing invariance**. The four existing axes perturb WHICH surfaces the
+classifier reads or in what order — RELABEL rewrites the host inside them, SURFACE-ORDER
+reverses the read sequence, CONTENT-SCALE duplicates the bodies, NOISE-SURFACE adds a
+signal-free surface. This one perturbs the CASING of the text inside them: uppercase every
+surface body and assert the classified capability profile is unchanged. A storefront that
+writes `Pay-Per-Call`, `pay-per-call`, and `PAY PER CALL` declares the same capability all
+three ways; the score must key on what a site says it can DO, never on its typography. This
+was the exact in-cloud METHOD unit Cycle 132's next-hypothesis named ("a whitespace/casing
+normalization invariance axis").
+
+**The invariant.** `_assert_casing_invariance(domain, expected_claimed)` asserts the
+case-INDEPENDENT skeleton is identical under `.upper()`: claimed archetypes IN RANK ORDER
+(drives the fixed template-bank task order for cross-site comparability), the NA/unclaimed
+complement (excluded from every mean/spread, never penalized), and per-archetype
+`(strength, sorted per-(label, surface) match counts)` via a new `_casing_struct` helper. The
+quote TEXT is deliberately EXCLUDED from the comparison — a signal's quote echoes the bytes it
+matched, so it upper-cases with the surface, and HTML-entity artifacts (`&amp; -> &AMP;`) mean
+the quote is not expected to differ by case alone. The invariant is "the SAME signals fire on
+the SAME surfaces the SAME number of times", not "the captured evidence is byte-identical".
+
+**Non-vacuity teeth.** (a) The transform is REAL — a surface carries lowercase at base, so
+uppercasing genuinely changes the bytes the classifier scans (asserted directly). (b)
+Case-insensitivity is LOAD-BEARING — the helper searches the fired evidence for a signal whose
+CASE-SENSITIVE match count on its surface DIFFERS between the base and uppercased prose while
+its real `re.IGNORECASE` count is UNCHANGED, and asserts one exists. The canonical anchor is
+the `metered_api/post-endpoint` `POST https://…` quote: its `https?://` stops matching once the
+scheme upper-cases to `HTTPS`, so a case-sensitive reader gives 1→0 while the shipped IGNORECASE
+matcher holds at 1. Verified empirically 36 such load-bearing signals on `.org`, 86 on `.com` —
+so if a future signal is ever added WITHOUT `re.IGNORECASE`, its count moves under this transform
+and the structural assertion fails loudly (the guard's forward value).
+
+**Ship class + evidence.** Tests-only, off the scoring path (`scoring.py` 0 offering refs) →
+score-neutral, NOT peer-gated. `git diff --name-only` = `tests/test_offering_canonical.py`
+ONLY; `git diff` over `asrs/ rubric/ fixtures/` EMPTY. First duty: no open peer-gated PR
+(`list_pull_requests state=open` → `[]` at fire start). Cloud bridge blocks direct main push →
+branch `loop/casing-invariance` + PR #115 + self-merge (squash a024c97). Realigned main to
+origin/main after merge (`git reset --hard origin/main` → a024c97, verified 39/39 + replay 24/24
+on merged main), deleted local branch. `test_offering_canonical.py` 37→39; full suite green (22
+files; `test_free_tier` 11/11 after `pip install -r requirements.txt`, environment-only — the
+sole pre-fix red was `eth-account` absent, an env dep, not this change). Canonical PAIR
+unchanged: replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7. INFRA
+HEALTHY (verify 20260731T134541Z 13:45Z, ~2.4h old at fire, within 6h floor; no open peer-gated
+PRs).
+
+**Slack — daily digest (first fire after 16:00 UTC).** 16:1xZ is the first-after-16:00 fire →
+DM sent to U07PEGPSZD3: runner recovery (~56h stall cleared Cycle 126), the persisting live-delta
+divergence, cycles/ships since the last digest, canonical-delta trend, top open question. Not a
+sensitive-class flag (this cycle is score-neutral/off-scoring-path).
+
+**LIVE-DELTA divergence — still standing, still off the scoring path.** No new verify artifact
+since 13:45Z (driftflight.com LIVE 76.2 C / +30.1 / transactability 62.5, confirmed across the
+08:52Z + 13:45Z crawls, ~5h apart → likely a real 3-day change, not wake/network noise). In-cloud
+replay guard STILL 24/24 / +39.4 — the frozen regression signal is intact. Re-capture/re-baseline
+remains [LOCAL] and peer-gated (moves the replay-guard EXPECTED per the Cycle-17 contract).
+
+**Next hypothesis.** Rotate COVERAGE next (METHOD → COVERAGE → TRUTH → READOUT). In-cloud
+new-signal COVERAGE is [LOCAL]-blocked (physical_good fulfillment / service_booking /
+data_retrieval have no rich committed fixture that CLAIMS them — see the P1 fixture-capture
+items). Highest-leverage in-cloud COVERAGE options: a new capability leg on an ALREADY-claimed
+archetype the canonical pair supports (metered_api / subscription / digital_good), OR — if the
+next verify still shows transactability 62.5 — the [LOCAL] canonical re-capture rises in leverage
+(it resolves the live-delta divergence and is the one thing that moves the frozen guard honestly).
+Remaining METHOD frontier for a later rotation: cross-signal precision-isolation (proving one
+archetype's evidence never leaks into another's verdict) and surface-dedup invariance — the two
+axes Cycle 132 named alongside casing that are still unbuilt.
+
 ## Cycle 132 — 2026-07-31T15:1xZ — READOUT (branch+PR+self-merge, display+tests-only/off-scoring-path/score-neutral)
 
 **What/why.** Surfaced Cycle 130's `self-provisioning` metered_api signal in the public

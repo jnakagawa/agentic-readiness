@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 132
+- Cycle counter: 133
 - Started: 2026-07-23 (UTC)
 - RUNNER RECOVERED at 2026-07-31T09:12Z (Cycle 126) — the ~56h stall (first breached Cycle 76 06:12Z)
   CLEARED. Newest artifact `runs/local/verify_20260731T085248Z.json` (08:52Z Jul-31) carries
@@ -36,7 +36,37 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 133 METHOD — added the FIFTH metamorphic-invariance axis to the offering classifier's
+  harness: TEXT-CASING INVARIANCE (`_assert_casing_invariance` + `_casing_struct` in
+  `tests/test_offering_canonical.py`, 37→39). Uppercasing every surface body leaves the classified
+  capability skeleton identical — claimed archetypes IN RANK ORDER, the NA/unclaimed complement,
+  and per-archetype `(strength, per-(label, surface) match counts)`. Quote TEXT excluded from the
+  compare (it echoes the matched bytes → upper-cases with the surface; `&amp;→&AMP;` entity
+  artifacts). Complements RELABEL/ORDER/SCALE/NOISE (which perturb which surfaces are read / their
+  order) by perturbing the CASING inside them: a site writing Pay-Per-Call / pay-per-call / PAY PER
+  CALL declares one capability, and the score must not key on typography. TEETH: (a) transform is
+  real (a surface carries lowercase at base); (b) case-insensitivity is LOAD-BEARING — a fired
+  signal's CASE-SENSITIVE count moves under uppercasing (`https?://`→`HTTPS` in the metered_api
+  post-endpoint quote, 1→0) while its `re.IGNORECASE` count holds (36 such signals on .org, 86 on
+  .com) → a future signal added WITHOUT `re.IGNORECASE` fails this guard loudly. This was Cycle 132's
+  named next-hypothesis unit. SHIP CLASS: tests-only, off the scoring path (`scoring.py` 0 offering
+  refs) → score-neutral, NOT peer-gated. `git diff --name-only` = `tests/test_offering_canonical.py`
+  ONLY; git diff over `asrs/ rubric/ fixtures/` EMPTY. First duty: no open peer-gated PR (`[]` at
+  fire start). Cloud bridge blocks direct main push → branch loop/casing-invariance + PR #115 +
+  self-merge (squash a024c97; realigned main via `git reset --hard origin/main` → a024c97, verified
+  39/39 + replay 24/24 on merged main, deleted local branch). Full suite green (22 files; test_free_tier
+  11/11 after `pip install -r requirements.txt`, environment-only — sole pre-fix red was `eth-account`
+  absent, an env dep). Canonical PAIR unchanged: replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0
+  replay-miss; rubric v0.7. INFRA HEALTHY (verify 20260731T134541Z 13:45Z, ~2.4h old at fire, within
+  6h floor; no open peer-gated PRs). Slack DAILY DIGEST SENT (16:1xZ = first fire after 16:00 UTC):
+  runner recovery + persisting live-delta divergence + cycles/ships + canonical trend + top question.
+  Next COVERAGE — new-signal COVERAGE is [LOCAL]-blocked (physical_good/service_booking/data_retrieval
+  have no rich committed fixture; see P1 fixture-capture). In-cloud option: a new capability leg on an
+  already-claimed canonical archetype (metered_api/subscription/digital_good). Remaining METHOD frontier
+  for later: cross-signal precision-isolation + surface-dedup invariance (the two axes Cycle 132 named
+  alongside casing, still unbuilt). If the next verify still shows transactability 62.5, the [LOCAL]
+  canonical re-capture rises in leverage.)
   (Cycle 132 READOUT — CLOSED the ninth metered_api COVERAGE→TRUTH→READOUT arc by surfacing Cycle
   130's `self-provisioning` signal in the public methodology prose. Added one capability-worded,
   vendor-neutral paragraph "Onboarding without a human" to `_write_methodology_page`

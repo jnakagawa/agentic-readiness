@@ -1261,17 +1261,27 @@ design in-cloud, execute locally.
 
 ## P2
 
-- **[CANDIDATE, METHOD] Metamorphic grid — remaining axes/poles** (observation, Cycle 129). The
-  intra-surface ORDER-invariance axis now spans BOTH poles: retail listing-order on physical_good
-  (Cycle 125, `test_offering_listing_order_invariance_priced_listing`) and endpoint-order on the
-  metered_api MACHINE surface (Cycle 129, `test_offering_endpoint_order_invariance_metered_api`). The
-  metamorphic family also has relabel-invariance (signal-level ×8 metered_api + digital_good/subscription
-  legs), content-scale, and noise-surface invariance across the org/com/retail poles. Open frontier for a
-  future METHOD cycle: (a) content-scale or noise-surface invariance on the metered_api MACHINE surface
-  (only the prose poles are covered); (b) a cross-SURFACE order axis — does the ORDER in which surfaces
-  are read (homepage vs /openapi.json vs /llms.txt) move a multi-surface claim? (partially pinned by
-  `test_offering_surface_order_invariance_*` on the org pole — extend to the machine pole). All
-  tests-only, off the scoring path, in-cloud-doable on committed fixtures.
+- **[CANDIDATE, METHOD] Metamorphic grid — remaining axes/poles** (observation, Cycle 129;
+  updated Cycle 133). A SIXTH axis now exists — TEXT-CASING invariance (Cycle 133,
+  `test_offering_casing_invariance_org`/`_com`, `_assert_casing_invariance` + `_casing_struct`):
+  uppercasing every surface body leaves the case-independent capability skeleton (archetypes ranked,
+  NA complement, per-archetype strength + per-(label, surface) counts) identical, with load-bearing
+  teeth (a fired signal's CASE-SENSITIVE count moves under uppercasing while its `re.IGNORECASE` count
+  holds → a future signal added without `re.IGNORECASE` fails loudly). The intra-surface ORDER axis
+  spans BOTH poles: retail listing-order on physical_good (Cycle 125,
+  `test_offering_listing_order_invariance_priced_listing`) and endpoint-order on the metered_api
+  MACHINE surface (Cycle 129, `test_offering_endpoint_order_invariance_metered_api`). The family also
+  has relabel-invariance (signal-level ×8 metered_api + digital_good/subscription legs), content-scale,
+  and noise-surface invariance across the org/com/retail poles. Open frontier for a future METHOD
+  cycle: (a) content-scale or noise-surface invariance on the metered_api MACHINE surface (only the
+  prose poles are covered); (b) a cross-SURFACE order axis — does the ORDER in which surfaces are read
+  (homepage vs /openapi.json vs /llms.txt) move a multi-surface claim? (partially pinned by
+  `test_offering_surface_order_invariance_*` on the org pole — extend to the machine pole); (c) casing
+  invariance mirrored onto the retail/machine poles (Cycle 133 covers the org/com prose pair only);
+  (d) the two axes Cycle 132 named alongside casing that are still UNBUILT — cross-signal
+  PRECISION-ISOLATION (proving one archetype's evidence never leaks into another archetype's verdict)
+  and SURFACE-DEDUP invariance (a fixture that serves the same body at two surface keys must not
+  double-count a claim). All tests-only, off the scoring path, in-cloud-doable on committed fixtures.
 
 - **[METHOD, cloud-doable] Audit the test-runner registration lists for authored-but-unregistered
   guards** (observation, Cycle 84). The in-cloud suites run via each `tests/test_*.py`'s own `main()`

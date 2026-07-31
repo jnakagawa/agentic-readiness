@@ -1,7 +1,14 @@
 # Loop state
 
-- Cycle counter: 137
+- Cycle counter: 138
 - Started: 2026-07-23 (UTC)
+- RUNNER STILL STALE at 2026-07-31T21:1xZ (Cycle 138) — newest verify
+  `runs/local/verify_20260731T134541Z.json` (13:45Z) is ~7.5h old, still BREACHING the 6h floor
+  (14:41–20:41 launchd fires produced NO artifact = machine asleep, the Cycle-63 wake-instant
+  pattern, NOT a code regression). Cloud CANNOT repair. Already flagged in today's 16:1xZ digest
+  (Cycle 133); re-flag in the next first-after-16:00 fire (~Aug-1 16:xxZ) if not recovered. A
+  persistent no-wake past ~Aug-1 morning is an operator/launchd-plist matter for Jonah, NOT the
+  Cycle-63 backoff fix (that is for the wake/network RACE, not a machine that never wakes).
 - RUNNER STALE AGAIN at 2026-07-31T20:12Z (Cycle 137) — newest verify
   `runs/local/verify_20260731T134541Z.json` (13:45Z) is ~6.5h old, BREACHING the 6h floor. The
   14:41–19:41 launchd fires produced NO artifact — consistent with the machine asleep through the
@@ -41,9 +48,33 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 137 was
-  METHOD, so Cycle 138 is COVERAGE). Cycle 137 built the FIRST menu item —
-  cross-signal precision-ISOLATION: a full 56-signal / 6-archetype matrix
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 138 was
+  COVERAGE, so Cycle 139 is TRUTH). Cycle 138 shipped the in-cloud COVERAGE unit Cycle 137's
+  next-hypothesis called for: `output-resolution` — an eleventh digital_good capability leg (the
+  output RESOLUTION / pixel DIMENSIONS / ASPECT RATIO of the generated deliverable an agent must
+  request and can rely on; the "understand + specify the offer" leg, distinct from generation/
+  render (WHAT), hosted-output (WHERE), output-license (rights), content-provenance (trust)).
+  Vendor-neutral (`maxResolution` / output-print resolution in px / WxH px / aspect ratio),
+  precision-guarded against screen/monitor/display hardware resolutions + the Super-/Enhance-image-
+  resolution MODEL-FEATURE trap on api.replicate.com's OpenAPI + dispute/New-Year/DNS senses. Fires
+  4/4 on the canonical pair (both already claim digital_good: /docs maxResolution + homepage "print
+  resolution") and ZERO on api.replicate.com/books.toscrape/example.com → score-neutral (claimed
+  SET+ORDER byte-identical `[metered_api, digital_good, subscription]`). Off scoring path
+  (`scoring.py` 0 offering refs) → NOT peer-gated; branch loop/output-resolution-signal + PR #125 +
+  self-merge (squash 52b86ca). `test_offering.py` 54→56 (precision-synthetic 9 pos / 8 neg +
+  real-captured non-vacuous fire w/ the model-feature trap); isolation completeness matrix auto-covers
+  it. Replay guard 24/24, 46.1 F / 85.5 B / +39.4; offering-canonical 42/42; rubric v0.7. NEXT (TRUTH
+  139): pin `output-resolution` RELABEL-INVARIANT (synthetic-surface guard like free-trial 115 /
+  content-provenance — resolution evidence is host-free); then READOUT (140) surfaces "specify the
+  deliverable's output resolution" in methodology prose, closing a COVERAGE→TRUTH→READOUT arc.
+  REMAINING in-cloud METHOD sibling (unused this rotation, available as a future fallback):
+  surface-DEDUP invariance (duplicate/near-duplicate surfaces don't inflate match counts or strength
+  — note `strength` is already distinct-label-count, so likely a robustness PIN not a bug-find).
+  New-signal COVERAGE on the unclaimed archetypes (service_booking / data_retrieval) stays
+  [LOCAL]-blocked on a fixture capture (P1); adding a leg to a never-claimed archetype is
+  unverifiable in-cloud.
+  (Cycle 137 METHOD — built the FIRST menu item, cross-signal precision-ISOLATION: a full 56-signal
+  / 6-archetype matrix
   (`test_cross_signal_archetype_isolation` + negative control in
   `tests/test_offering_canonical.py`) proving each signal's affirmative evidence claims EXACTLY its
   own archetype and leaks into no other (the score-relevant no-false-claim property);
@@ -52,7 +83,7 @@
   — note `strength` is already distinct-label-count, so likely a robustness PIN not a bug-find) —
   the METHOD fallback if Cycle 138 COVERAGE finds no in-cloud-verifiable unit. New-signal COVERAGE on
   the unclaimed archetypes (service_booking / data_retrieval) stays [LOCAL]-blocked on a fixture
-  capture (P1); adding a leg to a never-claimed archetype is unverifiable in-cloud.
+  capture (P1); adding a leg to a never-claimed archetype is unverifiable in-cloud.)
   (Cycle 136 READOUT — CLOSED the webhook-verification COVERAGE→TRUTH→READOUT arc with its
   methodology PROSE leg: a new paragraph in `_write_methodology_page` (`asrs/scorecard.py`) after
   the streaming-response prose framing trusting the async callback as the SECURITY sibling of

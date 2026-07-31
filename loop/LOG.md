@@ -3,6 +3,72 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 138 — 2026-07-31T21:1xZ — COVERAGE (branch+PR+self-merge, off-scoring-path/score-neutral)
+
+**What/why.** Took the in-cloud-verifiable COVERAGE unit Cycle 137's next-hypothesis called for
+(the two weak archetypes stay [LOCAL]-blocked; this deepens an ALREADY-claimed archetype instead).
+Added an eleventh capability leg to the offering classifier's **digital_good** archetype:
+**`output-resolution`** — the concrete output RESOLUTION / pixel DIMENSIONS / ASPECT RATIO of the
+generated deliverable an agent must REQUEST and can RELY ON. It is the "understand + specify the
+offer" leg, distinct from every existing digital_good signal: `generation`/`generate-media`/`render`
+say WHAT is produced, `hosted-output` WHERE it is delivered, `output-license` whether the agent may
+USE it, `content-provenance` whether the agent can TRUST it — NONE says the physical SHAPE of the
+deliverable the agent parameterizes its request with. An agent that cannot read the output-resolution
+contract requests an unproducible size (a failed/clipped generation) or gets a wrong-resolution
+deliverable (a hero image at thumbnail size), so a storefront that documents its output resolutions
+is MORE agent-completable. Vendor-neutral output-format vocabulary (a `maxResolution` field, an
+output/render/print resolution in pixels, a WxH pixel dimension, an aspect ratio) — never a vendor.
+
+**Precision.** Bare `resolution` is a false-positive minefield. Guarded: SCREEN/MONITOR/DISPLAY
+hardware resolutions (the viewer's device, not the deliverable — negative lookbehinds); the
+`Super resolution` / `Enhance image resolution` MODEL-FEATURE phrasing in api.replicate.com's committed
+`/openapi.json` (a hosted model's feature, not a deliverable the storefront vends — the `image`
+qualifier that caused this exact leak in a first draft was DROPPED after empirical A/B); and
+dispute/New-Year/DNS senses. Empirical proof: fires **4 / 4** on driftflight.com / drift-flight.org
+(both already claim digital_good — via the `/docs` models block `"maxResolution":"1024px|2048px|4096px"`
++ the homepage "gallery for hero and print resolution") and **ZERO** on api.replicate.com /
+books.toscrape.com / example.com, so it can never CONJURE a false digital_good claim on a site that
+does not already make one.
+
+**Ship class + evidence.** Signal-bank + tests only; off the scoring path (`scoring.py` imports no
+`offering` — grep-verified 0 refs) → score-neutral, NOT peer-gated (same class as every prior
+COVERAGE signal arc, e.g. Cycles 130/134). `git diff` over `asrs/scoring.py rubric/ fixtures/` EMPTY;
+`git diff --name-only` = `asrs/offering.py` + `tests/test_offering.py` + `tests/test_offering_canonical.py`.
+Cloud bridge blocks direct main push → branch `loop/output-resolution-signal` + PR #125 + self-merge
+(squash 52b86ca; realigned main → 52b86ca, verified 2 signal refs present + test_offering 56/56 +
+offering-canonical 42/42 + replay 24/24 on merged main, deleted local+remote branch).
+`tests/test_offering.py` 54→56 (a synthetic precision test — 9 positives / 8 resolution-shaped noise
+negatives incl. the screen/monitor/display + Super-/Enhance-image-resolution model traps — and a
+real-captured non-vacuous & score-neutral test on the canonical `/docs` + the api.replicate.com
+negative). The cross-signal isolation COMPLETENESS matrix (Cycle 137) auto-covers the new signal —
+its curated isolation snippet ("the maximum output resolution is 4096px") claims EXACTLY digital_good;
+offering-canonical guard 42/42 unchanged in count (completeness enforced). Full suite green (22 files;
+`test_free_tier` 11/11 after `pip install -r requirements.txt`, environment-only). Canonical PAIR
+unchanged AND re-measured pre- AND post-merge: replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0
+replay-miss; claimed sets AND order byte-identical on all 5 fixtures (`[metered_api, digital_good,
+subscription]` on the canonical pair); rubric v0.7.
+
+**Infra.** Local verify runner STILL STALE — newest `runs/local/verify_20260731T134541Z.json` (13:45Z)
+is ~7.5h old at this ~21:1xZ fire, breaching the 6h floor; the 14:41–20:41 launchd fires produced no
+artifact (machine asleep, same wake-instant pattern the Cycle-63 fire root-caused — NOT a code
+regression). Cloud cannot repair the local machine. LIVE-DELTA divergence unchanged (no new verify
+since 13:45Z: driftflight.com LIVE 76.2 C / +30.1 / transactability 62.5 across two crawls); the
+in-cloud replay guard is the independent regression signal and is intact at 24/24 / +39.4. Both flagged
+in today's 16:1xZ digest (Cycle 133) already; will re-flag if the runner has not recovered by the next
+first-after-16:00 fire (~Aug-1 16:xxZ).
+
+**Next hypothesis (TRUTH — Cycle 139).** Rotate to TRUTH: pin `output-resolution` as RELABEL-INVARIANT,
+extending the signal-level relabel family (metered_api ×several, digital_good's output-license +
+content-provenance, subscription's free-trial) to digital_good's output-SPEC leg. Output-resolution
+evidence is host-FREE by nature (`maxResolution` / a px value / "print resolution"), so — like
+free-trial (115) / content-provenance — the guard likely needs a SYNTHETIC surface seating the host
+INSIDE the resolution evidence to be non-vacuous, then assert identity-invariance under end-to-end
+relabel + a bare screen/monitor-resolution distractor firing ZERO. Then READOUT (Cycle 140): surface
+"specify the deliverable's output resolution/dimensions" in the public methodology prose, closing a
+full COVERAGE→TRUTH→READOUT arc. COVERAGE frontier after that stays [LOCAL]-blocked: physical_good
+fulfillment depth is thin but capturable on the retail fixture; service_booking / data_retrieval need
+a rich committed fixture (P1); ACP/UCP/MPP + free-tier live-wiring stays [LOCAL].
+
 ## Cycle 137 — 2026-07-31T20:1xZ — METHOD (branch+PR+self-merge, tests-only/off-scoring-path/score-neutral)
 
 **What/why.** Built the cross-signal precision-ISOLATION matrix — the top item on Cycle 132's

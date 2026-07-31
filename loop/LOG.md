@@ -3,6 +3,65 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 136 — 2026-07-31T19:1xZ — READOUT (branch+PR+self-merge, display+tests/off-scoring-path/score-neutral)
+
+**What/why.** CLOSED the `webhook-verification` COVERAGE→TRUTH→READOUT arc (signal Cycle 134,
+relabel-invariance guard Cycle 135) with its methodology PROSE leg — the NINTH `metered_api`
+offer-side leg to complete a full arc (after payment-rail 78/79/80, async-job 82/83/84, api-auth
+86/87/88, error-contract 90/91/92, test-mode 102/103/104, pagination 106/107/108, cancel-job
+110/111/112, streaming-response 126/127/128). The webhook-AUTHENTICITY leg was pinned in code +
+tests but never surfaced in prose a critic can read. New paragraph in `_write_methodology_page`
+(`asrs/scorecard.py`), placed after the streaming-response prose, frames **trusting the async
+callback** as the **security sibling of async-job**: where async-job says a webhook DELIVERY
+channel EXISTS, nothing there says whether the agent can AUTHENTICATE what arrives on it. Names the
+failure (an agent that acts on an unverified "job complete" webhook can be tricked by a forged/
+spoofed callback into treating fabricated output as real, or releasing a payment) and its tie to
+ASRS's own $0-only capital-safety ethos (never act, never pay, on a forged callback).
+
+**Fidelity to the signal.** The prose names the vendor-neutral webhook-security vocabulary the
+offering signal anchors on (a webhook signature, a webhook signing secret, an `X-Webhook-Signature`
+header, webhook requests that are authentic/signed) as open convention alongside REST/GraphQL/
+OpenAPI; PRESERVES the signal's bare-signature precision guard (a marketing "signature look", a
+settlement signature a payment proof verifies locally, a signed-URL signing secret for file access,
+a digital signature on a contract, a webhook that merely EXISTS = async-job's turf → no signal);
+pins the identity-relabel regression property (keys on the contract the API documents, not who
+published it); stays honest about scope (diagnostic, off the scoring path, not a scored pillar) —
+the same scored-vs-diagnostic line every sibling offer-side paragraph keeps.
+
+**Guard.** `test_methodology_documents_webhook_verification` in `tests/test_readout.py` (60→61),
+mirroring the streaming-response guard: whitespace-collapsed content-presence over the framing
+phrases, the three webhook-security vocabulary tokens, the five precision-note tokens, and the
+vendor-neutrality bans (drift-flight / driftflight / replicate absent).
+
+**Ship class + evidence.** Display + tests only. `git diff --name-only` = `asrs/scorecard.py` +
+`tests/test_readout.py` ONLY; `git diff` over `asrs/scoring.py asrs/offering.py rubric/ fixtures/`
+EMPTY → rubric v0.7, score-neutral, NOT peer-gated. First duty: no open peer-gated PR (`[]` at fire
+start; `list_pull_requests` open = `[]`). Cloud bridge blocks direct main push → branch
+`loop/webhook-verification-readout` + PR #121 + self-merge (squash 70f5100; realigned main → 70f5100
+via `git reset --hard origin/main`, verified guard present + test_readout 61/61 + replay 24/24 on
+merged main, deleted local+remote branch). Full suite green (22 files; test_free_tier 11/11 after
+`pip install -r requirements.txt`, environment-only eth-account dep).
+
+**Canonical pair.** Replay guard 24/24 — 46.1 F / 85.5 B / delta **+39.4** UNCHANGED, 0 replay-miss
+(scoring path byte-for-byte untouched); offering-canonical 40/40; rubric v0.7.
+
+**Infra.** HEALTHY at fire start — newest verify `runs/local/verify_20260731T134541Z.json` (13:45Z),
+~5.4h old at the 19:12Z fire, within the 6h floor (will breach ~19:45Z — the runner is due to fire
+at :41). LIVE-DELTA divergence unchanged (no new verify since 13:45Z; driftflight.com LIVE 76.2 C /
++30.1 / transactability 62.5 across two crawls); in-cloud replay guard STILL 24/24 / +39.4, off
+scoring path; re-capture is [LOCAL]/peer-gated. No Slack (score-neutral, off scoring path, not
+sensitive-class; 19:1xZ is NOT the first-after-16:00 digest — Cycle 133 at 16:1xZ already sent
+today's).
+
+**Next hypothesis (METHOD — Cycle 137).** With all ten metered_api signals now carrying the full
+COVERAGE→TRUTH→READOUT treatment, the in-cloud METHOD frontier is Cycle 132's still-unbuilt menu:
+cross-signal precision-ISOLATION (each metered_api signal fires on ITS evidence and stays silent on
+every sibling's affirmative fixture — a matrix guard proving no signal poaches another's turf) and
+surface-DEDUP invariance (duplicate/near-duplicate surfaces don't inflate match counts or strength).
+New-signal COVERAGE on the unclaimed archetypes (service_booking / data_retrieval) stays
+[LOCAL]-blocked on a fixture capture (P1). If the next verify still shows transactability 62.5, the
+[LOCAL] canonical re-capture rises in leverage.
+
 ## Cycle 135 — 2026-07-31T18:1xZ — TRUTH (branch+PR+self-merge, tests-only/off-scoring-path/score-neutral)
 
 **What/why.** Shipped the TRUTH leg of Cycle 134's `webhook-verification` COVERAGE arc:

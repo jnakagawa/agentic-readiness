@@ -503,18 +503,26 @@ design in-cloud, execute locally.
 
 ## P1
 
-- **Complete the `output-resolution` arc — the READOUT leg** (follow-up to Cycle 138 COVERAGE / Cycle
-  139 TRUTH). (a) TRUTH leg DONE 2026-07-31T22:1xZ (Cycle 139, tests-only/off-scoring-path/score-neutral,
-  branch+PR #127+self-merge squash 3a1ff0c): `test_offering_relabel_invariance_output_resolution` added to
-  `tests/test_offering_canonical.py` (42→43) — SYNTHETIC-surface guard (host seated inside the resolution
-  evidence, non-vacuous) pinning the eleventh digital_good signal identity-invariant; TEETH distractor
-  (dispute/New-Year/DNS resolution + Super-/Enhance-image-resolution model-feature + screen/monitor/display
-  hardware) fires ZERO. Replay guard 24/24 / +39.4; rubric v0.7. (b) READOUT (do at Cycle 140): add a
-  methodology paragraph in `_write_methodology_page` (`asrs/scorecard.py`) framing "specify the
-  deliverable's output resolution / dimensions" as the digital_good output-SPEC leg (distinct from WHAT is
-  produced / WHERE delivered / rights / trust), with a `test_readout.py` guard — CLOSING the
-  COVERAGE→TRUTH→READOUT arc (mirrors webhook-verification 136 / free-trial 116). Display+tests, off
-  scoring path → score-neutral, NOT peer-gated.
+<!-- DONE 2026-07-31T23:1xZ (Cycle 140, READOUT, branch+PR #129+self-merge squash aeafed4,
+     display+tests/off-scoring-path/score-neutral): "Complete the `output-resolution` arc — the READOUT
+     leg" FULLY DISCHARGED, CLOSING the full COVERAGE (138) → TRUTH (139) → READOUT (140) arc. New
+     paragraph in `_write_methodology_page` (`asrs/scorecard.py`) after the content-provenance ("Trusting
+     the deliverable") prose: frames "specify the deliverable's shape / the output-resolution contract" as
+     the digital_good output-SPEC sibling of owning/trusting the render — DISTINCT from generation/render
+     (WHAT produced), hosted-output (WHERE delivered), output-license (rights), content-provenance (trust).
+     Names the failure (an agent requests an unproducible size, or gets a wrong-resolution deliverable — a
+     hero image at thumbnail size), the vendor-neutral output-format vocab (a `maxResolution` field, an
+     output/render/print resolution in px, a WxH pixel dimension, an aspect ratio), preserves the
+     bare-`resolution` precision guard (dispute/New-Year/DNS resolution, the Super-/enhance-image
+     MODEL-FEATURE trap, screen/monitor/display HARDWARE resolution → no signal), pins the identity-relabel
+     regression property, stays diagnostic/off-scoring-path. The digital_good output-SPEC leg with a full
+     arc, mirroring metered_api webhook-verification (134/135/136) and streaming-response (126/127/128).
+     Guard `test_methodology_documents_output_resolution` in `tests/test_readout.py` (61→62), mirroring the
+     webhook-verification guard. Off scoring path (`git diff` over `asrs/scoring.py asrs/offering.py rubric/
+     fixtures/` EMPTY; `--name-only` = `asrs/scorecard.py` + `tests/test_readout.py` ONLY) → score-neutral,
+     NOT peer-gated. Full suite 344→345; replay guard 24/24 / 46.1 F / 85.5 B / +39.4; offering-canonical
+     43/43; rubric v0.7. See LOG Cycle 140. (a) TRUTH leg was Cycle 139 (PR #127, squash 3a1ff0c); (b)
+     COVERAGE signal was Cycle 138 (PR #125, squash 52b86ca). -->
 
 <!-- DONE 2026-07-31T19:1xZ (Cycle 136, READOUT, branch+PR+self-merge, display+tests/off-scoring-path/
      score-neutral): "Complete the `webhook-verification` arc — the READOUT leg" FULLY DISCHARGED,

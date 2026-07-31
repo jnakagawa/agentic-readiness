@@ -1,9 +1,16 @@
 # Loop state
 
-- Cycle counter: 139
+- Cycle counter: 140
 - Started: 2026-07-23 (UTC)
-- RUNNER STILL STALE at 2026-07-31T22:1xZ (Cycle 139) — newest verify
-  `runs/local/verify_20260731T134541Z.json` (13:45Z) is ~8.5h old, still BREACHING the 6h floor
+- RUNNER STILL STALE at 2026-07-31T23:1xZ (Cycle 140) — newest verify
+  `runs/local/verify_20260731T134541Z.json` (13:45Z) is ~9.5h old, still BREACHING the 6h floor
+  (14:41–22:41 launchd fires produced NO artifact = machine asleep, the Cycle-63 wake-instant
+  pattern, NOT a code regression). Cloud CANNOT repair. Already flagged in today's 16:1xZ digest
+  (Cycle 133); re-flag in the next first-after-16:00 fire (~Aug-1 16:xxZ) if not recovered. A
+  persistent no-wake past ~Aug-1 morning is an operator/launchd-plist matter for Jonah, NOT the
+  Cycle-63 backoff fix (that is for the wake/network RACE, not a machine that never wakes).
+- RUNNER STALE at 2026-07-31T22:1xZ (Cycle 139) — newest verify
+  `runs/local/verify_20260731T134541Z.json` (13:45Z) was ~8.5h old, BREACHING the 6h floor
   (14:41–21:41 launchd fires produced NO artifact = machine asleep, the Cycle-63 wake-instant
   pattern, NOT a code regression). Cloud CANNOT repair. Already flagged in today's 16:1xZ digest
   (Cycle 133); re-flag in the next first-after-16:00 fire (~Aug-1 16:xxZ) if not recovered. A
@@ -48,30 +55,31 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 139 was
-  TRUTH, so Cycle 140 is READOUT). Cycle 139 shipped the TRUTH leg of the `output-resolution`
-  COVERAGE→TRUTH→READOUT arc (Cycle 138 shipped its COVERAGE signal): pinned the eleventh
-  digital_good signal RELABEL-INVARIANT via `test_offering_relabel_invariance_output_resolution`
-  in `tests/test_offering_canonical.py`. Because the real canonical output-resolution evidence is
-  HOST-FREE (`maxResolution` / "print resolution" carry no host), a whole-fixture relabel would be
-  VACUOUS — so (like free-trial 115 / content-provenance 119) the guard scans a SYNTHETIC
-  generation-storefront surface seating the host INSIDE the resolution evidence (surface key +
-  adjacent to `maxResolution` on both sides → in the padded quote window, asserted non-vacuous),
-  relabels end-to-end, and asserts same match count / same host-normalized surface / quote still
-  matches the live regex / host absent. TEETH: bare-"resolution" distractor (dispute / New-Year /
-  DNS resolution, the Super-/Enhance-image-resolution MODEL-FEATURE trap, screen/monitor/display
-  HARDWARE resolution) fires ZERO. Tests-only, off scoring path (`git diff` over `scoring.py
-  offering.py rubric/ fixtures/` EMPTY) → NOT peer-gated; branch loop/output-resolution-relabel-
-  invariance + PR #127 + self-merge (squash 3a1ff0c). `test_offering_canonical.py` 42→43. Replay
-  guard 24/24, 46.1 F / 85.5 B / +39.4; rubric v0.7. NEXT (READOUT 140): a methodology paragraph in
-  `_write_methodology_page` (`asrs/scorecard.py`) framing "specify the deliverable's output
-  resolution / dimensions" as the digital_good output-SPEC leg (distinct from WHAT is produced /
-  WHERE delivered / rights / trust), with a `test_readout.py` guard — CLOSING the arc. Then METHOD
-  (141): the unused in-cloud METHOD sibling is surface-DEDUP invariance (duplicate/near-duplicate
-  surfaces don't inflate match counts or `strength` — note `strength` is already distinct-label-
-  count, so likely a robustness PIN not a bug-find). New-signal COVERAGE on the unclaimed archetypes
-  (service_booking / data_retrieval) stays [LOCAL]-blocked on a fixture capture (P1); adding a leg to
-  a never-claimed archetype is unverifiable in-cloud.
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 140 was
+  READOUT, so Cycle 141 is METHOD). Cycle 140 CLOSED the `output-resolution`
+  COVERAGE→TRUTH→READOUT arc (138 COVERAGE signal / 139 TRUTH relabel-invariance / 140 READOUT
+  prose) with its methodology PROSE leg: a new paragraph in `_write_methodology_page`
+  (`asrs/scorecard.py`) after the content-provenance ("Trusting the deliverable") prose, framing
+  "specify the deliverable's shape / the output-resolution contract" as the digital_good output-SPEC
+  sibling of owning/trusting the render — DISTINCT from generation/render (WHAT produced),
+  hosted-output (WHERE delivered), output-license (rights), content-provenance (trust); names the
+  failure (an agent requests an unproducible size, or gets a wrong-resolution deliverable — a hero
+  image at thumbnail size), the vendor-neutral output-format vocab (a `maxResolution` field, an
+  output/render/print resolution in px, a WxH pixel dimension, an aspect ratio), preserves the
+  bare-`resolution` precision guard (dispute/New-Year/DNS resolution, the Super-/enhance-image
+  MODEL-FEATURE trap, screen/monitor/display HARDWARE resolution → no signal), pins the
+  identity-relabel regression property, stays diagnostic/off-scoring-path. The digital_good
+  output-SPEC leg now completes a full arc, mirroring metered_api webhook-verification (134/135/136)
+  and streaming-response (126/127/128). Guard `test_methodology_documents_output_resolution` in
+  `tests/test_readout.py` (61→62). Display+tests, off scoring path (`git diff` over `scoring.py
+  offering.py rubric/ fixtures/` EMPTY; `--name-only` = `scorecard.py` + `test_readout.py` ONLY) →
+  NOT peer-gated; branch loop/output-resolution-readout + PR #129 + self-merge (squash aeafed4).
+  Full suite 344→345. Replay guard 24/24, 46.1 F / 85.5 B / +39.4; offering-canonical 43/43;
+  rubric v0.7. NEXT (METHOD 141): the unused in-cloud METHOD sibling is surface-DEDUP invariance
+  (duplicate/near-duplicate surfaces don't inflate match counts or `strength` — note `strength` is
+  already distinct-label-count, so likely a robustness PIN not a bug-find). New-signal COVERAGE on
+  the unclaimed archetypes (service_booking / data_retrieval) stays [LOCAL]-blocked on a fixture
+  capture (P1); adding a leg to a never-claimed archetype is unverifiable in-cloud.
   (Cycle 138 COVERAGE — shipped `output-resolution`, an eleventh digital_good capability leg (the
   output RESOLUTION / pixel DIMENSIONS / ASPECT RATIO of the generated deliverable an agent must
   request and can rely on; distinct from generation/render (WHAT), hosted-output (WHERE),

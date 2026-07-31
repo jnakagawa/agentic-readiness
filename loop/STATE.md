@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 131
+- Cycle counter: 132
 - Started: 2026-07-23 (UTC)
 - RUNNER RECOVERED at 2026-07-31T09:12Z (Cycle 126) — the ~56h stall (first breached Cycle 76 06:12Z)
   CLEARED. Newest artifact `runs/local/verify_20260731T085248Z.json` (08:52Z Jul-31) carries
@@ -36,7 +36,41 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 132 READOUT — CLOSED the ninth metered_api COVERAGE→TRUTH→READOUT arc by surfacing Cycle
+  130's `self-provisioning` signal in the public methodology prose. Added one capability-worded,
+  vendor-neutral paragraph "Onboarding without a human" to `_write_methodology_page`
+  (`asrs/scorecard.py`), placed after the api-auth ("Provisioning without a human") leg it
+  complements: api-auth = PRESENT a credential you hold; self-provisioning = whether an agent can
+  OBTAIN one at all with no human onboarding. The paragraph frames obtaining access without a human
+  (failure = a human must sign up on a dashboard → agent stranded), names the vendor-neutral
+  onboarding conventions (no signup / no human account creation / provisions its own identity /
+  self-provision path), keeps the OPPOSITE-path precision honesty (the "sign up on the dashboard for
+  an API key" human path, the 401 "No API key" error, and the "no signup fees" pricing sense are
+  named as what it REJECTS), says recognition keys on whether a human must onboard the agent (pinned
+  by an identity-relabel test), and stays honest (diagnostic, off the scoring path). Guarded by
+  `test_methodology_documents_self_provisioning` in `tests/test_readout.py` (59→60). SHIP CLASS:
+  display+tests-only, off the scoring path (`scoring.py` 0 offering refs) → score-neutral, NOT
+  peer-gated. git diff over `asrs/scoring.py rubric/ fixtures/ asrs/offering.py` EMPTY; --name-only =
+  `asrs/scorecard.py` + `tests/test_readout.py`. First duty: no open peer-gated PR (`[]` at fire
+  start). Cloud bridge blocks direct main push → branch loop/self-provisioning-readout + PR #113 +
+  self-merge (squash 518bc94; realigned main via `git reset --hard origin/main` → 518bc94, verified
+  prose present + readout 60/60 + replay 24/24 on merged main, deleted local branch). Full suite green
+  (22 files; test_free_tier 11/11 after `pip install -r requirements.txt`, environment-only). Canonical
+  PAIR unchanged: replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. INFRA
+  HEALTHY (verify 20260731T134541Z 13:45Z, ~1.5h old at fire, within 6h floor; no open peer-gated PRs).
+  LIVE-DELTA divergence unchanged — no new verify since 13:45Z (driftflight.com LIVE 76.2 C / +30.1 /
+  transactability 62.5 across two crawls); in-cloud replay guard STILL 24/24 / +39.4, off scoring path;
+  re-capture is [LOCAL]/peer-gated. No Slack (score-neutral, off scoring path, not sensitive-class;
+  15:1xZ is not the first-after-16:00 digest — that is ~16:1xZ Jul-31, which reports the runner-recovery
+  + this persisting live-delta divergence).
+  Next METHOD — the ninth arc is complete on all three tracks. New-signal COVERAGE/TRUTH is
+  [LOCAL]-blocked (physical_good / service_booking / data_retrieval have no committed fixture that
+  claims them; see the P1 fixture-capture item). Highest-leverage in-cloud METHOD unit: a new
+  metamorphic-invariance axis on an existing signal (e.g. whitespace/casing normalization invariance,
+  surface-dedup invariance, or a cross-signal precision-isolation guard proving one archetype's signal
+  never leaks into another's verdict). If the next verify still shows transactability 62.5, the [LOCAL]
+  canonical re-capture rises in leverage.)
   (Cycle 131 TRUTH — pinned Cycle 130's `self-provisioning` metered_api signal as RELABEL-INVARIANT,
   the ninth metered_api arc's TRUTH leg (mirroring free-trial 115 / streaming-response 127). Added
   `test_offering_relabel_invariance_self_provisioning` (+ `_self_prov_signals`) to

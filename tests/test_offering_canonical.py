@@ -2366,6 +2366,129 @@ def test_offering_content_scale_invariance_com() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Content-scale invariance on the NO-RAILS retail store — the credibility-
+# protecting direction of the SCALE axis, closing the same org/com-only-vs-retail
+# asymmetry the noise-surface axis closed one increment earlier. `_org`/`_com`
+# above prove a WITH-RAILS storefront that repeats its pitch is not "more" of any
+# archetype (multi-archetype, ranked); this pins the OPPOSITE storefront type: a
+# pure book catalog that claims ONLY physical_good with every rails archetype NA
+# (metered_api / subscription / digital_good). The property it protects is the
+# "never manufacture the delta" invariant applied to the SCALE axis: duplicating a
+# no-rails retailer's catalog prose N times must not push its physical_good claim
+# up in strength AND must not CONJURE a rails archetype it does not offer. The
+# classified delta between a rails storefront and a no-rails one has to come from
+# real published capability, never from how much a store repeats itself.
+#
+# Two structural differences from `_assert_content_scale_invariance` force a
+# dedicated test rather than a reuse of the canonical helper:
+#   * the retail store claims a SINGLE archetype, so the helper's `len(claimed)
+#     >= 2` rank-reorder premise does not apply (there is no multi-archetype
+#     ranking to perturb — the guarded property is instead "strength holds and the
+#     NA rails set stays NA");
+#   * non-vacuity is therefore anchored on physical_good's own signals, which fire
+#     MORE raw matches under duplication (a count-based reader would differ), plus
+#     the NA-rails-stay-NA teeth, rather than on an observable rank reorder.
+# ---------------------------------------------------------------------------
+
+
+def test_offering_content_scale_invariance_retail() -> None:
+    """Repeating a no-rails catalog is not "more" physical_good — and conjures no rails."""
+    print("test_offering_content_scale_invariance_retail")
+
+    # Capture the base surfaces exactly as discovery feeds them to the classifier.
+    # (Unlike `_captured_surfaces`, no >=2-surface premise: the retail fixture is a
+    # single-surface homepage catalog, and the scale axis duplicates whatever base
+    # the store publishes.)
+    path = os.path.join(_FIXTURE_DIR, f"{_RETAIL}.json")
+    ctx = FetchContext.from_fixture(path)
+    captured: dict = {}
+    real = _offering.classify_offering
+
+    def _spy(dom, surfaces):
+        captured.clear()
+        captured.update(surfaces)
+        return real(dom, surfaces)
+
+    _offering.classify_offering = _spy
+    try:
+        _offering.discover_offering(ctx)
+    finally:
+        _offering.classify_offering = real
+
+    base = _offering.classify_offering(_RETAIL, dict(captured))
+
+    # The property under test is genuinely present: the store claims EXACTLY
+    # physical_good, with every rails archetype NA — so a rails claim conjured by
+    # sheer repetition would be unmistakably observable.
+    _check(
+        set(base.archetypes) == _RETAIL_CLAIMED,
+        f"{_RETAIL}: base claimed set == {sorted(_RETAIL_CLAIMED)} "
+        f"(got {sorted(set(base.archetypes))})",
+    )
+    _check(
+        _RETAIL_MUST_BE_NA <= set(base.unclaimed),
+        f"{_RETAIL}: the rails archetypes {sorted(_RETAIL_MUST_BE_NA)} are all NA at "
+        f"base (got unclaimed {sorted(base.unclaimed)}) — the no-rails property the "
+        "duplication must not overturn is present",
+    )
+
+    dup_surfaces = {s: _dup_surface(r) for s, r in captured.items()}
+    # Non-vacuity: the duplication genuinely enlarged every surface the classifier
+    # reads — its input really changed.
+    _check(
+        all(len(dup_surfaces[s]) > len(captured[s]) for s in captured),
+        f"{_RETAIL}: every surface body grew under {_SCALE_K}x duplication "
+        "(the perturbation is real, not a no-op)",
+    )
+    # TEETH: a count-based reader WOULD see strictly more. physical_good's first
+    # signal fires K times as many RAW matches after duplication, yet the classifier
+    # below reports the SAME single signal / strength / claim — proving count-
+    # independence is a real property on the retail pole, not a vacuous invariance.
+    anchor = base.claimed[0].signals[0]
+    _check(
+        anchor.archetype == "physical_good",
+        f"{_RETAIL}: the anchor signal is a physical_good leg (got {anchor.archetype})",
+    )
+    pat = _signal_pattern(anchor.archetype, anchor.label)
+    _check(pat is not None, f"{_RETAIL}: anchor signal pattern resolvable")
+    n_base = len(pat.findall(_surface_prose(anchor.surface, captured[anchor.surface])))
+    n_dup = len(pat.findall(_surface_prose(anchor.surface, dup_surfaces[anchor.surface])))
+    _check(
+        n_base >= 1 and n_dup > n_base,
+        f"{_RETAIL}: the anchor signal ({anchor.archetype}/{anchor.label}) fires MORE raw "
+        f"matches under duplication ({n_base} -> {n_dup}) — a count-based reader would differ",
+    )
+
+    dup = _offering.classify_offering(_RETAIL, dict(dup_surfaces))
+
+    # (1) The WHOLE classified profile is byte-identical: physical_good's strength
+    # AND its complete (label, surface, quote) evidence survive duplication unchanged
+    # — no signal multiplied, no quote drifted, no rails archetype conjured.
+    _check(
+        _full_evidence_map(dup) == _full_evidence_map(base),
+        f"{_RETAIL}: complete per-archetype (strength, (label, surface, quote)) evidence "
+        "map invariant under content duplication",
+    )
+    # (2) Claimed archetypes invariant — still EXACTLY physical_good. Repetition
+    # conjured no rails claim; the "never manufacture the delta" property on the
+    # SCALE axis.
+    _check(
+        dup.archetypes == base.archetypes,
+        f"{_RETAIL}: claimed archetypes invariant under duplication "
+        f"(base {base.archetypes}, dup {dup.archetypes})",
+    )
+    # (3) The rails archetypes stay NA and the whole NA set is invariant — which
+    # archetypes a no-rails store is excused on as NA is a property of WHAT it
+    # claims, never of how many times it says it.
+    _check(
+        _RETAIL_MUST_BE_NA <= set(dup.unclaimed)
+        and set(dup.unclaimed) == set(base.unclaimed),
+        f"{_RETAIL}: the rails archetypes stay NA and the whole NA set is invariant "
+        f"under duplication (base {sorted(base.unclaimed)}, dup {sorted(dup.unclaimed)})",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Noise-surface invariance — the FOURTH metamorphic axis on the classifier.
 #
 # The three families above perturb the surfaces a site DOES publish: RELABEL
@@ -2826,6 +2949,7 @@ def main() -> int:
         test_offering_surface_order_invariance_org,
         test_offering_content_scale_invariance_org,
         test_offering_content_scale_invariance_com,
+        test_offering_content_scale_invariance_retail,
         test_offering_noise_surface_invariance_org,
         test_offering_noise_surface_invariance_com,
         test_offering_noise_surface_invariance_retail,

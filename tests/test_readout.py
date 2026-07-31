@@ -1015,6 +1015,67 @@ def test_methodology_documents_webhook_verification() -> None:
                f"webhook-verification prose names no vendor/domain ({banned!r})")
 
 
+def test_methodology_documents_output_resolution() -> None:
+    # Cycle 140 (READOUT): the READOUT complement CLOSING the output-resolution arc
+    # opened by Cycle 138 (COVERAGE — the eleventh digital_good `output-resolution`
+    # offering signal: the output RESOLUTION / pixel DIMENSIONS / ASPECT RATIO of the
+    # generated deliverable an agent must request and can rely on) and Cycle 139 (TRUTH
+    # — the SIGNAL-level HOST relabel-invariance guard for that signal). This is the
+    # digital_good output-SPEC leg completing the full COVERAGE->TRUTH->READOUT arc
+    # (mirroring the metered_api siblings webhook-verification 134/135/136,
+    # streaming-response 126/127/128, cancel-job 110/111/112). The output-SHAPE leg was
+    # pinned in code + tests but NEVER surfaced in prose a critic can read — a reader
+    # could not learn WHY a generation storefront that documents its output resolutions
+    # is MORE agent-completable, or how the leg is DISTINCT from every existing
+    # digital_good leg: generation/render say WHAT is produced, hosted-output says WHERE
+    # it is delivered, output-license whether the agent may USE it, content-provenance
+    # whether the agent can TRUST it — NONE says the physical SHAPE the agent must
+    # parameterize its request with. The paragraph must (a) frame it as specifying the
+    # deliverable's shape / the output-resolution contract, name it the output-spec
+    # sibling of owning/trusting the render, and name the failure (an agent requests a
+    # size the API cannot produce, or is handed a deliverable at the wrong resolution for
+    # its downstream use — a hero image delivered at thumbnail size); (b) name the
+    # vendor-neutral output-format vocabulary the offering signal anchors on as open
+    # conventions — a maxResolution field, a WxH pixel dimension, an aspect ratio; (c)
+    # keep the signal's PRECISION honesty — a bare `resolution` (dispute resolution, a
+    # New-Year resolution, DNS resolution, a hosted model's own Super-resolution/enhance-
+    # image-resolution FEATURE, a screen/monitor/display hardware resolution) is not an
+    # output spec and is read as no signal; (d) say recognition keys on the SHAPE the
+    # offer documents not who documents it and is pinned by an identity-relabel
+    # executable regression test; and (e) stay HONEST about scope — this offering read is
+    # diagnostic, off the scoring path, not a scored pillar. Vendor-neutral throughout.
+    print("test_methodology_documents_output_resolution")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    # Match on the whitespace-collapsed text (same technique as the webhook-verification
+    # / streaming-response guards) so wording, not source wrapping, is what the guard pins.
+    collapsed = " ".join(text.split())
+    for phrase in ("Specifying the deliverable", "output-spec sibling",
+                   "output resolution", "output-resolution contract",
+                   "wrong resolution for its downstream use",
+                   "shape the offer documents, not who documents it",
+                   "relabels the storefront", "executable regression test",
+                   "off the scoring path", "diagnostic"):
+        _check(phrase in collapsed,
+               f"methodology documents output-resolution: {phrase!r}")
+    # The vendor-neutral output-format vocabulary the offering signal bank anchors on
+    # must appear as open conventions, never a vendor product: a maxResolution field, a
+    # WxH pixel dimension, an aspect ratio.
+    for token in ("maxResolution", "pixel dimension", "aspect ratio"):
+        _check(token in collapsed, f"methodology names output-format convention {token!r}")
+    # PRECISION honesty: the prose must preserve the signal's bare-word guard — a bare
+    # `resolution` (dispute resolution, a hosted model's Super-resolution feature, a
+    # screen/monitor/display hardware resolution) is not an output spec, no signal.
+    for token in ("bare", "no signal", "dispute resolution",
+                  "Super-resolution", "screen / monitor / display"):
+        _check(token in collapsed,
+               f"methodology keeps output-resolution precision note: {token!r}")
+    # Vendor-neutral: no scored domain/product/brand named on the page.
+    for banned in ("drift-flight", "driftflight", "replicate"):
+        _check(banned not in text,
+               f"output-resolution prose names no vendor/domain ({banned!r})")
+
+
 def test_methodology_documents_free_trial() -> None:
     # Cycle 116 (READOUT): the READOUT complement CLOSING the free-trial arc opened by
     # Cycle 114 (COVERAGE — the `free-trial` offering signal added to the SUBSCRIPTION

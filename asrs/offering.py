@@ -473,6 +473,52 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"\bCancel-After\b"
             r"|\bcancel(?:s|ing|led|ed)?\s+(?:(?:the|a|an|your|this|in-progress|running|pending|queued|current)\s+)*(?:prediction|job|run|task|request|training|inference|operation|generation|batch|workflow)s?\b"
             r"|\b(?:prediction|job|run|task|training|inference|operation)s?/[^\s\"']*?/cancel\b", _F)),
+        # AGENT SELF-PROVISIONING — whether an autonomous agent can OBTAIN access to
+        # the API WITHOUT a human in the loop: no signup, no human account creation,
+        # the agent provisions its OWN identity. This is the "provision without a
+        # human" capability the PLAYBOOK's capability lens names explicitly, and it is
+        # currently UNCAPTURED by the bank. It is the load-bearing precondition for
+        # every other metered_api leg: an API whose credentials can only be issued by
+        # a human who signs up on a dashboard is NOT agent-completable end-to-end, no
+        # matter how cleanly it documents its auth scheme, rate limits, or errors — a
+        # human must first onboard. So a metered API that lets an agent self-provision
+        # (no signup / no API key / provision its own identity) is MORE agent-
+        # completable. Distinct from every existing metered_api signal: `api-auth` is
+        # how you PRESENT credentials you ALREADY hold; `test-mode` is whether you can
+        # TRY the call safely; NONE says whether a HUMAN must onboard you to get
+        # credentials at all. Vendor-neutral agent-onboarding vocabulary (no signup /
+        # no human account creation / an agent provisions its own identity /
+        # self-provision), never a vendor.
+        # PRECISION-CRITICAL: this signal must capture only the AFFIRMATIVE agentic
+        # self-provisioning capability and NEVER the OPPOSITE human-onboarding
+        # phrasing present verbatim in the very fixtures we validate on — BOTH
+        # canonical domains carry "Human developers sign up on the dashboard for an
+        # API key" (a human-gated onboarding, the exact inverse of the capability),
+        # and drift-flight.org's /docs 401 row reads "No API key, or the key is
+        # unknown or revoked" (an error message, not a no-key capability). A naive
+        # "\bsign up\b" would misread the human path as self-provisioning; a bare "no
+        # API key" would misread the 401 error. So NEVER match a bare "sign up" or a
+        # bare "no API key": require the NEGATED onboarding ("no signup" / "no
+        # sign-up", NOT the pricing sense "no signup fees/costs/charges"), an agent
+        # PROVISIONING ITS OWN IDENTITY, an explicit "self-provision", or a "no
+        # human"/"without a human" signup/account/onboarding/provisioning phrase. The
+        # "Human developers sign up" path, the 401 "No API key" error, "no signup
+        # fees", and a "sign up for our newsletter" prompt trip none of these. Fires
+        # non-vacuously on driftflight.com (the apex "free trial, no signup" heading
+        # and the agents.driftflight.com agent docs "There is no signup and no API
+        # key … an autonomous agent can provision its own identity") and is correctly
+        # ABSENT on drift-flight.org (whose ONLY signup phrasing is the human-gated
+        # dashboard path) — the discovery-layer echo of the real capability gap. Both
+        # already claim metered_api via other signals, so this deepens driftflight.com's
+        # evidence without adding or reordering any archetype (score-neutral); it fires
+        # on ZERO of the api.replicate.com (API-key required), retail
+        # (books.toscrape.com), or null (example.com) fixtures, so it can never CONJURE
+        # a metered_api claim on a site that does not already make one.
+        ("self-provisioning", re.compile(
+            r"\bno\s+sign[- ]?up(?!\s+(?:fees?|costs?|charges?))\b"
+            r"|\bprovision\w*\s+(?:its|their|your|an?)\s+own\s+identit\w+"
+            r"|\bself[- ]provision\w*"
+            r"|\b(?:no\s+human|without\s+(?:a\s+)?human)\s+(?:sign[- ]?up|signup|account|onboarding|provisioning)\b", _F)),
         # Credit-based metering — the dominant billing convention for generative
         # and agent-native APIs (prepay a credit balance, spend N credits per
         # call/image/generation). PRECISION-CRITICAL: bare "\bcredits?\b" is a

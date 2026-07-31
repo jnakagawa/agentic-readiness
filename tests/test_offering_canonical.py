@@ -1835,6 +1835,145 @@ def test_offering_relabel_invariance_free_trial() -> None:
 
 
 # ---------------------------------------------------------------------------
+# digital_good's SECOND signal-level companion — and the tenth leg of the
+# signal-level relabel family (metered_api's seven + digital_good's
+# `output-license` + subscription's `free-trial`): the digital_good bank's
+# `content-provenance` (Cycle 118 — the trust/authenticity leg, the MEANS to
+# verify a generated deliverable is genuine, MIRROR of `output-license`'s RIGHT
+# to use it). An agent that obtains a render carrying embedded C2PA content
+# credentials / a provenance manifest can confirm the asset's origin and use it
+# in a provenance-aware pipeline, so a storefront that records provenance on its
+# output is more agent-completable at the digital-good layer. Provenance is a
+# property of the DELIVERABLE — C2PA credentials, a content/media provenance
+# record — never of WHO vends it, so the signal must be identity-invariant under
+# a host relabel.
+#
+# Why a SYNTHETIC surface, not the real fixture (like `free-trial`, unlike
+# `output-license` which rides driftflight.com's captured evidence): the
+# `content-provenance` vocabulary is host-free by nature ("C2PA content
+# credentials", "records provenance metadata"), and on the real canonical pair
+# the signal fires on the homepage / /docs / /pricing / /llms.txt surfaces with
+# the host in NEITHER the quote window NOR (mostly) the surface key — even on the
+# `agents.driftflight.com/*` surfaces the host sits in the surface KEY but the
+# C2PA quote is host-free (verified live). So a whole-fixture relabel would leave
+# the provenance evidence byte-identical and the invariance would be VACUOUS. To
+# genuinely rewrite the classifier's input at the provenance signal, this guard
+# scans a synthetic digital_good surface that deliberately seats the host INSIDE
+# the provenance evidence: the host is the surface KEY prefix AND sits adjacent to
+# the C2PA phrase, so it lands inside the padded quote window (asserted
+# non-vacuous below). Relabel the host everywhere, re-scan, and the
+# content-provenance signal must survive with the SAME match count, on the SAME
+# host-normalized surface, its quote STILL satisfying the live content-provenance
+# regex, with the vendor host absent from all rewritten evidence.
+#
+# TEETH (precision, the content-provenance signal's defining risk): a sibling
+# synthetic surface carrying only the bare-"provenance"/"credentials"
+# false-positive senses the signal must REFUSE — art & wine provenance, "data
+# provenance" (a data_retrieval concern), login "credentials", and the
+# api.replicate-style "watermarking for provenance" hosted-MODEL-feature phrasing
+# — fires ZERO content-provenance signals, proving the match keys on the
+# content-authenticity STRUCTURE (C2PA / content credentials / a media-output
+# provenance record), not on the words "provenance"/"credentials"; and relabeling
+# the host through that distractor prose never CONJURES a digital_good claim.
+# ---------------------------------------------------------------------------
+_PROVENANCE_LABEL = "content-provenance"
+_CP_HOST = "acme-renders.example"  # a host bearing no content-provenance signal word
+_CP_SURFACE = f"agents.{_CP_HOST}/docs"
+# Host seated adjacent to the C2PA phrase so it lands in the padded quote window.
+_CP_PROSE = (
+    f"{_CP_HOST} embeds C2PA content credentials on every render, so an agent can "
+    f"verify the {_CP_HOST} asset is genuine before use."
+)
+# The bare-"provenance"/"credentials" false-positive senses it must never match.
+_CP_DISTRACTOR_SURFACE = f"agents.{_CP_HOST}/legal"
+_CP_DISTRACTOR_PROSE = (
+    f"The {_CP_HOST} sommelier documents each bottle provenance; a museum verified "
+    f"the painting provenance. Users sign in with their credentials. The model "
+    f"embeds invisible watermarking for provenance on all generated images, and "
+    f"data provenance is logged downstream."
+)
+
+
+def _provenance_signals(surface: str, text: str) -> list:
+    """The (surface, quote) pairs where the digital_good content-provenance fired."""
+    return sorted(
+        (s.surface, s.quote)
+        for s in _offering._scan_surface(surface, text)
+        if s.archetype == "digital_good" and s.label == _PROVENANCE_LABEL
+    )
+
+
+def test_offering_relabel_invariance_content_provenance() -> None:
+    """The digital_good content-provenance keys on the C2PA form, not the host."""
+    print("test_offering_relabel_invariance_content_provenance")
+    base = _provenance_signals(_CP_SURFACE, _CP_PROSE)
+
+    # The signal genuinely fires on the synthetic digital_good evidence.
+    _check(
+        len(base) == 1,
+        f"content-provenance fires exactly once on the synthetic surface (got {len(base)})",
+    )
+    base_surf, base_quote = base[0]
+
+    # Non-vacuity: the host sits inside BOTH the surface key AND the padded quote
+    # window, so a host relabel genuinely rewrites the classifier's provenance input
+    # — this is not a no-op over host-free evidence (the real-fixture failure mode).
+    _check(
+        _CP_HOST in base_surf and _CP_HOST in base_quote,
+        f"the host is inside the content-provenance surface key AND quote window — "
+        f"relabel rewrites real signal input (surface {base_surf!r}, quote {base_quote!r})",
+    )
+
+    # TEETH: the bare-"provenance"/"credentials" senses (art / wine / login /
+    # data provenance / "watermarking for provenance" model-feature) fire ZERO —
+    # the signal keys on the content-authenticity structure, not the words.
+    _check(
+        _provenance_signals(_CP_DISTRACTOR_SURFACE, _CP_DISTRACTOR_PROSE) == [],
+        "bare-'provenance'/'credentials' distractor prose (art/wine/data provenance, "
+        "login credentials, watermarking-for-provenance) fires no content-provenance "
+        "signal — the match is structural, not the word 'provenance'",
+    )
+
+    # Relabel the host everywhere (surface key + prose) and re-scan.
+    relab_surface = _CP_SURFACE.replace(_CP_HOST, _NEUTRAL_HOST)
+    relab_prose = _CP_PROSE.replace(_CP_HOST, _NEUTRAL_HOST)
+    _check(
+        _CP_HOST not in relab_surface and _CP_HOST not in relab_prose,
+        "every occurrence of the original host was relabeled out of the synthetic input",
+    )
+    relab = _provenance_signals(relab_surface, relab_prose)
+
+    # (1) Same match count — the provenance signal is neither lost nor conjured.
+    _check(
+        len(relab) == len(base) == 1,
+        f"content-provenance match count invariant under relabel (base {len(base)}, "
+        f"relabel {len(relab)})",
+    )
+    relab_surf, relab_quote = relab[0]
+
+    # (2) The SAME logical surface carries the signal once the host label is
+    # normalized away — the signal did not migrate to a different surface.
+    _check(
+        relab_surf == base_surf.replace(_CP_HOST, _NEUTRAL_HOST),
+        "content-provenance fires on the same (host-normalized) surface under relabel "
+        f"(base {base_surf!r}, relabel {relab_surf!r})",
+    )
+    # (3) The relabeled quote STILL satisfies the live content-provenance regex (the
+    # fired form is a C2PA / content-credentials record, not the host) and names no
+    # vendor host — the match keyed on the DELIVERABLE's provenance, not who vends it.
+    cp_re = dict(_offering._SIGNALS["digital_good"])[_PROVENANCE_LABEL]
+    _check(
+        cp_re.search(relab_quote) is not None,
+        f"relabeled content-provenance quote still matches the authenticity-structural "
+        f"signal: {relab_quote!r}",
+    )
+    _check(
+        _CP_HOST not in relab_quote and _CP_HOST not in relab_surf,
+        f"vendor host absent from relabeled content-provenance evidence (surface {relab_surf!r})",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Surface-read ORDER invariance — the digital_good deliverable-RIGHTS leg.
 #
 # A fresh perturbation AXIS orthogonal to the relabel/identity family above. The
@@ -2682,6 +2821,7 @@ def main() -> int:
         test_offering_relabel_invariance_cancel_job,
         test_offering_relabel_invariance_output_license,
         test_offering_relabel_invariance_free_trial,
+        test_offering_relabel_invariance_content_provenance,
         test_offering_surface_order_invariance_output_license,
         test_offering_surface_order_invariance_org,
         test_offering_content_scale_invariance_org,

@@ -1,14 +1,13 @@
 # Loop state
 
-- Cycle counter: 118
+- Cycle counter: 119
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-31T01:12Z, Cycle 118; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-31T02:11Z, Cycle 119; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~49.5h old at the Cycle-118 fire (the container clock reads 01:12Z Jul-31, correcting the
-  Cycle-117 note's "~15:xxZ / 63h" estimate — the real wall clock is ~49.5h past the last artifact); no
-  newer :41 artifact through 01:12Z Jul-31. Cloud CANNOT repair the local machine. The gap was RE-FLAGGED
+  Jul-28 = ~50h old at the Cycle-119 fire (container clock 02:11Z Jul-31); no
+  newer :41 artifact through 02:11Z Jul-31. Cloud CANNOT repair the local machine. The gap was RE-FLAGGED
   loudly in the Cycle-109 16:12Z digest (the first cycle after 16:00Z on Jul-30). The NEXT first-after-16:00
-  fire (~16:1xZ Jul-31) is the next re-flag point; Cycle 118 at 01:12Z is NOT first-after-16:00 → no
+  fire (~16:1xZ Jul-31) is the next re-flag point; Cycle 119 at 02:11Z is NOT first-after-16:00 → no
   re-digest THIS fire, but keep noting the gap until it clears; queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
   is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
@@ -28,7 +27,34 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 119 TRUTH — pinned the Cycle-118 `content-provenance` signal (digital_good's authenticity leg) as
+  RELABEL-INVARIANT: the TRUTH leg of the COVERAGE(118)→TRUTH arc, mirroring free-trial (114→115). Tenth leg
+  of the signal-level relabel family (metered_api ×7 + digital_good `output-license` + subscription
+  `free-trial` + this); digital_good's SECOND relabel-pinned leg. VERIFIED live that content-provenance
+  evidence (C2PA / content credentials / records provenance) is host-FREE on all five committed fixtures —
+  the host never lands in the quote window, even on the `agents.driftflight.com/*` surfaces where it sits
+  only in the surface KEY — so a whole-fixture relabel would be VACUOUS (the free-trial-115 failure mode).
+  New `test_offering_relabel_invariance_content_provenance` + `_provenance_signals` therefore scan a SYNTHETIC
+  digital_good surface (host `acme-renders.example`) seating the host INSIDE the C2PA evidence (surface key +
+  padded quote window, asserted non-vacuous), relabel end-to-end, and assert identity-invariance: same match
+  count (1), same host-normalized surface, quote still matches the live content-provenance regex, host absent.
+  TEETH: a bare-`provenance`/`credentials` distractor (art/wine/data provenance, login credentials,
+  api.replicate-style "watermarking for provenance" model-feature) fires ZERO. SHIP CLASS: tests-only, off the
+  scoring path (`scoring.py` 0 offering refs — grep-verified) → score-neutral, NOT peer-gated. git diff over
+  `asrs/ rubric/ fixtures/` EMPTY; --name-only = `tests/test_offering_canonical.py` ONLY (+140). Cloud bridge
+  blocks direct main push → branch loop/relabel-content-provenance-signal + PR #87 + self-merge (squash
+  a8363d3; merged commit = exactly the one test file). First duty: no open peer-gated PR ([] at fire start);
+  realigned main to origin/main after merge, deleted local branch. offering canonical guard 30→31, re-run on
+  merged main 31/31; full suite green (22 files; test_free_tier 11/11 after `pip install -r requirements.txt`,
+  environment-only). Canonical PAIR unchanged AND re-measured pre/post merge: replay guard 24/24, 46.1 F /
+  85.5 B / +39.4, 0 replay-miss; rubric v0.7. No Slack (score-neutral, off scoring path; not sensitive-class;
+  not the first-after-16:00 digest cycle — that is the ~16:1xZ Jul-31 fire). RUNNER STILL GAPPED
+  (verify_20260728T234102Z 23:41Z, ~50h old). Next READOUT — CLOSE the content-provenance arc at its third
+  layer: surface "verify the deliverable's provenance" in `_write_methodology_page` prose (third full
+  COVERAGE→TRUTH→READOUT arc on a non-metered_api archetype, after free-trial + output-license),
+  capability-worded/vendor-neutral (C2PA / content credentials / media-output provenance record as open
+  conventions), with a `test_readout.py` content-presence guard.)
   (Cycle 118 COVERAGE — added a `content-provenance` capability signal to the **digital_good** archetype
   bank (`asrs/offering.py`): the "verify + trust the deliverable" leg, the authenticity MIRROR of
   `output-license` (rights to USE → the MEANS to TRUST). An agent obtaining a generated asset that carries

@@ -273,6 +273,58 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"|\bpoll(?:ing)?\s+(?:the\s+|for\s+|your\s+)?[^\n]{0,50}?\bendpoint\b"
             r"|\bpoll(?:ing)?\s+(?:for|until)\b"
             r"|\basync(?:hronous)?\s+(?:api|jobs?|requests?|predictions?|endpoint|calls?|inference|processing|tasks?|mode)\b", _F)),
+        # STREAMING response delivery — how an agent consumes output INCREMENTALLY
+        # over the OPEN connection as it is produced (token-by-token generation,
+        # progressive job output) rather than in one terminal round-trip. This is a
+        # "complete the job" delivery-mode capability, and it is the IN-BAND sibling
+        # of `async-job`: where `async-job` collects a completed long job's result
+        # OUT of band (a webhook fires / the agent polls a status URL AFTER the
+        # request returns), streaming delivers partial output WITHIN the same
+        # request while the work is still running. An agent that cannot read the
+        # streaming contract either blocks on a long call it could have consumed
+        # progressively, or reads a `stream` URL it does not know how to open — so a
+        # metered API that documents a streaming/SSE flow is MORE agent-completable.
+        # Distinct from every existing metered_api signal: `api-auth` is how you
+        # PRESENT credentials, `rate-limited` how fast you may call, `async-job` how
+        # a completed job's result comes back OUT of band, `error-contract` how a
+        # failed call recovers, `pagination` how a paged collection is walked,
+        # `cancel-job` how a job is stopped; NONE says how output is delivered
+        # incrementally over the live connection. Vendor-neutral open-standard
+        # streaming vocabulary — the W3C Server-Sent Events standard, its
+        # `text/event-stream` media type, a documented streaming API/endpoint that
+        # streams the output/response/tokens as they are produced — the same
+        # open-convention category as REST/GraphQL/OpenAPI/x402 already in this bank,
+        # never a vendor.
+        # PRECISION-CRITICAL: bare "\bstream\b"/"\bSSE\b" is a false-positive
+        # minefield present in the very fixtures we validate on — the SSE ACRONYM
+        # collides with the Shanghai Stock Exchange (SSE) and "sum of squared errors
+        # (SSE)"; bare "stream" reads `application/octet-stream` (a binary-download
+        # MIME type, NOT a streaming RESPONSE — present verbatim on
+        # api.replicate.com's /openapi.json), a "live stream", the "bloodstream", a
+        # "stream of consciousness", "downstream/upstream". A bare "SSE" would be
+        # WORSE than noise here: it could CONJURE a false metered_api claim on a
+        # stock-exchange page (the exact archetype-pollution this module removes). So
+        # NEVER match a bare token: require the spelled-out `server-sent events`, the
+        # `text/event-stream` media type, a `stream`/`streaming` VERB naming an output
+        # noun (stream the output / streaming responses / stream tokens / streaming
+        # generations), a `streaming` API/ENDPOINT/MODE, or the `SSE` acronym ONLY in
+        # a streaming context (over/via/using/through SSE, an `SSE stream/endpoint/
+        # connection/events`). The octet-stream MIME, the stock exchange, the squared
+        # errors, and the live-stream/bloodstream/downstream senses trip none of these.
+        # Fires non-vacuously on the real captured api.replicate.com /openapi.json (the
+        # `stream` field's "receive streaming output using server-sent events (SSE)" +
+        # "An event source to stream the output of the prediction") and on ZERO of the
+        # canonical-pair, retail (books.toscrape.com), or null (example.com) fixtures.
+        # api.replicate.com ALREADY claims metered_api (its only archetype), so this
+        # deepens its evidence without adding or reordering any archetype
+        # (score-neutral); the classifier is off the scoring path.
+        ("streaming-response", re.compile(
+            r"\bserver-sent events\b"
+            r"|\btext/event-stream\b"
+            r"|\bstream(?:s|ing)?\s+(?:the\s+|your\s+|its\s+)?(?:output|response|responses|result|results|tokens?|completions?|events?|generations?)\b"
+            r"|\bstreaming\s+(?:api|endpoint|mode|responses?|outputs?)\b"
+            r"|\b(?:over|via|using|through)\s+SSE\b"
+            r"|\bSSE\s+(?:stream|streaming|endpoint|connection|events?)\b", _F)),
         # Documented ERROR CONTRACT — the machine-readable HTTP error responses an
         # agent must handle to RECOVER from a failed call: the 4xx/5xx status codes
         # and error identifiers the API returns when a request is rejected. This is

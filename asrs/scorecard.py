@@ -419,6 +419,38 @@ relabels the API&rsquo;s identity end-to-end and confirms the async contract is
 still recognized, unchanged, with the vendor&rsquo;s name gone. This read is
 <b>diagnostic</b> &mdash; it names what the offer requires, <b>off the scoring
 path</b> &mdash; not a scored pillar.</p>
+<p><b>Consuming the output as it streams</b> is the <b>in-band sibling</b> of
+collecting an async job, and it is where a metered API that produces its answer
+<b>incrementally</b> can either free an agent or block it. Where an async job
+hands back a completed result <b>out of band</b> &mdash; a webhook fires, the
+agent polls a status URL after the request returns &mdash; a <b>streaming</b>
+offer delivers partial output <b>within the same request</b>, over the open
+connection, while the work is still running. An agent that cannot read the
+<b>streaming contract</b> either blocks on a long call it could have consumed
+progressively, or is handed a <code>stream</code> URL it never learns how to
+open &mdash; so an offer that documents how its output streams is more
+agent-completable than one whose only mode is wait-for-the-whole-thing. So ASRS
+reads the documented streaming contract as part of finishing the offer, keyed on
+vendor-neutral open-standard delivery vocabulary (the W3C <b>server-sent
+events</b> standard, its <code>text/event-stream</code> media type, a
+<b>streaming endpoint</b> that streams the output or tokens as they are
+produced), the same category of open convention as REST, GraphQL or OpenAPI. The
+read is <b>precision-guarded</b>: a <b>bare</b> <code>stream</code> or
+<code>SSE</code> token is <b>no signal</b> &mdash; an
+<code>application/octet-stream</code> binary-download MIME type, the <b>Shanghai
+Stock Exchange</b> (SSE) or &ldquo;sum of squared errors (SSE)&rdquo;, a live
+stream, the bloodstream, or a &ldquo;stream of consciousness&rdquo; must never
+trip it, and a bare <code>SSE</code> must never <b>conjure a metered-API
+claim</b> on a stock-exchange page &mdash; so the phrasing must name an actual
+streaming delivery (spelled-out server-sent events, the
+<code>text/event-stream</code> type, a stream verb naming an output noun, a
+streaming API or endpoint, or <code>SSE</code> only in a streaming context).
+Recognition keys on the <b>contract the API documents, not who published it</b>:
+that property is pinned by an <b>executable regression test</b> that relabels the
+API&rsquo;s identity end-to-end and confirms the streaming contract is still
+recognized, unchanged, with the vendor&rsquo;s name gone. This read is
+<b>diagnostic</b> &mdash; it names whether the offer lets an agent consume output
+as it is produced, <b>off the scoring path</b> &mdash; not a scored pillar.</p>
 <p><b>Aborting a runaway job</b> is the control leg of that same asynchronous
 contract, and it is where a metered API can quietly <b>bleed an agent&rsquo;s
 budget</b>: a long-running job &mdash; an image or video generation, a training

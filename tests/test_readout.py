@@ -886,6 +886,69 @@ def test_methodology_documents_cancel_job() -> None:
                f"cancel-job prose names no vendor/domain ({banned!r})")
 
 
+def test_methodology_documents_streaming_response() -> None:
+    # Cycle 128 (READOUT): the READOUT complement CLOSING the streaming-response arc
+    # opened by Cycle 126 (COVERAGE — the metered_api `streaming-response` offering
+    # signal: how an agent consumes output INCREMENTALLY over the OPEN connection as
+    # it is produced — server-sent events / text/event-stream / a streaming
+    # API/endpoint that streams the output/tokens) and Cycle 127 (TRUTH — the
+    # SIGNAL-level HOST relabel-invariance guard for that signal). This is the EIGHTH
+    # metered_api offer-side leg to complete the full COVERAGE->TRUTH->READOUT arc
+    # (after payment-rail 78/79/80, async-job 82/83/84, api-auth 86/87/88,
+    # error-contract 90/91/92, test-mode 102/103/104, pagination 106/107/108,
+    # cancel-job 110/111/112). The "consume the output as it streams" leg was pinned in
+    # code + tests but NEVER surfaced in prose a critic can read — a reader could not
+    # learn WHY a metered API that documents how its output streams is MORE
+    # agent-completable, or how it is the IN-BAND sibling of the async-job leg (async
+    # collects a completed job OUT of band; streaming delivers partial output WITHIN the
+    # same request over the live connection). The paragraph must (a) frame it as
+    # consuming the output as it streams / the streaming contract, name it the in-band
+    # sibling of async-job, and name the failure (block on a long call it could have
+    # consumed progressively, or a `stream` URL it never learns how to open); (b) name
+    # the vendor-neutral open-standard streaming vocabulary the offering signal anchors
+    # on as open conventions — server-sent events, the text/event-stream media type, a
+    # streaming endpoint; (c) keep the signal's PRECISION honesty — a bare `stream`/`SSE`
+    # token (an application/octet-stream binary MIME, the Shanghai Stock Exchange (SSE),
+    # sum of squared errors, a live stream, the bloodstream, a "stream of consciousness")
+    # is not a streaming delivery and is read as no signal, and a bare SSE must never
+    # conjure a metered-API claim; (d) say recognition keys on the CONTRACT the API
+    # documents not who published it and is pinned by an identity-relabel executable
+    # regression test; and (e) stay HONEST about scope — this offering read is
+    # diagnostic, off the scoring path, not a scored pillar (the same
+    # scored-vs-diagnostic line the sibling offer-side prose keeps). Vendor-neutral
+    # throughout.
+    print("test_methodology_documents_streaming_response")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    # Match on the whitespace-collapsed text (same technique as the async-job /
+    # api-auth / error-contract / test-mode / pagination / cancel-job guards) so
+    # wording, not source wrapping, is what the guard pins.
+    collapsed = " ".join(text.split())
+    for phrase in ("Consuming the output as it streams", "in-band sibling",
+                   "streaming contract",
+                   "contract the API documents, not who published it",
+                   "relabels the API", "executable regression test",
+                   "off the scoring path", "diagnostic"):
+        _check(phrase in collapsed,
+               f"methodology documents streaming-response: {phrase!r}")
+    # The vendor-neutral streaming vocabulary the offering signal bank anchors on must
+    # appear as open delivery conventions, never a vendor product: server-sent events,
+    # the text/event-stream media type, a streaming endpoint.
+    for token in ("server-sent events", "text/event-stream", "streaming endpoint"):
+        _check(token in collapsed, f"methodology names streaming convention {token!r}")
+    # PRECISION honesty: the prose must preserve the signal's bare-word guard — a bare
+    # `stream`/`SSE` token (an octet-stream MIME, the Shanghai Stock Exchange (SSE), a
+    # "stream of consciousness") is not a streaming delivery and is read as no signal.
+    for token in ("bare", "no signal", "octet-stream", "Shanghai Stock Exchange",
+                  "stream of consciousness"):
+        _check(token in collapsed,
+               f"methodology keeps streaming-response precision note: {token!r}")
+    # Vendor-neutral: no scored domain/product/brand named on the page.
+    for banned in ("drift-flight", "driftflight", "replicate"):
+        _check(banned not in text,
+               f"streaming-response prose names no vendor/domain ({banned!r})")
+
+
 def test_methodology_documents_free_trial() -> None:
     # Cycle 116 (READOUT): the READOUT complement CLOSING the free-trial arc opened by
     # Cycle 114 (COVERAGE — the `free-trial` offering signal added to the SUBSCRIPTION
@@ -1741,6 +1804,7 @@ def main() -> int:
         test_methodology_documents_test_mode,
         test_methodology_documents_pagination,
         test_methodology_documents_cancel_job,
+        test_methodology_documents_streaming_response,
         test_methodology_documents_free_trial,
         test_methodology_documents_content_provenance,
         test_methodology_documents_priced_listing,

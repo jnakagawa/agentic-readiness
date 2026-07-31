@@ -548,6 +548,32 @@ storefront&rsquo;s identity end-to-end and confirms the rights grant is still
 recognized, unchanged, with the vendor&rsquo;s name gone. This read is
 <b>diagnostic</b> &mdash; it names whether the offer lets an agent use what it
 buys, <b>off the scoring path</b> &mdash; not a scored pillar.</p>
+<p><b>Trusting the deliverable</b> is the authenticity mirror of owning it: on the
+<b>digital-good</b> side an agent can obtain exactly the render it asked for, hold a
+licence to use it, and still not be able to <b>prove it is genuine</b>. As synthetic
+media proliferates, a generated deliverable that carries embedded <b>provenance</b>
+&mdash; <b>C2PA content credentials</b>, a <b>provenance manifest</b> or metadata
+record of how the asset was produced &mdash; lets the agent verify the output and
+carry it into a <b>provenance-aware pipeline</b> (disclosure, attribution, downstream
+trust), whereas a render an agent cannot provenance-check has <b>not completed the
+commercial job</b> in any workflow that must vouch for what it ships. So ASRS reads a
+documented provenance record as part of understanding the digital-good offer, keyed on
+vendor-neutral <b>open-standard provenance vocabulary</b> (the <b>C2PA</b> Coalition
+for Content Provenance and Authenticity standard, the <b>Content Credentials</b> mark,
+a media/output <b>provenance manifest</b> or metadata record), the same category of
+open convention as REST, GraphQL or OpenAPI &mdash; never on a vendor&rsquo;s name. The
+read is <b>precision-guarded</b>: a bare <code>provenance</code> or
+<code>credentials</code> word is <b>no signal</b> &mdash; art, wine or supply-chain
+provenance, <b>data provenance</b>, login credentials, or a hosted model&rsquo;s own
+&ldquo;watermarking for provenance&rdquo; feature must never trip it &mdash; so the
+phrasing must name the C2PA standard, the content-credentials mark, a media/output
+noun qualifying provenance, or a provenance metadata/record grant on the deliverable.
+Recognition keys on the <b>provenance the offer grants, not who grants it</b>: that
+property is pinned by an <b>executable regression test</b> that relabels the
+storefront&rsquo;s identity end-to-end and confirms the provenance record is still
+recognized, unchanged, with the vendor&rsquo;s name gone. This read is
+<b>diagnostic</b> &mdash; it names whether the offer lets an agent trust what it
+obtained, <b>off the scoring path</b> &mdash; not a scored pillar.</p>
 <p><b>Evaluating a subscription at $0 first</b> is finishing on the
 <b>subscription</b> side, where the thing an agent must commit to is not a single
 call but a <b>recurring charge</b> that renews on its own. An agent asked to

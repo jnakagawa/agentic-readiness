@@ -3,6 +3,85 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 126 — 2026-07-31T09:12Z — COVERAGE (branch+PR+self-merge, off-scoring-path/score-neutral)
+
+**What/why.** Added a NEW capability signal `streaming-response` to the offering classifier's
+`metered_api` signal bank (`asrs/offering.py`) — how an agent consumes output INCREMENTALLY over
+the OPEN connection as it is produced (token-by-token generation, progressive job output) rather
+than in one terminal round-trip. It is the IN-BAND sibling of `async-job`: where `async-job`
+collects a completed long job's result OUT of band (a webhook fires / the agent polls a status URL
+AFTER the request returns), streaming delivers partial output WITHIN the same live request. An agent
+that cannot read the streaming contract either blocks on a long call it could have consumed
+progressively, or receives a `stream` URL it does not know how to open — so a metered API that
+documents a streaming/SSE flow is MORE agent-completable. Distinct from every existing metered_api
+leg (`api-auth` how you present credentials, `rate-limited` how fast, `async-job` out-of-band
+result, `error-contract` recovery, `pagination` paged collection, `cancel-job` stopping a job):
+NONE describes incremental in-band delivery. Vendor-neutral open-standard streaming vocabulary — the
+W3C Server-Sent Events standard, its `text/event-stream` media type, a documented streaming
+API/endpoint that streams the output/tokens — the same open-convention category as
+REST/GraphQL/OpenAPI/x402 already in this bank.
+
+**Precision.** Bare "stream"/"SSE" is a false-positive minefield present in the fixtures themselves:
+`application/octet-stream` (a binary-download MIME type, verbatim on api.replicate.com's
+`/openapi.json`) is NOT a streaming RESPONSE; the `SSE` acronym collides with the Shanghai Stock
+Exchange and "sum of squared errors"; a bare `SSE` would be WORSE than noise — it could CONJURE a
+false metered_api claim on a stock-exchange page (the archetype-pollution this module removes). So it
+never matches a bare token: it requires spelled-out `server-sent events`, the `text/event-stream`
+media type, a `stream`/`streaming` VERB naming an output noun (stream the output / streaming
+responses / stream tokens), a `streaming` API/ENDPOINT/MODE, or `SSE` ONLY in streaming context
+(over/via/using/through SSE, an `SSE stream/endpoint/connection/events`).
+
+**Evidence / validation.** Fires NON-VACUOUSLY on the real captured api.replicate.com
+`/openapi.json` (the `stream` field's "receive streaming output using server-sent events (SSE)" + "An
+event source to stream the output of the prediction") and on ZERO of the canonical-pair, retail
+(books.toscrape.com), or null (example.com) fixtures. api.replicate.com ALREADY claims metered_api
+(its only archetype), so this deepens its evidence without adding or reordering any archetype.
+`tests/test_offering.py` +2 guards (52→54): `test_streaming_response_metering_precision_synthetic`
+(8 real streaming/SSE positives fire; 7 streaming-shaped noise strings — octet-stream, SSE
+stock-exchange, SSE sum-of-squared-errors, live stream, bloodstream, stream-of-consciousness,
+downstream — do NOT fire, and the acronym collisions do not even conjure a metered_api claim) +
+`test_streaming_response_fires_on_real_captured_openapi` (real end-to-end discovery on the committed
+fixture; claimed set stays `[metered_api]`; the octet-stream MIME never masquerades as the streaming
+quote). Full suite green (22 files, 0 real failures; test_free_tier passes after `pip install -r
+requirements.txt`, environment-only). Offering canonical guard 34/34 (claimed sets + order
+unchanged); replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7.
+
+**Ship class.** Off the scoring path (`scoring.py` 0 offering refs — grep-verified) → score-neutral,
+NOT peer-gated. `git diff` over `asrs/scoring.py rubric/ fixtures/` EMPTY; `--name-only` =
+`asrs/offering.py` + `tests/test_offering.py` ONLY. First duty: no open peer-gated PR (`[]` at fire
+start). Cloud bridge blocks direct main push → branch `loop/streaming-response-signal` + PR #101 +
+self-merge (squash 02be8d9; merged commit = exactly the two files). Realigned main to origin/main
+after merge (`git reset --hard origin/main` → 02be8d9, verified `streaming-response` present + 34/34 +
+24/24 on merged main), deleted local branch.
+
+**RUNNER RECOVERED + LIVE-DELTA DIVERGENCE (record, not alarm).** The LOCAL verify runner CLEARED its
+~56h stall THIS cycle: newest artifact `runs/local/verify_20260731T085248Z.json` (08:52Z Jul-31,
+`git_pull.ok=true attempts=1`, tests_ok=true, both domains scored). The wake/network race the Cycle-63
+fire root-caused evidently self-cleared on a successful wake (attempts=1, no slow-network miss). BUT
+its LIVE static re-score diverges from the frozen-fixture replay guard: driftflight.com LIVE 76.2 C
+(delta +30.1) vs fixture 85.5 B (+39.4). In capability terms the ENTIRE ~9pt drop is
+transactability 87.5 → 62.5 (legibility 90.9, access 100, trust 60 all UNCHANGED) — the live
+with-rails anchor's agent-native payment/transaction evidence weakened between the Jul-23 fixture and
+the Jul-31 live crawl, narrowing the live delta. NOT caused by this change (off the scoring path;
+fixture replay still 85.5/+39.4). It is a SINGLE datapoint from a just-recovered runner — plausibly a
+transient partial-fetch of a transactability surface during the wake/network recovery, OR a real
+change in driftflight.com over the 3-day gap. Scientific discipline on n=1: recorded here, queued P0
+[LOCAL] to verify next fire (re-score; if 76.2 persists, capture a fresh fixture and identify WHICH
+transactability check flipped; if transient, confirm it self-clears), and FLAG in the next 16:00 UTC
+digest. No Slack this fire (per comms policy: not sensitive-class, not a score-changing ship by this
+cycle, and 09:12Z is not the first-after-16:00 digest cycle — that is ~16:1xZ Jul-31).
+
+**Canonical pair (in-cloud regression signal, frozen fixtures).** 46.1 F (drift-flight.org) / 85.5 B
+(driftflight.com) / delta +39.4 — UNCHANGED (off the scoring path). LIVE signal (recovered runner):
+46.1 F / 76.2 C / +30.1 — see the divergence note above.
+
+**Next hypothesis.** Rotate to TRUTH. The streaming-response leg is a fresh COVERAGE signal with no
+relabel-invariance guard yet — the TRUTH increment mirrors the seven metered_api arcs (pin
+`streaming-response` as RELABEL-INVARIANT: the streaming contract keys on the delivery form, not the
+host), then a READOUT leg completes the arc. OR, if the live transactability drop persists, the
+[LOCAL] canonical re-capture becomes the higher-leverage TRUTH item (calibrate the frozen fixture
+against the live site). Thin archetypes service_booking / data_retrieval remain [LOCAL]-blocked.
+
 ## Cycle 125 — 2026-07-31T08:12Z — METHOD (branch+PR+self-merge, tests-only/off-scoring-path/score-neutral)
 
 **What/why.** Added the FIFTH metamorphic-invariance axis on the offering classifier — and

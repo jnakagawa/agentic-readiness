@@ -646,6 +646,35 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
         ("shipping-noun", re.compile(r"\bshipping (address|cost|rates?|options?|method|fee|policy)\b", _F)),
         ("add-to-cart", re.compile(r"\badd to (cart|bag|basket)\b|\bshopping cart\b", _F)),
         ("stock", re.compile(r"\b(in|out of|back in) stock\b", _F)),
+        # PRICED CATALOG LISTING — the "understand the offer" price leg for a
+        # physical good. To DECIDE and FULFILL a physical purchase an agent must
+        # read the CONCRETE price of a purchasable, in-stock catalog item; a
+        # storefront that quotes a decimal amount directly beside the item's
+        # availability / add-to-cart control ("£51.77 In stock", "$12.99 Add to
+        # basket") makes that price machine-legible on the listing. Distinct from
+        # the sibling physical_good legs: `add-to-cart` is the buy ACTION, `stock`
+        # is WHETHER it is available, `sku-inventory` is inventory MANAGEMENT —
+        # none of them guarantees a readable PRICE on the offer.
+        # PRECISION-CRITICAL: a bare currency amount is a false-positive minefield —
+        # a metered API quotes "$0.01 per API call" / "$29 / month" / "$5 per 1,000
+        # requests" and a subscription quotes a per-period fee, NONE of which sits
+        # adjacent to in-stock / add-to-cart availability language. So NEVER match a
+        # bare price: require a decimal money amount IMMEDIATELY followed by
+        # "in stock" or an "add to cart/basket/bag" control — the unambiguous
+        # priced-catalog-listing shape. The canonical flight-API pair carries
+        # 12–17 bare currency amounts (metered per-call pricing) yet ZERO priced
+        # in-stock listings, so this leg can never CONJURE physical_good on an API
+        # storefront that merely lists dollar amounts (physical_good stays NA there
+        # — pinned by tests/test_offering_canonical.py). Currency symbol optional
+        # (the amount, not the glyph, is the evidence; a mojibake "£" must not gate
+        # recognition). Precision-first: recall loss on the reverse "in stock … price"
+        # order (which can span two adjacent listings) is accepted — a real shop
+        # trips add-to-cart / stock anyway. Fires non-vacuously on the real retail
+        # fixture (books.toscrape.com, 60 priced listings) and on ZERO of the
+        # metered-API (api.replicate.com), canonical (drift-flight.org /
+        # driftflight.com), or null (example.com) fixtures.
+        ("priced-listing", re.compile(
+            r"\d+[.,]\d{2}\s+(?:in stock\b|add to (?:cart|basket|bag)\b)", _F)),
         ("fulfillment", re.compile(r"\bfulfil?lment\b|\bwarehouse\b|\bdelivery address\b|\bhome delivery\b|\btracking number\b", _F)),
         # SKU / inventory, RETAIL sense only. A bare "\bSKU\b" over-matched the
         # COMPUTE sense — an inference API's OpenAPI spec says "The SKU for the

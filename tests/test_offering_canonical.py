@@ -240,8 +240,13 @@ _RETAIL_CLAIMED = {"physical_good"}
 # canonical pair CLAIMS are all NA on the retail storefront (it sells none of them).
 _RETAIL_MUST_BE_NA = {"metered_api", "subscription", "digital_good"}
 # The anchored fulfillment signals that make physical_good non-vacuous here (the
-# specific labels the precision guard requires — never bare "ship").
-_RETAIL_PHYSICAL_LABELS = {"add-to-cart", "stock"}
+# specific labels the precision guard requires — never bare "ship"). Includes
+# `priced-listing` (a decimal price quoted beside an in-stock / add-to-cart
+# control — "£51.77 In stock"), the "understand the offer" price leg: the retail
+# catalog quotes concrete prices, an agent-native API quotes bare metered
+# per-call prices with no in-stock listing (priced-listing stays NA on the
+# canonical pair — pinned by the org/com guards above).
+_RETAIL_PHYSICAL_LABELS = {"add-to-cart", "stock", "priced-listing"}
 
 
 def _assert_retail_inverse() -> None:

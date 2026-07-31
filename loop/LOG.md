@@ -3,6 +3,57 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 121 — 2026-07-31T~04:1xZ — METHOD (branch+PR+self-merge, tests-only/score-neutral)
+
+**What/why.** Extended the content-**SCALE** metamorphic-invariance axis to the NO-RAILS
+retail pole (`books.toscrape.com`), closing the org/com-only-vs-retail asymmetry the SCALE
+axis carried — the exact gap Cycle 117 closed one increment earlier for the noise-surface
+axis. The `_org`/`_com` content-scale guards prove a WITH-RAILS storefront that repeats its
+pitch is not "more" of any archetype; this pins the OPPOSITE storefront type. The property
+protected is the **"never manufacture the delta"** invariant applied to the SCALE axis:
+duplicating a no-rails book catalog's prose N times must not raise its `physical_good`
+strength AND must not CONJURE a rails archetype (`metered_api`/`subscription`/`digital_good`)
+it does not offer. The classified delta between a rails storefront and a no-rails one has to
+come from real published capability, never from how many times a store repeats itself.
+
+**Shape + non-vacuity.** A dedicated `test_offering_content_scale_invariance_retail`, NOT a
+reuse of the multi-archetype `_assert_content_scale_invariance` helper, because the retail
+store claims a SINGLE archetype (no multi-archetype rank to reorder). Non-vacuity is
+therefore anchored on physical_good's own signal, not on an observable rank reorder: (a)
+every surface body grows under 3× duplication (perturbation is real); (b) TEETH —
+physical_good's anchor signal fires strictly MORE raw matches under duplication
+(`add-to-cart`/`stock` repeat K×; a count-based reader WOULD differ) yet the classifier
+reports the same strength / evidence map; (c) the rails archetypes STAY NA and the whole NA
+set is invariant. Mirrors the Cycle-117 retail noise-surface test's structure (single-
+archetype-appropriate teeth), on the scale axis.
+
+**Ship class + evidence.** Tests only; off the scoring path (`scoring.py` imports no
+`offering` — grep-verified 0 refs) → score-neutral, NOT peer-gated. `git diff` over
+`asrs/ rubric/ fixtures/` EMPTY; `git diff --name-only` = `tests/test_offering_canonical.py`
+ONLY (+~130). Cloud bridge blocks direct main push → branch `loop/content-scale-retail` +
+PR #91 + self-merge (squash 0e52bf0; merged commit = exactly the one test file). First duty:
+no open peer-gated PR (`list_pull_requests state=open` → `[]` at fire start). Realigned main
+to origin/main after merge, deleted local branch. offering canonical guard 31→32, re-run on
+merged main 32/32; full suite green (22 files; `test_free_tier` 11/11 after
+`pip install -r requirements.txt`, environment-only). Canonical PAIR unchanged AND
+re-measured pre- AND post-merge: replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0
+replay-miss; rubric v0.7. RUNNER STILL GAPPED (`verify_20260728T234102Z` 23:41Z, ~52.5h old;
+cloud cannot repair the local machine; next re-flag is the first-after-16:00 fire ~16:1xZ
+Jul-31). No Slack (score-neutral, off scoring path; not sensitive-class; not the
+first-after-16:00 digest cycle — 04:1xZ is not first-after-16:00).
+
+**Next hypothesis.** Rotate COVERAGE next (METHOD → COVERAGE → TRUTH → READOUT). The
+in-cloud COVERAGE frontier on CLAIMED archetypes is NARROW: metered_api saturated (7 arcs);
+digital_good has THREE closed arcs (generate-media, output-license, content-provenance);
+subscription free-trial closed. The thin archetypes (physical_good fulfillment,
+service_booking, data_retrieval) are all `[LOCAL]`-blocked (no rich committed fixture claims
+them — queued P1). A COVERAGE move needing no new claimed archetype: a new capability leg on
+an existing dense archetype with committed non-vacuous evidence (a physical_good CATALOG leg
+beyond add-to-cart/stock — e.g. price/variant/availability — verifiable on
+books.toscrape.com), or wire the next published self-description surface. Otherwise the
+metamorphic-axis grid still has gaps: surface-ORDER covers only output-license + org (com,
+retail, machine uncovered), a future METHOD candidate.
+
 ## Cycle 120 — 2026-07-31T~03:1xZ — READOUT (branch+PR+self-merge, display+tests-only/score-neutral)
 
 **What/why.** CLOSED the **content-provenance** arc at its third and final layer by

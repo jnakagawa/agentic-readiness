@@ -1,13 +1,13 @@
 # Loop state
 
-- Cycle counter: 120
+- Cycle counter: 121
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-31T03:12Z, Cycle 120; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-31T04:12Z, Cycle 121; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~51.5h old at the Cycle-120 fire (container clock 03:12Z Jul-31); no
-  newer :41 artifact through 03:12Z Jul-31. Cloud CANNOT repair the local machine. The gap was RE-FLAGGED
+  Jul-28 = ~52.5h old at the Cycle-121 fire (container clock 04:12Z Jul-31); no
+  newer :41 artifact through 04:12Z Jul-31. Cloud CANNOT repair the local machine. The gap was RE-FLAGGED
   loudly in the Cycle-109 16:12Z digest (the first cycle after 16:00Z on Jul-30). The NEXT first-after-16:00
-  fire (~16:1xZ Jul-31) is the next re-flag point; Cycle 120 at 03:12Z is NOT first-after-16:00 → no
+  fire (~16:1xZ Jul-31) is the next re-flag point; Cycle 121 at 04:12Z is NOT first-after-16:00 → no
   re-digest THIS fire, but keep noting the gap until it clears; queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
   is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
@@ -27,7 +27,33 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 121 METHOD — extended the content-SCALE metamorphic-invariance axis to the NO-RAILS retail pole
+  (`books.toscrape.com`), closing the org/com-only-vs-retail asymmetry the SCALE axis carried — exactly the
+  gap Cycle 117 closed for the noise-surface axis. `_org`/`_com` prove a WITH-RAILS storefront that repeats
+  its pitch is not "more" of any archetype; this pins the OPPOSITE storefront type. Property protected: the
+  "never manufacture the delta" invariant on the SCALE axis — duplicating a no-rails book catalog's prose
+  N times must not raise its physical_good strength AND must not CONJURE a rails archetype (metered_api /
+  subscription / digital_good) it does not offer. Dedicated `test_offering_content_scale_invariance_retail`,
+  NOT the multi-archetype `_assert_content_scale_invariance` helper (retail claims a SINGLE archetype → no
+  rank to reorder); non-vacuity anchored on physical_good's own signal firing MORE raw matches under
+  duplication (count-based reader WOULD differ) + the NA-rails-stay-NA teeth. Mirrors Cycle 117's retail
+  noise-surface test structure on the scale axis. SHIP CLASS: tests-only, off the scoring path (`scoring.py`
+  imports no `offering` — grep 0 refs) → score-neutral, NOT peer-gated. git diff over `asrs/ rubric/
+  fixtures/` EMPTY; --name-only = `tests/test_offering_canonical.py` ONLY (+~130). Cloud bridge blocks
+  direct main push → branch loop/content-scale-retail + PR #91 + self-merge (squash 0e52bf0; merged commit =
+  exactly the one test file). First duty: no open peer-gated PR (`[]` at fire start); realigned main to
+  origin/main after merge, deleted local branch. offering canonical guard 31→32, re-run on merged main 32/32;
+  full suite green (22 files; test_free_tier 11/11 after `pip install -r requirements.txt`, environment-only).
+  Canonical PAIR unchanged AND re-measured pre/post merge: replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0
+  replay-miss; rubric v0.7. RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z, ~52.5h old). No Slack
+  (score-neutral, off scoring path; not sensitive-class; not the first-after-16:00 digest cycle — that is the
+  ~16:1xZ Jul-31 fire). Next COVERAGE — frontier on CLAIMED archetypes is NARROW (metered_api saturated ×7;
+  digital_good three closed arcs; subscription free-trial closed); thin archetypes (physical_good fulfillment
+  / service_booking / data_retrieval) [LOCAL]-blocked. A COVERAGE move needing no new claimed archetype: a
+  new physical_good CATALOG leg beyond add-to-cart/stock (price / variant / availability, verifiable on
+  books.toscrape.com), or wire the next published self-description surface. Metamorphic-axis grid still has
+  gaps too (surface-ORDER covers only output-license + org; com/retail/machine uncovered) — a future METHOD.)
   (Cycle 120 READOUT — CLOSED the `content-provenance` arc at its third layer: surfaced the digital_good
   "verify + trust the deliverable" capability in the PUBLIC methodology prose. Added ONE capability-worded,
   vendor-neutral `<p>` ("Trusting the deliverable", the authenticity MIRROR of the output-license "Owning

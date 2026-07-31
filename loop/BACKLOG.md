@@ -1260,6 +1260,18 @@ design in-cloud, execute locally.
 
 ## P2
 
+- **[CANDIDATE, METHOD] Metamorphic grid — remaining axes/poles** (observation, Cycle 129). The
+  intra-surface ORDER-invariance axis now spans BOTH poles: retail listing-order on physical_good
+  (Cycle 125, `test_offering_listing_order_invariance_priced_listing`) and endpoint-order on the
+  metered_api MACHINE surface (Cycle 129, `test_offering_endpoint_order_invariance_metered_api`). The
+  metamorphic family also has relabel-invariance (signal-level ×8 metered_api + digital_good/subscription
+  legs), content-scale, and noise-surface invariance across the org/com/retail poles. Open frontier for a
+  future METHOD cycle: (a) content-scale or noise-surface invariance on the metered_api MACHINE surface
+  (only the prose poles are covered); (b) a cross-SURFACE order axis — does the ORDER in which surfaces
+  are read (homepage vs /openapi.json vs /llms.txt) move a multi-surface claim? (partially pinned by
+  `test_offering_surface_order_invariance_*` on the org pole — extend to the machine pole). All
+  tests-only, off the scoring path, in-cloud-doable on committed fixtures.
+
 - **[METHOD, cloud-doable] Audit the test-runner registration lists for authored-but-unregistered
   guards** (observation, Cycle 84). The in-cloud suites run via each `tests/test_*.py`'s own `main()`
   test LIST (no pytest auto-discovery — `local_verify.py` invokes `python tests/test_X.py`). Cycle 84

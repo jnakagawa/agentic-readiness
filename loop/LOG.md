@@ -3,6 +3,62 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 129 — 2026-07-31T12:12Z — METHOD (branch+PR+self-merge, tests-only/off-scoring-path/score-neutral)
+
+**What/why.** Added the metamorphic INVARIANCE axis `test_offering_endpoint_order_invariance_metered_api`
+(`tests/test_offering_canonical.py` 35→36) — the WITH-RAILS / machine-surface MIRROR of Cycle 125's
+retail `test_offering_listing_order_invariance_priced_listing`. Cycle 125 pinned that reordering the
+priced listings on ONE retail catalog page does not move the physical_good verdict; this pins that
+reordering the ENDPOINTS within ONE OpenAPI machine contract does not move the metered_api verdict. The
+machine surface is where the metered_api archetype is most load-bearing — the one committed
+machine-contract storefront (api.replicate.com) earns its metered_api claim from its `/openapi.json`
+ALONE (pinned by `test_machine_surface_openapi_storefront`) — so an order dependence there would corrupt
+the archetype on its home turf. Executes Cycle 128's next-METHOD hypothesis verbatim ("mirror
+listing-order invariance onto a with-rails MACHINE surface — do the metered_api endpoints' ORDER within
+one OpenAPI spec move the claim?").
+
+**Mechanism / non-vacuity (same substrate as the retail leg).** `_scan_surface` keeps the FIRST regex
+match per signal in a surface, so which endpoint leads the spec text is OBSERVABLE at the `post-endpoint`
+signal — the synthetic spec's three endpoints each carry a distinct POST/GET line, so a `[0,1,2]→[2,1,0]`
+reorder moves the sampled exemplar quote (leading endpoint flips predictions-POST → status-GET;
+asserted). Under that real, scanner-visible perturbation the guard pins four invariants: (1) metered_api
+distinct-label STRENGTH (4: post-endpoint / api-auth / async-job / rate-limited); (2) the SET of legs;
+(3) the ORDERED claimed list (order drives the fixed template-bank task order → cross-site comparability,
+so a spec reorder must not reorder the battery); (4) every non-API archetype stays NA and the whole NA
+set is invariant (the credibility-protecting direction — no archetype conjured by ordering). Base
+strength ≥2 and all 5 other archetypes NA are asserted up front so a dropped leg or a conjured non-API
+archetype would be unmistakable.
+
+**Vendor-neutrality.** Synthetic spec built from a signal-free host (`gridcell.example` — no
+archetype-signal word; a "metered"-bearing host would have spuriously tripped `usage-based`, avoided) and
+pure open machine-integration vocabulary (a POST/GET endpoint, `Authorization: Bearer`, a webhook
+callback, a per-minute rate limit) — the same open-convention category the signal bank already anchors
+on, never a vendor.
+
+**Ship class + evidence.** Tests-only; off the scoring path (`scoring.py` imports no `offering` —
+grep-verified 0 refs) → score-neutral, NOT peer-gated. `git diff` over `asrs/ rubric/ fixtures/` EMPTY;
+`git diff --name-only` = `tests/test_offering_canonical.py` ONLY (+150 lines). First duty: no open
+peer-gated PR (`[]` at fire start — `list_pull_requests state=open` returned empty). Infra HEALTHY at
+fire (newest verify `20260731T085248Z` 08:52Z, 3.4h old, within the 6h floor). Cloud bridge blocks
+direct main push → branch `loop/endpoint-order-invariance` + PR #107 + self-merge (squash 00b17e6;
+merged commit = exactly the one test file). Realigned main to origin/main after merge (`git reset --hard
+origin/main` → 00b17e6, verified the new test present + 36/36 + replay 24/24 on merged main), deleted
+local branch. Full suite green (22 files; `test_free_tier` 11/11 after `pip install -r requirements.txt`,
+environment-only). Canonical PAIR unchanged (frozen fixtures): replay guard 24/24, **46.1 F / 85.5 B /
++39.4**, 0 replay-miss; offering canonical 36/36; rubric v0.7.
+
+**Live-delta note (carried, not this cycle's work).** The newest LOCAL verify artifact still shows
+driftflight.com LIVE 76.2 C / +30.1 (transactability 87.5→62.5) vs the frozen-fixture replay guard's 85.5
+B / +39.4 — the divergence opened Cycle 126, queued P0 [LOCAL] to verify, and flagged for the ~16:1xZ
+digest. Off the scoring path; the in-cloud replay guard (the independent regression signal) is intact.
+
+**Next hypothesis.** Rotate COVERAGE next. The metered_api bank has eight fully-arced signals + a
+metamorphic grid now spanning the listing/endpoint ORDER axis on BOTH poles (retail 125 + machine 129);
+a COVERAGE increment would add the ninth metered_api leg or deepen a thinner archetype's evidence on a
+committed fixture. Thin archetypes service_booking / data_retrieval remain [LOCAL]-blocked (no committed
+fixture claims either). OR, if the next verify artifact still shows the driftflight.com transactability
+drop, the [LOCAL] canonical re-capture is the higher-leverage item.
+
 ## Cycle 128 — 2026-07-31T11:12Z — READOUT (branch+PR+self-merge, display+tests-only/score-neutral)
 
 **What/why.** Added ONE capability-worded, vendor-neutral methodology `<p>` ("Consuming the output as

@@ -545,32 +545,33 @@ design in-cloud, execute locally.
      green (22 files); replay guard 24/24, 46.1 F / 85.5 B / +39.4; rubric v0.7. See LOG Cycle 116. The
      free-trial arc is now closed at ALL THREE layers (signal 114 / relabel 115 / readout 116). Next COVERAGE
      frontier on the thin archetypes (service_booking / data_retrieval) is [LOCAL]-blocked — see the P1 below. -->
-- **[in-cloud] frontier note (post-Cycle-122): physical_good now has ONE open in-cloud COVERAGE arc.**
-  Cycle 122 added a `priced-listing` SIGNAL to physical_good (the "understand the offer" PRICE leg — a
-  decimal amount adjacent to in-stock/add-to-cart), which fires non-vacuously on the committed
-  books.toscrape.com fixture (60 priced listings) and 0× on the canonical pair / api.replicate / example.
-  This REOPENS in-cloud COVERAGE on physical_good on the CATALOG/price dimension — NOT the FULFILLMENT
-  dimension the Cycle-118 note demoted to [LOCAL] (books.toscrape has no shipping/tracking/returns prose;
-  that still needs the rich-retail P1 [LOCAL] fixture). So the two-layer arc for priced-listing (TRUTH-relabel
-  + READOUT prose) is the natural in-cloud follow-up (physical_good has NO relabel leg and NO offer-side
-  methodology paragraph yet), and further physical_good CATALOG legs verifiable on books
-  (a variant/edition leg, a product-title/detail leg) may exist. digital_good's content-provenance arc is
-  CLOSED at all three layers (SIGNAL 118, TRUTH-relabel 119, READOUT prose 120); free-trial (subscription
-  114/115/116), generate-media (94/95/96), and output-license (99/100 + prose) are likewise CLOSED; metered_api
-  saturated (7 arcs). service_booking (5 legs) and data_retrieval (5 legs) remain ALL [LOCAL]-blocked — no
-  committed fixture claims them richly enough (see the P1 [LOCAL] fixture-capture items). Prefer, in order:
-  the priced-listing TRUTH/READOUT arc; another in-cloud physical_good catalog leg; a METHOD perturbation-axis
-  extension (relabel/order/scale/noise-surface onto a cell not yet covered — SURFACE-ORDER is thinnest); a
-  cross-fixture invariant over the now-dense digital_good signal family.
-  METAMORPHIC-AXIS GRID STATE (post-Cycle-121, so a METHOD cycle doesn't re-cover the same cell): RELABEL —
+- **[in-cloud] frontier note (post-Cycle-123): the priced-listing arc has ONE layer left — READOUT.**
+  Cycle 122 added the `priced-listing` SIGNAL to physical_good (COVERAGE — a decimal amount adjacent to
+  in-stock/add-to-cart, fires 60× on books.toscrape, 0× on canonical/replicate/example); Cycle 123 pinned it
+  RELABEL-INVARIANT (TRUTH — physical_good's FIRST relabel leg, synthetic-surface method). REMAINING to close
+  the arc: the READOUT layer — physical_good has NO offer-side methodology paragraph yet. Add ONE
+  capability-worded, vendor-neutral `<p>` to `_write_methodology_page` (`asrs/scorecard.py`) surfacing "read
+  the price to decide + fulfill a physical purchase" (the physical_good mirror of the free-trial-116
+  "Evaluating a subscription at $0 first" and content-provenance-120 "Trusting the deliverable" prose),
+  guarded by a content-presence test in `tests/test_readout.py`. Display+tests-only/score-neutral → completes
+  the FIRST full COVERAGE→TRUTH→READOUT arc on physical_good. AFTER that: further physical_good CATALOG legs
+  verifiable on books (a variant/edition leg, a product-title/detail leg) may exist; a METHOD perturbation-axis
+  extension (SURFACE-ORDER is thinnest — see grid below); a cross-fixture invariant over the now-dense
+  digital_good signal family. digital_good's content-provenance arc is CLOSED at all three layers (SIGNAL 118,
+  TRUTH-relabel 119, READOUT prose 120); free-trial (subscription 114/115/116), generate-media (94/95/96), and
+  output-license (99/100 + prose) are likewise CLOSED; metered_api saturated (7 arcs). service_booking (5 legs)
+  and data_retrieval (5 legs) remain ALL [LOCAL]-blocked — no committed fixture claims them richly enough (see
+  the P1 [LOCAL] fixture-capture items).
+  METAMORPHIC-AXIS GRID STATE (post-Cycle-123, so a METHOD cycle doesn't re-cover the same cell): RELABEL —
   org/com/machine/retail/nonstorefront (whole-fixture) + signal-level metered_api ×7, digital_good ×2
-  (output-license, content-provenance), subscription ×1 (free-trial): DENSE. NOISE-SURFACE — org/com/retail:
-  COVERED (Cycle 117 added retail). CONTENT-SCALE — org/com/retail: COVERED (Cycle 121 added retail). Thinnest
-  axis is SURFACE-ORDER — only output-license (com) + org whole-fixture; com/retail/machine whole-fixture and
-  every other signal family UNCOVERED. Next METHOD candidate: extend surface-ORDER to the retail pole
-  (books.toscrape single-archetype, single-surface homepage — note ORDER needs ≥2 surfaces to be non-vacuous,
-  so retail may need a NA-rails-stay-NA framing rather than a read-order permutation) or to the .com/machine
-  half; OR a cross-fixture invariant over the digital_good signal family.
+  (output-license, content-provenance), subscription ×1 (free-trial), physical_good ×1 (priced-listing,
+  Cycle 123 — synthetic surface): DENSE. NOISE-SURFACE — org/com/retail: COVERED (Cycle 117 added retail).
+  CONTENT-SCALE — org/com/retail: COVERED (Cycle 121 added retail). Thinnest axis is SURFACE-ORDER — only
+  output-license (com) + org whole-fixture; com/retail/machine whole-fixture and every other signal family
+  UNCOVERED. Next METHOD candidate: extend surface-ORDER to the retail pole (books.toscrape single-archetype,
+  single-surface homepage — note ORDER needs ≥2 surfaces to be non-vacuous, so retail may need a
+  NA-rails-stay-NA framing rather than a read-order permutation) or to the .com/machine half; OR a cross-fixture
+  invariant over the digital_good signal family.
 
 <!-- REVISED 2026-07-31 (Cycle 118 COVERAGE finding): "[COVERAGE, in-cloud] a physical_good FULFILLMENT
      leg on the committed retail fixture" (from Cycle 117's audit) was DEMOTED to [LOCAL]. In-cloud

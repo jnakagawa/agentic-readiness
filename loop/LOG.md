@@ -3,6 +3,70 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 123 — 2026-07-31T06:18Z — TRUTH (branch+PR+self-merge, tests-only/off-scoring-path/score-neutral)
+
+**What/why.** Pinned Cycle 122's new `priced-listing` physical_good signal as
+RELABEL-INVARIANT — executing exactly Cycle 122's next-hypothesis. Added
+`test_offering_relabel_invariance_priced_listing` to `tests/test_offering_canonical.py`
+(32→33). This is the **FIRST physical_good leg** to join the signal-level relabel-invariance
+family; the prior ten legs are metered_api ×7 (payment-rail 79 / async-job 83 / api-auth 87 /
+error-contract 91 / test-mode 103 / pagination 107 / cancel-job 111) + digital_good's
+`output-license` (99) and `content-provenance` (119) + subscription's `free-trial` (115). A
+priced listing (a decimal amount beside an in-stock / add-to-cart control) is a property of the
+CATALOG STRUCTURE a storefront publishes, never of who published it, so the signal must key on
+the price-beside-availability form, not the host — the vendor-neutrality invariant, dropped one
+layer from the whole-archetype relabel guards to this specific "understand the offer" signal.
+
+**Synthetic-surface method + non-vacuity (the free-trial-115 / content-provenance-119
+pattern, NOT the quote-anchored output-license one).** The real books.toscrape.com priced-listing
+evidence is host-FREE — the fired quote carries a price + availability phrase ("£51.77 In
+stock"), not a vendor name, and the 60 real listings fire with the host in NEITHER the surface
+key NOR the quote window — so a whole-fixture host relabel would leave the evidence byte-identical
+and the invariance would be VACUOUS. So the guard scans a SYNTHETIC retail catalog surface that
+seats the host INSIDE the priced-listing evidence: host = surface-KEY prefix AND adjacent to the
+price on both sides so it lands inside the 40-char padded quote window (asserted non-vacuous:
+host present in both surface key and quote). Relabel the host everywhere, re-scan: (1) same match
+count (1), (2) same host-normalized surface (signal did not migrate), (3) relabeled quote still
+satisfies the live `priced-listing` regex with the vendor host gone. TEETH (the signal's defining
+precision risk): a sibling synthetic surface of bare-currency metered/subscription pricing —
+"$0.01 per API call", "$29.00 per month", "$5.00 per 1,000 requests", none beside availability —
+fires ZERO priced-listing, proving the match keys on the priced-catalog-listing STRUCTURE, not on
+the presence of a money amount; relabeling through that distractor never conjures physical_good.
+
+**Ship class + evidence.** Tests-only, off the scoring path (`scoring.py` imports no
+`offering` — grep-verified 0 refs) → **score-neutral, NOT peer-gated** (same class as every
+prior offering signal-level guard). `git diff` over `asrs/ rubric/ fixtures/` EMPTY;
+`git diff --name-only` = `tests/test_offering_canonical.py` ONLY. Cloud bridge blocks direct
+main push → branch `loop/relabel-priced-listing-signal` + PR #95 + self-merge (squash, merge
+commit 914b18a). First duty: no open peer-gated PR (`list_pull_requests state=open` → `[]` at
+fire start). Realigned main to origin/main after merge (local main was stale at Cycle-94
+3796519 from a forced-history rewrite; `git reset --hard origin/main` → 914b18a, verified the
+new test present + 33/33 on merged main), deleted local branch. `test_offering_canonical.py`
+32→33; full suite green (22 files; `test_free_tier` 11/11 after `pip install -r requirements.txt`,
+environment-only).
+
+**Canonical pair.** Unchanged AND re-measured on merged main: replay guard 24/24,
+**46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7. (Tests-only, off scoring path — cannot
+move a score by construction; the guard confirms it.)
+
+**Runner.** STILL GAPPED — newest `runs/local/verify_20260728T234102Z.json` (23:41Z Jul-28) is
+~54.6h old at this fire (06:18Z Jul-31). Cloud cannot reach Jonah's machine to repair; queued P0
+[LOCAL]. In-cloud replay guard remains the independent live regression signal (24/24 / +39.4) so
+benchmark integrity is intact — a heartbeat gap, not a scoring outage. Next re-flag point is the
+first-after-16:00Z fire (~16:1xZ Jul-31); 06:18Z is not it → no digest this fire.
+
+**Comms.** No Slack (score-neutral, off scoring path; not sensitive-class; not the
+first-after-16:00 digest cycle).
+
+**Next hypothesis (READOUT).** The priced-listing arc now has COVERAGE (122) + TRUTH (123);
+close it at the READOUT layer — physical_good has NO offer-side methodology paragraph yet
+(subscription got one at free-trial-116, digital_good at output-license + content-provenance-120).
+Add ONE capability-worded, vendor-neutral `<p>` to `_write_methodology_page` (`asrs/scorecard.py`)
+surfacing "read the price to decide + fulfill a physical purchase" (the physical_good mirror of
+the free-trial "Evaluating a subscription at $0 first" and content-provenance "Trusting the
+deliverable" prose), guarded by a content-presence test in `tests/test_readout.py`. That completes
+the FIRST full COVERAGE→TRUTH→READOUT arc on physical_good, display+tests-only/score-neutral.
+
 ## Cycle 122 — 2026-07-31T05:20Z — COVERAGE (branch+PR+self-merge, off-scoring-path/score-neutral)
 
 **What/why.** Added a `priced-listing` capability signal to the **physical_good** archetype

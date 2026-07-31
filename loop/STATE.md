@@ -1,13 +1,13 @@
 # Loop state
 
-- Cycle counter: 122
+- Cycle counter: 123
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-31T05:20Z, Cycle 122; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-31T06:18Z, Cycle 123; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~53.7h old at the Cycle-122 fire (container clock 05:20Z Jul-31); no
-  newer :41 artifact through 05:20Z Jul-31. Cloud CANNOT repair the local machine. The gap was RE-FLAGGED
+  Jul-28 = ~54.6h old at the Cycle-123 fire (container clock 06:18Z Jul-31); no
+  newer :41 artifact through 06:18Z Jul-31. Cloud CANNOT repair the local machine. The gap was RE-FLAGGED
   loudly in the Cycle-109 16:12Z digest (the first cycle after 16:00Z on Jul-30). The NEXT first-after-16:00
-  fire (~16:1xZ Jul-31) is the next re-flag point; Cycle 121 at 04:12Z is NOT first-after-16:00 → no
+  fire (~16:1xZ Jul-31) is the next re-flag point; Cycle 123 at 06:18Z is NOT first-after-16:00 → no
   re-digest THIS fire, but keep noting the gap until it clears; queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
   85.5 B / +39.4) remains the live regression signal INDEPENDENT of the runner, so benchmark integrity
   is intact — a heartbeat gap, not a scoring problem. Likely the same wake/network race the Cycle-63
@@ -27,7 +27,39 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 123 TRUTH — pinned Cycle 122's `priced-listing` physical_good signal as RELABEL-INVARIANT,
+  the FIRST physical_good leg in the signal-level relabel family (prior ten legs: metered_api ×7 +
+  digital_good output-license/content-provenance + subscription free-trial). Added
+  `test_offering_relabel_invariance_priced_listing` to `tests/test_offering_canonical.py` (32→33). A
+  priced listing (a decimal amount beside an in-stock/add-to-cart control) is a property of the CATALOG
+  STRUCTURE, not the host, so the signal must key on the price-beside-availability form. The real
+  books.toscrape.com evidence is host-FREE (60 listings fire with the host in NEITHER surface key NOR
+  quote window) → a whole-fixture relabel would be VACUOUS (the free-trial-115 / content-provenance-119
+  failure mode), so the guard scans a SYNTHETIC retail catalog surface seating the host INSIDE the
+  priced-listing evidence (surface-key prefix + adjacent to the price both sides → inside the 40-char
+  padded quote window; asserted non-vacuous), relabels end-to-end, asserts identity-invariance (same
+  match count 1, same host-normalized surface, quote still matches the live regex, host absent). TEETH:
+  bare-currency metered/subscription pricing ("$0.01 per API call" / "$29.00 per month" / "$5.00 per
+  1,000 requests", none beside availability) fires ZERO priced-listing → the match keys on the structure,
+  not on a money amount. SHIP CLASS: tests-only, off the scoring path (`scoring.py` 0 offering refs) →
+  score-neutral, NOT peer-gated. git diff over `asrs/ rubric/ fixtures/` EMPTY; --name-only =
+  `tests/test_offering_canonical.py` ONLY. Cloud bridge blocks direct main push → branch
+  loop/relabel-priced-listing-signal + PR #95 + self-merge (squash 914b18a; merged commit = exactly the
+  one test file). First duty: no open peer-gated PR (`[]` at fire start). Realigned main to origin/main
+  after merge (local main stale at Cycle-94 3796519 from a forced-history rewrite → `git reset --hard
+  origin/main` = 914b18a, verified new test present + 33/33 on merged main), deleted local branch. Full
+  suite green (22 files; test_free_tier 11/11 after `pip install -r requirements.txt`, environment-only).
+  Canonical PAIR unchanged AND re-measured on merged main: replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0
+  replay-miss; rubric v0.7. RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z, ~54.6h old). No Slack
+  (score-neutral, off scoring path; not sensitive-class; 06:18Z is not the first-after-16:00 digest cycle
+  — that is ~16:1xZ Jul-31). Next READOUT — CLOSE the priced-listing arc at its third layer: physical_good
+  has NO offer-side methodology paragraph yet (subscription got one at free-trial-116, digital_good at
+  output-license + content-provenance-120). Add ONE capability-worded, vendor-neutral `<p>` to
+  `_write_methodology_page` (`asrs/scorecard.py`) surfacing "read the price to decide + fulfill a physical
+  purchase" (the physical_good mirror of the free-trial/content-provenance prose), guarded by a
+  content-presence test in `tests/test_readout.py` → completes the FIRST full COVERAGE→TRUTH→READOUT arc
+  on physical_good, display+tests-only/score-neutral.)
   (Cycle 122 COVERAGE — added a `priced-listing` capability signal to the **physical_good** archetype bank
   (`asrs/offering.py`): the "understand the offer" PRICE leg — a decimal amount quoted directly beside an
   in-stock / add-to-cart control ("£51.77 In stock", "$12.99 Add to basket") makes the item's price

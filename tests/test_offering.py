@@ -2052,6 +2052,112 @@ def test_cancel_job_fires_on_real_captured_openapi():
     print("  ok: the retail HTML 'next' catalog link does NOT fire pagination (real-data precision)")
 
 
+def test_webhook_verification_precision_synthetic():
+    # WEBHOOK AUTHENTICITY VERIFICATION — whether an agent can TRUST that an inbound
+    # async callback is GENUINELY from the API rather than a forged/spoofed webhook
+    # (a webhook signing secret to verify inbound requests, a webhook signature to
+    # check) — is the security/TRUST leg of the async contract for a metered API: an
+    # agent that acts on an UNVERIFIED "job complete" webhook can be tricked by a
+    # spoofed callback into treating fabricated output as real or releasing a payment,
+    # so a documented webhook-verification contract makes it claim metered_api via the
+    # new webhook-verification signal. Each POSITIVE is real, vendor-neutral
+    # webhook-security vocabulary; each NEGATIVE is signature/signing-SHAPED noise that
+    # must NOT fire it (the precision traps: a marketing "signature look", an x402
+    # PAYMENT-proof signature, a file SIGNED-URL "signing secret", a bare webhook that
+    # only EXISTS — `async-job`'s turf — and generic contract/digital signatures).
+    positives = {
+        "webhook signature": "Verify the webhook signature before trusting the callback.",
+        "signing secret for webhook": "Get the signing secret for the default webhook endpoint.",
+        "verify that webhook requests": "This is used to verify that webhook requests are authentic.",
+        "verify the webhook payload": "You must verify the webhook payload with your signing key.",
+        "webhook events are signed": "All webhook events are signed so an agent can confirm origin.",
+        "X-Webhook-Signature header": "Check the X-Webhook-Signature header on each delivery.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("metered.test", {"homepage": text})
+        assert prof.claims("metered_api"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "metered_api"
+            for s in c.signals
+        }
+        assert "webhook-verification" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real webhook-verification phrasings each fire webhook-verification")
+
+    negatives = {
+        "signature look marketing": "your product line, your palette, your signature look.",
+        "x402 payment signature": "ZeroClick verifies the signature locally, so nothing settles on-chain.",
+        "file url signing secret": 'generated with the Files API signing secret","in":"query","name":"signature"',
+        "webhook exists only": "Register a webhook endpoint to receive prediction events.",
+        "sign the contract": "Please sign the contract and return it.",
+        "digital signature doc": "The document requires a digital signature.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "webhook-verification" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} signature/signing-shaped noise strings do NOT fire webhook-verification (precision)"
+    )
+
+
+def test_webhook_verification_fires_on_real_captured_openapi():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the webhook-verification signal fires on
+    # the GENUINE webhook-authenticity contract captured live from a real machine-surface
+    # storefront — api.replicate.com's /openapi.json documents a
+    # `/webhooks/default/secret` endpoint whose description reads "Get the signing secret
+    # for the default webhook endpoint. This is used to verify that webhook requests are
+    # coming from ...", captured verbatim in the committed fixture. Run the REAL discovery
+    # path (from_fixture -> discover_offering) so the signal is exercised exactly as a
+    # live crawl would, the same real-data non-vacuity move
+    # test_cancel_job_fires_on_real_captured_openapi makes.
+    #
+    # SCORE-NEUTRAL by construction: api.replicate.com already claims ONLY metered_api
+    # (its strongest and only archetype), so a webhook-verification contract on its spec
+    # can only deepen that claim's evidence — never add an archetype or reorder. The
+    # classifier is off the scoring path; the canonical pair (whose webhook/signature
+    # prose is marketing "signature look" + x402 payment-proof verification, no webhook
+    # authenticity contract) is unchanged (webhook-verification fires on neither
+    # driftflight surface — pinned by tests/test_offering_canonical.py and the canonical
+    # replay guard).
+    spec = _fixture_entry_text("api.replicate.com", "/openapi.json")
+    assert "signing secret for the default webhook" in spec, (
+        "fixture /openapi.json lost its webhook-verification contract"
+    )
+
+    ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "api.replicate.com.json"))
+    prof = offering.discover_offering(ctx)
+
+    assert prof.claims("metered_api"), prof.archetypes
+    metered = next(c for c in prof.claimed if c.archetype == "metered_api")
+    wv = [s for s in metered.signals if s.label == "webhook-verification"]
+    assert wv, {s.label for s in metered.signals}
+    quote = wv[0].quote.lower()
+    assert "webhook" in quote, wv[0].quote
+    print(f"  ok: webhook-verification fires on REAL captured OpenAPI contract — quote: {wv[0].quote!r}")
+
+    # NON-VACUOUS + score-neutral: the machine storefront's claimed SET is exactly
+    # [metered_api] — the webhook-verification contract deepened the metered_api
+    # evidence without adding a spurious archetype.
+    assert prof.archetypes == ["metered_api"], prof.archetypes
+    print("  ok: webhook-verification evidence does NOT change the claimed set (score-neutral)")
+
+    # Precision on the real canonical pair: both driftflight surfaces carry a
+    # "signature" (the marketing "your palette, your signature look" and the x402
+    # payment-proof "ZeroClick verifies the signature locally") but NO webhook
+    # authenticity contract. webhook-verification must NOT fire on either, so the
+    # canonical pair gains no spurious signal (the driftflight metered_api claim rests
+    # on its own — unrelated — evidence, unchanged).
+    for dom in ("drift-flight.org", "driftflight.com"):
+        canon = offering.discover_offering(
+            FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        )
+        canon_labels = {s.label for c in canon.claimed for s in c.signals}
+        assert "webhook-verification" not in canon_labels, (dom, canon_labels)
+    print("  ok: the canonical pair's marketing/payment 'signature' prose does NOT fire webhook-verification (real-data precision)")
+
+
 def test_streaming_response_metering_precision_synthetic():
     # STREAMING response delivery — how an agent consumes output INCREMENTALLY over
     # the OPEN connection as it is produced (token-by-token generation, progressive

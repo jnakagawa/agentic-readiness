@@ -273,6 +273,53 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"|\bpoll(?:ing)?\s+(?:the\s+|for\s+|your\s+)?[^\n]{0,50}?\bendpoint\b"
             r"|\bpoll(?:ing)?\s+(?:for|until)\b"
             r"|\basync(?:hronous)?\s+(?:api|jobs?|requests?|predictions?|endpoint|calls?|inference|processing|tasks?|mode)\b", _F)),
+        # WEBHOOK AUTHENTICITY VERIFICATION — whether an agent can TRUST that an
+        # inbound async callback is GENUINELY from the API rather than a forged or
+        # spoofed webhook. This is the security/TRUST leg of the async contract, and
+        # it is the direct sibling of `async-job`: where `async-job` says a webhook
+        # DELIVERY channel EXISTS (a webhook url/endpoint, register/configure a
+        # webhook), NONE of the existing signals says whether the agent can
+        # AUTHENTICATE what arrives on it. An autonomous agent that acts on an
+        # UNVERIFIED "job complete" webhook can be tricked by a spoofed callback into
+        # treating fabricated output as real — or, worse, releasing a payment — so a
+        # metered API that documents webhook-signature verification (a webhook signing
+        # secret to verify inbound requests, a webhook signature to check) lets the
+        # agent TRUST the callback before acting on it, and is MORE agent-completable.
+        # This dovetails with ASRS's own $0-only capital-safety ethos: don't act, and
+        # never pay, on a forged callback. Distinct from every existing metered_api
+        # signal — `async-job` is that a webhook/poll channel EXISTS, `api-auth` how
+        # YOU present credentials OUTBOUND, `error-contract` how a failed call
+        # recovers; NONE says how an agent verifies an INBOUND webhook is authentic.
+        # Vendor-neutral webhook-security vocabulary (a webhook signing secret, a
+        # webhook signature, an X-Webhook-Signature header, verifying that webhook
+        # requests are authentic/signed) — the same open-convention category as
+        # REST/GraphQL/OpenAPI already in this bank, never a vendor.
+        # PRECISION-CRITICAL: bare "\bsignature\b" / "\bsigning secret\b" is a
+        # false-positive minefield present in the very fixtures we validate on — the
+        # canonical pair's marketing "your palette, your signature look", the x402
+        # PAYMENT-proof "ZeroClick verifies the signature locally" (a settlement
+        # signature, not a webhook), api.replicate.com's Files API SIGNED-URL "signing
+        # secret" + `name: signature` query param (URL signing, not a webhook), and
+        # generic "digital signature" / "sign the contract" senses. So NEVER match a
+        # bare "signature"/"signing secret": require the token to name a WEBHOOK — a
+        # `webhook signature` / `webhook-signature` (or `X-Webhook-Signature`) header,
+        # a `signing secret for/of the ... webhook`, a `verify ... webhook`, or
+        # `webhook requests/events/payloads are coming/authentic/signed/verified`. The
+        # marketing-signature, x402-payment-signature, file-URL-signing-secret,
+        # webhook-EXISTS-only (`async-job`'s turf), and contract/digital-signature
+        # senses trip none of these. Fires non-vacuously on the real captured
+        # api.replicate.com `/openapi.json` (the `/webhooks/default/secret` endpoint's
+        # "Get the signing secret for the default webhook endpoint. This is used to
+        # verify that webhook requests are coming from ...") and on ZERO of the
+        # canonical-pair, retail (books.toscrape.com), or null (example.com) fixtures.
+        # api.replicate.com ALREADY claims metered_api (its only archetype), so this
+        # deepens its evidence without adding or reordering any archetype
+        # (score-neutral); the classifier is off the scoring path.
+        ("webhook-verification", re.compile(
+            r"\bwebhook[- ]signatures?\b"
+            r"|\bsigning\s+secret\s+(?:for|of)\s+(?:the\s+|a\s+|your\s+)?(?:default\s+)?webhooks?\b"
+            r"|\bverif\w+\s+(?:that\s+)?(?:the\s+|these\s+|inbound\s+|each\s+)?webhooks?\b"
+            r"|\bwebhooks?\s+(?:requests?|events?|payloads?|deliveries|calls?)\s+(?:are\s+)?(?:coming|authentic|genuine|signed|verified|valid)\b", _F)),
         # STREAMING response delivery — how an agent consumes output INCREMENTALLY
         # over the OPEN connection as it is produced (token-by-token generation,
         # progressive job output) rather than in one terminal round-trip. This is a

@@ -3,6 +3,64 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 131 — 2026-07-31T14:1xZ — TRUTH (branch+PR+self-merge, tests-only/off-scoring-path/score-neutral)
+
+**What/why.** Pinned Cycle 130's `self-provisioning` metered_api signal as
+identity-invariant — the TRUTH leg of the ninth metered_api COVERAGE→TRUTH→READOUT arc,
+mirroring free-trial (115) and streaming-response (127). Added
+`test_offering_relabel_invariance_self_provisioning` (+ a `_self_prov_signals` helper) to
+`tests/test_offering_canonical.py` (36→37). Under a whole-host relabel the agent
+self-onboarding claim (no signup / provision its own identity / self-provision / no-human
+onboarding) must keep the SAME match count, on the SAME host-normalized surface, its quote
+STILL satisfying the live regex, with the vendor host absent from all rewritten evidence.
+Self-provisioning is a property of what a storefront GRANTS an agent (self-onboarding),
+never of WHO grants it, so it must key on identity-free structure.
+
+**Why synthetic, not the real fixture.** The real self-provisioning quote is host-free by
+nature ("no signup", "provision its own identity"); on driftflight.com the signal fires
+with the host in the surface KEY but the fired QUOTE host-free (verified live via Cycle
+130), so a whole-fixture relabel would leave the quote byte-identical and the invariance
+VACUOUS at the quote — the same failure mode free-trial/content-provenance dodged. So the
+guard scans a synthetic metered_api surface (`agents.acme-agents.example/docs`) seating the
+host INSIDE the evidence: host as surface-key prefix AND adjacent to the "no signup" phrase
+→ inside the padded quote window (asserted non-vacuous: host in both surface key and quote).
+
+**Teeth (precision).** The OPPOSITE human-onboarding senses present VERBATIM in the
+canonical fixtures fire ZERO self-provisioning: the human path "Human developers sign up on
+the dashboard for an API key" (both canonical domains), the 401 "No API key, or the key is
+unknown or revoked" (drift-flight.org /docs), the pricing sense "no signup fees" (the
+negative lookahead), and "sign up for our newsletter" — proving the match keys on the
+AFFIRMATIVE agentic structure, never a bare "sign up" or a bare "no API key". Also a
+negative-control check: the neutral host carries no self-provisioning signal word.
+
+**Ship class + evidence.** Tests-only, off the scoring path (`scoring.py` 0 offering refs)
+→ score-neutral, NOT peer-gated. `git diff` over `asrs/ rubric/ fixtures/` EMPTY;
+`git diff --name-only` = `tests/test_offering_canonical.py` ONLY. First duty: no open
+peer-gated PR (`list_pull_requests state=open` → `[]` at fire start). Cloud bridge blocks
+direct main push → branch `loop/self-provisioning-invariance` + PR #111 + self-merge (squash
+29e691e; merged commit = exactly the one test file). Realigned main to origin/main after
+merge (`git reset --hard origin/main` → 29e691e, verified 37/37 + replay 24/24 on merged
+main), deleted local branch. `tests/test_offering_canonical.py` 36→37; `test_offering.py`
+54/54; full suite green (22 files; `test_free_tier` 11/11 after `pip install -r
+requirements.txt`, environment-only). Canonical PAIR unchanged: replay guard 24/24,
+**46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7. INFRA HEALTHY (verify
+20260731T134541Z 13:45Z, ~26min old at fire, within 6h floor).
+
+**LIVE-DELTA divergence — now PERSISTS across two crawls.** The 13:45Z verify artifact
+shows driftflight.com LIVE **76.2 C / +30.1** with transactability **62.5** (down from
+fixture 87.5) — MATCHING the 08:52Z artifact (76.2/62.5) ~5h earlier. Two independent live
+crawls now agree, so the ~9pt drop is looking less like transient wake-recovery noise and
+more like a real change in driftflight.com's agent-native payment evidence over the Jul-23→
+Jul-31 gap. Off the scoring path (in-cloud replay guard STILL 24/24, +39.4 — regression
+signal intact); the re-capture/re-baseline is [LOCAL]. Flag in the ~16:1xZ digest.
+
+**Next hypothesis.** Rotate READOUT next (the ninth arc's READOUT leg): surface "onboard
+without a human" / self-provisioning in the public methodology prose (`_write_methodology_page`),
+guarded by a content-presence test in `test_readout.py` — the metered_api mirror completing
+COVERAGE 130 → TRUTH 131 → READOUT. COVERAGE frontier after: physical_good / service_booking
+/ data_retrieval all `[LOCAL]`-blocked. If the next verify still shows transactability
+62.5, the [LOCAL] canonical re-capture rises in leverage.
+
 ## Cycle 130 — 2026-07-31T13:1xZ — COVERAGE (branch+PR+self-merge, off-scoring-path/score-neutral)
 
 **What/why.** Added a NINTH metered_api capability leg — the `self-provisioning` signal

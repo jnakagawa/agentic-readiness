@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 130
+- Cycle counter: 131
 - Started: 2026-07-23 (UTC)
 - RUNNER RECOVERED at 2026-07-31T09:12Z (Cycle 126) — the ~56h stall (first breached Cycle 76 06:12Z)
   CLEARED. Newest artifact `runs/local/verify_20260731T085248Z.json` (08:52Z Jul-31) carries
@@ -14,12 +14,15 @@
   87.5 → 62.5 (legibility 90.9 / access 100 / trust 60 all UNCHANGED) — the live with-rails anchor's
   agent-native payment evidence weakened between the Jul-23 fixture and the Jul-31 live crawl. NOT
   caused by any in-cloud change (off the scoring path; the in-cloud replay guard is STILL 24/24, 46.1 F
-  / 85.5 B / +39.4 — the independent regression signal is intact). It is a SINGLE datapoint from a
-  just-recovered runner — plausibly a transient partial-fetch of a transactability surface during the
-  wake/network recovery, OR a real change in driftflight.com over the 3-day gap. Queued P0 [LOCAL] to
-  verify next fire; FLAG in the next 16:00 UTC digest (~16:1xZ Jul-31, the next first-after-16:00 fire —
-  which also reports that the runner stall cleared). Cycle 126 at 09:12Z is NOT first-after-16:00 → no
-  digest this fire.
+  / 85.5 B / +39.4 — the independent regression signal is intact). UPDATE Cycle 131: NOW CONFIRMED
+  ACROSS TWO independent live crawls — the 13:45Z artifact (76.2 C / +30.1 / transactability 62.5)
+  MATCHES the 08:52Z one (76.2 / 62.5) ~5h apart, so it is less likely transient wake/network
+  partial-fetch noise and more likely a REAL change in driftflight.com's agent-native payment evidence
+  over the Jul-23→Jul-31 gap. Still off the scoring path; the [LOCAL] re-capture/re-baseline is the
+  resolution path (peer-gated, moves the replay guard EXPECTED per the Cycle-17 contract). Queued P0
+  [LOCAL]; FLAG in the next 16:00 UTC digest (~16:1xZ Jul-31, the next first-after-16:00 fire — which
+  also reports that the runner stall cleared). Cycle 131 at 14:1xZ is NOT first-after-16:00 → no digest
+  this fire.
 - INFRA (2026-07-29T04:2xZ, Cycle 74): the CLOUD git bridge now REFUSES direct pushes to `main`
   (branch-protected) — a `git push origin main` of a legitimate fast-forward is rejected with a
   MISLEADING "non-fast-forward" even when the read replica, the write primary (receive-pack
@@ -33,7 +36,39 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 131 TRUTH — pinned Cycle 130's `self-provisioning` metered_api signal as RELABEL-INVARIANT,
+  the ninth metered_api arc's TRUTH leg (mirroring free-trial 115 / streaming-response 127). Added
+  `test_offering_relabel_invariance_self_provisioning` (+ `_self_prov_signals`) to
+  `tests/test_offering_canonical.py` (36→37): under a whole-host relabel the agent self-onboarding
+  claim (no signup / provision own identity / self-provision / no-human onboarding) keeps the SAME
+  match count, SAME host-normalized surface, quote STILL matching the live regex, host absent. Because
+  the real self-provisioning quote is host-free (a whole-fixture relabel would be VACUOUS at the quote),
+  the guard scans a SYNTHETIC metered_api surface seating the host INSIDE the evidence (surface-key
+  prefix + adjacent to "no signup" → in the padded quote window; asserted non-vacuous). TEETH: the
+  OPPOSITE human-onboarding senses present VERBATIM in the fixtures fire ZERO — dashboard "sign up …
+  for an API key" (both domains), 401 "No API key" (drift-flight.org /docs), "no signup fees" (the
+  lookahead), newsletter sign up. SHIP CLASS: tests-only, off the scoring path (`scoring.py` 0 offering
+  refs) → score-neutral, NOT peer-gated. git diff over `asrs/ rubric/ fixtures/` EMPTY; --name-only =
+  `tests/test_offering_canonical.py` ONLY. First duty: no open peer-gated PR (`[]` at fire start). Cloud
+  bridge blocks direct main push → branch loop/self-provisioning-invariance + PR #111 + self-merge
+  (squash 29e691e; merged commit = exactly the one test file). Realigned main to origin/main after merge
+  (`git reset --hard origin/main` → 29e691e, verified 37/37 + replay 24/24 on merged main), deleted local
+  branch. `test_offering_canonical.py` 36→37; `test_offering.py` 54/54; full suite green (22 files;
+  test_free_tier 11/11 after `pip install -r requirements.txt`, environment-only). Canonical PAIR
+  unchanged: replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. INFRA HEALTHY
+  (verify 20260731T134541Z 13:45Z, ~26min old at fire, within 6h floor; no open peer-gated PRs).
+  LIVE-DELTA divergence NOW PERSISTS across TWO crawls — the 13:45Z artifact shows driftflight.com LIVE
+  76.2 C / +30.1, transactability 62.5, MATCHING 08:52Z (76.2/62.5) ~5h earlier → less like transient
+  wake noise, more like a real 3-day change in the with-rails anchor's payment evidence. Off scoring
+  path (in-cloud replay guard STILL 24/24 / +39.4). Re-capture is [LOCAL]. No Slack (score-neutral, off
+  scoring path, not sensitive-class; 14:1xZ is not the first-after-16:00 digest — that is ~16:1xZ Jul-31,
+  which reports the runner-recovery + this now-persisting live-delta divergence).
+  Next READOUT — surface "onboard without a human" / self-provisioning in the public methodology prose
+  (`_write_methodology_page`, `asrs/scorecard.py`), guarded by a content-presence test in `test_readout.py`,
+  completing the ninth metered_api arc COVERAGE 130 → TRUTH 131 → READOUT. COVERAGE frontier after:
+  physical_good / service_booking / data_retrieval all [LOCAL]-blocked (no rich committed fixture). If the
+  next verify still shows transactability 62.5, the [LOCAL] canonical re-capture rises in leverage.)
   (Cycle 130 COVERAGE — added a NINTH metered_api capability leg, the `self-provisioning` signal
   (`asrs/offering.py`), capturing the PLAYBOOK capability lens's own words "provision without a
   human": whether an autonomous agent can OBTAIN API access with no signup / no human account

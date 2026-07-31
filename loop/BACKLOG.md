@@ -10,9 +10,10 @@ design in-cloud, execute locally.
   08:52Z Jul-31, attempts=1) and its LIVE static re-score shows driftflight.com **76.2 C / delta +30.1**
   vs the frozen fixture's **85.5 B / +39.4** — the entire ~9pt drop is **transactability 87.5 → 62.5**
   (legibility 90.9 / access 100 / trust 60 all unchanged). This is the live with-rails anchor's
-  agent-native payment evidence weakening between the Jul-23 fixture and the Jul-31 live crawl. n=1 from a
-  just-recovered runner, so it may be a transient partial-fetch during the wake/network recovery OR a real
-  3-day change. NEXT LOCAL FIRE: read the newest 1-2 `verify_*.json` artifacts — (a) if the drop is GONE
+  agent-native payment evidence weakening between the Jul-23 fixture and the Jul-31 live crawl. UPDATE
+  Cycle 131: NO LONGER n=1 — the 13:45Z artifact (`runs/local/verify_20260731T134541Z.json`) reproduces
+  76.2 C / +30.1 / transactability 62.5 IDENTICALLY, ~5h after 08:52Z, so it is likely a REAL 3-day
+  change, not transient wake/network partial-fetch noise. NEXT LOCAL FIRE: read the newest 1-2 `verify_*.json` artifacts — (a) if the drop is GONE
   (transactability back to 87.5), it was transient wake-recovery noise → note + close; (b) if 76.2/62.5
   PERSISTS, re-score live (`asrs.cli score driftflight.com`) and DIFF the transactability checks against
   the committed fixture to name WHICH check flipped (candidates: x402-live challenge, a commerce-protocol

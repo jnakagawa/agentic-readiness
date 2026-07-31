@@ -663,6 +663,40 @@ storefront&rsquo;s identity end-to-end and confirms the provenance record is sti
 recognized, unchanged, with the vendor&rsquo;s name gone. This read is
 <b>diagnostic</b> &mdash; it names whether the offer lets an agent trust what it
 obtained, <b>off the scoring path</b> &mdash; not a scored pillar.</p>
+<p><b>Specifying the deliverable&rsquo;s shape</b> is the <b>output-spec sibling</b>
+of owning and trusting the render: on the <b>digital-good</b> side an agent can
+obtain a render it holds a licence to use and can prove is genuine, and still get
+it back at the <b>wrong size</b> to use. A generation storefront returns an image,
+a video or a document, but <b>what</b> it produces, <b>where</b> it delivers it and
+whether the agent may <b>use</b> it all say nothing about the physical <b>shape</b>
+of the deliverable &mdash; its <b>output resolution</b>, its <b>pixel dimensions</b>,
+its <b>aspect ratio</b> &mdash; the one parameter the agent must set on the request
+itself. An agent that cannot read the documented <b>output-resolution contract</b>
+either requests a size the API cannot produce (a failed or clipped generation) or is
+handed a deliverable at the <b>wrong resolution for its downstream use</b> &mdash; a
+hero image delivered at thumbnail size &mdash; so an offer that documents its output
+resolutions and dimensions is more agent-completable than one that leaves the agent
+guessing what size it will be handed back. So ASRS reads the documented output spec
+as part of understanding the digital-good offer, keyed on vendor-neutral
+<b>output-format vocabulary</b> (a <code>maxResolution</code> field, an output /
+render / print resolution in pixels, a <b>WxH pixel dimension</b>, an
+<b>aspect ratio</b>), the same category of open convention as REST, GraphQL or
+OpenAPI &mdash; never on a vendor&rsquo;s name. The read is <b>precision-guarded</b>:
+a bare <code>resolution</code> word is <b>no signal</b> &mdash; <b>dispute
+resolution</b>, a New-Year resolution, DNS resolution, a hosted model&rsquo;s own
+<b>Super-resolution</b> or &ldquo;enhance image resolution&rdquo; <b>feature</b>
+(what the model does, not a deliverable the storefront vends), and a <b>screen /
+monitor / display</b> resolution (the viewer&rsquo;s hardware, not the deliverable)
+must never trip it &mdash; so the phrasing must name an actual output spec (a
+<code>maxResolution</code> field, a print resolution, a resolution in explicit
+pixels, an output/render/canvas/generation/target resolution or dimensions, a WxH
+pixel dimension, or an aspect ratio). Recognition keys on the <b>shape the offer
+documents, not who documents it</b>: that property is pinned by an <b>executable
+regression test</b> that relabels the storefront&rsquo;s identity end-to-end and
+confirms the output spec is still recognized, unchanged, with the vendor&rsquo;s
+name gone. This read is <b>diagnostic</b> &mdash; it names whether the offer lets an
+agent request the render at the size it needs, <b>off the scoring path</b> &mdash;
+not a scored pillar.</p>
 <p><b>Evaluating a subscription at $0 first</b> is finishing on the
 <b>subscription</b> side, where the thing an agent must commit to is not a single
 call but a <b>recurring charge</b> that renews on its own. An agent asked to

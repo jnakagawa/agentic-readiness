@@ -1003,6 +1003,67 @@ def test_methodology_documents_content_provenance() -> None:
                f"content-provenance prose names no vendor/domain ({banned!r})")
 
 
+def test_methodology_documents_priced_listing() -> None:
+    # Cycle 124 (READOUT): the READOUT leg CLOSING the priced-listing arc opened by
+    # Cycle 122 (COVERAGE — the `priced-listing` offering signal added to the
+    # PHYSICAL_GOOD archetype bank: the "understand the offer" PRICE leg, a decimal
+    # amount quoted directly beside an in-stock / add-to-cart control) and Cycle 123
+    # (TRUTH — the SIGNAL-level relabel-invariance guard, physical_good's FIRST relabel
+    # leg, with a synthetic retail surface seating the host INSIDE the priced-listing
+    # evidence). This COMPLETES the FIRST full COVERAGE->TRUTH->READOUT arc on the
+    # physical_good archetype (after subscription's free-trial 114/115/116 and
+    # digital_good's output-license + content-provenance 118/119/120 arcs). The
+    # "read the concrete price to decide + fulfill a physical purchase" leg was pinned
+    # in code + tests but NEVER surfaced in prose a critic can read — a reader could not
+    # learn WHY a listing whose price is machine-legible beside its availability is MORE
+    # agent-completable, or how it is the physical-good mirror of the offer-side legs on
+    # the other archetypes. The paragraph must (a) frame it as finishing on the
+    # physical-good side — an agent can browse a catalog, see it is in stock and has an
+    # add-to-cart control, yet still not be able to DECIDE whether to buy — and name the
+    # failure (a catalog whose price an agent cannot read has not completed the
+    # commercial job); (b) name the vendor-neutral priced-listing SHAPE the offering
+    # signal anchors on (a decimal amount adjacent to an in-stock / add-to-cart control);
+    # (c) keep the signal's PRECISION honesty — a bare currency amount is no signal (a
+    # metered "per API call" price, a subscription "per month" fee sit nowhere near
+    # availability language), so the price must sit immediately beside the availability
+    # control, and a price alone can never conjure a physical good on an API storefront
+    # (it stays NA); (d) say recognition keys on the PRICE the offer lists not who lists
+    # it and is pinned by an identity-relabel executable regression test; and (e) stay
+    # HONEST about scope — this offering read is diagnostic, off the scoring path, not a
+    # scored pillar (the same scored-vs-diagnostic line the sibling offer-side prose
+    # keeps). Vendor-neutral throughout.
+    print("test_methodology_documents_priced_listing")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    # Match on the whitespace-collapsed text (same technique as the content-provenance /
+    # free-trial guards) so wording, not source wrapping, is what the guard pins.
+    collapsed = " ".join(text.split())
+    for phrase in ("Reading the price to fulfill", "physical-good",
+                   "priced catalog listing", "priced-listing shape",
+                   "not completed the commercial job",
+                   "price the offer lists, not who lists it",
+                   "relabels the storefront", "executable regression test",
+                   "off the scoring path", "diagnostic"):
+        _check(phrase in collapsed,
+               f"methodology documents priced-listing: {phrase!r}")
+    # The vendor-neutral priced-listing vocabulary the offering signal keys on: a decimal
+    # amount adjacent to in-stock / add-to-cart availability language.
+    for token in ("in stock", "add-to-cart", "decide", "fulfill"):
+        _check(token in collapsed,
+               f"methodology names priced-listing vocabulary {token!r}")
+    # PRECISION honesty: the prose must preserve the signal's bare-amount guard — a bare
+    # currency amount (a metered per-call price, a subscription per-month fee) sitting
+    # nowhere near availability is no signal, and a price alone can never conjure a
+    # physical good (it stays NA on an API storefront).
+    for token in ("bare", "no signal", "per API call", "per month", "NA"):
+        _check(token in collapsed,
+               f"methodology keeps priced-listing precision note: {token!r}")
+    # Vendor-neutral: no scored domain/product/brand named on the page.
+    for banned in ("drift-flight", "driftflight", "replicate", "toscrape"):
+        _check(banned not in text,
+               f"priced-listing prose names no vendor/domain ({banned!r})")
+
+
 def test_methodology_documents_calibration() -> None:
     # Cycle 68 (READOUT): the READOUT complement to Cycle 67's calibration guard
     # (tests/test_calibration.py — the first static-vs-behavioral VALIDITY axis).
@@ -1682,6 +1743,7 @@ def main() -> int:
         test_methodology_documents_cancel_job,
         test_methodology_documents_free_trial,
         test_methodology_documents_content_provenance,
+        test_methodology_documents_priced_listing,
         test_methodology_documents_calibration,
         test_methodology_page_tracks_live_rubric,
         test_build_scorecard_publishes_and_links_methodology,

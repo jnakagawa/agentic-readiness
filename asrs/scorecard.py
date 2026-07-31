@@ -604,6 +604,35 @@ recognized, unchanged, with the vendor&rsquo;s name gone. This read is
 <b>diagnostic</b> &mdash; it names whether the offer lets an agent evaluate a
 subscription at $0 before committing, <b>off the scoring path</b> &mdash; not a
 scored pillar.</p>
+<p><b>Reading the price to fulfill</b> is finishing on the <b>physical-good</b>
+side, where an agent can browse a catalog, read that an item is <b>in stock</b>
+and see an <b>add-to-cart</b> control, and still not be able to <b>decide</b>
+whether to buy it. To decide on and then <b>fulfill</b> a physical purchase an
+agent must read the <b>concrete price</b> of the purchasable item; a storefront
+that quotes a decimal money amount <b>directly beside</b> the item&rsquo;s
+availability or add-to-cart control &mdash; a <b>priced catalog listing</b> such
+as &ldquo;<code>&pound;51.77 In stock</code>&rdquo; or &ldquo;<code>$12.99 Add to
+basket</code>&rdquo; &mdash; makes that price <b>machine-legible on the
+listing</b>, whereas a catalog whose price an agent cannot read beside the item
+has <b>not completed the commercial job</b>: the agent can put the thing in a
+cart but cannot decide whether it is worth buying. So ASRS reads the priced
+listing as part of understanding the physical-good offer, keyed on the
+vendor-neutral <b>priced-listing shape</b> (a decimal amount adjacent to an
+in-stock or add-to-cart/basket/bag control), never on a vendor&rsquo;s name. The
+read is <b>precision-guarded</b>: a <b>bare</b> currency amount is <b>no
+signal</b> &mdash; a metered API&rsquo;s &ldquo;<code>$0.01 per API call</code>&rdquo;
+or &ldquo;<code>$5 per 1,000 requests</code>&rdquo;, or a subscription&rsquo;s
+&ldquo;<code>$29 per month</code>&rdquo; fee, sits <b>nowhere near</b> in-stock or
+add-to-cart availability language &mdash; so the amount must sit <b>immediately
+beside</b> the availability control to count, and a price alone can never conjure
+a physical good on an API storefront that merely lists dollar amounts (it stays
+<b>NA</b> there). Recognition keys on the <b>price the offer lists, not who lists
+it</b>: that property is pinned by an <b>executable regression test</b> that
+relabels the storefront&rsquo;s identity end-to-end and confirms the priced
+listing is still recognized, unchanged, with the vendor&rsquo;s name gone. This
+read is <b>diagnostic</b> &mdash; it names whether the offer lets an agent read
+what a physical item costs before buying, <b>off the scoring path</b> &mdash; not
+a scored pillar.</p>
 </div>
 
 <div class="card">

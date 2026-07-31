@@ -1,11 +1,11 @@
 # Loop state
 
-- Cycle counter: 124
+- Cycle counter: 125
 - Started: 2026-07-23 (UTC)
-- RUNNER STALL (STILL GAPPED at 2026-07-31T07:12Z, Cycle 124; first breached Cycle 76 06:12Z): the LOCAL
+- RUNNER STALL (STILL GAPPED at 2026-07-31T08:12Z, Cycle 125; first breached Cycle 76 06:12Z): the LOCAL
   verify runner remains PAST the 6h floor. Newest `runs/local/verify_20260728T234102Z.json` is 23:41Z
-  Jul-28 = ~55.5h old at the Cycle-124 fire (container clock 07:12Z Jul-31); no
-  newer :41 artifact through 07:12Z Jul-31. Cloud CANNOT repair the local machine. The gap was RE-FLAGGED
+  Jul-28 = ~56.5h old at the Cycle-125 fire (container clock 08:12Z Jul-31); no
+  newer :41 artifact through 08:12Z Jul-31. Cloud CANNOT repair the local machine. The gap was RE-FLAGGED
   loudly in the Cycle-109 16:12Z digest (the first cycle after 16:00Z on Jul-30). The NEXT first-after-16:00
   fire (~16:1xZ Jul-31) is the next re-flag point; Cycle 124 at 07:12Z is NOT first-after-16:00 → no
   re-digest THIS fire, but keep noting the gap until it clears; queued P0 [LOCAL] below. The in-cloud replay guard (`test_canonical_replay` 24/24, 46.1 F /
@@ -27,7 +27,39 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 125 METHOD — added the FIFTH metamorphic-invariance axis on the offering classifier, and the
+  FIRST to perturb the order of items WITHIN a single surface rather than the surfaces themselves (the
+  four prior axes — relabel / surface-read-order / scale / noise — all operate at surface granularity;
+  none reorders the catalog listings a storefront lists on one page). `test_offering_listing_order_invariance_priced_listing`
+  (`tests/test_offering_canonical.py` 33→34) pins that reordering the priced listings on one synthetic
+  catalog page does not move the physical_good verdict: distinct-label STRENGTH, claimed set, and NA
+  partition all order-invariant. Executes Cycle 124's next-hypothesis exactly. NON-VACUOUS by
+  construction: `_scan_surface` keeps the FIRST match per signal (`pattern.search`), so reordering
+  genuinely MOVES the sampled priced-listing exemplar quote (£51.77-first → €24.50-first, verified) while
+  the verdict does not — an honest classifier samples a different price to show the reader but reaches the
+  same conclusion. SYNTHETIC vehicle because `strip_html` collapses a committed fixture to a single
+  whitespace-joined line (no per-listing boundary to permute — same reason as the free-trial-115 /
+  content-provenance-119 / priced-listing-122 relabel guards). TEETH three ways: (a) reordered catalog
+  bytes differ; (b) sampled quote differs; (c) base is a real strength-5 physical_good (add-to-cart /
+  free-shipping / fulfillment / priced-listing / stock) with rails NA → a dropped leg or conjured rail
+  would be unmistakable (retail-pole credibility direction). SHIP CLASS: tests-only, off the scoring path
+  (`scoring.py` 0 offering refs) → score-neutral, NOT peer-gated. git diff over `asrs/ rubric/ fixtures/`
+  EMPTY; --name-only = `tests/test_offering_canonical.py` ONLY. Cloud bridge blocks direct main push →
+  branch loop/listing-order-invariance + PR #99 + self-merge (squash 33f188e; merged commit = exactly the
+  one test file). First duty: no open peer-gated PR (`[]` at fire start). Realigned main to origin/main
+  after merge (`git reset --hard origin/main` → 33f188e, verified new test present + 34/34 on merged main),
+  deleted local branch. Full suite green (22 files; test_free_tier 11/11 after `pip install -r
+  requirements.txt`, environment-only). Canonical PAIR unchanged AND re-measured on merged main: replay
+  guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7; offering canonical guard 34/34. RUNNER
+  STILL GAPPED (verify_20260728T234102Z 23:41Z, ~56.5h old). No Slack (score-neutral, off scoring path;
+  not sensitive-class; 08:12Z is not the first-after-16:00 digest cycle — that is ~16:1xZ Jul-31). Next
+  COVERAGE — the metamorphic grid now spans five axes but listing-order invariance is pinned on the
+  synthetic retail pole only; a future METHOD increment could mirror it onto a with-rails MACHINE surface
+  (do the metered_api endpoints' ORDER within one OpenAPI spec matter to the claim?). For COVERAGE this
+  cycle's rotation: a new signal leg on a CLAIMED archetype, or the [LOCAL] free-tier live-wiring /
+  ACP-UCP-MPP handshakes. Thin archetypes service_booking / data_retrieval remain [LOCAL]-blocked (no
+  committed fixture claims either — see P1).)
   (Cycle 124 READOUT — CLOSED the `priced-listing` arc at its third layer, COMPLETING the FIRST full
   COVERAGE→TRUTH→READOUT arc on the physical_good archetype (COVERAGE 122 signal → TRUTH 123
   relabel-invariance → READOUT 124). Added ONE capability-worded, vendor-neutral `<p>` ("Reading the

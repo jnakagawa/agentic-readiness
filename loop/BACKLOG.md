@@ -569,18 +569,19 @@ design in-cloud, execute locally.
   in-cloud COVERAGE candidates on physical_good: further CATALOG legs verifiable on books (a variant/edition
   leg, a product-title/detail leg). service_booking (5 legs) and data_retrieval (5 legs) remain ALL
   [LOCAL]-blocked — no committed fixture claims them richly enough (see the P1 [LOCAL] fixture-capture items).
-  METAMORPHIC-AXIS GRID STATE (post-Cycle-124, so a METHOD cycle doesn't re-cover the same cell): RELABEL —
-  org/com/machine/retail/nonstorefront (whole-fixture) + signal-level metered_api ×7, digital_good ×2
-  (output-license, content-provenance), subscription ×1 (free-trial), physical_good ×1 (priced-listing,
-  Cycle 123 — synthetic surface): DENSE. NOISE-SURFACE — org/com/retail: COVERED (Cycle 117 added retail).
-  CONTENT-SCALE — org/com/retail: COVERED (Cycle 121 added retail). Thinnest axis is SURFACE-ORDER — only
-  output-license (com) + org whole-fixture; com/retail/machine whole-fixture and every other signal family
-  UNCOVERED. Next METHOD candidate (Cycle 125 is METHOD): extend surface-ORDER to the retail pole
-  (books.toscrape single-archetype, single-surface homepage — note ORDER needs ≥2 surfaces to be
-  non-vacuous, so retail may need a NA-rails-stay-NA framing rather than a read-order permutation) or to the
-  .com/machine half; OR add a metamorphic axis to the new physical_good priced-listing signal (reordering the
-  catalog listings must not change its physical_good strength); OR a cross-fixture invariant over the
-  now-dense digital_good signal family.
+  METAMORPHIC-AXIS GRID STATE (post-Cycle-125, so a METHOD cycle doesn't re-cover the same cell): FIVE axes
+  now exist. RELABEL — org/com/machine/retail/nonstorefront (whole-fixture) + signal-level metered_api ×7,
+  digital_good ×2 (output-license, content-provenance), subscription ×1 (free-trial), physical_good ×1
+  (priced-listing, Cycle 123 — synthetic surface): DENSE. NOISE-SURFACE — org/com/retail: COVERED (Cycle
+  117 added retail). CONTENT-SCALE — org/com/retail: COVERED (Cycle 121 added retail). LISTING-ORDER
+  (intra-surface, the FIFTH axis, Cycle 125) — physical_good priced-listing on the synthetic retail pole
+  ONLY. Thinnest axis remains SURFACE-ORDER (whole-surface read order) — only output-license (com) + org
+  whole-fixture; com/retail/machine whole-fixture and every other signal family UNCOVERED. Next METHOD
+  candidates (Cycle 129 is the next METHOD fire): (a) mirror LISTING-ORDER onto a with-rails MACHINE surface
+  — do the metered_api endpoints' ORDER within one OpenAPI spec matter to the claim? (multi-endpoint reorder
+  within one spec, machine pole); (b) extend surface-ORDER (whole-surface read order) to the .com/machine
+  half (retail is single-surface so read-order needs a NA-rails-stay-NA framing, not a permutation);
+  (c) a cross-fixture invariant over the now-dense digital_good signal family.
 
 <!-- REVISED 2026-07-31 (Cycle 118 COVERAGE finding): "[COVERAGE, in-cloud] a physical_good FULFILLMENT
      leg on the committed retail fixture" (from Cycle 117's audit) was DEMOTED to [LOCAL]. In-cloud

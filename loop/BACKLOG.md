@@ -503,6 +503,21 @@ design in-cloud, execute locally.
 
 ## P1
 
+- **Complete the `output-resolution` arc — the TRUTH + READOUT legs** (follow-up to Cycle 138 COVERAGE,
+  which added the `output-resolution` digital_good signal, PR #125 / squash 52b86ca). Mirrors the
+  webhook-verification (134/135/136) and free-trial (114/115/116) arcs. (a) TRUTH: pin the signal as
+  RELABEL-INVARIANT — add `test_offering_relabel_invariance_output_resolution` to
+  `tests/test_offering_canonical.py`. Output-resolution evidence is HOST-FREE by nature (`maxResolution`
+  / a px value / "print resolution" carry no host), so a whole-fixture relabel is VACUOUS; use a
+  SYNTHETIC surface seating the host INSIDE the resolution evidence (the free-trial 115 /
+  content-provenance pattern), relabel end-to-end, assert same match count / host-normalized surface /
+  quote still matches the live regex / host absent, with a bare screen-or-monitor-resolution distractor
+  firing ZERO. Tests-only, off scoring path → score-neutral, NOT peer-gated. (b) READOUT: add a
+  methodology paragraph in `_write_methodology_page` (`asrs/scorecard.py`) framing "specify the
+  deliverable's output resolution / dimensions" as the digital_good output-SPEC leg (distinct from
+  WHAT is produced / WHERE delivered / rights / trust), with a `test_readout.py` guard. Both in-cloud;
+  do the TRUTH leg at Cycle 139, READOUT at 140 per the rotation.
+
 <!-- DONE 2026-07-31T19:1xZ (Cycle 136, READOUT, branch+PR+self-merge, display+tests/off-scoring-path/
      score-neutral): "Complete the `webhook-verification` arc — the READOUT leg" FULLY DISCHARGED,
      closing the full COVERAGE (134) → TRUTH (135) → READOUT (136) arc. New paragraph in

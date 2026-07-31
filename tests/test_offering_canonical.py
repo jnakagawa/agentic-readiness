@@ -2114,6 +2114,157 @@ def test_offering_relabel_invariance_self_provisioning() -> None:
 
 
 # ---------------------------------------------------------------------------
+# metered_api's TENTH signal-level companion (Cycle 134's `webhook-verification`,
+# whose relabel-invariance TRUTH leg this is) — the async-callback TRUST leg: the
+# security sibling of `async-job`. Where `async-job` says a webhook DELIVERY
+# channel EXISTS (a webhook url/endpoint, register/configure a webhook), NONE of
+# the other legs says whether the agent can TRUST that an inbound callback is
+# GENUINELY from the API rather than a forged/spoofed webhook. An agent that acts
+# on an UNVERIFIED "job complete" webhook can be tricked by a spoofed callback into
+# treating fabricated output as real or releasing a payment, so a documented
+# webhook-verification contract (a webhook signing secret, a webhook signature,
+# verifying that inbound webhooks are authentic) is MORE agent-completable — and
+# it dovetails with the $0-only capital-safety ethos: never act or pay on a forged
+# callback. Webhook authenticity is a property of the async CONTRACT a storefront
+# publishes — a signing secret, a signature to check — never of WHO publishes it,
+# so the signal must be identity-invariant under a host relabel.
+#
+# Why a SYNTHETIC surface, not the real fixture (like free-trial / self-
+# provisioning / content-provenance, unlike output-license which rides
+# driftflight.com's captured evidence): the `webhook-verification` vocabulary is
+# host-free by nature ("a webhook signature", "verify that inbound webhooks are
+# authentic"), and on the real api.replicate.com fixture the signal fires on the
+# /openapi.json surface with the host in NEITHER the surface key NOR the fired
+# quote window (verified live — the `/webhooks/default/secret` "signing secret ...
+# used to verify that webhook requests are coming from ..." description) — so a
+# whole-fixture relabel would leave the webhook-verification evidence byte-identical
+# and the invariance would be VACUOUS. To make the relabel genuinely rewrite the
+# classifier's input at the webhook-verification signal, this guard scans a
+# synthetic metered_api surface that deliberately seats the host INSIDE the
+# webhook-verification evidence: the host is the surface KEY prefix AND sits
+# adjacent to the "webhook signature" phrase, so it lands inside the padded quote
+# window (asserted non-vacuous below). Relabel the host everywhere, re-scan, and
+# the webhook-verification signal must survive with the SAME match count, on the
+# SAME host-normalized surface, its quote STILL satisfying the live
+# webhook-verification regex, with the vendor host absent from all rewritten
+# evidence.
+#
+# TEETH (precision, the webhook-verification signal's defining risk — a
+# signature/secret is a heavily overloaded token): a sibling synthetic surface
+# carrying only the signature-shaped senses the signal must REFUSE — a brand
+# "signature look", the x402 payment-proof "verifies the signature locally", a
+# SIGNED-URL "signing secret" + `name: signature` query param (URL signing, not a
+# webhook), a webhook that only EXISTS ("register a webhook URL", `async-job`'s
+# turf), and a contract/digital signature — fires ZERO webhook-verification
+# signals, proving the match keys on the webhook-AUTHENTICITY STRUCTURE (a
+# webhook-signature / a signing secret FOR a webhook / verifying inbound webhooks /
+# webhook requests are authentic), never a bare "signature" or "signing secret"
+# untethered from a webhook; and relabeling the host through that same distractor
+# prose never CONJURES a metered_api webhook-verification claim.
+# ---------------------------------------------------------------------------
+_WEBHOOK_VERIFY_LABEL = "webhook-verification"
+_WV_HOST = "acme-hooks.example"  # a host bearing no archetype-signal word
+_WV_SURFACE = f"agents.{_WV_HOST}/docs"
+# Host seated adjacent to the "webhook signature" phrase so it lands in the padded
+# quote window.
+_WV_PROSE = (
+    f"Every {_WV_HOST} callback carries a webhook signature, so an autonomous agent "
+    f"can verify that inbound webhooks from {_WV_HOST} are authentic before acting on "
+    f"a job-complete notification."
+)
+# The signature-shaped false-positive senses webhook-verification must never match —
+# a brand signature, an x402 payment-proof signature, a SIGNED-URL signing secret, a
+# webhook that only EXISTS, and a contract signature.
+_WV_DISTRACTOR_SURFACE = f"agents.{_WV_HOST}/legal"
+_WV_DISTRACTOR_PROSE = (
+    f"The {_WV_HOST} brand signature look is unmistakable. The x402 client verifies "
+    f"the signature locally. Download via a signed URL whose signing secret is rotated "
+    f"hourly; the name: signature query param authenticates the link. Register a webhook "
+    f"URL to receive callbacks. Sign the digital contract with your signature."
+)
+
+
+def _webhook_verify_signals(surface: str, text: str) -> list:
+    """The (surface, quote) pairs where the metered_api webhook-verification fired."""
+    return sorted(
+        (s.surface, s.quote)
+        for s in _offering._scan_surface(surface, text)
+        if s.archetype == "metered_api" and s.label == _WEBHOOK_VERIFY_LABEL
+    )
+
+
+def test_offering_relabel_invariance_webhook_verification() -> None:
+    """The async-callback trust claim keys on the webhook-authenticity form, not host."""
+    print("test_offering_relabel_invariance_webhook_verification")
+    base = _webhook_verify_signals(_WV_SURFACE, _WV_PROSE)
+
+    # The signal genuinely fires on the synthetic metered_api evidence.
+    _check(
+        len(base) == 1,
+        f"webhook-verification fires exactly once on the synthetic metered_api surface (got {len(base)})",
+    )
+    base_surf, base_quote = base[0]
+
+    # Non-vacuity: the host sits inside BOTH the surface key AND the padded quote
+    # window, so a host relabel genuinely rewrites the classifier's webhook-verification
+    # input — this is not a no-op over host-free evidence (the real-fixture failure mode).
+    _check(
+        _WV_HOST in base_surf and _WV_HOST in base_quote,
+        f"the host is inside the webhook-verification surface key AND quote window — "
+        f"relabel rewrites real signal input (surface {base_surf!r}, quote {base_quote!r})",
+    )
+
+    # TEETH: the signature-shaped false-positive senses (brand signature / x402 verify /
+    # signed-URL signing secret / webhook-exists / contract signature) fire ZERO
+    # webhook-verification — the signal keys on the webhook-AUTHENTICITY structure,
+    # never on a bare "signature" or "signing secret" untethered from a webhook.
+    _check(
+        _webhook_verify_signals(_WV_DISTRACTOR_SURFACE, _WV_DISTRACTOR_PROSE) == [],
+        "signature-shaped distractor prose (brand signature / x402 verify-locally / "
+        "signed-URL signing secret / register-a-webhook-URL / contract signature) fires "
+        "no webhook-verification signal — the match is the webhook-authenticity structure, "
+        "not the words 'signature'/'signing secret'",
+    )
+
+    # Relabel the host everywhere (surface key + prose) and re-scan.
+    relab_surface = _WV_SURFACE.replace(_WV_HOST, _NEUTRAL_HOST)
+    relab_prose = _WV_PROSE.replace(_WV_HOST, _NEUTRAL_HOST)
+    _check(
+        _WV_HOST not in relab_surface and _WV_HOST not in relab_prose,
+        "every occurrence of the original host was relabeled out of the synthetic input",
+    )
+    relab = _webhook_verify_signals(relab_surface, relab_prose)
+
+    # (1) Same match count — the webhook-verification signal is neither lost nor conjured.
+    _check(
+        len(relab) == len(base) == 1,
+        f"webhook-verification match count invariant under relabel (base {len(base)}, relabel {len(relab)})",
+    )
+    relab_surf, relab_quote = relab[0]
+
+    # (2) The SAME logical surface carries the signal once the host label is
+    # normalized away — the signal did not migrate to a different surface.
+    _check(
+        relab_surf == base_surf.replace(_WV_HOST, _NEUTRAL_HOST),
+        "webhook-verification fires on the same (host-normalized) surface under relabel "
+        f"(base {base_surf!r}, relabel {relab_surf!r})",
+    )
+    # (3) The relabeled quote STILL satisfies the live webhook-verification regex (the
+    # fired form is the structural webhook-authenticity contract — a webhook signature /
+    # verify inbound webhooks, not the host) and names no vendor host — the match keyed
+    # on the async-callback TRUST contract, not identity.
+    wv_re = dict(_offering._SIGNALS["metered_api"])[_WEBHOOK_VERIFY_LABEL]
+    _check(
+        wv_re.search(relab_quote) is not None,
+        f"relabeled webhook-verification quote still matches the authenticity-structural signal: {relab_quote!r}",
+    )
+    _check(
+        _WV_HOST not in relab_quote and _WV_HOST not in relab_surf,
+        f"vendor host absent from relabeled webhook-verification evidence (surface {relab_surf!r})",
+    )
+
+
+# ---------------------------------------------------------------------------
 # digital_good's SECOND signal-level companion — and the tenth leg of the
 # signal-level relabel family (metered_api's seven + digital_good's
 # `output-license` + subscription's `free-trial`): the digital_good bank's
@@ -3796,6 +3947,7 @@ def main() -> int:
         test_offering_relabel_invariance_output_license,
         test_offering_relabel_invariance_free_trial,
         test_offering_relabel_invariance_self_provisioning,
+        test_offering_relabel_invariance_webhook_verification,
         test_offering_relabel_invariance_content_provenance,
         test_offering_relabel_invariance_priced_listing,
         test_offering_surface_order_invariance_output_license,

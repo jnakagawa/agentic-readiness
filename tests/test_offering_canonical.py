@@ -1979,6 +1979,143 @@ def test_offering_relabel_invariance_content_provenance() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Relabel-invariance at the SIGNAL level — the physical_good PRICED CATALOG
+# LISTING. The FIRST physical_good leg to join the signal-level relabel family
+# (the ten prior legs are metered_api's seven + digital_good's `output-license`
+# and `content-provenance` + subscription's `free-trial`): the physical_good
+# bank's `priced-listing` (Cycle 122 — a decimal money amount quoted directly
+# beside an in-stock / add-to-cart control, "£51.77 In stock", "$12.99 Add to
+# basket"). It is the physical_good "understand the offer" PRICE leg: to DECIDE
+# and FULFILL a physical purchase an agent must read the concrete price of a
+# purchasable, in-stock catalog item. A priced listing is a property of the
+# CATALOG STRUCTURE a storefront publishes (an amount adjacent to availability),
+# never of who published it, so the signal must be identity-invariant under a
+# host relabel.
+#
+# Why a SYNTHETIC surface, not the real fixture (mirroring free-trial 115 and
+# content-provenance 119, NOT output-license which rides captured evidence): the
+# priced-listing vocabulary is host-FREE by nature — the fired quote carries a
+# price + availability phrase ("£51.77 In stock"), not the vendor's name — and on
+# the real books.toscrape.com fixture the 60 priced listings fire with the host in
+# NEITHER the surface key NOR the quote window, so a whole-fixture relabel would
+# leave the priced-listing evidence byte-identical and the invariance would be
+# VACUOUS. To make the relabel genuinely rewrite the classifier's input at THIS
+# signal, this guard scans a synthetic retail catalog surface that deliberately
+# seats the host INSIDE the priced-listing evidence: the host is the surface KEY
+# prefix AND sits adjacent to the price on both sides, so it lands inside the
+# padded quote window (asserted non-vacuous below). Relabel the host everywhere,
+# re-scan, and the priced-listing signal must survive with the SAME match count,
+# on the SAME host-normalized surface, its quote STILL satisfying the live
+# priced-listing regex, with the vendor host absent from all rewritten evidence.
+# `_scan_surface` on synthetic prose is the same primitive the noise-surface and
+# free-trial guards use directly.
+#
+# TEETH (precision, the priced-listing signal's defining risk): a sibling synthetic
+# surface carrying only BARE currency amounts in metered/subscription pricing prose
+# — "$0.01 per API call", "$29.00 per month", "$5.00 per 1,000 requests", none
+# adjacent to in-stock / add-to-cart availability — must fire ZERO priced-listing
+# signals, proving the match keys on the PRICED-CATALOG-LISTING structure (a decimal
+# amount beside availability), not on the presence of a money amount; and relabeling
+# the host through that same distractor prose never CONJURES a physical_good claim on
+# an API storefront that merely lists dollar amounts (the operator NA-preservation
+# the signal's canonical guard already pins on the real fixtures).
+# ---------------------------------------------------------------------------
+_PL_LABEL = "priced-listing"
+_PL_HOST = "acme-goods.example"  # a host bearing no archetype-signal word
+_PL_SURFACE = f"agents.{_PL_HOST}/catalog"
+# Host seated adjacent to the priced listing on both sides so it lands in the
+# padded quote window (not merely in the surface key).
+_PL_PROSE = (
+    f"At {_PL_HOST}: hardcover novel £51.77 In stock at {_PL_HOST}, add to "
+    f"basket to ship it from the warehouse."
+)
+# The bare-currency false-positive senses the priced-listing signal must never
+# match: metered/subscription pricing with decimal amounts NOT beside availability.
+_PL_DISTRACTOR_SURFACE = f"agents.{_PL_HOST}/pricing"
+_PL_DISTRACTOR_PROSE = (
+    f"{_PL_HOST} bills $0.01 per API call and $29.00 per month; volume plans run "
+    f"$5.00 per 1,000 requests. No physical goods are stocked by {_PL_HOST}."
+)
+
+
+def _priced_listing_signals(surface: str, text: str) -> list:
+    """The (surface, quote) pairs where the physical_good priced-listing signal fired."""
+    return sorted(
+        (s.surface, s.quote)
+        for s in _offering._scan_surface(surface, text)
+        if s.archetype == "physical_good" and s.label == _PL_LABEL
+    )
+
+
+def test_offering_relabel_invariance_priced_listing() -> None:
+    """The physical_good priced-listing keys on the price+availability form, not the host."""
+    print("test_offering_relabel_invariance_priced_listing")
+    base = _priced_listing_signals(_PL_SURFACE, _PL_PROSE)
+
+    # The signal genuinely fires on the synthetic retail catalog evidence.
+    _check(
+        len(base) == 1,
+        f"priced-listing fires exactly once on the synthetic catalog surface (got {len(base)})",
+    )
+    base_surf, base_quote = base[0]
+
+    # Non-vacuity: the host sits inside BOTH the surface key AND the padded quote
+    # window, so a host relabel genuinely rewrites the classifier's priced-listing
+    # input — not a no-op over host-free evidence (the real-fixture failure mode).
+    _check(
+        _PL_HOST in base_surf and _PL_HOST in base_quote,
+        f"the host is inside the priced-listing surface key AND quote window — relabel "
+        f"rewrites real signal input (surface {base_surf!r}, quote {base_quote!r})",
+    )
+
+    # TEETH: bare-currency metered/subscription pricing prose (per API call / per
+    # month / per 1,000 requests, none beside availability) fires ZERO priced-listing
+    # — the signal keys on the priced-catalog-listing structure, not a money amount.
+    _check(
+        _priced_listing_signals(_PL_DISTRACTOR_SURFACE, _PL_DISTRACTOR_PROSE) == [],
+        "bare-currency distractor prose ($0.01 per API call / $29.00 per month / "
+        "$5.00 per 1,000 requests) fires no priced-listing signal — the match is "
+        "structural (price beside availability), not the presence of a money amount",
+    )
+
+    # Relabel the host everywhere (surface key + prose) and re-scan.
+    relab_surface = _PL_SURFACE.replace(_PL_HOST, _NEUTRAL_HOST)
+    relab_prose = _PL_PROSE.replace(_PL_HOST, _NEUTRAL_HOST)
+    _check(
+        _PL_HOST not in relab_surface and _PL_HOST not in relab_prose,
+        "every occurrence of the original host was relabeled out of the synthetic input",
+    )
+    relab = _priced_listing_signals(relab_surface, relab_prose)
+
+    # (1) Same match count — the priced-listing signal is neither lost nor conjured.
+    _check(
+        len(relab) == len(base) == 1,
+        f"priced-listing match count invariant under relabel (base {len(base)}, relabel {len(relab)})",
+    )
+    relab_surf, relab_quote = relab[0]
+
+    # (2) The SAME logical surface carries the signal once the host label is
+    # normalized away — the signal did not migrate to a different surface.
+    _check(
+        relab_surf == base_surf.replace(_PL_HOST, _NEUTRAL_HOST),
+        "priced-listing fires on the same (host-normalized) surface under relabel "
+        f"(base {base_surf!r}, relabel {relab_surf!r})",
+    )
+    # (3) The relabeled quote STILL satisfies the live priced-listing regex (the fired
+    # form is a structural price-beside-availability listing, not the host) and names
+    # no vendor host — the match keyed on the PRICED CATALOG LISTING, not identity.
+    pl_re = dict(_offering._SIGNALS["physical_good"])[_PL_LABEL]
+    _check(
+        pl_re.search(relab_quote) is not None,
+        f"relabeled priced-listing quote still matches the price-structural signal: {relab_quote!r}",
+    )
+    _check(
+        _PL_HOST not in relab_quote and _PL_HOST not in relab_surf,
+        f"vendor host absent from relabeled priced-listing evidence (surface {relab_surf!r})",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Surface-read ORDER invariance — the digital_good deliverable-RIGHTS leg.
 #
 # A fresh perturbation AXIS orthogonal to the relabel/identity family above. The
@@ -2950,6 +3087,7 @@ def main() -> int:
         test_offering_relabel_invariance_output_license,
         test_offering_relabel_invariance_free_trial,
         test_offering_relabel_invariance_content_provenance,
+        test_offering_relabel_invariance_priced_listing,
         test_offering_surface_order_invariance_output_license,
         test_offering_surface_order_invariance_org,
         test_offering_content_scale_invariance_org,

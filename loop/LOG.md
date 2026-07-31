@@ -3,6 +3,71 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 122 — 2026-07-31T05:20Z — COVERAGE (branch+PR+self-merge, off-scoring-path/score-neutral)
+
+**What/why.** Added a `priced-listing` capability signal to the **physical_good** archetype
+bank (`asrs/offering.py`) — the "understand the offer" **price** leg, executing exactly the
+COVERAGE move Cycle 121's next-hypothesis flagged ("a physical_good CATALOG leg beyond
+add-to-cart/stock — price/variant/availability — verifiable on books.toscrape.com"). To
+DECIDE and FULFILL a physical purchase an agent must read the CONCRETE price of a purchasable,
+in-stock catalog item; a storefront that quotes a decimal amount directly beside the item's
+availability / add-to-cart control ("£51.77 In stock", "$12.99 Add to basket") makes that
+price machine-legible on the listing. Distinct from every sibling physical_good leg:
+`add-to-cart` is the buy ACTION, `stock` is WHETHER available, `sku-inventory` is inventory
+MANAGEMENT — none guarantees a readable PRICE on the offer. This is the FIRST new
+physical_good leg since the sku-inventory precision work (2026-07-27); the first COVERAGE
+increment on the retail pole in-cloud.
+
+**Precision + non-vacuity (the capability-lens discipline).** Precision-CRITICAL: never a bare
+currency amount. A metered API quotes "$0.01 per API call" / "$29 / month" / "$5 per 1,000
+requests" and a subscription quotes a per-period fee, NONE of which sits adjacent to in-stock
+/ add-to-cart availability language. The regex `\d+[.,]\d{2}\s+(?:in stock|add to
+(cart|basket|bag))` requires a decimal money amount IMMEDIATELY followed by the retail
+availability/cart control. VERIFIED across all five committed fixtures BEFORE writing: fires
+**60×** on the real retail fixture (books.toscrape.com) and **0×** on api.replicate.com
+(metered), drift-flight.org / driftflight.com (the canonical pair — which carry 12–17 bare
+currency amounts of metered per-call pricing, yet ZERO priced in-stock listings), and
+example.com (null). So the leg CANNOT conjure physical_good on an API storefront that merely
+lists dollar amounts — `physical_good` stays NA on the canonical pair (operator acceptance
+criterion preserved). Currency glyph optional (the amount is the evidence; a mojibake "£" must
+not gate recognition); precision-first, recall loss on the reverse "in stock … price" order
+(which can span two listings) accepted.
+
+**Ship class + evidence.** Off the scoring path (`scoring.py` imports no `offering` —
+grep-verified 0 refs) → **score-neutral, NOT peer-gated** (same class as every prior
+offering-signal cycle: metered_api ×7, digital_good ×3, subscription free-trial). `git diff`
+over `asrs/scoring.py rubric/ fixtures/` EMPTY; `git diff --name-only` = `asrs/offering.py` +
+`tests/test_offering.py` + `tests/test_offering_canonical.py`. Cloud bridge blocks direct
+main push → branch `loop/priced-listing-physical-good` + PR #93 + self-merge (squash 1267137).
+First duty: no open peer-gated PR (`list_pull_requests state=open` → `[]` at fire start).
+Realigned main to origin/main after merge (local main ref was stale at Cycle-94 3796519 from a
+forced-history rewrite; `git reset --hard origin/main` to 1267137, verified `priced-listing`
+present on merged main), deleted local branch. Tests: `test_offering.py` 48→50
+(`test_priced_listing_precision_synthetic` — 5 positives fire, 6 price-shaped noise strings
+[metered per-call, subscription fee, per-1k requests, bare marketing price, stock-without-price,
+price-then-sentence-break] do NOT; `test_priced_listing_fires_on_real_captured_retail` —
+non-vacuous end-to-end on the committed books.toscrape.com fixture + NA guard on the canonical
+pair); `test_offering_canonical.py` retail-inverse guard now asserts `priced-listing` in
+`_RETAIL_PHYSICAL_LABELS` (32/32). Full suite green on merged main (22 files; `test_free_tier`
+11/11 after `pip install -r requirements.txt`, environment-only). Canonical PAIR unchanged AND
+re-measured pre- AND post-merge: replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0
+replay-miss; rubric v0.7. RUNNER STILL GAPPED (`verify_20260728T234102Z` 23:41Z, ~53.7h old;
+cloud cannot repair the local machine; next re-flag is the first-after-16:00 fire ~16:1xZ
+Jul-31). No Slack (score-neutral, off scoring path; not sensitive-class; 05:20Z is not the
+first-after-16:00 digest cycle).
+
+**Next hypothesis.** Rotate TRUTH next (METHOD → COVERAGE → TRUTH → **READOUT**... pointer:
+COVERAGE done → TRUTH). The natural TRUTH follow-up mirrors every prior COVERAGE→TRUTH arc:
+pin `priced-listing` as RELABEL-INVARIANT (the physical_good signal family's first relabel
+leg — all ten existing relabel legs are metered_api/digital_good/subscription). Because the
+real books.toscrape evidence is host-free (the price/stock tokens carry no domain string), a
+whole-fixture relabel would be VACUOUS (the free-trial-115 / content-provenance-119 failure
+mode) — so the guard should scan a SYNTHETIC retail surface seating the host inside a priced
+listing, relabel end-to-end, and assert identity-invariance (same match count, host absent,
+quote still matches). Alternatively READOUT: surface the physical_good "read the price to
+fulfill" capability in `_write_methodology_page` prose (physical_good has no offer-side
+methodology paragraph yet — every closed arc so far is metered_api/digital_good/subscription).
+
 ## Cycle 121 — 2026-07-31T~04:1xZ — METHOD (branch+PR+self-merge, tests-only/score-neutral)
 
 **What/why.** Extended the content-**SCALE** metamorphic-invariance axis to the NO-RAILS

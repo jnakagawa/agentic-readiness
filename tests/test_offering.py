@@ -2154,6 +2154,120 @@ def test_streaming_response_fires_on_real_captured_openapi():
     print("  ok: the octet-stream binary MIME does NOT masquerade as streaming (real-data precision)")
 
 
+def test_self_provisioning_precision_synthetic():
+    # AGENT SELF-PROVISIONING — whether an autonomous agent can OBTAIN access to the
+    # API WITHOUT a human in the loop (no signup, no human account creation, the agent
+    # provisions its OWN identity). This is the "provision without a human" capability
+    # the PLAYBOOK's capability lens names, and it is the load-bearing precondition
+    # for every other metered_api leg: an API whose credentials only a human can
+    # obtain is not agent-completable end-to-end. A metered API that lets an agent
+    # self-provision claims metered_api via the new self-provisioning signal. Each
+    # POSITIVE is real, vendor-neutral agent-onboarding vocabulary; each NEGATIVE is
+    # onboarding-SHAPED noise that must NOT fire it (the precision traps: the OPPOSITE
+    # human-onboarding path "Human developers sign up …", a 401 "No API key" error
+    # message, a "no signup fees" pricing statement, a "sign up for our newsletter"
+    # prompt).
+    positives = {
+        "no signup heading": "Driftflight sells to AI agents - free trial, no signup.",
+        "no signup and no api key": "There is no signup and no API key: agents pay per use.",
+        "provision own identity": "an autonomous agent can provision its own identity and start calling.",
+        "no funding and no signup": "The free allowance needs no funding and no signup.",
+        "no signup comma": "No signup, no API key: you authenticate by signing payment challenges.",
+        "self-provision": "Agents self-provision an account with no human in the loop.",
+        "without a human account": "Onboard without a human account creation step.",
+        "no human signup": "Access requires no human signup — the agent registers itself.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("metered.test", {"homepage": text})
+        assert prof.claims("metered_api"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "metered_api"
+            for s in c.signals
+        }
+        assert "self-provisioning" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real self-provisioning phrasings each fire self-provisioning")
+
+    negatives = {
+        # The OPPOSITE capability — a human-gated onboarding — present verbatim on
+        # BOTH canonical domains. Misreading it as self-provisioning would invert the
+        # signal's meaning, so it must fire NOTHING here.
+        "human signup path": "Human developers sign up on the dashboard for an API key; usage bills monthly.",
+        "401 no-api-key error": "401 unauthorized No API key, or the key is unknown or revoked.",
+        "no signup fee pricing": "Good news: there are no signup fees or setup charges on any plan.",
+        "newsletter signup": "Sign up for our newsletter to get 10% off your first order.",
+        "human artist": "Made by a human artist — sign up for a studio tour.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "self-provisioning" not in labels, (name, labels, prof.archetypes)
+    # NOTE: the "human signup path" and "401 no-api-key error" negatives DO contain a
+    # literal "API key", which legitimately trips the SEPARATE `api-auth` signal (an
+    # API with a key IS a metered API) — so metered_api may well be claimed here. That
+    # is correct and orthogonal: the precision point this signal must hold is that the
+    # human-onboarding / error phrasing never fires SELF-PROVISIONING (asserted above),
+    # not that the surrounding text conjures no other archetype.
+    print(
+        f"  ok: {len(negatives)} onboarding-shaped noise strings do NOT fire self-provisioning (precision)"
+    )
+
+
+def test_self_provisioning_fires_on_real_captured_surfaces():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the self-provisioning signal fires on
+    # the GENUINE agent-onboarding prose captured live from driftflight.com — the apex
+    # homepage/pricing "free trial, no signup" heading and the agents.driftflight.com
+    # agent docs "There is no signup and no API key … an autonomous agent can provision
+    # its own identity" — all captured verbatim in the committed fixture. Run the REAL
+    # discovery path (from_fixture -> discover_offering) so the signal is exercised
+    # exactly as a live crawl would, the same real-data non-vacuity move
+    # test_api_auth_fires_on_real_captured_surfaces makes.
+    #
+    # SCORE-NEUTRAL by construction: driftflight.com already claims metered_api (its
+    # strongest archetype), so self-provisioning evidence can only deepen that claim —
+    # never add an archetype or reorder. The classifier is off the scoring path; the
+    # canonical pair's claimed SET+ORDER is unchanged (pinned by
+    # tests/test_offering_canonical.py and the canonical replay guard).
+    ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "driftflight.com.json"))
+    prof = offering.discover_offering(ctx)
+    assert prof.claims("metered_api"), prof.archetypes
+    metered = next(c for c in prof.claimed if c.archetype == "metered_api")
+    sp = [s for s in metered.signals if s.label == "self-provisioning"]
+    assert sp, {s.label for s in metered.signals}
+    q = sp[0].quote.lower()
+    assert "no signup" in q or "provision" in q or "no sign-up" in q, sp[0].quote
+    assert prof.archetypes == ["metered_api", "digital_good", "subscription"], prof.archetypes
+    print(f"  ok: self-provisioning fires on REAL captured driftflight.com prose — quote: {sp[0].quote!r}")
+
+    # PRECISION-CRITICAL on real data: drift-flight.org's ONLY signup phrasing is the
+    # human-gated dashboard path ("Human developers sign up on the dashboard for an API
+    # key") plus a 401 "No API key" error — NEITHER is agent self-provisioning. The
+    # signal must be ABSENT there even though the trap words ("sign up", "No API key")
+    # are present verbatim, and .org's claimed set must be unchanged. This is the
+    # discovery-layer echo of the real capability gap: the with-rails .com documents
+    # autonomous onboarding, the .org does not.
+    org_docs = _fixture_entry_text("drift-flight.org", "/docs")
+    assert "sign up" in org_docs.lower() or "no api key" in org_docs.lower(), (
+        "fixture lost the human-onboarding / 401 trap words the precision guard needs"
+    )
+    octx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "drift-flight.org.json"))
+    oprof = offering.discover_offering(octx)
+    all_labels = {s.label for c in oprof.claimed for s in c.signals}
+    assert "self-provisioning" not in all_labels, all_labels
+    assert oprof.archetypes == ["metered_api", "digital_good", "subscription"], oprof.archetypes
+    print("  ok: self-provisioning is ABSENT on drift-flight.org's human-only signup path (real-data precision)")
+
+    # NON-VACUOUS negative: a real retail storefront documents no agent onboarding —
+    # self-provisioning must be absent there and must not conjure a metered_api claim.
+    rctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "books.toscrape.com.json"))
+    retail = offering.discover_offering(rctx)
+    assert retail.archetypes == ["physical_good"], retail.archetypes
+    rlabels = {s.label for c in retail.claimed for s in c.signals}
+    assert "self-provisioning" not in rlabels, rlabels
+    print("  ok: self-provisioning is ABSENT on a real retail storefront (non-vacuous)")
+
+
 def main() -> int:
     tests = [
         test_api_storefront_claims_agent_native_not_physical,
@@ -2203,6 +2317,8 @@ def main() -> int:
         test_cancel_job_fires_on_real_captured_openapi,
         test_streaming_response_metering_precision_synthetic,
         test_streaming_response_fires_on_real_captured_openapi,
+        test_self_provisioning_precision_synthetic,
+        test_self_provisioning_fires_on_real_captured_surfaces,
         test_free_trial_subscription_precision_synthetic,
         test_free_trial_fires_on_real_captured_subscription_prose,
         test_priced_listing_precision_synthetic,

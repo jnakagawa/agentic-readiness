@@ -943,6 +943,66 @@ def test_methodology_documents_free_trial() -> None:
                f"free-trial prose names no vendor/domain ({banned!r})")
 
 
+def test_methodology_documents_content_provenance() -> None:
+    # Cycle 120 (READOUT): the READOUT leg CLOSING the content-provenance arc opened by
+    # Cycle 118 (COVERAGE — the `content-provenance` offering signal added to the
+    # DIGITAL_GOOD archetype bank: the "verify + trust the deliverable" leg, the
+    # authenticity mirror of `output-license`'s "rights to USE") and Cycle 119 (TRUTH —
+    # the SIGNAL-level relabel-invariance guard, with a synthetic surface seating the host
+    # INSIDE the provenance evidence). This is the THIRD full COVERAGE->TRUTH->READOUT arc
+    # on a NON-metered_api archetype (after subscription's free-trial 114/115/116 and
+    # digital_good's own output-license rights leg), and digital_good's SECOND prose leg.
+    # The "verify the deliverable's provenance so an agent can trust what it obtained" leg
+    # was pinned in code + tests but NEVER surfaced in prose a critic can read — a reader
+    # could not learn WHY a generated deliverable that ships with embedded provenance is
+    # MORE agent-completable, or how it is the authenticity mirror of owning the output.
+    # The paragraph must (a) frame it as the authenticity mirror of owning the deliverable
+    # — an agent can hold the render and a licence to use it yet still not prove it genuine
+    # — and name the failure (a render that cannot be provenance-checked has not completed
+    # the commercial job); (b) name the vendor-neutral OPEN-STANDARD provenance vocabulary
+    # the offering signal anchors on as open conventions — C2PA, Content Credentials, a
+    # media/output provenance manifest/metadata record; (c) keep the signal's PRECISION
+    # honesty — a bare `provenance`/`credentials` word (art/wine/supply-chain provenance,
+    # data provenance, login credentials, a hosted model's "watermarking for provenance"
+    # feature) is not a deliverable-provenance grant and is read as no signal; (d) say
+    # recognition keys on the PROVENANCE the offer grants not who grants it and is pinned
+    # by an identity-relabel executable regression test; and (e) stay HONEST about scope —
+    # this offering read is diagnostic, off the scoring path, not a scored pillar (the same
+    # scored-vs-diagnostic line the sibling offer-side prose keeps). Vendor-neutral throughout.
+    print("test_methodology_documents_content_provenance")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    # Match on the whitespace-collapsed text (same technique as the output-license /
+    # free-trial guards) so wording, not source wrapping, is what the guard pins.
+    collapsed = " ".join(text.split())
+    for phrase in ("Trusting the deliverable", "authenticity mirror",
+                   "provenance-aware pipeline", "not completed the commercial job",
+                   "provenance the offer grants, not who grants it",
+                   "relabels the storefront", "executable regression test",
+                   "off the scoring path", "diagnostic"):
+        _check(phrase in collapsed,
+               f"methodology documents content-provenance: {phrase!r}")
+    # The vendor-neutral open-standard provenance vocabulary the offering signal bank
+    # anchors on must appear as open conventions, never a vendor product: the C2PA
+    # standard, the Content Credentials mark, a provenance manifest / metadata record.
+    for token in ("C2PA", "Content Credentials", "provenance manifest",
+                  "content credentials"):
+        _check(token in collapsed,
+               f"methodology names provenance convention {token!r}")
+    # PRECISION honesty: the prose must preserve the signal's bare-word guard — a bare
+    # `provenance`/`credentials` word (art/wine/supply-chain provenance, data provenance,
+    # login credentials, "watermarking for provenance") is not a deliverable-provenance
+    # grant and is read as no signal.
+    for token in ("bare", "no signal", "supply-chain", "data provenance",
+                  "watermarking for provenance"):
+        _check(token in collapsed,
+               f"methodology keeps content-provenance precision note: {token!r}")
+    # Vendor-neutral: no scored domain/product/brand named on the page.
+    for banned in ("drift-flight", "driftflight", "replicate"):
+        _check(banned not in text,
+               f"content-provenance prose names no vendor/domain ({banned!r})")
+
+
 def test_methodology_documents_calibration() -> None:
     # Cycle 68 (READOUT): the READOUT complement to Cycle 67's calibration guard
     # (tests/test_calibration.py — the first static-vs-behavioral VALIDITY axis).
@@ -1621,6 +1681,7 @@ def main() -> int:
         test_methodology_documents_pagination,
         test_methodology_documents_cancel_job,
         test_methodology_documents_free_trial,
+        test_methodology_documents_content_provenance,
         test_methodology_documents_calibration,
         test_methodology_page_tracks_live_rubric,
         test_build_scorecard_publishes_and_links_methodology,

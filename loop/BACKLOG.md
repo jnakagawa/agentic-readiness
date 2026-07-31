@@ -553,6 +553,20 @@ design in-cloud, execute locally.
   archetype is unverifiable here (vacuous). Not a firm in-cloud item; promote a METHOD perturbation-axis or
   a relabel-family extension instead until the [LOCAL] fixture lands.
 
+- **[COVERAGE, in-cloud] a physical_good FULFILLMENT leg on the committed retail fixture** (from Cycle 117's
+  perturbation-matrix audit; the next COVERAGE brick per STATE). Unlike service_booking / data_retrieval, the
+  `physical_good` archetype IS claimed by a committed fixture (`books.toscrape.com`, the no-rails retail pole),
+  so a NEW capability-worded signal on it is VERIFIABLE in-cloud non-vacuously (it must fire on real retail
+  fulfillment prose and stay silent on the canonical pair + API domains where physical_good is NA). Current
+  physical_good signals are thin (add-to-cart / stock / bare-"ship" precision guard). Candidate legs, all
+  capability-worded + vendor-neutral: a `shipping-address` leg (an agent can supply a delivery destination), an
+  `order-tracking` / `order-status` leg (an agent can confirm fulfillment progress after purchase), or a
+  `returns-policy` / `return-window` leg (an agent can reverse the transaction). Add ONE with the same
+  non-vacuous shape the metered_api legs got: fires on the retail fixture's real prose, silent on the canonical
+  pair, plus a `test_offering.py` positive/negative battery and a signal-level relabel-invariance guard in
+  `test_offering_canonical.py`. Off the scoring path, score-neutral. Precision: a `returns` word must anchor on
+  a genuine return/refund policy, not "returns to the homepage"; `track` on an order, not a music track.
+
 <!-- DONE 2026-07-30T04:16Z (Cycle 97, METHOD, branch+PR+self-merge, tests-only/score-neutral):
      "Pin the digital_good DESCRIPTOR derivation as relabel/identity-invariant" SHIPPED. New guards in
      `tests/test_battery_instantiate.py` (9→12) classify a synthetic surface that names the host INSIDE the

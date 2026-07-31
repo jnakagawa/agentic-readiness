@@ -1,10 +1,10 @@
 # Loop state
 
-- Cycle counter: 138
+- Cycle counter: 139
 - Started: 2026-07-23 (UTC)
-- RUNNER STILL STALE at 2026-07-31T21:1xZ (Cycle 138) — newest verify
-  `runs/local/verify_20260731T134541Z.json` (13:45Z) is ~7.5h old, still BREACHING the 6h floor
-  (14:41–20:41 launchd fires produced NO artifact = machine asleep, the Cycle-63 wake-instant
+- RUNNER STILL STALE at 2026-07-31T22:1xZ (Cycle 139) — newest verify
+  `runs/local/verify_20260731T134541Z.json` (13:45Z) is ~8.5h old, still BREACHING the 6h floor
+  (14:41–21:41 launchd fires produced NO artifact = machine asleep, the Cycle-63 wake-instant
   pattern, NOT a code regression). Cloud CANNOT repair. Already flagged in today's 16:1xZ digest
   (Cycle 133); re-flag in the next first-after-16:00 fire (~Aug-1 16:xxZ) if not recovered. A
   persistent no-wake past ~Aug-1 morning is an operator/launchd-plist matter for Jonah, NOT the
@@ -48,31 +48,41 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 138 was
-  COVERAGE, so Cycle 139 is TRUTH). Cycle 138 shipped the in-cloud COVERAGE unit Cycle 137's
-  next-hypothesis called for: `output-resolution` — an eleventh digital_good capability leg (the
+- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 139 was
+  TRUTH, so Cycle 140 is READOUT). Cycle 139 shipped the TRUTH leg of the `output-resolution`
+  COVERAGE→TRUTH→READOUT arc (Cycle 138 shipped its COVERAGE signal): pinned the eleventh
+  digital_good signal RELABEL-INVARIANT via `test_offering_relabel_invariance_output_resolution`
+  in `tests/test_offering_canonical.py`. Because the real canonical output-resolution evidence is
+  HOST-FREE (`maxResolution` / "print resolution" carry no host), a whole-fixture relabel would be
+  VACUOUS — so (like free-trial 115 / content-provenance 119) the guard scans a SYNTHETIC
+  generation-storefront surface seating the host INSIDE the resolution evidence (surface key +
+  adjacent to `maxResolution` on both sides → in the padded quote window, asserted non-vacuous),
+  relabels end-to-end, and asserts same match count / same host-normalized surface / quote still
+  matches the live regex / host absent. TEETH: bare-"resolution" distractor (dispute / New-Year /
+  DNS resolution, the Super-/Enhance-image-resolution MODEL-FEATURE trap, screen/monitor/display
+  HARDWARE resolution) fires ZERO. Tests-only, off scoring path (`git diff` over `scoring.py
+  offering.py rubric/ fixtures/` EMPTY) → NOT peer-gated; branch loop/output-resolution-relabel-
+  invariance + PR #127 + self-merge (squash 3a1ff0c). `test_offering_canonical.py` 42→43. Replay
+  guard 24/24, 46.1 F / 85.5 B / +39.4; rubric v0.7. NEXT (READOUT 140): a methodology paragraph in
+  `_write_methodology_page` (`asrs/scorecard.py`) framing "specify the deliverable's output
+  resolution / dimensions" as the digital_good output-SPEC leg (distinct from WHAT is produced /
+  WHERE delivered / rights / trust), with a `test_readout.py` guard — CLOSING the arc. Then METHOD
+  (141): the unused in-cloud METHOD sibling is surface-DEDUP invariance (duplicate/near-duplicate
+  surfaces don't inflate match counts or `strength` — note `strength` is already distinct-label-
+  count, so likely a robustness PIN not a bug-find). New-signal COVERAGE on the unclaimed archetypes
+  (service_booking / data_retrieval) stays [LOCAL]-blocked on a fixture capture (P1); adding a leg to
+  a never-claimed archetype is unverifiable in-cloud.
+  (Cycle 138 COVERAGE — shipped `output-resolution`, an eleventh digital_good capability leg (the
   output RESOLUTION / pixel DIMENSIONS / ASPECT RATIO of the generated deliverable an agent must
-  request and can rely on; the "understand + specify the offer" leg, distinct from generation/
-  render (WHAT), hosted-output (WHERE), output-license (rights), content-provenance (trust)).
-  Vendor-neutral (`maxResolution` / output-print resolution in px / WxH px / aspect ratio),
-  precision-guarded against screen/monitor/display hardware resolutions + the Super-/Enhance-image-
-  resolution MODEL-FEATURE trap on api.replicate.com's OpenAPI + dispute/New-Year/DNS senses. Fires
-  4/4 on the canonical pair (both already claim digital_good: /docs maxResolution + homepage "print
-  resolution") and ZERO on api.replicate.com/books.toscrape/example.com → score-neutral (claimed
-  SET+ORDER byte-identical `[metered_api, digital_good, subscription]`). Off scoring path
-  (`scoring.py` 0 offering refs) → NOT peer-gated; branch loop/output-resolution-signal + PR #125 +
-  self-merge (squash 52b86ca). `test_offering.py` 54→56 (precision-synthetic 9 pos / 8 neg +
-  real-captured non-vacuous fire w/ the model-feature trap); isolation completeness matrix auto-covers
-  it. Replay guard 24/24, 46.1 F / 85.5 B / +39.4; offering-canonical 42/42; rubric v0.7. NEXT (TRUTH
-  139): pin `output-resolution` RELABEL-INVARIANT (synthetic-surface guard like free-trial 115 /
-  content-provenance — resolution evidence is host-free); then READOUT (140) surfaces "specify the
-  deliverable's output resolution" in methodology prose, closing a COVERAGE→TRUTH→READOUT arc.
-  REMAINING in-cloud METHOD sibling (unused this rotation, available as a future fallback):
-  surface-DEDUP invariance (duplicate/near-duplicate surfaces don't inflate match counts or strength
-  — note `strength` is already distinct-label-count, so likely a robustness PIN not a bug-find).
-  New-signal COVERAGE on the unclaimed archetypes (service_booking / data_retrieval) stays
-  [LOCAL]-blocked on a fixture capture (P1); adding a leg to a never-claimed archetype is
-  unverifiable in-cloud.
+  request and can rely on; distinct from generation/render (WHAT), hosted-output (WHERE),
+  output-license (rights), content-provenance (trust)). Vendor-neutral (`maxResolution` / print
+  resolution in px / WxH px / aspect ratio), precision-guarded against screen/monitor/display
+  hardware resolutions + the Super-/Enhance-image-resolution MODEL-FEATURE trap on
+  api.replicate.com's OpenAPI + dispute/New-Year/DNS senses. Fires 4/4 on the canonical pair
+  (both already claim digital_good) and ZERO on api.replicate.com/books.toscrape/example.com →
+  score-neutral (claimed SET+ORDER byte-identical `[metered_api, digital_good, subscription]`). Off
+  scoring path → NOT peer-gated; branch loop/output-resolution-signal + PR #125 + self-merge (squash
+  52b86ca). `test_offering.py` 54→56.)
   (Cycle 137 METHOD — built the FIRST menu item, cross-signal precision-ISOLATION: a full 56-signal
   / 6-archetype matrix
   (`test_cross_signal_archetype_isolation` + negative control in

@@ -3595,6 +3595,155 @@ def _assert_offering_relabel_general(domain: str, expected_claimed: set) -> None
     )
 
 
+# ---------------------------------------------------------------------------
+# Text-casing invariance — a metamorphic axis on the classifier's READING layer.
+#
+# The families above perturb WHICH surfaces the classifier reads or in what order
+# (RELABEL rewrites the host, ORDER reverses the read sequence, SCALE duplicates
+# the bodies, NOISE adds a signal-free surface). This axis perturbs the CASING of
+# the text inside them: uppercase every surface body and assert the classified
+# CAPABILITY profile is unchanged. A storefront that writes "Pay-Per-Call",
+# "pay-per-call", and "PAY PER CALL" declares the same capability all three ways;
+# the score must key on what a site says it can DO, never on its typography.
+#
+# What is asserted invariant is the case-INDEPENDENT skeleton of the profile —
+# claimed archetypes IN RANK ORDER, the NA/unclaimed complement, and per-archetype
+# (strength, per-(label, surface) match counts). The quote TEXT is deliberately
+# excluded from the comparison: a signal's quote echoes the bytes it matched, so it
+# legitimately upper-cases with the surface (and HTML-entity artifacts like
+# ``&amp; -> &AMP;`` mean the quote is not expected to differ by case alone). The
+# invariant is "the SAME signals fire on the SAME surfaces the SAME number of
+# times", not "the captured evidence is byte-identical".
+#
+# Non-vacuity has two teeth:
+#   (a) the transform is REAL — some surface body carries lowercase at base, so
+#       uppercasing genuinely changes the bytes the matcher scans;
+#   (b) case-insensitivity is LOAD-BEARING — for the fired evidence there exists a
+#       signal whose CASE-SENSITIVE match count on its surface differs between the
+#       base and uppercased prose (e.g. the ``https?://`` in a POST-endpoint quote,
+#       whose case-sensitive form stops matching once the scheme upper-cases), while
+#       the real (``re.IGNORECASE``) matcher's count is unchanged. So the invariance
+#       rests on the classifier's case-folding, not on the text happening to already
+#       be case-uniform. If a future signal is added WITHOUT ``re.IGNORECASE``, its
+#       count will move under this transform and the structural assertion fails loudly.
+# ---------------------------------------------------------------------------
+
+
+def _casing_struct(prof) -> dict:
+    """archetype -> (strength, sorted ((label, surface), count)) — the case-independent skeleton.
+
+    Excludes the quote text (which echoes the matched bytes and so upper-cases with
+    the surface); keeps the per-(label, surface) match MULTIPLICITY so a signal that
+    fired N times must still fire N times after the case transform.
+    """
+    from collections import Counter
+
+    return {
+        c.archetype: (
+            round(c.strength, 9),
+            sorted(Counter((s.label, s.surface) for s in c.signals).items()),
+        )
+        for c in prof.claimed
+    }
+
+
+def _assert_casing_invariance(domain: str, expected_claimed: set) -> None:
+    """Uppercasing every surface body leaves the classified capability skeleton identical."""
+    surfaces = _captured_surfaces(domain)
+    base = _offering.classify_offering(domain, dict(surfaces))
+
+    # The property under test is genuinely present: the domain claims the expected
+    # multi-archetype set, RANKED, so a casing change that perturbed a claim or a
+    # rank would be observable.
+    _check(
+        set(base.archetypes) == expected_claimed,
+        f"{domain}: base claimed set == {sorted(expected_claimed)} "
+        f"(got {sorted(set(base.archetypes))})",
+    )
+    _check(
+        len(base.claimed) >= 2,
+        f"{domain}: >=2 archetypes claimed, so the ranking a casing change could "
+        f"reorder is real (got {base.archetypes})",
+    )
+
+    up_surfaces = {s: r.upper() for s, r in surfaces.items()}
+    # TEETH (a): the transform is REAL — at least one surface carries lowercase at
+    # base, so uppercasing genuinely alters the bytes the classifier scans (not a
+    # no-op on already-uppercase text).
+    _check(
+        any(up_surfaces[s] != surfaces[s] for s in surfaces),
+        f"{domain}: uppercasing genuinely changed >=1 surface body "
+        "(the perturbation is real, not a no-op)",
+    )
+
+    # TEETH (b): case-insensitivity is LOAD-BEARING. Among the fired evidence there
+    # is a signal whose CASE-SENSITIVE match count on its own surface differs between
+    # the base and uppercased prose, while the real IGNORECASE matcher's count is
+    # unchanged — so the invariance below rests on the classifier's case-folding, not
+    # on the text already being case-uniform.
+    load_bearing = None
+    for c in base.claimed:
+        for s in c.signals:
+            pat = _signal_pattern(c.archetype, s.label)
+            if pat is None:
+                continue
+            case_sensitive = re.compile(pat.pattern)  # SAME source, no re.IGNORECASE
+            b_prose = _surface_prose(s.surface, surfaces[s.surface])
+            u_prose = _surface_prose(s.surface, up_surfaces[s.surface])
+            cs_b, cs_u = len(case_sensitive.findall(b_prose)), len(case_sensitive.findall(u_prose))
+            ic_b, ic_u = len(pat.findall(b_prose)), len(pat.findall(u_prose))
+            if cs_b != cs_u and ic_b == ic_u:
+                load_bearing = (c.archetype, s.label, cs_b, cs_u)
+                break
+        if load_bearing:
+            break
+    _check(
+        load_bearing is not None,
+        f"{domain}: a fired signal's CASE-SENSITIVE count moves under uppercasing "
+        "while its IGNORECASE count holds — case-folding is load-bearing, so the "
+        "invariance is non-vacuous",
+    )
+
+    up = _offering.classify_offering(domain, dict(up_surfaces))
+
+    # (1) The case-independent capability skeleton is identical: every archetype's
+    # strength AND its per-(label, surface) match counts survive the casing change —
+    # no signal lost or conjured, no count drifted, by mere typography.
+    _check(
+        _casing_struct(up) == _casing_struct(base),
+        f"{domain}: per-archetype (strength, per-(label, surface) counts) skeleton "
+        "invariant under uppercasing",
+    )
+    # (2) Claimed archetypes IN RANK ORDER invariant — the rank drives the fixed
+    # template-bank task order (cross-site comparability), so casing must not
+    # reorder it.
+    _check(
+        up.archetypes == base.archetypes,
+        f"{domain}: claimed archetypes (ranked) invariant under uppercasing "
+        f"(base {base.archetypes}, up {up.archetypes})",
+    )
+    # (3) The NA/unclaimed set (excluded from every mean/spread, never penalized) is
+    # invariant — which archetypes a site is judged on vs excused as NA depends on
+    # WHAT it declares, not on the case it declares it in.
+    _check(
+        set(up.unclaimed) == set(base.unclaimed),
+        f"{domain}: NA/unclaimed set invariant under uppercasing "
+        f"(base {sorted(base.unclaimed)}, up {sorted(up.unclaimed)})",
+    )
+
+
+def test_offering_casing_invariance_org() -> None:
+    """A storefront's declared capabilities do not depend on text casing (.org)."""
+    print("test_offering_casing_invariance_org")
+    _assert_casing_invariance("drift-flight.org", EXPECTED_CLAIMED["drift-flight.org"])
+
+
+def test_offering_casing_invariance_com() -> None:
+    """Casing-invariance mirrored onto the .com half of the canonical pair."""
+    print("test_offering_casing_invariance_com")
+    _assert_casing_invariance("driftflight.com", EXPECTED_CLAIMED["driftflight.com"])
+
+
 def test_offering_relabel_invariance_retail() -> None:
     """A retail storefront's task set (physical_good, all else NA) is identity-invariant."""
     print("test_offering_relabel_invariance_retail")
@@ -3659,6 +3808,8 @@ def main() -> int:
         test_offering_noise_surface_invariance_retail,
         test_offering_listing_order_invariance_priced_listing,
         test_offering_endpoint_order_invariance_metered_api,
+        test_offering_casing_invariance_org,
+        test_offering_casing_invariance_com,
         test_offering_relabel_invariance_retail,
         test_offering_relabel_invariance_nonstorefront,
         test_offering_relabel_negative_control,

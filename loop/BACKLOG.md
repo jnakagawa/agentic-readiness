@@ -503,18 +503,24 @@ design in-cloud, execute locally.
 
 ## P1
 
-- **Complete the `webhook-verification` arc — the TRUTH + READOUT legs** (in-cloud, from Cycle 134's
-  COVERAGE ship). Cycle 134 added the tenth metered_api signal `webhook-verification` (offer-side
-  COVERAGE). Two in-cloud follow-ups mirror the prior nine arcs: (a) TRUTH — a relabel-invariance
-  guard `test_offering_relabel_invariance_webhook_verification` in `tests/test_offering_canonical.py`
-  (mirror of self-provisioning 131 / streaming-response 127 / free-trial 115): under a whole-host
-  relabel the webhook-authenticity claim keeps the SAME match count, SAME host-normalized surface,
-  quote STILL matching the live regex, host absent — with TEETH from a synthetic surface seating the
-  host inside the webhook-verification evidence if the real quote is host-free; (b) READOUT — one
+- **Complete the `webhook-verification` arc — the READOUT leg** (in-cloud, from Cycle 134's
+  COVERAGE ship). <!-- TRUTH HALF DONE 2026-07-31T18:1xZ (Cycle 135, branch+PR+self-merge, tests-only/
+  score-neutral): `test_offering_relabel_invariance_webhook_verification` in
+  `tests/test_offering_canonical.py` (39→40) SHIPPED. The real api.replicate.com webhook-verification
+  quote is host-FREE (host in neither `/openapi.json` surface key nor fired quote — verified live), so
+  the guard uses a SYNTHETIC metered_api surface seating the host inside BOTH surface key + padded quote
+  window (mirror of free-trial 115 / self-provisioning 131); asserts same match count (1) / same
+  host-normalized surface / relabeled quote still matches live regex / host absent under end-to-end
+  relabel; TEETH = signature-shaped distractor (brand signature / x402 verify-locally / signed-URL
+  signing secret / register-a-webhook-URL / contract signature) fires ZERO. Off scoring path
+  (`scoring.py` 0 offering refs) → score-neutral, NOT peer-gated; git diff over `asrs/ rubric/ fixtures/`
+  EMPTY; PR #119 (squash 7438af8). Replay guard 24/24, 46.1 F / 85.5 B / +39.4; rubric v0.7. See LOG
+  Cycle 135. --> The remaining leg: (b) READOUT — one
   capability-worded, vendor-neutral paragraph in `_write_methodology_page` (`asrs/scorecard.py`)
   after the async-job / streaming-response prose, framing trusting the async callback (failure = an
-  agent acts on a forged "job complete" webhook), guarded by a content-presence test in
-  `tests/test_readout.py`. Both off the scoring path, score-neutral, NOT peer-gated.
+  agent acts on a forged "job complete" webhook, treating fabricated output as real or releasing a
+  payment), guarded by a content-presence test in `tests/test_readout.py`. Off the scoring path,
+  score-neutral, NOT peer-gated.
 
 - **[LOCAL] Capture a fixture that CLAIMS service_booking and/or data_retrieval** (COVERAGE enabler, from
   Cycle 114's audit). The two weakest offering archetypes — `service_booking` (5 legs: book / appointment /

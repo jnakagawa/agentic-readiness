@@ -2957,6 +2957,154 @@ def test_offering_noise_surface_invariance_retail() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Listing-ORDER invariance — the FIFTH metamorphic axis on the classifier, and
+# the FIRST that perturbs the order of items WITHIN a single surface rather than
+# the surfaces themselves. The four axes above all operate at surface
+# granularity: RELABEL rewrites the host inside a surface, surface-read ORDER
+# reverses the sequence surfaces ARRIVE in, SCALE duplicates a surface body,
+# NOISE adds a signal-free surface. None reorders the catalog listings a single
+# storefront page publishes. This one does: a retail catalog lists its goods in
+# SOME order (newest-first, best-selling, alphabetical, a shuffle per request),
+# and which listing sits at the top is a merchandising choice, never a readiness
+# property. Reordering the priced listings on one page must not change WHICH
+# archetype the store is judged to claim, nor the STRENGTH of that claim.
+#
+# Why this axis has teeth here specifically: `_scan_surface` keeps the FIRST
+# match of each signal per surface (`pattern.search`), so the sampled evidence
+# QUOTE for `physical_good`'s `priced-listing` leg is anchored on whichever
+# priced listing appears first in the page. Reordering the listings therefore
+# GENUINELY moves the classifier's sampled exemplar (asserted below: the base
+# and reordered priced-listing quotes differ) — the perturbation is real and
+# observable, not a no-op the scanner ignores. The metamorphic property under
+# test is that this movement of the exemplar changes NOTHING that a readout or
+# the battery consumes: the distinct-label STRENGTH, the claimed set, and the NA
+# partition are all order-invariant. An honest classifier samples a different
+# price to show the reader but reaches the same verdict.
+#
+# A SYNTHETIC multi-listing catalog is the right vehicle (as for free-trial 115 /
+# content-provenance 119 / priced-listing 122's own relabel guard): `strip_html`
+# collapses a real fixture's prose to a single whitespace-joined line, so there
+# is no per-listing boundary to permute on the committed retail fixture without
+# re-segmenting HTML heuristically. The synthetic page seats three DISTINCT
+# priced listings (different amounts + currencies) among catalog chrome, each
+# also tripping a sibling physical_good leg, so the claim rests on a multi-label
+# strength (>1) that a dropped or conjured label would visibly move.
+#
+# TEETH / non-vacuity, three ways: (a) the reordered catalog string genuinely
+# differs from the base; (b) the sampled priced-listing quote differs between the
+# two orders (the first-match exemplar really moved); (c) the base claim is a
+# real, multi-label physical_good with every rails archetype NA, so a reorder
+# that dropped a leg (lower strength) or conjured a rail (metered_api /
+# subscription / digital_good out of NA) would be unmistakable. The
+# credibility-protecting direction, mirroring the retail-pole scale/noise guards:
+# the classified delta between storefront types must come from published
+# capability, never from the order a store lists its shelf in.
+# ---------------------------------------------------------------------------
+_LO_HOST = "market-goods.example"  # a host bearing no archetype-signal word
+_LO_CHROME_HEAD = "<header>Marketplace catalog — browse our in-store goods.</header>"
+_LO_CHROME_FOOT = "<footer>Cookie notice. Careers. (c) market-goods.</footer>"
+# Three distinct priced catalog listings. Each quotes a decimal amount beside an
+# in-stock / add-to-cart control (the `priced-listing` form) with a DIFFERENT
+# amount + currency, so which one `pattern.search` samples first is observable;
+# each also trips a sibling physical_good leg (add-to-cart / fulfillment / free-
+# shipping) so the claim rests on a multi-label strength, not a lone signal.
+_LO_LISTINGS = [
+    "<article><h3>Hardcover novel</h3><p>£51.77 In stock. Add to basket.</p></article>",
+    "<article><h3>Ceramic mug</h3><p>$12.99 In stock. Ships from the warehouse.</p></article>",
+    "<article><h3>Wool scarf</h3><p>&euro;24.50 In stock. Free shipping applies.</p></article>",
+]
+
+
+def _catalog(order: list[int]) -> str:
+    """A synthetic homepage catalog with the listings in the given order."""
+    return _LO_CHROME_HEAD + "".join(_LO_LISTINGS[i] for i in order) + _LO_CHROME_FOOT
+
+
+def _pg_claim(prof):
+    """The physical_good claim on a profile, or ``None`` if unclaimed."""
+    return next((c for c in prof.claimed if c.archetype == "physical_good"), None)
+
+
+def test_offering_listing_order_invariance_priced_listing() -> None:
+    """Reordering the priced listings on one catalog page does not move the verdict."""
+    print("test_offering_listing_order_invariance_priced_listing")
+
+    base_order = [0, 1, 2]
+    reordered = [2, 1, 0]  # a genuine permutation whose first listing differs
+    base = _offering.classify_offering(_LO_HOST, {"homepage": _catalog(base_order)})
+    perm = _offering.classify_offering(_LO_HOST, {"homepage": _catalog(reordered)})
+
+    # The property under test is genuinely present: the synthetic catalog claims
+    # physical_good on a MULTI-label strength, with every rails archetype NA — so a
+    # dropped leg or a conjured rail would be unmistakable.
+    b, p = _pg_claim(base), _pg_claim(perm)
+    _check(
+        b is not None and b.strength >= 2,
+        f"{_LO_HOST}: base claims physical_good on >=2 distinct legs "
+        f"(strength {b.strength if b else None}, labels "
+        f"{sorted({s.label for s in b.signals}) if b else None})",
+    )
+    _RAILS = {"metered_api", "subscription", "digital_good"}
+    _check(
+        _RAILS <= set(base.unclaimed),
+        f"{_LO_HOST}: the rails archetypes {sorted(_RAILS)} are all NA at base "
+        f"(got unclaimed {sorted(base.unclaimed)}) — the no-rails property a reorder "
+        "must not overturn is present",
+    )
+
+    # Non-vacuity (a): the reorder is a REAL perturbation — the catalog page bytes
+    # genuinely differ, so the classifier reads a different input.
+    _check(
+        _catalog(base_order) != _catalog(reordered),
+        f"{_LO_HOST}: the reordered catalog differs from the base (the perturbation "
+        "is real, not a no-op)",
+    )
+    # Non-vacuity (b): the reorder is OBSERVABLE at THIS signal — `_scan_surface`
+    # keeps the FIRST priced listing per surface, so moving a different listing to
+    # the top moves the sampled exemplar quote. If the quotes matched, the reorder
+    # would be invisible to the scanner and the invariance below vacuous.
+    plq = lambda c: next(s.quote for s in c.signals if s.label == "priced-listing")
+    _check(
+        plq(b) != plq(p),
+        f"{_LO_HOST}: the sampled priced-listing quote MOVED under reorder "
+        f"(base {plq(b)!r}, reordered {plq(p)!r}) — the first-match exemplar really "
+        "changed, so order-invariance of the verdict is non-vacuous",
+    )
+
+    # (1) The distinct-label STRENGTH of the physical_good claim is invariant — no
+    # leg was lost or gained by reshuffling the shelf.
+    _check(
+        p is not None and p.strength == b.strength,
+        f"{_LO_HOST}: physical_good strength invariant under listing reorder "
+        f"(base {b.strength}, reordered {p.strength if p else None})",
+    )
+    # (2) The SET of physical_good legs is identical — the same evidence fired,
+    # only its text position moved.
+    _check(
+        {s.label for s in p.signals} == {s.label for s in b.signals},
+        f"{_LO_HOST}: the set of physical_good legs is invariant under reorder "
+        f"(base {sorted({s.label for s in b.signals})}, reordered "
+        f"{sorted({s.label for s in p.signals})})",
+    )
+    # (3) Claimed archetypes IN ORDER invariant — order drives the fixed template-
+    # bank task order (cross-site comparability), so a reorder of the shelf must not
+    # reorder the battery.
+    _check(
+        perm.archetypes == base.archetypes,
+        f"{_LO_HOST}: claimed archetypes (ordered) invariant under listing reorder "
+        f"(base {base.archetypes}, reordered {perm.archetypes})",
+    )
+    # (4) The rails archetypes stay NA and the whole NA set is invariant — no
+    # archetype is conjured by how the catalog is ordered; the credibility-
+    # protecting direction of this axis.
+    _check(
+        _RAILS <= set(perm.unclaimed) and set(perm.unclaimed) == set(base.unclaimed),
+        f"{_LO_HOST}: the rails archetypes stay NA and the whole NA set is invariant "
+        f"under reorder (base {sorted(base.unclaimed)}, reordered {sorted(perm.unclaimed)})",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Relabel-invariance EXTENDED to the retail + non-storefront domains.
 #
 # The two invariance tests above cover only the canonical PAIR, because their
@@ -3096,6 +3244,7 @@ def main() -> int:
         test_offering_noise_surface_invariance_org,
         test_offering_noise_surface_invariance_com,
         test_offering_noise_surface_invariance_retail,
+        test_offering_listing_order_invariance_priced_listing,
         test_offering_relabel_invariance_retail,
         test_offering_relabel_invariance_nonstorefront,
         test_offering_relabel_negative_control,

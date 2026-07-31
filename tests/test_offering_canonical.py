@@ -1977,6 +1977,143 @@ def test_offering_relabel_invariance_free_trial() -> None:
 
 
 # ---------------------------------------------------------------------------
+# metered_api's NINTH signal-level companion (Cycle 130's `self-provisioning`,
+# whose relabel-invariance TRUTH leg this is) — the agent-onboarding leg: whether
+# an autonomous agent can OBTAIN API access with no human in the loop (no signup /
+# provision its own identity / self-provision / no-human onboarding). It is the
+# load-bearing precondition for every other metered_api leg — an API whose
+# credentials only a human can issue is not agent-completable end-to-end no matter
+# how cleanly it documents auth, rate limits, or errors. Self-provisioning is a
+# property of what a storefront GRANTS an agent — the ability to onboard itself —
+# never of WHO grants it, so the signal must be identity-invariant under a host
+# relabel.
+#
+# Why a SYNTHETIC surface, not the real fixture (like free-trial / content-
+# provenance, unlike output-license which rides driftflight.com's captured
+# evidence): the `self-provisioning` vocabulary is host-free by nature ("no
+# signup", "provision its own identity"), and on driftflight.com the signal fires
+# on the homepage / agents.* docs surfaces with the host in the surface KEY but the
+# fired QUOTE host-free (verified live) — so a whole-fixture relabel would leave the
+# self-provisioning quote byte-identical and the invariance would be VACUOUS at the
+# quote. To make the relabel genuinely rewrite the classifier's input at the
+# self-provisioning signal, this guard scans a synthetic metered_api surface that
+# deliberately seats the host INSIDE the self-provisioning evidence: the host is the
+# surface KEY prefix AND sits adjacent to the "no signup" phrase, so it lands inside
+# the padded quote window (asserted non-vacuous below). Relabel the host everywhere,
+# re-scan, and the self-provisioning signal must survive with the SAME match count,
+# on the SAME host-normalized surface, its quote STILL satisfying the live
+# self-provisioning regex, with the vendor host absent from all rewritten evidence.
+#
+# TEETH (precision, the self-provisioning signal's defining risk — the OPPOSITE
+# human-onboarding phrasing lives verbatim in the very fixtures it validates on): a
+# sibling synthetic surface carrying only the human-gated / error / pricing / list
+# senses the signal must REFUSE — "Human developers sign up on the dashboard for an
+# API key" (the human path, present on BOTH canonical domains), the 401 "No API key,
+# or the key is unknown or revoked" error (drift-flight.org's /docs row), "no signup
+# fees" (the pricing sense the negative lookahead excludes), and "sign up for our
+# newsletter" — fires ZERO self-provisioning signals, proving the match keys on the
+# AFFIRMATIVE agentic self-provisioning STRUCTURE (no signup / provision its own
+# identity / self-provision / no-human onboarding), never a bare "sign up" or a bare
+# "no API key"; and relabeling the host through that same distractor prose never
+# CONJURES a metered_api self-provisioning claim.
+# ---------------------------------------------------------------------------
+_SELF_PROV_LABEL = "self-provisioning"
+_SP_HOST = "acme-agents.example"  # a host bearing no archetype-signal word
+_SP_SURFACE = f"agents.{_SP_HOST}/docs"
+# Host seated adjacent to the "no signup" phrase so it lands in the padded quote window.
+_SP_PROSE = (
+    f"{_SP_HOST} needs no signup: an autonomous agent can provision its own "
+    f"identity and call the {_SP_HOST} metered API programmatically, paying per "
+    f"request. There is no human onboarding."
+)
+# The human-onboarding / error / pricing / list senses self-provisioning must never
+# match — the exact inverse phrasings present verbatim in the canonical fixtures.
+_SP_DISTRACTOR_SURFACE = f"agents.{_SP_HOST}/signup"
+_SP_DISTRACTOR_PROSE = (
+    f"Human developers sign up on the {_SP_HOST} dashboard for an API key. No API "
+    f"key, or the key is unknown or revoked, returns 401. Our plans have no signup "
+    f"fees. Sign up for our newsletter."
+)
+
+
+def _self_prov_signals(surface: str, text: str) -> list:
+    """The (surface, quote) pairs where the metered_api self-provisioning fired."""
+    return sorted(
+        (s.surface, s.quote)
+        for s in _offering._scan_surface(surface, text)
+        if s.archetype == "metered_api" and s.label == _SELF_PROV_LABEL
+    )
+
+
+def test_offering_relabel_invariance_self_provisioning() -> None:
+    """The agent self-onboarding claim keys on the no-signup structure, not host."""
+    print("test_offering_relabel_invariance_self_provisioning")
+    base = _self_prov_signals(_SP_SURFACE, _SP_PROSE)
+
+    # The signal genuinely fires on the synthetic metered_api evidence.
+    _check(
+        len(base) == 1,
+        f"self-provisioning fires exactly once on the synthetic metered_api surface (got {len(base)})",
+    )
+    base_surf, base_quote = base[0]
+
+    # Non-vacuity: the host sits inside BOTH the surface key AND the padded quote
+    # window, so a host relabel genuinely rewrites the classifier's self-provisioning
+    # input — this is not a no-op over host-free evidence (the real-fixture failure mode).
+    _check(
+        _SP_HOST in base_surf and _SP_HOST in base_quote,
+        f"the host is inside the self-provisioning surface key AND quote window — "
+        f"relabel rewrites real signal input (surface {base_surf!r}, quote {base_quote!r})",
+    )
+
+    # TEETH: the OPPOSITE human-onboarding / 401 / pricing / list senses fire ZERO
+    # self-provisioning — the signal keys on the AFFIRMATIVE agentic self-onboarding
+    # structure, never on a bare "sign up" or a bare "no API key".
+    _check(
+        _self_prov_signals(_SP_DISTRACTOR_SURFACE, _SP_DISTRACTOR_PROSE) == [],
+        "human-onboarding distractor prose (dashboard sign up / 401 no API key / "
+        "no signup fees / newsletter sign up) fires no self-provisioning signal — the "
+        "match is the affirmative agentic structure, not the words 'sign up'",
+    )
+
+    # Relabel the host everywhere (surface key + prose) and re-scan.
+    relab_surface = _SP_SURFACE.replace(_SP_HOST, _NEUTRAL_HOST)
+    relab_prose = _SP_PROSE.replace(_SP_HOST, _NEUTRAL_HOST)
+    _check(
+        _SP_HOST not in relab_surface and _SP_HOST not in relab_prose,
+        "every occurrence of the original host was relabeled out of the synthetic input",
+    )
+    relab = _self_prov_signals(relab_surface, relab_prose)
+
+    # (1) Same match count — the self-provisioning signal is neither lost nor conjured.
+    _check(
+        len(relab) == len(base) == 1,
+        f"self-provisioning match count invariant under relabel (base {len(base)}, relabel {len(relab)})",
+    )
+    relab_surf, relab_quote = relab[0]
+
+    # (2) The SAME logical surface carries the signal once the host label is
+    # normalized away — the signal did not migrate to a different surface.
+    _check(
+        relab_surf == base_surf.replace(_SP_HOST, _NEUTRAL_HOST),
+        "self-provisioning fires on the same (host-normalized) surface under relabel "
+        f"(base {base_surf!r}, relabel {relab_surf!r})",
+    )
+    # (3) The relabeled quote STILL satisfies the live self-provisioning regex (the
+    # fired form is the structural no-signup / provision-own-identity capability, not
+    # the host) and names no vendor host — the match keyed on the GRANTED self-onboarding.
+    sp_re = dict(_offering._SIGNALS["metered_api"])[_SELF_PROV_LABEL]
+    _check(
+        sp_re.search(relab_quote) is not None,
+        f"relabeled self-provisioning quote still matches the onboarding-structural signal: {relab_quote!r}",
+    )
+    _check(
+        _SP_HOST not in relab_quote and _SP_HOST not in relab_surf,
+        f"vendor host absent from relabeled self-provisioning evidence (surface {relab_surf!r})",
+    )
+
+
+# ---------------------------------------------------------------------------
 # digital_good's SECOND signal-level companion — and the tenth leg of the
 # signal-level relabel family (metered_api's seven + digital_good's
 # `output-license` + subscription's `free-trial`): the digital_good bank's
@@ -3509,6 +3646,7 @@ def main() -> int:
         test_offering_relabel_invariance_streaming_response,
         test_offering_relabel_invariance_output_license,
         test_offering_relabel_invariance_free_trial,
+        test_offering_relabel_invariance_self_provisioning,
         test_offering_relabel_invariance_content_provenance,
         test_offering_relabel_invariance_priced_listing,
         test_offering_surface_order_invariance_output_license,

@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 127
+- Cycle counter: 128
 - Started: 2026-07-23 (UTC)
 - RUNNER RECOVERED at 2026-07-31T09:12Z (Cycle 126) — the ~56h stall (first breached Cycle 76 06:12Z)
   CLEARED. Newest artifact `runs/local/verify_20260731T085248Z.json` (08:52Z Jul-31) carries
@@ -33,7 +33,39 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT)
+  (Cycle 128 READOUT — completed the EIGHTH metered_api COVERAGE→TRUTH→READOUT arc: added ONE
+  capability-worded, vendor-neutral methodology `<p>` ("Consuming the output as it streams") to
+  `_write_methodology_page` (`asrs/scorecard.py`), guarded by `test_methodology_documents_streaming_response`
+  (`tests/test_readout.py` 58→59). Closes the `streaming-response` arc (COVERAGE 126 → TRUTH 127 →
+  READOUT 128), after payment-rail (78/79/80), async-job (82/83/84), api-auth (86/87/88), error-contract
+  (90/91/92), test-mode (102/103/104), pagination (106/107/108), cancel-job (110/111/112), plus
+  digital_good rights (100) and subscription free-trial (114/115/116). Frames streaming as the IN-BAND
+  sibling of async-job (async collects a completed job OUT of band via webhook/poll; streaming delivers
+  partial output WITHIN the same request over the live connection); names open-standard delivery
+  vocabulary (W3C server-sent events, `text/event-stream`, a streaming endpoint); keeps the bare-`stream`/
+  `SSE` precision note (octet-stream MIME / Shanghai Stock Exchange (SSE) / sum-of-squared-errors / live
+  stream / bloodstream / "stream of consciousness" = no signal, and a bare SSE never conjures a
+  metered-API claim); recognition keys on the CONTRACT not who published it, pinned by an identity-relabel
+  regression test; honest scope (diagnostic, off the scoring path). Placed right after the async-job
+  paragraph. SHIP CLASS: display + tests-only, off the scoring path (`scoring.py` 0 offering refs) →
+  score-neutral, NOT peer-gated. git diff over `asrs/scoring.py rubric/ fixtures/` EMPTY; --name-only =
+  `asrs/scorecard.py` + `tests/test_readout.py` ONLY. First duty: no open peer-gated PR (`[]` at fire
+  start). Cloud bridge blocks direct main push → branch loop/streaming-response-readout + PR #105 +
+  self-merge (squash fa2d096; merged commit = exactly the two files). Realigned main to origin/main after
+  merge (`git reset --hard origin/main` → fa2d096, verified paragraph + test present + readout 59/59 +
+  replay 24/24 on merged main), deleted local branch. Full suite green (22 files; test_free_tier 11/11
+  after `pip install -r requirements.txt`, environment-only). Canonical PAIR unchanged: replay guard
+  24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; offering canonical 35/35; rubric v0.7. INFRA HEALTHY
+  (verify 20260731T085248Z 08:52Z, 2.3h old at fire, within 6h floor; no open peer-gated PRs). No Slack
+  (score-neutral, off scoring path, not sensitive-class; 11:12Z is not the first-after-16:00 digest —
+  that is ~16:1xZ Jul-31, which also reports the runner-recovery + the live-delta divergence).
+  Next METHOD — the metered_api bank now has eight fully-arced signals and the metamorphic grid spans
+  five axes on the metered_api + retail poles; a METHOD increment could mirror listing-order invariance
+  onto a with-rails MACHINE surface (do the metered_api endpoints' ORDER within one OpenAPI spec move the
+  claim?). OR, if the next verify artifact still shows the driftflight.com transactability drop
+  (87.5→62.5), the [LOCAL] canonical re-capture is the higher-leverage item. Thin archetypes
+  service_booking / data_retrieval remain [LOCAL]-blocked.)
   (Cycle 127 TRUTH — pinned `streaming-response` (the metered_api signal added Cycle 126) as
   RELABEL-INVARIANT: `test_offering_relabel_invariance_streaming_response` (`tests/test_offering_canonical.py`
   34→35), the EIGHTH signal-level relabel-invariance guard in the metered_api bank (after payment-rail 79 /

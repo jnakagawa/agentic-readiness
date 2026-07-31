@@ -10466,3 +10466,7 @@ end-to-end relabel + a bare-"provenance" distractor firing ZERO. Then READOUT: s
 "verify the deliverable's provenance" in the public methodology prose. COVERAGE frontier
 after that: physical_good fulfillment, service_booking, data_retrieval all `[LOCAL]`-blocked
 (no rich committed fixture); ACP/UCP/MPP + free-tier live-wiring stays `[LOCAL]`.
+
+## Local verification — 20260731T085248Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260731T085248Z.json

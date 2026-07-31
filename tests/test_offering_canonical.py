@@ -2405,6 +2405,151 @@ def test_offering_relabel_invariance_content_provenance() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Relabel-invariance at the SIGNAL level — the digital_good OUTPUT RESOLUTION
+# leg (Cycle 138 COVERAGE, PR #125). The eleventh digital_good signal to join
+# the signal-level relabel family and the TRUTH leg of the output-resolution
+# COVERAGE→TRUTH→READOUT arc (mirroring webhook-verification 134/135/136 and
+# free-trial 114/115/116). It is the digital_good output-SPEC leg: the
+# physical SHAPE of the deliverable — its output RESOLUTION / pixel DIMENSIONS
+# / ASPECT RATIO — an agent must parameterize its request with and can rely on
+# (distinct from generation/render = WHAT is produced, hosted-output = WHERE
+# delivered, output-license = rights, content-provenance = trust). The output
+# resolution of a generated deliverable is a property of the DELIVERABLE's
+# spec (a `maxResolution` field, a print resolution in px, a WxH pixel
+# dimension, an aspect ratio), never of who vends it, so the signal must be
+# identity-invariant under a host relabel.
+#
+# Why a SYNTHETIC surface, not the real fixture (mirroring free-trial 115 /
+# content-provenance 119, NOT output-license which rides captured evidence):
+# the output-resolution vocabulary is host-FREE by nature — the fired quote
+# carries a resolution/dimension token (`maxResolution of 4096px`), not the
+# vendor's name — and on the real canonical pair the signal fires (the /docs
+# `"maxResolution"` block + the homepage "print resolution") with the host in
+# NEITHER the surface key NOR the quote window, so a whole-fixture relabel
+# would leave the resolution evidence byte-identical and the invariance would
+# be VACUOUS. To make the relabel genuinely rewrite the classifier's input at
+# THIS signal, this guard scans a synthetic generation-storefront surface that
+# deliberately seats the host INSIDE the resolution evidence: the host is the
+# surface KEY prefix AND sits adjacent to the `maxResolution` phrase on both
+# sides, so it lands inside the padded quote window (asserted non-vacuous
+# below). Relabel the host everywhere, re-scan, and the output-resolution
+# signal must survive with the SAME match count, on the SAME host-normalized
+# surface, its quote STILL satisfying the live output-resolution regex, with
+# the vendor host absent from all rewritten evidence.
+#
+# TEETH (precision, the output-resolution signal's defining risk): a sibling
+# synthetic surface carrying only the bare-"resolution" false-positive senses
+# the signal must REFUSE — "dispute resolution", a "New Year resolution",
+# "DNS resolution", the api.replicate-style hosted-MODEL-feature phrasing
+# ("Super resolution", "Enhance image resolution"), and the screen / monitor /
+# display HARDWARE resolutions (the viewer's device, not the deliverable's
+# spec) — fires ZERO output-resolution signals, proving the match keys on the
+# output-SPEC structure (a `maxResolution` key / a print or explicit-pixel
+# resolution / a WxH dimension / an aspect ratio), not on the word
+# "resolution"; and relabeling the host through that distractor prose never
+# CONJURES a digital_good claim on a site that merely says "resolution".
+# ---------------------------------------------------------------------------
+_OR_LABEL = "output-resolution"
+_OR_HOST = "acme-studio.example"  # a host bearing no archetype-signal word
+_OR_SURFACE = f"agents.{_OR_HOST}/docs"
+# Host seated adjacent to the maxResolution phrase on both sides so it lands in
+# the padded quote window (not merely in the surface key).
+_OR_PROSE = f"{_OR_HOST} documents a maxResolution of 4096px for {_OR_HOST} renders."
+# The bare-"resolution" false-positive senses the output-resolution signal must
+# never match: dispute/New-Year/DNS resolution, the hosted-model-feature
+# "Super resolution"/"Enhance image resolution" trap, and screen/monitor/display
+# HARDWARE resolutions (the viewer's device, not the deliverable's output spec).
+_OR_DISTRACTOR_SURFACE = f"agents.{_OR_HOST}/hardware"
+_OR_DISTRACTOR_PROSE = (
+    f"{_OR_HOST} offers dispute resolution and DNS resolution; a New Year "
+    f"resolution too. The hosted model does Super resolution and can Enhance "
+    f"image resolution. View on a screen resolution of 1080px or a monitor "
+    f"resolution 2560px display."
+)
+
+
+def _output_resolution_signals(surface: str, text: str) -> list:
+    """The (surface, quote) pairs where the digital_good output-resolution fired."""
+    return sorted(
+        (s.surface, s.quote)
+        for s in _offering._scan_surface(surface, text)
+        if s.archetype == "digital_good" and s.label == _OR_LABEL
+    )
+
+
+def test_offering_relabel_invariance_output_resolution() -> None:
+    """The digital_good output-resolution keys on the output-spec form, not the host."""
+    print("test_offering_relabel_invariance_output_resolution")
+    base = _output_resolution_signals(_OR_SURFACE, _OR_PROSE)
+
+    # The signal genuinely fires on the synthetic generation-storefront evidence.
+    _check(
+        len(base) == 1,
+        f"output-resolution fires exactly once on the synthetic surface (got {len(base)})",
+    )
+    base_surf, base_quote = base[0]
+
+    # Non-vacuity: the host sits inside BOTH the surface key AND the padded quote
+    # window, so a host relabel genuinely rewrites the classifier's resolution
+    # input — not a no-op over host-free evidence (the real-fixture failure mode).
+    _check(
+        _OR_HOST in base_surf and _OR_HOST in base_quote,
+        f"the host is inside the output-resolution surface key AND quote window — "
+        f"relabel rewrites real signal input (surface {base_surf!r}, quote {base_quote!r})",
+    )
+
+    # TEETH: the bare-"resolution" senses (dispute / New Year / DNS resolution,
+    # the Super-/Enhance-image-resolution model-feature trap, and screen/monitor/
+    # display HARDWARE resolutions) fire ZERO — the signal keys on the output-spec
+    # structure, not the word "resolution".
+    _check(
+        _output_resolution_signals(_OR_DISTRACTOR_SURFACE, _OR_DISTRACTOR_PROSE) == [],
+        "bare-'resolution' distractor prose (dispute/New-Year/DNS resolution, "
+        "Super-/Enhance-image-resolution model feature, screen/monitor/display "
+        "hardware resolution) fires no output-resolution signal — the match is "
+        "structural (output-spec), not the word 'resolution'",
+    )
+
+    # Relabel the host everywhere (surface key + prose) and re-scan.
+    relab_surface = _OR_SURFACE.replace(_OR_HOST, _NEUTRAL_HOST)
+    relab_prose = _OR_PROSE.replace(_OR_HOST, _NEUTRAL_HOST)
+    _check(
+        _OR_HOST not in relab_surface and _OR_HOST not in relab_prose,
+        "every occurrence of the original host was relabeled out of the synthetic input",
+    )
+    relab = _output_resolution_signals(relab_surface, relab_prose)
+
+    # (1) Same match count — the output-resolution signal is neither lost nor conjured.
+    _check(
+        len(relab) == len(base) == 1,
+        f"output-resolution match count invariant under relabel (base {len(base)}, "
+        f"relabel {len(relab)})",
+    )
+    relab_surf, relab_quote = relab[0]
+
+    # (2) The SAME logical surface carries the signal once the host label is
+    # normalized away — the signal did not migrate to a different surface.
+    _check(
+        relab_surf == base_surf.replace(_OR_HOST, _NEUTRAL_HOST),
+        "output-resolution fires on the same (host-normalized) surface under relabel "
+        f"(base {base_surf!r}, relabel {relab_surf!r})",
+    )
+    # (3) The relabeled quote STILL satisfies the live output-resolution regex (the
+    # fired form is an output-spec token — a maxResolution/pixel/dimension/aspect —
+    # not the host) and names no vendor host — the match keyed on the DELIVERABLE's
+    # output spec, not who vends it.
+    or_re = dict(_offering._SIGNALS["digital_good"])[_OR_LABEL]
+    _check(
+        or_re.search(relab_quote) is not None,
+        f"relabeled output-resolution quote still matches the output-spec signal: {relab_quote!r}",
+    )
+    _check(
+        _OR_HOST not in relab_quote and _OR_HOST not in relab_surf,
+        f"vendor host absent from relabeled output-resolution evidence (surface {relab_surf!r})",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Relabel-invariance at the SIGNAL level — the physical_good PRICED CATALOG
 # LISTING. The FIRST physical_good leg to join the signal-level relabel family
 # (the ten prior legs are metered_api's seven + digital_good's `output-license`
@@ -4140,6 +4285,7 @@ def main() -> int:
         test_offering_relabel_invariance_self_provisioning,
         test_offering_relabel_invariance_webhook_verification,
         test_offering_relabel_invariance_content_provenance,
+        test_offering_relabel_invariance_output_resolution,
         test_offering_relabel_invariance_priced_listing,
         test_offering_surface_order_invariance_output_license,
         test_offering_surface_order_invariance_org,

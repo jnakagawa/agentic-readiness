@@ -9903,3 +9903,64 @@ or data_retrieval (a records-enrichment/dataset-query API) — queued P1 [LOCAL]
 METHOD next: a fresh perturbation axis on the offering/battery path, OR extend the
 signal-level relabel family, now spanning three archetypes (metered_api ×7,
 digital_good ×1, subscription ×1). ACP/UCP/MPP + free-tier live-wiring stays [LOCAL].
+
+## Cycle 117 — 2026-07-31T~15:xxZ — METHOD (branch+PR+self-merge, tests-only/score-neutral)
+
+**What/why.** Extended the **noise-surface** perturbation axis (Cycle 113) onto the
+OPPOSITE storefront type — the no-rails retail store. `_org`/`_com` prove incidental
+web chrome adds no claim on the WITH-RAILS canonical pair (multi-archetype, ranked);
+this closes the axis on `books.toscrape.com`, a pure book catalog that claims ONLY
+`physical_good` with EVERY rails archetype NA (metered_api / subscription /
+digital_good / service_booking / data_retrieval). The property pinned is exactly the
+**"never manufacture the delta"** invariant applied to task discovery: bolting
+incidental boilerplate (cookie/careers/legal chrome) onto a no-rails retailer must not
+CONJURE a rails claim it does not make — the classified delta between a rails
+storefront and a no-rails one has to come from real published capability, never from
+how much chrome surrounds the catalog. New test
+`test_offering_noise_surface_invariance_retail`: base claims == {physical_good} with
+the rails set NA → add the signal-free `/privacy` chrome surface → the WHOLE profile
+is byte-identical (physical_good strength + complete (label, surface, quote) evidence
+unchanged), the rails set stays NA, and `surfaces_seen` grew by exactly `/privacy`.
+
+**Why a dedicated test (not a reuse of `_assert_noise_surface_invariance`).** Two
+structural mismatches: (1) the retail store is SINGLE-archetype, so the helper's
+`len(claimed) >= 2` rank-reorder premise does not apply — the guarded property is
+instead "the NA rails set stays NA"; (2) the helper's negative control conjures
+`physical_good`, which is ALREADY claimed here, so it would be a no-op. The
+retail-appropriate teeth conjure `metered_api` (a rails archetype that IS NA on a book
+catalog) via real programmatic-API prose (auth + metered billing + rate limits), so a
+signal-bearing added surface observably moves the profile.
+
+**Teeth (non-vacuity, mirroring the canonical guard).** (a) the `/privacy` noise
+surface is genuinely READ — lands in `surfaces_seen` — yet contributes no claim; (b)
+the distractor prose fires ZERO signals under `_scan_surface` despite its near-miss
+vocabulary (metaphorical "ship", cookie/careers/legal chrome); (c) the metered_api
+negative control DOES conjure metered_api (`['metered_api','physical_good']`), proving
+the added-surface channel is live and the chrome-invariance is a real property, not a
+channel the classifier ignores.
+
+**Ship class + evidence.** Tests-only, off the scoring path (`scoring.py` imports no
+`offering` — grep-verified 0 refs) → score-neutral, NOT peer-gated. `git diff` over
+`asrs/ rubric/ fixtures/` EMPTY; `git diff --name-only` = `tests/test_offering_canonical.py`
+ONLY. Cloud bridge blocks direct main push → branch `loop/noise-surface-invariance-retail`
++ PR #83 + self-merge (squash d04b34c). First duty: no open peer-gated PR (`[]` at fire
+start). offering canonical guard 29→30; full suite green (22 files; `test_free_tier`
+11/11 after `pip install -r requirements.txt`, environment-only). Canonical PAIR
+unchanged AND re-measured: replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0
+replay-miss; rubric v0.7. RUNNER STILL GAPPED (verify_20260728T234102Z 23:41Z,
+~63h old at fire; cloud cannot repair the local machine; NOT the first-after-16:00
+digest cycle — that is the ~16:1xZ Jul-31 fire).
+
+**Next hypothesis.** The offering-classifier perturbation matrix is now dense across
+BOTH the with-rails canonical pair AND the two single-archetype poles: relabel spans
+org/com/machine + 9 signal-level legs; order + scale + noise-surface span org/com; and
+noise-surface now also covers the no-rails retail pole. The remaining thin cells are
+order/scale on the single-archetype poles (weaker there — machine's metered_api and
+retail's physical_good each accumulate on essentially one surface, so a reorder/scale
+permutes a near-single-surface accumulation). Rotate COVERAGE next: the strengthenable
+frontier in-cloud is a new capability-worded signal on a CLAIMED archetype (metered_api
+/ digital_good / subscription / physical_good), since service_booking & data_retrieval
+stay [LOCAL]-blocked (no committed fixture claims either — any new signal vacuous). A
+physical_good signal on the retail pole (e.g. a shipping-address / order-tracking /
+returns-policy fulfillment leg) is now the natural next COVERAGE brick, with the retail
+fixture already committed. ACP/UCP/MPP + free-tier live-wiring stays [LOCAL].

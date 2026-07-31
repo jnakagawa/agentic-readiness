@@ -3,6 +3,54 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 139 — 2026-07-31T22:1xZ — TRUTH (branch+PR+self-merge, tests-only/off-scoring-path/score-neutral)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`). Infra health:
+full suite runnable (fresh `.venv` + `requirements.txt`, all 22 test files green); the LOCAL verify
+runner is STILL stale — newest `runs/local/verify_20260731T134541Z.json` (13:45Z) is ~8.5h old,
+breaching the 6h floor (machine asleep through the afternoon, the Cycle-63 wake-instant pattern, NOT a
+code regression; cloud CANNOT repair). Already flagged in today's 16:1xZ digest (Cycle 133); re-flag in
+the next first-after-16:00 fire (~Aug-1 16:xxZ) if unrecovered. No repair possible in-cloud.
+
+**What/why.** TRUTH leg of the `output-resolution` COVERAGE→TRUTH→READOUT arc (Cycle 138 shipped the
+COVERAGE signal, PR #125; this is the queued next-hypothesis). Pins the eleventh digital_good signal as
+identity-invariant, mirroring webhook-verification (134/135/136) and free-trial (114/115/116). New
+`test_offering_relabel_invariance_output_resolution` in `tests/test_offering_canonical.py`: because the
+real canonical output-resolution evidence is HOST-FREE (`maxResolution` / "print resolution" carry no
+host), a whole-fixture relabel would be VACUOUS — so (like free-trial 115 / content-provenance 119) the
+guard scans a SYNTHETIC generation-storefront surface that seats the host INSIDE the resolution evidence
+(surface key + adjacent to the `maxResolution` phrase on BOTH sides → lands in the padded quote window,
+asserted non-vacuous). Relabel the host end-to-end and the signal survives with the SAME match count, on
+the SAME host-normalized surface, its quote STILL satisfying the live `output-resolution` regex, host
+absent from all rewritten evidence. TEETH: a sibling distractor carrying only the bare-"resolution"
+false-positive senses — dispute / New-Year / DNS resolution, the `Super resolution` /
+`Enhance image resolution` MODEL-FEATURE trap, and screen/monitor/display HARDWARE resolutions — fires
+ZERO, proving the match keys on the output-SPEC structure, not the word "resolution".
+
+**Ship class.** Tests-only, off the scoring path (`git diff` over `asrs/scoring.py asrs/offering.py
+rubric/ fixtures/` EMPTY; `--name-only` = `tests/test_offering_canonical.py` ONLY) → score-neutral, NOT
+peer-gated. Cloud bridge blocks direct main push → branch `loop/output-resolution-relabel-invariance` +
+PR #127 + self-merge (squash 3a1ff0c); realigned main → 3a1ff0c, verified guard present + offering-canonical
+43/43 on merged main, deleted local+remote branch.
+
+**Evidence / canonical numbers.** Full suite green (22 files). `tests/test_offering_canonical.py` 42→43.
+Replay guard 24/24 — canonical PAIR unchanged: 46.1 F / 85.5 B / delta +39.4, 0 replay-miss; rubric v0.7.
+LIVE-DELTA divergence unchanged (no new verify since 13:45Z: driftflight.com LIVE 76.2 C / +30.1 /
+transactability 62.5 across two crawls; in-cloud replay guard STILL 24/24 / +39.4, off scoring path;
+re-capture is [LOCAL]/peer-gated).
+
+**Comms.** No Slack (score-neutral, off scoring path, not sensitive-class; 22:1xZ is NOT the
+first-after-16:00 digest — Cycle 133 at 16:1xZ already sent today's; the runner stall + LIVE-DELTA
+divergence stay queued for the next first-after-16:00 fire ~Aug-1 16:xxZ).
+
+**Next hypothesis.** READOUT leg (Cycle 140): a methodology paragraph in `_write_methodology_page`
+(`asrs/scorecard.py`) framing "specify the deliverable's output resolution / dimensions" as the
+digital_good output-SPEC leg (distinct from WHAT is produced / WHERE delivered / rights / trust), with a
+`test_readout.py` guard — CLOSING the output-resolution COVERAGE→TRUTH→READOUT arc. Then rotation returns
+to METHOD (141): the unused in-cloud METHOD sibling is surface-DEDUP invariance (duplicate/near-duplicate
+surfaces don't inflate match counts or `strength` — likely a robustness PIN, `strength` already being a
+distinct-label count).
+
 ## Cycle 138 — 2026-07-31T21:1xZ — COVERAGE (branch+PR+self-merge, off-scoring-path/score-neutral)
 
 **What/why.** Took the in-cloud-verifiable COVERAGE unit Cycle 137's next-hypothesis called for

@@ -1076,6 +1076,69 @@ def test_methodology_documents_output_resolution() -> None:
                f"output-resolution prose names no vendor/domain ({banned!r})")
 
 
+def test_methodology_documents_payment_receipt() -> None:
+    # Cycle 144 (READOUT): the READOUT complement CLOSING the payment-receipt arc
+    # opened by Cycle 142 (COVERAGE — the metered_api `payment-receipt` offering
+    # signal: the machine-readable PROOF-OF-PAYMENT an agent gets BACK after a paid
+    # call and logs to reconcile its own spend) and Cycle 143 (TRUTH — the SIGNAL-
+    # level HOST relabel-invariance guard for that signal). This is the metered_api
+    # ACCOUNTING / capital-safety leg completing the full COVERAGE->TRUTH->READOUT
+    # arc (mirroring the metered_api siblings webhook-verification 134/135/136,
+    # streaming-response 126/127/128, cancel-job 110/111/112, and the digital_good
+    # output-resolution 138/139/140). The accounting leg was pinned in code + tests
+    # but NEVER surfaced in prose a critic can read — a reader could not learn WHY a
+    # metered offer that returns a receipt an agent can log is MORE agent-completable,
+    # or how it is DISTINCT from the payment RAILS: an agent-payment rail (x402, a
+    # machine-payable endpoint) is the PAY leg (WHETHER the agent can pay); the
+    # payment-receipt is the proof that comes BACK so the agent can reconcile what it
+    # was charged. The paragraph must (a) frame it as accounting for the spend /
+    # trusting the receipt, name it the capital-safety accounting sibling of the
+    # payment rails, tie the PAY leg to the receipt-comes-back leg, tie it to the
+    # $0-only capital-safety ethos, and name the failure (an agent pays and cannot
+    # reconcile its own spend — capital it can neither confirm nor dispute); (b) name
+    # the vendor-neutral proof-of-payment vocabulary the offering signal anchors on as
+    # open conventions — a receipt header, a payment / settlement receipt, a serialized
+    # receipt, a spend record, explicit proof of payment; (c) keep the signal's
+    # PRECISION honesty — a bare `receipt` (an email receipt, a read receipt, an order
+    # receipt on a retail checkout, "in receipt of" a message, a warehouse receipt of
+    # goods) is not proof of payment and is read as no signal; (d) say recognition keys
+    # on the RECEIPT the offer returns not who returns it and is pinned by an
+    # identity-relabel executable regression test; and (e) stay HONEST about scope —
+    # this offering read is diagnostic, off the scoring path, not a scored pillar.
+    # Vendor-neutral throughout.
+    print("test_methodology_documents_payment_receipt")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    # Match on the whitespace-collapsed text (same technique as the output-resolution
+    # / webhook-verification guards) so wording, not source wrapping, is what the guard pins.
+    collapsed = " ".join(text.split())
+    for phrase in ("Accounting for the spend", "capital-safety accounting sibling",
+                   "reconcile its own spend", "PAY leg",
+                   "proof that comes back to reconcile the spend",
+                   "receipt the offer returns, not who returns it",
+                   "relabels the storefront", "executable regression test",
+                   "off the scoring path", "diagnostic"):
+        _check(phrase in collapsed,
+               f"methodology documents payment-receipt: {phrase!r}")
+    # The vendor-neutral proof-of-payment vocabulary the offering signal bank anchors
+    # on must appear as open conventions, never a vendor product: a receipt header, a
+    # payment / settlement receipt, a serialized receipt, a spend record, proof of payment.
+    for token in ("receipt header", "settlement receipt", "serialized receipt",
+                  "spend record", "proof of payment"):
+        _check(token in collapsed, f"methodology names proof-of-payment convention {token!r}")
+    # PRECISION honesty: the prose must preserve the signal's bare-word guard — a bare
+    # `receipt` (email/read/order/goods receipt, "in receipt of") is not proof of
+    # payment, no signal.
+    for token in ("bare", "no signal", "email receipt", "read receipt",
+                  "order receipt", "receipt of goods"):
+        _check(token in collapsed,
+               f"methodology keeps payment-receipt precision note: {token!r}")
+    # Vendor-neutral: no scored domain/product/brand named on the page.
+    for banned in ("drift-flight", "driftflight", "replicate"):
+        _check(banned not in text,
+               f"payment-receipt prose names no vendor/domain ({banned!r})")
+
+
 def test_methodology_documents_free_trial() -> None:
     # Cycle 116 (READOUT): the READOUT complement CLOSING the free-trial arc opened by
     # Cycle 114 (COVERAGE — the `free-trial` offering signal added to the SUBSCRIPTION
@@ -1990,6 +2053,8 @@ def main() -> int:
         test_methodology_documents_cancel_job,
         test_methodology_documents_streaming_response,
         test_methodology_documents_webhook_verification,
+        test_methodology_documents_output_resolution,
+        test_methodology_documents_payment_receipt,
         test_methodology_documents_free_trial,
         test_methodology_documents_self_provisioning,
         test_methodology_documents_content_provenance,

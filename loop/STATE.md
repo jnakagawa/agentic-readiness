@@ -1,7 +1,17 @@
 # Loop state
 
-- Cycle counter: 141
+- Cycle counter: 142
 - Started: 2026-07-23 (UTC)
+- RUNNER STILL STALE at 2026-08-01T01:1xZ (Cycle 142) — newest verify
+  `runs/local/verify_20260731T134541Z.json` (13:45Z Jul-31) is ~11.5h old, still BREACHING the 6h floor
+  (14:41Z Jul-31–01:41Z Aug-1 launchd fires produced NO artifact = machine asleep, the Cycle-63
+  wake-instant pattern, NOT a code regression). Cloud CANNOT repair. Already flagged in today's 16:1xZ
+  digest (Cycle 133); 01:1xZ Aug-1 is NOT first-after-16:00 → no re-flag this fire. Re-flag in the next
+  first-after-16:00 fire (~Aug-1 16:xxZ) if not recovered. A persistent no-wake past ~Aug-1 morning is an
+  operator/launchd-plist matter for Jonah, NOT the Cycle-63 backoff fix (that is for the wake/network
+  RACE, not a machine that never wakes). Cycle 142 also self-healed a bookkeeping fork: local `main` had
+  drifted to a Cycle-94 "unrelated history" (fresh-clone artifact) and was `git reset --hard` to
+  origin/main before work.
 - RUNNER STILL STALE at 2026-08-01T00:1xZ (Cycle 141) — newest verify
   `runs/local/verify_20260731T134541Z.json` (13:45Z Jul-31) is ~10.5h old, still BREACHING the 6h floor
   (14:41Z Jul-31–00:41Z Aug-1 launchd fires produced NO artifact = machine asleep, the Cycle-63
@@ -63,7 +73,25 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 141 was
+- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 142 was
+  COVERAGE, so Cycle 143 is TRUTH). Cycle 142 shipped the **payment-receipt** metered_api signal on the
+  offering classifier (`asrs/offering.py`) — the machine-readable PROOF-OF-PAYMENT an agent gets BACK
+  after a paid call and logs to reconcile its own spend (receipt header / payment/settlement receipt /
+  serialized receipt / spend record / proof of payment); the ACCOUNTING leg + capital-safety counterpart
+  to the payment RAILS (x402/agent-payment-rail = PAY; none said what receipt comes BACK). Vendor-neutral,
+  precision-guarded against bare-`receipt` (email/read/order/goods, "in receipt of"). Fires 4 legs on the
+  REAL captured driftflight.com `agents.driftflight.com/llms-full.txt` and ZERO on drift-flight.org
+  (capability-gap echo, mirroring self-provisioning) / api.replicate.com / books.toscrape / example.com.
+  Off scoring path (`git diff asrs/scoring.py rubric/ fixtures/` EMPTY) → score-neutral (claimed SET+ORDER
+  `[metered_api, digital_good, subscription]` unchanged), NOT peer-gated; branch loop/payment-receipt-signal
+  + PR #132 + self-merge (squash 8b5cee3). `test_offering.py` 56→58 (`_precision_synthetic` 8+/6−,
+  `_fires_on_real_captured_surfaces`); isolation-matrix entry added, offering-canonical 45/45; full suite
+  347→349. Replay guard 24/24, 46.1 F / 85.5 B / +39.4; rubric v0.7. NEXT (TRUTH 143): a relabel-/order-
+  invariance guard for the new `payment-receipt` signal (mirroring the webhook-verification/output-resolution
+  TRUTH legs) to give the payment-receipt arc its COVERAGE→TRUTH→READOUT shape. digital_good/subscription
+  are the next COVERAGE frontier on committed evidence; service_booking/data_retrieval new signals +
+  physical_good fulfillment leg stay [LOCAL]-blocked; ACP/UCP/MPP + free-tier live-wiring stay [LOCAL].
+- Focus pointer (Cycle 141): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 141 was
   METHOD, so Cycle 142 is COVERAGE). Cycle 141 shipped **surface-DEDUP invariance** — the LAST unused
   in-cloud METHOD sibling of the offering invariance family (`test_offering_surface_dedup_invariance_org/
   _com` in `tests/test_offering_canonical.py`, 43→45). Pins that serving the SAME doc surface a second

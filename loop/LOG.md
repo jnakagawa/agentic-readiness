@@ -3,6 +3,79 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 142 — 2026-08-01T01:1xZ — COVERAGE — payment-receipt metered_api signal (offering classifier)
+
+**Track / rotation.** COVERAGE (focus pointer was "COVERAGE next" after Cycle 141 METHOD). Ships a NEW
+capability-worded signal on a CLAIMED archetype (metered_api), the strengthenable unit the Cycle-141
+"next" note named.
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`) → no review duty.
+
+**Infra health.** Bench healthy: fresh `.venv` + `requirements.txt` (`requests`/`PyYAML`/`eth-account`),
+all 22 test files green pre-change, 347 tests. Bookkeeping self-heal: local `main` was a STALE fork
+(pointed at Cycle 94, "unrelated histories" vs origin — a fresh-clone artifact) → `git reset --hard
+origin/main` to 42573fb (Cycle 141) before work; verified. LOCAL verify runner STILL stale — newest
+`runs/local/verify_20260731T134541Z.json` (13:45Z Jul-31) is ~11.5h old at the 01:1xZ Aug-1 fire,
+breaching the 6h floor (machine asleep, Cycle-63 wake-instant pattern, NOT a code regression). Cloud
+CANNOT repair; already flagged in today's 16:1xZ digest (Cycle 133). 01:1xZ is NOT first-after-16:00 →
+no re-flag this fire; re-flag ~Aug-1 16:xxZ if not recovered. In-cloud replay guard is the intact
+independent regression signal.
+
+**What.** Added a `payment-receipt` signal to the `metered_api` archetype in `asrs/offering.py`'s signal
+bank — the machine-readable PROOF-OF-PAYMENT an agent gets BACK after a paid call and logs to reconcile
+its own spend: a `receipt header` on the paid response, a `payment`/`settlement receipt`, a `serialized
+receipt`, a `spend record`, `proof of payment`. Placed with the payment cluster, right after
+`agent-payment-rail`.
+
+**Why (capability lens; distinct from every existing metered_api leg).** This is the ACCOUNTING leg of
+an agent-native metered API and the capital-safety COUNTERPART to the payment RAILS already in the bank:
+`x402` / `agent-payment-rail` say the agent can PAY; `credit-metered`/`tiered-volume`/`pay-per` how it is
+PRICED; `test-mode` how it avoids paying while testing; `webhook-verification` how it trusts an INBOUND
+callback — NONE says what verifiable receipt comes BACK on a paid response. An autonomous agent that pays
+per call but cannot obtain a machine-readable receipt cannot reconcile its own spend (no per-call proof
+to log against a budget, dispute a wrong charge, or reconcile an invoice), so a metered API that returns
+one is MORE agent-completable. Dovetails directly with ASRS's own $0-only capital-safety ethos: track
+every unit of spend.
+
+**Precision + non-vacuity (real data).** Vendor-neutral payment-accounting vocabulary; bare `\breceipt\b`
+is precision-guarded against the email/read/order/goods-receipt + "in receipt of" senses (6 synthetic
+negatives asserted absent). Fires non-vacuously on the REAL captured driftflight.com agent docs
+(`agents.driftflight.com/llms-full.txt` — "Every successful paid response includes a receipt header you
+can log for your spend records: `payment-response` … or `payment-receipt` (MPP, serialized receipt)"),
+matching 4 legs (receipt header / spend records / payment-receipt / serialized receipt), and on ZERO of
+the drift-flight.org / api.replicate.com / books.toscrape.com / example.com fixtures. The .org absence is
+the discovery-layer echo of the real capability gap (with-rails .com documents receipts, no-rails .org
+does not), mirroring `self-provisioning`.
+
+**Ship class + evidence.** Off the scoring path (`git diff` over `asrs/scoring.py rubric/ fixtures/`
+EMPTY; `--name-only` = `asrs/offering.py` + `tests/test_offering.py` + `tests/test_offering_canonical.py`
+ONLY) → score-neutral (driftflight.com already claims metered_api; claimed SET+ORDER `[metered_api,
+digital_good, subscription]` byte-identical), NOT peer-gated (same class as prior signal-adds:
+webhook-verification #117, streaming-response, output-resolution #125). Cloud bridge blocks direct main
+push → branch `loop/payment-receipt-signal` + PR #132 + self-merge (squash **8b5cee3**). Tests:
+`test_payment_receipt_precision_synthetic` (8 positives / 6 precision negatives) +
+`test_payment_receipt_fires_on_real_captured_surfaces` (real-data non-vacuity + api/retail/null absence);
+`test_offering.py` 56→58. Isolation-matrix entry `payment-receipt` added to `test_offering_canonical.py`
+(the Cycle-137 bank-coverage contract), offering-canonical 45/45. Full suite **347→349**, 22 files green.
+Canonical replay guard **24/24 — 46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7.
+
+**Live-delta note (unchanged, off-scoring-path).** The known driftflight.com LIVE divergence (76.2 C /
++30.1, transactability 62.5 in the two Jul-31 live crawls vs the frozen fixture 85.5 B / +39.4) is a real
+change in the site's live agent-native PAYMENT evidence, orthogonal to this offering-classifier change
+(discovery ≠ scoring). Resolution stays the queued P0 [LOCAL] re-capture/re-baseline; my change does not
+touch it.
+
+**Next hypothesis.** metered_api is now the deepest archetype (post-endpoint/qualified-api/api-auth,
+5 billing legs, rate-limited, async-job, webhook-verification, streaming-response, error-contract,
+test-mode, pagination, cancel-job, self-provisioning, credit-metered, tiered-volume, x402,
+agent-payment-rail, and now payment-receipt). Rotate TRUTH next (142 COVERAGE → TRUTH): the natural unit
+is a relabel-/order-invariance guard for the new `payment-receipt` signal (mirroring the
+webhook-verification/output-resolution TRUTH legs) so the payment-receipt arc gains its
+COVERAGE→TRUTH→READOUT shape. digital_good/subscription remain shallower than metered_api and are the next
+COVERAGE frontier on committed evidence; service_booking/data_retrieval new signals + physical_good
+fulfillment leg stay [LOCAL]-blocked (no committed fixture claims them / retail fixture too thin);
+ACP/UCP/MPP live handshakes + free-tier live-wiring stay [LOCAL].
+
 ## Cycle 141 — 2026-08-01T00:1xZ — METHOD — surface-DEDUP invariance (offering classifier)
 
 **Track / rotation.** METHOD (focus pointer was "METHOD next" after Cycle 140 READOUT closed the

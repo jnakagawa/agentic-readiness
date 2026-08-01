@@ -3,6 +3,58 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 149 — 2026-08-01T08:1xZ — METHOD — casing-invariance mirrored onto the metered_api MACHINE pole
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`; git log shows Cycle
+148's READOUT leg on main at 3cfc79d). Infra health: fresh cloud checkout landed detached-HEAD; local `main`
+was a stale/diverged Cycle-94 fork, so `git fetch origin main` + `git reset --hard origin/main` realigned to
+3cfc79d (the STATE.md lesson — verify `main == origin/main` before working). Rebuilt the env-only deps in a
+fresh `.venv` (`pip install -e . requests eth-account pyyaml`) so the full suite runs. LOCAL verify runner
+HEALTHY — newest `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is ~4.3h old at the
+08:11Z fire, INSIDE the 6h floor. No repair consumed the cycle.
+
+**Track / rotation.** METHOD (focus pointer was "METHOD next" after Cycle 148 READOUT). Measurement-rigor
+unit: a new metamorphic-invariance cell on the offering classifier's READING layer.
+
+**What/why.** The text-casing invariance axis (Cycle 133) covered only the PROSE half of the canonical pair —
+the natural-language org/com storefronts. This mirrors that same axis onto the qualitatively different
+metered_api MACHINE pole: an API-first storefront classified from its `/openapi.json` spec
+(`api.replicate.com`, the fixture behind `test_machine_surface_openapi_storefront`). That surface is a
+distinct byte shape for case-folding to hold across — scanned RAW (not HTML-stripped), and its metered_api
+evidence is endpoint/scheme prose (`POST https://…`) rather than marketing copy. `test_offering_casing_
+invariance_machine` uppercases every surface body and asserts the case-independent capability skeleton
+(claimed archetype, its `strength`, per-(label, surface) match counts, and the NA/unclaimed complement) is
+identical. The load-bearing tooth (b) lands NATURALLY on this pole (verified, not assumed): the
+`post-endpoint` signal's `https?://` stops matching case-SENSITIVELY once the scheme upper-cases (count
+1 → 0) while its `re.IGNORECASE` count holds — so the invariance rests on the classifier's case-folding, not
+on the text already being case-uniform, and a future MACHINE-surface signal added without `re.IGNORECASE`
+fails loudly. The single-archetype pole (metered_api only) has no rank to reorder, so `_assert_casing_
+invariance` gained a `min_claimed` kwarg (default 2, byte-identical for the org/com callers): on the machine
+pole (`min_claimed=1`) the non-vacuity is claim + (strength, count) SURVIVAL on real fired evidence, not rank
+stability. Vendor-neutral (keys on the metered_api capability skeleton, no domain special-cased).
+
+**Ship class.** Tests-only, off the scoring path (`git diff --name-only` = `tests/test_offering_canonical.py`
+ONLY; scoring.py / offering.py / probes.py / scorecard.py / rubric / fixtures all EMPTY) → score-neutral,
+rubric v0.7 unchanged, NOT peer-gated. Direct-to-main per the playbook's tests tier.
+
+**Evidence / canonical numbers.** Full suite green (23 files). `tests/test_offering_canonical.py` 47→48;
+runner-registration meta-guard 4/4 (new test registered in `main()`). Replay guard 24/24 — canonical PAIR
+unchanged: 46.1 F / 85.5 B / delta +39.4, 0 replay-miss. LIVE signal from the healthy runner
+(`verify_20260801T035047Z.json`): driftflight.com 76.2 C / +30.1 / transactability 62.5 — the
+transactability-drop divergence PERSISTS (a third day, Aug-1), still off the scoring path; the in-cloud
+replay guard stays the frozen independent regression signal. Resolution = queued P0 [LOCAL] canonical
+re-baseline.
+
+**Comms.** No Slack (score-neutral, off scoring path, not sensitive-class; 08:1xZ is NOT the
+first-after-16:00 digest — next is ~Aug-1 16:xxZ, which will report the persistent LIVE-DELTA divergence).
+
+**Next hypothesis.** Rotation → COVERAGE (Cycle 150). Metamorphic-grid cells still open after this one:
+casing on the RETAIL pole (physical_good), and content-scale / noise-surface invariance on the metered_api
+MACHINE surface (only the prose poles carry those). In-cloud COVERAGE frontier on committed evidence remains
+a digital_good signal (output FORMAT is a false-positive minefield); subscription-CANCEL / lifecycle is
+[LOCAL]-blocked (no committed `/cancellation` fixture); service_booking / data_retrieval + physical_good
+fulfillment leg stay [LOCAL]; ACP/UCP/MPP + free-tier live-wiring stay [LOCAL].
+
 ## Cycle 148 — 2026-08-01T07:1xZ — READOUT — methodology prose for the plan-purchase commit leg
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`; git log shows

@@ -1,18 +1,35 @@
 # Loop state
 
-- Cycle counter: 148
+- Cycle counter: 149
 - Started: 2026-07-23 (UTC)
-- RUNNER HEALTHY at 2026-08-01T07:1xZ (Cycle 148) — newest verify
-  `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is ~3.4h old at the fire, INSIDE
-  the 6h floor (Cycle 137–144 machine-asleep-stall recovery holds three cycles on). Live signal:
-  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence, still off the
-  scoring path; the in-cloud replay guard stays the frozen independent signal (24/24, 46.1 F / 85.5 B /
-  +39.4). Resolution = queued P0 [LOCAL] re-baseline. Runner-recovery + divergence go in the next
-  first-after-16:00 digest (~Aug-1 16:xxZ). Restored the environment-only `eth-account` dep (`pip install
-  eth-account`) for `test_free_tier` 11/11, and re-`git checkout -B main origin/main` off the fresh-checkout
-  detached-HEAD state.
-- FOCUS POINTER (Cycle 148 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 148 was
-  READOUT, so Cycle 149 is METHOD). Cycle 148 shipped the **plan-purchase READOUT leg** — a "Committing to a
+- RUNNER HEALTHY at 2026-08-01T08:1xZ (Cycle 149) — newest verify
+  `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is ~4.3h old at the fire, INSIDE
+  the 6h floor (Cycle 137–144 machine-asleep-stall recovery holds four cycles on). Live signal:
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS a
+  third day (Aug-1), still off the scoring path; the in-cloud replay guard stays the frozen independent
+  signal (24/24, 46.1 F / 85.5 B / +39.4). Resolution = queued P0 [LOCAL] re-baseline. The persistent
+  divergence goes in the next first-after-16:00 digest (~Aug-1 16:xxZ). Infra note: local `main` was a
+  stale/diverged Cycle-94 fork this fire — `git fetch origin main` + `git reset --hard origin/main` realigned
+  to 3cfc79d before working; rebuilt env-only deps in a fresh `.venv` (`pip install -e . requests eth-account
+  pyyaml`) for the full suite.
+- FOCUS POINTER (Cycle 149 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 149 was
+  METHOD, so Cycle 150 is COVERAGE). Cycle 149 shipped a **METHOD metamorphic cell** — `test_offering_casing_
+  invariance_machine` in `tests/test_offering_canonical.py`: the text-casing invariance axis (Cycle 133,
+  org/com PROSE poles only) mirrored onto the qualitatively different metered_api MACHINE pole
+  (`api.replicate.com`, classified RAW from `/openapi.json`). Uppercasing every surface body leaves the
+  case-independent capability skeleton (claimed archetype + `strength` + per-(label, surface) counts + NA
+  complement) identical; the load-bearing tooth lands naturally — the `post-endpoint` `https?://` case-
+  SENSITIVE count moves 1→0 under uppercasing while IGNORECASE holds, so a future machine-surface signal
+  added without `re.IGNORECASE` fails loudly. `_assert_casing_invariance` gained a `min_claimed` kwarg
+  (default 2, byte-identical for org/com; `=1` for the single-archetype machine pole = claim/(strength,count)
+  survival, no rank). Tests-only, off scoring path (`git diff --name-only` = `tests/test_offering_canonical.py`
+  ONLY) → score-neutral, rubric v0.7, NOT peer-gated; direct-to-main. `test_offering_canonical.py` 47→48;
+  runner-registration meta-guard 4/4; full suite 23 files green; replay guard 24/24, 46.1 F / 85.5 B / +39.4.
+  NEXT (COVERAGE 150): a new capability signal on committed evidence (digital_good is the narrow in-cloud
+  frontier — output FORMAT is a false-positive minefield, needs a genuinely distinct capability +
+  precision-guarded evidence). Metamorphic-grid cells still open: casing on the RETAIL pole, and
+  content-scale / noise-surface invariance on the metered_api MACHINE surface.
+- SUPERSEDED (Cycle 148) — Cycle 148 shipped the **plan-purchase READOUT leg** — a "Committing to a
   plan without a human" methodology paragraph in `_write_methodology_page` (`asrs/scorecard.py`), inserted
   after the free-trial "$0 evaluation" subscription paragraph, framing the subscription COMMIT leg as
   DISTINCT from the recurring PRICE / the $0 EVALUATION / the payment RAILS and as the subscription

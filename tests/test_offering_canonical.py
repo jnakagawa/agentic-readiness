@@ -4233,24 +4233,44 @@ def _casing_struct(prof) -> dict:
     }
 
 
-def _assert_casing_invariance(domain: str, expected_claimed: set) -> None:
-    """Uppercasing every surface body leaves the classified capability skeleton identical."""
+def _assert_casing_invariance(domain: str, expected_claimed: set, *, min_claimed: int = 2) -> None:
+    """Uppercasing every surface body leaves the classified capability skeleton identical.
+
+    ``min_claimed`` is the number of archetypes the pole is expected to claim. On a
+    MULTI-archetype pole (the org/com prose pair, ``min_claimed=2``) the non-vacuity is
+    that a casing change could perturb a claim OR reorder the RANK. On a SINGLE-archetype
+    pole (the metered_api MACHINE surface, ``min_claimed=1``) there is no rank to reorder,
+    so the non-vacuity is that the lone claim rests on real fired evidence whose (strength,
+    per-(label, surface) counts) a casing change could perturb — the load-bearing tooth (b)
+    below still proves the invariance rests on case-folding, not on case-uniform text.
+    """
     surfaces = _captured_surfaces(domain)
     base = _offering.classify_offering(domain, dict(surfaces))
 
     # The property under test is genuinely present: the domain claims the expected
-    # multi-archetype set, RANKED, so a casing change that perturbed a claim or a
-    # rank would be observable.
+    # archetype set, RANKED, so a casing change that perturbed a claim or a rank would
+    # be observable.
     _check(
         set(base.archetypes) == expected_claimed,
         f"{domain}: base claimed set == {sorted(expected_claimed)} "
         f"(got {sorted(set(base.archetypes))})",
     )
-    _check(
-        len(base.claimed) >= 2,
-        f"{domain}: >=2 archetypes claimed, so the ranking a casing change could "
-        f"reorder is real (got {base.archetypes})",
-    )
+    if min_claimed >= 2:
+        _check(
+            len(base.claimed) >= 2,
+            f"{domain}: >=2 archetypes claimed, so the ranking a casing change could "
+            f"reorder is real (got {base.archetypes})",
+        )
+    else:
+        # Single-archetype pole: no rank to reorder, but the lone claim must rest on real
+        # fired signals — otherwise the (strength, count) skeleton a casing change could
+        # perturb would be empty and the invariance vacuous.
+        _check(
+            len(base.claimed) == 1 and any(c.signals for c in base.claimed),
+            f"{domain}: exactly 1 archetype claimed on real fired evidence, so the "
+            f"(strength, per-(label, surface) counts) a casing change could perturb is "
+            f"real (got {base.archetypes})",
+        )
 
     up_surfaces = {s: r.upper() for s, r in surfaces.items()}
     # TEETH (a): the transform is REAL — at least one surface carries lowercase at
@@ -4328,6 +4348,27 @@ def test_offering_casing_invariance_com() -> None:
     """Casing-invariance mirrored onto the .com half of the canonical pair."""
     print("test_offering_casing_invariance_com")
     _assert_casing_invariance("driftflight.com", EXPECTED_CLAIMED["driftflight.com"])
+
+
+def test_offering_casing_invariance_machine() -> None:
+    """Casing-invariance mirrored onto the metered_api MACHINE pole.
+
+    The org/com casing guards (Cycle 133) cover only the PROSE half of the canonical
+    pair — natural-language homepage/llms.txt storefronts. This mirrors the same axis
+    onto the qualitatively different MACHINE surface: an API-first storefront classified
+    from its ``/openapi.json`` spec (``api.replicate.com``, the fixture behind
+    ``test_machine_surface_openapi_storefront``). That surface is scanned RAW (not
+    HTML-stripped), and its metered_api evidence is endpoint/scheme prose
+    (``POST https://…``) rather than marketing copy — a distinct byte shape for the
+    case-folding to hold across. The load-bearing tooth (b) lands naturally here: the
+    ``post-endpoint`` signal's ``https?://`` stops matching case-SENSITIVELY once the
+    scheme upper-cases (count 1 -> 0), while its ``re.IGNORECASE`` count holds — so the
+    invariance rests on the classifier's case-folding, and a future machine-surface
+    signal added without ``re.IGNORECASE`` fails loudly. Single-archetype pole, so the
+    property is claim + (strength, count) SURVIVAL, not rank stability (``min_claimed=1``).
+    """
+    print("test_offering_casing_invariance_machine")
+    _assert_casing_invariance(_MACHINE_SURFACE, _MACHINE_CLAIMED, min_claimed=1)
 
 
 def test_offering_relabel_invariance_retail() -> None:
@@ -4764,6 +4805,7 @@ def main() -> int:
         test_offering_endpoint_order_invariance_metered_api,
         test_offering_casing_invariance_org,
         test_offering_casing_invariance_com,
+        test_offering_casing_invariance_machine,
         test_offering_surface_dedup_invariance_org,
         test_offering_surface_dedup_invariance_com,
         test_offering_relabel_invariance_retail,

@@ -1393,13 +1393,15 @@ design in-cloud, execute locally.
   prose poles are covered); (b) a cross-SURFACE order axis — does the ORDER in which surfaces are read
   (homepage vs /openapi.json vs /llms.txt) move a multi-surface claim? (partially pinned by
   `test_offering_surface_order_invariance_*` on the org pole — extend to the machine pole); (c) casing
-  invariance mirrored onto the retail/machine poles (Cycle 133 covers the org/com prose pair only);
-  (d) SURFACE-DEDUP invariance (a fixture that serves the same body at two surface keys must not
-  double-count a claim) — the ONE remaining axis of the two Cycle 132 named alongside casing. NOTE
-  `strength` is already distinct-label-count (`ArchetypeClaim.strength = len({s.label ...})`), so a
-  dedup guard is likely a robustness PIN (proving the current design already resists double-counting)
-  rather than a bug-find; still worth pinning so a future strength refactor to raw match count fails
-  loudly. [cross-signal PRECISION-ISOLATION — the sibling axis — SHIPPED Cycle 137: a full 56-signal /
+  invariance — the MACHINE pole is now DONE (Cycle 149, `test_offering_casing_invariance_machine`,
+  metered_api `/openapi.json`, single-archetype via `_assert_casing_invariance(min_claimed=1)`, load-bearing
+  `post-endpoint` `https?://` tooth); the RETAIL pole (physical_good) is the one remaining casing cell
+  (Cycle 133 covered org/com prose only). NOTE the retail casing tooth is harder — physical_good prose
+  nouns ("Add to basket", "£51.77") may not carry a naturally case-sensitive signal like the machine
+  `https?://`, so its load-bearing tooth (b) needs verification (or a `min_claimed=1` single-archetype
+  adaptation like the machine pole); (d) SURFACE-DEDUP invariance — DONE (already shipped as
+  `test_offering_surface_dedup_invariance_org`/`_com`, registered in `main()`). [cross-signal
+  PRECISION-ISOLATION — the sibling axis — SHIPPED Cycle 137: a full 56-signal /
   6-archetype matrix `test_cross_signal_archetype_isolation` + negative control in
   `tests/test_offering_canonical.py`, proving each signal's affirmative evidence claims EXACTLY its own
   archetype and leaks into no other, completeness-enforced.] All tests-only, off the scoring path,

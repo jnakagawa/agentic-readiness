@@ -503,16 +503,21 @@ design in-cloud, execute locally.
 
 ## P1
 
-- **Complete the `payment-receipt` arc — TRUTH then READOUT legs** (follow-up to Cycle 142 COVERAGE).
-  Cycle 142 shipped the `payment-receipt` metered_api signal (the machine-readable proof-of-payment /
-  spend-record an agent logs to reconcile its spend — `asrs/offering.py`). Give it the same
-  COVERAGE→TRUTH→READOUT arc shape the webhook-verification (134/135/136) and output-resolution
-  (138/139/140) signals got: (a) TRUTH — a relabel-/order-invariance guard pinning that the signal's
-  archetype attribution and the canonical claimed set survive a host relabel + surface-order permutation
-  (mirror `test_offering.py`'s webhook-verification/output-resolution relabel-invariance tests); (b)
-  READOUT — a methodology paragraph in `_write_methodology_page` (`asrs/scorecard.py`) framing "account
-  for the spend / trust the receipt" as the capital-safety accounting sibling of the payment RAILS, with a
-  `test_methodology_documents_payment_receipt` guard in `tests/test_readout.py`. Both off the scoring path,
+- **Complete the `payment-receipt` arc — the READOUT leg** (follow-up to Cycle 142 COVERAGE / Cycle 143
+  TRUTH). (a) TRUTH — DONE Cycle 143 (`test_offering_relabel_invariance_payment_receipt` in
+  `tests/test_offering_canonical.py`, 45→46; branch loop/payment-receipt-invariance + PR #134 + self-merge
+  squash 2fc1415; tests-only/off-scoring-path/score-neutral; replay guard 24/24, 46.1 F / 85.5 B / +39.4).
+  A SYNTHETIC metered_api surface seats the host INSIDE the receipt evidence (the real driftflight.com
+  evidence is host-free in the quote window → a whole-fixture relabel would be VACUOUS, mirroring
+  webhook-verification 135 / output-resolution 139); asserts same match count / same host-normalized
+  surface / quote still matches the live regex / host absent, with a bare-"receipt" distractor firing ZERO.
+  REMAINING — (b) READOUT (Cycle 144, the arc-CLOSING leg): a methodology paragraph in
+  `_write_methodology_page` (`asrs/scorecard.py`) framing "account for the spend / trust the receipt" as
+  the capital-safety accounting sibling of the payment RAILS (x402/agent-payment-rail = PAY;
+  payment-receipt = the proof that comes BACK to reconcile spend), naming the vendor-neutral vocabulary
+  (a receipt header / a payment-settlement receipt / a serialized receipt / a spend record / proof of
+  payment) and preserving the bare-"receipt" precision guard (email/read/order/goods receipt), with a
+  `test_methodology_documents_payment_receipt` guard in `tests/test_readout.py`. Off the scoring path,
   score-neutral, NOT peer-gated (branch+PR+self-merge). All in-cloud (committed driftflight.com fixture).
 
 <!-- DONE 2026-07-31T23:1xZ (Cycle 140, READOUT, branch+PR #129+self-merge squash aeafed4,

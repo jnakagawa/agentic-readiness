@@ -503,22 +503,41 @@ design in-cloud, execute locally.
 
 ## P1
 
-- **Complete the `payment-receipt` arc — the READOUT leg** (follow-up to Cycle 142 COVERAGE / Cycle 143
-  TRUTH). (a) TRUTH — DONE Cycle 143 (`test_offering_relabel_invariance_payment_receipt` in
-  `tests/test_offering_canonical.py`, 45→46; branch loop/payment-receipt-invariance + PR #134 + self-merge
-  squash 2fc1415; tests-only/off-scoring-path/score-neutral; replay guard 24/24, 46.1 F / 85.5 B / +39.4).
-  A SYNTHETIC metered_api surface seats the host INSIDE the receipt evidence (the real driftflight.com
-  evidence is host-free in the quote window → a whole-fixture relabel would be VACUOUS, mirroring
-  webhook-verification 135 / output-resolution 139); asserts same match count / same host-normalized
-  surface / quote still matches the live regex / host absent, with a bare-"receipt" distractor firing ZERO.
-  REMAINING — (b) READOUT (Cycle 144, the arc-CLOSING leg): a methodology paragraph in
-  `_write_methodology_page` (`asrs/scorecard.py`) framing "account for the spend / trust the receipt" as
-  the capital-safety accounting sibling of the payment RAILS (x402/agent-payment-rail = PAY;
-  payment-receipt = the proof that comes BACK to reconcile spend), naming the vendor-neutral vocabulary
-  (a receipt header / a payment-settlement receipt / a serialized receipt / a spend record / proof of
-  payment) and preserving the bare-"receipt" precision guard (email/read/order/goods receipt), with a
-  `test_methodology_documents_payment_receipt` guard in `tests/test_readout.py`. Off the scoring path,
-  score-neutral, NOT peer-gated (branch+PR+self-merge). All in-cloud (committed driftflight.com fixture).
+<!-- DONE 2026-08-01T02:5xZ (Cycle 144, READOUT, branch loop/payment-receipt-readout + PR #136 +
+     self-merge squash 05821a6, display+tests/off-scoring-path/score-neutral): "Complete the
+     `payment-receipt` arc — the READOUT leg" FULLY DISCHARGED, CLOSING the payment-receipt
+     COVERAGE(142)→TRUTH(143)→READOUT(144) arc. New paragraph in `_write_methodology_page`
+     (`asrs/scorecard.py`) after the webhook-verification prose (its metered_api capital-safety sibling):
+     "Accounting for the spend" = the capital-safety accounting sibling of the payment RAILS
+     (agent-payment rail / x402 = the PAY leg WHETHER the agent can pay; payment-receipt = the proof that
+     comes back to reconcile the spend — nothing in the PAY leg says what proof returns). Names the failure
+     (an agent pays, gets no machine-readable receipt → cannot reconcile its own spend), the vendor-neutral
+     proof-of-payment vocab (receipt header / payment-settlement receipt / serialized receipt / spend
+     record / proof of payment), preserves the bare-`receipt` precision guard (email/read/order/goods
+     receipt, "in receipt of"), pins the identity-relabel regression property, diagnostic/off-scoring-path.
+     Guard `test_methodology_documents_payment_receipt` in `tests/test_readout.py`. BONUS silent-dead-test
+     fix: `test_methodology_documents_output_resolution` (Cycle 140) was defined but NEVER registered in the
+     runner list (Cycle-140's claimed 61→62 never took) → registered it (passes against shipped prose);
+     runner list 61→63. Off scoring path (`git diff asrs/scoring.py asrs/offering.py rubric/ fixtures/`
+     EMPTY; changed = `asrs/scorecard.py` + `tests/test_readout.py` ONLY) → score-neutral, NOT peer-gated.
+     Full suite 22 files green; replay guard 24/24, 46.1 F / 85.5 B / +39.4; rubric v0.7. See LOG Cycle 144.
+     (a) TRUTH leg was Cycle 143 (PR #134, squash 2fc1415); COVERAGE signal was Cycle 142 (PR #132, squash
+     8b5cee3). -->
+
+  <!-- OPEN COVERAGE FRONTIER (post-payment-receipt-arc, in-cloud on committed evidence): the next
+       strengthenable unit is a digital_good or subscription capability signal with a full
+       COVERAGE→TRUTH→READOUT arc. service_booking / data_retrieval new signals + the physical_good
+       fulfillment leg stay [LOCAL]-blocked (no committed fixture claims them); ACP/UCP/MPP live
+       handshakes + free-tier live-wiring stay [LOCAL]. -->
+- **Guard against silent dead tests in the hand-maintained runner lists** (METHOD hygiene, opened
+  Cycle 144, in-cloud). Cycle 144 found `test_methodology_documents_output_resolution` (Cycle 140)
+  DEFINED but never added to `tests/test_readout.py`'s `tests` runner list — it silently never ran until
+  Cycle 144 registered it. These suites use a hand-maintained explicit `tests = [...]` list, so a
+  defined-but-unregistered `def test_*` is invisible (no collection error, no failure). Cheap in-cloud
+  meta-test: assert every top-level `def test_*` in a suite module appears in that module's `tests` list
+  (via `ast` over the source, or a registered-vs-defined set diff), so a future arc-closing leg cannot
+  silently skip its guard. Tests-only, off scoring path; branch+PR+self-merge. Good METHOD candidate for
+  Cycle 145.
 
 <!-- DONE 2026-07-31T23:1xZ (Cycle 140, READOUT, branch+PR #129+self-merge squash aeafed4,
      display+tests/off-scoring-path/score-neutral): "Complete the `output-resolution` arc — the READOUT

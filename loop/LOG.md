@@ -3,6 +3,65 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 144 — 2026-08-01T02:5xZ — READOUT — payment-receipt methodology prose (arc-closing leg)
+
+**Track / rotation.** READOUT (focus pointer was "READOUT next" after Cycle 143 TRUTH). CLOSES the
+payment-receipt COVERAGE(142)→TRUTH(143)→READOUT(144) arc — surfaces the metered_api accounting leg in
+prose a critic can read.
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`) → no review duty.
+
+**Infra health.** Bench healthy: all 22 test files green. Restored the environment-only `eth-account`
+dep (`pip install eth-account`) so `test_free_tier` runs 11/11 (a cloud-env gap, not a repo issue).
+Re-`git checkout -B main origin/main` off the forced-update / detached-HEAD state the fresh cloud pull
+left (recurs each checkout; Cycle-94 "unrelated history" pattern). LOCAL verify runner STILL stale —
+newest `runs/local/verify_20260731T134541Z.json` (13:45Z Jul-31) is ~13h old at the 02:5xZ Aug-1 fire,
+breaching the 6h floor (machine asleep, Cycle-63 wake-instant pattern, NOT a code regression). Cloud
+CANNOT repair; already flagged in today's 16:1xZ digest (Cycle 133). 02:5xZ is NOT first-after-16:00 →
+no re-flag this fire; re-flag ~Aug-1 16:xxZ if not recovered. In-cloud replay guard is the intact
+independent regression signal.
+
+**What.** New paragraph in `_write_methodology_page` (`asrs/scorecard.py`) after the webhook-verification
+prose (its metered_api capital-safety sibling): frames "**Accounting for the spend**" as the
+**capital-safety accounting sibling of the payment rails**. Where an agent-payment rail (x402, a
+machine-payable endpoint) is the **PAY leg** — WHETHER the agent can pay — the payment-receipt is the
+**proof that comes back to reconcile the spend**; nothing in the PAY leg says what proof returns. Names
+the failure (an agent pays and gets no machine-readable receipt → cannot reconcile its own spend, capital
+it can neither confirm nor dispute), the vendor-neutral proof-of-payment vocabulary (a receipt header on
+the paid response, a payment/settlement receipt, a serialized receipt, a spend record, proof of payment),
+preserves the bare-`receipt` precision guard (email/read/order/goods receipt, "in receipt of"), pins the
+identity-relabel regression property, stays diagnostic/off the scoring path. Ties to ASRS's own $0-only
+capital-safety ethos: account for what every call cost.
+
+**Why (READOUT).** The accounting leg was pinned in code (Cycle 142) + a relabel-invariance test
+(Cycle 143) but NEVER surfaced in prose — a reader could not learn WHY a metered offer that returns a
+loggable receipt is more agent-completable, or how it is DISTINCT from the payment RAILS (PAY vs
+proof-comes-back). This paragraph is that distinction, mirroring the metered_api siblings
+webhook-verification (134/135/136), streaming-response (126/127/128), and the digital_good
+output-resolution (138/139/140).
+
+**Bonus repair (silent dead-test fix).** Found `test_methodology_documents_output_resolution`
+(Cycle 140) DEFINED at test_readout.py:1018 but NEVER registered in the runner `tests` list — the guard
+silently never executed (Cycle-140's claimed 61→62 never took; suite was 61). Verified it passes against
+the shipped prose, then registered it alongside the new guard. Runner list 61→63.
+
+**Ship class + evidence.** Off the scoring path (`git diff` over `asrs/scoring.py asrs/offering.py
+rubric/ fixtures/` EMPTY; changed files = `asrs/scorecard.py` + `tests/test_readout.py` ONLY) →
+score-neutral, NOT peer-gated (display + tests, same class as the prior READOUT legs). Cloud bridge
+blocks direct main push → branch `loop/payment-receipt-readout` + PR #136 + self-merge (squash
+**05821a6**). Guard `test_methodology_documents_payment_receipt` (10 framing phrases + 5 vocabulary
+tokens + 6 precision negatives + 3 vendor-neutrality bans); `test_readout.py` 61→63. Full suite 22 files
+green. Canonical replay guard **24/24 — 46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7.
+
+**Canonical pair.** 46.1 F / 85.5 B / delta **+39.4** (replay guard, by construction — scoring path
+byte-for-byte untouched). LIVE signal STALE (runner asleep since 13:45Z Jul-31; last live 76.2 C /
++30.1, the transactability-drop divergence tracked in STATE/BACKLOG).
+
+**Next hypothesis.** payment-receipt arc fully closed. Next COVERAGE frontier on committed evidence:
+digital_good / subscription signals. service_booking / data_retrieval new signals + the physical_good
+fulfillment leg stay [LOCAL]-blocked (no committed fixture claims them). Rotation → METHOD next
+(Cycle 145).
+
 ## Cycle 142 — 2026-08-01T01:1xZ — COVERAGE — payment-receipt metered_api signal (offering classifier)
 
 **Track / rotation.** COVERAGE (focus pointer was "COVERAGE next" after Cycle 141 METHOD). Ships a NEW

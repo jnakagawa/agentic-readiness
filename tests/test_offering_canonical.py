@@ -4068,6 +4068,139 @@ def test_offering_content_scale_invariance_retail() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Content-scale invariance on the MACHINE (API-first) pole — closing the same
+# org/com/retail-vs-machine asymmetry the surface-dedup axis already closed
+# (Cycle 159), now for the SCALE axis. `_org`/`_com` pin the multi-archetype
+# PROSE pole, `_retail` the single-archetype no-rails catalog; this pins the
+# single-archetype metered_api OpenAPI-spec pole (`api.replicate.com`, which
+# claims ONLY metered_api off its `/openapi.json` doc surface). This is the
+# NATIVE home of the metered claim — the one committed machine-contract
+# storefront earns its metered_api from that spec ALONE (pinned by
+# `test_machine_surface_openapi_storefront`) — so a volume dependence here would
+# corrupt the archetype on its home turf. The property it protects is the "never
+# manufacture the delta" invariant on the SCALE axis, from the metered pole:
+# repeating a spec's prose N times (an endpoint block copy-pasted across a
+# rebuild, the same `POST` echoed in overview + reference) must not push
+# metered_api up in strength AND must not CONJURE a rails archetype
+# (subscription / physical_good / ...) the API does not offer. An API is not
+# "more" metered — nor suddenly a shop — because its one spec repeats itself.
+#
+# Two structural differences from `_assert_content_scale_invariance` force a
+# dedicated test rather than a reuse of the canonical helper (the same two the
+# surface-dedup machine pole names):
+#   * the shared helper's non-vacuity rests on `len(base.claimed) >= 2` so a
+#     count-driven RANK REORDER is observable; the machine pole claims exactly
+#     ONE archetype, so "reorder" is structurally impossible and would be the
+#     wrong non-vacuity proof. The single-claim analogue below is stronger in the
+#     credibility direction: the teeth are (a) the anchor metered_api signal
+#     fires MORE raw matches under duplication (a count-based reader would
+#     differ), and (b) the five sibling archetypes stay NA — no rail is conjured
+#     by repetition;
+#   * `_captured_surfaces` requires `>=2` READ surfaces for a reorder to matter;
+#     the machine pole reads exactly {homepage, /openapi.json}, so the base is
+#     captured inline (the same spy pattern the casing / surface-dedup machine
+#     poles use) and the scale axis duplicates whatever body the store publishes.
+# ---------------------------------------------------------------------------
+
+
+def test_offering_content_scale_invariance_machine() -> None:
+    """Repeating an API-first store's one spec is not "more" metered_api — and conjures no rails."""
+    print("test_offering_content_scale_invariance_machine")
+
+    # Capture the base surfaces exactly as discovery feeds them to the classifier.
+    # (Unlike `_captured_surfaces`, no >=2-surface reorder premise: the machine pole
+    # reads {homepage, /openapi.json} and the scale axis duplicates the spec body.)
+    path = os.path.join(_FIXTURE_DIR, f"{_MACHINE_SURFACE}.json")
+    ctx = FetchContext.from_fixture(path)
+    captured: dict = {}
+    real = _offering.classify_offering
+
+    def _spy(dom, surfaces):
+        captured.clear()
+        captured.update(surfaces)
+        return real(dom, surfaces)
+
+    _offering.classify_offering = _spy
+    try:
+        _offering.discover_offering(ctx)
+    finally:
+        _offering.classify_offering = real
+
+    base = _offering.classify_offering(_MACHINE_SURFACE, dict(captured))
+
+    # The property under test is genuinely present: the store claims EXACTLY
+    # metered_api, with every other archetype NA — so a rails claim conjured by
+    # sheer repetition, or a strengthened metered_api, would be observable.
+    _check(
+        set(base.archetypes) == _MACHINE_CLAIMED,
+        f"{_MACHINE_SURFACE}: base claimed set == {sorted(_MACHINE_CLAIMED)} "
+        f"(got {sorted(set(base.archetypes))})",
+    )
+    machine_must_be_na = set(_offering.ARCHETYPES) - _MACHINE_CLAIMED
+    _check(
+        machine_must_be_na <= set(base.unclaimed),
+        f"{_MACHINE_SURFACE}: the non-metered archetypes {sorted(machine_must_be_na)} are "
+        f"all NA at base (got unclaimed {sorted(base.unclaimed)}) — the single-claim "
+        "property the duplication must not overturn is present",
+    )
+
+    dup_surfaces = {s: _dup_surface(r) for s, r in captured.items()}
+    # Non-vacuity: the duplication genuinely enlarged every surface the classifier
+    # reads — its input really changed.
+    _check(
+        all(len(dup_surfaces[s]) > len(captured[s]) for s in captured),
+        f"{_MACHINE_SURFACE}: every surface body grew under {_SCALE_K}x duplication "
+        "(the perturbation is real, not a no-op)",
+    )
+    # TEETH: a count-based reader WOULD see strictly more. metered_api's anchor
+    # signal fires K times as many RAW matches after duplication, yet the classifier
+    # below reports the SAME single signal / strength / claim — proving count-
+    # independence is a real property on the machine pole, not a vacuous invariance.
+    anchor = base.claimed[0].signals[0]
+    _check(
+        anchor.archetype == "metered_api",
+        f"{_MACHINE_SURFACE}: the anchor signal is a metered_api leg (got {anchor.archetype})",
+    )
+    pat = _signal_pattern(anchor.archetype, anchor.label)
+    _check(pat is not None, f"{_MACHINE_SURFACE}: anchor signal pattern resolvable")
+    n_base = len(pat.findall(_surface_prose(anchor.surface, captured[anchor.surface])))
+    n_dup = len(pat.findall(_surface_prose(anchor.surface, dup_surfaces[anchor.surface])))
+    _check(
+        n_base >= 1 and n_dup > n_base,
+        f"{_MACHINE_SURFACE}: the anchor signal ({anchor.archetype}/{anchor.label}) fires MORE "
+        f"raw matches under duplication ({n_base} -> {n_dup}) — a count-based reader would differ",
+    )
+
+    dup = _offering.classify_offering(_MACHINE_SURFACE, dict(dup_surfaces))
+
+    # (1) The WHOLE classified profile is byte-identical: metered_api's strength AND
+    # its complete (label, surface, quote) evidence survive duplication unchanged —
+    # no signal multiplied, no quote drifted, no rails archetype conjured.
+    _check(
+        _full_evidence_map(dup) == _full_evidence_map(base),
+        f"{_MACHINE_SURFACE}: complete per-archetype (strength, (label, surface, quote)) "
+        "evidence map invariant under content duplication",
+    )
+    # (2) Claimed archetypes invariant — still EXACTLY metered_api. Repetition
+    # conjured no rails claim; the "never manufacture the delta" property on the
+    # SCALE axis, from the machine pole.
+    _check(
+        dup.archetypes == base.archetypes,
+        f"{_MACHINE_SURFACE}: claimed archetypes invariant under duplication "
+        f"(base {base.archetypes}, dup {dup.archetypes})",
+    )
+    # (3) The non-metered archetypes stay NA and the whole NA set is invariant —
+    # which archetypes an API-first store is excused on as NA is a property of WHAT
+    # it claims, never of how many times its spec says it.
+    _check(
+        machine_must_be_na <= set(dup.unclaimed)
+        and set(dup.unclaimed) == set(base.unclaimed),
+        f"{_MACHINE_SURFACE}: the non-metered archetypes stay NA and the whole NA set is "
+        f"invariant under duplication (base {sorted(base.unclaimed)}, dup {sorted(dup.unclaimed)})",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Noise-surface invariance — the FOURTH metamorphic axis on the classifier.
 #
 # The three families above perturb the surfaces a site DOES publish: RELABEL
@@ -5690,6 +5823,7 @@ def main() -> int:
         test_offering_content_scale_invariance_org,
         test_offering_content_scale_invariance_com,
         test_offering_content_scale_invariance_retail,
+        test_offering_content_scale_invariance_machine,
         test_offering_noise_surface_invariance_org,
         test_offering_noise_surface_invariance_com,
         test_offering_noise_surface_invariance_retail,

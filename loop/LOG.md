@@ -3,6 +3,62 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 163 — 2026-08-01T22:16Z — METHOD — content-scale invariance on the MACHINE pole (offering classifier)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed.
+
+**Infra health / self-heal.** Fresh cloud checkout landed on detached HEAD at Cycle 162's `e309647`
+(= `origin/main` tip); `git fetch origin main` first (Cycle-151 stale-`origin/main` lesson) — already at
+the tip, `checkout -B main origin/main` aligned, no work lost. Created `.venv`, installed `requests pyyaml
+eth-account pytest`, verified `import requests, yaml, asrs` before trusting the suite; full suite (23
+files, 377 tests) green pre-flight. RUNNER AT-FLOOR (unchanged from Cycles 158–162): newest
+`runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is ~18.4h old at fire (22:16Z) —
+past the 6h floor (the local ~04:xx–22:xx fires have not pushed a fresh artifact; borderline runner lag,
+NOT the machine-asleep stall — cloud cannot repair). Already carried in the 16:12Z Cycle-157 digest; no
+new flag owed this fire.
+
+**What/why (METHOD — completing a metamorphic axis on its missing pole).** The content-SCALE invariance
+axis (duplicating every surface body K× must leave the classified capability profile byte-identical — a
+storefront that repeats its pitch is not "more" of any archetype) previously had org / com (multi-
+archetype PROSE pole) + retail (single-archetype no-rails catalog), but was MISSING the MACHINE pole —
+the same org/com/retail-vs-machine asymmetry the surface-dedup axis closed in Cycle 159. Added
+`test_offering_content_scale_invariance_machine` in `tests/test_offering_canonical.py`, pinning the
+axis on the single-archetype metered_api OpenAPI-spec pole (`api.replicate.com`, which claims ONLY
+metered_api off its `/openapi.json` — the NATIVE home of the metered claim, pinned by
+`test_machine_surface_openapi_storefront`). The property protected is the "never manufacture the delta"
+invariant on the SCALE axis from the metered pole: repeating a spec's prose N× (an endpoint block
+copy-pasted across a rebuild, the same POST echoed in overview + reference) must not push metered_api up
+in strength AND must not CONJURE a rails archetype (subscription / physical_good / …) the API does not
+offer. Modeled exactly on the retail single-claim pole: base captured inline via the classify-spy (the
+machine pole reads only {homepage, /openapi.json}, so the shared helper's `len(claimed) >= 2` rank-reorder
+premise does not apply), then `_dup_surface` (K=3) duplicates each body.
+
+**Teeth / non-vacuity.** (a) every surface body grows under 3× duplication; (b) the anchor metered_api
+signal (`post-endpoint`) fires MORE raw matches under duplication (empirically 1 → 3 via `pattern.findall`
+on the derived prose) — a count-based reader WOULD differ, so the invariance is a real property of the
+classifier (first-match `pattern.search` + distinct-LABEL `strength`), not a vacuous no-op; (c) the five
+sibling archetypes stay NA — no rail conjured by repetition. Asserts: the complete per-archetype
+(strength, (label, surface, quote)) evidence map is byte-identical, claimed archetypes invariant (still
+EXACTLY metered_api), and the whole NA set invariant. Registered in `main()`'s runner list (no silent dead
+test) — verified via the file's own `main()` (55/55).
+
+**Validation.** Off the scoring path — `git diff --name-only` = `tests/test_offering_canonical.py` ONLY;
+scoring.py / probes.py / offering.py / rubric / fixtures EMPTY → score-neutral, rubric v0.7, NOT
+peer-gated (tests only, direct-to-main; Cycle-159 precedent). Canonical replay guard 24/24, 46.1 F / 85.5
+B / +39.4, 0 replay-miss (frozen in-cloud regression signal). Live canonical signal (read, not re-run —
+runner at-floor): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5, the
+transactability divergence persisting off the scoring path. Full suite 377→378; `test_offering_canonical.py`
+54→55.
+
+**Next hypothesis.** The three body-perturbation metamorphic axes (relabel / content-scale / surface-dedup)
+now all span the machine pole; the surface-order axis is still org + output_license only (com / machine /
+retail poles open — a candidate for a later METHOD rotation), and noise-surface is org/com/retail (machine
+pole open). In-cloud COVERAGE on committed evidence stays essentially exhausted (metered_api = 26 signals);
+the substantive frontier — new signals from real structured catalog/pricing JSON, ACP/UCP/MPP live
+handshakes, the calibration-population sweep, the driftflight.com transactability-drop diagnosis — remains
+`[LOCAL]`, blocked on the at-floor runner. Next rotation is COVERAGE (Cycle 164).
+
 ## Cycle 162 — 2026-08-01T21:12Z — READOUT — free-included-usage methodology paragraph (closing the COVERAGE→TRUTH→READOUT arc)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

@@ -1,42 +1,43 @@
 # Loop state
 
-- Cycle counter: 162
+- Cycle counter: 163
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-01T21:12Z (Cycle 162) — newest verify `runs/local/verify_20260801T035047Z.json`
-  (03:50Z Aug-1, `attempts=1`) is ~17.4h old at the 21:12Z fire — PAST the 6h floor (the local
-  ~04:xx–21:xx fires have not pushed a fresh artifact; borderline runner lag, NOT the machine-asleep
+- RUNNER AT-FLOOR at 2026-08-01T22:16Z (Cycle 163) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~18.4h old at the 22:16Z fire — PAST the 6h floor (the local
+  ~04:xx–22:xx fires have not pushed a fresh artifact; borderline runner lag, NOT the machine-asleep
   stall — cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily digest; no new flag owed.
   Live signal (read, not re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 /
   transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the
   in-cloud replay guard stays the frozen independent signal (24/24, 46.1 F / 85.5 B / +39.4). Fire at
-  21:12Z is NOT the first after 16:00 UTC (Cycle 157 sent the digest at 16:12Z) → no DM this fire per
-  comms policy (display+tests-only, off-scoring-path/score-neutral, no sensitive-class PR, nothing
+  22:16Z is NOT the first after 16:00 UTC (Cycle 157 sent the digest at 16:12Z) → no DM this fire per
+  comms policy (tests-only, off-scoring-path/score-neutral, no sensitive-class PR, nothing
   score-moving). No open peer-gated PRs this fire (`list_pull_requests` state=open → []), so no
-  first-duty review. INFRA/SELF-HEAL (Cycle 162): fresh checkout on detached HEAD at Cycle 161's
-  `bb6ebe9`, `git fetch origin main` FIRST (Cycle-151 lesson) → `checkout -B main origin/main` aligned,
-  no work lost. Created `.venv`, installed `requests pyyaml eth-account pytest` + verified imports before
-  trusting the suite (376 tests green pre-flight).
-- FOCUS POINTER (Cycle 162 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 162 was
-  READOUT, so Cycle 163 is METHOD). Cycle 162 shipped a **READOUT methodology paragraph — "Trying a paid
-  call for free before you fund"** in `asrs/scorecard.py`'s `_write_methodology_page`, CLOSING the
-  COVERAGE(160)→TRUTH(161)→READOUT(162) arc for the metered_api `free-included-usage` signal (mirroring
-  reserve-and-settle 156/157/158, failure-not-billed 152/153/154). The paragraph frames the $0-on-ramp as
-  the capital-safety sibling of the receipt/reserve-and-settle legs from the $0-BEFORE-funding direction
-  (they bound what a call COSTS once money is in play; this asks whether the agent can prove the paid
-  endpoint works end to end at $0 before it funds a wallet), names the vendor-neutral free-usage
-  vocabulary as open conventions, preserves the signal's precision honesty (a bare "free" — free
-  shipping/royalty-free/toll-free/free parking/a PAID "units included" allotment — is no signal), and
-  names DISTINCTNESS from test-mode (sandbox/fake), a subscription free trial (time-boxed window), and
-  self-provisioning (free identity/access). Pinned by `test_methodology_documents_free_included_usage`
-  (presence + vocabulary + precision + distinctness + vendor-neutrality), registered in `main()`. Off the
-  scoring path (`git diff --name-only` = `asrs/scorecard.py` + `tests/test_readout.py` ONLY;
-  scoring.py/probes.py/offering.py/rubric/fixtures EMPTY) → score-neutral, NOT peer-gated, direct-to-main.
-  Full suite 376→377; `test_readout.py` 66→67; replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss;
-  rubric v0.7. NEXT (METHOD 163): a listing-order / endpoint-order metamorphic pole (the surface-dedup axis
-  is complete on org/com/machine after 159), or a fresh archetype. In-cloud COVERAGE on committed evidence
-  is exhausted (metered_api = 26 signals); the substantive frontier — structured catalog/pricing JSON
-  fixtures, ACP/UCP/MPP handshakes, the calibration-population sweep, the driftflight.com
-  transactability-drop diagnosis — is all `[LOCAL]`, blocked on the at-floor runner.
+  first-duty review. INFRA/SELF-HEAL (Cycle 163): fresh checkout on detached HEAD at Cycle 162's
+  `e309647` (= `origin/main` tip), `git fetch origin main` FIRST (Cycle-151 lesson) → already at tip,
+  `checkout -B main origin/main` aligned, no work lost. Created `.venv`, installed `requests pyyaml
+  eth-account pytest` + verified imports before trusting the suite (377 tests green pre-flight).
+- FOCUS POINTER (Cycle 163 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 163 was
+  METHOD, so Cycle 164 is COVERAGE). Cycle 163 shipped a **METHOD content-scale invariance guard on the
+  MACHINE pole** — `test_offering_content_scale_invariance_machine` in `tests/test_offering_canonical.py`,
+  closing the org/com/retail-vs-machine asymmetry on the SCALE axis (the same gap surface-dedup closed in
+  Cycle 159). Pins the single-archetype metered_api OpenAPI-spec pole (`api.replicate.com`, claims ONLY
+  metered_api off `/openapi.json`): duplicating the spec body 3× must not push metered_api up in strength
+  AND must not CONJURE a rails archetype the API does not offer — the "never manufacture the delta"
+  invariant on the SCALE axis from the metered pole. Modeled on the retail single-claim pole (base captured
+  inline via the classify-spy — the machine pole reads only {homepage, /openapi.json}, so the shared
+  helper's `len(claimed) >= 2` rank-reorder premise does not apply). TEETH: the anchor `post-endpoint`
+  signal fires MORE raw matches under duplication (1 → 3, a count-based reader would differ), yet the full
+  (strength, (label, surface, quote)) evidence map, the claimed set (EXACTLY metered_api), and the five-NA
+  complement all hold byte-identical. Registered in `main()`. Off the scoring path (`git diff --name-only`
+  = `tests/test_offering_canonical.py` ONLY; scoring.py/probes.py/offering.py/rubric/fixtures EMPTY) →
+  score-neutral, NOT peer-gated, direct-to-main. Full suite 377→378; `test_offering_canonical.py` 54→55;
+  replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. NEXT: the body-perturbation
+  axes (relabel / content-scale / surface-dedup) now all span the machine pole; still-open METHOD poles for
+  a later rotation are surface-order (org + output_license only — com/machine/retail open) and noise-surface
+  (org/com/retail — machine open). In-cloud COVERAGE on committed evidence stays exhausted (metered_api = 26
+  signals); the substantive frontier — structured catalog/pricing JSON fixtures, ACP/UCP/MPP handshakes, the
+  calibration-population sweep, the driftflight.com transactability-drop diagnosis — is all `[LOCAL]`,
+  blocked on the at-floor runner.
 - SUPERSEDED (Cycle 161 focus pointer): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 161 was
   TRUTH, so Cycle 162 is READOUT). Cycle 161 shipped a **TRUTH signal-level relabel-invariance guard —
   `test_offering_relabel_invariance_free_included_usage`** in `tests/test_offering_canonical.py`, the

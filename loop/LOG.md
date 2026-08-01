@@ -3,6 +3,72 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 141 — 2026-08-01T00:1xZ — METHOD — surface-DEDUP invariance (offering classifier)
+
+**Track / rotation.** METHOD (focus pointer was "METHOD next" after Cycle 140 READOUT closed the
+output-resolution arc). This ships the LAST unused in-cloud METHOD sibling of the invariance family
+that the Cycle 137/138/140 "next" notes have flagged repeatedly: **surface-DEDUP invariance**.
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`).
+
+**Infra health.** Full suite runnable (fresh `.venv` + `requirements.txt`, all 22 test files green
+pre-change). The LOCAL verify runner is STILL stale — newest `runs/local/verify_20260731T134541Z.json`
+(13:45Z Jul-31) is ~10.5h old at the 00:1xZ Aug-1 fire, breaching the 6h floor (the 14:41Z–23:41Z
+launchd fires produced no artifact = machine asleep, the Cycle-63 wake-instant pattern, NOT a code
+regression). Cloud CANNOT repair the local machine; already flagged in today's 16:1xZ digest
+(Cycle 133) and every fire since. 00:1xZ is NOT the first-after-16:00 digest cycle (Cycle 133 sent
+today's), so no re-flag this fire — re-flag in the next first-after-16:00 fire (~Aug-1 16:xxZ) if the
+machine has not woken. The in-cloud replay guard is the independent live regression signal and is intact.
+
+**What.** Added `test_offering_surface_dedup_invariance_org` / `_com` (+ helpers `_mirror_doc_surfaces`,
+`_assert_surface_dedup_invariance`) to `tests/test_offering_canonical.py` (43→45 tests). They pin a NEW
+perturbation axis on the offering classifier: serving the SAME signal-bearing doc surface a SECOND time
+under a DISTINCT surface key must leave every archetype's `strength`, the RANKED claimed list, and the
+NA complement byte-identical. Each of every captured doc surface (homepage excluded) is duplicated under
+a `mirror::<key>` key carrying the same body, then re-classified.
+
+**Why (distinct from the existing axes; a robustness PIN not a bug-find).** This is NOT content-SCALE
+(Cycle 100-ish), its closest relative: content-scale grows every surface BODY K-fold within a FIXED
+surface SET (raw hits multiply INSIDE one surface); surface-DEDUP adds a whole DUPLICATE SURFACE under a
+new key (same body from a second location). That is exactly what the LIVE discovery path already
+produces — `discover_offering` reads each `_SURFACE_DOCS` path on the apex host AND on the `agents.`/
+`docs.`/`developers.`/`api.` doc subdomains (`_doc_subdomain_surfaces`), so a storefront that mirrors its
+`llms.txt`/OpenAPI/`/pricing` on `agents.<host>` (as the canonical driftflight.com does) hands the
+classifier the same body under two distinct host-qualified keys. A CDN mirror, an `/openapi.json` also
+served at `/swagger.json`, or `llms.txt` duplicated as `llms-full.txt` are the same shape. The ranking
+quantity `ArchetypeClaim.strength` counts DISTINCT signal LABELS (`len({s.label ...})`), so a duplicate
+surface — which adds no new distinct label — cannot change it; the pin turns that docstring rationale
+into an executable tripwire for the dedup axis. A regression to `strength = len(self.signals)` (raw count)
+would let a mirrored surface reorder the fixed template-bank task order, and fails here.
+
+**Teeth / non-vacuity (real, verified live).** The mirror genuinely reaches classification
+(`surfaces_seen` grows by exactly the mirror keys) and the top claim's raw signal-LIST length STRICTLY
+INCREASES — metered_api **18→29 (.org)** and **47→85 (.com)** raw signals under the mirror — so a
+count-based reader WOULD see a difference and could flip the rank; yet the distinct-label `strength`
+holds (metered_api 11/11 .org, 17/17 .com), and the ranked claimed list `[metered_api, digital_good,
+subscription]` and NA set `{physical_good, service_booking, data_retrieval}` are byte-identical. Mirrored
+onto BOTH canonical halves from the start (no .com-only asymmetry to close later).
+
+**Ship class + evidence.** Tests-only, off the scoring path (`scoring.py` imports no `offering` —
+grep-verified across the loop's history) → score-neutral, NOT peer-gated. `git diff` over
+`asrs/ rubric/ fixtures/` EMPTY; `git diff --name-only` = `tests/test_offering_canonical.py` ONLY. Cloud
+bridge blocks direct main push → branch `loop/surface-dedup-invariance` + PR + self-merge (squash).
+Offering-canonical guard 43→45; full suite 22 files green (`test_free_tier` after
+`pip install -r requirements.txt`, environment-only). Canonical PAIR unchanged AND re-measured: replay
+guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7.
+
+**Next hypothesis.** The offering-classifier invariance matrix is now dense across every in-cloud
+perturbation axis: host RELABEL (archetype + 9+ signal legs), surface-read ORDER, content SCALE, NOISE
+surface, listing/endpoint ORDER, CASE fold, and now surface DEDUP — each on BOTH canonical halves (and
+several on the retail/machine poles). The remaining in-cloud METHOD frontier thins; rotate COVERAGE next
+(141 METHOD → COVERAGE), where the strengthenable unit is a new capability-worded signal on a CLAIMED
+archetype (metered_api/digital_good/subscription/physical_good — the retail pole's physical_good
+fulfillment leg needs a richer committed fixture, [LOCAL]-blocked). A surface-dedup RETAIL-pole variant
+(the "never manufacture the delta" credibility direction, mirroring how content-scale/noise-surface
+grew a retail sibling) is a fold-in candidate but weaker (retail claims a single archetype, so rank
+stability is trivial there). service_booking/data_retrieval new signals stay [LOCAL]-blocked (no
+committed fixture claims either); ACP/UCP/MPP live handshakes + free-tier live-wiring stay [LOCAL].
+
 ## Cycle 140 — 2026-07-31T23:1xZ — READOUT (branch+PR+self-merge, display+tests/off-scoring-path/score-neutral)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`). Infra health:

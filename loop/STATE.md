@@ -1,7 +1,15 @@
 # Loop state
 
-- Cycle counter: 140
+- Cycle counter: 141
 - Started: 2026-07-23 (UTC)
+- RUNNER STILL STALE at 2026-08-01T00:1xZ (Cycle 141) — newest verify
+  `runs/local/verify_20260731T134541Z.json` (13:45Z Jul-31) is ~10.5h old, still BREACHING the 6h floor
+  (14:41Z Jul-31–00:41Z Aug-1 launchd fires produced NO artifact = machine asleep, the Cycle-63
+  wake-instant pattern, NOT a code regression). Cloud CANNOT repair. Already flagged in today's 16:1xZ
+  digest (Cycle 133); 00:1xZ Aug-1 is NOT first-after-16:00 (Cycle 133 sent today's) → no re-flag this
+  fire. Re-flag in the next first-after-16:00 fire (~Aug-1 16:xxZ) if not recovered. A persistent
+  no-wake past ~Aug-1 morning is an operator/launchd-plist matter for Jonah, NOT the Cycle-63 backoff
+  fix (that is for the wake/network RACE, not a machine that never wakes).
 - RUNNER STILL STALE at 2026-07-31T23:1xZ (Cycle 140) — newest verify
   `runs/local/verify_20260731T134541Z.json` (13:45Z) is ~9.5h old, still BREACHING the 6h floor
   (14:41–22:41 launchd fires produced NO artifact = machine asleep, the Cycle-63 wake-instant
@@ -55,7 +63,24 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 140 was
+- Focus pointer: COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 141 was
+  METHOD, so Cycle 142 is COVERAGE). Cycle 141 shipped **surface-DEDUP invariance** — the LAST unused
+  in-cloud METHOD sibling of the offering invariance family (`test_offering_surface_dedup_invariance_org/
+  _com` in `tests/test_offering_canonical.py`, 43→45). Pins that serving the SAME doc surface a second
+  time under a DISTINCT key (the apex+`agents.<host>` mirror the LIVE `_doc_subdomain_surfaces` path
+  already produces; a CDN mirror; `/openapi.json` aliased to `/swagger.json`) leaves every archetype's
+  distinct-label `strength`, the RANKED claimed list, and the NA complement byte-identical. Teeth: the
+  top claim's raw signal-LIST length STRICTLY grows under the mirror (metered_api 18→29 .org / 47→85
+  .com) — a count-based `strength=len(signals)` reader WOULD reorder — yet strength (11/17) and rank
+  hold. Tests-only, off scoring path (`git diff asrs/ rubric/ fixtures/` EMPTY; `--name-only` =
+  `tests/test_offering_canonical.py` ONLY) → score-neutral, NOT peer-gated; branch
+  loop/surface-dedup-invariance + PR + self-merge (squash). Replay guard 24/24, 46.1 F / 85.5 B / +39.4;
+  rubric v0.7. NEXT (COVERAGE 142): a new capability-worded signal on a CLAIMED archetype (metered_api/
+  digital_good/subscription — physical_good fulfillment leg [LOCAL]-blocked on a richer retail fixture);
+  a surface-dedup RETAIL-pole sibling is a weaker fold-in candidate (single-archetype → trivial rank).
+  service_booking/data_retrieval new signals stay [LOCAL]-blocked; ACP/UCP/MPP + free-tier live-wiring
+  stay [LOCAL].
+- Focus pointer (Cycle 140): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 140 was
   READOUT, so Cycle 141 is METHOD). Cycle 140 CLOSED the `output-resolution`
   COVERAGE→TRUTH→READOUT arc (138 COVERAGE signal / 139 TRUTH relabel-invariance / 140 READOUT
   prose) with its methodology PROSE leg: a new paragraph in `_write_methodology_page`

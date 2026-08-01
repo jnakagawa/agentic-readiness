@@ -2465,6 +2465,115 @@ def test_self_provisioning_fires_on_real_captured_surfaces():
     print("  ok: self-provisioning is ABSENT on a real retail storefront (non-vacuous)")
 
 
+def test_payment_receipt_precision_synthetic():
+    # PAYMENT RECEIPT / spend reconciliation — the machine-readable PROOF-OF-PAYMENT
+    # an agent gets BACK after a paid call and logs to RECONCILE its own spend (a
+    # receipt header on the paid response, a payment/settlement receipt, a spend
+    # record, proof of payment). This is the ACCOUNTING leg of an agent-native metered
+    # API and the capital-safety counterpart to the payment RAILS (`x402` /
+    # `agent-payment-rail` say the agent can PAY; NONE says what verifiable receipt
+    # comes BACK). A metered API that returns a machine-readable payment receipt claims
+    # metered_api via the new payment-receipt signal. Each POSITIVE is real,
+    # vendor-neutral payment-accounting vocabulary; each NEGATIVE is receipt-SHAPED
+    # noise that must NOT fire it (the precision traps: an email/read receipt, a retail
+    # order receipt, "in receipt of", a warehouse "receipt of goods").
+    positives = {
+        "receipt header": "Every successful paid response includes a receipt header you can log.",
+        "payment receipt": "The response returns a payment receipt for each settled call.",
+        "payment-receipt hyphen": "MPP responses carry a `payment-receipt` header.",
+        "settlement receipt": "Each paid call returns a settlement receipt the agent stores.",
+        "serialized receipt": "The MPP receipt is a serialized receipt in the response header.",
+        "spend records": "Log the receipt for your spend records to reconcile usage.",
+        "proof of payment": "Every paid call returns proof of payment as a response header.",
+        "receipt you can log": "The API returns a receipt you can log against your budget.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("metered.test", {"homepage": text})
+        assert prof.claims("metered_api"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "metered_api"
+            for s in c.signals
+        }
+        assert "payment-receipt" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real payment-receipt phrasings each fire payment-receipt")
+
+    negatives = {
+        # Non-payment "receipt" senses — misreading any as a payment receipt would
+        # conjure a spurious agent-payment-accounting capability. Each must fire
+        # NOTHING here.
+        "email receipt": "We email a receipt to your inbox after every purchase.",
+        "read receipt": "Enable read receipts so senders know you saw the message.",
+        "order receipt": "Your order receipt is available in your account history.",
+        "in receipt of": "We are in receipt of your support request and will reply soon.",
+        "receipt of goods": "Payment is due on receipt of goods at the warehouse.",
+        "receipt to log expenses": "Keep your receipt to log the expense later.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "payment-receipt" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} receipt-shaped noise strings do NOT fire payment-receipt (precision)"
+    )
+
+
+def test_payment_receipt_fires_on_real_captured_surfaces():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the payment-receipt signal fires on the
+    # GENUINE agent-payment-accounting prose captured live from driftflight.com — the
+    # agents.driftflight.com/llms-full.txt agent docs "Every successful paid response
+    # includes a receipt header you can log for your spend records: `payment-response`
+    # … or `payment-receipt` (MPP, serialized receipt)" — captured verbatim in the
+    # committed fixture. Run the REAL discovery path (from_fixture -> discover_offering)
+    # so the signal is exercised exactly as a live crawl would, the same real-data
+    # non-vacuity move test_self_provisioning_fires_on_real_captured_surfaces makes.
+    #
+    # SCORE-NEUTRAL by construction: driftflight.com already claims metered_api (its
+    # strongest archetype), so payment-receipt evidence can only deepen that claim —
+    # never add an archetype or reorder. The classifier is off the scoring path; the
+    # canonical pair's claimed SET+ORDER is unchanged (pinned by
+    # tests/test_offering_canonical.py and the canonical replay guard).
+    ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "driftflight.com.json"))
+    prof = offering.discover_offering(ctx)
+    assert prof.claims("metered_api"), prof.archetypes
+    metered = next(c for c in prof.claimed if c.archetype == "metered_api")
+    pr = [s for s in metered.signals if s.label == "payment-receipt"]
+    assert pr, {s.label for s in metered.signals}
+    q = pr[0].quote.lower()
+    assert "receipt" in q or "spend record" in q, pr[0].quote
+    assert prof.archetypes == ["metered_api", "digital_good", "subscription"], prof.archetypes
+    print(f"  ok: payment-receipt fires on REAL captured driftflight.com prose — quote: {pr[0].quote!r}")
+
+    # PRECISION-CRITICAL on real data: drift-flight.org — the no-rails-side canonical
+    # anchor — carries NO receipt/spend-record prose at all. The signal must be ABSENT
+    # there and .org's claimed set unchanged. This is the discovery-layer echo of the
+    # real capability gap: the with-rails .com documents machine-readable payment
+    # receipts, the .org does not (mirroring self-provisioning).
+    octx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "drift-flight.org.json"))
+    oprof = offering.discover_offering(octx)
+    all_labels = {s.label for c in oprof.claimed for s in c.signals}
+    assert "payment-receipt" not in all_labels, all_labels
+    assert oprof.archetypes == ["metered_api", "digital_good", "subscription"], oprof.archetypes
+    print("  ok: payment-receipt is ABSENT on drift-flight.org (real-data precision / capability gap)")
+
+    # NON-VACUOUS negatives: a metered-API marketplace (api.replicate.com), a real
+    # retail storefront (books.toscrape.com), and a null site (example.com) document no
+    # agent-payment receipt — payment-receipt must be absent on all three and must not
+    # conjure or reorder any archetype.
+    for dom, expected in (
+        ("api.replicate.com", ["metered_api"]),
+        ("books.toscrape.com", ["physical_good"]),
+        ("example.com", []),
+    ):
+        nctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        nprof = offering.discover_offering(nctx)
+        nlabels = {s.label for c in nprof.claimed for s in c.signals}
+        assert "payment-receipt" not in nlabels, (dom, nlabels)
+        assert nprof.archetypes == expected, (dom, nprof.archetypes)
+    print("  ok: payment-receipt is ABSENT on the api / retail / null fixtures (non-vacuous, score-neutral)")
+
+
 def main() -> int:
     tests = [
         test_api_storefront_claims_agent_native_not_physical,
@@ -2518,6 +2627,8 @@ def main() -> int:
         test_streaming_response_fires_on_real_captured_openapi,
         test_self_provisioning_precision_synthetic,
         test_self_provisioning_fires_on_real_captured_surfaces,
+        test_payment_receipt_precision_synthetic,
+        test_payment_receipt_fires_on_real_captured_surfaces,
         test_free_trial_subscription_precision_synthetic,
         test_free_trial_fires_on_real_captured_subscription_prose,
         test_priced_listing_precision_synthetic,

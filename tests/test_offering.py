@@ -2629,6 +2629,8 @@ def main() -> int:
         test_self_provisioning_fires_on_real_captured_surfaces,
         test_payment_receipt_precision_synthetic,
         test_payment_receipt_fires_on_real_captured_surfaces,
+        test_webhook_verification_precision_synthetic,
+        test_webhook_verification_fires_on_real_captured_openapi,
         test_free_trial_subscription_precision_synthetic,
         test_free_trial_fires_on_real_captured_subscription_prose,
         test_priced_listing_precision_synthetic,

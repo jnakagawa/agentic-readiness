@@ -503,6 +503,22 @@ design in-cloud, execute locally.
 
 ## P1
 
+- **[LOCAL] Capture a fixture with subscription-CANCEL / lifecycle prose, then add the signal** (COVERAGE,
+  opened Cycle 146). A real subscription capability gap: whether an agent can PROGRAMMATICALLY CANCEL /
+  downgrade its own recurring plan without a human — the capital-safety lifecycle leg (bound your own
+  recurring spend), the subscription mirror of metered_api's `cancel-job`. Cannot ship in-cloud: the
+  canonical `/cancellation` surface is NOT in any committed fixture (grep of all 5 fixtures = 0
+  subscription-cancel prose; api.replicate.com's 49 "cancel" hits are all JOB-cancel, already covered by
+  `cancel-job`), so a signal would be vacuous (unprovable it fires / is score-neutral). Capture the
+  surface LIVE first — `asrs.cli score driftflight.com --record-fixture fixtures/canonical/driftflight.com.json`
+  (re-capture MOVES the replay-guard EXPECTED, so this is the peer-gated canonical re-baseline already
+  queued as the P0 above — fold the /cancellation capture into that same re-capture), OR capture a NEW
+  domain that documents programmatic subscription cancellation. Then add a precision-guarded
+  `subscription-cancel` signal (anchor to a `DELETE /subscriptions/{id}` or `/plans/{id}/cancel` endpoint,
+  "cancel your subscription programmatically", a `cancel` API on the plan/subscription resource) that does
+  NOT fire on the human "cancel anytime" marketing or metered_api's job-cancel; wire the same two-test
+  guard as `plan-purchase` (Cycle 146). Off scoring path, score-neutral.
+
 <!-- DONE 2026-08-01T02:5xZ (Cycle 144, READOUT, branch loop/payment-receipt-readout + PR #136 +
      self-merge squash 05821a6, display+tests/off-scoring-path/score-neutral): "Complete the
      `payment-receipt` arc — the READOUT leg" FULLY DISCHARGED, CLOSING the payment-receipt
@@ -524,11 +540,16 @@ design in-cloud, execute locally.
      (a) TRUTH leg was Cycle 143 (PR #134, squash 2fc1415); COVERAGE signal was Cycle 142 (PR #132, squash
      8b5cee3). -->
 
-  <!-- OPEN COVERAGE FRONTIER (post-payment-receipt-arc, in-cloud on committed evidence): the next
-       strengthenable unit is a digital_good or subscription capability signal with a full
-       COVERAGE→TRUTH→READOUT arc. service_booking / data_retrieval new signals + the physical_good
-       fulfillment leg stay [LOCAL]-blocked (no committed fixture claims them); ACP/UCP/MPP live
-       handshakes + free-tier live-wiring stay [LOCAL]. -->
+  <!-- OPEN COVERAGE FRONTIER (post-plan-purchase, in-cloud on committed evidence): subscription is now
+       well-covered (8 signals incl. plan-purchase, Cycle 146). The remaining in-cloud strengthenable unit
+       is a DIGITAL_GOOD capability signal — but output FORMAT (PNG/JPEG/MP4/WebP) is a false-positive
+       minefield (badge SVGs, thumbnail JPGs, content-type headers everywhere in the fixtures), so a clean
+       digital_good signal needs a genuinely distinct capability + precision-guarded evidence. A
+       subscription-CANCEL / lifecycle-management signal (agent bounds its own recurring spend) is
+       [LOCAL]-blocked: the canonical `/cancellation` surface is NOT in any committed fixture (capture one
+       [LOCAL] first). service_booking / data_retrieval new signals + the physical_good fulfillment leg stay
+       [LOCAL]-blocked (no committed fixture claims them); ACP/UCP/MPP live handshakes + free-tier
+       live-wiring stay [LOCAL]. -->
 <!-- DONE 2026-08-01T04:1xZ (Cycle 145, METHOD, branch loop/runner-registration-guard + PR #138 +
      self-merge squash 60fa743, tests-only/off-scoring-path/score-neutral): "Guard against silent dead
      tests in the hand-maintained runner lists" SHIPPED. `tests/test_runner_registration.py` (4 tests) —

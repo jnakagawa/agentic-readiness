@@ -1,8 +1,34 @@
 # Loop state
 
-- Cycle counter: 145
+- Cycle counter: 146
 - Started: 2026-07-23 (UTC)
-- RUNNER RECOVERED at 2026-08-01T04:1xZ (Cycle 145) — newest verify
+- RUNNER HEALTHY at 2026-08-01T05:1xZ (Cycle 146) — newest verify
+  `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is ~1.4h old at the fire, INSIDE
+  the 6h floor (recovery from the Cycle 137–144 machine-asleep stall holds, one cycle on). Live signal:
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence, still off the
+  scoring path; the in-cloud replay guard stays the frozen independent signal (24/24, 46.1 F / 85.5 B /
+  +39.4). Resolution = queued P0 [LOCAL] re-baseline. The runner-recovery + the divergence both go in the
+  next first-after-16:00 digest (~Aug-1 16:xxZ). Restored the environment-only `eth-account` dep (`pip
+  install eth-account`) for `test_free_tier` 11/11 each fresh cloud checkout.
+- FOCUS POINTER (Cycle 146 done): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 146 was
+  COVERAGE, so Cycle 147 is TRUTH). Cycle 146 shipped the **plan-purchase subscription signal** — a
+  `plan-purchase` entry in `asrs/offering.py`'s subscription signal bank: the programmatic capability for an
+  agent to BUY / commit to a credit-or-subscription plan via an API call (`POST /plans/{id}/purchase`
+  endpoint, a purchasable plan, a buy/purchase/activate verb naming a credit/subscription plan), the
+  "commit without a human" leg — counterpart to metered_api's `self-provisioning`. Precision-guarded against
+  the human "subscribe to a plan on the pricing page" / dashboard onboarding phrasing + bare "subscription
+  plans" marketing. Fires on the real captured driftflight.com agent docs, absent on drift-flight.org
+  (human-only plan path — the discovery-layer capability-gap echo) and on the api/retail/null fixtures. Off
+  scoring path (`git diff` over scoring.py/probes.py/scorecard.py/rubric/fixtures EMPTY) → score-neutral
+  (claimed SET+ORDER `[metered_api, digital_good, subscription]` byte-identical; subscription strength 5→6
+  on driftflight.com only), NOT peer-gated; branch loop/plan-purchase-signal + PR #140 + self-merge (squash
+  e4c7ad8). `test_offering.py` 60→62; full suite 23 files green; replay guard 24/24, 46.1 F / 85.5 B /
+  +39.4; rubric v0.7. NEXT (TRUTH 147): a measurement-calibration unit — real-domain sweep, panel-verdict
+  stability, or does-the-score-predict-experience. Open COVERAGE frontier on committed evidence narrows to a
+  digital_good signal (output FORMAT is a false-positive minefield — needs care); subscription-CANCEL /
+  lifecycle is [LOCAL]-blocked (no committed `/cancellation` fixture); service_booking / data_retrieval +
+  physical_good fulfillment leg stay [LOCAL]; ACP/UCP/MPP + free-tier live-wiring stay [LOCAL].
+- SUPERSEDED (Cycle 145) — RUNNER RECOVERED at 2026-08-01T04:1xZ — newest verify
   `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is ~22 min old at the fire,
   INSIDE the 6h floor, clearing the ~14h stall tracked through Cycles 137–144. Cause was the machine
   asleep Jul-31 afternoon→Aug-1 03:xx (Cycle-63 wake-instant pattern); it self-cleared on a successful

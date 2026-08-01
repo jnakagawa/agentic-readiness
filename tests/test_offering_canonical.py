@@ -3413,6 +3413,146 @@ def test_offering_relabel_invariance_reserve_and_settle() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Relabel invariance — the metered_api free-included-usage ON-RAMP leg
+# (Cycle 160's signal; the metered_api $0 on-ramp the playbook's lens names).
+#
+# The signal-level metamorphic mirror every recent signal earns (reserve-and-
+# settle / failure-not-billed / output-retention / plan-purchase / payment-
+# receipt): whether an agent can complete a REAL metered call at $0 before
+# committing any money — a per-account free ALLOWANCE of actual units, usable at
+# a zero balance with no funding — is a property of the free-included-usage
+# CONTRACT, never of who vends it, so the signal is identity-invariant under a
+# host relabel.
+#
+# NON-VACUITY (same real-fixture failure mode the RS/FNB guards name): the live
+# free-included-usage quotes are host-FREE ("Free allowance - try it before any
+# payment", "`includedUnits` - free usage per account"), so a whole-fixture
+# relabel would be VACUOUS over host-free evidence. A SYNTHETIC vehicle seats the
+# host INSIDE the evidence — surface-key prefix AND adjacent to the free-allowance
+# phrase (within the 40-char quote pad) — so a host relabel genuinely rewrites the
+# classifier's free-included-usage input, then the signal must survive with the
+# SAME match count, on the SAME host-normalized surface, its quote STILL
+# satisfying the live free-included-usage regex, with the vendor host absent from
+# all rewritten evidence.
+#
+# TEETH (precision, the free-included-usage signal's defining risk — bare free/
+# included/units is a homonym minefield): a sibling synthetic surface carrying
+# only the free/included-SHAPED noise the signal must REFUSE — retail "free
+# shipping on every order", "royalty-free stock images", a PAID "500 units
+# included per month" allotment (included units, but NOT free), and "feel free to
+# explore" — fires ZERO free-included-usage signals, proving the match keys on the
+# free-USAGE STRUCTURE (a free usage/allowance, free units per account/period, an
+# includedUnits allotment that is FREE, or try/use it before any money), never on
+# a bare "free", a bare "included units", or a PAID included allotment; and
+# relabeling the host through that noise never CONJURES a metered_api $0-on-ramp
+# claim.
+# ---------------------------------------------------------------------------
+_FIU_LABEL = "free-included-usage"
+_FIU_HOST = "acme-vend.example"  # a host bearing no free/included/usage (or other) signal word
+_FIU_SURFACE = f"agents.{_FIU_HOST}/llms.txt"
+# Host seated adjacent to the "free allowance" phrase (surface-key prefix + the
+# sentence subject and a trailing repeat) so it lands in the padded quote window,
+# not merely the surface key.
+_FIU_PROSE = (
+    f"On {_FIU_HOST}, every account gets a free allowance you can spend before "
+    f"funding a wallet; {_FIU_HOST} bills nothing until that free allowance runs out."
+)
+# The free/included-SHAPED noise the free-included-usage signal must never match:
+# a retail "free shipping" (free, no usage/allowance/units), "royalty-free" images
+# (free, no included-usage), a PAID "500 units included per month" allotment
+# (included units, but NOT free), and "feel free" (free, no usage sense).
+_FIU_DISTRACTOR_SURFACE = f"agents.{_FIU_HOST}/pricing"
+_FIU_DISTRACTOR_PROSE = (
+    f"{_FIU_HOST} offers free shipping on every order. Royalty-free stock images "
+    f"included. 500 units included per month on the paid plan. Feel free to explore."
+)
+
+
+def _free_included_usage_signals(surface: str, text: str) -> list:
+    """The (surface, quote) pairs where the metered_api free-included-usage fired."""
+    return sorted(
+        (s.surface, s.quote)
+        for s in _offering._scan_surface(surface, text)
+        if s.archetype == "metered_api" and s.label == _FIU_LABEL
+    )
+
+
+def test_offering_relabel_invariance_free_included_usage() -> None:
+    """The metered_api free-included-usage keys on the $0-on-ramp contract, not the host."""
+    print("test_offering_relabel_invariance_free_included_usage")
+    base = _free_included_usage_signals(_FIU_SURFACE, _FIU_PROSE)
+
+    # The signal genuinely fires on the synthetic metered_api evidence.
+    _check(
+        len(base) == 1,
+        f"free-included-usage fires exactly once on the synthetic metered_api surface (got {len(base)})",
+    )
+    base_surf, base_quote = base[0]
+
+    # Non-vacuity: the host sits inside BOTH the surface key AND the padded quote
+    # window, so a host relabel genuinely rewrites the classifier's
+    # free-included-usage input — not a no-op over host-free evidence (the
+    # real-fixture failure mode named above).
+    _check(
+        _FIU_HOST in base_surf and _FIU_HOST in base_quote,
+        f"the host is inside the free-included-usage surface key AND quote window — "
+        f"relabel rewrites real signal input (surface {base_surf!r}, quote {base_quote!r})",
+    )
+
+    # TEETH: the free/included-SHAPED noise (retail free shipping, royalty-free
+    # images, a PAID included-units allotment, "feel free") fires ZERO — the signal
+    # keys on the free-USAGE STRUCTURE, never on a bare "free", a bare "included
+    # units", or a PAID included allotment.
+    _check(
+        _free_included_usage_signals(_FIU_DISTRACTOR_SURFACE, _FIU_DISTRACTOR_PROSE) == [],
+        "free/included-shaped noise ('free shipping on every order', 'royalty-free "
+        "stock images', 'included. 500 units included per month on the paid plan', "
+        "'feel free to explore') fires no free-included-usage signal — the match is "
+        "the free-usage structure (a free usage/allowance, free units per "
+        "account/period, an includedUnits allotment that is FREE, or try/use it "
+        "before any money), not a bare 'free', a bare 'included units', or a PAID "
+        "included allotment",
+    )
+
+    # Relabel the host everywhere (surface key + prose) and re-scan.
+    relab_surface = _FIU_SURFACE.replace(_FIU_HOST, _NEUTRAL_HOST)
+    relab_prose = _FIU_PROSE.replace(_FIU_HOST, _NEUTRAL_HOST)
+    _check(
+        _FIU_HOST not in relab_surface and _FIU_HOST not in relab_prose,
+        "every occurrence of the original host was relabeled out of the synthetic input",
+    )
+    relab = _free_included_usage_signals(relab_surface, relab_prose)
+
+    # (1) Same match count — the free-included-usage signal is neither lost nor conjured.
+    _check(
+        len(relab) == len(base) == 1,
+        f"free-included-usage match count invariant under relabel (base {len(base)}, "
+        f"relabel {len(relab)})",
+    )
+    relab_surf, relab_quote = relab[0]
+
+    # (2) The SAME logical surface carries the signal once the host label is
+    # normalized away — the signal did not migrate to a different surface.
+    _check(
+        relab_surf == base_surf.replace(_FIU_HOST, _NEUTRAL_HOST),
+        "free-included-usage fires on the same (host-normalized) surface under relabel "
+        f"(base {base_surf!r}, relabel {relab_surf!r})",
+    )
+    # (3) The relabeled quote STILL satisfies the live free-included-usage regex
+    # (the fired form is a free-allowance clause, not the host) and names no vendor
+    # host — the match keyed on the $0-on-ramp CONTRACT, not who vends it.
+    fiu_re = dict(_offering._SIGNALS["metered_api"])[_FIU_LABEL]
+    _check(
+        fiu_re.search(relab_quote) is not None,
+        f"relabeled free-included-usage quote still matches the $0-on-ramp signal: {relab_quote!r}",
+    )
+    _check(
+        _FIU_HOST not in relab_quote and _FIU_HOST not in relab_surf,
+        f"vendor host absent from relabeled free-included-usage evidence (surface {relab_surf!r})",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Surface-read ORDER invariance — the digital_good deliverable-RIGHTS leg.
 #
 # A fresh perturbation AXIS orthogonal to the relabel/identity family above. The
@@ -5544,6 +5684,7 @@ def main() -> int:
         test_offering_relabel_invariance_output_retention,
         test_offering_relabel_invariance_failure_not_billed,
         test_offering_relabel_invariance_reserve_and_settle,
+        test_offering_relabel_invariance_free_included_usage,
         test_offering_surface_order_invariance_output_license,
         test_offering_surface_order_invariance_org,
         test_offering_content_scale_invariance_org,

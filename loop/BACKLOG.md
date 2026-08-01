@@ -588,6 +588,24 @@ design in-cloud, execute locally.
      `asrs/scorecard.py` + `tests/test_readout.py` ONLY) → score-neutral, rubric v0.7, replay guard 24/24 /
      46.1 F / 85.5 B / +39.4, 0 replay-miss. Full suite 372 passed (371→372). See LOG Cycle 158. The
      reserve-and-settle arc is now COMPLETE across all three tracks. -->
+<!-- DONE 2026-08-01T20:12Z (Cycle 161, TRUTH, direct-to-main, tests-only/score-neutral): the
+     free-included-usage TRUTH leg — per-signal relabel-invariance guard SHIPPED.
+     `test_offering_relabel_invariance_free_included_usage` in `tests/test_offering_canonical.py`, the
+     signal-level metamorphic mirror of reserve-and-settle 157 / failure-not-billed 153 / payment-receipt 143,
+     covering Cycle 160's `free-included-usage` metered_api $0-on-ramp signal. Whether an agent can complete a
+     REAL metered call at $0 before committing money (a per-account free ALLOWANCE usable at a zero balance, no
+     funding) is a property of the free-included-usage CONTRACT, not who vends it → identity-invariant under a
+     host relabel. Non-vacuous SYNTHETIC vehicle (`acme-vend.example` — the live quote is host-FREE so a
+     whole-fixture relabel would be VACUOUS): host seated in the surface-key prefix `agents.acme-vend.example/llms.txt`
+     AND adjacent to "free allowance" within the 40-char quote pad (asserted host-in-BOTH-surface-key-and-quote);
+     relabel host → neutral and the signal survives with SAME count (1) / SAME host-normalized surface / quote
+     still matching the live regex / host absent. TEETH: free/included-SHAPED homonym noise ("free shipping on
+     every order", "royalty-free stock images", a PAID "500 units included per month" allotment, "feel free to
+     explore") fires ZERO. Verified empirically (base=1 host-in-both, distractor=0, relabel=1 host-absent) before
+     writing. Off scoring path (`git diff --name-only` = `tests/test_offering_canonical.py` ONLY) → score-neutral,
+     rubric v0.7, replay guard 24/24 / 46.1 F / 85.5 B / +39.4. `test_offering_canonical.py` 53→54; suite 376
+     passed (375→376). See LOG Cycle 161. The READOUT leg (methodology "trying a paid call for free before you
+     fund" paragraph) is the next-rotation leg closing the COVERAGE(160)→TRUTH(161)→READOUT(162) arc. -->
 <!-- COVERAGE-IN-CLOUD EXHAUSTION (recorded Cycle 152; UPDATED Cycle 156 — reserve-and-settle was a second
      distinct signal found after this note, so the frontier is narrower now but was NOT fully dry): a broad
      capability-vocabulary sweep of the rich committed fixtures (drift pair + api.replicate.com) this cycle

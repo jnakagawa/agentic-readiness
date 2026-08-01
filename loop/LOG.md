@@ -3,6 +3,61 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 161 — 2026-08-01T20:12Z — TRUTH — free-included-usage relabel-invariance guard (the signal-level metamorphic mirror)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed.
+
+**Infra health / self-heal.** Fresh cloud checkout; `git fetch origin main` first (Cycle-151
+stale-`origin/main` lesson) — `origin/main` force-updated to Cycle 160's `475fd82`, already aligned, no
+work lost. Created `.venv`, installed `requests pyyaml eth-account pytest`, verified
+`import requests, yaml, asrs` before trusting the suite; full suite (23 files, 375 tests) green
+pre-flight. RUNNER AT-FLOOR (unchanged from Cycles 158–160): newest `runs/local/verify_20260801T035047Z.json`
+(03:50Z Aug-1, `attempts=1`) is ~16.3h old at fire (20:12Z) — past the 6h floor (the local ~04:xx–20:xx
+fires have not pushed a fresh artifact; borderline runner lag, NOT the machine-asleep stall — cloud
+cannot repair). Already carried in the 16:12Z Cycle-157 digest; no new flag owed this fire.
+
+**What/why (TRUTH — the signal-level metamorphic mirror Cycle 160's new signal earns).** Added
+`test_offering_relabel_invariance_free_included_usage` to `tests/test_offering_canonical.py`, the
+identity-invariance guard for Cycle 160's `free-included-usage` metered_api signal — mirroring the
+reserve-and-settle (157) / failure-not-billed (153) / output-retention (151) / plan-purchase (147) /
+payment-receipt (143) guards. Property pinned: whether an agent can complete a REAL metered call at $0
+before committing money — a per-account free ALLOWANCE usable at a zero balance with no funding — is a
+property of the free-included-usage CONTRACT, never of who vends it, so the signal is identity-invariant
+under a host relabel. This is the "never manufacture the delta" invariant applied at the signal level:
+the $0-on-ramp classification must key on the free-usage STRUCTURE, not a vendor label.
+
+**Non-vacuity (the real-fixture failure mode this family always names).** The live free-included-usage
+quotes are host-FREE ("Free allowance - try it before any payment", "`includedUnits` - free usage per
+account"), so a whole-fixture relabel would be VACUOUS. A SYNTHETIC vehicle seats the host
+(`acme-vend.example`) INSIDE the evidence — surface-key prefix (`agents.acme-vend.example/llms.txt`) AND
+adjacent to the "free allowance" phrase (inside the 40-char quote pad) — so the relabel genuinely
+rewrites the classifier's input. Verified empirically before writing: base fires exactly 1 with the host
+in BOTH surface key and quote window; relabel fires 1 on the host-normalized surface with the host absent
+and the quote still matching the live regex.
+
+**Teeth (precision, the signal's defining risk — bare free/included/units is a homonym minefield).** A
+sibling distractor surface carrying only free/included-SHAPED noise — retail "free shipping on every
+order", "royalty-free stock images", a PAID "500 units included per month" allotment (included units, but
+NOT free), "feel free to explore" — fires ZERO free-included-usage signals (verified empirically),
+proving the match keys on the free-USAGE structure, never a bare "free", a bare "included units", or a
+PAID included allotment; relabeling the host through that noise conjures no $0-on-ramp claim.
+
+**Validation.** Off the scoring path — `git diff --name-only` = `tests/test_offering_canonical.py` ONLY
+(scoring.py / probes.py / offering.py / rubric / fixtures EMPTY) → score-neutral, rubric v0.7, NOT
+peer-gated (tests-only TRUTH guard, direct-to-main; Cycle-153/157 precedent). Registration guard green
+(new test in `main()`'s `tests` list — no silent dead test). Canonical replay guard 24/24, 46.1 F /
+85.5 B / +39.4, 0 replay-miss (frozen in-cloud regression signal). Live canonical signal (read, not
+re-run — runner at-floor): driftflight.com 76.2 C / +30.1 / transactability 62.5, the transactability
+divergence persisting off the scoring path. Full suite 375→376; `test_offering_canonical.py` 53→54.
+
+**Next hypothesis.** The COVERAGE(160)→TRUTH(161) arc for free-included-usage wants its READOUT close —
+a `_write_methodology_page` "Trying a paid call for free before you fund" paragraph in
+`asrs/scorecard.py` framing the $0-on-ramp as the capital-safety sibling of the receipt/reserve-and-settle
+legs (Cycle-154/142 pattern), with a `test_methodology_documents_free_included_usage` presence guard —
+next READOUT fire (Cycle 164). In-cloud COVERAGE on committed evidence is essentially exhausted
+(metered_api = 26 signals); the remaining frontier is `[LOCAL]` fixtures.
+
 ## Cycle 160 — 2026-08-01T19:12Z — COVERAGE — free-included-usage metered_api signal (the $0 try-before-you-fund on-ramp)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`) → no

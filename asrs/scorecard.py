@@ -508,6 +508,36 @@ identity end-to-end and confirms the verification contract is still recognized,
 unchanged, with the vendor&rsquo;s name gone. This read is <b>diagnostic</b>
 &mdash; it names whether the offer lets an agent trust an inbound callback before
 acting on it, <b>off the scoring path</b> &mdash; not a scored pillar.</p>
+<p><b>Accounting for the spend</b> is the <b>capital-safety accounting sibling</b>
+of the payment <b>rails</b>, and it is where an agent that <b>pays</b> can lose
+track of <b>what it was charged</b>. Where an <b>agent-payment rail</b> &mdash; an
+<b>x402</b> challenge, a machine-payable endpoint &mdash; lets an agent settle a
+metered call, <b>nothing there says what proof comes back</b> so the agent can
+<b>reconcile its own spend</b>. An autonomous agent that pays and gets no
+<b>machine-readable receipt</b> cannot <b>reconcile its own spend</b> &mdash; it
+has spent capital it can neither confirm nor dispute &mdash; so a metered offer
+that returns a <b>receipt the agent can log</b> is more agent-completable, and it
+dovetails with the same <b>$0-only capital-safety</b> ethos ASRS itself holds:
+account for what every call cost. Where the rail is the <b>PAY leg</b>, the receipt
+is the <b>proof that comes back to reconcile the spend</b>. So ASRS reads the
+documented receipt grant as part of understanding the metered offer, keyed on
+vendor-neutral <b>proof-of-payment vocabulary</b> (a <b>receipt header</b> on the
+paid response, a <b>payment / settlement receipt</b>, a <b>serialized receipt</b>,
+a <b>spend record</b> the agent keeps, explicit <b>proof of payment</b>), the same
+category of open convention as REST, GraphQL or OpenAPI &mdash; never on a
+vendor&rsquo;s name. The read is <b>precision-guarded</b>: a <b>bare</b>
+<code>receipt</code> word is <b>no signal</b> &mdash; an <b>email receipt</b>, a
+<b>read receipt</b> (&ldquo;enable read receipts&rdquo;), an <b>order receipt</b>
+on a retail checkout, &ldquo;<b>in receipt of</b>&rdquo; a message, and a warehouse
+<b>receipt of goods</b> must never trip it &mdash; so the phrasing must name a
+receipt header, a payment or settlement receipt, a serialized receipt, a spend
+record, or an explicit proof of payment the agent can log. Recognition keys on the
+<b>receipt the offer returns, not who returns it</b>: that property is pinned by an
+<b>executable regression test</b> that relabels the storefront&rsquo;s identity
+end-to-end and confirms the receipt grant is still recognized, unchanged, with the
+vendor&rsquo;s name gone. This read is <b>diagnostic</b> &mdash; it names whether
+the offer lets an agent <b>account for what it spent</b>, <b>off the scoring
+path</b> &mdash; not a scored pillar.</p>
 <p><b>Aborting a runaway job</b> is the control leg of that same asynchronous
 contract, and it is where a metered API can quietly <b>bleed an agent&rsquo;s
 budget</b>: a long-running job &mdash; an image or video generation, a training

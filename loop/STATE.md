@@ -1,7 +1,33 @@
 # Loop state
 
-- Cycle counter: 143
+- Cycle counter: 144
 - Started: 2026-07-23 (UTC)
+- RUNNER STILL STALE at 2026-08-01T02:5xZ (Cycle 144) — newest verify
+  `runs/local/verify_20260731T134541Z.json` (13:45Z Jul-31) is ~13h old, still BREACHING the 6h floor
+  (14:41Z Jul-31–02:41Z Aug-1 launchd fires produced NO artifact = machine asleep, the Cycle-63
+  wake-instant pattern, NOT a code regression). Cloud CANNOT repair. Already flagged in today's 16:1xZ
+  digest (Cycle 133); 02:5xZ Aug-1 is NOT first-after-16:00 → no re-flag this fire. Re-flag in the next
+  first-after-16:00 fire (~Aug-1 16:xxZ) if not recovered. A persistent no-wake past ~Aug-1 morning is an
+  operator/launchd-plist matter for Jonah, NOT the Cycle-63 backoff fix. Cycle 144 restored the
+  environment-only `eth-account` dep (`pip install eth-account`) so the cloud bench runs `test_free_tier`
+  11/11, and re-`git checkout -B main origin/main` off the forced-update/detached-HEAD state the fresh
+  cloud pull left before work.
+- FOCUS POINTER (Cycle 144 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 144
+  was READOUT, so Cycle 145 is METHOD). Cycle 144 shipped the **payment-receipt READOUT leg** — a
+  methodology paragraph in `_write_methodology_page` (`asrs/scorecard.py`) framing "Accounting for the
+  spend" as the capital-safety accounting sibling of the payment RAILS (agent-payment rail = the PAY
+  leg; payment-receipt = the proof that comes back to reconcile the spend), CLOSING the payment-receipt
+  COVERAGE(142)→TRUTH(143)→READOUT(144) arc. Guard `test_methodology_documents_payment_receipt` in
+  `tests/test_readout.py`. ALSO fixed a silent dead-test bug: `test_methodology_documents_output_resolution`
+  (Cycle 140) was defined but NEVER registered in the runner list (Cycle-140's claimed 61→62 never took) —
+  registered it; passes against the shipped prose; runner list 61→63. Off scoring path (`git diff` over
+  `asrs/scoring.py asrs/offering.py rubric/ fixtures/` EMPTY; changed = `asrs/scorecard.py` +
+  `tests/test_readout.py` ONLY) → score-neutral, NOT peer-gated; branch loop/payment-receipt-readout +
+  PR #136 + self-merge (squash 05821a6). Full suite 22 files green; replay guard 24/24, 46.1 F / 85.5 B /
+  +39.4; rubric v0.7. NEXT (METHOD 145): a measurement-rigor unit — variance/attribution/control. Open
+  COVERAGE frontier on committed evidence: digital_good / subscription signals; service_booking /
+  data_retrieval new signals + physical_good fulfillment leg stay [LOCAL]-blocked; ACP/UCP/MPP + free-tier
+  live-wiring stay [LOCAL].
 - RUNNER STILL STALE at 2026-08-01T02:1xZ (Cycle 143) — newest verify
   `runs/local/verify_20260731T134541Z.json` (13:45Z Jul-31) is ~12.6h old, still BREACHING the 6h floor
   (14:41Z Jul-31–02:41Z Aug-1 launchd fires produced NO artifact = machine asleep, the Cycle-63

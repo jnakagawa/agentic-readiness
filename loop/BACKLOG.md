@@ -503,6 +503,34 @@ design in-cloud, execute locally.
 
 ## P1
 
+- **failure-not-billed TRUTH leg — per-signal relabel-invariance guard** (TRUTH, follow-up to Cycle 152).
+  Cycle 152 shipped the `failure-not-billed` metered_api signal (a FAILED call is not charged — the
+  capital-safety "you don't pay for work you didn't get" leg) but, like every new signal before its
+  TRUTH/METHOD leg, it has no relabel-invariance guard. Add `test_offering_relabel_invariance_failure_not_billed`
+  to `tests/test_offering_canonical.py`, the signal-level mirror of output-retention (151) / plan-purchase
+  (147) / payment-receipt (143): whether a failed unit is billed is a property of the failure-billing
+  CONTRACT, never of who vends it, so the signal is identity-invariant under a host relabel. The quotes are
+  host-FREE by nature (a failure token + not-charged), so use a SYNTHETIC surface that SEATS the host inside
+  the evidence window (surface key prefix + host adjacent to the failure-billing prose, asserted non-vacuous);
+  relabel host → neutral everywhere and the signal survives with the SAME match count / SAME host-normalized
+  surface / quote still matching the live regex / host absent. TEETH: failure-billing-shaped noise (a
+  subscription trial "card not charged until the trial ends"; `error-contract` "on failure the body is
+  problem+json") fires ZERO failure-not-billed. Tests-only, off scoring path, score-neutral, direct-to-main.
+  Then the READOUT leg (a `_write_methodology_page` paragraph framing "you don't pay for work you didn't get"
+  as the metered capital-safety sibling of `payment-receipt`), CLOSING a COVERAGE(152)→TRUTH→READOUT arc.
+
+<!-- COVERAGE-IN-CLOUD EXHAUSTION (recorded Cycle 152 so future cycles skip the re-sweep): a broad
+     capability-vocabulary sweep of the rich committed fixtures (drift pair + api.replicate.com) this cycle
+     REJECTED as vacuous-or-colliding: (a) `overage`/quota-boundary billing — metered_api's `usage-based`
+     regex ALREADY matches bare `\boverage\b`, so any overage prose already claims metered_api; a
+     subscription "overage-rate" signal would break the Cycle-137 cross-signal isolation matrix AND be
+     redundant (matches ⊂ usage-based's). (b) `SLA` — the 35 "SLA" hits on the drift pair are the `--slate`
+     CSS color variable, NOT a service-level capability. (c) usage/balance-CHECK endpoint (GET /usage,
+     /balance, remaining-quota read) — absent from every committed fixture. (d) billing-on-failure was the
+     ONE genuinely distinct, non-colliding, non-vacuous capability found → SHIPPED as `failure-not-billed`
+     (Cycle 152). The remaining in-cloud COVERAGE frontier on committed evidence is output FORMAT
+     (false-positive minefield, deferred); everything else needs new [LOCAL] fixtures. -->
+
 - **[LOCAL] Capture a fixture with subscription-CANCEL / lifecycle prose, then add the signal** (COVERAGE,
   opened Cycle 146). A real subscription capability gap: whether an agent can PROGRAMMATICALLY CANCEL /
   downgrade its own recurring plan without a human — the capital-safety lifecycle leg (bound your own

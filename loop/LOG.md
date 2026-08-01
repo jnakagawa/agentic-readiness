@@ -3,6 +3,89 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 152 — 2026-08-01T11:2xZ — COVERAGE — failure-not-billed metered_api signal (offering classifier)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`) → no
+peer-gate review owed.
+
+**Infra health / self-heal.** Fresh cloud checkout: `git fetch origin main` first (the
+Cycle-151 stale-`origin/main` lesson), then `checkout main` + `reset --hard origin/main` →
+force-updated `3796519...aaeb265`, aligned to the true HEAD (Cycle 151, `aaeb265`); no work
+lost. The `-q` `pip install -e .` silently no-op'd again (the Cycle-150 proxy-masking failure:
+`import requests` → `ModuleNotFoundError`), re-ran `pip install requests pyyaml eth-account`
+verbosely and verified `import requests, yaml, eth_account` before trusting the suite. Full
+suite (23 files) green pre-flight; replay guard 24/24, 46.1 F / 85.5 B / +39.4. RUNNER
+AT-FLOOR: newest `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is ~7.4h old at fire
+— past the 6h floor (the ~10:xx/11:xx local fires have not yet pushed a fresh artifact; borderline,
+NOT the machine-asleep stall — cloud cannot repair). Carries to the next first-after-16:00 digest.
+
+**What/why (COVERAGE — a genuinely distinct capability on committed evidence).** Added
+`failure-not-billed` to `asrs/offering.py`'s metered_api signal bank: whether a metered call
+that FAILS (the render did not complete, the job errored, the request timed out) is NOT charged
+— the capital-safety leg the playbook's lens names directly. An autonomous per-call buyer must
+know a FAILED unit does not silently burn money, or it cannot bound its spend against a flaky
+endpoint. DISTINCT from every existing metered_api signal: `error-contract` = the error FORMAT
+(how a failure is reported), `payment-receipt` = proof of a SUCCESSFUL charge, `test-mode` = a
+$0 SANDBOX (not the priced path), `usage-based`/`billed-per`/`per-unit-rate`/`credit-metered` =
+how you are charged ON SUCCESS — NONE says whether a FAILURE costs money. It is the metered
+sibling of digital_good's `output-retention` (both "complete the job" legs): retention = how
+long a successful output lives, failure-not-billed = whether an unsuccessful one is free.
+
+**Investigation trail (why THIS signal, and what was rejected).** Swept the rich fixtures for
+uncaptured capability vocabulary. REJECTED `overage`/quota-boundary billing: the metered_api
+`usage-based` regex ALREADY matches bare `\boverage\b`, so any overage prose already claims
+metered_api — a subscription "overage-rate" signal would (a) break the Cycle-137 cross-signal
+isolation matrix (co-claiming metered_api) and (b) be redundant (its matches are a strict
+subset of usage-based's). REJECTED `SLA` (the 35 "SLA" hits are the `--slate` CSS var, not a
+capability), usage/balance-CHECK endpoint, and subscription-CANCEL — all absent from committed
+fixtures (vacuous in-cloud, stay `[LOCAL]`). `failure-not-billed` is the one genuinely distinct,
+non-colliding capability present in committed evidence.
+
+**Precision (bare "not charged" is a false-positive minefield).** "your card is not charged
+until the trial ends" / "you are not charged during the free trial" is a SUBSCRIPTION $0-eval
+promise, not a failure guarantee — so the regex NEVER matches a bare not-charged: it requires a
+FAILURE token within a short, sentence-bounded (`[^.<>]{0,60}`) window of "(not|never) (charged|
+billed)" in either order, OR "only (charged|billed) for successful/completed". 7 real
+failure-guarantee phrasings each fire it; 7 not-charged-noise strings (trial promises, the
+`error-contract` "on failure the body is problem+json", "no charge to get started", graceful-
+failure prose) fire ZERO (precision test green).
+
+**Validation / non-vacuity.** Fires exactly once on BOTH canonical `/docs` — "502
+generation_failed | The render did not complete; you are not charged a generation" (verbatim in
+the committed fixtures, verified via the REAL `discover_offering` path) — and on ZERO of
+api.replicate.com (metered-only) / books.toscrape.com (retail) / example.com (null). Both drift
+domains ALREADY claim metered_api, so the signal only DEEPENS the claim.
+
+**Ship class + evidence.** New offering signal, OFF the scoring path (`git diff --name-only`
+over `asrs/scoring.py asrs/probes.py asrs/scorecard.py rubric/ fixtures/` EMPTY; changed =
+`asrs/offering.py` + `tests/test_offering.py` + `tests/test_offering_canonical.py` only) →
+score-neutral (claimed SET+ORDER byte-identical on all 5 fixtures: `[metered_api, digital_good,
+subscription]` / `[metered_api]` / `[physical_good]` / `[]`; metered_api deepened only), NOT
+peer-gated → direct-to-main (the Cycle 34/42/46/70 signal-addition convention). Two-test guard
+in `test_offering.py` (`_metering_precision_synthetic` + `_fires_on_real_captured_api_docs`),
+64→66; `failure-not-billed` added to `test_offering_canonical.py`'s `_ISOLATION_EVIDENCE`
+completeness map (49 signals, cross-archetype isolation green — the snippet claims metered_api
+only). Full suite 23 files green; replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0
+replay-miss; rubric v0.7.
+
+**Live canonical signal.** Newest LOCAL artifact `runs/local/verify_20260801T035047Z.json`
+(03:50Z Aug-1) ~7.4h old at fire — BREACHING the 6h floor (borderline runner lag, off the
+scoring path; cloud cannot repair). Its LIVE re-score: drift-flight.org 46.1 F / driftflight.com
+76.2 C / delta +30.1 — the known transactability 87.5→62.5 divergence persists (Aug-1). The
+frozen in-cloud replay guard stays the regression signal. Fire ~11:2xZ Aug-1 is NOT
+first-after-16:00 → no digest, no DM (routine score-neutral direct-to-main signal; comms policy).
+
+**Next hypothesis.** Rotate TRUTH next (Cycle 152 was COVERAGE). The `failure-not-billed`
+signal now earns its per-signal relabel-invariance / metamorphic guard (the METHOD/TRUTH mirror
+of output-retention 151 / plan-purchase 147 / payment-receipt 143) — a natural TRUTH-leg unit;
+its quotes are host-free (a failure-billing contract), so a SYNTHETIC surface seating the host
+in the evidence is the non-vacuous vehicle. After that: the READOUT leg (a methodology paragraph
+framing "you don't pay for work you didn't get" as the metered capital-safety sibling of
+`payment-receipt`), CLOSING a COVERAGE(152)→TRUTH→READOUT arc. In-cloud COVERAGE on committed
+evidence is now VERY narrow (this cycle proved overage/SLA/balance-check/subscription-cancel all
+blocked); output FORMAT stays a false-positive minefield; service_booking / data_retrieval +
+physical fulfillment + ACP/UCP/MPP + free-tier live-wiring stay `[LOCAL]`.
+
 ## Cycle 151 — 2026-08-01T10:1xZ — METHOD — output-retention relabel-invariance guard (offering classifier)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`) → no

@@ -1,8 +1,42 @@
 # Loop state
 
-- Cycle counter: 151
+- Cycle counter: 152
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-01T10:1xZ (Cycle 151) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-01T11:2xZ (Cycle 152) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~7.4h old at the 11:2xZ fire — PAST the 6h floor (the ~10:xx/11:xx local
+  fires have not yet pushed a fresh artifact; borderline runner lag, NOT the machine-asleep stall — cloud
+  cannot repair). Live signal (read, not re-run): driftflight.com 76.2 C / +30.1 / transactability 62.5 —
+  the transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays
+  the frozen independent signal (24/24, 46.1 F / 85.5 B / +39.4). Both the runner-floor-breach and the
+  persistent divergence carry to the next first-after-16:00 digest (~Aug-1 16:xxZ). INFRA/SELF-HEAL (Cycle
+  152): `git fetch origin main` FIRST (the Cycle-151 stale-`origin/main` lesson) → `reset --hard` aligned
+  `3796519...aaeb265` (Cycle 151), no work lost; the `-q` `pip install -e .` silently no-op'd again (Cycle-150
+  proxy-masking) → re-ran verbosely + verified `import requests` before trusting the suite.
+- FOCUS POINTER (Cycle 152 done): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 152 was
+  COVERAGE, so Cycle 153 is TRUTH). Cycle 152 shipped a **COVERAGE metered_api signal** — `failure-not-billed`
+  in `asrs/offering.py`'s metered_api bank: whether a metered call that FAILS (render did not complete / job
+  errored / request timed out) is NOT charged — the capital-safety "you don't pay for work you didn't get"
+  leg, DISTINCT from `error-contract` (error FORMAT), `payment-receipt` (proof of a SUCCESSFUL charge),
+  `test-mode` ($0 sandbox), and the billing signals (how you're charged ON SUCCESS); the metered sibling of
+  digital_good's `output-retention`. Precision-first: NEVER a bare "not charged" (dodges the subscription
+  trial-$0 promise "card not charged until the trial ends") — requires a FAILURE token within a
+  sentence-bounded window of "(not|never) (charged|billed)" (either order), OR "only (charged|billed) for
+  successful/completed". Fires exactly once on BOTH canonical `/docs` ("502 generation_failed | The render did
+  not complete; you are not charged a generation"), ZERO on api/retail/null. REJECTED this cycle as
+  vacuous/colliding: `overage` (metered_api `usage-based` already matches bare `\boverage\b` → redundant +
+  isolation-breaking), `SLA` (the 35 hits are the `--slate` CSS var), usage/balance-CHECK endpoint,
+  subscription-CANCEL (all absent from committed fixtures → stay `[LOCAL]`). Off the scoring path (`git diff
+  --name-only` over scoring.py/probes.py/scorecard.py/rubric/fixtures EMPTY; changed = `asrs/offering.py` +
+  `tests/test_offering.py` + `tests/test_offering_canonical.py`) → score-neutral (claimed SET+ORDER unchanged
+  on all 5 fixtures; metered_api deepened only), NOT peer-gated; direct-to-main. Two-test guard in
+  `test_offering.py` (64→66) + `_ISOLATION_EVIDENCE` completeness entry (49 signals, cross-archetype isolation
+  green). Full suite 23 files green; replay guard 24/24, 46.1 F / 85.5 B / +39.4; rubric v0.7. NEXT (TRUTH
+  153): the `failure-not-billed` per-signal relabel-invariance / metamorphic guard (mirror of output-retention
+  151 / plan-purchase 147 / payment-receipt 143) — host-free quotes, so a synthetic host-seated surface is the
+  non-vacuous vehicle. In-cloud COVERAGE on committed evidence is now VERY narrow (this cycle proved
+  overage/SLA/balance-check/subscription-cancel all blocked); output FORMAT stays a false-positive minefield;
+  service_booking / data_retrieval + physical fulfillment + ACP/UCP/MPP + free-tier live-wiring stay `[LOCAL]`.
+- SUPERSEDED (Cycle 151 runner note): RUNNER AT-FLOOR at 2026-08-01T10:1xZ (Cycle 151) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~6.4h old at the 10:1xZ fire — JUST past the 6h floor (the ~10:xxZ local
   fire should refresh it; expected borderline, NOT the machine-asleep stall — cloud cannot repair). Live
   signal (read, not re-run): driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop

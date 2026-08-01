@@ -2775,6 +2775,99 @@ def test_plan_purchase_fires_on_real_captured_subscription_prose():
     print("  ok: plan-purchase is ABSENT on the api / retail / null fixtures (non-vacuous, score-neutral)")
 
 
+def test_failure_not_billed_metering_precision_synthetic():
+    # FAILURE NOT BILLED is the capital-safety leg of a metered call: a FAILED unit
+    # (the render did not complete, the job errored, the request timed out) is NOT
+    # charged, so an autonomous per-call buyer can bound its spend against a flaky
+    # endpoint. Each POSITIVE is real failure-guarantee prose that must claim
+    # metered_api via the new failure-not-billed signal; each NEGATIVE is not-charged
+    # noise that must NOT fire it — the precision trap is the SUBSCRIPTION $0-eval
+    # promise ("your card is not charged until the trial ends"), which is a not-charged
+    # phrase with NO failure context.
+    positives = {
+        "did not complete": "The render did not complete; you are not charged a generation.",
+        "failed not billed": "Failed requests are not billed to your account.",
+        "errored no charge": "If the job errored you are not charged for it.",
+        "only successful": "You are only billed for successful generations.",
+        "timeout": "When a call times out you are not charged.",
+        "reverse order": "You are not charged when a generation fails.",
+        "unsuccessful": "Unsuccessful calls are never billed.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("api.test", {"/docs": text})
+        assert prof.claims("metered_api"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "metered_api"
+            for s in c.signals
+        }
+        assert "failure-not-billed" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real failure-not-billed phrasings each fire failure-not-billed")
+
+    negatives = {
+        "trial card": "Your card is not charged until the free trial ends.",
+        "trial period": "You are not charged during the 14-day trial period.",
+        "error-contract": "On failure the response body is application/problem+json.",
+        "no setup charge": "There is no setup fee and no charge to get started.",
+        "graceful failure": "We handle failure gracefully with automatic retries.",
+        "successful custs": "Our successful customers love the fast API.",
+        "not billed monthly": "You are not billed a monthly fee on the free tier.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"/docs": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "failure-not-billed" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} not-charged noise strings do NOT fire failure-not-billed (precision)"
+    )
+
+
+def test_failure_not_billed_fires_on_real_captured_api_docs():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the failure-not-billed signal fires on
+    # the GENUINE capital-safety guarantee captured live from BOTH canonical domains'
+    # /docs — "The render did not complete; you are not charged a generation" —
+    # captured verbatim in the committed fixtures. Run the REAL discovery path
+    # (from_fixture -> discover_offering) so the signal is exercised exactly as a live
+    # crawl would.
+    #
+    # SCORE-NEUTRAL by construction: both canonical domains ALREADY claim metered_api,
+    # so failure-not-billed evidence can only deepen that claim — never add an archetype
+    # or reorder. The classifier is off the scoring path; the canonical pair's claimed
+    # SET+ORDER is unchanged (pinned by tests/test_offering_canonical.py and the
+    # canonical replay guard).
+    for dom in ("driftflight.com", "drift-flight.org"):
+        ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        prof = offering.discover_offering(ctx)
+        assert prof.claims("metered_api"), (dom, prof.archetypes)
+        met = next(c for c in prof.claimed if c.archetype == "metered_api")
+        fnb = [s for s in met.signals if s.label == "failure-not-billed"]
+        assert fnb, (dom, {s.label for s in met.signals})
+        q = fnb[0].quote.lower()
+        assert ("not charged" in q or "not billed" in q), (dom, fnb[0].quote)
+        assert prof.archetypes == ["metered_api", "digital_good", "subscription"], (
+            dom,
+            prof.archetypes,
+        )
+        print(f"  ok: failure-not-billed fires on REAL captured {dom} /docs — quote: {fnb[0].quote!r}")
+
+    # NON-VACUOUS negatives: a metered-API marketplace (api.replicate.com), a real
+    # retail storefront (books.toscrape.com), and a null site (example.com) document no
+    # failure-not-billed guarantee — the signal must be absent on all three and must not
+    # conjure or reorder any archetype.
+    for dom, expected in (
+        ("api.replicate.com", ["metered_api"]),
+        ("books.toscrape.com", ["physical_good"]),
+        ("example.com", []),
+    ):
+        nctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        nprof = offering.discover_offering(nctx)
+        nlabels = {s.label for c in nprof.claimed for s in c.signals}
+        assert "failure-not-billed" not in nlabels, (dom, nlabels)
+        assert nprof.archetypes == expected, (dom, nprof.archetypes)
+    print("  ok: failure-not-billed is ABSENT on the api / retail / null fixtures (non-vacuous, score-neutral)")
+
+
 def main() -> int:
     tests = [
         test_api_storefront_claims_agent_native_not_physical,
@@ -2838,6 +2931,8 @@ def main() -> int:
         test_free_trial_fires_on_real_captured_subscription_prose,
         test_plan_purchase_subscription_precision_synthetic,
         test_plan_purchase_fires_on_real_captured_subscription_prose,
+        test_failure_not_billed_metering_precision_synthetic,
+        test_failure_not_billed_fires_on_real_captured_api_docs,
         test_priced_listing_precision_synthetic,
         test_priced_listing_fires_on_real_captured_retail,
         test_strip_html_drops_script_style_and_tags,

@@ -4601,6 +4601,7 @@ _ISOLATION_EVIDENCE: dict[str, str] = {
     "x402": "the endpoint answers with HTTP 402",
     "agent-payment-rail": "settle via x402 (usdc) on the base network",
     "payment-receipt": "log the receipt header for your spend records",
+    "failure-not-billed": "if the request failed you are not charged",
     # subscription
     "subscription": "start a subscription today",
     "per-month-price": "$29 per month",

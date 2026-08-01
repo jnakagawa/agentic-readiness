@@ -671,6 +671,44 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"|\bspend\s+records?\b"
             r"|\bproof\s+of\s+payment\b"
             r"|\breceipts?\s+(?:that\s+|which\s+)?(?:an?\s+agent\s+|you\s+)?(?:can\s+)?log\b", _F)),
+        # FAILURE NOT BILLED — whether a metered call that FAILS (the render did not
+        # complete, the job errored, the request timed out) is NOT charged. This is a
+        # capital-safety leg the PLAYBOOK's lens names directly: an autonomous agent
+        # paying per call must know that a FAILED unit does not silently burn money,
+        # or it cannot bound its spend against a flaky endpoint — the risk of being
+        # billed for work it never received. It is DISTINCT from every existing
+        # metered_api signal: `error-contract` names the machine-readable error FORMAT
+        # (how a failure is REPORTED), `payment-receipt` is the proof of a SUCCESSFUL
+        # charge, `test-mode` is a $0 SANDBOX (not the priced path), `usage-based`/
+        # `billed-per`/`per-unit-rate`/`credit-metered` describe how you are charged
+        # ON SUCCESS — NONE says whether a FAILURE costs money. It is the metered
+        # sibling of digital_good's `output-retention` (both are "complete the job"
+        # legs): retention is HOW LONG a successful output lives, failure-not-billed is
+        # whether an UNSUCCESSFUL one is free.
+        # PRECISION-CRITICAL: bare "not charged"/"not billed" is a false-positive
+        # minefield — "your card is not charged until the trial ends" / "you are not
+        # charged during the free trial" is a SUBSCRIPTION $0-eval promise, not a
+        # failure guarantee — so NEVER match a bare not-charged: require a FAILURE
+        # token (fail/failed/failure/errored/did-not-complete/incomplete/unsuccessful/
+        # timed-out) within a short, sentence-bounded window of "(not|never) (charged|
+        # billed)" (either order), OR an explicit "only (charged|billed) for
+        # successful/completed". The trial promises (no failure word), `error-contract`
+        # prose ("on failure the body is application/problem+json" — a failure word but
+        # no not-charged), and generic "no charge to get started" trip none of these.
+        # Fires non-vacuously on BOTH canonical /docs ("The render did not complete;
+        # you are not charged a generation") — both ALREADY claim metered_api, so this
+        # only DEEPENS the claim without adding or reordering an archetype
+        # (score-neutral) — and on ZERO of the metered-api-only (api.replicate.com),
+        # retail (books.toscrape.com), or null (example.com) fixtures. Off the scoring
+        # path.
+        ("failure-not-billed", re.compile(
+            r"\b(?:fail(?:s|ed|ure)?|errored|did not complete|does not complete"
+            r"|didn.t complete|incomplete|unsuccessful|time(?:s|d)? out)\b"
+            r"[^.<>]{0,60}?\b(?:not|never|aren.?t|isn.?t)\s+(?:be\s+)?(?:charged|billed)\b"
+            r"|\b(?:not|never|aren.?t|isn.?t)\s+(?:be\s+)?(?:charged|billed)\b"
+            r"[^.<>]{0,60}?\b(?:fail(?:s|ed|ure)?|errored|did not complete|does not complete"
+            r"|didn.t complete|incomplete|unsuccessful|time(?:s|d)? out)\b"
+            r"|\bonly\s+(?:charged|billed)\s+(?:for\s+)?(?:successful|completed)\b", _F)),
     ],
     "subscription": [
         ("subscription", re.compile(r"\bsubscription\b|\bsubscribe\b", _F)),

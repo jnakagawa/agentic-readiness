@@ -1139,6 +1139,67 @@ def test_methodology_documents_payment_receipt() -> None:
                f"payment-receipt prose names no vendor/domain ({banned!r})")
 
 
+def test_methodology_documents_plan_purchase() -> None:
+    # Cycle 148 (READOUT): the READOUT complement CLOSING the plan-purchase arc opened
+    # by Cycle 146 (COVERAGE — the SUBSCRIPTION `plan-purchase` offering signal: whether
+    # an agent can programmatically BUY / commit to a credit-or-subscription plan via an
+    # API call, the "commit without a human" leg) and Cycle 147 (TRUTH — the SIGNAL-level
+    # HOST relabel-invariance guard for that signal). This is the SECOND subscription-
+    # archetype leg to complete a full COVERAGE->TRUTH->READOUT arc (after free-trial
+    # 114/115/116) and mirrors the metered_api payment-receipt arc 142/143/144. The
+    # commit leg was pinned in code + tests but NEVER surfaced in prose a critic can read
+    # — a reader could not learn WHY a subscription that lets an agent buy the plan
+    # programmatically is MORE agent-completable, or how it is DISTINCT from the three
+    # subscription/payment reads already on the page: the recurring PRICE an agent reads,
+    # the $0 free-trial EVALUATION leg, and the payment RAILS (x402 / a machine-payable
+    # endpoint = the PAY leg, WHETHER the agent can pay at all). plan-purchase is the
+    # subscription-archetype counterpart of metered_api's self-provisioning (obtain access
+    # without a human) — here, take on the recurring commitment without a human. The
+    # paragraph must (a) frame it as the commit leg, distinguish it from the price / $0
+    # evaluation / payment-rails reads, name it the counterpart of self-provisioning, and
+    # name the failure (a human runs a pricing-page checkout or dashboard onboarding → the
+    # agent stranded one step short of the recurring offer); (b) name the vendor-neutral
+    # plan-commitment vocabulary the offering signal anchors on as open conventions — a
+    # plan-purchase endpoint on the plan resource, a purchasable plan, a buy/purchase/
+    # activate verb naming a credit or subscription plan; (c) keep the signal's PRECISION
+    # honesty — a bare `plan` / "subscribe to a plan" on a pricing page / a dashboard
+    # onboarding flow / bare "subscription plans" marketing is the HUMAN path, no signal;
+    # (d) say recognition keys on the PLAN the offer lets an agent BUY not who sells it,
+    # pinned by an identity-relabel executable regression test; and (e) stay HONEST about
+    # scope — this offering read is diagnostic, off the scoring path, not a scored pillar.
+    # Vendor-neutral throughout.
+    print("test_methodology_documents_plan_purchase")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    # Match on the whitespace-collapsed text (same technique as the payment-receipt /
+    # free-trial / self-provisioning guards) so wording, not source wrapping, is pinned.
+    collapsed = " ".join(text.split())
+    for phrase in ("Committing to a plan without a human", "commit leg",
+                   "self-provisioning", "PAY leg",
+                   "plan the offer lets an agent buy, not who sells it",
+                   "relabels the storefront", "executable regression test",
+                   "off the scoring path", "diagnostic"):
+        _check(phrase in collapsed,
+               f"methodology documents plan-purchase: {phrase!r}")
+    # The vendor-neutral plan-commitment vocabulary the offering signal bank anchors on
+    # must appear as open subscription conventions, never a vendor product: a plan-purchase
+    # endpoint on the plan resource, a purchasable plan, a buy/purchase/activate verb
+    # naming a credit or subscription plan.
+    for token in ("/plans/", "purchasable plan", "credit or subscription plan"):
+        _check(token in collapsed, f"methodology names plan-commitment convention {token!r}")
+    # PRECISION honesty: the prose must preserve the signal's guard — the HUMAN plan path
+    # (a bare `plan`, "subscribe to a plan", dashboard onboarding, bare "subscription
+    # plans" marketing) is not the agentic commit and is read as no signal.
+    for token in ("bare", "no signal", "subscribe to a plan",
+                  "dashboard onboarding", "subscription plans"):
+        _check(token in collapsed,
+               f"methodology keeps plan-purchase precision note: {token!r}")
+    # Vendor-neutral: no scored domain/product/brand named on the page.
+    for banned in ("drift-flight", "driftflight", "replicate"):
+        _check(banned not in text,
+               f"plan-purchase prose names no vendor/domain ({banned!r})")
+
+
 def test_methodology_documents_free_trial() -> None:
     # Cycle 116 (READOUT): the READOUT complement CLOSING the free-trial arc opened by
     # Cycle 114 (COVERAGE — the `free-trial` offering signal added to the SUBSCRIPTION
@@ -2055,6 +2116,7 @@ def main() -> int:
         test_methodology_documents_webhook_verification,
         test_methodology_documents_output_resolution,
         test_methodology_documents_payment_receipt,
+        test_methodology_documents_plan_purchase,
         test_methodology_documents_free_trial,
         test_methodology_documents_self_provisioning,
         test_methodology_documents_content_provenance,

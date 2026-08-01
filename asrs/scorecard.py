@@ -757,6 +757,42 @@ recognized, unchanged, with the vendor&rsquo;s name gone. This read is
 <b>diagnostic</b> &mdash; it names whether the offer lets an agent evaluate a
 subscription at $0 before committing, <b>off the scoring path</b> &mdash; not a
 scored pillar.</p>
+<p><b>Committing to a plan without a human</b> is the <b>commit leg</b> of that same
+<b>subscription</b> offer, and it is where an agent that can already read a plan&rsquo;s
+price and even try it free still cannot <b>take on the recurring commitment</b> on its
+own. The two subscription legs read so far say what a plan <b>costs</b> (the recurring
+price an agent reads) and let it <b>evaluate the plan at $0</b> before any charge (the
+free-trial leg); <b>neither says whether the agent can actually buy the plan</b>. A
+subscription whose only path to commit runs a <b>human through a pricing-page checkout
+or a dashboard onboarding flow</b> is not agent-completable at the commit step, however
+cleanly it documents its cadence &mdash; the agent is stranded one step short of the
+recurring offer it was sent to provision. So a subscription that exposes a
+<b>programmatic plan-purchase path</b> &mdash; a <code>/plans/{id}/purchase</code>
+endpoint, a <b>purchasable plan</b>, a <b>buy / purchase / activate</b> verb naming a
+<b>credit or subscription plan</b> &mdash; is <b>more agent-completable</b>, and it is
+the load-bearing <b>commit</b> leg of agent-native commerce: take on the recurring
+commitment without a human. It is the subscription-archetype counterpart of the
+metered-API archetype&rsquo;s <b>self-provisioning</b> (obtain API access without a
+human), one archetype over. This commit leg is also <b>distinct from the payment
+rails</b> &mdash; an <b>x402</b> challenge or a machine-payable endpoint is the <b>PAY
+leg</b> (whether the agent <b>can pay at all</b>); plan-purchase is <b>which recurring
+thing it commits that payment to</b>. So ASRS reads the documented plan-purchase path as
+part of understanding the subscription offer, keyed on vendor-neutral
+<b>plan-commitment vocabulary</b> (a plan-purchase endpoint on the plan resource, a
+purchasable plan, a buy/purchase/activate verb naming a credit or subscription plan),
+the same category of open convention as REST, GraphQL or OpenAPI &mdash; never on a
+vendor&rsquo;s name. The read is <b>precision-guarded</b>: a <b>bare</b>
+<code>plan</code> word is <b>no signal</b> &mdash; &ldquo;<b>subscribe to a plan</b>&rdquo;
+on a pricing page, a <b>dashboard onboarding</b> flow, and bare &ldquo;<b>subscription
+plans</b>&rdquo; marketing are all the <b>human</b> path and must never trip it &mdash;
+so the phrasing must name a programmatic purchase of the plan (a plan-purchase endpoint,
+a purchasable plan, or a buy/purchase/activate verb on a credit or subscription plan).
+Recognition keys on the <b>plan the offer lets an agent buy, not who sells it</b>: that
+property is pinned by an <b>executable regression test</b> that relabels the
+storefront&rsquo;s identity end-to-end and confirms the plan-purchase path is still
+recognized, unchanged, with the vendor&rsquo;s name gone. This read is <b>diagnostic</b>
+&mdash; it names whether the offer lets an agent <b>commit to a recurring plan without a
+human</b>, <b>off the scoring path</b> &mdash; not a scored pillar.</p>
 <p><b>Reading the price to fulfill</b> is finishing on the <b>physical-good</b>
 side, where an agent can browse a catalog, read that an item is <b>in stock</b>
 and see an <b>add-to-cart</b> control, and still not be able to <b>decide</b>

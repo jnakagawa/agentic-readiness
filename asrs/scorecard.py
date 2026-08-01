@@ -589,6 +589,41 @@ regression test</b> that relabels the API&rsquo;s identity end-to-end and confir
 the error contract is still recognized, unchanged, with the vendor&rsquo;s name
 gone. This read is <b>diagnostic</b> &mdash; it names how the offer reports a
 failure, <b>off the scoring path</b> &mdash; not a scored pillar.</p>
+<p><b>Not paying for a call that failed</b> is the <b>capital-safety sibling</b> of
+the <b>receipt</b> leg, one step earlier: the receipt lets an agent <b>account for
+what a successful call cost</b>, but <b>nothing there says what a FAILED call
+costs</b>. A metered endpoint bills per call, and calls fail &mdash; a render does
+not complete, a job errors, a request times out. An autonomous per-call buyer that
+cannot tell whether a <b>failed unit</b> is <b>silently charged</b> anyway cannot
+<b>bound its own spend</b> against a flaky endpoint: every retry against a failing
+service might be burning money for work it never received. An offer that documents
+that a <b>failed call is not billed</b> &mdash; &ldquo;<b>you are not charged</b>
+for a failed generation&rdquo;, &ldquo;you are <b>only billed for completed</b>
+jobs&rdquo; &mdash; is more agent-completable, and it dovetails with the same
+<b>$0-only capital-safety</b> ethos ASRS itself holds: <b>you don&rsquo;t pay for
+work you didn&rsquo;t get</b>. It is the metered <b>failure-billing</b> leg, distinct
+from every neighbour: the <b>receipt</b> is proof of a <b>successful</b> charge, the
+<b>error contract</b> is the <b>shape</b> of a failure (not its price), and a
+<b>free trial</b> is a subscription&rsquo;s $0 evaluation window. So ASRS reads the
+documented failure-billing grant as part of finishing the metered offer, keyed on
+vendor-neutral <b>failure-billing vocabulary</b> (a <b>failure token</b> &mdash;
+failed, errored, did not complete, timed out &mdash; joined to <b>not / never
+charged or billed</b>, or an explicit <b>only charged for successful / completed</b>
+calls), the same category of open convention as REST, GraphQL or OpenAPI &mdash;
+never on a vendor&rsquo;s name. The read is <b>precision-guarded</b>: a <b>bare</b>
+&ldquo;<b>not charged</b>&rdquo; is <b>no signal</b> &mdash; a subscription&rsquo;s
+&ldquo;<b>your card is not charged until the trial ends</b>&rdquo; or &ldquo;you are
+not charged during the free trial&rdquo; is a <b>$0-evaluation promise</b>, not a
+failure guarantee, and an <b>error contract</b> that names a failure without saying
+it is free must never trip it &mdash; so the phrasing must join a <b>failure
+token</b> to a <b>not-charged / not-billed</b> clause, or name being charged
+<b>only</b> for successful calls. Recognition keys on the <b>failure-billing contract
+the offer documents, not who documents it</b>: that property is pinned by an
+<b>executable regression test</b> that relabels the storefront&rsquo;s identity
+end-to-end and confirms the failure-billing grant is still recognized, unchanged,
+with the vendor&rsquo;s name gone. This read is <b>diagnostic</b> &mdash; it names
+whether the offer lets an agent <b>bound its spend against a failing endpoint</b>,
+<b>off the scoring path</b> &mdash; not a scored pillar.</p>
 <p><b>Walking the whole collection</b> is the finishing leg for a metered API that
 answers with a <b>list</b> &mdash; your predictions, your models, your deployments,
 your records &mdash; because such an endpoint rarely returns everything at once: it

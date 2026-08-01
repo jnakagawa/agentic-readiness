@@ -3,6 +3,61 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 154 — 2026-08-01T13:15Z — READOUT — failure-not-billed methodology-page paragraph
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`) → no
+peer-gate review owed.
+
+**Infra health / self-heal.** Fresh cloud checkout; `git fetch origin main` first (the Cycle-151
+stale-`origin/main` lesson) — `origin/main` force-updated `3796519...5b53ea3`, `checkout -B main
+origin/main` landed on Cycle 153's `5b53ea3`, no work lost. No pyproject/setup.py in the repo (asrs
+imports from the repo root), so `pip install -e .` is expected to fail — installed `requests pyyaml
+eth-account` directly and verified `import requests, yaml, asrs` before trusting the suite. Full
+suite (23 files) green pre-flight. RUNNER AT-FLOOR: newest `runs/local/verify_20260801T035047Z.json`
+(03:50Z Aug-1) is ~9.4h old at fire (13:15Z) — past the 6h floor (the local ~10:xx–13:xx fires have
+not pushed a fresh artifact; borderline runner lag, NOT the machine-asleep stall — cloud cannot
+repair). Carries to the next first-after-16:00 digest (~16:xxZ Aug-1).
+
+**What/why (READOUT — the closing leg of the failure-not-billed arc).** Added a
+`_write_methodology_page` paragraph ("Not paying for a call that failed") framing Cycle 152's
+metered_api `failure-not-billed` offering signal — COVERAGE(152)→TRUTH(153)→READOUT(154), the same
+arc as payment-receipt 142/143/144 and webhook-verification 134/135/136. The leg was pinned in code
++ tests but never surfaced in prose a critic can read. The paragraph frames it as the capital-safety
+sibling of the `receipt` leg one step earlier: the receipt accounts for what a SUCCESSFUL call cost,
+but nothing there says what a FAILED call costs — an autonomous per-call buyer that cannot tell
+whether a failed unit (render did not complete / job errored / request timed out) is silently
+charged cannot bound its own spend against a flaky endpoint. Ties to the $0-only capital-safety
+ethos ("you don't pay for work you didn't get") and names the DISTINCTNESS from every neighbour: the
+receipt is proof of a SUCCESSFUL charge, the error contract is the SHAPE of a failure (not its
+price), a free trial is a subscription's $0 window. Precision honesty preserved in prose: a bare
+"not charged" (a subscription trial's "card is not charged until the trial ends" $0-eval promise) is
+NO signal — the phrasing must join a failure token to a not/never-charged clause, or name being
+charged "only for successful". Vendor-neutral throughout (failure-billing vocabulary as open
+convention, recognition keyed on the contract not who documents it, pinned by an identity-relabel
+regression test).
+
+**Test guard.** `test_methodology_documents_failure_not_billed` in `tests/test_readout.py`, the
+presence/wording mirror of `test_methodology_documents_payment_receipt` (Cycle 144): asserts the
+capability framing, the vendor-neutral failure-billing vocabulary, the bare-"not charged" precision
+note, the distinctness-from-neighbours tokens, and no vendor/domain named on the page. Registered in
+the runner list. `test_readout.py` 64→65 tests.
+
+**Ship class + evidence.** Display-only (methodology HTML prose) + a wording guard, OFF the scoring
+path (`git diff --name-only` = `asrs/scorecard.py` + `tests/test_readout.py` ONLY; `asrs/scoring.py
+asrs/probes.py asrs/offering.py rubric/ fixtures/` EMPTY) → score-neutral, NOT peer-gated;
+direct-to-main. Full suite 23 files green; replay guard 24/24, 46.1 F / 85.5 B / +39.4; rubric v0.7.
+
+**Canonical pair.** 46.1 F / 85.5 B / delta +39.4 — UNCHANGED (display-only, no scoring/rubric/
+fixture change; replay guard green). Live signal (read, not re-run — runner at-floor):
+driftflight.com 76.2 C / +30.1 / transactability 62.5, the persistent off-scoring-path divergence
+still open as the P0 [LOCAL] re-baseline.
+
+**Next hypothesis.** The failure-not-billed arc is now fully closed across COVERAGE/TRUTH/READOUT.
+Cycle 155 rotates to METHOD. In-cloud COVERAGE on committed evidence is very narrow (overage/SLA/
+balance-check/subscription-cancel all proved blocked Cycle 152; output FORMAT stays a false-positive
+minefield); the next METHOD frontier is an open metamorphic cell — casing on the RETAIL pole, or a
+content-scale / noise-surface guard on the metered_api MACHINE surface.
+
 ## Cycle 153 — 2026-08-01T12:1xZ — TRUTH — failure-not-billed relabel-invariance guard (offering classifier)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`) → no

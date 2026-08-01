@@ -518,15 +518,23 @@ design in-cloud, execute locally.
      score-neutral, rubric v0.7, replay guard 24/24 / 46.1 F / 85.5 B / +39.4. `test_offering_canonical.py`
      49→50; suite 23 files green. See LOG Cycle 153. The READOUT leg is the follow-up below. -->
 
-- **failure-not-billed READOUT leg — methodology-page paragraph** (READOUT, follow-up to Cycle 152/153,
-  closes the COVERAGE(152)→TRUTH(153)→READOUT arc, the pattern of plan-purchase 146/147/148). Add a
-  `_write_methodology_page` paragraph framing the metered_api `failure-not-billed` signal — "you don't pay
-  for work you didn't get" — as the metered capital-safety sibling of `payment-receipt`: an autonomous
-  per-call buyer must know a FAILED unit (render did not complete / job errored / request timed out) does
-  not silently burn money, or it cannot bound its spend against a flaky endpoint. Vendor-neutral,
-  capability-worded; mirror the existing signal-methodology prose. Display-only, off scoring path,
-  score-neutral, direct-to-main; extend `tests/test_readout_wording.py` (or `test_readout.py`) with a
-  presence/wording guard the same way plan-purchase's READOUT leg (Cycle 148) was.
+<!-- DONE 2026-08-01T13:15Z (Cycle 154, READOUT, direct-to-main, display-only/score-neutral): the
+     "failure-not-billed READOUT leg — methodology-page paragraph" SHIPPED, CLOSING the
+     COVERAGE(152)→TRUTH(153)→READOUT(154) arc (pattern of payment-receipt 142/143/144). Added a
+     `_write_methodology_page` "Not paying for a call that failed" paragraph in `asrs/scorecard.py` framing
+     Cycle 152's metered_api `failure-not-billed` signal as the capital-safety sibling of the `receipt` leg
+     ("you don't pay for work you didn't get"): the receipt accounts for a SUCCESSFUL call's cost, but nothing
+     there says what a FAILED call costs — an autonomous per-call buyer that cannot tell whether a failed unit
+     (render did not complete / job errored / timed out) is silently charged cannot bound its spend against a
+     flaky endpoint. Names DISTINCTNESS from every neighbour (receipt = proof of a SUCCESSFUL charge;
+     error-contract = SHAPE of a failure not its price; free trial = subscription $0 window) and preserves the
+     signal's precision honesty in prose (a bare "not charged" trial promise is no signal). Vendor-neutral,
+     capability-worded, recognition keyed on the failure-billing contract not who documents it, pinned by an
+     identity-relabel regression test. Guard `test_methodology_documents_failure_not_billed` in
+     `tests/test_readout.py` (64→65), the presence/wording mirror of `test_methodology_documents_payment_receipt`.
+     Off the scoring path (`git diff --name-only` = `asrs/scorecard.py` + `tests/test_readout.py` ONLY;
+     scoring.py/probes.py/offering.py/rubric/fixtures EMPTY) → score-neutral, rubric v0.7, replay guard 24/24 /
+     46.1 F / 85.5 B / +39.4. Full suite 23 files green. See LOG Cycle 154. -->
 
 <!-- COVERAGE-IN-CLOUD EXHAUSTION (recorded Cycle 152 so future cycles skip the re-sweep): a broad
      capability-vocabulary sweep of the rich committed fixtures (drift pair + api.replicate.com) this cycle

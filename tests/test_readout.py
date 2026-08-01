@@ -1139,6 +1139,73 @@ def test_methodology_documents_payment_receipt() -> None:
                f"payment-receipt prose names no vendor/domain ({banned!r})")
 
 
+def test_methodology_documents_failure_not_billed() -> None:
+    # Cycle 154 (READOUT): the READOUT complement CLOSING the failure-not-billed arc
+    # opened by Cycle 152 (COVERAGE — the metered_api `failure-not-billed` offering
+    # signal: whether a metered call that FAILS — a render did not complete, a job
+    # errored, a request timed out — is NOT charged) and Cycle 153 (TRUTH — the
+    # SIGNAL-level HOST relabel-invariance guard for that signal). This is the metered
+    # capital-safety FAILURE-BILLING leg completing the full COVERAGE->TRUTH->READOUT
+    # arc (mirroring payment-receipt 142/143/144, webhook-verification 134/135/136,
+    # cancel-job 110/111/112). The leg was pinned in code + tests but NEVER surfaced in
+    # prose a critic can read — a reader could not learn WHY a metered offer that
+    # promises a failed call is not billed is MORE agent-completable, or how it is
+    # DISTINCT from its neighbours: the receipt is proof of a SUCCESSFUL charge, the
+    # error contract is the SHAPE of a failure (not its price), a free trial is a
+    # subscription's $0 window. The paragraph must (a) frame it as not paying for a
+    # call that failed, name it the capital-safety sibling of the receipt leg, tie it to
+    # the $0-only capital-safety ethos ("you don't pay for work you didn't get"), and
+    # name the failure (an autonomous per-call buyer that cannot tell whether a failed
+    # unit is silently charged cannot bound its spend against a flaky endpoint); (b)
+    # name the vendor-neutral failure-billing vocabulary the offering signal anchors on
+    # as open conventions — a failure token (failed/errored/did not complete/timed out)
+    # joined to not/never charged or billed, or only charged for successful/completed
+    # calls; (c) keep the signal's PRECISION honesty — a bare "not charged" (a
+    # subscription trial's "card is not charged until the trial ends" $0-evaluation
+    # promise) is not a failure guarantee and is read as no signal; (d) say recognition
+    # keys on the failure-billing contract the offer documents not who documents it and
+    # is pinned by an identity-relabel executable regression test; and (e) stay HONEST
+    # about scope — this offering read is diagnostic, off the scoring path, not a scored
+    # pillar. Vendor-neutral throughout.
+    print("test_methodology_documents_failure_not_billed")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    # Match on the whitespace-collapsed text (same technique as the payment-receipt /
+    # output-resolution guards) so wording, not source wrapping, is what the guard pins.
+    collapsed = " ".join(text.split())
+    for phrase in ("Not paying for a call that failed", "capital-safety sibling",
+                   "bound its own spend", "flaky endpoint",
+                   "you don&rsquo;t pay for work you didn&rsquo;t get",
+                   "failure-billing contract the offer documents, not who documents it",
+                   "relabels the storefront", "executable regression test",
+                   "off the scoring path", "diagnostic"):
+        _check(phrase in collapsed,
+               f"methodology documents failure-not-billed: {phrase!r}")
+    # The vendor-neutral failure-billing vocabulary the offering signal bank anchors on
+    # must appear as open conventions: a failure token joined to not/never charged or
+    # billed, or only charged for successful/completed calls.
+    for token in ("failure token", "not / never charged or billed",
+                  "only charged for successful / completed", "did not complete",
+                  "timed out"):
+        _check(token in collapsed, f"methodology names failure-billing convention {token!r}")
+    # PRECISION honesty: the prose must preserve the signal's bare-word guard — a bare
+    # "not charged" (a subscription trial's $0-evaluation promise) is not a failure
+    # guarantee, no signal.
+    for token in ("bare", "no signal", "not charged until the trial ends",
+                  "$0-evaluation promise"):
+        _check(token in collapsed,
+               f"methodology keeps failure-not-billed precision note: {token!r}")
+    # DISTINCTNESS: the prose must name the neighbours it is distinct from so a reader
+    # cannot conflate the failure-billing leg with the receipt, error-contract, or trial.
+    for token in ("proof of a", "successful", "shape", "free trial"):
+        _check(token in collapsed,
+               f"methodology keeps failure-not-billed distinctness note: {token!r}")
+    # Vendor-neutral: no scored domain/product/brand named on the page.
+    for banned in ("drift-flight", "driftflight", "replicate"):
+        _check(banned not in text,
+               f"failure-not-billed prose names no vendor/domain ({banned!r})")
+
+
 def test_methodology_documents_plan_purchase() -> None:
     # Cycle 148 (READOUT): the READOUT complement CLOSING the plan-purchase arc opened
     # by Cycle 146 (COVERAGE — the SUBSCRIPTION `plan-purchase` offering signal: whether
@@ -2116,6 +2183,7 @@ def main() -> int:
         test_methodology_documents_webhook_verification,
         test_methodology_documents_output_resolution,
         test_methodology_documents_payment_receipt,
+        test_methodology_documents_failure_not_billed,
         test_methodology_documents_plan_purchase,
         test_methodology_documents_free_trial,
         test_methodology_documents_self_provisioning,

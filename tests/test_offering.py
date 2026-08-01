@@ -1957,6 +1957,97 @@ def test_output_resolution_fires_on_real_captured_surfaces():
     print("  ok: the 'Super/Enhance image resolution' model-features do NOT fire output-resolution (real-data precision)")
 
 
+def test_output_retention_precision_synthetic():
+    # Output DELIVERY-WINDOW / retention is the "complete the job" LIFECYCLE leg of a
+    # digital good — how long the generated deliverable PERSISTS at its hosted URL and
+    # that the agent must retrieve it (download it into its OWN storage) before the
+    # window closes. An agent that reads the retention contract copies its output out
+    # in time instead of silently losing it when the hosted link expires, so it must
+    # claim digital_good via the new output-retention signal. Each POSITIVE is real
+    # artifact-lifecycle vocabulary; each NEGATIVE is retention-SHAPED noise that must
+    # NOT fire it (the precision traps: a SUPPORT-line / EVENT / FREE-TRIAL time window
+    # with no deliverable noun, and — the trap on a metered-API marketplace — a signed
+    # download-URL / API-key EXPIRY, which is not a hosted-deliverable retention window).
+    positives = {
+        "urls remain available": "Renders come back as hosted URLs that remain available for 90 days.",
+        "output hosted for": "Output images are hosted for 30 days before deletion.",
+        "files stored for": "Generated files are stored for 7 days on our CDN.",
+        "asset kept for": "Each asset is kept for 24 hours after the job completes.",
+        "download into own storage": "Download them into your own storage for anything long-lived.",
+        "download images into bucket": "Download the images into your own bucket before they expire.",
+        "retention policy": "See our output retention policy for how long renders live.",
+        "render retention window": "The render retention window is 14 days.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("studio.test", {"homepage": text})
+        assert prof.claims("digital_good"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "digital_good"
+            for s in c.signals
+        }
+        assert "output-retention" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real output-retention phrasings each fire output-retention")
+
+    negatives = {
+        "support line window": "Our support agents remain available for 24 hours a day.",
+        "event hosted window": "The conference is hosted for 3 days in June.",
+        "free trial window": "This plan is free for 30 days, no card required.",
+        "seats available window": "Seats are available for 5 users on the team plan.",
+        "file expiry trap": "A Unix timestamp with expiration date of this download URL.",
+        "when file expires": "expires_at: When the file expires.",
+        "download a file": "Download a file by providing its ID.",
+        "retained counsel": "We retained counsel for the dispute last year.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "output-retention" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} retention-shaped noise strings do NOT fire output-retention (precision)"
+    )
+
+
+def test_output_retention_fires_on_real_captured_surfaces():
+    # Real-evidence, NON-VACUOUS validation of output-retention — it fires on GENUINE
+    # delivery-window prose captured live from a real generation storefront, and does
+    # NOT fire on a DIFFERENT real storefront's signed-URL / file-EXPIRY trap.
+    #
+    # BOTH canonical domains carry captured retention prose on their /docs: generated
+    # renders are "returned as hosted URLs that remain available for 90 days; download
+    # them into your own storage for anything long-lived". The storefront already claims
+    # digital_good, so this DEEPENS its evidence without changing the claimed set
+    # (score-neutrality pinned byte-for-byte by tests/test_offering_canonical.py;
+    # classification is off the scoring path).
+    for domain in ("driftflight.com", "drift-flight.org"):
+        docs = _fixture_entry_text(domain, "/docs")
+        assert "remain available for 90 days" in docs, f"{domain} /docs lost its retention-window prose"
+        prof = classify_offering(domain, {"/docs": docs})
+        assert prof.claims("digital_good"), (domain, prof.archetypes)
+        dg = next(c for c in prof.claimed if c.archetype == "digital_good")
+        ret = [s for s in dg.signals if s.label == "output-retention"]
+        assert ret, (domain, {s.label for s in dg.signals})
+        quotes = " ".join(s.quote.lower() for s in ret)
+        assert "remain available" in quotes or "own storage" in quotes, quotes
+        print(f"  ok: output-retention fires on REAL captured {domain} /docs — quotes: {[s.quote for s in ret]!r}")
+
+    # Precision on real noise: api.replicate.com — a metered_api-ONLY storefront (pinned
+    # by test_machine_surface_openapi_storefront) — exposes a Files API whose committed
+    # OpenAPI spec says "When the file expires" and "a Unix timestamp with expiration
+    # date of this download URL". That is a SIGNED-URL / file expiry, not a hosted
+    # deliverable's retention window (no deliverable noun + retention verb, no
+    # download-into-your-own-storage step), so output-retention must NOT fire — the spec
+    # must not gain a spurious digital_good.
+    spec = _fixture_entry_text("api.replicate.com", "/openapi.json")
+    assert "expiration date of this download URL" in spec, "fixture lost its file-expiry trap"
+    spec_prof = classify_offering("api.replicate.com", {"/openapi.json": spec})
+    spec_labels = {s.label for c in spec_prof.claimed for s in c.signals}
+    assert "output-retention" not in spec_labels, spec_labels
+    assert not spec_prof.claims("digital_good"), spec_prof.archetypes
+    print("  ok: the Files API signed-URL/file-expiry prose does NOT fire output-retention (real-data precision)")
+
+
 def test_pagination_metering_precision_synthetic():
     # Cursor / collection PAGINATION — how an agent retrieves a MULTI-PAGE result
     # set (a list endpoint returns one page plus a cursor / a `next`/`previous` page
@@ -2729,6 +2820,8 @@ def main() -> int:
         test_content_provenance_fires_on_real_captured_surfaces,
         test_output_resolution_precision_synthetic,
         test_output_resolution_fires_on_real_captured_surfaces,
+        test_output_retention_precision_synthetic,
+        test_output_retention_fires_on_real_captured_surfaces,
         test_pagination_metering_precision_synthetic,
         test_pagination_fires_on_real_captured_openapi,
         test_cancel_job_metering_precision_synthetic,

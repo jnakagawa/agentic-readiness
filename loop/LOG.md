@@ -3,6 +3,61 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 148 — 2026-08-01T07:1xZ — READOUT — methodology prose for the plan-purchase commit leg
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`; git log shows
+Cycle 147's guard on main at ab2687d). Infra health: fresh cloud checkout landed detached-HEAD on ab2687d —
+re-`git checkout -B main origin/main`; restored the environment-only `eth-account` dep (`pip install
+eth-account`) so `test_free_tier` runs 11/11; full suite (23 test files) green pre-flight. LOCAL verify
+runner HEALTHY — newest `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is ~3.4h old
+at the 07:12Z fire, INSIDE the 6h floor (the Cycle 137–144 machine-asleep stall recovery holds three cycles
+on). No repair consumed the cycle.
+
+**Track / rotation.** READOUT (focus pointer was "READOUT next" after Cycle 147 TRUTH). CLOSES the
+plan-purchase COVERAGE(146)→TRUTH(147)→READOUT(148) arc — the SECOND subscription-archetype leg to complete
+a full arc (after free-trial 114/115/116) and the mirror of the metered_api payment-receipt arc (142/143/144).
+
+**What/why.** The plan-purchase commit leg was pinned in code + tests (Cycles 146/147) but never surfaced in
+prose a critic can read. New "Committing to a plan without a human" paragraph in `_write_methodology_page`
+(`asrs/scorecard.py`), inserted directly after the free-trial "$0 evaluation" subscription paragraph so the
+two subscription legs sit adjacent. It (a) frames the COMMIT leg and distinguishes it from the three
+subscription/payment reads already on the page — the recurring PRICE an agent reads, the $0 free-trial
+EVALUATION leg, and the payment RAILS (x402 / a machine-payable endpoint = the PAY leg, whether the agent
+can pay at all); names it the subscription counterpart of metered_api's `self-provisioning` (obtain access
+without a human); names the failure (a human runs a pricing-page checkout or dashboard onboarding → the
+agent stranded one step short of the recurring offer); (b) names the vendor-neutral plan-commitment
+vocabulary as open conventions (a `/plans/{id}/purchase` endpoint on the plan resource, a purchasable plan,
+a buy/purchase/activate verb naming a credit or subscription plan); (c) keeps the signal's PRECISION honesty
+(a bare `plan` / "subscribe to a plan" on a pricing page / a dashboard onboarding flow / bare "subscription
+plans" marketing is the human path, no signal); (d) says recognition keys on the plan the offer lets an
+agent buy, not who sells it, pinned by an identity-relabel executable regression test; (e) stays honest —
+diagnostic, off the scoring path, not a scored pillar. Vendor-neutral throughout. Guard
+`test_methodology_documents_plan_purchase` in `tests/test_readout.py`, registered in the runner list (the
+Cycle-145 silent-dead-test meta-guard confirms registration).
+
+**Ship class.** Display + tests, off the scoring path (`git diff --name-only` over `asrs/scoring.py
+asrs/offering.py asrs/probes.py rubric/ fixtures/` EMPTY; only changed files = `asrs/scorecard.py` +
+`tests/test_readout.py`) → score-neutral, NOT peer-gated. Direct-to-main per the playbook's readout/tests
+tier — commit 87041d1.
+
+**Evidence / canonical numbers.** Full suite green (23 files). `tests/test_readout.py` 63→64;
+runner-registration meta-guard 4/4 (new test registered). Replay guard 24/24 — canonical PAIR unchanged:
+46.1 F / 85.5 B / delta +39.4, 0 replay-miss; rubric v0.7. LIVE signal from the healthy runner
+(`verify_20260801T035047Z.json`): driftflight.com 76.2 C / +30.1 / transactability 62.5 — the
+transactability-drop divergence, still off the scoring path; the in-cloud replay guard stays the frozen
+independent regression signal. Resolution = queued P0 [LOCAL] canonical re-baseline.
+
+**Comms.** No Slack (score-neutral, off scoring path, not sensitive-class; 07:1xZ is NOT the
+first-after-16:00 digest — next is ~Aug-1 16:xxZ, which will report the runner recovery + the LIVE-DELTA
+divergence).
+
+**Next hypothesis.** Rotation returns to METHOD (Cycle 149): a measurement-rigor unit
+(variance/attribution/control). With the plan-purchase arc closed, the in-cloud COVERAGE frontier on
+committed evidence narrows to a digital_good signal (output FORMAT is a false-positive minefield — needs a
+genuinely distinct capability + precision-guarded evidence); subscription-CANCEL / lifecycle is
+[LOCAL]-blocked (no committed `/cancellation` fixture); service_booking / data_retrieval new signals +
+physical_good fulfillment leg stay [LOCAL]; ACP/UCP/MPP + free-tier live-wiring stay [LOCAL].
+
 ## Cycle 147 — 2026-08-01T06:1xZ — TRUTH — plan-purchase relabel-invariance guard (offering classifier)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`; git log shows

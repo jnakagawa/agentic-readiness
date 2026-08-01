@@ -1,8 +1,35 @@
 # Loop state
 
-- Cycle counter: 147
+- Cycle counter: 148
 - Started: 2026-07-23 (UTC)
-- RUNNER HEALTHY at 2026-08-01T06:1xZ (Cycle 147) — newest verify
+- RUNNER HEALTHY at 2026-08-01T07:1xZ (Cycle 148) — newest verify
+  `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is ~3.4h old at the fire, INSIDE
+  the 6h floor (Cycle 137–144 machine-asleep-stall recovery holds three cycles on). Live signal:
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence, still off the
+  scoring path; the in-cloud replay guard stays the frozen independent signal (24/24, 46.1 F / 85.5 B /
+  +39.4). Resolution = queued P0 [LOCAL] re-baseline. Runner-recovery + divergence go in the next
+  first-after-16:00 digest (~Aug-1 16:xxZ). Restored the environment-only `eth-account` dep (`pip install
+  eth-account`) for `test_free_tier` 11/11, and re-`git checkout -B main origin/main` off the fresh-checkout
+  detached-HEAD state.
+- FOCUS POINTER (Cycle 148 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 148 was
+  READOUT, so Cycle 149 is METHOD). Cycle 148 shipped the **plan-purchase READOUT leg** — a "Committing to a
+  plan without a human" methodology paragraph in `_write_methodology_page` (`asrs/scorecard.py`), inserted
+  after the free-trial "$0 evaluation" subscription paragraph, framing the subscription COMMIT leg as
+  DISTINCT from the recurring PRICE / the $0 EVALUATION / the payment RAILS and as the subscription
+  counterpart of metered_api's `self-provisioning`; keeps the human-path precision guard (bare "plan" /
+  "subscribe to a plan" / dashboard onboarding / bare "subscription plans" = no signal); diagnostic, off the
+  scoring path. CLOSES the plan-purchase COVERAGE(146)→TRUTH(147)→READOUT(148) arc (mirror of payment-receipt
+  142/143/144). Guard `test_methodology_documents_plan_purchase` in `tests/test_readout.py`, registered in
+  the runner list. Display+tests, off scoring path (`git diff --name-only` over scoring.py/offering.py/
+  probes.py/rubric/fixtures EMPTY; only changed = `asrs/scorecard.py` + `tests/test_readout.py`) →
+  score-neutral, NOT peer-gated; direct-to-main commit 87041d1. `test_readout.py` 63→64;
+  runner-registration meta-guard 4/4; full suite 23 files green; replay guard 24/24, 46.1 F / 85.5 B /
+  +39.4; rubric v0.7. NEXT (METHOD 149): a measurement-rigor unit — variance/attribution/control. In-cloud
+  COVERAGE frontier on committed evidence narrows to a digital_good signal (output FORMAT is a
+  false-positive minefield); subscription-CANCEL / lifecycle is [LOCAL]-blocked (no committed `/cancellation`
+  fixture); service_booking / data_retrieval + physical_good fulfillment leg stay [LOCAL]; ACP/UCP/MPP +
+  free-tier live-wiring stay [LOCAL].
+- SUPERSEDED (Cycle 147) — RUNNER HEALTHY at 2026-08-01T06:1xZ (Cycle 147) — newest verify
   `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is ~2.4h old at the fire, INSIDE
   the 6h floor (Cycle 137–144 machine-asleep-stall recovery holds two cycles on). Live signal:
   driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence, still off the

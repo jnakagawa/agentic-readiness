@@ -541,7 +541,10 @@ design in-cloud, execute locally.
      8b5cee3). -->
 
   <!-- OPEN COVERAGE FRONTIER (post-plan-purchase, in-cloud on committed evidence): subscription is now
-       well-covered (8 signals incl. plan-purchase, Cycle 146). The remaining in-cloud strengthenable unit
+       well-covered (8 signals incl. plan-purchase, Cycle 146) AND the plan-purchase COVERAGE(146)→TRUTH(147)
+       →READOUT(148) arc is FULLY CLOSED — the commit leg is now pinned in code + relabel-invariance test +
+       methodology prose (Cycle 148, `test_methodology_documents_plan_purchase`). The remaining in-cloud
+       strengthenable unit
        is a DIGITAL_GOOD capability signal — but output FORMAT (PNG/JPEG/MP4/WebP) is a false-positive
        minefield (badge SVGs, thumbnail JPGs, content-type headers everywhere in the fixtures), so a clean
        digital_good signal needs a genuinely distinct capability + precision-guarded evidence. A

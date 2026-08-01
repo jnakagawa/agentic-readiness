@@ -3277,6 +3277,142 @@ def test_offering_relabel_invariance_failure_not_billed() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Relabel invariance — the metered_api reserve-and-settle CAPITAL-SAFETY leg
+# (Cycle 156's signal; the metered sibling of failure-not-billed).
+#
+# The signal-level metamorphic mirror every recent signal earns (failure-not-
+# billed / output-retention / plan-purchase / payment-receipt / error-contract):
+# whether an agent can CAP a single call's exposure up front — reserve a spend
+# ceiling, be charged only actual usage, be refunded the unused remainder — is a
+# property of the reserve-and-settle CONTRACT, never of who vends it, so the
+# signal is identity-invariant under a host relabel.
+#
+# NON-VACUITY (same real-fixture failure mode the FNB guard names): the live
+# reserve-and-settle quote is host-FREE ("reserves the ceiling", "escrow refunds
+# the rest"), so a whole-fixture relabel would be VACUOUS over host-free evidence.
+# A SYNTHETIC vehicle seats the host INSIDE the evidence — surface-key prefix AND
+# adjacent to the reserve-and-settle phrase (within the 40-char quote pad) — so a
+# host relabel genuinely rewrites the classifier's reserve-and-settle input, then
+# the signal must survive with the SAME match count, on the SAME host-normalized
+# surface, its quote STILL satisfying the live reserve-and-settle regex, with the
+# vendor host absent from all rewritten evidence.
+#
+# TEETH (precision, the reserve-and-settle signal's defining risk — bare reserve/
+# refund/ceiling/escrow is a homonym minefield): a sibling synthetic surface
+# carrying only the reserve/refund-SHAPED noise the signal must REFUSE — a
+# "reserves the right to change prices" boilerplate line, a plain retail "full
+# refund within 30 days", and "reserved capacity ceilings" — fires ZERO
+# reserve-and-settle signals, proving the match keys on the reserve-AND-settle
+# STRUCTURE (a reserved ceiling charged only actual, or an escrow/reserve that
+# refunds the unused remainder), never on a bare reservation, a bare refund, or a
+# bare ceiling; and relabeling the host through that noise never CONJURES a
+# metered_api capital-safety claim.
+# ---------------------------------------------------------------------------
+_RS_LABEL = "reserve-and-settle"
+_RS_HOST = "acme-meter.example"  # a host bearing no reserve-and-settle (or other) signal word
+_RS_SURFACE = f"api.{_RS_HOST}/docs"
+# Host seated adjacent to the "reserves the ceiling" phrase (surface key prefix +
+# the sentence subject and a trailing repeat) so it lands in the padded quote
+# window, not merely the surface key.
+_RS_PROSE = (
+    f"On {_RS_HOST}, your wallet reserves the ceiling up front; "
+    f"{_RS_HOST} then charges only actual usage and the escrow refunds the rest."
+)
+# The reserve/refund-SHAPED noise the reserve-and-settle signal must never match:
+# a "reserves the right" boilerplate (reserve, no ceiling/settle), a plain retail
+# refund (refund, no escrow/reserve+remainder), and "reserved capacity ceilings"
+# (reserve + ceiling, but no charged-only-actual / refund-the-remainder settle).
+_RS_DISTRACTOR_SURFACE = f"api.{_RS_HOST}/pricing"
+_RS_DISTRACTOR_PROSE = (
+    f"{_RS_HOST} reserves the right to change prices. Full refund within 30 days. "
+    f"Reserved capacity ceilings apply."
+)
+
+
+def _reserve_and_settle_signals(surface: str, text: str) -> list:
+    """The (surface, quote) pairs where the metered_api reserve-and-settle fired."""
+    return sorted(
+        (s.surface, s.quote)
+        for s in _offering._scan_surface(surface, text)
+        if s.archetype == "metered_api" and s.label == _RS_LABEL
+    )
+
+
+def test_offering_relabel_invariance_reserve_and_settle() -> None:
+    """The metered_api reserve-and-settle keys on the capital-safety contract, not the host."""
+    print("test_offering_relabel_invariance_reserve_and_settle")
+    base = _reserve_and_settle_signals(_RS_SURFACE, _RS_PROSE)
+
+    # The signal genuinely fires on the synthetic metered_api evidence.
+    _check(
+        len(base) == 1,
+        f"reserve-and-settle fires exactly once on the synthetic metered_api surface (got {len(base)})",
+    )
+    base_surf, base_quote = base[0]
+
+    # Non-vacuity: the host sits inside BOTH the surface key AND the padded quote
+    # window, so a host relabel genuinely rewrites the classifier's
+    # reserve-and-settle input — not a no-op over host-free evidence (the
+    # real-fixture failure mode named above).
+    _check(
+        _RS_HOST in base_surf and _RS_HOST in base_quote,
+        f"the host is inside the reserve-and-settle surface key AND quote window — "
+        f"relabel rewrites real signal input (surface {base_surf!r}, quote {base_quote!r})",
+    )
+
+    # TEETH: the reserve/refund-SHAPED noise (a "reserves the right" boilerplate,
+    # a plain retail refund, "reserved capacity ceilings") fires ZERO — the signal
+    # keys on the reserve-AND-settle STRUCTURE, never on a bare reservation, a bare
+    # refund, or a bare ceiling.
+    _check(
+        _reserve_and_settle_signals(_RS_DISTRACTOR_SURFACE, _RS_DISTRACTOR_PROSE) == [],
+        "reserve/refund-shaped noise ('reserves the right to change prices', 'full "
+        "refund within 30 days', 'reserved capacity ceilings apply') fires no "
+        "reserve-and-settle signal — the match is the reserve-and-settle structure "
+        "(a reserved ceiling charged only actual, or an escrow/reserve that refunds "
+        "the unused remainder), not a bare reservation, refund, or ceiling",
+    )
+
+    # Relabel the host everywhere (surface key + prose) and re-scan.
+    relab_surface = _RS_SURFACE.replace(_RS_HOST, _NEUTRAL_HOST)
+    relab_prose = _RS_PROSE.replace(_RS_HOST, _NEUTRAL_HOST)
+    _check(
+        _RS_HOST not in relab_surface and _RS_HOST not in relab_prose,
+        "every occurrence of the original host was relabeled out of the synthetic input",
+    )
+    relab = _reserve_and_settle_signals(relab_surface, relab_prose)
+
+    # (1) Same match count — the reserve-and-settle signal is neither lost nor conjured.
+    _check(
+        len(relab) == len(base) == 1,
+        f"reserve-and-settle match count invariant under relabel (base {len(base)}, "
+        f"relabel {len(relab)})",
+    )
+    relab_surf, relab_quote = relab[0]
+
+    # (2) The SAME logical surface carries the signal once the host label is
+    # normalized away — the signal did not migrate to a different surface.
+    _check(
+        relab_surf == base_surf.replace(_RS_HOST, _NEUTRAL_HOST),
+        "reserve-and-settle fires on the same (host-normalized) surface under relabel "
+        f"(base {base_surf!r}, relabel {relab_surf!r})",
+    )
+    # (3) The relabeled quote STILL satisfies the live reserve-and-settle regex
+    # (the fired form is a reserved ceiling / escrow-refund clause, not the host)
+    # and names no vendor host — the match keyed on the capital-safety CONTRACT,
+    # not who vends it.
+    rs_re = dict(_offering._SIGNALS["metered_api"])[_RS_LABEL]
+    _check(
+        rs_re.search(relab_quote) is not None,
+        f"relabeled reserve-and-settle quote still matches the capital-safety signal: {relab_quote!r}",
+    )
+    _check(
+        _RS_HOST not in relab_quote and _RS_HOST not in relab_surf,
+        f"vendor host absent from relabeled reserve-and-settle evidence (surface {relab_surf!r})",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Surface-read ORDER invariance — the digital_good deliverable-RIGHTS leg.
 #
 # A fresh perturbation AXIS orthogonal to the relabel/identity family above. The
@@ -5245,6 +5381,7 @@ def main() -> int:
         test_offering_relabel_invariance_plan_purchase,
         test_offering_relabel_invariance_output_retention,
         test_offering_relabel_invariance_failure_not_billed,
+        test_offering_relabel_invariance_reserve_and_settle,
         test_offering_surface_order_invariance_output_license,
         test_offering_surface_order_invariance_org,
         test_offering_content_scale_invariance_org,

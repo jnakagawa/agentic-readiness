@@ -1,8 +1,40 @@
 # Loop state
 
-- Cycle counter: 156
+- Cycle counter: 157
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-01T15:12Z (Cycle 156) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-01T16:12Z (Cycle 157) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~12.4h old at the 16:12Z fire — PAST the 6h floor (the local ~04:xx–16:xx
+  fires have not pushed a fresh artifact; borderline runner lag, NOT the machine-asleep stall — cloud cannot
+  repair). Live signal (read, not re-run): driftflight.com 76.2 C / +30.1 / transactability 62.5 — the
+  transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the
+  frozen independent signal (24/24, 46.1 F / 85.5 B / +39.4). Fire at 16:12Z is the FIRST after 16:00 UTC →
+  daily digest DM SENT (per comms policy). No open peer-gated PRs this fire (list_pull_requests state=open →
+  []), so no first-duty review. INFRA/SELF-HEAL (Cycle 157): fresh checkout landed clean on `main` at `b75ee42`
+  (Cycle 156), no git divergence this fire; created `.venv`, installed `requests pyyaml eth-account` + verified
+  `import requests, yaml, asrs` before trusting the suite (23 files green pre-flight).
+- FOCUS POINTER (Cycle 157 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 157 was
+  TRUTH, so Cycle 158 is READOUT). Cycle 157 shipped a **TRUTH relabel-invariance guard** —
+  `test_offering_relabel_invariance_reserve_and_settle` in `tests/test_offering_canonical.py`, the signal-level
+  metamorphic mirror every recent metered_api signal earns (failure-not-billed 153 / output-retention 151 /
+  plan-purchase 147 / payment-receipt 143), now covering Cycle 156's `reserve-and-settle` capital-safety signal.
+  Whether an agent can CAP a single call's exposure up front (reserve a ceiling → pay actual → refund the rest)
+  is a property of the reserve-and-settle CONTRACT, never who vends it → identity-invariant under a host relabel.
+  Non-vacuous SYNTHETIC vehicle (`acme-meter.example`) since the live reserve-and-settle quote is host-FREE
+  ("reserves the ceiling", "escrow refunds the rest") → a whole-fixture relabel would be VACUOUS: the host is
+  seated in the surface-key prefix AND adjacent to the reserve-and-settle phrase within the 40-char quote pad
+  (asserted host-in-BOTH-surface-key-and-quote before relabel). TEETH: reserve/refund-SHAPED homonym noise
+  ("reserves the right to change prices", "full refund within 30 days", "reserved capacity ceilings apply")
+  fires ZERO — the match keys on the reserve-AND-settle STRUCTURE, not a bare reservation/refund/ceiling.
+  Verified empirically (base=1 host-in-quote, distractor=0, relabel=1 host-absent + quote still matches the live
+  regex) before writing. Tests-only, OFF the scoring path (`git diff --name-only` = `tests/test_offering_canonical.py`
+  ONLY; `asrs/ rubric/ fixtures/` EMPTY) → score-neutral, NOT peer-gated; direct-to-main.
+  `test_offering_canonical.py` 51→52; full suite 23 files green; replay guard 24/24, 46.1 F / 85.5 B / +39.4;
+  rubric v0.7. NEXT (READOUT 158): close the reserve-and-settle COVERAGE(156)→TRUTH(157)→READOUT arc with a
+  `_write_methodology_page` "Bounding a single call's cost" paragraph in `asrs/scorecard.py` (capital-safety
+  sibling of the receipt/failure-not-billed legs) pinned by a `test_methodology_documents_reserve_and_settle`
+  presence/wording guard — the payment-receipt 142/143/144 pattern. In-cloud COVERAGE on committed evidence
+  stays narrow (metered_api = 25 signals); remaining frontier is `[LOCAL]` fixtures.
+- SUPERSEDED (Cycle 156 runner note): RUNNER AT-FLOOR at 2026-08-01T15:12Z (Cycle 156) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~11.4h old at the 15:12Z fire — PAST the 6h floor (the local ~04:xx–15:xx
   fires have not pushed a fresh artifact; borderline runner lag, NOT the machine-asleep stall — cloud cannot
   repair). Live signal (read, not re-run): driftflight.com 76.2 C / +30.1 / transactability 62.5 — the
@@ -14,7 +46,7 @@
   `origin/main` force-updated `3796519...c0bba5f`, `checkout -B main origin/main` realigned onto Cycle 155's
   `c0bba5f`, no work lost. Created `.venv`, installed `requests pyyaml eth-account` + verified
   `import requests, yaml, asrs` before trusting the suite (23 files green).
-- FOCUS POINTER (Cycle 156 done): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 156 was
+- SUPERSEDED (Cycle 156 focus pointer): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 156 was
   COVERAGE, so Cycle 157 is TRUTH). Cycle 156 shipped a **COVERAGE metered_api signal** — `reserve-and-settle`
   in `asrs/offering.py`'s metered_api bank: whether an agent can CAP its per-call exposure up front (reserve a
   spend CEILING, be charged only ACTUAL usage, refunded the unused remainder) — the capital-safety leg that

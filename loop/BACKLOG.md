@@ -550,6 +550,24 @@ design in-cloud, execute locally.
      off scoring path grep-reconfirmed) → rubric v0.7, replay guard 24/24 / 46.1 F / 85.5 B / +39.4. See
      LOG Cycle 156. TRUTH follow-up (relabel-invariance guard) + READOUT (methodology paragraph) are the
      next-two-rotation legs per the focus pointer, closing the COVERAGE→TRUTH→READOUT arc. -->
+<!-- DONE 2026-08-01T16:12Z (Cycle 157, TRUTH, direct-to-main, tests-only/score-neutral): the
+     reserve-and-settle TRUTH leg — per-signal relabel-invariance guard SHIPPED.
+     `test_offering_relabel_invariance_reserve_and_settle` in `tests/test_offering_canonical.py`, the
+     signal-level metamorphic mirror of failure-not-billed 153 / output-retention 151 / plan-purchase 147 /
+     payment-receipt 143, covering Cycle 156's `reserve-and-settle` metered_api signal. Whether an agent can
+     CAP a single call's exposure up front (reserve a ceiling → pay actual → refund the rest) is a property of
+     the reserve-and-settle CONTRACT, not who vends it → identity-invariant under a host relabel. Non-vacuous
+     SYNTHETIC vehicle (`acme-meter.example` — the live quote is host-FREE so a whole-fixture relabel would be
+     VACUOUS): host seated in the surface-key prefix AND adjacent to "reserves the ceiling up front … escrow
+     refunds the rest" within the 40-char quote pad (asserted host-in-BOTH-surface-key-and-quote); relabel host
+     → neutral and the signal survives with SAME count (1) / SAME host-normalized surface / quote still matching
+     the live regex / host absent. TEETH: reserve/refund-SHAPED homonym noise ("reserves the right to change
+     prices", "full refund within 30 days", "reserved capacity ceilings apply") fires ZERO. Verified empirically
+     (base=1 host-in-quote, distractor=0, relabel=1 host-absent) before writing. Off scoring path
+     (`git diff --name-only` = `tests/test_offering_canonical.py` ONLY) → score-neutral, rubric v0.7, replay
+     guard 24/24 / 46.1 F / 85.5 B / +39.4. `test_offering_canonical.py` 51→52; suite 23 files green. See LOG
+     Cycle 157. The READOUT leg (methodology "Bounding a single call's cost" paragraph) is the next-rotation leg
+     closing the COVERAGE(156)→TRUTH(157)→READOUT arc. -->
 <!-- COVERAGE-IN-CLOUD EXHAUSTION (recorded Cycle 152; UPDATED Cycle 156 — reserve-and-settle was a second
      distinct signal found after this note, so the frontier is narrower now but was NOT fully dry): a broad
      capability-vocabulary sweep of the rich committed fixtures (drift pair + api.replicate.com) this cycle

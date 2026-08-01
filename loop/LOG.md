@@ -3,6 +3,62 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 157 — 2026-08-01T16:12Z — TRUTH — reserve-and-settle relabel-invariance guard (offering classifier)
+
+**What/why.** Added `test_offering_relabel_invariance_reserve_and_settle` to
+`tests/test_offering_canonical.py` — the signal-level metamorphic mirror every recent metered_api
+signal earns (failure-not-billed 153 / output-retention 151 / plan-purchase 147 / payment-receipt
+143 / error-contract 91), now covering Cycle 156's `reserve-and-settle` capital-safety signal.
+Whether an agent can CAP a single call's exposure up front (reserve a spend ceiling, be charged
+only actual, be refunded the unused remainder) is a property of the reserve-and-settle CONTRACT,
+never of who vends it, so the signal must be identity-invariant under a host relabel. The guard
+pins that: relabel the host everywhere and the signal survives with the SAME match count (1), on
+the SAME host-normalized surface, its quote STILL satisfying the live reserve-and-settle regex,
+with the vendor host absent from all rewritten evidence.
+
+**Non-vacuity (synthetic host-in-evidence vehicle).** The live reserve-and-settle quote is
+host-FREE ("reserves the ceiling", "escrow refunds the rest"), so a whole-fixture relabel over
+the canonical fixtures would be VACUOUS — the same real-fixture failure mode the FNB (153) guard
+names. So a SYNTHETIC vehicle (`acme-meter.example`) seats the host INSIDE the evidence: the
+surface-key prefix (`api.acme-meter.example/docs`) AND adjacent to the reserve-and-settle phrase
+within the 40-char quote pad ("On acme-meter.example, your wallet reserves the ceiling up front
+… the escrow refunds the rest"). Asserted non-vacuous — host verified in BOTH the surface key and
+the padded quote window before relabel — so the relabel genuinely rewrites the classifier's
+reserve-and-settle input, not a no-op over host-free text.
+
+**Teeth (precision, the signal's defining risk).** A sibling distractor surface carrying only the
+reserve/refund-SHAPED homonym noise the signal must REFUSE — "reserves the right to change
+prices", a plain retail "full refund within 30 days", and "reserved capacity ceilings apply" —
+fires ZERO reserve-and-settle signals, proving the match keys on the reserve-AND-settle STRUCTURE
+(a reserved ceiling charged only actual, or an escrow/reserve that refunds the unused remainder),
+never on a bare reservation, a bare refund, or a bare ceiling; and relabeling the host through
+that noise never CONJURES a metered_api capital-safety claim. Verified empirically before writing
+(base=1 with host in quote, distractor=0, relabel=1 with host absent + quote still matching the
+live regex).
+
+**Ship class + evidence.** TRUTH tests-only, direct-to-main. `git diff --name-only` =
+`tests/test_offering_canonical.py` ONLY (`asrs/`, `rubric/`, `fixtures/` EMPTY) → OFF the scoring
+path, score-neutral, NOT peer-gated. `test_offering_canonical.py` 51→52; full suite 23 files
+green; in-cloud replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7.
+
+**Live canonical signal.** Newest LOCAL artifact `runs/local/verify_20260801T035047Z.json`
+(03:50Z Aug-1) is ~12.4h old at the 16:12Z fire — BREACHING the 6h floor (borderline runner lag,
+NOT a code regression; the local ~04:xx–16:xx fires have not pushed a fresh artifact — cloud
+cannot repair the local machine). Its LIVE re-score: drift-flight.org 46.1 F / driftflight.com
+76.2 C / delta +30.1 — the known transactability 87.5→62.5 divergence (off the scoring path; the
+frozen replay guard stays the in-cloud regression signal). Fire at 16:12Z is the FIRST after
+16:00 UTC → daily digest DM sent (cycles since last digest, canonical delta trend, runner-floor
+breach, persistent .com divergence, top open question) per comms policy.
+
+**Next hypothesis.** Rotate READOUT next (Cycle 157 was TRUTH). Close the reserve-and-settle
+COVERAGE(156)→TRUTH(157)→READOUT arc with a `_write_methodology_page` "Bounding a single call's
+cost" paragraph in `asrs/scorecard.py` framing the signal as the capital-safety sibling of the
+receipt/failure-not-billed legs (reserve a ceiling → pay actual → refund the rest lets an
+autonomous per-call buyer bound worst-case spend against a variable-priced endpoint), pinned by a
+`test_methodology_documents_reserve_and_settle` presence/wording guard — the payment-receipt
+142/143/144 pattern. In-cloud COVERAGE on committed evidence stays narrow (metered_api = 25
+signals); remaining frontier is `[LOCAL]` fixtures.
+
 ## Cycle 156 — 2026-08-01T15:12Z — COVERAGE — reserve-and-settle metered_api signal (offering classifier)
 
 **What/why.** Added a `reserve-and-settle` signal to `asrs/offering.py`'s metered_api bank:

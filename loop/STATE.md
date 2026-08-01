@@ -1,8 +1,31 @@
 # Loop state
 
-- Cycle counter: 144
+- Cycle counter: 145
 - Started: 2026-07-23 (UTC)
-- RUNNER STILL STALE at 2026-08-01T02:5xZ (Cycle 144) — newest verify
+- RUNNER RECOVERED at 2026-08-01T04:1xZ (Cycle 145) — newest verify
+  `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is ~22 min old at the fire,
+  INSIDE the 6h floor, clearing the ~14h stall tracked through Cycles 137–144. Cause was the machine
+  asleep Jul-31 afternoon→Aug-1 03:xx (Cycle-63 wake-instant pattern); it self-cleared on a successful
+  wake exactly as predicted, NOT a code regression, so no escalation needed. The stall was flagged in
+  the Jul-31 16:1xZ digest (Cycle 133); the NEXT first-after-16:00 digest (~Aug-1 16:xxZ) should REPORT
+  the recovery. Live signal from the recovered runner: driftflight.com 76.2 C / +30.1 / transactability
+  62.5 — the transactability-drop divergence, now confirmed across a THIRD independent crawl (08:52Z +
+  13:45Z Jul-31 + 03:50Z Aug-1). Off the scoring path; the in-cloud replay guard stays the frozen
+  independent signal (24/24, 46.1 F / 85.5 B / +39.4). Resolution = queued P0 [LOCAL] re-baseline.
+- FOCUS POINTER (Cycle 145 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 145
+  was METHOD, so Cycle 146 is COVERAGE). Cycle 145 shipped the **silent-dead-test guard** —
+  `tests/test_runner_registration.py` (4 tests), an `ast` meta-scan asserting every top-level `def test_*`
+  is registered in its module's `tests` runner list (plus ghost detection + non-empty-list check), with
+  teeth proven on synthetic sources. It IMMEDIATELY caught two more live dead tests
+  (`test_webhook_verification_*` in `test_offering.py`, dead since the webhook arc) → registered them
+  (58→60). This closes the Cycle-140/144 silent-dead-test class mechanically. Tests-only, off scoring path
+  (`git diff` over scoring.py/offering.py/probes.py/rubric/fixtures EMPTY) → score-neutral, NOT peer-gated;
+  branch loop/runner-registration-guard + PR #138 + self-merge (squash 60fa743). Full suite green across
+  23 files; replay guard 24/24, 46.1 F / 85.5 B / +39.4; rubric v0.7. NEXT (COVERAGE 146): a digital_good
+  or subscription capability signal on committed evidence with a COVERAGE→TRUTH→READOUT arc;
+  service_booking / data_retrieval + physical_good fulfillment stay [LOCAL]-blocked; ACP/UCP/MPP +
+  free-tier live-wiring stay [LOCAL].
+- SUPERSEDED — RUNNER STILL STALE at 2026-08-01T02:5xZ (Cycle 144) — newest verify
   `runs/local/verify_20260731T134541Z.json` (13:45Z Jul-31) is ~13h old, still BREACHING the 6h floor
   (14:41Z Jul-31–02:41Z Aug-1 launchd fires produced NO artifact = machine asleep, the Cycle-63
   wake-instant pattern, NOT a code regression). Cloud CANNOT repair. Already flagged in today's 16:1xZ

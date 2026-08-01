@@ -1,8 +1,49 @@
 # Loop state
 
-- Cycle counter: 159
+- Cycle counter: 160
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-01T18:17Z (Cycle 159) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-01T19:12Z (Cycle 160) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~15.4h old at the 19:12Z fire — PAST the 6h floor (the local ~04:xx–19:xx
+  fires have not pushed a fresh artifact; borderline runner lag, NOT the machine-asleep stall — cloud cannot
+  repair). Already flagged in the 16:12Z Cycle-157 daily digest. Live signal (read, not re-run):
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS
+  (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent signal (24/24, 46.1 F /
+  85.5 B / +39.4). Fire at 19:12Z is NOT the first after 16:00 UTC (Cycle 157 sent the digest at 16:12Z) → no
+  DM this fire per comms policy (COVERAGE off-scoring-path/score-neutral, no sensitive-class PR, nothing
+  score-moving). No open peer-gated PRs this fire (`list_pull_requests` state=open → []), so no first-duty review.
+  INFRA/SELF-HEAL (Cycle 160): fresh checkout landed on detached HEAD at Cycle 159's `309417a`; `git fetch
+  origin main` FIRST (Cycle-151 lesson) → `origin/main` force-updated `3796519...309417a`, `checkout -B main
+  origin/main` realigned onto `309417a`, no work lost. Created `.venv`, installed `requests pyyaml eth-account
+  pytest` + verified `import requests, yaml, asrs` before trusting the suite (23 files green pre-flight).
+- FOCUS POINTER (Cycle 160 done): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 160 was
+  COVERAGE, so Cycle 161 is TRUTH). Cycle 160 shipped a **COVERAGE metered_api signal — `free-included-usage`**
+  in `asrs/offering.py`: whether an agent can complete a REAL metered call at **$0 before committing any money**
+  — a per-account free ALLOWANCE of actual units (an `includedUnits` contract), usable at a zero balance with
+  no funding, no human signup. This is the metered_api ON-RAMP the PLAYBOOK's lens names directly (an agent can
+  prove a paid API works end-to-end for free before funding a wallet — the barrier to agent adoption) and
+  dovetails with ASRS's own $0-only ethos. DISTINCT from every existing signal: subscription `free-trial` = a
+  time-boxed RECURRING-plan window; `test-mode` = a SANDBOX/fake env; `self-provisioning` = free IDENTITY/access
+  — none is "run a real billable unit at $0 before funding". Precision-first (12 homonym distractors — free
+  shipping/trial/parking/WiFi, royalty-free, toll-free, "feel free", "$5M funding before launch", "read before
+  you pay", paid-in "500 units/month" — fire ZERO; verified empirically before writing). Non-vacuous: fires 17×
+  on REAL captured driftflight.com agent docs (llms.txt + llms-full.txt + manifest.json — "Free allowance - try
+  it before any payment", "`includedUnits` - free usage per account that needs no funding", "try this API end
+  to end before any money is involved"), ZERO on .org (no llms.txt) / api.replicate.com / retail / null — the
+  honest with-rails/no-rails capability-gap echo (payment-receipt / reserve-and-settle shape). SCORE-NEUTRAL by
+  construction: driftflight.com already claims metered_api strongest, so it only DEEPENS the claim — claimed
+  SET+ORDER `['metered_api','digital_good','subscription']` unchanged on BOTH canonical domains. Three edits:
+  signal in `asrs/offering.py`; `_ISOLATION_EVIDENCE` completeness entry in `tests/test_offering_canonical.py`
+  (62→63 signals); the `reserve-and-settle`-mirrored guard pair in `tests/test_offering.py` (registered in
+  `main()`). OFF the scoring path (`git diff --name-only` = `asrs/offering.py` + the two test files ONLY;
+  scoring.py/probes.py/rubric/fixtures EMPTY; grep-reconfirmed the classifier is off the scoring path) →
+  direct-to-main, NOT peer-gated (Cycle-150/152/156 precedent). Full suite 23 files green; `test_offering.py`
+  68→70, `test_offering_canonical.py` 52→53; replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric
+  v0.7. NEXT (TRUTH 161): the `free-included-usage` relabel-invariance guard
+  (`test_offering_relabel_invariance_free_included_usage`, synthetic host-in-evidence vehicle mirroring the
+  reserve-and-settle 157 guard), then a READOUT methodology paragraph closing the arc. In-cloud COVERAGE on
+  committed evidence is now essentially exhausted (metered_api = 26 signals); remaining frontier is `[LOCAL]`
+  fixtures.
+- SUPERSEDED (Cycle 159 runner note): RUNNER AT-FLOOR at 2026-08-01T18:17Z (Cycle 159) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~14.4h old at the 18:17Z fire — PAST the 6h floor (the local ~04:xx–18:xx
   fires have not pushed a fresh artifact; borderline runner lag, NOT the machine-asleep stall — cloud cannot
   repair). Already flagged in the 16:12Z Cycle-157 daily digest. Live signal (read, not re-run):
@@ -15,7 +56,7 @@
   (Cycle-151 lesson) → `origin/main` force-updated `3796519...29d0c6a`, `checkout -B main origin/main` realigned
   onto `29d0c6a`, no work lost. Created `.venv`, installed `requests pyyaml eth-account pytest` + verified
   `import requests, yaml, asrs` before trusting the suite (372 tests green pre-flight).
-- FOCUS POINTER (Cycle 159 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 159 was
+- SUPERSEDED (Cycle 159 focus pointer): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 159 was
   METHOD, so Cycle 160 is COVERAGE). Cycle 159 shipped a **METHOD surface-dedup guard on the machine pole** —
   `test_offering_surface_dedup_invariance_machine` in `tests/test_offering_canonical.py`, extending the
   surface-dedup metamorphic axis (previously org/com only) onto the single-archetype metered_api OpenAPI-spec

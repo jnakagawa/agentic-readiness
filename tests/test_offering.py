@@ -2974,6 +2974,111 @@ def test_reserve_and_settle_fires_on_real_captured_surfaces():
     print("  ok: reserve-and-settle is ABSENT on the api / retail / null fixtures (non-vacuous, score-neutral)")
 
 
+def test_free_included_usage_precision_synthetic():
+    # FREE-INCLUDED-USAGE is the metered_api ON-RAMP: an agent can complete a REAL
+    # metered call at $0 before committing money — a per-account free ALLOWANCE of
+    # actual units (an `includedUnits` contract), usable at a zero balance with no
+    # funding. Each POSITIVE is real free-allowance prose that must claim metered_api
+    # via the new signal; each NEGATIVE is a "free"/"trial" homonym that must NOT fire
+    # it — the precision traps are free shipping (physical), a free trial (a recurring
+    # subscription's window, a DIFFERENT signal), royalty-free, toll-free, "feel free",
+    # free parking/WiFi, and a plan's paid-in "included units per month".
+    positives = {
+        "free usage per account": "Some pay-as-you-go prices carry free usage per account that needs no funding.",
+        "free allowance": "The free allowance needs no funding and no human signup.",
+        "includedUnits free": "A price's `includedUnits` is the number of free units per period.",
+        "free included units": "Free included usage: the first N free included units cost nothing.",
+        "try before money": "A zero-balance identity can try this API end to end before any money is involved.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("api.test", {"/llms.txt": text})
+        assert prof.claims("metered_api"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "metered_api"
+            for s in c.signals
+        }
+        assert "free-included-usage" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real free-allowance phrasings each fire free-included-usage")
+
+    negatives = {
+        "free shipping": "Enjoy free shipping on all orders over $50.",
+        "free trial": "Start your 14-day free trial today, no card required.",
+        "royalty free": "All renders are royalty-free for commercial use.",
+        "toll free": "Call our toll-free support line any time.",
+        "feel free": "Feel free to reach out with questions.",
+        "free parking": "The venue includes free parking for guests.",
+        "paid included units": "Your plan includes 500 units per month at no extra charge.",
+        "read before pay": "Read the docs before you pay for a plan.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"/llms.txt": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "free-included-usage" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} free/trial/included homonym strings do NOT fire "
+        "free-included-usage (precision)"
+    )
+
+
+def test_free_included_usage_fires_on_real_captured_surfaces():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the free-included-usage signal fires on
+    # the GENUINE free-allowance prose captured live from driftflight.com — the
+    # agents.driftflight.com/llms.txt + llms-full.txt + manifest.json agent docs
+    # ("`includedUnits` - free usage per account that needs no funding", "a freshly
+    # provisioned identity with a zero balance ... can try this API end to end before
+    # any money is involved") — captured verbatim in the committed fixture. Run the
+    # REAL discovery path (from_fixture -> discover_offering) so the signal is exercised
+    # exactly as a live crawl would, the same real-data non-vacuity move
+    # test_reserve_and_settle_fires_on_real_captured_surfaces makes.
+    #
+    # SCORE-NEUTRAL by construction: driftflight.com already claims metered_api (its
+    # strongest archetype), so free-included-usage evidence can only deepen that claim —
+    # never add an archetype or reorder. The classifier is off the scoring path; the
+    # canonical pair's claimed SET+ORDER is unchanged (pinned by
+    # tests/test_offering_canonical.py and the canonical replay guard).
+    ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "driftflight.com.json"))
+    prof = offering.discover_offering(ctx)
+    assert prof.claims("metered_api"), prof.archetypes
+    metered = next(c for c in prof.claimed if c.archetype == "metered_api")
+    fiu = [s for s in metered.signals if s.label == "free-included-usage"]
+    assert fiu, {s.label for s in metered.signals}
+    q = fiu[0].quote.lower()
+    assert ("free" in q or "included" in q or "before" in q), fiu[0].quote
+    assert prof.archetypes == ["metered_api", "digital_good", "subscription"], prof.archetypes
+    print(f"  ok: free-included-usage fires on REAL captured driftflight.com prose — quote: {fiu[0].quote!r}")
+
+    # PRECISION-CRITICAL on real data: drift-flight.org — the no-rails-side canonical
+    # anchor — carries NO free-allowance prose at all (it publishes no llms.txt). The
+    # signal must be ABSENT there and .org's claimed set unchanged. This is the
+    # discovery-layer echo of the real capability gap: the with-rails .com documents a
+    # free try-before-you-fund on-ramp, the .org does not (mirroring payment-receipt /
+    # reserve-and-settle).
+    octx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "drift-flight.org.json"))
+    oprof = offering.discover_offering(octx)
+    all_labels = {s.label for c in oprof.claimed for s in c.signals}
+    assert "free-included-usage" not in all_labels, all_labels
+    assert oprof.archetypes == ["metered_api", "digital_good", "subscription"], oprof.archetypes
+    print("  ok: free-included-usage is ABSENT on drift-flight.org (real-data precision / capability gap)")
+
+    # NON-VACUOUS negatives: a metered-API marketplace (api.replicate.com), a real
+    # retail storefront (books.toscrape.com), and a null site (example.com) document no
+    # free-allowance on-ramp — the signal must be absent on all three and must not
+    # conjure or reorder any archetype.
+    for dom, expected in (
+        ("api.replicate.com", ["metered_api"]),
+        ("books.toscrape.com", ["physical_good"]),
+        ("example.com", []),
+    ):
+        nctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        nprof = offering.discover_offering(nctx)
+        nlabels = {s.label for c in nprof.claimed for s in c.signals}
+        assert "free-included-usage" not in nlabels, (dom, nlabels)
+        assert nprof.archetypes == expected, (dom, nprof.archetypes)
+    print("  ok: free-included-usage is ABSENT on the api / retail / null fixtures (non-vacuous, score-neutral)")
+
+
 def main() -> int:
     tests = [
         test_api_storefront_claims_agent_native_not_physical,
@@ -3041,6 +3146,8 @@ def main() -> int:
         test_failure_not_billed_fires_on_real_captured_api_docs,
         test_reserve_and_settle_precision_synthetic,
         test_reserve_and_settle_fires_on_real_captured_surfaces,
+        test_free_included_usage_precision_synthetic,
+        test_free_included_usage_fires_on_real_captured_surfaces,
         test_priced_listing_precision_synthetic,
         test_priced_listing_fires_on_real_captured_retail,
         test_strip_html_drops_script_style_and_tags,

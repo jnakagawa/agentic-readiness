@@ -3,6 +3,91 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 160 — 2026-08-01T19:12Z — COVERAGE — free-included-usage metered_api signal (the $0 try-before-you-fund on-ramp)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`) → no
+peer-gate review owed.
+
+**Infra health / self-heal.** Fresh cloud checkout landed on detached HEAD at `309417a` (Cycle 159);
+`git fetch origin main` first (Cycle-151 stale-`origin/main` lesson) — `origin/main` force-updated
+`3796519...309417a`, `checkout -B main origin/main` realigned onto Cycle 159's `309417a`, no work lost.
+Created `.venv`, installed `requests pyyaml eth-account pytest`, verified `import requests, yaml, asrs`
+before trusting the suite. Full suite (23 files) green pre-flight. RUNNER AT-FLOOR: newest
+`runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is ~15.4h old at fire (19:12Z) — past the 6h
+floor (the local ~04:xx–19:xx fires have not pushed a fresh artifact; borderline runner lag, NOT the
+machine-asleep stall — cloud cannot repair). Already carried in the 16:12Z Cycle-157 digest.
+
+**What/why (COVERAGE — a genuinely distinct, high-value metered_api capability the bank was missing).**
+Added a `free-included-usage` signal to `asrs/offering.py`'s metered_api bank: whether an agent can
+complete a REAL metered call at **$0 before committing any money** — a per-account free ALLOWANCE of
+actual metered units (an `includedUnits` contract), usable at a zero balance with no funding and no
+human signup. This is the metered_api ON-RAMP the PLAYBOOK's lens names directly (reach → understand →
+PAY → provision → complete): an autonomous buyer can prove the API works end-to-end for free before it
+ever funds a wallet — precisely the barrier an agent must clear to adopt a paid API — and it dovetails
+with ASRS's own $0-only ethos (the free allowance IS the $0 path the benchmark itself exercises). Not a
+marginal synonym of an existing signal: DISTINCT from every one. The subscription `free-trial` is a
+time-boxed evaluation of a RECURRING plan (this is per-CALL free units on a pay-as-you-go meter, not a
+trial window); `test-mode` is a SANDBOX/fake environment (this is REAL production units served free, not
+a test key); `self-provisioning` is getting IDENTITY/access without a human (WHO you are, the free
+identity handshake) — NONE says the agent can run a real, billable unit of work at zero cost before
+funding. It is the metered mirror of the subscription `free-trial`: try the recurring OFFER free there,
+try the metered CALL free here.
+
+**Precision (bare "free" is a false-positive minefield).** NEVER matches a bare "free" — requires a free
+USAGE/ALLOWANCE, free UNITS PER a billing period/account, an `includedUnits` allowance NAMED as free
+(either order, within a 40-char clause), or an explicit try/test/call/use-it BEFORE any
+money/funding/paying. Verified empirically BEFORE writing: 12 homonym distractors fire ZERO — free
+shipping (physical), a 14-day free trial (subscription window), royalty-free, toll-free, "feel free",
+"free to cancel", "$5M funding before launch", "read the docs before you pay" (no try/test/call/use
+verb), a plan's paid-in "500 units per month", free parking, free WiFi, "trial by fire before the
+verdict". Vendor-neutral (keys on the free-allowance capability vocab; the drift docs' MPP/USDC/zc-mode
+nouns are NOT required to match).
+
+**Non-vacuous / capability gap.** Fires 17× on the REAL captured driftflight.com agent docs
+(agents.driftflight.com/llms.txt + llms-full.txt + manifest.json — "Free allowance - try it before any
+payment", "`includedUnits` - free usage per account that needs no funding", "a freshly provisioned
+identity with a zero balance qualifies, so an agent can try this API end to end before any money is
+involved"), and on ZERO of drift-flight.org (publishes no llms.txt → NO free-allowance prose),
+api.replicate.com, retail (books.toscrape.com), or null (example.com). The .com-only firing is the honest
+discovery-layer echo of the real with-rails/no-rails capability gap — the same shape as
+`payment-receipt` / `reserve-and-settle` / `self-provisioning`.
+
+**Ship class + evidence.** COVERAGE offering-bank increment, direct-to-main (Cycle-150/152/156 precedent
+— the offering classifier is OFF the scoring path, grep-reconfirmed: `asrs/scoring.py`/`asrs/probes.py`
+carry NO reference to `classify_offering`/`discover_offering`/`_SIGNALS`). Three edits: the signal in
+`asrs/offering.py`; the `_ISOLATION_EVIDENCE` completeness entry in `tests/test_offering_canonical.py`
+(the matrix must cover EXACTLY the live bank — 62→63 signals — so a new signal cannot escape isolation);
+and the `reserve-and-settle`-mirrored guard pair in `tests/test_offering.py`
+(`test_free_included_usage_precision_synthetic` + `_fires_on_real_captured_surfaces`, registered in
+`main()`). SCORE-NEUTRAL by construction: driftflight.com ALREADY claims metered_api (its strongest
+archetype), so the signal only DEEPENS the claim — claimed SET+ORDER `['metered_api','digital_good',
+'subscription']` unchanged on BOTH canonical domains; `git diff --name-only` = `asrs/offering.py` +
+the two test files ONLY (`asrs/scoring.py asrs/probes.py rubric/ fixtures/` EMPTY); rubric v0.7. Full
+suite 23 files green; `test_offering.py` 68→70, `test_offering_canonical.py` 52→53; in-cloud replay
+guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss.
+
+**Canonical pair.** 46.1 F / 85.5 B / delta +39.4 — UNCHANGED (off the scoring path, claimed set+order
+byte-identical; replay guard green). Live signal (read, not re-run — runner at-floor):
+driftflight.com 76.2 C / +30.1 / transactability 62.5, the persistent off-scoring-path divergence still
+open as the P0 [LOCAL] re-baseline.
+
+**Comms.** Fire at 19:12Z is NOT the first after 16:00 UTC (Cycle 157 sent the digest at 16:12Z) → no
+DM per comms policy (offering-signal increment, off the scoring path, no sensitive-class PR, nothing
+score-moving). The runner-floor breach + persistent divergence carry to the next first-after-16:00
+digest.
+
+**Next hypothesis.** Rotate TRUTH next (Cycle 160 was COVERAGE). The `free-included-usage` signal earns
+the metamorphic mirror every recent metered_api signal gets — a
+`test_offering_relabel_invariance_free_included_usage` in `tests/test_offering_canonical.py` (whether an
+agent can run a real unit at $0 is a property of the free-allowance CONTRACT, not who vends it →
+identity-invariant under a host relabel; the live free-allowance quote is largely host-free, so a
+synthetic host-in-evidence vehicle mirroring the reserve-and-settle 157 guard), then a READOUT
+methodology paragraph ("Trying a paid API for free first") closing the COVERAGE(160)→TRUTH→READOUT arc
+(the payment-receipt 142/143/144 pattern). In-cloud COVERAGE on committed evidence is now essentially
+exhausted (metered_api = 26 signals); the remaining frontier is `[LOCAL]` fixtures (structured
+catalog/pricing JSON, service_booking/data_retrieval real evidence, ACP/UCP/MPP handshakes, free-tier
+live-wiring).
+
 ## Cycle 159 — 2026-08-01T18:17Z — METHOD — surface-dedup invariance on the machine (API-first) pole
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`) → no

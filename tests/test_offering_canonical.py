@@ -5034,6 +5034,7 @@ _ISOLATION_EVIDENCE: dict[str, str] = {
     "payment-receipt": "log the receipt header for your spend records",
     "failure-not-billed": "if the request failed you are not charged",
     "reserve-and-settle": "you reserve the ceiling up front and are charged only actual",
+    "free-included-usage": "included units are free per account",
     # subscription
     "subscription": "start a subscription today",
     "per-month-price": "$29 per month",

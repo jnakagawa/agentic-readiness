@@ -758,6 +758,49 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"[^.<>]{0,80}?\b(?:reserv\w+|ceiling|up[- ]front)\b"
             r"|\b(?:escrow|channel|reserv\w+)\b[^.<>]{0,80}?"
             r"\brefunds?\s+(?:the\s+)?(?:rest|difference|remainder|unused|balance)\b", _F)),
+        # FREE-INCLUDED-USAGE — whether an agent can complete a REAL metered call at
+        # $0 before committing any money: a per-account free ALLOWANCE of actual
+        # metered units (an `includedUnits` contract), usable with a zero balance and
+        # no funding and no human signup. This is the metered_api ON-RAMP the
+        # PLAYBOOK's lens names directly (reach → understand → PAY → provision →
+        # complete): an autonomous buyer can prove the API works end-to-end for free
+        # before it ever funds a wallet, which is exactly the barrier an agent must
+        # clear to adopt a paid API — and it dovetails with ASRS's own $0-only ethos
+        # (the free allowance is precisely the $0 path the benchmark itself exercises).
+        # It is DISTINCT from every existing signal: the subscription `free-trial` is
+        # a time-boxed evaluation of a RECURRING plan (this is per-CALL free units on
+        # a pay-as-you-go meter, not a trial window); `test-mode` is a SANDBOX/fake
+        # environment (this is REAL production units served free, not a test key);
+        # `self-provisioning` is getting IDENTITY/access without a human (WHO you are,
+        # the free identity handshake) — NONE says the agent can run a real, billable
+        # unit of work at zero cost before funding. It is the metered mirror of the
+        # subscription `free-trial`: try the recurring OFFER free there, try the
+        # metered CALL free here.
+        # PRECISION-CRITICAL: bare "free" is a false-positive minefield — free
+        # shipping, a free trial, royalty-free, toll-free, "feel free", free parking,
+        # free WiFi, "free to cancel". So NEVER match a bare "free": require a free
+        # USAGE/ALLOWANCE, free UNITS PER a billing period/account, an `includedUnits`
+        # allowance NAMED as free (either order, within a clause), or an explicit
+        # try/test/call/use-it BEFORE any money/funding/paying — the shipping/trial/
+        # licence/parking senses trip none of these. Fires non-vacuously on the real
+        # captured driftflight.com agent docs (agents.driftflight.com/llms.txt +
+        # llms-full.txt + manifest.json — "Free allowance - try it before any payment",
+        # "`includedUnits` - free usage per account that needs no funding", "a freshly
+        # provisioned identity with a zero balance qualifies, so an agent can try this
+        # API end to end before any money is involved") and on ZERO of drift-flight.org
+        # (which carries NO free-allowance prose — the discovery-layer echo of the real
+        # capability gap, mirroring `payment-receipt`/`reserve-and-settle`),
+        # api.replicate.com, retail (books.toscrape.com), or null (example.com)
+        # fixtures. driftflight.com ALREADY claims metered_api (its strongest
+        # archetype), so this deepens its evidence without adding or reordering any
+        # archetype (score-neutral); the classifier is off the scoring path.
+        ("free-included-usage", re.compile(
+            r"\bfree\s+(?:included\s+)?(?:usage|allowance)\b"
+            r"|\bfree\s+units?\s+per\s+(?:account|period|month|day|week|billing)\b"
+            r"|\bincluded[- ]?units?\b[^.<>]{0,40}?\bfree\b"
+            r"|\bfree\b[^.<>]{0,40}?\bincluded[- ]?units?\b"
+            r"|\b(?:try|test|call|use)\b[^.<>]{0,60}?"
+            r"\bbefore\s+(?:any\s+)?(?:money|funding|paying)\b", _F)),
     ],
     "subscription": [
         ("subscription", re.compile(r"\bsubscription\b|\bsubscribe\b", _F)),

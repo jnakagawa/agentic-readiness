@@ -625,6 +625,52 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
         ("agent-payment-rail", re.compile(
             r'"protocol"\s*:\s*"(?:x402|mpp|acp|ucp|ap2)"'
             r"|\b(?:x402|mpp|acp|ucp|ap2)\b\s*\([^)]*\b(?:usdc|usdt|stablecoin)\b[^)]*\)", _F)),
+        # PAYMENT RECEIPT / spend reconciliation — the machine-readable PROOF-OF-
+        # PAYMENT an agent gets BACK after a paid call and logs to RECONCILE its own
+        # spend: a receipt header on the successful paid response, a payment /
+        # settlement receipt, a spend record it keeps. This is the ACCOUNTING leg of
+        # an agent-native metered API and the capital-safety COUNTERPART to the
+        # payment RAILS above — `x402` / `agent-payment-rail` say the agent can PAY;
+        # NONE says the agent gets a verifiable RECEIPT back to account for what it
+        # paid. An autonomous agent that pays per call but cannot obtain a
+        # machine-readable receipt cannot reconcile its own spend — it has no
+        # per-call proof to log against a budget, dispute a wrong charge, or
+        # reconcile an invoice — so a metered API that returns a payment receipt /
+        # spend record is MORE agent-completable, and it dovetails directly with
+        # ASRS's own $0-only capital-safety ethos: track every unit of spend.
+        # Distinct from every existing metered_api signal: `x402`/`agent-payment-rail`
+        # are how you PAY, `credit-metered`/`tiered-volume`/`pay-per` how you are
+        # PRICED, `test-mode` how you avoid paying while testing, `webhook-verification`
+        # how you trust an INBOUND callback; NONE says what proof-of-payment comes
+        # BACK on a paid response. Vendor-neutral payment-accounting vocabulary (a
+        # receipt header on the paid response, a payment / settlement receipt, a
+        # serialized receipt, a spend record, proof of payment) — the same open-
+        # convention category as REST/GraphQL/OpenAPI/x402 already in this bank,
+        # never a vendor.
+        # PRECISION-CRITICAL: bare "\breceipt\b" is a false-positive minefield — an
+        # EMAIL receipt / a READ receipt ("enable read receipts"), an ORDER receipt on
+        # a retail checkout, "in receipt of your message", a warehouse "receipt of
+        # goods". So NEVER match a bare "receipt": require a `receipt header`, a
+        # `payment`/`settlement` receipt, a `serialized receipt`, a `spend record`, an
+        # explicit `proof of payment`, or a receipt the agent can LOG. The email/read/
+        # order/goods-receipt senses trip none of these. Fires non-vacuously on the
+        # real captured driftflight.com agent docs (agents.driftflight.com/
+        # llms-full.txt — "Every successful paid response includes a receipt header you
+        # can log for your spend records: `payment-response` … or `payment-receipt`
+        # (MPP, serialized receipt)") and on ZERO of the drift-flight.org (which carries
+        # NO receipt/spend-record prose — the discovery-layer echo of the real
+        # capability gap, mirroring `self-provisioning`), api.replicate.com, retail
+        # (books.toscrape.com), or null (example.com) fixtures. driftflight.com ALREADY
+        # claims metered_api (its strongest archetype), so this deepens its evidence
+        # without adding or reordering any archetype (score-neutral); the classifier is
+        # off the scoring path.
+        ("payment-receipt", re.compile(
+            r"\breceipt\s+headers?\b"
+            r"|\b(?:payment|settlement)[- ]receipts?\b"
+            r"|\bserialized\s+receipts?\b"
+            r"|\bspend\s+records?\b"
+            r"|\bproof\s+of\s+payment\b"
+            r"|\breceipts?\s+(?:that\s+|which\s+)?(?:an?\s+agent\s+|you\s+)?(?:can\s+)?log\b", _F)),
     ],
     "subscription": [
         ("subscription", re.compile(r"\bsubscription\b|\bsubscribe\b", _F)),

@@ -547,23 +547,29 @@ design in-cloud, execute locally.
        Cycle 146) with its COVERAGE(146)→TRUTH(147)→READOUT(148) arc CLOSED. The remaining IN-CLOUD
        strengthenable digital_good unit is output FORMAT (PNG/JPEG/MP4/WebP) — a false-positive minefield
        (badge SVGs, thumbnail JPGs, content-type headers everywhere in the fixtures), so it needs a genuinely
-       distinct capability + precision-guarded evidence and is DEFERRED, not attempted. The natural next
-       METHOD unit for output-retention is a RELABEL-INVARIANCE guard (the TRUTH-leg mirror of plan-purchase
-       Cycle 147 / payment-receipt Cycle 143) — in-cloud, on the committed canonical /docs evidence. A
+       distinct capability + precision-guarded evidence and is DEFERRED, not attempted. output-retention's
+       RELABEL-INVARIANCE guard (the METHOD/TRUTH mirror of plan-purchase Cycle 147 / payment-receipt Cycle
+       143) SHIPPED Cycle 151 (see the DONE note below). A
        subscription-CANCEL / lifecycle-management signal (agent bounds its own recurring spend) is
        [LOCAL]-blocked: the canonical `/cancellation` surface is NOT in any committed fixture (capture one
        [LOCAL] first). service_booking / data_retrieval new signals + the physical_good fulfillment leg stay
        [LOCAL]-blocked (no committed fixture claims them); ACP/UCP/MPP live handshakes + free-tier
        live-wiring stay [LOCAL]. -->
 
-  <!-- CANDIDATE (METHOD, in-cloud, Cycle 151+): `test_offering_relabel_invariance_output_retention` in
-       tests/test_offering_canonical.py — pin Cycle 150's `output-retention` digital_good signal as
-       identity-invariant under a host relabel (a synthetic /docs surface seats the host adjacent to the
-       "hosted URLs that remain available for 90 days; download them into your own storage" phrase; relabel
-       end-to-end; the signal survives with same match count / host-normalized surface / quote still matching
-       the live regex / host absent). TEETH: the file-expiry / support-line / event-hosting distractors fire
-       ZERO. Mirrors the plan-purchase (147) / payment-receipt (143) relabel guards. Off scoring path,
-       score-neutral. -->
+  <!-- DONE 2026-08-01T10:1xZ (Cycle 151, METHOD, direct-to-main, tests-only/off-scoring-path/score-neutral):
+       `test_offering_relabel_invariance_output_retention` in tests/test_offering_canonical.py SHIPPED — pins
+       Cycle 150's `output-retention` digital_good signal as identity-invariant under a host relabel. A
+       SYNTHETIC digital_good /docs surface seats the host INSIDE the retention evidence (surface key prefix +
+       host adjacent to "returns each render as a hosted URL that remains available for 90 days", asserted
+       host in BOTH surface key AND padded quote window = non-vacuous, the real-fixture host-free failure mode
+       dodged); relabel host → neutral end-to-end and the signal survives with SAME match count (1) / SAME
+       host-normalized surface / quote still matching the live `_SIGNALS["digital_good"]["output-retention"]`
+       regex / host absent. TEETH: a sibling distractor surface carrying the retention-SHAPED noise (a
+       support-line window with no deliverable noun; the signed download-URL / file-EXPIRY trap on a
+       metered-API marketplace) fires ZERO output-retention. Mirrors plan-purchase (147) / payment-receipt
+       (143) relabel guards. Off scoring path (`git diff --name-only` = `tests/test_offering_canonical.py`
+       ONLY) → score-neutral, NOT peer-gated. `test_offering_canonical.py` 48→49; runner-registration 4/4;
+       full suite 23 files green; replay guard 24/24, 46.1 F / 85.5 B / +39.4; rubric v0.7. See LOG Cycle 151. -->
 
 <!-- DONE 2026-08-01T04:1xZ (Cycle 145, METHOD, branch loop/runner-registration-guard + PR #138 +
      self-merge squash 60fa743, tests-only/off-scoring-path/score-neutral): "Guard against silent dead

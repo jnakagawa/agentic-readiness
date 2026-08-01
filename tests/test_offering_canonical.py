@@ -2976,6 +2976,158 @@ def test_offering_relabel_invariance_plan_purchase() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Relabel-invariance at the SIGNAL level — the digital_good OUTPUT-RETENTION
+# leg (Cycle 150 COVERAGE, PR #142). The newest digital_good signal to join the
+# signal-level relabel family and the METHOD/TRUTH mirror every recent signal
+# earned (plan-purchase 147 / payment-receipt 143 / error-contract 91). It is
+# the digital_good "complete the job" LIFECYCLE leg — the counterpart to
+# metered_api's `cancel-job`: `generation`/`generate-media`/`render` say WHAT is
+# produced, `hosted-output` WHERE it is delivered, `output-resolution` its SHAPE,
+# `output-license` whether the agent may USE it, `content-provenance` whether it
+# can TRUST it — NONE says HOW LONG the hosted deliverable lives or that the agent
+# must copy it out before the link expires. output-retention is that
+# "collect the finished job's deliverable in time" leg — a delivery-window on a
+# hosted output ("hosted URLs that remain available for N days"), the
+# download-into-your-own-storage step, or an explicit output retention
+# window/period/policy. Whether an agent can retrieve its output before it expires
+# is a property of the retention CONTRACT the site exposes, never of WHO vends it,
+# so the signal must be identity-invariant under a host relabel.
+#
+# Why a SYNTHETIC surface, not the real fixture (mirroring plan-purchase 147 /
+# payment-receipt 143 / webhook-verification 135, NOT output-license which rides
+# captured evidence): the output-retention vocabulary is host-FREE by nature — the
+# fired quote carries an artifact-lifecycle window (a media/deliverable noun + a
+# persistence verb + "for N days", or "download ... into your own storage"), not
+# the vendor's name — and on the real captured canonical /docs the signal fires
+# with the host in the surface KEY but NOT the quote window, so a whole-fixture
+# relabel would leave the output-retention evidence byte-identical and the
+# invariance would be VACUOUS. To make the relabel genuinely rewrite the
+# classifier's input at THIS signal, this guard scans a synthetic digital_good
+# surface that deliberately seats the host INSIDE the retention evidence: the host
+# is the surface KEY prefix AND sits adjacent to the "hosted URL that remains
+# available for 90 days" phrase (asserted non-vacuous below). Relabel the host
+# everywhere, re-scan, and the output-retention signal must survive with the SAME
+# match count, on the SAME host-normalized surface, its quote STILL satisfying the
+# live output-retention regex, with the vendor host absent from all rewritten
+# evidence.
+#
+# TEETH (precision, the output-retention signal's defining risk — a bare time
+# window is a false-positive minefield): a sibling synthetic surface carrying only
+# the retention-SHAPED noise the signal must REFUSE — a SUPPORT-line window
+# ("support agents remain available for 24 hours", no deliverable noun) and the
+# metered-API marketplace trap, a signed download-URL / file EXPIRY ("expiration
+# date of this download URL", a signed-URL expiry, NOT a hosted-deliverable
+# retention window) — fires ZERO output-retention signals, proving the match keys
+# on the artifact-lifecycle STRUCTURE (a hosted DELIVERABLE that persists for a
+# window / a download-into-your-own-storage step / an output retention policy),
+# never on a bare "available for N hours" window or a URL-expiry; and relabeling
+# the host through that noise never CONJURES a digital_good claim on a site whose
+# only "window" is a support line or a signed-URL expiry.
+# ---------------------------------------------------------------------------
+_OR_LABEL = "output-retention"
+_OR_HOST = "acme-forge.example"  # a host bearing no output-retention (or other) signal word
+_OR_SURFACE = f"agents.{_OR_HOST}/docs"
+# Host seated adjacent to the "hosted URL that remains available for 90 days"
+# phrase (surface key prefix + the sentence subject and trailer) so it lands in
+# the padded quote window, not merely the surface key.
+_OR_PROSE = (
+    f"{_OR_HOST} returns each render as a hosted URL that remains "
+    f"available for 90 days on {_OR_HOST}."
+)
+# The retention-SHAPED noise the output-retention signal must never match: a
+# SUPPORT-line time window (no deliverable noun) and the signed download-URL /
+# file EXPIRY trap on a metered-API marketplace.
+_OR_DISTRACTOR_SURFACE = f"agents.{_OR_HOST}/openapi"
+_OR_DISTRACTOR_PROSE = (
+    f"{_OR_HOST} support agents remain available for 24 hours; a Unix "
+    f"timestamp gives the expiration date of this download URL on {_OR_HOST}."
+)
+
+
+def _output_retention_signals(surface: str, text: str) -> list:
+    """The (surface, quote) pairs where the digital_good output-retention fired."""
+    return sorted(
+        (s.surface, s.quote)
+        for s in _offering._scan_surface(surface, text)
+        if s.archetype == "digital_good" and s.label == _OR_LABEL
+    )
+
+
+def test_offering_relabel_invariance_output_retention() -> None:
+    """The digital_good output-retention keys on the retention contract, not the host."""
+    print("test_offering_relabel_invariance_output_retention")
+    base = _output_retention_signals(_OR_SURFACE, _OR_PROSE)
+
+    # The signal genuinely fires on the synthetic digital_good evidence.
+    _check(
+        len(base) == 1,
+        f"output-retention fires exactly once on the synthetic digital_good surface (got {len(base)})",
+    )
+    base_surf, base_quote = base[0]
+
+    # Non-vacuity: the host sits inside BOTH the surface key AND the padded quote
+    # window, so a host relabel genuinely rewrites the classifier's
+    # output-retention input — not a no-op over host-free evidence (the
+    # real-fixture failure mode named above).
+    _check(
+        _OR_HOST in base_surf and _OR_HOST in base_quote,
+        f"the host is inside the output-retention surface key AND quote window — "
+        f"relabel rewrites real signal input (surface {base_surf!r}, quote {base_quote!r})",
+    )
+
+    # TEETH: the retention-shaped noise (support-line window with no deliverable
+    # noun, signed download-URL / file expiry) fires ZERO — the signal keys on the
+    # hosted-deliverable retention STRUCTURE, never on a bare "available for N
+    # hours" window or a URL expiry.
+    _check(
+        _output_retention_signals(_OR_DISTRACTOR_SURFACE, _OR_DISTRACTOR_PROSE) == [],
+        "retention-shaped noise ('support agents remain available for 24 hours', "
+        "'expiration date of this download URL') fires no output-retention signal — "
+        "the match is the hosted-deliverable retention structure (a deliverable that "
+        "persists for a window / a download-into-your-own-storage step / an output "
+        "retention policy), not a bare time window or a signed-URL expiry",
+    )
+
+    # Relabel the host everywhere (surface key + prose) and re-scan.
+    relab_surface = _OR_SURFACE.replace(_OR_HOST, _NEUTRAL_HOST)
+    relab_prose = _OR_PROSE.replace(_OR_HOST, _NEUTRAL_HOST)
+    _check(
+        _OR_HOST not in relab_surface and _OR_HOST not in relab_prose,
+        "every occurrence of the original host was relabeled out of the synthetic input",
+    )
+    relab = _output_retention_signals(relab_surface, relab_prose)
+
+    # (1) Same match count — the output-retention signal is neither lost nor conjured.
+    _check(
+        len(relab) == len(base) == 1,
+        f"output-retention match count invariant under relabel (base {len(base)}, "
+        f"relabel {len(relab)})",
+    )
+    relab_surf, relab_quote = relab[0]
+
+    # (2) The SAME logical surface carries the signal once the host label is
+    # normalized away — the signal did not migrate to a different surface.
+    _check(
+        relab_surf == base_surf.replace(_OR_HOST, _NEUTRAL_HOST),
+        "output-retention fires on the same (host-normalized) surface under relabel "
+        f"(base {base_surf!r}, relabel {relab_surf!r})",
+    )
+    # (3) The relabeled quote STILL satisfies the live output-retention regex (the
+    # fired form is an artifact-lifecycle window — a hosted deliverable that remains
+    # available for N days — not the host) and names no vendor host — the match
+    # keyed on the retention CONTRACT, not who vends it.
+    or_re = dict(_offering._SIGNALS["digital_good"])[_OR_LABEL]
+    _check(
+        or_re.search(relab_quote) is not None,
+        f"relabeled output-retention quote still matches the retention-window signal: {relab_quote!r}",
+    )
+    _check(
+        _OR_HOST not in relab_quote and _OR_HOST not in relab_surf,
+        f"vendor host absent from relabeled output-retention evidence (surface {relab_surf!r})",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Surface-read ORDER invariance — the digital_good deliverable-RIGHTS leg.
 #
 # A fresh perturbation AXIS orthogonal to the relabel/identity family above. The
@@ -4794,6 +4946,7 @@ def main() -> int:
         test_offering_relabel_invariance_priced_listing,
         test_offering_relabel_invariance_payment_receipt,
         test_offering_relabel_invariance_plan_purchase,
+        test_offering_relabel_invariance_output_retention,
         test_offering_surface_order_invariance_output_license,
         test_offering_surface_order_invariance_org,
         test_offering_content_scale_invariance_org,

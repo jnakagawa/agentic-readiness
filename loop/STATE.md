@@ -1,8 +1,39 @@
 # Loop state
 
-- Cycle counter: 150
+- Cycle counter: 151
 - Started: 2026-07-23 (UTC)
-- RUNNER HEALTHY at 2026-08-01T09:1xZ (Cycle 150) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-01T10:1xZ (Cycle 151) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~6.4h old at the 10:1xZ fire — JUST past the 6h floor (the ~10:xxZ local
+  fire should refresh it; expected borderline, NOT the machine-asleep stall — cloud cannot repair). Live
+  signal (read, not re-run): driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop
+  divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent
+  signal (24/24, 46.1 F / 85.5 B / +39.4). Both the runner-floor-breach and the persistent divergence carry
+  to the next first-after-16:00 digest (~Aug-1 16:xxZ). INFRA/SELF-HEAL (Cycle 151): the fresh checkout's
+  local `origin/main` tracking ref was STALE — clone left it at `3796519` (Cycle 94) while the tree was
+  detached at the REAL HEAD `74fa29e` (Cycle 150); a naive `git checkout -B main origin/main` rewound the
+  tree to Cycle 94 (a false bookkeeping-down). `git fetch origin main` force-updated the ref
+  `3796519...74fa29e`, confirming GitHub's `origin/main` is genuinely Cycle 150; re-checkout realigned, NO
+  work lost. LESSON: `git fetch origin main` BEFORE trusting `git checkout -B main origin/main` on a fresh
+  cloud checkout, or a legitimate HEAD reads as a divergence.
+- FOCUS POINTER (Cycle 151 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 151 was
+  METHOD, so Cycle 152 is COVERAGE). Cycle 151 shipped a **METHOD relabel-invariance guard** —
+  `test_offering_relabel_invariance_output_retention` in `tests/test_offering_canonical.py`, the signal-level
+  metamorphic mirror every recent signal earns (plan-purchase 147 / payment-receipt 143 / error-contract 91),
+  now covering Cycle 150's `output-retention` digital_good signal. A SYNTHETIC digital_good surface seats the
+  host INSIDE the retention evidence (surface key prefix + host adjacent to "hosted URL that remains available
+  for 90 days", asserted non-vacuous); relabel host → neutral everywhere and the signal survives with the SAME
+  match count / SAME host-normalized surface / quote still matching the live regex / host absent. TEETH: the
+  retention-shaped noise (a support-line window with no deliverable noun; the signed download-URL / file
+  EXPIRY trap on a metered-API marketplace) fires ZERO output-retention. Tests-only, off scoring path (`git
+  diff --name-only` = `tests/test_offering_canonical.py` ONLY) → score-neutral, NOT peer-gated; direct-to-main.
+  `test_offering_canonical.py` 48→49; runner-registration meta-guard 4/4; full suite 23 files green; replay
+  guard 24/24, 46.1 F / 85.5 B / +39.4; rubric v0.7. NEXT (COVERAGE 152): a capability signal on committed
+  evidence — output FORMAT (PNG/JPEG/MP4/WebP) is the narrow digital_good frontier but a false-positive
+  minefield (deferred until a genuinely distinct capability + precision-guarded evidence). Open metamorphic
+  cells for a future METHOD: casing on the RETAIL pole; content-scale / noise-surface on the metered_api
+  MACHINE surface. subscription-CANCEL / lifecycle stays [LOCAL]-blocked; service_booking / data_retrieval +
+  physical fulfillment + ACP/UCP/MPP + free-tier live-wiring stay [LOCAL].
+- SUPERSEDED (Cycle 150 runner note): RUNNER HEALTHY at 2026-08-01T09:1xZ (Cycle 150) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~5.35h old at the 09:11Z fire, INSIDE the 6h floor but nearing it (the
   ~10:xxZ local fire should refresh it). Live signal (read, not re-run): driftflight.com 76.2 C / +30.1 /
   transactability 62.5 — the transactability-drop divergence PERSISTS a third day (Aug-1), still off the

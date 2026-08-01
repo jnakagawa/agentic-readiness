@@ -3,6 +3,77 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 151 — 2026-08-01T10:1xZ — METHOD — output-retention relabel-invariance guard (offering classifier)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`) → no
+peer-gate review owed.
+
+**Infra health / self-heal.** The fresh cloud checkout landed with a STALE local `origin/main`
+tracking ref: the clone left `origin/main` at `3796519` (Cycle 94) while the working tree was
+detached at the REAL HEAD `74fa29e` (Cycle 150). A naive `git checkout -B main origin/main`
+therefore rewound the tree to Cycle 94 (the output-retention signal vanished, `test_offering.py`
+read 36/36 instead of 64/64) — a false "bookkeeping-down" signal. Diagnosed via reflog + a
+`git fetch origin main`, which force-updated the tracking ref `3796519...74fa29e` and confirmed
+GitHub's `origin/main` is genuinely at Cycle 150. Re-`git checkout -B main origin/main` realigned
+to the true HEAD; NO work was lost (the detached commits were always the real remote). LESSON
+(folded into STATE): a fresh checkout's `origin/main` ref can be stale — `git fetch origin main`
+BEFORE trusting `git checkout -B main origin/main`, or a legitimate HEAD reads as a divergence.
+Env-only deps rebuilt in a fresh `.venv` (`pip install requests pyyaml eth-account`; verified
+`import requests` before trusting the suite, per the Cycle-150 `-q`-masking lesson).
+
+**What/why (METHOD — measurement rigor, per-signal metamorphic guard).** Cycle 150 shipped the
+`output-retention` digital_good signal (the "collect the finished job's deliverable in time"
+LIFECYCLE leg) but — like every new signal before its TRUTH/METHOD leg — it had no
+relabel-invariance guard. Added `test_offering_relabel_invariance_output_retention` to
+`tests/test_offering_canonical.py`, the signal-level relabel mirror every recent signal earned
+(plan-purchase 147 / payment-receipt 143 / error-contract 91): pins that whether an agent can
+retrieve its output before the hosted link expires is a property of the retention CONTRACT the
+site exposes, NEVER of who vends it, so the signal is identity-invariant under a host relabel.
+
+**Design (non-vacuous by construction).** output-retention quotes are host-FREE by nature (an
+artifact-lifecycle window — a media/deliverable noun + persistence verb + "for N days", or
+"download ... into your own storage"), so on the real fixture the host sits in the surface KEY
+but not the quote window and a whole-fixture relabel would be VACUOUS. So the guard scans a
+SYNTHETIC digital_good surface that seats the host INSIDE the retention evidence — surface key
+prefix `agents.acme-forge.example/docs` + the host adjacent to "returns each render as a hosted
+URL that remains available for 90 days on acme-forge.example." (asserted: host in BOTH surface
+key AND padded quote window). Relabel host → `vendor-neutral.test` everywhere, re-scan → the
+signal survives with the SAME match count (1), on the SAME host-normalized surface, its quote
+STILL matching the live `_SIGNALS["digital_good"]["output-retention"]` regex, host absent from
+all rewritten evidence.
+
+**Teeth (precision — a bare time window is a false-positive minefield).** A sibling distractor
+surface carrying only the retention-SHAPED noise the signal must REFUSE — a SUPPORT-line window
+("support agents remain available for 24 hours", no deliverable noun) and the metered-API
+marketplace trap, a signed download-URL / file EXPIRY ("expiration date of this download URL") —
+fires ZERO output-retention. The match keys on the hosted-deliverable retention STRUCTURE (a
+deliverable that persists for a window / a download-into-your-own-storage step / an output
+retention policy), never on a bare "available for N hours" window or a URL expiry.
+
+**Ship class + evidence.** Tests-only, off the scoring path (`git diff --name-only` =
+`tests/test_offering_canonical.py` ONLY; scoring.py/offering.py/probes.py/scorecard.py/rubric/
+fixtures untouched) → score-neutral, NOT peer-gated → direct-to-main. `test_offering_canonical.py`
+48→49; runner-registration meta-guard 4/4; full suite 23 files green, 0 failures. Canonical PAIR
+unchanged: in-cloud replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7.
+
+**Live canonical signal.** Newest LOCAL artifact `runs/local/verify_20260801T035047Z.json`
+(03:50Z Aug-1, `attempts=1`) is ~6.4h old at the 10:1xZ fire — JUST past the 6h floor (the
+~10:xxZ local fire should refresh it; the Cycle 137–144 machine-asleep pattern, NOT a code
+regression, and the cloud cannot repair it). Its LIVE re-score: drift-flight.org 46.1 F /
+driftflight.com 76.2 C / delta +30.1 — the known transactability 87.5→62.5 divergence, off the
+scoring path; the frozen replay guard stays the in-cloud regression signal. Fire at 10:1xZ is
+NOT first-after-16:00 → no digest DM this cycle (the runner-floor-breach + the persistent
+divergence carry to the ~16:xxZ digest).
+
+**Next hypothesis.** Rotate COVERAGE next (Cycle 151 was METHOD). In-cloud COVERAGE frontier on
+committed evidence: digital_good is now DEEP (11 signals + `output-retention`); the remaining
+in-cloud strengthenable unit is output FORMAT (PNG/JPEG/MP4/WebP), a false-positive minefield
+(deferred until a genuinely distinct capability + precision-guarded evidence). Open metamorphic
+cells for a future METHOD: casing on the RETAIL pole; content-scale / noise-surface on the
+metered_api MACHINE surface. subscription-CANCEL / lifecycle stays `[LOCAL]`-blocked (no committed
+`/cancellation` fixture); service_booking / data_retrieval + physical fulfillment + ACP/UCP/MPP +
+free-tier live-wiring stay `[LOCAL]`.
+
 ## Cycle 150 — 2026-08-01T09:1xZ — COVERAGE — output-retention digital_good signal (offering classifier)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`; git log showed Cycle

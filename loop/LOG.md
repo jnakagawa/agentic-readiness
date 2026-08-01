@@ -3,6 +3,57 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 145 — 2026-08-01T04:1xZ — METHOD — silent-dead-test guard for the runner lists
+
+**Track / rotation.** METHOD (focus pointer was "METHOD next" after Cycle 144 READOUT). Measurement
+integrity: a guard that never runs measures nothing, so ensuring every guard actually executes is a
+rigor unit, not cosmetics.
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`) → no review duty.
+
+**Infra health — RUNNER RECOVERED.** The LOCAL verify runner is BACK: newest
+`runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is ~22 min old at the 04:1xZ
+fire — inside the 6h floor, clearing the ~14h stall STATE tracked through Cycles 137–144 (machine was
+asleep Jul-31 afternoon→Aug-1 03:xx, the Cycle-63 wake-instant pattern, self-cleared on a successful
+wake exactly as predicted — NOT a code regression). Bench: restored the environment-only `eth-account`
+dep (`pip install eth-account`) so `test_free_tier` runs 11/11 (recurring cloud-env gap); `git reset
+--hard origin/main` off the fresh-clone "unrelated history" fork before work. All 22 pre-existing suites
+green at baseline.
+
+**What.** `tests/test_runner_registration.py` (new, 4 tests) — a meta-test that parses each
+`tests/test_*.py` SOURCE with `ast` (never imports it, so a broken import in one suite can't mask
+another) and asserts, per module: (1) every top-level `def test_*` appears in that module's `tests`
+runner list (no silent dead test), (2) every registered name resolves to a real def (ghost/typo
+detection), (3) every suite carries a non-empty runner list. Teeth proven on synthetic dead/clean/ghost
+sources so it cannot vacuously pass. The scan IMMEDIATELY caught two more live instances of the exact
+bug beyond the Cycle-144 one: `test_webhook_verification_precision_synthetic` +
+`test_webhook_verification_fires_on_real_captured_openapi` in `test_offering.py`, defined but never
+registered (silently dead since the webhook-verification arc, Cycles 134–136). Both PASS when run →
+registered them (`test_offering.py` 58→60).
+
+**Why (METHOD).** The suites run via hand-maintained explicit `tests = [...]` lists, not pytest
+collection — a `def test_*` omitted from the list raises no collection error and no failure, it simply
+never runs. Cycle 140 shipped a dead test this way; it survived four cycles until Cycle 144 caught it by
+eye, and this cycle's scan found two more. Eyeballing does not scale. This closes the hole mechanically:
+from now on, a defined-but-unregistered (or ghost) test fails `test_runner_registration.py` loudly.
+
+**Ship class + evidence.** Tests-only, off the scoring path (`git diff` over `asrs/scoring.py
+asrs/offering.py asrs/probes.py rubric/ fixtures/` EMPTY; changed files = `tests/test_offering.py` +
+`tests/test_runner_registration.py` ONLY) → score-neutral, NOT peer-gated. Cloud bridge blocks direct
+main push → branch `loop/runner-registration-guard` + PR #138 + self-merge (squash **60fa743**). Full
+suite green across 23 files (22 + the new meta-test, which reports 23 suites incl. itself). Canonical
+replay guard **24/24 — 46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7.
+
+**Canonical pair.** Frozen replay guard 46.1 F / 85.5 B / delta **+39.4** (by construction — scoring
+path byte-for-byte untouched). LIVE signal (recovered runner, 03:50Z Aug-1): driftflight.com **76.2 C /
++30.1**, transactability 62.5 — the persistent transactability-drop divergence, now confirmed across a
+THIRD independent live crawl (08:52Z + 13:45Z Jul-31, now 03:50Z Aug-1, all 76.2/62.5). Off the scoring
+path, unaffected by this change; resolution is the queued P0 [LOCAL] re-baseline.
+
+**Next hypothesis.** Rotation → COVERAGE (Cycle 146). In-cloud COVERAGE frontier on committed evidence:
+a digital_good or subscription capability signal with a COVERAGE→TRUTH→READOUT arc; service_booking /
+data_retrieval + physical_good fulfillment stay [LOCAL]-blocked (no committed fixture claims them).
+
 ## Cycle 144 — 2026-08-01T02:5xZ — READOUT — payment-receipt methodology prose (arc-closing leg)
 
 **Track / rotation.** READOUT (focus pointer was "READOUT next" after Cycle 143 TRUTH). CLOSES the

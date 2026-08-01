@@ -529,15 +529,31 @@ design in-cloud, execute locally.
        COVERAGE→TRUTH→READOUT arc. service_booking / data_retrieval new signals + the physical_good
        fulfillment leg stay [LOCAL]-blocked (no committed fixture claims them); ACP/UCP/MPP live
        handshakes + free-tier live-wiring stay [LOCAL]. -->
-- **Guard against silent dead tests in the hand-maintained runner lists** (METHOD hygiene, opened
-  Cycle 144, in-cloud). Cycle 144 found `test_methodology_documents_output_resolution` (Cycle 140)
-  DEFINED but never added to `tests/test_readout.py`'s `tests` runner list — it silently never ran until
-  Cycle 144 registered it. These suites use a hand-maintained explicit `tests = [...]` list, so a
-  defined-but-unregistered `def test_*` is invisible (no collection error, no failure). Cheap in-cloud
-  meta-test: assert every top-level `def test_*` in a suite module appears in that module's `tests` list
-  (via `ast` over the source, or a registered-vs-defined set diff), so a future arc-closing leg cannot
-  silently skip its guard. Tests-only, off scoring path; branch+PR+self-merge. Good METHOD candidate for
-  Cycle 145.
+<!-- DONE 2026-08-01T04:1xZ (Cycle 145, METHOD, branch loop/runner-registration-guard + PR #138 +
+     self-merge squash 60fa743, tests-only/off-scoring-path/score-neutral): "Guard against silent dead
+     tests in the hand-maintained runner lists" SHIPPED. `tests/test_runner_registration.py` (4 tests) —
+     an `ast` meta-scan of every `tests/test_*.py` SOURCE (never imports it) asserting per module:
+     (1) every top-level `def test_*` is registered in that module's `tests` runner list (no silent dead
+     test), (2) every registered name resolves to a real def (ghost/typo detection), (3) every suite has
+     a non-empty runner list; teeth proven on synthetic dead/clean/ghost sources (non-vacuous). The scan
+     IMMEDIATELY caught two more live instances beyond the Cycle-144 one:
+     `test_webhook_verification_precision_synthetic` + `test_webhook_verification_fires_on_real_captured_openapi`
+     in `test_offering.py`, defined but never registered (silently dead since the webhook-verification arc,
+     Cycles 134–136) — both PASS, registered them (58→60). Closes the Cycle-140/144 silent-dead-test class
+     mechanically. Off scoring path (`git diff` over scoring.py/offering.py/probes.py/rubric/fixtures EMPTY;
+     changed = tests/test_offering.py + tests/test_runner_registration.py ONLY) → score-neutral, NOT
+     peer-gated. Full suite green across 23 files; replay guard 24/24, 46.1 F / 85.5 B / +39.4; rubric v0.7.
+     See LOG Cycle 145. -->
+
+<!-- NOTE (Cycle 145): the LOCAL verify runner RECOVERED — newest verify_20260801T035047Z.json (03:50Z
+     Aug-1, attempts=1) is inside the 6h floor, clearing the ~14h Cycle-137→144 stall (machine-asleep
+     wake-instant pattern, self-cleared on wake as predicted). Report the recovery in the next
+     first-after-16:00 digest (~Aug-1 16:xxZ). No action item. -->
+
+  <!-- STANDING METHOD-hygiene note: `test_runner_registration.py` (Cycle 145) now fails loudly on any
+       future defined-but-unregistered or ghost test, so an arc-closing leg can no longer silently skip
+       its guard. No further work — this is the closed form of the hygiene concern. -->
+
 
 <!-- DONE 2026-07-31T23:1xZ (Cycle 140, READOUT, branch+PR #129+self-merge squash aeafed4,
      display+tests/off-scoring-path/score-neutral): "Complete the `output-resolution` arc — the READOUT

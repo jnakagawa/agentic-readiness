@@ -503,21 +503,30 @@ design in-cloud, execute locally.
 
 ## P1
 
-- **failure-not-billed TRUTH leg — per-signal relabel-invariance guard** (TRUTH, follow-up to Cycle 152).
-  Cycle 152 shipped the `failure-not-billed` metered_api signal (a FAILED call is not charged — the
-  capital-safety "you don't pay for work you didn't get" leg) but, like every new signal before its
-  TRUTH/METHOD leg, it has no relabel-invariance guard. Add `test_offering_relabel_invariance_failure_not_billed`
-  to `tests/test_offering_canonical.py`, the signal-level mirror of output-retention (151) / plan-purchase
-  (147) / payment-receipt (143): whether a failed unit is billed is a property of the failure-billing
-  CONTRACT, never of who vends it, so the signal is identity-invariant under a host relabel. The quotes are
-  host-FREE by nature (a failure token + not-charged), so use a SYNTHETIC surface that SEATS the host inside
-  the evidence window (surface key prefix + host adjacent to the failure-billing prose, asserted non-vacuous);
-  relabel host → neutral everywhere and the signal survives with the SAME match count / SAME host-normalized
-  surface / quote still matching the live regex / host absent. TEETH: failure-billing-shaped noise (a
-  subscription trial "card not charged until the trial ends"; `error-contract` "on failure the body is
-  problem+json") fires ZERO failure-not-billed. Tests-only, off scoring path, score-neutral, direct-to-main.
-  Then the READOUT leg (a `_write_methodology_page` paragraph framing "you don't pay for work you didn't get"
-  as the metered capital-safety sibling of `payment-receipt`), CLOSING a COVERAGE(152)→TRUTH→READOUT arc.
+<!-- DONE 2026-08-01T12:1xZ (Cycle 153, TRUTH, direct-to-main, tests-only/score-neutral): the
+     "failure-not-billed TRUTH leg — per-signal relabel-invariance guard" SHIPPED.
+     `test_offering_relabel_invariance_failure_not_billed` in `tests/test_offering_canonical.py`, the
+     signal-level metamorphic mirror of output-retention 151 / plan-purchase 147 / payment-receipt 143,
+     covering Cycle 152's `failure-not-billed` metered_api signal. Non-vacuous SYNTHETIC vehicle
+     (`acme-flux.example` seats the host INSIDE the evidence — surface-key prefix + adjacent to "if a render
+     fails it is never charged", asserted host-in-BOTH-surface-key-and-quote); relabel host → neutral and the
+     signal survives with SAME match count (1) / SAME host-normalized surface / quote still matching the live
+     regex / host absent. TEETH: a subscription trial "your card is not charged until the trial ends" (no
+     failure word) + the `error-contract` "on failure the body is application/problem+json" (no not-charged)
+     fire ZERO. Verified empirically (base=1 host-in-quote, distractor=0, relabel=1 host-absent) before
+     writing. Off scoring path (`git diff --name-only` = `tests/test_offering_canonical.py` ONLY) →
+     score-neutral, rubric v0.7, replay guard 24/24 / 46.1 F / 85.5 B / +39.4. `test_offering_canonical.py`
+     49→50; suite 23 files green. See LOG Cycle 153. The READOUT leg is the follow-up below. -->
+
+- **failure-not-billed READOUT leg — methodology-page paragraph** (READOUT, follow-up to Cycle 152/153,
+  closes the COVERAGE(152)→TRUTH(153)→READOUT arc, the pattern of plan-purchase 146/147/148). Add a
+  `_write_methodology_page` paragraph framing the metered_api `failure-not-billed` signal — "you don't pay
+  for work you didn't get" — as the metered capital-safety sibling of `payment-receipt`: an autonomous
+  per-call buyer must know a FAILED unit (render did not complete / job errored / request timed out) does
+  not silently burn money, or it cannot bound its spend against a flaky endpoint. Vendor-neutral,
+  capability-worded; mirror the existing signal-methodology prose. Display-only, off scoring path,
+  score-neutral, direct-to-main; extend `tests/test_readout_wording.py` (or `test_readout.py`) with a
+  presence/wording guard the same way plan-purchase's READOUT leg (Cycle 148) was.
 
 <!-- COVERAGE-IN-CLOUD EXHAUSTION (recorded Cycle 152 so future cycles skip the re-sweep): a broad
      capability-vocabulary sweep of the rich committed fixtures (drift pair + api.replicate.com) this cycle

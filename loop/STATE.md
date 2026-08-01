@@ -1,8 +1,40 @@
 # Loop state
 
-- Cycle counter: 152
+- Cycle counter: 153
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-01T11:2xZ (Cycle 152) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-01T12:1xZ (Cycle 153) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~8.4h old at the 12:12Z fire — PAST the 6h floor (the ~10:xx–12:xx local
+  fires have not yet pushed a fresh artifact; borderline runner lag, NOT the machine-asleep stall — cloud
+  cannot repair). Live signal (read, not re-run): driftflight.com 76.2 C / +30.1 / transactability 62.5 —
+  the transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays
+  the frozen independent signal (24/24, 46.1 F / 85.5 B / +39.4). Both the runner-floor-breach and the
+  persistent divergence carry to the next first-after-16:00 digest (~Aug-1 16:xxZ). INFRA/SELF-HEAL (Cycle
+  153): fresh checkout landed on `main` at `b80d14e` (Cycle 152), no git divergence this fire; the `pip
+  install -e .` silently no-op'd on `requests` again (recurring proxy-masking) → re-ran `pip install requests
+  pyyaml eth-account` verbosely + verified `import requests, yaml, asrs` before trusting the suite.
+- FOCUS POINTER (Cycle 153 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 153 was
+  TRUTH, so Cycle 154 is READOUT). Cycle 153 shipped a **TRUTH relabel-invariance guard** —
+  `test_offering_relabel_invariance_failure_not_billed` in `tests/test_offering_canonical.py`, the
+  signal-level metamorphic mirror every recent signal earns (output-retention 151 / plan-purchase 147 /
+  payment-receipt 143 / error-contract 91), now covering Cycle 152's `failure-not-billed` metered_api signal.
+  Whether a failed unit is billed is a property of the failure-billing CONTRACT, never of who vends it, so the
+  signal is identity-invariant under a host relabel. Non-vacuous SYNTHETIC vehicle (the failure-not-billed
+  quote is host-FREE, so a whole-fixture relabel would be VACUOUS): `acme-flux.example` seats the host INSIDE
+  the evidence (surface-key prefix + adjacent to "if a render fails it is never charged", asserted non-vacuous
+  — host in BOTH surface key and padded quote); relabel host → neutral everywhere and the signal survives with
+  the SAME match count (1) / SAME host-normalized surface / quote still matching the live regex / host absent.
+  TEETH: the not-charged-shaped noise (a subscription free-trial "your card is not charged until the trial
+  ends" — no failure word; the `error-contract` "on failure the body is application/problem+json" — no
+  not-charged) fires ZERO failure-not-billed. Tests-only, off scoring path (`git diff --name-only` =
+  `tests/test_offering_canonical.py` ONLY) → score-neutral, NOT peer-gated; direct-to-main.
+  `test_offering_canonical.py` 49→50; full suite 23 files green; replay guard 24/24, 46.1 F / 85.5 B / +39.4;
+  rubric v0.7. NEXT (READOUT 154): the `failure-not-billed` COVERAGE(152)→TRUTH(153)→READOUT arc's closing
+  leg — a `_write_methodology_page` paragraph framing "you don't pay for work you didn't get" as the metered
+  capital-safety sibling of `payment-receipt` (the pattern of plan-purchase 146/147/148). In-cloud COVERAGE on
+  committed evidence is now VERY narrow (overage/SLA/balance-check/subscription-cancel proved blocked Cycle
+  152); output FORMAT stays a false-positive minefield; service_booking / data_retrieval + physical
+  fulfillment + ACP/UCP/MPP + free-tier live-wiring stay `[LOCAL]`.
+- SUPERSEDED (Cycle 152 runner note): RUNNER AT-FLOOR at 2026-08-01T11:2xZ (Cycle 152) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~7.4h old at the 11:2xZ fire — PAST the 6h floor (the ~10:xx/11:xx local
   fires have not yet pushed a fresh artifact; borderline runner lag, NOT the machine-asleep stall — cloud
   cannot repair). Live signal (read, not re-run): driftflight.com 76.2 C / +30.1 / transactability 62.5 —

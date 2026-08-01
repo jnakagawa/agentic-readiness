@@ -3128,6 +3128,155 @@ def test_offering_relabel_invariance_output_retention() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Signal-level relabel-invariance — the metered_api failure-not-billed leg
+# (Cycle 152 COVERAGE, direct-to-main). The newest metered_api signal to join
+# the signal-level relabel family and the TRUTH/METHOD mirror every recent
+# signal earns (output-retention 151 / plan-purchase 147 / payment-receipt 143
+# / error-contract 91). It is the metered_api capital-safety leg the PLAYBOOK's
+# lens names directly: an autonomous agent paying per call must know that a
+# FAILED unit (the render did not complete, the job errored, the request timed
+# out) does not silently burn money — "you don't pay for work you didn't get" —
+# or it cannot bound its spend against a flaky endpoint. It is DISTINCT from the
+# other metered_api legs: `error-contract` names the machine-readable failure
+# FORMAT (how a failure is REPORTED), `payment-receipt` is proof of a SUCCESSFUL
+# charge, `test-mode` is a $0 SANDBOX, and `usage-based`/`billed-per`/
+# `per-unit-rate`/`credit-metered` describe how you are charged ON SUCCESS —
+# NONE says whether a FAILURE costs money. Whether a failed unit is billed is a
+# property of the failure-billing CONTRACT the site exposes, never of WHO vends
+# it, so the signal must be identity-invariant under a host relabel.
+#
+# Why a SYNTHETIC surface, not the real fixture (mirroring output-retention 151
+# / plan-purchase 147 / payment-receipt 143): the failure-not-billed vocabulary
+# is host-FREE by nature — the fired quote carries a failure token adjacent to a
+# not-charged/not-billed guarantee, not the vendor's name — and on the real
+# captured canonical /docs the signal fires with the host in the surface KEY but
+# NOT the quote window, so a whole-fixture relabel would leave the evidence
+# byte-identical and the invariance would be VACUOUS. To make the relabel
+# genuinely rewrite the classifier's input at THIS signal, this guard scans a
+# synthetic metered_api surface that deliberately seats the host INSIDE the
+# failure-billing evidence: the host is the surface KEY prefix AND sits adjacent
+# to the "if a render fails it is never charged" phrase (asserted non-vacuous
+# below). Relabel the host everywhere, re-scan, and the failure-not-billed
+# signal must survive with the SAME match count, on the SAME host-normalized
+# surface, its quote STILL satisfying the live failure-not-billed regex, with
+# the vendor host absent from all rewritten evidence.
+#
+# TEETH (precision, the failure-not-billed signal's defining risk — a bare "not
+# charged" is a false-positive minefield): a sibling synthetic surface carrying
+# only the not-charged-SHAPED noise the signal must REFUSE — a SUBSCRIPTION
+# free-trial $0-eval promise ("your card is not charged until the trial ends",
+# a not-charged with no failure word) and the `error-contract` trap ("on failure
+# the body is application/problem+json", a failure word with no not-charged) —
+# fires ZERO failure-not-billed signals, proving the match keys on the
+# failure-billing STRUCTURE (a failure token WITHIN a short window of a
+# not/never-charged guarantee, or "only charged for successful"), never on a
+# bare trial promise or a bare failure format; and relabeling the host through
+# that noise never CONJURES a metered_api failure-billing claim.
+# ---------------------------------------------------------------------------
+_FNB_LABEL = "failure-not-billed"
+_FNB_HOST = "acme-flux.example"  # a host bearing no failure-not-billed (or other) signal word
+_FNB_SURFACE = f"api.{_FNB_HOST}/docs"
+# Host seated adjacent to the "if a render fails it is never charged" phrase
+# (surface key prefix + the sentence subject and trailer) so it lands in the
+# padded quote window, not merely the surface key.
+_FNB_PROSE = (
+    f"On {_FNB_HOST}, if a render fails it is never charged; "
+    f"{_FNB_HOST} bills only for renders it completed."
+)
+# The not-charged-SHAPED noise the failure-not-billed signal must never match: a
+# SUBSCRIPTION free-trial $0-eval promise (not-charged, no failure word) and the
+# `error-contract` failure-FORMAT trap (failure word, no not-charged).
+_FNB_DISTRACTOR_SURFACE = f"api.{_FNB_HOST}/pricing"
+_FNB_DISTRACTOR_PROSE = (
+    f"{_FNB_HOST} free trial: your card is not charged until the trial ends. "
+    f"On failure the {_FNB_HOST} API returns application/problem+json."
+)
+
+
+def _failure_not_billed_signals(surface: str, text: str) -> list:
+    """The (surface, quote) pairs where the metered_api failure-not-billed fired."""
+    return sorted(
+        (s.surface, s.quote)
+        for s in _offering._scan_surface(surface, text)
+        if s.archetype == "metered_api" and s.label == _FNB_LABEL
+    )
+
+
+def test_offering_relabel_invariance_failure_not_billed() -> None:
+    """The metered_api failure-not-billed keys on the failure-billing contract, not the host."""
+    print("test_offering_relabel_invariance_failure_not_billed")
+    base = _failure_not_billed_signals(_FNB_SURFACE, _FNB_PROSE)
+
+    # The signal genuinely fires on the synthetic metered_api evidence.
+    _check(
+        len(base) == 1,
+        f"failure-not-billed fires exactly once on the synthetic metered_api surface (got {len(base)})",
+    )
+    base_surf, base_quote = base[0]
+
+    # Non-vacuity: the host sits inside BOTH the surface key AND the padded quote
+    # window, so a host relabel genuinely rewrites the classifier's
+    # failure-not-billed input — not a no-op over host-free evidence (the
+    # real-fixture failure mode named above).
+    _check(
+        _FNB_HOST in base_surf and _FNB_HOST in base_quote,
+        f"the host is inside the failure-not-billed surface key AND quote window — "
+        f"relabel rewrites real signal input (surface {base_surf!r}, quote {base_quote!r})",
+    )
+
+    # TEETH: the not-charged-shaped noise (a subscription free-trial $0 promise
+    # with no failure word, an error-contract failure FORMAT with no not-charged)
+    # fires ZERO — the signal keys on the failure-billing STRUCTURE, never on a
+    # bare trial promise or a bare failure format.
+    _check(
+        _failure_not_billed_signals(_FNB_DISTRACTOR_SURFACE, _FNB_DISTRACTOR_PROSE) == [],
+        "not-charged-shaped noise ('your card is not charged until the trial ends', "
+        "'on failure the body is application/problem+json') fires no failure-not-billed "
+        "signal — the match is the failure-billing structure (a failure token within a "
+        "short window of a not/never-charged guarantee, or 'only charged for successful'), "
+        "not a bare trial promise or a bare failure format",
+    )
+
+    # Relabel the host everywhere (surface key + prose) and re-scan.
+    relab_surface = _FNB_SURFACE.replace(_FNB_HOST, _NEUTRAL_HOST)
+    relab_prose = _FNB_PROSE.replace(_FNB_HOST, _NEUTRAL_HOST)
+    _check(
+        _FNB_HOST not in relab_surface and _FNB_HOST not in relab_prose,
+        "every occurrence of the original host was relabeled out of the synthetic input",
+    )
+    relab = _failure_not_billed_signals(relab_surface, relab_prose)
+
+    # (1) Same match count — the failure-not-billed signal is neither lost nor conjured.
+    _check(
+        len(relab) == len(base) == 1,
+        f"failure-not-billed match count invariant under relabel (base {len(base)}, "
+        f"relabel {len(relab)})",
+    )
+    relab_surf, relab_quote = relab[0]
+
+    # (2) The SAME logical surface carries the signal once the host label is
+    # normalized away — the signal did not migrate to a different surface.
+    _check(
+        relab_surf == base_surf.replace(_FNB_HOST, _NEUTRAL_HOST),
+        "failure-not-billed fires on the same (host-normalized) surface under relabel "
+        f"(base {base_surf!r}, relabel {relab_surf!r})",
+    )
+    # (3) The relabeled quote STILL satisfies the live failure-not-billed regex
+    # (the fired form is a failure token adjacent to a not/never-charged
+    # guarantee, not the host) and names no vendor host — the match keyed on the
+    # failure-billing CONTRACT, not who vends it.
+    fnb_re = dict(_offering._SIGNALS["metered_api"])[_FNB_LABEL]
+    _check(
+        fnb_re.search(relab_quote) is not None,
+        f"relabeled failure-not-billed quote still matches the failure-billing signal: {relab_quote!r}",
+    )
+    _check(
+        _FNB_HOST not in relab_quote and _FNB_HOST not in relab_surf,
+        f"vendor host absent from relabeled failure-not-billed evidence (surface {relab_surf!r})",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Surface-read ORDER invariance — the digital_good deliverable-RIGHTS leg.
 #
 # A fresh perturbation AXIS orthogonal to the relabel/identity family above. The
@@ -4948,6 +5097,7 @@ def main() -> int:
         test_offering_relabel_invariance_payment_receipt,
         test_offering_relabel_invariance_plan_purchase,
         test_offering_relabel_invariance_output_retention,
+        test_offering_relabel_invariance_failure_not_billed,
         test_offering_surface_order_invariance_output_license,
         test_offering_surface_order_invariance_org,
         test_offering_content_scale_invariance_org,

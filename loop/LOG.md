@@ -3,6 +3,68 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 153 — 2026-08-01T12:1xZ — TRUTH — failure-not-billed relabel-invariance guard (offering classifier)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`) → no
+peer-gate review owed.
+
+**Infra health / self-heal.** Fresh cloud checkout on `main` at `b80d14e` (Cycle 152). No git
+divergence this fire. The `.venv` `pip install -e .` silently no-op'd on `requests` again (the
+recurring proxy-masking failure: `import requests` → `ModuleNotFoundError`); re-ran `pip install
+requests pyyaml eth-account` verbosely and verified `import requests, yaml, asrs` before trusting
+the suite. Full suite (23 files) green pre-flight; replay guard 24/24, 46.1 F / 85.5 B / +39.4.
+RUNNER AT-FLOOR: newest `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is ~8.4h old at
+fire (12:12Z) — past the 6h floor (the ~10:xx–12:xx local fires have not pushed a fresh artifact;
+borderline runner lag, NOT the machine-asleep stall — cloud cannot repair). Carries to the next
+first-after-16:00 digest.
+
+**What/why (TRUTH — the relabel-invariance leg every recent signal earns).** Added
+`test_offering_relabel_invariance_failure_not_billed` to `tests/test_offering_canonical.py`, the
+signal-level metamorphic mirror of output-retention (151) / plan-purchase (147) / payment-receipt
+(143) / error-contract (91), now covering Cycle 152's `failure-not-billed` metered_api signal.
+Whether a failed unit is billed is a property of the failure-billing CONTRACT the site exposes,
+never of WHO vends it, so the signal must be identity-invariant under a host relabel — this guard
+proves it.
+
+**Non-vacuous synthetic vehicle (why not the real fixture).** The failure-not-billed vocabulary
+is host-FREE by nature (the fired quote carries a failure token adjacent to a not/never-charged
+guarantee, not the vendor's name), so on the real captured `/docs` the signal fires with the host
+in the surface KEY but NOT the quote window — a whole-fixture relabel would leave the evidence
+byte-identical and the invariance would be VACUOUS. Following payment-receipt 143 / output-
+retention 151, the guard scans a SYNTHETIC metered_api surface that seats the host INSIDE the
+evidence: `acme-flux.example` is the surface-key prefix AND sits adjacent to "if a render fails
+it is never charged" (asserted non-vacuous — host in BOTH surface key and padded quote window).
+Relabel the host everywhere → the signal survives with the SAME match count (1), on the SAME
+host-normalized surface, its quote STILL matching the live failure-not-billed regex, with the
+host absent from all rewritten evidence.
+
+**Teeth (precision, the signal's defining risk).** A sibling synthetic surface carries only the
+not-charged-SHAPED noise the signal must REFUSE — a SUBSCRIPTION free-trial $0-eval promise
+("your card is not charged until the trial ends", a not-charged with no failure word) and the
+`error-contract` failure-FORMAT trap ("on failure the body is application/problem+json", a
+failure word with no not-charged) — and fires ZERO failure-not-billed, proving the match keys on
+the failure-billing STRUCTURE (a failure token within a short window of a not/never-charged
+guarantee, or "only charged for successful"), never on a bare trial promise or a bare failure
+format. Verified empirically before writing the test (base=1 host-in-quote, distractor=0,
+relabel=1 host-absent).
+
+**Ship class + evidence.** Tests-only, OFF the scoring path (`git diff --name-only` = 
+`tests/test_offering_canonical.py` ONLY; `asrs/ rubric/ fixtures/` EMPTY) → score-neutral, NOT
+peer-gated; direct-to-main. `test_offering_canonical.py` 49→50; full suite 23 files green;
+replay guard 24/24, 46.1 F / 85.5 B / +39.4; rubric v0.7.
+
+**Canonical pair.** 46.1 F / 85.5 B / delta +39.4 — UNCHANGED (tests-only, no scoring/rubric/
+fixture change; replay guard green). Live signal (read, not re-run — runner at-floor):
+driftflight.com 76.2 C / +30.1 / transactability 62.5, the persistent off-scoring-path divergence
+still open as the P0 [LOCAL] re-baseline.
+
+**Next hypothesis.** The `failure-not-billed` COVERAGE(152)→TRUTH(153) arc still owes a READOUT
+leg — a `_write_methodology_page` paragraph framing "you don't pay for work you didn't get" as
+the metered capital-safety sibling of `payment-receipt` (closing a COVERAGE→TRUTH→READOUT triad,
+the pattern of plan-purchase 146/147/148). In-cloud COVERAGE on committed evidence is now very
+narrow (overage/SLA/balance-check/subscription-cancel all proved blocked Cycle 152); the frontier
+is [LOCAL] fixtures or the READOUT leg.
+
 ## Cycle 152 — 2026-08-01T11:2xZ — COVERAGE — failure-not-billed metered_api signal (offering classifier)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`) → no

@@ -730,6 +730,53 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"|\b\d+[- ]days?\s+(?:free\s+)?trial\b"
             r"|\bstart\s+(?:a|your)\s+(?:free\s+)?trial\b"
             r"|\btry\s+(?:it\s+)?free\s+for\s+\d+\s+days?\b", _F)),
+        # PROGRAMMATIC PLAN PURCHASE — whether an autonomous agent can BUY / commit
+        # to a credit-or-subscription plan through an API CALL (a `POST /plans/{id}/
+        # purchase` endpoint on the plan resource), rather than a human checkout on a
+        # pricing page. This is the "pay programmatically + provision without a human"
+        # capability the PLAYBOOK's lens names, applied to the SUBSCRIPTION archetype,
+        # and it is currently UNCAPTURED. Every existing subscription signal describes
+        # that a plan EXISTS (`subscription`/`recurring`) or how it is PRICED
+        # (`per-month`/`per-month-price`/`annual-billing` the cadence, `seat-licensing`
+        # the per-user basis) or that it can be EVALUATED at $0 first (`free-trial`);
+        # NONE says whether the agent can autonomously COMMIT to the recurring plan.
+        # A storefront whose subscription can only be started by a human clicking
+        # through a checkout is NOT agent-completable at the commit step, no matter how
+        # cleanly it documents its cadence — so a subscription offer that exposes a
+        # programmatic plan-purchase endpoint (buy a credit / subscription plan, a
+        # `purchase` object on a purchasable plan) is MORE agent-completable, and it
+        # is the load-bearing "commit" leg of the north star's agent-native commerce.
+        # It is the subscription-archetype counterpart to metered_api's
+        # `self-provisioning` (obtain API access without a human): here, take on the
+        # recurring commitment without a human.
+        # PRECISION-CRITICAL: bare "plan"/"subscribe to a plan" is a false-positive
+        # minefield present verbatim in the very fixtures we validate on — BOTH
+        # canonical domains' /docs read "Create an account, subscribe to a plan on the
+        # pricing page" (a HUMAN checkout, the exact inverse of the capability) and
+        # drift-flight.org's OpenAPI reads "issued on the dashboard after subscribing
+        # to a plan" (again human-gated); bare "subscription plans" is marketing that
+        # `subscription` already covers. So NEVER match a bare "plan" or a "subscribe
+        # to a plan" phrase: require the PROGRAMMATIC purchase — a `/plans/{id}/
+        # purchase` ENDPOINT PATH, a `purchasable plan`, or a BUY/PURCHASE/ACTIVATE
+        # verb naming a CREDIT-or-SUBSCRIPTION plan (`buy a credit or subscription
+        # plan`). The human "subscribe to a plan on the pricing page", the dashboard
+        # onboarding path, and the bare-"subscription plans" marketing trip none of
+        # these. Fires non-vacuously on driftflight.com (the agents.driftflight.com
+        # llms-full.txt "purchase once with `POST /plans/{planId}/purchase`", "buy a
+        # credit or subscription plan", "Purchasable plans carry a `purchase` object")
+        # and is correctly ABSENT on drift-flight.org (whose ONLY plan prose is the
+        # human dashboard/pricing-page path) — the discovery-layer echo of the real
+        # capability gap, mirroring `self-provisioning` / `payment-receipt`.
+        # driftflight.com ALREADY claims subscription via `subscription`/`per-month`/
+        # etc., so this deepens its evidence without adding or reordering any archetype
+        # (score-neutral); it fires on ZERO of the metered-api (api.replicate.com),
+        # retail (books.toscrape.com), or null (example.com) fixtures, so it can never
+        # CONJURE a subscription claim on a site that does not already make one. The
+        # classifier is off the scoring path.
+        ("plan-purchase", re.compile(
+            r"/plans/[^\s\"'<>]*/purchase\b"
+            r"|\bpurchasable\s+plans?\b"
+            r"|\b(?:buy|buys|buying|purchas(?:e|es|ed|ing)|activate|activates|activating)\s+(?:once\s+)?(?:a|an|your|the)?\s*(?:(?:credit|subscription)\s+(?:or|and|/)\s+)?(?:credit|subscription)\s+plans?\b", _F)),
     ],
     "digital_good": [
         ("generation", re.compile(r"\b(text-to-image|image|video|audio|art)\s+generation\b", _F)),

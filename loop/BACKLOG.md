@@ -540,19 +540,31 @@ design in-cloud, execute locally.
      (a) TRUTH leg was Cycle 143 (PR #134, squash 2fc1415); COVERAGE signal was Cycle 142 (PR #132, squash
      8b5cee3). -->
 
-  <!-- OPEN COVERAGE FRONTIER (post-plan-purchase, in-cloud on committed evidence): subscription is now
-       well-covered (8 signals incl. plan-purchase, Cycle 146) AND the plan-purchase COVERAGE(146)→TRUTH(147)
-       →READOUT(148) arc is FULLY CLOSED — the commit leg is now pinned in code + relabel-invariance test +
-       methodology prose (Cycle 148, `test_methodology_documents_plan_purchase`). The remaining in-cloud
-       strengthenable unit
-       is a DIGITAL_GOOD capability signal — but output FORMAT (PNG/JPEG/MP4/WebP) is a false-positive
-       minefield (badge SVGs, thumbnail JPGs, content-type headers everywhere in the fixtures), so a clean
-       digital_good signal needs a genuinely distinct capability + precision-guarded evidence. A
+  <!-- OPEN COVERAGE FRONTIER (post-output-retention, in-cloud on committed evidence): the DIGITAL_GOOD bank
+       is now DEEP — 11 signals (generation / generate-media / generations / render / translation /
+       hosted-output / output-license / content-provenance / output-resolution + `output-retention`, Cycle
+       150, the LIFECYCLE/delivery-window leg). subscription is well-covered (8 signals incl. plan-purchase,
+       Cycle 146) with its COVERAGE(146)→TRUTH(147)→READOUT(148) arc CLOSED. The remaining IN-CLOUD
+       strengthenable digital_good unit is output FORMAT (PNG/JPEG/MP4/WebP) — a false-positive minefield
+       (badge SVGs, thumbnail JPGs, content-type headers everywhere in the fixtures), so it needs a genuinely
+       distinct capability + precision-guarded evidence and is DEFERRED, not attempted. The natural next
+       METHOD unit for output-retention is a RELABEL-INVARIANCE guard (the TRUTH-leg mirror of plan-purchase
+       Cycle 147 / payment-receipt Cycle 143) — in-cloud, on the committed canonical /docs evidence. A
        subscription-CANCEL / lifecycle-management signal (agent bounds its own recurring spend) is
        [LOCAL]-blocked: the canonical `/cancellation` surface is NOT in any committed fixture (capture one
        [LOCAL] first). service_booking / data_retrieval new signals + the physical_good fulfillment leg stay
        [LOCAL]-blocked (no committed fixture claims them); ACP/UCP/MPP live handshakes + free-tier
        live-wiring stay [LOCAL]. -->
+
+  <!-- CANDIDATE (METHOD, in-cloud, Cycle 151+): `test_offering_relabel_invariance_output_retention` in
+       tests/test_offering_canonical.py — pin Cycle 150's `output-retention` digital_good signal as
+       identity-invariant under a host relabel (a synthetic /docs surface seats the host adjacent to the
+       "hosted URLs that remain available for 90 days; download them into your own storage" phrase; relabel
+       end-to-end; the signal survives with same match count / host-normalized surface / quote still matching
+       the live regex / host absent). TEETH: the file-expiry / support-line / event-hosting distractors fire
+       ZERO. Mirrors the plan-purchase (147) / payment-receipt (143) relabel guards. Off scoring path,
+       score-neutral. -->
+
 <!-- DONE 2026-08-01T04:1xZ (Cycle 145, METHOD, branch loop/runner-registration-guard + PR #138 +
      self-merge squash 60fa743, tests-only/off-scoring-path/score-neutral): "Guard against silent dead
      tests in the hand-maintained runner lists" SHIPPED. `tests/test_runner_registration.py` (4 tests) —

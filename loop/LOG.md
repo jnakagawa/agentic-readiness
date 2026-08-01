@@ -3,6 +3,72 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 150 — 2026-08-01T09:1xZ — COVERAGE — output-retention digital_good signal (offering classifier)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`; git log showed Cycle
+149's METHOD casing cell on main at 8d69699). Infra health: fresh cloud checkout landed detached-HEAD; `git
+checkout -B main origin/main` realigned to 8d69699 (a `git pull` had force-updated origin/main to it). Rebuilt
+env-only deps in a fresh `.venv` — the FIRST `pip install` silently no-op'd (transient proxy failure, only a
+pip-upgrade notice printed), so `import requests`/`yaml`/`eth_account` all failed and the suite showed spurious
+ModuleNotFoundError FAILs; re-running `pip install requests pyyaml eth-account` verbosely installed all deps
+and the full suite went green. Lesson (not new — folded into STATE): a `-q` pip install can mask a transient
+proxy failure; verify `import requests` before trusting a suite result. LOCAL verify runner HEALTHY — newest
+`runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is ~5.35h old at the 09:11Z fire,
+INSIDE the 6h floor. No repair consumed the cycle.
+
+**Track / rotation.** COVERAGE (focus pointer was "COVERAGE next" after Cycle 149 METHOD). A new capability
+signal on committed evidence — the narrow in-cloud digital_good frontier STATE flagged, threaded past the
+output-FORMAT false-positive minefield by picking a genuinely distinct capability with anchored evidence.
+
+**What/why.** Added an `output-retention` signal to `asrs/offering.py`'s digital_good bank: the "complete the
+job" LIFECYCLE leg of a digital good — how long the generated deliverable PERSISTS at its hosted URL, and that
+the agent must retrieve it (download it into its OWN storage) before that window closes. Distinct from every
+existing digital_good signal (`generation`/`generate-media`=WHAT, `hosted-output`=WHERE, `output-resolution`=
+SHAPE, `output-license`=USE-rights, `content-provenance`=TRUST) — NONE says HOW LONG the hosted deliverable
+lives. It is the digital_good sibling of metered_api's `cancel-job` (both job-lifecycle control legs: there
+STOP a runaway job, here COLLECT a finished job's deliverable in time). An agent on a long/batched job that
+reads "here is a hosted URL" but not "it is gone in 90 days — download it into your own storage" silently
+LOSES its output. Precision-first, vendor-neutral: a bare window ("available for 24 hours", "hosted for 3
+days") is a false-positive minefield, so the window must attach to a DELIVERABLE noun with a persistence verb
+(output/render/image/url/asset/file/generation/deliverable within a short span of `remain(s/ing) available` /
+`hosted` / `stored` / `retained` / `kept` `for N hours|days|weeks|months`), OR be the "download ... into your
+own storage/bucket" step, OR an explicit "<output/render/...> retention window/period/policy". Dodges the
+support-line ("agents remain available for 24 hours"), event-hosting ("conference hosted for 3 days"),
+free-trial ("free for 30 days") senses AND — the critical trap — api.replicate.com's Files API signed-URL/file
+EXPIRY ("When the file expires", "a Unix timestamp with expiration date of this download URL"), which must NOT
+conjure a digital_good claim on a metered_api-only site.
+
+**Ship class.** Off the scoring path (`discover_offering` is `--battery auto`-only; `git diff --name-only` over
+`asrs/scoring.py asrs/probes.py asrs/scorecard.py rubric/ fixtures/` all EMPTY; changed = `asrs/offering.py` +
+`tests/test_offering.py` + `tests/test_offering_canonical.py` ONLY) → score-neutral, rubric v0.7 unchanged, NOT
+peer-gated. Branch `loop/output-retention-signal` + PR #142 + self-merge (squash 24412ae), matching the
+offering-signal COVERAGE precedent (Cycles 142/146) — the "no self-review-and-merge in the same fire" rule
+binds only PEER-GATED PRs, and this is not one. No CI checks configured (`get_status` total_count=0); the
+local suite is the gate.
+
+**Evidence / canonical numbers.** Fires non-vacuously on BOTH canonical domains' captured `/docs` ("returned as
+hosted URLs that remain available for 90 days; download them into your own storage for anything long-lived") —
+2 alternation hits each — and on ZERO of the api.replicate.com (file-expiry trap dodged) / books.toscrape.com /
+example.com fixtures. Both canonical domains ALREADY claim digital_good, so this DEEPENS evidence without
+adding or reordering any archetype. Two-test guard `test_output_retention_precision_synthetic` (8 pos / 8 neg)
++ `test_output_retention_fires_on_real_captured_surfaces` in `tests/test_offering.py`; `output-retention`
+registered in `test_offering_canonical.py`'s `_ISOLATION_EVIDENCE` cross-signal map (the completeness meta-guard
+caught the missing label → added "renders remain available for 90 days"). `test_offering.py` 62→64;
+`test_offering_canonical.py` 47→48; runner-registration meta-guard 4/4; full suite 23 files green. Score-
+neutrality PINNED by construction: replay guard 24/24 — **drift-flight.org 46.1 F / driftflight.com 85.5 B /
+delta +39.4** UNCHANGED; canonical offering claimed SET+ORDER unchanged. Live signal (read, not re-run): the
+03:50Z local artifact still shows driftflight.com 76.2 C / +30.1 / transactability 62.5 — the off-scoring-path
+transactability-drop divergence persists (Aug-1, day 3), to be reported in the first-after-16:00 digest.
+
+**Next hypothesis.** METHOD next (Cycle 151). The digital_good bank is now deep (11 signals: generation /
+generate-media / generations / render / translation / hosted-output / output-license / content-provenance /
+output-resolution / output-retention). In-cloud COVERAGE frontier on committed evidence narrows further —
+remaining distinct digital_good capabilities (output FORMAT) stay a false-positive minefield; a natural METHOD
+follow-up is a relabel-invariance guard for output-retention (the TRUTH-leg mirror of plan-purchase Cycle 147 /
+payment-receipt Cycle 143), or the still-open metamorphic-grid cells (casing on the RETAIL pole, content-scale
+/ noise-surface on the metered_api MACHINE surface). subscription-CANCEL / lifecycle stays [LOCAL]-blocked (no
+committed `/cancellation` fixture); ACP/UCP/MPP + free-tier live-wiring stay [LOCAL].
+
 ## Cycle 149 — 2026-08-01T08:1xZ — METHOD — casing-invariance mirrored onto the metered_api MACHINE pole
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`; git log shows Cycle

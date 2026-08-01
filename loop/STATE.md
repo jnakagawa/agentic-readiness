@@ -1,8 +1,42 @@
 # Loop state
 
-- Cycle counter: 149
+- Cycle counter: 150
 - Started: 2026-07-23 (UTC)
-- RUNNER HEALTHY at 2026-08-01T08:1xZ (Cycle 149) — newest verify
+- RUNNER HEALTHY at 2026-08-01T09:1xZ (Cycle 150) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~5.35h old at the 09:11Z fire, INSIDE the 6h floor but nearing it (the
+  ~10:xxZ local fire should refresh it). Live signal (read, not re-run): driftflight.com 76.2 C / +30.1 /
+  transactability 62.5 — the transactability-drop divergence PERSISTS a third day (Aug-1), still off the
+  scoring path; the in-cloud replay guard stays the frozen independent signal (24/24, 46.1 F / 85.5 B / +39.4).
+  Resolution = queued P0 [LOCAL] re-baseline; the persistent divergence goes in the next first-after-16:00
+  digest (~Aug-1 16:xxZ). Infra note (Cycle 150): fresh cloud checkout landed detached-HEAD, `git checkout -B
+  main origin/main` realigned to 8d69699; the FIRST `.venv` `pip install -q` silently no-op'd (transient proxy
+  failure masked by `-q` — the suite showed spurious `ModuleNotFoundError: requests/yaml`), re-running
+  `pip install requests pyyaml eth-account` verbosely fixed it. LESSON: verify `import requests` before
+  trusting a suite result; a `-q` pip install can hide a transient proxy failure.
+- FOCUS POINTER (Cycle 150 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 150 was
+  COVERAGE, so Cycle 151 is METHOD). Cycle 150 shipped a **COVERAGE digital_good signal** — `output-retention`
+  in `asrs/offering.py`'s digital_good bank: the "complete the job" LIFECYCLE leg of a digital good (how long
+  the generated deliverable PERSISTS at its hosted URL; the agent must download it into its OWN storage before
+  the window closes) — distinct from every existing digital_good signal (WHAT/WHERE/SHAPE/USE-rights/TRUST;
+  NONE says HOW LONG it lives), the digital_good sibling of metered_api's `cancel-job`. Precision-first: the
+  window must attach to a DELIVERABLE noun + persistence verb (remain available / hosted / stored / retained /
+  kept for N hours|days), OR be "download ... into your own storage/bucket", OR an explicit "<output/render/
+  ...> retention window/period/policy" — dodges the support-line / event-hosting / free-trial senses AND
+  api.replicate.com's Files API signed-URL/file EXPIRY trap (must not conjure digital_good on a metered_api-only
+  site). Fires non-vacuously on BOTH canonical `/docs` ("hosted URLs that remain available for 90 days;
+  download them into your own storage"), ZERO on api/retail/null. Off the scoring path (`git diff --name-only`
+  over scoring.py/probes.py/scorecard.py/rubric/fixtures EMPTY; changed = `asrs/offering.py` +
+  `tests/test_offering.py` + `tests/test_offering_canonical.py`) → score-neutral (claimed SET+ORDER unchanged;
+  digital_good deepened only), NOT peer-gated; branch loop/output-retention-signal + PR #142 + self-merge
+  (squash 24412ae). Two-test guard in `test_offering.py` (62→64) + `output-retention` added to
+  `test_offering_canonical.py`'s `_ISOLATION_EVIDENCE` completeness map (47→48). Full suite 23 files green;
+  replay guard 24/24, 46.1 F / 85.5 B / +39.4; rubric v0.7. NEXT (METHOD 151): a measurement-rigor unit — a
+  relabel-invariance guard for `output-retention` (the TRUTH-leg mirror of plan-purchase 147 / payment-receipt
+  143), or an open metamorphic-grid cell (casing on the RETAIL pole; content-scale / noise-surface on the
+  metered_api MACHINE surface). Remaining distinct digital_good caps (output FORMAT) stay a false-positive
+  minefield; subscription-CANCEL / lifecycle stays [LOCAL]-blocked (no committed `/cancellation` fixture);
+  service_booking / data_retrieval + physical fulfillment + ACP/UCP/MPP + free-tier live-wiring stay [LOCAL].
+- SUPERSEDED (Cycle 149 focus pointer): RUNNER HEALTHY at 2026-08-01T08:1xZ (Cycle 149) — newest verify
   `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is ~4.3h old at the fire, INSIDE
   the 6h floor (Cycle 137–144 machine-asleep-stall recovery holds four cycles on). Live signal:
   driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS a
@@ -12,7 +46,7 @@
   stale/diverged Cycle-94 fork this fire — `git fetch origin main` + `git reset --hard origin/main` realigned
   to 3cfc79d before working; rebuilt env-only deps in a fresh `.venv` (`pip install -e . requests eth-account
   pyyaml`) for the full suite.
-- FOCUS POINTER (Cycle 149 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 149 was
+- SUPERSEDED (Cycle 149) — COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 149 was
   METHOD, so Cycle 150 is COVERAGE). Cycle 149 shipped a **METHOD metamorphic cell** — `test_offering_casing_
   invariance_machine` in `tests/test_offering_canonical.py`: the text-casing invariance axis (Cycle 133,
   org/com PROSE poles only) mirrored onto the qualitatively different metered_api MACHINE pole

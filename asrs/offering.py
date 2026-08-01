@@ -1105,6 +1105,51 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"\b(?:output|render|image|video|audio|asset|file|generation|url|deliverable)s?\b[^.\n]{0,40}?\b(?:remain(?:s|ing)?\s+available|hosted|stored|retained|kept)\s+for\s+\d+\s+(?:hours?|days?|weeks?|months?)\b"
             r"|\bdownload\s+(?:them|it|these|the\s+(?:images?|outputs?|renders?|results?|files?|assets?|generations?))\s+into\s+your\s+own\s+(?:storage|bucket|store)\b"
             r"|\b(?:output|render|image|video|asset|file|deliverable|generation)\s+retention\s+(?:window|period|policy)\b", _F)),
+        # PROGRAMMATIC OUTPUT-VARIANT SELECTION — whether an autonomous agent can
+        # DISCOVER and SELECT which VARIANT a generative digital-good service
+        # produces: a named, listable style PRESET the agent passes on the request
+        # so it obtains a FIT-FOR-PURPOSE, REPRODUCIBLE deliverable rather than a
+        # nondeterministic one it cannot use downstream. This is the "complete the
+        # job with a USABLE deliverable" leg of the digital_good archetype, and it
+        # is currently UNCAPTURED. Every existing digital_good signal describes a
+        # PROPERTY of the artifact the agent RECEIVES — that media is generated
+        # (`generation`/`generate-media`/`generations`/`render`/`translation`), how
+        # it is delivered (`hosted-output`), what rights attach (`output-license`),
+        # whether it is authentic (`content-provenance`), how large it is
+        # (`output-resolution`), how long it persists (`output-retention`); NONE
+        # says whether the agent can CONTROL which variant gets produced. An agent
+        # generating at scale (a catalog run where "the two-hundredth image has to
+        # match the first") cannot use a service that returns a random style each
+        # call — a selectable preset that "locks palette, lighting, and rendering
+        # style" is exactly what makes the deliverable consistent and pipeline-safe,
+        # so a generative offer that documents programmatic variant selection is
+        # MORE agent-completable. Vendor-neutral variant-selection vocabulary (a
+        # STYLE preset, a preset SLUG/STRING/PARAMETER/ID/NAME, pick/choose/select/
+        # browse/pass/send a preset, a preset that locks/pins the style), never a
+        # vendor.
+        # PRECISION-CRITICAL: bare "model" and "tier" are false-positive minefields —
+        # a language/business/role/3D "model" and a billing "tier" (which the
+        # metered_api `tiered-volume` signal already owns) appear all over these
+        # docs — so NEITHER is ever matched. "preset" is anchored to a STYLE preset,
+        # a preset PARAMETER (slug/string/param/id/name), an explicit SELECT/BROWSE
+        # verb naming a preset, or the determinism verb (a preset locks/pins the
+        # style); the preset-VERB ("preset the oven to 200C"), factory/camera presets,
+        # and "reset" trip none of these. Fires non-vacuously on BOTH canonical
+        # domains' captured surfaces (homepage/docs "Pick a preset", "style presets",
+        # "Browse presets", and the `preset` request-parameter "A style preset slug")
+        # — BOTH ALREADY claim digital_good (both are image-generation storefronts, so
+        # variant selection is a shared deliverable-control capability, NOT a
+        # payment/rails gap), so it deepens evidence without adding or reordering any
+        # archetype (score-neutral, pinned by tests/test_offering_canonical.py) — and
+        # on ZERO of the metered-api (api.replicate.com), retail (books.toscrape.com),
+        # or null (example.com) fixtures, so it can never CONJURE a digital_good claim
+        # on a site that does not already make one. The classifier is off the scoring
+        # path.
+        ("variant-selection", re.compile(
+            r"\bstyle\s+presets?\b"
+            r"|\bpresets?\s+(?:slug|string|param(?:eter)?s?|id|name)\b"
+            r"|\b(?:pick|choose|select|browse|specify|pass|send)\s+(?:a\s+|the\s+|your\s+|one\s+)?presets?\b"
+            r"|\bpresets?\s+(?:lock|pin)s?\b", _F)),
     ],
     "physical_good": [
         # PRECISION-CRITICAL: bare "ship" is metaphorical on many agent-native

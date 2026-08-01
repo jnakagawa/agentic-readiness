@@ -3,6 +3,108 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 164 — 2026-08-01T23:12Z — COVERAGE — variant-selection digital_good signal (programmatic output-variant selection)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed.
+
+**Infra health / self-heal.** Fresh cloud checkout landed on detached HEAD at Cycle 163's `33d970e`
+(= `origin/main` tip); `git fetch origin main` first (Cycle-151 stale-`origin/main` lesson) — already at
+the tip, `checkout -B main origin/main` aligned, no work lost. Created `.venv`, installed `requests pyyaml
+eth-account pytest`, verified `import requests, yaml, asrs` before trusting the suite; full suite (23
+files, 378 tests) green pre-flight. RUNNER AT-FLOOR (unchanged from Cycles 158–163): newest
+`runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is ~19.4h old at fire (23:12Z) —
+past the 6h floor (borderline runner lag, NOT the machine-asleep stall — cloud cannot repair). Already
+carried in the 16:12Z Cycle-157 digest; no new flag owed this fire.
+
+**Scoping the COVERAGE frontier (why this signal, and why NOT the near-misses).** Rotation pointed
+COVERAGE. STATE had flagged in-cloud offering COVERAGE as "essentially exhausted (metered_api = 26
+signals)"; this cycle re-tested that claim rather than assuming it, and found the honest picture is
+archetype-specific. The signal bank is metered_api-HEAVY (26) vs subscription 8 / digital_good 10 /
+physical_good 9 / service_booking 5 / data_retrieval 5, so the leverage is in an UNDER-covered archetype
+the canonical evidence can still verify non-vacuously. Rejected two near-misses on discipline grounds
+(recorded so a future cycle does not re-mine them): (1) a subscription "credit-balance" (prepaid /
+top-up / draw-down) signal — the canonical .com docs carry rich prepaid-credit prose, BUT metered_api
+ALREADY owns it via `credit-metered` (`\bcredit\s+(?:plan|balance|…)`, `(?:prepay|prepaid|top-up|…)\s+
+credits?`); adding it to subscription would DUPLICATE an existing signal and CROSS-poach the prepaid
+concept across archetypes — the bank already (correctly) classifies prepaid credit as metered_api. (2) a
+digital_good "output-format/MIME" signal — no genuine output-file-format prose exists in the committed
+evidence (the "format" hits are the "flies in formation" metaphor; "mimeType"/"Content-Type" are the
+JSON REQUEST type; "watermark" is the sandbox test key) → it would be VACUOUS in-cloud. Also confirmed
+the structured catalog/pricing JSON surfaces (`/catalog.json`, `/pricing.json`, `/plans`) are 404 on
+EVERY committed fixture (books.toscrape / driftflight.{com,org} / api.replicate) → that item stays
+`[LOCAL]`, unverifiable in-cloud.
+
+**What/why (COVERAGE — a genuinely distinct, verifiable digital_good capability the bank was missing).**
+Added a `variant-selection` signal to `asrs/offering.py`'s digital_good bank: whether an autonomous agent
+can DISCOVER and SELECT which OUTPUT VARIANT a generative digital-good service produces — a named,
+listable style PRESET the agent passes on the request so it obtains a FIT-FOR-PURPOSE, REPRODUCIBLE
+deliverable rather than a nondeterministic one it cannot use downstream. This is the "complete the job
+with a USABLE deliverable" leg of the PLAYBOOK's lens, applied to digital_good. It is genuinely DISTINCT
+from every one of the 10 existing digital_good signals, all of which describe a PROPERTY of the artifact
+the agent RECEIVES — that media is generated (`generation`/`generate-media`/`generations`/`render`/
+`translation`), how it is delivered (`hosted-output`), its rights (`output-license`), authenticity
+(`content-provenance`), size (`output-resolution`), persistence (`output-retention`); NONE says whether
+the agent can CONTROL which variant gets produced. An agent generating at scale (a catalog run where
+"the two-hundredth image has to match the first") cannot use a service that returns a random style each
+call — a selectable preset that "locks palette, lighting, and rendering style" is exactly what makes the
+deliverable consistent and pipeline-safe. Addresses the metered_api-heavy imbalance (digital_good 10→11)
+and moves the north-star's measurement-flexibility axis (deliverable-control, not just deliverable-
+property).
+
+**Precision (bare "model"/"tier" is a false-positive minefield).** NEVER matches bare "model" (a
+language/business/role/3D model — all present in these docs) or "tier" (a billing tier, already owned by
+metered_api `tiered-volume`). "preset" is anchored to a STYLE preset, a preset PARAMETER
+(slug/string/param/id/name), an explicit SELECT/BROWSE/PICK/PASS verb naming a preset, or the determinism
+verb (a preset locks/pins the style). Verified empirically BEFORE writing: 9 homonym distractors fire
+ZERO — large language model, business model, role model, 3D model, model number, volume tiers, "preset
+the oven to 200C" (the preset VERB), "factory preset", "reset your password". Vendor-neutral (keys on the
+style-preset selection vocab; the drift docs' driftflight/preset-slug nouns are NOT required to match).
+
+**Non-vacuous / honest reading (fires on BOTH sides, NOT a delta-widener).** Fires 14× on the real
+captured driftflight.com and 9× on drift-flight.org (homepage/docs "Pick a preset", "style presets",
+"Browse presets", and the `preset` request-parameter "A style preset slug"). UNLIKE the payment/rails
+signals (`free-included-usage`/`plan-purchase`/`self-provisioning`, which fire .com-only as the honest
+echo of the with-rails/no-rails gap), variant-selection fires on BOTH canonical sides because
+output-variant selection is a DELIVERABLE-CONTROL capability BOTH image-generation storefronts genuinely
+share — NOT a rails gap. It is not there to widen the delta; it measures a real generative-good
+capability. Fires on ZERO of api.replicate.com (metered_api-only — the bare-"model" homonym trap dodged,
+so it does NOT conjure digital_good), books.toscrape.com (retail), or example.com (null).
+
+**Ship class + evidence.** COVERAGE offering-bank increment, direct-to-main (Cycle-160/152/150
+precedent — the offering classifier is OFF the scoring path, grep-reconfirmed: `asrs/scoring.py` /
+`asrs/probes.py` carry NO reference to `classify_offering` / `discover_offering` / `_SIGNALS`). Three
+edits: the signal in `asrs/offering.py`; the `_ISOLATION_EVIDENCE` completeness entry in
+`tests/test_offering_canonical.py` (the matrix must cover EXACTLY the live bank — 63→64 signals — so a
+new signal cannot escape cross-archetype isolation); the `free-included-usage`-mirrored guard pair in
+`tests/test_offering.py` (`test_variant_selection_precision_synthetic` + `_fires_on_real_captured_surfaces`,
+registered in `main()`). SCORE-NEUTRAL by construction: BOTH canonical domains ALREADY claim digital_good,
+so the signal only DEEPENS the claim — claimed SET+ORDER `['metered_api','digital_good','subscription']`
+unchanged on both; `git diff --name-only` = `asrs/offering.py` + the two test files ONLY
+(`asrs/scoring.py asrs/probes.py rubric/ fixtures/` EMPTY); rubric v0.7. Full suite 23 files green;
+`test_offering.py` 70→72, `test_offering_canonical.py` 55→55 (isolation matrix entry added, count of test
+FUNCTIONS unchanged); in-cloud replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss.
+
+**Canonical pair.** 46.1 F / 85.5 B / delta +39.4 — UNCHANGED (off the scoring path, claimed set+order
+byte-identical; replay guard green). Live signal (read, not re-run — runner at-floor): drift-flight.org
+46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5, the persistent off-scoring-path
+divergence still open as the P0 `[LOCAL]` re-baseline.
+
+**Comms.** Fire at 23:12Z is NOT the first after 16:00 UTC (Cycle 157 sent the digest at 16:12Z) → no
+DM per comms policy (offering-signal increment, off the scoring path, no sensitive-class PR, nothing
+score-moving). The runner-floor breach + persistent divergence carry to the next first-after-16:00 digest.
+
+**Next hypothesis.** Rotate TRUTH next (Cycle 164 was COVERAGE). The `variant-selection` signal earns
+the metamorphic mirror every recent signal gets — a `test_offering_relabel_invariance_variant_selection`
+in `tests/test_offering_canonical.py` (whether an agent can select the output variant is a property of
+the preset CONTRACT, not who vends it → identity-invariant under a host relabel), then a READOUT
+methodology paragraph ("Getting a consistent, fit-for-purpose deliverable") closing a
+COVERAGE(164)→TRUTH→READOUT arc. NOTE for a future COVERAGE cycle: with digital_good now at 11, the
+remaining under-covered archetypes (service_booking 5, data_retrieval 5, physical_good 9) have NO or thin
+committed claiming evidence (books.toscrape is a 3.4KB retail catalog; service_booking / data_retrieval
+have no committed claiming fixture at all), so strengthening THEM is `[LOCAL]` (needs a captured fixture
+from a real booking / data-retrieval / mixed storefront) — a good candidate to design + queue.
+
 ## Cycle 163 — 2026-08-01T22:16Z — METHOD — content-scale invariance on the MACHINE pole (offering classifier)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

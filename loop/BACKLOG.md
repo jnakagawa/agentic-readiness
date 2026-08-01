@@ -221,6 +221,22 @@ design in-cloud, execute locally.
   OFFERING guard 12/12 unchanged. New guard `test_pricing_surface_is_read_live` + wiring test extended;
   `test_offering.py` 23→24; suite 240 tests. See LOG Cycle 70.
 
+- **[LOCAL] Strengthen the UNDER-COVERED archetypes (service_booking / data_retrieval / physical_good)**
+  (COVERAGE, opened Cycle 164). The offering signal bank is metered_api-HEAVY: metered_api 26, digital_good
+  11 (post-Cycle-164 `variant-selection`), physical_good 9, subscription 8, service_booking 5,
+  data_retrieval 5. The three thin archetypes CANNOT be strengthened non-vacuously in-cloud — no committed
+  fixture CLAIMS service_booking or data_retrieval at all, and the only physical_good fixture
+  (books.toscrape.com) is a ~3.4KB retail catalog whose fulfillment prose is already fully mined
+  (add-to-cart / stock / priced-listing). To close the imbalance and move the north-star's "many storefront
+  types" axis, capture LIVE fixtures from real storefronts that genuinely claim these archetypes —
+  e.g. a booking/reservation service (restaurant/salon/clinic booking API), a data-retrieval/enrichment
+  API (records lookup / dataset feed), and a MIXED storefront (retail + API) to exercise multi-archetype
+  classification — via `asrs.cli score <domain> --record-fixture fixtures/canonical/<domain>.json` (static
+  $0), then mine each for genuinely distinct, precision-guarded capability signals the same way Cycle 164
+  did for digital_good. Off the scoring path, score-neutral; each new signal needs the isolation-matrix
+  entry + a precision/real-evidence guard pair. Prefer the booking fixture first (service_booking is tied
+  for thinnest and has zero committed evidence).
+
 - **[LOCAL] Wire + verify the STRUCTURED catalog / pricing JSON surfaces** (COVERAGE, follow-up to Cycle
   70's `/pricing`). The directive names "manifest/**catalog**"; `/catalog.json`, `/pricing.json`, `/plans`
   are conventional structured-JSON offering/billing docs but 404 on EVERY committed fixture, so adding them

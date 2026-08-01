@@ -3079,6 +3079,108 @@ def test_free_included_usage_fires_on_real_captured_surfaces():
     print("  ok: free-included-usage is ABSENT on the api / retail / null fixtures (non-vacuous, score-neutral)")
 
 
+def test_variant_selection_precision_synthetic():
+    # VARIANT-SELECTION is the digital_good "complete the job with a USABLE
+    # deliverable" leg: whether an agent can DISCOVER and SELECT which output variant
+    # a generative service produces (a named, listable style preset it passes on the
+    # request) so it obtains a fit-for-purpose, REPRODUCIBLE deliverable rather than a
+    # nondeterministic one. Each POSITIVE is real variant-selection prose that must
+    # claim digital_good via the new signal; each NEGATIVE is a "model"/"preset"
+    # homonym that must NOT fire it — the precision traps are the bare "model"
+    # minefield (a language/business/role/3D model, which is why "model" is NEVER
+    # matched), a billing "tier" (owned by metered_api `tiered-volume`), the preset
+    # VERB ("preset the oven"), factory/camera presets, and "reset".
+    positives = {
+        "style presets": "Every render uses one of our style presets for a consistent look.",
+        "preset slug": "Pass a preset slug on the request to lock the look.",
+        "preset string param": "preset string — a style preset slug (see presets below).",
+        "pick a preset": "Pick a preset, send your prompt, and every render matches.",
+        "browse presets": "Browse presets and choose the one that fits your campaign.",
+        "select a preset": "Select a preset so the whole catalog stays consistent.",
+        "preset locks style": "A preset locks palette, lighting, and rendering style across prompts.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("gen.test", {"/llms.txt": text})
+        assert prof.claims("digital_good"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "digital_good"
+            for s in c.signals
+        }
+        assert "variant-selection" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real variant-selection phrasings each fire variant-selection")
+
+    negatives = {
+        "language model": "We fine-tuned a large language model on your corpus.",
+        "business model": "Our business model is a flat monthly subscription.",
+        "role model": "She has always been a role model for the team.",
+        "3d model": "Import a 3D model of the building into the scene.",
+        "model number": "The device model number is printed on the back.",
+        "billing tier": "Higher volume tiers unlock committed-use discounts.",
+        "preset verb oven": "Preset the oven to 200C before you start.",
+        "factory preset": "Restore the factory preset to clear your changes.",
+        "reset password": "Reset your password from the account page.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"/llms.txt": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "variant-selection" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} model/preset/tier homonym strings do NOT fire "
+        "variant-selection (precision)"
+    )
+
+
+def test_variant_selection_fires_on_real_captured_surfaces():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the variant-selection signal fires on the
+    # GENUINE preset-selection prose captured live from BOTH canonical domains — the
+    # homepage/docs "Pick a preset", "style presets", "Browse presets", and the `preset`
+    # request-parameter "A style preset slug" — captured verbatim in the committed
+    # fixtures. Run the REAL discovery path (from_fixture -> discover_offering) so the
+    # signal is exercised exactly as a live crawl would.
+    #
+    # UNLIKE payment/rails signals (free-included-usage, plan-purchase, self-provisioning)
+    # this fires on BOTH canonical sides, NOT only .com: output-variant selection is a
+    # DELIVERABLE-CONTROL capability BOTH image-generation storefronts genuinely share,
+    # not a with-rails/no-rails gap. That is the honest reading — the signal is not there
+    # to widen the delta, it is there to measure a real generative-good capability.
+    #
+    # SCORE-NEUTRAL by construction: both domains already claim digital_good, so
+    # variant-selection evidence can only deepen that claim — never add an archetype or
+    # reorder. The classifier is off the scoring path; the canonical pair's claimed
+    # SET+ORDER is unchanged (pinned by tests/test_offering_canonical.py and the
+    # canonical replay guard).
+    for dom in ("driftflight.com", "drift-flight.org"):
+        ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        prof = offering.discover_offering(ctx)
+        assert prof.claims("digital_good"), (dom, prof.archetypes)
+        dg = next(c for c in prof.claimed if c.archetype == "digital_good")
+        vs = [s for s in dg.signals if s.label == "variant-selection"]
+        assert vs, (dom, {s.label for s in dg.signals})
+        assert "preset" in vs[0].quote.lower(), (dom, vs[0].quote)
+        assert prof.archetypes == ["metered_api", "digital_good", "subscription"], (dom, prof.archetypes)
+        print(f"  ok: variant-selection fires on REAL captured {dom} prose — quote: {vs[0].quote!r}")
+
+    # NON-VACUOUS negatives: a metered-API marketplace (api.replicate.com), a real retail
+    # storefront (books.toscrape.com), and a null site (example.com) document no
+    # output-variant selection — the signal must be absent on all three and must not
+    # conjure or reorder any archetype (in particular it must NOT conjure digital_good on
+    # the metered_api-only api.replicate.com, whose docs are full of the bare "model"
+    # homonym the signal deliberately never matches).
+    for dom, expected in (
+        ("api.replicate.com", ["metered_api"]),
+        ("books.toscrape.com", ["physical_good"]),
+        ("example.com", []),
+    ):
+        nctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        nprof = offering.discover_offering(nctx)
+        nlabels = {s.label for c in nprof.claimed for s in c.signals}
+        assert "variant-selection" not in nlabels, (dom, nlabels)
+        assert nprof.archetypes == expected, (dom, nprof.archetypes)
+    print("  ok: variant-selection is ABSENT on the api / retail / null fixtures (non-vacuous, score-neutral)")
+
+
 def main() -> int:
     tests = [
         test_api_storefront_claims_agent_native_not_physical,
@@ -3148,6 +3250,8 @@ def main() -> int:
         test_reserve_and_settle_fires_on_real_captured_surfaces,
         test_free_included_usage_precision_synthetic,
         test_free_included_usage_fires_on_real_captured_surfaces,
+        test_variant_selection_precision_synthetic,
+        test_variant_selection_fires_on_real_captured_surfaces,
         test_priced_listing_precision_synthetic,
         test_priced_listing_fires_on_real_captured_retail,
         test_strip_html_drops_script_style_and_tags,

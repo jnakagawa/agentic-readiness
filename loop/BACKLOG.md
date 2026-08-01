@@ -536,7 +536,22 @@ design in-cloud, execute locally.
      scoring.py/probes.py/offering.py/rubric/fixtures EMPTY) → score-neutral, rubric v0.7, replay guard 24/24 /
      46.1 F / 85.5 B / +39.4. Full suite 23 files green. See LOG Cycle 154. -->
 
-<!-- COVERAGE-IN-CLOUD EXHAUSTION (recorded Cycle 152 so future cycles skip the re-sweep): a broad
+<!-- DONE 2026-08-01T15:12Z (Cycle 156, COVERAGE, direct-to-main, score-neutral): a SECOND genuinely
+     distinct non-colliding metered_api signal found on committed evidence — `reserve-and-settle` in
+     `asrs/offering.py` (the capital-safety leg that bounds a SUCCESSFUL call's cost: reserve a spend
+     ceiling up front, charged only actual, refunded the remainder — the metered sibling of Cycle 152's
+     `failure-not-billed`, which bounds a FAILURE's cost). Fires on BOTH real driftflight.com agent
+     surfaces (llms.txt + llms-full.txt — "your wallet reserves the ceiling up front, then you are
+     charged only actual … the escrow refunds the rest"), ZERO on .org (no llms.txt) / api.replicate.com
+     / retail / null (the with-rails capability-gap echo, payment-receipt shape). Precision-first: NEVER
+     bare reserve/refund/ceiling/escrow — 7 homonym distractors verified firing zero. `_ISOLATION_EVIDENCE`
+     extended (50→51), payment-receipt-mirrored guard pair in `test_offering.py` (66→68). SCORE-NEUTRAL
+     (.com already claims metered_api → claim only deepened; claimed set+order unchanged both; classifier
+     off scoring path grep-reconfirmed) → rubric v0.7, replay guard 24/24 / 46.1 F / 85.5 B / +39.4. See
+     LOG Cycle 156. TRUTH follow-up (relabel-invariance guard) + READOUT (methodology paragraph) are the
+     next-two-rotation legs per the focus pointer, closing the COVERAGE→TRUTH→READOUT arc. -->
+<!-- COVERAGE-IN-CLOUD EXHAUSTION (recorded Cycle 152; UPDATED Cycle 156 — reserve-and-settle was a second
+     distinct signal found after this note, so the frontier is narrower now but was NOT fully dry): a broad
      capability-vocabulary sweep of the rich committed fixtures (drift pair + api.replicate.com) this cycle
      REJECTED as vacuous-or-colliding: (a) `overage`/quota-boundary billing — metered_api's `usage-based`
      regex ALREADY matches bare `\boverage\b`, so any overage prose already claims metered_api; a

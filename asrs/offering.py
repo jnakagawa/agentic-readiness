@@ -709,6 +709,55 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"[^.<>]{0,60}?\b(?:fail(?:s|ed|ure)?|errored|did not complete|does not complete"
             r"|didn.t complete|incomplete|unsuccessful|time(?:s|d)? out)\b"
             r"|\bonly\s+(?:charged|billed)\s+(?:for\s+)?(?:successful|completed)\b", _F)),
+        # RESERVE-AND-SETTLE — whether an agent can CAP its per-call exposure up
+        # front: reserve a spend CEILING before the call, then be charged only the
+        # ACTUAL usage, the unused remainder refunded. This is a capital-safety leg
+        # the PLAYBOOK's lens names directly — an autonomous per-call buyer that can
+        # bound its WORST-CASE cost per request (reserve a ceiling, pay actual)
+        # controls its exposure against a variable-priced endpoint the way a human
+        # sets a credit-card hold; it never overpays for a call that turned out
+        # cheaper than the ceiling. It is DISTINCT from every existing metered_api
+        # signal: `x402`/`agent-payment-rail` say the agent CAN pay (which rails
+        # exist), `payment-receipt` is the proof of a SUCCESSFUL charge (the
+        # accounting AFTER), `failure-not-billed` is whether a FAILED call is free,
+        # `credit-metered`/`pay-per`/`usage-based`/`tiered-volume` are how you are
+        # PRICED on success — NONE says the agent can BOUND a single call's maximum
+        # cost before making it and be refunded the difference. It is the metered
+        # capital-safety sibling of `failure-not-billed`: that one bounds the cost of
+        # a FAILURE, this one bounds the cost of a SUCCESS.
+        # Vendor-neutral reserve-and-settle vocabulary — reserving a spend ceiling,
+        # a reserve-and-pay-actual rail, being charged only actual against a reserved
+        # ceiling, an escrow/channel that refunds the unused remainder — the same
+        # open-convention category as REST/GraphQL/OpenAPI/x402 already in this bank,
+        # never a vendor (the drift docs' MPP/USDC nouns are not required to match).
+        # PRECISION-CRITICAL: bare "reserve"/"refund"/"ceiling"/"escrow" is a
+        # false-positive minefield — a hotel "reservation", "we reserve the right",
+        # a retail "full refund within 30 days", cloud "reserved capacity", a
+        # "ceiling fan". So NEVER match a bare token: require the NAMED
+        # reserve-and-pay-actual rail, an explicit "reserve(s) the ceiling" (a SPEND
+        # ceiling, not a generic reservation), "charged only actual" ANCHORED to a
+        # reserve/ceiling/up-front context, or an escrow/channel/reserve that
+        # "refunds the (rest|difference|remainder|unused|balance)". The
+        # reservation/refund-policy/reserved-capacity senses trip none of these.
+        # Fires non-vacuously on the real captured driftflight.com agent docs
+        # (agents.driftflight.com/llms.txt + llms-full.txt — "your wallet reserves
+        # the ceiling up front, then you are charged only actual … the escrow refunds
+        # the rest") and on ZERO of the drift-flight.org (which carries NO
+        # reserve-and-settle prose — the discovery-layer echo of the real capability
+        # gap, mirroring `payment-receipt`/`self-provisioning`), api.replicate.com,
+        # retail (books.toscrape.com), or null (example.com) fixtures. driftflight.com
+        # ALREADY claims metered_api (its strongest archetype), so this deepens its
+        # evidence without adding or reordering any archetype (score-neutral); the
+        # classifier is off the scoring path.
+        ("reserve-and-settle", re.compile(
+            r"\breserve[- ]and[- ]pay[- ]actual\b"
+            r"|\breserves?\s+(?:the\s+|a\s+|your\s+)?ceiling\b"
+            r"|\b(?:reserv\w+|ceiling|up[- ]front)\b[^.<>]{0,80}?"
+            r"\bcharged\s+only\s+(?:for\s+|the\s+)?actual\b"
+            r"|\bcharged\s+only\s+(?:for\s+|the\s+)?actual\b"
+            r"[^.<>]{0,80}?\b(?:reserv\w+|ceiling|up[- ]front)\b"
+            r"|\b(?:escrow|channel|reserv\w+)\b[^.<>]{0,80}?"
+            r"\brefunds?\s+(?:the\s+)?(?:rest|difference|remainder|unused|balance)\b", _F)),
     ],
     "subscription": [
         ("subscription", re.compile(r"\bsubscription\b|\bsubscribe\b", _F)),

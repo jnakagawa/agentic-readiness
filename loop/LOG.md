@@ -3,6 +3,74 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 156 — 2026-08-01T15:12Z — COVERAGE — reserve-and-settle metered_api signal (offering classifier)
+
+**What/why.** Added a `reserve-and-settle` signal to `asrs/offering.py`'s metered_api bank:
+whether an agent can CAP its per-call exposure up front — reserve a spend CEILING before the
+call, be charged only the ACTUAL usage, and be refunded the unused remainder. This is a
+capital-safety leg the PLAYBOOK's lens names directly: an autonomous per-call buyer that can
+bound a single request's WORST-CASE cost (reserve a ceiling, pay actual) controls its exposure
+against a variable-priced endpoint the way a human sets a credit-card hold — it never overpays
+for a call cheaper than the ceiling. DISTINCT from every existing metered_api signal:
+`x402`/`agent-payment-rail` say the agent CAN pay (which rails exist), `payment-receipt` is
+proof of a SUCCESSFUL charge (the accounting AFTER), `failure-not-billed` is whether a FAILED
+call is free, `credit-metered`/`pay-per`/`usage-based`/`tiered-volume` are how you're PRICED
+on success — NONE says the agent can BOUND a single call's maximum cost before making it and be
+refunded the difference. It is the metered capital-safety sibling of `failure-not-billed`:
+that bounds the cost of a FAILURE, this bounds the cost of a SUCCESS.
+
+**Precision (bare reserve/refund/ceiling/escrow is a false-positive minefield).** NEVER matches
+a bare token — requires the NAMED `reserve-and-pay-actual` rail, an explicit `reserve(s) the
+ceiling` (a SPEND ceiling, not a generic reservation), `charged only actual` ANCHORED (≤80
+char, sentence-bounded) to a reserve/ceiling/up-front context, or an escrow/channel/reserve
+that `refunds the (rest|difference|remainder|unused|balance)`. Verified empirically BEFORE
+writing: 7 homonym distractors fire ZERO — hotel "make a reservation", "we reserve the right",
+retail "full refund within 30 days", cloud "reserved capacity", a "ceiling fan", the
+subscription "card not charged until the trial ends", and "charged only once per month".
+Vendor-neutral (keys on reserve-and-settle capability vocab; the drift docs' MPP/USDC/Tempo
+nouns are NOT required to match).
+
+**Non-vacuous / capability gap.** Fires on the REAL captured driftflight.com agent docs
+(agents.driftflight.com/llms.txt + llms-full.txt — "your wallet reserves the ceiling up front,
+then you are charged only actual … the escrow refunds the rest"), and on ZERO of drift-flight.org
+(publishes no llms.txt → NO reserve-and-settle prose), api.replicate.com, retail
+(books.toscrape.com), or null (example.com). The .com-only firing is the honest discovery-layer
+echo of the real with-rails/no-rails capability gap — the same shape as `payment-receipt` /
+`self-provisioning`.
+
+**Ship class + evidence.** COVERAGE offering-bank increment, direct-to-main (matching the
+Cycle-150/152 precedent — the offering classifier is OFF the scoring path, grep-reconfirmed:
+`asrs/scoring.py`/`asrs/probes.py` carry NO reference to `classify_offering`/`discover_offering`/
+`_SIGNALS`). Three edits: the signal in `asrs/offering.py`; the `_ISOLATION_EVIDENCE`
+completeness entry in `tests/test_offering_canonical.py` (the matrix must cover EXACTLY the live
+bank, so a new signal cannot escape isolation — 50→51); and the `payment-receipt`-mirrored guard
+pair in `tests/test_offering.py` (`test_reserve_and_settle_precision_synthetic` +
+`_fires_on_real_captured_surfaces`, 66→68). SCORE-NEUTRAL by construction: driftflight.com
+ALREADY claims metered_api (its strongest archetype), so the signal only DEEPENS the claim —
+claimed SET+ORDER `['metered_api','digital_good','subscription']` unchanged on BOTH canonical
+domains; `git diff` over `asrs/scoring.py rubric/ fixtures/` EMPTY; rubric v0.7. Full suite 23
+files green; in-cloud replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss.
+
+**Live canonical signal.** Newest LOCAL artifact `runs/local/verify_20260801T035047Z.json`
+(03:50Z Aug-1) is ~11.4h old at the 15:12Z fire — BREACHING the 6h floor (borderline runner
+lag, NOT a code regression; cloud cannot repair). Its LIVE re-score: drift-flight.org 46.1 F /
+driftflight.com 76.2 C / delta +30.1 — the known transactability 87.5→62.5 divergence (off the
+scoring path; the frozen replay guard stays the in-cloud regression signal). Fire at 15:12Z is
+BEFORE 16:00 UTC → NOT first-after-16:00 → no digest, no DM (offering-signal increment, quiet
+per comms policy, Cycle-152 precedent). Both the runner-floor breach + the persistent
+divergence carry to the next first-after-16:00 digest (~16:xxZ Aug-1).
+
+**Next hypothesis.** Rotate TRUTH next (Cycle 156 was COVERAGE). The `reserve-and-settle`
+signal earns the metamorphic mirror every recent signal gets — a
+`test_offering_relabel_invariance_reserve_and_settle` in `tests/test_offering_canonical.py`
+(whether a failed/reserved call is billed is a property of the settlement CONTRACT, not who
+vends it → identity-invariant under a host relabel; synthetic host-in-evidence vehicle since
+the reserve-and-settle quote is host-free), then a READOUT methodology paragraph closing the
+COVERAGE(156)→TRUTH→READOUT arc (the payment-receipt 142/143/144 pattern). In-cloud COVERAGE on
+committed evidence stays narrow after this (metered_api is now 25 signals); the remaining
+frontier is `[LOCAL]` fixtures (structured catalog/pricing JSON, service_booking/data_retrieval
+real evidence, ACP/UCP/MPP handshakes, free-tier live-wiring).
+
 ## Cycle 155 — 2026-08-01T14:17Z — METHOD — casing invariance on the retail pole
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`) → no

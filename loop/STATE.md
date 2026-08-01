@@ -1,8 +1,43 @@
 # Loop state
 
-- Cycle counter: 155
+- Cycle counter: 156
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-01T14:17Z (Cycle 155) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-01T15:12Z (Cycle 156) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~11.4h old at the 15:12Z fire — PAST the 6h floor (the local ~04:xx–15:xx
+  fires have not pushed a fresh artifact; borderline runner lag, NOT the machine-asleep stall — cloud cannot
+  repair). Live signal (read, not re-run): driftflight.com 76.2 C / +30.1 / transactability 62.5 — the
+  transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the
+  frozen independent signal (24/24, 46.1 F / 85.5 B / +39.4). Both the runner-floor-breach and the persistent
+  divergence carry to the next first-after-16:00 digest (~Aug-1 16:xxZ). No open peer-gated PRs this fire
+  (list_pull_requests state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 156): fresh checkout
+  landed on detached HEAD at `c0bba5f` (Cycle 155); `git fetch origin main` FIRST (Cycle-151 lesson) →
+  `origin/main` force-updated `3796519...c0bba5f`, `checkout -B main origin/main` realigned onto Cycle 155's
+  `c0bba5f`, no work lost. Created `.venv`, installed `requests pyyaml eth-account` + verified
+  `import requests, yaml, asrs` before trusting the suite (23 files green).
+- FOCUS POINTER (Cycle 156 done): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 156 was
+  COVERAGE, so Cycle 157 is TRUTH). Cycle 156 shipped a **COVERAGE metered_api signal** — `reserve-and-settle`
+  in `asrs/offering.py`'s metered_api bank: whether an agent can CAP its per-call exposure up front (reserve a
+  spend CEILING, be charged only ACTUAL usage, refunded the unused remainder) — the capital-safety leg that
+  bounds a SUCCESSFUL call's cost, the metered sibling of `failure-not-billed` (which bounds a FAILURE's cost).
+  DISTINCT from x402/agent-payment-rail (the agent CAN pay), payment-receipt (proof of a SUCCESSFUL charge),
+  and the pricing signals (how you're charged on success). Precision-first: NEVER bare reserve/refund/ceiling/
+  escrow — requires the named `reserve-and-pay-actual` rail, `reserve(s) the ceiling`, `charged only actual`
+  anchored to a reserve/ceiling context, or an escrow/channel/reserve that `refunds the rest/difference/...`;
+  7 homonym distractors (hotel reservation, reserve-the-right, retail refund, reserved capacity, ceiling fan,
+  trial-not-charged, charged-monthly) verified firing ZERO before writing. Fires on BOTH real driftflight.com
+  agent surfaces (llms.txt + llms-full.txt), ZERO on drift-flight.org (no llms.txt) / api.replicate.com /
+  retail / null — the .com-only firing is the honest with-rails/no-rails capability-gap echo (payment-receipt
+  shape). Three edits: signal in `asrs/offering.py`; `_ISOLATION_EVIDENCE` completeness entry in
+  `tests/test_offering_canonical.py` (50→51); payment-receipt-mirrored guard pair in `tests/test_offering.py`
+  (66→68). SCORE-NEUTRAL by construction (.com already claims metered_api → claim only DEEPENED; claimed
+  SET+ORDER unchanged on both; `git diff` over `asrs/scoring.py rubric/ fixtures/` EMPTY; classifier off the
+  scoring path, grep-reconfirmed) → NOT peer-gated; direct-to-main. Full suite 23 files green; replay guard
+  24/24, 46.1 F / 85.5 B / +39.4; rubric v0.7. NEXT (TRUTH 157): the `reserve-and-settle` relabel-invariance
+  guard (`test_offering_relabel_invariance_reserve_and_settle` in `tests/test_offering_canonical.py`, synthetic
+  host-in-evidence vehicle since the quote is host-free), then a READOUT methodology paragraph closing the
+  COVERAGE(156)→TRUTH→READOUT arc. In-cloud COVERAGE on committed evidence is now VERY narrow (metered_api = 25
+  signals); remaining frontier is `[LOCAL]` fixtures.
+- SUPERSEDED (Cycle 155 runner note): RUNNER AT-FLOOR at 2026-08-01T14:17Z (Cycle 155) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~10.4h old at the 14:17Z fire — PAST the 6h floor (the local ~04:xx–14:xx
   fires have not pushed a fresh artifact; borderline runner lag, NOT the machine-asleep stall — cloud cannot
   repair). Live signal (read, not re-run): driftflight.com 76.2 C / +30.1 / transactability 62.5 — the
@@ -13,7 +48,7 @@
   → `origin/main` force-updated `3796519...3187d52`, `checkout -B main origin/main` realigned onto Cycle 154's
   `3187d52`, no work lost. Created `.venv`, installed `requests pyyaml eth-account` directly + verified
   `import requests, yaml, asrs` before trusting the suite.
-- FOCUS POINTER (Cycle 155 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 155 was
+- SUPERSEDED (Cycle 155 focus pointer): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 155 was
   METHOD, so Cycle 156 is COVERAGE). Cycle 155 shipped a **METHOD casing-invariance guard on the RETAIL pole**
   — `test_offering_casing_invariance_retail` in `tests/test_offering_canonical.py`, the fourth and final pole
   of the case-invariance axis (org/com PROSE + machine metered_api spec already covered; retail was the open

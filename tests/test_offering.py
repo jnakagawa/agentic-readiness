@@ -2868,6 +2868,112 @@ def test_failure_not_billed_fires_on_real_captured_api_docs():
     print("  ok: failure-not-billed is ABSENT on the api / retail / null fixtures (non-vacuous, score-neutral)")
 
 
+def test_reserve_and_settle_precision_synthetic():
+    # RESERVE-AND-SETTLE is the capital-safety leg that bounds a SUCCESSFUL call's
+    # cost: an agent reserves a spend CEILING up front, is charged only ACTUAL usage,
+    # and is refunded the unused remainder — so an autonomous per-call buyer can cap
+    # its worst-case exposure per request. Each POSITIVE is real reserve-and-settle
+    # prose that must claim metered_api via the new signal; each NEGATIVE is a
+    # reserve/refund/ceiling homonym that must NOT fire it — the precision traps are a
+    # hotel "reservation", "we reserve the right", a retail "full refund", cloud
+    # "reserved capacity", a "ceiling fan", and the subscription/failure not-charged
+    # phrasings that belong to OTHER signals.
+    positives = {
+        "named rail": "The x402 rail uses reserve-and-pay-actual settlement.",
+        "reserve ceiling": (
+            "Your wallet reserves the ceiling up front, then you are charged only actual."
+        ),
+        "charged actual anchored": "You are charged only for actual usage against a reserved ceiling.",
+        "escrow refund": "The channel closes at your actual usage so the escrow refunds the rest.",
+        "refund remainder": "We reserve a per-call ceiling and refund the remainder you did not use.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("api.test", {"/llms.txt": text})
+        assert prof.claims("metered_api"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "metered_api"
+            for s in c.signals
+        }
+        assert "reserve-and-settle" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real reserve-and-settle phrasings each fire reserve-and-settle")
+
+    negatives = {
+        "hotel reservation": "Make a reservation for two at 7pm.",
+        "reserve the right": "We reserve the right to change these terms at any time.",
+        "retail refund": "Full refund within 30 days, no questions asked.",
+        "reserved capacity": "Purchase reserved capacity for predictable cloud pricing.",
+        "ceiling fan": "The ceiling fan ships in two colors.",
+        "trial not charged": "Your card is not charged until the free trial ends.",
+        "charged monthly": "You are charged only once per month for the plan.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"/llms.txt": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "reserve-and-settle" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} reserve/refund/ceiling homonym strings do NOT fire "
+        "reserve-and-settle (precision)"
+    )
+
+
+def test_reserve_and_settle_fires_on_real_captured_surfaces():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the reserve-and-settle signal fires on
+    # the GENUINE reserve-and-pay-actual prose captured live from driftflight.com — the
+    # agents.driftflight.com/llms.txt agent docs "your wallet reserves the ceiling up
+    # front, then you are charged only actual … the escrow refunds the rest" — captured
+    # verbatim in the committed fixture. Run the REAL discovery path (from_fixture ->
+    # discover_offering) so the signal is exercised exactly as a live crawl would, the
+    # same real-data non-vacuity move test_payment_receipt_fires_on_real_captured_surfaces
+    # makes.
+    #
+    # SCORE-NEUTRAL by construction: driftflight.com already claims metered_api (its
+    # strongest archetype), so reserve-and-settle evidence can only deepen that claim —
+    # never add an archetype or reorder. The classifier is off the scoring path; the
+    # canonical pair's claimed SET+ORDER is unchanged (pinned by
+    # tests/test_offering_canonical.py and the canonical replay guard).
+    ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "driftflight.com.json"))
+    prof = offering.discover_offering(ctx)
+    assert prof.claims("metered_api"), prof.archetypes
+    metered = next(c for c in prof.claimed if c.archetype == "metered_api")
+    ras = [s for s in metered.signals if s.label == "reserve-and-settle"]
+    assert ras, {s.label for s in metered.signals}
+    q = ras[0].quote.lower()
+    assert ("ceiling" in q or "reserve-and-pay-actual" in q or "actual" in q), ras[0].quote
+    assert prof.archetypes == ["metered_api", "digital_good", "subscription"], prof.archetypes
+    print(f"  ok: reserve-and-settle fires on REAL captured driftflight.com prose — quote: {ras[0].quote!r}")
+
+    # PRECISION-CRITICAL on real data: drift-flight.org — the no-rails-side canonical
+    # anchor — carries NO reserve-and-settle prose at all (it publishes no llms.txt).
+    # The signal must be ABSENT there and .org's claimed set unchanged. This is the
+    # discovery-layer echo of the real capability gap: the with-rails .com documents a
+    # reserve-and-pay-actual rail, the .org does not (mirroring payment-receipt /
+    # self-provisioning).
+    octx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "drift-flight.org.json"))
+    oprof = offering.discover_offering(octx)
+    all_labels = {s.label for c in oprof.claimed for s in c.signals}
+    assert "reserve-and-settle" not in all_labels, all_labels
+    assert oprof.archetypes == ["metered_api", "digital_good", "subscription"], oprof.archetypes
+    print("  ok: reserve-and-settle is ABSENT on drift-flight.org (real-data precision / capability gap)")
+
+    # NON-VACUOUS negatives: a metered-API marketplace (api.replicate.com), a real
+    # retail storefront (books.toscrape.com), and a null site (example.com) document no
+    # reserve-and-settle rail — the signal must be absent on all three and must not
+    # conjure or reorder any archetype.
+    for dom, expected in (
+        ("api.replicate.com", ["metered_api"]),
+        ("books.toscrape.com", ["physical_good"]),
+        ("example.com", []),
+    ):
+        nctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        nprof = offering.discover_offering(nctx)
+        nlabels = {s.label for c in nprof.claimed for s in c.signals}
+        assert "reserve-and-settle" not in nlabels, (dom, nlabels)
+        assert nprof.archetypes == expected, (dom, nprof.archetypes)
+    print("  ok: reserve-and-settle is ABSENT on the api / retail / null fixtures (non-vacuous, score-neutral)")
+
+
 def main() -> int:
     tests = [
         test_api_storefront_claims_agent_native_not_physical,
@@ -2933,6 +3039,8 @@ def main() -> int:
         test_plan_purchase_fires_on_real_captured_subscription_prose,
         test_failure_not_billed_metering_precision_synthetic,
         test_failure_not_billed_fires_on_real_captured_api_docs,
+        test_reserve_and_settle_precision_synthetic,
+        test_reserve_and_settle_fires_on_real_captured_surfaces,
         test_priced_listing_precision_synthetic,
         test_priced_listing_fires_on_real_captured_retail,
         test_strip_html_drops_script_style_and_tags,

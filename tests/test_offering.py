@@ -2574,6 +2574,116 @@ def test_payment_receipt_fires_on_real_captured_surfaces():
     print("  ok: payment-receipt is ABSENT on the api / retail / null fixtures (non-vacuous, score-neutral)")
 
 
+def test_plan_purchase_subscription_precision_synthetic():
+    # PROGRAMMATIC PLAN PURCHASE — whether an agent can BUY / commit to a
+    # credit-or-subscription plan through an API call (a `POST /plans/{id}/purchase`
+    # endpoint, a purchasable plan, a buy/purchase/activate verb naming a
+    # credit/subscription plan) rather than a human checkout on a pricing page. This
+    # is the SUBSCRIPTION-archetype "pay programmatically + provision without a human"
+    # commit leg (the counterpart to metered_api's self-provisioning), distinct from
+    # the existing subscription signals that only say a plan EXISTS / its CADENCE /
+    # per-user basis / free-trial. Each POSITIVE is real, vendor-neutral programmatic
+    # plan-purchase vocabulary; each NEGATIVE is plan-SHAPED noise that must NOT fire
+    # it (the precision traps: the HUMAN "subscribe to a plan on the pricing page" and
+    # "subscribing to a plan on the dashboard", and bare "subscription plans"
+    # marketing that `subscription` already covers).
+    positives = {
+        "purchase endpoint path": "Buy it via `POST /plans/{planId}/purchase` with the plan id.",
+        "purchase endpoint short id": "Call `POST /plans/{id}/purchase` to activate.",
+        "buy credit-or-subscription plan": "Purchase once to buy a credit or subscription plan.",
+        "buy a subscription plan": "An agent can buy a subscription plan without a human.",
+        "buy a credit plan": "Buying a credit plan draws down a prepaid balance.",
+        "purchase a subscription plan": "Agents purchase a subscription plan programmatically.",
+        "purchasable plans": "Purchasable plans carry a `purchase` object with amountRequired.",
+        "activate subscription plan": "Activate a subscription plan by paying the challenge.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("plans.test", {"homepage": text})
+        assert prof.claims("subscription"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "subscription"
+            for s in c.signals
+        }
+        assert "plan-purchase" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real plan-purchase phrasings each fire plan-purchase")
+
+    negatives = {
+        # Human-gated onboarding and bare marketing — misreading any as a programmatic
+        # purchase would conjure a spurious agent-native commit capability. Each must
+        # fire NOTHING here (the plan-purchase label, specifically).
+        "human subscribe on pricing page": "Create an account, subscribe to a plan on the pricing page.",
+        "human subscribe on dashboard": "Keys are issued on the dashboard after subscribing to a plan.",
+        "bare subscription plans marketing": "We offer flexible subscription plans for every team.",
+        "plan your campaign": "Plan your next campaign with our creative tools.",
+        "pricing plans exist": "Compare our pricing plans and pick the one that fits.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "plan-purchase" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} plan-shaped noise strings do NOT fire plan-purchase (precision)"
+    )
+
+
+def test_plan_purchase_fires_on_real_captured_subscription_prose():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the plan-purchase signal fires on the
+    # GENUINE programmatic plan-purchase prose captured live from driftflight.com — the
+    # agents.driftflight.com/llms-full.txt agent docs "purchase once with `POST /plans/
+    # {planId}/purchase`", "buy a credit or subscription plan", "Purchasable plans carry
+    # a `purchase` object" — captured verbatim in the committed fixture. Run the REAL
+    # discovery path (from_fixture -> discover_offering) so the signal is exercised
+    # exactly as a live crawl would.
+    #
+    # SCORE-NEUTRAL by construction: driftflight.com already claims subscription (via
+    # `subscription`/`per-month`/etc.), so plan-purchase evidence can only deepen that
+    # claim — never add an archetype or reorder. The classifier is off the scoring path;
+    # the canonical pair's claimed SET+ORDER is unchanged (pinned by
+    # tests/test_offering_canonical.py and the canonical replay guard).
+    ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "driftflight.com.json"))
+    prof = offering.discover_offering(ctx)
+    assert prof.claims("subscription"), prof.archetypes
+    sub = next(c for c in prof.claimed if c.archetype == "subscription")
+    pp = [s for s in sub.signals if s.label == "plan-purchase"]
+    assert pp, {s.label for s in sub.signals}
+    q = pp[0].quote.lower()
+    assert "plan" in q or "purchase" in q, pp[0].quote
+    assert prof.archetypes == ["metered_api", "digital_good", "subscription"], prof.archetypes
+    print(f"  ok: plan-purchase fires on REAL captured driftflight.com prose — quote: {pp[0].quote!r}")
+
+    # PRECISION-CRITICAL on real data: drift-flight.org — the no-rails-side canonical
+    # anchor — has ONLY the human plan path ("subscribe to a plan on the pricing page",
+    # "issued on the dashboard after subscribing to a plan"), NO programmatic purchase.
+    # The signal must be ABSENT there and .org's claimed set unchanged. This is the
+    # discovery-layer echo of the real capability gap: the with-rails .com exposes a
+    # programmatic plan-purchase endpoint, the .org gates the commit behind a human
+    # (mirroring self-provisioning / payment-receipt).
+    octx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "drift-flight.org.json"))
+    oprof = offering.discover_offering(octx)
+    all_labels = {s.label for c in oprof.claimed for s in c.signals}
+    assert "plan-purchase" not in all_labels, all_labels
+    assert oprof.archetypes == ["metered_api", "digital_good", "subscription"], oprof.archetypes
+    print("  ok: plan-purchase is ABSENT on drift-flight.org (real-data precision / capability gap)")
+
+    # NON-VACUOUS negatives: a metered-API marketplace (api.replicate.com), a real
+    # retail storefront (books.toscrape.com), and a null site (example.com) document no
+    # programmatic subscription-plan purchase — plan-purchase must be absent on all three
+    # and must not conjure or reorder any archetype.
+    for dom, expected in (
+        ("api.replicate.com", ["metered_api"]),
+        ("books.toscrape.com", ["physical_good"]),
+        ("example.com", []),
+    ):
+        nctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        nprof = offering.discover_offering(nctx)
+        nlabels = {s.label for c in nprof.claimed for s in c.signals}
+        assert "plan-purchase" not in nlabels, (dom, nlabels)
+        assert nprof.archetypes == expected, (dom, nprof.archetypes)
+    print("  ok: plan-purchase is ABSENT on the api / retail / null fixtures (non-vacuous, score-neutral)")
+
+
 def main() -> int:
     tests = [
         test_api_storefront_claims_agent_native_not_physical,
@@ -2633,6 +2743,8 @@ def main() -> int:
         test_webhook_verification_fires_on_real_captured_openapi,
         test_free_trial_subscription_precision_synthetic,
         test_free_trial_fires_on_real_captured_subscription_prose,
+        test_plan_purchase_subscription_precision_synthetic,
+        test_plan_purchase_fires_on_real_captured_subscription_prose,
         test_priced_listing_precision_synthetic,
         test_priced_listing_fires_on_real_captured_retail,
         test_strip_html_drops_script_style_and_tags,

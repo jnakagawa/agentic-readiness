@@ -2687,6 +2687,146 @@ def test_offering_relabel_invariance_priced_listing() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Relabel-invariance at the SIGNAL level — the metered_api PAYMENT RECEIPT leg
+# (Cycle 142 COVERAGE, PR #132). The newest metered_api signal to join the
+# signal-level relabel family and the TRUTH leg of the payment-receipt
+# COVERAGE→TRUTH→READOUT arc (mirroring webhook-verification 134/135/136 and
+# output-resolution 138/139/140). It is the metered_api ACCOUNTING leg — the
+# capital-safety COUNTERPART to the payment RAILS (x402 / agent-payment-rail say
+# an agent can PAY; payment-receipt is the machine-readable proof-of-payment
+# that comes BACK, which the agent logs to reconcile its own spend). The receipt
+# an agent gets back is a property of the paid-response CONTRACT (a receipt
+# header, a payment/settlement receipt, a serialized receipt, a spend record, an
+# explicit proof of payment), never of WHO vends it, so the signal must be
+# identity-invariant under a host relabel.
+#
+# Why a SYNTHETIC surface, not the real fixture (mirroring webhook-verification
+# 135 / output-resolution 139, NOT output-license which rides captured
+# evidence): the payment-receipt vocabulary is host-FREE by nature — the fired
+# quote carries a receipt/spend-record token ("a payment receipt", "a receipt
+# header"), not the vendor's name — and on the real captured driftflight.com
+# agent docs (agents.driftflight.com/llms-full.txt) the signal fires with the
+# host in the surface KEY but NOT the quote window, so a whole-fixture relabel
+# would leave the receipt evidence byte-identical and the invariance would be
+# VACUOUS. To make the relabel genuinely rewrite the classifier's input at THIS
+# signal, this guard scans a synthetic metered_api surface that deliberately
+# seats the host INSIDE the receipt evidence: the host is the surface KEY prefix
+# AND sits adjacent to the payment-receipt phrase on both sides, so it lands in
+# the padded quote window (asserted non-vacuous below). Relabel the host
+# everywhere, re-scan, and the payment-receipt signal must survive with the SAME
+# match count, on the SAME host-normalized surface, its quote STILL satisfying
+# the live payment-receipt regex, with the vendor host absent from all rewritten
+# evidence.
+#
+# TEETH (precision, the payment-receipt signal's defining risk — a bare
+# "receipt" is a false-positive minefield): a sibling synthetic surface carrying
+# only the bare-"receipt" senses the signal must REFUSE — an EMAIL/ORDER receipt
+# at retail checkout, a READ receipt ("enable read receipts"), "in receipt of
+# your message", a warehouse "receipt of goods" — fires ZERO payment-receipt
+# signals, proving the match keys on the proof-of-payment STRUCTURE (a receipt
+# HEADER / a payment/settlement receipt / a serialized receipt / a spend record /
+# proof of payment), not on the bare word "receipt"; and relabeling the host
+# through that distractor prose never CONJURES a metered_api claim on a site that
+# merely says "receipt".
+# ---------------------------------------------------------------------------
+_PR_LABEL = "payment-receipt"
+_PR_HOST = "acme-meter.example"  # a host bearing no payment-receipt signal word
+_PR_SURFACE = f"agents.{_PR_HOST}/llms-full.txt"
+# Host seated adjacent to the payment-receipt phrase on both sides so it lands in
+# the padded quote window (not merely in the surface key).
+_PR_PROSE = f"{_PR_HOST} returns a payment receipt on every paid {_PR_HOST} response."
+# The bare-"receipt" false-positive senses the payment-receipt signal must never
+# match: an email/order receipt at checkout, a read receipt, "in receipt of", a
+# warehouse receipt of goods.
+_PR_DISTRACTOR_SURFACE = f"agents.{_PR_HOST}/support"
+_PR_DISTRACTOR_PROSE = (
+    f"{_PR_HOST} emails an order receipt at checkout; enable read receipts for "
+    f"chat. We are in receipt of your message. A warehouse notes receipt of goods."
+)
+
+
+def _payment_receipt_signals(surface: str, text: str) -> list:
+    """The (surface, quote) pairs where the metered_api payment-receipt fired."""
+    return sorted(
+        (s.surface, s.quote)
+        for s in _offering._scan_surface(surface, text)
+        if s.archetype == "metered_api" and s.label == _PR_LABEL
+    )
+
+
+def test_offering_relabel_invariance_payment_receipt() -> None:
+    """The metered_api payment-receipt keys on the proof-of-payment form, not the host."""
+    print("test_offering_relabel_invariance_payment_receipt")
+    base = _payment_receipt_signals(_PR_SURFACE, _PR_PROSE)
+
+    # The signal genuinely fires on the synthetic metered_api evidence.
+    _check(
+        len(base) == 1,
+        f"payment-receipt fires exactly once on the synthetic metered_api surface (got {len(base)})",
+    )
+    base_surf, base_quote = base[0]
+
+    # Non-vacuity: the host sits inside BOTH the surface key AND the padded quote
+    # window, so a host relabel genuinely rewrites the classifier's payment-receipt
+    # input — not a no-op over host-free evidence (the real-fixture failure mode).
+    _check(
+        _PR_HOST in base_surf and _PR_HOST in base_quote,
+        f"the host is inside the payment-receipt surface key AND quote window — "
+        f"relabel rewrites real signal input (surface {base_surf!r}, quote {base_quote!r})",
+    )
+
+    # TEETH: the bare-"receipt" senses (order/email receipt at checkout, read
+    # receipt, "in receipt of", warehouse receipt of goods) fire ZERO — the signal
+    # keys on the proof-of-payment structure, never on the bare word "receipt".
+    _check(
+        _payment_receipt_signals(_PR_DISTRACTOR_SURFACE, _PR_DISTRACTOR_PROSE) == [],
+        "bare-'receipt' distractor prose (order/email receipt at checkout, read "
+        "receipts, 'in receipt of', warehouse receipt of goods) fires no "
+        "payment-receipt signal — the match is the proof-of-payment structure "
+        "(receipt header / payment-settlement receipt / serialized receipt / spend "
+        "record / proof of payment), not the word 'receipt'",
+    )
+
+    # Relabel the host everywhere (surface key + prose) and re-scan.
+    relab_surface = _PR_SURFACE.replace(_PR_HOST, _NEUTRAL_HOST)
+    relab_prose = _PR_PROSE.replace(_PR_HOST, _NEUTRAL_HOST)
+    _check(
+        _PR_HOST not in relab_surface and _PR_HOST not in relab_prose,
+        "every occurrence of the original host was relabeled out of the synthetic input",
+    )
+    relab = _payment_receipt_signals(relab_surface, relab_prose)
+
+    # (1) Same match count — the payment-receipt signal is neither lost nor conjured.
+    _check(
+        len(relab) == len(base) == 1,
+        f"payment-receipt match count invariant under relabel (base {len(base)}, "
+        f"relabel {len(relab)})",
+    )
+    relab_surf, relab_quote = relab[0]
+
+    # (2) The SAME logical surface carries the signal once the host label is
+    # normalized away — the signal did not migrate to a different surface.
+    _check(
+        relab_surf == base_surf.replace(_PR_HOST, _NEUTRAL_HOST),
+        "payment-receipt fires on the same (host-normalized) surface under relabel "
+        f"(base {base_surf!r}, relabel {relab_surf!r})",
+    )
+    # (3) The relabeled quote STILL satisfies the live payment-receipt regex (the
+    # fired form is a proof-of-payment token — a payment receipt / receipt header /
+    # spend record — not the host) and names no vendor host — the match keyed on
+    # the paid-response ACCOUNTING contract, not who vends it.
+    pr_re = dict(_offering._SIGNALS["metered_api"])[_PR_LABEL]
+    _check(
+        pr_re.search(relab_quote) is not None,
+        f"relabeled payment-receipt quote still matches the proof-of-payment signal: {relab_quote!r}",
+    )
+    _check(
+        _PR_HOST not in relab_quote and _PR_HOST not in relab_surf,
+        f"vendor host absent from relabeled payment-receipt evidence (surface {relab_surf!r})",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Surface-read ORDER invariance — the digital_good deliverable-RIGHTS leg.
 #
 # A fresh perturbation AXIS orthogonal to the relabel/identity family above. The
@@ -4460,6 +4600,7 @@ def main() -> int:
         test_offering_relabel_invariance_content_provenance,
         test_offering_relabel_invariance_output_resolution,
         test_offering_relabel_invariance_priced_listing,
+        test_offering_relabel_invariance_payment_receipt,
         test_offering_surface_order_invariance_output_license,
         test_offering_surface_order_invariance_org,
         test_offering_content_scale_invariance_org,

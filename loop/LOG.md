@@ -3,6 +3,66 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 155 — 2026-08-01T14:17Z — METHOD — casing invariance on the retail pole
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`) → no
+peer-gate review owed.
+
+**Infra health / self-heal.** Fresh cloud checkout landed on detached HEAD at `3187d52` (Cycle 154);
+`git fetch origin main` first (the Cycle-151 stale-`origin/main` lesson) — `origin/main` force-updated
+`3796519...3187d52`, `checkout -B main origin/main` realigned onto Cycle 154's `3187d52`, no work lost.
+No pyproject/setup.py in the repo (asrs imports from the repo root), so `pip install -e .` is expected
+to fail — created `.venv`, installed `requests pyyaml eth-account` directly, and verified `import
+requests, yaml, asrs` before trusting the suite. Full suite (23 files) green pre-flight. RUNNER
+AT-FLOOR: newest `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is ~10.4h old at fire
+(14:17Z) — past the 6h floor (the local ~04:xx–14:xx fires have not pushed a fresh artifact; borderline
+runner lag, NOT the machine-asleep stall — cloud cannot repair). Carries to the next first-after-16:00
+digest (~16:xxZ Aug-1).
+
+**What/why (METHOD — closing the last open cell of the casing metamorphic axis).** Added
+`test_offering_casing_invariance_retail`, the fourth pole of the case-invariance axis. The axis had
+`_org`/`_com` (multi-archetype PROSE) + `_machine` (single-archetype metered_api `/openapi.json` spec)
+but NO retail pole — the same org/com/machine-only-vs-retail asymmetry the content-scale and
+noise-surface axes already closed. The new test pins the OPPOSITE storefront type: a no-rails book
+catalog (`books.toscrape.com`) claiming EXACTLY physical_good with every rails archetype NA. Property
+protected = the "never manufacture the delta" invariant on the CASE axis: uppercasing a retailer's
+shelf copy must not push its physical_good strength up NOR conjure a rails archetype it does not offer.
+Asserts (1) the case-independent skeleton (`_casing_struct` — strength + per-(label,surface) counts;
+quote text upper-cases with the surface so `_full_evidence_map` is deliberately NOT the invariant
+here), (2) ranked claimed archetypes invariant (still exactly physical_good), (3) the whole NA/unclaimed
+set invariant (rails stay NA).
+
+**Why a dedicated test, not a reuse of `_assert_casing_invariance`.** Two structural differences, both
+verified empirically before writing: (a) the retail fixture is a SINGLE-surface homepage catalog, so
+the helper's `_captured_surfaces` >=2-surface premise fails — base captured inline via the same spy
+pattern the content-scale / noise-surface retail poles use; (b) the helper's tooth (b) requires a fired
+signal whose CASE-SENSITIVE count MOVES under uppercasing (`cs_b != cs_u`), but the physical_good bank
+is authored lowercase and matches the mixed-case copy ("Add to basket", "In stock") ONLY through
+`re.IGNORECASE` — so every fired signal's case-sensitive count is already 0 at base and stays 0 (empir.
+add-to-cart/stock/priced-listing all 0→0 case-sensitive, 20→20 IGNORECASE). A "count moves" tooth is
+structurally impossible here. The retail-appropriate tooth (b) is instead the STRONGER "folding is
+ESSENTIAL" form: a fired signal matches 0x case-sensitively yet Nx with IGNORECASE at base (strip the
+fold and the physical_good claim vanishes outright) and that count survives uppercasing. TEETH (a): the
+transform genuinely alters ≥1 surface (base carries lowercase).
+
+**Ship class + evidence.** Tests-only, OFF the scoring path (`git diff --name-only` =
+`tests/test_offering_canonical.py` ONLY; `asrs/ rubric/ fixtures/` EMPTY) → score-neutral, NOT
+peer-gated; direct-to-main. `test_offering_canonical.py` 50→51; full suite 23 files green; replay guard
+24/24, 46.1 F / 85.5 B / +39.4; rubric v0.7.
+
+**Canonical pair.** 46.1 F / 85.5 B / delta +39.4 — UNCHANGED (tests-only, no scoring/rubric/fixture
+change; replay guard green). Live signal (read, not re-run — runner at-floor): driftflight.com 76.2 C /
++30.1 / transactability 62.5, the persistent off-scoring-path divergence still open as the P0 [LOCAL]
+re-baseline.
+
+**Next hypothesis.** The casing metamorphic axis is now complete across all four poles (org/com/machine/
+retail), matching content-scale and noise-surface. Cycle 156 rotates to COVERAGE — but in-cloud COVERAGE
+on committed evidence is very narrow (overage/SLA/balance-check/subscription-cancel proved blocked Cycle
+152; output FORMAT stays a false-positive minefield), so the likely COVERAGE move is a new [LOCAL]
+fixture-dependent signal queued, or a metamorphic/isolation cell if one remains open. Remaining METHOD
+frontier for a future rotation: a surface-dedup or listing-order pole not yet mirrored onto retail/machine.
+
+
 ## Cycle 154 — 2026-08-01T13:15Z — READOUT — failure-not-billed methodology-page paragraph
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`) → no

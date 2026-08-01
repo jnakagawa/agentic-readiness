@@ -1,8 +1,40 @@
 # Loop state
 
-- Cycle counter: 154
+- Cycle counter: 155
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-01T13:15Z (Cycle 154) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-01T14:17Z (Cycle 155) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~10.4h old at the 14:17Z fire — PAST the 6h floor (the local ~04:xx–14:xx
+  fires have not pushed a fresh artifact; borderline runner lag, NOT the machine-asleep stall — cloud cannot
+  repair). Live signal (read, not re-run): driftflight.com 76.2 C / +30.1 / transactability 62.5 — the
+  transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the
+  frozen independent signal (24/24, 46.1 F / 85.5 B / +39.4). Both the runner-floor-breach and the persistent
+  divergence carry to the next first-after-16:00 digest (~Aug-1 16:xxZ). INFRA/SELF-HEAL (Cycle 155): fresh
+  checkout landed on detached HEAD at `3187d52` (Cycle 154); `git fetch origin main` FIRST (Cycle-151 lesson)
+  → `origin/main` force-updated `3796519...3187d52`, `checkout -B main origin/main` realigned onto Cycle 154's
+  `3187d52`, no work lost. Created `.venv`, installed `requests pyyaml eth-account` directly + verified
+  `import requests, yaml, asrs` before trusting the suite.
+- FOCUS POINTER (Cycle 155 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 155 was
+  METHOD, so Cycle 156 is COVERAGE). Cycle 155 shipped a **METHOD casing-invariance guard on the RETAIL pole**
+  — `test_offering_casing_invariance_retail` in `tests/test_offering_canonical.py`, the fourth and final pole
+  of the case-invariance axis (org/com PROSE + machine metered_api spec already covered; retail was the open
+  cell, the same org/com/machine-only-vs-retail asymmetry the content-scale + noise-surface axes already
+  closed). Pins a no-rails book catalog (`books.toscrape.com`) claiming EXACTLY physical_good, all rails NA:
+  uppercasing the shelf copy must not raise physical_good strength NOR conjure a rails archetype. Dedicated
+  test (not a reuse of `_assert_casing_invariance`) for two verified-empirical structural reasons: (a)
+  single-surface fixture fails the helper's `_captured_surfaces` >=2 premise → inline spy capture; (b) the
+  physical_good bank is lowercase-authored and matches mixed-case copy ONLY via `re.IGNORECASE` (add-to-cart/
+  stock/priced-listing all 0→0 case-sensitive, 20→20 IGNORECASE), so the helper's "count moves" tooth
+  (`cs_b != cs_u`) is structurally impossible → replaced with the STRONGER "folding is ESSENTIAL" tooth (a
+  fired signal matches 0x case-sensitively yet Nx with IGNORECASE, so stripping the fold erases the claim).
+  Uses `_casing_struct` (quote-excluded, since quotes upper-case with the surface), not `_full_evidence_map`.
+  Tests-only, OFF the scoring path (`git diff --name-only` = `tests/test_offering_canonical.py` ONLY;
+  `asrs/ rubric/ fixtures/` EMPTY) → score-neutral, NOT peer-gated; direct-to-main. `test_offering_canonical.py`
+  50→51; full suite 23 files green; replay guard 24/24, 46.1 F / 85.5 B / +39.4; rubric v0.7. NEXT (COVERAGE
+  156): in-cloud COVERAGE on committed evidence is VERY narrow (overage/SLA/balance-check/subscription-cancel
+  proved blocked Cycle 152; output FORMAT stays a false-positive minefield) → likely a new [LOCAL]
+  fixture-dependent signal queued, or an open metamorphic/isolation cell. The casing axis is now COMPLETE
+  across all four poles; a future METHOD rotation could mirror surface-dedup or listing-order onto retail/machine.
+- SUPERSEDED (Cycle 154 runner note): RUNNER AT-FLOOR at 2026-08-01T13:15Z (Cycle 154) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~9.4h old at the 13:15Z fire — PAST the 6h floor (the local ~10:xx–13:xx
   fires have not pushed a fresh artifact; borderline runner lag, NOT the machine-asleep stall — cloud cannot
   repair). Live signal (read, not re-run): driftflight.com 76.2 C / +30.1 / transactability 62.5 — the
@@ -13,7 +45,7 @@
   `3796519...5b53ea3`, `checkout -B main origin/main` landed on Cycle 153's `5b53ea3`, no work lost. Repo has
   NO pyproject/setup.py (asrs imports from repo root) so `pip install -e .` is expected to fail — installed
   `requests pyyaml eth-account` directly + verified `import requests, yaml, asrs` before trusting the suite.
-- FOCUS POINTER (Cycle 154 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 154 was
+- SUPERSEDED (Cycle 154 focus pointer): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 154 was
   READOUT, so Cycle 155 is METHOD). Cycle 154 shipped a **READOUT methodology paragraph** — a
   `_write_methodology_page` "Not paying for a call that failed" paragraph in `asrs/scorecard.py` framing Cycle
   152's metered_api `failure-not-billed` signal as the capital-safety sibling of the `receipt` leg ("you don't

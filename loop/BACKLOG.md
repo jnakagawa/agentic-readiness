@@ -548,6 +548,17 @@ design in-cloud, execute locally.
      (Cycle 152). The remaining in-cloud COVERAGE frontier on committed evidence is output FORMAT
      (false-positive minefield, deferred); everything else needs new [LOCAL] fixtures. -->
 
+<!-- METHOD METAMORPHIC-GRID STATE (updated Cycle 155): the CASING axis is now COMPLETE across all four
+     poles — org/com (multi-archetype prose), machine (metered_api /openapi.json spec), retail (no-rails
+     physical_good), matching content-scale and noise-surface. Cross-axis coverage map for a future METHOD
+     rotation: (a) content-scale = org/com/retail (no machine pole); (b) noise-surface = org/com/retail (no
+     machine pole); (c) casing = org/com/machine/retail (COMPLETE); (d) surface-dedup = org/com only (no
+     machine/retail pole); (e) surface-ORDER = org (+ per-signal cells); (f) listing-order / endpoint-order =
+     single-signal cells. Candidate open cells, smallest-meaningful-unit each: content-scale/noise-surface on
+     the MACHINE pole; surface-dedup on the retail or machine pole. Each needs the same pole-specific tooth
+     care casing-retail did — verify the load-bearing tooth EMPIRICALLY before writing (a single-surface pole
+     breaks the >=2 premise; a lowercase-authored-bank pole breaks the count-moves tooth). -->
+
 - **[LOCAL] Capture a fixture with subscription-CANCEL / lifecycle prose, then add the signal** (COVERAGE,
   opened Cycle 146). A real subscription capability gap: whether an agent can PROGRAMMATICALLY CANCEL /
   downgrade its own recurring plan without a human — the capital-safety lifecycle leg (bound your own

@@ -4672,6 +4672,152 @@ def test_offering_casing_invariance_machine() -> None:
     _assert_casing_invariance(_MACHINE_SURFACE, _MACHINE_CLAIMED, min_claimed=1)
 
 
+# ---------------------------------------------------------------------------
+# Casing invariance on the NO-RAILS retail store — the credibility-protecting
+# direction of the CASE axis, closing the same org/com/machine-only-vs-retail
+# asymmetry the content-scale and noise-surface axes already closed. `_org`/`_com`
+# pin the multi-archetype PROSE pole and `_machine` the single-archetype metered_api
+# spec pole; this pins the OPPOSITE storefront type — a pure book catalog that claims
+# ONLY physical_good with every rails archetype NA. The property it protects is the
+# "never manufacture the delta" invariant applied to the CASE axis: shouting a
+# no-rails retailer's shelf copy in all-caps must not push its physical_good claim
+# up in strength AND must not CONJURE a rails archetype it does not offer. The delta
+# between a rails storefront and a no-rails one has to come from real published
+# capability, never from the typography a store happens to publish it in.
+#
+# Two structural differences from `_assert_casing_invariance` force a dedicated test
+# rather than a reuse of the shared casing helper:
+#   * the retail store is a SINGLE-surface homepage catalog, so the helper's
+#     `_captured_surfaces` >=2-surface premise does not hold — the base is captured
+#     inline (the same spy pattern the content-scale / noise-surface retail poles use);
+#   * the shared helper's tooth (b) requires a fired signal whose CASE-SENSITIVE count
+#     MOVES under uppercasing (cs_b != cs_u). The physical_good bank is authored
+#     lowercase and matches the mixed-case shelf copy ("Add to basket", "In stock")
+#     ONLY through re.IGNORECASE, so every fired signal's case-sensitive count is
+#     already 0 at base and stays 0 — a "count moves" tooth is structurally impossible
+#     here. The retail-appropriate tooth (b) below is instead the STRONGER "folding is
+#     essential" form: a fired signal matches 0x case-sensitively yet Nx with
+#     IGNORECASE, so stripping the fold would erase the physical_good claim outright.
+# ---------------------------------------------------------------------------
+
+
+def test_offering_casing_invariance_retail() -> None:
+    """Shouting a no-rails catalog in all-caps is not "more" physical_good — and conjures no rails."""
+    print("test_offering_casing_invariance_retail")
+
+    # Capture the base surfaces exactly as discovery feeds them to the classifier.
+    # (Unlike `_captured_surfaces`, no >=2-surface premise: the retail fixture is a
+    # single-surface homepage catalog, and the case axis uppercases whatever base the
+    # store publishes.)
+    path = os.path.join(_FIXTURE_DIR, f"{_RETAIL}.json")
+    ctx = FetchContext.from_fixture(path)
+    captured: dict = {}
+    real = _offering.classify_offering
+
+    def _spy(dom, surfaces):
+        captured.clear()
+        captured.update(surfaces)
+        return real(dom, surfaces)
+
+    _offering.classify_offering = _spy
+    try:
+        _offering.discover_offering(ctx)
+    finally:
+        _offering.classify_offering = real
+
+    base = _offering.classify_offering(_RETAIL, dict(captured))
+
+    # The property under test is genuinely present: the store claims EXACTLY
+    # physical_good, with every rails archetype NA — so a rails claim conjured by
+    # sheer typography would be unmistakably observable.
+    _check(
+        set(base.archetypes) == _RETAIL_CLAIMED,
+        f"{_RETAIL}: base claimed set == {sorted(_RETAIL_CLAIMED)} "
+        f"(got {sorted(set(base.archetypes))})",
+    )
+    _check(
+        _RETAIL_MUST_BE_NA <= set(base.unclaimed),
+        f"{_RETAIL}: the rails archetypes {sorted(_RETAIL_MUST_BE_NA)} are all NA at "
+        f"base (got unclaimed {sorted(base.unclaimed)}) — the no-rails property the "
+        "casing must not overturn is present",
+    )
+
+    up_surfaces = {s: r.upper() for s, r in captured.items()}
+    # TEETH (a): the transform is REAL — the base carries lowercase, so uppercasing
+    # genuinely alters the bytes the classifier scans (not a no-op on all-caps text).
+    _check(
+        any(up_surfaces[s] != captured[s] for s in captured),
+        f"{_RETAIL}: uppercasing genuinely changed >=1 surface body "
+        "(the perturbation is real, not a no-op)",
+    )
+
+    # TEETH (b): case-folding is not merely load-bearing here but ESSENTIAL. The
+    # retail catalog's physical_good signals are authored lowercase yet match the
+    # mixed-case shelf copy ("Add to basket", "In stock") ONLY through the
+    # classifier's re.IGNORECASE — so at base a fired signal matches ZERO times
+    # case-SENSITIVELY while firing N>0 times case-insensitively (strip the fold and
+    # the physical_good claim vanishes outright), and that IGNORECASE count survives
+    # the uppercase transform. This is the retail pole's analogue of the machine
+    # surface's count-moves tooth: on the spec a case-sensitive `https://` match is
+    # BROKEN by uppercasing (1 -> 0); here no fired signal ever matched
+    # case-sensitively to begin with, so a "count moves" tooth is structurally
+    # impossible and would be the wrong non-vacuity proof.
+    essential = None
+    for c in base.claimed:
+        for s in c.signals:
+            pat = _signal_pattern(c.archetype, s.label)
+            if pat is None:
+                continue
+            case_sensitive = re.compile(pat.pattern)  # SAME source, no re.IGNORECASE
+            b_prose = _surface_prose(s.surface, captured[s.surface])
+            u_prose = _surface_prose(s.surface, up_surfaces[s.surface])
+            cs_b = len(case_sensitive.findall(b_prose))
+            ic_b = len(pat.findall(b_prose))
+            ic_u = len(pat.findall(u_prose))
+            if cs_b == 0 and ic_b > 0 and ic_b == ic_u:
+                essential = (c.archetype, s.label, ic_b)
+                break
+        if essential:
+            break
+    _check(
+        essential is not None,
+        f"{_RETAIL}: a fired signal matches 0x case-SENSITIVELY yet Nx with "
+        "re.IGNORECASE at base (and that count survives uppercasing) — case-folding "
+        "is essential to the physical_good claim, so the invariance is non-vacuous "
+        f"(essential signal: {essential})",
+    )
+
+    up = _offering.classify_offering(_RETAIL, dict(up_surfaces))
+
+    # (1) The case-independent capability skeleton is identical: physical_good's
+    # strength AND its per-(label, surface) match counts survive the casing change —
+    # no signal lost or conjured, no count drifted, by mere typography. (The quote
+    # text itself upper-cases with the surface, so `_casing_struct` — not
+    # `_full_evidence_map` — is the case-independent invariant here.)
+    _check(
+        _casing_struct(up) == _casing_struct(base),
+        f"{_RETAIL}: per-archetype (strength, per-(label, surface) counts) skeleton "
+        "invariant under uppercasing",
+    )
+    # (2) Claimed archetypes IN RANK ORDER invariant — still EXACTLY physical_good.
+    # Shouting the catalog conjured no rails claim; the "never manufacture the delta"
+    # property on the CASE axis.
+    _check(
+        up.archetypes == base.archetypes,
+        f"{_RETAIL}: claimed archetypes (ranked) invariant under uppercasing "
+        f"(base {base.archetypes}, up {up.archetypes})",
+    )
+    # (3) The rails archetypes stay NA and the whole NA/unclaimed set is invariant —
+    # which archetypes a no-rails store is excused as NA depends on WHAT it declares,
+    # not on the case it declares it in.
+    _check(
+        _RETAIL_MUST_BE_NA <= set(up.unclaimed)
+        and set(up.unclaimed) == set(base.unclaimed),
+        f"{_RETAIL}: the rails archetypes stay NA and the whole NA set is invariant "
+        f"under uppercasing (base {sorted(base.unclaimed)}, up {sorted(up.unclaimed)})",
+    )
+
+
 def test_offering_relabel_invariance_retail() -> None:
     """A retail storefront's task set (physical_good, all else NA) is identity-invariant."""
     print("test_offering_relabel_invariance_retail")
@@ -5111,6 +5257,7 @@ def main() -> int:
         test_offering_casing_invariance_org,
         test_offering_casing_invariance_com,
         test_offering_casing_invariance_machine,
+        test_offering_casing_invariance_retail,
         test_offering_surface_dedup_invariance_org,
         test_offering_surface_dedup_invariance_com,
         test_offering_relabel_invariance_retail,

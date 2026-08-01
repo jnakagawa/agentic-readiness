@@ -11652,3 +11652,7 @@ arc (COVERAGE 142 → TRUTH 143 → READOUT). After that, digital_good / subscri
 COVERAGE frontier on committed evidence; service_booking / data_retrieval new signals +
 physical_good fulfillment leg stay `[LOCAL]`-blocked; ACP/UCP/MPP + free-tier live-wiring stay
 `[LOCAL]`.
+
+## Local verification — 20260801T035047Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260801T035047Z.json

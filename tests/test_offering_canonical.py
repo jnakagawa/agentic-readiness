@@ -4259,6 +4259,178 @@ def test_cross_signal_isolation_negative_control() -> None:
     )
 
 
+# ---------------------------------------------------------------------------
+# Surface-DEDUP invariance — a genuinely NEW perturbation axis on the offering
+# path, the last unused in-cloud METHOD sibling of the invariance family (host
+# RELABEL / surface-read ORDER / content SCALE / NOISE surface / listing &
+# endpoint ORDER / CASE fold). It is distinct from content-SCALE, its closest
+# relative: content-scale grows every surface BODY K-fold within a FIXED surface
+# SET (raw hits multiply INSIDE one surface); this adds a whole DUPLICATE SURFACE
+# under a DISTINCT key (the SAME signal-bearing body served a second time from a
+# second location). That is not a synthetic contortion — it is exactly what the
+# LIVE discovery path already produces: `discover_offering` reads each
+# `_SURFACE_DOCS` path on the apex host AND on the `agents.`/`docs.`/`developers.`/
+# `api.` doc subdomains (`_doc_subdomain_surfaces`), so a storefront that mirrors
+# its `llms.txt` / OpenAPI spec / `/pricing` on `agents.<host>` (as the canonical
+# driftflight.com does) hands the classifier the SAME body under two distinct
+# host-qualified surface keys. A CDN mirror, an `/openapi.json` also served at
+# `/swagger.json`, or an `llms.txt` duplicated as `llms-full.txt` are the same
+# shape. None of that should make a site "more" of any archetype.
+#
+# WHY this is a robustness PIN, not a bug-find: a duplicate surface has a DISTINCT
+# key, so `classify_offering` ADDS it (a dict never overwrites a new key) and
+# `_scan_surface` stamps its signals with the mirror surface — so the per-claim
+# `signals` LIST genuinely GROWS (the same labels fire again on the mirror). The
+# ranking quantity survives because `ArchetypeClaim.strength` counts DISTINCT
+# signal LABELS (`len({s.label for s in self.signals})`), not raw list length —
+# its docstring names exactly this "does not out-rank" rationale. This guard turns
+# that rationale into an executable tripwire for the DEDUP axis on REAL canonical
+# evidence: mirroring every doc surface must leave the strength of every archetype,
+# the RANKED claimed list (which drives the fixed template-bank task order for
+# cross-site comparability), and the NA complement byte-identical.
+#
+# TEETH / non-vacuity: the mirror really reaches the classifier (`surfaces_seen`
+# grows by exactly the mirror keys), and the top-ranked claim's raw `len(signals)`
+# STRICTLY INCREASES under the mirror — so a count-based reader (a regression that
+# defined `strength = len(self.signals)`, letting a mirrored surface reorder the
+# ranking) WOULD see a difference and could flip the task order, yet the
+# distinct-label `strength` and the rank below do not move. Mirrored onto BOTH
+# canonical pair-halves from the start, so this axis does not inherit the .com-only
+# asymmetry surface-read-order had to close later. The homepage is deliberately NOT
+# mirrored: `_doc_subdomain_surfaces` mirrors only `_SURFACE_DOCS` (never the apex
+# homepage), and a non-"homepage"-keyed HTML body is stripped only via
+# `_is_html_document`, so restricting the mirror to the doc surfaces keeps each
+# duplicate's scan byte-faithful to its original AND models the real mechanism.
+# ---------------------------------------------------------------------------
+_MIRROR_PREFIX = "mirror::"  # a sentinel key prefix; never collides with a real surface
+
+
+def _mirror_doc_surfaces(surfaces: dict) -> dict:
+    """``{mirror-key: original-key}`` for every doc surface (homepage excluded).
+
+    Each doc surface (everything the discovery path reads beyond the apex homepage)
+    gets a duplicate under a distinct ``mirror::`` key carrying the SAME body — the
+    apex+subdomain / CDN / spec-alias mirror the live discovery path already yields.
+    """
+    return {f"{_MIRROR_PREFIX}{s}": s for s in surfaces if s != "homepage"}
+
+
+def _assert_surface_dedup_invariance(domain: str, expected_claimed: set) -> None:
+    """Serving the same doc surface a second time changes no archetype claim."""
+    surfaces = _captured_surfaces(domain)
+    base = _offering.classify_offering(domain, dict(surfaces))
+
+    # The property under test is genuinely present: the domain claims the expected
+    # multi-archetype set, RANKED, so a count-driven reorder would be observable.
+    _check(
+        set(base.archetypes) == expected_claimed,
+        f"{domain}: base claimed set == {sorted(expected_claimed)} "
+        f"(got {sorted(set(base.archetypes))})",
+    )
+    _check(
+        len(base.claimed) >= 2,
+        f"{domain}: >=2 archetypes claimed, so the ranking a dedup regression could "
+        f"reorder is real (got {base.archetypes})",
+    )
+
+    mirror_keys = _mirror_doc_surfaces(surfaces)
+    _check(
+        bool(mirror_keys),
+        f"{domain}: >=1 doc surface exists to mirror (got surfaces {list(surfaces)})",
+    )
+    mirrored = dict(surfaces)
+    for mk, src in mirror_keys.items():
+        _check(mk not in mirrored, f"{domain}: mirror key {mk!r} is new, not an overwrite")
+        mirrored[mk] = surfaces[src]  # byte-identical duplicate under a distinct key
+    # Non-vacuity: the mirror genuinely enlarged the surface MAP the classifier reads.
+    _check(
+        len(mirrored) == len(surfaces) + len(mirror_keys),
+        f"{domain}: the surface map grew by exactly the mirror keys "
+        f"({len(surfaces)} -> {len(mirrored)}) — the perturbation is real",
+    )
+
+    dup = _offering.classify_offering(domain, mirrored)
+
+    # The mirror really reached classification: surfaces_seen grew by exactly the
+    # mirror keys and nothing else (each duplicate carried non-empty prose, so it
+    # was read — not silently dropped, which would make the invariance vacuous).
+    _check(
+        set(dup.surfaces_seen) == set(base.surfaces_seen) | set(mirror_keys),
+        f"{domain}: surfaces_seen grew by exactly the mirror keys "
+        f"(base {sorted(base.surfaces_seen)}, dup {sorted(dup.surfaces_seen)})",
+    )
+
+    # TEETH: the top-ranked claim's raw signal-LIST length STRICTLY INCREASES under
+    # the mirror (its labels fired again on the mirror surfaces), so a count-based
+    # `strength = len(self.signals)` reader WOULD see more and could reorder the
+    # ranking — yet the distinct-label strength and the rank below do not move. This
+    # is why the invariance is a real property of the classifier, not a no-op.
+    def _sig_count(prof, arch: str) -> int:
+        return len(next(c for c in prof.claimed if c.archetype == arch).signals)
+
+    mirror_src = set(mirror_keys.values())
+    top = base.claimed[0]
+    top_mirrorable = sum(1 for s in top.signals if s.surface in mirror_src)
+    _check(
+        top_mirrorable >= 1,
+        f"{domain}: the top-ranked claim ({top.archetype}) has >=1 signal on a "
+        f"mirrored doc surface (got {top_mirrorable}) — the count teeth are real",
+    )
+    _check(
+        _sig_count(dup, top.archetype) > _sig_count(base, top.archetype),
+        f"{domain}: the top claim ({top.archetype}) fires MORE raw signals under the "
+        f"mirror ({_sig_count(base, top.archetype)} -> {_sig_count(dup, top.archetype)}) "
+        "— a count-based strength reader would differ",
+    )
+
+    # (1) Per-archetype STRENGTH (distinct-label count — the ranking quantity) is
+    # byte-identical: a duplicate surface adds no distinct label, so no claim gets
+    # stronger and none can leapfrog another in the rank.
+    base_strength = {c.archetype: c.strength for c in base.claimed}
+    dup_strength = {c.archetype: c.strength for c in dup.claimed}
+    _check(
+        dup_strength == base_strength,
+        f"{domain}: per-archetype strength invariant under surface dedup "
+        f"(base {base_strength}, dup {dup_strength})",
+    )
+    # (2) The distinct-label SET per archetype (the substrate strength counts) is
+    # identical — the mirror re-fired the SAME labels, conjured no new one.
+    base_labels = {c.archetype: {s.label for s in c.signals} for c in base.claimed}
+    dup_labels = {c.archetype: {s.label for s in c.signals} for c in dup.claimed}
+    _check(
+        dup_labels == base_labels,
+        f"{domain}: per-archetype distinct-label set invariant under surface dedup",
+    )
+    # (3) Claimed archetypes IN RANK ORDER invariant — the rank drives the fixed
+    # template-bank task order (cross-site comparability), so a mirrored surface must
+    # not reorder it.
+    _check(
+        dup.archetypes == base.archetypes,
+        f"{domain}: claimed archetypes (ranked) invariant under surface dedup "
+        f"(base {base.archetypes}, dup {dup.archetypes})",
+    )
+    # (4) The NA/unclaimed set (excluded from every mean/spread, never penalized) is
+    # invariant — which archetypes a site is judged on vs excused as NA is a property
+    # of WHAT it claims, not how many places it says it.
+    _check(
+        set(dup.unclaimed) == set(base.unclaimed),
+        f"{domain}: NA/unclaimed set invariant under surface dedup "
+        f"(base {sorted(base.unclaimed)}, dup {sorted(dup.unclaimed)})",
+    )
+
+
+def test_offering_surface_dedup_invariance_org() -> None:
+    """A doc surface served twice is not "more" of any archetype (.org)."""
+    print("test_offering_surface_dedup_invariance_org")
+    _assert_surface_dedup_invariance("drift-flight.org", EXPECTED_CLAIMED["drift-flight.org"])
+
+
+def test_offering_surface_dedup_invariance_com() -> None:
+    """Surface-dedup invariance mirrored onto the .com half of the canonical pair."""
+    print("test_offering_surface_dedup_invariance_com")
+    _assert_surface_dedup_invariance("driftflight.com", EXPECTED_CLAIMED["driftflight.com"])
+
+
 def main() -> int:
     tests = [
         test_canonical_org_offering,
@@ -4299,6 +4471,8 @@ def main() -> int:
         test_offering_endpoint_order_invariance_metered_api,
         test_offering_casing_invariance_org,
         test_offering_casing_invariance_com,
+        test_offering_surface_dedup_invariance_org,
+        test_offering_surface_dedup_invariance_com,
         test_offering_relabel_invariance_retail,
         test_offering_relabel_invariance_nonstorefront,
         test_offering_relabel_negative_control,

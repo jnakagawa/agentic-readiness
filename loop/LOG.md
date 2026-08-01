@@ -11532,3 +11532,64 @@ tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1
 ## Local verification — 20260731T134541Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260731T134541Z.json
+
+## Cycle 143 — 2026-08-01 ~02:1xZ — TRUTH
+
+**What.** The TRUTH leg of the `payment-receipt` COVERAGE→TRUTH→READOUT arc:
+`test_offering_relabel_invariance_payment_receipt` in `tests/test_offering_canonical.py`
+(45→46), pinning the metered_api `payment-receipt` signal (Cycle 142 COVERAGE, PR #132)
+as identity-invariant — the newest member of the signal-level relabel family, mirroring
+webhook-verification (134/135/136) and output-resolution (138/139/140).
+
+**Why (capability terms).** `payment-receipt` is the metered_api ACCOUNTING leg — the
+capital-safety COUNTERPART to the payment RAILS: `x402`/`agent-payment-rail` say an agent
+can PAY; `payment-receipt` is the machine-readable proof-of-payment that comes BACK, which
+the agent logs to reconcile its own spend. The receipt an agent gets back is a property of
+the paid-response CONTRACT (a receipt header, a payment/settlement receipt, a serialized
+receipt, a spend record, proof of payment), never of WHO vends it — so it must survive a
+host relabel unchanged. This gives the arc its COVERAGE→TRUTH shape and readies the READOUT
+leg (methodology prose, queued P1).
+
+**Method / non-vacuity.** The real captured driftflight.com evidence
+(`agents.driftflight.com/llms-full.txt`) carries the host in the surface KEY but NOT the
+quote window, so a whole-fixture relabel would leave the receipt evidence byte-identical
+and the invariance would be VACUOUS (the same reason webhook-verification 135 / output-
+resolution 139 use synthetic surfaces). So the guard scans a SYNTHETIC metered_api surface
+that seats the host INSIDE the receipt evidence: host = surface KEY prefix AND adjacent to
+the "payment receipt" phrase on both sides (lands in the pad=40 quote window, asserted
+non-vacuous). Relabel end-to-end → the signal survives with the SAME match count, on the
+SAME host-normalized surface, its quote STILL matching the live payment-receipt regex, host
+absent from all rewritten evidence.
+
+**Teeth (precision — a bare "receipt" is a false-positive minefield).** A sibling distractor
+surface carrying only the bare-"receipt" senses the signal must REFUSE — an order/email
+receipt at retail checkout, a read receipt ("enable read receipts"), "in receipt of your
+message", a warehouse "receipt of goods" — fires ZERO payment-receipt. The match keys on
+the proof-of-payment STRUCTURE (receipt header / payment-settlement receipt / serialized
+receipt / spend record / proof of payment), not the word "receipt".
+
+**Ship class + evidence.** Tests-only, off the scoring path (`git diff` over
+`asrs/ rubric/ fixtures/` EMPTY; `--name-only` = `tests/test_offering_canonical.py` only)
+→ score-neutral, NOT peer-gated. Cloud bridge blocks direct main push → branch
+`loop/payment-receipt-invariance` + PR #134 + self-merge (squash 2fc1415). offering-canonical
+45→46; full suite green (22 suite files, 0 failures; `test_free_tier` 11/11 after restoring
+the environment-only `eth-account` dep — a cloud-env dependency gap, NOT a code/site
+regression; the LOCAL runner has it, its artifacts show test_free_tier green). Canonical PAIR
+unchanged: in-cloud replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric
+v0.7.
+
+**Live canonical signal.** Newest LOCAL artifact `runs/local/verify_20260731T134541Z.json`
+(13:45Z Jul-31) is ~12.6h old at fire — still BREACHING the 6h floor (machine asleep, the
+Cycle-63 wake-instant pattern, NOT a code regression; cloud cannot repair). Its LIVE re-score:
+drift-flight.org 46.1 F / driftflight.com 76.2 C / delta +30.1 — the known transactability
+87.5→62.5 divergence (off the scoring path; the frozen replay guard stays the in-cloud
+regression signal). Fire at 02:1xZ Aug-1 is NOT first-after-16:00 → no digest.
+
+**Next hypothesis.** Rotate READOUT next (Cycle 143 was TRUTH). The `payment-receipt` READOUT
+leg (queued P1): a methodology paragraph in `_write_methodology_page` (`asrs/scorecard.py`)
+framing "account for the spend / trust the receipt" as the capital-safety accounting sibling
+of the payment RAILS, with a `test_methodology_documents_payment_receipt` guard — CLOSING the
+arc (COVERAGE 142 → TRUTH 143 → READOUT). After that, digital_good / subscription are the next
+COVERAGE frontier on committed evidence; service_booking / data_retrieval new signals +
+physical_good fulfillment leg stay `[LOCAL]`-blocked; ACP/UCP/MPP + free-tier live-wiring stay
+`[LOCAL]`.

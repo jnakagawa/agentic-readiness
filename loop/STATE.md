@@ -1,7 +1,17 @@
 # Loop state
 
-- Cycle counter: 142
+- Cycle counter: 143
 - Started: 2026-07-23 (UTC)
+- RUNNER STILL STALE at 2026-08-01T02:1xZ (Cycle 143) — newest verify
+  `runs/local/verify_20260731T134541Z.json` (13:45Z Jul-31) is ~12.6h old, still BREACHING the 6h floor
+  (14:41Z Jul-31–02:41Z Aug-1 launchd fires produced NO artifact = machine asleep, the Cycle-63
+  wake-instant pattern, NOT a code regression). Cloud CANNOT repair. Already flagged in today's 16:1xZ
+  digest (Cycle 133); 02:1xZ Aug-1 is NOT first-after-16:00 → no re-flag this fire. Re-flag in the next
+  first-after-16:00 fire (~Aug-1 16:xxZ) if not recovered. A persistent no-wake past ~Aug-1 morning is an
+  operator/launchd-plist matter for Jonah, NOT the Cycle-63 backoff fix. Cycle 143 also re-`git reset
+  --hard`'d local `main` off the Cycle-94 "unrelated history" fresh-clone fork (recurs each fresh cloud
+  checkout) before work, and restored the environment-only `eth-account` dep (`pip install eth-account`)
+  so the cloud bench runs `test_free_tier` 11/11 — a cloud-env gap the LOCAL runner does not have.
 - RUNNER STILL STALE at 2026-08-01T01:1xZ (Cycle 142) — newest verify
   `runs/local/verify_20260731T134541Z.json` (13:45Z Jul-31) is ~11.5h old, still BREACHING the 6h floor
   (14:41Z Jul-31–01:41Z Aug-1 launchd fires produced NO artifact = machine asleep, the Cycle-63
@@ -73,7 +83,28 @@
   LOCAL runner is UNAFFECTED (it pushes to real github.com with real credentials, not the cloud bridge —
   its verify-artifact heartbeat still works; 190b9b7/etc. are recent local-fire main pushes). Do NOT
   burn 15 min re-diagnosing next cycle: go straight to branch+PR+self-merge.
-- Focus pointer: TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 142 was
+- Focus pointer: READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 143 was
+  TRUTH, so Cycle 144 is READOUT). Cycle 143 shipped the **payment-receipt relabel-invariance** TRUTH
+  guard (`test_offering_relabel_invariance_payment_receipt` in `tests/test_offering_canonical.py`,
+  45→46) — the TRUTH leg of the payment-receipt COVERAGE→TRUTH→READOUT arc, pinning the Cycle-142
+  metered_api signal as identity-invariant under a host relabel. A SYNTHETIC metered_api surface seats
+  the host INSIDE the receipt evidence (surface KEY + adjacent to "payment receipt" on both sides →
+  pad=40 quote window, non-vacuous — the real driftflight.com evidence is host-free in the quote window,
+  so a whole-fixture relabel would be VACUOUS, mirroring webhook-verification 135 / output-resolution
+  139). Relabel end-to-end → same match count, same host-normalized surface, quote still matches the live
+  regex, host absent. TEETH: bare-"receipt" senses (order/email receipt, read receipts, "in receipt of",
+  warehouse receipt of goods) fire ZERO. Tests-only, off scoring path (`git diff asrs/ rubric/ fixtures/`
+  EMPTY; `--name-only` = `tests/test_offering_canonical.py` only) → score-neutral, NOT peer-gated; branch
+  loop/payment-receipt-invariance + PR #134 + self-merge (squash 2fc1415). Full suite green (22 suite
+  files, 0 fail; `test_free_tier` 11/11 after restoring the env-only `eth-account` dep). Replay guard
+  24/24, 46.1 F / 85.5 B / +39.4; rubric v0.7. NEXT (READOUT 144): the payment-receipt READOUT leg — a
+  methodology paragraph in `_write_methodology_page` (`asrs/scorecard.py`) framing "account for the
+  spend / trust the receipt" as the capital-safety accounting sibling of the payment RAILS + a
+  `test_methodology_documents_payment_receipt` guard in `tests/test_readout.py`, CLOSING the arc.
+  digital_good/subscription are the next COVERAGE frontier on committed evidence;
+  service_booking/data_retrieval new signals + physical_good fulfillment leg stay [LOCAL]-blocked;
+  ACP/UCP/MPP + free-tier live-wiring stay [LOCAL].
+- Focus pointer (Cycle 142): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 142 was
   COVERAGE, so Cycle 143 is TRUTH). Cycle 142 shipped the **payment-receipt** metered_api signal on the
   offering classifier (`asrs/offering.py`) — the machine-readable PROOF-OF-PAYMENT an agent gets BACK
   after a paid call and logs to reconcile its own spend (receipt header / payment/settlement receipt /

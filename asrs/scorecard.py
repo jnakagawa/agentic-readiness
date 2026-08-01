@@ -624,6 +624,46 @@ end-to-end and confirms the failure-billing grant is still recognized, unchanged
 with the vendor&rsquo;s name gone. This read is <b>diagnostic</b> &mdash; it names
 whether the offer lets an agent <b>bound its spend against a failing endpoint</b>,
 <b>off the scoring path</b> &mdash; not a scored pillar.</p>
+<p><b>Bounding a single call&rsquo;s cost</b> is the <b>capital-safety sibling</b> of
+the <b>failure-not-billed</b> leg from the other direction: failure-not-billed bounds
+what a <b>FAILED</b> call costs, this bounds what a <b>SUCCESSFUL</b> one can cost
+<b>before</b> the agent commits to it. A metered endpoint whose price varies with the
+request &mdash; tokens consumed, seconds of compute, output size &mdash; leaves an
+autonomous per-call buyer unable to know its <b>worst-case exposure</b> until the bill
+arrives: a single call against a variable-priced service might cost far more than the
+agent budgeted, and it has <b>no way to cap that up front</b> before it authorizes.
+An offer that documents a <b>reserve-and-settle</b> contract &mdash; <b>reserve a
+spend ceiling</b> up front, be <b>charged only actual</b> usage, the unused remainder
+<b>refunded</b> &mdash; lets the agent <b>bound its worst-case cost per request</b> the
+way a human sets a <b>credit-card hold</b>: it never overpays for a call that turned
+out cheaper than the ceiling, and it never authorizes a call whose ceiling it cannot
+afford. That dovetails with the same <b>$0-only capital-safety</b> ethos ASRS holds
+&mdash; an agent that can cap its exposure per call spends deliberately, not blindly.
+It is <b>distinct</b> from every neighbour: the payment <b>rails</b> (x402, a
+machine-payable endpoint) say the agent <b>can pay</b>; the <b>receipt</b> is proof of
+a <b>successful</b> charge after the fact; the <b>pricing</b> signals say <b>how</b>
+you are charged on success; and <b>failure-not-billed</b> bounds a
+<b>failure&rsquo;s</b> cost &mdash; this bounds a <b>success&rsquo;s</b>. So ASRS reads
+the documented reserve-and-settle grant as part of finishing the metered offer, keyed
+on vendor-neutral <b>reserve-and-settle vocabulary</b> (a <b>reserve-and-pay-actual</b>
+rail, <b>reserving a spend ceiling</b>, being <b>charged only actual</b> against a
+reserved ceiling, an <b>escrow</b> or <b>channel that refunds the remainder</b>), the
+same category of open convention as REST, GraphQL or OpenAPI &mdash; never on a
+vendor&rsquo;s name. The read is <b>precision-guarded</b>: a <b>bare</b>
+<code>reserve</code>, <code>refund</code>, <code>ceiling</code> or <code>escrow</code>
+word is <b>no signal</b> &mdash; a hotel <b>reservation</b>, &ldquo;we <b>reserve the
+right</b>&rdquo;, a retail <b>full refund within 30 days</b>, cloud <b>reserved
+capacity</b>, or a <b>ceiling fan</b> must never trip it &mdash; so the phrasing must
+name the reserve-<b>and</b>-settle structure: a named reserve-and-pay-actual rail,
+reserving a <b>spend</b> ceiling, being charged only actual against a reserved ceiling,
+or an escrow/channel that refunds the <b>remainder</b>. Recognition keys on the
+<b>reserve-and-settle contract the offer documents, not who documents it</b>: that
+property is pinned by an <b>executable regression test</b> that relabels the
+storefront&rsquo;s identity end-to-end and confirms the reserve-and-settle grant is
+still recognized, unchanged, with the vendor&rsquo;s name gone. This read is
+<b>diagnostic</b> &mdash; it names whether the offer lets an agent <b>cap a single
+call&rsquo;s cost up front</b>, <b>off the scoring path</b> &mdash; not a scored
+pillar.</p>
 <p><b>Walking the whole collection</b> is the finishing leg for a metered API that
 answers with a <b>list</b> &mdash; your predictions, your models, your deployments,
 your records &mdash; because such an endpoint rarely returns everything at once: it

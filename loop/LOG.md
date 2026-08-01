@@ -3,6 +3,65 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 158 — 2026-08-01T17:12Z — READOUT — reserve-and-settle methodology paragraph ("Bounding a single call's cost")
+
+**What/why.** Added a `_write_methodology_page` "Bounding a single call's cost" paragraph in
+`asrs/scorecard.py`, CLOSING the reserve-and-settle COVERAGE(156)→TRUTH(157)→READOUT(158) arc
+(the payment-receipt 142/143/144 and failure-not-billed 152/153/154 pattern). Cycle 156's
+metered_api `reserve-and-settle` signal was pinned in the classifier + tests but never surfaced in
+prose a critic can read — a reader could not learn WHY a metered offer that lets an agent reserve a
+spend ceiling and pay only actual is MORE agent-completable. The paragraph frames it as the
+capital-safety sibling of the `failure-not-billed` leg from the other direction: failure-not-billed
+bounds what a FAILED call costs; reserve-and-settle bounds what a SUCCESSFUL one can cost BEFORE the
+agent commits. It names the failure (a per-call buyer against a variable-priced endpoint — tokens,
+compute-seconds, output size — cannot know its worst-case exposure until the bill arrives, and has
+no way to cap it up front), ties it to the $0-only capital-safety ethos, and reads the
+reserve-a-ceiling → pay-actual → refund-the-remainder contract as the way an agent bounds worst-case
+cost per request "the way a human sets a credit-card hold".
+
+**Distinctness + precision (preserved in prose).** Names the leg distinct from every neighbour: the
+payment RAILS (x402, a machine-payable endpoint) say the agent CAN pay; the RECEIPT is proof of a
+SUCCESSFUL charge after the fact; the PRICING signals say HOW you're charged on success; and
+failure-not-billed bounds a FAILURE's cost — this bounds a SUCCESS's. Keeps the signal's precision
+honesty: a bare reserve/refund/ceiling/escrow is no signal — a hotel reservation, "we reserve the
+right", a retail full refund within 30 days, cloud reserved capacity, a ceiling fan must never trip
+it — so the phrasing must name the reserve-AND-settle structure. Vendor-neutral throughout
+(reserve-and-pay-actual rail, reserving a spend ceiling, charged only actual, an escrow/channel that
+refunds the remainder — the same open-convention category as REST/GraphQL/OpenAPI), recognition
+keyed on "the reserve-and-settle contract the offer documents, not who documents it", pinned by an
+identity-relabel executable regression test. Honest scope: diagnostic, off the scoring path, not a
+scored pillar.
+
+**Guard.** `test_methodology_documents_reserve_and_settle` in `tests/test_readout.py` (the
+presence/wording mirror of `test_methodology_documents_failure_not_billed`), asserting the frame,
+the vendor-neutral vocabulary as open conventions, the bare-word precision note, the four-way
+distinctness (rails / receipt / pricing / failure-not-billed), the identity-relabel + off-scoring-
+path scope, and that no vendor/domain is named. Registered in the suite's `main()` runner list — the
+Cycle-140/144/145 silent-dead-test guard (`test_runner_registration.py`) caught the omission on the
+first full-suite run, so this cycle relearned nothing.
+
+**Ship class + evidence.** READOUT display-only, direct-to-main. `git diff --name-only` =
+`asrs/scorecard.py` + `tests/test_readout.py` ONLY (`asrs/scoring.py`, `asrs/probes.py`,
+`asrs/offering.py`, `rubric/`, `fixtures/` EMPTY) → OFF the scoring path, score-neutral, NOT
+peer-gated. `test_readout.py` 65→66; full suite 372 passed (371→372); in-cloud replay guard 24/24,
+**46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7.
+
+**Live canonical signal.** Newest LOCAL artifact `runs/local/verify_20260801T035047Z.json`
+(03:50Z Aug-1) is ~13.4h old at the 17:12Z fire — BREACHING the 6h floor (borderline runner lag,
+NOT a code regression; the local ~04:xx–17:xx fires have not pushed a fresh artifact — cloud cannot
+repair the local machine; already flagged in the 16:12Z Cycle-157 digest). Its LIVE re-score:
+drift-flight.org 46.1 F / driftflight.com 76.2 C / delta +30.1 — the known transactability
+87.5→62.5 divergence (off the scoring path; the frozen replay guard stays the in-cloud regression
+signal). This fire (17:12Z) is NOT the first after 16:00 UTC (Cycle 157 sent the digest at 16:12Z)
+→ no DM per comms policy (READOUT display-only, no sensitive-class PR, nothing score-moving).
+
+**Next hypothesis.** Rotate METHOD next (Cycle 158 was READOUT). The reserve-and-settle arc is now
+COMPLETE across COVERAGE(156)/TRUTH(157)/READOUT(158). In-cloud COVERAGE on committed evidence stays
+very narrow (metered_api = 25 signals; overage/SLA/balance-check proved blocked Cycle 152); a METHOD
+rotation could mirror the surface-dedup or listing-order metamorphic axis onto the retail/machine
+pole (the casing axis completed all four poles at Cycle 155), or add a metamorphic/isolation cell.
+Remaining COVERAGE frontier is `[LOCAL]` fixture-dependent signals.
+
 ## Cycle 157 — 2026-08-01T16:12Z — TRUTH — reserve-and-settle relabel-invariance guard (offering classifier)
 
 **What/why.** Added `test_offering_relabel_invariance_reserve_and_settle` to

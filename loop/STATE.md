@@ -1,8 +1,46 @@
 # Loop state
 
-- Cycle counter: 157
+- Cycle counter: 158
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-01T16:12Z (Cycle 157) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-01T17:12Z (Cycle 158) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~13.4h old at the 17:12Z fire — PAST the 6h floor (the local ~04:xx–17:xx
+  fires have not pushed a fresh artifact; borderline runner lag, NOT the machine-asleep stall — cloud cannot
+  repair). Already flagged in the 16:12Z Cycle-157 daily digest. Live signal (read, not re-run):
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS
+  (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent signal (24/24, 46.1 F /
+  85.5 B / +39.4). Fire at 17:12Z is NOT the first after 16:00 UTC (Cycle 157 sent the digest at 16:12Z) → no
+  DM this fire per comms policy (READOUT display-only, no sensitive-class PR, nothing score-moving). No open
+  peer-gated PRs this fire (list_pull_requests state=open → []), so no first-duty review. INFRA/SELF-HEAL
+  (Cycle 158): fresh checkout landed on detached HEAD at Cycle 157's `2a6fa4a`; `git fetch origin main` FIRST
+  (Cycle-151 lesson) → `origin/main` force-updated `3796519...2a6fa4a`, `checkout -B main origin/main` realigned
+  onto `2a6fa4a`, no work lost. Created `.venv`, installed `requests pyyaml eth-account pytest` + verified
+  `import requests, yaml, asrs` before trusting the suite (372 tests green pre-flight).
+- FOCUS POINTER (Cycle 158 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 158 was
+  READOUT, so Cycle 159 is METHOD). Cycle 158 shipped a **READOUT methodology paragraph** — a
+  `_write_methodology_page` "Bounding a single call's cost" paragraph in `asrs/scorecard.py` CLOSING the
+  reserve-and-settle COVERAGE(156)→TRUTH(157)→READOUT(158) arc (the payment-receipt 142/143/144 pattern). It
+  frames Cycle 156's metered_api `reserve-and-settle` signal as the capital-safety sibling of the
+  `failure-not-billed` leg from the other direction — failure-not-billed bounds what a FAILED call costs, this
+  bounds what a SUCCESSFUL one can cost BEFORE the agent commits — names the failure (a per-call buyer against
+  a variable-priced endpoint cannot bound worst-case exposure until the bill arrives, no way to cap up front),
+  ties it to the $0-only capital-safety ethos ("credit-card hold"), names its distinctness from every neighbour
+  (payment RAILS = the agent CAN pay; RECEIPT = proof of a SUCCESSFUL charge; PRICING = HOW you're charged on
+  success; failure-not-billed = a FAILURE's cost), preserves the bare-word precision honesty (a bare
+  reserve/refund/ceiling/escrow — hotel reservation, reserve-the-right, retail full refund, reserved capacity,
+  ceiling fan — is no signal), stays vendor-neutral (reserve-and-pay-actual rail / spend ceiling / charged only
+  actual / escrow refunds the remainder, recognition keyed on the contract not who documents it, identity-
+  relabel-pinned), and honest on scope (diagnostic, off the scoring path). Guard
+  `test_methodology_documents_reserve_and_settle` in `tests/test_readout.py` (65→66, mirror of
+  `test_methodology_documents_failure_not_billed`), REGISTERED in `main()` (the `test_runner_registration.py`
+  silent-dead-test guard caught the omission on the first full-suite run). Display-only, OFF the scoring path
+  (`git diff --name-only` = `asrs/scorecard.py` + `tests/test_readout.py` ONLY; scoring.py/probes.py/offering.py/
+  rubric/fixtures EMPTY) → score-neutral, NOT peer-gated; direct-to-main. Full suite 372 passed (371→372);
+  replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. NEXT (METHOD 159): the
+  reserve-and-settle arc is COMPLETE; a METHOD rotation could mirror the surface-dedup or listing-order
+  metamorphic axis onto the retail/machine pole (casing axis completed all four poles Cycle 155), or add a new
+  metamorphic/isolation cell. In-cloud COVERAGE on committed evidence stays very narrow (metered_api = 25
+  signals); remaining frontier is `[LOCAL]` fixtures.
+- SUPERSEDED (Cycle 157 runner note): RUNNER AT-FLOOR at 2026-08-01T16:12Z (Cycle 157) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~12.4h old at the 16:12Z fire — PAST the 6h floor (the local ~04:xx–16:xx
   fires have not pushed a fresh artifact; borderline runner lag, NOT the machine-asleep stall — cloud cannot
   repair). Live signal (read, not re-run): driftflight.com 76.2 C / +30.1 / transactability 62.5 — the
@@ -12,7 +50,7 @@
   []), so no first-duty review. INFRA/SELF-HEAL (Cycle 157): fresh checkout landed clean on `main` at `b75ee42`
   (Cycle 156), no git divergence this fire; created `.venv`, installed `requests pyyaml eth-account` + verified
   `import requests, yaml, asrs` before trusting the suite (23 files green pre-flight).
-- FOCUS POINTER (Cycle 157 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 157 was
+- SUPERSEDED (Cycle 157 focus pointer): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 157 was
   TRUTH, so Cycle 158 is READOUT). Cycle 157 shipped a **TRUTH relabel-invariance guard** —
   `test_offering_relabel_invariance_reserve_and_settle` in `tests/test_offering_canonical.py`, the signal-level
   metamorphic mirror every recent metered_api signal earns (failure-not-billed 153 / output-retention 151 /

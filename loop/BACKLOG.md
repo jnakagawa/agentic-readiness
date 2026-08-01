@@ -568,6 +568,26 @@ design in-cloud, execute locally.
      guard 24/24 / 46.1 F / 85.5 B / +39.4. `test_offering_canonical.py` 51→52; suite 23 files green. See LOG
      Cycle 157. The READOUT leg (methodology "Bounding a single call's cost" paragraph) is the next-rotation leg
      closing the COVERAGE(156)→TRUTH(157)→READOUT arc. -->
+<!-- DONE 2026-08-01T17:12Z (Cycle 158, READOUT, direct-to-main, display-only/score-neutral): the
+     reserve-and-settle READOUT leg — a `_write_methodology_page` "Bounding a single call's cost" paragraph in
+     `asrs/scorecard.py` — SHIPPED, CLOSING the reserve-and-settle COVERAGE(156)→TRUTH(157)→READOUT(158) arc
+     (the payment-receipt 142/143/144 + failure-not-billed 152/153/154 pattern). Frames Cycle 156's metered_api
+     `reserve-and-settle` signal as the capital-safety sibling of `failure-not-billed` from the OTHER direction:
+     failure-not-billed bounds what a FAILED call costs; reserve-and-settle bounds what a SUCCESSFUL one can cost
+     BEFORE the agent commits (reserve a spend ceiling → pay actual → refund the remainder = bounding worst-case
+     cost per request "the way a human sets a credit-card hold"). Names the failure (a per-call buyer against a
+     variable-priced endpoint cannot bound worst-case exposure until the bill arrives, no way to cap up front),
+     the four-way distinctness (payment RAILS = the agent CAN pay; RECEIPT = proof of a SUCCESSFUL charge;
+     PRICING = HOW you're charged on success; failure-not-billed = a FAILURE's cost), the bare-word precision
+     honesty (a bare reserve/refund/ceiling/escrow — hotel reservation, reserve-the-right, retail full refund,
+     reserved capacity, ceiling fan — is no signal), vendor-neutral vocabulary as open conventions, identity-
+     relabel recognition, and honest scope (diagnostic, off the scoring path). Guard
+     `test_methodology_documents_reserve_and_settle` in `tests/test_readout.py` (65→66, mirror of the
+     failure-not-billed guard), REGISTERED in `main()` (the `test_runner_registration.py` silent-dead-test guard
+     caught the omission on the first full-suite run). Off the scoring path (`git diff --name-only` =
+     `asrs/scorecard.py` + `tests/test_readout.py` ONLY) → score-neutral, rubric v0.7, replay guard 24/24 /
+     46.1 F / 85.5 B / +39.4, 0 replay-miss. Full suite 372 passed (371→372). See LOG Cycle 158. The
+     reserve-and-settle arc is now COMPLETE across all three tracks. -->
 <!-- COVERAGE-IN-CLOUD EXHAUSTION (recorded Cycle 152; UPDATED Cycle 156 — reserve-and-settle was a second
      distinct signal found after this note, so the frontier is narrower now but was NOT fully dry): a broad
      capability-vocabulary sweep of the rich committed fixtures (drift pair + api.replicate.com) this cycle

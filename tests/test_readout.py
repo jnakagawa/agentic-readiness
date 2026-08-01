@@ -1206,6 +1206,73 @@ def test_methodology_documents_failure_not_billed() -> None:
                f"failure-not-billed prose names no vendor/domain ({banned!r})")
 
 
+def test_methodology_documents_reserve_and_settle() -> None:
+    # Cycle 158 (READOUT): the READOUT complement CLOSING the reserve-and-settle arc
+    # opened by Cycle 156 (COVERAGE — the metered_api `reserve-and-settle` offering
+    # signal: whether an agent can CAP its per-call exposure up front by reserving a
+    # spend CEILING, being charged only the ACTUAL usage, the unused remainder refunded)
+    # and Cycle 157 (TRUTH — the SIGNAL-level HOST relabel-invariance guard for that
+    # signal). This is the metered capital-safety leg that bounds a SUCCESSFUL call's
+    # cost, completing the full COVERAGE->TRUTH->READOUT arc (mirroring failure-not-billed
+    # 152/153/154, payment-receipt 142/143/144, webhook-verification 134/135/136). The
+    # leg was pinned in code + tests but NEVER surfaced in prose a critic can read — a
+    # reader could not learn WHY a metered offer that lets an agent reserve a ceiling and
+    # pay only actual is MORE agent-completable, or how it is DISTINCT from its
+    # neighbours: the payment rails (x402, a machine-payable endpoint) say the agent CAN
+    # pay; the receipt is proof of a SUCCESSFUL charge after the fact; the pricing signals
+    # say HOW you are charged on success; and failure-not-billed bounds a FAILURE's cost
+    # while this bounds a SUCCESS's, before the agent commits. The paragraph must (a)
+    # frame it as bounding a single call's cost up front, name it the capital-safety
+    # sibling of the failure-not-billed leg, tie it to the $0-only capital-safety ethos,
+    # and name the failure (a per-call buyer against a variable-priced endpoint cannot
+    # bound its worst-case exposure until the bill arrives); (b) name the vendor-neutral
+    # reserve-and-settle vocabulary the offering signal anchors on as open conventions —
+    # a reserve-and-pay-actual rail, reserving a spend ceiling, being charged only actual
+    # against a reserved ceiling, an escrow/channel that refunds the remainder; (c) keep
+    # the signal's PRECISION honesty — a bare reserve/refund/ceiling/escrow (a hotel
+    # reservation, "we reserve the right", a retail full refund, cloud reserved capacity,
+    # a ceiling fan) is no signal; (d) say recognition keys on the reserve-and-settle
+    # contract the offer documents not who documents it and is pinned by an identity-
+    # relabel executable regression test; and (e) stay HONEST about scope — this offering
+    # read is diagnostic, off the scoring path, not a scored pillar. Vendor-neutral throughout.
+    print("test_methodology_documents_reserve_and_settle")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    # Match on the whitespace-collapsed text (same technique as the failure-not-billed /
+    # payment-receipt guards) so wording, not source wrapping, is what the guard pins.
+    collapsed = " ".join(text.split())
+    for phrase in ("Bounding a single call", "capital-safety sibling",
+                   "worst-case cost per request", "credit-card hold",
+                   "reserve-and-settle contract the offer documents, not who documents it",
+                   "relabels the storefront", "executable regression test",
+                   "off the scoring path", "diagnostic"):
+        _check(phrase in collapsed,
+               f"methodology documents reserve-and-settle: {phrase!r}")
+    # The vendor-neutral reserve-and-settle vocabulary the offering signal bank anchors on
+    # must appear as open conventions: a reserve-and-pay-actual rail, a reserved spend
+    # ceiling, being charged only actual, an escrow/channel that refunds the remainder.
+    for token in ("reserve-and-pay-actual", "spend ceiling", "charged only actual",
+                  "refunds the remainder"):
+        _check(token in collapsed, f"methodology names reserve-and-settle convention {token!r}")
+    # PRECISION honesty: the prose must preserve the signal's bare-word guard — a bare
+    # reserve/refund/ceiling/escrow (a hotel reservation, reserve-the-right, retail refund,
+    # reserved capacity, ceiling fan) is no signal.
+    for token in ("bare", "no signal", "reserve the right", "reserved capacity",
+                  "ceiling fan"):
+        _check(token in collapsed,
+               f"methodology keeps reserve-and-settle precision note: {token!r}")
+    # DISTINCTNESS: the prose must name the neighbours it is distinct from so a reader
+    # cannot conflate reserve-and-settle with the payment rails, receipt, pricing, or
+    # failure-not-billed leg.
+    for token in ("can pay", "proof of a", "failure-not-billed", "success&rsquo;s"):
+        _check(token in collapsed,
+               f"methodology keeps reserve-and-settle distinctness note: {token!r}")
+    # Vendor-neutral: no scored domain/product/brand named on the page.
+    for banned in ("drift-flight", "driftflight", "replicate"):
+        _check(banned not in text,
+               f"reserve-and-settle prose names no vendor/domain ({banned!r})")
+
+
 def test_methodology_documents_plan_purchase() -> None:
     # Cycle 148 (READOUT): the READOUT complement CLOSING the plan-purchase arc opened
     # by Cycle 146 (COVERAGE — the SUBSCRIPTION `plan-purchase` offering signal: whether
@@ -2184,6 +2251,7 @@ def main() -> int:
         test_methodology_documents_output_resolution,
         test_methodology_documents_payment_receipt,
         test_methodology_documents_failure_not_billed,
+        test_methodology_documents_reserve_and_settle,
         test_methodology_documents_plan_purchase,
         test_methodology_documents_free_trial,
         test_methodology_documents_self_provisioning,

@@ -720,6 +720,46 @@ prefix</b> end-to-end and confirms the test facility is still recognized,
 unchanged, with the vendor&rsquo;s name gone. This read is <b>diagnostic</b>
 &mdash; it names whether the offer lets an agent rehearse the call at $0, <b>off
 the scoring path</b> &mdash; not a scored pillar.</p>
+<p><b>Trying a paid call for free before you fund</b> is the <b>capital-safety
+sibling</b> of the <b>receipt</b> and <b>reserve-and-settle</b> legs from the
+on-ramp direction: those bound what a call <b>costs</b> once money is in play,
+this asks whether the agent can prove the paid endpoint <b>works end to end at
+$0</b> &mdash; before it funds a wallet at all. An autonomous per-call buyer that
+must move money into a metered service <b>sight unseen</b>, on the promise the API
+will do what it claims, is exposed the way anyone is who <b>pays before they can
+verify</b>; an offer that documents a <b>free included allowance</b> &mdash; a
+per-account grant of <b>real billable units</b> usable at a <b>zero balance</b>
+with no funding, an <code>includedUnits</code> allotment named as free, or an
+explicit invitation to <b>try / call the API before any money or funding</b>
+&mdash; lets the agent run a genuine metered call, confirm the integration, and
+<b>only then</b> decide to fund. That dovetails directly with ASRS&rsquo;s own
+<b>$0-only</b> ethos: the offer an agent can exercise <b>for real</b> at zero cost
+before committing capital is the most agent-completable on-ramp there is. It is
+<b>distinct</b> from every neighbour: <b>test-mode</b> rehearses the call in a
+<b>sandbox / fake environment</b> (no real output, no real billing), a
+subscription <b>free trial</b> is a <b>time-boxed window</b> on a recurring plan,
+and <b>self-provisioning</b> grants free <b>identity or access</b> &mdash; none of
+them is a <b>real billable unit run at $0 against production before funding</b>.
+So ASRS reads the documented free-allowance grant as part of understanding the
+metered offer, keyed on vendor-neutral <b>free-usage vocabulary</b> (a <b>free
+usage / allowance</b>, <b>free units per account or period</b>, an
+<code>includedUnits</code> allotment named free, or an explicit try/call
+<b>before any money or funding</b>), the same category of open convention as REST,
+GraphQL or OpenAPI &mdash; never on a vendor&rsquo;s name. The read is
+<b>precision-guarded</b>: a <b>bare</b> &ldquo;<b>free</b>&rdquo; is <b>no
+signal</b> &mdash; <b>free shipping</b>, a <b>royalty-free</b> licence,
+<b>toll-free</b>, <b>free parking</b>, &ldquo;<b>feel free</b>&rdquo;, or a
+<b>paid</b> &ldquo;500 units <b>included</b> per month&rdquo; allotment must never
+trip it &mdash; so the phrasing must name a free <b>usage/allowance</b>, free
+<b>units per account/period</b>, an <code>includedUnits</code> grant joined to
+<b>free</b>, or trying the call <b>before any money/funding</b>. Recognition keys
+on the <b>free-usage contract the offer documents, not who documents it</b>: that
+property is pinned by an <b>executable regression test</b> that relabels the
+storefront&rsquo;s identity end-to-end and confirms the free-allowance grant is
+still recognized, unchanged, with the vendor&rsquo;s name gone. This read is
+<b>diagnostic</b> &mdash; it names whether the offer lets an agent <b>run a real
+paid call at $0 before funding</b>, <b>off the scoring path</b> &mdash; not a
+scored pillar.</p>
 <p><b>Owning the deliverable</b> is finishing on the <b>digital-good</b> side,
 where an agent can obtain exactly the render it asked for and still not be able to
 <b>use</b> it. A generation storefront returns an image, a video, an audio clip or

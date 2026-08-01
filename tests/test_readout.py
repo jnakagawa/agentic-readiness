@@ -1273,6 +1273,76 @@ def test_methodology_documents_reserve_and_settle() -> None:
                f"reserve-and-settle prose names no vendor/domain ({banned!r})")
 
 
+def test_methodology_documents_free_included_usage() -> None:
+    # Cycle 162 (READOUT): the READOUT complement CLOSING the free-included-usage arc
+    # opened by Cycle 160 (COVERAGE — the metered_api `free-included-usage` offering
+    # signal: whether an agent can complete a REAL metered call at $0 BEFORE committing
+    # any money, via a per-account free ALLOWANCE of actual billable units usable at a
+    # zero balance with no funding) and Cycle 161 (TRUTH — the SIGNAL-level HOST
+    # relabel-invariance guard for that signal). This is the metered on-ramp leg from the
+    # $0-before-funding direction, completing the full COVERAGE->TRUTH->READOUT arc
+    # (mirroring reserve-and-settle 156/157/158, failure-not-billed 152/153/154,
+    # payment-receipt 142/143/144). The leg was pinned in code + tests but NEVER surfaced
+    # in prose a critic can read — a reader could not learn WHY a metered offer that lets
+    # an agent run a genuine billable call at $0 before funding a wallet is MORE
+    # agent-completable, or how it is DISTINCT from its neighbours: test-mode rehearses
+    # the call in a SANDBOX / FAKE environment (no real output, no real billing), a
+    # subscription free trial is a TIME-BOXED window on a recurring plan, and
+    # self-provisioning grants free IDENTITY / access — none is a REAL billable unit run
+    # at $0 against production before funding. The paragraph must (a) frame it as trying a
+    # paid call for free before you fund, name it the capital-safety sibling of the
+    # receipt/reserve-and-settle legs, tie it to the $0-only ethos, and name the failure
+    # (a per-call buyer forced to move money sight unseen before it can verify the API
+    # works); (b) name the vendor-neutral free-usage vocabulary the offering signal
+    # anchors on as open conventions — a free usage/allowance, free units per account or
+    # period, an includedUnits allotment named free, an explicit try/call before any
+    # money or funding; (c) keep the signal's PRECISION honesty — a bare "free" (free
+    # shipping, royalty-free, toll-free, free parking, "feel free", a PAID "units
+    # included per month" allotment) is no signal; (d) say recognition keys on the
+    # free-usage contract the offer documents not who documents it and is pinned by an
+    # identity-relabel executable regression test; and (e) stay HONEST about scope — this
+    # offering read is diagnostic, off the scoring path, not a scored pillar.
+    # Vendor-neutral throughout.
+    print("test_methodology_documents_free_included_usage")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    # Match on the whitespace-collapsed text (same technique as the reserve-and-settle /
+    # failure-not-billed / payment-receipt guards) so wording, not source wrapping, is
+    # what the guard pins.
+    collapsed = " ".join(text.split())
+    for phrase in ("Trying a paid call for free before you fund", "capital-safety sibling",
+                   "works end to end at $0", "before it funds a wallet",
+                   "free-usage contract the offer documents, not who documents it",
+                   "relabels the storefront", "executable regression test",
+                   "off the scoring path", "diagnostic"):
+        _check(phrase in collapsed,
+               f"methodology documents free-included-usage: {phrase!r}")
+    # The vendor-neutral free-usage vocabulary the offering signal bank anchors on must
+    # appear as open conventions: a free usage/allowance, free units per account/period,
+    # an includedUnits allotment named free, trying the call before any money/funding.
+    for token in ("free usage / allowance", "free units per account or period",
+                  "includedUnits", "before any money or funding"):
+        _check(token in collapsed, f"methodology names free-usage convention {token!r}")
+    # PRECISION honesty: the prose must preserve the signal's bare-word guard — a bare
+    # "free" (free shipping, royalty-free, toll-free, free parking, a PAID included
+    # allotment) is no signal.
+    for token in ("bare", "no signal", "free shipping", "royalty-free", "toll-free",
+                  "free parking", "500 units"):
+        _check(token in collapsed,
+               f"methodology keeps free-included-usage precision note: {token!r}")
+    # DISTINCTNESS: the prose must name the neighbours it is distinct from so a reader
+    # cannot conflate free-included-usage with test-mode, a subscription free trial, or
+    # self-provisioning.
+    for token in ("test-mode", "sandbox / fake environment", "free trial",
+                  "self-provisioning"):
+        _check(token in collapsed,
+               f"methodology keeps free-included-usage distinctness note: {token!r}")
+    # Vendor-neutral: no scored domain/product/brand named on the page.
+    for banned in ("drift-flight", "driftflight", "replicate"):
+        _check(banned not in text,
+               f"free-included-usage prose names no vendor/domain ({banned!r})")
+
+
 def test_methodology_documents_plan_purchase() -> None:
     # Cycle 148 (READOUT): the READOUT complement CLOSING the plan-purchase arc opened
     # by Cycle 146 (COVERAGE — the SUBSCRIPTION `plan-purchase` offering signal: whether
@@ -2252,6 +2322,7 @@ def main() -> int:
         test_methodology_documents_payment_receipt,
         test_methodology_documents_failure_not_billed,
         test_methodology_documents_reserve_and_settle,
+        test_methodology_documents_free_included_usage,
         test_methodology_documents_plan_purchase,
         test_methodology_documents_free_trial,
         test_methodology_documents_self_provisioning,

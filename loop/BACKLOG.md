@@ -601,16 +601,21 @@ design in-cloud, execute locally.
      (Cycle 152). The remaining in-cloud COVERAGE frontier on committed evidence is output FORMAT
      (false-positive minefield, deferred); everything else needs new [LOCAL] fixtures. -->
 
-<!-- METHOD METAMORPHIC-GRID STATE (updated Cycle 155): the CASING axis is now COMPLETE across all four
-     poles — org/com (multi-archetype prose), machine (metered_api /openapi.json spec), retail (no-rails
-     physical_good), matching content-scale and noise-surface. Cross-axis coverage map for a future METHOD
-     rotation: (a) content-scale = org/com/retail (no machine pole); (b) noise-surface = org/com/retail (no
-     machine pole); (c) casing = org/com/machine/retail (COMPLETE); (d) surface-dedup = org/com only (no
-     machine/retail pole); (e) surface-ORDER = org (+ per-signal cells); (f) listing-order / endpoint-order =
-     single-signal cells. Candidate open cells, smallest-meaningful-unit each: content-scale/noise-surface on
-     the MACHINE pole; surface-dedup on the retail or machine pole. Each needs the same pole-specific tooth
-     care casing-retail did — verify the load-bearing tooth EMPIRICALLY before writing (a single-surface pole
-     breaks the >=2 premise; a lowercase-authored-bank pole breaks the count-moves tooth). -->
+<!-- METHOD METAMORPHIC-GRID STATE (updated Cycle 159): CASING = COMPLETE across all four poles (Cycle 155);
+     SURFACE-DEDUP now = org/com/machine (Cycle 159 added the metered_api /openapi.json pole,
+     `test_offering_surface_dedup_invariance_machine`) and is COMPLETE on the poles where the mechanism
+     exists — retail is STRUCTURALLY EXCLUDED (a single-surface homepage catalog has no `_SURFACE_DOCS` doc
+     surface to mirror; `_doc_subdomain_surfaces` never mirrors the apex homepage). Cross-axis coverage map
+     for a future METHOD rotation: (a) content-scale = org/com/retail (no MACHINE pole); (b) noise-surface =
+     org/com/retail (no MACHINE pole); (c) casing = org/com/machine/retail (COMPLETE); (d) surface-dedup =
+     org/com/machine (COMPLETE where mechanism exists); (e) surface-ORDER = org (+ per-signal cells) — extend
+     to the machine/.com pole; (f) listing-order = priced_listing single cell / endpoint-order = metered_api
+     single cell — mirror onto a SECOND signal/pole. Candidate open cells, smallest-meaningful-unit each:
+     content-scale/noise-surface on the MACHINE pole; surface-ORDER on the machine or .com pole; a second
+     listing-order/endpoint-order pole. Each needs the same pole-specific tooth care casing-retail /
+     dedup-machine did — verify the load-bearing tooth EMPIRICALLY before writing (a single-surface pole
+     breaks the >=2 reorder premise → use the count-increase + no-conjured-archetype teeth; a
+     lowercase-authored-bank pole breaks the count-moves tooth → use the folding-essential form). -->
 
 - **[LOCAL] Capture a fixture with subscription-CANCEL / lifecycle prose, then add the signal** (COVERAGE,
   opened Cycle 146). A real subscription capability gap: whether an agent can PROGRAMMATICALLY CANCEL /

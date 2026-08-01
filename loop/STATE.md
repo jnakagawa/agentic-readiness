@@ -1,8 +1,44 @@
 # Loop state
 
-- Cycle counter: 158
+- Cycle counter: 159
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-01T17:12Z (Cycle 158) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-01T18:17Z (Cycle 159) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~14.4h old at the 18:17Z fire — PAST the 6h floor (the local ~04:xx–18:xx
+  fires have not pushed a fresh artifact; borderline runner lag, NOT the machine-asleep stall — cloud cannot
+  repair). Already flagged in the 16:12Z Cycle-157 daily digest. Live signal (read, not re-run):
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS
+  (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent signal (24/24, 46.1 F /
+  85.5 B / +39.4). Fire at 18:17Z is NOT the first after 16:00 UTC (Cycle 157 sent the digest at 16:12Z) → no
+  DM this fire per comms policy (tests-only/score-neutral, no sensitive-class PR, nothing score-moving). No
+  open peer-gated PRs this fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL
+  (Cycle 159): fresh checkout landed on detached HEAD at Cycle 158's `29d0c6a`; `git fetch origin main` FIRST
+  (Cycle-151 lesson) → `origin/main` force-updated `3796519...29d0c6a`, `checkout -B main origin/main` realigned
+  onto `29d0c6a`, no work lost. Created `.venv`, installed `requests pyyaml eth-account pytest` + verified
+  `import requests, yaml, asrs` before trusting the suite (372 tests green pre-flight).
+- FOCUS POINTER (Cycle 159 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 159 was
+  METHOD, so Cycle 160 is COVERAGE). Cycle 159 shipped a **METHOD surface-dedup guard on the machine pole** —
+  `test_offering_surface_dedup_invariance_machine` in `tests/test_offering_canonical.py`, extending the
+  surface-dedup metamorphic axis (previously org/com only) onto the single-archetype metered_api OpenAPI-spec
+  pole (`api.replicate.com`). This is the NATIVE home of the dedup mechanism: the live discovery path mirrors
+  every `_SURFACE_DOCS` path across apex + `api.`/`docs.` host-qualified keys, so an `/openapi.json` re-served
+  at `/swagger.json` or behind a CDN hands the classifier the SAME spec body under two keys. Property protected
+  = "never manufacture the delta" on the DEDUP axis from the metered pole: re-serving the spec must not push
+  metered_api up in strength NOR conjure a rails archetype the API does not offer. A dedicated test (not a
+  reuse of `_assert_surface_dedup_invariance`) because the shared helper's non-vacuity rests on `>=2` claimed
+  archetypes for a RANK REORDER — the machine pole claims exactly ONE, so the single-claim analogue tooth is
+  (a) the one claim's raw signal count STRICTLY INCREASES under the mirror (metered_api 9→18 signals, a
+  count-based `strength=len(signals)` reader would differ) while (b) the five siblings stay NA (no rail
+  conjured). Asserts strength / distinct-label-set / ranked-archetypes / NA-set all invariant; verified
+  empirically before writing (surfaces_seen grows by exactly `mirror::/openapi.json`, 9→18 raw signals, rest
+  byte-identical). REGISTERED in `main()` (the `test_runner_registration` silent-dead-test guard). Tests-only,
+  OFF the scoring path (`git diff --name-only` = `tests/test_offering_canonical.py` ONLY; scoring.py/probes.py/
+  offering.py/rubric/fixtures EMPTY) → score-neutral, NOT peer-gated; direct-to-main. Full suite 372→373;
+  `test_offering_canonical.py` 52→53; replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7.
+  NEXT (COVERAGE 160): the surface-dedup axis is now complete on the poles where the mechanism exists
+  (org/com/machine; retail is structurally excluded — a single-surface homepage catalog has no doc surface to
+  mirror). In-cloud COVERAGE on committed evidence stays very narrow (metered_api = 25 signals); remaining
+  frontier is `[LOCAL]` fixtures, or a METHOD listing-order/endpoint-order pole for a later rotation.
+- SUPERSEDED (Cycle 158 runner note): RUNNER AT-FLOOR at 2026-08-01T17:12Z (Cycle 158) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~13.4h old at the 17:12Z fire — PAST the 6h floor (the local ~04:xx–17:xx
   fires have not pushed a fresh artifact; borderline runner lag, NOT the machine-asleep stall — cloud cannot
   repair). Already flagged in the 16:12Z Cycle-157 daily digest. Live signal (read, not re-run):
@@ -15,7 +51,7 @@
   (Cycle-151 lesson) → `origin/main` force-updated `3796519...2a6fa4a`, `checkout -B main origin/main` realigned
   onto `2a6fa4a`, no work lost. Created `.venv`, installed `requests pyyaml eth-account pytest` + verified
   `import requests, yaml, asrs` before trusting the suite (372 tests green pre-flight).
-- FOCUS POINTER (Cycle 158 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 158 was
+- SUPERSEDED (Cycle 158 focus pointer): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 158 was
   READOUT, so Cycle 159 is METHOD). Cycle 158 shipped a **READOUT methodology paragraph** — a
   `_write_methodology_page` "Bounding a single call's cost" paragraph in `asrs/scorecard.py` CLOSING the
   reserve-and-settle COVERAGE(156)→TRUTH(157)→READOUT(158) arc (the payment-receipt 142/143/144 pattern). It

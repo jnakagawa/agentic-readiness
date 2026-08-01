@@ -3,6 +3,69 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 159 — 2026-08-01T18:17Z — METHOD — surface-dedup invariance on the machine (API-first) pole
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`) → no
+peer-gate review owed.
+
+**Infra health / self-heal.** Fresh cloud checkout landed on detached HEAD at `29d0c6a` (Cycle 158);
+`git fetch origin main` first (the Cycle-151 stale-`origin/main` lesson) — `origin/main` force-updated
+`3796519...29d0c6a`, `checkout -B main origin/main` realigned onto Cycle 158's `29d0c6a`, no work lost.
+No pyproject/setup.py (asrs imports from repo root), so created `.venv`, installed `requests pyyaml
+eth-account pytest`, verified `import requests, yaml, asrs` before trusting the suite. Full suite (372
+tests) green pre-flight. RUNNER AT-FLOOR: newest `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1)
+is ~14.4h old at fire (18:17Z) — past the 6h floor (the local ~04:xx–18:xx fires have not pushed a fresh
+artifact; borderline runner lag, NOT the machine-asleep stall — cloud cannot repair). Already carried in
+the 16:12Z Cycle-157 digest.
+
+**What/why (METHOD — extending the surface-dedup metamorphic axis onto the machine pole).** Added
+`test_offering_surface_dedup_invariance_machine`, closing the org/com-only-vs-machine asymmetry the
+DEDUP axis carried (casing closed the analogous asymmetry Cycle 155). The dedup axis had `_org`/`_com`
+(multi-archetype PROSE, shared `_assert_surface_dedup_invariance`) but NO machine pole. The new test
+pins the single-archetype metered_api OpenAPI-spec pole (`api.replicate.com`, claims EXACTLY metered_api
+off its `/openapi.json` doc surface, every other archetype NA). This is the NATIVE home of the dedup
+mechanism, not a contortion: the live discovery path mirrors every `_SURFACE_DOCS` path across apex +
+`api.`/`docs.` host-qualified keys, and an `/openapi.json` re-served at `/swagger.json` or behind a CDN
+hands the classifier the SAME spec body under two distinct keys. Property protected = "never manufacture
+the delta" on the DEDUP axis, from the metered pole: re-serving a spec must not push metered_api up in
+strength NOR CONJURE a rails archetype the API does not offer. Asserts (1) per-archetype strength
+invariant (distinct-label count — metered_api no stronger by duplication), (2) per-archetype
+distinct-label SET invariant (mirror re-fired the SAME labels), (3) ranked claimed archetypes invariant
+(still exactly metered_api), (4) the non-metered archetypes stay NA and the whole NA/unclaimed set
+invariant.
+
+**Why a dedicated test, not a reuse of `_assert_surface_dedup_invariance`.** Two structural differences,
+both verified empirically before writing: (a) the shared helper's non-vacuity rests on `len(base.claimed)
+>= 2` so a count-driven RANK REORDER is observable; the machine pole claims exactly ONE archetype, so
+"reorder" is structurally impossible and would be the wrong non-vacuity proof — the single-claim analogue
+tooth (a) is instead that the one claim's raw signal count STRICTLY INCREASES under the mirror (metered_api
+9→18 signals empirically, a count-based `strength=len(signals)` reader would differ) while tooth (b) is
+the five sibling archetypes staying NA (no rail conjured by duplication); (b) `_captured_surfaces` requires
+`>=2` READ surfaces for a reorder to matter, but the machine pole reads exactly `{homepage, /openapi.json}`
+— so the base is captured inline via the same spy pattern the casing/content-scale machine poles use, and
+the single doc surface is mirrored. Verified empirically before writing: mirror grows `surfaces_seen` by
+exactly `mirror::/openapi.json`, metered_api raw signals 9→18, strength/label-set/ranked-archetypes/NA all
+byte-identical.
+
+**Ship class + evidence.** Tests-only, OFF the scoring path (`git diff --name-only` =
+`tests/test_offering_canonical.py` ONLY; `asrs/ rubric/ fixtures/` EMPTY) → score-neutral, NOT
+peer-gated; direct-to-main. `test_offering_canonical.py` 52→53 (registered in `main()`, so the
+`test_runner_registration` silent-dead-test guard stays green); full suite 372→373; replay guard 24/24,
+46.1 F / 85.5 B / +39.4; rubric v0.7.
+
+**Canonical pair.** 46.1 F / 85.5 B / delta +39.4 — UNCHANGED (tests-only, no scoring/rubric/fixture
+change; replay guard green). Live signal (read, not re-run — runner at-floor): driftflight.com 76.2 C /
++30.1 / transactability 62.5, the persistent off-scoring-path divergence still open as the P0 [LOCAL]
+re-baseline.
+
+**Next hypothesis.** The surface-dedup axis now spans org/com/machine; retail is structurally excluded
+(a single-surface homepage catalog has no `_SURFACE_DOCS` doc surface to mirror — the axis models
+`_doc_subdomain_surfaces`, which never mirrors the apex homepage), so this axis is complete on the poles
+where the mechanism exists. Cycle 160 rotates to COVERAGE. Remaining METHOD frontier for a future
+rotation: the listing-order / endpoint-order axes mirrored onto a second pole, or a new metamorphic/
+isolation cell. In-cloud COVERAGE on committed evidence stays very narrow (metered_api = 25 signals);
+new archetype signals + fixtures stay `[LOCAL]`-blocked.
+
 ## Cycle 158 — 2026-08-01T17:12Z — READOUT — reserve-and-settle methodology paragraph ("Bounding a single call's cost")
 
 **What/why.** Added a `_write_methodology_page` "Bounding a single call's cost" paragraph in

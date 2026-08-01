@@ -5349,6 +5349,167 @@ def test_offering_surface_dedup_invariance_com() -> None:
     _assert_surface_dedup_invariance("driftflight.com", EXPECTED_CLAIMED["driftflight.com"])
 
 
+# ---------------------------------------------------------------------------
+# Surface-dedup invariance on the MACHINE (API-first) pole — closing the same
+# org/com-only-vs-machine asymmetry the casing axis already closed (Cycle 155),
+# now for the DEDUP axis. `_org`/`_com` pin the multi-archetype PROSE pole; this
+# pins the single-archetype metered_api OpenAPI-spec pole (`api.replicate.com`,
+# which claims ONLY metered_api off its `/openapi.json` doc surface). This is the
+# NATIVE home of the dedup mechanism, not a contortion: the live discovery path
+# mirrors every `_SURFACE_DOCS` path across apex + `api.`/`docs.` host-qualified
+# keys, and an `/openapi.json` re-served at `/swagger.json` or behind a CDN hands
+# the classifier the SAME spec body under two distinct keys — exactly what an
+# API-first storefront produces. The property it protects is the "never manufacture
+# the delta" invariant on the DEDUP axis, from the metered pole: re-serving a spec
+# must not push metered_api up in strength AND must not CONJURE a rails archetype
+# (subscription / physical_good / ...) the API does not offer. A storefront is not
+# "more" metered — nor suddenly a shop — because its one spec is mirrored twice.
+#
+# Two structural differences from `_assert_surface_dedup_invariance` force a
+# dedicated test rather than a reuse of the shared dedup helper:
+#   * the shared helper's non-vacuity rests on `len(base.claimed) >= 2` so a
+#     count-driven RANK REORDER is observable; the machine pole claims exactly ONE
+#     archetype, so "reorder" is structurally impossible and would be the wrong
+#     non-vacuity proof. The single-claim analogue below is stronger in the
+#     credibility direction: the teeth are (a) the raw signal count of the one claim
+#     STRICTLY INCREASES under the mirror (a count-based reader would differ), and
+#     (b) the five sibling archetypes stay NA — no rail is conjured by duplication;
+#   * `_captured_surfaces` requires `>=2` READ surfaces for a reorder to matter; the
+#     machine pole reads exactly {homepage, /openapi.json}, so the base is captured
+#     inline (the same spy pattern the casing/content-scale machine poles use) and
+#     the single doc surface is the one that gets mirrored.
+# ---------------------------------------------------------------------------
+
+
+def test_offering_surface_dedup_invariance_machine() -> None:
+    """Mirroring an API-first store's one spec is not "more" metered_api — and conjures no rails."""
+    print("test_offering_surface_dedup_invariance_machine")
+
+    # Capture the base surfaces exactly as discovery feeds them to the classifier.
+    # (Unlike `_captured_surfaces`, no >=2-surface reorder premise: the machine pole
+    # reads {homepage, /openapi.json} and the dedup axis mirrors the doc surface.)
+    path = os.path.join(_FIXTURE_DIR, f"{_MACHINE_SURFACE}.json")
+    ctx = FetchContext.from_fixture(path)
+    captured: dict = {}
+    real = _offering.classify_offering
+
+    def _spy(dom, surfaces):
+        captured.clear()
+        captured.update(surfaces)
+        return real(dom, surfaces)
+
+    _offering.classify_offering = _spy
+    try:
+        _offering.discover_offering(ctx)
+    finally:
+        _offering.classify_offering = real
+
+    base = _offering.classify_offering(_MACHINE_SURFACE, dict(captured))
+
+    # The property under test is genuinely present: the store claims EXACTLY
+    # metered_api, with every other archetype NA — so a rails claim conjured by a
+    # mere duplicate surface, or a strengthened metered_api, would be observable.
+    _check(
+        set(base.archetypes) == _MACHINE_CLAIMED,
+        f"{_MACHINE_SURFACE}: base claimed set == {sorted(_MACHINE_CLAIMED)} "
+        f"(got {sorted(set(base.archetypes))})",
+    )
+    machine_must_be_na = set(_offering.ARCHETYPES) - _MACHINE_CLAIMED
+    _check(
+        machine_must_be_na <= set(base.unclaimed),
+        f"{_MACHINE_SURFACE}: the non-metered archetypes {sorted(machine_must_be_na)} are "
+        f"all NA at base (got unclaimed {sorted(base.unclaimed)}) — the single-claim "
+        "property the dedup must not overturn is present",
+    )
+
+    mirror_keys = _mirror_doc_surfaces(captured)
+    _check(
+        bool(mirror_keys),
+        f"{_MACHINE_SURFACE}: >=1 doc surface exists to mirror (got surfaces {list(captured)})",
+    )
+    mirrored = dict(captured)
+    for mk, src in mirror_keys.items():
+        _check(mk not in mirrored, f"{_MACHINE_SURFACE}: mirror key {mk!r} is new, not an overwrite")
+        mirrored[mk] = captured[src]  # byte-identical duplicate under a distinct key
+    # Non-vacuity: the mirror genuinely enlarged the surface MAP the classifier reads.
+    _check(
+        len(mirrored) == len(captured) + len(mirror_keys),
+        f"{_MACHINE_SURFACE}: the surface map grew by exactly the mirror keys "
+        f"({len(captured)} -> {len(mirrored)}) — the perturbation is real",
+    )
+
+    dup = _offering.classify_offering(_MACHINE_SURFACE, mirrored)
+
+    # The mirror really reached classification: surfaces_seen grew by exactly the
+    # mirror keys and nothing else (the duplicate carried non-empty spec prose, so it
+    # was read — not silently dropped, which would make the invariance vacuous).
+    _check(
+        set(dup.surfaces_seen) == set(base.surfaces_seen) | set(mirror_keys),
+        f"{_MACHINE_SURFACE}: surfaces_seen grew by exactly the mirror keys "
+        f"(base {sorted(base.surfaces_seen)}, dup {sorted(dup.surfaces_seen)})",
+    )
+
+    def _sig_count(prof, arch: str) -> int:
+        return len(next(c for c in prof.claimed if c.archetype == arch).signals)
+
+    # TEETH (a): the one claim's raw signal-LIST length STRICTLY INCREASES under the
+    # mirror (its labels fired again on the duplicate spec), so a count-based
+    # `strength = len(self.signals)` reader WOULD see more metered_api — yet the
+    # distinct-label strength below does not move. This is the single-claim pole's
+    # analogue of the multi-archetype rank tooth: no rank to flip, but the same
+    # count-inflation a naive reader would mistake for a stronger claim.
+    top = base.claimed[0]
+    mirror_src = set(mirror_keys.values())
+    top_mirrorable = sum(1 for s in top.signals if s.surface in mirror_src)
+    _check(
+        top_mirrorable >= 1,
+        f"{_MACHINE_SURFACE}: the metered_api claim has >=1 signal on a mirrored doc "
+        f"surface (got {top_mirrorable}) — the count teeth are real",
+    )
+    _check(
+        _sig_count(dup, "metered_api") > _sig_count(base, "metered_api"),
+        f"{_MACHINE_SURFACE}: metered_api fires MORE raw signals under the mirror "
+        f"({_sig_count(base, 'metered_api')} -> {_sig_count(dup, 'metered_api')}) — a "
+        "count-based strength reader would differ",
+    )
+
+    # (1) Per-archetype STRENGTH (distinct-label count — the ranking quantity) is
+    # byte-identical: a duplicate spec adds no distinct label, so metered_api gets no
+    # stronger by mere duplication.
+    base_strength = {c.archetype: c.strength for c in base.claimed}
+    dup_strength = {c.archetype: c.strength for c in dup.claimed}
+    _check(
+        dup_strength == base_strength,
+        f"{_MACHINE_SURFACE}: per-archetype strength invariant under surface dedup "
+        f"(base {base_strength}, dup {dup_strength})",
+    )
+    # (2) The distinct-label SET per archetype is identical — the mirror re-fired the
+    # SAME labels, conjured no new one.
+    base_labels = {c.archetype: {s.label for s in c.signals} for c in base.claimed}
+    dup_labels = {c.archetype: {s.label for s in c.signals} for c in dup.claimed}
+    _check(
+        dup_labels == base_labels,
+        f"{_MACHINE_SURFACE}: per-archetype distinct-label set invariant under surface dedup",
+    )
+    # (3) Claimed archetypes IN RANK ORDER invariant — still EXACTLY metered_api.
+    # Duplicating the spec conjured no rail; the "never manufacture the delta"
+    # property on the DEDUP axis, from the single-archetype metered pole.
+    _check(
+        dup.archetypes == base.archetypes,
+        f"{_MACHINE_SURFACE}: claimed archetypes (ranked) invariant under surface dedup "
+        f"(base {base.archetypes}, dup {dup.archetypes})",
+    )
+    # (4) The non-metered archetypes stay NA and the whole NA/unclaimed set is
+    # invariant — which archetypes an API-first store is excused as NA depends on WHAT
+    # it declares, not how many times its one spec is served.
+    _check(
+        machine_must_be_na <= set(dup.unclaimed)
+        and set(dup.unclaimed) == set(base.unclaimed),
+        f"{_MACHINE_SURFACE}: the non-metered archetypes stay NA and the whole NA set is "
+        f"invariant under surface dedup (base {sorted(base.unclaimed)}, dup {sorted(dup.unclaimed)})",
+    )
+
+
 def main() -> int:
     tests = [
         test_canonical_org_offering,
@@ -5398,6 +5559,7 @@ def main() -> int:
         test_offering_casing_invariance_retail,
         test_offering_surface_dedup_invariance_org,
         test_offering_surface_dedup_invariance_com,
+        test_offering_surface_dedup_invariance_machine,
         test_offering_relabel_invariance_retail,
         test_offering_relabel_invariance_nonstorefront,
         test_offering_relabel_negative_control,

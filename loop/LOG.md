@@ -3,6 +3,80 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 146 — 2026-08-01T05:1xZ — COVERAGE — plan-purchase subscription signal (offering classifier)
+
+**Track / rotation.** COVERAGE (focus pointer was "COVERAGE next" after Cycle 145 METHOD). Ships a NEW
+capability-worded signal on a CLAIMED archetype (subscription), the strengthenable unit the Cycle-145
+"next" note named ("a digital_good or subscription capability signal on committed evidence").
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`) → no review duty.
+
+**Infra health.** Bench healthy: LOCAL verify runner RECOVERED — newest `runs/local/verify_20260801T035047Z.json`
+(03:50Z Aug-1, `attempts=1`) is ~1.4h old at the 05:1xZ fire, INSIDE the 6h floor (the ~14h Cycle 137–144
+machine-asleep stall self-cleared on wake, as predicted). Restored the environment-only `eth-account` dep
+(`pip install eth-account`) so the cloud bench runs `test_free_tier` 11/11 (a cloud-env gap, not a code
+regression); re-`git checkout -B main origin/main` off the fresh-clone detached-HEAD/forced-update state.
+All 23 test files green pre-change.
+
+**What.** Added a `plan-purchase` signal to the `subscription` archetype in `asrs/offering.py`'s signal
+bank — the programmatic capability for an agent to BUY / commit to a credit-or-subscription plan via an
+API call: a `POST /plans/{id}/purchase` endpoint path, a `purchasable plan`, or a buy/purchase/activate
+verb naming a `credit`/`subscription plan`. Placed right after `free-trial`.
+
+**Why (capability lens; distinct from every existing subscription leg).** This is the subscription-archetype
+"pay programmatically + provision without a human" COMMIT leg — the counterpart to metered_api's
+`self-provisioning`. Every existing subscription signal only says a plan EXISTS (`subscription`/`recurring`),
+its CADENCE (`per-month`/`per-month-price`/`annual-billing`), per-user basis (`seat-licensing`), or that it
+can be EVALUATED at $0 first (`free-trial`); NONE says whether the agent can autonomously COMMIT to the
+recurring plan. A storefront whose subscription can only be started by a human clicking a checkout is not
+agent-completable at the commit step — the load-bearing "commit" leg of agent-native commerce (north star).
+
+**Precision + non-vacuity (real data).** Vendor-neutral programmatic-purchase vocabulary; precision-guarded
+against the HUMAN-gated "subscribe to a plan on the pricing page" (both canonical /docs) + "issued on the
+dashboard after subscribing to a plan" (drift-flight.org OpenAPI) + bare "subscription plans" marketing
+(5 synthetic negatives asserted absent; `subscription` already covers the marketing sense). Fires
+non-vacuously on the REAL captured driftflight.com agent docs (`agents.driftflight.com/llms-full.txt` —
+"purchase once with `POST /plans/{planId}/purchase`", "buy a credit or subscription plan", "Purchasable
+plans carry a `purchase` object") and on ZERO of the drift-flight.org / api.replicate.com /
+books.toscrape.com / example.com fixtures. The .org absence is the discovery-layer echo of the real
+capability gap (with-rails .com exposes a programmatic plan-purchase endpoint, no-rails .org gates the
+commit behind a human), mirroring `self-provisioning` / `payment-receipt`.
+
+**Ship class + evidence.** Off the scoring path (`git diff` over `asrs/scoring.py asrs/probes.py
+asrs/scorecard.py rubric/ fixtures/` EMPTY; `--name-only` = `asrs/offering.py` + `tests/test_offering.py` +
+`tests/test_offering_canonical.py` ONLY) → score-neutral (driftflight.com already claims subscription;
+claimed SET+ORDER `[metered_api, digital_good, subscription]` byte-identical; subscription strength 5→6 on
+driftflight.com ONLY, order unchanged since metered_api=18 > digital_good=8 > subscription=6). NOT
+peer-gated (same class as prior signal-adds: payment-receipt #132, webhook-verification, streaming-response,
+output-resolution). Cloud bridge blocks direct main push → branch `loop/plan-purchase-signal` + PR #140 +
+self-merge (squash **e4c7ad8**). Tests: `test_plan_purchase_subscription_precision_synthetic` (8 positives /
+5 precision negatives) + `test_plan_purchase_fires_on_real_captured_subscription_prose` (real-data
+non-vacuity + api/retail/null absence); `test_offering.py` 60→62. Isolation-matrix entry `plan-purchase`
+added to `test_offering_canonical.py` (Cycle-137 bank-coverage contract), offering-canonical 46/46. Full
+suite 23 files green. Canonical replay guard **24/24 — 46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7.
+Regex fix during dev: the endpoint-path branch had a leading `\b` that killed the match (a space precedes
+`/plans/`, so no word boundary) — caught by the synthetic positive, removed before ship.
+
+**Live-delta note (unchanged, off-scoring-path).** The known driftflight.com LIVE divergence (76.2 C /
++30.1, transactability 62.5 across three Jul-31→Aug-1 live crawls vs the frozen fixture 85.5 B / +39.4) is a
+real change in the site's live agent-native PAYMENT evidence, orthogonal to this offering-classifier change
+(discovery ≠ scoring). Resolution stays the queued P0 [LOCAL] re-capture/re-baseline; my change does not
+touch it.
+
+**Comms.** No Slack DM: 05:1xZ is NOT first-after-16:00, not a human gate (self-merged, not peer-gated), and
+a score-neutral off-scoring-path discovery signal is routine improvement (does not change scores) — same
+quiet posture as prior signal-add cycles. Runner-recovery + live-delta divergence report goes in the next
+first-after-16:00 digest (~Aug-1 16:xxZ).
+
+**Next hypothesis.** Rotate TRUTH next (Cycle 146 was COVERAGE). subscription now has 8 signals
+(subscription/per-month/per-month-price/annual-billing/recurring/seat-licensing/free-trial/plan-purchase);
+metered_api stays the deepest (19 signals). Open COVERAGE frontier on committed evidence narrows: a
+digital_good signal is the remaining in-cloud unit (output FORMAT is a false-positive minefield — badge
+SVGs / thumbnail JPGs everywhere — needs care); a subscription-CANCEL / lifecycle signal is [LOCAL]-blocked
+(the `/cancellation` surface is not in any committed fixture); service_booking / data_retrieval + the
+physical_good fulfillment leg stay [LOCAL]-blocked; ACP/UCP/MPP live handshakes + free-tier live-wiring stay
+[LOCAL].
+
 ## Cycle 145 — 2026-08-01T04:1xZ — METHOD — silent-dead-test guard for the runner lists
 
 **Track / rotation.** METHOD (focus pointer was "METHOD next" after Cycle 144 READOUT). Measurement

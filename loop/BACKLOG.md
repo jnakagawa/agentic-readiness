@@ -503,6 +503,18 @@ design in-cloud, execute locally.
 
 ## P1
 
+- **Complete the `payment-receipt` arc — TRUTH then READOUT legs** (follow-up to Cycle 142 COVERAGE).
+  Cycle 142 shipped the `payment-receipt` metered_api signal (the machine-readable proof-of-payment /
+  spend-record an agent logs to reconcile its spend — `asrs/offering.py`). Give it the same
+  COVERAGE→TRUTH→READOUT arc shape the webhook-verification (134/135/136) and output-resolution
+  (138/139/140) signals got: (a) TRUTH — a relabel-/order-invariance guard pinning that the signal's
+  archetype attribution and the canonical claimed set survive a host relabel + surface-order permutation
+  (mirror `test_offering.py`'s webhook-verification/output-resolution relabel-invariance tests); (b)
+  READOUT — a methodology paragraph in `_write_methodology_page` (`asrs/scorecard.py`) framing "account
+  for the spend / trust the receipt" as the capital-safety accounting sibling of the payment RAILS, with a
+  `test_methodology_documents_payment_receipt` guard in `tests/test_readout.py`. Both off the scoring path,
+  score-neutral, NOT peer-gated (branch+PR+self-merge). All in-cloud (committed driftflight.com fixture).
+
 <!-- DONE 2026-07-31T23:1xZ (Cycle 140, READOUT, branch+PR #129+self-merge squash aeafed4,
      display+tests/off-scoring-path/score-neutral): "Complete the `output-resolution` arc — the READOUT
      leg" FULLY DISCHARGED, CLOSING the full COVERAGE (138) → TRUTH (139) → READOUT (140) arc. New

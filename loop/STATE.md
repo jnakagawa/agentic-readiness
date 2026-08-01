@@ -1,8 +1,36 @@
 # Loop state
 
-- Cycle counter: 146
+- Cycle counter: 147
 - Started: 2026-07-23 (UTC)
-- RUNNER HEALTHY at 2026-08-01T05:1xZ (Cycle 146) — newest verify
+- RUNNER HEALTHY at 2026-08-01T06:1xZ (Cycle 147) — newest verify
+  `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is ~2.4h old at the fire, INSIDE
+  the 6h floor (Cycle 137–144 machine-asleep-stall recovery holds two cycles on). Live signal:
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence, still off the
+  scoring path; the in-cloud replay guard stays the frozen independent signal (24/24, 46.1 F / 85.5 B /
+  +39.4). Resolution = queued P0 [LOCAL] re-baseline. Runner-recovery + divergence go in the next
+  first-after-16:00 digest (~Aug-1 16:xxZ). Restored the environment-only `eth-account` dep (`pip install
+  eth-account`) for `test_free_tier` 11/11, and re-`git checkout -B main origin/main` off the fresh-checkout
+  detached-HEAD / stale Cycle-94 local-main fork.
+- FOCUS POINTER (Cycle 147 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 147 was
+  TRUTH, so Cycle 148 is READOUT). Cycle 147 shipped the **plan-purchase relabel-invariance guard** —
+  `test_offering_relabel_invariance_plan_purchase` in `tests/test_offering_canonical.py`, the TRUTH leg of
+  the plan-purchase COVERAGE(146)→TRUTH(147)→READOUT(148) arc (mirroring payment-receipt 142/143/144). Pins
+  Cycle 146's `plan-purchase` subscription signal as identity-invariant under a host relabel: a synthetic
+  subscription surface seats the host adjacent to the `/plans/pro/purchase` phrase (non-vacuous), relabel
+  end-to-end and the signal survives with the SAME match count / SAME host-normalized surface / quote still
+  matching the live regex / host absent. TEETH: the human plan senses (pricing-page checkout, dashboard
+  onboarding, bare "subscription plans" marketing — present verbatim in both canonical fixtures) fire ZERO.
+  Tests-only, off scoring path (`git diff --name-only` over scoring.py/offering.py/probes.py/scorecard.py/
+  rubric/fixtures EMPTY; only changed = `tests/test_offering_canonical.py`) → score-neutral, NOT peer-gated.
+  `test_offering_canonical.py` 46→47; runner-registration meta-guard 4/4; full suite 23 files green; replay
+  guard 24/24, 46.1 F / 85.5 B / +39.4; rubric v0.7. NEXT (READOUT 148): a methodology paragraph in
+  `_write_methodology_page` framing "commit to the recurring plan without a human" as the subscription
+  COMMIT leg (distinct from recurring PRICE / $0 EVALUATION / payment RAILS), + `test_readout.py` guard,
+  CLOSING the plan-purchase arc. Open COVERAGE frontier on committed evidence narrows to a digital_good
+  signal (output FORMAT is a false-positive minefield); subscription-CANCEL / lifecycle is [LOCAL]-blocked
+  (no committed `/cancellation` fixture); service_booking / data_retrieval + physical_good fulfillment leg
+  stay [LOCAL]; ACP/UCP/MPP + free-tier live-wiring stay [LOCAL].
+- SUPERSEDED (Cycle 146) — RUNNER HEALTHY at 2026-08-01T05:1xZ — newest verify
   `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is ~1.4h old at the fire, INSIDE
   the 6h floor (recovery from the Cycle 137–144 machine-asleep stall holds, one cycle on). Live signal:
   driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence, still off the

@@ -2827,6 +2827,155 @@ def test_offering_relabel_invariance_payment_receipt() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Relabel-invariance at the SIGNAL level — the subscription PLAN-PURCHASE leg
+# (Cycle 146 COVERAGE, PR #140). The newest subscription signal to join the
+# signal-level relabel family and the TRUTH leg of the plan-purchase
+# COVERAGE→TRUTH(→READOUT) arc (mirroring payment-receipt 142/143/144 and
+# output-resolution 138/139/140). It is the subscription-archetype COMMIT leg —
+# the counterpart to metered_api's `self-provisioning`: `subscription` /
+# `per-month` / `seat-licensing` all say the site documents a recurring PRICE,
+# and `free-trial` says it can be evaluated at $0, but NONE says the agent can
+# autonomously COMMIT to the recurring plan. plan-purchase is that "take on the
+# recurring commitment without a human" leg — a `/plans/{id}/purchase` endpoint,
+# a purchasable plan, a BUY/PURCHASE/ACTIVATE verb naming a credit-or-
+# subscription plan. Whether an agent can programmatically commit to a plan is a
+# property of the plan-purchase CONTRACT the site exposes, never of WHO vends
+# it, so the signal must be identity-invariant under a host relabel.
+#
+# Why a SYNTHETIC surface, not the real fixture (mirroring payment-receipt 143 /
+# webhook-verification 135 / output-resolution 139, NOT output-license which
+# rides captured evidence): the plan-purchase vocabulary is host-FREE by nature —
+# the fired quote carries an endpoint path / a purchasable-plan / a buy-a-plan
+# token, not the vendor's name — and on the real captured driftflight.com agent
+# docs (agents.driftflight.com/llms-full.txt) the signal fires with the host in
+# the surface KEY but NOT the quote window, so a whole-fixture relabel would
+# leave the plan-purchase evidence byte-identical and the invariance would be
+# VACUOUS. To make the relabel genuinely rewrite the classifier's input at THIS
+# signal, this guard scans a synthetic subscription surface that deliberately
+# seats the host INSIDE the plan-purchase evidence: the host is the surface KEY
+# prefix AND sits adjacent to the `/plans/{id}/purchase` phrase (asserted
+# non-vacuous below). Relabel the host everywhere, re-scan, and the plan-purchase
+# signal must survive with the SAME match count, on the SAME host-normalized
+# surface, its quote STILL satisfying the live plan-purchase regex, with the
+# vendor host absent from all rewritten evidence.
+#
+# TEETH (precision, the plan-purchase signal's defining risk — bare "plan" /
+# "subscribe to a plan" / "subscription plans" is a false-positive minefield
+# present verbatim in BOTH canonical fixtures' human-checkout prose): a sibling
+# synthetic surface carrying only the human, non-programmatic senses the signal
+# must REFUSE — "subscribe to a plan on the pricing page" (the human checkout,
+# the exact inverse of the capability), "issued on the dashboard after
+# subscribing to a plan" (dashboard onboarding), and bare "subscription plans"
+# marketing — fires ZERO plan-purchase signals, proving the match keys on the
+# PROGRAMMATIC purchase STRUCTURE (a `/plans/{id}/purchase` endpoint / a
+# purchasable plan / a buy-or-activate verb over a credit-or-subscription plan),
+# not on the bare word "plan"; and relabeling the host through that human prose
+# never CONJURES a plan-purchase claim on a site whose only plan path is a human
+# clicking through a checkout.
+# ---------------------------------------------------------------------------
+_PP_LABEL = "plan-purchase"
+_PP_HOST = "acme-vend.example"  # a host bearing no plan-purchase signal word
+_PP_SURFACE = f"agents.{_PP_HOST}/llms-full.txt"
+# Host seated adjacent to the `/plans/{id}/purchase` phrase (surface key prefix +
+# the sentence subject) so it lands in the padded quote window, not merely the
+# surface key.
+_PP_PROSE = (
+    f"{_PP_HOST} exposes POST /plans/pro/purchase so an agent can buy a "
+    f"subscription plan on {_PP_HOST}."
+)
+# The human, non-programmatic plan senses the plan-purchase signal must never
+# match: the pricing-page human checkout, the dashboard onboarding path after
+# subscribing, and bare "subscription plans" marketing.
+_PP_DISTRACTOR_SURFACE = f"agents.{_PP_HOST}/pricing"
+_PP_DISTRACTOR_PROSE = (
+    f"{_PP_HOST} lists subscription plans on its pricing page; subscribe to a "
+    f"plan on the pricing page, or finish onboarding on the dashboard after "
+    f"subscribing to a plan."
+)
+
+
+def _plan_purchase_signals(surface: str, text: str) -> list:
+    """The (surface, quote) pairs where the subscription plan-purchase fired."""
+    return sorted(
+        (s.surface, s.quote)
+        for s in _offering._scan_surface(surface, text)
+        if s.archetype == "subscription" and s.label == _PP_LABEL
+    )
+
+
+def test_offering_relabel_invariance_plan_purchase() -> None:
+    """The subscription plan-purchase keys on the programmatic-commit form, not the host."""
+    print("test_offering_relabel_invariance_plan_purchase")
+    base = _plan_purchase_signals(_PP_SURFACE, _PP_PROSE)
+
+    # The signal genuinely fires on the synthetic subscription evidence.
+    _check(
+        len(base) == 1,
+        f"plan-purchase fires exactly once on the synthetic subscription surface (got {len(base)})",
+    )
+    base_surf, base_quote = base[0]
+
+    # Non-vacuity: the host sits inside BOTH the surface key AND the padded quote
+    # window, so a host relabel genuinely rewrites the classifier's plan-purchase
+    # input — not a no-op over host-free evidence (the real-fixture failure mode).
+    _check(
+        _PP_HOST in base_surf and _PP_HOST in base_quote,
+        f"the host is inside the plan-purchase surface key AND quote window — "
+        f"relabel rewrites real signal input (surface {base_surf!r}, quote {base_quote!r})",
+    )
+
+    # TEETH: the human plan senses (pricing-page checkout, dashboard onboarding,
+    # bare "subscription plans" marketing) fire ZERO — the signal keys on the
+    # programmatic-purchase structure, never on the bare word "plan".
+    _check(
+        _plan_purchase_signals(_PP_DISTRACTOR_SURFACE, _PP_DISTRACTOR_PROSE) == [],
+        "human plan distractor prose ('subscribe to a plan on the pricing page', "
+        "dashboard onboarding after subscribing, bare 'subscription plans' "
+        "marketing) fires no plan-purchase signal — the match is the programmatic "
+        "purchase structure (a /plans/{id}/purchase endpoint / a purchasable plan "
+        "/ a buy-or-activate verb over a credit-or-subscription plan), not 'plan'",
+    )
+
+    # Relabel the host everywhere (surface key + prose) and re-scan.
+    relab_surface = _PP_SURFACE.replace(_PP_HOST, _NEUTRAL_HOST)
+    relab_prose = _PP_PROSE.replace(_PP_HOST, _NEUTRAL_HOST)
+    _check(
+        _PP_HOST not in relab_surface and _PP_HOST not in relab_prose,
+        "every occurrence of the original host was relabeled out of the synthetic input",
+    )
+    relab = _plan_purchase_signals(relab_surface, relab_prose)
+
+    # (1) Same match count — the plan-purchase signal is neither lost nor conjured.
+    _check(
+        len(relab) == len(base) == 1,
+        f"plan-purchase match count invariant under relabel (base {len(base)}, "
+        f"relabel {len(relab)})",
+    )
+    relab_surf, relab_quote = relab[0]
+
+    # (2) The SAME logical surface carries the signal once the host label is
+    # normalized away — the signal did not migrate to a different surface.
+    _check(
+        relab_surf == base_surf.replace(_PP_HOST, _NEUTRAL_HOST),
+        "plan-purchase fires on the same (host-normalized) surface under relabel "
+        f"(base {base_surf!r}, relabel {relab_surf!r})",
+    )
+    # (3) The relabeled quote STILL satisfies the live plan-purchase regex (the
+    # fired form is a programmatic-commit token — a /plans/{id}/purchase endpoint /
+    # a buy-a-subscription-plan verb — not the host) and names no vendor host — the
+    # match keyed on the plan-purchase CONTRACT, not who vends it.
+    pp_re = dict(_offering._SIGNALS["subscription"])[_PP_LABEL]
+    _check(
+        pp_re.search(relab_quote) is not None,
+        f"relabeled plan-purchase quote still matches the programmatic-commit signal: {relab_quote!r}",
+    )
+    _check(
+        _PP_HOST not in relab_quote and _PP_HOST not in relab_surf,
+        f"vendor host absent from relabeled plan-purchase evidence (surface {relab_surf!r})",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Surface-read ORDER invariance — the digital_good deliverable-RIGHTS leg.
 #
 # A fresh perturbation AXIS orthogonal to the relabel/identity family above. The
@@ -4602,6 +4751,7 @@ def main() -> int:
         test_offering_relabel_invariance_output_resolution,
         test_offering_relabel_invariance_priced_listing,
         test_offering_relabel_invariance_payment_receipt,
+        test_offering_relabel_invariance_plan_purchase,
         test_offering_surface_order_invariance_output_license,
         test_offering_surface_order_invariance_org,
         test_offering_content_scale_invariance_org,

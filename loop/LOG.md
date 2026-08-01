@@ -3,6 +3,59 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 147 — 2026-08-01T06:1xZ — TRUTH — plan-purchase relabel-invariance guard (offering classifier)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` open = `[]`; git log shows
+Cycle 146's PR #140 self-merged e4c7ad8, bookkeeping #141 on main). Infra health: fresh cloud checkout
+landed detached-HEAD on 812b2dd with local `main` on the stale Cycle-94 fork — re-`git checkout -B main
+origin/main`; restored the environment-only `eth-account` dep (`pip install eth-account`) so
+`test_free_tier` runs 11/11; full suite (23 test files) green. LOCAL verify runner HEALTHY — newest
+`runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is ~2.4h old at the 06:12Z fire,
+INSIDE the 6h floor (the Cycle 137–144 machine-asleep stall recovery holds). No repair consumed the cycle.
+
+**Track / rotation.** TRUTH (focus pointer was "TRUTH next" after Cycle 146 COVERAGE). Closes the TRUTH
+leg of the plan-purchase COVERAGE(146)→TRUTH(147)→READOUT(148) arc, mirroring payment-receipt
+(142/143/144) and output-resolution (138/139/140).
+
+**What/why.** Pins the Cycle-146 `plan-purchase` subscription signal as identity-invariant under a host
+relabel — the subscription-archetype COMMIT leg (counterpart to metered_api's `self-provisioning`):
+whether an agent can programmatically commit to a plan is a property of the plan-purchase CONTRACT
+(`/plans/{id}/purchase` endpoint / purchasable plan / a buy-or-activate verb over a credit-or-subscription
+plan), never of WHO vends it. New `test_offering_relabel_invariance_plan_purchase` in
+`tests/test_offering_canonical.py`. Because the real captured driftflight.com plan-purchase evidence seats
+the host in the surface KEY but not the quote window, a whole-fixture relabel would be VACUOUS — so (like
+payment-receipt 143 / output-resolution 139) the guard scans a SYNTHETIC subscription surface that seats
+the host adjacent to the `/plans/pro/purchase` phrase so it lands in the padded quote window (asserted
+non-vacuous). Relabel the host end-to-end and the signal survives with the SAME match count, on the SAME
+host-normalized surface, its quote STILL satisfying the live `plan-purchase` regex, host absent from all
+rewritten evidence. TEETH (the signal's defining risk — bare "plan"/"subscribe to a plan"/"subscription
+plans" is a false-positive minefield present verbatim in BOTH canonical fixtures' human-checkout prose):
+a sibling distractor carrying only the human senses — "subscribe to a plan on the pricing page" (the human
+checkout, exact inverse of the capability), "dashboard after subscribing to a plan" (onboarding), bare
+"subscription plans" marketing — fires ZERO, proving the match keys on the programmatic-purchase
+STRUCTURE, not the word "plan".
+
+**Ship class.** Tests-only, off the scoring path (`git diff --name-only` over `asrs/scoring.py
+asrs/offering.py asrs/probes.py asrs/scorecard.py rubric/ fixtures/` EMPTY; only changed file =
+`tests/test_offering_canonical.py`) → score-neutral, NOT peer-gated. Direct-to-main per the playbook's
+docs/tests tier (branch+PR+self-merge fallback if the cloud bridge blocks the push).
+
+**Evidence / canonical numbers.** Full suite green (23 files). `tests/test_offering_canonical.py` 46→47;
+runner-registration meta-guard 4/4 (new test registered). Replay guard 24/24 — canonical PAIR unchanged:
+46.1 F / 85.5 B / delta +39.4, 0 replay-miss; rubric v0.7. LIVE signal from the healthy runner
+(`verify_20260801T035047Z.json`): driftflight.com 76.2 C / +30.1 / transactability 62.5 — the
+transactability-drop divergence, still off the scoring path; the in-cloud replay guard stays the frozen
+independent regression signal. Resolution = queued P0 [LOCAL] canonical re-baseline.
+
+**Comms.** No Slack (score-neutral, off scoring path, not sensitive-class; 06:1xZ is NOT the
+first-after-16:00 digest — Cycle 133 sent yesterday's, next is ~Aug-1 16:xxZ, which will report the runner
+recovery + the LIVE-DELTA divergence).
+
+**Next hypothesis.** READOUT leg (Cycle 148): a methodology paragraph in `_write_methodology_page`
+(`asrs/scorecard.py`) framing "commit to the recurring plan without a human" as the subscription COMMIT
+leg (distinct from the recurring PRICE / the $0 EVALUATION / the payment RAILS), with a `test_readout.py`
+guard — CLOSING the plan-purchase arc. Then rotation returns to METHOD (149).
+
 ## Cycle 146 — 2026-08-01T05:1xZ — COVERAGE — plan-purchase subscription signal (offering classifier)
 
 **Track / rotation.** COVERAGE (focus pointer was "COVERAGE next" after Cycle 145 METHOD). Ships a NEW

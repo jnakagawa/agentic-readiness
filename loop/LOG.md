@@ -3,6 +3,62 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 162 — 2026-08-01T21:12Z — READOUT — free-included-usage methodology paragraph (closing the COVERAGE→TRUTH→READOUT arc)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed.
+
+**Infra health / self-heal.** Fresh cloud checkout landed on detached HEAD at Cycle 161's `bb6ebe9`;
+`git fetch origin main` first (Cycle-151 stale-`origin/main` lesson) — `origin/main` force-updated
+`3796519...bb6ebe9`, `checkout -B main origin/main` realigned, no work lost. Created `.venv`, installed
+`requests pyyaml eth-account pytest`, verified `import requests, yaml, asrs` before trusting the suite;
+full suite (376 tests) green pre-flight. RUNNER AT-FLOOR (unchanged from Cycles 158–161): newest
+`runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is ~17.4h old at fire (21:12Z) —
+past the 6h floor (the local ~04:xx–21:xx fires have not pushed a fresh artifact; borderline runner lag,
+NOT the machine-asleep stall — cloud cannot repair). Already carried in the 16:12Z Cycle-157 digest; no
+new flag owed this fire.
+
+**What/why (READOUT — the prose complement the signal earns).** Added a "Trying a paid call for free
+before you fund" paragraph to `_write_methodology_page` (`asrs/scorecard.py`), CLOSING the
+COVERAGE(160)→TRUTH(161)→READOUT(162) arc for the metered_api `free-included-usage` offering signal
+(mirroring reserve-and-settle 156/157/158, failure-not-billed 152/153/154, payment-receipt 142/143/144).
+The signal was pinned in code + tests but never surfaced in prose a critic can read. The paragraph frames
+the $0-on-ramp as the capital-safety sibling of the receipt/reserve-and-settle legs from the
+$0-BEFORE-funding direction (those bound what a call COSTS once money is in play; this asks whether the
+agent can prove the paid endpoint works end to end at $0 before it funds a wallet at all), ties it to
+ASRS's own $0-only ethos, and names the failure (a per-call buyer forced to move money sight unseen
+before it can verify the API works). Names the vendor-neutral free-usage vocabulary as open conventions
+(a free usage/allowance, free units per account/period, an `includedUnits` allotment named free, an
+explicit try/call before any money or funding). Preserves the signal's PRECISION honesty in prose (a bare
+"free" — free shipping, royalty-free, toll-free, free parking, a PAID "500 units included per month"
+allotment — is no signal) and names DISTINCTNESS from every neighbour so a reader cannot conflate it:
+test-mode rehearses in a sandbox/fake environment (no real output/billing), a subscription free trial is
+a time-boxed window on a recurring plan, self-provisioning grants free identity/access — none is a real
+billable unit run at $0 against production before funding.
+
+**Guard.** `test_methodology_documents_free_included_usage` in `tests/test_readout.py`, the
+presence/wording mirror of `test_methodology_documents_reserve_and_settle`: asserts the framing phrases,
+the free-usage vocabulary, the precision note (bare/no-signal/free-shipping/royalty-free/toll-free/free-
+parking/500-units), the distinctness note (test-mode/sandbox/free-trial/self-provisioning), and
+vendor-neutrality (no drift-flight/driftflight/replicate on the page). Registered in `main()`'s runner
+list (no silent dead test) — verified both via pytest and the file's own `main()` (67/67).
+
+**Validation.** Off the scoring path — `git diff --name-only` = `asrs/scorecard.py` (display) +
+`tests/test_readout.py` ONLY; scoring.py / probes.py / offering.py / rubric / fixtures EMPTY →
+score-neutral, rubric v0.7, NOT peer-gated (display + tests only, direct-to-main; Cycle-154/158
+precedent). Canonical replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss (frozen in-cloud
+regression signal). Live canonical signal (read, not re-run — runner at-floor): drift-flight.org 46.1 F /
+driftflight.com 76.2 C / +30.1 / transactability 62.5, the transactability divergence persisting off the
+scoring path. Full suite 376→377; `test_readout.py` 66→67.
+
+**Next hypothesis.** The free-included-usage arc is now closed on all three tracks. In-cloud COVERAGE on
+committed evidence is essentially exhausted (metered_api = 26 signals); the READOUT + TRUTH tracks have
+kept pace with each new signal's arc, so the highest-leverage remaining in-cloud work is a METHOD axis
+(a listing-order / endpoint-order metamorphic pole for a later rotation) or a fresh archetype. The
+substantive frontier — new signals from real structured catalog/pricing JSON, ACP/UCP/MPP live
+handshakes, the calibration-population sweep, and the driftflight.com transactability-drop diagnosis —
+is all `[LOCAL]`, blocked on the at-floor runner. Next rotation is METHOD (Cycle 163).
+
 ## Cycle 161 — 2026-08-01T20:12Z — TRUTH — free-included-usage relabel-invariance guard (the signal-level metamorphic mirror)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

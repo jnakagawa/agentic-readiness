@@ -503,6 +503,29 @@ design in-cloud, execute locally.
 
 ## P1
 
+<!-- DONE 2026-08-01T21:12Z (Cycle 162, READOUT, direct-to-main, display+tests-only/score-neutral): the
+     "free-included-usage READOUT leg — methodology-page paragraph" SHIPPED, CLOSING the
+     COVERAGE(160)→TRUTH(161)→READOUT(162) arc (pattern of reserve-and-settle 156/157/158,
+     failure-not-billed 152/153/154, payment-receipt 142/143/144). Added a `_write_methodology_page`
+     "Trying a paid call for free before you fund" paragraph in `asrs/scorecard.py` framing Cycle 160's
+     metered_api `free-included-usage` signal as the capital-safety sibling of the receipt/reserve-and-settle
+     legs from the $0-BEFORE-funding direction (those bound what a call COSTS once money is in play; this
+     asks whether the agent can prove the paid endpoint works end to end at $0 before it funds a wallet at
+     all — a per-call buyer forced to move money sight unseen before it can verify the API works). Names the
+     vendor-neutral free-usage vocabulary as open conventions (a free usage/allowance, free units per
+     account/period, an `includedUnits` allotment named free, an explicit try/call before any money or
+     funding), preserves the signal's precision honesty in prose (a bare "free" — free shipping/royalty-free/
+     toll-free/free parking/a PAID "500 units included per month" allotment — is no signal), and names
+     DISTINCTNESS from every neighbour (test-mode = sandbox/fake env, no real output/billing; a subscription
+     free trial = a time-boxed window on a recurring plan; self-provisioning = free identity/access — none is
+     a real billable unit run at $0 against production before funding). Vendor-neutral, capability-worded,
+     recognition keyed on the free-usage contract not who documents it, pinned by an identity-relabel
+     regression test. Guard `test_methodology_documents_free_included_usage` in `tests/test_readout.py`
+     (66→67), the presence/wording mirror of `test_methodology_documents_reserve_and_settle`, registered in
+     `main()`. Off the scoring path (`git diff --name-only` = `asrs/scorecard.py` + `tests/test_readout.py`
+     ONLY; scoring.py/probes.py/offering.py/rubric/fixtures EMPTY) → score-neutral, rubric v0.7, replay guard
+     24/24 / 46.1 F / 85.5 B / +39.4. Full suite 376→377. See LOG Cycle 162. -->
+
 <!-- DONE 2026-08-01T12:1xZ (Cycle 153, TRUTH, direct-to-main, tests-only/score-neutral): the
      "failure-not-billed TRUTH leg — per-signal relabel-invariance guard" SHIPPED.
      `test_offering_relabel_invariance_failure_not_billed` in `tests/test_offering_canonical.py`, the

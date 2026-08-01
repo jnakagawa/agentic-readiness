@@ -1,21 +1,43 @@
 # Loop state
 
-- Cycle counter: 161
+- Cycle counter: 162
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-01T20:12Z (Cycle 161) — newest verify `runs/local/verify_20260801T035047Z.json`
-  (03:50Z Aug-1, `attempts=1`) is ~16.3h old at the 20:12Z fire — PAST the 6h floor (the local
-  ~04:xx–20:xx fires have not pushed a fresh artifact; borderline runner lag, NOT the machine-asleep
+- RUNNER AT-FLOOR at 2026-08-01T21:12Z (Cycle 162) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~17.4h old at the 21:12Z fire — PAST the 6h floor (the local
+  ~04:xx–21:xx fires have not pushed a fresh artifact; borderline runner lag, NOT the machine-asleep
   stall — cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily digest; no new flag owed.
-  Live signal (read, not re-run): driftflight.com 76.2 C / +30.1 / transactability 62.5 — the
-  transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays
-  the frozen independent signal (24/24, 46.1 F / 85.5 B / +39.4). Fire at 20:12Z is NOT the first after
-  16:00 UTC (Cycle 157 sent the digest at 16:12Z) → no DM this fire per comms policy (tests-only,
-  off-scoring-path/score-neutral, no sensitive-class PR, nothing score-moving). No open peer-gated PRs
-  this fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 161):
-  fresh checkout, `git fetch origin main` FIRST (Cycle-151 lesson) → aligned onto Cycle 160's `475fd82`,
+  Live signal (read, not re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 /
+  transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the
+  in-cloud replay guard stays the frozen independent signal (24/24, 46.1 F / 85.5 B / +39.4). Fire at
+  21:12Z is NOT the first after 16:00 UTC (Cycle 157 sent the digest at 16:12Z) → no DM this fire per
+  comms policy (display+tests-only, off-scoring-path/score-neutral, no sensitive-class PR, nothing
+  score-moving). No open peer-gated PRs this fire (`list_pull_requests` state=open → []), so no
+  first-duty review. INFRA/SELF-HEAL (Cycle 162): fresh checkout on detached HEAD at Cycle 161's
+  `bb6ebe9`, `git fetch origin main` FIRST (Cycle-151 lesson) → `checkout -B main origin/main` aligned,
   no work lost. Created `.venv`, installed `requests pyyaml eth-account pytest` + verified imports before
-  trusting the suite (375 tests green pre-flight).
-- FOCUS POINTER (Cycle 161 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 161 was
+  trusting the suite (376 tests green pre-flight).
+- FOCUS POINTER (Cycle 162 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 162 was
+  READOUT, so Cycle 163 is METHOD). Cycle 162 shipped a **READOUT methodology paragraph — "Trying a paid
+  call for free before you fund"** in `asrs/scorecard.py`'s `_write_methodology_page`, CLOSING the
+  COVERAGE(160)→TRUTH(161)→READOUT(162) arc for the metered_api `free-included-usage` signal (mirroring
+  reserve-and-settle 156/157/158, failure-not-billed 152/153/154). The paragraph frames the $0-on-ramp as
+  the capital-safety sibling of the receipt/reserve-and-settle legs from the $0-BEFORE-funding direction
+  (they bound what a call COSTS once money is in play; this asks whether the agent can prove the paid
+  endpoint works end to end at $0 before it funds a wallet), names the vendor-neutral free-usage
+  vocabulary as open conventions, preserves the signal's precision honesty (a bare "free" — free
+  shipping/royalty-free/toll-free/free parking/a PAID "units included" allotment — is no signal), and
+  names DISTINCTNESS from test-mode (sandbox/fake), a subscription free trial (time-boxed window), and
+  self-provisioning (free identity/access). Pinned by `test_methodology_documents_free_included_usage`
+  (presence + vocabulary + precision + distinctness + vendor-neutrality), registered in `main()`. Off the
+  scoring path (`git diff --name-only` = `asrs/scorecard.py` + `tests/test_readout.py` ONLY;
+  scoring.py/probes.py/offering.py/rubric/fixtures EMPTY) → score-neutral, NOT peer-gated, direct-to-main.
+  Full suite 376→377; `test_readout.py` 66→67; replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss;
+  rubric v0.7. NEXT (METHOD 163): a listing-order / endpoint-order metamorphic pole (the surface-dedup axis
+  is complete on org/com/machine after 159), or a fresh archetype. In-cloud COVERAGE on committed evidence
+  is exhausted (metered_api = 26 signals); the substantive frontier — structured catalog/pricing JSON
+  fixtures, ACP/UCP/MPP handshakes, the calibration-population sweep, the driftflight.com
+  transactability-drop diagnosis — is all `[LOCAL]`, blocked on the at-floor runner.
+- SUPERSEDED (Cycle 161 focus pointer): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 161 was
   TRUTH, so Cycle 162 is READOUT). Cycle 161 shipped a **TRUTH signal-level relabel-invariance guard —
   `test_offering_relabel_invariance_free_included_usage`** in `tests/test_offering_canonical.py`, the
   identity-invariance mirror (reserve-and-settle 157 / failure-not-billed 153 / payment-receipt 143

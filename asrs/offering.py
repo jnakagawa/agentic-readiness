@@ -926,6 +926,55 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"|\b(?:output|render|canvas|generation|target)\s+(?:resolutions?|dimensions?)\b"
             r"|\b\d{3,5}\s?[x×]\s?\d{3,5}\s?(?:px|pixels?)\b"
             r"|\baspect[- ]ratios?\b", _F)),
+        # Output DELIVERY-WINDOW / retention — how long the generated deliverable
+        # PERSISTS at its hosted URL, and that the agent must RETRIEVE it (download
+        # it into its OWN storage) before that window closes. This is the "complete
+        # the job" LIFECYCLE leg of a digital good, and it is distinct from every
+        # existing digital_good signal: `generation` / `generate-media` / `render` say
+        # WHAT is produced, `hosted-output` WHERE it is delivered (a hosted URL exists),
+        # `output-resolution` the SHAPE of it, `output-license` whether the agent may
+        # USE it, `content-provenance` whether the agent can TRUST it — NONE says HOW
+        # LONG the hosted deliverable lives or that the agent must copy it out before it
+        # expires. An autonomous agent on a long-running or batched job that reads
+        # "here is a hosted URL" but not "it is gone in 90 days — download it into your
+        # own storage" silently LOSES its output when the link expires, so a generation
+        # storefront that documents its output-retention window (and the download-to-
+        # your-own-storage step) is MORE agent-completable at the digital-good layer. It
+        # is the digital_good sibling of metered_api's `cancel-job` — both are
+        # job-lifecycle CONTROL legs (there: STOP a runaway job; here: COLLECT a finished
+        # job's deliverable in time). Vendor-neutral artifact-lifecycle vocabulary (a
+        # hosted output/render/URL that remains available for / is stored / retained /
+        # kept for N hours|days, download it into your own storage/bucket, an output
+        # retention window/period/policy) — the same open-convention category as the
+        # media nouns already in this bank, never a vendor.
+        # PRECISION-CRITICAL: a bare time window ("available for 24 hours", "hosted for
+        # 3 days") is a false-positive minefield — a support line ("agents remain
+        # available for 24 hours"), an EVENT ("the conference is hosted for 3 days"), a
+        # FREE TRIAL ("free for 30 days"), and — the trap this signal must dodge on a
+        # metered-API marketplace — api.replicate.com's Files API file EXPIRY ("When the
+        # file expires", "a Unix timestamp with expiration date of this download URL"),
+        # which is a signed-URL expiry, NOT a hosted-deliverable retention window, and
+        # must NOT conjure a digital_good claim on a metered_api-only site. So NEVER
+        # match a bare window: require the retention window to attach to a DELIVERABLE
+        # noun (output/render/image/video/audio/asset/file/generation/url/deliverable
+        # within a short same-line span of `remain(s/ing) available` / `hosted` /
+        # `stored` / `retained` / `kept` `for N hours|days|weeks|months`), the
+        # unambiguous "download ... into your own storage/bucket" step, or an explicit
+        # "<output/render/...> retention window/period/policy". The support-line,
+        # event-hosting, free-trial, and api-key/file-expiry senses (no deliverable noun,
+        # or no time window, or no "into your own storage") trip none of these. Fires
+        # non-vacuously on BOTH canonical domains' captured /docs ("returned as hosted
+        # URLs that remain available for 90 days; download them into your own storage") —
+        # both ALREADY claim digital_good, so it deepens evidence without adding or
+        # reordering any archetype (score-neutral, pinned by tests/test_offering_canonical.py)
+        # — and on ZERO of the metered-api (api.replicate.com's file-expiry trap dodged),
+        # retail (books.toscrape.com), or null (example.com) fixtures, so it can never
+        # CONJURE a digital_good claim on a site that does not already make one. The
+        # classifier is off the scoring path.
+        ("output-retention", re.compile(
+            r"\b(?:output|render|image|video|audio|asset|file|generation|url|deliverable)s?\b[^.\n]{0,40}?\b(?:remain(?:s|ing)?\s+available|hosted|stored|retained|kept)\s+for\s+\d+\s+(?:hours?|days?|weeks?|months?)\b"
+            r"|\bdownload\s+(?:them|it|these|the\s+(?:images?|outputs?|renders?|results?|files?|assets?|generations?))\s+into\s+your\s+own\s+(?:storage|bucket|store)\b"
+            r"|\b(?:output|render|image|video|asset|file|deliverable|generation)\s+retention\s+(?:window|period|policy)\b", _F)),
     ],
     "physical_good": [
         # PRECISION-CRITICAL: bare "ship" is metaphorical on many agent-native

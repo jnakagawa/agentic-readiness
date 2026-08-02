@@ -147,6 +147,92 @@ def test_sustained_drift_counts_trailing_run() -> None:
             )
 
 
+def test_sustained_run_spans_wall_clock() -> None:
+    print("test_sustained_run_spans_wall_clock")
+    # The DURATION behind the count: a trailing out-of-band run of 3 readings taken
+    # over a real wall-clock span reports that span (first-run-reading -> latest), not
+    # just the reading count. This is what separates a durable real-world move from a
+    # burst of rapid re-scores that happen to be out of band.
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [_artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4) for i in range(1, 5)]
+        rows += [
+            _artifact("20260731T080000Z", 46.1, 76.2, 30.1),  # first out-of-band
+            _artifact("20260731T140000Z", 46.1, 76.2, 30.1),
+            _artifact("20260801T020000Z", 46.1, 76.2, 30.1),  # latest, 18h later
+        ]
+        _write_series(tmp, rows)
+        hist = ch.load_history(tmp)
+        sr = hist.sustained_run
+        _check(sr is not None, "an out-of-band run has a measured span")
+        _check(sr.n == hist.consecutive_out_of_band == 3, f"n mirrors the count, got {sr.n}")
+        _check(sr.first_ts == "20260731T080000Z", f"span starts at the first run reading, got {sr.first_ts}")
+        _check(sr.latest_ts == "20260801T020000Z", f"span ends at the latest, got {sr.latest_ts}")
+        _check(abs(sr.span_hours - 18.0) < 1e-6, f"first->latest is 18h, got {sr.span_hours}")
+        _check("spanning 18.0h" in ch.render(hist), "render names the wall-clock span")
+
+
+def test_sustained_run_none_when_in_band() -> None:
+    print("test_sustained_run_none_when_in_band")
+    # In-band series -> no out-of-band run -> no span (honest None, not a 0h claim).
+    with tempfile.TemporaryDirectory() as tmp:
+        _write_series(tmp, [_artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4) for i in range(1, 4)])
+        hist = ch.load_history(tmp)
+        _check(hist.consecutive_out_of_band == 0, "nothing out of band")
+        _check(hist.sustained_run is None, "in-band -> no sustained-run span")
+        _check("spanning" not in ch.render(hist), "render omits the span line when in-band")
+
+
+def test_sustained_run_lone_reading_is_zero_span() -> None:
+    print("test_sustained_run_lone_reading_is_zero_span")
+    # A single trailing out-of-band reading spans 0h — a real fact: one reading has no
+    # persistence in time, so it is the weakest possible "recent" signal, matching the
+    # not-yet-sustained (< _SUSTAINED_MIN) count verdict from the other direction.
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [_artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4) for i in range(1, 4)]
+        rows.append(_artifact("20260727T050000Z", 46.1, 60.0, 13.9))  # lone diverged tail
+        _write_series(tmp, rows)
+        hist = ch.load_history(tmp)
+        _check(hist.consecutive_out_of_band == 1, "one trailing out-of-band reading")
+        sr = hist.sustained_run
+        _check(sr is not None and sr.n == 1, "a lone reading still has a (degenerate) run")
+        _check(sr.span_hours == 0.0, f"a single reading spans 0h, got {sr.span_hours}")
+        _check(sr.first_ts == sr.latest_ts, "its endpoints coincide")
+
+
+def test_sustained_run_none_on_unparseable_ts() -> None:
+    print("test_sustained_run_none_on_unparseable_ts")
+    # Honest-None: an unparseable endpoint timestamp yields no duration claim (the same
+    # discipline liveness follows). Exercised directly on the pure function.
+    good = ch.CanonicalPoint(
+        ts="20260731T080000Z", no_rails_overall=46.1, no_rails_grade="F",
+        with_rails_overall=76.2, with_rails_grade="C", delta=30.1,
+    )
+    bad = ch.CanonicalPoint(
+        ts="not-a-timestamp", no_rails_overall=46.1, no_rails_grade="F",
+        with_rails_overall=76.2, with_rails_grade="C", delta=30.1,
+    )
+    _check(ch.sustained_run([good, bad], 2) is None, "unparseable latest ts -> None")
+    _check(ch.sustained_run([bad, good], 2) is None, "unparseable first-of-run ts -> None")
+    _check(ch.sustained_run([good], 0) is None, "run < 1 -> None (in-band)")
+
+
+def test_sustained_run_on_real_series_is_coherent() -> None:
+    print("test_sustained_run_on_real_series_is_coherent")
+    # End-to-end on the REAL committed series, recovery-tolerant: whenever the live
+    # series is out of band, the span is present, non-negative, its n mirrors the
+    # count, and the render surfaces it; when in-band, both are absent. Ties the new
+    # measure to the same live-vs-recovered dichotomy the recapture test uses.
+    hist = ch.load_history()
+    if hist.consecutive_out_of_band >= 1:
+        sr = hist.sustained_run
+        _check(sr is not None, "an out-of-band real series has a measured span")
+        _check(sr.n == hist.consecutive_out_of_band, f"n mirrors the count, got {sr.n}")
+        _check(sr.span_hours >= 0.0, f"span is non-negative, got {sr.span_hours}")
+        _check("spanning" in ch.render(hist), "the real render carries the span")
+    else:
+        _check(hist.sustained_run is None, "an in-band real series has no span")
+
+
 def test_render_substantive_and_empty_safe() -> None:
     print("test_render_substantive_and_empty_safe")
     empty = ch.render(ch.summarize([]))
@@ -745,6 +831,11 @@ def main() -> int:
         test_loader_parses_and_skips_malformed,
         test_bands_and_in_band_series,
         test_sustained_drift_counts_trailing_run,
+        test_sustained_run_spans_wall_clock,
+        test_sustained_run_none_when_in_band,
+        test_sustained_run_lone_reading_is_zero_span,
+        test_sustained_run_none_on_unparseable_ts,
+        test_sustained_run_on_real_series_is_coherent,
         test_render_substantive_and_empty_safe,
         test_baseline_cannot_drift_from_replay_guard,
         test_attribution_names_the_moving_pillar,

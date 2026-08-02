@@ -536,6 +536,15 @@ design in-cloud, execute locally.
 
 ## P1
 
+- **Surface the canonical-drift SUSTAINED-RUN SPAN on the HTML readout** (READOUT, opened Cycle 175, in-cloud).
+  Cycle 175 added `SustainedRun` (wall-clock hours the trailing out-of-band run spans) to
+  `asrs/canonical_history.summarize` and the TERMINAL `render` ("sustained: N ... spanning Xh (first → latest)").
+  The HTML canonical-history page (`_write_canonical_history_page`, `asrs/scorecard.py`) does NOT yet name the
+  span — it shows the count/band/recapture but not the drift's persistence in time. Add the span to that page
+  (dimmed sub-line under the sustained/recent row, driven off `history.sustained_run`), with a `test_readout`
+  guard asserting the span text renders when out-of-band and is omitted in-band. Display-only, off the scoring
+  path, score-neutral, direct-to-main — the natural READOUT leg closing the TRUTH(175)→READOUT(176) arc.
+
 <!-- DONE 2026-08-02T~09:1xZ (Cycle 174, COVERAGE, direct-to-main, tests-only/score-neutral):
      "`plan-allowance` noise-surface metamorphic axis" SHIPPED. `test_plan_allowance_noise_surface_invariance`
      (`tests/test_offering.py`, +1) closes the Cycle-171 noise-surface family onto the Cycle-172 subscription

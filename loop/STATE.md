@@ -1,8 +1,45 @@
 # Loop state
 
-- Cycle counter: 166
+- Cycle counter: 167
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-02T01:15Z (Cycle 166) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-02T02:11Z (Cycle 167) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~22.4h old at the 02:11Z Aug-2 fire — PAST the 6h floor (borderline runner
+  lag, NOT the machine-asleep stall — cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily
+  digest; no new flag owed (next digest = first cycle after 16:00 UTC Aug-2; 02:11Z is NOT it → no DM this
+  fire per comms policy — tests-only/off-scoring-path/score-neutral METHOD increment, no sensitive-class PR,
+  nothing score-moving). Live signal (read, not re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C /
+  +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1), off the scoring path;
+  the in-cloud replay guard stays the frozen independent signal (24/24, 46.1 F / 85.5 B / +39.4). No open
+  peer-gated PRs this fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL
+  (Cycle 167): fresh checkout on detached HEAD at Cycle 166's `473df5f` (= `origin/main` tip); `git fetch
+  origin main` FIRST (Cycle-151 lesson) → already at tip, `checkout -B main origin/main` aligned, no work
+  lost. Created `.venv`, installed `requests pyyaml eth-account pytest` + verified imports before trusting the
+  suite (382 tests green pre-flight).
+- FOCUS POINTER (Cycle 167 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 167 was
+  METHOD, so Cycle 168 is COVERAGE). Cycle 167 shipped a **METHOD reading-layer metamorphic axis —
+  `test_offering_whitespace_invariance_machine`** in `tests/test_offering_canonical.py`, the natural SIBLING
+  of the CASE axis (133/155): casing perturbs the CASE of the scanned bytes, this perturbs the WHITESPACE
+  between them (each single space → three) and asserts the classified capability profile is unchanged.
+  Established FIRST (not assumed) that the axis is non-vacuous ONLY on the machine pole: the prose poles
+  (org/com/retail) go through `strip_html`, which COLLAPSES whitespace runs BEFORE the matcher sees them
+  (verified), so a prose-pole whitespace guard would be VACUOUS (enforced by strip_html, not the patterns) —
+  the `/openapi.json` spec is scanned RAW (`_surface_prose`), so on the metered_api machine pole
+  (`api.replicate.com`) whitespace-tolerance rests on the signal patterns' OWN `\s+`/`\s*` flexibility.
+  Transform is EXPANSION (monotone: `\s+`/`\s*` still matches a longer run; an exact-single-space requirement
+  can only STOP matching, never CONJURE), so skeleton-invariance means every fired signal is genuinely
+  whitespace-robust. Asserts the quote-EXCLUDED skeleton (`_casing_struct`, reused). Teeth: (a) transform REAL
+  (raw spec carries single spaces); (b) whitespace-flexibility LOAD-BEARING — a fired signal's RIGID-whitespace
+  count (its pattern with `\s+`/`\s*` → one literal space) DROPS under expansion while the flexible count holds
+  (6 signals qualify; canonical example `post-endpoint`: "POST https://" rigid 1→0, flexible 1→1). Verified
+  empirically before writing (skeleton invariant: metered_api strength 9, all 9 (label,surface) counts
+  preserved; claim + NA invariant). Off the scoring path (`git diff --name-only` = `tests/test_offering_canonical.py`
+  ONLY; scoring.py/probes.py/offering.py/rubric/fixtures EMPTY) → score-neutral, NOT peer-gated, direct-to-main.
+  Registration guard green. Full suite 382→383; `test_offering_canonical.py` 56→57; replay guard 24/24, 46.1 F
+  / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. NEXT (COVERAGE 168): in-cloud COVERAGE on committed evidence
+  stays archetype-imbalanced (under-covered service_booking / data_retrieval / physical_good need `[LOCAL]`
+  fixtures). Remaining in-cloud METHOD symmetry gaps: noise-surface MACHINE pole, surface-dedup RETAIL pole.
+  The substantive frontier (ACP/UCP/MPP, calibration sweep, transactability-drop diagnosis) is all `[LOCAL]`.
+- SUPERSEDED (Cycle 166 runner note): RUNNER AT-FLOOR at 2026-08-02T01:15Z (Cycle 166) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~21.4h old at the 01:15Z Aug-2 fire — PAST the 6h floor (borderline runner
   lag, NOT the machine-asleep stall — cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily
   digest; no new flag owed (next digest = first cycle after 16:00 UTC Aug-2; 01:15Z is NOT it → no DM this
@@ -15,7 +52,7 @@
   `git fetch origin main` FIRST (Cycle-151 lesson) → `origin/main` fast-forwarded to `9948b90`, `checkout -B
   main origin/main` aligned, no work lost. Created `.venv`, installed `requests pyyaml eth-account pytest` +
   verified imports before trusting the suite (23 files green pre-flight).
-- FOCUS POINTER (Cycle 166 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 166 was
+- SUPERSEDED (Cycle 166 focus pointer): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 166 was
   READOUT, so Cycle 167 is METHOD). Cycle 166 shipped the **READOUT leg closing the variant-selection arc —
   the `_write_methodology_page` paragraph "Choosing the deliverable's variant"** in `asrs/scorecard.py`, the
   prose complement (free-included-usage 162 / reserve-and-settle 158 / failure-not-billed 154 / payment-receipt

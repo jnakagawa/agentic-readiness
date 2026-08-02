@@ -3,6 +3,67 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 167 — 2026-08-02T02:11Z — METHOD — whitespace-invariance metamorphic axis on the machine pole
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed.
+
+**Infra health / self-heal.** Fresh cloud checkout on detached HEAD at Cycle 166's `473df5f`; `git fetch
+origin main` first (Cycle-151 stale-`origin/main` lesson) → `origin/main` already at `473df5f`, `checkout -B
+main origin/main` aligned, no work lost. Git log consistent with STATE (Cycle 166 = `473df5f`). Created
+`.venv`, installed `requests pyyaml eth-account pytest`, verified imports; full suite (23 files, 382 tests)
+green pre-flight → bench is up. RUNNER AT-FLOOR (unchanged from Cycles 158–166): newest
+`runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is ~22.4h old at fire (02:11Z Aug-2)
+— past the 6h floor (borderline runner lag, NOT the machine-asleep stall — cloud cannot repair). Already
+carried in the 16:12Z Cycle-157 digest; no new flag owed this fire (next digest = first cycle after 16:00
+UTC Aug-2; 02:11Z is not it).
+
+**What/why (METHOD — a new reading-layer metamorphic axis).** Rotation pointed METHOD, and STATE named the
+candidate: a whitespace-invariance metamorphic guard on the machine pole. Added
+`test_offering_whitespace_invariance_machine` in `tests/test_offering_canonical.py` — the natural SIBLING of
+the CASE axis (Cycle 133/155): casing perturbs the CASE of the bytes the matcher scans, this perturbs the
+WHITESPACE between them (each single space → three) and asserts the classified capability profile is
+unchanged. Established FIRST (not assumed) that this axis is non-vacuous ONLY on the machine pole: on the
+prose poles every surface is HTML and runs through `strip_html`, which COLLAPSES whitespace runs BEFORE the
+matcher sees them (verified `strip_html('pay   per     call')` inside markup → `'pay per call'`), so a
+whitespace perturbation there is normalized away by the reader and the invariance would hold VACUOUSLY. The
+`/openapi.json` spec is scanned RAW (not HTML-stripped, per `_surface_prose`), so on the metered_api machine
+pole (`api.replicate.com`) whitespace-tolerance rests on the signal patterns' OWN `\s+`/`\s*` flexibility —
+the load-bearing mechanism the guard actually pins. Transform is EXPANSION (monotone: a `\s+`/`\s*` matcher
+still matches the longer run; a pattern requiring an exact single space can only STOP matching, never
+CONJURE one), so skeleton-invariance is a strong statement — every fired signal on the machine pole is
+genuinely whitespace-robust and none silently leans on an exact single space (a reformat/minifier/
+pretty-printer would break that in the wild). Asserts the quote-EXCLUDED skeleton (`_casing_struct`, reused
+from the case axis — quotes echo a fixed byte WINDOW that legitimately shifts when whitespace moves offsets):
+archetypes in rank order, NA complement, per-(label, surface) match multiplicity. Two teeth: (a) the
+transform is REAL (the raw spec carries single spaces, so expanding genuinely changes the scanned bytes);
+(b) whitespace-flexibility is LOAD-BEARING — a fired signal's RIGID-whitespace count (its pattern with every
+`\s+`/`\s*` rewritten to a single literal space) DROPS under expansion while the real flexible count holds.
+Verified empirically before writing: skeleton invariant (metered_api strength 9, all 9 (label,surface)
+counts preserved), claim + NA invariant, and 6 fired signals satisfy tooth (b) — canonical example
+`post-endpoint` (`\b(POST|GET|PUT)\s+https?://\S+`): "POST https://" → rigid literal-space 1→0, flexible
+`\s+` 1→1.
+
+**Ship.** Off the scoring path (`git diff --name-only` = `tests/test_offering_canonical.py` ONLY;
+scoring.py/probes.py/offering.py/rubric/fixtures EMPTY) → score-neutral, NOT peer-gated, direct-to-main.
+Registration guard green (test added to `main()`; `test_runner_registration.py` passes). Full suite 382→383
+(`test_offering_canonical.py` 56→57). Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric
+v0.7.
+
+**Canonical pair.** In-cloud replay guard (frozen independent signal): drift-flight.org 46.1 F /
+driftflight.com 85.5 B / delta +39.4. Live signal (READ from newest `verify_20260801T035047Z.json`, not
+re-run — cloud has no network re-score): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 /
+transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1), off the scoring path, tracked
+in the P0 `[LOCAL]` diagnosis item.
+
+**Next hypothesis.** METHOD's whitespace axis now has its load-bearing (machine) pole; a prose-pole
+companion would be vacuous (strip_html normalizes it) so it is deliberately NOT owed. Remaining metamorphic
+symmetry gaps are the credibility-direction poles the other axes still lack (noise-surface MACHINE,
+surface-dedup RETAIL). Otherwise METHOD leverage on committed evidence is thinning — the substantive frontier
+(under-covered archetypes, ACP/UCP/MPP, calibration sweep, the transactability-drop diagnosis) is all
+`[LOCAL]`. Cycle 168 = COVERAGE (rotate), but in-cloud COVERAGE on committed evidence stays
+archetype-imbalanced; consider a metamorphic-symmetry fill or flag the `[LOCAL]` frontier in the next digest.
+
 ## Cycle 166 — 2026-08-02T01:15Z — READOUT — variant-selection methodology paragraph (closing the COVERAGE→TRUTH→READOUT arc)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

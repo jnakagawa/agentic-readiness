@@ -672,7 +672,17 @@ design in-cloud, execute locally.
      listing-order/endpoint-order pole. Each needs the same pole-specific tooth care casing-retail /
      dedup-machine did — verify the load-bearing tooth EMPIRICALLY before writing (a single-surface pole
      breaks the >=2 reorder premise → use the count-increase + no-conjured-archetype teeth; a
-     lowercase-authored-bank pole breaks the count-moves tooth → use the folding-essential form). -->
+     lowercase-authored-bank pole breaks the count-moves tooth → use the folding-essential form).
+     UPDATE Cycle 163: content-scale MACHINE pole DONE (`test_offering_content_scale_invariance_machine`).
+     UPDATE Cycle 167: a SECOND reading-layer axis, WHITESPACE, opened on the MACHINE pole
+     (`test_offering_whitespace_invariance_machine`) — sibling of CASE. Established the axis is non-vacuous
+     ONLY on the machine pole (the prose poles go through `strip_html`, which collapses whitespace before the
+     matcher → a prose whitespace guard is VACUOUS; the raw `/openapi.json` spec is where `\s+`/`\s*`
+     flexibility is load-bearing). So the whitespace axis is COMPLETE where the mechanism exists (machine
+     only) — do NOT add prose/retail whitespace poles (they would be strip_html-enforced, not pattern-tested).
+     Remaining smallest-unit open cells for a future METHOD rotation: (b) noise-surface MACHINE pole; (d)
+     surface-dedup RETAIL is STRUCTURALLY EXCLUDED (no doc surface to mirror); surface-ORDER on the machine/.com
+     pole; a second listing-order/endpoint-order pole. Each still needs the empirical pole-specific tooth check. -->
 
 - **[LOCAL] Capture a fixture with subscription-CANCEL / lifecycle prose, then add the signal** (COVERAGE,
   opened Cycle 146). A real subscription capability gap: whether an agent can PROGRAMMATICALLY CANCEL /

@@ -5925,6 +5925,185 @@ def test_offering_surface_dedup_invariance_machine() -> None:
     )
 
 
+# ---------------------------------------------------------------------------
+# Whitespace invariance on the MACHINE (API-first) pole — a SECOND reading-layer
+# metamorphic axis, the natural sibling of the CASE axis (Cycle 133/155). Casing
+# perturbs the CASE of the bytes the matcher scans; this perturbs the WHITESPACE
+# between them: expand every inter-token space and assert the classified
+# capability profile is unchanged. A storefront that writes "POST https://…" with
+# one space, two, or a line-break declares the same endpoint all three ways; the
+# score must key on what a spec says the API can DO, never on how its author
+# happened to lay the bytes out.
+#
+# This axis lands ONLY on the machine pole, and that scope is the science, not a
+# shortcut. On the PROSE poles (org/com/retail) every surface is HTML and runs
+# through `strip_html`, which COLLAPSES whitespace runs to single spaces BEFORE
+# the matcher sees them (verified: `strip_html('pay   per     call')` inside markup
+# -> 'pay per call'); a whitespace perturbation there is normalized away by the
+# reader, so the invariance would hold VACUOUSLY — enforced by strip_html, not by
+# the signal patterns. The `/openapi.json` spec is scanned RAW (not HTML-stripped,
+# per `_surface_prose`), so on the machine pole whitespace-tolerance rests on the
+# signal patterns' OWN `\s+`/`\s*` flexibility — the load-bearing mechanism this
+# guard actually pins. That is why the metered_api spec pole is the native (and
+# only non-vacuous) home for the whitespace axis.
+#
+# The transform is EXPANSION (each single space -> three), which is monotone in the
+# credibility-safe direction: a `\s+`/`\s*` matcher still matches the longer run,
+# while a pattern that required an EXACT single space can only STOP matching — it can
+# never CONJURE a new match. So skeleton-invariance under expansion is a strong
+# statement: every fired signal on the machine pole is genuinely whitespace-robust,
+# and none silently leans on an exact single space (which a reformat / minifier /
+# pretty-printer would break in the wild).
+#
+# What is asserted invariant is the quote-EXCLUDED skeleton (`_casing_struct`, shared
+# with the case axis): archetypes in rank order, the NA complement, and per-(label,
+# surface) match multiplicity. The quote TEXT is excluded for the SAME reason as in
+# the case axis — a signal's quote echoes a fixed byte WINDOW around its match, so it
+# legitimately shifts when whitespace changes the byte offsets; "the same signals fire
+# on the same surfaces the same number of times" is the invariant, not byte-identical
+# evidence.
+#
+# Non-vacuity has two teeth:
+#   (a) the transform is REAL — the raw spec carries single spaces, so expanding them
+#       genuinely changes the bytes the classifier scans;
+#   (b) whitespace-tolerance is LOAD-BEARING — among the fired evidence there is a
+#       signal whose RIGID-whitespace count (its pattern with every `\s+`/`\s*` rewritten
+#       to a single literal space) DROPS under expansion, while the real (flexible)
+#       matcher's count holds. The canonical example is `post-endpoint`
+#       (`\b(POST|GET|PUT)\s+https?://\S+`): the space in "POST https://" expands to
+#       three, the rigid literal-space form stops matching (count 1 -> 0) while `\s+`
+#       holds (1 -> 1). So the invariance rests on the patterns' whitespace-flexibility,
+#       and a future machine-surface signal written with an exact space would move its
+#       count under this transform and fail loudly.
+# ---------------------------------------------------------------------------
+_WS_RIGID_RE = re.compile(r"\\s[+*]")
+
+
+def _expand_whitespace(text: str) -> str:
+    """Expand every single space into three (monotone: can only DROP literal-space matches)."""
+    return text.replace(" ", "   ")
+
+
+def test_offering_whitespace_invariance_machine() -> None:
+    """Reformatting an API-first store's spec whitespace is not "more" metered_api — and conjures no rails."""
+    print("test_offering_whitespace_invariance_machine")
+
+    # Capture the base surfaces exactly as discovery feeds them to the classifier.
+    # (Unlike `_captured_surfaces`, no >=2-surface reorder premise: the machine pole
+    # reads {homepage, /openapi.json} and the whitespace axis reflows the spec body.)
+    path = os.path.join(_FIXTURE_DIR, f"{_MACHINE_SURFACE}.json")
+    ctx = FetchContext.from_fixture(path)
+    captured: dict = {}
+    real = _offering.classify_offering
+
+    def _spy(dom, surfaces):
+        captured.clear()
+        captured.update(surfaces)
+        return real(dom, surfaces)
+
+    _offering.classify_offering = _spy
+    try:
+        _offering.discover_offering(ctx)
+    finally:
+        _offering.classify_offering = real
+
+    base = _offering.classify_offering(_MACHINE_SURFACE, dict(captured))
+
+    # The property under test is genuinely present: the store claims EXACTLY
+    # metered_api on real fired evidence, with every other archetype NA — so a rails
+    # claim conjured by a reflow, or a strengthened/weakened metered_api, would be
+    # observable.
+    _check(
+        set(base.archetypes) == _MACHINE_CLAIMED,
+        f"{_MACHINE_SURFACE}: base claimed set == {sorted(_MACHINE_CLAIMED)} "
+        f"(got {sorted(set(base.archetypes))})",
+    )
+    _check(
+        len(base.claimed) == 1 and any(c.signals for c in base.claimed),
+        f"{_MACHINE_SURFACE}: exactly 1 archetype claimed on real fired evidence, so the "
+        f"(strength, per-(label, surface) counts) skeleton a reflow could perturb is real "
+        f"(got {base.archetypes})",
+    )
+    machine_must_be_na = set(_offering.ARCHETYPES) - _MACHINE_CLAIMED
+    _check(
+        machine_must_be_na <= set(base.unclaimed),
+        f"{_MACHINE_SURFACE}: the non-metered archetypes {sorted(machine_must_be_na)} are "
+        f"all NA at base (got unclaimed {sorted(base.unclaimed)}) — the single-claim "
+        "property the reflow must not overturn is present",
+    )
+
+    ws_surfaces = {s: _expand_whitespace(r) for s, r in captured.items()}
+    # TEETH (a): the transform is REAL — at least one surface carries single spaces at
+    # base, so expanding them genuinely alters the bytes the classifier scans (not a
+    # no-op on already-space-free text).
+    _check(
+        any(ws_surfaces[s] != captured[s] for s in captured),
+        f"{_MACHINE_SURFACE}: whitespace expansion genuinely changed >=1 surface body "
+        "(the perturbation is real, not a no-op)",
+    )
+
+    # TEETH (b): whitespace-tolerance is LOAD-BEARING. Among the fired evidence there is
+    # a signal whose RIGID-whitespace count (its pattern with every `\s+`/`\s*` rewritten
+    # to a single literal space) DROPS under expansion, while the real flexible matcher's
+    # count holds — so the invariance below rests on the patterns' `\s+`/`\s*` flexibility,
+    # not on the spec happening to be single-spaced everywhere its signals match.
+    load_bearing = None
+    for c in base.claimed:
+        for s in c.signals:
+            pat = _signal_pattern(c.archetype, s.label)
+            if pat is None:
+                continue
+            rigid_src = _WS_RIGID_RE.sub(" ", pat.pattern)  # \s+/\s* -> one literal space
+            if rigid_src == pat.pattern:
+                continue  # no flexible-whitespace token to make rigid — cannot be the tooth
+            try:
+                rigid = re.compile(rigid_src, re.IGNORECASE)
+            except re.error:
+                continue
+            b_prose = _surface_prose(s.surface, captured[s.surface])
+            w_prose = _surface_prose(s.surface, ws_surfaces[s.surface])
+            rig_b, rig_w = len(rigid.findall(b_prose)), len(rigid.findall(w_prose))
+            flex_b, flex_w = len(pat.findall(b_prose)), len(pat.findall(w_prose))
+            if rig_b > rig_w and flex_b == flex_w:
+                load_bearing = (c.archetype, s.label, rig_b, rig_w)
+                break
+        if load_bearing:
+            break
+    _check(
+        load_bearing is not None,
+        f"{_MACHINE_SURFACE}: a fired signal's RIGID-whitespace count DROPS under expansion "
+        "while its flexible count holds — whitespace-flexibility is load-bearing, so the "
+        "invariance is non-vacuous",
+    )
+
+    ws = _offering.classify_offering(_MACHINE_SURFACE, dict(ws_surfaces))
+
+    # (1) The quote-excluded capability skeleton is identical: metered_api's strength AND
+    # its per-(label, surface) match counts survive the reflow — no signal lost or
+    # conjured, no count drifted, by mere whitespace.
+    _check(
+        _casing_struct(ws) == _casing_struct(base),
+        f"{_MACHINE_SURFACE}: per-archetype (strength, per-(label, surface) counts) skeleton "
+        "invariant under whitespace expansion",
+    )
+    # (2) Claimed archetypes invariant — still EXACTLY metered_api. The reflow conjured
+    # no rails claim; the "never manufacture the delta" property on the WHITESPACE axis,
+    # from the machine pole.
+    _check(
+        ws.archetypes == base.archetypes,
+        f"{_MACHINE_SURFACE}: claimed archetypes invariant under whitespace expansion "
+        f"(base {base.archetypes}, ws {ws.archetypes})",
+    )
+    # (3) The non-metered archetypes stay NA and the whole NA/unclaimed set is invariant
+    # — which archetypes an API-first store is excused on as NA is a property of WHAT its
+    # spec declares, never of how its author spaced it.
+    _check(
+        machine_must_be_na <= set(ws.unclaimed) and set(ws.unclaimed) == set(base.unclaimed),
+        f"{_MACHINE_SURFACE}: the non-metered archetypes stay NA and the whole NA set is "
+        f"invariant under whitespace expansion (base {sorted(base.unclaimed)}, ws {sorted(ws.unclaimed)})",
+    )
+
+
 def main() -> int:
     tests = [
         test_canonical_org_offering,
@@ -5978,6 +6157,7 @@ def main() -> int:
         test_offering_surface_dedup_invariance_org,
         test_offering_surface_dedup_invariance_com,
         test_offering_surface_dedup_invariance_machine,
+        test_offering_whitespace_invariance_machine,
         test_offering_relabel_invariance_retail,
         test_offering_relabel_invariance_nonstorefront,
         test_offering_relabel_negative_control,

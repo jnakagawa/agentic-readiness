@@ -1,8 +1,37 @@
 # Loop state
 
-- Cycle counter: 184
+- Cycle counter: 185
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-02T19:17Z (Cycle 184) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-02T20:17Z (Cycle 185) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~40h old at the 20:17Z fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; 20:17Z is
+  NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral METHOD increment,
+  no sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org 46.1 F /
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS
+  (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent regression signal
+  (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open → []),
+  so no first-duty review. INFRA/SELF-HEAL (Cycle 185): fresh checkout on detached HEAD at Cycle 184's
+  `59ca867`; ran `git fetch origin main` FIRST (standing lesson), `checkout -B main origin/main` aligned to
+  the real tip, working tree clean, invariant #5 intact. Fresh `.venv` + `requests pyyaml eth-account
+  pytest`, imports verified, 409 tests green pre-flight.
+- FOCUS POINTER (Cycle 185 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 185 was
+  METHOD, so Cycle 186 is COVERAGE). Cycle 185 shipped a **METHOD increment — the attribution-STABILITY
+  host-relabel invariance guard** (`tests/test_canonical_history.py`
+  `test_attribution_stability_is_host_relabel_invariant`, +1): the metamorphic vendor-neutrality guard for
+  `attribution_stability`, the last drift diagnostic in the canonical-history family without one (sibling of
+  Cycle-181's `cause_verdict` relabel guard). Relabels both reference hosts to fresh strings, rebuilds the
+  SAME structural series across a STABLE + a WANDERS scenario, and asserts the movers/fingered follow the new
+  host, the pillar set is structural, the relabeled line leaks no original host, and the stability line is
+  BYTE-IDENTICAL modulo the host token. Mutation-verified (hardcoding `driftflight.com` reddens it; revert
+  green). Tests-only, OFF the scoring path (`git diff --name-only` = `tests/test_canonical_history.py` ONLY;
+  scoring-path diff EMPTY) → score-neutral, NOT peer-gated, direct-to-main. Full suite 409→410; replay guard
+  24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. The canonical-drift diagnostic family now has
+  full metamorphic coverage (reflection magnitude/direction, cause-verdict relabel, attribution-stability
+  relabel) + terminal+HTML readout. NEXT (COVERAGE 186): cloud-doable candidates are an offering-classifier
+  robustness/precision guard on real committed evidence, or a readout completeness check; the substantive
+  frontier (thin-archetype/render/structured-catalog LIVE fixtures, ACP/UCP/MPP, calibration sweep,
+  transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 184 runner note): RUNNER AT-FLOOR at 2026-08-02T19:17Z (Cycle 184) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~39.5h old at the 19:17Z fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; 19:17Z is
   NOT first-after-16:00 UTC → no DM this fire per comms policy (off-scoring-path / score-neutral READOUT

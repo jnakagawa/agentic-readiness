@@ -3,6 +3,69 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 185 — 2026-08-02T20:17Z — METHOD — attribution-STABILITY host-relabel invariance guard (vendor-neutrality, made executable)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed. Infra/self-heal: fresh checkout was detached at Cycle-184's `59ca867`; `git
+fetch origin main` FIRST (standing lesson), then `checkout -B main origin/main` aligned to the real
+tip (`59ca867`), tree clean, invariant #5 intact. Fresh `.venv` + `requests pyyaml eth-account
+pytest`; 409 tests green pre-flight (bench up). Runner AT-FLOOR: newest verify
+`runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is ~40h old at the 20:17Z fire — PAST the
+6h floor (machine-asleep / runner-lag pattern, cloud cannot repair; already flagged in the 16:12Z
+Cycle-181 digest). 20:17Z is NOT first-after-16:00 UTC → no digest DM this fire.
+
+**What (METHOD).** Added `test_attribution_stability_is_host_relabel_invariant` — the metamorphic
+(host-relabel) VENDOR-NEUTRALITY guard for `attribution_stability`, the ONE drift diagnostic in the
+canonical-history family that still lacked one (Cycle 181 gave `cause_verdict` its relabel guard;
+this is its sibling). `attribution_stability` labels each `ReadingTop.top` / `movers` / `fingered`
+with `PillarMove.domain`, drawn from the module host constants, and renders a STABLE/WANDERS line.
+Those must key ONLY on the pair's STRUCTURE (which side drifts, which pillar, how many readings
+agree), never on the literal host STRINGS — the benchmark's core "worded by capability, never by
+vendor" invariant, applied to the diagnostic readout.
+
+**Why.** The attribution-stability verdict is a driver claim an operator acts on ("the reference is
+STABLY softening on transactability"). Cycle 183 pinned the REAL-series value and Cycle 184 put it
+on the HTML card, but nothing proved the verdict is invariant under a host relabel — a latent
+vendor-hardcode in the stability path (or its render) would have gone uncaught. This makes
+vendor-neutrality an executable, falsifiable property of the stability diagnostic, not an assumed one.
+
+**Method / teeth (non-vacuous).** Transform: RELABEL both reference hosts to fresh unrelated strings
+(`no-rails-store.example` / `with-rails-store.example`) and rebuild the SAME structural series
+(`_artifact` keys the written scores off the constants, so the rebuild is loaded/attributed/rendered
+entirely under the new labels), across TWO structural scenarios — a STABLE run (both readings finger
+with-rails transactability) and a WANDERS run (readings finger different with-rails pillars). Asserts
+per scenario: (a) baseline movers/fingered/render name the real host; (b) relabel took effect —
+movers follow the NEW host while the pillar SET is unchanged; (c) the pillar set is structural; (d)
+teeth — the relabeled stability line leaks NEITHER original host; (e) INVARIANCE — the two stability
+lines are BYTE-IDENTICAL once the driver host is substituted to `<HOST>`; (f) fingered `(host,
+pillar)` tracks the relabel modulo the host token (stable) / stays None (wander). Mutation-verified:
+hardcoding `driftflight.com` into the STABLE render line reddens the guard (relabel-took-effect +
+byte-identity both fail); revert restores green.
+
+**Ship class + evidence.** Tests-only, OFF the scoring path: `git diff --name-only` =
+`tests/test_canonical_history.py` ONLY; scoring-path diff (`asrs/scoring.py rubric/ fixtures/
+asrs/offering.py asrs/probes asrs/fetch.py asrs/cli.py asrs/battery.py asrs/scorecard.py
+asrs/canonical_history.py`) = EMPTY → score-neutral, NOT peer-gated, direct-to-main. Full suite
+409→410, 0 failures; the 6 host-relabel/stability tests green in isolation. Canonical PAIR unchanged:
+in-cloud replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7. (Cloud is
+network-blocked for the live re-score; in-cloud standard = regression-by-construction — scoring path
+byte-identical — plus the offline replay guard, both green.)
+
+**Live canonical signal.** Newest LOCAL artifact `runs/local/verify_20260801T035047Z.json` (03:50Z
+Aug-1) is ~40h old — PAST the 6h floor (already flagged Cycle-181 digest; cloud cannot repair). Its
+LIVE re-score: drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 — the known transactability
+87.5→62.5 divergence (off the scoring path; the frozen replay guard stays the in-cloud regression
+signal).
+
+**Next hypothesis.** Rotate COVERAGE next (Cycle 185 was METHOD; METHOD → COVERAGE → TRUTH →
+READOUT). The canonical-drift diagnostic family now has full metamorphic coverage (reflection
+magnitude/direction, cause-verdict relabel, attribution-stability relabel) plus terminal+HTML
+readout. In-cloud COVERAGE candidates are thin without a new committed fixture (the surface bank +
+archetype signals are well-mined); the substantive frontier (thin-archetype/render/structured-catalog
+LIVE fixtures, ACP/UCP/MPP handshakes, calibration-sweep growth, transactability-drop CHECK-level
+diagnosis) stays `[LOCAL]`. A cloud-doable COVERAGE unit: an offering-classifier robustness/precision
+guard on real committed evidence, or a readout completeness check.
+
 ## Cycle 184 — 2026-08-02T19:17Z — READOUT — HTML canonical-history card surfaces the attribution-STABILITY line (STABLE / WANDERS)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

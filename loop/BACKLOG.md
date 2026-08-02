@@ -561,6 +561,16 @@ design in-cloud, execute locally.
 
 ## P1
 
+- **[OBSERVATION — Cycle 185] Canonical-drift diagnostic family metamorphic axis is EXHAUSTED in-cloud.**
+  With the Cycle-185 `test_attribution_stability_is_host_relabel_invariant`, every drift diagnostic now has a
+  metamorphic guard: reflection magnitude/direction (Cycle-179ish `test_reflection_about_baseline_...`),
+  cause-verdict host-relabel (Cycle 181), and attribution-stability host-relabel (Cycle 185); attribution and
+  divergence-cause are additionally pinned on the real committed series. A future METHOD cycle should NOT add
+  another relabel/reflection guard on this family (diminishing returns) — reach instead for a NEW diagnostic,
+  a measurement-rigor refinement (e.g. a variance/trial-count method), or the offering-classifier precision
+  guards. The substantive drift work (CHECK-level transactability-drop diagnosis + peer-gated re-baseline)
+  stays `[LOCAL]` and is tracked in the P0 canonical-anchor item.
+
 <!-- DONE 2026-08-02T~11:2xZ (Cycle 176, READOUT, direct-to-main, display-only/score-neutral): "Surface the
      canonical-drift SUSTAINED-RUN SPAN on the HTML readout" SHIPPED, closing the TRUTH(175)→READOUT(176) arc.
      `_write_canonical_history_page` (`asrs/scorecard.py`) now renders a dimmed (`class="q"`) "spanning Xh

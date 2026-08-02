@@ -600,6 +600,125 @@ def test_attribution_stability_on_real_series_holds_the_pillar() -> None:
     )
 
 
+def test_attribution_stability_is_host_relabel_invariant() -> None:
+    print("test_attribution_stability_is_host_relabel_invariant")
+    # METHOD (Cycle 185): VENDOR-NEUTRALITY of the attribution-STABILITY diagnostic,
+    # made executable as the metamorphic (host-relabel) invariance axis — the sibling
+    # of the Cycle-181 cause_verdict guard, for the ONE drift diagnostic in the family
+    # that still lacked one. attribution_stability labels each ReadingTop.top / movers
+    # / fingered with PillarMove.domain, drawn from the module host constants; its
+    # STABLE/WANDERS verdict and the rendered line must key ONLY on the pair's
+    # STRUCTURE (which side drifts, which pillar, how many readings agree), never on
+    # the literal host STRINGS. If it hardcoded "driftflight.com" the benchmark's core
+    # invariant ("checks worded by capability, never by vendor") would be violated in
+    # the readout. Transform: RELABEL both reference hosts to fresh, unrelated strings
+    # and rebuild the SAME structural series. Invariant: the stability verdict is
+    # unchanged and its rendered line is BYTE-IDENTICAL once the driver host is
+    # substituted back to a neutral placeholder — a pure function of structure + token.
+    def _stable_rows():
+        # both out-of-band readings finger with-rails transactability (magnitudes differ)
+        return [
+            _artifact("20260727T000000Z", 46.1, 85.5, 39.4,
+                      org_pillars=dict(_ANCHOR_ORG_PILLARS),
+                      com_pillars=dict(_ANCHOR_COM_PILLARS)),
+            _artifact("20260727T010000Z", 46.1, 80.0, 33.9,
+                      org_pillars=dict(_ANCHOR_ORG_PILLARS),
+                      com_pillars={**_ANCHOR_COM_PILLARS, "transactability": 70.0}),
+            _artifact("20260727T020000Z", 46.1, 76.2, 30.1,
+                      org_pillars=dict(_ANCHOR_ORG_PILLARS),
+                      com_pillars={**_ANCHOR_COM_PILLARS, "transactability": 62.5}),
+        ]
+
+    def _wander_rows():
+        # the two out-of-band readings finger DIFFERENT with-rails pillars
+        return [
+            _artifact("20260727T000000Z", 46.1, 85.5, 39.4,
+                      org_pillars=dict(_ANCHOR_ORG_PILLARS),
+                      com_pillars=dict(_ANCHOR_COM_PILLARS)),
+            _artifact("20260727T010000Z", 46.1, 78.5, 32.4,
+                      org_pillars=dict(_ANCHOR_ORG_PILLARS),
+                      com_pillars={**_ANCHOR_COM_PILLARS, "legibility": 70.9}),
+            _artifact("20260727T020000Z", 46.1, 76.2, 30.1,
+                      org_pillars=dict(_ANCHOR_ORG_PILLARS),
+                      com_pillars={**_ANCHOR_COM_PILLARS, "transactability": 62.5}),
+        ]
+
+    def _stab_line(hist) -> str:
+        for ln in ch.render(hist).splitlines():
+            if ln.startswith("attribution stability:"):
+                return ln
+        return ""
+
+    orig_no, orig_with = ch.CANONICAL_NO_RAILS, ch.CANONICAL_WITH_RAILS
+    new_no, new_with = "no-rails-store.example", "with-rails-store.example"
+    try:
+        for rows_of, tag, expect_stable, expect_pillars in (
+            (_stable_rows, "stable", True, {"transactability"}),
+            (_wander_rows, "wander", False, {"legibility", "transactability"}),
+        ):
+            # (a) baseline at the REAL labels.
+            with tempfile.TemporaryDirectory() as tmp:
+                _write_series(tmp, rows_of())
+                h1 = ch.load_history(tmp)
+            s1 = h1.attribution_stability
+            _check(s1 is not None, f"[{tag}] a 2-reading out-of-band run gets a stability measure")
+            _check(s1.stable is expect_stable, f"[{tag}] baseline stable={expect_stable}, got {s1.stable}")
+            _check({d for d, _ in s1.movers} == {orig_with},
+                   f"[{tag}] baseline movers are all the real with-rails host, got {s1.movers}")
+            _check({p for _, p in s1.movers} == expect_pillars,
+                   f"[{tag}] baseline pillar set {expect_pillars}, got {s1.movers}")
+            line1 = _stab_line(h1)
+            _check(orig_with in line1, f"[{tag}] baseline render names the real driver host, got: {line1}")
+
+            # (b) RELABEL both hosts and rebuild the SAME structural series (_artifact
+            #     keys the written scores off the constants, so the new build is keyed
+            #     — and loaded, attributed, rendered — entirely under the new labels).
+            ch.CANONICAL_NO_RAILS, ch.CANONICAL_WITH_RAILS = new_no, new_with
+            with tempfile.TemporaryDirectory() as tmp2:
+                _write_series(tmp2, rows_of())
+                h2 = ch.load_history(tmp2)
+            s2 = h2.attribution_stability
+            _check(s2 is not None, f"[{tag}] relabeled run still gets a stability measure")
+            _check(s2.stable is expect_stable, f"[{tag}] relabel-invariant stable={expect_stable}, got {s2.stable}")
+
+            # (c) relabel took effect — movers follow the NEW host; the pillar SET is
+            #     structural, unchanged by the relabel.
+            _check({d for d, _ in s2.movers} == {new_with},
+                   f"[{tag}] relabel took effect — movers on the new host, got {s2.movers}")
+            _check({p for _, p in s2.movers} == expect_pillars,
+                   f"[{tag}] pillar set is structural, unchanged by relabel, got {s2.movers}")
+
+            # (d) teeth: the relabeled stability line leaks NEITHER original host — a
+            #     diagnostic that hardcoded the real vendor domains would fail here.
+            line2 = _stab_line(h2)
+            _check(orig_no not in line2 and orig_with not in line2,
+                   f"[{tag}] relabeled line leaks no original host, got: {line2}")
+
+            # (e) INVARIANCE: substitute each driver host back to one placeholder — the
+            #     two stability lines are byte-identical, so the verdict prose (STABLE
+            #     vs WANDERS, the fingered/mover clause, the reading count) is a pure
+            #     function of structure + the host token.
+            _check(line1.replace(orig_with, "<HOST>") == line2.replace(new_with, "<HOST>"),
+                   f"[{tag}] stability line is host-relabel invariant modulo the host token\n"
+                   f"    orig: {line1}\n    new:  {line2}")
+
+            # (f) the fingered (host, pillar) tracks the relabel modulo the host token
+            #     on the stable branch; the wander branch has no single fingered pillar.
+            if expect_stable:
+                _check(s1.fingered == (orig_with, "transactability"),
+                       f"[{tag}] baseline fingered the real with-rails transactability, got {s1.fingered}")
+                _check(s2.fingered == (new_with, "transactability"),
+                       f"[{tag}] fingered host follows the new label, pillar unchanged, got {s2.fingered}")
+            else:
+                _check(s1.fingered is None and s2.fingered is None,
+                       f"[{tag}] a wandering run has no single fingered pillar under either labelling")
+
+            ch.CANONICAL_NO_RAILS, ch.CANONICAL_WITH_RAILS = orig_no, orig_with
+    finally:
+        # Module constants are process-global; other tests depend on the real pair.
+        ch.CANONICAL_NO_RAILS, ch.CANONICAL_WITH_RAILS = orig_no, orig_with
+
+
 def test_divergence_cause_names_the_softening_side() -> None:
     print("test_divergence_cause_names_the_softening_side")
     # (a) the REAL 2026-07-27 shape: .org flat at 46.1, .com falls 85.5 -> 78.7.
@@ -1291,6 +1410,7 @@ def main() -> int:
         test_attribution_stability_stable_when_pillar_holds,
         test_attribution_stability_none_when_short_or_no_anchor,
         test_attribution_stability_on_real_series_holds_the_pillar,
+        test_attribution_stability_is_host_relabel_invariant,
         test_divergence_cause_names_the_softening_side,
         test_divergence_cause_none_when_in_band,
         test_divergence_cause_on_real_series,

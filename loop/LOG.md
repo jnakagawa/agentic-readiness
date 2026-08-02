@@ -3,6 +3,77 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 186 — 2026-08-02T21:12Z — COVERAGE — data_retrieval precision hardening: `enrich`/`dataset` bare-word signals no longer conjure a false archetype
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed. Infra/self-heal: fresh checkout was detached at Cycle-185's `dae52d6`; `git
+fetch origin main` FIRST (standing lesson), then `checkout -B main origin/main` aligned to the real
+tip (`dae52d6`), tree clean, invariant #5 intact. Fresh `.venv` + `requests pyyaml eth-account
+pytest`; 410 tests green pre-flight (bench up). Runner AT-FLOOR: newest verify
+`runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is ~41h old at the 21:12Z fire — PAST the
+6h floor (machine-asleep / runner-lag pattern, cloud cannot repair; already flagged in the 16:12Z
+Cycle-181 digest). 21:12Z is NOT first-after-16:00 UTC → no digest DM this fire.
+
+**What (COVERAGE).** Precision-hardened the two cheapest bare-word signals in the `data_retrieval`
+archetype's signal bank (`asrs/offering.py`): `enrich` (was `\benrich(es|ed|ment)?\b`) and `dataset`
+(was `\bdatasets?\b`). `enrich` now requires the verb to name an unambiguous DATA object
+(records/data/datasets/contacts/leads/profiles/rows/fields) within a short same-clause window, or the
+fixed "data enrichment" phrase. `dataset` now requires a RETRIEVAL/ACCESS verb adjacent to it
+(query/search/access/download/retrieve/fetch/pull/look-up/subscribe-to/licence/browse/against a …
+dataset) or the dataset named AS an offering (dataset api/feed/subscription/catalog/marketplace/
+endpoint/access/licence/download). Added `test_data_retrieval_precision_synthetic` (8 genuine
+data-retrieval positives fire; 7 provenance/marketing negatives dodge) and
+`test_data_retrieval_precision_is_canonical_invariant_on_real_fixtures` (full `from_fixture →
+discover_offering` on all 5 committed fixtures — claimed sets byte-identical, data_retrieval stays NA
+on every one).
+
+**Why.** `data_retrieval` is one of the two THINNEST archetypes, so a FALSE claim here does maximum
+damage — the site gets probed with a lookup/enrichment intent it does not serve, exactly the
+archetype pollution the operator directive (2026-07-23) removed. Bare `\bdataset\b` is the single most
+common TRAINING-PROVENANCE word in generative/ML prose ("trained on a dataset of 100M images", "our
+training dataset", "a diverse dataset of prompts") — describing what a MODEL learned from, NOT a data
+product the storefront vends; left bare, an image-generation API (metered_api + digital_good) whose
+marketing mentions its training dataset would ALSO conjure a false `data_retrieval` claim. Bare
+`\benrich\b` is the same minefield in marketing prose ("an enriched user experience", "an enriching
+partnership", "enrichment of company culture"). The hardening RE-TARGETS the signals onto genuine
+retrieval OFFERINGS rather than merely narrowing them — net recall on real data-retrieval prose is
+preserved (the committed genuine-offering test fixtures DATA_HOMEPAGE / DATA_AGENT_CARD still claim
+`data_retrieval`). "Precision over recall" invariant, applied to the thinnest archetype.
+
+**Method / non-vacuity + teeth.** Prototyped both patterns against FIRE (must-keep) and DODGE
+(must-exclude) sets before editing; the loosened `dataset` determiner gap (`(?:\w+\s+){0,3}`, so
+"download the *full* dataset" fires) is punctuation-stopped and still gated by the verb, so
+"trained *on* a dataset" (no retrieval verb) dodges. Full-fixture audit BEFORE and AFTER confirms
+identical claimed sets: api.replicate.com `[metered_api]`, books.toscrape.com `[physical_good]`,
+drift-flight.org / driftflight.com `[metered_api, digital_good, subscription]`, example.com `[]` —
+`data_retrieval` NA on all 5 (none serves a queryable dataset or a record-enrichment API), so the
+change is trivially canonical-invariant AND the synthetic before/after proves the behavior actually
+changed (a naive "trained on a dataset" blurb claimed `data_retrieval` before, does not after).
+
+**Ship class + evidence.** OFF the scoring path: `git diff --name-only` = `asrs/offering.py` +
+`tests/test_offering.py` ONLY; scoring-path diff (`asrs/scoring.py rubric/ fixtures/ asrs/probes
+asrs/fetch.py asrs/cli.py asrs/battery.py asrs/scorecard.py`) = EMPTY. `discover_offering`/
+`classify_offering` are imported only by cli (`--battery auto`) / battery / report / scorecard —
+never scoring/probes/rubric (grep-verified) → score-neutral, NOT peer-gated, direct-to-main. Full
+suite 410→412, 0 failures; offering suite 137→139. Canonical PAIR unchanged: in-cloud replay guard
+24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7. (Cloud is network-blocked for the
+live re-score; in-cloud standard = regression-by-construction — scoring path byte-identical — plus
+the offline replay guard, both green.)
+
+**Live canonical signal.** Newest LOCAL artifact `runs/local/verify_20260801T035047Z.json` (03:50Z
+Aug-1) is ~41h old — PAST the 6h floor (already flagged Cycle-181 digest; cloud cannot repair). Its
+LIVE re-score: drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 — the known transactability
+87.5→62.5 divergence (off the scoring path; the frozen replay guard stays the in-cloud regression
+signal).
+
+**Next hypothesis.** Rotate TRUTH next (Cycle 186 was COVERAGE; METHOD → COVERAGE → TRUTH → READOUT).
+The `data_retrieval` bank now has hardened enrich/dataset; the remaining thin-archetype work
+(service_booking still has the un-guarded `book (a|an|your)` sales-CTA collision — "book a demo" would
+falsely claim service_booking; and the thin banks want GENUINE new signals) needs LIVE fixtures →
+stays `[LOCAL]`. In-cloud TRUTH candidate: a calibration/attribution guard, or a metamorphic guard on
+a diagnostic still lacking one. Substantive frontier (thin-archetype/render/structured-catalog LIVE
+fixtures, ACP/UCP/MPP, calibration sweep, transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+
 ## Cycle 185 — 2026-08-02T20:17Z — METHOD — attribution-STABILITY host-relabel invariance guard (vendor-neutrality, made executable)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

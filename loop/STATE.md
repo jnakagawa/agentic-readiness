@@ -1,8 +1,39 @@
 # Loop state
 
-- Cycle counter: 185
+- Cycle counter: 186
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-02T20:17Z (Cycle 185) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-02T21:12Z (Cycle 186) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~41h old at the 21:12Z fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; 21:12Z is
+  NOT first-after-16:00 UTC → no DM this fire per comms policy (off-scoring-path / score-neutral COVERAGE
+  increment, no sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org
+  46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence
+  PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent regression
+  signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open
+  → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 186): fresh checkout on detached HEAD at Cycle 185's
+  `dae52d6`; ran `git fetch origin main` FIRST (standing lesson), `checkout -B main origin/main` aligned to
+  the real tip, working tree clean, invariant #5 intact. Fresh `.venv` + `requests pyyaml eth-account
+  pytest`, imports verified, 410 tests green pre-flight.
+- FOCUS POINTER (Cycle 186 done): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 186 was
+  COVERAGE, so Cycle 187 is TRUTH). Cycle 186 shipped a **COVERAGE increment — data_retrieval precision
+  hardening** (`asrs/offering.py`): the archetype's two cheapest bare-word signals, `enrich` and `dataset`,
+  are precision-guarded so a common ML/marketing word no longer conjures a false claim on the THINNEST
+  archetype. `enrich` now requires an unambiguous DATA object (records/data/contacts/leads/…) within a
+  short window (or "data enrichment"); `dataset` now requires a RETRIEVAL verb adjacent (query/download/
+  access/… a … dataset) or the dataset named AS an offering (dataset api/feed/subscription/…), so
+  training-PROVENANCE prose ("trained on a dataset", "our training dataset") and marketing ("an enriching
+  partnership") dodge. `tests/test_offering.py` +2: `test_data_retrieval_precision_synthetic` (8 genuine
+  positives fire / 7 provenance-marketing negatives dodge) + `..._is_canonical_invariant_on_real_fixtures`
+  (full `from_fixture → discover_offering` on all 5 committed fixtures — claimed sets byte-identical,
+  data_retrieval NA on every one). OFF the scoring path (`git diff --name-only` = `asrs/offering.py` +
+  `tests/test_offering.py` ONLY; scoring-path diff EMPTY; offering imported only by cli/battery/report/
+  scorecard, grep-verified) → score-neutral, NOT peer-gated, direct-to-main. Full suite 410→412; offering
+  suite 137→139; replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. NEXT (TRUTH 187):
+  a calibration/attribution guard or a metamorphic guard on a diagnostic still lacking one. Substantive
+  frontier (thin-archetype/render/structured-catalog LIVE fixtures — incl. the service_booking
+  `book (a|an|your)` sales-CTA collision, now noted in BACKLOG — ACP/UCP/MPP, calibration sweep,
+  transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 185 runner note): RUNNER AT-FLOOR at 2026-08-02T20:17Z (Cycle 185) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~40h old at the 20:17Z fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; 20:17Z is
   NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral METHOD increment,

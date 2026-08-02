@@ -248,7 +248,20 @@ design in-cloud, execute locally.
   $0), then mine each for genuinely distinct, precision-guarded capability signals the same way Cycle 164
   did for digital_good. Off the scoring path, score-neutral; each new signal needs the isolation-matrix
   entry + a precision/real-evidence guard pair. Prefer the booking fixture first (service_booking is tied
-  for thinnest and has zero committed evidence).
+  for thinnest and has zero committed evidence). UPDATE Cycle 186 (COVERAGE, in-cloud, direct-to-main): the
+  data_retrieval PRECISION half is DONE — `enrich` and `dataset`, the two cheapest bare-word signals, are
+  now provenance/marketing-collision-hardened (a naive "trained on a dataset" / "an enriching partnership"
+  no longer conjures the archetype), pinned by `test_data_retrieval_precision_synthetic` +
+  `..._is_canonical_invariant_on_real_fixtures`. This does NOT close the item: the thin banks still want
+  GENUINE NEW signals from real fixtures ([LOCAL], unchanged). NOTE the mirror gap this surfaced —
+  service_booking's `book (a|an|your|now|online)` signal is UN-guarded and would false-positive on the
+  ubiquitous B2B sales CTA "book a demo" / "book a call" / "book a walkthrough" (conjuring service_booking
+  on a pure-API storefront). No committed fixture carries it (service_booking is NA on all 5, and grep of
+  fixtures for "book" hits only "Books to Scrape"), so a precision guard would be synthetic-demonstrated +
+  canonical-invariant — a clean cloud-doable COVERAGE unit (exclude the sales-CTA objects demo/call/
+  walkthrough/briefing/meeting while KEEPING genuine bookable services: table/room/appointment/session/
+  class/consultation). Watch recall: service_booking is tied-thinnest, so exclude only unambiguous sales
+  CTAs.
 
 - **[LOCAL] Validate the Cycle-178 whitespace-reflow robustness on a REAL line-wrapped surface** (COVERAGE,
   follow-up to Cycle 178). Cycle 178 made `classify_offering` collapse whitespace runs before scanning so

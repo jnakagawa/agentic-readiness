@@ -1272,8 +1272,46 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
         ("availability", re.compile(r"\bcheck availability\b|\bavailable (times|slots)\b|\btime slots?\b", _F)),
     ],
     "data_retrieval": [
-        ("enrich", re.compile(r"\benrich(es|ed|ment)?\b", _F)),
-        ("dataset", re.compile(r"\bdatasets?\b", _F)),
+        # RECORD ENRICHMENT — an agent submits records and gets structured fields
+        # back. PRECISION-CRITICAL: bare "\benrich\b" is a false-positive minefield —
+        # marketing prose reads "an enriched user experience", "an enriching
+        # partnership", "enrich your workflow", "enrichment of company culture" — none
+        # of which is a data-retrieval OFFERING; each would falsely claim
+        # data_retrieval and run an irrelevant lookup intent (the exact archetype
+        # pollution this module removes, and doubly harmful on data_retrieval, one of
+        # the two thinnest archetypes). So NEVER match a bare "enrich": require the
+        # verb to name an unambiguous DATA object (records / data / a dataset /
+        # contacts / leads / profiles / rows / fields) within a short same-clause
+        # window (either order), or the fixed "data enrichment" phrase. The
+        # experience/partnership/workflow/culture senses (no data noun) trip none of
+        # these; the genuine "enrich a list of records" / "enriches company records"
+        # data-service prose still fires (pinned by the genuine-offering tests).
+        ("enrich", re.compile(
+            r"\benrich\w*\b[^.\n]{0,40}?\b(?:records?|data|datasets?|contacts?|leads?|profiles?|rows?|fields?)\b"
+            r"|\b(?:records?|data|contacts?|leads?|profiles?)\b[^.\n]{0,20}?\benrich\w*"
+            r"|\bdata\s+enrichment\b", _F)),
+        # QUERYABLE DATASET — a dataset the agent can RETRIEVE FROM (query / download /
+        # access / subscribe to), or a dataset offered AS a product (a dataset API /
+        # feed / subscription / marketplace). PRECISION-CRITICAL: bare "\bdataset\b" is
+        # a false-positive minefield — it is the single most common TRAINING-PROVENANCE
+        # word in generative/ML prose ("trained on a dataset of 100M images", "our
+        # training dataset", "a diverse dataset of prompts"), which describes what a
+        # MODEL learned from, NOT a data product the storefront vends. Left bare, an
+        # image-generation API (metered_api + digital_good) whose marketing mentions
+        # its training dataset would ALSO falsely claim data_retrieval and be probed
+        # with a "query a dataset" intent it does not serve. So NEVER match a bare
+        # "dataset": require a RETRIEVAL/ACCESS verb adjacent to it (query / search /
+        # access / download / retrieve / fetch / pull / look up / subscribe to /
+        # licence / browse / against a ... dataset) or the dataset named AS an offering
+        # (dataset api / feed / subscription / catalog / marketplace / endpoint /
+        # access / licence / download). The "trained on"/"training"/"dataset of ..."
+        # provenance senses (no retrieval verb, no offering noun) trip none of these;
+        # the genuine "query the dataset" / "enrich records against our datasets" prose
+        # still fires (pinned by the genuine-offering tests). Off the scoring path;
+        # data_retrieval stays NA on every committed fixture (none serves a dataset).
+        ("dataset", re.compile(
+            r"\bdatasets?\s+(?:api|feed|subscription|catalog(?:ue)?|marketplace|endpoint|access|licen[sc]e|download|lookup)\b"
+            r"|\b(?:quer(?:y|ying|ies)|search|access|download|retriev\w+|fetch|pull|look\s?up|subscribe\s+to|licen[sc]e|browse|against)\s+(?:\w+\s+){0,3}datasets?\b", _F)),
         ("lookup", re.compile(r"\blook ?ups?\b", _F)),
         ("data-service", re.compile(r"\bdata (feed|api|enrichment|records)\b|\brecords against\b", _F)),
         ("query-records", re.compile(r"\bquery (records|the database|a dataset)\b", _F)),

@@ -821,6 +821,70 @@ def test_booking_and_data_archetypes_fire():
     print(f"  ok: data service claims data_retrieval, got {data.archetypes}")
 
 
+def test_data_retrieval_precision_synthetic():
+    # data_retrieval is one of the two thinnest archetypes, so a FALSE claim here
+    # does maximum damage: the site gets probed with a lookup/enrichment intent it
+    # does not serve (the exact archetype pollution this module removes). Its two
+    # cheapest bare-word signals — "enrich" and "dataset" — are precision-hardened
+    # so a common ML/marketing word can no longer conjure the whole archetype. Each
+    # POSITIVE is genuine data-retrieval OFFERING prose that must still claim
+    # data_retrieval; each NEGATIVE is enrich/dataset-SHAPED noise that must NOT.
+    positives = {
+        "enrich records": "Enrich a list of records against our data API.",
+        "enriches records": "The agent enriches company records and returns fields.",
+        "enrich contacts": "Enrich your contacts with firmographic data.",
+        "data enrichment": "A data enrichment endpoint for your CRM.",
+        "query dataset": "Query the dataset over a REST API and pay per lookup.",
+        "download dataset": "Download the full dataset or subscribe to the feed.",
+        "dataset api": "Our dataset API returns structured records by domain.",
+        "against datasets": "Match your rows against our proprietary datasets.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("data.test", {"homepage": text})
+        assert prof.claims("data_retrieval"), (name, prof.archetypes)
+    print(f"  ok: {len(positives)} genuine data-retrieval phrasings each claim data_retrieval")
+
+    negatives = {
+        "training dataset": "Our model is trained on a proprietary dataset of 100M images.",
+        "dataset of prompts": "Fine-tuned on a diverse dataset of prompts and captions.",
+        "enriched experience": "We deliver an enriched, delightful user experience.",
+        "enriching partnership": "Join us for an enriching, long-term partnership.",
+        "enrich workflow": "Enrich your creative workflow with new presets.",
+        "culture enrichment": "We fund enrichment of our company culture.",
+        "dataset provenance": "Every render's dataset provenance is documented for audit.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        assert not prof.claims("data_retrieval"), (name, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} enrich/dataset-shaped noise strings do NOT claim data_retrieval (precision)"
+    )
+
+
+def test_data_retrieval_precision_is_canonical_invariant_on_real_fixtures():
+    # Real-evidence regression guard: the precision hardening leaves every committed
+    # fixture's CLAIMED SET byte-identical — data_retrieval stays NA on all five
+    # (none of them serves a queryable dataset or a record-enrichment API), and no
+    # other archetype moves. Runs the FULL live discovery path (from_fixture ->
+    # discover_offering) so the guard exercises the real captured surfaces, not a
+    # hand-built map. This pins that narrowing the two bare-word signals could not
+    # have silently dropped (or conjured) a claim on the real anchors. Off the
+    # scoring path, so the scored canonical delta is untouched.
+    expected = {
+        "api.replicate.com": ["metered_api"],
+        "books.toscrape.com": ["physical_good"],
+        "drift-flight.org": ["metered_api", "digital_good", "subscription"],
+        "driftflight.com": ["metered_api", "digital_good", "subscription"],
+        "example.com": [],
+    }
+    for domain, archetypes in expected.items():
+        ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{domain}.json"))
+        prof = offering.discover_offering(ctx)
+        assert prof.archetypes == archetypes, (domain, prof.archetypes)
+        assert "data_retrieval" not in prof.archetypes, domain
+    print("  ok: all 5 committed fixtures keep their exact claimed set; data_retrieval stays NA")
+
+
 def test_non_storefront_claims_nothing():
     prof = classify_offering("example.test", {"homepage": NULL_HOMEPAGE})
     assert prof.archetypes == [], prof.archetypes
@@ -3814,6 +3878,8 @@ def main() -> int:
         test_test_mode_fires_on_real_captured_api_docs,
         test_seat_licensing_subscription_precision_synthetic,
         test_booking_and_data_archetypes_fire,
+        test_data_retrieval_precision_synthetic,
+        test_data_retrieval_precision_is_canonical_invariant_on_real_fixtures,
         test_non_storefront_claims_nothing,
         test_strength_counts_distinct_signals_and_orders_claims,
         test_classification_is_surface_read_order_invariant,

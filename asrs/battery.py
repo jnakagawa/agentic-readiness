@@ -224,6 +224,20 @@ def _digital_good_descriptor(claim: ArchetypeClaim | None) -> str:
         m = _MEDIA_RE.search(sig.quote)
         if m:
             return f"generated {m.group(1).lower()}"
+    # A render-generation service (3D / architectural / scene / frame render)
+    # whose digital_good claim fired via the offering bank's `render` signal but
+    # named no image/video/audio/art artifact in any quote. The offering
+    # classifier already recognises `render` as digital_good output evidence, so
+    # dropping such a site to the bare generic "digital output" battery task left
+    # a seam: its intent was vaguer than its own offering. Prefer "generated
+    # render" — the vendor-neutral output noun the `render` signal itself keys on.
+    # DELIBERATELY lower priority than the image/video/audio/art loop above (a
+    # site that also names one of those keeps the more specific "generated
+    # <media>" descriptor), so the canonical image pair — which fires BOTH
+    # `render` and `image` — is unchanged at "generated image" (canonical battery
+    # text stable). Off the scoring path (``--battery auto`` task text only).
+    if "render" in labels:
+        return "generated render"
     return "digital output"
 
 

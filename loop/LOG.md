@@ -3,6 +3,73 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 168 — 2026-08-02T03:12Z — COVERAGE — battery descriptor covers `render` output (offering↔battery seam)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed.
+
+**Infra health / self-heal.** Fresh cloud checkout on detached HEAD at Cycle 167's `d0a9fa5`
+(= `origin/main` tip); `git fetch origin main` first (Cycle-151 stale-`origin/main` lesson) → already at
+tip, `checkout -B main origin/main` aligned, no work lost, git log consistent with STATE. Created `.venv`,
+installed `requests pyyaml eth-account pytest`, verified imports; full suite (23 files, 383 tests) green
+pre-flight → bench is up. RUNNER AT-FLOOR (unchanged from Cycles 158–167): newest
+`runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is ~23.4h old at fire (03:12Z
+Aug-2) — past the 6h floor (borderline runner lag, NOT the machine-asleep stall — cloud cannot repair).
+Already carried in the 16:12Z Cycle-157 digest; no new flag owed this fire (next digest = first cycle after
+16:00 UTC Aug-2; 03:12Z is not it).
+
+**What / why (COVERAGE, measurement flexibility).** The offering-relative battery parameterizes the
+digital_good task intent with the site's discovered output (operator directive brick 2: "buy an
+AI-generated image" for an image API). `_digital_good_descriptor` (asrs/battery.py) recognised
+image/video/audio/art (→ "generated <noun>") and translation (→ "translated document"), but the offering
+classifier's OWN digital_good bank also recognises a `render` output signal — and a render-EXCLUSIVE claim
+(a 3D / architectural / scene / frame render service that fired `render` but named no image/video/audio/art
+artifact) fell through to the bare generic "digital output". That was a seam between the classifier (knows
+the site renders) and the battery (probes it with a vaguer task than its own offering). Added a `render`
+descriptor branch → "generated render", the vendor-neutral output noun the `render` signal itself keys on.
+DELIBERATELY lower priority than the image/video/audio/art loop (a claim that ALSO names one of those keeps
+the more specific descriptor), so the canonical image pair — which fires BOTH `render` and `image` — is
+unchanged at "generated image" and the canonical battery text is stable. Vendor-neutral, capability-worded,
+off the scoring path.
+
+**Why this and not a new offering signal.** Verified in-cloud that every NEW-capability COVERAGE direction
+on committed evidence is vacuous, noisy, or over-fit: (a) output-format — fixtures carry only favicon/CSS/
+avatar PNG noise, no documented format-selection capability; (b) service_booking / data_retrieval — no
+committed fixture claims either; physical_good's only fixture (books.toscrape) is fully mined; (c)
+physical_good descriptor parameterization — its evidence quotes carry book TITLES, not a clean product noun
+(no closed vocabulary, unlike digital_good's media set); (d) idempotency / Idempotency-Key — absent from all
+five fixtures; (e) x402 "retry-idempotent-settlement" — the retry prose is header-construction mechanics and
+"we do not bill it twice" is a free RE-RENDER window (digital_good), neither a distinct idempotent-settlement
+capability, and it fires on only ONE fixture (driftflight.com) → over-fitting the anchor, which the
+capability lens forbids. Shipping any of those would violate invariant #3 (evidence) or the anti-manufacture
+lens. The `render` seam is the one non-vacuous (synthetic-testable, exactly as the video/audio/art branches
+are), non-over-fit, score-neutral increment available — it closes a real classifier↔battery coverage gap.
+
+**Tests.** `tests/test_battery_instantiate.py::test_digital_good_descriptor_covers_render` (registered in
+`main()`): (a) a render-exclusive synthetic claim → "generated render"; (b) PRIORITY teeth — a claim naming
+BOTH `render` and an `image` artifact → "generated image" (the render branch never demotes a site that also
+names a primary media noun; this is the canonical pair's exact shape, so the branch is canonical-stable by
+construction). File 12→13.
+
+**Ship class + evidence.** Direct-to-main (off the scoring path, no scoring-semantics / payment / signing
+change → not peer-gated). `git diff --name-only` = `asrs/battery.py` + `tests/test_battery_instantiate.py`
+ONLY; `git diff` over `asrs/scoring.py asrs/probes.py asrs/offering.py rubric/ fixtures/` EMPTY →
+score-neutral, rubric v0.7. Canonical descriptor VERIFIED unchanged: driftflight.com / drift-flight.org both
+still "generated image". Full suite 383→384, all green.
+
+**Live canonical signal.** In-cloud replay guard 24/24 → **46.1 F / 85.5 B / +39.4**, 0 replay-miss (frozen
+regression signal, unchanged by construction — change is off the scoring path). Newest LOCAL artifact
+`runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) read as the live signal: drift-flight.org 46.1 F /
+driftflight.com 76.2 C / delta +30.1 — the known transactability 87.5→62.5 divergence PERSISTS (Aug-1, off
+the scoring path). Fire at 03:12Z Aug-2 is NOT first-after-16:00 → no digest, no DM (comms policy).
+
+**Next hypothesis.** Rotate TRUTH next (Cycle 168 was COVERAGE). Candidate: a relabel/identity-invariance
+guard for the new `render` descriptor branch (mirror `test_digital_good_descriptor_is_relabel_invariant_media`
+— the render output noun is a property of the offering, not the host). The substantive COVERAGE frontier
+stays `[LOCAL]`: a render-generation fixture would give this branch its first REAL-evidence validation
+(currently synthetic-only, like video/audio/art); thin-archetype fixtures (service_booking / data_retrieval),
+ACP/UCP/MPP handshakes, calibration sweep, and the transactability-drop diagnosis all need Jonah's machine.
+
 ## Cycle 167 — 2026-08-02T02:11Z — METHOD — whitespace-invariance metamorphic axis on the machine pole
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

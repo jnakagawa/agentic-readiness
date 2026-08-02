@@ -200,6 +200,44 @@ def test_digital_good_descriptor_branches():
            "a missing claim -> 'digital output' fallback (never crashes)")
 
 
+def test_digital_good_descriptor_covers_render():
+    """A render-generation service whose digital_good claim fired via the offering
+    bank's ``render`` signal but named no image/video/audio/art artifact gets the
+    specific "generated render" battery task instead of the bare generic "digital
+    output" fallback — closing the seam between the offering classifier (which
+    recognises ``render`` as digital_good output evidence) and the battery
+    descriptor (which dropped a render-exclusive claim to the vague generic).
+
+    Off the scoring path (``--battery auto`` task text only); the ``render``
+    branch is DELIBERATELY lower priority than the image/video/audio/art loop, so
+    a claim that ALSO names one of those keeps the more specific "generated
+    <media>" descriptor — which is why the canonical image pair (fires BOTH
+    ``render`` and ``image``) stays "generated image" and the canonical battery
+    text is unchanged.
+    """
+    # (a) a render-EXCLUSIVE digital_good claim -> "generated render"
+    render_claim = ArchetypeClaim(
+        archetype="digital_good",
+        signals=[ArchetypeSignal("digital_good", "homepage", "render",
+                                  "render your 3D scene to a photoreal frame")],
+    )
+    _check(_digital_good_descriptor(render_claim) == "generated render",
+           "a render-exclusive claim -> 'generated render' descriptor")
+
+    # (b) PRIORITY: a claim naming BOTH render and an image artifact keeps the
+    #     more specific "generated image" (the canonical pair's exact shape) — the
+    #     render branch never DEMOTES a site that also names a primary media noun.
+    render_and_image = ArchetypeClaim(
+        archetype="digital_good",
+        signals=[
+            ArchetypeSignal("digital_good", "homepage", "render", "every paid render is hosted"),
+            ArchetypeSignal("digital_good", "/docs", "generation", "fast image generation for agents"),
+        ],
+    )
+    _check(_digital_good_descriptor(render_and_image) == "generated image",
+           "render + image -> 'generated image' (image priority preserved, canonical-stable)")
+
+
 def test_digital_good_descriptor_recovers_plural_media():
     """A PLURAL-only fired media quote yields the SAME singular 'generated <noun>'
     descriptor as the singular form — the descriptor half of the Cycle-94
@@ -407,6 +445,7 @@ def main() -> int:
         test_ids_are_archetypes_in_template_bank_order,
         test_same_archetype_is_comparable_across_sites,
         test_digital_good_descriptor_branches,
+        test_digital_good_descriptor_covers_render,
         test_digital_good_descriptor_recovers_plural_media,
         test_digital_good_descriptor_is_relabel_invariant_media,
         test_digital_good_descriptor_is_relabel_invariant_translation,

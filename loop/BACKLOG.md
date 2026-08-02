@@ -237,6 +237,17 @@ design in-cloud, execute locally.
   entry + a precision/real-evidence guard pair. Prefer the booking fixture first (service_booking is tied
   for thinnest and has zero committed evidence).
 
+- **[LOCAL] Capture a RENDER-generation digital_good fixture to validate the Cycle-168 descriptor branch on
+  REAL evidence** (COVERAGE, follow-up to Cycle 168). `_digital_good_descriptor` (asrs/battery.py) now maps a
+  render-EXCLUSIVE digital_good claim → "generated render", but the ONLY committed digital_good fixtures are
+  the driftflight image pair (both fire BOTH `render` and `image`, so `image` wins by design) — the render
+  branch is currently synthetic-test-only, exactly like the video/audio/art branches. Capture a fixture from
+  a real render-generation storefront that claims digital_good via `render` WITHOUT an image/video/audio/art
+  artifact noun (a 3D / architectural-viz / scene-render / video-render-farm API) via `asrs.cli score
+  <domain> --record-fixture fixtures/canonical/<domain>.json` (static $0 → [LOCAL]), then add a read-live
+  guard asserting `discover_offering → _digital_good_descriptor` yields "generated render" on real evidence
+  (the render-branch mirror of the image branch's live validation). Off the scoring path, score-neutral.
+
 - **[LOCAL] Wire + verify the STRUCTURED catalog / pricing JSON surfaces** (COVERAGE, follow-up to Cycle
   70's `/pricing`). The directive names "manifest/**catalog**"; `/catalog.json`, `/pricing.json`, `/plans`
   are conventional structured-JSON offering/billing docs but 404 on EVERY committed fixture, so adding them

@@ -1,8 +1,47 @@
 # Loop state
 
-- Cycle counter: 167
+- Cycle counter: 168
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-02T02:11Z (Cycle 167) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-02T03:12Z (Cycle 168) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~23.4h old at the 03:12Z Aug-2 fire — PAST the 6h floor (borderline runner
+  lag, NOT the machine-asleep stall — cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily
+  digest; no new flag owed (next digest = first cycle after 16:00 UTC Aug-2; 03:12Z is NOT it → no DM this
+  fire per comms policy — off-scoring-path/score-neutral COVERAGE increment, no sensitive-class PR, nothing
+  score-moving). Live signal (read, not re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 /
+  transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the
+  in-cloud replay guard stays the frozen independent signal (24/24, 46.1 F / 85.5 B / +39.4). No open
+  peer-gated PRs this fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL
+  (Cycle 168): fresh checkout on detached HEAD at Cycle 167's `d0a9fa5` (= `origin/main` tip); `git fetch
+  origin main` FIRST (Cycle-151 lesson) → already at tip, `checkout -B main origin/main` aligned, no work
+  lost. Created `.venv`, installed `requests pyyaml eth-account pytest` + verified imports before trusting the
+  suite (383 tests green pre-flight).
+- FOCUS POINTER (Cycle 168 done): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 168 was
+  COVERAGE, so Cycle 169 is TRUTH). Cycle 168 shipped a **COVERAGE measurement-flexibility increment —
+  `_digital_good_descriptor` now covers the `render` output** (asrs/battery.py). The offering-relative
+  battery parameterizes the digital_good task with the discovered output (operator brick 2); the descriptor
+  recognised image/video/audio/art + translation, but a render-EXCLUSIVE claim (a 3D/architectural/scene/frame
+  render service that fired the offering bank's `render` signal but named no image/video/audio/art artifact)
+  fell to the bare generic "digital output" — a seam between the classifier (knows the site renders) and the
+  battery (probed it vaguer than its own offering). New branch → "generated render", DELIBERATELY lower
+  priority than the media loop so a claim that ALSO names image/video/audio/art keeps the more specific
+  descriptor → the canonical image pair (fires BOTH `render` + `image`) stays "generated image", battery text
+  stable (VERIFIED both domains). Chosen after verifying in-cloud that every NEW-signal direction is vacuous/
+  noisy/over-fit on committed evidence (output-format = favicon/CSS noise; service_booking/data_retrieval = no
+  fixture claims them; physical_good descriptor = book TITLES not a product noun; idempotency = absent;
+  x402 retry-idempotency = header mechanics + a free re-render window, and fires on ONE fixture → anchor
+  over-fit) — the `render` seam is the one non-vacuous, non-over-fit, score-neutral unit. Test
+  `test_digital_good_descriptor_covers_render` (synthetic render-exclusive claim → "generated render"; PRIORITY
+  teeth: render+image → "generated image"), registered in `main()`; file 12→13. Off the scoring path (`git
+  diff --name-only` = `asrs/battery.py` + `tests/test_battery_instantiate.py` ONLY; scoring.py/probes.py/
+  offering.py/rubric/fixtures EMPTY) → score-neutral, NOT peer-gated, direct-to-main. Full suite 383→384;
+  replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. NEXT (TRUTH 169): a relabel/
+  identity-invariance guard for the new `render` branch (mirror
+  `test_digital_good_descriptor_is_relabel_invariant_media` — the render output noun is a property of the
+  offering, not the host). Substantive COVERAGE frontier stays `[LOCAL]`: a render-generation fixture would
+  give this branch its first REAL-evidence validation (currently synthetic-only, like video/audio/art);
+  thin-archetype fixtures, ACP/UCP/MPP, calibration sweep, transactability-drop diagnosis all need Jonah's
+  machine.
+- SUPERSEDED (Cycle 167 runner note): RUNNER AT-FLOOR at 2026-08-02T02:11Z (Cycle 167) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~22.4h old at the 02:11Z Aug-2 fire — PAST the 6h floor (borderline runner
   lag, NOT the machine-asleep stall — cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily
   digest; no new flag owed (next digest = first cycle after 16:00 UTC Aug-2; 02:11Z is NOT it → no DM this
@@ -15,7 +54,7 @@
   origin main` FIRST (Cycle-151 lesson) → already at tip, `checkout -B main origin/main` aligned, no work
   lost. Created `.venv`, installed `requests pyyaml eth-account pytest` + verified imports before trusting the
   suite (382 tests green pre-flight).
-- FOCUS POINTER (Cycle 167 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 167 was
+- SUPERSEDED (Cycle 167 focus pointer): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 167 was
   METHOD, so Cycle 168 is COVERAGE). Cycle 167 shipped a **METHOD reading-layer metamorphic axis —
   `test_offering_whitespace_invariance_machine`** in `tests/test_offering_canonical.py`, the natural SIBLING
   of the CASE axis (133/155): casing perturbs the CASE of the scanned bytes, this perturbs the WHITESPACE

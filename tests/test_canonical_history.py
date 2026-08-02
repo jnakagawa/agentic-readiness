@@ -626,6 +626,71 @@ def test_cause_verdict_pillar_named_end_to_end_in_render() -> None:
                f"{[l for l in out.splitlines() if l.startswith('driver:')]}")
 
 
+def test_cause_verdict_prose_is_host_relabel_invariant() -> None:
+    print("test_cause_verdict_prose_is_host_relabel_invariant")
+    # METHOD (Cycle 181): VENDOR-NEUTRALITY of the divergence-cause diagnostic prose,
+    # made executable as a metamorphic (host-relabel) invariance axis. Cycle 180 wove
+    # the fingered pillar into the driver sentence; that decision — and every other
+    # part of the sentence (which side-branch fires, the SOFTENED/GAINED verb, the
+    # "on <pillar>" clause, the signed magnitude) — must key ONLY on the pair's
+    # STRUCTURE (which side carries rails, which pillar moved, its direction), never
+    # on the literal host STRINGS. If cause_verdict hardcoded "driftflight.com" the
+    # benchmark's core invariant ("checks worded by capability, never by vendor")
+    # would be violated in the readout. Transform: RELABEL both reference hosts to
+    # fresh, unrelated strings and rebuild the SAME structural scenario. Invariant:
+    # the prose is BYTE-IDENTICAL once each host is substituted back to a neutral
+    # placeholder — the sentence is a pure function of structure + the two host tokens.
+    def _soften_case():
+        # with-rails side SOFTENS, transactability the agreeing pillar mover.
+        c = ch.DivergenceCause("20260728T234102Z", no_rails_change=0.0, with_rails_change=-9.3)
+        tx = ch.PillarMove(ch.CANONICAL_WITH_RAILS, "transactability", 87.5, 62.5, -25.0)
+        return c, tx, ch.CANONICAL_WITH_RAILS  # driver host
+
+    def _gain_case():
+        # no-rails FLOOR gains capability, legibility the agreeing pillar mover.
+        c = ch.DivergenceCause("20260728T234102Z", no_rails_change=+13.6, with_rails_change=0.0)
+        lg = ch.PillarMove(ch.CANONICAL_NO_RAILS, "legibility", 36.4, 50.0, +13.6)
+        return c, lg, ch.CANONICAL_NO_RAILS  # driver host
+
+    orig_no, orig_with = ch.CANONICAL_NO_RAILS, ch.CANONICAL_WITH_RAILS
+    try:
+        for build, tag in ((_soften_case, "soften"), (_gain_case, "gain")):
+            # (a) verdict at the REAL labels.
+            cause, top, driver_host = build()
+            orig = ch.cause_verdict(cause, top)
+            _check(driver_host in orig, f"[{tag}] baseline prose names the driver host")
+
+            # (b) RELABEL both hosts to fresh, structurally-identical strings and
+            #     rebuild the SAME scenario against the new labels.
+            ch.CANONICAL_NO_RAILS = "no-rails-store.example"
+            ch.CANONICAL_WITH_RAILS = "with-rails-store.example"
+            cause2, top2, driver_host2 = build()
+            _check(cause2.driver == driver_host2,
+                   f"[{tag}] relabel took effect — driver follows the new label, got {cause2.driver}")
+            new = ch.cause_verdict(cause2, top2)
+
+            # (c) teeth: the relabeled prose must contain NEITHER original host — a
+            #     function that hardcoded the real vendor domains would fail here.
+            _check(orig_no not in new and orig_with not in new,
+                   f"[{tag}] relabeled prose leaks no original host string, got: {new}")
+
+            # (d) INVARIANCE: substitute each driver host back to one placeholder — the
+            #     two verdicts must be byte-identical, so the sentence's STRUCTURE (branch,
+            #     verb, pillar clause, sign) is independent of the host strings.
+            _check(orig.replace(driver_host, "<DRIVER>") == new.replace(driver_host2, "<DRIVER>"),
+                   f"[{tag}] prose is host-relabel invariant modulo the host token\n"
+                   f"    orig: {orig}\n    new:  {new}")
+
+            # (e) the Cycle-180 pillar clause survives the relabel on BOTH honest branches.
+            pillar = top.pillar
+            _check(f"on {pillar}" in new, f"[{tag}] the fingered pillar clause survives relabel, got: {new}")
+
+            ch.CANONICAL_NO_RAILS, ch.CANONICAL_WITH_RAILS = orig_no, orig_with
+    finally:
+        # Module constants are process-global; other tests depend on the real pair.
+        ch.CANONICAL_NO_RAILS, ch.CANONICAL_WITH_RAILS = orig_no, orig_with
+
+
 def test_reflection_about_baseline_is_magnitude_invariant_direction_covariant() -> None:
     print("test_reflection_about_baseline_is_magnitude_invariant_direction_covariant")
     # METAMORPHIC guard on the CORE design split of the drift-diagnostic family: the
@@ -1074,6 +1139,7 @@ def main() -> int:
         test_divergence_cause_on_real_series,
         test_cause_verdict_names_the_pillar_on_cross_mechanism_agreement,
         test_cause_verdict_pillar_named_end_to_end_in_render,
+        test_cause_verdict_prose_is_host_relabel_invariant,
         test_reflection_about_baseline_is_magnitude_invariant_direction_covariant,
         test_recapture_advice_baseline_valid_when_in_band,
         test_recapture_advice_waits_when_not_yet_sustained,

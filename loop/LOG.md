@@ -3,6 +3,55 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 181 — 2026-08-02T16:12Z — METHOD — host-relabel (vendor-neutrality) invariance guard on the divergence-cause prose
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed.
+
+**Infra health.** Fresh checkout on detached HEAD at Cycle 180's `ec36cba`; `git fetch origin main`
+FIRST (standing lesson) → `3796519…ec36cba (forced update)` (cached `origin/main` was the Cycle-94-era
+`3796519`), `checkout -B main origin/main` aligned to the real tip, tree clean, invariant #5 intact.
+Fresh `.venv` + `requests pyyaml eth-account pytest`, 401 tests green pre-flight. RUNNER AT-FLOOR:
+newest verify `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is ~36.4h old at the 16:12Z
+fire — PAST the 6h floor (machine-asleep / runner-lag; cloud cannot repair; already flagged in prior
+digests). Bench + bookkeeping otherwise healthy (401 = STATE post-Cycle-180).
+
+**What/why (METHOD — make vendor-neutrality of the diagnostic prose executable).** Cycle 180 wove the
+fingered pillar into `cause_verdict`'s driver sentence. That sentence — and every other part of it
+(which side-branch fires, the SOFTENED/GAINED verb, the "on <pillar>" clause, the signed magnitude) —
+must key ONLY on the pair's STRUCTURE (which side carries rails, which pillar moved, its direction),
+never on the literal host STRINGS. Invariant #from-the-capability-lens: "checks worded by capability,
+never by vendor." That principle had guards on the SCORING checks but none on the divergence-cause
+READOUT prose — a `cause_verdict` that hardcoded "driftflight.com" would silently violate it and no
+test would catch it. This cycle adds that missing invariance axis as a metamorphic (host-relabel)
+guard: `test_cause_verdict_prose_is_host_relabel_invariant` RELABELS both reference-pair host
+constants (`CANONICAL_NO_RAILS`/`CANONICAL_WITH_RAILS`) to fresh, unrelated strings, rebuilds the SAME
+structural scenario, and asserts the prose is BYTE-IDENTICAL once each driver host is substituted back
+to a neutral placeholder — proving the sentence is a pure function of structure + the two host tokens.
+Covers BOTH honest side-branches (with-rails SOFTENED / no-rails GAINED). Teeth: (a) the relabel is
+verified to take effect (`cause.driver` follows the new label — non-vacuous); (b) the relabeled prose
+leaks NEITHER original host string (a hardcoding function fails here); (c) the Cycle-180 "on <pillar>"
+clause survives the relabel on both branches. Constants restored in `finally` (they are process-global;
+other tests depend on the real pair).
+
+**Ship.** Tests-only, off the scoring path. `git diff --name-only` = `tests/test_canonical_history.py`
+ONLY (asrs/ scoring/probes/offering/rubric/fetch/cli/scorecard/fixtures = 0 changes) → score-neutral,
+NOT peer-gated, direct-to-main.
+
+**Validation.** Full suite 401 → 402; `test_canonical_history.py` runner 40 → 41 (all `_check`
+assertions non-vacuous — relabel verified live, invariance holds on both branches). Canonical replay
+guard 24/24 green, **46.1 F / 85.5 B / delta +39.4**, 0 replay-miss — the frozen in-cloud regression
+signal is UNCHANGED (guaranteed by construction: no scoring-path byte moved). Live signal (read, not
+re-run — runner at-floor): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability
+62.5 — the Jul-31/Aug-1 transactability-drop divergence PERSISTS, off the scoring path. Rubric v0.7.
+
+**Next hypothesis (COVERAGE 182).** The divergence-cause diagnostic now has a near-complete invariance
+envelope (reflection magnitude/direction + host-relabel). COVERAGE frontier that moves the north-star
+"many storefront types" axis is `[LOCAL]` (thin-archetype / render / structured-catalog live fixtures);
+an in-cloud COVERAGE candidate is a new offering signal or a metamorphic axis on a check still lacking
+one. Substantive live work (ACP/UCP/MPP handshakes, calibration sweep, transactability-drop CHECK-level
+diagnosis) stays `[LOCAL]`.
+
 ## Cycle 180 — 2026-08-02T15:19Z — READOUT — divergence-cause prose names the fingered PILLAR (not just the side)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

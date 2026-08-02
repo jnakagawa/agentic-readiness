@@ -1,8 +1,40 @@
 # Loop state
 
-- Cycle counter: 180
+- Cycle counter: 181
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-02T15:19Z (Cycle 180) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-02T16:12Z (Cycle 181) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~36.4h old at the 16:12Z fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). 16:12Z IS the first cycle after 16:00 UTC → **daily digest DM
+  SENT** this fire per comms policy (cycles-run + shipped-item + canonical-delta trend + top open question).
+  Live signal (read, not re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 /
+  transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the
+  in-cloud replay guard stays the frozen independent regression signal (24/24, 46.1 F / 85.5 B / +39.4). No
+  open peer-gated PRs this fire (`list_pull_requests` state=open → []), so no first-duty review.
+  INFRA/SELF-HEAL (Cycle 181): fresh checkout on detached HEAD at Cycle 180's `ec36cba`; ran `git fetch
+  origin main` FIRST (standing lesson) → `3796519…ec36cba (forced update)`, `checkout -B main origin/main`
+  aligned to the real tip, working tree clean, invariant #5 intact. Fresh `.venv` + `requests pyyaml
+  eth-account pytest`, imports verified, 401 tests green pre-flight.
+- FOCUS POINTER (Cycle 181 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 181 was
+  METHOD, so Cycle 182 is COVERAGE). Cycle 181 shipped a **METHOD increment — a host-relabel
+  (vendor-neutrality) metamorphic invariance guard on the divergence-cause prose** (`tests/test_canonical_
+  history.py` +1, no module change). Cycle 180 wove the fingered pillar into `cause_verdict`'s driver
+  sentence; that sentence — branch selection, SOFTENED/GAINED verb, "on <pillar>" clause, signed magnitude —
+  must key ONLY on the pair's STRUCTURE (which side has rails, which pillar moved, direction), never on the
+  literal host strings ("checks worded by capability, never by vendor"). The scoring checks had that guard;
+  the divergence-cause READOUT prose did not. New `test_cause_verdict_prose_is_host_relabel_invariant`
+  RELABELS both `CANONICAL_*` host constants to fresh strings, rebuilds the SAME structural scenario, and
+  asserts the prose is BYTE-IDENTICAL modulo substituting each driver host back to a placeholder — a pure
+  function of structure + host token. Both honest branches (with-rails SOFTENED / no-rails GAINED); teeth =
+  (a) relabel verified to take effect (non-vacuous), (b) no original host string leaks, (c) the Cycle-180
+  pillar clause survives relabel. Constants restored in `finally` (process-global). Off the scoring path
+  (`git diff --name-only` = `tests/test_canonical_history.py` ONLY) → score-neutral, NOT peer-gated,
+  direct-to-main. `test_canonical_history.py` runner 40→41; full suite 401→402; replay guard 24/24, 46.1 F /
+  85.5 B / +39.4, 0 replay-miss; rubric v0.7. NEXT (COVERAGE 182): the divergence-cause diagnostic now has a
+  near-complete invariance envelope (reflection magnitude/direction + host-relabel). In-cloud COVERAGE
+  candidate = a new offering signal or a metamorphic axis on a check still lacking one; substantive frontier
+  (thin-archetype/render/structured-catalog LIVE fixtures, ACP/UCP/MPP, calibration sweep,
+  transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 180 runner note): RUNNER AT-FLOOR at 2026-08-02T15:19Z (Cycle 180) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~35.5h old at the 15:19Z fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily digest; 15:19Z is
   NOT first-after-16:00 UTC → no DM this fire per comms policy (READOUT increment, off-scoring-path /

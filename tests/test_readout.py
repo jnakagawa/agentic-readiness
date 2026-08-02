@@ -1964,6 +1964,35 @@ def test_canonical_history_in_band_shows_no_drift() -> None:
            "no attribution/cause card when there is nothing to explain")
 
 
+def test_canonical_history_page_shows_sustained_run_span() -> None:
+    # READOUT (Cycle 176): the sustained/recent row names HOW MANY trailing readings
+    # are out of band; the dimmed sub-line under it names over how much WALL-CLOCK TIME
+    # they persist (SustainedRun, TRUTH Cycle 175) — closing the TRUTH(175)->READOUT(176)
+    # arc so card + terminal both name the drift's persistence in time, not just its
+    # reading-count. Span text renders when out-of-band; omitted entirely in-band.
+    print("test_canonical_history_page_shows_sustained_run_span")
+    # Drifting series: 3 trailing out-of-band readings at 06:00 -> 08:00Z = a 2.0h span.
+    hist = _drifting_history()
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_canonical_history_page(Path(d), history=hist)).read_text()
+    _check("Sustained" in text, "still names the sustained run (the count row)")
+    _check("spanning 2.0h" in text, "names the wall-clock span of the out-of-band run")
+    _check("2026-07-27T06:00Z" in text and "2026-07-27T08:00Z" in text,
+           "names the run's first -> latest endpoints")
+    # Non-vacuous: an in-band series has no out-of-band run, so no span sub-line at all
+    # — the span prose is earned by the data, not baked into the template.
+    no_pil = {"access": 100.0, "legibility": 36.4}
+    with_pil = {"access": 100.0, "legibility": 90.9}
+    pts = [
+        _hist_point("20260727T050000Z", 46.1, "F", 85.5, "B", no_pil, with_pil),
+        _hist_point("20260727T060000Z", 46.1, "F", 85.5, "B", no_pil, with_pil),
+    ]
+    ib = ch.summarize(pts)
+    with tempfile.TemporaryDirectory() as d:
+        ibtext = Path(scorecard._write_canonical_history_page(Path(d), history=ib)).read_text()
+    _check("spanning" not in ibtext, "no span sub-line on an in-band series")
+
+
 def test_canonical_history_trend_svg_colors_by_band() -> None:
     # The chart is a single series, so identity needs no legend; but each point is
     # colored by its divergence BAND (a reserved status encoding). Pin that an
@@ -2425,6 +2454,7 @@ def main() -> int:
         test_canonical_history_page_written_and_links,
         test_canonical_history_page_renders_drift_diagnosis,
         test_canonical_history_in_band_shows_no_drift,
+        test_canonical_history_page_shows_sustained_run_span,
         test_canonical_history_trend_svg_colors_by_band,
         test_canonical_history_empty_series_renders_gracefully,
         test_canonical_history_names_reference_pair_as_data,

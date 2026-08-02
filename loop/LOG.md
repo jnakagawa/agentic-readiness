@@ -13588,3 +13588,54 @@ physical_good fulfillment leg stay `[LOCAL]`-blocked; ACP/UCP/MPP + free-tier li
 ## Local verification — 20260801T035047Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260801T035047Z.json
+
+## Cycle 176 — 2026-08-02 ~11:2xZ — READOUT
+
+**What.** The READOUT leg of the canonical-drift persistence arc opened Cycle 175: the
+HTML canonical-history page (`_write_canonical_history_page`, `asrs/scorecard.py`) now
+names the sustained-run WALL-CLOCK SPAN, not just the count. Under the existing
+"Sustained/Recent: N consecutive re-score(s) out of band" row on the Latest-reading card,
+a dimmed (`class="q"`) sub-line renders "spanning Xh (first → latest)", driven off
+`history.sustained_run` (the `SustainedRun` dataclass Cycle 175 added). Guard
+`test_canonical_history_page_shows_sustained_run_span` (`tests/test_readout.py`, +1).
+
+**Why (READOUT).** Cycle 175 shipped `SustainedRun` and wired the span into the TERMINAL
+`render` ("spanning Xh (first → latest)"), but the HTML page still showed only the
+count/band/recapture — a reader who never opens a terminal saw the drift's reading-count
+but not its persistence in time. Three re-scores a minute apart (a burst) are far weaker
+evidence of a durable real-world change than three spanning a day; the span is the honest
+disambiguator, and card + terminal now name it identically. Closes the P1 READOUT item
+opened Cycle 175, completing the TRUTH(175)→READOUT(176) arc.
+
+**Method / non-vacuity.** The guard renders `_drifting_history()` (in-band anchor at
+05:00Z then 3 out-of-band readings 06:00→08:00Z, delta narrows +39.4→+32.6) and asserts
+the card names "spanning 2.0h" AND both endpoints (2026-07-27T06:00Z → T08:00Z) alongside
+the existing "Sustained" count row. Non-vacuous: on an in-band 2-point series (no
+out-of-band run) the span prose is absent entirely ("spanning" not in text) — earned by
+the data, not baked into the template. Honest-None preserved: the sub-line is emitted only
+when `sustained_run is not None` (the same unparseable-endpoint discipline the terminal
+render and the `SustainedRun` loader follow).
+
+**Ship class + evidence.** Display-only, off the scoring path: `git diff --name-only` =
+`asrs/scorecard.py` + `tests/test_readout.py` ONLY; `git diff --stat` over
+`asrs/scoring.py rubric/ fixtures/ asrs/offering.py asrs/probes.py asrs/fetch.py
+asrs/cli.py` EMPTY → score-neutral, NOT peer-gated. `test_readout.py` +1; full suite
+396→397, 0 failures. Canonical PAIR unchanged: in-cloud replay guard 24/24, **46.1 F /
+85.5 B / +39.4**, 0 replay-miss; rubric v0.7. (Cloud is network-blocked for the live
+re-score; the in-cloud standard is regression-by-construction — the scoring path is
+byte-identical — plus the offline replay guard, both green.)
+
+**Live canonical signal.** Newest LOCAL artifact `runs/local/verify_20260801T035047Z.json`
+(03:50Z Aug-1) is ~31.5h old at the ~11:2xZ Aug-2 fire — PAST the 6h floor (machine-asleep
+/ runner-lag pattern, cloud cannot repair; already flagged in the 16:12Z Cycle-157 digest).
+Its LIVE re-score: drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 — the known
+transactability 87.5→62.5 divergence (off the scoring path; the frozen replay guard stays
+the in-cloud regression signal). ~11:2xZ is NOT first-after-16:00 UTC → no digest DM.
+
+**Next hypothesis.** Rotate METHOD next (Cycle 176 was READOUT; METHOD → COVERAGE → TRUTH
+→ READOUT). The canonical-drift diagnostic family (band, sustained-run count+span, noise
+floor, liveness, pillar/side attribution, recapture advice) is now fully surfaced on both
+terminal and HTML. In-cloud METHOD candidate: a metamorphic/invariance guard on a
+diagnostic still lacking one, or a small measurement-rigor refinement. Substantive frontier
+(thin-archetype/render/structured-catalog fixtures, ACP/UCP/MPP, calibration sweep,
+transactability-drop check-level diagnosis) stays `[LOCAL]`.

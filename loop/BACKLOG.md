@@ -536,14 +536,19 @@ design in-cloud, execute locally.
 
 ## P1
 
-- **Surface the canonical-drift SUSTAINED-RUN SPAN on the HTML readout** (READOUT, opened Cycle 175, in-cloud).
-  Cycle 175 added `SustainedRun` (wall-clock hours the trailing out-of-band run spans) to
-  `asrs/canonical_history.summarize` and the TERMINAL `render` ("sustained: N ... spanning Xh (first → latest)").
-  The HTML canonical-history page (`_write_canonical_history_page`, `asrs/scorecard.py`) does NOT yet name the
-  span — it shows the count/band/recapture but not the drift's persistence in time. Add the span to that page
-  (dimmed sub-line under the sustained/recent row, driven off `history.sustained_run`), with a `test_readout`
-  guard asserting the span text renders when out-of-band and is omitted in-band. Display-only, off the scoring
-  path, score-neutral, direct-to-main — the natural READOUT leg closing the TRUTH(175)→READOUT(176) arc.
+<!-- DONE 2026-08-02T~11:2xZ (Cycle 176, READOUT, direct-to-main, display-only/score-neutral): "Surface the
+     canonical-drift SUSTAINED-RUN SPAN on the HTML readout" SHIPPED, closing the TRUTH(175)→READOUT(176) arc.
+     `_write_canonical_history_page` (`asrs/scorecard.py`) now renders a dimmed (`class="q"`) "spanning Xh
+     (first → latest)" sub-line under the "Sustained/Recent: N consecutive re-score(s) out of band" row,
+     driven off `history.sustained_run` (the `SustainedRun` dataclass Cycle 175 added + wired into the terminal
+     render) — so card + terminal both name the drift's wall-clock persistence, not just its reading-count.
+     Guard `test_canonical_history_page_shows_sustained_run_span` (`tests/test_readout.py`, +1) asserts the span
+     + both endpoints render on `_drifting_history()` (3 out-of-band readings 06:00→08:00Z = 2.0h span) and are
+     ABSENT on an in-band series (non-vacuous); honest-None preserved (emitted only when `sustained_run is not
+     None`). Off the scoring path (`git diff --name-only` = `asrs/scorecard.py` + `tests/test_readout.py` ONLY)
+     → score-neutral, NOT peer-gated. Full suite 396→397; replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0
+     replay-miss; rubric v0.7. See LOG Cycle 176. -->
+
 
 <!-- DONE 2026-08-02T~09:1xZ (Cycle 174, COVERAGE, direct-to-main, tests-only/score-neutral):
      "`plan-allowance` noise-surface metamorphic axis" SHIPPED. `test_plan_allowance_noise_surface_invariance`

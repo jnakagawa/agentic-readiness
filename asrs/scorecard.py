@@ -1506,6 +1506,20 @@ committed fixtures regardless of what the live site does today.</p>
             f'<p><b>{_esc(kind.title())}:</b> {nrun} consecutive re-score(s) '
             f'out of band (|delta &minus; baseline| &gt; {ch._BAND_IN:.1f}).</p>'
         )
+        # The count says HOW MANY trailing readings are out of band; the span says
+        # over how much WALL-CLOCK TIME they persist (SustainedRun, TRUTH Cycle 175):
+        # three readings a minute apart are far weaker evidence of a durable real-world
+        # change than three spanning a day. Surface the span as a dimmed sub-line so the
+        # card names the drift's persistence in time, not just its reading-count. Omitted
+        # (honest-None) when either endpoint timestamp is unparseable — the same
+        # discipline the terminal render follows.
+        sr = hist.sustained_run
+        if sr is not None:
+            latest_card += (
+                f'<p class="q" style="margin-top:-6px">spanning {sr.span_hours:.1f}h '
+                f'({_esc(ch._short_ts(sr.first_ts))} &rarr; '
+                f'{_esc(ch._short_ts(sr.latest_ts))}).</p>'
+            )
     latest_card += "</div>"
 
     chart_card = f"""<div class="card">

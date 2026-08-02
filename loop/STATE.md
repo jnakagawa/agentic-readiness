@@ -1,8 +1,40 @@
 # Loop state
 
-- Cycle counter: 175
+- Cycle counter: 176
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-02T10:11Z (Cycle 175) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-02T~11:2xZ (Cycle 176) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~31.5h old at fire — PAST the 6h floor (machine-asleep / runner-lag
+  pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily digest; ~11:2xZ is NOT
+  first-after-16:00 UTC → no DM this fire per comms policy (display-only / off-scoring-path / score-neutral
+  READOUT increment, no sensitive-class PR, nothing score-moving). Live signal (read, not re-run):
+  drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop
+  divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent
+  regression signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire
+  (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 176): fresh
+  checkout on detached HEAD at Cycle 175's `3cadb77`; ran `git fetch origin main` FIRST (standing lesson) →
+  `3796519…3cadb77 (forced update)` (cached `origin/main` was the Cycle-94-era `3796519`), `checkout -B main
+  origin/main` aligned to the real tip, working tree clean, invariant #5 intact. Fresh `.venv` + `requests
+  pyyaml eth-account pytest`, imports verified, 396 tests green pre-flight.
+- FOCUS POINTER (Cycle 176 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 176 was
+  READOUT, so Cycle 177 is METHOD). Cycle 176 shipped a **READOUT increment — the canonical-drift SUSTAINED-RUN
+  SPAN on the HTML page** (`asrs/scorecard.py` + `tests/test_readout.py`, +1 test), closing the
+  TRUTH(175)→READOUT(176) arc. Under the existing "Sustained/Recent: N consecutive re-score(s) out of band"
+  row on the Latest-reading card, a dimmed (`class="q"`) sub-line now renders "spanning Xh (first → latest)",
+  driven off `history.sustained_run` (the `SustainedRun` dataclass Cycle 175 added + wired into the terminal
+  render). So card + terminal both name the drift's wall-clock PERSISTENCE, not just its reading-count — three
+  re-scores a minute apart read differently from three spanning a day. Guard asserts the span text + both
+  endpoints render on `_drifting_history()` (3 out-of-band readings 06:00→08:00Z = 2.0h span) alongside the
+  "Sustained" count row, and are ABSENT entirely on an in-band series (non-vacuous, earned by the data);
+  honest-None preserved (sub-line emitted only when `sustained_run is not None`). Display-only, off the scoring
+  path (`git diff --name-only` = `asrs/scorecard.py` + `tests/test_readout.py` ONLY; scoring/probes/offering/
+  rubric/fetch/cli/fixtures UNTOUCHED) → score-neutral, NOT peer-gated, direct-to-main. `test_readout.py` +1;
+  full suite 396→397; replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. NEXT (METHOD
+  177): the canonical-drift diagnostic family (band, sustained-run count+span, noise floor, liveness, pillar/
+  side attribution, recapture advice) is now fully surfaced on terminal AND HTML — an in-cloud METHOD candidate
+  is a metamorphic/invariance guard on a diagnostic still lacking one, or a small measurement-rigor refinement.
+  Substantive frontier (thin-archetype/render/structured-catalog fixtures, ACP/UCP/MPP, calibration sweep,
+  transactability-drop check-level diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 175 runner note): RUNNER AT-FLOOR at 2026-08-02T10:11Z (Cycle 175) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~30.3h old at fire — PAST the 6h floor (machine-asleep / runner-lag
   pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily digest; 10:11Z is NOT
   first-after-16:00 UTC → no DM this fire per comms policy (read-only-diagnostic / off-scoring-path /

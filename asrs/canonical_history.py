@@ -332,6 +332,37 @@ class Liveness:
 
 
 @dataclass
+class SustainedRun:
+    """Wall-clock PERSISTENCE of the trailing out-of-band run.
+
+    ``consecutive_out_of_band`` counts how many trailing re-scores are out of band,
+    and ``_SUSTAINED_MIN`` gates the "sustained" verdict (and the re-capture
+    decision) on that COUNT. But a count says nothing about the wall-clock TIME the
+    run spans: three readings a minute apart (the local runner briefly firing in a
+    burst) are far weaker evidence of a durable real-world change than three spanning
+    a day. This measures that span — the hours from the FIRST reading of the trailing
+    out-of-band run to the latest — so "sustained" is corroborated by DURATION, not
+    reading-count alone. It is a descriptive companion to the count, not a new gate:
+    it never re-classifies a run or changes a recommendation, it makes the run's real
+    persistence an explicit, honest fact for a reader (and the re-capture decision it
+    feeds) to weigh — the wall-clock analogue of ``Liveness`` for the drift itself.
+
+    Computed from parsed artifact timestamps; None when the run is empty or either
+    endpoint timestamp is unparseable (the same honest-None discipline the loader,
+    attribution, noise floor, and liveness follow — never a fabricated duration).
+
+    ``n``          : readings in the trailing out-of-band run (== consecutive_out_of_band).
+    ``span_hours`` : wall-clock hours first-run-reading -> latest (>= 0; 0 for a lone reading).
+    ``first_ts`` / ``latest_ts`` : the run's endpoints, as recorded.
+    """
+
+    n: int
+    span_hours: float
+    first_ts: str
+    latest_ts: str
+
+
+@dataclass
 class RecaptureAdvice:
     """Whether the pinned canonical fixture still represents the true gap.
 
@@ -359,6 +390,10 @@ class CanonicalHistory:
     # trailing run of readings whose |delta - baseline| exceeds the in-band
     # threshold — 1 reading is jitter, N>=3 is a sustained real-world move.
     consecutive_out_of_band: int = 0
+    # wall-clock persistence of that trailing out-of-band run (first out-of-band
+    # reading -> latest) — the DURATION behind the count. None when in-band (no run)
+    # or an endpoint timestamp is unparseable. Descriptive only; gates nothing.
+    sustained_run: SustainedRun | None = None
     # which pillar(s) drove the latest divergence, vs the last in-band reading;
     # None when in-band (nothing to explain) or when no in-band anchor exists in
     # the live series (we never observed a stable baseline to attribute against).
@@ -532,6 +567,7 @@ def summarize(
         else:
             break
     hist.consecutive_out_of_band = run
+    hist.sustained_run = sustained_run(points, run)
     hist.attribution = _attribute(points, run, latest)
     hist.divergence_cause = _cause(points, run, latest)
     hist.recapture = recapture_advice(hist)
@@ -561,6 +597,31 @@ def noise_floor(
         max_abs_divergence=round(max(abs(d - baseline_delta) for d in deltas), 6),
         no_rails_stddev=round(pstdev([p.no_rails_overall for p in in_band]), 6),
         with_rails_stddev=round(pstdev([p.with_rails_overall for p in in_band]), 6),
+    )
+
+
+def sustained_run(
+    points: list[CanonicalPoint], run: int
+) -> SustainedRun | None:
+    """Measure the wall-clock span of the trailing out-of-band run.
+
+    Hours from the FIRST reading of the trailing out-of-band run (``points[-run]``)
+    to the latest. None when the run is empty (``run < 1`` — the series is in-band)
+    or either endpoint timestamp is unparseable (honest-None, never a fabricated
+    duration). A lone out-of-band reading (``run == 1``) spans 0h by construction —
+    a real fact: one reading has no persistence in time. Pure, no score.
+    """
+    if run < 1 or run > len(points):
+        return None
+    first = points[-run]
+    latest = points[-1]
+    t0 = _parse_ts(first.ts)
+    t1 = _parse_ts(latest.ts)
+    if t0 is None or t1 is None:
+        return None
+    span = max(0.0, (t1 - t0).total_seconds() / 3600.0)
+    return SustainedRun(
+        n=run, span_hours=round(span, 3), first_ts=first.ts, latest_ts=latest.ts
     )
 
 
@@ -816,8 +877,15 @@ def render(history: CanonicalHistory, window: int = 24) -> str:
     if history.consecutive_out_of_band >= 1:
         n = history.consecutive_out_of_band
         kind = "sustained" if n >= _SUSTAINED_MIN else "recent"
+        sr = history.sustained_run
+        span = (
+            f" spanning {sr.span_hours:.1f}h "
+            f"({_short_ts(sr.first_ts)} → {_short_ts(sr.latest_ts)})"
+            if sr is not None
+            else ""
+        )
         lines.append(
-            f"{kind}: {n} consecutive re-score(s) out of band "
+            f"{kind}: {n} consecutive re-score(s) out of band{span} "
             f"(|delta - baseline| > {_BAND_IN:.1f})"
         )
     nf = history.noise_floor

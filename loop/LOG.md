@@ -3,6 +3,64 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 175 — 2026-08-02T~10:1xZ — TRUTH — canonical-drift diagnostic gains wall-clock PERSISTENCE (sustained-run span)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed.
+
+**Infra / self-heal.** Fresh container, detached HEAD at Cycle 174's `334a6a2`. `git fetch origin main`
+FIRST (standing lesson) then `checkout -B main origin/main`; working tree clean, invariant #5 intact.
+Fresh `.venv` + `requests pyyaml eth-account pytest` (the cloud-env dep gap, not a regression), imports
+verified, full suite **391 green pre-flight**. RUNNER AT-FLOOR: newest verify
+`runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is ~30.3h old at the 10:11Z fire — PAST the 6h
+floor (machine-asleep / runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-157
+digest; 10:11Z is NOT first-after-16:00 UTC → no digest/DM this fire per comms policy (tests-only /
+off-scoring-path / score-neutral TRUTH, no sensitive-class PR).
+
+**What / why (capability terms).** Departs from the recent offering-signal metamorphic grind for a
+higher-leverage TRUTH increment on the live-canonical calibration signal itself. `asrs/canonical_history`
+reads the committed `runs/local/verify_*.json` series and, when the LIVE delta drifts off the pinned
+fixture baseline (+39.4), decides whether the reference pair has moved durably (re-capture) or is merely
+softening transiently (defer). That whole "sustained vs jitter" judgment — and the DEFER/RECAPTURE
+recommendation it feeds — keyed ONLY on a COUNT (`consecutive_out_of_band` vs `_SUSTAINED_MIN=3`). A count
+is time-blind: three re-scores a minute apart (the local runner firing in a burst) read IDENTICALLY to
+three spanning a day, yet they mean very different things about how durable a real-world change is. This
+adds the missing time dimension: `SustainedRun` (span_hours + endpoints) measures the wall-clock hours the
+trailing out-of-band run spans (first out-of-band reading → latest), so "sustained" is corroborated by
+DURATION, not reading-count alone — the wall-clock analogue of `Liveness` for the drift itself. On the
+current live series it names the divergence as **spanning 19.0h (2026-07-31T08:52Z → 2026-08-01T03:50Z)
+across 3 reads**, concretely strengthening the standing DEFER (driftflight.com transactability 87.5→62.5,
+the with-rails reference softening) beyond a bare "3 readings".
+
+**Method / non-vacuity + teeth.** Descriptive companion, NOT a new gate — it never re-classifies a run or
+alters a recommendation (existing recapture/attribution/noise-floor logic byte-unchanged), it makes the
+run's real persistence an explicit honest fact. Pure `sustained_run(points, run)` from parsed timestamps;
+honest-None when the run is empty (in-band) or an endpoint ts is unparseable (the same discipline the
+loader/attribution/noise-floor/liveness follow — never a fabricated duration). A lone out-of-band reading
+spans 0h by construction (one reading has no persistence in time). 5 new tests (`test_canonical_history.py`
+32→37): a known 18h synthetic span (render shows "spanning 18.0h"); None when in-band (not a spurious 0h);
+lone-reading 0h with coincident endpoints; unparseable-ts → None on both endpoints exercised on the pure
+function; and a recovery-tolerant real-series coherence check (span present ⇔ out-of-band, n mirrors the
+count). Vendor-neutral: reference-host names appear only as the module's existing data constants.
+
+**Ship class + score-neutrality.** TRUTH, read-only DIAGNOSTIC over committed verify artifacts —
+`canonical_history` imports NO scoring code and is off the scoring path. `git diff --name-only` =
+`asrs/canonical_history.py` + `tests/test_canonical_history.py` ONLY (scoring.py / probes / offering.py /
+rubric / fetch / cli / scorecard / fixtures UNTOUCHED) → SCORE-NEUTRAL, NOT peer-gated, DIRECT-TO-MAIN
+(same class as the prior canonical_history diagnostic increments: noise-floor, liveness, divergence-cause).
+`test_canonical_history.py` 32→37; full suite **391→396**; canonical replay guard **24/24, 46.1 F / 85.5 B
+/ +39.4**, 0 replay-miss; rubric v0.7. Live signal (read, not re-run): drift-flight.org 46.1 F /
+driftflight.com 76.2 C / +30.1 — the transactability-drop divergence PERSISTS, off the scoring path; the
+frozen replay guard is the independent regression signal.
+
+**Next hypothesis.** READOUT 176 (rotate METHOD→COVERAGE→TRUTH→READOUT; 175 was TRUTH). A natural
+READOUT leg: surface the new sustained-run span on the HTML canonical-history page
+(`_write_canonical_history_page`, `asrs/scorecard.py`) so the card and terminal both name the drift's
+wall-clock persistence, with a `test_readout` guard. The substantive frontier — thin-archetype /
+render / structured-catalog fixtures, ACP/UCP/MPP handshakes, the calibration sweep, and the live
+transactability-drop check-level diagnosis (verify artifacts store only pillar rollups, so naming WHICH
+transactability check flipped still needs a live per-check re-crawl) — remains `[LOCAL]`-blocked.
+
 ## Cycle 174 — 2026-08-02T~09:1xZ — COVERAGE — noise-surface invariance metamorphic axis for `plan-allowance`
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

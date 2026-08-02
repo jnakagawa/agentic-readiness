@@ -3,6 +3,60 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 174 — 2026-08-02T~09:1xZ — COVERAGE — noise-surface invariance metamorphic axis for `plan-allowance`
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed.
+
+**Infra / self-heal.** Fresh container on detached HEAD at Cycle 173's `2cb8be6`. Per the STANDING lesson
+ran `git fetch origin main` FIRST → `3796519…2cb8be6 (forced update)` (cached `origin/main` was the
+`3796519` Cycle-94-era ref), then `checkout -B main origin/main` aligned to the real tip; working tree
+clean, invariant #5 intact. `.venv` + `requests pyyaml eth-account pytest`, imports verified, full suite
+390 green pre-flight. RUNNER AT-FLOOR: newest verify `runs/local/verify_20260801T035047Z.json` (03:50Z
+Aug-1) is ~29h old at fire — PAST the 6h floor (borderline runner lag / machine-asleep pattern, cloud
+cannot repair). Already flagged in the 16:12Z Cycle-157 digest; ~09:1xZ is NOT first-after-16:00 UTC → no
+digest/DM this fire per comms policy (tests-only/off-scoring-path/score-neutral COVERAGE, no sensitive-class PR).
+
+**What / why (capability terms).** Closes the Cycle-171 noise-surface metamorphic family onto the Cycle-172
+`plan-allowance` subscription signal — the one signal the machine-pole noise guard (Cycle 171,
+`api.replicate.com`) could not reach, because the committed machine fixture claims only metered_api and
+never fires plan-allowance. The property under test is the "never manufacture the delta" invariant applied
+to task discovery, on the NOISE axis, from the subscription pole: bolting incidental web chrome (a signal-
+free `/privacy` cookies/careers/legal surface) onto a bundled-plan-allowance storefront must not conjure
+an archetype, a signal, or perturb the plan-allowance evidence. A benchmark whose classified capability
+delta between a rails storefront and a no-rails one could be moved by how much boilerplate surrounds the
+catalog is not credible; this makes "chrome adds no claim" an executable tripwire for the subscription pole.
+
+**Method / non-vacuity + teeth.** `test_plan_allowance_noise_surface_invariance` (`tests/test_offering.py`):
+classify the synthetic bundled-plan-allowance homepage (the same `_PLAN_ALLOWANCE_HOMEPAGE` substrate as the
+Cycle-173 relabel guards) — base claims a RANKED multi-archetype set (`subscription` > `metered_api`) with
+`plan-allowance` among the subscription sub-signals (substrate assertions: `len(claimed) >= 2` so a rank
+reorder is observable, plan-allowance present). Then add a signal-free `/privacy` surface and assert the WHOLE
+per-archetype `(strength, sorted (label, surface, quote))` evidence map is byte-identical, claimed archetypes
+in RANK ORDER invariant, the NA/unclaimed set invariant, and surfaces_seen grows by EXACTLY `/privacy`.
+Three teeth mirror the machine-pole guard: (a) the noise surface is genuinely READ (lands in surfaces_seen)
+yet contributes no claim; (b) the distractor fires ZERO `_scan_surface` signals despite near-miss vocabulary
+("we ship ideas"); (c) the negative control — the SAME surface key carrying real fulfillment prose ("add to
+cart… free shipping on physical orders") — DOES conjure `physical_good` (NA at base), proving the added-
+surface channel is live, so the invariance is non-vacuous rather than a channel the classifier ignores.
+
+**Ship class + score-neutrality.** COVERAGE (methodological-rigor member of the noise-axis family),
+TESTS-ONLY (`git diff --name-only` = `tests/test_offering.py` ONLY — scoring.py/probes.py/offering.py/
+rubric/fixtures UNTOUCHED) → SCORE-NEUTRAL, NOT peer-gated, DIRECT-TO-MAIN (same class as the Cycle-171
+machine-pole noise guard and the Cycle-173 relabel guards). `test_offering.py` +1 (module runner 76→77);
+full suite 390→391; canonical replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7.
+Live signal (read, not re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability
+62.5 — the transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the frozen replay guard
+is the independent regression signal.
+
+**Next hypothesis.** TRUTH 175 (rotate METHOD→COVERAGE→TRUTH→READOUT; 174 was COVERAGE). The in-cloud
+noise/relabel/content-scale/whitespace metamorphic grid is now near-complete across the offering signal
+poles; the substantive frontier — thin-archetype service_booking/data_retrieval/physical_good fixtures, a
+real render-generation digital_good fixture, structured catalog/pricing JSON surfaces, ACP/UCP/MPP live
+handshakes, the calibration sweep, and the live transactability-drop diagnosis — is all `[LOCAL]`-blocked.
+A near-in-cloud TRUTH candidate: extend the relabel/identity family to any offering sub-signal still lacking
+a metamorphic guard, or a small readout/methodology refinement if the signal-guard grid is genuinely closed.
+
 ## Cycle 173 — 2026-08-02T08:12Z — TRUTH — signal-level relabel/host-invariance guard for `plan-allowance`
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

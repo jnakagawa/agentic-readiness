@@ -2984,6 +2984,158 @@ def test_plan_allowance_relabel_has_teeth():
     print("  ok: the plan-allowance relabel guard has teeth (a host-keyed detector flips)")
 
 
+# A signal-free chrome surface (privacy/cookies/careers/legal boilerplate) to bolt
+# onto the plan-allowance store — the noise-axis analogue of the machine-pole guard
+# in test_offering_canonical.py, but on the SYNTHETIC plan-allowance homepage so the
+# axis reaches the Cycle-172 subscription signal (absent from the committed machine
+# fixture). The prose deliberately carries near-miss vocabulary ("we ship ideas",
+# cookie/careers/legal chrome) yet claims no capability.
+_PLAN_ALLOWANCE_NOISE_SURFACE = "/privacy"
+_PLAN_ALLOWANCE_NOISE_PROSE = (
+    "Privacy & Cookies. We use cookies to remember your preferences and improve "
+    "your experience. By continuing to browse you accept our cookie notice. We "
+    "never sell your personal data.\n\n"
+    "Careers. We are hiring! Join a friendly, mission-driven crew who love to ship "
+    "ideas, not boxes. We value kindness, ownership, and a growth mindset.\n\n"
+    "Legal. All trademarks belong to their respective owners. This notice is "
+    "provided for informational purposes only and does not constitute advice."
+)
+# The negative control: real physical-fulfillment prose on the SAME surface key.
+# physical_good is NA on the plan-allowance store, so a claim it conjures is
+# unmistakably observable — proving the added-surface channel is live.
+_PLAN_ALLOWANCE_NOISE_TEETH_PROSE = (
+    "Add to cart. In stock now — we offer free shipping on all physical orders "
+    "to your shipping address."
+)
+
+
+def _pa_evidence_map(prof) -> dict:
+    """archetype -> (strength, its full sorted (label, surface, quote) evidence)."""
+    return {
+        c.archetype: (
+            c.strength,
+            sorted((s.label, s.surface, s.quote) for s in c.signals),
+        )
+        for c in prof.claimed
+    }
+
+
+def test_plan_allowance_noise_surface_invariance():
+    # NOISE-SURFACE metamorphic axis for plan-allowance — the Cycle-171 machine-pole
+    # noise guard extended to the Cycle-172 subscription signal (which the committed
+    # machine fixture does not claim, so the axis needs the synthetic plan-allowance
+    # store). Bolting a signal-free chrome surface (/privacy: cookies/careers/legal
+    # boilerplate) onto a bundled-plan-allowance storefront must leave the WHOLE
+    # capability profile byte-identical: incidental web chrome conjures no archetype,
+    # no signal, and does not perturb the plan-allowance evidence. "Never manufacture
+    # the delta" applied to task discovery, on the noise axis, from the subscription
+    # pole.
+    domain = f"api.{_PLAN_ALLOWANCE_HOST}"
+    base = classify_offering(domain, {"homepage": _PLAN_ALLOWANCE_HOMEPAGE})
+
+    # The property under test is genuinely present: the store claims a RANKED
+    # multi-archetype set with plan-allowance among its subscription sub-signals, so a
+    # conjured claim, a reordered rank, or a perturbed plan-allowance quote would all
+    # be observable.
+    assert len(base.claimed) >= 2, (
+        f"substrate: >=2 archetypes claimed so the rank a noise surface could reorder "
+        f"is real (got {base.archetypes})"
+    )
+    sub = next(c for c in base.claimed if c.archetype == "subscription")
+    assert "plan-allowance" in {s.label for s in sub.signals}, (
+        f"substrate: plan-allowance is among the base subscription signals "
+        f"(got {sorted(s.label for s in sub.signals)})"
+    )
+    # The noise surface key is a genuine ADDITION, not an overwrite that could hide a
+    # change.
+    assert _PLAN_ALLOWANCE_NOISE_SURFACE not in base.surfaces_seen, (
+        f"the noise surface {_PLAN_ALLOWANCE_NOISE_SURFACE!r} is new, not an overwrite "
+        f"(base surfaces_seen {base.surfaces_seen})"
+    )
+
+    # TEETH (b): the distractor carries NO capability signal at all, despite its
+    # near-miss vocabulary — so the invariance below is "noise adds no claim", not
+    # "we matched an existing signal".
+    assert (
+        offering._scan_surface(_PLAN_ALLOWANCE_NOISE_SURFACE, _PLAN_ALLOWANCE_NOISE_PROSE)
+        == []
+    ), (
+        "the distractor prose fires ZERO archetype signals (got "
+        f"{[(s.archetype, s.label) for s in offering._scan_surface(_PLAN_ALLOWANCE_NOISE_SURFACE, _PLAN_ALLOWANCE_NOISE_PROSE)]})"
+    )
+
+    noisy = classify_offering(
+        domain,
+        {
+            "homepage": _PLAN_ALLOWANCE_HOMEPAGE,
+            _PLAN_ALLOWANCE_NOISE_SURFACE: _PLAN_ALLOWANCE_NOISE_PROSE,
+        },
+    )
+
+    # TEETH (a): the noise surface was genuinely READ — it reached the classifier and
+    # landed in the read-provenance record — yet contributed no claim. So the
+    # invariance is non-vacuous: the classifier ingested the extra input.
+    assert _PLAN_ALLOWANCE_NOISE_SURFACE in noisy.surfaces_seen, (
+        f"the noise surface {_PLAN_ALLOWANCE_NOISE_SURFACE!r} was read "
+        f"(surfaces_seen {noisy.surfaces_seen})"
+    )
+
+    # (1) The WHOLE classified profile is byte-identical: every archetype's strength
+    # AND its complete (label, surface, quote) evidence — including the plan-allowance
+    # sub-signal — survive the added surface unchanged.
+    assert _pa_evidence_map(noisy) == _pa_evidence_map(base), (
+        "complete per-archetype (strength, (label, surface, quote)) evidence map "
+        "invariant under a signal-free added surface (plan-allowance evidence intact)"
+    )
+    # (2) Claimed archetypes IN RANK ORDER invariant — the rank drives the fixed
+    # template-bank task order, so incidental chrome must not reorder it.
+    assert noisy.archetypes == base.archetypes, (
+        f"claimed archetypes (ranked) invariant under a signal-free added surface "
+        f"(base {base.archetypes}, noisy {noisy.archetypes})"
+    )
+    # (3) The NA/unclaimed set is invariant — which archetypes the store is excused on
+    # as NA is a property of WHAT it declares, not what boilerplate surrounds it.
+    assert set(noisy.unclaimed) == set(base.unclaimed), (
+        f"NA/unclaimed set invariant under a signal-free added surface "
+        f"(base {sorted(base.unclaimed)}, noisy {sorted(noisy.unclaimed)})"
+    )
+    # (4) The ONLY thing that changed is read-provenance: surfaces_seen grew by exactly
+    # the noise surface. This pins the honest scope — the classifier records that it
+    # read the extra surface, and records nothing else from it.
+    assert set(noisy.surfaces_seen) == set(base.surfaces_seen) | {
+        _PLAN_ALLOWANCE_NOISE_SURFACE
+    }, (
+        f"surfaces_seen grew by exactly {_PLAN_ALLOWANCE_NOISE_SURFACE!r} and nothing "
+        f"else (base {sorted(base.surfaces_seen)}, noisy {sorted(noisy.surfaces_seen)})"
+    )
+
+    # TEETH (c): the negative control — swap the SAME surface key for real fulfillment
+    # prose. physical_good (NA at base) MUST be conjured, proving an added surface CAN
+    # move the classification, so the invariance for the distractor is meaningful, not
+    # a channel the classifier ignores.
+    teeth = classify_offering(
+        domain,
+        {
+            "homepage": _PLAN_ALLOWANCE_HOMEPAGE,
+            _PLAN_ALLOWANCE_NOISE_SURFACE: _PLAN_ALLOWANCE_NOISE_TEETH_PROSE,
+        },
+    )
+    assert (
+        _pa_evidence_map(teeth) != _pa_evidence_map(base)
+        and "physical_good" in teeth.archetypes
+        and "physical_good" not in base.archetypes
+    ), (
+        f"a signal-BEARING added surface DOES move the profile (physical_good conjured: "
+        f"{'physical_good' in teeth.archetypes}) — the added-surface channel is live, so "
+        "noise-invariance is non-vacuous"
+    )
+    print(
+        f"  ok: plan-allowance profile is byte-identical under a signal-free added "
+        f"surface ({base.archetypes} ranked, plan-allowance evidence intact; teeth "
+        "conjure physical_good)"
+    )
+
+
 def test_failure_not_billed_metering_precision_synthetic():
     # FAILURE NOT BILLED is the capital-safety leg of a metered call: a FAILED unit
     # (the render did not complete, the job errored, the request timed out) is NOT
@@ -3457,6 +3609,7 @@ def main() -> int:
         test_plan_allowance_fires_on_real_captured_subscription_prose,
         test_plan_allowance_signal_is_relabel_invariant,
         test_plan_allowance_relabel_has_teeth,
+        test_plan_allowance_noise_surface_invariance,
         test_failure_not_billed_metering_precision_synthetic,
         test_failure_not_billed_fires_on_real_captured_api_docs,
         test_reserve_and_settle_precision_synthetic,

@@ -536,14 +536,18 @@ design in-cloud, execute locally.
 
 ## P1
 
-- **`plan-allowance` noise-surface metamorphic axis** (COVERAGE/METHOD, in-cloud, opened Cycle 173). Cycle
-  172 added the `plan-allowance` subscription signal; Cycle 173 gave it a signal-level relabel/host-invariance
-  guard. The remaining Cycle-171-family axis for this signal is a NOISE-SURFACE invariance test: bolt a
-  signal-free chrome surface (e.g. `/privacy`) onto a synthetic plan-allowance-claiming store and assert the
-  discovered profile (claimed set + the (label, surface, quote) evidence map) is byte-identical — incidental
-  web chrome conjures no extra archetype/signal. Tests-only, off the scoring path, score-neutral; mirror
-  `test_offering_content_scale_invariance_*` / the machine-pole noise guard. Small in-cloud unit for a future
-  COVERAGE/METHOD rotation.
+<!-- DONE 2026-08-02T~09:1xZ (Cycle 174, COVERAGE, direct-to-main, tests-only/score-neutral):
+     "`plan-allowance` noise-surface metamorphic axis" SHIPPED. `test_plan_allowance_noise_surface_invariance`
+     (`tests/test_offering.py`, +1) closes the Cycle-171 noise-surface family onto the Cycle-172 subscription
+     signal the machine-pole guard (`api.replicate.com`) could not reach (that fixture never fires plan-allowance).
+     Bolts a signal-free `/privacy` chrome surface onto the synthetic bundled-plan-allowance homepage
+     (`_PLAN_ALLOWANCE_HOMEPAGE`) and asserts the whole per-archetype (strength, (label, surface, quote)) evidence
+     map is byte-identical, ranked archetypes (subscription > metered_api) + NA set invariant, surfaces_seen grows
+     by exactly `/privacy`. Three teeth: (a) noise surface READ yet no claim; (b) distractor fires ZERO
+     `_scan_surface` signals; (c) negative control (real fulfillment prose on the same key) DOES conjure
+     physical_good (NA at base) → non-vacuous. Tests-only (`git diff --name-only` = `tests/test_offering.py` ONLY)
+     → score-neutral, NOT peer-gated. Module runner 76→77; full suite 390→391; replay guard 24/24, 46.1 F / 85.5 B
+     / +39.4, 0 replay-miss; rubric v0.7. See LOG Cycle 174. -->
 
 <!-- DONE 2026-08-01T21:12Z (Cycle 162, READOUT, direct-to-main, display+tests-only/score-neutral): the
      "free-included-usage READOUT leg — methodology-page paragraph" SHIPPED, CLOSING the

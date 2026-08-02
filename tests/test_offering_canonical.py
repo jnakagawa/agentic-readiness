@@ -3553,6 +3553,146 @@ def test_offering_relabel_invariance_free_included_usage() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Relabel invariance — the digital_good variant-selection DELIVERABLE-CONTROL leg
+# (Cycle 164's signal; the "complete the job with a USABLE deliverable" leg).
+#
+# The signal-level metamorphic mirror every recent signal earns (free-included-
+# usage / reserve-and-settle / failure-not-billed / output-retention / payment-
+# receipt): whether an autonomous agent can DISCOVER and SELECT which output
+# variant a generative service produces — a named, listable style PRESET passed
+# on the request so the deliverable is fit-for-purpose and REPRODUCIBLE across a
+# catalog run — is a property of the variant-selection CONTRACT the offer
+# publishes, never of who vends it, so the signal is identity-invariant under a
+# host relabel.
+#
+# NON-VACUITY (same real-fixture failure mode the FIU/RS/FNB guards name): the
+# live variant-selection quotes are host-FREE ("Pick a preset", "style presets",
+# "A style preset slug"), so a whole-fixture relabel would be VACUOUS over
+# host-free evidence. A SYNTHETIC vehicle seats the host INSIDE the evidence —
+# surface-key prefix AND adjacent to the "pick a preset" phrase (within the
+# 40-char quote pad) — so a host relabel genuinely rewrites the classifier's
+# variant-selection input, then the signal must survive with the SAME match
+# count, on the SAME host-normalized surface, its quote STILL satisfying the live
+# variant-selection regex, with the vendor host absent from all rewritten
+# evidence.
+#
+# TEETH (precision, the variant-selection signal's DEFINING risk — bare "model"
+# and "tier" are false-positive minefields the signal must REFUSE): a sibling
+# synthetic surface carrying only the preset/model/tier-SHAPED noise — a "large
+# language model" on the "pro tier", the preset-VERB ("preset the oven"), a
+# "factory preset", a "camera preset", and a "reset" — fires ZERO
+# variant-selection signals, proving the match keys on the deliverable-control
+# STRUCTURE (a STYLE preset, a preset slug/param/id/name, a pick/choose/select/
+# browse verb naming a preset, or a preset that locks/pins the style), never on a
+# bare "model", a bare billing "tier", the preset VERB, a factory/camera preset,
+# or "reset"; and relabeling the host through that noise never CONJURES a
+# digital_good variant-selection claim.
+# ---------------------------------------------------------------------------
+_VS_LABEL = "variant-selection"
+_VS_HOST = "acme-vend.example"  # a host bearing no preset/style/select (or other) signal word
+_VS_SURFACE = f"agents.{_VS_HOST}/docs"
+# Host seated adjacent to the "pick a preset" phrase (surface-key prefix + the
+# sentence subject and a trailing repeat) so it lands in the padded quote window,
+# not merely the surface key.
+_VS_PROSE = (
+    f"On {_VS_HOST}, pick a preset to lock the render style before you generate; "
+    f"{_VS_HOST} lists every style preset it ships in the catalog."
+)
+# The preset/model/tier-SHAPED noise the variant-selection signal must never
+# match: a bare "model" and billing "tier" (the two named minefields; "tier" is
+# owned by metered_api `tiered-volume`), the preset-VERB, a factory/camera
+# preset, and "reset".
+_VS_DISTRACTOR_SURFACE = f"agents.{_VS_HOST}/pricing"
+_VS_DISTRACTOR_PROSE = (
+    f"{_VS_HOST} runs a large language model on the pro tier. Preset the oven to "
+    f"200C; the camera's factory preset and a full reset are unrelated."
+)
+
+
+def _variant_selection_signals(surface: str, text: str) -> list:
+    """The (surface, quote) pairs where the digital_good variant-selection fired."""
+    return sorted(
+        (s.surface, s.quote)
+        for s in _offering._scan_surface(surface, text)
+        if s.archetype == "digital_good" and s.label == _VS_LABEL
+    )
+
+
+def test_offering_relabel_invariance_variant_selection() -> None:
+    """The digital_good variant-selection keys on the deliverable-control contract, not the host."""
+    print("test_offering_relabel_invariance_variant_selection")
+    base = _variant_selection_signals(_VS_SURFACE, _VS_PROSE)
+
+    # The signal genuinely fires on the synthetic digital_good evidence.
+    _check(
+        len(base) == 1,
+        f"variant-selection fires exactly once on the synthetic digital_good surface (got {len(base)})",
+    )
+    base_surf, base_quote = base[0]
+
+    # Non-vacuity: the host sits inside BOTH the surface key AND the padded quote
+    # window, so a host relabel genuinely rewrites the classifier's
+    # variant-selection input — not a no-op over host-free evidence (the
+    # real-fixture failure mode named above).
+    _check(
+        _VS_HOST in base_surf and _VS_HOST in base_quote,
+        f"the host is inside the variant-selection surface key AND quote window — "
+        f"relabel rewrites real signal input (surface {base_surf!r}, quote {base_quote!r})",
+    )
+
+    # TEETH: the preset/model/tier-SHAPED noise (a bare "model", a billing "tier",
+    # the preset VERB, a factory/camera preset, a "reset") fires ZERO — the signal
+    # keys on the deliverable-control STRUCTURE, never on a bare "model", a bare
+    # "tier", or the preset VERB.
+    _check(
+        _variant_selection_signals(_VS_DISTRACTOR_SURFACE, _VS_DISTRACTOR_PROSE) == [],
+        "preset/model/tier-shaped noise ('a large language model on the pro tier', "
+        "'preset the oven to 200C', 'the camera's factory preset', 'a full reset') "
+        "fires no variant-selection signal — the match is the deliverable-control "
+        "structure (a style preset, a preset slug/param/id/name, a pick/choose/select/"
+        "browse verb naming a preset, or a preset that locks/pins the style), not a "
+        "bare 'model', a billing 'tier', the preset verb, or a factory/camera preset",
+    )
+
+    # Relabel the host everywhere (surface key + prose) and re-scan.
+    relab_surface = _VS_SURFACE.replace(_VS_HOST, _NEUTRAL_HOST)
+    relab_prose = _VS_PROSE.replace(_VS_HOST, _NEUTRAL_HOST)
+    _check(
+        _VS_HOST not in relab_surface and _VS_HOST not in relab_prose,
+        "every occurrence of the original host was relabeled out of the synthetic input",
+    )
+    relab = _variant_selection_signals(relab_surface, relab_prose)
+
+    # (1) Same match count — the variant-selection signal is neither lost nor conjured.
+    _check(
+        len(relab) == len(base) == 1,
+        f"variant-selection match count invariant under relabel (base {len(base)}, "
+        f"relabel {len(relab)})",
+    )
+    relab_surf, relab_quote = relab[0]
+
+    # (2) The SAME logical surface carries the signal once the host label is
+    # normalized away — the signal did not migrate to a different surface.
+    _check(
+        relab_surf == base_surf.replace(_VS_HOST, _NEUTRAL_HOST),
+        "variant-selection fires on the same (host-normalized) surface under relabel "
+        f"(base {base_surf!r}, relabel {relab_surf!r})",
+    )
+    # (3) The relabeled quote STILL satisfies the live variant-selection regex
+    # (the fired form is a pick-a-preset clause, not the host) and names no vendor
+    # host — the match keyed on the deliverable-control CONTRACT, not who vends it.
+    vs_re = dict(_offering._SIGNALS["digital_good"])[_VS_LABEL]
+    _check(
+        vs_re.search(relab_quote) is not None,
+        f"relabeled variant-selection quote still matches the deliverable-control signal: {relab_quote!r}",
+    )
+    _check(
+        _VS_HOST not in relab_quote and _VS_HOST not in relab_surf,
+        f"vendor host absent from relabeled variant-selection evidence (surface {relab_surf!r})",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Surface-read ORDER invariance — the digital_good deliverable-RIGHTS leg.
 #
 # A fresh perturbation AXIS orthogonal to the relabel/identity family above. The
@@ -5819,6 +5959,7 @@ def main() -> int:
         test_offering_relabel_invariance_failure_not_billed,
         test_offering_relabel_invariance_reserve_and_settle,
         test_offering_relabel_invariance_free_included_usage,
+        test_offering_relabel_invariance_variant_selection,
         test_offering_surface_order_invariance_output_license,
         test_offering_surface_order_invariance_org,
         test_offering_content_scale_invariance_org,

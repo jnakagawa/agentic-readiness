@@ -3,6 +3,69 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 165 — 2026-08-02T00:12Z — TRUTH — variant-selection relabel-invariance guard (deliverable-control identity invariance)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed.
+
+**Infra health / self-heal.** Fresh cloud checkout landed on detached HEAD at Cycle 164's `428aa77`
+(= `origin/main` tip); `git fetch origin main` first (Cycle-151 stale-`origin/main` lesson) — already at
+the tip, `checkout -B main origin/main` aligned, no work lost. Created `.venv`, installed `requests pyyaml
+eth-account pytest`, verified `import requests, yaml, asrs` before trusting the suite; full suite (23
+files) green pre-flight. RUNNER AT-FLOOR (unchanged from Cycles 158–164): newest
+`runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is ~20.4h old at fire (00:12Z
+Aug-2) — past the 6h floor (borderline runner lag, NOT the machine-asleep stall — cloud cannot repair).
+Already carried in the 16:12Z Cycle-157 digest; no new flag owed this fire (next digest = first cycle
+after 16:00 UTC Aug-2).
+
+**What/why (TRUTH — the signal-level metamorphic mirror Cycle 164's signal earns).** Rotation pointed
+TRUTH, and STATE named the exact next item: the identity-invariance guard for Cycle 164's `variant-selection`
+digital_good signal, the same metamorphic mirror every recent signal has earned (free-included-usage 161 /
+reserve-and-settle 157 / failure-not-billed 153 / payment-receipt 143 pattern). Property pinned: whether an
+autonomous agent can DISCOVER and SELECT which output variant a generative service produces — a named,
+listable style PRESET passed on the request so the deliverable is fit-for-purpose and REPRODUCIBLE across a
+catalog run — is a property of the variant-selection CONTRACT the offer publishes, NEVER of who vends it, so
+the signal must be identity-invariant under a host relabel. This is the "never manufacture the delta"
+invariant applied at the signal level: a deliverable-control capability that both image-gen storefronts
+genuinely share must not become a vendor tell.
+
+**Non-vacuity (the synthetic host-in-evidence vehicle).** The live variant-selection quotes are host-FREE
+("Pick a preset", "style presets", "A style preset slug"), so a whole-fixture relabel would be VACUOUS over
+host-free evidence (the failure mode the FIU/RS/FNB guards name). A SYNTHETIC vehicle
+(`_VS_HOST = acme-vend.example`, proven signal-word-free) seats the host INSIDE the evidence — surface-key
+prefix `agents.acme-vend.example/docs` AND adjacent to the leftmost "pick a preset" phrase within the
+40-char quote pad (verified: base fires exactly once, host in surface key AND quote window). Relabel to
+`vendor-neutral.test` then survives with (1) the SAME match count (1, neither lost nor conjured), (2) on the
+SAME host-normalized surface, (3) the quote STILL satisfying the live `_SIGNALS["digital_good"]["variant-selection"]`
+regex, with the vendor host absent from all rewritten evidence.
+
+**Teeth (precision, the signal's defining risk).** A sibling distractor surface carrying only the
+preset/model/tier-SHAPED noise the signal must REFUSE — a "large language model" on the "pro tier" (the two
+named minefields; "tier" is owned by metered_api `tiered-volume`), the preset-VERB ("preset the oven to
+200C"), a "factory preset", a "camera preset", and a "reset" — fires ZERO variant-selection signals,
+proving the match keys on the deliverable-control STRUCTURE (a style preset, a preset slug/param/id/name, a
+pick/choose/select/browse verb naming a preset, or a preset that locks/pins the style), and that relabeling
+the host through that noise never CONJURES a digital_good claim.
+
+**Ship / evidence.** Off the scoring path, test-only: `git diff --name-only` = `tests/test_offering_canonical.py`
+ONLY (scoring.py/probes.py/offering.py/rubric/fixtures EMPTY) → score-neutral, NOT peer-gated, direct-to-main
+(Cycle-161 precedent). Guard `test_offering_relabel_invariance_variant_selection` registered in `main()`
+(registration otherwise silently no-tests). `test_offering_canonical.py` 55→56; full suite 23 files green.
+
+**Canonical pair.** In-cloud replay guard 24/24, `drift-flight.org` **46.1 F** / `driftflight.com` **85.5 B**
+/ delta **+39.4**, 0 replay-miss — unchanged (regression-by-construction: the change touches no scoring
+path, so the delta cannot move). Live signal (read from newest verify artifact, not re-run — runner
+at-floor): driftflight.com **76.2 C / +30.1** / transactability 62.5 — the Aug-1 transactability-drop
+divergence PERSISTS, off the scoring path; the frozen replay guard stays the independent regression signal.
+
+**Next hypothesis (READOUT 166).** Close the COVERAGE(164)→TRUTH(165)→READOUT(166) arc with a
+`_write_methodology_page` paragraph framing variant-selection as the deliverable-control / "usable,
+reproducible deliverable" leg (the Cycle-162/154/144 pattern) + a `test_methodology_documents_variant_selection`
+presence guard. In-cloud offering COVERAGE on committed evidence stays archetype-imbalanced but the
+under-covered archetypes (service_booking / data_retrieval / physical_good) need `[LOCAL]` captured
+fixtures; the substantive frontier (ACP/UCP/MPP handshakes, calibration sweep, the driftflight.com
+transactability-drop diagnosis) is all `[LOCAL]`, blocked on the at-floor runner.
+
 ## Cycle 164 — 2026-08-01T23:12Z — COVERAGE — variant-selection digital_good signal (programmatic output-variant selection)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

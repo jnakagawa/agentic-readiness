@@ -1,8 +1,48 @@
 # Loop state
 
-- Cycle counter: 164
+- Cycle counter: 165
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-01T23:12Z (Cycle 164) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-02T00:12Z (Cycle 165) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~20.4h old at the 00:12Z Aug-2 fire — PAST the 6h floor (the local
+  ~04:xx Aug-1 onward fires have not pushed a fresh artifact; borderline runner lag, NOT the machine-asleep
+  stall — cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily digest; no new flag owed (next
+  digest = first cycle after 16:00 UTC Aug-2). Live signal (read, not re-run): drift-flight.org 46.1 F /
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS
+  (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent signal (24/24, 46.1 F
+  / 85.5 B / +39.4). Fire at 00:12Z Aug-2 is NOT the first after 16:00 UTC (Cycle 157 sent the digest at
+  16:12Z Aug-1; next is after 16:00Z Aug-2) → no DM this fire per comms policy (test-only/off-scoring-path/
+  score-neutral TRUTH increment, no sensitive-class PR, nothing score-moving). No open peer-gated PRs this
+  fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 165): fresh
+  checkout on detached HEAD at Cycle 164's `428aa77` (= `origin/main` tip), `git fetch origin main` FIRST
+  (Cycle-151 lesson) → already at tip, `checkout -B main origin/main` aligned, no work lost. Created `.venv`,
+  installed `requests pyyaml eth-account pytest` + verified imports before trusting the suite (23 files green
+  pre-flight).
+- FOCUS POINTER (Cycle 165 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 165 was
+  TRUTH, so Cycle 166 is READOUT). Cycle 165 shipped the **TRUTH signal-level relabel-invariance guard —
+  `test_offering_relabel_invariance_variant_selection`** in `tests/test_offering_canonical.py`, the
+  identity-invariance mirror (free-included-usage 161 / reserve-and-settle 157 / failure-not-billed 153 /
+  payment-receipt 143 pattern) for Cycle 164's `variant-selection` digital_good signal. Property pinned:
+  whether an autonomous agent can DISCOVER and SELECT which output variant a generative service produces (a
+  named, listable style PRESET passed on the request so the deliverable is fit-for-purpose and REPRODUCIBLE)
+  is a property of the variant-selection CONTRACT, not who vends it, so the signal is host-relabel invariant
+  — the "never manufacture the delta" invariant at the signal level, applied to a deliverable-control
+  capability BOTH image-gen storefronts genuinely share. Non-vacuous SYNTHETIC vehicle (`acme-vend.example`
+  seats the host INSIDE the evidence — surface-key prefix `agents.acme-vend.example/docs` + adjacent to the
+  leftmost "pick a preset" phrase within the 40-char quote pad; base=1 host-in-both): relabel to
+  `vendor-neutral.test` → host absent, SAME match count (1), SAME host-normalized surface, quote still
+  matching the live regex. TEETH: preset/model/tier-SHAPED noise (a "large language model" on the "pro tier"
+  — the two named minefields; the preset-VERB "preset the oven"; a "factory preset"; a "camera preset"; a
+  "reset") fires ZERO. Off the scoring path (`git diff --name-only` = `tests/test_offering_canonical.py`
+  ONLY; scoring.py/probes.py/offering.py/rubric/fixtures EMPTY) → score-neutral, NOT peer-gated,
+  direct-to-main. Registration guard green (test in `main()`). Full suite 23 files green;
+  `test_offering_canonical.py` 55→56; replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric
+  v0.7. NEXT (READOUT 166): the variant-selection methodology-page paragraph (`_write_methodology_page`
+  framing deliverable-control / "usable, reproducible deliverable" as the Cycle-162/154/144 pattern) + a
+  `test_methodology_documents_variant_selection` presence guard, closing the COVERAGE(164)→TRUTH(165)→
+  READOUT(166) arc. In-cloud COVERAGE on committed evidence stays archetype-imbalanced; under-covered
+  archetypes (service_booking / data_retrieval / physical_good) need `[LOCAL]` fixtures; the substantive
+  frontier (ACP/UCP/MPP, calibration sweep, transactability-drop diagnosis) is all `[LOCAL]`.
+- SUPERSEDED (Cycle 164 runner note): RUNNER AT-FLOOR at 2026-08-01T23:12Z (Cycle 164) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~19.4h old at the 23:12Z fire — PAST the 6h floor (the local
   ~04:xx–23:xx fires have not pushed a fresh artifact; borderline runner lag, NOT the machine-asleep
   stall — cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily digest; no new flag owed.
@@ -16,7 +56,7 @@
   `33d970e` (= `origin/main` tip), `git fetch origin main` FIRST (Cycle-151 lesson) → already at tip,
   `checkout -B main origin/main` aligned, no work lost. Created `.venv`, installed `requests pyyaml
   eth-account pytest` + verified imports before trusting the suite (378 tests green pre-flight).
-- FOCUS POINTER (Cycle 164 done): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 164 was
+- SUPERSEDED (Cycle 164 focus pointer): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 164 was
   COVERAGE, so Cycle 165 is TRUTH). Cycle 164 shipped a **COVERAGE digital_good signal — `variant-selection`**
   in `asrs/offering.py`: whether an autonomous agent can DISCOVER and SELECT which output VARIANT a
   generative digital-good service produces (a named, listable style PRESET passed on the request) so it

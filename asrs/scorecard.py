@@ -1124,10 +1124,15 @@ attribution honesty as section&nbsp;5, applied to tasks). The task is also
 own surfaces describe a generated image &mdash; the media noun comes from the
 site, not from ASRS. That noun is derived <b>only</b> from ASRS&rsquo;s own
 vendor-neutral media vocabulary (a generic <code>image</code>, <code>video</code>,
-<code>audio</code> or <code>art</code>, or a plain <b>digital output</b> when the
-site gives no cleaner hint) matched against the site&rsquo;s surfaces &mdash; never
-by pasting arbitrary site prose into the agent&rsquo;s directive, so the task stays
-<b>injection-safe</b> and names no vendor product. Recognition is
+<code>audio</code> or <code>art</code>; a <b>generated render</b> for a
+render-generation service that names no other medium; or a plain <b>digital
+output</b> when the site gives no cleaner hint) matched against the
+site&rsquo;s surfaces &mdash; never by pasting arbitrary site prose into the
+agent&rsquo;s directive, so the task stays <b>injection-safe</b> and names no
+vendor product. The descriptor takes the <b>most specific</b> output the site
+claims: a service that names an <code>image</code> keeps &ldquo;generated
+image&rdquo; even if it also advertises a render, so the render noun surfaces
+only when it is the <b>only</b> output the site describes. Recognition is
 <b>form-normalized</b>: a storefront that describes its output as an
 <code>image</code>, as <code>images</code>, or as <code>generating images</code>
 yields the <b>same</b> singular task noun, so two storefronts offering the same

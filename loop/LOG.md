@@ -3,6 +3,57 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 170 — 2026-08-02T05:12Z — READOUT — methodology paragraph names the `generated render` descriptor variant + priority (closes the render arc)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed. The many `loop/*` refs seen on `git fetch` are stale post-merge branches, not
+open PRs.
+
+**Infra/self-heal.** Fresh checkout on detached HEAD; `git fetch origin main` FIRST (Cycle-151 lesson)
+surfaced a FORCED-UPDATE `3796519…750b407` — `3796519` is a Cycle-94-era commit present but not an
+ancestor of the tip (container's cached `origin/main` was ~76 cycles stale, PR-merge history linearised
+past it); recent history 165→169 clean + consistent with STATE/LOG → benign staleness, NOT a loop
+rewrite (invariant #5 intact). `checkout -B main origin/main` aligned to `750b407` (Cycle 169), no work
+lost. `.venv` + `requests pyyaml eth-account pytest`, imports verified, 23 test files green pre-flight.
+RUNNER AT-FLOOR: newest verify `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is
+~25.4h old at this 05:12Z fire — PAST the 6h floor (borderline runner lag, NOT the machine-asleep stall;
+cloud cannot repair). Already flagged in the 16:12Z Cycle-157 digest; no new flag owed (next digest =
+first cycle after 16:00 UTC Aug-2; 05:12Z is NOT it → no DM this fire).
+
+**What/why (READOUT).** Closes the `render` arc — COVERAGE(168, the `_digital_good_descriptor` →
+"generated render" branch) → TRUTH(169, its relabel/identity-invariance guard) → READOUT(170, this).
+Section 6 of the methodology page (`asrs/scorecard._write_methodology_page`) is the ONE place the
+derived offering-relative descriptor vocabulary is surfaced in prose, but it named only
+image/video/audio/art/digital-output — a reader could not learn that a render-generation service yields
+"generated render", nor that the media noun WINS when a site names both (the priority the Cycle-168 code
+test pins as teeth). Added (a) the vendor-neutral **"generated render"** variant for a render-only
+service, and (b) the **most-specific-output** rule so the render noun surfaces only when no media noun is
+present (a service that names an `image` keeps "generated image" even if it also renders). Display prose
+only — no new descriptor logic, the code branch already existed (Cycle 168).
+
+**Guard.** Extended `test_methodology_documents_offering_relative_battery` (`tests/test_readout.py`) — the
+existing presence guard on this exact paragraph — to pin `"generated render"` + `"most specific"` in the
+collapsed prose and `"render"` in the media-form vocabulary, with a docstring note (f)+(g) recording the
+Cycle-170 extension. Vendor-neutral checks (`no drift-flight/driftflight`) already present and hold.
+
+**Ship.** Display + tests only. `git diff --name-only` = `asrs/scorecard.py` + `tests/test_readout.py`
+ONLY; scoring path EMPTY (`git diff -- asrs/scoring.py asrs/probes.py asrs/offering.py asrs/battery.py
+rubric/ fixtures/` = nothing) → **score-neutral, NOT peer-gated, direct-to-main**. No Slack (no
+sensitive-class PR, nothing score-moving, no digest owed).
+
+**Validation.** `test_readout.py` 68/68; full suite 23 files green; replay guard 24/24, **46.1 F /
+85.5 B / +39.4**, 0 replay-miss; rubric **v0.7**. Live signal (READ, not re-run): drift-flight.org
+46.1 F / driftflight.com **76.2 C / +30.1** — the transactability-drop divergence PERSISTS (Aug-1), off
+the scoring path; the frozen in-cloud replay guard (+39.4) stays the independent regression signal.
+Evidence: this commit's diff; `runs/local/verify_20260801T035047Z.json` (newest live artifact).
+
+**Next hypothesis (METHOD 171).** The render/media-descriptor prose arc is now fully closed across
+COVERAGE→TRUTH→READOUT. In-cloud COVERAGE on committed evidence stays archetype-imbalanced
+(service_booking/data_retrieval/physical_good need `[LOCAL]` fixtures). Candidate METHOD unit: a
+noise-surface invariance axis on the MACHINE pole, or a surface-dedup axis on the RETAIL pole (both named
+as remaining symmetry gaps in Cycle 167's note). Substantive frontier (real render-generation fixture,
+thin-archetype fixtures, ACP/UCP/MPP, calibration sweep, transactability-drop diagnosis) all `[LOCAL]`.
+
 ## Cycle 169 — 2026-08-02T04:12Z — TRUTH — relabel/identity-invariance guard for the new `render` descriptor branch
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

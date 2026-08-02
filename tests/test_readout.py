@@ -639,6 +639,18 @@ def test_methodology_documents_offering_relative_battery() -> None:
     # about scope — this battery is diagnostic, off the scoring path, not a scored
     # pillar (the same scored-vs-diagnostic line the sibling prose keeps).
     # Vendor-neutral throughout.
+    #
+    # Cycle 170 (READOUT) EXTENSION closing the render arc (Cycle 168 COVERAGE —
+    # the digital_good `render` descriptor branch; Cycle 169 TRUTH — its relabel/
+    # identity-invariance guard): the descriptor now maps a render-EXCLUSIVE claim
+    # to "generated render", but this same paragraph — the one place the derived
+    # descriptor vocabulary is surfaced in prose — named only image/video/audio/
+    # art/digital-output. A reader could not learn that a render-generation service
+    # yields "generated render", nor that the media noun WINS when a site names
+    # both (the priority the code test pins as teeth). The paragraph must now also
+    # (f) name the vendor-neutral "generated render" variant for a render-only
+    # service, and (g) state the most-specific-output rule so the render noun
+    # surfaces only when no media noun is present.
     print("test_methodology_documents_offering_relative_battery")
     with tempfile.TemporaryDirectory() as d:
         text = Path(scorecard._write_methodology_page(Path(d))).read_text()
@@ -647,15 +659,16 @@ def test_methodology_documents_offering_relative_battery() -> None:
     collapsed = " ".join(text.split())
     for phrase in ("offering-relative", "claims to sell",
                    "worded in the site", "generated image",
+                   "generated render", "most specific",
                    "never built to answer", "injection-safe",
                    "form-normalized", "executable regression test",
                    "off the scoring path", "diagnostic"):
         _check(phrase in collapsed,
                f"methodology documents offering-relative battery: {phrase!r}")
     # The vendor-neutral media vocabulary the digital_good descriptor is drawn
-    # from must appear as generic media nouns + the generic fallback, never a
-    # vendor product; and the form-normalization exemplars must be present.
-    for token in ("image", "video", "audio", "art", "digital output",
+    # from must appear as generic media nouns + the render + the generic fallback,
+    # never a vendor product; and the form-normalization exemplars must be present.
+    for token in ("image", "video", "audio", "art", "render", "digital output",
                   "images", "generating images"):
         _check(token in collapsed, f"methodology names media form {token!r}")
     # Vendor-neutral: no scored domain/product/brand named on the page.

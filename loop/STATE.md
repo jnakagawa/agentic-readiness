@@ -1,43 +1,44 @@
 # Loop state
 
-- Cycle counter: 169
+- Cycle counter: 170
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-02T04:12Z (Cycle 169) — newest verify `runs/local/verify_20260801T035047Z.json`
-  (03:50Z Aug-1, `attempts=1`) is ~24.4h old at the 04:12Z Aug-2 fire — PAST the 6h floor (borderline runner
+- RUNNER AT-FLOOR at 2026-08-02T05:12Z (Cycle 170) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~25.4h old at the 05:12Z Aug-2 fire — PAST the 6h floor (borderline runner
   lag, NOT the machine-asleep stall — cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily
-  digest; no new flag owed (next digest = first cycle after 16:00 UTC Aug-2; 04:12Z is NOT it → no DM this
-  fire per comms policy — tests-only/off-scoring-path/score-neutral TRUTH increment, no sensitive-class PR,
-  nothing score-moving). Live signal (read, not re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C /
-  +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1), off the scoring path;
-  the in-cloud replay guard stays the frozen independent signal (24/24, 46.1 F / 85.5 B / +39.4). No open
-  peer-gated PRs this fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL
-  (Cycle 169): fresh checkout on detached HEAD; `git fetch origin main` FIRST (Cycle-151 lesson) surfaced a
-  FORCED-UPDATE `3796519…070c016` — `3796519` is a Cycle-94 commit (present, NOT an ancestor of the tip): the
-  container's cached `origin/main` was ~74 cycles stale, PR-merge history linearised past it; recent history
-  (164→168) clean + consistent with STATE/LOG → benign staleness, NOT a loop rewrite (invariant #5 intact).
-  `checkout -B main origin/main` aligned to `070c016`, no work lost. Created `.venv`, installed `requests
+  digest; no new flag owed (next digest = first cycle after 16:00 UTC Aug-2; 05:12Z is NOT it → no DM this
+  fire per comms policy — display+tests-only/off-scoring-path/score-neutral READOUT increment, no
+  sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org 46.1 F /
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS
+  (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent signal (24/24, 46.1 F
+  / 85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open → []; the many `loop/*`
+  refs on fetch are stale post-merge branches), so no first-duty review. INFRA/SELF-HEAL (Cycle 170): fresh
+  checkout on detached HEAD; `git fetch origin main` FIRST (Cycle-151 lesson) surfaced a FORCED-UPDATE
+  `3796519…750b407` — `3796519` is a Cycle-94-era commit (present, NOT an ancestor of the tip): the
+  container's cached `origin/main` was ~76 cycles stale, PR-merge history linearised past it; recent history
+  (165→169) clean + consistent with STATE/LOG → benign staleness, NOT a loop rewrite (invariant #5 intact).
+  `checkout -B main origin/main` aligned to `750b407`, no work lost. Created `.venv`, installed `requests
   pyyaml eth-account pytest` + verified imports before trusting the suite (23 files green pre-flight).
-- FOCUS POINTER (Cycle 169 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 169 was
-  TRUTH, so Cycle 170 is READOUT). Cycle 169 shipped a **TRUTH vendor-neutrality tripwire — the relabel/
-  identity-invariance guard for the new `render` descriptor branch** (`tests/test_battery_instantiate.py`
-  `test_digital_good_descriptor_is_relabel_invariant_render`), the sibling of the media/translation relabel
-  guards. Cycle 168's `render` branch (`_digital_good_descriptor` → "generated render") keys on the `render`
-  LABEL, so it is host-independent BY CONSTRUCTION — this pins that as executable, so a future refactor that
-  made it read the fired quote could not silently leak the host into the battery task noun. Reuses
-  `_assert_descriptor_relabel_invariant`; substrate is a SYNTHETIC render-exclusive homepage
-  (`_RENDER_HOST_HOMEPAGE`) verified empirically to classify via the REAL `classify_offering` path as
-  `labels==['render']` (no image/video/audio/art/generation media label) with the host seated INSIDE the
-  fired render quote → the whole-host relabel genuinely rewrites the descriptor's input (non-vacuous:
-  host-in-base-evidence, host-gone-from-relabel-quotes, quotes-differ all asserted); descriptor byte-identical
-  "generated render" across the relabel. Teeth shared with `test_descriptor_relabel_has_teeth` (a host-keyed
-  stub IS caught). Off the scoring path (`git diff --name-only` = `tests/test_battery_instantiate.py` ONLY;
-  asrs/ rubric/ fixtures/ EMPTY) → score-neutral, NOT peer-gated, direct-to-main. `test_battery_instantiate.py`
-  13→14; full suite 23 files green; replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7.
-  NEXT (READOUT 170): the render arc spans COVERAGE(168)→TRUTH(169); a READOUT methodology paragraph naming
-  the render output as a digital-good deliverable variant is a candidate but small — a fresh COVERAGE/METHOD
-  unit on committed evidence may be higher leverage. Substantive frontier stays `[LOCAL]`: a real
-  render-generation fixture (first REAL-evidence validation of this branch), thin-archetype fixtures,
-  ACP/UCP/MPP, calibration sweep, transactability-drop diagnosis all need Jonah's machine.
+- FOCUS POINTER (Cycle 170 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 170 was
+  READOUT, so Cycle 171 is METHOD). Cycle 170 shipped a **READOUT methodology paragraph naming the
+  `generated render` descriptor variant + its priority**, CLOSING the render arc COVERAGE(168)→TRUTH(169)→
+  READOUT(170). Section 6 of `_write_methodology_page` (`asrs/scorecard.py`) — the one place the derived
+  offering-relative descriptor vocabulary is surfaced in prose — named only image/video/audio/art/
+  digital-output; a reader could not learn that a render-generation service yields "generated render", nor
+  that the media noun WINS when a site names both (the priority the Cycle-168 code test pins as teeth). Added
+  the vendor-neutral "generated render" variant for a render-only service + the most-specific-output rule
+  (a service naming an `image` keeps "generated image" even if it also renders → render noun surfaces only
+  when it is the ONLY output described). Display prose only — the descriptor branch already existed (Cycle
+  168), no new logic. Guard: extended `test_methodology_documents_offering_relative_battery`
+  (`tests/test_readout.py`) — the existing presence guard on this exact paragraph — to pin `"generated
+  render"` + `"most specific"` + `"render"` (docstring note f+g), vendor-neutral checks already present.
+  Off the scoring path (`git diff --name-only` = `asrs/scorecard.py` + `tests/test_readout.py` ONLY;
+  scoring.py/probes.py/offering.py/battery.py/rubric/fixtures EMPTY) → score-neutral, NOT peer-gated,
+  direct-to-main. `test_readout.py` 68/68; full suite 23 files green; replay guard 24/24, 46.1 F / 85.5 B /
+  +39.4, 0 replay-miss; rubric v0.7. NEXT (METHOD 171): a noise-surface invariance axis on the MACHINE pole,
+  or a surface-dedup axis on the RETAIL pole (Cycle-167's named remaining symmetry gaps). Substantive
+  frontier stays `[LOCAL]`: a real render-generation fixture (first REAL-evidence validation of the render
+  branch), thin-archetype fixtures, ACP/UCP/MPP, calibration sweep, transactability-drop diagnosis all need
+  Jonah's machine.
 - SUPERSEDED (Cycle 168 runner note): RUNNER AT-FLOOR at 2026-08-02T03:12Z (Cycle 168) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~23.4h old at the 03:12Z Aug-2 fire — PAST the 6h floor (borderline runner
   lag, NOT the machine-asleep stall — cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily

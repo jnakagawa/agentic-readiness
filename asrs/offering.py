@@ -1422,6 +1422,24 @@ def classify_offering(domain: str, surfaces: dict[str, str]) -> OfferingProfile:
         prose = strip_html(raw) if (surface == "homepage" or _is_html_document(raw)) else raw
         if not prose:
             continue
+        # Whitespace-reflow invariance. A plain-text surface (llms.txt, a markdown
+        # docs page) is routinely line-wrapped, so a two-word capability phrase can
+        # straddle a newline ("free\nshipping", "per\nmonth"), and HTML-stripped
+        # prose can carry runs of layout whitespace. Many signals separate their
+        # tokens with a LITERAL single space ("free shipping", "add to cart",
+        # "book a ..."), which a line-wrap or a double space silently defeats —
+        # dropping the claim, and with it the site's whole task battery, purely on
+        # typography. Collapse every whitespace run to a single space (the SAME
+        # normalization already applied to evidence quotes via _WS_RE) so a signal
+        # keys on the WORDS a surface declares, not the shape a crawl captured.
+        # Precision-safe: a single space still separates tokens and \b boundaries
+        # still hold, so collapsing runs cannot conjure a phrase that isn't there
+        # (verified: paragraph-split "add\n\nto ... cart" stays unclaimed). Off the
+        # scoring path (discovery drives --battery auto task selection only), so the
+        # canonical scoring delta is untouched; the canonical CLAIMED sets are
+        # invariant (tests/test_offering_canonical.py) because their evidence is not
+        # reflowed.
+        prose = _WS_RE.sub(" ", prose)
         seen.append(surface)
         for sig in _scan_surface(surface, prose):
             scanned.setdefault(sig.archetype, []).append(sig)

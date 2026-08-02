@@ -3,6 +3,75 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 178 — 2026-08-02T~13:2xZ — COVERAGE — offering discovery is whitespace-reflow robust (line-wrapped plain-text surfaces)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed.
+
+**Infra / self-heal.** Fresh container, detached HEAD at Cycle 177's `79c6435`. `git fetch origin main`
+FIRST (standing lesson); cached `origin/main` was the Cycle-94-era `3796519` → `3796519…79c6435 (forced
+update)`, then `checkout -B main origin/main`; working tree clean, invariant #5 intact. Fresh `.venv` +
+`requests pyyaml eth-account pytest` (cloud-env dep gap, not a regression), imports verified, full suite
+**398 green pre-flight**. RUNNER AT-FLOOR: newest verify `runs/local/verify_20260801T035047Z.json`
+(03:50Z Aug-1) is ~33.5h old at the 13:20Z fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
+cloud cannot repair). Already flagged in the 16:12Z Cycle-157 digest; 13:20Z is NOT first-after-16:00 UTC
+→ no digest/DM this fire per comms policy (off-scoring-path / score-neutral COVERAGE, no sensitive-class PR).
+
+**What / why (capability terms).** The COVERAGE leg (rotate METHOD→COVERAGE→TRUTH→READOUT; 177 was METHOD).
+Empirical finding: the offering discovery classifier (`asrs/offering.classify_offering`, which drives the
+operator directive's `--battery auto` task SELECTION and NA semantics) scans plain-text surfaces
+(`llms.txt`, markdown `/docs`) with NO whitespace normalization, yet MANY signals separate their tokens with
+a LITERAL single space — `\bfree shipping\b`, `\badd to (cart|bag|basket)\b`, `\bbilled per [a-z]+\b`,
+`\bper month\b`, `\bbook (a|an|your...)\b`, and ~30 more across every archetype. Plain-text agent surfaces
+are ROUTINELY line-wrapped (80-column llms.txt/markdown is the norm), so a two-word capability phrase can
+straddle a newline ("free\nshipping", "per\nmonth") and the literal-space signal silently misses it.
+Measured worst case (every space → newline) on a realistic 3-archetype store: classification collapsed from
+`[physical_good, metered_api, subscription]` → `[]` — the site's WHOLE offering, and thus its entire
+offering-relative task battery, blanked out purely on typography. That measures the crawl's line-wrapping,
+not the site's readiness — the same "measure the site, not the harness" principle behind the offering
+directive itself.
+
+**Fix.** One-line, single-point at the scan boundary in `classify_offering`: after HTML-stripping (homepage/
+`_is_html_document` surfaces) and before `_scan_surface`, collapse every whitespace run to a single space —
+`prose = _WS_RE.sub(" ", prose)` — the SAME normalization already trusted for evidence quotes (`_quote`).
+So a signal keys on the WORDS a surface declares, not the shape a crawl captured. Precision-safe by
+construction: a single space still separates tokens and `\b` boundaries still hold, so collapsing runs
+cannot conjure a phrase — VERIFIED empirically (paragraph-split "add\n\nto ... cart" stays unclaimed; the
+example.com null and metaphorical-"ship" NA precision guards stay green). No pattern depends on newlines/
+`MULTILINE`/`DOTALL` (audited: the 8 apparent "anchor" patterns are all `[^…]` char-class negations).
+
+**Method / non-vacuity + teeth.** New `test_classification_is_whitespace_reflow_invariant`
+(`tests/test_offering.py`, +1) — the whitespace-reflow analogue of the casing invariance
+(`test_offering_canonical.py`) and the surface-read-order invariance. On a flat 3-archetype prose (claims
+physical_good+metered_api+subscription via literal-space signals), an arbitrary reflow (every space →
+newline) must leave the claimed archetypes IN RANK ORDER, the NA/unclaimed complement, and per-archetype
+(strength, per-(label,surface) match counts) skeleton IDENTICAL. TEETH (a) the reflow genuinely changes the
+bytes; (b) LOAD-BEARING — a fired signal's RAW literal-space pattern match count DROPS on the reflowed
+surface (the line-wrap really does defeat it) while normalization restores it, so the invariance rests on
+whitespace-folding not on the phrases surviving; (c) NEGATIVE control — a paragraph-split "add … to cart"
+does NOT conjure physical_good, proving the fold repairs line-wrap without manufacturing a claim.
+
+**Ship class + score-neutrality.** COVERAGE, discovery-layer robustness fix. `classify_offering`/
+`discover_offering` are OFF the scoring path (grep-verified: referenced only in `cli.py`'s `--battery auto`
+branch, ZERO refs in `scoring.py`) → SCORE-NEUTRAL, NOT a rubric-semantics change, NOT peer-gated,
+DIRECT-TO-MAIN (same class as the Cycle-34/42/46/70 surface additions and the Cycle-164/172 signal
+additions, all direct/score-neutral). `git diff --name-only` = `asrs/offering.py` + `tests/test_offering.py`
+ONLY (scoring / probes / rubric / fetch / battery / scorecard / fixtures UNTOUCHED). Canonical CLAIMED sets
+INVARIANT under the fix — `[metered_api, digital_good, subscription]` on both drift domains + `[metered_api]`
+on api.replicate.com, byte-identical before/after (their evidence is not reflowed; `test_offering_canonical`
+136 green). `test_offering.py` +1; full suite **398→399**; canonical replay guard **24/24, 46.1 F / 85.5 B
+/ +39.4**, 0 replay-miss; rubric v0.7. Live signal (read, not re-run — runner at-floor): drift-flight.org
+46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence
+PERSISTS (Aug-1), off the scoring path; the frozen replay guard is the independent regression signal.
+
+**Next hypothesis.** TRUTH 179 (rotate; 178 was COVERAGE). The discovery classifier now has reorder, host-
+relabel, noise-surface, casing, AND whitespace-reflow metamorphic invariance — a fairly complete robustness
+envelope on synthetic + canonical evidence. Near-in-cloud frontier: a TRUTH/calibration refinement, or an
+invariance axis on a diagnostic still lacking one. The substantive frontier — thin-archetype / render /
+structured-catalog LIVE fixtures (which would also exercise this reflow-robustness on real line-wrapped
+surfaces), ACP/UCP/MPP handshakes, the calibration sweep, and the live transactability-drop check-level
+diagnosis — remains `[LOCAL]`-blocked.
+
 ## Cycle 177 — 2026-08-02T~12:1xZ — METHOD — metamorphic guard: canonical-drift diagnostics are magnitude-invariant / direction-covariant
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

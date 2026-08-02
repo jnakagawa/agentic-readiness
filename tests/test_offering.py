@@ -910,6 +910,142 @@ def test_classification_is_surface_read_order_invariant():
     print("  ok: reorder is observable (surfaces_seen list + subscription sample_quote differ) — non-vacuous")
 
 
+def _wsr_struct(prof) -> dict:
+    """archetype -> (strength, sorted ((label, surface), count)) — the whitespace-independent skeleton.
+
+    The reflow analogue of ``_casing_struct`` in test_offering_canonical.py: excludes
+    the quote text (which echoes the matched bytes and so reflows with the surface) and
+    keeps the per-(label, surface) match MULTIPLICITY, so a signal that fired N times
+    must still fire N times after the whitespace transform.
+    """
+    from collections import Counter
+
+    return {
+        c.archetype: (
+            round(c.strength, 9),
+            sorted(Counter((s.label, s.surface) for s in c.signals).items()),
+        )
+        for c in prof.claimed
+    }
+
+
+def _signal_pattern(archetype: str, label: str):
+    """The compiled pattern behind one fired (archetype, label) signal, or None."""
+    for lbl, pat in offering._SIGNALS.get(archetype, []):
+        if lbl == label:
+            return pat
+    return None
+
+
+def test_classification_is_whitespace_reflow_invariant():
+    # A readiness classification is a property of the WORDS a storefront's surfaces
+    # DECLARE, not the TYPOGRAPHY a crawl happened to capture. Plain-text surfaces
+    # (llms.txt, a markdown docs page) are routinely line-wrapped, and HTML-stripped
+    # prose can carry runs of layout whitespace — so a two-word capability phrase can
+    # straddle a newline ("free\nshipping", "per\nmonth") or gain a double space.
+    # MANY signals separate their tokens with a LITERAL single space ("free shipping",
+    # "add to cart", "billed per <unit>", "per month"), which a line-wrap silently
+    # defeats. Before the Cycle-178 normalization, that dropped the claim — and with
+    # it the site's whole offering-relative task battery — purely on layout. This is
+    # the whitespace-reflow analogue of the casing invariance
+    # (test_offering_canonical.py) and the surface-read-order invariance above: the
+    # claimed archetypes IN RANK ORDER, the NA/unclaimed complement, and per-archetype
+    # (strength, per-(label, surface) match counts) must ALL survive an arbitrary
+    # whitespace reflow. Cross-crawl comparability rests on it: two crawls of the same
+    # site, one line-wrapped at 80 columns and one not, must classify identically.
+    #
+    # The prose exercises three archetypes whose fired signals key on literal-space
+    # phrases, so a reflow that broke any of them would perturb a claim OR reorder the
+    # rank observably.
+    flat = (
+        "Store notes: we offer free shipping on every physical order. "
+        "Add to cart when ready. Programmatic access is billed per call. "
+        "Membership renews per month on each billing cycle."
+    )
+    base = classify_offering("shop.test", {"/llms.txt": flat})
+
+    # Substrate: the property under test is genuinely present — a RANKED multi-archetype
+    # classification a reflow could perturb.
+    assert len(base.claimed) >= 2, (
+        f"substrate: >=2 archetypes claimed so the rank a reflow could reorder is real "
+        f"(got {base.archetypes})"
+    )
+    assert {"physical_good", "metered_api", "subscription"} <= set(base.archetypes), (
+        f"substrate: the three literal-space archetypes all claim on the flat prose "
+        f"(got {base.archetypes})"
+    )
+
+    # A worst-case line-wrap: every space becomes a newline, so EVERY literal-space
+    # phrase straddles a line break. TEETH (a): the transform is REAL — the reflowed
+    # bytes differ from the flat bytes.
+    reflowed = flat.replace(" ", "\n")
+    assert reflowed != flat, "the reflow genuinely changed the surface bytes (non-vacuous)"
+
+    # TEETH (b): whitespace normalization is LOAD-BEARING. Among the fired evidence
+    # there is a signal whose RAW pattern (a literal-space matcher) match count on the
+    # reflowed surface DROPS below its count on the flat surface — i.e. the line-wrap
+    # genuinely defeats the literal-space form — so the invariance below rests on the
+    # classifier's whitespace-folding, not on the phrases happening to survive reflow.
+    load_bearing = None
+    for c in base.claimed:
+        for s in c.signals:
+            pat = _signal_pattern(c.archetype, s.label)
+            if pat is None:
+                continue
+            flat_n = len(pat.findall(flat))
+            reflowed_n = len(pat.findall(reflowed))
+            if reflowed_n < flat_n:
+                load_bearing = (c.archetype, s.label, flat_n, reflowed_n)
+                break
+        if load_bearing:
+            break
+    assert load_bearing is not None, (
+        "a fired signal's RAW-pattern match count drops under the line-wrap reflow, so "
+        "whitespace-folding is load-bearing — the invariance is non-vacuous"
+    )
+
+    reflow_prof = classify_offering("shop.test", {"/llms.txt": reflowed})
+
+    # (1) The whitespace-independent capability skeleton is identical: every archetype's
+    # strength AND its per-(label, surface) match counts survive the reflow — no signal
+    # lost or conjured, no count drifted, by mere line-wrapping.
+    assert _wsr_struct(reflow_prof) == _wsr_struct(base), (
+        f"per-archetype (strength, per-(label, surface) counts) skeleton invariant "
+        f"under whitespace reflow (base {_wsr_struct(base)}, reflow {_wsr_struct(reflow_prof)})"
+    )
+    # (2) Claimed archetypes IN RANK ORDER invariant — the rank drives the fixed
+    # template-bank task order, so a line-wrap must not reorder the battery.
+    assert reflow_prof.archetypes == base.archetypes, (
+        f"claimed archetypes (ranked) invariant under whitespace reflow "
+        f"(base {base.archetypes}, reflow {reflow_prof.archetypes})"
+    )
+    # (3) The NA/unclaimed complement (excluded from every mean/spread, never penalized)
+    # is invariant — which archetypes a site is excused on as NA depends on what it
+    # declares, not how a crawl wrapped it.
+    assert set(reflow_prof.unclaimed) == set(base.unclaimed), (
+        f"NA/unclaimed set invariant under whitespace reflow "
+        f"(base {sorted(base.unclaimed)}, reflow {sorted(reflow_prof.unclaimed)})"
+    )
+    print(
+        f"  ok: claimed set / rank / strengths / labels / NA invariant under whitespace "
+        f"reflow (load-bearing signal {load_bearing[0]}/{load_bearing[1]}: raw count "
+        f"{load_bearing[2]}->{load_bearing[3]} on reflow, normalization restores it)"
+    )
+
+    # TEETH (c): the negative control — whitespace-folding must NOT bridge a real
+    # paragraph boundary into a phantom phrase. "add" and "to cart" split across a blank
+    # line are two unrelated sentences; collapsing runs to a single space keeps them a
+    # sentence apart (the \n\n becomes " "), and physical_good's add-to-cart must NOT
+    # fire. So the normalization repairs line-wrap WITHOUT manufacturing a claim.
+    bridge = "Please add\n\nto our list. Your cart of ideas awaits — nothing to buy here."
+    bridge_prof = classify_offering("noise.test", {"/llms.txt": bridge})
+    assert "physical_good" not in bridge_prof.archetypes, (
+        f"whitespace-folding must not bridge a paragraph split into a phantom 'add to "
+        f"cart' claim (got {bridge_prof.archetypes})"
+    )
+    print("  ok: reflow does not conjure a claim across a paragraph boundary — precision-safe")
+
+
 def test_evidence_is_quoted_and_surface_tagged():
     prof = classify_offering("example-imaging.test", {"homepage": API_HOMEPAGE})
     for claim in prof.claimed:
@@ -3560,6 +3696,7 @@ def main() -> int:
         test_non_storefront_claims_nothing,
         test_strength_counts_distinct_signals_and_orders_claims,
         test_classification_is_surface_read_order_invariant,
+        test_classification_is_whitespace_reflow_invariant,
         test_evidence_is_quoted_and_surface_tagged,
         test_openapi_spec_alone_classifies_api_first_storefront,
         test_ai_plugin_descriptor_alone_classifies_storefront,

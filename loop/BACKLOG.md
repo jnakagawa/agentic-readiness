@@ -237,6 +237,18 @@ design in-cloud, execute locally.
   entry + a precision/real-evidence guard pair. Prefer the booking fixture first (service_booking is tied
   for thinnest and has zero committed evidence).
 
+- **[LOCAL] Validate the Cycle-178 whitespace-reflow robustness on a REAL line-wrapped surface** (COVERAGE,
+  follow-up to Cycle 178). Cycle 178 made `classify_offering` collapse whitespace runs before scanning so
+  literal-space signals (`\bfree shipping\b`, `\bper month\b`, `\badd to cart\b`, ~35 total) survive an
+  80-column line-wrap ("free\nshipping") — validated in-cloud on synthetic prose + confirmed the canonical
+  claimed sets are invariant (their committed evidence is NOT reflowed, so the fix is exercised only
+  synthetically today). Capture a fixture from a real storefront whose `llms.txt` / markdown `/docs` IS
+  genuinely line-wrapped across a capability phrase (`asrs.cli score <domain> --record-fixture
+  fixtures/canonical/<domain>.json`, static $0 → [LOCAL]), then add a read-live guard asserting the wrapped
+  phrase's archetype still classifies (the real-evidence mirror of the synthetic reflow guard). Off the
+  scoring path, score-neutral. Naturally folds into the thin-archetype / render / structured-catalog live
+  captures above (any real llms.txt-bearing site will do).
+
 - **[LOCAL] Capture a RENDER-generation digital_good fixture to validate the Cycle-168 descriptor branch on
   REAL evidence** (COVERAGE, follow-up to Cycle 168). `_digital_good_descriptor` (asrs/battery.py) now maps a
   render-EXCLUSIVE digital_good claim → "generated render", but the ONLY committed digital_good fixtures are

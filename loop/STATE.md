@@ -1,8 +1,49 @@
 # Loop state
 
-- Cycle counter: 177
+- Cycle counter: 178
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-02T~12:1xZ (Cycle 177) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-02T13:20Z (Cycle 178) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~33.5h old at the 13:20Z fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily digest; 13:20Z is
+  NOT first-after-16:00 UTC → no DM this fire per comms policy (off-scoring-path / score-neutral COVERAGE
+  increment, no sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org
+  46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence
+  PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent regression
+  signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open
+  → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 178): fresh checkout on detached HEAD at Cycle 177's
+  `79c6435`; ran `git fetch origin main` FIRST (standing lesson) → `3796519…79c6435 (forced update)` (cached
+  `origin/main` was the Cycle-94-era `3796519`), `checkout -B main origin/main` aligned to the real tip,
+  working tree clean, invariant #5 intact. Fresh `.venv` + `requests pyyaml eth-account pytest`, imports
+  verified, 398 tests green pre-flight.
+- FOCUS POINTER (Cycle 178 done): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 178 was
+  COVERAGE, so Cycle 179 is TRUTH). Cycle 178 shipped a **COVERAGE increment — whitespace-reflow robustness
+  for offering discovery** (`asrs/offering.py` + `tests/test_offering.py`, +1 test). Empirical finding: the
+  discovery classifier (`classify_offering`, which drives `--battery auto` task SELECTION + NA semantics)
+  scanned plain-text surfaces (llms.txt / markdown /docs) with NO whitespace normalization, yet ~35 signals
+  across every archetype separate their tokens with a LITERAL single space (`\bfree shipping\b`, `\badd to
+  (cart|bag|basket)\b`, `\bbilled per [a-z]+\b`, `\bper month\b`, ...). Plain-text agent surfaces are
+  routinely 80-column line-wrapped, so a two-word phrase can straddle a newline ("free\nshipping") and the
+  literal-space signal misses it — measured worst case, a realistic 3-archetype store's classification
+  collapsed `[physical_good, metered_api, subscription]` → `[]`, blanking its whole task battery on
+  typography. FIX: one-line at the scan boundary — collapse every whitespace run to a single space
+  (`prose = _WS_RE.sub(" ", prose)`, the same normalization already trusted for evidence quotes) so a signal
+  keys on the WORDS a surface declares, not the shape a crawl captured. Precision-safe (single space still
+  separates tokens, `\b` still holds; paragraph-split "add\n\nto ... cart" stays unclaimed — verified). New
+  `test_classification_is_whitespace_reflow_invariant` (the reflow analogue of the casing/reorder/relabel/
+  noise-surface guards): claimed-set-in-rank-order + NA complement + per-(label,surface) count skeleton
+  invariant under an arbitrary reflow, with teeth (a) real transform (b) load-bearing — a fired signal's RAW
+  literal-space count DROPS under line-wrap while normalization restores it (c) negative control — no phantom
+  claim across a paragraph split. Off the scoring path (`classify_offering`/`discover_offering` referenced
+  only in cli.py's `--battery auto` branch, ZERO refs in scoring.py) → score-neutral, NOT peer-gated,
+  direct-to-main. Canonical CLAIMED sets INVARIANT (evidence not reflowed). `git diff --name-only` =
+  `asrs/offering.py` + `tests/test_offering.py` ONLY; full suite 398→399; replay guard 24/24, 46.1 F / 85.5 B
+  / +39.4, 0 replay-miss; rubric v0.7. NEXT (TRUTH 179): the discovery classifier now has reorder + host-
+  relabel + noise-surface + casing + whitespace-reflow invariance — a near-complete robustness envelope. A
+  TRUTH candidate is a calibration/attribution refinement or an invariance axis on a diagnostic still lacking
+  one. Substantive frontier (thin-archetype/render/structured-catalog LIVE fixtures — which would also
+  exercise this reflow robustness on real line-wrapped surfaces — ACP/UCP/MPP, calibration sweep,
+  transactability-drop check-level diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 177 runner note): RUNNER AT-FLOOR at 2026-08-02T~12:1xZ (Cycle 177) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~32.4h old at the 12:12Z fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily digest; 12:12Z is
   NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / off-scoring-path / score-neutral

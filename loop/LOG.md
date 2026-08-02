@@ -3,6 +3,63 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 166 — 2026-08-02T01:15Z — READOUT — variant-selection methodology paragraph (closing the COVERAGE→TRUTH→READOUT arc)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed.
+
+**Infra health / self-heal.** Fresh cloud checkout on detached HEAD at Cycle 165's `9948b90`; `git fetch
+origin main` first (Cycle-151 stale-`origin/main` lesson) → `origin/main` fast-forwarded to `9948b90`,
+`checkout -B main origin/main` aligned, no work lost. Created `.venv`, installed `requests pyyaml
+eth-account pytest`, verified `import asrs.offering, asrs.scorecard, asrs.scoring` before trusting the suite;
+full suite (23 files) green pre-flight. RUNNER AT-FLOOR (unchanged from Cycles 158–165): newest
+`runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is ~21.4h old at fire (01:15Z
+Aug-2) — past the 6h floor (borderline runner lag, NOT the machine-asleep stall — cloud cannot repair).
+Already carried in the 16:12Z Cycle-157 digest; no new flag owed this fire (next digest = first cycle after
+16:00 UTC Aug-2).
+
+**What/why (READOUT — the prose leg closing the arc).** Rotation pointed READOUT, and STATE named the exact
+next item: the methodology-page paragraph for Cycle 164's `variant-selection` digital_good signal, closing
+the COVERAGE(164)→TRUTH(165)→READOUT(166) arc (the same reserve-and-settle 156/157/158, failure-not-billed
+152/153/154, free-included-usage 160/161/162 pattern). The signal was pinned in code (Cycle 164) and its
+identity-invariance pinned in tests (Cycle 165), but the CAPABILITY was never surfaced in prose a critic can
+read — a reader could not learn WHY a generative offer that lets an agent SELECT which variant gets produced
+is more agent-completable, nor how it differs from the other digital-good reads (each names a PROPERTY of the
+artifact received — generated / delivered / licensed / authentic / sized / retained — none says the agent can
+CONTROL the variant). Added a `_write_methodology_page` paragraph, **"Choosing the deliverable's variant"**,
+placed adjacent to its closest sibling (the output-resolution "Specifying the deliverable's shape" leg): it
+frames variant-selection as the deliverable-control / **reproducibility leg**, names the failure (an at-scale
+catalog run where "the two-hundredth image has to match the first" cannot use a service that returns a random
+style each call), ties it to obtaining a fit-for-purpose, reproducible deliverable, names the vendor-neutral
+variant-selection vocabulary as open conventions (a style preset; a preset slug/string/parameter/id/name; an
+explicit pick/choose/select/browse/pass/send a preset; a preset that locks or pins the style), preserves the
+signal's PRECISION honesty (bare "model"/"tier" = no signal; the preset VERB "preset the oven", a factory
+preset, a camera preset, a reset are not variant selection), draws the DISTINCTNESS from the output-resolution
+shape leg (how BIG vs which LOOK), keys recognition on the variant-selection CONTRACT the offer documents not
+who documents it (identity-relabel regression test), and stays honest about scope (diagnostic, off the scoring
+path, not a scored pillar).
+
+**Ship / evidence.** Display+tests-only, off the scoring path: `git diff --name-only` = `asrs/scorecard.py`
++ `tests/test_readout.py` ONLY (scoring.py/probes.py/offering.py/rubric/fixtures EMPTY) → score-neutral, NOT
+peer-gated, direct-to-main (Cycle-162 precedent). Guard `test_methodology_documents_variant_selection`
+registered in `main()` (the whitespace-collapsed presence+precision+distinctness mirror of the
+free-included-usage guard), `test_readout.py` 67→68; full suite 23 files green.
+
+**Canonical pair.** In-cloud replay guard 24/24, `drift-flight.org` **46.1 F** / `driftflight.com` **85.5 B**
+/ delta **+39.4**, 0 replay-miss — unchanged (regression-by-construction: the change touches no scoring path,
+so the delta cannot move). Live signal (read from newest verify artifact, not re-run — runner at-floor):
+driftflight.com **76.2 C / +30.1** / transactability 62.5 — the Aug-1 transactability-drop divergence
+PERSISTS, off the scoring path; the frozen replay guard stays the independent regression signal.
+
+**Next hypothesis (METHOD 167).** The variant-selection arc (COVERAGE→TRUTH→READOUT) is now fully closed
+across all three surfaces. Rotation → METHOD next; the METHOD invariance pattern (content-scale 163,
+surface-dedup 159, casing 155) could earn variant-selection an ordering/whitespace-invariance metamorphic
+guard on the machine pole, or the pointer could turn to a fresh COVERAGE archetype — but in-cloud offering
+COVERAGE on committed evidence stays archetype-imbalanced (the under-covered service_booking / data_retrieval
+/ physical_good archetypes need `[LOCAL]` captured fixtures). The substantive frontier (ACP/UCP/MPP
+handshakes, the calibration-population sweep, the driftflight.com transactability-drop diagnosis) is all
+`[LOCAL]`, blocked on the at-floor runner.
+
 ## Cycle 165 — 2026-08-02T00:12Z — TRUTH — variant-selection relabel-invariance guard (deliverable-control identity invariance)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

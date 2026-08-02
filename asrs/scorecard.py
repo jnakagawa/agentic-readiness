@@ -842,6 +842,43 @@ confirms the output spec is still recognized, unchanged, with the vendor&rsquo;s
 name gone. This read is <b>diagnostic</b> &mdash; it names whether the offer lets an
 agent request the render at the size it needs, <b>off the scoring path</b> &mdash;
 not a scored pillar.</p>
+<p><b>Choosing the deliverable&rsquo;s variant</b> is the <b>deliverable-control
+sibling</b> of specifying its shape: on the <b>digital-good</b> side an agent can
+obtain a render at the right size, hold a licence to use it and prove it is genuine,
+and still be handed a <b>different look every call</b>. Every other digital-good read
+names a <b>property of the artifact the agent receives</b> &mdash; that the media is
+<b>generated</b>, how it is <b>delivered</b>, what <b>rights</b> attach, whether it is
+<b>authentic</b>, how large it is, how long it <b>persists</b> &mdash; and none of them
+says whether the agent can <b>control which variant gets produced</b>. An agent
+generating <b>at scale</b> &mdash; a catalog run where <b>the two-hundredth image has to
+match the first</b> &mdash; cannot use a service that returns a <b>random style each
+call</b>; a generative offer that documents <b>programmatic variant selection</b> &mdash;
+a selectable <b>style preset</b> the agent passes on the request that <b>locks palette,
+lighting and rendering style</b> &mdash; hands back a <b>fit-for-purpose, reproducible</b>
+deliverable, so it is <b>more agent-completable</b> than one that leaves the look to
+chance. That makes it the <b>reproducibility leg</b> of finishing the digital-good job,
+distinct from the shape leg (<b>output resolution</b> is <b>how big</b> the render is;
+variant selection is <b>which look</b> it has) and from every rights / authenticity /
+delivery read. So ASRS reads the documented variant-selection facility as part of
+understanding the digital-good offer, keyed on vendor-neutral <b>variant-selection
+vocabulary</b> (a <b>style preset</b>, a preset <b>slug / string / parameter / id /
+name</b>, an explicit <b>pick / choose / select / browse / pass / send a preset</b>, a
+preset that <b>locks or pins the style</b>), the same category of open convention as
+REST, GraphQL or OpenAPI &mdash; never on a vendor&rsquo;s name. The read is
+<b>precision-guarded</b>: a bare <code>model</code> or <code>tier</code> word is <b>no
+signal</b> &mdash; a language, business, role or 3D <b>model</b> and a <b>billing
+tier</b> (owned by the metered-API <b>tiered-volume</b> read) appear all over these docs
+and must never trip it &mdash; and the <b>preset verb</b> (&ldquo;<b>preset</b> the oven
+to 200C&rdquo;), a <b>factory preset</b>, a <b>camera preset</b> and a <b>reset</b> are
+not variant selection either, so the phrasing must name a <b>style preset</b>, a preset
+<b>parameter</b>, an explicit <b>select / browse a preset</b> verb, or a preset that
+<b>locks or pins the style</b>. Recognition keys on the <b>variant-selection contract the
+offer documents, not who documents it</b>: that property is pinned by an <b>executable
+regression test</b> that relabels the storefront&rsquo;s identity end-to-end and confirms
+the variant-selection facility is still recognized, unchanged, with the vendor&rsquo;s
+name gone. This read is <b>diagnostic</b> &mdash; it names whether the offer lets an
+agent obtain a <b>usable, reproducible deliverable</b>, <b>off the scoring path</b>
+&mdash; not a scored pillar.</p>
 <p><b>Evaluating a subscription at $0 first</b> is finishing on the
 <b>subscription</b> side, where the thing an agent must commit to is not a single
 call but a <b>recurring charge</b> that renews on its own. An agent asked to

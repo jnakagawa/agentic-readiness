@@ -1,8 +1,49 @@
 # Loop state
 
-- Cycle counter: 165
+- Cycle counter: 166
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-02T00:12Z (Cycle 165) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-02T01:15Z (Cycle 166) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~21.4h old at the 01:15Z Aug-2 fire — PAST the 6h floor (borderline runner
+  lag, NOT the machine-asleep stall — cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily
+  digest; no new flag owed (next digest = first cycle after 16:00 UTC Aug-2; 01:15Z is NOT it → no DM this
+  fire per comms policy — display+tests-only/off-scoring-path/score-neutral READOUT increment, no
+  sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org 46.1 F /
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS
+  (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent signal (24/24, 46.1 F
+  / 85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open → []), so no
+  first-duty review. INFRA/SELF-HEAL (Cycle 166): fresh checkout on detached HEAD at Cycle 165's `9948b90`;
+  `git fetch origin main` FIRST (Cycle-151 lesson) → `origin/main` fast-forwarded to `9948b90`, `checkout -B
+  main origin/main` aligned, no work lost. Created `.venv`, installed `requests pyyaml eth-account pytest` +
+  verified imports before trusting the suite (23 files green pre-flight).
+- FOCUS POINTER (Cycle 166 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 166 was
+  READOUT, so Cycle 167 is METHOD). Cycle 166 shipped the **READOUT leg closing the variant-selection arc —
+  the `_write_methodology_page` paragraph "Choosing the deliverable's variant"** in `asrs/scorecard.py`, the
+  prose complement (free-included-usage 162 / reserve-and-settle 158 / failure-not-billed 154 / payment-receipt
+  144 pattern) for Cycle 164's `variant-selection` digital_good signal, closing the COVERAGE(164)→TRUTH(165)→
+  READOUT(166) arc. The paragraph frames variant-selection as the deliverable-control / REPRODUCIBILITY leg of
+  finishing the digital-good job (distinct from the output-resolution SHAPE leg — how BIG the render is vs
+  which LOOK it has, and from every rights/authenticity/delivery read that names a PROPERTY of the artifact
+  received, not CONTROL of which variant is produced), names the failure (an at-scale catalog run where "the
+  two-hundredth image has to match the first" cannot use a service that returns a random style each call),
+  names the vendor-neutral variant-selection vocabulary as open conventions (a style preset; a preset
+  slug/string/parameter/id/name; pick/choose/select/browse/pass/send a preset; a preset that locks or pins the
+  style), preserves the signal's PRECISION honesty (bare "model"/"tier" = no signal — "tier" owned by
+  metered_api `tiered-volume`; the preset VERB "preset the oven", a factory preset, a camera preset, a reset
+  are not variant selection), keys recognition on the variant-selection CONTRACT the offer documents not who
+  documents it (identity-relabel regression test), and stays honest about scope (diagnostic, off the scoring
+  path, not a scored pillar). Placed adjacent to its closest sibling (the output-resolution paragraph). Guard
+  `test_methodology_documents_variant_selection` in `tests/test_readout.py` (67→68), the whitespace-collapsed
+  presence+precision+distinctness mirror of `test_methodology_documents_free_included_usage`, registered in
+  `main()`. Off the scoring path (`git diff --name-only` = `asrs/scorecard.py` + `tests/test_readout.py` ONLY;
+  scoring.py/probes.py/offering.py/rubric/fixtures EMPTY) → score-neutral, NOT peer-gated, direct-to-main.
+  Full suite 23 files green; replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. NEXT
+  (METHOD 167): the variant-selection arc is now closed across all three surfaces; METHOD could earn it an
+  ordering/whitespace-invariance metamorphic guard on the machine pole (content-scale 163 / surface-dedup 159 /
+  casing 155 pattern), or the pointer could turn to a fresh COVERAGE archetype — but in-cloud COVERAGE on
+  committed evidence stays archetype-imbalanced; the under-covered archetypes (service_booking / data_retrieval
+  / physical_good) need `[LOCAL]` fixtures; the substantive frontier (ACP/UCP/MPP, calibration sweep,
+  transactability-drop diagnosis) is all `[LOCAL]`.
+- SUPERSEDED (Cycle 165 runner note): RUNNER AT-FLOOR at 2026-08-02T00:12Z (Cycle 165) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~20.4h old at the 00:12Z Aug-2 fire — PAST the 6h floor (the local
   ~04:xx Aug-1 onward fires have not pushed a fresh artifact; borderline runner lag, NOT the machine-asleep
   stall — cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily digest; no new flag owed (next
@@ -17,7 +58,7 @@
   (Cycle-151 lesson) → already at tip, `checkout -B main origin/main` aligned, no work lost. Created `.venv`,
   installed `requests pyyaml eth-account pytest` + verified imports before trusting the suite (23 files green
   pre-flight).
-- FOCUS POINTER (Cycle 165 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 165 was
+- SUPERSEDED (Cycle 165 focus pointer): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 165 was
   TRUTH, so Cycle 166 is READOUT). Cycle 165 shipped the **TRUTH signal-level relabel-invariance guard —
   `test_offering_relabel_invariance_variant_selection`** in `tests/test_offering_canonical.py`, the
   identity-invariance mirror (free-included-usage 161 / reserve-and-settle 157 / failure-not-billed 153 /

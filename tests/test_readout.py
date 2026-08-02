@@ -1343,6 +1343,79 @@ def test_methodology_documents_free_included_usage() -> None:
                f"free-included-usage prose names no vendor/domain ({banned!r})")
 
 
+def test_methodology_documents_variant_selection() -> None:
+    # Cycle 166 (READOUT): the READOUT complement CLOSING the variant-selection arc
+    # opened by Cycle 164 (COVERAGE — the digital_good `variant-selection` offering
+    # signal: whether an autonomous agent can DISCOVER and SELECT which output VARIANT a
+    # generative service produces, via a named, listable style PRESET passed on the
+    # request, so the deliverable is fit-for-purpose and REPRODUCIBLE) and Cycle 165
+    # (TRUTH — the SIGNAL-level HOST relabel-invariance guard for that signal). This is
+    # the deliverable-CONTROL / reproducibility leg of finishing the digital-good job,
+    # completing the COVERAGE->TRUTH->READOUT arc (mirroring free-included-usage
+    # 160/161/162, reserve-and-settle 156/157/158, failure-not-billed 152/153/154). The
+    # leg was pinned in code + tests but NEVER surfaced in prose a critic can read — a
+    # reader could not learn WHY a generative offer that lets an agent select which
+    # variant gets produced is MORE agent-completable, or how it is DISTINCT from the
+    # other digital-good reads: every one of those names a PROPERTY of the artifact
+    # received (generated, delivered, licensed, authentic, sized, retained) — none says
+    # the agent can CONTROL which variant is produced. In particular it is distinct from
+    # the output-RESOLUTION shape leg (how BIG the render is, versus which LOOK it has).
+    # The paragraph must (a) frame it as the deliverable-control / reproducibility leg,
+    # name the failure (an at-scale catalog run where the two-hundredth image has to
+    # match the first cannot use a service that returns a random style each call), and
+    # tie it to obtaining a fit-for-purpose, reproducible deliverable; (b) name the
+    # vendor-neutral variant-selection vocabulary the offering signal anchors on as open
+    # conventions — a style preset, a preset slug/string/parameter/id/name, pick/choose/
+    # select/browse/pass/send a preset, a preset that locks or pins the style; (c) keep
+    # the signal's PRECISION honesty — a bare "model" or "tier" (a language/business/role/
+    # 3D model, a billing tier owned by tiered-volume) is no signal, and the preset VERB
+    # ("preset the oven"), a factory preset, a camera preset and a reset are not variant
+    # selection; (d) say recognition keys on the variant-selection contract the offer
+    # documents not who documents it, pinned by an identity-relabel executable regression
+    # test; and (e) stay HONEST about scope — this offering read is diagnostic, off the
+    # scoring path, not a scored pillar. Vendor-neutral throughout.
+    print("test_methodology_documents_variant_selection")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    # Match on the whitespace-collapsed text (same technique as the free-included-usage /
+    # reserve-and-settle / failure-not-billed guards) so wording, not source wrapping, is
+    # what the guard pins.
+    collapsed = " ".join(text.split())
+    for phrase in ("Choosing the deliverable", "deliverable-control sibling",
+                   "control which variant gets produced", "reproducibility leg",
+                   "fit-for-purpose, reproducible", "programmatic variant selection",
+                   "variant-selection contract the offer documents, not who documents it",
+                   "relabels the storefront", "executable regression test",
+                   "off the scoring path", "diagnostic"):
+        _check(phrase in collapsed,
+               f"methodology documents variant-selection: {phrase!r}")
+    # The vendor-neutral variant-selection vocabulary the offering signal bank anchors on
+    # must appear as open conventions: a style preset, a preset parameter, an explicit
+    # select/browse verb, a preset that locks/pins the style.
+    for token in ("style preset", "slug / string / parameter / id / name",
+                  "pick / choose / select / browse / pass / send a preset",
+                  "locks or pins the style"):
+        _check(token in collapsed,
+               f"methodology names variant-selection convention {token!r}")
+    # PRECISION honesty: the prose must preserve the signal's bare-word guard — a bare
+    # "model" / "tier" is no signal, and the preset verb / factory / camera / reset traps
+    # are not variant selection.
+    for token in ("no signal", "billing", "tiered-volume", "preset</b> the oven",
+                  "factory preset", "camera preset", "reset"):
+        _check(token in collapsed,
+               f"methodology keeps variant-selection precision note: {token!r}")
+    # DISTINCTNESS: the prose must name that it is the reproducibility leg distinct from
+    # the output-resolution SHAPE leg (how big vs which look), so a reader cannot conflate
+    # variant selection with the other digital-good reads.
+    for token in ("how big", "which look", "output resolution"):
+        _check(token in collapsed,
+               f"methodology keeps variant-selection distinctness note: {token!r}")
+    # Vendor-neutral: no scored domain/product/brand named on the page.
+    for banned in ("drift-flight", "driftflight", "replicate"):
+        _check(banned not in text,
+               f"variant-selection prose names no vendor/domain ({banned!r})")
+
+
 def test_methodology_documents_plan_purchase() -> None:
     # Cycle 148 (READOUT): the READOUT complement CLOSING the plan-purchase arc opened
     # by Cycle 146 (COVERAGE — the SUBSCRIPTION `plan-purchase` offering signal: whether
@@ -2323,6 +2396,7 @@ def main() -> int:
         test_methodology_documents_failure_not_billed,
         test_methodology_documents_reserve_and_settle,
         test_methodology_documents_free_included_usage,
+        test_methodology_documents_variant_selection,
         test_methodology_documents_plan_purchase,
         test_methodology_documents_free_trial,
         test_methodology_documents_self_provisioning,

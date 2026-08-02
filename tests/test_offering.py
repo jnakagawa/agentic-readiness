@@ -2881,6 +2881,109 @@ def test_plan_allowance_fires_on_real_captured_subscription_prose():
     print("  ok: plan-allowance is ABSENT on the api / retail / null fixtures (non-vacuous, score-neutral)")
 
 
+# A synthetic bundled-subscription storefront that names its OWN host INSIDE the
+# plan-allowance evidence — the host sits within the ±40-char quote window of the
+# `monthly allowance` / `subscription with included` matches, so relabeling the
+# host genuinely rewrites the plan-allowance quote the signal records. The
+# capability the signal keys on ("your plan's monthly allowance resets each cycle;
+# usage beyond it is metered") is a property of the OFFERING's own vocabulary, not
+# of the host — this pins that as an executable tripwire.
+_PLAN_ALLOWANCE_HOST = "acme-plans.test"
+_PLAN_ALLOWANCE_NEUTRAL_HOST = "vendor-neutral.test"  # reserved .test TLD; no signal word
+_PLAN_ALLOWANCE_HOMEPAGE = (
+    "<html><body>"
+    "<h1>Acme — metered subscription on acme-plans.test</h1>"
+    "<p>Subscription $9 per month. This is a subscription with included credit on "
+    "acme-plans.test. Your plan's monthly allowance on acme-plans.test resets each "
+    "cycle; usage beyond the acme-plans.test allowance is metered and charged per call."
+    "</p></body></html>"
+)
+
+
+def _plan_allowance_signals(domain: str, homepage: str):
+    """The plan-allowance signals fired for ``domain`` on a synthetic homepage."""
+    prof = classify_offering(domain, {"homepage": homepage})
+    assert prof.claims("subscription"), (domain, prof.archetypes)
+    sub = next(c for c in prof.claimed if c.archetype == "subscription")
+    return [s for s in sub.signals if s.label == "plan-allowance"]
+
+
+def test_plan_allowance_signal_is_relabel_invariant():
+    # SIGNAL-LEVEL relabel / host-invariance guard for plan-allowance — the
+    # subscription mirror of the media/render descriptor relabel guards
+    # (test_battery_instantiate.py) and the classifier-level fixture relabel guard
+    # (test_offering_canonical.py). It makes "whether a site claims the bundled-
+    # subscription-allowance capability keys on its VOCABULARY, not its host/vendor"
+    # an executable tripwire at the signal layer: a storefront that names its own
+    # host inside the allowance prose fires plan-allowance identically once its host
+    # is relabeled to a neutral placeholder.
+    base = _plan_allowance_signals(f"api.{_PLAN_ALLOWANCE_HOST}", _PLAN_ALLOWANCE_HOMEPAGE)
+    assert base, "substrate: plan-allowance fires on the base homepage"
+
+    # Non-vacuity: the host appears INSIDE the fired plan-allowance quote, so
+    # relabeling genuinely changes the text the signal recorded (not a no-op).
+    assert any(_PLAN_ALLOWANCE_HOST in s.quote for s in base), (
+        "the host appears in the plan-allowance evidence (relabel changes signal input "
+        "— the guard is non-vacuous)"
+    )
+
+    relabeled_home = _PLAN_ALLOWANCE_HOMEPAGE.replace(
+        _PLAN_ALLOWANCE_HOST, _PLAN_ALLOWANCE_NEUTRAL_HOST
+    )
+    relab = _plan_allowance_signals(
+        f"api.{_PLAN_ALLOWANCE_NEUTRAL_HOST}", relabeled_home
+    )
+    assert relab, "plan-allowance still fires after the host is relabeled"
+    assert all(_PLAN_ALLOWANCE_HOST not in s.quote for s in relab), (
+        "every occurrence of the host was relabeled out of the plan-allowance evidence"
+    )
+    # The relabel genuinely changed the recorded quotes (host removed) — non-vacuous.
+    assert [s.quote for s in relab] != [s.quote for s in base], (
+        "the relabel genuinely changed the plan-allowance quotes (non-vacuous)"
+    )
+    # IDENTITY-INVARIANCE: the SET of plan-allowance sub-signal labels that fired is
+    # byte-identical under relabel — the same capability is recognized regardless of
+    # the host embedded alongside the allowance vocabulary.
+    assert (
+        sorted(s.label for s in base) == sorted(s.label for s in relab)
+    ), "plan-allowance fires identically under host relabel (label set invariant)"
+    print(
+        f"  ok: plan-allowance signal is IDENTITY-invariant under host relabel "
+        f"({len(base)} sub-signal(s), host {_PLAN_ALLOWANCE_HOST!r} in evidence, "
+        "keys on offering vocabulary not host)"
+    )
+
+
+def test_plan_allowance_relabel_has_teeth():
+    # The invariance guard above is only meaningful if a HOST-KEYED plan-allowance
+    # detector WOULD be caught by the same relabel comparison. Simulate one — a
+    # stub that only "fires" when the host string is present in the quote — and
+    # confirm base vs relabel DIFFER under it, while the REAL signal stays invariant
+    # on the identical relabel pair. So the invariance test refutes a real failure
+    # mode (a site's allowance claim leaking its vendor identity), not a tautology.
+    base = _plan_allowance_signals(f"api.{_PLAN_ALLOWANCE_HOST}", _PLAN_ALLOWANCE_HOMEPAGE)
+    relabeled_home = _PLAN_ALLOWANCE_HOMEPAGE.replace(
+        _PLAN_ALLOWANCE_HOST, _PLAN_ALLOWANCE_NEUTRAL_HOST
+    )
+    relab = _plan_allowance_signals(
+        f"api.{_PLAN_ALLOWANCE_NEUTRAL_HOST}", relabeled_home
+    )
+
+    def _host_keyed_fires(signals):
+        # A DELIBERATELY vendor-rigged detector: the exact failure the real signal
+        # must not have — recognition gated on the host string, not the vocabulary.
+        return any(_PLAN_ALLOWANCE_HOST in s.quote for s in signals)
+
+    assert _host_keyed_fires(base) != _host_keyed_fires(relab), (
+        "a host-keyed detector is caught by the relabel comparison (the guard has teeth)"
+    )
+    # ...while the REAL signal is invariant on the same pair (the property held).
+    assert (
+        sorted(s.label for s in base) == sorted(s.label for s in relab)
+    ), "the real plan-allowance signal stays invariant on the same relabel pair the stub flips"
+    print("  ok: the plan-allowance relabel guard has teeth (a host-keyed detector flips)")
+
+
 def test_failure_not_billed_metering_precision_synthetic():
     # FAILURE NOT BILLED is the capital-safety leg of a metered call: a FAILED unit
     # (the render did not complete, the job errored, the request timed out) is NOT
@@ -3352,6 +3455,8 @@ def main() -> int:
         test_plan_purchase_fires_on_real_captured_subscription_prose,
         test_plan_allowance_subscription_precision_synthetic,
         test_plan_allowance_fires_on_real_captured_subscription_prose,
+        test_plan_allowance_signal_is_relabel_invariant,
+        test_plan_allowance_relabel_has_teeth,
         test_failure_not_billed_metering_precision_synthetic,
         test_failure_not_billed_fires_on_real_captured_api_docs,
         test_reserve_and_settle_precision_synthetic,

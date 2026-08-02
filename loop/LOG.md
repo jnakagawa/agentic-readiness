@@ -3,6 +3,56 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 173 — 2026-08-02T08:12Z — TRUTH — signal-level relabel/host-invariance guard for `plan-allowance`
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed.
+
+**Infra / self-heal.** Fresh container on detached HEAD at Cycle 172's `9120667`. Cached `origin/main`
+stale (`3796519`, Cycle-94 era); per the STANDING lesson ran `git fetch origin main` FIRST →
+`3796519…9120667 (forced update)`, then `checkout -B main origin/main` aligned to the real tip; working
+tree clean, invariant #5 intact. `.venv` + `requests pyyaml eth-account pytest`, imports verified, full
+suite 388 green pre-flight. RUNNER AT-FLOOR: newest verify `runs/local/verify_20260801T035047Z.json`
+(03:50Z Aug-1) is ~28.4h old at 08:12Z — PAST the 6h floor (borderline runner lag, machine-asleep pattern,
+cloud cannot repair). Already flagged in the 16:12Z Cycle-157 digest; 08:12Z is NOT first-after-16:00 UTC →
+no digest/DM this fire per comms policy (tests-only/off-scoring-path/score-neutral TRUTH, no sensitive-class PR).
+
+**What / why (capability terms).** Cycle 172 added the `plan-allowance` subscription signal (the hybrid
+bundled-allowance-plus-overage plan) but had no guard that its recognition is HOST-INVARIANT. The operator
+vendor-neutrality directive forbids a check keying on a site's identity rather than its evidence — and
+`plan-allowance`'s quote window (pad=40) genuinely embeds nearby host text when a storefront names its own
+domain in the allowance prose (`"your plan's monthly allowance on acme-plans.test resets…"`). So "whether a
+site claims the bundled-subscription-allowance capability keys on its VOCABULARY, not its host/vendor" was a
+CLAIM the code made but nothing enforced. This cycle makes it an executable tripwire — the subscription-signal
+mirror of the media/render descriptor relabel guards (`test_battery_instantiate.py`) and the classifier-level
+fixture relabel guard (`test_offering_canonical.py`).
+
+**Method / non-vacuity + teeth.** `test_plan_allowance_signal_is_relabel_invariant`
+(`tests/test_offering.py`): a synthetic bundled-subscription homepage that names its own host
+(`acme-plans.test`) INSIDE the plan-allowance evidence → the host provably appears in the fired quote
+(non-vacuity: relabel genuinely changes the signal's input), relabel the host everywhere to a neutral
+placeholder, re-classify, and assert (a) plan-allowance still fires + subscription still claimed, (b) the
+host is gone from the evidence, (c) the recorded quotes DID change (non-vacuous), (d) the fired sub-signal
+LABEL SET is byte-identical under relabel. `test_plan_allowance_relabel_has_teeth`: a DELIBERATELY
+host-keyed stub detector (fires only when the host string is in the quote) DIFFERS under the same relabel
+pair while the REAL signal stays invariant — so the guard refutes a real failure mode (a site's allowance
+claim leaking its vendor identity), not a tautology.
+
+**Ship class + score-neutrality.** TRUTH, TESTS-ONLY (`git diff --name-only` = `tests/test_offering.py`
+ONLY — scoring.py/probes.py/offering.py/rubric/fixtures UNTOUCHED) → SCORE-NEUTRAL, NOT peer-gated,
+DIRECT-TO-MAIN. `test_offering.py` +2 (relabel-invariant + teeth); full suite 388→390; canonical replay
+guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7. Live signal (read, not re-run):
+drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop
+divergence PERSISTS (Aug-1), off the scoring path; the frozen replay guard is the independent regression
+signal.
+
+**Next hypothesis.** COVERAGE 174: in-cloud COVERAGE on committed evidence stays archetype-imbalanced —
+the substantive frontier (thin-archetype service_booking/data_retrieval/physical_good fixtures, a real
+render-generation fixture, structured catalog/pricing JSON surfaces, ACP/UCP/MPP, the calibration sweep,
+and the live transactability-drop diagnosis) is all `[LOCAL]`. A near-in-cloud candidate: a `plan-allowance`
+noise-surface metamorphic axis (bolt a signal-free chrome surface onto a plan-allowance-claiming synthetic
+store and assert the profile is byte-identical), extending the Cycle-171 noise-surface family to the new signal.
+
 ## Cycle 172 — 2026-08-02T07:27Z — COVERAGE — new subscription signal `plan-allowance` (bundled monthly allowance + metered overage)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

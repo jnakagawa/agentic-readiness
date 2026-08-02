@@ -536,6 +536,15 @@ design in-cloud, execute locally.
 
 ## P1
 
+- **`plan-allowance` noise-surface metamorphic axis** (COVERAGE/METHOD, in-cloud, opened Cycle 173). Cycle
+  172 added the `plan-allowance` subscription signal; Cycle 173 gave it a signal-level relabel/host-invariance
+  guard. The remaining Cycle-171-family axis for this signal is a NOISE-SURFACE invariance test: bolt a
+  signal-free chrome surface (e.g. `/privacy`) onto a synthetic plan-allowance-claiming store and assert the
+  discovered profile (claimed set + the (label, surface, quote) evidence map) is byte-identical — incidental
+  web chrome conjures no extra archetype/signal. Tests-only, off the scoring path, score-neutral; mirror
+  `test_offering_content_scale_invariance_*` / the machine-pole noise guard. Small in-cloud unit for a future
+  COVERAGE/METHOD rotation.
+
 <!-- DONE 2026-08-01T21:12Z (Cycle 162, READOUT, direct-to-main, display+tests-only/score-neutral): the
      "free-included-usage READOUT leg — methodology-page paragraph" SHIPPED, CLOSING the
      COVERAGE(160)→TRUTH(161)→READOUT(162) arc (pattern of reserve-and-settle 156/157/158,

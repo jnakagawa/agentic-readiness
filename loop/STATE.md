@@ -1,8 +1,38 @@
 # Loop state
 
-- Cycle counter: 172
+- Cycle counter: 173
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-02T07:27Z (Cycle 172) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-02T08:12Z (Cycle 173) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~28.4h old at the 08:12Z Aug-2 fire — PAST the 6h floor (borderline runner
+  lag / machine-asleep pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily digest;
+  08:12Z is NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only/off-scoring-path/
+  score-neutral TRUTH increment, no sensitive-class PR, nothing score-moving). Live signal (read, not
+  re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the
+  transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the
+  frozen independent signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire
+  (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 173): fresh checkout
+  on detached HEAD at Cycle 172's `9120667`; cached `origin/main` stale (`3796519`, Cycle-94 era) → ran
+  `git fetch origin main` FIRST (standing lesson) → `3796519…9120667 (forced update)`, `checkout -B main
+  origin/main` aligned to the real tip, working tree clean, invariant #5 intact. `.venv` + `requests pyyaml
+  eth-account pytest`, imports verified, 388 tests green pre-flight.
+- FOCUS POINTER (Cycle 173 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 173 was
+  TRUTH, so Cycle 174 is COVERAGE). Cycle 173 shipped a **TRUTH increment — signal-level relabel/host-
+  invariance guard for `plan-allowance`** (`tests/test_offering.py`, +2 tests): the subscription-signal
+  mirror of the media/render descriptor relabel guards and the classifier-level fixture relabel guard. Makes
+  "whether a site claims the bundled-subscription-allowance capability keys on its VOCABULARY, not its host/
+  vendor" an executable tripwire — a synthetic bundled-plan store that names its own host INSIDE the
+  plan-allowance evidence (host provably in the pad=40 quote) fires plan-allowance IDENTICALLY (same
+  sub-signal label set) once the host is relabeled to a neutral placeholder, with the quotes genuinely
+  changing (non-vacuous). `test_plan_allowance_relabel_has_teeth`: a deliberately host-keyed stub detector
+  FLIPS under the same relabel pair while the real signal stays invariant — the guard refutes a real
+  failure mode, not a tautology. Tests-only (`git diff --name-only` = `tests/test_offering.py` ONLY;
+  scoring/probes/offering/rubric/fixtures UNTOUCHED) → score-neutral, NOT peer-gated, direct-to-main.
+  `test_offering.py` +2; full suite 388→390; replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss;
+  rubric v0.7. NEXT (COVERAGE 174): a `plan-allowance` noise-surface metamorphic axis (Cycle-171 family
+  extended to the new signal) is the nearest in-cloud candidate; the substantive frontier (thin-archetype +
+  render fixtures, structured catalog/pricing JSON, ACP/UCP/MPP, calibration sweep, transactability-drop
+  diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 172 runner note): RUNNER AT-FLOOR at 2026-08-02T07:27Z (Cycle 172) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~27.6h old at the 07:27Z Aug-2 fire — PAST the 6h floor (borderline runner
   lag / machine-asleep pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily digest;
   07:27Z is NOT first-after-16:00 UTC → no DM this fire per comms policy (off-scoring-path/score-neutral

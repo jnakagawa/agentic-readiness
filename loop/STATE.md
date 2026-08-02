@@ -1,8 +1,44 @@
 # Loop state
 
-- Cycle counter: 182
+- Cycle counter: 183
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-02T17:11Z (Cycle 182) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-02T18:19Z (Cycle 183) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~38.5h old at the 18:19Z fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; 18:19Z is
+  NOT first-after-16:00 UTC → no DM this fire per comms policy (off-scoring-path / score-neutral TRUTH
+  increment, no sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org
+  46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence
+  PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent regression
+  signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open
+  → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 183): fresh checkout on detached HEAD at Cycle 182's
+  `404d219`; ran `git fetch origin main` FIRST (standing lesson) → `3796519…404d219 (forced update)`,
+  `checkout -B main origin/main` aligned to the real tip, working tree clean, invariant #5 intact. Fresh
+  `.venv` + `requests pyyaml eth-account pytest`, imports verified, 403 tests green pre-flight.
+- FOCUS POINTER (Cycle 183 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 183 was
+  TRUTH, so Cycle 184 is READOUT). Cycle 183 shipped a **TRUTH increment — attribution STABILITY across the
+  trailing out-of-band run** (`asrs/canonical_history.py`: new pure `attribution_stability(points, run)` +
+  `AttributionStability`/`ReadingTop` dataclasses, wired onto `CanonicalHistory` via `summarize` + one
+  terminal render line; `tests/test_canonical_history.py` +4). `_attribute` fingers the drifting pillar from
+  the LATEST reading vs the last in-band anchor — a single snapshot; this asks whether EVERY reading of the
+  trailing out-of-band run fingers the SAME (domain, pillar) or the top mover WANDERS. Computed against the
+  SAME anchor (`points[-(run+1)]`) over `points[-run:]`; `stable` iff every reading isolates a top mover AND
+  all agree on one (domain, pillar) — magnitude may vary, pillar must hold; a None-top reading makes it
+  not-stable (unconfirmable ≠ confirmed-same). Honest-None on `_attribute`'s gates (run<2 = one reading can't
+  wander; run>=len = no in-band anchor). REAL-SERIES RESULT (non-vacuous): the 3 out-of-band readings (Jul-31
+  08:52Z / 13:45Z, Aug-1 03:50Z) vs the Jul-28 23:41Z anchor ALL finger `driftflight.com transactability
+  −25.0` → stable, one distinct mover — the transactability drop is a SUSTAINED move across ~28h, not a
+  snapshot artifact, strengthening the "with-rails reference softened on transactability" credibility. Teeth:
+  a synthetic wandering run (legibility→transactability flip) → stable False, render "WANDERS"; a synthetic
+  same-pillar run → stable True (green witness independent of live recovery); + honest-None guards + a
+  real-series guard cross-checking the snapshot top equals the sustained fingered pillar. Off the scoring path
+  (`git diff --name-only` = `asrs/canonical_history.py` + `tests/test_canonical_history.py` ONLY;
+  `canonical_history` imported only by cli/scorecard READOUTS, imports no scoring code — grep-verified) →
+  score-neutral, NOT peer-gated, direct-to-main. Full suite 403→407; replay guard 24/24, 46.1 F / 85.5 B /
+  +39.4, 0 replay-miss; rubric v0.7. NEXT (READOUT 184): the HTML canonical-history page does not yet surface
+  the stability line — render it on the card the way the sibling attribution/driver lines are (the
+  terminal-then-HTML pattern Cycle 176 followed). Substantive frontier (thin-archetype/render/structured-catalog
+  LIVE fixtures, ACP/UCP/MPP, calibration sweep, transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 182 runner note): RUNNER AT-FLOOR at 2026-08-02T17:11Z (Cycle 182) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~37.3h old at the 17:11Z fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; 17:11Z is
   NOT first-after-16:00 UTC → no DM this fire per comms policy (off-scoring-path / score-neutral COVERAGE

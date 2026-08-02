@@ -29,7 +29,14 @@ design in-cloud, execute locally.
   87.5→62.5 (−25.0)** as the sole top mover, cross-checked against side-level `divergence_cause.driver`
   (both = driftflight.com, `reference_degraded=True`). Remaining [LOCAL] work here is STRICTLY CHECK-level:
   re-score live and diff WHICH transactability check flipped (x402-live challenge / commerce-protocol
-  surface / machine-payable evidence), then the peer-gated re-baseline as described above.
+  surface / machine-payable evidence), then the peer-gated re-baseline as described above. UPDATE Cycle 183
+  (TRUTH, in-cloud, direct-to-main): the in-cloud pillar attribution is now also proven STABLE across the
+  WHOLE trailing out-of-band run, not just the latest reading — `canonical_history.attribution_stability` +
+  `test_canonical_history.py`'s `..._on_real_series_holds_the_pillar` guard assert ALL 3 out-of-band readings
+  (Jul-31 08:52Z/13:45Z, Aug-1 03:50Z) finger driftflight.com transactability −25.0 identically (stable, one
+  distinct mover, spanning ~28h), so the drop is a SUSTAINED move, not snapshot jitter. Remaining [LOCAL]
+  work here is UNCHANGED and still STRICTLY CHECK-level (re-score live + diff which check flipped + peer-gated
+  re-baseline).
 
 <!-- DONE 2026-07-28T17:27Z (local fire, SELF-HEALING/METHOD, direct-to-main): "[LOCAL] Local
      verify runner STALLED past the 6h floor" ROOT-CAUSED + FIXED. The cloud's Cycle-51→62

@@ -150,6 +150,66 @@ class PillarAttribution:
 
 
 @dataclass
+class ReadingTop:
+    """The top pillar-mover at ONE reading of the trailing out-of-band run.
+
+    ``top`` is that reading's largest-|change| pillar vs the shared in-band anchor,
+    or None when the reading's overall moved but no pillar was observable on either
+    side (the same honest-None ``_attribute`` applies, per reading)."""
+
+    ts: str
+    top: PillarMove | None
+
+
+@dataclass
+class AttributionStability:
+    """Whether the fingered pillar is STABLE across the trailing out-of-band run.
+
+    ``PillarAttribution`` fingers the drifting pillar from the LATEST reading vs the
+    last in-band anchor — a single snapshot. This asks the harder question that
+    snapshot cannot: does EVERY reading of the trailing out-of-band run finger the
+    SAME (domain, pillar), or does the top mover WANDER reading to reading? A driver
+    claim an operator acts on ("the reference SOFTENED on transactability") is only
+    as credible as its stability — a fingered pillar that flips between consecutive
+    re-scores is noise-dominated, not a sustained real-world site move.
+
+    Computed against the SAME in-band anchor ``_attribute`` uses (``points[-(run+1)]``)
+    over every reading of the trailing out-of-band run (``points[-run:]``, oldest
+    first). ``readings`` records each reading's top mover; ``stable`` is True iff every
+    reading isolated a top mover AND they all agree on one (domain, pillar) — the
+    signed magnitude may vary between readings, only the fingered pillar must hold. A
+    reading that isolates NO pillar (top None) makes the run NOT stable: an
+    unconfirmable pillar is not a confirmed-same one (attribution honesty).
+
+    Distinct from not-stable, the whole object is None when the run is too short to be
+    a stability question (< 2 out-of-band readings — one reading cannot wander) or no
+    in-band anchor exists in the live series — the same gates ``_attribute`` honours."""
+
+    anchor_ts: str
+    readings: list[ReadingTop] = field(default_factory=list)
+
+    @property
+    def movers(self) -> set[tuple[str, str]]:
+        """The distinct (domain, pillar) tops across the run (None tops excluded)."""
+        return {(r.top.domain, r.top.pillar) for r in self.readings if r.top is not None}
+
+    @property
+    def stable(self) -> bool:
+        """True iff every reading isolated a top mover and they all agree on the
+        same (domain, pillar)."""
+        if any(r.top is None for r in self.readings):
+            return False
+        return len(self.movers) == 1
+
+    @property
+    def fingered(self) -> tuple[str, str] | None:
+        """The single (domain, pillar) the whole run agrees on, else None."""
+        if not self.stable:
+            return None
+        return next(iter(self.movers))
+
+
+@dataclass
 class DivergenceCause:
     """Which SIDE of the pair drove the latest divergence, and what it means.
 
@@ -398,6 +458,11 @@ class CanonicalHistory:
     # None when in-band (nothing to explain) or when no in-band anchor exists in
     # the live series (we never observed a stable baseline to attribute against).
     attribution: PillarAttribution | None = None
+    # whether the fingered pillar is STABLE across the trailing out-of-band run
+    # (every reading fingers the same domain+pillar) or WANDERS — a credibility
+    # measure on the single-snapshot attribution above. None when < 2 out-of-band
+    # readings (too short to wander) or no in-band anchor exists in the live series.
+    attribution_stability: AttributionStability | None = None
     # which SIDE drove the latest divergence (no-rails gaining vs with-rails
     # softening) — same anchor/gate as ``attribution``; None on the same conditions.
     divergence_cause: DivergenceCause | None = None
@@ -569,6 +634,7 @@ def summarize(
     hist.consecutive_out_of_band = run
     hist.sustained_run = sustained_run(points, run)
     hist.attribution = _attribute(points, run, latest)
+    hist.attribution_stability = attribution_stability(points, run)
     hist.divergence_cause = _cause(points, run, latest)
     hist.recapture = recapture_advice(hist)
     hist.noise_floor = noise_floor(points, baseline_delta)
@@ -663,6 +729,33 @@ def _attribute(
     )
     moves.sort(key=lambda m: abs(m.change), reverse=True)
     return PillarAttribution(anchor_ts=anchor.ts, moves=moves)
+
+
+def attribution_stability(
+    points: list[CanonicalPoint], run: int
+) -> AttributionStability | None:
+    """Measure whether the fingered pillar holds across the trailing out-of-band run.
+
+    For each reading of the trailing out-of-band run (``points[-run:]``), compute its
+    top pillar-mover vs the SAME in-band anchor ``_attribute`` uses
+    (``points[-(run+1)]``), and record whether they all finger the same pillar.
+    Gated to a genuine stability question: ``run >= 2`` (one reading cannot wander)
+    AND an earlier in-band anchor exists (``run < len(points)``) — otherwise honest
+    None, matching ``_attribute``'s discipline. Pure, no score, no side effects.
+    """
+    if run < 2 or run >= len(points):
+        return None
+    anchor = points[-(run + 1)]
+    readings: list[ReadingTop] = []
+    for pt in points[-run:]:
+        moves = _pillar_moves(
+            CANONICAL_NO_RAILS, anchor.no_rails_pillars, pt.no_rails_pillars
+        ) + _pillar_moves(
+            CANONICAL_WITH_RAILS, anchor.with_rails_pillars, pt.with_rails_pillars
+        )
+        moves.sort(key=lambda m: abs(m.change), reverse=True)
+        readings.append(ReadingTop(ts=pt.ts, top=moves[0] if moves else None))
+    return AttributionStability(anchor_ts=anchor.ts, readings=readings)
 
 
 def _cause(
@@ -957,6 +1050,24 @@ def render(history: CanonicalHistory, window: int = 24) -> str:
                 f"attribution (vs last in-band {_short_ts(attr.anchor_ts)}): "
                 f"overall delta moved but no single pillar isolated "
                 f"(pillar(s) unobserved on one side)"
+            )
+    stab = history.attribution_stability
+    if stab is not None:
+        if stab.stable and stab.fingered is not None:
+            dom, pil = stab.fingered
+            lines.append(
+                f"attribution stability: {dom} {pil} fingered by all "
+                f"{len(stab.readings)} out-of-band re-scores — STABLE, not wandering"
+            )
+        else:
+            movers = (
+                "; ".join(f"{d} {p}" for d, p in sorted(stab.movers))
+                or "no single pillar isolated"
+            )
+            lines.append(
+                f"attribution stability: top mover WANDERS across "
+                f"{len(stab.readings)} out-of-band re-scores ({movers}) "
+                f"— the fingered pillar is not sustained"
             )
     cause = history.divergence_cause
     if cause is not None:

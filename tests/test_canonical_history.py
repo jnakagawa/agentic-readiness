@@ -447,6 +447,159 @@ def test_attribution_on_real_series_fingers_the_drifting_pillar() -> None:
     )
 
 
+# Anchor pillars shared by the synthetic stability series below: the canonical
+# pre-drift shape (no-rails floor low, with-rails reference high on every pillar).
+_ANCHOR_ORG_PILLARS = {
+    "access": 100.0, "legibility": 36.4, "transactability": 18.8, "trust": 60.0,
+}
+_ANCHOR_COM_PILLARS = {
+    "access": 100.0, "legibility": 90.9, "transactability": 87.5, "trust": 60.0,
+}
+
+
+def test_attribution_stability_catches_a_wandering_mover() -> None:
+    print("test_attribution_stability_catches_a_wandering_mover")
+    # Teeth: a trailing out-of-band run of TWO readings whose top mover FLIPS — the
+    # first reading fingers .com legibility, the second .com transactability. The
+    # single-snapshot attribution would report only the latest (transactability) and
+    # look identical to a sustained move; stability must catch that the fingered
+    # pillar WANDERED, so the attribution is not a sustained real-world site move.
+    with tempfile.TemporaryDirectory() as tmp:
+        _write_series(tmp, [
+            # anchor: in-band (delta 39.4 == baseline)
+            _artifact("20260727T000000Z", 46.1, 85.5, 39.4,
+                      org_pillars=dict(_ANCHOR_ORG_PILLARS),
+                      com_pillars=dict(_ANCHOR_COM_PILLARS)),
+            # reading 1: .com legibility 90.9 -> 70.9 (-20), out of band (delta 32.4)
+            _artifact("20260727T010000Z", 46.1, 78.5, 32.4,
+                      org_pillars=dict(_ANCHOR_ORG_PILLARS),
+                      com_pillars={**_ANCHOR_COM_PILLARS, "legibility": 70.9}),
+            # reading 2: .com transactability 87.5 -> 62.5 (-25), legibility RESTORED,
+            # out of band (delta 30.1) -> tops a DIFFERENT pillar than reading 1
+            _artifact("20260727T020000Z", 46.1, 76.2, 30.1,
+                      org_pillars=dict(_ANCHOR_ORG_PILLARS),
+                      com_pillars={**_ANCHOR_COM_PILLARS, "transactability": 62.5}),
+        ])
+        hist = ch.load_history(tmp)
+        _check(hist.consecutive_out_of_band == 2, "the trailing run is 2 out-of-band readings")
+        stab = hist.attribution_stability
+        _check(stab is not None, "a 2-reading out-of-band run gets a stability measure")
+        _check(stab.anchor_ts == "20260727T000000Z", "stability anchors on the last in-band reading")
+        _check(len(stab.readings) == 2, "one ReadingTop per out-of-band reading")
+        _check(
+            stab.movers == {(ch.CANONICAL_WITH_RAILS, "legibility"),
+                            (ch.CANONICAL_WITH_RAILS, "transactability")},
+            f"the two readings finger DIFFERENT pillars, got {stab.movers}",
+        )
+        _check(stab.stable is False, "a wandering top mover is NOT stable")
+        _check(stab.fingered is None, "a wandering run has no single fingered pillar")
+        out = ch.render(hist)
+        _check("attribution stability" in out and "WANDERS" in out, "render names the wander")
+
+
+def test_attribution_stability_stable_when_pillar_holds() -> None:
+    print("test_attribution_stability_stable_when_pillar_holds")
+    # Positive: a trailing out-of-band run of TWO readings that BOTH finger the same
+    # pillar (.com transactability, first -17.5 then -25.0 — magnitude may differ, the
+    # fingered pillar must hold). This is the shape of the REAL current drift; the
+    # synthetic version pins it deterministically so the property has a green witness
+    # independent of whether the live site has recovered.
+    with tempfile.TemporaryDirectory() as tmp:
+        _write_series(tmp, [
+            _artifact("20260727T000000Z", 46.1, 85.5, 39.4,
+                      org_pillars=dict(_ANCHOR_ORG_PILLARS),
+                      com_pillars=dict(_ANCHOR_COM_PILLARS)),
+            # reading 1: transactability 87.5 -> 70.0 (-17.5), out of band (delta 33.9)
+            _artifact("20260727T010000Z", 46.1, 80.0, 33.9,
+                      org_pillars=dict(_ANCHOR_ORG_PILLARS),
+                      com_pillars={**_ANCHOR_COM_PILLARS, "transactability": 70.0}),
+            # reading 2: transactability 87.5 -> 62.5 (-25.0), out of band (delta 30.1)
+            _artifact("20260727T020000Z", 46.1, 76.2, 30.1,
+                      org_pillars=dict(_ANCHOR_ORG_PILLARS),
+                      com_pillars={**_ANCHOR_COM_PILLARS, "transactability": 62.5}),
+        ])
+        hist = ch.load_history(tmp)
+        stab = hist.attribution_stability
+        _check(stab is not None, "a 2-reading out-of-band run gets a stability measure")
+        _check(stab.stable is True, "both readings fingering one pillar is STABLE")
+        _check(
+            stab.fingered == (ch.CANONICAL_WITH_RAILS, "transactability"),
+            f"the fingered pillar is the shared mover, got {stab.fingered}",
+        )
+        _check(len(stab.movers) == 1, "a stable run has exactly one distinct mover")
+        _check("STABLE, not wandering" in ch.render(hist), "render names the stable pillar")
+
+
+def test_attribution_stability_none_when_short_or_no_anchor() -> None:
+    print("test_attribution_stability_none_when_short_or_no_anchor")
+    # (a) a LONE out-of-band reading is not a stability question — one reading cannot
+    # wander. Honest None, not a fabricated "stable".
+    with tempfile.TemporaryDirectory() as tmp:
+        _write_series(tmp, [
+            _artifact("20260727T000000Z", 46.1, 85.5, 39.4,
+                      org_pillars=dict(_ANCHOR_ORG_PILLARS),
+                      com_pillars=dict(_ANCHOR_COM_PILLARS)),
+            _artifact("20260727T010000Z", 46.1, 76.2, 30.1,
+                      org_pillars=dict(_ANCHOR_ORG_PILLARS),
+                      com_pillars={**_ANCHOR_COM_PILLARS, "transactability": 62.5}),
+        ])
+        hist = ch.load_history(tmp)
+        _check(hist.consecutive_out_of_band == 1, "the trailing run is a single out-of-band reading")
+        _check(hist.attribution_stability is None, "a lone out-of-band reading -> no stability claim")
+    # (b) an ALL-out-of-band series has no in-band anchor to attribute against —
+    # honest None, the same discipline _attribute applies (no observed stable baseline).
+    with tempfile.TemporaryDirectory() as tmp2:
+        _write_series(tmp2, [
+            _artifact("20260727T000000Z", 46.1, 78.5, 32.4,
+                      org_pillars=dict(_ANCHOR_ORG_PILLARS),
+                      com_pillars={**_ANCHOR_COM_PILLARS, "legibility": 70.9}),
+            _artifact("20260727T010000Z", 46.1, 76.2, 30.1,
+                      org_pillars=dict(_ANCHOR_ORG_PILLARS),
+                      com_pillars={**_ANCHOR_COM_PILLARS, "transactability": 62.5}),
+        ])
+        h2 = ch.load_history(tmp2)
+        _check(h2.consecutive_out_of_band == 2, "both readings are out of band")
+        _check(h2.attribution_stability is None, "no in-band anchor in the series -> no stability claim")
+
+
+def test_attribution_stability_on_real_series_holds_the_pillar() -> None:
+    print("test_attribution_stability_on_real_series_holds_the_pillar")
+    # Non-vacuous end-to-end on the REAL committed series: the current transactability
+    # drift is fingered by the LATEST reading (the sibling _fingers_the_drifting_pillar
+    # guard) — but is it fingered by EVERY out-of-band reading, or only the latest? This
+    # pins that the fingered pillar is STABLE across the whole trailing out-of-band run,
+    # turning the single-snapshot claim into a sustained-move claim. Guarded three ways:
+    # if the site recovered (in-band) OR the run is a single reading (< 2, no wander
+    # question) OR no anchor exists, stability is correctly None and the claim is skipped.
+    # If this reddens with stability NOT None and NOT stable, the real fingered pillar
+    # WANDERED between readings — read the newest runs/local/verify_*.json, confirm which
+    # pillars moved, and reconcile (the same "executable evidence tracks reality"
+    # discipline as the attribution family).
+    hist = ch.load_history()
+    stab = hist.attribution_stability
+    if stab is None:
+        _check(True, "live run too short / recovered / no anchor -> no stability question (skip)")
+        return
+    _check(len(stab.readings) >= 2, "a real stability measure spans >= 2 out-of-band readings")
+    _check(
+        stab.stable is True,
+        f"the real trailing out-of-band run fingers ONE pillar, got movers {stab.movers}",
+    )
+    _check(
+        stab.fingered == (ch.CANONICAL_WITH_RAILS, "transactability"),
+        f"the sustained real drift is with-rails transactability, got {stab.fingered}",
+    )
+    # Cross-check: the single-snapshot attribution top must be the SAME pillar the whole
+    # run agrees on — the two computations (latest-vs-anchor and per-reading-vs-anchor)
+    # must not disagree about what is drifting.
+    top = hist.attribution.top if hist.attribution is not None else None
+    _check(top is not None, "the drifting real series isolates a snapshot top mover")
+    _check(
+        (top.domain, top.pillar) == stab.fingered,
+        f"snapshot top ({top.domain} {top.pillar}) must equal the sustained pillar {stab.fingered}",
+    )
+
+
 def test_divergence_cause_names_the_softening_side() -> None:
     print("test_divergence_cause_names_the_softening_side")
     # (a) the REAL 2026-07-27 shape: .org flat at 46.1, .com falls 85.5 -> 78.7.
@@ -1134,6 +1287,10 @@ def main() -> int:
         test_attribution_none_when_in_band,
         test_attribution_skips_unobserved_pillar_and_needs_an_anchor,
         test_attribution_on_real_series_fingers_the_drifting_pillar,
+        test_attribution_stability_catches_a_wandering_mover,
+        test_attribution_stability_stable_when_pillar_holds,
+        test_attribution_stability_none_when_short_or_no_anchor,
+        test_attribution_stability_on_real_series_holds_the_pillar,
         test_divergence_cause_names_the_softening_side,
         test_divergence_cause_none_when_in_band,
         test_divergence_cause_on_real_series,

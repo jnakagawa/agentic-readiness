@@ -3,6 +3,85 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 183 — 2026-08-02T18:19Z — TRUTH — attribution STABILITY: is the fingered drift pillar the same at every out-of-band reading, or does it wander?
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed. Infra: fresh checkout was detached at Cycle-182's `404d219`; `git fetch
+origin main` FIRST (standing lesson) → `3796519…404d219 (forced update)`, `checkout -B main
+origin/main` aligned to the real tip, tree clean, invariant #5 intact. Fresh `.venv` + `requests
+pyyaml eth-account pytest`; 403 tests green pre-flight (bench up). Runner AT-FLOOR: newest verify
+`runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is ~38.5h old at the 18:19Z fire — PAST
+the 6h floor (machine-asleep / runner-lag pattern, cloud cannot repair; already flagged in the
+16:12Z Cycle-181 digest).
+
+**What (TRUTH).** New pure diagnostic `attribution_stability(points, run)` +
+`AttributionStability`/`ReadingTop` dataclasses in `asrs/canonical_history.py`, wired onto
+`CanonicalHistory.attribution_stability` (via `summarize`) and rendered as one terminal line. The
+existing `_attribute` fingers the drifting pillar from the LATEST reading vs the last in-band
+anchor — a single snapshot. This asks the harder question that snapshot cannot: does EVERY reading
+of the trailing out-of-band run finger the SAME (domain, pillar), or does the top mover WANDER
+reading to reading? Computed against the SAME in-band anchor (`points[-(run+1)]`) over every
+out-of-band reading (`points[-run:]`); `stable` is True iff every reading isolated a top mover AND
+all agree on one (domain, pillar) — magnitude may vary, only the fingered pillar must hold. A
+reading isolating NO pillar (top None) makes the run NOT stable (unconfirmable ≠ confirmed-same).
+Honest-None on the same gates `_attribute` honours: `run < 2` (one reading cannot wander) or `run
+>= len(points)` (no in-band anchor).
+
+**Why.** STATE's Cycle-183 NEXT pointer asks exactly this: "is the pillar-attribution `top` STABLE
+across the trailing out-of-band runs (same mover every reading, or does it wander)?" A driver claim
+an operator acts on ("the reference SOFTENED on transactability" — the persistent Jul-31/Aug-1
+divergence STATE/BACKLOG track) is only as credible as its stability. The single-snapshot
+attribution guard (`_fingers_the_drifting_pillar`) proves the LATEST reading fingers transactability
+but is blind to whether an EARLIER out-of-band reading fingered something else — a wandering pillar
+would be noise-dominated jitter dressed up as a sustained move. This turns the snapshot claim into a
+measured sustained-move claim.
+
+**Real-series result (non-vacuous).** On the REAL committed series the trailing out-of-band run is 3
+readings (Jul-31 08:52Z, Jul-31 13:45Z, Aug-1 03:50Z) against the last in-band anchor (Jul-28
+23:41Z, delta +39.4). ALL THREE finger `driftflight.com transactability −25.0` (87.5 → 62.5) →
+`stable=True`, `fingered=(driftflight.com, transactability)`, one distinct mover. The
+transactability-drop attribution is NOT a single-snapshot artifact — it is consistent across all 3
+readings spanning ~28h, materially strengthening the credibility of the "with-rails reference
+softened on transactability" claim. Terminal render now emits: "attribution stability: driftflight.com
+transactability fingered by all 3 out-of-band re-scores — STABLE, not wandering".
+
+**Method / teeth.** `tests/test_canonical_history.py` +4 (41→45 test fns; 403→407 pytest): (a)
+`_catches_a_wandering_mover` — synthetic 2-reading run whose top mover FLIPS (reading 1 → .com
+legibility −20, reading 2 → .com transactability −25, legibility restored) → `stable=False`,
+`fingered=None`, movers={two}, render names "WANDERS" (falsifiable property, has teeth); (b)
+`_stable_when_pillar_holds` — synthetic 2-reading run both fingering .com transactability (−17.5
+then −25.0, magnitude differs) → `stable=True`, deterministic green witness independent of live
+recovery; (c) `_none_when_short_or_no_anchor` — lone out-of-band reading → None, all-out-of-band
+(no anchor) → None; (d) `_on_real_series_holds_the_pillar` — real-series guard (recovery/short/no-
+anchor skipped) asserting `stable`, `fingered==(with_rails, transactability)`, AND that the
+snapshot `attribution.top` equals the sustained fingered pillar (cross-check the two computations
+don't disagree).
+
+**Ship class + evidence.** Read-only diagnostic, OFF the scoring path: `git diff --name-only` =
+`asrs/canonical_history.py` + `tests/test_canonical_history.py` ONLY (scoring/rubric/probes/fetch/
+cli/battery/scorecard/offering/fixtures = 0 changes). `canonical_history` is imported only by
+`cli.py`/`scorecard.py` READOUTS and imports no scoring code (grep-verified) → score-neutral, NOT
+peer-gated, direct-to-main. Vendor-neutral: keys on the pair's structure (which side, which pillar,
+direction), host names used only as data (the module's existing reference constants). Full suite
+403→407, 0 failures. Canonical PAIR unchanged: in-cloud replay guard 24/24, **46.1 F / 85.5 B /
++39.4**, 0 replay-miss; rubric v0.7. (Cloud is network-blocked for the live re-score; the in-cloud
+standard is regression-by-construction — the scoring path is byte-identical — plus the offline
+replay guard, both green.)
+
+**Live canonical signal.** Newest LOCAL artifact `runs/local/verify_20260801T035047Z.json` (03:50Z
+Aug-1) is ~38.5h old at the 18:19Z fire — PAST the 6h floor (cloud cannot repair). Its LIVE re-score:
+drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 — the known transactability 87.5→62.5
+divergence (off the scoring path; the frozen replay guard stays the in-cloud regression signal).
+18:19Z is NOT first-after-16:00 UTC → no digest DM per comms policy; off-scoring-path / score-neutral
+increment, no sensitive-class PR, nothing score-moving → no DM this fire.
+
+**Next hypothesis.** Rotate READOUT next (Cycle 183 was TRUTH; METHOD → COVERAGE → TRUTH → READOUT).
+The drift diagnostic now measures attribution stability but the HTML canonical-history page does not
+yet surface it — a READOUT increment could render the stability line on the card the same way the
+sibling attribution/driver lines are (the terminal-then-HTML pattern Cycle 176 followed). Substantive
+frontier (thin-archetype/render/structured-catalog LIVE fixtures, ACP/UCP/MPP, calibration sweep,
+transactability-drop CHECK-level diagnosis + the peer-gated fixture re-baseline) stays `[LOCAL]`.
+
 ## Cycle 182 — 2026-08-02T17:11Z — COVERAGE — offering discovery HTML-entity-decodes: `&nbsp;`-joined capability phrases no longer under-classify
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

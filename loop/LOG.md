@@ -3,6 +3,66 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 177 — 2026-08-02T~12:1xZ — METHOD — metamorphic guard: canonical-drift diagnostics are magnitude-invariant / direction-covariant
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed.
+
+**Infra / self-heal.** Fresh container, detached HEAD at Cycle 176's `8f39551`. `git fetch origin main`
+FIRST (standing lesson); cached `origin/main` was the Cycle-94-era `3796519` → `3796519…8f39551 (forced
+update)`, then `checkout -B main origin/main`; working tree clean, invariant #5 intact. Fresh `.venv` +
+`requests pyyaml eth-account pytest` (the cloud-env dep gap, not a regression), imports verified, full
+suite **397 green pre-flight**. RUNNER AT-FLOOR: newest verify `runs/local/verify_20260801T035047Z.json`
+(03:50Z Aug-1) is ~32.4h old at the 12:12Z fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
+cloud cannot repair). Already flagged in the 16:12Z Cycle-157 digest; 12:12Z is NOT first-after-16:00 UTC
+→ no digest/DM this fire per comms policy (tests-only / off-scoring-path / score-neutral METHOD, no
+sensitive-class PR).
+
+**What / why (capability terms).** The METHOD leg (rotate METHOD→COVERAGE→TRUTH→READOUT; 176 was READOUT).
+The canonical-drift diagnostic family (`asrs/canonical_history`) reads the committed live-verify series and
+splits into two kinds of verdict with OPPOSITE design intents: the MAGNITUDE machinery (band,
+`consecutive_out_of_band`, `SustainedRun.span_hours`, `NoiseFloor`) keys on `|delta - baseline|` and must be
+DIRECTION-BLIND (a gap that widens by x and one that narrows by x are the same *size* of drift), while the
+DIRECTION machinery (signed `divergence`, `gap_change`, `reference_degraded`, and the DEFER-vs-RECAPTURE
+recommendation) must be DIRECTION-SENSITIVE (with-rails SOFTENING → DEFER, the pinned fixture still holds;
+no-rails/with-rails GAINING → RECAPTURE, the real gap moved). Existing cause/recapture tests corroborate
+this with hand-built OPPOSITE cases that change WHICH side moves. This adds the stronger, missing statement:
+a single **metamorphic transform** — reflect the whole trajectory about its in-band anchor (each side
+`v → 2·anchor − v`, so the delta reflects about the baseline gap with sign flipped and magnitude preserved)
+— under which the magnitude family must be INVARIANT and the direction family must COVARY, same driver side.
+This is the canonical-fixture-anchor credibility protection (playbook capability lens) turned into an
+executable structural invariant of the drift readout, not just point checks.
+
+**Method / non-vacuity + teeth.** New `test_reflection_about_baseline_is_magnitude_invariant_direction_covariant`
+(`tests/test_canonical_history.py`) + a `_reflect_about_anchor` helper. Base = the real 2026-07-27 shape
+(no-rails flat 46.1, with-rails softens 85.5→78.7, 3 in a row = sustained DEFER). Teeth: an up-front sanity
+assertion pins that the reflected with-rails side RISES where the base FALLS — the two series are genuinely
+distinct, not a series vs itself. INVARIANCE half: `band` (both `drifting`), `consecutive_out_of_band` (both
+3), `sustained_run.span_hours` (both 2.0), and `noise_floor.{stddev,max_abs_divergence}` are equal across
+the transform. COVARIANCE half: `divergence` (−6.8 ↔ +6.8, equal magnitude opposite sign), `gap_change`
+(same), `divergence_cause.driver` INVARIANT (still driftflight.com — reflection preserves each side's
+|move|), `reference_degraded` flips True→False, `recapture.code` flips `defer-reference-degraded` →
+`recapture-candidate`, and the render prose flips ("DEFER re-capture" → "re-capture candidate"). A
+direction-blind regression (e.g. the count/band accidentally reading signed divergence) OR a
+magnitude-leaking one (the band picking up sign) would break a half. Vendor-neutral: reference-host names
+appear only as the module's existing data constants.
+
+**Ship class + score-neutrality.** METHOD, tests-only. `git diff --name-only` = `tests/test_canonical_history.py`
+ONLY (asrs/ scoring / probes / offering / rubric / fetch / cli / scorecard / fixtures ALL UNTOUCHED) →
+SCORE-NEUTRAL, NOT peer-gated, DIRECT-TO-MAIN. `test_canonical_history.py` module runner 37→38; full suite
+**397→398**; canonical replay guard **24/24, 46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7. Live
+signal (read, not re-run — runner at-floor): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 /
+transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the
+frozen replay guard is the independent regression signal.
+
+**Next hypothesis.** COVERAGE 178 (rotate; 177 was METHOD). The canonical-drift diagnostic family now has a
+structural metamorphic invariant on top of its point checks; the near-in-cloud frontier is another
+metamorphic/invariance axis on a sub-signal still lacking one, or a small readout/methodology refinement.
+The substantive frontier — thin-archetype / render / structured-catalog fixtures, ACP/UCP/MPP handshakes,
+the calibration sweep, and the live transactability-drop check-level diagnosis (verify artifacts store only
+pillar rollups, so naming WHICH transactability check flipped still needs a live per-check re-crawl) —
+remains `[LOCAL]`-blocked.
+
 ## Cycle 175 — 2026-08-02T~10:1xZ — TRUTH — canonical-drift diagnostic gains wall-clock PERSISTENCE (sustained-run span)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

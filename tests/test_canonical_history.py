@@ -76,6 +76,30 @@ def _write_series(tmp: str, rows: list[dict]) -> None:
             json.dump(obj, fh)
 
 
+def _reflect_about_anchor(rows: list[dict]) -> list[dict]:
+    """Reflect a whole series' two overall scores about the FIRST row's overalls.
+
+    Each side ``v`` maps to ``2*anchor - v`` (a point reflection about the anchor,
+    per side), so a move of ``+x`` on a side becomes ``-x`` and the delta reflects
+    about the anchor gap: ``delta = with - no`` -> ``2*(anchor_with - anchor_no) -
+    delta``. Because the anchor is the in-band baseline reading, this reflects each
+    reading's divergence about the pinned baseline with its SIGN flipped and its
+    MAGNITUDE preserved — the canonical metamorphic transform for testing that the
+    drift diagnostics' magnitude machinery is direction-blind while their direction
+    machinery is direction-sensitive. Timestamps and grades are carried through
+    unchanged (only the numeric trajectory is reflected)."""
+    a_no = rows[0]["scores"][ch.CANONICAL_NO_RAILS]["overall"]
+    a_with = rows[0]["scores"][ch.CANONICAL_WITH_RAILS]["overall"]
+    out: list[dict] = []
+    for r in rows:
+        no = r["scores"][ch.CANONICAL_NO_RAILS]["overall"]
+        wi = r["scores"][ch.CANONICAL_WITH_RAILS]["overall"]
+        r_no = round(2 * a_no - no, 4)
+        r_wi = round(2 * a_with - wi, 4)
+        out.append(_artifact(r["ts"], r_no, r_wi, round(r_wi - r_no, 4)))
+    return out
+
+
 def test_loader_parses_and_skips_malformed() -> None:
     print("test_loader_parses_and_skips_malformed")
     with tempfile.TemporaryDirectory() as tmp:
@@ -478,6 +502,85 @@ def test_divergence_cause_on_real_series() -> None:
     _check("driver:" in ch.render(hist), "the render names the driver on the real series")
 
 
+def test_reflection_about_baseline_is_magnitude_invariant_direction_covariant() -> None:
+    print("test_reflection_about_baseline_is_magnitude_invariant_direction_covariant")
+    # METAMORPHIC guard on the CORE design split of the drift-diagnostic family: the
+    # MAGNITUDE machinery (band, out-of-band count, sustained-run span, noise floor)
+    # keys on |delta - baseline| and must be DIRECTION-BLIND, while the DIRECTION
+    # machinery (signed divergence, gap_change, reference_degraded, DEFER vs
+    # RECAPTURE) must be DIRECTION-SENSITIVE. One transform proves both at once:
+    # reflect the whole trajectory about its in-band anchor (2026-07-27 shape —
+    # no-rails flat, with-rails softens 3 in a row = sustained DEFER). The reflection
+    # keeps every |divergence| identical (so the magnitude family CANNOT move) while
+    # flipping every sign (so the direction family MUST flip: the same reference side
+    # now GAINS instead of softening -> RECAPTURE, not DEFER). Existing cause/recapture
+    # tests use hand-built OPPOSITE cases that change WHICH side moves; this pins the
+    # stronger statement — one metamorphic pair, same driver side, flipped direction —
+    # and adds the cross-transform magnitude-INVARIANCE assertions no other test makes.
+    base = [_artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4) for i in range(1, 5)]
+    base += [
+        _artifact("20260727T050000Z", 46.1, 80.0, 33.9),   # drifting
+        _artifact("20260727T060000Z", 46.1, 79.0, 32.9),   # drifting
+        _artifact("20260727T070000Z", 46.1, 78.7, 32.6),   # drifting, 3rd in a row
+    ]
+    refl = _reflect_about_anchor(base)
+    with tempfile.TemporaryDirectory() as tb, tempfile.TemporaryDirectory() as tr:
+        _write_series(tb, base)
+        _write_series(tr, refl)
+        hb = ch.load_history(tb)
+        hr = ch.load_history(tr)
+
+    # sanity: the two series are GENUINELY different (teeth) — the reflected with-rails
+    # side rose where the base fell, so this is not comparing a series to itself.
+    _check(
+        hb.latest.with_rails_overall < hb.points[0].with_rails_overall
+        and hr.latest.with_rails_overall > hr.points[0].with_rails_overall,
+        "base softens the with-rails side; reflection lifts it — genuinely distinct series",
+    )
+
+    # (1) MAGNITUDE machinery is INVARIANT under the reflection.
+    _check(hb.band == hr.band == ch.BAND_DRIFTING, f"band invariant, got {hb.band}/{hr.band}")
+    _check(
+        hb.consecutive_out_of_band == hr.consecutive_out_of_band == 3,
+        f"out-of-band count invariant, got {hb.consecutive_out_of_band}/{hr.consecutive_out_of_band}",
+    )
+    _check(
+        hb.sustained_run.span_hours == hr.sustained_run.span_hours == 2.0,
+        f"sustained-run span invariant, got {hb.sustained_run.span_hours}/{hr.sustained_run.span_hours}",
+    )
+    _check(
+        hb.noise_floor.stddev == hr.noise_floor.stddev
+        and hb.noise_floor.max_abs_divergence == hr.noise_floor.max_abs_divergence,
+        "noise floor invariant (in-band anchor readings are fixed points of the reflection)",
+    )
+
+    # (2) DIRECTION machinery is COVARIANT: every signed quantity flips, same magnitude.
+    _check(
+        abs(hb.divergence + hr.divergence) < 1e-9 and hb.divergence < 0 < hr.divergence,
+        f"signed divergence flips sign, same magnitude, got {hb.divergence}/{hr.divergence}",
+    )
+    cb, cr = hb.divergence_cause, hr.divergence_cause
+    _check(
+        cb.driver == cr.driver == ch.CANONICAL_WITH_RAILS,
+        f"driver SIDE invariant (reflection preserves |per-side move|), got {cb.driver}/{cr.driver}",
+    )
+    _check(
+        abs(cb.gap_change + cr.gap_change) < 1e-9 and cb.gap_change < 0 < cr.gap_change,
+        f"gap_change flips sign, same magnitude, got {cb.gap_change}/{cr.gap_change}",
+    )
+    _check(
+        cb.reference_degraded is True and cr.reference_degraded is False,
+        "reference_degraded flips: base = with-rails softening, reflection = with-rails gaining",
+    )
+    _check(
+        hb.recapture.code == ch.REC_DEFER and hr.recapture.code == ch.REC_RECAPTURE,
+        f"recapture flips DEFER->RECAPTURE, got {hb.recapture.code}/{hr.recapture.code}",
+    )
+    # the render prose flips with the verdict, too (not just the codes).
+    _check("DEFER re-capture" in ch.render(hb), "base render says defer")
+    _check("re-capture candidate" in ch.render(hr), "reflected render says re-capture candidate")
+
+
 def test_recapture_advice_baseline_valid_when_in_band() -> None:
     print("test_recapture_advice_baseline_valid_when_in_band")
     # in-band series -> the pinned fixture still represents the true gap; no action.
@@ -845,6 +948,7 @@ def main() -> int:
         test_divergence_cause_names_the_softening_side,
         test_divergence_cause_none_when_in_band,
         test_divergence_cause_on_real_series,
+        test_reflection_about_baseline_is_magnitude_invariant_direction_covariant,
         test_recapture_advice_baseline_valid_when_in_band,
         test_recapture_advice_waits_when_not_yet_sustained,
         test_recapture_advice_defers_on_reference_softening,

@@ -1,8 +1,43 @@
 # Loop state
 
-- Cycle counter: 176
+- Cycle counter: 177
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-02T~11:2xZ (Cycle 176) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-02T~12:1xZ (Cycle 177) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~32.4h old at the 12:12Z fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily digest; 12:12Z is
+  NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / off-scoring-path / score-neutral
+  METHOD increment, no sensitive-class PR, nothing score-moving). Live signal (read, not re-run):
+  drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop
+  divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent
+  regression signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire
+  (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 177): fresh
+  checkout on detached HEAD at Cycle 176's `8f39551`; ran `git fetch origin main` FIRST (standing lesson) →
+  `3796519…8f39551 (forced update)` (cached `origin/main` was the Cycle-94-era `3796519`), `checkout -B main
+  origin/main` aligned to the real tip, working tree clean, invariant #5 intact. Fresh `.venv` + `requests
+  pyyaml eth-account pytest`, imports verified, 397 tests green pre-flight.
+- FOCUS POINTER (Cycle 177 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 177 was
+  METHOD, so Cycle 178 is COVERAGE). Cycle 177 shipped a **METHOD increment — a metamorphic invariance guard
+  on the canonical-drift diagnostic family** (`tests/test_canonical_history.py`, +1 test + a
+  `_reflect_about_anchor` helper). The family splits into two verdict kinds with OPPOSITE design intents:
+  the MAGNITUDE machinery (band, `consecutive_out_of_band`, `SustainedRun.span_hours`, `NoiseFloor`) keys on
+  `|delta - baseline|` and must be DIRECTION-BLIND, while the DIRECTION machinery (signed `divergence`,
+  `gap_change`, `reference_degraded`, DEFER-vs-RECAPTURE) must be DIRECTION-SENSITIVE. Existing cause/recapture
+  tests corroborate this with hand-built OPPOSITE cases (changing WHICH side moves); this pins the stronger
+  statement via ONE metamorphic transform — reflect the whole trajectory about its in-band anchor
+  (`v → 2·anchor − v`, so the delta reflects about the baseline gap, sign flipped / magnitude preserved) —
+  under which the magnitude family is INVARIANT (band `drifting`=`drifting`, count 3=3, span 2.0=2.0, noise
+  floor equal) and the direction family COVARIES (divergence −6.8↔+6.8, gap_change same, driver SIDE invariant
+  = driftflight.com, `reference_degraded` True→False, recapture `defer`→`recapture-candidate`, render prose
+  flips). Teeth: an up-front sanity assertion pins the reflected with-rails side RISES where the base FALLS
+  (genuinely distinct series); a direction-blind OR magnitude-leaking regression breaks a half. Tests-only
+  (`git diff --name-only` = `tests/test_canonical_history.py` ONLY; asrs/ scoring/probes/offering/rubric/
+  fetch/cli/scorecard/fixtures UNTOUCHED) → score-neutral, NOT peer-gated, direct-to-main. `test_canonical_history.py`
+  module runner 37→38; full suite 397→398; replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss;
+  rubric v0.7. NEXT (COVERAGE 178): another metamorphic/invariance axis on an offering sub-signal or drift
+  diagnostic still lacking one, else a small readout/methodology refinement. Substantive frontier
+  (thin-archetype/render/structured-catalog fixtures, ACP/UCP/MPP, calibration sweep, transactability-drop
+  check-level diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 176 runner note): RUNNER AT-FLOOR at 2026-08-02T~11:2xZ (Cycle 176) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~31.5h old at fire — PAST the 6h floor (machine-asleep / runner-lag
   pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily digest; ~11:2xZ is NOT
   first-after-16:00 UTC → no DM this fire per comms policy (display-only / off-scoring-path / score-neutral

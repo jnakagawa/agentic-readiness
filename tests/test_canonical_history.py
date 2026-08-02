@@ -1159,6 +1159,117 @@ def test_recapture_advice_on_real_series_is_coherent() -> None:
     _check("re-capture:" in ch.render(hist), "the real render carries the recommendation line")
 
 
+def test_recapture_advice_prose_is_host_relabel_invariant() -> None:
+    print("test_recapture_advice_prose_is_host_relabel_invariant")
+    # TRUTH (Cycle 187): VENDOR-NEUTRALITY of the re-capture DECISION prose, made
+    # executable as the metamorphic (host-relabel) invariance axis — the sibling of
+    # the Cycle-181 cause_verdict guard and the Cycle-185 attribution-stability guard,
+    # for the LAST host-naming drift diagnostic in the family that still lacked one.
+    # recapture_advice's DEFER and RECAPTURE reasons embed cause.driver (a host, drawn
+    # from the module reference-pair constants) and cause.driver_change; the rendered
+    # "re-capture:" line surfaces that reason. This decision is comparability-affecting
+    # — RECAPTURE recommends a [LOCAL] fixture re-capture that MOVES the pinned delta
+    # the replay guard asserts — so it must key ONLY on the pair's STRUCTURE (which
+    # side moved, in which direction, how sustained), never on the literal host
+    # STRINGS. A branch that hardcoded "driftflight.com" would violate the benchmark's
+    # core invariant ("checks worded by capability, never by vendor") in the very
+    # readout that gates a baseline move. The two branches name OPPOSITE sides (DEFER
+    # -> the with-rails reference; RECAPTURE -> the no-rails floor), so one guard
+    # exercises vendor-neutrality on BOTH host constants. Transform: RELABEL both
+    # reference hosts to fresh, unrelated strings and rebuild the SAME structural
+    # series. Invariant: the advice CODE is unchanged and the rendered re-capture line
+    # is BYTE-IDENTICAL once the driver host is substituted back to a neutral
+    # placeholder — a pure function of structure + the host token.
+    def _defer_rows():
+        # sustained (3+) out of band, with-rails reference SOFTENING (.org flat, .com
+        # falls) -> DEFER, reason names the WITH-RAILS driver. (Mirrors the load-
+        # bearing 2026-07-27 real-drift shape from the DEFER coherence test.)
+        rows = [_artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4) for i in range(1, 5)]
+        rows += [
+            _artifact("20260727T050000Z", 46.1, 80.0, 33.9),
+            _artifact("20260727T060000Z", 46.1, 79.0, 32.9),
+            _artifact("20260727T070000Z", 46.1, 78.7, 32.6),
+        ]
+        return rows
+
+    def _recapture_rows():
+        # sustained out of band, no-rails FLOOR gaining (with-rails flat) -> RECAPTURE,
+        # reason names the NO-RAILS driver. The opposite side from DEFER.
+        rows = [_artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4) for i in range(1, 5)]
+        rows += [
+            _artifact("20260727T050000Z", 52.0, 85.5, 33.5),
+            _artifact("20260727T060000Z", 53.0, 85.5, 32.5),
+            _artifact("20260727T070000Z", 54.0, 85.5, 31.5),
+        ]
+        return rows
+
+    def _rec_line(hist) -> str:
+        for ln in ch.render(hist).splitlines():
+            if ln.startswith("re-capture:"):
+                return ln
+        return ""
+
+    orig_no, orig_with = ch.CANONICAL_NO_RAILS, ch.CANONICAL_WITH_RAILS
+    new_no, new_with = "no-rails-store.example", "with-rails-store.example"
+    try:
+        for rows_of, tag, expect_code, driver_of in (
+            (_defer_rows, "defer", ch.REC_DEFER, lambda no, wi: wi),
+            (_recapture_rows, "recapture", ch.REC_RECAPTURE, lambda no, wi: no),
+        ):
+            orig_driver = driver_of(orig_no, orig_with)
+            other_orig = orig_no if orig_driver == orig_with else orig_with
+
+            # (a) baseline at the REAL labels: the expected branch + a named driver.
+            with tempfile.TemporaryDirectory() as tmp:
+                _write_series(tmp, rows_of())
+                h1 = ch.load_history(tmp)
+            _check(h1.recapture.code == expect_code,
+                   f"[{tag}] baseline advice code {expect_code}, got {h1.recapture.code}")
+            _check(h1.divergence_cause.driver == orig_driver,
+                   f"[{tag}] baseline driver is the expected side, got {h1.divergence_cause.driver}")
+            line1 = _rec_line(h1)
+            _check(orig_driver in line1,
+                   f"[{tag}] baseline re-capture line names the real driver host, got: {line1}")
+
+            # (b) RELABEL both hosts and rebuild the SAME structural series (_artifact
+            #     keys the written scores off the constants, so the rebuilt series is
+            #     loaded, attributed, and rendered entirely under the new labels).
+            ch.CANONICAL_NO_RAILS, ch.CANONICAL_WITH_RAILS = new_no, new_with
+            new_driver = driver_of(new_no, new_with)
+            with tempfile.TemporaryDirectory() as tmp2:
+                _write_series(tmp2, rows_of())
+                h2 = ch.load_history(tmp2)
+            _check(h2.recapture.code == expect_code,
+                   f"[{tag}] relabel-invariant advice code {expect_code}, got {h2.recapture.code}")
+
+            # (c) relabel took effect — the reason names the NEW driver host.
+            line2 = _rec_line(h2)
+            _check(new_driver in line2,
+                   f"[{tag}] relabeled re-capture line names the new driver host, got: {line2}")
+
+            # (d) teeth: the relabeled line leaks NEITHER original host — a branch that
+            #     hardcoded a real vendor domain would fail here.
+            _check(orig_no not in line2 and orig_with not in line2,
+                   f"[{tag}] relabeled line leaks no original host, got: {line2}")
+            # the non-driver original host must be absent under the baseline too (the
+            # reason names ONLY the driver, never the quiet side).
+            _check(other_orig not in line1,
+                   f"[{tag}] baseline reason names only the driver, not the quiet side, got: {line1}")
+
+            # (e) INVARIANCE: substitute each driver host back to one placeholder — the
+            #     two re-capture lines are byte-identical, so the label + reason (the
+            #     verdict, the direction clause, the signed driver change) is a pure
+            #     function of structure + the host token.
+            _check(line1.replace(orig_driver, "<HOST>") == line2.replace(new_driver, "<HOST>"),
+                   f"[{tag}] re-capture line is host-relabel invariant modulo the host token\n"
+                   f"    orig: {line1}\n    new:  {line2}")
+
+            ch.CANONICAL_NO_RAILS, ch.CANONICAL_WITH_RAILS = orig_no, orig_with
+    finally:
+        # Module constants are process-global; other tests depend on the real pair.
+        ch.CANONICAL_NO_RAILS, ch.CANONICAL_WITH_RAILS = orig_no, orig_with
+
+
 def test_noise_floor_is_deterministic_on_real_series() -> None:
     print("test_noise_floor_is_deterministic_on_real_series")
     # THE load-bearing calibration finding: on the committed live series every
@@ -1424,6 +1535,7 @@ def main() -> int:
         test_recapture_advice_recommends_recapture_when_baseline_moved,
         test_recapture_advice_reviews_when_no_anchor,
         test_recapture_advice_on_real_series_is_coherent,
+        test_recapture_advice_prose_is_host_relabel_invariant,
         test_noise_floor_is_deterministic_on_real_series,
         test_noise_floor_sides_are_deterministic_on_real_series,
         test_noise_floor_sides_catch_a_cancelling_drift_the_delta_misses,

@@ -3,6 +3,67 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 187 — 2026-08-02T22:12Z — TRUTH — recapture-advice prose host-relabel invariance guard: the re-capture DECISION is now provably vendor-neutral
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed. Infra/self-heal: fresh checkout was detached on a stale tip; `git fetch origin
+main` FIRST (standing lesson) — origin/main had a `(forced update)` to `5559aef` (Cycle 186) — then
+`checkout -B main origin/main` aligned to the real tip, tree clean, invariant #5 intact (our own
+history untouched). Fresh `.venv` + `requests pyyaml eth-account pytest`; 412 tests green pre-flight
+(bench up). Runner AT-FLOOR: newest verify `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1)
+is ~42h old at the 22:12Z fire — PAST the 6h floor (machine-asleep / runner-lag pattern, cloud cannot
+repair; already flagged in the 16:12Z Cycle-181 digest). 22:12Z is NOT first-after-16:00 UTC → no
+digest DM this fire.
+
+**What (TRUTH).** Added `test_recapture_advice_prose_is_host_relabel_invariant` to
+`tests/test_canonical_history.py` — the metamorphic (host-relabel) vendor-neutrality guard for
+`recapture_advice`, the LAST host-naming diagnostic in the canonical-drift family that still lacked
+one (siblings: Cycle-181 `cause_verdict` prose, Cycle-185 `attribution_stability` line). The guard
+builds two sustained-out-of-band series — a DEFER shape (with-rails reference SOFTENING, reason names
+the with-rails driver) and a RECAPTURE shape (no-rails floor GAINING, reason names the no-rails
+driver) — so ONE guard exercises vendor-neutrality on BOTH host constants (the branches name OPPOSITE
+sides). For each: load at the real labels, capture the rendered `re-capture:` line + advice code;
+RELABEL both `ch.CANONICAL_{NO,WITH}_RAILS` to fresh strings; rebuild the SAME structural series; and
+assert (a) the advice CODE is unchanged, (b) the reason names the NEW driver host, (c) the relabeled
+line leaks NEITHER original host and the baseline names ONLY the driver (never the quiet side), and
+(d) INVARIANCE: `line1.replace(orig_driver,"<HOST>") == line2.replace(new_driver,"<HOST>")` — the
+label + reason (verdict, direction clause, signed driver change) is a pure function of structure + the
+host token. Registered in the manual `main()` runner too.
+
+**Why.** `recapture_advice` is not just descriptive prose — its RECAPTURE branch recommends a
+`[LOCAL]` fixture re-capture that MOVES the pinned canonical delta the replay guard asserts (the
+comparability baseline). A branch that hardcoded a vendor domain would violate the benchmark's core
+invariant ("checks worded by capability, never by vendor") in the very readout that gates a baseline
+move — the highest-stakes place for a vendor leak. The rest of the drift family already had this axis
+made executable; this closes it, so the whole canonical-drift diagnostic family (reflection
+magnitude/direction, cause-verdict relabel, attribution-stability relabel, and now recapture-advice
+relabel) is uniformly proven vendor-neutral by construction, not by inspection.
+
+**Method / non-vacuity + teeth.** MUTATION-VERIFIED: temporarily hardcoding `driftflight.com` into
+the DEFER reason (`sed` swap of `{cause.driver}` → literal) reddens the guard on the relabeled build
+(`[defer] relabeled re-capture line names the new driver host` fails, the leaked line shown); reverting
+restores 47/47. The two shapes reuse the exact score trajectories of the existing DEFER/RECAPTURE
+coherence tests, so the branches under test are the load-bearing ones.
+
+**Ship class + evidence.** OFF the scoring path: `git diff --name-only` = `tests/test_canonical_history.py`
+ONLY; scoring-path diff (`asrs/scoring.py rubric/ fixtures/ asrs/probes asrs/fetch.py asrs/cli.py
+asrs/battery.py asrs/offering.py asrs/scorecard.py`) = EMPTY → score-neutral, NOT peer-gated,
+direct-to-main. Full suite 412→413, 0 failures; `test_canonical_history.py` 46→47. Canonical PAIR
+unchanged: in-cloud replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7.
+(Cloud is network-blocked for the live re-score; in-cloud standard = regression-by-construction —
+scoring path byte-identical — plus offline suite.) LIVE signal (read from newest verify, not re-run):
+drift-flight.org **46.1 F** / driftflight.com **76.2 C** / **+30.1** / transactability 62.5 — the
+transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the frozen replay guard stays
+the independent regression signal.
+
+**Next hypothesis (READOUT 188).** The metamorphic-invariance axis is now complete across the drift
+family; the cloud-doable frontier shifts to a READOUT completeness/consistency check (e.g. terminal↔HTML
+parity on a diagnostic line, or an evidence-link audit) or an offering-classifier precision guard on
+real committed evidence. The substantive frontier — thin-archetype / render / structured-catalog LIVE
+fixtures (incl. the service_booking `book (a|an|your)` sales-CTA collision), ACP/UCP/MPP handshakes,
+the calibration sweep, and the CHECK-level diagnosis of the persistent driftflight.com transactability
+drop — stays `[LOCAL]`.
+
 ## Cycle 186 — 2026-08-02T21:12Z — COVERAGE — data_retrieval precision hardening: `enrich`/`dataset` bare-word signals no longer conjure a false archetype
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

@@ -1,8 +1,39 @@
 # Loop state
 
-- Cycle counter: 186
+- Cycle counter: 187
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-02T21:12Z (Cycle 186) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-02T22:12Z (Cycle 187) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~42h old at the 22:12Z fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; 22:12Z is
+  NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral TRUTH increment,
+  no sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org 46.1 F /
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS
+  (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent regression signal
+  (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open → []),
+  so no first-duty review. INFRA/SELF-HEAL (Cycle 187): fresh checkout on detached HEAD on a stale tip; ran
+  `git fetch origin main` FIRST (standing lesson) → origin/main `(forced update)` to `5559aef` (Cycle 186),
+  `checkout -B main origin/main` aligned to the real tip, working tree clean, invariant #5 intact. Fresh
+  `.venv` + `requests pyyaml eth-account pytest`, imports verified, 412 tests green pre-flight.
+- FOCUS POINTER (Cycle 187 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 187 was
+  TRUTH, so Cycle 188 is READOUT). Cycle 187 shipped a **TRUTH increment — the recapture-advice prose
+  host-relabel invariance guard** (`tests/test_canonical_history.py`
+  `test_recapture_advice_prose_is_host_relabel_invariant`, +1): the metamorphic vendor-neutrality guard for
+  `recapture_advice`, the LAST host-naming diagnostic in the canonical-drift family without one (siblings:
+  Cycle-181 cause_verdict, Cycle-185 attribution_stability). Builds a DEFER shape (with-rails reference
+  softening) + a RECAPTURE shape (no-rails floor gaining) so ONE guard exercises BOTH host constants;
+  relabels both hosts, rebuilds the SAME structural series, and asserts the advice code + rendered
+  `re-capture:` line follow the new host, leak neither original host, and are BYTE-IDENTICAL modulo the host
+  token. Load-bearing because the RECAPTURE branch gates a `[LOCAL]` fixture re-capture that MOVES the pinned
+  delta. Mutation-verified (hardcoding `driftflight.com` reddens it; revert green). Tests-only, OFF the
+  scoring path (`git diff --name-only` = `tests/test_canonical_history.py` ONLY; scoring-path diff EMPTY) →
+  score-neutral, NOT peer-gated, direct-to-main. Full suite 412→413; `test_canonical_history.py` 46→47;
+  replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. The canonical-drift diagnostic
+  family now has UNIFORM metamorphic (host-relabel) vendor-neutrality coverage. NEXT (READOUT 188): a
+  terminal↔HTML parity or evidence-link completeness check, or an offering-classifier precision guard on real
+  committed evidence. Substantive frontier (thin-archetype/render/structured-catalog LIVE fixtures — incl. the
+  service_booking `book (a|an|your)` sales-CTA collision — ACP/UCP/MPP, calibration sweep,
+  transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 186 runner note): RUNNER AT-FLOOR at 2026-08-02T21:12Z (Cycle 186) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~41h old at the 21:12Z fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; 21:12Z is
   NOT first-after-16:00 UTC → no DM this fire per comms policy (off-scoring-path / score-neutral COVERAGE

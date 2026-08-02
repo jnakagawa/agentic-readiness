@@ -1,8 +1,43 @@
 # Loop state
 
-- Cycle counter: 179
+- Cycle counter: 180
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-02T14:12Z (Cycle 179) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-02T15:19Z (Cycle 180) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~35.5h old at the 15:19Z fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily digest; 15:19Z is
+  NOT first-after-16:00 UTC → no DM this fire per comms policy (READOUT increment, off-scoring-path /
+  score-neutral, no sensitive-class PR, nothing score-moving). Live signal (read, not re-run):
+  drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop
+  divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent
+  regression signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests`
+  state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 180): fresh checkout on detached HEAD at
+  Cycle 179's `bdbd8b1`; ran `git fetch origin main` FIRST (standing lesson) → `3796519…bdbd8b1 (forced
+  update)` (cached `origin/main` was the Cycle-94-era `3796519`), `checkout -B main origin/main` aligned to
+  the real tip, working tree clean, invariant #5 intact. Fresh `.venv` + `requests pyyaml eth-account
+  pytest`, imports verified, 399 tests green pre-flight.
+- FOCUS POINTER (Cycle 180 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 180 was
+  READOUT, so Cycle 181 is METHOD). Cycle 180 shipped a **READOUT increment — the divergence-cause prose now
+  names the fingered PILLAR, not just the side** (`asrs/canonical_history.py` `cause_verdict` + its two call
+  sites in `render` and `asrs/scorecard.py`, + `tests/test_canonical_history.py` +2). The drift diagnostic
+  computed two independent attributions (per-pillar `_attribute` → WHICH pillar; side-level `_cause` → WHICH
+  side + what-to-do) and rendered them on two SEPARATE lines; the side/driver sentence — the one carrying the
+  "what to do" meaning (reference SOFTENED → defer re-capture) — did NOT name the pillar, so a reader had to
+  mentally join them. `cause_verdict(cause, top=None)` now weaves the pillar in ("SOFTENED **on
+  transactability**") but ONLY on cross-mechanism agreement — same domain (`top.domain == cause.driver`, the
+  invariant Cycle 179 pinned) AND same direction (`sign(top.change) == sign(driver_change)`); on disagreement
+  or no isolated pillar it falls back byte-for-byte to the side-only wording. Threaded through terminal
+  (`driver:` line) AND HTML (`Side:` line), each passing `attribution.top`. Verified end-to-end on the REAL
+  committed series: driver line reads "…the with-rails reference SOFTENED on transactability (a real-world
+  site change)…" on both surfaces. Off the scoring path (`git diff --name-only` = canonical_history.py +
+  scorecard.py + test only; scoring/probes/rubric/fetch/offering/cli/battery/fixtures = 0 changes) →
+  score-neutral, NOT peer-gated, direct-to-main. `test_canonical_history.py` runner 38→40; full suite
+  399→401; replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. NEXT (METHOD 181): a
+  variance/attribution refinement or an invariance axis on a diagnostic still lacking one — e.g. pin
+  `cause_verdict`'s new pillar clause is host-relabel invariant, or measure whether the pillar-attribution
+  top is STABLE across the trailing out-of-band run (same pillar every reading, or does the mover wander?).
+  Substantive frontier (thin-archetype/render/structured-catalog LIVE fixtures, ACP/UCP/MPP, calibration
+  sweep, transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 179 runner note): RUNNER AT-FLOOR at 2026-08-02T14:12Z (Cycle 179) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~34.4h old at the 14:12Z fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily digest; 14:12Z is
   NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / off-scoring-path / score-neutral

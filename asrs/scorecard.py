@@ -1606,7 +1606,8 @@ its <b>{nf.n_in_band}</b> in-band re-scores: &sigma;={nf.stddev:.2f}, worst dive
                 'isolated (a pillar was unobserved on one side).</p>'
             )
         if cause is not None:
-            diag_card += f'<p><b>Side:</b> {_esc(ch.cause_verdict(cause))}.</p>'
+            c_top = attr.top if attr is not None else None
+            diag_card += f'<p><b>Side:</b> {_esc(ch.cause_verdict(cause, c_top))}.</p>'
         diag_card += "</div>"
 
     # The synthesized DECISION the drift diagnostics feed (Cycle 43): given the live

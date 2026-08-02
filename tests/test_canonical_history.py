@@ -534,6 +534,98 @@ def test_divergence_cause_on_real_series() -> None:
     _check("driver:" in ch.render(hist), "the render names the driver on the real series")
 
 
+def test_cause_verdict_names_the_pillar_on_cross_mechanism_agreement() -> None:
+    print("test_cause_verdict_names_the_pillar_on_cross_mechanism_agreement")
+    # READOUT (Cycle 180): the side/driver prose is the sentence that carries the
+    # "what to do" meaning (reference SOFTENED -> defer re-capture). It named the
+    # SIDE but not WHICH pillar softened — a reader had to mentally join it to the
+    # separate pillar-attribution line. cause_verdict now weaves the fingered pillar
+    # into that sentence, but ONLY when the two INDEPENDENT attribution mechanisms
+    # concur: the isolated pillar sits on the same domain the side cause blames AND
+    # moved the same direction as that side's overall. Otherwise it falls back to
+    # the side-only wording rather than assert a pillar the signals don't corroborate.
+    soften = ch.DivergenceCause(
+        anchor_ts="20260728T234102Z",
+        no_rails_change=0.0,
+        with_rails_change=-9.3,   # with-rails drove it -> reference_degraded
+    )
+    _check(soften.driver == ch.CANONICAL_WITH_RAILS, "with-rails is the driver")
+    _check(soften.reference_degraded is True, "reference softened")
+    tx = ch.PillarMove(ch.CANONICAL_WITH_RAILS, "transactability", 87.5, 62.5, -25.0)
+
+    # (1) AGREEMENT (same domain, same direction) -> the pillar is NAMED, and the
+    #     side-level wording the older tests/readout grep for is preserved verbatim.
+    joined = ch.cause_verdict(soften, tx)
+    _check("SOFTENED on transactability" in joined, f"names the softened pillar, got: {joined}")
+    _check("SOFTENED" in joined, "side-level SOFTENED wording preserved")
+    _check("the pinned fixture still represents the true gap" in joined, "defer meaning preserved")
+
+    # (2) NO PILLAR ISOLATED (top None: a pillar unobserved on one side, where the
+    #     side cause is still defined) -> byte-for-byte the pre-pillar side-only form.
+    side_only = ch.cause_verdict(soften, None)
+    _check("on transactability" not in side_only, "no pillar named when none supplied")
+    _check("SOFTENED (a real-world change" in side_only or "SOFTENED (a real-world site change" in side_only,
+           f"clause reads immediately after SOFTENED with no pillar, got: {side_only}")
+
+    # (3) DOMAIN DISAGREEMENT: the largest pillar mover is on the OTHER (no-rails)
+    #     side while the side cause blames with-rails -> mechanisms disagree, so the
+    #     prose must NOT graft a no-rails pillar onto the with-rails softening claim.
+    other_side = ch.PillarMove(ch.CANONICAL_NO_RAILS, "legibility", 36.4, 60.0, +23.6)
+    disagree = ch.cause_verdict(soften, other_side)
+    _check("on legibility" not in disagree, "no pillar named across a domain disagreement")
+    _check(disagree == side_only, "domain disagreement falls back to the exact side-only prose")
+
+    # (4) DIRECTION DISAGREEMENT: right domain, but that pillar ROSE while the side's
+    #     overall FELL -> naming it "SOFTENED on <pillar>" would contradict the pillar
+    #     line, so the clause is withheld.
+    rose = ch.PillarMove(ch.CANONICAL_WITH_RAILS, "legibility", 50.0, 80.0, +30.0)
+    dir_dis = ch.cause_verdict(soften, rose)
+    _check("on legibility" not in dir_dis, "no pillar named when the pillar moved the wrong way")
+    _check(dir_dis == side_only, "direction disagreement falls back to the exact side-only prose")
+
+    # (5) The OTHER honest direction: the no-rails floor GAINED capability (the gap
+    #     genuinely closed). Agreement names the pillar without disturbing the
+    #     "real benchmark movement" language that distinguishes it from an outage.
+    gain = ch.DivergenceCause("20260728T234102Z", no_rails_change=+13.6, with_rails_change=0.0)
+    _check(gain.driver == ch.CANONICAL_NO_RAILS, "no-rails is the driver")
+    _check(gain.reference_degraded is False, "a floor gain is not reference degradation")
+    lg = ch.PillarMove(ch.CANONICAL_NO_RAILS, "legibility", 36.4, 50.0, +13.6)
+    gverd = ch.cause_verdict(gain, lg)
+    _check("GAINED capability on legibility" in gverd, f"names the gained pillar, got: {gverd}")
+    _check("real benchmark movement" in gverd, "movement-vs-outage language preserved")
+
+
+def test_cause_verdict_pillar_named_end_to_end_in_render() -> None:
+    print("test_cause_verdict_pillar_named_end_to_end_in_render")
+    # Integration: a full series carrying PILLARS through the loader must surface the
+    # joined "SOFTENED on <pillar>" sentence in the terminal render's driver line,
+    # confirming render/scorecard actually thread PillarAttribution.top into
+    # cause_verdict (not just the unit-tested function). Shape mirrors the real drift:
+    # .org flat, .com softens with transactability the dominant mover.
+    org_p = {"access": 100.0, "legibility": 36.4, "transactability": 18.75, "trust": 60.0}
+    com_anchor = {"access": 100.0, "legibility": 90.9, "transactability": 87.5, "trust": 60.0}
+    com_drift = {"access": 100.0, "legibility": 90.9, "transactability": 62.5, "trust": 60.0}
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [
+            _artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4, org_pillars=org_p, com_pillars=com_anchor)
+            for i in range(1, 5)
+        ]
+        rows += [
+            _artifact("20260731T080000Z", 46.1, 76.2, 30.1, org_pillars=org_p, com_pillars=com_drift),
+            _artifact("20260731T140000Z", 46.1, 76.2, 30.1, org_pillars=org_p, com_pillars=com_drift),
+        ]
+        _write_series(tmp, rows)
+        hist = ch.load_history(tmp)
+        top = hist.attribution.top
+        _check(top is not None and top.domain == ch.CANONICAL_WITH_RAILS and top.pillar == "transactability",
+               f"the loader fingers com transactability, got: {top}")
+        out = ch.render(hist)
+        _check("driver:" in out, "render still names the driver")
+        _check("SOFTENED on transactability" in out,
+               f"render's driver line names the fingered pillar, got driver line: "
+               f"{[l for l in out.splitlines() if l.startswith('driver:')]}")
+
+
 def test_reflection_about_baseline_is_magnitude_invariant_direction_covariant() -> None:
     print("test_reflection_about_baseline_is_magnitude_invariant_direction_covariant")
     # METAMORPHIC guard on the CORE design split of the drift-diagnostic family: the
@@ -980,6 +1072,8 @@ def main() -> int:
         test_divergence_cause_names_the_softening_side,
         test_divergence_cause_none_when_in_band,
         test_divergence_cause_on_real_series,
+        test_cause_verdict_names_the_pillar_on_cross_mechanism_agreement,
+        test_cause_verdict_pillar_named_end_to_end_in_render,
         test_reflection_about_baseline_is_magnitude_invariant_direction_covariant,
         test_recapture_advice_baseline_valid_when_in_band,
         test_recapture_advice_waits_when_not_yet_sustained,

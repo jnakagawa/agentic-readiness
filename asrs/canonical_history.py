@@ -779,36 +779,59 @@ def _spark(values: list[float]) -> str:
     return "".join(out)
 
 
-def cause_verdict(cause: DivergenceCause) -> str:
+def cause_verdict(cause: DivergenceCause, top: PillarMove | None = None) -> str:
     """A capability-lens sentence naming which SIDE drove the divergence.
 
     Keys on (driver side, driver direction) — the four honest cases. Because the
     driver is the dominant side, its direction fixes whether the gap narrowed or
     widened, so the sentence never contradicts ``gap_change``.
+
+    When ``top`` (the largest per-pillar mover from ``PillarAttribution``) is
+    supplied AND the two INDEPENDENT attribution mechanisms concur, the sentence
+    also names the fingered PILLAR — "SOFTENED on transactability", not only "the
+    with-rails side softened". Concurrence means the isolated pillar sits on the
+    SAME domain the side-level cause blames (``top.domain == cause.driver`` — the
+    cross-mechanism agreement the real-series guard pins) AND moved the SAME
+    direction as that side's overall (``sign(top.change) == sign(driver_change)``,
+    so the named pillar genuinely moved the way the verb says). When the two
+    signals disagree, or no single pillar isolated (``top`` None — a pillar
+    unobserved on one side, where the side cause is still defined but no pillar
+    is), the prose falls back to the side-only wording, byte-for-byte the
+    pre-pillar form, rather than assert a pillar the mechanisms don't corroborate.
     """
     driver = cause.driver
     change = cause.driver_change
     verb = "fell" if change < 0 else "rose"
+    on_pillar = ""
+    if (
+        top is not None
+        and top.domain == driver
+        and (top.change < 0) == (change < 0)
+    ):
+        on_pillar = f" on {top.pillar}"
     if driver == CANONICAL_NO_RAILS:
         if change > 0:
             meaning = (
-                "the capability gap narrowed because the no-rails reference GAINED "
-                "capability — a real benchmark movement, not a reference outage"
+                f"the capability gap narrowed because the no-rails reference GAINED "
+                f"capability{on_pillar} — a real benchmark movement, not a reference "
+                f"outage"
             )
         else:
             meaning = (
-                "the gap widened because the no-rails reference LOST ground"
+                f"the gap widened because the no-rails reference LOST ground{on_pillar}"
             )
     else:  # with-rails driver
         if change < 0:
             meaning = (
-                "the gap narrowed because the with-rails reference SOFTENED "
-                "(a real-world site change), not because the no-rails side gained "
-                "capability — the pinned fixture still represents the true gap"
+                f"the gap narrowed because the with-rails reference SOFTENED"
+                f"{on_pillar} (a real-world site change), not because the no-rails "
+                f"side gained capability — the pinned fixture still represents the "
+                f"true gap"
             )
         else:
             meaning = (
-                "the gap widened because the with-rails reference GAINED capability"
+                f"the gap widened because the with-rails reference GAINED "
+                f"capability{on_pillar}"
             )
     return f"{driver} overall {verb} {change:+.1f} — {meaning}"
 
@@ -937,7 +960,8 @@ def render(history: CanonicalHistory, window: int = 24) -> str:
             )
     cause = history.divergence_cause
     if cause is not None:
-        lines.append(f"driver: {cause_verdict(cause)}")
+        top = attr.top if attr is not None else None
+        lines.append(f"driver: {cause_verdict(cause, top)}")
     adv = history.recapture
     if adv is not None and adv.code != REC_NO_DATA:
         lines.append(f"re-capture: {_REC_LABEL.get(adv.code, adv.code)} — {adv.reason}")

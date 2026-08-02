@@ -3,6 +3,74 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 180 — 2026-08-02T15:19Z — READOUT — divergence-cause prose names the fingered PILLAR (not just the side)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed.
+
+**Infra health.** Fresh checkout on detached HEAD at Cycle 179's `bdbd8b1`; `git fetch origin main`
+FIRST (standing lesson) → `3796519…bdbd8b1 (forced update)` (cached `origin/main` was the Cycle-94-era
+`3796519`), `checkout -B main origin/main` aligned to the real tip, tree clean, invariant #5 intact.
+Fresh `.venv` + `requests pyyaml eth-account pytest`, 399 tests green pre-flight. RUNNER AT-FLOOR:
+newest verify `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is ~35.5h old at the 15:19Z
+fire — PAST the 6h floor (machine-asleep / runner-lag; cloud cannot repair; already flagged in the
+16:12Z Cycle-157 digest). Bench + bookkeeping otherwise healthy (399 = STATE).
+
+**What/why (READOUT — join the two attribution mechanisms in the operator-facing prose).** The
+canonical-drift diagnostic already computes TWO independent attributions and renders them on two
+separate lines: the `attribution`/`Pillar` line names WHICH pillar moved (driftflight.com
+transactability 87.5 → 62.5), and the `driver`/`Side` line (via `cause_verdict`) names WHICH SIDE
+moved and what to do about it (the with-rails reference SOFTENED → defer re-capture). But the
+side/driver sentence — the one carrying the "what to do" meaning — did NOT name the pillar; a reader
+had to mentally join it to the pillar line above. Cycle 179 pinned as a test invariant that the two
+mechanisms CONCUR on the real series (`top.domain == cause.driver`, direction-consistent); this cycle
+spends that established agreement in the readout. `cause_verdict(cause, top=None)` now weaves the
+fingered pillar into the sentence — "SOFTENED **on transactability**", not only "the with-rails side
+softened" — but ONLY when the two independent signals concur: same domain (`top.domain ==
+cause.driver`) AND same direction (`sign(top.change) == sign(driver_change)`, so the named pillar
+genuinely moved the way the verb says). When they disagree, or no single pillar isolated (`top` None —
+a pillar unobserved on one side, where the side cause is still defined), the prose falls back
+byte-for-byte to the pre-pillar side-only wording rather than assert a pillar the mechanisms don't
+corroborate. Threaded through BOTH surfaces: terminal `render` (`driver:` line) and the HTML
+canonical-history page (`_write_canonical_history_page`'s `Side:` line), each passing
+`attribution.top`.
+
+Verified end-to-end on the REAL committed series (83 points, out of band): the driver line now reads
+"driftflight.com overall fell -9.3 — the gap narrowed because the with-rails reference SOFTENED **on
+transactability** (a real-world site change)…" on terminal AND HTML.
+
+**Ship class + evidence.** READOUT, off the scoring path: `git diff --name-only` =
+`asrs/canonical_history.py` + `asrs/scorecard.py` + `tests/test_canonical_history.py` ONLY;
+scoring-path files (scoring.py / probes / rubric / fetch / offering / cli / battery / fixtures)
+UNTOUCHED — `git diff --name-only` over them = 0 → score-neutral, NOT peer-gated, direct-to-main.
+`canonical_history` imports no scoring code (read-only diagnostic); `scorecard` is HTML display. Two
+new tests (`test_cause_verdict_names_the_pillar_on_cross_mechanism_agreement` — the four honest driver
+cases + the three non-vacuous fallback guards: no-pillar / domain-disagreement / direction-
+disagreement, each pinned equal to the exact side-only prose; and
+`test_cause_verdict_pillar_named_end_to_end_in_render` — a full pillar-carrying series through the
+loader confirms `render` threads `attribution.top` into `cause_verdict`). Existing SOFTENED / GAINED
+capability / real-benchmark-movement / `driver:` greps in test_canonical_history + test_readout stay
+green (side-level substrings preserved verbatim). `test_canonical_history.py` module runner 38→40;
+full suite **399 → 401**, 0 failures. Canonical PAIR unchanged: in-cloud replay guard **24/24, 46.1 F
+/ 85.5 B / +39.4**, 0 replay-miss; rubric v0.7. (Cloud network-blocked for live re-score; in-cloud
+standard = regression-by-construction — scoring path byte-identical — plus the offline replay guard.)
+
+**Live canonical signal.** Read (not re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C /
++30.1 / transactability 62.5 — the known transactability 87.5→62.5 divergence PERSISTS (Aug-1), off
+the scoring path; the frozen replay guard (+39.4) stays the in-cloud regression signal. 15:19Z is NOT
+first-after-16:00 UTC → no digest DM; score-neutral readout, nothing sensitive-class or score-moving
+→ no notable-ship DM. No Slack this fire per comms policy.
+
+**Next hypothesis.** Rotate METHOD next (Cycle 180 was READOUT; METHOD → COVERAGE → TRUTH → READOUT).
+The drift-diagnostic family now cross-validates its two attribution mechanisms AND surfaces the joined
+pillar+side story on both readouts. A METHOD candidate: a variance/attribution refinement or an
+invariance axis on a diagnostic still lacking one — e.g. pin that `cause_verdict`'s pillar clause is
+itself host-relabel invariant (the readout equivalent of the classifier relabel guards), or measure
+whether the pillar-attribution top is STABLE across the trailing out-of-band run (does the same pillar
+finger every reading, or does the mover wander?). Substantive frontier (thin-archetype/render/
+structured-catalog LIVE fixtures, ACP/UCP/MPP, calibration sweep, transactability-drop CHECK-level
+diagnosis) stays `[LOCAL]`.
+
 ## Cycle 179 — 2026-08-02T~14:1xZ — TRUTH — real-series pillar attribution: finger the DRIFTING pillar + cross-check the two mechanisms
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

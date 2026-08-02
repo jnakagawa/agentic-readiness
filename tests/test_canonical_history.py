@@ -396,13 +396,19 @@ def test_attribution_skips_unobserved_pillar_and_needs_an_anchor() -> None:
         _check(h2.attribution is None, "no in-band anchor in the series -> no attribution claim")
 
 
-def test_attribution_on_real_series_fingers_com_legibility() -> None:
-    print("test_attribution_on_real_series_fingers_com_legibility")
+def test_attribution_on_real_series_fingers_the_drifting_pillar() -> None:
+    print("test_attribution_on_real_series_fingers_the_drifting_pillar")
     # Non-vacuous end-to-end: the REAL committed series' current drift must
-    # attribute to driftflight.com legibility (the 2026-07-27 real-world site
-    # change STATE.md hand-wrote — now COMPUTED). Guarded so it only asserts the
-    # attribution WHEN the live series is actually out of band; if the site
-    # recovers to in-band, attribution is correctly None and we skip the claim.
+    # attribute to a SPECIFIC pillar on the with-rails reference (COMPUTED from the
+    # committed verify_*.json series, not hand-written). The live drift's pillar has
+    # MOVED over the loop's lifetime — it was driftflight.com LEGIBILITY during the
+    # 2026-07-27 episode and is driftflight.com TRANSACTABILITY now (87.5 -> 62.5,
+    # the persistent Jul-31/Aug-1 machine-payment softening tracked in STATE/BACKLOG)
+    # — so this guard pins the pillar the CURRENT series fingers, not a frozen name.
+    # Guarded for recovery: if the site returns to in-band, attribution is correctly
+    # None and the claim is skipped. Two independent mechanisms must AGREE here — the
+    # per-pillar _attribute() and the side-level _cause() — a cross-check neither
+    # test alone makes.
     hist = ch.load_history()
     if hist.band == ch.BAND_IN or hist.attribution is None:
         _check(True, "live series is in-band -> no attribution to check (site recovered)")
@@ -412,6 +418,32 @@ def test_attribution_on_real_series_fingers_com_legibility() -> None:
     _check(
         top.domain == ch.CANONICAL_WITH_RAILS,
         f"the real drift is on the with-rails side, got {top.domain}",
+    )
+    # Cross-mechanism agreement: the pillar-level attribution and the side-level
+    # divergence cause are computed independently (different code paths, one on
+    # per-pillar scores, one on overalls) — on the real series they must finger the
+    # SAME side, or one of them is lying about what moved.
+    cause = hist.divergence_cause
+    _check(cause is not None, "an out-of-band real series with an anchor has a cause")
+    _check(
+        top.domain == cause.driver,
+        f"pillar attribution ({top.domain}) and side cause ({cause.driver}) must agree",
+    )
+    # Direction consistency: when the with-rails reference is what SOFTENED
+    # (reference_degraded), the fingered pillar's own move must be a DROP — a
+    # degradation cannot be carried by a pillar that rose.
+    if cause.reference_degraded:
+        _check(
+            top.change < 0,
+            f"a reference softening must be a pillar DROP, got {top.change:+}",
+        )
+    # The specific pillar the CURRENT live drift fingers. If this reddens, the real
+    # site drifted to a DIFFERENT pillar than transactability — read the newest
+    # runs/local/verify_*.json, confirm which pillar moved, and update this name
+    # (the same "executable evidence tracks reality" discipline as the family).
+    _check(
+        top.pillar == "transactability",
+        f"the current live drift is on transactability, got {top.pillar}",
     )
 
 
@@ -944,7 +976,7 @@ def main() -> int:
         test_attribution_names_the_moving_pillar,
         test_attribution_none_when_in_band,
         test_attribution_skips_unobserved_pillar_and_needs_an_anchor,
-        test_attribution_on_real_series_fingers_com_legibility,
+        test_attribution_on_real_series_fingers_the_drifting_pillar,
         test_divergence_cause_names_the_softening_side,
         test_divergence_cause_none_when_in_band,
         test_divergence_cause_on_real_series,

@@ -1,8 +1,45 @@
 # Loop state
 
-- Cycle counter: 178
+- Cycle counter: 179
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-02T13:20Z (Cycle 178) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-02T14:12Z (Cycle 179) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~34.4h old at the 14:12Z fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily digest; 14:12Z is
+  NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / off-scoring-path / score-neutral
+  TRUTH increment, no sensitive-class PR, nothing score-moving). Live signal (read, not re-run):
+  drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop
+  divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent
+  regression signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests`
+  state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 179): fresh checkout on detached HEAD at
+  Cycle 178's `2ddc5dd`; ran `git fetch origin main` FIRST (standing lesson) → `3796519…2ddc5dd (forced
+  update)` (cached `origin/main` was the Cycle-94-era `3796519`), `checkout -B main origin/main` aligned to
+  the real tip, working tree clean, invariant #5 intact. Fresh `.venv` + `requests pyyaml eth-account
+  pytest`, imports verified, 399 tests green pre-flight.
+- FOCUS POINTER (Cycle 179 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 179 was
+  TRUTH, so Cycle 180 is READOUT). Cycle 179 shipped a **TRUTH increment — real-series pillar attribution
+  now fingers the DRIFTING pillar + cross-checks the two attribution mechanisms** (`tests/test_canonical_
+  history.py`, rename+strengthen, no net count change). The canonical-drift diagnostic's real-series guard
+  was named `..._fingers_com_legibility` but asserted ONLY the with-rails SIDE — and the executable evidence
+  had drifted from reality: the name said LEGIBILITY (the 07-27 episode) while the CURRENT committed series
+  (83 usable points; anchor `20260728T234102Z`, latest Aug-1) attributes to **driftflight.com TRANSACTABILITY
+  87.5 → 62.5 (−25.0)**, the persistent Jul-31/Aug-1 machine-payment softening. Computed live: band `diverged`,
+  delta +30.1, `attribution.top` = driftflight.com transactability −25.0 (sole mover), `divergence_cause.driver`
+  = driftflight.com, `reference_degraded` = True. FIX: renamed to `..._fingers_the_drifting_pillar`, corrected
+  the docstring (legibility→transactability history), and strengthened the recovery-guarded asserts to pin,
+  when out of band: (1) top on with-rails side; (2) CROSS-MECHANISM agreement `top.domain == cause.driver`
+  (per-pillar `_attribute` vs side-level `_cause`, independent code paths — a consistency neither real-series
+  test alone made); (3) DIRECTION consistency `top.change < 0` when `reference_degraded` (a softening can't be
+  carried by a pillar that rose); (4) the current live pillar is `transactability` (documents reality — a red
+  means the real site drifted to another pillar; read newest `verify_*.json` + update). All four executed
+  non-vacuously (band out-of-band → guard did not short-circuit): driftflight.com / driftflight.com / −25.0 /
+  transactability. Tests-only, off the scoring path (`git diff --name-only` = `tests/test_canonical_history.py`
+  ONLY; asrs/ scoring/probes/offering/rubric/fetch/cli/scorecard/fixtures UNTOUCHED) → score-neutral, NOT
+  peer-gated, direct-to-main. Full suite 399→399; replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss;
+  rubric v0.7. NEXT (READOUT 180): surface the fingered PILLAR (not just the side) in the terminal/HTML
+  divergence-cause prose ("transactability softened on driftflight.com", not only "with-rails side softened").
+  Substantive frontier (thin-archetype/render/structured-catalog LIVE fixtures, ACP/UCP/MPP, calibration
+  sweep, transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 178 runner note): RUNNER AT-FLOOR at 2026-08-02T13:20Z (Cycle 178) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~33.5h old at the 13:20Z fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily digest; 13:20Z is
   NOT first-after-16:00 UTC → no DM this fire per comms policy (off-scoring-path / score-neutral COVERAGE

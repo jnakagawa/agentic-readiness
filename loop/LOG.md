@@ -3,6 +3,66 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 179 — 2026-08-02T~14:1xZ — TRUTH — real-series pillar attribution: finger the DRIFTING pillar + cross-check the two mechanisms
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed.
+
+**Infra health.** Fresh checkout on detached HEAD at Cycle 178's `2ddc5dd`; `git fetch origin
+main` FIRST (standing lesson) → `3796519…2ddc5dd (forced update)` (cached `origin/main` was the
+Cycle-94-era `3796519`), `checkout -B main origin/main` aligned to the real tip, tree clean,
+invariant #5 intact. Fresh `.venv` + `requests pyyaml eth-account pytest`, 399 tests green
+pre-flight. Newest verify `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is ~34.4h old
+at the 14:12Z fire — PAST the 6h floor (machine-asleep / runner-lag; cloud cannot repair; already
+flagged in the 16:12Z Cycle-157 digest). Bench + bookkeeping otherwise healthy (399 = STATE).
+
+**What/why (TRUTH — calibration of the diagnostic against the REAL observed drift).** The
+canonical-drift diagnostic's real-series attribution guard was named
+`test_attribution_on_real_series_fingers_com_legibility` and asserted ONLY that the top mover is
+on the with-rails side — nothing about WHICH pillar. But the executable evidence had drifted from
+reality: the name says LEGIBILITY (the 2026-07-27 episode) while the CURRENT committed series
+(83 usable points; anchor `20260728T234102Z`, latest Aug-1) attributes the drift to
+**driftflight.com TRANSACTABILITY 87.5 → 62.5 (−25.0)** — the persistent Jul-31/Aug-1
+machine-payment softening STATE/BACKLOG track. Computed live this fire:
+`load_history()` → band `diverged`, delta +30.1, `attribution.top` = driftflight.com transactability
+−25.0 (sole mover), `divergence_cause.driver` = driftflight.com, `reference_degraded` = True. So the
+guard's name was stale AND under-specified — it would pass no matter which with-rails pillar moved.
+
+FIX (tests-only): renamed to `test_attribution_on_real_series_fingers_the_drifting_pillar`, corrected
+the docstring to name the pillar the series ACTUALLY fingers (with the legibility→transactability
+history), and strengthened the (recovery-guarded) assertions to pin, when out of band:
+(1) top on the with-rails side [existing]; (2) **cross-mechanism agreement** — the per-pillar
+`_attribute()` and the side-level `_cause()`, computed on independent code paths (per-pillar scores
+vs overalls), must finger the SAME side (`top.domain == cause.driver`), a consistency neither
+real-series test alone made; (3) **direction consistency** — a `reference_degraded` softening must be
+carried by a pillar that DROPPED (`top.change < 0`), not one that rose; (4) the current live drift's
+specific pillar is `transactability` (documents reality — a red here means the real site drifted to a
+different pillar; read the newest `verify_*.json` and update the name, the family's standing
+"executable evidence tracks reality" discipline). All four executed non-vacuously this fire (band is
+out-of-band, so the recovery guard did NOT short-circuit): got `driftflight.com` / `driftflight.com`
+/ `−25.0` / `transactability`.
+
+**Ship class + evidence.** Tests-only, off the scoring path: `git diff --name-only` =
+`tests/test_canonical_history.py` ONLY (asrs/ scoring/probes/offering/rubric/fetch/cli/scorecard/
+fixtures UNTOUCHED) → score-neutral, NOT peer-gated, direct-to-main. Test renamed+strengthened (no
+net count change): `test_canonical_history.py` module runner 38→38; full suite **399 → 399**, 0
+failures. Canonical PAIR unchanged: in-cloud replay guard **24/24, 46.1 F / 85.5 B / +39.4**, 0
+replay-miss; rubric v0.7. (Cloud network-blocked for live re-score; in-cloud standard =
+regression-by-construction — scoring path byte-identical — plus the offline replay guard, both green.)
+
+**Live canonical signal.** Read (not re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C /
++30.1 / transactability 62.5 — the known transactability 87.5→62.5 divergence PERSISTS (Aug-1), off
+the scoring path; the frozen replay guard (+39.4) stays the in-cloud regression signal. 14:12Z is NOT
+first-after-16:00 UTC → no digest DM; nothing sensitive-class or score-moving → no notable-ship DM.
+
+**Next hypothesis.** Rotate READOUT next (Cycle 179 was TRUTH; METHOD → COVERAGE → TRUTH → READOUT).
+The real-series diagnostic now cross-validates its two attribution mechanisms AND names the drifting
+pillar. A READOUT candidate: surface the fingered PILLAR (not just the side) in the terminal/HTML
+divergence-cause prose, so an operator reading the card sees "transactability softened on
+driftflight.com," not only "with-rails side softened." Substantive frontier (thin-archetype/render/
+structured-catalog fixtures, ACP/UCP/MPP, calibration sweep, transactability-drop CHECK-level
+diagnosis) stays `[LOCAL]`.
+
 ## Cycle 178 — 2026-08-02T~13:2xZ — COVERAGE — offering discovery is whitespace-reflow robust (line-wrapped plain-text surfaces)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

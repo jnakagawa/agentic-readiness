@@ -23,7 +23,13 @@ design in-cloud, execute locally.
   (bump the guard's EXPECTED in the SAME PR per the Cycle-17 maintenance contract) and the LOG must
   explain the delta move in capability terms. The in-cloud replay guard (24/24, 46.1 F / 85.5 B / +39.4)
   stays the frozen regression signal until then. FLAG the divergence + the runner recovery in the next
-  16:00 UTC digest (~16:1xZ Jul-31).
+  16:00 UTC digest (~16:1xZ Jul-31). UPDATE Cycle 179 (TRUTH, in-cloud, direct-to-main): the PILLAR-level
+  attribution of this drop is now PINNED in-cloud — `test_canonical_history.py`'s real-series guard
+  (`..._fingers_the_drifting_pillar`) asserts `load_history()` fingers driftflight.com **transactability
+  87.5→62.5 (−25.0)** as the sole top mover, cross-checked against side-level `divergence_cause.driver`
+  (both = driftflight.com, `reference_degraded=True`). Remaining [LOCAL] work here is STRICTLY CHECK-level:
+  re-score live and diff WHICH transactability check flipped (x402-live challenge / commerce-protocol
+  surface / machine-payable evidence), then the peer-gated re-baseline as described above.
 
 <!-- DONE 2026-07-28T17:27Z (local fire, SELF-HEALING/METHOD, direct-to-main): "[LOCAL] Local
      verify runner STALLED past the 6h floor" ROOT-CAUSED + FIXED. The cloud's Cycle-51→62

@@ -1605,6 +1605,31 @@ its <b>{nf.n_in_band}</b> in-band re-scores: &sigma;={nf.stddev:.2f}, worst dive
                 '<p><b>Pillar:</b> the overall delta moved but no single pillar '
                 'isolated (a pillar was unobserved on one side).</p>'
             )
+        # Whether that fingered pillar HOLDS across the whole trailing out-of-band
+        # run or WANDERS reading-to-reading (AttributionStability, TRUTH Cycle 183) —
+        # the credibility measure on the single-snapshot Pillar line above. Rendered
+        # between the Pillar (what moved) and Side (which side) lines so the card
+        # reads in the same order the terminal readout does. None (and so omitted)
+        # unless the run is >= 2 out-of-band readings with an in-band anchor.
+        stab = hist.attribution_stability
+        if stab is not None:
+            if stab.stable and stab.fingered is not None:
+                dom, pil = stab.fingered
+                diag_card += (
+                    f'<p><b>Stability:</b> {_esc(dom)} {_esc(pil)} fingered by all '
+                    f'{len(stab.readings)} out-of-band re-scores &mdash; '
+                    f'<b>STABLE</b>, not wandering.</p>'
+                )
+            else:
+                movers = (
+                    "; ".join(f"{_esc(d)} {_esc(p)}" for d, p in sorted(stab.movers))
+                    or "no single pillar isolated"
+                )
+                diag_card += (
+                    f'<p><b>Stability:</b> the top mover <b>WANDERS</b> across '
+                    f'{len(stab.readings)} out-of-band re-scores ({movers}) '
+                    f'&mdash; the fingered pillar is not sustained.</p>'
+                )
         if cause is not None:
             c_top = attr.top if attr is not None else None
             diag_card += f'<p><b>Side:</b> {_esc(ch.cause_verdict(cause, c_top))}.</p>'

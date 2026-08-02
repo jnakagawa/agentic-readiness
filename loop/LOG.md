@@ -3,6 +3,64 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 184 — 2026-08-02T19:17Z — READOUT — HTML canonical-history card surfaces the attribution-STABILITY line (STABLE / WANDERS)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed. Infra: fresh checkout was detached at Cycle-183's `3fbf983`; `git fetch
+origin main` FIRST (standing lesson) → aligned `checkout -B main origin/main` to the real tip
+(`3fbf983`), tree clean, invariant #5 intact. Fresh `.venv` + `requests pyyaml eth-account
+pytest`; 407 tests green pre-flight (bench up). Runner AT-FLOOR: newest verify
+`runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is ~39.5h old at the 19:17Z fire — PAST
+the 6h floor (machine-asleep / runner-lag pattern, cloud cannot repair; already flagged in the
+16:12Z Cycle-181 digest).
+
+**What (READOUT).** Cycle 183 (TRUTH) added `AttributionStability` — whether the fingered drift
+pillar HOLDS across the whole trailing out-of-band run or WANDERS reading-to-reading — and wired
+it into the TERMINAL `render` ("attribution stability: … STABLE, not wandering" / "top mover
+WANDERS …"). But the HTML canonical-history page's "What moved, and which side" card showed only
+the single-snapshot **Pillar** line and the **Side** cause — a reader who never opens a terminal
+saw WHICH pillar the latest reading fingered but not whether that finger is SUSTAINED or noise.
+This fire renders the stability line on the card, placed BETWEEN the Pillar (what moved) and Side
+(which side) lines so the card reads in the SAME order the terminal readout does — the
+terminal-then-HTML arc Cycle 176 followed for the sustained-run span. STABLE branch names the
+fingered `(host, pillar)` and how many out-of-band re-scores agree; WANDERS branch names all the
+distinct movers. Emitted only when `attribution_stability is not None` (≥2 out-of-band readings
+with an in-band anchor) — the same honest-None gate the module already honours.
+
+**Method / non-vacuity.** Two new guards. (1) `_drifting_history()` (in-band anchor 05:00Z then 3
+out-of-band readings all fingering with-rails legibility 90.9→63.6) → card names it **STABLE**,
+identifies the with-rails legibility mover, and reports "all 3 out-of-band re-scores". (2) A
+data-driven mirror: a series whose top mover FLIPS (reading 1 legibility, reading 2 restores
+legibility + drops transactability) → card renders **WANDERS** naming BOTH movers and does NOT
+render "not wandering" — proving the STABLE prose is earned by the data, not baked into the
+template. The pre-existing in-band guard (`…_in_band_shows_no_drift`) already pins the whole
+diagnosis card (and so the stability line) is absent when there is nothing to explain.
+
+**Ship class + evidence.** Display-only, off the scoring path: `git diff --name-only` =
+`asrs/scorecard.py` + `tests/test_readout.py` ONLY; `git diff --name-only` over
+`asrs/scoring.py rubric/ fixtures/ asrs/offering.py asrs/probes.py asrs/protocols.py asrs/fetch.py
+asrs/cli.py asrs/battery.py` = EMPTY → score-neutral, NOT peer-gated, direct-to-main.
+`test_readout.py` +2; full suite 407→409, 0 failures. Canonical PAIR unchanged: in-cloud replay
+guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7. (Cloud is network-blocked
+for the live re-score; the in-cloud standard is regression-by-construction — the scoring path is
+byte-identical — plus the offline replay guard, both green.)
+
+**Live canonical signal.** Newest LOCAL artifact `runs/local/verify_20260801T035047Z.json`
+(03:50Z Aug-1) is ~39.5h old at the 19:17Z Aug-2 fire — PAST the 6h floor (machine-asleep /
+runner-lag pattern, cloud cannot repair; already flagged in the 16:12Z Cycle-181 digest). Its
+LIVE re-score: drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 — the known
+transactability 87.5→62.5 divergence (off the scoring path; the frozen replay guard stays the
+in-cloud regression signal). 19:17Z is NOT first-after-16:00 UTC → no digest DM this fire.
+
+**Next hypothesis.** Rotate METHOD next (Cycle 184 was READOUT; METHOD → COVERAGE → TRUTH →
+READOUT). The canonical-drift diagnostic family (band, sustained-run count+span, noise floor,
+liveness, pillar/side attribution, attribution stability, recapture advice) is now fully surfaced
+on both terminal and HTML. In-cloud METHOD candidate: a metamorphic/invariance guard on a
+diagnostic still lacking one (e.g. attribution-stability host-relabel invariance, the sibling of
+the Cycle-181 divergence-cause guard), or a small measurement-rigor refinement. Substantive
+frontier (thin-archetype/render/structured-catalog LIVE fixtures, ACP/UCP/MPP, calibration sweep,
+transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+
 ## Cycle 183 — 2026-08-02T18:19Z — TRUTH — attribution STABILITY: is the fingered drift pillar the same at every out-of-band reading, or does it wander?
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

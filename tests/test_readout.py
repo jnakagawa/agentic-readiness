@@ -1941,6 +1941,65 @@ def test_canonical_history_page_renders_drift_diagnosis() -> None:
            "renders the 4-point trend chart")
 
 
+def test_canonical_history_page_renders_attribution_stability_stable() -> None:
+    # READOUT (Cycle 184): the terminal readout names whether the fingered pillar is
+    # STABLE across the whole trailing out-of-band run or WANDERS (AttributionStability,
+    # TRUTH Cycle 183); the HTML page must surface that credibility line too — the
+    # terminal-then-HTML arc Cycle 176 followed for the sustained-run span. On the
+    # drifting series every out-of-band reading fingers the SAME pillar (with-rails
+    # legibility 90.9 -> 63.6), so the page names it STABLE and identifies the pillar.
+    print("test_canonical_history_page_renders_attribution_stability_stable")
+    hist = _drifting_history()
+    _check(
+        hist.attribution_stability is not None
+        and hist.attribution_stability.stable is True
+        and hist.attribution_stability.fingered
+        == (ch.CANONICAL_WITH_RAILS, "legibility"),
+        "the drifting series is STABLE fingering with-rails legibility (sanity)",
+    )
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_canonical_history_page(Path(d), history=hist)).read_text()
+    _check("Stability:" in text, "the diagnosis card carries a Stability line")
+    _check("STABLE" in text and "not wandering" in text,
+           "names the fingered pillar as STABLE across the out-of-band run")
+    _check(ch.CANONICAL_WITH_RAILS in text and "legibility" in text,
+           "identifies the sustained (with-rails legibility) mover")
+    _check("all 3 out-of-band re-scores" in text,
+           "names how many out-of-band re-scores fingered the same pillar")
+
+
+def test_canonical_history_page_stability_wanders_is_data_driven() -> None:
+    # Non-vacuous mirror: a series whose top mover FLIPS between the two out-of-band
+    # readings (with-rails legibility, then with-rails transactability) renders the
+    # WANDERS branch naming BOTH movers, and does NOT render "STABLE" — proving the
+    # stability line is earned by the data, not baked into the template.
+    print("test_canonical_history_page_stability_wanders_is_data_driven")
+    no_pil = {"access": 100.0, "legibility": 36.4, "transactability": 18.75,
+              "trust": 60.0}
+    anchor_with = {"access": 100.0, "legibility": 90.9, "transactability": 87.5,
+                   "trust": 60.0}
+    # reading 1 fingers legibility; reading 2 restores legibility, drops transactability
+    r1_with = {**anchor_with, "legibility": 70.9}
+    r2_with = {**anchor_with, "transactability": 62.5}
+    pts = [
+        _hist_point("20260727T050000Z", 46.1, "F", 85.5, "B", no_pil, anchor_with),
+        _hist_point("20260727T060000Z", 46.1, "F", 78.5, "C", no_pil, r1_with),
+        _hist_point("20260727T070000Z", 46.1, "F", 76.2, "C", no_pil, r2_with),
+    ]
+    hist = ch.summarize(pts)
+    _check(hist.attribution_stability is not None
+           and hist.attribution_stability.stable is False,
+           "the wandering series is NOT stable (sanity)")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_canonical_history_page(Path(d), history=hist)).read_text()
+    _check("Stability:" in text and "WANDERS" in text,
+           "names the wandering top mover on the diagnosis card")
+    _check("legibility" in text and "transactability" in text,
+           "the wander line names both fingered pillars")
+    _check("not wandering" not in text,
+           "the STABLE prose is data-driven — absent on a wandering series")
+
+
 def test_canonical_history_in_band_shows_no_drift() -> None:
     # Non-vacuous: an in-band series (live delta reproduces the pinned +39.4) shows
     # the IN-BAND verdict and NO drift/attribution/cause markup — the drift prose in
@@ -2453,6 +2512,8 @@ def main() -> int:
         test_cap_link_and_methodology_anchor_cannot_drift,
         test_canonical_history_page_written_and_links,
         test_canonical_history_page_renders_drift_diagnosis,
+        test_canonical_history_page_renders_attribution_stability_stable,
+        test_canonical_history_page_stability_wanders_is_data_driven,
         test_canonical_history_in_band_shows_no_drift,
         test_canonical_history_page_shows_sustained_run_span,
         test_canonical_history_trend_svg_colors_by_band,

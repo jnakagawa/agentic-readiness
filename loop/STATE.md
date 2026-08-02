@@ -1,8 +1,39 @@
 # Loop state
 
-- Cycle counter: 183
+- Cycle counter: 184
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-02T18:19Z (Cycle 183) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-02T19:17Z (Cycle 184) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~39.5h old at the 19:17Z fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; 19:17Z is
+  NOT first-after-16:00 UTC → no DM this fire per comms policy (off-scoring-path / score-neutral READOUT
+  increment, no sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org
+  46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence
+  PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent regression
+  signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open
+  → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 184): fresh checkout on detached HEAD at Cycle 183's
+  `3fbf983`; ran `git fetch origin main` FIRST (standing lesson), `checkout -B main origin/main` aligned to
+  the real tip, working tree clean, invariant #5 intact. Fresh `.venv` + `requests pyyaml eth-account
+  pytest`, imports verified, 407 tests green pre-flight.
+- FOCUS POINTER (Cycle 184 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 184 was
+  READOUT, so Cycle 185 is METHOD). Cycle 184 shipped a **READOUT increment — the HTML canonical-history
+  card now surfaces the attribution-STABILITY line** (`asrs/scorecard.py`: a `Stability:` paragraph in the
+  "What moved, and which side" diag card, between the Pillar and Side lines; `tests/test_readout.py` +2). The
+  Cycle-183 `AttributionStability` (fingered pillar HOLDS across the whole out-of-band run, or WANDERS) was
+  terminal-only; a card reader saw the single-snapshot Pillar mover but not whether it is SUSTAINED. STABLE
+  branch names the fingered `(host, pillar)` + how many re-scores agree ("all 3 out-of-band re-scores");
+  WANDERS branch names all distinct movers. Emitted only when `attribution_stability is not None` (≥2
+  out-of-band readings + in-band anchor). Non-vacuous: the `_drifting_history()` guard renders STABLE naming
+  with-rails legibility; a flip-mover mirror renders WANDERS naming both pillars and NOT "not wandering"
+  (data-driven). Off the scoring path (`git diff --name-only` = `asrs/scorecard.py` + `tests/test_readout.py`
+  ONLY; scoring/rubric/probes/fetch/cli/battery/offering = 0 changes) → score-neutral, NOT peer-gated,
+  direct-to-main. Full suite 407→409; replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric
+  v0.7. The canonical-drift diagnostic family (band, sustained-run count+span, noise floor, liveness,
+  pillar/side attribution, attribution stability, recapture advice) is now FULLY surfaced on both terminal
+  and HTML. NEXT (METHOD 185): a metamorphic/invariance guard on a diagnostic still lacking one — e.g.
+  attribution-stability HOST-RELABEL invariance (the sibling of the Cycle-181 divergence-cause guard) — or a
+  small measurement-rigor refinement. Substantive frontier (thin-archetype/render/structured-catalog LIVE
+  fixtures, ACP/UCP/MPP, calibration sweep, transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 183 runner note): RUNNER AT-FLOOR at 2026-08-02T18:19Z (Cycle 183) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~38.5h old at the 18:19Z fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; 18:19Z is
   NOT first-after-16:00 UTC → no DM this fire per comms policy (off-scoring-path / score-neutral TRUTH

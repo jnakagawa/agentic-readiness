@@ -1500,6 +1500,15 @@ design in-cloud, execute locally.
   overall within each `segment`) so the reader sees the rails-anchor vs no-rails-retail vs control bands as
   aggregates, not just a flat ranking — most valuable once the population passes ~15 members. Both display-
   only, off the scoring path; render off `_load_calibration_sweep()`.
+- **Attribution-stability HOST-RELABEL invariance guard** (METHOD, candidate opened Cycle 184). Cycle 183
+  added `attribution_stability` (does the fingered drift pillar HOLD across the whole out-of-band run or
+  WANDER?) and Cycle 184 surfaced it on the HTML card, but — unlike the divergence-cause prose, which got a
+  host-relabel metamorphic guard in Cycle 181 — the stability computation + its terminal/HTML prose have no
+  vendor-neutrality invariance guard. Add `test_attribution_stability_is_host_relabel_invariant`: relabel
+  both `CANONICAL_*` host constants, rebuild the SAME structural stable/wandering scenario, and assert
+  `stable`/`fingered`/`movers` (and the rendered STABLE/WANDERS prose modulo the substituted host token) are
+  invariant — the sibling of `test_cause_verdict_prose_is_host_relabel_invariant`. Off the scoring path,
+  tests-only, score-neutral, direct-to-main. A clean in-cloud METHOD unit for Cycle 185.
 - **[LOCAL] Offering-classifier precision — the exa.ai over-claim** (COVERAGE/METHOD, observation from
   the 23:57Z sweep). `discover_offering` classified exa.ai (a search/retrieval API) as claiming ALL SIX
   archetypes incl. physical_good + service_booking, from its rich docs. Diagnostic-only (offering feeds no

@@ -1,8 +1,44 @@
 # Loop state
 
-- Cycle counter: 171
+- Cycle counter: 172
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-02T06:11Z (Cycle 171) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-02T07:27Z (Cycle 172) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~27.6h old at the 07:27Z Aug-2 fire — PAST the 6h floor (borderline runner
+  lag / machine-asleep pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily digest;
+  07:27Z is NOT first-after-16:00 UTC → no DM this fire per comms policy (off-scoring-path/score-neutral
+  COVERAGE increment, no sensitive-class PR, nothing score-moving). Live signal (read, not re-run):
+  drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop
+  divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent
+  signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open
+  → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 172): fresh checkout on detached HEAD at Cycle 171's
+  `c79045a`; cached `origin/main` stale (`3796519`, Cycle-94 era) → ran `git fetch origin main` FIRST
+  (standing lesson) → `3796519…c79045a (forced update)`, `checkout -B main origin/main` aligned to the real
+  tip, reflog clean, invariant #5 intact. `.venv` + `requests pyyaml eth-account pytest`, imports verified,
+  386 tests green pre-flight.
+- FOCUS POINTER (Cycle 172 done): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 172 was
+  COVERAGE, so Cycle 173 is TRUTH). Cycle 172 shipped a **COVERAGE increment — new subscription signal
+  `plan-allowance`** (`asrs/offering.py`): the HYBRID subscription plan whose recurring fee bundles a
+  bounded monthly allowance that RESETS each cycle, with metered overage beyond it — the capital-safety
+  "understand the offer" fact none of the 8 flat-recurring subscription signals captured. Keys on a bare
+  `monthly allowance` / usage-qualified monthly allowance / the hybrid-plan definition (`subscription with
+  included …`) / the allowance lifecycle (`used up`/`resets`/`is tracked per plan`); distinct from
+  metered_api's `free-included-usage` (FREE allowance), `credit-metered` (credit balance), `usage-based`
+  (bare overage). Precision: 6 allowance-shaped negatives fire zero (incl. the "monthly expense allowance"
+  HR-perk trap). The content-scale metamorphic guard CAUGHT a bare-`exhausted` alternation matching the
+  openapi.json 429 tail (pad=40 quote window bled across the duplication boundary) → dropped it; `used up`/
+  `resets` cover the exhaustion sense with interior/stable matches. Fires on the PAIR (both /docs "plan's
+  monthly allowance"; .com also llms-full.txt), ZERO on api/retail/null. Guards: precision-synthetic +
+  real-captured in `test_offering.py`, isolation-matrix entry in `test_offering_canonical.py`. Off the
+  scoring path (`git diff --name-only` = `asrs/offering.py` + `tests/test_offering.py` +
+  `tests/test_offering_canonical.py` ONLY; scoring/probes/rubric/fetch/cli/fixtures EMPTY) → score-neutral,
+  NOT peer-gated, direct-to-main (same class as offering-signal Cycles 34/42/46/70/160/164). Subscription
+  8→9 (bank 64→65); strength 4→5 (.org)/6→7 (.com), still < digital_good's 10 — claimed SET+ORDER
+  `[metered_api, digital_good, subscription]` UNCHANGED on both; full suite 386→388; replay guard 24/24,
+  46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. NEXT (TRUTH 173): a relabel/host-invariance guard for
+  `plan-allowance` (the allowance/hybrid-plan vocabulary is a property of the OFFERING, not the host — the
+  subscription mirror of the media/render relabel guards). Substantive frontier (thin-archetype + render
+  fixtures, ACP/UCP/MPP, calibration sweep, transactability-drop diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 171 runner note): RUNNER AT-FLOOR at 2026-08-02T06:11Z (Cycle 171) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~26.3h old at the 06:11Z Aug-2 fire — PAST the 6h floor (borderline runner
   lag, NOT the machine-asleep stall — cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily
   digest; no new flag owed (next digest = first cycle after 16:00 UTC Aug-2; 06:11Z is NOT it → no DM this

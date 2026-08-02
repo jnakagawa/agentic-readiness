@@ -2775,6 +2775,112 @@ def test_plan_purchase_fires_on_real_captured_subscription_prose():
     print("  ok: plan-purchase is ABSENT on the api / retail / null fixtures (non-vacuous, score-neutral)")
 
 
+def test_plan_allowance_subscription_precision_synthetic():
+    # BUNDLED MONTHLY ALLOWANCE + METERED OVERAGE — the HYBRID subscription plan whose
+    # recurring fee INCLUDES a bounded per-cycle allowance that RESETS each period, with
+    # usage beyond it charged as metered overage. This is the subscription-archetype
+    # "understand the offer" capability the flat recurring signals miss: an agent must
+    # know the flat fee buys only a bounded monthly allowance and that calls past it
+    # accrue per-unit overage (a capital-safety fact), and it can budget around the cycle
+    # reset. Distinct from metered_api's included/credit signals by ARCHETYPE and SENSE
+    # (`free-included-usage` = a FREE $0 evaluation allowance; `credit-metered` = a
+    # prepaid credit balance; `usage-based` = generic "overage"). Each POSITIVE is real
+    # bundled-plan-allowance prose that must claim subscription via the new plan-allowance
+    # signal; each NEGATIVE is allowance-SHAPED noise that must NOT fire it (the precision
+    # traps: a FREE allowance that needs no funding — `free-included-usage`'s turf — a
+    # baggage allowance, a tax allowance, and the sharpest trap, a monthly EXPENSE/food
+    # allowance that is an HR perk, not a recurring plan quota).
+    positives = {
+        "plan's monthly allowance": "Your plan's monthly allowance resets on the first of each cycle.",
+        "monthly generation allowance": "The monthly generation allowance covers 500 renders per period.",
+        "subscription with included": "This is a subscription with included credit; usage beyond it is metered.",
+        "monthly usage allowance": "Each tier carries a monthly usage allowance for API calls.",
+        "allowance used up": "Once the included allowance used up, further calls are billed as overage.",
+        "allowance resets": "The plan allowance resets every billing cycle automatically.",
+        "allowance tracked per plan": "On purchased plans the allowance is tracked per plan access.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("saas.test", {"homepage": text})
+        assert prof.claims("subscription"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "subscription"
+            for s in c.signals
+        }
+        assert "plan-allowance" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real plan-allowance phrasings each fire plan-allowance")
+
+    negatives = {
+        # A FREE allowance is the metered_api free-included-usage capability, not a
+        # recurring PLAN quota — plan-allowance must not scoop it. Baggage / tax
+        # allowances are unrelated senses. The monthly EXPENSE / food allowance is the
+        # sharpest trap: "monthly ... allowance" that is an HR perk, NOT a plan quota —
+        # so the monthly branch requires either a bare "monthly allowance" or a USAGE
+        # noun, never a bare "monthly <anything> allowance".
+        "free allowance": "A generous free allowance covers early testing.",
+        "baggage allowance": "Every ticket includes a 20kg baggage allowance.",
+        "tax allowance": "Claim your annual tax allowance before the April deadline.",
+        "monthly expense allowance": "Staff receive a monthly expense allowance for travel.",
+        "monthly food allowance": "A monthly food allowance is provided on site.",
+        "personal allowance": "Set a weekly personal allowance for the kids.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "plan-allowance" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} allowance-shaped noise strings do NOT fire plan-allowance (precision)"
+    )
+
+
+def test_plan_allowance_fires_on_real_captured_subscription_prose():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the plan-allowance signal fires on the
+    # GENUINE bundled-plan-allowance prose captured live from BOTH canonical domains —
+    # drift-flight.org AND driftflight.com: "your plan's monthly allowance", the 429
+    # "Monthly generation allowance used up; upgrade or wait for the cycle reset" /
+    # "Plan generation allowance exhausted", and on driftflight.com additionally "a
+    # subscription with included credit; usage beyond it is metered and charged per call"
+    # + "the allowance is tracked per plan access". Unlike the with-rails-only plan-purchase
+    # signal, this HYBRID-plan structure is documented on BOTH sides (both sell the same
+    # metered subscription), so the signal fires on the PAIR — not a singleton, so it is
+    # not over-fit to one fixture. Run the REAL discovery path (from_fixture ->
+    # discover_offering) so the signal is exercised exactly as a live crawl would.
+    #
+    # SCORE-NEUTRAL by construction AND re-measured: both canonical domains already claim
+    # subscription (via `subscription`/`per-month`/etc.), so plan-allowance evidence can
+    # only DEEPEN that claim — never add an archetype or reorder (subscription strength
+    # 4->5 on .org / 6->7 on .com, still well below digital_good's 10). The classifier is
+    # off the scoring path; the canonical pair's claimed SET+ORDER is unchanged (pinned by
+    # tests/test_offering_canonical.py and the canonical replay guard).
+    for dom in ("drift-flight.org", "driftflight.com"):
+        ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        prof = offering.discover_offering(ctx)
+        assert prof.claims("subscription"), (dom, prof.archetypes)
+        sub = next(c for c in prof.claimed if c.archetype == "subscription")
+        pa = [s for s in sub.signals if s.label == "plan-allowance"]
+        assert pa, (dom, {s.label for s in sub.signals})
+        assert "allowance" in pa[0].quote.lower() or "included" in pa[0].quote.lower(), pa[0].quote
+        assert prof.archetypes == ["metered_api", "digital_good", "subscription"], (dom, prof.archetypes)
+        print(f"  ok: plan-allowance fires on REAL captured {dom} prose — quote: {pa[0].quote!r}")
+
+    # NON-VACUOUS negatives: a metered-API marketplace (api.replicate.com), a real retail
+    # storefront (books.toscrape.com), and a null site (example.com) document no bundled
+    # subscription-plan allowance — plan-allowance must be absent on all three and must not
+    # conjure or reorder any archetype.
+    for dom, expected in (
+        ("api.replicate.com", ["metered_api"]),
+        ("books.toscrape.com", ["physical_good"]),
+        ("example.com", []),
+    ):
+        nctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        nprof = offering.discover_offering(nctx)
+        nlabels = {s.label for c in nprof.claimed for s in c.signals}
+        assert "plan-allowance" not in nlabels, (dom, nlabels)
+        assert nprof.archetypes == expected, (dom, nprof.archetypes)
+    print("  ok: plan-allowance is ABSENT on the api / retail / null fixtures (non-vacuous, score-neutral)")
+
+
 def test_failure_not_billed_metering_precision_synthetic():
     # FAILURE NOT BILLED is the capital-safety leg of a metered call: a FAILED unit
     # (the render did not complete, the job errored, the request timed out) is NOT
@@ -3244,6 +3350,8 @@ def main() -> int:
         test_free_trial_fires_on_real_captured_subscription_prose,
         test_plan_purchase_subscription_precision_synthetic,
         test_plan_purchase_fires_on_real_captured_subscription_prose,
+        test_plan_allowance_subscription_precision_synthetic,
+        test_plan_allowance_fires_on_real_captured_subscription_prose,
         test_failure_not_billed_metering_precision_synthetic,
         test_failure_not_billed_fires_on_real_captured_api_docs,
         test_reserve_and_settle_precision_synthetic,

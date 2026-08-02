@@ -5620,6 +5620,7 @@ _ISOLATION_EVIDENCE: dict[str, str] = {
     "seat-licensing": "$10 per seat per month",
     "free-trial": "start a free trial",
     "plan-purchase": "purchasable plans carry a purchase object",
+    "plan-allowance": "your plan's monthly allowance resets each cycle",
     # digital_good
     "generation": "image generation for creators",
     "generate-media": "generate an image from a prompt",

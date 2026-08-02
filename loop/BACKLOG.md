@@ -223,8 +223,8 @@ design in-cloud, execute locally.
 
 - **[LOCAL] Strengthen the UNDER-COVERED archetypes (service_booking / data_retrieval / physical_good)**
   (COVERAGE, opened Cycle 164). The offering signal bank is metered_api-HEAVY: metered_api 26, digital_good
-  11 (post-Cycle-164 `variant-selection`), physical_good 9, subscription 8, service_booking 5,
-  data_retrieval 5. The three thin archetypes CANNOT be strengthened non-vacuously in-cloud — no committed
+  11 (post-Cycle-164 `variant-selection`), physical_good 9, subscription 9 (post-Cycle-172 `plan-allowance`),
+  service_booking 5, data_retrieval 5. The three thin archetypes CANNOT be strengthened non-vacuously in-cloud — no committed
   fixture CLAIMS service_booking or data_retrieval at all, and the only physical_good fixture
   (books.toscrape.com) is a ~3.4KB retail catalog whose fulfillment prose is already fully mined
   (add-to-cart / stock / priced-listing). To close the imbalance and move the north-star's "many storefront

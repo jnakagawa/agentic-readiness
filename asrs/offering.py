@@ -907,6 +907,63 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"/plans/[^\s\"'<>]*/purchase\b"
             r"|\bpurchasable\s+plans?\b"
             r"|\b(?:buy|buys|buying|purchas(?:e|es|ed|ing)|activate|activates|activating)\s+(?:once\s+)?(?:a|an|your|the)?\s*(?:(?:credit|subscription)\s+(?:or|and|/)\s+)?(?:credit|subscription)\s+plans?\b", _F)),
+        # BUNDLED MONTHLY ALLOWANCE + METERED OVERAGE — the HYBRID subscription
+        # plan whose recurring fee INCLUDES a bounded per-cycle allowance that
+        # RESETS each billing period, with usage BEYOND it charged as metered
+        # overage. This is the "understand the offer" capability for the modern
+        # subscription archetype, and it is currently UNCAPTURED. Every existing
+        # subscription signal describes a FLAT recurring commitment — that a plan
+        # exists (`subscription`/`recurring`), its cadence (`per-month`/
+        # `per-month-price`/`annual-billing`), its per-user basis (`seat-licensing`),
+        # its $0 evaluation (`free-trial`), or its programmatic commit
+        # (`plan-purchase`); NONE says the plan bundles a METERED quota that resets
+        # and then bills overage. An autonomous agent evaluating such a plan must
+        # know the flat fee buys only a bounded monthly allowance and that calls
+        # past it incur per-unit overage — a load-bearing CAPITAL-SAFETY fact (a
+        # bounded-then-metered plan can silently accrue overage after the included
+        # units are spent), and it lets the agent budget around the cycle reset.
+        # This is distinct from metered_api's included/credit signals by ARCHETYPE
+        # and by SENSE: `free-included-usage` is a FREE evaluation allowance that
+        # needs no funding (a $0 trial of a metered call); `credit-metered` is a
+        # prepaid CREDIT balance you buy/top-up; `usage-based`'s bare "overage" is
+        # generic metered billing. NONE of them is a RECURRING PLAN's bundled
+        # monthly allowance with a cycle reset — the subscription-side included quota.
+        # Vendor-neutral bundled-plan vocabulary (a monthly allowance, a plan's
+        # included allowance that resets each cycle, "a subscription with included
+        # credit; usage beyond it is metered"), never a vendor.
+        # PRECISION-CRITICAL: bare "\ballowance\b" is a false-positive minefield —
+        # a "free allowance" that needs no funding (`free-included-usage`'s turf),
+        # a baggage allowance, a tax allowance, a monthly EXPENSE/food/travel
+        # allowance (an HR perk, not a plan quota). So NEVER match a bare
+        # "allowance", and NEVER match a bare "monthly <anything> allowance":
+        # require either a bare "monthly allowance" ("plan's monthly allowance") or a
+        # monthly allowance qualified by a USAGE noun (a monthly generation / usage /
+        # api / call / request / credit / render / token / image / video / compute /
+        # query / inference / prediction allowance), the HYBRID plan definition
+        # (`subscription with included ...`), or the plan-allowance LIFECYCLE it is
+        # spent/reset on (`allowance used up`/`allowance resets`/`allowance is
+        # tracked per plan`) — quota semantics an HR/baggage/
+        # tax allowance never carries. The free-allowance, baggage, tax, and
+        # monthly-expense senses trip none of these. Fires non-vacuously on BOTH
+        # canonical domains (drift-flight.org + driftflight.com /docs: "counts one
+        # generation against your plan's monthly allowance" + the 429 "Monthly
+        # generation allowance used up; upgrade or wait for the cycle reset", and on
+        # driftflight.com additionally "a subscription with included credit; usage
+        # beyond it is metered and charged per call" and "the allowance is tracked
+        # per plan access") — a PAIR, not a singleton, so it is not over-fit to one
+        # fixture — and on ZERO of the metered-api-only (api.replicate.com), retail
+        # (books.toscrape.com), or null (example.com) fixtures. Both canonical
+        # domains ALREADY claim subscription (via `subscription`/`per-month`/etc.),
+        # so this deepens their subscription evidence without adding or reordering
+        # any archetype (subscription strength 4->5 on .org / 6->7 on .com, still
+        # well below digital_good's 10 — no reorder; the claimed set is unchanged) —
+        # score-neutral, and it can never CONJURE a subscription claim on a site
+        # that does not already make one. The classifier is off the scoring path.
+        ("plan-allowance", re.compile(
+            r"\bmonthly\s+allowance\b"
+            r"|\bmonthly\s+(?:generation|usage|api|call|request|credit|render|token|image|video|compute|query|inference|prediction)\s+allowance\b"
+            r"|\bsubscription\s+with\s+included\b"
+            r"|\ballowance\s+(?:used\s+up|resets?|is\s+tracked\s+per\s+plan)\b", _F)),
     ],
     "digital_good": [
         ("generation", re.compile(r"\b(text-to-image|image|video|audio|art)\s+generation\b", _F)),

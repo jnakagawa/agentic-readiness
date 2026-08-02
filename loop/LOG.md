@@ -3,6 +3,72 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 172 — 2026-08-02T07:27Z — COVERAGE — new subscription signal `plan-allowance` (bundled monthly allowance + metered overage)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed. The many `loop/*` refs on `git fetch` are stale post-merge branches.
+
+**Infra / self-heal.** Fresh container on detached HEAD at Cycle 171's `c79045a`. Cached `origin/main`
+was stale (`3796519`, Cycle-94 era); per the STANDING lesson ran `git fetch origin main` FIRST →
+`3796519…c79045a (forced update)`, then `checkout -B main origin/main` aligned to `c79045a` (= real tip);
+reflog clean, nothing lost, invariant #5 intact. `.venv` + `requests pyyaml eth-account pytest`, imports
+verified, full suite 386 green pre-flight. RUNNER AT-FLOOR: newest verify `runs/local/verify_20260801T035047Z.json`
+(03:50Z Aug-1) is ~27.6h old — PAST the 6h floor (borderline runner lag, machine-asleep pattern, cloud
+cannot repair). Already flagged in the 16:12Z Cycle-157 digest; 07:27Z is NOT first-after-16:00 UTC → no
+digest/DM this fire per comms policy (off-scoring-path/score-neutral COVERAGE, no sensitive-class PR).
+
+**What / why (capability terms).** The offering signal bank is metered_api-HEAVY (26) and thin on the
+other archetypes; subscription had only 8 signals, all describing a FLAT recurring commitment — that a plan
+EXISTS (`subscription`/`recurring`), its CADENCE (`per-month`/`per-month-price`/`annual-billing`), its
+per-user basis (`seat-licensing`), its $0 evaluation (`free-trial`), or its programmatic COMMIT
+(`plan-purchase`). NONE captured the HYBRID subscription plan whose recurring fee INCLUDES a bounded
+per-cycle allowance that RESETS each period, with usage beyond it charged as metered overage. That is a
+load-bearing "understand the offer" + CAPITAL-SAFETY fact for an autonomous agent: the flat fee buys only a
+bounded monthly allowance, and calls past it accrue per-unit overage — the agent must know this to budget
+around the cycle reset. New subscription signal `plan-allowance` (`asrs/offering.py`) keys on a bare
+`monthly allowance` or a USAGE-qualified monthly allowance (generation/usage/api/call/…), the hybrid-plan
+definition (`subscription with included …`), or the allowance LIFECYCLE (`allowance used up`/`resets`/`is
+tracked per plan`). Distinct from metered_api's `free-included-usage` (a FREE $0-eval allowance),
+`credit-metered` (a prepaid credit balance), and `usage-based` (bare "overage") by ARCHETYPE and SENSE.
+
+**Precision.** Bare "allowance" is a false-positive minefield (a FREE allowance, a baggage/tax allowance,
+and the sharpest trap a monthly EXPENSE/food allowance = an HR perk not a plan quota) — so the monthly
+branch requires a bare `monthly allowance` or a usage noun, never a bare `monthly <anything> allowance`;
+6 allowance-shaped negatives (incl. "monthly expense allowance") fire ZERO. During validation the
+content-scale metamorphic guard (`test_offering_content_scale_invariance_{org,com}`) caught that a bare
+`allowance exhausted` alternation matched the openapi.json 429 tail (`…exhausted."}}}}`) — a surface-END
+match whose pad=40 quote window BLEEDS into the next duplicated copy, drifting the evidence quote. Dropped
+the redundant bare-`exhausted` alternation (the `/docs` 429 already carries "Monthly generation allowance
+USED UP" and the `used up`/`resets` lifecycle covers the exhaustion sense with interior, stable matches),
+restoring byte-identical evidence under content duplication without weakening the guard or the signal.
+
+**Method / non-vacuity.** Fires on the canonical PAIR (both drift-flight.org + driftflight.com /docs "your
+plan's monthly allowance"; .com additionally llms-full.txt "a subscription with included credit" + "the
+allowance is tracked per plan access") — a pair, not a singleton, so not over-fit to one fixture — and ZERO
+on api.replicate.com (metered-only), books.toscrape.com (retail), example.com (null). New guards in
+`tests/test_offering.py` (precision-synthetic + real-captured, mirroring the plan-purchase/free-trial pair)
+and the `plan-allowance` entry added to the cross-signal ISOLATION matrix (`test_offering_canonical.py`,
+snippet claims ONLY subscription and fires its own label).
+
+**Ship class + score-neutrality.** COVERAGE, off the scoring path (grep-verified: scoring.py/probes.py do
+not import offering/_SIGNALS/classify_offering; `git diff --name-only` = `asrs/offering.py` +
+`tests/test_offering.py` + `tests/test_offering_canonical.py` ONLY — scoring/probes/rubric/fetch/cli/fixtures
+UNTOUCHED) → SCORE-NEUTRAL, NOT peer-gated (same class as every prior offering-signal cycle: 34/42/46/70/160/164),
+DIRECT-TO-MAIN. Subscription 8→9 signals (bank 64→65); strength 4→5 (.org) / 6→7 (.com), still well below
+digital_good's 10 — claimed SET+ORDER `[metered_api, digital_good, subscription]` UNCHANGED on both
+(canonical offering guard green). Full suite 386→388; canonical replay guard 24/24, **46.1 F / 85.5 B /
++39.4**, 0 replay-miss; rubric v0.7.
+
+**Live canonical signal.** Read (not re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C / delta
++30.1 — the known transactability 87.5→62.5 divergence PERSISTS (off the scoring path; the frozen replay
+guard stays the in-cloud regression signal). An offering-classifier change cannot move it.
+
+**Next hypothesis.** Rotate TRUTH next (Cycle 172 was COVERAGE). Candidate: a relabel/host-invariance guard
+for `plan-allowance` (the allowance/hybrid-plan vocabulary is a property of the OFFERING, not the host —
+the subscription mirror of the media/render relabel guards). In-cloud COVERAGE stays archetype-imbalanced;
+substantive frontier (thin-archetype + render fixtures, ACP/UCP/MPP, calibration sweep, transactability-drop
+diagnosis) stays `[LOCAL]`.
+
 ## Cycle 171 — 2026-08-02T06:11Z — METHOD — noise-surface invariance on the MACHINE pole (closes the last noise-axis pole gap)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

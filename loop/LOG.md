@@ -14339,3 +14339,63 @@ terminal and HTML. In-cloud METHOD candidate: a metamorphic/invariance guard on 
 diagnostic still lacking one, or a small measurement-rigor refinement. Substantive frontier
 (thin-archetype/render/structured-catalog fixtures, ACP/UCP/MPP, calibration sweep,
 transactability-drop check-level diagnosis) stays `[LOCAL]`.
+
+## Cycle 188 — 2026-08-02 ~23:1xZ — READOUT
+
+**What.** A terminal↔HTML PARITY guard for the whole canonical-drift diagnosis:
+`test_terminal_and_html_surfaces_name_the_same_diagnostics`
+(`tests/test_canonical_history.py`, +1). It builds ONE out-of-band history that fires
+every diagnostic (4 in-band anchors → 3 out-of-band transactability-softening readings
+spanning 18h), renders BOTH surfaces — the terminal `ch.render(hist)` and the HTML
+`scorecard._write_canonical_history_page(tmp, history=hist)` — and asserts that ten
+diagnostic FACTS, each COMPUTED from the history model (never a literal), appear in both:
+latest overalls, band verdict, sustained wall-clock span, at-rest noise-floor determinism,
+the fingered pillar + side, attribution-stability verdict, the side/direction cause
+sentence, and the re-capture recommendation label.
+
+**Why (READOUT).** The canonical-drift diagnosis has two readout surfaces, and every
+cycle that added a diagnostic (per_kind 10→12, between_kind 18→20, noise floor 47→48,
+liveness 51, sustained span 175→176, attribution stability 183→184) had to HAND-PORT it
+to both — the "terminal→HTML close-out" the scorecard comments describe. Nothing kept
+them from silently drifting apart: the HTML `_write_canonical_history_page` had **zero
+test coverage** (every existing `test_canonical_history` case exercised only `ch.render`),
+so a renderer dropping a line — or a future sibling diagnostic never gaining one on one
+surface — went uncaught. This binds the two surfaces to name the same facts, turning the
+hand-maintained parity contract into an executable tripwire. This is the "terminal↔HTML
+parity check" the Cycle-187 focus pointer named as a READOUT candidate.
+
+**Method / non-vacuity.** Preconditions assert each diagnostic actually fired (out-of-band
+band, sustained run with span>0, deterministic noise floor, isolated top mover, measurable
+stability, a cause, a non-no-data recapture) so the parity check is never vacuously true by
+both surfaces omitting the same absent line. Facts are derived from the model
+(`top.pillar`, `sr.span_hours`, `ch.cause_verdict(cause, top)`, `ch._REC_LABEL[adv.code]`,
+…), so the guard stays vendor-neutral and tracks the data rather than freezing a string.
+MUTATION-VERIFIED: dropping "DETERMINISTIC at rest" from the HTML noise headline reddens it
+(the phrase survives in the terminal → exactly one surface loses the fact → parity leak
+caught); revert → green. The full side/direction cause SENTENCE ("…the with-rails reference
+SOFTENED on transactability…the pinned fixture still represents the true gap") appears
+byte-identical on both surfaces.
+
+**Ship class + evidence.** Tests-only, off the scoring path: `git diff --name-only` =
+`tests/test_canonical_history.py` ONLY; scoring-path diff (`asrs/ rubric/ fixtures/`) EMPTY
+→ score-neutral, NOT peer-gated, direct-to-main. `test_canonical_history.py` 47→48; full
+suite 413→414, 0 failures. Canonical PAIR unchanged: in-cloud replay guard 24/24, **46.1 F
+/ 85.5 B / +39.4**, 0 replay-miss; rubric v0.7. (Cloud is network-blocked for the live
+re-score; the in-cloud standard is regression-by-construction — the scoring path is
+byte-identical — plus the offline replay guard, both green.)
+
+**Live canonical signal.** Newest LOCAL artifact `runs/local/verify_20260801T035047Z.json`
+(03:50Z Aug-1) is ~43.3h old at the 23:12Z Aug-2 fire — PAST the 6h floor (machine-asleep /
+runner-lag pattern, cloud cannot repair; already flagged in the 16:12Z Cycle-181 digest).
+Its LIVE re-score: drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 — the known
+transactability 87.5→62.5 divergence (off the scoring path; the frozen replay guard stays
+the in-cloud regression signal). 23:12Z is NOT first-after-16:00 UTC → no digest DM per
+comms policy; tests-only / score-neutral, no sensitive-class PR, nothing score-moving.
+
+**Next hypothesis.** Rotate METHOD next (Cycle 188 was READOUT; METHOD → COVERAGE → TRUTH
+→ READOUT). The canonical-drift diagnostic family is now parity-guarded across both
+surfaces. In-cloud METHOD candidate: a metamorphic/invariance guard on a diagnostic still
+lacking one, or a small measurement-rigor refinement. Substantive frontier
+(thin-archetype/render/structured-catalog LIVE fixtures — incl. the service_booking
+`book (a|an|your)` sales-CTA collision — ACP/UCP/MPP, calibration sweep,
+transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.

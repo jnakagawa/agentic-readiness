@@ -1,8 +1,38 @@
 # Loop state
 
-- Cycle counter: 187
+- Cycle counter: 188
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-02T22:12Z (Cycle 187) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-02T23:12Z (Cycle 188) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~43.3h old at the 23:12Z fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; 23:12Z is
+  NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral READOUT increment,
+  no sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org 46.1 F /
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS
+  (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent regression signal
+  (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open → []),
+  so no first-duty review. INFRA/SELF-HEAL (Cycle 188): fresh checkout already aligned to origin/main tip
+  `e7fadb5` (Cycle 187); working tree clean, invariant #5 intact. Fresh `.venv` + `requests pyyaml eth-account
+  pytest`, imports verified, 413 tests green pre-flight (414 after this cycle's +1).
+- FOCUS POINTER (Cycle 188 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 188 was
+  READOUT, so Cycle 189 is METHOD). Cycle 188 shipped a **READOUT increment — the terminal↔HTML PARITY
+  guard** (`tests/test_canonical_history.py`
+  `test_terminal_and_html_surfaces_name_the_same_diagnostics`, +1): the canonical-drift diagnosis has TWO
+  surfaces (terminal `ch.render` + HTML `scorecard._write_canonical_history_page`) whose parity was maintained
+  purely BY HAND cycle-to-cycle, and the HTML page had ZERO test coverage. The guard builds ONE out-of-band
+  history that fires every diagnostic (4 in-band anchors → 3 out-of-band transactability-softening readings,
+  18h span), renders BOTH surfaces, and asserts ten diagnostic FACTS (latest overalls, band verdict, sustained
+  span, noise-floor determinism, fingered pillar+side, stability verdict, cause sentence, re-capture label) —
+  each COMPUTED from the history model, never a literal — appear in BOTH. Preconditions assert each diagnostic
+  actually fired (non-vacuous); mutation-verified (dropping "DETERMINISTIC at rest" from the HTML reddens it;
+  revert green). Tests-only, OFF the scoring path (`git diff --name-only` = `tests/test_canonical_history.py`
+  ONLY; scoring-path diff EMPTY) → score-neutral, NOT peer-gated, direct-to-main. Full suite 413→414;
+  `test_canonical_history.py` 47→48; replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7.
+  The canonical-drift readout is now parity-locked across both surfaces. NEXT (METHOD 189): a metamorphic/
+  invariance guard on a diagnostic still lacking one, or a small measurement-rigor refinement. Substantive
+  frontier (thin-archetype/render/structured-catalog LIVE fixtures — incl. the service_booking
+  `book (a|an|your)` sales-CTA collision — ACP/UCP/MPP, calibration sweep, transactability-drop CHECK-level
+  diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 187 runner note): RUNNER AT-FLOOR at 2026-08-02T22:12Z (Cycle 187) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~42h old at the 22:12Z fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; 22:12Z is
   NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral TRUTH increment,

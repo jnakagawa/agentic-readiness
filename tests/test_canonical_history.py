@@ -1491,6 +1491,91 @@ def test_liveness_on_real_committed_series_is_coherent() -> None:
     )
 
 
+def test_terminal_and_html_surfaces_name_the_same_diagnostics() -> None:
+    print("test_terminal_and_html_surfaces_name_the_same_diagnostics")
+    # READOUT parity guard (Cycle 188): the canonical-delta DIAGNOSIS has two
+    # surfaces — the terminal ``asrs canonical-history`` render (``ch.render``) and
+    # the HTML ``canonical-history.html`` page
+    # (``scorecard._write_canonical_history_page``). Every cycle that added a
+    # diagnostic (sustained wall-clock span, at-rest noise floor, pillar
+    # attribution, attribution stability, side/direction cause, re-capture advice)
+    # had to HAND-PORT it to BOTH surfaces — the "terminal->HTML close-out" the
+    # scorecard comments describe (per_kind Cycle 10->12, between_kind Cycle 18->20,
+    # noise floor Cycle 47->48, liveness Cycle 51, stability Cycle 183->184). Nothing
+    # kept the two from silently drifting apart: the HTML page had no test at all, so
+    # a renderer dropping a line (or a sibling never gaining one) went uncaught. This
+    # binds them. Build ONE out-of-band history that fires every diagnostic, render
+    # BOTH surfaces, and assert each diagnostic FACT — derived from the history MODEL,
+    # not hand-written — appears in BOTH. If exactly one surface loses a fact, this
+    # reddens. Display-only: imports no scoring code, moves no score.
+    from pathlib import Path
+
+    from asrs import scorecard
+
+    org_p = {"access": 100.0, "legibility": 36.4, "transactability": 18.75, "trust": 60.0}
+    com_anchor = {"access": 100.0, "legibility": 90.9, "transactability": 87.5, "trust": 60.0}
+    com_drift = {"access": 100.0, "legibility": 90.9, "transactability": 62.5, "trust": 60.0}
+    with tempfile.TemporaryDirectory() as tmp:
+        # 4 in-band anchors (both sides flat -> deterministic noise floor) + a trailing
+        # run of 3 out-of-band drift readings spanning ~18h (com transactability
+        # softens, mirroring the real Jul-31/Aug-1 drop) so sustained-run, attribution,
+        # stability, cause and re-capture all fire.
+        rows = [
+            _artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4,
+                      org_pillars=org_p, com_pillars=com_anchor)
+            for i in range(1, 5)
+        ]
+        rows += [
+            _artifact("20260731T080000Z", 46.1, 76.2, 30.1, org_pillars=org_p, com_pillars=com_drift),
+            _artifact("20260731T140000Z", 46.1, 76.2, 30.1, org_pillars=org_p, com_pillars=com_drift),
+            _artifact("20260801T020000Z", 46.1, 76.2, 30.1, org_pillars=org_p, com_pillars=com_drift),
+        ]
+        _write_series(tmp, rows)
+        # No clock -> liveness None (deterministic; the liveness banner is separately
+        # unit-tested and is time-dependent, so we keep it out of the parity fixture).
+        hist = ch.load_history(tmp)
+
+        # Preconditions: every diagnostic must have fired, or the parity check is
+        # vacuous (both surfaces trivially agree by omitting the same absent line).
+        sr = hist.sustained_run
+        nf = hist.noise_floor
+        attr = hist.attribution
+        stab = hist.attribution_stability
+        cause = hist.divergence_cause
+        adv = hist.recapture
+        _check(hist.band != ch.BAND_IN, "the fixture series is out of band")
+        _check(sr is not None and sr.span_hours > 0, "a sustained run with a real span fired")
+        _check(nf is not None and nf.deterministic, "the at-rest noise floor is deterministic")
+        _check(attr is not None and attr.top is not None, "pillar attribution isolated a top mover")
+        _check(stab is not None, "attribution stability is measurable")
+        _check(cause is not None, "a side/direction cause fired")
+        _check(adv is not None and adv.code != ch.REC_NO_DATA, "a re-capture recommendation fired")
+
+        terminal = ch.render(hist)
+        html_path = scorecard._write_canonical_history_page(Path(tmp), history=hist)
+        html = Path(html_path).read_text(encoding="utf-8")
+
+        top = attr.top
+        # (label, needle) — each needle is COMPUTED from the history model, never a
+        # literal, so this stays vendor-neutral and tracks the data. Both surfaces
+        # must carry every one; a diagnostic present on only one side is a parity leak.
+        facts = [
+            ("latest no-rails overall", f"{hist.latest.no_rails_overall:.1f}"),
+            ("latest with-rails overall", f"{hist.latest.with_rails_overall:.1f}"),
+            ("band verdict", ch._BAND_VERDICT[hist.band]),
+            ("sustained wall-clock span", f"spanning {sr.span_hours:.1f}h"),
+            ("at-rest noise-floor determinism", "DETERMINISTIC at rest"),
+            ("attribution: moved pillar", top.pillar),
+            ("attribution: moved side", top.domain),
+            ("attribution stability verdict", "STABLE" if stab.stable else "WANDERS"),
+            ("side/direction cause", ch.cause_verdict(cause, top)),
+            ("re-capture recommendation", ch._REC_LABEL[adv.code]),
+        ]
+        for label, needle in facts:
+            _check(needle in terminal, f"terminal surface names the {label}: {needle!r}")
+            _check(needle in html, f"HTML surface names the {label}: {needle!r}")
+
+
 def test_runs_against_real_committed_series() -> None:
     print("test_runs_against_real_committed_series")
     hist = ch.load_history()  # default runs/local in this checkout
@@ -1549,6 +1634,7 @@ def main() -> int:
         test_liveness_future_artifact_clamps_to_zero,
         test_liveness_none_on_unparseable_ts,
         test_liveness_on_real_committed_series_is_coherent,
+        test_terminal_and_html_surfaces_name_the_same_diagnostics,
         test_runs_against_real_committed_series,
     ]
     failed = 0

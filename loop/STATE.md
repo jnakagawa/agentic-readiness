@@ -1,8 +1,48 @@
 # Loop state
 
-- Cycle counter: 181
+- Cycle counter: 182
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-02T16:12Z (Cycle 181) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-02T17:11Z (Cycle 182) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~37.3h old at the 17:11Z fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; 17:11Z is
+  NOT first-after-16:00 UTC → no DM this fire per comms policy (off-scoring-path / score-neutral COVERAGE
+  increment, no sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org
+  46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence
+  PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent regression
+  signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open
+  → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 182): fresh checkout on detached HEAD at Cycle 181's
+  `3b4978f`; ran `git fetch origin main` FIRST (standing lesson) → `3796519…3b4978f (forced update)`,
+  `checkout -B main origin/main` aligned to the real tip, working tree clean, invariant #5 intact. Fresh
+  `.venv` + `requests pyyaml eth-account pytest`, imports verified, 402 tests green pre-flight.
+- FOCUS POINTER (Cycle 182 done): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 182 was
+  COVERAGE, so Cycle 183 is TRUTH). Cycle 182 shipped a **COVERAGE increment — the offering classifier now
+  HTML-entity-decodes** (`asrs/offering.py` `strip_html` + `import html as _html`, + `tests/test_offering.py`
+  +1 guard). `strip_html` dropped scripts/tags and collapsed whitespace but never decoded entities, so real
+  HTML that joins capability phrases with a non-breaking-space entity (`Free&nbsp;shipping`,
+  `per&nbsp;month`, `Add&nbsp;to&nbsp;cart`) — exactly the phrases publishers keep from wrapping — left the
+  literal-single-space signals silently MISSING and under-classified the storefront purely on encoding (the
+  sibling of the Cycle-178 line-wrap gap, from a space ENCODED not WRAPPED). Demonstrated pre-fix: a
+  `&nbsp;`-joined retail page classified `{subscription}` only vs `{metered_api, physical_good, subscription}`
+  with literal spaces. FIX: `_html.unescape` AFTER tag removal, BEFORE whitespace collapse (so `&nbsp;` →
+  `\xa0` folds into the single-space normalization) — precisely what makes it the VISIBLE prose.
+  Precision-safe: `unescape` only rewrites `&…;`, so it can never conjure a phrase (`&amp;`/`&mdash;` noise →
+  `&`/`—`, never a signal word). New guard `test_classification_is_html_entity_decode_invariant` (entity-decode
+  analogue of the casing/whitespace-reflow axes): entity-joined vs literal-space classify identically (set/
+  rank/NA/skeleton); teeth = encoding real + free-shipping pattern matches `free shipping` NOT
+  `free&nbsp;shipping` (decode LOAD-BEARING) + `&amp;`/`&mdash;` negative control conjures nothing;
+  REAL-EVIDENCE half proves BOTH committed canonical homepages' `&nbsp;` brand marquee (`Arclight&nbsp;Goods`,
+  `VELA&nbsp;Studio`) is genuinely decoded on raw committed bytes yet does NOT conjure physical_good (canonical
+  NA holds). Off the scoring path (`git diff --name-only` = `asrs/offering.py` + `tests/test_offering.py` ONLY;
+  scoring/rubric/probes/fetch/cli/battery/scorecard/fixtures = 0 changes) → score-neutral, NOT peer-gated,
+  direct-to-main. Full suite 402→403; offering+canonical guards 136/136; replay guard 24/24, 46.1 F / 85.5 B /
+  +39.4, 0 replay-miss; rubric v0.7. Unlike the Cycle-178 reflow gap (committed evidence not reflowed → needs a
+  `[LOCAL]` real-wrapped capture), the entity gap validated NON-VACUOUSLY on the committed `&nbsp;` this fire —
+  no new `[LOCAL]` item owed. NEXT (TRUTH 183): a calibration/attribution refinement against reality — is the
+  pillar-attribution `top` STABLE across the trailing out-of-band runs (same mover every reading, or does it
+  wander?), or an in-cloud guard on the transactability-drop persistence. Substantive frontier (thin-archetype/
+  render/structured-catalog LIVE fixtures, ACP/UCP/MPP, calibration sweep, transactability-drop CHECK-level
+  diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 181 runner note): RUNNER AT-FLOOR at 2026-08-02T16:12Z (Cycle 181) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~36.4h old at the 16:12Z fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). 16:12Z IS the first cycle after 16:00 UTC → **daily digest DM
   SENT** this fire per comms policy (cycles-run + shipped-item + canonical-delta trend + top open question).

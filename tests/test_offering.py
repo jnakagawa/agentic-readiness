@@ -1046,6 +1046,127 @@ def test_classification_is_whitespace_reflow_invariant():
     print("  ok: reflow does not conjure a claim across a paragraph boundary — precision-safe")
 
 
+def test_classification_is_html_entity_decode_invariant():
+    # A readiness classification is a property of the VISIBLE words a storefront
+    # renders, not the ENCODING a crawl captured. Real HTML joins the exact two-word
+    # capability phrases a publisher will not let line-wrap with a non-breaking-space
+    # entity ("Free&nbsp;shipping", "per&nbsp;month", "Add&nbsp;to&nbsp;cart") and
+    # escapes ampersands/quotes/dashes ("&amp;", "&#39;", "&mdash;"). Left literal,
+    # "Free&nbsp;shipping" is NOT the string "free shipping", so the many
+    # literal-single-space signals ("free shipping", "add to cart", "per month",
+    # "billed per <unit>") silently miss and the storefront is under-classified purely
+    # on encoding. That is the sibling failure to the Cycle-178 line-wrap gap — from a
+    # space that was ENCODED rather than WRAPPED — and strip_html now HTML-entity-decodes
+    # as part of reducing a page to its VISIBLE prose. This pins the invariance: the
+    # SAME storefront, capability phrases entity-joined vs literal-space, classifies
+    # identically (claimed archetypes in rank order, the NA complement, and the
+    # per-(label, surface) skeleton). It is the entity-decode analogue of the casing
+    # (test_offering_canonical.py) and whitespace-reflow (above) axes.
+    decoded = (
+        "<!doctype html><html><body><p>"
+        "Free shipping on every physical order. Add to cart when ready. "
+        "Programmatic access is billed per call. Membership renews per month."
+        "</p></body></html>"
+    )
+    encoded = (
+        decoded.replace("Free shipping", "Free&nbsp;shipping")
+        .replace("Add to cart", "Add&nbsp;to&nbsp;cart")
+        .replace("billed per call", "billed&nbsp;per&nbsp;call")
+        .replace("per month", "per&nbsp;month")
+    )
+    base = classify_offering("shop.test", {"homepage": decoded})
+    ent = classify_offering("shop.test", {"homepage": encoded})
+
+    # Substrate: the property under test is genuinely present — a RANKED multi-archetype
+    # classification an encoding difference could perturb, over three literal-space
+    # archetypes.
+    assert {"physical_good", "metered_api", "subscription"} <= set(base.archetypes), (
+        f"substrate: the three literal-space archetypes all claim on the decoded prose "
+        f"(got {base.archetypes})"
+    )
+
+    # TEETH (a): the transform is REAL — the encoded bytes differ and carry the entity.
+    assert encoded != decoded and "&nbsp;" in encoded, "the encoding genuinely changed the bytes (non-vacuous)"
+
+    # TEETH (b): entity DECODING is LOAD-BEARING. A literal-space signal's raw pattern
+    # matches the decoded phrase but NOT the entity-joined form, so without the decode
+    # the encoded surface would drop the claim — the invariance below rests on
+    # strip_html's unescape, not on the phrases surviving by luck. (physical_good's
+    # free-shipping is authored with a literal single space.)
+    fs_pat = _signal_pattern("physical_good", "free-shipping")
+    assert fs_pat is not None, "free-shipping signal exists"
+    assert fs_pat.search("free shipping") is not None, "free-shipping matches the literal-space form"
+    assert fs_pat.search("free&nbsp;shipping") is None, (
+        "free-shipping does NOT match the entity-joined form — so decoding is load-bearing"
+    )
+
+    # (1) The encoding-independent capability skeleton is identical: every archetype's
+    # strength AND its per-(label, surface) match counts survive the entity encoding —
+    # no signal lost or conjured, no count drifted, by mere &nbsp;-joining.
+    assert _wsr_struct(ent) == _wsr_struct(base), (
+        f"per-archetype (strength, per-(label, surface) counts) skeleton invariant under "
+        f"HTML-entity encoding (decoded {_wsr_struct(base)}, encoded {_wsr_struct(ent)})"
+    )
+    # (2) Claimed archetypes IN RANK ORDER invariant — the rank drives the fixed
+    # template-bank task order, so encoding must not reorder the battery.
+    assert ent.archetypes == base.archetypes, (
+        f"claimed archetypes (ranked) invariant under HTML-entity encoding "
+        f"(decoded {base.archetypes}, encoded {ent.archetypes})"
+    )
+    # (3) The NA/unclaimed complement (excluded from every mean/spread, never penalized)
+    # is invariant — which archetypes a site is excused on as NA depends on what it
+    # declares, not how a crawl encoded it.
+    assert set(ent.unclaimed) == set(base.unclaimed), (
+        f"NA/unclaimed set invariant under HTML-entity encoding "
+        f"(decoded {sorted(base.unclaimed)}, encoded {sorted(ent.unclaimed)})"
+    )
+    print("  ok: claimed set / rank / strengths / labels / NA invariant under &nbsp; entity encoding (decode is load-bearing)")
+
+    # TEETH (c): the negative control — entity DECODING must NOT conjure a claim from
+    # entity-shaped noise. "Terms & conditions" / "Q & A" escape their ampersands as
+    # "&amp;"; unescape rewrites them to "&", never to a signal word, so no archetype
+    # is manufactured. Decoding repairs the encoded phrase WITHOUT inventing one.
+    noise = (
+        "<!doctype html><html><body><p>"
+        "Terms &amp; conditions apply. Q &amp; A &mdash; read the FAQ. About &amp; contact."
+        "</p></body></html>"
+    )
+    noise_prof = classify_offering("noise.test", {"homepage": noise})
+    assert noise_prof.claimed == [], (
+        f"entity decoding must not conjure a claim from &amp;/&mdash; noise (got {noise_prof.archetypes})"
+    )
+    print("  ok: entity decoding does not conjure a claim from &amp;/&mdash; noise — precision-safe")
+
+    # REAL-EVIDENCE half: the fix runs NON-VACUOUSLY on committed canonical evidence.
+    # Both canonical homepages carry a brand-logo marquee whose names are joined with
+    # &nbsp; ("Arclight&nbsp;Goods", "VELA&nbsp;Studio"). strip_html must DECODE them
+    # (so the marquee reads as visible prose) WITHOUT the decoded "Goods"/"Studio"
+    # tokens conjuring physical_good — the canonical operator-acceptance NA — which is
+    # exactly why decoding is safe on the canonical pair (guarded set-level in
+    # test_offering_canonical.py; here we prove the decode genuinely fired on the raw
+    # committed bytes).
+    for domain in ("drift-flight.org", "driftflight.com"):
+        path = os.path.join(_FIXTURE_DIR, f"{domain}.json")
+        raw = json.load(open(path))
+        homepage = next(
+            (e["result"].get("text", "") for e in raw["entries"]
+             if e.get("url", "").rstrip("/").endswith(domain.replace("www.", ""))
+             and isinstance(e.get("result"), dict) and "&nbsp;" in (e["result"].get("text") or "")),
+            "",
+        )
+        assert "&nbsp;" in homepage, f"{domain}: committed homepage carries a raw &nbsp; (non-vacuous)"
+        stripped = strip_html(homepage)
+        assert "&nbsp;" not in stripped, f"{domain}: strip_html DECODED the committed &nbsp; (fix ran on real evidence)"
+        # The decoded marquee reads as visible prose (brand names space-joined), and the
+        # canonical NA is preserved: no physical_good conjured from "Goods"/"Studio".
+        prof = classify_offering(domain, {"homepage": homepage})
+        assert "physical_good" not in prof.archetypes, (
+            f"{domain}: decoding the brand marquee must not conjure physical_good (canonical NA) "
+            f"(got {prof.archetypes})"
+        )
+    print("  ok: committed canonical &nbsp; marquee is decoded on real evidence, physical_good stays NA")
+
+
 def test_evidence_is_quoted_and_surface_tagged():
     prof = classify_offering("example-imaging.test", {"homepage": API_HOMEPAGE})
     for claim in prof.claimed:
@@ -3697,6 +3818,7 @@ def main() -> int:
         test_strength_counts_distinct_signals_and_orders_claims,
         test_classification_is_surface_read_order_invariant,
         test_classification_is_whitespace_reflow_invariant,
+        test_classification_is_html_entity_decode_invariant,
         test_evidence_is_quoted_and_surface_tagged,
         test_openapi_spec_alone_classifies_api_first_storefront,
         test_ai_plugin_descriptor_alone_classifies_storefront,

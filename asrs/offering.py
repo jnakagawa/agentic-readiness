@@ -43,6 +43,7 @@ Pure stdlib + dataclasses; unit-testable with synthetic surfaces, no network.
 
 from __future__ import annotations
 
+import html as _html
 import re
 from dataclasses import asdict, dataclass, field
 from typing import Any
@@ -1352,13 +1353,35 @@ _WS_RE = re.compile(r"\s+")
 def strip_html(text: str) -> str:
     """Reduce an HTML document to its visible prose for scanning.
 
-    Drops script/style blocks then tags, collapses whitespace. A no-op on text
-    that has no tags (llms.txt / plain manifests pass through unchanged).
+    Drops script/style blocks then tags, DECODES HTML entities, collapses
+    whitespace. A no-op on text that has no tags (llms.txt / plain manifests
+    pass through unchanged).
+
+    Entity decoding is what makes this the VISIBLE prose, not just the tag-free
+    bytes. Real HTML routinely joins the exact two-word capability phrases a
+    publisher does not want to line-wrap with a non-breaking space entity —
+    ``Free&nbsp;shipping``, ``per&nbsp;month``, ``Add&nbsp;to&nbsp;cart`` — and
+    escapes ampersands/quotes/dashes (``&amp;``, ``&#39;``, ``&mdash;``). Left
+    literal, ``Free&nbsp;shipping`` is not the string ``free shipping``, so the
+    many literal-single-space signals ("free shipping", "add to cart", "per
+    month") silently miss and the storefront is under-classified purely on
+    encoding — the sibling failure to the Cycle-178 line-wrap gap, from a space
+    that was ENCODED rather than WRAPPED. Decoding runs AFTER tag removal (so a
+    real ``<div>`` is stripped as markup) but BEFORE the whitespace collapse (so
+    ``&nbsp;`` -> ``\\xa0`` folds into the single-space normalization with every
+    other layout whitespace). Precision-safe: ``_html.unescape`` only rewrites
+    ``&...;`` sequences, so it cannot conjure a capability phrase from prose that
+    does not already contain one (an entity-shaped noise token like ``&amp;``
+    decodes to ``&``, never to a signal word). Off the scoring path (discovery
+    drives ``--battery auto`` task selection only); the canonical CLAIMED sets
+    are invariant because their committed ``&nbsp;`` sits in a brand-logo marquee
+    ("Arclight&nbsp;Goods"), which decodes to prose that fires no signal.
     """
     if not text or "<" not in text:
         return (text or "").strip()
     stripped = _SCRIPT_STYLE_RE.sub(" ", text)
     stripped = _TAG_RE.sub(" ", stripped)
+    stripped = _html.unescape(stripped)
     return _WS_RE.sub(" ", stripped).strip()
 
 

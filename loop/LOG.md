@@ -3,6 +3,68 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 182 — 2026-08-02T17:11Z — COVERAGE — offering discovery HTML-entity-decodes: `&nbsp;`-joined capability phrases no longer under-classify
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed.
+
+**Infra health.** Fresh checkout on detached HEAD at Cycle 181's `3b4978f`; `git fetch origin main`
+FIRST (standing lesson) → `3796519…3b4978f (forced update)`, `checkout -B main origin/main` aligned to
+the real tip, tree clean, invariant #5 intact. Fresh `.venv` + `requests pyyaml eth-account pytest`,
+402 tests green pre-flight. RUNNER AT-FLOOR: newest verify `runs/local/verify_20260801T035047Z.json`
+(03:50Z Aug-1) is ~37.3h old at the 17:11Z fire — PAST the 6h floor (machine-asleep / runner-lag;
+cloud cannot repair; already flagged in the 16:12Z daily digest). Bench + bookkeeping otherwise healthy
+(402 = STATE post-Cycle-181).
+
+**What/why (COVERAGE — measurement flexibility: classify real HTML, not just its tag-free bytes).**
+`strip_html` reduced an HTML surface to prose by dropping scripts/tags and collapsing whitespace but
+did NOT decode HTML entities. Real HTML routinely joins the exact two-word capability phrases a
+publisher will not let line-wrap with a non-breaking-space entity — `Free&nbsp;shipping`,
+`per&nbsp;month`, `Add&nbsp;to&nbsp;cart` — and escapes `&`/`'`/`—`. Left literal, `Free&nbsp;shipping`
+is NOT the string `free shipping`, so the many literal-single-space signals silently miss and a real
+storefront is UNDER-CLASSIFIED purely on encoding — the sibling failure to the Cycle-178 line-wrap gap,
+from a space that was ENCODED rather than WRAPPED. Demonstrated pre-fix: a retail page whose phrases are
+`&nbsp;`-joined classified as `{subscription}` only; the same page with literal spaces →
+`{metered_api, physical_good, subscription}` — physical_good + metered_api silently dropped. FIX:
+`strip_html` now `_html.unescape(...)` AFTER tag removal (real `<div>` stripped as markup) and BEFORE
+the whitespace collapse (so `&nbsp;` → `\xa0` folds into the single-space normalization with every other
+layout whitespace) — entity decoding is precisely what makes this the VISIBLE prose. Precision-safe:
+`html.unescape` only rewrites `&…;` sequences, so it can never conjure a capability phrase from prose
+that lacks one (`&amp;`/`&mdash;` noise decodes to `&`/`—`, never to a signal word — verified). Guard
+`test_classification_is_html_entity_decode_invariant` (the entity-decode analogue of the casing /
+whitespace-reflow axes): entity-joined vs literal-space prose classify identically (claimed set in rank
+order + NA complement + per-(label,surface) skeleton); teeth = the encoding is real, the free-shipping
+signal's raw pattern matches `free shipping` but NOT `free&nbsp;shipping` (decode is LOAD-BEARING), and
+an `&amp;`/`&mdash;` negative control conjures nothing; REAL-EVIDENCE half asserts BOTH committed
+canonical homepages' `&nbsp;` brand-logo marquee (`Arclight&nbsp;Goods`, `VELA&nbsp;Studio`) is genuinely
+decoded by `strip_html` on the raw committed bytes yet does NOT conjure physical_good (the canonical
+operator-acceptance NA holds — decoded `Goods`/`Studio` fires no signal).
+
+**Ship.** Classifier bug-fix that does NOT change scoring semantics (the offering classifier drives
+`--battery auto` task selection only, off the scoring path — grep-confirmed: `git diff --name-only` =
+`asrs/offering.py` + `tests/test_offering.py` ONLY; scoring/rubric/probes/fetch/cli/battery/scorecard/
+fixtures = 0 changes) → score-neutral, NOT peer-gated, **direct-to-main**.
+
+**Validation.** Full suite 402 → 403 (`test_offering.py` +1 guard, runner-registration guard green).
+Offering + canonical-offering guards 136/136 (canonical CLAIMED sets `{metered_api, subscription,
+digital_good}` with physical_good NA on BOTH — INVARIANT under the decode, since the committed `&nbsp;`
+sits in a brand marquee that decodes to signal-free prose). Canonical replay guard 24/24 green,
+**46.1 F / 85.5 B / delta +39.4**, 0 replay-miss — the frozen in-cloud regression signal is UNCHANGED
+(guaranteed by construction: no scoring-path byte moved). Live signal (read, not re-run — runner
+at-floor): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the
+Jul-31/Aug-1 transactability-drop divergence PERSISTS, off the scoring path. Rubric v0.7.
+
+**Next hypothesis (TRUTH 183).** The offering classifier's reading layer now has a near-complete
+robustness envelope for cross-crawl comparability — casing, whitespace-reflow, surface-read-order,
+host-relabel, and now HTML-entity-decode all pinned invariant. Unlike the Cycle-178 reflow gap (whose
+committed evidence is NOT reflowed, so it needs a `[LOCAL]` real-wrapped-surface capture to validate on
+live data), the entity gap validated NON-VACUOUSLY on the committed canonical `&nbsp;` this fire — no new
+`[LOCAL]` item owed. TRUTH 183: a calibration/attribution refinement against reality — e.g. does the
+pillar-attribution `top` on the real committed series stay STABLE across the trailing out-of-band runs
+(same mover every reading, or does it wander?), or wire an in-cloud guard on the transactability-drop
+persistence. Substantive live work (thin-archetype/render/structured-catalog fixtures, ACP/UCP/MPP,
+calibration sweep, transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+
 ## Cycle 181 — 2026-08-02T16:12Z — METHOD — host-relabel (vendor-neutrality) invariance guard on the divergence-cause prose
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

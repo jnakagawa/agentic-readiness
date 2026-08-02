@@ -4667,6 +4667,169 @@ def test_offering_noise_surface_invariance_retail() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Noise-surface invariance on the MACHINE (API-first) pole — closing the last
+# org/com/retail-vs-machine asymmetry on the NOISE axis (the content-scale and
+# surface-dedup axes already reach all four poles; the whitespace axis is
+# machine-only by construction). `_org`/`_com` pin the multi-archetype PROSE
+# pole, `_retail` the single-archetype no-rails catalog; this pins the single-
+# archetype metered_api OpenAPI-spec pole (`api.replicate.com`, which claims ONLY
+# metered_api off its `/openapi.json` doc surface — its NATIVE home, pinned by
+# `test_machine_surface_openapi_storefront`). The property it protects is the
+# "never manufacture the delta" invariant on the NOISE axis, from the metered
+# pole: bolting incidental web chrome (a cookie/privacy notice, a careers blurb,
+# a legal footer) onto an API-first storefront must not CONJURE a rails archetype
+# (subscription / physical_good / ...) the spec does not offer, nor strengthen or
+# retract the metered_api claim. An API is not suddenly a shop — nor "more"
+# metered — because a privacy page sits next to its spec.
+#
+# Two structural differences from `_assert_noise_surface_invariance` force a
+# dedicated test rather than a reuse of the canonical helper (the same two the
+# content-scale / surface-dedup machine poles name):
+#   * the shared helper's non-vacuity rests on `len(base.claimed) >= 2` so an
+#     added surface that REORDERED the ranking would be observable; the machine
+#     pole claims exactly ONE archetype, so "reorder" is structurally impossible
+#     and would be the wrong non-vacuity proof. The single-claim analogue below
+#     is the credibility-direction one the retail pole uses: the guarded property
+#     is "the rails/other archetypes stay NA", and the negative-control teeth
+#     conjure a NON-metered archetype (physical_good, NA here) so a signal-bearing
+#     added surface observably moves the profile;
+#   * `_captured_surfaces` requires `>=2` READ surfaces for a reorder to matter;
+#     the machine pole reads exactly {homepage, /openapi.json}, so the base is
+#     captured inline (the same spy pattern the content-scale / whitespace machine
+#     poles use) and the noise axis adds one signal-free surface to it.
+#
+# Non-vacuity mirrors the canonical guard's three teeth: (a) the noise surface is
+# genuinely READ (lands in surfaces_seen) yet contributes no claim; (b) the
+# distractor prose fires ZERO signals under `_scan_surface`; (c) the physical_good
+# negative control DOES move the profile — the added-surface channel is live.
+# The whole per-archetype (strength, (label, surface, quote)) evidence map is
+# asserted byte-identical (not the quote-excluded skeleton the whitespace axis
+# must fall back to): unlike a reflow, an ADDED signal-free surface never touches
+# the bytes of the surfaces the fired evidence is quoted from, so the sampled
+# quotes cannot drift.
+# ---------------------------------------------------------------------------
+
+
+def test_offering_noise_surface_invariance_machine() -> None:
+    """Incidental web chrome conjures no rails claim on an API-first metered store."""
+    print("test_offering_noise_surface_invariance_machine")
+
+    # Capture the base surfaces exactly as discovery feeds them to the classifier.
+    # (Unlike `_captured_surfaces`, no >=2-surface reorder premise: the machine pole
+    # reads {homepage, /openapi.json} and the noise axis adds one signal-free surface.)
+    path = os.path.join(_FIXTURE_DIR, f"{_MACHINE_SURFACE}.json")
+    ctx = FetchContext.from_fixture(path)
+    captured: dict = {}
+    real = _offering.classify_offering
+
+    def _spy(dom, surfaces):
+        captured.clear()
+        captured.update(surfaces)
+        return real(dom, surfaces)
+
+    _offering.classify_offering = _spy
+    try:
+        _offering.discover_offering(ctx)
+    finally:
+        _offering.classify_offering = real
+
+    base = _offering.classify_offering(_MACHINE_SURFACE, dict(captured))
+
+    # The property under test is genuinely present: the store claims EXACTLY
+    # metered_api, with every other archetype NA — so a rails claim conjured by
+    # incidental chrome, or a strengthened metered_api, would be observable.
+    _check(
+        set(base.archetypes) == _MACHINE_CLAIMED,
+        f"{_MACHINE_SURFACE}: base claimed set == {sorted(_MACHINE_CLAIMED)} "
+        f"(got {sorted(set(base.archetypes))})",
+    )
+    machine_must_be_na = set(_offering.ARCHETYPES) - _MACHINE_CLAIMED
+    _check(
+        machine_must_be_na <= set(base.unclaimed),
+        f"{_MACHINE_SURFACE}: the non-metered archetypes {sorted(machine_must_be_na)} are "
+        f"all NA at base (got unclaimed {sorted(base.unclaimed)}) — the single-claim "
+        "property the noise must not overturn is present",
+    )
+    # The extra surface key is a genuine ADDITION, not an overwrite that could hide
+    # a change.
+    _check(
+        _NOISE_SURFACE not in captured,
+        f"{_MACHINE_SURFACE}: the noise surface key {_NOISE_SURFACE!r} is new, not an "
+        f"overwrite (captured surfaces: {list(captured)})",
+    )
+
+    # TEETH (b): the distractor carries NO capability signal, despite its near-miss
+    # vocabulary (metaphorical "ship", cookie/careers/legal chrome) — so the
+    # invariance is "noise adds no claim", not "we matched an existing signal".
+    _check(
+        _offering._scan_surface(_NOISE_SURFACE, _NOISE_PROSE) == [],
+        f"{_MACHINE_SURFACE}: the distractor prose fires ZERO archetype signals "
+        f"(got {[(s.archetype, s.label) for s in _offering._scan_surface(_NOISE_SURFACE, _NOISE_PROSE)]})",
+    )
+
+    noisy = _offering.classify_offering(
+        _MACHINE_SURFACE, {**captured, _NOISE_SURFACE: _NOISE_PROSE}
+    )
+
+    # TEETH (a): the noise surface was genuinely READ — it reached the scanner and
+    # landed in the read-provenance record — yet contributed no claim.
+    _check(
+        _NOISE_SURFACE in noisy.surfaces_seen,
+        f"{_MACHINE_SURFACE}: the noise surface {_NOISE_SURFACE!r} was read "
+        f"(surfaces_seen {noisy.surfaces_seen})",
+    )
+
+    # (1) The WHOLE classified profile is byte-identical: metered_api's strength AND
+    # its complete (label, surface, quote) evidence survive the added surface
+    # unchanged — no signal conjured, no quote drifted, no rails archetype added.
+    _check(
+        _full_evidence_map(noisy) == _full_evidence_map(base),
+        f"{_MACHINE_SURFACE}: complete per-archetype (strength, (label, surface, quote)) "
+        "evidence map invariant under a signal-free added surface",
+    )
+    # (2) Claimed archetypes invariant — still EXACTLY metered_api. The chrome
+    # conjured no rails claim; the "never manufacture the delta" property on the
+    # NOISE axis, from the machine pole.
+    _check(
+        noisy.archetypes == base.archetypes,
+        f"{_MACHINE_SURFACE}: claimed archetypes invariant under a signal-free added "
+        f"surface (base {base.archetypes}, noisy {noisy.archetypes})",
+    )
+    # (3) The non-metered archetypes stay NA and the whole NA/unclaimed set is
+    # invariant — which archetypes an API-first store is excused on as NA is a
+    # property of WHAT its spec declares, never of what boilerplate surrounds it.
+    _check(
+        machine_must_be_na <= set(noisy.unclaimed)
+        and set(noisy.unclaimed) == set(base.unclaimed),
+        f"{_MACHINE_SURFACE}: the non-metered archetypes stay NA and the whole NA set is "
+        f"invariant under a signal-free added surface (base {sorted(base.unclaimed)}, "
+        f"noisy {sorted(noisy.unclaimed)})",
+    )
+    # (4) The ONLY change is read-provenance: surfaces_seen grew by exactly the noise
+    # surface and nothing else.
+    _check(
+        set(noisy.surfaces_seen) == set(base.surfaces_seen) | {_NOISE_SURFACE},
+        f"{_MACHINE_SURFACE}: surfaces_seen grew by exactly {_NOISE_SURFACE!r} and nothing "
+        f"else (base {sorted(base.surfaces_seen)}, noisy {sorted(noisy.surfaces_seen)})",
+    )
+
+    # TEETH (c): the negative control — swap the SAME surface key for real
+    # fulfillment prose. physical_good (NA on this API-first store) MUST be
+    # conjured, proving an added surface CAN move the classification, so the chrome-
+    # invariance above is meaningful, not a channel the classifier ignores.
+    teeth = _offering.classify_offering(
+        _MACHINE_SURFACE, {**captured, _NOISE_SURFACE: _NOISE_TEETH_PROSE}
+    )
+    _check(
+        _full_evidence_map(teeth) != _full_evidence_map(base)
+        and "physical_good" in teeth.archetypes,
+        f"{_MACHINE_SURFACE}: a signal-BEARING added surface DOES move the profile "
+        f"(physical_good conjured: {'physical_good' in teeth.archetypes}) — the "
+        "added-surface channel is live, so noise-invariance is non-vacuous",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Listing-ORDER invariance — the FIFTH metamorphic axis on the classifier, and
 # the FIRST that perturbs the order of items WITHIN a single surface rather than
 # the surfaces themselves. The four axes above all operate at surface
@@ -6148,6 +6311,7 @@ def main() -> int:
         test_offering_noise_surface_invariance_org,
         test_offering_noise_surface_invariance_com,
         test_offering_noise_surface_invariance_retail,
+        test_offering_noise_surface_invariance_machine,
         test_offering_listing_order_invariance_priced_listing,
         test_offering_endpoint_order_invariance_metered_api,
         test_offering_casing_invariance_org,

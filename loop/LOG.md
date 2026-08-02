@@ -3,6 +3,70 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 171 — 2026-08-02T06:11Z — METHOD — noise-surface invariance on the MACHINE pole (closes the last noise-axis pole gap)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed. The many `loop/*` refs on `git fetch` are stale post-merge branches, not open PRs.
+
+**Infra/self-heal.** Fresh checkout on detached HEAD at Cycle 170's `1bbf474` (= real `origin/main` tip).
+I initially ran `git checkout -B main origin/main` WITHOUT fetching first and re-learned the Cycle-151/170
+lesson the hard way: the container's cached `origin/main` ref was the stale Cycle-94-era `3796519`, so my
+`main` branch reset to it and the working tree silently reverted ~76 cycles (surfaced by a test-count
+sanity check — `test_offering_canonical.py` showed 17 `def test_` vs STATE's 57). Diagnosed via
+`git merge-base --is-ancestor` (3796519 NOT an ancestor of the fresh 1bbf474) + reflog (1bbf474 still
+reachable, nothing lost), then `git fetch origin main` → `3796519…1bbf474 (forced update)` corrected the
+tracking ref and `checkout -B main origin/main` re-aligned to the real tip (57/72 counts restored, full
+suite green). No history rewrite (invariant #5 intact); this was a local checkout mistake, not a remote
+problem. `.venv` + `requests pyyaml eth-account pytest`, imports verified. LESSON RE-CONFIRMED (fold into
+practice, not a new backlog item): ALWAYS `git fetch origin main` before `checkout -B main origin/main` in
+a fresh container — the cached tracking ref can be dozens of cycles stale. RUNNER AT-FLOOR: newest verify
+`runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is ~26.3h old at this 06:11Z fire
+— PAST the 6h floor (borderline runner lag, NOT the machine-asleep stall; cloud cannot repair). Already
+flagged in the 16:12Z Cycle-157 digest; no new flag owed (next digest = first cycle after 16:00 UTC Aug-2;
+06:11Z is NOT it → no DM this fire).
+
+**What/why (METHOD).** Closes the LAST org/com/retail-vs-machine asymmetry on the **noise-surface**
+metamorphic axis (STATE's named Cycle-171 gap). The noise axis (adding a signal-free readable surface —
+cookie/privacy notice, careers blurb, legal footer — and asserting the classified capability profile is
+byte-identical) reached org/com (Cycle-era multi-archetype prose pole) and retail (single-archetype
+no-rails catalog) but NOT the machine (API-first OpenAPI-spec) pole. Added
+`test_offering_noise_surface_invariance_machine` on `api.replicate.com` (claims ONLY metered_api off its
+`/openapi.json`, the fixture's native home). Property protected: the "never manufacture the delta"
+invariant on the noise axis from the metered pole — bolting incidental web chrome onto an API-first store
+must not CONJURE a rails/other archetype (physical_good/subscription/…) nor strengthen/retract
+metered_api. An API is not suddenly a shop because a privacy page sits next to its spec.
+
+**Non-vacuity (three teeth, mirroring the canonical + retail noise guards).** (a) the `/privacy` noise
+surface is genuinely READ (lands in `surfaces_seen`) yet contributes no claim; (b) the distractor prose
+fires ZERO signals under `_scan_surface` (asserted directly — doubles as a precision demo on realistic
+chrome incl. metaphorical "ship" ×3); (c) the physical_good negative control (real fulfillment prose on
+the SAME `/privacy` key) DOES move the profile (physical_good, NA here, is conjured) → the added-surface
+channel is live. Asserts the WHOLE per-archetype (strength, (label, surface, quote)) evidence map
+byte-identical — an ADDED signal-free surface never touches the bytes the fired evidence is quoted from,
+so unlike the whitespace-reflow axis no quote can drift (no skeleton fallback needed). Dedicated test
+(not a reuse of `_assert_noise_surface_invariance`): the machine pole claims exactly ONE archetype so the
+helper's `len(claimed) >= 2` rank-reorder premise is inapplicable — same reason the content-scale /
+surface-dedup machine poles have dedicated tests; base captured inline via the shared machine-pole spy.
+
+**Ship.** Tests only. `git diff --name-only` = `tests/test_offering_canonical.py` ONLY; scoring path EMPTY
+(`asrs/scoring.py` `asrs/probes.py` `asrs/offering.py` `asrs/battery.py` `rubric/` `fixtures/` untouched)
+→ score-neutral, NOT peer-gated, direct-to-main.
+
+**Validate.** `test_offering_canonical.py` 57→58; full suite 23 files green; in-cloud replay guard 24/24,
+**drift-flight.org 46.1 F / driftflight.com 85.5 B / delta +39.4**, 0 replay-miss; rubric v0.7. Live
+canonical signal (read from newest verify, cloud can't re-run): drift-flight.org 46.1 F / driftflight.com
+**76.2 C / +30.1** / transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1), off the
+scoring path; my change touches no scoring code so both the frozen and live deltas are unchanged by
+construction.
+
+**Next hypothesis (COVERAGE 172).** In-cloud COVERAGE on committed evidence stays archetype-imbalanced
+(under-covered service_booking / data_retrieval / physical_good need `[LOCAL]` fixtures). Remaining
+in-cloud METHOD symmetry gap after this: surface-dedup on the RETAIL pole — but its teeth are ranking
+stability across ≥2 archetypes, and retail claims only physical_good (no ranking), so it is the weaker,
+near-vacuous axis; prefer a new archetype/signal or a `[LOCAL]` fixture over forcing it. The substantive
+frontier (ACP/UCP/MPP, calibration sweep, transactability-drop diagnosis, render/thin-archetype fixtures)
+is all `[LOCAL]`.
+
 ## Cycle 170 — 2026-08-02T05:12Z — READOUT — methodology paragraph names the `generated render` descriptor variant + priority (closes the render arc)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

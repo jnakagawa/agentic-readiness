@@ -1,8 +1,45 @@
 # Loop state
 
-- Cycle counter: 170
+- Cycle counter: 171
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-02T05:12Z (Cycle 170) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-02T06:11Z (Cycle 171) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~26.3h old at the 06:11Z Aug-2 fire — PAST the 6h floor (borderline runner
+  lag, NOT the machine-asleep stall — cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily
+  digest; no new flag owed (next digest = first cycle after 16:00 UTC Aug-2; 06:11Z is NOT it → no DM this
+  fire per comms policy — tests-only/off-scoring-path/score-neutral METHOD increment, no sensitive-class PR,
+  nothing score-moving). Live signal (read, not re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C /
+  +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1), off the scoring path;
+  the in-cloud replay guard stays the frozen independent signal (24/24, 46.1 F / 85.5 B / +39.4). No open
+  peer-gated PRs this fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL
+  (Cycle 171): fresh checkout on detached HEAD at Cycle 170's `1bbf474` (= real `origin/main` tip). RE-LEARNED
+  the Cycle-151/170 lesson the hard way — ran `checkout -B main origin/main` BEFORE fetching, which reset
+  `main` to the container's STALE cached `origin/main` (`3796519`, Cycle-94 era) and silently reverted the
+  working tree ~76 cycles (caught by a test-count sanity check: 17 vs STATE's 57 `def test_`). Fixed with
+  `git fetch origin main` → `3796519…1bbf474 (forced update)` + re-align; reflog confirms nothing lost,
+  invariant #5 intact. STANDING LESSON: ALWAYS `git fetch origin main` FIRST in a fresh container before
+  `checkout -B main origin/main`. `.venv` + deps installed, imports verified, 23 test files green.
+- FOCUS POINTER (Cycle 171 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 171 was
+  METHOD, so Cycle 172 is COVERAGE). Cycle 171 shipped a **METHOD noise-surface metamorphic axis on the
+  MACHINE pole** — `test_offering_noise_surface_invariance_machine` in `tests/test_offering_canonical.py`,
+  closing the LAST org/com/retail-vs-machine asymmetry on the noise axis (org/com/retail already covered;
+  content-scale + surface-dedup already reach all four poles; whitespace is machine-only by construction).
+  Adds a signal-free `/privacy` chrome surface to the `api.replicate.com` metered_api OpenAPI-spec pole and
+  asserts the whole (strength, (label, surface, quote)) evidence map is byte-identical — bolting incidental
+  web chrome onto an API-first store conjures no rails/other archetype ("never manufacture the delta" on the
+  noise axis from the metered pole). Three teeth: (a) noise surface READ (in surfaces_seen) yet no claim; (b)
+  distractor fires ZERO `_scan_surface` signals; (c) physical_good negative control DOES move the profile.
+  Dedicated test (not the shared `len(claimed)>=2` helper — machine claims exactly 1 archetype), base
+  captured inline via the machine-pole spy. Off the scoring path (`git diff --name-only` =
+  `tests/test_offering_canonical.py` ONLY; scoring.py/probes.py/offering.py/battery.py/rubric/fixtures EMPTY)
+  → score-neutral, NOT peer-gated, direct-to-main. `test_offering_canonical.py` 57→58; registration guard
+  green; full suite 23 files green; replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7.
+  NEXT (COVERAGE 172): in-cloud COVERAGE on committed evidence stays archetype-imbalanced (under-covered
+  service_booking / data_retrieval / physical_good need `[LOCAL]` fixtures). Remaining in-cloud METHOD gap
+  (surface-dedup RETAIL pole) is near-vacuous — its teeth need ≥2 archetypes for a ranking, retail claims
+  only physical_good — so prefer a new archetype/signal or a `[LOCAL]` fixture. Substantive frontier
+  (ACP/UCP/MPP, calibration sweep, transactability-drop diagnosis, render/thin-archetype fixtures) is all
+  `[LOCAL]`.
+- SUPERSEDED (Cycle 170 runner note): RUNNER AT-FLOOR at 2026-08-02T05:12Z (Cycle 170) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~25.4h old at the 05:12Z Aug-2 fire — PAST the 6h floor (borderline runner
   lag, NOT the machine-asleep stall — cloud cannot repair). Already flagged in the 16:12Z Cycle-157 daily
   digest; no new flag owed (next digest = first cycle after 16:00 UTC Aug-2; 05:12Z is NOT it → no DM this

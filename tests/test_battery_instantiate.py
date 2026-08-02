@@ -352,6 +352,23 @@ _TRANSLATE_HOST_HOMEPAGE = """
 short document between two languages at api.acme-vendor.test. Subscription $9 per month.</p>
 </body></html>
 """
+# A RENDER-generation storefront (Cycle 168 branch) that names its host inside the
+# digital_good evidence. It fires the offering bank's `render` signal EXCLUSIVELY —
+# no image/video/audio/art media noun and no `generation`/`generate-media` label —
+# so the descriptor takes the "generated render" branch, and relabeling the host
+# genuinely rewrites the render quote the guard reads. The "generated render" branch
+# keys on the `render` LABEL (not the quote), so like the translation branch it is
+# host-independent BY CONSTRUCTION; this pins that as an executable tripwire for the
+# new branch, so a future refactor that made it read the quote (e.g. to lift a
+# "3D scene" descriptor) could not silently leak the host into the task noun.
+_RENDER_HOST_HOMEPAGE = """
+<html><body>
+<h1>Acme — 3D scene render API</h1>
+<p>POST https://api.acme-vendor.test/v1/renders to render your 3D scene to a photoreal frame.
+Pay per render. Each render is hosted as a URL at api.acme-vendor.test.</p>
+<p>Subscription $7 per month.</p>
+</body></html>
+"""
 _HOST = "acme-vendor.test"
 
 
@@ -399,6 +416,17 @@ def test_digital_good_descriptor_is_relabel_invariant_translation():
     # The 'translated document' branch: the descriptor keys on the `translation`
     # signal LABEL, not the host embedded in the fired quote.
     _assert_descriptor_relabel_invariant(_TRANSLATE_HOST_HOMEPAGE, "translated document")
+
+
+def test_digital_good_descriptor_is_relabel_invariant_render():
+    # The 'generated render' branch (Cycle 168): a render-EXCLUSIVE digital_good
+    # claim (fires only the `render` signal — no image/video/audio/art media noun)
+    # whose evidence embeds the host. The descriptor keys on the `render` LABEL, not
+    # the host in the fired quote — the descriptor-layer vendor-neutrality guard for
+    # the newest branch, the sibling of the media/translation guards above. Made an
+    # executable tripwire so the render output noun stays a property of the site's
+    # own VOCABULARY, never its host/vendor.
+    _assert_descriptor_relabel_invariant(_RENDER_HOST_HOMEPAGE, "generated render")
 
 
 def test_descriptor_relabel_has_teeth():
@@ -449,6 +477,7 @@ def main() -> int:
         test_digital_good_descriptor_recovers_plural_media,
         test_digital_good_descriptor_is_relabel_invariant_media,
         test_digital_good_descriptor_is_relabel_invariant_translation,
+        test_digital_good_descriptor_is_relabel_invariant_render,
         test_descriptor_relabel_has_teeth,
         test_instantiation_touches_no_scoring_state,
     ]

@@ -247,6 +247,12 @@ design in-cloud, execute locally.
   <domain> --record-fixture fixtures/canonical/<domain>.json` (static $0 → [LOCAL]), then add a read-live
   guard asserting `discover_offering → _digital_good_descriptor` yields "generated render" on real evidence
   (the render-branch mirror of the image branch's live validation). Off the scoring path, score-neutral.
+  UPDATE Cycle 169 (TRUTH, direct-to-main): the in-cloud half of the render-branch validation is now DONE —
+  `test_digital_good_descriptor_is_relabel_invariant_render` pins the branch's host/vendor identity-invariance
+  on a synthetic render-exclusive claim (the sibling of the media/translation relabel guards). What remains
+  HERE is strictly the REAL-evidence half — a live render-generation fixture — which stays `[LOCAL]` (the
+  render branch is synthetic-test-only until a real fixture claims render WITHOUT an image/video/audio/art
+  artifact noun).
 
 - **[LOCAL] Wire + verify the STRUCTURED catalog / pricing JSON surfaces** (COVERAGE, follow-up to Cycle
   70's `/pricing`). The directive names "manifest/**catalog**"; `/catalog.json`, `/pricing.json`, `/plans`

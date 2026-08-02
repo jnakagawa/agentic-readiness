@@ -3,6 +3,65 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 169 — 2026-08-02T04:12Z — TRUTH — relabel/identity-invariance guard for the new `render` descriptor branch
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed.
+
+**Infra health / self-heal.** Fresh cloud checkout on detached HEAD; `git fetch origin main` first
+(Cycle-151 stale-`origin/main` lesson) surfaced a FORCED-UPDATE `3796519…070c016` — investigated:
+`3796519` is a Cycle-94 commit (`git cat-file` present; NOT an ancestor of the current tip), i.e. this
+container's cached `origin/main` was ~74 cycles stale, and the intervening PR-merge history linearised past
+it. Recent history (Cycles 164→168) is clean and byte-consistent with STATE/LOG → benign container
+staleness, NOT a loop history rewrite (invariant #5 intact). `checkout -B main origin/main` aligned to
+`070c016`, no work lost. Created `.venv`, installed `requests pyyaml eth-account pytest`, verified imports;
+full suite (23 files) green pre-flight → bench is up. RUNNER AT-FLOOR (unchanged from Cycles 158–168):
+newest `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, `attempts=1`) is ~24.4h old at fire
+(04:12Z Aug-2) — past the 6h floor (borderline runner lag, NOT the machine-asleep stall — cloud cannot
+repair). Already carried in the 16:12Z Cycle-157 digest; no new flag owed (next digest = first cycle after
+16:00 UTC Aug-2; 04:12Z is not it).
+
+**What / why (TRUTH, vendor-neutrality made executable).** Cycle 168 added the `render` branch to
+`_digital_good_descriptor` (asrs/battery.py) so a render-exclusive digital_good claim gets the
+"generated render" battery task instead of the bare "digital output". This cycle makes the branch's
+identity-invariance an executable tripwire — the descriptor-layer vendor-neutrality guard, the sibling of
+the media (`generated image`) and translation (`translated document`) relabel guards. The methodology prose
+CLAIMS the battery task noun "comes from the site, not ASRS"; the "generated render" branch keys on the
+`render` LABEL (not the fired quote), so it is host-independent BY CONSTRUCTION — but without a guard a
+future refactor that made it read the quote (e.g. to lift a "3D scene" descriptor) could silently leak the
+host into the task noun. The guard pins it against that regression.
+
+**Method / non-vacuity.** New `test_digital_good_descriptor_is_relabel_invariant_render`, reusing the
+existing `_assert_descriptor_relabel_invariant` machinery. Substrate is a SYNTHETIC render-generation
+homepage (`_RENDER_HOST_HOMEPAGE`) verified empirically before writing to (a) classify (via the REAL
+`classify_offering` path) as a render-EXCLUSIVE digital_good claim — `labels == ['render']`, no
+image/video/audio/art/generation media label — so the descriptor genuinely takes the "generated render"
+branch; (b) seat the host INSIDE the fired render quote, so the whole-host relabel genuinely rewrites the
+evidence the descriptor reads (asserted: host in base evidence, host gone from every relabeled quote, quotes
+differ). Descriptor is byte-identical "generated render" across the relabel → the render output noun keys on
+the site's own vocabulary, not its host/vendor. TEETH are already shared: `test_descriptor_relabel_has_teeth`
+proves a host-keyed descriptor stub IS caught by the same relabel comparison, so the invariance is refuting
+a real failure mode, not asserting a tautology.
+
+**Ship class + evidence.** Direct-to-main (tests-only, off the scoring path, no scoring-semantics / payment /
+signing change → not peer-gated). `git diff --name-only` = `tests/test_battery_instantiate.py` ONLY; `git
+diff` over `asrs/ rubric/ fixtures/` EMPTY → score-neutral, rubric v0.7. `test_battery_instantiate.py` 13→14;
+full suite 23 files green, 0 failures.
+
+**Live canonical signal.** In-cloud replay guard 24/24 → **46.1 F / 85.5 B / +39.4**, 0 replay-miss (frozen
+regression signal, unchanged by construction — change is off the scoring path). Newest LOCAL artifact
+`runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) read as the live signal: drift-flight.org 46.1 F /
+driftflight.com 76.2 C / delta +30.1 — the known transactability 87.5→62.5 divergence PERSISTS (Aug-1, off
+the scoring path). Fire at 04:12Z Aug-2 is NOT first-after-16:00 → no digest, no DM (comms policy).
+
+**Next hypothesis.** Rotate READOUT next (Cycle 169 was TRUTH). The `render` descriptor arc now spans
+COVERAGE (168) → TRUTH (169); a READOUT leg could add a methodology paragraph naming the render output as a
+digital-good deliverable variant, though it is a small branch and may not warrant its own prose — a fresh
+COVERAGE/METHOD unit on committed evidence may be higher leverage. The substantive frontier stays `[LOCAL]`:
+a real render-generation fixture would give this branch its first REAL-evidence validation (currently
+synthetic-only, like video/audio/art), and thin-archetype fixtures, ACP/UCP/MPP, the calibration sweep, and
+the transactability-drop diagnosis all need Jonah's machine.
+
 ## Cycle 168 — 2026-08-02T03:12Z — COVERAGE — battery descriptor covers `render` output (offering↔battery seam)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

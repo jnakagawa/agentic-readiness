@@ -3,6 +3,62 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 210 — 2026-08-03T22:15Z — COVERAGE — drop the offering-classifier relabel guard one layer, to the per-archetype EVIDENCE: strength + fired-label set are identity-invariant, not just the claimed set
+
+WHAT/WHY (COVERAGE). The offering classifier drives the operator directive's task SELECTION (which archetypes
+get intents) and NA semantics (which are excluded from every mean/spread). Its vendor-neutrality is guarded by
+`_assert_offering_relabel_invariant` (Cycle 21/…): relabel a canonical fixture's host everywhere and the
+CLAIMED archetype list (ordered) + the NA/unclaimed set are byte-identical. But that guard is SET-level — it
+only catches an identity-keyed special-case that CHANGES which archetypes are claimed (the existing negative
+control force-adds a whole `physical_good` claim). It is blind to a subtler vendor-rigging: a favorable
+special-case that pads an ALREADY-claimed archetype's evidence — extra signal labels, a higher `strength`
+(distinct-label count) — WITHOUT flipping the claimed set or its order. Yet `strength` and the fired-label set
+are exactly what the classifier surfaces to the operator (`profile.evidence["claimed"][*]["strength"|"labels"]`)
+as HOW WELL a capability is supported. A host-keyed strength/label boost would make a favored storefront's
+claims read as better-evidenced purely on its NAME — the "favorable OR hostile special-casing" the capability
+lens forbids, one layer below what the set guard sees. This cycle pins the invariance at that evidence layer:
+`_assert_offering_relabel_evidence_invariant` asserts, for every claimed archetype, that the
+`(strength, sorted fired-label set)` is byte-identical under a whole-fixture host relabel — on all three
+committed offering fixtures (drift-flight.org, driftflight.com, api.replicate.com).
+
+WHY IT MATTERS. Task selection keying on evidence, not identity, is the offering directive's vendor-neutrality
+boundary applied to the battery layer. The set-level guard proved WHICH archetypes are identity-invariant; the
+strength/label readout an operator reads to judge claim quality was un-guarded, so an identity-keyed evidence
+boost could slip through. This closes that gap without adding any real signal (off the scoring path, discovery
+drives `--battery auto` task selection only).
+
+METHOD / NON-VACUITY / TEETH. Same non-vacuity substrate as the set guard — the host is INSIDE the classifier's
+matched quotes on every fixture (asserted per-fixture), so relabeling genuinely rewrites classifier input; the
+neutral host `vendor-neutral.test` is a different length and carries no archetype-signal word, so invariance is
+neither a same-length coincidence nor a neutral-host artifact. Empirically verified before coding: on all three
+fixtures every claimed archetype's (strength, label set) is invariant (metered_api 12/21/9, digital_good 10/10,
+subscription 5/7 — identical base vs relabel). TEETH proven by `test_offering_relabel_evidence_negative_control`:
+a monkeypatched identity-keyed rig that pads `metered_api` (the strongest claim by a wide margin) with one extra
+label — the coarser `_assert_offering_relabel_invariant` STILL PASSES under it (claimed set, order, NA all
+unchanged, proving the gap is real), while the finer evidence guard RAISES (metered_api's fingerprint diverges
+between canonical-host base and neutral-host relabel). Real classifier restored in a `finally`. Vendor-neutral
+by construction (compares a profile to its own relabel; no host special-cased).
+
+EVIDENCE. `tests/test_offering_canonical.py` (+4 tests: 3 per-fixture evidence-invariance guards + 1 negative
+control; 58→62 in-file, all 4 registered in the runner list — direct runner `python tests/test_offering_canonical.py`
+62/62). Suite 436 → 440 green (`python -m pytest tests/ -q`). Off the scoring path: `git diff --name-only` = the
+one test file; `git diff -- asrs/scoring.py asrs/probes/ rubric/ fixtures/ asrs/offering.py asrs/battery.py` EMPTY
+→ score-neutral, NOT peer-gated, direct-to-main.
+
+CANONICAL PAIR. In-cloud replay guard (frozen regression signal) 24/24, drift-flight.org 46.1 F /
+driftflight.com 85.5 B / delta +39.4, 0 replay-miss; rubric v0.7 — UNCHANGED (nothing on the scoring path
+moved). Live signal (read, not re-run; runner AT-FLOOR): newest `runs/local/verify_20260801T035047Z.json`
+(Aug-1 03:50Z, `attempts=1`) is ~66.4h old — past the 6h floor, machine-asleep/runner-lag, cloud cannot
+repair; already flagged in the 16:17Z Cycle-204 digest. Its live static re-score reads driftflight.com 76.2 C
+/ +30.1 / transactability 62.5 (the off-scoring-path transactability-drop divergence persists; independent of
+the frozen replay signal).
+
+NEXT (TRUTH 211). The relabel family now covers the claimed set (Cycle 21) AND the per-archetype evidence
+(this cycle) at the classifier level. A TRUTH candidate is a fresh calibration/attribution invariance guard, or
+substantive frontier work (GENUINE new thin-bank signals from real fixtures, the negative anchor's two-crawl
+static cross-validation via a `moleskine.com` fixture, ACP/UCP/MPP live handshakes, the transactability-drop
+CHECK-level diagnosis) — all `[LOCAL]`.
+
 ## Cycle 209 — 2026-08-03T21:17Z — METHOD — couple the corroboration VERDICT WORD to the boolean: the readout prose cannot lie about whether the decision rests on two mechanisms
 
 WHAT/WHY (METHOD). Cycle 207 pinned the two-mechanism convergence INTERNALLY; Cycle 208 SURFACED it via

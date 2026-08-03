@@ -697,6 +697,170 @@ def test_offering_relabel_negative_control() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Relabel-invariance at the EVIDENCE layer — finer than the set/order guards.
+#
+# `_assert_offering_relabel_invariant` pins that the CLAIMED archetype list
+# (ordered) and the NA/unclaimed set are identity-invariant. That catches an
+# identity-keyed special-case only when it CHANGES which archetypes are claimed
+# (the negative control above force-adds a whole physical_good claim). It is
+# blind to a subtler vendor-rigging: a favorable special-case that pads an
+# ALREADY-claimed archetype's evidence — extra signal labels, a higher
+# `strength` (distinct-label count) — WITHOUT flipping the claimed set or its
+# order. Yet `strength` and the fired-label set are exactly what the classifier
+# surfaces to the operator (`profile.evidence["claimed"][*]["strength"|"labels"]`)
+# as HOW WELL a capability is supported — so a host-keyed strength/label boost
+# would make a favored storefront's claims read as better-evidenced purely on
+# its NAME. The capability lens forbids special-casing "favorable OR hostile";
+# this drops the invariance one layer, to the per-archetype evidence itself.
+#
+# For every claimed archetype it asserts the (strength, sorted signal-label set)
+# is byte-identical under a whole-fixture host relabel. Same non-vacuity
+# substrate as the set/order guard — the host is inside the classifier's matched
+# quotes (asserted), so relabeling genuinely rewrites classifier input — and
+# `test_offering_relabel_evidence_negative_control` proves this catches a rig the
+# coarser set/order guard PASSES.
+# ---------------------------------------------------------------------------
+def _claim_evidence_fingerprint(profile) -> dict:
+    """``archetype -> (strength, sorted fired-label tuple)`` for a profile.
+
+    The per-archetype evidence the classifier exposes to the readout — finer
+    than the claimed SET (which archetypes) the coarser guard pins.
+    """
+    return {
+        c.archetype: (c.strength, tuple(sorted(s.label for s in c.signals)))
+        for c in profile.claimed
+    }
+
+
+def _assert_offering_relabel_evidence_invariant(domain: str) -> None:
+    base, _ = _discover(domain)
+
+    # Non-vacuity: the classifier's OWN matched evidence contains the host, so a
+    # relabel genuinely changes the text classification reads (not a no-op) — the
+    # same substrate the set/order guard rests on, re-asserted here so this guard
+    # stands on its own.
+    _check(
+        any(domain in s.quote for c in base.claimed for s in c.signals),
+        f"{domain}: the host appears in the classifier's matched evidence "
+        "(relabel genuinely changes classifier input — the test is non-vacuous)",
+    )
+
+    relab = _discover_relabeled(domain, _NEUTRAL_HOST)
+    base_fp = _claim_evidence_fingerprint(base)
+    relab_fp = _claim_evidence_fingerprint(relab)
+
+    # Same archetypes carry evidence on both sides (implied by the set guard, but
+    # re-checked so the per-archetype comparison below is total, not partial).
+    _check(
+        set(base_fp) == set(relab_fp),
+        f"{domain}: the same archetypes carry evidence under relabel "
+        f"(base {sorted(base_fp)}, relabel {sorted(relab_fp)})",
+    )
+    for archetype in base_fp:
+        b_strength, b_labels = base_fp[archetype]
+        r_strength, r_labels = relab_fp[archetype]
+        _check(
+            b_strength == r_strength,
+            f"{domain}: {archetype} strength invariant under relabel "
+            f"({b_strength} -> {r_strength})",
+        )
+        _check(
+            b_labels == r_labels,
+            f"{domain}: {archetype} fired-label set invariant under relabel "
+            f"(base {list(b_labels)}, relabel {list(r_labels)})",
+        )
+
+
+def test_offering_relabel_evidence_invariance_org() -> None:
+    print("test_offering_relabel_evidence_invariance_org")
+    _assert_offering_relabel_evidence_invariant("drift-flight.org")
+
+
+def test_offering_relabel_evidence_invariance_com() -> None:
+    print("test_offering_relabel_evidence_invariance_com")
+    _assert_offering_relabel_evidence_invariant("driftflight.com")
+
+
+def test_offering_relabel_evidence_invariance_machine() -> None:
+    print("test_offering_relabel_evidence_invariance_machine")
+    _assert_offering_relabel_evidence_invariant(_MACHINE_SURFACE)
+
+
+def test_offering_relabel_evidence_negative_control() -> None:
+    """The evidence guard catches a rig the coarser set/order guard PASSES.
+
+    Monkeypatch a FAVORABLE identity-keyed special-case that pads an ALREADY-
+    claimed archetype: when the domain is the canonical identity, add one extra
+    signal label to ``metered_api`` (the strongest claim by a wide margin, so the
+    pad neither flips the claimed SET nor its ORDER nor the NA set). Under this
+    rig:
+
+      (a) `_assert_offering_relabel_invariant` — the coarser set/order guard —
+          STILL PASSES, because claimed archetypes, their order, and the NA set
+          are all unchanged (metered_api was already first). This proves the
+          gap is real: identity-rigging can hide from the coarser guard.
+      (b) `_assert_offering_relabel_evidence_invariant` — this cycle's finer
+          guard — RAISES, because metered_api's (strength, label set) diverges
+          between the canonical-host base and the neutral-host relabel.
+
+    So the evidence guard refutes a real failure mode (a host-keyed evidence
+    boost making a favored storefront's claims read as better-supported) that the
+    archetype-set guard cannot see. Restores the real classifier in a finally.
+    """
+    print("test_offering_relabel_evidence_negative_control")
+    real = _offering.classify_offering
+    _PAD_LABEL = "rigged-strength-pad"
+
+    def rigged(domain, surfaces):
+        prof = real(domain, surfaces)
+        # Keyed on the storefront's IDENTITY, not its evidence — the anti-pattern,
+        # but this time padding an already-claimed archetype rather than adding one.
+        if "driftflight" in domain.replace("-", ""):
+            claim = next(
+                (c for c in prof.claimed if c.archetype == "metered_api"), None
+            )
+            if claim is not None and all(s.label != _PAD_LABEL for s in claim.signals):
+                claim.signals.append(
+                    ArchetypeSignal(
+                        archetype="metered_api",
+                        surface="homepage",
+                        label=_PAD_LABEL,
+                        quote="strength padded on domain identity",
+                    )
+                )
+        return prof
+
+    _offering.classify_offering = rigged
+    try:
+        # (a) The coarser set/order guard PASSES under the rig — the pad is
+        # invisible to it (claimed set, order, and NA all unchanged).
+        _assert_offering_relabel_invariant("driftflight.com")
+        _check(
+            True,
+            "coarser set/order relabel guard PASSES under the strength-pad rig "
+            "(the pad hides from it — the gap is real)",
+        )
+        # (b) The finer evidence guard CATCHES it — metered_api's fingerprint
+        # diverges between the canonical-host base and the neutral-host relabel.
+        caught = False
+        try:
+            _assert_offering_relabel_evidence_invariant("driftflight.com")
+        except AssertionError:
+            caught = True
+        _check(
+            caught,
+            "the evidence guard CATCHES the identity-keyed strength/label pad "
+            "(divergence the set/order guard misses)",
+        )
+    finally:
+        _offering.classify_offering = real
+    _check(
+        _offering.classify_offering is real,
+        "real classify_offering restored after the evidence negative control",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Relabel-invariance at the SIGNAL level — the agent-native payment RAIL claim.
 #
 # The relabel guards above assert the claimed ARCHETYPE partition is
@@ -6326,6 +6490,10 @@ def main() -> int:
         test_offering_relabel_invariance_retail,
         test_offering_relabel_invariance_nonstorefront,
         test_offering_relabel_negative_control,
+        test_offering_relabel_evidence_invariance_org,
+        test_offering_relabel_evidence_invariance_com,
+        test_offering_relabel_evidence_invariance_machine,
+        test_offering_relabel_evidence_negative_control,
         test_cross_signal_archetype_isolation,
         test_cross_signal_isolation_negative_control,
     ]

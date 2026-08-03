@@ -1,8 +1,40 @@
 # Loop state
 
-- Cycle counter: 209
+- Cycle counter: 210
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-03T21:17Z (Cycle 209) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-03T22:15Z (Cycle 210) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~66.4h old at the fire — PAST the 6h floor (machine-asleep / runner-lag
+  pattern, cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 22:15Z fire is
+  NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral off-scoring-path
+  COVERAGE increment, no sensitive-class PR, nothing score-moving). Live signal (read, not re-run):
+  drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop
+  divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent
+  regression signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire
+  (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 210): fresh
+  checkout's shallow-clone local `main` ref was stale; reconciled to origin/main `43b7e4a` (Cycle-209 tip)
+  via `git checkout -B main origin/main`. Fresh `.venv` + `requests pyyaml eth-account pytest`, 436 tests
+  green pre-flight (440 after +4).
+- FOCUS POINTER (Cycle 210 done): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 210 was
+  COVERAGE, so Cycle 211 is TRUTH). Cycle 210 shipped a **COVERAGE increment — the offering-classifier
+  relabel guard dropped one layer, to the per-archetype EVIDENCE** (`tests/test_offering_canonical.py` +4,
+  in-file 58→62, suite 436→440). The existing `_assert_offering_relabel_invariant` pins that the CLAIMED
+  archetype list (ordered) + NA set are host-relabel-invariant, but it is SET-level — blind to a favorable
+  identity-keyed special-case that pads an ALREADY-claimed archetype's evidence (extra label / higher
+  `strength`) without flipping the claimed set. Yet `strength`/`labels` are exactly what the classifier
+  surfaces to the operator as claim-support quality. New `_assert_offering_relabel_evidence_invariant` asserts
+  every claimed archetype's `(strength, sorted fired-label set)` is byte-identical under a whole-fixture host
+  relabel, on all 3 committed offering fixtures (org/com/api.replicate.com). Non-vacuous (host inside the
+  matched quotes on every fixture — relabel genuinely rewrites input; neutral host different length + no signal
+  word). TEETH: `test_offering_relabel_evidence_negative_control` pads `metered_api` with one label under an
+  identity rig — the COARSER set/order guard STILL PASSES (gap is real), the finer evidence guard RAISES.
+  Vendor-neutral (profile compared to its own relabel; no host special-cased). OFF the scoring path
+  (`git diff --name-only` = the one test file; `asrs/scoring.py asrs/probes/ rubric/ fixtures/ asrs/offering.py
+  asrs/battery.py` diff EMPTY) → score-neutral, NOT peer-gated, direct-to-main. Replay guard 24/24, 46.1 F /
+  85.5 B / +39.4, 0 replay-miss; rubric v0.7. NEXT (TRUTH 211): a fresh calibration/attribution invariance
+  guard, or substantive frontier work — GENUINE new thin-bank signals from real fixtures, the negative anchor's
+  two-crawl static cross-validation via a `moleskine.com` fixture, ACP/UCP/MPP, the transactability-drop
+  CHECK-level diagnosis — all `[LOCAL]`.
+- SUPERSEDED (Cycle 209 runner note): RUNNER AT-FLOOR at 2026-08-03T21:17Z (Cycle 209) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~65.4h old at the fire — PAST the 6h floor (machine-asleep / runner-lag
   pattern, cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 21:17Z fire is
   NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral off-scoring-path

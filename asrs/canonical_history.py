@@ -353,6 +353,51 @@ class NoiseFloor:
 
 
 @dataclass
+class PillarNoiseFloor:
+    """The at-rest dispersion of ONE side's ONE pillar over the in-band readings —
+    the pillar-granularity counterpart of ``NoiseFloor``.
+
+    ``NoiseFloor`` proves the OVERALL delta is deterministic at rest, so the in-band
+    band is absorbing site TRANSIENTS, not measurement jitter. But the drift the
+    benchmark ATTRIBUTES and an operator ACTS on is at the PILLAR level — WHICH
+    (domain, pillar) softened — and nothing at that granularity says the fingered
+    move is above pillar jitter. A −25-point transactability drop is only a credible
+    real-world site move if, at rest, THAT SAME pillar reproduces its value exactly;
+    otherwise the "drop" could be ordinary per-pillar noise that the coarser overall
+    measure happens to cancel. This closes that gap: over the readings the band calls
+    in-band, how much does the given side's given pillar ACTUALLY vary?
+
+    On the committed series the fingered pillar (driftflight.com transactability) is
+    87.5 across every in-band reading, so the at-rest dispersion is 0 and the tracked
+    −25 move dwarfs it — the pillar-level proof that the attributed drop is signal,
+    not jitter, mirroring what ``band_clears_the_observed_noise`` proves for the
+    overall delta.
+
+    Measured only over in-band readings where the pillar is NUMERIC on that side (a
+    pillar recorded None — unobserved on an error crawl — is dropped, never counted
+    as a zero). Read-only, no score.
+
+    ``domain`` / ``pillar`` : which side's which pillar this floor measures.
+    ``n_in_band``           : in-band readings the floor is measured over (>= 2).
+    ``stddev``              : population stddev of the pillar's value at rest.
+    ``max_abs_divergence``  : the worst |value - mean| observed at rest.
+    """
+
+    domain: str
+    pillar: str
+    n_in_band: int
+    stddev: float
+    max_abs_divergence: float
+
+    @property
+    def deterministic(self) -> bool:
+        """True iff the pillar shows no measurable at-rest dispersion — every in-band
+        reading reproduced its value exactly. When true, any appreciable out-of-band
+        move on this pillar is a real change, not pillar-level measurement jitter."""
+        return self.stddev <= _NOISE_EPS and self.max_abs_divergence <= _NOISE_EPS
+
+
+@dataclass
 class Liveness:
     """How CURRENT the latest live re-score is — is the newest observation fresh
     enough that its verdict describes the reference pair NOW, or stale?
@@ -532,6 +577,12 @@ class CanonicalHistory:
     # that the in-band band absorbs site transients, not measurement jitter. None
     # when fewer than 2 in-band readings exist (dispersion is undefined).
     noise_floor: NoiseFloor | None = None
+    # the at-rest dispersion of the ATTRIBUTED pillar (the fingered top mover) over
+    # the in-band readings — the pillar-granularity noise floor proving the tracked
+    # drop is signal, not pillar jitter. None when there is no isolated top mover to
+    # measure (in-band, no in-band anchor, or the fingered pillar has < 2 in-band
+    # numeric readings).
+    attributed_pillar_noise_floor: PillarNoiseFloor | None = None
     # how current the latest re-score is (fresh within the 6h floor vs stale). None
     # when no reference ``now`` was supplied (a pure point-series summary) or the
     # latest timestamp is unparseable — never a fabricated freshness claim.
@@ -698,6 +749,12 @@ def summarize(
     hist.recapture = recapture_advice(hist)
     hist.corroboration = decision_corroboration(hist)
     hist.noise_floor = noise_floor(points, baseline_delta)
+    top = hist.attribution.top if hist.attribution else None
+    hist.attributed_pillar_noise_floor = (
+        pillar_noise_floor(points, top.domain, top.pillar, baseline_delta)
+        if top is not None
+        else None
+    )
     hist.liveness = liveness(latest, now)
     return hist
 
@@ -723,6 +780,45 @@ def noise_floor(
         max_abs_divergence=round(max(abs(d - baseline_delta) for d in deltas), 6),
         no_rails_stddev=round(pstdev([p.no_rails_overall for p in in_band]), 6),
         with_rails_stddev=round(pstdev([p.with_rails_overall for p in in_band]), 6),
+    )
+
+
+def pillar_noise_floor(
+    points: list[CanonicalPoint],
+    domain: str,
+    pillar: str,
+    baseline_delta: float = FIXTURE_BASELINE_DELTA,
+) -> PillarNoiseFloor | None:
+    """At-rest dispersion of one side's one pillar over the in-band readings.
+
+    The pillar-granularity counterpart of ``noise_floor``: over the readings the band
+    calls in-band (``|delta - baseline| <= _BAND_IN``), how much does ``domain``'s
+    ``pillar`` vary? ``domain`` selects the side (the with-rails vs no-rails reference
+    host); readings where that side's pillar is not numeric (unobserved on an error
+    crawl) are dropped, never counted as a zero. None for an unknown domain, or when
+    fewer than 2 in-band readings carry the pillar — dispersion is undefined for one
+    point (the same honest-None discipline ``noise_floor`` follows). Pure, no score.
+    """
+    if domain == CANONICAL_WITH_RAILS:
+        side = lambda p: p.with_rails_pillars.get(pillar)  # noqa: E731
+    elif domain == CANONICAL_NO_RAILS:
+        side = lambda p: p.no_rails_pillars.get(pillar)  # noqa: E731
+    else:
+        return None
+    values = [
+        v
+        for p in points
+        if abs(p.delta - baseline_delta) <= _BAND_IN and (v := side(p)) is not None
+    ]
+    if len(values) < 2:
+        return None
+    mean = sum(values) / len(values)
+    return PillarNoiseFloor(
+        domain=domain,
+        pillar=pillar,
+        n_in_band=len(values),
+        stddev=round(pstdev(values), 6),
+        max_abs_divergence=round(max(abs(v - mean) for v in values), 6),
     )
 
 

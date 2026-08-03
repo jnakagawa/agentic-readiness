@@ -1855,6 +1855,93 @@ def test_noise_floor_none_below_two_in_band() -> None:
         _check(ch.load_history(tmp2).noise_floor is None, "a single in-band reading -> no dispersion, None")
 
 
+def test_pillar_noise_floor_is_deterministic_on_the_fingered_pillar_real_series() -> None:
+    print("test_pillar_noise_floor_is_deterministic_on_the_fingered_pillar_real_series")
+    # The pillar-granularity counterpart of the overall-delta signal proof
+    # (test_band_clears_the_observed_noise). The overall noise floor proves the DELTA
+    # is deterministic at rest; the drift we ATTRIBUTE is at the PILLAR level
+    # (driftflight.com transactability −25). This pins that the fingered pillar is
+    # ALSO deterministic at rest, so the tracked move is signal, not pillar jitter.
+    hist = ch.load_history()
+    top = hist.attribution.top if hist.attribution else None
+    _check(top is not None, "the real series fingers a top pillar mover to measure against")
+    pnf = hist.attributed_pillar_noise_floor
+    _check(pnf is not None, "the fingered pillar has >= 2 in-band numeric readings -> a floor")
+    # the floor measures the SAME (domain, pillar) attribution fingers
+    _check(
+        (pnf.domain, pnf.pillar) == (top.domain, top.pillar),
+        f"the pillar floor measures the fingered mover {top.domain}/{top.pillar}, "
+        f"got {pnf.domain}/{pnf.pillar}",
+    )
+    _check(pnf.n_in_band >= 2, f"measured over the in-band readings, got {pnf.n_in_band}")
+    _check(pnf.stddev == 0.0, f"the fingered pillar is deterministic at rest (σ=0), got {pnf.stddev}")
+    _check(pnf.max_abs_divergence == 0.0, f"worst at-rest |div| is 0, got {pnf.max_abs_divergence}")
+    _check(pnf.deterministic is True, "the fingered pillar reproduces its value exactly at rest")
+    # SIGNAL, not jitter: the tracked move dwarfs the pillar noise floor — the
+    # pillar-level mirror of the overall OOB-transient-above-noise proof.
+    _check(
+        abs(top.change) > pnf.max_abs_divergence,
+        f"tracked move |{top.change}| is above the pillar noise floor {pnf.max_abs_divergence}",
+    )
+    _check(
+        abs(top.change) >= 20.0,
+        f"the fingered move is large ({top.change}) — a check-scale drop, not sub-point jitter",
+    )
+
+
+def test_pillar_noise_floor_measures_synthetic_pillar_jitter() -> None:
+    print("test_pillar_noise_floor_measures_synthetic_pillar_jitter")
+    # NON-VACUOUS: the measure is NOT hard-coded to 0. A series whose in-band readings
+    # keep the DELTA constant (both overalls flat) but whose driftflight.com
+    # transactability pillar genuinely VARIES must report a positive stddev, a matching
+    # worst |div|, and deterministic=False — the pillar jitter the overall floor,
+    # blind to pillars, cannot see.
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [
+            _artifact("20260727T010000Z", 46.1, 85.5, 39.4, org_pillars=_org_pillars(), com_pillars=_com_pillars(90.9, transactability=87.5)),
+            _artifact("20260727T020000Z", 46.1, 85.5, 39.4, org_pillars=_org_pillars(), com_pillars=_com_pillars(90.9, transactability=88.5)),
+            _artifact("20260727T030000Z", 46.1, 85.5, 39.4, org_pillars=_org_pillars(), com_pillars=_com_pillars(90.9, transactability=86.5)),
+        ]
+        _write_series(tmp, rows)
+        points = ch.load_history(tmp).points
+        pnf = ch.pillar_noise_floor(points, ch.CANONICAL_WITH_RAILS, "transactability")
+        _check(pnf is not None, "three in-band readings carry the pillar -> a floor")
+        _check(pnf.n_in_band == 3, f"all three are in-band, got {pnf.n_in_band}")
+        _check(pnf.stddev > 0.0, f"varying in-band pillar -> positive dispersion, got {pnf.stddev}")
+        _check(abs(pnf.max_abs_divergence - 1.0) < 1e-6, f"worst |div| about the mean is 1.0, got {pnf.max_abs_divergence}")
+        _check(pnf.deterministic is False, "measurable pillar dispersion -> not deterministic")
+
+
+def test_pillar_noise_floor_honest_none() -> None:
+    print("test_pillar_noise_floor_honest_none")
+    # Honest None on the same conditions noise_floor follows, plus the pillar-specific
+    # ones: an unknown domain, and a pillar with < 2 in-band NUMERIC readings.
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [
+            _artifact("20260727T010000Z", 46.1, 85.5, 39.4, org_pillars=_org_pillars(), com_pillars=_com_pillars(90.9)),
+            _artifact("20260727T020000Z", 46.1, 85.5, 39.4, org_pillars=_org_pillars(), com_pillars=_com_pillars(90.9)),
+        ]
+        _write_series(tmp, rows)
+        points = ch.load_history(tmp).points
+        _check(
+            ch.pillar_noise_floor(points, "nobody.example", "transactability") is None,
+            "an unknown domain has no side to measure -> None",
+        )
+        # a pillar unobserved on this side (outcome is None in _com_pillars) -> no
+        # numeric in-band readings -> None (never counted as a zero).
+        _check(
+            ch.pillar_noise_floor(points, ch.CANONICAL_WITH_RAILS, "outcome") is None,
+            "a pillar that is None on every reading has no numeric floor -> None",
+        )
+    # a lone in-band numeric reading is < 2 -> undefined dispersion -> None
+    with tempfile.TemporaryDirectory() as tmp2:
+        _write_series(tmp2, [_artifact("20260727T010000Z", 46.1, 85.5, 39.4, com_pillars=_com_pillars(90.9))])
+        _check(
+            ch.pillar_noise_floor(ch.load_history(tmp2).points, ch.CANONICAL_WITH_RAILS, "transactability") is None,
+            "a single in-band reading -> no dispersion, None",
+        )
+
+
 def test_liveness_none_without_now() -> None:
     print("test_liveness_none_without_now")
     with tempfile.TemporaryDirectory() as tmp:
@@ -2073,6 +2160,9 @@ def main() -> int:
         test_noise_floor_measures_synthetic_jitter,
         test_noise_floor_flags_a_too_tight_band,
         test_noise_floor_none_below_two_in_band,
+        test_pillar_noise_floor_is_deterministic_on_the_fingered_pillar_real_series,
+        test_pillar_noise_floor_measures_synthetic_pillar_jitter,
+        test_pillar_noise_floor_honest_none,
         test_liveness_none_without_now,
         test_liveness_fresh_when_within_floor,
         test_liveness_stale_past_floor_warns_verdict_is_old,

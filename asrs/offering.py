@@ -230,7 +230,33 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
         ("pay-per", re.compile(r"\bpay[- ]per[- ](call|request|use|token|unit|image|generation)\b", _F)),
         ("billed-per", re.compile(r"\bbilled per [a-z]+\b", _F)),
         ("per-unit-rate", re.compile(r"\bper[- ](generation|call|request|token|render|unit)\b", _F)),
-        ("usage-based", re.compile(r"\b(usage[- ]based|metered|overage)\b", _F)),
+        # Usage-metered billing (usage-based / overage / metered). PRECISION-CRITICAL:
+        # bare "\bmetered\b" is a BROAD-ENGLISH minefield — metered parking, a metered
+        # water / electricity / gas UTILITY, a metered-dose inhaler, metered postage,
+        # metered verse, "a metered approach/pace" — none of which is a metered API's
+        # billing, yet each would CONJURE a metered_api claim on a site that does not
+        # sell one (the exact archetype-pollution this module removes; the last cheap
+        # bare-word metered_api signal, after enrich/dataset/lookup, book/schedule,
+        # recurring). `usage-based` and `overage` are already billing-specific and stay
+        # bare. `metered` must now name a BILLING/USAGE/API context: a billing object
+        # after it (metered billing/pricing/rate/plan/usage/api/tier/access/charges), a
+        # "metered per <unit>" rate, "metered and charged/billed", or a usage/call/
+        # request subject that "is/are metered". The `metered` branches are LOOKAHEAD-
+        # anchored so the MATCHED SPAN stays exactly "metered" — `m.end()` is unchanged,
+        # so the evidence QUOTE on the canonical pair is byte-identical (narrowing only,
+        # canonical-invariant by construction: it can only REMOVE non-billing matches).
+        # Non-vacuous — the genuine metered-billing sense still fires on driftflight.com
+        # ("usage beyond it is metered and charged per call") via `metered-and-...`, and
+        # the isolation matrix's "usage-based overage applies" via the bare alternatives.
+        ("usage-based", re.compile(
+            r"\busage[- ]based\b"
+            r"|\boverage\b"
+            r"|\bmetered\b(?=\s+(?:billing|pricing|rate|rates|plan|plans|usage|api"
+            r"|charging|charges?|access|tiers?|meter)\b)"
+            r"|\bmetered\b(?=\s+per\s+(?:\w+\s+)?(?:call|request|token|generation"
+            r"|render|unit|image|use|invocation)\b)"
+            r"|\bmetered\b(?=\s+and\s+(?:charged|billed)\b)"
+            r"|\b(?:usage|calls?|requests?|access)\s+(?:is|are)\s+metered\b", _F)),
         # Documented RATE LIMITS / request quotas — a metered programmatic API
         # publishes how fast/how often an agent may call it (rate limits, requests
         # per minute, an API/request quota) so the agent can plan its usage. This

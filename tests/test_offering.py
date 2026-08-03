@@ -1078,6 +1078,73 @@ def test_subscription_recurring_precision_synthetic():
     )
 
 
+def test_usage_based_metered_precision_synthetic():
+    # The metered_api bank's last cheap bare-word signal hardened (siblings:
+    # enrich/dataset/lookup for data_retrieval, book/schedule for service_booking,
+    # recurring for subscription). The `usage-based` signal's bare "\bmetered\b"
+    # alternative is a BROAD-ENGLISH minefield: metered parking, a metered water /
+    # electricity UTILITY, a metered-dose inhaler, metered postage, metered verse,
+    # "a metered approach" — none says a metered API bills by usage, yet each would
+    # CONJURE a metered_api claim (probing a site with an API-call intent it does not
+    # serve — the exact battery-mismatch the offering-relative directive removes).
+    # The guard requires "metered" to name a BILLING/USAGE/API context (a billing
+    # object after it, "metered per <unit>", "metered and charged/billed", or a
+    # usage/call/request subject that "is/are metered"); the `usage-based`/`overage`
+    # alternatives are already billing-specific and stay bare. Each POSITIVE fires
+    # the `usage-based` label with no other metered_api signal rescuing it, so it
+    # exercises the narrowed branch directly; each NEGATIVE is a broad-English
+    # "metered <noun>" that must NOT claim metered_api on its own.
+    #
+    # The `metered` branches are LOOKAHEAD-anchored so the matched SPAN stays
+    # exactly "metered" — the canonical evidence quote is byte-identical (pinned by
+    # tests/test_offering_canonical.py + the replay guard); narrowing only, so this
+    # is canonical-invariant by construction.
+    positives = {
+        "metered billing": "Access runs on metered billing.",
+        "metered pricing": "We use metered pricing for the service.",
+        "metered API": "This is a metered API.",
+        "metered usage": "Your invoice reflects metered usage.",
+        "metered tier": "Requests fall on the metered tier.",  # priced-listing NEG shape
+        "metered and charged": "Usage beyond the plan is metered and charged.",  # canonical .com shape
+        "metered per API call": "Metered per API call, no monthly minimum.",  # test-4548 shape
+        "metered per request": "Compute is metered per request.",
+        "usage is metered": "Your usage is metered.",
+        "calls are metered": "All calls are metered.",
+        "overage stays bare": "Overage applies past your quota.",  # bare alt untouched
+        "usage-based stays bare": "Simple usage-based billing.",  # bare alt untouched
+    }
+    for name, text in positives.items():
+        prof = classify_offering("metered.test", {"homepage": text})
+        assert prof.claims("metered_api"), (name, prof.archetypes)
+        fired = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "metered_api"
+            for s in c.signals
+        }
+        assert "usage-based" in fired, (name, sorted(fired))  # non-vacuous: THIS signal fired
+    print(f"  ok: {len(positives)} genuine metered-billing phrasings each fire usage-based")
+
+    negatives = {
+        "metered parking": "Downtown offers metered parking near the venue.",
+        "metered water": "The city bills metered water to each home.",
+        "metered electricity": "Homes with metered electricity save money.",
+        "metered-dose": "A metered-dose inhaler delivers a fixed dose.",
+        "metered dose": "Take one metered dose twice daily.",
+        "metered postage": "We print metered postage for bulk mail.",
+        "metered verse": "The poem is written in metered verse.",
+        "metered approach": "We take a metered approach to rollouts.",
+        "metered rhythm": "The track has a slow, metered rhythm.",
+        "water is metered": "In this town the water is metered.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("prose.test", {"homepage": text})
+        assert not prof.claims("metered_api"), (name, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} broad-English 'metered <noun>' strings do NOT claim metered_api (precision)"
+    )
+
+
 def test_non_storefront_claims_nothing():
     prof = classify_offering("example.test", {"homepage": NULL_HOMEPAGE})
     assert prof.archetypes == [], prof.archetypes
@@ -4079,6 +4146,7 @@ def main() -> int:
         test_service_booking_schedule_precision_synthetic,
         test_data_retrieval_lookup_precision_synthetic,
         test_subscription_recurring_precision_synthetic,
+        test_usage_based_metered_precision_synthetic,
         test_non_storefront_claims_nothing,
         test_strength_counts_distinct_signals_and_orders_claims,
         test_classification_is_surface_read_order_invariant,

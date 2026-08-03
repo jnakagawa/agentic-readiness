@@ -339,7 +339,20 @@ design in-cloud, execute locally.
   bare-word minefields across the two THINNEST archetypes AND subscription's cheapest signal are now ALL
   guarded. Next in-cloud precision candidate is a metered_api bare-word audit (largest bank, 26 signals,
   never swept for broad-English collisions). This does NOT close the parent item — the thin banks still
-  want GENUINE NEW signals from real fixtures ([LOCAL], unchanged).
+  want GENUINE NEW signals from real fixtures ([LOCAL], unchanged). DONE Cycle 206 (COVERAGE, in-cloud,
+  direct-to-main, score-neutral): the metered_api bare-word audit is COMPLETE — `usage-based`'s bare
+  `\bmetered\b` (the largest bank's last un-swept broad-English collision: metered parking / water /
+  electricity / -dose / postage / verse / "a metered approach") is now anchored to a BILLING/USAGE/API
+  context (billing object after it / "metered per <unit>" / "metered and charged" / usage-call-request
+  "is/are metered"); `usage-based` + `overage` stay bare (already billing-specific). LOOKAHEAD-anchored so
+  the matched span stays exactly `metered` → the canonical evidence QUOTE is byte-identical (verified on
+  both domains) → canonical-invariant by construction. `test_usage_based_metered_precision_synthetic` (12
+  metered-billing positives fire usage-based / 10 broad-English "metered <noun>" negatives claim nothing).
+  With this, the bare-word minefields are now ALL precision-guarded across EVERY archetype bank
+  (enrich/dataset/lookup + subscription's recurring + service_booking's book/schedule + metered_api's
+  metered) — the in-cloud precision-audit frontier is EXHAUSTED; further COVERAGE wanting new SIGNALS (not
+  precision) needs real fixtures ([LOCAL]). Does NOT close the parent item — the thin banks still want
+  GENUINE NEW signals from real fixtures ([LOCAL], unchanged).
 
 - **[LOCAL] Validate the Cycle-178 whitespace-reflow robustness on a REAL line-wrapped surface** (COVERAGE,
   follow-up to Cycle 178). Cycle 178 made `classify_offering` collapse whitespace runs before scanning so

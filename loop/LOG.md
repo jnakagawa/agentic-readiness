@@ -3,6 +3,67 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 206 — 2026-08-03T18:14Z — COVERAGE — metered_api `usage-based` bare-word precision guard: the largest bank's last un-swept broad-English collision (`metered`) can no longer conjure a metered_api claim
+
+WHAT/WHY. The COVERAGE 206 candidate Cycle 205 named: audit the metered_api signal bank (the largest, 26
+signals) for the bare-word broad-English collisions the enrich/dataset/lookup (data_retrieval), book/schedule
+(service_booking), and recurring (subscription) guards closed on the thinner banks. One signal in metered_api
+still carried a naked broad-English word: `usage-based` matched `\b(usage[- ]based|metered|overage)\b`, and
+the `metered` alternative fires on prose that has nothing to do with a metered API — **metered parking**, a
+**metered water / electricity / gas UTILITY**, a **metered-dose inhaler**, **metered postage**, **metered
+verse**, "a **metered approach**". On a site that sells any of those, bare `metered` would CONJURE a
+metered_api claim and the offering-relative battery would then probe it with an API-call intent it never
+offered — the exact archetype-pollution this module exists to remove (a FALSE claim is the maximum-damage
+error; a MISSED one is merely conservative). `usage-based` and `overage` are already billing-specific and are
+left bare; only `metered` needed anchoring.
+
+CHANGE (COVERAGE, off the scoring path, score-neutral, direct-to-main). `asrs/offering.py`: the `usage-based`
+regex now requires `metered` to name a BILLING/USAGE/API context — a billing object after it (metered
+billing/pricing/rate/plan/usage/api/tier/access/charges), a "metered per <unit>" rate, "metered and
+charged/billed", or a usage/call/request subject that "is/are metered". Crucially the `metered` branches are
+**LOOKAHEAD-anchored** so the MATCHED SPAN stays exactly `metered` — `m.end()` is unchanged, so `_quote`'s
+evidence window on the canonical pair is **byte-identical** (narrowing only; canonical-invariant BY
+CONSTRUCTION — it can only REMOVE non-billing matches, never move an existing one). A first draft included an
+`it is metered` subject that matched the canonical .com "usage beyond **it is metered** and charged" one token
+earlier and shifted the quote; dropping `it` from the subject list restored the exact pre-edit span (the
+`metered and charged` lookahead branch matches at the same "metered" position). Empirically verified: the
+`usage-based` evidence quote on both canonical domains is byte-for-byte identical pre/post, and all five
+fixtures' claimed sets are unchanged (.org/.com {metered_api,digital_good,subscription}, api.replicate.com
+{metered_api}, books.toscrape.com {physical_good}, example.com {}).
+
+METHOD / non-vacuity + teeth. New guard `test_usage_based_metered_precision_synthetic` (mirrors the
+recurring/lookup precision guards): 12 genuine metered-billing positives each fire the `usage-based` label
+non-vacuously (incl. the canonical .com "metered and charged" shape and the test-fixture "metered per API
+call" shape, plus the untouched bare `overage`/`usage-based` alternatives), and 10 broad-English "metered
+<noun>" negatives (parking/water/electricity/-dose/dose/postage/verse/approach/rhythm, "water is metered")
+each claim NOTHING. Canonical-invariant by construction (lookahead-anchored span; existing
+tests/test_offering_canonical.py profile-identity + replay guards stay green).
+
+EVIDENCE. `git diff --name-only` = `asrs/offering.py` + `tests/test_offering.py` ONLY; `git diff -- asrs/scoring.py asrs/probes/ rubric/ fixtures/` EMPTY; `grep 'offering' asrs/scoring.py asrs/probes/` = NONE
+(classifier is off the scoring path — discovery runs only under `--battery auto`) → score-neutral, NOT
+peer-gated → direct-to-main. Full suite 431→432, 0 failures; `test_offering.py`/`test_offering_canonical.py`
+144/144; new test registered in the runner (registration guard green).
+
+CANONICAL PAIR (in-cloud replay guard — authoritative static re-score, 24/24, 0 replay-miss):
+drift-flight.org 46.1 F / driftflight.com 85.5 B / delta +39.4 — UNCHANGED (off the scoring path; classifier
+evidence byte-identical). Live signal (read, not re-run — runner AT-FLOOR, newest artifact
+verify_20260801T035047Z.json ~62.4h old at 18:14Z, machine-asleep/runner-lag, cloud cannot repair):
+drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the off-scoring-path
+transactability-drop divergence PERSISTS (Aug-1), untouched by this change. Rubric v0.7.
+
+COMMS. No DM. This fire (18:14Z) is NOT the first cycle after 16:00 UTC (Cycle 204 at 16:17Z already sent
+today's digest); off-scoring-path score-neutral COVERAGE increment, no sensitive-class PR, nothing
+score-moving → comms policy says quiet. No open peer-gated PRs → no first-duty review.
+
+NEXT HYPOTHESIS (TRUTH 207). Rotate TRUTH next (Cycle 206 was COVERAGE; METHOD → COVERAGE → TRUTH → READOUT).
+The bare-word minefields are now ALL guarded across every archetype bank (enrich/dataset/lookup, book/schedule,
+recurring, and now metered) — the in-cloud precision-audit frontier is largely exhausted; a future COVERAGE
+cycle wanting new SIGNALS (not precision) needs real fixtures ([LOCAL]). In-cloud TRUTH candidate: a fresh
+attribution/invariance guard on the calibration or canonical-history series, or an out-of-band-stability
+check. Substantive frontier (GENUINE new thin-bank signals from real fixtures, the negative anchor's
+two-crawl static cross-validation via a `moleskine.com` fixture, ACP/UCP/MPP live handshakes,
+transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+
 ## Cycle 205 — 2026-08-03T17:19Z — METHOD — the published headline PROSE cannot drift from the live fraction (word derived FROM the number)
 
 WHAT/WHY. Cycle 204 put the sentence "agent-native payment closes ABOUT TWO-THIRDS of the … headline gap …

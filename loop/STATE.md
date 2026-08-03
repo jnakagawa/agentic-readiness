@@ -1,8 +1,39 @@
 # Loop state
 
-- Cycle counter: 205
+- Cycle counter: 206
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-03T17:19Z (Cycle 205) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-03T18:14Z (Cycle 206) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~62.4h old at the fire — PAST the 6h floor (machine-asleep / runner-lag
+  pattern, cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 18:14Z fire is
+  NOT first-after-16:00 UTC → no DM this fire per comms policy (off-scoring-path / score-neutral COVERAGE
+  increment, no sensitive-class PR, nothing score-moving). Live signal (read, not re-run):
+  drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop
+  divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent
+  regression signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire
+  (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 206): fresh
+  checkout landed at `3c02615` (Cycle-205 tip) = origin/main after `git pull` (the benign "(forced update)
+  from 3796519" is the stale shallow-clone local-ref reconciliation, NOT a history rewrite — invariant #5
+  intact). Fresh `.venv` + `requests pyyaml eth-account pytest`, 431 tests green pre-flight (432 after +1).
+- FOCUS POINTER (Cycle 206 done): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 206 was
+  COVERAGE, so Cycle 207 is TRUTH). Cycle 206 shipped a **COVERAGE increment — the metered_api bank's last
+  un-swept bare word is now precision-guarded** (`asrs/offering.py` `usage-based` regex; `tests/test_offering.py`
+  +1, suite 431→432). Bare `\bmetered\b` (in `usage-based`) was a broad-English minefield — metered parking /
+  water / electricity / -dose / postage / verse / "a metered approach" — any of which could CONJURE a
+  metered_api claim (an API-call intent probed on a site that offers none). The guard now requires `metered`
+  to name a BILLING/USAGE/API context (billing object after it, "metered per <unit>", "metered and
+  charged/billed", or usage/call/request "is/are metered"); `usage-based`/`overage` stay bare (already
+  billing-specific). LOOKAHEAD-anchored so the matched SPAN stays exactly `metered` → the canonical evidence
+  QUOTE is byte-identical (verified empirically on both domains) → canonical-invariant by construction. New
+  guard `test_usage_based_metered_precision_synthetic` (12 genuine metered-billing positives fire usage-based
+  non-vacuously / 10 broad-English "metered <noun>" negatives claim nothing). OFF the scoring path
+  (`git diff -- asrs/scoring.py asrs/probes/ rubric/ fixtures/` EMPTY; classifier not imported by scoring) →
+  score-neutral, NOT peer-gated, direct-to-main. Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss;
+  rubric v0.7. NEXT (TRUTH 207): the bare-word minefields are now ALL guarded across every archetype bank —
+  the in-cloud precision-audit frontier is exhausted; a TRUTH candidate is a fresh attribution/invariance
+  guard on the calibration or canonical-history series. Substantive frontier (GENUINE new thin-bank signals
+  from real fixtures, the negative anchor's two-crawl static cross-validation via a `moleskine.com` fixture,
+  ACP/UCP/MPP, transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 205 runner note): RUNNER AT-FLOOR at 2026-08-03T17:19Z (Cycle 205) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~61.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag
   pattern, cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 17:19Z fire is
   NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral off-scoring-path

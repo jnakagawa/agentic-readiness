@@ -3,6 +3,67 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 207 — 2026-08-03T19:13Z — TRUTH — the operator-facing re-capture DECISION on the REAL series is DEFER, and that DEFER is corroborated by BOTH independent drift mechanisms
+
+WHAT/WHY (TRUTH). Added `test_real_series_defer_decision_is_corroborated_by_both_mechanisms` to
+`tests/test_canonical_history.py` (49→50 in-file; full suite 432→433). The canonical drift diagnostics
+already pin, on the REAL committed `runs/local/verify_*.json` series, (a) the PILLAR-level attribution
+(driftflight.com transactability 87.5→62.5, −25.0) cross-checked against the SIDE-level cause
+(`test_attribution_on_real_series_fingers_the_drifting_pillar`), and (b) that the re-capture recommendation
+is band-consistent (`test_recapture_advice_on_real_series_is_coherent`, weakly: out-of-band ⇒ not-VALID).
+But NOTHING tied the two together: the operator-facing DECISION `recapture_advice` emits — the thing an
+operator ACTS on — is synthesized from the SIDE-level `divergence_cause` ALONE (overall scores), and no
+guard asserted that on the real series that decision is specifically **DEFER** AND is jointly corroborated
+by the INDEPENDENT pillar mechanism fingering the same with-rails softening. That is the piece neither
+sibling makes: "the DEFER an operator would act on is the one two independent mechanisms support."
+
+WHY IT MATTERS. DEFER means "the pinned fixture still represents the true capability gap — do NOT chase the
+dip down; WAIT for the reference to recover." A wrong DEFER→RECAPTURE flip would re-pin the frozen baseline
+to a transient with-rails site regression, MOVING the delta the replay guard asserts and corrupting
+cross-version comparability (the maintenance contract `test_canonical_replay` documents). The decision's
+trustworthiness rests on it NOT being a single-signal artifact: the pillar-level `_attribute` (per-pillar
+scores) and the side-level `_cause` (overalls) are independent code paths, and their AGREEMENT that the
+with-rails reference softened is what makes DEFER credible. This guard is the tripwire that reddens if that
+convergence ever breaks under the DEFER decision.
+
+METHOD / NON-VACUITY + teeth. Computed from `load_history()` on the committed series (no network,
+deterministic in-cloud). Recovery-tolerant, three honest branches: in-band ⇒ assert `REC_VALID` and skip;
+out-of-band-but-not-sustained/anchorless ⇒ assert `REC_WAIT`/`REC_REVIEW` (never a blind DEFER, never
+VALID); sustained + anchored ⇒ the load-bearing block. CURRENTLY NON-VACUOUS on the real series (verified
+empirically at fire: band=`diverged`, `consecutive_out_of_band=3` == `_SUSTAINED_MIN`, `divergence_cause`
+present) so it exercises the full DEFER path: `reference_degraded is True`, `recapture.code == REC_DEFER`,
+AND independent corroboration — `attribution.top.domain == cause.driver == driftflight.com` (both
+mechanisms finger the with-rails reference) with `top.change < 0` (a softening must be a pillar DROP), and
+the rendered block surfaces "defer re-capture". Vendor-neutral: keys on the pair STRUCTURE (which side
+softened, how sustained) and the module's own reference-pair constant, never a literal host string in the
+assertion logic. Also corrected the now-STALE recovery-tolerance comment in
+`test_recapture_advice_on_real_series_is_coherent` (it claimed "currently reads baseline-valid" from the
+long-recovered Jul-27 episode; the live series is out-of-band today).
+
+SHIP CLASS + evidence. Tests-only, OFF the scoring path: `git diff --name-only` =
+`tests/test_canonical_history.py` ONLY; scoring-path diff (`asrs/ rubric/ fixtures/`) EMPTY → score-neutral,
+NOT peer-gated, direct-to-main. `test_canonical_history.py` 49→50; full suite 432→433, 0 failures.
+Canonical PAIR unchanged: in-cloud replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric
+v0.7. (Cloud is network-blocked for the live re-score; the in-cloud standard is regression-by-construction —
+the scoring path is byte-identical — plus the offline replay guard, both green.)
+
+LIVE CANONICAL SIGNAL. Newest LOCAL artifact `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is
+~63.4h old at this 19:13Z fire — PAST the 6h floor (machine-asleep / runner-lag, cloud cannot repair;
+already flagged in the 16:17Z Cycle-204 digest). Its LIVE re-score: drift-flight.org 46.1 F /
+driftflight.com 76.2 C / +30.1 / transactability 62.5 — the known transactability 87.5→62.5 divergence this
+very guard's DEFER decision covers (off the scoring path; the frozen replay guard stays the in-cloud
+regression signal). 19:13Z is NOT first-after-16:00 UTC (Cycle 204 sent today's digest at 16:17Z) → no
+digest DM per comms policy; tests-only / score-neutral, no sensitive-class PR, nothing score-moving. No
+open peer-gated PRs (`list_pull_requests` state=open → []) → no first-duty review.
+
+NEXT HYPOTHESIS (READOUT 208). Rotate READOUT next (Cycle 207 was TRUTH; METHOD → COVERAGE → TRUTH →
+READOUT). The DEFER decision + its two-mechanism corroboration are now guarded on the real series; an
+in-cloud READOUT candidate is surfacing the corroborated-DEFER recommendation with its two-mechanism basis
+in the terminal/HTML drift block (the operator sees WHY defer, not just the code), or a readout-wording
+coupling guard. Substantive frontier (GENUINE new thin-bank signals from real fixtures, the negative
+anchor's two-crawl static cross-validation via a `moleskine.com` fixture, ACP/UCP/MPP, transactability-drop
+CHECK-level diagnosis) stays `[LOCAL]`.
+
 ## Cycle 206 — 2026-08-03T18:14Z — COVERAGE — metered_api `usage-based` bare-word precision guard: the largest bank's last un-swept broad-English collision (`metered`) can no longer conjure a metered_api claim
 
 WHAT/WHY. The COVERAGE 206 candidate Cycle 205 named: audit the metered_api signal bank (the largest, 26

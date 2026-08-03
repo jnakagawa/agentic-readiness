@@ -1287,9 +1287,10 @@ def test_recapture_advice_on_real_series_is_coherent() -> None:
     print("test_recapture_advice_on_real_series_is_coherent")
     # End-to-end on the REAL committed series: the recommendation must be present,
     # a known code, and CONSISTENT with the band — in-band <-> baseline-valid, and
-    # any out-of-band code never claims baseline-valid. Recovery-tolerant: the site
-    # recovered 2026-07-27 so this currently reads baseline-valid, but the assertion
-    # holds whichever way the live series sits.
+    # any out-of-band code never claims baseline-valid. Recovery-tolerant: the live
+    # series currently sits OUT of band (the persistent Jul-31/Aug-1 with-rails
+    # transactability softening), so this reads a non-VALID code today, but the
+    # assertion holds whichever way the live series sits.
     hist = ch.load_history()
     adv = hist.recapture
     _check(adv is not None, "the real series gets a recommendation")
@@ -1299,6 +1300,80 @@ def test_recapture_advice_on_real_series_is_coherent() -> None:
     else:
         _check(adv.code != ch.REC_VALID, f"out-of-band real series is not baseline-valid, got {adv.code}")
     _check("re-capture:" in ch.render(hist), "the real render carries the recommendation line")
+
+
+def test_real_series_defer_decision_is_corroborated_by_both_mechanisms() -> None:
+    print("test_real_series_defer_decision_is_corroborated_by_both_mechanisms")
+    # TRUTH (Cycle 207): the operator-facing re-capture DECISION on the REAL series,
+    # and its TWO-MECHANISM corroboration, pinned as ONE fact — the piece neither
+    # sibling guard makes alone.
+    #
+    # recapture_advice synthesizes its recommendation from the SIDE-level
+    # divergence_cause ALONE (overall scores). On the current live series that
+    # decision is DEFER: the with-rails reference SOFTENED, so the pinned fixture
+    # still represents the true capability gap and a [LOCAL] re-capture must WAIT —
+    # never chase the dip down. A wrong DEFER->RECAPTURE flip here would re-pin the
+    # frozen baseline to a transient site regression, corrupting cross-version
+    # comparability (the maintenance contract test_canonical_replay documents).
+    #
+    # The decision's TRUSTWORTHINESS rests on it not being a single-signal artifact:
+    # the INDEPENDENT pillar-level attribution (_attribute, per-pillar scores) must
+    # finger the SAME side softening the side-level cause (_cause, overalls) blames.
+    # This guard ties the operator-facing DECISION to that convergence:
+    #   - test_attribution_on_real_series_fingers_the_drifting_pillar asserts the
+    #     convergence but NOT the recapture decision it should drive;
+    #   - test_recapture_advice_on_real_series_is_coherent asserts the decision but
+    #     only weakly (not-VALID) and does NOT tie it to the two-mechanism agreement.
+    # Neither asserts "the DEFER an operator would ACT on is the one two independent
+    # mechanisms support". That is this guard.
+    #
+    # Recovery-tolerant: if the site returns to in-band the decision is correctly
+    # REC_VALID and the corroborated-DEFER claim is skipped; if it drifts out of band
+    # but not yet sustained (or with no in-band anchor), the honest code is WAIT/
+    # REVIEW — still non-VALID, and the corroborated-DEFER claim applies only once the
+    # move is sustained with an anchor, the same discipline as the sibling guards.
+    hist = ch.load_history()
+    adv = hist.recapture
+    _check(adv is not None, "the real series gets a recommendation")
+    if hist.band == ch.BAND_IN:
+        _check(adv.code == ch.REC_VALID, f"in-band real series -> baseline-valid, got {adv.code}")
+        return
+    if hist.consecutive_out_of_band < ch._SUSTAINED_MIN or hist.divergence_cause is None:
+        # out of band but not a sustained, anchored move -> WAIT or REVIEW, never a
+        # blind DEFER/RECAPTURE and never baseline-valid.
+        _check(
+            adv.code in (ch.REC_WAIT, ch.REC_REVIEW),
+            f"out-of-band-but-not-sustained/anchorless -> wait/review, got {adv.code}",
+        )
+        return
+    # Sustained out of band WITH an in-band anchor: the decision is DEFER (reference
+    # softened) or RECAPTURE (baseline genuinely moved). On the current live series it
+    # is DEFER, and BOTH independent mechanisms must corroborate the with-rails softening.
+    cause = hist.divergence_cause
+    _check(
+        cause.reference_degraded is True,
+        "the current live drift is with-rails reference softening (not the floor rising)",
+    )
+    _check(
+        adv.code == ch.REC_DEFER,
+        f"reference-softening real series -> defer, got {adv.code}",
+    )
+    # Independent corroboration: the pillar mechanism must finger the SAME side.
+    _check(hist.attribution is not None, "a sustained, anchored drift isolates a pillar mover")
+    top = hist.attribution.top
+    _check(top is not None, "the drift isolates a top pillar mover")
+    _check(
+        top.domain == cause.driver == ch.CANONICAL_WITH_RAILS,
+        f"side cause ({cause.driver}) and pillar attribution ({top.domain}) must BOTH "
+        f"finger the with-rails reference, or the DEFER is single-signal",
+    )
+    _check(
+        top.change < 0,
+        f"a corroborated reference softening must be a pillar DROP, got {top.change:+}",
+    )
+    # The operator-facing block surfaces the DEFER decision the two mechanisms support.
+    out = ch.render(hist)
+    _check("defer re-capture" in out, "render surfaces the defer decision to the operator")
 
 
 def test_recapture_advice_prose_is_host_relabel_invariant() -> None:
@@ -1763,6 +1838,7 @@ def main() -> int:
         test_recapture_advice_recommends_recapture_when_baseline_moved,
         test_recapture_advice_reviews_when_no_anchor,
         test_recapture_advice_on_real_series_is_coherent,
+        test_real_series_defer_decision_is_corroborated_by_both_mechanisms,
         test_recapture_advice_prose_is_host_relabel_invariant,
         test_noise_floor_is_deterministic_on_real_series,
         test_noise_floor_sides_are_deterministic_on_real_series,

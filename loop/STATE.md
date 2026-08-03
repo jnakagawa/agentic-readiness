@@ -1,8 +1,43 @@
 # Loop state
 
-- Cycle counter: 206
+- Cycle counter: 207
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-03T18:14Z (Cycle 206) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-03T19:13Z (Cycle 207) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~63.4h old at the fire — PAST the 6h floor (machine-asleep / runner-lag
+  pattern, cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 19:13Z fire is
+  NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral off-scoring-path
+  TRUTH increment, no sensitive-class PR, nothing score-moving). Live signal (read, not re-run):
+  drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop
+  divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent
+  regression signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire
+  (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 207): fresh
+  checkout landed at `d6412da` (Cycle-206 tip) = origin/main after `git pull` (the benign "(forced update)
+  from 3796519" is the stale shallow-clone local-ref reconciliation, NOT a history rewrite — invariant #5
+  intact). Fresh `.venv` + `requests pyyaml eth-account pytest`, 432 tests green pre-flight (433 after +1).
+- FOCUS POINTER (Cycle 207 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 207 was
+  TRUTH, so Cycle 208 is READOUT). Cycle 207 shipped a **TRUTH increment — the operator-facing re-capture
+  DECISION on the REAL canonical series is DEFER, and that DEFER is corroborated by BOTH independent drift
+  mechanisms** (`tests/test_canonical_history.py` 49→50, suite 432→433). `recapture_advice` synthesizes its
+  recommendation from the SIDE-level `divergence_cause` ALONE (overalls); the new guard
+  `test_real_series_defer_decision_is_corroborated_by_both_mechanisms` ties that operator-facing DECISION to
+  the INDEPENDENT pillar mechanism on the real committed series — currently non-vacuous (band=diverged,
+  consecutive_out_of_band=3==`_SUSTAINED_MIN`): `reference_degraded is True`, `recapture.code==REC_DEFER`,
+  and `attribution.top.domain == cause.driver == driftflight.com` with `top.change<0` (both mechanisms
+  finger the with-rails transactability softening 87.5→62.5). The piece neither sibling made alone
+  (`..._fingers_the_drifting_pillar` asserts the convergence not the decision; `..._is_coherent` asserts the
+  decision only weakly, not the convergence). A wrong DEFER→RECAPTURE flip would re-pin the frozen baseline
+  to a transient site regression, corrupting comparability — this is that tripwire. Also corrected the stale
+  recovery-tolerance comment in `..._is_coherent` ("currently reads baseline-valid" → out-of-band today).
+  Recovery-tolerant (in-band ⇒ REC_VALID skip; not-sustained ⇒ WAIT/REVIEW). Vendor-neutral (keys on pair
+  STRUCTURE + the module reference constant, no literal host in assertion logic). OFF the scoring path
+  (`git diff --name-only` = test_canonical_history.py; `asrs/ rubric/ fixtures/` diff EMPTY) → score-neutral,
+  NOT peer-gated, direct-to-main. Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7.
+  NEXT (READOUT 208): surface the corroborated-DEFER recommendation WITH its two-mechanism basis in the
+  terminal/HTML drift block (the operator sees WHY defer), or a readout-wording coupling guard. Substantive
+  frontier (GENUINE new thin-bank signals from real fixtures, the negative anchor's two-crawl static
+  cross-validation via a `moleskine.com` fixture, ACP/UCP/MPP, transactability-drop CHECK-level diagnosis)
+  stays `[LOCAL]`.
+- SUPERSEDED (Cycle 206 runner note): RUNNER AT-FLOOR at 2026-08-03T18:14Z (Cycle 206) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~62.4h old at the fire — PAST the 6h floor (machine-asleep / runner-lag
   pattern, cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 18:14Z fire is
   NOT first-after-16:00 UTC → no DM this fire per comms policy (off-scoring-path / score-neutral COVERAGE

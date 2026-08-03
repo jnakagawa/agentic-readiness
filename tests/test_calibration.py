@@ -907,6 +907,122 @@ def test_no_rails_transactability_floor_is_capability_attributable_and_type_inva
     )
 
 
+# ---------------------------------------------------------------------------
+# 12. THE WITH-RAILS TRANSACTABILITY CEILING IS A PAYMENT-CAPABILITY SIGNAL, NOT
+#     A PREMIUM-CATEGORY ARTIFACT — a KNOCK-OUT counterfactual (the positive-side
+#     mirror of test 11's negative-floor type-invariance).
+#
+#     Test 9 attributes the with-rails/no-rails transactability point-GAP to the
+#     agent-native payment checks by DECOMPOSITION (the payment point-diffs sum to
+#     the whole gap; non-payment nets zero).  A decomposition of raw-point SUMS,
+#     though, (i) could in principle mask OFFSETTING non-payment moves once more
+#     than one non-payment check exists (two that cancel would still sum to zero),
+#     and (ii) does not speak in the pillar-SCORE units a card reader actually sees.
+#     Test 11 proves the no-rails FLOOR is type-invariant, but says nothing about
+#     what holds the with-rails CEILING up: if the 87.5 were even partly a
+#     premium-category artifact (a "fancy storefront" scoring high for something
+#     OTHER than payment rails), neither test 9 nor test 11 would catch it.
+#
+#     This guard makes the attribution FALSIFIABLE by counterfactual instead of
+#     decompositional.  Take the with-rails storefront and KNOCK OUT its agent-native
+#     payment capability: replace each ``_STATIC_PAYMENT_CHECKS`` earned-points value
+#     with the NO-RAILS storefront's value for the SAME check (an agent that cannot
+#     pay earns what the no-rails agent earns), leaving max_points and EVERY
+#     non-payment check untouched, then recompute the transactability pillar with
+#     scoring's own formula.  The knocked-out score lands EXACTLY on the no-rails
+#     floor (18.75): strip the payment capability and the with-rails ceiling is
+#     indistinguishable from the no-rails floor, so the ENTIRE ceiling-vs-floor
+#     separation is the agent-native payment capability — the ceiling is a payment
+#     signal, not a category artifact.  Because we recompute the REPORTED pillar
+#     score (not a raw-point sum) and require an EXACT landing, this also closes the
+#     offsetting-cancellation hole test 9(b)'s aggregate leaves open: any non-payment
+#     check that secretly moved would knock the landing off 18.75.
+#
+#     Honest counterfactual: max_points and the non-payment check (mcp_surface) are
+#     RETAINED through the knock-out, so this simulates the payment capability
+#     ABSENT/FAILING (0/partial earned, still counted in the denominator) — the same
+#     way a real no-rails agent scores — NOT the capability deleted from the rubric
+#     (which would trivially shrink the pillar).  The 18.75/87.5 literals share test
+#     9(d)'s re-baseline tripwire contract (a legitimate [LOCAL] canonical re-capture
+#     reddens this guard alongside ``test_canonical_replay``).
+# ---------------------------------------------------------------------------
+def test_with_rails_ceiling_is_payment_capability_not_category_artifact() -> None:
+    print("test_with_rails_ceiling_is_payment_capability_not_category_artifact")
+    com, com_misses = _static_report(_ANCHOR_DOMAIN)       # with-rails ceiling
+    org, org_misses = _static_report("drift-flight.org")   # no-rails floor
+    _check(
+        not com_misses and not org_misses,
+        "both canonical static replays are like-for-like (no replay-miss)",
+    )
+
+    com_tx = {c.check_id: c for c in com.checks if c.pillar == "transactability"}
+    org_tx = {c.check_id: c for c in org.checks if c.pillar == "transactability"}
+    _check(
+        set(com_tx) == set(org_tx) and bool(com_tx),
+        f"both sides share the transactability check set ({sorted(com_tx)})",
+    )
+    for cid in _STATIC_PAYMENT_CHECKS:
+        _check(cid in com_tx, f"agent-native payment check {cid!r} is a transactability check")
+
+    # The ceiling and floor are the pinned anchors (re-baseline tripwire, test 9(d)).
+    ceiling = com.pillar_scores["transactability"]
+    floor = org.pillar_scores["transactability"]
+    _check(abs(ceiling - 87.5) < 1e-9, f"with-rails ceiling is the pinned 87.5 (got {ceiling})")
+    _check(abs(floor - 18.75) < 1e-9, f"no-rails floor is the pinned 18.75 (got {floor})")
+
+    def _scored(check) -> bool:
+        return scoring._status_value(check.status) in scoring._SCORED_STATUSES
+
+    # KNOCK-OUT: recompute the with-rails transactability pillar with scoring's OWN
+    # formula, but each payment check earns what the NO-RAILS agent earns (capability
+    # absent).  max_points and every non-payment check are the with-rails ones,
+    # untouched — the honest "capability failed", not "check removed".
+    earned = 0.0
+    possible = 0.0
+    for cid, c in com_tx.items():
+        if not _scored(c):
+            continue
+        possible += c.max_points
+        earned += org_tx[cid].points if cid in _STATIC_PAYMENT_CHECKS else c.points
+    _check(possible > 0, "the knocked-out transactability pillar still has scored checks")
+    knocked = 100.0 * earned / possible
+
+    # THE COUNTERFACTUAL: strip agent-native payment -> the ceiling collapses to the
+    # no-rails FLOOR, exactly.  So 100% of the ceiling-vs-floor separation is payment.
+    _check(
+        abs(knocked - floor) < 1e-9,
+        f"knocking out agent-native payment collapses the with-rails ceiling to the "
+        f"no-rails floor (knocked={knocked}, floor={floor}) — the ceiling is the "
+        f"payment capability, not a category artifact",
+    )
+    _check(
+        abs(knocked - 18.75) < 1e-9,
+        f"the collapsed ceiling lands exactly on the pinned 18.75 floor (got {knocked})",
+    )
+
+    # DISCRIMINATING: the knock-out is a genuine collapse, not a no-op — the intact
+    # ceiling sat far above (a knock-out that barely moved would prove nothing).
+    _check(
+        ceiling - knocked > 60.0,
+        f"the knock-out is a real collapse (87.5 -> {knocked}, drop {ceiling - knocked}), "
+        f"not a no-op",
+    )
+
+    # NON-VACUOUS: a real non-payment transactability check (mcp_surface) is present
+    # and RETAINED through the knock-out — it is NOT what makes the ceiling collapse,
+    # so the collapse is attributable to payment despite a live non-payment control.
+    nonpayment_ids = [cid for cid in com_tx if cid not in _STATIC_PAYMENT_CHECKS]
+    _check(
+        nonpayment_ids,
+        f"a non-payment transactability check exists as the control ({nonpayment_ids})",
+    )
+    for cid in nonpayment_ids:
+        _check(
+            _scored(com_tx[cid]),
+            f"the non-payment control {cid!r} is scored and retained through the knock-out",
+        )
+
+
 def main() -> int:
     tests = [
         test_static_payment_prediction_is_behaviorally_corroborated,
@@ -920,6 +1036,7 @@ def main() -> int:
         test_payability_prediction_is_attributably_agent_native_payment,
         test_readout_earner_and_calibration_attribution_cannot_drift,
         test_no_rails_transactability_floor_is_capability_attributable_and_type_invariant,
+        test_with_rails_ceiling_is_payment_capability_not_category_artifact,
     ]
     failed = 0
     for t in tests:

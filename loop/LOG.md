@@ -3,6 +3,73 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 197 — 2026-08-03T09:14Z — METHOD — the with-rails ceiling is a payment-capability signal, not a category artifact (knock-out counterfactual)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed. Infra/self-heal: fresh checkout aligned to origin/main via `git checkout -B main
+origin/main` on the Cycle-196 tip `950606b` (origin arrived as a `(forced update)` from `3796519`, a
+normal main-history state given the loop's direct-to-main cadence; working tree clean, invariant #5
+intact). Fresh `.venv` + `requests pyyaml eth-account pytest`; imports verified; 424 tests green
+pre-flight. Runner AT-FLOOR: newest verify `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is
+~53.4h old at the 09:14Z fire — PAST the 6h floor (machine-asleep / runner-lag pattern, cloud cannot
+repair; already flagged in the 16:12Z Cycle-181 digest). This 09:14Z fire is NOT first-after-16:00 UTC →
+no digest DM (tests-only / score-neutral off-scoring-path METHOD increment, no sensitive-class PR,
+nothing score-moving).
+
+**What (METHOD).** Added `test_with_rails_ceiling_is_payment_capability_not_category_artifact`
+(`tests/test_calibration.py`, test 12; suite 424→425) — the POSITIVE-side counterfactual mirror of test
+11's negative-floor type-invariance. It KNOCKS OUT the with-rails storefront's agent-native payment
+capability: on the frozen `driftflight.com` fixture replay it replaces each `_STATIC_PAYMENT_CHECKS`
+(x402_probe 8.0, self_serve_payg 6.0) earned-points value with the **no-rails** `drift-flight.org`
+value for the same check (0.0 / 3.0), leaving max_points and the non-payment control (`mcp_surface`)
+untouched, then recomputes the transactability pillar with scoring's own formula. The knocked-out score
+lands **exactly on the no-rails floor 18.75** — strip agent-native payment and the with-rails ceiling
+(87.5) is indistinguishable from the no-rails floor, so **100% of the ceiling-vs-floor separation is the
+payment capability**. The ceiling is a payment signal, not a premium-category artifact.
+
+**Why.** Two attribution guards already existed but neither answered "what holds the with-rails CEILING
+up?": test 9 decomposes the transactability point-GAP into payment vs non-payment at the raw-point-SUM
+level; test 11 proves the no-rails FLOOR is storefront-type-invariant. A category artifact propping the
+ceiling above the floor (a "fancy storefront" scoring high for something other than payment rails) would
+slip past both. Recomputing the REPORTED pillar score under a payment knock-out — and requiring an EXACT
+landing on the floor — makes the ceiling attribution FALSIFIABLE (counterfactual, not decompositional)
+in the pillar-score units a card reader sees, and additionally closes the offsetting-cancellation hole
+test 9(b)'s aggregate leaves open (a non-payment check that secretly moved would knock the landing off
+18.75). This is the METHOD-track realization of Cycle 196's "positive mirror" next-hypothesis: protecting
+the delta's credibility from the with-rails end, per the capability lens.
+
+**Method / non-vacuity + teeth (mutation-verified twice).** (A) NO knock-out (keep the with-rails
+points) → recomputes 87.5 ≠ 18.75, so the `abs(knocked - floor) < 1e-9` assertion would FAIL — the
+knock-out is not a no-op. (B) a simulated category artifact (`mcp_surface` +6 on the with-rails side
+only, propping the ceiling) → knock-out lands on 56.25 > 18.75, so the guard FAILs — it catches the exact
+failure mode it targets. Non-vacuous control: `mcp_surface` (a real non-payment transactability check) is
+present, scored, and RETAINED through the knock-out, so the collapse is attributable to payment despite a
+live non-payment check. Honest counterfactual: max_points + the non-payment check are retained, so it
+simulates the payment capability ABSENT/FAILING (0/partial earned, still counted), the way a real
+no-rails agent scores — NOT the check deleted from the rubric. The 18.75/87.5 literals share test 9(d)'s
+re-baseline tripwire contract (a legitimate [LOCAL] canonical re-capture reddens this guard alongside
+`test_canonical_replay`).
+
+**Evidence / validation.** `git diff --name-only` = `tests/test_calibration.py` ONLY — scoring-path diff
+EMPTY (`git diff --stat -- asrs/ rubric/ fixtures/` clean) → score-neutral, NOT peer-gated,
+direct-to-main. `tests/test_calibration.py` 11→12 green standalone (12/12); full suite 424→425. Replay
+guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7 unchanged.
+
+**Canonical pair.** In-cloud replay guard (frozen regression signal): drift-flight.org 46.1 F /
+driftflight.com 85.5 B / delta +39.4, UNCHANGED (tests-only; by construction). Live signal (read from
+the newest verify artifact, NOT re-run — runner at-floor): drift-flight.org 46.1 F / driftflight.com
+76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1), off the
+scoring path. The new guard reads the FROZEN fixtures (85.5 ceiling / 18.75 floor), so it is robust to
+the live com drop.
+
+**Next hypothesis (METHOD/READOUT frontier).** The counterfactual attribution now holds on BOTH sides
+(floor type-invariant, ceiling payment-earned). Cheapest next METHOD unit: pin the same knock-out is
+WEIGHT-robust (the collapse-to-floor holds under a range of pillar weights, like the replay guard's
+weight-robustness), OR carry the counterfactual onto a readout (surface "strip payment → this score
+becomes the no-rails floor" on the card/methodology page). Substantive frontier (thin-archetype / render
+/ structured-catalog LIVE fixtures, the negative anchor's two-crawl static cross-validation via a
+`moleskine.com` fixture, ACP/UCP/MPP, transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+
 ## Cycle 196 — 2026-08-03T08:13Z — READOUT — surface the type-invariant negative floor: a payment-capability signal, not a retail artifact
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

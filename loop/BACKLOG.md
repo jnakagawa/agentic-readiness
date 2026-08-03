@@ -46,6 +46,16 @@ design in-cloud, execute locally.
   driftflight.com at the softened live transactability, the calibration guard reddens ALONGSIDE
   `test_canonical_replay`, forcing the calibration anchor's payability magnitude + scope to be revisited in
   the SAME re-baseline PR. Does NOT close this item — the CHECK-level live diff + re-baseline stay [LOCAL].
+  UPDATE Cycle 197 (METHOD, in-cloud, direct-to-main): the with-rails anchor's payability attribution — the
+  87.5 ceiling this P0's live erosion tracks — is now COUNTERFACTUALLY pinned, not just decompositionally.
+  `test_calibration.py`'s new `test_with_rails_ceiling_is_payment_capability_not_category_artifact` (12) KNOCKS
+  OUT the agent-native payment checks on the frozen `driftflight.com` replay (substitutes the no-rails
+  `drift-flight.org` earned points for `_STATIC_PAYMENT_CHECKS`) and recomputes the transactability pillar: it
+  collapses EXACTLY to the no-rails floor 18.75, proving 100% of the ceiling-vs-floor separation is agent-native
+  payment (the very x402_probe + self_serve_payg checks whose live erosion this P0 tracks). So when the [LOCAL]
+  re-baseline re-captures driftflight.com at the softened live transactability, BOTH the counterfactual guard AND
+  the calibration/replay guards redden together, forcing the payability magnitude to be revisited in the SAME
+  re-baseline PR. Does NOT close this item — the CHECK-level live diff + re-baseline stay [LOCAL].
 
 <!-- DONE 2026-07-28T17:27Z (local fire, SELF-HEALING/METHOD, direct-to-main): "[LOCAL] Local
      verify runner STALLED past the 6h floor" ROOT-CAUSED + FIXED. The cloud's Cycle-51→62

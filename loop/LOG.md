@@ -3,6 +3,56 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 209 — 2026-08-03T21:17Z — METHOD — couple the corroboration VERDICT WORD to the boolean: the readout prose cannot lie about whether the decision rests on two mechanisms
+
+WHAT/WHY (METHOD). Cycle 207 pinned the two-mechanism convergence INTERNALLY; Cycle 208 SURFACED it via
+`corroboration_verdict` (the CORROBORATED / NOT-corroborated sentence on the terminal `corroboration:` line +
+the HTML **Corroboration:** paragraph). But nothing tied the WORD that sentence emits to the computed fact
+`corr.corroborated`. `corroboration_verdict` has three branches — one CORROBORATED, two NOT-corroborated —
+and every existing guard exercises it only through REAL histories (`..._agrees_disagrees_and_none` moves
+overall/pillars to construct series; `..._on_real_series_is_coherent` reads the committed series). None probes
+the verdict function across its own input space. An edit that emitted "CORROBORATED" from a not-corroborated
+branch (or the reverse) would mis-sell a single-signal decision as two-mechanism-backed — the exact failure
+the readout exists to PREVENT — and pass the whole suite. This cycle pins the coupling directly:
+`test_corroboration_verdict_word_is_coupled_to_the_boolean` constructs `DecisionCorroboration` over the FULL
+(same_side, same_direction) truth table and asserts, for every corner, that `verdict.startswith("CORROBORATED")
+is corr.corroborated` AND `verdict.startswith("NOT corroborated") is (not corr.corroborated)` — the word is
+exactly one of the two forms and which one is fixed by the boolean. The advisory POSTURE is coupled the same
+way (the "weigh the recommendation with caution" warning appears iff not corroborated; the "two independent
+signals concurring" assurance iff corroborated), so neither the word nor the operator-facing caution can cross
+over from the fact.
+
+WHY IT MATTERS. The corroboration readout's entire value to an operator is that its word is TRUE — a
+CORROBORATED that could appear on a one-signal decision is worse than no word at all, because it launders a
+single-signal defer/recapture as cross-checked. Cycle 208 wired the word; this makes the wiring load-bearing,
+so a future refactor of the verdict prose can't silently decouple the sentence from `corr.corroborated`.
+
+METHOD / NON-VACUITY. Constructed directly (no real scored state implied — a pure readout probe): the truth
+table has exactly one corroborated corner and three not (asserted, `corroborated_count == 1`), so the guard
+can't pass by every combo landing on one side. MUTATION-VERIFIED: flipping the CORROBORATED branch to emit
+"NOT corroborated" reddens the guard (the prose-lies case), restore → green, `asrs/canonical_history.py` diff
+clean afterward. Vendor-neutrality is pinned too — the verdict keys on whether the two mechanisms' SIDES MATCH,
+never host identity, so swapping the reference pair's roles (`driver=NR, other=WR`) leaves the word for each
+structurally identical combo unchanged.
+
+EVIDENCE. `tests/test_canonical_history.py` (+1 test, 52→53 in-file; registered in the runner list).
+Suite 435 → 436 green (`python -m pytest tests/ -q`). Off the scoring path: `git diff --name-only` = the one
+test file; `git diff -- asrs/scoring.py asrs/probes/ rubric/ fixtures/ asrs/canonical_history.py` EMPTY →
+score-neutral, NOT peer-gated, direct-to-main.
+
+CANONICAL PAIR. In-cloud replay guard (frozen regression signal) 24/24, drift-flight.org 46.1 F /
+driftflight.com 85.5 B / delta +39.4, 0 replay-miss; rubric v0.7 — UNCHANGED (nothing on the scoring path
+moved). Live signal (read, not re-run; runner AT-FLOOR): newest `runs/local/verify_20260801T035047Z.json`
+(Aug-1 03:50Z, `attempts=1`) is ~65.4h old — past the 6h floor, machine-asleep/runner-lag, cloud cannot
+repair; already flagged in the 16:17Z Cycle-204 digest. Its live static re-score reads driftflight.com 76.2 C
+/ +30.1 / transactability 62.5 (the off-scoring-path transactability-drop divergence persists; independent of
+the frozen replay signal).
+
+NEXT (COVERAGE 210). The in-cloud precision-audit frontier is exhausted and the corroboration/attribution
+readout series is now word-coupled end to end; a COVERAGE candidate is a fresh invariance guard elsewhere, or
+substantive frontier work (GENUINE new thin-bank signals from real fixtures, the negative anchor's two-crawl
+static cross-validation, ACP/UCP/MPP, the transactability-drop CHECK-level diagnosis) — all `[LOCAL]`.
+
 ## Cycle 208 — 2026-08-03T20:14Z — READOUT — surface the re-capture decision's TWO-MECHANISM corroboration in the drift block: the operator sees WHY defer, not just the code
 
 WHAT/WHY (READOUT). Cycle 207 pinned INTERNALLY that on the real series the re-capture DECISION is DEFER and

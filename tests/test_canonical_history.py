@@ -1626,6 +1626,90 @@ def test_decision_corroboration_on_real_series_is_coherent() -> None:
     _check("corroboration:" in ch.render(hist), "the real render carries the corroboration line")
 
 
+def test_corroboration_verdict_word_is_coupled_to_the_boolean() -> None:
+    print("test_corroboration_verdict_word_is_coupled_to_the_boolean")
+    # METHOD (Cycle 209): the PROSE CANNOT LIE. `corroboration_verdict` renders the
+    # operator-facing CORROBORATED / NOT-corroborated word, and `recapture_advice`'s
+    # trustworthiness for the operator rests on that word matching the computed fact
+    # `corr.corroborated`. Cycle 207 pinned the convergence internally and Cycle 208
+    # surfaced it, but nothing tied the WORD to the BOOLEAN: an edit that emitted
+    # "CORROBORATED" from a not-corroborated branch (or the reverse) would mis-sell a
+    # single-signal decision as two-mechanism-backed and pass every existing guard
+    # (they exercise real histories, never the verdict function across its input
+    # space). This pins the coupling over the FULL (same_side, same_direction) truth
+    # table, constructing DecisionCorroboration directly so no real scored state is
+    # implied — a pure probe of the readout word.
+    WR, NR = ch.CANONICAL_WITH_RAILS, ch.CANONICAL_NO_RAILS
+
+    def _corr(same_side: bool, same_direction: bool, *, driver: str, other: str):
+        # driver overall always falls (-9.3, the real 2026-07-27 drift sign); the
+        # pillar mover sits on the driver's side iff same_side, and moves the same
+        # way (down) iff same_direction — so corroborated == same_side and same_dir.
+        return ch.DecisionCorroboration(
+            driver=driver,
+            driver_change=-9.3,
+            pillar_domain=(driver if same_side else other),
+            pillar="transactability",
+            pillar_change=(-25.0 if same_direction else +25.0),
+        )
+
+    combos = [(True, True), (True, False), (False, True), (False, False)]
+    # non-vacuity: the truth table has exactly one corroborated corner and three not.
+    corroborated_count = 0
+    for same_side, same_dir in combos:
+        corr = _corr(same_side, same_dir, driver=WR, other=NR)
+        _check(corr.same_side is same_side, f"same_side wired as intended ({same_side})")
+        _check(corr.same_direction is same_dir, f"same_direction wired as intended ({same_dir})")
+        _check(
+            corr.corroborated is (same_side and same_dir),
+            f"corroborated == same_side and same_direction ({same_side},{same_dir})",
+        )
+        verdict = ch.corroboration_verdict(corr)
+        # THE COUPLING: the leading word is exactly one of the two forms, and which one
+        # is fixed by the boolean — startswith("CORROBORATED") iff corroborated,
+        # startswith("NOT corroborated") iff not. ("NOT corroborated" begins with "NOT",
+        # so the uppercase-word test cleanly discriminates the two.)
+        _check(
+            verdict.startswith("CORROBORATED") is corr.corroborated,
+            f"the CORROBORATED word appears iff corroborated ({same_side},{same_dir}): {verdict!r}",
+        )
+        _check(
+            verdict.startswith("NOT corroborated") is (not corr.corroborated),
+            f"the NOT-corroborated word appears iff not corroborated ({same_side},{same_dir}): {verdict!r}",
+        )
+        # the advisory POSTURE is coupled the same way: a not-corroborated verdict warns
+        # the operator to weigh the recommendation with caution; a corroborated one says
+        # the decision rests on two independent signals. Neither posture may cross over.
+        _check(
+            ("weigh the recommendation with caution" in verdict) is (not corr.corroborated),
+            f"the caution advisory appears iff not corroborated: {verdict!r}",
+        )
+        _check(
+            ("two independent signals concurring" in verdict) is corr.corroborated,
+            f"the two-signals assurance appears iff corroborated: {verdict!r}",
+        )
+        corroborated_count += int(corr.corroborated)
+    _check(corroborated_count == 1, f"exactly one truth-table corner corroborates, got {corroborated_count}")
+
+    # vendor-neutrality: the verdict keys on whether the two mechanisms' SIDES match,
+    # never on host identity. Swap the reference pair's roles (driver drawn from the
+    # no-rails constant, other from with-rails) and the word for each structurally
+    # identical combo is unchanged — only the named domain differs, and both branches
+    # of the coupling still hold. A regression that special-cased a host would break
+    # this without touching the same-pair test above.
+    for same_side, same_dir in combos:
+        base = ch.corroboration_verdict(_corr(same_side, same_dir, driver=WR, other=NR))
+        swapped = ch.corroboration_verdict(_corr(same_side, same_dir, driver=NR, other=WR))
+        _check(
+            base.startswith("CORROBORATED") == swapped.startswith("CORROBORATED"),
+            f"the CORROBORATED word is host-relabel invariant ({same_side},{same_dir})",
+        )
+        _check(
+            base.startswith("NOT corroborated") == swapped.startswith("NOT corroborated"),
+            f"the NOT-corroborated word is host-relabel invariant ({same_side},{same_dir})",
+        )
+
+
 def test_noise_floor_is_deterministic_on_real_series() -> None:
     print("test_noise_floor_is_deterministic_on_real_series")
     # THE load-bearing calibration finding: on the committed live series every
@@ -1980,6 +2064,7 @@ def main() -> int:
         test_real_series_defer_decision_is_corroborated_by_both_mechanisms,
         test_decision_corroboration_agrees_disagrees_and_none,
         test_decision_corroboration_on_real_series_is_coherent,
+        test_corroboration_verdict_word_is_coupled_to_the_boolean,
         test_recapture_advice_prose_is_host_relabel_invariant,
         test_noise_floor_is_deterministic_on_real_series,
         test_noise_floor_sides_are_deterministic_on_real_series,

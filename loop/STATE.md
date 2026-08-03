@@ -1,8 +1,42 @@
 # Loop state
 
-- Cycle counter: 208
+- Cycle counter: 209
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-03T20:14Z (Cycle 208) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-03T21:17Z (Cycle 209) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~65.4h old at the fire — PAST the 6h floor (machine-asleep / runner-lag
+  pattern, cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 21:17Z fire is
+  NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral off-scoring-path
+  METHOD increment, no sensitive-class PR, nothing score-moving). Live signal (read, not re-run):
+  drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop
+  divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent
+  regression signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire
+  (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 209): fresh
+  checkout's shallow-clone local `main` ref was the stale `3796519`; reconciled to origin/main `7bc96e5`
+  (Cycle-208 tip) via `git fetch origin main` + `git checkout -B main origin/main` (the benign "(forced
+  update)" is the shallow-clone local-ref reconciliation, NOT a history rewrite — invariant #5 intact). Fresh
+  `.venv` + `requests pyyaml eth-account pytest`, 435 tests green pre-flight (436 after +1).
+- FOCUS POINTER (Cycle 209 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 209 was
+  METHOD, so Cycle 210 is COVERAGE). Cycle 209 shipped a **METHOD increment — the corroboration VERDICT WORD
+  is now coupled to the boolean, so the readout prose cannot lie** (`tests/test_canonical_history.py` +1, suite
+  435→436). Cycle 208 wired `corroboration_verdict`'s CORROBORATED / NOT-corroborated sentence onto the
+  terminal + HTML drift block, but nothing tied the WORD to `corr.corroborated`: an edit emitting "CORROBORATED"
+  from a not-corroborated branch would mis-sell a single-signal decision as two-mechanism-backed and pass every
+  existing guard (they only exercise the verdict through real histories). New guard
+  `test_corroboration_verdict_word_is_coupled_to_the_boolean` constructs `DecisionCorroboration` over the FULL
+  (same_side, same_direction) truth table and pins, for every corner, `verdict.startswith("CORROBORATED") is
+  corr.corroborated` AND `verdict.startswith("NOT corroborated") is (not corr.corroborated)`, plus the advisory
+  posture coupling (caution warning iff not corroborated; two-signals assurance iff corroborated). Non-vacuous
+  (exactly one corroborated corner, `corroborated_count==1`), MUTATION-VERIFIED (flip the CORROBORATED branch →
+  guard reddens, restore → green, source diff clean), vendor-neutral (host-relabel invariant — swap the pair's
+  roles, the word per structural combo is unchanged). OFF the scoring path (`git diff --name-only` = the one
+  test file; `asrs/scoring.py asrs/probes/ rubric/ fixtures/ asrs/canonical_history.py` diff EMPTY) →
+  score-neutral, NOT peer-gated, direct-to-main. Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss;
+  rubric v0.7. NEXT (COVERAGE 210): the in-cloud precision-audit frontier is exhausted and the
+  corroboration/attribution readout series is word-coupled end to end — a COVERAGE candidate is a fresh
+  invariance guard elsewhere. Substantive frontier (GENUINE new thin-bank signals from real fixtures, the
+  negative anchor's two-crawl static cross-validation via a `moleskine.com` fixture, ACP/UCP/MPP,
+  transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 208 runner note): RUNNER AT-FLOOR at 2026-08-03T20:14Z (Cycle 208) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~64.4h old at the fire — PAST the 6h floor (machine-asleep / runner-lag
   pattern, cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 20:14Z fire is
   NOT first-after-16:00 UTC → no DM this fire per comms policy (display-only / score-neutral off-scoring-path

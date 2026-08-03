@@ -36,7 +36,16 @@ design in-cloud, execute locally.
   (Jul-31 08:52Z/13:45Z, Aug-1 03:50Z) finger driftflight.com transactability −25.0 identically (stable, one
   distinct mover, spanning ~28h), so the drop is a SUSTAINED move, not snapshot jitter. Remaining [LOCAL]
   work here is UNCHANGED and still STRICTLY CHECK-level (re-score live + diff which check flipped + peer-gated
-  re-baseline).
+  re-baseline). UPDATE Cycle 191 (TRUTH, in-cloud, direct-to-main): the "is the with-rails anchor itself
+  degrading?" concern is now TEST-COUPLED in-cloud — `test_calibration.py`'s new
+  `test_payability_prediction_is_attributably_agent_native_payment` pins that the with-rails storefront's
+  transactability magnitude (87.5) the positive calibration anchor rests on is ATTRIBUTABLY the agent-native
+  payment capability (the entire 11.0-pt transactability gap vs no-rails is earned by `x402_probe` +
+  `self_serve_payg`, the very checks whose live erosion this P0 tracks). Its `== 87.5` assertion (d) shares
+  the replay guard's maintenance contract: when the peer-gated [LOCAL] re-baseline re-captures
+  driftflight.com at the softened live transactability, the calibration guard reddens ALONGSIDE
+  `test_canonical_replay`, forcing the calibration anchor's payability magnitude + scope to be revisited in
+  the SAME re-baseline PR. Does NOT close this item — the CHECK-level live diff + re-baseline stay [LOCAL].
 
 <!-- DONE 2026-07-28T17:27Z (local fire, SELF-HEALING/METHOD, direct-to-main): "[LOCAL] Local
      verify runner STALLED past the 6h floor" ROOT-CAUSED + FIXED. The cloud's Cycle-51→62

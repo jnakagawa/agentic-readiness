@@ -576,6 +576,120 @@ def test_calibration_is_two_sided() -> None:
     )
 
 
+# ---------------------------------------------------------------------------
+# 9. THE PAYABILITY PREDICTION IS ATTRIBUTABLY THE AGENT-NATIVE PAYMENT
+#    CAPABILITY, not diffuse transactability credit.  Tests 1/4 corroborate the
+#    with-rails anchor's transactability (87.5) behaviorally and pin it as a
+#    shared static base — but "transactability > 0", even "== 87.5", does not on
+#    its own prove the credit the behavioral run corroborates is EARNED by
+#    agent-native payment.  A refactor could keep x402_probe PASS yet source the
+#    transactability magnitude from an unrelated transactability check, silently
+#    hollowing the calibration link: the score would still "predict payability"
+#    while the number it rests on came from something the shopper never exercised.
+#    This guard closes that gap on the canonical pair itself: the ENTIRE
+#    transactability point-gap between the with-rails and no-rails storefronts is
+#    earned by the agent-native payment checks the anchor corroborates
+#    (x402_probe, self_serve_payg); every NON-payment transactability check
+#    contributes ZERO to the gap.  So the payability magnitude the calibration
+#    anchor rests on is attributably the agent-native payment capability — the
+#    static counterpart of the _PAYMENT_OUTCOME_CHECKS the live shopper hit.
+#
+#    This ties the calibration anchor into the same maintenance contract as the
+#    replay guard (test_canonical_replay) and the canonical-drift baseline: the
+#    with-rails anchor and the LIVE canonical-drift subject are the SAME domain
+#    and the SAME pillar (driftflight.com transactability).  If a [LOCAL]
+#    re-baseline ever re-captures that fixture at the softened live value, the
+#    87.5 assertion below goes red BY DESIGN, forcing this calibration anchor's
+#    payability magnitude to be revisited in the same PR — the coupling the
+#    BACKLOG "is the with-rails anchor itself degrading?" question needs monitored.
+# ---------------------------------------------------------------------------
+
+# The transactability checks that OPERATIONALIZE agent-native programmatic
+# payment on the STATIC side — the with-rails rail the calibration anchor
+# corroborates.  x402_probe (the x402 402 / machine-payable challenge) and
+# self_serve_payg (self-serve pay-as-you-go) are exactly the two the module
+# docstring names; they are the static counterparts of the behavioral
+# _PAYMENT_OUTCOME_CHECKS.  Capability-worded, vendor-neutral.
+_STATIC_PAYMENT_CHECKS = ("x402_probe", "self_serve_payg")
+
+
+def test_payability_prediction_is_attributably_agent_native_payment() -> None:
+    print("test_payability_prediction_is_attributably_agent_native_payment")
+    com, com_misses = _static_report(_ANCHOR_DOMAIN)          # with-rails
+    org, org_misses = _static_report("drift-flight.org")      # no-rails
+    _check(
+        not com_misses and not org_misses,
+        "both canonical static replays are like-for-like (no replay-miss)",
+    )
+
+    # Same rubric -> the two sides share the transactability check SET.
+    com_tx = {c.check_id: c for c in com.checks if c.pillar == "transactability"}
+    org_tx = {c.check_id: c for c in org.checks if c.pillar == "transactability"}
+    _check(
+        set(com_tx) == set(org_tx) and bool(com_tx),
+        f"both sides share the transactability check set ({sorted(com_tx)})",
+    )
+    for cid in _STATIC_PAYMENT_CHECKS:
+        _check(
+            cid in com_tx,
+            f"agent-native payment check {cid!r} is a transactability check",
+        )
+
+    # (a) DISCRIMINATING: each agent-native payment check is MORE credited on the
+    #     with-rails storefront than the no-rails one — the payment capability is
+    #     present with-rails, absent/partial no-rails, in the predicted direction.
+    for cid in _STATIC_PAYMENT_CHECKS:
+        _check(
+            com_tx[cid].points > org_tx[cid].points,
+            f"{cid}: more credited with-rails ({com_tx[cid].points}) than "
+            f"no-rails ({org_tx[cid].points}) — payability discriminates",
+        )
+
+    # (b) ATTRIBUTION: the ENTIRE transactability raw-point gap between the two
+    #     storefronts is earned by the agent-native payment checks; every
+    #     non-payment transactability check nets ZERO to the gap.  So the
+    #     payability magnitude the anchor corroborates is attributably the
+    #     agent-native payment capability, not diffuse transactability credit.
+    total_gap = sum(com_tx[cid].points - org_tx[cid].points for cid in com_tx)
+    payment_gap = sum(
+        com_tx[cid].points - org_tx[cid].points for cid in _STATIC_PAYMENT_CHECKS
+    )
+    nonpayment_gap = sum(
+        com_tx[cid].points - org_tx[cid].points
+        for cid in com_tx
+        if cid not in _STATIC_PAYMENT_CHECKS
+    )
+    _check(total_gap > 0, f"there IS a transactability gap to attribute (raw {total_gap})")
+    _check(
+        abs(payment_gap - total_gap) < 1e-9,
+        f"the WHOLE transactability gap is earned by agent-native payment "
+        f"(payment_gap={payment_gap}, total_gap={total_gap})",
+    )
+    _check(
+        abs(nonpayment_gap) < 1e-9,
+        f"non-payment transactability checks net ZERO to the gap "
+        f"(nonpayment_gap={nonpayment_gap}) — the control",
+    )
+
+    # (c) NON-VACUOUS: a non-payment transactability check really IS in the set
+    #     (mcp_surface), so (b) is "the gap is all-payment DESPITE a non-payment
+    #     check existing", not the trivial "payment is the only check".
+    nonpayment_ids = [cid for cid in com_tx if cid not in _STATIC_PAYMENT_CHECKS]
+    _check(
+        len(nonpayment_ids) >= 1,
+        f"a non-payment transactability check exists as the control ({nonpayment_ids})",
+    )
+
+    # (d) The attributed capability IS the magnitude the anchor corroborates: the
+    #     with-rails transactability is exactly the 87.5 tests 1/4 rest on.  This
+    #     literal is the re-baseline tripwire (see the maintenance note above).
+    _check(
+        abs(com.pillar_scores["transactability"] - 87.5) < 1e-9,
+        f"with-rails transactability is the pinned 87.5 the anchor corroborates "
+        f"(got {com.pillar_scores['transactability']})",
+    )
+
+
 def main() -> int:
     tests = [
         test_static_payment_prediction_is_behaviorally_corroborated,
@@ -586,6 +700,7 @@ def main() -> int:
         test_negative_anchor_is_a_genuine_reachable_retail_storefront,
         test_negative_corroboration_is_reproducible,
         test_calibration_is_two_sided,
+        test_payability_prediction_is_attributably_agent_native_payment,
     ]
     failed = 0
     for t in tests:

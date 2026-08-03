@@ -14527,3 +14527,72 @@ archetype `physical_good` is already fully mined on its only fixture. In-cloud T
 calibration/attribution guard, or extend the surface-read-order / whitespace-reflow invariance coverage
 to the newly-guarded book branch. Substantive frontier (thin-archetype/render/structured-catalog LIVE
 fixtures, ACP/UCP/MPP, calibration sweep, transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+
+## Cycle 191 — 2026-08-03 ~02:1xZ — TRUTH — the payability prediction is ATTRIBUTABLY the agent-native payment capability: the calibration anchor's transactability credit is earned, not diffuse
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed. Infra/self-heal: fresh checkout on a detached HEAD at the Cycle-190 tip;
+`git checkout -B main origin/main` aligned to origin/main `e1b78eb` (Cycle 190), tree clean, invariant
+#5 intact (the fetch surfaced many long-dead `loop/*` branches as "[new branch]" — first fetch in a fresh
+clone, none open as PRs). Fresh `.venv` + `requests pyyaml eth-account pytest`; 416 tests green pre-flight
+(bench up). Runner AT-FLOOR: newest verify `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is
+~46h old at the 02:1xZ Aug-3 fire — PAST the 6h floor (machine-asleep / runner-lag pattern, cloud cannot
+repair; already flagged in the 16:12Z Cycle-181 digest). 02:1xZ is NOT first-after-16:00 UTC → no digest
+DM this fire.
+
+**What (TRUTH).** Added `test_payability_prediction_is_attributably_agent_native_payment` to
+`tests/test_calibration.py` (the north-star "does the STATIC score predict what an AGENT experiences?"
+axis, 8→9 tests). The existing positive anchor (tests 1/4) corroborates the with-rails storefront's
+transactability magnitude (87.5) behaviorally and pins it as a shared static base — but it only asserts
+`transactability > 0` / `== 87.5`. Neither proves the credit the shopper corroborated is EARNED by
+agent-native payment rather than diffuse transactability credit: a refactor could keep `x402_probe` PASS
+yet source the 87.5 from an unrelated transactability check, silently hollowing the calibration link (the
+score would still "predict payability" on a number the shopper never exercised). The new guard closes that
+on the canonical pair itself. Replaying BOTH committed fixtures (offline, no network), it pins that the
+ENTIRE transactability raw-point gap between the with-rails and no-rails storefronts (11.0 pts = 87.5 vs
+18.75) is earned by the two agent-native payment checks the anchor corroborates — `x402_probe`
+(FAIL 0/8 → PASS 8/8) and `self_serve_payg` (partial 3/6 → PASS 6/6) — while every NON-payment
+transactability check nets ZERO to the gap. So the payability magnitude the calibration anchor rests on is
+attributably the agent-native payment capability, the static counterpart of the `_PAYMENT_OUTCOME_CHECKS`
+the live shopper hit.
+
+**Why.** The calibration axis is the benchmark's validity core; the with-rails anchor is ALSO the LIVE
+canonical-drift subject (driftflight.com transactability, currently softening 87.5→62.5 live per the
+BACKLOG P0). The open question there is "is the with-rails anchor itself degrading?" — and until now
+nothing tied the calibration anchor's payability magnitude to the payment capability specifically, so a
+scoring refactor OR a re-baseline could move that number without the calibration story noticing. The guard
+makes the coupling test-visible: it shares the replay guard's maintenance contract — the `== 87.5`
+assertion (d) is the re-baseline tripwire, so a future [LOCAL] fixture re-capture at the softened live
+value reddens it BY DESIGN, forcing this anchor's payability magnitude to be revisited in the same PR.
+
+**Method / non-vacuity + teeth.** (a) each payment check is strictly more credited with-rails than no-rails
+(discriminating, predicted direction); (b) `payment_gap == total_gap` AND `nonpayment_gap == 0` (the whole
+gap is payment-earned); (c) a genuine non-payment transactability check (`mcp_surface`, FAIL 0/2 on BOTH)
+exists in the set as the control, so (b) is "all-payment DESPITE a non-payment check present", not the
+trivial "payment is the only check"; (d) the with-rails transactability is the pinned 87.5. MUTATION-
+VERIFIED: dropping `self_serve_payg` from the payment set makes `payment_gap` 8.0 ≠ `total_gap` 11.0 → the
+attribution assertion reddens (the partial→PASS 3-pt swing MUST be attributed) — the guard bites.
+Capability-worded, vendor-neutral (keys on payment-capability check ids the module docstring already names,
+no host/vendor).
+
+**Ship class + evidence.** Tests-only, OFF the scoring path: `git diff --name-only` =
+`tests/test_calibration.py` ONLY; scoring-path diff (`asrs/ rubric/ fixtures/`) EMPTY → score-neutral, NOT
+peer-gated, direct-to-main. `test_calibration.py` 8→9; full suite 416→417, 0 failures. Canonical PAIR
+unchanged: in-cloud replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7. (Cloud is
+network-blocked for the live re-score; the in-cloud standard is regression-by-construction — the scoring
+path is byte-identical — plus the offline replay guard, both green.)
+
+**Live canonical signal.** Newest LOCAL artifact `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1)
+is ~46h old at this fire — PAST the 6h floor (machine-asleep / runner-lag, cloud cannot repair; flagged in
+the 16:12Z Cycle-181 digest). Its LIVE re-score: drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1
+— the known transactability 87.5→62.5 divergence (off the scoring path; the frozen replay guard stays the
+in-cloud regression signal). 02:1xZ is NOT first-after-16:00 UTC → no digest DM per comms policy;
+tests-only / score-neutral, no sensitive-class PR, nothing score-moving. No open peer-gated PRs → no
+first-duty review.
+
+**Next hypothesis (READOUT 192).** Rotate READOUT next (Cycle 191 was TRUTH; METHOD → COVERAGE → TRUTH →
+READOUT). The calibration positive anchor now proves payability is attributably earned; the negative
+anchor's shared-static cross-validation stays [LOCAL] (moleskine.com fixture). In-cloud READOUT candidate:
+surface the attribution in the card/prose (name WHICH capability earns the transactability credit), or a
+readout-wording guard. Substantive frontier (thin-archetype/render/structured-catalog LIVE fixtures,
+ACP/UCP/MPP, calibration sweep, transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.

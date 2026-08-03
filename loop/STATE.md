@@ -1,8 +1,41 @@
 # Loop state
 
-- Cycle counter: 190
+- Cycle counter: 191
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-03T01:12Z (Cycle 190) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-03T02:1xZ (Cycle 191) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~46h old at the 02:1xZ fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; 02:1xZ is
+  NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral TRUTH increment,
+  no sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org 46.1 F /
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS
+  (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent regression signal
+  (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open → []),
+  so no first-duty review. INFRA/SELF-HEAL (Cycle 191): fresh checkout on a detached HEAD at the Cycle-190
+  tip; `git checkout -B main origin/main` aligned to origin/main `e1b78eb` (Cycle 190), working tree clean,
+  invariant #5 intact (the first fetch in a fresh clone surfaced many long-dead `loop/*` branches as
+  "[new branch]"; none open as PRs). Fresh `.venv` + `requests pyyaml eth-account pytest`, imports verified,
+  416 tests green pre-flight (417 after this cycle's +1).
+- FOCUS POINTER (Cycle 191 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 191 was
+  TRUTH, so Cycle 192 is READOUT). Cycle 191 shipped a **TRUTH increment — the payability-is-attributable
+  calibration guard** (`tests/test_calibration.py` `test_payability_prediction_is_attributably_agent_native_payment`,
+  8→9). The positive calibration anchor corroborates the with-rails storefront's transactability magnitude
+  (87.5) behaviorally but only asserted `transactability > 0` / `== 87.5` — neither proves the corroborated
+  credit is EARNED by agent-native payment vs diffuse transactability credit (a refactor could keep
+  `x402_probe` PASS while sourcing 87.5 elsewhere, hollowing the link). The new guard replays BOTH canonical
+  fixtures offline and pins that the ENTIRE transactability raw-point gap (11.0 = 87.5 vs 18.75) is earned by
+  the two agent-native payment checks the anchor corroborates — `x402_probe` (FAIL 0/8→PASS 8/8) +
+  `self_serve_payg` (partial 3/6→PASS 6/6) — while every non-payment transactability check (`mcp_surface`,
+  FAIL on both) nets ZERO to the gap. Non-vacuous (mcp_surface control (c) + pinned-87.5 (d)); MUTATION-
+  VERIFIED (drop self_serve_payg → payment_gap 8.0 ≠ total 11.0 → reddens). Ties the calibration anchor into
+  the replay guard's maintenance contract: the `== 87.5` literal is the [LOCAL] re-baseline tripwire, so the
+  BACKLOG "is the with-rails anchor itself degrading?" coupling is now test-monitored. Tests-only, OFF the
+  scoring path (`git diff --name-only` = `tests/test_calibration.py` ONLY; scoring-path diff EMPTY) →
+  score-neutral, NOT peer-gated, direct-to-main. Full suite 416→417; `test_calibration.py` 8→9; replay guard
+  24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. NEXT (READOUT 192): surface WHICH capability
+  earns the transactability credit in the card/prose, or a readout-wording guard. Substantive frontier
+  (thin-archetype/render/structured-catalog LIVE fixtures — ACP/UCP/MPP, calibration sweep,
+  transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 190 runner note): RUNNER AT-FLOOR at 2026-08-03T01:12Z (Cycle 190) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~45.4h old at the 01:12Z fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; 01:12Z is
   NOT first-after-16:00 UTC → no DM this fire per comms policy (off-scoring-path / score-neutral COVERAGE

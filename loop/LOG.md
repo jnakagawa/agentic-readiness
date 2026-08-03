@@ -3,6 +3,72 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 195 — 2026-08-03T07:16Z — TRUTH — the no-rails transactability FLOOR is capability-attributable and storefront-TYPE-invariant
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed. Infra/self-heal: fresh checkout detached on the Cycle-194 tip `5a29199`;
+`git checkout -B main origin/main` aligned to origin/main `5a29199`, tree clean, invariant #5 intact.
+Fresh `.venv` + `requests pyyaml eth-account pytest`; imports verified; 423 tests green pre-flight (424
+after this cycle's +1). Runner AT-FLOOR: newest verify `runs/local/verify_20260801T035047Z.json`
+(03:50Z Aug-1) is ~51.4h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
+cloud cannot repair; already flagged in the 16:12Z Cycle-181 digest). This 07:16Z fire is NOT
+first-after-16:00 UTC → no digest DM (tests-only / score-neutral off-scoring-path TRUTH increment, no
+sensitive-class PR, nothing score-moving).
+
+**What (TRUTH).** Added `test_no_rails_transactability_floor_is_capability_attributable_and_type_invariant`
+to `tests/test_calibration.py` (10→11). It replays `drift-flight.org` (no-rails **API**, offline
+fixture) and reads the committed no-rails **RETAIL** behavioral anchor (`moleskine.com`, live crawl),
+and pins that the two — structurally DIFFERENT storefront types, TWO independent crawl methods —
+converge on the IDENTICAL transactability floor (18.75), earned by the IDENTICAL per-check point vector
+(`x402_probe` 0/8, `mcp_surface` 0/2, `self_serve_payg` 3/6), with the agent-native payment gap-check
+`x402_probe` at ZERO on both. Assertions: (a) type-invariant floor (retail == api); (b) identical
+per-check vector; (c) payment attribution — `x402_probe` earns 0 on both no-rails anchors, every
+`_STATIC_PAYMENT_CHECK` credited LESS than with-rails; (d) discriminates from the with-rails ceiling
+(x402_probe 8/8, transactability 87.5 >> 18.75 floor); (e) non-vacuous control — the non-payment
+`mcp_surface` is identical across ALL THREE anchors, so the discrimination is carried by the payment
+capability, not an incidental check.
+
+**Why.** This is the negative-side, TYPE-CROSSING mirror of Cycle 191's positive attribution guard
+(#9). #9 attributes the with-rails/no-rails transactability GAP to agent-native payment on the canonical
+API *pair* (com vs org). But the negative calibration anchor is a genuinely different storefront TYPE
+(a no-rails retail shop), and nothing pinned that its low transactability was the SAME
+capability-absence floor rather than a retail ARTIFACT (a shop scoring low because it sells physical
+goods, not because it lacks payment rails). Left unpinned, the two-sided property (#8) could be
+confounded by storefront type. The new guard shows the floor is storefront-CATEGORY-independent and
+attributably the ABSENCE of agent-native payment — advancing the north-star validity question (does the
+score predict what an agent experiences?) on the negative side, across TYPE. Unlike the negative
+anchor's absent two-crawl STATIC cross-validation (still `[LOCAL]` — no `moleskine.com` fixture), this
+needs NO fixture: the retail floor is read from the report's own embedded checks and matched against a
+SECOND, independent no-rails crawl (`drift-flight.org`).
+
+**Method / non-vacuity + teeth.** MUTATION-VERIFIED twice: (1) monkeypatch the retail floor to the
+with-rails ceiling (87.5) → clause (a) reds ("floor is storefront-type-invariant, retail=87.5"); (2)
+monkeypatch retail `x402_probe` to full 8.0 → clauses (b)/(c) red ("identical points … retail=8.0").
+Non-vacuous by construction: the retail anchor is a DISTINCT type (physical_good CLAIMED, ≥2 live
+behavioral trials) crawled a DISTINCT way from the API fixture replay, and `mcp_surface` (control) is
+0 on all three so it can't be the discriminator. Robust to the tracked driftflight.com live drop: the
+guard is a `neg == org (floor)` + `floor < com (ceiling)` comparison, so a future `[LOCAL]` com
+re-baseline to the softened 62.5 still satisfies `18.75 < 62.5` — it will not spuriously red on the
+divergence #9's `== 87.5` tripwire tracks.
+
+**Evidence / validation.** `git diff --name-only` = `tests/test_calibration.py` ONLY — scoring-path
+diff EMPTY → score-neutral, NOT peer-gated, direct-to-main. `test_calibration.py` 10→11 green (bare
+script + pytest); full suite 423→424 green. Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0
+replay-miss; rubric v0.7 unchanged.
+
+**Canonical pair.** In-cloud replay guard (frozen regression signal): drift-flight.org 46.1 F /
+driftflight.com 85.5 B / delta +39.4, UNCHANGED. Live signal (read from the newest verify artifact, NOT
+re-run — runner at-floor): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability
+62.5 — the transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the frozen replay
+guard stays the independent in-cloud signal.
+
+**Next hypothesis (READOUT 196).** Surface the two-sided / type-invariant calibration property on a
+readout (card or rubric page) so a reader sees the negative floor is a payment-capability signal, not a
+retail artifact; OR pin the mirror non-payment control on the POSITIVE side. Substantive frontier
+(thin-archetype/render/structured-catalog LIVE fixtures, the negative anchor's two-crawl static
+cross-validation via a `moleskine.com` fixture, ACP/UCP/MPP, transactability-drop CHECK-level diagnosis)
+stays `[LOCAL]`.
+
 ## Cycle 194 — 2026-08-03T06:1xZ — COVERAGE — service_booking `schedule a …` sales-CTA precision guard (the `book` fix's sibling)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

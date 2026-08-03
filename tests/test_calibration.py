@@ -767,6 +767,146 @@ def test_readout_earner_and_calibration_attribution_cannot_drift() -> None:
         )
 
 
+# ---------------------------------------------------------------------------
+# 11. THE NO-RAILS TRANSACTABILITY FLOOR IS CAPABILITY-ATTRIBUTABLE AND
+#     STOREFRONT-TYPE-INVARIANT.  Test 9 attributes the with-rails/no-rails
+#     transactability GAP to agent-native payment on the canonical API PAIR
+#     (driftflight.com vs drift-flight.org).  But the negative CALIBRATION anchor
+#     is a genuinely different storefront TYPE — a no-rails RETAIL shop
+#     (moleskine.com) — and nothing yet pins that ITS low transactability is the
+#     same capability-absence floor, reached the same way, as the no-rails API
+#     storefront.  If "the score predicts no agent-native payment" were a retail
+#     ARTIFACT (a shop scores low because it sells physical goods, not because it
+#     lacks payment rails), the negative calibration would be measuring storefront
+#     CATEGORY, not payment readiness — and the two-sided property (test 8) would
+#     be confounded by type.
+#
+#     This guard closes that gap using ONLY committed evidence (no [LOCAL]
+#     fixture): the no-rails RETAIL anchor (moleskine.com, read from its LIVE
+#     behavioral crawl) and the no-rails API storefront (drift-flight.org, from
+#     the OFFLINE fixture replay) land on the IDENTICAL transactability floor,
+#     earned by the IDENTICAL per-check point vector, with the agent-native
+#     payment gap-check (x402_probe) at ZERO on both.  Two structurally different
+#     storefronts, two independent crawl METHODS, one capability-attributable
+#     floor.  So the negative prediction is reproducible across storefront TYPE
+#     and crawl METHOD, and it is attributably the ABSENCE of agent-native payment
+#     — not a retail artifact, not a diffuse low score.  It discriminates from the
+#     with-rails ceiling (the payment gap-check earns full there; the floor sits
+#     well below 87.5), and the behavioral shopper on the retail instance actually
+#     hit the payment wall (tests 5/7), so the type-invariant static floor is
+#     behaviorally real on the retail side.  This is the negative-side, type-
+#     crossing mirror of test 9's positive attribution — and unlike the negative
+#     anchor's absent two-crawl STATIC cross-validation (still [LOCAL]), it needs
+#     no fixture: the retail floor is read from the report's own embedded checks
+#     and matched against a SECOND, independent no-rails crawl.
+# ---------------------------------------------------------------------------
+def test_no_rails_transactability_floor_is_capability_attributable_and_type_invariant() -> None:
+    print("test_no_rails_transactability_floor_is_capability_attributable_and_type_invariant")
+    neg = _load_negative()                                 # no-rails RETAIL, live behavioral crawl
+    org, org_misses = _static_report("drift-flight.org")   # no-rails API, offline fixture replay
+    com, com_misses = _static_report(_ANCHOR_DOMAIN)       # with-rails API ceiling
+    _check(
+        not org_misses and not com_misses,
+        "canonical static replays are like-for-like (no replay-miss)",
+    )
+
+    # LIKE-FOR-LIKE scale: all three anchors on rubric 0.7.
+    _check(
+        neg["rubric_version"] == org.rubric_version == com.rubric_version == "0.7",
+        f"all anchors on rubric 0.7 (retail={neg['rubric_version']}, "
+        f"api-norails={org.rubric_version}, api-rails={com.rubric_version})",
+    )
+
+    # NON-VACUOUS — two DISTINCT storefront types + two DISTINCT crawl methods.
+    #   retail no-rails: physical_good CLAIMED, floor read from a LIVE behavioral crawl;
+    #   API no-rails:    physical_good NA, floor from an OFFLINE fixture replay.
+    neg_bs = neg["battery_summary"]
+    _check(
+        "physical_good" in neg_bs["assessed_archetypes"],
+        f"retail anchor CLAIMS physical_good (a genuinely different storefront type) "
+        f"(assessed={neg_bs['assessed_archetypes']})",
+    )
+    _check(
+        len(neg.get("behavioral_runs", [])) >= 2,
+        "retail floor comes from a LIVE behavioral crawl (>=2 trials), not a fixture replay",
+    )
+
+    # The transactability check vectors, keyed by check_id, for all three anchors.
+    neg_tx = {
+        c["check_id"]: float(c["points"])
+        for c in neg["checks"]
+        if c["pillar"] == "transactability"
+    }
+    org_tx = {c.check_id: c.points for c in org.checks if c.pillar == "transactability"}
+    com_tx = {c.check_id: c.points for c in com.checks if c.pillar == "transactability"}
+    _check(
+        set(neg_tx) == set(org_tx) == set(com_tx) and bool(neg_tx),
+        f"all three anchors share the transactability check set ({sorted(neg_tx)})",
+    )
+    for cid in _STATIC_PAYMENT_CHECKS:
+        _check(cid in com_tx, f"agent-native payment check {cid!r} is a transactability check")
+
+    # (a) TYPE-INVARIANT FLOOR: the no-rails RETAIL and no-rails API storefronts
+    #     land on the IDENTICAL transactability pillar score — the floor does not
+    #     depend on WHAT the store sells, only on the (absent) payment rails.
+    neg_pillar = neg["pillar_scores"]["transactability"]
+    org_pillar = org.pillar_scores["transactability"]
+    _check(
+        neg_pillar is not None and abs(neg_pillar - org_pillar) < 1e-9,
+        f"no-rails transactability floor is storefront-type-invariant "
+        f"(retail={neg_pillar}, api={org_pillar})",
+    )
+
+    # (b) EARNED THE SAME WAY: the per-check point vector is IDENTICAL across the
+    #     two no-rails types — the equal floor is not a coincidence of different
+    #     checks summing to the same total.
+    for cid in org_tx:
+        _check(
+            abs(neg_tx[cid] - org_tx[cid]) < 1e-9,
+            f"{cid}: identical points across no-rails retail ({neg_tx[cid]}) and "
+            f"no-rails api ({org_tx[cid]}) — same floor, earned the same way",
+        )
+
+    # (c) ATTRIBUTION: the agent-native payment gap-check earns ZERO on BOTH
+    #     no-rails anchors, and every agent-native payment check is credited LESS
+    #     than with-rails — the floor is attributably the ABSENCE of agent-native
+    #     payment, the static counterpart of the wall the retail shopper hit.
+    _check(
+        neg_tx["x402_probe"] == 0.0 and org_tx["x402_probe"] == 0.0,
+        f"the agent-native payment gap-check earns ZERO on both no-rails anchors "
+        f"(retail={neg_tx['x402_probe']}, api={org_tx['x402_probe']}) — capability absent",
+    )
+    for cid in _STATIC_PAYMENT_CHECKS:
+        _check(
+            neg_tx[cid] < com_tx[cid] and org_tx[cid] < com_tx[cid],
+            f"{cid}: agent-native payment credited LESS on both no-rails anchors "
+            f"(retail={neg_tx[cid]}, api={org_tx[cid]}) than with-rails ({com_tx[cid]})",
+        )
+
+    # (d) DISCRIMINATES from the with-rails ceiling: the payment gap-check earns
+    #     credit there and the ceiling transactability sits well above the floor —
+    #     the floor is a real payment-capability signal, not a universal low score.
+    _check(
+        com_tx["x402_probe"] > 0.0 and com.pillar_scores["transactability"] > neg_pillar,
+        f"with-rails ceiling earns the payment gap-check ({com_tx['x402_probe']}) and "
+        f"scores transactability {com.pillar_scores['transactability']} >> floor {neg_pillar}",
+    )
+
+    # (e) NON-VACUOUS CONTROL: the NON-payment transactability check(s) (mcp_surface)
+    #     are identical across ALL THREE anchors, so they do NOT distinguish floor
+    #     from ceiling — the discrimination in (c)/(d) is carried by the agent-native
+    #     PAYMENT capability, not by some incidental transactability check.
+    nonpayment_ids = [cid for cid in com_tx if cid not in _STATIC_PAYMENT_CHECKS]
+    _check(
+        nonpayment_ids
+        and all(
+            com_tx[cid] == org_tx[cid] == neg_tx[cid] for cid in nonpayment_ids
+        ),
+        f"non-payment transactability check(s) {nonpayment_ids} are identical across "
+        f"all three anchors — the discrimination is the payment capability, not them",
+    )
+
+
 def main() -> int:
     tests = [
         test_static_payment_prediction_is_behaviorally_corroborated,
@@ -779,6 +919,7 @@ def main() -> int:
         test_calibration_is_two_sided,
         test_payability_prediction_is_attributably_agent_native_payment,
         test_readout_earner_and_calibration_attribution_cannot_drift,
+        test_no_rails_transactability_floor_is_capability_attributable_and_type_invariant,
     ]
     failed = 0
     for t in tests:

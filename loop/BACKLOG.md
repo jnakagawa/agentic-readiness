@@ -141,6 +141,15 @@ design in-cloud, execute locally.
   pillars (access/legibility/transactability) match the behavioral report's within 1e-9 (the negative mirror of
   `test_calibration_rests_on_a_shared_static_base`). This proves the negative prediction rests on the same
   static evidence across two independent crawls, closing the honest-scope gap the docstring names.
+  UPDATE Cycle 195 (TRUTH, in-cloud, direct-to-main): the negative anchor's TRANSACTABILITY floor is now
+  cross-validated in-cloud WITHOUT the fixture — `test_calibration.py`'s new
+  `test_no_rails_transactability_floor_is_capability_attributable_and_type_invariant` matches the retail
+  behavioral crawl's transactability floor (18.75, identical per-check vector, x402_probe 0) against a
+  SECOND independent no-rails crawl (`drift-flight.org` offline fixture), proving the negative floor is
+  storefront-TYPE-invariant + attributably the ABSENCE of agent-native payment. This does NOT close the
+  item: it cross-validates only the transactability PILLAR against a DIFFERENT domain; the honest-scope gap
+  the docstring names (access/legibility/transactability of moleskine.com ITSELF replayed offline vs its
+  behavioral crawl, within 1e-9) still needs the committed `moleskine.com` fixture → stays `[LOCAL]`.
 
 - **[OPERATOR DIRECTIVE — Jonah, 2026-07-23] The battery must be
   OFFERING-RELATIVE, not fixed.** Observed: the current battery judges every

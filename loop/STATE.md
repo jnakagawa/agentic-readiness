@@ -1,8 +1,43 @@
 # Loop state
 
-- Cycle counter: 194
+- Cycle counter: 195
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-03T06:1xZ (Cycle 194) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-03T07:16Z (Cycle 195) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~51.4h old at the fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; this
+  07:16Z fire is NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral
+  off-scoring-path TRUTH increment, no sensitive-class PR, nothing score-moving). Live signal (read, not
+  re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the
+  transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays
+  the frozen independent regression signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this
+  fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 195):
+  fresh checkout detached on the Cycle-194 tip `5a29199`; `git checkout -B main origin/main` aligned to
+  origin/main `5a29199`, working tree clean, invariant #5 intact. Fresh `.venv` + `requests pyyaml
+  eth-account pytest`, imports verified, 423 tests green pre-flight (424 after this cycle's +1).
+- FOCUS POINTER (Cycle 195 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 195 was
+  TRUTH, so Cycle 196 is READOUT). Cycle 195 shipped a **TRUTH increment — the no-rails transactability
+  FLOOR is capability-attributable and storefront-TYPE-invariant** (`tests/test_calibration.py`, 10→11,
+  `test_no_rails_transactability_floor_is_capability_attributable_and_type_invariant`). It pins that two
+  structurally DIFFERENT no-rails storefronts — a no-rails API (`drift-flight.org`, offline fixture
+  replay) and a no-rails RETAIL shop (`moleskine.com`, live behavioral crawl) — converge on the IDENTICAL
+  transactability floor (18.75), earned by the IDENTICAL per-check point vector, with the agent-native
+  payment gap-check `x402_probe` at ZERO on both. So the negative calibration prediction is reproducible
+  across storefront TYPE and crawl METHOD, and is attributably the ABSENCE of agent-native payment — NOT a
+  retail artifact (a shop scoring low for selling physical goods) nor a diffuse low score. The
+  negative-side, type-crossing mirror of Cycle 191's positive attribution guard (#9); closes the
+  storefront-type confound the two-sided property (#8) left open. Needs NO `[LOCAL]` fixture (retail floor
+  read from the report's own embedded checks, matched against a second independent no-rails crawl).
+  MUTATION-VERIFIED twice (retail floor→ceiling reds (a); retail x402_probe→8 reds (b)/(c)); non-vacuous
+  `mcp_surface` control (0 on all three); robust to the tracked com live-drop (`floor < ceiling` holds at
+  62.5). Tests-only, OFF the scoring path (`git diff --name-only` = `tests/test_calibration.py` ONLY;
+  scoring-path diff EMPTY) → score-neutral, NOT peer-gated, direct-to-main. Full suite 423→424;
+  `test_calibration.py` 10→11; replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7.
+  NEXT (READOUT 196): surface the two-sided / type-invariant calibration property on a readout (card /
+  rubric page) so a reader sees the negative floor is a payment-capability signal not a retail artifact,
+  OR pin the mirror non-payment control on the POSITIVE side. Substantive frontier (thin-archetype /
+  render / structured-catalog LIVE fixtures, the negative anchor's two-crawl static cross-validation via a
+  `moleskine.com` fixture, ACP/UCP/MPP, transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 194 runner note): RUNNER AT-FLOOR at 2026-08-03T06:1xZ (Cycle 194) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~50.5h old at the fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; this
   fire is NOT first-after-16:00 UTC → no DM this fire per comms policy (score-neutral off-scoring-path

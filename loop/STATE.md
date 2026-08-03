@@ -1,8 +1,45 @@
 # Loop state
 
-- Cycle counter: 198
+- Cycle counter: 199
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-03T10:17Z (Cycle 198) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-03T11:14Z (Cycle 199) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~55.4h old at the fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; this
+  11:14Z fire is NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral
+  off-scoring-path TRUTH increment, no sensitive-class PR, nothing score-moving). Live signal (read, not
+  re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the
+  transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays
+  the frozen independent regression signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this
+  fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 199):
+  fresh checkout on the Cycle-198 tip `83a8cac` (origin arrived as a `(forced update)` from `3796519`,
+  normal direct-to-main cadence), working tree clean, invariant #5 intact. Fresh `.venv` + `requests
+  pyyaml eth-account pytest`, imports verified, 426 tests green pre-flight (427 after +1).
+- FOCUS POINTER (Cycle 199 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 199 was
+  TRUTH, so Cycle 200 is READOUT). Cycle 199 shipped a **TRUTH increment — the ceiling-collapse
+  counterfactual is WEIGHT-robust** (`tests/test_calibration.py`, 12→13,
+  `test_ceiling_payment_attribution_is_weight_robust`, suite 426→427). Test 12 (Cycle 197) proved that
+  knocking out agent-native payment collapses the with-rails transactability ceiling (87.5) EXACTLY onto
+  the no-rails floor (18.75), but at ONE weighting — the max_points the committed rubric ships today. A
+  skeptic could call the "payment, not category" conclusion weight-contingent. This guard refutes that:
+  it makes EXPLICIT the coupling the identity rests on (the two anchors share the transactability check
+  SET, per-check max_points, and the non-payment check's earned points — none dependent on the weight
+  VALUES), then re-derives BOTH floor and knocked-out ceiling under TWO arbitrary per-check REWEIGHTINGS
+  (each check's max_points AND earned points scaled by the same factor — the faithful model of "weight
+  this check λ× more"). Under both, the knocked-out ceiling lands EXACTLY on the reweighted floor
+  (4.054/4.054 and 40.0/40.0), while the two drive the pillar to DISTINCT values (neither the pinned
+  18.75) — the collapse is re-tested at two operating points, not re-stated at one. Teeth: unit-weight
+  sanity reproduces test 12; each reweighting is asserted to genuinely move the floor off 18.75; MUTATION
+  — breaking the shared-weight coupling (reweight the ceiling's payment check but NOT the floor's) makes
+  the knock-out MISS the floor (7.5 ≠ 18.75), so a category-conditional cap that weighted the two
+  storefront types divergently would redden the guard. Capability-worded, vendor-neutral; 18.75/87.5 share
+  test 9(d)'s re-baseline tripwire. OFF the scoring path (`git diff --name-only` = `tests/test_calibration.py`
+  ONLY; scoring-path diff EMPTY) → score-neutral, NOT peer-gated, direct-to-main. Replay guard 24/24, 46.1
+  F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. NEXT (READOUT 200): surface the weight-robustness /
+  counterfactual on the methodology page ("strip payment and the ceiling meets the floor at every
+  weighting") or carry it onto the calibration/history card; the substantive frontier (GENUINE new
+  thin-bank signals from real fixtures, the negative anchor's two-crawl static cross-validation via a
+  `moleskine.com` fixture, ACP/UCP/MPP, transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 198 runner note): RUNNER AT-FLOOR at 2026-08-03T10:17Z (Cycle 198) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~54.5h old at the fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; this
   10:17Z fire is NOT first-after-16:00 UTC → no DM this fire per comms policy (score-neutral

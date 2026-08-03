@@ -1023,6 +1023,191 @@ def test_with_rails_ceiling_is_payment_capability_not_category_artifact() -> Non
         )
 
 
+# ---------------------------------------------------------------------------
+# 13. THE CEILING-COLLAPSE COUNTERFACTUAL IS WEIGHT-ROBUST — the payment
+#     attribution is a structural property, not an artifact of the specific
+#     transactability check weights the committed rubric happens to ship.
+#
+#     Test 12 knocks out agent-native payment on the with-rails ceiling and shows
+#     it collapses EXACTLY to the no-rails floor (18.75), concluding that 100% of
+#     the ceiling-vs-floor separation is the payment capability.  But it does so at
+#     ONE weighting — the max_points the committed rubric assigns today
+#     (x402_probe 8, self_serve_payg 6, mcp_surface 2).  A skeptic could object:
+#     the collapse lands on the floor only BECAUSE of that particular weight
+#     vector; under a different (still valid) weighting the attribution might not
+#     be 100%, so the "payment, not category" conclusion is weight-contingent.
+#
+#     This guard refutes that.  The knock-out identity ``knocked == floor`` is a
+#     structural consequence of a coupling this test makes EXPLICIT — the two
+#     anchors share the transactability check SET, share per-check max_points, and
+#     agree on the non-payment check's earned points — none of which depends on
+#     what those weights ARE.  We prove it by re-deriving both the floor and the
+#     knocked-out ceiling under two arbitrary, non-trivial per-check REWEIGHTINGS
+#     (each check's max_points AND its earned points scaled by the same per-check
+#     factor — the faithful model of "weight this check lambda times more", since a
+#     check's earned points scale linearly with its max_points at a fixed status).
+#     Under BOTH reweightings the knocked-out ceiling lands EXACTLY on the
+#     reweighted floor, while the two reweightings drive the pillar to two DISTINCT
+#     values (neither the original 18.75) — so the collapse is not a coincidence of
+#     one weighting: strip payment and the ceiling meets the floor at EVERY
+#     weighting, which is what "the separation IS the payment capability" means.
+#
+#     NON-VACUOUS / mutation-aware: the guard also constructs a hypothetical where
+#     the coupling BREAKS — the with-rails ceiling is reweighted on a payment check
+#     but the no-rails floor is NOT (a category-conditional cap that weighted the
+#     "fancy" storefront's payment check differently) — and confirms the knock-out
+#     then MISSES the floor.  So the identity is load-bearing on the shared-weight
+#     coupling, not trivially true; a future rubric that gave the two storefront
+#     types divergent transactability weights would redden this guard.  The
+#     18.75/87.5 literals share test 9(d)'s re-baseline tripwire contract.
+# ---------------------------------------------------------------------------
+def _knockout_pillar(com_tx, org_tx, weight):
+    """Recompute the with-rails transactability pillar with agent-native payment
+    knocked out (each payment check earns the NO-RAILS value), under a per-check
+    ``weight`` multiplier applied to BOTH max_points and earned points.
+
+    ``weight`` maps check_id -> factor (>0).  Returns the 0..100 pillar score.
+    """
+    def _scored(check) -> bool:
+        return scoring._status_value(check.status) in scoring._SCORED_STATUSES
+
+    earned = 0.0
+    possible = 0.0
+    for cid, c in com_tx.items():
+        if not _scored(c):
+            continue
+        w = weight[cid]
+        possible += w * c.max_points
+        pts = org_tx[cid].points if cid in _STATIC_PAYMENT_CHECKS else c.points
+        earned += w * pts
+    return 100.0 * earned / possible
+
+
+def _floor_pillar(org_tx, weight):
+    """The no-rails floor transactability pillar under the same ``weight``."""
+    def _scored(check) -> bool:
+        return scoring._status_value(check.status) in scoring._SCORED_STATUSES
+
+    earned = 0.0
+    possible = 0.0
+    for cid, c in org_tx.items():
+        if not _scored(c):
+            continue
+        w = weight[cid]
+        possible += w * c.max_points
+        earned += w * c.points
+    return 100.0 * earned / possible
+
+
+def test_ceiling_payment_attribution_is_weight_robust() -> None:
+    print("test_ceiling_payment_attribution_is_weight_robust")
+    com, com_misses = _static_report(_ANCHOR_DOMAIN)       # with-rails ceiling
+    org, org_misses = _static_report("drift-flight.org")   # no-rails floor
+    _check(
+        not com_misses and not org_misses,
+        "both canonical static replays are like-for-like (no replay-miss)",
+    )
+
+    com_tx = {c.check_id: c for c in com.checks if c.pillar == "transactability"}
+    org_tx = {c.check_id: c for c in org.checks if c.pillar == "transactability"}
+    _check(
+        set(com_tx) == set(org_tx) and bool(com_tx),
+        f"both sides share the transactability check set ({sorted(com_tx)})",
+    )
+    for cid in _STATIC_PAYMENT_CHECKS:
+        _check(cid in com_tx, f"agent-native payment check {cid!r} is a transactability check")
+
+    # THE COUPLING the weight-robustness rests on, made EXPLICIT (test 12 relied on
+    # it implicitly): the two anchors share per-check max_points, and agree on the
+    # non-payment check's earned points.  These — not the weight VALUES — are what
+    # make ``knocked == floor`` hold; pin them so a divergence is caught HERE.
+    for cid in com_tx:
+        _check(
+            abs(com_tx[cid].max_points - org_tx[cid].max_points) < 1e-9,
+            f"{cid}: with-rails and no-rails share max_points "
+            f"({com_tx[cid].max_points} vs {org_tx[cid].max_points}) — the shared "
+            f"weight coupling the knock-out identity rests on",
+        )
+    for cid in com_tx:
+        if cid not in _STATIC_PAYMENT_CHECKS:
+            _check(
+                abs(com_tx[cid].points - org_tx[cid].points) < 1e-9,
+                f"non-payment {cid}: with-rails and no-rails earn identical points "
+                f"({com_tx[cid].points} vs {org_tx[cid].points})",
+            )
+
+    # The pinned anchors (re-baseline tripwire, test 9(d)).
+    ceiling = com.pillar_scores["transactability"]
+    floor = org.pillar_scores["transactability"]
+    _check(abs(ceiling - 87.5) < 1e-9, f"with-rails ceiling is the pinned 87.5 (got {ceiling})")
+    _check(abs(floor - 18.75) < 1e-9, f"no-rails floor is the pinned 18.75 (got {floor})")
+
+    # Sanity: at the identity (unit) weighting the knock-out reproduces test 12 —
+    # the reweighting machinery is a faithful generalization, not a new model.
+    unit = {cid: 1.0 for cid in com_tx}
+    _check(
+        abs(_floor_pillar(org_tx, unit) - floor) < 1e-9
+        and abs(_knockout_pillar(com_tx, org_tx, unit) - floor) < 1e-9,
+        "at unit weights the knock-out collapses to the floor (reproduces test 12)",
+    )
+
+    # TWO arbitrary, non-trivial per-check reweightings (distinct factors, all >0,
+    # deliberately NOT all-equal so they genuinely re-order the pillar).  Under EACH
+    # the knocked-out ceiling must land EXACTLY on the reweighted floor.
+    reweightings = (
+        {"x402_probe": 3.0, "mcp_surface": 5.0, "self_serve_payg": 0.5},
+        {"x402_probe": 0.25, "mcp_surface": 2.0, "self_serve_payg": 4.0},
+    )
+    # every transactability check must have a factor (guards a future added check).
+    for w in reweightings:
+        _check(
+            set(w) == set(com_tx),
+            f"reweighting covers exactly the transactability checks ({sorted(w)})",
+        )
+
+    moved_floors = []
+    for i, w in enumerate(reweightings):
+        rw_floor = _floor_pillar(org_tx, w)
+        rw_knocked = _knockout_pillar(com_tx, org_tx, w)
+        _check(
+            abs(rw_knocked - rw_floor) < 1e-9,
+            f"reweighting #{i}: knocking out payment collapses the ceiling to the "
+            f"reweighted floor (knocked={rw_knocked}, floor={rw_floor}) — the "
+            f"attribution is WEIGHT-robust, not a fixture-weight artifact",
+        )
+        # NON-VACUOUS: the reweighting genuinely moved the pillar off 18.75, so the
+        # identity is being re-tested at a DIFFERENT operating point each time.
+        _check(
+            abs(rw_floor - floor) > 1e-6,
+            f"reweighting #{i} genuinely moves the floor off the pinned 18.75 "
+            f"(reweighted floor={rw_floor}) — the identity is re-tested, not re-stated",
+        )
+        moved_floors.append(rw_floor)
+
+    # The two reweightings land on DIFFERENT pillar values — the identity held at
+    # two distinct operating points, not one lucky coincidence.
+    _check(
+        abs(moved_floors[0] - moved_floors[1]) > 1e-6,
+        f"the two reweightings drive the pillar to distinct values "
+        f"({moved_floors[0]} vs {moved_floors[1]}) — collapse holds at each",
+    )
+
+    # MUTATION / non-vacuous: BREAK the shared-weight coupling — reweight the
+    # with-rails ceiling's payment check but NOT the no-rails floor's (a
+    # category-conditional cap that weighted the "premium" storefront differently).
+    # The knock-out must then MISS the floor, proving the identity is load-bearing
+    # on the coupling and not trivially true.
+    skew = {"x402_probe": 4.0, "mcp_surface": 1.0, "self_serve_payg": 1.0}
+    broken_knocked = _knockout_pillar(com_tx, org_tx, skew)   # ceiling weights skewed
+    intact_floor = _floor_pillar(org_tx, unit)                # floor at unit weights
+    _check(
+        abs(broken_knocked - intact_floor) > 1e-6,
+        f"breaking the shared-weight coupling makes the knock-out MISS the floor "
+        f"(knocked={broken_knocked}, floor={intact_floor}) — the identity is "
+        f"load-bearing on the coupling, not vacuous",
+    )
+
+
 def main() -> int:
     tests = [
         test_static_payment_prediction_is_behaviorally_corroborated,
@@ -1037,6 +1222,7 @@ def main() -> int:
         test_readout_earner_and_calibration_attribution_cannot_drift,
         test_no_rails_transactability_floor_is_capability_attributable_and_type_invariant,
         test_with_rails_ceiling_is_payment_capability_not_category_artifact,
+        test_ceiling_payment_attribution_is_weight_robust,
     ]
     failed = 0
     for t in tests:

@@ -56,6 +56,17 @@ design in-cloud, execute locally.
   re-baseline re-captures driftflight.com at the softened live transactability, BOTH the counterfactual guard AND
   the calibration/replay guards redden together, forcing the payability magnitude to be revisited in the SAME
   re-baseline PR. Does NOT close this item — the CHECK-level live diff + re-baseline stay [LOCAL].
+  UPDATE Cycle 199 (TRUTH, in-cloud, direct-to-main): the counterfactual pinning the 87.5 ceiling this P0
+  tracks is now proven WEIGHT-robust, not weight-contingent. `test_calibration.py`'s new
+  `test_ceiling_payment_attribution_is_weight_robust` (13) re-derives BOTH the floor and the knocked-out
+  ceiling under two arbitrary per-check transactability REWEIGHTINGS (max_points AND earned points scaled
+  by the same factor) and shows the knock-out lands EXACTLY on the reweighted floor at each (4.054/4.054,
+  40.0/40.0 — distinct operating points, neither the pinned 18.75), making EXPLICIT the shared-weight
+  coupling the identity rests on (mutation-verified: skew the ceiling's payment weight but not the floor's
+  and the knock-out MISSES the floor, 7.5≠18.75). So the "100% of the ceiling-vs-floor separation is
+  agent-native payment" attribution this P0 relies on is a structural property, not a fixture-weight
+  artifact — and the 18.75/87.5 literals share test 9(d)'s re-baseline tripwire. Does NOT close this item —
+  the CHECK-level live diff + re-baseline stay [LOCAL].
 
 <!-- DONE 2026-07-28T17:27Z (local fire, SELF-HEALING/METHOD, direct-to-main): "[LOCAL] Local
      verify runner STALLED past the 6h floor" ROOT-CAUSED + FIXED. The cloud's Cycle-51→62

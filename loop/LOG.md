@@ -3,6 +3,71 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 199 — 2026-08-03T11:14Z — TRUTH — the ceiling-collapse counterfactual is WEIGHT-robust: the payment attribution is structural, not a fixture-weight artifact
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed. Infra/self-heal: fresh checkout on the Cycle-198 tip `83a8cac` (origin arrived as a
+`(forced update)` from `3796519` — normal direct-to-main cadence), tree clean, invariant #5 intact. Fresh
+`.venv` + `requests pyyaml eth-account pytest`; imports verified; 426 tests green pre-flight (427 after
+this cycle's +1). Runner AT-FLOOR: newest verify `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1)
+is ~55.4h old — PAST the 6h floor (machine-asleep / runner-lag, cloud cannot repair; flagged in the 16:12Z
+Cycle-181 digest).
+
+**What.** `tests/test_calibration.py` test 13,
+`test_ceiling_payment_attribution_is_weight_robust` (12→13; suite 426→427). Test 12 (Cycle 197) proved by
+KNOCK-OUT that stripping agent-native payment collapses the with-rails transactability ceiling (87.5)
+EXACTLY onto the no-rails floor (18.75) — 100% of the ceiling-vs-floor separation is the payment
+capability. But test 12 does so at ONE weighting: the max_points the committed rubric ships today
+(x402_probe 8, self_serve_payg 6, mcp_surface 2). A skeptic can object that the collapse lands on the floor
+only BECAUSE of that particular weight vector, making the "payment, not category" conclusion
+weight-contingent. This guard refutes that.
+
+**Why.** The knock-out identity `knocked == floor` is a structural consequence of a coupling — the two
+anchors share the transactability check SET, share per-check max_points, and agree on the non-payment
+check's earned points — none of which depends on what those weights ARE. The test makes that coupling
+EXPLICIT (test 12 relied on it implicitly) and then re-derives BOTH the floor and the knocked-out ceiling
+under TWO arbitrary non-trivial per-check REWEIGHTINGS (each check's max_points AND earned points scaled by
+the same per-check factor — the faithful model of "weight this check λ× more", since earned points scale
+linearly with max_points at a fixed status). Under BOTH reweightings the knocked-out ceiling lands EXACTLY
+on the reweighted floor (`{x402:3, mcp:5, payg:0.5}` → 4.054/4.054; `{x402:0.25, mcp:2, payg:4}` →
+40.0/40.0), while the two drive the pillar to DISTINCT values (4.054 ≠ 40.0, neither the pinned 18.75) — so
+the collapse is re-tested at two different operating points, not re-stated at one. Strip payment and the
+ceiling meets the floor at EVERY weighting: that is what "the separation IS the payment capability" means.
+
+**Non-vacuity + teeth.** (a) unit-weight sanity reproduces test 12 (collapse to 18.75) — the reweighting
+machinery is a faithful generalization, not a new model; (b) each reweighting is asserted to genuinely move
+the floor off 18.75 (identity re-tested, not re-stated); (c) MUTATION: BREAK the shared-weight coupling —
+reweight the ceiling's payment check (`x402×4`) but NOT the floor's — and the knock-out MISSES the floor
+(7.5 ≠ 18.75), proving the identity is load-bearing on the coupling, not trivially true. So a future rubric
+that gave the two storefront TYPES divergent transactability weights (a category-conditional cap) would
+redden this guard. Capability-worded, vendor-neutral (keys on the `_STATIC_PAYMENT_CHECKS` ids the module
+docstring already names; no host/vendor). The 18.75/87.5 literals share test 9(d)'s re-baseline tripwire
+contract — a legitimate [LOCAL] canonical re-capture reddens this alongside `test_canonical_replay`.
+
+**Ship class + evidence.** Tests-only, OFF the scoring path: `git diff --name-only` =
+`tests/test_calibration.py` ONLY; scoring-path diff (`asrs/ rubric/ fixtures/`) EMPTY → score-neutral, NOT
+peer-gated, direct-to-main. `test_calibration.py` 12→13; full suite 426→427, 0 failures. Canonical PAIR
+unchanged: in-cloud replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7. (Cloud is
+network-blocked for the live re-score; the in-cloud standard is regression-by-construction — the scoring
+path is byte-identical — plus the offline replay guard, both green.)
+
+**Live canonical signal.** Newest LOCAL artifact `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1)
+is ~55.4h old at this fire — PAST the 6h floor (machine-asleep / runner-lag, cloud cannot repair; flagged
+in the 16:12Z Cycle-181 digest). Its LIVE re-score: drift-flight.org 46.1 F / driftflight.com 76.2 C /
++30.1 — the known transactability 87.5→62.5 divergence (off the scoring path; the frozen replay guard stays
+the in-cloud regression signal). 11:14Z is NOT first-after-16:00 UTC → no digest DM per comms policy;
+tests-only / score-neutral, no sensitive-class PR, nothing score-moving. No open peer-gated PRs → no
+first-duty review.
+
+**Next hypothesis (READOUT 200).** Rotate READOUT next (Cycle 199 was TRUTH; METHOD → COVERAGE → TRUTH →
+READOUT). The calibration attribution is now pinned four ways (decompositional test 9, counterfactual test
+12, type-invariant floor test 11, weight-robust test 13); the in-cloud READOUT candidate is to surface the
+weight-robustness / counterfactual on the methodology page (the reader sees "strip payment and the ceiling
+meets the floor at every weighting"), or carry it onto the calibration/history card. Substantive frontier
+(thin-archetype/render/structured-catalog LIVE fixtures, the negative anchor's two-crawl static
+cross-validation via a `moleskine.com` fixture, ACP/UCP/MPP, transactability-drop CHECK-level diagnosis)
+stays `[LOCAL]`.
+
 ## Cycle 198 — 2026-08-03T10:17Z — COVERAGE — data_retrieval `lookup` data-structure precision guard (the third thin-bank bare-word minefield closed)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

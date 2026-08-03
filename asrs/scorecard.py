@@ -1214,6 +1214,30 @@ re-derived under <b>arbitrary re-weightings</b> of the transactability checks, t
 knocked-out ceiling lands on the re-weighted floor <b>every time</b>. Strip payment
 and the ceiling meets the floor at <b>every weighting</b> &mdash; the attribution is
 <b>structural</b>, not a weighting choice.</p>
+<p>That counterfactual lands on the transactability <b>pillar</b>, but the number a
+reader actually <b>cites</b> is the <b>overall</b> score, which the rubric rolls up
+across five weighted pillars &mdash; transactability is only <b>0.30</b> of it. A
+skeptic could grant the pillar attribution yet argue the <b>headline</b> gap is
+really carried by other pillars once that weight dilutes payment. So run the same
+knock-out through the scorer&rsquo;s <b>own roll-up</b>, not a pillar in isolation:
+substitute the no-rails storefront&rsquo;s earned evidence on the payment checks,
+leave every other check untouched, and re-score. The with-rails overall <b>collapses
+a full grade tier across the passing boundary</b> &mdash; a passing storefront turns
+failing &mdash; while every non-payment pillar stays byte-identical and no cap
+changes, so the entire drop flows through the payment-driven transactability
+collapse and nothing else. That single capability closes <b>about two-thirds</b> of
+the with-rails/no-rails headline gap: agent-native payment is the <b>single majority
+driver</b> of the number people quote, not a minor contributor the pillar weights
+bury.</p>
+<p>The honest complement matters as much as the claim. Stripping payment does
+<b>not</b> drag the with-rails overall all the way down to the no-rails score &mdash;
+a residual gap remains, carried by a <b>non-payment</b> pillar (the with-rails
+storefront documents its offer far more machine-<b>legibly</b>). So the headline
+delta is payment-<b>dominated</b>, not payment-<b>exclusive</b>: roughly two-thirds
+agent-native payment, the rest an earned legibility difference the pitch does not get
+to claim. Like the pillar counterfactual, this overall-level attribution is pinned by
+an <b>executable regression test</b> &mdash; so &ldquo;payment drives the majority of
+the gap&rdquo; is <b>checked, not asserted</b>.</p>
 <p>Two honest limits keep this from over-claiming. The positive direction is still
 anchored on a <b>single with-rails run</b>; the negative floor now spans <b>two
 storefront types</b>, but neither direction is yet corroborated across a full

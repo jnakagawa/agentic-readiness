@@ -1798,6 +1798,30 @@ def test_methodology_documents_calibration() -> None:
            "stale positive-only anchor claim removed")
     _check("not yet run end-to-end" not in collapsed,
            "stale 'mirror case not yet run' claim removed")
+    # Cycle 204 (READOUT): the counterfactual now PROPAGATES to the OVERALL headline
+    # number, not just the transactability pillar. Cycle 203's test 14
+    # (test_payment_capability_drives_the_majority_of_the_headline_delta) runs the
+    # same knock-out through scoring's OWN roll-up and shows the with-rails overall
+    # collapses a full grade tier across the passing boundary (B->F), only
+    # transactability moving, closing ~65% of the +39.4 headline delta — agent-native
+    # payment is the SINGLE MAJORITY driver of the cited number, even after the 0.30
+    # pillar weight dilutes it. A reader must be able to see BOTH the majority-driver
+    # claim AND its honest complement (payment-DOMINATED, not payment-EXCLUSIVE — a
+    # residual gap remains, carried by legibility). This lived only in the test suite
+    # until now, exactly as tests 12/13's pillar counterfactual did before Cycle 200.
+    _check("own roll-up" in collapsed,
+           "overall-level attribution runs the knock-out through scoring's own roll-up")
+    _check("full grade tier across the passing boundary" in collapsed,
+           "overall collapse framed as a grade-tier flip across the passing boundary")
+    _check("about two-thirds" in collapsed,
+           "payment stated to close about two-thirds of the headline gap")
+    _check("single majority driver" in collapsed,
+           "agent-native payment named the single majority driver of the headline delta")
+    # Honest complement: payment-DOMINATED, not payment-EXCLUSIVE (a residual remains).
+    _check("residual" in collapsed and "dominated" in collapsed and "exclusive" in collapsed,
+           "headline attribution framed as payment-dominated, not payment-exclusive")
+    _check("legibly" in collapsed,
+           "the honest residual attributed to the non-payment (legibility) pillar")
     # Vendor-neutral: no domain/product/brand named on the page.
     for banned in ("drift-flight", "driftflight"):
         _check(banned not in text, f"methodology names no vendor/domain ({banned!r})")

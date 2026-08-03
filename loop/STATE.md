@@ -1,8 +1,38 @@
 # Loop state
 
-- Cycle counter: 203
+- Cycle counter: 204
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-03T15:13Z (Cycle 203) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-03T16:17Z (Cycle 204) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~60.4h old at the fire — PAST the 6h floor (machine-asleep / runner-lag
+  pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; this 16:17Z fire IS
+  the FIRST cycle after 16:00 UTC today → daily digest DM SENT this fire per comms policy (display-only /
+  score-neutral READOUT increment, no sensitive-class PR, nothing score-moving). Live signal (read, not
+  re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the
+  transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays
+  the frozen independent regression signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this
+  fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 204): fresh
+  checkout, working tree clean, invariant #5 intact; fresh `.venv` + `requests pyyaml eth-account pytest`,
+  430 tests green pre-flight (430 after — extended an EXISTING test function, not a new one).
+- FOCUS POINTER (Cycle 204 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 204 was
+  READOUT, so Cycle 205 is METHOD). Cycle 204 shipped a **READOUT increment — the overall-level payment
+  attribution is now on the public methodology page** (`asrs/scorecard.py` `_write_methodology_page`
+  section 8 + a Cycle-204 block in `test_methodology_documents_calibration`). Cycle 203's test 14 proved at
+  the OVERALL level (scoring's own roll-up) that knocking agent-native payment out of the with-rails
+  storefront collapses the cited overall a full grade tier across the passing boundary (85.5 B → 59.8 F),
+  only transactability moving, closing ~65% of the +39.4 headline delta, with an honest legibility residual
+  — but that lived ONLY in the test suite. Two new number-free paragraphs carry it onto the page: the cited
+  headline gap is payment-DOMINATED ("about two-thirds", "single majority driver"), NOT payment-EXCLUSIVE
+  (a residual carried by the machine-legibility pillar), run through the scorer's OWN roll-up and
+  test-pinned. Matches section 8's deliberately number-free style (no 85.5/59.8/46.1 literals → no new
+  re-baseline tripwire); vendor-neutral. OFF the scoring path (`git diff --name-only` = scorecard.py +
+  test_readout.py; `grep scorecard asrs/scoring.py asrs/probes/` = NONE) → score-neutral, NOT peer-gated,
+  direct-to-main. Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. NEXT (METHOD
+  205): pin that the overall-attribution PROSE cannot drift from test 14's actual `fraction`/`0.652`
+  numbers (couple the "about two-thirds"/"majority driver" wording to the live computation), OR a fresh
+  invariance/attribution guard. Substantive frontier (GENUINE new thin-bank signals from real fixtures, the
+  negative anchor's two-crawl static cross-validation via a `moleskine.com` fixture, ACP/UCP/MPP,
+  transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 203 runner note): RUNNER AT-FLOOR at 2026-08-03T15:13Z (Cycle 203) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~58.6h old at the fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; this
   15:13Z fire is BEFORE 16:00 UTC → NOT first-after-16:00 → no DM this fire per comms policy (tests-only /

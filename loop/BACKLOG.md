@@ -652,15 +652,27 @@ design in-cloud, execute locally.
 
 ## P1
 
-- **[OBSERVATION — Cycle 196] The negative-floor "not a retail artifact" readout has an un-surfaced
-  POSITIVE mirror.** Cycle 196 (READOUT) surfaced on the methodology page (§8 Calibration) that the no-rails
-  transactability FLOOR is storefront-type-invariant and attributably the ABSENCE of agent-native payment
-  (not a retail artifact) — the readout of Cycle-195's type-invariance guard. The symmetric positive claim
-  is NOT yet in any readout: that the with-rails transactability CEILING (87.5) is earned by agent-native
-  payment SPECIFICALLY (the entire 11-pt gap vs no-rails is `x402_probe` + `self_serve_payg`, per Cycle-191
-  test #9), not diffuse legibility/trust credit. A cheap, score-neutral, in-cloud READOUT increment: add a
-  positive-mirror sentence to §8 (or the calibration page) so BOTH directions read as payment-capability
-  signals, guarded like the Cycle-196 assertions. Off-scoring-path, display-only, direct-to-main.
+<!-- DONE (superseded by Cycles 200 + 204): "[OBSERVATION — Cycle 196] positive-ceiling mirror
+     un-surfaced" — the positive mirror IS now on the methodology page. Cycle 200 (READOUT) added §8's
+     ceiling counterfactual ("The mirror holds for the ceiling … knock out its agent-native payment
+     capability … it collapses exactly onto the no-rails floor. So ALL of the ceiling's separation from
+     the floor is the agent-native payment capability"), guarded by test_methodology_documents_calibration's
+     Cycle-200 block; Cycle 204 (READOUT) then carried it to the OVERALL cited number (payment-DOMINATED,
+     ~two-thirds, single majority driver, honest legibility residual), guarded by the same test's Cycle-204
+     block. BOTH directions now read as payment-capability signals on §8 and are test-pinned. -->
+
+- **[OBSERVATION — Cycle 204, METHOD candidate] The methodology's overall-attribution PROSE can drift
+  from test 14's actual numbers.** Cycle 204 (READOUT) put the overall-level payment attribution on §8 as
+  NUMBER-FREE prose ("about two-thirds", "single majority driver", "full grade tier across the passing
+  boundary"), guarded only for phrase PRESENCE (`test_methodology_documents_calibration` Cycle-204 block).
+  Nothing couples that wording to the number test 14
+  (`test_payment_capability_drives_the_majority_of_the_headline_delta`) actually computes — if a legitimate
+  [LOCAL] canonical re-baseline moved `fraction` from 0.652 to, say, 0.45, test 14 would redden but the page
+  would still read "about two-thirds / single majority driver", silently misleading a public reader. Cheap,
+  score-neutral, in-cloud METHOD increment: a guard asserting the §8 wording is CONSISTENT with the live
+  `fraction` (e.g. the "majority driver" phrase may render only while the recomputed fraction ≥ 0.5, and
+  "about two-thirds" only within a band around it) — the prose-vs-computation coupling the phrase-presence
+  guard lacks. Off-scoring-path, direct-to-main.
 
 - **[OBSERVATION — Cycle 192] The "earned by" pillar caption opens two in-cloud follow-ups.** Cycle 192
   (READOUT) added `_pillar_top_earner` + the per-pillar "earned by <capability> +N" caption to the HTML card

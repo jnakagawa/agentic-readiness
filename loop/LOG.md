@@ -3,6 +3,66 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 204 — 2026-08-03T16:17Z — READOUT — carry the overall-level payment attribution onto the methodology page: the cited headline gap is payment-DOMINATED, not payment-EXCLUSIVE
+
+WHAT/WHY. Cycle 203's test 14 (`test_payment_capability_drives_the_majority_of_the_headline_delta`)
+established at the OVERALL level — using scoring's own roll-up — that knocking agent-native payment out of
+the with-rails storefront collapses the cited overall a full grade tier across the passing boundary
+(85.5 B -> 59.8 F), only transactability moving, closing ~65% of the +39.4 headline delta, with an honest
+non-payment (legibility) residual. But that lived ONLY in the test suite — exactly as tests 12/13's PILLAR
+counterfactual did before Cycle 200 carried it onto the methodology page. Section 8 of the methodology page
+already carries the counterfactual at the transactability-PILLAR level ("knock out … collapses exactly onto
+the no-rails floor … the attribution is structural"); a public reader could grant that yet still wonder
+whether the number they actually CITE (the overall score, transactability only 0.30 of the roll-up) is
+really driven by payment. This is the READOUT gap for Cycle 204.
+
+CHANGE (READOUT, off the scoring path, display-only prose, score-neutral, direct-to-main).
+`asrs/scorecard.py` `_write_methodology_page`, section 8 (Calibration): two new paragraphs after the
+weight-robust pillar counterfactual and before the "two honest limits" paragraph. (1) The majority-driver
+paragraph: the counterfactual is a PILLAR result, but the cited number is the OVERALL score (transactability
+only 0.30 of five weighted pillars); run the same knock-out through the scorer's OWN roll-up and the
+with-rails overall "collapses a full grade tier across the passing boundary", every non-payment pillar
+byte-identical and no cap changing, so the whole drop flows through the payment-driven transactability
+collapse — closing "about two-thirds" of the headline gap → agent-native payment is the "single majority
+driver" of the cited number, not a contributor the pillar weights bury. (2) The honest-complement paragraph:
+stripping payment does NOT drag the overall all the way to the no-rails score — a residual carried by a
+non-payment pillar (the with-rails storefront documents its offer far more machine-legibly) — so the
+headline delta is payment-DOMINATED, not payment-EXCLUSIVE, and is test-pinned ("checked, not asserted").
+Matches section 8's deliberately NUMBER-FREE prose style (no 85.5/59.8/46.1 literals → no new re-baseline
+tripwire, no maintenance coupling); vendor-neutral (no domain/product named).
+
+EVIDENCE. `git diff --name-only` = `asrs/scorecard.py` + `tests/test_readout.py` ONLY; `git diff --stat --
+asrs/scoring.py asrs/probes/ rubric/ fixtures/` EMPTY, and `grep scorecard asrs/scoring.py asrs/probes/` =
+NONE → `_write_methodology_page` is off the scoring path, score-neutral by construction, NOT peer-gated →
+direct-to-main. Guard: extended `test_methodology_documents_calibration` (test_readout.py) with a Cycle-204
+block asserting the rendered page carries "own roll-up", "full grade tier across the passing boundary",
+"about two-thirds", "single majority driver", the payment-DOMINATED-not-EXCLUSIVE residual framing, and the
+legibility attribution — the READOUT mirror of Cycle 200's pillar-counterfactual assertions; the existing
+vendor-neutral check (no drift-flight/driftflight on the page) still holds. Rendered the page and confirmed
+all six phrases present + zero domain names + zero canonical numerals. Extended an EXISTING test function
+(not a new one), so the suite count is unchanged: full suite 430->430, 0 failures (also ran the readout +
+calibration + canonical-replay guards standalone, 113 passed).
+
+CANONICAL PAIR (in-cloud replay guard — authoritative static re-score, 24/24, 0 replay-miss):
+drift-flight.org 46.1 F / driftflight.com 85.5 B / delta +39.4 — UNCHANGED (prose-only change, scoring path
+byte-identical). Live signal (read, not re-run — runner AT-FLOOR, newest artifact
+verify_20260801T035047Z.json ~60.4h old at 16:17Z, machine-asleep/runner-lag, cloud cannot repair):
+drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the off-scoring-path
+transactability-drop divergence PERSISTS (Aug-1), untouched by this change. Rubric v0.7.
+
+COMMS. This fire is 16:17Z = the FIRST cycle after 16:00 UTC today → daily digest DM sent to Jonah per the
+comms policy (cycles run, shipped items, canonical delta trend, top open question). No sensitive-class PR;
+the ship is display-only prose, no score move.
+
+NEXT HYPOTHESIS (METHOD 205). Rotate METHOD next (Cycle 204 was READOUT; METHOD → COVERAGE → TRUTH →
+READOUT). The pillar- and overall-level payment attributions are now BOTH on the public page and BOTH
+test-pinned. A METHOD candidate: pin that the methodology's overall-attribution PROSE cannot drift from
+test 14's actual numbers (a guard coupling the "majority driver"/"about two-thirds" wording to the live
+`fraction >= 0.5 / 0.652` the test computes), OR a fresh invariance/attribution guard elsewhere. Substantive
+frontier (GENUINE new thin-bank signals from real fixtures, the negative anchor's two-crawl static
+cross-validation via a `moleskine.com` fixture, ACP/UCP/MPP live handshakes, transactability-drop CHECK-level
+diagnosis) stays `[LOCAL]`.
+
 ## Cycle 203 — 2026-08-03T15:13Z — TRUTH — agent-native payment drives the MAJORITY of the headline delta (overall-level counterfactual)
 
 WHAT/WHY. Tests 11-13 (`test_calibration.py`) pin the payment attribution at the

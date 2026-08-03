@@ -1761,6 +1761,17 @@ def test_methodology_documents_calibration() -> None:
     # prediction: a legible FAIL (evidence of absence), not an untestable blank.
     _check("legible, not a blank" in text,
            "negative calibration failure framed as legible evidence, not a null")
+    # Cycle 196 (READOUT): the negative floor is now surfaced as a payment-capability
+    # signal, not a retail artifact — measured identically on a no-rails API and a
+    # no-rails retail shop (storefront-TYPE-invariant, per Cycle-195's calibration
+    # guard). A reader must be able to see the low score is the ABSENCE of agent-native
+    # payment, not a shop marked down for its category.
+    _check("retail artifact" in text,
+           "negative floor explicitly framed as NOT a retail artifact")
+    _check("storefront-type-invariant" in collapsed,
+           "negative floor stated to be storefront-type-invariant")
+    _check("absence of" in collapsed and "agent-native payment" in collapsed,
+           "type-invariant floor attributed to the absence of agent-native payment")
     # The old positive-only honest limit must be GONE (the mirror case now runs).
     _check("one with-rails storefront" not in collapsed,
            "stale positive-only anchor claim removed")

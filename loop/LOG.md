@@ -3,6 +3,64 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 196 — 2026-08-03T08:13Z — READOUT — surface the type-invariant negative floor: a payment-capability signal, not a retail artifact
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed. Infra/self-heal: fresh checkout clean on the Cycle-195 tip `270a3cf` (working
+tree clean, invariant #5 intact). Fresh `.venv` + `requests pyyaml eth-account pytest`; imports
+verified; 424 tests green pre-flight. Runner AT-FLOOR: newest verify `runs/local/verify_20260801T035047Z.json`
+(03:50Z Aug-1) is ~52.4h old at the 08:13Z fire — PAST the 6h floor (machine-asleep / runner-lag
+pattern, cloud cannot repair; already flagged in the 16:12Z Cycle-181 digest). This 08:13Z fire is NOT
+first-after-16:00 UTC → no digest DM (display-only / score-neutral off-scoring-path READOUT increment,
+no sensitive-class PR, nothing score-moving).
+
+**What (READOUT).** Surfaced Cycle-195's type-invariant negative-floor finding on the methodology page's
+Calibration section (§8, `asrs/scorecard.py::_write_methodology_page`). Added a paragraph stating the
+negative floor is **not a retail artifact** — it has been measured on two structurally different no-rails
+storefronts (a no-rails **API** and a no-rails **retail shop**), both landing on the **identical**
+transactability floor with the agent-native payment check at **zero** on each, so the low score is
+attributably the **absence of agent-native payment**, not the storefront's category: the negative
+prediction is **storefront-type-invariant**. Also refreshed the stale "two honest limits" sentence: the
+old "each direction is anchored on one storefront" claim is replaced with "the positive direction is
+still a single with-rails run; the negative floor now spans two storefront types, but neither direction
+is yet corroborated across a full population" — accurate to the Cycle-195 guard, still honest about the
+population gap. Vendor-neutral (no domain/product named; capability-worded).
+
+**Why.** Cycle 195 made the type-invariance a *test-pinned property* but it was invisible to a reader —
+the methodology page still framed the negative anchor as a single no-rails storefront, leaving open the
+critic's confound "is the low no-rails score just measuring retail?". Section 8 is the "does the score
+predict what an agent experiences?" validity page; surfacing that the negative floor is a
+payment-capability signal (identical across storefront TYPE) closes that confound in prose a critic can
+read, advancing the north-star's readout-clarity axis without touching a score.
+
+**Method / non-vacuity + teeth.** Guarded by 3 new assertions in
+`test_methodology_documents_calibration` (`tests/test_readout.py`): the rendered page must contain
+"retail artifact", "storefront-type-invariant", and attribute the floor to the "absence of agent-native
+payment". The existing two-sided-property assertions (two-sided, no-rails retail storefront, both
+directions, $0 free, executable regression test) and the stale-claim negatives ("one with-rails
+storefront" absent) all still hold. Rendered §8 eyeballed: reads cleanly, no dangling markup, no domain
+leak.
+
+**Evidence / validation.** `git diff --name-only` = `asrs/scorecard.py` + `tests/test_readout.py` —
+scoring-path diff EMPTY (`asrs/scoring.py asrs/probes rubric/ fixtures/ asrs/offering.py asrs/battery.py`
+all clean) → score-neutral, NOT peer-gated, direct-to-main. Full suite 424 green (assertions +3 within
+an existing test, so the test COUNT is unchanged at 424); `test_readout.py`/`test_readout_wording.py`/
+`test_calibration.py` 90 green. Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7
+unchanged.
+
+**Canonical pair.** In-cloud replay guard (frozen regression signal): drift-flight.org 46.1 F /
+driftflight.com 85.5 B / delta +39.4, UNCHANGED (display-only change; by construction). Live signal
+(read from the newest verify artifact, NOT re-run — runner at-floor): drift-flight.org 46.1 F /
+driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS
+(Aug-1), off the scoring path.
+
+**Next hypothesis (READOUT frontier).** The positive side still lacks the mirror non-payment control in
+the readout — surface that the with-rails transactability CEILING (87.5) is earned by agent-native
+payment specifically (the positive analogue of "not a retail artifact"), OR carry the type-invariance
+onto the calibration/history page. Substantive frontier (thin-archetype / render / structured-catalog
+LIVE fixtures, the negative anchor's two-crawl static cross-validation via a `moleskine.com` fixture,
+ACP/UCP/MPP, transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+
 ## Cycle 195 — 2026-08-03T07:16Z — TRUTH — the no-rails transactability FLOOR is capability-attributable and storefront-TYPE-invariant
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

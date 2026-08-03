@@ -1,8 +1,44 @@
 # Loop state
 
-- Cycle counter: 207
+- Cycle counter: 208
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-03T19:13Z (Cycle 207) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-03T20:14Z (Cycle 208) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~64.4h old at the fire — PAST the 6h floor (machine-asleep / runner-lag
+  pattern, cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 20:14Z fire is
+  NOT first-after-16:00 UTC → no DM this fire per comms policy (display-only / score-neutral off-scoring-path
+  READOUT increment, no sensitive-class PR, nothing score-moving). Live signal (read, not re-run):
+  drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop
+  divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent
+  regression signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire
+  (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 208): fresh
+  checkout landed on the STALE shallow-clone local `main` ref `3796519`; reconciled to origin/main `7e55c45`
+  (Cycle-207 tip) via `git fetch origin main` + `git checkout -B main origin/main` (the benign "(forced
+  update)" is the shallow-clone local-ref reconciliation, NOT a history rewrite — invariant #5 intact). Fresh
+  `.venv` + `requests pyyaml eth-account pytest`, 433 tests green pre-flight (435 after +2).
+- FOCUS POINTER (Cycle 208 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 208 was
+  READOUT, so Cycle 209 is METHOD). Cycle 208 shipped a **READOUT increment — the re-capture decision's
+  TWO-MECHANISM corroboration is now surfaced in the drift block** (`asrs/canonical_history.py` +
+  `asrs/scorecard.py`; `tests/test_canonical_history.py` 50→52, suite 433→435). Cycle 207 pinned INTERNALLY
+  that on the real series the DEFER decision is corroborated by both independent mechanisms (side-level
+  `divergence_cause` from overalls + pillar-level `attribution` from per-pillar scores fingering the same
+  with-rails softening), but the operator never SAW it: the `re-capture:` line + HTML rec_card stated only
+  the side-level reason. New `DecisionCorroboration` (`same_side`/`same_direction`/`corroborated`),
+  `decision_corroboration()` (pure read of cause+attribution; None unless both present with an isolated
+  pillar), and `corroboration_verdict()` (CORROBORATED with both signed moves, or NOT-corroborated naming the
+  disagreement) drive a new `corroboration:` terminal line + a **Corroboration:** HTML paragraph. On the live
+  series it reads "CORROBORATED — side-level (driftflight.com overall −9.3) and INDEPENDENT pillar-level
+  (driftflight.com transactability −25.0) finger the same side moving the same way". Guard
+  `test_decision_corroboration_agrees_disagrees_and_none` is non-vacuous BOTH ways (agree; side-disagree;
+  direction-disagree; None in-band); `..._on_real_series_is_coherent` ties it to the real primitives,
+  recovery-tolerant. Vendor-neutral (domains compared only for equality to each other, never host-special-
+  cased). OFF the scoring path (`git diff --name-only` = the two asrs readout modules + the test; `asrs/scoring.py
+  asrs/probes/ rubric/ fixtures/` diff EMPTY) → score-neutral, NOT peer-gated, direct-to-main. Replay guard
+  24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. NEXT (METHOD 209): a coupling guard tying the
+  `corroboration_verdict` CORROBORATED/NOT-corroborated word to `corr.corroborated` (so the prose cannot lie),
+  or a fresh attribution/invariance guard elsewhere in the calibration/history series. Substantive frontier
+  (GENUINE new thin-bank signals from real fixtures, the negative anchor's two-crawl static cross-validation
+  via a `moleskine.com` fixture, ACP/UCP/MPP, transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 207 runner note): RUNNER AT-FLOOR at 2026-08-03T19:13Z (Cycle 207) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~63.4h old at the fire — PAST the 6h floor (machine-asleep / runner-lag
   pattern, cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 19:13Z fire is
   NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral off-scoring-path

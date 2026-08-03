@@ -441,6 +441,59 @@ class RecaptureAdvice:
 
 
 @dataclass
+class DecisionCorroboration:
+    """Whether the re-capture DECISION rests on BOTH independent drift mechanisms.
+
+    ``recapture_advice`` synthesizes its recommendation from the SIDE-level
+    ``DivergenceCause`` ALONE — each reference storefront's OVERALL score. The
+    pillar-level ``PillarAttribution`` is an INDEPENDENT decomposition (per-pillar
+    scores, a different arithmetic on a finer signal). When the pillar mechanism's
+    single largest mover lands on the SAME domain the side-level cause blames AND
+    moves the SAME direction as that side's overall, the two mechanisms CORROBORATE
+    the decision — it rests on two independent computations concurring, not one
+    number. That corroboration is what makes a DEFER (or a RECAPTURE) trustworthy to
+    an operator, and it is the convergence the real-series guard
+    (``test_real_series_defer_decision_is_corroborated_by_both_mechanisms``) pins
+    internally; this names it on the READOUT so the operator sees WHY a recommendation
+    holds, not only what it is.
+
+    Computed only when BOTH mechanisms are present and the pillar mechanism isolates a
+    single top mover — out of band, with an in-band anchor, a pillar observable on the
+    moving side. None otherwise: the same honest-None discipline the attribution and
+    the cause already follow — a decision the two mechanisms cannot both speak to is
+    never CLAIMED corroborated (nor falsely claimed contradicted).
+
+    Vendor-neutral: the domains are the module's reference-pair constants, compared
+    only for EQUALITY to each other (does the pillar side match the cause side), never
+    special-cased by host identity.
+    """
+
+    driver: str  # the side-level cause driver (dominant OVERALL mover)
+    driver_change: float
+    pillar_domain: str  # the pillar-level top mover's domain
+    pillar: str
+    pillar_change: float
+
+    @property
+    def same_side(self) -> bool:
+        """True iff the pillar mechanism's top mover sits on the same domain the
+        side-level cause blames."""
+        return self.pillar_domain == self.driver
+
+    @property
+    def same_direction(self) -> bool:
+        """True iff the fingered pillar moved the same way as that side's overall —
+        the same sign test ``cause_verdict`` uses before it may name the pillar."""
+        return (self.pillar_change < 0) == (self.driver_change < 0)
+
+    @property
+    def corroborated(self) -> bool:
+        """True iff the two independent decompositions concur on side AND direction —
+        the decision rests on two signals, not one."""
+        return self.same_side and self.same_direction
+
+
+@dataclass
 class CanonicalHistory:
     points: list[CanonicalPoint] = field(default_factory=list)
     baseline_delta: float = FIXTURE_BASELINE_DELTA
@@ -469,6 +522,12 @@ class CanonicalHistory:
     # the synthesized re-capture recommendation (baseline-valid / wait / defer /
     # recapture-candidate / review) — always present once there is a latest point.
     recapture: RecaptureAdvice | None = None
+    # whether that decision is CORROBORATED by both independent drift mechanisms —
+    # the side-level cause (overalls) and the pillar-level attribution (per-pillar)
+    # fingering the same side moving the same way. None unless both mechanisms are
+    # present with an isolated pillar (out of band, in-band anchor); it never claims
+    # a decision the two mechanisms cannot both speak to as corroborated.
+    corroboration: DecisionCorroboration | None = None
     # the measured measurement-noise floor over the in-band readings — validates
     # that the in-band band absorbs site transients, not measurement jitter. None
     # when fewer than 2 in-band readings exist (dispersion is undefined).
@@ -637,6 +696,7 @@ def summarize(
     hist.attribution_stability = attribution_stability(points, run)
     hist.divergence_cause = _cause(points, run, latest)
     hist.recapture = recapture_advice(hist)
+    hist.corroboration = decision_corroboration(hist)
     hist.noise_floor = noise_floor(points, baseline_delta)
     hist.liveness = liveness(latest, now)
     return hist
@@ -850,6 +910,62 @@ _REC_LABEL = {
     REC_RECAPTURE: "re-capture candidate",
     REC_REVIEW: "review",
 }
+
+
+def decision_corroboration(
+    history: CanonicalHistory,
+) -> DecisionCorroboration | None:
+    """Whether the re-capture decision is corroborated by both drift mechanisms.
+
+    Pure read over the already-computed ``divergence_cause`` (side-level, OVERALL
+    scores) and ``attribution`` (pillar-level, per-pillar scores). None unless BOTH
+    are present and the pillar mechanism isolated a single top mover — a decision the
+    two mechanisms cannot both speak to is never claimed corroborated. No score, no
+    side effects.
+    """
+    cause = history.divergence_cause
+    attr = history.attribution
+    if cause is None or attr is None or attr.top is None:
+        return None
+    top = attr.top
+    return DecisionCorroboration(
+        driver=cause.driver,
+        driver_change=cause.driver_change,
+        pillar_domain=top.domain,
+        pillar=top.pillar,
+        pillar_change=top.change,
+    )
+
+
+def corroboration_verdict(corr: DecisionCorroboration) -> str:
+    """A capability-lens sentence: do the two INDEPENDENT decompositions concur on
+    the driver, and so does the re-capture decision rest on two signals or one?
+
+    Vendor-neutral: the domains come straight from ``corr`` (the module's reference-
+    pair constants), named only as data — the sentence keys on whether the two sides
+    MATCH, never on which host it is.
+    """
+    if corr.corroborated:
+        return (
+            f"CORROBORATED — the side-level decomposition ({corr.driver} overall "
+            f"{corr.driver_change:+.1f}) and the INDEPENDENT pillar-level decomposition "
+            f"({corr.pillar_domain} {corr.pillar} {corr.pillar_change:+.1f}) finger the "
+            f"same side moving the same way, so the decision rests on two independent "
+            f"signals concurring, not one number"
+        )
+    if not corr.same_side:
+        return (
+            f"NOT corroborated — the side-level decomposition blames {corr.driver} "
+            f"({corr.driver_change:+.1f}) but the largest pillar move is on a different "
+            f"side ({corr.pillar_domain} {corr.pillar} {corr.pillar_change:+.1f}); the two "
+            f"mechanisms disagree on the driver, so weigh the recommendation with caution"
+        )
+    return (
+        f"NOT corroborated — {corr.driver} drives both decompositions, but its overall "
+        f"({corr.driver_change:+.1f}) and its largest pillar move ({corr.pillar} "
+        f"{corr.pillar_change:+.1f}) point OPPOSITE ways, so weigh the recommendation "
+        f"with caution"
+    )
 
 
 def load_history(
@@ -1076,6 +1192,9 @@ def render(history: CanonicalHistory, window: int = 24) -> str:
     adv = history.recapture
     if adv is not None and adv.code != REC_NO_DATA:
         lines.append(f"re-capture: {_REC_LABEL.get(adv.code, adv.code)} — {adv.reason}")
+        corr = history.corroboration
+        if corr is not None:
+            lines.append(f"corroboration: {corroboration_verdict(corr)}")
     tail = pts[-window:]
     lines.append(
         f"delta trend (last {len(tail)}): {_spark([p.delta for p in tail])}"

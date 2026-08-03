@@ -1487,6 +1487,145 @@ def test_recapture_advice_prose_is_host_relabel_invariant() -> None:
         ch.CANONICAL_NO_RAILS, ch.CANONICAL_WITH_RAILS = orig_no, orig_with
 
 
+def test_decision_corroboration_agrees_disagrees_and_none() -> None:
+    print("test_decision_corroboration_agrees_disagrees_and_none")
+    # READOUT (Cycle 208): the re-capture DECISION's TWO-MECHANISM corroboration is
+    # now an explicit, computed readout fact — does the SIDE-level cause (overalls,
+    # what recapture_advice keys on) and the INDEPENDENT pillar-level attribution
+    # (per-pillar scores) finger the SAME side moving the SAME way? The operator sees
+    # WHY a defer/re-capture holds — two independent decompositions concurring, not
+    # one number. Cycle 207 pinned that convergence INTERNALLY; this pins that it is
+    # SURFACED, and — non-vacuously — that a genuine DISAGREEMENT is reported as such,
+    # not papered over. The verify artifact carries `overall` and `pillars` as
+    # independent fields, so a disagreement can be constructed by moving one without
+    # the other (a synthetic probe of the readout, never a real scored state).
+    anchor = dict(
+        org_pillars={"transactability": 18.75, "legibility": 36.4},
+        com_pillars={"transactability": 87.5, "legibility": 90.9},
+    )
+
+    # (a) CORROBORATED: with-rails overall falls AND its transactability pillar falls
+    #     (the load-bearing 2026-07-27 real-drift shape) -> both mechanisms finger the
+    #     with-rails side going down.
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [_artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4, **anchor) for i in range(1, 5)]
+        rows += [
+            _artifact("20260727T050000Z", 46.1, 80.0, 33.9,
+                      org_pillars=anchor["org_pillars"],
+                      com_pillars={"transactability": 75.0, "legibility": 90.9}),
+            _artifact("20260727T060000Z", 46.1, 78.7, 32.6,
+                      org_pillars=anchor["org_pillars"],
+                      com_pillars={"transactability": 62.5, "legibility": 90.9}),
+            _artifact("20260727T070000Z", 46.1, 76.2, 30.1,
+                      org_pillars=anchor["org_pillars"],
+                      com_pillars={"transactability": 62.5, "legibility": 90.9}),
+        ]
+        _write_series(tmp, rows)
+        hist = ch.load_history(tmp)
+        corr = hist.corroboration
+        _check(corr is not None, "sustained anchored drift with an isolated pillar -> a corroboration")
+        _check(corr.driver == ch.CANONICAL_WITH_RAILS, f"side cause drives with-rails, got {corr.driver}")
+        _check(corr.pillar_domain == ch.CANONICAL_WITH_RAILS, f"pillar mover on with-rails, got {corr.pillar_domain}")
+        _check(corr.pillar == "transactability", f"the moving pillar is transactability, got {corr.pillar}")
+        _check(corr.same_side is True, "both mechanisms finger the same side")
+        _check(corr.same_direction is True, "both point the same way (down)")
+        _check(corr.corroborated is True, "-> CORROBORATED")
+        out = ch.render(hist)
+        _check("corroboration:" in out, "render surfaces a corroboration line")
+        _check("CORROBORATED" in out, "render names the decision corroborated")
+        _check(hist.recapture.code == ch.REC_DEFER, f"the decision it backs is defer, got {hist.recapture.code}")
+
+    # (b) NON-VACUOUS side disagreement: the with-rails OVERALL falls (side driver =
+    #     with-rails) but the largest PILLAR move is on the no-rails side (its
+    #     transactability jumps while its overall stays flat). The two mechanisms
+    #     disagree on the driver -> NOT corroborated. A readout blind to this would
+    #     mis-sell a single-signal decision as two-mechanism-backed.
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [_artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4, **anchor) for i in range(1, 5)]
+        rows += [
+            _artifact("20260727T050000Z", 46.1, 80.0, 33.9,
+                      org_pillars={"transactability": 55.0, "legibility": 36.4},
+                      com_pillars=anchor["com_pillars"]),
+            _artifact("20260727T060000Z", 46.1, 79.0, 32.9,
+                      org_pillars={"transactability": 60.0, "legibility": 36.4},
+                      com_pillars=anchor["com_pillars"]),
+            _artifact("20260727T070000Z", 46.1, 78.7, 32.6,
+                      org_pillars={"transactability": 60.0, "legibility": 36.4},
+                      com_pillars=anchor["com_pillars"]),
+        ]
+        _write_series(tmp, rows)
+        hist = ch.load_history(tmp)
+        corr = hist.corroboration
+        _check(corr is not None, "still a corroboration object (both mechanisms present)")
+        _check(corr.driver == ch.CANONICAL_WITH_RAILS, f"side driver with-rails (its overall fell), got {corr.driver}")
+        _check(corr.pillar_domain == ch.CANONICAL_NO_RAILS, f"pillar mover on no-rails, got {corr.pillar_domain}")
+        _check(corr.same_side is False, "the two mechanisms disagree on the side")
+        _check(corr.corroborated is False, "-> NOT corroborated")
+        out = ch.render(hist)
+        _check("NOT corroborated" in out, "render reports the disagreement honestly")
+
+    # (c) NON-VACUOUS direction disagreement: with-rails drives both (its overall
+    #     falls, its pillar is the largest mover) but the pillar RISES while the
+    #     overall falls -> same side, opposite direction -> NOT corroborated.
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [_artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4, **anchor) for i in range(1, 5)]
+        rows += [
+            _artifact("20260727T050000Z", 46.1, 80.0, 33.9,
+                      org_pillars=anchor["org_pillars"],
+                      com_pillars={"transactability": 95.0, "legibility": 90.9}),
+            _artifact("20260727T060000Z", 46.1, 79.0, 32.9,
+                      org_pillars=anchor["org_pillars"],
+                      com_pillars={"transactability": 99.0, "legibility": 90.9}),
+            _artifact("20260727T070000Z", 46.1, 78.7, 32.6,
+                      org_pillars=anchor["org_pillars"],
+                      com_pillars={"transactability": 99.0, "legibility": 90.9}),
+        ]
+        _write_series(tmp, rows)
+        hist = ch.load_history(tmp)
+        corr = hist.corroboration
+        _check(corr.same_side is True, "same side drives both (with-rails)")
+        _check(corr.same_direction is False, "overall fell but the pillar rose -> opposite directions")
+        _check(corr.corroborated is False, "-> NOT corroborated")
+
+    # (d) None when in-band: no divergence cause, so nothing to corroborate — never a
+    #     fabricated corroboration claim, and the render carries no corroboration line.
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [_artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4, **anchor) for i in range(1, 5)]
+        _write_series(tmp, rows)
+        hist = ch.load_history(tmp)
+        _check(hist.band == ch.BAND_IN, "the flat series is in-band")
+        _check(hist.corroboration is None, "in-band -> no corroboration claim")
+        _check("corroboration:" not in ch.render(hist), "render omits the corroboration line in-band")
+
+
+def test_decision_corroboration_on_real_series_is_coherent() -> None:
+    print("test_decision_corroboration_on_real_series_is_coherent")
+    # End-to-end on the REAL committed series, recovery-tolerant: when the live drift
+    # is a sustained, anchored, single-pillar move, the corroboration object must be
+    # present and MUST agree with the primitives it reads (its driver == the side
+    # cause's driver, its pillar side == the attribution top's side) and the render
+    # must surface the line. If the site recovered to in-band (or no pillar isolated),
+    # the honest state is no-corroboration and the claim is correctly skipped.
+    hist = ch.load_history()
+    corr = hist.corroboration
+    if (
+        hist.band == ch.BAND_IN
+        or hist.divergence_cause is None
+        or hist.attribution is None
+        or hist.attribution.top is None
+    ):
+        _check(corr is None, "no both-mechanism state -> no corroboration claim")
+        return
+    _check(corr is not None, "out-of-band anchored drift with an isolated pillar gets a corroboration")
+    _check(corr.driver == hist.divergence_cause.driver, "corroboration driver == side cause driver")
+    _check(
+        corr.pillar_domain == hist.attribution.top.domain,
+        "corroboration pillar side == attribution top side",
+    )
+    _check(corr.pillar_change == hist.attribution.top.change, "corroboration reads the top mover's change")
+    _check("corroboration:" in ch.render(hist), "the real render carries the corroboration line")
+
+
 def test_noise_floor_is_deterministic_on_real_series() -> None:
     print("test_noise_floor_is_deterministic_on_real_series")
     # THE load-bearing calibration finding: on the committed live series every
@@ -1839,6 +1978,8 @@ def main() -> int:
         test_recapture_advice_reviews_when_no_anchor,
         test_recapture_advice_on_real_series_is_coherent,
         test_real_series_defer_decision_is_corroborated_by_both_mechanisms,
+        test_decision_corroboration_agrees_disagrees_and_none,
+        test_decision_corroboration_on_real_series_is_coherent,
         test_recapture_advice_prose_is_host_relabel_invariant,
         test_noise_floor_is_deterministic_on_real_series,
         test_noise_floor_sides_are_deterministic_on_real_series,

@@ -1696,6 +1696,19 @@ its <b>{nf.n_in_band}</b> in-band re-scores: &sigma;={nf.stddev:.2f}, worst dive
     if adv is not None and adv.code != ch.REC_NO_DATA:
         rec_color = _HISTORY_REC_COLOR.get(adv.code, "#667085")
         rec_label = ch._REC_LABEL.get(adv.code, adv.code)
+        # Whether that decision is CORROBORATED by both independent drift mechanisms —
+        # the side-level cause (overalls) and the pillar-level attribution (per-pillar)
+        # fingering the same side moving the same way (Cycle 208). It surfaces WHY the
+        # recommendation holds — two independent decompositions concurring, not one
+        # number — the crux the real-series guard pins internally. None (and so
+        # omitted) unless both mechanisms are present with an isolated pillar.
+        corr = hist.corroboration
+        corr_p = ""
+        if corr is not None:
+            corr_p = (
+                f'\n<p style="margin-top:12px"><b>Corroboration:</b> '
+                f'{_esc(ch.corroboration_verdict(corr))}.</p>'
+            )
         rec_card = f"""<div class="card">
 <h2>Re-capture decision</h2>
 <p>Does the committed fixture still represent the true capability gap, or has the
@@ -1704,7 +1717,7 @@ This synthesizes the band, sustained-run, pillar and side diagnostics above into
 recommendation &mdash; a decision, never an action (re-capturing the pinned baseline
 is a <span class="chip">[LOCAL]</span>, comparability-affecting step).</p>
 <p style="margin-top:12px"><b style="color:{rec_color}">{_esc(rec_label)}</b>
-&mdash; {_esc(adv.reason)}.</p>
+&mdash; {_esc(adv.reason)}.</p>{corr_p}
 </div>"""
 
     body = f"""{nav}{intro}

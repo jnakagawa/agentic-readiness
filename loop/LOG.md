@@ -3,6 +3,75 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 208 — 2026-08-03T20:14Z — READOUT — surface the re-capture decision's TWO-MECHANISM corroboration in the drift block: the operator sees WHY defer, not just the code
+
+WHAT/WHY (READOUT). Cycle 207 pinned INTERNALLY that on the real series the re-capture DECISION is DEFER and
+that DEFER is corroborated by BOTH independent drift mechanisms (side-level `divergence_cause` from overalls
++ pillar-level `attribution` from per-pillar scores, fingering the same with-rails softening). But that
+corroboration was never SURFACED to the operator: the terminal `re-capture:` line and the HTML "Re-capture
+decision" card stated only the SIDE-level reason ("the driftflight.com reference SOFTENED (−9.3)"); the
+`driver:` line named the pillar on concurrence but framed it as drift description, not as the decision's
+evidential basis. A reader saw the recommendation and one reason, never "this rests on two independent
+decompositions concurring, not one number." This cycle makes that an explicit, computed readout fact on both
+surfaces. New in `asrs/canonical_history.py`: `DecisionCorroboration` (driver/pillar sides + `same_side`,
+`same_direction`, `corroborated` properties), pure `decision_corroboration(history)` (reads the already-
+computed cause + attribution; None unless both present with an isolated pillar), and `corroboration_verdict`
+(a capability-lens sentence — CORROBORATED with both signed moves, or NOT corroborated naming the
+disagreement honestly). `summarize` sets `hist.corroboration`; `render` emits a `corroboration:` line after
+`re-capture:`; the HTML rec_card gets a **Corroboration:** paragraph.
+
+WHY IT MATTERS. DEFER is comparability-affecting — it says "do NOT re-pin the frozen baseline to what may be
+a transient with-rails site regression." The single fact that makes a DEFER trustworthy to an operator is
+that it is NOT a single-signal artifact: the overall-score decomposition and the independent per-pillar
+decomposition agree the with-rails reference softened. Naming that on the readout is the difference between
+an operator TRUSTING the defer and an operator having to re-derive the cross-check by eye from three separate
+lines. It also makes a genuine DISAGREEMENT loud: if the two mechanisms ever diverge (side blames one store,
+the largest pillar move is on the other, or they point opposite directions), the readout now says "NOT
+corroborated — weigh with caution" instead of silently presenting a one-signal decision as settled.
+
+METHOD / NON-VACUITY. `test_decision_corroboration_agrees_disagrees_and_none` builds four synthetic series
+(the verify artifact carries `overall` and `pillars` as independent fields, so a disagreement is constructed
+by moving one without the other): (a) with-rails overall AND its transactability pillar both fall →
+CORROBORATED, render says "CORROBORATED", decision is DEFER; (b) NON-VACUOUS side disagreement — with-rails
+overall falls (side driver) but the largest pillar move is on the no-rails side → `same_side False`, render
+says "NOT corroborated"; (c) NON-VACUOUS direction disagreement — with-rails drives both but its pillar RISES
+while its overall falls → `same_direction False`; (d) in-band → `corroboration is None`, render omits the
+line. `test_decision_corroboration_on_real_series_is_coherent` (recovery-tolerant) asserts on the REAL
+committed series that the corroboration agrees with the primitives it reads (driver == cause driver, pillar
+side == attribution top side, pillar_change == top change) and the render carries the line — currently
+non-vacuous (CORROBORATED: driftflight.com overall −9.3 + transactability −25.0). Vendor-neutral: the domains
+come from `corr` (the module reference-pair constants) and are compared only for EQUALITY to each other,
+never special-cased by host identity (the host-relabel invariance the sibling drift diagnostics already pin
+carries through unchanged — 24/24 green).
+
+SHIP CLASS + evidence. READOUT, display-only, OFF the scoring path: `git diff --name-only` =
+`asrs/canonical_history.py`, `asrs/scorecard.py`, `tests/test_canonical_history.py` ONLY; scoring-path diff
+(`asrs/scoring.py asrs/probes/ rubric/ fixtures/`) EMPTY → score-neutral, NOT peer-gated, direct-to-main.
+`test_canonical_history.py` 50→52; full suite 433→435, 0 failures. Canonical PAIR unchanged: in-cloud replay
+guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7.
+
+LIVE CANONICAL SIGNAL. Newest LOCAL artifact `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is
+~64.4h old at this 20:14Z fire — PAST the 6h floor (machine-asleep / runner-lag, cloud cannot repair;
+already flagged in the 16:17Z Cycle-204 digest). Its LIVE re-score: drift-flight.org 46.1 F /
+driftflight.com 76.2 C / +30.1 / transactability 62.5 — the very with-rails softening this cycle's
+corroboration readout now explains to the operator (off the scoring path; the frozen replay guard stays the
+in-cloud regression signal). 20:14Z is NOT first-after-16:00 UTC (Cycle 204 sent today's digest at 16:17Z) →
+no digest DM per comms policy; display-only / score-neutral, no sensitive-class PR, nothing score-moving. No
+open peer-gated PRs (`list_pull_requests` state=open → []) → no first-duty review. INFRA note: fresh checkout
+landed on the stale shallow-clone local `main` ref `3796519`; reconciled to origin/main `7e55c45` (Cycle 207
+tip) via `git checkout -B main origin/main` (the benign shallow-clone "(forced update)" — NOT a history
+rewrite, invariant #5 intact). Fresh `.venv` + requests/pyyaml/eth-account/pytest, full suite green.
+
+NEXT HYPOTHESIS (METHOD 209). Rotate METHOD next (Cycle 208 was READOUT; METHOD → COVERAGE → TRUTH →
+READOUT). The drift block now surfaces band, noise floor, attribution, attribution-stability, driver, the
+re-capture decision, AND its two-mechanism corroboration — the READOUT frontier on the canonical-history
+surface is well-saturated. A METHOD candidate: a coupling guard tying the `corroboration_verdict` wording to
+the `DecisionCorroboration` booleans (the CORROBORATED/NOT-corroborated word must be derived FROM
+`corr.corroborated`, so the prose cannot lie), or a fresh attribution/invariance guard elsewhere in the
+calibration/history series. Substantive frontier (GENUINE new thin-bank signals from real fixtures, the
+negative anchor's two-crawl static cross-validation via a `moleskine.com` fixture, ACP/UCP/MPP,
+transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+
 ## Cycle 207 — 2026-08-03T19:13Z — TRUTH — the operator-facing re-capture DECISION on the REAL series is DEFER, and that DEFER is corroborated by BOTH independent drift mechanisms
 
 WHAT/WHY (TRUTH). Added `test_real_series_defer_decision_is_corroborated_by_both_mechanisms` to

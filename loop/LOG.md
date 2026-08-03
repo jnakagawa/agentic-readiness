@@ -3,6 +3,65 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 194 — 2026-08-03T06:1xZ — COVERAGE — service_booking `schedule a …` sales-CTA precision guard (the `book` fix's sibling)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed. Infra/self-heal: fresh checkout detached on the Cycle-193 tip `faeadfb`;
+`git checkout -B main origin/main` aligned to origin/main `faeadfb`, tree clean, invariant #5 intact.
+Fresh `.venv` + `requests pyyaml eth-account pytest`; imports verified; 422 tests green pre-flight (423
+after this cycle's +1). Runner AT-FLOOR: newest verify `runs/local/verify_20260801T035047Z.json`
+(03:50Z Aug-1) is ~50.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
+cloud cannot repair; already flagged in the 16:12Z Cycle-181 digest). This fire is NOT
+first-after-16:00 UTC → no digest DM (score-neutral off-scoring-path COVERAGE increment, no
+sensitive-class PR, nothing score-moving).
+
+**What (COVERAGE).** Narrowed the `service_booking` archetype's `schedule` signal in `asrs/offering.py`
+from the bare `\bschedule (a|an|your)\b` to
+`\bschedule (?:a|an|your) (?!(?:demo|call|walk[- ]?through|briefing|meeting)s?\b)\w+`, and added
+`test_service_booking_schedule_precision_synthetic` to `tests/test_offering.py` (6 genuine positives
+fire / 7 schedule-a-<CTA> negatives dodge, incl. the "schedule your demos" plural + hyphenated
+"walk-through"). This is the DIRECT SIBLING of the Cycle-190 `book` fix: `schedule` carried the
+identical unfixed sales-CTA gap. Verified at fire start that the bare signal FIRED on "Schedule a demo",
+"Schedule a call", "schedule a meeting", "Schedule a briefing" — the exact B2B SALES CTA family that is
+NOT a bookable service.
+
+**Why.** service_booking is tied with data_retrieval for the THINNEST archetype (5 signals), so a FALSE
+claim does maximum damage — the site gets probed with a reservation intent it does not serve (the exact
+archetype pollution the offering module removes). "Schedule a demo / call / meeting" is arguably the
+single most common SaaS sales CTA on the web; left bare, `schedule` conjured service_booking on any
+pure-API / SaaS storefront carrying that button. Cycle 190's own note flagged the `book`/`schedule`
+family as the minefield; this closes the mirror gap. Serves measurement rigor on the north-star's "many
+storefront types" axis (a metered-API storefront with a "Schedule a demo" CTA is no longer mis-typed).
+
+**Method / non-vacuity + teeth.** Positives are schedule-ONLY prose (session / consultation / table /
+pickup / visit / fitting — no sibling service_booking signal rescues them), so each genuinely exercises
+the narrowed branch; if `schedule` broke, all 6 would fail. Negatives are clean schedule-a-<CTA>
+strings with no other service_booking trigger. Recall-conscious per the thin-archetype caution: only
+the DIRECT sales-CTA object is stripped (a rare padded "schedule a quick demo" still slips — accepted,
+the same tradeoff `book` took; a genuine site trips appointment / reservation / availability anyway).
+
+**Ship class.** Direct-to-main. The change is confined to the offering CLASSIFIER
+(`discover_offering`/`classify_offering`), which drives `--battery auto` task selection ONLY and is OFF
+the scoring path — NOT a scoring-semantics change (no check add/remove, no weight/cap/version). Scoring
+diff is empty of `asrs/scoring.py`/`rubric/`; the change is a precision-narrowing bug-fix.
+
+**Validation / canonical pair.** Score-neutral: `git diff --name-only` = `asrs/offering.py` +
+`tests/test_offering.py` ONLY (no scoring-path file). Canonical-invariant by CONSTRUCTION — narrowing
+only REMOVES matches, and no committed fixture even contains the word "schedule" (grep-verified), so
+service_booking stays NA on all five canonical fixtures (`test_offering_canonical.py` 58/58 green).
+In-cloud replay guard (the authoritative canonical signal) 24/24: **drift-flight.org 46.1 F /
+driftflight.com 85.5 B / delta +39.4**, 0 replay-miss, rubric v0.7 — UNCHANGED. Full suite 422→423;
+`test_offering.py` +1. Live signal (read, not re-run): the local runner's last live re-score persists
+driftflight.com 76.2 C / +30.1 / transactability 62.5 (the off-scoring-path transactability-drop
+divergence, Aug-1), tracked separately as the [LOCAL] CHECK-level P0.
+
+**Next hypothesis.** The three cheapest bare-word minefields are now ALL guarded across the two
+thinnest archetypes: `enrich`/`dataset` (data_retrieval, Cycle 186), `book` (service_booking, Cycle
+190), `schedule` (service_booking, this cycle). The next in-cloud precision candidate is
+data_retrieval's bare `lookup` (`\blook ?ups?\b` false-positives on "lookup table" in API docs) or
+subscription's bare `recurring`. The substantive COVERAGE frontier (GENUINE new signals for the thin
+banks) still needs real live fixtures ([LOCAL], unchanged). Rotate to TRUTH next (Cycle 195).
+
 ## Cycle 193 — 2026-08-03T05:19Z — METHOD — the readout's and the calibration's transactability attributions cannot silently drift apart
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

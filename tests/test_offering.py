@@ -928,6 +928,47 @@ def test_service_booking_book_precision_synthetic():
     )
 
 
+def test_service_booking_schedule_precision_synthetic():
+    # The DIRECT SIBLING of test_service_booking_book_precision_synthetic: the
+    # `schedule` signal carried the identical unfixed sales-CTA gap that Cycle 190
+    # closed for `book`. Bare "schedule a/an/your <x>" fired on the same B2B SALES CTA
+    # family ("schedule a demo / call / meeting / walkthrough / briefing"), falsely
+    # claiming service_booking (tied-thinnest archetype -> maximum damage) on a
+    # pure-API / SaaS storefront. The guard strips those unambiguous sales-CTA objects
+    # while keeping every genuine scheduled service. Each POSITIVE is schedule-ONLY
+    # prose (no sibling service_booking signal rescues it), so it exercises the
+    # narrowed schedule branch directly; each NEGATIVE is a schedule-a-<CTA> string
+    # that must NOT conjure service_booking on its own.
+    positives = {
+        "schedule a session": "Schedule a session with a certified trainer today.",
+        "schedule a consultation": "Schedule a consultation to discuss your options.",
+        "schedule a table": "Schedule a table for your dinner party.",
+        "schedule a pickup": "Schedule a pickup at your local branch.",
+        "schedule your visit": "Schedule your visit to the clinic online.",
+        "schedule a fitting": "Schedule a fitting with one of our tailors.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("booking.test", {"homepage": text})
+        assert prof.claims("service_booking"), (name, prof.archetypes)
+    print(f"  ok: {len(positives)} genuine scheduled-service phrasings each claim service_booking")
+
+    negatives = {
+        "schedule a demo": "Schedule a demo to see the API in action.",
+        "schedule a call": "Schedule a call with our sales team.",
+        "schedule a meeting": "Schedule a meeting to learn more.",
+        "schedule a walkthrough": "Schedule a walkthrough of the platform.",
+        "schedule a walk-through": "Schedule a walk-through with an engineer.",
+        "schedule a briefing": "Schedule a briefing with our solutions team.",
+        "schedule demos plural": "Schedule your demos with the team this quarter.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("saas.test", {"homepage": text})
+        assert not prof.claims("service_booking"), (name, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} schedule-a-<sales-CTA> strings do NOT claim service_booking (precision)"
+    )
+
+
 def test_non_storefront_claims_nothing():
     prof = classify_offering("example.test", {"homepage": NULL_HOMEPAGE})
     assert prof.archetypes == [], prof.archetypes
@@ -3926,6 +3967,7 @@ def main() -> int:
         test_data_retrieval_precision_synthetic,
         test_data_retrieval_precision_is_canonical_invariant_on_real_fixtures,
         test_service_booking_book_precision_synthetic,
+        test_service_booking_schedule_precision_synthetic,
         test_non_storefront_claims_nothing,
         test_strength_counts_distinct_signals_and_orders_claims,
         test_classification_is_surface_read_order_invariant,

@@ -1290,7 +1290,25 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"|\bbooking\b", _F)),
         ("appointment", re.compile(r"\bappointments?\b", _F)),
         ("reservation", re.compile(r"\breservations?\b|\breserve (a|an|your|now)\b", _F)),
-        ("schedule", re.compile(r"\bschedule (a|an|your)\b", _F)),
+        # SCHEDULE A SERVICE — the DIRECT SIBLING of the `book` signal above, and its
+        # precision gap was identical. Bare "schedule a/an/your <x>" collided with the
+        # SAME ubiquitous B2B SALES CTA family the Cycle-190 `book` fix excluded —
+        # "schedule a demo / call / meeting / walkthrough / briefing" — none of which is
+        # a bookable SERVICE the storefront sells to an agent; each would falsely conjure
+        # service_booking (tied with data_retrieval for the thinnest archetype, so a
+        # false claim does maximum damage) on a pure-API / SaaS storefront and probe it
+        # with a reservation intent it does not serve. So EXCLUDE those unambiguous
+        # sales-CTA objects while KEEPING every genuine scheduled service (appointment /
+        # session / consultation / table / pickup / visit / ...). Recall-conscious per
+        # the thin-archetype caution: only the DIRECT sales-CTA object is stripped (a
+        # rare padded "schedule a quick demo" still slips — accepted, the same tradeoff
+        # the `book` narrowing took, and a genuine site trips appointment / reservation /
+        # availability anyway). No committed fixture trips this signal (service_booking
+        # is NA on all five per test_offering_canonical, and no fixture even contains the
+        # word "schedule"), so the narrowing is canonical-invariant by construction; the
+        # classifier is off the scoring path.
+        ("schedule", re.compile(
+            r"\bschedule (?:a|an|your) (?!(?:demo|call|walk[- ]?through|briefing|meeting)s?\b)\w+", _F)),
         ("availability", re.compile(r"\bcheck availability\b|\bavailable (times|slots)\b|\btime slots?\b", _F)),
     ],
     "data_retrieval": [

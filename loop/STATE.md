@@ -1,8 +1,41 @@
 # Loop state
 
-- Cycle counter: 193
+- Cycle counter: 194
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-03T05:19Z (Cycle 193) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-03T06:1xZ (Cycle 194) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~50.5h old at the fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; this
+  fire is NOT first-after-16:00 UTC → no DM this fire per comms policy (score-neutral off-scoring-path
+  COVERAGE increment, no sensitive-class PR, nothing score-moving). Live signal (read, not re-run):
+  drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the
+  transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays
+  the frozen independent regression signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this
+  fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 194):
+  fresh checkout detached on the Cycle-193 tip `faeadfb`; `git checkout -B main origin/main` aligned to
+  origin/main `faeadfb`, working tree clean, invariant #5 intact. Fresh `.venv` + `requests pyyaml
+  eth-account pytest`, imports verified, 422 tests green pre-flight (423 after this cycle's +1).
+- FOCUS POINTER (Cycle 194 done): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 194 was
+  COVERAGE, so Cycle 195 is TRUTH). Cycle 194 shipped a **COVERAGE increment — the service_booking
+  `schedule a …` sales-CTA precision guard** (`asrs/offering.py`), the DIRECT SIBLING of the Cycle-190
+  `book` fix. The archetype's `schedule` signal, bare `\bschedule (a|an|your)\b`, fired on the identical
+  ubiquitous B2B SALES CTA family ("schedule a demo / call / meeting / walkthrough / briefing") — none a
+  bookable service — falsely conjuring service_booking (tied with data_retrieval for the THINNEST
+  archetype, so max damage) on a pure-API / SaaS storefront. New form
+  `\bschedule (?:a|an|your) (?!(?:demo|call|walk[- ]?through|briefing|meeting)s?\b)\w+` excludes those
+  unambiguous sales-CTA objects while keeping every genuine scheduled service (session / consultation /
+  table / pickup / visit / fitting). `tests/test_offering.py` +1
+  (`test_service_booking_schedule_precision_synthetic`, 6 schedule-ONLY positives fire / 7 CTA negatives
+  dodge, incl. plural "schedule your demos" + hyphenated "walk-through"). Canonical-invariant by
+  construction (narrowing only removes matches; no committed fixture contains "schedule"; service_booking
+  stays NA on all 5 fixtures per `test_offering_canonical::_MUST_BE_NA`, 58/58). OFF the scoring path
+  (`git diff --name-only` = `asrs/offering.py` + `tests/test_offering.py`; no scoring-path file) →
+  score-neutral, NOT peer-gated, direct-to-main. Full suite 422→423; replay guard 24/24, 46.1 F / 85.5 B
+  / +39.4, 0 replay-miss; rubric v0.7. The three cheapest bare-word minefields across the two thinnest
+  archetypes are now ALL guarded (`enrich`/`dataset` Cycle 186, `book` Cycle 190, `schedule` this cycle).
+  NEXT (TRUTH 195): the in-cloud precision frontier is data_retrieval's bare `lookup` ("lookup table" in
+  API docs) or subscription's bare `recurring`; the substantive COVERAGE frontier (GENUINE new thin-bank
+  signals) stays `[LOCAL]` (real live fixtures — thin-archetype/render/structured-catalog, ACP/UCP/MPP).
+- SUPERSEDED (Cycle 193 runner note): RUNNER AT-FLOOR at 2026-08-03T05:19Z (Cycle 193) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~49.5h old at the 05:19Z fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; 05:19Z is
   NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral METHOD increment,

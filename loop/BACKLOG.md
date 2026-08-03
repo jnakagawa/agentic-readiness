@@ -273,9 +273,19 @@ design in-cloud, execute locally.
   "walk-through") + canonical-invariant by construction (narrowing only removes matches; service_booking stays
   NA on all 5 fixtures per `test_offering_canonical::_MUST_BE_NA`, 58/58); the surface-read-order test that
   had inadvertently ENCODED this false positive ("Book a demo appointment") was corrected to genuine
-  two-signal booking prose. The three cheapest bare-word minefields (`enrich`/`dataset`, Cycle 186; `book`,
-  Cycle 190) are now ALL precision-guarded. This does NOT close the parent item — the thin banks still want
-  GENUINE NEW signals from real fixtures ([LOCAL], unchanged).
+  two-signal booking prose. DONE Cycle 194 (COVERAGE, in-cloud, direct-to-main, score-neutral): the
+  service_booking `schedule` signal — the DIRECT SIBLING of `book`, with the identical unfixed sales-CTA
+  gap — is now guarded. Bare `\bschedule (a|an|your)\b` fired on the same "schedule a demo / call /
+  meeting / walkthrough / briefing" family (verified live at fire start); new form
+  `\bschedule (?:a|an|your) (?!(?:demo|call|walk[- ]?through|briefing|meeting)s?\b)\w+` excludes them
+  while keeping genuine scheduled services (session/consultation/table/pickup/visit/fitting);
+  `test_service_booking_schedule_precision_synthetic` (6 schedule-ONLY positives fire / 7 CTA negatives
+  dodge) + canonical-invariant by construction (no fixture contains "schedule"; service_booking NA on all
+  5, 58/58). The bare-word minefields across the two THINNEST archetypes are now ALL precision-guarded:
+  `enrich`/`dataset` (data_retrieval, Cycle 186), `book` + `schedule` (service_booking, Cycles 190/194).
+  Next in-cloud precision candidate is data_retrieval's bare `lookup` (`\blook ?ups?\b` false-positives on
+  "lookup table" in API docs). This does NOT close the parent item — the thin banks still want GENUINE NEW
+  signals from real fixtures ([LOCAL], unchanged).
 
 - **[LOCAL] Validate the Cycle-178 whitespace-reflow robustness on a REAL line-wrapped surface** (COVERAGE,
   follow-up to Cycle 178). Cycle 178 made `classify_offering` collapse whitespace runs before scanning so

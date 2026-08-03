@@ -3,6 +3,61 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 205 — 2026-08-03T17:19Z — METHOD — the published headline PROSE cannot drift from the live fraction (word derived FROM the number)
+
+WHAT/WHY. Cycle 204 put the sentence "agent-native payment closes ABOUT TWO-THIRDS of the … headline gap …
+the SINGLE MAJORITY DRIVER" onto the PUBLIC methodology page (section 8). Cycle 203's test 14
+(`test_payment_capability_drives_the_majority_of_the_headline_delta`) computes that fraction from the LIVE
+scorer — knock agent-native payment out of the with-rails replay, re-score through scoring's OWN roll-up:
+closed/delta = 0.652. But the page's WORDS and the test's NUMBER were coupled only by a string-PRESENCE
+check (`test_readout.py` asserts "about two-thirds"/"single majority driver" are present) — neither side
+knows the live fraction. A legitimate [LOCAL] canonical re-baseline could move the fraction to 0.48 (no
+longer a MAJORITY) or 0.82 (no longer "about TWO-THIRDS") and BOTH the page and the presence check would
+stay green while the published prose quietly lied. That anti-drift gap was Cycle 204's named METHOD 205
+candidate.
+
+CHANGE (METHOD, tests-only, off the scoring path, score-neutral, direct-to-main). `tests/test_calibration.py`
++1 (14→15): `test_methodology_headline_prose_is_coupled_to_the_live_fraction`, the missing NUMBER↔WORD
+coupling. It recomputes the live majority-driver fraction the SAME way test 14 does (payment knock-out via
+`_STATIC_PAYMENT_CHECKS` substitution → `scoring.score` roll-up → closed/delta), renders the LIVE
+`scorecard._write_methodology_page`, and then DERIVES the required English word FROM the number:
+`_nearest_fraction_word(fraction)` picks the nearest of half / three-fifths / two-thirds / three-quarters /
+four-fifths and asserts the page says "about <word>". So the wording is COMPUTED from the computation, not
+asserted alongside it. (a) coupling: drift the fraction across a band edge → nearest-word flips → the
+still-"two-thirds" page reddens HERE, forcing the prose rewrite in the same re-baseline PR; edit the word off
+the page while the number holds → the presence half reddens. (b) non-vacuous: two-thirds (0.667) is STRICTLY
+the closest simple fraction to the live 0.652 — closer than half OR three-quarters (|0.652−0.667|=0.014) — so
+the word choice is honest, not a convenient round. (c) qualitative claim coupled: the page may call payment
+the "single majority driver" ONLY while the live fraction is a majority (≥0.5). (d) honest complement stays
+coupled: fraction < 1.0 → the page must keep the payment-DOMINATED-not-EXCLUSIVE residual framing.
+
+EVIDENCE. `git diff --name-only` = `tests/test_calibration.py` ONLY; `git diff -- asrs/ rubric/ fixtures/`
+EMPTY → off the scoring path, score-neutral by construction, NOT peer-gated → direct-to-main. New guard
+5/5 assertions green (fraction=0.652 → "about two-thirds", two-thirds strictly nearest, majority ≥0.5,
+dominated-not-exclusive). MUTATION-VERIFIED non-vacuous: patched the rendered page "about two-thirds" →
+"about three-quarters" ⇒ guard REDDENS (word/number disagree); removed "single majority driver" from the
+page ⇒ guard REDDENS (qualitative coupling). Full suite 430→431, 0 failures; `test_calibration.py` 15/15;
+canonical-replay guard 24/24, 0 replay-miss.
+
+CANONICAL PAIR (in-cloud replay guard — authoritative static re-score, 24/24, 0 replay-miss):
+drift-flight.org 46.1 F / driftflight.com 85.5 B / delta +39.4 — UNCHANGED (tests-only, scoring path
+byte-identical). Live signal (read, not re-run — runner AT-FLOOR, newest artifact
+verify_20260801T035047Z.json ~61.5h old at 17:19Z, machine-asleep/runner-lag, cloud cannot repair):
+drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the off-scoring-path
+transactability-drop divergence PERSISTS (Aug-1), untouched by this change. Rubric v0.7.
+
+COMMS. No DM. This fire (17:19Z) is NOT the first cycle after 16:00 UTC (Cycle 204 at 16:17Z already sent
+today's digest); tests-only score-neutral off-scoring-path METHOD increment, no sensitive-class PR, nothing
+score-moving → comms policy says quiet.
+
+NEXT HYPOTHESIS (COVERAGE 206). Rotate COVERAGE next (Cycle 205 was METHOD; METHOD → COVERAGE → TRUTH →
+READOUT). The pillar- AND overall-level payment attributions are now both on the page, both test-pinned, and
+the overall PROSE is now number-coupled. In-cloud COVERAGE candidate: a metered_api bare-word precision
+audit (largest bank, 26 signals, never swept for broad-English collisions — the last un-audited archetype
+bank after enrich/dataset/lookup, book/schedule, recurring). Substantive frontier (GENUINE new thin-bank
+signals from real fixtures, the negative anchor's two-crawl static cross-validation via a `moleskine.com`
+fixture, ACP/UCP/MPP live handshakes, transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+
 ## Cycle 204 — 2026-08-03T16:17Z — READOUT — carry the overall-level payment attribution onto the methodology page: the cited headline gap is payment-DOMINATED, not payment-EXCLUSIVE
 
 WHAT/WHY. Cycle 203's test 14 (`test_payment_capability_drives_the_majority_of_the_headline_delta`)

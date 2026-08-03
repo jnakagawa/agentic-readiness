@@ -74,6 +74,8 @@ from __future__ import annotations
 import json
 import os
 import sys
+import tempfile
+from pathlib import Path
 
 # Make the worktree's asrs importable when run as a bare script.
 _REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -1355,6 +1357,122 @@ def test_payment_capability_drives_the_majority_of_the_headline_delta() -> None:
     )
 
 
+# ---------------------------------------------------------------------------
+# 15. THE PUBLISHED HEADLINE PROSE CANNOT DRIFT FROM THE LIVE FRACTION.
+#     Cycle 204 put a sentence onto the PUBLIC methodology page (section 8):
+#     agent-native payment "closes ABOUT TWO-THIRDS of the ... headline gap" and
+#     is "the SINGLE MAJORITY DRIVER" of the cited number.  Cycle 203's test 14
+#     computes that fraction from the LIVE scorer (knock payment out, re-score
+#     through scoring's own roll-up: closed/delta = 0.652).  But the page's WORDS
+#     and the test's NUMBER were coupled only by a string-PRESENCE check
+#     (test_readout.py): the page says "about two-thirds" and a test asserts that
+#     string is present — neither knows the live fraction.  A legitimate [LOCAL]
+#     canonical re-baseline could move the fraction to 0.48 (no longer a MAJORITY)
+#     or 0.82 (no longer "about TWO-THIRDS") and BOTH the page and the presence
+#     check would stay green while the published prose quietly lied.
+#
+#     This guard is the missing coupling.  It recomputes the live fraction the
+#     SAME way test 14 does, then derives — from the NUMBER — which simple-fraction
+#     English word honestly names it (the nearest of half / three-fifths /
+#     two-thirds / three-quarters / four-fifths), and asserts the page uses THAT
+#     word ("about <word>").  So the wording is computed from the computation, not
+#     asserted alongside it:
+#       * drift the fraction across a band edge and the nearest-word flips, so the
+#         required phrase changes and the still-"two-thirds" page reddens HERE —
+#         forcing the prose to be rewritten in the same re-baseline PR;
+#       * edit the word off the page while the number holds and the presence half
+#         reddens.
+#     It also couples the QUALITATIVE claim: the page may call payment the "single
+#     majority driver" only while the live fraction is actually a majority
+#     (>= 0.5).  Non-vacuous: two-thirds (0.667) must be strictly the CLOSEST
+#     simple fraction to the live 0.652 — closer than half OR three-quarters — so
+#     the word choice is the honest one, not a convenient round-down.  Shares test
+#     9(d)'s re-baseline tripwire (the 0.652 flows from the 85.5/46.1 anchors).
+# ---------------------------------------------------------------------------
+
+# The simple-fraction English words the headline prose may honestly use, mapped
+# to their value.  The page must use the word NEAREST to the live fraction.
+_SIMPLE_FRACTION_WORDS = {
+    "half": 1 / 2,
+    "three-fifths": 3 / 5,
+    "two-thirds": 2 / 3,
+    "three-quarters": 3 / 4,
+    "four-fifths": 4 / 5,
+}
+
+
+def _nearest_fraction_word(x: float) -> str:
+    return min(_SIMPLE_FRACTION_WORDS, key=lambda w: abs(_SIMPLE_FRACTION_WORDS[w] - x))
+
+
+def test_methodology_headline_prose_is_coupled_to_the_live_fraction() -> None:
+    print("test_methodology_headline_prose_is_coupled_to_the_live_fraction")
+    # Recompute the live majority-driver fraction exactly as test 14 does: knock
+    # agent-native payment out of the with-rails replay (substitute the no-rails
+    # FULL CheckResult per payment check) and re-score through scoring's own
+    # roll-up, then take closed/delta over the pinned headline anchors.
+    com, com_misses = _static_report(_ANCHOR_DOMAIN)       # with-rails ceiling
+    org, org_misses = _static_report("drift-flight.org")   # no-rails floor
+    _check(
+        not com_misses and not org_misses,
+        "both canonical static replays are like-for-like (no replay-miss)",
+    )
+    org_by_id = {c.check_id: c for c in org.checks}
+    knocked_checks = [
+        org_by_id[c.check_id] if c.check_id in _STATIC_PAYMENT_CHECKS else c
+        for c in com.checks
+    ]
+    knocked = scoring.score(knocked_checks, scoring.load_rubric(None), _ANCHOR_DOMAIN)
+    delta = com.overall_score - org.overall_score
+    closed = com.overall_score - knocked.overall_score
+    fraction = closed / delta
+
+    # Render the LIVE public methodology page (the same builder the card links to).
+    with tempfile.TemporaryDirectory() as d:
+        page = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    collapsed = " ".join(page.split()).lower()
+
+    # (a) THE COUPLING: derive the required English word FROM the number, and
+    #     assert the page uses "about <word>".  If a re-baseline moves the fraction
+    #     across a band edge, `word` flips and the page (still "two-thirds") fails.
+    word = _nearest_fraction_word(fraction)
+    _check(
+        f"about {word}" in collapsed,
+        f"the methodology page describes the live fraction with its nearest simple "
+        f"fraction: fraction={fraction:.3f} -> the page must say 'about {word}'",
+    )
+
+    # (b) NON-VACUOUS word choice: two-thirds is STRICTLY the closest simple
+    #     fraction to the live value — closer than half or three-quarters — so
+    #     "about two-thirds" is the honest word, not a convenient round.
+    _check(
+        word == "two-thirds"
+        and abs(fraction - 2 / 3) < abs(fraction - 1 / 2)
+        and abs(fraction - 2 / 3) < abs(fraction - 3 / 4),
+        f"two-thirds is strictly the nearest simple fraction to the live "
+        f"{fraction:.3f} (|{fraction:.3f}-0.667|={abs(fraction - 2/3):.3f} < "
+        f"both half and three-quarters)",
+    )
+
+    # (c) THE QUALITATIVE CLAIM is coupled too: the page may call payment the
+    #     "single majority driver" ONLY while the live fraction is a majority.
+    _check(
+        fraction >= 0.5 and "single majority driver" in collapsed,
+        f"the page names payment the 'single majority driver' and the live "
+        f"fraction is genuinely a majority (fraction={fraction:.3f} >= 0.5)",
+    )
+
+    # (d) HONEST COMPLEMENT stays coupled: the number is NOT the whole delta, so
+    #     the page must keep the "dominated, not exclusive" residual framing.
+    _check(
+        fraction < 1.0 - 1e-9
+        and "dominated" in collapsed
+        and "exclusive" in collapsed,
+        f"payment closes a MAJORITY but not ALL of the gap (fraction={fraction:.3f}) "
+        f"and the page frames it payment-dominated, not payment-exclusive",
+    )
+
+
 def main() -> int:
     tests = [
         test_static_payment_prediction_is_behaviorally_corroborated,
@@ -1371,6 +1489,7 @@ def main() -> int:
         test_with_rails_ceiling_is_payment_capability_not_category_artifact,
         test_ceiling_payment_attribution_is_weight_robust,
         test_payment_capability_drives_the_majority_of_the_headline_delta,
+        test_methodology_headline_prose_is_coupled_to_the_live_fraction,
     ]
     failed = 0
     for t in tests:

@@ -3,6 +3,62 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 201 — 2026-08-03T13:25Z — METHOD — verdict_stability is MONOTONE in disagreement and shares ONE threshold with the citability gate
+
+WHAT/WHY. `verdict_stability` (asrs/reliability.py) is the single number the whole
+benchmark's "is this safe to CITE?" credibility rests on: `quotability()` reads it to
+call a behavioral panel CITABLE (`reproducible`) vs PROVISIONAL (`provisional-unstable`),
+and the descriptive band `_label` reads it to print stable/mixed/unstable. The existing
+reliability tests (1-8) pin WHAT it computes at specific point values, and test 9 pins
+that it ignores trial ARRIVAL ORDER — but two load-bearing SHAPE properties were unpinned,
+and both directly gate the credibility number:
+  (A) MONOTONICITY — adding disagreement to a panel can only LOWER stability and only
+      DEGRADE citability (`reproducible` -> `provisional-unstable`, never the reverse). A
+      refactor that let MORE disagreement RAISE stability would silently stamp a flipping
+      panel citable.
+  (B) THRESHOLD COHERENCE — the "stable" band and the "reproducible" citability verdict
+      cut over at the SAME threshold (`_STABLE_MIN`), so a reader can never see a "stable"
+      label on a number the gate calls provisional (or vice versa). This holds by
+      construction today (both read the module `_STABLE_MIN`), but nothing CAUGHT a future
+      divergent hardcoded literal in `quotability`.
+
+CHANGE (tests-only, off the scoring path). `tests/test_reliability.py` +1 function
+(`test_verdict_stability_is_monotone_and_shares_the_citability_threshold`), 9->10 in-file,
+suite 427->428. Three parts:
+  - (A) build a strictly-descending stability ladder [1.0,0.8,0.6,0.4,0.2,0.0] by splitting
+    an increasing prefix of the 5 checkpoints 50/50; assert stability strictly decreases,
+    citability tracks `>= _STABLE_MIN` exactly, and once provisional never rebounds to
+    citable. Non-vacuous: the ladder spans BOTH citability verdicts and stable..unstable.
+  - (B) EXHAUSTIVE boundedness+formula over EVERY n=4 panel (reliability depends only on the
+    per-checkpoint pass COUNT, so `itertools.product(range(5), repeat=5)` = all 3125 distinct
+    4-run agreement structures): stability stays in [0,1] and equals the independent
+    recompute `1 - 2*mean(minority)`.
+  - (C) THRESHOLD COHERENCE via a MUTATION sweep. Construct an interior panel at stability
+    0.75 (n=8: one checkpoint split 4/4, one split 1/7, rest unanimous), monkeypatch
+    `_STABLE_MIN` across 0.75 (0.60..0.90) and assert the "stable" label and the
+    "reproducible" gate agree about THIS panel at every threshold — only possible if
+    quotability reads the same `_STABLE_MIN` the label does. TEETH VERIFIED out-of-band: a
+    simulated `quotability` with a hardcoded-0.8 cutoff is CAUGHT at thr in {0.60,0.70,0.74}
+    (label stable / gate provisional). `_STABLE_MIN` restored in a `finally`.
+
+VALIDATION. Full suite 427->428 green. Scoring-path diff EMPTY (`git diff --name-only` =
+`tests/test_reliability.py` only; no asrs/ rubric/ fixtures/ changes) -> score-NEUTRAL,
+NOT peer-gated, direct-to-main. Canonical replay guard 24/24, **drift-flight.org 46.1 F /
+driftflight.com 85.5 B / delta +39.4**, 0 replay-miss (scoring path byte-for-byte
+unchanged), rubric v0.7. Live signal (read, not re-run — runner AT-FLOOR, newest verify
+`runs/local/verify_20260801T035047Z.json` ~57.5h old, already flagged): live driftflight.com
+76.2 C / +30.1 / transactability 62.5 divergence PERSISTS off the scoring path; frozen replay
+guard stays the independent in-cloud regression signal.
+
+NEXT (COVERAGE 202). The reliability/variance layer's SHAPE is now pinned (order-invariance
+9, monotonicity+threshold-coherence 201). Candidate frontiers: carry the citability
+verdict's monotone/threshold contract into a READOUT-wording guard so the public card can
+never mislabel provisional as stable; or a COVERAGE thin-bank precision candidate
+(subscription bare `recurring` -> "recurring theme/bug" false positive, next in-cloud
+precision minefield). Substantive frontier (GENUINE new thin-bank signals from real
+fixtures, the negative anchor's two-crawl static cross-validation via a moleskine.com
+fixture, ACP/UCP/MPP, transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+
 ## Cycle 200 — 2026-08-03T12:26Z — READOUT — surface the positive-side counterfactual: strip payment and the ceiling meets the floor at every weighting
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

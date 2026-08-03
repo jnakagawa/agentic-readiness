@@ -1766,6 +1766,21 @@ design in-cloud, execute locally.
 
 ## P2
 
+- **[CANDIDATE, READOUT] Card-surface citability monotone/threshold guard** (observation, Cycle 201).
+  Cycle 201 pinned in the reliability LAYER that `verdict_stability` is monotone in disagreement and that
+  the "stable" label + the "reproducible" citability gate share ONE `_STABLE_MIN`
+  (`test_reliability.py::test_verdict_stability_is_monotone_and_shares_the_citability_threshold`). The
+  PUBLIC card renders both the band label and the quotability verdict; a readout-wording guard should assert
+  the CARD can never print a "stable"/reproducible-styled cell on a panel the gate calls provisional (the
+  card-surface mirror of the layer coherence guard), so a display refactor can't desync the shown label from
+  the shown citability. In-cloud, off the scoring path, score-neutral; a natural COVERAGE/READOUT increment.
+
+- **[CANDIDATE, COVERAGE] subscription bare-`recurring` precision guard** (observation, carried from Cycle
+  198). `\brecurring\b` false-positives on non-billing prose ("recurring theme", "recurring bug"); it is the
+  next in-cloud thin-bank bare-word minefield after enrich/dataset/book/schedule/lookup. Needs a
+  billing-context guard + a precision/canonical-invariant synthetic guard pair, same shape as Cycles
+  186/190/194/198. In-cloud, off the scoring path, score-neutral.
+
 - **[CANDIDATE, METHOD] Metamorphic grid — remaining axes/poles** (observation, Cycle 129;
   updated Cycle 133). A SIXTH axis now exists — TEXT-CASING invariance (Cycle 133,
   `test_offering_casing_invariance_org`/`_com`, `_assert_casing_invariance` + `_casing_struct`):

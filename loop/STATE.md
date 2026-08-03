@@ -1,8 +1,38 @@
 # Loop state
 
-- Cycle counter: 200
+- Cycle counter: 201
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-03T12:26Z (Cycle 200) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-03T13:25Z (Cycle 201) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~57.6h old at the fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; this
+  13:25Z fire is NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral
+  off-scoring-path METHOD increment, no sensitive-class PR, nothing score-moving). Live signal (read, not
+  re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the
+  transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays
+  the frozen independent regression signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this
+  fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 201): fresh
+  checkout on the Cycle-200 tip `cdc3b53`, working tree clean, invariant #5 intact. Fresh `.venv` +
+  `requests pyyaml eth-account pytest`, imports verified, 427 tests green pre-flight (428 after +1).
+- FOCUS POINTER (Cycle 201 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 201 was
+  METHOD, so Cycle 202 is COVERAGE). Cycle 201 shipped a **METHOD increment — verdict_stability is MONOTONE
+  in disagreement and shares ONE threshold with the citability gate** (`tests/test_reliability.py`, 9→10
+  in-file, suite 427→428, `test_verdict_stability_is_monotone_and_shares_the_citability_threshold`).
+  verdict_stability is the number the whole benchmark's "is this safe to CITE?" credibility rests on;
+  point-value tests (1-8) and order-invariance (9) pinned WHAT it computes, but not the SHAPE. New guard
+  pins: (A) MONOTONICITY — more panel disagreement can only LOWER stability and only DEGRADE citability
+  (reproducible→provisional, never reverse), via a strictly-descending ladder [1.0..0.0]; (B) EXHAUSTIVE
+  boundedness+formula over EVERY n=4 panel (all 3125 pass-count vectors: stability ∈ [0,1] and ==
+  1-2*mean(minority)); (C) THRESHOLD COHERENCE — the "stable" label and the "reproducible" gate cut over at
+  the SAME `_STABLE_MIN`, proven by a MUTATION sweep of `_STABLE_MIN` across an interior 0.75 panel (n=8);
+  a hardcoded-0.8 gate is CAUGHT (teeth verified out-of-band at thr∈{0.60,0.70,0.74}). OFF the scoring path
+  (`git diff --name-only` = `tests/test_reliability.py` ONLY; scoring-path diff EMPTY) → score-neutral, NOT
+  peer-gated, direct-to-main. Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. NEXT
+  (COVERAGE 202): carry the citability monotone/threshold contract into a READOUT-wording guard so the card
+  can never mislabel provisional as stable, OR the subscription bare-`recurring` precision minefield (next
+  in-cloud thin-bank candidate). Substantive frontier (GENUINE new thin-bank signals from real fixtures,
+  the negative anchor's two-crawl static cross-validation via a `moleskine.com` fixture, ACP/UCP/MPP,
+  transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 200 runner note): RUNNER AT-FLOOR at 2026-08-03T12:26Z (Cycle 200) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~56.6h old at the fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; this
   12:26Z fire is NOT first-after-16:00 UTC → no DM this fire per comms policy (display-only / score-neutral

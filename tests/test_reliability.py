@@ -25,7 +25,9 @@ Covers the load-bearing behaviours with synthetic ``BehavioralRun`` fixtures
 
 from __future__ import annotations
 
+import itertools
 import os
+import statistics
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -284,6 +286,141 @@ def test_panel_reliability_is_trial_order_invariant() -> None:
                f"ordering {i}: PanelReliability byte-identical under reordering")
 
 
+# ---------------------------------------------------------------------------
+# 10. verdict_stability MONOTONICITY + shared CITABILITY THRESHOLD (Cycle 201
+#     METHOD rigor). verdict_stability is the single number the whole benchmark's
+#     "is this safe to cite?" credibility rests on: the quotability gate reads it
+#     to call a panel CITABLE ("reproducible") vs PROVISIONAL ("provisional-
+#     unstable"), and the descriptive band label reads it to print stable/mixed/
+#     unstable. The point-value tests (1-8) and the order-invariance tripwire (9)
+#     pin WHAT it computes and that it ignores arrival order; this pins two
+#     load-bearing SHAPE properties they do not:
+#       (A) MONOTONICITY — adding disagreement to the panel can only LOWER
+#           stability and can only DEGRADE citability (reproducible -> provisional,
+#           never the reverse). A refactor that let more disagreement RAISE
+#           stability would silently mark a flipping panel citable.
+#       (B) THRESHOLD COHERENCE — the "stable" band and the "reproducible" citable
+#           verdict cut over at the SAME threshold (_STABLE_MIN), so a reader can
+#           never see a "stable" label on a number the gate calls provisional (or
+#           vice versa). Proven with a mutation sweep of _STABLE_MIN across a panel
+#           whose stability sits at an interior operating point: label and gate
+#           must flip TOGETHER at every threshold — which they can only do if
+#           quotability has NO independent hardcoded cutoff of its own.
+#     Plus an EXHAUSTIVE boundedness+formula check over every possible n=4 panel
+#     (reliability depends only on the per-checkpoint pass COUNT, so enumerating
+#     pass-count vectors covers every distinct 4-run panel): stability stays in
+#     [0, 1] and equals the independent recomputation 1 - 2*mean(minority).
+# ---------------------------------------------------------------------------
+class _StubReport:
+    """Minimal duck for R.quotability (overall_score / scored / behavioral_runs)."""
+
+    def __init__(self, runs):
+        self.scored = True
+        self.overall_score = 72.0
+        self.behavioral_runs = list(runs)
+
+
+def _panel(n, splits):
+    """``n`` valid runs; ``splits`` maps a checkpoint key -> how many of the n runs
+    PASS it (unlisted checkpoints pass in all n -> unanimous). Run i passes key k
+    iff i < pass_count[k], so key k gets exactly pass_count[k] passes."""
+    runs = []
+    for i in range(n):
+        cp = {k: (i < splits.get(k, n)) for k in _KEYS}
+        runs.append(_run(model="m", trial=i, **cp))
+    return runs
+
+
+def _expected_stability(n, pass_counts):
+    mins = [min(p, n - p) / n for p in pass_counts]
+    return round(1.0 - 2.0 * statistics.fmean(mins), 3)
+
+
+def test_verdict_stability_is_monotone_and_shares_the_citability_threshold() -> None:
+    print("test_verdict_stability_is_monotone_and_shares_the_citability_threshold")
+
+    # --- (A) MONOTONICITY: split an increasing prefix of the 5 checkpoints 1/2 --
+    # kf=0..5 split checkpoints -> minority mean kf*0.5/5 -> stability 1 - 0.2*kf,
+    # i.e. [1.0, 0.8, 0.6, 0.4, 0.2, 0.0]: a strictly descending ladder.
+    stabilities, tags, labels = [], [], []
+    for kf in range(len(_KEYS) + 1):
+        splits = {_KEYS[j]: 1 for j in range(kf)}  # 1 pass of 2 = a 50/50 split
+        runs = _panel(2, splits)
+        rel = R.panel_reliability(runs)
+        stabilities.append(rel.verdict_stability)
+        labels.append(rel.label)
+        tags.append(R.quotability(_StubReport(runs)).tag)
+
+    # stability is strictly DECREASING as disagreement grows (never rebounds).
+    for a, b in zip(stabilities, stabilities[1:]):
+        _check(b < a, f"stability strictly decreases with disagreement: {a} -> {b}")
+    _check(stabilities == [1.0, 0.8, 0.6, 0.4, 0.2, 0.0],
+           f"stability ladder as constructed, got {stabilities}")
+
+    # Citability degrades MONOTONICALLY: 'reproducible' exactly while stability
+    # >= _STABLE_MIN, 'provisional-unstable' after — and once provisional it never
+    # returns to reproducible as the panel disagrees more.
+    expect_tags = ["reproducible" if s >= R._STABLE_MIN else "provisional-unstable"
+                   for s in stabilities]
+    _check(tags == expect_tags, f"citability tracks the threshold, got {tags}")
+    first_provisional = tags.index("provisional-unstable")
+    _check(all(t == "provisional-unstable" for t in tags[first_provisional:]),
+           "once provisional, more disagreement never restores citable")
+    # NON-VACUOUS: the ladder genuinely spans BOTH citability verdicts and BOTH
+    # sides of the label bands, so the monotonicity claim has something to bite on.
+    _check("reproducible" in tags and "provisional-unstable" in tags,
+           "the constructed ladder exercises both citability verdicts")
+    _check({"stable", "unstable"} <= set(labels),
+           f"the ladder spans stable..unstable, got {labels}")
+
+    # --- (B) EXHAUSTIVE boundedness + formula over EVERY n=4 panel -------------
+    n = 4
+    for pass_counts in itertools.product(range(n + 1), repeat=len(_KEYS)):
+        splits = {_KEYS[j]: pass_counts[j] for j in range(len(_KEYS))}
+        rel = R.panel_reliability(_panel(n, splits))
+        _check(0.0 <= rel.verdict_stability <= 1.0,
+               f"stability in [0,1] for {pass_counts}, got {rel.verdict_stability}")
+        exp = _expected_stability(n, pass_counts)
+        _check(abs(rel.verdict_stability - exp) < 1e-9,
+               f"stability == 1-2*mean(minority) for {pass_counts}: "
+               f"{rel.verdict_stability} vs {exp}")
+
+    # --- (C) THRESHOLD COHERENCE: label 'stable' <-> gate 'reproducible' share --
+    #         ONE threshold. Build a panel whose stability is an interior 0.75
+    #         (n=8: one checkpoint split 4/4 -> minority .5, one split 1/7 ->
+    #         minority .125, rest unanimous -> mean .125 -> 1-2*.125 = 0.75), then
+    #         sweep _STABLE_MIN ACROSS 0.75. At every threshold the descriptive
+    #         'stable' label and the 'reproducible' citability verdict must agree
+    #         about THIS panel — which is only possible if quotability reads the
+    #         same _STABLE_MIN the label does. A hardcoded literal in quotability
+    #         would desync them at a threshold on the far side of the literal.
+    panel = _panel(8, {_KEYS[0]: 4, _KEYS[1]: 1})
+    _check(abs(R.panel_reliability(panel).verdict_stability - 0.75) < 1e-9,
+           "coherence panel sits at the interior operating point 0.75")
+
+    saved = R._STABLE_MIN
+    seen_stable, seen_provisional = False, False
+    try:
+        for thr in (0.60, 0.70, 0.74, 0.76, 0.80, 0.90):
+            R._STABLE_MIN = thr
+            rel = R.panel_reliability(panel)
+            tag = R.quotability(_StubReport(panel)).tag
+            is_stable_label = rel.label == "stable"
+            is_citable = tag == "reproducible"
+            _check(is_stable_label == is_citable,
+                   f"at _STABLE_MIN={thr}: 'stable' label ({is_stable_label}) and "
+                   f"'reproducible' gate ({is_citable}) must agree on this panel")
+            seen_stable |= is_stable_label
+            seen_provisional |= not is_citable
+    finally:
+        R._STABLE_MIN = saved
+
+    # NON-VACUOUS: the sweep genuinely crossed the boundary (both a citable and a
+    # provisional verdict appeared), so the coupling was actually put under strain.
+    _check(seen_stable and seen_provisional,
+           "the threshold sweep straddled the boundary (both verdicts appeared)")
+
+
 def main() -> int:
     tests = [
         test_unanimous,
@@ -295,6 +432,7 @@ def main() -> int:
         test_trust_event_flip_is_separate,
         test_mixed_band,
         test_panel_reliability_is_trial_order_invariant,
+        test_verdict_stability_is_monotone_and_shares_the_citability_threshold,
     ]
     failed = 0
     for t in tests:

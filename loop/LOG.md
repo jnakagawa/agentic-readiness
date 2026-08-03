@@ -3,6 +3,70 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 192 — 2026-08-03T04:1xZ — READOUT — the "earned by" pillar caption: each pillar score now names the dominant capability that earns it
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed. Infra/self-heal: fresh checkout was detached on the Cycle-191 tip; `git pull`
+declined on the detached HEAD, so `git checkout -B main origin/main` aligned to origin/main `dd7dc0b`
+(Cycle 191), tree clean, invariant #5 intact (the fresh clone's first fetch surfaced many long-dead
+`loop/*` branches as "[new branch]"; none open as PRs). Fresh `.venv` + `requests pyyaml eth-account
+pytest`; imports verified; 417 tests green pre-flight (421 after this cycle's +4). Runner AT-FLOOR:
+newest verify `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is ~48h old at the 04:12Z fire
+— PAST the 6h floor (machine-asleep / runner-lag pattern, cloud cannot repair; already flagged in the
+16:12Z Cycle-181 digest). 04:12Z is NOT first-after-16:00 UTC → no digest DM this fire.
+
+**What (READOUT).** Added an "earned by" caption to every pillar bar in the HTML scorecard
+(`asrs/scorecard.py`). Each pillar row already showed a band-colored score bar + the capability
+question; it now also names, in a small caption under the question, the SINGLE check that contributes
+the most raw points to that pillar's score — e.g. transactability on the with-rails anchor reads
+**"earned by x402-live +8"**, and on the no-rails anchor **"earned by self-serve-signup +3"**. New
+pure helper `_pillar_top_earner(rep, pillar)` returns `(finding, points)` of the top-earning check
+(points-desc, ties broken by rubric-check order via `max`), or `None` when the pillar is n/a or no
+check earns any credit; `_pillars` renders the caption only when a check actually earns credit. CSS:
+a `.pillar-row .name small.earner` rule (tertiary text, bolded capability name), no layout change to
+the bar/value/delta columns.
+
+**Why.** Cycle 191's calibration guard proved in TESTS that the with-rails transactability magnitude
+(87.5) is ATTRIBUTABLE — the entire 11.0-pt gap vs no-rails is earned by the two agent-native payment
+checks (`x402_probe` + `self_serve_payg`), not diffuse credit. That attribution was invisible to a
+card reader: the bar just said "87.5". This surfaces it — a reader now sees the number is earned by a
+named, capability-worded check, so the pillar score reads as attributable evidence rather than an
+opaque aggregate. Serves the north-star's readout-clarity axis directly. Vendor-neutral by
+construction: the caption names whichever check earns the most, never a fixed one — `x402-live` wins on
+the with-rails side only because it earns the most points there, and the no-rails side names its own
+residual `self-serve-signup` earner instead.
+
+**Method / non-vacuity + teeth.** `tests/test_readout.py` +4 (71→75):
+(1) `test_pillar_earner_names_dominant_capability` — synthetic transactability pillar (x402 +8 /
+self-serve +6 / mcp fail 0) → caption names x402-live, shows +8, never the failing `no-mcp-surface`,
+bar value unchanged (display-only); (2) `test_pillar_earner_tracks_points_not_a_hardcoded_name` —
+FALSIFIABLE vendor-neutrality: flip the magnitudes (self-serve +9 > x402 +8) and the caption follows
+the points to `no-signup-provisioning`, proving no hardcoded name; (3)
+`test_pillar_earner_omitted_for_na_and_unearned` — an all-fail pillar AND an n/a (outcome=None) pillar
+each name nothing (a genuinely unearned score is not dressed up); (4)
+`test_pillar_earner_reflects_real_canonical_evidence` — NON-VACUOUS on real evidence: replays BOTH
+canonical fixtures through the real probe+score path and pins driftflight.com transactability earner =
+`x402-live +8`, drift-flight.org = `self-serve-signup +3`, tying the readout to the Cycle-191
+attribution.
+
+**Ship class + evidence.** OFF the scoring path: `git diff --name-only` = `asrs/scorecard.py` +
+`tests/test_readout.py` ONLY; scoring-path diff (`asrs/scoring.py rubric/ fixtures/ asrs/probes
+asrs/fetch.py asrs/cli.py asrs/battery.py asrs/offering.py`) = EMPTY → score-neutral, display-only,
+NOT peer-gated, direct-to-main. Full suite 417→421; `test_readout.py` 71→75. Canonical replay guard
+24/24, drift-flight.org 46.1 F / driftflight.com 85.5 B / delta +39.4, 0 replay-miss, rubric v0.7 —
+UNCHANGED (the caption is a pure read of the same checks/points; re-scored the pair live-offline to
+confirm 46.1/85.5). Live signal (read, not re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C /
++30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1), off the scoring
+path; the in-cloud replay guard stays the frozen regression signal.
+
+**Next hypothesis (METHOD 193).** The earner caption is display-only; the calibration guard couples
+the transactability magnitude to the replay guard's maintenance contract. A METHOD increment could
+add a guard that the CARD's surfaced earner and the calibration anchor's attribution can't silently
+drift apart (the earner naming a check the calibration guard doesn't credit would be a readout bug),
+or extend the earner to the terminal readout for terminal↔HTML parity. Substantive frontier
+(thin-archetype / render / structured-catalog LIVE fixtures, ACP/UCP/MPP handshakes, calibration
+sweep, transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+
 ## Cycle 187 — 2026-08-02T22:12Z — TRUTH — recapture-advice prose host-relabel invariance guard: the re-capture DECISION is now provably vendor-neutral
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

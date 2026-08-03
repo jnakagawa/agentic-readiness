@@ -588,6 +588,18 @@ design in-cloud, execute locally.
 
 ## P1
 
+- **[OBSERVATION — Cycle 192] The "earned by" pillar caption opens two in-cloud follow-ups.** Cycle 192
+  (READOUT) added `_pillar_top_earner` + the per-pillar "earned by <capability> +N" caption to the HTML card
+  (`asrs/scorecard.py`), surfacing the Cycle-191 attribution (a pillar score is earned by named checks, not
+  diffuse) for a reader. Two cheap, score-neutral, in-cloud increments remain: (a) **METHOD** — a
+  drift/coupling guard that the card's surfaced transactability earner and the calibration anchor's credited
+  checks (`x402_probe` + `self_serve_payg`, `test_calibration.py`) cannot silently disagree (an earner naming
+  a check the calibration guard does not credit = a readout bug the current guards would miss); (b) **READOUT**
+  — extend the earner caption to the TERMINAL readout (`asrs/report.py`) and add a terminal↔HTML parity guard,
+  the same shape as the Cycle-188 canonical-drift parity guard, so the two surfaces can't drift. Both are
+  off-scoring-path, direct-to-main. The earner is display-only (reads the same checks/points the score is
+  built from); no scoring semantics involved.
+
 - **[OBSERVATION — Cycle 185] Canonical-drift diagnostic family metamorphic axis is EXHAUSTED in-cloud.**
   With the Cycle-185 `test_attribution_stability_is_host_relabel_invariant`, every drift diagnostic now has a
   metamorphic guard: reflection magnitude/direction (Cycle-179ish `test_reflection_about_baseline_...`),

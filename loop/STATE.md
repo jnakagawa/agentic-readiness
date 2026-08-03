@@ -1,8 +1,37 @@
 # Loop state
 
-- Cycle counter: 191
+- Cycle counter: 192
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-03T02:1xZ (Cycle 191) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-03T04:12Z (Cycle 192) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~48h old at the 04:12Z fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; 04:12Z is
+  NOT first-after-16:00 UTC → no DM this fire per comms policy (display-only / score-neutral READOUT
+  increment, no sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org
+  46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence
+  PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent regression
+  signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open
+  → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 192): fresh checkout detached on the Cycle-191 tip;
+  `git pull` declined on the detached HEAD → `git checkout -B main origin/main` aligned to origin/main
+  `dd7dc0b` (Cycle 191), working tree clean, invariant #5 intact (the fresh clone's first fetch surfaced many
+  long-dead `loop/*` branches as "[new branch]"; none open as PRs). Fresh `.venv` + `requests pyyaml
+  eth-account pytest`, imports verified, 417 tests green pre-flight (421 after this cycle's +4).
+- FOCUS POINTER (Cycle 192 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 192 was
+  READOUT, so Cycle 193 is METHOD). Cycle 192 shipped a **READOUT increment — the "earned by" pillar
+  caption** (`asrs/scorecard.py`). Each HTML-card pillar bar now names, under its capability question, the
+  single check that contributes the most raw points to the pillar's score — transactability reads
+  **"earned by x402-live +8"** on the with-rails anchor, **"earned by self-serve-signup +3"** on the no-rails
+  anchor — so a card reader sees the score is ATTRIBUTABLE to a named, capability-worded check (the Cycle-191
+  calibration insight surfaced) rather than a diffuse aggregate. New pure helper `_pillar_top_earner`
+  (points-desc, ties on rubric order, `None` for n/a / all-fail pillars); caption omitted when nothing earns
+  credit. Vendor-neutral by construction (names whichever check earns the most, proven falsifiable by a
+  magnitude-flip test). Display-only, OFF the scoring path (`git diff --name-only` = `asrs/scorecard.py` +
+  `tests/test_readout.py`; scoring-path diff EMPTY) → score-neutral, NOT peer-gated, direct-to-main. Full
+  suite 417→421; `test_readout.py` 71→75; replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric
+  v0.7. NEXT (METHOD 193): a guard that the card's surfaced earner and the calibration anchor's attribution
+  can't silently drift apart, or extend the earner caption to the terminal readout for terminal↔HTML parity.
+  Substantive frontier (thin-archetype/render/structured-catalog LIVE fixtures — ACP/UCP/MPP, calibration
+  sweep, transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 191 runner note): RUNNER AT-FLOOR at 2026-08-03T02:1xZ (Cycle 191) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~46h old at the 02:1xZ fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; 02:1xZ is
   NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral TRUTH increment,

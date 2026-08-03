@@ -144,6 +144,8 @@ a.chip:hover{box-shadow:inset 0 0 0 1px var(--text-tertiary);color:var(--text-pr
 .pillar-row .name{font-weight:500;color:var(--text-secondary)}
 .pillar-row .name small{display:block;font-weight:400;font-size:12px;
   color:var(--text-quaternary)}
+.pillar-row .name small.earner{color:var(--text-tertiary);margin-top:2px}
+.pillar-row .name small.earner b{font-weight:600;color:var(--text-secondary)}
 .track{background:var(--bg-quaternary);border-radius:9999px;height:8px;
   overflow:hidden}
 .fill{height:100%;border-radius:9999px}
@@ -1949,6 +1951,29 @@ def _caps_alerts(rep: dict) -> str:
     return "".join(out)
 
 
+def _pillar_top_earner(rep: dict, pillar: str) -> tuple[str, float] | None:
+    """The single check that contributes the MOST raw points to ``pillar`` — the
+    dominant capability behind that pillar's score. Returns ``(finding, points)``
+    or ``None`` when no check in the pillar earns any credit.
+
+    This makes a pillar score attributable in the readout: the number is not a
+    diffuse aggregate but is *earned by* a named, capability-worded check (the
+    Cycle-191 calibration insight, surfaced for the reader). Vendor-neutral —
+    it reads whichever check happens to earn the most, never a fixed one — and
+    display-only (it reads the same ``checks``/``points`` the score is built
+    from and cannot move a score). Deterministic: on tied points, ``max``
+    keeps the first earner in rubric-check order (the rubric's own priority)."""
+    earners = [
+        c
+        for c in rep.get("checks", [])
+        if c.get("pillar") == pillar and (c.get("points") or 0) > 0
+    ]
+    if not earners:
+        return None
+    top = max(earners, key=lambda c: c.get("points") or 0)
+    return (top.get("finding") or top.get("check_id") or "", float(top.get("points") or 0))
+
+
 def _pillars(rep: dict, baseline: dict | None = None) -> str:
     """Pillar bar rows. With ``baseline``, each row also shows the per-pillar
     delta vs the baseline report (the compare card's right column)."""
@@ -1971,9 +1996,21 @@ def _pillars(rep: dict, baseline: dict | None = None) -> str:
                 d = s - sb
                 dcls = "up" if d > 0 else ("down" if d < 0 else "flat")
                 delta = f'<span class="d {dcls} num">{d:+.0f}</span>'
+        # "Earned by" caption — name the dominant capability behind the score so
+        # the number is attributable, not diffuse. Omitted when the pillar is
+        # n/a or nothing earns credit (a genuinely unearned score names nothing).
+        earner = ""
+        if s is not None:
+            top = _pillar_top_earner(rep, p)
+            if top is not None:
+                finding, pts = top
+                earner = (
+                    f'<small class="earner">earned by <b>{_esc(finding)}</b> '
+                    f"<span class=\"num\">+{pts:g}</span></small>"
+                )
         rows.append(
             f'<div class="{row_cls}"><span class="name"><span class="ptag {_esc(p)}">{label}</span>'
-            f"<small>{PILLAR_QUESTIONS[p]}</small></span>"
+            f"<small>{PILLAR_QUESTIONS[p]}</small>{earner}</span>"
             f'<div class="track"><div class="fill {fill_cls}" style="width:{width}%"></div></div>{val}{delta}</div>'
         )
     return f'<div class="pillars">{"".join(rows)}</div>'

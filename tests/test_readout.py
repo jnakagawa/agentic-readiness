@@ -2460,6 +2460,107 @@ def test_calibration_page_published_and_linked() -> None:
                "the card footer links to calibration.html")
 
 
+# ---------------------------------------------------------------------------
+# Cycle 192 (READOUT): the "earned by" pillar caption. Each pillar bar now names
+# the single capability that contributes the most raw points to its score, so
+# the number is ATTRIBUTABLE in the readout — the Cycle-191 calibration insight
+# (a pillar score is earned by named checks, not a diffuse aggregate) surfaced
+# for a card reader. Display-only: it reads the same checks/points the score is
+# built from and cannot move a score; vendor-neutral: it names whichever check
+# earns the most, never a fixed one. Math for the pillar scores lives in the
+# scoring tests — these pin only the surfacing.
+
+def _pillar_dict(pillar_scores: dict, checks: list) -> dict:
+    """A minimal report dict shaped for ``scorecard._pillars`` — pillar_scores +
+    a checks list carrying the fields the earner caption reads."""
+    return {"pillar_scores": pillar_scores, "checks": checks}
+
+
+def _chk(pillar: str, points: float, finding: str, check_id: str = "", status: str = "pass") -> dict:
+    return {"pillar": pillar, "points": points, "max_points": max(points, 1.0),
+            "finding": finding, "check_id": check_id or finding, "status": status}
+
+
+def test_pillar_earner_names_dominant_capability() -> None:
+    # The transactability caption names the check that earns the most points —
+    # here x402-live (+8) over the partial self-serve (+6), never the failing one.
+    print("test_pillar_earner_names_dominant_capability")
+    d = _pillar_dict(
+        {"access": None, "legibility": None, "transactability": 87.5,
+         "trust": None, "outcome": None},
+        [_chk("transactability", 8.0, "x402-live", "x402_probe"),
+         _chk("transactability", 0.0, "no-mcp-surface", "mcp_surface", "fail"),
+         _chk("transactability", 6.0, "no-signup-provisioning", "self_serve_payg")],
+    )
+    top = scorecard._pillar_top_earner(d, "transactability")
+    _check(top == ("x402-live", 8.0), f"top earner is x402-live +8, got {top}")
+    html = scorecard._pillars(d)
+    _check("earned by <b>x402-live</b>" in html, "caption names the dominant capability")
+    _check("+8" in html and "no-mcp-surface" not in html,
+           "caption shows the earned points, never the failing check")
+    # The bar value is untouched — the caption is display-only, not a score move.
+    _check(">88<" in html or ">87<" in html, "pillar value still rendered from the score")
+
+
+def test_pillar_earner_tracks_points_not_a_hardcoded_name() -> None:
+    # Falsifiable vendor-neutrality: flip the magnitudes and the caption follows
+    # the points — the dominant name is not baked to x402 or any fixed check.
+    print("test_pillar_earner_tracks_points_not_a_hardcoded_name")
+    d = _pillar_dict(
+        {"access": None, "legibility": None, "transactability": 90.0,
+         "trust": None, "outcome": None},
+        [_chk("transactability", 8.0, "x402-live", "x402_probe"),
+         _chk("transactability", 9.0, "no-signup-provisioning", "self_serve_payg")],
+    )
+    top = scorecard._pillar_top_earner(d, "transactability")
+    _check(top == ("no-signup-provisioning", 9.0),
+           f"the higher-earning check wins regardless of identity, got {top}")
+    html = scorecard._pillars(d)
+    _check("earned by <b>no-signup-provisioning</b>" in html and "x402-live" not in html,
+           "caption tracks whichever capability earns the most")
+
+
+def test_pillar_earner_omitted_for_na_and_unearned() -> None:
+    # An n/a pillar (outcome) names nothing; a scored pillar whose checks all earn
+    # zero names nothing either — a genuinely unearned score is not dressed up.
+    print("test_pillar_earner_omitted_for_na_and_unearned")
+    d = _pillar_dict(
+        {"access": None, "legibility": None, "transactability": 0.0,
+         "trust": None, "outcome": None},
+        [_chk("transactability", 0.0, "no-agent-native-payment", "x402_probe", "fail"),
+         _chk("outcome", 0.0, "no-outcome", "outcome_probe", "fail")],
+    )
+    _check(scorecard._pillar_top_earner(d, "transactability") is None,
+           "an all-fail pillar has no earner")
+    _check(scorecard._pillar_top_earner(d, "outcome") is None, "n/a pillar has no earner")
+    html = scorecard._pillars(d)
+    _check("earned by" not in html, "no caption invented for an unearned or n/a pillar")
+
+
+def test_pillar_earner_reflects_real_canonical_evidence() -> None:
+    # Non-vacuous on REAL evidence: replay both canonical fixtures through the
+    # real probe+score path and confirm the caption names the transactability
+    # capability that actually earns the credit — x402-live (+8) with-rails,
+    # the residual self-serve-signup (+3) no-rails. Ties the readout to the
+    # Cycle-191 attribution (transactability is earned by agent-native payment).
+    print("test_pillar_earner_reflects_real_canonical_evidence")
+    from asrs.fetch import FetchContext
+    from asrs.cli import _run_probes
+    from asrs import scoring
+    cases = {
+        "fixtures/canonical/driftflight.com.json": ("driftflight.com", ("x402-live", 8.0)),
+        "fixtures/canonical/drift-flight.org.json": ("drift-flight.org", ("self-serve-signup", 3.0)),
+    }
+    for path, (dom, expected) in cases.items():
+        ctx = FetchContext.from_fixture(path)
+        rep = scoring.score(_run_probes(ctx), scoring.load_rubric(None), dom)
+        d = json.loads(rep.to_json())
+        top = scorecard._pillar_top_earner(d, "transactability")
+        _check(top == expected, f"{dom} transactability earned by {expected}, got {top}")
+        _check(f"earned by <b>{expected[0]}</b>" in scorecard._pillars(d),
+               f"{dom} card names its transactability earner")
+
+
 def main() -> int:
     tests = [
         test_json_carries_reliability,
@@ -2533,6 +2634,10 @@ def main() -> int:
         test_calibration_page_bands_live_and_version_flagged,
         test_calibration_page_empty_renders_gracefully,
         test_calibration_page_published_and_linked,
+        test_pillar_earner_names_dominant_capability,
+        test_pillar_earner_tracks_points_not_a_hardcoded_name,
+        test_pillar_earner_omitted_for_na_and_unearned,
+        test_pillar_earner_reflects_real_canonical_evidence,
     ]
     failed = 0
     for t in tests:

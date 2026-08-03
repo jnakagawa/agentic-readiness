@@ -28,7 +28,7 @@ import json
 import os
 import sys
 import tempfile
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -97,6 +97,37 @@ def _reflect_about_anchor(rows: list[dict]) -> list[dict]:
         r_no = round(2 * a_no - no, 4)
         r_wi = round(2 * a_with - wi, 4)
         out.append(_artifact(r["ts"], r_no, r_wi, round(r_wi - r_no, 4)))
+    return out
+
+
+def _shift_ts(ts: str, delta) -> str:
+    """Translate a ``YYYYMMDDTHHMMSSZ`` timestamp by a fixed ``timedelta``,
+    reformatting in the same verify-artifact format so the loader still parses it."""
+    when = datetime.strptime(ts, "%Y%m%dT%H%M%SZ").replace(tzinfo=timezone.utc)
+    return (when + delta).strftime("%Y%m%dT%H%M%SZ")
+
+
+def _time_translate(rows: list[dict], delta) -> list[dict]:
+    """Shift every row's timestamp by ``delta`` (numeric trajectory untouched).
+
+    The metamorphic transform for TIME-TRANSLATION invariance: the drift
+    diagnostics measure RELATIVE time (durations, ordering, freshness-vs-``now``),
+    never the absolute epoch, so translating the whole series in time — even across
+    a month/year boundary — must leave every structural verdict identical. Pillars,
+    overalls, grades and deltas are carried through unchanged; only the ``ts`` moves."""
+    out: list[dict] = []
+    for r in rows:
+        s = r["scores"]
+        out.append(
+            _artifact(
+                _shift_ts(r["ts"], delta),
+                s[ch.CANONICAL_NO_RAILS]["overall"],
+                s[ch.CANONICAL_WITH_RAILS]["overall"],
+                r["delta"],
+                org_pillars=s[ch.CANONICAL_NO_RAILS].get("pillars"),
+                com_pillars=s[ch.CANONICAL_WITH_RAILS].get("pillars"),
+            )
+        )
     return out
 
 
@@ -1042,6 +1073,117 @@ def test_reflection_about_baseline_is_magnitude_invariant_direction_covariant() 
     _check("re-capture candidate" in ch.render(hr), "reflected render says re-capture candidate")
 
 
+def test_drift_diagnostics_are_time_translation_invariant() -> None:
+    print("test_drift_diagnostics_are_time_translation_invariant")
+    # METAMORPHIC guard on a REPRODUCIBILITY property the whole drift-diagnostic
+    # family rests on but no test pins: every verdict measures RELATIVE time
+    # (durations, trailing-run ordering, freshness-vs-``now``), NEVER the absolute
+    # epoch. So the SAME drift shape must yield the SAME diagnosis whether it happened
+    # in July or the following January — a benchmark whose "sustained 18h softening"
+    # verdict silently depended on the calendar (a hardcoded reference epoch, a
+    # year-boundary bug in ``_parse_ts``/span arithmetic) would be irreproducible.
+    # The transform: shift EVERY artifact timestamp — and the reference ``now`` — by
+    # one fixed offset that crosses a month AND year boundary (Jul 2026 -> Jan 2027),
+    # leaving the numeric trajectory untouched. Every STRUCTURAL diagnostic must be
+    # byte-identical across the shift; only the ts LABELS (which are relative-time
+    # anchors, not verdicts) may differ. Distinct from the reflection guard (which
+    # transforms the SCORE axis to test direction-blindness): this transforms the TIME
+    # axis to test epoch-blindness — the orthogonal metamorphic relation.
+    org_p = {"access": 100.0, "legibility": 36.4, "transactability": 18.75, "trust": 60.0}
+    com_anchor = {"access": 100.0, "legibility": 90.9, "transactability": 87.5, "trust": 60.0}
+    com_drift = {"access": 100.0, "legibility": 90.9, "transactability": 62.5, "trust": 60.0}
+    # 4 in-band anchors (deterministic noise floor) + a trailing run of 3 out-of-band
+    # readings spanning ~18h (com transactability softens) so sustained-run,
+    # attribution, stability, cause, re-capture AND liveness all fire.
+    base = [
+        _artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4, org_pillars=org_p, com_pillars=com_anchor)
+        for i in range(1, 5)
+    ]
+    base += [
+        _artifact("20260731T080000Z", 46.1, 76.2, 30.1, org_pillars=org_p, com_pillars=com_drift),
+        _artifact("20260731T140000Z", 46.1, 76.2, 30.1, org_pillars=org_p, com_pillars=com_drift),
+        _artifact("20260801T020000Z", 46.1, 76.2, 30.1, org_pillars=org_p, com_pillars=com_drift),
+    ]
+    offset = timedelta(days=160, hours=3, minutes=17)  # crosses month + year boundary
+    shifted = _time_translate(base, offset)
+    now_b = datetime(2026, 8, 1, 3, 0, 0, tzinfo=timezone.utc)  # ~1h past the latest -> fresh
+    now_s = now_b + offset
+    with tempfile.TemporaryDirectory() as tb, tempfile.TemporaryDirectory() as ts:
+        _write_series(tb, base)
+        _write_series(ts, shifted)
+        hb = ch.load_history(tb, now=now_b)
+        hs = ch.load_history(ts, now=now_s)
+
+    # sanity: the transform genuinely moved the calendar (different year), so this is
+    # not comparing a series to itself; and every diagnostic actually fired (non-vacuous).
+    _check(
+        hb.latest.ts[:4] == "2026" and hs.latest.ts[:4] == "2027",
+        f"the shift crossed the year boundary, got {hb.latest.ts} -> {hs.latest.ts}",
+    )
+    _check(hb.band != ch.BAND_IN, "base series is out of band (a real verdict to preserve)")
+    _check(hb.attribution is not None and hb.attribution.top is not None, "attribution fired")
+    _check(hb.attribution_stability is not None, "stability fired")
+    _check(hb.noise_floor is not None and hb.noise_floor.deterministic, "noise floor fired")
+    _check(hb.liveness is not None and hb.liveness.fresh, "liveness fired (fresh)")
+
+    # (1) magnitude/ordering machinery — invariant.
+    _check(hb.band == hs.band, f"band invariant, got {hb.band}/{hs.band}")
+    _check(hb.divergence == hs.divergence, f"divergence invariant, got {hb.divergence}/{hs.divergence}")
+    _check(
+        hb.consecutive_out_of_band == hs.consecutive_out_of_band,
+        f"out-of-band count invariant, got {hb.consecutive_out_of_band}/{hs.consecutive_out_of_band}",
+    )
+    _check(
+        hb.sustained_run.span_hours == hs.sustained_run.span_hours,
+        f"sustained-run SPAN invariant (a duration, not an epoch), got "
+        f"{hb.sustained_run.span_hours}/{hs.sustained_run.span_hours}",
+    )
+    nb, ns = hb.noise_floor, hs.noise_floor
+    _check(
+        (nb.n_in_band, nb.stddev, nb.max_abs_divergence, nb.no_rails_stddev, nb.with_rails_stddev)
+        == (ns.n_in_band, ns.stddev, ns.max_abs_divergence, ns.no_rails_stddev, ns.with_rails_stddev),
+        "noise floor invariant (score-keyed, time-blind)",
+    )
+
+    # (2) attribution / stability / cause — the fingered pillar+side and signed moves
+    # are functions of the SCORE series, not of when it was recorded.
+    ab, as_ = hb.attribution, hs.attribution
+    _check(
+        (ab.top.domain, ab.top.pillar, ab.top.change) == (as_.top.domain, as_.top.pillar, as_.top.change),
+        f"attribution top mover invariant, got {ab.top.domain}/{ab.top.pillar}/{ab.top.change}",
+    )
+    _check(
+        [(m.domain, m.pillar, m.change) for m in ab.moves]
+        == [(m.domain, m.pillar, m.change) for m in as_.moves],
+        "full attribution move list invariant",
+    )
+    _check(
+        hb.attribution_stability.stable == hs.attribution_stability.stable
+        and hb.attribution_stability.fingered == hs.attribution_stability.fingered,
+        "attribution stability (stable? / fingered pillar) invariant",
+    )
+    cb, cs = hb.divergence_cause, hs.divergence_cause
+    _check(
+        (cb.driver, cb.gap_change, cb.reference_degraded, cb.no_rails_change, cb.with_rails_change)
+        == (cs.driver, cs.gap_change, cs.reference_degraded, cs.no_rails_change, cs.with_rails_change),
+        "divergence cause (driver / direction / per-side change) invariant",
+    )
+    _check(
+        hb.recapture.code == hs.recapture.code,
+        f"re-capture recommendation invariant, got {hb.recapture.code}/{hs.recapture.code}",
+    )
+
+    # (3) liveness — age is measured against ``now``; shift BOTH the series and ``now``
+    # by the same offset and the age (hence fresh/stale) is unchanged. THE control that
+    # proves the invariance is non-trivial: liveness is the one time-DEPENDENT
+    # diagnostic, yet it too is translation-invariant when its own clock moves with it.
+    _check(
+        hb.liveness.age_hours == hs.liveness.age_hours and hb.liveness.fresh == hs.liveness.fresh,
+        f"liveness age/fresh invariant under co-translated clock, got "
+        f"{hb.liveness.age_hours}/{hb.liveness.fresh} vs {hs.liveness.age_hours}/{hs.liveness.fresh}",
+    )
+
+
 def test_recapture_advice_baseline_valid_when_in_band() -> None:
     print("test_recapture_advice_baseline_valid_when_in_band")
     # in-band series -> the pinned fixture still represents the true gap; no action.
@@ -1614,6 +1756,7 @@ def main() -> int:
         test_cause_verdict_pillar_named_end_to_end_in_render,
         test_cause_verdict_prose_is_host_relabel_invariant,
         test_reflection_about_baseline_is_magnitude_invariant_direction_covariant,
+        test_drift_diagnostics_are_time_translation_invariant,
         test_recapture_advice_baseline_valid_when_in_band,
         test_recapture_advice_waits_when_not_yet_sustained,
         test_recapture_advice_defers_on_reference_softening,

@@ -1,8 +1,41 @@
 # Loop state
 
-- Cycle counter: 188
+- Cycle counter: 189
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-02T23:12Z (Cycle 188) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-03T00:12Z (Cycle 189) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~44.4h old at the 00:12Z fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; 00:12Z is
+  NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral METHOD increment,
+  no sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org 46.1 F /
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS
+  (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent regression signal
+  (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open → []),
+  so no first-duty review. INFRA/SELF-HEAL (Cycle 189): fresh checkout, `git pull` fast-forwarded to
+  origin/main tip `1d1569e` (Cycle 188); working tree clean, invariant #5 intact. Fresh `.venv` + `requests
+  pyyaml eth-account pytest`, imports verified, 414 tests green pre-flight (415 after this cycle's +1).
+- FOCUS POINTER (Cycle 189 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 189 was
+  METHOD, so Cycle 190 is COVERAGE). Cycle 189 shipped a **METHOD increment — the TIME-TRANSLATION invariance
+  metamorphic guard** (`tests/test_canonical_history.py`
+  `test_drift_diagnostics_are_time_translation_invariant`, +1; test-only helpers `_shift_ts`/`_time_translate`):
+  builds ONE out-of-band history firing every drift diagnostic (4 in-band anchors → 3 out-of-band 18h-softening
+  readings, `now` ~1h past latest → FRESH liveness), then shifts EVERY timestamp AND `now` by a fixed offset
+  crossing the month+year boundary (Jul 2026 → Jan 2027) with the numeric trajectory untouched, and asserts
+  every STRUCTURAL diagnostic is byte-identical (band, divergence, out-of-band count, sustained SPAN, all four
+  noise-floor stddevs, full attribution move list, stability stable/fingered, cause driver/direction/per-side,
+  recapture code) — liveness age/fresh invariant under a CO-translated clock as the non-trivial control. Proves
+  the family measures RELATIVE time, never the absolute epoch (reproducibility). Orthogonal to the reflection
+  guard (score-axis / direction-blindness) and the host-relabel guards (vendor-neutrality). Non-vacuous
+  (year-boundary sanity + all-fired preconditions); MUTATION-VERIFIED (un-co-translated `now` → liveness age
+  1.0→0.0 → reddens). Tests-only, OFF the scoring path (`git diff --name-only` = `tests/test_canonical_history.py`
+  ONLY; scoring-path diff EMPTY) → score-neutral, NOT peer-gated, direct-to-main. Full suite 414→415;
+  `test_canonical_history.py` 48→49; replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7.
+  The canonical-drift diagnostic family now has vendor-neutrality (host-relabel) + direction-blindness
+  (reflection) + epoch-blindness (time-translation) metamorphic coverage. NEXT (COVERAGE 190): an
+  offering-classifier precision guard on real committed evidence (e.g. the service_booking `book (a|an|your)`
+  sales-CTA collision, synthetic-demonstrated + canonical-invariant). Substantive frontier (thin-archetype/
+  render/structured-catalog LIVE fixtures — ACP/UCP/MPP, calibration sweep, transactability-drop CHECK-level
+  diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 188 runner note): RUNNER AT-FLOOR at 2026-08-02T23:12Z (Cycle 188) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~43.3h old at the 23:12Z fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; 23:12Z is
   NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral READOUT increment,

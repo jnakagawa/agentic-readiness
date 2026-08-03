@@ -14399,3 +14399,66 @@ lacking one, or a small measurement-rigor refinement. Substantive frontier
 (thin-archetype/render/structured-catalog LIVE fixtures — incl. the service_booking
 `book (a|an|your)` sales-CTA collision — ACP/UCP/MPP, calibration sweep,
 transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+
+## Cycle 189 — 2026-08-03 ~00:1xZ — METHOD
+
+**What.** A TIME-TRANSLATION invariance metamorphic guard for the whole canonical-drift
+diagnostic family: `test_drift_diagnostics_are_time_translation_invariant`
+(`tests/test_canonical_history.py`, +1), plus two test-only helpers (`_shift_ts`,
+`_time_translate`). It builds ONE out-of-band history that fires every diagnostic (4 in-band
+anchors → 3 out-of-band transactability-softening readings spanning ~18h) with a reference
+`now` ~1h past the latest (so liveness reads FRESH), then shifts EVERY artifact timestamp —
+and `now` — by one fixed offset (`timedelta(days=160, hours=3, minutes=17)`, Jul 2026 →
+Jan 2027, crossing month AND year boundaries) while leaving the numeric trajectory untouched.
+It asserts every STRUCTURAL diagnostic is byte-identical across the shift: band, divergence,
+out-of-band count, sustained-run SPAN, all four noise-floor stddevs + `n_in_band`, the full
+attribution move list (domain/pillar/signed change), attribution-stability (`stable`/
+`fingered`), divergence-cause (driver/gap_change/reference_degraded/per-side change), and the
+re-capture code. Liveness (`age_hours`/`fresh`) is the one time-DEPENDENT diagnostic and is
+asserted invariant under a CO-translated clock — the non-trivial control.
+
+**Why (METHOD).** Reproducibility is a north-star pillar: the SAME drift shape must yield the
+SAME diagnosis regardless of WHEN it was recorded. The family measures relative time
+(durations, trailing-run ordering, freshness-vs-`now`), never the absolute epoch — but nothing
+pinned that. A verdict that silently depended on the calendar (a hardcoded reference epoch, a
+year-boundary bug in `_parse_ts` or the span arithmetic) would be irreproducible and no test
+would catch it. This is the orthogonal companion to the reflection guard
+(`..._is_magnitude_invariant_direction_covariant`): that transforms the SCORE axis to test
+direction-blindness; this transforms the TIME axis to test epoch-blindness. It is the METHOD
+candidate the Cycle-188 focus pointer named ("a metamorphic/invariance guard on a diagnostic
+still lacking one").
+
+**Method / non-vacuity.** Preconditions assert the shift genuinely crossed the year boundary
+(`hb.latest.ts[:4] == "2026"` vs `hs.latest.ts[:4] == "2027"` — not a series compared to
+itself) AND that every diagnostic actually fired (out-of-band band, isolated top mover,
+measurable stability, deterministic noise floor, FRESH liveness). MUTATION-VERIFIED: loading
+the shifted series with the UN-translated `now` (forgetting to co-translate the clock) moves
+`liveness.age_hours` 1.0 → 0.0 (the shifted latest is now future-dated → clamps to 0), so the
+liveness-invariance assertion reddens — the guard bites on a real epoch-dependence. Vendor-
+neutral: keys on no host or vendor; the transform touches only timestamps.
+
+**Ship class + evidence.** Tests-only, off the scoring path: `git diff --name-only` =
+`tests/test_canonical_history.py` ONLY; scoring-path diff (`asrs/ rubric/ fixtures/`) EMPTY
+→ score-neutral, NOT peer-gated, direct-to-main. `test_canonical_history.py` 48→49; full
+suite 414→415, 0 failures. Canonical PAIR unchanged: in-cloud replay guard 24/24, **46.1 F
+/ 85.5 B / +39.4**, 0 replay-miss; rubric v0.7. (Cloud is network-blocked for the live
+re-score; the in-cloud standard is regression-by-construction — the scoring path is
+byte-identical — plus the offline replay guard, both green.)
+
+**Live canonical signal.** Newest LOCAL artifact `runs/local/verify_20260801T035047Z.json`
+(03:50Z Aug-1) is ~44.4h old at the 00:12Z Aug-3 fire — PAST the 6h floor (machine-asleep /
+runner-lag pattern, cloud cannot repair; already flagged in the 16:12Z Cycle-181 digest).
+Its LIVE re-score: drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 — the known
+transactability 87.5→62.5 divergence (off the scoring path; the frozen replay guard stays
+the in-cloud regression signal). 00:12Z is NOT first-after-16:00 UTC → no digest DM per
+comms policy; tests-only / score-neutral, no sensitive-class PR, nothing score-moving. No
+open peer-gated PRs this fire → no first-duty review.
+
+**Next hypothesis.** Rotate COVERAGE next (Cycle 189 was METHOD; METHOD → COVERAGE → TRUTH
+→ READOUT). The canonical-drift diagnostic family now has host-relabel (vendor-neutrality),
+reflection (direction-blindness) AND time-translation (epoch-blindness) metamorphic coverage.
+In-cloud COVERAGE candidate: an offering-classifier precision guard on real committed
+evidence (e.g. the service_booking `book (a|an|your)` sales-CTA collision, synthetic-
+demonstrated + canonical-invariant). Substantive frontier (thin-archetype/render/structured-
+catalog LIVE fixtures, ACP/UCP/MPP, calibration sweep, transactability-drop CHECK-level
+diagnosis) stays `[LOCAL]`.

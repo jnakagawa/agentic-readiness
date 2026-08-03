@@ -3,6 +3,59 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 211 — 2026-08-03T23:22Z — TRUTH — pillar-granularity noise floor: prove the ATTRIBUTED transactability drop is signal, not pillar jitter
+
+WHAT/WHY (TRUTH — does the score predict what an agent experiences?). The load-bearing calibration finding
+(`test_band_clears_the_observed_noise…`) proves the OVERALL delta is deterministic at rest (σ=0 over the 76
+in-band re-scores) so the in-band band absorbs site TRANSIENTS, not measurement jitter. But the drift the
+benchmark ATTRIBUTES and an operator ACTS on is at the PILLAR level — the fingered (domain, pillar) that
+softened (driftflight.com transactability, −25.0, the live BACKLOG P0). Nothing at that granularity proved the
+fingered move exceeds PILLAR-level jitter: a −25 "drop" is only a credible real-world site move if that same
+pillar reproduces its value exactly at rest, else it could be ordinary per-pillar noise the coarser overall
+measure happens to cancel. This closes that gap — the pillar-granularity mirror of the overall signal proof.
+
+New `PillarNoiseFloor` dataclass (`domain/pillar/n_in_band/stddev/max_abs_divergence` + `deterministic`) and
+pure `pillar_noise_floor(points, domain, pillar, baseline_delta)`: over the in-band readings, the at-rest
+dispersion of ONE side's ONE pillar (numeric readings only — a None-on-error-crawl pillar is dropped, never a
+zero; honest-None below 2). `summarize` wires it to the attributed top mover →
+`CanonicalHistory.attributed_pillar_noise_floor`. On the real committed series the fingered pillar
+(driftflight.com transactability) is 87.5 across all 76 in-band readings ⇒ σ=0, max|div|=0, deterministic; the
+tracked −25 dwarfs it. So the attributed drop is SIGNAL, not pillar jitter, at the granularity we finger it.
+
+METHOD / non-vacuity + teeth. (1) `…_is_deterministic_on_the_fingered_pillar_real_series`: the floor measures
+the SAME (domain, pillar) attribution fingers, σ=0/max|div|=0/deterministic, and |−25| > floor AND ≥ 20
+(check-scale, not sub-point). (2) `…_measures_synthetic_pillar_jitter`: NON-VACUOUS — a series with a constant
+DELTA (both overalls flat) but a genuinely varying .com transactability pillar reports σ>0, worst|div|=1.0,
+deterministic=False — the pillar jitter the overall floor is blind to. (3) `…_honest_none`: None on an unknown
+domain, on a pillar None on every reading (`outcome`), and on a lone in-band reading. MUTATION-VERIFIED: leak
+the OOB drop into the floor (drop the in-band filter) → σ=5.39, deterministic=False → the real-series guard
+reddens. Vendor-neutral (domain is a side selector compared to the module's own reference-pair constants; no
+host special-cased). Capability-worded (keys on the fingered pillar, not any vendor).
+
+SHIP CLASS + EVIDENCE. OFF the scoring path: `git diff --name-only` = `asrs/canonical_history.py` +
+`tests/test_canonical_history.py` ONLY; scoring-path diff (`asrs/scoring.py asrs/probes/ rubric/ fixtures/
+asrs/offering.py asrs/battery.py`) EMPTY → score-neutral, NOT peer-gated, direct-to-main.
+`test_canonical_history.py` 53→56 (registered in the runner list — the Cycle-140 dead-test guard stays green);
+full suite 440→443, 0 failures. Canonical PAIR unchanged: in-cloud replay guard 24/24, **46.1 F / 85.5 B /
++39.4**, 0 replay-miss; rubric v0.7. (Cloud network-blocked for live re-score; in-cloud standard = regression-
+by-construction — scoring path byte-identical — plus the offline replay guard, both green.)
+
+LIVE CANONICAL SIGNAL. Newest LOCAL artifact `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is
+~67.5h old at this 23:22Z fire — PAST the 6h floor (machine-asleep / runner-lag, cloud cannot repair; already
+flagged in the 16:17Z Cycle-204 digest). Its LIVE re-score: drift-flight.org 46.1 F / driftflight.com 76.2 C /
++30.1 — the known transactability 87.5→62.5 divergence (off the scoring path; the frozen replay guard stays the
+in-cloud regression signal). 23:22Z is NOT first-after-16:00 UTC → no digest DM per comms policy; tests-only /
+score-neutral off-scoring-path, no sensitive-class PR, nothing score-moving. No open peer-gated PRs
+(`list_pull_requests` state=open → []) → no first-duty review.
+
+NEXT HYPOTHESIS (READOUT 212). Rotate READOUT next (Cycle 211 was TRUTH; METHOD → COVERAGE → TRUTH → READOUT).
+The `attributed_pillar_noise_floor` is computed but not yet surfaced — an in-cloud READOUT candidate is to
+render it in the drift block ("fingered pillar deterministic at rest; the −25 move is signal, not jitter"),
+mirroring how the overall noise floor is surfaced (mind the terminal/HTML surface-parity guard). Substantive
+frontier (GENUINE new thin-bank signals from real fixtures, the negative anchor's two-crawl static
+cross-validation via a `moleskine.com` fixture, ACP/UCP/MPP, the transactability-drop CHECK-level diagnosis)
+stays `[LOCAL]`.
+
 ## Cycle 210 — 2026-08-03T22:15Z — COVERAGE — drop the offering-classifier relabel guard one layer, to the per-archetype EVIDENCE: strength + fired-label set are identity-invariant, not just the claimed set
 
 WHAT/WHY (COVERAGE). The offering classifier drives the operator directive's task SELECTION (which archetypes

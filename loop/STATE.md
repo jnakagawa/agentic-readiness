@@ -1,8 +1,43 @@
 # Loop state
 
-- Cycle counter: 210
+- Cycle counter: 211
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-03T22:15Z (Cycle 210) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-03T23:22Z (Cycle 211) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~67.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag
+  pattern, cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 23:22Z fire is
+  NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral off-scoring-path
+  TRUTH increment, no sensitive-class PR, nothing score-moving). Live signal (read, not re-run):
+  drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop
+  divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent
+  regression signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire
+  (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 211): fresh
+  checkout landed in detached HEAD on the stale shallow-clone `main` ref; reconciled to origin/main `81f63f1`
+  (Cycle-210 tip) via `git checkout main` + `git reset --hard origin/main` (the benign divergence is the
+  shallow-clone local-ref reconciliation, NOT a history rewrite — invariant #5 intact). Fresh `.venv` +
+  `requests pyyaml eth-account pytest`, 440 tests green pre-flight (443 after +3).
+- FOCUS POINTER (Cycle 211 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 211 was
+  TRUTH, so Cycle 212 is READOUT). Cycle 211 shipped a **TRUTH increment — a pillar-granularity noise floor
+  proving the ATTRIBUTED transactability drop is signal, not pillar jitter** (`asrs/canonical_history.py` +
+  `tests/test_canonical_history.py` +3, in-file 53→56, suite 440→443). The overall `NoiseFloor` proves the
+  DELTA is deterministic at rest (σ=0 over 76 in-band re-scores), but the drift the benchmark ATTRIBUTES is at
+  the PILLAR level (driftflight.com transactability −25) and nothing proved that fingered move exceeds
+  PILLAR-level jitter. New `PillarNoiseFloor` + pure `pillar_noise_floor(points, domain, pillar)` measure one
+  side's one pillar's at-rest dispersion over the in-band readings (numeric-only, honest-None below 2);
+  `summarize` wires it to the attributed top mover → `attributed_pillar_noise_floor`. On the real series the
+  fingered pillar is 87.5 across all 76 in-band readings ⇒ σ=0/max|div|=0/deterministic, and the tracked −25
+  dwarfs it (SIGNAL, not jitter, at the granularity we finger). Non-vacuous (synthetic pillar-jitter guard:
+  constant delta but varying .com transactability → σ>0/deterministic=False — the jitter the overall floor is
+  blind to), MUTATION-VERIFIED (leak the OOB drop into the floor → σ=5.39/deterministic=False → real-series
+  guard reddens), vendor-neutral (domain is a side selector vs the module's own reference-pair constants; no
+  host special-cased). OFF the scoring path (`git diff --name-only` = the module + its test; `asrs/scoring.py
+  asrs/probes/ rubric/ fixtures/ asrs/offering.py asrs/battery.py` diff EMPTY) → score-neutral, NOT peer-gated,
+  direct-to-main. Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. NEXT (READOUT 212):
+  the `attributed_pillar_noise_floor` is computed but not yet surfaced — render it in the drift block ("fingered
+  pillar deterministic at rest; the −25 move is signal, not jitter"), mirroring the overall noise-floor
+  surfacing (mind the terminal/HTML surface-parity guard). Substantive frontier (GENUINE new thin-bank signals
+  from real fixtures, the negative anchor's two-crawl static cross-validation via a `moleskine.com` fixture,
+  ACP/UCP/MPP, the transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 210 runner note): RUNNER AT-FLOOR at 2026-08-03T22:15Z (Cycle 210) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~66.4h old at the fire — PAST the 6h floor (machine-asleep / runner-lag
   pattern, cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 22:15Z fire is
   NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral off-scoring-path

@@ -665,6 +665,16 @@ design in-cloud, execute locally.
 
 ## P1
 
+- **[OBSERVATION — Cycle 211, READOUT candidate] Surface the `attributed_pillar_noise_floor`.** Cycle 211
+  (TRUTH) added `PillarNoiseFloor` + `pillar_noise_floor()` and wired `CanonicalHistory.attributed_pillar_noise_floor`
+  (the fingered pillar's at-rest dispersion over the in-band readings — on the real series σ=0, so the tracked
+  driftflight.com transactability −25 is proven SIGNAL not pillar jitter), but it is computed, NOT rendered. The
+  overall `NoiseFloor` IS surfaced in `render()` ("noise floor … DETERMINISTIC … both sides exact"); the pillar
+  floor should get the same treatment in the drift block — one line naming the fingered pillar, its at-rest
+  determinism, and that the −25 move dwarfs it. Cheap, score-neutral, in-cloud READOUT increment (mind the
+  terminal/HTML surface-parity guard `test_terminal_and_html_surfaces_name_the_same_diagnostics`, and the
+  honest-None path when `attributed_pillar_noise_floor` is None). Off-scoring-path, direct-to-main.
+
 <!-- DONE (superseded by Cycles 200 + 204): "[OBSERVATION — Cycle 196] positive-ceiling mirror
      un-surfaced" — the positive mirror IS now on the methodology page. Cycle 200 (READOUT) added §8's
      ceiling counterfactual ("The mirror holds for the ceiling … knock out its agent-native payment

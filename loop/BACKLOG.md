@@ -325,10 +325,21 @@ design in-cloud, execute locally.
   canonical-invariant by construction (no fixture contains "lookup"; data_retrieval NA on all 5, and the
   isolation matrix's "a phone lookup service" still fires). The bare-word minefields across the two THINNEST
   archetypes are now ALL precision-guarded: `enrich`/`dataset` (data_retrieval, Cycle 186), `book` +
-  `schedule` (service_booking, Cycles 190/194), `lookup` (data_retrieval, Cycle 198). Next in-cloud
-  precision candidate is subscription's bare `recurring` (`\brecurring\b` false-positives on "recurring
-  theme" / "recurring bug" in non-billing prose) or a metered_api bare-word audit. This does NOT close the
-  parent item — the thin banks still want GENUINE NEW signals from real fixtures ([LOCAL], unchanged).
+  `schedule` (service_booking, Cycles 190/194), `lookup` (data_retrieval, Cycle 198). DONE Cycle 202
+  (COVERAGE, in-cloud, direct-to-main, score-neutral): subscription's bare `recurring` — the cheapest
+  subscription signal, false-positiving on broad-English "recurring theme/dream/nightmare/bug/character/
+  meeting/pattern" prose (each CONJURING a subscription claim on a non-billing storefront) — is now
+  POSITIVE-anchored (mirroring enrich/dataset, since its false-positive family is open-ended general
+  English, not a bounded CTA/internals set): fires only on a BILLING object after "recurring" (billing/
+  payment/charge/subscription/invoice/fee/plan/price/dues/membership ±cadence) or a billing verb in a short
+  window ("billed/charged/invoiced ... on a recurring basis"); `test_subscription_recurring_precision_synthetic`
+  (10 recurring-ONLY positives fire non-vacuously / 13 non-billing negatives dodge, incl. "recurring
+  revenue/costs" + the no-verb "recurring basis") + canonical-invariant by construction (no fixture contains
+  "recurring"; subscription claimed on the pair via `subscription`/`per-month`/`annual-billing`). The
+  bare-word minefields across the two THINNEST archetypes AND subscription's cheapest signal are now ALL
+  guarded. Next in-cloud precision candidate is a metered_api bare-word audit (largest bank, 26 signals,
+  never swept for broad-English collisions). This does NOT close the parent item — the thin banks still
+  want GENUINE NEW signals from real fixtures ([LOCAL], unchanged).
 
 - **[LOCAL] Validate the Cycle-178 whitespace-reflow robustness on a REAL line-wrapped surface** (COVERAGE,
   follow-up to Cycle 178). Cycle 178 made `classify_offering` collapse whitespace runs before scanning so

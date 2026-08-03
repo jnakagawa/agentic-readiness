@@ -1016,6 +1016,68 @@ def test_data_retrieval_lookup_precision_synthetic():
     )
 
 
+def test_subscription_recurring_precision_synthetic():
+    # The last cheap bare-word subscription signal hardened (siblings: enrich/
+    # dataset/lookup for data_retrieval, book/schedule for service_booking). Bare
+    # "\brecurring\b" is a broad-ENGLISH minefield: "a recurring theme", "a
+    # recurring dream/nightmare", "a recurring bug/issue", "a recurring character/
+    # role", "a recurring meeting", "a recurring pattern" — none says a plan bills
+    # on a cadence, yet each would CONJURE a subscription claim (probing a site with
+    # a plan-purchase intent it does not serve). The guard requires a BILLING object
+    # after "recurring" (billing/payment/charge/subscription/invoice/fee/plan/price/
+    # dues/membership, optionally through a cadence adjective) OR a billing VERB in a
+    # short window ("billed / charged / invoiced ... on a recurring basis"). Each
+    # POSITIVE is recurring-ONLY prose (fires the `recurring` label with no sibling
+    # subscription signal rescuing it), so it exercises the narrowed branch directly;
+    # each NEGATIVE is a non-billing "recurring <noun>" that must NOT claim
+    # subscription on its own.
+    positives = {
+        "recurring plan": "We offer a recurring plan for regular users.",  # isolation-matrix phrase
+        "recurring billing": "Access continues under recurring billing.",
+        "recurring payments": "Set up recurring payments for uninterrupted access.",
+        "recurring charge": "A recurring charge keeps your workspace active.",
+        "recurring invoice": "You receive a recurring invoice each period.",
+        "recurring fee": "Membership carries a recurring fee.",
+        "recurring pricing": "Our recurring pricing keeps things simple.",
+        "recurring membership dues": "Cover your recurring membership dues automatically.",
+        "billed on a recurring basis": "Your card is billed on a recurring basis.",
+        "charged on a recurring basis": "You are charged on a recurring basis until you cancel.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("sub.test", {"homepage": text})
+        assert prof.claims("subscription"), (name, prof.archetypes)
+        fired = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "subscription"
+            for s in c.signals
+        }
+        assert "recurring" in fired, (name, sorted(fired))  # non-vacuous: THIS branch fired
+    print(f"  ok: {len(positives)} genuine recurring-billing phrasings each claim subscription via `recurring`")
+
+    negatives = {
+        "recurring theme": "A recurring theme in our renders is soft light.",
+        "recurring dream": "The app helps you journal a recurring dream.",
+        "recurring nightmare": "Debugging this was a recurring nightmare.",
+        "recurring bug": "We fixed a recurring bug in the parser.",
+        "recurring issue": "Latency was a recurring issue last quarter.",
+        "recurring character": "Meet Ada, a recurring character in the tutorial.",
+        "recurring role": "She plays a recurring role in the demo videos.",
+        "recurring meeting": "Add a recurring meeting to your calendar.",
+        "recurring pattern": "The dataset shows a recurring pattern of spikes.",
+        "recurring motif": "Circles are a recurring motif in the brand art.",
+        "recurring headache": "Config drift was a recurring headache.",
+        "recurring costs": "We help you cut the recurring costs of your servers.",
+        "recurring basis, no verb": "We meet on a recurring basis to review progress.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("prose.test", {"homepage": text})
+        assert not prof.claims("subscription"), (name, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} non-billing 'recurring <noun>' strings do NOT claim subscription (precision)"
+    )
+
+
 def test_non_storefront_claims_nothing():
     prof = classify_offering("example.test", {"homepage": NULL_HOMEPAGE})
     assert prof.archetypes == [], prof.archetypes
@@ -4016,6 +4078,7 @@ def main() -> int:
         test_service_booking_book_precision_synthetic,
         test_service_booking_schedule_precision_synthetic,
         test_data_retrieval_lookup_precision_synthetic,
+        test_subscription_recurring_precision_synthetic,
         test_non_storefront_claims_nothing,
         test_strength_counts_distinct_signals_and_orders_claims,
         test_classification_is_surface_read_order_invariant,

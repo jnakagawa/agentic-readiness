@@ -807,7 +807,34 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
         ("subscription", re.compile(r"\bsubscription\b|\bsubscribe\b", _F)),
         ("per-month-price", re.compile(r"\$\s?\d[\d,.]*\s*(?:/|per)\s*month\b", _F)),
         ("per-month", re.compile(r"\bper month\b|\b/mo\b|\bmonthly\b", _F)),
-        ("recurring", re.compile(r"\brecurring\b", _F)),
+        # A RECURRING BILLING commitment — the plan renews and re-charges each
+        # period. PRECISION-CRITICAL: bare "\brecurring\b" is a broad-English
+        # false-positive minefield — "a recurring theme", "a recurring dream/
+        # nightmare", "a recurring bug/issue/problem", "a recurring character/
+        # role", "a recurring meeting/event/appointment", "a recurring pattern/
+        # motif" — none of which says a plan bills on a cadence. A generative or
+        # storytelling storefront whose homepage mentions "a recurring theme in
+        # your renders" would falsely claim subscription (the same over-claim
+        # failure the enrich/dataset/lookup guards close, here for the last cheap
+        # bare-word subscription signal). So NEVER match a bare "recurring":
+        # require it to name a BILLING object — recurring billing / payment(s) /
+        # charge(s) / subscription / invoice(s) / fee(s) / plan(s) / price /
+        # pricing / dues / membership, optionally through a cadence adjective
+        # ("recurring monthly plan") — or a BILLING VERB within a short window
+        # ("billed / charged / invoiced ... on a recurring basis"). The theme/
+        # dream/bug/character/meeting senses name none of these; the genuine
+        # "recurring subscription", "billed on a recurring basis", and the
+        # isolation-matrix "a recurring plan" all keep firing. Narrowing only —
+        # canonical-invariant by construction (no committed fixture contains
+        # "recurring"; subscription is claimed on the driftflight pair via
+        # `subscription`/`per-month`/`annual-billing`, never this signal).
+        ("recurring", re.compile(
+            r"\brecurring\s+"
+            r"(?:(?:monthly|annual|yearly|weekly|daily|quarterly|auto[- ]?renewing)\s+)?"
+            r"(?:billing|payments?|charges?|subscriptions?|invoices?|fees?|plans?"
+            r"|pric(?:e|es|ing)|dues?|membership)\b"
+            r"|\b(?:bill(?:ed|ing)?|charge[ds]?|charging|invoice[ds]?|invoicing|paid)\b"
+            r"[^.\n]{0,30}?\brecurring\b", _F)),
         ("annual-billing", re.compile(r"\bannual billing\b|\bbilling cycle\b", _F)),
         # Seat / per-user licensing — the dominant SaaS-subscription billing
         # convention (a recurring price per user seat), distinct from the

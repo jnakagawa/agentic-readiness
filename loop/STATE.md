@@ -1,8 +1,41 @@
 # Loop state
 
-- Cycle counter: 201
+- Cycle counter: 202
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-03T13:25Z (Cycle 201) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-03T14:22Z (Cycle 202) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~58.5h old at the fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; this
+  14:22Z fire is NOT first-after-16:00 UTC → no DM this fire per comms policy (score-neutral
+  off-scoring-path COVERAGE increment, no sensitive-class PR, nothing score-moving). Live signal (read,
+  not re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the
+  transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays
+  the frozen independent regression signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this
+  fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 202): fresh
+  checkout on the Cycle-201 tip `daf671f` (origin arrived as a `(forced update)` from `3796519`, normal
+  direct-to-main cadence), working tree clean, invariant #5 intact. Fresh `.venv` + `requests pyyaml
+  eth-account pytest`, imports verified, 428 tests green pre-flight (429 after +1).
+- FOCUS POINTER (Cycle 202 done): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 202 was
+  COVERAGE, so Cycle 203 is TRUTH). Cycle 202 shipped a **COVERAGE increment — the subscription
+  `recurring` bare-word precision guard** (`asrs/offering.py` + `tests/test_offering.py`,
+  `test_subscription_recurring_precision_synthetic`, suite 428→429). Bare `\brecurring\b` false-positived
+  on broad-English "recurring theme/dream/nightmare/bug/character/meeting/pattern" prose (each would CONJURE
+  a subscription claim on a non-billing storefront); the POSITIVE-anchored form (mirroring enrich/dataset,
+  since `recurring`'s false-positive family is open-ended general English, not a bounded CTA/internals set)
+  now requires a BILLING object after "recurring" (billing/payment/charge/subscription/invoice/fee/plan/
+  price/dues/membership, optionally via a cadence adjective) OR a billing verb in a short window ("billed/
+  charged/invoiced ... on a recurring basis"); dropped the ambiguous "revenue"/"costs". 10 recurring-ONLY
+  positives fire non-vacuously / 13 non-billing negatives dodge. CANONICAL-INVARIANT by construction (no
+  fixture contains "recurring", narrowing only removes matches); isolation matrix green. OFF the scoring
+  path (`git diff --name-only` = offering.py + test_offering.py; `scoring.py` has no `classify_offering`
+  reference, grep-re-verified) → score-neutral, NOT peer-gated, direct-to-main. Replay guard 24/24, 46.1
+  F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. The two THINNEST-archetype bare-word minefields
+  (enrich/dataset/lookup, book/schedule) are now ALL guarded and subscription's `recurring` closed. NEXT
+  (TRUTH 203): a calibration/attribution invariance guard, OR carry the counterfactual onto the
+  calibration/history card. NEXT in-cloud COVERAGE candidate is a metered_api bare-word audit (largest
+  bank, 26 signals, never swept for broad-English collisions). Substantive frontier (GENUINE new thin-bank
+  signals from real fixtures, the negative anchor's two-crawl static cross-validation via a `moleskine.com`
+  fixture, ACP/UCP/MPP, transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 201 runner note): RUNNER AT-FLOOR at 2026-08-03T13:25Z (Cycle 201) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~57.6h old at the fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; this
   13:25Z fire is NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral

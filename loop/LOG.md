@@ -3,6 +3,64 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 202 — 2026-08-03T14:22Z — COVERAGE — subscription `recurring` bare-word precision guard
+
+WHAT/WHY. The offering classifier's subscription signal bank carried the last cheap
+bare-word signal still un-guarded: `("recurring", re.compile(r"\brecurring\b"))`. Every
+sibling thin-bank bare word has been precision-hardened across recent cycles — enrich/
+dataset (data_retrieval, Cycle 186), book (service_booking, Cycle 190), schedule (Cycle
+194), lookup (data_retrieval, Cycle 198) — and STATE named `recurring` the next in-cloud
+candidate. Bare `\brecurring\b` is a broad-ENGLISH minefield: "a recurring theme", "a
+recurring dream/nightmare", "a recurring bug/issue", "a recurring character/role", "a
+recurring meeting", "a recurring pattern/motif", "a recurring headache" — none says a plan
+BILLS on a cadence, yet each would CONJURE a `subscription` claim (a generative or
+storytelling storefront that mentions "a recurring theme in your renders" gets probed with a
+plan-purchase intent it does not serve — the same over-claim the enrich/dataset/lookup
+guards close). Because subscription is one of the tied-thinnest live-evidence archetypes, a
+false claim does outsized damage.
+
+CHANGE (COVERAGE, off the scoring path, score-neutral, direct-to-main). `asrs/offering.py`:
+replaced the bare regex with the POSITIVE-anchored form used for the other broad-English
+minefields (enrich/dataset) rather than a negative lookaround (book/schedule/lookup use
+those because THEIR false-positive family is a bounded CTA/internals set; `recurring`'s is
+open-ended general English, so require the billing OBJECT). It now fires only when
+`recurring` names a BILLING object — billing / payment(s) / charge(s) / subscription(s) /
+invoice(s) / fee(s) / plan(s) / price / pricing / dues / membership, optionally through a
+cadence adjective ("recurring monthly plan") — OR when a billing VERB sits in a short
+window ("billed / charged / invoiced ... on a recurring basis"). Dropped the ambiguous
+"revenue"/"costs" objects (a B2B tool that helps you grow "recurring revenue" or cut
+"recurring costs" is not itself a subscription). `tests/test_offering.py`:
+`test_subscription_recurring_precision_synthetic` — 10 recurring-ONLY billing positives
+(each claims subscription with the `recurring` label firing and NO sibling signal
+rescuing it, so it exercises the narrowed branch non-vacuously) + 13 non-billing
+"recurring <noun>" negatives that must NOT claim subscription (incl. "recurring revenue/
+costs" and the reverse-window teeth "we meet on a recurring basis" — no billing verb →
+dodge). Registered in the module runner list (test_runner_registration guard green).
+
+EVIDENCE. `git diff --name-only` = `asrs/offering.py` + `tests/test_offering.py` ONLY;
+`scoring.py` has NO reference to `classify_offering`/`discover_offering` (grep-verified,
+re-confirmed this fire) → the classifier is off the scoring path, so score-neutral by
+construction. CANONICAL-INVARIANT by construction: narrowing only REMOVES matches, and no
+committed fixture contains "recurring" at all (grep of all 5 fixtures = 0 hits) — subscription
+is claimed on the driftflight pair via `subscription`/`per-month`/`annual-billing`, never
+this signal. Cross-signal isolation matrix green (the "a recurring plan" affirmative still
+fires `recurring`→subscription and leaks to no other archetype). Full suite 428→429.
+
+CANONICAL PAIR (in-cloud replay guard — authoritative static re-score, 24/24, 0 replay-miss):
+drift-flight.org 46.1 F / driftflight.com 85.5 B / delta +39.4 — UNCHANGED. Live signal (read,
+not re-run — runner AT-FLOOR, newest artifact verify_20260801T035047Z.json ~58.5h old):
+drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the
+off-scoring-path transactability-drop divergence PERSISTS (Aug-1), untouched by this change.
+Rubric v0.7.
+
+NEXT HYPOTHESIS. The two THINNEST-archetype bare-word minefields are now fully guarded and
+subscription's `recurring` closed; the next in-cloud precision candidate is a metered_api
+bare-word audit (the metered_api bank is the largest, 26 signals, and its cheapest bare
+words were never swept for the same broad-English collisions). GENUINE NEW thin-bank
+signals from real fixtures, the negative anchor's two-crawl static cross-validation via a
+`moleskine.com` fixture, ACP/UCP/MPP handshakes, and the transactability-drop CHECK-level
+diagnosis all stay `[LOCAL]`.
+
 ## Cycle 201 — 2026-08-03T13:25Z — METHOD — verdict_stability is MONOTONE in disagreement and shares ONE threshold with the citability gate
 
 WHAT/WHY. `verdict_stability` (asrs/reliability.py) is the single number the whole

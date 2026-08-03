@@ -1199,6 +1199,21 @@ floor, earned by the identical per-check evidence, with the agent-native payment
 check at <b>zero</b> on each. So the low score is attributably the <b>absence of
 agent-native payment</b>, not the storefront&rsquo;s category: the negative
 prediction is <b>storefront-type-invariant</b>.</p>
+<p>The mirror holds for the <b>ceiling</b>. Just as the low score is not a category
+artifact, the high one is not a <b>premium-category artifact</b> &mdash; a rich
+storefront rated well merely for being sophisticated. Take the with-rails
+storefront and <b>knock out its agent-native payment capability</b> &mdash;
+substitute the no-rails storefront&rsquo;s earned evidence on exactly the payment
+checks, leaving every other check untouched &mdash; then recompute the pillar with
+the scorer&rsquo;s own formula: it <b>collapses exactly onto the no-rails
+floor</b>. So <b>all</b> of the ceiling&rsquo;s separation from the floor is the
+agent-native payment capability and nothing else &mdash; a falsifiable
+<b>counterfactual</b>, not a decomposition of totals that could hide an offsetting
+cancellation. And it is not an artifact of the shipped rubric&rsquo;s weights:
+re-derived under <b>arbitrary re-weightings</b> of the transactability checks, the
+knocked-out ceiling lands on the re-weighted floor <b>every time</b>. Strip payment
+and the ceiling meets the floor at <b>every weighting</b> &mdash; the attribution is
+<b>structural</b>, not a weighting choice.</p>
 <p>Two honest limits keep this from over-claiming. The positive direction is still
 anchored on a <b>single with-rails run</b>; the negative floor now spans <b>two
 storefront types</b>, but neither direction is yet corroborated across a full

@@ -3,6 +3,61 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 200 — 2026-08-03T12:26Z — READOUT — surface the positive-side counterfactual: strip payment and the ceiling meets the floor at every weighting
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed. Infra/self-heal: fresh checkout on the Cycle-199 tip `c12588d`, tree clean,
+invariant #5 intact. Fresh `.venv` + `requests pyyaml eth-account pytest`; imports verified; 427 tests
+green pre-flight (427 after — this cycle EXTENDS an existing guard rather than adding a test function).
+Runner AT-FLOOR: newest verify `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is ~56.6h old —
+PAST the 6h floor (machine-asleep / runner-lag, cloud cannot repair; flagged in the 16:12Z Cycle-181
+digest).
+
+**What.** `asrs/scorecard.py` — methodology page section 8 (Calibration) gains one paragraph; the
+calibration-documentation guard `tests/test_readout.py::test_methodology_documents_calibration` gains
+5 assertions pinning the new prose. The rendered page now surfaces the POSITIVE-side counterfactual
+(Cycle 197's test 12) and its weight-robustness (Cycle 199's test 13), the ceiling mirror of the
+already-surfaced type-invariant negative floor (Cycle 196).
+
+**Why.** Section 8 already tells a reader the LOW score is not a "retail artifact" — the no-rails floor is
+storefront-TYPE-invariant, attributably the absence of agent-native payment. But the symmetric fact about
+the HIGH score — that it is not a "premium-category artifact", i.e. a rich storefront rated well merely for
+being sophisticated — was proven executable two cycles running (test 12 counterfactual, test 13
+weight-robustness) yet lived ONLY in the test suite, invisible to the public methodology page. A critic
+reading the page could still suspect the with-rails ceiling is a category premium. The new paragraph closes
+that gap in prose a critic can read: take the with-rails storefront, KNOCK OUT its agent-native payment
+capability (substitute the no-rails earned evidence on exactly the payment checks, every other check
+untouched), recompute the pillar with the scorer's own formula → it collapses EXACTLY onto the no-rails
+floor, so 100% of the ceiling-vs-floor separation is the payment capability and nothing else — a
+falsifiable counterfactual, not a decomposition of totals that could hide an offsetting cancellation. And
+it is weight-robust: re-derived under arbitrary re-weightings of the transactability checks, the
+knocked-out ceiling lands on the re-weighted floor every time. "Strip payment and the ceiling meets the
+floor at every weighting — the attribution is structural, not a weighting choice."
+
+**Ship class.** DISPLAY-ONLY, OFF the scoring path → score-neutral, NOT peer-gated, direct-to-main. The
+methodology page and card desc strings are rendered but never read by `scoring.score` (keys on
+id/pillar/max_points). `git diff --name-only` = `asrs/scorecard.py` + `tests/test_readout.py` ONLY;
+`git diff --stat -- asrs/scoring.py asrs/probes rubric/ fixtures/` EMPTY. Vendor-neutral (no domain/product
+named — `test_readout_wording.py` green; capability-worded throughout: "with-rails storefront", "no-rails
+floor", "agent-native payment", never a vendor). Rubric stays v0.7.
+
+**Validate.** Full suite 427 passed (test COUNT unchanged — existing guard extended, +5 assertions).
+`test_readout.py` / `test_readout_wording.py` / `test_canonical_replay.py` = 103 passed. Canonical replay
+guard 24/24, drift-flight.org 46.1 F / driftflight.com 85.5 B / delta **+39.4**, 0 replay-miss — UNCHANGED
+(off the scoring path). Live signal (read, not re-run; runner at-floor): driftflight.com 76.2 C / +30.1 /
+transactability 62.5 — the Aug-1 transactability-drop divergence PERSISTS off the scoring path; the frozen
+replay guard remains the independent regression signal.
+
+**Comms.** No DM this fire: NOT first-after-16:00 UTC (12:26Z), no sensitive-class PR, display-only /
+score-neutral — nothing score-moving or human-gated. Per comms policy → silent.
+
+**Next hypothesis (READOUT frontier).** The calibration section now surfaces BOTH sides — type-invariant
+floor AND weight-robust ceiling-collapse. A next READOUT unit could carry the counterfactual onto the
+calibration/history CARD (today it lives only on the methodology page), or add the population-sweep honest
+limit as a visible caveat. Substantive frontier (GENUINE new thin-bank signals from real fixtures, the
+negative anchor's two-crawl static cross-validation via a `moleskine.com` fixture, ACP/UCP/MPP,
+transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+
 ## Cycle 199 — 2026-08-03T11:14Z — TRUTH — the ceiling-collapse counterfactual is WEIGHT-robust: the payment attribution is structural, not a fixture-weight artifact
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

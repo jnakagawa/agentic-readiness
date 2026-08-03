@@ -1772,6 +1772,27 @@ def test_methodology_documents_calibration() -> None:
            "negative floor stated to be storefront-type-invariant")
     _check("absence of" in collapsed and "agent-native payment" in collapsed,
            "type-invariant floor attributed to the absence of agent-native payment")
+    # Cycle 200 (READOUT): the POSITIVE-side counterfactual now runs too — the
+    # ceiling mirror of the type-invariant floor. Cycle 197's test 12 knocks out the
+    # with-rails agent-native payment capability (substitutes the no-rails earned
+    # points on exactly the payment checks) and shows the transactability pillar
+    # collapses EXACTLY onto the no-rails floor: 100% of the ceiling-vs-floor
+    # separation is the agent-native payment capability, so the high score is not a
+    # "premium-category artifact". Cycle 199's test 13 proves that collapse is
+    # WEIGHT-robust — re-derived under arbitrary per-check re-weightings, the
+    # knocked-out ceiling lands on the re-weighted floor every time. A reader must be
+    # able to see BOTH: the counterfactual (not a decomposition) and its weight-
+    # robustness ("strip payment and the ceiling meets the floor at every weighting").
+    _check("premium-category artifact" in collapsed,
+           "positive ceiling explicitly framed as NOT a premium-category artifact")
+    _check("knock out" in collapsed,
+           "ceiling attribution stated as a knock-out counterfactual")
+    _check("collapses exactly onto the no-rails floor" in collapsed,
+           "knocked-out ceiling stated to collapse exactly onto the no-rails floor")
+    _check("counterfactual" in collapsed,
+           "ceiling attribution framed as a falsifiable counterfactual")
+    _check("every weighting" in collapsed and "structural" in collapsed,
+           "counterfactual stated to be weight-robust (structural, every weighting)")
     # The old positive-only honest limit must be GONE (the mirror case now runs).
     _check("one with-rails storefront" not in collapsed,
            "stale positive-only anchor claim removed")

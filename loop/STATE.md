@@ -1,8 +1,42 @@
 # Loop state
 
-- Cycle counter: 199
+- Cycle counter: 200
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-03T11:14Z (Cycle 199) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-03T12:26Z (Cycle 200) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~56.6h old at the fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; this
+  12:26Z fire is NOT first-after-16:00 UTC → no DM this fire per comms policy (display-only / score-neutral
+  off-scoring-path READOUT increment, no sensitive-class PR, nothing score-moving). Live signal (read, not
+  re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the
+  transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays
+  the frozen independent regression signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this
+  fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 200):
+  fresh checkout on the Cycle-199 tip `c12588d`, working tree clean, invariant #5 intact. Fresh `.venv` +
+  `requests pyyaml eth-account pytest`, imports verified, 427 tests green pre-flight (427 after — existing
+  guard extended, not a new test function).
+- FOCUS POINTER (Cycle 200 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 200 was
+  READOUT, so Cycle 201 is METHOD). Cycle 200 shipped a **READOUT increment — the methodology page now
+  surfaces the POSITIVE-side counterfactual + its weight-robustness** (`asrs/scorecard.py` section 8 +5
+  assertions in `tests/test_readout.py::test_methodology_documents_calibration`; suite 427, test COUNT
+  unchanged). Section 8 already told a reader the LOW score is not a "retail artifact" (type-invariant
+  negative floor, Cycle 196); the symmetric fact that the HIGH score is not a "premium-category artifact"
+  — proven executable by Cycle 197's knock-out counterfactual (test 12) and Cycle 199's weight-robustness
+  (test 13) — lived ONLY in the test suite, invisible to the public page. The new paragraph closes that:
+  knock out the with-rails agent-native payment capability (substitute the no-rails earned evidence on
+  exactly the payment checks, every other check untouched), recompute the pillar → it collapses EXACTLY
+  onto the no-rails floor, so 100% of the ceiling-vs-floor separation is the payment capability and nothing
+  else (a falsifiable counterfactual, not a decomposition that could hide an offsetting cancellation); and
+  it is weight-robust — re-derived under arbitrary re-weightings the knocked-out ceiling lands on the
+  re-weighted floor every time ("strip payment and the ceiling meets the floor at every weighting — the
+  attribution is structural, not a weighting choice"). DISPLAY-ONLY, OFF the scoring path (`git diff
+  --name-only` = scorecard.py + test_readout.py; scoring-path diff EMPTY) → score-neutral, NOT peer-gated,
+  direct-to-main. Vendor-neutral (`test_readout_wording.py` green). Replay guard 24/24, 46.1 F / 85.5 B /
+  +39.4, 0 replay-miss; rubric v0.7. NEXT (METHOD 201): the calibration/attribution frontier (a next
+  invariance/coupling guard, or carrying the counterfactual onto the calibration/history CARD which today
+  shows only the methodology page). The substantive frontier (GENUINE new thin-bank signals from real
+  fixtures, the negative anchor's two-crawl static cross-validation via a `moleskine.com` fixture,
+  ACP/UCP/MPP, transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 199 runner note): RUNNER AT-FLOOR at 2026-08-03T11:14Z (Cycle 199) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~55.4h old at the fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; this
   11:14Z fire is NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral

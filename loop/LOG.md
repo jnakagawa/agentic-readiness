@@ -3,6 +3,63 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 193 — 2026-08-03T05:19Z — METHOD — the readout's and the calibration's transactability attributions cannot silently drift apart
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed. Infra/self-heal: fresh checkout detached on the Cycle-192 tip `8a4b3ec`;
+`git checkout -B main origin/main` aligned to origin/main `8a4b3ec` (Cycle 192, arrived via a
+`(forced update)` from `3796519`), tree clean, invariant #5 intact. Fresh `.venv` + `requests pyyaml
+eth-account pytest`; imports verified; 421 tests green pre-flight (422 after this cycle's +1). Runner
+AT-FLOOR: newest verify `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is ~49.5h old at the
+05:19Z fire — PAST the 6h floor (machine-asleep / runner-lag pattern, cloud cannot repair; already
+flagged in the 16:12Z Cycle-181 digest). 05:19Z is NOT first-after-16:00 UTC → no digest DM this fire.
+
+**What (METHOD).** Added `test_readout_earner_and_calibration_attribution_cannot_drift` to
+`tests/test_calibration.py` (test #10, 9→10). Two layers now each attribute the transactability score
+to a capability from OPPOSITE ends of the pipeline, and this guard pins that they name the SAME one on
+both canonical anchors: the CALIBRATION layer (Cycle-191 test #9) proves the transactability point-gap
+is earned entirely by the agent-native payment checks `_STATIC_PAYMENT_CHECKS = (x402_probe,
+self_serve_payg)`; the READOUT layer (Cycle-192 `scorecard._pillar_top_earner`) surfaces on the HTML
+card the single check that earns the MOST transactability points ("earned by <check>"). The guard
+replays BOTH canonical fixtures offline, maps the card's surfaced `(finding, points)` back to the
+concrete check it names, and asserts that check's `check_id` is one of `_STATIC_PAYMENT_CHECKS` — on
+driftflight.com the earner is `x402_probe` (finding "x402-live", +8), on drift-flight.org
+`self_serve_payg` (finding "self-serve-signup", +3). One source of truth (`_STATIC_PAYMENT_CHECKS`)
+now shared by the readout caption and the calibration reasoning.
+
+**Why.** Cycle 192 surfaced the transactability earner on the card; Cycle 191 attributed the
+calibration magnitude to payment. Nothing forced these to agree. A refactor could keep the calibration
+attribution intact (payment still earns the gap) while the card's top-earner caption drifted to a
+non-payment transactability check — the card would then tell a reader "transactability earned by
+<non-payment check>" while the science says the payability magnitude rests on agent-native payment, and
+the reader's mental model would silently diverge from the calibration attribution. Coupling the two to
+one check-set closes that drift channel. Serves methodological rigor (attribution consistency across
+the readout↔calibration seam).
+
+**Method / non-vacuity + teeth.** Non-vacuous: a non-payment transactability check (`mcp_surface`) is
+genuinely in the set on BOTH sides (earns 0 on both), so the assertion is "the readout names a payment
+check DESPITE a real non-payment alternative", not "payment is the only check there is" — the guard
+also asserts the surfaced earner is not that control. MUTATION-VERIFIED two ways: (a) dropping
+`x402_probe` from `_STATIC_PAYMENT_CHECKS` reddens (test #9 first, then #10's coupling clause);
+(b) monkeypatching `_pillar_top_earner` to surface `mcp_surface` as the transactability earner reddens
+#10 specifically ("the card attributes transactability to agent-native payment ('mcp_surface' …)") —
+proving it catches READOUT-side drift, not only calibration-side.
+
+**Ship class + evidence.** OFF the scoring path: `git diff --name-only` = `tests/test_calibration.py`
+ONLY; scoring-path diff (`asrs/scoring.py rubric/ fixtures/ asrs/probes asrs/fetch.py asrs/cli.py
+asrs/battery.py asrs/offering.py asrs/scorecard.py`) = EMPTY → score-neutral, tests-only, NOT
+peer-gated, direct-to-main. Full suite 421→422; `test_calibration.py` 9→10. Canonical replay guard
+24/24, drift-flight.org 46.1 F / driftflight.com 85.5 B / delta +39.4, 0 replay-miss, rubric v0.7 —
+UNCHANGED. Live signal (read, not re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 /
+transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the
+in-cloud replay guard stays the frozen regression signal.
+
+**Next hypothesis (COVERAGE 194).** The substantive COVERAGE frontier is [LOCAL] (thin-archetype /
+render / structured-catalog live fixtures, ACP/UCP/MPP handshakes). In-cloud COVERAGE candidates: a new
+precision-guard on the next-cheapest bare-word offering signal, or extend the readout↔calibration
+coupling pattern to a second pillar (e.g. an Outcome or trust earner-vs-attribution guard) if a
+comparable attribution exists.
+
 ## Cycle 192 — 2026-08-03T04:1xZ — READOUT — the "earned by" pillar caption: each pillar score now names the dominant capability that earns it
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

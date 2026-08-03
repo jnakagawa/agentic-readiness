@@ -80,6 +80,7 @@ _REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, _REPO_ROOT)
 
 from asrs import scoring  # noqa: E402
+from asrs import scorecard  # noqa: E402
 from asrs.cli import _run_probes  # noqa: E402
 from asrs.fetch import FetchContext  # noqa: E402
 from asrs.types import Status  # noqa: E402
@@ -690,6 +691,82 @@ def test_payability_prediction_is_attributably_agent_native_payment() -> None:
     )
 
 
+# ---------------------------------------------------------------------------
+# 10. THE READOUT'S ATTRIBUTION AND THE CALIBRATION'S ATTRIBUTION CANNOT SILENTLY
+#     DRIFT APART.  Two layers now each attribute the transactability score to a
+#     capability, from OPPOSITE ends of the pipeline:
+#       - the CALIBRATION layer (test 9) proves the with-rails/no-rails
+#         transactability point-gap is earned entirely by the agent-native
+#         payment checks in ``_STATIC_PAYMENT_CHECKS`` (x402_probe, self_serve_payg);
+#       - the READOUT layer (scorecard._pillar_top_earner, Cycle 192) surfaces, on
+#         the HTML card, the single check that earns the MOST transactability points
+#         — the "earned by <check>" caption a human reads off the card.
+#     Nothing yet forces these to name the SAME capability.  A refactor could keep
+#     the calibration attribution intact (payment still earns the gap) while the
+#     card's top-earner caption drifts to a non-payment transactability check
+#     (e.g. if mcp_surface began out-earning the payment checks) — the card would
+#     then tell a reader "transactability earned by <non-payment check>" while the
+#     science says the payability magnitude rests on agent-native payment.  The
+#     reader's mental model and the calibration attribution would silently diverge.
+#     This guard closes that gap on BOTH canonical anchors: the check the readout
+#     surfaces as the transactability earner IS one of the agent-native payment
+#     checks the calibration attribution credits — one source of truth
+#     (``_STATIC_PAYMENT_CHECKS``) shared by the card and the calibration reasoning.
+#     Non-vacuous: a non-payment transactability check (mcp_surface) really is in
+#     the set on both sides, so this is "the readout names a payment check DESPITE
+#     a non-payment check being present", not "payment is the only check there is".
+# ---------------------------------------------------------------------------
+def test_readout_earner_and_calibration_attribution_cannot_drift() -> None:
+    print("test_readout_earner_and_calibration_attribution_cannot_drift")
+    # Both canonical storefronts: the readout must attribute transactability to the
+    # SAME agent-native payment capability the calibration attribution reasons about.
+    for dom in (_ANCHOR_DOMAIN, "drift-flight.org"):
+        rep, misses = _static_report(dom)
+        _check(not misses, f"{dom} static replay is like-for-like (no replay-miss)")
+        d = json.loads(rep.to_json())
+
+        tx_checks = [c for c in d["checks"] if c["pillar"] == "transactability"]
+        _check(bool(tx_checks), f"{dom} has transactability checks to attribute")
+
+        # The check the READOUT surfaces to a card reader as the transactability earner.
+        top = scorecard._pillar_top_earner(d, "transactability")
+        _check(top is not None, f"{dom} transactability names an earner on the card")
+        finding, pts = top
+
+        # Map the surfaced (finding, points) back to the concrete check the card names.
+        named = [
+            c for c in tx_checks
+            if (c.get("finding") or c.get("check_id")) == finding
+            and abs(float(c["points"]) - pts) < 1e-9
+        ]
+        _check(
+            len(named) == 1,
+            f"{dom}: the card's surfaced earner maps to exactly one transactability "
+            f"check (finding={finding!r}, points={pts}, matched={[c['check_id'] for c in named]})",
+        )
+
+        # THE COUPLING: the check the readout surfaces IS one of the calibration's
+        # agent-native payment checks — the two attributions share one source of truth.
+        earner_id = named[0]["check_id"]
+        _check(
+            earner_id in _STATIC_PAYMENT_CHECKS,
+            f"{dom}: the card attributes transactability to agent-native payment "
+            f"({earner_id!r} in {_STATIC_PAYMENT_CHECKS}) — the readout and the "
+            f"calibration attribution name the same capability",
+        )
+
+        # NON-VACUOUS: a non-payment transactability check is genuinely present and is
+        # NOT what the card surfaced — the coupling holds despite a real alternative.
+        nonpayment_ids = [
+            c["check_id"] for c in tx_checks if c["check_id"] not in _STATIC_PAYMENT_CHECKS
+        ]
+        _check(
+            nonpayment_ids and earner_id not in nonpayment_ids,
+            f"{dom}: a non-payment transactability check exists as the control "
+            f"({nonpayment_ids}) yet is not the surfaced earner",
+        )
+
+
 def main() -> int:
     tests = [
         test_static_payment_prediction_is_behaviorally_corroborated,
@@ -701,6 +778,7 @@ def main() -> int:
         test_negative_corroboration_is_reproducible,
         test_calibration_is_two_sided,
         test_payability_prediction_is_attributably_agent_native_payment,
+        test_readout_earner_and_calibration_attribution_cannot_drift,
     ]
     failed = 0
     for t in tests:

@@ -1,8 +1,38 @@
 # Loop state
 
-- Cycle counter: 192
+- Cycle counter: 193
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-03T04:12Z (Cycle 192) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-03T05:19Z (Cycle 193) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~49.5h old at the 05:19Z fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; 05:19Z is
+  NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral METHOD increment,
+  no sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org 46.1 F /
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS
+  (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent regression signal
+  (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open → []),
+  so no first-duty review. INFRA/SELF-HEAL (Cycle 193): fresh checkout detached on the Cycle-192 tip
+  `8a4b3ec`; `git checkout -B main origin/main` aligned to origin/main `8a4b3ec` (Cycle 192, arrived via a
+  `(forced update)` from `3796519`), working tree clean, invariant #5 intact. Fresh `.venv` + `requests
+  pyyaml eth-account pytest`, imports verified, 421 tests green pre-flight (422 after this cycle's +1).
+- FOCUS POINTER (Cycle 193 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 193 was
+  METHOD, so Cycle 194 is COVERAGE). Cycle 193 shipped a **METHOD increment — the readout↔calibration
+  attribution coupling guard** (`tests/test_calibration.py`
+  `test_readout_earner_and_calibration_attribution_cannot_drift`, 9→10). Two layers each attribute the
+  transactability score to a capability from opposite ends of the pipeline — the CALIBRATION layer (Cycle-191
+  test #9) proves the transactability gap is earned by `_STATIC_PAYMENT_CHECKS = (x402_probe, self_serve_payg)`;
+  the READOUT layer (Cycle-192 `scorecard._pillar_top_earner`) surfaces the card's "earned by <check>" caption
+  — but nothing forced them to name the SAME check. The guard replays BOTH canonical fixtures offline, maps the
+  card's surfaced earner back to its `check_id`, and asserts it's one of the calibration payment checks (x402_probe
+  with-rails, self_serve_payg no-rails), so a refactor cannot drift the card's caption to a non-payment check
+  while calibration still credits payment. Non-vacuous (mcp_surface control present on both sides, earns 0);
+  MUTATION-VERIFIED twice (drop x402_probe from the set → reddens; monkeypatch `_pillar_top_earner` to surface
+  mcp_surface → #10 reddens on the coupling clause specifically, proving it catches readout-side drift).
+  Tests-only, OFF the scoring path (`git diff --name-only` = `tests/test_calibration.py` ONLY; scoring-path diff
+  EMPTY) → score-neutral, NOT peer-gated, direct-to-main. Full suite 421→422; `test_calibration.py` 9→10; replay
+  guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. NEXT (COVERAGE 194): the substantive frontier
+  is [LOCAL] (thin-archetype/render/structured-catalog live fixtures, ACP/UCP/MPP); in-cloud, a next-cheapest
+  bare-word offering precision guard, or extend the earner-vs-attribution coupling pattern to a second pillar.
+- SUPERSEDED (Cycle 192 runner note): RUNNER AT-FLOOR at 2026-08-03T04:12Z (Cycle 192) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~48h old at the 04:12Z fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; 04:12Z is
   NOT first-after-16:00 UTC → no DM this fire per comms policy (display-only / score-neutral READOUT

@@ -607,6 +607,16 @@ design in-cloud, execute locally.
 
 ## P1
 
+- **[OBSERVATION — Cycle 196] The negative-floor "not a retail artifact" readout has an un-surfaced
+  POSITIVE mirror.** Cycle 196 (READOUT) surfaced on the methodology page (§8 Calibration) that the no-rails
+  transactability FLOOR is storefront-type-invariant and attributably the ABSENCE of agent-native payment
+  (not a retail artifact) — the readout of Cycle-195's type-invariance guard. The symmetric positive claim
+  is NOT yet in any readout: that the with-rails transactability CEILING (87.5) is earned by agent-native
+  payment SPECIFICALLY (the entire 11-pt gap vs no-rails is `x402_probe` + `self_serve_payg`, per Cycle-191
+  test #9), not diffuse legibility/trust credit. A cheap, score-neutral, in-cloud READOUT increment: add a
+  positive-mirror sentence to §8 (or the calibration page) so BOTH directions read as payment-capability
+  signals, guarded like the Cycle-196 assertions. Off-scoring-path, display-only, direct-to-main.
+
 - **[OBSERVATION — Cycle 192] The "earned by" pillar caption opens two in-cloud follow-ups.** Cycle 192
   (READOUT) added `_pillar_top_earner` + the per-pillar "earned by <capability> +N" caption to the HTML card
   (`asrs/scorecard.py`), surfacing the Cycle-191 attribution (a pillar score is earned by named checks, not

@@ -1,8 +1,43 @@
 # Loop state
 
-- Cycle counter: 195
+- Cycle counter: 196
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-03T07:16Z (Cycle 195) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-03T08:13Z (Cycle 196) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~52.4h old at the fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; this
+  08:13Z fire is NOT first-after-16:00 UTC → no DM this fire per comms policy (display-only /
+  score-neutral off-scoring-path READOUT increment, no sensitive-class PR, nothing score-moving). Live
+  signal (read, not re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability
+  62.5 — the transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay
+  guard stays the frozen independent regression signal (24/24, 46.1 F / 85.5 B / +39.4). No open
+  peer-gated PRs this fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL
+  (Cycle 196): fresh checkout clean on the Cycle-195 tip `270a3cf`, working tree clean, invariant #5
+  intact. Fresh `.venv` + `requests pyyaml eth-account pytest`, imports verified, 424 tests green
+  pre-flight (424 after this cycle — assertions +3 within an existing test, so the COUNT is unchanged).
+- FOCUS POINTER (Cycle 196 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 196 was
+  READOUT, so Cycle 197 is METHOD). Cycle 196 shipped a **READOUT increment — the type-invariant negative
+  floor surfaced on the methodology page** (`asrs/scorecard.py`, §8 Calibration). A new paragraph states
+  the negative transactability floor is **not a retail artifact**: it is measured IDENTICALLY on a
+  no-rails **API** and a no-rails **retail shop** (two structurally different storefront types), with the
+  agent-native payment check at **zero** on each, so the low score is attributably the **absence of
+  agent-native payment**, not the storefront's category — the negative prediction is
+  **storefront-type-invariant** (the readout of Cycle-195's calibration guard). The stale "each direction
+  is anchored on one storefront" honest-limit sentence was refreshed to "the positive direction is still a
+  single with-rails run; the negative floor now spans two storefront types, but neither direction is yet
+  corroborated across a full population" — accurate to the guard, still honest about the population gap.
+  Vendor-neutral (no domain/product named). Guarded by 3 new assertions in
+  `test_methodology_documents_calibration` (retail-artifact / storefront-type-invariant / absence-of-
+  agent-native-payment) atop the existing two-sided + stale-claim-removed checks. OFF the scoring path
+  (`git diff --name-only` = `asrs/scorecard.py` + `tests/test_readout.py`; scoring-path diff EMPTY) →
+  score-neutral, NOT peer-gated, direct-to-main. Full suite 424 green; replay guard 24/24, 46.1 F / 85.5 B
+  / +39.4, 0 replay-miss; rubric v0.7. NEXT (METHOD 197): the readout frontier still wants the POSITIVE
+  mirror — surface that the with-rails transactability CEILING (87.5) is earned by agent-native payment
+  specifically (positive analogue of "not a retail artifact"), OR carry type-invariance onto the
+  calibration/history page; on the METHOD track, a next-cheapest invariance/coupling guard. Substantive
+  frontier (thin-archetype / render / structured-catalog LIVE fixtures, the negative anchor's two-crawl
+  static cross-validation via a `moleskine.com` fixture, ACP/UCP/MPP, transactability-drop CHECK-level
+  diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 195 runner note): RUNNER AT-FLOOR at 2026-08-03T07:16Z (Cycle 195) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~51.4h old at the fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; this
   07:16Z fire is NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral

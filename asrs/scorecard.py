@@ -1191,9 +1191,18 @@ never something that couldn&rsquo;t be observed. At the <b>same payment
 checkpoints</b>, the with-rails storefront <b>passes</b> and the no-rails one
 <b>fails</b> &mdash; the prediction tracks the experience in <b>both
 directions</b>.</p>
-<p>Two honest limits keep this from over-claiming. Each direction is anchored on
-<b>one storefront</b> &mdash; a single with-rails run and a single no-rails run
-&mdash; so the property is corroborated both ways but not yet across a population.
+<p>The negative floor is not a <b>retail artifact</b> &mdash; a shop marked down
+merely for selling physical goods. It has been measured on two structurally
+different no-rails storefronts &mdash; a no-rails <b>API</b> and a no-rails
+<b>retail shop</b> &mdash; and both land on the <b>identical</b> transactability
+floor, earned by the identical per-check evidence, with the agent-native payment
+check at <b>zero</b> on each. So the low score is attributably the <b>absence of
+agent-native payment</b>, not the storefront&rsquo;s category: the negative
+prediction is <b>storefront-type-invariant</b>.</p>
+<p>Two honest limits keep this from over-claiming. The positive direction is still
+anchored on a <b>single with-rails run</b>; the negative floor now spans <b>two
+storefront types</b>, but neither direction is yet corroborated across a full
+<b>population</b> of real merchants.
 And the whole check stays inside the <b>$0 free tier</b> (section&nbsp;10): the
 agent completes a real machine-payable path, or is confirmed to have none, without
 ever signing a nonzero-value authorization. Within that scope the two-sided

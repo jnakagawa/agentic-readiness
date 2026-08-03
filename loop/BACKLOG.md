@@ -254,14 +254,19 @@ design in-cloud, execute locally.
   no longer conjures the archetype), pinned by `test_data_retrieval_precision_synthetic` +
   `..._is_canonical_invariant_on_real_fixtures`. This does NOT close the item: the thin banks still want
   GENUINE NEW signals from real fixtures ([LOCAL], unchanged). NOTE the mirror gap this surfaced —
-  service_booking's `book (a|an|your|now|online)` signal is UN-guarded and would false-positive on the
-  ubiquitous B2B sales CTA "book a demo" / "book a call" / "book a walkthrough" (conjuring service_booking
-  on a pure-API storefront). No committed fixture carries it (service_booking is NA on all 5, and grep of
-  fixtures for "book" hits only "Books to Scrape"), so a precision guard would be synthetic-demonstrated +
-  canonical-invariant — a clean cloud-doable COVERAGE unit (exclude the sales-CTA objects demo/call/
-  walkthrough/briefing/meeting while KEEPING genuine bookable services: table/room/appointment/session/
-  class/consultation). Watch recall: service_booking is tied-thinnest, so exclude only unambiguous sales
-  CTAs.
+  service_booking's `book (a|an|your)` signal was UN-guarded and false-positived on the ubiquitous B2B
+  sales CTA "book a demo" / "book a call" / "book a walkthrough" (conjuring service_booking on a pure-API
+  storefront). DONE Cycle 190 (COVERAGE, in-cloud, direct-to-main, score-neutral): the guard
+  `\bbook (?:a|an|your) (?!(?:demo|call|walk[- ]?through|briefing|meeting)s?\b)\w+` now excludes those
+  unambiguous sales-CTA objects while KEEPING genuine bookable services (table/room/appointment/session/
+  class/consultation) and `book now`/`book online`/`booking`; `test_service_booking_book_precision_synthetic`
+  (8 genuine positives fire / 7 book-a-<CTA> negatives dodge, incl. the "book your demos" plural + hyphenated
+  "walk-through") + canonical-invariant by construction (narrowing only removes matches; service_booking stays
+  NA on all 5 fixtures per `test_offering_canonical::_MUST_BE_NA`, 58/58); the surface-read-order test that
+  had inadvertently ENCODED this false positive ("Book a demo appointment") was corrected to genuine
+  two-signal booking prose. The three cheapest bare-word minefields (`enrich`/`dataset`, Cycle 186; `book`,
+  Cycle 190) are now ALL precision-guarded. This does NOT close the parent item — the thin banks still want
+  GENUINE NEW signals from real fixtures ([LOCAL], unchanged).
 
 - **[LOCAL] Validate the Cycle-178 whitespace-reflow robustness on a REAL line-wrapped surface** (COVERAGE,
   follow-up to Cycle 178). Cycle 178 made `classify_offering` collapse whitespace runs before scanning so

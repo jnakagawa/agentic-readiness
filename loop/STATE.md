@@ -1,8 +1,40 @@
 # Loop state
 
-- Cycle counter: 189
+- Cycle counter: 190
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-03T00:12Z (Cycle 189) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-03T01:12Z (Cycle 190) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~45.4h old at the 01:12Z fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; 01:12Z is
+  NOT first-after-16:00 UTC → no DM this fire per comms policy (off-scoring-path / score-neutral COVERAGE
+  increment, no sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org
+  46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence
+  PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent regression
+  signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open
+  → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 190): fresh checkout, `git pull --ff-only`
+  fast-forwarded to origin/main tip `d9a3f55` (Cycle 189, after a `(forced update)`); working tree clean,
+  invariant #5 intact. Fresh `.venv` + `requests pyyaml eth-account pytest`, imports verified, 415 tests green
+  pre-flight (416 after this cycle's +1).
+- FOCUS POINTER (Cycle 190 done): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 190 was
+  COVERAGE, so Cycle 191 is TRUTH). Cycle 190 shipped a **COVERAGE increment — the service_booking `book a …`
+  sales-CTA precision guard** (`asrs/offering.py`): the archetype's cheapest signal, the bare `book (a|an|your)`
+  verb, matched the single most common B2B sales CTA ("book a demo / call / meeting / walkthrough / briefing"),
+  falsely conjuring service_booking — tied-thinnest, so max damage — on a pure-API / SaaS storefront. New form
+  `\bbook (?:a|an|your) (?!(?:demo|call|walk[- ]?through|briefing|meeting)s?\b)\w+` excludes those unambiguous
+  sales-CTA objects while keeping every genuine bookable service (table/room/appointment/session/class/
+  consultation) and `book now`/`book online`/`booking`. `tests/test_offering.py` +1
+  (`test_service_booking_book_precision_synthetic`, 8 positives fire / 7 CTA negatives dodge) and the
+  surface-read-order test updated (it had encoded the false positive "Book a demo appointment"; now uses
+  genuine "Book a table; appointments available"). Canonical-invariant by construction (narrowing only removes
+  matches; service_booking stays NA on all 5 fixtures per `test_offering_canonical::_MUST_BE_NA`, 58/58). OFF
+  the scoring path (`git diff --name-only` = `asrs/offering.py` + `tests/test_offering.py`; scoring-path diff
+  EMPTY) → score-neutral, NOT peer-gated, direct-to-main. Full suite 415→416; `test_offering.py` 81→82; replay
+  guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. The offering classifier's three cheapest
+  bare-word minefields — `enrich`/`dataset` (data_retrieval, Cycle 186) and now `book` (service_booking) — are
+  all precision-guarded. NEXT (TRUTH 191): a calibration/attribution guard, or extend surface-read-order /
+  whitespace-reflow invariance coverage to the newly-guarded book branch. Substantive frontier (thin-archetype/
+  render/structured-catalog LIVE fixtures — ACP/UCP/MPP, calibration sweep, transactability-drop CHECK-level
+  diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 189 runner note): RUNNER AT-FLOOR at 2026-08-03T00:12Z (Cycle 189) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~44.4h old at the 00:12Z fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; 00:12Z is
   NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral METHOD increment,

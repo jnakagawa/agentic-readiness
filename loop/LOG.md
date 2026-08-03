@@ -14462,3 +14462,68 @@ evidence (e.g. the service_booking `book (a|an|your)` sales-CTA collision, synth
 demonstrated + canonical-invariant). Substantive frontier (thin-archetype/render/structured-
 catalog LIVE fixtures, ACP/UCP/MPP, calibration sweep, transactability-drop CHECK-level
 diagnosis) stays `[LOCAL]`.
+
+## Cycle 190 — 2026-08-03 ~01:1xZ — COVERAGE — service_booking "book a …" sales-CTA precision guard: the thinnest archetype can no longer be conjured by a B2B demo CTA
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed. Infra/self-heal: fresh checkout; `git pull --ff-only` — origin/main had a
+`(forced update)` to `d9a3f55` (Cycle 189), fast-forwarded there, tree clean, invariant #5 intact.
+Fresh `.venv` + `requests pyyaml eth-account pytest`; 415 tests green pre-flight (bench up). Runner
+AT-FLOOR: newest verify `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is ~45.4h old at the
+01:12Z Aug-3 fire — PAST the 6h floor (machine-asleep / runner-lag pattern, cloud cannot repair;
+already flagged in the 16:12Z Cycle-181 digest). 01:12Z is NOT first-after-16:00 UTC → no digest DM
+this fire.
+
+**What (COVERAGE).** Precision-hardened the `service_booking` archetype's cheapest signal, the bare
+`book (a|an|your)` verb, in `asrs/offering.py`. The old regex `\bbook (a|an|your|now|online)\b|\bbooking\b`
+matched the single most common B2B **sales CTA** on the web — "book a demo", "book a call", "book a
+meeting", "book a walkthrough", "book a briefing" — none of which is a bookable SERVICE the storefront
+sells to an agent. The new form excludes those unambiguous sales-CTA objects from the article branch
+(`\bbook (?:a|an|your) (?!(?:demo|call|walk[- ]?through|briefing|meeting)s?\b)\w+`) while keeping every
+genuine bookable service (table / room / appointment / session / class / consultation / …), and keeps
+`book now` / `book online` (no object) and the noun `booking` untouched (never sales CTAs). Added
+`test_service_booking_book_precision_synthetic` to `tests/test_offering.py` (8 genuine positives fire /
+7 book-a-<CTA> negatives dodge, incl. the "book your demos" plural + "walk-through" hyphen forms) and
+registered it in the manual `main()` runner.
+
+**Why.** `service_booking` is tied with `data_retrieval` for the THINNEST archetype, so a false claim
+does maximum damage: a pure-API / SaaS storefront whose homepage says "Book a demo" would falsely claim
+service_booking and be probed with a reservation intent it does not serve — the exact archetype
+pollution the offering-relative directive removes, and doubly harmful on a thin archetype. This is the
+mirror gap the Cycle-186 `data_retrieval` precision work surfaced (BACKLOG note). Recall-conscious per
+the thin-archetype caution: only the DIRECT sales-CTA object is stripped (a rare padded "book a quick
+demo" still slips — accepted; the backlog directs excluding only unambiguous CTAs, and over-reaching
+would risk dropping genuine two-word services). Also updated the surface-read-order invariance test,
+which had inadvertently ENCODED the false positive ("Book a demo appointment" → strength 2) — now uses
+genuine two-signal booking prose ("Book a table; appointments available") that keeps the strength-2 tie.
+
+**Method / non-vacuity + teeth.** The narrowing can only REMOVE matches, never add, and `service_booking`
+is NA on all five committed fixtures (pinned by `test_offering_canonical.py::_MUST_BE_NA`, which replays
+the real discovery path), so the change is canonical-invariant by construction — verified green (58/58).
+The synthetic guard has both a positive pool (genuine services still claim) and a negative pool (each CTA
+dodges), so it bites in both directions. `\b` in the exclusion correctly spares whole-word non-CTAs
+("book a demonstration" / "book a caller" still fire, as intended — only the exact CTA nouns are stripped).
+
+**Ship class + evidence.** OFF the scoring path: `git diff --name-only` = `asrs/offering.py` +
+`tests/test_offering.py` ONLY; the classifier (`discover_offering`/`classify_offering`) is off the
+scoring path (scoring-path diff `asrs/scoring.py asrs/probes.py rubric/ fixtures/` = EMPTY) →
+score-neutral, NOT peer-gated, direct-to-main. `test_offering.py` 81→82; full suite 415→416, 0 failures.
+Canonical PAIR unchanged: in-cloud replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss;
+rubric v0.7. (Cloud is network-blocked for the live re-score; the in-cloud standard is
+regression-by-construction — the scoring path is byte-identical — plus the offline replay guard, green.)
+
+**Live canonical signal.** Newest LOCAL artifact `runs/local/verify_20260801T035047Z.json` (03:50Z
+Aug-1) is ~45.4h old at the 01:12Z Aug-3 fire — PAST the 6h floor (machine-asleep / runner-lag, cloud
+cannot repair; already flagged in the 16:12Z Cycle-181 digest). Its LIVE re-score: drift-flight.org
+46.1 F / driftflight.com 76.2 C / +30.1 — the known transactability 87.5→62.5 divergence (off the
+scoring path; the frozen replay guard stays the in-cloud regression signal). 01:12Z is NOT
+first-after-16:00 UTC → no digest DM per comms policy; off-scoring-path / score-neutral, no
+sensitive-class PR, nothing score-moving. No open peer-gated PRs this fire → no first-duty review.
+
+**Next hypothesis (TRUTH 191).** Rotate TRUTH next (Cycle 190 was COVERAGE; METHOD → COVERAGE → TRUTH
+→ READOUT). The offering classifier's three cheapest bare-word minefields — `enrich`/`dataset`
+(data_retrieval, Cycle 186) and now `book` (service_booking) — are precision-guarded; the remaining thin
+archetype `physical_good` is already fully mined on its only fixture. In-cloud TRUTH candidate: a
+calibration/attribution guard, or extend the surface-read-order / whitespace-reflow invariance coverage
+to the newly-guarded book branch. Substantive frontier (thin-archetype/render/structured-catalog LIVE
+fixtures, ACP/UCP/MPP, calibration sweep, transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.

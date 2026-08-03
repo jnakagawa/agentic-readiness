@@ -885,6 +885,49 @@ def test_data_retrieval_precision_is_canonical_invariant_on_real_fixtures():
     print("  ok: all 5 committed fixtures keep their exact claimed set; data_retrieval stays NA")
 
 
+def test_service_booking_book_precision_synthetic():
+    # service_booking is tied with data_retrieval for the thinnest archetype, so a
+    # FALSE claim here does maximum damage: the site gets probed with a reservation
+    # intent it does not serve (the exact archetype pollution this module removes).
+    # Its cheapest signal — the bare "book a ..." verb — collides with the single
+    # most common B2B SALES CTA ("book a demo / call / meeting / walkthrough /
+    # briefing"), which is NOT a bookable service. The guard strips those
+    # unambiguous sales-CTA objects while keeping every genuine bookable service.
+    # Each POSITIVE is genuine booking prose that must still claim service_booking
+    # via the book signal; each NEGATIVE is a book-a-<CTA> string that must NOT
+    # conjure service_booking on its own.
+    positives = {
+        "book a table": "Book a table for dinner at your preferred time.",
+        "book a room": "Book a room online for your next stay.",
+        "book an appointment": "Book an appointment with one of our stylists.",
+        "book a session": "Book a session with a certified trainer today.",
+        "book a consultation": "Book a consultation to discuss your options.",
+        "book a class": "Book a class in our weekly schedule.",
+        "book now": "Ready when you are — book now.",
+        "booking noun": "Complete your booking in just a few seconds.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("booking.test", {"homepage": text})
+        assert prof.claims("service_booking"), (name, prof.archetypes)
+    print(f"  ok: {len(positives)} genuine bookable-service phrasings each claim service_booking")
+
+    negatives = {
+        "book a demo": "Book a demo to see the API in action.",
+        "book a call": "Book a call with our sales team.",
+        "book a meeting": "Book a meeting to learn more.",
+        "book a walkthrough": "Book a walkthrough of the platform.",
+        "book a walk-through": "Book a walk-through with an engineer.",
+        "book a briefing": "Book a briefing with our solutions team.",
+        "book demos plural": "Book your demos with the team this quarter.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("saas.test", {"homepage": text})
+        assert not prof.claims("service_booking"), (name, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} book-a-<sales-CTA> strings do NOT claim service_booking (precision)"
+    )
+
+
 def test_non_storefront_claims_nothing():
     prof = classify_offering("example.test", {"homepage": NULL_HOMEPAGE})
     assert prof.archetypes == [], prof.archetypes
@@ -926,8 +969,10 @@ def test_classification_is_surface_read_order_invariant():
         # permutes the per-archetype signal accumulation, not merely the dict);
         # service_booking ties subscription at strength 2 (a tie broken by
         # ARCHETYPES.index, never by which surface arrived first); digital_good
-        # is single-surface.
-        "homepage": "Our plans are billed monthly. Book a demo appointment.",
+        # is single-surface. service_booking fires TWO genuine bookable-service
+        # signals here — "book a table" (book) + "appointments" (appointment) —
+        # deliberately NOT the sales-CTA "book a demo" the precision guard strips.
+        "homepage": "Our plans are billed monthly. Book a table; appointments available.",
         "/pricing": "Recurring billing. We generate an image for you.",
     }
     forward = classify_offering("shop.test", dict(surfaces))
@@ -3880,6 +3925,7 @@ def main() -> int:
         test_booking_and_data_archetypes_fire,
         test_data_retrieval_precision_synthetic,
         test_data_retrieval_precision_is_canonical_invariant_on_real_fixtures,
+        test_service_booking_book_precision_synthetic,
         test_non_storefront_claims_nothing,
         test_strength_counts_distinct_signals_and_orders_claims,
         test_classification_is_surface_read_order_invariant,

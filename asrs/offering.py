@@ -1265,7 +1265,29 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
         ("physical-descriptor", re.compile(r"\bphysical (product|good|item)s?\b", _F)),
     ],
     "service_booking": [
-        ("book", re.compile(r"\bbook (a|an|your|now|online)\b|\bbooking\b", _F)),
+        # BOOK A SERVICE — a bookable appointment / table / room / session.
+        # PRECISION-CRITICAL: bare "book a ..." is the single most common B2B
+        # SALES CTA on the web — "book a demo", "book a call", "book a meeting",
+        # "book a walkthrough", "book a briefing" — none of which is a SERVICE the
+        # storefront sells to an agent; each would falsely conjure service_booking
+        # (tied with data_retrieval for the thinnest archetype, so a false claim
+        # does maximum damage) on a pure-API / SaaS storefront and probe it with a
+        # reservation intent it does not serve. So EXCLUDE those unambiguous
+        # sales-CTA objects from the "book a/an/your <x>" branch while KEEPING every
+        # genuine bookable service (table / room / appointment / session / class /
+        # consultation / ...). "book now" / "book online" (no object) and the noun
+        # "booking" stay — they are never sales CTAs. Recall-conscious per the
+        # thin-archetype caution (service_booking is tied-thinnest): only the DIRECT
+        # sales-CTA object is stripped, so a rare padded "book a quick demo" still
+        # slips — accepted, the backlog directs excluding only unambiguous CTAs, and
+        # over-reaching would risk dropping genuine two-word services. No committed
+        # fixture trips this signal (service_booking is NA on all five per
+        # test_offering_canonical), so the narrowing is canonical-invariant by
+        # construction; the classifier is off the scoring path.
+        ("book", re.compile(
+            r"\bbook (?:a|an|your) (?!(?:demo|call|walk[- ]?through|briefing|meeting)s?\b)\w+"
+            r"|\bbook (?:now|online)\b"
+            r"|\bbooking\b", _F)),
         ("appointment", re.compile(r"\bappointments?\b", _F)),
         ("reservation", re.compile(r"\breservations?\b|\breserve (a|an|your|now)\b", _F)),
         ("schedule", re.compile(r"\bschedule (a|an|your)\b", _F)),

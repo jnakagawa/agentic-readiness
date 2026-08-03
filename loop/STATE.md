@@ -1,8 +1,40 @@
 # Loop state
 
-- Cycle counter: 197
+- Cycle counter: 198
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-03T09:14Z (Cycle 197) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-03T10:17Z (Cycle 198) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~54.5h old at the fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; this
+  10:17Z fire is NOT first-after-16:00 UTC → no DM this fire per comms policy (score-neutral
+  off-scoring-path COVERAGE increment, no sensitive-class PR, nothing score-moving). Live signal (read,
+  not re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the
+  transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays
+  the frozen independent regression signal (24/24, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this
+  fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 198):
+  fresh checkout on the Cycle-197 tip `5d413fb`, working tree clean, invariant #5 intact. Fresh `.venv` +
+  `requests pyyaml eth-account pytest`, imports verified, 425 tests green pre-flight (426 after +1).
+- FOCUS POINTER (Cycle 198 done): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 198 was
+  COVERAGE, so Cycle 199 is TRUTH). Cycle 198 shipped a **COVERAGE increment — the data_retrieval
+  `lookup` data-structure precision guard** (`asrs/offering.py` + `tests/test_offering.py`,
+  `test_data_retrieval_lookup_precision_synthetic`, suite 425→426). The bare `\blook ?ups?\b` signal
+  false-positived on the data-structure / internals vocabulary that saturates API & engineering docs
+  ("lookup table", "hash / cache / index / key / symbol / array / in-memory lookup") — internal mechanism
+  / performance descriptors, NOT a data-retrieval OFFERING — conjuring the tied-thinnest archetype on any
+  storefront whose docs mention an internal lookup. Narrowed to
+  `(?<!hash )(?<!cache )(?<!index )(?<!table )(?<!array )(?<!key )(?<!symbol )(?<!memory )\blook ?ups?\b(?!\s*tables?\b)`:
+  fixed-width negative lookbehinds strip the leading data-structure qualifiers + a trailing lookahead
+  strips "lookup table(s)", while 8 genuine record-lookup positives (phone/reverse-IP/address/domain/
+  company/WHOIS, "look up a customer record") still fire. Surgical, not blunt — the discriminating pair
+  "look up a table reservation" FIRES / "lookup table" DODGES. This is the `lookup` guard the Cycle-194
+  note explicitly queued. OFF the scoring path (`git diff --name-only` = offering.py + test_offering.py;
+  scoring-path diff EMPTY) → score-neutral, NOT peer-gated, direct-to-main. Canonical-invariant by
+  construction (no fixture contains "lookup"; data_retrieval NA on all 5). Replay guard 24/24, 46.1 F /
+  85.5 B / +39.4, 0 replay-miss; rubric v0.7. NEXT (TRUTH 199): the calibration/attribution frontier
+  (a next invariance/coupling guard on the live signal bank, or the negative anchor's cross-validation).
+  The next in-cloud COVERAGE precision candidate is subscription's bare `recurring`; the substantive
+  frontier (GENUINE new thin-bank signals from real fixtures, ACP/UCP/MPP, transactability-drop CHECK-level
+  diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 197 runner note): RUNNER AT-FLOOR at 2026-08-03T09:14Z (Cycle 197) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~53.4h old at the fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; this
   09:14Z fire is NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral

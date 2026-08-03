@@ -969,6 +969,53 @@ def test_service_booking_schedule_precision_synthetic():
     )
 
 
+def test_data_retrieval_lookup_precision_synthetic():
+    # The THIRD data_retrieval bare-word signal hardened (siblings: enrich/dataset,
+    # Cycle 186). `lookup` is one of the two thinnest archetypes' cheapest signals,
+    # so a FALSE claim does maximum damage: the site gets probed with a records-
+    # lookup intent it does not serve. Bare "\blook ?ups?\b" collides with the
+    # DATA-STRUCTURE / INTERNALS vocabulary that saturates API & engineering docs
+    # ("lookup table", "hash / cache / index / key / symbol / array / in-memory
+    # lookup") — every one an internal mechanism or performance descriptor, NOT a
+    # data-retrieval OFFERING. The guard strips those unambiguous internals
+    # collocations while keeping every genuine record-retrieval sense. Each POSITIVE
+    # is lookup-ONLY prose (no sibling data_retrieval signal rescues it), so it
+    # exercises the narrowed lookup branch directly; each NEGATIVE is an internals
+    # collocation that must NOT conjure data_retrieval on its own.
+    positives = {
+        "phone lookup": "A phone lookup service returning carrier and line-type data.",
+        "reverse ip lookup": "Reverse IP lookup over a simple REST endpoint.",
+        "address lookup": "Address lookup by postal code, one call per query.",
+        "domain lookup": "Domain lookup returns registration records for any host.",
+        "company lookup": "Company lookup by name or registration ID.",
+        "whois lookup": "WHOIS lookup for any registered domain.",
+        "look up a customer": "Look up a customer record by email address.",
+        "look up a reservation": "Look up a table reservation by confirmation code.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("data.test", {"homepage": text})
+        assert prof.claims("data_retrieval"), (name, prof.archetypes)
+    print(f"  ok: {len(positives)} genuine record-lookup phrasings each claim data_retrieval")
+
+    negatives = {
+        "lookup table": "Values are stored in a lookup table for fast access.",
+        "lookup tables": "We ship precomputed lookup tables with the SDK.",
+        "hash lookup": "Records are found via a hash lookup in constant time.",
+        "cache lookup": "A cache lookup avoids the network round trip.",
+        "index lookup": "The query planner performs an index lookup internally.",
+        "key lookup": "A key lookup returns the stored value.",
+        "symbol lookup": "Dynamic symbol lookup happens at load time.",
+        "array lookup": "An array lookup by offset is constant time.",
+        "in-memory lookup": "Config resolves with an in-memory lookup.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("internals.test", {"homepage": text})
+        assert not prof.claims("data_retrieval"), (name, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} data-structure/internals lookup strings do NOT claim data_retrieval (precision)"
+    )
+
+
 def test_non_storefront_claims_nothing():
     prof = classify_offering("example.test", {"homepage": NULL_HOMEPAGE})
     assert prof.archetypes == [], prof.archetypes
@@ -3968,6 +4015,7 @@ def main() -> int:
         test_data_retrieval_precision_is_canonical_invariant_on_real_fixtures,
         test_service_booking_book_precision_synthetic,
         test_service_booking_schedule_precision_synthetic,
+        test_data_retrieval_lookup_precision_synthetic,
         test_non_storefront_claims_nothing,
         test_strength_counts_distinct_signals_and_orders_claims,
         test_classification_is_surface_read_order_invariant,

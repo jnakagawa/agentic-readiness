@@ -300,11 +300,24 @@ design in-cloud, execute locally.
   while keeping genuine scheduled services (session/consultation/table/pickup/visit/fitting);
   `test_service_booking_schedule_precision_synthetic` (6 schedule-ONLY positives fire / 7 CTA negatives
   dodge) + canonical-invariant by construction (no fixture contains "schedule"; service_booking NA on all
-  5, 58/58). The bare-word minefields across the two THINNEST archetypes are now ALL precision-guarded:
-  `enrich`/`dataset` (data_retrieval, Cycle 186), `book` + `schedule` (service_booking, Cycles 190/194).
-  Next in-cloud precision candidate is data_retrieval's bare `lookup` (`\blook ?ups?\b` false-positives on
-  "lookup table" in API docs). This does NOT close the parent item — the thin banks still want GENUINE NEW
-  signals from real fixtures ([LOCAL], unchanged).
+  5, 58/58). DONE Cycle 198 (COVERAGE, in-cloud, direct-to-main, score-neutral): the data_retrieval
+  `lookup` signal — the last cheap bare-word minefield across the two thinnest archetypes — is now guarded.
+  Bare `\blook ?ups?\b` false-positived on the data-structure / internals vocabulary that saturates API &
+  engineering docs ("lookup table", "hash / cache / index / key / symbol / array / in-memory lookup" —
+  internal mechanism / performance descriptors, verified firing live at fire start); new form
+  `(?<!hash )(?<!cache )(?<!index )(?<!table )(?<!array )(?<!key )(?<!symbol )(?<!memory )\blook ?ups?\b(?!\s*tables?\b)`
+  (fixed-width negative lookbehinds strip the leading data-structure qualifiers + a trailing lookahead
+  strips "lookup table(s)") excludes them while KEEPING every genuine record-retrieval sense
+  (phone/reverse-IP/address/domain/company/WHOIS lookup, "look up a customer record");
+  `test_data_retrieval_lookup_precision_synthetic` (8 record-lookup positives fire / 9 internals negatives
+  dodge, incl. the discriminating pair "look up a table reservation" FIRES / "lookup table" DODGES) +
+  canonical-invariant by construction (no fixture contains "lookup"; data_retrieval NA on all 5, and the
+  isolation matrix's "a phone lookup service" still fires). The bare-word minefields across the two THINNEST
+  archetypes are now ALL precision-guarded: `enrich`/`dataset` (data_retrieval, Cycle 186), `book` +
+  `schedule` (service_booking, Cycles 190/194), `lookup` (data_retrieval, Cycle 198). Next in-cloud
+  precision candidate is subscription's bare `recurring` (`\brecurring\b` false-positives on "recurring
+  theme" / "recurring bug" in non-billing prose) or a metered_api bare-word audit. This does NOT close the
+  parent item — the thin banks still want GENUINE NEW signals from real fixtures ([LOCAL], unchanged).
 
 - **[LOCAL] Validate the Cycle-178 whitespace-reflow robustness on a REAL line-wrapped surface** (COVERAGE,
   follow-up to Cycle 178). Cycle 178 made `classify_offering` collapse whitespace runs before scanning so

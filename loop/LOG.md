@@ -3,6 +3,68 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 198 — 2026-08-03T10:17Z — COVERAGE — data_retrieval `lookup` data-structure precision guard (the third thin-bank bare-word minefield closed)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no
+peer-gate review owed. Infra/self-heal: fresh checkout on the Cycle-197 tip `5d413fb`, tree clean,
+invariant #5 intact. Fresh `.venv` + `requests pyyaml eth-account pytest`; imports verified; 425 tests
+green pre-flight (426 after this cycle's +1). Runner AT-FLOOR: newest verify
+`runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is ~54.5h old at the fire — PAST the 6h floor
+(machine-asleep / runner-lag pattern, cloud cannot repair; already flagged in the 16:12Z Cycle-181
+digest). This 10:17Z fire is NOT first-after-16:00 UTC → no digest DM (score-neutral off-scoring-path
+COVERAGE increment, no sensitive-class PR, nothing score-moving).
+
+**What (COVERAGE).** Narrowed the `data_retrieval` archetype's `lookup` signal in `asrs/offering.py`
+from the bare `\blook ?ups?\b` to
+`(?<!hash )(?<!cache )(?<!index )(?<!table )(?<!array )(?<!key )(?<!symbol )(?<!memory )\blook ?ups?\b(?!\s*tables?\b)`,
+and added `test_data_retrieval_lookup_precision_synthetic` to `tests/test_offering.py` (8 genuine
+record-lookup positives fire / 9 data-structure-internals negatives dodge). Verified at fire start that
+the bare signal FIRED on "lookup table", "hash lookup", "cache lookup", "index lookup" — internal
+mechanism / performance vocabulary, NOT a data-retrieval offering.
+
+**Why.** data_retrieval is tied with service_booking for the THINNEST archetype (5 signals), so a FALSE
+claim does maximum damage — the site gets probed with a records-lookup intent it does not serve (the
+exact archetype pollution the offering module removes). "lookup table" / "hash lookup" / "cache lookup"
+/ "index lookup" saturate API & engineering docs as data-structure and performance descriptors; left
+bare, `lookup` conjured data_retrieval on any storefront whose docs mention an internal lookup mechanism.
+This is the `lookup` guard the Cycle-194 note explicitly queued as the next in-cloud precision candidate.
+Serves measurement rigor on the north-star's "many storefront types" axis (a metered-API storefront
+documenting an in-memory lookup table is no longer mis-typed as a data vendor).
+
+**Method / non-vacuity + teeth.** Positives are lookup-ONLY prose (phone / reverse-IP / address / domain
+/ company / WHOIS lookup, "look up a customer record", "look up a table reservation" — no sibling
+data_retrieval signal rescues them), so each genuinely exercises the narrowed branch; if `lookup` broke,
+all 8 would fail. The discriminating pair proves the guard is surgical, not blunt: "look up a table
+reservation" (genuine verb + external data object) FIRES while "lookup table" (data structure) DODGES.
+Negatives are clean internals collocations with no other data_retrieval trigger. Recall-conscious per
+the thin-archetype caution: only the unambiguous data-structure collocations are stripped (a leading
+`<hash|cache|index|table|array|key|symbol|memory> lookup` via fixed-width negative lookbehinds + a
+trailing `lookup table(s)` via negative lookahead); a genuine data service also trips data-service /
+query-records / dataset anyway.
+
+**Ship class.** Direct-to-main. The change is confined to the offering CLASSIFIER
+(`discover_offering`/`classify_offering`), which drives `--battery auto` task selection ONLY and is OFF
+the scoring path — NOT a scoring-semantics change (no check add/remove, no weight/cap/version). Scoring
+diff is empty of `asrs/scoring.py`/`rubric/`; the change is a precision-narrowing bug-fix.
+
+**Validation / canonical pair.** Score-neutral: `git diff --name-only` = `asrs/offering.py` +
+`tests/test_offering.py` ONLY (no scoring-path file; `git diff --stat -- asrs/scoring.py asrs/probes.py
+rubric/ fixtures/` EMPTY). Canonical-invariant by CONSTRUCTION — narrowing only REMOVES matches, and no
+committed fixture contains the word "lookup" (data_retrieval NA on all five per `test_offering_canonical`
+58/58 green, incl. the cross-signal isolation matrix whose `lookup` phrase "a phone lookup service" still
+fires). In-cloud replay guard (the authoritative canonical signal) 24/24: **drift-flight.org 46.1 F /
+driftflight.com 85.5 B / delta +39.4**, 0 replay-miss, rubric v0.7 — UNCHANGED. Full suite 425→426;
+`test_offering.py` +1. Live signal (read, not re-run): the local runner's last live re-score persists
+driftflight.com 76.2 C / +30.1 / transactability 62.5 (the off-scoring-path transactability-drop
+divergence, Aug-1), tracked separately as the [LOCAL] CHECK-level P0.
+
+**Next hypothesis.** Four bare-word minefields are now guarded across the two thinnest archetypes:
+`enrich`/`dataset` (data_retrieval, Cycle 186), `book`/`schedule` (service_booking, Cycles 190/194), and
+`lookup` (data_retrieval, this cycle). The next in-cloud precision candidate is subscription's bare
+`recurring` (`\brecurring\b` false-positives on "recurring theme" / "recurring bug" in non-billing prose)
+or a metered_api bare-word audit. The substantive COVERAGE frontier (GENUINE new signals for the thin
+banks) still needs real live fixtures ([LOCAL], unchanged). Rotate to TRUTH next (Cycle 199).
+
 ## Cycle 197 — 2026-08-03T09:14Z — METHOD — the with-rails ceiling is a payment-capability signal, not a category artifact (knock-out counterfactual)
 
 **First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`) → no

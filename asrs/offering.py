@@ -1352,7 +1352,29 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
         ("dataset", re.compile(
             r"\bdatasets?\s+(?:api|feed|subscription|catalog(?:ue)?|marketplace|endpoint|access|licen[sc]e|download|lookup)\b"
             r"|\b(?:quer(?:y|ying|ies)|search|access|download|retriev\w+|fetch|pull|look\s?up|subscribe\s+to|licen[sc]e|browse|against)\s+(?:\w+\s+){0,3}datasets?\b", _F)),
-        ("lookup", re.compile(r"\blook ?ups?\b", _F)),
+        # LOOK UP A RECORD — an agent retrieves a specific datum by key (phone /
+        # address / domain / company / person / WHOIS lookup). PRECISION-CRITICAL:
+        # bare "\blook ?ups?\b" is a data-structure / internals minefield in API and
+        # engineering docs — "lookup table", "hash lookup", "cache lookup", "index
+        # lookup", "key lookup", "symbol lookup", "array lookup", "in-memory lookup" —
+        # every one an INTERNAL MECHANISM or performance descriptor, NOT a
+        # data-retrieval OFFERING the storefront vends to an agent; each would falsely
+        # claim data_retrieval (one of the two thinnest archetypes, so a false claim
+        # does maximum damage) and probe it with a records-lookup intent it does not
+        # serve. So EXCLUDE the unambiguous data-structure / internals collocations —
+        # a trailing "lookup table(s)" and a leading "<hash|cache|index|table|array|
+        # key|symbol|memory> lookup" — while KEEPING every genuine record-retrieval
+        # sense ("phone / address / domain / company lookup", "look up a customer",
+        # "reverse lookup", "WHOIS lookup"). Recall-conscious per the thin-archetype
+        # caution: only the unambiguous internals collocations are stripped, and a
+        # genuine data service also trips data-service / query-records / dataset
+        # anyway. No committed fixture trips this signal (data_retrieval is NA on all
+        # five per test_offering_canonical, and no fixture contains "lookup"), so the
+        # narrowing is canonical-invariant by construction; the classifier is off the
+        # scoring path.
+        ("lookup", re.compile(
+            r"(?<!hash )(?<!cache )(?<!index )(?<!table )(?<!array )(?<!key )"
+            r"(?<!symbol )(?<!memory )\blook ?ups?\b(?!\s*tables?\b)", _F)),
         ("data-service", re.compile(r"\bdata (feed|api|enrichment|records)\b|\brecords against\b", _F)),
         ("query-records", re.compile(r"\bquery (records|the database|a dataset)\b", _F)),
     ],

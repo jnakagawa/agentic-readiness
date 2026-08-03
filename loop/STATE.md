@@ -1,8 +1,47 @@
 # Loop state
 
-- Cycle counter: 202
+- Cycle counter: 203
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-03T14:22Z (Cycle 202) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-03T15:13Z (Cycle 203) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~58.6h old at the fire — PAST the 6h floor (machine-asleep /
+  runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; this
+  15:13Z fire is BEFORE 16:00 UTC → NOT first-after-16:00 → no DM this fire per comms policy (tests-only /
+  score-neutral off-scoring-path TRUTH increment, no sensitive-class PR, nothing score-moving). Live
+  signal (read, not re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability
+  62.5 — the transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay
+  guard stays the frozen independent regression signal (24/24, 46.1 F / 85.5 B / +39.4). No open
+  peer-gated PRs this fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL
+  (Cycle 203): the fresh checkout started detached on the real tip `eb634bd` (Cycle 202) but the clone's
+  local `main`/`origin/main` refs were STALE at `3796519` (Cycle 94) — a shallow-clone artifact, NOT a
+  history rewrite. A read-only `git fetch origin main` reconciled origin/main → `eb634bd` (Cycle 202,
+  matching STATE/LOG); the per-cycle "(forced update) from 3796519" note is exactly this benign stale-ref
+  reconciliation, not a real force-push (invariant #5 intact, verified: full Cycle-95→202 history present,
+  429 tests green on the real tip). Worked on `main` = origin/main = `eb634bd`. Fresh `.venv` + `requests
+  pyyaml eth-account pytest`; 429 tests green pre-flight (430 after +1). NOTE for future fires: `git
+  checkout main` on a fresh cloud checkout lands on the STALE local branch (Cycle 94) — always
+  `git fetch origin main` and work from `origin/main`, never the bare local `main`.
+- FOCUS POINTER (Cycle 203 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 203 was
+  TRUTH, so Cycle 204 is READOUT). Cycle 203 shipped a **TRUTH increment — the agent-native payment
+  attribution PROPAGATES to the cited OVERALL number** (`tests/test_calibration.py` 13→14,
+  `test_payment_capability_drives_the_majority_of_the_headline_delta`, suite 429→430). Tests 11-13 pinned
+  the payment attribution at the TRANSACTABILITY-PILLAR level; this carries it to the OVERALL score people
+  cite. Using scoring's OWN roll-up, it knocks out agent-native payment on the with-rails storefront
+  (substitutes the no-rails FULL CheckResults for `_STATIC_PAYMENT_CHECKS` — points + findings, so any
+  payment-gap cap fires faithfully) and re-scores: OVERALL collapses **85.5 B → 59.8 F** (a full grade-tier
+  flip ACROSS the passing boundary), ONLY transactability moves (87.5→18.75, other pillars byte-identical,
+  caps unchanged), closing **25.7/39.4 = 65.2%** of the headline delta — agent-native payment is the SINGLE
+  MAJORITY driver of the cited gap even after the 0.30 pillar weight dilutes it. HONEST non-exclusivity: the
+  knock-out leaves a residual (59.8 > 46.1) carried by legibility (90.9 vs 36.4), so the guard states the
+  delta is payment-DOMINATED, not payment-EXCLUSIVE. OFF the scoring path (`git diff --name-only` =
+  test_calibration.py only; asrs/rubric/fixtures diff EMPTY) → score-neutral, NOT peer-gated,
+  direct-to-main. The 85.5/46.1/59.8/18.75 literals share test 9(d)'s re-baseline tripwire. Replay guard
+  24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. NEXT (READOUT 204): carry this overall-level,
+  headline-number attribution (payment ≈65% majority driver, B→F flip, honest ~35% legibility residual)
+  onto the methodology page / calibration card — it lives only in the test suite today, exactly as tests
+  12/13's pillar counterfactual did before Cycle 200 surfaced it. Substantive frontier (GENUINE new
+  thin-bank signals from real fixtures, the negative anchor's two-crawl static cross-validation via a
+  `moleskine.com` fixture, ACP/UCP/MPP, transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 202 runner note): RUNNER AT-FLOOR at 2026-08-03T14:22Z (Cycle 202) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~58.5h old at the fire — PAST the 6h floor (machine-asleep /
   runner-lag pattern, cloud cannot repair). Already flagged in the 16:12Z Cycle-181 daily digest; this
   14:22Z fire is NOT first-after-16:00 UTC → no DM this fire per comms policy (score-neutral

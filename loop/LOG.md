@@ -3,6 +3,74 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 203 — 2026-08-03T15:13Z — TRUTH — agent-native payment drives the MAJORITY of the headline delta (overall-level counterfactual)
+
+WHAT/WHY. Tests 11-13 (`test_calibration.py`) pin the payment attribution at the
+TRANSACTABILITY-PILLAR level: the no-rails floor is storefront-type-invariant (11),
+knocking agent-native payment out of the with-rails ceiling collapses it EXACTLY onto that
+floor (12, a falsifiable counterfactual), and the collapse is weight-robust (13). But the
+number people CITE is the OVERALL score — 85.5 B (with-rails) vs 46.1 F (no-rails), delta
++39.4 — which the rubric rolls up across FIVE weighted pillars, with transactability only
+0.30. A skeptic could grant the pillar attribution yet argue the headline +39.4 is really
+carried by OTHER pillars once the 0.30 weight dilutes payment. Tests 11-13 cannot answer
+that — they never leave the transactability pillar. This is the honest, citation-relevant
+gap: does the pillar-level payment attribution actually PROPAGATE to the cited number?
+
+CHANGE (TRUTH, off the scoring path, tests-only, score-neutral, direct-to-main).
+`tests/test_calibration.py`: new test 14
+`test_payment_capability_drives_the_majority_of_the_headline_delta`, registered in the
+module runner list. It answers the question at the overall level using scoring's OWN
+roll-up (`scoring.score` + the committed rubric — no reimplementation): KNOCK OUT
+agent-native payment on the with-rails storefront by substituting the no-rails storefront's
+FULL CheckResult for each `_STATIC_PAYMENT_CHECKS` check (capability absent — the no-rails
+earned points AND finding slugs, so any payment-gap CAP would fire exactly as for a real
+no-rails store), leave every other check untouched, and re-score. Assertions:
+(a) OVERALL collapses 85.5 B -> 59.8 F — stripping the SINGLE payment capability drops a
+    passing storefront a full grade tier ACROSS the passing boundary (a categorical flip,
+    not a rounding nudge);
+(b) ONLY the transactability pillar moves (87.5 -> the no-rails floor 18.75); access /
+    legibility / trust are byte-identical to the intact report and `caps_applied` is
+    unchanged, so the overall drop flows SOLELY through the payment-driven transactability
+    collapse, not a side effect or a cap artifact;
+(c) MAJORITY DRIVER — that closes 25.7 / 39.4 = ~65.2% of the headline delta, so
+    agent-native payment is the SINGLE MAJORITY driver of the cited gap even after the 0.30
+    pillar weight dilutes it (`fraction >= 0.5`, pinned 0.652);
+(d) HONEST NON-EXCLUSIVITY (truth over pitch) — the knock-out does NOT drop the with-rails
+    overall all the way to the no-rails 46.1; a residual remains (59.8 > 46.1), attributably
+    carried by legibility (90.9 vs 36.4). The delta is payment-DOMINATED, not payment-
+    EXCLUSIVE, and the guard asserts that honest ~35% explicitly.
+
+EVIDENCE. `git diff --name-only` = `tests/test_calibration.py` ONLY; `git diff --stat --
+asrs/ rubric/ fixtures/` EMPTY → off the scoring path, score-neutral by construction, NOT
+peer-gated → direct-to-main. Faithful counterfactual: the knock-out substitutes the no-rails
+payment CheckResults WHOLE (points + finding), modelling "this storefront cannot pay
+programmatically" the way a real no-rails store scores, NOT a rubric edit (max_points +
+every non-payment check retained). CANONICAL-INVARIANT: reads the frozen fixtures via the
+same offline replay `test_canonical_replay` uses; the 85.5/46.1/59.8/18.75 literals share
+test 9(d)'s re-baseline tripwire (a legitimate [LOCAL] re-capture reddens this alongside
+`test_canonical_replay` and tests 12/13). Offline arithmetic double-checked by hand
+(85.54/59.76/46.12 pre-round with weights 0.15/0.20/0.30/0.15 renormalized over the 4
+static pillars, outcome NA-dropped). Full suite 429->430; calibration file 13->14, green in
+both pytest and the module `main()` runner. Non-vacuous/teeth: (a) pins the exact 59.8/F and
+requires the B->F flip, (c) pins 0.652 and requires >half — a no-op knock-out fails both.
+
+CANONICAL PAIR (in-cloud replay guard — authoritative static re-score, 24/24, 0 replay-miss):
+drift-flight.org 46.1 F / driftflight.com 85.5 B / delta +39.4 — UNCHANGED. Live signal (read,
+not re-run — runner AT-FLOOR, newest artifact verify_20260801T035047Z.json ~58.6h old at
+15:13Z): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 —
+the off-scoring-path transactability-drop divergence PERSISTS (Aug-1), untouched by this
+change. Rubric v0.7.
+
+NEXT HYPOTHESIS (READOUT 204). The overall-level counterfactual (payment is the ~65% majority
+driver of the cited +39.4, a B->F flip) now lives only in the test suite, exactly as tests
+12/13's pillar counterfactual did before Cycle 200 carried it onto the methodology page. The
+natural next READOUT increment is to surface this overall-level, headline-number attribution
+(and its honest ~35% non-payment residual) on the methodology page or calibration card so a
+public reader sees that the cited gap is payment-DOMINATED-not-exclusive, not just a pillar
+fact buried in tests. Substantive frontier (GENUINE new thin-bank signals from real fixtures,
+the negative anchor's two-crawl static cross-validation via a `moleskine.com` fixture,
+ACP/UCP/MPP, transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+
 ## Cycle 202 — 2026-08-03T14:22Z — COVERAGE — subscription `recurring` bare-word precision guard
 
 WHAT/WHY. The offering classifier's subscription signal bank carried the last cheap

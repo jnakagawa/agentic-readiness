@@ -1208,6 +1208,153 @@ def test_ceiling_payment_attribution_is_weight_robust() -> None:
     )
 
 
+# ---------------------------------------------------------------------------
+# 14. THE AGENT-NATIVE PAYMENT CAPABILITY DRIVES THE MAJORITY OF THE HEADLINE
+#     DELTA — the pillar-level attribution (tests 11-13) propagates to the
+#     OVERALL score a reader actually cites.
+#
+#     Tests 11-13 pin the payment attribution at the TRANSACTABILITY-PILLAR
+#     level: the no-rails floor is type-invariant (11), knocking payment out of
+#     the with-rails ceiling collapses it exactly onto that floor (12), and the
+#     collapse is weight-robust (13).  But the number people quote is the
+#     OVERALL score — 85.5 B (with-rails) vs 46.1 F (no-rails), delta +39.4 —
+#     which the rubric rolls up across FIVE weighted pillars (transactability is
+#     only 0.30).  A skeptic could grant the pillar attribution yet argue the
+#     +39.4 headline is really carried by OTHER pillars (legibility, trust),
+#     with payment a minor contributor once the pillar weights dilute it.  Tests
+#     11-13 cannot answer that: they never leave the transactability pillar.
+#
+#     This guard settles it at the overall level, with scoring's OWN roll-up
+#     (not a reimplementation).  KNOCK OUT agent-native payment on the with-rails
+#     storefront — substitute the no-rails storefront's FULL CheckResult for each
+#     ``_STATIC_PAYMENT_CHECKS`` check (capability absent: the no-rails earned
+#     points AND findings, so any payment-gap CAP fires exactly as it would for a
+#     real no-rails store), leave every other check untouched — and re-score with
+#     ``scoring.score`` + the committed rubric.  The result:
+#       * OVERALL collapses 85.5 B -> 59.8 F: stripping the single payment
+#         capability drops a passing storefront a full grade tier ACROSS the
+#         passing boundary (B -> F).  Not a rounding nudge — a categorical flip.
+#       * ONLY the transactability pillar moves (87.5 -> the no-rails floor
+#         18.75); access/legibility/trust are byte-identical to the intact
+#         with-rails report, so the overall drop flows SOLELY through the
+#         payment-driven transactability collapse, not a side effect.
+#       * That closes 25.7 of the 39.4 headline delta = ~65% — agent-native
+#         payment is the SINGLE MAJORITY driver of the cited with-rails/no-rails
+#         gap, even after the 0.30 pillar weight dilutes it.
+#
+#     HONEST NON-EXCLUSIVITY (truth over pitch): the knock-out does NOT take the
+#     with-rails overall all the way down to the no-rails 46.1 — a residual gap
+#     remains (carried by legibility: 90.9 vs 36.4).  The guard asserts that
+#     residual explicitly, so it states the honest thing — the delta is payment-
+#     DOMINATED, not payment-EXCLUSIVE — and would redden if a future change let
+#     the knock-out over- or under-claim.  The 85.5/46.1/59.8/18.75 literals
+#     share test 9(d)'s re-baseline tripwire contract (a legitimate [LOCAL]
+#     canonical re-capture reddens this guard alongside ``test_canonical_replay``
+#     and tests 12/13).
+# ---------------------------------------------------------------------------
+def test_payment_capability_drives_the_majority_of_the_headline_delta() -> None:
+    print("test_payment_capability_drives_the_majority_of_the_headline_delta")
+    com, com_misses = _static_report(_ANCHOR_DOMAIN)       # with-rails ceiling
+    org, org_misses = _static_report("drift-flight.org")   # no-rails floor
+    _check(
+        not com_misses and not org_misses,
+        "both canonical static replays are like-for-like (no replay-miss)",
+    )
+    _check(
+        com.rubric_version == org.rubric_version == "0.7",
+        f"both anchors on rubric 0.7 (com={com.rubric_version}, org={org.rubric_version})",
+    )
+
+    # The pinned headline anchors (re-baseline tripwire, test 9(d)).
+    _check(
+        abs(com.overall_score - 85.5) < 1e-9 and com.grade == "B",
+        f"with-rails overall is the pinned 85.5 B (got {com.overall_score} {com.grade})",
+    )
+    _check(
+        abs(org.overall_score - 46.1) < 1e-9 and org.grade == "F",
+        f"no-rails overall is the pinned 46.1 F (got {org.overall_score} {org.grade})",
+    )
+    delta = com.overall_score - org.overall_score
+    _check(abs(delta - 39.4) < 1e-9, f"headline delta is the pinned +39.4 (got {delta})")
+
+    org_by_id = {c.check_id: c for c in org.checks}
+    for cid in _STATIC_PAYMENT_CHECKS:
+        _check(
+            cid in org_by_id and any(c.check_id == cid for c in com.checks),
+            f"payment check {cid!r} is present on BOTH anchors (knock-out is defined)",
+        )
+
+    # KNOCK-OUT: the with-rails report with agent-native payment ABSENT.  Each
+    # payment check becomes the no-rails FULL CheckResult (points + finding), so
+    # the counterfactual is a faithful "this storefront cannot pay programmatically"
+    # — including any payment-gap cap the no-rails finding would trigger — NOT a
+    # rubric edit.  Every non-payment check is the with-rails one, untouched.
+    knocked_checks = [
+        org_by_id[c.check_id] if c.check_id in _STATIC_PAYMENT_CHECKS else c
+        for c in com.checks
+    ]
+    knocked = scoring.score(knocked_checks, scoring.load_rubric(None), _ANCHOR_DOMAIN)
+
+    # (a) OVERALL COLLAPSE ACROSS THE PASSING BOUNDARY: B -> F.
+    _check(
+        abs(knocked.overall_score - 59.8) < 1e-9 and knocked.grade == "F",
+        f"knocking out agent-native payment collapses the with-rails overall from "
+        f"85.5 B to the pinned 59.8 F (got {knocked.overall_score} {knocked.grade}) — "
+        f"a full grade-tier flip across the passing boundary, not a rounding nudge",
+    )
+
+    # (b) ONLY TRANSACTABILITY MOVED — the overall drop is attributable to the
+    #     payment-driven transactability collapse, not a side effect on another
+    #     pillar.  Non-payment pillars are byte-identical to the intact report;
+    #     transactability lands exactly on the no-rails floor (18.75).
+    for pillar, pscore in com.pillar_scores.items():
+        if pillar == "transactability":
+            continue
+        kp = knocked.pillar_scores[pillar]
+        _check(
+            (pscore is None and kp is None) or (pscore is not None and abs(kp - pscore) < 1e-9),
+            f"{pillar} pillar is untouched by the knock-out ({kp} == {pscore})",
+        )
+    _check(
+        abs(knocked.pillar_scores["transactability"] - org.pillar_scores["transactability"]) < 1e-9
+        and abs(knocked.pillar_scores["transactability"] - 18.75) < 1e-9,
+        f"transactability collapses onto the no-rails floor "
+        f"({knocked.pillar_scores['transactability']} == 18.75)",
+    )
+    _check(
+        knocked.caps_applied == com.caps_applied,
+        f"the collapse is a genuine points move, not a cap artifact "
+        f"(caps {knocked.caps_applied} == {com.caps_applied})",
+    )
+
+    # (c) MAJORITY DRIVER: the knock-out closes >half of the headline delta, even
+    #     after the 0.30 transactability pillar weight dilutes it.
+    closed = com.overall_score - knocked.overall_score
+    fraction = closed / delta
+    _check(
+        fraction >= 0.5 and abs(fraction - 0.652) < 0.01,
+        f"agent-native payment is the SINGLE MAJORITY driver of the +39.4 delta — "
+        f"knocking it out closes {closed:.1f}/{delta:.1f} = {fraction:.1%} of the gap",
+    )
+
+    # (d) HONEST NON-EXCLUSIVITY: the knock-out does NOT drop the with-rails store
+    #     all the way to the no-rails overall — a residual gap remains, carried by
+    #     a non-payment pillar (legibility).  The delta is payment-DOMINATED, not
+    #     payment-EXCLUSIVE; this asserts the honest ~35% the pitch does not own.
+    _check(
+        knocked.overall_score > org.overall_score + 1.0,
+        f"payment is DOMINANT, not the WHOLE story — stripping it leaves the "
+        f"with-rails overall ({knocked.overall_score}) still above the no-rails "
+        f"{org.overall_score}, a residual carried by other pillars",
+    )
+    _check(
+        com.pillar_scores["legibility"] - org.pillar_scores["legibility"] > 10.0,
+        f"the residual is real and attributable — legibility differs markedly "
+        f"({com.pillar_scores['legibility']} vs {org.pillar_scores['legibility']}), "
+        f"the honest non-payment part of the delta",
+    )
+
+
 def main() -> int:
     tests = [
         test_static_payment_prediction_is_behaviorally_corroborated,
@@ -1223,6 +1370,7 @@ def main() -> int:
         test_no_rails_transactability_floor_is_capability_attributable_and_type_invariant,
         test_with_rails_ceiling_is_payment_capability_not_category_artifact,
         test_ceiling_payment_attribution_is_weight_robust,
+        test_payment_capability_drives_the_majority_of_the_headline_delta,
     ]
     failed = 0
     for t in tests:

@@ -1613,10 +1613,28 @@ def classify_offering(domain: str, surfaces: dict[str, str]) -> OfferingProfile:
     for surface, text in surfaces.items():
         raw = text or ""
         # Strip markup to visible prose for the homepage AND any HTML-document
-        # surface (a rendered /docs API-reference page); plain-text and JSON
+        # surface (a rendered /docs API-reference page). Plain-text and JSON
         # surfaces (llms.txt, manifest.json, openapi.json, agent cards) carry the
-        # signal directly and pass through unchanged.
-        prose = strip_html(raw) if (surface == "homepage" or _is_html_document(raw)) else raw
+        # signal directly — but they can STILL arrive HTML-entity-encoded: a
+        # framework HTML-escapes a JSON `description`/`description_for_model`
+        # field, or an llms.txt/manifest was exported from an HTML source, so a
+        # capability phrase's separators survive as "&nbsp;"/"&#8209;"/"&amp;"
+        # ("add&nbsp;to&nbsp;cart", "pay&#8209;per&#8209;call"). strip_html already
+        # decodes on the HTML branch; decode the NON-HTML branch too so a plain-text
+        # / JSON surface keys on the WORDS it declares, not the entity form they were
+        # serialized as. This is the non-HTML-surface sibling of the HTML-branch
+        # entity decode (test_classification_is_html_entity_decode_invariant) and of
+        # the reflow (Cycle 178) / hyphen (Cycle 214) folds. Precision-safe: html
+        # unescape only rewrites VALID entity references (a literal "R&D" / "terms &
+        # conditions" is untouched) and expands each to a single char — mostly
+        # punctuation/whitespace — so it can RESTORE an intended separator but never
+        # spell a capability phrase that isn't there. Off the scoring path; no-op on
+        # the canonical evidence (0 of 74 non-HTML canonical surfaces change under
+        # unescape), so the CLAIMED sets stay invariant by construction.
+        if surface == "homepage" or _is_html_document(raw):
+            prose = strip_html(raw)  # strip_html decodes entities as part of stripping
+        else:
+            prose = _html.unescape(raw)
         if not prose:
             continue
         # Whitespace-reflow invariance. A plain-text surface (llms.txt, a markdown

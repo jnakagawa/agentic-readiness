@@ -1493,6 +1493,129 @@ def test_classification_is_html_entity_decode_invariant():
     print("  ok: committed canonical &nbsp; marquee is decoded on real evidence, physical_good stays NA")
 
 
+def test_classification_is_non_html_surface_entity_invariant():
+    # The sibling test above pins HTML-entity decoding on the HTML branch (a
+    # "homepage"/HTML-document surface routed through strip_html, which unescapes as
+    # part of reducing markup to visible prose). But a storefront's NON-HTML surfaces
+    # — llms.txt, a JSON manifest / ai-plugin descriptor / A2A agent card / OpenAPI
+    # spec — carry their capability prose DIRECTLY and never see strip_html, yet they
+    # can STILL arrive entity-encoded: a framework HTML-escapes a JSON
+    # `description`/`description_for_model` field, or an llms.txt was exported from an
+    # HTML source, so a capability phrase's separators survive as "&nbsp;". Left
+    # undecoded on the non-HTML branch, "add&nbsp;to&nbsp;cart" is NOT "add to cart"
+    # and the literal-single-space signals silently miss — dropping the claim, and
+    # with it the site's whole offering-relative battery, purely on the encoding of a
+    # surface class the HTML-branch decode never touched. classify_offering now
+    # unescapes the non-HTML branch too. This pins the invariance for that branch:
+    # the SAME storefront, capability phrases entity-joined vs literal-space on an
+    # llms.txt, classifies identically (claimed archetypes in rank order, the NA
+    # complement, and the per-(label, surface) skeleton).
+    flat = (
+        "Store notes: we offer free shipping on every physical order. "
+        "Add to cart when ready. Programmatic access is billed per call. "
+        "Membership renews per month on each billing cycle."
+    )
+    base = classify_offering("shop.test", {"/llms.txt": flat})
+
+    # Substrate: the property under test is genuinely present — a RANKED multi-archetype
+    # classification an encoding difference could perturb, over three literal-space
+    # archetypes.
+    assert {"physical_good", "metered_api", "subscription"} <= set(base.archetypes), (
+        f"substrate: the three literal-space archetypes all claim on the flat llms.txt "
+        f"(got {base.archetypes})"
+    )
+
+    # An &nbsp;-encoding of exactly the two-word phrases a publisher will not let
+    # line-wrap — the same encoding real HTML uses, but here on a plain-text surface.
+    encoded = (
+        flat.replace("free shipping", "free&nbsp;shipping")
+        .replace("Add to cart", "Add&nbsp;to&nbsp;cart")
+        .replace("billed per call", "billed&nbsp;per&nbsp;call")
+        .replace("per month", "per&nbsp;month")
+    )
+    ent = classify_offering("shop.test", {"/llms.txt": encoded})
+
+    # TEETH (a): the transform is REAL — the encoded bytes differ and carry the entity.
+    assert encoded != flat and "&nbsp;" in encoded, "the encoding genuinely changed the bytes (non-vacuous)"
+
+    # TEETH (b): this is the NON-HTML branch specifically — the surface is NOT an HTML
+    # document, so the HTML-branch strip_html decode (the sibling test) never runs on
+    # it, and the invariance rests entirely on the new non-HTML unescape. And that
+    # decode is LOAD-BEARING: a literal-space signal's raw pattern matches the decoded
+    # phrase but NOT the entity-joined form.
+    assert offering._is_html_document(encoded) is False, (
+        "the encoded llms.txt is NOT an HTML document — so it takes the non-HTML branch, "
+        "and strip_html's decode does not cover it (this is the gap under test)"
+    )
+    fs_pat = _signal_pattern("physical_good", "free-shipping")
+    assert fs_pat is not None, "free-shipping signal exists"
+    assert fs_pat.search("free shipping") is not None, "free-shipping matches the literal-space form"
+    assert fs_pat.search("free&nbsp;shipping") is None, (
+        "free-shipping does NOT match the entity-joined form — so the non-HTML decode is load-bearing"
+    )
+
+    # (1) The encoding-independent capability skeleton is identical: every archetype's
+    # strength AND its per-(label, surface) match counts survive the entity encoding —
+    # no signal lost or conjured, no count drifted, by mere &nbsp;-joining.
+    assert _wsr_struct(ent) == _wsr_struct(base), (
+        f"per-archetype (strength, per-(label, surface) counts) skeleton invariant under "
+        f"non-HTML-surface entity encoding (decoded {_wsr_struct(base)}, encoded {_wsr_struct(ent)})"
+    )
+    # (2) Claimed archetypes IN RANK ORDER invariant — the rank drives the fixed
+    # template-bank task order, so encoding must not reorder the battery.
+    assert ent.archetypes == base.archetypes, (
+        f"claimed archetypes (ranked) invariant under non-HTML-surface entity encoding "
+        f"(decoded {base.archetypes}, encoded {ent.archetypes})"
+    )
+    # (3) The NA/unclaimed complement (excluded from every mean/spread, never penalized)
+    # is invariant — which archetypes a site is excused on as NA depends on what it
+    # declares, not how a crawl encoded it.
+    assert set(ent.unclaimed) == set(base.unclaimed), (
+        f"NA/unclaimed set invariant under non-HTML-surface entity encoding "
+        f"(decoded {sorted(base.unclaimed)}, encoded {sorted(ent.unclaimed)})"
+    )
+    print("  ok: claimed set / rank / strengths / labels / NA invariant under &nbsp; on a non-HTML surface (non-HTML decode is load-bearing)")
+
+    # TEETH (c): the negative control — decoding a non-HTML surface must NOT conjure a
+    # claim from entity-shaped noise. "Terms & conditions" / "Q & A" escape their
+    # ampersands as "&amp;"; unescape rewrites them to "&", never to a signal word, so
+    # no archetype is manufactured. Decoding repairs the encoded phrase WITHOUT
+    # inventing one.
+    noise = "Terms &amp; conditions apply. Q &amp; A &mdash; read the FAQ. About &amp; contact."
+    noise_prof = classify_offering("noise.test", {"/llms.txt": noise})
+    assert noise_prof.claimed == [], (
+        f"non-HTML entity decoding must not conjure a claim from &amp;/&mdash; noise (got {noise_prof.archetypes})"
+    )
+    print("  ok: non-HTML entity decoding does not conjure a claim from &amp;/&mdash; noise — precision-safe")
+
+    # REAL-EVIDENCE half: the non-HTML decode is a NO-OP on committed canonical
+    # evidence, so the canonical CLAIMED sets are invariant BY CONSTRUCTION. Every
+    # non-HTML surface both canonical crawls fetched (llms.txt, JSON manifests, agent
+    # cards, OpenAPI, ...) is byte-identical under html.unescape — none carries a
+    # decodable entity — so extending the decode to the non-HTML branch cannot move a
+    # canonical claim. This is the non-HTML-surface mirror of the em-dash exclusion
+    # that keeps the hyphen fold a canonical no-op.
+    import html as _html
+    for domain in ("drift-flight.org", "driftflight.com"):
+        path = os.path.join(_FIXTURE_DIR, f"{domain}.json")
+        raw = json.load(open(path))
+        n_nonhtml = 0
+        for e in raw["entries"]:
+            result = e.get("result")
+            if not isinstance(result, dict):
+                continue
+            body = result.get("text") or ""
+            if not body or offering._is_html_document(body):
+                continue
+            n_nonhtml += 1
+            assert _html.unescape(body) == body, (
+                f"{domain}: non-HTML surface {e.get('url')!r} changes under unescape — "
+                f"canonical invariance is no longer by construction"
+            )
+        assert n_nonhtml > 0, f"{domain}: committed evidence has non-HTML surfaces to check (non-vacuous)"
+    print("  ok: every committed canonical non-HTML surface is unescape-identical — decode is a no-op there (invariant by construction)")
+
+
 def test_classification_is_intra_word_hyphen_invariant():
     # A readiness classification is a property of the WORDS a storefront declares,
     # not the DASH GLYPH a crawl captured. Compound capability terms are routinely
@@ -4261,6 +4384,7 @@ def main() -> int:
         test_classification_is_surface_read_order_invariant,
         test_classification_is_whitespace_reflow_invariant,
         test_classification_is_html_entity_decode_invariant,
+        test_classification_is_non_html_surface_entity_invariant,
         test_classification_is_intra_word_hyphen_invariant,
         test_evidence_is_quoted_and_surface_tagged,
         test_openapi_spec_alone_classifies_api_first_storefront,

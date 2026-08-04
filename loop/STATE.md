@@ -1,8 +1,38 @@
 # Loop state
 
-- Cycle counter: 217
+- Cycle counter: 218
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-04T05:2xZ (Cycle 217) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-04T06:1xZ (Cycle 218) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~73.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
+  cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 06:1xZ fire is NOT
+  first-after-16:00 UTC → no DM this fire per comms policy (score-neutral off-scoring-path COVERAGE increment, no
+  sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org 46.1 F /
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1),
+  off the scoring path; the in-cloud replay guard stays the frozen independent regression signal (24/24, 46.1 F /
+  85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open → []), so no first-duty
+  review. INFRA/SELF-HEAL (Cycle 218): fresh `.venv` + `requests pyyaml eth-account pytest`, 462 tests green
+  pre-flight (463 after +1); LOG.md confirmed newest-first + complete through Cycle 217 (no bookkeeping gap).
+  NOTE: the runner has now been at-floor since Aug-1 03:50Z (~3 days) — the durable [LOCAL] runner-recovery item
+  stays P0.
+- FOCUS POINTER (Cycle 218 done): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 218 was COVERAGE,
+  so Cycle 219 is TRUTH). Cycle 218 shipped a **COVERAGE increment — HTML-entity decoding on the NON-HTML surface
+  branch** of the offering classifier. The entity decode ran only inside `strip_html` (HTML branch); non-HTML
+  surfaces (llms.txt, JSON manifest / ai-plugin / A2A agent card / OpenAPI) carried prose directly and, if
+  entity-encoded (`add&nbsp;to&nbsp;cart`), silently dropped the claim. `classify_offering` now `_html.unescape`s
+  the non-HTML branch too (HTML branch unchanged; no double-unescape). New guard
+  `test_classification_is_non_html_surface_entity_invariant` (the non-HTML sibling of the existing HTML-branch
+  entity test): &nbsp;-encoded vs plain `/llms.txt` classify identically (rank/NA/skeleton), teeth prove the
+  surface is NOT an HTML document (so the HTML decode does not cover it) + decode is load-bearing + negative
+  control (&amp;/&mdash; noise conjures nothing). Canonical NO-OP BY CONSTRUCTION: all 74 committed non-HTML
+  canonical surfaces (32 + 42) are byte-identical under `html.unescape`. OFF the scoring path (scoring-path diff
+  EMPTY; `offering` not imported by `scoring.py`/`probes/`) → score-neutral, NOT peer-gated, direct-to-main.
+  Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; `test_offering.py` 88→89, suite 462→463; rubric
+  v0.7. NEXT (TRUTH 219): a calibration/attribution invariance guard or a panel-verdict-stability property; the
+  classifier's three encoding-robustness folds (reflow/hyphen/entity) now cover both surface branches, and the
+  in-cloud precision+encoding audit frontier is essentially exhausted. Substantive frontier (thin-bank live
+  fixtures, hyphen/reflow/entity real-surface validation, moleskine.com two-crawl cross-validation, ACP/UCP/MPP,
+  transactability-drop CHECK-level diagnosis + peer-gated re-baseline) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 217 runner note): RUNNER AT-FLOOR at 2026-08-04T05:2xZ (Cycle 217) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~73.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
   cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 05:2xZ fire is NOT
   first-after-16:00 UTC → no DM this fire per comms policy (score-neutral off-scoring-path METHOD increment, no

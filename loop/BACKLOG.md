@@ -366,22 +366,29 @@ design in-cloud, execute locally.
   precision) needs real fixtures ([LOCAL]). Does NOT close the parent item — the thin banks still want
   GENUINE NEW signals from real fixtures ([LOCAL], unchanged).
 
-- **[LOCAL] Validate the typographic-encoding robustness fixes on REAL surfaces (line-wrap + intra-word hyphen)**
-  (COVERAGE, follow-up to Cycles 178 + 214). TWO sibling in-cloud fixes are exercised only SYNTHETICALLY today
+- **[LOCAL] Validate the typographic-encoding robustness fixes on REAL surfaces (line-wrap + intra-word hyphen + non-HTML entity)**
+  (COVERAGE, follow-up to Cycles 178 + 214 + 218). THREE sibling in-cloud fixes are exercised only SYNTHETICALLY today
   because the committed evidence is not reflowed/dashed: (a) Cycle 178 made `classify_offering` collapse
   whitespace runs before scanning so literal-space signals (`\bfree shipping\b`, `\bper month\b`, `\badd to
   cart\b`, ~35 total) survive an 80-column line-wrap ("free\nshipping"); (b) Cycle 214 added `_HYPHEN_NORMALIZE`
   folding the intra-word hyphen family (U+2011 non-breaking hyphen, en/figure dash, minus) to ASCII `-` so
   hyphenated compounds (`pay-as-you-go`, `pay-per-call`, `per-generation`) survive a publisher's non-breaking
   hyphen — the canonical pair is invariant by construction (its only Unicode dash is the deliberately-excluded em
-  dash). Capture a fixture from a real storefront whose `llms.txt` / markdown `/docs` genuinely (a) line-wraps
-  across a capability phrase AND/OR (b) typesets a billing compound with a non-breaking/typographic hyphen
+  dash); (c) Cycle 218 extended HTML-entity decoding to the NON-HTML surface branch (`_html.unescape` on
+  llms.txt / JSON manifest / ai-plugin / A2A card / OpenAPI, not just the strip_html HTML branch) so an
+  entity-encoded phrase (`add&nbsp;to&nbsp;cart`, `pay&#8209;per&#8209;call`) on a non-HTML surface no longer
+  drops the claim — canonical no-op by construction (all 74 committed non-HTML canonical surfaces are
+  unescape-identical). Capture a fixture from a real storefront whose `llms.txt` / markdown `/docs` genuinely
+  (a) line-wraps across a capability phrase AND/OR (b) typesets a billing compound with a non-breaking/
+  typographic hyphen AND/OR (c) serves an entity-encoded capability phrase on a NON-HTML surface (a JSON
+  manifest/ai-plugin `description` field HTML-escaped by a framework, or an llms.txt exported from HTML)
   (`asrs.cli score <domain> --record-fixture fixtures/canonical/<domain>.json`, static $0 → [LOCAL]), then add a
-  read-live guard asserting the wrapped/dashed phrase's archetype still classifies (the real-evidence mirror of
-  the two synthetic guards `test_classification_is_whitespace_reflow_invariant` +
-  `test_classification_is_intra_word_hyphen_invariant`). Off the scoring path, score-neutral. Naturally folds
-  into the thin-archetype / render / structured-catalog live captures above (any real llms.txt-bearing site will
-  do; a `/pricing` page with `per‑month` non-breaking hyphens is especially likely to exercise the hyphen fold).
+  read-live guard asserting the wrapped/dashed/entity-encoded phrase's archetype still classifies (the
+  real-evidence mirror of the three synthetic guards `test_classification_is_whitespace_reflow_invariant` +
+  `test_classification_is_intra_word_hyphen_invariant` + `test_classification_is_non_html_surface_entity_invariant`).
+  Off the scoring path, score-neutral. Naturally folds into the thin-archetype / render / structured-catalog live
+  captures above (any real llms.txt-bearing site will do; a `/pricing` page with `per‑month` non-breaking hyphens
+  is especially likely to exercise the hyphen fold; a JSON manifest field is the most likely to carry entities).
 
 - **[LOCAL] Capture a RENDER-generation digital_good fixture to validate the Cycle-168 descriptor branch on
   REAL evidence** (COVERAGE, follow-up to Cycle 168). `_digital_good_descriptor` (asrs/battery.py) now maps a

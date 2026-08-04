@@ -3,6 +3,70 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 218 — 2026-08-04T06:1xZ — COVERAGE — HTML-entity decoding on NON-HTML surfaces: an entity-encoded capability phrase in an llms.txt / JSON manifest no longer silently drops the claim
+
+WHAT/WHY (COVERAGE — the non-HTML-surface half of entity-decode robustness). The offering classifier
+normalizes three ways so a claim keys on the WORDS a surface declares, not the shape/encoding a crawl
+captured: whitespace-reflow collapse (Cycle 178), intra-word hyphen fold (Cycle 214), and HTML-entity
+decode. But the entity decode ran ONLY inside `strip_html`, i.e. ONLY on the HTML branch (a "homepage" or
+HTML-document surface). A storefront's NON-HTML surfaces — `llms.txt`, a JSON `manifest.json` /
+`ai-plugin.json` `description_for_model` / A2A agent card / OpenAPI spec — carry their capability prose
+DIRECTLY and never see `strip_html`, yet they can STILL arrive entity-encoded (a framework HTML-escapes a
+JSON string field, or an llms.txt is exported from an HTML source), so a phrase's separators survive as
+`&nbsp;`/`&#8209;`/`&amp;`. Left undecoded, `add&nbsp;to&nbsp;cart` is NOT the string `add to cart`, so the
+literal-single-space signals silently miss and the storefront is under-classified — dropping the claim, and
+with it the site's whole offering-relative task battery, purely on the encoding of a surface class the
+HTML-branch decode never touched. FIX (`asrs/offering.classify_offering`): the surface-routing line becomes
+an explicit if/else — HTML branch → `strip_html(raw)` (already unescapes), non-HTML branch →
+`_html.unescape(raw)`. No double-unescape (each branch decodes exactly once). Demonstrated live before/after:
+a JSON `ai-plugin.json` reading `Pay&#8209;per&#8209;call metered API. add&nbsp;to&nbsp;cart to buy generated
+images.` classified `[metered_api, digital_good]` (physical_good DROPPED) before the fix and
+`[metered_api, digital_good, physical_good]` after — identical to the plain-space form.
+
+METHOD / non-vacuity + teeth. New guard `test_classification_is_non_html_surface_entity_invariant`
+(tests/test_offering.py), the non-HTML sibling of the existing HTML-branch
+`test_classification_is_html_entity_decode_invariant`: a 3-archetype `/llms.txt` (physical_good + metered_api
++ subscription over literal-space phrases), &nbsp;-encoded vs plain, must classify IDENTICALLY — claimed
+archetypes IN RANK ORDER, the NA/unclaimed complement, AND the per-(label, surface) strength skeleton
+(`_wsr_struct`). TEETH: (a) the transform is real (bytes differ, carry `&nbsp;`); (b) the surface is asserted
+NOT an HTML document (`offering._is_html_document(encoded) is False`) so the HTML-branch decode provably does
+NOT cover it — the invariance rests entirely on the new non-HTML unescape, and the raw free-shipping pattern
+matches `free shipping` but NOT `free&nbsp;shipping` (decode is load-bearing); (c) negative control — a
+non-HTML surface of `&amp;`/`&mdash;` noise (`Terms &amp; conditions … Q &amp; A &mdash;`) conjures NOTHING
+(unescape rewrites valid entities to single chars, never to a signal word — precision-safe).
+
+CANONICAL INVARIANCE BY CONSTRUCTION. The decode is a NO-OP on committed canonical evidence: the guard's
+real-evidence half asserts EVERY non-HTML surface both canonical crawls fetched (32 on drift-flight.org, 42
+on driftflight.com = 74) is byte-identical under `html.unescape` — none carries a decodable entity — so
+extending the decode to the non-HTML branch cannot move a canonical claim (the non-HTML-surface mirror of the
+em-dash exclusion that keeps the hyphen fold a canonical no-op).
+
+SHIP CLASS + EVIDENCE. OFF the scoring path (`discover_offering`/`classify_offering` drive `--battery auto`
+task selection only, not scoring; scoring-path diff `asrs/scoring.py asrs/probes/ rubric/` EMPTY) →
+score-neutral, NOT peer-gated, direct-to-main. Diff = `asrs/offering.py` (+21/−3) + `tests/test_offering.py`
+(new test + registration). `test_offering.py` 88→89; full suite 462→463, 0 failures. Canonical PAIR
+unchanged: offline replay guard 24/24, static re-score **drift-flight.org 46.1 F / driftflight.com 85.5 B /
++39.4**, 0 replay-miss; `test_offering_canonical.py` green (claimed sets invariant); rubric v0.7. (Cloud is
+network-blocked for a live re-score; in-cloud standard is regression-by-construction — scoring path
+byte-identical — plus the offline replay guard, both green.)
+
+LIVE CANONICAL SIGNAL. Newest LOCAL artifact `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is
+~73.5h old at this fire — PAST the 6h floor (machine-asleep / runner-lag, cloud cannot repair; the ~3-day
+stall stays the P0 [LOCAL] runner-recovery item, flagged in the 16:17Z Cycle-204 digest). Its LIVE re-score:
+drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 — the known transactability 87.5→62.5 divergence
+(off the scoring path; the frozen replay guard stays the in-cloud regression signal). 06:1xZ is NOT
+first-after-16:00 UTC → no digest DM per comms policy; score-neutral off-scoring-path COVERAGE, no
+sensitive-class PR, nothing score-moving. No open peer-gated PRs (`list_pull_requests` state=open → []) → no
+first-duty review.
+
+NEXT HYPOTHESIS (TRUTH 219). Rotate TRUTH next (Cycle 218 was COVERAGE; METHOD → COVERAGE → TRUTH →
+READOUT). The classifier's three encoding-robustness folds (reflow / hyphen / entity) now cover BOTH surface
+branches; the in-cloud precision + encoding audit frontier is now essentially exhausted for the classifier.
+In-cloud TRUTH candidate: a calibration/attribution invariance guard, or a panel-verdict-stability property.
+Substantive frontier (thin-archetype/render/structured-catalog LIVE fixtures, hyphen/reflow/entity
+real-surface validation, moleskine.com two-crawl cross-validation, ACP/UCP/MPP, transactability-drop
+CHECK-level diagnosis + peer-gated re-baseline) stays `[LOCAL]`.
+
 ## Cycle 217 — 2026-08-04T05:2xZ — METHOD — a drift-series INTEGRITY verdict: judge whether the KEPT series is a trustworthy basis for the drift verdict, or a thinned/biased remnant
 
 WHAT/WHY (METHOD — the judgment over Cycle 216's accounting). Cycle 215 made the drift loader DROP

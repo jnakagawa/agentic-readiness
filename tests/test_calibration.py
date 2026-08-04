@@ -615,6 +615,17 @@ def test_calibration_is_two_sided() -> None:
 # _PAYMENT_OUTCOME_CHECKS.  Capability-worded, vendor-neutral.
 _STATIC_PAYMENT_CHECKS = ("x402_probe", "self_serve_payg")
 
+# The legibility checks that OPERATIONALIZE the "understand the offer" leg of
+# the capability lens on the STATIC side — the agent-native legibility rails the
+# with-rails anchor publishes so an agent can read what is for sale.  llms_txt
+# (the machine-readable natural-language guide for agents) and offer_catalog
+# (the machine-readable offer/product catalog) are the SOLE carriers of the
+# legibility gap between the anchors: on the canonical pair the other legibility
+# checks (sitemap, pricing_machine_readable, api_docs_surface) are byte-identical
+# on both sides, so these two ARE the residual test 14 leaves un-decomposed.
+# Capability-worded, vendor-neutral.
+_STATIC_LEGIBILITY_CHECKS = ("llms_txt", "offer_catalog")
+
 
 def test_payability_prediction_is_attributably_agent_native_payment() -> None:
     print("test_payability_prediction_is_attributably_agent_native_payment")
@@ -1358,6 +1369,159 @@ def test_payment_capability_drives_the_majority_of_the_headline_delta() -> None:
 
 
 # ---------------------------------------------------------------------------
+# 14B. THE HEADLINE DELTA IS FULLY CAPABILITY-ATTRIBUTED — NO UNEXPLAINED
+#      RESIDUAL.  Test 14 proves agent-native PAYMENT is the single majority
+#      driver (~65%) and that the ~35% remainder is real and "carried by
+#      legibility" — but it stops at "legibility differs markedly (>10pt)".
+#      That leaves the honest one-third the pitch does NOT own asserted only as
+#      a pillar-level gap, not attributed to a named agent-native CAPABILITY the
+#      way payment is.  The north star forbids a manufactured delta; the strongest
+#      defense is proving the ENTIRE +39.4 headline gap decomposes into exactly
+#      two agent-native capability FAMILIES — "pay programmatically"
+#      (transactability: _STATIC_PAYMENT_CHECKS) and "understand the offer"
+#      (legibility: _STATIC_LEGIBILITY_CHECKS = llms_txt + offer_catalog) — with
+#      ZERO unexplained residual.
+#
+#      Same faithful knock-out machinery as test 14: substitute the no-rails FULL
+#      CheckResult for each targeted check (points + finding + any cap it would
+#      trip), never a rubric edit.  Three things get pinned that test 14 does not:
+#        (a) the legibility residual is EXCLUSIVELY the two named agent-legibility
+#            checks — knocking ONLY llms_txt + offer_catalog collapses the
+#            legibility pillar EXACTLY onto the no-rails floor (36.36), the other
+#            legibility checks byte-identical, no cap artifact.  So the "understand
+#            the offer" leg is a genuine capability gap, not a category offset.
+#        (b) COMBINED, payment + legibility collapse the with-rails OVERALL EXACTLY
+#            onto the no-rails floor 46.1 — residual 0.0.  The whole delta is two
+#            capability families and NOTHING ELSE (access + trust are already equal
+#            on the pair; this proves no fourth, unnamed driver hides in the
+#            roll-up).
+#        (c) the two families are near-additive and jointly ~100%: payment ~0.652,
+#            legibility ~0.345, sum within 0.01 of 1.0.  Non-vacuity — legibility
+#            is a genuine honest MINORITY: strictly below a majority (< 0.5) and
+#            strictly non-negligible (> 0.2), so it is neither the whole story nor
+#            a rounding artifact.
+#      Shares test 9(d)'s re-baseline tripwire (the 85.5/46.1/+39.4 anchors flow
+#      from the pinned fixtures); a [LOCAL] canonical re-baseline reddens this
+#      guard alongside test 14, forcing the decomposition to be re-derived in the
+#      same PR.  Tests-only, off the scoring path — score-neutral.
+# ---------------------------------------------------------------------------
+def test_headline_delta_is_fully_attributed_to_two_capability_families() -> None:
+    print("test_headline_delta_is_fully_attributed_to_two_capability_families")
+    com, com_misses = _static_report(_ANCHOR_DOMAIN)       # with-rails ceiling
+    org, org_misses = _static_report("drift-flight.org")   # no-rails floor
+    _check(
+        not com_misses and not org_misses,
+        "both canonical static replays are like-for-like (no replay-miss)",
+    )
+    _check(
+        com.rubric_version == org.rubric_version == "0.7",
+        f"both anchors on rubric 0.7 (com={com.rubric_version}, org={org.rubric_version})",
+    )
+
+    # The pinned headline anchors (re-baseline tripwire, shared with test 9(d)).
+    _check(
+        abs(com.overall_score - 85.5) < 1e-9 and com.grade == "B",
+        f"with-rails overall is the pinned 85.5 B (got {com.overall_score} {com.grade})",
+    )
+    _check(
+        abs(org.overall_score - 46.1) < 1e-9 and org.grade == "F",
+        f"no-rails overall is the pinned 46.1 F (got {org.overall_score} {org.grade})",
+    )
+    delta = com.overall_score - org.overall_score
+    _check(abs(delta - 39.4) < 1e-9, f"headline delta is the pinned +39.4 (got {delta})")
+
+    org_by_id = {c.check_id: c for c in org.checks}
+    targeted = set(_STATIC_PAYMENT_CHECKS) | set(_STATIC_LEGIBILITY_CHECKS)
+    for cid in targeted:
+        _check(
+            cid in org_by_id and any(c.check_id == cid for c in com.checks),
+            f"targeted check {cid!r} is present on BOTH anchors (knock-out is defined)",
+        )
+
+    # A faithful knock-out: for each check id in ``ids`` swap in the no-rails FULL
+    # CheckResult (points + finding), leave every other check the with-rails one,
+    # then re-score through scoring's own roll-up — a counterfactual, not a rubric
+    # edit.
+    def _knock(ids: set) -> object:
+        knocked_checks = [
+            org_by_id[c.check_id] if c.check_id in ids else c for c in com.checks
+        ]
+        return scoring.score(knocked_checks, scoring.load_rubric(None), _ANCHOR_DOMAIN)
+
+    k_pay = _knock(set(_STATIC_PAYMENT_CHECKS))
+    k_leg = _knock(set(_STATIC_LEGIBILITY_CHECKS))
+    k_both = _knock(targeted)
+
+    # (a) THE LEGIBILITY RESIDUAL IS EXCLUSIVELY THE TWO NAMED AGENT-LEGIBILITY
+    #     CHECKS.  Knocking ONLY llms_txt + offer_catalog collapses the legibility
+    #     pillar exactly onto the no-rails floor; the OTHER legibility checks are
+    #     byte-identical to the intact report, and no cap moved — so the "understand
+    #     the offer" gap is these two capabilities, not a category artifact.
+    _check(
+        abs(k_leg.pillar_scores["legibility"] - org.pillar_scores["legibility"]) < 1e-9
+        and abs(k_leg.pillar_scores["legibility"] - 36.36363636363637) < 1e-6,
+        f"knocking out the two agent-legibility checks collapses legibility onto "
+        f"the no-rails floor ({k_leg.pillar_scores['legibility']} == "
+        f"{org.pillar_scores['legibility']})",
+    )
+    leg_ids = {c.check_id for c in com.checks if c.pillar == "legibility"}
+    com_by_id = {c.check_id: c for c in com.checks}
+    knocked_by_id = {c.check_id: c for c in k_leg.checks}
+    for cid in leg_ids - set(_STATIC_LEGIBILITY_CHECKS):
+        _check(
+            abs(knocked_by_id[cid].points - com_by_id[cid].points) < 1e-9,
+            f"non-targeted legibility check {cid!r} is untouched by the legibility "
+            f"knock-out ({knocked_by_id[cid].points} == {com_by_id[cid].points})",
+        )
+    _check(
+        k_leg.caps_applied == com.caps_applied,
+        f"the legibility collapse is a genuine points move, not a cap artifact "
+        f"(caps {k_leg.caps_applied} == {com.caps_applied})",
+    )
+
+    # (b) COMBINED, THE TWO FAMILIES CLOSE THE ENTIRE DELTA — RESIDUAL 0.0.
+    #     Access and trust are already equal on the pair, so once payment and
+    #     legibility are both knocked out the with-rails overall lands EXACTLY on
+    #     the no-rails floor.  There is no third, unnamed driver hiding in the
+    #     weighted roll-up.
+    _check(
+        abs(k_both.overall_score - org.overall_score) < 1e-9,
+        f"payment + legibility knocked out together collapse the with-rails overall "
+        f"EXACTLY onto the no-rails floor ({k_both.overall_score} == "
+        f"{org.overall_score}) — the whole +39.4 delta is two capability families, "
+        f"zero unexplained residual",
+    )
+    _check(
+        k_both.caps_applied == com.caps_applied,
+        f"the joint collapse is a genuine points move, not a cap artifact "
+        f"(caps {k_both.caps_applied} == {com.caps_applied})",
+    )
+
+    # (c) NEAR-ADDITIVE, JOINTLY ~100%, WITH LEGIBILITY A GENUINE HONEST MINORITY.
+    #     Payment and legibility live in different, independently-weighted pillars
+    #     (transactability vs legibility), so the two single-family fractions sum to
+    #     ~1.0; legibility is strictly a minority (< 0.5) but strictly non-negligible
+    #     (> 0.2) — neither the whole story nor a rounding artifact.
+    pay_frac = (com.overall_score - k_pay.overall_score) / delta
+    leg_frac = (com.overall_score - k_leg.overall_score) / delta
+    _check(
+        abs((pay_frac + leg_frac) - 1.0) < 0.01,
+        f"the two capability families are near-additive and jointly account for the "
+        f"whole delta (payment {pay_frac:.1%} + legibility {leg_frac:.1%} = "
+        f"{pay_frac + leg_frac:.1%})",
+    )
+    _check(
+        pay_frac >= 0.5,
+        f"payment is the majority family ({pay_frac:.1%})",
+    )
+    _check(
+        0.2 < leg_frac < 0.5,
+        f"legibility is a genuine honest MINORITY — non-negligible (> 20%) but not a "
+        f"majority ({leg_frac:.1%}), the honest part the pitch does not own",
+    )
+
+
+# ---------------------------------------------------------------------------
 # 15. THE PUBLISHED HEADLINE PROSE CANNOT DRIFT FROM THE LIVE FRACTION.
 #     Cycle 204 put a sentence onto the PUBLIC methodology page (section 8):
 #     agent-native payment "closes ABOUT TWO-THIRDS of the ... headline gap" and
@@ -1628,6 +1792,7 @@ def main() -> int:
         test_with_rails_ceiling_is_payment_capability_not_category_artifact,
         test_ceiling_payment_attribution_is_weight_robust,
         test_payment_capability_drives_the_majority_of_the_headline_delta,
+        test_headline_delta_is_fully_attributed_to_two_capability_families,
         test_methodology_headline_prose_is_coupled_to_the_live_fraction,
         test_static_prediction_and_behavioral_outcome_are_rank_concordant,
     ]

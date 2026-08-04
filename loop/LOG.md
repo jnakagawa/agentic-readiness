@@ -3,6 +3,68 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 231 — 2026-08-04T19:15Z — TRUTH — the headline delta is FULLY capability-attributed: the entire +39.4 gap decomposes into exactly TWO agent-native capability families (pay programmatically + understand the offer) with ZERO unexplained residual
+
+WHAT/WHY (TRUTH — calibration against reality, per the Cycle-230 FOCUS POINTER's TRUTH-231 "else a further
+attribution/calibration invariance"). Test 14 (`test_payment_capability_drives_the_majority_of_the_headline_delta`,
+Cycle 203) proves agent-native PAYMENT is the single MAJORITY driver of the +39.4 headline delta (~65.2%) and that the
+~35% remainder is real and "carried by legibility" — but it stops at "legibility differs markedly (>10pt)". That leaves
+the honest one-third the pitch does NOT own asserted only as a pillar-level GAP, never attributed to a named
+agent-native CAPABILITY the way payment is counterfactually attributed. The north star forbids a manufactured delta;
+the strongest defense of its credibility is proving the ENTIRE gap is capability, not category. This cycle closes the
+decomposition: the whole +39.4 splits into exactly two agent-native capability FAMILIES — "pay programmatically"
+(transactability: `_STATIC_PAYMENT_CHECKS` = x402_probe + self_serve_payg) and "understand the offer" (legibility:
+new `_STATIC_LEGIBILITY_CHECKS` = llms_txt + offer_catalog) — with ZERO unexplained residual.
+
+The two legibility checks ARE the residual, non-vacuously: on the canonical pair the OTHER three legibility checks
+(sitemap 0/0, pricing_machine_readable 4/4=4/4, api_docs_surface 4/4=4/4) are byte-identical on both sides, so the
+entire legibility gap (90.9 vs 36.4) is carried by llms_txt (6/6 vs 0/6, the machine-readable agent guide) and
+offer_catalog (6/6 vs 0/6, the machine-readable offer catalog) — both squarely the "understand the offer" leg of the
+capability lens.
+
+TRUTH — the smallest unit (one attribution guard, tests-only, off the scoring path).
+`tests/test_calibration.py` `test_headline_delta_is_fully_attributed_to_two_capability_families` (registered after
+test 14) uses the SAME faithful knock-out machinery as test 14 (substitute the no-rails FULL CheckResult per targeted
+check — points + finding + any cap it would trip — then re-score through scoring's own roll-up; a counterfactual, never
+a rubric edit). Three things test 14 does NOT pin: (a) the legibility residual is EXCLUSIVELY the two named
+agent-legibility checks — knocking ONLY llms_txt + offer_catalog collapses the legibility pillar EXACTLY onto the
+no-rails floor (36.36), the other legibility checks byte-identical, no cap artifact → a genuine capability gap, not a
+category offset; (b) COMBINED, payment + legibility collapse the with-rails OVERALL EXACTLY onto the no-rails floor
+46.1 — residual 0.0, so no third UNNAMED driver hides in the weighted roll-up (access + trust are already equal on the
+pair); (c) the two families are near-additive and jointly ~100% (payment 65.2% + legibility 34.5% = 99.75%, within
+0.01 of 1.0), with legibility a genuine honest MINORITY — strictly non-negligible (> 20%) but strictly below a majority
+(< 50%), neither the whole story nor a rounding artifact. Completes test 14's honest-non-exclusivity claim into a full,
+residual-free capability decomposition.
+
+VALIDATION. `tests/test_calibration.py` 16→17 (direct run 17/17). New module constant `_STATIC_LEGIBILITY_CHECKS`,
+sibling of `_STATIC_PAYMENT_CHECKS`, capability-worded + vendor-neutral. Full suite 480→481. All assertions land on the
+frozen anchors (85.5 B / 46.1 F / +39.4; leg-only knock legibility → 36.36 == no-rails floor; both-knock overall →
+46.1 == no-rails floor, residual 0.0; caps unchanged []).
+
+SCORE-NEUTRAL by construction: tests-only — `git diff --name-only` = `tests/test_calibration.py` ALONE; scoring path
+untouched (`git diff --name-only -- asrs/scoring.py asrs/probes/ rubric/ fixtures/ asrs/offering.py asrs/battery.py
+asrs/cli.py asrs/scorecard.py asrs/fetch.py` EMPTY). Direct-to-main (not a scoring-semantics change, not payment/
+signing code → NOT peer-gated; same tier as the prior calibration-attribution TRUTH cycles 191/197/199). RE-BASELINE
+COUPLING: the guard's 85.5/46.1/+39.4 assertions share test 9(d)'s tripwire — a `[LOCAL]` canonical re-baseline reddens
+this guard ALONGSIDE test 14 and the replay guard, forcing the whole two-family decomposition to be re-derived in the
+same PR.
+
+CANONICAL PAIR (in-cloud offline regression signal). Canonical replay guard 24/24 GREEN — drift-flight.org 46.1 F /
+driftflight.com 85.5 B / delta +39.4, 0 replay-miss; frozen independent regression signal UNMOVED (tests-only, off the
+scoring path). LIVE signal (READ from the newest verify artifact `runs/local/verify_20260804T174103Z.json`, 17:41Z,
+`git_pull.ok=true` attempts=1 `divergence_recovery=None` `tests_ok=true`, ~1.5h old at this 19:1xZ fire — WELL inside
+the 6h floor; off the scoring path): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 —
+the transactability-drop divergence PERSISTS (its CHECK-level diagnosis + peer-gated re-baseline stay `[LOCAL]`, gated
+on a live crawl).
+
+NEXT HYPOTHESIS (COVERAGE 232). With the delta now proven to decompose residual-free into two capability families, the
+attribution frontier is well-covered in-cloud. Rotate to COVERAGE: the Cycle-230 NEXT's deep-bank sibling — a
+machine-readable concurrency/quota ERROR-RECOVERY response (a `409 concurrency_exceeded` / a `Retry-After` naming the
+concurrency wall) distinct from generic `error-contract`, IF the committed canonical `/docs` error table or OpenAPI
+responses carry it; else a further offering-signal audit. The substantive frontier (thin-bank live fixtures, a THIRD
+real anchor, the transactability-drop CHECK-level diagnosis, moleskine.com two-crawl cross-validation, ACP/UCP/MPP)
+stays `[LOCAL]`, now UNBLOCKED by the recovered runner — prefer the oldest.
+
 ## Cycle 230 — 2026-08-04T17:52Z — COVERAGE — new metered_api offering signal `concurrency-limit`: the CONCURRENCY CEILING + queue-depth backpressure (how many jobs an agent may run IN PARALLEL, distinct from `rate-limited`'s requests-per-TIME) — a documented capability the committed canonical /docs carried but the deep bank had not yet mapped
 
 WHAT/WHY (COVERAGE — measurement coverage, per the Cycle-229 FOCUS POINTER's named in-cloud lever: with the

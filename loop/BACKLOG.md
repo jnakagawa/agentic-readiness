@@ -93,6 +93,16 @@ design in-cloud, execute locally.
   agent-native payment" attribution this P0 relies on is a structural property, not a fixture-weight
   artifact — and the 18.75/87.5 literals share test 9(d)'s re-baseline tripwire. Does NOT close this item —
   the CHECK-level live diff + re-baseline stay [LOCAL].
+  UPDATE Cycle 231 (TRUTH, in-cloud, direct-to-main): the WHOLE frozen +39.4 headline delta this P0's
+  re-baseline coupling protects is now proven to decompose RESIDUAL-FREE into exactly two agent-native
+  capability families — `test_calibration.py`'s new `test_headline_delta_is_fully_attributed_to_two_capability_families`
+  (14B) knocks out payment (`_STATIC_PAYMENT_CHECKS`, ~65.2%) AND legibility (new `_STATIC_LEGIBILITY_CHECKS`
+  = llms_txt + offer_catalog, ~34.5%) together and the with-rails overall collapses EXACTLY onto the no-rails
+  floor 46.1 (residual 0.0, no third unnamed driver; leg-only knock collapses legibility onto its floor 36.36
+  with the other leg checks byte-identical). So both HALVES of the delta are now named capabilities, and this
+  guard shares test 9(d)/14's re-baseline tripwire (85.5/46.1/+39.4) — a [LOCAL] re-baseline reddens it
+  alongside them, forcing the two-family decomposition to be re-derived in the same PR. Does NOT close this
+  item — the CHECK-level live diff + re-baseline stay [LOCAL].
 
 <!-- DONE 2026-07-28T17:27Z (local fire, SELF-HEALING/METHOD, direct-to-main): "[LOCAL] Local
      verify runner STALLED past the 6h floor" ROOT-CAUSED + FIXED. The cloud's Cycle-51→62

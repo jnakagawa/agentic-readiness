@@ -1,6 +1,37 @@
 # Loop state
 
-- Cycle counter: 230
+- Cycle counter: 231
+- RUNNER HEALTHY at 2026-08-04T19:1xZ (Cycle 231) — newest verify `runs/local/verify_20260804T174103Z.json` (17:41Z,
+  `git_pull.ok=true` attempts=1 `divergence_recovery=None` `tests_ok=true`) is ~1.5h old at this fire — WELL inside the
+  6h floor. The push-race recovery (Cycle 229's `d812d6e`) is HOLDING — every fire since (17:09Z, 17:41Z) `attempts=1`,
+  `git_pull.ok=true`, no `divergence_recovery` note. Live signal (READ fresh, NOT re-run, off the scoring path):
+  drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence
+  PERSISTS. In-cloud replay guard stays the frozen independent regression signal (24/24, 46.1 F / 85.5 B / +39.4). No
+  open peer-gated PRs this fire (`list_pull_requests` state=open → []), so no first-duty review. This 19:1xZ fire is NOT
+  first-after-16:00 UTC (Cycle 228 at 16:2xZ already sent the Aug-4 daily digest) → NO DM this fire per comms policy
+  (tests-only / score-neutral off-scoring-path TRUTH guard, no sensitive-class PR, nothing score-moving — below the DM
+  bar, same precedent as the prior calibration-attribution TRUTH cycles 191/197/199). INFRA/SELF-HEAL (Cycle 231): fresh
+  `.venv` + `requests pyyaml eth-account pytest`, 480 tests green pre-flight (481 after +1); local checkout at origin tip
+  `d94827e` (Cycle 230); LOG.md newest-first + complete through Cycle 230.
+- FOCUS POINTER (Cycle 231 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 231 was TRUTH, so
+  Cycle 232 is COVERAGE). Cycle 231 shipped a **TRUTH increment — the headline delta is FULLY capability-attributed with
+  ZERO unexplained residual**: `tests/test_calibration.py`
+  `test_headline_delta_is_fully_attributed_to_two_capability_families` (registered after test 14) completes test 14's
+  honest-non-exclusivity claim into a full, residual-free decomposition. Same faithful knock-out machinery: the whole
+  +39.4 headline gap splits into exactly TWO agent-native capability families — "pay programmatically" (transactability:
+  `_STATIC_PAYMENT_CHECKS` = x402_probe + self_serve_payg, ~65.2%) and "understand the offer" (legibility: new
+  `_STATIC_LEGIBILITY_CHECKS` = llms_txt + offer_catalog, ~34.5%) — with (a) the legibility residual EXCLUSIVELY the two
+  named agent-legibility checks (leg-only knock collapses legibility onto the no-rails floor 36.36, other leg checks
+  byte-identical, no cap), (b) payment + legibility COMBINED collapsing the with-rails OVERALL EXACTLY onto the no-rails
+  floor 46.1 — residual 0.0, no third unnamed driver, and (c) near-additive jointly ~100% (65.2%+34.5%=99.75%) with
+  legibility a genuine honest MINORITY (>20%, <50%). Tests-only, OFF the scoring path (`git diff --name-only` =
+  `tests/test_calibration.py` alone; scoring path EMPTY) → score-neutral, NOT peer-gated, direct-to-main. Shares test
+  9(d)'s re-baseline tripwire (85.5/46.1/+39.4). Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; suite
+  480→481; rubric v0.7. NEXT (COVERAGE 232): the Cycle-230 deep-bank sibling — a machine-readable concurrency/quota
+  ERROR-RECOVERY response (`409 concurrency_exceeded` / `Retry-After` naming the concurrency wall) distinct from generic
+  `error-contract`, IF committed prose carries it; else a further offering-signal audit. Substantive frontier (thin-bank
+  live fixtures, a THIRD real anchor, transactability-drop CHECK-level diagnosis + peer-gated re-baseline, moleskine.com
+  two-crawl cross-validation, ACP/UCP/MPP) stays `[LOCAL]`, UNBLOCKED by the recovered runner — prefer the oldest.
 - RUNNER HEALTHY at 2026-08-04T17:5xZ (Cycle 230) — newest verify `runs/local/verify_20260804T174103Z.json` (17:41Z,
   `git_pull.ok=true` attempts=1, `tests_ok=true`) is ~10min old at this fire, WELL inside the 6h floor. The push-race
   recovery (Cycle 229's `d812d6e`) is HOLDING — two clean fires since (17:09Z, 17:41Z), both `attempts=1`,

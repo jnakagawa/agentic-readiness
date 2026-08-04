@@ -1,7 +1,25 @@
 # Loop state
 
-- Cycle counter: 228
+- Cycle counter: 229
 - Started: 2026-07-23 (UTC)
+- RUNNER RECOVERED at 2026-08-04T17:1xZ (Cycle 229) — the ~3.5-day push-race stall is CLEARED. A LOCAL self-healing
+  fire at 17:08–17:09Z Aug-4 landed the runner's own fix (commit d812d6e `recover_from_own_divergence`: on a
+  --ff-only pull that fails because the branch diverged, discard our own un-pushed `loop: local verification`
+  heartbeats and realign to origin — strictly guarded so any un-pushed NON-heartbeat commit is preserved; tests
+  4→8) and pushed a fresh artifact `runs/local/verify_20260804T170922Z.json` (17:09Z, `attempts=1`, git_pull.ok=true,
+  tests_ok=true), <10 min old at this fire — the 6h floor is UP again. Live signal (READ fresh, not re-run):
+  drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop
+  divergence PERSISTS (fresh, off the scoring path). The in-cloud replay guard stays the frozen independent
+  regression signal (24/24 replay green, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire
+  (`list_pull_requests` state=open → []), so no first-duty review. This 17:1xZ fire is NOT first-after-16:00 UTC
+  (Cycle 228 at 16:2xZ already sent the Aug-4 daily digest) → no DM this fire per comms policy (tests-only /
+  score-neutral off-scoring-path METHOD guard, no sensitive-class PR, nothing score-moving; runner recovery is infra
+  good news, not a score change → below the DM bar). INFRA/SELF-HEAL (Cycle 229): fresh `.venv` +
+  `requests pyyaml eth-account pytest`, 477 tests green pre-flight (478 after +1); realigned local `main` to
+  origin/main `d85d7bf` (Cycle-52 lesson — the local runner force-updated main past the stale Cycle-228 tip); LOG.md
+  newest-first + complete through Cycle 228. NOTE: the durable [LOCAL] runner-recovery P0 is CLOSED this cycle
+  (fix landed + fresh artifact <6h old); watch the `attempts`/`git_pull.ok` fields over the next day to confirm the
+  push-race fix holds under real fires.
 - RUNNER REPAIRED — LOCAL cycle 2026-08-04T17:13Z (SELF-HEALING, direct-to-main). The ~3.5-day stall
   (at-floor since Aug-1 03:50Z) is FIXED and the live floor is RESTORED: fresh artifact
   `runs/local/verify_20260804T170922Z.json` (`git_pull.ok=true` attempts=1, `tests_ok=true`, live 46.1 F / 76.2 C /
@@ -21,8 +39,37 @@
   was flagged TO Jonah as unresolved). NOTE: transactability-drop divergence (driftflight.com 62.5) reproduced LIVE
   again this fire — stays an open P0 (separate from the runner fix), needs the check-level diagnosis + peer-gated
   re-baseline.
-- FOCUS POINTER (Cycle 228 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 228 was READOUT,
-  so Cycle 229 is METHOD). Cycle 228 shipped a **READOUT increment — the public methodology page now earns a
+- FOCUS POINTER (Cycle 229 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 229 was METHOD,
+  so Cycle 230 is COVERAGE). Cycle 229 shipped a **METHOD increment — panel reliability + citability are PANEL-SIZE
+  (REPLICATION) INVARIANT**: `tests/test_reliability.py` `test_verdict_stability_is_panel_size_invariant`
+  (registered, after the polarity guard) pins that `verdict_stability = 1 - 2*mean(minority/n)` is an agreement RATE,
+  immune to panel-size padding — replicating every valid run k-fold (transform `_replicate(runs, k)`) leaves
+  verdict_stability, flip_rate, the flipped set, per-checkpoint agreement/unanimity, trust agreement, band label AND
+  the citability verdict byte-identical (only valid_runs + per-checkpoint n/pass_count scale). (A) the ANTI-GAMING
+  statement — a below-threshold panel (stability 0.6, provisional) stays provisional replicated to 4/6/20 runs (20
+  padded copies cannot cross _STABLE_MIN 0.8 to buy citability); (B) general invariance over an interior-mix panel
+  (0.7); (C) NEGATIVE CONTROL — adding one DISSENTING run moves the metric 0.7→0.68, proving the invariance is
+  specific to replication. Distinct from trial-order invariance (permutes a FIXED multiset; this changes n at fixed
+  rate). Completes the reliability metric's metamorphic-invariance family (order/shape/polarity/panel-size).
+  Tests-only, OFF the scoring path (`git diff -- asrs/ rubric/ fixtures/` EMPTY) → score-neutral, NOT peer-gated,
+  direct-to-main. Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; suite 477→478; rubric v0.7.
+  NEXT (COVERAGE 230): with the runner RECOVERED the substantive [LOCAL] frontier (thin-bank live fixtures, a THIRD
+  real anchor, the transactability-drop CHECK-level diagnosis, ACP/UCP/MPP) is now UNBLOCKED — prefer the oldest of
+  those; else an in-cloud deep-bank signal audit (Cycle-226 showed committed fixtures can still carry uncaptured
+  capabilities).
+- SUPERSEDED (Cycle 228 runner note): RUNNER AT-FLOOR at 2026-08-04T16:2xZ (Cycle 228) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~84.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
+  cloud cannot repair). This 16:21Z fire IS the first-after-16:00 UTC cycle of Aug-4 → daily-digest DM SENT to
+  U07PEGPSZD3 (cycles 205–228 shipped, canonical delta trend, ~3.5-day runner stall re-flagged, top open question).
+  Live signal (READ, not re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 —
+  the transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the
+  frozen independent regression signal (28/28 replay-family green, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs
+  this fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 228): fresh
+  `.venv` + `requests pyyaml eth-account pytest`, 472 tests green pre-flight (473 after +1); local `main` realigned
+  off the stale diverged tip to origin/main `fe720aa` (Cycle 227) before working (Cycle-52 lesson); LOG.md confirmed
+  newest-first + complete through Cycle 227; last push (Cycle 227, fe720aa) present on origin/main. NOTE: runner
+  at-floor since Aug-1 03:50Z (~3.5 days) — durable [LOCAL] runner-recovery stays P0.
+- SUPERSEDED (Cycle 228 focus pointer): FOCUS POINTER (Cycle 228 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 228 was READOUT,  so Cycle 229 is METHOD). Cycle 228 shipped a **READOUT increment — the public methodology page now earns a
   reader-facing block for the `payment-challenge-retry` capability**, closing the COVERAGE(226)→TRUTH(227)→READOUT(228)
   arc. `asrs/scorecard.py` `_write_methodology_page` gains an "Executing the pay handshake" `<p>` inserted right
   after the payment-rails block (its natural sibling): it frames the challenge-settle-retry handshake as the

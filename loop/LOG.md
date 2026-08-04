@@ -3,6 +3,60 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 229 — 2026-08-04T17:18Z — METHOD — pin panel reliability + citability are PANEL-SIZE (REPLICATION) INVARIANT: reproducibility is an agreement RATE, not a head count — you cannot pad a panel with agreeing copies to buy citability
+
+WHAT/WHY (METHOD — measurement rigor, per the Cycle-228 FOCUS POINTER's named next step: "a further
+variance/attribution invariance"). `verdict_stability = 1 - 2*mean(minority_fraction)` (minority = min(pass, n-pass)
+per checkpoint) is the single number the whole benchmark's "is this safe to cite?" credibility rests on — the
+quotability gate reads it to call a panel CITABLE vs PROVISIONAL. Its metamorphic-invariance family already pins
+that it ignores arrival ORDER (Cycle 93, trial-order), its SHAPE (Cycle 201, monotonicity + shared citability
+threshold), and the SIGN of the verdict (Cycle 225, polarity — a no-rails unanimous FAIL is as citable as a
+with-rails unanimous PASS). One load-bearing property in that family was UN-pinned: **panel-size / replication
+invariance** — that reproducibility is an agreement RATE, immune to panel-size padding. Without it a store could
+game citability by padding its panel with duplicate copies of one agreeing run, and a 2/2 unanimous panel would not
+be provably as reproducible as a 10/10 one. Because the metric divides by n, replicating every run k-fold
+(pass_count → k·p, n → k·n) leaves minority/n = min(p,n-p)/n EXACTLY unchanged — so the anti-gaming property holds
+by construction, but was untested. This cycle makes it a per-cycle tripwire.
+
+METHOD — the smallest unit (one metamorphic-invariance guard, tests-only, off the scoring path).
+`tests/test_reliability.py` `test_verdict_stability_is_panel_size_invariant` (registered, after the polarity guard)
+with the `_replicate(runs, k)` transform (each valid run duplicated k times with distinct trial ids so `_valid_runs`
+keeps every copy, byte-identical observed outcomes): (A) the CRISP ANTI-GAMING statement — a panel BELOW the
+citability threshold (2 runs split on 2 checkpoints → verdict_stability 0.6 < _STABLE_MIN 0.8 → provisional) stays
+0.6 / `provisional-unstable` when replicated to 4, 6, 20 runs (20 padded copies cannot cross the gate); (B) the
+GENERAL invariance over an interior-mix panel (stability 0.7, mixed flips, split trust) — replicating k=2,3,5 leaves
+verdict_stability, flip_rate, flipped set, per-checkpoint agreement/unanimity, trust agreement, band label AND the
+citability verdict identical, while `valid_runs` and each checkpoint's n/pass_count scale k-fold (the non-vacuity that
+the panel really grew); (C) the NEGATIVE CONTROL — adding ONE DISSENTING run changes the pass RATE and MUST move the
+metric (0.7 → 0.68), proving the invariance is specific to replication, not a metric that ignores its input. Distinct
+from trial-order invariance (which permutes a FIXED multiset; this changes n while holding the per-checkpoint rate).
+
+VALIDATION. `test_reliability.py` 11→12 tests (direct run 12/12; registered — main() runner green). Full suite
+477→478 passed. SCORE-NEUTRAL by construction: tests-only, `git diff -- asrs/ rubric/ fixtures/ asrs/scoring.py
+asrs/probes/ asrs/offering.py` EMPTY; the reliability layer is rubric-agnostic and this change adds no code, only a
+guard. Direct-to-main (not a scoring-semantics change, not payment/signing code → NOT peer-gated).
+
+CANONICAL PAIR (in-cloud offline regression signal). Canonical replay guard 24/24 GREEN — drift-flight.org 46.1 F /
+driftflight.com 85.5 B / delta +39.4, 0 replay-miss; frozen independent regression signal UNMOVED (this change
+touches no scoring code, no fixture, no rubric). LIVE signal RESTORED this fire and READ fresh (not stale): the LOCAL
+runner RECOVERED — a local self-healing fire at 17:08–17:09Z Aug-4 (commit d812d6e `recover_from_own_divergence` +
+d85d7bf) fixed the ~3.5-day push-race divergence stall and pushed `runs/local/verify_20260804T170922Z.json` (17:09Z,
+attempts=1, git_pull.ok=true): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the
+transactability-drop divergence PERSISTS (now ~9 min old, not 84h stale), off the scoring path.
+
+INFRA/SELF-HEAL (Cycle 229): fresh `.venv` + `requests pyyaml eth-account pytest`; realigned local `main` to
+origin/main `d85d7bf` (Cycle-52 lesson — the local runner force-updated main past the stale Cycle-228 tip);
+LOG.md newest-first + complete through Cycle 228; suite 477 green pre-flight (478 after +1). The ~3.5-day runner
+at-floor is RESOLVED (the runner's own hardening fix landed + a fresh artifact is <6h old) — the P0 runner-recovery
+item is closed this cycle.
+
+NEXT HYPOTHESIS (COVERAGE 230, per rotation METHOD→COVERAGE→TRUTH→READOUT; Cycle 229 was METHOD). The reliability
+metric's metamorphic-invariance family is now COMPLETE across order / shape / polarity / panel-size — a refactor that
+broke any of the four load-bearing properties now reddens. Candidate COVERAGE: with the runner recovered, the
+substantive [LOCAL] frontier (thin-bank live fixtures, a THIRD real anchor, the transactability-drop CHECK-level
+diagnosis, ACP/UCP/MPP handshakes) is now UNBLOCKED — prefer designing/executing the oldest of those; else an
+in-cloud deep-bank signal audit (Cycle-226 showed committed fixtures can still carry uncaptured capabilities).
+
 ## Local cycle — 2026-08-04T17:13Z — SELF-HEALING (infra outranks new work): root-caused + fixed the ~3.5-day LOCAL verify-runner stranding, hardened the runner against recurrence, restored the live floor
 
 WHAT/WHY. Infra breakage outranks new work (playbook self-healing), so this fire's ONE item was the repair, not a

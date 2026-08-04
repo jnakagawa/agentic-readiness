@@ -30,7 +30,18 @@ Covers the load-bearing behaviours with synthetic ``BehavioralRun`` fixtures
     unanimous FAIL is exactly as citable as a with-rails store's unanimous PASS
     (Cycle 225 METHOD rigor — the two-sided calibration anchor stated at the
     reliability layer; the metamorphic sibling of the attribution layer's
-    host-relabel-invariance guards).
+    host-relabel-invariance guards);
+  - reproducibility + citability are PANEL-SIZE (REPLICATION) INVARIANT:
+    reproducibility is an agreement RATE, not a head count — replicating every
+    valid run k-fold leaves verdict_stability, flip_rate, the flipped set,
+    per-checkpoint agreement/unanimity, trust agreement, the band label AND the
+    citability verdict byte-identical (only valid_runs and the per-checkpoint
+    n/pass_count scale). The anti-gaming complement to polarity invariance: a
+    store cannot pad its panel with copies of an agreeing run to buy citability, a
+    below-threshold panel stays provisional however many duplicates are stacked on
+    it, and a 2/2 unanimous panel is exactly as reproducible as a 10/10 one — with
+    a negative control (adding one DISSENTING run must move the metric) proving the
+    invariance is specific to replication (Cycle 229 METHOD rigor).
 """
 
 from __future__ import annotations
@@ -546,6 +557,130 @@ def test_verdict_stability_is_polarity_invariant() -> None:
            f"citability gate is polarity-invariant (tag {q.tag!r} both ways)")
 
 
+# ---------------------------------------------------------------------------
+# 12. verdict_stability + citability are PANEL-SIZE (REPLICATION) INVARIANT
+#     (Cycle 229 METHOD rigor). Reproducibility is an agreement RATE, not a
+#     head count: replicating every valid run k-fold (each outcome-identical run
+#     duplicated k times) leaves verdict_stability, flip_rate, the flipped set,
+#     per-checkpoint agreement/unanimity, trust agreement, the band label AND the
+#     citability verdict byte-identical — ONLY valid_runs scales k-fold. This is
+#     the ANTI-GAMING complement to polarity invariance: a store cannot buy
+#     citability by padding its panel with copies of an agreeing run, and a panel
+#     that sits BELOW the citability threshold stays provisional no matter how many
+#     duplicate runs are stacked on it (20 padded runs cannot cross _STABLE_MIN).
+#     It is what makes a 2/2 unanimous panel exactly as reproducible as a 10/10
+#     one, and it is DISTINCT from trial-order invariance (9): that permutes a
+#     FIXED multiset; this changes n while holding the per-checkpoint pass RATE.
+#     The metamorphic transform is run-replication; the negative control adds a
+#     single DISSENTING run (which changes the rate) and must move the metric,
+#     proving the invariance is specifically to replication, not to any change.
+# ---------------------------------------------------------------------------
+def _replicate(runs: list[BehavioralRun], k: int) -> list[BehavioralRun]:
+    """Each run duplicated k times with distinct trial ids (so _valid_runs keeps
+    every copy as its own valid draw) but byte-identical observed outcomes — the
+    metamorphic transform under test: it scales the panel size, nothing about how
+    the panel voted or how much it agreed."""
+    return [
+        BehavioralRun(
+            model=r.model, trial=r.trial * 100 + c,
+            checkpoints=dict(r.checkpoints), trust_events=list(r.trust_events),
+        )
+        for c in range(k)
+        for r in runs
+    ]
+
+
+def test_verdict_stability_is_panel_size_invariant() -> None:
+    print("test_verdict_stability_is_panel_size_invariant")
+
+    # --- (A) The crisp anti-gaming statement: a panel that sits BELOW the ---------
+    #     citability threshold cannot be pushed OVER it by padding with copies.
+    #     Two runs split on two checkpoints -> minority mean 2*.5/5 = .2 ->
+    #     verdict_stability 0.6 (< _STABLE_MIN 0.8 -> provisional). Replicating that
+    #     panel to 4, 6, 20 runs leaves it at 0.6 / provisional every time: extra
+    #     agreeing-copy runs are not extra evidence.
+    base = dict.fromkeys(_KEYS, True)
+    below = [_run("claude", 1, **base),
+             _run("codex", 1, **{**base, "machine_payable_path": False,
+                                 "no_human_gate": False})]
+    ref_below = R.panel_reliability(below)
+    ref_tag = R.quotability(_StubReport(below)).tag
+    _check(abs(ref_below.verdict_stability - 0.6) < 1e-9
+           and ref_below.verdict_stability < R._STABLE_MIN,
+           f"seed panel sits below the citability threshold, got "
+           f"{ref_below.verdict_stability}")
+    _check(ref_tag == "provisional-unstable",
+           "seed panel is NOT citable (provisional-unstable)")
+    for k in (2, 3, 10):
+        rep = _replicate(below, k)
+        rel = R.panel_reliability(rep)
+        tag = R.quotability(_StubReport(rep)).tag
+        _check(rel.valid_runs == 2 * k,
+               f"k={k}: panel really grew to {2 * k} valid runs, got {rel.valid_runs}")
+        _check(abs(rel.verdict_stability - ref_below.verdict_stability) < 1e-9,
+               f"k={k}: verdict_stability unchanged by padding, got "
+               f"{rel.verdict_stability}")
+        _check(tag == ref_tag == "provisional-unstable",
+               f"k={k}: padding with agreeing copies cannot buy citability "
+               f"(still {tag})")
+
+    # --- (B) The general metamorphic invariance over an INTERIOR-mix panel --------
+    #     (some unanimous, some split, trust posture split). Replicating every run
+    #     k-fold leaves EVERY reproducibility/citability field identical; ONLY
+    #     valid_runs (and the per-checkpoint n/pass_count that scale with it) move.
+    v1 = _run("claude", 1, trust_events=["warn: unproven"],
+              **{**base, "no_human_gate": False})
+    v2 = _run("claude", 2, trust_events=["warn: unproven"],
+              **{**base, "machine_payable_path": False, "no_human_gate": False})
+    v3 = _run("codex", 1, trust_events=[],
+              **{**base, "no_human_gate": False})
+    v4 = _run("codex", 2, trust_events=["warn: unproven"],
+              **{**base, "found_purchase_path": False,
+                 "machine_payable_path": False, "no_human_gate": False})
+    panel = [v1, v2, v3, v4]
+    rel = R.panel_reliability(panel)
+
+    # non-vacuous: a genuine interior operating point with a real mix + split trust.
+    _check(abs(rel.verdict_stability - 0.7) < 1e-9
+           and 0.0 < rel.verdict_stability < 1.0,
+           f"reference panel at a genuine interior 0.7, got {rel.verdict_stability}")
+    _check(0 < len(rel.flipped_checkpoints) < len(_KEYS)
+           and rel.trust_events_unanimous is False,
+           "reference panel mixes flipped/unanimous checkpoints AND splits trust")
+
+    for k in (2, 3, 5):
+        rep = R.panel_reliability(_replicate(panel, k))
+        # non-vacuous: the panel genuinely scaled k-fold.
+        _check(rep.valid_runs == len(panel) * k,
+               f"k={k}: valid_runs scaled to {len(panel) * k}, got {rep.valid_runs}")
+        # THE INVARIANT: every RATE-bearing field is unchanged by replication.
+        for fkey in ("single_trial", "flipped_checkpoints", "flip_rate",
+                     "verdict_stability", "trust_event_agreement",
+                     "trust_events_unanimous", "label"):
+            _check(getattr(rep, fkey) == getattr(rel, fkey),
+                   f"k={k}: {fkey} invariant under panel replication")
+        # per-checkpoint agreement/unanimity are RATES -> invariant; only n and
+        # pass_count scale with the panel size.
+        for c, cr in zip(rel.per_checkpoint, rep.per_checkpoint):
+            _check(c.checkpoint == cr.checkpoint and c.agreement == cr.agreement
+                   and c.unanimous == cr.unanimous,
+                   f"k={k}: {c.checkpoint} agreement/unanimity invariant")
+            _check(cr.n == c.n * k and cr.pass_count == c.pass_count * k,
+                   f"k={k}: {c.checkpoint} n/pass_count scale k-fold (non-vacuous)")
+
+    # --- (C) NEGATIVE CONTROL: the invariance is to REPLICATION, not to any -------
+    #     panel change. Adding ONE dissenting run changes the pass RATE and MUST
+    #     move verdict_stability — otherwise (B) would pass vacuously for a metric
+    #     that ignored its input entirely.
+    dissent = _run("claude", 9, **{**base, "found_product": False,
+                                   "machine_payable_path": False,
+                                   "no_human_gate": False})
+    moved = R.panel_reliability(panel + [dissent])
+    _check(moved.verdict_stability != rel.verdict_stability,
+           "adding a DISSENTING run moves the metric (invariance is to "
+           f"replication only): {rel.verdict_stability} -> {moved.verdict_stability}")
+
+
 def main() -> int:
     tests = [
         test_unanimous,
@@ -559,6 +694,7 @@ def main() -> int:
         test_panel_reliability_is_trial_order_invariant,
         test_verdict_stability_is_monotone_and_shares_the_citability_threshold,
         test_verdict_stability_is_polarity_invariant,
+        test_verdict_stability_is_panel_size_invariant,
     ]
     failed = 0
     for t in tests:

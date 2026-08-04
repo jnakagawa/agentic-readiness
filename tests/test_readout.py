@@ -1152,6 +1152,76 @@ def test_methodology_documents_payment_receipt() -> None:
                f"payment-receipt prose names no vendor/domain ({banned!r})")
 
 
+def test_methodology_documents_payment_challenge_retry() -> None:
+    # Cycle 228 (READOUT): the READOUT complement CLOSING the payment-challenge-retry
+    # arc opened by Cycle 226 (COVERAGE — the metered_api `payment-challenge-retry`
+    # offering signal: the agent-native payment CHALLENGE-SETTLE-RETRY handshake, the
+    # request/response FLOW an agent must EXECUTE to actually pay, distinct from the
+    # STATIC fact a rail exists) and Cycle 227 (TRUTH — the real-captured-surfaces guard
+    # pinning the signal fires on the with-rails anchor and is ABSENT on the no-rails
+    # one). This is the PAY-EXECUTION leg completing the full COVERAGE->TRUTH->READOUT
+    # arc (mirroring payment-receipt 142/143/144, reserve-and-settle 156/157/158,
+    # failure-not-billed 152/153/154). The handshake was pinned in code + tests but
+    # NEVER surfaced in prose a critic can read — a reader could not learn WHY an offer
+    # that documents the challenge-settle-retry round-trip is MORE agent-completable, or
+    # how it is DISTINCT from its neighbours: the payment RAILS (x402, a machine-payable
+    # endpoint) say a rail EXISTS / the agent CAN pay; the RECEIPT is the proof that
+    # comes BACK after a paid call; this is the FLOW in between that actually spends. The
+    # paragraph must (a) frame it as executing the pay handshake / the leg between having
+    # a rail and getting a receipt, and name the failure (an agent that reads "here is a
+    # 402" but is not told to settle the challenge and retry with the proof attached
+    # STALLS at the pay step — has the rail, no sequence); (b) name the vendor-neutral
+    # challenge-response vocabulary the offering signal anchors on as open conventions —
+    # an HTTP 402 payment challenge, pay and retry, settle the challenge, retry with a
+    # payment / signed authorization / proof attached — and note HTTP 402 is a standard
+    # status + challenge-response a universal auth pattern; (c) keep the signal's
+    # PRECISION honesty — a bare retry/402/challenge/settle is a minefield (a WEBHOOK
+    # redelivery "retry the webhook a few times", a generic "retry on failure", a 402
+    # merely mentioned without the settle-and-retry sequence) and is no signal; (d) tie
+    # the SETTLE step to ASRS's own $0-only ethos (the signable step is a zero-value
+    # authorization, never a nonzero charge); (e) say recognition keys on the HANDSHAKE
+    # the offer documents not who documents it and is pinned by an identity-relabel
+    # executable regression test; and (f) stay HONEST about scope — this offering read is
+    # diagnostic, off the scoring path, not a scored pillar. Vendor-neutral throughout.
+    print("test_methodology_documents_payment_challenge_retry")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    # Match on the whitespace-collapsed text (same technique as the payment-receipt /
+    # reserve-and-settle guards) so wording, not source wrapping, is what the guard pins.
+    collapsed = " ".join(text.split())
+    for phrase in ("Executing the pay handshake", "challenge-settle-retry handshake",
+                   "settle the challenge and retry with the proof attached",
+                   "PAY-execution leg",
+                   "handshake the offer documents, not who documents it",
+                   "relabels the storefront", "executable regression test",
+                   "off the scoring path", "diagnostic"):
+        _check(phrase in collapsed,
+               f"methodology documents payment-challenge-retry: {phrase!r}")
+    # The vendor-neutral challenge-response vocabulary the offering signal bank anchors on
+    # must appear as open conventions, never a vendor product: a 402 payment challenge,
+    # pay and retry, settle the challenge, retry with a payment/authorization/proof.
+    for token in ("payment challenge", "pay and retry", "settle", "retry with"):
+        _check(token in collapsed,
+               f"methodology names challenge-response convention {token!r}")
+    # PRECISION honesty: the prose must preserve the signal's bare-word guard — a bare
+    # retry/402/challenge/settle (a webhook redelivery, a generic retry-on-failure) is no
+    # signal; only the co-occurrence the handshake produces trips it.
+    for token in ("bare", "no signal", "retry the webhook", "retry on failure",
+                  "co-occurrence"):
+        _check(token in collapsed,
+               f"methodology keeps payment-challenge-retry precision note: {token!r}")
+    # DISTINCTNESS: the prose must name the neighbours it is distinct from so a reader
+    # cannot conflate the pay-execution FLOW with the payment rails (the ability) or the
+    # receipt (the proof after).
+    for token in ("can pay", "back after", "$0-only", "zero-value"):
+        _check(token in collapsed,
+               f"methodology keeps payment-challenge-retry distinctness note: {token!r}")
+    # Vendor-neutral: no scored domain/product/brand named on the page.
+    for banned in ("drift-flight", "driftflight", "replicate"):
+        _check(banned not in text,
+               f"payment-challenge-retry prose names no vendor/domain ({banned!r})")
+
+
 def test_methodology_documents_failure_not_billed() -> None:
     # Cycle 154 (READOUT): the READOUT complement CLOSING the failure-not-billed arc
     # opened by Cycle 152 (COVERAGE — the metered_api `failure-not-billed` offering
@@ -2822,6 +2892,7 @@ def main() -> int:
         test_methodology_documents_webhook_verification,
         test_methodology_documents_output_resolution,
         test_methodology_documents_payment_receipt,
+        test_methodology_documents_payment_challenge_retry,
         test_methodology_documents_failure_not_billed,
         test_methodology_documents_reserve_and_settle,
         test_methodology_documents_free_included_usage,

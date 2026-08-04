@@ -1,8 +1,40 @@
 # Loop state
 
-- Cycle counter: 227
+- Cycle counter: 228
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-04T15:2xZ (Cycle 227) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-04T16:2xZ (Cycle 228) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~84.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
+  cloud cannot repair). This 16:21Z fire IS the first-after-16:00 UTC cycle of Aug-4 → daily-digest DM SENT to
+  U07PEGPSZD3 (cycles 205–228 shipped, canonical delta trend, ~3.5-day runner stall re-flagged, top open question).
+  Live signal (READ, not re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 —
+  the transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the
+  frozen independent regression signal (28/28 replay-family green, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs
+  this fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 228): fresh
+  `.venv` + `requests pyyaml eth-account pytest`, 472 tests green pre-flight (473 after +1); local `main` realigned
+  off the stale diverged tip to origin/main `fe720aa` (Cycle 227) before working (Cycle-52 lesson); LOG.md confirmed
+  newest-first + complete through Cycle 227; last push (Cycle 227, fe720aa) present on origin/main. NOTE: runner
+  at-floor since Aug-1 03:50Z (~3.5 days) — durable [LOCAL] runner-recovery stays P0.
+- FOCUS POINTER (Cycle 228 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 228 was READOUT,
+  so Cycle 229 is METHOD). Cycle 228 shipped a **READOUT increment — the public methodology page now earns a
+  reader-facing block for the `payment-challenge-retry` capability**, closing the COVERAGE(226)→TRUTH(227)→READOUT(228)
+  arc. `asrs/scorecard.py` `_write_methodology_page` gains an "Executing the pay handshake" `<p>` inserted right
+  after the payment-rails block (its natural sibling): it frames the challenge-settle-retry handshake as the
+  PAY-EXECUTION leg BETWEEN the rail (the agent CAN pay) and the receipt (the proof that comes BACK after), names
+  the failure (an agent that reads "here is a 402" but is not told to settle the challenge and retry with the proof
+  attached STALLS at the pay step), names the vendor-neutral challenge-response vocabulary as open conventions (HTTP
+  402 payment challenge / pay and retry / settle the challenge / retry with a payment / signed authorization / proof
+  — HTTP 402 a standard status, challenge-response a universal auth pattern), keeps the bare-word precision honesty
+  (webhook redelivery / retry-on-failure / a bare 402 are no signal — only the co-occurrence trips it), ties the
+  SETTLE step to the $0-only ethos (a zero-value authorization, never a nonzero charge), and stays honest about
+  scope (diagnostic, off the scoring path). `tests/test_readout.py`
+  `test_methodology_documents_payment_challenge_retry` (registered) is the executable mirror. DISPLAY-ONLY, OFF the
+  scoring path (`git diff -- asrs/scoring.py asrs/probes/ rubric/ fixtures/ asrs/offering.py` EMPTY; only scorecard.py
+  prose + the test) → score-neutral, NOT peer-gated, direct-to-main. Replay guard 46.1 F / 85.5 B / +39.4, 0
+  replay-miss; suite 472→473; rubric v0.7. NEXT (METHOD 229): a further variance/attribution invariance, OR audit
+  the methodology page for a leg whose science is pinned but prose is thin. Substantive frontier (CHECK-level
+  transactability-drop diagnosis + peer-gated re-baseline, thin-bank live fixtures, moleskine.com two-crawl
+  cross-validation, a THIRD real anchor, ACP/UCP/MPP) stays `[LOCAL]`, gated on the runner recovering.
+- SUPERSEDED (Cycle 227 runner note): RUNNER AT-FLOOR at 2026-08-04T15:2xZ (Cycle 227) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~83.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
   cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 15:2xZ fire is NOT
   first-after-16:00 UTC (15:19Z) → no DM this fire per comms policy (tests-only / score-neutral off-scoring-path
@@ -15,7 +47,7 @@
   `29807a1` (Cycle 226) before working (Cycle-52 lesson); LOG.md confirmed newest-first + complete through Cycle
   226; last push (Cycle 226, 29807a1) present on origin/main. NOTE: runner at-floor since Aug-1 03:50Z (~3.5 days)
   — durable [LOCAL] runner-recovery stays P0.
-- FOCUS POINTER (Cycle 227 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 227 was TRUTH,
+- SUPERSEDED (Cycle 227 focus pointer): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 227 was TRUTH,
   so Cycle 228 is READOUT). Cycle 227 shipped a **TRUTH increment — a real-captured-surfaces guard for the
   Cycle-226 `payment-challenge-retry` signal**: `tests/test_offering.py`
   `test_payment_challenge_retry_fires_on_real_captured_surfaces` runs the REAL discovery path over all 5 committed

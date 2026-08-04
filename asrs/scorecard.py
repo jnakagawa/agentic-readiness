@@ -385,6 +385,44 @@ is favored by name. Recognition keys on <b>what</b> a storefront declares, never
 on <b>who</b> declares it: that property is pinned by an <b>executable regression
 test</b> that relabels the storefront&rsquo;s identity end-to-end and confirms the
 rail is still recognized, unchanged, with the vendor&rsquo;s name gone.</p>
+<p><b>Executing the pay handshake</b> is the leg <b>between</b> having a rail and
+getting a receipt, and it is where an agent that <b>can</b> pay still <b>stalls</b>:
+the rails above say a rail <b>exists</b> &mdash; that the agent is <b>able</b> to pay
+&mdash; but nothing there says <b>how the payment is driven as a request/response
+sequence</b>. An agent that reads &ldquo;here is a <code>402</code>&rdquo; but is never
+told to settle the challenge and retry with the proof attached has the rail and <b>no
+sequence to run it</b> &mdash; it stops at the pay step. An offer that documents the
+challenge-settle-retry handshake &mdash; an HTTP <code>402</code>
+<b>payment challenge</b>, then <b>settle</b> it (sign the <b>zero-value
+authorization</b>, or pay the priced <code>402</code>), then retry the request with the
+payment proof attached &mdash; hands the agent the <b>exact round-trip</b> it must
+perform, so it is more agent-completable than one that leaves the agent holding a rail
+with no documented way to <b>drive it to a paid response</b>. The <b>settle</b> step is
+where ASRS&rsquo;s own <b>$0-only</b> ethos lives: the signable step is a <b>zero-value
+authorization</b>, never a nonzero charge. It is <b>distinct</b> from every neighbour:
+the payment <b>rails</b> (x402, a machine-payable endpoint) say the agent <b>can
+pay</b>; the <b>receipt</b> is the proof that comes <b>back after</b> a paid call; this
+is the <b>flow in between that actually spends</b> &mdash; the <b>PAY-execution leg</b>,
+not the pay <b>ability</b> before and not the <b>accounting</b> after. So ASRS reads the
+documented handshake as part of understanding the metered offer, keyed on vendor-neutral
+<b>challenge-response vocabulary</b> (an HTTP <code>402</code> payment challenge, <b>pay
+and retry</b>, settle the challenge, retry with a payment / signed authorization / proof
+attached), the same category of open convention as REST, GraphQL, OpenAPI or x402
+&mdash; HTTP <code>402 Payment&nbsp;Required</code> is a standard status and
+challenge-response is a universal auth pattern, never a vendor&rsquo;s product. The read
+is <b>precision-guarded</b>: a <b>bare</b> <code>retry</code>, <code>402</code>,
+<code>challenge</code> or <code>settle</code> word is <b>no signal</b> &mdash; a
+<b>webhook redelivery</b> (&ldquo;we retry the webhook a few times&rdquo;), a generic
+&ldquo;retry on failure&rdquo;, or a <code>402</code> merely <b>mentioned</b> without the
+settle-and-retry sequence must never trip it &mdash; so the phrasing must show the
+<b>co-occurrence</b> only the handshake produces: pay or settle a <code>402</code> or
+challenge <b>and retry</b>, or retry with a payment / proof / signed authorization
+attached. Recognition keys on the <b>handshake the offer documents, not who documents
+it</b>: that property is pinned by an <b>executable regression test</b> that relabels the
+storefront&rsquo;s identity end-to-end and confirms the handshake is still recognized,
+unchanged, with the vendor&rsquo;s name gone. This read is <b>diagnostic</b> &mdash; it
+names whether the offer lets an agent <b>drive a payment challenge to a paid
+response</b>, <b>off the scoring path</b> &mdash; not a scored pillar.</p>
 <p><b>Provisioning without a human</b> sits between paying and finishing, and it
 is the leg an agent silently fails before it can do either: a metered API is only
 callable by an agent that can <b>present the right credential</b>. Agent-native

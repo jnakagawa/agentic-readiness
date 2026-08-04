@@ -3,6 +3,58 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 228 — 2026-08-04T16:2xZ — READOUT — surface the `payment-challenge-retry` capability in the public methodology prose: a reader can now learn WHY the challenge-settle-retry handshake is the PAY-EXECUTION leg, distinct from the rail (the ability) and the receipt (the proof after)
+
+WHAT/WHY (READOUT — reader-facing clarity, per the Cycle-227 FOCUS POINTER's named next step: "surface the
+payment-challenge-retry capability in a reader-facing readout the way prior signals earned their READOUT leg").
+Cycle 226 shipped the `payment-challenge-retry` metered_api offering signal (the HTTP-402 challenge → settle →
+retry-with-proof handshake an agent must EXECUTE to actually pay) and Cycle 227 pinned its real-data capability-split
+behaviour — but the handshake lived ONLY in code + tests + a code comment. The public methodology page (the
+"read the paper" doc) already earns a dedicated reader-facing `<p>` block for every substantial metered_api leg —
+the payment rails (agent CAN pay), provisioning, streaming, webhook-verification, the receipt (accounting for the
+spend), cancel, error-contract, failure-not-billed, reserve-and-settle — but had NO block for the pay-EXECUTION
+FLOW between the rail and the receipt. A critic reading the page could not learn WHY an offer that documents the
+challenge-settle-retry round-trip is MORE agent-completable, or how it is DISTINCT from its neighbours (the rail
+says a rail EXISTS / the agent CAN pay; the receipt is the proof that comes BACK after). This cycle closes the
+COVERAGE(226)→TRUTH(227)→READOUT(228) arc, the same three-legged shape as payment-receipt (142/143/144),
+reserve-and-settle (156/157/158), and failure-not-billed (152/153/154).
+
+READOUT — the smallest unit (one methodology `<p>` block + one mirror guard, display-only, off the scoring path).
+`asrs/scorecard.py` `_write_methodology_page` gains an "Executing the pay handshake" paragraph inserted right after
+the payment-rails block (its natural sibling), that: (a) frames it as the leg BETWEEN having a rail and getting a
+receipt and names the failure (an agent that reads "here is a 402" but is not told to settle the challenge and
+retry with the proof attached STALLS at the pay step — has the rail, no sequence to run it); (b) names the
+vendor-neutral challenge-response vocabulary as OPEN conventions (an HTTP 402 payment challenge, pay and retry,
+settle the challenge, retry with a payment / signed authorization / proof attached), noting HTTP 402 Payment
+Required is a standard status and challenge-response a universal auth pattern — never a vendor's product;
+(c) keeps the signal's PRECISION honesty (a bare retry/402/challenge/settle is a minefield — a webhook redelivery
+"retry the webhook a few times", a generic "retry on failure", a 402 merely mentioned without the settle-and-retry
+sequence — only the CO-OCCURRENCE the handshake produces trips it); (d) ties the SETTLE step to ASRS's own $0-only
+ethos (the signable step is a zero-value authorization, never a nonzero charge); (e) says recognition keys on the
+HANDSHAKE the offer documents, not who documents it, pinned by an identity-relabel executable regression test; and
+(f) stays HONEST about scope (diagnostic, off the scoring path, not a scored pillar). `tests/test_readout.py`
+`test_methodology_documents_payment_challenge_retry` (registered in the runner list, after the payment-receipt
+guard) is the executable mirror — asserts the frame/vocabulary/precision/distinctness phrases on the
+whitespace-collapsed page and re-asserts vendor-neutrality (no drift-flight / driftflight / replicate on the page).
+
+VALIDATION. Full suite 472→473 passed; `test_readout.py` +1 test (registered — `test_runner_registration` green).
+SCORE-NEUTRAL by construction: display-only prose + a test, `git diff -- asrs/scoring.py asrs/probes/ rubric/
+fixtures/ asrs/offering.py` EMPTY; only `asrs/scorecard.py` (methodology HTML) + `tests/test_readout.py` changed.
+Direct-to-main (not a scoring-semantics change, not payment/signing code → NOT peer-gated).
+
+CANONICAL PAIR (in-cloud offline regression signal; live re-score [LOCAL], runner at-floor since Aug-1 03:50Z):
+replay guard 28/28 GREEN — drift-flight.org 46.1 F / driftflight.com 85.5 B / delta +39.4, 0 replay-miss. Frozen
+independent regression signal UNMOVED (this change touches no scoring code, no fixture, no rubric). Live drift
+signal (READ, not re-run) stays driftflight.com 76.2 C / +30.1 / transactability 62.5 from the Aug-1 artifact.
+
+NEXT HYPOTHESIS (METHOD 229, per rotation METHOD→COVERAGE→TRUTH→READOUT; Cycle 228 was READOUT). The
+payment-challenge-retry arc is now COMPLETE across all three legs. The in-cloud diagnostic-layer precision/rigor
+frontier is dense (attribution + reliability invariances both host-relabel- and polarity-pinned; calibration
+rank-concordance landed in code + prose). Candidate METHOD: a further variance/attribution invariance, or audit the
+methodology page for a leg whose science is pinned but prose is thin. Substantive frontier (CHECK-level
+transactability-drop diagnosis + peer-gated re-baseline, thin-bank live fixtures, moleskine.com two-crawl
+cross-validation, a THIRD real anchor, ACP/UCP/MPP) stays `[LOCAL]`, gated on the runner recovering.
+
 ## Cycle 227 — 2026-08-04T15:2xZ — TRUTH — pin the new payment-FLOW signal's PRESENCE tracks the real with-rails/no-rails CAPABILITY SPLIT: a real-captured-surfaces guard for `payment-challenge-retry`
 
 WHAT/WHY (TRUTH — calibration against reality, per the Cycle-226 FOCUS POINTER's named next step: "pin that the

@@ -3,6 +3,58 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 235 — 2026-08-04T21:17Z — REVIEW/MERGE (peer-gate) — adversarially reviewed + MERGED PR #145 (x402 call-through PROXY discovery); the Cycle-126 driftflight.com "transactability drop" is now RESOLVED AT THE SOURCE (probe under-measurement, fixed)
+
+FIRST DUTY (before any new work): the only open peer-gated PR was #145 `loop/x402-proxy-discovery`, authored by
+LOCAL Cycle 234 — a DIFFERENT fire, so this cloud cycle is the legitimate reviewer (not review-and-merge of my
+own cycle's PR). No comments, no reviews, no Jonah veto, no CI configured on the repo. INFRA green at fire
+start: newest verify `runs/local/verify_20260804T204105Z.json` (20:41Z, git_pull.ok=true attempts=1,
+divergence_recovery=None, tests_ok=true, 23 suites) ~32min old — WELL inside the 6h floor; push-race recovery
+(`d812d6e`) holding. No repair owed.
+
+ADVERSARIAL REVIEW (fresh context; tried to refute against every invariant, could not):
+- **Fixture-neutral — VERIFIED BY EXECUTION, not assumed** (checked out the branch, built venv, ran the suite):
+  full suite 24/24 files green, 0 failures; `test_canonical_replay` 24/24 → **46.1 F / 85.5 B / +39.4**, zero
+  replay-miss; `test_x402_proxy_discovery` 4/4; `test_fetch_replay` 3/3. The probe short-circuits on the first
+  live 402 (`/extend` method-path, ordered ahead of the new openapi-derived `agents/v1/*` paths), so the frozen
+  fetched-set is byte-identical — the reorder + cap bump (`_dedupe(paths)[:5]→api_paths[:6]`, targets
+  `[:8]→[:10]`) provably cannot move the frozen score.
+- **Vendor-neutral / capability-worded**: matching logic is generic (`agents.<domain>` proxy base + openapi
+  operation paths), no domain/product literal; "ZeroClick-style" is descriptive prose only, consistent with the
+  playbook's own framing of the with-rails category.
+- **Invariant #1**: the change is URL discovery + ordering ONLY (`_strip_url_junk` sheds trailing markdown
+  punctuation; `_agent_surface_targets` leads with concrete operation endpoints); the handshake stays the
+  existing empty-body `$0` POST — no nonzero-auth/signing path added.
+- **Precision non-vacuous**: docs-only site stays `x402-documented-not-probed` (4.0) yet STILL POSTs the proxy
+  path — the negative has teeth.
+- **Canonical-delta in capability terms**: unchanged on the frozen fixture; the LIVE 76.2 C → 85.5 B
+  restoration is the with-rails anchor's x402 rail being *measured*, not manufactured (bare $0 POST → real 402,
+  Local Cycle 232). Truth-outranks-pitch honored — this was an under-measurement, not site degradation, so
+  restoring the delta is honest, not rigged.
+- **Live re-score unavailable in-cloud** (no outbound to the canonical domains). Per the playbook the in-cloud
+  merge standard is regression-by-construction (replay guard, run above) + the authoring LOCAL cycle's committed
+  live validation on 4 real domains (driftflight.com 76.2→85.5 / x402-live 8.0; drift-flight.org 46.1 /
+  example.com 22.5 / books.toscrape.com 29.5 all stay no-agent-native-payment, no false positive). Live monitor
+  is post-merge: the hourly local `verify_*.json` should move driftflight.com 76.2→85.5 once the fixed probe
+  reaches the pinned `~/.local/bin` runner.
+
+SURVIVES → MERGED (`10ecbc6`, merge commit — invariant #5, no history rewrite). Verdict posted as PR comment
+(GitHub blocks self-approval since the loop posts as `jnakagawa`; the peer-gate is a cycle-level discipline, not
+an account gate). This CLOSES the Cycle-234 [LOCAL] probe-fix item AND resolves the Cycle-126 transactability-drop
+question at its root: the live canonical signal will now permanently agree with the frozen fixture (85.5 / +39.4).
+
+CANONICAL PAIR: frozen replay guard **46.1 F / 85.5 B / +39.4** (rubric v0.7, unchanged — the merge is
+fixture-neutral by construction). Live (per newest LOCAL artifact, pre-merge) 76.2 C / +30.1 — expected to
+return to 85.5 / +39.4 on the next local fire after the pinned runner picks up the merged probe.
+
+NEXT HYPOTHESIS. Cloud track rotation resumes: Cycle 233 was COVERAGE → cloud pointer is **TRUTH next** (this
+review cycle did not consume a track slot). In-cloud TRUTH candidates: the moleskine.com negative-anchor
+two-crawl cross-validation remains [LOCAL] (needs the fixture); an in-cloud TRUTH increment could tighten the
+calibration/attribution guards further. Substantive frontier (thin-bank live fixtures, a THIRD real anchor,
+ACP/UCP/MPP handshakes) stays [LOCAL]. WATCH: confirm the next 1-2 LOCAL `verify_*.json` show driftflight.com
+back at 85.5 / +39.4 — if it does NOT, the pinned-runner resync (self-heal law) or a residual probe gap needs a
+LOCAL fire.
+
 ## Local cycle — 2026-08-04T20:59Z — Cycle 234 — COVERAGE/METHOD — the x402 probe now discovers + POSTs the call-through PROXY endpoint (agents.<domain>/<upstream-openapi-path>); PEER-GATED PR #145 opened, restores the with-rails anchor's live x402-live 8.0 / 85.5 B (fixing the Cycle-126 "transactability drop" at its root)
 
 LOCAL CYCLE (Jonah's machine, network + venv). FIRST duty discharged: `gh pr list --state open` → [] at fire

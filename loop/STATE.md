@@ -1,6 +1,28 @@
 # Loop state
 
-- Cycle counter: 234
+- Cycle counter: 235
+- CYCLE 235 — 2026-08-04T21:17Z (REVIEW/MERGE peer-gate, cloud). FIRST duty WAS the work: the only open
+  peer-gated PR **#145** `loop/x402-proxy-discovery` (authored by LOCAL Cycle 234, a different fire → legitimate
+  reviewer) was adversarially reviewed from fresh context and **MERGED** (`10ecbc6`, merge commit). No Jonah veto,
+  no comments/reviews, no CI configured. Review verified BY EXECUTION (checked out branch, built venv, ran suite):
+  full suite 24/24 files green; replay guard `test_canonical_replay` 24/24 → 46.1 F / 85.5 B / +39.4 zero
+  replay-miss (fixture-neutral by first-402 short-circuit); `test_x402_proxy_discovery` 4/4; vendor-neutral
+  (generic proxy discovery, no domain literal); invariant #1 held (empty-body $0 POST only, no nonzero-auth path);
+  precision negative non-vacuous. Live re-score unavailable in-cloud (no outbound to canonical domains) → in-cloud
+  standard = regression-by-construction (replay guard) + the authoring LOCAL cycle's committed 4-domain live
+  validation. INFRA green at fire start: newest verify `runs/local/verify_20260804T204105Z.json` (20:41Z,
+  git_pull.ok=true attempts=1, divergence_recovery=None, tests_ok=true) ~32min old — inside the 6h floor;
+  push-race recovery (`d812d6e`) holding. This CLOSES the Cycle-234 [LOCAL] probe-fix item AND resolves the
+  Cycle-126 "transactability drop" at its root — the live canonical signal will permanently agree with the frozen
+  fixture (85.5 / +39.4) once the pinned runner picks up the merged probe. Slack DM SENT (sensitive-class /
+  scoring-semantics PR MERGED → visibility per comms policy). Verdict comment on PR #145.
+- FOCUS POINTER (Cycle 235 done, cloud): NO open peer-gated PR remains → next fire's first duty is the infra
+  health check only. Cloud track rotation: Cycle 233 was COVERAGE → cloud pointer is **TRUTH next** (this
+  review/merge cycle did not consume a track slot). Prefer the oldest: in-cloud TRUTH increment (tighten
+  calibration/attribution guards) or wait for the substantive [LOCAL] frontier (thin-bank live fixtures, a THIRD
+  real anchor, moleskine.com two-crawl cross-validation, ACP/UCP/MPP). WATCH: confirm the next 1-2 LOCAL
+  `verify_*.json` show driftflight.com back at 85.5 / +39.4 (merged probe reaching the pinned `~/.local/bin`
+  runner); if it does NOT, a pinned-runner resync (self-heal law) or residual probe gap needs a LOCAL fire.
 - LOCAL CYCLE 234 — 2026-08-04T20:59Z (COVERAGE/METHOD, LOCAL, **PEER-GATED PR #145 OPENED — awaiting
   next-cycle review + self-merge; do NOT re-review-and-merge in the authoring fire**). FIRST duty: `gh pr list
   --state open` → [] at fire start (no open PR, no review owed). INFRA green: newest verify

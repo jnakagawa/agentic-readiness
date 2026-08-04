@@ -129,45 +129,36 @@ design in-cloud, execute locally.
   `experiments/diag_transactability_drop.py` (the tool). The remaining work is the PROBE FIX — a NEW peer-gated
   [LOCAL] item below (this "verify the drop" item is now CLOSED).
 
-- **[LOCAL] Fix the x402 probe to discover + POST the call-through PROXY endpoint** (COVERAGE/METHOD,
-  peer-gated, opened Cycle 232 from the diagnosis above).
-  **AUTHORED + PR OPEN — LOCAL Cycle 234 (2026-08-04T20:59Z): PR #145 `loop/x402-proxy-discovery` is OPEN,
-  awaiting the NEXT cycle's FIRST-DUTY adversarial review + self-merge (never review-and-merge the authoring
-  cycle's own PR).** Fix shipped to the branch: `_strip_url_junk` sheds trailing markdown punctuation off prose
-  URLs (so a referenced `openapi.json` survives the `.json` gate) + `_agent_surface_targets` probes the
-  openapi-derived concrete endpoints, joined to the agent PROXY base, AHEAD of doc/auth URLs. Fixture-neutral by
-  construction (the probe returns on the first live 402; the frozen priced endpoint is the method-path `/extend`,
-  which 402s + returns BEFORE any new `agents/v1/*` fetch → replay guard 24/24, 46.1 F / 85.5 B / +39.4, ZERO
-  replay-miss). LIVE-validated (invariant #3, $0 static): driftflight.com 76.2 C → 85.5 B / x402-live 8.0
-  (matches frozen); drift-flight.org 46.1 F + example.com 22.5 F + books.toscrape.com 29.5 F all stay
-  no-agent-native-payment (no false positive); live delta restored to +39.4. TDD RED→GREEN
-  `tests/test_x402_proxy_discovery.py` (4); full suite 24/24 files. Evidence:
-  `runs/local/diag_x402_proxyfix_driftflightcom_20260804T205446Z.json`,
-  `runs/local/x402_proxyfix_live_validation_20260804T205632Z.json`. **NEXT-CYCLE REVIEW CHECKLIST**: re-run live
-  (driftflight.com → x402-live 85.5; ≥1 no-rails → no false positive), confirm replay guard 24/24 zero-miss
-  (fixture-neutral), vendor-neutrality (worded by capability, no domain special-casing), invariant #1 (only
-  empty-body $0 POST handshakes, no nonzero-auth path). On merge this item CLOSES and the Cycle-126
-  transactability-drop question is resolved at the source (live agrees with frozen). Original diagnosis + fix
-  plan preserved below for the reviewer:
-  The x402 probe UNDER-MEASURES sites that front a
-  ZeroClick-style call-through proxy (`agents.<domain>/<upstream-openapi-path>` returns the bare 402), scoring
-  them `x402-documented-not-probed` (4.0) instead of `x402-live` (8.0) — verified live on the with-rails
-  canonical anchor this fire (driftflight.com scores 76.2 live vs the true 85.5). This is a SCORING-SEMANTICS
-  change (restores x402-live → live overall 85.5, matching the frozen fixture) so it is **PEER-GATED**: author
-  a PR `loop/x402-proxy-discovery` with full evidence; next cycle's first duty reviews + self-merges. Fix
-  targets, smallest-first: (1) strip trailing markdown punctuation from `_ABS_URL_RE` matches (a
-  `.rstrip(",.:;`)")` or a tighter terminator class) so extracted URLs + the referenced `openapi.json` are
-  clean — the highest-leverage single fix; (2) ensure the openapi-derived UPSTREAM paths are joined to the
-  `agents.<domain>` PROXY base and are not starved by the `_dedupe(paths)[:5]` / `targets[:16]` caps (prefer
-  concrete API paths over doc/auth/manifest URLs when selecting agent_targets); (3) confirm the probe POSTs
-  those proxy targets (it already POSTs `agent_targets` when the surface documents x402). TDD FIRST (a synthetic
-  agent-surface where the live 402 lives at `POST proxy/<openapi-path>` and doc URLs carry trailing
-  punctuation → assert `x402-live`, plus a precision negative that a docs-only site stays
-  `x402-documented-not-probed`); isolation-matrix + canonical-invariance (the FROZEN fixtures already capture
-  x402-live at `/extend`, so the replay guard must stay 85.5/+39.4 — verify by construction the fix is
-  fixture-neutral); then LIVE-validate on driftflight.com (→ x402-live 8.0, overall 85.5) AND ≥1 unrelated
-  live x402/proxy domain (invariant #3). Off any weight/cap change — it only improves discovery — but it MOVES
-  live scores, hence peer-gated. Slack visibility on open per comms policy (scoring-semantics PR).
+<!-- DONE 2026-08-04T21:17Z (Cycle 235, cloud, REVIEW/MERGE peer-gate): "[LOCAL] Fix the x402 probe to discover
+     + POST the call-through PROXY endpoint" MERGED. PR #145 `loop/x402-proxy-discovery` (authored LOCAL Cycle 234)
+     was adversarially reviewed from fresh cloud context — the legitimate next-cycle reviewer, not the authoring
+     fire — and SURVIVED every invariant: fixture-neutral VERIFIED BY EXECUTION (checked out branch + built venv +
+     ran suite → 24/24 files green; `test_canonical_replay` 24/24 = 46.1 F / 85.5 B / +39.4 zero replay-miss;
+     `test_x402_proxy_discovery` 4/4; `test_fetch_replay` 3/3 — the first-402 short-circuit makes the reorder + cap
+     bump `[:5]→[:6]`/`[:8]→[:10]` provably unable to move the frozen score); vendor-neutral (generic proxy
+     discovery, no domain literal; "ZeroClick-style" descriptive prose only); invariant #1 held (discovery/ordering
+     ONLY — `_strip_url_junk` + concrete-endpoint-first `_agent_surface_targets`; handshake stays empty-body $0
+     POST, no nonzero-auth path); precision negative non-vacuous (docs-only stays x402-documented-not-probed yet
+     still POSTs the proxy path). Live re-score unavailable in-cloud (no outbound to canonical domains) → in-cloud
+     merge standard = regression-by-construction (replay guard) + the authoring LOCAL cycle's committed 4-domain
+     live validation (driftflight.com 76.2→85.5/x402-live 8.0; drift-flight.org 46.1 / example.com 22.5 /
+     books.toscrape.com 29.5 all no-agent-native-payment, no false positive). MERGED `10ecbc6` (merge commit,
+     invariant #5). Verdict posted as PR #145 comment (GitHub blocks self-approval — loop posts as jnakagawa; the
+     peer-gate is a cycle-level discipline, not an account gate). This RESOLVES the Cycle-126 transactability-drop
+     question AT ITS SOURCE — the live canonical signal will now permanently agree with the frozen fixture (85.5 /
+     +39.4) once the pinned `~/.local/bin` runner picks up the merged probe. WATCH (folded into the runner-health
+     note, not a fresh P0): confirm the next 1-2 LOCAL `verify_*.json` show driftflight.com back at 85.5 / +39.4;
+     if it does NOT, a pinned-runner resync (self-heal law) or a residual probe gap needs a LOCAL fire. -->
+- **[LOCAL] Confirm the merged x402 proxy-discovery probe restores driftflight.com live to 85.5 / +39.4** (TRUTH,
+  opened Cycle 235). The Cycle-234 probe fix merged to main this fire (`10ecbc6`); the pinned local runner
+  (`~/.local/bin/asrs_local_verify.py`) still executes the PRE-fix probe until it is resynced from the repo copy
+  (self-heal law — resync ONLY from a shipped/reviewed commit, which this now is). NEXT LOCAL FIRE: (1) resync the
+  pinned runner from the merged repo copy and record it in LOG; (2) verify the next `verify_*.json` shows
+  driftflight.com **85.5 B / delta +39.4** (was 76.2 C / +30.1 under the un-merged pinned probe) — the live signal
+  now agreeing with the frozen fixture is the empirical close-out of the Cycle-126 transactability-drop thread. If
+  the live re-score does NOT return to 85.5, the fix did not fully reach the pinned runner OR a residual proxy-path
+  gap remains — re-diag before assuming resolution. This is the ONLY remaining thread of the Cycle-126 question;
+  everything else about it is now RESOLVED + merged.
 
 <!-- DONE 2026-07-28T17:27Z (local fire, SELF-HEALING/METHOD, direct-to-main): "[LOCAL] Local
      verify runner STALLED past the 6h floor" ROOT-CAUSED + FIXED. The cloud's Cycle-51→62

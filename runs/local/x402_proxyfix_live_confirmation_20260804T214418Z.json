@@ -1,0 +1,59 @@
+{
+ "ts": "20260804T214418Z",
+ "kind": "x402-proxyfix-live-confirmation",
+ "purpose": "Empirical close-out of the Cycle-126 driftflight.com transactability-drop thread: confirm the merged PR #145 x402 proxy-discovery probe restores driftflight.com live to 85.5 B / delta +39.4 / x402_probe PASS 8.0 x402-live.",
+ "mechanism_note": "The pinned ~/.local/bin/asrs_local_verify.py is byte-identical to loop/local_verify.py (diff empty) and scores via subprocess [.venv/bin/python -m asrs score] with cwd=REPO (local_verify.py:184) \u2014 i.e. it runs the repo LIVE asrs package, not a pinned copy of the probe. PR #145 touched only asrs/ (pulled live), never the pinned orchestrator, so the fix reached the runner automatically on the first post-merge pull; the backlog step (1) resync was a misunderstanding of the pinning mechanism and was moot.",
+ "confirmation_A_pinned_runner_verify_artifact": {
+  "artifact": "runs/local/verify_20260804T214104Z.json",
+  "ts": "20260804T214104Z",
+  "git_pull_ok": true,
+  "pulled_to": "053d7c2..bfd0fef (includes merged fix 10ecbc6 / bfd0fef)",
+  "driftflight.com": {
+   "overall": 85.5,
+   "grade": "B",
+   "transactability": 87.5
+  },
+  "drift-flight.org": {
+   "overall": 46.1,
+   "grade": "F"
+  },
+  "delta": 39.4
+ },
+ "confirmation_B_independent_live_rescore": {
+  "report": "runs/driftflight_com_20260804T214319.json (gitignored; check vector inlined)",
+  "domain": "driftflight.com",
+  "overall": 85.5,
+  "grade": "B",
+  "rubric": "0.7",
+  "transactability_pillar": 87.5,
+  "transactability_checks": [
+   {
+    "check_id": "x402_probe",
+    "status": "pass",
+    "points": 8.0,
+    "max_points": 8.0,
+    "finding": "x402-live"
+   },
+   {
+    "check_id": "mcp_surface",
+    "status": "fail",
+    "points": 0.0,
+    "max_points": 2.0,
+    "finding": "no-mcp-surface"
+   },
+   {
+    "check_id": "self_serve_payg",
+    "status": "pass",
+    "points": 6.0,
+    "max_points": 6.0,
+    "finding": "no-signup-provisioning"
+   }
+  ]
+ },
+ "verdict": "CONFIRMED. Both independent readings agree: driftflight.com 85.5 B / transactability 87.5 / delta +39.4, and x402_probe = PASS 8.0 x402-live (was PARTIAL 4.0 x402-documented-not-probed under the pre-fix probe, Cycle 232 diagnosis). The live canonical signal now permanently agrees with the frozen fixture. The Cycle-126 transactability-drop thread is empirically CLOSED at its root.",
+ "invariants": {
+  "spend": "$0 static crawls only, no behavioral run, no nonzero max-pay",
+  "score_neutral": "git diff -- asrs/ rubric/ fixtures/ tests/ EMPTY",
+  "attribution_honesty": "the drop was a probe under-measurement (Cycle 232), never scored as site degradation (invariant #4)"
+ }
+}

@@ -149,16 +149,29 @@ design in-cloud, execute locally.
      +39.4) once the pinned `~/.local/bin` runner picks up the merged probe. WATCH (folded into the runner-health
      note, not a fresh P0): confirm the next 1-2 LOCAL `verify_*.json` show driftflight.com back at 85.5 / +39.4;
      if it does NOT, a pinned-runner resync (self-heal law) or a residual probe gap needs a LOCAL fire. -->
-- **[LOCAL] Confirm the merged x402 proxy-discovery probe restores driftflight.com live to 85.5 / +39.4** (TRUTH,
-  opened Cycle 235). The Cycle-234 probe fix merged to main this fire (`10ecbc6`); the pinned local runner
-  (`~/.local/bin/asrs_local_verify.py`) still executes the PRE-fix probe until it is resynced from the repo copy
-  (self-heal law — resync ONLY from a shipped/reviewed commit, which this now is). NEXT LOCAL FIRE: (1) resync the
-  pinned runner from the merged repo copy and record it in LOG; (2) verify the next `verify_*.json` shows
-  driftflight.com **85.5 B / delta +39.4** (was 76.2 C / +30.1 under the un-merged pinned probe) — the live signal
-  now agreeing with the frozen fixture is the empirical close-out of the Cycle-126 transactability-drop thread. If
-  the live re-score does NOT return to 85.5, the fix did not fully reach the pinned runner OR a residual proxy-path
-  gap remains — re-diag before assuming resolution. This is the ONLY remaining thread of the Cycle-126 question;
-  everything else about it is now RESOLVED + merged.
+<!-- DONE 2026-08-04T21:44Z (LOCAL Cycle 236, TRUTH, direct-to-main, score-neutral): "[LOCAL] Confirm the merged
+     x402 proxy-discovery probe restores driftflight.com live to 85.5 / +39.4" CONFIRMED — this EMPIRICALLY CLOSES
+     the Cycle-126 transactability-drop thread at its root. TWO independent live readings AGREE that driftflight.com
+     is back to **85.5 B / transactability 87.5 / delta +39.4** with **x402_probe = PASS 8.0 x402-live** (the exact
+     check Cycle 232 diagnosed as eroded to PARTIAL 4.0 x402-documented-not-probed under the pre-fix probe):
+     (A) the pinned runner's OWN post-merge verify artifact `runs/local/verify_20260804T214104Z.json` (21:41Z,
+     git_pull pulled `053d7c2..bfd0fef` = includes merged fix 10ecbc6/bfd0fef → 85.5 B / +39.4, tests_ok=true 24/24);
+     (B) an INDEPENDENT $0 static live re-score this fire (`runs/driftflight_com_20260804T214319.json`, gitignored;
+     check vector inlined in the evidence artifact) → 85.5 B / tx 87.5 / x402_probe PASS 8.0 x402-live / self_serve_payg
+     PASS 6.0 / mcp_surface FAIL 0.0. MECHANISM CORRECTION: the backlog step (1) "resync the pinned runner" was a
+     MISUNDERSTANDING of the pinning mechanism — the pinned `~/.local/bin/asrs_local_verify.py` is byte-identical to
+     `loop/local_verify.py` (diff EMPTY) AND scores via `subprocess [.venv/bin/python -m asrs score]` with `cwd=REPO`
+     (local_verify.py:184), i.e. it runs the repo's LIVE `asrs/` package. PR #145 touched ONLY `asrs/` (pulled live),
+     never the pinned orchestrator, so the fix reached the runner AUTOMATICALLY on the first post-merge pull — no
+     resync was needed or possible for the probe code. So the live canonical signal now permanently agrees with the
+     frozen fixture (85.5 / +39.4); the in-cloud replay guard (24/24, 46.1 F / 85.5 B / +39.4) is UNAFFECTED (frozen).
+     Score-neutral: `git diff -- asrs/ rubric/ fixtures/ tests/ loop/local_verify.py` EMPTY (read-only scores only);
+     $0 static crawls, no behavioral run, no nonzero max-pay. Evidence (force-added):
+     `runs/local/x402_proxyfix_live_confirmation_20260804T214418Z.json`. The Cycle-126 question ("is the with-rails
+     anchor degrading?") is now fully RESOLVED: NO — probe under-measurement (Cycle 232), fix merged (Cycle 235),
+     live-confirmed restored (this fire). See LOG (Local cycle — 21:44Z). No fresh P0 spawned; the Cycle-126 thread
+     is CLOSED end-to-end. -->
+
 
 <!-- DONE 2026-07-28T17:27Z (local fire, SELF-HEALING/METHOD, direct-to-main): "[LOCAL] Local
      verify runner STALLED past the 6h floor" ROOT-CAUSED + FIXED. The cloud's Cycle-51→62

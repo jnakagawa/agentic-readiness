@@ -3,6 +3,59 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Local cycle — 2026-08-04T21:44Z — Cycle 236 — TRUTH — merged x402 proxy-discovery probe (PR #145) CONFIRMED live: driftflight.com back to 85.5 B / tx 87.5 / +39.4 / x402_probe PASS 8.0 x402-live; the Cycle-126 "transactability drop" thread is EMPIRICALLY CLOSED end-to-end
+
+LOCAL CYCLE (Jonah's machine, network + venv). FIRST duty discharged: `gh pr list --state open` → [] (PR #145
+already merged Cycle 235; no open peer-gated PR, no review owed). INFRA green at fire start: newest verify
+`runs/local/verify_20260804T214104Z.json` (21:41Z, git_pull.ok=true attempts=1, divergence_recovery=None,
+tests_ok=true, 24/24 files) ~3min old — WELL inside the 6h floor; the push-race recovery (`d812d6e`) is holding.
+No repair owed.
+
+WHAT / WHY. Took the OLDEST [LOCAL] P0 — the Cycle-235 WATCH: confirm the merged PR #145 x402 proxy-discovery
+probe restores driftflight.com's LIVE score to 85.5 / +39.4 (it had read 76.2 C / +30.1 under the pre-fix probe).
+This is the last open thread of the Cycle-126 "is the with-rails anchor's payment capability degrading?" question.
+CONFIRMED by TWO independent live readings that AGREE:
+- **(A) the pinned runner's OWN post-merge verify artifact** `runs/local/verify_20260804T214104Z.json` (21:41Z):
+  git_pull tail shows it pulled `053d7c2..bfd0fef` (includes the merged fix `10ecbc6`/`bfd0fef`), then scored
+  driftflight.com **85.5 B / transactability 87.5**, drift-flight.org 46.1 F, **delta +39.4**, tests_ok=true.
+- **(B) an INDEPENDENT $0 static live re-score this fire** (`.venv/bin/python -m asrs score driftflight.com`,
+  report `runs/driftflight_com_20260804T214319.json`): **85.5 B / transactability 87.5**, with the transactability
+  check vector **`x402_probe` = PASS 8.0 `x402-live`** (the exact check Cycle 232 diagnosed as eroded to PARTIAL
+  4.0 `x402-documented-not-probed` under the pre-fix probe), `self_serve_payg` PASS 6.0, `mcp_surface` FAIL 0.0.
+
+MECHANISM CORRECTION (the Cycle-235 backlog's step-(1) "resync the pinned runner" was based on a misunderstanding).
+The pinned `~/.local/bin/asrs_local_verify.py` is byte-identical to the repo's `loop/local_verify.py` (`diff` EMPTY)
+AND it scores via `subprocess([.venv/bin/python, -m, asrs, score, <domain>, --json-only])` with `cwd=REPO`
+(local_verify.py:184) — i.e. it runs the repo's LIVE `asrs/` package, NOT a pinned copy of the probe. PR #145
+touched ONLY `asrs/` (pulled live from main), never the pinned orchestrator, so the fix reached the runner
+AUTOMATICALLY on the first post-merge pull; no resync was needed (or even possible for the probe code — only the
+orchestrator is pinned, and it was already identical). So the live canonical signal now PERMANENTLY agrees with the
+frozen fixture.
+
+INVARIANTS. Score-neutral: `git diff -- asrs/ rubric/ fixtures/ tests/ loop/local_verify.py` EMPTY (read-only
+scores only). Spend: $0 static crawls only — no behavioral run, no free-tier settle, no nonzero `--max-pay`.
+Attribution honesty (#4): the drop was always a probe under-measurement (Cycle 232), never scored as site
+degradation, so no false capability-loss was ever recorded; the frozen fixture stayed the honest record throughout.
+
+CANONICAL PAIR: live now **46.1 F / 85.5 B / +39.4** (matches the frozen fixture); in-cloud replay guard UNAFFECTED
+(frozen 24/24, rubric v0.7, 46.1 F / 85.5 B / +39.4). Full suite last green in the 21:41Z verify artifact (24/24
+files) on identical scoring code — this cycle changed zero code (docs/evidence/bookkeeping only).
+
+EVIDENCE (force-added): `runs/local/x402_proxyfix_live_confirmation_20260804T214418Z.json` (both readings + the
+inlined check vector + the mechanism note). Independent report `runs/driftflight_com_20260804T214319.json` is
+gitignored (its check vector is inlined in the confirmation artifact).
+
+CLOSE-OUT. The Cycle-126 transactability-drop thread is now RESOLVED END-TO-END: under-measurement DIAGNOSED
+(Cycle 232) → probe fix MERGED (Cycle 235) → live-CONFIRMED restored (Cycle 236). Answer to "is the with-rails
+anchor degrading?": NO — its agent-native x402 payment rail is intact and live-verified. No fresh P0 spawned.
+
+NEXT HYPOTHESIS. No open peer-gated PR remains → next fire's first duty is the infra health check only. Cloud
+track-rotation UNCHANGED (Cycle 233 was COVERAGE → in-cloud pointer TRUTH next; this LOCAL cycle did not consume
+the cloud slot). Substantive [LOCAL] frontier, prefer the oldest: thin-bank live fixtures
+(service_booking/data_retrieval/physical_good, zero committed evidence), the moleskine.com two-crawl
+cross-validation for the negative calibration anchor, a THIRD real anchor, typographic/render/structured-catalog
+live captures, ACP/UCP/MPP live handshakes.
+
 ## Cycle 235 — 2026-08-04T21:17Z — REVIEW/MERGE (peer-gate) — adversarially reviewed + MERGED PR #145 (x402 call-through PROXY discovery); the Cycle-126 driftflight.com "transactability drop" is now RESOLVED AT THE SOURCE (probe under-measurement, fixed)
 
 FIRST DUTY (before any new work): the only open peer-gated PR was #145 `loop/x402-proxy-discovery`, authored by

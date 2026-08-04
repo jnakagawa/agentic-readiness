@@ -1,6 +1,34 @@
 # Loop state
 
-- Cycle counter: 235
+- Cycle counter: 236
+- LOCAL CYCLE 236 — 2026-08-04T21:44Z (TRUTH, LOCAL, direct-to-main, score-neutral). FIRST duty: `gh pr list
+  --state open` → [] (PR #145 already merged Cycle 235; no open peer-gated PR, no review owed). INFRA green: newest
+  verify `runs/local/verify_20260804T214104Z.json` (21:41Z, git_pull.ok=true attempts=1 divergence_recovery=None
+  tests_ok=true, 24/24 files) ~3min old — WELL inside the 6h floor; push-race recovery (`d812d6e`) holding. Took the
+  OLDEST [LOCAL] P0 (the WATCH from Cycle 235): **confirm the merged x402 proxy-discovery probe (PR #145) restores
+  driftflight.com live to 85.5 / +39.4** — and it is CONFIRMED, empirically CLOSING the Cycle-126 transactability-drop
+  thread at its root. TWO independent live readings AGREE: (A) the pinned runner's post-merge 21:41Z verify artifact
+  (pulled `053d7c2..bfd0fef` incl. merged fix → **85.5 B / tx 87.5 / +39.4**); (B) an INDEPENDENT $0 static re-score
+  this fire (`runs/driftflight_com_20260804T214319.json`) → **85.5 B / tx 87.5**, `x402_probe = PASS 8.0 x402-live`
+  (was PARTIAL 4.0 x402-documented-not-probed under the pre-fix probe, Cycle 232), self_serve_payg PASS 6.0,
+  mcp_surface FAIL 0.0. MECHANISM CORRECTION (LOG'd): the Cycle-235 backlog "resync the pinned runner" step was a
+  misunderstanding — the pinned `~/.local/bin/asrs_local_verify.py` is byte-identical to `loop/local_verify.py`
+  (diff EMPTY) and scores via `subprocess [.venv/bin/python -m asrs score]` with `cwd=REPO` (local_verify.py:184),
+  i.e. it runs the repo's LIVE `asrs/` package; PR #145 touched only `asrs/` (pulled live), so the fix reached the
+  runner automatically on the first post-merge pull — no resync needed or possible. Live canonical signal now
+  PERMANENTLY agrees with the frozen fixture; in-cloud replay guard UNAFFECTED (frozen 24/24, 46.1 F / 85.5 B /
+  +39.4). Score-neutral (`git diff -- asrs/ rubric/ fixtures/ tests/ loop/local_verify.py` EMPTY; $0 static, no
+  behavioral run, no nonzero max-pay). NO DM (score-neutral confirmation, no sensitive-class PR, not
+  first-after-16:00 UTC — Aug-4 digest went Cycle 228 16:2xZ; the merge itself was already DM'd Cycle 235). Evidence
+  (force-added): `runs/local/x402_proxyfix_live_confirmation_20260804T214418Z.json`.
+- FOCUS POINTER (Cycle 236 done, LOCAL): the Cycle-126 transactability-drop thread is CLOSED end-to-end (probe
+  under-measurement diagnosed Cycle 232 → fix merged Cycle 235 → live-confirmed restored Cycle 236). NO open
+  peer-gated PR remains → next fire's first duty is the infra health check only. Cloud track-rotation UNCHANGED:
+  Cycle 233 was COVERAGE → in-cloud pointer is **TRUTH next** (this LOCAL cycle did not consume the cloud rotation
+  slot). Substantive [LOCAL] frontier (prefer the oldest): thin-bank live fixtures
+  (service_booking/data_retrieval/physical_good — zero committed evidence), moleskine.com two-crawl cross-validation
+  for the negative calibration anchor, a THIRD real anchor, typographic/render/structured-catalog live captures,
+  ACP/UCP/MPP live handshakes. In-cloud TRUTH increment (tighten calibration/attribution guards) also available.
 - CYCLE 235 — 2026-08-04T21:17Z (REVIEW/MERGE peer-gate, cloud). FIRST duty WAS the work: the only open
   peer-gated PR **#145** `loop/x402-proxy-discovery` (authored by LOCAL Cycle 234, a different fire → legitimate
   reviewer) was adversarially reviewed from fresh context and **MERGED** (`10ecbc6`, merge commit). No Jonah veto,

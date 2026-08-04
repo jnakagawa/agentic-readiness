@@ -1211,6 +1211,80 @@ def test_payment_challenge_retry_precision_synthetic():
     )
 
 
+def test_payment_challenge_retry_fires_on_real_captured_surfaces():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the TRUTH mirror of Cycle 226's
+    # SYNTHETIC precision guard (test_payment_challenge_retry_precision_synthetic).
+    # It pins that the new payment-FLOW signal's PRESENCE tracks the real
+    # with-rails/no-rails CAPABILITY SPLIT it echoes — on committed evidence, run
+    # through the REAL discovery path (from_fixture -> discover_offering) exactly as
+    # a live crawl would, the same real-data non-vacuity move
+    # test_reserve_and_settle_fires_on_real_captured_surfaces / _free_included_usage_
+    # make. Until now the signal's real-data behaviour lived only in a COMMENT +
+    # test_offering_canonical.py's set+order invariance; this guard makes the
+    # discovery-layer echo of the capability gap a first-class per-cycle tripwire.
+    #
+    # SCORE-NEUTRAL by construction: driftflight.com already claims metered_api (its
+    # strongest archetype), so the challenge-settle-retry evidence can only deepen
+    # that claim — never add an archetype or reorder. The classifier is off the
+    # scoring path; the canonical pair's claimed SET+ORDER is unchanged (pinned by
+    # tests/test_offering_canonical.py and the canonical replay guard).
+    ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "driftflight.com.json"))
+    prof = offering.discover_offering(ctx)
+    assert prof.claims("metered_api"), prof.archetypes
+    metered = next(c for c in prof.claimed if c.archetype == "metered_api")
+    pcr = [s for s in metered.signals if s.label == "payment-challenge-retry"]
+    assert pcr, {s.label for s in metered.signals}
+    # The with-rails anchor documents the FULL handshake across >=2 real agent-doc
+    # surfaces (the 402 challenge on llms.txt, the settle+retry-with-proof round-trip
+    # on llms-full.txt) — a stronger non-vacuity than a single hit, and the shape a
+    # storefront that is genuinely agent-completable at the pay leg exhibits.
+    surfaces = {s.surface for s in pcr}
+    assert len(surfaces) >= 2, sorted(surfaces)
+    quotes = " ".join(s.quote.lower() for s in pcr)
+    assert ("challenge" in quotes and "retry" in quotes), [s.quote for s in pcr]
+    assert prof.archetypes == ["metered_api", "digital_good", "subscription"], prof.archetypes
+    print(
+        f"  ok: payment-challenge-retry fires on {len(pcr)} REAL captured driftflight.com "
+        f"agent-doc surfaces {sorted(surfaces)}"
+    )
+
+    # PRECISION-CRITICAL on real data: drift-flight.org — the no-rails-side canonical
+    # anchor — carries NO 402/challenge/settle/retry prose at all (it publishes no
+    # agent docs). The signal must be ABSENT there and .org's claimed set unchanged.
+    # This is the discovery-layer echo of the real capability gap: the with-rails .com
+    # documents the machine-payable challenge-settle-retry round-trip an agent must
+    # drive to complete the pay leg, the .org does not (mirroring payment-receipt /
+    # reserve-and-settle / free-included-usage / self-provisioning).
+    octx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "drift-flight.org.json"))
+    oprof = offering.discover_offering(octx)
+    all_labels = {s.label for c in oprof.claimed for s in c.signals}
+    assert "payment-challenge-retry" not in all_labels, all_labels
+    assert oprof.archetypes == ["metered_api", "digital_good", "subscription"], oprof.archetypes
+    print("  ok: payment-challenge-retry is ABSENT on drift-flight.org (real-data precision / capability gap)")
+
+    # NON-VACUOUS negatives on REAL data — the strongest one is api.replicate.com,
+    # which carries the very WEBHOOK-REDELIVERY retry ("we will retry the webhook a
+    # few times") the synthetic precision guard targets: on real captured prose the
+    # signal correctly DODGES it (a redelivery, not a payment handshake). A real
+    # retail storefront (books.toscrape.com) and a null site (example.com) document
+    # no challenge-settle-retry handshake either — absent on all three, conjuring or
+    # reordering no archetype.
+    for dom, expected in (
+        ("api.replicate.com", ["metered_api"]),
+        ("books.toscrape.com", ["physical_good"]),
+        ("example.com", []),
+    ):
+        nctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        nprof = offering.discover_offering(nctx)
+        nlabels = {s.label for c in nprof.claimed for s in c.signals}
+        assert "payment-challenge-retry" not in nlabels, (dom, nlabels)
+        assert nprof.archetypes == expected, (dom, nprof.archetypes)
+    print(
+        "  ok: payment-challenge-retry is ABSENT on the api (webhook-retry) / retail / "
+        "null fixtures (non-vacuous real-data precision, score-neutral)"
+    )
+
+
 def test_non_storefront_claims_nothing():
     prof = classify_offering("example.test", {"homepage": NULL_HOMEPAGE})
     assert prof.archetypes == [], prof.archetypes
@@ -4579,6 +4653,7 @@ def main() -> int:
         test_subscription_recurring_precision_synthetic,
         test_usage_based_metered_precision_synthetic,
         test_payment_challenge_retry_precision_synthetic,
+        test_payment_challenge_retry_fires_on_real_captured_surfaces,
         test_non_storefront_claims_nothing,
         test_strength_counts_distinct_signals_and_orders_claims,
         test_classification_is_surface_read_order_invariant,

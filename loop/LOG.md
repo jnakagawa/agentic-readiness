@@ -3,6 +3,49 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 227 — 2026-08-04T15:2xZ — TRUTH — pin the new payment-FLOW signal's PRESENCE tracks the real with-rails/no-rails CAPABILITY SPLIT: a real-captured-surfaces guard for `payment-challenge-retry`
+
+WHAT/WHY (TRUTH — calibration against reality, per the Cycle-226 FOCUS POINTER's named next step: "pin that the
+new payment-FLOW signal's presence tracks the with-rails/no-rails capability split it echoes"). Cycle 226 shipped
+the `payment-challenge-retry` metered_api signal (the 402-challenge → settle → retry-with-proof handshake an agent
+must EXECUTE to pay) with only a SYNTHETIC precision guard — its real-data behaviour (FIRES on the with-rails .com
+anchor, ABSENT on the no-rails .org anchor) lived only in a CODE COMMENT and was pinned indirectly by
+`test_offering_canonical.py`'s claimed-set+order invariance. Every sibling payment-FLOW signal earns a dedicated
+`_fires_on_real_captured_surfaces` TRUTH guard that runs the REAL discovery path over the committed fixtures and
+makes the discovery-layer echo of the capability gap a first-class per-cycle tripwire (`payment-receipt`,
+`reserve-and-settle`, `free-included-usage`, `self-provisioning`). `payment-challenge-retry` — the load-bearing
+"pay without a human" leg of the PLAYBOOK's capability lens — did not. This cycle closes that gap.
+
+TRUTH — the smallest unit (one real-evidence guard, tests-only, off the scoring path). `tests/test_offering.py`
+`test_payment_challenge_retry_fires_on_real_captured_surfaces` (registered in the runner list, after the synthetic
+precision guard) runs `FetchContext.from_fixture -> offering.discover_offering` over all 5 committed canonical
+fixtures and pins: (a) FIRES on driftflight.com across >=2 real agent-doc surfaces (the 402 payment challenge on
+agents.driftflight.com/llms.txt; the settle+retry-with-signed-payment round-trip on llms-full.txt), quote carries
+both "challenge" and "retry" — a STRONGER non-vacuity than a single hit (the shape a genuinely pay-leg-completable
+storefront exhibits), claimed set+order unchanged `[metered_api, digital_good, subscription]`; (b) ABSENT on
+drift-flight.org (no agent docs / no 402/challenge/settle/retry prose), .org's claimed set+order unchanged — the
+discovery-layer echo of the real capability gap; (c) ABSENT on api.replicate.com — the crown-jewel real-data
+precision datapoint: it carries the very WEBHOOK-REDELIVERY retry ("we will retry the webhook a few times") the
+synthetic guard targets, and on REAL captured prose the signal correctly DODGES it (a redelivery, not a payment
+handshake) — plus ABSENT on books.toscrape.com (retail) and example.com (null), conjuring/reordering no archetype.
+
+VALIDATION. Full suite 471→472 passed; `test_offering.py` +1 test (registered — `test_runner_registration`
+green). EMPIRICALLY confirmed before writing the guard: payment-challenge-retry fires exactly on driftflight.com
+(2 surfaces) and is absent on the other four committed fixtures. SCORE-NEUTRAL by construction: tests-only,
+`git diff -- asrs/ rubric/ fixtures/` EMPTY; the classifier is off the scoring path (`offering` not imported by
+scoring/probes). Direct-to-main (not a scoring-semantics change, not payment/signing code → NOT peer-gated).
+
+CANONICAL PAIR (in-cloud offline regression signal; live re-score [LOCAL], runner at-floor since Aug-1 03:50Z):
+replay guard 24/24 GREEN — drift-flight.org 46.1 F / driftflight.com 85.5 B / delta +39.4, 0 replay-miss. Frozen
+independent regression signal UNMOVED (this change touches no scoring code, no fixture, no rubric). Live drift
+signal (READ, not re-run) stays driftflight.com 76.2 C / +30.1 / transactability 62.5 from the Aug-1 artifact.
+
+NEXT HYPOTHESIS (READOUT 228, per rotation): surface the payment-challenge-retry capability in a reader-facing
+readout the way prior signals earned their READOUT leg (e.g. the methodology/offering prose or the card's
+capability-evidence surface), OR continue the METHOD/TRUTH deepening. Substantive frontier (CHECK-level
+transactability-drop diagnosis + peer-gated re-baseline, thin-bank live fixtures, a THIRD real anchor, ACP/UCP/MPP
+handshakes) stays `[LOCAL]`, gated on the runner recovering.
+
 ## Cycle 226 — 2026-08-04T14:2xZ — COVERAGE — a NEW metered_api capability signal: the agent-native payment CHALLENGE-SETTLE-RETRY handshake (the request/response FLOW an agent EXECUTES to pay, not just the static fact that a rail exists)
 
 WHAT/WHY (COVERAGE — a new offering-discovery capability signal, per the Cycle-225 FOCUS POINTER; the

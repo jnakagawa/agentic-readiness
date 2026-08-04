@@ -2,18 +2,25 @@
 
 - Cycle counter: 228
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-04T16:2xZ (Cycle 228) — newest verify `runs/local/verify_20260801T035047Z.json`
-  (03:50Z Aug-1, `attempts=1`) is ~84.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
-  cloud cannot repair). This 16:21Z fire IS the first-after-16:00 UTC cycle of Aug-4 → daily-digest DM SENT to
-  U07PEGPSZD3 (cycles 205–228 shipped, canonical delta trend, ~3.5-day runner stall re-flagged, top open question).
-  Live signal (READ, not re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 —
-  the transactability-drop divergence PERSISTS (Aug-1), off the scoring path; the in-cloud replay guard stays the
-  frozen independent regression signal (28/28 replay-family green, 46.1 F / 85.5 B / +39.4). No open peer-gated PRs
-  this fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/SELF-HEAL (Cycle 228): fresh
-  `.venv` + `requests pyyaml eth-account pytest`, 472 tests green pre-flight (473 after +1); local `main` realigned
-  off the stale diverged tip to origin/main `fe720aa` (Cycle 227) before working (Cycle-52 lesson); LOG.md confirmed
-  newest-first + complete through Cycle 227; last push (Cycle 227, fe720aa) present on origin/main. NOTE: runner
-  at-floor since Aug-1 03:50Z (~3.5 days) — durable [LOCAL] runner-recovery stays P0.
+- RUNNER REPAIRED — LOCAL cycle 2026-08-04T17:13Z (SELF-HEALING, direct-to-main). The ~3.5-day stall
+  (at-floor since Aug-1 03:50Z) is FIXED and the live floor is RESTORED: fresh artifact
+  `runs/local/verify_20260804T170922Z.json` (`git_pull.ok=true` attempts=1, `tests_ok=true`, live 46.1 F / 76.2 C /
+  +30.1, pushed) on origin (`d85d7bf`), newest-verify age reset to ~0. ROOT CAUSE (a local fire saw what the cloud
+  could only guess at — NOT launchd, NOT a wake/DNS race, NOT machine-asleep): the runner commits a heartbeat THEN
+  pushes, so a cloud push between the runner's pull and push rejected the runner's push and left a divergent
+  un-pushed commit (`64ae3c1`) that stranded EVERY later fire at `git pull --ff-only`. FIX: (1) realigned local
+  `main` to origin/main `a241fd1` (Cycle 228), dropping the orphaned Aug-1 heartbeat; (2) cleaned 35 untracked
+  no-score failed-fire debris artifacts that were failing `test_canonical_history` LOCALLY (they pollute the
+  on-disk series glob; the cloud never sees them); (3) durable — `loop/local_verify.py` `recover_from_own_divergence`
+  auto-discards our OWN un-pushed heartbeats on a diverged pull (guarded: any non-heartbeat un-pushed commit is
+  preserved), shipped `d812d6e`, pinned copy RESYNCED (was Jul-28 stale), executed end-to-end to prove it. TDD
+  `test_local_verify.py` 4→8, verified with real git. Off the scoring path → score-neutral, rubric v0.7, replay
+  guard `test_canonical_replay.py` 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; full suite 473→477. No open
+  peer-gated PRs this fire (`gh pr list --state open` → []), so no first-duty review. The daily digest already went
+  out at 16:21Z (Cycle 228); a short repair-confirmation DM to U07PEGPSZD3 closes the escalated-P0 loop (the stall
+  was flagged TO Jonah as unresolved). NOTE: transactability-drop divergence (driftflight.com 62.5) reproduced LIVE
+  again this fire — stays an open P0 (separate from the runner fix), needs the check-level diagnosis + peer-gated
+  re-baseline.
 - FOCUS POINTER (Cycle 228 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 228 was READOUT,
   so Cycle 229 is METHOD). Cycle 228 shipped a **READOUT increment — the public methodology page now earns a
   reader-facing block for the `payment-challenge-retry` capability**, closing the COVERAGE(226)→TRUTH(227)→READOUT(228)

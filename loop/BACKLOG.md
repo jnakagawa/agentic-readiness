@@ -5,17 +5,31 @@ design in-cloud, execute locally.
 
 ## P0
 
-- **[LOCAL] LOCAL verify runner AT-FLOOR since Aug-1 03:50Z (~3 days)** (SELF-HEALING, re-opened Cycle 215).
-  Newest artifact `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is the last successful fire; at
-  Cycle 215 (Aug-4 03:2xZ) it is ~71.5h old — far past the 6h floor. This is LONGER than the prior
-  self-clearing machine-asleep stalls (Cycle 63 ~18h, Cycle 137→144 ~14h), so it may NOT be a simple
-  wake-race this time. The cloud CANNOT repair the local machine (no reach). NEXT LOCAL FIRE (when the
-  machine wakes): confirm the launchd job (`org.pie.asrs-local-cycle`, :41) still fires (check its heartbeat
-  log), that `git_pull_with_retry` isn't exhausting its 5×15s budget, and that `.venv`/`ASRS_REPO` are intact;
-  if the runner is fine and just hasn't woken, one wake self-clears it — if it fires but fails, capture the
-  heartbeat + newest unpushed `verify_*.json` and diagnose. FLAG the ~3-day stall in the next first-after-16:00
-  UTC digest (~Aug-4 16:xxZ). Until it recovers, the in-cloud replay guard (24/24, 46.1 F / 85.5 B / +39.4)
-  stays the frozen regression signal and the live drift signal is READ (not re-run) from the Aug-1 artifact.
+<!-- DONE 2026-08-04T17:13Z (LOCAL cycle, SELF-HEALING, direct-to-main, score-neutral): "[LOCAL] LOCAL verify
+     runner AT-FLOOR since Aug-1 03:50Z (~3 days)" ROOT-CAUSED + FIXED + HARDENED — a local fire saw what the
+     cloud could only guess. The cloud's hypotheses were ALL wrong (NOT launchd-not-firing, NOT a wake/DNS race,
+     NOT machine-asleep). REAL CAUSE: the runner commits a heartbeat THEN pushes (local_verify.py step 5), so a
+     cloud push landing between the runner's pull and its push rejected the runner's push (non-fast-forward) and
+     left a divergent un-pushed commit (`64ae3c1`, "loop: local verification 20260801T094918Z"); every later fire
+     then bailed at `git pull --ff-only` ("Not possible to fast-forward"), a 66-cycle stranding (local stuck at
+     Cycle 162 while origin ran to 228). Cycle 63 hardened the DNS wake-race, not this PUSH-race divergence. FIX
+     (three parts, all off the scoring path): (1) realigned local main to origin/main `a241fd1` (Cycle 228),
+     dropping the orphaned Aug-1 heartbeat; (2) cleaned 35 untracked no-score failed-fire debris artifacts that had
+     polluted the LOCAL on-disk `canonical_history` series glob (35/119 = 0.30 > the 0.25 floor → failed
+     `test_canonical_history::test_series_integrity_on_real_series_is_intact` LOCALLY ONLY; the cloud's fresh
+     checkout sees only committed artifacts and passes); (3) DURABLE — `loop/local_verify.py`
+     `recover_from_own_divergence` auto-discards our OWN un-pushed `loop: local verification` heartbeats on a
+     diverged `--ff-only` pull and realigns to origin, STRICTLY GUARDED so any un-pushed NON-heartbeat commit is
+     preserved (real work never lost). Shipped `d812d6e`; pinned `~/.local/bin/asrs_local_verify.py` RESYNCED
+     (self-heal law — it was Jul-28 stale = launchd had been running the un-hardened code); EXECUTED end-to-end
+     (execute, don't assume): clean pull, `tests_ok=True` (23 suites), live scores, `pushed=True` → fresh floor
+     artifact `runs/local/verify_20260804T170922Z.json` on origin (`d85d7bf`), floor RESTORED. TDD
+     `tests/test_local_verify.py` 4→8, verified with real git (throwaway origin+clone reproduced the exact
+     divergence + real recovery). Score-neutral (rubric v0.7, replay guard `test_canonical_replay.py` 24/24,
+     46.1 F / 85.5 B / +39.4, 0 replay-miss; full suite 473→477). See LOG (Local cycle — 17:13Z). WATCH (folded
+     into the runner-health note, not a fresh P0): the runner's `divergence_recovery` field on future
+     `verify_*.json` — a non-null note means a push race was auto-recovered in the wild; escalate only if a
+     recovery ever FAILS (e.g. a real un-pushed non-heartbeat commit blocks it). -->
 
 - **[LOCAL] Verify the driftflight.com LIVE transactability drop (canonical-anchor divergence)** (TRUTH,
   opened Cycle 126). The LOCAL runner RECOVERED this fire (`runs/local/verify_20260731T085248Z.json`,

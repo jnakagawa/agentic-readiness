@@ -3,6 +3,62 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Local cycle — 2026-08-04T17:13Z — SELF-HEALING (infra outranks new work): root-caused + fixed the ~3.5-day LOCAL verify-runner stranding, hardened the runner against recurrence, restored the live floor
+
+WHAT/WHY. Infra breakage outranks new work (playbook self-healing), so this fire's ONE item was the repair, not a
+backlog pick. This hour's verify artifact (`runs/local/verify_20260804T164106Z.json`) recorded `git_pull.ok=false`,
+`attempts=5`, tail "Not possible to fast-forward, aborting." — the LOCAL runner has been STRANDED since Aug-1 03:50Z
+(~3.5 days; the standing P0 re-flagged in the Cycle-228 16:2xZ digest). ROOT CAUSE (correcting the P0's cloud-side
+guesses — NOT "launchd not firing", NOT a wake/DNS race, NOT machine-asleep): the runner commits a heartbeat THEN
+pushes, so when the cloud pushed between the runner's pull and its push the push was rejected (non-fast-forward),
+leaving a DIVERGENT un-pushed commit (`64ae3c1`, "loop: local verification 20260801T094918Z"). Every subsequent fire
+then bailed at `git pull --ff-only`, a 66-cycle stranding (local stuck at Cycle 162 while origin ran to 228). The
+Cycle-63 retry hardened the DNS wake-race, not this push-race divergence.
+
+FIX (three parts, all off the scoring path):
+ (1) REALIGNED local main to origin/main (Cycle 228 `a241fd1`), dropping the orphaned Aug-1 heartbeat commit (a
+     gitignored verify artifact + one heartbeat LOG line, never on origin, disposable). `git fetch origin main`
+     first (Cycle-151 lesson) → `checkout -B main origin/main`; 0/0 divergence after. No real work lost.
+ (2) CLEANED 35 failed-fire debris artifacts (untracked, gitignored, `{ts,kind,git_pull}` with `git_pull.ok=false`,
+     no scores) accumulated on local disk during the stranding. `canonical_history.load_points` globs on-disk
+     `runs/local/verify_*.json`, so those 35 polluted the LOCAL series (35/119 = 0.30 excluded > the 0.25 floor),
+     which failed `test_canonical_history::test_series_integrity_on_real_series_is_intact` LOCALLY ONLY — the
+     cloud's fresh checkout sees only the 88 committed artifacts and passes. Surgical: only untracked, no-score files
+     removed; committed data untouched. Full suite green after.
+ (3) DURABLE (prevent recurrence): hardened `loop/local_verify.py` with `recover_from_own_divergence` — on a
+     `--ff-only` pull that fails BECAUSE the branch diverged (`_is_diverged`), if every commit we are ahead of
+     origin by is one of our own `loop: local verification` heartbeats (un-pushed, disposable), discard them and
+     realign to origin; ANY un-pushed NON-heartbeat commit is PRESERVED (bail as before) so real work is never lost.
+     Wired into `main()` after `git_pull_with_retry`. A lost push race now costs one skipped heartbeat, never a
+     multi-day cascade. TDD: `tests/test_local_verify.py` 4→8 (`_is_diverged` discrimination vs network failure;
+     recover-only-from-own-heartbeat; preserve-non-heartbeat guard; no-recovery-when-not-ahead). VERIFIED WITH REAL
+     GIT (execute, don't assume): reproduced the exact divergence in a throwaway origin+clone, ran the real
+     `recover_from_own_divergence` → discarded the heartbeat, realigned, post-recovery pull clean, HEAD = the cloud
+     commit. Shipped the code fix (`d812d6e`), RESYNCED the pinned `~/.local/bin/asrs_local_verify.py` (self-heal law
+     — it was Jul-28 stale, i.e. launchd had been running the un-hardened code), and EXECUTED it end-to-end: clean
+     pull (attempts=1, no recovery needed), `tests_ok=True` (23 suites), live scores, `pushed=True` → fresh floor
+     artifact `runs/local/verify_20260804T170922Z.json` on origin (`d85d7bf`), newest-verify age reset to ~0.
+     Floor RESTORED. (Mirror to `piedotorg` failed — non-fatal by design.)
+
+EVIDENCE. `runs/local/verify_20260804T164106Z.json` (the `git_pull.ok=false` stranding record) → the fresh
+`runs/local/verify_20260804T170922Z.json` (git_pull ok, tests_ok, live scores, pushed); commits `d812d6e` (runner
+hardening + tests) and this bookkeeping commit.
+
+CANONICAL PAIR. LIVE static re-score this fire (fresh $0 crawl): drift-flight.org 46.1 F (access 100 / legibility
+36.4 / transactability 18.75 / trust 60), driftflight.com 76.2 C (access 100 / legibility 90.9 / transactability
+62.5 / trust 60), delta +30.1 — the Aug-1 transactability drop (62.5 vs the frozen fixture's 87.5) PERSISTS on a
+fresh Aug-4 crawl, independently confirming the OTHER P0's READ signal. Off the scoring path: the in-cloud replay
+guard stays the frozen regression signal (`test_canonical_replay.py` 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss)
+against the committed fixture. Score-neutral: the diff touches only `loop/local_verify.py`,
+`tests/test_local_verify.py`, and `loop/{LOG,STATE,BACKLOG}.md` — scoring.py/probes.py/offering.py/rubric/fixtures
+EMPTY. Direct-to-main (infra self-heal, not scoring-semantics/payment → not peer-gated). Full suite 473→477.
+
+NEXT HYPOTHESIS. The runner now self-heals a push-race divergence; watch the next few `verify_<ts>.json`
+`divergence_recovery` fields to confirm it fires cleanly in the wild (a non-null note = a race was auto-recovered).
+The transactability-drop P0 (driftflight.com 62.5, reproduced live AGAIN this fire) is the remaining live
+diagnosis: name WHICH transactability check flipped vs the committed fixture, then peer-gate a canonical
+re-baseline (bump the replay-guard EXPECTED in the same PR per the Cycle-17 maintenance contract).
+
 ## Cycle 228 — 2026-08-04T16:2xZ — READOUT — surface the `payment-challenge-retry` capability in the public methodology prose: a reader can now learn WHY the challenge-settle-retry handshake is the PAY-EXECUTION leg, distinct from the rail (the ability) and the receipt (the proof after)
 
 WHAT/WHY (READOUT — reader-facing clarity, per the Cycle-227 FOCUS POINTER's named next step: "surface the

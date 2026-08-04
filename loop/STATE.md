@@ -1,6 +1,36 @@
 # Loop state
 
-- Cycle counter: 238
+- Cycle counter: 239
+- CYCLE 239 — 2026-08-04T23:1xZ (READOUT, cloud, direct-to-main, display-only + tests / score-neutral).
+  FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests` state=open `[]`): INFRA
+  GREEN, newest verify `runs/local/verify_20260804T224102Z.json` (22:41Z, git_pull.ok=true attempts=1,
+  divergence_recovery=None, tests_ok=true 24/24) ~33min old; live canonical **46.1 F / 85.5 B / +39.4**
+  (tx 87.5) — drift fully resolved (last two verifies both +39.4). Shipped a READOUT increment: the
+  section-8 legibility COMPLEMENT on the public methodology page — the "understand the offer" third of the
+  +39.4 two-family decomposition (test 14B) — is now COUPLED, the legibility mirror of test 15's payment
+  coupling. Prose rewrite (`asrs/scorecard.py` `_write_methodology_page`): the legibility share is
+  QUANTIFIED **"about one-third"** (near-exact complement of payment's two-thirds; two families
+  near-additive, whole delta, no third driver) and its BEHAVIORAL two-sidedness surfaced (with-rails
+  shopper found the product + understood the pricing / no-rails did neither; Access credited → comprehension
+  wall). New guard `test_calibration.py::test_methodology_legibility_complement_prose_is_coupled_to_the_live_fraction`
+  (19→20): (a) derives the nearest simple-fraction word FROM live leg_frac=0.345 against a minority bank
+  (complement-reflection of test 15's) → page must say "about one-third"; (b) one-third STRICTLY nearest;
+  (c) pay+leg near-additive ~1.0, minority 0.2<frac<0.5, dominated-not-exclusive; (d) behavioral coupling —
+  the phrase map covers EXACTLY `_LEGIBILITY_EXPERIENCE_CHECKPOINTS`, each TRUE with-rails/FALSE no-rails
+  both trials AND its phrase present on the page. Vendor-neutral (clean under `test_readout_wording`).
+  Score-neutral: `git diff --name-only -- asrs/scoring.py asrs/probes rubric/ fixtures/` EMPTY (methodology
+  page is display-only, off the scoring path); replay guard 24/24, **46.1 F / 85.5 B / +39.4** UNMOVED; full
+  suite 24/24. NO DM (display prose + tests, not sensitive-class, not score-changing, not first-after-16:00
+  UTC — digest went Cycle 228). See LOG Cycle 239.
+- FOCUS POINTER (Cycle 239 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
+  check only. Cloud track rotation: Cycle 239 was READOUT → cloud pointer is **METHOD next** (METHOD →
+  COVERAGE → TRUTH → READOUT). Both delta families are now coupled on the public methodology page (payment
+  test 15, legibility test 19). METHOD-240 candidate: tighten a variance/attribution guard, or extend the
+  family-fraction coupling pattern to the CARD if it surfaces a family fraction. RUNNER-HEALTH WATCH: drift
+  RESOLVED; future `verify_*.json` read +39.4 / attribution=None, real-series canonical_history tests
+  recovery-tolerant (green). Substantive [LOCAL] frontier unchanged (thin-bank live fixtures
+  service_booking/data_retrieval/physical_good, a THIRD real anchor, render/structured-catalog captures, the
+  typographic PHRASE-RESCUE real-evidence case, ACP/UCP/MPP live handshakes) — prefer the oldest.
 - LOCAL CYCLE 238 — 2026-08-04T22:56Z (TRUTH, LOCAL, direct-to-main, score-neutral). FIRST duty: `gh pr list
   --state open` → [] (no open peer-gated PR, no review owed). INFRA green: this hour's verify floor
   `runs/local/verify_20260804T224102Z.json` (22:41Z, git_pull.ok=true attempts=1, tests_ok=true 24/24) is THIS

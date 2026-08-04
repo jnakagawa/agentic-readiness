@@ -17399,3 +17399,81 @@ tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4
 ## Local verification — 20260804T224102Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260804T224102Z.json
+
+## Cycle 239 — 2026-08-04 ~23:1xZ — READOUT — the legibility complement on the public methodology page is now COUPLED to the live one-third fraction AND the live behavioral checkpoints (the second family made drift-proof, mirroring test 15)
+
+**First duty.** No open peer-gated PR at fire start (`list_pull_requests` state=open = `[]`)
+→ no peer-gate review owed. Infra health check GREEN: newest verify
+`runs/local/verify_20260804T224102Z.json` (22:41Z Aug-4, git_pull.ok=true attempts=1,
+divergence_recovery=None, tests_ok=true 24/24) is ~33min old at the 23:14Z fire — WELL inside
+the 6h floor; live canonical **46.1 F / 85.5 B / +39.4** (tx 87.5) — the drift is fully
+resolved (the last two verifies both read +39.4). Stood up the cloud `.venv`
+(`pip install -r requirements.txt`) — agent-side env, not a bench regression.
+
+**What (READOUT).** Section 8 of the public methodology page decomposes the +39.4 headline
+delta into two capability families (test 14B): agent-native payment (~65%, the majority) and
+the "understand the offer" legibility difference (~35%, the honest minority). Test 15 already
+COUPLES the payment majority prose ("about two-thirds", "single majority driver") to the live
+knock-out fraction so it cannot drift from a re-baseline. But the OTHER family — the legibility
+third — was surfaced only QUALITATIVELY ("the rest an earned legibility difference"): an
+un-quantified, uncoupled residual, and the page carried NO behavioral framing for it at all.
+This cycle (a) rewrote the section-8 complement paragraph in `asrs/scorecard.py`
+`_write_methodology_page` to QUANTIFY the legibility share as **"about one-third"** (the
+near-exact complement of payment's two-thirds; two families near-additive, whole delta, no
+third driver) and to SURFACE its behavioral two-sidedness — on the live run the with-rails
+shopper actually **found the product** and **understood the pricing** while the no-rails shopper
+did **neither** (Access fully credited on both → comprehension wall, not un-observability); and
+(b) added the COUPLING guard `test_calibration.py::
+test_methodology_legibility_complement_prose_is_coupled_to_the_live_fraction` (test 19, 19→20),
+the legibility mirror of test 15.
+
+**Why.** The methodology page is the "read the paper" surface a critic reads before trusting
+the number, and half of its own delta decomposition (the legibility third) was published as
+loose prose that a legitimate [LOCAL] canonical re-baseline could silently falsify: move the
+legibility share to a quarter or a half and the page's "the rest" stays green while the
+published complement misdescribes the number; flip a behavioral checkpoint and the page's
+hand-authored "found the product / understood the pricing" claim goes stale, coupled to the
+live panel by nothing. The north-star's READOUT axis wants the prose COMPUTED from the
+computation, not asserted beside it — the same discipline test 15 gave the payment majority,
+now extended to the legibility minority so BOTH families of the delta are drift-proof on the
+public page.
+
+**Method / non-vacuity + teeth.** The guard recomputes both single-family fractions exactly as
+test 14B does (knock each family out, re-score through the roll-up): live pay_frac=0.652,
+leg_frac=0.345. (a) It derives the nearest simple-fraction word FROM leg_frac against a
+`_MINORITY_FRACTION_WORDS` bank that is the complement-reflection of test 15's majority bank
+(one-fifth / one-quarter / one-third / two-fifths / half) and asserts the page says "about
+<word>" — a re-baseline across a band edge flips the word and the still-"one-third" page reddens
+HERE. (b) NON-VACUOUS: one-third is STRICTLY nearest (|0.345-0.333|=0.012 < both one-quarter and
+two-fifths). (c) COMPLEMENT coupled: pay+leg near-additive (~99.7%≈1.0, no third driver) and
+legibility a genuine honest MINORITY (0.2<0.345<0.5), page framed dominated-not-exclusive. (d)
+BEHAVIORAL two-sidedness coupled to the LIVE panel: the phrase map `_LEGIBILITY_CHECKPOINT_PHRASES`
+covers EXACTLY `_LEGIBILITY_EXPERIENCE_CHECKPOINTS` (found_product/understood_pricing), each
+checkpoint is TRUE with-rails / FALSE no-rails across both trials (the fact the page claims) AND
+its natural-language phrase is present on the page — flip a checkpoint OR drop the claim and one
+half reddens. Capability-worded, vendor-neutral (no domain/product; "with-rails"/"no-rails"/
+"agent"/"legibility") — clean under `test_readout_wording` (methodology page scanned for the
+vendor denylist, green).
+
+**Ship class + evidence.** READOUT/display-only + tests — OFF the scoring path:
+`git diff --name-only` = `asrs/scorecard.py` (methodology PROSE only — `_write_methodology_page`
+renders display HTML, never read by `scoring.score`) + `tests/test_calibration.py` ONLY;
+scoring-path diff (`asrs/scoring.py asrs/probes rubric/ fixtures/`) EMPTY → score-neutral, NOT
+peer-gated, direct-to-main. `test_calibration.py` 19→20; full suite 24/24 files green.
+Canonical PAIR unchanged: in-cloud replay guard `test_canonical_replay` 24/24, **46.1 F / 85.5 B
+/ +39.4**, 0 replay-miss; rubric v0.7. (Cloud is network-blocked for the live re-score; the
+in-cloud standard is regression-by-construction — the scoring path is byte-identical — plus the
+offline replay guard, green. Live canonical signal: the newest LOCAL verify 22:41Z reads +39.4,
+in agreement.)
+
+**Comms.** NO DM: not a sensitive-class PR (no payment/signing/weights/caps/removals — display
+prose + tests), not score-changing, and not the first cycle after 16:00 UTC (today's digest went
+Cycle 228 ~16:2xZ; current 23:14Z). Per the comms policy, silence.
+
+**Next hypothesis (METHOD 240).** Rotate METHOD next (Cycle 239 was READOUT; METHOD → COVERAGE
+→ TRUTH → READOUT). Both delta families are now coupled on the public page (payment test 15,
+legibility test 19). METHOD candidate: tighten a variance/attribution guard, or extend the
+coupling pattern to the CARD (not just the methodology page) if the card surfaces a family
+fraction. Substantive frontier (thin-archetype/render/structured-catalog LIVE fixtures, a THIRD
+real anchor, ACP/UCP/MPP live handshakes, the typographic phrase-rescue real-evidence case)
+stays `[LOCAL]`.

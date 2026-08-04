@@ -2014,6 +2014,170 @@ def test_legibility_family_understand_the_offer_is_behaviorally_corroborated() -
     )
 
 
+# ---------------------------------------------------------------------------
+# 19. THE PUBLISHED LEGIBILITY-COMPLEMENT PROSE CANNOT DRIFT FROM THE LIVE
+#     FRACTION OR THE LIVE CHECKPOINTS.  Test 15 couples the PAYMENT majority
+#     ("about two-thirds", the single majority driver) on section 8 of the public
+#     methodology page to the live knock-out fraction — so a re-baseline that moved
+#     payment across a band edge reddens the page.  But payment is only ONE of the
+#     two capability families test 14B decomposes the +39.4 delta into.  The OTHER
+#     family — the "understand the offer" legibility third — was surfaced on the
+#     page ONLY qualitatively ("the rest an earned legibility difference"): an
+#     un-quantified, uncoupled residual.  A [LOCAL] re-baseline could move the
+#     legibility share to a quarter or a half and the page's "the rest" would stay
+#     green while the published complement quietly misdescribed the number; and the
+#     page's fresh BEHAVIORAL claim (the with-rails agent found the product and
+#     understood the pricing, the no-rails agent did neither — Cycle 237's test 18)
+#     was pure hand-authored prose, coupled to the live panel by nothing.
+#
+#     This guard is the missing coupling for the SECOND family — the legibility
+#     mirror of test 15.  (a) It recomputes the live legibility fraction the SAME
+#     way test 14B does (knock out the two agent-legibility checks, re-score through
+#     the roll-up), derives — FROM the number — which simple-fraction English word
+#     honestly names it (the nearest of the minority bank, the complement-reflection
+#     of test 15's majority bank), and asserts the page says "about <word>".  Drift
+#     the fraction across a band edge and the nearest word flips, so the still-
+#     "one-third" page reddens HERE, forcing the prose rewritten in the same
+#     re-baseline PR.  (b) Non-vacuous: one-third must be STRICTLY the closest simple
+#     fraction to the live value.  (c) The COMPLEMENT is coupled: payment + legibility
+#     are near-additive (~1.0, two families and no third), and legibility is a genuine
+#     honest MINORITY (0.2 < frac < 0.5) the page frames as such, dominated-not-
+#     exclusive.  (d) The BEHAVIORAL two-sidedness is coupled to the LIVE panel: the
+#     page must SAY the with-rails agent found the product and understood the pricing
+#     and the no-rails agent did neither, and the committed behavioral anchors must
+#     ACTUALLY show that (every _LEGIBILITY_EXPERIENCE_CHECKPOINTS TRUE with-rails /
+#     FALSE no-rails, both trials) — flip a checkpoint in a re-baseline and the page
+#     claim is false and this reddens; drop the claim from the page and the presence
+#     half reddens.  Shares test 9(d)'s re-baseline tripwire (the fraction flows from
+#     the 85.5/46.1 anchors).
+# ---------------------------------------------------------------------------
+
+# The simple-fraction English words the legibility-COMPLEMENT prose may honestly
+# use — the complement-reflection of test 15's majority _SIMPLE_FRACTION_WORDS
+# (1-half, 1-three-fifths=two-fifths, 1-two-thirds=one-third, 1-three-quarters=
+# one-quarter, 1-four-fifths=one-fifth).  The page must use the word NEAREST the
+# live minority fraction.
+_MINORITY_FRACTION_WORDS = {
+    "one-fifth": 1 / 5,
+    "one-quarter": 1 / 4,
+    "one-third": 1 / 3,
+    "two-fifths": 2 / 5,
+    "half": 1 / 2,
+}
+
+
+def _nearest_minority_word(x: float) -> str:
+    return min(_MINORITY_FRACTION_WORDS, key=lambda w: abs(_MINORITY_FRACTION_WORDS[w] - x))
+
+
+# The natural-language phrase the methodology page must use to surface each
+# behavioral legibility checkpoint — the coupling between the panel's checkpoint
+# ids and the words a reader actually reads.  Covers exactly the experience set.
+_LEGIBILITY_CHECKPOINT_PHRASES = {
+    "found_product": "found the product",
+    "understood_pricing": "understood the pricing",
+}
+
+
+def test_methodology_legibility_complement_prose_is_coupled_to_the_live_fraction() -> None:
+    print("test_methodology_legibility_complement_prose_is_coupled_to_the_live_fraction")
+    # Recompute BOTH single-family fractions exactly as test 14B does: knock each
+    # family out of the with-rails replay (substitute the no-rails FULL CheckResult)
+    # and re-score through scoring's own roll-up, then take closed/delta.
+    com, com_misses = _static_report(_ANCHOR_DOMAIN)       # with-rails ceiling
+    org, org_misses = _static_report("drift-flight.org")   # no-rails floor
+    _check(
+        not com_misses and not org_misses,
+        "both canonical static replays are like-for-like (no replay-miss)",
+    )
+    org_by_id = {c.check_id: c for c in org.checks}
+
+    def _knock(ids: set) -> object:
+        knocked_checks = [
+            org_by_id[c.check_id] if c.check_id in ids else c for c in com.checks
+        ]
+        return scoring.score(knocked_checks, scoring.load_rubric(None), _ANCHOR_DOMAIN)
+
+    delta = com.overall_score - org.overall_score
+    pay_frac = (com.overall_score - _knock(set(_STATIC_PAYMENT_CHECKS)).overall_score) / delta
+    leg_frac = (com.overall_score - _knock(set(_STATIC_LEGIBILITY_CHECKS)).overall_score) / delta
+
+    # Render the LIVE public methodology page (the same builder the card links to).
+    with tempfile.TemporaryDirectory() as d:
+        page = Path(scorecard._write_methodology_page(Path(d))).read_text()
+    collapsed = " ".join(page.split()).lower()
+
+    # (a) THE COUPLING: derive the required English word FROM the legibility number
+    #     and assert the page uses "about <word>".  A re-baseline that moves the
+    #     fraction across a band edge flips `word` and the still-"one-third" page fails.
+    word = _nearest_minority_word(leg_frac)
+    _check(
+        f"about {word}" in collapsed,
+        f"the methodology page describes the live legibility fraction with its nearest "
+        f"simple fraction: leg_frac={leg_frac:.3f} -> the page must say 'about {word}'",
+    )
+
+    # (b) NON-VACUOUS word choice: one-third is STRICTLY the closest simple fraction
+    #     to the live value — closer than one-quarter or two-fifths — so "about
+    #     one-third" is the honest word, not a convenient round.
+    _check(
+        word == "one-third"
+        and abs(leg_frac - 1 / 3) < abs(leg_frac - 1 / 4)
+        and abs(leg_frac - 1 / 3) < abs(leg_frac - 2 / 5),
+        f"one-third is strictly the nearest simple fraction to the live "
+        f"{leg_frac:.3f} (|{leg_frac:.3f}-0.333|={abs(leg_frac - 1/3):.3f} < both "
+        f"one-quarter and two-fifths)",
+    )
+
+    # (c) THE COMPLEMENT is coupled: payment + legibility are near-additive and
+    #     jointly the whole delta (no third driver), and legibility is a genuine
+    #     honest MINORITY the page frames as dominated-not-exclusive.
+    _check(
+        abs((pay_frac + leg_frac) - 1.0) < 0.01,
+        f"the two families are near-additive and jointly the whole delta "
+        f"(payment {pay_frac:.1%} + legibility {leg_frac:.1%} = {pay_frac + leg_frac:.1%})",
+    )
+    _check(
+        0.2 < leg_frac < 0.5
+        and "dominated" in collapsed
+        and "exclusive" in collapsed,
+        f"legibility is a genuine honest MINORITY ({leg_frac:.1%}, 0.2<frac<0.5) and the "
+        f"page frames the delta payment-dominated, not payment-exclusive",
+    )
+
+    # (d) THE BEHAVIORAL TWO-SIDEDNESS is coupled to the LIVE panel: the page must
+    #     SAY the with-rails agent found the product and understood the pricing and
+    #     the no-rails agent did neither, and the committed anchors must ACTUALLY
+    #     show that (every legibility checkpoint TRUE with-rails / FALSE no-rails,
+    #     both trials).  Flip a checkpoint in a re-baseline and the page claim is
+    #     false and this reddens; drop the claim from the page and the presence
+    #     half reddens.
+    pos, neg = _load_behavioral(), _load_negative()
+    pos_runs, neg_runs = pos.get("behavioral_runs", []), neg.get("behavioral_runs", [])
+    _check(
+        len(pos_runs) >= 2 and len(neg_runs) >= 2,
+        f"both anchors rest on >=2 behavioral trials (pos={len(pos_runs)}, neg={len(neg_runs)})",
+    )
+    _check(
+        set(_LEGIBILITY_CHECKPOINT_PHRASES) == set(_LEGIBILITY_EXPERIENCE_CHECKPOINTS),
+        "the page-phrase map covers EXACTLY the legibility experience checkpoints "
+        "(coupling is to the live checkpoint set, not an arbitrary phrase list)",
+    )
+    for ck, phrase in _LEGIBILITY_CHECKPOINT_PHRASES.items():
+        pos_all = all(r.get("checkpoints", {}).get(ck) is True for r in pos_runs)
+        neg_all = all(r.get("checkpoints", {}).get(ck) is False for r in neg_runs)
+        _check(
+            pos_all and neg_all,
+            f"live panel: {ck} TRUE with-rails / FALSE no-rails across all trials "
+            f"(the two-sided fact the page claims)",
+        )
+        _check(
+            phrase in collapsed,
+            f"the page surfaces the '{ck}' behavioral checkpoint in words the reader "
+            f"reads ({phrase!r}) — the behavioral claim cannot drift from the panel",
+        )
+
+
 def main() -> int:
     tests = [
         test_static_payment_prediction_is_behaviorally_corroborated,
@@ -2035,6 +2199,7 @@ def main() -> int:
         test_methodology_headline_prose_is_coupled_to_the_live_fraction,
         test_static_prediction_and_behavioral_outcome_are_rank_concordant,
         test_legibility_family_understand_the_offer_is_behaviorally_corroborated,
+        test_methodology_legibility_complement_prose_is_coupled_to_the_live_fraction,
     ]
     failed = 0
     for t in tests:

@@ -1269,13 +1269,27 @@ driver</b> of the number people quote, not a minor contributor the pillar weight
 bury.</p>
 <p>The honest complement matters as much as the claim. Stripping payment does
 <b>not</b> drag the with-rails overall all the way down to the no-rails score &mdash;
-a residual gap remains, carried by a <b>non-payment</b> pillar (the with-rails
-storefront documents its offer far more machine-<b>legibly</b>). So the headline
-delta is payment-<b>dominated</b>, not payment-<b>exclusive</b>: roughly two-thirds
-agent-native payment, the rest an earned legibility difference the pitch does not get
-to claim. Like the pillar counterfactual, this overall-level attribution is pinned by
-an <b>executable regression test</b> &mdash; so &ldquo;payment drives the majority of
-the gap&rdquo; is <b>checked, not asserted</b>.</p>
+a residual gap remains, carried by a <b>non-payment</b> pillar: the with-rails
+storefront documents its offer far more machine-<b>legibly</b> (it publishes the
+machine-readable agent guide the no-rails store lacks). Run the same knock-out on
+<b>that</b> family &mdash; substitute the no-rails evidence on the two
+agent-legibility checks and re-score through the roll-up &mdash; and it closes
+<b>about one-third</b> of the headline gap, the near-exact complement of
+payment&rsquo;s two-thirds: the two capability families are <b>near-additive</b> and
+together account for the <b>whole</b> delta, with <b>no third, unnamed driver</b>
+hiding in the weighted roll-up. So the headline delta is payment-<b>dominated</b>,
+not payment-<b>exclusive</b>: roughly two-thirds agent-native payment, about
+one-third an earned <b>legibility</b> difference &mdash; the honest minority the
+pitch does not get to claim. And that minority is not a paper advantage. On the live
+behavioral run the with-rails shopper actually <b>found the product</b> and
+<b>understood the pricing</b>, while the no-rails shopper did <b>neither</b> &mdash;
+Access fully credited on both, so the no-rails failure is a comprehension wall, not
+un-observability. So the &ldquo;understand the offer&rdquo; third is <b>two-sided in
+experience</b>, the same way agent-native payment is &mdash; a lived capability
+difference, not merely a static residual. Like the pillar counterfactual, both the
+one-third fraction and the two-sided experience are pinned by <b>executable
+regression tests</b> &mdash; so &ldquo;payment drives the majority, legibility the
+honest rest&rdquo; is <b>checked, not asserted</b>.</p>
 <p>Everything so far checks the number against the experience on each storefront
 <b>separately</b>. But the claim a reader actually <b>cites</b> is a <b>ranking</b>
 &mdash; a grade of <b>B versus F</b>, which storefront is more agent-ready &mdash; and a

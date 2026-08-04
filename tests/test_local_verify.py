@@ -93,12 +93,84 @@ def test_default_pull_stays_ff_only() -> None:
     _check(rc == 0, "returns the underlying pull result")
 
 
+def test_is_diverged_distinguishes_divergence_from_network_failure() -> None:
+    """The self-heal must fire on a DIVERGED tree, never on a transient network
+    failure (that path is git_pull_with_retry's, not ours)."""
+    # The exact tail the 2026-08 stranding wrote to every verify_*.json:
+    _check(lv._is_diverged("Not possible to fast-forward, aborting."),
+           "recognizes the --ff-only divergence abort")
+    _check(lv._is_diverged("hint: Diverging branches can't be fast-forwarded"),
+           "recognizes the diverging-branches hint")
+    _check(not lv._is_diverged("Could not resolve host: github.com"),
+           "a network failure is NOT a divergence")
+    _check(not lv._is_diverged("Already up to date."),
+           "a clean pull is NOT a divergence")
+
+
+def test_recovers_only_from_our_own_heartbeat_divergence() -> None:
+    """The common case: a prior fire's heartbeat push lost the race with the
+    cloud. Every un-pushed commit is one of ours -> discard + realign."""
+    calls = {"fetch": 0, "reset": 0}
+
+    def fetch() -> tuple[int, str]:
+        calls["fetch"] += 1
+        return 0, ""
+
+    def ahead() -> list[str]:
+        return ["loop: local verification 20260804T170000Z"]
+
+    def reset() -> tuple[int, str]:
+        calls["reset"] += 1
+        return 0, ""
+
+    recovered, note = lv.recover_from_own_divergence(fetch=fetch, ahead=ahead, reset=reset)
+    _check(recovered, f"recovers from our own un-pushed heartbeat, note={note!r}")
+    _check(calls["fetch"] == 1, "fetched origin before inspecting the divergence")
+    _check(calls["reset"] == 1, "reset --hard origin/main exactly once")
+
+
+def test_preserves_unpushed_non_heartbeat_commit() -> None:
+    """Safety guard: if ANY un-pushed commit is not our heartbeat, discard
+    NOTHING — real work is never lost to the self-heal."""
+    calls = {"reset": 0}
+
+    def reset() -> tuple[int, str]:
+        calls["reset"] += 1
+        return 0, ""
+
+    recovered, note = lv.recover_from_own_divergence(
+        fetch=lambda: (0, ""),
+        ahead=lambda: ["loop: local verification 20260804T170000Z", "fix: real work"],
+        reset=reset,
+    )
+    _check(not recovered, "does NOT recover when a non-heartbeat commit is ahead")
+    _check(calls["reset"] == 0, "never resets when real work would be lost")
+    _check("preserving" in note, f"note explains the preservation, got {note!r}")
+
+
+def test_no_recovery_when_divergence_is_not_ours() -> None:
+    """Nothing ahead of origin (e.g. origin rewound, or a non-ours state): do
+    not reset on a guess."""
+    calls = {"reset": 0}
+    recovered, note = lv.recover_from_own_divergence(
+        fetch=lambda: (0, ""),
+        ahead=lambda: [],
+        reset=lambda: (calls.__setitem__("reset", calls["reset"] + 1), (0, ""))[1],
+    )
+    _check(not recovered, "no recovery when we are not ahead of origin")
+    _check(calls["reset"] == 0, "never resets when the divergence is not our commits")
+
+
 def main() -> int:
     tests = [
         test_success_on_first_attempt_never_sleeps,
         test_transient_wake_race_recovers,
         test_persistent_failure_bails_after_budget,
         test_default_pull_stays_ff_only,
+        test_is_diverged_distinguishes_divergence_from_network_failure,
+        test_recovers_only_from_our_own_heartbeat_divergence,
+        test_preserves_unpushed_non_heartbeat_commit,
+        test_no_recovery_when_divergence_is_not_ours,
     ]
     failed = 0
     for t in tests:

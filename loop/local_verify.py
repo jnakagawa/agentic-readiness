@@ -5,7 +5,8 @@ of its regression protocol run here, on a networked machine, on a fixed
 schedule (launchd, hourly). FIXED VERBS ONLY — this script never executes
 instructions from the backlog; it always does exactly:
 
-  1. git pull (fast-forward only)
+  1. git pull (fast-forward only; self-heal a divergence of our OWN un-pushed
+     heartbeats — see below)
   2. run the repo's test suites
   3. live static re-score of the canonical pair
   4. write runs/local/verify_<ts>.json + append a short LOG.md entry
@@ -13,6 +14,18 @@ instructions from the backlog; it always does exactly:
 
 Cloud cycles read the newest runs/local/verify_*.json as their live
 canonical-delta signal. One-off [LOCAL] experiments stay manual.
+
+Divergence self-heal (the 2026-08 3-day stranding incident): step 5 commits a
+heartbeat THEN pushes, so if the cloud pushes between our pull and our push the
+push is rejected (non-fast-forward) and we're left with a divergent commit. The
+old runner then bailed on EVERY subsequent fire at the --ff-only pull, stranding
+the floor for days. `recover_from_own_divergence` heals this: when the pull
+fails because the branch diverged, and every commit we're ahead by is one of our
+own `loop: local verification` heartbeats (un-pushed, disposable — the cloud
+never saw it, and this fire writes a fresh one), we discard them and realign to
+origin. Strictly guarded: any un-pushed NON-heartbeat commit is preserved and we
+bail as before, so no real work is ever lost. A lost push race now costs one
+skipped heartbeat, never a cascade.
 """
 from __future__ import annotations
 
@@ -76,6 +89,62 @@ def git_pull_with_retry(pull=_pull_once, attempts: int = 5, delay: int = 15,
     return rc, tail, attempts
 
 
+# The heartbeat commit subject (see main()); un-pushed heartbeats are the ONLY
+# thing the divergence self-heal is ever allowed to discard.
+_HEARTBEAT_PREFIX = "loop: local verification "
+
+
+def _is_diverged(tail: str) -> bool:
+    """True when a --ff-only pull failed because the branch has diverged (our
+    un-pushed commit vs the cloud's), NOT because of a transient network error."""
+    t = tail.lower()
+    return (
+        "not possible to fast-forward" in t
+        or "diverging branches" in t
+        or "non-fast-forward" in t
+    )
+
+
+def _fetch_origin() -> tuple[int, str]:
+    return run(["git", "fetch", "origin", "main"])
+
+
+def _ahead_subjects() -> list[str]:
+    """Subjects of the commits HEAD is ahead of origin/main by (our un-pushed
+    commits), newest first. Empty when we are not ahead."""
+    rc, out = run(["git", "log", "--format=%s", "origin/main..HEAD"])
+    return [s for s in out.splitlines() if s.strip()] if rc == 0 else []
+
+
+def _reset_to_origin() -> tuple[int, str]:
+    return run(["git", "reset", "--hard", "origin/main"])
+
+
+def recover_from_own_divergence(
+    fetch=_fetch_origin, ahead=_ahead_subjects, reset=_reset_to_origin,
+) -> tuple[bool, str]:
+    """Heal a divergence caused ONLY by our own un-pushed heartbeat commits.
+
+    Fetch origin, then look at what HEAD is ahead of origin/main by. Recover
+    (discard those commits, realign to origin) ONLY if there is at least one
+    such commit AND every one is a `loop: local verification` heartbeat — the
+    cloud never saw them and this fire writes a fresh one, so they are
+    disposable. Any un-pushed NON-heartbeat commit (or nothing ahead) → do not
+    touch anything; return False so the caller bails and preserves the tree.
+    Returns (recovered, human-readable note for the artifact/log).
+    """
+    fetch()
+    subjects = ahead()
+    if not subjects:
+        return False, "divergence is not from our un-pushed commits (nothing ahead of origin)"
+    if not all(s.startswith(_HEARTBEAT_PREFIX) for s in subjects):
+        return False, f"preserving {len(subjects)} un-pushed non-heartbeat commit(s); not ours to discard"
+    rc, tail = reset()
+    if rc != 0:
+        return False, f"reset --hard origin/main failed: {tail[-120:].strip()}"
+    return True, f"discarded {len(subjects)} un-pushed heartbeat(s), realigned to origin/main"
+
+
 def main() -> int:
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     out: dict = {"ts": ts, "kind": "local-verify"}
@@ -87,6 +156,14 @@ def main() -> int:
         return 1
 
     rc, tail, tries = git_pull_with_retry()
+    if rc != 0 and _is_diverged(tail):
+        # A prior fire's heartbeat push lost the race with the cloud and left a
+        # divergent commit. Self-heal it (guarded) instead of stranding the floor.
+        recovered, note = recover_from_own_divergence()
+        log(f"divergence self-heal: {note}")
+        out["divergence_recovery"] = note
+        if recovered:
+            rc, tail, tries = git_pull_with_retry()
     out["git_pull"] = {"ok": rc == 0, "attempts": tries, "tail": tail[-300:]}
     if rc != 0:
         # Do not verify a tree we couldn't sync; report and bail.

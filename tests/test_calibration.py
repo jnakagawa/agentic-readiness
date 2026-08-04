@@ -1473,6 +1473,145 @@ def test_methodology_headline_prose_is_coupled_to_the_live_fraction() -> None:
     )
 
 
+# ---------------------------------------------------------------------------
+# 16. STATIC PREDICTION AND BEHAVIORAL EXPERIENCE ARE RANK-CONCORDANT — NO SIGN
+#     INVERSION.  Tests 1-8 establish that at the payment CHECKPOINTS the score's
+#     prediction agrees with behavior on each anchor INDEPENDENTLY (with-rails
+#     passes, no-rails fails).  But the number a reader actually CITES is the
+#     headline grade (B vs F) — a RANKING of storefronts.  Nothing yet pins that
+#     the DIRECTION the static score predicts (which store is more agent-ready)
+#     is the SAME direction the agent's lived behavioral outcome points.  A
+#     refactor could, e.g., reweight legibility so the no-rails retail store's
+#     static-observable readiness out-ranks the with-rails API store's — a static
+#     prediction that ranks them one way while the agent succeeds only on the
+#     other: a rank INVERSION between prediction and experience that every
+#     per-anchor checkpoint test would stay green through (each still passes/fails
+#     its own checkpoints; only the CROSS-anchor ordering flipped).
+#
+#     This guard closes that gap: it asserts CONCORDANCE — the static-observable
+#     readiness prediction (access/legibility/transactability, the pillars scored
+#     WITHOUT the behavioral run) ranks the with-rails store >= the no-rails store
+#     on every observable pillar and strictly > on payability, AND the behavioral
+#     Outcome pillar (the behavioral-ONLY measurement) points the SAME way.  So
+#     neither layer inverts the other: the behavioral headline ordering is a
+#     faithful AMPLIFICATION of a static prediction that already pointed the same
+#     direction, not a behavioral RESCUE of a statically-worse store.
+#
+#     HONEST SCOPE makes it non-vacuous, not a trivial "with-rails wins
+#     everything": the with-rails store does NOT dominate on every pillar — TRUST
+#     (behaviorally augmented with a live panel, deliberately OUTSIDE the
+#     static-observable set per test 4's _SHARED_STATIC_PILLARS) actually favors
+#     the NO-RAILS store.  The concordance is a SCOPED claim about the static
+#     READINESS prediction vs the behavioral PAYMENT outcome, both of which point
+#     one way, while a differently-measured capability legitimately points the
+#     other.  And ACCESS is EQUAL on the two, so the static ranking is carried by
+#     the capability pillars (payability, legibility), not a uniform offset.  The
+#     with-rails static-observable pillars are cross-checked against the offline
+#     fixture replay, so the 87.5/90.9 literals share test 9(d)'s re-baseline
+#     tripwire.
+# ---------------------------------------------------------------------------
+def test_static_prediction_and_behavioral_outcome_are_rank_concordant() -> None:
+    print("test_static_prediction_and_behavioral_outcome_are_rank_concordant")
+    pos = _load_behavioral()   # with-rails API storefront (higher static readiness)
+    neg = _load_negative()     # no-rails retail storefront (lower static readiness)
+
+    # (a) LIKE-FOR-LIKE and genuinely DIFFERENT storefront TYPES — a cross-anchor
+    #     ranking is only meaningful between two distinct storefronts.  They are
+    #     disjoint on the payment-native archetype axis: the with-rails anchor
+    #     CLAIMS the agent-payable metered API (and does NOT claim physical retail);
+    #     the no-rails anchor is its inverse.
+    _check(
+        pos["rubric_version"] == neg["rubric_version"] == "0.7",
+        f"both anchors on rubric 0.7 (pos={pos['rubric_version']}, neg={neg['rubric_version']})",
+    )
+    pos_bs, neg_bs = pos["battery_summary"], neg["battery_summary"]
+    _check(
+        "metered_api" in pos_bs["assessed_archetypes"]
+        and "metered_api" in neg_bs["na_archetypes"],
+        f"with-rails anchor CLAIMS the agent-payable metered API, no-rails anchor "
+        f"does NOT (pos assessed={pos_bs['assessed_archetypes']}, "
+        f"neg na={neg_bs['na_archetypes']})",
+    )
+    _check(
+        "physical_good" in neg_bs["assessed_archetypes"]
+        and "physical_good" in pos_bs["na_archetypes"],
+        f"no-rails anchor is the retail inverse (claims physical_good, with-rails "
+        f"does not) — the two are distinct storefront types",
+    )
+
+    # Cross-check the with-rails static-observable pillars against the OFFLINE
+    # fixture replay so the 87.5/90.9 literals ride test 9(d)'s re-baseline
+    # tripwire (the no-rails anchor has no committed fixture — its static-observable
+    # prediction is read from the report's own embedded static crawl, per docstring).
+    static_com, com_misses = _static_report(_ANCHOR_DOMAIN)
+    _check(not com_misses, f"{_ANCHOR_DOMAIN} static replay is like-for-like (no replay-miss)")
+    for pillar in _SHARED_STATIC_PILLARS:
+        _check(
+            abs(static_com.pillar_scores[pillar] - pos["pillar_scores"][pillar]) < 1e-9,
+            f"with-rails {pillar} agrees between fixture replay and behavioral crawl "
+            f"({static_com.pillar_scores[pillar]} == {pos['pillar_scores'][pillar]})",
+        )
+
+    pos_p, neg_p = pos["pillar_scores"], neg["pillar_scores"]
+
+    # (b) STATIC-OBSERVABLE CONCORDANCE (Pareto): on EVERY pillar scored without
+    #     the behavioral run, the with-rails store ranks >= the no-rails store —
+    #     no static-observable pillar inverts — and strictly > on payability.
+    for pillar in _SHARED_STATIC_PILLARS:
+        _check(
+            pos_p[pillar] >= neg_p[pillar] - 1e-9,
+            f"static-observable {pillar}: with-rails ({pos_p[pillar]}) is not "
+            f"out-ranked by no-rails ({neg_p[pillar]}) — no inversion",
+        )
+    _check(
+        pos_p["transactability"] > neg_p["transactability"] + 1e-9,
+        f"static PAYABILITY ranks with-rails strictly above no-rails "
+        f"({pos_p['transactability']} > {neg_p['transactability']})",
+    )
+
+    # (c) THE BEHAVIORAL-ONLY MEASUREMENT AGREES IN DIRECTION: the Outcome pillar
+    #     (scored only by the live shopper) ranks with-rails strictly above
+    #     no-rails — the same direction the static prediction points.
+    _check(
+        pos_p["outcome"] > neg_p["outcome"] + 1e-9,
+        f"behavioral Outcome ranks with-rails strictly above no-rails "
+        f"({pos_p['outcome']} > {neg_p['outcome']}) — same direction as the static prediction",
+    )
+
+    # (d) NO INVERSION / AMPLIFICATION, NOT RESCUE: the cited headline ordering
+    #     holds, AND it already held on the static-observable prediction BEFORE the
+    #     behavioral Outcome pillar was added — so the behavioral run did not
+    #     rescue a statically-worse store; it amplified a concordant prediction.
+    _check(
+        pos["overall_score"] > neg["overall_score"] + 1.0,
+        f"cited headline ordering holds by a real margin (with-rails "
+        f"{pos['overall_score']} > no-rails {neg['overall_score']})",
+    )
+    _check(
+        pos_p["transactability"] > neg_p["transactability"] + 1e-9,
+        "the payability pillar ALONE already ranks the pair correctly with the "
+        "behavioral Outcome pillar removed — the ordering is not a behavioral rescue",
+    )
+
+    # (e) NON-VACUOUS / HONEST SCOPE: the with-rails store does NOT win every
+    #     pillar — TRUST (behaviorally augmented, outside the static-observable
+    #     set) favors the NO-RAILS store — so the concordance is a scoped claim
+    #     (static readiness vs behavioral payment), not "with-rails wins all"; and
+    #     ACCESS is EQUAL, so the static ranking is carried by the capability
+    #     pillars, not a uniform offset.
+    _check(
+        "trust" not in _SHARED_STATIC_PILLARS and neg_p["trust"] > pos_p["trust"] + 1e-9,
+        f"a differently-measured capability (trust, behaviorally augmented, out of "
+        f"the static-observable set) legitimately favors the no-rails store "
+        f"({neg_p['trust']} > {pos_p['trust']}) — the concordance is scoped, not universal",
+    )
+    _check(
+        abs(pos_p["access"] - neg_p["access"]) < 1e-9,
+        f"access is EQUAL on the two ({pos_p['access']} == {neg_p['access']}) — the "
+        f"static ranking is carried by the capability pillars, not a uniform offset",
+    )
+
+
 def main() -> int:
     tests = [
         test_static_payment_prediction_is_behaviorally_corroborated,
@@ -1490,6 +1629,7 @@ def main() -> int:
         test_ceiling_payment_attribution_is_weight_robust,
         test_payment_capability_drives_the_majority_of_the_headline_delta,
         test_methodology_headline_prose_is_coupled_to_the_live_fraction,
+        test_static_prediction_and_behavioral_outcome_are_rank_concordant,
     ]
     failed = 0
     for t in tests:

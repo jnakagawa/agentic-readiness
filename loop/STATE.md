@@ -1,8 +1,43 @@
 # Loop state
 
-- Cycle counter: 222
+- Cycle counter: 223
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-04T10:2xZ (Cycle 222) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-04T11:2xZ (Cycle 223) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~79.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
+  cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 11:2xZ fire is NOT
+  first-after-16:00 UTC → no DM this fire per comms policy (score-neutral tests-only TRUTH increment, no
+  sensitive-class PR, nothing score-moving). Live signal (READ, not re-run): drift-flight.org 46.1 F /
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1), off
+  the scoring path; the in-cloud replay guard stays the frozen independent regression signal (24/24, 46.1 F / 85.5 B /
+  +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/
+  SELF-HEAL (Cycle 223): fresh `.venv` + `requests pyyaml eth-account pytest`, 468 tests green pre-flight (469 after
+  +1); LOG.md confirmed newest-first + complete through Cycle 222 (no bookkeeping gap); last push (Cycle 222) present
+  on origin/main. NOTE: runner at-floor since Aug-1 03:50Z (~3+ days) — durable [LOCAL] runner-recovery stays P0.
+- FOCUS POINTER (Cycle 223 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 223 was TRUTH, so
+  Cycle 224 is READOUT). Cycle 223 shipped a **TRUTH increment — the calibration suite's missing CROSS-anchor
+  property: static prediction and behavioral experience are RANK-CONCORDANT (no sign inversion)**. Tests 1-8 pin that
+  the static payment prediction agrees with behavior on each committed anchor INDEPENDENTLY (with-rails PASSES,
+  no-rails retail FAILS, Outcome 100 vs 0), but every one reasons WITHIN a single anchor — nothing pinned that the
+  DIRECTION the score predicts (which store is more agent-ready) is the SAME direction the agent's lived outcome
+  points, the validity claim a reader actually cites (grade B vs F is a RANKING). A reweight could invert the
+  cross-anchor ordering while every per-anchor checkpoint test stayed green. New `test_calibration.py` test 16
+  `test_static_prediction_and_behavioral_outcome_are_rank_concordant` asserts: (b) on EVERY static-observable pillar
+  (access/legibility/transactability, `_SHARED_STATIC_PILLARS`) with-rails ranks >= no-rails, strictly > on
+  payability — no inversion; (c) the behavioral-ONLY Outcome pillar points the SAME way (100 > 0); (d)
+  AMPLIFICATION-not-RESCUE — the cited headline ordering (87.8 > 38.8) already held on the static-observable
+  prediction BEFORE Outcome was added (payability alone ranks the pair correctly). HONEST SCOPE / non-vacuous: (e)
+  TRUST (behaviorally augmented, OUTSIDE the static-observable set) legitimately FAVORS the no-rails store (66.67 >
+  55.56), so the concordance is a SCOPED claim (static readiness vs behavioral payment), not "with-rails wins all";
+  ACCESS is EQUAL (100==100) so the ranking is carried by the capability pillars. With-rails static-observable pillars
+  cross-checked against the offline fixture replay → the 87.5/90.9 literals ride test 9(d)'s re-baseline tripwire.
+  CAPABILITY-worded, vendor-neutral; anchors read from committed `runs/local/acceptance_battery_*.report.json` (no
+  network). OFF the scoring path (tests-only; scoring-path diff `git diff -- asrs/ rubric/ fixtures/` EMPTY) →
+  score-neutral, NOT peer-gated, direct-to-main. Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss;
+  `test_calibration.py` 15→16, suite 468→469; rubric v0.7. NEXT (READOUT 224): surface the concordance / no-inversion
+  claim on the public methodology page or card (the science is pinned in-cloud, the reader-facing prose is not).
+  Substantive frontier (thin-bank live fixtures, moleskine.com two-crawl cross-validation, ACP/UCP/MPP,
+  transactability-drop CHECK-level diagnosis + peer-gated re-baseline) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 222 runner note): RUNNER AT-FLOOR at 2026-08-04T10:2xZ (Cycle 222) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~78.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
   cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 10:2xZ fire is NOT
   first-after-16:00 UTC → no DM this fire per comms policy (score-neutral off-scoring-path COVERAGE increment, no

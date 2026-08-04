@@ -3,6 +3,54 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 223 — 2026-08-04T11:2xZ — TRUTH — static prediction and behavioral experience are RANK-CONCORDANT (no sign inversion): the direction the score predicts is the direction the agent lives, at the headline-ranking level people cite
+
+WHAT/WHY (TRUTH — the calibration suite's missing CROSS-anchor property). Tests 1-8 of `test_calibration.py`
+establish that at the payment CHECKPOINTS the static prediction agrees with behavior on each committed anchor
+INDEPENDENTLY: the with-rails API storefront (driftflight.com) PASSES `bhv_machine_payable`/`bhv_no_human_gate`, the
+no-rails retail storefront (moleskine.com) FAILS them, Outcome 100 vs 0. But every one of those guards reasons WITHIN
+a single anchor. The number a reader actually CITES is the headline grade — a RANKING of storefronts (B vs F) — and
+NOTHING pinned that the DIRECTION the static score predicts (which store is more agent-ready) is the SAME direction
+the agent's lived behavioral outcome points. A refactor could reweight, say, legibility so the no-rails store's
+static-observable readiness out-ranks the with-rails store's — a static prediction that ranks the pair one way while
+the agent succeeds only on the other (a rank INVERSION between prediction and experience) — and every per-anchor
+checkpoint test would stay GREEN through it, because each anchor still passes/fails its OWN checkpoints; only the
+cross-anchor ordering flipped. This is the north-star validity question ("does the score predict what an agent
+experiences?") at the ranking level, and it was the one calibration axis with no guard.
+
+TRUTH — the smallest unit (one test, no source change). `test_static_prediction_and_behavioral_outcome_are_rank_concordant`
+(test 16) asserts CONCORDANCE: (b) on EVERY static-observable pillar (access/legibility/transactability — the
+`_SHARED_STATIC_PILLARS` scored WITHOUT the behavioral run) the with-rails store ranks >= the no-rails store (no
+inversion) and strictly > on payability; (c) the behavioral-ONLY Outcome pillar points the SAME way (100 > 0); (d)
+NO INVERSION / AMPLIFICATION-not-RESCUE — the cited headline ordering (87.8 > 38.8) already held on the
+static-observable prediction BEFORE Outcome was added (the payability pillar alone ranks the pair correctly), so the
+behavioral run amplified a concordant prediction rather than rescuing a statically-worse store. HONEST SCOPE keeps it
+non-vacuous: (e) the with-rails store does NOT dominate every pillar — TRUST (behaviorally augmented with a live
+panel, deliberately OUTSIDE the static-observable set per test 4) legitimately FAVORS the no-rails store (66.67 >
+55.56), so the concordance is a SCOPED claim about the static READINESS prediction vs the behavioral PAYMENT outcome,
+not a trivial "with-rails wins everything"; and ACCESS is EQUAL (100 == 100), so the static ranking is carried by the
+capability pillars (payability, legibility), not a uniform offset. (a) The two anchors are genuinely distinct
+storefront TYPES — disjoint on the payment-native archetype axis (with-rails CLAIMS metered_api / no-rails has it NA;
+no-rails CLAIMS physical_good / with-rails has it NA). CAPABILITY-WORDED, vendor-neutral (keys on payability /
+readiness / archetype-claim structure, names no vendor). The with-rails static-observable pillars are cross-checked
+against the OFFLINE fixture replay, so the 87.5/90.9 literals ride test 9(d)'s re-baseline tripwire — a [LOCAL]
+canonical re-capture reddens this guard alongside `test_canonical_replay`.
+
+TESTS (+1, 468→469; `test_calibration.py` 15→16). Direct-runner list updated. Full suite 469 green; new test 16/16.
+
+EVIDENCE / CANONICAL PAIR (score-neutral, tests-only — scoring-path diff `git diff -- asrs/ rubric/ fixtures/`
+EMPTY). Rubric v0.7; in-cloud replay guard 24/24, **46.1 F / 85.5 B / +39.4, 0 replay-miss** (the frozen regression
+signal, unmoved by a tests-only change). LIVE canonical-drift signal (READ, not re-run — runner at-floor since Aug-1
+03:50Z): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 (off the scoring path;
+transactability-drop divergence persists). Anchors read from committed `runs/local/acceptance_battery_*.report.json`
+(driftflight.com 87.8 B, moleskine.com 38.8 F) — no network.
+
+NEXT HYPOTHESIS (READOUT 224, per rotation). The calibration suite is now RANK-concordant cross-anchor; a natural
+READOUT increment is to surface the concordance/no-inversion claim on the public methodology page or card (the
+science is pinned in-cloud, the reader-facing prose is not). Substantive frontier (thin-bank live fixtures,
+moleskine.com two-crawl cross-validation, ACP/UCP/MPP handshakes, transactability-drop CHECK-level diagnosis +
+peer-gated re-baseline) stays `[LOCAL]`; runner-recovery stays the durable P0.
+
 ## Cycle 222 — 2026-08-04T10:2xZ — COVERAGE — strip INVISIBLE line-break controls in offering discovery: a soft-hyphen / zero-width-space interleaved inside a capability word no longer silently drops the archetype claim
 
 WHAT/WHY (COVERAGE — the fourth encoding-robustness fold, completing the reflow/hyphen/entity family). The offering

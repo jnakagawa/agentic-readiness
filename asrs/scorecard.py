@@ -1530,11 +1530,29 @@ committed fixtures regardless of what the live site does today.</p>
                 f'is a current reading.</p>'
             )
 
+    # The loader silently drops artifacts scored on a red bench (Cycle-215
+    # versioned-comparability gate) or malformed, so the "N live re-scores" count is
+    # the FILTERED series, not the raw one. Surface the exclusion accounting so a web
+    # reader sees the series is filtered and on what grounds — the terminal->HTML
+    # close-out of the Cycle-216 loader-accounting readout. Renders only when the
+    # loader actually dropped something (accounting present with excluded > 0); a
+    # clean load shows nothing (raw == filtered, honest silence).
+    acct = hist.load_accounting
+    series_filtered_note = ""
+    if acct is not None and acct.any_excluded:
+        series_filtered_note = (
+            f'<p class="q" style="margin-top:-8px">Series filtered: '
+            f'{acct.included} of {acct.total} artifacts kept, {acct.excluded} '
+            f'excluded ({_esc(ch._exclusion_phrase(acct))}) &mdash; red-bench '
+            f'readings were scored while the bench&rsquo;s own guards were red (not '
+            f'comparable within the version); malformed ones were unusable.</p>'
+        )
     latest_card = f"""<div class="card">
 <h2>Latest reading</h2>
 <p style="margin-bottom:14px">{_esc(ch._short_ts(latest.ts))} &middot;
 {len(hist.points)} live re-scores over
 {_esc(ch._short_ts(hist.points[0].ts))} &rarr; {_esc(ch._short_ts(latest.ts))}</p>
+{series_filtered_note}
 <table>
 <tr><th>Side</th><th class="num">Overall</th><th>Grade</th></tr>
 <tr><td>{_esc(ch.CANONICAL_NO_RAILS)} <span class="q">(no rails)</span></td>

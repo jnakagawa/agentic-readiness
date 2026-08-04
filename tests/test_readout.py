@@ -1997,6 +1997,43 @@ def test_canonical_history_page_renders_drift_diagnosis() -> None:
            "renders the 4-point trend chart")
 
 
+def test_canonical_history_page_names_exclusion_accounting() -> None:
+    # The loader-accounting readout (Cycle 216) has a terminal AND an HTML surface:
+    # when the loader filtered the series (red-bench / malformed artifacts dropped),
+    # the page must NAME the accounting so a web reader sees the series is not raw;
+    # a clean load stays silent (raw == filtered). Mirrors the terminal guard
+    # test_render_names_exclusion_accounting_when_filtered in test_canonical_history.
+    print("test_canonical_history_page_names_exclusion_accounting")
+    pts = _drifting_history().points
+    filtered = ch.summarize(
+        pts,
+        accounting=ch.LoadAccounting(
+            total=6, included=len(pts), excluded_red_bench=1, excluded_malformed=1
+        ),
+    )
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(
+            scorecard._write_canonical_history_page(Path(d), history=filtered)
+        ).read_text()
+    _check("Series filtered" in text, "the page names the filtered series")
+    _check(f"{len(pts)} of 6 artifacts kept" in text, "names the kept/total counts")
+    _check("1 red-bench" in text and "1 malformed" in text,
+           "names both exclusion reasons")
+
+    # A clean load (0 excluded) shows no filtered note — raw == filtered.
+    clean = ch.summarize(
+        pts,
+        accounting=ch.LoadAccounting(
+            total=len(pts), included=len(pts), excluded_red_bench=0, excluded_malformed=0
+        ),
+    )
+    with tempfile.TemporaryDirectory() as d:
+        text2 = Path(
+            scorecard._write_canonical_history_page(Path(d), history=clean)
+        ).read_text()
+    _check("Series filtered" not in text2, "an unfiltered load shows no filtered note")
+
+
 def test_canonical_history_page_renders_attribution_stability_stable() -> None:
     # READOUT (Cycle 184): the terminal readout names whether the fingered pillar is
     # STABLE across the whole trailing out-of-band run or WANDERS (AttributionStability,
@@ -2731,6 +2768,7 @@ def main() -> int:
         test_cap_link_and_methodology_anchor_cannot_drift,
         test_canonical_history_page_written_and_links,
         test_canonical_history_page_renders_drift_diagnosis,
+        test_canonical_history_page_names_exclusion_accounting,
         test_canonical_history_page_renders_attribution_stability_stable,
         test_canonical_history_page_stability_wanders_is_data_driven,
         test_canonical_history_in_band_shows_no_drift,

@@ -215,6 +215,98 @@ def test_real_committed_series_is_all_green_bench() -> None:
     )
 
 
+def test_load_accounting_counts_exclusions_by_reason() -> None:
+    print("test_load_accounting_counts_exclusions_by_reason")
+    # The Cycle-215 loader gate drops artifacts silently; Cycle 216 ACCOUNTS for
+    # them by reason so the readout can show the series is FILTERED, not raw. Build
+    # a directory with one clean reading, one red-bench (tests_ok False), and two
+    # malformed (one missing scores, one unparseable JSON) and assert the counts +
+    # the closure invariant included + red + malformed == total.
+    with tempfile.TemporaryDirectory() as tmp:
+        clean = _artifact("20260727T010000Z", 46.1, 85.5, 39.4)
+        red_bench = _artifact("20260727T020000Z", 46.1, 62.5, 16.4)
+        red_bench["tests_ok"] = False
+        malformed = {"ts": "20260727T030000Z", "kind": "local-verify"}  # no scores/delta
+        _write_series(tmp, [clean, red_bench, malformed])
+        # a file that is not valid JSON at all -> counted malformed (an artifact we
+        # saw but could not use), never crashes the loader.
+        with open(os.path.join(tmp, "verify_20260727T040000Z.json"), "w") as fh:
+            fh.write("{not json")
+        pts, acct = ch.load_points_accounted(tmp)
+        _check(len(pts) == 1, f"only the clean reading loads, got {len(pts)}")
+        _check(acct.total == 4, f"all four artifacts are counted, got {acct.total}")
+        _check(acct.included == 1, f"one included, got {acct.included}")
+        _check(acct.excluded_red_bench == 1, f"one red-bench, got {acct.excluded_red_bench}")
+        _check(acct.excluded_malformed == 2, f"two malformed, got {acct.excluded_malformed}")
+        _check(acct.excluded == 3, f"three excluded total, got {acct.excluded}")
+        _check(acct.any_excluded, "any_excluded is True when the series was filtered")
+        _check(
+            acct.included + acct.excluded_red_bench + acct.excluded_malformed == acct.total,
+            "the accounting closes: included + red + malformed == total",
+        )
+        # Teeth: flip the red-bench flag green and it reclassifies as INCLUDED, not
+        # red-bench — the flag is what moves it between the buckets.
+        red_bench["tests_ok"] = True
+        _write_series(tmp, [clean, red_bench, malformed])
+        _, acct2 = ch.load_points_accounted(tmp)
+        _check(
+            acct2.included == 2 and acct2.excluded_red_bench == 0,
+            f"green bench -> included, not red-bench; got {acct2.included}/{acct2.excluded_red_bench}",
+        )
+
+
+def test_load_accounting_clean_series_reports_zero_excluded() -> None:
+    print("test_load_accounting_clean_series_reports_zero_excluded")
+    # A series with nothing to drop: accounting must report 0 excluded and
+    # any_excluded False, so the readout stays silent (raw == filtered). This is
+    # the state of the real committed series today.
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [_artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4) for i in range(1, 4)]
+        _write_series(tmp, rows)
+        pts, acct = ch.load_points_accounted(tmp)
+        _check(acct.total == 3 and acct.included == 3, "all three kept")
+        _check(acct.excluded == 0 and not acct.any_excluded, "nothing excluded, any_excluded False")
+    # The real committed series carries the loader accounting, and it is
+    # non-vacuous: no artifact was ever scored on a red bench (0 red-bench, matching
+    # test_real_committed_series_is_all_green_bench), but the early pre-Cycle-13
+    # legacy FileNotFoundError artifact(s) ARE malformed and were previously dropped
+    # SILENTLY — the accounting now surfaces exactly them, which is the point of the
+    # increment. The closure invariant holds on the real data.
+    hist = ch.load_history()
+    ra = hist.load_accounting
+    _check(ra is not None, "load_history attaches the loader accounting")
+    _check(ra.included == len(hist.points), "included matches the loaded point count")
+    _check(ra.excluded_red_bench == 0, f"no committed reading is red-bench, got {ra.excluded_red_bench}")
+    _check(
+        ra.included + ra.excluded_red_bench + ra.excluded_malformed == ra.total,
+        "the accounting closes on the real committed series",
+    )
+
+
+def test_render_names_exclusion_accounting_when_filtered() -> None:
+    print("test_render_names_exclusion_accounting_when_filtered")
+    # The terminal render must NAME the exclusion accounting when the series was
+    # filtered (so the operator sees it is not raw), and stay silent when it wasn't.
+    with tempfile.TemporaryDirectory() as tmp:
+        clean = _artifact("20260727T010000Z", 46.1, 85.5, 39.4)
+        clean2 = _artifact("20260727T020000Z", 46.1, 85.5, 39.4)
+        red_bench = _artifact("20260727T030000Z", 46.1, 62.5, 16.4)
+        red_bench["tests_ok"] = False
+        _write_series(tmp, [clean, clean2, red_bench])
+        out = ch.render(ch.load_history(tmp))
+        _check("series filtered" in out, "render names the filtered series")
+        _check("2 of 3 artifacts kept" in out, f"render names kept/total counts:\n{out}")
+        # The reason parenthetical lists only the non-zero causes: 1 red-bench, and
+        # NOT a "0 malformed" entry (the phrase "(1 red-bench)" is exact).
+        _check("(1 red-bench)" in out, f"render lists only the non-zero reason:\n{out}")
+    # Clean series -> no filtered line at all.
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [_artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4) for i in range(1, 4)]
+        _write_series(tmp, rows)
+        out = ch.render(ch.load_history(tmp))
+        _check("series filtered" not in out, "an unfiltered series shows no filtered line")
+
+
 def test_bands_and_in_band_series() -> None:
     print("test_bands_and_in_band_series")
     with tempfile.TemporaryDirectory() as tmp:
@@ -2183,6 +2275,9 @@ def main() -> int:
         test_loader_parses_and_skips_malformed,
         test_loader_skips_a_reading_from_a_red_bench,
         test_real_committed_series_is_all_green_bench,
+        test_load_accounting_counts_exclusions_by_reason,
+        test_load_accounting_clean_series_reports_zero_excluded,
+        test_render_names_exclusion_accounting_when_filtered,
         test_bands_and_in_band_series,
         test_sustained_drift_counts_trailing_run,
         test_sustained_run_spans_wall_clock,

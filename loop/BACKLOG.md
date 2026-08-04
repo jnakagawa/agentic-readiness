@@ -682,6 +682,19 @@ design in-cloud, execute locally.
 
 ## P1
 
+- **[OBSERVATION — Cycle 216, METHOD candidate] Fold the loader exclusion accounting into a drift-series
+  INTEGRITY metric.** Cycle 216 (READOUT) surfaced `LoadAccounting` (total / included / excluded_red_bench /
+  excluded_malformed) on both drift surfaces, but it is a display-only count — nothing JUDGES whether the
+  filtered fraction is small enough for the surviving series to be trustworthy. In-cloud METHOD increment:
+  add a pure `load_integrity(accounting)` verdict (e.g. `excluded / total` above a floor → the drift series is
+  MOSTLY filtered, weigh its attribution with caution; red-bench fraction its own sub-signal since a red-bench
+  drop means the scoring path itself was in question). Off the scoring path, score-neutral; guard both the
+  metric (synthetic high-exclusion series trips it, the clean real series does not) and honest-None when total
+  is 0. Naturally couples to the `attribution` / `recapture` confidence the operator already reads — a
+  recommendation resting on a heavily-filtered series is weaker than one on a clean one. Non-vacuous today: the
+  real series is 1/84 excluded (well under any sane floor), so the metric reads "clean" on real data while the
+  synthetic guard exercises the tripped branch.
+
 <!-- DONE 2026-08-04T00:2xZ (Cycle 212, READOUT, direct-to-main, display-only/score-neutral): "[OBSERVATION —
      Cycle 211] Surface the `attributed_pillar_noise_floor`" SHIPPED. Terminal `render` gains a `pillar noise
      floor:` line directly after the attribution top-mover; HTML `_write_canonical_history_page` gains an

@@ -1,8 +1,35 @@
 # Loop state
 
-- Cycle counter: 215
+- Cycle counter: 216
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-04T03:2xZ (Cycle 215) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-04T04:2xZ (Cycle 216) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~72.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
+  cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 04:2xZ fire is NOT
+  first-after-16:00 UTC → no DM this fire per comms policy (display-only / score-neutral off-scoring-path READOUT
+  increment, no sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org
+  46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS
+  (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent regression signal (24/24,
+  46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open → []), so no
+  first-duty review. INFRA/SELF-HEAL (Cycle 216): fresh `.venv` + `requests pyyaml eth-account pytest`, 451 tests
+  green pre-flight (455 after +4). NOTE: the runner has now been at-floor since Aug-1 03:50Z (~3 days) — the
+  durable [LOCAL] runner-recovery item stays P0.
+- FOCUS POINTER (Cycle 216 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 216 was READOUT,
+  so Cycle 217 is METHOD). Cycle 216 shipped a **READOUT increment — the drift block now surfaces the loader's
+  EXCLUSION ACCOUNTING** (`asrs/canonical_history.py` `LoadAccounting` + `load_points_accounted` +
+  `_classify_artifact` refactor + `render` line, `asrs/scorecard.py` "Latest reading" note, `tests/
+  test_canonical_history.py` +3, `tests/test_readout.py` +1; suite 451→455). Cycle 215's loader gate DROPS
+  red-bench/malformed artifacts SILENTLY, so `series: N re-scores` is the FILTERED series with no sign of it. Now
+  both surfaces name `K of N artifacts kept, M excluded (k red-bench, j malformed)` when the loader dropped
+  something (silent when clean). NON-VACUOUS on the REAL series: it surfaces the pre-Cycle-13 legacy malformed
+  artifact previously dropped silently → **83 of 84 kept, 1 excluded (1 malformed), 0 red-bench**. Cross-surface
+  parity (terminal + HTML mirror tests); the Cycle-188 PARITY GUARD stays green (its fixture is all-clean → line
+  absent on both). OFF the scoring path (scoring-path diff EMPTY; `canonical_history`/`scorecard` not imported by
+  `scoring.py`/`probes/` — grep-verified) → score-neutral, NOT peer-gated, direct-to-main. Replay guard 24/24,
+  46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. NEXT (METHOD 217): a fresh calibration/attribution
+  invariance guard, or fold the accounting into a drift-series integrity metric (warn if the excluded FRACTION
+  crosses a floor). Substantive frontier (thin-bank live fixtures, hyphen/reflow real-surface validation,
+  ACP/UCP/MPP, transactability-drop CHECK-level diagnosis + peer-gated re-baseline) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 215 runner note): RUNNER AT-FLOOR at 2026-08-04T03:2xZ (Cycle 215) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~71.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
   cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 03:2xZ fire is NOT
   first-after-16:00 UTC → no DM this fire per comms policy (score-neutral off-scoring-path TRUTH increment, no

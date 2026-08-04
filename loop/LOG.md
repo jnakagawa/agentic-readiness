@@ -3,6 +3,62 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 216 — 2026-08-04T04:2xZ — READOUT — surface the loader's exclusion accounting in the drift block: the operator sees the canonical series is FILTERED, not raw
+
+WHAT/WHY (READOUT — the mirror of Cycle 215's TRUTH loader gate). Cycle 215 made `canonical_history`'s loader
+DROP a reading scored while the bench's own guards were red (`tests_ok is False`), on top of its existing drops
+for malformed/unusable artifacts (missing `scores`/`delta`, a side that didn't score, unparseable JSON). But
+every drop was SILENT: the `series: N live re-scores` line a reader sees is the FILTERED series, with no sign
+anything was excluded — an operator reading the drift block cannot tell a 30-point live divergence rests on a
+raw series or a filtered one, nor on what grounds the filtering happened. This cycle ACCOUNTS for the drops and
+names them on both readout surfaces. New `LoadAccounting` (total / included / excluded_red_bench /
+excluded_malformed, closure `included + red + malformed == total`) produced by a new `load_points_accounted()`;
+`_point_from_artifact` refactored into `_classify_artifact` returning `(point, reason)` so the loader can bucket
+each drop by cause WITHOUT duplicating the parse logic (`_point_from_artifact` kept as a thin points-only
+wrapper, signature preserved for its existing callers/tests). Threaded through `summarize(..., accounting=)` and
+`load_history`; a bare point list (a test constructing points directly) leaves it None and renders nothing.
+Terminal `render` gains a `series filtered: K of N artifacts kept, M excluded (k red-bench, j malformed) —
+red-bench = scored while the bench's own guards were red ...; malformed = unusable artifact` line right after
+`series:`; the HTML `canonical-history.html` "Latest reading" card gains the parallel dimmed note — the same
+terminal->HTML close-out every other drift diagnostic took. Both render ONLY when the loader actually dropped
+something (`any_excluded`); a clean load stays silent (raw == filtered, honest quiet).
+
+METHOD / non-vacuity + teeth. NON-VACUOUS ON THE REAL SERIES: the committed `runs/local` carries an early
+pre-Cycle-13 legacy FileNotFoundError artifact that IS malformed — so the real accounting is **83 of 84 kept, 1
+excluded (1 malformed), 0 red-bench**, and the real terminal render now shows the filtered line surfacing exactly
+that previously-silent legacy drop (0 red-bench matches Cycle 215's green-bench guard). `test_load_accounting_
+counts_exclusions_by_reason`: a synthetic dir with clean + red-bench + missing-scores + unparseable-JSON
+artifacts counts 1/1/2 by reason and closes; teeth — flipping the red flag green reclassifies it from red-bench
+to INCLUDED. `test_load_accounting_clean_series_reports_zero_excluded`: 0-exclusion series → `any_excluded` False
++ real-series accounting closes with 0 red-bench. `test_render_names_exclusion_accounting_when_filtered`
+(terminal) + `test_canonical_history_page_names_exclusion_accounting` (HTML, the cross-surface mirror): a filtered
+series NAMES the kept/total counts and the non-zero reason on each surface AND a clean load shows no filtered
+line on either. The Cycle-188 READOUT PARITY GUARD stays green: its fixture is all-clean (0 excluded), so the
+new line is correctly absent on BOTH surfaces (parity by omission).
+
+SHIP CLASS + evidence. OFF the scoring path — `canonical_history`/`scorecard` are readout/display, NOT imported
+by `scoring.py`/`probes/`/`rubric` (grep-verified); scoring-path diff (`asrs/scoring.py asrs/probes/ rubric/
+fixtures/`) EMPTY → score-neutral, NOT peer-gated, direct-to-main. Changed files: `asrs/canonical_history.py`,
+`asrs/scorecard.py`, `tests/test_canonical_history.py` (+3 tests), `tests/test_readout.py` (+1 test).
+`test_canonical_history.py` 58→61; `test_readout.py` 77→78; full suite 451→455, 0 failures.
+
+CANONICAL PAIR (in-cloud regression-by-construction). Cloud is network-blocked for the live re-score; the
+in-cloud standard is the offline replay guard + regression-by-construction. Scoring path byte-identical →
+replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7. Live signal (read, not re-run —
+runner AT-FLOOR, see STATE): newest `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, ~72.5h old) shows
+drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop
+divergence PERSISTS, off the scoring path.
+
+COMMS. 04:2xZ is NOT first-after-16:00 UTC (last digest Cycle 204, 16:17Z Aug-3) → no digest DM per comms
+policy; score-neutral, no sensitive-class PR, nothing score-moving → no DM. No open peer-gated PRs
+(`list_pull_requests` state=open → []) → no first-duty review.
+
+NEXT HYPOTHESIS (METHOD 217). Rotate METHOD next (METHOD→COVERAGE→TRUTH→READOUT; 216 was READOUT). In-cloud
+METHOD candidate: a fresh calibration/attribution invariance guard, or fold the malformed/red-bench accounting
+into an in-cloud drift-series integrity metric (e.g. warn if the excluded FRACTION crosses a floor — the series
+is mostly filtered). Substantive frontier (thin-bank live fixtures, hyphen/reflow real-surface validation,
+ACP/UCP/MPP, transactability-drop CHECK-level diagnosis + peer-gated re-baseline) stays `[LOCAL]`.
+
 ## Cycle 215 — 2026-08-04T03:2xZ — TRUTH — the drift series excludes a canonical reading scored while the bench's own guards were red: an inconsistent scoring path is not a comparable data point
 
 WHAT/WHY (TRUTH — attribution honesty + versioned comparability of the drift series). The live P0's whole

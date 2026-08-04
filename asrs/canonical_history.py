@@ -539,6 +539,44 @@ class DecisionCorroboration:
 
 
 @dataclass
+class LoadAccounting:
+    """How many verify artifacts the loader saw, KEPT, and EXCLUDED — and why.
+
+    ``load_points`` silently drops artifacts it cannot use: an incomplete/unusable
+    file (``_EXCL_MALFORMED`` — bad JSON, missing/invalid score or delta, a side
+    that didn't score) or a run scored while the bench's own guards were red
+    (``_EXCL_RED_BENCH`` — the Cycle-215 versioned-comparability gate). Silent
+    exclusion means the ``series: N re-scores`` line a reader sees is the FILTERED
+    series, not the raw one, with no sign that anything was dropped. This records
+    the accounting so the readout can NAME it — the operator sees the series is
+    filtered, not raw, and on what grounds (the readout mirror of the Cycle-215
+    loader gate, the same terminal->HTML close-out the other drift diagnostics
+    took).
+
+    ``total``     : verify_*.json files found (parsed or not).
+    ``included``  : usable readings that became points.
+    ``excluded_red_bench`` : dropped for ``tests_ok`` explicitly False.
+    ``excluded_malformed`` : dropped as unusable. By construction
+        ``included + excluded_red_bench + excluded_malformed == total``.
+    """
+
+    total: int
+    included: int
+    excluded_red_bench: int
+    excluded_malformed: int
+
+    @property
+    def excluded(self) -> int:
+        return self.excluded_red_bench + self.excluded_malformed
+
+    @property
+    def any_excluded(self) -> bool:
+        """True iff the loader dropped at least one artifact — the series a reader
+        sees is FILTERED, not the raw set of committed re-scores."""
+        return self.excluded > 0
+
+
+@dataclass
 class CanonicalHistory:
     points: list[CanonicalPoint] = field(default_factory=list)
     baseline_delta: float = FIXTURE_BASELINE_DELTA
@@ -587,6 +625,11 @@ class CanonicalHistory:
     # when no reference ``now`` was supplied (a pure point-series summary) or the
     # latest timestamp is unparseable — never a fabricated freshness claim.
     liveness: Liveness | None = None
+    # the loader's exclusion accounting (how many artifacts were seen, KEPT, and
+    # dropped as red-bench / malformed) — lets the readout show the series is
+    # FILTERED, not raw. None when summarized from a bare point list (no loader
+    # ran), e.g. a test constructing points directly; present via ``load_history``.
+    load_accounting: LoadAccounting | None = None
 
 
 def _band_for(abs_divergence: float) -> str:
@@ -615,53 +658,81 @@ def _repo_root() -> str:
     return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-def _point_from_artifact(obj: dict) -> CanonicalPoint | None:
-    """Parse one verify artifact into a CanonicalPoint, or None if unusable.
+# Exclusion reason codes for the loader accounting — WHY an artifact was dropped.
+# red-bench = scored while the bench's own guards were red (tests_ok False, the
+# Cycle-215 versioned-comparability gate); malformed = otherwise unusable.
+_EXCL_RED_BENCH = "red-bench"
+_EXCL_MALFORMED = "malformed"
+
+
+def _classify_artifact(obj: dict) -> tuple[CanonicalPoint | None, str | None]:
+    """Parse one verify artifact, returning ``(point, None)`` if usable or
+    ``(None, reason)`` naming WHY it was excluded.
 
     Early artifacts (pre-Cycle-13, before the stderr-leak fix) recorded a
     FileNotFoundError instead of a score and carry no top-level ``delta``; those
-    are skipped rather than scored as a zero — attribution honesty applies to the
-    history readout too (a run we couldn't observe is not a data point).
+    are ``_EXCL_MALFORMED`` rather than scored as a zero — attribution honesty
+    applies to the history readout too (a run we couldn't observe is not a data
+    point).
 
     A run whose OWN bench guards were red (``tests_ok`` explicitly False) is
-    likewise not a clean data point. The runner scores the pair even when the
-    suite fails (it bails only on a failed ``git pull``, before scoring — those
-    artifacts carry no ``scores``/``delta`` and are already skipped above), so a
-    tests-red fire still writes a full score. But if the bench is red the scoring
-    path may itself be in an unexpected state (e.g. a red ``test_canonical_replay``
-    means the scoring semantics moved), so that reading is NOT comparable within
-    the version and must not silently anchor a drift attribution — versioned
-    comparability + attribution honesty (invariants #2 / #4). Only an EXPLICIT
-    ``tests_ok == False`` excludes: a missing/None field (pre-``tests_ok``
-    artifacts) is the honest-unknown case and stays in, never fabricated red.
+    likewise not a clean data point — ``_EXCL_RED_BENCH``. The runner scores the
+    pair even when the suite fails (it bails only on a failed ``git pull``, before
+    scoring — those artifacts carry no ``scores``/``delta`` and are already
+    ``_EXCL_MALFORMED`` above), so a tests-red fire still writes a full score. But
+    if the bench is red the scoring path may itself be in an unexpected state (e.g.
+    a red ``test_canonical_replay`` means the scoring semantics moved), so that
+    reading is NOT comparable within the version and must not silently anchor a
+    drift attribution — versioned comparability + attribution honesty (invariants
+    #2 / #4). Only an EXPLICIT ``tests_ok == False`` excludes: a missing/None field
+    (pre-``tests_ok`` artifacts) is the honest-unknown case and stays in, never
+    fabricated red.
+
+    The returned reason drives the loader's exclusion accounting
+    (``LoadAccounting``) so the readout can show the series is FILTERED, not raw —
+    surfacing what was previously a silent drop.
     """
     ts = obj.get("ts")
     scores = obj.get("scores")
     delta = obj.get("delta")
     if not ts or not isinstance(scores, dict) or not isinstance(delta, (int, float)):
-        return None
+        return None, _EXCL_MALFORMED
     if obj.get("tests_ok") is False:
-        return None
+        return None, _EXCL_RED_BENCH
     no_rails = scores.get(CANONICAL_NO_RAILS)
     with_rails = scores.get(CANONICAL_WITH_RAILS)
     if not isinstance(no_rails, dict) or not isinstance(with_rails, dict):
-        return None
+        return None, _EXCL_MALFORMED
     if not (no_rails.get("ok") and with_rails.get("ok")):
-        return None
+        return None, _EXCL_MALFORMED
     no_o = no_rails.get("overall")
     with_o = with_rails.get("overall")
     if not isinstance(no_o, (int, float)) or not isinstance(with_o, (int, float)):
-        return None
-    return CanonicalPoint(
-        ts=ts,
-        no_rails_overall=float(no_o),
-        no_rails_grade=str(no_rails.get("grade", "?")),
-        with_rails_overall=float(with_o),
-        with_rails_grade=str(with_rails.get("grade", "?")),
-        delta=float(delta),
-        no_rails_pillars=_numeric_pillars(no_rails),
-        with_rails_pillars=_numeric_pillars(with_rails),
+        return None, _EXCL_MALFORMED
+    return (
+        CanonicalPoint(
+            ts=ts,
+            no_rails_overall=float(no_o),
+            no_rails_grade=str(no_rails.get("grade", "?")),
+            with_rails_overall=float(with_o),
+            with_rails_grade=str(with_rails.get("grade", "?")),
+            delta=float(delta),
+            no_rails_pillars=_numeric_pillars(no_rails),
+            with_rails_pillars=_numeric_pillars(with_rails),
+        ),
+        None,
     )
+
+
+def _point_from_artifact(obj: dict) -> CanonicalPoint | None:
+    """Parse one verify artifact into a CanonicalPoint, or None if unusable.
+
+    Thin points-only wrapper over ``_classify_artifact`` preserving the historical
+    signature for callers that only care WHETHER an artifact is usable; see that
+    function for the full exclusion rationale (malformed vs red-bench).
+    """
+    pt, _ = _classify_artifact(obj)
+    return pt
 
 
 def _numeric_pillars(side: dict) -> dict[str, float]:
@@ -684,21 +755,50 @@ def _numeric_pillars(side: dict) -> dict[str, float]:
     return out
 
 
-def load_points(runs_dir: str | None = None) -> list[CanonicalPoint]:
-    """Load every usable verify artifact as a CanonicalPoint, ordered by ts."""
+def load_points_accounted(
+    runs_dir: str | None = None,
+) -> tuple[list[CanonicalPoint], LoadAccounting]:
+    """Load every usable verify artifact as a CanonicalPoint AND account for the
+    ones EXCLUDED (red-bench / malformed), ordered by ts.
+
+    ``load_points`` is the points-only view of this; the accounting lets the
+    readout show the series is FILTERED, not raw. A file that fails to open or
+    parse as JSON is counted ``malformed`` (it is an artifact we saw but could not
+    use), so ``total`` is every ``verify_*.json`` found and the accounting closes:
+    ``included + excluded_red_bench + excluded_malformed == total``.
+    """
     if runs_dir is None:
         runs_dir = os.path.join(_repo_root(), "runs", "local")
     points: list[CanonicalPoint] = []
+    total = red = malformed = 0
     for path in sorted(glob.glob(os.path.join(runs_dir, "verify_*.json"))):
+        total += 1
         try:
             with open(path, encoding="utf-8") as fh:
                 obj = json.load(fh)
         except (OSError, json.JSONDecodeError):
+            malformed += 1
             continue
-        pt = _point_from_artifact(obj)
+        pt, reason = _classify_artifact(obj)
         if pt is not None:
             points.append(pt)
+        elif reason == _EXCL_RED_BENCH:
+            red += 1
+        else:
+            malformed += 1
     points.sort(key=lambda p: p.ts)
+    accounting = LoadAccounting(
+        total=total,
+        included=len(points),
+        excluded_red_bench=red,
+        excluded_malformed=malformed,
+    )
+    return points, accounting
+
+
+def load_points(runs_dir: str | None = None) -> list[CanonicalPoint]:
+    """Load every usable verify artifact as a CanonicalPoint, ordered by ts."""
+    points, _ = load_points_accounted(runs_dir)
     return points
 
 
@@ -736,13 +836,21 @@ def summarize(
     baseline_delta: float = FIXTURE_BASELINE_DELTA,
     *,
     now: datetime | None = None,
+    accounting: LoadAccounting | None = None,
 ) -> CanonicalHistory:
     """Roll a point series up into a CanonicalHistory (latest + drift verdict).
 
     ``now`` (optional, tz-aware UTC) enables the freshness check on the latest
     re-score; omit it for a pure, clock-independent summary of the series.
+    ``accounting`` (optional) carries the loader's exclusion accounting so the
+    readout can show the series is filtered; a bare point list (no loader ran)
+    leaves it None and no accounting line renders.
     """
-    hist = CanonicalHistory(points=list(points), baseline_delta=baseline_delta)
+    hist = CanonicalHistory(
+        points=list(points),
+        baseline_delta=baseline_delta,
+        load_accounting=accounting,
+    )
     if not points:
         return hist
     latest = points[-1]
@@ -1081,7 +1189,8 @@ def corroboration_verdict(corr: DecisionCorroboration) -> str:
 def load_history(
     runs_dir: str | None = None, *, now: datetime | None = None
 ) -> CanonicalHistory:
-    return summarize(load_points(runs_dir), now=now)
+    points, accounting = load_points_accounted(runs_dir)
+    return summarize(points, now=now, accounting=accounting)
 
 
 def _spark(values: list[float]) -> str:
@@ -1174,6 +1283,19 @@ def _fmt_delta(d: float) -> str:
     return f"{d:+.1f}"
 
 
+def _exclusion_phrase(acct: LoadAccounting) -> str:
+    """"k red-bench, j malformed" — only the non-zero reasons, in a fixed order, so
+    the readout names WHY the series was filtered without listing empty causes.
+    Shared by both surfaces (terminal + HTML) so they phrase the exclusion the same.
+    """
+    parts = []
+    if acct.excluded_red_bench:
+        parts.append(f"{acct.excluded_red_bench} red-bench")
+    if acct.excluded_malformed:
+        parts.append(f"{acct.excluded_malformed} malformed")
+    return ", ".join(parts)
+
+
 def render(history: CanonicalHistory, window: int = 24) -> str:
     """Render the history as a terminal block."""
     lines = ["CANONICAL DELTA HISTORY", "-" * 23]
@@ -1185,6 +1307,14 @@ def render(history: CanonicalHistory, window: int = 24) -> str:
         f"series: {len(pts)} live re-scores  "
         f"{_short_ts(pts[0].ts)} → {_short_ts(pts[-1].ts)}"
     )
+    acct = history.load_accounting
+    if acct is not None and acct.any_excluded:
+        lines.append(
+            f"series filtered: {acct.included} of {acct.total} artifacts kept, "
+            f"{acct.excluded} excluded ({_exclusion_phrase(acct)}) — "
+            f"red-bench = scored while the bench's own guards were red (not "
+            f"comparable within the version); malformed = unusable artifact"
+        )
     lines.append(
         f"baseline (committed fixtures): {_fmt_delta(history.baseline_delta)}  "
         f"[{CANONICAL_NO_RAILS} no-rails vs {CANONICAL_WITH_RAILS} rails]"

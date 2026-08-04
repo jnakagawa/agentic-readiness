@@ -10,8 +10,11 @@ series and surfaces the delta TREND + a sustained-drift alert vs the committed-
 fixture baseline the in-cloud replay guard pins (+39.4). These tests pin:
 
   - the loader parses a well-formed artifact and SKIPS malformed ones (the early
-    pre-Cycle-13 FileNotFoundError artifacts, and any run where a domain isn't
-    ``ok``) — attribution honesty: an unobserved re-score is not a data point;
+    pre-Cycle-13 FileNotFoundError artifacts, any run where a domain isn't
+    ``ok``, and any run scored while the bench's own guards were red
+    (``tests_ok`` False)) — attribution honesty + versioned comparability: an
+    unobserved re-score, or one from an inconsistent scoring path, is not a data
+    point;
   - the drift bands + the sustained-out-of-band counter (1 reading is jitter, a
     trailing RUN is a real move) behave as documented;
   - the render block is substantive and never crashes on an empty series;
@@ -152,6 +155,64 @@ def test_loader_parses_and_skips_malformed() -> None:
         _check(pts[0].ts == "20260727T010000Z", "the usable point is the good one")
         _check(pts[0].delta == 39.4, f"delta parsed, got {pts[0].delta}")
         _check(pts[0].with_rails_overall == 85.5, "with-rails overall parsed")
+
+
+def test_loader_skips_a_reading_from_a_red_bench() -> None:
+    print("test_loader_skips_a_reading_from_a_red_bench")
+    with tempfile.TemporaryDirectory() as tmp:
+        # Two identical, otherwise-usable readings; one was scored while the
+        # bench's own guards were red. A tests-red fire still writes a full
+        # score (the runner bails only on a failed git pull, before scoring),
+        # but its scoring path may be in an unexpected state — not comparable
+        # within the version, so it must not anchor a drift point.
+        clean = _artifact("20260727T010000Z", 46.1, 85.5, 39.4)
+        red_bench = _artifact("20260727T020000Z", 46.1, 62.5, 16.4)
+        red_bench["tests_ok"] = False
+        # a reading with NO tests_ok field is the honest-unknown case: stays in.
+        legacy_no_field = _artifact("20260727T030000Z", 46.1, 85.5, 39.4)
+        del legacy_no_field["tests_ok"]
+        _write_series(tmp, [clean, red_bench, legacy_no_field])
+        pts = ch.load_points(tmp)
+        kept = {p.ts for p in pts}
+        _check(
+            kept == {"20260727T010000Z", "20260727T030000Z"},
+            f"the red-bench reading is dropped, unknown stays; kept {sorted(kept)}",
+        )
+        # Non-vacuous / has teeth: without the guard the red reading WOULD load
+        # (it is otherwise well-formed) — flip its flag True and it reappears.
+        red_bench["tests_ok"] = True
+        _write_series(tmp, [clean, red_bench, legacy_no_field])
+        _check(
+            len(ch.load_points(tmp)) == 3,
+            "same reading loads once its bench is green — the flag is what excludes",
+        )
+
+
+def test_real_committed_series_is_all_green_bench() -> None:
+    print("test_real_committed_series_is_all_green_bench")
+    # The exclusion is defense-in-depth: every committed artifact today was
+    # scored on a green bench, so the guard drops NONE of the real series (the
+    # live drift attribution the P0 rests on is unchanged). If a future artifact
+    # lands with tests_ok False, this reconciles loaded-points vs raw-usable.
+    import glob as _glob
+
+    runs = os.path.join(_REPO, "runs", "local")
+    raw_usable = red = 0
+    for path in sorted(_glob.glob(os.path.join(runs, "verify_*.json"))):
+        with open(path, encoding="utf-8") as fh:
+            obj = json.load(fh)
+        base = dict(obj)
+        base.pop("tests_ok", None)  # neutralize the new gate to count raw-usable
+        if ch._point_from_artifact(base) is not None:
+            raw_usable += 1
+            if obj.get("tests_ok") is False:
+                red += 1
+    loaded = len(ch.load_points())
+    _check(red == 0, f"no committed reading was scored on a red bench, got {red}")
+    _check(
+        loaded == raw_usable,
+        f"the bench gate drops nothing on the real series: loaded {loaded} == usable {raw_usable}",
+    )
 
 
 def test_bands_and_in_band_series() -> None:
@@ -2120,6 +2181,8 @@ def test_runs_against_real_committed_series() -> None:
 def main() -> int:
     tests = [
         test_loader_parses_and_skips_malformed,
+        test_loader_skips_a_reading_from_a_red_bench,
+        test_real_committed_series_is_all_green_bench,
         test_bands_and_in_band_series,
         test_sustained_drift_counts_trailing_run,
         test_sustained_run_spans_wall_clock,

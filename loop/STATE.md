@@ -1,8 +1,34 @@
 # Loop state
 
-- Cycle counter: 214
+- Cycle counter: 215
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-04T02:1xZ (Cycle 214) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-04T03:2xZ (Cycle 215) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~71.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
+  cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 03:2xZ fire is NOT
+  first-after-16:00 UTC → no DM this fire per comms policy (score-neutral off-scoring-path TRUTH increment, no
+  sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org 46.1 F /
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1),
+  off the scoring path; the in-cloud replay guard stays the frozen independent regression signal (24/24, 46.1 F /
+  85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open → []), so no first-duty
+  review. Test suite green pre-flight (449) and post (451). NOTE: the runner has now been at-floor since Aug-1
+  03:50Z (~3 days) — the durable [LOCAL] runner-recovery item stays P0.
+- FOCUS POINTER (Cycle 215 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 215 was TRUTH,
+  so Cycle 216 is READOUT). Cycle 215 shipped a **TRUTH increment — the drift-series loader now excludes a
+  canonical reading scored while the bench's own guards were red** (`asrs/canonical_history._point_from_artifact`
+  returns None on an EXPLICIT `tests_ok is False`; a missing/None field = honest-unknown, stays in). The runner
+  scores the pair even on a red suite (it bails only on a failed `git pull`, before scoring — those are already
+  dropped for missing scores/delta), so a reading from an inconsistent scoring path (e.g. a red
+  `test_canonical_replay` = scoring semantics moved) could silently anchor a drift attribution — invariants #2
+  (versioned comparability) + #4 (attribution honesty). Non-vacuous: teeth test flips the SAME reading's flag
+  True→reappears; real-series reconciliation proves the gate drops NONE of the 84 committed (all green) artifacts,
+  so the live drift attribution the P0 rests on is unchanged. OFF the scoring path (canonical_history not imported
+  by scoring.py/probes/rubric — grep-verified; scoring-path diff EMPTY) → score-neutral, NOT peer-gated,
+  direct-to-main. Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. `test_canonical_history.py`
+  56→58; suite 449→451. NEXT (READOUT 216): surface the loader's exclusion accounting in the drift block/render
+  ("N readings; M excluded: k red-bench, j malformed") so the operator sees the series is filtered, not raw — the
+  readout mirror of this cycle's guard. Substantive frontier (thin-bank live fixtures, hyphen/reflow real-surface
+  validation, ACP/UCP/MPP, transactability-drop CHECK-level diagnosis + peer-gated re-baseline) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 214 runner note): RUNNER AT-FLOOR at 2026-08-04T02:1xZ (Cycle 214) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~70.4h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
   cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 02:1xZ fire is NOT
   first-after-16:00 UTC → no DM this fire per comms policy (score-neutral off-scoring-path COVERAGE increment, no

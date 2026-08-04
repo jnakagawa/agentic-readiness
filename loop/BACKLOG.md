@@ -5,6 +5,18 @@ design in-cloud, execute locally.
 
 ## P0
 
+- **[LOCAL] LOCAL verify runner AT-FLOOR since Aug-1 03:50Z (~3 days)** (SELF-HEALING, re-opened Cycle 215).
+  Newest artifact `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is the last successful fire; at
+  Cycle 215 (Aug-4 03:2xZ) it is ~71.5h old — far past the 6h floor. This is LONGER than the prior
+  self-clearing machine-asleep stalls (Cycle 63 ~18h, Cycle 137→144 ~14h), so it may NOT be a simple
+  wake-race this time. The cloud CANNOT repair the local machine (no reach). NEXT LOCAL FIRE (when the
+  machine wakes): confirm the launchd job (`org.pie.asrs-local-cycle`, :41) still fires (check its heartbeat
+  log), that `git_pull_with_retry` isn't exhausting its 5×15s budget, and that `.venv`/`ASRS_REPO` are intact;
+  if the runner is fine and just hasn't woken, one wake self-clears it — if it fires but fails, capture the
+  heartbeat + newest unpushed `verify_*.json` and diagnose. FLAG the ~3-day stall in the next first-after-16:00
+  UTC digest (~Aug-4 16:xxZ). Until it recovers, the in-cloud replay guard (24/24, 46.1 F / 85.5 B / +39.4)
+  stays the frozen regression signal and the live drift signal is READ (not re-run) from the Aug-1 artifact.
+
 - **[LOCAL] Verify the driftflight.com LIVE transactability drop (canonical-anchor divergence)** (TRUTH,
   opened Cycle 126). The LOCAL runner RECOVERED this fire (`runs/local/verify_20260731T085248Z.json`,
   08:52Z Jul-31, attempts=1) and its LIVE static re-score shows driftflight.com **76.2 C / delta +30.1**
@@ -1007,10 +1019,16 @@ design in-cloud, execute locally.
      peer-gated. Full suite green across 23 files; replay guard 24/24, 46.1 F / 85.5 B / +39.4; rubric v0.7.
      See LOG Cycle 145. -->
 
-<!-- NOTE (Cycle 145): the LOCAL verify runner RECOVERED — newest verify_20260801T035047Z.json (03:50Z
-     Aug-1, attempts=1) is inside the 6h floor, clearing the ~14h Cycle-137→144 stall (machine-asleep
-     wake-instant pattern, self-cleared on wake as predicted). Report the recovery in the next
-     first-after-16:00 digest (~Aug-1 16:xxZ). No action item. -->
+<!-- NOTE (Cycle 145, SUPERSEDED Cycle 215): reported the runner recovered with verify_20260801T035047Z.json
+     inside the floor. That was true at 03:50Z Aug-1 — but that artifact turned out to be the LAST successful
+     fire; the runner has been AT-FLOOR ever since. Tracked now as the P0 [LOCAL] runner-recovery item at the
+     top of P0 (re-opened Cycle 215). -->
+
+<!-- READOUT candidate (opened Cycle 215, for Cycle 216): surface the loader's EXCLUSION accounting in the
+     drift block / `canonical_history.render` — e.g. "N readings; M excluded (k red-bench, j malformed)" — so
+     the operator sees the drift series is FILTERED (per-side-not-ok + red-bench + malformed dropped), not raw.
+     The READOUT mirror of Cycle 215's TRUTH guard (`_point_from_artifact` now drops tests_ok=False). Off the
+     scoring path, display+tests only → score-neutral, direct-to-main. -->
 
   <!-- STANDING METHOD-hygiene note: `test_runner_registration.py` (Cycle 145) now fails loudly on any
        future defined-but-unregistered or ghost test, so an arc-closing leg can no longer silently skip

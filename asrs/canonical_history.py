@@ -622,11 +622,25 @@ def _point_from_artifact(obj: dict) -> CanonicalPoint | None:
     FileNotFoundError instead of a score and carry no top-level ``delta``; those
     are skipped rather than scored as a zero — attribution honesty applies to the
     history readout too (a run we couldn't observe is not a data point).
+
+    A run whose OWN bench guards were red (``tests_ok`` explicitly False) is
+    likewise not a clean data point. The runner scores the pair even when the
+    suite fails (it bails only on a failed ``git pull``, before scoring — those
+    artifacts carry no ``scores``/``delta`` and are already skipped above), so a
+    tests-red fire still writes a full score. But if the bench is red the scoring
+    path may itself be in an unexpected state (e.g. a red ``test_canonical_replay``
+    means the scoring semantics moved), so that reading is NOT comparable within
+    the version and must not silently anchor a drift attribution — versioned
+    comparability + attribution honesty (invariants #2 / #4). Only an EXPLICIT
+    ``tests_ok == False`` excludes: a missing/None field (pre-``tests_ok``
+    artifacts) is the honest-unknown case and stays in, never fabricated red.
     """
     ts = obj.get("ts")
     scores = obj.get("scores")
     delta = obj.get("delta")
     if not ts or not isinstance(scores, dict) or not isinstance(delta, (int, float)):
+        return None
+    if obj.get("tests_ok") is False:
         return None
     no_rails = scores.get(CANONICAL_NO_RAILS)
     with_rails = scores.get(CANONICAL_WITH_RAILS)

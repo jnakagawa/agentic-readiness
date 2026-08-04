@@ -3,6 +3,54 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 215 — 2026-08-04T03:2xZ — TRUTH — the drift series excludes a canonical reading scored while the bench's own guards were red: an inconsistent scoring path is not a comparable data point
+
+WHAT/WHY (TRUTH — attribution honesty + versioned comparability of the drift series). The live P0's whole
+question is "is driftflight.com's transactability 87.5→62.5 a REAL site move or environment noise?" — and the
+answer rests entirely on `canonical_history.load_points()` treating each committed `verify_*.json` as CLEAN,
+comparable site evidence. The loader already skips a reading whose per-side crawl wasn't `ok` (attribution
+honesty) and, because the runner bails on a failed `git pull` BEFORE scoring, a network-degraded fire writes no
+`scores`/`delta` and is already dropped. But I found the run-level bench-health gap: `local_verify.py` scores the
+pair EVEN WHEN THE TEST SUITE FAILS (`main()` continues past a red suite, exits 2, writes a FULL score with
+`tests_ok=False`). A reading produced while the bench's own guards were red is NOT trustworthy as a comparable
+drift point — if the red suite is `test_canonical_replay`, the SCORING SEMANTICS moved, so any "drift" in that
+reading could be a code artifact, not a site change (invariant #2 versioned comparability). Yet nothing consulted
+`tests_ok` — it was written by the runner and read by no one. Now `_point_from_artifact` returns None on an
+EXPLICIT `tests_ok is False` (a missing/None field = honest-unknown, stays in — never fabricated red), extending
+the loader's existing "a run we couldn't observe is not a data point" philosophy from per-side crawl health to
+run-level bench health.
+
+METHOD / non-vacuity + teeth. `test_loader_skips_a_reading_from_a_red_bench`: a well-formed reading with
+`tests_ok=False` is dropped, a no-field reading is kept (honest-unknown), and — the teeth — flipping the SAME
+reading's flag back to True makes it reappear (so the flag is what excludes, not some other malformation).
+`test_real_committed_series_is_all_green_bench`: reconciles the guard against the REAL series — recomputes
+"raw-usable" points with the gate neutralized and asserts `load_points()` drops NONE of them (all 84 committed
+artifacts are `tests_ok=True`), so the live drift attribution the P0 rests on is provably unchanged; it also
+asserts zero committed readings were red-bench (defense-in-depth, arms on the first future red artifact).
+
+SHIP CLASS + evidence. OFF the scoring path — `canonical_history` is imported by cli/scorecard/tests only, NOT
+by `scoring.py`/`probes/`/`rubric` (grep-verified); scoring-path diff (`asrs/scoring.py asrs/probes/ rubric/
+fixtures/`) EMPTY → score-neutral, NOT peer-gated, direct-to-main. Changed files: `asrs/canonical_history.py`
+(+14) + `tests/test_canonical_history.py` (+2 tests). `test_canonical_history.py` 56→58; full suite 449→451, 0
+failures.
+
+CANONICAL PAIR (in-cloud regression-by-construction). Cloud is network-blocked for the live re-score; the
+in-cloud standard is the offline replay guard + regression-by-construction. Scoring path byte-identical →
+replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7. Live signal (read, not re-run —
+runner AT-FLOOR, see STATE): newest `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1, ~71.5h old) shows
+drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop
+divergence PERSISTS, off the scoring path.
+
+COMMS. 03:2xZ is NOT first-after-16:00 UTC (last digest Cycle 204, 16:17Z Aug-3) → no digest DM per comms
+policy; score-neutral, no sensitive-class PR, nothing score-moving → no DM. No open peer-gated PRs
+(`list_pull_requests` state=open → []) → no first-duty review.
+
+NEXT HYPOTHESIS (READOUT 216). Rotate READOUT next (METHOD→COVERAGE→TRUTH→READOUT; 215 was TRUTH). In-cloud
+READOUT candidate: surface the loader's exclusion accounting in the drift block/render (e.g. "N readings; M
+excluded: k red-bench, j malformed") so the operator sees the series is filtered, not raw — the readout mirror
+of this cycle's TRUTH guard. Substantive frontier (thin-bank live fixtures, hyphen/reflow real-surface
+validation, ACP/UCP/MPP, transactability-drop CHECK-level diagnosis + peer-gated re-baseline) stays `[LOCAL]`.
+
 ## Cycle 214 — 2026-08-04T02:1xZ — COVERAGE — fold typographic/non-breaking intra-word hyphens so a compound capability term keys on its WORDS, not the dash glyph a crawl captured
 
 WHAT/WHY (COVERAGE — offering-classifier robustness; the third typographic-encoding sibling). A readiness

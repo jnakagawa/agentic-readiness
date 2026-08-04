@@ -1,0 +1,22 @@
+{
+  "ts": "20260804T205632Z",
+  "cycle": "LOCAL 234",
+  "change": "loop/x402-proxy-discovery — x402 probe discovers + POSTs the call-through PROXY endpoint",
+  "invariant_3_live_validation": {
+    "positive_with_rails": {
+      "domain": "driftflight.com",
+      "before_fix_live": {"overall": 76.2, "grade": "C", "tx_pillar": 62.5, "x402_probe": "PARTIAL 4.0 x402-documented-not-probed"},
+      "after_fix_live":  {"overall": 85.5, "grade": "B", "tx_pillar": 87.5, "x402_probe": "PASS 8.0 x402-live"},
+      "frozen_fixture":  {"overall": 85.5, "grade": "B", "tx_pillar": 87.5, "x402_probe": "PASS 8.0 x402-live"},
+      "note": "live now byte-identical to the frozen fixture; proxy 402 observed at POST agents.driftflight.com/<upstream-openapi-path>"
+    },
+    "precision_negatives_live": [
+      {"domain": "drift-flight.org",  "overall": 46.1, "grade": "F", "x402_probe": "FAIL 0.0 no-agent-native-payment", "note": "live no-rails anchor — no false x402-live; matches frozen 46.1"},
+      {"domain": "example.com",       "overall": 22.5, "grade": "F", "x402_probe": "FAIL 0.0 no-agent-native-payment"},
+      {"domain": "books.toscrape.com","overall": 29.5, "grade": "F", "x402_probe": "FAIL 0.0 no-agent-native-payment"}
+    ],
+    "live_canonical_delta_after_fix": 39.4,
+    "frozen_replay_guard": "24/24, 46.1 F / 85.5 B / +39.4, zero replay-miss (fixture-neutral by early-return-at-first-402)"
+  },
+  "spend": "zero — static $0 crawl only, empty-body POST handshake, no --behavioral, no nonzero auth (invariant #1)"
+}

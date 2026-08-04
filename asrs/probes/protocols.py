@@ -542,6 +542,17 @@ _ABS_URL_RE = re.compile(r"https?://[^\s\"'<>)\]]+")
 _METHOD_PATH_RE = re.compile(r"\b(?:GET|POST|PUT|PATCH|ANY)\s+(/[A-Za-z0-9_\-/.]*[A-Za-z0-9])")
 # Discovery docs an agent surface serves at well-known paths.
 _AGENT_SURFACE_DOCS = ("/llms.txt", "/llms-full.txt", "/manifest.json")
+# URLs pulled from prose/markdown pick up trailing punctuation the extractor
+# must shed — a closing backtick/quote, a sentence period, comma, or colon.
+# Without this, a referenced `openapi.json`. (backtick + period) fails the
+# ".json" gate and its upstream paths are lost. (Parens/brackets/angle-quotes
+# are already excluded by _ABS_URL_RE's own character class.)
+_URL_TRAILING_JUNK = "`.,;:!?*"
+
+
+def _strip_url_junk(url: str) -> str:
+    """Trim trailing markdown/sentence punctuation off a URL pulled from prose."""
+    return url.rstrip(_URL_TRAILING_JUNK)
 
 
 def _agent_surface_bases(ctx: FetchContext, home: FetchResult, llms: FetchResult | None) -> list[str]:
@@ -558,7 +569,7 @@ def _agent_surface_bases(ctx: FetchContext, home: FetchResult, llms: FetchResult
 
     candidates = list(_all_links(home))
     if llms is not None and llms.ok and llms.status == 200:
-        candidates += [m.group(0) for m in _ABS_URL_RE.finditer(llms.text or "")]
+        candidates += [_strip_url_junk(m.group(0)) for m in _ABS_URL_RE.finditer(llms.text or "")]
 
     bases: list[str] = []
     for url in candidates:
@@ -591,29 +602,43 @@ def _agent_surface_targets(
     Pulls API paths the surface's own docs name — "POST /generate" mentions,
     absolute URLs on an agent host, and paths from a referenced openapi.json —
     and joins the relative ones to each base.
+
+    A ZeroClick-style call-through proxy fronts the bare-POST 402 at
+    ``agents.<domain>/<upstream-openapi-path>`` (send the same method+path you
+    would send the upstream API), so the concrete OPERATION paths — method-path
+    doc mentions first, then upstream openapi paths — are joined to each proxy
+    base and ordered AHEAD of doc/auth URLs, which never 402. The first live
+    402 short-circuits the probe, so leading with the priced endpoints is what
+    lets the proxy handshake be observed rather than under-scored.
     """
     if not bases:
         return []
     text = "\n".join(p.text or "" for p in pages)
     base_hosts = {urlparse(b).netloc for b in bases}
 
-    paths = [m.group(1) for m in _METHOD_PATH_RE.finditer(text)]
-
-    targets: list[str] = []
+    method_paths = [m.group(1) for m in _METHOD_PATH_RE.finditer(text)]
+    openapi_paths: list[str] = []
+    doc_urls: list[str] = []
     for m in _ABS_URL_RE.finditer(text):
-        parsed = urlparse(m.group(0))
+        url = _strip_url_junk(m.group(0))
+        parsed = urlparse(url)
         if parsed.netloc in base_hosts and len(parsed.path.strip("/")) > 0:
             # Their own docs pages aren't API endpoints.
             if not any(parsed.path.endswith(d) for d in _AGENT_SURFACE_DOCS):
-                targets.append(f"{parsed.scheme}://{parsed.netloc}{parsed.path}")
+                doc_urls.append(f"{parsed.scheme}://{parsed.netloc}{parsed.path}")
         elif "openapi" in parsed.path.lower() and parsed.path.lower().endswith(".json"):
-            paths += _openapi_paths(ctx, m.group(0))
+            openapi_paths += _openapi_paths(ctx, url)
 
+    # Concrete operation paths first (method-path mentions, then upstream
+    # openapi paths), each joined to every proxy base; then doc/auth URLs.
+    api_paths = _dedupe(method_paths + openapi_paths)
+    targets: list[str] = []
     for base in bases:
-        for path in _dedupe(paths)[:5]:
+        for path in api_paths[:6]:
             if "{" not in path and "<" not in path:
                 targets.append(base + path)
-    return _dedupe(targets)[:8]
+    targets += doc_urls
+    return _dedupe(targets)[:10]
 
 
 def _openapi_paths(ctx: FetchContext, url: str) -> list[str]:

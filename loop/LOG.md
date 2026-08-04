@@ -17477,3 +17477,7 @@ coupling pattern to the CARD (not just the methodology page) if the card surface
 fraction. Substantive frontier (thin-archetype/render/structured-catalog LIVE fixtures, a THIRD
 real anchor, ACP/UCP/MPP live handshakes, the typographic phrase-rescue real-evidence case)
 stays `[LOCAL]`.
+
+## Local verification — 20260804T234102Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260804T234102Z.json

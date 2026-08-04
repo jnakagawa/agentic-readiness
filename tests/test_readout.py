@@ -1822,6 +1822,27 @@ def test_methodology_documents_calibration() -> None:
            "headline attribution framed as payment-dominated, not payment-exclusive")
     _check("legibly" in collapsed,
            "the honest residual attributed to the non-payment (legibility) pillar")
+    # Cycle 224 (READOUT): the cross-anchor RANK-CONCORDANCE property now runs too
+    # (Cycle 223's test 16 test_static_prediction_and_behavioral_outcome_are_rank_
+    # concordant). Every prior calibration prose reasons WITHIN a single anchor (does
+    # THIS store's checkpoint pass?) or about the payment counterfactual; none surfaces
+    # that the DIRECTION the score predicts — the ranking a reader cites, B vs F — is
+    # the SAME direction the agent's lived outcome points, with no sign inversion. The
+    # page must now name: (a) the ranking-level no-inversion claim; (b) amplification-
+    # not-rescue (the ordering already held on the static prediction alone, before the
+    # behavioral outcome was folded in); (c) the honest scope — trust legitimately
+    # favors the no-rails store and access ties, so concordance is carried by the
+    # capability pillars, not "with-rails wins everything". Test-pinned, vendor-neutral.
+    _check("rank-concordant" in collapsed and "no sign inversion" in collapsed,
+           "calibration states the static prediction and behavioral outcome are rank-concordant")
+    _check("amplification, not rescue" in collapsed,
+           "no-inversion framed as amplification-not-rescue (ordering held on static alone)")
+    _check("static prediction alone" in collapsed,
+           "amplification claim grounded: the ordering held on the static prediction alone")
+    _check("favors the no-rails storefront" in collapsed,
+           "honest scope: one behaviorally augmented pillar (trust) favors the no-rails store")
+    _check("carried by the" in collapsed and "capability pillars" in collapsed,
+           "ranking stated to be carried by the capability pillars, not a clean sweep")
     # Vendor-neutral: no domain/product/brand named on the page.
     for banned in ("drift-flight", "driftflight"):
         _check(banned not in text, f"methodology names no vendor/domain ({banned!r})")

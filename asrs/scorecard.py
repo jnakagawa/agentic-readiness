@@ -1238,6 +1238,25 @@ agent-native payment, the rest an earned legibility difference the pitch does no
 to claim. Like the pillar counterfactual, this overall-level attribution is pinned by
 an <b>executable regression test</b> &mdash; so &ldquo;payment drives the majority of
 the gap&rdquo; is <b>checked, not asserted</b>.</p>
+<p>Everything so far checks the number against the experience on each storefront
+<b>separately</b>. But the claim a reader actually <b>cites</b> is a <b>ranking</b>
+&mdash; a grade of <b>B versus F</b>, which storefront is more agent-ready &mdash; and a
+ranking has its own failure mode: a reweighting could keep every single-storefront
+checkpoint green yet <b>invert the order</b>, so the score names one winner while the
+agent&rsquo;s lived outcome names the other. It does not. The static prediction and the
+behavioral outcome are <b>rank-concordant &mdash; no sign inversion</b>: on <b>every</b>
+static-observable pillar the with-rails side ranks at least as high as the no-rails side
+and <b>strictly higher on payability</b>, and the behavioral-only <b>outcome</b> pillar
+points the <b>same way</b> (a completed machine-payable transaction versus a hard stall).
+Crucially this is <b>amplification, not rescue</b>: the cited headline ordering already
+held on the <b>static prediction alone</b>, before the behavioral outcome was folded in
+&mdash; the live run <b>confirms</b> the direction the static number already pointed, it
+does not manufacture it. And the concordance is <b>honestly scoped</b>, not
+&ldquo;the with-rails side wins everything&rdquo;: one behaviorally augmented pillar
+&mdash; <b>trust</b> &mdash; legitimately <b>favors the no-rails storefront</b>, and
+access is a <b>tie</b>, so the ranking is carried by the <b>capability pillars</b>,
+exactly where agent-native payment lives. Like the rest of this section, the
+no-inversion property is pinned by an <b>executable regression test</b>.</p>
 <p>Two honest limits keep this from over-claiming. The positive direction is still
 anchored on a <b>single with-rails run</b>; the negative floor now spans <b>two
 storefront types</b>, but neither direction is yet corroborated across a full

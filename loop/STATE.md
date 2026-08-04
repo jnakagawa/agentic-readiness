@@ -1,8 +1,37 @@
 # Loop state
 
-- Cycle counter: 223
+- Cycle counter: 224
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-04T11:2xZ (Cycle 223) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-04T12:2xZ (Cycle 224) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~80.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
+  cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 12:2xZ fire is NOT
+  first-after-16:00 UTC → no DM this fire per comms policy (display-only / score-neutral off-scoring-path READOUT
+  increment, no sensitive-class PR, nothing score-moving). Live signal (READ, not re-run): drift-flight.org 46.1 F /
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1), off
+  the scoring path; the in-cloud replay guard stays the frozen independent regression signal (24/24, 46.1 F / 85.5 B /
+  +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/
+  SELF-HEAL (Cycle 224): fresh `.venv` + `requests pyyaml eth-account pytest`, 469 tests green pre-flight (469 after —
+  the 5 new assertions live inside the existing calibration test, no count change); realigned local `main` off the
+  stale orphan tip `3796519` to origin/main `3192ff0` (Cycle-52 lesson) before working; LOG.md confirmed newest-first
+  + complete through Cycle 223; last push (Cycle 223, 3192ff0) present on origin/main. NOTE: runner at-floor since
+  Aug-1 03:50Z (~3.3 days) — durable [LOCAL] runner-recovery stays P0.
+- FOCUS POINTER (Cycle 224 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 224 was READOUT, so
+  Cycle 225 is METHOD). Cycle 224 shipped a **READOUT increment — the public methodology page (section 8, Calibration)
+  now surfaces the cross-anchor RANK-CONCORDANCE / no-sign-inversion property** that Cycle 223's test 16 pinned in-cloud
+  but the reader-facing prose did not state. New paragraph in `_write_methodology_page` (before the "Two honest limits"
+  closer): (a) the ranking-level failure mode (a reweighting keeps every single-store checkpoint green yet INVERTS the
+  order) and that ASRS is "rank-concordant — no sign inversion" (with-rails >= no-rails on every static-observable
+  pillar, strictly higher on payability, behavioral-only Outcome pointing the same way); (b) AMPLIFICATION-not-RESCUE
+  (the headline ordering already held on the "static prediction alone" before the behavioral outcome was folded in);
+  (c) honest scope — trust "favors the no-rails storefront" + access ties, so the ranking is "carried by the capability
+  pillars", not "with-rails wins everything". CAPABILITY-worded, vendor-neutral; `test_methodology_documents_calibration`
+  +5 assertions. OFF the scoring path (scoring-path diff EMPTY; only `scorecard.py` display + the test) → score-neutral,
+  NOT peer-gated, direct-to-main. Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; suite 469; rubric v0.7.
+  NEXT (METHOD 225): a variance/attribution property (panel-verdict-stability invariant or a tighter divergence-
+  attribution guard) — the calibration science + its readout are now both landed for the two committed anchors. The
+  substantive frontier (a THIRD real anchor, moleskine.com two-crawl cross-validation, ACP/UCP/MPP, transactability-drop
+  CHECK-level diagnosis + peer-gated re-baseline) stays `[LOCAL]`, gated on the runner recovering.
+- SUPERSEDED (Cycle 223 runner note): RUNNER AT-FLOOR at 2026-08-04T11:2xZ (Cycle 223) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~79.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
   cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 11:2xZ fire is NOT
   first-after-16:00 UTC → no DM this fire per comms policy (score-neutral tests-only TRUTH increment, no
@@ -13,7 +42,7 @@
   SELF-HEAL (Cycle 223): fresh `.venv` + `requests pyyaml eth-account pytest`, 468 tests green pre-flight (469 after
   +1); LOG.md confirmed newest-first + complete through Cycle 222 (no bookkeeping gap); last push (Cycle 222) present
   on origin/main. NOTE: runner at-floor since Aug-1 03:50Z (~3+ days) — durable [LOCAL] runner-recovery stays P0.
-- FOCUS POINTER (Cycle 223 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 223 was TRUTH, so
+- SUPERSEDED (Cycle 223 focus pointer): FOCUS POINTER (Cycle 223 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 223 was TRUTH, so
   Cycle 224 is READOUT). Cycle 223 shipped a **TRUTH increment — the calibration suite's missing CROSS-anchor
   property: static prediction and behavioral experience are RANK-CONCORDANT (no sign inversion)**. Tests 1-8 pin that
   the static payment prediction agrees with behavior on each committed anchor INDEPENDENTLY (with-rails PASSES,

@@ -3,6 +3,49 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 224 — 2026-08-04T12:2xZ — READOUT — surface the cross-anchor RANK-CONCORDANCE / no-sign-inversion property in the public methodology prose (the science was pinned in-cloud last cycle; the reader-facing page didn't say it)
+
+WHAT/WHY (READOUT — the reader-facing complement to Cycle 223's calibration test 16). Cycle 223 made the
+cross-anchor validity property executable: the static prediction and the agent's lived behavioral outcome are
+RANK-CONCORDANT — no sign inversion — at the headline-ranking level a reader actually cites (grade B vs F). But
+the public methodology page's section 8 (Calibration) still argued calibration only WITHIN each anchor
+separately (does THIS store's payment checkpoint pass?) plus the payment counterfactual. Nothing on the page told
+a reader that the DIRECTION the score predicts is the SAME direction the agent experiences, nor that it is
+AMPLIFICATION-not-RESCUE, nor the honest scope (trust legitimately favors the no-rails store). Per the north star
+("readout clarity") and the FOCUS POINTER set by Cycle 223, this cycle ports that pinned science into prose a
+critic can read.
+
+READOUT — the smallest unit (one methodology paragraph + the test that pins it). `asrs/scorecard.py`
+`_write_methodology_page` section 8 gains ONE paragraph (inserted before the "Two honest limits" closer) stating,
+in capability-worded vendor-neutral prose: (a) the ranking-level failure mode a reweighting could cause (keep every
+single-store checkpoint green yet INVERT the order) and that ASRS does not exhibit it — the prediction and outcome
+are "rank-concordant — no sign inversion", with-rails >= no-rails on every static-observable pillar and strictly
+higher on payability, the behavioral-only Outcome pillar pointing the same way; (b) AMPLIFICATION-not-RESCUE — the
+cited headline ordering already held on the "static prediction alone" before the behavioral outcome was folded in
+(the live run confirms the direction the static number already pointed, it does not manufacture it); (c) the honest
+scope — one behaviorally augmented pillar (trust) "favors the no-rails storefront" and access is a tie, so the
+ranking is "carried by the capability pillars", not "with-rails wins everything". `tests/test_readout.py`
+`test_methodology_documents_calibration` gains 5 assertions pinning (a)/(b)/(c) + the vendor-neutrality guard
+already covers it.
+
+VALIDATION. Full suite 469 passed (5 new assertions live INSIDE the existing calibration test → test COUNT
+unchanged at 469, not a new file). `test_readout.py` 79/79. OFF the scoring path / score-neutral: `git diff --stat --
+asrs/scoring.py asrs/probes/ rubric/ fixtures/` EMPTY; only `asrs/scorecard.py` (display) + `tests/test_readout.py`
+touched (+40 lines). Display-only READOUT → NOT peer-gated, direct-to-main. Rubric v0.7 unchanged.
+
+CANONICAL PAIR. In-cloud replay guard (frozen regression signal) 24/24 GREEN, 46.1 F / 85.5 B / +39.4, 0
+replay-miss — unchanged by construction (the change is HTML prose off the scoring path). Live signal (READ from the
+newest artifact `runs/local/verify_20260801T035047Z.json`, NOT re-run — runner at-floor): drift-flight.org 46.1 F /
+driftflight.com 76.2 C / +30.1 / transactability 62.5, the Aug-1 transactability-drop divergence persisting (off the
+scoring path). The local runner has been at-floor since Aug-1 03:50Z (~79.5h) — cloud cannot repair; stays P0.
+
+NEXT HYPOTHESIS (METHOD 225, per rotation METHOD→COVERAGE→TRUTH→READOUT). The calibration SCIENCE (test 16) and its
+READOUT prose (this cycle) are now both landed for the two committed anchors. The in-cloud methodological frontier
+that remains genuinely un-pinned is a variance/attribution property — e.g. a panel-verdict-stability invariant or a
+tighter divergence-attribution guard — while the substantive calibration frontier (a THIRD real anchor to move
+"single with-rails run" off the honest-limits list, the moleskine.com two-crawl cross-validation, ACP/UCP/MPP)
+stays `[LOCAL]`, gated on the runner recovering.
+
 ## Cycle 223 — 2026-08-04T11:2xZ — TRUTH — static prediction and behavioral experience are RANK-CONCORDANT (no sign inversion): the direction the score predicts is the direction the agent lives, at the headline-ranking level people cite
 
 WHAT/WHY (TRUTH — the calibration suite's missing CROSS-anchor property). Tests 1-8 of `test_calibration.py`

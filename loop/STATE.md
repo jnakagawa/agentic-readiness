@@ -1,8 +1,39 @@
 # Loop state
 
-- Cycle counter: 213
+- Cycle counter: 214
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-04T01:1xZ (Cycle 213) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-04T02:1xZ (Cycle 214) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~70.4h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
+  cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 02:1xZ fire is NOT
+  first-after-16:00 UTC → no DM this fire per comms policy (score-neutral off-scoring-path COVERAGE increment, no
+  sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org 46.1 F /
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1),
+  off the scoring path; the in-cloud replay guard stays the frozen independent regression signal (24/24, 46.1 F /
+  85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open → []), so no first-duty
+  review. INFRA/SELF-HEAL (Cycle 214): fresh checkout landed at the STALE shallow-clone `origin/main` ref
+  (Cycle-94 `3796519`); `git fetch origin main` forced the ref forward to the true cloned tip `4c4497e` (Cycle 213)
+  and `git checkout -B main origin/main` reconciled. Fresh `.venv` + `requests pyyaml eth-account pytest`, 448
+  tests green pre-flight (449 after +1).
+- FOCUS POINTER (Cycle 214 done): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 214 was COVERAGE,
+  so Cycle 215 is TRUTH). Cycle 214 shipped a **COVERAGE increment — the offering classifier now folds
+  typographic/non-breaking INTRA-WORD hyphens** (`asrs/offering.py` `_HYPHEN_NORMALIZE` + a per-surface fold in
+  `classify_offering` after the Cycle-178 reflow collapse, `tests/test_offering.py` +1; suite 448→449). Many
+  signals (esp. metered_api's `pay-as-you-go`/`pay-per`/`per-generation`) match a literal `[- ]` only, so a
+  compound typeset with U+2011 (non-breaking hyphen — the dash sibling of `&nbsp;`), en/figure dash, or minus sign
+  silently missed and the WHOLE archetype claim dropped on typography (verified live: U+2011 substitution drops
+  metered_api entirely). The fold maps U+2010–2013 + U+2212 + U+FE63 + U+FF0D → ASCII `-`; DELIBERATELY excludes
+  the em dash (U+2014) + horizontal bar (U+2015) as sentence punctuation — which is BOTH the precision-correct
+  choice AND makes the fold a no-op on the canonical pair (whose only Unicode dash is a prose em dash, 8× each) →
+  canonical CLAIMED sets invariant by construction. Third typographic-encoding invariance sibling (line-wrap /
+  entity-decode / hyphen). Non-vacuous: load-bearing (raw pattern matches ASCII not U+2011), em-dash-exclusion
+  teeth (em dash input drops metered_api → subscription rank-1), real-evidence half (fixtures carry only the
+  excluded em dash). OFF the scoring path (scoring-path diff EMPTY; `offering` not imported by `scoring.py`/
+  `probes/` — grep-verified) → score-neutral, NOT peer-gated, direct-to-main. Replay guard 24/24, 46.1 F / 85.5 B
+  / +39.4, 0 replay-miss; rubric v0.7. NEXT (TRUTH 215): a fresh calibration/attribution invariance guard, or
+  substantive frontier work — GENUINE new thin-bank signals from real fixtures, validate the hyphen-fold + reflow
+  on a REAL dashed/line-wrapped surface, the negative anchor's two-crawl static cross-validation via a
+  `moleskine.com` fixture, ACP/UCP/MPP, the transactability-drop CHECK-level diagnosis — all `[LOCAL]`.
+- SUPERSEDED (Cycle 213 runner note): RUNNER AT-FLOOR at 2026-08-04T01:1xZ (Cycle 213) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~69.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
   cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 01:1xZ fire is NOT
   first-after-16:00 UTC → no DM this fire per comms policy (score-neutral off-scoring-path METHOD increment, no

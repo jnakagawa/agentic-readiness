@@ -3,6 +3,78 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 214 — 2026-08-04T02:1xZ — COVERAGE — fold typographic/non-breaking intra-word hyphens so a compound capability term keys on its WORDS, not the dash glyph a crawl captured
+
+WHAT/WHY (COVERAGE — offering-classifier robustness; the third typographic-encoding sibling). A readiness
+classification must be a property of the WORDS a storefront DECLARES, not the dash GLYPH a crawl happened to
+capture. Many signals — especially the billing-central metered_api bank — match a LITERAL `[- ]` (ASCII
+hyphen-minus or space) inside a compound: `pay[- ]?as[- ]?you[- ]?go`, `pay[- ]per[- ](call|...)`,
+`per[- ](generation|call|...)`. But publishers routinely typeset those exact compounds with a NON-breaking
+hyphen (U+2011 — the dash sibling of the `&nbsp;` used to keep the SAME phrase off a line-wrap) or a typographic
+en/figure dash (from a word-processor autocorrect, or a decoded `&ndash;` entity). Left un-normalized,
+`pay‑as‑you‑go` (U+2011) is NOT the string `pay-as-you-go`, so the literal-`[- ]` signals silently miss and the
+WHOLE archetype claim is dropped on pure typography. Verified live at fire start: `pay-as-you-go / pay-per-call /
+per-generation` prose classifies metered_api on THREE signals with ASCII hyphens, but substituting U+2011 (or
+en-dash / figure dash / minus sign) drops metered_api ENTIRELY, leaving only the bare-word `generations`. This is
+the exact encoding sibling of the Cycle-178 line-wrap gap (a space that was WRAPPED) and the strip_html
+entity-decode gap (a space that was ENCODED) — here, a hyphen that was TYPESET.
+
+THE FIX (`asrs/offering.py`). New module-level `_HYPHEN_NORMALIZE = {ord(c): "-" for c in "‐‑‒–−﹣－"}` folds the
+INTRA-WORD hyphen family (U+2010 hyphen, U+2011 non-breaking hyphen, U+2012 figure dash, U+2013 en dash, U+2212
+minus, U+FE63 small / U+FF0D fullwidth hyphen-minus) to ASCII `-`, applied per-surface in `classify_offering`
+right after the Cycle-178 whitespace-reflow collapse (all surfaces, so it also covers a U+2011 that arrives on a
+plain-text llms.txt, not only HTML). DELIBERATELY EXCLUDES the em dash (U+2014) and horizontal bar (U+2015):
+those are SENTENCE punctuation, never intra-word joiners, so folding them would be BOTH imprecise (a spaced
+"offer — billing" is not a compound) AND would perturb the canonical pair, whose ONLY Unicode dash is a prose em
+dash (8× each, sentence breaks). With the em dash excluded the fold is a NO-OP on all committed evidence → the
+canonical CLAIMED sets are invariant BY CONSTRUCTION.
+
+METHOD / NON-VACUITY + TEETH (1 new test, `tests/test_offering.py::test_classification_is_intra_word_hyphen_invariant`,
+registered in `main()` — Cycle-140 dead-test guard green; it is the third member of the reflow/entity invariance
+family). Substrate: metered_api ranks first on three hyphenated-compound signals over a ranked multi-archetype
+classification (metered_api > subscription > digital_good). TEETH (a): the U+2011 substitution genuinely changes
+the bytes. TEETH (b): folding is LOAD-BEARING — `pay-as-you-go`'s raw pattern matches the ASCII form but NOT the
+U+2011 form, so the invariance rests on the fold, not on luck. Invariance (1/2/3): the per-(label,surface)
+strength skeleton, the ranked claimed list, and the NA/unclaimed complement are all identical ASCII vs U+2011.
+TEETH (c): the em dash is NOT folded — substituting it (adversarial input) leaves the metered_api compounds
+broken so metered_api DROPS and subscription becomes rank-1, proving the fold is scoped to the intra-word family,
+not a blanket dash rewrite. REAL-EVIDENCE half: asserts both committed canonical fixtures carry the excluded em
+dash but NONE of the intra-word hyphen family, so the fold is provably a no-op there (invariant by construction).
+Vendor-neutral (keys on the dash glyph, no host special-cased).
+
+SHIP CLASS + EVIDENCE. Off the scoring path, score-neutral: `git diff --name-only` = `asrs/offering.py` +
+`tests/test_offering.py` ONLY; the scoring-path diff (`asrs/scoring.py asrs/probes/ rubric/ fixtures/`) is EMPTY,
+and `offering` is not imported by `scoring.py` or `asrs/probes/` (grep-verified — discovery drives `--battery
+auto` task selection only) → NOT scoring semantics, NOT peer-gated, direct-to-main. `test_offering.py` 62→63
+in-file; full suite 448→449, 0 failures. Canonical PAIR unchanged: in-cloud replay guard 24/24, **46.1 F / 85.5 B
+/ +39.4**, 0 replay-miss; rubric v0.7. (Cloud network-blocked for live re-score; in-cloud standard =
+regression-by-construction — scoring path byte-identical, discovery off the scoring path — plus the offline
+replay guard.) CAPABILITY-TERMS canonical-delta note: the fold can only ADD an archetype claim to a
+typographically-dashed surface (never remove one), it never touches the scoring path, and it is a no-op on the
+committed canonical evidence (their only Unicode dash is the excluded em dash) — so the +39.4 delta is unmoved by
+construction; if a future re-crawl of a rails storefront that typesets its billing compounds with a non-breaking
+hyphen were to gain a metered_api battery task it previously missed, that is the HONEST reading (the site
+declared the capability; typography had hidden it), not a manufactured one.
+
+FIRST-DUTY / INFRA. No open peer-gated PRs (`list_pull_requests` state=open → []) → no first-duty review. Fresh
+checkout landed at the stale shallow-clone `origin/main` ref (Cycle-94 `3796519`); `git fetch origin main` forced
+the ref forward to the true cloned tip `4c4497e` (Cycle 213) and `git checkout -B main origin/main` reconciled
+(benign shallow-clone local-ref reconciliation, NOT a history rewrite — invariant #5 intact). Fresh `.venv` +
+`requests pyyaml eth-account pytest`, 448 green pre-flight (449 after +1). Local verify runner AT-FLOOR: newest
+`runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is ~70.4h old at this 02:1xZ fire — past the 6h floor
+(machine-asleep / runner-lag, cloud cannot repair; already flagged in the Cycle-204 16:17Z digest). Live signal
+(read, not re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the
+transactability-drop divergence PERSISTS (Aug-1), off the scoring path. 02:1xZ is NOT first-after-16:00 UTC → no
+digest DM per comms policy (score-neutral off-scoring-path COVERAGE, no sensitive-class PR, nothing score-moving).
+
+NEXT HYPOTHESIS (TRUTH 215). Rotate TRUTH next (Cycle 214 was COVERAGE; METHOD → COVERAGE → TRUTH → READOUT). The
+three typographic-encoding invariance siblings (line-wrap / entity-decode / intra-word hyphen) now cover the ways
+a crawl's TYPOGRAPHY can hide a declared compound; the remaining in-cloud precision/robustness frontier is thin.
+Substantive frontier stays `[LOCAL]`: GENUINE new thin-bank signals from real fixtures (validate the hyphen fold
++ the reflow fix on a REAL dashed/line-wrapped surface — folds into any live llms.txt capture), the negative
+anchor's two-crawl static cross-validation via a `moleskine.com` fixture, ACP/UCP/MPP live handshakes, and the
+transactability-drop CHECK-level diagnosis + peer-gated re-baseline.
+
 ## Cycle 213 — 2026-08-04T01:1xZ — METHOD — close the citability gate's blind spot to the refuse↔warn trust flip: a checkpoint-stable panel that split on trust is provisional, not reproducible
 
 WHAT/WHY (METHOD — reproducibility rigor). `quotability()` is the one-bit "is this headline number safe to

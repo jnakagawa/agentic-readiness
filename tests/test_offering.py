@@ -1493,6 +1493,115 @@ def test_classification_is_html_entity_decode_invariant():
     print("  ok: committed canonical &nbsp; marquee is decoded on real evidence, physical_good stays NA")
 
 
+def test_classification_is_intra_word_hyphen_invariant():
+    # A readiness classification is a property of the WORDS a storefront declares,
+    # not the DASH GLYPH a crawl captured. Compound capability terms are routinely
+    # joined with a NON-breaking or typographic hyphen rather than an ASCII
+    # hyphen-minus — "pay‑as‑you‑go" (U+2011, the dash sibling of the &nbsp; a
+    # publisher uses to keep the SAME compound off a line-wrap), "per‑generation"
+    # (an en/figure dash from a word-processor autocorrect or a decoded &ndash;
+    # entity). MANY signals — especially the billing-central metered_api bank —
+    # match a LITERAL "[- ]" (ASCII hyphen or space) only, so such a term silently
+    # misses and the WHOLE archetype claim is dropped on pure typography. That is
+    # the encoding sibling of the Cycle-178 line-wrap (above) and the HTML-entity
+    # (above) gaps, and classify_offering now folds the intra-word hyphen family
+    # to ASCII "-" per-surface. This pins the invariance: the SAME storefront,
+    # hyphenated compounds joined with a non-breaking hyphen vs an ASCII hyphen,
+    # classifies identically (claimed archetypes in rank order, the NA complement,
+    # and the per-(label, surface) skeleton).
+    flat = (
+        "Programmatic access is billed pay-as-you-go, charged pay-per-call at a low "
+        "per-generation rate. A monthly subscription is available; subscribe any time."
+    )
+    base = classify_offering("shop.test", {"/llms.txt": flat})
+
+    # Substrate: the property under test is genuinely present — a RANKED
+    # multi-archetype classification a dash-glyph difference could perturb, led by
+    # metered_api on THREE hyphenated-compound signals.
+    assert {"metered_api", "subscription"} <= set(base.archetypes), (
+        f"substrate: metered_api + subscription both claim on the ASCII-hyphen prose "
+        f"(got {base.archetypes})"
+    )
+    assert base.archetypes[0] == "metered_api", (
+        f"substrate: metered_api ranks first on its three hyphenated signals "
+        f"(got {base.archetypes})"
+    )
+
+    # A non-breaking hyphen (U+2011) substituted for every ASCII hyphen — exactly
+    # what a publisher types to keep "pay-as-you-go" off a line-wrap.
+    nbh = flat.replace("-", "‑")
+    hyph = classify_offering("shop.test", {"/llms.txt": nbh})
+
+    # TEETH (a): the transform is REAL — the bytes differ and carry the U+2011.
+    assert nbh != flat and "‑" in nbh, "the hyphen substitution genuinely changed the bytes (non-vacuous)"
+
+    # TEETH (b): hyphen-FOLDING is LOAD-BEARING. A metered_api compound signal's raw
+    # pattern matches the ASCII-hyphen form but NOT the non-breaking-hyphen form, so
+    # without the fold the substituted surface would drop the claim — the invariance
+    # below rests on classify_offering's dash normalization, not on the phrases
+    # surviving by luck.
+    pay_pat = _signal_pattern("metered_api", "pay-as-you-go")
+    assert pay_pat is not None, "pay-as-you-go signal exists"
+    assert pay_pat.search("pay-as-you-go") is not None, "pay-as-you-go matches the ASCII-hyphen form"
+    assert pay_pat.search("pay‑as‑you‑go") is None, (
+        "pay-as-you-go does NOT match the non-breaking-hyphen form — so folding is load-bearing"
+    )
+
+    # (1) The dash-independent capability skeleton is identical: every archetype's
+    # strength AND its per-(label, surface) match counts survive the substitution —
+    # no signal lost or conjured, no count drifted, by mere non-breaking-hyphen joining.
+    assert _wsr_struct(hyph) == _wsr_struct(base), (
+        f"per-archetype (strength, per-(label, surface) counts) skeleton invariant under "
+        f"intra-word hyphen substitution (ASCII {_wsr_struct(base)}, nbhyphen {_wsr_struct(hyph)})"
+    )
+    # (2) Claimed archetypes IN RANK ORDER invariant — the rank drives the fixed
+    # template-bank task order, so a dash glyph must not reorder the battery.
+    assert hyph.archetypes == base.archetypes, (
+        f"claimed archetypes (ranked) invariant under intra-word hyphen substitution "
+        f"(ASCII {base.archetypes}, nbhyphen {hyph.archetypes})"
+    )
+    # (3) The NA/unclaimed complement (excluded from every mean/spread, never penalized)
+    # is invariant — which archetypes a site is excused on as NA depends on what it
+    # declares, not the dash glyph a crawl captured.
+    assert set(hyph.unclaimed) == set(base.unclaimed), (
+        f"NA/unclaimed set invariant under intra-word hyphen substitution "
+        f"(ASCII {sorted(base.unclaimed)}, nbhyphen {sorted(hyph.unclaimed)})"
+    )
+    print("  ok: claimed set / rank / strengths / labels / NA invariant under non-breaking-hyphen joining (fold is load-bearing)")
+
+    # TEETH (c): the em dash (U+2014) is DELIBERATELY NOT folded — it is SENTENCE
+    # punctuation, never an intra-word joiner. Substituting it for the ASCII hyphens
+    # (an implausible-but-adversarial input) leaves the metered_api compounds broken,
+    # so the metered_api claim DROPS and subscription becomes the rank-1 archetype.
+    # This proves the fold is scoped to the intra-word hyphen family, not a blanket
+    # dash-to-hyphen rewrite — the exact scoping that keeps the canonical pair, whose
+    # only Unicode dash is a prose em dash, invariant by construction.
+    emd = flat.replace("-", "—")
+    emd_prof = classify_offering("shop.test", {"/llms.txt": emd})
+    assert "metered_api" not in emd_prof.archetypes, (
+        f"em dash is not folded, so the broken metered_api compounds do NOT claim "
+        f"(got {emd_prof.archetypes})"
+    )
+    assert emd_prof.archetypes[0] != "metered_api", "em-dash input reorders away from metered_api"
+    print("  ok: em dash is NOT folded (sentence punctuation, not a compound joiner) — precision-safe")
+
+    # REAL-EVIDENCE half: the fold is a NO-OP on committed canonical evidence, so the
+    # canonical CLAIMED sets are invariant BY CONSTRUCTION. Both canonical fixtures
+    # carry Unicode dashes, but ONLY the em dash (U+2014, prose sentence breaks) —
+    # which the fold deliberately excludes — and NONE of the intra-word hyphen family.
+    INTRA_WORD = "‐‑‒–−﹣－"
+    for domain in ("drift-flight.org", "driftflight.com"):
+        path = os.path.join(_FIXTURE_DIR, f"{domain}.json")
+        raw = open(path, encoding="utf-8").read()
+        present = {ch for ch in raw if ch in INTRA_WORD}
+        assert not present, (
+            f"{domain}: committed evidence carries an intra-word hyphen the fold WOULD rewrite "
+            f"({[hex(ord(c)) for c in present]}) — canonical invariance is no longer by construction"
+        )
+        assert "—" in raw, f"{domain}: committed evidence carries the excluded em dash (non-vacuous)"
+    print("  ok: committed canonical evidence carries only the excluded em dash — fold is a no-op there (invariant by construction)")
+
+
 def test_evidence_is_quoted_and_surface_tagged():
     prof = classify_offering("example-imaging.test", {"homepage": API_HOMEPAGE})
     for claim in prof.claimed:
@@ -4152,6 +4261,7 @@ def main() -> int:
         test_classification_is_surface_read_order_invariant,
         test_classification_is_whitespace_reflow_invariant,
         test_classification_is_html_entity_decode_invariant,
+        test_classification_is_intra_word_hyphen_invariant,
         test_evidence_is_quoted_and_surface_tagged,
         test_openapi_spec_alone_classifies_api_first_storefront,
         test_ai_plugin_descriptor_alone_classifies_storefront,

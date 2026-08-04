@@ -179,6 +179,27 @@ _DOC_SUBDOMAINS: tuple[str, ...] = ("agents", "docs", "developers", "api")
 
 _F = re.IGNORECASE
 
+# Intra-word hyphen normalization (applied per-surface in classify_offering,
+# alongside the whitespace-reflow collapse). Compound capability terms are
+# routinely joined with a NON-breaking or typographic hyphen rather than an
+# ASCII hyphen-minus — "pay‑as‑you‑go" (U+2011, the dash sibling of the
+# ``&nbsp;`` a publisher uses to keep the SAME compound off a line-wrap),
+# "per‑generation" (en/figure dash from a word-processor autocorrect or an
+# ``&ndash;`` entity that strip_html has already decoded). The many hyphenated
+# metered_api signals match a LITERAL ``[- ]`` (ASCII hyphen or space) only, so
+# such a term silently misses and the whole archetype claim is dropped on pure
+# typography — the encoding sibling of the Cycle-178 line-wrap and the
+# strip_html entity gaps. Fold the intra-word hyphen family to ASCII ``-`` so a
+# signal keys on the WORDS a surface declares, not the dash glyph it was typeset
+# with. DELIBERATELY excludes the em dash (U+2014) and horizontal bar (U+2015):
+# those are SENTENCE punctuation, never intra-word joiners, so mapping them
+# would be both imprecise (a spaced "offer — billing" is not a compound) and
+# would perturb the canonical pair, whose ONLY Unicode dash is a prose em dash
+# (8× each, sentence breaks). With the em dash excluded the fold is a NO-OP on
+# all committed evidence, so the canonical CLAIMED sets are invariant by
+# construction (tests/test_offering_canonical.py).
+_HYPHEN_NORMALIZE = {ord(c): "-" for c in "‐‑‒–−﹣－"}
+
 
 # Signal bank: archetype -> [(label, pattern), ...]. Each pattern is anchored to
 # high-precision, vendor-neutral language. A match records the archetype, the
@@ -1616,6 +1637,12 @@ def classify_offering(domain: str, surfaces: dict[str, str]) -> OfferingProfile:
         # invariant (tests/test_offering_canonical.py) because their evidence is not
         # reflowed.
         prose = _WS_RE.sub(" ", prose)
+        # Fold typographic / non-breaking intra-word hyphens to ASCII "-" (see
+        # _HYPHEN_NORMALIZE) so hyphenated compound signals ("pay-as-you-go",
+        # "per-generation") key on the WORDS a surface declares, not the dash
+        # glyph it was typeset with. Excludes the em dash, so it is a no-op on the
+        # canonical evidence and the CLAIMED sets stay invariant by construction.
+        prose = prose.translate(_HYPHEN_NORMALIZE)
         seen.append(surface)
         for sig in _scan_surface(surface, prose):
             scanned.setdefault(sig.archetype, []).append(sig)

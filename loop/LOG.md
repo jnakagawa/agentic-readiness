@@ -3,6 +3,76 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 238 — 2026-08-04T22:56Z — TRUTH (LOCAL, direct-to-main, score-neutral) — the NEGATIVE calibration anchor (no-rails retail, moleskine.com) now has a committed static fixture, so its no-rails FLOOR gets the SAME two-crawl cross-validation the with-rails CEILING has — closing the honest-scope gap open since Cycle 71
+
+FIRST duty (LOCAL): `gh pr list --state open` → `[]` — no open peer-gated PR, no review/merge owed (PR #145 merged
+Cycle 235, thread closed Cycle 236). INFRA green: this hour's verify floor `runs/local/verify_20260804T224102Z.json`
+(22:41Z, git_pull.ok=true attempts=1, tests_ok=true 24/24 files) is THIS fire — WELL inside the 6h floor. Live
+canonical signal READ from it: **46.1 F / 85.5 B / +39.4** (tx 87.5) — the drift is resolved, the live signal
+permanently agrees with the frozen fixture. Full suite re-run at fire start: 24/24 green (no bench-red to self-heal).
+
+WHAT/WHY (TRUTH — the OLDEST substantive [LOCAL] P0, per local law "prefer the oldest"). The two-sided calibration
+rests on two committed LIVE behavioral anchors: the with-rails API storefront (driftflight.com, payability real) and
+the no-rails RETAIL storefront (moleskine.com, payment wall real). The WITH-RAILS anchor is cross-validated across
+TWO independent crawls — its behavioral run AND a separate offline fixture replay (`fixtures/canonical/driftflight.com.json`,
+tests 1/4). The NEGATIVE anchor had only ONE crawl: its static PREDICTION was read from the static checks embedded in
+the behavioral report, with NO committed fixture to cross-validate against (moleskine.com was absent from
+`fixtures/canonical/`). The module docstring named this the honest-scope gap and a [LOCAL] follow-up (opened Cycle 71,
+2026-07-29). This cycle closes it.
+
+HONEST ORDERING (invariant #4 — the TRUTH move). BEFORE recording anything, ran a live $0 static score of
+moleskine.com to check the site had not DRIFTED in the week since the 2026-07-28 behavioral capture — a changed site
+(added rails, restructured pricing) would make a fresh fixture disagree with the committed behavioral report and a
+forced cross-validation would misrecord reality. It had NOT drifted: the live crawl reproduced the behavioral run's
+static-observable pillars EXACTLY — access 100.0 / legibility 40.909 / transactability 18.75 (overall 49.8 F), x402_probe
+FAIL, self_serve_payg x402_live=False (the no-rails floor). Only THEN recorded the fixture.
+
+WHAT SHIPPED.
+1. `fixtures/canonical/www.moleskine.com.json` (NEW) — the negative anchor's offline static fixture, captured live via
+   `asrs score www.moleskine.com --record-fixture ...` ($0 static crawl). 41 fetch entries; replays with ZERO
+   replay-miss; static-observable pillars byte-identical to the committed behavioral report. Hygiene: 40 `set-cookie`
+   headers (ephemeral ANONYMOUS Demandware/Salesforce-Commerce session IDs the CDN assigns any crawler — not
+   credentials) stripped for determinism + to match the siblings' zero-set-cookie convention; re-serialized in the
+   canonical `save_fixture` key order. VERIFIED cookie-strip + reserialize are byte-for-byte score-neutral (overall
+   49.8, pillars unchanged, no replay-miss). No local-path/username leak (the 29 `/home/` hits are moleskine's own nav
+   URLs; 0 `jonahnakagawa`, 0 `/Users/`). Size 8.49MB — heavy but MINIMAL: the scoring replay requests all 41 entries
+   (traced), so none is dead weight; the bulk is a real retail site's 200–530KB HTML pages, intrinsic to the anchor.
+2. `tests/test_calibration.py` `test_negative_calibration_rests_on_a_shared_static_base` (NEW, 18→19) — the negative
+   mirror of test 4. `_static_report("www.moleskine.com")` replay vs the behavioral report: every static-observable
+   pillar (access/legibility/transactability) IDENTICAL within 1e-9, so the no-rails FLOOR (18.75) the negative
+   prediction rests on is pinned by a fresh independent crawl — the mirror of test 4 pinning the with-rails CEILING
+   (87.5). Non-vacuous: Outcome null in the static replay but 0.0 in the behavioral run (genuine superset); Trust
+   differs (static 73.33 vs behavioral 66.67, the live panel). Updated the docstring HONEST SCOPE bullet + test 5's
+   parenthetical to reflect the gap is closed.
+
+SIDE EFFECT (a real finding turned into a strengthening — mandatory to keep the suite honestly green, invariant #3).
+The moleskine fixture carries a genuine zero-width space (U+200B) INSIDE an `<img>` filename
+(`8056711513287_mouse over.jpg` on /shop/notebooks/, ZWSP before the underscore), which tripped
+`tests/test_offering.py::test_classification_is_invisible_formatting_invariant` — its real-evidence half asserted NO
+committed fixture carries a stripped invisible char ("invariant BY CONSTRUCTION"). Rather than exclude the fixture
+(which would hide real evidence), converted that half to "invariant BY VERIFICATION": for any fixture carrying a
+stripped char, classify it with `_INVISIBLE_STRIP` DISABLED (empty translate table) vs shipped and assert the
+archetypes + NA complement are IDENTICAL. moleskine now exercises the by-verification branch, verified clean
+(classification ['subscription', 'physical_good'] identical with/without the strip — the ZWSP sits in an image
+filename, not a capability phrase, so this proves HARMLESSNESS of the strip on real evidence, not phrase-RESCUE).
+This PARTIALLY discharges the separate [LOCAL] typographic-robustness item (Cycle 222's invisible-strip, part d) on
+REAL evidence — the harmlessness case; the phrase-rescue real-evidence case (an invisible control INSIDE a capability
+signal) stays synthetic-only.
+
+VALIDATION. Full suite 24/24 files green. `test_calibration.py` 18→19; `test_offering.py` 95/95 (structure change,
+count unchanged). Replay guard `test_canonical_replay` 24/24 → **46.1 F / 85.5 B / +39.4**, zero replay-miss, UNMOVED.
+SCORE-NEUTRAL: `git diff --name-only -- asrs/ rubric/ loop/local_verify.py` EMPTY; the diff is the two test files +
+the one new fixture ALONE. Invariant #1 held: $0 static crawls only (no `--behavioral`, no free-tier paid call, no
+nonzero `--max-pay`; moleskine has no free tier / no x402 so the free-tier probe found nothing to call). Ship class:
+tests + fixture, score-neutral, no scoring-semantics/payment code → direct-to-main (not peer-gated). NO DM
+(score-neutral, no sensitive-class PR, not first-after-16:00-UTC — today's digest went Cycle 228).
+
+EVIDENCE. `fixtures/canonical/www.moleskine.com.json` (the committed fixture IS the evidence). NEXT HYPOTHESIS: the
+negative anchor now has a committed offline replay — a future in-cloud cycle can give the OTHER negative-floor
+calibration tests (e.g. the type-invariance guard whose docstring still names the "moleskine.com itself replayed
+offline" gap) a moleskine offline cross-validation the same way, and the typographic item's phrase-RESCUE
+real-evidence case still needs a fixture whose capability WORD carries an invisible control mid-signal.
+
 ## Cycle 237 — 2026-08-04T22:26Z — TRUTH (cloud, direct-to-main, tests-only/score-neutral) — the "understand the offer" capability family is now BEHAVIORALLY corroborated: the SECOND family of the +39.4 two-family decomposition is made two-sided, no longer a static-only assertion; + SELF-HEAL of a bench-red the drift-resolution left behind
 
 FIRST duty (infra health check, per the Cycle-236 FOCUS POINTER — no open peer-gated PR). INFRA green: newest

@@ -50,13 +50,17 @@ the no-rails retail storefront — a prediction that points OPPOSITE ways on the
 two, not a universal pass that would "agree" with anything.
 
 HONEST SCOPE (attribution invariant, applied to calibration).
-- The negative anchor has no committed static fixture (moleskine.com is not in
-  ``fixtures/canonical/``; capturing one needs network -> [LOCAL]).  Its static
-  PREDICTION is therefore read from the static checks embedded in the behavioral
-  report's own full-probe crawl, not cross-validated against a separate offline
-  replay the way the with-rails anchor is (tests 1/4).  Capturing the fixture to
-  give the negative side the same two-crawl cross-validation is a [LOCAL]
-  follow-up, not a blocker on the two-sided property.
+- The negative anchor now HAS a committed static fixture
+  (``fixtures/canonical/www.moleskine.com.json``, captured live at a 2026-08-04
+  [LOCAL] fire; the live crawl reproduced the behavioral run's static-observable
+  pillars exactly, so the no-rails anchor had not drifted a week on).  Its
+  static-observable pillars are therefore cross-validated against a SEPARATE
+  offline replay exactly the way the with-rails anchor's are (test 4) — see
+  ``test_negative_calibration_rests_on_a_shared_static_base`` (the negative
+  mirror).  The tests that read the static PREDICTION from the behavioral
+  report's own embedded checks (test 5) are unchanged; the fixture ADDS the
+  second, independent crawl, closing the two-crawl gap the earlier revision of
+  this docstring named as a [LOCAL] follow-up.
 - The negative FAILs are attribution-honest: Access is fully credited (the agent
   reached the site) and the physical_good battery intent reached partial
   completion (the agent BROWSED the store) — the wall is the payment path, not
@@ -404,9 +408,9 @@ def test_static_no_payment_prediction_is_behaviorally_corroborated() -> None:
 
     # LIKE-FOR-LIKE with the positive anchor: SAME rubric version, so "the score
     # predicts no payability" is measured on the same scale as the with-rails
-    # "the score predicts payability".  (The static prediction is read from the
-    # report's own embedded static checks — moleskine.com has no committed static
-    # fixture; see the module docstring's HONEST SCOPE.)
+    # "the score predicts payability".  (This test reads the static prediction
+    # from the report's own embedded static checks; the SEPARATE offline-fixture
+    # cross-validation is test_negative_calibration_rests_on_a_shared_static_base.)
     _check(
         neg["domain"] == _NEGATIVE_DOMAIN,
         f"negative anchor describes {_NEGATIVE_DOMAIN!r} (got {neg['domain']!r})",
@@ -459,6 +463,78 @@ def test_static_no_payment_prediction_is_behaviorally_corroborated() -> None:
     _check(
         True,
         "AGREEMENT: static NO-payability prediction == behavioral NO-payability experience",
+    )
+
+
+# ---------------------------------------------------------------------------
+# 5b. THE NEGATIVE TWO-CRAWL CROSS-VALIDATION (mirror of test 4).  Calibration's
+#     NEGATIVE prediction must rest on the SAME static evidence across two
+#     INDEPENDENT crawls — a fresh offline fixture replay AND the behavioral
+#     run's own full-probe crawl — not a single measurement, exactly as the
+#     positive anchor does (test 4).  This closes the honest-scope gap the module
+#     docstring named: the no-rails RETAIL anchor now has a committed static
+#     fixture (fixtures/canonical/www.moleskine.com.json, captured live at a
+#     2026-08-04 [LOCAL] fire), so its no-rails FLOOR is cross-validated the same
+#     way the with-rails CEILING is.
+# ---------------------------------------------------------------------------
+def test_negative_calibration_rests_on_a_shared_static_base() -> None:
+    print("test_negative_calibration_rests_on_a_shared_static_base")
+    static, misses = _static_report(_NEGATIVE_DOMAIN)
+    neg = _load_negative()
+    _check(not misses, f"{_NEGATIVE_DOMAIN}: static replay has no replay-miss (like-for-like)")
+
+    # LIKE-FOR-LIKE: the offline fixture and the behavioral run must describe the
+    # SAME storefront on the SAME rubric version, or the cross-validation is
+    # meaningless.
+    _check(
+        neg["domain"] == _NEGATIVE_DOMAIN == static.domain,
+        f"negative behavioral + static describe the same domain {_NEGATIVE_DOMAIN!r} "
+        f"(got behavioral={neg['domain']!r}, static={static.domain!r})",
+    )
+    _check(
+        neg["rubric_version"] == static.rubric_version == "0.7",
+        f"negative behavioral + static share rubric_version 0.7 "
+        f"(got behavioral={neg['rubric_version']!r}, static={static.rubric_version!r})",
+    )
+
+    neg_pillars = neg["pillar_scores"]
+
+    # SHARED STATIC BASE: every static-observable pillar is IDENTICAL across the
+    # two independent measurements — the negative anchor corroborates the SAME
+    # static evidence the NO-payability score predicts on, reproduced across two
+    # crawls.  Includes transactability, so the no-rails FLOOR (18.75) the negative
+    # prediction rests on is provably the one a fresh offline replay pins — the
+    # mirror of test 4 pinning the with-rails CEILING (87.5).
+    for pillar in _SHARED_STATIC_PILLARS:
+        s = static.pillar_scores[pillar]
+        b = neg_pillars[pillar]
+        _check(
+            s is not None and b is not None and abs(s - b) < 1e-9,
+            f"shared static base: {pillar} identical across static replay and "
+            f"behavioral run (static={s}, behavioral={b})",
+        )
+
+    # NON-VACUOUS: the behavioral report is a genuine augmented SUPERSET, not the
+    # static fixture re-dumped — the identical static pillars above are an
+    # agreement between two DISTINCT measurements, not a tautology.
+    # (a) the Outcome pillar is SCORED behaviorally (0.0, the payment wall) but
+    #     NULL in the static replay.
+    _check(
+        static.pillar_scores["outcome"] is None,
+        "static replay scores Outcome null (behavioral-only pillar)",
+    )
+    _check(
+        isinstance(neg_pillars.get("outcome"), (int, float)),
+        f"behavioral run SCORES the Outcome pillar the static replay lacks "
+        f"(got {neg_pillars.get('outcome')}) — genuine behavioral superset",
+    )
+    # (b) the Trust pillar DIFFERS — the behavioral run adds a LIVE trust panel,
+    #     so the two reports are distinct runs, not the same file twice.
+    _check(
+        static.pillar_scores["trust"] is not None
+        and abs(static.pillar_scores["trust"] - neg_pillars["trust"]) > 1e-9,
+        f"Trust differs (static={static.pillar_scores['trust']}, "
+        f"behavioral={neg_pillars['trust']}) — behavioral augments it with a live panel",
     )
 
 
@@ -1945,6 +2021,7 @@ def main() -> int:
         test_behavioral_corroboration_is_reproducible,
         test_calibration_rests_on_a_shared_static_base,
         test_static_no_payment_prediction_is_behaviorally_corroborated,
+        test_negative_calibration_rests_on_a_shared_static_base,
         test_negative_anchor_is_a_genuine_reachable_retail_storefront,
         test_negative_corroboration_is_reproducible,
         test_calibration_is_two_sided,

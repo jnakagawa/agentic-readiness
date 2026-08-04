@@ -257,25 +257,31 @@ design in-cloud, execute locally.
      is now a two-sided property. Tests-only, git diff -- asrs/ rubric/ fixtures/ EMPTY → rubric v0.7, replay
      guard 24/24 / 46.1 F / 85.5 B / +39.4. Suite 240→244. See LOG Cycle 71. The static-fixture cross-validation
      for the negative side is the [LOCAL] follow-up below. -->
-- **[LOCAL] Capture a moleskine.com static fixture for the negative calibration anchor** (TRUTH, follow-up to
-  Cycle 71). The negative calibration guard (Cycle 71) reads moleskine.com's STATIC prediction from the static
-  checks embedded in the committed behavioral report — it has no separate offline replay to cross-validate
-  against, unlike the with-rails anchor (tests 1/4 replay `fixtures/canonical/driftflight.com.json`). Capture
-  the fixture LIVE — `asrs.cli score www.moleskine.com --record-fixture fixtures/canonical/www.moleskine.com.json`
-  (static $0 crawl, needs network → [LOCAL]) — then extend `test_calibration.py` so the negative side gets the
-  SAME two-crawl cross-validation: a `_static_report("www.moleskine.com")` replay whose static-observable
-  pillars (access/legibility/transactability) match the behavioral report's within 1e-9 (the negative mirror of
-  `test_calibration_rests_on_a_shared_static_base`). This proves the negative prediction rests on the same
-  static evidence across two independent crawls, closing the honest-scope gap the docstring names.
-  UPDATE Cycle 195 (TRUTH, in-cloud, direct-to-main): the negative anchor's TRANSACTABILITY floor is now
-  cross-validated in-cloud WITHOUT the fixture — `test_calibration.py`'s new
-  `test_no_rails_transactability_floor_is_capability_attributable_and_type_invariant` matches the retail
-  behavioral crawl's transactability floor (18.75, identical per-check vector, x402_probe 0) against a
-  SECOND independent no-rails crawl (`drift-flight.org` offline fixture), proving the negative floor is
-  storefront-TYPE-invariant + attributably the ABSENCE of agent-native payment. This does NOT close the
-  item: it cross-validates only the transactability PILLAR against a DIFFERENT domain; the honest-scope gap
-  the docstring names (access/legibility/transactability of moleskine.com ITSELF replayed offline vs its
-  behavioral crawl, within 1e-9) still needs the committed `moleskine.com` fixture → stays `[LOCAL]`.
+<!-- DONE 2026-08-04T22:56Z (LOCAL Cycle 238, TRUTH, direct-to-main, score-neutral): "[LOCAL] Capture a
+     moleskine.com static fixture for the negative calibration anchor" DISCHARGED — the negative (no-rails retail)
+     calibration anchor now gets the SAME two-crawl cross-validation the with-rails anchor has. HONEST ORDERING
+     (invariant #4): BEFORE recording, a live $0 static score confirmed moleskine.com had NOT drifted in the week
+     since the 2026-07-28 behavioral capture — the live crawl reproduced the behavioral run's static-observable
+     pillars EXACTLY (access 100.0 / legibility 40.909 / transactability 18.75, overall 49.8 F, x402_probe FAIL,
+     x402_live=False). THEN recorded `fixtures/canonical/www.moleskine.com.json` (41 entries, replays zero
+     replay-miss; 40 ephemeral anonymous Demandware set-cookie headers stripped for determinism, byte-for-byte
+     score-neutral, matching the siblings' zero-set-cookie convention; canonical save_fixture key order; no
+     local-path leak; 8.49MB, minimal-by-construction — the scoring replay requests all 41 entries, the bulk is a
+     real retail site's 200–530KB HTML pages). New guard `test_calibration.py::
+     test_negative_calibration_rests_on_a_shared_static_base` (18→19, the negative mirror of test 4): the offline
+     fixture replay's static-observable pillars (access/legibility/transactability) match the behavioral report's
+     within 1e-9 — the no-rails FLOOR (18.75) is now pinned by a fresh independent crawl the way test 4 pins the
+     with-rails CEILING (87.5); non-vacuous (Outcome null static vs 0.0 behavioral; Trust 73.33 vs 66.67). Updated
+     the docstring HONEST SCOPE bullet + test 5's parenthetical. Cycle-195's transactability-only in-cloud
+     type-invariance guard is now SUPERSEDED for the moleskine-itself gap this item named (access + legibility +
+     transactability of moleskine.com ITSELF, offline vs behavioral). SCORE-NEUTRAL (git diff -- asrs/ rubric/
+     loop/local_verify.py EMPTY; replay guard 24/24, 46.1 F / 85.5 B / +39.4 UNMOVED). SIDE EFFECT (folded, not a
+     new item): the fixture carries a real ZWSP (U+200B) in an <img> filename → converted
+     `test_offering.py::test_classification_is_invisible_formatting_invariant`'s real-evidence half from
+     assert-absence (by construction) to verify-invariance (by verification), which PARTIALLY discharges the
+     typographic-robustness item below (part d harmlessness on real evidence; phrase-rescue stays synthetic). See
+     LOG Cycle 238. -->
+
 
 - **[OPERATOR DIRECTIVE — Jonah, 2026-07-23] The battery must be
   OFFERING-RELATIVE, not fixed.** Observed: the current battery judges every
@@ -527,6 +533,16 @@ design in-cloud, execute locally.
   captures above (any real llms.txt-bearing site will do; a `/pricing` page with `per‑month` non-breaking hyphens
   is especially likely to exercise the hyphen fold; a JSON manifest field is the most likely to carry entities; a
   CMS-exported `/docs` or BOM-prefixed llms.txt is the likeliest to exercise the invisible-control strip).
+  UPDATE Cycle 238 (TRUTH, LOCAL, direct-to-main, score-neutral): part (d) is PARTIALLY discharged on REAL evidence.
+  The `www.moleskine.com` fixture captured this cycle (for the negative calibration anchor) carries a genuine ZWSP
+  (U+200B) inside an `<img>` filename, so `test_classification_is_invisible_formatting_invariant`'s real-evidence
+  half was converted from assert-absence (invariant BY CONSTRUCTION — no fixture carries a stripped char) to
+  verify-invariance (BY VERIFICATION — classify each char-carrying fixture with `_INVISIBLE_STRIP` disabled vs
+  shipped, assert identical archetypes/NA). moleskine now exercises that branch clean. BUT this is the HARMLESSNESS
+  case only (the ZWSP sits in an image filename, NOT inside a capability signal), so the strip is proven a no-op on
+  real evidence that INCIDENTALLY carries the char. The phrase-RESCUE case — an invisible control INSIDE a capability
+  WORD such that the strip is LOAD-BEARING for a real claim — is still synthetic-only and remains the open [LOCAL]
+  work here (as do reflow (a) / hyphen (b) / entity (c), all still synthetic).
 
 - **[LOCAL] Capture a RENDER-generation digital_good fixture to validate the Cycle-168 descriptor branch on
   REAL evidence** (COVERAGE, follow-up to Cycle 168). `_digital_good_descriptor` (asrs/battery.py) now maps a

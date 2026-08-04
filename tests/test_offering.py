@@ -1982,20 +1982,49 @@ def test_classification_is_invisible_formatting_invariant():
     assert znj_prof.archetypes[0] != "metered_api", "ZWNJ input reorders away from metered_api"
     print("  ok: ZWNJ / ZWJ are NOT stripped (script/grapheme semantics, not line-break controls) — precision-safe")
 
-    # REAL-EVIDENCE half: the strip is a NO-OP on committed canonical evidence, so
-    # the canonical CLAIMED sets are invariant BY CONSTRUCTION. NONE of the five
-    # committed fixtures carries any character the fold deletes.
+    # REAL-EVIDENCE half: the strip is a classification NO-OP on every committed
+    # canonical fixture. A fixture that carries NONE of the stripped chars is
+    # invariant BY CONSTRUCTION (nothing to delete). A fixture that DOES carry one —
+    # a genuine CMS/CDN artifact, e.g. the ZWSP a retail crawl captured INSIDE an
+    # <img> filename on www.moleskine.com — is invariant BY VERIFICATION: classifying
+    # it with the strip DISABLED (an empty str.translate table) yields the IDENTICAL
+    # archetypes and NA complement, so deleting the char never moves a real canonical
+    # claim. This is the real-evidence mirror of the synthetic invariance above
+    # (harmlessness on an incidental invisible char; the phrase-RESCUE case — a
+    # capability word itself broken mid-signal by an invisible control — is still
+    # synthetic-only, [LOCAL] until a fixture carries one inside a signal).
     STRIPPED = "­​⁠﻿"
-    for name in os.listdir(_FIXTURE_DIR):
+    verified = 0  # fixtures that carry a stripped char, checked by verification
+    for name in sorted(os.listdir(_FIXTURE_DIR)):
         if not name.endswith(".json"):
             continue
-        raw = open(os.path.join(_FIXTURE_DIR, name), encoding="utf-8").read()
+        path = os.path.join(_FIXTURE_DIR, name)
+        raw = open(path, encoding="utf-8").read()
         present = {ch for ch in raw if ch in STRIPPED}
-        assert not present, (
-            f"{name}: committed evidence carries an invisible char the strip WOULD delete "
-            f"({[hex(ord(c)) for c in present]}) — canonical invariance is no longer by construction"
+        if not present:
+            continue  # invariant by construction — nothing for the strip to delete
+        shipped = offering.discover_offering(FetchContext.from_fixture(path))
+        _saved = offering._INVISIBLE_STRIP
+        try:
+            offering._INVISIBLE_STRIP = {}  # str.translate no-op == strip disabled
+            unstripped = offering.discover_offering(FetchContext.from_fixture(path))
+        finally:
+            offering._INVISIBLE_STRIP = _saved
+        assert (
+            shipped.archetypes == unstripped.archetypes
+            and set(shipped.unclaimed) == set(unstripped.unclaimed)
+        ), (
+            f"{name}: strip is NOT a no-op on real evidence carrying "
+            f"{[hex(ord(c)) for c in present]} — classification moves "
+            f"(shipped {shipped.archetypes}, strip-disabled {unstripped.archetypes})"
         )
-    print("  ok: no committed canonical evidence carries a stripped invisible char — strip is a no-op there (invariant by construction)")
+        verified += 1
+    assert verified >= 1, (
+        "no committed fixture carries a stripped invisible char — the by-verification "
+        "branch is vacuous; a real CMS/CDN surface must exercise it (see www.moleskine.com)"
+    )
+    print(f"  ok: strip is a classification no-op on all committed canonical evidence "
+          f"({verified} char-carrying fixture(s) checked by verification, rest by construction)")
 
 
 def test_evidence_is_quoted_and_surface_tagged():

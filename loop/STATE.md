@@ -1,6 +1,37 @@
 # Loop state
 
-- Cycle counter: 237
+- Cycle counter: 238
+- LOCAL CYCLE 238 — 2026-08-04T22:56Z (TRUTH, LOCAL, direct-to-main, score-neutral). FIRST duty: `gh pr list
+  --state open` → [] (no open peer-gated PR, no review owed). INFRA green: this hour's verify floor
+  `runs/local/verify_20260804T224102Z.json` (22:41Z, git_pull.ok=true attempts=1, tests_ok=true 24/24) is THIS
+  fire; live canonical **46.1 F / 85.5 B / +39.4** (tx 87.5). Took the OLDEST substantive [LOCAL] P0 (open since
+  Cycle 71): **capture a moleskine.com static fixture for the NEGATIVE calibration anchor** — the no-rails retail
+  anchor now gets the SAME two-crawl cross-validation the with-rails anchor has. HONEST ORDERING (invariant #4):
+  BEFORE recording, a live $0 static score confirmed moleskine.com had NOT drifted a week on — the live crawl
+  reproduced the behavioral run's static-observable pillars EXACTLY (access 100 / legibility 40.909 /
+  transactability 18.75, overall 49.8 F, x402_probe FAIL, x402_live=False). Shipped: (1)
+  `fixtures/canonical/www.moleskine.com.json` (NEW; 41 entries, zero replay-miss; 40 ephemeral-anonymous
+  set-cookie headers stripped for determinism, byte-for-byte score-neutral; canonical key order; no local-path
+  leak; 8.49MB, minimal — all 41 entries consumed by the scoring replay, a real retail site's large HTML). (2)
+  `test_calibration.py::test_negative_calibration_rests_on_a_shared_static_base` (18→19, negative mirror of test
+  4): offline replay's access/legibility/transactability match the behavioral report within 1e-9 (no-rails FLOOR
+  18.75 now pinned by a fresh independent crawl, mirroring test 4's with-rails CEILING 87.5); non-vacuous (Outcome
+  null vs 0.0; Trust 73.33 vs 66.67). SIDE EFFECT (folded): the fixture carries a real ZWSP (U+200B) in an <img>
+  filename → converted `test_offering.py::test_classification_is_invisible_formatting_invariant`'s real-evidence
+  half from assert-absence to verify-invariance (classify each char-carrying fixture with `_INVISIBLE_STRIP`
+  on/off → identical); moleskine exercises it clean (HARMLESSNESS on real evidence — the ZWSP is not in a
+  capability phrase). Full suite 24/24; replay guard 24/24 / +39.4 UNMOVED; `git diff -- asrs/ rubric/
+  loop/local_verify.py` EMPTY. Invariant #1 held ($0 static crawls only). NO DM. See LOG Cycle 238.
+- FOCUS POINTER (Cycle 238 done, LOCAL): NO open peer-gated PR → next fire's first duty is the infra health check
+  only. Cloud track rotation UNCHANGED: Cycle 237 was TRUTH → cloud pointer is **READOUT next** (this LOCAL cycle
+  did not consume the cloud rotation slot; the READOUT-238 candidate from the prior pointer — surface the
+  "understand the offer" family's behavioral two-sidedness on the methodology page — is still open). The
+  moleskine two-crawl cross-validation is now DONE. Substantive [LOCAL] frontier (prefer the oldest): thin-bank
+  live fixtures (service_booking/data_retrieval/physical_good — zero committed evidence), a THIRD real anchor,
+  render/structured-catalog live captures, the typographic PHRASE-RESCUE real-evidence case (an invisible control
+  INSIDE a capability signal — moleskine only covered harmlessness), ACP/UCP/MPP live handshakes. In-cloud TRUTH
+  increment (tighten calibration/attribution guards) also available. RUNNER-HEALTH WATCH: drift RESOLVED; future
+  `verify_*.json` read +39.4 / attribution=None, real-series canonical_history tests recovery-tolerant (green).
 - CYCLE 237 — 2026-08-04T22:26Z (TRUTH, cloud, direct-to-main, tests-only/score-neutral). FIRST duty (infra
   health check — no open peer-gated PR per Cycle-236 pointer): INFRA green, newest verify
   `runs/local/verify_20260804T214104Z.json` (21:41Z, git_pull.ok=true attempts=1, divergence_recovery=None,

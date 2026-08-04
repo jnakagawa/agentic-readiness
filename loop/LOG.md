@@ -3,6 +3,74 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 226 — 2026-08-04T14:2xZ — COVERAGE — a NEW metered_api capability signal: the agent-native payment CHALLENGE-SETTLE-RETRY handshake (the request/response FLOW an agent EXECUTES to pay, not just the static fact that a rail exists)
+
+WHAT/WHY (COVERAGE — a new offering-discovery capability signal, per the Cycle-225 FOCUS POINTER; the
+in-cloud lever every prior offering-signal cycle used). The offering signal bank's payment vocabulary is deep
+but every existing payment signal names a STATIC FACT: `x402` that the 402 rail is named, `agent-payment-rail`
+WHICH rails exist (x402/MPP/ACP/UCP/AP2), `payment-receipt` the proof that comes BACK on success,
+`reserve-and-settle` a spend CEILING, `failure-not-billed` that a FAILURE is free, `free-included-usage` a $0
+on-ramp. NONE captured the request/response FLOW itself — the HTTP 402 CHALLENGE → SETTLE (sign the zero-value
+authorization / pay the priced 402) → RETRY-the-same-request-with-the-proof-attached round-trip an agent must
+EXECUTE to pay programmatically. That is the load-bearing "pay without a human" leg of the PLAYBOOK's capability
+lens: an autonomous buyer that reads "here is a 402" but not "settle the challenge and retry with the proof
+attached" receives the challenge and STALLS at the pay step — it never completes the paid call. A storefront that
+documents the challenge-settle-retry handshake is MORE agent-completable at the payment leg, not merely "has a
+rail". This also updates the standing frontier note: Cycle 206 declared the in-cloud "further new SIGNALS need
+[LOCAL] fixtures" — but a real, uncaptured capability was still sitting in the COMMITTED driftflight.com agent
+docs (the challenge-retry flow), so an in-cloud new-signal increment was available after all.
+
+COVERAGE — the smallest unit (one metered_api signal + a precision test + the isolation-matrix entry).
+`asrs/offering.py` `_SIGNALS["metered_api"]` gains `payment-challenge-retry` (placed with the payment-rail
+signals, between `agent-payment-rail` and `payment-receipt` — it is the FLOW sibling of `payment-receipt`: that
+is the proof AFTER a successful settle, this is how the agent settles and retries to GET there). VENDOR-NEUTRAL
+challenge-response payment vocabulary (the IETF HTTP 402 Payment Required status, a payment challenge, settling/
+signing a 402 authorization and retrying with the payment proof attached, "pay and retry") — HTTP 402 +
+challenge-response is a standard status + a universal auth pattern, no ZeroClick/wallet/on-chain-asset noun
+required to match. PRECISION-CRITICAL (bare "retry"/"402"/"challenge"/"settle" is a minefield — a WEBHOOK-delivery
+retry present verbatim on api.replicate.com "we will retry the webhook a few times", a generic "please retry", a
+"coding challenge", "settle a dispute", a phone-number 402): NEVER a bare token — require the CO-OCCURRENCE only
+the handshake produces (`pay|top-up and retry`; `settle ... 402|challenge` either order; `(priced )402 ... retry`;
+`retry ... with|attach ... payment|proof|signed|signature|authorization`; `sign|settle ... 402|challenge|
+authorization ... and retry`; direct `payment challenge` / `402 challenge`). `tests/test_offering.py`
+`test_payment_challenge_retry_precision_synthetic` (9 real-shape positives fire the label / 9 bare-token negatives
+— incl. the replicate webhook-retry — dodge), registered in the runner list; isolation-matrix entry added to
+`tests/test_offering_canonical.py` `_ISOLATION_EVIDENCE` (claims EXACTLY metered_api, fires its own label).
+
+VALIDATION. Full suite 470→471 passed; `test_offering.py` +1 test (registered — `test_runner_registration`
+green), isolation matrix 72/72 complete. NON-VACUOUS on real committed evidence: fires on driftflight.com's
+captured agent docs (agents.driftflight.com/llms.txt + llms-full.txt — "Settle it via the challenge and retry
+with the proof attached", "Sign the zero-value x402 authorization (free) and retry", priced-402 "pay and retry",
+"top up and retry") and is CORRECTLY ABSENT on drift-flight.org (which carries NO 402/challenge/settle/retry prose
+— the discovery-layer echo of the real capability gap, mirroring `self-provisioning`/`payment-receipt`/
+`reserve-and-settle`/`free-included-usage`), api.replicate.com (webhook-retry dodged), books.toscrape.com, and
+example.com. CANONICAL CLAIMED SETS + ORDER INVARIANT on all 5 fixtures: driftflight.com metered_api strength
+21→22 (already the strongest archetype → no reorder, set unchanged {metered_api, digital_good, subscription});
+drift-flight.org unchanged {metered_api(12), digital_good(10), subscription(5)}; api.replicate.com metered_api(9)
+unchanged; books.toscrape.com physical_good(3) unchanged; example.com {} unchanged. OFF the scoring path /
+score-neutral: `git diff --stat -- asrs/scoring.py asrs/probes/ rubric/ fixtures/` EMPTY (only the off-path
+`asrs/offering.py` discovery classifier — not imported by scoring.py/probes/ — + the two test files changed).
+Discovery-layer COVERAGE, not a scoring check → NOT peer-gated, direct-to-main (same class as every prior
+offering-signal cycle). Rubric v0.7 unchanged.
+
+CANONICAL PAIR. In-cloud replay guard (frozen regression signal) 24/24 GREEN, 46.1 F / 85.5 B / +39.4, 0
+replay-miss — unchanged by construction (the classifier is off the scoring path; the scoring-path diff is empty).
+Live signal (READ from the newest artifact `runs/local/verify_20260801T035047Z.json`, NOT re-run — runner
+at-floor): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5, the Aug-1
+transactability-drop divergence persisting (off the scoring path). Local runner at-floor since Aug-1 03:50Z
+(~82.5h) — cloud cannot repair; stays P0. Infra health this fire: fresh `.venv` + `requests pyyaml eth-account
+pytest`, 470 tests green pre-flight (471 after +1); local `main` aligned to origin/main `ccef6ef` (Cycle 225);
+no open peer-gated PRs (`list_pull_requests` state=open → []), so no first-duty review.
+
+NEXT HYPOTHESIS (TRUTH 227). Rotate to TRUTH. The in-cloud precision/rigor frontier for the diagnostic layers is
+dense (attribution + reliability invariances host-relabel- and polarity-pinned; the offering classifier's payment
+bank now covers the challenge-settle-retry FLOW, not just static rail facts). A candidate TRUTH increment: a
+calibration/attribution invariance guard, OR — now that the payment-FLOW capability is discoverable — pin that the
+new signal's presence tracks the WITH-rails/NO-rails capability split it is meant to echo (the discovery-layer
+mirror of the transactability delta). The substantive frontier (a THIRD real anchor, thin-bank live fixtures,
+moleskine.com two-crawl cross-validation, ACP/UCP/MPP live handshakes, transactability-drop CHECK-level diagnosis
++ peer-gated re-baseline) stays `[LOCAL]`, gated on the runner recovering.
+
 ## Cycle 225 — 2026-08-04T13:2xZ — METHOD — panel reliability is VERDICT-POLARITY INVARIANT (a no-rails store's unanimous FAIL is exactly as reproducible + citable as a with-rails store's unanimous PASS)
 
 WHAT/WHY (METHOD — a variance/attribution rigor tripwire, per the Cycle-224 FOCUS POINTER). `panel_reliability`

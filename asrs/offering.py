@@ -699,6 +699,69 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
         ("agent-payment-rail", re.compile(
             r'"protocol"\s*:\s*"(?:x402|mpp|acp|ucp|ap2)"'
             r"|\b(?:x402|mpp|acp|ucp|ap2)\b\s*\([^)]*\b(?:usdc|usdt|stablecoin)\b[^)]*\)", _F)),
+        # PAYMENT CHALLENGE-SETTLE-RETRY HANDSHAKE — the machine-readable payment
+        # PROTOCOL FLOW an agent must drive to PAY programmatically: the endpoint
+        # answers a call with an HTTP 402 payment CHALLENGE, the agent SETTLES it
+        # (signs the zero-value authorization / pays the priced 402 with its wallet),
+        # then RETRIES the same request with the signed payment proof attached. This
+        # is the load-bearing "pay programmatically without a human" leg of the
+        # PLAYBOOK's capability lens, and — despite the depth of the payment bank — it
+        # is currently UNCAPTURED. Every existing payment signal names a STATIC FACT:
+        # `x402` that the 402 rail is named, `agent-payment-rail` WHICH rails exist
+        # (x402/MPP/ACP/UCP/AP2), `payment-receipt` the proof that comes BACK on
+        # success, `reserve-and-settle` a spend CEILING, `failure-not-billed` that a
+        # FAILURE is free, `free-included-usage` a $0 on-ramp. NONE describes the
+        # request/response FLOW itself — the 402-challenge → settle → retry-with-proof
+        # round-trip an agent has to EXECUTE. An autonomous buyer that reads "here is a
+        # 402" but not "settle the challenge and retry the same request with the proof
+        # attached" receives the challenge and STALLS at the pay step — it never
+        # completes the paid call — so a storefront that documents the challenge-settle-
+        # retry handshake is MORE agent-completable at the payment leg, not merely
+        # "has a rail". It is the FLOW sibling of `payment-receipt`: that is the proof
+        # the agent gets AFTER a successful settle; this is how it settles and retries
+        # to GET there.
+        # Vendor-neutral challenge-response payment vocabulary — the IETF HTTP 402
+        # Payment Required status, a payment challenge, settling/signing a 402
+        # authorization and retrying the request with the payment proof/signature
+        # attached, "pay and retry" — the same open-convention category as
+        # REST/GraphQL/OpenAPI/x402 already in this bank (HTTP 402 + challenge-response
+        # is a standard status + a universal auth pattern), never a vendor (no
+        # ZeroClick / wallet / on-chain-asset noun is required to match).
+        # PRECISION-CRITICAL: bare "retry" / bare "402" / bare "challenge" / bare
+        # "settle" is a false-positive minefield — a WEBHOOK-DELIVERY retry present
+        # verbatim in the very fixtures we validate on ("we will retry the webhook a
+        # few times" on api.replicate.com, a redelivery not a payment), a generic
+        # "please retry the request", a "coding challenge" / "the challenge of
+        # scaling", "settle a dispute" / "settle down", a room/extension "402". So
+        # NEVER match a bare token: require the CO-OCCURRENCE that only the payment
+        # handshake produces — a `pay|top-up and retry`, a `settle ... (402|challenge)`
+        # (either order), a `(priced )402 ... retry`, a `retry ... with|attach ...
+        # (payment|proof|signed|signature|authorization)`, a `sign|settle ...
+        # (402|challenge|authorization) ... and retry`, or a direct `payment challenge`
+        # / `402 challenge`. The webhook-retry, generic-retry, coding-challenge,
+        # settle-a-dispute, and phone-number-402 senses trip none of these. Fires
+        # non-vacuously on the real captured driftflight.com agent docs
+        # (agents.driftflight.com — "Settle it via the challenge and retry with the
+        # proof attached", "Sign the zero-value x402 authorization (free) and retry",
+        # "priced 402 ... pay and retry", "top up and retry") and is correctly ABSENT
+        # on drift-flight.org (which carries NO 402 / challenge / settle / retry prose
+        # at all — the discovery-layer echo of the real capability gap, mirroring
+        # `self-provisioning` / `payment-receipt` / `reserve-and-settle` /
+        # `free-included-usage`). driftflight.com ALREADY claims metered_api (its
+        # strongest archetype), so this deepens its evidence without adding or
+        # reordering any archetype (score-neutral, pinned by
+        # tests/test_offering_canonical.py); it fires on ZERO of the metered-api-only
+        # (api.replicate.com — the webhook-retry dodged), retail (books.toscrape.com),
+        # or null (example.com) fixtures, so it can never CONJURE a metered_api claim
+        # on a site that does not already make one. The classifier is off the scoring
+        # path.
+        ("payment-challenge-retry", re.compile(
+            r"\b(?:pay|paid|top[- ]?up)\s+and\s+retry\b"
+            r"|\bsettle\b[^.<>\n]{0,50}?\b(?:402|challenge)\b"
+            r"|\b(?:priced\s+)?402\b[^.<>\n]{0,25}?\b(?:then\s+)?retry\b"
+            r"|\bretry\b[^.<>\n]{0,55}?\b(?:with|attach\w*)\b[^.<>\n]{0,30}?\b(?:payment|proof|signed|signature|authorization)\b"
+            r"|\b(?:sign|settle)\w*\b[^.<>\n]{0,45}?\b(?:402|challenge|authorization)\b[^.<>\n]{0,25}?\band\s+retry\b"
+            r"|\bpayment\s+challenge\b|\b402\s+(?:payment\s+)?challenge\b", _F)),
         # PAYMENT RECEIPT / spend reconciliation — the machine-readable PROOF-OF-
         # PAYMENT an agent gets BACK after a paid call and logs to RECONCILE its own
         # spend: a receipt header on the successful paid response, a payment /

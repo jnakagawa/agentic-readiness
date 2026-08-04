@@ -1,8 +1,44 @@
 # Loop state
 
-- Cycle counter: 225
+- Cycle counter: 226
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-04T13:2xZ (Cycle 225) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-04T14:2xZ (Cycle 226) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~82.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
+  cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 14:2xZ fire is NOT
+  first-after-16:00 UTC → no DM this fire per comms policy (score-neutral off-scoring-path COVERAGE increment, no
+  sensitive-class PR, nothing score-moving). Live signal (READ, not re-run): drift-flight.org 46.1 F /
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1), off
+  the scoring path; the in-cloud replay guard stays the frozen independent regression signal (24/24, 46.1 F / 85.5 B /
+  +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/
+  SELF-HEAL (Cycle 226): fresh `.venv` + `requests pyyaml eth-account pytest`, 470 tests green pre-flight (471 after
+  +1); local `main` aligned to origin/main `ccef6ef` (Cycle 225); LOG.md confirmed newest-first + complete through
+  Cycle 225; last push (Cycle 225, ccef6ef) present on origin/main. NOTE: runner at-floor since Aug-1 03:50Z
+  (~3.4 days) — durable [LOCAL] runner-recovery stays P0.
+- FOCUS POINTER (Cycle 226 done): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 226 was COVERAGE, so
+  Cycle 227 is TRUTH). Cycle 226 shipped a **COVERAGE increment — a NEW metered_api offering signal:
+  `payment-challenge-retry`, the agent-native payment CHALLENGE-SETTLE-RETRY handshake**. Every existing payment
+  signal named a STATIC FACT (`x402` the rail, `agent-payment-rail` which rails, `payment-receipt` the proof back,
+  `reserve-and-settle` a ceiling, `failure-not-billed` a free failure, `free-included-usage` a $0 on-ramp); NONE
+  captured the request/response FLOW an agent must EXECUTE — the HTTP 402 CHALLENGE → SETTLE (sign the zero-value
+  authorization / pay the priced 402) → RETRY-with-proof-attached round-trip. An agent that reads "here is a 402"
+  but not "settle the challenge and retry with the proof attached" STALLS at the pay step. VENDOR-NEUTRAL (HTTP 402 +
+  challenge-response is a standard status + universal auth pattern; no ZeroClick/wallet noun required). PRECISION-
+  CRITICAL (bare retry/402/challenge/settle is a minefield incl. api.replicate.com's WEBHOOK-delivery "retry the
+  webhook a few times"): requires the CO-OCCURRENCE only the handshake produces. `test_offering.py`
+  `test_payment_challenge_retry_precision_synthetic` (9 real-shape positives fire / 9 bare-token negatives dodge),
+  registered; isolation-matrix entry added (claims EXACTLY metered_api). NON-VACUOUS on committed evidence: fires on
+  driftflight.com agent docs, CORRECTLY ABSENT on drift-flight.org (no 402/challenge/settle/retry prose — the
+  discovery-layer echo of the real capability gap). CANONICAL SETS + ORDER INVARIANT on all 5 fixtures
+  (driftflight.com metered_api 21→22, already strongest → no reorder; every other fixture unchanged). Updates the
+  standing frontier note: Cycle 206 said "further new SIGNALS need [LOCAL] fixtures", but a real uncaptured
+  capability (the challenge-retry flow) was still in the COMMITTED driftflight.com docs. OFF the scoring path
+  (`git diff -- asrs/scoring.py asrs/probes/ rubric/ fixtures/` EMPTY; `offering` not imported by scoring/probes) →
+  score-neutral, NOT peer-gated, direct-to-main. Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; suite
+  470→471; rubric v0.7. NEXT (TRUTH 227): a calibration/attribution invariance guard, OR pin that the new payment-FLOW
+  signal's presence tracks the with-rails/no-rails capability split it echoes. Substantive frontier (a THIRD real
+  anchor, thin-bank live fixtures, moleskine.com two-crawl cross-validation, ACP/UCP/MPP, transactability-drop
+  CHECK-level diagnosis + peer-gated re-baseline) stays `[LOCAL]`, gated on the runner recovering.
+- SUPERSEDED (Cycle 225 runner note): RUNNER AT-FLOOR at 2026-08-04T13:2xZ (Cycle 225) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~81.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
   cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 13:2xZ fire is NOT
   first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral off-scoring-path METHOD
@@ -14,7 +50,7 @@
   +1); realigned local `main` off the stale diverged tip to origin/main `06ce0ff` (Cycle-52 lesson) before working;
   LOG.md confirmed newest-first + complete through Cycle 224; last push (Cycle 224, 06ce0ff) present on origin/main.
   NOTE: runner at-floor since Aug-1 03:50Z (~3.4 days) — durable [LOCAL] runner-recovery stays P0.
-- FOCUS POINTER (Cycle 225 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 225 was METHOD, so
+- SUPERSEDED (Cycle 225 focus pointer): FOCUS POINTER (Cycle 225 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 225 was METHOD, so
   Cycle 226 is COVERAGE). Cycle 225 shipped a **METHOD increment — panel reliability is VERDICT-POLARITY INVARIANT**.
   `verdict_stability = 1 - 2*mean(minority_fraction)` with `minority = min(pass, n-pass)` is SYMMETRIC in pass↔fail, so
   a panel that unanimously FAILS the payment checkpoints is by construction exactly as reproducible + citable as one

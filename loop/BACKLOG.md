@@ -364,7 +364,17 @@ design in-cloud, execute locally.
   (enrich/dataset/lookup + subscription's recurring + service_booking's book/schedule + metered_api's
   metered) — the in-cloud precision-audit frontier is EXHAUSTED; further COVERAGE wanting new SIGNALS (not
   precision) needs real fixtures ([LOCAL]). Does NOT close the parent item — the thin banks still want
-  GENUINE NEW signals from real fixtures ([LOCAL], unchanged).
+  GENUINE NEW signals from real fixtures ([LOCAL], unchanged). QUALIFICATION Cycle 226 (COVERAGE, in-cloud,
+  direct-to-main, score-neutral): the "further new SIGNALS need [LOCAL] fixtures" claim held only for the THIN
+  archetypes — it was too strong for the DEEP banks. Cycle 226 added `payment-challenge-retry` to metered_api
+  (the agent-native payment CHALLENGE-SETTLE-RETRY handshake — the request/response FLOW an agent executes,
+  distinct from the STATIC rail facts x402/agent-payment-rail/payment-receipt/reserve-and-settle) firing
+  NON-VACUOUSLY on the COMMITTED driftflight.com agent docs and ABSENT on drift-flight.org (the with/no-rails
+  capability-gap echo), canonical SETS+ORDER invariant on all 5. So the in-cloud new-signal lever is NOT fully
+  exhausted for the deep banks: a committed fixture can still carry a documented CAPABILITY not yet mapped to a
+  signal (audit metered_api/digital_good/subscription committed prose for uncaptured FLOW/lifecycle/safety
+  capabilities before assuming [LOCAL] is required). The thin banks (service_booking/data_retrieval/physical_good)
+  DO still need real fixtures ([LOCAL], unchanged) — no committed fixture claims them to mine.
 
 - **[LOCAL] Validate the typographic-encoding robustness fixes on REAL surfaces (line-wrap + intra-word hyphen + non-HTML entity + invisible line-break control)**
   (COVERAGE, follow-up to Cycles 178 + 214 + 218 + 222). FOUR sibling in-cloud fixes are exercised only SYNTHETICALLY today

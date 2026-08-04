@@ -1145,6 +1145,72 @@ def test_usage_based_metered_precision_synthetic():
     )
 
 
+def test_payment_challenge_retry_precision_synthetic():
+    # A NEW metered_api capability signal: the agent-native payment CHALLENGE-SETTLE-
+    # RETRY handshake — the request/response FLOW an agent must EXECUTE to pay
+    # programmatically (the endpoint answers with an HTTP 402 challenge; the agent
+    # settles/signs it and retries the same request with the payment proof attached).
+    # Distinct from every static payment FACT already in the bank (`x402` names the
+    # rail, `agent-payment-rail` which rails exist, `payment-receipt` the proof BACK,
+    # `reserve-and-settle` a ceiling, `failure-not-billed` a free failure): those say
+    # a rail EXISTS, this says how the agent DRIVES it to completion. Precision is the
+    # whole game — bare "retry"/"402"/"challenge"/"settle" is a false-positive
+    # minefield (a WEBHOOK-delivery retry present verbatim on api.replicate.com, a
+    # generic "please retry", a "coding challenge", "settle a dispute", a phone-number
+    # 402) — so the signal requires the CO-OCCURRENCE only the payment handshake
+    # produces. Each POSITIVE fires `payment-challenge-retry` with no other metered_api
+    # signal rescuing it (so it exercises the branch directly); each NEGATIVE must NOT
+    # claim metered_api on its own.
+    #
+    # Canonical-invariant by construction (the signal fires ONLY on driftflight.com,
+    # already metered_api's strongest archetype → strength 21->22, no reorder; ABSENT
+    # on drift-flight.org, which carries no 402/challenge/settle/retry prose — the
+    # discovery-layer echo of the real capability gap; ZERO on the api/retail/null
+    # fixtures — pinned by tests/test_offering_canonical.py). Off the scoring path.
+    positives = {
+        # The real captured driftflight.com agent-docs prose (verbatim shapes).
+        "settle via the challenge and retry": "Settle it via the challenge and retry with the proof attached.",
+        "retry with signed payment attached": "Retry the same request with the signed payment attached.",
+        "retry with the proof attached": "Then retry the same request with the proof attached.",
+        "sign the 402 authorization and retry": "Sign the zero-value x402 authorization (free) and retry.",
+        "priced 402, pay and retry": "Each call returns one priced 402 with the exact amount; pay and retry.",
+        "402 top up and retry": "An exhausted balance surfaces as a 402 - top up and retry.",
+        "settle its priced 402 then retry": "Route it as a paid request: settle its priced 402, then retry.",
+        "payment challenge direct": "The endpoint answers with a payment challenge.",
+        "402 challenge direct": "You receive a 402 challenge on the first call.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("pay.test", {"homepage": text})
+        assert prof.claims("metered_api"), (name, prof.archetypes)
+        fired = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "metered_api"
+            for s in c.signals
+        }
+        assert "payment-challenge-retry" in fired, (name, sorted(fired))  # non-vacuous
+    print(f"  ok: {len(positives)} payment challenge-settle-retry phrasings each fire payment-challenge-retry")
+
+    negatives = {
+        # The api.replicate.com webhook-redelivery retry — the precision target.
+        "webhook redelivery retry": "If there are network problems, we will retry the webhook a few times.",
+        "generic retry request": "Please retry the request if it fails.",
+        "retry a search": "Retry your search with different filters.",
+        "coding challenge": "Join our monthly coding challenge and win prizes.",
+        "challenge of scaling": "The challenge of scaling infrastructure is real.",
+        "settle a dispute": "We settle disputes within thirty days.",
+        "settle down": "Settle down and enjoy the flight.",
+        "extension 402": "Call us at extension 402 for support.",
+        "retry the payment page": "If the page errors, refresh and try again later.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("prose.test", {"homepage": text})
+        assert not prof.claims("metered_api"), (name, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} bare retry/402/challenge/settle strings do NOT claim metered_api (precision)"
+    )
+
+
 def test_non_storefront_claims_nothing():
     prof = classify_offering("example.test", {"homepage": NULL_HOMEPAGE})
     assert prof.archetypes == [], prof.archetypes
@@ -4512,6 +4578,7 @@ def main() -> int:
         test_data_retrieval_lookup_precision_synthetic,
         test_subscription_recurring_precision_synthetic,
         test_usage_based_metered_precision_synthetic,
+        test_payment_challenge_retry_precision_synthetic,
         test_non_storefront_claims_nothing,
         test_strength_counts_distinct_signals_and_orders_claims,
         test_classification_is_surface_read_order_invariant,

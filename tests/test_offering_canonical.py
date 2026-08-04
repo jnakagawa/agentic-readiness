@@ -5771,6 +5771,7 @@ _ISOLATION_EVIDENCE: dict[str, str] = {
     "tiered-volume": "committed-use volume discounts apply",
     "x402": "the endpoint answers with HTTP 402",
     "agent-payment-rail": "settle via x402 (usdc) on the base network",
+    "payment-challenge-retry": "settle the payment challenge and retry with the proof attached",
     "payment-receipt": "log the receipt header for your spend records",
     "failure-not-billed": "if the request failed you are not charged",
     "reserve-and-settle": "you reserve the ceiling up front and are charged only actual",

@@ -20,7 +20,17 @@ Covers the load-bearing behaviours with synthetic ``BehavioralRun`` fixtures
     enumerated its model x trial draws in (Cycle 93 METHOD rigor tripwire — the
     reliability-layer member of the presentation-order invariance family that
     already covers the battery, the leaderboard, offering classification, and the
-    scorer's multi-cap accumulation).
+    scorer's multi-cap accumulation);
+  - reproducibility + citability are VERDICT-POLARITY INVARIANT: reversing the
+    direction of every observed outcome (pass<->fail on every checkpoint,
+    warned<->clean on the trust posture) leaves verdict_stability, flip_rate, the
+    flipped-checkpoint set, trust agreement, the band label AND the citability gate
+    unchanged — only the reported per-checkpoint pass_count reflects the flip. The
+    metric measures whether the panel AGREED, not WHICH WAY, so a no-rails store's
+    unanimous FAIL is exactly as citable as a with-rails store's unanimous PASS
+    (Cycle 225 METHOD rigor — the two-sided calibration anchor stated at the
+    reliability layer; the metamorphic sibling of the attribution layer's
+    host-relabel-invariance guards).
 """
 
 from __future__ import annotations
@@ -421,6 +431,121 @@ def test_verdict_stability_is_monotone_and_shares_the_citability_threshold() -> 
            "the threshold sweep straddled the boundary (both verdicts appeared)")
 
 
+# ---------------------------------------------------------------------------
+# 11. verdict_stability + citability are VERDICT-POLARITY INVARIANT (Cycle 225
+#     METHOD rigor). Reliability measures whether the panel AGREED, not WHICH WAY
+#     it agreed: reverse the direction of every observed outcome (pass<->fail on
+#     every checkpoint, warned<->clean on the trust posture) and every
+#     reproducibility/citability field must be unchanged. This is the calibration
+#     anchor's two-sidedness stated at the reliability layer — a no-rails store
+#     whose panel unanimously FAILS the payment checkpoints has to be exactly as
+#     REPRODUCIBLE and as CITABLE as a with-rails store whose panel unanimously
+#     PASSES them. If it were not, the citability gate would carry a hidden pro-
+#     PASS bias: the "fail" side of the two-sided calibration anchor would look
+#     less quotable purely because it failed, which would quietly disqualify the
+#     negative anchor the whole calibration rests on. The point-value tests (1-8)
+#     pin WHAT it computes, order-invariance (9) that it ignores arrival order,
+#     monotonicity+threshold (10) its SHAPE; this pins that it is blind to the
+#     SIGN of the verdict — the metamorphic sibling of the attribution layer's
+#     host-relabel-invariance guards.
+# ---------------------------------------------------------------------------
+def _invert(run: BehavioralRun) -> BehavioralRun:
+    """The same run with the DIRECTION of every observed outcome reversed:
+    every checkpoint verdict negated and the trust posture flipped
+    (warned<->clean). The metamorphic transform under test — it changes which way
+    the panel voted, nothing about how much it agreed."""
+    return BehavioralRun(
+        model=run.model, trial=run.trial,
+        checkpoints={k: (not v) for k, v in run.checkpoints.items()},
+        trust_events=[] if run.trust_events else ["warn: unproven"],
+    )
+
+
+def test_verdict_stability_is_polarity_invariant() -> None:
+    print("test_verdict_stability_is_polarity_invariant")
+
+    # --- (A) The crisp two-sided calibration statement: a unanimously-FAILING ---
+    #     panel is exactly as reproducible AND as citable as a unanimously-PASSING
+    #     one. This is the reliability-layer face of the two-sided calibration
+    #     anchor (with-rails PASS / no-rails retail FAIL): reproducibility is a
+    #     property of the AGREEMENT, not of the direction agreed on.
+    allpass = [_run(model=m, trial=t, **dict.fromkeys(_KEYS, True))
+               for m, t in (("claude", 1), ("codex", 1))]
+    allfail = [_invert(r) for r in allpass]
+    rp = R.panel_reliability(allpass)
+    rf = R.panel_reliability(allfail)
+    # non-vacuous: the transform genuinely reversed every checkpoint verdict.
+    _check(all(c.pass_count == 2 for c in rp.per_checkpoint),
+           "PASS panel: every checkpoint passed by both runs")
+    _check(all(c.pass_count == 0 for c in rf.per_checkpoint),
+           "FAIL panel: every checkpoint failed by both runs (the flip is real)")
+    _check(rp.verdict_stability == 1.0 and rf.verdict_stability == 1.0,
+           "unanimous PASS and unanimous FAIL are BOTH perfectly reproducible")
+    _check(rp.label == rf.label == "stable",
+           "both land in the same descriptive band")
+    qp = R.quotability(_StubReport(allpass))
+    qf = R.quotability(_StubReport(allfail))
+    _check(qp.quotable and qf.quotable and qp.tag == qf.tag == "reproducible",
+           "a unanimously-FAILING store is exactly as CITABLE as a "
+           "unanimously-PASSING one — the gate carries no pro-PASS bias")
+
+    # --- (B) The general metamorphic invariance over an INTERIOR-mix panel ------
+    #     (some unanimous, some split, trust posture split). Inverting every run's
+    #     verdict polarity leaves every reproducibility/citability field identical;
+    #     ONLY the reported per-checkpoint pass_count reflects the flip (n - p).
+    base = dict.fromkeys(_KEYS, True)
+    v1 = _run("claude", 1, trust_events=["warn: unproven"],
+              **{**base, "no_human_gate": False})
+    v2 = _run("claude", 2, trust_events=["warn: unproven"],
+              **{**base, "machine_payable_path": False, "no_human_gate": False})
+    v3 = _run("codex", 1, trust_events=[],
+              **{**base, "no_human_gate": False})
+    v4 = _run("codex", 2, trust_events=["warn: unproven"],
+              **{**base, "found_purchase_path": False,
+                 "machine_payable_path": False, "no_human_gate": False})
+    panel = [v1, v2, v3, v4]
+    inv = [_invert(r) for r in panel]
+    rel = R.panel_reliability(panel)
+    reli = R.panel_reliability(inv)
+
+    # non-vacuous: a genuine interior operating point with a real mix + split trust.
+    _check(abs(rel.verdict_stability - 0.7) < 1e-9
+           and 0.0 < rel.verdict_stability < 1.0,
+           f"reference panel at a genuine interior 0.7, got {rel.verdict_stability}")
+    _check(0 < len(rel.flipped_checkpoints) < len(_KEYS)
+           and rel.trust_events_unanimous is False,
+           "reference panel mixes flipped/unanimous checkpoints AND splits trust")
+
+    # non-vacuous: inversion really moved the reported pass counts (n - original).
+    ref_pc = {c.checkpoint: c.pass_count for c in rel.per_checkpoint}
+    inv_pc = {c.checkpoint: c.pass_count for c in reli.per_checkpoint}
+    _check(inv_pc != ref_pc,
+           "inversion genuinely changed the reported pass counts (non-vacuous)")
+    _check(all(inv_pc[k] == rel.valid_runs - ref_pc[k] for k in _KEYS),
+           "each reported pass_count reflects the flip exactly: inverted == n - original")
+
+    # THE INVARIANT: every reproducibility/citability field is unchanged.
+    d, di = rel.to_dict(), reli.to_dict()
+    for fkey in ("valid_runs", "single_trial", "flipped_checkpoints", "flip_rate",
+                 "verdict_stability", "trust_event_agreement",
+                 "trust_events_unanimous", "label"):
+        _check(d[fkey] == di[fkey],
+               f"{fkey} invariant under verdict-polarity inversion")
+    # per-checkpoint agreement/unanimity are invariant; only pass_count moved.
+    for c, ci in zip(rel.per_checkpoint, reli.per_checkpoint):
+        _check(c.checkpoint == ci.checkpoint and c.n == ci.n
+               and c.agreement == ci.agreement and c.unanimous == ci.unanimous,
+               f"{c.checkpoint}: agreement/unanimity invariant "
+               "(only pass_count reflects the flip)")
+
+    # and the citability GATE returns the same verdict on the inverted panel.
+    q = R.quotability(_StubReport(panel))
+    qi = R.quotability(_StubReport(inv))
+    _check(q.tag == qi.tag and q.quotable == qi.quotable
+           and q.verdict_stability == qi.verdict_stability,
+           f"citability gate is polarity-invariant (tag {q.tag!r} both ways)")
+
+
 def main() -> int:
     tests = [
         test_unanimous,
@@ -433,6 +558,7 @@ def main() -> int:
         test_mixed_band,
         test_panel_reliability_is_trial_order_invariant,
         test_verdict_stability_is_monotone_and_shares_the_citability_threshold,
+        test_verdict_stability_is_polarity_invariant,
     ]
     failed = 0
     for t in tests:

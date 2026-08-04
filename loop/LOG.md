@@ -3,6 +3,49 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 225 — 2026-08-04T13:2xZ — METHOD — panel reliability is VERDICT-POLARITY INVARIANT (a no-rails store's unanimous FAIL is exactly as reproducible + citable as a with-rails store's unanimous PASS)
+
+WHAT/WHY (METHOD — a variance/attribution rigor tripwire, per the Cycle-224 FOCUS POINTER). `panel_reliability`
+(asrs/reliability.py) is the single number the benchmark's "is this safe to cite?" credibility rests on: the
+quotability gate reads `verdict_stability` to call a behavioral panel CITABLE ("reproducible") vs PROVISIONAL. The
+existing guards pin WHAT it computes (tests 1-8), that it ignores arrival order (9, trial-order invariance), and its
+SHAPE — monotonicity + shared citability threshold (10). NONE pinned that it is blind to the SIGN of the verdict.
+That gap matters for the two-sided calibration anchor specifically: reproducibility is `1 - 2*mean(minority_fraction)`
+with `minority = min(pass, n-pass)`, which is SYMMETRIC in pass↔fail — so a panel that unanimously FAILS the payment
+checkpoints is, by construction, exactly as reproducible as one that unanimously PASSES. If a refactor ever broke that
+symmetry, the citability gate would carry a hidden pro-PASS bias and the negative anchor the whole calibration rests
+on (a no-rails retail store's reproducible FAIL) would look less quotable purely BECAUSE it failed — silently
+disqualifying the "fail" side of the two-sided anchor.
+
+METHOD — the smallest unit (one metamorphic test + a helper). `tests/test_reliability.py`
+`test_verdict_stability_is_polarity_invariant` (test 11) with `_invert(run)` (negate every checkpoint verdict, flip
+the trust posture warned↔clean): (A) the crisp two-sided statement — a unanimous-PASS panel and its unanimous-FAIL
+inversion both give `verdict_stability 1.0`, band `stable`, and citability tag `reproducible` (a failing store is
+exactly as CITABLE as a passing one); (B) the general metamorphic invariance over an INTERIOR-mix panel (verdict_
+stability 0.7, mixed flips, split trust) — inverting every run leaves valid_runs / single_trial / flipped_checkpoints
+/ flip_rate / verdict_stability / trust_event_agreement / trust_events_unanimous / label AND the citability gate's
+tag+quotable+verdict_stability byte-identical, with ONLY the reported per-checkpoint `pass_count` reflecting the flip
+(inverted == n − original), agreement/unanimity per checkpoint unchanged. Non-vacuous: interior 0.7 operating point,
+the inversion demonstrably moves the pass counts, the gate returns a genuine multi-trial verdict ("provisional-
+unstable" both ways). CAPABILITY-worded, vendor-neutral; the metamorphic sibling of the attribution layer's
+host-relabel-invariance guards. Module docstring bullet added to match the trial-order property's documentation.
+
+VALIDATION. Full suite 469→470 passed; `test_reliability.py` 10→11 tests (all 11 green run directly). OFF the
+scoring path / score-neutral: `git diff --stat -- asrs/ rubric/ fixtures/` EMPTY (tests-only; `asrs/reliability.py`
+untouched, and it imports no scoring/probe/report module by construction). Tests-only display-neutral → NOT
+peer-gated, direct-to-main. Rubric v0.7 unchanged.
+
+CANONICAL PAIR. In-cloud replay guard (frozen regression signal) 24/24 GREEN, 46.1 F / 85.5 B / +39.4, 0
+replay-miss — unchanged by construction (tests-only, nothing on the scoring path moved). Live signal (READ from the
+newest artifact `runs/local/verify_20260801T035047Z.json`, NOT re-run — runner at-floor): drift-flight.org 46.1 F /
+driftflight.com 76.2 C / +30.1 / transactability 62.5, the Aug-1 transactability-drop divergence persisting (off the
+scoring path). Local runner at-floor since Aug-1 03:50Z (~81.5h) — cloud cannot repair; stays P0.
+
+NEXT HYPOTHESIS (COVERAGE 226). The in-cloud precision/rigor frontier for the diagnostic layers is now dense
+(attribution invariances + reliability invariances both host-relabel- and polarity-pinned). The substantive frontier
+(a THIRD real anchor, thin-bank live fixtures, moleskine.com two-crawl cross-validation, ACP/UCP/MPP handshakes,
+transactability-drop CHECK-level diagnosis + peer-gated re-baseline) stays `[LOCAL]`, gated on the runner recovering.
+
 ## Cycle 224 — 2026-08-04T12:2xZ — READOUT — surface the cross-anchor RANK-CONCORDANCE / no-sign-inversion property in the public methodology prose (the science was pinned in-cloud last cycle; the reader-facing page didn't say it)
 
 WHAT/WHY (READOUT — the reader-facing complement to Cycle 223's calibration test 16). Cycle 223 made the

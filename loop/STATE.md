@@ -1,6 +1,36 @@
 # Loop state
 
-- Cycle counter: 236
+- Cycle counter: 237
+- CYCLE 237 — 2026-08-04T22:26Z (TRUTH, cloud, direct-to-main, tests-only/score-neutral). FIRST duty (infra
+  health check — no open peer-gated PR per Cycle-236 pointer): INFRA green, newest verify
+  `runs/local/verify_20260804T214104Z.json` (21:41Z, git_pull.ok=true attempts=1, divergence_recovery=None,
+  tests_ok=true, 24/24) ~45min old; live canonical signal **+39.4 RESTORED** (46.1 F / 85.5 B / tx 87.5). Shipped a
+  TRUTH increment: `test_calibration.py` `test_legibility_family_understand_the_offer_is_behaviorally_corroborated`
+  (17→18) — the "understand the offer" LEGIBILITY family (the honest ~1/3 of the +39.4 two-family decomposition,
+  test 14B) is now BEHAVIORALLY corroborated, two-sided, on the committed live anchors' own legibility checkpoints
+  (found_product + understood_pricing, new `_LEGIBILITY_EXPERIENCE_CHECKPOINTS`): with-rails BOTH TRUE / no-rails
+  BOTH FALSE across both trials, attribution-honest (Access 100, agent browsed the store — comprehension wall, not
+  un-observability). So BOTH capability families of the delta are now behaviorally two-sided, not just payment.
+  Plus a SELF-HEAL: `test_canonical_history.py::test_pillar_noise_floor_is_deterministic_on_the_fingered_pillar_real_series`
+  was red on main (proven independent of this cycle by stash-and-rerun) because the Cycle-235/236 probe fix RESOLVED
+  the transactability drop — the newest series reading is back to +39.4 so `load_history().attribution` is correctly
+  None (site recovered) and the test unconditionally asserted an active drift; every future fire would have stayed
+  red (`tests_ok=false`). Added the SAME recovery-tolerance guard its sibling real-series tests already carry (an
+  oversight on this one; convention at lines 726-734/890-899/1109-1113/1902-1907/2181-2187). Also stood up the
+  missing cloud `.venv` (`pip install -r requirements.txt`, eth-account 0.13.7) so the free-tier signer test runs —
+  agent-side env gap, not a bench regression. Full suite 24/24 files green; replay guard 24/24 / 46.1 F / 85.5 B /
+  +39.4 UNMOVED. Score-neutral (`git diff --name-only -- asrs/ rubric/ fixtures/ loop/local_verify.py` EMPTY; only
+  the two test files changed). NO DM (not sensitive-class, not score-changing, not the first cycle after 16:00 UTC —
+  today's digest went Cycle 228; the self-heal fixed a transient bench-red before it recurred, nothing to flag).
+- FOCUS POINTER (Cycle 237 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check
+  only. Cloud track rotation: Cycle 237 was TRUTH → cloud pointer is **READOUT next** (METHOD → COVERAGE → TRUTH →
+  READOUT). READOUT-238 candidate: surface the "understand the offer" family's behavioral two-sidedness on the
+  public methodology page (a coupled-to-computation READOUT like test 15, so prose cannot drift from the live
+  checkpoints). RUNNER-HEALTH WATCH (folded here, not a fresh P0): the drift is RESOLVED — future `verify_*.json`
+  should read delta +39.4 with `attribution=None`; the real-series canonical_history tests are now recovery-tolerant,
+  so this is expected and green. Substantive [LOCAL] frontier unchanged (thin-bank live fixtures, moleskine.com
+  two-crawl cross-validation, a THIRD real anchor, typographic/render/structured-catalog captures, ACP/UCP/MPP) —
+  prefer the oldest.
 - LOCAL CYCLE 236 — 2026-08-04T21:44Z (TRUTH, LOCAL, direct-to-main, score-neutral). FIRST duty: `gh pr list
   --state open` → [] (PR #145 already merged Cycle 235; no open peer-gated PR, no review owed). INFRA green: newest
   verify `runs/local/verify_20260804T214104Z.json` (21:41Z, git_pull.ok=true attempts=1 divergence_recovery=None

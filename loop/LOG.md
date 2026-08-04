@@ -3,6 +3,76 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 237 — 2026-08-04T22:26Z — TRUTH (cloud, direct-to-main, tests-only/score-neutral) — the "understand the offer" capability family is now BEHAVIORALLY corroborated: the SECOND family of the +39.4 two-family decomposition is made two-sided, no longer a static-only assertion; + SELF-HEAL of a bench-red the drift-resolution left behind
+
+FIRST duty (infra health check, per the Cycle-236 FOCUS POINTER — no open peer-gated PR). INFRA green: newest
+verify `runs/local/verify_20260804T214104Z.json` (21:41Z, git_pull.ok=true attempts=1, divergence_recovery=None,
+tests_ok=true, 24/24 files) ~45min old — WELL inside the 6h floor; push-race recovery (`d812d6e`) holding. Live
+canonical signal READ from it: 46.1 F / 85.5 B / **+39.4 RESTORED** (tx 87.5) — the Cycle-235/236 x402
+proxy-discovery fix has the live signal permanently agreeing with the frozen fixture.
+
+SELF-HEAL (infra breakage outranks new work; a <15-min repair does not consume the cycle's one-improvement
+budget). Running the full suite at fire start surfaced ONE red test on main, PROVEN independent of this cycle's
+work (stash-and-rerun on clean HEAD reproduced it): `test_canonical_history.py::
+test_pillar_noise_floor_is_deterministic_on_the_fingered_pillar_real_series`. ROOT CAUSE — GOOD news, not a
+regression: the Cycle-235/236 probe fix RESOLVED the Jul-31 transactability drop, so the newest committed series
+reading (21:41Z) is back to delta **+39.4** and `ch.load_history().attribution` is correctly **None** (nothing to
+attribute — the site recovered). The runner reported this suite 71/71 at 21:41Z only because it runs tests BEFORE
+committing its own restored reading; every FUTURE fire will read the recovered series and the test — which
+unconditionally asserted the real series still fingers an active drift — would stay red permanently, making the
+verify floor report `tests_ok=false`. FIX: added the SAME recovery-tolerance guard its sibling real-series tests
+already carry (`if hist.band == ch.BAND_IN or hist.attribution is None: _check(True, "...site recovered..."); return`
+— the established convention at lines 726-734 / 890-899 / 1109-1113 / 1902-1907 / 2181-2187). The one real-series
+test that lacked the guard was an oversight; the synthetic-jitter counterpart
+(`test_pillar_noise_floor_measures_synthetic_pillar_jitter`) keeps the noise-floor machinery under test
+unconditionally, so coverage is not weakened. Also stood up the missing `.venv` (fresh cloud checkout had none;
+`pip install -r requirements.txt` → eth-account 0.13.7) so the free-tier signer test runs — an agent-side
+environment gap, not a bench regression (the pinned runner's venv already reports it green). Suite fully runnable:
+24/24 files green.
+
+WHAT/WHY (TRUTH — calibration against reality; the Cycle-235/236 FOCUS POINTER's "in-cloud TRUTH increment").
+Test 14B (Cycle 231) proves the entire +39.4 headline delta decomposes into exactly TWO agent-native capability
+families — "pay programmatically" (transactability: `_STATIC_PAYMENT_CHECKS`) and "understand the offer"
+(legibility: `_STATIC_LEGIBILITY_CHECKS` = llms_txt + offer_catalog) — with zero unexplained residual. But that is
+a decomposition of the SCORE. The PAYMENT family has a full two-sided BEHAVIORAL corroboration (tests 1/5/8: the
+live shopper's Outcome pillar PASSES with-rails, FAILS no-rails, reproducibly). The LEGIBILITY family — the honest
+~1/3 the pitch does NOT own — had NONE: it could have been a real static advantage that made zero behavioral
+difference, and every payment-checkpoint test would stay green through it. This cycle closes that asymmetry.
+
+TRUTH — the smallest unit (one calibration guard, tests-only, off the scoring path). `tests/test_calibration.py`
+`test_legibility_family_understand_the_offer_is_behaviorally_corroborated` (18th test) reads the SAME committed live
+anchors on their OWN legibility checkpoints (distinct from the payment Outcome checks): the behavioral panel records
+per trial whether the shopper FOUND THE PRODUCT (discovered what is for sale) and UNDERSTOOD THE PRICING (read the
+offer's price) — the behavioral operationalization of the "understand the offer" leg, new module constant
+`_LEGIBILITY_EXPERIENCE_CHECKPOINTS = (found_product, understood_pricing)`, the legibility counterpart of
+`_PAYMENT_OUTCOME_CHECKS`. STATIC PREDICTION: with-rails publishes the agent-legibility rails (llms_txt PASS,
+legibility 90.9, cross-checked against the offline fixture replay so the literal rides test 9(d)'s re-baseline
+tripwire); no-rails retail lacks the agent guide (llms_txt not-pass, legibility 40.9 markedly lower). BEHAVIORAL
+EXPERIENCE: with-rails found_product/understood_pricing BOTH TRUE across both trials; no-rails BOTH FALSE across
+both trials. TWO-SIDED at the same checkpoints, reproducibly. ATTRIBUTION HONESTY (invariant #4): the no-rails
+FALSEs are a comprehension wall, not un-observability — Access 100 and the agent made real battery progress
+(physical_good completion 0.6, it browsed the store), so it COULD see the site; it just could not machine-readably
+understand the offer. So the two capability families of test 14B are now BOTH behaviorally two-sided, not just
+payment — the honest ~1/3 of the delta is behaviorally real.
+
+VALIDATION. `tests/test_calibration.py` 17→18 (direct run 18/18). Vendor-neutral, capability-worded. Full suite
+24/24 files green (with the venv stood up). SCORE-NEUTRAL by construction: `git diff --name-only` = the two test
+files ALONE; scoring path untouched (`git diff --name-only -- asrs/ rubric/ fixtures/ loop/local_verify.py` EMPTY).
+Direct-to-main (not a scoring-semantics change, not payment/signing → NOT peer-gated; same tier as the calibration
+TRUTH cycles 191/197/199/231, and the canonical_history self-heal is a test recovery-tolerance guard following the
+file's own convention).
+
+CANONICAL PAIR (in-cloud offline regression signal). Replay guard `test_canonical_replay` 24/24 GREEN —
+drift-flight.org 46.1 F / driftflight.com 85.5 B / delta +39.4, 0 replay-miss; frozen independent regression signal
+UNMOVED (tests-only, off the scoring path). Re-derived directly: 46.1 F / 85.5 B / +39.4, rubric 0.7 on both.
+
+NEXT HYPOTHESIS (READOUT 238). Rotate READOUT next (Cycle 237 was TRUTH; METHOD → COVERAGE → TRUTH → READOUT). The
+two-family decomposition (test 14B) and NOW its behavioral two-sidedness (this cycle) are pinned in-cloud but the
+public methodology page's prose (section 8) frames only the PAYMENT "two-thirds" story — surface the "understand
+the offer" family's behavioral corroboration to a reader (a coupled-to-computation READOUT like test 15, so the
+prose cannot drift from the live checkpoints). Substantive frontier stays `[LOCAL]` (thin-bank live fixtures,
+moleskine.com two-crawl cross-validation, a THIRD real anchor, ACP/UCP/MPP) — prefer the oldest.
+
 ## Local cycle — 2026-08-04T21:44Z — Cycle 236 — TRUTH — merged x402 proxy-discovery probe (PR #145) CONFIRMED live: driftflight.com back to 85.5 B / tx 87.5 / +39.4 / x402_probe PASS 8.0 x402-live; the Cycle-126 "transactability drop" thread is EMPIRICALLY CLOSED end-to-end
 
 LOCAL CYCLE (Jonah's machine, network + venv). FIRST duty discharged: `gh pr list --state open` → [] (PR #145

@@ -1776,6 +1776,168 @@ def test_static_prediction_and_behavioral_outcome_are_rank_concordant() -> None:
     )
 
 
+# ---------------------------------------------------------------------------
+# 17. THE "UNDERSTAND THE OFFER" CAPABILITY FAMILY IS BEHAVIORALLY CORROBORATED
+#     — the SECOND family of the two-family decomposition, made two-sided.
+#
+#     Test 14B proves the entire +39.4 headline delta decomposes into exactly two
+#     agent-native capability families: "pay programmatically" (transactability:
+#     _STATIC_PAYMENT_CHECKS) and "understand the offer" (legibility:
+#     _STATIC_LEGIBILITY_CHECKS = llms_txt + offer_catalog).  The PAYMENT family
+#     has a full two-sided BEHAVIORAL corroboration (tests 1/5/8: the shopper's
+#     Outcome pillar PASSES with-rails, FAILS no-rails, reproducibly).  The
+#     LEGIBILITY family — the honest ~1/3 of the delta the pitch does NOT own — is
+#     proven only STATICALLY (test 14B is a decomposition of the SCORE): nothing
+#     yet holds it up against what an AGENT actually experienced.  A calibration
+#     story that behaviorally corroborates one half of its own delta decomposition
+#     and leaves the other half a static assertion is incomplete — the legibility
+#     third could be a real static advantage that makes NO behavioral difference,
+#     and every payment-checkpoint test (1-8) would stay green through it.
+#
+#     This guard closes that gap using the SAME committed live anchors, on their
+#     OWN legibility checkpoints (distinct from the payment Outcome checks): the
+#     behavioral panel records, per trial, whether the shopper FOUND THE PRODUCT
+#     (discovered what is for sale) and UNDERSTOOD THE PRICING (read the offer's
+#     price) — the behavioral operationalization of the "understand the offer" leg,
+#     the way _PAYMENT_OUTCOME_CHECKS operationalizes the payment leg.
+#       * STATIC PREDICTION: the with-rails store publishes the agent-legibility
+#         rails (llms_txt PASSES — the machine-readable agent guide — legibility
+#         pillar high); the no-rails retail store lacks the agent guide (llms_txt
+#         does NOT pass, legibility markedly lower).
+#       * BEHAVIORAL EXPERIENCE: the with-rails shopper actually found the product
+#         and understood the pricing (both checkpoints TRUE, both trials); the
+#         no-rails shopper did NEITHER (both FALSE, both trials), reproducibly.
+#       * Prediction == experience on the legibility family too — so the two-family
+#         decomposition (test 14B) is now behaviorally TWO-SIDED on BOTH families,
+#         not just payment.
+#     ATTRIBUTION HONESTY (invariant #4): the no-rails FALSEs are a comprehension
+#     wall, not un-observability — Access is fully credited and the agent made real
+#     battery progress (it browsed the store, test 6), so it COULD see the site; it
+#     just could not machine-readably find/understand the offer.  The with-rails
+#     legibility (90.9) is cross-checked against the offline fixture replay, so the
+#     literal rides test 9(d)'s re-baseline tripwire.  Tests-only, off the scoring
+#     path — score-neutral.
+# ---------------------------------------------------------------------------
+
+# The behavioral panel checkpoints that OPERATIONALIZE the "understand the offer"
+# legibility leg — the shopper actually discovering what is for sale and reading
+# its price.  The behavioral counterpart of _STATIC_LEGIBILITY_CHECKS, the way
+# _PAYMENT_OUTCOME_CHECKS is the counterpart of _STATIC_PAYMENT_CHECKS.
+# Capability-worded, vendor-neutral.
+_LEGIBILITY_EXPERIENCE_CHECKPOINTS = ("found_product", "understood_pricing")
+
+
+def test_legibility_family_understand_the_offer_is_behaviorally_corroborated() -> None:
+    print("test_legibility_family_understand_the_offer_is_behaviorally_corroborated")
+    pos = _load_behavioral()   # with-rails: publishes the agent-legibility rails
+    neg = _load_negative()     # no-rails retail: lacks the machine-readable agent guide
+
+    _check(
+        pos["rubric_version"] == neg["rubric_version"] == "0.7",
+        f"both anchors on rubric 0.7 (pos={pos['rubric_version']}, neg={neg['rubric_version']})",
+    )
+
+    # STATIC PREDICTION (with-rails): the agent-legibility family is credited —
+    # llms_txt PASSES (the machine-readable agent guide) and the legibility pillar
+    # is high.  Cross-check the pillar against the OFFLINE fixture replay so the
+    # 90.9 literal rides test 9(d)'s re-baseline tripwire.
+    static_com, com_misses = _static_report(_ANCHOR_DOMAIN)
+    _check(not com_misses, f"{_ANCHOR_DOMAIN} static replay is like-for-like (no replay-miss)")
+    _check(
+        _static_check(static_com, "llms_txt").status is Status.PASS,
+        "static PREDICTION: with-rails llms_txt PASSES — the machine-readable agent guide is published",
+    )
+    _check(
+        abs(static_com.pillar_scores["legibility"] - pos["pillar_scores"]["legibility"]) < 1e-9,
+        f"with-rails legibility agrees between fixture replay and behavioral crawl "
+        f"({static_com.pillar_scores['legibility']} == {pos['pillar_scores']['legibility']})",
+    )
+
+    # STATIC PREDICTION (no-rails): the agent-legibility family is NOT fully
+    # credited — llms_txt does NOT pass and the legibility pillar is markedly lower
+    # (read from the report's embedded static crawl — no committed fixture, per
+    # the module docstring's HONEST SCOPE).
+    neg_leg = {c["check_id"]: c["status"] for c in neg["checks"] if c.get("pillar") == "legibility"}
+    _check(
+        neg_leg.get("llms_txt") != "pass",
+        f"static PREDICTION: no-rails llms_txt does NOT pass (got {neg_leg.get('llms_txt')!r}) "
+        f"— no machine-readable agent guide",
+    )
+    _check(
+        neg["pillar_scores"]["legibility"] < pos["pillar_scores"]["legibility"] - 1e-9,
+        f"static PREDICTION discriminates: no-rails legibility "
+        f"({neg['pillar_scores']['legibility']}) markedly below with-rails "
+        f"({pos['pillar_scores']['legibility']})",
+    )
+
+    # REPRODUCIBILITY floor: both anchors rest on >=2 behavioral trials.
+    pos_runs = pos.get("behavioral_runs", [])
+    neg_runs = neg.get("behavioral_runs", [])
+    _check(
+        len(pos_runs) >= 2 and len(neg_runs) >= 2,
+        f"both anchors rest on >=2 behavioral trials (pos={len(pos_runs)}, neg={len(neg_runs)})",
+    )
+
+    # BEHAVIORAL EXPERIENCE (positive): the with-rails shopper actually found the
+    # product and understood the pricing — every legibility checkpoint TRUE across
+    # BOTH trials, reproducibly.  The score predicted offer-comprehension; the
+    # agent lived it.
+    for i, run in enumerate(pos_runs):
+        cps = run.get("checkpoints", {})
+        for ck in _LEGIBILITY_EXPERIENCE_CHECKPOINTS:
+            _check(
+                cps.get(ck) is True,
+                f"with-rails trial {i} (model={run.get('model')}): {ck} reached "
+                f"(agent understood the offer, as the score predicted)",
+            )
+
+    # BEHAVIORAL EXPERIENCE (negative): the no-rails shopper did NEITHER — every
+    # legibility checkpoint FALSE across BOTH trials.  The honest ~1/3 of the delta
+    # is behaviorally real on the negative side too.
+    for i, run in enumerate(neg_runs):
+        cps = run.get("checkpoints", {})
+        for ck in _LEGIBILITY_EXPERIENCE_CHECKPOINTS:
+            _check(
+                cps.get(ck) is False,
+                f"no-rails trial {i} (model={run.get('model')}): {ck} NOT reached "
+                f"(agent could not understand the offer, as the score predicted)",
+            )
+
+    # ATTRIBUTION HONESTY (invariant #4): the no-rails FALSEs are a comprehension
+    # wall, not un-observability — Access is fully credited and the agent made real
+    # battery progress (it browsed the store, test 6), so it COULD see the site.
+    _check(
+        neg["pillar_scores"]["access"] == 100.0,
+        f"no-rails anchor is reachable, not env-blocked (access={neg['pillar_scores']['access']}) "
+        f"— the legibility FALSEs are a comprehension wall, not un-observability",
+    )
+    pg = next(k for k in neg["battery_summary"]["per_kind"] if k["kind"] == "physical_good")
+    _check(
+        pg["mean_completion"] > 0.0,
+        f"the no-rails agent made real progress on the store (physical_good completion "
+        f"{pg['mean_completion']}) — it browsed but could not machine-readably understand the offer",
+    )
+
+    # TWO-SIDED / SECOND FAMILY: at the SAME legibility checkpoints the with-rails
+    # anchor succeeds and the no-rails anchor fails — opposite directions, the
+    # legibility mirror of the payment two-sided property (test 8).  So the two
+    # capability families of test 14B are now BOTH behaviorally two-sided, not just
+    # payment.
+    for ck in _LEGIBILITY_EXPERIENCE_CHECKPOINTS:
+        pos_all = all(r.get("checkpoints", {}).get(ck) is True for r in pos_runs)
+        neg_all = all(r.get("checkpoints", {}).get(ck) is False for r in neg_runs)
+        _check(
+            pos_all and neg_all,
+            f"legibility checkpoint {ck}: with-rails reaches it, no-rails does not "
+            f"(opposite directions, same checkpoint) — 'understand the offer' is two-sided",
+        )
+    _check(
+        True,
+        "AGREEMENT: static 'understand the offer' prediction == behavioral offer-comprehension "
+        "experience, two-sided — the SECOND capability family of the +39.4 decomposition",
+    )
+
+
 def main() -> int:
     tests = [
         test_static_payment_prediction_is_behaviorally_corroborated,
@@ -1795,6 +1957,7 @@ def main() -> int:
         test_headline_delta_is_fully_attributed_to_two_capability_families,
         test_methodology_headline_prose_is_coupled_to_the_live_fraction,
         test_static_prediction_and_behavioral_outcome_are_rank_concordant,
+        test_legibility_family_understand_the_offer_is_behaviorally_corroborated,
     ]
     failed = 0
     for t in tests:

@@ -2435,7 +2435,18 @@ def test_pillar_noise_floor_is_deterministic_on_the_fingered_pillar_real_series(
     # (driftflight.com transactability −25). This pins that the fingered pillar is
     # ALSO deterministic at rest, so the tracked move is signal, not pillar jitter.
     hist = ch.load_history()
-    top = hist.attribution.top if hist.attribution else None
+    # Guarded for recovery (matching the sibling real-series tests, e.g. the
+    # attribution-agreement and stability guards): once the tracked drift RESOLVES
+    # and the live series returns in-band, attribution is correctly None and there
+    # is no fingered mover to measure a noise floor against — skip, don't assert an
+    # active drift. (The Cycle-235/236 x402 proxy-discovery probe fix restored
+    # driftflight.com to +39.4, resolving the Jul-31 transactability drop this test
+    # was written against; the synthetic-jitter counterpart below keeps the pillar
+    # noise-floor machinery under test unconditionally.)
+    if hist.band == ch.BAND_IN or hist.attribution is None:
+        _check(True, "live series is in-band -> no fingered mover to measure (site recovered)")
+        return
+    top = hist.attribution.top
     _check(top is not None, "the real series fingers a top pillar mover to measure against")
     pnf = hist.attributed_pillar_noise_floor
     _check(pnf is not None, "the fingered pillar has >= 2 in-band numeric readings -> a floor")

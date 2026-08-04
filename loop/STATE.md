@@ -1,8 +1,39 @@
 # Loop state
 
-- Cycle counter: 218
+- Cycle counter: 219
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-04T06:1xZ (Cycle 218) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-04T07:22Z (Cycle 219) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~75.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
+  cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 07:22Z fire is NOT
+  first-after-16:00 UTC → no DM this fire per comms policy (score-neutral TESTS-ONLY off-scoring-path TRUTH increment,
+  no sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org 46.1 F /
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1), off
+  the scoring path; the in-cloud replay guard stays the frozen independent regression signal (24/24, 46.1 F / 85.5 B /
+  +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/
+  SELF-HEAL (Cycle 219): fresh `.venv` + `requests pyyaml eth-account pytest`, 463 tests green pre-flight (464 after
+  +1); LOG.md confirmed newest-first + complete through Cycle 218 (no bookkeeping gap); last push (Cycle 218, 8214f47)
+  present on origin/main. NOTE: the runner has now been at-floor since Aug-1 03:50Z (~3 days) — the durable [LOCAL]
+  runner-recovery item stays P0.
+- FOCUS POINTER (Cycle 219 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 219 was TRUTH, so
+  Cycle 220 is READOUT). Cycle 219 shipped a **TRUTH increment — a property test pinning `DivergenceCause.reference_
+  degraded`'s conservatism across the full driver grid**. `reference_degraded` gates the re-capture-DEFERRAL decision
+  (True → the with-rails reference is losing ground, the pinned fixture still holds the true gap, WAIT for recovery
+  rather than chase a dip); a false positive wrongly FREEZES the fixture. The two docstring-claimed credibility
+  properties — (i) driver ties resolve to the no-rails floor so an AMBIGUOUS move is never read as degradation, (ii)
+  it fires ONLY on a with-rails LOSS, not a with-rails GAIN that widens the gap from the top — were exercised only in
+  the interior by the existing scenario tests, never at the edges. New `test_reference_degraded_is_conservative_across_
+  the_full_driver_grid` (tests/test_canonical_history.py) asserts, over a 14-cell (no_change, with_change) grid incl.
+  exact ties + first-principles semantics (NOT a re-run of the SUT expression): degradation ⟹ dominant with-rails loss
+  narrowing the gap; tie ⟹ no-rails driver + not degraded; strict-dominance ⟹ gap sign follows the driver's own
+  direction; + a non-vacuity guard (≥1 real degradation cell) + two teeth cells (with-rails-widening, ambiguous-tie).
+  MUTATION-VERIFIED: tie-break `>`→`>=` and dropping the `<0` guard each redden it. OFF the scoring path (`asrs/` diff
+  EMPTY; `canonical_history` not imported by `scoring.py`/`probes/`) → score-neutral, NOT peer-gated, direct-to-main.
+  Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; `test_canonical_history.py` 67→68, suite 463→464; rubric
+  v0.7. NEXT (READOUT 220): surface the conservatism in the drift render — when the driver is a tie/ambiguous move, say
+  the gap moved but the SIDE is unattributed (don't silently default the prose to the no-rails floor). Substantive
+  frontier (thin-bank live fixtures, hyphen/reflow/entity real-surface validation, moleskine.com two-crawl cross-
+  validation, ACP/UCP/MPP, transactability-drop CHECK-level diagnosis + peer-gated re-baseline) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 218 runner note): RUNNER AT-FLOOR at 2026-08-04T06:1xZ (Cycle 218) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~73.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
   cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 06:1xZ fire is NOT
   first-after-16:00 UTC → no DM this fire per comms policy (score-neutral off-scoring-path COVERAGE increment, no

@@ -1124,6 +1124,116 @@ def test_divergence_cause_on_real_series() -> None:
     _check("driver:" in ch.render(hist), "the render names the driver on the real series")
 
 
+def test_reference_degraded_is_conservative_across_the_full_driver_grid() -> None:
+    print("test_reference_degraded_is_conservative_across_the_full_driver_grid")
+    # TRUTH (Cycle 219). reference_degraded gates the re-capture-DEFERRAL decision:
+    # True means the pinned fixture still represents the true capability gap and a
+    # re-capture should WAIT for the with-rails site to recover (the P2 canonical-
+    # fixture item), NOT chase a dip. A FALSE POSITIVE wrongly FREEZES the fixture;
+    # a false negative chases a transient. Both scenario tests above exercise only
+    # the interior (with-rails softens / no-rails gains); the DivergenceCause
+    # docstrings claim two credibility properties nothing pins at the EDGES:
+    #   (i)  driver ties resolve to the no-rails floor, so an AMBIGUOUS move is read
+    #        conservatively as gap movement, NEVER as reference degradation; and
+    #   (ii) reference_degraded fires ONLY on a with-rails LOSS — the with-rails side
+    #        GAINING (gap widening from the top) is not degradation even though it
+    #        drives the move.
+    # Pin them as a PROPERTY over directly-constructed causes (mirroring the
+    # cause_verdict tests' construction), asserting semantics derived from first
+    # principles — NOT a re-run of the SUT's own driver/degraded expression.
+    def _sign(x: float) -> int:
+        return (x > 0) - (x < 0)
+
+    # (no_rails_change, with_rails_change) spanning every sign/magnitude regime,
+    # INCLUDING exact ties (both signs) and single-side-flat moves.
+    grid = [
+        (0.0, -8.0),   # with-rails dominant LOSS   -> reference degraded
+        (0.0,  8.0),   # with-rails dominant GAIN   -> NOT degraded (gap widens from top)
+        (0.0, -3.0), (0.0, 3.0),
+        (6.0,  0.0),   # no-rails dominant GAIN     -> gap closes from floor, NOT degraded
+        (-6.0, 0.0),   # no-rails dominant LOSS     -> gap widens from floor, NOT degraded
+        (-2.0, -9.0),  # with-rails dominant loss (both fall)    -> degraded
+        (-9.0, -2.0),  # no-rails dominant loss                   -> NOT degraded
+        (3.0, -1.0),   # no-rails gain dominant, with-rails dip   -> NOT degraded
+        (-5.0, -5.0),  # TIE, both fall             -> no_rails driver, NOT degraded
+        (5.0, -5.0),   # TIE, floor up / top down   -> AMBIGUOUS, NOT degraded
+        (5.0,  5.0),   # TIE, both rise             -> NOT degraded
+        (-5.0, 5.0),   # TIE, floor down / top up   -> NOT degraded
+        (4.0,  4.0),
+    ]
+    degraded_seen = False
+    for no_c, wr_c in grid:
+        cause = ch.DivergenceCause(
+            anchor_ts="20260101T000000Z", no_rails_change=no_c, with_rails_change=wr_c
+        )
+        tag = f"(no={no_c:+}, with={wr_c:+})"
+        # gap_change is the delta move, coherent with the two component fields.
+        _check(
+            abs(cause.gap_change - round(wr_c - no_c, 4)) < 1e-9,
+            f"{tag} gap_change == with_change - no_change",
+        )
+        _check(
+            cause.driver in (ch.CANONICAL_NO_RAILS, ch.CANONICAL_WITH_RAILS),
+            f"{tag} driver is a reference host",
+        )
+        deg = cause.reference_degraded
+        if deg:
+            degraded_seen = True
+            # A reference degradation is a coherent, DOMINANT with-rails LOSS that
+            # NARROWS the gap — never anything else.
+            _check(wr_c < 0, f"{tag} degraded => with-rails LOST ground")
+            _check(abs(wr_c) > abs(no_c), f"{tag} degraded => with-rails move DOMINATES")
+            _check(cause.gap_change < 0, f"{tag} degraded => gap NARROWED")
+            _check(
+                cause.driver == ch.CANONICAL_WITH_RAILS,
+                f"{tag} degraded => with-rails is the driver",
+            )
+        # Conservatism: an AMBIGUOUS (equal-magnitude) move is never degradation.
+        if abs(wr_c) == abs(no_c) and (no_c != 0.0 or wr_c != 0.0):
+            _check(
+                cause.driver == ch.CANONICAL_NO_RAILS,
+                f"{tag} tie resolves to the no-rails floor (conservative)",
+            )
+            _check(deg is False, f"{tag} an ambiguous move is NOT reference degradation")
+        # Strict-dominance sign invariant: when one side strictly dominates, the
+        # driver's OWN direction fixes whether the gap narrows or widens (the
+        # docstring's "sign(gap_change) is fixed by the driver's direction").
+        if abs(wr_c) > abs(no_c):
+            _check(
+                _sign(cause.gap_change) == _sign(wr_c),
+                f"{tag} with-rails driver: gap sign follows the with-rails move",
+            )
+        elif abs(no_c) > abs(wr_c):
+            _check(
+                _sign(cause.gap_change) == -_sign(no_c),
+                f"{tag} no-rails driver: gap sign is the OPPOSITE of the floor move",
+            )
+    # Non-vacuity: the grid DOES contain genuine reference-degradation cases (else
+    # every "degraded =>" clause above is vacuously satisfied).
+    _check(degraded_seen, "grid exercises at least one real reference-degradation case")
+
+    # TEETH — the two crisp edges the scenario tests miss, with exact expectations:
+    # (A) with-rails GAINING dominant: driver IS with-rails and it drives the move,
+    #     yet reference_degraded must stay False (the gap widened from the top).
+    #     Drop the `with_rails_change < 0` guard and this flips True.
+    widen = ch.DivergenceCause(anchor_ts="t", no_rails_change=0.0, with_rails_change=8.0)
+    _check(widen.driver == ch.CANONICAL_WITH_RAILS, "with-rails gain is the driver")
+    _check(abs(widen.gap_change - 8.0) < 1e-9, "gap widened +8.0")
+    _check(
+        widen.reference_degraded is False,
+        "a with-rails GAIN widens the gap from the top — that is not degradation",
+    )
+    # (B) exact ambiguous tie (floor up, top down): equal magnitudes, so the move is
+    #     unattributable to one side. Flip the driver tie-break to `>=` and this
+    #     tie's with-rails drop would falsely read as reference degradation.
+    ambiguous = ch.DivergenceCause(anchor_ts="t", no_rails_change=5.0, with_rails_change=-5.0)
+    _check(ambiguous.driver == ch.CANONICAL_NO_RAILS, "the tie resolves to the no-rails floor")
+    _check(
+        ambiguous.reference_degraded is False,
+        "an ambiguous tie is never read as reference degradation",
+    )
+
+
 def test_cause_verdict_names_the_pillar_on_cross_mechanism_agreement() -> None:
     print("test_cause_verdict_names_the_pillar_on_cross_mechanism_agreement")
     # READOUT (Cycle 180): the side/driver prose is the sentence that carries the
@@ -2439,6 +2549,7 @@ def main() -> int:
         test_divergence_cause_names_the_softening_side,
         test_divergence_cause_none_when_in_band,
         test_divergence_cause_on_real_series,
+        test_reference_degraded_is_conservative_across_the_full_driver_grid,
         test_cause_verdict_names_the_pillar_on_cross_mechanism_agreement,
         test_cause_verdict_pillar_named_end_to_end_in_render,
         test_cause_verdict_prose_is_host_relabel_invariant,

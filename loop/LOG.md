@@ -3,6 +3,59 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 219 — 2026-08-04T07:22Z — TRUTH — reference_degraded is conservative across the full driver grid: an ambiguous or with-rails-GAINING move is never read as reference degradation
+
+WHAT/WHY (TRUTH — the re-capture-deferral signal's credibility at the edges). `DivergenceCause.reference_degraded`
+(asrs/canonical_history.py) gates the deferred re-capture DECISION: True means the with-rails reference is LOSING
+ground (a real-world site regression), the pinned fixture still represents the true capability gap, and a re-capture
+should WAIT for the site to recover rather than chase a dip (the P2 canonical-fixture item + the driftflight.com
+transactability-drop P0 both turn on it). A FALSE POSITIVE wrongly FREEZES the fixture; a false negative chases a
+transient. Its two credibility properties are asserted in the class docstrings but the existing scenario tests
+(`test_divergence_cause_names_the_softening_side` — with-rails softens → True; no-rails gains → False) exercise only
+the INTERIOR, never the edges: (i) `driver` ties resolve to the no-rails floor so an AMBIGUOUS (equal-magnitude) move
+is read conservatively as gap movement, NEVER as reference degradation; (ii) `reference_degraded` fires ONLY on a
+with-rails LOSS — the with-rails side GAINING (gap widening from the top) is not degradation even though it drives the
+move. Nothing pinned either edge, so a flipped tie-break (`>` → `>=`) or a dropped `with_rails_change < 0` guard would
+silently start crying "reference degrading" on ambiguous or gap-WIDENING moves — a re-capture-deferral false positive.
+
+METHOD / non-vacuity + teeth. New `test_reference_degraded_is_conservative_across_the_full_driver_grid`
+(tests/test_canonical_history.py), a PROPERTY over directly-constructed `DivergenceCause` instances (mirroring the
+existing `cause_verdict` tests' construction), asserting semantics derived from FIRST PRINCIPLES — not a re-run of the
+SUT's own driver/degraded expression. A 14-cell grid of (no_rails_change, with_rails_change) spans every sign/magnitude
+regime incl. exact ties (both signs) + single-side-flat moves. For every cell: `gap_change == with_change − no_change`
+(component coherence); `driver` is a reference host; IF `reference_degraded` then with-rails LOST ground AND its move
+DOMINATES AND the gap NARROWED AND with-rails is the driver (a degradation is a coherent dominant with-rails loss,
+never anything else); equal-magnitude tie ⟹ driver is the no-rails floor AND not degraded (conservatism); strict
+dominance ⟹ `sign(gap_change)` follows the driver's own direction (the docstring's dominant-side sign claim, both
+branches). Non-vacuity guard: the grid provably contains ≥1 real degradation case (else every "degraded =>" clause is
+vacuous). TEETH — two crisp edges the scenario tests miss, with exact expectations: (A) with-rails GAINING dominant
+(no=0, with=+8) → driver IS with-rails and drives the move, yet `reference_degraded` False (gap widened from the top);
+(B) exact ambiguous tie (no=+5, with=−5) → driver is the no-rails floor, not degraded. MUTATION-VERIFIED (both reverted):
+tie-break `>` → `>=` reddens the test (tie mis-attributes to with-rails); dropping `with_rails_change < 0` reddens it
+(edge A falsely fires).
+
+SHIP CLASS + EVIDENCE. TESTS-ONLY — `asrs/` byte-untouched (`git diff -- asrs/ rubric/` EMPTY; `canonical_history` is
+not imported by `scoring.py`/`probes/` — read-only diagnostic) → score-neutral, NOT peer-gated, direct-to-main. Diff =
+`tests/test_canonical_history.py` (new test + registration). `test_canonical_history.py` 67→68; full suite 463→464, 0
+failures. Canonical PAIR unchanged by construction: offline replay guard 24/24, **drift-flight.org 46.1 F /
+driftflight.com 85.5 B / +39.4**, 0 replay-miss; `test_offering_canonical.py` green; rubric v0.7.
+
+LIVE CANONICAL SIGNAL. Newest LOCAL artifact `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is ~75.5h old at
+this fire — PAST the 6h floor (machine-asleep / runner-lag, cloud cannot repair; the ~3-day stall stays the P0 [LOCAL]
+runner-recovery item, flagged in the 16:17Z Cycle-204 digest). Its LIVE re-score: drift-flight.org 46.1 F /
+driftflight.com 76.2 C / +30.1 — the known transactability 87.5→62.5 divergence (off the scoring path; the frozen
+replay guard stays the in-cloud regression signal). 07:22Z is NOT first-after-16:00 UTC → no digest DM per comms
+policy; score-neutral tests-only TRUTH, no sensitive-class PR, nothing score-moving. No open peer-gated PRs
+(`list_pull_requests` state=open → []) → no first-duty review.
+
+NEXT HYPOTHESIS (READOUT 220). Rotate READOUT next (Cycle 219 was TRUTH; METHOD → COVERAGE → TRUTH → READOUT). The
+divergence-cause SIDE reading (driver / reference_degraded) is now pinned at both interior and edges; a READOUT
+candidate is to surface the conservatism explicitly in the drift render — when the driver is a tie/ambiguous move,
+say the gap moved but the SIDE is unattributed (rather than silently defaulting the prose to the no-rails floor), so
+the operator sees "ambiguous, do not defer on this alone". Substantive frontier (thin-archetype/render/structured-
+catalog LIVE fixtures, hyphen/reflow/entity real-surface validation, moleskine.com two-crawl cross-validation,
+ACP/UCP/MPP, transactability-drop CHECK-level diagnosis + peer-gated re-baseline) stays `[LOCAL]`.
+
 ## Cycle 218 — 2026-08-04T06:1xZ — COVERAGE — HTML-entity decoding on NON-HTML surfaces: an entity-encoded capability phrase in an llms.txt / JSON manifest no longer silently drops the claim
 
 WHAT/WHY (COVERAGE — the non-HTML-surface half of entity-decode robustness). The offering classifier

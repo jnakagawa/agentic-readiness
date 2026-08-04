@@ -16701,3 +16701,7 @@ anchor's shared-static cross-validation stays [LOCAL] (moleskine.com fixture). I
 surface the attribution in the card/prose (name WHICH capability earns the transactability credit), or a
 readout-wording guard. Substantive frontier (thin-archetype/render/structured-catalog LIVE fixtures,
 ACP/UCP/MPP, calibration sweep, transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+
+## Local verification — 20260804T170922Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260804T170922Z.json

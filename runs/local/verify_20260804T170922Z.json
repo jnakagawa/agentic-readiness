@@ -1,0 +1,135 @@
+{
+ "ts": "20260804T170922Z",
+ "kind": "local-verify",
+ "git_pull": {
+  "ok": true,
+  "attempts": 1,
+  "tail": "Already up to date.\nFrom https://github.com/jnakagawa/agentic-readiness\n * branch            main       -> FETCH_HEAD\n"
+ },
+ "tests": {
+  "test_attribution.py": {
+   "ok": true,
+   "tail": "nominator counts only the 1 valid run\n  ok: safety-blocked codex run counted as reachability, not site evidence\n  ok: the safety-blocked model is attributed in reachability evidence\n\n9/9 tests passed\n"
+  },
+  "test_battery.py": {
+   "ok": true,
+   "tail": "variant\n  ok: NA audit record identical (same attempted-run count, no completion)\n  ok: between_kind_spread is real (>0.2), got 0.25\n  ok: cross_task_spread is real (>0), got 0.25\n\n14/14 tests passed\n"
+  },
+  "test_battery_instantiate.py": {
+   "ok": true,
+   "tail": " guard has teeth)\n  ok: the real descriptor stays invariant on the same relabel pair the stub flips\n  ok: instantiate_battery yields a Battery of BatteryTask (task selection only)\n\n14/14 tests passed\n"
+  },
+  "test_battery_instantiate_canonical.py": {
+   "ok": true,
+   "tail": "ous agent, without a human in the loop\"\n    \"invoke the service's metered API once and pay for that single call programmatically as an autonomous agent, without a human in the loop\"\n\n6/6 tests passed\n"
+  },
+  "test_battery_wiring.py": {
+   "ok": true,
+   "tail": "t without --behavioral (static probes are task-independent) \u2014 ignored\n[asrs] warning: --battery auto discovered no offering archetypes for 'shop.example' \u2014 empty battery (every archetype recorded NA)\n"
+  },
+  "test_calibration.py": {
+   "ok": true,
+   "tail": "\u2014 absent (pillar max shrinks)\nrubric check 'hosted_agent_reachability' has no result \u2014 absent (pillar max shrinks)\nrubric check 'hosted_agent_reachability' has no result \u2014 absent (pillar max shrinks)\n"
+  },
+  "test_canonical_history.py": {
+   "ok": true,
+   "tail": "ed_series\n  ok: the committed series has points, got 83\n  ok: there is a latest point\n  ok: latest lands in a known band, got diverged\n  ok: real render is substantive, 2397 chars\n\n71/71 tests passed\n"
+  },
+  "test_canonical_replay.py": {
+   "ok": true,
+   "tail": "\u2014 absent (pillar max shrinks)\nrubric check 'hosted_agent_reachability' has no result \u2014 absent (pillar max shrinks)\nrubric check 'hosted_agent_reachability' has no result \u2014 absent (pillar max shrinks)\n"
+  },
+  "test_fetch_replay.py": {
+   "ok": true,
+   "tail": "no-agent-native-payment, got no-agent-native-payment\n  ok: bare side zero transactability points, got 0.0\n  ok: x402 capability delta is the full 8.0 (rails earns it, bare does not)\n\n3/3 tests passed\n"
+  },
+  "test_free_tier.py": {
+   "ok": true,
+   "tail": " 2.0\ntest_full_delivery_passes\n  ok: full delivery => PASS\n  ok: full credit = 5.0, got 5.0\n  ok: content field surfaced in evidence\n  ok: steering to free meter via openapi enums\n\n11/11 tests passed\n"
+  },
+  "test_local_verify.py": {
+   "ok": true,
+   "tail": "got 'preserving 2 un-pushed non-heartbeat commit(s); not ours to discard'\n  ok: no recovery when we are not ahead of origin\n  ok: never resets when the divergence is not our commits\n\n8/8 tests passed\n"
+  },
+  "test_offering.py": {
+   "ok": true,
+   "tail": "log \u2014 quote: 'e no real meaning. A Light in the ... \u00c2\u00a351.77 In stock Add to basket Tipping the Velvet \u00c2\u00a353.7'\n  ok: strip_html removes script/style/tags, passes plain text through\n\n91/91 tests passed\n"
+  },
+  "test_offering_canonical.py": {
+   "ok": true,
+   "tail": "l_good']) \u2014 the isolation check has teeth\n  ok: the poaching surface trips >1 archetype (['metered_api', 'physical_good']), so single-archetype isolation is a falsifiable property\n\n62/62 tests passed\n"
+  },
+  "test_protocols.py": {
+   "ok": true,
+   "tail": "st_reverse_domain_capability_ids\n  ok: reverse-domain cap -> ucp, got {'protocol': 'ucp', 'fields': ['capabilities'], 'snippet': '{\"data\": {\"caps\": [\"dev.ucp.shopping.checkout\"]}}'}\n\n7/7 tests passed\n"
+  },
+  "test_quotability.py": {
+   "ok": true,
+   "tail": "le-trial card shows the PROVISIONAL verdict\n  ok: behavioral overall score unchanged too\ntest_cli_trials_default_is_two\n  ok: default --trials is 2 (multi-trial by default), got 2\n\n11/11 tests passed\n"
+  },
+  "test_readout.py": {
+   "ok": true,
+   "tail": "ty earner\n\n80/80 tests passed\nrubric check 'hosted_agent_reachability' has no result \u2014 absent (pillar max shrinks)\nrubric check 'hosted_agent_reachability' has no result \u2014 absent (pillar max shrinks)\n"
+  },
+  "test_readout_wording.py": {
+   "ok": true,
+   "tail": "(77359 chars) \u2014 an empty render can't vacuously pass the neutrality scan\n  ok: card.html is substantive (12596 chars)\n  ok: the denylist is non-empty and every entry is a real token\n\n4/4 tests passed\n"
+  },
+  "test_reliability.py": {
+   "ok": true,
+   "tail": "the flip)\n  ok: no_human_gate: agreement/unanimity invariant (only pass_count reflects the flip)\n  ok: citability gate is polarity-invariant (tag 'provisional-unstable' both ways)\n\n11/11 tests passed\n"
+  },
+  "test_rubric_wording.py": {
+   "ok": true,
+   "tail": "\n4/4 tests passed\n"
+  },
+  "test_runner_registration.py": {
+   "ok": true,
+   "tail": "gs a defined-but-unregistered test (has teeth)\n  ok: detector does NOT fire on a fully-registered module (no false positive)\n  ok: detector flags a ghost registered name (has teeth)\n\n4/4 tests passed\n"
+  },
+  "test_scoring.py": {
+   "ok": true,
+   "tail": "' has no result \u2014 absent (pillar max shrinks)\nrubric check 'policies_present' has no result \u2014 absent (pillar max shrinks)\nrubric check 'reputation_signals' has no result \u2014 absent (pillar max shrinks)\n"
+  },
+  "test_shopper_hermetic.py": {
+   "ok": true,
+   "tail": "ust probe still runs `claude -p`\n  ok: the trust-probe prompt is still passed through\n  ok: trust probe still requests --output-format json\n  ok: trust probe still pins --model opus\n\n4/4 tests passed\n"
+  },
+  "test_trial_stability_v06.py": {
+   "ok": true,
+   "tail": "2 unchanged by the fix (both 0.8)\n  ok: N>=3 readings moved after the fix (committed curve superseded), moved=[3, 4, 5]\n  ok: committed pre-v0.6 N=3 was mixed (0.6 < 0.8) \u2014 the leak\n\n4/4 tests passed\n"
+  }
+ },
+ "tests_ok": true,
+ "scores": {
+  "drift-flight.org": {
+   "ok": true,
+   "overall": 46.1,
+   "grade": "F",
+   "rubric": "0.7",
+   "scored": true,
+   "pillars": {
+    "access": 100.0,
+    "legibility": 36.36363636363637,
+    "transactability": 18.75,
+    "trust": 60.0,
+    "outcome": null
+   }
+  },
+  "driftflight.com": {
+   "ok": true,
+   "overall": 76.2,
+   "grade": "C",
+   "rubric": "0.7",
+   "scored": true,
+   "pillars": {
+    "access": 100.0,
+    "legibility": 90.9090909090909,
+    "transactability": 62.5,
+    "trust": 60.0,
+    "outcome": null
+   }
+  }
+ },
+ "delta": 30.1
+}

@@ -1295,6 +1295,124 @@ def test_cause_verdict_names_the_pillar_on_cross_mechanism_agreement() -> None:
     _check("real benchmark movement" in gverd, "movement-vs-outage language preserved")
 
 
+def test_cause_verdict_flags_the_unattributed_tie() -> None:
+    print("test_cause_verdict_flags_the_unattributed_tie")
+    # READOUT (Cycle 220): DivergenceCause.driver tie-breaks an EQUAL-magnitude,
+    # opposite-direction move to the no-rails floor by convention, not by evidence
+    # (pinned by Cycle 219's grid). The driver-line prose keyed on that driver and
+    # therefore SILENTLY reported such a tie as a confident "no-rails reference
+    # GAINED capability — a real benchmark movement", hiding an equal-and-opposite
+    # with-rails softening of the same magnitude. cause_verdict now detects the tie
+    # (side_ambiguous) and states the gap move while calling the SIDE unattributed.
+
+    # (1) The tie: no-rails +5.0, with-rails -5.0 -> gap NARROWED -10.0. Driver and
+    #     reference_degraded are UNCHANGED (Cycle 219 semantics intact) — this is a
+    #     READOUT change, not a recommendation change.
+    tie = ch.DivergenceCause(anchor_ts="t", no_rails_change=5.0, with_rails_change=-5.0)
+    _check(tie.side_ambiguous is True, "equal-and-opposite move is side_ambiguous")
+    _check(tie.driver == ch.CANONICAL_NO_RAILS, "driver tie-break unchanged (no-rails)")
+    _check(tie.reference_degraded is False, "reference_degraded stays conservative on a tie")
+    verd = ch.cause_verdict(tie, None)
+    _check("unattributed" in verd, f"prose calls the side unattributed, got: {verd}")
+    _check("-10.0" in verd, f"prose states the gap move magnitude, got: {verd}")
+    _check("narrowed" in verd, f"prose names the gap direction, got: {verd}")
+    _check("tie" in verd, f"prose says it is a tie, got: {verd}")
+    # The silent default it replaces MUST be gone.
+    _check("GAINED capability" not in verd, f"no confident floor-gain claim on a tie, got: {verd}")
+    _check("real benchmark movement" not in verd, "no movement-vs-outage claim on a tie")
+
+    # (1b) A pillar mover on ONE side does not rescue attribution — the OVERALL tie
+    #      means the side is unattributed regardless of any per-pillar signal, so the
+    #      ambiguous prose fires (and ignores top) even when a top move is supplied.
+    top = ch.PillarMove(ch.CANONICAL_WITH_RAILS, "transactability", 87.5, 82.5, -5.0)
+    _check(ch.cause_verdict(tie, top) == verd, "a per-pillar top does not un-tie an overall tie")
+
+    # (2) The OPPOSITE tie direction: no-rails -5.0, with-rails +5.0 -> gap WIDENED.
+    tie_w = ch.DivergenceCause(anchor_ts="t", no_rails_change=-5.0, with_rails_change=5.0)
+    _check(tie_w.side_ambiguous is True, "the mirror tie is also side_ambiguous")
+    vw = ch.cause_verdict(tie_w, None)
+    _check("widened" in vw and "+10.0" in vw, f"mirror tie names widen +10.0, got: {vw}")
+
+    # (3) ROUNDING TOLERANCE: a tie equal to the scores' 1-decimal precision but off
+    #     by float noise is still a tie, not a sub-rounding artifact that slips
+    #     through to the confident prose.
+    noisy = ch.DivergenceCause(anchor_ts="t", no_rails_change=5.1000000001, with_rails_change=-5.1)
+    _check(noisy.side_ambiguous is True, "a sub-rounding float-noise tie still flags")
+
+    # (4) TEETH — a STRICT-dominant no-rails GAIN is NOT a tie: side_ambiguous False,
+    #     and the confident floor-gain prose the new branch could over-swallow is
+    #     preserved verbatim. (Make the branch fire on this and a real attribution
+    #     would be mis-reported as unattributed.)
+    gain = ch.DivergenceCause(anchor_ts="t", no_rails_change=8.0, with_rails_change=0.0)
+    _check(gain.side_ambiguous is False, "a dominant one-sided move is not a tie")
+    gv = ch.cause_verdict(gain, None)
+    _check("GAINED capability" in gv and "unattributed" not in gv,
+           f"a real one-sided attribution keeps its confident prose, got: {gv}")
+
+    # (5) EQUAL-and-SAME-SIGN is NOT ambiguous — the moves cancel to gap_change 0, so
+    #     there is no divergence to attribute (not an ambiguous one).
+    same = ch.DivergenceCause(anchor_ts="t", no_rails_change=5.0, with_rails_change=5.0)
+    _check(abs(same.gap_change) < 1e-9, "equal-same-sign cancels to no gap move")
+    _check(same.side_ambiguous is False, "no gap move is not an ambiguous attribution")
+
+    # (6) HOST-RELABEL INVARIANCE: the ambiguous prose names the two hosts as DATA
+    #     (the module constants), never a hardcoded vendor — byte-identical once the
+    #     labels substitute back, the same invariant the four honest cases hold.
+    orig_no, orig_with = ch.CANONICAL_NO_RAILS, ch.CANONICAL_WITH_RAILS
+    try:
+        base = ch.cause_verdict(
+            ch.DivergenceCause("t", no_rails_change=5.0, with_rails_change=-5.0), None
+        )
+        _check(orig_no in base and orig_with in base, "ambiguous prose names both hosts")
+        ch.CANONICAL_NO_RAILS = "no-rails-store.example"
+        ch.CANONICAL_WITH_RAILS = "with-rails-store.example"
+        relabeled = ch.cause_verdict(
+            ch.DivergenceCause("t", no_rails_change=5.0, with_rails_change=-5.0), None
+        )
+        _check(ch.CANONICAL_NO_RAILS in relabeled and ch.CANONICAL_WITH_RAILS in relabeled,
+               "relabeled prose names the new hosts")
+        subbed = relabeled.replace(ch.CANONICAL_NO_RAILS, orig_no).replace(
+            ch.CANONICAL_WITH_RAILS, orig_with)
+        _check(subbed == base, "ambiguous prose is a pure function of structure + host tokens")
+    finally:
+        ch.CANONICAL_NO_RAILS, ch.CANONICAL_WITH_RAILS = orig_no, orig_with
+
+
+def test_cause_verdict_unattributed_tie_end_to_end_in_render() -> None:
+    print("test_cause_verdict_unattributed_tie_end_to_end_in_render")
+    # Integration: a full series whose LATEST reading is an equal-and-opposite
+    # side tie must surface the unattributed wording in the terminal render's driver
+    # line — confirming render threads side_ambiguous through, not just the unit. The
+    # no-rails floor rises +5.0 while the with-rails reference falls -5.0 (gap 39.4 ->
+    # 29.4): the confident "no-rails GAINED capability" reading would be exactly as
+    # wrong as reading it as with-rails softening, so neither is asserted.
+    org_p = {"access": 100.0, "legibility": 36.4, "transactability": 18.75, "trust": 60.0}
+    com_p = {"access": 100.0, "legibility": 90.9, "transactability": 87.5, "trust": 60.0}
+    org_up = {"access": 100.0, "legibility": 46.4, "transactability": 18.75, "trust": 60.0}
+    com_dn = {"access": 100.0, "legibility": 90.9, "transactability": 62.5, "trust": 60.0}
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [
+            _artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4, org_pillars=org_p, com_pillars=com_p)
+            for i in range(1, 5)
+        ]
+        rows += [
+            _artifact("20260731T080000Z", 51.1, 80.5, 29.4, org_pillars=org_up, com_pillars=com_dn),
+            _artifact("20260731T140000Z", 51.1, 80.5, 29.4, org_pillars=org_up, com_pillars=com_dn),
+        ]
+        _write_series(tmp, rows)
+        hist = ch.load_history(tmp)
+        cause = hist.divergence_cause
+        _check(cause is not None and cause.side_ambiguous,
+               f"loader builds an equal-and-opposite tie cause, got: {cause}")
+        out = ch.render(hist)
+        driver_lines = [l for l in out.splitlines() if l.startswith("driver:")]
+        _check(len(driver_lines) == 1, f"render still names one driver line, got: {driver_lines}")
+        _check("unattributed" in driver_lines[0],
+               f"render's driver line calls the tie unattributed, got: {driver_lines[0]}")
+        _check("GAINED capability" not in driver_lines[0],
+               f"render does not present the tie as a confident floor gain, got: {driver_lines[0]}")
+
+
 def test_cause_verdict_pillar_named_end_to_end_in_render() -> None:
     print("test_cause_verdict_pillar_named_end_to_end_in_render")
     # Integration: a full series carrying PILLARS through the loader must surface the
@@ -2551,6 +2669,8 @@ def main() -> int:
         test_divergence_cause_on_real_series,
         test_reference_degraded_is_conservative_across_the_full_driver_grid,
         test_cause_verdict_names_the_pillar_on_cross_mechanism_agreement,
+        test_cause_verdict_flags_the_unattributed_tie,
+        test_cause_verdict_unattributed_tie_end_to_end_in_render,
         test_cause_verdict_pillar_named_end_to_end_in_render,
         test_cause_verdict_prose_is_host_relabel_invariant,
         test_reflection_about_baseline_is_magnitude_invariant_direction_covariant,

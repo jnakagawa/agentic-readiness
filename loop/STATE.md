@@ -1,8 +1,37 @@
 # Loop state
 
-- Cycle counter: 219
+- Cycle counter: 220
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-04T07:22Z (Cycle 219) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-04T08:2xZ (Cycle 220) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~76.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
+  cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 08:2xZ fire is NOT
+  first-after-16:00 UTC → no DM this fire per comms policy (display-only / score-neutral off-scoring-path READOUT
+  increment, no sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org 46.1 F /
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1), off
+  the scoring path; the in-cloud replay guard stays the frozen independent regression signal (24/24, 46.1 F / 85.5 B /
+  +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/
+  SELF-HEAL (Cycle 220): fresh `.venv` + `requests pyyaml eth-account pytest`, 464 tests green pre-flight (466 after
+  +2); LOG.md confirmed newest-first + complete through Cycle 219 (no bookkeeping gap); last push (Cycle 219, 5b3dc45)
+  present on origin/main. NOTE: the runner has now been at-floor since Aug-1 03:50Z (~3 days) — the durable [LOCAL]
+  runner-recovery item stays P0.
+- FOCUS POINTER (Cycle 220 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 220 was READOUT, so
+  Cycle 221 is METHOD). Cycle 220 shipped a **READOUT increment — the driver-line prose now surfaces the tie
+  conservatism**. `DivergenceCause.driver` tie-breaks an equal-and-opposite side move to the no-rails floor by
+  CONVENTION (Cycle-219 grid), and `cause_verdict` (the terminal "driver:" line + the HTML card "Side:" note,
+  scorecard.py:1757) silently printed that as a confident "no-rails reference GAINED capability — real benchmark
+  movement", hiding an equal-and-opposite with-rails softening of the same size. New `DivergenceCause.side_ambiguous`
+  (equal magnitude within 4-dp rounding tolerance AND a real gap move) gates a FIFTH cause_verdict case: "the gap
+  {narrowed|widened} ±X, but the SIDE is unattributed — both references moved by equal magnitude (…), so which drove it
+  is a tie (read conservatively as gap movement, not reference degradation)". The four honest cases are byte-for-byte
+  unchanged; `reference_degraded` + the re-capture DECISION are untouched (READOUT-only). OFF the scoring path
+  (scoring-path diff EMPTY; `canonical_history` not imported by scoring.py/probes/ — grep-verified) → score-neutral,
+  NOT peer-gated, direct-to-main. Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss;
+  `test_canonical_history.py` 68→70, suite 464→466; rubric v0.7. NEXT (METHOD 221): the same silent floor-default
+  survives one function over in `recapture_advice`'s REC_RECAPTURE reason (~line 1213 reads `cause.driver` on a tie) —
+  route the tie through `side_ambiguous` there too (queued READOUT candidate in BACKLOG). Substantive frontier
+  (thin-bank live fixtures, hyphen/reflow/entity real-surface validation, moleskine.com two-crawl cross-validation,
+  ACP/UCP/MPP, transactability-drop CHECK-level diagnosis + peer-gated re-baseline) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 219 runner note): RUNNER AT-FLOOR at 2026-08-04T07:22Z (Cycle 219) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~75.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
   cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 07:22Z fire is NOT
   first-after-16:00 UTC → no DM this fire per comms policy (score-neutral TESTS-ONLY off-scoring-path TRUTH increment,
@@ -14,7 +43,7 @@
   +1); LOG.md confirmed newest-first + complete through Cycle 218 (no bookkeeping gap); last push (Cycle 218, 8214f47)
   present on origin/main. NOTE: the runner has now been at-floor since Aug-1 03:50Z (~3 days) — the durable [LOCAL]
   runner-recovery item stays P0.
-- FOCUS POINTER (Cycle 219 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 219 was TRUTH, so
+- SUPERSEDED (Cycle 219 focus pointer): FOCUS POINTER (Cycle 219 done): READOUT next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 219 was TRUTH, so
   Cycle 220 is READOUT). Cycle 219 shipped a **TRUTH increment — a property test pinning `DivergenceCause.reference_
   degraded`'s conservatism across the full driver grid**. `reference_degraded` gates the re-capture-DEFERRAL decision
   (True → the with-rails reference is losing ground, the pinned fixture still holds the true gap, WAIT for recovery

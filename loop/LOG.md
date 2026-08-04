@@ -3,6 +3,53 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 220 — 2026-08-04T08:2xZ — READOUT — surface the driver-line conservatism: an equal-and-opposite side tie is reported as an UNATTRIBUTED gap move, not a silent no-rails floor gain
+
+WHAT/WHY (READOUT — the side-attribution prose must not over-claim on a tie). `DivergenceCause.driver`
+(asrs/canonical_history.py) tie-breaks an EQUAL-magnitude, opposite-direction move to the no-rails floor by
+CONVENTION (pinned by Cycle 219's grid: `abs(with_rails_change) > abs(no_rails_change)` is strict, so a tie falls to
+no-rails). `cause_verdict` — the "driver:" line in the terminal drift block AND the HTML card's "Side:" note
+(asrs/scorecard.py:1757) — keyed on that driver, so on a tie it SILENTLY printed the confident no-rails case: "the
+capability gap narrowed because the no-rails reference GAINED capability — a real benchmark movement, not a reference
+outage". But an equal-and-OPPOSITE with-rails softening of the same magnitude is EXACTLY as consistent with a tie, so
+that reading over-claims: it hides a possible reference degradation of identical size behind a floor-gain sentence. The
+recommendation stays correctly conservative on a tie (`reference_degraded` is False → re-capture is NOT deferred, Cycle
+219), but the READOUT was asserting a side the evidence does not attribute.
+
+READOUT — the smallest unit. New `DivergenceCause.side_ambiguous` property: True iff the two side moves are equal in
+magnitude (rounding-tolerant to 4 dp, mirroring `gap_change` — a real 1-decimal tie must not slip through on float
+noise) AND the gap actually moved (equal-and-SAME-sign moves cancel to gap 0 = no attribution, not an ambiguous one).
+`cause_verdict` now checks it FIRST and returns a fifth-case sentence — "the gap {narrowed|widened} {±X}, but the SIDE
+is unattributed — both references moved by equal magnitude (<no-rails> ±a, <with-rails> ±b), so which drove it is a tie
+(read conservatively as gap movement, not reference degradation)" — naming both hosts as DATA (module constants,
+vendor-neutral), never a pillar (the SIDE is unattributed regardless of any per-pillar top). The four honest cases are
+byte-for-byte unchanged (they use strict-dominant scenarios, so the new branch never fires on them).
+
+TESTS (+2, 464→466). `test_cause_verdict_flags_the_unattributed_tie`: (1) narrow tie → side_ambiguous True, driver +
+reference_degraded UNCHANGED (Cycle-219 semantics intact — a READOUT change, not a recommendation change), prose says
+unattributed/tie/-10.0/narrowed and the old "GAINED capability"/"real benchmark movement" defaults are GONE; (1b) a
+supplied per-pillar top does NOT un-tie an overall tie; (2) mirror tie widens +10.0; (3) rounding tolerance (a
+sub-rounding float-noise tie still flags); (4) TEETH — a strict-dominant no-rails GAIN is NOT a tie and keeps its
+confident prose verbatim (a too-greedy branch would mis-report a real attribution as unattributed); (5) equal-same-sign
+cancels to gap 0 → not ambiguous; (6) host-relabel invariance of the ambiguous prose.
+`test_cause_verdict_unattributed_tie_end_to_end_in_render`: a full series (no-rails +5.0 / with-rails -5.0, gap 39.4 →
+29.4) loads through `load_history` → the render's single driver line reads "unattributed", not a floor gain — pinning
+that render/scorecard thread `side_ambiguous`, not just the unit.
+
+EVIDENCE / SHIP. OFF the scoring path (git diff -- asrs/scoring.py asrs/probes/ rubric/ fixtures/ EMPTY;
+`canonical_history` NOT imported by scoring.py/probes/ — grep-verified) → score-neutral, NOT peer-gated,
+direct-to-main. Full suite 466 passed; free-tier 11/11; canonical replay guard 24/24 — **46.1 F / 85.5 B / +39.4, 0
+replay-miss (unchanged by construction)**. `test_canonical_history.py` 68→70; rubric v0.7. Live canonical signal
+(READ, runner still at-floor since Aug-1 03:50Z, cloud can't repair): drift-flight.org 46.1 F / driftflight.com 76.2 C
+/ +30.1 / transactability 62.5 — the Aug-1 transactability-drop divergence persists, off the scoring path.
+
+NEXT (METHOD 221 per rotation): the `recapture_advice` REC_RECAPTURE reason (asrs/canonical_history.py ~1213) still
+reads `cause.driver`/`driver_change` on a tie ("the baseline genuinely moved (<no-rails> +X) — a durable
+capability-gap change"), so the SAME silent floor-default survives in the re-capture RECOMMENDATION prose one function
+over — a natural follow-up to route the tie through `side_ambiguous` there too (queued READOUT candidate below).
+Substantive frontier (thin-bank live fixtures, hyphen/reflow/entity real-surface validation, moleskine.com two-crawl
+cross-validation, ACP/UCP/MPP, transactability-drop CHECK-level diagnosis + peer-gated re-baseline) stays `[LOCAL]`.
+
 ## Cycle 219 — 2026-08-04T07:22Z — TRUTH — reference_degraded is conservative across the full driver grid: an ambiguous or with-rails-GAINING move is never read as reference degradation
 
 WHAT/WHY (TRUTH — the re-capture-deferral signal's credibility at the edges). `DivergenceCause.reference_degraded`

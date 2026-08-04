@@ -689,6 +689,19 @@ design in-cloud, execute locally.
 
 ## P1
 
+- **[OBSERVATION — Cycle 220, READOUT candidate] Route the side-attribution TIE through the re-capture
+  RECOMMENDATION prose too.** Cycle 220 made `cause_verdict` (the "driver:" line) report an equal-and-opposite
+  side tie as UNATTRIBUTED via `DivergenceCause.side_ambiguous`, but the SAME silent floor-default survives one
+  function over: `recapture_advice`'s REC_RECAPTURE branch (asrs/canonical_history.py ~line 1213) reads
+  `cause.driver` / `cause.driver_change` and prints "the baseline genuinely moved (<no-rails> +X) — a durable
+  capability-gap change" on a tie — attributing the move to the no-rails floor the driver tie-break arbitrarily
+  picked. In-cloud READOUT increment: when `cause.side_ambiguous`, have the REC_RECAPTURE reason say the gap moved
+  but the SIDE is unattributed (so re-capture rests on a gap move whose driver is a coin-flip), WITHOUT changing
+  the recommendation CODE (REC_RECAPTURE vs REC_DEFER is driven by `reference_degraded`/band, which stay correct —
+  a tie is not `reference_degraded`, so it already routes to RECAPTURE, not DEFER; this is prose-only). Off the
+  scoring path, score-neutral; guard the ambiguous-tie reason string + that the recommendation CODE is unchanged
+  from today on the same tie input. Naturally the METHOD/READOUT sibling of the Cycle-220 driver-line fix.
+
 - **[OBSERVATION — Cycle 216, METHOD candidate] Fold the loader exclusion accounting into a drift-series
   INTEGRITY metric.** Cycle 216 (READOUT) surfaced `LoadAccounting` (total / included / excluded_red_bench /
   excluded_malformed) on both drift surfaces, but it is a display-only count — nothing JUDGES whether the

@@ -279,6 +279,32 @@ class DivergenceCause:
         """
         return self.driver == CANONICAL_WITH_RAILS and self.with_rails_change < 0
 
+    @property
+    def side_ambiguous(self) -> bool:
+        """True iff both references moved by EQUAL magnitude in OPPOSITE directions,
+        so the gap genuinely moved but which SIDE drove it is a tie that ``driver``
+        resolves — conservatively, but arbitrarily — to the no-rails floor.
+
+        This is the one case where the ``driver`` convention is a coin-flip rather
+        than a measurement: the no-rails move and the with-rails move are exactly
+        as large, so reading it as "the no-rails floor GAINED capability" would hide
+        an equal-and-opposite with-rails softening of the same magnitude. The
+        recommendation stays conservative here (``reference_degraded`` is False on a
+        tie, so re-capture is not deferred), but the READOUT must SAY the side is
+        unattributed rather than silently present the tie as a confident floor move.
+        Requires an actual gap change (equal-and-SAME-sign moves cancel to no
+        divergence, which is not an ambiguous attribution — it is no attribution).
+
+        Equality is rounding-tolerant (to 4 dp, mirroring ``gap_change``): two side
+        moves that are equal to the scores' own 1-decimal precision but differ only
+        in float noise are a genuine tie, and must not slip through to the confident
+        no-rails prose on a sub-rounding artifact.
+        """
+        return (
+            round(abs(self.with_rails_change) - abs(self.no_rails_change), 4) == 0
+            and self.gap_change != 0
+        )
+
 
 @dataclass
 class NoiseFloor:
@@ -1311,6 +1337,12 @@ def cause_verdict(cause: DivergenceCause, top: PillarMove | None = None) -> str:
     driver is the dominant side, its direction fixes whether the gap narrowed or
     widened, so the sentence never contradicts ``gap_change``.
 
+    The FIFTH case is a tie (``side_ambiguous``): both references moved by equal
+    magnitude in opposite directions, so ``driver`` resolves to the no-rails floor
+    by convention, not by evidence. There the sentence states the gap move but
+    calls the SIDE unattributed instead of asserting a confident floor gain — a
+    with-rails softening of the same magnitude is exactly as consistent.
+
     When ``top`` (the largest per-pillar mover from ``PillarAttribution``) is
     supplied AND the two INDEPENDENT attribution mechanisms concur, the sentence
     also names the fingered PILLAR — "SOFTENED on transactability", not only "the
@@ -1324,6 +1356,21 @@ def cause_verdict(cause: DivergenceCause, top: PillarMove | None = None) -> str:
     is), the prose falls back to the side-only wording, byte-for-byte the
     pre-pillar form, rather than assert a pillar the mechanisms don't corroborate.
     """
+    if cause.side_ambiguous:
+        # The two references moved by equal magnitude in opposite directions: the
+        # gap really moved, but ``driver`` tie-breaks to the no-rails floor by
+        # convention, not by evidence. Say the gap moved and that the SIDE is
+        # unattributed rather than present the tie as a confident floor gain — a
+        # with-rails softening of the same magnitude is exactly as consistent.
+        direction = "narrowed" if cause.gap_change < 0 else "widened"
+        return (
+            f"the gap {direction} {cause.gap_change:+.1f}, but the SIDE is "
+            f"unattributed — both references moved by equal magnitude "
+            f"({CANONICAL_NO_RAILS} {cause.no_rails_change:+.1f}, "
+            f"{CANONICAL_WITH_RAILS} {cause.with_rails_change:+.1f}), so which "
+            f"drove it is a tie (read conservatively as gap movement, not "
+            f"reference degradation)"
+        )
     driver = cause.driver
     change = cause.driver_change
     verb = "fell" if change < 0 else "rose"

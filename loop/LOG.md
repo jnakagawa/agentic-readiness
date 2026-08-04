@@ -3,6 +3,59 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 222 — 2026-08-04T10:2xZ — COVERAGE — strip INVISIBLE line-break controls in offering discovery: a soft-hyphen / zero-width-space interleaved inside a capability word no longer silently drops the archetype claim
+
+WHAT/WHY (COVERAGE — the fourth encoding-robustness fold, completing the reflow/hyphen/entity family). The offering
+classifier normalizes a surface's typography before matching so a claim keys on the WORDS a storefront declares, not
+the shape a crawl captured: Cycle 178 collapses whitespace runs (line-wrap), Cycle 214 folds typographic/non-breaking
+VISIBLE hyphens to ASCII, Cycle 218 decodes HTML entities on the non-HTML branch. A sibling class was still uncovered —
+the INVISIBLE line-break controls a justification / auto-hyphenation engine sprinkles INSIDE a word or compound: the
+soft hyphen U+00AD (`sub­scrip­tion`, `free ship­ping`), the zero-width space U+200B, the word joiner U+2060, the BOM /
+zero-width no-break space U+FEFF (a common leading byte on an exported surface). These are Unicode category **Cf**, so
+`\s` does NOT match them (the reflow collapse misses them, VERIFIED) and they are not visible dashes (the hyphen fold
+misses them). Sitting mid-word they break a signal's `\b`/literal match and drop the WHOLE archetype claim on
+ink-invisible typography. WORSE, the Cycle-218 entity decode can RESTORE one from its reference form (`&shy;`→U+00AD,
+`&#8203;`→U+200B) straight into the matched text — so this strip is also the natural completion of that decode.
+Demonstrated non-vacuous at fire start: a soft-hyphenated `sub­scrip­tion … per­ month` prose lost its `metered_api`
+claim (`['subscription','metered_api']` → `['subscription']`).
+
+COVERAGE — the smallest unit. New `_INVISIBLE_STRIP = {cp: None for cp in (0x00AD, 0x200B, 0x2060, 0xFEFF)}` and one
+`prose.translate(_INVISIBLE_STRIP)` in `classify_offering`, applied per-surface AFTER the entity decode and BEFORE the
+whitespace collapse + hyphen fold. DELETE (not fold to `-`): a soft hyphen / zero-width control is an invisible break
+hint, never part of a word's identity, so the intended text is the char removed. PRECISION-SAFE: deleting a zero-width
+char can only JOIN adjacent characters, never insert a space or a `\b` boundary, so it RESTORES an intended word
+(`sub­scrip­tion`→`subscription`) but can NEVER spell a literal-space phrase (`free shipping`) a real space wasn't
+already separating. DELIBERATELY EXCLUDES the zero-width non-joiner / joiner U+200C / U+200D: unlike the pure
+line-break controls, those carry grapheme-cluster / script semantics (Persian/Indic shaping, emoji ZWJ sequences), so
+deleting them is not a safe no-op — the same precision scoping that made the Cycle-214 hyphen fold exclude the em dash.
+VENDOR-NEUTRAL (keys on Unicode formatting category, names no domain/product).
+
+TESTS (+1, 467→468; `test_offering.py` +1). `test_classification_is_invisible_formatting_invariant`: the SAME storefront
+with SHY/ZWSP/WJ interleaved mid-compound + a leading BOM classifies IDENTICALLY (per-(label,surface) skeleton, ranked
+claimed set, NA complement) to the clean prose. TEETH: (a) the injection is real (bytes differ, all four controls present)
++ literals pinned to code points AND to `_INVISIBLE_STRIP`'s keys (silent-mangle guard); (b) the strip is LOAD-BEARING
+(the `subscription`/`subscription` signal matches the clean word but NOT the ZWSP-interrupted form); (c) ZWNJ (U+200C,
+deliberately UNstripped) interleaved into the metered_api compounds leaves them broken → `metered_api` DROPS and loses
+rank-1, proving the strip is scoped to the pure line-break family, not a blanket zero-width rewrite. REAL-EVIDENCE half:
+0 of the 5 committed canonical fixtures carries ANY stripped char (verified at fire start + asserted in-test), so the
+canonical CLAIMED sets are invariant BY CONSTRUCTION.
+
+OFF THE SCORING PATH → score-neutral, NOT peer-gated, direct-to-main. Scoring-path diff EMPTY (`git diff -- asrs/scoring.py
+asrs/probes/ rubric/ fixtures/`); `offering` not imported by `scoring.py`/`probes/`. Only 2 files touched (asrs/offering.py,
+tests/test_offering.py).
+
+CANONICAL PAIR (in-cloud replay guard, frozen regression signal): 24/24 green — drift-flight.org 46.1 F / driftflight.com
+85.5 B / delta +39.4, 0 replay-miss; rubric v0.7 (unchanged). LIVE signal (READ, not re-run — runner at-floor since
+Aug-1 03:50Z, ~78h, cloud cannot repair): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability
+62.5 — the transactability-drop divergence PERSISTS (off the scoring path). Full suite 468 green.
+
+NEXT (TRUTH 223): a calibration/attribution invariance guard or a panel-verdict-stability property. The offering
+classifier's FOUR typography folds (reflow / hyphen / entity / invisible-control) now cover both surface branches and
+the pure-formatting Cf class — the in-cloud encoding-robustness frontier is now genuinely exhausted; further COVERAGE
+wanting new SIGNALS (not robustness) needs real fixtures ([LOCAL]). Substantive frontier (thin-bank live fixtures,
+hyphen/reflow/entity/invisible-control real-surface validation, moleskine.com two-crawl cross-validation, ACP/UCP/MPP,
+transactability-drop CHECK-level diagnosis + peer-gated re-baseline) stays `[LOCAL]`.
+
 ## Cycle 221 — 2026-08-04T09:2xZ — METHOD — the re-capture DECISION must not gamble on a coin-flip: an equal-and-opposite side tie is a human-review case, not a confident re-capture candidate
 
 WHAT/WHY (METHOD — attribution rigor in the DECISION, one function over from Cycle 220's READOUT fix). Cycle 220

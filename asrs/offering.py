@@ -200,6 +200,32 @@ _F = re.IGNORECASE
 # construction (tests/test_offering_canonical.py).
 _HYPHEN_NORMALIZE = {ord(c): "-" for c in "‐‑‒–−﹣－"}
 
+# Invisible-formatting strip (applied per-surface in classify_offering, before the
+# whitespace-reflow collapse and the hyphen fold). A justification / auto-hyphenation
+# engine routinely sprinkles INVISIBLE line-break-control characters INSIDE a word or
+# compound — the soft hyphen U+00AD ("sub­scrip­tion", "free ship­ping"), the zero-width
+# space U+200B, the word joiner U+2060, the zero-width no-break space / BOM U+FEFF. They
+# render as nothing (or, for the soft hyphen, a hyphen ONLY at a line end), so a human
+# sees the intact word — but they are Unicode category Cf, so `\s` does NOT match them
+# (the reflow collapse misses them) and they are not visible dashes (the hyphen fold
+# misses them). Sitting mid-word, they break a signal's `\b`/literal match and drop the
+# whole archetype claim on ink-invisible typography — the encoding sibling of the
+# Cycle-178 line-wrap, the Cycle-214 hyphen, and the Cycle-218 entity gaps. Worse, the
+# entity decode can RESTORE one from its reference form (`&shy;` -> U+00AD, `&#8203;` ->
+# U+200B) directly into the matched text, so this fold is also the natural completion of
+# that decode. DELETE them (map to None) so a signal keys on the WORDS a surface declares,
+# not the break hints a CMS interleaved. Precision-safe: deleting a zero-width char can
+# only JOIN adjacent characters, never insert a space or a `\b` boundary, so it can RESTORE
+# an intended word ("sub­scrip­tion" -> "subscription") but can never spell a literal-space
+# phrase ("free shipping") that a real space wasn't already separating. DELIBERATELY
+# excludes the zero-width non-joiner / joiner (U+200C / U+200D): unlike the pure
+# line-break controls above, those carry grapheme-cluster / script semantics (Persian/
+# Indic shaping, emoji ZWJ sequences), so deleting them is not a safe no-op — the same
+# precision scoping that made the hyphen fold exclude the em dash. No-op on all committed
+# canonical evidence (0 of 5 fixtures carry any of these), so the CLAIMED sets stay
+# invariant by construction (tests/test_offering_canonical.py).
+_INVISIBLE_STRIP = {cp: None for cp in (0x00AD, 0x200B, 0x2060, 0xFEFF)}
+
 
 # Signal bank: archetype -> [(label, pattern), ...]. Each pattern is anchored to
 # high-precision, vendor-neutral language. A match records the archetype, the
@@ -1637,6 +1663,18 @@ def classify_offering(domain: str, surfaces: dict[str, str]) -> OfferingProfile:
             prose = _html.unescape(raw)
         if not prose:
             continue
+        # Strip invisible line-break-control characters (soft hyphen U+00AD,
+        # zero-width space U+200B, word joiner U+2060, BOM U+FEFF; see
+        # _INVISIBLE_STRIP) BEFORE the whitespace collapse and hyphen fold. A
+        # justification / auto-hyphenation engine interleaves these inside a word
+        # or compound ("sub­scrip­tion", "free ship­ping"); they are category Cf so
+        # neither the reflow collapse (\s) nor the hyphen fold (visible dashes)
+        # reaches them, and mid-word they break a signal's \b/literal match and drop
+        # the claim on ink-invisible typography. Deleting them restores the WORDS a
+        # surface declares; it can only join adjacent chars, never conjure a
+        # literal-space phrase, so it is precision-safe and a no-op on the canonical
+        # evidence (invariant by construction, tests/test_offering_canonical.py).
+        prose = prose.translate(_INVISIBLE_STRIP)
         # Whitespace-reflow invariance. A plain-text surface (llms.txt, a markdown
         # docs page) is routinely line-wrapped, so a two-word capability phrase can
         # straddle a newline ("free\nshipping", "per\nmonth"), and HTML-stripped

@@ -1725,6 +1725,139 @@ def test_classification_is_intra_word_hyphen_invariant():
     print("  ok: committed canonical evidence carries only the excluded em dash — fold is a no-op there (invariant by construction)")
 
 
+def test_classification_is_invisible_formatting_invariant():
+    # A readiness classification is a property of the WORDS a storefront declares,
+    # not the INVISIBLE line-break controls a CMS interleaved. A justification /
+    # auto-hyphenation engine sprinkles zero-ink characters INSIDE a word or
+    # compound — the soft hyphen U+00AD ("sub­scrip­tion"), the zero-width space
+    # U+200B, the word joiner U+2060, the BOM / zero-width no-break space U+FEFF
+    # (often a leading byte on an exported surface). A human sees the intact word,
+    # but these are Unicode category Cf: `\s` does NOT match them (the reflow
+    # collapse misses them) and they are not visible dashes (the hyphen fold misses
+    # them), so mid-word they break a signal's \b/literal match and drop the WHOLE
+    # archetype claim on ink-invisible typography — the encoding sibling of the
+    # Cycle-178 line-wrap, the Cycle-214 hyphen, and the Cycle-218 entity gaps.
+    # classify_offering now DELETES the invisible line-break family per-surface (see
+    # _INVISIBLE_STRIP). This pins the invariance: the SAME storefront, capability
+    # words interleaved with invisible break controls vs clean, classifies
+    # identically (claimed archetypes in rank order, the NA complement, and the
+    # per-(label, surface) skeleton).
+    flat = (
+        "Programmatic access is billed pay-as-you-go, charged pay-per-call at a low "
+        "per-generation rate. A monthly subscription is available; subscribe any time."
+    )
+    base = classify_offering("shop.test", {"/llms.txt": flat})
+
+    # Substrate: the property under test is genuinely present — a RANKED
+    # multi-archetype classification an invisible-char difference could perturb,
+    # led by metered_api on its hyphenated-compound signals.
+    assert {"metered_api", "subscription"} <= set(base.archetypes), (
+        f"substrate: metered_api + subscription both claim on the clean prose "
+        f"(got {base.archetypes})"
+    )
+    assert base.archetypes[0] == "metered_api", (
+        f"substrate: metered_api ranks first on its compound signals "
+        f"(got {base.archetypes})"
+    )
+
+    # Invisible line-break controls interleaved inside the very words the signals
+    # key on — one of EACH stripped char (soft hyphen, zero-width space, word
+    # joiner) mid-compound, plus a leading BOM exactly as an exported surface
+    # carries one.
+    SHY, ZWSP, WJ, BOM = "­", "​", "⁠", "﻿"
+    # Pin the (invisible) literals to their code points AND to the SUT's strip set,
+    # so an editor that mangles a zero-ink glyph, or a change to _INVISIBLE_STRIP,
+    # reddens here instead of silently weakening the test.
+    assert [ord(c) for c in (SHY, ZWSP, WJ, BOM)] == [0x00AD, 0x200B, 0x2060, 0xFEFF]
+    assert set(offering._INVISIBLE_STRIP) == {0x00AD, 0x200B, 0x2060, 0xFEFF}, (
+        "test exercises exactly the chars _INVISIBLE_STRIP deletes"
+    )
+    inv = flat
+    inv = inv.replace("pay-as-you-go", "pay-as-you-g" + SHY + "o")
+    inv = inv.replace("pay-per-call", "pay-p" + ZWSP + "er-call")
+    inv = inv.replace("per-generation", "per-gen" + WJ + "eration")
+    inv = inv.replace("subscription", "sub" + SHY + "scrip" + ZWSP + "tion")
+    inv = BOM + inv
+    prof = classify_offering("shop.test", {"/llms.txt": inv})
+
+    # TEETH (a): the transform is REAL — the bytes differ and carry all four
+    # invisible controls the fold targets.
+    assert inv != flat, "the invisible-char injection genuinely changed the bytes (non-vacuous)"
+    assert all(ch in inv for ch in (SHY, ZWSP, WJ, BOM)), (
+        "all four stripped invisible controls are present in the injected surface"
+    )
+
+    # TEETH (b): the STRIP is LOAD-BEARING. A signal's raw pattern matches the clean
+    # word but NOT the zero-width-interrupted form, so without the strip the injected
+    # surface would drop the claim — the invariance below rests on classify_offering's
+    # invisible-char deletion, not on the phrases surviving by luck.
+    sub_pat = _signal_pattern("subscription", "subscription")
+    assert sub_pat is not None, "subscription signal exists"
+    assert sub_pat.search("a subscription plan") is not None, "matches the clean word"
+    assert sub_pat.search("a sub​scrip​tion plan") is None, (
+        "does NOT match the zero-width-interrupted word — so the strip is load-bearing"
+    )
+
+    # (1) The invisible-char-independent capability skeleton is identical: every
+    # archetype's strength AND its per-(label, surface) match counts survive — no
+    # signal lost or conjured, no count drifted, by mere break-control interleaving.
+    assert _wsr_struct(prof) == _wsr_struct(base), (
+        f"per-archetype (strength, per-(label, surface) counts) skeleton invariant under "
+        f"invisible-char interleaving (clean {_wsr_struct(base)}, injected {_wsr_struct(prof)})"
+    )
+    # (2) Claimed archetypes IN RANK ORDER invariant — the rank drives the fixed
+    # template-bank task order, so an invisible char must not reorder the battery.
+    assert prof.archetypes == base.archetypes, (
+        f"claimed archetypes (ranked) invariant under invisible-char interleaving "
+        f"(clean {base.archetypes}, injected {prof.archetypes})"
+    )
+    # (3) The NA/unclaimed complement (excluded from every mean/spread, never
+    # penalized) is invariant — what a site is excused on as NA depends on what it
+    # declares, not the break controls a crawl captured.
+    assert set(prof.unclaimed) == set(base.unclaimed), (
+        f"NA/unclaimed set invariant under invisible-char interleaving "
+        f"(clean {sorted(base.unclaimed)}, injected {sorted(prof.unclaimed)})"
+    )
+    print("  ok: claimed set / rank / strengths / labels / NA invariant under soft-hyphen/ZWSP/WJ/BOM interleaving (strip is load-bearing)")
+
+    # TEETH (c): the zero-width non-joiner / joiner (U+200C / U+200D) are DELIBERATELY
+    # NOT stripped — unlike the pure line-break controls above, they carry
+    # grapheme-cluster / script semantics (Persian/Indic shaping, emoji ZWJ
+    # sequences), so deleting them is not a safe no-op. Interleaving a ZWNJ into the
+    # SAME metered_api compounds (an adversarial input) leaves them broken, so the
+    # metered_api claim DROPS and it is no longer the rank-1 archetype. This proves
+    # the strip is scoped to the pure line-break family, not a blanket zero-width
+    # rewrite — the exact scoping (mirroring the hyphen fold's em-dash exclusion)
+    # that keeps the canonical pair invariant by construction.
+    ZWNJ = "‌"
+    znj = flat
+    znj = znj.replace("pay-as-you-go", "pay-as-you-g" + ZWNJ + "o")
+    znj = znj.replace("pay-per-call", "pay-p" + ZWNJ + "er-call")
+    znj = znj.replace("per-generation", "per-gen" + ZWNJ + "eration")
+    znj_prof = classify_offering("shop.test", {"/llms.txt": znj})
+    assert "metered_api" not in znj_prof.archetypes, (
+        f"ZWNJ is not stripped, so the broken metered_api compounds do NOT claim "
+        f"(got {znj_prof.archetypes})"
+    )
+    assert znj_prof.archetypes[0] != "metered_api", "ZWNJ input reorders away from metered_api"
+    print("  ok: ZWNJ / ZWJ are NOT stripped (script/grapheme semantics, not line-break controls) — precision-safe")
+
+    # REAL-EVIDENCE half: the strip is a NO-OP on committed canonical evidence, so
+    # the canonical CLAIMED sets are invariant BY CONSTRUCTION. NONE of the five
+    # committed fixtures carries any character the fold deletes.
+    STRIPPED = "­​⁠﻿"
+    for name in os.listdir(_FIXTURE_DIR):
+        if not name.endswith(".json"):
+            continue
+        raw = open(os.path.join(_FIXTURE_DIR, name), encoding="utf-8").read()
+        present = {ch for ch in raw if ch in STRIPPED}
+        assert not present, (
+            f"{name}: committed evidence carries an invisible char the strip WOULD delete "
+            f"({[hex(ord(c)) for c in present]}) — canonical invariance is no longer by construction"
+        )
+    print("  ok: no committed canonical evidence carries a stripped invisible char — strip is a no-op there (invariant by construction)")
+
+
 def test_evidence_is_quoted_and_surface_tagged():
     prof = classify_offering("example-imaging.test", {"homepage": API_HOMEPAGE})
     for claim in prof.claimed:
@@ -4386,6 +4519,7 @@ def main() -> int:
         test_classification_is_html_entity_decode_invariant,
         test_classification_is_non_html_surface_entity_invariant,
         test_classification_is_intra_word_hyphen_invariant,
+        test_classification_is_invisible_formatting_invariant,
         test_evidence_is_quoted_and_surface_tagged,
         test_openapi_spec_alone_classifies_api_first_storefront,
         test_ai_plugin_descriptor_alone_classifies_storefront,

@@ -1,35 +1,39 @@
 # Loop state
 
-- Cycle counter: 221
+- Cycle counter: 222
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-04T09:2xZ (Cycle 221) — newest verify `runs/local/verify_20260801T035047Z.json`
-  (03:50Z Aug-1, `attempts=1`) is ~77.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
-  cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 09:2xZ fire is NOT
-  first-after-16:00 UTC → no DM this fire per comms policy (score-neutral off-scoring-path METHOD increment, no
+- RUNNER AT-FLOOR at 2026-08-04T10:2xZ (Cycle 222) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~78.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
+  cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 10:2xZ fire is NOT
+  first-after-16:00 UTC → no DM this fire per comms policy (score-neutral off-scoring-path COVERAGE increment, no
   sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org 46.1 F /
   driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1), off
   the scoring path; the in-cloud replay guard stays the frozen independent regression signal (24/24, 46.1 F / 85.5 B /
   +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/
-  SELF-HEAL (Cycle 221): fresh `.venv` + `requests pyyaml eth-account pytest`, 466 tests green pre-flight (467 after
-  +1); LOG.md confirmed newest-first + complete through Cycle 220 (no bookkeeping gap); last push (Cycle 220, 3b218e8)
-  present on origin/main. NOTE: the runner has now been at-floor since Aug-1 03:50Z (~3 days) — the durable [LOCAL]
+  SELF-HEAL (Cycle 222): fresh `.venv` + `requests pyyaml eth-account pytest`, 467 tests green pre-flight (468 after
+  +1); LOG.md confirmed newest-first + complete through Cycle 221 (no bookkeeping gap); last push (Cycle 221, 7242f19)
+  present on origin/main. NOTE: the runner has now been at-floor since Aug-1 03:50Z (~3+ days) — the durable [LOCAL]
   runner-recovery item stays P0.
-- FOCUS POINTER (Cycle 221 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 221 was METHOD, so
-  Cycle 222 is COVERAGE). Cycle 221 shipped a **METHOD increment — the re-capture DECISION now routes an ambiguous
-  side-tie to human review, not a confident re-capture candidate**. On a sustained out-of-band tie (`side_ambiguous`:
-  equal-magnitude, opposite-direction side moves), `driver` resolves to the no-rails floor by CONVENTION, so
-  `reference_degraded` is False (Cycle 219) and `recapture_advice` fell through to `REC_RECAPTURE` — recommending a
-  comparability-affecting [LOCAL] baseline re-pin on a coin-flip that is EQUALLY a with-rails softening (which → DEFER,
-  wait). New `REC_AMBIGUOUS` code + a branch (checked after `reference_degraded`, before the `REC_RECAPTURE`
-  fall-through) that returns a human-review recommendation naming the tie in capability terms (no host → host-relabel
-  invariant). This is the DECISION-level sibling of Cycle 220's READOUT (`cause_verdict`) fix — the drift family's
-  silent-floor-default audit is now COMPLETE across both consumers (prose + decision). OFF the scoring path
-  (scoring-path diff EMPTY; `canonical_history` not imported by `scoring.py`/`probes/` — grep-verified) → score-neutral,
-  NOT peer-gated, direct-to-main. Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss;
-  `test_canonical_history.py` 70→71, suite 466→467; rubric v0.7. NEXT (COVERAGE 222): a fresh vendor-neutral capability
-  check or in-cloud offering-classifier refinement. Substantive frontier (thin-bank live fixtures, hyphen/reflow/entity
-  real-surface validation, moleskine.com two-crawl cross-validation, ACP/UCP/MPP, transactability-drop CHECK-level
-  diagnosis + peer-gated re-baseline) stays `[LOCAL]`.
+- FOCUS POINTER (Cycle 222 done): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 222 was COVERAGE, so
+  Cycle 223 is TRUTH). Cycle 222 shipped a **COVERAGE increment — the FOURTH encoding-robustness fold: strip INVISIBLE
+  line-break controls in offering discovery**. A justification / auto-hyphenation engine interleaves zero-ink category-Cf
+  characters INSIDE a capability word or compound — soft hyphen U+00AD (`sub­scrip­tion`), zero-width space U+200B, word
+  joiner U+2060, BOM U+FEFF — which `\s` does NOT match (reflow collapse misses them) and which are not visible dashes
+  (hyphen fold misses them), so mid-word they break a signal's `\b`/literal match and drop the WHOLE archetype claim on
+  ink-invisible typography (worse: the Cycle-218 entity decode can RESTORE `&shy;`/`&#8203;` straight into the matched
+  text). New `_INVISIBLE_STRIP` + one `prose.translate(...)` in `classify_offering` (after entity decode, before reflow +
+  hyphen fold) DELETES them (an invisible break hint is never part of a word's identity). PRECISION-SAFE (deleting a
+  zero-width char only JOINS adjacent chars, never inserts a space/`\b`, so it RESTORES an intended word but can never
+  spell a literal-space phrase) and DELIBERATELY excludes ZWNJ/ZWJ U+200C/U+200D (grapheme/script semantics — same scoping
+  as the hyphen fold's em-dash exclusion). OFF the scoring path (scoring-path diff EMPTY; `offering` not imported by
+  `scoring.py`/`probes/`) → score-neutral, NOT peer-gated, direct-to-main. Canonical CLAIMED sets invariant BY
+  CONSTRUCTION (0 of 5 fixtures carry any stripped char). Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss;
+  `test_offering.py` +1, suite 467→468; rubric v0.7. NEXT (TRUTH 223): a calibration/attribution invariance guard or a
+  panel-verdict-stability property — the classifier's four typography folds (reflow/hyphen/entity/invisible-control) now
+  cover both surface branches + the pure-formatting Cf class, so the in-cloud encoding-robustness frontier is genuinely
+  exhausted. Substantive frontier (thin-bank live fixtures, reflow/hyphen/entity/invisible-control real-surface
+  validation, moleskine.com two-crawl cross-validation, ACP/UCP/MPP, transactability-drop CHECK-level diagnosis +
+  peer-gated re-baseline) stays `[LOCAL]`.
 - SUPERSEDED (Cycle 220 runner note): RUNNER AT-FLOOR at 2026-08-04T08:2xZ (Cycle 220) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~76.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
   cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 08:2xZ fire is NOT

@@ -2238,6 +2238,68 @@ def test_canonical_history_per_side_claim_withheld_on_cancellation() -> None:
            "WITHHOLDS the per-side claim when sides are not exact (cancellation not ruled out)")
 
 
+def _pillar_floor_pts(pillar_seq) -> list:
+    """A drift series: in-band anchors whose with-rails ``transactability`` takes the
+    values in ``pillar_seq`` (the fixture decouples each side's overall from its pillar
+    dict, so the readings stay in-band at the pinned +39.4 while the pillar value moves),
+    then a trailing out-of-band run where transactability drops to 62.5 — so the top
+    mover is with-rails transactability and its at-rest floor is measured over
+    ``pillar_seq``."""
+    no_pil = {"access": 100.0, "legibility": 36.4, "transactability": 18.75, "trust": 60.0}
+    drift = {"access": 100.0, "legibility": 90.9, "transactability": 62.5, "trust": 60.0}
+    pts = [
+        _hist_point(f"20260727T0{i}0000Z", 46.1, "F", 85.5, "B", no_pil,
+                    {"access": 100.0, "legibility": 90.9, "transactability": v, "trust": 60.0})
+        for i, v in enumerate(pillar_seq, start=1)
+    ]
+    pts += [
+        _hist_point("20260731T080000Z", 46.1, "F", 76.2, "C", no_pil, drift),
+        _hist_point("20260731T140000Z", 46.1, "F", 76.2, "C", no_pil, drift),
+        _hist_point("20260801T020000Z", 46.1, "F", 76.2, "C", no_pil, drift),
+    ]
+    return pts
+
+
+def test_pillar_noise_floor_surfaced_on_both_drift_surfaces() -> None:
+    # READOUT (Cycle 212): the attributed_pillar_noise_floor — the at-rest dispersion of
+    # the FINGERED pillar (Cycle 211) — must surface on BOTH the terminal drift block and
+    # the HTML drift card, the pillar-granularity mirror of the overall noise floor. When
+    # that pillar is DETERMINISTIC at rest, both surfaces earn the strong "signal, not
+    # pillar jitter" claim about the attributed move (here −25.0 on transactability).
+    print("test_pillar_noise_floor_surfaced_on_both_drift_surfaces")
+    hist = ch.summarize(_pillar_floor_pts([87.5, 87.5, 87.5]))
+    pnf = hist.attributed_pillar_noise_floor
+    _check(pnf is not None and pnf.deterministic and pnf.pillar == "transactability",
+           "the attributed pillar's at-rest floor is deterministic on transactability")
+    terminal = ch.render(hist)
+    with tempfile.TemporaryDirectory() as d:
+        html = Path(scorecard._write_canonical_history_page(Path(d), history=hist)).read_text()
+    for name, text in (("terminal", terminal), ("HTML", html)):
+        _check("signal, not pillar jitter" in text,
+               f"{name} earns the strong at-rest determinism claim")
+        _check("transactability" in text, f"{name} names the fingered pillar")
+
+
+def test_pillar_noise_floor_withholds_strong_claim_when_pillar_jitters() -> None:
+    # NON-VACUOUS / teeth: when the fingered pillar itself JITTERS at rest (not
+    # deterministic), both surfaces must WITHHOLD the "signal, not pillar jitter" claim
+    # and instead report the at-rest dispersion — otherwise the strong sentence is
+    # templated, not earned (the pillar mirror of the per-side cancellation guard).
+    print("test_pillar_noise_floor_withholds_strong_claim_when_pillar_jitters")
+    hist = ch.summarize(_pillar_floor_pts([87.5, 80.0, 87.5]))  # in-band anchors, pillar jitters
+    pnf = hist.attributed_pillar_noise_floor
+    _check(pnf is not None and not pnf.deterministic and pnf.pillar == "transactability",
+           "the fingered pillar's at-rest floor is NON-deterministic (jitter)")
+    terminal = ch.render(hist)
+    with tempfile.TemporaryDirectory() as d:
+        html = Path(scorecard._write_canonical_history_page(Path(d), history=hist)).read_text()
+    for name, text in (("terminal", terminal), ("HTML", html)):
+        _check("signal, not pillar jitter" not in text,
+               f"{name} WITHHOLDS the strong claim when the pillar jitters")
+        _check("at-rest pillar jitter" in text,
+               f"{name} instead reports the at-rest dispersion")
+
+
 def test_canonical_history_noise_card_absent_without_floor() -> None:
     # Honest silence: with < 2 in-band readings there is no measurable floor, so the
     # calibration card must not render at all (never a fabricated determinism claim).
@@ -2680,6 +2742,8 @@ def main() -> int:
         test_canonical_history_recapture_is_data_driven,
         test_canonical_history_page_renders_per_side_determinism,
         test_canonical_history_per_side_claim_withheld_on_cancellation,
+        test_pillar_noise_floor_surfaced_on_both_drift_surfaces,
+        test_pillar_noise_floor_withholds_strong_claim_when_pillar_jitters,
         test_canonical_history_noise_card_absent_without_floor,
         test_canonical_history_stale_banner_when_signal_old,
         test_canonical_history_fresh_shows_age_no_stale_banner,

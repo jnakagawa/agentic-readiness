@@ -665,15 +665,22 @@ design in-cloud, execute locally.
 
 ## P1
 
-- **[OBSERVATION — Cycle 211, READOUT candidate] Surface the `attributed_pillar_noise_floor`.** Cycle 211
-  (TRUTH) added `PillarNoiseFloor` + `pillar_noise_floor()` and wired `CanonicalHistory.attributed_pillar_noise_floor`
-  (the fingered pillar's at-rest dispersion over the in-band readings — on the real series σ=0, so the tracked
-  driftflight.com transactability −25 is proven SIGNAL not pillar jitter), but it is computed, NOT rendered. The
-  overall `NoiseFloor` IS surfaced in `render()` ("noise floor … DETERMINISTIC … both sides exact"); the pillar
-  floor should get the same treatment in the drift block — one line naming the fingered pillar, its at-rest
-  determinism, and that the −25 move dwarfs it. Cheap, score-neutral, in-cloud READOUT increment (mind the
-  terminal/HTML surface-parity guard `test_terminal_and_html_surfaces_name_the_same_diagnostics`, and the
-  honest-None path when `attributed_pillar_noise_floor` is None). Off-scoring-path, direct-to-main.
+<!-- DONE 2026-08-04T00:2xZ (Cycle 212, READOUT, direct-to-main, display-only/score-neutral): "[OBSERVATION —
+     Cycle 211] Surface the `attributed_pillar_noise_floor`" SHIPPED. Terminal `render` gains a `pillar noise
+     floor:` line directly after the attribution top-mover; HTML `_write_canonical_history_page` gains an
+     `At rest:` line in the "What moved, and which side" card directly below the Pillar line — same reading order
+     on both (attribution → at-rest determinism → stability). Deterministic branch earns the strong claim
+     (`driftflight.com transactability σ=0.00 over 76 in-band re-scores → DETERMINISTIC at rest — the -25.0 move
+     is signal, not pillar jitter`), non-deterministic branch WITHHOLDS it (σ + worst |div| against "the at-rest
+     pillar jitter"), honest-None when the floor is None. The Cycle-188 READOUT PARITY GUARD now binds the new
+     diagnostic across BOTH surfaces (precondition + `"signal, not pillar jitter"` fact);
+     `test_pillar_noise_floor_surfaced_on_both_drift_surfaces` + `..._withholds_strong_claim_when_pillar_jitters`
+     (teeth: a jittering fingered pillar must NOT print the strong claim, MUST print "at-rest pillar jitter", on
+     both surfaces). Verified live on the real committed series (83 pts, diverged, σ=0/n=76/−25.0). Off the
+     scoring path (`asrs/canonical_history.py` + `asrs/scorecard.py` render + 2 tests; scoring-path diff EMPTY)
+     → rubric v0.7, replay guard 24/24 / 46.1 F / 85.5 B / +39.4, 0 replay-miss. `test_readout.py` 75→77; suite
+     443→445. See LOG Cycle 212. The overall + pillar noise-floor / attribution / corroboration readout series is
+     now surfaced end-to-end on both surfaces at both granularities. -->
 
 <!-- DONE (superseded by Cycles 200 + 204): "[OBSERVATION — Cycle 196] positive-ceiling mirror
      un-surfaced" — the positive mirror IS now on the methodology page. Cycle 200 (READOUT) added §8's

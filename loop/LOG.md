@@ -3,6 +3,55 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 212 — 2026-08-04T00:2xZ — READOUT — surface the attributed-pillar noise floor in the drift block: the operator sees the −25 move is signal, not pillar jitter
+
+WHAT/WHY (READOUT — evidence clarity on both surfaces). Cycle 211 computed `attributed_pillar_noise_floor`
+(the at-rest dispersion of the FINGERED pillar, the pillar-granularity mirror of the overall noise floor) but
+left it un-rendered — a diagnostic an operator could not see. The overall noise floor ("DETERMINISTIC at rest —
+the ±2.0 band absorbs site transients") is already on both the terminal drift block and the HTML drift card, but
+the drift the benchmark ATTRIBUTES and an operator ACTS on is at the PILLAR level (driftflight.com
+transactability −25.0). This surfaces the pillar-level proof next to the attribution it qualifies, so the readout
+now states in words WHY the −25 move is a real site change and not per-pillar jitter.
+
+Rendered on BOTH surfaces, in the same reading order (attribution → at-rest determinism → stability): terminal
+`render` gains a `pillar noise floor:` line directly after the attribution top-mover line; HTML
+`_write_canonical_history_page` gains an `At rest:` line in the "What moved, and which side" card directly below
+the Pillar line. Deterministic branch earns the strong claim — `driftflight.com transactability σ=0.00 over 76
+in-band re-scores → DETERMINISTIC at rest — the -25.0 move is signal, not pillar jitter`; non-deterministic
+branch WITHHOLDS it and reports σ + worst |div| against "the at-rest pillar jitter" instead. Honest-None: no line
+when `attributed_pillar_noise_floor` is None (no top mover, or < 2 in-band readings carry the pillar). Verified
+live on the real committed series (83 pts, diverged band): the line renders with the real σ=0/n=76/−25.0.
+
+METHOD / non-vacuity + teeth. (1) The Cycle-188 READOUT PARITY GUARD
+(`test_..._diagnosis_parity_across_terminal_and_html`) now includes the attributed-pillar floor: a precondition
+asserts it fired deterministic in the fixture, and a new parity FACT (`"signal, not pillar jitter"`) is asserted
+present in BOTH surfaces — so a future edit dropping the line from exactly one surface reddens. (2)
+`test_pillar_noise_floor_surfaced_on_both_drift_surfaces`: deterministic branch earns the strong claim + names
+the fingered pillar on both surfaces. (3) `test_pillar_noise_floor_withholds_strong_claim_when_pillar_jitters`:
+NON-VACUOUS teeth — an in-band series whose fingered pillar JITTERS (87.5/80.0/87.5, σ>0) must NOT print "signal,
+not pillar jitter" and must instead print "at-rest pillar jitter" on both surfaces (the pillar mirror of the
+per-side cancellation guard), so the strong sentence is earned, not templated. Vendor-neutral (needles computed
+from the history model / literal verdict prose; no host special-cased).
+
+SHIP CLASS + EVIDENCE. Display-only, OFF the scoring path: `git diff --name-only` = `asrs/canonical_history.py`
+(render), `asrs/scorecard.py` (render), `tests/test_canonical_history.py`, `tests/test_readout.py` ONLY; the
+scoring-path diff (`asrs/scoring.py asrs/probes/ rubric/ fixtures/ asrs/offering.py asrs/battery.py`) is EMPTY →
+score-neutral, NOT peer-gated, direct-to-main. `test_readout.py` 75→77; full suite 443→445, 0 failures. Canonical
+PAIR unchanged: in-cloud replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7. (Cloud
+network-blocked for live re-score; in-cloud standard = regression-by-construction + the offline replay guard —
+the diff never touches a scoring surface.) FIRST-DUTY: no open peer-gated PRs (`list_pull_requests` state=open →
+[]). INFRA: bench healthy (23 suites green pre-flight); local verify runner AT-FLOOR (newest
+`verify_20260801T035047Z.json` ~69h old, machine-asleep pattern, cloud cannot repair — already flagged in the
+Cycle-204 16:17Z digest; this fire is NOT first-after-16:00 UTC). Live signal (read, not re-run): drift-flight.org
+46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the drop PERSISTS (Aug-1), off the scoring path.
+
+NEXT HYPOTHESIS. The corroboration/attribution/noise-floor readout series is now surfaced end-to-end on both
+surfaces at both overall and pillar granularity. READOUT frontier candidates: a leaderboard/card cross-link to
+the canonical-history diagnosis, or prose calibration on the rubric page. Substantive frontier (GENUINE new
+thin-bank signals from real fixtures, the negative anchor's two-crawl static cross-validation via a
+`moleskine.com` fixture, ACP/UCP/MPP live handshakes, the transactability-drop CHECK-level diagnosis) stays
+`[LOCAL]`.
+
 ## Cycle 211 — 2026-08-03T23:22Z — TRUTH — pillar-granularity noise floor: prove the ATTRIBUTED transactability drop is signal, not pillar jitter
 
 WHAT/WHY (TRUTH — does the score predict what an agent experiences?). The load-bearing calibration finding

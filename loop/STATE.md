@@ -1,8 +1,37 @@
 # Loop state
 
-- Cycle counter: 211
+- Cycle counter: 212
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-03T23:22Z (Cycle 211) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-04T00:2xZ (Cycle 212) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~69h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
+  cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 00:2xZ fire is NOT
+  first-after-16:00 UTC → no DM this fire per comms policy (display-only / score-neutral off-scoring-path READOUT
+  increment, no sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org
+  46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS
+  (Aug-1), off the scoring path; the in-cloud replay guard stays the frozen independent regression signal (24/24,
+  46.1 F / 85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open → []), so no
+  first-duty review. INFRA/SELF-HEAL (Cycle 212): fresh checkout landed in detached HEAD at origin/main tip
+  `a199d67` (Cycle-211); fresh `.venv` + `requests pyyaml eth-account pytest`, 443 tests green pre-flight (445
+  after +2).
+- FOCUS POINTER (Cycle 212 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 212 was
+  READOUT, so Cycle 213 is METHOD). Cycle 212 shipped a **READOUT increment — the attributed-pillar noise floor
+  is now SURFACED on both drift surfaces** (`asrs/canonical_history.py` render + `asrs/scorecard.py` render,
+  `tests/test_readout.py` +2, `tests/test_canonical_history.py` parity-guard +1 fact; suite 443→445). Cycle 211
+  computed `attributed_pillar_noise_floor` (the fingered pillar's at-rest dispersion) but left it un-rendered.
+  Terminal `render` gains a `pillar noise floor:` line after the attribution top-mover; HTML drift card gains an
+  `At rest:` line below the Pillar line — same reading order on both. Deterministic branch earns the strong claim
+  (`driftflight.com transactability σ=0.00 over 76 in-band re-scores → DETERMINISTIC at rest — the -25.0 move is
+  signal, not pillar jitter`), non-deterministic branch WITHHOLDS it (reports σ + worst against "the at-rest
+  pillar jitter"), honest-None when the floor is None. The Cycle-188 READOUT PARITY GUARD now binds the new
+  diagnostic across BOTH surfaces (precondition + `"signal, not pillar jitter"` fact); teeth via
+  `test_pillar_noise_floor_withholds_strong_claim_when_pillar_jitters` (jittering fingered pillar → strong claim
+  absent, "at-rest pillar jitter" present on both surfaces). Verified live on the real committed series (83 pts,
+  diverged, σ=0/n=76/−25.0). OFF the scoring path (scoring-path diff EMPTY) → score-neutral, NOT peer-gated,
+  direct-to-main. Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. NEXT (METHOD 213): a
+  fresh calibration/attribution invariance guard, or substantive frontier work — GENUINE new thin-bank signals
+  from real fixtures, the negative anchor's two-crawl static cross-validation via a `moleskine.com` fixture,
+  ACP/UCP/MPP, the transactability-drop CHECK-level diagnosis — all `[LOCAL]`.
+- SUPERSEDED (Cycle 211 runner note): RUNNER AT-FLOOR at 2026-08-03T23:22Z (Cycle 211) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~67.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag
   pattern, cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 23:22Z fire is
   NOT first-after-16:00 UTC → no DM this fire per comms policy (tests-only / score-neutral off-scoring-path

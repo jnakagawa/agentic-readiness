@@ -2070,6 +2070,7 @@ def test_terminal_and_html_surfaces_name_the_same_diagnostics() -> None:
         stab = hist.attribution_stability
         cause = hist.divergence_cause
         adv = hist.recapture
+        pnf = hist.attributed_pillar_noise_floor
         _check(hist.band != ch.BAND_IN, "the fixture series is out of band")
         _check(sr is not None and sr.span_hours > 0, "a sustained run with a real span fired")
         _check(nf is not None and nf.deterministic, "the at-rest noise floor is deterministic")
@@ -2077,6 +2078,8 @@ def test_terminal_and_html_surfaces_name_the_same_diagnostics() -> None:
         _check(stab is not None, "attribution stability is measurable")
         _check(cause is not None, "a side/direction cause fired")
         _check(adv is not None and adv.code != ch.REC_NO_DATA, "a re-capture recommendation fired")
+        _check(pnf is not None and pnf.deterministic,
+               "the attributed pillar's at-rest noise floor is deterministic")
 
         terminal = ch.render(hist)
         html_path = scorecard._write_canonical_history_page(Path(tmp), history=hist)
@@ -2094,6 +2097,7 @@ def test_terminal_and_html_surfaces_name_the_same_diagnostics() -> None:
             ("at-rest noise-floor determinism", "DETERMINISTIC at rest"),
             ("attribution: moved pillar", top.pillar),
             ("attribution: moved side", top.domain),
+            ("attributed-pillar at-rest determinism", "signal, not pillar jitter"),
             ("attribution stability verdict", "STABLE" if stab.stable else "WANDERS"),
             ("side/direction cause", ch.cause_verdict(cause, top)),
             ("re-capture recommendation", ch._REC_LABEL[adv.code]),

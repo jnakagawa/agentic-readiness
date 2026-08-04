@@ -1655,6 +1655,32 @@ its <b>{nf.n_in_band}</b> in-band re-scores: &sigma;={nf.stddev:.2f}, worst dive
                 '<p><b>Pillar:</b> the overall delta moved but no single pillar '
                 'isolated (a pillar was unobserved on one side).</p>'
             )
+        # The at-rest dispersion of THAT fingered pillar (attributed_pillar_noise_floor,
+        # TRUTH Cycle 211): the overall noise-floor card above proves the DELTA is
+        # deterministic at rest, but the drift the benchmark ATTRIBUTES and an operator
+        # acts on is at the PILLAR level. This proves the SAME fingered pillar reproduces
+        # its value exactly at rest, so the attributed move is signal, not pillar-level
+        # jitter — the pillar-granularity mirror of the overall noise-floor card.
+        # Rendered right below the Pillar line it qualifies (attr.top gives the move
+        # magnitude). None (and so omitted) unless >= 2 in-band readings carry the pillar.
+        pnf = hist.attributed_pillar_noise_floor
+        if pnf is not None and attr is not None and attr.top is not None:
+            move = attr.top.change
+            if pnf.deterministic:
+                diag_card += (
+                    f'<p><b>At rest:</b> {_esc(pnf.domain)} {_esc(pnf.pillar)} is '
+                    f'<b style="color:{_HISTORY_BAND_COLOR["in-band"]}">DETERMINISTIC</b> '
+                    f'across its {pnf.n_in_band} in-band re-scores '
+                    f'(&sigma;={pnf.stddev:.2f}) &mdash; the {move:+.1f} move is '
+                    f'<b>signal, not pillar jitter</b>.</p>'
+                )
+            else:
+                diag_card += (
+                    f'<p><b>At rest:</b> {_esc(pnf.domain)} {_esc(pnf.pillar)} varies '
+                    f'&sigma;={pnf.stddev:.2f} (worst {pnf.max_abs_divergence:.2f}) over '
+                    f'its {pnf.n_in_band} in-band re-scores &mdash; the {move:+.1f} move '
+                    f'against the at-rest pillar jitter.</p>'
+                )
         # Whether that fingered pillar HOLDS across the whole trailing out-of-band
         # run or WANDERS reading-to-reading (AttributionStability, TRUTH Cycle 183) —
         # the credibility measure on the single-snapshot Pillar line above. Rendered

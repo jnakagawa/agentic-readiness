@@ -1263,6 +1263,21 @@ def render(history: CanonicalHistory, window: int = 24) -> str:
                 f"overall delta moved but no single pillar isolated "
                 f"(pillar(s) unobserved on one side)"
             )
+    pnf = history.attributed_pillar_noise_floor
+    if pnf is not None and attr is not None and attr.top is not None:
+        move = attr.top.change
+        if pnf.deterministic:
+            lines.append(
+                f"pillar noise floor: {pnf.domain} {pnf.pillar} σ={pnf.stddev:.2f} "
+                f"over {pnf.n_in_band} in-band re-scores → DETERMINISTIC at rest — "
+                f"the {move:+.1f} move is signal, not pillar jitter"
+            )
+        else:
+            lines.append(
+                f"pillar noise floor: {pnf.domain} {pnf.pillar} σ={pnf.stddev:.2f} "
+                f"(worst |div|={pnf.max_abs_divergence:.2f}) over {pnf.n_in_band} "
+                f"in-band re-scores — the {move:+.1f} move against the at-rest pillar jitter"
+            )
     stab = history.attribution_stability
     if stab is not None:
         if stab.stable and stab.fingered is not None:

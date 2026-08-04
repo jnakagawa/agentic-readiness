@@ -321,6 +321,63 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"|\b\d+\s*(?:requests?|reqs?|calls?)\s*/\s*(?:s|sec|second|min|minute|hr|hour|day|month)\b"
             r"|\b(?:api|request|usage|monthly|daily|rate)\s+quota\b"
             r"|\bquota\s+(?:per|of|resets?|remaining|exceeded)\b", _F)),
+        # CONCURRENCY CEILING + queue-depth backpressure — how many jobs an agent
+        # may run IN PARALLEL at once, and the response-header signal it reads to
+        # PACE that parallelism against the ceiling. This is the "complete the job
+        # AT SCALE" capability, and — despite the depth of this bank — it is
+        # currently UNCAPTURED. It is DISTINCT from `rate-limited`, which is the
+        # TEMPORAL axis (how OFTEN an agent may call — requests per second/minute, a
+        # request quota): concurrency is the PARALLELISM axis (how many jobs may be
+        # in flight SIMULTANEOUSLY — "2 concurrent renders", a concurrency cap). The
+        # two are orthogonal quotas a metered API sets independently: an agent may be
+        # well under its per-minute rate yet blocked by a 2-in-flight concurrency
+        # ceiling, or vice-versa. An autonomous agent doing a catalog run (the same
+        # "the two-hundredth image has to match the first" scale scenario
+        # `variant-selection` invokes) that cannot read its concurrency ceiling either
+        # under-utilizes the API (submits one job at a time when it could run six) or
+        # floods it blind; and the queue-depth backpressure header (a response header
+        # reporting the current queue so the agent throttles, "bursts beyond the limit
+        # queue rather than fail") is exactly the machine signal that lets it self-pace.
+        # So a metered API that documents its concurrency ceiling + queue-depth
+        # backpressure is MORE agent-completable at the scale leg. Vendor-neutral
+        # concurrency vocabulary (N concurrent renders/jobs/requests, a concurrency
+        # limit/cap/ceiling, an `X-*-Queue-Depth` response header, "queue rather than
+        # fail" backpressure) — the same open-convention category as REST/GraphQL/
+        # OpenAPI already in this bank, never a vendor.
+        # PRECISION-CRITICAL: bare "concurrent" / "parallel" / "queue" is a
+        # false-positive minefield — "concurrent jurisdiction / medication / events"
+        # (broad English), "parallel lines / universe / in parallel" (so "parallel"
+        # is NEVER matched at all), a checkout/print/support "queue", "join the queue",
+        # a bare NVMe "queue depth" benchmark, "concurrent users" (a seat/session
+        # concept, not job parallelism). So NEVER match a bare token: require a COUNT
+        # of concurrent JOB-nouns ("2 concurrent renders"), a `concurrency`/`concurrent
+        # <job> limit|cap|ceiling`, a `max(imum) concurrency`, an `X-<vendor>-Queue-Depth`
+        # RESPONSE HEADER, a `queue-depth header/response/metric/reports`, or the
+        # explicit BACKPRESSURE construction ("queue(d) rather than / instead of
+        # fail/reject/error/drop"). The jurisdiction/lines/checkout-queue/NVMe/
+        # concurrent-users senses trip none of these. Fires non-vacuously on BOTH
+        # canonical domains' captured /docs rate-limits block ("Hobby: 2 concurrent
+        # renders. Studio: 6. Agency: 20 with the priority lane. Bursts beyond the
+        # limit queue rather than fail; the `x-df-queue-depth` response header reports
+        # the current queue.") — a PAIR, not a singleton (both are image-generation
+        # storefronts with a concurrency ceiling, so this is a SHARED deliverable-scale
+        # capability, NOT a payment/rails gap, mirroring `output-resolution` /
+        # `variant-selection`). Both ALREADY claim metered_api (their strongest
+        # archetype), so this deepens evidence without adding or reordering any
+        # archetype (score-neutral, pinned by tests/test_offering_canonical.py) — and
+        # on ZERO of the metered-api-only (api.replicate.com, which carries no
+        # concurrent/queue-depth prose), retail (books.toscrape.com), or null
+        # (example.com) fixtures, so it can never CONJURE a metered_api claim on a site
+        # that does not already make one. The classifier is off the scoring path.
+        ("concurrency-limit", re.compile(
+            r"\b\d+\s+concurrent\s+(?:renders?|jobs?|requests?|calls?|generations?|predictions?|tasks?|inferences?|operations?|connections?|streams?|uploads?|downloads?)\b"
+            r"|\bconcurrent\s+(?:renders?|jobs?|requests?|calls?|generations?|predictions?|tasks?|inferences?|operations?|connections?|streams?)\s+(?:limit|limits|cap|caps|ceiling|allowed|per\s+(?:plan|account|key|tier))\b"
+            r"|\b(?:max(?:imum)?|per[- ]plan|plan)\s+concurrent\s+(?:renders?|jobs?|requests?|calls?|generations?|predictions?|tasks?|inferences?|operations?|connections?|streams?)\b"
+            r"|\bconcurrenc(?:y|ies)\s+(?:limit|limits|cap|caps|ceiling|quota|slots?|budget)\b"
+            r"|\bmax(?:imum)?\s+concurrenc(?:y|ies)\b"
+            r"|\bx-[a-z0-9-]*queue-depth\b"
+            r"|\bqueue[- ]depth\s+(?:header|response|metric|reports?)\b"
+            r"|\bqueue(?:d|s)?\s+(?:rather\s+than|instead\s+of)\s+(?:fail|reject|error|drop)\w*", _F)),
         # Asynchronous long-running job — submit a request, then RETRIEVE the
         # result later via a webhook CALLBACK or by POLLING a status endpoint. This
         # is the defining contract of an agent-native API whose work does not finish

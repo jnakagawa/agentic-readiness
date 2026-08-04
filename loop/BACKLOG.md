@@ -389,6 +389,17 @@ design in-cloud, execute locally.
   signal (audit metered_api/digital_good/subscription committed prose for uncaptured FLOW/lifecycle/safety
   capabilities before assuming [LOCAL] is required). The thin banks (service_booking/data_retrieval/physical_good)
   DO still need real fixtures ([LOCAL], unchanged) — no committed fixture claims them to mine.
+  QUALIFICATION Cycle 230 (COVERAGE, in-cloud, direct-to-main, score-neutral): the deep-bank new-signal lever produced
+  again — `concurrency-limit` added to metered_api (the CONCURRENCY CEILING + queue-depth backpressure: "2 concurrent
+  renders … Bursts beyond the limit queue rather than fail; the `x-df-queue-depth` response header reports the current
+  queue" on BOTH canonical `/docs`), a capability distinct from `rate-limited`'s TEMPORAL axis (requests-per-time) —
+  the orthogonal PARALLELISM axis (jobs-in-flight-at-once), the "complete the job AT SCALE" leg. Fires NON-VACUOUSLY on
+  the committed pair (a SHARED capability like output-resolution/variant-selection, both already claim metered_api → no
+  reorder), ABSENT on api/retail/null; precision-synthetic 11-fire/10-dodge + real-captured guard + isolation-matrix
+  entry (suite 478→480). So the deep banks STILL have uncaptured committed capabilities to mine in-cloud — NEXT
+  candidate (Cycle-230 LOG "next hypothesis"): a concurrency/quota ERROR-RECOVERY response (`409 concurrency_exceeded` /
+  a `Retry-After` naming the concurrency wall) distinct from generic `error-contract`, IF committed prose carries it.
+  The thin banks (service_booking/data_retrieval/physical_good) DO still need real fixtures ([LOCAL], unchanged).
 
 - **[LOCAL] Validate the typographic-encoding robustness fixes on REAL surfaces (line-wrap + intra-word hyphen + non-HTML entity + invisible line-break control)**
   (COVERAGE, follow-up to Cycles 178 + 214 + 218 + 222). FOUR sibling in-cloud fixes are exercised only SYNTHETICALLY today

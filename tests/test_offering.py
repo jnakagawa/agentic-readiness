@@ -4630,6 +4630,143 @@ def test_variant_selection_fires_on_real_captured_surfaces():
     print("  ok: variant-selection is ABSENT on the api / retail / null fixtures (non-vacuous, score-neutral)")
 
 
+def test_concurrency_limit_precision_synthetic():
+    # A NEW metered_api capability signal: the CONCURRENCY CEILING + queue-depth
+    # backpressure — how many jobs an agent may run IN PARALLEL at once, and the
+    # response-header signal it reads to PACE that parallelism. This is the "complete
+    # the job AT SCALE" leg, DISTINCT from `rate-limited`: rate-limited is the
+    # TEMPORAL axis (how OFTEN — requests per minute, a request quota), concurrency is
+    # the PARALLELISM axis (how many jobs in flight at once — "2 concurrent renders").
+    # The two are orthogonal quotas: an agent may be well under its per-minute rate
+    # yet blocked by a 2-in-flight concurrency ceiling. Precision is the whole game —
+    # bare "concurrent"/"parallel"/"queue" is a false-positive minefield (concurrent
+    # jurisdiction, a parallel universe, a checkout queue, an NVMe queue-depth
+    # benchmark, "concurrent users" — a seat/session concept, not job parallelism) —
+    # so the signal requires a COUNT of concurrent JOB-nouns, a concurrency LIMIT/CAP,
+    # a max concurrency, an `X-*-Queue-Depth` response header, or the explicit
+    # BACKPRESSURE construction. Each POSITIVE fires `concurrency-limit` with no other
+    # metered_api signal rescuing it (so it exercises the branch directly); each
+    # NEGATIVE must NOT claim metered_api on its own.
+    #
+    # Canonical-invariant by construction: the signal fires on BOTH canonical domains
+    # (both are image-generation storefronts whose /docs rate-limits block documents
+    # a concurrency ceiling — a SHARED deliverable-scale capability, NOT a
+    # payment/rails gap, mirroring output-resolution / variant-selection), each
+    # already metered_api's strongest archetype → no reorder; ABSENT on the
+    # api/retail/null fixtures (pinned by tests/test_offering_canonical.py). Off the
+    # scoring path.
+    positives = {
+        # The real captured canonical /docs prose (verbatim shapes).
+        "count concurrent renders": "Hobby: 2 concurrent renders. Studio: 6.",
+        "queue-depth response header": "the x-df-queue-depth response header reports the current queue.",
+        "queue rather than fail": "Bursts beyond the limit queue rather than fail.",
+        # Genuine concurrency-capability vocabulary from other real APIs.
+        "concurrency limit": "Your plan has a concurrency limit of six.",
+        "concurrency cap": "A concurrency cap of 4 applies per key.",
+        "max concurrent jobs": "You may run at most max concurrent jobs of 4.",
+        "concurrent request cap": "A concurrent request cap applies per key.",
+        "maximum concurrency": "The maximum concurrency for your tier is 10.",
+        "per-plan concurrent predictions": "Studio grants 6 per-plan concurrent predictions.",
+        "queued instead of rejected": "Extra calls are queued instead of rejected.",
+        "generic queue-depth header": "Read the x-acme-queue-depth header to self-throttle.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("scale.test", {"homepage": text})
+        assert prof.claims("metered_api"), (name, prof.archetypes)
+        fired = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "metered_api"
+            for s in c.signals
+        }
+        assert "concurrency-limit" in fired, (name, sorted(fired))  # non-vacuous
+    print(f"  ok: {len(positives)} concurrency-ceiling phrasings each fire concurrency-limit")
+
+    negatives = {
+        # Broad-English "concurrent"/"parallel"/"queue" that must NOT conjure a
+        # metered_api claim.
+        "concurrent jurisdiction": "The courts have concurrent jurisdiction over the matter.",
+        "concurrent medication": "Avoid concurrent medication without a doctor's advice.",
+        "parallel universe": "Imagine a parallel universe of design.",
+        "in parallel": "We run our creative process in parallel.",
+        "parallel processing": "Enjoy the beauty of parallel processing of ideas.",
+        "checkout queue": "Skip the checkout queue with express delivery.",
+        "join the queue": "Join the queue for early access.",
+        "nvme queue depth": "The SSD sustains a queue depth of 32 in benchmarks.",
+        "concurrent users": "Supports up to 500 concurrent users on the site.",
+        "concurrent sessions": "Two concurrent sessions per household.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("prose.test", {"homepage": text})
+        assert not prof.claims("metered_api"), (name, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} bare concurrent/parallel/queue strings do NOT claim metered_api (precision)"
+    )
+
+
+def test_concurrency_limit_fires_on_real_captured_surfaces():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the TRUTH mirror of the synthetic
+    # precision guard. It pins that the new concurrency signal fires on the GENUINE
+    # concurrency-ceiling prose captured live from BOTH canonical domains' /docs
+    # rate-limits block ("Hobby: 2 concurrent renders ... Bursts beyond the limit
+    # queue rather than fail; the `x-df-queue-depth` response header reports the
+    # current queue."), run through the REAL discovery path (from_fixture ->
+    # discover_offering) exactly as a live crawl would.
+    #
+    # UNLIKE the with-rails/no-rails PAYMENT signals (free-included-usage,
+    # payment-receipt, self-provisioning) this fires on BOTH canonical sides, NOT only
+    # .com: a concurrency ceiling is a deliverable-SCALE capability BOTH image-generation
+    # storefronts genuinely share, not a rails gap. That is the honest reading — the
+    # signal measures a real "complete the job at scale" capability, not the delta.
+    #
+    # SCORE-NEUTRAL by construction: both domains already claim metered_api (their
+    # strongest archetype), so the concurrency evidence can only deepen that claim —
+    # never add an archetype or reorder. The classifier is off the scoring path; the
+    # canonical pair's claimed SET+ORDER is unchanged (pinned by
+    # tests/test_offering_canonical.py and the canonical replay guard).
+    for dom in ("driftflight.com", "drift-flight.org"):
+        docs = _fixture_entry_text(dom, "/docs")
+        assert "concurrent" in docs, f"{dom} /docs lost its concurrency-ceiling prose"
+        prof = classify_offering(dom, {"/docs": docs})
+        assert prof.claims("metered_api"), (dom, prof.archetypes)
+        metered = next(c for c in prof.claimed if c.archetype == "metered_api")
+        cc = [s for s in metered.signals if s.label == "concurrency-limit"]
+        assert cc, (dom, {s.label for s in metered.signals})
+        assert "concurrent" in cc[0].quote.lower(), cc[0].quote
+        # Non-vacuity beyond the single recorded hit: the SAME captured /docs block
+        # documents the FULL self-pacing contract an agent needs at scale — the
+        # parallel-jobs ceiling ("N concurrent renders"), the queue-depth backpressure
+        # HEADER, and the "queue rather than fail" backpressure semantics — each an
+        # independent branch of the signal (proven against the fixture bytes, since the
+        # classifier records only the first-firing instance per label).
+        assert "x-df-queue-depth" in docs, dom
+        assert "queue rather than fail" in docs.lower(), dom
+        print(f"  ok: concurrency-limit fires on REAL captured {dom} /docs — quote: {cc[0].quote!r}")
+
+    # Full-discovery claimed-set invariance on the canonical pair (score-neutrality).
+    for dom in ("driftflight.com", "drift-flight.org"):
+        ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        prof = offering.discover_offering(ctx)
+        assert prof.archetypes == ["metered_api", "digital_good", "subscription"], (dom, prof.archetypes)
+
+    # NON-VACUOUS negatives on REAL data: a metered-API marketplace (api.replicate.com,
+    # which carries NO concurrent/queue-depth prose), a real retail storefront
+    # (books.toscrape.com), and a null site (example.com) document no concurrency
+    # ceiling — the signal must be absent on all three and conjure or reorder no
+    # archetype.
+    for dom, expected in (
+        ("api.replicate.com", ["metered_api"]),
+        ("books.toscrape.com", ["physical_good"]),
+        ("example.com", []),
+    ):
+        nctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        nprof = offering.discover_offering(nctx)
+        nlabels = {s.label for c in nprof.claimed for s in c.signals}
+        assert "concurrency-limit" not in nlabels, (dom, nlabels)
+        assert nprof.archetypes == expected, (dom, nprof.archetypes)
+    print("  ok: concurrency-limit is ABSENT on the api / retail / null fixtures (non-vacuous, score-neutral)")
+
+
 def main() -> int:
     tests = [
         test_api_storefront_claims_agent_native_not_physical,
@@ -4720,6 +4857,8 @@ def main() -> int:
         test_free_included_usage_fires_on_real_captured_surfaces,
         test_variant_selection_precision_synthetic,
         test_variant_selection_fires_on_real_captured_surfaces,
+        test_concurrency_limit_precision_synthetic,
+        test_concurrency_limit_fires_on_real_captured_surfaces,
         test_priced_listing_precision_synthetic,
         test_priced_listing_fires_on_real_captured_retail,
         test_strip_html_drops_script_style_and_tags,

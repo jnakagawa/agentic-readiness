@@ -1,6 +1,35 @@
 # Loop state
 
-- Cycle counter: 229
+- Cycle counter: 230
+- RUNNER HEALTHY at 2026-08-04T17:5xZ (Cycle 230) — newest verify `runs/local/verify_20260804T174103Z.json` (17:41Z,
+  `git_pull.ok=true` attempts=1, `tests_ok=true`) is ~10min old at this fire, WELL inside the 6h floor. The push-race
+  recovery (Cycle 229's `d812d6e`) is HOLDING — two clean fires since (17:09Z, 17:41Z), both `attempts=1`,
+  `git_pull.ok=true`, no `divergence_recovery` note fired. Live signal (READ fresh, NOT re-run, off the scoring path):
+  drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence
+  PERSISTS. In-cloud replay guard stays the frozen independent regression signal (24/24, 46.1 F / 85.5 B / +39.4). No
+  open peer-gated PRs this fire (`list_pull_requests` state=open → []), so no first-duty review. This 17:5xZ fire is NOT
+  first-after-16:00 UTC (Cycle 228 at 16:2xZ already sent the Aug-4 daily digest) → NO DM this fire per comms policy
+  (score-neutral off-scoring-path COVERAGE signal, no sensitive-class PR, nothing score-moving — below the DM bar, same
+  precedent as the prior offering-signal cycles 226/206/202). INFRA/SELF-HEAL (Cycle 230): fresh `.venv` +
+  `requests pyyaml eth-account pytest`, 478 tests green pre-flight (480 after +2); local `main` at origin tip; LOG.md
+  newest-first + complete through Cycle 229.
+- FOCUS POINTER (Cycle 230 done): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 230 was COVERAGE, so
+  Cycle 231 is TRUTH). Cycle 230 shipped a **COVERAGE increment — new metered_api offering signal `concurrency-limit`**:
+  the CONCURRENCY CEILING + queue-depth backpressure ("Hobby: 2 concurrent renders … Bursts beyond the limit queue
+  rather than fail; the `x-df-queue-depth` response header reports the current queue"), a documented capability on BOTH
+  canonical domains' committed `/docs` that the deep bank had not mapped — distinct from `rate-limited`'s TEMPORAL axis
+  (requests-per-time) as the orthogonal PARALLELISM axis (jobs-in-flight-at-once), the "complete the job AT SCALE" leg.
+  `asrs/offering._SIGNALS["metered_api"]` +1 (after `rate-limited`); `tests/test_offering.py` +2 (precision-synthetic:
+  11 fire / 10 dodge; real-captured: fires on both drift /docs, absent api/retail/null, sets invariant); isolation
+  matrix +1. Off the scoring path (`git diff --name-only -- asrs/scoring.py asrs/probes/ rubric/ fixtures/ …` EMPTY;
+  only offering.py + tests), score-neutral, direct-to-main (NOT peer-gated). Replay guard 24/24, 46.1 F / 85.5 B /
+  +39.4, 0 replay-miss; suite 478→480; rubric v0.7. NEXT (TRUTH 231): the deep-bank audit's SIBLING candidate — a
+  machine-readable concurrency/quota ERROR-RECOVERY response (a `409 concurrency_exceeded` / `Retry-After` naming the
+  concurrency wall) distinct from generic `error-contract`, IF committed prose carries it; else a further attribution/
+  calibration invariance. Substantive frontier (transactability-drop CHECK-level diagnosis + peer-gated re-baseline,
+  thin-bank live fixtures, moleskine.com two-crawl cross-validation, a THIRD real anchor, ACP/UCP/MPP) stays `[LOCAL]`,
+  now UNBLOCKED by the recovered runner — prefer the oldest.
+- SUPERSEDED (Cycle 229 runner/counter note): Cycle counter was 229
 - Started: 2026-07-23 (UTC)
 - RUNNER RECOVERED at 2026-08-04T17:1xZ (Cycle 229) — the ~3.5-day push-race stall is CLEARED. A LOCAL self-healing
   fire at 17:08–17:09Z Aug-4 landed the runner's own fix (commit d812d6e `recover_from_own_divergence`: on a

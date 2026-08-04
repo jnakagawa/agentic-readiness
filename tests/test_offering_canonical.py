@@ -5756,6 +5756,7 @@ _ISOLATION_EVIDENCE: dict[str, str] = {
     "per-unit-rate": "priced per token consumed",
     "usage-based": "usage-based overage applies",
     "rate-limited": "the endpoint is rate-limited to protect capacity",
+    "concurrency-limit": "a concurrency limit of four applies",
     "async-job": "poll for the outcome until it is ready",
     "webhook-verification": (
         "verify that webhook requests are authentic with the "

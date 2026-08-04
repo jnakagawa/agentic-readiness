@@ -3,6 +3,65 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 230 — 2026-08-04T17:52Z — COVERAGE — new metered_api offering signal `concurrency-limit`: the CONCURRENCY CEILING + queue-depth backpressure (how many jobs an agent may run IN PARALLEL, distinct from `rate-limited`'s requests-per-TIME) — a documented capability the committed canonical /docs carried but the deep bank had not yet mapped
+
+WHAT/WHY (COVERAGE — measurement coverage, per the Cycle-229 FOCUS POINTER's named in-cloud lever: with the
+substantive frontier all `[LOCAL]` and no network in-cloud, run a deep-bank signal audit — Cycle 226 proved a
+committed fixture can still carry a documented CAPABILITY not yet mapped to a signal). The audit found one on BOTH
+canonical domains' captured `/docs` rate-limits block: **"Hobby: 2 concurrent renders. Studio: 6. Agency: 20 with
+the priority lane. Bursts beyond the limit queue rather than fail; the `x-df-queue-depth` response header reports the
+current queue."** No existing metered_api signal captured it — `rate-limited` fires on the section HEADING
+("rate-limits") but names only the TEMPORAL axis (how OFTEN an agent may call: requests per minute, a request quota).
+The CONCURRENCY ceiling is the orthogonal PARALLELISM axis (how many jobs in flight AT ONCE) plus the queue-depth
+BACKPRESSURE header an agent reads to self-pace — the "complete the job AT SCALE" capability (the same catalog-run
+scenario `variant-selection` invokes). An autonomous agent that cannot read its concurrency ceiling either
+under-utilizes the API or floods it blind, so a metered API that documents concurrency + queue-depth backpressure is
+MORE agent-completable at the scale leg.
+
+COVERAGE — the smallest unit (one new precision-guarded offering signal, off the scoring path).
+`asrs/offering._SIGNALS["metered_api"]` gains `concurrency-limit`, placed right after `rate-limited` (its temporal
+sibling). Vendor-neutral concurrency vocabulary (N concurrent renders/jobs/requests, a concurrency limit/cap/ceiling,
+a max concurrency, an `X-*-Queue-Depth` response header, "queue(d) rather than / instead of fail/reject/error/drop").
+PRECISION-CRITICAL: bare "concurrent"/"parallel"/"queue" is a false-positive minefield (concurrent jurisdiction /
+medication, a parallel universe, a checkout/print queue, an NVMe queue-depth benchmark, "concurrent users" — a
+seat/session concept not job parallelism), so "parallel" is NEVER matched at all and every branch requires an
+anchoring context (a COUNT of concurrent JOB-nouns, a concurrency LIMIT/CAP/CEILING, a max concurrency, an
+`X-<vendor>-Queue-Depth` header, a queue-depth header/response/metric, or the explicit BACKPRESSURE construction).
+
+VALIDATION. `tests/test_offering.py` +2 (`test_concurrency_limit_precision_synthetic`: 11 concurrency phrasings each
+fire `concurrency-limit` non-vacuously / 10 broad-English concurrent/parallel/queue negatives claim nothing;
+`test_concurrency_limit_fires_on_real_captured_surfaces`: fires on BOTH canonical domains' REAL captured /docs via the
+discovery path, the block documenting the full self-pacing contract — parallel-jobs ceiling + `x-df-queue-depth`
+header + "queue rather than fail" backpressure — and ABSENT on api.replicate.com [no concurrent/queue prose] / retail /
+null, claimed sets invariant). Isolation matrix `tests/test_offering_canonical.py::_ISOLATION_EVIDENCE` +1
+("a concurrency limit of four applies" → EXACTLY metered_api, only `concurrency-limit`). `test_offering.py` 91→93 (direct
+run 93/93); `test_offering_canonical.py` 85→86; full suite 478→480. FIRES on a PAIR (both drift domains, a SHARED
+deliverable-scale capability like output-resolution/variant-selection — NOT a with/no-rails gap), both already claim
+metered_api → no archetype added/reordered.
+
+SCORE-NEUTRAL by construction: discovery is off the scoring path (`--battery auto` diagnostic only) —
+`git diff --name-only -- asrs/scoring.py asrs/probes/ rubric/ fixtures/ asrs/fetch.py asrs/cli.py asrs/battery.py
+asrs/scorecard.py` EMPTY; only `asrs/offering.py` + the two test files changed (3 files, +197). Direct-to-main (not a
+scoring-semantics change, not payment/signing code → NOT peer-gated; same tier as the prior offering-signal COVERAGE
+cycles 226/206/202).
+
+CANONICAL PAIR (in-cloud offline regression signal). Canonical replay guard 24/24 GREEN — drift-flight.org 46.1 F /
+driftflight.com 85.5 B / delta +39.4, 0 replay-miss; frozen independent regression signal UNMOVED (the classifier is
+off the scoring path, and the signal only DEEPENS metered_api evidence on a pair that already claims it — canonical
+claimed SET+ORDER `[metered_api, digital_good, subscription]` invariant on both, pinned by
+test_offering_canonical.py). LIVE signal (READ from the newest verify artifact `runs/local/verify_20260804T174103Z.json`,
+17:41Z, `git_pull.ok=true` attempts=1, `tests_ok=true`, off the scoring path): drift-flight.org 46.1 F /
+driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS (its CHECK-level
+diagnosis + peer-gated re-baseline stay `[LOCAL]`, gated on a live crawl).
+
+NEXT HYPOTHESIS. The deep-bank audit still has room: the concurrency ceiling is a QUOTA the agent must read;
+the SIBLING capability an agent needs to ACT on it — a machine-readable "you are over the concurrency limit"
+response (a `409 concurrency_exceeded` / a `Retry-After` on a 429 that names the concurrency wall) — may also live
+uncaptured in committed prose. Audit the canonical `/docs` error table + OpenAPI responses for a concurrency/quota
+ERROR-RECOVERY signal distinct from the generic `error-contract`. Else the substantive frontier (thin-bank live
+fixtures, a THIRD real anchor, the transactability-drop CHECK-level diagnosis, ACP/UCP/MPP) stays `[LOCAL]`, now
+UNBLOCKED by the recovered runner — prefer the oldest.
+
 ## Cycle 229 — 2026-08-04T17:18Z — METHOD — pin panel reliability + citability are PANEL-SIZE (REPLICATION) INVARIANT: reproducibility is an agreement RATE, not a head count — you cannot pad a panel with agreeing copies to buy citability
 
 WHAT/WHY (METHOD — measurement rigor, per the Cycle-228 FOCUS POINTER's named next step: "a further

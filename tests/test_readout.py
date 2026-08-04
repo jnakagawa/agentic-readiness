@@ -2034,6 +2034,57 @@ def test_canonical_history_page_names_exclusion_accounting() -> None:
     _check("Series filtered" not in text2, "an unfiltered load shows no filtered note")
 
 
+def test_canonical_history_page_names_series_integrity() -> None:
+    # The series-integrity verdict (Cycle 217 METHOD) has a terminal AND an HTML
+    # surface: when the series was filtered, the page must JUDGE whether the kept
+    # remnant is a trustworthy basis (intact) or DEGRADED, mirroring the terminal
+    # guard test_render_names_series_integrity_when_filtered. A clean load stays
+    # silent. This is the terminal->HTML close-out that keeps the two in parity.
+    print("test_canonical_history_page_names_series_integrity")
+    pts = _drifting_history().points  # 4 points
+    # Intact: 1/5 = 20% excluded, within the 25% floor.
+    intact = ch.summarize(
+        pts,
+        accounting=ch.LoadAccounting(
+            total=5, included=len(pts), excluded_red_bench=1, excluded_malformed=0
+        ),
+    )
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(
+            scorecard._write_canonical_history_page(Path(d), history=intact)
+        ).read_text()
+    _check("Series integrity" in text and "intact" in text,
+           "the page names the intact integrity verdict")
+    _check("within the 25% floor" in text, "the page names the floor")
+
+    # Degraded: 4/8 = 50% excluded, past the floor.
+    degraded = ch.summarize(
+        pts,
+        accounting=ch.LoadAccounting(
+            total=8, included=len(pts), excluded_red_bench=2, excluded_malformed=2
+        ),
+    )
+    with tempfile.TemporaryDirectory() as d:
+        text2 = Path(
+            scorecard._write_canonical_history_page(Path(d), history=degraded)
+        ).read_text()
+    _check("DEGRADED" in text2, "the page flags the degraded series")
+    _check("weigh it with caution" in text2, "the degraded verdict warns the reader")
+
+    # A clean load shows no integrity note (raw == filtered, nothing to judge).
+    clean = ch.summarize(
+        pts,
+        accounting=ch.LoadAccounting(
+            total=len(pts), included=len(pts), excluded_red_bench=0, excluded_malformed=0
+        ),
+    )
+    with tempfile.TemporaryDirectory() as d:
+        text3 = Path(
+            scorecard._write_canonical_history_page(Path(d), history=clean)
+        ).read_text()
+    _check("Series integrity" not in text3, "an unfiltered load shows no integrity note")
+
+
 def test_canonical_history_page_renders_attribution_stability_stable() -> None:
     # READOUT (Cycle 184): the terminal readout names whether the fingered pillar is
     # STABLE across the whole trailing out-of-band run or WANDERS (AttributionStability,
@@ -2769,6 +2820,7 @@ def main() -> int:
         test_canonical_history_page_written_and_links,
         test_canonical_history_page_renders_drift_diagnosis,
         test_canonical_history_page_names_exclusion_accounting,
+        test_canonical_history_page_names_series_integrity,
         test_canonical_history_page_renders_attribution_stability_stable,
         test_canonical_history_page_stability_wanders_is_data_driven,
         test_canonical_history_in_band_shows_no_drift,

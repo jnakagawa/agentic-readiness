@@ -307,6 +307,140 @@ def test_render_names_exclusion_accounting_when_filtered() -> None:
         _check("series filtered" not in out, "an unfiltered series shows no filtered line")
 
 
+def test_series_integrity_intact_within_floor() -> None:
+    print("test_series_integrity_intact_within_floor")
+    # Cycle 216 NAMES what the loader dropped; Cycle 217 JUDGES whether the drop
+    # compromises the series the drift verdict is drawn from. A small excluded
+    # fraction (within the floor) is ordinary attrition -> intact. Build 4 clean +
+    # 1 red-bench = 1/5 = 20% excluded, at/below the 25% floor.
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [_artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4) for i in range(1, 5)]
+        red_bench = _artifact("20260727T050000Z", 46.1, 62.5, 16.4)
+        red_bench["tests_ok"] = False
+        _write_series(tmp, rows + [red_bench])
+        hist = ch.load_history(tmp)
+        integ = hist.integrity
+        _check(integ is not None, "load_history attaches the series integrity verdict")
+        _check(integ.total == 5 and integ.excluded == 1, "5 total, 1 excluded")
+        _check(abs(integ.excluded_fraction - 0.2) < 1e-9, f"20% excluded, got {integ.excluded_fraction}")
+        _check(abs(integ.red_bench_fraction - 0.2) < 1e-9, "the sole exclusion is red-bench")
+        _check(integ.intact, "20% excluded is within the 25% floor -> intact")
+
+
+def test_series_integrity_degraded_past_floor() -> None:
+    print("test_series_integrity_degraded_past_floor")
+    # The teeth: when so much of the committed series is filtered that the excluded
+    # fraction CROSSES the floor, the kept remnant is not a trustworthy basis and the
+    # verdict must read DEGRADED. Build 2 clean + 1 red-bench + 1 malformed = 2/4 =
+    # 50% excluded, PAST the 25% floor. Included stays >= 1 so there is still a series.
+    with tempfile.TemporaryDirectory() as tmp:
+        clean = [_artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4) for i in range(1, 3)]
+        red_bench = _artifact("20260727T030000Z", 46.1, 62.5, 16.4)
+        red_bench["tests_ok"] = False
+        malformed = {"ts": "20260727T040000Z", "kind": "local-verify"}  # no scores/delta
+        _write_series(tmp, clean + [red_bench, malformed])
+        hist = ch.load_history(tmp)
+        integ = hist.integrity
+        _check(integ is not None and integ.total == 4 and integ.excluded == 2, "4 total, 2 excluded")
+        _check(abs(integ.excluded_fraction - 0.5) < 1e-9, f"50% excluded, got {integ.excluded_fraction}")
+        _check(not integ.intact, "50% excluded is past the 25% floor -> DEGRADED")
+    # Boundary: exactly AT the floor is still intact (<=), not degraded — the floor
+    # is the discriminator. 3 distinct clean + 1 red-bench = 1/4 = 25%.
+    with tempfile.TemporaryDirectory() as tmp:
+        clean3 = [_artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4) for i in range(1, 4)]
+        red = _artifact("20260727T040000Z", 46.1, 62.5, 16.4)
+        red["tests_ok"] = False
+        _write_series(tmp, clean3 + [red])
+        integ2 = ch.load_history(tmp).integrity
+        _check(integ2.total == 4 and integ2.excluded == 1, "4 total, 1 excluded at the boundary")
+        _check(abs(integ2.excluded_fraction - 0.25) < 1e-9, "at the 25% floor exactly")
+        _check(integ2.intact, "exactly at the floor is intact (<=), the boundary is inclusive")
+
+
+def test_series_integrity_none_without_accounting_or_artifacts() -> None:
+    print("test_series_integrity_none_without_accounting_or_artifacts")
+    # Honest-None discipline: no loader accounting (a bare point list a test builds
+    # directly) -> no integrity claim; and an empty runs dir (0 artifacts found) ->
+    # None, nothing to judge.
+    pts = [ch.CanonicalPoint("20260727T010000Z", 46.1, "F", 85.5, "B", 39.4)]
+    _check(ch.summarize(pts).integrity is None, "a bare point summary makes no integrity claim")
+    _check(ch.series_integrity(None) is None, "series_integrity(None) is None")
+    with tempfile.TemporaryDirectory() as tmp:
+        _check(ch.load_history(tmp).integrity is None, "an empty runs dir yields no integrity verdict")
+
+
+def test_series_integrity_on_real_series_is_intact() -> None:
+    print("test_series_integrity_on_real_series_is_intact")
+    # Non-vacuous on the REAL committed series: the loader drops the pre-Cycle-13
+    # legacy malformed artifact(s) but keeps the overwhelming majority, so the real
+    # verdict is INTACT with a small excluded fraction — the drift verdict the P0
+    # rests on is drawn from a representative series, and this asserts it on real data.
+    hist = ch.load_history()
+    integ = hist.integrity
+    _check(integ is not None, "the real committed series carries an integrity verdict")
+    _check(integ.included == len(hist.points), "included matches the loaded point count")
+    _check(integ.intact, f"the real series is intact, excluded={integ.excluded_fraction:.3f}")
+    _check(
+        integ.excluded_fraction < integ.floor,
+        f"the real excluded fraction {integ.excluded_fraction:.3f} is below the {integ.floor} floor",
+    )
+
+
+def test_render_names_series_integrity_when_filtered() -> None:
+    print("test_render_names_series_integrity_when_filtered")
+    # The terminal render must NAME the integrity verdict when the series was filtered
+    # (intact vs degraded), and stay silent when nothing was dropped. Intact path:
+    # 4 clean + 1 red-bench (20%).
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [_artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4) for i in range(1, 5)]
+        red_bench = _artifact("20260727T050000Z", 46.1, 62.5, 16.4)
+        red_bench["tests_ok"] = False
+        _write_series(tmp, rows + [red_bench])
+        out = ch.render(ch.load_history(tmp))
+        _check("series integrity: INTACT" in out, f"render names the intact verdict:\n{out}")
+        _check("within the 25% floor" in out, "render names the floor")
+        _check("red-bench" in out, "render names the red-bench exclusion in the integrity line")
+    # Degraded path: 2 clean + 3 red-bench (60%).
+    with tempfile.TemporaryDirectory() as tmp:
+        clean = [_artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4) for i in range(1, 3)]
+        reds = []
+        for i in range(3, 6):
+            r = _artifact(f"20260727T0{i}0000Z", 46.1, 62.5, 16.4)
+            r["tests_ok"] = False
+            reds.append(r)
+        _write_series(tmp, clean + reds)
+        out = ch.render(ch.load_history(tmp))
+        _check("series integrity: DEGRADED" in out, f"render names the degraded verdict:\n{out}")
+        _check("weigh it with caution" in out, "the degraded verdict warns the reader")
+    # Clean series -> no integrity line at all (raw == filtered, nothing to judge).
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = [_artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4) for i in range(1, 4)]
+        _write_series(tmp, rows)
+        out = ch.render(ch.load_history(tmp))
+        _check("series integrity" not in out, "an unfiltered series shows no integrity line")
+
+
+def test_render_empty_series_names_all_excluded() -> None:
+    print("test_render_empty_series_names_all_excluded")
+    # The maximally degraded case: artifacts were found but ALL filtered out. The
+    # empty render must not imply the runner produced nothing — it names the count
+    # and the reasons instead.
+    with tempfile.TemporaryDirectory() as tmp:
+        r1 = _artifact("20260727T010000Z", 46.1, 62.5, 16.4)
+        r1["tests_ok"] = False
+        r2 = {"ts": "20260727T020000Z", "kind": "local-verify"}  # malformed, no scores
+        _write_series(tmp, [r1, r2])
+        hist = ch.load_history(tmp)
+        _check(not hist.points, "no usable points survived the filter")
+        out = ch.render(hist)
+        _check("2 found, all 2 excluded" in out, f"empty render names the all-excluded count:\n{out}")
+        _check("1 red-bench" in out and "1 malformed" in out, "names both reasons")
+    # A genuinely empty runs dir still shows the plain message (no accounting to name).
+    with tempfile.TemporaryDirectory() as tmp:
+        out = ch.render(ch.load_history(tmp))
+        _check("no usable live-verify artifacts found" in out, "empty dir -> plain message")
+
+
 def test_bands_and_in_band_series() -> None:
     print("test_bands_and_in_band_series")
     with tempfile.TemporaryDirectory() as tmp:
@@ -2278,6 +2412,12 @@ def main() -> int:
         test_load_accounting_counts_exclusions_by_reason,
         test_load_accounting_clean_series_reports_zero_excluded,
         test_render_names_exclusion_accounting_when_filtered,
+        test_series_integrity_intact_within_floor,
+        test_series_integrity_degraded_past_floor,
+        test_series_integrity_none_without_accounting_or_artifacts,
+        test_series_integrity_on_real_series_is_intact,
+        test_render_names_series_integrity_when_filtered,
+        test_render_empty_series_names_all_excluded,
         test_bands_and_in_band_series,
         test_sustained_drift_counts_trailing_run,
         test_sustained_run_spans_wall_clock,

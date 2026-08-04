@@ -576,6 +576,94 @@ class LoadAccounting:
         return self.excluded > 0
 
 
+# Fraction of the committed verify series the loader may EXCLUDE before the KEPT
+# remnant is no longer a trustworthy basis for the drift verdict. Every drift
+# diagnostic (band, sustained run, attribution, noise floor) is computed over the
+# INCLUDED points only; below this floor a few dropped artifacts (e.g. the fixed
+# pre-Cycle-13 legacy malformed one) are ordinary attrition, but above it so much of
+# the series was filtered that those diagnostics rest on a thinned/biased remnant and
+# a reader should distrust the verdict. Set to 0.25: the sustained-run gate already
+# needs 3 readings, so losing more than a quarter of the series materially thins the
+# evidence any verdict stands on. A floor on the FRACTION (not a raw count) so it does
+# not tighten as the series legitimately grows.
+_INTEGRITY_EXCLUDED_FLOOR = 0.25
+
+
+@dataclass
+class SeriesIntegrity:
+    """Whether the KEPT drift series is a trustworthy basis for the verdict, or so
+    much was filtered that the remnant is thinned/biased.
+
+    ``LoadAccounting`` NAMES what the loader dropped and why; this JUDGES whether the
+    drop compromises the series the drift diagnostics are computed over. The band,
+    sustained run, pillar attribution and noise floor all read the INCLUDED points
+    only — a divergence verdict drawn from a series with most of its artifacts
+    filtered out rests on a remnant, not the raw record, and a reader acting on it
+    should know. This turns the Cycle-216 accounting into a single integrity verdict:
+    is the excluded FRACTION within the floor (``intact``) or past it (degraded)?
+
+    Vendor-neutral, read-only, no score — a pure function of the loader counts.
+
+    ``floor`` is the excluded-fraction threshold; ``excluded_fraction`` the observed
+    one; ``red_bench_fraction`` the version-comparability-relevant subset (runs scored
+    while the bench's own guards were red — the Cycle-215 gate), surfaced separately
+    because a red-bench exclusion signals the scoring path itself may have been in
+    flux, a sharper concern than a benign legacy malformed artifact.
+    """
+
+    total: int
+    included: int
+    excluded_red_bench: int
+    excluded_malformed: int
+    floor: float = _INTEGRITY_EXCLUDED_FLOOR
+
+    @property
+    def excluded(self) -> int:
+        return self.excluded_red_bench + self.excluded_malformed
+
+    @property
+    def any_excluded(self) -> bool:
+        return self.excluded > 0
+
+    @property
+    def excluded_fraction(self) -> float:
+        """Fraction of the committed series the loader dropped (0.0 when none found)."""
+        return self.excluded / self.total if self.total else 0.0
+
+    @property
+    def red_bench_fraction(self) -> float:
+        """Fraction dropped specifically as red-bench (scored while the bench's own
+        guards were red) — the version-comparability-relevant exclusions."""
+        return self.excluded_red_bench / self.total if self.total else 0.0
+
+    @property
+    def intact(self) -> bool:
+        """True iff the excluded fraction stays within the floor — the kept series is
+        a representative basis for the drift verdict. False = DEGRADED: enough of the
+        committed series was filtered that the verdict rests on a thinned/biased
+        remnant; weigh it with caution."""
+        return self.excluded_fraction <= self.floor
+
+
+def series_integrity(
+    accounting: LoadAccounting | None,
+) -> SeriesIntegrity | None:
+    """Judge whether the kept series is a trustworthy basis for the drift verdict.
+
+    None when no loader accounting is available (a bare point list — no loader ran)
+    or no artifacts were found at all (``total == 0`` — nothing to judge). Pure, no
+    score, no side effects.
+    """
+    if accounting is None or accounting.total == 0:
+        return None
+    return SeriesIntegrity(
+        total=accounting.total,
+        included=accounting.included,
+        excluded_red_bench=accounting.excluded_red_bench,
+        excluded_malformed=accounting.excluded_malformed,
+    )
+
+
 @dataclass
 class CanonicalHistory:
     points: list[CanonicalPoint] = field(default_factory=list)
@@ -630,6 +718,11 @@ class CanonicalHistory:
     # FILTERED, not raw. None when summarized from a bare point list (no loader
     # ran), e.g. a test constructing points directly; present via ``load_history``.
     load_accounting: LoadAccounting | None = None
+    # whether the KEPT series is a trustworthy basis for the drift verdict (the
+    # excluded fraction within the integrity floor) or DEGRADED (too much of the
+    # committed series filtered out) — the JUDGMENT over the accounting's counts.
+    # None when no loader accounting is present or no artifacts were found at all.
+    integrity: SeriesIntegrity | None = None
 
 
 def _band_for(abs_divergence: float) -> str:
@@ -851,6 +944,10 @@ def summarize(
         baseline_delta=baseline_delta,
         load_accounting=accounting,
     )
+    # Judge the series' integrity from the accounting BEFORE the empty-series early
+    # return: a series filtered all the way to empty is the MOST degraded case, and
+    # the verdict is still worth carrying even when there are no points to summarize.
+    hist.integrity = series_integrity(accounting)
     if not points:
         return hist
     latest = points[-1]
@@ -1301,7 +1398,16 @@ def render(history: CanonicalHistory, window: int = 24) -> str:
     lines = ["CANONICAL DELTA HISTORY", "-" * 23]
     pts = history.points
     if not pts:
-        lines.append("(no usable live-verify artifacts found)")
+        acct0 = history.load_accounting
+        if acct0 is not None and acct0.total > 0:
+            # Artifacts were found but ALL filtered out — the maximally degraded
+            # integrity case: name it rather than imply the runner produced nothing.
+            lines.append(
+                f"(no usable live-verify artifacts — {acct0.total} found, all "
+                f"{acct0.excluded} excluded: {_exclusion_phrase(acct0)})"
+            )
+        else:
+            lines.append("(no usable live-verify artifacts found)")
         return "\n".join(lines)
     lines.append(
         f"series: {len(pts)} live re-scores  "
@@ -1315,6 +1421,30 @@ def render(history: CanonicalHistory, window: int = 24) -> str:
             f"red-bench = scored while the bench's own guards were red (not "
             f"comparable within the version); malformed = unusable artifact"
         )
+        # The counts above say WHAT was dropped; this JUDGES whether the drop
+        # compromises the series the drift verdict is drawn from (Cycle 217). Only
+        # shown when something was filtered — a clean load has nothing to judge.
+        integ = history.integrity
+        if integ is not None:
+            rb = (
+                f", {integ.excluded_red_bench} of them red-bench"
+                if integ.excluded_red_bench
+                else ""
+            )
+            if integ.intact:
+                lines.append(
+                    f"series integrity: INTACT — {integ.excluded}/{integ.total} "
+                    f"({integ.excluded_fraction * 100:.0f}%) excluded{rb}, within "
+                    f"the {integ.floor * 100:.0f}% floor; the drift verdict rests on "
+                    f"a representative series"
+                )
+            else:
+                lines.append(
+                    f"series integrity: DEGRADED — {integ.excluded}/{integ.total} "
+                    f"({integ.excluded_fraction * 100:.0f}%) of the committed series "
+                    f"excluded{rb}, PAST the {integ.floor * 100:.0f}% floor; the drift "
+                    f"verdict rests on a thinned/biased remnant — weigh it with caution"
+                )
     lines.append(
         f"baseline (committed fixtures): {_fmt_delta(history.baseline_delta)}  "
         f"[{CANONICAL_NO_RAILS} no-rails vs {CANONICAL_WITH_RAILS} rails]"

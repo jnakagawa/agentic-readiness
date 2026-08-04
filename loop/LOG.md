@@ -3,6 +3,67 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 217 — 2026-08-04T05:2xZ — METHOD — a drift-series INTEGRITY verdict: judge whether the KEPT series is a trustworthy basis for the drift verdict, or a thinned/biased remnant
+
+WHAT/WHY (METHOD — the judgment over Cycle 216's accounting). Cycle 215 made the drift loader DROP
+readings scored on a red bench / malformed; Cycle 216 ACCOUNTED for the drops (`LoadAccounting`, total /
+included / excluded_red_bench / excluded_malformed) and NAMED them on both readout surfaces. But naming
+what was filtered does not JUDGE whether the filtering compromises the series: every drift diagnostic (band,
+sustained run, pillar attribution, noise floor) is computed over the INCLUDED points only, so a divergence
+verdict drawn from a series with most of its artifacts filtered out rests on a remnant, not the raw record —
+and nothing said so. This cycle adds the judgment. New `SeriesIntegrity` (asrs/canonical_history.py): a pure
+function of the loader counts exposing `excluded_fraction`, `red_bench_fraction`, and `intact` = the excluded
+fraction stays within `_INTEGRITY_EXCLUDED_FLOOR` (0.25 — the sustained-run gate already needs 3 readings, so
+losing >¼ of the series materially thins the evidence; a floor on the FRACTION, not a raw count, so it does
+not tighten as the series legitimately grows). Produced by `series_integrity(accounting)` (None when no
+accounting or 0 artifacts found — honest-None), threaded through `summarize` BEFORE the empty-series early
+return (a series filtered to empty is the MOST degraded case) and onto `CanonicalHistory.integrity`. Terminal
+`render` gains a `series integrity: INTACT — K/N (X%) excluded, within the Y% floor …` / `DEGRADED — … PAST
+the Y% floor … weigh it with caution` line right after the Cycle-216 `series filtered:` line (shown only when
+something was dropped — a clean load has nothing to judge); the empty-render branch now names the all-excluded
+count (`N found, all M excluded: …`) instead of implying the runner produced nothing. HTML
+`canonical-history.html` gains the parallel dimmed note (degraded reddened) — the same terminal->HTML close-out
+every drift diagnostic takes, keeping the two surfaces in parity.
+
+METHOD / non-vacuity + teeth. NON-VACUOUS ON THE REAL SERIES: the committed `runs/local` is **83 of 84 kept,
+1 excluded (1 malformed, 0 red-bench)** → integrity **INTACT, 1/84 (1%) excluded, within the 25% floor** —
+the drift verdict the live-divergence P0 rests on is drawn from a representative series, now asserted on real
+data (`test_series_integrity_on_real_series_is_intact`). TEETH: `test_series_integrity_degraded_past_floor`
+builds 2 clean + 1 red-bench + 1 malformed = 50% excluded → `intact` False (DEGRADED), and pins the BOUNDARY
+(3 clean + 1 red-bench = exactly 25% → still intact, the floor is inclusive `<=`), so it is the fraction
+crossing the floor that flips the verdict, not the mere presence of an exclusion.
+`test_series_integrity_intact_within_floor` (20% → intact, red_bench_fraction surfaced),
+`test_series_integrity_none_without_accounting_or_artifacts` (honest-None on a bare point list AND an empty
+dir), `test_render_names_series_integrity_when_filtered` (terminal names INTACT/DEGRADED, silent when clean),
+`test_render_empty_series_names_all_excluded` (the maximally-degraded all-filtered case), and the HTML mirror
+`test_canonical_history_page_names_series_integrity` (intact + degraded + silent-when-clean). The Cycle-188
+READOUT PARITY GUARD stays green: its fixture is all-clean (0 excluded), so the integrity line is correctly
+absent on BOTH surfaces (parity by omission). Vendor-neutral (keys on loader counts only, no host/vendor).
+
+SHIP CLASS + evidence. OFF the scoring path — `canonical_history`/`scorecard` are readout/display, NOT
+imported by `scoring.py`/`probes/` (grep-verified); scoring-path diff (`asrs/scoring.py asrs/probes/ rubric/
+fixtures/ asrs/cli.py`) EMPTY → score-neutral, NOT peer-gated, direct-to-main. Full suite 455→462 (+6
+`test_canonical_history.py`, +1 `test_readout.py`), 0 failures. Canonical PAIR unchanged: in-cloud replay
+guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7. (Cloud is network-blocked for the live
+re-score; in-cloud standard is regression-by-construction — scoring path byte-identical — plus the offline
+replay guard, both green.)
+
+LIVE CANONICAL SIGNAL. Newest LOCAL artifact `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1) is
+~73.5h old at this fire — PAST the 6h floor (machine-asleep / runner-lag, cloud cannot repair; the runner has
+been at-floor since Aug-1 03:50Z, ~3 days; flagged in the 16:17Z Cycle-204 digest, durable [LOCAL] P0). Its
+LIVE re-score (READ, not re-run): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 — the known
+transactability 87.5→62.5 divergence (off the scoring path; the frozen replay guard stays the in-cloud
+regression signal). 05:2xZ is NOT first-after-16:00 UTC → no digest DM per comms policy; score-neutral
+off-scoring-path METHOD increment, no sensitive-class PR, nothing score-moving. No open peer-gated PRs → no
+first-duty review this fire.
+
+NEXT HYPOTHESIS (COVERAGE 218). Rotate COVERAGE next (Cycle 217 was METHOD; METHOD → COVERAGE → TRUTH →
+READOUT). The drift-series integrity is now judged; a COVERAGE candidate is a fresh vendor-neutral capability
+check or an in-cloud offering-classifier refinement, but the substantive frontier (GENUINE new thin-bank
+signals from real fixtures, hyphen/reflow real-surface validation, the negative anchor's moleskine.com
+two-crawl cross-validation, ACP/UCP/MPP live handshakes, the transactability-drop CHECK-level diagnosis +
+peer-gated re-baseline) stays `[LOCAL]`.
+
 ## Cycle 216 — 2026-08-04T04:2xZ — READOUT — surface the loader's exclusion accounting in the drift block: the operator sees the canonical series is FILTERED, not raw
 
 WHAT/WHY (READOUT — the mirror of Cycle 215's TRUTH loader gate). Cycle 215 made `canonical_history`'s loader

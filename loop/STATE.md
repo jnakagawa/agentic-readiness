@@ -1,8 +1,36 @@
 # Loop state
 
-- Cycle counter: 216
+- Cycle counter: 217
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-04T04:2xZ (Cycle 216) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-04T05:2xZ (Cycle 217) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~73.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
+  cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 05:2xZ fire is NOT
+  first-after-16:00 UTC → no DM this fire per comms policy (score-neutral off-scoring-path METHOD increment, no
+  sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org 46.1 F /
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1),
+  off the scoring path; the in-cloud replay guard stays the frozen independent regression signal (24/24, 46.1 F /
+  85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open → []), so no first-duty
+  review. INFRA/SELF-HEAL (Cycle 217): fresh `.venv` + `requests pyyaml eth-account pytest`, 455 tests green
+  pre-flight (462 after +7). NOTE: the runner has now been at-floor since Aug-1 03:50Z (~3 days) — the durable
+  [LOCAL] runner-recovery item stays P0.
+- FOCUS POINTER (Cycle 217 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 217 was METHOD,
+  so Cycle 218 is COVERAGE). Cycle 217 shipped a **METHOD increment — a drift-series INTEGRITY verdict** over the
+  Cycle-216 exclusion accounting (`asrs/canonical_history.py` `SeriesIntegrity` + `_INTEGRITY_EXCLUDED_FLOOR`
+  (0.25) + `series_integrity()` + `CanonicalHistory.integrity`, wired into `summarize` before the empty-series
+  early return; `render` gains the `series integrity: INTACT/DEGRADED …` line + an all-excluded empty-render
+  branch; `asrs/scorecard.py` the parallel HTML note; `tests/test_canonical_history.py` +6, `tests/test_readout.py`
+  +1; suite 455→462). It JUDGES whether the KEPT series (which every drift diagnostic is computed over) is a
+  trustworthy basis — excluded fraction within the floor (INTACT) or past it (DEGRADED, weigh with caution) —
+  rather than only NAMING what was dropped. NON-VACUOUS on the REAL series: **83 of 84 kept, 1 excluded (1
+  malformed) → INTACT, 1% excluded, within the 25% floor**. Teeth: 50%-excluded → DEGRADED, and the 25% boundary
+  is inclusive (`<=`). Cross-surface parity (terminal + HTML mirror tests); the Cycle-188 PARITY GUARD stays green
+  (all-clean fixture → line absent on both). OFF the scoring path (scoring-path diff EMPTY; `canonical_history`/
+  `scorecard` not imported by `scoring.py`/`probes/` — grep-verified) → score-neutral, NOT peer-gated,
+  direct-to-main. Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. NEXT (COVERAGE 218): a
+  fresh vendor-neutral capability check or in-cloud offering-classifier refinement; substantive frontier
+  (thin-bank live fixtures, hyphen/reflow real-surface validation, moleskine.com two-crawl cross-validation,
+  ACP/UCP/MPP, transactability-drop CHECK-level diagnosis + peer-gated re-baseline) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 216 runner note): RUNNER AT-FLOOR at 2026-08-04T04:2xZ (Cycle 216) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~72.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
   cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 04:2xZ fire is NOT
   first-after-16:00 UTC → no DM this fire per comms policy (display-only / score-neutral off-scoring-path READOUT

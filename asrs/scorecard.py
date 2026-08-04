@@ -1547,6 +1547,34 @@ committed fixtures regardless of what the live site does today.</p>
             f'readings were scored while the bench&rsquo;s own guards were red (not '
             f'comparable within the version); malformed ones were unusable.</p>'
         )
+        # The counts NAME what was dropped; this JUDGES whether the drop compromises
+        # the series the drift verdict is drawn from (Cycle 217 METHOD) — the
+        # terminal->HTML close-out of the integrity verdict, mirroring ch.render.
+        integ = hist.integrity
+        if integ is not None:
+            rb = (
+                f", {integ.excluded_red_bench} of them red-bench"
+                if integ.excluded_red_bench
+                else ""
+            )
+            if integ.intact:
+                series_filtered_note += (
+                    f'<p class="q" style="margin-top:-8px">Series integrity: '
+                    f'<b>intact</b> &mdash; {integ.excluded}/{integ.total} '
+                    f'({integ.excluded_fraction * 100:.0f}%) excluded{rb}, within the '
+                    f'{integ.floor * 100:.0f}% floor; the drift verdict rests on a '
+                    f'representative series.</p>'
+                )
+            else:
+                series_filtered_note += (
+                    f'<p class="q" style="margin-top:-8px;color:'
+                    f'{_HISTORY_BAND_COLOR["diverged"]}">Series integrity: '
+                    f'<b>DEGRADED</b> &mdash; {integ.excluded}/{integ.total} '
+                    f'({integ.excluded_fraction * 100:.0f}%) of the committed series '
+                    f'excluded{rb}, past the {integ.floor * 100:.0f}% floor; the drift '
+                    f'verdict rests on a thinned/biased remnant &mdash; weigh it with '
+                    f'caution.</p>'
+                )
     latest_card = f"""<div class="card">
 <h2>Latest reading</h2>
 <p style="margin-bottom:14px">{_esc(ch._short_ts(latest.ts))} &middot;

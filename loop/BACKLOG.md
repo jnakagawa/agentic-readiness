@@ -456,6 +456,22 @@ design in-cloud, execute locally.
   candidate (Cycle-230 LOG "next hypothesis"): a concurrency/quota ERROR-RECOVERY response (`409 concurrency_exceeded` /
   a `Retry-After` naming the concurrency wall) distinct from generic `error-contract`, IF committed prose carries it.
   The thin banks (service_booking/data_retrieval/physical_good) DO still need real fixtures ([LOCAL], unchanged).
+  QUALIFICATION Cycle 233 (COVERAGE, in-cloud, direct-to-main, score-neutral): the Cycle-230/231 concurrency/quota
+  ERROR-RECOVERY candidate was CHECKED against committed prose and is NOT present (error table 400/401/403/429/502 with
+  429=`allowance_exhausted` already-covered quota exhaustion; concurrency bursts QUEUE rather than fail per
+  `concurrency-limit`, no 409/`Retry-After`) → DROPPED per the no-vacuous-signal discipline. Auditing the same committed
+  /docs surfaced a DIFFERENT uncaptured deep-bank capability: `key-rotation` added to metered_api — the CREDENTIAL
+  LIFECYCLE / KILL-SWITCH ("Rotate any key from the dashboard; old keys are revoked immediately." on BOTH canonical
+  /docs), the "operate safely without a human" leg, distinct from `api-auth` (present a held credential) and
+  `self-provisioning` (obtain one without a human, the lifecycle START) — this is the lifecycle END. Precision NAMES a
+  key in a rotation/kill sense so the 401 error row "the key is unknown or revoked" (on both /docs) does NOT fire it
+  (signal-level discriminator: 401 fires api-auth but not key-rotation). Fires NON-VACUOUSLY on the pair (SHARED
+  credential-safety capability, both already metered_api → no reorder), ABSENT on api/retail/null; precision-synthetic
+  8-fire/8-dodge + 401-discriminator + real-captured guard + isolation-matrix entry (suite 481→483). So the deep-bank
+  new-signal lever produced AGAIN in-cloud. NEXT candidate (Cycle-233 LOG "next hypothesis"): a credential-SCOPE /
+  least-privilege capability (a key scoped to a plan/tier/model) distinct from api-auth, IF committed prose carries it
+  (verify "df_test_ sandbox, no quota use" is already `test-mode` first). The thin banks
+  (service_booking/data_retrieval/physical_good) DO still need real fixtures ([LOCAL], unchanged).
 
 - **[LOCAL] Validate the typographic-encoding robustness fixes on REAL surfaces (line-wrap + intra-word hyphen + non-HTML entity + invisible line-break control)**
   (COVERAGE, follow-up to Cycles 178 + 214 + 218 + 222). FOUR sibling in-cloud fixes are exercised only SYNTHETICALLY today

@@ -5768,6 +5768,7 @@ _ISOLATION_EVIDENCE: dict[str, str] = {
     "pagination": "walk results with cursor-based pagination",
     "cancel-job": "you can cancel a running prediction at any time",
     "self-provisioning": "an agent can provision its own identity, no sign-up",
+    "key-rotation": "rotate your api key from the dashboard",
     "credit-metered": "each call spends credits remaining in your balance",
     "tiered-volume": "committed-use volume discounts apply",
     "x402": "the endpoint answers with HTTP 402",

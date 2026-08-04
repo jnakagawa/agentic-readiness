@@ -697,6 +697,57 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"|\bprovision\w*\s+(?:its|their|your|an?)\s+own\s+identit\w+"
             r"|\bself[- ]provision\w*"
             r"|\b(?:no\s+human|without\s+(?:a\s+)?human)\s+(?:sign[- ]?up|signup|account|onboarding|provisioning)\b", _F)),
+        # CREDENTIAL LIFECYCLE / KILL-SWITCH — whether a held API key can be
+        # ROTATED and the old one REVOKED (immediately). This is the credential
+        # END of the auth lifecycle, and — despite the depth of this bank — it is
+        # currently UNCAPTURED. It is the "operate safely without a human" leg an
+        # autonomous agent depends on: a long-running agent holds a key across many
+        # calls, and a key can leak (into a log, a shared context, a compromised
+        # transcript). A metered API that documents key rotation + immediate
+        # revocation lets the agent (or its operator) KILL a compromised credential
+        # and swap in a fresh one WITHOUT a human re-onboarding step — so the site is
+        # more safely agent-operable. Distinct from every existing metered_api signal:
+        # `api-auth` is how you PRESENT a credential you ALREADY hold (Bearer token),
+        # `self-provisioning` is OBTAINING a credential without a human (no signup) —
+        # the lifecycle START; NONE says whether a held credential can be ROTATED or
+        # KILLED (the lifecycle END). Vendor-neutral credential-security vocabulary
+        # (rotate an API key, revoke a key, old keys are revoked, key rotation) — the
+        # same open-convention category as REST/OpenAPI/webhook-signature already in
+        # this bank, never a vendor.
+        # PRECISION-CRITICAL: bare "revoke"/"rotate" is a false-positive minefield,
+        # incl. prose present in the very fixtures we validate on. NEVER match a bare
+        # token: (a) "revoke" broad-English boilerplate ("revoke consent", "revoke
+        # access to your account", "revoke your license" — ToS/privacy language with
+        # NO key) must not fire; (b) "rotate" broad-English ("rotate the image",
+        # "rotate stock", "a rotating carousel", "crop rotation") must not fire; and
+        # CRITICALLY (c) BOTH canonical /docs carry the 401 ERROR row "No API key, or
+        # the key is unknown or revoked" — an error-status MEANING, NOT the rotation
+        # CAPABILITY — which must NOT trip this signal (else it fires on the error
+        # contract, not the lifecycle). So require the token to NAME A KEY in a
+        # rotation/kill sense: "rotate <key>", "keys are/can be ROTATED", "OLD keys
+        # are revoked" (superseded-key kill, unambiguously not a 401), "revoke <key>"
+        # (imperative kill), or "key rotation". The 401 "the key is ... revoked" (key
+        # BEFORE a non-adjacent "revoked", no "old", no imperative "revoke <key>", and
+        # `\brevoke\b` never matches the past-participle "revoked"), the revoke-consent/
+        # revoke-access/revoke-license senses, and the rotate-image/stock/carousel
+        # senses trip NONE of these. Fires NON-VACUOUSLY on BOTH canonical domains'
+        # captured /docs ("Rotate any key from the dashboard; old keys are revoked
+        # immediately.") — a PAIR, not a singleton (both are metered image APIs whose
+        # /docs document the same key-rotation lifecycle, so this is a SHARED
+        # credential-safety capability, NOT a payment/rails gap, mirroring
+        # `concurrency-limit` / `output-resolution`). Both ALREADY claim metered_api
+        # (their strongest archetype), so this deepens evidence without adding or
+        # reordering any archetype (score-neutral, pinned by
+        # tests/test_offering_canonical.py) — and on ZERO of the metered-api-only
+        # (api.replicate.com), retail (books.toscrape.com), or null (example.com)
+        # fixtures, so it can never CONJURE a metered_api claim on a site that does
+        # not already make one. The classifier is off the scoring path.
+        ("key-rotation", re.compile(
+            r"\brotate\s+(?:any|the|your|old|an?)?\s*(?:api\s+)?keys?\b"
+            r"|\b(?:api\s+)?keys?\s+(?:can\s+be\s+|may\s+be\s+|are\s+)?rotated\b"
+            r"|\bold\s+(?:api\s+)?keys?\s+(?:are\s+)?revoked\b"
+            r"|\brevoke\s+(?:any\s+|the\s+|your\s+|an?\s+)?(?:api\s+)?keys?\b"
+            r"|\b(?:api\s+)?key\s+rotation\b", _F)),
         # Credit-based metering — the dominant billing convention for generative
         # and agent-native APIs (prepay a credit balance, spend N credits per
         # call/image/generation). PRECISION-CRITICAL: bare "\bcredits?\b" is a

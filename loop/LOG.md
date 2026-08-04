@@ -3,6 +3,77 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 233 — 2026-08-04T20:15Z — COVERAGE — new metered_api offering signal `key-rotation`: the CREDENTIAL LIFECYCLE / KILL-SWITCH (rotate an API key, old keys revoked immediately) — a documented capability on BOTH canonical /docs the deep bank had not yet mapped, distinct from api-auth (present a held credential) and self-provisioning (obtain one without a human)
+
+IN-CLOUD CYCLE. FIRST duty discharged: `list_pull_requests(state=open)` → [] (no open peer-gated PR, no
+review owed). INFRA green: newest verify `runs/local/verify_20260804T194102Z.json` (19:41Z, git_pull.ok=true
+attempts=1, divergence_recovery=None, tests_ok=true) is ~33min old at this 20:15Z fire — WELL inside the 6h
+floor; the Cycle-229 push-race recovery (`d812d6e`) still holding. Full suite ran green pre-flight (481).
+Track rotation: Cycle 231 was TRUTH, Cycle 232 was a LOCAL TRUTH diagnosis (did not consume the cloud slot),
+so the in-cloud pointer was COVERAGE — taken here.
+
+WHAT/WHY. The Cycle-226/230 QUALIFICATION established that the DEEP banks still carry committed capabilities
+not yet mapped to a signal (audit committed prose before assuming [LOCAL] is required). The Cycle-231 "next
+hypothesis" candidate — a `409 concurrency_exceeded` / `Retry-After` concurrency-wall error-recovery response —
+was CHECKED against the committed pair and is NOT present (the /docs error table is 400/401/403/429/502 with
+429=`allowance_exhausted` a quota-billing exhaustion already covered, and concurrency bursts QUEUE rather than
+fail per the `concurrency-limit` signal, no 409/Retry-After), so per the no-vacuous-signal discipline that
+candidate was DROPPED. Auditing the same committed /docs for a genuine uncaptured, agent-relevant capability
+surfaced one: **credential rotation + immediate revocation** — "Rotate any key from the dashboard; old keys
+are revoked immediately." — present on BOTH canonical domains, matched by NO existing signal. This is the
+"operate safely without a human" leg an autonomous agent depends on: a long-running agent holds a key across
+many calls, a key can leak, and a metered API documenting key rotation + a kill-switch lets the agent (or its
+operator) revoke a compromised credential and swap a fresh one WITHOUT human re-onboarding. Distinct from every
+existing metered_api signal — `api-auth` is how you PRESENT a held credential, `self-provisioning` is OBTAINING
+one without a human (the lifecycle START); NONE said whether a held credential can be ROTATED/KILLED (the
+lifecycle END). Vendor-neutral credential-security vocabulary (rotate an API key, revoke a key, old keys are
+revoked, key rotation) — the same open-convention category as REST/OpenAPI/webhook-signature already in the
+bank, never a vendor.
+
+PRECISION (the whole game). Bare "revoke"/"rotate" is a false-positive minefield, incl. prose in the very
+fixtures validated on: (a) broad-English "revoke consent / access / license" (ToS boilerplate, no key);
+(b) "rotate the image / stock", "rotating carousel", "crop rotation"; and CRITICALLY (c) BOTH canonical /docs
+carry the 401 ERROR row "No API key, or the key is unknown or revoked" — an error-status MEANING, not the
+rotation capability — which must NOT trip the signal. The regex requires the token to NAME A KEY in a
+rotation/kill sense: `rotate <key>`, `keys are/can be rotated`, `old keys are revoked` (superseded-key kill,
+unambiguously not a 401), `revoke <key>` (imperative), or `key rotation`. The 401 (key BEFORE a non-adjacent
+"revoked", and `\brevoke\b` never matches the past-participle "revoked"), the revoke-consent/access/license
+senses, and the rotate-image/stock/carousel senses trip NONE. Tested at the SIGNAL level for the harder honest
+case: the 401 row legitimately fires `api-auth` (it names an API key) so it DOES claim metered_api, but must
+NOT fire `key-rotation` — the discriminator holds inside a genuine metered_api surface, exactly as on the pair.
+
+EVIDENCE / TESTS. `asrs/offering._SIGNALS["metered_api"]` +1 (after `self-provisioning`); `tests/test_offering.py`
++2 (`test_key_rotation_precision_synthetic`: 8 rotation/kill phrasings each fire, 8 broad-English negatives
+dodge, + the 401-error discriminator asserts api-auth fires but key-rotation does not; `test_key_rotation_fires_
+on_real_captured_surfaces`: fires NON-VACUOUSLY on BOTH canonical /docs via the real from_fixture→discover path,
+both rotation branches present in the classifier-visible prose, quote is the rotation sentence not the 401 row,
+claimed set+order invariant on the pair, ABSENT on api/retail/null); isolation matrix +1 in
+`tests/test_offering_canonical.py`. Empirically pre-validated: fires on both canonical domains, absent on ALL
+other committed fixtures.
+
+SCORE-NEUTRAL (off the scoring path). `git diff --name-only -- asrs/scoring.py asrs/probes/ rubric/ fixtures/`
+EMPTY (only `asrs/offering.py` + the two test files). The offering classifier is off the scoring path; both
+canonical domains ALREADY claim metered_api (their strongest archetype), so the new signal only DEEPENS
+evidence — never adds or reorders an archetype (claimed set `["metered_api","digital_good","subscription"]`
+invariant on both, pinned). Rubric v0.7. CANONICAL PAIR (frozen regression signal, in-cloud replay guard):
+`tests/test_canonical_replay.py` 24/24, drift-flight.org 46.1 F / driftflight.com 85.5 B / delta +39.4,
+0 replay-miss — UNCHANGED. LIVE floor signal (read, not re-run, off scoring path): newest verify 46.1 F /
+76.2 C / +30.1 (tx 62.5) — the KNOWN probe under-measurement of the migrated proxy endpoint (Cycle 232
+diagnosis; the peer-gated [LOCAL] `loop/x402-proxy-discovery` fix restores it), NOT degradation; the frozen
+fixture stays the honest record. Suite 481→483.
+
+SHIP. Direct-to-main (score-neutral, off the scoring path, NOT a scoring-semantics change → not peer-gated per
+the playbook ship rules). NO DM this cycle per comms policy (score-neutral off-scoring-path COVERAGE signal,
+no sensitive-class PR, not first-after-16:00 UTC — the Aug-4 digest went at Cycle 228 16:2xZ; below the DM bar,
+same precedent as offering-signal cycles 226/230).
+
+NEXT HYPOTHESIS (TRUTH 234). The deep-bank audit's next candidate: with `key-rotation` capturing the credential
+KILL, is there an uncaptured credential-SCOPE / least-privilege capability in committed prose (a key scoped to a
+plan/tier/model, "df_test_" sandbox keys with "no quota use" — the latter likely already `test-mode`; verify
+before adding) distinct from api-auth's present-a-Bearer sense? Else a further attribution/calibration invariance
+or offering-signal precision audit. Substantive frontier (thin-bank live fixtures, a THIRD real anchor, the
+peer-gated x402-proxy-discovery probe fix, moleskine.com two-crawl cross-validation, ACP/UCP/MPP) stays [LOCAL].
+
 ## Local cycle — 2026-08-04T19:55Z — Cycle 232 — TRUTH — the driftflight.com "transactability drop" is a PROBE UNDER-MEASUREMENT, not site degradation: the with-rails anchor's x402 rail is LIVE (bare $0 POST → real 402); the standing hypothesis is REVERSED and the re-baseline-DOWN plan is CANCELED
 
 LOCAL CYCLE (Jonah's machine, network + venv). Per local law "execute exactly ONE [LOCAL] backlog item —

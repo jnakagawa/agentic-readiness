@@ -4767,6 +4767,154 @@ def test_concurrency_limit_fires_on_real_captured_surfaces():
     print("  ok: concurrency-limit is ABSENT on the api / retail / null fixtures (non-vacuous, score-neutral)")
 
 
+def test_key_rotation_precision_synthetic():
+    # A NEW metered_api capability signal: the CREDENTIAL LIFECYCLE / KILL-SWITCH —
+    # whether a held API key can be ROTATED and the old one REVOKED (immediately).
+    # This is the "operate safely without a human" leg: a long-running agent holds a
+    # key across many calls, a key can leak, and a metered API that documents key
+    # rotation + immediate revocation lets the agent (or its operator) kill the
+    # compromised credential and swap a fresh one WITHOUT a human re-onboarding.
+    # DISTINCT from `api-auth` (how you PRESENT a held credential) and
+    # `self-provisioning` (OBTAINING one without a human — the lifecycle START): this
+    # is the lifecycle END. Precision is the whole game — bare "revoke"/"rotate" is a
+    # false-positive minefield (revoke consent/access/license — ToS boilerplate;
+    # rotate the image/stock, a rotating carousel, crop rotation), and CRITICALLY both
+    # canonical /docs carry the 401 ERROR row "the key is unknown or revoked" (an
+    # error-status meaning, NOT the rotation capability) which must NOT fire — so the
+    # signal requires the token to NAME A KEY in a rotation/kill sense. Each POSITIVE
+    # fires `key-rotation` with no other metered_api signal rescuing it (so it
+    # exercises the branch directly); each NEGATIVE must NOT claim metered_api.
+    #
+    # Canonical-invariant by construction: the signal fires on BOTH canonical domains
+    # (both metered image APIs whose /docs document the same key-rotation lifecycle —
+    # a SHARED credential-safety capability, NOT a payment/rails gap, mirroring
+    # concurrency-limit / output-resolution), each already metered_api's strongest
+    # archetype → no reorder; ABSENT on the api/retail/null fixtures (pinned by
+    # tests/test_offering_canonical.py). Off the scoring path.
+    positives = {
+        # The real captured canonical /docs prose (verbatim shapes).
+        "rotate any key": "Rotate any key from the dashboard; old keys are revoked immediately.",
+        "old keys revoked": "Old keys are revoked immediately.",
+        # Genuine key-rotation vocabulary from other real API docs.
+        "rotate your api key": "You can rotate your API key at any time.",
+        "rotate keys": "Rotate keys from the dashboard whenever you like.",
+        "revoke a key": "Revoke a key instantly if it leaks.",
+        "revoke your api key": "Revoke your API key from the dashboard to kill it.",
+        "keys can be rotated": "API keys can be rotated and issued from the console.",
+        "key rotation": "We support automatic API key rotation.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("cred.test", {"homepage": text})
+        assert prof.claims("metered_api"), (name, prof.archetypes)
+        fired = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "metered_api"
+            for s in c.signals
+        }
+        assert "key-rotation" in fired, (name, sorted(fired))  # non-vacuous
+    print(f"  ok: {len(positives)} key-rotation phrasings each fire key-rotation")
+
+    negatives = {
+        # Broad-English "revoke"/"rotate" that must NOT conjure a metered_api claim.
+        "revoke consent": "You may revoke consent at any time.",
+        "revoke access": "We may revoke access to your account.",
+        "revoke license": "We reserve the right to revoke your license.",
+        "rotate the image": "Rotate the image 90 degrees before uploading.",
+        "rotate stock": "We rotate stock seasonally for freshness.",
+        "rotating carousel": "A rotating carousel of featured banners.",
+        "crop rotation": "Crop rotation improves soil yield year over year.",
+        "rotate the menu": "We rotate our seasonal menu every quarter.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("prose.test", {"homepage": text})
+        assert not prof.claims("metered_api"), (name, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} bare revoke/rotate strings do NOT claim metered_api (precision)"
+    )
+
+    # CRITICAL discriminator, tested at the SIGNAL level: the 401 error row present in
+    # BOTH canonical /docs — "No API key, or the key is unknown or revoked" — legitimately
+    # trips `api-auth` (it names an API key), so it DOES claim metered_api; the point is
+    # that it must NOT fire `key-rotation` (an error-status MEANING is not the rotation
+    # capability). This is the harder, honest case: the discriminator must hold even inside
+    # a genuine metered_api surface, exactly as it does on the canonical pair.
+    err = classify_offering("err.test", {"homepage": "No API key, or the key is unknown or revoked."})
+    err_fired = {
+        s.label for c in err.claimed if c.archetype == "metered_api" for s in c.signals
+    }
+    assert "key-rotation" not in err_fired, err_fired
+    assert "api-auth" in err_fired, err_fired  # non-vacuous: it IS a metered_api surface
+    print("  ok: the 401 'key ... revoked' error row fires api-auth but NOT key-rotation (discriminator)")
+
+
+def test_key_rotation_fires_on_real_captured_surfaces():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the TRUTH mirror of the synthetic
+    # precision guard. It pins that the new key-rotation signal fires on the GENUINE
+    # credential-lifecycle prose captured live from BOTH canonical domains' /docs
+    # ("Rotate any key from the dashboard; old keys are revoked immediately."), run
+    # through the REAL discovery path (from_fixture -> discover_offering) exactly as a
+    # live crawl would.
+    #
+    # UNLIKE the with-rails/no-rails PAYMENT signals (free-included-usage,
+    # payment-receipt, self-provisioning) this fires on BOTH canonical sides, NOT only
+    # .com: key rotation is a credential-SAFETY capability BOTH metered image APIs
+    # genuinely share, not a rails gap. That is the honest reading — the signal
+    # measures a real "operate safely" capability, not the delta.
+    #
+    # SCORE-NEUTRAL by construction: both domains already claim metered_api (their
+    # strongest archetype), so the key-rotation evidence can only deepen that claim —
+    # never add an archetype or reorder. The classifier is off the scoring path; the
+    # canonical pair's claimed SET+ORDER is unchanged (pinned by
+    # tests/test_offering_canonical.py and the canonical replay guard).
+    for dom in ("driftflight.com", "drift-flight.org"):
+        docs = _fixture_entry_text(dom, "/docs")
+        assert "rotate" in docs.lower(), f"{dom} /docs lost its key-rotation prose"
+        prof = classify_offering(dom, {"/docs": docs})
+        assert prof.claims("metered_api"), (dom, prof.archetypes)
+        metered = next(c for c in prof.claimed if c.archetype == "metered_api")
+        kr = [s for s in metered.signals if s.label == "key-rotation"]
+        assert kr, (dom, {s.label for s in metered.signals})
+        assert "key" in kr[0].quote.lower(), kr[0].quote
+        # Non-vacuity beyond the single recorded hit: the SAME captured /docs sentence
+        # carries BOTH independent branches an agent reads for the lifecycle — the
+        # imperative ROTATE ("Rotate any key") and the superseded-key KILL ("old keys
+        # are revoked") — proven against the classifier-visible (whitespace-collapsed,
+        # HTML-stripped) prose, since the raw capture line-wraps mid-phrase ("old keys\n
+        # are revoked") and the classifier records only the first-firing instance per label.
+        prose = " ".join(strip_html(docs).split()).lower()
+        assert "rotate any key" in prose, dom
+        assert "old keys are revoked" in prose, dom
+        # The 401 error row ("the key is unknown or revoked") lives in the SAME /docs
+        # and must NOT be what fired the signal — the recorded quote is the rotation
+        # sentence, never the error row.
+        assert "unknown or revoked" not in kr[0].quote.lower(), kr[0].quote
+        print(f"  ok: key-rotation fires on REAL captured {dom} /docs — quote: {kr[0].quote!r}")
+
+    # Full-discovery claimed-set invariance on the canonical pair (score-neutrality).
+    for dom in ("driftflight.com", "drift-flight.org"):
+        ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        prof = offering.discover_offering(ctx)
+        assert prof.archetypes == ["metered_api", "digital_good", "subscription"], (dom, prof.archetypes)
+
+    # NON-VACUOUS negatives on REAL data: a metered-API marketplace (api.replicate.com,
+    # which carries NO key-rotation prose), a real retail storefront
+    # (books.toscrape.com), and a null site (example.com) document no key-rotation
+    # lifecycle — the signal must be absent on all three and conjure or reorder no
+    # archetype.
+    for dom, expected in (
+        ("api.replicate.com", ["metered_api"]),
+        ("books.toscrape.com", ["physical_good"]),
+        ("example.com", []),
+    ):
+        nctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        nprof = offering.discover_offering(nctx)
+        nlabels = {s.label for c in nprof.claimed for s in c.signals}
+        assert "key-rotation" not in nlabels, (dom, nlabels)
+        assert nprof.archetypes == expected, (dom, nprof.archetypes)
+    print("  ok: key-rotation is ABSENT on the api / retail / null fixtures (non-vacuous, score-neutral)")
+
+
 def main() -> int:
     tests = [
         test_api_storefront_claims_agent_native_not_physical,
@@ -4859,6 +5007,8 @@ def main() -> int:
         test_variant_selection_fires_on_real_captured_surfaces,
         test_concurrency_limit_precision_synthetic,
         test_concurrency_limit_fires_on_real_captured_surfaces,
+        test_key_rotation_precision_synthetic,
+        test_key_rotation_fires_on_real_captured_surfaces,
         test_priced_listing_precision_synthetic,
         test_priced_listing_fires_on_real_captured_retail,
         test_strip_html_drops_script_style_and_tags,

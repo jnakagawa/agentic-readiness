@@ -1,6 +1,38 @@
 # Loop state
 
-- Cycle counter: 232
+- Cycle counter: 233
+- CYCLE 233 — 2026-08-04T20:15Z (COVERAGE, in-cloud, direct-to-main, score-neutral). FIRST duty:
+  `list_pull_requests(state=open)` → [] (no open peer-gated PR, no review owed). INFRA green: newest verify
+  `runs/local/verify_20260804T194102Z.json` (19:41Z, git_pull.ok=true attempts=1, divergence_recovery=None,
+  tests_ok=true) ~33min old — WELL inside the 6h floor; push-race recovery (`d812d6e`) holding. SHIPPED a
+  **COVERAGE increment — new metered_api offering signal `key-rotation`**: the CREDENTIAL LIFECYCLE /
+  KILL-SWITCH ("Rotate any key from the dashboard; old keys are revoked immediately.") documented on BOTH
+  canonical /docs the deep bank had not mapped — the "operate safely without a human" leg, distinct from
+  `api-auth` (present a held credential) and `self-provisioning` (obtain one without a human, the lifecycle
+  START); this is the lifecycle END (rotate/kill a held credential). The Cycle-231 candidate (a
+  `409 concurrency_exceeded` / `Retry-After` concurrency-wall error-recovery) was CHECKED and is NOT in
+  committed prose (error table 400/401/403/429/502, 429=allowance_exhausted already covered, concurrency bursts
+  QUEUE not 409) → DROPPED per no-vacuous-signal discipline; audited the same /docs instead and found
+  key-rotation. Precision-critical: the regex NAMES A KEY in a rotation/kill sense so the 401 error row "the key
+  is unknown or revoked" (present on both /docs) does NOT fire it (tested at signal level: 401 fires api-auth
+  but not key-rotation — the discriminator holds inside a real metered_api surface). `asrs/offering.py` +1
+  signal; `tests/test_offering.py` +2 (precision-synthetic 8-fire/8-dodge + 401-discriminator; real-captured
+  fires non-vacuously on both canonical /docs, claimed set+order invariant, absent api/retail/null); isolation
+  matrix +1. Off the scoring path (`git diff -- asrs/scoring.py asrs/probes/ rubric/ fixtures/` EMPTY),
+  score-neutral, NOT peer-gated. Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; suite 481→483;
+  rubric v0.7. Live floor signal (read, off scoring path): 46.1 F / 76.2 C / +30.1 — the KNOWN probe
+  under-measurement (Cycle 232 diagnosis; peer-gated [LOCAL] `loop/x402-proxy-discovery` fix restores it), NOT
+  degradation. NO DM this cycle (score-neutral off-scoring-path COVERAGE, no sensitive-class PR, not
+  first-after-16:00 UTC — Aug-4 digest went Cycle 228 16:2xZ; below DM bar, precedent cycles 226/230).
+- FOCUS POINTER (Cycle 233 done): TRUTH next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 233 was
+  COVERAGE, so Cycle 234 is TRUTH). NEXT (TRUTH 234): the deep-bank audit's next candidate — with `key-rotation`
+  capturing the credential KILL, is there an uncaptured credential-SCOPE / least-privilege capability in
+  committed prose (a key scoped to a plan/tier/model) distinct from api-auth's present-a-Bearer sense; verify
+  the "df_test_ sandbox, no quota use" is already `test-mode` before touching it; else a further attribution/
+  calibration invariance or offering-signal precision audit. Substantive frontier (thin-bank live fixtures, a
+  THIRD real anchor, the peer-gated x402-proxy-discovery probe fix, moleskine.com two-crawl cross-validation,
+  ACP/UCP/MPP) stays [LOCAL], prefer the oldest.
+- SUPERSEDED (Cycle 232 counter note): Cycle counter was 232
 - LOCAL CYCLE 2026-08-04T19:5xZ (Cycle 232, TRUTH — oldest [LOCAL] P0, per local law "prefer the oldest P0"
   which overrides the cloud track-rotation; the COVERAGE-next cloud pointer is PRESERVED for the next in-cloud
   fire, unconsumed). FIRST duty: `gh pr list --state open` → [] (no open peer-gated PR), no review owed. INFRA:

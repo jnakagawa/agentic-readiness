@@ -1,6 +1,33 @@
 # Loop state
 
-- Cycle counter: 233
+- Cycle counter: 234
+- LOCAL CYCLE 234 — 2026-08-04T20:59Z (COVERAGE/METHOD, LOCAL, **PEER-GATED PR #145 OPENED — awaiting
+  next-cycle review + self-merge; do NOT re-review-and-merge in the authoring fire**). FIRST duty: `gh pr list
+  --state open` → [] at fire start (no open PR, no review owed). INFRA green: newest verify
+  `runs/local/verify_20260804T204105Z.json` (20:41Z, git_pull.ok=true attempts=1, divergence_recovery=None,
+  tests_ok=true) ~18min old — WELL inside the 6h floor; push-race recovery (`d812d6e`) holding. Per local law
+  "prefer the oldest [P0]" took the oldest substantive [LOCAL] P0: the Cycle-232 PROBE FIX
+  (`loop/x402-proxy-discovery`). SHIPPED (to the PR branch, NOT main): the x402 probe now discovers + POSTs the
+  ZeroClick-style CALL-THROUGH PROXY endpoint (`agents.<domain>/<upstream-openapi-path>`) — `_strip_url_junk`
+  sheds trailing markdown punctuation so a referenced `openapi.json` survives the `.json` gate, and
+  `_agent_surface_targets` probes the openapi-derived concrete endpoints (joined to the proxy base) AHEAD of
+  doc/auth URLs. Fixture-neutral BY CONSTRUCTION (probe returns on the first live 402; the frozen priced endpoint
+  is the method-path `/extend`, which 402s + returns before any new `agents/v1/*` fetch → replay guard 24/24,
+  46.1 F / 85.5 B / +39.4, ZERO replay-miss). LIVE-validated (invariant #3, $0 static): driftflight.com
+  76.2 C → **85.5 B / x402-live 8.0** (matches frozen); drift-flight.org 46.1 F / example.com 22.5 F /
+  books.toscrape.com 29.5 F all stay no-agent-native-payment (no false positive); live delta restored to +39.4.
+  TDD `tests/test_x402_proxy_discovery.py` (4, RED→GREEN); full suite 24/24 files green. **NEXT CYCLE'S FIRST
+  DUTY: review + re-run the live re-scores + MERGE PR #145 if it survives** (this is the RESOLUTION of the
+  Cycle-126 "transactability drop" at its root — once merged, the live canonical signal permanently agrees with
+  the frozen fixture). Slack DM SENT (scoring-semantics / sensitive-class PR → visibility, Jonah holds a veto not
+  a gate). Evidence on the PR branch: `runs/local/diag_x402_proxyfix_driftflightcom_20260804T205446Z.json`,
+  `runs/local/x402_proxyfix_live_validation_20260804T205632Z.json`.
+- FOCUS POINTER (Cycle 234 done, LOCAL): the top priority next fire is REVIEW+MERGE of the open peer-gated
+  **PR #145** (first duty). Cloud track-rotation UNCHANGED: Cycle 233 was COVERAGE, so the in-cloud pointer is
+  **TRUTH next** (this LOCAL cycle did not consume the cloud rotation slot). After the PR merges, the deep-bank
+  audit's next candidate (credential-SCOPE / least-privilege distinct from api-auth — verify "df_test_ sandbox"
+  is already `test-mode` first) and the substantive [LOCAL] frontier (thin-bank live fixtures, a THIRD real
+  anchor, moleskine.com two-crawl cross-validation, ACP/UCP/MPP) remain; prefer the oldest.
 - CYCLE 233 — 2026-08-04T20:15Z (COVERAGE, in-cloud, direct-to-main, score-neutral). FIRST duty:
   `list_pull_requests(state=open)` → [] (no open peer-gated PR, no review owed). INFRA green: newest verify
   `runs/local/verify_20260804T194102Z.json` (19:41Z, git_pull.ok=true attempts=1, divergence_recovery=None,

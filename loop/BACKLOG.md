@@ -130,7 +130,26 @@ design in-cloud, execute locally.
   [LOCAL] item below (this "verify the drop" item is now CLOSED).
 
 - **[LOCAL] Fix the x402 probe to discover + POST the call-through PROXY endpoint** (COVERAGE/METHOD,
-  peer-gated, opened Cycle 232 from the diagnosis above). The x402 probe UNDER-MEASURES sites that front a
+  peer-gated, opened Cycle 232 from the diagnosis above).
+  **AUTHORED + PR OPEN — LOCAL Cycle 234 (2026-08-04T20:59Z): PR #145 `loop/x402-proxy-discovery` is OPEN,
+  awaiting the NEXT cycle's FIRST-DUTY adversarial review + self-merge (never review-and-merge the authoring
+  cycle's own PR).** Fix shipped to the branch: `_strip_url_junk` sheds trailing markdown punctuation off prose
+  URLs (so a referenced `openapi.json` survives the `.json` gate) + `_agent_surface_targets` probes the
+  openapi-derived concrete endpoints, joined to the agent PROXY base, AHEAD of doc/auth URLs. Fixture-neutral by
+  construction (the probe returns on the first live 402; the frozen priced endpoint is the method-path `/extend`,
+  which 402s + returns BEFORE any new `agents/v1/*` fetch → replay guard 24/24, 46.1 F / 85.5 B / +39.4, ZERO
+  replay-miss). LIVE-validated (invariant #3, $0 static): driftflight.com 76.2 C → 85.5 B / x402-live 8.0
+  (matches frozen); drift-flight.org 46.1 F + example.com 22.5 F + books.toscrape.com 29.5 F all stay
+  no-agent-native-payment (no false positive); live delta restored to +39.4. TDD RED→GREEN
+  `tests/test_x402_proxy_discovery.py` (4); full suite 24/24 files. Evidence:
+  `runs/local/diag_x402_proxyfix_driftflightcom_20260804T205446Z.json`,
+  `runs/local/x402_proxyfix_live_validation_20260804T205632Z.json`. **NEXT-CYCLE REVIEW CHECKLIST**: re-run live
+  (driftflight.com → x402-live 85.5; ≥1 no-rails → no false positive), confirm replay guard 24/24 zero-miss
+  (fixture-neutral), vendor-neutrality (worded by capability, no domain special-casing), invariant #1 (only
+  empty-body $0 POST handshakes, no nonzero-auth path). On merge this item CLOSES and the Cycle-126
+  transactability-drop question is resolved at the source (live agrees with frozen). Original diagnosis + fix
+  plan preserved below for the reviewer:
+  The x402 probe UNDER-MEASURES sites that front a
   ZeroClick-style call-through proxy (`agents.<domain>/<upstream-openapi-path>` returns the bare 402), scoring
   them `x402-documented-not-probed` (4.0) instead of `x402-live` (8.0) — verified live on the with-rails
   canonical anchor this fire (driftflight.com scores 76.2 live vs the true 85.5). This is a SCORING-SEMANTICS

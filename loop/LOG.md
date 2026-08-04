@@ -3,6 +3,67 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Local cycle — 2026-08-04T20:59Z — Cycle 234 — COVERAGE/METHOD — the x402 probe now discovers + POSTs the call-through PROXY endpoint (agents.<domain>/<upstream-openapi-path>); PEER-GATED PR #145 opened, restores the with-rails anchor's live x402-live 8.0 / 85.5 B (fixing the Cycle-126 "transactability drop" at its root)
+
+LOCAL CYCLE (Jonah's machine, network + venv). FIRST duty discharged: `gh pr list --state open` → [] at fire
+start (no open peer-gated PR, no review owed). INFRA green: newest verify `runs/local/verify_20260804T204105Z.json`
+(20:41Z, git_pull.ok=true attempts=1, divergence_recovery=None, tests_ok=true, all 23 suites) is ~18min old at
+this 20:59Z fire — WELL inside the 6h floor; the Cycle-229 push-race recovery (`d812d6e`) still holding. Per
+local law "execute exactly ONE [LOCAL] item — prefer the oldest [P0]", this fire took the oldest substantive
+[LOCAL] P0: the PROBE FIX spawned by Cycle 232 (`loop/x402-proxy-discovery`) — it needs the network to author
++ live-validate, exactly the local half of the loop.
+
+WHAT/WHY. Cycle 232 diagnosed the driftflight.com live "transactability drop" (76.2 C / tx 62.5 vs the frozen
+85.5 B / tx 87.5, open since Cycle 126) as a PROBE UNDER-MEASUREMENT, not site degradation: the site MIGRATED
+from a dedicated `/extend` bare-402 endpoint to a ZeroClick-style CALL-THROUGH PROXY (send the same method+path
+you'd send the upstream API to `agents.<domain>/<upstream-openapi-path>`, which returns the bare 402). The probe
+missed it. Root cause in `_agent_surface_targets` (both proven by a synthetic TDD reproduction and confirmed
+live): (a) `_ABS_URL_RE` captured trailing markdown punctuation, gluing junk onto extracted URLs so the
+referenced ``openapi.json`.`` failed the `.endswith('.json')` gate and its upstream paths were never mined;
+(b) the openapi-derived concrete endpoints were starved behind doc/auth URLs by the target caps — so the probe
+never built `POST agents.<domain>/<openapi-path>` and never saw the live 402, scoring x402-documented-not-probed
+(4.0) instead of x402-live (8.0).
+
+FIX (discovery only — off any weight/cap/removal — but it MOVES live scores, so PEER-GATED per the ship rules):
+`_strip_url_junk()` sheds trailing backtick/period/comma/colon off URLs pulled from prose (applied in
+`_agent_surface_bases` + `_agent_surface_targets`); `_agent_surface_targets` separates concrete OPERATION paths
+(method-path mentions first, then upstream openapi paths) from doc/auth URLs and probes the concrete endpoints —
+joined to the agent PROXY base — AHEAD of the doc/auth URLs that never 402.
+
+CANONICAL INVARIANCE (fixture-neutral BY CONSTRUCTION). The probe returns on the FIRST live 402. In the FROZEN
+fixture the priced endpoint is the method-path `/extend`, which still 402s and RETURNS before any new
+openapi-derived `agents/v1/*` URL is fetched → the frozen fetched-set is unchanged and the replay guard stays
+24/24, 46.1 F / 85.5 B / +39.4, ZERO replay-miss (verified: `tests/test_canonical_replay.py` green after the
+fix). On the LIVE migrated site `/extend` now 401s, so the probe continues to the openapi-derived proxy endpoint
+and observes the 402.
+
+TDD + LIVE VALIDATION (invariant #3). `tests/test_x402_proxy_discovery.py` (4 tests, TDD RED→GREEN):
+synthetic proxy surface with punctuation-wrapped URLs + a migrated `/extend` → x402-live; precision negative
+(docs-only, no live 402) stays x402-documented-not-probed NON-VACUOUSLY (the proxy path WAS probed, only the 402
+was absent); `_strip_url_junk` unit; `_agent_surface_targets` builds the proxy endpoint concrete-first. LIVE
+($0 static, empty-body POST handshake, no --behavioral, no nonzero auth — invariant #1): driftflight.com
+76.2 C → 85.5 B / x402-live 8.0 (byte-identical to the frozen fixture); drift-flight.org 46.1 F, example.com
+22.5 F, books.toscrape.com 29.5 F all stay no-agent-native-payment (NO false positive). Live canonical delta
+restored to +39.4 (matches the frozen replay guard). Full suite 24/24 files green (suite +1: test_x402_proxy_discovery).
+
+CANONICAL PAIR (frozen regression signal, in-cloud replay guard): 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss
+— UNCHANGED (fix is fixture-neutral). Live signal, POST-FIX: 46.1 F / 85.5 B / +39.4 — the KNOWN probe
+under-measurement is now RESOLVED at the source (live agrees with frozen).
+
+SHIP. PEER-GATED PR #145 (`loop/x402-proxy-discovery`) OPENED, NOT self-merged this cycle (playbook: "Never
+review-and-merge your own cycle's PR in the same fire"). Next cycle's FIRST duty: adversarially review + re-run
+the live re-scores + MERGE if it survives. Evidence (force-added on the PR branch):
+`runs/local/diag_x402_proxyfix_driftflightcom_20260804T205446Z.json`,
+`runs/local/x402_proxyfix_live_validation_20260804T205632Z.json`. Bookkeeping (LOG/STATE/BACKLOG) direct-to-main.
+Slack DM SENT (scoring-semantics / sensitive-class PR opened → visibility per comms policy; Jonah holds a veto,
+not a gate).
+
+NEXT HYPOTHESIS. Next cycle reviews + merges PR #145 (re-run live driftflight.com → x402-live 85.5, ≥1 no-rails
+→ no false positive, replay guard 24/24 zero-miss). Once merged, the LIVE canonical signal permanently agrees
+with the frozen fixture; consider whether the local_verify runner's live re-score (currently reads 76.2 via the
+un-merged probe) should be noted as expected-to-rise-to-85.5 post-merge. Remaining substantive [LOCAL] frontier:
+thin-bank live fixtures, a THIRD real anchor, moleskine.com two-crawl cross-validation, ACP/UCP/MPP handshakes.
+
 ## Cycle 233 — 2026-08-04T20:15Z — COVERAGE — new metered_api offering signal `key-rotation`: the CREDENTIAL LIFECYCLE / KILL-SWITCH (rotate an API key, old keys revoked immediately) — a documented capability on BOTH canonical /docs the deep bank had not yet mapped, distinct from api-auth (present a held credential) and self-provisioning (obtain one without a human)
 
 IN-CLOUD CYCLE. FIRST duty discharged: `list_pull_requests(state=open)` → [] (no open peer-gated PR, no

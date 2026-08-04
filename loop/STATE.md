@@ -1,8 +1,36 @@
 # Loop state
 
-- Cycle counter: 220
+- Cycle counter: 221
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-04T08:2xZ (Cycle 220) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-04T09:2xZ (Cycle 221) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~77.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
+  cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 09:2xZ fire is NOT
+  first-after-16:00 UTC → no DM this fire per comms policy (score-neutral off-scoring-path METHOD increment, no
+  sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org 46.1 F /
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1), off
+  the scoring path; the in-cloud replay guard stays the frozen independent regression signal (24/24, 46.1 F / 85.5 B /
+  +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open → []), so no first-duty review. INFRA/
+  SELF-HEAL (Cycle 221): fresh `.venv` + `requests pyyaml eth-account pytest`, 466 tests green pre-flight (467 after
+  +1); LOG.md confirmed newest-first + complete through Cycle 220 (no bookkeeping gap); last push (Cycle 220, 3b218e8)
+  present on origin/main. NOTE: the runner has now been at-floor since Aug-1 03:50Z (~3 days) — the durable [LOCAL]
+  runner-recovery item stays P0.
+- FOCUS POINTER (Cycle 221 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 221 was METHOD, so
+  Cycle 222 is COVERAGE). Cycle 221 shipped a **METHOD increment — the re-capture DECISION now routes an ambiguous
+  side-tie to human review, not a confident re-capture candidate**. On a sustained out-of-band tie (`side_ambiguous`:
+  equal-magnitude, opposite-direction side moves), `driver` resolves to the no-rails floor by CONVENTION, so
+  `reference_degraded` is False (Cycle 219) and `recapture_advice` fell through to `REC_RECAPTURE` — recommending a
+  comparability-affecting [LOCAL] baseline re-pin on a coin-flip that is EQUALLY a with-rails softening (which → DEFER,
+  wait). New `REC_AMBIGUOUS` code + a branch (checked after `reference_degraded`, before the `REC_RECAPTURE`
+  fall-through) that returns a human-review recommendation naming the tie in capability terms (no host → host-relabel
+  invariant). This is the DECISION-level sibling of Cycle 220's READOUT (`cause_verdict`) fix — the drift family's
+  silent-floor-default audit is now COMPLETE across both consumers (prose + decision). OFF the scoring path
+  (scoring-path diff EMPTY; `canonical_history` not imported by `scoring.py`/`probes/` — grep-verified) → score-neutral,
+  NOT peer-gated, direct-to-main. Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss;
+  `test_canonical_history.py` 70→71, suite 466→467; rubric v0.7. NEXT (COVERAGE 222): a fresh vendor-neutral capability
+  check or in-cloud offering-classifier refinement. Substantive frontier (thin-bank live fixtures, hyphen/reflow/entity
+  real-surface validation, moleskine.com two-crawl cross-validation, ACP/UCP/MPP, transactability-drop CHECK-level
+  diagnosis + peer-gated re-baseline) stays `[LOCAL]`.
+- SUPERSEDED (Cycle 220 runner note): RUNNER AT-FLOOR at 2026-08-04T08:2xZ (Cycle 220) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~76.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
   cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 08:2xZ fire is NOT
   first-after-16:00 UTC → no DM this fire per comms policy (display-only / score-neutral off-scoring-path READOUT
@@ -14,7 +42,7 @@
   +2); LOG.md confirmed newest-first + complete through Cycle 219 (no bookkeeping gap); last push (Cycle 219, 5b3dc45)
   present on origin/main. NOTE: the runner has now been at-floor since Aug-1 03:50Z (~3 days) — the durable [LOCAL]
   runner-recovery item stays P0.
-- FOCUS POINTER (Cycle 220 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 220 was READOUT, so
+- SUPERSEDED (Cycle 220 focus pointer): FOCUS POINTER (Cycle 220 done): METHOD next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 220 was READOUT, so
   Cycle 221 is METHOD). Cycle 220 shipped a **READOUT increment — the driver-line prose now surfaces the tie
   conservatism**. `DivergenceCause.driver` tie-breaks an equal-and-opposite side move to the no-rails floor by
   CONVENTION (Cycle-219 grid), and `cause_verdict` (the terminal "driver:" line + the HTML card "Side:" note,

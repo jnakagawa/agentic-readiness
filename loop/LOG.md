@@ -3,6 +3,57 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 221 — 2026-08-04T09:2xZ — METHOD — the re-capture DECISION must not gamble on a coin-flip: an equal-and-opposite side tie is a human-review case, not a confident re-capture candidate
+
+WHAT/WHY (METHOD — attribution rigor in the DECISION, one function over from Cycle 220's READOUT fix). Cycle 220
+surfaced `DivergenceCause.side_ambiguous` (equal-magnitude, opposite-direction side moves — a genuine gap move whose
+SIDE the overall scores cannot break) and routed the terminal/HTML drift PROSE (`cause_verdict`) through it. But the
+same silent no-rails-floor default lived one function over, in `recapture_advice` (asrs/canonical_history.py): a tie
+resolves `driver` to the no-rails floor by CONVENTION, so `reference_degraded` is False (Cycle 219), and the sustained
+out-of-band tie fell through to `REC_RECAPTURE` — "the baseline genuinely moved (no-rails +X) — a durable capability-gap
+change; a [LOCAL] re-capture would re-pin the baseline". That is a WRONG ACTION on a coin-flip: an equal-and-opposite
+with-rails SOFTENING of the same magnitude is exactly as consistent with the tie, and THAT case is `REC_DEFER` (wait for
+the reference to recover, do NOT chase the dip). Recommending a comparability-affecting baseline re-pin on a tie the
+scores cannot attribute could freeze the pinned delta to a transient reference regression — the very failure
+`reference_degraded`/DEFER exists to prevent.
+
+METHOD — the smallest unit. New `REC_AMBIGUOUS = "review-side-ambiguous"` code (label "review (side unattributed)",
+neutral-grey HTML chip like the no-anchor review), and a new branch in `recapture_advice` checked AFTER
+`reference_degraded` and BEFORE the `REC_RECAPTURE` fall-through: `if cause.side_ambiguous → REC_AMBIGUOUS`, reason
+"sustained out of band and the gap moved (±X), but the SIDE is unattributed — both references moved by equal magnitude
+(no-rails ±a / with-rails ±b), so whether the capability FLOOR rose (re-capture) or the reference SOFTENED (defer) is a
+tie the overall scores cannot break; a human look is needed before the comparability-affecting re-capture". So a
+coin-flip tie now yields REVIEW (a human look), NOT a confident re-capture candidate. VENDOR-NEUTRAL: the reason speaks
+only in capability terms (no-rails / with-rails), names NO host → trivially host-relabel invariant (unlike the
+DEFER/RECAPTURE reasons, which name `cause.driver`). Distinct from `REC_REVIEW` ("review-no-anchor"): that fires when
+there is NO in-band anchor at all; here the anchor exists and the gap move is real — only the attribution is a tie.
+
+TESTS (+1, 466→467; `test_canonical_history.py` 70→71). `test_recapture_advice_flags_ambiguous_side_before_recapture`:
+a 4-anchor in-band series + a sustained (3) out-of-band run whose LATEST reading is an exact equal-and-opposite move vs
+the anchor (no-rails +4.0 / with-rails -4.0, gap -8.0) → side_ambiguous True, reference_degraded False, driver = the
+no-rails floor, and the DECISION is `REC_AMBIGUOUS` (NOT `REC_RECAPTURE`); the reason names the tie/unattributed side
+and NO host; render surfaces the "review (side unattributed)" label. TEETH: nudge the latest with-rails move to
+strictly dominate (-4.1 vs +4.0) and the tie breaks → reference_degraded → `REC_DEFER`, never `REC_AMBIGUOUS` — so the
+branch keys on the genuine tie, not merely on being out of band. The existing `..._recommends_recapture_when_baseline_moved`
+(strict no-rails +8 gain) and `..._prose_is_host_relabel_invariant` (strict-dominant DEFER/RECAPTURE rows) stay green:
+strict-dominance is not a tie, so those never route into REC_AMBIGUOUS.
+
+OFF THE SCORING PATH → score-neutral, NOT peer-gated, direct-to-main. Scoring-path diff EMPTY (`git diff -- asrs/scoring.py
+asrs/probes/ rubric/ fixtures/`); `canonical_history` not imported by `scoring.py`/`probes/` (grep-verified). Only 3
+files touched (asrs/canonical_history.py, asrs/scorecard.py, tests/test_canonical_history.py).
+
+CANONICAL PAIR (in-cloud replay guard, frozen regression signal): 24/24 green — drift-flight.org 46.1 F / driftflight.com
+85.5 B / delta +39.4, 0 replay-miss; rubric v0.7 (unchanged). LIVE signal (READ, not re-run — runner at-floor since
+Aug-1 03:50Z, ~77h, cloud cannot repair): drift-flight.org 46.1 F / driftflight.com 76.2 C / +30.1 / transactability
+62.5 — the transactability-drop divergence PERSISTS (off the scoring path). Full suite 467 green.
+
+NEXT (COVERAGE 222): a fresh vendor-neutral capability check or in-cloud offering-classifier refinement (precision +
+encoding audit frontier is exhausted). The drift-diagnostic family's silent-floor-default audit is now COMPLETE across
+BOTH consumers — the READOUT prose (`cause_verdict`, Cycle 220) and the DECISION (`recapture_advice`, this cycle) both
+route ties through `side_ambiguous`. Substantive frontier (thin-bank live fixtures, hyphen/reflow/entity real-surface
+validation, moleskine.com two-crawl cross-validation, ACP/UCP/MPP, transactability-drop CHECK-level diagnosis +
+peer-gated re-baseline) stays `[LOCAL]`.
+
 ## Cycle 220 — 2026-08-04T08:2xZ — READOUT — surface the driver-line conservatism: an equal-and-opposite side tie is reported as an UNATTRIBUTED gap move, not a silent no-rails floor gain
 
 WHAT/WHY (READOUT — the side-attribution prose must not over-claim on a tie). `DivergenceCause.driver`

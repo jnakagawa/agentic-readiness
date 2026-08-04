@@ -74,6 +74,7 @@ REC_WAIT = "wait-not-yet-sustained"
 REC_DEFER = "defer-reference-degraded"
 REC_RECAPTURE = "recapture-candidate"
 REC_REVIEW = "review-no-anchor"
+REC_AMBIGUOUS = "review-side-ambiguous"
 
 _SPARK = "▁▂▃▄▅▆▇█"
 
@@ -1197,6 +1198,14 @@ def recapture_advice(history: CanonicalHistory) -> RecaptureAdvice:
         capability gap closing; the pinned fixture still represents the true gap, so
         DEFER re-capture until the reference recovers. (This is the case the live
         2026-07-27 drift kept hitting — and the site did recover, vindicating it.)
+      - sustained out of band, but both references moved by EQUAL magnitude in
+        opposite directions (``side_ambiguous``) -> ``REC_AMBIGUOUS``: the gap moved
+        but the overall scores cannot break which SIDE drove it, so a confident
+        re-capture would gamble on a coin-flip (a floor gain that re-pins vs a
+        reference dip that should wait). Needs a human look before the
+        comparability-affecting re-capture. Distinct from ``REC_REVIEW`` (which
+        fires when there is NO in-band anchor at all): here the anchor exists, the
+        gap move is real, only the attribution is a tie.
       - sustained out of band, the baseline genuinely moved (no-rails gaining, or
         the reference durably improving) -> ``REC_RECAPTURE``: a real capability-gap
         change, so a [LOCAL] re-capture would re-pin the baseline.
@@ -1234,6 +1243,17 @@ def recapture_advice(history: CanonicalHistory) -> RecaptureAdvice:
             "capability gap closing; the pinned fixture still represents the true "
             "gap, so DEFER re-capture until the reference recovers",
         )
+    if cause.side_ambiguous:
+        return RecaptureAdvice(
+            REC_AMBIGUOUS,
+            f"sustained out of band and the gap moved ({cause.gap_change:+.1f}), but "
+            f"the SIDE is unattributed — both references moved by equal magnitude "
+            f"(no-rails {cause.no_rails_change:+.1f} / with-rails "
+            f"{cause.with_rails_change:+.1f}), so whether the capability FLOOR rose "
+            "(a durable gap close -> re-capture) or the reference SOFTENED (a "
+            "real-world dip -> defer) is a tie the overall scores cannot break; a "
+            "human look is needed before the comparability-affecting re-capture",
+        )
     return RecaptureAdvice(
         REC_RECAPTURE,
         f"sustained out of band and the baseline genuinely moved ({cause.driver} "
@@ -1250,6 +1270,7 @@ _REC_LABEL = {
     REC_DEFER: "defer re-capture",
     REC_RECAPTURE: "re-capture candidate",
     REC_REVIEW: "review",
+    REC_AMBIGUOUS: "review (side unattributed)",
 }
 
 

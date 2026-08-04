@@ -1313,6 +1313,7 @@ _HISTORY_REC_COLOR = {
     "defer-reference-degraded": "#b54708",
     "recapture-candidate": "#b42318",
     "review-no-anchor": "#667085",
+    "review-side-ambiguous": "#667085",
 }
 
 

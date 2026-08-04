@@ -1784,6 +1784,63 @@ def test_recapture_advice_recommends_recapture_when_baseline_moved() -> None:
         _check("re-capture candidate" in ch.render(hist), "render labels the durable-move case a re-capture candidate")
 
 
+def test_recapture_advice_flags_ambiguous_side_before_recapture() -> None:
+    print("test_recapture_advice_flags_ambiguous_side_before_recapture")
+    # METHOD (Cycle 221): the re-capture DECISION must not gamble on a coin-flip.
+    # When the gap moves but BOTH references moved by EQUAL magnitude in opposite
+    # directions (side_ambiguous), the overall scores cannot break which side drove
+    # it: reading it as a no-rails FLOOR gain -> REC_RECAPTURE would re-pin the
+    # baseline on a tie that is equally a with-rails SOFTENING (which -> REC_DEFER,
+    # wait). The honest recommendation is a human look, NOT a confident re-capture
+    # candidate. This is the decision-level sibling of the Cycle-220 cause_verdict
+    # tie case: the same silent no-rails-floor default lived one function over, in
+    # recapture_advice's REC_RECAPTURE fall-through, and drove the wrong action.
+    with tempfile.TemporaryDirectory() as tmp:
+        # 4 in-band anchors (delta 39.4), then a sustained out-of-band run whose
+        # LATEST reading is an exact equal-and-opposite move vs the in-band anchor:
+        # no-rails +4.0 / with-rails -4.0 (gap -8.0). The tie resolves driver to the
+        # no-rails floor by CONVENTION, so reference_degraded is False and the old
+        # fall-through mislabeled it a durable capability-gap change.
+        rows = [_artifact(f"20260727T0{i}0000Z", 46.1, 85.5, 39.4) for i in range(1, 5)]
+        rows += [
+            _artifact("20260727T050000Z", 48.0, 83.6, 35.6),   # +1.9 / -1.9
+            _artifact("20260727T060000Z", 49.0, 82.6, 33.6),   # +2.9 / -2.9
+            _artifact("20260727T070000Z", 50.1, 81.5, 31.4),   # +4.0 / -4.0, 3rd in a row
+        ]
+        _write_series(tmp, rows)
+        hist = ch.load_history(tmp)
+        cause = hist.divergence_cause
+        _check(hist.consecutive_out_of_band == 3, "sustained out of band (>= _SUSTAINED_MIN)")
+        _check(cause is not None and cause.side_ambiguous is True, "the latest move is an equal-and-opposite tie")
+        _check(cause.reference_degraded is False, "a tie is not reference degradation (driver defaults to the floor)")
+        _check(cause.driver == ch.CANONICAL_NO_RAILS, "the tie resolves the driver to the no-rails floor by convention")
+        # THE DECISION: review-the-tie, NOT a confident re-capture candidate.
+        _check(
+            hist.recapture.code == ch.REC_AMBIGUOUS,
+            f"ambiguous tie -> review (side unattributed), got {hist.recapture.code}",
+        )
+        _check(hist.recapture.code != ch.REC_RECAPTURE, "the coin-flip tie must NOT read as a durable baseline move")
+        reason = hist.recapture.reason
+        _check("unattributed" in reason and "tie" in reason, "the reason names the tie / unattributed side")
+        # Vendor-neutral: the reason speaks in capability terms (no-rails / with-rails),
+        # never a host string — so it is trivially host-relabel invariant.
+        _check(
+            ch.CANONICAL_NO_RAILS not in reason and ch.CANONICAL_WITH_RAILS not in reason,
+            "the ambiguous-tie reason names no host, only the capability sides",
+        )
+        rendered = ch.render(hist)
+        _check("review (side unattributed)" in rendered, "render surfaces the ambiguous-tie recommendation label")
+        # TEETH: nudge the latest with-rails move to STRICTLY dominate (-4.1 vs +4.0)
+        # and the tie breaks -> reference_degraded -> DEFER, never REC_AMBIGUOUS. This
+        # confirms the branch keys on the genuine tie, not merely on being out of band.
+        rows_strict = rows[:-1] + [_artifact("20260727T070000Z", 50.1, 81.4, 31.3)]
+        with tempfile.TemporaryDirectory() as tmp2:
+            _write_series(tmp2, rows_strict)
+            hist2 = ch.load_history(tmp2)
+        _check(hist2.divergence_cause.side_ambiguous is False, "a strictly dominant with-rails move is not a tie")
+        _check(hist2.recapture.code == ch.REC_DEFER, f"strict with-rails softening -> defer, got {hist2.recapture.code}")
+
+
 def test_recapture_advice_reviews_when_no_anchor() -> None:
     print("test_recapture_advice_reviews_when_no_anchor")
     # sustained out of band but the ENTIRE series is out of band -> no in-band anchor
@@ -2679,6 +2736,7 @@ def main() -> int:
         test_recapture_advice_waits_when_not_yet_sustained,
         test_recapture_advice_defers_on_reference_softening,
         test_recapture_advice_recommends_recapture_when_baseline_moved,
+        test_recapture_advice_flags_ambiguous_side_before_recapture,
         test_recapture_advice_reviews_when_no_anchor,
         test_recapture_advice_on_real_series_is_coherent,
         test_real_series_defer_decision_is_corroborated_by_both_mechanisms,

@@ -689,18 +689,21 @@ design in-cloud, execute locally.
 
 ## P1
 
-- **[OBSERVATION — Cycle 220, READOUT candidate] Route the side-attribution TIE through the re-capture
-  RECOMMENDATION prose too.** Cycle 220 made `cause_verdict` (the "driver:" line) report an equal-and-opposite
-  side tie as UNATTRIBUTED via `DivergenceCause.side_ambiguous`, but the SAME silent floor-default survives one
-  function over: `recapture_advice`'s REC_RECAPTURE branch (asrs/canonical_history.py ~line 1213) reads
-  `cause.driver` / `cause.driver_change` and prints "the baseline genuinely moved (<no-rails> +X) — a durable
-  capability-gap change" on a tie — attributing the move to the no-rails floor the driver tie-break arbitrarily
-  picked. In-cloud READOUT increment: when `cause.side_ambiguous`, have the REC_RECAPTURE reason say the gap moved
-  but the SIDE is unattributed (so re-capture rests on a gap move whose driver is a coin-flip), WITHOUT changing
-  the recommendation CODE (REC_RECAPTURE vs REC_DEFER is driven by `reference_degraded`/band, which stay correct —
-  a tie is not `reference_degraded`, so it already routes to RECAPTURE, not DEFER; this is prose-only). Off the
-  scoring path, score-neutral; guard the ambiguous-tie reason string + that the recommendation CODE is unchanged
-  from today on the same tie input. Naturally the METHOD/READOUT sibling of the Cycle-220 driver-line fix.
+<!-- DONE 2026-08-04T09:2xZ (Cycle 221, METHOD, direct-to-main, score-neutral): "Route the side-attribution TIE
+     through the re-capture RECOMMENDATION too" SHIPPED — and STRONGER than the prose-only increment this item
+     scoped. The observation proposed keeping REC_RECAPTURE and only softening the reason string. But re-examining
+     it as METHOD (Cycle 221 = METHOD): REC_RECAPTURE is an ACTION recommendation (a comparability-affecting [LOCAL]
+     baseline re-pin), and on a genuine equal-and-opposite tie the move is EQUALLY a with-rails softening (whose
+     honest recommendation is DEFER/wait). Recommending re-capture on a coin-flip could freeze the pinned delta to a
+     transient reference dip — the exact failure reference_degraded/DEFER guards against. So the decision, not just
+     the prose, was wrong. FIX: new `REC_AMBIGUOUS` code + a branch in `recapture_advice` (after `reference_degraded`,
+     before the REC_RECAPTURE fall-through) that returns a HUMAN-REVIEW recommendation when `cause.side_ambiguous`,
+     naming the tie in capability terms only (no host → host-relabel invariant). `test_recapture_advice_flags_ambiguous_
+     side_before_recapture` (tie → REC_AMBIGUOUS not REC_RECAPTURE; TEETH: strict with-rails dominance → REC_DEFER).
+     Off the scoring path (scoring-path diff EMPTY; canonical_history not imported by scoring.py/probes) → score-neutral,
+     NOT peer-gated. Replay guard 24/24 / 46.1 F / 85.5 B / +39.4; test_canonical_history.py 70→71, suite 466→467;
+     rubric v0.7. The drift family's silent-floor-default audit is now COMPLETE across BOTH consumers — the READOUT
+     prose (cause_verdict, Cycle 220) and the DECISION (recapture_advice, Cycle 221). See LOG Cycle 221. -->
 
 - **[OBSERVATION — Cycle 216, METHOD candidate] Fold the loader exclusion accounting into a drift-series
   INTEGRITY metric.** Cycle 216 (READOUT) surfaced `LoadAccounting` (total / included / excluded_red_bench /

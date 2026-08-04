@@ -1,8 +1,36 @@
 # Loop state
 
-- Cycle counter: 212
+- Cycle counter: 213
 - Started: 2026-07-23 (UTC)
-- RUNNER AT-FLOOR at 2026-08-04T00:2xZ (Cycle 212) — newest verify `runs/local/verify_20260801T035047Z.json`
+- RUNNER AT-FLOOR at 2026-08-04T01:1xZ (Cycle 213) — newest verify `runs/local/verify_20260801T035047Z.json`
+  (03:50Z Aug-1, `attempts=1`) is ~69.5h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
+  cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 01:1xZ fire is NOT
+  first-after-16:00 UTC → no DM this fire per comms policy (score-neutral off-scoring-path METHOD increment, no
+  sensitive-class PR, nothing score-moving). Live signal (read, not re-run): drift-flight.org 46.1 F /
+  driftflight.com 76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1),
+  off the scoring path; the in-cloud replay guard stays the frozen independent regression signal (24/24, 46.1 F /
+  85.5 B / +39.4). No open peer-gated PRs this fire (`list_pull_requests` state=open → []), so no first-duty
+  review. INFRA/SELF-HEAL (Cycle 213): fresh checkout landed in detached HEAD at origin/main tip `4344c38`
+  (Cycle-212); reconciled via `git checkout -B main origin/main`. Fresh `.venv` + `requests pyyaml eth-account
+  pytest`, 445 tests green pre-flight (448 after +3).
+- FOCUS POINTER (Cycle 213 done): COVERAGE next (rotate METHOD → COVERAGE → TRUTH → READOUT; Cycle 213 was
+  METHOD, so Cycle 214 is COVERAGE). Cycle 213 shipped a **METHOD increment — the citability gate now covers
+  TRUST-verdict reproducibility, not just the checkpoint ladder** (`asrs/reliability.py` gate + docstring,
+  `asrs/scorecard.py` pill map, `tests/test_quotability.py` +3; suite 445→448). `quotability()` tagged a panel
+  `reproducible`/citable once `verdict_stability` (checkpoint-ladder only) cleared 0.8 — IGNORING
+  `trust_events_unanimous`, so a ladder-unanimous panel that split 50/50 on the refuse↔warn trust flip (the very
+  instability the reliability module's docstring cites as its motivation) was mis-tagged citable (verified live:
+  stability 1.0, trust agreement 0.5 → `reproducible`). New branch (after the checkpoint-instability check, before
+  the `reproducible` return): `trust_events_unanimous is False` → `provisional-trust-unstable`/quotable=False,
+  carrying the real ladder stability + naming the unreproducible trust verdict. Checkpoint instability still
+  outranks it. Non-vacuous teeth: the SPLIT downgrades, not the PRESENCE of a concern (unanimous refuse stays
+  citable); ordering guard (doubly-unstable → `provisional-unstable`). Display-only, never a score gate (scoring.py
+  does not import quotability). OFF the scoring path (scoring-path diff EMPTY) → score-neutral, NOT peer-gated,
+  direct-to-main. Replay guard 24/24, 46.1 F / 85.5 B / +39.4, 0 replay-miss; rubric v0.7. NEXT (COVERAGE 214): a
+  dedicated reliability-card sentence for the new tag / surface-parity pin, or substantive frontier work — GENUINE
+  new thin-bank signals from real fixtures, the negative anchor's two-crawl static cross-validation via a
+  `moleskine.com` fixture, ACP/UCP/MPP, the transactability-drop CHECK-level diagnosis — all `[LOCAL]`.
+- SUPERSEDED (Cycle 212 runner note): RUNNER AT-FLOOR at 2026-08-04T00:2xZ (Cycle 212) — newest verify `runs/local/verify_20260801T035047Z.json`
   (03:50Z Aug-1, `attempts=1`) is ~69h old at the fire — PAST the 6h floor (machine-asleep / runner-lag pattern,
   cloud cannot repair). Already flagged in the 16:17Z Cycle-204 daily digest; this 00:2xZ fire is NOT
   first-after-16:00 UTC → no DM this fire per comms policy (display-only / score-neutral off-scoring-path READOUT

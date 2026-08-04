@@ -100,6 +100,9 @@ class Quotability:
         (the observed same-day refuse<->warn flip is exactly this risk).
       - ``provisional-unstable`` — a multi-trial panel whose runs disagreed; the
         number is a point estimate over a flipping distribution.
+      - ``provisional-trust-unstable`` — the checkpoint ladder reproduced but the
+        panel split on whether the site raised a trust concern (the refuse<->warn
+        flip); the trust posture is not reproducible even though the ladder is.
       - ``behavioral-unobserved`` — ``--behavioral`` was asked for but every run
         was env-blocked/failed, so the behavioral pillars rest on nothing; the
         behavioral dimension is not quotable (the static floor is not judged here).
@@ -168,6 +171,24 @@ def quotability(report: Any) -> Quotability:
             reason=f"Panel unstable (verdict stability {rel.verdict_stability:.2f} "
             f"< {_STABLE_MIN:.2f}) — the runs disagree, so the number is a point "
             "estimate over a flipping distribution.",
+            verdict_stability=rel.verdict_stability,
+        )
+    if rel.trust_events_unanimous is False:
+        # Checkpoints reproduce, but the panel SPLIT on whether the site raised a
+        # trust concern — the same-day refuse<->warn flip this module was built to
+        # catch (see the module docstring). verdict_stability is measured over the
+        # checkpoint ladder only, so a stable ladder can hide an unreproducible
+        # trust posture. A readiness read whose trust verdict does not reproduce is
+        # provisional, not citable, even with a fully stable ladder. (Checkpoint
+        # instability is caught above and outranks this — it is the coarser, more
+        # load-bearing signal.)
+        return Quotability(
+            quotable=False,
+            tag="provisional-trust-unstable",
+            reason=f"Checkpoints reproduce (verdict stability {rel.verdict_stability:.2f}) "
+            f"but the panel split on whether the site raised a trust concern "
+            f"(trust-event agreement {rel.trust_event_agreement:.2f}) — the "
+            "refuse/warn verdict is not reproducible, so the number is provisional.",
             verdict_stability=rel.verdict_stability,
         )
     return Quotability(

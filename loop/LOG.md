@@ -3,6 +3,60 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 213 — 2026-08-04T01:1xZ — METHOD — close the citability gate's blind spot to the refuse↔warn trust flip: a checkpoint-stable panel that split on trust is provisional, not reproducible
+
+WHAT/WHY (METHOD — reproducibility rigor). `quotability()` is the one-bit "is this headline number safe to
+cite?" gate. It classifies a behavioral panel as `reproducible` (citable) once the panel is multi-trial and its
+`verdict_stability` clears the 0.8 band. But `verdict_stability` is measured over the CHECKPOINT LADDER only
+(`_CHECKPOINT_KEYS`), while `trust_event_agreement` / `trust_events_unanimous` — whether the panel's runs AGREED
+on raising a trust concern (the refuse↔warn flip) — is computed by `panel_reliability` and then IGNORED by the
+citability gate. That flip is the EXACT instability the reliability module's opening docstring cites as its
+motivating case ("a same-day codex trust verdict flipped refuse <-> warn at equal confidence"), yet a panel
+unanimous on all five checkpoints but split 50/50 on the trust verdict was tagged `reproducible` / quotable=True
+("Panel reproduces"). Verified live at fire start (4-run panel, ladder unanimous, trust 2/2 split →
+verdict_stability 1.0, trust_event_agreement 0.5, tag `reproducible`). So the gate had a blind spot to the very
+reproducibility failure it was built to surface: a stable ladder could hide an unreproducible trust posture.
+
+THE FIX. `quotability()` gains a branch, AFTER the checkpoint-instability check and before the `reproducible`
+return: when `rel.trust_events_unanimous is False` (the panel split on the trust concern) the report is tagged
+`provisional-trust-unstable` / quotable=False, carrying the (real, stable) ladder verdict_stability through and
+naming the unreproducible trust verdict in the reason. Ordering is deliberate — checkpoint instability is the
+coarser, more load-bearing signal and still wins the tag (`provisional-unstable`) when BOTH are unstable; the
+trust caveat only fires on an otherwise-stable ladder. Display-only, never a score gate.
+
+METHOD / NON-VACUITY + TEETH (3 new tests, `tests/test_quotability.py`, registered in `main()` — Cycle-140
+dead-test guard green). (1) `test_trust_split_panel_is_provisional`: ladder unanimous (stability 1.0) + trust
+split → `provisional-trust-unstable` / not quotable, ladder stability carried, reason names the trust verdict.
+(2) `test_unanimous_trust_concern_stays_citable`: NON-VACUOUS — it is the SPLIT that downgrades, not the PRESENCE
+of a concern; a ladder-stable panel where BOTH runs raise the concern (unanimous refuse) stays `reproducible` /
+citable (else the gate would punish a reproducibly-distrusted site, which is a citable reading). (3)
+`test_checkpoint_instability_outranks_trust_split`: ordering guard — a doubly-unstable panel tags
+`provisional-unstable`, not the trust caveat. Vendor-neutral (keys on panel agreement, no host special-cased).
+
+SHIP CLASS + EVIDENCE. Display-only diagnostic, OFF the scoring path: `git diff --name-only` = `asrs/reliability.py`
+(the gate + `Quotability` docstring), `asrs/scorecard.py` (new tag → `("bad","Provisional")` pill), `tests/
+test_quotability.py` ONLY; the scoring-path diff (`asrs/scoring.py asrs/probes/ rubric/ fixtures/ asrs/offering.py
+asrs/battery.py`) is EMPTY → score-neutral, NOT scoring semantics (quotability never feeds the score — `scoring.py`
+does not import it), NOT peer-gated, direct-to-main. `test_quotability.py` 8→11; full suite 445→448, 0 failures.
+Canonical PAIR unchanged: in-cloud replay guard 24/24, **46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7.
+(Cloud network-blocked for live re-score; in-cloud standard = regression-by-construction — scoring path
+byte-identical — plus the offline replay guard.)
+
+FIRST-DUTY / INFRA. No open peer-gated PRs (`list_pull_requests` state=open → []) → no first-duty review. Bench
+healthy (448 green). Local verify runner AT-FLOOR: newest `runs/local/verify_20260801T035047Z.json` (03:50Z Aug-1)
+is ~69.5h old at this 01:1xZ fire — past the 6h floor (machine-asleep / runner-lag, cloud cannot repair; already
+flagged in the Cycle-204 16:17Z digest). Live signal (read, not re-run): drift-flight.org 46.1 F / driftflight.com
+76.2 C / +30.1 / transactability 62.5 — the transactability-drop divergence PERSISTS (Aug-1), off the scoring path.
+01:1xZ is NOT first-after-16:00 UTC → no digest DM per comms policy (score-neutral off-scoring-path METHOD, no
+sensitive-class PR, nothing score-moving).
+
+NEXT HYPOTHESIS (COVERAGE 214). Rotate COVERAGE next (Cycle 213 was METHOD; METHOD → COVERAGE → TRUTH → READOUT).
+The citability gate now covers ladder AND trust reproducibility. In-cloud COVERAGE candidates are thin, but the
+`provisional-trust-unstable` tag could earn a dedicated reliability-card sentence, or the surface-parity of the new
+pill be pinned. Substantive frontier (GENUINE new thin-bank signals from real fixtures, the negative anchor's
+two-crawl static cross-validation via a `moleskine.com` fixture, ACP/UCP/MPP live handshakes, the
+transactability-drop CHECK-level diagnosis) stays `[LOCAL]`.
+
 ## Cycle 212 — 2026-08-04T00:2xZ — READOUT — surface the attributed-pillar noise floor in the drift block: the operator sees the −25 move is signal, not pillar jitter
 
 WHAT/WHY (READOUT — evidence clarity on both surfaces). Cycle 211 computed `attributed_pillar_noise_floor`

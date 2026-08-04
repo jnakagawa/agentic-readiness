@@ -2233,6 +2233,7 @@ _QUOTABILITY_BANDS = {
     "provisional-single-trial": ("warn", "Provisional"),
     "behavioral-unobserved": ("warn", "Provisional"),
     "provisional-unstable": ("bad", "Provisional"),
+    "provisional-trust-unstable": ("bad", "Provisional"),
 }
 
 

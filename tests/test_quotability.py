@@ -42,9 +42,10 @@ def _check(cond: bool, msg: str) -> None:
     print(f"  ok: {msg}")
 
 
-def _run(model="claude", trial=1, **cp) -> BehavioralRun:
+def _run(model="claude", trial=1, trust_events=None, **cp) -> BehavioralRun:
     checkpoints = {k: bool(cp.get(k, False)) for k in _KEYS}
-    return BehavioralRun(model=model, trial=trial, checkpoints=checkpoints)
+    return BehavioralRun(model=model, trial=trial, checkpoints=checkpoints,
+                         trust_events=list(trust_events or []))
 
 
 def _env_blocked_run(model="codex", trial=1) -> BehavioralRun:
@@ -165,6 +166,52 @@ def test_render_shows_verdict_and_score_unchanged() -> None:
 # ---------------------------------------------------------------------------
 # 8. CLI default: --trials is now >=2 so a bare --behavioral run is checked.
 # ---------------------------------------------------------------------------
+def test_trust_split_panel_is_provisional() -> None:
+    print("test_trust_split_panel_is_provisional")
+    # Checkpoint ladder is UNANIMOUS (verdict_stability 1.0), but the panel SPLIT
+    # on whether the site raised a trust concern (one run warns, one is clean) —
+    # the same-day refuse<->warn flip the module exists to catch. Citability must
+    # NOT read "reproducible": a stable ladder can hide an unreproducible trust
+    # posture, and the number is provisional until the trust verdict reproduces.
+    allpass = dict.fromkeys(_KEYS, True)
+    warned = _run(trial=1, trust_events=["would warn: site may be illegitimate"], **allpass)
+    clean = _run(model="codex", trial=1, trust_events=[], **allpass)
+    q = quotability(_report(runs=[warned, clean]))
+    _check(q.quotable is False, "trust-split panel is not quotable")
+    _check(q.tag == "provisional-trust-unstable", f"tag provisional-trust-unstable, got {q.tag!r}")
+    # The checkpoint stability is real and carried through — the caveat is about
+    # the trust verdict, not the ladder.
+    _check(q.verdict_stability == 1.0, f"ladder stability 1.0 carried, got {q.verdict_stability}")
+    _check("trust concern" in q.reason, "reason names the unreproducible trust verdict")
+
+
+def test_unanimous_trust_concern_stays_citable() -> None:
+    print("test_unanimous_trust_concern_stays_citable")
+    # NON-VACUOUS teeth: it is the SPLIT that downgrades, not the mere PRESENCE of
+    # a trust concern. A ladder-stable panel where BOTH runs raise the concern
+    # (unanimous refuse) reproduces on trust too -> still CITABLE. Otherwise the
+    # gate would punish sites the panel agreed to distrust, which is a reproducible
+    # (and citable) reading, not an unstable one.
+    allpass = dict.fromkeys(_KEYS, True)
+    w1 = _run(trial=1, trust_events=["refuse: unverified merchant"], **allpass)
+    w2 = _run(model="codex", trial=1, trust_events=["refuse: unverified merchant"], **allpass)
+    q = quotability(_report(runs=[w1, w2]))
+    _check(q.quotable is True, "unanimous-trust panel is still quotable")
+    _check(q.tag == "reproducible", f"tag reproducible, got {q.tag!r}")
+
+
+def test_checkpoint_instability_outranks_trust_split() -> None:
+    print("test_checkpoint_instability_outranks_trust_split")
+    # Ordering guard: when the checkpoint ladder ALSO disagrees, the coarser,
+    # more load-bearing checkpoint instability wins the tag (provisional-unstable),
+    # not the trust-split caveat — even though both are unstable here.
+    r1 = _run(trial=1, trust_events=["would warn"], **dict.fromkeys(_KEYS, True))
+    r2 = _run(model="codex", trial=1, trust_events=[], **dict.fromkeys(_KEYS, False))
+    q = quotability(_report(runs=[r1, r2]))
+    _check(q.quotable is False, "doubly-unstable panel is not quotable")
+    _check(q.tag == "provisional-unstable", f"checkpoint instability wins, got {q.tag!r}")
+
+
 def test_cli_trials_default_is_two() -> None:
     print("test_cli_trials_default_is_two")
     from asrs.cli import build_parser
@@ -181,6 +228,9 @@ def main() -> int:
         test_unstable_panel_is_provisional,
         test_reproducible_panel_is_citable,
         test_all_env_blocked_is_behavioral_unobserved,
+        test_trust_split_panel_is_provisional,
+        test_unanimous_trust_concern_stays_citable,
+        test_checkpoint_instability_outranks_trust_split,
         test_render_shows_verdict_and_score_unchanged,
         test_cli_trials_default_is_two,
     ]

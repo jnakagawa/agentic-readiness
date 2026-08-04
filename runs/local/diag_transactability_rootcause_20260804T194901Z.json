@@ -1,0 +1,154 @@
+{
+  "conclusion": "The driftflight.com transactability drop (87.5->62.5) is a PROBE UNDER-MEASUREMENT, NOT site capability degradation. The agent-native x402 rail is FULLY LIVE. Per invariant #4 (attribution honesty) the frozen fixture (85.5 B / tx 87.5 / x402-live) stays the honest record: DO NOT re-baseline it DOWN. The gap is a probe bug (fix is peer-gated, separate cycle).",
+  "sole_flipped_check": "x402_probe: PASS 8.0 'x402-live' -> PARTIAL 4.0 'x402-documented-not-probed' (self_serve_payg 6.0 and mcp_surface 0.0 byte-identical)",
+  "live_x402_rail_IS_alive": {
+    "probe": "bare POST https://agents.driftflight.com/v1/images/generate (NO payment attached = $0)",
+    "status": 402,
+    "x402_live": true,
+    "amount_usd": "0.060000",
+    "protocols_offered": [
+      "mpp",
+      "x402"
+    ]
+  },
+  "site_migrated_to_call_through_proxy": {
+    "old_fixture_endpoint": "agents.driftflight.com/extend (Jul-23 fixture captured a bare 402 here)",
+    "extend_now_GET": 404,
+    "extend_now_POST": 401,
+    "meaning": "/extend moved behind agent-identity (401); the bare 402 now lives at POST agents.<domain>/<upstream-openapi-path> through the ZeroClick proxy."
+  },
+  "why_the_probe_misses_it": {
+    "agent_bases": [
+      "https://agents.driftflight.com"
+    ],
+    "agent_targets_built": [
+      "https://agents.driftflight.com/manifest.json,",
+      "https://agents.driftflight.com/auth.md",
+      "https://agents.driftflight.com/agent/identity`",
+      "https://agents.driftflight.com/auth.md.",
+      "https://agents.driftflight.com/manifest.json`:",
+      "https://agents.driftflight.com/manifest.json`",
+      "https://agents.driftflight.com/llms.txt.",
+      "https://agents.driftflight.com/plans/pln_FYK3YV6A80tciTVRNd2RW/purchase"
+    ],
+    "saw_live_402_in_scored_path": false,
+    "root_cause": "_agent_surface_targets never builds POST agents.<domain>/v1/images/generate. The openapi-derived upstream paths are dropped: (a) _ABS_URL_RE captures trailing markdown punctuation (',' '.' '`' ':' '):') gluing junk onto extracted URLs -> most agent_targets 404 and the referenced openapi.json URL can fail the .endswith('.json') gate; (b) the _dedupe(paths)[:5] cap drops openapi-derived paths behind method-path mentions; (c) the targets[:16] cap drops the tail. So the probe GETs the unpriced upstream (api.driftflight.com/*, 404/200) and POSTs only doc/auth URLs."
+  },
+  "probed_targets_scored_path": [
+    {
+      "m": "GET",
+      "u": "https://driftflight.com/api",
+      "s": 404
+    },
+    {
+      "m": "GET",
+      "u": "https://driftflight.com/api/v1",
+      "s": 404
+    },
+    {
+      "m": "GET",
+      "u": "https://driftflight.com/v1",
+      "s": 404
+    },
+    {
+      "m": "GET",
+      "u": "https://api.driftflight.com/openapi.json",
+      "s": 200
+    },
+    {
+      "m": "GET",
+      "u": "https://api.driftflight.com",
+      "s": 404
+    },
+    {
+      "m": "GET",
+      "u": "https://api.driftflight.com/v1/models",
+      "s": 200
+    },
+    {
+      "m": "GET",
+      "u": "https://api.driftflight.com/v1/images/generate",
+      "s": 404
+    },
+    {
+      "m": "GET",
+      "u": "https://api.driftflight.com/r/8f31...",
+      "s": 404
+    },
+    {
+      "m": "GET",
+      "u": "https://docs.x402.org/getting-started/quickstart-for-buyers):",
+      "s": 404
+    },
+    {
+      "m": "GET",
+      "u": "https://agents.driftflight.com/manifest.json,",
+      "s": 404
+    },
+    {
+      "m": "POST",
+      "u": "https://agents.driftflight.com/manifest.json,",
+      "s": 404
+    },
+    {
+      "m": "GET",
+      "u": "https://agents.driftflight.com/auth.md",
+      "s": 200
+    },
+    {
+      "m": "POST",
+      "u": "https://agents.driftflight.com/auth.md",
+      "s": 404
+    },
+    {
+      "m": "GET",
+      "u": "https://agents.driftflight.com/agent/identity`",
+      "s": 404
+    },
+    {
+      "m": "POST",
+      "u": "https://agents.driftflight.com/agent/identity`",
+      "s": 404
+    },
+    {
+      "m": "GET",
+      "u": "https://agents.driftflight.com/auth.md.",
+      "s": 404
+    },
+    {
+      "m": "POST",
+      "u": "https://agents.driftflight.com/auth.md.",
+      "s": 404
+    },
+    {
+      "m": "GET",
+      "u": "https://agents.driftflight.com/manifest.json`:",
+      "s": 404
+    },
+    {
+      "m": "POST",
+      "u": "https://agents.driftflight.com/manifest.json`:",
+      "s": 404
+    },
+    {
+      "m": "GET",
+      "u": "https://agents.driftflight.com/manifest.json`",
+      "s": 404
+    },
+    {
+      "m": "POST",
+      "u": "https://agents.driftflight.com/manifest.json`",
+      "s": 404
+    },
+    {
+      "m": "GET",
+      "u": "https://agents.driftflight.com/llms.txt.",
+      "s": 404
+    },
+    {
+      "m": "POST",
+      "u": "https://agents.driftflight.com/llms.txt.",
+      "s": 404
+    }
+  ]
+}

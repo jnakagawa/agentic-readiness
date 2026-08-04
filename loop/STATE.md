@@ -1,6 +1,36 @@
 # Loop state
 
-- Cycle counter: 231
+- Cycle counter: 232
+- LOCAL CYCLE 2026-08-04T19:5xZ (Cycle 232, TRUTH — oldest [LOCAL] P0, per local law "prefer the oldest P0"
+  which overrides the cloud track-rotation; the COVERAGE-next cloud pointer is PRESERVED for the next in-cloud
+  fire, unconsumed). FIRST duty: `gh pr list --state open` → [] (no open peer-gated PR), no review owed. INFRA:
+  newest verify `runs/local/verify_20260804T194102Z.json` (19:41Z, `git_pull.ok=true` attempts=1
+  `divergence_recovery=None` `tests_ok=true`, all 23 suites) is ~fresh at this fire — WELL inside the 6h floor;
+  the push-race recovery (`d812d6e`) still HOLDING. **SHIPPED — the driftflight.com transactability-drop P0
+  (open since Cycle 126) is DIAGNOSED + CLOSED, and its standing hypothesis is REVERSED.** The live re-score's
+  76.2 C / tx 62.5 is a PROBE UNDER-MEASUREMENT, NOT site degradation: CHECK-level diff fingers `x402_probe`
+  alone (PASS 8.0 `x402-live` → PARTIAL 4.0 `x402-documented-not-probed`; self_serve_payg + mcp_surface
+  byte-identical), yet a bare $0 POST to `agents.driftflight.com/v1/images/generate` returns a LIVE HTTP 402
+  (x402 + MPP, $0.06) — the anchor's agent-native payment rail is FULLY ALIVE. Driftflight migrated from a
+  `/extend` bare-402 endpoint (now GET 404 / POST 401 behind identity) to a call-through PROXY; the probe's
+  `_agent_surface_targets` never builds `POST proxy/<upstream-openapi-path>` (trailing-punctuation URL capture
+  + `[:5]`/`[:16]` caps drop the openapi paths), so it POSTs only doc/auth URLs → `saw_live_402=False`. Per
+  invariant #4 the FROZEN fixture (85.5 B / tx 87.5 / x402-live) stays the HONEST record — the
+  re-baseline-DOWN plan is CANCELED (would have falsely recorded a capability loss). The "is the with-rails
+  anchor degrading?" question open 100+ cycles is answered: NO, live-verified intact. Score-neutral
+  (`git diff -- asrs/ rubric/ fixtures/ tests/` EMPTY; only `experiments/` + force-added `runs/local/`
+  evidence) → rubric v0.7, replay guard 24/24 / 46.1 F / 85.5 B / +39.4, free-tier 11/11. Spawned a NEW
+  PEER-GATED [LOCAL] P0 (`loop/x402-proxy-discovery`) for the probe fix. NO DM this fire (score-neutral
+  off-scoring-path diagnosis, not first-after-16:00 UTC — the Aug-4 digest went at Cycle 228 16:2xZ; the
+  finding + the new peer-gated PR will surface in the next digest / at PR-open per the sensitive-class-PR
+  comms rule). Evidence: `runs/local/diag_transactability_drop_20260804T194242Z.json`,
+  `runs/local/diag_transactability_rootcause_20260804T194901Z.json`, `experiments/diag_transactability_drop.py`.
+- FOCUS POINTER (Cycle 232 done, LOCAL): the oldest substantive [LOCAL] P0 is now the PROBE FIX just spawned
+  (`loop/x402-proxy-discovery`, peer-gated) — the next LOCAL fire should author it (TDD + 2-domain live
+  validation) since it needs the network. Cloud track-rotation UNCHANGED: COVERAGE is still next-due for the
+  next in-cloud fire (Cycle 231 was TRUTH; this local TRUTH diagnosis did not consume the cloud rotation slot).
+  Remaining substantive [LOCAL] frontier (thin-bank live fixtures, a THIRD real anchor, moleskine.com
+  two-crawl cross-validation, typographic/render/structured-catalog live captures, ACP/UCP/MPP) stays queued.
 - RUNNER HEALTHY at 2026-08-04T19:1xZ (Cycle 231) — newest verify `runs/local/verify_20260804T174103Z.json` (17:41Z,
   `git_pull.ok=true` attempts=1 `divergence_recovery=None` `tests_ok=true`) is ~1.5h old at this fire — WELL inside the
   6h floor. The push-race recovery (Cycle 229's `d812d6e`) is HOLDING — every fire since (17:09Z, 17:41Z) `attempts=1`,

@@ -3,6 +3,72 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Local cycle — 2026-08-04T19:55Z — Cycle 232 — TRUTH — the driftflight.com "transactability drop" is a PROBE UNDER-MEASUREMENT, not site degradation: the with-rails anchor's x402 rail is LIVE (bare $0 POST → real 402); the standing hypothesis is REVERSED and the re-baseline-DOWN plan is CANCELED
+
+LOCAL CYCLE (Jonah's machine, network + venv). Per local law "execute exactly ONE [LOCAL] backlog item —
+prefer the oldest P0", this fire took the OLDEST [LOCAL] P0: "Verify the driftflight.com LIVE transactability
+drop" (opened Cycle 126). FIRST duty discharged: `gh pr list --state open` → [] (no open peer-gated PR, no
+review owed). INFRA green: newest verify `runs/local/verify_20260804T194102Z.json` (19:41Z, git_pull.ok=true
+attempts=1, divergence_recovery=None, tests_ok=true across 23 suites) is fresh — well inside the 6h floor;
+the Cycle-229 push-race recovery (`d812d6e`) still holding.
+
+WHAT/WHY. The hourly floor runner has reported driftflight.com LIVE at 76.2 C / tx 62.5 (vs the frozen Jul-23
+fixture 85.5 B / tx 87.5) since ~Cycle 126, and every cycle since has carried the open question "is the
+with-rails anchor's agent-native payment capability actually eroding?" — with the backlog plan being a
+peer-gated re-baseline DOWN (recapture the fixture at ~76.2, bump the replay guard EXPECTED). This fire
+executed the CHECK-level diagnosis the item called for and found the OPPOSITE of the standing hypothesis.
+
+FINDINGS (all evidenced, static $0 — no --behavioral, no payment ever attached; invariant #1 held).
+1. SOLE DRIVER. `experiments/diag_transactability_drop.py` replays the frozen fixture and re-scores
+   driftflight.com LIVE through the same probe+scoring pipeline, diffing the transactability pillar per check:
+   `x402_probe` is the ONLY check that flipped — PASS 8.0 `x402-live` → PARTIAL 4.0 `x402-documented-not-probed`
+   (self_serve_payg 6.0 PASS and mcp_surface 0.0 FAIL byte-identical). That single −4.0 raw is the entire tx
+   pillar 87.5→62.5 and the entire overall 85.5→76.2.
+2. THE RAIL IS LIVE. A bare $0 POST (no payment attached — the 402 IS the challenge) to
+   `agents.driftflight.com/v1/images/generate` returns a real HTTP **402** with a full x402 payload +
+   `www-authenticate: Payment` (MPP) challenge, amount $0.06, both `protocols.x402` + `protocols.mpp`. The
+   agent-native payment capability the fixture recorded is INTACT and live-verified this fire — arguably
+   stronger (every upstream path is now payable through the proxy).
+3. THE SITE MIGRATED TOPOLOGY. The Jul-23 fixture captured its bare 402 from `agents.driftflight.com/extend`;
+   that endpoint now returns GET 404 / POST 401 (moved behind an agent-identity gate). Driftflight moved to a
+   CALL-THROUGH PROXY model: send the upstream method+path THROUGH `agents.<domain>` and a bare request returns
+   the priced 402 (per its own `agents.driftflight.com/llms-full.txt`).
+4. WHY THE PROBE MISSES IT (faithful shared-ctx reproduction of the scored path, `saw_live_402=False`). The
+   probe reaches `agents.driftflight.com` and POSTs its `agent_targets`, but `_agent_surface_targets` never
+   builds `POST agents.driftflight.com/v1/images/generate`: the openapi-derived UPSTREAM paths are dropped by
+   (a) `_ABS_URL_RE` capturing trailing markdown punctuation (`,` `.` `` ` `` `:` `):`) — most agent_targets
+   become `.../manifest.json,` `.../auth.md.` etc. → 404, and the referenced `openapi.json` URL can arrive as
+   `...openapi.json):` failing the `.endswith('.json')` gate; (b) the `_dedupe(paths)[:5]` cap starving
+   openapi paths behind method-path mentions; (c) the `targets[:16]` cap dropping the tail. So the scored path
+   GETs the UNPRICED upstream (`api.driftflight.com/*`, 404/200) and POSTs only doc/auth URLs → no live 402.
+
+ATTRIBUTION VERDICT (invariant #4). This is an AGENT-SIDE under-measurement, never site evidence. The FROZEN
+fixture (85.5 B / tx 87.5 / x402-live) remains the HONEST record of the site's capability; the
+re-baseline-DOWN plan is CANCELED (executing it would have falsely recorded a capability loss the site never
+suffered). The "is the with-rails anchor degrading?" question open 100+ cycles is answered: NO. The in-cloud
+replay guard is UNAFFECTED and stays the frozen regression signal.
+
+SHIP. Direct-to-main, score-neutral: `git diff -- asrs/ rubric/ fixtures/ tests/` EMPTY (no scoring code
+touched); only the diagnostic tool `experiments/diag_transactability_drop.py` + force-added `runs/local/`
+evidence. Tests: free-tier 11/11, replay guard `test_canonical_replay.py` 24/24 (46.1 F / 85.5 B / +39.4, 0
+replay-miss); full suite green in the 19:41Z floor artifact. NO DM (score-neutral off-scoring-path diagnosis,
+not first-after-16:00 UTC). The probe fix is a NEW peer-gated [LOCAL] P0 (`loop/x402-proxy-discovery`).
+
+EVIDENCE (force-added, runs/local gitignored): `runs/local/diag_transactability_drop_20260804T194242Z.json`
+(per-check tx diff), `runs/local/diag_transactability_rootcause_20260804T194901Z.json` (live-402 proof +
+`/extend` 404/401 + faithful scored-path repro), `experiments/diag_transactability_drop.py` (the tool).
+
+CANONICAL PAIR (frozen fixture, unchanged): drift-flight.org 46.1 F / driftflight.com 85.5 B / delta +39.4.
+LIVE re-score (probe under-measurement, off the scoring path): driftflight.com 76.2 C / tx 62.5 — now
+EXPLAINED (probe bug), no longer an open anomaly.
+
+NEXT HYPOTHESIS. The peer-gated PROBE FIX (`loop/x402-proxy-discovery`): strip trailing punctuation from
+`_ABS_URL_RE` (highest-leverage single fix), join openapi upstream paths to the `agents.<domain>` proxy base
+without starving them via the `[:5]`/`[:16]` caps, and POST them — restoring `x402-live` (live overall 85.5,
+matching the fixture, so fixture-neutral / replay-guard-invariant by construction). TDD FIRST; LIVE-validate on
+driftflight.com + ≥1 unrelated live x402/proxy domain (invariant #3). Peer-gated because it MOVES live scores;
+Slack visibility on open.
+
 ## Cycle 231 — 2026-08-04T19:15Z — TRUTH — the headline delta is FULLY capability-attributed: the entire +39.4 gap decomposes into exactly TWO agent-native capability families (pay programmatically + understand the offer) with ZERO unexplained residual
 
 WHAT/WHY (TRUTH — calibration against reality, per the Cycle-230 FOCUS POINTER's TRUTH-231 "else a further

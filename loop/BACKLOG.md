@@ -103,6 +103,52 @@ design in-cloud, execute locally.
   guard shares test 9(d)/14's re-baseline tripwire (85.5/46.1/+39.4) — a [LOCAL] re-baseline reddens it
   alongside them, forcing the two-family decomposition to be re-derived in the same PR. Does NOT close this
   item — the CHECK-level live diff + re-baseline stay [LOCAL].
+  **DIAGNOSED + RESOLVED — LOCAL Cycle 232 (2026-08-04T19:5xZ, TRUTH, direct-to-main, score-neutral). The
+  standing hypothesis is REVERSED: the drop is a PROBE UNDER-MEASUREMENT, NOT site capability degradation, so
+  the re-baseline-DOWN plan above is CANCELED (executing it would have falsely recorded a capability loss —
+  invariant #4).** The CHECK-level live diff (`experiments/diag_transactability_drop.py`) fingers `x402_probe`
+  as the SOLE driver: PASS 8.0 `x402-live` → PARTIAL 4.0 `x402-documented-not-probed` (self_serve_payg 6.0 +
+  mcp_surface 0.0 byte-identical), which is the entire tx 87.5→62.5 and the entire overall 85.5→76.2. BUT the
+  site's agent-native x402 rail is FULLY LIVE this fire: a bare $0 POST (no payment attached) to
+  `agents.driftflight.com/v1/images/generate` returns a real **HTTP 402** with x402 + MPP challenges (amount
+  $0.06, `payment-required` + `www-authenticate: Payment` headers). Driftflight MIGRATED from a dedicated
+  `/extend` bare-402 endpoint (the Jul-23 fixture's source — now GET 404 / POST 401 behind agent-identity) to a
+  CALL-THROUGH PROXY: the bare 402 now lives at `POST agents.<domain>/<upstream-openapi-path>`. The probe misses
+  it — its `_agent_surface_targets` never builds `POST agents.driftflight.com/v1/images/generate`: the
+  openapi-derived upstream paths are dropped by (a) `_ABS_URL_RE` capturing trailing markdown punctuation
+  (`,` `.` `` ` `` `:` `):`) gluing junk onto extracted URLs (most agent_targets → 404; the referenced
+  `openapi.json` URL can fail the `.endswith('.json')` gate), (b) the `_dedupe(paths)[:5]` cap dropping
+  openapi paths behind method-path mentions, (c) the `targets[:16]` cap dropping the tail — so the scored path
+  GETs the UNPRICED upstream (`api.driftflight.com/*`) and POSTs only doc/auth URLs, `saw_live_402=False`
+  (faithful shared-ctx reproduction committed). So the FROZEN fixture (85.5 B / tx 87.5 / x402-live) remains
+  the HONEST record and stays the frozen regression signal; the in-cloud replay guard (24/24, 46.1 F / 85.5 B
+  / +39.4) is UNAFFECTED. This RESOLVES the "is the with-rails anchor degrading?" question open since Cycle 126:
+  NO — the anchor's payment capability is intact and live-verified. Evidence (force-added):
+  `runs/local/diag_transactability_drop_20260804T194242Z.json` (per-check diff),
+  `runs/local/diag_transactability_rootcause_20260804T194901Z.json` (live-402 proof + scored-path repro),
+  `experiments/diag_transactability_drop.py` (the tool). The remaining work is the PROBE FIX — a NEW peer-gated
+  [LOCAL] item below (this "verify the drop" item is now CLOSED).
+
+- **[LOCAL] Fix the x402 probe to discover + POST the call-through PROXY endpoint** (COVERAGE/METHOD,
+  peer-gated, opened Cycle 232 from the diagnosis above). The x402 probe UNDER-MEASURES sites that front a
+  ZeroClick-style call-through proxy (`agents.<domain>/<upstream-openapi-path>` returns the bare 402), scoring
+  them `x402-documented-not-probed` (4.0) instead of `x402-live` (8.0) — verified live on the with-rails
+  canonical anchor this fire (driftflight.com scores 76.2 live vs the true 85.5). This is a SCORING-SEMANTICS
+  change (restores x402-live → live overall 85.5, matching the frozen fixture) so it is **PEER-GATED**: author
+  a PR `loop/x402-proxy-discovery` with full evidence; next cycle's first duty reviews + self-merges. Fix
+  targets, smallest-first: (1) strip trailing markdown punctuation from `_ABS_URL_RE` matches (a
+  `.rstrip(",.:;`)")` or a tighter terminator class) so extracted URLs + the referenced `openapi.json` are
+  clean — the highest-leverage single fix; (2) ensure the openapi-derived UPSTREAM paths are joined to the
+  `agents.<domain>` PROXY base and are not starved by the `_dedupe(paths)[:5]` / `targets[:16]` caps (prefer
+  concrete API paths over doc/auth/manifest URLs when selecting agent_targets); (3) confirm the probe POSTs
+  those proxy targets (it already POSTs `agent_targets` when the surface documents x402). TDD FIRST (a synthetic
+  agent-surface where the live 402 lives at `POST proxy/<openapi-path>` and doc URLs carry trailing
+  punctuation → assert `x402-live`, plus a precision negative that a docs-only site stays
+  `x402-documented-not-probed`); isolation-matrix + canonical-invariance (the FROZEN fixtures already capture
+  x402-live at `/extend`, so the replay guard must stay 85.5/+39.4 — verify by construction the fix is
+  fixture-neutral); then LIVE-validate on driftflight.com (→ x402-live 8.0, overall 85.5) AND ≥1 unrelated
+  live x402/proxy domain (invariant #3). Off any weight/cap change — it only improves discovery — but it MOVES
+  live scores, hence peer-gated. Slack visibility on open per comms policy (scoring-semantics PR).
 
 <!-- DONE 2026-07-28T17:27Z (local fire, SELF-HEALING/METHOD, direct-to-main): "[LOCAL] Local
      verify runner STALLED past the 6h floor" ROOT-CAUSED + FIXED. The cloud's Cycle-51→62

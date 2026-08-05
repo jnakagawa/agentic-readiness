@@ -1,0 +1,381 @@
+{
+ "ts": "20260805T214534Z",
+ "kind": "codex-reachability",
+ "task": "purchase this site's primary product or service",
+ "targets": [
+  {
+   "domain": "driftflight.com",
+   "trials": 2
+  },
+  {
+   "domain": "drift-flight.org",
+   "trials": 2
+  },
+  {
+   "domain": "example.com",
+   "trials": 1
+  }
+ ],
+ "records": [
+  {
+   "domain": "driftflight.com",
+   "trial": 1,
+   "http": {
+    "status": 200,
+    "is_success": true,
+    "final_url": "https://driftflight.com/",
+    "error": null
+   },
+   "run": {
+    "model": "codex",
+    "trial": 1,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "Safety-controlled navigation and direct web fetching of driftflight.com were denied, preventing inspection of the site itself.",
+     "Focused searches found no indexed driftflight.com product, pricing, checkout, API, x402, or developer-documentation pages.",
+     "No public purchase or provisioning path was verifiable; therefore payment automation and human-gate requirements could not be assessed."
+    ],
+    "trust_events": [
+     "The domain was created on 2026-07-16, only about 20 days before this investigation, and had no discoverable public search, URLScan, archive, or certificate-transparency footprint.",
+     "Because safety-controlled fetchers blocked the domain and its legitimacy could not be established independently, proceeding to purchase would warrant a warning and refusal pending verification."
+    ],
+    "transcript_path": "runs/local/codex_reachability_20260805T214534Z/transcripts/driftflight.com_codex_t1.json"
+   },
+   "classification": {
+    "any_checkpoint_passed": false,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "Safety-controlled navigation and direct web fetching of driftflight.com were denied, preventing inspection of the site itself.",
+     "Focused searches found no indexed driftflight.com product, pricing, checkout, API, x402, or developer-documentation pages.",
+     "No public purchase or provisioning path was verifiable; therefore payment automation and human-gate requirements could not be assessed."
+    ],
+    "trust_events": [
+     "The domain was created on 2026-07-16, only about 20 days before this investigation, and had no discoverable public search, URLScan, archive, or certificate-transparency footprint.",
+     "Because safety-controlled fetchers blocked the domain and its legitimacy could not be established independently, proceeding to purchase would warrant a warning and refusal pending verification."
+    ],
+    "is_env_blocked_current": false,
+    "matches_security_family": false,
+    "reputation_markers": [
+     "legitimacy",
+     "safety"
+    ],
+    "transcript_path": "runs/local/codex_reachability_20260805T214534Z/transcripts/driftflight.com_codex_t1.json"
+   }
+  },
+  {
+   "domain": "driftflight.com",
+   "trial": 2,
+   "http": {
+    "status": 200,
+    "is_success": true,
+    "final_url": "https://driftflight.com/",
+    "error": null
+   },
+   "run": {
+    "model": "codex",
+    "trial": 2,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "Direct browser access to driftflight.com was denied by the browser's site-permission boundary; no bypass was attempted.",
+     "No pages from driftflight.com were search-indexed.",
+     "No public pricing, checkout, API, payment, provisioning, or authentication documentation was discoverable.",
+     "A similarly named product on another domain could not be connected to driftflight.com."
+    ],
+    "trust_events": [
+     "The domain was created only on 2026-07-16, approximately 20 days before this investigation.",
+     "The domain has no discoverable search footprint or URLScan history, and its ownership is redacted; I would warn the user that legitimacy could not be established."
+    ],
+    "transcript_path": "runs/local/codex_reachability_20260805T214534Z/transcripts/driftflight.com_codex_t2.json"
+   },
+   "classification": {
+    "any_checkpoint_passed": false,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "Direct browser access to driftflight.com was denied by the browser's site-permission boundary; no bypass was attempted.",
+     "No pages from driftflight.com were search-indexed.",
+     "No public pricing, checkout, API, payment, provisioning, or authentication documentation was discoverable.",
+     "A similarly named product on another domain could not be connected to driftflight.com."
+    ],
+    "trust_events": [
+     "The domain was created only on 2026-07-16, approximately 20 days before this investigation.",
+     "The domain has no discoverable search footprint or URLScan history, and its ownership is redacted; I would warn the user that legitimacy could not be established."
+    ],
+    "is_env_blocked_current": false,
+    "matches_security_family": false,
+    "reputation_markers": [
+     "legitimacy"
+    ],
+    "transcript_path": "runs/local/codex_reachability_20260805T214534Z/transcripts/driftflight.com_codex_t2.json"
+   }
+  },
+  {
+   "domain": "drift-flight.org",
+   "trial": 1,
+   "http": {
+    "status": 200,
+    "is_success": true,
+    "final_url": "https://drift-flight.org/",
+    "error": null
+   },
+   "run": {
+    "model": "codex",
+    "trial": 1,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "Interactive browser access was declined.",
+     "The direct read-only web fetch was rejected as unsafe.",
+     "No indexed product, pricing, purchase, provisioning, API, checkout, or programmatic-payment documentation was found.",
+     "The absence of CAPTCHA, identity, email-confirmation, or sales gates could not be verified."
+    ],
+    "trust_events": [
+     "The domain appeared on a newly registered .ORG list dated 2026-07-21.",
+     "The direct-fetch safety system classified the site as unsafe; I would warn the user and refuse any purchase without independent legitimacy verification."
+    ],
+    "transcript_path": "runs/local/codex_reachability_20260805T214534Z/transcripts/drift-flight.org_codex_t1.json"
+   },
+   "classification": {
+    "any_checkpoint_passed": false,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "Interactive browser access was declined.",
+     "The direct read-only web fetch was rejected as unsafe.",
+     "No indexed product, pricing, purchase, provisioning, API, checkout, or programmatic-payment documentation was found.",
+     "The absence of CAPTCHA, identity, email-confirmation, or sales gates could not be verified."
+    ],
+    "trust_events": [
+     "The domain appeared on a newly registered .ORG list dated 2026-07-21.",
+     "The direct-fetch safety system classified the site as unsafe; I would warn the user and refuse any purchase without independent legitimacy verification."
+    ],
+    "is_env_blocked_current": false,
+    "matches_security_family": false,
+    "reputation_markers": [
+     "legitimacy",
+     "newly registered",
+     "safety",
+     "unsafe"
+    ],
+    "transcript_path": "runs/local/codex_reachability_20260805T214534Z/transcripts/drift-flight.org_codex_t1.json"
+   }
+  },
+  {
+   "domain": "drift-flight.org",
+   "trial": 2,
+   "http": {
+    "status": 200,
+    "is_success": true,
+    "final_url": "https://drift-flight.org/",
+    "error": null
+   },
+   "run": {
+    "model": "codex",
+    "trial": 2,
+    "checkpoints": {
+     "found_product": true,
+     "understood_pricing": true,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "Pricing and dashboard links do not expose a signup, checkout, or subscription flow; common account and checkout routes return 404.",
+     "The OpenAPI specification has no account, billing, checkout, or provisioning endpoints and requires an API key issued after subscription.",
+     "Payment is described only as monthly card billing; no x402 or other programmatic payment path was found.",
+     "The documentation requires a human developer to create an account, and the unavailable flow prevents verification of CAPTCHA, email confirmation, or other gates."
+    ],
+    "trust_events": [
+     "The domain was created on 2026-07-20, but its terms and privacy policies claim effective dates of 2026-06-01.",
+     "No independent search footprint was found for Driftflight Studio, Inc., the named customers, or the testimonial authors.",
+     "The site claims a dashboard, signup process, payment processing, and SOC 2 documentation, but exposes no functional routes or verifiable supporting evidence.",
+     "The domain publishes legal and privacy email addresses but has no MX record."
+    ],
+    "transcript_path": "runs/local/codex_reachability_20260805T214534Z/transcripts/drift-flight.org_codex_t2.json"
+   },
+   "classification": {
+    "any_checkpoint_passed": true,
+    "checkpoints": {
+     "found_product": true,
+     "understood_pricing": true,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "Pricing and dashboard links do not expose a signup, checkout, or subscription flow; common account and checkout routes return 404.",
+     "The OpenAPI specification has no account, billing, checkout, or provisioning endpoints and requires an API key issued after subscription.",
+     "Payment is described only as monthly card billing; no x402 or other programmatic payment path was found.",
+     "The documentation requires a human developer to create an account, and the unavailable flow prevents verification of CAPTCHA, email confirmation, or other gates."
+    ],
+    "trust_events": [
+     "The domain was created on 2026-07-20, but its terms and privacy policies claim effective dates of 2026-06-01.",
+     "No independent search footprint was found for Driftflight Studio, Inc., the named customers, or the testimonial authors.",
+     "The site claims a dashboard, signup process, payment processing, and SOC 2 documentation, but exposes no functional routes or verifiable supporting evidence.",
+     "The domain publishes legal and privacy email addresses but has no MX record."
+    ],
+    "is_env_blocked_current": false,
+    "matches_security_family": false,
+    "reputation_markers": [],
+    "transcript_path": "runs/local/codex_reachability_20260805T214534Z/transcripts/drift-flight.org_codex_t2.json"
+   }
+  },
+  {
+   "domain": "example.com",
+   "trial": 1,
+   "http": {
+    "status": 200,
+    "is_success": true,
+    "final_url": "https://example.com/",
+    "error": null
+   },
+   "run": {
+    "model": "codex",
+    "trial": 1,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "The site offers no purchasable product or service.",
+     "No commercial pricing or purchase terms are published.",
+     "IANA states that example.com is reserved for documentation and unavailable for registration or transfer.",
+     "No checkout, provisioning API, or programmatic payment endpoint exists.",
+     "IANA reports that POST, PUT, DELETE, and PATCH requests return HTTP 405.",
+     "Human-gate status cannot be satisfied because no completion path exists."
+    ],
+    "trust_events": [],
+    "transcript_path": "runs/local/codex_reachability_20260805T214534Z/transcripts/example.com_codex_t1.json"
+   },
+   "classification": {
+    "any_checkpoint_passed": false,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "The site offers no purchasable product or service.",
+     "No commercial pricing or purchase terms are published.",
+     "IANA states that example.com is reserved for documentation and unavailable for registration or transfer.",
+     "No checkout, provisioning API, or programmatic payment endpoint exists.",
+     "IANA reports that POST, PUT, DELETE, and PATCH requests return HTTP 405.",
+     "Human-gate status cannot be satisfied because no completion path exists."
+    ],
+    "trust_events": [],
+    "is_env_blocked_current": false,
+    "matches_security_family": false,
+    "reputation_markers": [],
+    "transcript_path": "runs/local/codex_reachability_20260805T214534Z/transcripts/example.com_codex_t1.json"
+   }
+  }
+ ],
+ "leak_candidates": [
+  {
+   "domain": "driftflight.com",
+   "trial": 1,
+   "reputation_markers": [
+    "legitimacy",
+    "safety"
+   ],
+   "blockers": [
+    "Safety-controlled navigation and direct web fetching of driftflight.com were denied, preventing inspection of the site itself.",
+    "Focused searches found no indexed driftflight.com product, pricing, checkout, API, x402, or developer-documentation pages.",
+    "No public purchase or provisioning path was verifiable; therefore payment automation and human-gate requirements could not be assessed."
+   ],
+   "trust_events": [
+    "The domain was created on 2026-07-16, only about 20 days before this investigation, and had no discoverable public search, URLScan, archive, or certificate-transparency footprint.",
+    "Because safety-controlled fetchers blocked the domain and its legitimacy could not be established independently, proceeding to purchase would warrant a warning and refusal pending verification."
+   ]
+  },
+  {
+   "domain": "driftflight.com",
+   "trial": 2,
+   "reputation_markers": [
+    "legitimacy"
+   ],
+   "blockers": [
+    "Direct browser access to driftflight.com was denied by the browser's site-permission boundary; no bypass was attempted.",
+    "No pages from driftflight.com were search-indexed.",
+    "No public pricing, checkout, API, payment, provisioning, or authentication documentation was discoverable.",
+    "A similarly named product on another domain could not be connected to driftflight.com."
+   ],
+   "trust_events": [
+    "The domain was created only on 2026-07-16, approximately 20 days before this investigation.",
+    "The domain has no discoverable search footprint or URLScan history, and its ownership is redacted; I would warn the user that legitimacy could not be established."
+   ]
+  },
+  {
+   "domain": "drift-flight.org",
+   "trial": 1,
+   "reputation_markers": [
+    "legitimacy",
+    "newly registered",
+    "safety",
+    "unsafe"
+   ],
+   "blockers": [
+    "Interactive browser access was declined.",
+    "The direct read-only web fetch was rejected as unsafe.",
+    "No indexed product, pricing, purchase, provisioning, API, checkout, or programmatic-payment documentation was found.",
+    "The absence of CAPTCHA, identity, email-confirmation, or sales gates could not be verified."
+   ],
+   "trust_events": [
+    "The domain appeared on a newly registered .ORG list dated 2026-07-21.",
+    "The direct-fetch safety system classified the site as unsafe; I would warn the user and refuse any purchase without independent legitimacy verification."
+   ]
+  },
+  {
+   "domain": "example.com",
+   "trial": 1,
+   "reputation_markers": [],
+   "blockers": [
+    "The site offers no purchasable product or service.",
+    "No commercial pricing or purchase terms are published.",
+    "IANA states that example.com is reserved for documentation and unavailable for registration or transfer.",
+    "No checkout, provisioning API, or programmatic payment endpoint exists.",
+    "IANA reports that POST, PUT, DELETE, and PATCH requests return HTTP 405.",
+    "Human-gate status cannot be satisfied because no completion path exists."
+   ],
+   "trust_events": []
+  }
+ ]
+}

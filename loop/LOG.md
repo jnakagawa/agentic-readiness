@@ -3,6 +3,79 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 268 — 2026-08-05T21:4xZ — TRUTH (LOCAL, direct-to-main, score-neutral) — re-characterized codex hosted-browser reachability on the AGED canonical pair (~20d old): the reputation gate has SOFTENED (codex now reaches drift-flight.org on t2 in both of today's runs) AND its own-tool refusal vocabulary has DRIFTED off v0.6's `_ENV_BLOCK_RE`, surfacing a LIVE invariant-#4 attribution leak (the long-parked "test #8" case) on committed fresh transcripts — queued the peer-gated regex broadening
+
+**FIRST DUTY (peer-gate review + infra health).** `gh pr list --state open` → `[]` (no
+peer-gated PR to review/merge). Infra health check: newest verify
+`runs/local/verify_20260805T214106Z.json` (21:41Z, tests_ok=true across 26 suites, reads
+46.1 F / 85.5 B / +39.4) was ~1min old at fire (21:42Z), deep inside the 6h floor; the runner
+produced 20:41Z → 21:41Z on the :41 cadence (Cycle-261 launcher watchdog holding, Cycle-263
+pin green) → RUNNER-HEALTH WATCH NORMAL. HEAD == origin/main `dc84e29`, working tree clean,
+no conflicting loop agent. `pip install eth-account` (recurring agent-side gap per invariant #4).
+
+**THE [LOCAL] ITEM (TRUTH — codex reachability re-characterization).** The entire codex-blocked
+P0 cluster (cross-model panel N-curve; the pre-fetched-content attribution fix) hinges on ONE
+empirical question the cloud cannot answer: can codex's hosted browser reach a suitable domain?
+It was last characterized 2026-07-23 (~13d stale) when both canonical domains were 3–7 days old
+and codex was gated 4/4, EVERY refusal carrying the exact "browser {security,safety} controls"
+vocabulary v0.6 `_ENV_BLOCK_RE` matches (caught 4/4). Re-ran `experiments/codex_reachability.py`
+LIVE (5 codex trials + HTTP homepage checks, $0 read-only recon through the REAL scorer path
+`shopper._run_one` → `_codex_cmd`), now that the domains have aged to ~20 days. Corroborated by
+the prior 20:41Z fire's un-logged run (`codex_reachability_20260805T204555Z`), adopted here as an
+independent sample ~1h earlier.
+
+**FINDING 1 — the reputation gate has SOFTENED.** Codex REACHED drift-flight.org on trial 2 in
+BOTH of today's runs (browsed the real site, reported genuine offering/trust findings — OpenAPI
+image-gen only, monthly card billing, no x402, no independent footprint), and reached
+driftflight.com t2 at 20:45Z. On 07-23 it was a 4/4 hard block. So the gate is now INTERMITTENT
+(~1/2 reach rate on the .org today), not a per-domain wall → the cross-model N-curve P0 is
+PARTIALLY unblocked (BACKLOG updated).
+
+**FINDING 2 — an invariant-#4 attribution leak is now LIVE-observed (the "test #8" case).** The
+refusals that DO still fire have drifted OFF v0.6's vocabulary. Captured own-tool block phrasings:
+"Safety-controlled navigation and direct web fetching … were denied" (driftflight.com t1, 21:45Z);
+"Direct browser access … was denied by the browser's site-permission boundary" (driftflight.com
+t2, 21:45Z); "Interactive browser access was declined" + "the direct read-only web fetch was
+rejected as unsafe" (drift-flight.org t1, 21:45Z); "Browser access permission … was denied"
+(drift-flight.org t1, 20:45Z). Each is a genuine AGENT-side block — proven by the SAME-run
+`FetchContext.homepage()` returning HTTP 200, codex REACHING the same domain on sibling trials,
+and reputable example.com never being gated — yet NONE contains "browser {security,safety}
+controls/policy/grounds", so `_ENV_BLOCK_RE` misses them and `_is_env_blocked` returns False. In a
+real `--behavioral` run those runs (which observed nothing) would be scored as SITE FAILs, not
+routed to reachability — the exact invariant-#4 leak the test-#8 spec described but that had NEVER
+been observed on a real transcript until today. 07-23's conclusion ("NO regex broadening is
+warranted; do not broaden on speculation") is now SUPERSEDED by evidence.
+
+**SHIP (direct-to-main, score-neutral).** Committed both run artifacts (force-add per the tracked
+07-23 precedent; runs/ is gitignored): `runs/local/codex_reachability_20260805T204555Z/` +
+`.../214534Z/` (summary.json + 5 transcripts each). Updated STATE (Cycle 268 entry + focus pointer
++ superseded the codex open-question with the fresh characterization) and BACKLOG (unparked the
+test-#8 clause; added a NEW peer-gated P0 "Broaden `_ENV_BLOCK_RE`…" with the committed transcripts
+as fixtures + the both-ways attribution caution; marked the cross-model N-curve partially
+unblocked). The `_ENV_BLOCK_RE` broadening itself is SCORING-SEMANTICS → PEER-GATED → NOT shipped
+this fire; it is the next cycle's PR (`loop/env-block-vocab-drift`), reviewed adversarially, because
+the regex must catch the new agent-side phrasings WITHOUT over-excusing site-side 403s/Cloudflare —
+attribution honesty cuts both ways.
+
+**Canonical pair (regression signal):** 21:41Z live floor **46.1 F / 85.5 B / +39.4 UNMOVED** —
+this cycle is read-only recon and touches no scoring path (`git diff -- asrs/ rubric/ fixtures/`
+EMPTY; only runs/ artifacts + loop/ docs). Full suite green.
+
+**Invariants:** #1 ($0-only — read-only recon through the real code path, no free-tier probe, no
+zero CLI, no signing, no nonzero --max-pay), #2 (no scoring-semantics change → no version bump),
+#3 (evidence committed, characterization from the REAL scorer path not a hand-rolled one), #4 (the
+finding IS an attribution-honesty improvement — it SURFACES the leak and refuses to rush an
+over-broad fix that could excuse site-side blocks), #5 (append-only — new artifacts, LOG prepended,
+STATE/BACKLOG are mutable working state) all held. Budget: 5 codex invocations (≤10 cap), 0 scored
+behavioral pairs. NO DM (score-neutral TRUTH characterization, not sensitive-class; daily digest
+already sent Cycle 259 this ≥16:00 UTC window).
+
+**Next hypothesis:** (a) ship the peer-gated `_ENV_BLOCK_RE` broadening next cycle, driven off
+today's committed transcripts, with the site-side-403 negative control; (b) with codex now reaching
+the aged .org on ~half its trials, re-run `experiments/trial_count_N.py` on drift-flight.org to get
+the FIRST cross-model (claude×codex) verdict-agreement datapoint — sampling only the reached trials,
+marking the gated ones env-blocked once the regex catches them.
+
 ## Cycle 267 — 2026-08-05T21:1xZ — TRUTH (cloud, direct-to-main, score-neutral) — closed the HASH-SEED reproducibility axis on the static scoring path: the committed evidence is now proven byte-identical across `PYTHONHASHSEED`, the sibling of the arrival-order axis Cycles 253/255/257/262 closed on the behavioral path
 
 FIRST duty (infra health check): NO open peer-gated PR (`list_pull_requests` state=open → `[]`). Cloud started

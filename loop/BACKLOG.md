@@ -496,6 +496,27 @@ design in-cloud, execute locally.
   a sparkline of the canonical anchors' overall across every dated dataset, the population analog of
   canonical-history.html's per-cycle trend.
 
+- **[PEER-GATE] Broaden `_ENV_BLOCK_RE` to catch codex's drifted own-tool block vocabulary**
+  (TRUTH / invariant-#4 attribution honesty; scoring-semantics → PEER-GATED PR). NEW Cycle 268
+  (2026-08-05 local). On 07-23 EVERY codex refusal on the canonical pair carried "browser
+  {security,safety} controls" and v0.6 `_ENV_BLOCK_RE` caught 4/4. As the domains aged to ~20d the
+  refusal phrasing DRIFTED to forms v0.6 MISSES — all committed at
+  `runs/local/codex_reachability_20260805T{204555,214534}Z/` (summary.json + transcripts):
+  · "Safety-controlled navigation and direct web fetching … were denied"
+  · "denied by the browser's site-permission boundary" / "browser access permission … denied"
+  · "Interactive browser access was declined" / "the direct read-only web fetch was rejected as unsafe"
+  Each is a genuine AGENT-side block (the SAME-run `FetchContext.homepage()` shows the SITE at HTTP
+  200; codex REACHED the same domain on sibling trials; reputable example.com was NEVER gated) → today
+  `_is_env_blocked`=False → a real `--behavioral` run mis-scores these as SITE FAILs, the exact
+  invariant-#4 leak. FIX: extend `_ENV_BLOCK_RE` to also match these own-tool phrasings, with a
+  `tests/test_attribution.py` #8 test driven off the committed transcripts asserting
+  `_is_env_blocked`=True on them AND still `_is_env_blocked`=False on a genuine site-side 403 /
+  Cloudflare challenge (the broadening must NOT excuse real access findings — attribution honesty cuts
+  BOTH ways; keep the v0.6 comment's "deliberately does NOT match site-side blocks" property). Open
+  `loop/env-block-vocab-drift`; next cycle reviews+merges. Score effect: routes these runs to
+  reachability instead of FAIL → can RAISE a mis-FAILed site's behavioral score; argue in capability
+  terms + show the canonical STATIC delta is unaffected (behavioral-only path, replay guard unmoved).
+
 - **[LOCAL] Build the codex control-storefront / pre-fetched-content attribution
   fix** (TRUTH; unblocks the cross-model N-curve). The 11:42Z characterization
   proved codex's browser WORKS on a reputable domain (example.com) and gates BOTH
@@ -507,9 +528,16 @@ design in-cloud, execute locally.
   Design in-cloud from the committed transcripts; execute `[LOCAL]`. This is
   scoring-adjacent (adds an evidence provenance dimension) → likely peer-gated when
   the scoring path changes; the fetch-and-mark plumbing itself can land direct.
-  test-#8 regex fixture stays PARKED — no semantic reputation-gate transcript
-  ("flagged as unsafe"/"unable to browse" WITHOUT browser-safety words) has ever
-  been observed; do NOT broaden `_ENV_BLOCK_RE` on speculation.
+  UPDATE Cycle 268 (2026-08-05 local): the test-#8 fixture is UNPARKED. The 21:45Z + 20:45Z
+  reachability re-runs (canonical domains now ~20d old) captured own-tool refusals whose vocabulary
+  drifted OFF v0.6's "browser {security,safety} controls" — "Safety-controlled navigation … denied",
+  "browser's site-permission boundary … denied", "web fetch … rejected as unsafe" — all AGENT-side
+  (site HTTP 200, reached on sibling trials, example.com never gated) yet `_is_env_blocked`=False →
+  the invariant-#4 leak is now LIVE on committed transcripts. The `_ENV_BLOCK_RE` broadening is
+  therefore WARRANTED (no longer speculation) and split into its own peer-gated P0 item below. Note
+  codex ALSO now REACHES the aged canonical .org on t2 → the reputation gate softened from the 07-23
+  4/4 hard block, so this item's pre-fetched-content attribution fix is now needed LESS urgently
+  (codex reaches on some trials); the `_ENV_BLOCK_RE` correctness fix is the priority.
 
 
 - **[LOCAL] Fresh live 5-trial panel post-v0.6** (METHOD follow-up; the LIVE half
@@ -526,7 +554,12 @@ design in-cloud, execute locally.
   because codex env-blocked drift-flight.org on all 5 trials. The CROSS-MODEL
   agreement question (do claude and codex converge on the same verdict, and at
   what N) is unmeasured and BLOCKED on codex reachability — RE-CONFIRMED blocked
-  at 11:42Z (codex gated 4/4 on BOTH canonical domains). Do the "Build the codex
+  at 11:42Z (codex gated 4/4 on BOTH canonical domains). UPDATE Cycle 268 (2026-08-05):
+  codex reachability is now INTERMITTENTLY OPEN on the aged canonical pair — it REACHED
+  drift-flight.org on t2 in BOTH 08-05 runs (20:45Z + 21:45Z) — so this P0 is PARTIALLY
+  unblocked; `trial_count_N.py` can now sample codex-reachable trials on the aged .org,
+  though cross-model verdict AGREEMENT still needs enough REACHED trials (t2-only today,
+  ~1/2 reach rate). Do the "Build the codex
   control-storefront / pre-fetched-content attribution fix" item above FIRST, then
   re-run the nested-subsample harness on a domain codex can actually reach:
   ```

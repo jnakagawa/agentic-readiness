@@ -1,6 +1,50 @@
 # Loop state
 
-- Cycle counter: 253
+- Cycle counter: 254
+- CYCLE 254 — 2026-08-05T~11:2xZ (READOUT, cloud, direct-to-main, display-only, score-neutral).
+  FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests` state=open `[]`): HEAD in sync with
+  origin at Cycle 253 (`f842ce4`; detached-start realign via `git fetch origin main`, benign). **LOCAL VERIFY RUNNER
+  STALL PERSISTS — 6h floor still breached:** newest verify STILL `runs/local/verify_20260805T024100Z.json` (02:41Z,
+  div_recovery=None, tests_ok=true 24/24), ~8.6h old at fire (11:18Z); 8+ consecutive missed :41 slots (03:41–10:41).
+  Unchanged NO-NEW-ARTIFACT stall, NOT cloud-diagnosable → P0 [LOCAL] runner-stall diagnosis (queued Cycle 251)
+  stands; carry watch + flag LOUD in next 16:00 UTC digest (fire ~11:2xZ before the digest window).
+  Regression-by-construction stands in for the live re-score (playbook). Took the READOUT slot (cloud pointer, Cycle
+  253 was TRUTH): shipped the oldest in-cloud READOUT opening — the **card-level "behaviorally corroborated"
+  calibration badge** (Cycle-68 lineage, unblocked 2026-07-29). New `_payment_corroboration(rep)` +
+  transactability-pillar badge in `asrs/scorecard.py._pillars`: three honest states (good "behaviorally corroborated"
+  = predicted payable + every valid trial reached a machine-payable path; neutral "no payment, as predicted" = the
+  honest ABSENCE; warn "not corroborated" = prediction vs lived experience disagree/split), suppressed to `None` when
+  no valid panel or the `x402_probe` prediction check is absent. Reads the SAME signals the calibration guard pins
+  (static `x402_probe` = PREDICTION, `machine_payable_path` across valid trials = EXPERIENCE) so badge + guard cannot
+  desync; display-only (no new JSON field, off the scoring path). SHIPPED direct-to-main (READOUT, no
+  scoring-semantics → no version bump): `scorecard.py` fn+badge+CSS; `tests/test_readout.py` +5 (84→89: positive /
+  honest-absence / disagreement-both-directions+split / suppressed-and-scoped / real-anchor non-vacuity on the SAME
+  two committed reports the calibration guard reads). Verified in the FULL built card (`build_scorecard` — exactly one
+  badge, `.corrob` CSS present). SCORE-NEUTRAL: scoring-path diff (`asrs/scoring.py rubric/ fixtures/ batteries/
+  probes/`) EMPTY; replay 26/26, **46.1 F / 85.5 B / +39.4 UNMOVED**, 0 replay-miss; full suite **519 passed**
+  (514→519). Invariants #1 (display-only read; no probe/POST/signing), #2 (no scoring-semantics → no version bump),
+  #3 (badge derived from committed behavioral evidence, non-vacuous on both real anchors), #4 (a checkpoint-less run
+  corroborates nothing → None; stall attributed to LOCAL env not a site), #5 (append-only) all held. NO DM
+  (display-only READOUT, not sensitive-class, off scoring path, not first-after-16:00 UTC — ~11:2xZ Aug-5; last digest
+  Cycle 228). See LOG Cycle 254.
+- FOCUS POINTER (Cycle 254 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
+  **BUT the LOCAL verify runner is STALLED with the 6h floor breached (P0 [LOCAL] queued Cycle 251) — not
+  cloud-doable; next-fire priority is keeping the P0 [LOCAL] fresh + the 16:00 UTC digest flag (overdue once the
+  digest window opens ≥16:00Z — this cycle at ~11:2xZ is still before it).** Cloud track rotation: Cycle 254 was
+  READOUT → cloud pointer is **METHOD next** (METHOD → COVERAGE → TRUTH → READOUT). NEXT READOUT openings (later):
+  the TERMINAL-card corroboration line (`asrs/report.py` — this cycle did the HTML card, the backlog's named primary
+  surface; the terminal is the natural terminal→JSON→HTML follow-up per per_kind/between_kind_spread lineage); the
+  population-drift TREND once a 3rd dated sweep lands ([LOCAL]-gated, only 2 committed). NEXT METHOD/TRUTH openings:
+  the reachability-evidence reproducibility sweep (Cycle 253) — verify OTHER capped/`[:N]`-sliced `_aggregate`
+  evidence lists are all sort-BEFORE-slice; panel-verdict-stability (does the reliability `stable`/`reproducible` gate
+  track what an agent re-experiences across trials). NEXT COVERAGE openings: service_booking's INTAKE-FORM or WAITLIST
+  control (each IF precision-guardable); the ipinfo.io dataset-format/download-contract data_retrieval signal
+  (Cycle-243); the deep-bank uncaptured-capability audit (Cycle 226/230/233 lineage).
+  **RUNNER-HEALTH WATCH (ESCALATED — FLOOR BREACHED, carried Cycle 251→254 — hold until resolved):** last artifact
+  02:41Z; at the Cycle-254 fire (11:18Z) it is ~8.6h old = past the 6h floor, 8+ consecutive misses (03:41–10:41).
+  Cloud cannot diagnose (launchd-not-firing / machine-asleep / new pre-push failure indistinguishable from here) →
+  P0 [LOCAL] with exact diagnostic steps stands. Distinct from the Cycle-227 push-race (`divergence_recovery` None).
+  FLAG loudly in the next 16:00 UTC digest.
 - CYCLE 253 — 2026-08-05T~10:1xZ (TRUTH, cloud, direct-to-main, score-neutral).
   FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests` state=open `[]`): HEAD in sync with
   origin at Cycle 252 (`8d19fcf`; detached-start realign via `git fetch origin main`, benign). **LOCAL VERIFY RUNNER

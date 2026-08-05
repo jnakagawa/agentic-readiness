@@ -2224,19 +2224,34 @@ design in-cloud, execute locally.
   archetype and leaks into no other, completeness-enforced.] All tests-only, off the scoring path,
   in-cloud-doable on committed fixtures.
 
-- **[CANDIDATE, READOUT] Card-level "behaviorally corroborated" calibration badge** (follow-up to
-  Cycle 68). Cycle 68 documented the static-vs-behavioral VALIDITY property in methodology-page
-  PROSE (§8). The terminal→JSON→HTML surface it doesn't yet reach is the CARD: a payment-capable
-  storefront whose static transactability prediction is behaviorally confirmed (Outcome payment
-  checkpoints PASS across trials) could carry a small "behaviorally corroborated" affordance next to
-  the transactability pill — the same terminal→JSON→HTML closure per_kind (Cycle 10→12),
-  between_kind_spread (18→20), and NA (25→28) each took. Display-only/score-neutral when done.
-  NOW UNBLOCKED (2026-07-29): the SECOND committed behavioral report landed — the no-rails retail negative
-  anchor (moleskine, committed 2026-07-28T23:10Z) is now wired into the two-sided calibration guard
-  (Cycle 71) AND surfaced in §8 prose (Cycle 72). The badge can therefore render BOTH the positive
-  corroboration (with-rails: payment checkpoints PASS) AND its honest ABSENCE (no-rails: predicted no
-  payment, live wall confirmed — no corroboration to show), so it no longer over-claims. Remaining work is
-  the report-shape decision + the terminal→JSON→HTML closure; a strong future READOUT pick.
+<!-- DONE 2026-08-05T~11:2xZ (Cycle 254, READOUT, cloud, direct-to-main, display-only, score-neutral):
+     "[CANDIDATE, READOUT] Card-level 'behaviorally corroborated' calibration badge" SHIPPED (HTML card).
+     `asrs/scorecard._payment_corroboration(rep)` + a `.corrob` badge on the transactability pillar row in
+     `_pillars`: three honest states — good "behaviorally corroborated" (predicted payable + every valid trial
+     reached a machine-payable path), neutral "no payment, as predicted" (the honest ABSENCE — predicted no
+     payment, agent hit the wall in every valid trial, no over-claim), warn "not corroborated" (prediction vs
+     lived experience disagree, or the trials split). `None` (no badge) when no valid behavioral run exists
+     (static cards unchanged) or the `x402_probe` prediction check is absent — same suppression as the
+     reliability/quotability cards. Reads the SAME two signals the calibration guard pins (static `x402_probe`
+     status = PREDICTION, `machine_payable_path` across VALID trials = EXPERIENCE) so the shown badge and the
+     guard can never desync; display-only (no new JSON field, off the scoring path — cannot move a score).
+     `tests/test_readout.py` +5 (84→89): positive / honest-absence (asserts the negative anchor never shows
+     positive corroboration) / disagreement (both mismatch directions + a split panel) / suppressed-and-scoped
+     (no panel, crashed run, missing prediction check → None; badge sits ONLY inside the transactability row) /
+     non-vacuity on the SAME two committed anchors the calibration guard reads (driftflight.com → good,
+     moleskine → neutral). Verified in the FULL built card (`build_scorecard` — exactly one badge, `.corrob` CSS
+     present). Score-neutral (scoring-path diff empty; replay 26/26, 46.1 F / 85.5 B / +39.4 UNMOVED; full suite
+     514→519). See LOG Cycle 254. FOLLOW-UP below (terminal-card corroboration line). -->
+- **[CANDIDATE, READOUT] Terminal-card corroboration line** (follow-up to Cycle 254). Cycle 254 shipped the
+  behavioral-corroboration badge on the HTML card (the backlog's named primary surface). The natural
+  terminal→JSON→HTML closure the precedent READOUT items took (per_kind 10→12, between_kind_spread 18→20, NA
+  25→28) is the TERMINAL card in `asrs/report.py`: surface the same one-line corroboration verdict next to the
+  transactability pillar in `render(report)` when a behavioral panel has run. The derivation already exists as
+  `asrs/scorecard._payment_corroboration` but reads a report DICT; the terminal renderer holds a `Report`
+  object, so either (a) call it on `json.loads(report.to_json())` at the terminal boundary, or (b) lift the
+  derivation to operate on both shapes (a small shared helper). Display-only/score-neutral. A JSON `Report`
+  field is NOT yet needed (the badge derives at render); add one only if a downstream consumer must read the
+  verdict without re-deriving. Low-medium urgency; a clean next READOUT pick.
 
 <!-- DONE 2026-07-28T16:21Z (Cycle 62, COVERAGE, direct-to-main, score-neutral):
      "[CANDIDATE] Offering discovery should read the /docs API-docs surface" SHIPPED. `/docs`

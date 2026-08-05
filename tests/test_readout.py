@@ -3089,6 +3089,125 @@ def test_pillar_earner_reflects_real_canonical_evidence() -> None:
                f"{dom} card names its transactability earner")
 
 
+# ---------------------------------------------------------------------------
+# Behavioral-corroboration badge (Cycle 254, READOUT): the Cycle-68 static-vs-
+# behavioral validity property, surfaced on the CARD next to the transactability
+# pillar. Display-only — it reads the static x402_probe PREDICTION and the
+# machine_payable_path EXPERIENCE the report ALREADY carries (no new JSON field,
+# off the scoring path) and cannot move a score. The calibration MATH itself
+# lives in test_calibration.py; these pin the SURFACING: three honest states
+# (good corroboration / neutral honest-absence / warn disagreement), suppression
+# when there is nothing to corroborate, transactability-only scoping, and
+# non-vacuity on the SAME two committed anchors the calibration guard reads.
+# ---------------------------------------------------------------------------
+def _corrob_rep(x402_status: str, machine_payable_by_trial: list) -> dict:
+    """A minimal report dict for the transactability-corroboration badge: one
+    transactability ``x402_probe`` check at ``x402_status`` (the static
+    PREDICTION) and one behavioral run per entry in ``machine_payable_by_trial``
+    (the lived EXPERIENCE)."""
+    pts = 8.0 if x402_status == "pass" else 0.0
+    checks = [_chk("transactability", pts, "x402-live", "x402_probe", x402_status)]
+    runs = [
+        {"model": "claude", "trial": i + 1,
+         "checkpoints": {"machine_payable_path": bool(mp)}}
+        for i, mp in enumerate(machine_payable_by_trial)
+    ]
+    return {"pillar_scores": {"access": None, "legibility": None,
+                              "transactability": 50.0, "trust": None, "outcome": None},
+            "checks": checks, "behavioral_runs": runs}
+
+
+def test_corroboration_badge_positive() -> None:
+    print("test_corroboration_badge_positive")
+    rep = _corrob_rep("pass", [True, True])
+    v = scorecard._payment_corroboration(rep)
+    _check(v is not None and v[0] == "good",
+           f"predicted-payable + every valid trial reaches payment -> good, got {v}")
+    html = scorecard._pillars(rep)
+    _check("behaviorally corroborated" in html, "positive badge label rendered")
+    _check("corrob good" in html, "positive badge uses the good band")
+
+
+def test_corroboration_badge_honest_absence() -> None:
+    print("test_corroboration_badge_honest_absence")
+    rep = _corrob_rep("fail", [False, False])
+    v = scorecard._payment_corroboration(rep)
+    _check(v is not None and v[0] == "neutral",
+           f"predicted-no-payment + every valid trial walls -> neutral, got {v}")
+    html = scorecard._pillars(rep)
+    _check("no payment, as predicted" in html, "honest-absence badge rendered")
+    _check("corrob neutral" in html, "absence uses the neutral band")
+    _check("behaviorally corroborated" not in html,
+           "the negative anchor never over-claims positive corroboration")
+
+
+def test_corroboration_badge_disagreement() -> None:
+    # Prediction vs lived experience disagree (either direction), or the trials
+    # split -> warn: the number is not behaviorally corroborated, shown not hidden.
+    print("test_corroboration_badge_disagreement")
+    for x402, trials in (("pass", [False, False]),  # predicted payable, agent walled
+                         ("fail", [True, True]),     # predicted floor, agent paid
+                         ("pass", [True, False])):    # split -> not reproducibly corroborated
+        rep = _corrob_rep(x402, trials)
+        v = scorecard._payment_corroboration(rep)
+        _check(v is not None and v[0] == "warn",
+               f"mismatch/split -> warn, got {v} for {x402}/{trials}")
+        html = scorecard._pillars(rep)
+        _check("not corroborated" in html and "corrob warn" in html,
+               f"warn badge rendered for {x402}/{trials}")
+
+
+def test_corroboration_badge_suppressed_and_scoped() -> None:
+    print("test_corroboration_badge_suppressed_and_scoped")
+    base_pillars = {"access": None, "legibility": None, "transactability": 50.0,
+                    "trust": None, "outcome": None}
+    # No panel -> None (static cards render exactly as before this feature).
+    static = {"pillar_scores": base_pillars,
+              "checks": [_chk("transactability", 8.0, "x402-live", "x402_probe")]}
+    _check(scorecard._payment_corroboration(static) is None, "no behavioral runs -> None")
+    _check("corrob" not in scorecard._pillars(static),
+           "static card shows no corroboration badge (unchanged)")
+    # Runs present but none valid (crashed, no checkpoints) -> None, invariant #4:
+    # a run with no lived observation corroborates nothing.
+    crashed = dict(static, behavioral_runs=[{"model": "m", "trial": 1}])
+    _check(scorecard._payment_corroboration(crashed) is None,
+           "a run with no checkpoints is not a corroboration")
+    # Panel present but the prediction check absent (older/partial report) -> None.
+    older = {"pillar_scores": base_pillars, "checks": [],
+             "behavioral_runs": [{"checkpoints": {"machine_payable_path": True}}]}
+    _check(scorecard._payment_corroboration(older) is None,
+           "missing x402_probe prediction check -> None (no invented corroboration)")
+    # Scoped to the transactability row ONLY — the badge never attaches elsewhere.
+    html = scorecard._pillars(_corrob_rep("pass", [True, True]))
+    chunks = html.split('class="pillar-row')
+    tx = [c for c in chunks if "ptag transactability" in c]
+    others = [c for c in chunks if "ptag transactability" not in c]
+    _check(len(tx) == 1 and "corrob" in tx[0], "badge sits inside the transactability row")
+    _check(all("corrob" not in c for c in others), "no other pillar row carries the badge")
+
+
+def test_corroboration_badge_on_real_committed_anchors() -> None:
+    # Non-vacuous on REAL committed behavioral reports — the SAME two anchors the
+    # calibration guard (test_calibration) reads: with-rails driftflight.com is
+    # behaviorally corroborated (agent-native payment lived out); no-rails
+    # moleskine shows the honest ABSENCE (predicted floor, agent hit the wall).
+    print("test_corroboration_badge_on_real_committed_anchors")
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    cases = {
+        "acceptance_battery_driftflightcom_20260728T184325Z.report.json":
+            ("driftflight.com", "good", "behaviorally corroborated"),
+        "acceptance_battery_moleskine_20260728T225939Z.report.json":
+            ("www.moleskine.com", "neutral", "no payment, as predicted"),
+    }
+    for fn, (dom, cls, label) in cases.items():
+        with open(os.path.join(root, "runs", "local", fn), encoding="utf-8") as fh:
+            rep = json.load(fh)
+        _check(rep["domain"] == dom, f"committed anchor is {dom}")
+        v = scorecard._payment_corroboration(rep)
+        _check(v is not None and v[0] == cls, f"{dom} corroboration -> {cls}, got {v}")
+        _check(label in scorecard._pillars(rep), f"{dom} card renders the {label!r} badge")
+
+
 def main() -> int:
     tests = [
         test_json_carries_reliability,
@@ -3175,6 +3294,11 @@ def main() -> int:
         test_pillar_earner_tracks_points_not_a_hardcoded_name,
         test_pillar_earner_omitted_for_na_and_unearned,
         test_pillar_earner_reflects_real_canonical_evidence,
+        test_corroboration_badge_positive,
+        test_corroboration_badge_honest_absence,
+        test_corroboration_badge_disagreement,
+        test_corroboration_badge_suppressed_and_scoped,
+        test_corroboration_badge_on_real_committed_anchors,
     ]
     failed = 0
     for t in tests:

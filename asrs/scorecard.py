@@ -146,6 +146,14 @@ a.chip:hover{box-shadow:inset 0 0 0 1px var(--text-tertiary);color:var(--text-pr
   color:var(--text-quaternary)}
 .pillar-row .name small.earner{color:var(--text-tertiary);margin-top:2px}
 .pillar-row .name small.earner b{font-weight:600;color:var(--text-secondary)}
+.pillar-row .name small.corrob{display:inline-block;margin-top:4px;font-weight:600;
+  font-size:11px;padding:1px 8px;border-radius:9999px}
+.pillar-row .name small.corrob.good{background:var(--success-bg);color:var(--success);
+  box-shadow:inset 0 0 0 1px #a6f4c5}
+.pillar-row .name small.corrob.warn{background:var(--warning-bg);color:var(--warning);
+  box-shadow:inset 0 0 0 1px #fedf89}
+.pillar-row .name small.corrob.neutral{background:var(--bg-secondary);
+  color:var(--text-secondary);box-shadow:inset 0 0 0 1px var(--border-secondary)}
 .track{background:var(--bg-quaternary);border-radius:9999px;height:8px;
   overflow:hidden}
 .fill{height:100%;border-radius:9999px}
@@ -2308,9 +2316,81 @@ def _pillar_top_earner(rep: dict, pillar: str) -> tuple[str, float] | None:
     return (top.get("finding") or top.get("check_id") or "", float(top.get("points") or 0))
 
 
+# The static agent-native-payment PREDICTION check and the behavioral payment
+# EXPERIENCE checkpoint — the SAME operationalization the calibration guard
+# (tests/test_calibration.py) pins: ``x402_probe`` PASS <=> the score claims a
+# machine-payable rail is reachable; ``machine_payable_path`` True across valid
+# trials <=> the shopper actually reached one. Named here (not vendor-worded) so
+# the card's corroboration badge and the calibration guard read the SAME signal.
+_PAYMENT_PREDICTION_CHECK = "x402_probe"
+_PAYMENT_EXPERIENCE_CHECKPOINT = "machine_payable_path"
+
+
+def _payment_corroboration(rep: dict) -> tuple[str, str, str] | None:
+    """Does the shopper's LIVED payment experience corroborate the static
+    transactability PREDICTION? Returns ``(css_class, label, title)`` for the
+    transactability-pillar badge, or ``None`` when there is nothing to
+    corroborate against.
+
+    Display-only calibration affordance (the Cycle-68 static-vs-behavioral
+    validity property, surfaced on the CARD): it reads the SAME data the score
+    and the calibration guard already carry — the static ``x402_probe`` status
+    (the PREDICTION) and the ``machine_payable_path`` checkpoint across VALID
+    behavioral trials (the EXPERIENCE) — and cannot move a score.
+
+    Three honest states, never over-claiming:
+    - **good** — the score predicts agent-native payment AND every valid trial
+      reached a machine-payable path (prediction lived out);
+    - **neutral** — the score predicts NO agent-native payment AND every valid
+      trial hit the payment wall (the honest ABSENCE: predicted floor confirmed,
+      no positive corroboration to show);
+    - **warn** — the prediction and the lived experience disagree, or the trials
+      split — the number is not (yet) behaviorally corroborated.
+
+    ``None`` when no valid behavioral run exists (a static-only report has no
+    lived experience to corroborate against) or the prediction check is absent
+    (an older/partial report) — no invented corroboration, mirroring the
+    reliability/quotability cards' suppression."""
+    valid = [r for r in (rep.get("behavioral_runs") or []) if r.get("checkpoints")]
+    if not valid:
+        return None
+    prediction = None
+    for c in rep.get("checks", []):
+        if c.get("check_id") == _PAYMENT_PREDICTION_CHECK:
+            prediction = c.get("status")
+            break
+    if prediction is None:
+        return None
+    predicted_payable = prediction == "pass"
+    reached = [bool(r["checkpoints"].get(_PAYMENT_EXPERIENCE_CHECKPOINT)) for r in valid]
+    if predicted_payable and all(reached):
+        return (
+            "good",
+            "behaviorally corroborated",
+            "The score predicts agent-native payment; the shopper reached a "
+            "machine-payable path in every valid trial.",
+        )
+    if not predicted_payable and not any(reached):
+        return (
+            "neutral",
+            "no payment, as predicted",
+            "The score predicts no agent-native payment; the shopper hit the "
+            "payment wall in every valid trial (prediction confirmed).",
+        )
+    return (
+        "warn",
+        "not corroborated",
+        "The static payment prediction and the shopper's lived experience "
+        "disagree across trials.",
+    )
+
+
 def _pillars(rep: dict, baseline: dict | None = None) -> str:
     """Pillar bar rows. With ``baseline``, each row also shows the per-pillar
-    delta vs the baseline report (the compare card's right column)."""
+    delta vs the baseline report (the compare card's right column). The
+    transactability row carries a display-only behavioral-corroboration badge
+    when a panel has run (see :func:`_payment_corroboration`)."""
+    corrob = _payment_corroboration(rep)
     rows = []
     for p, label in PILLAR_LABELS.items():
         s = rep["pillar_scores"].get(p)
@@ -2342,9 +2422,18 @@ def _pillars(rep: dict, baseline: dict | None = None) -> str:
                     f'<small class="earner">earned by <b>{_esc(finding)}</b> '
                     f"<span class=\"num\">+{pts:g}</span></small>"
                 )
+        # Behavioral-corroboration badge — only on the transactability row, only
+        # when a panel has run (None otherwise, so static cards are unchanged).
+        badge = ""
+        if p == "transactability" and corrob is not None:
+            b_cls, b_label, b_title = corrob
+            badge = (
+                f'<small class="corrob {b_cls}" title="{_esc(b_title)}">'
+                f"{_esc(b_label)}</small>"
+            )
         rows.append(
             f'<div class="{row_cls}"><span class="name"><span class="ptag {_esc(p)}">{label}</span>'
-            f"<small>{PILLAR_QUESTIONS[p]}</small>{earner}</span>"
+            f"<small>{PILLAR_QUESTIONS[p]}</small>{earner}{badge}</span>"
             f'<div class="track"><div class="fill {fill_cls}" style="width:{width}%"></div></div>{val}{delta}</div>'
         )
     return f'<div class="pillars">{"".join(rows)}</div>'

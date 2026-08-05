@@ -2757,6 +2757,109 @@ def test_calibration_page_published_and_linked() -> None:
                "the card footer links to calibration.html")
 
 
+# Cycle 246 (READOUT): the calibration sweep is re-run on a cadence and each dated
+# dataset carries a `drift` block (experiments/calibration_sweep.py::_compute_drift,
+# LOCAL Cycle 244) diffing it against the prior sweep — but that block was
+# terminal/stderr-only, a committed dataset a reader could not see. These pin the
+# READOUT that surfaces it on calibration.html:
+#   - a drift block renders a Population-drift card whose counts + signed per-domain
+#     moves come from the DATA (not hand-typed), including the canonical anchors'
+#     own steadiness (the population echo of the frozen reference delta);
+#   - a scored<->not-scorable flip is surfaced as a REACHABILITY change in its own
+#     block, framed as NOT a capability move, and its magnitude is NEVER rendered as
+#     a score delta (invariant #4 — the same teeth as test_calibration_drift.py);
+#   - a sweep with no baseline (drift is None / absent) renders NO drift card and
+#     the leaderboard is unaffected (backward-compatible with the older datasets).
+
+def _fake_sweep_with_drift() -> dict:
+    """`_fake_sweep` plus a `drift` block exercising every branch: two real moves
+    (one up, one down), a scored<->not-scorable flip (a reachability change that a
+    naive impl would mis-report as a 90.0 score move), a steady reference anchor,
+    and a newly added member."""
+    s = _fake_sweep()
+    s["drift"] = {
+        "baseline_ts": "20260721T120000Z",
+        "baseline_path": "calibration_sweep_20260721T120000Z.json",
+        "n_compared": 3,
+        "n_moved": 2,
+        "max_abs_delta": 6.8,
+        "moved": [
+            {"domain": "rails-store.test", "segment": "api-storefront:rails-anchor",
+             "baseline": 85.5, "current": 85.5, "delta": 0.0},
+            {"domain": "mover-up.test", "segment": "retail:emerging-rails",
+             "baseline": 55.2, "current": 62.0, "delta": 6.8},
+            {"domain": "mover-down.test", "segment": "retail:no-rails",
+             "baseline": 50.0, "current": 45.0, "delta": -5.0},
+        ],
+        "status_changed": [
+            {"domain": "flipped.test", "segment": "retail:no-rails",
+             "baseline": "NOT SCORABLE", "current": 90.0},
+        ],
+        "added_members": ["fresh.test"],
+        "removed_members": [],
+    }
+    return s
+
+
+def test_calibration_page_surfaces_drift() -> None:
+    print("test_calibration_page_surfaces_drift")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_calibration_page(
+            Path(d), sweep=_fake_sweep_with_drift())).read_text()
+    _check("Population drift" in text, "a Population-drift card is rendered")
+    _check("20260721 120000" in text, "the drift card names the baseline sweep it diffs against")
+    # Summary counts come from the data (n_moved / n_compared / max |Δ|), not hand-typed.
+    _check("2 of 3 domains scored in both sweeps moved" in text,
+           "drift summary reports moved/compared straight from the block")
+    _check("6.8" in text, "the max |Δ| is surfaced")
+    # Both real moves render with signed deltas; a down-move keeps its sign.
+    _check("+6.8" in text and "mover-up.test" in text, "an up-move renders with its + sign")
+    _check("-5.0" in text and "mover-down.test" in text, "a down-move renders with its − sign")
+    # The canonical anchor's own steadiness — the population echo of the frozen delta.
+    _check("Reference anchors held steady" in text,
+           "a steady reference anchor is called out as the frozen-delta echo")
+    # A newly added member is listed, not averaged into the drift.
+    _check("fresh.test" in text and "New to the population" in text,
+           "a newly added member is listed as membership, not a move")
+
+
+def test_calibration_drift_reachability_change_is_not_a_score_move() -> None:
+    # Invariant #4 with teeth on the READOUT surface: a member crossing the
+    # scored<->not-scorable line is an OBSERVATION change, never a capability move.
+    # Its would-be 90.0 magnitude must appear ONLY in the reachability block, never
+    # as a rendered score Δ in the moved table.
+    print("test_calibration_drift_reachability_change_is_not_a_score_move")
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_calibration_page(
+            Path(d), sweep=_fake_sweep_with_drift())).read_text()
+    _check("Reachability changes" in text, "a separate Reachability-changes block exists")
+    r_idx = text.index("Reachability changes")
+    # The flipped domain appears ONLY under the reachability block, not in the moves above.
+    _check(text.index("flipped.test") > r_idx,
+           "the flipped member is under Reachability changes, not the moved table")
+    _check("not</b> a capability move" in text or "not a capability move" in text.replace("<b>", "").replace("</b>", ""),
+           "the flip is framed as not a capability move")
+    # The teeth: its magnitude is never rendered as a signed score delta.
+    _check("+90.0" not in text and "-90.0" not in text,
+           "the reachability flip is never counted as a 90.0 score Δ")
+
+
+def test_calibration_page_no_drift_renders_without_card() -> None:
+    # A first sweep (no prior baseline) carries drift=None / no drift key — the page
+    # renders the leaderboard with NO drift card, never a crash or an empty card.
+    print("test_calibration_page_no_drift_renders_without_card")
+    with tempfile.TemporaryDirectory() as d:
+        # _fake_sweep has no "drift" key at all — the older-dataset shape.
+        text_absent = Path(scorecard._write_calibration_page(
+            Path(d), sweep=_fake_sweep())).read_text()
+        s_none = _fake_sweep(); s_none["drift"] = None
+        text_none = Path(scorecard._write_calibration_page(
+            Path(d), sweep=s_none)).read_text()
+    for text, why in ((text_absent, "absent key"), (text_none, "explicit None")):
+        _check("Population drift" not in text, f"no drift card when drift is {why}")
+        _check("Calibration leaderboard" in text, f"leaderboard still renders when drift is {why}")
+
+
 # ---------------------------------------------------------------------------
 # Cycle 192 (READOUT): the "earned by" pillar caption. Each pillar bar now names
 # the single capability that contributes the most raw points to its score, so
@@ -2936,6 +3039,9 @@ def main() -> int:
         test_calibration_page_bands_live_and_version_flagged,
         test_calibration_page_empty_renders_gracefully,
         test_calibration_page_published_and_linked,
+        test_calibration_page_surfaces_drift,
+        test_calibration_drift_reachability_change_is_not_a_score_move,
+        test_calibration_page_no_drift_renders_without_card,
         test_pillar_earner_names_dominant_capability,
         test_pillar_earner_tracks_points_not_a_hardcoded_name,
         test_pillar_earner_omitted_for_na_and_unearned,

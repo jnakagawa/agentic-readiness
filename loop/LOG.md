@@ -17764,3 +17764,80 @@ real-evidence case, ACP/UCP/MPP live handshakes) — prefer the oldest.
 ## Local verification — 20260805T024100Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260805T024100Z.json
+
+## Cycle 246 — 2026-08-05T~03:1xZ — READOUT — the calibration population-drift block becomes a citable page section (was stderr-only)
+
+**Track / ship class.** READOUT (make the committed dataset a readout a reader can
+cite). Display-only, OFF the scoring path → direct-to-main (no rubric check
+add/remove, no weight/cap/version move, no probe change). Score-path diff
+(`asrs/scoring.py asrs/offering.py rubric/ fixtures/`) EMPTY; the only changed
+files are `asrs/scorecard.py` (the HTML renderer) + `tests/test_readout.py`.
+
+**FIRST duty (infra health check).** No open peer-gated PR (`list_pull_requests`
+state=open → `[]`, no review owed). INFRA GREEN: newest verify
+`runs/local/verify_20260805T024100Z.json` (02:41Z, git_pull.ok=true attempts=1,
+divergence_recovery=None, tests_ok=true 24/24) ~31min old at fire (03:12Z) — well
+inside the 6h floor; live canonical **46.1 F / 85.5 B / +39.4** (tx 87.5), no
+drift. Stood up the cloud `.venv` from requirements; all 25 suites green before
+the change (test_free_tier 11/11 in-cloud this fire). HEAD in sync with origin at
+Cycle 245.
+
+**What / why.** LOCAL Cycle 244 gave `experiments/calibration_sweep.py` a cadence
+DRIFT block (`_compute_drift`) — a per-domain diff of each dated population sweep
+vs the prior one — and Cycle 245 gave that block its first test. But the drift was
+TERMINAL/stderr-only: the committed dataset carried it, the `calibration.html`
+page did not, so a reader who opened the population page could see the leaderboard
+but not how the population had MOVED across the cadence. This cycle closes that
+READOUT gap. New `asrs/scorecard._calibration_drift_card(drift)` renders a
+**Population drift** card from the committed `sweep["drift"]` block, wired into
+`_write_calibration_page` after the Not-scorable card. It surfaces, all straight
+from the data (no hand-typed numbers): the baseline sweep it diffs against; the
+summary (`N of M domains scored in both moved, max |Δ|, K held steady`); a signed
+per-domain moved table (up green / down red); the canonical anchors' own
+steadiness called out as the population-scale echo of the frozen reference delta
+the replay guard defends; and newly-added / dropped members listed as membership,
+never averaged into the drift. Attribution honesty (invariant #4) is the
+load-bearing design choice, mirrored from the sweep math: a member that flips
+scored↔not-scorable is rendered in a SEPARATE "Reachability changes" block, framed
+as an OBSERVATION change and NOT a capability move — its magnitude is never
+rendered as a score Δ. Renders `""` (no card) when there is no baseline (a first
+sweep), so older datasets and the empty-population path are unaffected.
+
+**Evidence.** Rendered the card from the REAL newest committed dataset
+`runs/local/calibration_sweep_20260805T014754Z.json`: "2 of 13 domains scored in
+both sweeps moved (max |Δ| 6.8); 11 held steady" — deepai.org 55.2→62.0 (+6.8),
+allbirds.com 61.9→66.9 (+5.0); "Reference anchors held steady. Both canonical
+anchors moved Δ 0.0"; "New to the population this run: acuityscheduling.com,
+ipinfo.io" (the two new storefront TYPES — data-retrieval + service-booking); no
+reachability flips, none removed. Tests: `tests/test_readout.py` 80→83 —
+`test_calibration_page_surfaces_drift` (counts + signed moves + anchor echo +
+added-member from data), `test_calibration_drift_reachability_change_is_not_a_score_move`
+(invariant #4 teeth: a synthetic scored→90.0 flip lands in the reachability block,
+never as a +90.0/-90.0 score Δ), `test_calibration_page_no_drift_renders_without_card`
+(drift absent / None → no card, leaderboard intact — backward compatible).
+
+**Validation.** Full suite **25/25 files green**. Canonical replay guard
+(`test_canonical_replay.py`) **46.1 F / 85.5 B / +39.4 UNMOVED**, 0 replay-miss,
+relabel-invariant. Static live re-score of the canonical pair is out-of-band
+in-cloud (network policy); the in-cloud standard held — regression-by-construction
+(display-only change, score-path diff EMPTY, replay guard green) corroborated by
+the newest LOCAL verify artifact (02:41Z, 46.1/85.5/+39.4, tx 87.5). No probe
+touched → no 2-domain live probe validation owed.
+
+**Invariants.** #1 $0 held (renderer + tests only, no probe/POST/signing path).
+#2 comparability untouched (no scoring semantics; the page keeps pulling grade
+bands + rubric version LIVE). #3 evidence (rendered from a committed dataset;
+tests pass). #4 attribution honesty is the card's central design (reachability
+flips separated from capability moves, by construction AND by test). #5 append-only
+(new LOG entry, no history rewrite).
+
+**Comms.** NO DM — display-only READOUT, not sensitive-class, not first-cycle-after
+16:00 UTC (fire ~03:1xZ Aug-5; last digest Cycle 228). Per the playbook comms
+policy, silence.
+
+**Next hypothesis.** The population + drift are now citable, but the drift is a
+SINGLE-cadence diff (this sweep vs the immediately prior one). A READOUT follow-up
+could surface the population's drift TREND across all committed sweeps (a small
+sparkline of the canonical anchors' overall across every dated dataset, the
+population analog of canonical-history.html's per-cycle trend) once ≥3 dated
+sweeps exist. Cloud pointer next: METHOD (READOUT → METHOD → COVERAGE → TRUTH).

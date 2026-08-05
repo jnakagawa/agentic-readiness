@@ -1,6 +1,31 @@
 # Loop state
 
-- Cycle counter: 245
+- Cycle counter: 246
+- CYCLE 246 — 2026-08-05T~03:1xZ (READOUT, cloud, direct-to-main, score-neutral).
+  FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests`
+  state=open `[]`): INFRA GREEN, newest verify `runs/local/verify_20260805T024100Z.json`
+  (02:41Z, git_pull.ok=true attempts=1, divergence_recovery=None, tests_ok=true 24/24)
+  ~31min old at fire (03:12Z); live canonical **46.1 F / 85.5 B / +39.4** (tx 87.5), no
+  drift; HEAD in sync with origin at Cycle 245. Took the READOUT slot (cloud pointer,
+  Cycle 245 was TRUTH): surfaced the calibration population-DRIFT block — committed by
+  LOCAL Cycle 244, tested Cycle 245, but STDERR-ONLY — as a citable **Population drift**
+  card on `calibration.html`. New `scorecard._calibration_drift_card(drift)` (wired into
+  `_write_calibration_page`) renders, all from the data: the baseline it diffs against;
+  the summary (N/M moved, max|Δ|, K steady); a signed per-domain moved table (up green /
+  down red); the canonical anchors' own Δ0.0 steadiness as the population echo of the
+  frozen reference delta; and added/dropped members as membership (never averaged in).
+  Attribution honesty is the load-bearing design: a scored↔not-scorable flip renders in a
+  SEPARATE "Reachability changes" block, an OBSERVATION change NOT a capability move — its
+  magnitude never rendered as a score Δ (invariant #4, test-pinned). Renders "" with no
+  baseline (older datasets / empty path unaffected). Real-data render (newest committed
+  sweep 20260805T014754Z): "2 of 13 moved (max|Δ| 6.8); 11 held steady" — deepai.org
+  +6.8, allbirds.com +5.0; anchors Δ0.0; new: acuityscheduling.com + ipinfo.io.
+  SCORE-NEUTRAL: `git diff -- asrs/scoring.py asrs/offering.py rubric/ fixtures/` EMPTY
+  (only `asrs/scorecard.py` renderer + `tests/test_readout.py`); replay guard 25/25,
+  **46.1 F / 85.5 B / +39.4 UNMOVED**; full suite 25/25 files green; test_readout 80→83.
+  Invariant #1 held (renderer + tests only, no probe/POST/signing). NO DM (display-only
+  READOUT, not sensitive-class, not first-after-16:00 UTC — ~03:1xZ Aug-5; last digest
+  Cycle 228). See LOG Cycle 246.
 - CYCLE 245 — 2026-08-05T~02:1xZ (TRUTH, cloud, direct-to-main, score-neutral). FIRST duty (infra health
   check — no open peer-gated PR, `list_pull_requests` state=open `[]`): INFRA GREEN, newest verify
   `runs/local/verify_20260805T014104Z.json` (01:41Z, git_pull.ok=true attempts=1, divergence_recovery=None,
@@ -22,14 +47,15 @@
   **46.1 F / 85.5 B / +39.4 UNMOVED**; full suite 24→25 files green (test_free_tier 11/11 in-cloud this fire —
   eth-account gap did not recur). Invariant #1 held (tests-only, no probe/POST/signing). NO DM (score-neutral
   TRUTH, not sensitive-class, not first-after-16:00 UTC — ~02:1xZ Aug-5; last digest Cycle 228). See LOG Cycle 245.
-- FOCUS POINTER (Cycle 245 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
-  check only. Cloud track rotation: Cycle 245 was TRUTH → cloud pointer is **READOUT next** (METHOD → COVERAGE →
-  TRUTH → READOUT). READOUT opening this surfaced: the calibration population sweep now emits a trustworthy drift
-  block but it is a [LOCAL] stderr readout only — a READOUT cycle could surface the population + its cadence drift
-  on the rubric/leaderboard page or card (which storefront TYPES were scored, the drift trend), turning the
-  committed dataset into a citable readout. Other openings: the deep-bank uncaptured-capability audit (COVERAGE,
-  Cycle 226/230/233 lineage) or the still-UN-mined service_booking anchor (acuityscheduling.com, first distinct
-  signal). Substantive [LOCAL] frontier unchanged (prefer the oldest): physical_good-rich / MIXED retail+API
+- FOCUS POINTER (Cycle 246 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
+  check only. Cloud track rotation: Cycle 246 was READOUT → cloud pointer is **METHOD next** (METHOD → COVERAGE →
+  TRUTH → READOUT). READOUT DONE this cycle: the calibration population-drift block is now a citable **Population
+  drift** card on calibration.html (was stderr-only). REMAINING READOUT follow-up (queued, not urgent): the drift
+  is a SINGLE-cadence diff — a future READOUT could surface the drift TREND across all committed sweeps (a
+  sparkline of the canonical anchors' overall across every dated dataset, the population analog of
+  canonical-history.html) once ≥3 dated sweeps exist. METHOD/COVERAGE openings: the deep-bank
+  uncaptured-capability audit (COVERAGE, Cycle 226/230/233 lineage) or the still-UN-mined service_booking anchor
+  (acuityscheduling.com, first distinct signal). Substantive [LOCAL] frontier unchanged (prefer the oldest): physical_good-rich / MIXED retail+API
   fixtures (the P1 rich-retail item), a THIRD calibration anchor, render/structured-catalog captures, the
   typographic PHRASE-RESCUE real-evidence case, ACP/UCP/MPP live handshakes. RUNNER-HEALTH WATCH: drift RESOLVED;
   future `verify_*.json` read +39.4 / attribution=None, real-series canonical_history tests recovery-tolerant

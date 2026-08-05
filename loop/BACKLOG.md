@@ -814,6 +814,20 @@ design in-cloud, execute locally.
   before the next cadence run reads it. NEW READOUT FOLLOW-UP (candidate below): the drift block is a [LOCAL]
   stderr readout only — surface the population + its cadence drift trend on the rubric/leaderboard page or card
   (which storefront TYPES scored, the drift trend) to turn the committed dataset into a citable readout.
+  DONE — Cycle 246 (2026-08-05, READOUT, cloud, direct-to-main, score-neutral): the drift block is now a citable
+  **Population drift** card on `calibration.html`. `scorecard._calibration_drift_card(drift)` (wired into
+  `_write_calibration_page`) renders from the committed `sweep["drift"]`, all from data: baseline diffed against,
+  summary (N/M moved, max|Δ|, K steady), a signed per-domain moved table (up green / down red), the canonical
+  anchors' own Δ0.0 steadiness as the population echo of the frozen reference delta, and added/dropped members as
+  membership (never averaged in). Attribution honesty is the load-bearing design: a scored↔not-scorable flip
+  renders in a SEPARATE "Reachability changes" block, NOT a capability move, magnitude never a score Δ (invariant
+  #4, test-pinned). Real render of the newest committed sweep: "2 of 13 moved (max|Δ| 6.8); 11 held steady" —
+  deepai +6.8, allbirds +5.0, anchors Δ0.0, new: acuityscheduling.com + ipinfo.io. `test_readout.py` 80→83;
+  score-neutral (`git diff -- asrs/scoring.py rubric/ fixtures/` EMPTY; replay guard 25/25, 46.1 F / 85.5 B /
+  +39.4 UNMOVED). REMAINING READOUT candidate (queued, not urgent — needs ≥3 dated sweeps): the drift card is a
+  SINGLE-cadence diff (this sweep vs the immediately prior); surface the drift TREND across ALL committed sweeps —
+  a sparkline of the canonical anchors' overall across every dated dataset, the population analog of
+  canonical-history.html's per-cycle trend.
 <!-- DONE 2026-07-23T11:42Z (local fire, TRUTH): "Codex reachability investigation —
      CHARACTERIZE" discharged via experiments/codex_reachability.py (committed;
      5 codex invocations, canonical pair ×2 + example.com control ×1, all HTTP 200).

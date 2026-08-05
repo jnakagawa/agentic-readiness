@@ -1901,6 +1901,133 @@ def _load_calibration_sweep() -> dict | None:
 _SWEEP_PILLARS = ("access", "legibility", "transactability", "trust", "outcome")
 
 
+def _fmt_sweep_ts(ts: str) -> str:
+    """20260728T234815Z -> '20260728 234815' (display only)."""
+    ts = str(ts or "")
+    return f"{ts[:8]} {ts[9:15]}" if len(ts) >= 15 else ts
+
+
+def _calibration_drift_card(drift) -> str:
+    """Render the population-DRIFT card for calibration.html.
+
+    The calibration sweep is re-run on a cadence; each dated dataset carries a
+    ``drift`` block diffing it against the prior sweep (``experiments/
+    calibration_sweep.py::_compute_drift``). That block was terminal/stderr-only
+    until now — a committed dataset a reader could not see. A domain that ADDS or
+    REMOVES agent-native rails moves its overall score between runs: a real
+    capability change, the population-scale echo of the canonical pair's per-cycle
+    regression check. A member that flips scored <-> not-scorable is a REACHABILITY
+    change, never a capability move (invariant #4) — surfaced in its own row, never
+    counted as a score delta. New / dropped members are listed, never averaged in (a
+    broadened population is not a move). Display-only: reads the committed drift
+    block, moves no score. Returns "" when there is no baseline (a first sweep).
+    """
+    if not isinstance(drift, dict):
+        return ""
+    base_disp = _fmt_sweep_ts(drift.get("baseline_ts", ""))
+    n_compared = int(drift.get("n_compared", 0) or 0)
+    n_moved = int(drift.get("n_moved", 0) or 0)
+    max_abs = float(drift.get("max_abs_delta", 0.0) or 0.0)
+    n_steady = max(n_compared - n_moved, 0)
+    moved = [m for m in (drift.get("moved") or []) if m.get("delta")]
+    moved.sort(key=lambda m: abs(float(m.get("delta", 0.0))), reverse=True)
+    status_changed = drift.get("status_changed") or []
+    added = drift.get("added_members") or []
+    removed = drift.get("removed_members") or []
+
+    # The canonical anchors' own per-cadence movement, straight from the data — the
+    # population echo of the frozen reference delta the in-cloud replay guard defends.
+    anchors = [
+        m for m in (drift.get("moved") or [])
+        if str(m.get("segment", "")).endswith("anchor")
+    ]
+    anchor_note = ""
+    if anchors and all(not a.get("delta") for a in anchors):
+        anchor_note = (
+            '<p><b>Reference anchors held steady.</b> Both canonical anchors moved '
+            '&Delta;&nbsp;0.0 across this cadence &mdash; the frozen reference delta the '
+            'replay guard defends, seen through the population sweep.</p>'
+        )
+
+    if moved:
+        def _delta_cell(d: float) -> str:
+            color = "#067647" if d > 0 else "#b42318"
+            return f'<td class="num" style="color:{color}">{d:+.1f}</td>'
+        mv_rows = "".join(
+            f'<tr><td><b>{_esc(m.get("domain", ""))}</b>'
+            f'<div class="q">{_esc(m.get("segment", ""))}</div></td>'
+            f'<td class="num">{float(m["baseline"]):.1f} &rarr; {float(m["current"]):.1f}</td>'
+            f'{_delta_cell(float(m["delta"]))}</tr>'
+            for m in moved
+        )
+        moved_block = (
+            '<table><tr><th>Domain &amp; segment</th>'
+            '<th class="num">Overall: was &rarr; now</th>'
+            '<th class="num">&Delta;</th></tr>' + mv_rows + '</table>'
+        )
+    else:
+        moved_block = (
+            '<p>No domain scored in both sweeps moved &mdash; the whole population held '
+            'its score across the cadence.</p>'
+        )
+
+    if status_changed:
+        sc_rows = "".join(
+            f'<tr><td><b>{_esc(s.get("domain", ""))}</b>'
+            f'<div class="q">{_esc(s.get("segment", ""))}</div></td>'
+            f'<td class="num">{_esc(str(s.get("baseline")))} &rarr; '
+            f'{_esc(str(s.get("current")))}</td></tr>'
+            for s in status_changed
+        )
+        status_block = (
+            '<p style="margin-top:16px"><b>Reachability changes.</b> These members '
+            'crossed the scored / not-scorable line between sweeps. That is an '
+            '<b>observation</b> change (an agent-UA block appearing or lifting), '
+            '<b>not</b> a capability move &mdash; listed here, never counted as a score '
+            '&Delta; (attribution honesty).</p>'
+            '<table><tr><th>Domain &amp; segment</th>'
+            '<th class="num">Scorability: was &rarr; now</th></tr>' + sc_rows + '</table>'
+        )
+    else:
+        status_block = ""
+
+    membership = ""
+    if added or removed:
+        parts = []
+        if added:
+            parts.append(
+                '<b>New to the population this run:</b> '
+                + ", ".join(f'<span class="chip">{_esc(a)}</span>' for a in added)
+            )
+        if removed:
+            parts.append(
+                '<b>Dropped from the population:</b> '
+                + ", ".join(f'<span class="chip">{_esc(r)}</span>' for r in removed)
+            )
+        membership = (
+            '<p style="margin-top:16px">' + ' &middot; '.join(parts)
+            + ' &mdash; new / dropped members are listed, never averaged into the drift '
+            '(a broadened population is not a score move).</p>'
+        )
+
+    plural = "s" if n_compared != 1 else ""
+    summary = (
+        f'{n_moved} of {n_compared} domain{plural} scored in both sweeps moved '
+        f'(max&nbsp;|&Delta;|&nbsp;{max_abs:.1f}); {n_steady} held steady.'
+    )
+    return f"""<div class="card">
+<h2>Population drift <span style="color:#667085;font-weight:500">&middot; vs {_esc(base_disp)} UTC</span></h2>
+<p>The sweep is re-run on a cadence; this compares it to the prior dated dataset. A
+domain that <b>adds or removes agent-native rails</b> moves its overall score between
+runs &mdash; a real capability change, the population-scale echo of the canonical
+pair&rsquo;s per-cycle regression check. {summary}</p>
+{anchor_note}
+{moved_block}
+{status_block}
+{membership}
+</div>"""
+
+
 def _write_calibration_page(out_dir: Path, sweep=None) -> str:
     """Render calibration.html — the population leaderboard behind the reference pair.
 
@@ -2064,7 +2191,9 @@ readiness signal, but it is not the same as a low score.</p>
     else:
         ns_card = ""
 
-    body = f"""{nav}{intro}{table}{ns_card}
+    drift_card = _calibration_drift_card(sweep.get("drift"))
+
+    body = f"""{nav}{intro}{table}{ns_card}{drift_card}
 <p class="sub" style="margin-top:16px">
 Scores are comparable only within a rubric version.
 &middot; <a href="methodology.html">How the score is measured &rarr;</a>

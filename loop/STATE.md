@@ -1,6 +1,39 @@
 # Loop state
 
-- Cycle counter: 240
+- Cycle counter: 241
+- CYCLE 241 — 2026-08-05T~00:2xZ (METHOD, cloud, direct-to-main, tests-only/score-neutral). FIRST
+  duty (infra health check — no open peer-gated PR, `list_pull_requests` state=open `[]`): INFRA GREEN,
+  newest verify `runs/local/verify_20260804T234102Z.json` (23:41Z, git_pull.ok=true attempts=1,
+  divergence_recovery=None, tests_ok=true 24/24) ~34min old at fire (00:15Z); live canonical **46.1 F /
+  85.5 B / +39.4** (tx 87.5), drift resolved. Shipped a METHOD reproducibility increment: new
+  `test_canonical_replay.py::test_applied_caps_set_is_invariant_to_check_input_order` (24→25) drives guard
+  19's LATENT caps leg — `scoring.score` builds `caps_applied` in check-ARRIVAL order, but no committed
+  fixture binds a cap so it is empty everywhere and guard 19 exercises it VACUOUSLY. The new guard forces a
+  synthetic surface where TWO distinct critical findings bind and pins: (a) both caps bind non-vacuously
+  (len 2); (b) reversing is a real reordering (LIST flips); (c) the applied-caps SET + capped overall
+  (25.0 = lowest binding cap) + grade are order-INVARIANT (the reproducibility property; list order carries
+  no scored meaning → set-equality is the honest invariant); (d) non-vacuous negative control — a
+  first-binding-cap-only rig diverges by set → CAUGHT, real scorer restored. Vendor-neutral (synthetic
+  slugs). Score-neutral: `git diff -- asrs/ rubric/ fixtures/` EMPTY (only `tests/test_canonical_replay.py`,
+  +112/-1); replay guard 24/24 replays / **46.1 F / 85.5 B / +39.4** UNMOVED; full suite 24/24 files.
+  `test_runner_registration` 4/4 (new guard registered — no silent dead test). Also PRUNED 3 stale in-cloud
+  METHOD backlog candidates found already-implemented (Cycle-216 load_integrity, Cycle-84 runner-registration
+  audit, Cycle-204 methodology-headline prose coupling). NO DM (tests-only/score-neutral, not sensitive-class,
+  not first-after-16:00 UTC — current ~00:2xZ Aug-5, next digest after 16:00Z; last digest Cycle 228). See
+  LOG Cycle 241.
+- FOCUS POINTER (Cycle 241 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
+  check only. Cloud track rotation: Cycle 241 was METHOD → cloud pointer is **COVERAGE next** (METHOD →
+  COVERAGE → TRUTH → READOUT). COVERAGE-242 candidate: service_booking is now UNBLOCKED in-cloud (LOCAL Cycle
+  240 landed `fixtures/canonical/acuityscheduling.com.json`) — mine it for a genuinely distinct service_booking
+  capability leg (confirmation/booking-reference or reschedule/availability-check control) with a non-vacuous
+  read-live guard, the way Cycle 164 did digital_good; OR continue the deep-bank uncaptured-capability audit
+  (Cycle 226/230/233 lineage — audit metered_api/digital_good/subscription committed prose for an uncaptured
+  FLOW/lifecycle/safety capability). RUNNER-HEALTH WATCH: drift RESOLVED; future `verify_*.json` read +39.4 /
+  attribution=None, real-series canonical_history tests recovery-tolerant (green). Substantive [LOCAL] frontier
+  unchanged (data_retrieval/physical_good-rich fixtures, a THIRD real anchor, render/structured-catalog
+  captures, the typographic PHRASE-RESCUE real-evidence case, ACP/UCP/MPP live handshakes) — prefer the oldest.
+  NEW P2 precision-gap candidate (carried from Cycle 240): data_retrieval `lookup` false-positives on the
+  generic "<noun> lookup" admin-search sense ("deployment lookup" on cal.com) — extend the Cycle-198 bank.
 - LOCAL CYCLE 240 — 2026-08-05T00:06Z (COVERAGE, LOCAL, direct-to-main, score-neutral). FIRST duty: `gh pr list
   --state open` → `[]` (no open peer-gated PR, no review owed). INFRA green: this hour's verify floor
   `runs/local/verify_20260804T234102Z.json` (23:41Z, git_pull.ok=true attempts=1, divergence_recovery=None,

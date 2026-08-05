@@ -46,7 +46,7 @@ sys.path.insert(0, _REPO_ROOT)
 from asrs import scoring  # noqa: E402
 from asrs.cli import _run_probes  # noqa: E402
 from asrs.fetch import FetchContext  # noqa: E402
-from asrs.types import Status  # noqa: E402
+from asrs.types import CheckResult, Status  # noqa: E402
 
 _FIXTURE_DIR = os.path.join(_REPO_ROOT, "fixtures", "canonical")
 
@@ -1630,6 +1630,116 @@ def test_scorer_is_invariant_to_check_input_order() -> None:
     )
 
 
+# ---------------------------------------------------------------------------
+# 20. THE APPLIED-CAPS SET IS INVARIANT TO CHECK-INPUT ORDER — the caps leg
+#     guard 19 (test_scorer_is_invariant_to_check_input_order) NAMES as
+#     arrival-order-sensitive in its own docstring but never actually drives.
+#     ``scoring.score`` builds ``caps_applied`` by APPENDING each binding cap in
+#     check-ARRIVAL order, so reversing the input reverses that LIST. On every
+#     committed fixture NO grade cap binds (the weight-robust guard's precondition
+#     confirms neither canonical side is capped), so ``caps_applied`` is empty
+#     everywhere and guard 19's reversed-order pass exercises the caps output
+#     VACUOUSLY. This guard forces the latent path live: a synthetic surface whose
+#     rubric makes TWO distinct critical findings bind, scored forward and
+#     reversed. The reproducibility invariant that matters — the SET of caps
+#     applied, the capped overall, and the grade — must not depend on the order
+#     the probes happened to emit their checks. The incidental LIST order DOES
+#     flip (making the reversal a real reordering of the caps output, not a
+#     no-op), which is exactly why SET-equality, not list-equality, is the honest
+#     invariant here: the arrival order carries no scored meaning. Worded by
+#     measurement, not by vendor.
+# ---------------------------------------------------------------------------
+def test_applied_caps_set_is_invariant_to_check_input_order() -> None:
+    print("test_applied_caps_set_is_invariant_to_check_input_order")
+    # A minimal synthetic surface: two PASS checks on two pillars, each carrying a
+    # DISTINCT critical finding the rubric caps BELOW the uncapped overall, at two
+    # different cap values. Pre-cap overall is 100 (both pillars 100), so BOTH caps
+    # bind — the state no committed fixture reaches. ``_checks_by_id`` names both
+    # ids so scoring's coverage-warning loops stay silent.
+    checks = [
+        CheckResult("a", "access", Status.PASS, 10.0, 10.0, "critical-x", ""),
+        CheckResult("b", "transactability", Status.PASS, 10.0, 10.0, "critical-y", ""),
+    ]
+    rubric = {
+        "version": "test-caps-order",
+        "pillar_weights": {"access": 1.0, "transactability": 1.0},
+        "caps": {"critical-x": 40.0, "critical-y": 25.0},
+        "grade_bands": [[95, "A+"], [90, "A"], [80, "B"], [70, "C"], [60, "D"], [0, "F"]],
+        "_checks_by_id": {"a": {"id": "a"}, "b": {"id": "b"}},
+    }
+    fwd = scoring.score(checks, rubric, "synthetic-caps")
+    rev = scoring.score(list(reversed(checks)), rubric, "synthetic-caps")
+
+    # (a) NON-VACUOUS: unlike every committed fixture, BOTH caps bind here, so
+    # caps_applied is genuinely exercised (len 2, not the empty list guard 19 sees
+    # everywhere) — without this the order-invariance claim would be trivially true.
+    _check(
+        set(fwd.caps_applied) == {"critical-x", "critical-y"}
+        and len(fwd.caps_applied) == 2,
+        f"forward binds BOTH caps (non-vacuous): {fwd.caps_applied}",
+    )
+
+    # (b) The reversal is a REAL reordering of the caps output — the LIST order
+    # flips (append-in-arrival-order), so the set-equality below is a non-trivial
+    # invariant, not a no-op (mirrors guard 19's distinct-end-ids non-vacuity).
+    _check(
+        fwd.caps_applied != rev.caps_applied,
+        f"reversing the input reorders the caps LIST ({fwd.caps_applied} -> "
+        f"{rev.caps_applied}) — a real reordering, so set-equality is non-trivial",
+    )
+
+    # (c) THE INVARIANT: the SET of applied caps, the capped overall, and the grade
+    # are identical regardless of arrival order — the reproducibility property the
+    # per-cycle re-score number rests on. The overall is the lowest binding cap
+    # (25.0) either way; the list order carries no scored meaning.
+    _check(
+        set(fwd.caps_applied) == set(rev.caps_applied),
+        f"applied-caps SET is order-invariant ({set(fwd.caps_applied)})",
+    )
+    _check(
+        fwd.overall_score == rev.overall_score == 25.0,
+        f"capped overall is order-invariant (fwd {fwd.overall_score}, rev "
+        f"{rev.overall_score}) — the lowest binding cap",
+    )
+    _check(
+        fwd.grade == rev.grade,
+        f"grade is order-invariant (fwd {fwd.grade!r}, rev {rev.grade!r})",
+    )
+
+    # (d) NON-VACUOUS negative control — the set-equality assertion actually CATCHES
+    # an order-SENSITIVE cap recorder (the failure mode guard 19 cannot see because
+    # caps never bind on its fixtures). Rig scoring.score to keep only the FIRST
+    # binding cap in arrival order — a plausible order-sensitive implementation;
+    # forward then records {critical-x}, reversed {critical-y}, and the sets DIVERGE.
+    # Flows through the REAL scorer and is restored in a finally + a restore
+    # assertion so it never leaks (the guards-16/18/19 convention in this file).
+    real_score = scoring.score
+
+    def first_binding_cap_only(checks_, rubric_, domain_):
+        rep = real_score(checks_, rubric_, domain_)
+        if rep.caps_applied:
+            rep = dataclasses.replace(rep, caps_applied=rep.caps_applied[:1])
+        return rep
+
+    scoring.score = first_binding_cap_only
+    try:
+        rigged_fwd = scoring.score(checks, rubric, "synthetic-caps")
+        rigged_rev = scoring.score(list(reversed(checks)), rubric, "synthetic-caps")
+        _check(
+            set(rigged_fwd.caps_applied) != set(rigged_rev.caps_applied),
+            "negative control: an order-SENSITIVE cap recorder (first binding cap "
+            f"only) is CAUGHT by set-inequality (fwd {set(rigged_fwd.caps_applied)} "
+            f"!= rev {set(rigged_rev.caps_applied)}) — so the real scorer's "
+            "set-equality above is meaningful",
+        )
+    finally:
+        scoring.score = real_score
+    _check(
+        scoring.score is real_score,
+        "the real scorer is restored after the caps-order negative control",
+    )
+
+
 def main() -> int:
     tests = [
         test_canonical_org_replays_46_1,
@@ -1656,6 +1766,7 @@ def main() -> int:
         test_population_check_layer_negative_control,
         test_replay_pipeline_is_deterministic,
         test_scorer_is_invariant_to_check_input_order,
+        test_applied_caps_set_is_invariant_to_check_input_order,
     ]
     failed = 0
     for t in tests:

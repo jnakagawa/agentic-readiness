@@ -17546,3 +17546,72 @@ stays `[LOCAL]`.
 ## Local verification — 20260804T234102Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260804T234102Z.json
+
+## Cycle 241 — 2026-08-05 ~00:2xZ — METHOD — the applied-caps SET is pinned order-invariant: guard 19's latent caps leg is now driven non-vacuously
+
+**Track / ship class.** METHOD (measurement rigor: reproducibility). Tests-only, OFF the
+scoring path → direct-to-main (not a scoring-semantics change; no rubric check add/remove, no
+weight/cap/version move). `git diff` = `tests/test_canonical_replay.py` ONLY (+112/-1);
+scoring-path diff (`asrs/ rubric/ fixtures/`) EMPTY.
+
+**FIRST duty (infra health check).** No open peer-gated PR (`list_pull_requests` state=open →
+`[]`, no review owed). INFRA GREEN: newest verify `runs/local/verify_20260804T234102Z.json`
+(23:41Z, git_pull.ok=true attempts=1, divergence_recovery=None, tests_ok=true 24/24) ~34min old
+at fire (00:15Z) — well inside the 6h floor; live canonical **46.1 F / 85.5 B / +39.4** (tx
+87.5), drift resolved. Full suite runnable (stood up the cloud `.venv` from requirements —
+agent-side env, not a bench regression); all 24 suites green before the change.
+
+**What / why.** Guard 19 (`test_scorer_is_invariant_to_check_input_order`) proves the scorer's
+scored surface is invariant to check-INPUT order, and its own docstring NAMES `caps_applied` —
+which `scoring.score` builds by APPENDING each binding cap in check-ARRIVAL order — as an
+order-sensitive output. But that caps leg is LATENT: no grade cap binds on ANY committed fixture
+(the weight-robust guard's precondition confirms neither canonical side is capped), so
+`caps_applied` is empty everywhere and guard 19's reversed-order pass exercises the caps output
+VACUOUSLY. A reproducibility hole: were cap application order-sensitive, two runs of the same
+scored surface could report a different applied-caps set / capped overall, and no test would
+catch it. New guard `test_applied_caps_set_is_invariant_to_check_input_order` (the caps leg's
+missing rung, backlog candidate from Cycle 65/guard-20) forces the latent path live on a synthetic
+surface whose rubric makes TWO distinct critical findings bind (pillars both 100 → pre-cap 100;
+caps critical-x=40, critical-y=25 both bind), scored forward and reversed:
+(a) NON-VACUOUS — both caps bind (`caps_applied` len 2, unlike every fixture's empty list);
+(b) the reversal is a REAL reordering — the LIST flips `['critical-x','critical-y']` ->
+`['critical-y','critical-x']`, so set-equality is non-trivial (not a no-op);
+(c) THE INVARIANT — the applied-caps SET, the capped overall (25.0 = lowest binding cap either
+way), and the grade (F) are all order-invariant; the incidental LIST order carries no scored
+meaning, which is exactly why SET-equality (not list-equality) is the honest invariant;
+(d) NON-VACUOUS negative control — rig `scoring.score` to keep only the FIRST binding cap in
+arrival order (a plausible order-sensitive impl); forward records {critical-x}, reversed
+{critical-y}, sets DIVERGE → CAUGHT, so the real scorer's set-equality is meaningful. Rig flows
+through the real scorer, restored in a finally + a restore assertion (guards 16/18/19 convention),
+verified restored. Capability/measurement-worded, vendor-neutral (synthetic slugs, no domain).
+
+**Validation.** `test_canonical_replay.py` 24→25 (green, incl. the new guard's 6 asserts + neg
+control). Full suite 24/24 files green. Canonical PAIR UNMOVED: replay guard 24/24 replays,
+**46.1 F / 85.5 B / +39.4**, 0 replay-miss; rubric v0.7. Score-neutral by construction (scoring
+path byte-identical) — the cloud in-cloud standard; live canonical signal (newest LOCAL verify
+23:41Z) reads +39.4, in agreement. `test_runner_registration` 4/4 (new guard is registered — no
+silent dead test). Registration meta-guard + orphan sweep (all 24 suites, 0 orphans) confirm the
+suite carries no unregistered guard.
+
+**Comms.** NO DM: tests-only + score-neutral, not sensitive-class (no payment/signing/weights/
+caps/removals — a cap-VALUE change would be peer-gated; this only TESTS existing cap behavior),
+not score-changing, not the first cycle after 16:00 UTC (today's digest goes after 16:00Z Aug-5;
+current ~00:2xZ Aug-5; last digest Cycle 228). Per the comms policy, silence.
+
+**Backlog pruning (this fire).** While hunting the METHOD item, found THREE in-cloud METHOD
+backlog candidates ALREADY fully implemented — pruned as stale: (1) Cycle-216 `load_integrity`
+drift-series integrity metric (`SeriesIntegrity`/`series_integrity` in `canonical_history.py`,
+wired into `CanonicalHistory.integrity`, 3 tests, surfaced on both readout surfaces); (2) Cycle-84
+test-runner-registration audit (`tests/test_runner_registration.py`, 4 tests, the mechanical
+orphan guard); (3) Cycle-204 methodology-headline prose→live-fraction coupling
+(`test_methodology_headline_prose_is_coupled_to_the_live_fraction` in `test_calibration.py`).
+
+**Next hypothesis (COVERAGE 242).** Rotate COVERAGE next (Cycle 241 METHOD; METHOD → COVERAGE →
+TRUTH → READOUT). The service_booking archetype is now UNBLOCKED in-cloud (LOCAL Cycle 240 landed
+`fixtures/canonical/acuityscheduling.com.json`) — a COVERAGE cycle can mine it for a genuinely
+distinct service_booking capability leg (a confirmation/booking-reference or reschedule/
+availability-check control) with a non-vacuous read-live guard, the way Cycle 164 did digital_good.
+Alternatively continue the deep-bank uncaptured-capability audit (Cycle 226/230/233 lineage).
+Substantive [LOCAL] frontier unchanged (data_retrieval/physical_good-rich fixtures, a THIRD real
+anchor, render/structured-catalog captures, the typographic phrase-rescue real-evidence case,
+ACP/UCP/MPP live handshakes) — prefer the oldest.

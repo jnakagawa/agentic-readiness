@@ -866,19 +866,6 @@ design in-cloud, execute locally.
      rubric v0.7. The drift family's silent-floor-default audit is now COMPLETE across BOTH consumers — the READOUT
      prose (cause_verdict, Cycle 220) and the DECISION (recapture_advice, Cycle 221). See LOG Cycle 221. -->
 
-- **[OBSERVATION — Cycle 216, METHOD candidate] Fold the loader exclusion accounting into a drift-series
-  INTEGRITY metric.** Cycle 216 (READOUT) surfaced `LoadAccounting` (total / included / excluded_red_bench /
-  excluded_malformed) on both drift surfaces, but it is a display-only count — nothing JUDGES whether the
-  filtered fraction is small enough for the surviving series to be trustworthy. In-cloud METHOD increment:
-  add a pure `load_integrity(accounting)` verdict (e.g. `excluded / total` above a floor → the drift series is
-  MOSTLY filtered, weigh its attribution with caution; red-bench fraction its own sub-signal since a red-bench
-  drop means the scoring path itself was in question). Off the scoring path, score-neutral; guard both the
-  metric (synthetic high-exclusion series trips it, the clean real series does not) and honest-None when total
-  is 0. Naturally couples to the `attribution` / `recapture` confidence the operator already reads — a
-  recommendation resting on a heavily-filtered series is weaker than one on a clean one. Non-vacuous today: the
-  real series is 1/84 excluded (well under any sane floor), so the metric reads "clean" on real data while the
-  synthetic guard exercises the tripped branch.
-
 <!-- DONE 2026-08-04T00:2xZ (Cycle 212, READOUT, direct-to-main, display-only/score-neutral): "[OBSERVATION —
      Cycle 211] Surface the `attributed_pillar_noise_floor`" SHIPPED. Terminal `render` gains a `pillar noise
      floor:` line directly after the attribution top-mover; HTML `_write_canonical_history_page` gains an
@@ -904,19 +891,6 @@ design in-cloud, execute locally.
      Cycle-200 block; Cycle 204 (READOUT) then carried it to the OVERALL cited number (payment-DOMINATED,
      ~two-thirds, single majority driver, honest legibility residual), guarded by the same test's Cycle-204
      block. BOTH directions now read as payment-capability signals on §8 and are test-pinned. -->
-
-- **[OBSERVATION — Cycle 204, METHOD candidate] The methodology's overall-attribution PROSE can drift
-  from test 14's actual numbers.** Cycle 204 (READOUT) put the overall-level payment attribution on §8 as
-  NUMBER-FREE prose ("about two-thirds", "single majority driver", "full grade tier across the passing
-  boundary"), guarded only for phrase PRESENCE (`test_methodology_documents_calibration` Cycle-204 block).
-  Nothing couples that wording to the number test 14
-  (`test_payment_capability_drives_the_majority_of_the_headline_delta`) actually computes — if a legitimate
-  [LOCAL] canonical re-baseline moved `fraction` from 0.652 to, say, 0.45, test 14 would redden but the page
-  would still read "about two-thirds / single majority driver", silently misleading a public reader. Cheap,
-  score-neutral, in-cloud METHOD increment: a guard asserting the §8 wording is CONSISTENT with the live
-  `fraction` (e.g. the "majority driver" phrase may render only while the recomputed fraction ≥ 0.5, and
-  "about two-thirds" only within a band around it) — the prose-vs-computation coupling the phrase-presence
-  guard lacks. Off-scoring-path, direct-to-main.
 
 - **[OBSERVATION — Cycle 192] The "earned by" pillar caption opens two in-cloud follow-ups.** Cycle 192
   (READOUT) added `_pillar_top_earner` + the per-pillar "earned by <capability> +N" caption to the HTML card
@@ -2109,16 +2083,6 @@ design in-cloud, execute locally.
   archetype and leaks into no other, completeness-enforced.] All tests-only, off the scoring path,
   in-cloud-doable on committed fixtures.
 
-- **[METHOD, cloud-doable] Audit the test-runner registration lists for authored-but-unregistered
-  guards** (observation, Cycle 84). The in-cloud suites run via each `tests/test_*.py`'s own `main()`
-  test LIST (no pytest auto-discovery — `local_verify.py` invokes `python tests/test_X.py`). Cycle 84
-  found `test_methodology_documents_payment_rail_neutrality` (authored Cycle 80) was never added to
-  test_readout's `main()` list, so it silently never ran for four cycles — the "silent success/failure
-  look identical" failure mode. Fixed for that guard. Sweep the other suites: for each `test_*.py`,
-  diff the set of `def test_*` functions against the names in its `main()` list and register any orphans
-  (or add a tiny meta-guard that asserts the two sets match, so a future orphan fails loudly). Tests-only,
-  off the scoring path.
-
 - **[CANDIDATE, READOUT] Card-level "behaviorally corroborated" calibration badge** (follow-up to
   Cycle 68). Cycle 68 documented the static-vs-behavioral VALIDITY property in methodology-page
   PROSE (§8). The terminal→JSON→HTML surface it doesn't yet reach is the CARD: a payment-capable
@@ -2232,15 +2196,40 @@ design in-cloud, execute locally.
   committed fixture; tests-only, score-neutral — but verify its overall/pillars/statuses live first
   (the fixture may not yet have a pinned EXPECTED entry).
 
-- **[CANDIDATE, METHOD] Exercise the `caps_applied` arrival-order path directly** (reproducibility,
-  follow-up to Cycle 65's guard 20). Guard 20 pins that `scoring.score` is invariant to check-INPUT
-  order over the full scored surface, but its caps leg is LATENT: no grade cap binds on any committed
-  domain (the weight-robust guard's precondition A confirms `not com.caps_applied and not org.caps_applied`),
-  so `caps_applied` — which `scoring.score` builds in check-ARRIVAL order — is empty everywhere and its
-  order-sensitivity is never actually driven. Build a small synthetic fixture (or a unit test feeding a
-  hand-built `CheckResult` list) whose rubric forces TWO caps to bind, then assert `caps_applied` is a
-  SET-equal (not order-sensitive) output under a reversed input. Cloud-doable, tests-only, score-neutral;
-  low urgency (caps don't bind on any committed domain today, so this is latent-not-live).
+<!-- DONE 2026-08-05T~00:2xZ (Cycle 241, METHOD, cloud, direct-to-main, tests-only/score-neutral):
+     "[CANDIDATE, METHOD] Exercise the `caps_applied` arrival-order path directly" SHIPPED. Guard 19
+     (`test_scorer_is_invariant_to_check_input_order`) pins the scored surface is check-INPUT-order-invariant
+     but its caps leg is LATENT (no committed fixture binds a cap → `caps_applied` empty everywhere → the
+     reversed-order pass exercises it VACUOUSLY). New `test_canonical_replay.py::
+     test_applied_caps_set_is_invariant_to_check_input_order` (24→25) forces a synthetic surface where TWO
+     distinct critical findings bind (pillars both 100 → pre-cap 100; caps critical-x=40 / critical-y=25 both
+     bind) and pins: (a) both caps bind NON-VACUOUSLY (len 2, unlike every fixture's empty list); (b) the
+     reversal is a REAL reordering — the LIST flips `['critical-x','critical-y']`->`['critical-y','critical-x']`
+     — so set-equality is non-trivial; (c) THE INVARIANT — the applied-caps SET, the capped overall (25.0 =
+     lowest binding cap either way), and the grade (F) are all order-invariant (the reproducibility property;
+     the incidental list order carries no scored meaning → SET-equality, not list-equality, is the honest
+     invariant); (d) NON-VACUOUS negative control — a first-binding-cap-only rig diverges by set → CAUGHT,
+     real scorer restored (guards-16/18/19 finally-restore convention). Score-neutral (`git diff -- asrs/
+     rubric/ fixtures/` EMPTY; replay guard 24/24 / 46.1 F / 85.5 B / +39.4 UNMOVED; full suite 24/24);
+     registered in `main()` (`test_runner_registration` 4/4). Vendor-neutral (synthetic slugs). See LOG
+     Cycle 241. -->
+<!-- DONE (found already-implemented, pruned Cycle 241): "[OBSERVATION — Cycle 216, METHOD candidate] Fold the
+     loader exclusion accounting into a drift-series INTEGRITY metric" — `SeriesIntegrity` + `series_integrity()`
+     in `asrs/canonical_history.py`, wired into `CanonicalHistory.integrity` (populated by `load_history`),
+     3 tests in `test_canonical_history.py` (intact/degraded/none), AND surfaced on both readout surfaces
+     (`ch.render` terminal + `scorecard._write_canonical_history_page` HTML). Fully shipped. -->
+<!-- DONE (found already-implemented, pruned Cycle 241): "[METHOD, cloud-doable] Audit the test-runner
+     registration lists for authored-but-unregistered guards" — `tests/test_runner_registration.py` (4 tests)
+     is the mechanical AST orphan/ghost guard across all suites; a fresh sweep this fire found 0 orphans. Done. -->
+<!-- DONE (found already-implemented, pruned Cycle 241): "[OBSERVATION — Cycle 204, METHOD candidate] The
+     methodology's overall-attribution PROSE can drift from test 14's actual numbers" —
+     `test_calibration.py::test_methodology_headline_prose_is_coupled_to_the_live_fraction` recomputes the live
+     fraction and asserts the §8 headline word is the NEAREST simple fraction, with a band tripwire. Done. -->
+- **[LOCAL] Exercise a MULTI-cap-value grade cap on a real captured fixture** (METHOD, follow-up to Cycle 241,
+  LOW urgency). Cycle 241 pins `caps_applied` order-invariance SYNTHETICALLY (no committed fixture binds a
+  cap). If a real storefront ever earns a critical finding the rubric caps (e.g. a hostile robots/agent-block),
+  capture it and add a read-live guard that a REAL binding cap reproduces the synthetic invariant — closing the
+  latent-not-live gap the same way the transactability/legibility anchors were closed on real evidence.
 
 <!-- DONE 2026-07-28T06:1xZ (Cycle 52, READOUT, direct-to-main, display-only, score-neutral):
      "Live-signal FRESHNESS banner on canonical-history.html" SHIPPED. `asrs/scorecard.py`

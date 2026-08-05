@@ -437,7 +437,14 @@ design in-cloud, execute locally.
   (f). So service_booking now grows 6→7 signals. REMAINING in-cloud service_booking candidates: an INTAKE-FORM
   data-collection control ("custom intake forms" — the collect-what-the-job-needs leg) or a WAITLIST/slot capability
   ("Clients join a waitlist for fully booked times"), each IF precision-guardable against generic marketing prose.
-  See LOG Cycle 248/252.
+  UPDATE Cycle 256 (COVERAGE, in-cloud, direct-to-main, score-neutral): INTAKE-FORM is now SHIPPED as `intake-form`
+  (the DATA-COLLECTION PRECONDITION "collect what the job needs / provision without a human" leg, distinct from
+  create/manage/notify), 39 `\bintake forms?\b` hits on the anchor, ABSENT on all 7 others incl. the canonical pair,
+  guarded against bare "form"/bare "intake" (fixed collocation only). `test_offering.py` 101->103 + isolation row
+  (bank 71->72) + `_BOOKING_INTAKE_LABELS` leg (g). service_booking grows 7->8. The last thin candidate WAITLIST is
+  IMAGE-ONLY on the anchor (`waitlist.png`, no prose) -> in-cloud service_booking mining EXHAUSTED, deferred to a
+  [LOCAL] richer-booking-fixture capture.
+  See LOG Cycle 248/252/256.
   EARLIER — Cycle 243 (2026-08-05, COVERAGE, in-cloud, direct-to-main,
   score-neutral): **data_retrieval got its FIRST genuinely-distinct NEW capability signal** mined from the
   fresh ipinfo.io anchor — `batch-retrieval` (BATCH/BULK data retrieval, the "complete the job AT SCALE" leg,
@@ -467,7 +474,7 @@ design in-cloud, execute locally.
   service_booking, metered_api}). Remaining thin gap: **physical_good** wants a RICHER retail fixture than the thin
   books.toscrape (the P1 rich-retail item). The offering signal bank is metered_api-HEAVY: metered_api 26, digital_good
   11 (post-Cycle-164 `variant-selection`), physical_good 9, subscription 9 (post-Cycle-172 `plan-allowance`),
-  service_booking 6 (post-Cycle-248 `manage-booking`), data_retrieval 6 (post-Cycle-243 `batch-retrieval`). NOTE (superseded by Cycles 240/242/243): the
+  service_booking 8 (post-Cycle-256 `intake-form`), data_retrieval 6 (post-Cycle-243 `batch-retrieval`). NOTE (superseded by Cycles 240/242/243): the
   claim below that service_booking/data_retrieval "CANNOT be strengthened non-vacuously in-cloud" held only until their
   first committed anchors landed (acuityscheduling.com / ipinfo.io) — data_retrieval has since gained `batch-retrieval`
   against real evidence; service_booking's anchor is still un-mined. The three thin archetypes originally could not be

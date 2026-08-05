@@ -426,8 +426,17 @@ _BOOKING_MANAGE_LABELS = {"manage-booking"}
 # acknowledgment leg (the service_booking analog of metered_api's payment-receipt),
 # distinct from both the create act and the reschedule/cancel management leg.
 _BOOKING_NOTIFY_LABELS = {"booking-notification"}
+# The DISTINCT data-collection PRECONDITION leg mined from this anchor's real
+# prose (Cycle 256): the storefront gathers what a booked service needs via a
+# custom INTAKE FORM — the "collect what the job needs / provision without a
+# human" leg, distinct from the create act, the reschedule/cancel management leg
+# and the confirm/remind follow-through leg.
+_BOOKING_INTAKE_LABELS = {"intake-form"}
 _BOOKING_SERVICE_LABELS = (
-    _BOOKING_CREATE_LABELS | _BOOKING_MANAGE_LABELS | _BOOKING_NOTIFY_LABELS
+    _BOOKING_CREATE_LABELS
+    | _BOOKING_MANAGE_LABELS
+    | _BOOKING_NOTIFY_LABELS
+    | _BOOKING_INTAKE_LABELS
 )
 
 
@@ -509,6 +518,16 @@ def _assert_service_booking_anchor() -> None:
         _BOOKING_NOTIFY_LABELS <= labels,
         f"{_BOOKING}: the booking-notification follow-through leg fires on real "
         f"automated confirmation/reminder prose (got labels {sorted(labels)})",
+    )
+    # (g) The NEW data-collection precondition leg (Cycle 256) fires NON-VACUOUSLY
+    # on this anchor's real prose — a custom intake form the storefront uses to
+    # collect what a booked service needs — the DISTINCT "collect what the job
+    # needs / provision without a human" leg, not a create signal, not the
+    # reschedule/cancel management leg, and not the confirm/remind follow-through leg.
+    _check(
+        _BOOKING_INTAKE_LABELS <= labels,
+        f"{_BOOKING}: the intake-form data-collection leg fires on real "
+        f"custom-intake-form prose (got labels {sorted(labels)})",
     )
     _check(
         all(s.quote and s.quote.strip() for s in booking.signals),
@@ -6142,6 +6161,7 @@ _ISOLATION_EVIDENCE: dict[str, str] = {
     "availability": "check availability",
     "manage-booking": "reschedule or cancel your appointment",
     "booking-notification": "an appointment reminder is sent automatically",
+    "intake-form": "fill out the intake form",
     # data_retrieval
     "enrich": "we enrich your records",
     "dataset": "download the dataset",

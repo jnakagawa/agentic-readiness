@@ -1365,6 +1365,108 @@ def test_booking_notification_fires_on_real_captured_surfaces():
     print("  ok: booking-notification is ABSENT on the api-pair / marketplace / retail / null fixtures (non-vacuous, score-neutral)")
 
 
+def test_service_booking_intake_form_precision_synthetic():
+    # The data-collection PRECONDITION signal for service_booking (Cycle 256), a
+    # FOURTH distinct capability leg beyond the five create signals (book/appointment/
+    # reservation/schedule/availability — MAKE a booking), manage-booking
+    # (reschedule/cancel — MODIFY one) and booking-notification (confirm/remind —
+    # FOLLOW THROUGH): the storefront gathers what a booked service needs via a custom
+    # INTAKE FORM — the "collect what the job needs / provision without a human" leg.
+    # service_booking is tied with data_retrieval for the thinnest archetype, so a
+    # FALSE claim does maximum damage. Both tokens are minefields left bare: "form" is
+    # web-wide (contact form, sign-up form, "form field", an HTML <form>); "intake" is
+    # broad English (calorie/water intake, "the intake process"). The guard NEVER
+    # matches a bare token — it requires the fixed unambiguous "intake form(s)"
+    # collocation. Each POSITIVE is intake-form prose that must fire intake-form
+    # (non-vacuous); each NEGATIVE carries a bare form/intake token with no such
+    # collocation and must NOT claim service_booking on its own.
+    positives = {
+        # Real captured acuityscheduling.com shapes (verbatim-faithful).
+        "custom intake forms": "Collect client info with custom intake forms.",
+        "fill out any intake forms": "Fill out any intake forms you've set up.",
+        # Genuine intake-form vocabulary from other real booking services.
+        "complete the intake form": "Complete the intake form before your appointment.",
+        "submit an intake form": "Clients submit an intake form when they book.",
+        "intake forms plural": "We use intake forms to gather what your session needs.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("intake.test", {"homepage": text})
+        assert prof.claims("service_booking"), (name, prof.archetypes)
+        fired = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "service_booking"
+            for s in c.signals
+        }
+        assert "intake-form" in fired, (name, sorted(fired))  # non-vacuous
+    print(f"  ok: {len(positives)} intake-form phrasings each fire intake-form")
+
+    negatives = {
+        # bare "form" — no intake collocation.
+        "contact form": "Fill out the contact form to reach us.",
+        "form field required": "Every form field on the page is required.",
+        "sign-up form": "Submit the sign-up form to create an account.",
+        # bare "intake" — no form collocation.
+        "calorie intake": "Track your daily calorie intake in the app.",
+        "intake process": "The patient intake process takes only minutes.",
+        "water intake": "Increase your water intake for better health.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("prose.test", {"homepage": text})
+        assert not prof.claims("service_booking"), (name, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} bare-form / bare-intake strings do NOT claim service_booking (precision)"
+    )
+
+
+def test_intake_form_fires_on_real_captured_surfaces():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the TRUTH mirror of the synthetic
+    # precision guard. It pins that intake-form fires on the GENUINE custom-intake-form
+    # prose captured live from the committed service_booking anchor
+    # (acuityscheduling.com — "collect client info with custom intake forms", "fill out
+    # any intake forms you've set up"), run through the REAL discovery path
+    # (from_fixture -> discover_offering) exactly as a live crawl would.
+    #
+    # SCORE-NEUTRAL by construction: acuityscheduling.com ALREADY claims
+    # service_booking (via book/appointment/schedule), so the intake evidence can only
+    # DEEPEN that claim — never add an archetype or reorder. The classifier is off the
+    # scoring path; the anchor's claimed SET is unchanged (pinned by
+    # tests/test_offering_canonical.py).
+    actx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "acuityscheduling.com.json"))
+    aprof = offering.discover_offering(actx)
+    assert aprof.claims("service_booking"), aprof.archetypes
+    sb = next(c for c in aprof.claimed if c.archetype == "service_booking")
+    intake = [s for s in sb.signals if s.label == "intake-form"]
+    assert intake, {s.label for s in sb.signals}
+    assert intake[0].quote and intake[0].quote.strip(), "intake-form quote empty"
+    print(f"  ok: intake-form fires on REAL captured acuityscheduling.com — quote: {intake[0].quote!r}")
+
+    # Full-discovery claimed-SET invariance on the anchor (score-neutrality): the new
+    # signal deepens service_booking without adding or dropping any archetype.
+    assert set(aprof.archetypes) == {
+        "subscription", "service_booking", "metered_api"
+    }, aprof.archetypes
+
+    # NON-VACUOUS negatives on REAL data: the metered_api pair + marketplace, the retail
+    # catalog, and the null site carry no intake-form prose — the signal must be absent
+    # and conjure or reorder no archetype. (The canonical flight pair is the critical
+    # case: a flight API is not an appointment storefront collecting service intake, so
+    # service_booking must stay NA there and the score stays invariant.)
+    for dom, expected in (
+        ("driftflight.com", ["metered_api", "digital_good", "subscription"]),
+        ("drift-flight.org", ["metered_api", "digital_good", "subscription"]),
+        ("api.replicate.com", ["metered_api"]),
+        ("books.toscrape.com", ["physical_good"]),
+        ("example.com", []),
+    ):
+        nctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        nprof = offering.discover_offering(nctx)
+        nlabels = {s.label for c in nprof.claimed for s in c.signals}
+        assert "intake-form" not in nlabels, (dom, nlabels)
+        assert nprof.archetypes == expected, (dom, nprof.archetypes)
+    print("  ok: intake-form is ABSENT on the api-pair / marketplace / retail / null fixtures (non-vacuous, score-neutral)")
+
+
 def test_subscription_recurring_precision_synthetic():
     # The last cheap bare-word subscription signal hardened (siblings: enrich/
     # dataset/lookup for data_retrieval, book/schedule for service_booking). Bare
@@ -5319,6 +5421,8 @@ def main() -> int:
         test_manage_booking_fires_on_real_captured_surfaces,
         test_service_booking_notification_precision_synthetic,
         test_booking_notification_fires_on_real_captured_surfaces,
+        test_service_booking_intake_form_precision_synthetic,
+        test_intake_form_fires_on_real_captured_surfaces,
         test_subscription_recurring_precision_synthetic,
         test_usage_based_metered_precision_synthetic,
         test_payment_challenge_retry_precision_synthetic,

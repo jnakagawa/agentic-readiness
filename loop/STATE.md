@@ -1,6 +1,54 @@
 # Loop state
 
-- Cycle counter: 255
+- Cycle counter: 256
+- CYCLE 256 — 2026-08-05T~13:2xZ (COVERAGE, cloud, direct-to-main, score-neutral).
+  FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests` state=open `[]`): HEAD in sync with
+  origin at Cycle 255 (`7465e81`; detached-start realign via `git fetch origin main`, benign forced-update of local
+  ref). **LOCAL VERIFY RUNNER STALL PERSISTS — 6h floor still breached:** newest verify STILL
+  `runs/local/verify_20260805T024100Z.json` (02:41Z, div_recovery=None, tests_ok=true, reads 46.1 F / 85.5 B /
+  +39.4), ~10.7h old at fire (13:22Z); 10+ consecutive missed :41 slots (03:41–12:41). Unchanged NO-NEW-ARTIFACT
+  stall, NOT cloud-diagnosable → P0 [LOCAL] runner-stall diagnosis (queued Cycle 251) stands; carry watch + flag LOUD
+  in next 16:00 UTC digest (fire ~13:2xZ before the digest window). Regression-by-construction stands in for the live
+  re-score (playbook). `pip install eth-account` (agent-side dependency gap) → test_free_tier 11/11. Took the COVERAGE
+  slot (cloud pointer, Cycle 255 was METHOD): the oldest in-cloud COVERAGE opening — a service_booking intake-form
+  data-collection control. Evidence decided INTAKE-FORM over WAITLIST: the anchor states intake in real prose
+  ("collect client info with custom intake forms", "fill out any intake forms you've set up"; 39 `\bintake forms?\b`
+  hits) while WAITLIST is IMAGE-ONLY (`waitlist.png`, no prose → deferred to [LOCAL]). SHIPPED (off the scoring path →
+  score-neutral, direct-to-main): `asrs/offering.py` +8th service_booking signal `("intake-form",
+  re.compile(r"\bintake forms?\b", _F))` — the DATA-COLLECTION PRECONDITION "collect what the job needs / provision
+  without a human" leg, distinct from create/manage/notify, precision-guarded against bare "form" and bare "intake"
+  (fixed collocation only, mirroring booking-notification's "appointment reminder(s)"). Fired NON-VACUOUSLY on the
+  anchor (39 hits), ABSENT on all 7 others incl. the canonical pair. `test_offering.py` +2 (101→103: precision-
+  synthetic 5-fire/6-dodge + real-captured end-to-end) both registered; `test_offering_canonical.py`
+  `_BOOKING_INTAKE_LABELS` in the genuine-label contract + anchor check (g) + `_ISOLATION_EVIDENCE` row (bank 71→72).
+  MUTATION-TESTED (never-match regex reddens both offering guards + canonical (g); restored clean). SCORE-NEUTRAL:
+  classifier off the static path, anchor ALREADY claims service_booking so intake only DEEPENS; canonical archetypes
+  UNCHANGED (both [metered_api, digital_good, subscription]), **46.1 F / 85.5 B / +39.4 UNMOVED** (replay 26/26 pins
+  v0.7); full suite **523 passed** (521→523). Invariants #1 (classifier read-only, no probe/POST/signing), #2 (no
+  scoring-semantics → no version bump), #3 (real-prose mined, non-vacuous on anchor + absent on 7), #4 (eth-account +
+  stall attributed to agent/LOCAL env not a site), #5 (mutation on /tmp backup, reverted; append-only) all held. NO DM
+  (score-neutral COVERAGE, not sensitive-class, off scoring path, not first-after-16:00 UTC — ~13:2xZ Aug-5; last
+  digest Cycle 228). See LOG Cycle 256.
+- FOCUS POINTER (Cycle 256 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
+  **BUT the LOCAL verify runner is STALLED with the 6h floor breached (P0 [LOCAL] queued Cycle 251) — not
+  cloud-doable; next-fire priority is keeping the P0 [LOCAL] fresh + the 16:00 UTC digest flag (OVERDUE once the
+  digest window opens ≥16:00Z — this cycle at ~13:2xZ is still before it, but the NEXT fire likely crosses it).**
+  Cloud track rotation: Cycle 256 was COVERAGE → cloud pointer is **TRUTH next** (METHOD → COVERAGE → TRUTH →
+  READOUT). NEXT TRUTH openings (prefer oldest, in-cloud): panel-verdict-stability (does the reliability
+  `stable`/`reproducible` gate track what an agent re-experiences across trials); the remaining order-adjacent
+  surfaces = the `by_run` evidence lists (shopper.py:335/522) + `per_model` (`_build_check`), arrival-order but
+  self-labeled (model,trial) — a guard confirming they stay deterministic if panel construction ever parallelizes.
+  NEXT COVERAGE openings (later): service_booking in-cloud anchor mining is nearly EXHAUSTED (create ∪ manage ∪
+  notify ∪ intake = 8 signals); last thin candidate WAITLIST is IMAGE-ONLY on the anchor → [LOCAL] richer-booking
+  fixture. Remaining in-cloud: the ipinfo.io DATASET-FORMAT/DOWNLOAD-CONTRACT data_retrieval signal (Cycle-243); the
+  deep-bank uncaptured-capability audit (Cycle 226/230/233 lineage). NEXT READOUT openings: the TERMINAL-card
+  corroboration line (`asrs/report.py` — Cycle 254 did the HTML card); the population-drift TREND once a 3rd dated
+  sweep lands ([LOCAL]-gated, only 2 committed).
+  **RUNNER-HEALTH WATCH (ESCALATED — FLOOR BREACHED, carried Cycle 251→256 — hold until resolved):** last artifact
+  02:41Z; at the Cycle-256 fire (13:22Z) it is ~10.7h old = past the 6h floor, 10+ consecutive misses (03:41–12:41).
+  Cloud cannot diagnose (launchd-not-firing / machine-asleep / new pre-push failure indistinguishable from here) →
+  P0 [LOCAL] with exact diagnostic steps stands. Distinct from the Cycle-227 push-race (`divergence_recovery` None).
+  FLAG loudly in the next 16:00 UTC digest.
 - CYCLE 255 — 2026-08-05T~12:2xZ (METHOD, cloud, direct-to-main, score-neutral).
   FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests` state=open `[]`): HEAD in sync with
   origin at Cycle 254 (`a2c8e48`; detached-start realign via `git fetch origin main`, benign forced-update of local

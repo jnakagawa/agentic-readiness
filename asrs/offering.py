@@ -1651,6 +1651,38 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"\bappointments?\s+reminders?\b"
             r"|\b(?:confirmations?|reminders?)\b[^.\n]{0,40}?\b(?:appointments?|bookings?|reservations?)\b"
             r"|\b(?:appointments?|bookings?|reservations?)\b[^.\n]{0,40}?\b(?:confirmations?|reminders?)\b", _F)),
+        # COLLECT WHAT THE JOB NEEDS — the storefront gathers the information a
+        # booked service requires via a custom INTAKE FORM the agent (or the
+        # client on whose behalf it books) fills in. This is a FOURTH genuinely
+        # distinct capability leg beyond the create act (book / appointment /
+        # reservation / schedule / availability), the lifecycle-management leg
+        # (manage-booking) and the completion-acknowledgment leg
+        # (booking-notification): the DATA-COLLECTION PRECONDITION leg. An agent
+        # booking a service autonomously must be able to supply the intake
+        # information the provider defined, or the booking cannot be provisioned —
+        # the "provision without a human / complete the job" precondition the
+        # PLAYBOOK's lens names, applied to service_booking. It is the
+        # service_booking analog of a metered_api's request-parameter contract or
+        # a digital_good's variant-selection: the structured inputs the offering
+        # needs before it can deliver. Mined from the committed service_booking
+        # anchor's real prose (acuityscheduling.com — "collect client info with
+        # custom intake forms", "fill out any intake forms you've set up").
+        # PRECISION-CRITICAL: neither bare token may match. Bare "form" is a
+        # web-wide minefield (contact form, sign-up form, "form field", an HTML
+        # <form>, "form validation"), and bare "intake" is broad English
+        # (calorie/water/air intake, "the intake process", "intake manifold").
+        # So match ONLY the fixed unambiguous collocation "intake form(s)" — a
+        # service-intake data-collection artifact, unambiguously the
+        # collect-what-the-job-needs capability the same way the sibling
+        # booking-notification leg treats "appointment reminder(s)" as a
+        # standalone fixed collocation. Verified on the 8 committed fixtures: 39
+        # non-vacuous hits on the service_booking anchor, ZERO on the other seven —
+        # crucially ZERO on the canonical flight pair, so service_booking stays NA
+        # there and the classification/score is invariant (pinned by
+        # tests/test_offering_canonical.py). The anchor ALREADY claims
+        # service_booking via book/appointment/schedule, so this only DEEPENS an
+        # existing claim — never adds an archetype or reorders. Off the scoring path.
+        ("intake-form", re.compile(r"\bintake forms?\b", _F)),
     ],
     "data_retrieval": [
         # RECORD ENRICHMENT — an agent submits records and gets structured fields

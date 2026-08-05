@@ -3,6 +3,89 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 251 — 2026-08-05T~08:2xZ — METHOD (cloud, direct-to-main, tests-only, score-neutral) — crash-invisibility at the DENOMINATOR level (invariant #4): a no-verdict agent crash (empty checkpoints, no env-block language) must dilute NEITHER the outcome/trust denominator NOR the reachability denominator — it sits in a third bucket counted by nothing, and adding it to a panel is now pinned byte-identical across every check
+
+**First duty (infra health check).** No open peer-gated PR (`list_pull_requests`
+state=open → `[]`). Newest LOCAL verify `runs/local/verify_20260805T024100Z.json`
+(02:41Z, git_pull.ok=true attempts=1, divergence_recovery=None, tests_ok=true 24/24)
+was ~5.6h old at fire (08:15Z) — still INSIDE the 6h floor (trips ~08:41Z), so not a
+hard breach, live canonical **46.1 F / 85.5 B / +39.4** (tx 87.5) unchanged. BUT the
+:41 runner has now missed FIVE consecutive slots (03:41 / 04:41 / 05:41 / 06:41 /
+07:41 all absent) — the Cycle-250 RUNNER-HEALTH WATCH's trip condition ("if a fresh
+verify ≥07:41Z does not appear") is MET. Not cloud-repairable (the runner is on
+Jonah's machine, cloud-unreachable), so per the self-healing rule I queued a P0
+`[LOCAL]` runner-stall diagnosis (BACKLOG) and carry the watch; the loud flag goes in
+the next 16:00 UTC digest (it is ~08:2xZ now, before digest). Rebuilt the cloud
+`.venv` (absent in fresh container) + `pip install -r requirements.txt` →
+`test_free_tier` 11/11 (the known agent-side eth-account gap, not a bench regression).
+Cloud started DETACHED-HEAD with local `main` stale (per the Cycle-245 infra lesson);
+pushed with `HEAD:refs/heads/main`.
+
+**What/why (METHOD).** Took the METHOD slot (cloud pointer, Cycle 250 was READOUT).
+Invariant #4 — "agent-side environment failures are never scored as site evidence …
+when in doubt, CANT_TEST — a site is never punished for what couldn't be observed" —
+had its CLASSIFIER pinned (`test_attribution.py` #4: a no-checkpoint crash is not
+`_is_env_blocked`) but NOT its DENOMINATOR CONSEQUENCE, the thing the score actually
+depends on. `_aggregate` partitions runs into `env_blocked` (routes to reachability),
+`valid` (the outcome/trust denominator), and — implicitly — a THIRD bucket: runs with
+empty checkpoints that carry no env-block language (a segfault / unparsed verdict).
+Such a run is excluded from BOTH `valid` (no checkpoints) and `env_blocked`
+(`_is_env_blocked` needs refusal text), so it is counted by NOTHING. If a future
+refactor leaked it into `env_blocked` (counting an unparsed run as a reachability
+block) reachability would drop PASS→PARTIAL — a false site penalty for an agent
+crash; if into `valid`, the outcome denominator would inflate and an all-pass check
+would drop PASS→PARTIAL. Verified the live behavior first (`_aggregate` on
+2-valid + 1-crash is byte-identical to 2-valid alone: reachability PASS 5.0/5.0
+reached=2 blocked=0; every `bhv_*` check valid_runs=2, unmoved).
+
+**Guard (metamorphic + three-way teeth).** New `test_attribution.py` #10
+`test_crash_run_is_invisible_to_both_denominators` (attribution 9→10). (a) NON-VACUOUS
+by construction — the crash lands in the third bucket (`checkpoints == {}` so `valid`
+excludes it; `_is_env_blocked is False` so `env_blocked` excludes it). (b) THE
+INVARIANT — a `_sig()` (per-check status/points/max/finding/evidence) of the aggregate
+is byte-identical WITH and WITHOUT the crash, spelled out at both denominators
+(reachability still PASS blocked_runs=0; outcome valid_runs=2). (c) TEETH #1 — an
+ENV-BLOCKED control run added to the same base DOES drag reachability PASS→PARTIAL
+(the reachability denominator is live). (d) TEETH #2 — a VALID no-evidence run
+(reached, all-false) DOES enter the outcome denominator (found_product PASS→PARTIAL,
+valid_runs=3) while reachability stays PASS (the outcome denominator is live). So the
+crash's invisibility is a real claim about a distinct third bucket, not a no-op on an
+inert metric. MUTATION-TESTED on DISTINCT legs: routing crashes into `env_blocked` via
+the classifier reddens the non-vacuity leg (a); leaking them into the `_aggregate`
+partition while leaving the classifier untrue reddens the CORE metamorphic leg (b)
+`before == after`; both restored → 10/10 clean. Capability/measurement-worded,
+vendor-neutral (synthetic models claude/gpt/codex, domain `x.example`, no anchor
+literal).
+
+**Validation.** `test_attribution.py` 9→10 (green). Full suite 25/25 files green
+(`test_free_tier` 11/11 after the eth-account install). SCORE-NEUTRAL by construction:
+`git diff --name-only -- asrs/ rubric/ fixtures/ batteries/ probes/` EMPTY (only
+`tests/test_attribution.py`); in-cloud replay guard `test_canonical_replay` 26/26,
+**46.1 F / 85.5 B / +39.4 UNMOVED**, 0 replay-miss; rubric v0.7. Live canonical signal
+(newest LOCAL verify 02:41Z) reads +39.4, in agreement. Invariant #1 held (tests-only,
+no probe/POST/signing); #2 held (no scoring-semantics change → no version bump); #4 is
+the very invariant hardened; #5 held (append-only; the mutation experiments ran on a
+`/tmp` backup copy and were reverted — `git diff` on the scoring path is empty).
+
+**Comms.** NO DM: tests-only + score-neutral METHOD, not sensitive-class (no payment/
+signing/weights/caps/removals), not score-changing, not the first cycle after 16:00
+UTC (~08:2xZ Aug-5, before today's 16:00 digest; last digest Cycle 228). The
+runner-stall is queued P0 `[LOCAL]` and will be flagged in the next digest per the
+self-healing/comms policy, not as a mid-cycle DM.
+
+**Next hypothesis (COVERAGE 252).** Rotate COVERAGE next (Cycle 251 METHOD; METHOD →
+COVERAGE → TRUTH → READOUT). Prefer the oldest in-cloud opening: the still-un-mined
+service_booking anchor for a reminder/notification, intake-form, or waitlist control
+(each IF precision-guardable), OR the ipinfo.io dataset-format/download-contract
+data_retrieval signal (Cycle-243 next-hypothesis), OR the deep-bank
+uncaptured-capability audit (Cycle 226/230/233 lineage). METHOD follow-up: the
+attribution third-bucket is now pinned; a sibling METHOD opening is pinning that the
+reachability POINTS formula (`reached/n`) is itself invariant to which bucket a
+no-verdict run sits in under a partition-order permutation (likely already covered by
+the order-invariance family — verify before taking). If the LOCAL runner is still
+stalled next fire, its P0 `[LOCAL]` diagnosis is the priority and the digest flag is
+overdue.
+
 ## Cycle 250 — 2026-08-05T~07:2xZ — READOUT (cloud, direct-to-main, tests-only, score-neutral) — card-surface citability coherence: the reliability LAYER's "stable label ⟺ reproducible gate share one _STABLE_MIN" guard now has its mirror at the PUBLIC CARD, so a display refactor can never desync the shown citability from the gate — and the guard is honest about the one legitimate Stable+Provisional cell (a trust-posture split)
 
 FIRST duty (infra health check — no open peer-gated PR: `list_pull_requests` state=open → `[]`, no review/merge owed; last PR #145 merged Cycle 235). INFRA: newest verify floor `runs/local/verify_20260805T024100Z.json` (02:41Z, `git_pull.ok=true` attempts=1, `divergence_recovery=None`, `tests_ok=true` 24/24) was ~4.6h old at fire (07:17Z) — inside the 6h floor but AGING: the :41 hourly cadence has produced NOTHING since 02:41Z (03:41/04:41/05:41/06:41 all absent — 4 missed runs), so the local runner appears stalled and the floor trips at ~08:41Z if 07:41 does not land. Not repairable from the cloud (no reach to Jonah's machine); logged as a loud RUNNER-HEALTH WATCH in STATE for the next digest, not yet a P0 (still under floor). Live canonical (from the floor) **46.1 F / 85.5 B / +39.4** (tx 87.5), no drift. HEAD in sync with origin/main at Cycle 249 (`a2c3270`; pull was a forced-update realign, already-up-to-date). Env: `test_free_tier` 10/11 at fire (the declared `eth-account>=0.13` absent from the fresh container) → `pip install eth-account` → 11/11 (the known agent-side gap, never a bench regression).

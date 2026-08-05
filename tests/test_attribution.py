@@ -277,6 +277,103 @@ def test_env_block_safety_phrasing_covered() -> None:
            "the safety-blocked model is attributed in reachability evidence")
 
 
+# ---------------------------------------------------------------------------
+# 10. Crash-invisibility (invariant #4, denominator level): a run that produced
+#     NO verdict (empty checkpoints) and NO env-block language is neither a valid
+#     observation NOR an env-block — it observed nothing about the site. #4 pins
+#     only the CLASSIFIER (_is_env_blocked -> False); this pins the CONSEQUENCE
+#     the score actually depends on: such a crash must dilute NEITHER denominator.
+#     It is invisible to `_aggregate` — every check is byte-identical to the panel
+#     without it. This is "a site is never punished for what couldn't be observed"
+#     in its purest quantitative form: an agent-side segfault that yielded no
+#     verdict must not count as a site outcome (inflating the outcome denominator,
+#     dragging PASS -> PARTIAL) NOR as a reachability block (dragging reachability
+#     PASS -> PARTIAL). A crash sits in a THIRD bucket, counted by nothing.
+#
+#     Metamorphic form + three-way teeth: adding a CRASH moves nothing, while the
+#     two neighbouring perturbations DO move a denominator — an ENV-BLOCKED run
+#     drags reachability, and a VALID no-evidence run drags the outcome
+#     denominator. So both denominators are demonstrably live, and the crash's
+#     invisibility is a real claim about a distinct third bucket, not a no-op on
+#     an inert metric. A future refactor that routed a no-verdict crash into
+#     either bucket (e.g. counting attempted runs, or treating an unparsed run as
+#     blocked) reddens this immediately.
+# ---------------------------------------------------------------------------
+def _crash(model="codex", trial=9) -> BehavioralRun:
+    """A run whose own stack died before any verdict: empty checkpoints, and a
+    blocker that is NOT env-block language (a plain crash, not a URL refusal)."""
+    return BehavioralRun(
+        model=model, trial=trial, checkpoints={},
+        blockers=["run-failed: the cli segfaulted before returning a verdict"],
+        trust_events=[],
+    )
+
+
+def _sig(checks) -> dict:
+    """Comparable signature of an aggregate: per-check status/points/evidence."""
+    return {
+        c.check_id: (c.status, c.points, c.max_points, c.finding, c.evidence)
+        for c in checks
+    }
+
+
+def test_crash_run_is_invisible_to_both_denominators() -> None:
+    print("test_crash_run_is_invisible_to_both_denominators")
+    # Base panel: two valid runs that both reached the site and passed every
+    # checkpoint -> every check at full points, maximum room for any leak to show.
+    base = [
+        _run(model="claude", trial=1, found_product=True, understood_pricing=True,
+             found_purchase_path=True, machine_payable_path=True, no_human_gate=True),
+        _run(model="gpt", trial=1, found_product=True, understood_pricing=True,
+             found_purchase_path=True, machine_payable_path=True, no_human_gate=True),
+    ]
+    crash = _crash()
+
+    # NON-VACUOUS: the crash lands in the THIRD bucket by construction — it is not
+    # a valid observation (empty checkpoints) and not an env-block (no refusal
+    # language), so both `valid` and `env_blocked` exclude it.
+    _check(crash.checkpoints == {}, "crash produced no checkpoints (not a valid run)")
+    _check(S._is_env_blocked(crash) is False,
+           "a plain crash is not an env-block (no URL-refusal language)")
+
+    # THE INVARIANT: adding the crash to the panel changes nothing, anywhere.
+    before = _sig(S._aggregate("x.example", base))
+    after = _sig(S._aggregate("x.example", base + [crash]))
+    _check(before == after,
+           "a no-verdict crash is invisible: every check byte-identical with/without it")
+    # Spell out the two denominators the invariant protects.
+    reach = _by_id(S._aggregate("x.example", base + [crash]))["hosted_agent_reachability"]
+    _check(reach.status == Status.PASS and reach.evidence["blocked_runs"] == 0,
+           "reachability still full PASS — the crash is NOT counted as blocked")
+    _check(_by_id(S._aggregate("x.example", base + [crash]))["bhv_found_product"]
+           .evidence["valid_runs"] == 2,
+           "outcome denominator still 2 — the crash is NOT counted as a valid run")
+
+    # TEETH #1 — the reachability denominator IS live: an ENV-BLOCKED run (real
+    # URL refusal) added to `base` drags reachability off its full PASS. So the
+    # crash staying at PASS above is a real claim, not an inert metric.
+    blocked_run = _run(model="codex", trial=2,
+                       blockers=["the request was blocked by the browser security policy"])
+    _check(S._is_env_blocked(blocked_run) is True, "control run is genuinely env-blocked")
+    reach_blk = _by_id(S._aggregate("x.example", base + [blocked_run]))["hosted_agent_reachability"]
+    _check(reach_blk.status == Status.PARTIAL and reach_blk.points < reach.points,
+           "an env-blocked run DOES move reachability (denominator is live)")
+
+    # TEETH #2 — the outcome denominator IS live: a VALID run that reached the
+    # site but found nothing (all-false, no env-block language) drags an all-pass
+    # outcome check to PARTIAL, while reachability stays PASS (it reached). So the
+    # outcome denominator holding at 2 above is a real claim too.
+    empty_valid = _run(model="codex", trial=3)  # reached, every checkpoint false
+    _check(S._is_env_blocked(empty_valid) is False and empty_valid.checkpoints,
+           "control run is a valid no-evidence observation, not a crash")
+    with_valid = _by_id(S._aggregate("x.example", base + [empty_valid]))
+    _check(with_valid["bhv_found_product"].status == Status.PARTIAL
+           and with_valid["bhv_found_product"].evidence["valid_runs"] == 3,
+           "a valid no-evidence run DOES enter the outcome denominator (denominator is live)")
+    _check(with_valid["hosted_agent_reachability"].status == Status.PASS,
+           "the valid no-evidence run still reached the site (reachability unmoved)")
+
+
 def main() -> int:
     tests = [
         test_env_block_positive_phrasings,
@@ -288,6 +385,7 @@ def main() -> int:
         test_all_reached_full_reachability,
         test_reputation_gate_phrasing_is_current_coverage_gap,
         test_env_block_safety_phrasing_covered,
+        test_crash_run_is_invisible_to_both_denominators,
     ]
     failed = 0
     for t in tests:

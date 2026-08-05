@@ -5,6 +5,30 @@ design in-cloud, execute locally.
 
 ## P0
 
+- **[LOCAL] Diagnose the LOCAL verify runner STALL (no new artifact since 02:41Z Aug-5)** (SELF-HEALING/METHOD,
+  opened Cycle 251, 2026-08-05T~08:2xZ). SYMPTOM: newest `runs/local/verify_*.json` is
+  `verify_20260805T024100Z.json` (02:41Z); the :41 cadence has produced NOTHING for FIVE consecutive slots
+  (03:41 / 04:41 / 05:41 / 06:41 / 07:41 all absent). At the Cycle-251 fire (08:15Z) the artifact was ~5.6h old,
+  still inside the 6h floor (trips ~08:41Z), so no hard breach YET — but the trip condition of the Cycle-250
+  RUNNER-HEALTH WATCH ("no fresh verify ≥07:41Z") is MET. DISTINCT from the Cycle-227/Aug-1 push-race stranding:
+  that surfaced as a diverged `--ff-only` pull and was fixed by `recover_from_own_divergence` (Cycle 228+); here
+  `divergence_recovery` on the last good artifact is `None`, so this is a NO-NEW-ARTIFACT stall, not a divergence.
+  The cloud CANNOT tell the candidate causes apart — launchd not firing / machine asleep across the window / a NEW
+  pre-push failure that aborts before writing an artifact / a silent crash in `local_verify.py` are all consistent
+  with what the cloud sees. NEXT LOCAL FIRE (exact steps):
+  1. `launchctl list | grep -i asrs` and `log show --predicate 'process == "launchd"' --last 8h | grep -i asrs`
+     — did launchd fire the :41 job at all in 03:41–08:41? (fires-but-fails vs never-fires splits the tree).
+  2. If it fired: read the runner's own heartbeat log (the launchd StandardOut/StandardError path) for 03:41+ —
+     `local_verify.py` heartbeats on every fire, so silence there = it never started; an error there names the
+     failure (pull reject / test crash / score error / push reject).
+  3. Confirm the pinned `~/.local/bin/asrs_local_verify.py` matches the repo copy (self-heal law) —
+     `diff ~/.local/bin/asrs_local_verify.py loop/local_verify.py`; resync from the reviewed repo copy if stale
+     and RECORD the resync in LOG.
+  4. Run the runner once by hand end-to-end (`ASRS_REPO=<checkout> ~/.local/bin/asrs_local_verify.py`) and
+     VERIFY it produced a fresh `verify_<ts>.json` on origin (execute, don't assume) — floor restored.
+  5. LOG the diagnosis + fix; if a new failure MODE is found, harden `local_verify.py` + extend
+     `tests/test_local_verify.py` (the Cycle-228 push-race precedent). FLAG the outcome in the next digest.
+
 <!-- DONE 2026-08-04T17:13Z (LOCAL cycle, SELF-HEALING, direct-to-main, score-neutral): "[LOCAL] LOCAL verify
      runner AT-FLOOR since Aug-1 03:50Z (~3 days)" ROOT-CAUSED + FIXED + HARDENED — a local fire saw what the
      cloud could only guess. The cloud's hypotheses were ALL wrong (NOT launchd-not-firing, NOT a wake/DNS race,

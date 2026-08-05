@@ -1,6 +1,54 @@
 # Loop state
 
-- Cycle counter: 250
+- Cycle counter: 251
+- CYCLE 251 — 2026-08-05T~08:2xZ (METHOD, cloud, direct-to-main, tests-only, score-neutral).
+  FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests` state=open `[]`): newest verify
+  `runs/local/verify_20260805T024100Z.json` (02:41Z, git_pull.ok=true attempts=1, divergence_recovery=None,
+  tests_ok=true 24/24) ~5.6h old at fire (08:15Z), still INSIDE the 6h floor (trips ~08:41Z) — live canonical
+  **46.1 F / 85.5 B / +39.4** (tx 87.5), no drift; HEAD in sync with origin at Cycle 250 (detached-HEAD start,
+  local `main` stale per Cycle-245 lesson → pushed HEAD:refs/heads/main). BUT the Cycle-250 RUNNER-HEALTH WATCH
+  trip condition IS MET: the :41 runner has missed FIVE consecutive slots (03:41/04:41/05:41/06:41/07:41 all
+  absent, no verify ≥07:41Z) → queued **P0 [LOCAL] runner-stall diagnosis** (BACKLOG) + carry the watch; the loud
+  flag goes in the next 16:00 UTC digest (not cloud-repairable — runner is on Jonah's machine). `pip install
+  -r requirements.txt` (eth-account absent in fresh container) → test_free_tier 11/11 (agent-side gap, not a
+  bench regression). Took the METHOD slot (cloud pointer, Cycle 250 was READOUT): pinned invariant #4 at the
+  DENOMINATOR level — a no-verdict agent crash (empty checkpoints, no env-block language) sits in a THIRD
+  `_aggregate` bucket counted by NOTHING, diluting neither the outcome/trust denominator (`valid` excludes it, no
+  checkpoints) nor the reachability denominator (`env_blocked` excludes it, no refusal text). #4 previously pinned
+  only the CLASSIFIER (test_attribution #4: crash is not `_is_env_blocked`); this pins the CONSEQUENCE the score
+  depends on. New guard `test_crash_run_is_invisible_to_both_denominators` (test_attribution 9→10): (a) NON-VACUOUS
+  — crash lands in the third bucket by construction (checkpoints=={} AND `_is_env_blocked` False); (b) THE
+  INVARIANT — a per-check status/points/max/finding/evidence signature is byte-identical WITH and WITHOUT the crash
+  (reachability PASS blocked=0; outcome valid_runs=2 unmoved); (c) TEETH#1 — an env-blocked control DOES drag
+  reachability PASS→PARTIAL (reachability denom live); (d) TEETH#2 — a valid no-evidence run DOES enter the outcome
+  denom (found_product PASS→PARTIAL, valid_runs=3) while reachability holds PASS (outcome denom live). Mutation-
+  tested on DISTINCT legs: classifier-leak reddens (a); `_aggregate` partition-leak (classifier still False)
+  reddens the CORE metamorphic (b) `before==after`; both reverted → 10/10 clean. Vendor-neutral (synthetic
+  models, domain `x.example`). SCORE-NEUTRAL: `git diff --name-only -- asrs/ rubric/ fixtures/ batteries/ probes/`
+  EMPTY (only test_attribution.py); replay guard 26/26, **46.1 F / 85.5 B / +39.4 UNMOVED**, 0 replay-miss; full
+  suite 25/25 files green. Invariant #1 held (tests-only, no probe/POST/signing); #2 held (no scoring-semantics
+  change → no version bump); #4 is the invariant hardened; #5 held (mutation experiments on a /tmp backup, reverted
+  — scoring-path diff empty). NO DM (tests-only METHOD, not sensitive-class, off scoring path, not first-after-
+  16:00 UTC — ~08:2xZ Aug-5; last digest Cycle 228). See LOG Cycle 251.
+- FOCUS POINTER (Cycle 251 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
+  **BUT the LOCAL verify runner is STALLED (P0 [LOCAL] queued this cycle) — if still no verify ≥07:41Z at next
+  fire, the runner-stall diagnosis is NOT cloud-doable; the priority is the 16:00 UTC digest flag (overdue) +
+  keeping the P0 [LOCAL] fresh.** Cloud track rotation: Cycle 251 was METHOD → cloud pointer is **COVERAGE next**
+  (METHOD → COVERAGE → TRUTH → READOUT). NEXT COVERAGE openings (prefer the oldest, in-cloud): service_booking's
+  anchor reminder/notification, intake-form, or waitlist control (each IF precision-guardable); the ipinfo.io
+  dataset-format/download-contract data_retrieval signal (Cycle-243 next-hypothesis); the deep-bank
+  uncaptured-capability audit (Cycle 226/230/233 lineage). NEXT READOUT openings: the "behaviorally corroborated"
+  calibration badge (P2, Cycle 68 lineage — unblocked); the card-surface citability monotone (P2, Cycle 201 — but
+  see Cycle 250, the mirror guard shipped); the population-drift TREND once a 3rd dated sweep lands ([LOCAL]-gated,
+  only 2 committed). NEXT METHOD opening: verify whether the reachability POINTS formula (`reached/n`) invariance
+  under a partition-order permutation is already covered by the order-invariance family before taking it.
+  **RUNNER-HEALTH WATCH (ESCALATED, Cycle 251 — carry until resolved):** last artifact 02:41Z; 03:41–07:41 = 5
+  consecutive misses, trip condition MET (no fresh verify ≥07:41Z). At ~08:2xZ the 6h floor is not yet a hard
+  breach but trips ~08:41Z. Cloud cannot diagnose (launchd-not-firing / machine-asleep / a new pre-push failure
+  are indistinguishable from here) → a P0 [LOCAL] is queued with the exact diagnostic steps. Distinct from the
+  Cycle-227 push-race stranding (`divergence_recovery` is None here) — a NO-NEW-ARTIFACT stall. FLAG loudly in the
+  next 16:00 UTC digest.
+- CYCLE 250 — 2026-08-05T~07:2xZ (READOUT, cloud, direct-to-main, tests-only, score-neutral).
 - CYCLE 250 — 2026-08-05T~07:2xZ (READOUT, cloud, direct-to-main, tests-only, score-neutral).
   FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests` state=open `[]`): newest verify
   `runs/local/verify_20260805T024100Z.json` (02:41Z, git_pull.ok=true attempts=1, divergence_recovery=None,

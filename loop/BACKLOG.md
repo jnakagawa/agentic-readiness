@@ -385,14 +385,19 @@ design in-cloud, execute locally.
   `test_offering.py` 23→24; suite 240 tests. See LOG Cycle 70.
 
 - **[LOCAL] Strengthen the UNDER-COVERED archetypes (service_booking / data_retrieval / physical_good)**
-  (COVERAGE, opened Cycle 164). PROGRESS — LOCAL Cycle 240 (2026-08-05): **service_booking is now UNBLOCKED
-  in-cloud** — its first committed fixture (`fixtures/canonical/acuityscheduling.com.json`, a real appointment-booking
-  storefront claiming {subscription, service_booking, metered_api}) landed this fire, so an in-cloud COVERAGE cycle can
-  now mine service_booking for a genuinely distinct capability leg (a confirmation/booking-reference or a
-  reschedule/availability-check control) against REAL evidence, the same way Cycle 164 did for digital_good. The other
-  two thin archetypes still need fixtures: **data_retrieval** has zero committed evidence ([LOCAL], see the enabler
-  above) and **physical_good** wants a RICHER retail fixture than the thin books.toscrape (the P1 rich-retail item). See
-  LOG Cycle 240. The offering signal bank is metered_api-HEAVY: metered_api 26, digital_good
+  (COVERAGE, opened Cycle 164). PROGRESS — LOCAL Cycle 242 (2026-08-05): **data_retrieval is now UNBLOCKED
+  in-cloud** — its first committed fixture (`fixtures/canonical/ipinfo.io.json`, a real IP-data storefront claiming
+  {metered_api, data_retrieval, subscription, digital_good} with data_retrieval on ALL FOUR bank signals
+  lookup/enrich/dataset/data-service) landed this fire, the direct mirror of Cycle 240's service_booking capture, pinned
+  by `test_data_retrieval_anchor_offering` + `test_data_retrieval_partition_tracks_storefront_type`. So BOTH previously
+  zero-evidence thin archetypes now have anchors — an in-cloud COVERAGE cycle can now mine data_retrieval (a
+  records-lookup response contract, a dataset-download/licence control — ipinfo /docs carries dataset formats
+  CSV/MMDB/JSON/Parquet + a batch-enrichment API) OR service_booking (a confirmation/booking-reference or
+  reschedule/availability-check control) for a genuinely distinct capability leg against REAL evidence, the way Cycle 164
+  did for digital_good. See LOG Cycle 242. EARLIER — LOCAL Cycle 240: **service_booking** unblocked via
+  `fixtures/canonical/acuityscheduling.com.json` (a real appointment-booking storefront claiming {subscription,
+  service_booking, metered_api}). Remaining thin gap: **physical_good** wants a RICHER retail fixture than the thin
+  books.toscrape (the P1 rich-retail item). The offering signal bank is metered_api-HEAVY: metered_api 26, digital_good
   11 (post-Cycle-164 `variant-selection`), physical_good 9, subscription 9 (post-Cycle-172 `plan-allowance`),
   service_booking 5, data_retrieval 5. The three thin archetypes CANNOT be strengthened non-vacuously in-cloud — no committed
   fixture CLAIMS service_booking or data_retrieval at all, and the only physical_good fixture

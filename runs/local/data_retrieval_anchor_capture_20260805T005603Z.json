@@ -1,0 +1,192 @@
+{
+ "ts": "20260805T005603Z",
+ "kind": "data_retrieval_anchor_capture",
+ "domain": "ipinfo.io",
+ "fixture": "fixtures/canonical/ipinfo.io.json",
+ "entries": 66,
+ "set_cookie_stripped": 0,
+ "honest_ordering": {
+  "live": {
+   "claimed": [
+    "metered_api",
+    "data_retrieval",
+    "subscription",
+    "digital_good"
+   ],
+   "surfaces_seen": [
+    "/docs",
+    "/pricing",
+    "homepage"
+   ],
+   "unclaimed": [
+    "physical_good",
+    "service_booking"
+   ],
+   "data_retrieval_labels": [
+    "data-service",
+    "dataset",
+    "enrich",
+    "lookup"
+   ],
+   "data_retrieval_evidence": [
+    {
+     "label": "lookup",
+     "surface": "homepage",
+     "quote": "gnals in real time. That means every IP lookup reflects how the internet works today,"
+    },
+    {
+     "label": "enrich",
+     "surface": "/docs",
+     "quote": "ata\",\"href\":\"/developers/ip-carrier-api-data\"}]},{\"id\":\"batch-enrichment-api\",\"title\":\"Batch API\",\"href\":\"/devel"
+    },
+    {
+     "label": "dataset",
+     "surface": "/docs",
+     "quote": "tegration development purposes. You can download the sample datasets without an IPinfo Access Token.\",\"secti"
+    },
+    {
+     "label": "lookup",
+     "surface": "/docs",
+     "quote": "hboard . IPinfo Lite IPinfo Core IPinfo Lookup IPinfo Max Custom API IPinfo Lite is ou"
+    },
+    {
+     "label": "data-service",
+     "surface": "/docs",
+     "quote": "o/blog/ipinfo-database-formats/)\\n- [IP data enrichment with IPinfo: 4 ways to add insights to"
+    },
+    {
+     "label": "lookup",
+     "surface": "/pricing",
+     "quote": "ree forever · no credit card Manual web lookups 100 Geolocation Country level Privacy D"
+    },
+    {
+     "label": "data-service",
+     "surface": "/pricing",
+     "quote": "tion & Privacy data IP Ranges API WHOIS Data API Reverse Domains API IPinfo Core API And"
+    }
+   ]
+  },
+  "replay_pre_strip": {
+   "claimed": [
+    "metered_api",
+    "data_retrieval",
+    "subscription",
+    "digital_good"
+   ],
+   "surfaces_seen": [
+    "/docs",
+    "/pricing",
+    "homepage"
+   ],
+   "unclaimed": [
+    "physical_good",
+    "service_booking"
+   ],
+   "data_retrieval_labels": [
+    "data-service",
+    "dataset",
+    "enrich",
+    "lookup"
+   ],
+   "data_retrieval_evidence": [
+    {
+     "label": "lookup",
+     "surface": "homepage",
+     "quote": "gnals in real time. That means every IP lookup reflects how the internet works today,"
+    },
+    {
+     "label": "enrich",
+     "surface": "/docs",
+     "quote": "ata\",\"href\":\"/developers/ip-carrier-api-data\"}]},{\"id\":\"batch-enrichment-api\",\"title\":\"Batch API\",\"href\":\"/devel"
+    },
+    {
+     "label": "dataset",
+     "surface": "/docs",
+     "quote": "tegration development purposes. You can download the sample datasets without an IPinfo Access Token.\",\"secti"
+    },
+    {
+     "label": "lookup",
+     "surface": "/docs",
+     "quote": "hboard . IPinfo Lite IPinfo Core IPinfo Lookup IPinfo Max Custom API IPinfo Lite is ou"
+    },
+    {
+     "label": "data-service",
+     "surface": "/docs",
+     "quote": "o/blog/ipinfo-database-formats/)\\n- [IP data enrichment with IPinfo: 4 ways to add insights to"
+    },
+    {
+     "label": "lookup",
+     "surface": "/pricing",
+     "quote": "ree forever · no credit card Manual web lookups 100 Geolocation Country level Privacy D"
+    },
+    {
+     "label": "data-service",
+     "surface": "/pricing",
+     "quote": "tion & Privacy data IP Ranges API WHOIS Data API Reverse Domains API IPinfo Core API And"
+    }
+   ]
+  },
+  "replay_post_strip": {
+   "claimed": [
+    "metered_api",
+    "data_retrieval",
+    "subscription",
+    "digital_good"
+   ],
+   "surfaces_seen": [
+    "/docs",
+    "/pricing",
+    "homepage"
+   ],
+   "unclaimed": [
+    "physical_good",
+    "service_booking"
+   ],
+   "data_retrieval_labels": [
+    "data-service",
+    "dataset",
+    "enrich",
+    "lookup"
+   ],
+   "data_retrieval_evidence": [
+    {
+     "label": "lookup",
+     "surface": "homepage",
+     "quote": "gnals in real time. That means every IP lookup reflects how the internet works today,"
+    },
+    {
+     "label": "enrich",
+     "surface": "/docs",
+     "quote": "ata\",\"href\":\"/developers/ip-carrier-api-data\"}]},{\"id\":\"batch-enrichment-api\",\"title\":\"Batch API\",\"href\":\"/devel"
+    },
+    {
+     "label": "dataset",
+     "surface": "/docs",
+     "quote": "tegration development purposes. You can download the sample datasets without an IPinfo Access Token.\",\"secti"
+    },
+    {
+     "label": "lookup",
+     "surface": "/docs",
+     "quote": "hboard . IPinfo Lite IPinfo Core IPinfo Lookup IPinfo Max Custom API IPinfo Lite is ou"
+    },
+    {
+     "label": "data-service",
+     "surface": "/docs",
+     "quote": "o/blog/ipinfo-database-formats/)\\n- [IP data enrichment with IPinfo: 4 ways to add insights to"
+    },
+    {
+     "label": "lookup",
+     "surface": "/pricing",
+     "quote": "ree forever · no credit card Manual web lookups 100 Geolocation Country level Privacy D"
+    },
+    {
+     "label": "data-service",
+     "surface": "/pricing",
+     "quote": "tion & Privacy data IP Ranges API WHOIS Data API Reverse Domains API IPinfo Core API And"
+    }
+   ]
+  },
+  "live_matches_replay_pre": true,
+  "strip_is_byte_score_neutral": true
+ }
+}

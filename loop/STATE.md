@@ -1,6 +1,48 @@
 # Loop state
 
-- Cycle counter: 241
+- Cycle counter: 242
+- LOCAL CYCLE 242 — 2026-08-05T00:56Z (COVERAGE, LOCAL, direct-to-main, score-neutral). FIRST duty:
+  `gh pr list --state open` → `[]` (no open peer-gated PR, no review owed). INFRA green: this hour's verify
+  floor `runs/local/verify_20260805T004101Z.json` (00:41Z, git_pull.ok=true attempts=1, divergence_recovery=None,
+  tests_ok=true 24/24) ~1min old at fire; live canonical **46.1 F / 85.5 B / +39.4** (tx 87.5), drift resolved.
+  Took the OLDEST substantive [LOCAL] work (the thin-archetype COVERAGE parent P0, Cycle 164; STATE pointer's named
+  next step): **captured the FIRST committed fixture that CLAIMS data_retrieval** — the SECOND-thinnest offering
+  archetype (tied with service_booking) had ZERO prior committed evidence (NA on all six prior fixtures), the direct
+  mirror of Cycle 240's service_booking capture. SELECTION was the work: built
+  `experiments/probe_data_retrieval_candidates.py` ($0 static screen via the real `discover_offering`) and screened 10
+  real records-lookup/enrichment/dataset domains; rejected false-sibling claimants (peopledatalabs→physical_good,
+  opencagedata→service_booking), a single-signal thin one (numverify), a surface-sprawl giant (data.world), and — after
+  selection — whoisxmlapi.com (tripped bot protection on repeated crawls, went empty); CHOSE **ipinfo.io** — an IP-data
+  storefront claiming exactly {metered_api, data_retrieval, subscription, digital_good} with data_retrieval on ALL FOUR
+  bank signals (lookup/enrich/dataset/data-service) from real prose, no excluded provenance/internals sense, sibling
+  thin archetypes (physical_good, service_booking) correctly NA. HONEST ORDERING (invariant #4): a SINGLE live
+  `discover_offering` crawl classified + recorded from the same ctx; the offline replay reproduced the LIVE
+  classification EXACTLY, before AND after the set-cookie strip (0 stripped — ipinfo serves none). Shipped: (1)
+  `fixtures/canonical/ipinfo.io.json` (NEW, 66 browser-UA entries, 1.33MB, canonical key order, no path leak, no
+  invisible controls, minimal-by-construction). (2) `tests/test_offering_canonical.py` +2 (64→66):
+  `test_data_retrieval_anchor_offering` (exact claimed set; data_retrieval CLAIMED — first anchor; sibling thin NA;
+  non-vacuous ≥2 genuine signals) + `test_data_retrieval_partition_tracks_storefront_type` (TEETH: CLAIMED on ipinfo,
+  NA on the API pair + retail + booking). (3) `experiments/probe_data_retrieval_candidates.py` (screening tool). Full
+  suite 24/24 files; replay guard 24/24, **46.1 F / 85.5 B / +39.4 UNMOVED**; `git diff -- asrs/ rubric/
+  loop/local_verify.py` EMPTY (offering off the scoring path). Invariant #1 held ($0 static crawls, no payment rail
+  probed, no nonzero max-pay). Evidence (force-added): `runs/local/data_retrieval_anchor_capture_20260805T005603Z.json`.
+  NO DM (score-neutral COVERAGE, not sensitive-class, not first-after-16:00 UTC — 00:56Z Aug-5, last digest Cycle 228).
+  See LOG Cycle 242.
+- FOCUS POINTER (Cycle 242 done, LOCAL): NO open peer-gated PR → next fire's first duty is the infra health check only.
+  Cloud track rotation UNCHANGED (this LOCAL cycle did not consume the cloud rotation slot): Cycle 241 was METHOD →
+  cloud pointer is **COVERAGE next** (METHOD → COVERAGE → TRUTH → READOUT). BOTH zero-evidence thin archetypes now have
+  anchors (service_booking = acuityscheduling.com [Cycle 240]; data_retrieval = ipinfo.io [this fire]) — a future
+  in-cloud COVERAGE cycle can now mine EITHER for a genuinely distinct capability leg against real prose (e.g. a
+  records-lookup response contract or dataset-download/licence control for data_retrieval — ipinfo's /docs carries
+  dataset formats CSV/MMDB/JSON/Parquet + a batch-enrichment API; or a booking-reference/reschedule control for
+  service_booking) with a non-vacuous read-live guard, the way Cycle 164 did digital_good. Remaining thin frontier:
+  **physical_good** still wants a RICHER retail fixture than the thin books.toscrape (the P1 rich-retail item).
+  Substantive [LOCAL] frontier (prefer the oldest): the physical_good-rich / MIXED retail+API fixtures;
+  render/structured-catalog captures; the typographic PHRASE-RESCUE real-evidence case; a THIRD calibration anchor;
+  ACP/UCP/MPP live handshakes. NEW P2 precision-gap candidate (still carried from Cycle 240): data_retrieval `lookup`
+  false-positives on the generic "<noun> lookup" admin-search sense ("deployment lookup" on cal.com) — extend the
+  Cycle-198 bank. RUNNER-HEALTH WATCH: drift RESOLVED; future `verify_*.json` read +39.4 / attribution=None, real-series
+  canonical_history tests recovery-tolerant (green).
 - CYCLE 241 — 2026-08-05T~00:2xZ (METHOD, cloud, direct-to-main, tests-only/score-neutral). FIRST
   duty (infra health check — no open peer-gated PR, `list_pull_requests` state=open `[]`): INFRA GREEN,
   newest verify `runs/local/verify_20260804T234102Z.json` (23:41Z, git_pull.ok=true attempts=1,

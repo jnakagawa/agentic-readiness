@@ -509,6 +509,145 @@ def test_service_booking_partition_tracks_storefront_type() -> None:
 
 
 # ---------------------------------------------------------------------------
+# The data_retrieval ANCHOR — the FIRST committed fixture that CLAIMS
+# data_retrieval, the SIBLING thin archetype to service_booking. Before this
+# capture data_retrieval had ZERO committed evidence (NA on all six prior
+# canonical fixtures), so no data_retrieval signal could be added or verified
+# non-vacuously in-cloud — the exact gap the service_booking anchor
+# (acuityscheduling.com) closed for its sibling. This anchor closes it for
+# data_retrieval, the second-thinnest archetype, so an in-cloud COVERAGE cycle
+# can now mine it for a genuinely distinct capability leg (a records-lookup
+# response contract, a dataset-download/licence control, ...) against REAL prose.
+#
+# ipinfo.io is an IP-data storefront: a metered API over a data-retrieval product
+# (IP geolocation / carrier / privacy lookups), sold both as a subscription and as
+# downloadable databases (a digital good). data_retrieval is claimed on ALL FOUR of
+# its bank signals drawn from real prose — lookup ("every IP lookup"), enrich
+# ("batch-enrichment-api"), dataset ("download the sample datasets"), data-service
+# ("IP data enrichment" / "WHOIS Data API Reverse Domains API") — the widest genuine
+# data_retrieval evidence available, and none of it the excluded provenance/internals
+# senses the Cycle-186/198 precision guards strip (no "trained on a dataset", no
+# "lookup table"). So this is a real data-retrieval product, not a same-word
+# coincidence. The sibling thin archetypes stay NA: it fulfills no physical good and
+# books no service.
+#
+# Maintenance contract mirrors the canonical/retail/booking guards: if a signal-bank
+# change LEGITIMATELY moves what this fixture claims, re-capture it [LOCAL]
+# (a static $0 discover_offering crawl -> save_fixture) and update the expected sets
+# below in the SAME PR.
+#
+# Fixture captured [LOCAL] 2026-08-05 (this cycle) via a single live discover_offering
+# crawl — the live classification was reproduced byte-faithfully by the offline replay
+# before recording (honest ordering, invariant #4); ipinfo serves no set-cookie on
+# these surfaces (zero stripped), matching the sibling fixtures' zero-set-cookie
+# convention.
+# ---------------------------------------------------------------------------
+_DATA = "ipinfo.io"
+# What the data storefront CLAIMS: a metered, subscription-priced data-retrieval
+# API whose datasets are also sold as a downloadable digital good.
+_DATA_CLAIMED = {"metered_api", "data_retrieval", "subscription", "digital_good"}
+# The thin archetypes this anchor does NOT claim — data_retrieval gets its first
+# evidence without falsely conjuring its sibling thin archetypes (nothing is
+# physically fulfilled; no service is booked).
+_DATA_MUST_BE_NA = {"physical_good", "service_booking"}
+# The genuine data-retrieval signals that make data_retrieval non-vacuous here (real
+# lookup/enrichment/dataset prose, never the excluded provenance/internals senses).
+_DATA_RETRIEVAL_LABELS = {"lookup", "enrich", "dataset", "data-service"}
+
+
+def _assert_data_retrieval_anchor() -> None:
+    profile, _ = _discover(_DATA)
+    claimed = set(profile.archetypes)
+    unclaimed = set(profile.unclaimed)
+
+    _check(
+        "homepage" in profile.surfaces_seen,
+        f"{_DATA}: homepage surface was read (discovery had real evidence)",
+    )
+
+    # (a) The claimed SET is exactly {metered_api, data_retrieval, subscription,
+    # digital_good}. Exact equality is the regression signal in BOTH directions: a
+    # spurious ADD (a false physical_good/service_booking, the sibling thin
+    # archetypes) or a DROPPED archetype both fail here.
+    _check(
+        claimed == _DATA_CLAIMED,
+        f"{_DATA}: claimed archetypes == {sorted(_DATA_CLAIMED)} "
+        f"(got {sorted(claimed)})",
+    )
+
+    # claimed and unclaimed partition the fixed template bank exactly (no leaks).
+    _check(
+        claimed | unclaimed == set(ARCHETYPES) and not (claimed & unclaimed),
+        f"{_DATA}: claimed+unclaimed partition the archetype bank "
+        f"(claimed {sorted(claimed)}, unclaimed {sorted(unclaimed)})",
+    )
+
+    # (b) The whole point: data_retrieval is CLAIMED — the FIRST committed fixture
+    # to do so (it is NA on all six prior canonical fixtures).
+    _check(
+        profile.claims("data_retrieval"),
+        f"{_DATA}: data_retrieval CLAIMED — a real IP-data storefront retrieves "
+        "data (the first committed data_retrieval anchor)",
+    )
+
+    # (c) The sibling thin archetypes stay NA: this anchor does not falsely conjure
+    # its neighbours (no physical fulfillment, no service booking).
+    _check(
+        _DATA_MUST_BE_NA <= unclaimed,
+        f"{_DATA}: {sorted(_DATA_MUST_BE_NA)} are all NA/unclaimed "
+        f"(got unclaimed {sorted(unclaimed)}) — data_retrieval's first evidence "
+        "does not falsely claim its sibling thin archetypes",
+    )
+
+    # (d) Non-vacuous: data_retrieval rests on ANCHORED data-retrieval evidence
+    # (lookup / enrich / dataset / data-service), the genuine record-retrieval
+    # signals — NOT the excluded provenance/internals senses. At least two distinct
+    # genuine labels fire, every fired label is one of the genuine set (no unexpected
+    # signal), and each has a non-empty quote.
+    data = next(c for c in profile.claimed if c.archetype == "data_retrieval")
+    labels = {s.label for s in data.signals}
+    _check(
+        len(labels & _DATA_RETRIEVAL_LABELS) >= 2,
+        f"{_DATA}: data_retrieval rests on >=2 genuine data-retrieval signals "
+        f"{sorted(_DATA_RETRIEVAL_LABELS)} (got labels {sorted(labels)})",
+    )
+    _check(
+        labels <= _DATA_RETRIEVAL_LABELS,
+        f"{_DATA}: every data_retrieval signal is a genuine data-retrieval label "
+        f"(got {sorted(labels)}, expected subset of "
+        f"{sorted(_DATA_RETRIEVAL_LABELS)})",
+    )
+    _check(
+        all(s.quote and s.quote.strip() for s in data.signals),
+        f"{_DATA}: every data_retrieval signal carries quoted evidence",
+    )
+
+
+def test_data_retrieval_anchor_offering() -> None:
+    print("test_data_retrieval_anchor_offering")
+    _assert_data_retrieval_anchor()
+
+
+def test_data_retrieval_partition_tracks_storefront_type() -> None:
+    """TEETH: data_retrieval is CLAIMED on the IP-data storefront yet NA on the
+    with-rails API pair, the retail catalog, and the booking storefront — the
+    claimed/NA partition tracks the storefront TYPE, not a same-word coincidence."""
+    print("test_data_retrieval_partition_tracks_storefront_type")
+    data, _ = _discover(_DATA)
+    _check(
+        data.claims("data_retrieval"),
+        f"{_DATA}: retrieves data -> data_retrieval CLAIMED",
+    )
+    for other in ("driftflight.com", _RETAIL, _BOOKING):
+        prof, _ = _discover(other)
+        _check(
+            not prof.claims("data_retrieval"),
+            f"{other}: does not vend a data-retrieval product -> data_retrieval NA "
+            "(an image API / book catalog / booking storefront is not a data service)",
+        )
+
+
+# ---------------------------------------------------------------------------
 # The EMPTY offering — a site that sells nothing. The two guards above pin the
 # poles of the classifier (an agent-native API -> physical_good NA; a retail shop
 # -> physical_good CLAIMED, APIs NA). This pins the THIRD, degenerate case the
@@ -6598,6 +6737,8 @@ def main() -> int:
         test_retail_sandbox_title_does_not_trip_test_mode,
         test_service_booking_anchor_offering,
         test_service_booking_partition_tracks_storefront_type,
+        test_data_retrieval_anchor_offering,
+        test_data_retrieval_partition_tracks_storefront_type,
         test_nonstorefront_empty_offering,
         test_machine_surface_openapi_storefront,
         test_offering_relabel_invariance_org,

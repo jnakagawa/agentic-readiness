@@ -1,6 +1,33 @@
 # Loop state
 
-- Cycle counter: 246
+- Cycle counter: 247
+- CYCLE 247 — 2026-08-05T~04:2xZ (METHOD, cloud, direct-to-main, score-neutral).
+  FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests`
+  state=open `[]`): INFRA GREEN, newest verify `runs/local/verify_20260805T024100Z.json`
+  (02:41Z, git_pull.ok=true attempts=1, divergence_recovery=None, tests_ok=true 24/24)
+  ~1.5h old at fire; live canonical **46.1 F / 85.5 B / +39.4** (tx 87.5), no drift; HEAD
+  in sync with origin at Cycle 246 (detached-HEAD start; local `main` stale at Cycle 94).
+  Repaired an agent-side env gap (not a bench regression): the cloud `.venv` lacked the
+  DECLARED `eth-account>=0.13` → `test_free_tier::test_zero_value_signs_and_recovers`
+  failed; `pip install eth-account` → 11/11. Took the METHOD slot (cloud pointer, Cycle
+  246 was READOUT): pinned the calibration-population DRIFT signal order-invariant. The
+  drift block (`_compute_drift`, LOCAL Cycle 244, first guard Cycle 245) is the
+  POPULATION-LEVEL REGRESSION SIGNAL the digest + calibration.html card read, but a
+  sweep's row arrival order is incidental — a leak would let the SAME population report a
+  different drift. Order-invariant by construction TODAY, with the honest SET-not-list
+  subtlety Cycle 241 named: `moved` is stably sorted by |Δ| (ties follow arrival order),
+  `status_changed` is unsorted, so the STATS + the SETS are the invariant, not the list.
+  New guard `test_drift_signal_is_invariant_to_sweep_row_order` (test_calibration_drift
+  5→6): a synthetic case with a genuine |Δ|=4.0 TIE + a 2-element status list + membership
+  is engineered so reversal REALLY reorders both lists (non-vacuous — list-equality would
+  fail), then a domain-keyed order-independent SIGNATURE (stats + moved/status/membership
+  SETS) is byte-identical across 4 reorderings of the current rows AND 4 of the baseline
+  rows. Joins battery/reliability-9/applied-caps in the presentation-order invariance
+  family. SCORE-NEUTRAL: `git diff --name-only` = `tests/test_calibration_drift.py` ONLY;
+  scoring-path diff EMPTY; replay guard 25/25, **46.1 F / 85.5 B / +39.4 UNMOVED**; full
+  suite 25/25 files green. Invariant #1 held (tests-only, no probe/POST/signing). NO DM
+  (score-neutral METHOD, not sensitive-class, not first-after-16:00 UTC — ~04:2xZ Aug-5;
+  last digest Cycle 228). See LOG Cycle 247.
 - CYCLE 246 — 2026-08-05T~03:1xZ (READOUT, cloud, direct-to-main, score-neutral).
   FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests`
   state=open `[]`): INFRA GREEN, newest verify `runs/local/verify_20260805T024100Z.json`
@@ -47,20 +74,24 @@
   **46.1 F / 85.5 B / +39.4 UNMOVED**; full suite 24→25 files green (test_free_tier 11/11 in-cloud this fire —
   eth-account gap did not recur). Invariant #1 held (tests-only, no probe/POST/signing). NO DM (score-neutral
   TRUTH, not sensitive-class, not first-after-16:00 UTC — ~02:1xZ Aug-5; last digest Cycle 228). See LOG Cycle 245.
-- FOCUS POINTER (Cycle 246 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
-  check only. Cloud track rotation: Cycle 246 was READOUT → cloud pointer is **METHOD next** (METHOD → COVERAGE →
-  TRUTH → READOUT). READOUT DONE this cycle: the calibration population-drift block is now a citable **Population
-  drift** card on calibration.html (was stderr-only). REMAINING READOUT follow-up (queued, not urgent): the drift
-  is a SINGLE-cadence diff — a future READOUT could surface the drift TREND across all committed sweeps (a
-  sparkline of the canonical anchors' overall across every dated dataset, the population analog of
-  canonical-history.html) once ≥3 dated sweeps exist. METHOD/COVERAGE openings: the deep-bank
-  uncaptured-capability audit (COVERAGE, Cycle 226/230/233 lineage) or the still-UN-mined service_booking anchor
-  (acuityscheduling.com, first distinct signal). Substantive [LOCAL] frontier unchanged (prefer the oldest): physical_good-rich / MIXED retail+API
-  fixtures (the P1 rich-retail item), a THIRD calibration anchor, render/structured-catalog captures, the
-  typographic PHRASE-RESCUE real-evidence case, ACP/UCP/MPP live handshakes. RUNNER-HEALTH WATCH: drift RESOLVED;
-  future `verify_*.json` read +39.4 / attribution=None, real-series canonical_history tests recovery-tolerant
-  (green). NEW P2 precision-gap candidate (still carried): data_retrieval `lookup` false-positives on the generic
-  "<noun> lookup" admin-search sense ("deployment lookup" on cal.com).
+- FOCUS POINTER (Cycle 247 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
+  check only. Cloud track rotation: Cycle 247 was METHOD → cloud pointer is **COVERAGE next** (METHOD → COVERAGE →
+  TRUTH → READOUT). METHOD DONE this cycle: the calibration-population DRIFT signal is now pinned order-invariant
+  (stats + moved/status SETS reproduce regardless of sweep row arrival order; the presentation-order invariance
+  family now spans battery/reliability-9/applied-caps/drift). COVERAGE openings (prefer the oldest, in-cloud):
+  the still-UN-mined **service_booking** anchor (acuityscheduling.com, first distinct signal — a confirmation/
+  booking-reference or reschedule/availability-check control), OR the **ipinfo.io dataset-format/download-contract**
+  data_retrieval signal (Cycle-243 next-hypothesis), OR the deep-bank uncaptured-capability audit (Cycle
+  226/230/233 lineage). READOUT follow-up still queued (not urgent): surface the population drift TREND across all
+  committed sweeps once ≥3 dated sweeps exist. Substantive [LOCAL] frontier unchanged (prefer the oldest):
+  physical_good-rich / MIXED retail+API fixtures (the P1 rich-retail item), a THIRD calibration anchor, render/
+  structured-catalog captures, the typographic PHRASE-RESCUE real-evidence case, ACP/UCP/MPP live handshakes.
+  RUNNER-HEALTH WATCH: drift RESOLVED; future `verify_*.json` read +39.4 / attribution=None, real-series
+  canonical_history tests recovery-tolerant (green). NEW P2 precision-gap candidate (still carried): data_retrieval
+  `lookup` false-positives on the generic "<noun> lookup" admin-search sense ("deployment lookup" on cal.com).
+  ENV NOTE (paid Cycle 247): the cloud `.venv` can start WITHOUT the declared `eth-account>=0.13` →
+  test_free_tier's signer test fails; `pip install eth-account` (or `pip install -r requirements.txt`) restores it
+  — an agent-side gap, never a bench regression (mirrors the Cycle-245 note).
 - INFRA LESSON (paid for Cycle 245, don't relearn): the CLOUD container starts in **DETACHED HEAD** with the
   local `main` branch stale at an ANCIENT commit (this fire: 3796519, Cycle 94, "ahead 50 behind 51"). So
   `git push origin main` pushes that stale branch → a genuine non-fast-forward rejection whose symptoms MIMIC a

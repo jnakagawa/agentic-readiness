@@ -17841,3 +17841,84 @@ could surface the population's drift TREND across all committed sweeps (a small
 sparkline of the canonical anchors' overall across every dated dataset, the
 population analog of canonical-history.html's per-cycle trend) once ≥3 dated
 sweeps exist. Cloud pointer next: METHOD (READOUT → METHOD → COVERAGE → TRUTH).
+
+## Cycle 247 — 2026-08-05 ~04:2xZ — METHOD — the calibration-population DRIFT signal is pinned order-invariant (stats + moved/status SETS reproduce regardless of sweep row arrival order)
+
+**Track / ship class.** METHOD (measurement rigor: reproducibility — the
+presentation-order invariance family). Tests-only, OFF the scoring path →
+direct-to-main (not a scoring-semantics change; no rubric check add/remove, no
+weight/cap/version move, no payment/signing). `git diff --name-only` =
+`tests/test_calibration_drift.py` ONLY (+119); scoring-path diff
+(`asrs/ rubric/ fixtures/ experiments/calibration_sweep.py loop/local_verify.py`)
+EMPTY.
+
+**FIRST duty (infra health check).** No open peer-gated PR (`list_pull_requests`
+state=open → `[]`, no review owed). INFRA GREEN: newest verify
+`runs/local/verify_20260805T024100Z.json` (02:41Z, git_pull.ok=true attempts=1,
+divergence_recovery=None, tests_ok=true 24/24) ~1.5h old at fire (04:1xZ) — well
+inside the 6h floor; live canonical **46.1 F / 85.5 B / +39.4** (tx 87.5), no
+drift; HEAD in sync with origin at Cycle 246 (detached-HEAD start per the Cycle-245
+infra lesson; local `main` stale at Cycle 94). Agent-side env gap surfaced +
+repaired (not a bench regression): the cloud `.venv` lacked the declared
+`eth-account>=0.13` (requirements.txt) → `test_free_tier::test_zero_value_signs_and_recovers`
+failed to build an ephemeral signer; `pip install eth-account` → 11/11 green.
+
+**What / why.** The drift block (`experiments/calibration_sweep._compute_drift`,
+added LOCAL Cycle 244, first guard Cycle 245) is the POPULATION-LEVEL REGRESSION
+SIGNAL — the daily digest and the calibration.html "Population drift" card read
+`n_moved` / `max_abs_delta` / the moved SET to answer "did the population drift
+this period?". But a sweep's row arrival order is INCIDENTAL: it follows the
+`POPULATION` list order and the order domains happened to get scored, neither of
+which carries meaning. If that order leaked into the regression stats, two runs of
+the SAME population could report a different drift — a reproducibility hole. It is
+order-invariant by CONSTRUCTION today (`_compute_drift` keys both datasets by
+domain; `added_/removed_members` are `sorted()`), with ONE honest subtlety that
+makes SET-equality — not list-equality — the correct invariant: `moved` is STABLY
+sorted by |Δ|, so among magnitude TIES its list order follows arrival order, and
+`status_changed` is not sorted at all. This is exactly Cycle 241's applied-caps
+reasoning (the incidental list order carries no signal; the STATS + the SETS are
+what must reproduce), now extended to the sweep layer — joining battery
+aggregation + panel-reliability test 9 + applied-caps in the invariance family.
+
+**Method / non-vacuity + teeth.** New guard
+`test_drift_signal_is_invariant_to_sweep_row_order` (`test_calibration_drift.py`
+5→6). Synthetic baseline+current engineered so the set-vs-list distinction is
+REAL, not a no-op: a deliberate |Δ|=4.0 TIE (t1 +4.0 / t2 −4.0), a distinct max
+(big +12.0), a scored-in-both-but-unmoved domain (flat, counts in n_compared not
+n_moved), TWO reachability flips (fout scored→not, fin not→scored — an unsorted
+two-element `status_changed`), and add/drop membership. (a) NON-VACUOUS: reversing
+the rows genuinely flips the tie's order in the `moved` LIST (t1,t2 → t2,t1) AND
+flips the two-element `status_changed` LIST — a naive list-equality assertion WOULD
+fail, which is precisely why SET-equality is the honest claim. (b) THE INVARIANT: a
+domain-keyed order-independent SIGNATURE (baseline_ts/path, n_compared, n_moved,
+max_abs_delta, moved as a set of (domain,delta,baseline,current), status_changed as
+a set, added/removed) is byte-identical across all four deterministic reorderings
+of the current rows AND, independently, across all four reorderings of the baseline
+rows. A future refactor leaking arrival order into a count, the max, or which
+domains are called moved reddens here. Capability/measurement-worded, vendor-neutral
+(synthetic slugs t1/t2/big/flat/fout/fin/drop/add, no domain literal).
+
+**Validation.** `test_calibration_drift.py` 5→6 (green, incl. the tie/status
+reorder demonstration + 6 signature-invariance checks over 8 orderings). Full suite
+25/25 files green (test_free_tier 11/11 after the eth-account install). Canonical
+PAIR UNMOVED: in-cloud replay guard `test_canonical_replay` 25/25, **46.1 F / 85.5 B
+/ +39.4**, 0 replay-miss; rubric v0.7. Score-neutral by construction (scoring path
+byte-identical) — the in-cloud standard; live canonical signal (newest LOCAL verify
+02:41Z) reads +39.4, in agreement.
+
+**Comms.** NO DM: tests-only + score-neutral, not sensitive-class (no payment/
+signing/weights/caps/removals), not score-changing, not the first cycle after 16:00
+UTC (~04:2xZ Aug-5, before today's 16:00 digest; last digest Cycle 228). Per the
+comms policy, silence.
+
+**Next hypothesis (COVERAGE 248).** Rotate COVERAGE next (Cycle 247 METHOD; METHOD →
+COVERAGE → TRUTH → READOUT). The still-UN-mined service_booking anchor
+(`fixtures/canonical/acuityscheduling.com.json`, LOCAL Cycle 240) for its first
+genuinely distinct capability leg (a confirmation/booking-reference or reschedule/
+availability-check control), OR the ipinfo.io dataset-format/download-contract
+data_retrieval signal (Cycle-243 "next hypothesis"), OR the deep-bank
+uncaptured-capability audit (Cycle 226/230/233 lineage). Substantive [LOCAL]
+frontier unchanged (prefer the oldest): physical_good-rich / MIXED retail+API
+fixtures (the P1 rich-retail item), a THIRD calibration anchor, render/
+structured-catalog captures, the typographic phrase-rescue real-evidence case,
+ACP/UCP/MPP live handshakes.

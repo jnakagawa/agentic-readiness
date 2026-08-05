@@ -194,6 +194,124 @@ def test_moved_sorted_by_abs_delta_and_rounded() -> None:
     _check(drift["max_abs_delta"] == 5.0, f"max |Δ| is q's 5.0, got {drift['max_abs_delta']}")
 
 
+# The drift block is the POPULATION-LEVEL REGRESSION SIGNAL — the digest and the
+# calibration.html "Population drift" card read `n_moved` / `max_abs_delta` / the
+# moved set to answer "did the population drift this period?". But the arrival
+# order of a sweep's rows is incidental: it follows the `POPULATION` list order
+# and the order domains happened to get scored, neither of which carries meaning.
+# If that order leaked into the regression stats, two runs of the SAME population
+# could report a different drift — the reproducibility hole the METHOD track
+# exists to close (the sweep-layer member of the presentation-order invariance
+# family: battery aggregation, panel reliability test 9, applied-caps Cycle 241).
+#
+# Order-invariant by construction TODAY (`_compute_drift` keys both datasets by
+# domain, and `added_/removed_members` are `sorted()`), with ONE honest subtlety
+# that makes SET-equality — not list-equality — the correct invariant: `moved` is
+# STABLY sorted by |Δ|, so among magnitude TIES its list order follows arrival
+# order, and `status_changed` is not sorted at all. So the incidental list order
+# among ties carries no signal (exactly Cycle 241's applied-caps SET reasoning);
+# the STATS and the SETS are what must reproduce. This guard forces both the tie
+# reorder and the status-list reorder to actually happen, so the set/stats claim
+# is non-vacuous — a future refactor that leaked arrival order into a count, the
+# max, or which domains are called moved would redden here.
+def _orderings(seq):
+    """A few DETERMINISTIC reorderings of ``seq`` (no RNG — reproducible): the
+    identity, the full reverse, and two rotations (mirrors the reliability +
+    caps order-invariance guards)."""
+    s = list(seq)
+    n = len(s)
+    return [list(s), list(reversed(s)), s[n // 2:] + s[: n // 2], s[1:] + s[:1]]
+
+
+def _drift_signature(drift: dict) -> tuple:
+    """The order-INDEPENDENT content of a drift block: the regression stats plus
+    the moved / status_changed / membership as SETS (domain-keyed), dropping the
+    incidental list order among |Δ| ties."""
+    return (
+        drift["baseline_ts"],
+        drift["baseline_path"],
+        drift["n_compared"],
+        drift["n_moved"],
+        drift["max_abs_delta"],
+        frozenset((m["domain"], m["delta"], m["baseline"], m["current"]) for m in drift["moved"]),
+        frozenset((s["domain"], s["baseline"], s["current"]) for s in drift["status_changed"]),
+        tuple(drift["added_members"]),   # already sorted() -> order-invariant
+        tuple(drift["removed_members"]),
+    )
+
+
+def test_drift_signal_is_invariant_to_sweep_row_order() -> None:
+    """METHOD tripwire: the population regression signal (stats + moved/
+    status_changed/membership SETS) is invariant to the arrival order of BOTH the
+    current rows and the baseline rows — the incidental list order among |Δ| ties
+    carries no signal (SET-equality, not list-equality, is the honest invariant)."""
+    print("test_drift_signal_is_invariant_to_sweep_row_order")
+    # `t1`/`t2` are a deliberate |Δ|=4.0 TIE (one up, one down); `big` is the
+    # distinct max; `flat` is scored-in-both but unmoved (counts in n_compared,
+    # not n_moved); `fout`/`fin` are the two reachability flips (status_changed,
+    # unsorted); `drop` is baseline-only, `add` current-only (membership).
+    baseline = {
+        "ts": "BASE",
+        "_path": "calibration_sweep_BASE.json",
+        "rows": [
+            {"domain": "t1", "segment": "s", "scored": True, "overall": 50.0},
+            {"domain": "t2", "segment": "s", "scored": True, "overall": 50.0},
+            {"domain": "big", "segment": "s", "scored": True, "overall": 20.0},
+            {"domain": "flat", "segment": "s", "scored": True, "overall": 30.0},
+            {"domain": "fout", "segment": "s", "scored": True, "overall": 90.0},  # -> not
+            {"domain": "fin", "segment": "s", "scored": False, "overall": None},  # -> scored
+            {"domain": "drop", "segment": "s", "scored": True, "overall": 60.0},  # removed
+        ],
+    }
+    rows = [
+        {"domain": "t1", "segment": "s", "scored": True, "overall": 54.0},   # +4.0 (tie)
+        {"domain": "t2", "segment": "s", "scored": True, "overall": 46.0},   # -4.0 (tie)
+        {"domain": "big", "segment": "s", "scored": True, "overall": 32.0},  # +12.0 (max)
+        {"domain": "flat", "segment": "s", "scored": True, "overall": 30.0}, # 0.0
+        {"domain": "fout", "segment": "s", "scored": False, "overall": None},
+        {"domain": "fin", "segment": "s", "scored": True, "overall": 40.0},
+        {"domain": "add", "segment": "s", "scored": True, "overall": 70.0},  # added
+    ]
+
+    row_orders = _orderings(rows)
+    base_orders = _orderings(baseline["rows"])
+    ref = _compute_drift(row_orders[0], baseline)
+
+    # Sanity on the reference so the invariant is anchored to real content, not an
+    # empty block: 4 scored-in-both (t1,t2,big,flat), 3 moved, max |Δ| the distinct 12.0.
+    _check(ref["n_compared"] == 4, f"4 scored-in-both, got {ref['n_compared']}")
+    _check(ref["n_moved"] == 3, f"3 moved (flat is 0.0), got {ref['n_moved']}")
+    _check(ref["max_abs_delta"] == 12.0, f"max |Δ| is big's 12.0, got {ref['max_abs_delta']}")
+    _check({s["domain"] for s in ref["status_changed"]} == {"fout", "fin"},
+           "both reachability flips are status changes")
+
+    # (a) NON-VACUOUS — set/list distinction is REAL here, not a no-op: reversing
+    #     the rows genuinely flips the tie's order in the `moved` LIST (t1,t2 ->
+    #     t2,t1) AND flips the two-element `status_changed` LIST, so a naive
+    #     list-equality assertion WOULD fail. That is exactly why SET-equality is
+    #     the honest invariant (the incidental order among ties is not signal).
+    rev = _compute_drift(row_orders[1], baseline)
+    tie_ref = [m["domain"] for m in ref["moved"] if m["domain"] in {"t1", "t2"}]
+    tie_rev = [m["domain"] for m in rev["moved"] if m["domain"] in {"t1", "t2"}]
+    _check(tie_ref == ["t1", "t2"] and tie_rev == ["t2", "t1"],
+           f"the |Δ| tie genuinely reorders the moved LIST under reversal "
+           f"({tie_ref} -> {tie_rev}) — set-not-list is a real claim")
+    _check([s["domain"] for s in ref["status_changed"]] != [s["domain"] for s in rev["status_changed"]],
+           "the two-element status_changed LIST genuinely reorders too (non-vacuous)")
+
+    # (b) THE INVARIANT — across every arrival order of the current rows, and
+    #     independently across every arrival order of the baseline rows, the
+    #     order-independent signature is byte-identical.
+    sig = _drift_signature(ref)
+    for i, order in enumerate(row_orders[1:], start=1):
+        _check(_drift_signature(_compute_drift(order, baseline)) == sig,
+               f"row ordering {i}: drift signature invariant")
+    for i, b_order in enumerate(base_orders[1:], start=1):
+        b = {**baseline, "rows": b_order}
+        _check(_drift_signature(_compute_drift(rows, b)) == sig,
+               f"baseline ordering {i}: drift signature invariant")
+
+
 def main() -> int:
     tests = [
         test_committed_sweeps_reproduce_their_drift_facts,
@@ -201,6 +319,7 @@ def main() -> int:
         test_added_and_removed_members_are_listed_not_averaged,
         test_no_baseline_yields_no_drift_block,
         test_moved_sorted_by_abs_delta_and_rounded,
+        test_drift_signal_is_invariant_to_sweep_row_order,
     ]
     failed = 0
     for t in tests:

@@ -3,6 +3,54 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 267 — 2026-08-05T21:1xZ — TRUTH (cloud, direct-to-main, score-neutral) — closed the HASH-SEED reproducibility axis on the static scoring path: the committed evidence is now proven byte-identical across `PYTHONHASHSEED`, the sibling of the arrival-order axis Cycles 253/255/257/262 closed on the behavioral path
+
+FIRST duty (infra health check): NO open peer-gated PR (`list_pull_requests` state=open → `[]`). Cloud started
+on a stale orphan local `main` (`3796519`) while HEAD == origin/main `942a5db`; realigned local `main` to
+origin/main (benign, Cycle-245 lesson). **INFRA HEALTHY:** newest verify `runs/local/verify_20260805T204102Z.json`
+(20:41Z, tests_ok=true 26 suites, reads 46.1 F / 85.5 B / +39.4), ~34min old at fire (21:15Z), well inside the
+6h floor; :41 cadence holding (19:41Z→20:41Z) → RUNNER-HEALTH WATCH NORMAL. `pip install eth-account` (recurring
+agent-side gap, invariant #4) → test_free_tier 11/11.
+
+**IMPROVEMENT (TRUTH — a NEW reproducibility seam, the cloud pointer's TRUTH slot was flagged "saturated, surface
+a new seam first"):** invariant #3 is "evidence or it didn't happen" — every scored claim travels to committed
+artifacts as `Report.to_json`. For that evidence to be REPRODUCIBLE (the same fixture re-scored elsewhere yields
+byte-identical JSON), the serialization must not depend on anything the process picks at startup. Cycles
+253/255/257/262 closed the ARRIVAL-ORDER axis of this (sorting every panel-arrival-ordered behavioral projection).
+The sibling axis on the STATIC scoring path was never guarded: Python randomizes `str`/`bytes` hashing per process
+(PEP 456), so **set iteration order over strings varies run-to-run** — a probe that ever emitted `list(a_set_of_
+strings)` into a CheckResult's evidence would leave the SCORE untouched (scoring is count-based, so every number-
+pinning guard in `test_canonical_replay` stays green) while making the committed evidence bytes differ between two
+machines scoring the same fixture. A silent reproducibility regression exactly analogous to the arrival-order leaks,
+along a different axis. EMPIRICALLY, the property HOLDS today (the offering/probe layers project sets through
+`sorted(...)` or use them only for membership tests, and `AI_CRAWLERS` is a tuple) — but it was ASSUMED, never
+verified. NEW `tests/test_hashseed_reproducibility.py` (+4) converts it to a per-cycle VERIFIED property: it
+re-scores the canonical pair in SUBPROCESSES under 4 distinct `PYTHONHASHSEED` values (0/1/2/12345 — the only way
+to vary the seed, fixed at interpreter startup) and asserts the full serialized report is byte-identical across
+every seed (guard 1); both regression-signal sides reproduce AND serialize to DISTINCT reports, so the invariance
+is non-vacuous (guard 2); a committed set-backed injection (`list(set(...))` of 8 UA tokens) DOES reorder across
+seeds 0 vs 1 while the sorted projection does not, proving the subprocess digest-diff mechanism has teeth and that
+sorting is the fix (guard 3); and the seeded child's digest matches an in-process score, proving the children
+exercise the REAL pipeline, not an echo (guard 4). MUTATION-TESTED on the REAL scorer (restored via `git checkout`,
+invariant #5): injecting a genuine `list(set(...))` field into `asrs/probes/access.py`'s robots evidence reddened
+guards 1/2/4 with per-seed digests genuinely differing (`7949a6…`/`1eddcd…`/`7e78e0…`/`aefa02…`) — the guard catches
+the real failure mode, not just a synthetic one. Auto-joins the verify FLOOR (globs `tests/test_*.py`) +
+`test_runner_registration` (33 suites, all registered).
+
+SCORE-NEUTRAL: scoring-path diff (`asrs/ rubric/ fixtures/ batteries/ loop/local_verify.py loop/asrs_local_cycle.sh`)
+EMPTY — only the new test file; 20:41Z floor **46.1 F / 85.5 B / +39.4 UNMOVED**, canonical replay **26/26**; full
+suite **33/33 files green** (32→33). Invariants #1 ($0-only — no probes/payments/network, only offline fixture
+replay in subprocesses + synthetic serialization), #2 (no scoring-semantics → no version bump), #3 (this
+STRENGTHENS invariant #3's own reproducibility guarantee), #4 (no site scored; eth-account gap = agent env),
+#5 (mutation restored via git; LOG prepended, past untouched) all held. NO DM (score-neutral TRUTH, not
+sensitive-class, off scoring path; daily digest already sent Cycle 259 this ≥16:00 UTC window). Canonical: overall
+46.1 F (.org) / 85.5 B (.com), delta +39.4. NEXT HYPOTHESIS: the hash-seed axis is now guarded on the two
+regression-signal storefronts; a future TRUTH cycle could EXTEND the same subprocess-digest guard to the third/
+fourth calibration fixtures (books.toscrape.com / example.com) so the whole committed population's evidence is
+hash-seed-pinned, not only the pair — cheap (offline, 2 more subprocess pairs) and the natural completion of this
+seam. Beyond that, TRUTH stays saturated (arrival-order + hash-seed + metamorphic-drift families all closed) —
+surface a genuinely new seam before picking TRUTH again.
+
 ## Cycle 266 — 2026-08-05T20:1xZ — COVERAGE (cloud, direct-to-main, score-neutral) — mined the FIRST post-purchase order-lifecycle signal for physical_good — `order-tracking` — from the committed retail anchors, closing the "operate/complete without a human" leg for the benchmark's thinnest-anchored archetype
 
 FIRST duty (infra health check): NO open peer-gated PR (`list_pull_requests` state=open → `[]`). Cloud

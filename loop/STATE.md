@@ -1,6 +1,44 @@
 # Loop state
 
-- Cycle counter: 266
+- Cycle counter: 267
+- CYCLE 267 — 2026-08-05T21:1xZ (TRUTH, cloud, direct-to-main, score-neutral). FIRST duty (infra health check):
+  NO open peer-gated PR (`list_pull_requests` state=open → `[]`). Cloud started on a stale orphan local `main`
+  (`3796519`) while HEAD == origin/main `942a5db`; realigned local main to origin/main (benign, Cycle-245 lesson).
+  **INFRA HEALTHY:** newest verify `runs/local/verify_20260805T204102Z.json` (20:41Z, tests_ok=true 26 suites, reads
+  46.1 F / 85.5 B / +39.4), ~34min old at fire (21:15Z), well inside the 6h floor; :41 cadence holding
+  (19:41Z→20:41Z) → RUNNER-HEALTH WATCH NORMAL. `pip install eth-account` (recurring agent-side gap, invariant #4)
+  → test_free_tier 11/11. **IMPROVEMENT (TRUTH — surfaced a NEW seam; the pointer's TRUTH slot was "saturated"):**
+  closed the HASH-SEED reproducibility axis on the STATIC scoring path — the sibling of the arrival-order axis
+  Cycles 253/255/257/262 closed on the behavioral path. Invariant #3 commits every scored claim to `Report.to_json`;
+  Python randomizes `str` hashing per process (PEP 456), so a probe emitting `list(a_set_of_strings)` into evidence
+  would leave the SCORE untouched (count-based → every number guard stays green) while making committed evidence
+  bytes differ machine-to-machine. The property HOLDS today (offering/probe sets go through `sorted()` or membership
+  tests; `AI_CRAWLERS` is a tuple) but was ASSUMED, never verified. NEW `tests/test_hashseed_reproducibility.py`
+  (+4): re-scores the canonical pair in SUBPROCESSES under 4 seeds (0/1/2/12345) and asserts the full serialized
+  report byte-identical across every seed (guard 1); both sides reproduce + serialize DISTINCT reports (guard 2,
+  non-vacuous); a committed `list(set(...))` injection DOES reorder across seeds 0 vs 1 while sorted does not (guard 3,
+  teeth + fix); seeded-child digest == in-process score (guard 4, children score the REAL pipeline). MUTATION-TESTED
+  on the REAL scorer (restored via `git checkout`): a genuine set-leak in `access.py` reddened guards 1/2/4 with
+  per-seed digests differing. Auto-joins the verify FLOOR + `test_runner_registration` (33 suites). SCORE-NEUTRAL:
+  scoring-path diff EMPTY (only the new test); 20:41Z floor **46.1 F / 85.5 B / +39.4 UNMOVED**, replay **26/26**;
+  suite **33/33 files green** (32→33). Invariants #1–5 all held. NO DM (score-neutral TRUTH, not sensitive-class;
+  digest already sent Cycle 259 this window). See LOG Cycle 267.
+- FOCUS POINTER (Cycle 267 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
+  RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + Cycle 263 pin); WATCH stays NORMAL — re-escalate ONLY on a
+  fresh >6h no-artifact gap. Cloud track rotation: Cycle 267 was TRUTH → cloud pointer is **READOUT next** (METHOD →
+  COVERAGE → TRUTH → READOUT). NEXT READOUT openings: the HTML compare card (`scorecard._pillars(rep, baseline)`)
+  shows the payment badge only for the primary side, not the baseline (Cycle 264 symmetric follow-up); population-drift
+  TREND once a 3rd dated sweep lands ([LOCAL]). NEXT COVERAGE: a RETURNS-WINDOW / return-authorization leg for
+  physical_good (return-lifecycle capability, distinct from the static `returns` policy signal) IF committed retail
+  prose (allbirds/moleskine) carries a machine-readable return window; the agent-native RETAIL rail surfaces (UCP
+  `/.well-known/ucp`, MCP); ipinfo.io DATASET-FORMAT/DOWNLOAD-CONTRACT (Cycle-243); deep-bank uncaptured-capability
+  audit (226/230/233). NEXT TRUTH: hash-seed axis now guarded on the PAIR — cheap next step is EXTENDING the
+  subprocess-digest guard to books.toscrape.com / example.com so the whole committed population's evidence is
+  hash-seed-pinned; beyond that TRUTH stays SATURATED (arrival-order + hash-seed + metamorphic-drift all closed) —
+  surface a genuinely new seam first. NEXT METHOD: SATURATED — surface a NEW seam first. Substantive [LOCAL] frontier
+  (prefer oldest P0): a THIRD calibration anchor, render-generation digital_good (Cycle-168), structured catalog/
+  pricing JSON (Cycle-70), the typographic PHRASE-RESCUE real-evidence case, ACP/UCP/MPP live handshakes, a
+  richer-booking WAITLIST fixture (Cycle-256).
 - CYCLE 266 — 2026-08-05T20:1xZ (COVERAGE, cloud, direct-to-main, score-neutral). FIRST duty (infra health
   check): NO open peer-gated PR (`list_pull_requests` state=open → `[]`). Cloud started on a stale orphan local
   `main` (3796519) while HEAD == origin/main 4a3eb1c; realigned local main to origin/main (benign, Cycle-245

@@ -538,6 +538,18 @@ design in-cloud, execute locally.
 ## P1
 
 
+- **[OBSERVATION — Cycle 267] Evidence-reproducibility axes are now CLOSED across both paths.** The committed
+  `Report.to_json` evidence is proven order-invariant along the two axes a process can vary at startup:
+  ARRIVAL-ORDER on the behavioral path (Cycles 253/255/257/262 — every panel-arrival projection sorted) and
+  HASH-SEED on the static path (Cycle 267 — `tests/test_hashseed_reproducibility.py` re-scores the canonical pair
+  under 4 `PYTHONHASHSEED` values and asserts byte-identical serialized reports, teeth proven by a real set-leak
+  mutation). A future TRUTH cycle should NOT add another arrival-order/hash-seed guard on the pair (diminishing
+  returns). CHEAP in-cloud NEXT STEP (a genuine extension, not a new axis): widen the Cycle-267 subprocess-digest
+  guard to the third/fourth calibration fixtures (`books.toscrape.com` / `example.com`) so the WHOLE committed
+  population's evidence is hash-seed-pinned, not only the regression pair — 2 more offline subprocess pairs, still
+  score-neutral. Beyond that, reach for a genuinely new TRUTH seam (arrival-order + hash-seed + metamorphic-drift
+  families are all closed).
+
 - **[OBSERVATION — Cycle 185] Canonical-drift diagnostic family metamorphic axis is EXHAUSTED in-cloud.**
   With the Cycle-185 `test_attribution_stability_is_host_relabel_invariant`, every drift diagnostic now has a
   metamorphic guard: reflection magnitude/direction (Cycle-179ish `test_reflection_about_baseline_...`),

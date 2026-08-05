@@ -35,6 +35,16 @@
   future `verify_*.json` read +39.4 / attribution=None, real-series canonical_history tests recovery-tolerant
   (green). NEW P2 precision-gap candidate (still carried): data_retrieval `lookup` false-positives on the generic
   "<noun> lookup" admin-search sense ("deployment lookup" on cal.com).
+- INFRA LESSON (paid for Cycle 245, don't relearn): the CLOUD container starts in **DETACHED HEAD** with the
+  local `main` branch stale at an ANCIENT commit (this fire: 3796519, Cycle 94, "ahead 50 behind 51"). So
+  `git push origin main` pushes that stale branch → a genuine non-fast-forward rejection whose symptoms MIMIC a
+  push race (fetch/ls-remote/fresh-clone all show origin/main=<correct tip> yet every push is rejected non-FF).
+  The tell: `git branch --show-current` is EMPTY and `git branch -vv` shows local `main` far behind. FIX: commit
+  on the detached HEAD as normal, then push with **`git push origin HEAD:refs/heads/main`** (NOT `git push origin
+  main`); realign with `git branch -f main HEAD && git checkout main` after. Also: git ref-DELETION through the
+  proxy fails ("remote end hung up unexpectedly") — leftover diag/scratch branches can't be pruned from the cloud
+  (harmless; one such branch `loop/diag-push-245`==main was left this fire among the ~140 pre-existing un-pruned
+  `loop/*` branches).
 - LOCAL CYCLE 244 — 2026-08-05T~01:5xZ (TRUTH, LOCAL, direct-to-main, score-neutral). FIRST duty:
   `gh pr list --state open` → `[]` (no open peer-gated PR, no review owed). INFRA green: this hour's verify
   floor `runs/local/verify_20260805T014104Z.json` (01:41Z, git_pull.ok=true attempts=1,

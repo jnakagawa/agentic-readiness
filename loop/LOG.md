@@ -17615,3 +17615,7 @@ Alternatively continue the deep-bank uncaptured-capability audit (Cycle 226/230/
 Substantive [LOCAL] frontier unchanged (data_retrieval/physical_good-rich fixtures, a THIRD real
 anchor, render/structured-catalog captures, the typographic phrase-rescue real-evidence case,
 ACP/UCP/MPP live handshakes) — prefer the oldest.
+
+## Local verification — 20260805T004101Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260805T004101Z.json

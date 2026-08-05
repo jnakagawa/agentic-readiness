@@ -1016,6 +1016,143 @@ def test_data_retrieval_lookup_precision_synthetic():
     )
 
 
+def test_batch_retrieval_precision_synthetic():
+    # A NEW data_retrieval capability signal: BATCH / BULK RETRIEVAL — the agent
+    # submits MANY records / lookups / queries in ONE call and gets them all back.
+    # This is the "complete the job AT SCALE" leg for data_retrieval (the analog of
+    # metered_api's `concurrency-limit`), DISTINCT from every existing signal, each
+    # of which describes a SINGLE-item retrieval: `enrich` submits records but is
+    # silent on bulk; `lookup` retrieves ONE datum by key; `dataset` queries a
+    # dataset; `query-records`/`data-service` name a records API — NONE says the
+    # agent can amortize a large job over one batch request. Precision is the whole
+    # game — data_retrieval is one of the two thinnest archetypes, so a FALSE claim
+    # does maximum damage (the site gets probed with a records-lookup intent it does
+    # not serve). Bare "batch"/"bulk" is a two-family minefield: the metered_api
+    # COMPUTE sense (batch inference / batch prediction / a batch JOB / "a batch of
+    # images" / a generic "batch processing pipeline" — a generative/ML API runs
+    # batch JOBS, not data retrieval) and the physical_good/retail BULK sense ("buy
+    # in bulk" / a "bulk discount" / a "bulk order" / "bulk email" / a "fresh batch
+    # of cookies" / a "batch number"). So the signal NEVER matches a bare token — it
+    # requires batch/bulk to NAME a data-retrieval object (a batch/bulk ENRICHMENT /
+    # LOOKUP / GEOLOCATION, a "batch/bulk IP <processing|lookup|data|...>"), or a
+    # data-retrieval VERB/OBJECT (enrich / look up / query / retrieve / records /
+    # contacts / leads) done "in batches" / "in bulk". Each POSITIVE fires
+    # `batch-retrieval` (non-vacuous); each NEGATIVE must NOT claim data_retrieval on
+    # its own.
+    #
+    # Canonical-invariant by construction: the signal fires on the committed
+    # data_retrieval anchor (ipinfo.io — "Batch Enrichment API" / "Bulk Enrichment" /
+    # the `/batch` endpoint that "speeds up bulk IP processing"), which ALREADY claims
+    # data_retrieval via lookup/enrich/dataset/data-service → no new archetype, no
+    # reorder; and on ZERO of the seven other committed fixtures (none carries any
+    # "batch"/"bulk" prose — pinned by tests/test_offering_canonical.py). Off the
+    # scoring path.
+    positives = {
+        # The real captured ipinfo.io /docs prose (verbatim shapes).
+        "batch enrichment api": "Read the Batch Enrichment API guide to get started.",
+        "bulk enrichment": "See Bulk Enrichment in the developer docs.",
+        "bulk ip processing": "This significantly speeds up bulk IP processing.",
+        "batch lookup": "The default endpoint uses a standard batch lookup.",
+        # Genuine bulk-retrieval vocabulary from other real data services.
+        "bulk lookup": "Bulk lookup of up to 1,000 addresses in one call.",
+        "batch geolocation": "Run batch geolocation for millions of IPs.",
+        "enrich records in bulk": "Enrich your records in bulk with a single request.",
+        "look up in batches": "Look up thousands of IPs in batches over the API.",
+        "query records in bulk": "Query records in bulk over a REST endpoint.",
+        "retrieve contacts in bulk": "Retrieve matching contacts in bulk by domain.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("scale.test", {"homepage": text})
+        assert prof.claims("data_retrieval"), (name, prof.archetypes)
+        fired = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "data_retrieval"
+            for s in c.signals
+        }
+        assert "batch-retrieval" in fired, (name, sorted(fired))  # non-vacuous
+    print(f"  ok: {len(positives)} batch/bulk-retrieval phrasings each fire batch-retrieval")
+
+    negatives = {
+        # metered_api COMPUTE batch — a batch JOB, NOT a data retrieval.
+        "batch inference": "Run batch inference on your prompts overnight.",
+        "batch prediction": "Submit a batch prediction job to the model.",
+        "batch of images": "Generate a batch of images from one prompt.",
+        "batch processing pipeline": "Our batch processing pipeline renders overnight.",
+        "batch job": "Kick off a batch job for the training run.",
+        "batch generation": "Queue a batch generation of renders.",
+        # physical_good / retail BULK.
+        "buy in bulk": "Buy in bulk and save 20 percent.",
+        "bulk discount": "A bulk discount applies on orders over 50 units.",
+        "bulk order": "Place a bulk order for your whole team.",
+        "bulk email": "Send bulk email campaigns to your list.",
+        "fresh batch": "A fresh batch of cookies every morning.",
+        "batch number": "Check the batch number printed on the label.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("prose.test", {"homepage": text})
+        assert not prof.claims("data_retrieval"), (name, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} compute-batch / retail-bulk strings do NOT claim data_retrieval (precision)"
+    )
+
+
+def test_batch_retrieval_fires_on_real_captured_surfaces():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the TRUTH mirror of the synthetic
+    # precision guard. It pins that the new batch-retrieval signal fires on the
+    # GENUINE bulk-retrieval prose captured live from the committed data_retrieval
+    # anchor's /docs surface (ipinfo.io — "Batch Enrichment API" / "Bulk Enrichment"
+    # / the `/batch` endpoint that "significantly speeds up bulk IP processing"), run
+    # through the REAL discovery path (from_fixture -> discover_offering) exactly as a
+    # live crawl would.
+    #
+    # SCORE-NEUTRAL by construction: ipinfo.io ALREADY claims data_retrieval (via
+    # lookup/enrich/dataset/data-service), so the batch evidence can only DEEPEN that
+    # claim — never add an archetype or reorder. The classifier is off the scoring
+    # path; the anchor's claimed SET is unchanged (pinned by
+    # tests/test_offering_canonical.py).
+    docs = _fixture_entry_text("ipinfo.io", "/docs")
+    assert "bulk ip processing" in docs.lower(), "ipinfo /docs lost its bulk-retrieval prose"
+    prof = classify_offering("ipinfo.io", {"/docs": docs})
+    assert prof.claims("data_retrieval"), prof.archetypes
+    data = next(c for c in prof.claimed if c.archetype == "data_retrieval")
+    br = [s for s in data.signals if s.label == "batch-retrieval"]
+    assert br, {s.label for s in data.signals}
+    # Non-vacuity beyond the single recorded hit: the SAME captured /docs documents
+    # the FULL bulk-retrieval contract an agent needs at scale — a Batch Enrichment
+    # API, a Bulk Enrichment guide, and the `/batch` endpoint that speeds up bulk IP
+    # processing — each an independent branch of the signal (proven against the
+    # fixture bytes, since the classifier records only the first-firing instance).
+    assert "batch enrichment" in docs.lower(), "ipinfo"
+    assert "bulk enrichment" in docs.lower(), "ipinfo"
+    print(f"  ok: batch-retrieval fires on REAL captured ipinfo.io /docs — quote: {br[0].quote!r}")
+
+    # Full-discovery claimed-SET invariance on the anchor (score-neutrality): the new
+    # signal deepens data_retrieval without adding or dropping any archetype.
+    ictx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "ipinfo.io.json"))
+    iprof = offering.discover_offering(ictx)
+    assert set(iprof.archetypes) == {
+        "metered_api", "data_retrieval", "subscription", "digital_good"
+    }, iprof.archetypes
+
+    # NON-VACUOUS negatives on REAL data: the metered_api pair + marketplace, the
+    # retail catalog, the booking storefront, and the null site carry no batch/bulk
+    # prose — the signal must be absent and conjure or reorder no archetype.
+    for dom, expected in (
+        ("driftflight.com", ["metered_api", "digital_good", "subscription"]),
+        ("drift-flight.org", ["metered_api", "digital_good", "subscription"]),
+        ("api.replicate.com", ["metered_api"]),
+        ("books.toscrape.com", ["physical_good"]),
+        ("example.com", []),
+    ):
+        nctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        nprof = offering.discover_offering(nctx)
+        nlabels = {s.label for c in nprof.claimed for s in c.signals}
+        assert "batch-retrieval" not in nlabels, (dom, nlabels)
+        assert nprof.archetypes == expected, (dom, nprof.archetypes)
+    print("  ok: batch-retrieval is ABSENT on the api-pair / marketplace / retail / null fixtures (non-vacuous, score-neutral)")
+
+
 def test_subscription_recurring_precision_synthetic():
     # The last cheap bare-word subscription signal hardened (siblings: enrich/
     # dataset/lookup for data_retrieval, book/schedule for service_booking). Bare
@@ -4964,6 +5101,8 @@ def main() -> int:
         test_service_booking_book_precision_synthetic,
         test_service_booking_schedule_precision_synthetic,
         test_data_retrieval_lookup_precision_synthetic,
+        test_batch_retrieval_precision_synthetic,
+        test_batch_retrieval_fires_on_real_captured_surfaces,
         test_subscription_recurring_precision_synthetic,
         test_usage_based_metered_precision_synthetic,
         test_payment_challenge_retry_precision_synthetic,

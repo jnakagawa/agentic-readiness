@@ -1648,6 +1648,52 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"(?<!symbol )(?<!memory )\blook ?ups?\b(?!\s*tables?\b)", _F)),
         ("data-service", re.compile(r"\bdata (feed|api|enrichment|records)\b|\brecords against\b", _F)),
         ("query-records", re.compile(r"\bquery (records|the database|a dataset)\b", _F)),
+        # BATCH / BULK RETRIEVAL — the agent submits MANY records / lookups / queries
+        # in ONE call and gets them all back. This is the "complete the job AT SCALE"
+        # leg for data_retrieval — the direct analog of metered_api's `concurrency-limit`
+        # scale capability — and, despite this being a thin archetype, it is currently
+        # UNCAPTURED. It is DISTINCT from every existing data_retrieval signal, each of
+        # which describes a SINGLE-item retrieval: `enrich` submits records and gets
+        # fields back but is silent on doing it in bulk; `lookup` retrieves ONE datum
+        # by key; `dataset` queries/downloads a dataset; `query-records` / `data-service`
+        # name a records API — NONE says the agent can amortize a large job over one
+        # batch request. An autonomous agent enriching a large list of records
+        # one-lookup-at-a-time would exhaust its rate limit (the `rate-limited` /
+        # `quota` wall) long before finishing; a batch / bulk endpoint that groups
+        # thousands of lookups into one HTTP request is precisely what makes the
+        # retrieval agent-completable at scale, so a data service that documents a
+        # batch/bulk mode is MORE agent-completable at the scale leg. Vendor-neutral
+        # bulk-retrieval vocabulary (a batch/bulk ENRICHMENT / LOOKUP / geolocation, a
+        # data-retrieval verb done "in batches" / "in bulk"), never a vendor.
+        # PRECISION-CRITICAL: bare "batch" / "bulk" is a false-positive minefield that
+        # would do MAXIMUM damage here — data_retrieval is one of the two thinnest
+        # archetypes, so a false claim probes the site with a records-lookup intent it
+        # does not serve. Two distinct collision families must be excluded: (1) the
+        # metered_api COMPUTE sense — a batch-INFERENCE / batch-PREDICTION / batch JOB
+        # / a "batch of images" / a generic "batch processing pipeline" (a generative
+        # or ML API runs batch JOBS, which is NOT a data retrieval and must NOT conjure
+        # data_retrieval on a metered_api storefront); and (2) the physical_good /
+        # retail BULK sense — "buy in bulk", a "bulk discount", a "bulk order", "bulk
+        # email", a "fresh batch of cookies", a "batch number". So NEVER match a bare
+        # "batch"/"bulk": require it to NAME a data-retrieval object — a batch/bulk
+        # ENRICHMENT / LOOKUP / GEOLOCATION, a "batch/bulk IP <processing|lookup|
+        # data|geolocation|addresses|enrichment>", a "record-/data-retrieval" in
+        # batch/bulk, or a data-retrieval VERB/OBJECT (enrich / look up / query /
+        # retrieve / records / contacts / leads) done "in batches" / "in bulk". The
+        # compute-batch and retail-bulk senses (whose objects are inference / job /
+        # images / a discount / an order) trip none of these. Fires NON-VACUOUSLY on
+        # the committed data_retrieval anchor (ipinfo.io — "Batch Enrichment API",
+        # "Bulk Enrichment", the `/batch` endpoint "speeds up bulk IP processing")
+        # and on ZERO of the seven other committed fixtures (none of which carries any
+        # "batch"/"bulk" prose at all — canonical-invariant by construction, since
+        # ipinfo ALREADY claims data_retrieval via lookup/enrich/dataset/data-service,
+        # so this deepens its evidence without adding or reordering any archetype).
+        # Off the scoring path; score-neutral (pinned by tests/test_offering_canonical.py).
+        ("batch-retrieval", re.compile(
+            r"\b(?:batch|bulk)\s+ip\s+(?:processing|lookups?|data|geolocation|addresses|enrichment)\b"
+            r"|\b(?:batch|bulk)[- ]?(?:enrich(?:ment)?|look\s?ups?|geolocation|record[- ]retrieval|data[- ]retrieval)\b"
+            r"|\b(?:enrich\w*|look\s?ups?|looking\s+up|quer(?:y|ies|ying)|retriev\w+|geolocat\w+|records?|contacts?|leads?)\b"
+            r"[^.\n]{0,30}?\bin\s+(?:batch(?:es)?|bulk)\b", _F)),
     ],
 }
 

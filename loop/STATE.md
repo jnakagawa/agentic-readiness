@@ -1,6 +1,46 @@
 # Loop state
 
-- Cycle counter: 242
+- Cycle counter: 243
+- CYCLE 243 — 2026-08-05T01:23Z (COVERAGE, cloud, direct-to-main, score-neutral). FIRST duty (infra health
+  check — no open peer-gated PR, `list_pull_requests` state=open `[]`): INFRA GREEN, newest verify
+  `runs/local/verify_20260805T004101Z.json` (00:41Z, git_pull.ok=true attempts=1, divergence_recovery=None,
+  tests_ok=true 24/24) ~42min old at fire; live canonical **46.1 F / 85.5 B / +39.4** (tx 87.5), drift
+  resolved; HEAD in sync with origin at Cycle 242. Mined the fresh data_retrieval anchor (ipinfo.io, landed
+  LOCAL Cycle 242) for its FIRST genuinely-distinct NEW signal: **`batch-retrieval`** in the data_retrieval
+  bank — BATCH/BULK data retrieval (the agent submits MANY records/lookups in ONE call), the "complete the job
+  AT SCALE" leg, the data_retrieval analog of metered_api's Cycle-230 `concurrency-limit`. DISTINCT from all 5
+  existing data_retrieval signals (each single-item: enrich/lookup/dataset/data-service/query-records).
+  Precision-guarded against the two collision families — metered_api COMPUTE batch (batch inference/prediction/
+  job/"batch of images") and physical_good/retail BULK (buy in bulk / bulk discount/order / "batch of cookies"):
+  NEVER a bare token, requires batch/bulk to NAME a data-retrieval object or a data verb/object done "in
+  batches"/"in bulk". Fires NON-VACUOUSLY on the committed ipinfo.io `/docs` ("Batch Enrichment API" / "Bulk
+  Enrichment" / "speeds up bulk IP processing"), lifting data_retrieval strength 4→5 while the claimed SET stays
+  exactly {metered_api, data_retrieval, subscription, digital_good} (no reorder); ABSENT on all 7 other committed
+  fixtures (none has any batch/bulk prose — canonical-invariant by construction). Shipped: (1) `asrs/offering.py`
+  new signal (off the scoring path). (2) `tests/test_offering.py` +2 (95→97): `test_batch_retrieval_precision_synthetic`
+  (10 positives fire / 12 compute-batch+retail-bulk negatives claim nothing) + `test_batch_retrieval_fires_on_real_captured_surfaces`
+  (real-evidence end-to-end on ipinfo /docs + absent on API-pair/marketplace/retail/null), both runner-registered
+  (`test_runner_registration` 4/4). (3) `tests/test_offering_canonical.py` `_DATA_RETRIEVAL_LABELS` += batch-retrieval
+  (anchor-test re-baseline maintenance contract) + `_ISOLATION_EVIDENCE` cross-signal matrix += a batch-retrieval row.
+  `git diff -- asrs/ rubric/ fixtures/` = ONLY asrs/offering.py; replay guard `test_canonical_replay` 25/25, **46.1 F /
+  85.5 B / +39.4 UNMOVED**; full suite 23/24 files fully green, `test_free_tier` 10/11 is the KNOWN cloud eth-account
+  gap (VERIFIED pre-existing — fails identically on pristine HEAD with my diff stashed; environment gap, not a
+  regression, invariant #4; local runner 11/11). Invariant #1 held (discovery-only, read-only, no payment/signing/POST).
+  NO DM (score-neutral COVERAGE, not sensitive-class, not first-after-16:00 UTC — 01:23Z Aug-5, last digest Cycle 228).
+  See LOG Cycle 243.
+- FOCUS POINTER (Cycle 243 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check
+  only. Cloud track rotation: Cycle 243 was COVERAGE → cloud pointer is **TRUTH next** (METHOD → COVERAGE → TRUTH →
+  READOUT). COVERAGE frontier for a LATER cycle: (a) mine ipinfo.io `/docs` for a DATASET-FORMAT / DOWNLOAD-CONTRACT
+  signal (CSV/MMDB/JSON/NDJSON/Parquet delivery format — distinct from `dataset`'s query/download-existence and from
+  the new `batch-retrieval`'s call-shape — IF anchored precisely to a data-download context, guarding a generic
+  "export to CSV" any API emits); (b) service_booking's anchor (acuityscheduling.com) is still UN-mined for its first
+  distinct signal (confirmation/booking-reference or reschedule/availability-check control); (c) the deep-bank
+  uncaptured-capability audit (Cycle 226/230/233 lineage). RUNNER-HEALTH WATCH: drift RESOLVED; future `verify_*.json`
+  read +39.4 / attribution=None, real-series canonical_history tests recovery-tolerant (green). Substantive [LOCAL]
+  frontier unchanged (physical_good-rich / MIXED retail+API fixtures, a THIRD real anchor, render/structured-catalog
+  captures, the typographic PHRASE-RESCUE real-evidence case, ACP/UCP/MPP live handshakes) — prefer the oldest. NEW P2
+  precision-gap candidate (carried from Cycle 240): data_retrieval `lookup` false-positives on the generic "<noun>
+  lookup" admin-search sense ("deployment lookup" on cal.com) — extend the Cycle-198 bank.
 - LOCAL CYCLE 242 — 2026-08-05T00:56Z (COVERAGE, LOCAL, direct-to-main, score-neutral). FIRST duty:
   `gh pr list --state open` → `[]` (no open peer-gated PR, no review owed). INFRA green: this hour's verify
   floor `runs/local/verify_20260805T004101Z.json` (00:41Z, git_pull.ok=true attempts=1, divergence_recovery=None,

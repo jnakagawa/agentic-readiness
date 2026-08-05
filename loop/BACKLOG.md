@@ -385,7 +385,22 @@ design in-cloud, execute locally.
   `test_offering.py` 23→24; suite 240 tests. See LOG Cycle 70.
 
 - **[LOCAL] Strengthen the UNDER-COVERED archetypes (service_booking / data_retrieval / physical_good)**
-  (COVERAGE, opened Cycle 164). PROGRESS — LOCAL Cycle 242 (2026-08-05): **data_retrieval is now UNBLOCKED
+  (COVERAGE, opened Cycle 164). PROGRESS — Cycle 243 (2026-08-05, COVERAGE, in-cloud, direct-to-main,
+  score-neutral): **data_retrieval got its FIRST genuinely-distinct NEW capability signal** mined from the
+  fresh ipinfo.io anchor — `batch-retrieval` (BATCH/BULK data retrieval, the "complete the job AT SCALE" leg,
+  the data_retrieval analog of metered_api's Cycle-230 `concurrency-limit`), DISTINCT from all 5 single-item
+  existing signals, precision-guarded against the metered_api compute-batch and retail-bulk collision families,
+  firing NON-VACUOUSLY on the committed ipinfo.io `/docs` and ABSENT on all 7 other fixtures (data_retrieval
+  strength 4→5, claimed SET unchanged, no reorder). `test_offering.py` 95→97 (precision-synthetic +
+  real-captured guard pair) + `_ISOLATION_EVIDENCE` row + `_DATA_RETRIEVAL_LABELS` maintenance-contract update.
+  So data_retrieval now grows from 5→6 signals. NEXT in-cloud data_retrieval candidate (Cycle-243 LOG "next
+  hypothesis"): a DATASET-FORMAT / DOWNLOAD-CONTRACT signal (the machine-consumable delivery format an agent
+  receives bulk data in — CSV/MMDB/JSON/NDJSON/Parquet, all present in ipinfo /docs — distinct from `dataset`'s
+  query/download-EXISTENCE and from `batch-retrieval`'s call-shape) IF anchored precisely to a data-download
+  context (guard a generic "export to CSV" / "JSON response" any API emits). **service_booking's anchor
+  (acuityscheduling.com) remains UN-mined** for its first distinct signal (confirmation/booking-reference or
+  reschedule/availability-check control) — the next-thinnest in-cloud COVERAGE opening. See LOG Cycle 243.
+  EARLIER — LOCAL Cycle 242 (2026-08-05): **data_retrieval unblocked
   in-cloud** — its first committed fixture (`fixtures/canonical/ipinfo.io.json`, a real IP-data storefront claiming
   {metered_api, data_retrieval, subscription, digital_good} with data_retrieval on ALL FOUR bank signals
   lookup/enrich/dataset/data-service) landed this fire, the direct mirror of Cycle 240's service_booking capture, pinned
@@ -399,8 +414,12 @@ design in-cloud, execute locally.
   service_booking, metered_api}). Remaining thin gap: **physical_good** wants a RICHER retail fixture than the thin
   books.toscrape (the P1 rich-retail item). The offering signal bank is metered_api-HEAVY: metered_api 26, digital_good
   11 (post-Cycle-164 `variant-selection`), physical_good 9, subscription 9 (post-Cycle-172 `plan-allowance`),
-  service_booking 5, data_retrieval 5. The three thin archetypes CANNOT be strengthened non-vacuously in-cloud — no committed
-  fixture CLAIMS service_booking or data_retrieval at all, and the only physical_good fixture
+  service_booking 5, data_retrieval 6 (post-Cycle-243 `batch-retrieval`). NOTE (superseded by Cycles 240/242/243): the
+  claim below that service_booking/data_retrieval "CANNOT be strengthened non-vacuously in-cloud" held only until their
+  first committed anchors landed (acuityscheduling.com / ipinfo.io) — data_retrieval has since gained `batch-retrieval`
+  against real evidence; service_booking's anchor is still un-mined. The three thin archetypes originally could not be
+  strengthened non-vacuously in-cloud — no committed
+  fixture CLAIMED service_booking or data_retrieval at all, and the only physical_good fixture
   (books.toscrape.com) is a ~3.4KB retail catalog whose fulfillment prose is already fully mined
   (add-to-cart / stock / priced-listing). To close the imbalance and move the north-star's "many storefront
   types" axis, capture LIVE fixtures from real storefronts that genuinely claim these archetypes —

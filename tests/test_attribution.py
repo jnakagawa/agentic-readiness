@@ -374,6 +374,78 @@ def test_crash_run_is_invisible_to_both_denominators() -> None:
            "the valid no-evidence run still reached the site (reachability unmoved)")
 
 
+# ---------------------------------------------------------------------------
+# 11. Reachability EVIDENCE is order-invariant (reproducibility / TRUTH). The
+#     reachability POINTS and STATUS are functions of two counts (reached,
+#     blocked) and so were already order-invariant. But the human-readable
+#     evidence quoted on the card — ``block_statements`` — was an ARRIVAL-ORDER
+#     slice ``[...][:6]``, the lone deviation from the ``sorted({...})`` idiom
+#     every sibling evidence field in ``_aggregate`` uses (blocked_by_model,
+#     all_trust_events, failure_reasons, run_blockers, gate_blockers). So two
+#     panels with the SAME runs shuffled produced the SAME score but a DIFFERENT
+#     set of quoted refusals — both which six survived the cap and their order.
+#     For a benchmark whose credibility rests on "evidence or it didn't happen"
+#     and on citability, an order-dependent evidence surface is a latent
+#     reproducibility hole: cite the number today, re-run the panel, quote
+#     different refusals. This pins the fix — block_statements is now the sorted
+#     distinct set, capped — with real teeth: the >6-distinct fixture makes the
+#     cap pick a DIFFERENT set once sorted, and the pre-fix arrival-order slice
+#     is shown to have depended on run order while the new one does not.
+# ---------------------------------------------------------------------------
+def test_reachability_evidence_is_order_invariant() -> None:
+    print("test_reachability_evidence_is_order_invariant")
+    # Eight DISTINCT, each-independently-valid env-block statements. Chosen so
+    # their case-sensitive sort (A,B,C,D,H,L,N,T) differs from the arrival order
+    # they are fed in (reverse-sorted), so the [:6] cap selects a different SET
+    # depending on ordering — the strongest form of non-vacuity.
+    stmts = [
+        "Access to the site was blocked by the browser security policy",
+        "Browser security controls rejected the page load",
+        "Content load was denied on security grounds by the hosted browser",
+        "Denied by the browser security controls before the page rendered",
+        "Hosted URL-safety refused the navigation on security grounds",
+        "Loading was denied by the browser security controls",
+        "Navigation blocked by browser security policy",
+        "The request was refused on security grounds by my browser",
+    ]
+    # Feed them in reverse-sorted arrival order, one env-blocked run each.
+    arrival = list(reversed(stmts))
+    blocked_runs = [_run(model=f"m{i}", trial=1, blockers=[s]) for i, s in enumerate(arrival)]
+    for r in blocked_runs:  # NON-VACUOUS: every fixture run is genuinely env-blocked
+        _check(S._is_env_blocked(r), f"fixture run is env-blocked: {r.blockers[0]!r}")
+    # One valid reached run so reachability is a live PARTIAL (not degenerate).
+    valid = [_run(model="claude", trial=1, found_product=True)]
+
+    fwd = valid + blocked_runs
+    rev = list(reversed(fwd))
+    reach_fwd = _by_id(S._aggregate("x.example", fwd))["hosted_agent_reachability"]
+    reach_rev = _by_id(S._aggregate("x.example", rev))["hosted_agent_reachability"]
+
+    # THE PROPERTY: block_statements is the sorted distinct set, capped at 6.
+    expected = sorted(set(stmts))[:6]
+    _check(reach_fwd.evidence["block_statements"] == expected,
+           "block_statements is the sorted distinct set, capped at 6")
+
+    # THE INVARIANT: reversing run arrival order changes NOTHING in the whole
+    # reachability CheckResult (status, points, max, finding, every evidence key).
+    _check(_sig([reach_fwd]) == _sig([reach_rev]),
+           "reachability CheckResult is byte-identical under run-order reversal")
+
+    # NON-VACUOUS at the SET level: the >6 distinct statements make the cap pick a
+    # DIFFERENT set once sorted than the arrival-order slice would have — so the
+    # sort/dedup visibly changed the surface, it is not a cosmetic no-op.
+    old_arrival_slice = [b for r in blocked_runs for b in (r.blockers + r.trust_events)][:6]
+    _check(set(old_arrival_slice) != set(expected),
+           "the [:6] cap selects a DIFFERENT set arrival-ordered vs sorted (fix is non-vacuous)")
+
+    # TEETH: the PRE-FIX arrival-order slice DID depend on run order — reversing
+    # the panel would have changed which refusals were quoted. So the invariant
+    # above is a real claim about the fixed code, not something trivially true.
+    old_rev_slice = [b for r in list(reversed(blocked_runs)) for b in (r.blockers + r.trust_events)][:6]
+    _check(old_arrival_slice != old_rev_slice,
+           "the pre-fix arrival-order slice was order-sensitive (guard has teeth)")
+
+
 def main() -> int:
     tests = [
         test_env_block_positive_phrasings,
@@ -386,6 +458,7 @@ def main() -> int:
         test_reputation_gate_phrasing_is_current_coverage_gap,
         test_env_block_safety_phrasing_covered,
         test_crash_run_is_invisible_to_both_denominators,
+        test_reachability_evidence_is_order_invariant,
     ]
     failed = 0
     for t in tests:

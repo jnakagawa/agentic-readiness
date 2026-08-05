@@ -458,7 +458,13 @@ def _reachability_check(
         "reached_runs": reached,
         "blocked_runs": blocked,
         "blocked_by_model": sorted({r.model for r in env_blocked}),
-        "block_statements": [b for r in env_blocked for b in (r.blockers + r.trust_events)][:6],
+        # Sorted distinct set, capped — order-invariant like every sibling
+        # evidence field above (blocked_by_model / all_trust_events /
+        # failure_reasons / run_blockers). A panel re-run with the same runs in
+        # a different arrival order must quote the SAME refusals (points/status
+        # are already order-invariant counts; this makes the citable evidence
+        # surface reproduce too). See tests/test_attribution.py #11.
+        "block_statements": sorted({b for r in env_blocked for b in (r.blockers + r.trust_events)})[:6],
     }
     points = _REACHABILITY_MAX * (reached / n)
 

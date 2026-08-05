@@ -2138,6 +2138,16 @@ design in-cloud, execute locally.
 
 ## P2
 
+- **[CANDIDATE, TRUTH/in-cloud] Reachability-evidence reproducibility sweep — the rest of `_aggregate`** (follow-up
+  to Cycle 253). Cycle 253 fixed `block_statements` (the lone arrival-order `[...][:6]` evidence slice) to
+  `sorted({...})[:6]`, conforming to the `sorted({...})` idiom every sibling uses, so a shuffled-run panel quotes the
+  same refusals. Verify the CLAIM generalizes: audit every capped or `[:N]`-sliced evidence list produced in
+  `asrs/behavioral/shopper.py::_aggregate` (and any other aggregation surface) to confirm each is sort-BEFORE-slice,
+  not sorted-then-arrival-truncated or arrival-order-then-truncate. If another arrival-order slice hides behind a
+  cap, it is the same reproducibility hole; pin each with a reversed-run byte-identity guard (the `_sig` metamorphic
+  pattern from test_attribution #11). In-cloud, off the scoring path, score-neutral by construction. Non-vacuity
+  requires a fixture with >N distinct entries so the cap actually selects a different set under reordering.
+
 - **[CANDIDATE, COVERAGE/in-cloud] data_retrieval `lookup` false-positives on the generic "&lt;noun&gt; lookup"
   admin-search sense** (observation, LOCAL Cycle 240). While screening booking domains for the service_booking
   capture, cal.com's real llms-full.txt tripped a FALSE `data_retrieval` claim: the Cycle-198 `lookup` signal fired

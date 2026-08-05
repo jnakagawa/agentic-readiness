@@ -1,6 +1,49 @@
 # Loop state
 
-- Cycle counter: 252
+- Cycle counter: 253
+- CYCLE 253 — 2026-08-05T~10:1xZ (TRUTH, cloud, direct-to-main, score-neutral).
+  FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests` state=open `[]`): HEAD in sync with
+  origin at Cycle 252 (`8d19fcf`; detached-start realign via `git fetch origin main`, benign). **LOCAL VERIFY RUNNER
+  STALL PERSISTS — 6h floor still breached:** newest verify STILL `runs/local/verify_20260805T024100Z.json` (02:41Z,
+  div_recovery=None, tests_ok=true 24/24), ~7.6h old at fire (10:16Z); 7+ consecutive missed :41 slots (03:41–09:41).
+  Unchanged NO-NEW-ARTIFACT stall, NOT cloud-diagnosable → P0 [LOCAL] runner-stall diagnosis (queued Cycle 251)
+  stands; carry watch + flag LOUD in next 16:00 UTC digest. Regression-by-construction stands in for the live
+  re-score (playbook). `pip install -r requirements.txt` (eth-account absent) → test_free_tier 11/11 (agent-side gap).
+  Took the TRUTH slot (cloud pointer, Cycle 252 was COVERAGE): the Cycle-251 "could-shade-TRUTH" note — reachability
+  POINTS-formula order-invariance. POINTS/STATUS were already order-invariant (count functions); the LONE
+  order-SENSITIVE piece was the EVIDENCE field `block_statements` in `_reachability_check`
+  (`asrs/behavioral/shopper.py:461`), an arrival-order `[...][:6]` slice while every sibling `_aggregate` evidence
+  field is `sorted({...})`. A shuffled-run panel → same SCORE, DIFFERENT quoted refusals = reproducibility hole
+  under invariant #3/citability. FIXED to `sorted({...})[:6]` (sorted distinct set, capped — conforms to siblings;
+  dedup matches blocked_by_model). SHIPPED (off the scoring path → score-neutral, direct-to-main): `shopper.py` fix +
+  comment; `tests/test_attribution.py` +1 (10→11) `test_reachability_evidence_is_order_invariant` — 8 distinct valid
+  env-block stmts whose sort ≠ arrival so the `[:6]` cap picks a different SET (non-vacuous); asserts the property,
+  the full-CheckResult byte-identity under run-order reversal (`_sig`), fix-changed-the-surface, and pre-fix
+  order-sensitivity (teeth). MUTATION-TESTED (revert reddens exactly that guard 10/11; reverted clean). SCORE-NEUTRAL:
+  scoring-path diff (`asrs/scoring.py rubric/ fixtures/ batteries/ probes/`) EMPTY; `block_statements` referenced only
+  at the one call site (never scored); replay 26/26, **46.1 F / 85.5 B / +39.4 UNMOVED**, 0 replay-miss; full suite
+  **514 passed** (513→514). Invariants #1 (aggregation read-only, no probe/POST/signing), #2 (no scoring-semantics →
+  no version bump), #3 (this IS the evidence-reproducibility hardening), #4 (stall attributed to LOCAL env not a
+  site), #5 (mutation on /tmp backup, reverted; append-only) all held. NO DM (score-neutral TRUTH, not
+  sensitive-class, off scoring path, not first-after-16:00 UTC — ~10:1xZ Aug-5; last digest Cycle 228). See LOG Cycle 253.
+- FOCUS POINTER (Cycle 253 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
+  **BUT the LOCAL verify runner is STALLED with the 6h floor breached (P0 [LOCAL] queued Cycle 251) — not
+  cloud-doable; next-fire priority is keeping the P0 [LOCAL] fresh + the 16:00 UTC digest flag (overdue once the
+  digest window opens ≥16:00Z).** Cloud track rotation: Cycle 253 was TRUTH → cloud pointer is **READOUT next**
+  (METHOD → COVERAGE → TRUTH → READOUT). NEXT READOUT openings (prefer oldest, in-cloud): the "behaviorally
+  corroborated" calibration badge (P2, Cycle 68 lineage — unblocked); the population-drift TREND once a 3rd dated
+  sweep lands ([LOCAL]-gated, only 2 committed). NEXT TRUTH openings (later): the reachability-evidence
+  reproducibility sweep started here — verify OTHER capped/`[:N]`-sliced `_aggregate` evidence lists are all
+  sort-BEFORE-slice, not arrival-order-then-truncate; panel-verdict-stability (does the reliability `stable`/
+  `reproducible` gate track what an agent re-experiences across trials). NEXT COVERAGE openings: service_booking's
+  INTAKE-FORM ("custom intake forms") or WAITLIST control (each IF precision-guardable); the ipinfo.io
+  dataset-format/download-contract data_retrieval signal (Cycle-243); the deep-bank uncaptured-capability audit
+  (Cycle 226/230/233 lineage).
+  **RUNNER-HEALTH WATCH (ESCALATED — FLOOR BREACHED, carried Cycle 251→253 — hold until resolved):** last artifact
+  02:41Z; at the Cycle-253 fire (10:16Z) it is ~7.6h old = past the 6h floor, 7+ consecutive misses (03:41–09:41).
+  Cloud cannot diagnose (launchd-not-firing / machine-asleep / new pre-push failure indistinguishable from here) →
+  P0 [LOCAL] with exact diagnostic steps stands. Distinct from the Cycle-227 push-race (`divergence_recovery` None).
+  FLAG loudly in the next 16:00 UTC digest.
 - CYCLE 252 — 2026-08-05T~09:1xZ (COVERAGE, cloud, direct-to-main, score-neutral).
   FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests` state=open `[]`): HEAD in sync with
   origin at Cycle 251 (`4ac07b0`; detached-start, forced-update realign per Cycle-245 lesson, benign). **LOCAL

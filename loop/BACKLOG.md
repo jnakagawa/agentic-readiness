@@ -2138,15 +2138,29 @@ design in-cloud, execute locally.
 
 ## P2
 
-- **[CANDIDATE, TRUTH/in-cloud] Reachability-evidence reproducibility sweep — the rest of `_aggregate`** (follow-up
-  to Cycle 253). Cycle 253 fixed `block_statements` (the lone arrival-order `[...][:6]` evidence slice) to
-  `sorted({...})[:6]`, conforming to the `sorted({...})` idiom every sibling uses, so a shuffled-run panel quotes the
-  same refusals. Verify the CLAIM generalizes: audit every capped or `[:N]`-sliced evidence list produced in
-  `asrs/behavioral/shopper.py::_aggregate` (and any other aggregation surface) to confirm each is sort-BEFORE-slice,
-  not sorted-then-arrival-truncated or arrival-order-then-truncate. If another arrival-order slice hides behind a
-  cap, it is the same reproducibility hole; pin each with a reversed-run byte-identity guard (the `_sig` metamorphic
-  pattern from test_attribution #11). In-cloud, off the scoring path, score-neutral by construction. Non-vacuity
-  requires a fixture with >N distinct entries so the cap actually selects a different set under reordering.
+<!-- DONE 2026-08-05 (Cycle 255, METHOD, cloud, direct-to-main, score-neutral): the reproducibility sweep is
+     CLOSED across BOTH behavioral aggregators. shopper `_aggregate`: all 6 sibling evidence fields
+     (blocked_by_model / all_trust_events / failure_reasons / run_blockers / gate_blockers / block_statements)
+     confirmed `sorted({...})`; `_trust_live_check`'s `all_trust_events[:4]` confirmed sort-before-slice
+     (all_trust_events is `sorted({...})` at shopper.py:325). Extended to `trust_probe._build_check` and found the
+     sibling hole: `top = max(confident_refusal, key=confidence)` returns the ARRIVAL-first element on a confidence
+     TIE + `refusing_models` was arrival-order → a shuffled panel with two equal-confidence refusers quoted a
+     DIFFERENT panelist / listed refusing_models differently for the same score/status. FIXED to
+     `sorted(confident_refusal, key=lambda v: (-v.confidence, v.model))` (loudest-first, deterministic model
+     tie-break); new `tests/test_trust_panel_reproducibility.py` +2 (metamorphic byte-identity via `==` + teeth +
+     confidence-dominates-tie-break), mutation-tested. Replay 26/26, 46.1 F / 85.5 B / +39.4 UNMOVED; suite
+     519→521. See LOG Cycle 255. RESIDUAL (folded into the next-hypothesis, NOT a fresh item): the `by_run`
+     (shopper.py:335/522) + `per_model` (_build_check) evidence lists are arrival-order but self-labeled by
+     (model,trial) and deterministically ordered in production — a guard confirming they stay deterministic if
+     panel construction ever parallelizes is a small METHOD follow-up. -->
+
+- **[CANDIDATE, METHOD/in-cloud] Determinism guard for the self-labeled `by_run`/`per_model` evidence lists**
+  (residual of the Cycle-255 reproducibility sweep). The `by_run` lists in `shopper.py::_aggregate` (lines ~335/522)
+  and `per_model` in `trust_probe._build_check` are arrival-order but self-labeled by (model, trial) and today
+  deterministically ordered by the nested model×trial construction loop. Not a live hole now, but the one surface the
+  sweep left un-pinned: add a reversed-input byte-identity guard (or sort by (model, trial)) so that if panel
+  construction ever parallelizes and arrival order stops being deterministic, these citable per-run evidence lists
+  still reproduce. In-cloud, off the scoring path, score-neutral by construction.
 
 - **[CANDIDATE, COVERAGE/in-cloud] data_retrieval `lookup` false-positives on the generic "&lt;noun&gt; lookup"
   admin-search sense** (observation, LOCAL Cycle 240). While screening booking domains for the service_booking

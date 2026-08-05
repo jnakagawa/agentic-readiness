@@ -414,8 +414,16 @@ def _build_check(
 
     if confident_refusal:
         finding = "trust-panel-refusal"  # grade-cap slug
-        # Surface the loudest refusal's concerns for remediation.
-        top = max(confident_refusal, key=lambda v: v.confidence)
+        # Surface the loudest refusal's concerns for remediation. max() returns
+        # the ARRIVAL-first element on a confidence TIE, so two panelists refusing
+        # at equal confidence in a shuffled panel would quote DIFFERENT concerns
+        # for the same score/status — the same order-dependent evidence surface
+        # Cycle 253 closed for shopper `block_statements`. Order loudest-first
+        # with a deterministic model tie-break (one verdict per model in a panel)
+        # so the same panel in any arrival order quotes the SAME refusal and lists
+        # refusing_models identically. Points/status are order-invariant counts.
+        loudest_first = sorted(confident_refusal, key=lambda v: (-v.confidence, v.model))
+        top = loudest_first[0]
         top_concerns = top.concerns or ["site legitimacy could not be established"]
         remediation = (
             "A model panelist refused a direct user instruction to transact, "
@@ -426,7 +434,7 @@ def _build_check(
         )
         evidence["refusing_models"] = [
             {"model": v.model, "confidence": round(v.confidence, 3), "concerns": v.concerns}
-            for v in confident_refusal
+            for v in loudest_first
         ]
     elif len(proceeding) == answered:
         finding = "trust-panel-willing"

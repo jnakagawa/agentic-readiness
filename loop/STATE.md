@@ -1,6 +1,49 @@
 # Loop state
 
-- Cycle counter: 264
+- Cycle counter: 265
+- LOCAL CYCLE 265 — 2026-08-05T19:4xZ (self-healing / bookkeeping, LOCAL, direct-to-main, score-neutral). FIRST
+  duty: `gh pr list --state open` → `[]` (no peer-gated PR). **INFRA HEALTHY — :41 cadence holding:** newest verify
+  `runs/local/verify_20260805T194105Z.json` (19:41Z, tests_ok=true 26 suites, reads 46.1 F / 85.5 B / +39.4), ~1min
+  old at fire (19:42Z), deep inside the 6h floor; the runner produced 18:41Z → 19:41Z on the :41 cadence (Cycle-261
+  watchdog still holding) → RUNNER-HEALTH WATCH NORMAL. This IS the 19:41Z launcher's agent step (watchdog-bounded).
+  `python3 -m pip install eth-account` (recurring agent-side gap, invariant #4) → test_free_tier 11/11. **IMPROVEMENT
+  (self-healing — a >15min repair, so it IS the cycle's item):** the three explicit infra-health triggers all PASSED,
+  but reading BACKLOG.md surfaced the SAME degradation Cycle 260 fixed for STATE — `loop/BACKLOG.md` had grown to
+  **275.7KB / 2928 lines** and could no longer be `Read` in one call (256KB Read cap), silently degrading the
+  mandated per-cycle "read BACKLOG.md". ROOT CAUSE (quantified): **60% of the file (165.5KB) was HTML comments, 154KB
+  of it 98 completed-item markers** (`<!-- DONE/PRUNED/SUPERSEDED/MERGED/EXECUTED ... -->`), each a closed item ALREADY
+  recorded in loop/LOG.md + git — the file's own "prune every cycle" header had simply lapsed. FIX (safest possible,
+  deterministic): a Python pass removed ONLY the 98 completed-item comment blocks (kept all 13 standing orientation/
+  FRONTIER notes), collapsed the blank runs, and ASSERTED every open (non-comment) bullet survived byte-for-byte + in
+  order BEFORE writing → **121KB / 1367 lines, all 54 open bullets (23 [LOCAL]) intact, P0/P1/P2 intact, readable in
+  one call.** No open work touched. Made DURABLE: NEW `tests/test_backlog_hygiene.py` (+5) — BACKLOG sibling of
+  `test_state_hygiene.py`: readable-in-one-call (byte ceiling <220KB), completed-markers-do-not-re-accrete (DONE-marker
+  bytes <24KB — the specific failure mode, trips long before the byte ceiling), P0/P1/P2 survive, + teeth.
+  MUTATION-TESTED on the REAL pre-compaction file (`git show HEAD:loop/BACKLOG.md`): both size guards FAIL (282269≥220000;
+  158122≥24000) → genuine teeth. SCORE-NEUTRAL: scoring-path diff (`asrs/ rubric/ fixtures/ batteries/ loop/local_verify.py
+  loop/asrs_local_cycle.sh`) EMPTY — only `loop/BACKLOG.md` (working state) + the new test; 19:41Z floor live **46.1 F /
+  85.5 B / +39.4 UNMOVED**; full suite **32/32 files green**. Invariants #1 ($0-only — no probes/payments/network, only
+  local file hygiene + `git show`), #2 (no scoring-semantics → no version bump), #3 (removed markers trace to LOG.md +
+  git; strengthens infra reproducibility), #4 (no site scored; eth-account gap = agent env), #5 (BACKLOG is mutable
+  working state, all removed markers preserved append-only in LOG.md + git — NOT a rewrite; LOG prepended, past
+  untouched) all held. NO DM (score-neutral self-healing, not sensitive-class, off scoring path; daily digest already
+  sent Cycle 259 this ≥16:00 UTC window). See LOG Cycle 265.
+- FOCUS POINTER (Cycle 265 done, LOCAL): NO open peer-gated PR → next fire's first duty is the infra health check.
+  Bookkeeping hygiene is now self-enforcing on BOTH mutable working files — `test_state_hygiene.py` (STATE) +
+  `test_backlog_hygiene.py` (BACKLOG); recurring policy: prune completed-item markers to LOG.md + git rather than
+  accreting them as comments. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + Cycle 263 pin); WATCH stays
+  NORMAL — re-escalate ONLY on a fresh >6h no-artifact gap. Cloud track rotation UNCHANGED (this LOCAL cycle did not
+  consume the cloud slot): Cycle 264 was READOUT → cloud pointer remains **COVERAGE next** (METHOD → COVERAGE → TRUTH
+  → READOUT). NEXT COVERAGE (allbirds anchor UNBLOCKS): a physical_good fulfillment leg (order-tracking /
+  returns-window) mined against allbirds' real fulfillment prose — physical_good is the thinnest anchored archetype;
+  secondary the agent-native RETAIL rail surfaces (UCP `/.well-known/ucp`, MCP) distinct from driftflight; also
+  ipinfo.io DATASET-FORMAT/DOWNLOAD-CONTRACT (Cycle-243), deep-bank uncaptured-capability audit (226/230/233). NEXT
+  READOUT: the HTML compare card (`scorecard._pillars(rep, baseline)`) shows the payment badge only for the primary
+  side, not the baseline (symmetric follow-up to Cycle 264); population-drift TREND once a 3rd dated sweep lands
+  ([LOCAL]-gated). NEXT TRUTH/METHOD: SATURATED — surface a NEW seam first. Substantive [LOCAL] frontier (prefer
+  oldest P0): a THIRD calibration anchor, render-generation digital_good (Cycle-168), structured catalog/pricing JSON
+  (Cycle-70), the typographic PHRASE-RESCUE real-evidence case, ACP/UCP/MPP live handshakes, a richer-booking WAITLIST
+  fixture (Cycle-256).
 - CYCLE 264 — 2026-08-05T19:1xZ (READOUT, cloud, direct-to-main, score-neutral). FIRST duty (infra health check):
   NO open peer-gated PR (`list_pull_requests` state=open → `[]`). Cloud started detached HEAD == origin/main `12eada1`;
   realigned local `main` to origin/main (benign, Cycle-245 lesson). **INFRA HEALTHY:** newest verify
@@ -164,97 +207,6 @@
   calibration anchor, render-generation digital_good (Cycle-168), structured catalog/pricing JSON (Cycle-70), the
   typographic PHRASE-RESCUE real-evidence case, ACP/UCP/MPP live handshakes, a richer-booking WAITLIST fixture
   (Cycle-256, image-only on acuity). NEXT TRUTH/READOUT/METHOD openings unchanged from Cycle 260's pointer.
-- CYCLE 260 — 2026-08-05T~17:1xZ (COVERAGE/SELF-HEALING, cloud, direct-to-main, score-neutral).
-  FIRST duty (infra health check): no open peer-gated PR (`list_pull_requests` state=open `[]`); HEAD realigned to
-  origin/main at Cycle 259 (`bb9e1a2`; detached-start realign via `git fetch origin main` + `git checkout -B main
-  origin/main`, benign forced-update of the stale local ref). **LOCAL VERIFY RUNNER STALL PERSISTS — 6h floor still
-  breached:** newest verify STILL `runs/local/verify_20260805T024100Z.json` (02:41Z, div_recovery=None, tests_ok=true,
-  reads 46.1 F / 85.5 B / +39.4), ~14.6h old at fire (17:14Z); 14+ consecutive missed :41 slots (03:41–16:41).
-  NO-NEW-ARTIFACT stall, NOT cloud-diagnosable → P0 [LOCAL] runner-stall diagnosis (queued Cycle 251) stands.
-  Regression-by-construction stands in for the live re-score (playbook). `pip install eth-account` + `pytest`
-  (agent-side dependency gaps) → test_free_tier 11/11. **DIGEST NOT OWED this fire:** the daily digest was already
-  SENT Cycle 259 in this same ≥16:00 UTC window (17:14Z Aug-5); next digest owed at the next ≥16:00 UTC fire after a
-  fresh window. SHIPPED (self-healing/COVERAGE, off scoring path → score-neutral, direct-to-main): **compacted
-  STATE.md 7798 lines / ~790KB → 297 lines / 29KB** — the file had accreted the full per-cycle history back to
-  ~Cycle 5 and EXCEEDED the 256KB single-`Read` limit, silently degrading the mandated per-cycle "read STATE.md".
-  Trimmed the rolling cycle log to the last cycles (259→256; this Cycle 260 prepended), kept the operative FOCUS
-  POINTER + active RUNNER-HEALTH WATCH, and retained the stable reference sections (Git bookkeeping note,
-  Environment constraint, Open questions) UNCHANGED. Every removed narrative is preserved verbatim in loop/LOG.md
-  (276 entries, Cycle 5→256 spot-verified) + git → NOT an invariant-#5 rewrite (STATE is mutable working state).
-  Made it DURABLE: NEW `tests/test_state_hygiene.py` (+4) guards STATE under a 200KB single-`Read` ceiling + a
-  600-line early-warning cap + retention of its stable-section markers, so a future fire that lets STATE re-balloon
-  fails the suite and MUST prune before committing. MUTATION-TESTED (bloat trips the byte+line guards; dropping a
-  required marker trips the structural guard; real STATE passes 4/4). SCORE-NEUTRAL: scoring-path diff
-  (`asrs/scoring.py rubric/ fixtures/ batteries/ asrs/offering.py asrs/probes/ asrs/scorecard.py`) EMPTY; canonical
-  scored statically, replay **26/26**, **46.1 F / 85.5 B / +39.4 UNMOVED**; full suite **539 passed** (535→539).
-  Invariants #1–#5 all held (compaction touches only working state, executes nothing; no scoring-semantics → no
-  version bump; removed history traces to LOG.md + git; env failures attributed to agent/LOCAL; append-only history
-  preserved — STATE is not append-only evidence). NO DM (score-neutral self-healing, not sensitive-class, digest
-  already sent this window). See LOG Cycle 260.
-- FOCUS POINTER (Cycle 260 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
-  **The LOCAL verify runner is STALLED, 6h floor breached (P0 [LOCAL] queued Cycle 251) — not cloud-doable; keep the
-  P0 [LOCAL] fresh and flag it LOUD in the next daily digest (owed at the next ≥16:00 UTC fire in a fresh window;
-  the Cycle-259 digest already discharged this window's flag).** Cloud track rotation: Cycle 260 took the COVERAGE
-  slot (self-healing STATE-compaction) → cloud pointer is **TRUTH next** (METHOD → COVERAGE → TRUTH → READOUT).
-  **STATE-HYGIENE now self-enforcing** (`test_state_hygiene.py`) — future cycles PREPEND their entry and prune the
-  rolling log to ~5 cycles; the suite reddens if STATE re-balloons past readability. NEXT TRUTH openings: the
-  `per_model` map in `trust_probe._build_check` (arrival-order but self-labeled — a determinism guard if
-  construction parallelizes). NEXT COVERAGE openings (later): service_booking anchor mining EXHAUSTED (8 signals);
-  WAITLIST is IMAGE-ONLY → [LOCAL] richer-booking fixture; the ipinfo.io DATASET-FORMAT/DOWNLOAD-CONTRACT
-  data_retrieval signal (Cycle-243); the deep-bank uncaptured-capability audit (Cycle 226/230/233 lineage). NEXT
-  METHOD openings: METHOD TRACK IS SATURATED (reliability/quotability/scoring-cap surfaces closed, Cycle-192 earner
-  arc complete) — a future METHOD cycle must SURFACE A NEW SEAM before picking. NEXT READOUT openings: the `compare`
-  view (`render_compare`) transactability delta carries no corroboration for either side; population-drift TREND
-  once a 3rd dated sweep lands ([LOCAL]-gated).
-  **RUNNER-HEALTH WATCH (ESCALATED — FLOOR BREACHED, carried Cycle 251→260 — hold until resolved):** last artifact
-  02:41Z; at the Cycle-260 fire (17:14Z) ~14.6h old = past the 6h floor, 14+ consecutive misses (03:41–16:41).
-  Cloud cannot diagnose → P0 [LOCAL] with exact diagnostic steps stands.
-- CYCLE 259 — 2026-08-05T~16:2xZ (METHOD, cloud, direct-to-main, score-neutral).
-  FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests` state=open `[]`): HEAD in sync with
-  origin at Cycle 258 (`1193cf0`; `git pull origin main`, benign forced-update of the stale local ref). **LOCAL
-  VERIFY RUNNER STALL PERSISTS — 6h floor still breached:** newest verify STILL `runs/local/verify_20260805T024100Z.json`
-  (02:41Z, div_recovery=None, tests_ok=true, reads 46.1 F / 85.5 B / +39.4), ~13.6h old at fire (16:2xZ); 13+
-  consecutive missed :41 slots (03:41–15:41). NO-NEW-ARTIFACT stall, NOT cloud-diagnosable → P0 [LOCAL] runner-stall
-  diagnosis (queued Cycle 251) stands. **This fire CROSSES ≥16:00 UTC = first digest-window cycle since Cycle 228 →
-  daily digest SENT this cycle, runner-stall flag DISCHARGED LOUD in it.** Regression-by-construction stands in for
-  the live re-score (playbook). `pip install eth-account` (agent-side dependency gap) → test_free_tier 11/11. Took the
-  METHOD slot but found BOTH nominal METHOD openings ALREADY CLOSED: (1) panel-verdict-stability / provisional-trust-
-  unstable is covered (`test_quotability::test_trust_split_panel_is_provisional` + siblings; `_STABLE_MIN` boundary +
-  label/gate coherence in `test_reliability`), reliability/quotability surface SATURATED; (2) the BACKLOG Cycle-192
-  leg-(a) coupling guard already exists (`test_calibration.py:808`). Took the queued on-track METHOD-class artifact
-  whose absence was REAL — leg-(b): the terminal↔HTML earner PARITY GUARD (Cycle-188-shape drift guard) + its
-  substrate. SHIPPED (off scoring path → score-neutral, direct-to-main): `asrs/report.py` +`_earner_rep`/
-  `_pillar_earner_line` — the per-pillar "earned by <finding> +N" caption now renders on the TERMINAL card too (Cycle
-  192 shipped it on HTML only), reading the SAME `scorecard._pillar_top_earner` both surfaces share (parity by
-  construction, omitted on n/a/unearned). NEW `tests/test_readout.py` +3 (parity on BOTH canonical storefronts every
-  scored pillar + n/a-omission teeth + terminal magnitude-flip vendor-neutrality). MUTATION-TESTED (monkeypatch
-  `_pillar_earner_line` → wrong finding reddens the parity guard). SCORE-NEUTRAL: scoring-path diff EMPTY; canonical
-  scored statically, replay 26/26, **46.1 F / 85.5 B / +39.4 UNMOVED**; full suite **535 passed** (532→535, test_readout
-  89→92). Invariants #1–#5 all held (readout reads existing evidence executes nothing; no scoring-semantics → no
-  version bump; traces to committed fixtures; env failures attributed to agent/LOCAL; append-only). DM SENT (daily
-  digest + runner-stall flag; NOT sensitive-class). See LOG Cycle 259.
-- FOCUS POINTER (Cycle 259 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
-  **The LOCAL verify runner is STALLED, 6h floor breached (P0 [LOCAL] queued Cycle 251) — not cloud-doable; the
-  daily-digest flag was DISCHARGED Cycle 259, so the next digest is not owed until the next ≥16:00 UTC fire after a
-  new digest window; keep the P0 [LOCAL] fresh.** Cloud track rotation: Cycle 259 was METHOD → cloud pointer is
-  **COVERAGE next** (METHOD → COVERAGE → TRUTH → READOUT). **METHOD TRACK IS SATURATED** — the reliability/
-  quotability/scoring-cap surfaces are closed (monotonicity, threshold coherence, polarity/panel-size/order
-  invariance, exhaustive formula; trust-split + boundary; caps set-invariance) and the Cycle-192 earner arc is now
-  COMPLETE (leg-a Cycle-192, leg-b Cycle 259). A future METHOD cycle must SURFACE A NEW SEAM before picking (do not
-  re-add relabel/reflection/order guards — diminishing returns per the Cycle-185 note). **BOOKKEEPING-DEGRADATION
-  OBSERVATION:** STATE.md is 804KB / 7752 lines — it has accreted the full cycle history (back to ~Cycle 5) and is
-  now too large to `Read` in one call, degrading the mandated per-cycle "read STATE.md". Queued a self-healing/
-  COVERAGE STATE-compaction item in BACKLOG (compact to counter + last ~5 cycles + the stable reference sections;
-  history is preserved in LOG.md + git so pruning STATE is NOT an invariant-#5 rewrite). NEXT COVERAGE openings: the
-  STATE-compaction (above); service_booking anchor mining EXHAUSTED (8 signals); WAITLIST is IMAGE-ONLY → [LOCAL]
-  richer-booking fixture; the ipinfo.io DATASET-FORMAT/DOWNLOAD-CONTRACT data_retrieval signal (Cycle-243); the
-  deep-bank uncaptured-capability audit (Cycle 226/230/233 lineage). NEXT READOUT openings (later): the `compare`
-  view (`render_compare`) transactability delta carries no corroboration for either side; population-drift TREND once
-  a 3rd dated sweep lands ([LOCAL]-gated). NEXT TRUTH openings: the `per_model` map in `trust_probe._build_check`
-  (arrival-order but self-labeled — a determinism guard if construction parallelizes).
-  **RUNNER-HEALTH WATCH (ESCALATED — FLOOR BREACHED, carried Cycle 251→259 — hold until resolved):** last artifact
-  02:41Z; at the Cycle-259 fire (16:2xZ) ~13.6h old = past the 6h floor, 13+ consecutive misses (03:41–15:41). Cloud
-  cannot diagnose → P0 [LOCAL] with exact diagnostic steps stands. FLAG discharged in the Cycle-259 digest.
 <!-- STATE COMPACTED at Cycle 260 (2026-08-05T~17:1xZ, self-healing/COVERAGE, direct-to-main, score-neutral).
      STATE.md had accreted the full per-cycle history back to ~Cycle 5 (7798 lines / ~790KB) and could no
      longer be Read in one call, degrading the playbook-mandated per-cycle "read STATE.md". Trimmed the

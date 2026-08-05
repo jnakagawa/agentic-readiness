@@ -2265,16 +2265,31 @@ design in-cloud, execute locally.
      moleskine → neutral). Verified in the FULL built card (`build_scorecard` — exactly one badge, `.corrob` CSS
      present). Score-neutral (scoring-path diff empty; replay 26/26, 46.1 F / 85.5 B / +39.4 UNMOVED; full suite
      514→519). See LOG Cycle 254. FOLLOW-UP below (terminal-card corroboration line). -->
-- **[CANDIDATE, READOUT] Terminal-card corroboration line** (follow-up to Cycle 254). Cycle 254 shipped the
-  behavioral-corroboration badge on the HTML card (the backlog's named primary surface). The natural
-  terminal→JSON→HTML closure the precedent READOUT items took (per_kind 10→12, between_kind_spread 18→20, NA
-  25→28) is the TERMINAL card in `asrs/report.py`: surface the same one-line corroboration verdict next to the
-  transactability pillar in `render(report)` when a behavioral panel has run. The derivation already exists as
-  `asrs/scorecard._payment_corroboration` but reads a report DICT; the terminal renderer holds a `Report`
-  object, so either (a) call it on `json.loads(report.to_json())` at the terminal boundary, or (b) lift the
-  derivation to operate on both shapes (a small shared helper). Display-only/score-neutral. A JSON `Report`
-  field is NOT yet needed (the badge derives at render); add one only if a downstream consumer must read the
-  verdict without re-deriving. Low-medium urgency; a clean next READOUT pick.
+<!-- DONE 2026-08-05T~15:2xZ (Cycle 258, READOUT, cloud, direct-to-main, display-only, score-neutral):
+     "[CANDIDATE, READOUT] Terminal-card corroboration line" SHIPPED. Took option (b) — lifted the 3-state
+     DECISION into a shared pure `payment_corroboration_state(predicted_payable, reached)` in
+     `asrs/scorecard.py` that both readouts call, so the HTML badge and the terminal line can never drift apart
+     (a single source of truth for the corroboration signal, not two parallel re-derivations). `_payment_
+     corroboration` (HTML) refactored to delegate to it with byte-identical badge tuples; new
+     `_payment_corroboration_line(report)` in `asrs/report.py` operates on the `Report` object (reads
+     `behavioral_runs` checkpoints + the `x402_probe` check status via `_status_value`, shares the
+     `_PAYMENT_PREDICTION_CHECK`/`_PAYMENT_EXPERIENCE_CHECKPOINT` constants) and renders one indented sub-line
+     under the Transactability pillar row: good "behaviorally corroborated — reached a machine-payable path in
+     every valid trial", neutral "no payment, as predicted — hit the payment wall in every valid trial", warn
+     "NOT corroborated — static prediction and lived experience disagree across trials". Display-only, suppresses
+     on static-only or prediction-absent cards (byte-identical static cards). New
+     `tests/test_report_payment_corroboration.py` +7 (states, same-signal-as-HTML-badge, display-only,
+     suppression, teeth). MUTATION-TESTED (collapse the shared classifier → reddens BOTH readouts' tests).
+     Score-neutral: scoring-path diff empty, canonical 46.1 F / 85.5 B / +39.4 UNMOVED, replay 26/26, full suite
+     525→532. See LOG Cycle 258. FOLLOW-UP (queued below): the `compare` view (`render_compare`) has no
+     corroboration on either transactability column. -->
+- **[CANDIDATE, READOUT] Compare-view corroboration (both columns)** (follow-up to Cycle 258). The terminal
+  `render_compare(a, b)` two-column transactability delta shows neither side's behavioral corroboration. When
+  BOTH reports ran panels, the same `payment_corroboration_state` affordance could qualify the with/without
+  transactability rows so a reader sees whether each side's number was lived out — the compare-view analog of
+  Cycle 258's single-card line. Display-only/score-neutral; reuses the shared classifier (no new derivation).
+  Guard: suppress per-side when that side has no valid panel (mismatched panels must not imply a false
+  corroboration). Low-medium urgency; a clean next READOUT pick after the single-card line landed.
 
 <!-- DONE 2026-07-28T16:21Z (Cycle 62, COVERAGE, direct-to-main, score-neutral):
      "[CANDIDATE] Offering discovery should read the /docs API-docs surface" SHIPPED. `/docs`

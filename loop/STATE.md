@@ -1,6 +1,59 @@
 # Loop state
 
-- Cycle counter: 257
+- Cycle counter: 258
+- CYCLE 258 — 2026-08-05T~15:2xZ (READOUT, cloud, direct-to-main, score-neutral).
+  FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests` state=open `[]`): HEAD realigned to
+  origin/main at Cycle 257 (`a92fdd4`; detached-start realign via `git fetch origin main` + `git checkout -B main
+  origin/main`, benign forced-update of local ref). **LOCAL VERIFY RUNNER STALL PERSISTS — 6h floor still breached:**
+  newest verify STILL `runs/local/verify_20260805T024100Z.json` (02:41Z, div_recovery=None, tests_ok=true, reads 46.1 F
+  / 85.5 B / +39.4), ~12.6h old at fire (15:20Z); 12+ consecutive missed :41 slots (03:41–14:41). Unchanged
+  NO-NEW-ARTIFACT stall, NOT cloud-diagnosable → P0 [LOCAL] runner-stall diagnosis (queued Cycle 251) stands; carry
+  watch + flag LOUD in next 16:00 UTC digest (fire 15:20Z STILL just before the digest window; NEXT fire crossing
+  ≥16:00Z owes it — the runner-stall flag is OVERDUE the instant it opens). Regression-by-construction stands in for the
+  live re-score (playbook). `pip install eth-account` (agent-side dependency gap) → test_free_tier 11/11. Took the
+  READOUT slot (cloud pointer, Cycle 257 was TRUTH): the pointed in-cloud opening — the TERMINAL-card payment-
+  corroboration line, counterpart to the HTML card's Cycle-254 badge. `asrs/report.py render` showed the bare
+  Transactability pillar bar with no qualifier; the HTML card has since Cycle 254 carried a badge on that row saying
+  whether the shopper's LIVED payment experience corroborates the static transactability PREDICTION (x402_probe status
+  vs machine_payable_path across valid trials — the SAME signal the calibration guard reads). SHIPPED (readout-only,
+  off scoring path → score-neutral, direct-to-main): new shared pure `payment_corroboration_state(predicted_payable,
+  reached)` in `asrs/scorecard.py` (3-state good/neutral/warn DECISION), `_payment_corroboration` refactored to delegate
+  to it (HTML badge tuples byte-identical), new `_payment_corroboration_line(report)` in `asrs/report.py` wired under the
+  Transactability row — both readouts now read the ONE decision so the HTML badge and terminal line can never disagree.
+  Display-only: suppresses (no line) on static-only or prediction-absent cards; NEW
+  `tests/test_report_payment_corroboration.py` +7 (three states render distinct lines; terminal state == HTML badge
+  class across all three = same-signal proof; display-only score-untouched; suppression on no-panel/no-prediction;
+  teeth that the three states are distinct strings). MUTATION-TESTED (collapse the shared classifier to always-"good" →
+  reddens BOTH the new terminal test AND `test_readout` 89→86; restored 7/7, 89/89). SCORE-NEUTRAL: scoring-path diff
+  (`asrs/scoring.py rubric/ fixtures/ batteries/ asrs/offering.py asrs/probes/`) EMPTY; canonical scored statically
+  (no behavioral runs → line suppresses on both), replay 26/26, **46.1 F / 85.5 B / +39.4 UNMOVED**; full suite **532
+  passed** (525→532, exit-code-verified). Invariants #1 (readout reads existing evidence, executes nothing), #2 (no
+  scoring-semantics → no version bump), #3 (traces to committed report fields, suppresses when nothing to corroborate),
+  #4 (a `warn` is a display flag not a site punishment; eth-account + stall attributed to agent/LOCAL env), #5 (mutation
+  on /tmp backup, restored; append-only) all held. NO DM (score-neutral READOUT, not sensitive-class, off scoring path,
+  before 16:00 UTC — 15:20Z Aug-5; last digest Cycle 228). See LOG Cycle 258.
+- FOCUS POINTER (Cycle 258 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
+  **BUT the LOCAL verify runner is STALLED with the 6h floor breached (P0 [LOCAL] queued Cycle 251) — not cloud-doable;
+  next-fire priority is keeping the P0 [LOCAL] fresh + the 16:00 UTC digest flag (OVERDUE — the NEXT fire almost
+  certainly crosses ≥16:00Z and OWES the daily digest carrying the runner-stall flag LOUDLY).** Cloud track rotation:
+  Cycle 258 was READOUT → cloud pointer is **METHOD next** (METHOD → COVERAGE → TRUTH → READOUT). NEXT METHOD openings:
+  panel-verdict-stability — does the reliability `stable`/`reproducible` gate (`asrs/reliability.py` `verdict_stability
+  >= _STABLE_MIN`) track what an agent re-experiences across trials, or can a "stable" ladder coexist with an unstable
+  trust posture a reader would still cite? (`provisional-trust-unstable` quotability branch untested vs a synthetic
+  disagreeing panel). NEXT READOUT openings (later): the `compare` view (`render_compare`) shows the two-column
+  transactability delta but no corroboration for EITHER side — the same affordance could qualify the with/without
+  transactability rows when both sides ran panels; the population-drift TREND once a 3rd dated sweep lands
+  ([LOCAL]-gated, only 2 committed). NEXT TRUTH openings: the `per_model` map in `trust_probe._build_check`
+  (arrival-order but self-labeled — a determinism guard if construction parallelizes); the shopper aggregator's
+  arrival-order surfaces are now CLOSED (Cycles 253/255/257). NEXT COVERAGE openings: service_booking anchor mining
+  EXHAUSTED (8 signals); WAITLIST is IMAGE-ONLY → [LOCAL] richer-booking fixture; the ipinfo.io
+  DATASET-FORMAT/DOWNLOAD-CONTRACT data_retrieval signal (Cycle-243); the deep-bank uncaptured-capability audit
+  (Cycle 226/230/233 lineage).
+  **RUNNER-HEALTH WATCH (ESCALATED — FLOOR BREACHED, carried Cycle 251→258 — hold until resolved):** last artifact
+  02:41Z; at the Cycle-258 fire (15:20Z) it is ~12.6h old = past the 6h floor, 12+ consecutive misses (03:41–14:41).
+  Cloud cannot diagnose (launchd-not-firing / machine-asleep / new pre-push failure indistinguishable from here) →
+  P0 [LOCAL] with exact diagnostic steps stands. Distinct from the Cycle-227 push-race (`divergence_recovery` None).
+  FLAG loudly in the next 16:00 UTC digest.
 - CYCLE 257 — 2026-08-05T~14:2xZ (TRUTH, cloud, direct-to-main, score-neutral).
   FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests` state=open `[]`): HEAD in sync with
   origin at Cycle 256 (`3683c0f`; detached-start realign via `git fetch origin main`, benign forced-update of local

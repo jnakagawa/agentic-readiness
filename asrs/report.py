@@ -109,6 +109,54 @@ def _cant_test_checks(report):
 # single report card
 # --------------------------------------------------------------------------
 
+def _payment_corroboration_line(report) -> list[str]:
+    """Terminal analog of the HTML card's payment-corroboration badge: one
+    indented sub-line under the Transactability row saying whether the
+    shopper's LIVED payment experience corroborates the static transactability
+    PREDICTION. Reads the SAME data the HTML badge and the calibration guard
+    read — the static ``x402_probe`` status and the ``machine_payable_path``
+    checkpoint across VALID behavioral trials — via the shared decision in
+    :func:`asrs.scorecard.payment_corroboration_state`, so the two readouts can
+    never disagree.
+
+    Display-only: it moves no score and bumps no rubric version. Empty (no
+    line) when no valid behavioral run exists (a static-only card has no lived
+    experience to corroborate against) or the prediction check is absent (an
+    older/partial report) — mirroring the HTML badge's suppression, so static
+    cards are byte-for-byte unchanged.
+    """
+    # Lazy import: keep the report module light and avoid importing the heavy
+    # HTML scorecard module at load time (matches the reliability lazy-imports).
+    from .scorecard import (  # noqa: PLC0415
+        _PAYMENT_EXPERIENCE_CHECKPOINT,
+        _PAYMENT_PREDICTION_CHECK,
+        payment_corroboration_state,
+    )
+
+    valid = [r for r in report.behavioral_runs if r.checkpoints]
+    if not valid:
+        return []
+    prediction = None
+    for c in report.checks:
+        if c.check_id == _PAYMENT_PREDICTION_CHECK:
+            prediction = _status_value(c.status)
+            break
+    if prediction is None:
+        return []
+    predicted_payable = prediction == "pass"
+    reached = [bool(r.checkpoints.get(_PAYMENT_EXPERIENCE_CHECKPOINT)) for r in valid]
+    state = payment_corroboration_state(predicted_payable, reached)
+    text = {
+        "good": "behaviorally corroborated — reached a machine-payable path "
+                "in every valid trial",
+        "neutral": "no payment, as predicted — hit the payment wall in every "
+                   "valid trial",
+        "warn": "NOT corroborated — static prediction and lived experience "
+                "disagree across trials",
+    }[state]
+    return [f"      payment corroboration: {text}"]
+
+
 def render(report) -> str:
     """A clean terminal report card for one Report."""
     lines: list[str] = []
@@ -142,6 +190,10 @@ def render(report) -> str:
             lines.append(f"      - {slug}")
 
     # -- pillars --
+    # The Transactability row carries a display-only behavioral-corroboration
+    # sub-line when a panel has run — the terminal analog of the HTML card's
+    # badge, reading the SAME signal (see :func:`_payment_corroboration_line`).
+    corrob_line = _payment_corroboration_line(report)
     lines.append("")
     lines.append("  PILLARS")
     for pillar in _PILLAR_ORDER:
@@ -150,6 +202,8 @@ def render(report) -> str:
         pscore = report.pillar_scores[pillar]
         label = _PILLAR_LABEL.get(pillar, pillar).ljust(16)
         lines.append(f"    {label} {_bar(pscore)} {_fmt_score(pscore)}")
+        if pillar == "transactability":
+            lines.extend(corrob_line)
     # Any pillars present in scores but not in the known order (defensive).
     for pillar, pscore in report.pillar_scores.items():
         if pillar in _PILLAR_ORDER:

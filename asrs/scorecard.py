@@ -2326,6 +2326,24 @@ _PAYMENT_PREDICTION_CHECK = "x402_probe"
 _PAYMENT_EXPERIENCE_CHECKPOINT = "machine_payable_path"
 
 
+def payment_corroboration_state(predicted_payable: bool, reached: list[bool]) -> str:
+    """The 3-state payment-corroboration DECISION, shared by every readout so
+    the HTML card's badge and the terminal card's line can never disagree —
+    they are the SAME signal, presented differently. Pure: takes the static
+    PREDICTION (did the score claim agent-native payment?) and the per-valid-
+    trial EXPERIENCE (did the shopper reach a machine-payable path?), returns
+    one of ``"good"`` / ``"neutral"`` / ``"warn"``. Callers own presentation.
+
+    Callers pass a NON-EMPTY ``reached`` (a valid behavioral run exists);
+    ``all([])``/``any([])`` would otherwise read "good"/"neutral" vacuously.
+    """
+    if predicted_payable and all(reached):
+        return "good"  # prediction lived out in every valid trial
+    if not predicted_payable and not any(reached):
+        return "neutral"  # predicted floor confirmed (honest absence)
+    return "warn"  # prediction and lived experience disagree / trials split
+
+
 def _payment_corroboration(rep: dict) -> tuple[str, str, str] | None:
     """Does the shopper's LIVED payment experience corroborate the static
     transactability PREDICTION? Returns ``(css_class, label, title)`` for the
@@ -2363,26 +2381,27 @@ def _payment_corroboration(rep: dict) -> tuple[str, str, str] | None:
         return None
     predicted_payable = prediction == "pass"
     reached = [bool(r["checkpoints"].get(_PAYMENT_EXPERIENCE_CHECKPOINT)) for r in valid]
-    if predicted_payable and all(reached):
-        return (
+    state = payment_corroboration_state(predicted_payable, reached)
+    return {
+        "good": (
             "good",
             "behaviorally corroborated",
             "The score predicts agent-native payment; the shopper reached a "
             "machine-payable path in every valid trial.",
-        )
-    if not predicted_payable and not any(reached):
-        return (
+        ),
+        "neutral": (
             "neutral",
             "no payment, as predicted",
             "The score predicts no agent-native payment; the shopper hit the "
             "payment wall in every valid trial (prediction confirmed).",
-        )
-    return (
-        "warn",
-        "not corroborated",
-        "The static payment prediction and the shopper's lived experience "
-        "disagree across trials.",
-    )
+        ),
+        "warn": (
+            "warn",
+            "not corroborated",
+            "The static payment prediction and the shopper's lived experience "
+            "disagree across trials.",
+        ),
+    }[state]
 
 
 def _pillars(rep: dict, baseline: dict | None = None) -> str:

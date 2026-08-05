@@ -411,9 +411,16 @@ _BOOKING_CLAIMED = {"subscription", "service_booking", "metered_api"}
 # evidence without falsely conjuring its sibling thin archetypes (physical_good is
 # not fulfilled; data_retrieval must stay NA — the `lookup` family must not fire).
 _BOOKING_MUST_BE_NA = {"physical_good", "data_retrieval"}
-# The genuine bookable-service signals that make service_booking non-vacuous here
-# (real reservation prose, never the excluded "book a demo"/"schedule a call" CTA).
-_BOOKING_SERVICE_LABELS = {"book", "appointment", "schedule"}
+# The genuine bookable-service CREATE signals that make service_booking non-vacuous
+# here (real reservation prose, never the excluded "book a demo"/"schedule a call"
+# CTA) — the MAKE-a-booking act.
+_BOOKING_CREATE_LABELS = {"book", "appointment", "schedule"}
+# The DISTINCT lifecycle-management leg mined from this anchor's real prose
+# (Cycle 248): reschedule/cancel an EXISTING booking — the "operate without a human"
+# leg, not the create act. Every fired service_booking label must be one of these
+# genuine signals (create ∪ manage), so a future spurious signal on the anchor fails.
+_BOOKING_MANAGE_LABELS = {"manage-booking"}
+_BOOKING_SERVICE_LABELS = _BOOKING_CREATE_LABELS | _BOOKING_MANAGE_LABELS
 
 
 def _assert_service_booking_anchor() -> None:
@@ -462,21 +469,29 @@ def _assert_service_booking_anchor() -> None:
 
     # (d) Non-vacuous: service_booking rests on ANCHORED bookable-service evidence
     # (book / appointment / schedule), the genuine reservation signals — NOT the
-    # excluded sales-CTA family. At least two distinct genuine labels fire, every
-    # fired label is one of the genuine set (no unexpected signal), and each has a
-    # non-empty quote.
+    # excluded sales-CTA family. At least two distinct genuine CREATE labels fire,
+    # every fired label is one of the genuine set (create ∪ manage, no unexpected
+    # signal), and each has a non-empty quote.
     booking = next(c for c in profile.claimed if c.archetype == "service_booking")
     labels = {s.label for s in booking.signals}
     _check(
-        len(labels & _BOOKING_SERVICE_LABELS) >= 2,
-        f"{_BOOKING}: service_booking rests on >=2 genuine bookable-service signals "
-        f"{sorted(_BOOKING_SERVICE_LABELS)} (got labels {sorted(labels)})",
+        len(labels & _BOOKING_CREATE_LABELS) >= 2,
+        f"{_BOOKING}: service_booking rests on >=2 genuine bookable-service CREATE "
+        f"signals {sorted(_BOOKING_CREATE_LABELS)} (got labels {sorted(labels)})",
     )
     _check(
         labels <= _BOOKING_SERVICE_LABELS,
         f"{_BOOKING}: every service_booking signal is a genuine bookable-service "
         f"label (got {sorted(labels)}, expected subset of "
         f"{sorted(_BOOKING_SERVICE_LABELS)})",
+    )
+    # (e) The NEW lifecycle-management leg (Cycle 248) fires NON-VACUOUSLY on this
+    # anchor's real prose — reschedule/cancel an existing appointment — the DISTINCT
+    # "operate without a human" capability, not merely another create signal.
+    _check(
+        _BOOKING_MANAGE_LABELS <= labels,
+        f"{_BOOKING}: the manage-booking lifecycle leg fires on real "
+        f"rescheduling/cancellation prose (got labels {sorted(labels)})",
     )
     _check(
         all(s.quote and s.quote.strip() for s in booking.signals),
@@ -6108,6 +6123,7 @@ _ISOLATION_EVIDENCE: dict[str, str] = {
     "reservation": "make a reservation",
     "schedule": "schedule your visit",
     "availability": "check availability",
+    "manage-booking": "reschedule or cancel your appointment",
     # data_retrieval
     "enrich": "we enrich your records",
     "dataset": "download the dataset",

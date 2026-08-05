@@ -1581,6 +1581,36 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
         ("schedule", re.compile(
             r"\bschedule (?:a|an|your) (?!(?:demo|call|walk[- ]?through|briefing|meeting)s?\b)\w+", _F)),
         ("availability", re.compile(r"\bcheck availability\b|\bavailable (times|slots)\b|\btime slots?\b", _F)),
+        # MANAGE AN EXISTING BOOKING — reschedule or cancel a booking already made.
+        # This is a GENUINELY DISTINCT capability leg from the five signals above,
+        # which every one describes MAKING a booking (book / appointment /
+        # reservation / schedule / availability — the create act). This one is the
+        # LIFECYCLE-MANAGEMENT leg: an agent that books autonomously must also be
+        # able to modify or cancel that booking without a human — the "complete the
+        # job / operate safely without a human" leg for service_booking, the direct
+        # analog of metered_api's `key-rotation` (a credential's lifecycle END, not
+        # its start). Mined from the committed service_booking anchor's real prose
+        # (acuityscheduling.com — "Appointment rescheduling and cancellations",
+        # "Notify staff of new, rescheduled, and canceled appointments").
+        # PRECISION-CRITICAL: bare "cancel" is a broad-English / billing minefield
+        # ("cancel your subscription", "cancel anytime", "cancel your order",
+        # "cancel a running job"), and bare "reschedule" collides with the same
+        # ubiquitous SALES-CTA family the `book`/`schedule` signals exclude
+        # ("reschedule a demo / call / meeting"). So NEVER match a bare verb: require
+        # the reschedule/cancel verb to sit within a short window of an unambiguous
+        # BOOKING NOUN (appointment / booking / reservation), in either order. The
+        # subscription/order/job/demo/call senses carry no booking noun and trip
+        # nothing; the genuine "reschedule or cancel your appointment" /
+        # "reschedule a booking" / "cancel a reservation" management prose still
+        # fires. No committed fixture but the service_booking anchor carries this
+        # prose (verified ABSENT on the other seven; service_booking stays NA on all
+        # five NA-fixtures per test_offering_canonical), and the anchor ALREADY
+        # claims service_booking via book/appointment/schedule, so the signal only
+        # DEEPENS an existing claim — never adds an archetype or reorders. Off the
+        # scoring path.
+        ("manage-booking", re.compile(
+            r"\b(?:reschedul\w+|cancel\w*)\b[^.\n]{0,40}?\b(?:appointments?|bookings?|reservations?)\b"
+            r"|\b(?:appointments?|bookings?|reservations?)\b[^.\n]{0,40}?\b(?:reschedul\w+|cancel\w*)\b", _F)),
     ],
     "data_retrieval": [
         # RECORD ENRICHMENT — an agent submits records and gets structured fields

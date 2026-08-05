@@ -1,6 +1,30 @@
 # Loop state
 
-- Cycle counter: 247
+- Cycle counter: 248
+- CYCLE 248 — 2026-08-05T~05:2xZ (COVERAGE, cloud, direct-to-main, score-neutral).
+  FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests`
+  state=open `[]`): INFRA GREEN, newest verify `runs/local/verify_20260805T024100Z.json`
+  (02:41Z, git_pull.ok=true attempts=1, divergence_recovery=None, tests_ok=true 24/24)
+  ~2.6h old at fire; live canonical **46.1 F / 85.5 B / +39.4** (tx 87.5), no drift; HEAD
+  in sync with origin at Cycle 247. Rebuilt the cloud `.venv` (absent at fire) +
+  `pip install -r requirements.txt` → eth-account restored, `test_free_tier` 11/11 (the
+  known agent-side gap, not a bench regression). Took the COVERAGE slot (cloud pointer,
+  Cycle 247 was METHOD): mined the service_booking anchor (acuityscheduling.com) for its
+  FIRST genuinely-distinct NEW signal — **`manage-booking`** (reschedule/cancel an EXISTING
+  booking), the LIFECYCLE-MANAGEMENT "operate without a human" leg, distinct from the five
+  create signals (book/appointment/reservation/schedule/availability) and the service_booking
+  analog of metered_api's Cycle-233 `key-rotation`. Mined from real anchor prose ("Appointment
+  rescheduling and cancellations"; "new, rescheduled, and canceled appointments"). PRECISION:
+  never a bare verb — reschedule/cancel must sit ≤40 chars from an unambiguous booking noun
+  (appointment/booking/reservation), so bare-cancel (subscription/order/job) + sales-CTA-
+  reschedule (demo/call/meeting) trip nothing. Fires NON-VACUOUSLY on the committed anchor
+  (service_booking strength 3→4, claimed SET+ORDER [subscription, service_booking, metered_api]
+  UNCHANGED), ABSENT on all 7 other fixtures. SCORE-NEUTRAL: `git diff --stat` = `asrs/offering.py`
+  (classifier, OFF the scoring path) + `tests/test_offering.py` (97→99) + `tests/test_offering_canonical.py`
+  (isolation matrix 69→70 signals, anchor genuine-label contract split create∪manage); replay guard
+  25/25, **46.1 F / 85.5 B / +39.4 UNMOVED**; full suite 25/25 files green. Invariant #1 held
+  (read-only discovery classifier, no probe/POST/signing). NO DM (score-neutral COVERAGE, not
+  sensitive-class, not first-after-16:00 UTC — ~05:2xZ Aug-5; last digest Cycle 228). See LOG Cycle 248.
 - CYCLE 247 — 2026-08-05T~04:2xZ (METHOD, cloud, direct-to-main, score-neutral).
   FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests`
   state=open `[]`): INFRA GREEN, newest verify `runs/local/verify_20260805T024100Z.json`
@@ -74,16 +98,18 @@
   **46.1 F / 85.5 B / +39.4 UNMOVED**; full suite 24→25 files green (test_free_tier 11/11 in-cloud this fire —
   eth-account gap did not recur). Invariant #1 held (tests-only, no probe/POST/signing). NO DM (score-neutral
   TRUTH, not sensitive-class, not first-after-16:00 UTC — ~02:1xZ Aug-5; last digest Cycle 228). See LOG Cycle 245.
-- FOCUS POINTER (Cycle 247 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
-  check only. Cloud track rotation: Cycle 247 was METHOD → cloud pointer is **COVERAGE next** (METHOD → COVERAGE →
-  TRUTH → READOUT). METHOD DONE this cycle: the calibration-population DRIFT signal is now pinned order-invariant
-  (stats + moved/status SETS reproduce regardless of sweep row arrival order; the presentation-order invariance
-  family now spans battery/reliability-9/applied-caps/drift). COVERAGE openings (prefer the oldest, in-cloud):
-  the still-UN-mined **service_booking** anchor (acuityscheduling.com, first distinct signal — a confirmation/
-  booking-reference or reschedule/availability-check control), OR the **ipinfo.io dataset-format/download-contract**
-  data_retrieval signal (Cycle-243 next-hypothesis), OR the deep-bank uncaptured-capability audit (Cycle
-  226/230/233 lineage). READOUT follow-up still queued (not urgent): surface the population drift TREND across all
-  committed sweeps once ≥3 dated sweeps exist. Substantive [LOCAL] frontier unchanged (prefer the oldest):
+- FOCUS POINTER (Cycle 248 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
+  check only. Cloud track rotation: Cycle 248 was COVERAGE → cloud pointer is **TRUTH next** (METHOD → COVERAGE →
+  TRUTH → READOUT). COVERAGE DONE this cycle: service_booking's anchor mined for its first distinct signal
+  `manage-booking` (reschedule/cancel an existing booking — the lifecycle "operate without a human" leg), so the
+  thinnest archetype grows 5→6 signals; isolation matrix 69→70. NEXT COVERAGE openings (prefer the oldest, in-cloud):
+  service_booking's anchor STILL carries un-mined capabilities distinct from create+manage — a REMINDER/NOTIFICATION
+  contract ("appointment reminders", "confirmation, reminder, and follow-up emails"), an INTAKE-FORM data-collection
+  control ("custom intake forms"), or a WAITLIST/slot capability ("Clients join a waitlist for fully booked times"),
+  each IF precision-guardable; OR the **ipinfo.io dataset-format/download-contract** data_retrieval signal
+  (Cycle-243 next-hypothesis); OR the deep-bank uncaptured-capability audit (Cycle 226/230/233 lineage). READOUT
+  follow-up still queued (not urgent): surface the population drift TREND across all committed sweeps once ≥3 dated
+  sweeps exist. Substantive [LOCAL] frontier unchanged (prefer the oldest):
   physical_good-rich / MIXED retail+API fixtures (the P1 rich-retail item), a THIRD calibration anchor, render/
   structured-catalog captures, the typographic PHRASE-RESCUE real-evidence case, ACP/UCP/MPP live handshakes.
   RUNNER-HEALTH WATCH: drift RESOLVED; future `verify_*.json` read +39.4 / attribution=None, real-series

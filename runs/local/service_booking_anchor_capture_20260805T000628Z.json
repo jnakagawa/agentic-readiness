@@ -1,0 +1,241 @@
+{
+ "ts": "20260805T000628Z",
+ "kind": "service-booking-anchor-capture",
+ "cycle": 240,
+ "track": "COVERAGE",
+ "purpose": "First committed fixture that CLAIMS service_booking (the tied-thinnest offering archetype, zero prior committed evidence). Discharges the [LOCAL] enabler open since Cycle 114; unblocks the thin-archetype COVERAGE P0 (Cycle 164).",
+ "spend": "$0 static crawls only; no behavioral run; no nonzero max-pay; invariant #1 held (acuity has no agentic payment rails \u2014 the static x402/free-tier probes found nothing to call).",
+ "screen": [
+  {
+   "domain": "cal.com",
+   "claimed": [
+    "metered_api",
+    "subscription",
+    "digital_good",
+    "service_booking",
+    "data_retrieval"
+   ],
+   "surfaces": [
+    "/docs",
+    "/llms-full.txt",
+    "/llms.txt",
+    "/pricing",
+    "docs.cal.com/.well-known/agent-card.json",
+    "docs.cal.com/docs",
+    "docs.cal.com/llms-full.txt",
+    "docs.cal.com/llms.txt",
+    "homepage"
+   ],
+   "error": null
+  },
+  {
+   "domain": "www.simplybook.me",
+   "claimed": [
+    "service_booking"
+   ],
+   "surfaces": [
+    "agents.simplybook.me/api-docs",
+    "agents.simplybook.me/docs",
+    "agents.simplybook.me/manifest.json",
+    "agents.simplybook.me/pricing",
+    "agents.simplybook.me/reference"
+   ],
+   "error": null
+  },
+  {
+   "domain": "cronofy.com",
+   "claimed": [
+    "metered_api",
+    "service_booking",
+    "subscription",
+    "digital_good"
+   ],
+   "surfaces": [
+    "/llms-full.txt",
+    "/llms.txt",
+    "/pricing",
+    "docs.cronofy.com/llms.txt",
+    "homepage"
+   ],
+   "error": null
+  },
+  {
+   "domain": "acuityscheduling.com",
+   "claimed": [
+    "subscription",
+    "service_booking",
+    "metered_api"
+   ],
+   "surfaces": [
+    "/pricing",
+    "agents.acuityscheduling.com/pricing",
+    "developers.acuityscheduling.com/docs",
+    "developers.acuityscheduling.com/llms.txt",
+    "homepage"
+   ],
+   "error": null
+  },
+  {
+   "domain": "savvycal.com",
+   "claimed": [
+    "subscription",
+    "service_booking",
+    "digital_good"
+   ],
+   "surfaces": [
+    "/pricing",
+    "homepage"
+   ],
+   "error": null
+  },
+  {
+   "domain": "www.setmore.com",
+   "claimed": [
+    "subscription",
+    "service_booking"
+   ],
+   "surfaces": [
+    "/pricing",
+    "homepage"
+   ],
+   "error": null
+  },
+  {
+   "domain": "fresha.com",
+   "claimed": [
+    "subscription",
+    "service_booking",
+    "metered_api",
+    "physical_good"
+   ],
+   "surfaces": [
+    "/manifest.json",
+    "/pricing",
+    "homepage"
+   ],
+   "error": null
+  }
+ ],
+ "chosen": "acuityscheduling.com",
+ "why_chosen": "Clean, genuine, precision-safe: claims exactly {subscription, service_booking, metered_api}, service_booking on 3 distinct genuine signals (book/appointment/schedule) from homepage + real developer llms.txt, NO false data_retrieval (unlike cal.com, whose lookup fired on \"Self-hosted deployment lookup\"). A real appointment-booking storefront.",
+ "rejected": {
+  "cal.com": "rich service_booking (5 signals) but a FALSE data_retrieval (lookup on \"deployment lookup\") + noisy digital_good (notranslate/render) \u2014 not a clean anchor",
+  "www.simplybook.me": "thin/boilerplate \u2014 one repeated  title from a soft-404 SPA shell"
+ },
+ "live_classification": {
+  "claimed_order": [
+   "subscription",
+   "service_booking",
+   "metered_api"
+  ],
+  "surfaces_seen": [
+   "/pricing",
+   "developers.acuityscheduling.com/llms.txt",
+   "homepage"
+  ],
+  "claims": {
+   "subscription": {
+    "strength": 5,
+    "signals": [
+     "annual-billing",
+     "free-trial",
+     "per-month",
+     "per-month-price",
+     "recurring"
+    ],
+    "evidence": [
+     {
+      "label": "per-month-price",
+      "surface": "/pricing",
+      "quote": "o not include applicable taxes. Starter $16 / month $20 / month Get started Start free tria"
+     },
+     {
+      "label": "per-month",
+      "surface": "/pricing",
+      "quote": "icable taxes. Pay annually Save 20% Pay monthly All prices are in USD. Prices do not in"
+     },
+     {
+      "label": "recurring",
+      "surface": "/pricing",
+      "quote": "s and packages Offer bundled pricing or recurring billing. Sell gift certificates Allow clients t"
+     },
+     {
+      "label": "annual-billing",
+      "surface": "/pricing",
+      "quote": "e you start your free trial , switch to annual billing in your account settings, and you'll be"
+     },
+     {
+      "label": "free-trial",
+      "surface": "/pricing",
+      "quote": "6 / month $20 / month Get started Start free trial 7-day trial, no credit card needed 1 ca"
+     }
+    ]
+   },
+   "service_booking": {
+    "strength": 3,
+    "signals": [
+     "appointment",
+     "book",
+     "schedule"
+    ],
+    "evidence": [
+     {
+      "label": "book",
+      "surface": "homepage",
+      "quote": "Acuity Scheduling: Online Booking & Appointment Scheduling Software Get s"
+     },
+     {
+      "label": "appointment",
+      "surface": "homepage",
+      "quote": "Acuity Scheduling: Online Booking & Appointment Scheduling Software Get started How It"
+     },
+     {
+      "label": "book",
+      "surface": "/pricing",
+      "quote": "utions Product Client Experience Online Booking Client Management Class Scheduling View"
+     },
+     {
+      "label": "appointment",
+      "surface": "/pricing",
+      "quote": "dates, reminders, and confirmations for appointments. Custom client forms Use intake forms t"
+     },
+     {
+      "label": "appointment",
+      "surface": "developers.acuityscheduling.com/llms.txt",
+      "quote": "lopers worldwide: customize your online appointment scheduler using our powerful scheduling"
+     },
+     {
+      "label": "schedule",
+      "surface": "developers.acuityscheduling.com/llms.txt",
+      "quote": "for Acuity services. ## Pages - [How To Schedule an Appointment with the Acuity Scheduling API](https:/"
+     }
+    ]
+   },
+   "metered_api": {
+    "strength": 1,
+    "signals": [
+     "api-reference"
+    ],
+    "evidence": [
+     {
+      "label": "api-reference",
+      "surface": "developers.acuityscheduling.com/llms.txt",
+      "quote": "uityscheduling.com/docs/webhooks.md) ## API Reference - [Quick Start](https://developers.acui"
+     }
+    ]
+   }
+  }
+ },
+ "fixture": {
+  "path": "fixtures/canonical/acuityscheduling.com.json",
+  "entries": 65,
+  "bytes": 7362220,
+  "set_cookie_stripped": 15,
+  "set_cookie_now": 0,
+  "local_path_leak": false,
+  "invisible_stripped_chars": "none",
+  "honest_ordering": "fixture replay reproduces the live discover_offering classification EXACTLY (verified before + after set-cookie strip; identical)"
+ },
+ "guard": "tests/test_offering_canonical.py::test_service_booking_anchor_offering (+ test_service_booking_partition_tracks_storefront_type) \u2014 offering canonical suite 62->64",
+ "score_neutral": "git diff -- asrs/ rubric/ EMPTY (offering off scoring path); replay guard 24/24, 46.1 F / 85.5 B / +39.4 UNMOVED; full suite 24/24 files"
+}

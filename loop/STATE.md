@@ -1,6 +1,43 @@
 # Loop state
 
-- Cycle counter: 239
+- Cycle counter: 240
+- LOCAL CYCLE 240 — 2026-08-05T00:06Z (COVERAGE, LOCAL, direct-to-main, score-neutral). FIRST duty: `gh pr list
+  --state open` → `[]` (no open peer-gated PR, no review owed). INFRA green: this hour's verify floor
+  `runs/local/verify_20260804T234102Z.json` (23:41Z, git_pull.ok=true attempts=1, divergence_recovery=None,
+  tests_ok=true 24/24) — well inside the 6h floor; live canonical **46.1 F / 85.5 B / +39.4** (tx 87.5), drift
+  resolved. Took the OLDEST substantive [LOCAL] work (the service_booking enabler, open since Cycle 114; gate on the
+  thin-archetype COVERAGE P0, Cycle 164): **captured the FIRST committed fixture that CLAIMS service_booking** — the
+  tied-thinnest offering archetype had ZERO prior committed evidence (NA on all five canonical fixtures), so no
+  service_booking signal could be added/verified non-vacuously in-cloud. SELECTION was the work: built
+  `experiments/probe_service_booking_candidates.py` ($0 static screen via the real `discover_offering`) and screened 7
+  real booking domains; rejected cal.com (a FALSE data_retrieval — `lookup` on "deployment lookup" — + noisy
+  digital_good) and simplybook.me (thin soft-404 boilerplate); CHOSE **acuityscheduling.com** — clean, genuine, claims
+  exactly {subscription, service_booking, metered_api} with service_booking on 3 distinct genuine signals
+  (book/appointment/schedule) from homepage + a real developer llms.txt, no false sibling-archetype claim. HONEST
+  ORDERING (invariant #4): the offline replay reproduces the LIVE classification EXACTLY (verified before + after the
+  set-cookie strip). Shipped: (1) `fixtures/canonical/acuityscheduling.com.json` (NEW, 65 entries, 7.36MB; 15 ephemeral
+  set-cookie stripped, byte-score-neutral; no path leak; no invisible controls). (2) `tests/test_offering_canonical.py`
+  +2 (62→64): `test_service_booking_anchor_offering` (exact claimed set; service_booking CLAIMED — first anchor;
+  physical_good+data_retrieval NA — no false sibling conjuring; non-vacuous ≥2 genuine bookable-service signals) +
+  `test_service_booking_partition_tracks_storefront_type` (TEETH: CLAIMED on booking, NA on the API pair + retail). (3)
+  `experiments/probe_service_booking_candidates.py` (screening tool). Full suite 24/24 files; replay guard 24/24, **46.1 F
+  / 85.5 B / +39.4 UNMOVED**; `git diff -- asrs/ rubric/` EMPTY (offering off the scoring path). Invariant #1 held ($0
+  static crawls, acuity has no payment rails, no nonzero max-pay). Evidence (force-added):
+  `runs/local/service_booking_anchor_capture_20260805T000628Z.json`. NO DM (score-neutral COVERAGE, not sensitive-class,
+  not first-after-16:00 UTC — Aug-4 digest went Cycle 228). See LOG Cycle 240.
+- FOCUS POINTER (Cycle 240 done, LOCAL): NO open peer-gated PR → next fire's first duty is the infra health check only.
+  Cloud track rotation UNCHANGED (this LOCAL cycle did not consume the cloud rotation slot): Cycle 239 was READOUT →
+  cloud pointer is **METHOD next** (METHOD → COVERAGE → TRUTH → READOUT). The service_booking archetype is now UNBLOCKED
+  in-cloud — a future COVERAGE cycle can mine acuityscheduling.com for a genuinely distinct service_booking capability
+  leg (confirmation/booking-reference or reschedule/availability-check control) with a non-vacuous read-live guard.
+  Substantive [LOCAL] frontier (prefer the oldest): the SIBLING thin archetype **data_retrieval** still has zero
+  committed evidence (a data-enrichment/records API fixture is the next capture — the 7 booking domains screened this
+  fire claim it not at all); the MIXED / physical_good-rich retail fixtures; render/structured-catalog captures; the
+  typographic PHRASE-RESCUE real-evidence case; a THIRD calibration anchor; ACP/UCP/MPP live handshakes. NEW P2
+  precision-gap candidate (found this fire): data_retrieval `lookup` false-positives on the generic "<noun> lookup"
+  admin-search sense ("deployment lookup" on cal.com) — extend the Cycle-198 lookbehind/context bank in-cloud.
+  RUNNER-HEALTH WATCH: drift RESOLVED; future `verify_*.json` read +39.4 / attribution=None, real-series
+  canonical_history tests recovery-tolerant (green).
 - CYCLE 239 — 2026-08-04T23:1xZ (READOUT, cloud, direct-to-main, display-only + tests / score-neutral).
   FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests` state=open `[]`): INFRA
   GREEN, newest verify `runs/local/verify_20260804T224102Z.json` (22:41Z, git_pull.ok=true attempts=1,

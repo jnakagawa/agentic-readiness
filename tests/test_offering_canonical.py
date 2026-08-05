@@ -356,6 +356,159 @@ def test_retail_sandbox_title_does_not_trip_test_mode() -> None:
 
 
 # ---------------------------------------------------------------------------
+# The SERVICE-BOOKING anchor — the FIRST committed fixture to CLAIM service_booking.
+#
+# service_booking is one of the two tied-thinnest offering archetypes and, until
+# this fixture, had ZERO committed evidence: it is NA on ALL five prior canonical
+# fixtures (`_MUST_BE_NA` above pins it NA on the API pair; `_RETAIL` claims only
+# physical_good; example.com claims nothing), so a NEW capability-worded
+# service_booking signal could not be added or verified non-vacuously in-cloud
+# (the [LOCAL] enabler this discharges — BACKLOG "capture a fixture that CLAIMS
+# service_booking", open since Cycle 114). This fixture — a real appointment-
+# booking storefront (Acuity Scheduling) captured [LOCAL] via a static $0 crawl —
+# is that first anchor: it lets a future COVERAGE cycle mine service_booking for a
+# genuinely distinct capability leg (a confirmation / reschedule / availability
+# control) against REAL evidence, with the same non-vacuous read-live guard the
+# metered_api signals got.
+#
+# It also makes the operator directive's NA machinery TWO-SIDED on the booking
+# axis: the API pair and the retail fixture both show service_booking = NA (a
+# programmatic API and a book catalog do not book a service), while this booking
+# storefront shows it CLAIMED — proving the claimed/NA partition tracks the
+# storefront TYPE, the same way `_RETAIL` proved it for physical_good.
+#
+# HONEST full classification: Acuity CLAIMS {subscription, service_booking,
+# metered_api} — a subscription-priced ($16/mo, 7-day free trial) booking service
+# with a real developer API. Pinned as an exact set so a spurious ADD (notably a
+# false data_retrieval, the sibling thin archetype — the `lookup` precision family
+# must NOT fire here) or a DROPPED archetype both fail. The other two thin
+# archetypes (physical_good, data_retrieval) are asserted NA: this anchor gives
+# service_booking its first evidence WITHOUT falsely conjuring its siblings.
+#
+# NON-VACUOUS by anchored evidence: service_booking rests on GENUINE bookable-
+# service signals (book / appointment / schedule) drawn from real prose — "Online
+# Booking & Appointment Scheduling Software" (homepage) and "How To Schedule an
+# Appointment with the Acuity Scheduling API" (developer llms.txt) — NONE of which
+# is the excluded B2B sales-CTA family ("book a demo" / "schedule a call") the
+# Cycle-190/194 precision guards strip. So this is a real reservation storefront,
+# not a same-word coincidence.
+#
+# Maintenance contract mirrors the canonical/retail guards: if a signal-bank
+# change LEGITIMATELY moves what this fixture claims, re-capture it [LOCAL]
+# (`asrs.cli score acuityscheduling.com --record-fixture
+# fixtures/canonical/acuityscheduling.com.json`, static $0) and update the
+# expected sets below in the SAME PR.
+#
+# Fixture captured [LOCAL] 2026-08-05 (this cycle) — the live discover_offering
+# classification was reproduced byte-faithfully by the offline replay before
+# recording (honest ordering, invariant #4); ephemeral set-cookie headers stripped
+# for determinism, matching the sibling fixtures' zero-set-cookie convention.
+# ---------------------------------------------------------------------------
+_BOOKING = "acuityscheduling.com"
+# What the booking storefront CLAIMS: a subscription-priced service with an API.
+_BOOKING_CLAIMED = {"subscription", "service_booking", "metered_api"}
+# The thin archetypes this anchor does NOT claim — service_booking gets its first
+# evidence without falsely conjuring its sibling thin archetypes (physical_good is
+# not fulfilled; data_retrieval must stay NA — the `lookup` family must not fire).
+_BOOKING_MUST_BE_NA = {"physical_good", "data_retrieval"}
+# The genuine bookable-service signals that make service_booking non-vacuous here
+# (real reservation prose, never the excluded "book a demo"/"schedule a call" CTA).
+_BOOKING_SERVICE_LABELS = {"book", "appointment", "schedule"}
+
+
+def _assert_service_booking_anchor() -> None:
+    profile, _ = _discover(_BOOKING)
+    claimed = set(profile.archetypes)
+    unclaimed = set(profile.unclaimed)
+
+    _check(
+        "homepage" in profile.surfaces_seen,
+        f"{_BOOKING}: homepage surface was read (discovery had real evidence)",
+    )
+
+    # (a) The claimed SET is exactly {subscription, service_booking, metered_api}.
+    # Exact equality is the regression signal in BOTH directions: a spurious ADD
+    # (a false data_retrieval from the `lookup` family, the sibling thin archetype)
+    # or a DROPPED archetype both fail here.
+    _check(
+        claimed == _BOOKING_CLAIMED,
+        f"{_BOOKING}: claimed archetypes == {sorted(_BOOKING_CLAIMED)} "
+        f"(got {sorted(claimed)})",
+    )
+
+    # claimed and unclaimed partition the fixed template bank exactly (no leaks).
+    _check(
+        claimed | unclaimed == set(ARCHETYPES) and not (claimed & unclaimed),
+        f"{_BOOKING}: claimed+unclaimed partition the archetype bank "
+        f"(claimed {sorted(claimed)}, unclaimed {sorted(unclaimed)})",
+    )
+
+    # (b) The whole point: service_booking is CLAIMED — the FIRST committed fixture
+    # to do so (it is NA on all five prior canonical fixtures).
+    _check(
+        profile.claims("service_booking"),
+        f"{_BOOKING}: service_booking CLAIMED — a real appointment-booking "
+        "storefront books a service (the first committed service_booking anchor)",
+    )
+
+    # (c) The sibling thin archetypes stay NA: this anchor does not falsely conjure
+    # its neighbours (physical_good fulfillment / a data_retrieval `lookup`).
+    _check(
+        _BOOKING_MUST_BE_NA <= unclaimed,
+        f"{_BOOKING}: {sorted(_BOOKING_MUST_BE_NA)} are all NA/unclaimed "
+        f"(got unclaimed {sorted(unclaimed)}) — service_booking's first evidence "
+        "does not falsely claim its sibling thin archetypes",
+    )
+
+    # (d) Non-vacuous: service_booking rests on ANCHORED bookable-service evidence
+    # (book / appointment / schedule), the genuine reservation signals — NOT the
+    # excluded sales-CTA family. At least two distinct genuine labels fire, every
+    # fired label is one of the genuine set (no unexpected signal), and each has a
+    # non-empty quote.
+    booking = next(c for c in profile.claimed if c.archetype == "service_booking")
+    labels = {s.label for s in booking.signals}
+    _check(
+        len(labels & _BOOKING_SERVICE_LABELS) >= 2,
+        f"{_BOOKING}: service_booking rests on >=2 genuine bookable-service signals "
+        f"{sorted(_BOOKING_SERVICE_LABELS)} (got labels {sorted(labels)})",
+    )
+    _check(
+        labels <= _BOOKING_SERVICE_LABELS,
+        f"{_BOOKING}: every service_booking signal is a genuine bookable-service "
+        f"label (got {sorted(labels)}, expected subset of "
+        f"{sorted(_BOOKING_SERVICE_LABELS)})",
+    )
+    _check(
+        all(s.quote and s.quote.strip() for s in booking.signals),
+        f"{_BOOKING}: every service_booking signal carries quoted evidence",
+    )
+
+
+def test_service_booking_anchor_offering() -> None:
+    print("test_service_booking_anchor_offering")
+    _assert_service_booking_anchor()
+
+
+def test_service_booking_partition_tracks_storefront_type() -> None:
+    """TEETH: service_booking is CLAIMED on the booking storefront yet NA on the
+    with-rails API pair and the retail catalog — the claimed/NA partition tracks
+    the storefront TYPE, not a same-word coincidence."""
+    print("test_service_booking_partition_tracks_storefront_type")
+    booking, _ = _discover(_BOOKING)
+    _check(
+        booking.claims("service_booking"),
+        f"{_BOOKING}: books a service -> service_booking CLAIMED",
+    )
+    for other in ("driftflight.com", _RETAIL):
+        prof, _ = _discover(other)
+        _check(
+            not prof.claims("service_booking"),
+            f"{other}: does not book a service -> service_booking NA (a "
+            "programmatic API / book catalog is not a reservation storefront)",
+        )
+
+
+# ---------------------------------------------------------------------------
 # The EMPTY offering — a site that sells nothing. The two guards above pin the
 # poles of the classifier (an agent-native API -> physical_good NA; a retail shop
 # -> physical_good CLAIMED, APIs NA). This pins the THIRD, degenerate case the
@@ -6443,6 +6596,8 @@ def main() -> int:
         test_canonical_metaphorical_ship_stays_na_com,
         test_retail_inverse_offering,
         test_retail_sandbox_title_does_not_trip_test_mode,
+        test_service_booking_anchor_offering,
+        test_service_booking_partition_tracks_storefront_type,
         test_nonstorefront_empty_offering,
         test_machine_surface_openapi_storefront,
         test_offering_relabel_invariance_org,

@@ -3,6 +3,71 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 240 — 2026-08-05T00:06Z — COVERAGE (LOCAL, direct-to-main, score-neutral) — the FIRST committed fixture that CLAIMS service_booking (the tied-thinnest offering archetype, ZERO prior committed evidence): a real appointment-booking storefront (acuityscheduling.com) captured live, pinned by a read-live anchor guard — discharging the [LOCAL] enabler open since Cycle 114 and unblocking in-cloud COVERAGE on the thin archetypes
+
+FIRST duty (LOCAL): `gh pr list --state open` → `[]` — no open peer-gated PR, no review/merge owed (last PR #145 merged Cycle 235,
+thread closed Cycle 236). INFRA green: this hour's verify floor `runs/local/verify_20260804T234102Z.json` (23:41Z,
+git_pull.ok=true attempts=1, divergence_recovery=None, tests_ok=true 24/24 files) — well inside the 6h floor. Live canonical
+signal READ from it: **46.1 F / 85.5 B / +39.4** (tx 87.5) — drift resolved, live agrees with the frozen fixture.
+
+WHAT/WHY (COVERAGE — the OLDEST substantive [LOCAL] work, per local law "prefer the oldest"). service_booking is one of the
+two tied-thinnest offering archetypes and had **zero committed evidence**: it is NA on all five prior canonical fixtures
+(the API pair + api.replicate claim metered_api/subscription/digital_good; books.toscrape → physical_good; example.com →
+nothing). So a NEW capability-worded service_booking signal could not be added or verified non-vacuously in-cloud — the
+exact vacuous trap the enabler [LOCAL] item (open since Cycle 114) exists to break, and the gate on the thin-archetype
+COVERAGE P0 (Cycle 164). This cycle captures that first anchor.
+
+SELECTION WAS THE WORK (invariant #3 — verify live before shipping). Built `experiments/probe_service_booking_candidates.py`
+(a $0 static screen that runs the REAL `discover_offering` over candidate booking storefronts and reports reachability +
+claimed set + per-signal service_booking evidence) and screened 7 real domains. Findings:
+- **cal.com** — rich service_booking (5 signals) BUT a FALSE `data_retrieval` (`lookup` fired on "Self-hosted deployment
+  lookup", an admin search — the Cycle-198 lookbehind bank doesn't cover "deployment lookup") + noisy digital_good
+  (`notranslate` HTML attr, a render *warning*). Not a clean anchor — rejected (recorded as a new precision-gap candidate).
+- **www.simplybook.me** — claimed ONLY service_booking but on ONE repeated boilerplate title ("...| Scheduling and Booking
+  Website") from a soft-404 SPA shell — thin/vacuous. Rejected.
+- **acuityscheduling.com** — CHOSEN. Clean, genuine, precision-safe: claims exactly **{subscription, service_booking,
+  metered_api}**; service_booking on **3 distinct genuine signals** (book/appointment from the homepage "Online Booking &
+  Appointment Scheduling Software"; schedule from the REAL developer llms.txt "How To Schedule an Appointment with the
+  Acuity Scheduling API") — NONE the excluded "book a demo"/"schedule a call" sales-CTA family; no false sibling-archetype
+  claim. A real appointment-booking SaaS ($16/mo, 7-day free trial) with a public API — a genuinely new storefront TYPE.
+
+HONEST ORDERING (invariant #4). The fixture is captured FROM the live crawl and the offline replay reproduces the LIVE
+`discover_offering` classification EXACTLY — {subscription, service_booking, metered_api}, service_booking strength 3 — verified
+both before and after the set-cookie strip (identical). No re-recording of a drifted site.
+
+WHAT SHIPPED (all off the scoring path → score-neutral, direct-to-main):
+1. `fixtures/canonical/acuityscheduling.com.json` (NEW) — captured live via `asrs score acuityscheduling.com --record-fixture
+   ...` ($0 static crawl). 65 entries; 7.36MB. Hygiene: 15 ephemeral `set-cookie` headers stripped for determinism +
+   siblings' zero-set-cookie convention (VERIFIED byte-score-neutral: offering classification identical before/after); no
+   local-path leak (0 `jonahnakagawa`/`/Users/`); carries none of the invisible line-break controls (so the `test_offering.py`
+   fixture-glob strip test stays invariant-by-construction).
+2. `tests/test_offering_canonical.py` (+2, offering canonical suite 62→64):
+   - `test_service_booking_anchor_offering` — replays the fixture and pins: claimed SET == {subscription, service_booking,
+     metered_api} (exact — a spurious ADD like a false data_retrieval OR a drop both fail); service_booking CLAIMED (the
+     first committed fixture to do so); physical_good + data_retrieval NA (the anchor gives service_booking its first
+     evidence WITHOUT falsely conjuring its sibling thin archetypes); non-vacuous — ≥2 of {book,appointment,schedule} fire,
+     every fired label is a genuine bookable-service signal, each with quoted evidence.
+   - `test_service_booking_partition_tracks_storefront_type` (TEETH) — service_booking CLAIMED on the booking storefront yet
+     NA on driftflight.com (with-rails API) AND books.toscrape.com (retail), proving the claimed/NA partition tracks
+     storefront TYPE, the service_booking mirror of the `_RETAIL` physical_good proof.
+3. `experiments/probe_service_booking_candidates.py` (NEW) — the reproducible screening tool (evidence trail).
+
+VALIDATION. Full suite **24/24 files green** (offering canonical 62→64). Score-neutral: `git diff -- asrs/ rubric/` EMPTY
+(the offering classifier is off the scoring path); replay guard **24/24, 46.1 F / 85.5 B / +39.4 UNMOVED** (acuity is not in
+EXPECTED_CLAIMED / the replay guard — its `_MUST_BE_NA` = {physical_good, service_booking, data_retrieval} would forbid a
+service_booking-claiming fixture, so the anchor gets a DEDICATED guard, exactly as moleskine did in Cycle 238). Invariant #1
+held ($0 static crawls; acuity has no agentic payment rails so the static x402/free-tier probes found nothing; no nonzero
+max-pay). Evidence (force-added): `runs/local/service_booking_anchor_capture_20260805T000628Z.json` (screen + chosen +
+classification + hygiene).
+
+NEXT HYPOTHESIS. (1) A future in-cloud COVERAGE cycle can now mine service_booking for a genuinely distinct capability leg
+against this REAL evidence — e.g. a confirmation/booking-reference or a reschedule/availability-check control — with the same
+non-vacuous read-live guard the metered_api signals got (the thin-archetype P0 is UNBLOCKED for service_booking). (2) NEW
+precision-gap candidate discovered this fire: the data_retrieval `lookup` signal false-positives on the generic admin-search
+sense "<noun> lookup" ("deployment lookup" on cal.com) — extend the Cycle-198 lookbehind/context bank (queued P2). (3) The
+sibling thin archetype **data_retrieval** still has zero committed evidence — a data-enrichment/records API is the next
+[LOCAL] fixture capture (cronofy/others screened claim it not at all; a dedicated data-API domain is needed).
+
 ## Cycle 238 — 2026-08-04T22:56Z — TRUTH (LOCAL, direct-to-main, score-neutral) — the NEGATIVE calibration anchor (no-rails retail, moleskine.com) now has a committed static fixture, so its no-rails FLOOR gets the SAME two-crawl cross-validation the with-rails CEILING has — closing the honest-scope gap open since Cycle 71
 
 FIRST duty (LOCAL): `gh pr list --state open` → `[]` — no open peer-gated PR, no review/merge owed (PR #145 merged

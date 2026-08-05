@@ -385,7 +385,14 @@ design in-cloud, execute locally.
   `test_offering.py` 23→24; suite 240 tests. See LOG Cycle 70.
 
 - **[LOCAL] Strengthen the UNDER-COVERED archetypes (service_booking / data_retrieval / physical_good)**
-  (COVERAGE, opened Cycle 164). The offering signal bank is metered_api-HEAVY: metered_api 26, digital_good
+  (COVERAGE, opened Cycle 164). PROGRESS — LOCAL Cycle 240 (2026-08-05): **service_booking is now UNBLOCKED
+  in-cloud** — its first committed fixture (`fixtures/canonical/acuityscheduling.com.json`, a real appointment-booking
+  storefront claiming {subscription, service_booking, metered_api}) landed this fire, so an in-cloud COVERAGE cycle can
+  now mine service_booking for a genuinely distinct capability leg (a confirmation/booking-reference or a
+  reschedule/availability-check control) against REAL evidence, the same way Cycle 164 did for digital_good. The other
+  two thin archetypes still need fixtures: **data_retrieval** has zero committed evidence ([LOCAL], see the enabler
+  above) and **physical_good** wants a RICHER retail fixture than the thin books.toscrape (the P1 rich-retail item). See
+  LOG Cycle 240. The offering signal bank is metered_api-HEAVY: metered_api 26, digital_good
   11 (post-Cycle-164 `variant-selection`), physical_good 9, subscription 9 (post-Cycle-172 `plan-allowance`),
   service_booking 5, data_retrieval 5. The three thin archetypes CANNOT be strengthened non-vacuously in-cloud — no committed
   fixture CLAIMS service_booking or data_retrieval at all, and the only physical_good fixture
@@ -1265,21 +1272,31 @@ design in-cloud, execute locally.
      24/24, 46.1 F / 85.5 B / +39.4; offering-canonical 40/40; rubric v0.7. NINTH metered_api offer-side
      leg with a full COVERAGE→TRUTH→READOUT arc. See LOG Cycle 136. -->
 
-- **[LOCAL] Capture a fixture that CLAIMS service_booking and/or data_retrieval** (COVERAGE enabler, from
-  Cycle 114's audit). The two weakest offering archetypes — `service_booking` (5 legs: book / appointment /
-  reservation / schedule / availability) and `data_retrieval` (5 legs: enrich / dataset / lookup /
-  data-service / query-records) — cannot get a NEW capability-worded signal added in-cloud, because NO
-  committed fixture claims either (the canonical pair + api.replicate claim metered_api/subscription/
+- **[LOCAL] Capture a fixture that CLAIMS data_retrieval** (COVERAGE enabler, from
+  Cycle 114's audit). **SERVICE_BOOKING HALF DONE — LOCAL Cycle 240 (2026-08-05T00:06Z, COVERAGE, direct-to-main,
+  score-neutral): `fixtures/canonical/acuityscheduling.com.json` (NEW) is the FIRST committed fixture that CLAIMS
+  service_booking** — a real appointment-booking storefront (claims {subscription, service_booking, metered_api};
+  service_booking on 3 genuine signals book/appointment/schedule), chosen by a $0 static screen of 7 booking domains
+  (`experiments/probe_service_booking_candidates.py`) that rejected cal.com (false data_retrieval on "deployment lookup"
+  + noisy digital_good) and simplybook.me (soft-404 boilerplate). Pinned by `test_offering_canonical.py::
+  test_service_booking_anchor_offering` + `...partition_tracks_storefront_type` (62→64). So a future in-cloud COVERAGE
+  cycle CAN now add a genuinely distinct service_booking leg (confirmation/booking-reference or reschedule/availability
+  control) against real evidence. See LOG Cycle 240. **REMAINING: data_retrieval still has ZERO committed evidence** —
+  its 5 legs (enrich / dataset / lookup / data-service / query-records) still
+  cannot get a NEW capability-worded signal added in-cloud, because NO
+  committed fixture claims it (the canonical pair + api.replicate claim metered_api/subscription/
   digital_good; books.toscrape claims physical_good; example.com claims nothing). Adding a signal to a
   never-claimed archetype is UNVERIFIABLE here (a vacuous case — cannot prove it fires non-vacuously or is
-  score-neutral). Capture a fixture LIVE from a real agent-facing site that genuinely claims one of these —
-  a booking/reservation storefront (a hotel/restaurant/appointment API with `book`/`availability`/`time
-  slots`) or a data-enrichment/lookup API (a records-enrichment or dataset-query service) — via
+  score-neutral). Capture a fixture LIVE from a real data-enrichment/lookup API (a records-enrichment or
+  dataset-query service that genuinely claims data_retrieval) — via
   `asrs.cli score <domain> --record-fixture fixtures/canonical/<domain>.json` (static $0, needs network →
   [LOCAL]). Then a future COVERAGE cycle can add ONE capability leg to the claimed archetype (e.g.
-  service_booking: a `confirmation`/booking-reference or a `reschedule`/cancel-booking control leg;
   data_retrieval: a `bulk-export`/structured-output-format or a `filter`/query-parameter leg) with the same
-  non-vacuous read-live guard the metered_api signals got. Off the scoring path, score-neutral.
+  non-vacuous read-live guard the metered_api signals got. Off the scoring path, score-neutral. NOTE (Cycle 240):
+  the 7 booking domains screened for the service_booking capture (cal.com/cronofy/acuity/savvycal/setmore/
+  fresha/simplybook) claim data_retrieval NOT at all (cal.com's was a FALSE `lookup` on "deployment lookup"), so
+  a DEDICATED data-API domain is needed — screen records-enrichment / dataset-marketplace / reverse-lookup APIs
+  (e.g. a WHOIS/company-enrichment or a dataset-feed service) with the same probe tool.
 
 <!-- TRUTH HALF DONE 2026-07-30T~19:2xZ (Cycle 115, branch+PR+self-merge, tests-only/score-neutral):
      "pin `free-trial` as RELABEL-INVARIANT" SHIPPED. `test_offering_relabel_invariance_free_trial` +
@@ -2031,6 +2048,21 @@ design in-cloud, execute locally.
   the 10:13Z observation implied (folds into the acceptance-rerun P0; no new code — a timing note).
 
 ## P2
+
+- **[CANDIDATE, COVERAGE/in-cloud] data_retrieval `lookup` false-positives on the generic "&lt;noun&gt; lookup"
+  admin-search sense** (observation, LOCAL Cycle 240). While screening booking domains for the service_booking
+  capture, cal.com's real llms-full.txt tripped a FALSE `data_retrieval` claim: the Cycle-198 `lookup` signal fired
+  on "Self-hosted deployment **lookup**" (an internal admin/config search feature, NOT a records-retrieval OFFERING an
+  agent buys). The Cycle-198 lookbehind bank strips the data-structure senses (hash/cache/index/table/array/key/symbol/
+  memory lookup) but NOT the generic product/feature-search sense ("deployment lookup", plausibly "log lookup" /
+  "config lookup" / "user lookup" in an admin UI). Since data_retrieval is one of the two tied-thinnest archetypes, a
+  false claim does maximum damage (probes a booking/SaaS storefront with an irrelevant records-lookup intent). Extend
+  the `lookup` precision — anchor to a genuine record-retrieval object (phone/email/company/domain/WHOIS/address/person
+  record) or exclude the admin-feature qualifiers — pinned by a precision-synthetic test (deployment/config/log lookup
+  DODGE, "look up a customer record" FIRES) + canonical-invariant by construction (no committed fixture contains
+  "lookup"; acuity's data_retrieval already NA). In-cloud, off the scoring path, score-neutral. NOTE: this is a
+  precision NARROWING — verify it does not drop the genuine data_retrieval evidence a future [LOCAL] data-API fixture
+  will carry.
 
 - **[CANDIDATE, READOUT] Card-surface citability monotone/threshold guard** (observation, Cycle 201).
   Cycle 201 pinned in the reliability LAYER that `verdict_stability` is monotone in disagreement and that

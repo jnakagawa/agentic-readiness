@@ -1028,19 +1028,20 @@ design in-cloud, execute locally.
      mutation-tested). Scoring-path diff EMPTY, canonical 46.1 F / 85.5 B / +39.4 UNMOVED, suite 532→535. The
      Cycle-191/192 pillar-attribution readout arc is now COMPLETE across BOTH surfaces. See LOG Cycle 259. -->
 
-- **[SELF-HEALING/COVERAGE] Compact STATE.md — it has accreted the full cycle history and is oversized.**
-  (opened Cycle 259, 2026-08-05T~16:2xZ). SYMPTOM: `loop/STATE.md` is 804KB / 7752 lines — it carries verbose
-  narratives for cycles back to ~Cycle 5 plus 83 FOCUS POINTER blocks, and now EXCEEDS the 256KB single-`Read`
-  limit, so the mandated per-cycle "read STATE.md" (playbook cycle protocol step 1 + infra health check) can no
-  longer be done in one call. This is bookkeeping-degradation: every future cycle pays to page through dead
-  state. FIX (one cloud cycle, direct-to-main, score-neutral — touches only `loop/STATE.md`): compact STATE to
-  (a) the cycle counter, (b) the CURRENT focus pointer, (c) the last ~5 cycle entries for continuity, (d) the
-  active watches (runner-health), and (e) the stable reference sections (`## Open questions`, `## Environment
-  constraint`, `## Git bookkeeping note`). DELETE the older cycle narratives — they are preserved verbatim in
-  `loop/LOG.md` (append-only) and in git history, so pruning STATE is NOT an invariant-#5 rewrite (STATE is
-  living state the playbook says to UPDATE every cycle, not an append-only evidence file). Verify post-compaction
-  that `Read loop/STATE.md` succeeds in one call and that no OPEN watch/pointer was dropped (diff the FOCUS
-  POINTER + RUNNER-HEALTH WATCH blocks against the pre-compaction tail). NOT peer-gated (no scoring semantics).
+<!-- DONE 2026-08-05T~17:1xZ (Cycle 260, SELF-HEALING/COVERAGE, cloud, direct-to-main, score-neutral):
+     "[SELF-HEALING/COVERAGE] Compact STATE.md" DONE + made DURABLE. STATE.md compacted 7798 lines / ~790KB
+     → 297 lines / 29KB: rolling cycle log trimmed to the last cycles (259→256; Cycle 260 prepended), the
+     current FOCUS POINTER + active RUNNER-HEALTH WATCH retained, and the stable reference sections (Git
+     bookkeeping note, Environment constraint, Open questions) kept UNCHANGED. Every removed cycle narrative is
+     preserved verbatim in loop/LOG.md (276 entries, Cycle 5→256 spot-verified) + git, so NOT an invariant-#5
+     rewrite (STATE is mutable working state). Verified `Read loop/STATE.md` now succeeds in one call and the
+     scoring-path diff is EMPTY (score-neutral; canonical replay 26/26, 46.1 F / 85.5 B / +39.4 unmoved).
+     Beyond the one-time trim: added `tests/test_state_hygiene.py` (+4) — a durable guard asserting STATE stays
+     under a 200KB single-`Read` ceiling + a 600-line early-warning cap + retains its stable-section markers, so
+     a future fire that lets STATE re-balloon fails the suite and MUST prune before committing. Mutation-tested
+     (bloat trips the byte+line guards; dropping a required marker trips the structural guard). Full suite
+     535→539. See LOG Cycle 260. -->
+
 
 - **[OBSERVATION — Cycle 185] Canonical-drift diagnostic family metamorphic axis is EXHAUSTED in-cloud.**
   With the Cycle-185 `test_attribution_stability_is_host_relabel_invariant`, every drift diagnostic now has a

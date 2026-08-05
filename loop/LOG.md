@@ -17760,3 +17760,7 @@ service_booking anchor (acuityscheduling.com). Substantive [LOCAL] frontier
 unchanged (physical_good-rich / MIXED retail+API fixtures, a THIRD calibration
 anchor, render/structured-catalog captures, the typographic phrase-rescue
 real-evidence case, ACP/UCP/MPP live handshakes) — prefer the oldest.
+
+## Local verification — 20260805T024100Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260805T024100Z.json

@@ -34,6 +34,7 @@ loudly rather than silently rescore against a partial fixture).
 from __future__ import annotations
 
 import dataclasses
+import glob
 import json
 import os
 import sys
@@ -1464,6 +1465,98 @@ def test_population_check_layer_negative_control() -> None:
 
 
 # ---------------------------------------------------------------------------
+# 21. FIXTURE REPLAY-INTEGRITY PARTITION — every committed canonical fixture is
+#     EITHER score-replay-clean (covers the full current probe set: 0
+#     replay-misses, so it can drive a replay-SCORE guard as a like-for-like
+#     re-score) OR explicitly quarantined as classification-only (captured for
+#     offering/battery classification, whose probe surface is a strict SUBSET of
+#     the full scoring path, so a full score-replay requests dozens of URLs it
+#     never recorded and misses them).
+#
+#     WHY THIS IS A TRUTH GUARD. A score-replay is only a faithful re-score when
+#     the fixture covers every probe request — the _assert_domain (a)-leg pins
+#     this for the FIVE pinned score domains, but nothing pinned the fixtures
+#     committed for OTHER purposes. Two of them silently CANNOT replay-score:
+#     api.replicate.com (35 misses) and ipinfo.io (46 misses), both captured via
+#     the classification path (they miss the full scorer's robots.txt, homepage
+#     under claudebot/gptbot UAs, the trust/legal surface sweep, sitemap,
+#     pricing.json/catalog.json, cross-domain review URLs). The standing backlog
+#     proposal to add a SECOND API storefront (api.replicate.com) to
+#     _CAPABILITY_SPECTRUM would, done blindly, explode every population guard with
+#     a cryptic replay-miss rather than a clear "re-capture first" signal. This
+#     partition makes fixture faithfulness an EXPLICIT, self-maintaining invariant:
+#       - a NEW committed fixture that is neither clean nor quarantined FAILS here,
+#         forcing an eligibility decision before any guard can trust it;
+#       - a quarantined fixture that a [LOCAL] full-score re-capture makes clean
+#         FLIPS this guard red — the signal to promote it to _REPLAY_CLEAN and
+#         decide spectrum/calibration inclusion (the backlog item, made actionable
+#         instead of silently blocked).
+#     Partitioned by the OPERATIONAL property (does it cover the full probe set),
+#     never by vendor: acuityscheduling.com was also captured for classification
+#     yet happens to be replay-clean, so it sits in the clean set on its evidence.
+# ---------------------------------------------------------------------------
+# Fixtures that cover the full current probe set (0 misses) — eligible to drive
+# any replay-SCORE / calibration-score guard as a like-for-like re-score.
+_REPLAY_CLEAN = {
+    "driftflight.com",
+    "drift-flight.org",
+    "books.toscrape.com",
+    "example.com",
+    "www.moleskine.com",
+    "acuityscheduling.com",
+}
+# Fixtures whose recorded surface is a strict subset of the full scoring path
+# (captured for offering/battery classification) — NOT eligible for any
+# score-replay guard until re-captured full-score [LOCAL]:
+#   asrs.cli score <domain> --record-fixture fixtures/canonical/<domain>.json
+_CLASSIFICATION_ONLY = {"api.replicate.com", "ipinfo.io"}
+
+
+def test_committed_fixtures_are_partitioned_by_replay_integrity() -> None:
+    print("test_committed_fixtures_are_partitioned_by_replay_integrity")
+    on_disk = {
+        os.path.basename(p)[:-5]
+        for p in glob.glob(os.path.join(_FIXTURE_DIR, "*.json"))
+    }
+    # (a) The partition is TOTAL and DISJOINT over what is actually committed — a
+    # new fixture can be neither silently trusted nor silently ignored.
+    _check(
+        _REPLAY_CLEAN.isdisjoint(_CLASSIFICATION_ONLY),
+        "the two replay-integrity partitions are disjoint",
+    )
+    tracked = _REPLAY_CLEAN | _CLASSIFICATION_ONLY
+    _check(
+        on_disk == tracked,
+        f"every committed fixture is partitioned exactly once "
+        f"(untracked: {sorted(on_disk - tracked)}; "
+        f"tracked-but-absent: {sorted(tracked - on_disk)})",
+    )
+    # (b) THE INVARIANT protecting every score-replay guard: each clean fixture
+    # covers the FULL current probe set (0 misses). This is exactly what would
+    # have caught a naive add of a classification-only fixture to the spectrum.
+    for dom in sorted(_REPLAY_CLEAN):
+        _rep, misses = _score_fixture(dom)
+        _check(
+            not misses,
+            f"replay-clean fixture {dom} covers every probe request "
+            f"(0 misses; got {len(misses)})",
+        )
+    # (c) QUARANTINE TRIPWIRE + non-vacuity: each classification-only fixture DOES
+    # miss under the full scorer (documenting WHY it is quarantined, and making
+    # (b) a non-trivial partition — the property is not vacuously "all clean").
+    # When a [LOCAL] full-score re-capture makes one clean, this reddens: promote
+    # it to _REPLAY_CLEAN and decide spectrum/calibration inclusion.
+    for dom in sorted(_CLASSIFICATION_ONLY):
+        _rep, misses = _score_fixture(dom)
+        _check(
+            len(misses) > 0,
+            f"classification-only fixture {dom} is not yet score-replay-clean "
+            f"({len(misses)} misses) — quarantined until [LOCAL] full-score "
+            f"re-capture; promote to _REPLAY_CLEAN when this flips",
+        )
+
+
+# ---------------------------------------------------------------------------
 # 18. THE OFFLINE REPLAY INSTRUMENT IS DETERMINISTIC — the in-cloud regression
 #     signal reproduces itself run-to-run. Every shipping cycle re-measures the
 #     canonical population by replaying the committed fixtures through the REAL
@@ -1764,6 +1857,7 @@ def main() -> int:
         test_population_ordering_is_weight_robust,
         test_population_delta_is_earned_at_the_check_layer,
         test_population_check_layer_negative_control,
+        test_committed_fixtures_are_partitioned_by_replay_integrity,
         test_replay_pipeline_is_deterministic,
         test_scorer_is_invariant_to_check_input_order,
         test_applied_caps_set_is_invariant_to_check_input_order,

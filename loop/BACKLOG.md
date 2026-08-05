@@ -2270,14 +2270,27 @@ design in-cloud, execute locally.
      test_methodology_documents_check_layer_honesty; scoring untouched, rubric v0.7, replay 23/23 / +39.4;
      commit 6bb6ef3; see LOG Cycle 64). REMAINING follow-on: extend guard 19 to the 5th committed fixture
      (api.replicate.com) once its tier + expected statuses are pinned. -->
-- **[CANDIDATE, TRUTH] Extend guard 19 (population check-layer earned-dominance) to `api.replicate.com`**
-  — a 5th real fixture (`fixtures/canonical/api.replicate.com.json`) is already committed but not in the
-  capability-spectrum guards (12/17/19). Pin its capability tier + expected per-check statuses (a real
-  agent-native / metered API storefront), slot it into `_CAPABILITY_SPECTRUM`, and re-derive guard 19's
-  per-rung inversion sets. Adds a SECOND API-storefront data point to the population, strengthening the
-  ordering + earned-dominance claims beyond the single synthetic canonical pair. Cloud-doable from the
-  committed fixture; tests-only, score-neutral — but verify its overall/pillars/statuses live first
-  (the fixture may not yet have a pinned EXPECTED entry).
+- **[LOCAL] Re-capture `api.replicate.com` (+ `ipinfo.io`) full-score, THEN extend the population guards to a
+  2nd API storefront** (TRUTH). REVISED Cycle 249 (2026-08-05, TRUTH, in-cloud, direct-to-main, tests-only,
+  score-neutral): the "Cloud-doable from the committed fixture" claim was WRONG and is now DISPROVEN by
+  measurement — `_score_fixture('api.replicate.com')` yields **10.80 with 35 replay-misses** (and `ipinfo.io`
+  **40.30 with 46 misses**). Both fixtures were captured via the offering/battery CLASSIFICATION path, whose
+  probe surface is a strict SUBSET of the full scoring path, so a full score-replay requests dozens of URLs the
+  fixture never recorded (robots.txt, homepage under claudebot/gptbot UAs, the trust/legal surface sweep,
+  sitemap, pricing.json/catalog.json, cross-domain review URLs) → misses. So neither can drive a replay-SCORE
+  guard (`_CAPABILITY_SPECTRUM` / calibration) as a like-for-like re-score UNTIL re-captured full-score. This is
+  now GUARDED in-cloud: `test_canonical_replay.py::test_committed_fixtures_are_partitioned_by_replay_integrity`
+  partitions every committed fixture into `_REPLAY_CLEAN` (6, all verified 0-miss) vs `_CLASSIFICATION_ONLY`
+  ({api.replicate.com, ipinfo.io}, quarantined) — a naive add to the spectrum now fails leg (b) with a clear
+  "re-capture first" message instead of exploding every population guard with a cryptic miss.
+  NEXT (needs Jonah's machine — outbound network): `asrs.cli score api.replicate.com --record-fixture
+  fixtures/canonical/api.replicate.com.json` (and the same for ipinfo.io) to capture the FULL scoring surface;
+  the re-captured fixture replays 0-miss by construction → the quarantine tripwire (leg c) reddens → PROMOTE the
+  domain to `_REPLAY_CLEAN`, pin its overall/pillars/per-check statuses (an EXPECTED entry), then slot it into
+  `_CAPABILITY_SPECTRUM` at its capability rung and re-derive guards 12/13/17/19 (the tail-index + per-rung
+  inversion logic hard-codes the current 4-domain shape — inserting a 5th touches all four). Adds a SECOND
+  API-storefront data point to the population, strengthening the ordering + earned-dominance claims beyond the
+  single synthetic canonical pair. See LOG Cycle 249.
 
 <!-- DONE 2026-08-05T~00:2xZ (Cycle 241, METHOD, cloud, direct-to-main, tests-only/score-neutral):
      "[CANDIDATE, METHOD] Exercise the `caps_applied` arrival-order path directly" SHIPPED. Guard 19

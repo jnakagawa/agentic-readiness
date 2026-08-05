@@ -1,6 +1,32 @@
 # Loop state
 
-- Cycle counter: 248
+- Cycle counter: 249
+- CYCLE 249 — 2026-08-05T~06:2xZ (TRUTH, cloud, direct-to-main, tests-only, score-neutral).
+  FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests` state=open `[]`): INFRA GREEN,
+  newest verify `runs/local/verify_20260805T024100Z.json` (02:41Z, git_pull.ok=true attempts=1,
+  divergence_recovery=None, tests_ok=true 24/24) ~3.6h old at fire (06:17Z), inside the 6h floor; live canonical
+  **46.1 F / 85.5 B / +39.4** (tx 87.5), no drift; HEAD in sync with origin at Cycle 248 (pull was a forced-update
+  realign, already-up-to-date). Rebuilt cloud `.venv` (absent) + `pip install -r requirements.txt` → eth-account
+  restored, `test_free_tier` 11/11 (known agent-side gap, not a bench regression). Took the TRUTH slot: pursued
+  the standing CANDIDATE to add a 2nd API storefront (api.replicate.com) to the population spectrum guards —
+  first step "verify its overall/pillars" DISPROVED the item's "Cloud-doable" premise: the committed
+  `api.replicate.com` fixture replays to **10.80 with 35 replay-misses**, and a full sweep found a 2nd stale one,
+  `ipinfo.io` (**40.30, 46 misses**). Both were captured via the offering/battery CLASSIFICATION path (a strict
+  SUBSET of the full scoring probe surface), so a full score-replay misses dozens of URLs they never recorded
+  (robots.txt, homepage under bot UAs, trust/legal sweep, sitemap, pricing/catalog JSON, cross-domain review
+  URLs); the other 6 fixtures replay 0-miss. Shipped a self-maintaining integrity guard instead of a blind
+  spectrum add: `test_canonical_replay.py::test_committed_fixtures_are_partitioned_by_replay_integrity`
+  (section 21, +`import glob`, registered) partitions every committed fixture into `_REPLAY_CLEAN` (6, all
+  0-miss) vs `_CLASSIFICATION_ONLY` ({api.replicate.com, ipinfo.io}, quarantined) and asserts: (a) partition is
+  TOTAL + DISJOINT over on-disk fixtures (a new untracked fixture fails, forcing a decision); (b) every clean
+  fixture covers the full probe set (0 misses — the invariant that catches a naive spectrum add); (c) each
+  quarantined fixture DOES miss (tripwire — a [LOCAL] full-score re-capture that makes it clean reddens this,
+  forcing promotion + spectrum/calibration inclusion). Mutation-tested non-vacuous (all 3 failure modes caught).
+  SCORE-NEUTRAL: `git diff --name-only -- asrs/ rubric/ fixtures/` EMPTY (only the test file); replay guard
+  **26/26** (was 25), **46.1 F / 85.5 B / +39.4 UNMOVED**, 0 replay-miss; full suite 25/25 files green.
+  Invariant #1 held (tests-only, no probe/POST/signing); #5 held (append-only, existing guards untouched). NO DM
+  (tests-only TRUTH, not sensitive-class, not first-after-16:00 UTC — ~06:2xZ Aug-5; last digest Cycle 228).
+  See LOG Cycle 249.
 - CYCLE 248 — 2026-08-05T~05:2xZ (COVERAGE, cloud, direct-to-main, score-neutral).
   FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests`
   state=open `[]`): INFRA GREEN, newest verify `runs/local/verify_20260805T024100Z.json`
@@ -98,11 +124,18 @@
   **46.1 F / 85.5 B / +39.4 UNMOVED**; full suite 24→25 files green (test_free_tier 11/11 in-cloud this fire —
   eth-account gap did not recur). Invariant #1 held (tests-only, no probe/POST/signing). NO DM (score-neutral
   TRUTH, not sensitive-class, not first-after-16:00 UTC — ~02:1xZ Aug-5; last digest Cycle 228). See LOG Cycle 245.
-- FOCUS POINTER (Cycle 248 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
-  check only. Cloud track rotation: Cycle 248 was COVERAGE → cloud pointer is **TRUTH next** (METHOD → COVERAGE →
-  TRUTH → READOUT). COVERAGE DONE this cycle: service_booking's anchor mined for its first distinct signal
-  `manage-booking` (reschedule/cancel an existing booking — the lifecycle "operate without a human" leg), so the
-  thinnest archetype grows 5→6 signals; isolation matrix 69→70. NEXT COVERAGE openings (prefer the oldest, in-cloud):
+- FOCUS POINTER (Cycle 249 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
+  check only. Cloud track rotation: Cycle 249 was TRUTH → cloud pointer is **READOUT next** (METHOD → COVERAGE →
+  TRUTH → READOUT). TRUTH DONE this cycle: added a fixture replay-integrity partition guard
+  (`test_committed_fixtures_are_partitioned_by_replay_integrity`, replay guard 25→26) — every committed fixture
+  is now pinned as `_REPLAY_CLEAN` (6, 0-miss) or `_CLASSIFICATION_ONLY` ({api.replicate.com, ipinfo.io},
+  quarantined; 35/46 misses under the full scorer). This DISPROVED the "add api.replicate.com to the population"
+  candidate's cloud-doable premise (stale fixture) and converted it to a `[LOCAL]` full-score re-capture item —
+  the quarantine leg (c) is the tripwire that reddens on re-capture, forcing promotion + a 5-domain spectrum
+  re-derivation (guards 12/13/17/19). NEXT READOUT openings (prefer the oldest, in-cloud): surface the population
+  drift TREND across all committed sweeps once ≥3 dated sweeps exist; the card-surface citability monotone guard
+  (P2, Cycle 201); the card-level "behaviorally corroborated" calibration badge (P2). NEXT COVERAGE openings when
+  the pointer next lands there (prefer the oldest, in-cloud):
   service_booking's anchor STILL carries un-mined capabilities distinct from create+manage — a REMINDER/NOTIFICATION
   contract ("appointment reminders", "confirmation, reminder, and follow-up emails"), an INTAKE-FORM data-collection
   control ("custom intake forms"), or a WAITLIST/slot capability ("Clients join a waitlist for fully booked times"),

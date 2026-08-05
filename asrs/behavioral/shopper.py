@@ -332,10 +332,14 @@ def _aggregate(domain: str, runs: list[BehavioralRun]) -> list[CheckResult]:
             "valid_runs": 0,
             "attempted_runs": len(runs),
             "failures": failure_reasons,
+            # Self-labeled per-run rows, ordered by the (model, trial) label so
+            # the evidence is byte-identical regardless of panel arrival order
+            # (matches the sort-before-emit siblings block_statements/refusing_
+            # models; would leak if panel construction ever parallelizes).
             "by_run": [
                 {"model": r.model, "trial": r.trial, "blockers": r.blockers,
                  "transcript": r.transcript_path}
-                for r in runs
+                for r in sorted(runs, key=lambda r: (r.model, r.trial))
             ],
         }
         cant = [
@@ -519,9 +523,11 @@ def _trust_live_check(valid: list[BehavioralRun], all_trust_events: list[str]) -
         "clean_runs": len(clean),
         "warned_runs": len(warned),
         "trust_events": all_trust_events,
+        # Ordered by the (model, trial) label, not arrival order, so the trust
+        # evidence stays byte-identical under any panel permutation.
         "by_run": [
             {"model": r.model, "trial": r.trial, "trust_events": r.trust_events}
-            for r in valid
+            for r in sorted(valid, key=lambda r: (r.model, r.trial))
         ],
     }
 

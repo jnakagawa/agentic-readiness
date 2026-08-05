@@ -10,7 +10,9 @@ design in-cloud, execute locally.
   `verify_20260805T024100Z.json` (02:41Z); the :41 cadence has produced NOTHING for FIVE consecutive slots
   (03:41 / 04:41 / 05:41 / 06:41 / 07:41 all absent; UPDATE Cycle 252: 08:41 also absent = SIX consecutive misses,
   and at the 09:15Z fire the 02:41Z artifact is ~6.5h old so the 6h FLOOR IS NOW BREACHED — no longer a trending
-  watch but a hard breach). At the Cycle-251 fire (08:15Z) the artifact was ~5.6h old,
+  watch but a hard breach; UPDATE Cycle 257: STILL no new artifact through 13:41Z — 11+ consecutive misses, the
+  02:41Z artifact ~11.7h old at the 14:21Z fire, the floor breach now sustained ~5h+ across Cycles 252→257).
+  At the Cycle-251 fire (08:15Z) the artifact was ~5.6h old,
   still inside the 6h floor (trips ~08:41Z), so no hard breach YET — but the trip condition of the Cycle-250
   RUNNER-HEALTH WATCH ("no fresh verify ≥07:41Z") is MET. DISTINCT from the Cycle-227/Aug-1 push-race stranding:
   that surfaced as a diverged `--ff-only` pull and was fixed by `recover_from_own_divergence` (Cycle 228+); here

@@ -1,6 +1,56 @@
 # Loop state
 
-- Cycle counter: 256
+- Cycle counter: 257
+- CYCLE 257 — 2026-08-05T~14:2xZ (TRUTH, cloud, direct-to-main, score-neutral).
+  FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests` state=open `[]`): HEAD in sync with
+  origin at Cycle 256 (`3683c0f`; detached-start realign via `git fetch origin main`, benign forced-update of local
+  ref). **LOCAL VERIFY RUNNER STALL PERSISTS — 6h floor still breached:** newest verify STILL
+  `runs/local/verify_20260805T024100Z.json` (02:41Z, div_recovery=None, tests_ok=true, reads 46.1 F / 85.5 B /
+  +39.4), ~11.7h old at fire (14:21Z); 11+ consecutive missed :41 slots (03:41–13:41). Unchanged NO-NEW-ARTIFACT
+  stall, NOT cloud-diagnosable → P0 [LOCAL] runner-stall diagnosis (queued Cycle 251) stands; carry watch + flag LOUD
+  in next 16:00 UTC digest (fire ~14:2xZ still before the digest window; NEXT fire crossing ≥16:00Z owes it).
+  Regression-by-construction stands in for the live re-score (playbook). `pip install eth-account` (agent-side
+  dependency gap) → test_free_tier 11/11. Took the TRUTH slot (cloud pointer, Cycle 256 was COVERAGE): executed the
+  named next-hypothesis — the LAST two arrival-order evidence surfaces after Cycles 253/255 closed the sliced/selected
+  ones. Both self-labeled `by_run` lists in `asrs/behavioral/shopper.py` projected rows in ARRIVAL order:
+  `_aggregate`'s zero-valid CANT_TEST branch (`for r in runs`, shopper.py:335) + `_trust_live_check` (`for r in
+  valid`, shopper.py:522) — so two identical panels answering in a different order would emit byte-DIFFERENT evidence
+  for the SAME score if panel construction ever parallelizes (points/status already permutation-invariant counts;
+  only the citable list ORDER leaked). FIXED both to `sorted(..., key=lambda r: (r.model, r.trial))` — the
+  self-label is unique+total in production, so the whole CheckResult is byte-identical under any permutation. SHIPPED
+  (off the scoring path → score-neutral, direct-to-main): shopper.py two sorts + comments; NEW
+  `tests/test_shopper_evidence_order.py` +2 (metamorphic `_aggregate(fwd)==_aggregate(reversed)` on both the CANT_TEST
+  and valid-panel paths + `(model,trial)`-order property + teeth that the raw arrival projection differed).
+  MUTATION-TESTED (revert both sorts → reddens both `==` invariants 0/2; restored 2/2). SCORE-NEUTRAL: scoring-path
+  diff (`asrs/scoring.py rubric/ fixtures/ batteries/ asrs/offering.py asrs/probes/`) EMPTY; canonical scored
+  statically (no behavioral runs) so `_aggregate`/`_trust_live_check` never run on that path; replay 26/26, **46.1 F /
+  85.5 B / +39.4 UNMOVED**; full suite **525 passed** (523→525). Invariants #1 (probe read-only, evidence projection
+  only), #2 (no scoring-semantics → no version bump), #3 (strengthens evidence reproducibility), #4 (eth-account +
+  stall attributed to agent/LOCAL env not a site), #5 (mutation in working tree, restored from /tmp backup;
+  append-only) all held. NO DM (score-neutral TRUTH, not sensitive-class, off scoring path, before 16:00 UTC — ~14:2xZ
+  Aug-5; last digest Cycle 228). See LOG Cycle 257.
+- FOCUS POINTER (Cycle 257 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
+  **BUT the LOCAL verify runner is STALLED with the 6h floor breached (P0 [LOCAL] queued Cycle 251) — not
+  cloud-doable; next-fire priority is keeping the P0 [LOCAL] fresh + the 16:00 UTC digest flag (OVERDUE once the
+  digest window opens ≥16:00Z — this cycle at ~14:2xZ is still before it, but the NEXT fire likely crosses it).**
+  Cloud track rotation: Cycle 257 was TRUTH → cloud pointer is **READOUT next** (METHOD → COVERAGE → TRUTH →
+  READOUT). NEXT TRUTH openings (later): panel-verdict-stability — does the reliability `stable`/`reproducible` gate
+  (`asrs/reliability.py` `verdict_stability >= _STABLE_MIN`) track what an agent re-experiences across trials, or can a
+  "stable" ladder coexist with an unstable trust posture a reader would still cite? (the `provisional-trust-unstable`
+  quotability branch exists but is untested against a synthetic disagreeing panel); the `per_model` map in
+  `trust_probe._build_check` (arrival-order but self-labeled — a guard it stays deterministic if construction
+  parallelizes). The shopper aggregator's arrival-order surfaces are now CLOSED (both `by_run` + `block_statements` +
+  `refusing_models` + `all_trust_events` + `per_checkpoint`). NEXT READOUT openings (pointer now): the TERMINAL-card
+  corroboration line (`asrs/report.py` — Cycle 254 did the HTML card); the population-drift TREND once a 3rd dated
+  sweep lands ([LOCAL]-gated, only 2 committed). NEXT COVERAGE openings (later): service_booking in-cloud anchor
+  mining EXHAUSTED (8 signals); last thin candidate WAITLIST is IMAGE-ONLY → [LOCAL] richer-booking fixture; the
+  ipinfo.io DATASET-FORMAT/DOWNLOAD-CONTRACT data_retrieval signal (Cycle-243); the deep-bank uncaptured-capability
+  audit (Cycle 226/230/233 lineage).
+  **RUNNER-HEALTH WATCH (ESCALATED — FLOOR BREACHED, carried Cycle 251→257 — hold until resolved):** last artifact
+  02:41Z; at the Cycle-257 fire (14:21Z) it is ~11.7h old = past the 6h floor, 11+ consecutive misses (03:41–13:41).
+  Cloud cannot diagnose (launchd-not-firing / machine-asleep / new pre-push failure indistinguishable from here) →
+  P0 [LOCAL] with exact diagnostic steps stands. Distinct from the Cycle-227 push-race (`divergence_recovery` None).
+  FLAG loudly in the next 16:00 UTC digest.
 - CYCLE 256 — 2026-08-05T~13:2xZ (COVERAGE, cloud, direct-to-main, score-neutral).
   FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests` state=open `[]`): HEAD in sync with
   origin at Cycle 255 (`7465e81`; detached-start realign via `git fetch origin main`, benign forced-update of local

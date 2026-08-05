@@ -8,7 +8,9 @@ design in-cloud, execute locally.
 - **[LOCAL] Diagnose the LOCAL verify runner STALL (no new artifact since 02:41Z Aug-5)** (SELF-HEALING/METHOD,
   opened Cycle 251, 2026-08-05T~08:2xZ). SYMPTOM: newest `runs/local/verify_*.json` is
   `verify_20260805T024100Z.json` (02:41Z); the :41 cadence has produced NOTHING for FIVE consecutive slots
-  (03:41 / 04:41 / 05:41 / 06:41 / 07:41 all absent). At the Cycle-251 fire (08:15Z) the artifact was ~5.6h old,
+  (03:41 / 04:41 / 05:41 / 06:41 / 07:41 all absent; UPDATE Cycle 252: 08:41 also absent = SIX consecutive misses,
+  and at the 09:15Z fire the 02:41Z artifact is ~6.5h old so the 6h FLOOR IS NOW BREACHED — no longer a trending
+  watch but a hard breach). At the Cycle-251 fire (08:15Z) the artifact was ~5.6h old,
   still inside the 6h floor (trips ~08:41Z), so no hard breach YET — but the trip condition of the Cycle-250
   RUNNER-HEALTH WATCH ("no fresh verify ≥07:41Z") is MET. DISTINCT from the Cycle-227/Aug-1 push-race stranding:
   that surfaced as a diverged `--ff-only` pull and was fixed by `recover_from_own_divergence` (Cycle 228+); here
@@ -425,11 +427,17 @@ design in-cloud, execute locally.
   [subscription, service_booking, metered_api] UNCHANGED) and ABSENT on all 7 other fixtures. `test_offering.py`
   97→99 (precision-synthetic + real-captured guard pair) + `_ISOLATION_EVIDENCE` row (bank 69→70) + the anchor
   genuine-label maintenance contract split into `_BOOKING_CREATE_LABELS` ∪ `_BOOKING_MANAGE_LABELS`. So
-  service_booking now grows 5→6 signals. NEXT in-cloud service_booking candidate (Cycle-248 LOG "next hypothesis"):
-  a REMINDER/NOTIFICATION contract ("appointment reminders", "confirmation, reminder, and follow-up emails" — the
-  "keep the job on track" leg, distinct from manage-booking), an INTAKE-FORM data-collection control ("custom intake
-  forms"), or a WAITLIST/slot capability ("Clients join a waitlist for fully booked times"), each IF precision-
-  guardable against generic marketing prose. See LOG Cycle 248.
+  service_booking now grows 5→6 signals. UPDATE Cycle 252 (COVERAGE, in-cloud, direct-to-main, score-neutral):
+  the REMINDER/NOTIFICATION candidate below is now SHIPPED as `booking-notification` (the booking is automatically
+  CONFIRMED + reminded WITHOUT a human — the completion-acknowledgment leg, the service_booking analog of
+  metered_api's `payment-receipt`), fired NON-VACUOUSLY on the committed anchor (52 hits), ABSENT on all 7 others
+  incl. the canonical pair, precision-guarded (confirm/remind token ≤40 chars from a booking noun, or the fixed
+  "appointment reminder(s)" collocation) against bare order/UI-confirmation + restock/system-notification +
+  broad-reminder collisions. `test_offering.py` 99→101 + `_ISOLATION_EVIDENCE` row + `_BOOKING_NOTIFY_LABELS` leg
+  (f). So service_booking now grows 6→7 signals. REMAINING in-cloud service_booking candidates: an INTAKE-FORM
+  data-collection control ("custom intake forms" — the collect-what-the-job-needs leg) or a WAITLIST/slot capability
+  ("Clients join a waitlist for fully booked times"), each IF precision-guardable against generic marketing prose.
+  See LOG Cycle 248/252.
   EARLIER — Cycle 243 (2026-08-05, COVERAGE, in-cloud, direct-to-main,
   score-neutral): **data_retrieval got its FIRST genuinely-distinct NEW capability signal** mined from the
   fresh ipinfo.io anchor — `batch-retrieval` (BATCH/BULK data retrieval, the "complete the job AT SCALE" leg,

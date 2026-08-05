@@ -420,7 +420,15 @@ _BOOKING_CREATE_LABELS = {"book", "appointment", "schedule"}
 # leg, not the create act. Every fired service_booking label must be one of these
 # genuine signals (create ∪ manage), so a future spurious signal on the anchor fails.
 _BOOKING_MANAGE_LABELS = {"manage-booking"}
-_BOOKING_SERVICE_LABELS = _BOOKING_CREATE_LABELS | _BOOKING_MANAGE_LABELS
+# The DISTINCT closed-loop FOLLOW-THROUGH leg mined from this anchor's real prose
+# (Cycle 252): the booking is automatically CONFIRMED and its reminders handled
+# without a human — the "provision + complete the job without a human" completion-
+# acknowledgment leg (the service_booking analog of metered_api's payment-receipt),
+# distinct from both the create act and the reschedule/cancel management leg.
+_BOOKING_NOTIFY_LABELS = {"booking-notification"}
+_BOOKING_SERVICE_LABELS = (
+    _BOOKING_CREATE_LABELS | _BOOKING_MANAGE_LABELS | _BOOKING_NOTIFY_LABELS
+)
 
 
 def _assert_service_booking_anchor() -> None:
@@ -492,6 +500,15 @@ def _assert_service_booking_anchor() -> None:
         _BOOKING_MANAGE_LABELS <= labels,
         f"{_BOOKING}: the manage-booking lifecycle leg fires on real "
         f"rescheduling/cancellation prose (got labels {sorted(labels)})",
+    )
+    # (f) The NEW closed-loop follow-through leg (Cycle 252) fires NON-VACUOUSLY on
+    # this anchor's real prose — automated confirmation/reminder of a booking — the
+    # DISTINCT "complete the job without a human" completion-acknowledgment leg, not
+    # a create signal and not the reschedule/cancel management leg.
+    _check(
+        _BOOKING_NOTIFY_LABELS <= labels,
+        f"{_BOOKING}: the booking-notification follow-through leg fires on real "
+        f"automated confirmation/reminder prose (got labels {sorted(labels)})",
     )
     _check(
         all(s.quote and s.quote.strip() for s in booking.signals),
@@ -6124,6 +6141,7 @@ _ISOLATION_EVIDENCE: dict[str, str] = {
     "schedule": "schedule your visit",
     "availability": "check availability",
     "manage-booking": "reschedule or cancel your appointment",
+    "booking-notification": "an appointment reminder is sent automatically",
     # data_retrieval
     "enrich": "we enrich your records",
     "dataset": "download the dataset",

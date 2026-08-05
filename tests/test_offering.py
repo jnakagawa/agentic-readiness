@@ -1258,6 +1258,113 @@ def test_manage_booking_fires_on_real_captured_surfaces():
     print("  ok: manage-booking is ABSENT on the api-pair / marketplace / retail / null fixtures (non-vacuous, score-neutral)")
 
 
+def test_service_booking_notification_precision_synthetic():
+    # The closed-loop FOLLOW-THROUGH signal for service_booking (Cycle 252), a THIRD
+    # distinct capability leg beyond the five create signals (book/appointment/
+    # reservation/schedule/availability — MAKE a booking) and manage-booking
+    # (reschedule/cancel — MODIFY one): the booking is automatically CONFIRMED and its
+    # reminders handled WITHOUT a human — the "provision + complete the job without a
+    # human" completion-acknowledgment leg, the service_booking analog of metered_api's
+    # payment-receipt. service_booking is tied with data_retrieval for the thinnest
+    # archetype, so a FALSE claim does maximum damage. All three tokens are minefields
+    # left bare: "confirmation" is order/email/UI ("order confirmation", "confirm your
+    # email", "confirmation dialog"); "notification"/"reminder" is restock/UI/system
+    # ("restockNotificationsEnabled", "undelivered notifications", "a gentle reminder").
+    # The guard NEVER matches a bare confirm/remind token — it requires the token within
+    # a short window of an unambiguous BOOKING NOUN (appointment / booking / reservation),
+    # in either order, OR the fixed "appointment reminder(s)" collocation. Each POSITIVE
+    # is booking-notification prose that must fire booking-notification (non-vacuous);
+    # each NEGATIVE carries a bare confirm/notify/remind token with NO booking noun and
+    # must NOT claim service_booking on its own.
+    positives = {
+        # Real captured acuityscheduling.com shapes (verbatim-faithful).
+        "appointment reminders": "We send automated appointment reminders.",
+        "booking triggers a confirmation": "Every booking triggers a confirmation email.",
+        "reminder before the appointment": "Reminder emails go out before the appointment.",
+        # Genuine confirmation/reminder vocabulary from other real booking services.
+        "confirmation for your appointment": "You get a confirmation for your appointment instantly.",
+        "reminder before your booking": "We send a reminder before your booking.",
+        "reservation confirmation email": "A reservation confirmation email is sent automatically.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("notify.test", {"homepage": text})
+        assert prof.claims("service_booking"), (name, prof.archetypes)
+        fired = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "service_booking"
+            for s in c.signals
+        }
+        assert "booking-notification" in fired, (name, sorted(fired))  # non-vacuous
+    print(f"  ok: {len(positives)} confirm/remind-a-booking phrasings each fire booking-notification")
+
+    negatives = {
+        # order / email / UI confirmation — no booking noun.
+        "order confirmation email": "Your order confirmation email is on its way.",
+        "confirm your email": "Please confirm your email address to continue.",
+        "confirmation dialog": "Click OK in the confirmation dialog to proceed.",
+        # restock / system / broad-English reminder — no booking noun.
+        "restock notifications": "restockNotificationsEnabled is false in the config.",
+        "gentle reminder password": "A gentle reminder to update your password.",
+        "reminder invoice due": "We'll send a reminder when your invoice is due.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("prose.test", {"homepage": text})
+        assert not prof.claims("service_booking"), (name, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} bare-confirm / restock-notify / broad-reminder strings do NOT claim service_booking (precision)"
+    )
+
+
+def test_booking_notification_fires_on_real_captured_surfaces():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the TRUTH mirror of the synthetic
+    # precision guard. It pins that booking-notification fires on the GENUINE
+    # confirmation/reminder prose captured live from the committed service_booking
+    # anchor (acuityscheduling.com — "Confirmations and reminders sent automatically",
+    # "Every booking triggers a confirmation email. Reminder emails go out before the
+    # appointment", "appointment reminders"), run through the REAL discovery path
+    # (from_fixture -> discover_offering) exactly as a live crawl would.
+    #
+    # SCORE-NEUTRAL by construction: acuityscheduling.com ALREADY claims
+    # service_booking (via book/appointment/schedule), so the follow-through evidence
+    # can only DEEPEN that claim — never add an archetype or reorder. The classifier is
+    # off the scoring path; the anchor's claimed SET is unchanged (pinned by
+    # tests/test_offering_canonical.py).
+    actx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "acuityscheduling.com.json"))
+    aprof = offering.discover_offering(actx)
+    assert aprof.claims("service_booking"), aprof.archetypes
+    sb = next(c for c in aprof.claimed if c.archetype == "service_booking")
+    bn = [s for s in sb.signals if s.label == "booking-notification"]
+    assert bn, {s.label for s in sb.signals}
+    assert bn[0].quote and bn[0].quote.strip(), "booking-notification quote empty"
+    print(f"  ok: booking-notification fires on REAL captured acuityscheduling.com — quote: {bn[0].quote!r}")
+
+    # Full-discovery claimed-SET invariance on the anchor (score-neutrality): the new
+    # signal deepens service_booking without adding or dropping any archetype.
+    assert set(aprof.archetypes) == {
+        "subscription", "service_booking", "metered_api"
+    }, aprof.archetypes
+
+    # NON-VACUOUS negatives on REAL data: the metered_api pair + marketplace, the retail
+    # catalog, and the null site carry no confirm/remind-a-booking prose — the signal
+    # must be absent and conjure or reorder no archetype. (The canonical flight pair is
+    # the critical case: a flight API is not a reschedulable appointment storefront, so
+    # service_booking must stay NA there and the score stays invariant.)
+    for dom, expected in (
+        ("driftflight.com", ["metered_api", "digital_good", "subscription"]),
+        ("drift-flight.org", ["metered_api", "digital_good", "subscription"]),
+        ("api.replicate.com", ["metered_api"]),
+        ("books.toscrape.com", ["physical_good"]),
+        ("example.com", []),
+    ):
+        nctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        nprof = offering.discover_offering(nctx)
+        nlabels = {s.label for c in nprof.claimed for s in c.signals}
+        assert "booking-notification" not in nlabels, (dom, nlabels)
+        assert nprof.archetypes == expected, (dom, nprof.archetypes)
+    print("  ok: booking-notification is ABSENT on the api-pair / marketplace / retail / null fixtures (non-vacuous, score-neutral)")
+
+
 def test_subscription_recurring_precision_synthetic():
     # The last cheap bare-word subscription signal hardened (siblings: enrich/
     # dataset/lookup for data_retrieval, book/schedule for service_booking). Bare
@@ -5210,6 +5317,8 @@ def main() -> int:
         test_batch_retrieval_fires_on_real_captured_surfaces,
         test_service_booking_manage_precision_synthetic,
         test_manage_booking_fires_on_real_captured_surfaces,
+        test_service_booking_notification_precision_synthetic,
+        test_booking_notification_fires_on_real_captured_surfaces,
         test_subscription_recurring_precision_synthetic,
         test_usage_based_metered_precision_synthetic,
         test_payment_challenge_retry_precision_synthetic,

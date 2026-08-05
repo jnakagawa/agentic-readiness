@@ -1611,6 +1611,46 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
         ("manage-booking", re.compile(
             r"\b(?:reschedul\w+|cancel\w*)\b[^.\n]{0,40}?\b(?:appointments?|bookings?|reservations?)\b"
             r"|\b(?:appointments?|bookings?|reservations?)\b[^.\n]{0,40}?\b(?:reschedul\w+|cancel\w*)\b", _F)),
+        # CONFIRM & REMIND — the booking is automatically CONFIRMED and its reminders
+        # handled WITHOUT a human chasing them. This is a THIRD genuinely distinct
+        # capability leg beyond the create act (book / appointment / reservation /
+        # schedule / availability) and the lifecycle-management leg (manage-booking):
+        # the CLOSED-LOOP FOLLOW-THROUGH leg. An agent that books a service on a
+        # user's behalf needs a machine-readable acknowledgment the booking took AND
+        # unattended follow-through so the appointment is kept — the "provision +
+        # complete the job without a human" capability the PLAYBOOK's lens names,
+        # applied to service_booking. It is the direct analog of metered_api's
+        # `payment-receipt` (a machine-readable acknowledgment the transaction
+        # completed) and physical_good's fulfillment/tracking evidence — the
+        # completion-acknowledgment leg, one archetype over. Mined from the committed
+        # service_booking anchor's real prose (acuityscheduling.com — "Confirmations
+        # and reminders sent automatically", "Every booking triggers a confirmation
+        # email. Reminder emails go out before the appointment", "appointment
+        # reminders").
+        # PRECISION-CRITICAL: bare "confirm"/"confirmation" is a false-positive
+        # minefield ("order confirmation", "confirm your email", "addToCartConfirmation
+        # Type", a UI "confirmation dialog"), and bare "notification"/"reminder" is
+        # worse — restock/UI/system notifications ("restockNotificationsEnabled",
+        # "novuNotification", "undelivered notifications") and a generic "a gentle
+        # reminder" carry no booking sense at all. So NEVER match a bare confirm/remind
+        # token: require it to sit within a short window of an unambiguous BOOKING NOUN
+        # (appointment / booking / reservation), in either order — the SAME booking-
+        # noun anchoring the sibling manage-booking leg uses — OR be the unambiguous
+        # fixed collocation "appointment reminder(s)". The order/email/UI/restock senses
+        # carry no booking noun and trip nothing; the genuine "confirmation email ...
+        # booking", "appointment reminders", "reminders sent ... appointment" prose
+        # still fires. Verified on the 8 committed fixtures: 52 non-vacuous hits on the
+        # service_booking anchor, ZERO on the other seven — crucially ZERO on the
+        # canonical flight pair (a flight API is not a reschedulable appointment
+        # storefront; "reservation confirmation"-style travel prose is absent), so
+        # service_booking stays NA on the canonical pair and the classification/score
+        # is invariant (pinned by tests/test_offering_canonical.py). The anchor ALREADY
+        # claims service_booking via book/appointment/schedule, so this only DEEPENS an
+        # existing claim — never adds an archetype or reorders. Off the scoring path.
+        ("booking-notification", re.compile(
+            r"\bappointments?\s+reminders?\b"
+            r"|\b(?:confirmations?|reminders?)\b[^.\n]{0,40}?\b(?:appointments?|bookings?|reservations?)\b"
+            r"|\b(?:appointments?|bookings?|reservations?)\b[^.\n]{0,40}?\b(?:confirmations?|reminders?)\b", _F)),
     ],
     "data_retrieval": [
         # RECORD ENRICHMENT — an agent submits records and gets structured fields

@@ -1,6 +1,54 @@
 # Loop state
 
-- Cycle counter: 251
+- Cycle counter: 252
+- CYCLE 252 — 2026-08-05T~09:1xZ (COVERAGE, cloud, direct-to-main, score-neutral).
+  FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests` state=open `[]`): HEAD in sync with
+  origin at Cycle 251 (`4ac07b0`; detached-start, forced-update realign per Cycle-245 lesson, benign). **LOCAL
+  VERIFY RUNNER STALL — 6h FLOOR NOW BREACHED:** newest verify STILL `runs/local/verify_20260805T024100Z.json`
+  (02:41Z, div_recovery=None, tests_ok=true 24/24), ~6.5h old at fire (09:15Z) = PAST the 6h floor; SIX consecutive
+  missed :41 slots (03:41–08:41 all absent, no verify ≥07:41Z). NO-NEW-ARTIFACT stall (distinct from Cycle-227
+  push-race), NOT cloud-diagnosable → P0 [LOCAL] runner-stall diagnosis (queued Cycle 251) stands; carry watch +
+  flag LOUDLY in next 16:00 UTC digest. Regression-by-construction stands in for the live re-score (playbook).
+  `pip install -r requirements.txt` (eth-account absent in fresh container) → test_free_tier 11/11 (agent-side gap,
+  not a bench regression). Took the COVERAGE slot (cloud pointer, Cycle 251 was METHOD): mined the service_booking
+  anchor (acuityscheduling.com) for its THIRD distinct capability leg per Cycle 248's named next-hypothesis —
+  **`booking-notification`**: the booking is automatically CONFIRMED + reminded WITHOUT a human (the "provision +
+  complete the job without a human" completion-acknowledgment leg, the service_booking analog of metered_api's
+  `payment-receipt`), distinct from the create act (book/appointment/reservation/schedule/availability) and the
+  manage-booking lifecycle leg. Fires NON-VACUOUSLY on the committed anchor (52 raw hits — "appointment reminders",
+  "Every booking triggers a confirmation email. Reminder emails go out before the appointment"), ABSENT on all 7
+  other fixtures — ZERO on the canonical flight pair (service_booking stays NA there; classification/score invariant
+  by construction). PRECISION: all three tokens are minefields bare (order/UI "confirmation", restock/system
+  "notification"/"reminder" — all present verbatim in the anchor's own embedded JSON); the signal requires the
+  token within ≤40 chars of a BOOKING NOUN (appointment/booking/reservation) either order, OR the fixed "appointment
+  reminder(s)" collocation. SHIPPED (off the scoring path → score-neutral, direct-to-main, identical pattern to
+  Cycle 226/230/233/243/248): `asrs/offering.py` new signal + comment; `tests/test_offering.py` +2 (99→101,
+  synthetic 6-pos/6-neg precision + real-surface end-to-end, registered); `tests/test_offering_canonical.py`
+  `_BOOKING_NOTIFY_LABELS` new leg (f) + `_ISOLATION_EVIDENCE` row (66/66). SCORE-NEUTRAL: scoring-path diff
+  (`asrs/scoring.py rubric/ fixtures/ batteries/ probes/`) EMPTY; replay guard 26/26, **46.1 F / 85.5 B / +39.4
+  UNMOVED**, 0 replay-miss; full suite 25/25 files green. Invariant #1 held (classifier read-only, no probe/POST/
+  signing); #2 held (no scoring-semantics change → no version bump); #4 held (stalled live re-score attributed to
+  the LOCAL runner env, not any site); #5 held (append-only). NO DM (score-neutral COVERAGE, not sensitive-class,
+  off scoring path, not first-after-16:00 UTC — ~09:1xZ Aug-5; last digest Cycle 228). See LOG Cycle 252.
+- FOCUS POINTER (Cycle 252 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
+  **BUT the LOCAL verify runner is STALLED with the 6h floor now BREACHED (P0 [LOCAL] queued Cycle 251) — not
+  cloud-doable; next-fire priority is keeping the P0 [LOCAL] fresh + the 16:00 UTC digest flag (overdue once the
+  digest window opens).** Cloud track rotation: Cycle 252 was COVERAGE → cloud pointer is **TRUTH next** (METHOD →
+  COVERAGE → TRUTH → READOUT). NEXT TRUTH openings (prefer oldest, in-cloud): panel-verdict-stability / does-the-
+  score-predict-what-an-agent-experiences family — check whether the reachability POINTS formula order-invariance is
+  already covered before taking it (Cycle-251 METHOD note, could shade TRUTH). NEXT COVERAGE openings (for a later
+  cycle): service_booking's INTAKE-FORM ("custom intake forms" — collect-what-the-job-needs) or WAITLIST control
+  (each IF precision-guardable — the reminder/notification opening is now CLOSED by this cycle); the ipinfo.io
+  dataset-format/download-contract data_retrieval signal (Cycle-243 next-hypothesis); the deep-bank uncaptured-
+  capability audit (Cycle 226/230/233 lineage). NEXT READOUT openings: the "behaviorally corroborated" calibration
+  badge (P2, Cycle 68 lineage — unblocked); the population-drift TREND once a 3rd dated sweep lands ([LOCAL]-gated,
+  only 2 committed).
+  **RUNNER-HEALTH WATCH (ESCALATED — FLOOR BREACHED, Cycle 252 — carry until resolved):** last artifact 02:41Z; at
+  the Cycle-252 fire (09:15Z) it is ~6.5h old = PAST the 6h floor, SIX consecutive misses (03:41–08:41). Cloud
+  cannot diagnose (launchd-not-firing / machine-asleep / new pre-push failure indistinguishable from here) → P0
+  [LOCAL] with exact diagnostic steps stands (queued Cycle 251). Distinct from the Cycle-227 push-race stranding
+  (`divergence_recovery` is None). FLAG loudly in the next 16:00 UTC digest.
+- CYCLE 251 — 2026-08-05T~08:2xZ (METHOD, cloud, direct-to-main, tests-only, score-neutral).
 - CYCLE 251 — 2026-08-05T~08:2xZ (METHOD, cloud, direct-to-main, tests-only, score-neutral).
   FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests` state=open `[]`): newest verify
   `runs/local/verify_20260805T024100Z.json` (02:41Z, git_pull.ok=true attempts=1, divergence_recovery=None,

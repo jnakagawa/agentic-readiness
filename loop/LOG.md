@@ -18228,3 +18228,7 @@ frontier unchanged (prefer the oldest): physical_good-rich / MIXED retail+API
 fixtures (the P1 rich-retail item), a THIRD calibration anchor, render/
 structured-catalog captures, the typographic phrase-rescue real-evidence case,
 ACP/UCP/MPP live handshakes.
+
+## Local verification — 20260805T174754Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260805T174754Z.json

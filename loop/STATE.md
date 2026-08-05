@@ -1,6 +1,47 @@
 # Loop state
 
-- Cycle counter: 268
+- Cycle counter: 269
+- CYCLE 269 — 2026-08-05T22:2xZ (TRUTH, cloud, PEER-GATED PR #146, behavioral-scoring-semantics). FIRST
+  duty: `list_pull_requests` state=open → `[]` (Cycle 268 QUEUED the broadening but opened no PR). Cloud
+  started on stale orphan local `main` (`3796519`) while HEAD == origin/main `c7b5b8e`; realigned (benign,
+  Cycle-245). **INFRA HEALTHY:** newest verify `runs/local/verify_20260805T214106Z.json` (21:41Z,
+  tests_ok=true 33 suites, 46.1 F / 85.5 B / +39.4), ~34min old at fire (22:15Z), well inside the 6h floor;
+  :41 cadence holding (20:41Z→21:41Z) → RUNNER-HEALTH WATCH NORMAL. `pip install eth-account` (recurring
+  agent-side gap, invariant #4). **IMPROVEMENT (TRUTH — the pointer's "highest-value next step": the LIVE
+  invariant-#4 attribution leak).** Broadened `_ENV_BLOCK_RE` to catch codex's DRIFTED own-tool refusal
+  vocabulary (the domains aged ~20d and codex's refusals drifted OFF v0.6's "browser {security,safety}" onto
+  tool-named phrasings — "Browser access permission … was denied", "Interactive browser access was declined",
+  "denied by the browser's site-permission boundary", "Safety-controlled navigation … were denied" — all
+  genuine AGENT-side blocks v0.6 MISSED → mis-scored as SITE FAILs). Three SELF-QUALIFIED alternatives (own
+  browser gate / browser's own boundary / safety-controlled navigation layer), each with a NEGATIVE LOOKAHEAD
+  `_NOT_SITE_ATTRIBUTED` rejecting "…denied BY the firewall/server/Cloudflare/…" so a real 403/Cloudflare is
+  STILL never excused (attribution cuts BOTH ways); gap `(?:[^.]|\.(?=\S)){0,60}?` tolerates a domain dot but
+  stops at a sentence boundary. Pure-semantic reputation gates stay out of scope → test #8 UNCHANGED/green.
+  NEW `test_attribution.py` #12 (11→12): drifted phrasings verbatim from the two committed transcripts
+  classify env-blocked; pre-broadening v0.6 pattern MISSES each (teeth); site-attributed + cross-sentence +
+  example.com genuine-finding stay NOT excused; denominator routing mirrors #5/#9. PEER-GATED (behavioral
+  denominator routing): static path untouched (`git diff -- asrs/scoring.py asrs/scorecard.py rubric/
+  fixtures/ asrs/offering.py asrs/probes/ asrs/battery.py` EMPTY — only `asrs/behavioral/shopper.py` + test);
+  replay guard **26/26, 46.1 F / 85.5 B / +39.4 UNMOVED**; full suite **33/33 green**; no rubric version bump
+  (comparability preserved, lands under v0.7). Branch `loop/env-block-vocab-drift`, PR #146. Invariants #1–5
+  all held. DM SENT (peer-gated scoring-semantics PR opened → Jonah-veto visibility). See LOG Cycle 269.
+- FOCUS POINTER (Cycle 269 done, cloud): **OPEN PEER-GATED PR #146** (`loop/env-block-vocab-drift`,
+  `_ENV_BLOCK_RE` own-tool vocab-drift broadening) → next fire's FIRST DUTY is to adversarially review + merge
+  it from fresh context (re-derive that NO site-side 403/Cloudflare phrasing is excused by the new
+  alternatives; confirm vendor-neutral capability wording; run the LIVE behavioral canonical re-score if the
+  env has network, else queue `[LOCAL]`; confirm test #8's pure-semantic gap is intentionally kept). NEVER
+  same-fire self-merge — Cycle 269 authored it, so a LATER cycle reviews. Repo has NO CI workflow → no checks
+  to drive; PR mergeability is the only gate. RUNNER STALL RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH
+  NORMAL — re-escalate ONLY on a fresh >6h no-artifact gap. Cloud track rotation: Cycle 269 was TRUTH → cloud
+  pointer is **READOUT next** (METHOD → COVERAGE → TRUTH → READOUT) once #146 clears. NEXT READOUT: the HTML
+  compare card payment-badge symmetry (Cycle 264 follow-up); population-drift TREND once a 3rd dated sweep
+  lands ([LOCAL]). NEXT COVERAGE: physical_good RETURNS-WINDOW leg (if allbirds/moleskine prose carries a
+  machine-readable return window); agent-native RETAIL rail surfaces (UCP/MCP); ipinfo.io DATASET-FORMAT
+  (Cycle-243); deep-bank uncaptured-capability audit. NEXT TRUTH/METHOD: SATURATED — surface a NEW seam first.
+  Substantive [LOCAL] frontier: once #146 merges, re-score the behavioral canonical delta LIVE on a
+  codex-reachable trial (drift-flight.org t2) end-to-end; cross-model N-curve (partially unblocked, t2-only);
+  a THIRD calibration anchor; render-generation digital_good (Cycle-168); structured catalog/pricing JSON
+  (Cycle-70); ACP/UCP/MPP live handshakes; a richer-booking WAITLIST fixture (Cycle-256).
 - CYCLE 268 — 2026-08-05T21:4xZ (TRUTH, LOCAL, direct-to-main, score-neutral). FIRST duty: `gh pr list
   --state open` → `[]` (no peer-gated PR). **INFRA HEALTHY — :41 cadence holding:** newest verify
   `runs/local/verify_20260805T214106Z.json` (21:41Z, tests_ok=true 26 suites, reads 46.1 F / 85.5 B / +39.4),

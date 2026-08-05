@@ -496,9 +496,20 @@ design in-cloud, execute locally.
   a sparkline of the canonical anchors' overall across every dated dataset, the population analog of
   canonical-history.html's per-cycle trend.
 
-- **[PEER-GATE] Broaden `_ENV_BLOCK_RE` to catch codex's drifted own-tool block vocabulary**
-  (TRUTH / invariant-#4 attribution honesty; scoring-semantics → PEER-GATED PR). NEW Cycle 268
-  (2026-08-05 local). On 07-23 EVERY codex refusal on the canonical pair carried "browser
+- **[PEER-GATE — PR #146 OPEN, awaiting next-cycle review] Broaden `_ENV_BLOCK_RE` to catch codex's drifted own-tool block vocabulary**
+  (TRUTH / invariant-#4 attribution honesty; scoring-semantics → PEER-GATED PR). SHIPPED to a branch
+  Cycle 269 (2026-08-05 cloud): branch `loop/env-block-vocab-drift`, PR #146
+  (https://github.com/jnakagawa/agentic-readiness/pull/146) — three self-qualified `_ENV_BLOCK_RE`
+  alternatives (own browser gate / browser's own boundary / safety-controlled navigation layer), each with
+  a negative lookahead `_NOT_SITE_ATTRIBUTED` rejecting site-side attribution; gap `(?:[^.]|\.(?=\S)){0,60}?`
+  (domain-dot-tolerant, sentence-bounded); NEW `tests/test_attribution.py` #12 (verbatim transcripts + v0.6
+  pre-broadening teeth + site-attributed/cross-sentence/example.com NOT-excused + denominator routing). Static
+  path untouched, replay 26/26 46.1/85.5/+39.4 unmoved, suite 33/33, no rubric bump. test #8's pure-semantic
+  reputation gap intentionally LEFT in place (broadening is a principled subset). **NEXT CYCLE'S FIRST DUTY:
+  adversarially review + self-merge (never same-fire; Cycle 269 authored it).** Reviewer must re-derive that no
+  site-side 403/Cloudflare phrasing is excused, confirm vendor-neutral capability wording, and run the LIVE
+  behavioral canonical re-score if networked (else queue `[LOCAL]`). Original diagnosis below (Cycle 268):
+  On 07-23 EVERY codex refusal on the canonical pair carried "browser
   {security,safety} controls" and v0.6 `_ENV_BLOCK_RE` caught 4/4. As the domains aged to ~20d the
   refusal phrasing DRIFTED to forms v0.6 MISSES — all committed at
   `runs/local/codex_reachability_20260805T{204555,214534}Z/` (summary.json + transcripts):

@@ -3,6 +3,65 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 269 — 2026-08-05T22:2xZ — TRUTH (cloud, PEER-GATED PR, behavioral-scoring-semantics) — broadened `_ENV_BLOCK_RE` to catch codex's DRIFTED own-tool refusal vocabulary, closing the LIVE invariant-#4 attribution leak Cycle 268 surfaced
+
+**FIRST DUTY (peer-gate review + infra health).** `list_pull_requests` state=open → `[]` (Cycle
+268 QUEUED the `_ENV_BLOCK_RE` broadening as a P0 candidate but did NOT open a PR — no peer-gated
+PR to review this fire). Cloud started on the stale orphan local `main` (`3796519`) while HEAD ==
+origin/main `c7b5b8e`; realigned local main to origin/main (benign, Cycle-245 lesson). **INFRA
+HEALTHY:** newest verify `runs/local/verify_20260805T214106Z.json` (21:41Z, tests_ok=true 33 suites,
+reads 46.1 F / 85.5 B / +39.4), ~34min old at fire (22:15Z), well inside the 6h floor; :41 cadence
+holding (20:41Z → 21:41Z) → RUNNER-HEALTH WATCH NORMAL. `pip install eth-account` (recurring
+agent-side gap, invariant #4) → full suite green.
+
+**IMPROVEMENT (TRUTH — the peer-gated P0 the pointer named "the highest-value next step": the LIVE
+invariant-#4 attribution leak).** Cycle 268 observed on committed fresh transcripts that, as the
+canonical domains aged to ~20d, codex's SAME hosted-browser refusals drifted OFF the v0.6 "browser
+{security,safety}" vocabulary onto phrasings that name the gated TOOL instead — "Browser access
+permission ... was denied", "Interactive browser access was declined", "denied by the browser's
+site-permission boundary", "Safety-controlled navigation ... were denied". Each is a genuine
+AGENT-side block (same-run `FetchContext.homepage()` = HTTP 200; codex REACHED the same domain on
+sibling trials; reputable example.com NEVER gated) that v0.6's `_ENV_BLOCK_RE` MISSED → `_is_env_blocked`
+False → a real `--behavioral` run mis-scores them as SITE FAILs (invariant #4 leak; the long-parked
+"test #8" case, now live on `runs/local/codex_reachability_20260805T{204555,214534}Z/`). FIX: three
+SELF-QUALIFIED `_ENV_BLOCK_RE` alternatives naming the agent's OWN navigation apparatus —
+(a) `interactive browser access`/`browser access permission` + block verb, (b) the browser's own
+`site-permission`/`safety` boundary, (c) the `safety-controlled navigation/fetching` layer + block
+verb. Each verb alternative carries a NEGATIVE LOOKAHEAD (`_NOT_SITE_ATTRIBUTED`) rejecting site-side
+attribution ("...denied BY the firewall/server/Cloudflare/WAF/gateway/..."), so a genuine 403 /
+Cloudflare block is STILL never excused — attribution honesty cuts both ways. The gap
+`(?:[^.]|\.(?=\S)){0,60}?` tolerates a dot INSIDE a token (a domain like "driftflight.com") but stops
+at a sentence boundary (". "), so a match can't span into an unrelated following sentence.
+Pure-semantic reputation gates naming NO own tool ("flagged as unsafe", "unable to browse") stay
+DELIBERATELY out of scope → test #8 UNCHANGED and still green (the broadening is a principled subset).
+
+**TEST — `tests/test_attribution.py` #12 (new, 11→12 tests).** Drifted phrasings VERBATIM from the two
+committed transcripts (invariant #3) classify env-blocked, in blockers AND as a trust_event.
+NON-VACUITY TEETH: the pre-broadening v0.6 pattern re-derived inline is shown to MISS every drifted
+phrasing. ATTRIBUTION HONESTY (both directions): site-attributed "browser access denied by the
+firewall", cross-sentence "safety-controlled navigation was fine. The server denied ...", and
+example.com's genuine no-storefront finding all stay NOT excused. Denominator routing mirrors #5/#9
+(drift-blocked codex run excluded from the outcome denominator n=1 → PASS not PARTIAL, surfaces as
+`hosted_agent_reachability` PARTIAL, model-attributed).
+
+**VALIDATION / SHIP.** SCORING-SEMANTICS (behavioral denominator routing) → PEER-GATED. Static scoring
+path untouched (`git diff -- asrs/scoring.py asrs/scorecard.py rubric/ fixtures/ asrs/offering.py
+asrs/probes/ asrs/battery.py` EMPTY — only `asrs/behavioral/shopper.py` + the test). Canonical STATIC
+replay guard **26/26, 46.1 F / 85.5 B / +39.4 UNMOVED** (behavioral-only path); full suite **33/33
+files green**. No rubric version bump (static comparability preserved; refinement lands under current
+rubric v0.7). Behaviorally the change can only RAISE a mis-FAILed site's score (routes genuine
+agent-side blocks out of outcome/trust into reachability) — an honest correction, not delta
+manufacture. Branch `loop/env-block-vocab-drift`, PR #146 (https://github.com/jnakagawa/agentic-readiness/pull/146);
+NEXT cycle's first duty reviews it adversarially + self-merges (never same-fire). Invariants #1
+($0 — no probes/payments/network, regex + tests only), #2 (behavioral aggregation refinement, peer-gated,
+comparability preserved → no version bump), #3 (fixtures verbatim from committed transcripts), #4 (the
+whole point — closes a leak WITHOUT over-excusing site-side blocks, teeth both directions), #5
+(append-only; LOG prepended, past untouched) all held. DM: peer-gated scoring-semantics PR opened →
+Slack visibility flag sent (Jonah's veto, not a gate). Repo has no CI workflow → no checks to drive.
+Next hypothesis: once #146 merges, the behavioral canonical delta can be re-scored LIVE [LOCAL] on a
+codex-reachable trial (drift-flight.org t2) to confirm the routing correction end-to-end; the
+cross-model N-curve P0 stays partially unblocked (t2-only reach).
+
 ## Cycle 268 — 2026-08-05T21:4xZ — TRUTH (LOCAL, direct-to-main, score-neutral) — re-characterized codex hosted-browser reachability on the AGED canonical pair (~20d old): the reputation gate has SOFTENED (codex now reaches drift-flight.org on t2 in both of today's runs) AND its own-tool refusal vocabulary has DRIFTED off v0.6's `_ENV_BLOCK_RE`, surfacing a LIVE invariant-#4 attribution leak (the long-parked "test #8" case) on committed fresh transcripts — queued the peer-gated regex broadening
 
 **FIRST DUTY (peer-gate review + infra health).** `gh pr list --state open` → `[]` (no

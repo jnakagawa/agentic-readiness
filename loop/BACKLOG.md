@@ -31,6 +31,11 @@ design in-cloud, execute locally.
      `verify_*.json` — a non-null note means a push race was auto-recovered in the wild; escalate only if a
      recovery ever FAILS (e.g. a real un-pushed non-heartbeat commit blocks it). -->
 
+<!-- DONE/PRUNED 2026-08-05 (Cycle 244) — this "verify the drop" item is RESOLVED end-to-end: Cycle 232
+     diagnosed it as PROBE under-measurement (not site degradation) → Cycle 235 merged PR #145 (x402
+     call-through proxy discovery) → Cycle 236 live-confirmed driftflight.com back to 85.5 B / +39.4 /
+     x402-live. Converted from an open bullet to this DONE marker (was internally CLOSED but still rendering
+     as open P0); full audit trail retained verbatim below.
 - **[LOCAL] Verify the driftflight.com LIVE transactability drop (canonical-anchor divergence)** (TRUTH,
   opened Cycle 126). The LOCAL runner RECOVERED this fire (`runs/local/verify_20260731T085248Z.json`,
   08:52Z Jul-31, attempts=1) and its LIVE static re-score shows driftflight.com **76.2 C / delta +30.1**
@@ -127,7 +132,7 @@ design in-cloud, execute locally.
   `runs/local/diag_transactability_drop_20260804T194242Z.json` (per-check diff),
   `runs/local/diag_transactability_rootcause_20260804T194901Z.json` (live-402 proof + scored-path repro),
   `experiments/diag_transactability_drop.py` (the tool). The remaining work is the PROBE FIX — a NEW peer-gated
-  [LOCAL] item below (this "verify the drop" item is now CLOSED).
+  [LOCAL] item below (this "verify the drop" item is now CLOSED). -->
 
 <!-- DONE 2026-08-04T21:17Z (Cycle 235, cloud, REVIEW/MERGE peer-gate): "[LOCAL] Fix the x402 probe to discover
      + POST the call-through PROXY endpoint" MERGED. PR #145 `loop/x402-proxy-discovery` (authored LOCAL Cycle 234)
@@ -785,6 +790,21 @@ design in-cloud, execute locally.
   the prior dated dataset so population DRIFT is visible (a domain adding/removing rails moves its score).
   Static $0, reuse the shipped harness (`.venv/bin/python -m experiments.calibration_sweep`); force-add the
   dated JSON to `runs/local/`. Keep it vendor-neutral (uniform probes; `segment` is read-only context).
+  PROGRESS — LOCAL Cycle 244 (2026-08-05, TRUTH, direct-to-main, score-neutral): the cadence re-run is DONE
+  (prior dataset was ~8 days old) and BOTH increments advanced. (b) is now AUTOMATIC and no longer a manual
+  step: `experiments/calibration_sweep.py` gained `_load_baseline` + `_compute_drift`, so every future run
+  emits a `drift` block (per-domain overall Δ for domains scored in both datasets; scored↔not-scorable
+  transitions reported separately per invariant #4; added/removed members listed) and prints a drift summary.
+  (a) POPULATION broadened 14→16 (target 15–20 HIT) with two NEW storefront TYPES absent from it — `ipinfo.io`
+  (`data-retrieval:api`, the Cycle-242 offering anchor) + `acuityscheduling.com` (`service-booking:saas`, the
+  Cycle-240 anchor), both already reachability-validated. Latest dataset `runs/local/calibration_sweep_20260805T014754Z.json`
+  (rubric v0.7): 15/16 scored, 1 not-scorable (rei.com, same as baseline), 0 error; **canonical pair byte-stable
+  85.5 B / 46.1 F / +39.4** (regression signal unmoved); drift vs 2026-07-28 = 11/13 IDENTICAL over 8 days, 2
+  moved (both upward, single-pillar): deepai.org +6.8 (all legibility 72.7→100.0), allbirds.com +5.0 (all trust
+  33.3→60.0). This item STAYS OPEN as the standing cadence (re-run weekly; the drift block reads itself). NEXT
+  broadening step toward the upper 15–20: a genuine ACP/UCP/MPP merchant or a 2nd x402-live site (both scarce —
+  record reachability as its own signal). Off the scoring path, score-neutral (`git diff -- asrs/ rubric/`
+  EMPTY; only `experiments/calibration_sweep.py`).
 <!-- DONE 2026-07-23T11:42Z (local fire, TRUTH): "Codex reachability investigation —
      CHARACTERIZE" discharged via experiments/codex_reachability.py (committed;
      5 codex invocations, canonical pair ×2 + example.com control ×1, all HTTP 200).

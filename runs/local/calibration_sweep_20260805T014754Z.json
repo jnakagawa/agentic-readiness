@@ -1,0 +1,586 @@
+{
+ "ts": "20260805T014754Z",
+ "kind": "calibration-sweep",
+ "rubric_version": "0.7",
+ "n_total": 16,
+ "n_scored": 15,
+ "n_not_scorable": 1,
+ "n_error": 0,
+ "leaderboard": [
+  {
+   "domain": "driftflight.com",
+   "segment": "api-storefront:rails-anchor",
+   "overall": 85.5,
+   "grade": "B"
+  },
+  {
+   "domain": "exa.ai",
+   "segment": "api-service",
+   "overall": 78.1,
+   "grade": "C"
+  },
+  {
+   "domain": "allbirds.com",
+   "segment": "retail:emerging-rails",
+   "overall": 66.9,
+   "grade": "D"
+  },
+  {
+   "domain": "deathwishcoffee.com",
+   "segment": "retail:emerging-rails",
+   "overall": 65.8,
+   "grade": "D"
+  },
+  {
+   "domain": "openai.com",
+   "segment": "api-service",
+   "overall": 64.5,
+   "grade": "D"
+  },
+  {
+   "domain": "warbyparker.com",
+   "segment": "retail:emerging-rails",
+   "overall": 64.2,
+   "grade": "D"
+  },
+  {
+   "domain": "deepai.org",
+   "segment": "api-service",
+   "overall": 62.0,
+   "grade": "D"
+  },
+  {
+   "domain": "ipinfo.io",
+   "segment": "data-retrieval:api",
+   "overall": 61.3,
+   "grade": "D"
+  },
+  {
+   "domain": "anthropic.com",
+   "segment": "api-service",
+   "overall": 58.5,
+   "grade": "F"
+  },
+  {
+   "domain": "acuityscheduling.com",
+   "segment": "service-booking:saas",
+   "overall": 54.0,
+   "grade": "F"
+  },
+  {
+   "domain": "moleskine.com",
+   "segment": "retail:no-rails",
+   "overall": 49.8,
+   "grade": "F"
+  },
+  {
+   "domain": "drift-flight.org",
+   "segment": "api-storefront:no-rails-anchor",
+   "overall": 46.1,
+   "grade": "F"
+  },
+  {
+   "domain": "perplexity.ai",
+   "segment": "api-service",
+   "overall": 41.3,
+   "grade": "F"
+  },
+  {
+   "domain": "wikipedia.org",
+   "segment": "control:non-storefront",
+   "overall": 41.1,
+   "grade": "F"
+  },
+  {
+   "domain": "example.com",
+   "segment": "control:non-storefront",
+   "overall": 22.5,
+   "grade": "F"
+  }
+ ],
+ "drift": {
+  "baseline_ts": "20260728T234815Z",
+  "baseline_path": "calibration_sweep_20260728T234815Z.json",
+  "n_compared": 13,
+  "n_moved": 2,
+  "max_abs_delta": 6.8,
+  "moved": [
+   {
+    "domain": "deepai.org",
+    "segment": "api-service",
+    "baseline": 55.2,
+    "current": 62.0,
+    "delta": 6.8
+   },
+   {
+    "domain": "allbirds.com",
+    "segment": "retail:emerging-rails",
+    "baseline": 61.9,
+    "current": 66.9,
+    "delta": 5.0
+   },
+   {
+    "domain": "driftflight.com",
+    "segment": "api-storefront:rails-anchor",
+    "baseline": 85.5,
+    "current": 85.5,
+    "delta": 0.0
+   },
+   {
+    "domain": "drift-flight.org",
+    "segment": "api-storefront:no-rails-anchor",
+    "baseline": 46.1,
+    "current": 46.1,
+    "delta": 0.0
+   },
+   {
+    "domain": "exa.ai",
+    "segment": "api-service",
+    "baseline": 78.1,
+    "current": 78.1,
+    "delta": 0.0
+   },
+   {
+    "domain": "perplexity.ai",
+    "segment": "api-service",
+    "baseline": 41.3,
+    "current": 41.3,
+    "delta": 0.0
+   },
+   {
+    "domain": "openai.com",
+    "segment": "api-service",
+    "baseline": 64.5,
+    "current": 64.5,
+    "delta": 0.0
+   },
+   {
+    "domain": "anthropic.com",
+    "segment": "api-service",
+    "baseline": 58.5,
+    "current": 58.5,
+    "delta": 0.0
+   },
+   {
+    "domain": "deathwishcoffee.com",
+    "segment": "retail:emerging-rails",
+    "baseline": 65.8,
+    "current": 65.8,
+    "delta": 0.0
+   },
+   {
+    "domain": "warbyparker.com",
+    "segment": "retail:emerging-rails",
+    "baseline": 64.2,
+    "current": 64.2,
+    "delta": 0.0
+   },
+   {
+    "domain": "moleskine.com",
+    "segment": "retail:no-rails",
+    "baseline": 49.8,
+    "current": 49.8,
+    "delta": 0.0
+   },
+   {
+    "domain": "example.com",
+    "segment": "control:non-storefront",
+    "baseline": 22.5,
+    "current": 22.5,
+    "delta": 0.0
+   },
+   {
+    "domain": "wikipedia.org",
+    "segment": "control:non-storefront",
+    "baseline": 41.1,
+    "current": 41.1,
+    "delta": 0.0
+   }
+  ],
+  "status_changed": [],
+  "added_members": [
+   "acuityscheduling.com",
+   "ipinfo.io"
+  ],
+  "removed_members": []
+ },
+ "rows": [
+  {
+   "domain": "driftflight.com",
+   "segment": "api-storefront:rails-anchor",
+   "scored": true,
+   "overall": 85.5,
+   "grade": "B",
+   "rubric_version": "0.7",
+   "pillars": {
+    "access": 100.0,
+    "legibility": 90.9090909090909,
+    "transactability": 87.5,
+    "trust": 60.0,
+    "outcome": null
+   },
+   "caps_applied": [],
+   "quotability": null,
+   "claimed_archetypes": [
+    "metered_api",
+    "digital_good",
+    "subscription"
+   ],
+   "error": null,
+   "elapsed_s": 12.94
+  },
+  {
+   "domain": "drift-flight.org",
+   "segment": "api-storefront:no-rails-anchor",
+   "scored": true,
+   "overall": 46.1,
+   "grade": "F",
+   "rubric_version": "0.7",
+   "pillars": {
+    "access": 100.0,
+    "legibility": 36.36363636363637,
+    "transactability": 18.75,
+    "trust": 60.0,
+    "outcome": null
+   },
+   "caps_applied": [],
+   "quotability": null,
+   "claimed_archetypes": [
+    "metered_api",
+    "digital_good",
+    "subscription"
+   ],
+   "error": null,
+   "elapsed_s": 5.14
+  },
+  {
+   "domain": "exa.ai",
+   "segment": "api-service",
+   "scored": true,
+   "overall": 78.1,
+   "grade": "C",
+   "rubric_version": "0.7",
+   "pillars": {
+    "access": 100.0,
+    "legibility": 100.0,
+    "transactability": 50.0,
+    "trust": 83.33333333333333,
+    "outcome": null
+   },
+   "caps_applied": [],
+   "quotability": null,
+   "claimed_archetypes": [
+    "metered_api",
+    "subscription",
+    "digital_good",
+    "data_retrieval",
+    "physical_good",
+    "service_booking"
+   ],
+   "error": null,
+   "elapsed_s": 25.18
+  },
+  {
+   "domain": "deepai.org",
+   "segment": "api-service",
+   "scored": true,
+   "overall": 62.0,
+   "grade": "D",
+   "rubric_version": "0.7",
+   "pillars": {
+    "access": 100.0,
+    "legibility": 100.0,
+    "transactability": 18.75,
+    "trust": 60.0,
+    "outcome": null
+   },
+   "caps_applied": [],
+   "quotability": null,
+   "claimed_archetypes": [
+    "metered_api",
+    "subscription",
+    "digital_good"
+   ],
+   "error": null,
+   "elapsed_s": 10.52
+  },
+  {
+   "domain": "perplexity.ai",
+   "segment": "api-service",
+   "scored": true,
+   "overall": 41.3,
+   "grade": "F",
+   "rubric_version": "0.7",
+   "pillars": {
+    "access": 100.0,
+    "legibility": 27.272727272727273,
+    "transactability": 18.75,
+    "trust": 46.666666666666664,
+    "outcome": null
+   },
+   "caps_applied": [],
+   "quotability": null,
+   "claimed_archetypes": [
+    "metered_api",
+    "digital_good",
+    "subscription",
+    "data_retrieval"
+   ],
+   "error": null,
+   "elapsed_s": 24.95
+  },
+  {
+   "domain": "openai.com",
+   "segment": "api-service",
+   "scored": true,
+   "overall": 64.5,
+   "grade": "D",
+   "rubric_version": "0.7",
+   "pillars": {
+    "access": 100.0,
+    "legibility": 45.45454545454545,
+    "transactability": 50.0,
+    "trust": 83.33333333333333,
+    "outcome": null
+   },
+   "caps_applied": [],
+   "quotability": null,
+   "claimed_archetypes": [
+    "metered_api",
+    "digital_good",
+    "subscription",
+    "service_booking",
+    "data_retrieval"
+   ],
+   "error": null,
+   "elapsed_s": 64.33
+  },
+  {
+   "domain": "anthropic.com",
+   "segment": "api-service",
+   "scored": true,
+   "overall": 58.5,
+   "grade": "F",
+   "rubric_version": "0.7",
+   "pillars": {
+    "access": 100.0,
+    "legibility": 59.09090909090909,
+    "transactability": 25.0,
+    "trust": 83.33333333333333,
+    "outcome": null
+   },
+   "caps_applied": [],
+   "quotability": null,
+   "claimed_archetypes": [
+    "metered_api",
+    "digital_good",
+    "subscription",
+    "data_retrieval"
+   ],
+   "error": null,
+   "elapsed_s": 32.97
+  },
+  {
+   "domain": "ipinfo.io",
+   "segment": "data-retrieval:api",
+   "scored": true,
+   "overall": 61.3,
+   "grade": "D",
+   "rubric_version": "0.7",
+   "pillars": {
+    "access": 100.0,
+    "legibility": 72.72727272727273,
+    "transactability": 25.0,
+    "trust": 80.0,
+    "outcome": null
+   },
+   "caps_applied": [],
+   "quotability": null,
+   "claimed_archetypes": [
+    "metered_api",
+    "data_retrieval",
+    "subscription",
+    "digital_good"
+   ],
+   "error": null,
+   "elapsed_s": 13.5
+  },
+  {
+   "domain": "acuityscheduling.com",
+   "segment": "service-booking:saas",
+   "scored": true,
+   "overall": 54.0,
+   "grade": "F",
+   "rubric_version": "0.7",
+   "pillars": {
+    "access": 100.0,
+    "legibility": 40.90909090909091,
+    "transactability": 25.0,
+    "trust": 83.33333333333333,
+    "outcome": null
+   },
+   "caps_applied": [],
+   "quotability": null,
+   "claimed_archetypes": [
+    "subscription",
+    "service_booking",
+    "metered_api"
+   ],
+   "error": null,
+   "elapsed_s": 23.58
+  },
+  {
+   "domain": "deathwishcoffee.com",
+   "segment": "retail:emerging-rails",
+   "scored": true,
+   "overall": 65.8,
+   "grade": "D",
+   "rubric_version": "0.7",
+   "pillars": {
+    "access": 100.0,
+    "legibility": 68.18181818181819,
+    "transactability": 50.0,
+    "trust": 60.0,
+    "outcome": null
+   },
+   "caps_applied": [],
+   "quotability": null,
+   "claimed_archetypes": [
+    "physical_good",
+    "metered_api",
+    "subscription"
+   ],
+   "error": null,
+   "elapsed_s": 15.71
+  },
+  {
+   "domain": "warbyparker.com",
+   "segment": "retail:emerging-rails",
+   "scored": true,
+   "overall": 64.2,
+   "grade": "D",
+   "rubric_version": "0.7",
+   "pillars": {
+    "access": 100.0,
+    "legibility": 86.36363636363636,
+    "transactability": 18.75,
+    "trust": 90.0,
+    "outcome": null
+   },
+   "caps_applied": [],
+   "quotability": null,
+   "claimed_archetypes": [
+    "service_booking",
+    "physical_good"
+   ],
+   "error": null,
+   "elapsed_s": 33.11
+  },
+  {
+   "domain": "allbirds.com",
+   "segment": "retail:emerging-rails",
+   "scored": true,
+   "overall": 66.9,
+   "grade": "D",
+   "rubric_version": "0.7",
+   "pillars": {
+    "access": 100.0,
+    "legibility": 72.72727272727273,
+    "transactability": 50.0,
+    "trust": 60.0,
+    "outcome": null
+   },
+   "caps_applied": [],
+   "quotability": null,
+   "claimed_archetypes": [
+    "metered_api",
+    "physical_good"
+   ],
+   "error": null,
+   "elapsed_s": 13.16
+  },
+  {
+   "domain": "moleskine.com",
+   "segment": "retail:no-rails",
+   "scored": true,
+   "overall": 49.8,
+   "grade": "F",
+   "rubric_version": "0.7",
+   "pillars": {
+    "access": 100.0,
+    "legibility": 40.90909090909091,
+    "transactability": 18.75,
+    "trust": 73.33333333333333,
+    "outcome": null
+   },
+   "caps_applied": [],
+   "quotability": null,
+   "claimed_archetypes": [
+    "subscription",
+    "physical_good"
+   ],
+   "error": null,
+   "elapsed_s": 26.57
+  },
+  {
+   "domain": "rei.com",
+   "segment": "retail:no-rails",
+   "scored": false,
+   "overall": null,
+   "grade": "N/A",
+   "rubric_version": "0.7",
+   "pillars": {
+    "access": null,
+    "legibility": null,
+    "transactability": null,
+    "trust": null,
+    "outcome": null
+   },
+   "caps_applied": [],
+   "quotability": null,
+   "claimed_archetypes": [],
+   "error": null,
+   "elapsed_s": 195.33
+  },
+  {
+   "domain": "example.com",
+   "segment": "control:non-storefront",
+   "scored": true,
+   "overall": 22.5,
+   "grade": "F",
+   "rubric_version": "0.7",
+   "pillars": {
+    "access": 100.0,
+    "legibility": 0.0,
+    "transactability": 0.0,
+    "trust": 20.0,
+    "outcome": null
+   },
+   "caps_applied": [],
+   "quotability": null,
+   "claimed_archetypes": [],
+   "error": null,
+   "elapsed_s": 3.86
+  },
+  {
+   "domain": "wikipedia.org",
+   "segment": "control:non-storefront",
+   "scored": true,
+   "overall": 41.1,
+   "grade": "F",
+   "rubric_version": "0.7",
+   "pillars": {
+    "access": 100.0,
+    "legibility": 36.36363636363637,
+    "transactability": 18.75,
+    "trust": 33.333333333333336,
+    "outcome": null
+   },
+   "caps_applied": [],
+   "quotability": null,
+   "claimed_archetypes": [],
+   "error": null,
+   "elapsed_s": 7.43
+  }
+ ]
+}

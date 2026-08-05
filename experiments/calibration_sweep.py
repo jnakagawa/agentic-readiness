@@ -33,6 +33,7 @@ evidence, force-added under runs/local/ (runs/ is gitignored).
 
 from __future__ import annotations
 
+import glob
 import json
 import os
 import sys
@@ -57,6 +58,12 @@ POPULATION: list[tuple[str, str]] = [
     ("perplexity.ai", "api-service"),
     ("openai.com", "api-service"),
     ("anthropic.com", "api-service"),
+    # data-retrieval / records-enrichment API storefront (the data_retrieval
+    # offering anchor captured LOCAL Cycle 242, fixtures/canonical/ipinfo.io.json)
+    ("ipinfo.io", "data-retrieval:api"),
+    # appointment / service-booking SaaS storefront (the service_booking offering
+    # anchor captured LOCAL Cycle 240, fixtures/canonical/acuityscheduling.com.json)
+    ("acuityscheduling.com", "service-booking:saas"),
     # retail with emerging agentic rails (llms.txt / agent manifests / agent checkout)
     ("deathwishcoffee.com", "retail:emerging-rails"),
     ("warbyparker.com", "retail:emerging-rails"),
@@ -133,6 +140,82 @@ def _score_one(domain: str, segment: str, rubric) -> dict:
     return row
 
 
+def _load_baseline(current_ts: str) -> dict | None:
+    """Newest prior calibration-sweep artifact, for the drift diff.
+
+    Increment (b) of the calibration-population item: re-run on a cadence and
+    diff against the prior dated dataset so population DRIFT (a domain adding or
+    removing agentic rails moves its score) is VISIBLE, not buried. Best-effort —
+    a missing / unreadable baseline just yields no drift block (the fresh sweep
+    is the primary datum). Skips the artifact this run is about to write.
+    """
+    paths = sorted(glob.glob(os.path.join("runs", "local", "calibration_sweep_*.json")))
+    for path in reversed(paths):
+        if f"calibration_sweep_{current_ts}.json" in path:
+            continue
+        try:
+            with open(path) as fh:
+                base = json.load(fh)
+            base["_path"] = os.path.basename(path)
+            return base
+        except Exception:  # noqa: BLE001 — diagnostic annotation only
+            continue
+    return None
+
+
+def _compute_drift(rows: list[dict], baseline: dict | None) -> dict | None:
+    """Per-domain overall-score movement vs the baseline sweep.
+
+    Only domains present in BOTH datasets and scored in both contribute a delta;
+    a scored<->not-scorable transition is reported separately (a reachability
+    change, not a capability move — invariant #4). New / dropped members are
+    listed so a broadened population is legible, not silently averaged in.
+    """
+    if not baseline:
+        return None
+    base_rows = {r["domain"]: r for r in baseline.get("rows", [])}
+    now_domains = {r["domain"] for r in rows}
+    moved: list[dict] = []
+    status_changed: list[dict] = []
+    for r in rows:
+        b = base_rows.get(r["domain"])
+        if b is None:
+            continue  # a newly added member — reported under added_members
+        now_scored = bool(r["scored"]) and r["overall"] is not None
+        base_scored = bool(b.get("scored")) and b.get("overall") is not None
+        if now_scored and base_scored:
+            moved.append(
+                {
+                    "domain": r["domain"],
+                    "segment": r["segment"],
+                    "baseline": b["overall"],
+                    "current": r["overall"],
+                    "delta": round(r["overall"] - b["overall"], 1),
+                }
+            )
+        elif now_scored != base_scored:
+            status_changed.append(
+                {
+                    "domain": r["domain"],
+                    "segment": r["segment"],
+                    "baseline": b["overall"] if base_scored else "NOT SCORABLE",
+                    "current": r["overall"] if now_scored else "NOT SCORABLE",
+                }
+            )
+    moved.sort(key=lambda m: abs(m["delta"]), reverse=True)
+    return {
+        "baseline_ts": baseline.get("ts"),
+        "baseline_path": baseline.get("_path"),
+        "n_compared": len(moved),
+        "n_moved": sum(1 for m in moved if m["delta"] != 0.0),
+        "max_abs_delta": max((abs(m["delta"]) for m in moved), default=0.0),
+        "moved": moved,
+        "status_changed": status_changed,
+        "added_members": sorted(now_domains - set(base_rows)),
+        "removed_members": sorted(set(base_rows) - now_domains),
+    }
+
+
 def run() -> dict:
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     rubric = scoring.load_rubric(None)
@@ -167,6 +250,7 @@ def run() -> dict:
             {"domain": r["domain"], "segment": r["segment"], "overall": r["overall"], "grade": r["grade"]}
             for r in leaderboard
         ],
+        "drift": _compute_drift(rows, _load_baseline(ts)),
         "rows": rows,
     }
     return payload
@@ -189,6 +273,27 @@ def main() -> int:
     print("leaderboard (scored, overall desc):", file=sys.stderr)
     for r in payload["leaderboard"]:
         print(f"  {r['overall']:>5} {r['grade']:<3} {r['domain']:<24} {r['segment']}", file=sys.stderr)
+
+    drift = payload.get("drift")
+    if drift:
+        print(
+            f"\ndrift vs {drift['baseline_ts']} ({drift['baseline_path']}): "
+            f"{drift['n_moved']}/{drift['n_compared']} moved, max |Δ| {drift['max_abs_delta']}",
+            file=sys.stderr,
+        )
+        for m in drift["moved"]:
+            if m["delta"]:
+                print(
+                    f"  Δ {m['delta']:+6.1f}  {m['domain']:<24} {m['baseline']} -> {m['current']}",
+                    file=sys.stderr,
+                )
+        for s in drift["status_changed"]:
+            print(f"  status   {s['domain']:<24} {s['baseline']} -> {s['current']}", file=sys.stderr)
+        if drift["added_members"]:
+            print(f"  added: {', '.join(drift['added_members'])}", file=sys.stderr)
+        if drift["removed_members"]:
+            print(f"  removed: {', '.join(drift['removed_members'])}", file=sys.stderr)
+
     print(out_path)
     return 0
 

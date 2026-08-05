@@ -1,6 +1,41 @@
 # Loop state
 
-- Cycle counter: 243
+- Cycle counter: 244
+- LOCAL CYCLE 244 — 2026-08-05T~01:5xZ (TRUTH, LOCAL, direct-to-main, score-neutral). FIRST duty:
+  `gh pr list --state open` → `[]` (no open peer-gated PR, no review owed). INFRA green: this hour's verify
+  floor `runs/local/verify_20260805T014104Z.json` (01:41Z, git_pull.ok=true attempts=1,
+  divergence_recovery=None, tests_ok=true 24/24) fresh at fire; live canonical **46.1 F / 85.5 B / +39.4**
+  (tx 87.5), no drift. Took the OLDEST actionable P0 [LOCAL] item — the calibration-population sweep (TRUTH,
+  opened 2026-07-28), which was CADENCE-DUE (~8 days since the prior dataset; item asks for a weekly re-run +
+  drift diff). Delivered BOTH increments in one $0-static unit: (a) broadened POPULATION 14→16 (target 15–20
+  hit) with two NEW storefront TYPES absent from it — ipinfo.io (`data-retrieval:api`, the Cycle-242 anchor) +
+  acuityscheduling.com (`service-booking:saas`, the Cycle-240 anchor), both already reachability-validated;
+  (b) added an automatic DRIFT DIFF to `experiments/calibration_sweep.py` (`_load_baseline`+`_compute_drift`,
+  emits a `drift` block + prints a summary — per-domain overall Δ for domains scored in both datasets,
+  scored↔not-scorable transitions separated per invariant #4, added/removed members listed). RESULT
+  (`runs/local/calibration_sweep_20260805T014754Z.json`, rubric v0.7): 15/16 scored, 1 not-scorable (rei.com,
+  same as baseline), 0 error; **canonical pair byte-stable 85.5 B / 46.1 F / +39.4** (regression signal
+  unmoved); drift vs 2026-07-28: 11/13 IDENTICAL over 8 days, 2 moved (both upward, each single-pillar) —
+  deepai.org +6.8 (all legibility 72.7→100.0), allbirds.com +5.0 (all trust 33.3→60.0). New members ipinfo.io
+  61.3 D, acuityscheduling.com 54.0 F. SCORE-NEUTRAL: `git diff -- asrs/ rubric/ fixtures/ tests/
+  loop/local_verify.py` EMPTY (only experiments/calibration_sweep.py, which READS the scoring path); replay
+  guard 25/25, full suite 24/24 files (test_free_tier 11/11 locally). Invariant #1 held ($0 static, no
+  --behavioral → no free-tier probe, no zero CLI, no signing). NO DM (score-neutral TRUTH, not sensitive-class,
+  not first-after-16:00 UTC; last digest Cycle 228). See LOG Cycle 244.
+- FOCUS POINTER (Cycle 244 done, LOCAL): NO open peer-gated PR → next fire's first duty is the infra health
+  check only. Cloud track rotation UNCHANGED (this LOCAL cycle did not consume the cloud rotation slot): Cycle
+  243 was COVERAGE → cloud pointer is **TRUTH next** (METHOD → COVERAGE → TRUTH → READOUT). The calibration
+  sweep now emits drift automatically — a future [LOCAL] fire re-runs `.venv/bin/python -m
+  experiments.calibration_sweep` on the weekly cadence and reads the `drift` block (next broadening step:
+  a genuine ACP/UCP/MPP merchant or a 2nd x402-live site for the upper 15–20 target — both scarce, record
+  reachability as its own signal). Substantive [LOCAL] frontier unchanged (prefer the oldest): physical_good-rich
+  / MIXED retail+API fixtures (the P1 rich-retail item), a THIRD calibration anchor, render/structured-catalog
+  captures, the typographic PHRASE-RESCUE real-evidence case, ACP/UCP/MPP live handshakes. In-cloud COVERAGE
+  openings for a later cycle: mine acuityscheduling.com (service_booking's anchor is still UN-mined for its
+  first distinct signal) or ipinfo.io's dataset-format/download-contract signal. RUNNER-HEALTH WATCH: drift
+  RESOLVED; future `verify_*.json` read +39.4 / attribution=None, real-series canonical_history tests
+  recovery-tolerant (green). NEW P2 precision-gap candidate (still carried): data_retrieval `lookup`
+  false-positives on the generic "<noun> lookup" admin-search sense ("deployment lookup" on cal.com).
 - CYCLE 243 — 2026-08-05T01:23Z (COVERAGE, cloud, direct-to-main, score-neutral). FIRST duty (infra health
   check — no open peer-gated PR, `list_pull_requests` state=open `[]`): INFRA GREEN, newest verify
   `runs/local/verify_20260805T004101Z.json` (00:41Z, git_pull.ok=true attempts=1, divergence_recovery=None,

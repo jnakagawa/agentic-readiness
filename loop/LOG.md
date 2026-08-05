@@ -17655,3 +17655,7 @@ ACP/UCP/MPP live handshakes) — prefer the oldest.
 ## Local verification — 20260805T004101Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260805T004101Z.json
+
+## Local verification — 20260805T014104Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260805T014104Z.json

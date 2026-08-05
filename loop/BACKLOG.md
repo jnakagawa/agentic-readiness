@@ -2339,13 +2339,29 @@ design in-cloud, execute locally.
      Score-neutral: scoring-path diff empty, canonical 46.1 F / 85.5 B / +39.4 UNMOVED, replay 26/26, full suite
      525→532. See LOG Cycle 258. FOLLOW-UP (queued below): the `compare` view (`render_compare`) has no
      corroboration on either transactability column. -->
-- **[CANDIDATE, READOUT] Compare-view corroboration (both columns)** (follow-up to Cycle 258). The terminal
-  `render_compare(a, b)` two-column transactability delta shows neither side's behavioral corroboration. When
-  BOTH reports ran panels, the same `payment_corroboration_state` affordance could qualify the with/without
-  transactability rows so a reader sees whether each side's number was lived out — the compare-view analog of
-  Cycle 258's single-card line. Display-only/score-neutral; reuses the shared classifier (no new derivation).
-  Guard: suppress per-side when that side has no valid panel (mismatched panels must not imply a false
-  corroboration). Low-medium urgency; a clean next READOUT pick after the single-card line landed.
+<!-- DONE 2026-08-05T19:1xZ (Cycle 264, READOUT, cloud, direct-to-main, score-neutral): "[CANDIDATE, READOUT]
+     Compare-view corroboration (both columns)" SHIPPED. `asrs.report.render_compare` now emits a per-side
+     payment-corroboration line directly under the Transactability delta row — one line per side that ran a
+     panel, spelling its good/neutral/warn state with the SAME wording the Cycle-258 single-card line uses.
+     Extracted the ONE shared decision `_payment_corroboration_state_for(report)` (→ state or None) +
+     module-level `_PAYMENT_CORROB_TEXT`; refactored `_payment_corroboration_line` to delegate (single-card
+     output byte-identical). Both terminal surfaces + the HTML badge + the calibration guard now read the same
+     `scorecard.payment_corroboration_state`. Guard honored: suppress per-side when that side has no valid
+     panel (0 panels → no lines = static compare unchanged; 1 → exactly one line, on that side). NEW
+     `tests/test_compare_payment_corroboration.py` +6 (both-sides annotation, same-signal proof, display-only
+     strip→un-annotated byte-for-byte, suppression 0/1/2, Cycle-258-wording regression guard, distinct-states
+     teeth). MUTATION-TESTED (collapse decision→always-good reddens BOTH the compare AND single-card suites).
+     Score-neutral: scoring-path diff EMPTY (only `asrs/report.py` + new test), replay 26/26, 46.1 F / 85.5 B
+     / +39.4 UNMOVED, full suite 31/31 files. See LOG Cycle 264. FOLLOW-UP (queued below): the HTML compare
+     card shows the badge only for the primary side, not the baseline. -->
+- **[CANDIDATE, READOUT] HTML compare card — baseline-side payment badge** (follow-up to Cycle 264). The HTML
+  compare card (`scorecard._pillars(rep, baseline)`) computes the payment-corroboration badge from
+  `_payment_corroboration(rep)` — the PRIMARY side only — so the baseline (without-rails) column's
+  transactability row carries no badge even when the baseline ran a panel. The terminal compare view now
+  annotates BOTH sides (Cycle 264); the HTML compare card should be made symmetric so the two readouts of the
+  SAME two-sided comparison agree. Display-only/score-neutral; reuses `_payment_corroboration`. Guard: suppress
+  per-side when that side has no valid panel (mismatched panels must not imply a false corroboration).
+  Low-medium urgency; a clean READOUT pick.
 
 <!-- DONE 2026-07-28T16:21Z (Cycle 62, COVERAGE, direct-to-main, score-neutral):
      "[CANDIDATE] Offering discovery should read the /docs API-docs surface" SHIPPED. `/docs`

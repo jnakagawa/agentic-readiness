@@ -109,6 +109,56 @@ def _cant_test_checks(report):
 # single report card
 # --------------------------------------------------------------------------
 
+# The payment-corroboration state -> terminal text, shared by the single card's
+# sub-line and the compare view's per-side annotation so every terminal readout
+# spells the SAME state identically (they can never phrase the same signal two
+# ways). Kept byte-identical to the Cycle-258 single-card wording.
+_PAYMENT_CORROB_TEXT = {
+    "good": "behaviorally corroborated — reached a machine-payable path "
+            "in every valid trial",
+    "neutral": "no payment, as predicted — hit the payment wall in every "
+               "valid trial",
+    "warn": "NOT corroborated — static prediction and lived experience "
+            "disagree across trials",
+}
+
+
+def _payment_corroboration_state_for(report) -> str | None:
+    """The payment-corroboration DECISION for one report — ``"good"`` /
+    ``"neutral"`` / ``"warn"``, or ``None`` when there is nothing to corroborate
+    (no valid behavioral run, or the ``x402_probe`` prediction check is absent).
+
+    The single extraction shared by the single-card sub-line and the compare
+    view's per-side annotation, so every terminal payment-corroboration readout
+    reads the SAME signal — the static ``x402_probe`` status and the
+    ``machine_payable_path`` checkpoint across VALID behavioral trials — via the
+    pure decision in :func:`asrs.scorecard.payment_corroboration_state` (the same
+    decision the HTML card's badge and the calibration guard consume). Pure /
+    read-only: it moves no score and bumps no rubric version.
+    """
+    # Lazy import: keep the report module light and avoid importing the heavy
+    # HTML scorecard module at load time (matches the reliability lazy-imports).
+    from .scorecard import (  # noqa: PLC0415
+        _PAYMENT_EXPERIENCE_CHECKPOINT,
+        _PAYMENT_PREDICTION_CHECK,
+        payment_corroboration_state,
+    )
+
+    valid = [r for r in report.behavioral_runs if r.checkpoints]
+    if not valid:
+        return None
+    prediction = None
+    for c in report.checks:
+        if c.check_id == _PAYMENT_PREDICTION_CHECK:
+            prediction = _status_value(c.status)
+            break
+    if prediction is None:
+        return None
+    predicted_payable = prediction == "pass"
+    reached = [bool(r.checkpoints.get(_PAYMENT_EXPERIENCE_CHECKPOINT)) for r in valid]
+    return payment_corroboration_state(predicted_payable, reached)
+
+
 def _payment_corroboration_line(report) -> list[str]:
     """Terminal analog of the HTML card's payment-corroboration badge: one
     indented sub-line under the Transactability row saying whether the
@@ -125,36 +175,10 @@ def _payment_corroboration_line(report) -> list[str]:
     older/partial report) — mirroring the HTML badge's suppression, so static
     cards are byte-for-byte unchanged.
     """
-    # Lazy import: keep the report module light and avoid importing the heavy
-    # HTML scorecard module at load time (matches the reliability lazy-imports).
-    from .scorecard import (  # noqa: PLC0415
-        _PAYMENT_EXPERIENCE_CHECKPOINT,
-        _PAYMENT_PREDICTION_CHECK,
-        payment_corroboration_state,
-    )
-
-    valid = [r for r in report.behavioral_runs if r.checkpoints]
-    if not valid:
+    state = _payment_corroboration_state_for(report)
+    if state is None:
         return []
-    prediction = None
-    for c in report.checks:
-        if c.check_id == _PAYMENT_PREDICTION_CHECK:
-            prediction = _status_value(c.status)
-            break
-    if prediction is None:
-        return []
-    predicted_payable = prediction == "pass"
-    reached = [bool(r.checkpoints.get(_PAYMENT_EXPERIENCE_CHECKPOINT)) for r in valid]
-    state = payment_corroboration_state(predicted_payable, reached)
-    text = {
-        "good": "behaviorally corroborated — reached a machine-payable path "
-                "in every valid trial",
-        "neutral": "no payment, as predicted — hit the payment wall in every "
-                   "valid trial",
-        "warn": "NOT corroborated — static prediction and lived experience "
-                "disagree across trials",
-    }[state]
-    return [f"      payment corroboration: {text}"]
+    return [f"      payment corroboration: {_PAYMENT_CORROB_TEXT[state]}"]
 
 
 def _earner_rep(report) -> dict:
@@ -542,6 +566,25 @@ def render_compare(a, b, label_a: str = "without", label_b: str = "with") -> str
             "  " + label + _fmt_score(sa).rjust(9) + _fmt_score(sb).rjust(11)
             + "   " + d_str
         )
+        # The transactability DELTA is the headline of the with/without pitch —
+        # qualify it, per side, with whether each side's LIVED payment
+        # experience corroborates its static prediction (the SAME signal the
+        # single card's sub-line reads, via _payment_corroboration_state_for).
+        # So a reader can see the delta is behaviorally earned, not a static
+        # artifact. Display-only; suppressed entirely when NEITHER side ran a
+        # panel (the canonical static re-score) so static compares are unchanged.
+        if pillar == "transactability":
+            states = [
+                (label_a, _payment_corroboration_state_for(a)),
+                (label_b, _payment_corroboration_state_for(b)),
+            ]
+            if any(st is not None for _, st in states):
+                for lbl, st in states:
+                    if st is not None:
+                        lines.append(
+                            f"      {lbl} payment corroboration: "
+                            f"{_PAYMENT_CORROB_TEXT[st]}"
+                        )
 
     # -- findings unique to each side --
     a_fail = {c.finding for c in a.checks if _status_value(c.status) == "fail"}

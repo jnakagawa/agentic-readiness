@@ -30,14 +30,24 @@ design in-cloud, execute locally.
      >6h no-artifact gap would mean the watchdog is not firing (or a fresh mode) → escalate. A DURABILITY follow-up worth
      a future cycle: `tests/test_launcher_hygiene.py` pinning that `loop/asrs_local_cycle.sh` keeps the watchdog
      wrapper (a bare unbounded `claude -p` invocation would regress the wedge) + stays synced to the pinned copy. -->
-- **[LOCAL / CANDIDATE, METHOD] Guard the launcher watchdog + pin the repo↔pinned launcher sync** (from Cycle 261).
-  The launcher `loop/asrs_local_cycle.sh` is now repo-tracked with a wall-clock agent WATCHDOG (Cycle 261 stall fix),
-  but nothing pins that it STAYS bounded — a future edit that drops the `&` / watchdog and reverts to a synchronous
-  `claude -p` would silently re-open the ~15h non-reentrant-wedge failure mode. Add `tests/test_launcher_hygiene.py`:
-  (a) `loop/asrs_local_cycle.sh` contains the backgrounded agent + a `kill`-based watchdog bounding `ASRS_AGENT_TIMEOUT`;
-  (b) it runs `local_verify.py` BEFORE the agent (floor-first); (c) optionally, when run on the operator's machine, the
-  pinned `~/.local/bin/asrs_local_cycle.sh` matches the repo copy (self-heal-law sync, the `local_verify.py` precedent).
-  Off the scoring path, score-neutral. [LOCAL] for leg (c) only; legs (a)/(b) are in-cloud (static file assertions).
+<!-- DONE 2026-08-05T18:4xZ (LOCAL Cycle 263, METHOD/self-healing durability, direct-to-main, score-neutral):
+     "[LOCAL/CANDIDATE, METHOD] Guard the launcher watchdog + pin the repo↔pinned launcher sync" (from Cycle 261)
+     SHIPPED. NEW `tests/test_launcher_hygiene.py` (+7) pins `loop/asrs_local_cycle.sh` against the exact Cycle-261
+     wedge shape: (a) the verify FLOOR runs BEFORE the agent (floor-first); (b) the agent is BACKGROUNDED (standalone
+     trailing `&`, distinguished from the `&` in `2>&1`); (c) the agent is WATCHDOG-BOUNDED (an
+     `ASRS_AGENT_TIMEOUT`-tunable `sleep`+`kill` on the captured `$AGENT_PID`); (d) `zsh -n` parses clean (guarded —
+     skips where zsh absent); (e) [LOCAL] the pinned `~/.local/bin/asrs_local_cycle.sh` is byte-identical to the repo
+     copy (self-heal-law sync, the `local_verify.py` precedent; skips off the operator machine). Leg (e) verified LIVE
+     this fire (diff IDENTICAL 2483B; zsh -n clean). Auto-joins the verify FLOOR (`local_verify.py` globs
+     `tests/test_*.py`) + `test_runner_registration` (now 30 suites, all registered). MUTATION-TESTED on the REAL
+     launcher (throwaway in-memory copies, real file untouched): dropping `&` → not-backgrounded; deleting the
+     watchdog lines → not-bounded; floor-after-agent → not-floor-first — each reddens ONLY its own guard, the real
+     launcher passes all three (no false positive); a self-contained teeth test also flags a synthetic regressed
+     launcher. Off the scoring path (`asrs/ rubric/ fixtures/ batteries/ loop/local_verify.py loop/asrs_local_cycle.sh`
+     diff EMPTY); 18:41Z floor re-scored live 46.1 F / 85.5 B / +39.4 UNMOVED; full suite 30/30 files green. Closes the
+     Cycle-261 self-healing arc end-to-end (root-cause → fix → pin). See LOG Cycle 263. -->
+
+
 
 <!-- DONE 2026-08-04T17:13Z (LOCAL cycle, SELF-HEALING, direct-to-main, score-neutral): "[LOCAL] LOCAL verify
      runner AT-FLOOR since Aug-1 03:50Z (~3 days)" ROOT-CAUSED + FIXED + HARDENED — a local fire saw what the

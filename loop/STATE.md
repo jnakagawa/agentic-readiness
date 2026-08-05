@@ -1,6 +1,49 @@
 # Loop state
 
-- Cycle counter: 269
+- Cycle counter: 270
+- CYCLE 270 — 2026-08-05T23:0xZ (READOUT, cloud, direct-to-main, display-only, score-neutral). FIRST duty
+  (infra health + peer-gate review): `list_pull_requests` state=open → `[]` (PR #146 merged externally by
+  the owner during Cycle 269, reconciled in the Cycle 269 addendum — no open peer-gated PR remains). Cloud
+  started on stale orphan local `main` (`3796519`) while HEAD == origin/main `d6bb24f`; realigned (benign,
+  Cycle-245). **INFRA HEALTHY:** newest verify `runs/local/verify_20260805T224105Z.json` (22:41Z,
+  tests_ok=true 33 suites, 46.1 F / 85.5 B / +39.4), ~10-20min old at fire (~23:0xZ), well inside the 6h
+  floor; :41 cadence holding (21:41Z→22:41Z, a fresh slot beyond Cycle 269's 21:41Z read) → RUNNER-HEALTH
+  WATCH NORMAL. LOG/STATE/git consistent (merge `8c89718` + addendum `d6bb24f` both on origin/main).
+  `pip install eth-account` (recurring agent-side gap, invariant #4). **IMPROVEMENT (READOUT — the pointer's
+  named highest-value in-cloud READOUT item, the Cycle-264 symmetric follow-up):** the HTML compare card was
+  asymmetric with the terminal — `scorecard._pillars(rep, baseline)` renders the with-side card that CARRIES
+  the transactability DELTA (the with/without pitch headline) but tagged only THAT side's payment-corroboration
+  badge; the baseline side's corroboration lived on the separate left card, never adjacent to the delta. Fixed
+  `_pillars` to ALSO surface the baseline's corroboration on the transactability row in compare mode
+  (`base_corrob = _payment_corroboration(baseline)` when a baseline is present), rendered as a
+  visually-secondary second badge (`<small class="corrob baseline {band}" title="Baseline — …">baseline:
+  {label}</small>` + `.corrob.baseline{opacity:.72;margin-left:6px}`), so a +delta over an UN-corroborated
+  baseline anchor is read with that caution without hunting to the other card — mirroring Cycle 264's terminal
+  both-sides annotation. Reads the SAME `_payment_corroboration` signal the with-side badge / terminal line /
+  calibration guard all consume; no new field, no new decision, cannot move a score; `baseline=None` is a
+  byte-for-byte no-op. NEW `test_readout.py` +2 (92→94): NON-VACUOUS on the two committed behavioral anchors
+  (driftflight.com good with-side over moleskine neutral baseline shows BOTH badges; reversed tracks) + TEETH
+  (baseline badge tracks the baseline's good/neutral/warn) + single-card NO-OP + honest-absence suppression
+  (static baseline adds no badge, inv #4) + transactability-only scoping; integration-confirmed on the REAL
+  assembled `build_scorecard` compare card (exactly one `corrob baseline` badge, on the with-side tx row).
+  SCORE-NEUTRAL: scoring-path diff EMPTY (only `asrs/scorecard.py` readout + the test); full suite **33/33
+  green**, test_readout 94/94; 22:41Z live signal **46.1 F / 85.5 B / +39.4 UNMOVED** (in-cloud network
+  blocked → by-construction + verify artifact per playbook). Invariants #1–5 all held. NO DM (score-neutral
+  display-only READOUT, not sensitive-class; digest already sent Cycle 259 this window). See LOG Cycle 270.
+- FOCUS POINTER (Cycle 270 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
+  check. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + Cycle 263 pin); WATCH stays NORMAL —
+  re-escalate ONLY on a fresh >6h no-artifact gap. Cloud track rotation: Cycle 270 was READOUT → cloud pointer
+  is **METHOD next** (METHOD → COVERAGE → TRUTH → READOUT). NEXT READOUT: the compare-card baseline
+  corroboration is now symmetric with the terminal (Cycle 264 follow-up DONE) — remaining READOUT opening is
+  the population-drift TREND across ≥3 dated sweeps ([LOCAL]-gated, only 2 committed); beyond that READOUT is
+  near-saturated → surface a NEW readout seam. NEXT METHOD/TRUTH: SATURATED (arrival-order + hash-seed +
+  metamorphic-drift all closed) — surface a genuinely NEW seam first. NEXT COVERAGE: physical_good
+  RETURNS-WINDOW leg (if allbirds/moleskine prose carries a machine-readable return window); agent-native
+  RETAIL rail surfaces (UCP/MCP); ipinfo.io DATASET-FORMAT (Cycle-243); deep-bank uncaptured-capability audit.
+  Substantive [LOCAL] frontier: re-score the behavioral canonical delta LIVE on a codex-reachable trial
+  (drift-flight.org t2) end-to-end; cross-model N-curve (partially unblocked, t2-only); a THIRD calibration
+  anchor; render-generation digital_good (Cycle-168); structured catalog/pricing JSON (Cycle-70); ACP/UCP/MPP
+  live handshakes; a richer-booking WAITLIST fixture (Cycle-256).
 - CYCLE 269 — 2026-08-05T22:2xZ (TRUTH, cloud, PEER-GATED PR #146, behavioral-scoring-semantics). FIRST
   duty: `list_pull_requests` state=open → `[]` (Cycle 268 QUEUED the broadening but opened no PR). Cloud
   started on stale orphan local `main` (`3796519`) while HEAD == origin/main `c7b5b8e`; realigned (benign,
@@ -280,91 +323,6 @@
   calibration anchor, render-generation digital_good (Cycle-168), structured catalog/pricing JSON (Cycle-70), the
   typographic PHRASE-RESCUE real-evidence case, ACP/UCP/MPP live handshakes, a richer-booking WAITLIST fixture
   (Cycle-256).
-- CYCLE 262 — 2026-08-05T~18:1xZ (TRUTH, cloud, direct-to-main, score-neutral). FIRST duty (infra health check):
-  NO open peer-gated PR (`list_pull_requests` state=open → `[]`). HEAD realigned to origin/main at Cycle 261
-  (`9f6e8cd`; detached-start realign via `git fetch origin main` + `git checkout -B main origin/main`, benign).
-  **RUNNER STALL RESOLVED (Cycle 261) — floor HEALTHY:** newest verify `runs/local/verify_20260805T174754Z.json`
-  (17:47Z, tests_ok=true 26 suites, reads 46.1 F / 85.5 B / +39.4), ~28min old at fire (18:15Z), well inside the 6h
-  floor. The Cycle-261 launcher-watchdog fix un-wedged launchd; RUNNER-HEALTH WATCH stays NORMAL (next :41 artifact
-  due 18:41Z — a fresh >6h gap would mean the watchdog is not firing → re-escalate). `pip install eth-account`
-  (recurring agent-side gap, invariant #4) → test_free_tier 11/11. **IMPROVEMENT (TRUTH):** closed the LAST
-  order-adjacent evidence surface — the trust-panel `per_model` verdicts map (`asrs/behavioral/trust_probe.py:366`)
-  was a dict comprehension over `verdicts` in ARRIVAL order, so its key-insertion order (and hence the SERIALIZED
-  JSON evidence committed to reports/transcripts) leaked panel arrival order. Fixed to
-  `sorted(verdicts, key=lambda v: v.model)`. This seam was INVISIBLE to the Cycle-255 metamorphic `cr_fwd == cr_rev`
-  guard because Python dict `==` is order-blind. `tests/test_trust_panel_reproducibility.py` +1
-  (`test_per_model_evidence_serializes_order_invariantly`, 2→3): serialized-bytes invariant + model-sorted keys +
-  TEETH (pre-fix key order differed AND Python `==` sees them equal). MUTATION-TESTED: reverting the sort reddens
-  ONLY the new serialization test, not the `==` guard. SCORE-NEUTRAL: scoring-path diff (`asrs/scoring.py rubric/
-  fixtures/ batteries/ asrs/offering.py asrs/probes/ asrs/scorecard.py`) EMPTY; canonical replay **26/26**, **46.1 F
-  / 85.5 B / +39.4 UNMOVED**; full suite **29/29 files green**. Invariants #1 (probe read-only, evidence projection
-  only), #2 (no scoring-semantics → no version bump), #3 (strengthens evidence reproducibility), #4 (eth-account gap
-  = agent env not site), #5 (mutation on /tmp backup restored; LOG prepended, past entries untouched) all held. NO DM
-  (score-neutral TRUTH, not sensitive-class, off scoring path; the daily digest was already sent Cycle 259 this
-  ≥16:00 UTC window). See LOG Cycle 262.
-- FOCUS POINTER (Cycle 262 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
-  **RUNNER STALL RESOLVED** (Cycle 261 launcher-watchdog fix + floor restored 17:47Z) — WATCH stays NORMAL; confirm
-  the 18:41Z (and next 1–2) `verify_*.json` resume the :41 cadence; re-escalate ONLY on a fresh >6h no-artifact gap
-  (would mean the watchdog is not firing or a new mode). Cloud track rotation: Cycle 262 was TRUTH → cloud pointer is
-  **READOUT next** (METHOD → COVERAGE → TRUTH → READOUT). **TRUTH arrival-order surfaces ALL CLOSED** (shopper
-  `by_run`/`block_statements`/`refusing_models` Cycles 253/255/257 + trust `per_model` Cycle 262) — a future TRUTH
-  cycle must SURFACE A NEW SEAM before picking. NEXT READOUT openings: the `compare` view (`render_compare`)
-  transactability delta carries no corroboration for EITHER side (the Cycle-254/258 payment-corroboration affordance
-  could qualify the with/without transactability rows when both ran panels); the population-drift TREND once a 3rd
-  dated sweep lands ([LOCAL]-gated, only 2 committed). NEXT COVERAGE openings (Cycle-261 allbirds anchor UNBLOCKS): a
-  physical_good fulfillment leg (order-tracking / returns-window) mined against allbirds' real fulfillment prose —
-  physical_good is the thinnest anchored archetype; secondary the agent-native RETAIL rail surfaces (UCP
-  `/.well-known/ucp`, MCP) distinct from driftflight; also ipinfo.io DATASET-FORMAT/DOWNLOAD-CONTRACT (Cycle-243),
-  deep-bank uncaptured-capability audit (226/230/233). NEXT METHOD: METHOD TRACK SATURATED (Cycle 259 note) — surface
-  a new seam first. Substantive [LOCAL] frontier (P1 rich-retail DISCHARGED Cycle 261; prefer oldest): a THIRD
-  calibration anchor, render-generation digital_good (Cycle-168), structured catalog/pricing JSON (Cycle-70), the
-  typographic PHRASE-RESCUE real-evidence case, ACP/UCP/MPP live handshakes, a richer-booking WAITLIST fixture
-  (Cycle-256), the launcher-watchdog hygiene guard (Cycle 261 candidate, legs a/b in-cloud).
-- LOCAL CYCLE 261 — 2026-08-05T17:2xZ (COVERAGE + SELF-HEALING, LOCAL, direct-to-main, score-neutral). FIRST duty:
-  `gh pr list --state open` → `[]` (no peer-gated PR). **SELF-HEALING (root-caused the 10-cycle-old P0 [LOCAL] verify
-  runner STALL the cloud could only guess at):** the newest verify was STILL 02:41Z (~14.7h old, floor breached 14+
-  slots). ROOT CAUSE (all cloud guesses WRONG — not launchd-not-firing, not machine-asleep-only, not a pre-push
-  failure, not a runner crash; `local_verify.py` ran CLEANLY at 02:41Z pushed=True and is byte-identical to the repo):
-  the launcher `~/.local/bin/asrs_local_cycle.sh` runs `local_verify.py` THEN a `claude -p` agent SYNCHRONOUSLY, and
-  the 02:41Z fire's agent (THIS process, PID 40814, etime 14h53m) stayed ALIVE — suspended through an overnight system
-  sleep — keeping the launcher (PID 40718) alive ~15h. **launchd StartCalendarInterval is NON-REENTRANT: it SKIPS a
-  new :41 firing while the previous instance lives** → every slot 03:41–16:41 skipped, no new verify artifact. A
-  genuinely NEW failure mode (distinct from the Cycle-228 push-race and the Cycle-63 DNS-wake-race). DURABLE FIX
-  (executed + verified, not assumed): wrapped the launcher's agent step in a portable wall-clock WATCHDOG (macOS has no
-  `timeout(1)`) bounding AWAKE agent runtime to 45min (`ASRS_AGENT_TIMEOUT`, default 2700s) — a suspended-overnight
-  agent is NOT killed (the watchdog `sleep` suspends with the system), a hung/awake one is, so the launcher can never
-  again wedge launchd for hours; the verify FLOOR runs BEFORE the agent so no floor coverage is lost. Added a
-  repo-tracked canonical copy `loop/asrs_local_cycle.sh` (byte-identical to the pinned copy, matching the
-  `local_verify.py` pin pattern — the launcher was previously untracked/unreviewable) + resynced the pinned copy.
-  Watchdog kill/exit pattern verified in isolation (a 60s "hung" child killed at the 2s bound, parent exits in 2s). The
-  loop AUTO-UNWEDGES when THIS agent exits (launcher exits → launchd fires the next :41); the floor is ALSO restored
-  live this fire by running `local_verify.py` by hand. **IMPROVEMENT (COVERAGE, the cycle's [LOCAL] item):** landed the
-  FIRST committed MIXED storefront anchor — **www.allbirds.com** (a real DTC retailer with agent-native commerce rails:
-  UCP merchant profile `GET /.well-known/ucp`, MCP endpoint, Shop Pay), claiming {metered_api, physical_good} at once
-  (every prior fixture is single-type on this axis) — discharging the P1 rich-retail item (open since Cycle 118) and
-  the north star's "many storefront types" × "agentic commerce becoming real". Shipped
-  `fixtures/canonical/www.allbirds.com.json` (66 entries, 2.52 MB, 14 set-cookie stripped, zero replay-miss, in
-  `_CLASSIFICATION_ONLY`), reusable helper `experiments/capture_offering_fixture.py`, `test_offering_canonical.py` +2
-  (anchor + partition TEETH). STALE-CHECKOUT NOTE: this fire started on a stale base (7cac779 / Cycle 245 — the stall
-  froze local main) while origin raced to Cycle 260; integrated by resetting to origin/main + re-applying the work
-  (renumbered 246→261) — NO history rewrite. SCORE-NEUTRAL: `git diff -- asrs/ rubric/` EMPTY; replay guard 26/26,
-  **46.1 F / 85.5 B / +39.4 UNMOVED**; full suite 29/29 files green. Invariant #1 held (read-only discovery crawl, no
-  POST/signing/behavioral run). DM: NO digest owed (Cycle 259 already sent it this ≥16:00 UTC window). See LOG Cycle 261.
-- FOCUS POINTER (Cycle 261 done, LOCAL): NO open peer-gated PR → next fire's first duty is the infra health check.
-  **RUNNER STALL RESOLVED this fire** (root-caused + durably fixed via the launcher watchdog + floor restored live) —
-  the RUNNER-HEALTH WATCH downgrades from ESCALATED to normal: future `verify_*.json` should resume at the :41 cadence
-  now that the launcher can't wedge launchd; escalate again only if a NEW no-artifact gap >6h appears (would mean the
-  watchdog is not firing or a fresh mode). Cloud track rotation UNCHANGED (this LOCAL cycle did not consume the cloud
-  slot): Cycle 260 was COVERAGE(self-healing) → cloud pointer is **TRUTH next**. NEW in-cloud COVERAGE opening the
-  allbirds anchor UNBLOCKS: a NEW physical_good fulfillment leg (order-tracking / returns-window) mined against
-  allbirds' real fulfillment prose (refund policy / track orders / shipping address) — PREFERRED (physical_good is the
-  thinnest anchored archetype), guarded precision-synthetic + real-captured, ABSENT on the API pair; secondary: the
-  agent-native RETAIL rail surfaces (UCP `/.well-known/ucp`, MCP) as a signal distinct from driftflight. Other in-cloud
-  COVERAGE: ipinfo.io DATASET-FORMAT/DOWNLOAD-CONTRACT (Cycle-243), deep-bank uncaptured-capability audit
-  (226/230/233). Substantive [LOCAL] frontier (P1 rich-retail DISCHARGED; prefer oldest of the rest): a THIRD
-  calibration anchor, render-generation digital_good (Cycle-168), structured catalog/pricing JSON (Cycle-70), the
-  typographic PHRASE-RESCUE real-evidence case, ACP/UCP/MPP live handshakes, a richer-booking WAITLIST fixture
-  (Cycle-256, image-only on acuity). NEXT TRUTH/READOUT/METHOD openings unchanged from Cycle 260's pointer.
 <!-- STATE COMPACTED at Cycle 260 (2026-08-05T~17:1xZ, self-healing/COVERAGE, direct-to-main, score-neutral).
      STATE.md had accreted the full per-cycle history back to ~Cycle 5 (7798 lines / ~790KB) and could no
      longer be Read in one call, degrading the playbook-mandated per-cycle "read STATE.md". Trimmed the

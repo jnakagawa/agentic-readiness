@@ -1152,14 +1152,15 @@ design in-cloud, execute locally.
   in-cloud-doable on committed fixtures.
 
 
-- **[CANDIDATE, READOUT] HTML compare card — baseline-side payment badge** (follow-up to Cycle 264). The HTML
-  compare card (`scorecard._pillars(rep, baseline)`) computes the payment-corroboration badge from
-  `_payment_corroboration(rep)` — the PRIMARY side only — so the baseline (without-rails) column's
-  transactability row carries no badge even when the baseline ran a panel. The terminal compare view now
-  annotates BOTH sides (Cycle 264); the HTML compare card should be made symmetric so the two readouts of the
-  SAME two-sided comparison agree. Display-only/score-neutral; reuses `_payment_corroboration`. Guard: suppress
-  per-side when that side has no valid panel (mismatched panels must not imply a false corroboration).
-  Low-medium urgency; a clean READOUT pick.
+<!-- DONE Cycle 270 (2026-08-05 cloud, READOUT, direct-to-main, display-only, score-neutral):
+     [CANDIDATE, READOUT] HTML compare card — baseline-side payment badge (follow-up to Cycle 264).
+     `_pillars(rep, baseline)` now ALSO surfaces the baseline side's payment corroboration on the
+     transactability delta row (`base_corrob = _payment_corroboration(baseline)` when baseline present),
+     as a visually-secondary `corrob baseline` badge — so the HTML compare card is symmetric with the
+     terminal render_compare per-side annotation. Suppression guard held (a baseline with no valid panel
+     adds no badge); baseline=None is a byte-for-byte no-op on single/static cards. test_readout.py +2
+     (real-anchor non-vacuity + synthetic teeth/scoping/no-op), 33/33 suite green, 46.1/85.5/+39.4 UNMOVED.
+     Recorded in LOG Cycle 270 + git. -->
 
 
 - **[LOCAL / CANDIDATE, COVERAGE] Real-data non-vacuity leg for `seat-licensing`** (follow-up to Cycle 66).

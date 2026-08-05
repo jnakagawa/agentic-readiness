@@ -3,6 +3,67 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 270 — 2026-08-05T23:0xZ — READOUT (cloud, direct-to-main, display-only, score-neutral) — surface the BASELINE side's payment corroboration on the compare card's transactability delta row (symmetric HTML follow-up to Cycle 264's terminal render_compare annotation)
+
+**FIRST DUTY (infra health + peer-gate review).** `list_pull_requests` state=open → `[]` (PR #146
+merged externally by the owner during Cycle 269's fire; reconciled in the Cycle 269 addendum — no
+open peer-gated PR remains). Cloud started on the stale orphan local `main` (`3796519`) while HEAD ==
+origin/main `d6bb24f`; realigned local main to origin/main (benign, Cycle-245 lesson). **INFRA
+HEALTHY:** newest verify `runs/local/verify_20260805T224105Z.json` (22:41Z, tests_ok=true, 33 suites,
+reads 46.1 F / 85.5 B / +39.4), ~10-20min old at fire (~23:0xZ), well inside the 6h floor; :41 cadence
+holding (21:41Z → 22:41Z, a fresh slot beyond the 21:41Z Cycle 269 read) → RUNNER-HEALTH WATCH NORMAL.
+LOG/STATE/git all consistent (PR #146 merge `8c89718` + Cycle 269 addendum `d6bb24f` both on
+origin/main; last push succeeded). `pip install eth-account` (recurring agent-side gap, invariant #4)
+→ full suite green.
+
+**IMPROVEMENT (READOUT — the cloud pointer's named highest-value in-cloud READOUT item, the Cycle-264
+symmetric follow-up).** Cycle 264 made the TERMINAL `render_compare` annotate the transactability
+DELTA — the with/without pitch headline — with BOTH sides' payment corroboration, so a reader sees the
+delta is behaviorally earned on each side, not a static artifact. The HTML compare card was still
+asymmetric: `scorecard._pillars(rep, baseline)` renders the with-side card that CARRIES the delta but
+tagged only THAT side's corroboration badge — the baseline side's corroboration lived on the separate
+left card, never adjacent to the delta. Fixed `_pillars` to ALSO surface the baseline's corroboration
+on the transactability row in compare mode (`base_corrob = _payment_corroboration(baseline)` when a
+baseline is present), rendered as a second, visually-secondary badge
+(`<small class="corrob baseline {band}" title="Baseline — …">baseline: {label}</small>` + a
+`.corrob.baseline{opacity:.72;margin-left:6px}` CSS modifier). So a +delta over an UN-corroborated
+baseline anchor is now read with that caution without hunting to the other card. It reads the SAME
+`_payment_corroboration` signal (the static `x402_probe` PREDICTION × the `machine_payable_path`
+EXPERIENCE across valid trials) the with-side badge, the terminal line, and the calibration guard all
+consume — no new field, no new decision, cannot move a score. `baseline=None` (single/static cards)
+is a byte-for-byte no-op.
+
+**TEST — `tests/test_readout.py` +2 (92→94 checks, still one file).**
+`test_compare_card_surfaces_baseline_corroboration_real_anchors`: NON-VACUOUS on the SAME two committed
+behavioral anchors the single-card badge + calibration guards read — with-rails driftflight.com
+(good) as the with-side over no-rails moleskine (neutral) baseline shows BOTH "behaviorally
+corroborated" AND "baseline: no payment, as predicted" (`corrob baseline neutral`); reversed, the
+baseline badge tracks driftflight's good. `test_compare_baseline_badge_reads_shared_signal_and_is_scoped`:
+TEETH (the baseline badge tracks the baseline's own good/neutral/warn state — non-vacuous), single-card
+NO-OP (`baseline=None` byte-identical to `_pillars(rep)`; no `corrob baseline`/`baseline:` token),
+honest-absence suppression (a static baseline with no valid run adds no baseline badge, invariant #4),
+and transactability-only scoping. Integration-confirmed on the REAL assembled `build_scorecard`
+compare card (moleskine `without` vs driftflight.com `with`): exactly one `corrob baseline` badge, on
+the with-side transactability row, reading "baseline: no payment, as predicted".
+
+**VALIDATION.** Scoring-path diff (`asrs/scoring.py rubric/ fixtures/ batteries/ asrs/offering.py
+asrs/probes/ asrs/battery.py asrs/behavioral/ loop/local_verify.py`) EMPTY — only `asrs/scorecard.py`
+(readout) + `tests/test_readout.py`. Full suite **33/33 files green**; `test_readout` 94/94; canonical
+replay guard green. Live canonical signal (newest verify 22:41Z, in-cloud network blocked per the
+STATE environment constraint so the live re-score is by-construction + the verify artifact per the
+playbook): **46.1 F / 85.5 B / +39.4 UNMOVED**. Invariants #1 (readout reads existing evidence,
+executes nothing — no probes/payments/signing), #2 (no scoring-semantics → no rubric version bump,
+comparability preserved under v0.7), #3 (traces to committed report fields; non-vacuous on committed
+anchors; suppresses when nothing to corroborate), #4 (a static/absent baseline adds NO badge — honest
+absence, never invented corroboration; eth-account gap = agent env not site), #5 (append-only — this
+LOG entry is prepended, the Cycle 269 addendum + all past entries untouched; no history rewrite) all
+held. Delta 46.1 / 85.5 / +39.4. NO DM (score-neutral display-only READOUT, not sensitive-class, off
+the scoring path; daily digest already sent Cycle 259 this ≥16:00 UTC window). NEXT HYPOTHESIS: the
+compare card's baseline corroboration is now symmetric with the terminal — the remaining READOUT
+opening is the population-drift TREND across ≥3 dated sweeps ([LOCAL]-gated, only 2 committed); beyond
+that READOUT and TRUTH/METHOD are near-saturated, so a future cloud cycle should surface a genuinely
+new READOUT seam or fall to a COVERAGE item (physical_good returns-window / agent-native retail rails).
+
 ## Cycle 269 addendum — 2026-08-05T22:3xZ — PR #146 MERGED (external merge by owner, same fire) + post-merge verification
 
 Minutes after Cycle 269 opened PR #146 and sent the Slack visibility flag, the repo owner MERGED it

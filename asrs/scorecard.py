@@ -154,6 +154,11 @@ a.chip:hover{box-shadow:inset 0 0 0 1px var(--text-tertiary);color:var(--text-pr
   box-shadow:inset 0 0 0 1px #fedf89}
 .pillar-row .name small.corrob.neutral{background:var(--bg-secondary);
   color:var(--text-secondary);box-shadow:inset 0 0 0 1px var(--border-secondary)}
+/* Compare mode only: the baseline side's corroboration, shown alongside this
+   card's own so the transactability DELTA is self-contained. Kept visually
+   secondary (dimmed, offset) — it qualifies the delta's anchor, it is not this
+   side's own verdict. */
+.pillar-row .name small.corrob.baseline{opacity:.72;margin-left:6px}
 .track{background:var(--bg-quaternary);border-radius:9999px;height:8px;
   overflow:hidden}
 .fill{height:100%;border-radius:9999px}
@@ -2410,6 +2415,13 @@ def _pillars(rep: dict, baseline: dict | None = None) -> str:
     transactability row carries a display-only behavioral-corroboration badge
     when a panel has run (see :func:`_payment_corroboration`)."""
     corrob = _payment_corroboration(rep)
+    # Compare mode: the transactability row carries the DELTA — the with/without
+    # pitch headline. Surface the BASELINE side's corroboration next to this
+    # side's own, so the delta is read self-contained (mirrors the terminal
+    # render_compare per-side annotation, Cycle 264): a +delta over an
+    # UN-corroborated baseline anchor should be read with that caution, without
+    # hunting to the other card. None (and thus a no-op) on single/static cards.
+    base_corrob = _payment_corroboration(baseline) if baseline is not None else None
     rows = []
     for p, label in PILLAR_LABELS.items():
         s = rep["pillar_scores"].get(p)
@@ -2444,12 +2456,20 @@ def _pillars(rep: dict, baseline: dict | None = None) -> str:
         # Behavioral-corroboration badge — only on the transactability row, only
         # when a panel has run (None otherwise, so static cards are unchanged).
         badge = ""
-        if p == "transactability" and corrob is not None:
-            b_cls, b_label, b_title = corrob
-            badge = (
-                f'<small class="corrob {b_cls}" title="{_esc(b_title)}">'
-                f"{_esc(b_label)}</small>"
-            )
+        if p == "transactability":
+            if corrob is not None:
+                b_cls, b_label, b_title = corrob
+                badge = (
+                    f'<small class="corrob {b_cls}" title="{_esc(b_title)}">'
+                    f"{_esc(b_label)}</small>"
+                )
+            if base_corrob is not None:
+                bb_cls, bb_label, bb_title = base_corrob
+                badge += (
+                    f'<small class="corrob baseline {bb_cls}" '
+                    f'title="Baseline — {_esc(bb_title)}">'
+                    f"baseline: {_esc(bb_label)}</small>"
+                )
         rows.append(
             f'<div class="{row_cls}"><span class="name"><span class="ptag {_esc(p)}">{label}</span>'
             f"<small>{PILLAR_QUESTIONS[p]}</small>{earner}{badge}</span>"

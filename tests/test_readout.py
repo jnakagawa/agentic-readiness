@@ -3321,6 +3321,93 @@ def test_corroboration_badge_on_real_committed_anchors() -> None:
         _check(label in scorecard._pillars(rep), f"{dom} card renders the {label!r} badge")
 
 
+# ---------------------------------------------------------------------------
+# Compare-card baseline corroboration (Cycle 270, READOUT): the symmetric HTML
+# follow-up to Cycle 264's terminal render_compare per-side annotation. In a
+# compare card the transactability row on the with-side carries the DELTA — the
+# with/without pitch headline — but only THIS side's corroboration badge; the
+# baseline side's corroboration lives on the other card, never adjacent to the
+# delta. These pin that _pillars(rep, baseline=...) now also surfaces the
+# baseline's corroboration so the delta is read self-contained, while single/
+# static cards (baseline=None) stay byte-for-byte unchanged.
+# ---------------------------------------------------------------------------
+def test_compare_card_surfaces_baseline_corroboration_real_anchors() -> None:
+    # Non-vacuous on the SAME two committed behavioral anchors the single-card
+    # badge test reads: with-rails driftflight.com is corroborated (good),
+    # no-rails moleskine shows the honest absence (neutral). In the compare card
+    # driftflight is the with-side (baseline=moleskine) — its transactability row
+    # must show BOTH its own "behaviorally corroborated" and moleskine's
+    # "baseline: no payment, as predicted", and vice-versa when reversed.
+    print("test_compare_card_surfaces_baseline_corroboration_real_anchors")
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    def _load(fn):
+        with open(os.path.join(root, "runs", "local", fn), encoding="utf-8") as fh:
+            return json.load(fh)
+    drift = _load("acceptance_battery_driftflightcom_20260728T184325Z.report.json")
+    mole = _load("acceptance_battery_moleskine_20260728T225939Z.report.json")
+
+    with_side = scorecard._pillars(drift, baseline=mole)
+    _check("behaviorally corroborated" in with_side,
+           "with-side shows its own good corroboration")
+    _check("baseline: no payment, as predicted" in with_side,
+           "with-side ALSO surfaces the baseline's honest-absence corroboration")
+    _check("corrob baseline neutral" in with_side,
+           "baseline badge carries the baseline modifier + the baseline's band")
+
+    reversed_side = scorecard._pillars(mole, baseline=drift)
+    _check("no payment, as predicted" in reversed_side,
+           "reversed: moleskine shows its own neutral corroboration")
+    _check("baseline: behaviorally corroborated" in reversed_side
+           and "corrob baseline good" in reversed_side,
+           "reversed: the baseline badge tracks driftflight's good corroboration")
+
+
+def test_compare_baseline_badge_reads_shared_signal_and_is_scoped() -> None:
+    # Teeth + scoping + no-op, on synthetic reports so every corroboration state
+    # is exercised. The baseline badge is the SAME _payment_corroboration signal
+    # applied to the baseline, so it changes with the baseline's state; it sits
+    # only on the transactability row; and baseline=None (single/static card) is
+    # byte-for-byte unchanged.
+    print("test_compare_baseline_badge_reads_shared_signal_and_is_scoped")
+    rep = _corrob_rep("pass", [True, True])  # with-side: good
+
+    # (1) Baseline badge TRACKS the baseline's own state (non-vacuous teeth).
+    for trials, x402, label in (
+        ([True, True], "pass", "baseline: behaviorally corroborated"),
+        ([False, False], "fail", "baseline: no payment, as predicted"),
+        ([True, False], "pass", "baseline: not corroborated"),
+    ):
+        html = scorecard._pillars(rep, baseline=_corrob_rep(x402, trials))
+        _check(label in html, f"baseline badge reflects baseline state -> {label!r}")
+
+    # (2) Single/static card unchanged: baseline=None emits no baseline badge,
+    # and _pillars(rep) == _pillars(rep, baseline=None) byte-for-byte.
+    single = scorecard._pillars(rep)
+    _check("corrob baseline" not in single and "baseline:" not in single,
+           "single card carries no baseline corroboration badge")
+    _check(single == scorecard._pillars(rep, baseline=None),
+           "baseline=None is byte-identical to the single-card render")
+
+    # (3) A baseline with no valid behavioral run corroborates nothing -> no
+    # baseline badge, even in compare mode (invariant #4, honest absence).
+    static_base = {"pillar_scores": {"access": None, "legibility": None,
+                                     "transactability": 50.0, "trust": None,
+                                     "outcome": None},
+                   "checks": [_chk("transactability", 8.0, "x402-live", "x402_probe")]}
+    _check("corrob baseline" not in scorecard._pillars(rep, baseline=static_base),
+           "a static baseline (no lived experience) adds no baseline badge")
+
+    # (4) Scoped: the baseline badge attaches ONLY to the transactability row.
+    compare = scorecard._pillars(rep, baseline=_corrob_rep("pass", [True, True]))
+    chunks = compare.split('class="pillar-row')
+    tx = [c for c in chunks if "ptag transactability" in c]
+    others = [c for c in chunks if "ptag transactability" not in c]
+    _check(len(tx) == 1 and "corrob baseline" in tx[0],
+           "baseline badge sits inside the transactability row")
+    _check(all("corrob baseline" not in c for c in others),
+           "no other pillar row carries the baseline badge")
+
+
 def main() -> int:
     tests = [
         test_json_carries_reliability,
@@ -3415,6 +3502,8 @@ def main() -> int:
         test_corroboration_badge_disagreement,
         test_corroboration_badge_suppressed_and_scoped,
         test_corroboration_badge_on_real_committed_anchors,
+        test_compare_card_surfaces_baseline_corroboration_real_anchors,
+        test_compare_baseline_badge_reads_shared_signal_and_is_scoped,
     ]
     failed = 0
     for t in tests:

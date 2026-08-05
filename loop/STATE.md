@@ -25,15 +25,19 @@
   replay guard **26/26, 46.1 F / 85.5 B / +39.4 UNMOVED**; full suite **33/33 green**; no rubric version bump
   (comparability preserved, lands under v0.7). Branch `loop/env-block-vocab-drift`, PR #146. Invariants #1–5
   all held. DM SENT (peer-gated scoring-semantics PR opened → Jonah-veto visibility). See LOG Cycle 269.
-- FOCUS POINTER (Cycle 269 done, cloud): **OPEN PEER-GATED PR #146** (`loop/env-block-vocab-drift`,
-  `_ENV_BLOCK_RE` own-tool vocab-drift broadening) → next fire's FIRST DUTY is to adversarially review + merge
-  it from fresh context (re-derive that NO site-side 403/Cloudflare phrasing is excused by the new
-  alternatives; confirm vendor-neutral capability wording; run the LIVE behavioral canonical re-score if the
-  env has network, else queue `[LOCAL]`; confirm test #8's pure-semantic gap is intentionally kept). NEVER
-  same-fire self-merge — Cycle 269 authored it, so a LATER cycle reviews. Repo has NO CI workflow → no checks
-  to drive; PR mergeability is the only gate. RUNNER STALL RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH
-  NORMAL — re-escalate ONLY on a fresh >6h no-artifact gap. Cloud track rotation: Cycle 269 was TRUTH → cloud
-  pointer is **READOUT next** (METHOD → COVERAGE → TRUTH → READOUT) once #146 clears. NEXT READOUT: the HTML
+- FOCUS POINTER (Cycle 269 done + PR #146 MERGED externally, cloud): **PR #146 MERGED** (external merge by
+  the repo owner at ~22:3xZ, merge commit reachable from main `8c89718` — acceptance, stronger than the
+  "silence is consent" default; the peer-gate rule HELD, Cycle 269 did NOT self-merge). The external merge
+  BYPASSED the mandated fresh-context pre-merge adversarial review, so Cycle 269 ran a POST-MERGE verification
+  in the same fire (playbook sensitive-class precedent): merged main **33/33 suites green, attribution 12/12,
+  canonical replay 26/26 46.1 F / 85.5 B / +39.4 UNMOVED** — no regression, and test #12 guarantees no
+  site-side over-excusal by construction (site-attributed/cross-sentence/example.com cases stay NOT excused).
+  → **no open peer-gated PR remains**; next fire's FIRST DUTY reverts to the normal infra health check.
+  A LIVE behavioral canonical re-score on a codex-reachable trial (drift-flight.org t2) remains a nice-to-have
+  [LOCAL] end-to-end confirmation but is NOT a merge blocker (already merged, static delta unaffected).
+  RUNNER STALL RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH NORMAL — re-escalate ONLY on a fresh >6h
+  no-artifact gap. Cloud track rotation: Cycle 269 was TRUTH → cloud pointer is **READOUT next** (METHOD →
+  COVERAGE → TRUTH → READOUT). NEXT READOUT: the HTML
   compare card payment-badge symmetry (Cycle 264 follow-up); population-drift TREND once a 3rd dated sweep
   lands ([LOCAL]). NEXT COVERAGE: physical_good RETURNS-WINDOW leg (if allbirds/moleskine prose carries a
   machine-readable return window); agent-native RETAIL rail surfaces (UCP/MCP); ipinfo.io DATASET-FORMAT

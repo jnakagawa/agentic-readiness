@@ -3,6 +3,25 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 269 addendum — 2026-08-05T22:3xZ — PR #146 MERGED (external merge by owner, same fire) + post-merge verification
+
+Minutes after Cycle 269 opened PR #146 and sent the Slack visibility flag, the repo owner MERGED it
+externally (webhook: outcome=merged; merged code reachable from main `8c89718`). This is acceptance —
+stronger than the "silence is consent" default — and the peer-gate rule HELD: Cycle 269 did NOT
+self-merge its own PR. The external merge did BYPASS the mandated fresh-context PRE-merge adversarial
+review, so this addendum ran the POST-merge verification in the same fire (playbook sensitive-class
+precedent: verify post-merge, revert-first if it ever fails). Pulled merged main and re-ran the full
+suite: **33/33 files green, `test_attribution.py` 12/12, canonical replay 26/26 with 46.1 F / 85.5 B /
++39.4 UNMOVED** — no regression from the merge, and test #12 guarantees by construction that no
+site-side 403/Cloudflare/cross-sentence/example.com case is over-excused (attribution honesty both
+directions). No open peer-gated PR remains → the next fire's first duty reverts to the normal infra
+health check; cloud pointer advances to READOUT. STATE + BACKLOG reconciled (PR #146 marked MERGED;
+the P0 item pruned to a DONE marker). A LIVE behavioral canonical re-score on a codex-reachable trial
+(drift-flight.org t2) remains a nice-to-have [LOCAL] end-to-end confirmation, NOT a blocker (already
+merged; static delta unaffected). Invariants #1–5 held (no history rewrite — this is a NEW dated
+addendum, the Cycle 269 entry below is untouched). This addendum is bookkeeping reconciliation of an
+external event, not a second improvement cycle.
+
 ## Cycle 269 — 2026-08-05T22:2xZ — TRUTH (cloud, PEER-GATED PR, behavioral-scoring-semantics) — broadened `_ENV_BLOCK_RE` to catch codex's DRIFTED own-tool refusal vocabulary, closing the LIVE invariant-#4 attribution leak Cycle 268 surfaced
 
 **FIRST DUTY (peer-gate review + infra health).** `list_pull_requests` state=open → `[]` (Cycle

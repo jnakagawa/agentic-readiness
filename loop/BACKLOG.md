@@ -496,37 +496,16 @@ design in-cloud, execute locally.
   a sparkline of the canonical anchors' overall across every dated dataset, the population analog of
   canonical-history.html's per-cycle trend.
 
-- **[PEER-GATE — PR #146 OPEN, awaiting next-cycle review] Broaden `_ENV_BLOCK_RE` to catch codex's drifted own-tool block vocabulary**
-  (TRUTH / invariant-#4 attribution honesty; scoring-semantics → PEER-GATED PR). SHIPPED to a branch
-  Cycle 269 (2026-08-05 cloud): branch `loop/env-block-vocab-drift`, PR #146
-  (https://github.com/jnakagawa/agentic-readiness/pull/146) — three self-qualified `_ENV_BLOCK_RE`
-  alternatives (own browser gate / browser's own boundary / safety-controlled navigation layer), each with
-  a negative lookahead `_NOT_SITE_ATTRIBUTED` rejecting site-side attribution; gap `(?:[^.]|\.(?=\S)){0,60}?`
-  (domain-dot-tolerant, sentence-bounded); NEW `tests/test_attribution.py` #12 (verbatim transcripts + v0.6
-  pre-broadening teeth + site-attributed/cross-sentence/example.com NOT-excused + denominator routing). Static
-  path untouched, replay 26/26 46.1/85.5/+39.4 unmoved, suite 33/33, no rubric bump. test #8's pure-semantic
-  reputation gap intentionally LEFT in place (broadening is a principled subset). **NEXT CYCLE'S FIRST DUTY:
-  adversarially review + self-merge (never same-fire; Cycle 269 authored it).** Reviewer must re-derive that no
-  site-side 403/Cloudflare phrasing is excused, confirm vendor-neutral capability wording, and run the LIVE
-  behavioral canonical re-score if networked (else queue `[LOCAL]`). Original diagnosis below (Cycle 268):
-  On 07-23 EVERY codex refusal on the canonical pair carried "browser
-  {security,safety} controls" and v0.6 `_ENV_BLOCK_RE` caught 4/4. As the domains aged to ~20d the
-  refusal phrasing DRIFTED to forms v0.6 MISSES — all committed at
-  `runs/local/codex_reachability_20260805T{204555,214534}Z/` (summary.json + transcripts):
-  · "Safety-controlled navigation and direct web fetching … were denied"
-  · "denied by the browser's site-permission boundary" / "browser access permission … denied"
-  · "Interactive browser access was declined" / "the direct read-only web fetch was rejected as unsafe"
-  Each is a genuine AGENT-side block (the SAME-run `FetchContext.homepage()` shows the SITE at HTTP
-  200; codex REACHED the same domain on sibling trials; reputable example.com was NEVER gated) → today
-  `_is_env_blocked`=False → a real `--behavioral` run mis-scores these as SITE FAILs, the exact
-  invariant-#4 leak. FIX: extend `_ENV_BLOCK_RE` to also match these own-tool phrasings, with a
-  `tests/test_attribution.py` #8 test driven off the committed transcripts asserting
-  `_is_env_blocked`=True on them AND still `_is_env_blocked`=False on a genuine site-side 403 /
-  Cloudflare challenge (the broadening must NOT excuse real access findings — attribution honesty cuts
-  BOTH ways; keep the v0.6 comment's "deliberately does NOT match site-side blocks" property). Open
-  `loop/env-block-vocab-drift`; next cycle reviews+merges. Score effect: routes these runs to
-  reachability instead of FAIL → can RAISE a mis-FAILed site's behavioral score; argue in capability
-  terms + show the canonical STATIC delta is unaffected (behavioral-only path, replay guard unmoved).
+<!-- DONE Cycle 269 (2026-08-05 cloud) + MERGED same fire (external merge by owner):
+     [PEER-GATE] Broaden `_ENV_BLOCK_RE` for codex's drifted own-tool refusal vocabulary.
+     Shipped on branch loop/env-block-vocab-drift, PR #146 — three self-qualified alternatives
+     (own browser gate / browser's own boundary / safety-controlled navigation layer), each with a
+     negative lookahead `_NOT_SITE_ATTRIBUTED` rejecting site-side attribution; domain-dot-tolerant
+     sentence-bounded gap; NEW test_attribution.py #12 (verbatim transcripts + v0.6 pre-broadening teeth
+     + site-attributed/cross-sentence/example.com NOT-excused + denominator routing). PR MERGED
+     externally (owner) the same fire; the peer-gate rule held (Cycle 269 did NOT self-merge). Post-merge
+     verification on merged main 8c89718: 33/33 suites, attribution 12/12, replay 26/26 46.1/85.5/+39.4
+     UNMOVED. test #8's pure-semantic reputation gap intentionally kept. Recorded in LOG Cycle 269 + git. -->
 
 - **[LOCAL] Build the codex control-storefront / pre-fetched-content attribution
   fix** (TRUTH; unblocks the cross-model N-curve). The 11:42Z characterization

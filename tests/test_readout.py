@@ -3090,6 +3090,119 @@ def test_pillar_earner_reflects_real_canonical_evidence() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Cycle 259 (METHOD, completing the Cycle-192 arc): the "earned by" caption now
+# renders on the TERMINAL card too (Cycle 192 added it to the HTML card only).
+# The two surfaces MUST name the identical earner — a card that attributes a
+# pillar to one capability while the terminal attributes it to another would be a
+# silent readout split. Both read the SAME scorecard._pillar_top_earner, so they
+# are coupled by construction; this pins that coupling (the terminal<->HTML parity
+# guard leg-(b) of the Cycle-192 observation asked for, the shape of the Cycle-188
+# canonical-drift parity guard). Off the scoring path — display-only, no score
+# move, no rubric bump.
+# ---------------------------------------------------------------------------
+def test_pillar_earner_terminal_matches_html_card() -> None:
+    # On BOTH real canonical storefronts: for every scored pillar the terminal
+    # card and the HTML card surface the IDENTICAL earner (finding + points), and a
+    # pillar with no earner (the n/a Outcome) is named on NEITHER. Non-vacuous —
+    # real multi-pillar evidence with distinct per-pillar earners and a genuine
+    # None pillar, so the parity claim has several independent things to bite on.
+    print("test_pillar_earner_terminal_matches_html_card")
+    from asrs import report as report_mod
+    from asrs.fetch import FetchContext
+    from asrs.cli import _run_probes
+    from asrs import scoring
+
+    for path, dom in (("fixtures/canonical/driftflight.com.json", "driftflight.com"),
+                      ("fixtures/canonical/drift-flight.org.json", "drift-flight.org")):
+        ctx = FetchContext.from_fixture(path)
+        rep = scoring.score(_run_probes(ctx), scoring.load_rubric(None), dom)
+        d = json.loads(rep.to_json())
+        html = scorecard._pillars(d)
+        term = report_mod.render(rep)
+
+        earned_pillars, na_pillars = [], []
+        for p in ("access", "legibility", "transactability", "trust", "outcome"):
+            s = rep.pillar_scores.get(p)
+            top = scorecard._pillar_top_earner(d, p) if s is not None else None
+            if top is None:
+                # No earner on this pillar -> NEITHER surface prints one for it.
+                na_pillars.append(p)
+                continue
+            earned_pillars.append(p)
+            finding, pts = top
+            # THE PARITY: the same _pillar_top_earner result surfaces on BOTH cards.
+            _check(f"earned by <b>{finding}</b>" in html and f"+{pts:g}" in html,
+                   f"{dom}/{p}: HTML card names the earner {finding} +{pts:g}")
+            _check(f"earned by {finding} +{pts:g}" in term,
+                   f"{dom}/{p}: terminal card names the SAME earner {finding} +{pts:g}")
+
+        # Non-vacuous: several pillars actually earned (so the parity did real work)
+        # and at least one pillar genuinely has no earner (the None-score Outcome).
+        _check(len(earned_pillars) >= 3,
+               f"{dom}: multiple pillars carry an earner ({earned_pillars})")
+        _check("outcome" in na_pillars,
+               f"{dom}: the n/a Outcome pillar has no earner ({na_pillars})")
+
+
+def test_pillar_earner_terminal_omitted_for_na_and_unearned() -> None:
+    # Teeth mirroring the HTML test_pillar_earner_omitted_for_na_and_unearned: a
+    # pillar whose checks all earn ZERO, and an n/a pillar, produce NO terminal
+    # "earned by" line — a genuinely unearned score is not dressed up on either
+    # surface. Uses a real Report so render() sees real CheckResults.
+    print("test_pillar_earner_terminal_omitted_for_na_and_unearned")
+    from asrs import report as report_mod
+    from asrs.types import CheckResult, Status
+
+    rep = Report(
+        domain="unearned.example",
+        rubric_version="0.7",
+        generated_at="2026-08-05T00:00:00",
+        checks=[
+            CheckResult("x402_probe", "transactability", Status.FAIL, 0.0, 8.0,
+                        "no-agent-native-payment", "add an x402 rail"),
+        ],
+        pillar_scores={"transactability": 0.0, "outcome": None},
+        overall_score=0.0,
+        grade="F",
+    )
+    term = report_mod.render(rep)
+    _check("earned by" not in term,
+           "no terminal caption for an all-zero pillar or an n/a pillar")
+
+
+def test_pillar_earner_terminal_tracks_points_not_a_hardcoded_name() -> None:
+    # Falsifiable vendor-neutrality on the TERMINAL surface (mirror of the HTML
+    # test_pillar_earner_tracks_points_not_a_hardcoded_name): flip which check
+    # earns more and the terminal caption follows the POINTS, not a baked-in name.
+    print("test_pillar_earner_terminal_tracks_points_not_a_hardcoded_name")
+    from asrs import report as report_mod
+    from asrs.types import CheckResult, Status
+
+    rep = Report(
+        domain="flip.example",
+        rubric_version="0.7",
+        generated_at="2026-08-05T00:00:00",
+        # Both PASS (full credit) so neither appears in the FINDINGS section — the
+        # only place "x402-live" may surface in the whole terminal card is the
+        # earner caption, so the negative assertion below tests the caption alone.
+        checks=[
+            CheckResult("x402_probe", "transactability", Status.PASS, 8.0, 8.0,
+                        "x402-live", ""),
+            CheckResult("self_serve_payg", "transactability", Status.PASS, 9.0, 9.0,
+                        "no-signup-provisioning", ""),
+        ],
+        pillar_scores={"transactability": 90.0},
+        overall_score=90.0,
+        grade="A-",
+    )
+    term = report_mod.render(rep)
+    _check("earned by no-signup-provisioning +9" in term,
+           "terminal caption tracks the higher-earning check")
+    _check("x402-live" not in term,
+           "the lower earner is not the surfaced terminal caption")
+
+
+# ---------------------------------------------------------------------------
 # Behavioral-corroboration badge (Cycle 254, READOUT): the Cycle-68 static-vs-
 # behavioral validity property, surfaced on the CARD next to the transactability
 # pillar. Display-only — it reads the static x402_probe PREDICTION and the
@@ -3294,6 +3407,9 @@ def main() -> int:
         test_pillar_earner_tracks_points_not_a_hardcoded_name,
         test_pillar_earner_omitted_for_na_and_unearned,
         test_pillar_earner_reflects_real_canonical_evidence,
+        test_pillar_earner_terminal_matches_html_card,
+        test_pillar_earner_terminal_omitted_for_na_and_unearned,
+        test_pillar_earner_terminal_tracks_points_not_a_hardcoded_name,
         test_corroboration_badge_positive,
         test_corroboration_badge_honest_absence,
         test_corroboration_badge_disagreement,

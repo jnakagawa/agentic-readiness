@@ -157,6 +157,51 @@ def _payment_corroboration_line(report) -> list[str]:
     return [f"      payment corroboration: {text}"]
 
 
+def _earner_rep(report) -> dict:
+    """The minimal ``{"checks": [...]}`` dict :func:`_pillar_top_earner` reads,
+    built from the Report's own checks. The four fields carry the SAME values the
+    JSON the HTML card renders from carries, so the terminal and the card feed the
+    identical earner selector — the coupling the parity guard pins."""
+    return {
+        "checks": [
+            {
+                "pillar": c.pillar,
+                "points": c.points,
+                "finding": c.finding,
+                "check_id": c.check_id,
+            }
+            for c in (getattr(report, "checks", None) or [])
+        ]
+    }
+
+
+def _pillar_earner_line(earner_rep: dict, pillar: str, pscore) -> list[str]:
+    """Terminal analog of the HTML card's per-pillar "earned by" caption: one
+    indented sub-line naming the single check that contributes the MOST raw points
+    to ``pillar``, so the score is ATTRIBUTABLE (not a diffuse aggregate) — the
+    Cycle-191 calibration insight surfaced in the terminal, the counterpart to the
+    HTML caption added in Cycle 192.
+
+    Reads the SAME :func:`asrs.scorecard._pillar_top_earner` the HTML card reads,
+    so the two surfaces can never name a different earner (pinned by the
+    terminal<->HTML parity guard). Display-only: it moves no score and bumps no
+    rubric version; vendor-neutral (names whichever check earns the most, never a
+    fixed one). Empty (no line) when the pillar is n/a (None score) or nothing
+    earns credit — a genuinely unearned score names nothing, mirroring the HTML
+    card's omission, so those rows are unchanged.
+    """
+    if pscore is None:
+        return []
+    # Lazy import: keep the report module light, matching the corroboration line.
+    from .scorecard import _pillar_top_earner  # noqa: PLC0415
+
+    top = _pillar_top_earner(earner_rep, pillar)
+    if top is None:
+        return []
+    finding, pts = top
+    return [f"      earned by {finding} +{pts:g}"]
+
+
 def render(report) -> str:
     """A clean terminal report card for one Report."""
     lines: list[str] = []
@@ -194,6 +239,7 @@ def render(report) -> str:
     # sub-line when a panel has run — the terminal analog of the HTML card's
     # badge, reading the SAME signal (see :func:`_payment_corroboration_line`).
     corrob_line = _payment_corroboration_line(report)
+    earner_rep = _earner_rep(report)
     lines.append("")
     lines.append("  PILLARS")
     for pillar in _PILLAR_ORDER:
@@ -202,6 +248,9 @@ def render(report) -> str:
         pscore = report.pillar_scores[pillar]
         label = _PILLAR_LABEL.get(pillar, pillar).ljust(16)
         lines.append(f"    {label} {_bar(pscore)} {_fmt_score(pscore)}")
+        # "earned by" caption BEFORE the corroboration line, matching the HTML
+        # card's name-span order ({earner}{badge}).
+        lines.extend(_pillar_earner_line(earner_rep, pillar, pscore))
         if pillar == "transactability":
             lines.extend(corrob_line)
     # Any pillars present in scores but not in the known order (defensive).
@@ -210,6 +259,7 @@ def render(report) -> str:
             continue
         label = pillar.ljust(16)
         lines.append(f"    {label} {_bar(pscore)} {_fmt_score(pscore)}")
+        lines.extend(_pillar_earner_line(earner_rep, pillar, pscore))
 
     # -- findings --
     failing = _failing_checks(report)

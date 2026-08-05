@@ -1,6 +1,52 @@
 # Loop state
 
-- Cycle counter: 258
+- Cycle counter: 259
+- CYCLE 259 — 2026-08-05T~16:2xZ (METHOD, cloud, direct-to-main, score-neutral).
+  FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests` state=open `[]`): HEAD in sync with
+  origin at Cycle 258 (`1193cf0`; `git pull origin main`, benign forced-update of the stale local ref). **LOCAL
+  VERIFY RUNNER STALL PERSISTS — 6h floor still breached:** newest verify STILL `runs/local/verify_20260805T024100Z.json`
+  (02:41Z, div_recovery=None, tests_ok=true, reads 46.1 F / 85.5 B / +39.4), ~13.6h old at fire (16:2xZ); 13+
+  consecutive missed :41 slots (03:41–15:41). NO-NEW-ARTIFACT stall, NOT cloud-diagnosable → P0 [LOCAL] runner-stall
+  diagnosis (queued Cycle 251) stands. **This fire CROSSES ≥16:00 UTC = first digest-window cycle since Cycle 228 →
+  daily digest SENT this cycle, runner-stall flag DISCHARGED LOUD in it.** Regression-by-construction stands in for
+  the live re-score (playbook). `pip install eth-account` (agent-side dependency gap) → test_free_tier 11/11. Took the
+  METHOD slot but found BOTH nominal METHOD openings ALREADY CLOSED: (1) panel-verdict-stability / provisional-trust-
+  unstable is covered (`test_quotability::test_trust_split_panel_is_provisional` + siblings; `_STABLE_MIN` boundary +
+  label/gate coherence in `test_reliability`), reliability/quotability surface SATURATED; (2) the BACKLOG Cycle-192
+  leg-(a) coupling guard already exists (`test_calibration.py:808`). Took the queued on-track METHOD-class artifact
+  whose absence was REAL — leg-(b): the terminal↔HTML earner PARITY GUARD (Cycle-188-shape drift guard) + its
+  substrate. SHIPPED (off scoring path → score-neutral, direct-to-main): `asrs/report.py` +`_earner_rep`/
+  `_pillar_earner_line` — the per-pillar "earned by <finding> +N" caption now renders on the TERMINAL card too (Cycle
+  192 shipped it on HTML only), reading the SAME `scorecard._pillar_top_earner` both surfaces share (parity by
+  construction, omitted on n/a/unearned). NEW `tests/test_readout.py` +3 (parity on BOTH canonical storefronts every
+  scored pillar + n/a-omission teeth + terminal magnitude-flip vendor-neutrality). MUTATION-TESTED (monkeypatch
+  `_pillar_earner_line` → wrong finding reddens the parity guard). SCORE-NEUTRAL: scoring-path diff EMPTY; canonical
+  scored statically, replay 26/26, **46.1 F / 85.5 B / +39.4 UNMOVED**; full suite **535 passed** (532→535, test_readout
+  89→92). Invariants #1–#5 all held (readout reads existing evidence executes nothing; no scoring-semantics → no
+  version bump; traces to committed fixtures; env failures attributed to agent/LOCAL; append-only). DM SENT (daily
+  digest + runner-stall flag; NOT sensitive-class). See LOG Cycle 259.
+- FOCUS POINTER (Cycle 259 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
+  **The LOCAL verify runner is STALLED, 6h floor breached (P0 [LOCAL] queued Cycle 251) — not cloud-doable; the
+  daily-digest flag was DISCHARGED Cycle 259, so the next digest is not owed until the next ≥16:00 UTC fire after a
+  new digest window; keep the P0 [LOCAL] fresh.** Cloud track rotation: Cycle 259 was METHOD → cloud pointer is
+  **COVERAGE next** (METHOD → COVERAGE → TRUTH → READOUT). **METHOD TRACK IS SATURATED** — the reliability/
+  quotability/scoring-cap surfaces are closed (monotonicity, threshold coherence, polarity/panel-size/order
+  invariance, exhaustive formula; trust-split + boundary; caps set-invariance) and the Cycle-192 earner arc is now
+  COMPLETE (leg-a Cycle-192, leg-b Cycle 259). A future METHOD cycle must SURFACE A NEW SEAM before picking (do not
+  re-add relabel/reflection/order guards — diminishing returns per the Cycle-185 note). **BOOKKEEPING-DEGRADATION
+  OBSERVATION:** STATE.md is 804KB / 7752 lines — it has accreted the full cycle history (back to ~Cycle 5) and is
+  now too large to `Read` in one call, degrading the mandated per-cycle "read STATE.md". Queued a self-healing/
+  COVERAGE STATE-compaction item in BACKLOG (compact to counter + last ~5 cycles + the stable reference sections;
+  history is preserved in LOG.md + git so pruning STATE is NOT an invariant-#5 rewrite). NEXT COVERAGE openings: the
+  STATE-compaction (above); service_booking anchor mining EXHAUSTED (8 signals); WAITLIST is IMAGE-ONLY → [LOCAL]
+  richer-booking fixture; the ipinfo.io DATASET-FORMAT/DOWNLOAD-CONTRACT data_retrieval signal (Cycle-243); the
+  deep-bank uncaptured-capability audit (Cycle 226/230/233 lineage). NEXT READOUT openings (later): the `compare`
+  view (`render_compare`) transactability delta carries no corroboration for either side; population-drift TREND once
+  a 3rd dated sweep lands ([LOCAL]-gated). NEXT TRUTH openings: the `per_model` map in `trust_probe._build_check`
+  (arrival-order but self-labeled — a determinism guard if construction parallelizes).
+  **RUNNER-HEALTH WATCH (ESCALATED — FLOOR BREACHED, carried Cycle 251→259 — hold until resolved):** last artifact
+  02:41Z; at the Cycle-259 fire (16:2xZ) ~13.6h old = past the 6h floor, 13+ consecutive misses (03:41–15:41). Cloud
+  cannot diagnose → P0 [LOCAL] with exact diagnostic steps stands. FLAG discharged in the Cycle-259 digest.
 - CYCLE 258 — 2026-08-05T~15:2xZ (READOUT, cloud, direct-to-main, score-neutral).
   FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests` state=open `[]`): HEAD realigned to
   origin/main at Cycle 257 (`a92fdd4`; detached-start realign via `git fetch origin main` + `git checkout -B main

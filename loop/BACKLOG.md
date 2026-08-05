@@ -1016,17 +1016,31 @@ design in-cloud, execute locally.
      ~two-thirds, single majority driver, honest legibility residual), guarded by the same test's Cycle-204
      block. BOTH directions now read as payment-capability signals on §8 and are test-pinned. -->
 
-- **[OBSERVATION — Cycle 192] The "earned by" pillar caption opens two in-cloud follow-ups.** Cycle 192
-  (READOUT) added `_pillar_top_earner` + the per-pillar "earned by <capability> +N" caption to the HTML card
-  (`asrs/scorecard.py`), surfacing the Cycle-191 attribution (a pillar score is earned by named checks, not
-  diffuse) for a reader. Two cheap, score-neutral, in-cloud increments remain: (a) **METHOD** — a
-  drift/coupling guard that the card's surfaced transactability earner and the calibration anchor's credited
-  checks (`x402_probe` + `self_serve_payg`, `test_calibration.py`) cannot silently disagree (an earner naming
-  a check the calibration guard does not credit = a readout bug the current guards would miss); (b) **READOUT**
-  — extend the earner caption to the TERMINAL readout (`asrs/report.py`) and add a terminal↔HTML parity guard,
-  the same shape as the Cycle-188 canonical-drift parity guard, so the two surfaces can't drift. Both are
-  off-scoring-path, direct-to-main. The earner is display-only (reads the same checks/points the score is
-  built from); no scoring semantics involved.
+<!-- DONE (both legs) — "[OBSERVATION — Cycle 192] The 'earned by' pillar caption opens two in-cloud
+     follow-ups." Leg (a) METHOD (card-earner↔calibration coupling guard) was shipped as
+     `test_calibration.py::test_readout_earner_and_calibration_attribution_cannot_drift` (asserts the card's
+     surfaced transactability earner ∈ `_STATIC_PAYMENT_CHECKS` on both canonical storefronts, non-vacuous
+     control). Leg (b) READOUT/METHOD (terminal earner caption + terminal↔HTML parity guard) SHIPPED Cycle 259
+     (2026-08-05T~16:2xZ, direct-to-main, score-neutral): `asrs/report.py` `_earner_rep`/`_pillar_earner_line`
+     render the per-pillar "earned by <finding> +N" caption on the terminal card reading the SAME
+     `scorecard._pillar_top_earner` the HTML card reads; `tests/test_readout.py` +3 parity guard (both surfaces
+     name the identical earner on both canonical storefronts; n/a-omission + terminal magnitude-flip teeth;
+     mutation-tested). Scoring-path diff EMPTY, canonical 46.1 F / 85.5 B / +39.4 UNMOVED, suite 532→535. The
+     Cycle-191/192 pillar-attribution readout arc is now COMPLETE across BOTH surfaces. See LOG Cycle 259. -->
+
+- **[SELF-HEALING/COVERAGE] Compact STATE.md — it has accreted the full cycle history and is oversized.**
+  (opened Cycle 259, 2026-08-05T~16:2xZ). SYMPTOM: `loop/STATE.md` is 804KB / 7752 lines — it carries verbose
+  narratives for cycles back to ~Cycle 5 plus 83 FOCUS POINTER blocks, and now EXCEEDS the 256KB single-`Read`
+  limit, so the mandated per-cycle "read STATE.md" (playbook cycle protocol step 1 + infra health check) can no
+  longer be done in one call. This is bookkeeping-degradation: every future cycle pays to page through dead
+  state. FIX (one cloud cycle, direct-to-main, score-neutral — touches only `loop/STATE.md`): compact STATE to
+  (a) the cycle counter, (b) the CURRENT focus pointer, (c) the last ~5 cycle entries for continuity, (d) the
+  active watches (runner-health), and (e) the stable reference sections (`## Open questions`, `## Environment
+  constraint`, `## Git bookkeeping note`). DELETE the older cycle narratives — they are preserved verbatim in
+  `loop/LOG.md` (append-only) and in git history, so pruning STATE is NOT an invariant-#5 rewrite (STATE is
+  living state the playbook says to UPDATE every cycle, not an append-only evidence file). Verify post-compaction
+  that `Read loop/STATE.md` succeeds in one call and that no OPEN watch/pointer was dropped (diff the FOCUS
+  POINTER + RUNNER-HEALTH WATCH blocks against the pre-compaction tail). NOT peer-gated (no scoring semantics).
 
 - **[OBSERVATION — Cycle 185] Canonical-drift diagnostic family metamorphic axis is EXHAUSTED in-cloud.**
   With the Cycle-185 `test_attribution_stability_is_host_relabel_invariant`, every drift diagnostic now has a

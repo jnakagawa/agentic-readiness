@@ -1,6 +1,51 @@
 # Loop state
 
-- Cycle counter: 260
+- Cycle counter: 261
+- LOCAL CYCLE 261 — 2026-08-05T17:2xZ (COVERAGE + SELF-HEALING, LOCAL, direct-to-main, score-neutral). FIRST duty:
+  `gh pr list --state open` → `[]` (no peer-gated PR). **SELF-HEALING (root-caused the 10-cycle-old P0 [LOCAL] verify
+  runner STALL the cloud could only guess at):** the newest verify was STILL 02:41Z (~14.7h old, floor breached 14+
+  slots). ROOT CAUSE (all cloud guesses WRONG — not launchd-not-firing, not machine-asleep-only, not a pre-push
+  failure, not a runner crash; `local_verify.py` ran CLEANLY at 02:41Z pushed=True and is byte-identical to the repo):
+  the launcher `~/.local/bin/asrs_local_cycle.sh` runs `local_verify.py` THEN a `claude -p` agent SYNCHRONOUSLY, and
+  the 02:41Z fire's agent (THIS process, PID 40814, etime 14h53m) stayed ALIVE — suspended through an overnight system
+  sleep — keeping the launcher (PID 40718) alive ~15h. **launchd StartCalendarInterval is NON-REENTRANT: it SKIPS a
+  new :41 firing while the previous instance lives** → every slot 03:41–16:41 skipped, no new verify artifact. A
+  genuinely NEW failure mode (distinct from the Cycle-228 push-race and the Cycle-63 DNS-wake-race). DURABLE FIX
+  (executed + verified, not assumed): wrapped the launcher's agent step in a portable wall-clock WATCHDOG (macOS has no
+  `timeout(1)`) bounding AWAKE agent runtime to 45min (`ASRS_AGENT_TIMEOUT`, default 2700s) — a suspended-overnight
+  agent is NOT killed (the watchdog `sleep` suspends with the system), a hung/awake one is, so the launcher can never
+  again wedge launchd for hours; the verify FLOOR runs BEFORE the agent so no floor coverage is lost. Added a
+  repo-tracked canonical copy `loop/asrs_local_cycle.sh` (byte-identical to the pinned copy, matching the
+  `local_verify.py` pin pattern — the launcher was previously untracked/unreviewable) + resynced the pinned copy.
+  Watchdog kill/exit pattern verified in isolation (a 60s "hung" child killed at the 2s bound, parent exits in 2s). The
+  loop AUTO-UNWEDGES when THIS agent exits (launcher exits → launchd fires the next :41); the floor is ALSO restored
+  live this fire by running `local_verify.py` by hand. **IMPROVEMENT (COVERAGE, the cycle's [LOCAL] item):** landed the
+  FIRST committed MIXED storefront anchor — **www.allbirds.com** (a real DTC retailer with agent-native commerce rails:
+  UCP merchant profile `GET /.well-known/ucp`, MCP endpoint, Shop Pay), claiming {metered_api, physical_good} at once
+  (every prior fixture is single-type on this axis) — discharging the P1 rich-retail item (open since Cycle 118) and
+  the north star's "many storefront types" × "agentic commerce becoming real". Shipped
+  `fixtures/canonical/www.allbirds.com.json` (66 entries, 2.52 MB, 14 set-cookie stripped, zero replay-miss, in
+  `_CLASSIFICATION_ONLY`), reusable helper `experiments/capture_offering_fixture.py`, `test_offering_canonical.py` +2
+  (anchor + partition TEETH). STALE-CHECKOUT NOTE: this fire started on a stale base (7cac779 / Cycle 245 — the stall
+  froze local main) while origin raced to Cycle 260; integrated by resetting to origin/main + re-applying the work
+  (renumbered 246→261) — NO history rewrite. SCORE-NEUTRAL: `git diff -- asrs/ rubric/` EMPTY; replay guard 26/26,
+  **46.1 F / 85.5 B / +39.4 UNMOVED**; full suite 29/29 files green. Invariant #1 held (read-only discovery crawl, no
+  POST/signing/behavioral run). DM: NO digest owed (Cycle 259 already sent it this ≥16:00 UTC window). See LOG Cycle 261.
+- FOCUS POINTER (Cycle 261 done, LOCAL): NO open peer-gated PR → next fire's first duty is the infra health check.
+  **RUNNER STALL RESOLVED this fire** (root-caused + durably fixed via the launcher watchdog + floor restored live) —
+  the RUNNER-HEALTH WATCH downgrades from ESCALATED to normal: future `verify_*.json` should resume at the :41 cadence
+  now that the launcher can't wedge launchd; escalate again only if a NEW no-artifact gap >6h appears (would mean the
+  watchdog is not firing or a fresh mode). Cloud track rotation UNCHANGED (this LOCAL cycle did not consume the cloud
+  slot): Cycle 260 was COVERAGE(self-healing) → cloud pointer is **TRUTH next**. NEW in-cloud COVERAGE opening the
+  allbirds anchor UNBLOCKS: a NEW physical_good fulfillment leg (order-tracking / returns-window) mined against
+  allbirds' real fulfillment prose (refund policy / track orders / shipping address) — PREFERRED (physical_good is the
+  thinnest anchored archetype), guarded precision-synthetic + real-captured, ABSENT on the API pair; secondary: the
+  agent-native RETAIL rail surfaces (UCP `/.well-known/ucp`, MCP) as a signal distinct from driftflight. Other in-cloud
+  COVERAGE: ipinfo.io DATASET-FORMAT/DOWNLOAD-CONTRACT (Cycle-243), deep-bank uncaptured-capability audit
+  (226/230/233). Substantive [LOCAL] frontier (P1 rich-retail DISCHARGED; prefer oldest of the rest): a THIRD
+  calibration anchor, render-generation digital_good (Cycle-168), structured catalog/pricing JSON (Cycle-70), the
+  typographic PHRASE-RESCUE real-evidence case, ACP/UCP/MPP live handshakes, a richer-booking WAITLIST fixture
+  (Cycle-256, image-only on acuity). NEXT TRUTH/READOUT/METHOD openings unchanged from Cycle 260's pointer.
 - CYCLE 260 — 2026-08-05T~17:1xZ (COVERAGE/SELF-HEALING, cloud, direct-to-main, score-neutral).
   FIRST duty (infra health check): no open peer-gated PR (`list_pull_requests` state=open `[]`); HEAD realigned to
   origin/main at Cycle 259 (`bb9e1a2`; detached-start realign via `git fetch origin main` + `git checkout -B main

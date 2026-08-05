@@ -1509,7 +1509,7 @@ _REPLAY_CLEAN = {
 # (captured for offering/battery classification) — NOT eligible for any
 # score-replay guard until re-captured full-score [LOCAL]:
 #   asrs.cli score <domain> --record-fixture fixtures/canonical/<domain>.json
-_CLASSIFICATION_ONLY = {"api.replicate.com", "ipinfo.io"}
+_CLASSIFICATION_ONLY = {"api.replicate.com", "ipinfo.io", "www.allbirds.com"}
 
 
 def test_committed_fixtures_are_partitioned_by_replay_integrity() -> None:

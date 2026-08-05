@@ -5,33 +5,39 @@ design in-cloud, execute locally.
 
 ## P0
 
-- **[LOCAL] Diagnose the LOCAL verify runner STALL (no new artifact since 02:41Z Aug-5)** (SELF-HEALING/METHOD,
-  opened Cycle 251, 2026-08-05T~08:2xZ). SYMPTOM: newest `runs/local/verify_*.json` is
-  `verify_20260805T024100Z.json` (02:41Z); the :41 cadence has produced NOTHING for FIVE consecutive slots
-  (03:41 / 04:41 / 05:41 / 06:41 / 07:41 all absent; UPDATE Cycle 252: 08:41 also absent = SIX consecutive misses,
-  and at the 09:15Z fire the 02:41Z artifact is ~6.5h old so the 6h FLOOR IS NOW BREACHED — no longer a trending
-  watch but a hard breach; UPDATE Cycle 257: STILL no new artifact through 13:41Z — 11+ consecutive misses, the
-  02:41Z artifact ~11.7h old at the 14:21Z fire, the floor breach now sustained ~5h+ across Cycles 252→257).
-  At the Cycle-251 fire (08:15Z) the artifact was ~5.6h old,
-  still inside the 6h floor (trips ~08:41Z), so no hard breach YET — but the trip condition of the Cycle-250
-  RUNNER-HEALTH WATCH ("no fresh verify ≥07:41Z") is MET. DISTINCT from the Cycle-227/Aug-1 push-race stranding:
-  that surfaced as a diverged `--ff-only` pull and was fixed by `recover_from_own_divergence` (Cycle 228+); here
-  `divergence_recovery` on the last good artifact is `None`, so this is a NO-NEW-ARTIFACT stall, not a divergence.
-  The cloud CANNOT tell the candidate causes apart — launchd not firing / machine asleep across the window / a NEW
-  pre-push failure that aborts before writing an artifact / a silent crash in `local_verify.py` are all consistent
-  with what the cloud sees. NEXT LOCAL FIRE (exact steps):
-  1. `launchctl list | grep -i asrs` and `log show --predicate 'process == "launchd"' --last 8h | grep -i asrs`
-     — did launchd fire the :41 job at all in 03:41–08:41? (fires-but-fails vs never-fires splits the tree).
-  2. If it fired: read the runner's own heartbeat log (the launchd StandardOut/StandardError path) for 03:41+ —
-     `local_verify.py` heartbeats on every fire, so silence there = it never started; an error there names the
-     failure (pull reject / test crash / score error / push reject).
-  3. Confirm the pinned `~/.local/bin/asrs_local_verify.py` matches the repo copy (self-heal law) —
-     `diff ~/.local/bin/asrs_local_verify.py loop/local_verify.py`; resync from the reviewed repo copy if stale
-     and RECORD the resync in LOG.
-  4. Run the runner once by hand end-to-end (`ASRS_REPO=<checkout> ~/.local/bin/asrs_local_verify.py`) and
-     VERIFY it produced a fresh `verify_<ts>.json` on origin (execute, don't assume) — floor restored.
-  5. LOG the diagnosis + fix; if a new failure MODE is found, harden `local_verify.py` + extend
-     `tests/test_local_verify.py` (the Cycle-228 push-race precedent). FLAG the outcome in the next digest.
+<!-- DONE 2026-08-05T17:2xZ (LOCAL Cycle 261, SELF-HEALING, direct-to-main, score-neutral): "[LOCAL] Diagnose the
+     LOCAL verify runner STALL" ROOT-CAUSED + durably FIXED — a local fire saw what the cloud (Cycles 251→260) could
+     only guess. All FOUR cloud candidate causes were WRONG (NOT launchd-not-firing, NOT machine-asleep-only, NOT a
+     pre-push failure, NOT a `local_verify.py` crash). The runner CODE is healthy: its heartbeat log shows the 02:41Z
+     run completed `tests_ok=True (25 suites) / pushed=True`, and `diff ~/.local/bin/asrs_local_verify.py
+     loop/local_verify.py` is EMPTY (no resync needed). REAL CAUSE — a NEW failure mode: the launcher
+     `~/.local/bin/asrs_local_cycle.sh` runs `local_verify.py` THEN a `claude -p` agent SYNCHRONOUSLY, and the 02:41Z
+     fire's agent (PID 40814, etime 14h53m) stayed ALIVE — suspended through an overnight system sleep — keeping the
+     launcher (PID 40718) alive ~15h. launchd `StartCalendarInterval` is NON-REENTRANT: while a prior instance lives it
+     SKIPS the next :41 firing, so 03:41–16:41 were all skipped → no new verify artifact. Distinct from the Cycle-228
+     push-race (`divergence_recovery` None) and the Cycle-63 DNS-wake-race. FIX (executed + verified, not assumed):
+     wrapped the launcher's agent step in a portable wall-clock WATCHDOG (macOS has no `timeout(1)`) bounding AWAKE
+     agent runtime to 45min (`ASRS_AGENT_TIMEOUT`, default 2700s) — a suspended-overnight agent is NOT killed (the
+     watchdog `sleep` suspends with the system), a hung-awake one is, so the launcher can never again wedge launchd; the
+     verify FLOOR runs before the agent so no floor coverage is lost. Added a repo-tracked canonical copy
+     `loop/asrs_local_cycle.sh` (byte-identical to the pinned copy — the launcher was previously untracked, unlike
+     `loop/local_verify.py`; now it follows the same pin pattern) + resynced the pinned copy. `zsh -n` clean; watchdog
+     kill/exit verified in isolation (60s "hung" child killed at a 2s bound, parent exits in 2s). The loop AUTO-UNWEDGES
+     when this agent exits (launcher exits → launchd fires next :41); floor ALSO restored live this fire by running
+     `local_verify.py` by hand (fresh `verify_<ts>.json` pushed to origin). Score-neutral (`git diff -- asrs/ rubric/`
+     EMPTY); replay 26/26, 46.1 F / 85.5 B / +39.4 UNMOVED; full suite 29/29 files. See LOG Cycle 261. WATCH (folded
+     into the runner-health note, not a fresh P0): confirm the next 1–2 `verify_*.json` resume the :41 cadence; a new
+     >6h no-artifact gap would mean the watchdog is not firing (or a fresh mode) → escalate. A DURABILITY follow-up worth
+     a future cycle: `tests/test_launcher_hygiene.py` pinning that `loop/asrs_local_cycle.sh` keeps the watchdog
+     wrapper (a bare unbounded `claude -p` invocation would regress the wedge) + stays synced to the pinned copy. -->
+- **[LOCAL / CANDIDATE, METHOD] Guard the launcher watchdog + pin the repo↔pinned launcher sync** (from Cycle 261).
+  The launcher `loop/asrs_local_cycle.sh` is now repo-tracked with a wall-clock agent WATCHDOG (Cycle 261 stall fix),
+  but nothing pins that it STAYS bounded — a future edit that drops the `&` / watchdog and reverts to a synchronous
+  `claude -p` would silently re-open the ~15h non-reentrant-wedge failure mode. Add `tests/test_launcher_hygiene.py`:
+  (a) `loop/asrs_local_cycle.sh` contains the backgrounded agent + a `kill`-based watchdog bounding `ASRS_AGENT_TIMEOUT`;
+  (b) it runs `local_verify.py` BEFORE the agent (floor-first); (c) optionally, when run on the operator's machine, the
+  pinned `~/.local/bin/asrs_local_cycle.sh` matches the repo copy (self-heal-law sync, the `local_verify.py` precedent).
+  Off the scoring path, score-neutral. [LOCAL] for leg (c) only; legs (a)/(b) are in-cloud (static file assertions).
 
 <!-- DONE 2026-08-04T17:13Z (LOCAL cycle, SELF-HEALING, direct-to-main, score-neutral): "[LOCAL] LOCAL verify
      runner AT-FLOOR since Aug-1 03:50Z (~3 days)" ROOT-CAUSED + FIXED + HARDENED — a local fire saw what the
@@ -473,8 +479,11 @@ design in-cloud, execute locally.
   reschedule/availability-check control) for a genuinely distinct capability leg against REAL evidence, the way Cycle 164
   did for digital_good. See LOG Cycle 242. EARLIER — LOCAL Cycle 240: **service_booking** unblocked via
   `fixtures/canonical/acuityscheduling.com.json` (a real appointment-booking storefront claiming {subscription,
-  service_booking, metered_api}). Remaining thin gap: **physical_good** wants a RICHER retail fixture than the thin
-  books.toscrape (the P1 rich-retail item). The offering signal bank is metered_api-HEAVY: metered_api 26, digital_good
+  service_booking, metered_api}). Remaining thin gap: **physical_good** now HAS a richer anchor — LOCAL Cycle 261
+  captured `fixtures/canonical/www.allbirds.com.json`, a real MIXED retailer with fulfillment prose (refund policy /
+  track orders / shipping address / agentic checkout) — so an in-cloud COVERAGE cycle can mine a NEW physical_good
+  leg (order-tracking / returns-window) against real evidence (the P1 rich-retail item, now DISCHARGED; see the
+  Cycle-261 follow-up above). The offering signal bank is metered_api-HEAVY: metered_api 26, digital_good
   11 (post-Cycle-164 `variant-selection`), physical_good 9, subscription 9 (post-Cycle-172 `plan-allowance`),
   service_booking 8 (post-Cycle-256 `intake-form`), data_retrieval 6 (post-Cycle-243 `batch-retrieval`). NOTE (superseded by Cycles 240/242/243): the
   claim below that service_booking/data_retrieval "CANNOT be strengthened non-vacuously in-cloud" held only until their
@@ -1492,20 +1501,33 @@ design in-cloud, execute locally.
      signal is UNVERIFIABLE in-cloud (vacuous — cannot prove non-vacuous firing), the same trap as
      service_booking / data_retrieval. See the P1 [LOCAL] rich-retail-fixture item below. Cycle 118 pivoted to
      digital_good `content-provenance` instead (fires non-vacuously on the canonical pair). -->
-- **[LOCAL] Capture a RICH retail fixture for physical_good fulfillment legs** (COVERAGE enabler, from
-  Cycle 118's in-cloud finding). The committed `books.toscrape.com` retail fixture is too thin to add a NEW
-  physical_good signal non-vacuously (only `add-to-cart` + `stock` fire; no shipping/tracking/returns prose;
-  llms.txt 404). Capture a fixture LIVE from a real agent-fetch-reachable retailer with a genuine checkout
-  that documents fulfillment — shipping options / delivery estimate / order confirmation / order tracking /
-  returns policy — via `asrs.cli score <domain> --record-fixture fixtures/canonical/<domain>.json` (static
-  $0, needs network → [LOCAL]; several retailers block agent UAs, so record which — a reachability signal in
-  itself). Then a future in-cloud COVERAGE cycle can add ONE capability-worded, vendor-neutral fulfillment leg
-  to physical_good with the metered_api non-vacuous shape: a `shipping-address` leg (an agent can supply a
-  delivery destination — NB `shipping (address|cost|rates|options|...)` already exists; a NEW leg must be
-  distinct), an `order-tracking` / `order-status` leg (confirm fulfillment progress after purchase — NB
-  `fulfillment` already matches "tracking number"), or a `returns-window` leg. Precision: `returns` must
-  anchor on a genuine return/refund policy, not "returns to the homepage"; `track` on an order, not a music
-  track. Off the scoring path, score-neutral.
+<!-- DONE 2026-08-05T17:2xZ (LOCAL Cycle 261, COVERAGE, direct-to-main, score-neutral): "[LOCAL] Capture a RICH
+     retail fixture for physical_good fulfillment legs" DISCHARGED — and stronger than a plain retail fixture. The
+     capture is **www.allbirds.com**, a real DTC shoe retailer that has stood up agent-native commerce RAILS: its
+     llms.txt "Agent Instructions" advertises a UCP merchant profile (`GET /.well-known/ucp`), an MCP endpoint
+     (`POST .../api/mcp`), Shop Pay checkout, a Refund policy, and order tracking. So discovery classifies it
+     {metered_api, physical_good} — the FIRST committed MIXED anchor (two storefront-TYPE archetypes at once; the P1
+     goal + the north star's "many storefront types" × "agentic commerce becoming real"). Shipped
+     `fixtures/canonical/www.allbirds.com.json` (66 entries, 2.52 MB, 14 set-cookie stripped, zero replay-miss,
+     `_CLASSIFICATION_ONLY`); a reusable $0 capture helper `experiments/capture_offering_fixture.py` (verifies honest
+     ordering + encodes the apex→www redirect note); `tests/test_offering_canonical.py` +2 (66→68) anchor + partition
+     TEETH. Score-neutral (`git diff -- asrs/ rubric/` EMPTY); replay 26/26, 46.1 F / 85.5 B / +39.4 UNMOVED; full
+     suite 29/29 files. See LOG Cycle 261. The in-cloud physical_good-mining FOLLOW-UP this anchor enables is the
+     new item below. -->
+- **[in-cloud, COVERAGE] Mine the allbirds MIXED anchor for a NEW physical_good fulfillment leg** (from Cycle 261,
+  the discharge above). `fixtures/canonical/www.allbirds.com.json` is now a committed MIXED retail+API anchor whose
+  llms.txt carries genuine fulfillment prose ("Refund policy", "track orders", "shipping address", an agentic
+  checkout flow) — the REAL evidence the thin physical_good bank (9 signals, only `free-shipping` + `shipping-noun`
+  firing on allbirds) needs to grow ONE distinct, capability-worded fulfillment leg the metered_api way: an
+  `order-tracking` / `order-status` signal (confirm fulfillment progress after purchase — distinct from
+  `fulfillment`'s "tracking number") OR a `returns-window` signal (a genuine return/refund POLICY). NB a
+  `shipping-address` leg is redundant (`shipping (address|cost|rates|options|...)` already exists). Precision:
+  `returns` must NOT fire on "returns to the homepage"; `track` must name an ORDER, not a music track. Each new
+  signal needs the isolation-matrix entry (`_ISOLATION_EVIDENCE`) + a precision-synthetic guard (positives fire /
+  broad-English negatives dodge) + a real-captured guard (fires on allbirds, ABSENT on the API pair / booking /
+  data / null fixtures) + the `_MIXED_PHYSICAL_LABELS` maintenance-contract update in test_offering_canonical.py.
+  Off the scoring path, score-neutral. Prefer this over the still-thin service_booking WAITLIST candidate —
+  physical_good is the thinnest archetype that now has an enriched anchor.
 
 <!-- TRUTH HALF DONE 2026-07-31T~02:1xZ (Cycle 119, TRUTH, branch+PR+self-merge, tests-only/score-neutral):
      "pin content-provenance as RELABEL-INVARIANT" SHIPPED. `test_offering_relabel_invariance_content_provenance`
@@ -2218,13 +2240,18 @@ design in-cloud, execute locally.
      provisional tag Citable → P1 fails; styling the stable band warn → P3 fails). test_readout 83→84; replay
      guard 26/26, 46.1 F / 85.5 B / +39.4 UNMOVED, 0 replay-miss; full suite 25/25 files green. Off the scoring
      path (`git diff -- asrs/ rubric/ fixtures/` EMPTY). See LOG Cycle 250. -->
-- **RUNNER-HEALTH WATCH (Cycle 250) — resolve or escalate.** The local verify runner's last artifact is
-  `runs/local/verify_20260805T024100Z.json` (02:41Z); 03:41/04:41/05:41/06:41 are all missing (4 consecutive
-  :41 misses at the 07:17Z fire). Under the 6h floor so not yet a hard breach. If a fresh `verify_*.json`
-  (07:41Z+) does NOT appear, the next cloud fire must promote this to a P0 [LOCAL] with the stall diagnosis
-  (candidates a [LOCAL] fire can distinguish but the cloud cannot: launchd not firing / machine asleep / a new
-  pre-push failure — distinct from the Cycle-227 push-race stranding, which was `divergence_recovery`-fixed and
-  reads `None` here) and flag it in the next 16:00 UTC digest. Auto-resolves if the cadence resumes.
+<!-- DONE/RESOLVED 2026-08-05T17:2xZ (LOCAL Cycle 261) — this Cycle-250 RUNNER-HEALTH WATCH (which escalated into the
+     P0 [LOCAL] stall item, marked DONE above) is RESOLVED: the stall was root-caused (a non-reentrant launcher wedged
+     by an overnight-suspended agent — NOT launchd-not-firing / machine-asleep / pre-push failure) and durably fixed
+     (launcher agent-step watchdog), and the floor was restored live this fire. The cadence resumes now the launcher
+     can no longer stay alive for hours and block launchd's :41 firings. See LOG Cycle 261 + the DONE stall item above.
+     Runner-health is now a normal (non-escalated) watch in STATE's FOCUS POINTER. -->
+- **[LOCAL, OPEN QUESTION — Cycle 261] Overnight coverage while the machine sleeps.** The watchdog stops a suspended
+  agent from WEDGING the loop, but it does not make launchd FIRE while the machine is asleep — so an overnight sleep
+  still yields a legitimate gap in local `verify_*.json` (the cloud's in-cloud replay-by-construction remains the
+  regression signal during that window, per playbook). NOT a bug (a closed laptop can't run jobs); noted so a future
+  fire does not re-diagnose an expected overnight gap as a stall. If continuous overnight coverage is ever wanted, the
+  durable lever is a `pmset repeat wake` schedule (system power config, outside the repo) — deliberately NOT done here.
 
 - **[CANDIDATE, COVERAGE] subscription bare-`recurring` precision guard** (observation, carried from Cycle
   198). `\brecurring\b` false-positives on non-billing prose ("recurring theme", "recurring bug"); it is the

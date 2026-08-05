@@ -699,6 +699,175 @@ def test_data_retrieval_partition_tracks_storefront_type() -> None:
 
 
 # ---------------------------------------------------------------------------
+# The MIXED storefront ANCHOR — the FIRST committed fixture that claims TWO
+# storefront-TYPE archetypes at once: a physical_good RETAILER that has ALSO
+# stood up agent-native commerce RAILS (metered_api). Every prior fixture is
+# single-type on this axis: the canonical pair + api.replicate.com are
+# metered_api with physical_good NA (an API fulfills no physical good); the
+# retail catalog is physical_good with metered_api NA (a book catalog is not a
+# programmatic API). So the claimed/NA partition had never been exercised on a
+# storefront that is BOTH — leaving unproven that the classifier represents a
+# genuinely MIXED offering rather than forcing an either/or. This fixture closes
+# that gap.
+#
+# www.allbirds.com is a real DTC shoe retailer (physical fulfillment) whose own
+# agent surfaces publish a live agent-native commerce rail: an llms.txt "Agent
+# Instructions" doc advertising a UCP merchant profile (`GET /.well-known/ucp`),
+# an MCP endpoint (`POST .../api/mcp`), and Buyer-approved Shop Pay checkout, plus
+# a refund policy and order tracking. So it CLAIMS {metered_api, physical_good} —
+# the retail half from anchored fulfillment nouns (homepage "free shipping", the
+# llms.txt agentic-checkout "shipping address"), the rails half from the documented
+# programmatic surface (a `GET/POST https://...` endpoint + a "Respect rate limits"
+# instruction). Pinned as an exact set so a spurious ADD (a false subscription /
+# data_retrieval) or a DROPPED archetype both fail.
+#
+# It advances the north star's "many storefront types" + "agentic commerce becoming
+# real" axes at once — the first REAL (non-synthetic, non-driftflight) agent-native
+# commerce storefront in the corpus, and a MIXED retail+API TYPE distinct from the
+# no-rails retail (books.toscrape / moleskine) and the pure-API pair. It is also the
+# [LOCAL] enabler the "capture a RICH retail fixture for physical_good fulfillment
+# legs" backlog item (open since Cycle 118) asked for: its surfaces carry genuine
+# fulfillment prose (refund policy, order tracking, shipping address, an agentic
+# checkout flow) a future in-cloud COVERAGE cycle can mine for a NEW capability-worded
+# physical_good leg (an order-tracking / returns-window signal) against REAL evidence —
+# without the score-path risk, exactly as the service_booking / data_retrieval anchors
+# enabled their siblings.
+#
+# The two thin archetypes (service_booking, data_retrieval) — and subscription /
+# digital_good — are asserted NA: this MIXED anchor gives the retail+API coexistence
+# its first evidence WITHOUT falsely conjuring any neighbour. NON-VACUOUS by anchored
+# evidence: physical_good rests on genuine fulfillment nouns ("free shipping" /
+# "shipping address"), never bare metaphorical "ship"; metered_api on a documented
+# programmatic endpoint + rate-limit instruction, never a bare login.
+#
+# Maintenance contract mirrors the canonical/retail/booking/data guards: if a
+# signal-bank change LEGITIMATELY moves what this fixture claims (e.g. a NEW
+# physical_good fulfillment signal this anchor was captured to enable), re-capture it
+# [LOCAL] (`python -m experiments.capture_offering_fixture www.allbirds.com
+# fixtures/canonical/www.allbirds.com.json`, static $0) and update the expected sets
+# below in the SAME PR.
+#
+# Fixture captured [LOCAL] 2026-08-05 (Cycle 261) via a single live discover_offering
+# crawl (experiments/capture_offering_fixture.py) — the live classification was
+# reproduced byte-faithfully by the offline replay before recording (honest ordering,
+# invariant #4; zero replay-miss); 14 ephemeral set-cookie headers stripped, matching
+# the sibling fixtures' zero-set-cookie convention.
+# ---------------------------------------------------------------------------
+_MIXED = "www.allbirds.com"
+# What the MIXED storefront CLAIMS: physical fulfillment AND a programmatic rail.
+_MIXED_CLAIMED = {"metered_api", "physical_good"}
+# The archetypes this anchor does NOT claim — the MIXED coexistence gets its first
+# evidence without falsely conjuring a subscription, a digital good, or either thin
+# archetype (service_booking / data_retrieval).
+_MIXED_MUST_BE_NA = {"subscription", "digital_good", "service_booking", "data_retrieval"}
+# The anchored fulfillment signals that make physical_good non-vacuous here (real
+# fulfillment nouns, never bare "ship"). Open subset: a future physical_good leg this
+# anchor was captured to enable may ADD a label without dropping the claim.
+_MIXED_PHYSICAL_LABELS = {"free-shipping", "shipping-noun"}
+# The anchored programmatic signals that make metered_api non-vacuous here (a
+# documented endpoint + a rate-limit instruction, never a bare login).
+_MIXED_API_LABELS = {"post-endpoint", "rate-limited"}
+
+
+def _assert_mixed_anchor() -> None:
+    profile, _ = _discover(_MIXED)
+    claimed = set(profile.archetypes)
+    unclaimed = set(profile.unclaimed)
+
+    _check(
+        "homepage" in profile.surfaces_seen,
+        f"{_MIXED}: homepage surface was read (discovery had real evidence)",
+    )
+
+    # (a) The claimed SET is exactly {metered_api, physical_good}. Exact equality is
+    # the regression signal in BOTH directions: a spurious ADD (a false subscription /
+    # data_retrieval) or a DROPPED archetype both fail here.
+    _check(
+        claimed == _MIXED_CLAIMED,
+        f"{_MIXED}: claimed archetypes == {sorted(_MIXED_CLAIMED)} (got {sorted(claimed)})",
+    )
+
+    # claimed and unclaimed partition the fixed template bank exactly (no leaks).
+    _check(
+        claimed | unclaimed == set(ARCHETYPES) and not (claimed & unclaimed),
+        f"{_MIXED}: claimed+unclaimed partition the archetype bank "
+        f"(claimed {sorted(claimed)}, unclaimed {sorted(unclaimed)})",
+    )
+
+    # (b) The whole point: BOTH storefront-type archetypes are CLAIMED at once — the
+    # FIRST committed fixture where physical fulfillment and a programmatic rail
+    # coexist (every prior fixture claims one with the other NA).
+    _check(
+        profile.claims("physical_good") and profile.claims("metered_api"),
+        f"{_MIXED}: physical_good AND metered_api both CLAIMED — a real retailer that "
+        "has stood up an agent-native commerce rail (the first MIXED anchor)",
+    )
+
+    # (c) The other archetypes stay NA: the MIXED coexistence does not falsely conjure
+    # a subscription, a digital good, or either thin archetype (service_booking /
+    # data_retrieval).
+    _check(
+        _MIXED_MUST_BE_NA <= unclaimed,
+        f"{_MIXED}: {sorted(_MIXED_MUST_BE_NA)} are all NA/unclaimed "
+        f"(got unclaimed {sorted(unclaimed)}) — the MIXED anchor claims exactly its "
+        "two storefront-type archetypes, conjuring no neighbour",
+    )
+
+    # (d) Non-vacuous, both halves. physical_good rests on anchored fulfillment nouns
+    # and metered_api on a documented programmatic surface — open subsets, so a future
+    # signal this anchor enables may add a label without dropping the claim. Every
+    # fired signal carries quoted evidence.
+    phys = next(c for c in profile.claimed if c.archetype == "physical_good")
+    phys_labels = {s.label for s in phys.signals}
+    _check(
+        _MIXED_PHYSICAL_LABELS <= phys_labels,
+        f"{_MIXED}: physical_good rests on anchored fulfillment evidence "
+        f"{sorted(_MIXED_PHYSICAL_LABELS)} (got labels {sorted(phys_labels)})",
+    )
+    api = next(c for c in profile.claimed if c.archetype == "metered_api")
+    api_labels = {s.label for s in api.signals}
+    _check(
+        _MIXED_API_LABELS <= api_labels,
+        f"{_MIXED}: metered_api rests on anchored programmatic evidence "
+        f"{sorted(_MIXED_API_LABELS)} (got labels {sorted(api_labels)})",
+    )
+    _check(
+        all(s.quote and s.quote.strip() for c in profile.claimed for s in c.signals),
+        f"{_MIXED}: every fired signal carries quoted evidence",
+    )
+
+
+def test_mixed_storefront_anchor_offering() -> None:
+    print("test_mixed_storefront_anchor_offering")
+    _assert_mixed_anchor()
+
+
+def test_mixed_partition_tracks_storefront_type() -> None:
+    """TEETH: the retail+API storefront claims BOTH metered_api and physical_good,
+    whereas the with-rails API pair claims metered_api WITHOUT physical_good and the
+    retail catalog claims physical_good WITHOUT metered_api — the claimed/NA partition
+    represents a genuinely MIXED offering, not a forced either/or."""
+    print("test_mixed_partition_tracks_storefront_type")
+    mixed, _ = _discover(_MIXED)
+    _check(
+        mixed.claims("metered_api") and mixed.claims("physical_good"),
+        f"{_MIXED}: sells a physical good over an agent-native rail -> BOTH claimed",
+    )
+    api_pair, _ = _discover("driftflight.com")
+    _check(
+        api_pair.claims("metered_api") and not api_pair.claims("physical_good"),
+        "driftflight.com: a programmatic image API -> metered_api CLAIMED, "
+        "physical_good NA (the MIXED coexistence is not an artifact of over-matching)",
+    )
+    retail, _ = _discover(_RETAIL)
+    _check(
+        retail.claims("physical_good") and not retail.claims("metered_api"),
+        f"{_RETAIL}: a book catalog -> physical_good CLAIMED, metered_api NA "
+        "(the other single-type pole)",
+    )
+
+
+# ---------------------------------------------------------------------------
 # The EMPTY offering — a site that sells nothing. The two guards above pin the
 # poles of the classifier (an agent-native API -> physical_good NA; a retail shop
 # -> physical_good CLAIMED, APIs NA). This pins the THIRD, degenerate case the
@@ -6848,6 +7017,8 @@ def main() -> int:
         test_offering_relabel_evidence_invariance_com,
         test_offering_relabel_evidence_invariance_machine,
         test_offering_relabel_evidence_negative_control,
+        test_mixed_storefront_anchor_offering,
+        test_mixed_partition_tracks_storefront_type,
         test_cross_signal_archetype_isolation,
         test_cross_signal_isolation_negative_control,
     ]

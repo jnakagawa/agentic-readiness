@@ -17678,3 +17678,85 @@ tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4
 ## Local verification — 20260805T014104Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260805T014104Z.json
+
+## Cycle 245 — 2026-08-05T~02:1xZ — TRUTH — the calibration-population DRIFT diff gets its first guard: a reachability flip is never scored as a capability move
+
+**Track / ship class.** TRUTH (calibration against reality: the real-domain
+population sweep's drift signal). Tests-only, OFF the scoring path →
+direct-to-main (not a scoring-semantics change; no rubric check add/remove, no
+weight/cap/version move). `git diff` = the new file `tests/test_calibration_drift.py`
+ONLY; scoring-path diff (`asrs/ rubric/ fixtures/ loop/local_verify.py
+experiments/calibration_sweep.py`) EMPTY.
+
+**FIRST duty (infra health check).** No open peer-gated PR (`list_pull_requests`
+state=open → `[]`, no review owed). INFRA GREEN: newest verify
+`runs/local/verify_20260805T014104Z.json` (01:41Z, git_pull.ok=true attempts=1,
+divergence_recovery=None, tests_ok=true 24/24) ~31min old at fire (02:12Z) — well
+inside the 6h floor; live canonical **46.1 F / 85.5 B / +39.4** (tx 87.5), no
+drift. Stood up the cloud `.venv` from requirements; all 24 suites green before
+the change (test_free_tier 11/11 in-cloud this fire — the eth-account gap did not
+recur). HEAD in sync with origin at Cycle 244.
+
+**What / why.** LOCAL Cycle 244 added a DRIFT block to
+`experiments/calibration_sweep.py` (`_compute_drift`): the cadence sweep now
+diffs each domain's overall against the newest prior dated sweep, so a real
+storefront ADDING or REMOVING agentic rails (its score moves) is VISIBLE rather
+than buried in a re-averaged population. That drift diff is the
+calibration-against-reality signal the TRUTH track exists to protect — and it
+shipped with ZERO test coverage. The property most in need of teeth is
+invariant #4 applied to the sweep: a domain going scored↔NOT SCORABLE is a
+REACHABILITY change, never a capability move — it must land in `status_changed`,
+never in `moved`, and must never pollute the delta statistics (a site is neither
+punished nor credited for what could not be observed). New guard
+`tests/test_calibration_drift.py` (5 tests, all registered), a pure-function
+guard on `_compute_drift` (no network, no scoring-path import beyond the drift
+helper):
+- **Real-evidence (invariant #3)** — replays the TWO committed dated sweeps
+  (`calibration_sweep_20260728T234815Z.json` → `..._20260805T014754Z.json`)
+  through the real `_compute_drift` and re-derives the 08-05 artifact's drift
+  facts: 13 scored-in-both, exactly 2 moved over 8 days (deepai.org +6.8,
+  allbirds.com +5.0), max |Δ| 6.8, two new members
+  {acuityscheduling.com, ipinfo.io} listed / none removed, `status_changed` empty
+  this period. Pins the POPULATION-LEVEL REGRESSION ECHO: the canonical pair is
+  byte-stable across the cadence (both in `moved`, delta 0.0) — the same +39.4
+  the in-cloud replay guard freezes, seen from the sweep. And rei.com
+  (NOT SCORABLE in BOTH) is in NEITHER list (unobserved-in-both = no entry, not a
+  zero-delta move).
+- **Invariant #4 with TEETH** — the committed data has NO scored↔not-scorable
+  transition (`status_changed == []`), so the real leg can never exercise that
+  branch. A synthetic case flips one domain scored→NOT SCORABLE (baseline 90.0)
+  and another NOT SCORABLE→scored (40.0) alongside one genuine move (50.0→55.0):
+  asserts both flips land in `status_changed` (with the correct NOT SCORABLE
+  sentinel on the right side) and NEITHER in `moved`. The negative control: the
+  scored→not domain's 90.0 baseline is by far the largest would-be magnitude — a
+  naive impl treating NOT SCORABLE as 0.0 would report `max_abs_delta` 90.0; the
+  guard pins it at 5.0 (the genuine move), so a leak is caught numerically, not
+  just structurally.
+- **Legibility** — added/removed members are listed, never folded into the
+  compared-in-both stats; no baseline (or unreadable one) yields NO drift block
+  rather than a misleading empty diff; movers are sorted by |Δ| descending
+  (biggest real-world drift leads) and deltas round to one decimal.
+
+**Validation.** New suite 5/5 green; `test_runner_registration` 4/4 (all 5 new
+tests registered — no silent dead test). Full suite 25/25 files green (24→25 with
+the new file). Canonical PAIR UNMOVED: replay guard 25/25 replays, **46.1 F /
+85.5 B / +39.4**, 0 replay-miss; rubric v0.7. Score-neutral by construction
+(scoring path byte-identical — the in-cloud standard); live canonical signal
+(newest LOCAL verify 01:41Z) reads +39.4, in agreement.
+
+**Comms.** NO DM: tests-only + score-neutral, not sensitive-class (no
+payment/signing/weights/caps/removals), not score-changing, not the first cycle
+after 16:00 UTC (today's digest goes after 16:00Z Aug-5; current ~02:1xZ Aug-5;
+last digest Cycle 228). Per the comms policy, silence.
+
+**Next hypothesis (READOUT 246).** Rotate READOUT next (Cycle 245 TRUTH; METHOD →
+COVERAGE → TRUTH → READOUT). The population sweep now emits a trustworthy drift
+block but it is a [LOCAL] stderr readout only — a READOUT cycle could surface the
+population + its drift on the rubric/leaderboard page or the card (which
+storefront TYPES were scored, the cadence drift trend), turning the committed
+dataset into a citable readout. Alternatively the deep-bank uncaptured-capability
+audit (COVERAGE, Cycle 226/230/233 lineage) or the still-un-mined
+service_booking anchor (acuityscheduling.com). Substantive [LOCAL] frontier
+unchanged (physical_good-rich / MIXED retail+API fixtures, a THIRD calibration
+anchor, render/structured-catalog captures, the typographic phrase-rescue
+real-evidence case, ACP/UCP/MPP live handshakes) — prefer the oldest.

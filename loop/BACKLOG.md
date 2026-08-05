@@ -805,6 +805,15 @@ design in-cloud, execute locally.
   broadening step toward the upper 15–20: a genuine ACP/UCP/MPP merchant or a 2nd x402-live site (both scarce —
   record reachability as its own signal). Off the scoring path, score-neutral (`git diff -- asrs/ rubric/`
   EMPTY; only `experiments/calibration_sweep.py`).
+  PROGRESS — Cycle 245 (2026-08-05, TRUTH, cloud, direct-to-main, score-neutral): the Cycle-244 drift diff is now
+  TEST-GUARDED — `tests/test_calibration_drift.py` (5 tests) pins `_compute_drift` against BOTH committed dated
+  sweeps (real-evidence: 13 scored-in-both, 2 moved [deepai +6.8, allbirds +5.0], canonical pair delta 0.0 =
+  the frozen +39.4 seen from the sweep, rei.com in neither list) AND a synthetic invariant-#4 negative control
+  (a scored↔NOT SCORABLE flip lands in `status_changed`, never `moved`; a naive not-scorable-as-0.0 impl would
+  report max_abs_delta 90.0, the guard pins 5.0 → leak caught numerically). So the drift signal is now trustworthy
+  before the next cadence run reads it. NEW READOUT FOLLOW-UP (candidate below): the drift block is a [LOCAL]
+  stderr readout only — surface the population + its cadence drift trend on the rubric/leaderboard page or card
+  (which storefront TYPES scored, the drift trend) to turn the committed dataset into a citable readout.
 <!-- DONE 2026-07-23T11:42Z (local fire, TRUTH): "Codex reachability investigation —
      CHARACTERIZE" discharged via experiments/codex_reachability.py (committed;
      5 codex invocations, canonical pair ×2 + example.com control ×1, all HTTP 200).

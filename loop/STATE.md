@@ -1,6 +1,40 @@
 # Loop state
 
-- Cycle counter: 244
+- Cycle counter: 245
+- CYCLE 245 — 2026-08-05T~02:1xZ (TRUTH, cloud, direct-to-main, score-neutral). FIRST duty (infra health
+  check — no open peer-gated PR, `list_pull_requests` state=open `[]`): INFRA GREEN, newest verify
+  `runs/local/verify_20260805T014104Z.json` (01:41Z, git_pull.ok=true attempts=1, divergence_recovery=None,
+  tests_ok=true 24/24) ~31min old at fire (02:12Z); live canonical **46.1 F / 85.5 B / +39.4** (tx 87.5), no
+  drift; HEAD in sync with origin at Cycle 244. Took the TRUTH slot: gave the calibration-population DRIFT diff
+  (`experiments/calibration_sweep._compute_drift`, added LOCAL Cycle 244, ZERO prior test coverage) its first
+  guard — `tests/test_calibration_drift.py` (5 tests, all registered). The property with teeth is invariant #4
+  applied to the sweep: a domain going scored↔NOT SCORABLE is a REACHABILITY change, never a capability move → it
+  must land in `status_changed`, never in `moved`, and never pollute the delta stats. Legs: (a) real-evidence —
+  replays the TWO committed dated sweeps through the real `_compute_drift` and re-derives the 08-05 drift facts
+  (13 scored-in-both, 2 moved [deepai +6.8, allbirds +5.0], max |Δ| 6.8, two new members {acuity, ipinfo}, none
+  removed, `status_changed` empty), pinning the POPULATION-LEVEL REGRESSION ECHO (canonical pair delta 0.0 across
+  the 8-day cadence = the frozen +39.4 seen from the sweep) + rei.com (not-scorable in both) in NEITHER list;
+  (b) invariant #4 TEETH — a synthetic scored→NOT SCORABLE (baseline 90.0) flip whose would-be 90.0 magnitude a
+  naive not-scorable-as-0.0 impl would report as `max_abs_delta`; the guard pins it at 5.0 (the genuine move),
+  catching a leak numerically; (c) legibility — added/removed listed not averaged, no-baseline → no drift block,
+  sorted by |Δ| desc + one-decimal rounding. SCORE-NEUTRAL: `git diff -- asrs/ rubric/ fixtures/
+  loop/local_verify.py experiments/calibration_sweep.py` EMPTY (only the new test file); replay guard 25/25,
+  **46.1 F / 85.5 B / +39.4 UNMOVED**; full suite 24→25 files green (test_free_tier 11/11 in-cloud this fire —
+  eth-account gap did not recur). Invariant #1 held (tests-only, no probe/POST/signing). NO DM (score-neutral
+  TRUTH, not sensitive-class, not first-after-16:00 UTC — ~02:1xZ Aug-5; last digest Cycle 228). See LOG Cycle 245.
+- FOCUS POINTER (Cycle 245 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
+  check only. Cloud track rotation: Cycle 245 was TRUTH → cloud pointer is **READOUT next** (METHOD → COVERAGE →
+  TRUTH → READOUT). READOUT opening this surfaced: the calibration population sweep now emits a trustworthy drift
+  block but it is a [LOCAL] stderr readout only — a READOUT cycle could surface the population + its cadence drift
+  on the rubric/leaderboard page or card (which storefront TYPES were scored, the drift trend), turning the
+  committed dataset into a citable readout. Other openings: the deep-bank uncaptured-capability audit (COVERAGE,
+  Cycle 226/230/233 lineage) or the still-UN-mined service_booking anchor (acuityscheduling.com, first distinct
+  signal). Substantive [LOCAL] frontier unchanged (prefer the oldest): physical_good-rich / MIXED retail+API
+  fixtures (the P1 rich-retail item), a THIRD calibration anchor, render/structured-catalog captures, the
+  typographic PHRASE-RESCUE real-evidence case, ACP/UCP/MPP live handshakes. RUNNER-HEALTH WATCH: drift RESOLVED;
+  future `verify_*.json` read +39.4 / attribution=None, real-series canonical_history tests recovery-tolerant
+  (green). NEW P2 precision-gap candidate (still carried): data_retrieval `lookup` false-positives on the generic
+  "<noun> lookup" admin-search sense ("deployment lookup" on cal.com).
 - LOCAL CYCLE 244 — 2026-08-05T~01:5xZ (TRUTH, LOCAL, direct-to-main, score-neutral). FIRST duty:
   `gh pr list --state open` → `[]` (no open peer-gated PR, no review owed). INFRA green: this hour's verify
   floor `runs/local/verify_20260805T014104Z.json` (01:41Z, git_pull.ok=true attempts=1,

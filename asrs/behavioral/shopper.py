@@ -64,14 +64,48 @@ _REACHABILITY_MAX = 5.0
 # URL-safety layer surfaces its block as either word — codex on the canonical
 # .org reported "blocked by browser safety controls" in one trial and "browser
 # security controls" in its siblings on the same domain. Both name the agent's
-# own navigation gate, not the site. Reputation-gate phrasings that lack this
-# browser-{security,safety} vocabulary ("flagged as unsafe", "unable to browse")
-# remain deliberately out of scope (see tests/test_attribution.py #8).
+# own navigation gate, not the site.
+#
+# v0.7 (Cycle 269): as the canonical domains aged (~20d), codex's SAME own-tool
+# refusals DRIFTED off the "security"/"safety" vocabulary onto phrasings that
+# name the gated TOOL instead — "Browser access permission ... was denied",
+# "Interactive browser access was declined", "denied by the browser's
+# site-permission boundary", "Safety-controlled navigation ... were denied".
+# These are genuine AGENT-side blocks (same-run FetchContext.homepage() = HTTP
+# 200; codex reached the same domain on sibling trials; reputable example.com
+# was never gated) that v0.6 MISSED -> _is_env_blocked False -> mis-scored as
+# SITE FAILs (invariant #4 leak; runs/local/codex_reachability_20260805T{204555,
+# 214534}Z/). Each new alternative below is SELF-QUALIFIED to the agent's own
+# apparatus and carries a negative lookahead rejecting site-side attribution
+# ("...denied BY the firewall/server/Cloudflare"), so a real 403 / Cloudflare
+# block is STILL never excused — attribution honesty cuts both ways.
+# Pure-semantic reputation-gate phrasings that name NO own tool ("flagged as
+# unsafe", "unable to browse") remain deliberately out of scope
+# (tests/test_attribution.py #8); the own-tool drift is pinned by #12.
+_NOT_SITE_ATTRIBUTED = (
+    r"(?!\s{0,4}by (?:a |an |the )?"
+    r"(?:site|server|origin|host|firewall|cloud\s?flare|gateway|proxy|edge|cdn|waf)\b)"
+)
 _ENV_BLOCK_RE = re.compile(
+    # v0.6: the browser {security,safety} URL-safety layer, both phrase orders.
     r"(?:blocked|rejected|refused|denied)[^.]{0,80}"
     r"(?:browser (?:security|safety)|(?:security|safety) (?:policy|controls|grounds))"
     r"|(?:browser (?:security|safety) (?:policy|controls))[^.]{0,80}"
-    r"(?:blocked|rejected|refused|denied)",
+    r"(?:blocked|rejected|refused|denied)"
+    # v0.7 (a): the agent's own browser gate declining/denying ITS access.
+    # The gap tolerates a dot INSIDE a token (a domain like "driftflight.com")
+    # but stops at a sentence boundary (". "), so a match can't span into an
+    # unrelated following sentence.
+    r"|(?:interactive browser access|browser access permission)"
+    r"(?:[^.]|\.(?=\S)){0,60}?"
+    r"(?:denied|declined|refused|rejected|blocked)" + _NOT_SITE_ATTRIBUTED +
+    # v0.7 (b): the browser's OWN site-permission / safety boundary as the gate.
+    r"|browser['’]s (?:site[- ]permission|safety|security) "
+    r"(?:boundary|layer|policy|controls?|system)"
+    # v0.7 (c): the hosted safety layer controlling the agent's navigation.
+    r"|safety[- ]controlled (?:navigation|fetch(?:ing|ers?)?)"
+    r"(?:[^.]|\.(?=\S)){0,60}?"
+    r"(?:denied|declined|refused|rejected|blocked)" + _NOT_SITE_ATTRIBUTED,
     re.I,
 )
 

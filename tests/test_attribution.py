@@ -28,6 +28,7 @@ All fixtures are synthetic ``BehavioralRun`` records — no network, no CLIs.
 from __future__ import annotations
 
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -446,6 +447,103 @@ def test_reachability_evidence_is_order_invariant() -> None:
            "the pre-fix arrival-order slice was order-sensitive (guard has teeth)")
 
 
+# ---------------------------------------------------------------------------
+# 12. v0.7: own-tool-vocabulary DRIFT (invariant #4, LIVE-observed). As the
+#     canonical domains aged (~20 days), codex's SAME hosted-browser refusals
+#     stopped saying "browser {security,safety}" and started naming the gated
+#     TOOL instead — "Browser access permission ... was denied", "Interactive
+#     browser access was declined", "denied by the browser's site-permission
+#     boundary", "Safety-controlled navigation ... were denied". Each is a
+#     genuine AGENT-side block: the same-run FetchContext.homepage() shows the
+#     SITE at HTTP 200, codex REACHED the same domain on sibling trials, and
+#     reputable example.com was NEVER gated — yet v0.6's regex MISSED them, so
+#     _is_env_blocked returned False and a real --behavioral run would mis-score
+#     them as SITE FAILs (the exact invariant-#4 leak test #8 anticipated).
+#     Fixtures are the LITERAL committed transcript strings (invariant #3):
+#     runs/local/codex_reachability_20260805T{204555,214534}Z/summary.json.
+#
+#     The broadening is attribution-honest in BOTH directions: it is SELF-
+#     QUALIFIED to the agent's own apparatus and rejects site-side attribution
+#     ("...denied BY the firewall/server/Cloudflare"), so a genuine 403 /
+#     Cloudflare block is still NOT excused (the second half below). Pure-
+#     semantic reputation gates that name no own tool stay out of scope (#8).
+# ---------------------------------------------------------------------------
+def test_env_block_own_tool_vocab_drift_covered() -> None:
+    print("test_env_block_own_tool_vocab_drift_covered")
+    # Verbatim own-tool refusals from the two committed 2026-08-05 reachability
+    # transcripts. Each is a run that reached NOTHING (all checkpoints false).
+    drifted = [
+        "Browser access permission to the domain was denied.",
+        "Interactive browser access was declined.",
+        "Direct browser access to driftflight.com was denied by the "
+        "browser's site-permission boundary; no bypass was attempted.",
+        "Safety-controlled navigation and direct web fetching of "
+        "driftflight.com were denied, preventing inspection of the site itself.",
+    ]
+    # The SAME drift as a trust_event framing (codex surfaces it either way).
+    drifted_trust = "Because safety-controlled fetchers blocked the domain and " \
+        "its legitimacy could not be established, purchase would warrant refusal."
+
+    # Pre-broadening TEETH: the v0.6 pattern (the two browser-{security,safety}
+    # branches) MISSED every one of these — the guard is non-vacuous.
+    v06 = re.compile(
+        r"(?:blocked|rejected|refused|denied)[^.]{0,80}"
+        r"(?:browser (?:security|safety)|(?:security|safety) (?:policy|controls|grounds))"
+        r"|(?:browser (?:security|safety) (?:policy|controls))[^.]{0,80}"
+        r"(?:blocked|rejected|refused|denied)",
+        re.I,
+    )
+    for phrase in drifted + [drifted_trust]:
+        _check(v06.search(phrase) is None,
+               f"v0.6 pattern MISSED this drifted phrasing (teeth): {phrase[:48]!r}")
+
+    # Positive classification, in blockers AND as a trust_event.
+    for i, phrase in enumerate(drifted):
+        _check(S._is_env_blocked(_run(model="codex", trial=i, blockers=[phrase])),
+               f"drifted own-tool blocker classified env-blocked: {phrase[:48]!r}")
+    _check(S._is_env_blocked(_run(model="codex", trial=9, trust_events=[drifted_trust])),
+           "drifted own-tool trust_event classified env-blocked")
+
+    # ATTRIBUTION HONESTY (the other direction): the broadening must NOT excuse a
+    # site-attributed block just because it names "browser access" — a 403 /
+    # Cloudflare / firewall refusal is a real access finding, not an artifact.
+    site_attributed = [
+        "the server denied the browser access after returning a 403 Forbidden",
+        "Cloudflare denied the browser access to the protected page",
+        "the site's firewall refused the browser access at the edge",
+        "browser access permission was denied by the firewall at the origin",
+        "interactive browser access was refused by the server's WAF",
+        "safety-controlled navigation was blocked by the site gateway",
+    ]
+    for phrase in site_attributed:
+        _check(not S._is_env_blocked(_run(model="claude", blockers=[phrase])),
+               f"site-attributed block NOT excused as environment: {phrase[:52]!r}")
+
+    # example.com's genuine "no commercial site" finding (verbatim, same run set)
+    # is an OBSERVATION, not a block — it must keep its verdict, never route to
+    # reachability. The reputable control that proves the drift is codex's gate.
+    example_finding = "The site offers no purchasable product or service. IANA " \
+        "reports that POST, PUT, DELETE, and PATCH requests return HTTP 405."
+    _check(not S._is_env_blocked(_run(model="codex", blockers=[example_finding])),
+           "example.com's genuine no-storefront finding is NOT an env-block")
+
+    # Denominator routing (mirrors #5/#9 for the drifted family): one valid
+    # claude run + one drift-blocked codex run -> outcome over n=1 (a passed
+    # checkpoint reads PASS, not PARTIAL), blocked run surfaces as reachability.
+    valid = _run(model="claude", trial=1, found_product=True)
+    blocked = _run(model="codex", trial=2, blockers=[drifted[0]])
+    checks = _by_id(S._aggregate("driftflight.com", [valid, blocked]))
+    _check(checks["bhv_found_product"].status == Status.PASS,
+           "found_product PASS — drift-blocked run excluded from denominator (n=1)")
+    _check(checks["bhv_found_product"].evidence["valid_runs"] == 1,
+           "outcome denominator counts only the 1 valid run")
+    reach = checks["hosted_agent_reachability"]
+    _check(reach.status == Status.PARTIAL and reach.evidence["blocked_runs"] == 1,
+           "drift-blocked codex run counted as reachability, not site evidence")
+    _check("codex" in reach.evidence["blocked_by_model"],
+           "the drift-blocked model is attributed in reachability evidence")
+
+
 def main() -> int:
     tests = [
         test_env_block_positive_phrasings,
@@ -459,6 +557,7 @@ def main() -> int:
         test_env_block_safety_phrasing_covered,
         test_crash_run_is_invisible_to_both_denominators,
         test_reachability_evidence_is_order_invariant,
+        test_env_block_own_tool_vocab_drift_covered,
     ]
     failed = 0
     for t in tests:

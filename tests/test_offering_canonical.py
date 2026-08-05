@@ -763,7 +763,10 @@ _MIXED_MUST_BE_NA = {"subscription", "digital_good", "service_booking", "data_re
 # The anchored fulfillment signals that make physical_good non-vacuous here (real
 # fulfillment nouns, never bare "ship"). Open subset: a future physical_good leg this
 # anchor was captured to enable may ADD a label without dropping the claim.
-_MIXED_PHYSICAL_LABELS = {"free-shipping", "shipping-noun"}
+# `order-tracking` (Cycle 266) is the post-purchase order-lifecycle leg this MIXED
+# anchor was captured to enable — pinned here on the real llms.txt evidence
+# ("... and track orders", the "Order tracking" capability bullet).
+_MIXED_PHYSICAL_LABELS = {"free-shipping", "shipping-noun", "order-tracking"}
 # The anchored programmatic signals that make metered_api non-vacuous here (a
 # documented endpoint + a rate-limit instruction, never a bare login).
 _MIXED_API_LABELS = {"post-endpoint", "rate-limited"}
@@ -6321,6 +6324,7 @@ _ISOLATION_EVIDENCE: dict[str, str] = {
     "fulfillment": "ships from our warehouse",
     "sku-inventory": "manage inventory levels",
     "returns": "see our return policy",
+    "order-tracking": "track your order after checkout",
     "physical-descriptor": "a physical product",
     # service_booking
     "book": "book a session online",

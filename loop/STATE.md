@@ -1,6 +1,40 @@
 # Loop state
 
-- Cycle counter: 265
+- Cycle counter: 266
+- CYCLE 266 — 2026-08-05T20:1xZ (COVERAGE, cloud, direct-to-main, score-neutral). FIRST duty (infra health
+  check): NO open peer-gated PR (`list_pull_requests` state=open → `[]`). Cloud started on a stale orphan local
+  `main` (3796519) while HEAD == origin/main 4a3eb1c; realigned local main to origin/main (benign, Cycle-245
+  lesson). **INFRA HEALTHY:** newest verify `runs/local/verify_20260805T194105Z.json` (19:41Z, tests_ok=true 26
+  suites, reads 46.1 F / 85.5 B / +39.4), ~33min old at fire (20:14Z), well inside the 6h floor; :41 cadence
+  holding (18:41Z→19:41Z) → RUNNER-HEALTH WATCH NORMAL. `pip install eth-account` (recurring agent-side gap,
+  invariant #4) → test_free_tier 11/11. **IMPROVEMENT (COVERAGE):** mined physical_good's FIRST post-purchase
+  capability signal `order-tracking` from the committed retail anchors — the "complete the job / operate without
+  a human" order-lifecycle leg (query order status, watch it ship), the analog of service_booking's
+  `manage-booking` + metered_api's `payment-receipt`, DISTINCT from `fulfillment`'s static "tracking number"
+  datum. Precision-guarded (fixed collocations `order tracking`/`order status`/`track (your|my|the)? order(s)`
+  only; excludes broad "order"/"track" and the B2B procurement "PURCHASE order" via `(?<!purchase )`), fires
+  NON-VACUOUSLY on TWO real fixtures (allbirds `/llms.txt` "track orders" + "Order tracking" bullet; moleskine
+  homepage "Check Your Order Status"), ABSENT on all 6 others, both anchors ALREADY claim physical_good → DEEPENS
+  only, no reorder. physical_good grows 9→10. NEW `test_physical_good_order_tracking_precision_synthetic` (6-fire/
+  10-dodge) + `test_order_tracking_fires_on_real_captured_surfaces` (both anchors, claimed-SET invariance) +
+  isolation-matrix entry (bank 72→73) + `_MIXED_PHYSICAL_LABELS` anchor pin. MUTATION-TESTED (removal reddens all
+  4 pins). SCORE-NEUTRAL: scoring-path diff EMPTY (only `asrs/offering.py` off the scoring path + 2 test files);
+  19:41Z floor **46.1 F / 85.5 B / +39.4 UNMOVED**; suite **32/32 green** (test_offering 103→105). Invariants #1–5
+  all held. NO DM (score-neutral COVERAGE, not sensitive-class; digest already sent Cycle 259 this window). See
+  LOG Cycle 266.
+- FOCUS POINTER (Cycle 266 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
+  check. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + Cycle 263 pin); WATCH stays NORMAL — re-escalate
+  ONLY on a fresh >6h no-artifact gap. Cloud track rotation: Cycle 266 was COVERAGE → cloud pointer is **TRUTH
+  next** (METHOD → COVERAGE → TRUTH → READOUT). NEXT COVERAGE openings (physical_good order-tracking now DONE): a
+  RETURNS-WINDOW / return-authorization leg (the return-lifecycle capability, distinct from the static `returns`
+  policy-page signal) IF committed retail prose carries a machine-readable return window — check allbirds/moleskine
+  prose first; the agent-native RETAIL rail surfaces (UCP `/.well-known/ucp`, MCP endpoint) as classification
+  evidence distinct from driftflight; ipinfo.io DATASET-FORMAT/DOWNLOAD-CONTRACT (Cycle-243); deep-bank
+  uncaptured-capability audit (226/230/233). NEXT TRUTH/METHOD: SATURATED — surface a NEW seam first. NEXT READOUT:
+  the HTML compare card payment-badge symmetry (Cycle 264 follow-up); population-drift TREND once a 3rd dated sweep
+  lands ([LOCAL]). Substantive [LOCAL] frontier (prefer oldest P0): a THIRD calibration anchor, render-generation
+  digital_good (Cycle-168), structured catalog/pricing JSON (Cycle-70), the typographic PHRASE-RESCUE real-evidence
+  case, ACP/UCP/MPP live handshakes, a richer-booking WAITLIST fixture (Cycle-256).
 - LOCAL CYCLE 265 — 2026-08-05T19:4xZ (self-healing / bookkeeping, LOCAL, direct-to-main, score-neutral). FIRST
   duty: `gh pr list --state open` → `[]` (no peer-gated PR). **INFRA HEALTHY — :41 cadence holding:** newest verify
   `runs/local/verify_20260805T194105Z.json` (19:41Z, tests_ok=true 26 suites, reads 46.1 F / 85.5 B / +39.4), ~1min

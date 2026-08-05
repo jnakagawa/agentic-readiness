@@ -163,13 +163,17 @@ design in-cloud, execute locally.
   reschedule/availability-check control) for a genuinely distinct capability leg against REAL evidence, the way Cycle 164
   did for digital_good. See LOG Cycle 242. EARLIER — LOCAL Cycle 240: **service_booking** unblocked via
   `fixtures/canonical/acuityscheduling.com.json` (a real appointment-booking storefront claiming {subscription,
-  service_booking, metered_api}). Remaining thin gap: **physical_good** now HAS a richer anchor — LOCAL Cycle 261
-  captured `fixtures/canonical/www.allbirds.com.json`, a real MIXED retailer with fulfillment prose (refund policy /
-  track orders / shipping address / agentic checkout) — so an in-cloud COVERAGE cycle can mine a NEW physical_good
-  leg (order-tracking / returns-window) against real evidence (the P1 rich-retail item, now DISCHARGED; see the
-  Cycle-261 follow-up above). The offering signal bank is metered_api-HEAVY: metered_api 26, digital_good
-  11 (post-Cycle-164 `variant-selection`), physical_good 9, subscription 9 (post-Cycle-172 `plan-allowance`),
-  service_booking 8 (post-Cycle-256 `intake-form`), data_retrieval 6 (post-Cycle-243 `batch-retrieval`). NOTE (superseded by Cycles 240/242/243): the
+  service_booking, metered_api}). Remaining thin gap: **physical_good** got its FIRST post-purchase signal in
+  Cycle 266 — `order-tracking` (the order-lifecycle "operate without a human" leg, mined from allbirds' llms.txt
+  "track orders" / "Order tracking" + moleskine's "Check Your Order Status"), DISTINCT from `fulfillment`'s static
+  "tracking number" datum. So physical_good grows 9→10. REMAINING in-cloud physical_good candidate (Cycle-266 LOG
+  "next hypothesis"): a RETURNS-WINDOW / return-authorization leg (the return-lifecycle capability, distinct from
+  the static `returns` policy-page signal) IF committed retail prose (allbirds/moleskine) carries a machine-readable
+  return window; secondary the agent-native RETAIL rail surfaces (UCP `/.well-known/ucp`, MCP) as classification
+  evidence distinct from driftflight. The offering signal bank is metered_api-HEAVY: metered_api 26, digital_good
+  11 (post-Cycle-164 `variant-selection`), physical_good 10 (post-Cycle-266 `order-tracking`), subscription 9
+  (post-Cycle-172 `plan-allowance`), service_booking 8 (post-Cycle-256 `intake-form`), data_retrieval 6
+  (post-Cycle-243 `batch-retrieval`). NOTE (superseded by Cycles 240/242/243): the
   claim below that service_booking/data_retrieval "CANNOT be strengthened non-vacuously in-cloud" held only until their
   first committed anchors landed (acuityscheduling.com / ipinfo.io) — data_retrieval has since gained `batch-retrieval`
   against real evidence; service_booking's anchor is still un-mined. The three thin archetypes originally could not be

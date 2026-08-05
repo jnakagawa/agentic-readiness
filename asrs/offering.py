@@ -1533,6 +1533,44 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"|\b(manage|track|update|check|low|remaining|out of)\s+inventory\b"
             r"|\bin[- ]stock\s+inventory\b", _F)),
         ("returns", re.compile(r"\breturns? (policy|&|and) (exchanges?|refunds?)\b|\breturn policy\b", _F)),
+        # TRACK A PLACED ORDER — the POST-PURCHASE order-lifecycle leg: an agent
+        # that buys on a user's behalf must be able to follow that order to
+        # completion (query its status, watch it ship) WITHOUT a human. This is
+        # the "complete the job / operate without a human" leg for physical_good,
+        # the direct analog of service_booking's `manage-booking` (lifecycle
+        # management AFTER the create act) and metered_api's `payment-receipt`
+        # (post-transaction acknowledgment). GENUINELY DISTINCT from the sibling
+        # `fulfillment` signal: that matches the STATIC shipping datum
+        # "tracking number" (a field printed on a shipment); THIS is the
+        # order-STATUS CAPABILITY the agent invokes ("track your order", "order
+        # status", "order tracking") — different text, different rung of the
+        # ladder. Mined from the committed MIXED-retail anchor's real prose
+        # (www.allbirds.com — llms.txt "purchase products directly ... and track
+        # orders", capability bullet "Order tracking") and firing a SECOND time on
+        # a second committed retail fixture (www.moleskine.com — homepage "Check
+        # Your Order Status").
+        # PRECISION-CRITICAL: bare "order" and bare "track" are each broad-English
+        # minefields ("in order to", "order of operations", "sort order",
+        # "ascending order"; "track record", "track changes", "keep track",
+        # "track your usage"). So NEVER match either bare — require the fixed
+        # order-lifecycle collocations only: "order tracking" / "order status"
+        # (contiguous), or "track (your|my|their|the)? order(s)" (track directly
+        # governing the order noun). Broad "track <other-noun>" ("track your
+        # shipment/usage/changes"), "keep track of your orders" (track not
+        # governing), and "reorder" (no word boundary) all dodge. Additionally
+        # EXCLUDE the B2B procurement sense "PURCHASE order tracking / status" —
+        # a purchase order (PO) is an accounting document, not a consumer
+        # fulfillment order; a SaaS/API storefront documenting PO billing must not
+        # conjure physical_good. No committed fixture but the two retail anchors
+        # trips this signal (physical_good is NA on all five NA-fixtures per
+        # test_offering_canonical; ABSENT on the canonical pair / api / data /
+        # booking / null), and both anchors ALREADY claim physical_good via
+        # shipping/free-shipping, so the signal only DEEPENS an existing claim —
+        # never adds an archetype or reorders. Off the scoring path.
+        ("order-tracking", re.compile(
+            r"(?<!purchase )\border tracking\b"
+            r"|\btrack (?:your |my |their |the )?orders?\b"
+            r"|(?<!purchase )\border status\b", _F)),
         ("physical-descriptor", re.compile(r"\bphysical (product|good|item)s?\b", _F)),
     ],
     "service_booking": [

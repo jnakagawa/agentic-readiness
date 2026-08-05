@@ -3,6 +3,53 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 266 — 2026-08-05T20:1xZ — COVERAGE (cloud, direct-to-main, score-neutral) — mined the FIRST post-purchase order-lifecycle signal for physical_good — `order-tracking` — from the committed retail anchors, closing the "operate/complete without a human" leg for the benchmark's thinnest-anchored archetype
+
+FIRST duty (infra health check): NO open peer-gated PR (`list_pull_requests` state=open → `[]`). Cloud
+started on a stale orphan local `main` (`3796519`) while HEAD == origin/main `4a3eb1c`; realigned local `main`
+to origin/main (benign, Cycle-245 lesson). **INFRA HEALTHY:** newest verify `runs/local/verify_20260805T194105Z.json`
+(19:41Z, tests_ok=true 26 suites, reads 46.1 F / 85.5 B / +39.4), ~33min old at fire (20:14Z), well inside the
+6h floor; :41 cadence holding (18:41Z→19:41Z) → RUNNER-HEALTH WATCH NORMAL. `pip install eth-account` (recurring
+agent-side gap, invariant #4) → test_free_tier 11/11.
+
+**IMPROVEMENT (COVERAGE — physical_good's FIRST post-purchase capability signal):** physical_good is the
+thinnest-ANCHORED archetype (9 signals, all pre-purchase: understand/decide/buy/ship). The committed MIXED
+retail anchor `www.allbirds.com` (Cycle 261) carries, in its own agent-native `llms.txt`, a distinct
+POST-purchase capability the bank did not map: "purchase products directly, discover best prices and discounts,
+and **track orders**" + the explicit "**Order tracking**" capability bullet. Added `order-tracking` to
+`asrs/offering._SIGNALS['physical_good']` — the "complete the job / operate without a human" post-purchase
+order-lifecycle leg (query order status, watch it ship), the direct analog of service_booking's `manage-booking`
+(Cycle 248) and metered_api's `payment-receipt`. GENUINELY DISTINCT from the sibling `fulfillment` signal, which
+matches the STATIC shipping datum "tracking number"; this is the order-STATUS CAPABILITY an agent invokes.
+PRECISION-CRITICAL (bare "order"/"track" are broad-English minefields): matches ONLY the fixed collocations
+`order tracking` / `order status` (contiguous) or `track (your|my|their|the)? order(s)` (track governing the
+order noun), and EXCLUDES the B2B procurement sense "PURCHASE order tracking/status" (a PO is an accounting
+document, not a consumer fulfillment order) via `(?<!purchase )` lookbehinds. Fires NON-VACUOUSLY on TWO real
+committed retail fixtures — allbirds (`/llms.txt`+`/llms-full.txt` "track orders", the "Order tracking" bullet)
+AND `www.moleskine.com` (homepage "Check Your Order Status") — satisfying invariant #3's live-on-2+-domains bar,
+and ABSENT on all 6 other fixtures (canonical pair / api.replicate.com / ipinfo.io / acuityscheduling.com /
+books.toscrape.com / example.com). Both anchors ALREADY claim physical_good via shipping/free-shipping, so the
+signal only DEEPENS an existing claim — never adds an archetype or reorders. So physical_good grows 9→10 signals.
+NEW guards `test_physical_good_order_tracking_precision_synthetic` (6 order-lifecycle positives fire / 10
+broad-order+broad-track+procurement-PO negatives dodge) + `test_order_tracking_fires_on_real_captured_surfaces`
+(both anchors fire non-vacuously with claimed-SET invariance; ABSENT + archetype-order invariant on all 7
+others); isolation-matrix entry `"order-tracking": "track your order after checkout"` (bank 72→73); and
+`_MIXED_PHYSICAL_LABELS` pins order-tracking on the allbirds anchor (the leg it was captured to enable).
+MUTATION-TESTED (in-process signal removal reddens all four pins: precision_synthetic, real_captured, anchor,
+isolation-completeness → genuine teeth; restored). SCORE-NEUTRAL: scoring-path diff (`asrs/scoring.py
+asrs/scorecard.py rubric/ fixtures/ batteries/ asrs/probes/ asrs/report.py loop/local_verify.py`) EMPTY — only
+`asrs/offering.py` (classifier, off the scoring path — grep-verified no discover/classify import) + the two test
+files; 19:41Z floor **46.1 F / 85.5 B / +39.4 UNMOVED**; full suite **32/32 files green** (test_offering 103→105,
+test_offering_canonical 68/68 with the isolation bank now 73). Invariants #1 ($0-only — read-only fixture replay,
+no probes/payments/network), #2 (no scoring-semantics → no rubric version bump; offering classifier is task
+selection, not a rubric check add), #3 (fires live on 2 real domains; eth-account gap = agent env not site), #4
+(no site scored; NA-fixtures stay NA), #5 (mutation in-process only; LOG prepended, past untouched) all held. NO
+DM (score-neutral COVERAGE, not sensitive-class, off scoring path; daily digest already sent Cycle 259 this
+≥16:00 UTC window). Next hypothesis: a RETURNS-WINDOW / return-authorization capability (the return-lifecycle
+leg, distinct from the static `returns` policy-page signal) IF committed retail prose carries a machine-readable
+return window; or the agent-native RETAIL rail surfaces (UCP `/.well-known/ucp`, MCP endpoint) as classification
+evidence distinct from driftflight.
+
 ## Cycle 265 — 2026-08-05T19:4xZ — self-healing / bookkeeping (LOCAL, direct-to-main, score-neutral) — COMPACTED loop/BACKLOG.md from 275.7KB/2928 lines to 121KB/1367 lines by pruning 98 completed-item comment markers (DONE/PRUNED/SUPERSEDED/MERGED/EXECUTED, ~154KB, all recorded in loop/LOG.md + git) that had accreted PAST the Read tool's 256KB single-call limit — silently degrading the playbook-mandated per-cycle "read BACKLOG.md" — and added `tests/test_backlog_hygiene.py` so it can never re-balloon (or re-accrete completed markers) unnoticed; the BACKLOG sibling of Cycle-260's STATE-hygiene guard
 
 **FIRST duty (infra health check).** No open peer-gated PR (`gh pr list --state open` → `[]`, none owed). Git clean, on `main`, HEAD == origin/main `9bc89b0` (`git pull` → already up to date). **INFRA — RUNNER HEALTHY, :41 cadence holding:** newest verify is `runs/local/verify_20260805T194105Z.json` (19:41Z, `tests_ok=true` 26 suites, reads 46.1 F / 85.5 B / +39.4) — at this fire (~19:42Z) **~1 min old, deep inside the 6h floor.** The Cycle-261 launcher-watchdog fix continues holding: the runner produced 18:41Z → **19:41Z** on the :41 cadence, so RUNNER-HEALTH WATCH stays NORMAL. This is a LOCAL fire (I am the 19:41Z launcher's agent step, watchdog-bounded to 45min awake). Live canonical signal from the 19:41Z floor: **46.1 F / 85.5 B / +39.4**. Env: `python3 -m pip install eth-account` (the recurring agent-side dependency gap, invariant #4 — env not site) → `test_free_tier` 11/11.

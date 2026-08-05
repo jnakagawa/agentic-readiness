@@ -1258,6 +1258,130 @@ def test_manage_booking_fires_on_real_captured_surfaces():
     print("  ok: manage-booking is ABSENT on the api-pair / marketplace / retail / null fixtures (non-vacuous, score-neutral)")
 
 
+def test_physical_good_order_tracking_precision_synthetic():
+    # A NEW physical_good capability signal: ORDER TRACKING — the POST-PURCHASE
+    # order-lifecycle leg. An agent that buys on a user's behalf must be able to
+    # follow that order to completion (query its status, watch it ship) WITHOUT a
+    # human — the "complete the job / operate without a human" leg for
+    # physical_good, the direct analog of service_booking's manage-booking
+    # (lifecycle management AFTER the create act) and metered_api's payment-receipt
+    # (post-transaction acknowledgment). GENUINELY DISTINCT from the sibling
+    # `fulfillment` signal, which matches the STATIC shipping datum "tracking
+    # number" (a field on a shipment); THIS is the order-STATUS CAPABILITY an agent
+    # invokes. Bare "order" and bare "track" are each broad-English minefields ("in
+    # order to", "order of operations", "sort/ascending order"; "track record",
+    # "track changes", "keep track", "track your usage"), so the guard NEVER matches
+    # either bare — only the fixed order-lifecycle collocations ("order tracking" /
+    # "order status" contiguous, or "track (your|my|their|the)? order(s)" with track
+    # directly governing the order noun), and it EXCLUDES the B2B procurement sense
+    # "purchase order tracking/status" (a PO is an accounting document, not a
+    # consumer fulfillment order). Each POSITIVE fires order-tracking (non-vacuous);
+    # each NEGATIVE must NOT claim physical_good on its own.
+    #
+    # Canonical-invariant by construction: the signal fires on TWO committed retail
+    # anchors (www.allbirds.com — llms.txt "... and track orders", bullet "Order
+    # tracking"; www.moleskine.com — homepage "Check Your Order Status"), BOTH of
+    # which ALREADY claim physical_good via shipping/free-shipping → no new
+    # archetype, no reorder; and on ZERO of the remaining committed fixtures
+    # (physical_good is NA on the canonical pair / api / data / booking / null —
+    # pinned by tests/test_offering_canonical.py). Off the scoring path.
+    positives = {
+        # The real captured anchor shapes (verbatim-faithful).
+        "and track orders": "purchase products directly, discover best prices, and track orders.",
+        "order tracking bullet": "It handles: - Buyer-approved checkout - Order tracking - Identity reuse",
+        "check your order status": "Support Check Your Order Status Return Request Delivery info",
+        # Genuine order-lifecycle vocabulary from other real storefronts.
+        "track your order": "Track your order from your account dashboard anytime.",
+        "track my order": "Track my order — enter your order number and email.",
+        "order status page": "Visit the order status page to see where your package is.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("track.test", {"homepage": text})
+        assert prof.claims("physical_good"), (name, prof.archetypes)
+        fired = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "physical_good"
+            for s in c.signals
+        }
+        assert "order-tracking" in fired, (name, sorted(fired))  # non-vacuous
+    print(f"  ok: {len(positives)} order-tracking phrasings each fire order-tracking")
+
+    negatives = {
+        # broad-English "order" — never a fulfillment order-status.
+        "in order to": "In order to track your API usage, call the metrics endpoint.",
+        "order of operations": "The order of operations matters when composing calls.",
+        "ascending order": "Sort the results in ascending order.",
+        # broad-English "track" — never governing an order noun.
+        "track record": "We keep a strong track record of uptime.",
+        "track changes": "Track changes across revisions in the editor.",
+        "track your usage": "Track your usage in real time from the dashboard.",
+        "track shipment": "Track your shipment number on the carrier site.",
+        "reorder": "Reorder your favorites with one tap.",
+        # B2B procurement PO — an accounting document, not a fulfillment order.
+        "purchase order tracking": "A purchase order tracking system for procurement teams.",
+        "purchase order status": "Check your purchase order status in the billing portal.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("prose.test", {"homepage": text})
+        assert not prof.claims("physical_good"), (name, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} broad-order / broad-track / procurement-PO strings do NOT claim physical_good (precision)"
+    )
+
+
+def test_order_tracking_fires_on_real_captured_surfaces():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the TRUTH mirror of the synthetic
+    # precision guard. It pins that order-tracking fires on the GENUINE order-
+    # lifecycle prose captured live from TWO committed retail fixtures — the MIXED
+    # anchor www.allbirds.com (llms.txt "... and track orders", the "Order tracking"
+    # capability bullet) and www.moleskine.com (homepage "Check Your Order Status")
+    # — run through the REAL discovery path (from_fixture -> discover_offering)
+    # exactly as a live crawl would.
+    #
+    # SCORE-NEUTRAL by construction: BOTH anchors ALREADY claim physical_good (via
+    # shipping/free-shipping), so the order-tracking evidence can only DEEPEN that
+    # claim — never add an archetype or reorder. The classifier is off the scoring
+    # path; each anchor's claimed SET is unchanged (pinned by
+    # tests/test_offering_canonical.py).
+    for dom, expected in (
+        ("www.allbirds.com", {"metered_api", "physical_good"}),
+        ("www.moleskine.com", {"physical_good", "subscription"}),
+    ):
+        ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        prof = offering.discover_offering(ctx)
+        assert prof.claims("physical_good"), (dom, prof.archetypes)
+        phys = next(c for c in prof.claimed if c.archetype == "physical_good")
+        ot = [s for s in phys.signals if s.label == "order-tracking"]
+        assert ot, (dom, {s.label for s in phys.signals})
+        assert ot[0].quote and ot[0].quote.strip(), (dom, "order-tracking quote empty")
+        # Full-discovery claimed-SET invariance (score-neutrality): the new signal
+        # deepens physical_good without adding or dropping any archetype.
+        assert set(prof.archetypes) == expected, (dom, prof.archetypes)
+        print(f"  ok: order-tracking fires on REAL captured {dom} — quote: {ot[0].quote!r}")
+
+    # NON-VACUOUS negatives on REAL data: the metered_api pair + marketplace, the
+    # data anchor, the booking storefront, and the null site carry no order-status
+    # prose — the signal must be absent and conjure or reorder no archetype. (The
+    # retail catalog books.toscrape.com carries priced listings but no order-status
+    # capability, so physical_good stays claimed there WITHOUT order-tracking.)
+    for dom, expected in (
+        ("driftflight.com", ["digital_good", "metered_api", "subscription"]),
+        ("drift-flight.org", ["digital_good", "metered_api", "subscription"]),
+        ("api.replicate.com", ["metered_api"]),
+        ("ipinfo.io", ["data_retrieval", "digital_good", "metered_api", "subscription"]),
+        ("acuityscheduling.com", ["metered_api", "service_booking", "subscription"]),
+        ("books.toscrape.com", ["physical_good"]),
+        ("example.com", []),
+    ):
+        nctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        nprof = offering.discover_offering(nctx)
+        nlabels = {s.label for c in nprof.claimed for s in c.signals}
+        assert "order-tracking" not in nlabels, (dom, nlabels)
+        assert sorted(nprof.archetypes) == expected, (dom, sorted(nprof.archetypes))
+    print("  ok: order-tracking is ABSENT on the api-pair / data / booking / retail-catalog / null fixtures (non-vacuous, score-neutral)")
+
+
 def test_service_booking_notification_precision_synthetic():
     # The closed-loop FOLLOW-THROUGH signal for service_booking (Cycle 252), a THIRD
     # distinct capability leg beyond the five create signals (book/appointment/
@@ -5419,6 +5543,8 @@ def main() -> int:
         test_batch_retrieval_fires_on_real_captured_surfaces,
         test_service_booking_manage_precision_synthetic,
         test_manage_booking_fires_on_real_captured_surfaces,
+        test_physical_good_order_tracking_precision_synthetic,
+        test_order_tracking_fires_on_real_captured_surfaces,
         test_service_booking_notification_precision_synthetic,
         test_booking_notification_fires_on_real_captured_surfaces,
         test_service_booking_intake_form_precision_synthetic,

@@ -2121,14 +2121,30 @@ design in-cloud, execute locally.
   precision NARROWING — verify it does not drop the genuine data_retrieval evidence a future [LOCAL] data-API fixture
   will carry.
 
-- **[CANDIDATE, READOUT] Card-surface citability monotone/threshold guard** (observation, Cycle 201).
-  Cycle 201 pinned in the reliability LAYER that `verdict_stability` is monotone in disagreement and that
-  the "stable" label + the "reproducible" citability gate share ONE `_STABLE_MIN`
-  (`test_reliability.py::test_verdict_stability_is_monotone_and_shares_the_citability_threshold`). The
-  PUBLIC card renders both the band label and the quotability verdict; a readout-wording guard should assert
-  the CARD can never print a "stable"/reproducible-styled cell on a panel the gate calls provisional (the
-  card-surface mirror of the layer coherence guard), so a display refactor can't desync the shown label from
-  the shown citability. In-cloud, off the scoring path, score-neutral; a natural COVERAGE/READOUT increment.
+<!-- DONE 2026-08-05T~07:2xZ (Cycle 250, READOUT, cloud, direct-to-main, tests-only, score-neutral):
+     "[CANDIDATE, READOUT] Card-surface citability monotone/threshold guard" SHIPPED. New guard
+     `tests/test_readout.py::test_card_citability_pill_tracks_the_gate` (§8b, registered) renders BOTH public
+     card pills (`scorecard._reliability` Stable/Mixed/Unstable + `scorecard._quotability` Citable/Provisional)
+     from the REAL scorecard, driven by REAL panels, and pins: (P1) the quotability pill class/label is a TOTAL
+     faithful function of the gate `quotable` bit (good/Citable iff quotable, else warn|bad/Provisional — no
+     "Citable" on a provisional number or vice-versa); (P2) same-panel coherence, HONEST about the one exception
+     — an Unstable pill never sits beside a Citable number, a Stable pill pairs Citable UNLESS the trust posture
+     split (the lone honest Stable+Provisional cell `provisional-trust-unstable` IS exercised, so the mirror is
+     not naive about it — the Cycle-201 note's "stable-styled cell on a provisional panel" is impossible EXCEPT
+     this attribution: ladder reproduces, trust posture does not); (P3) THRESHOLD coherence — an interior-0.75
+     panel swept across `_STABLE_MIN` ∈ {.60,.70,.74,.76,.80,.90}, the RENDERED Stable pill and Citable pill flip
+     TOGETHER at every threshold (the direct card-surface mirror of layer part C). Non-vacuous (all 3 cells
+     asserted rendered; sweep straddles the boundary); mutation-tested teeth on DISTINCT legs (styling a
+     provisional tag Citable → P1 fails; styling the stable band warn → P3 fails). test_readout 83→84; replay
+     guard 26/26, 46.1 F / 85.5 B / +39.4 UNMOVED, 0 replay-miss; full suite 25/25 files green. Off the scoring
+     path (`git diff -- asrs/ rubric/ fixtures/` EMPTY). See LOG Cycle 250. -->
+- **RUNNER-HEALTH WATCH (Cycle 250) — resolve or escalate.** The local verify runner's last artifact is
+  `runs/local/verify_20260805T024100Z.json` (02:41Z); 03:41/04:41/05:41/06:41 are all missing (4 consecutive
+  :41 misses at the 07:17Z fire). Under the 6h floor so not yet a hard breach. If a fresh `verify_*.json`
+  (07:41Z+) does NOT appear, the next cloud fire must promote this to a P0 [LOCAL] with the stall diagnosis
+  (candidates a [LOCAL] fire can distinguish but the cloud cannot: launchd not firing / machine asleep / a new
+  pre-push failure — distinct from the Cycle-227 push-race stranding, which was `divergence_recovery`-fixed and
+  reads `None` here) and flag it in the next 16:00 UTC digest. Auto-resolves if the cadence resumes.
 
 - **[CANDIDATE, COVERAGE] subscription bare-`recurring` precision guard** (observation, carried from Cycle
   198). `\brecurring\b` false-positives on non-billing prose ("recurring theme", "recurring bug"); it is the

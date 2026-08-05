@@ -1,6 +1,51 @@
 # Loop state
 
-- Cycle counter: 249
+- Cycle counter: 250
+- CYCLE 250 — 2026-08-05T~07:2xZ (READOUT, cloud, direct-to-main, tests-only, score-neutral).
+  FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests` state=open `[]`): newest verify
+  `runs/local/verify_20260805T024100Z.json` (02:41Z, git_pull.ok=true attempts=1, divergence_recovery=None,
+  tests_ok=true 24/24) ~4.6h old at fire (07:17Z), inside the 6h floor BUT the :41 cadence has produced NOTHING
+  since 02:41Z (03:41/04:41/05:41/06:41 all absent — 4 missed runs → **RUNNER-HEALTH WATCH: local runner appears
+  STALLED**; floor trips ~08:41Z if 07:41 does not land; not cloud-repairable → next digest flag, P0 [LOCAL] if it
+  trips). Live canonical **46.1 F / 85.5 B / +39.4** (tx 87.5), no drift; HEAD in sync with origin at Cycle 249.
+  `pip install eth-account` (declared dep absent in fresh container) → test_free_tier 11/11 (agent-side gap, not a
+  bench regression). Took the READOUT slot (cloud pointer, Cycle 249 was TRUTH): the oldest READOUT opening
+  (population-drift TREND) is BLOCKED — only 2 dated sweeps committed, needs ≥3 ([LOCAL]-generated) — so took the
+  next, the CANDIDATE **card-surface citability monotone/threshold guard** (Cycle 201). The reliability LAYER
+  already pins that the `stable` label and the `reproducible` gate share ONE `_STABLE_MIN`
+  (test_reliability part C); this is its MIRROR at the PUBLIC CARD: both pills (`scorecard._reliability`
+  Stable/Mixed/Unstable + `scorecard._quotability` Citable/Provisional) rendered by the REAL scorecard, driven by
+  REAL panels, across three engineered cells. New guard `test_card_citability_pill_tracks_the_gate`
+  (test_readout §8b, +`import re` +reliability-module handle for a scoped `_STABLE_MIN` sweep): (P1) the
+  quotability pill class/label is a TOTAL faithful function of the gate `quotable` bit (good/Citable iff quotable,
+  else warn|bad/Provisional — no "Citable" on a provisional number or vice-versa); (P2) same-panel coherence,
+  HONEST about the exception — Unstable pill never beside a Citable number; Stable pill pairs Citable UNLESS the
+  trust posture split (the lone honest Stable+Provisional cell `provisional-trust-unstable` IS exercised); (P3)
+  THRESHOLD coherence — interior-0.75 panel swept across `_STABLE_MIN` ∈ {.60,.70,.74,.76,.80,.90}, the RENDERED
+  Stable pill and Citable pill flip TOGETHER at every threshold (mirror of layer part C). Non-vacuous (all 3
+  cells asserted rendered; sweep straddles the boundary). Mutation-tested teeth on DISTINCT legs (provisional
+  styled Citable → P1 fails; stable band styled warn → P3 fails; restored → clean). SCORE-NEUTRAL:
+  `git diff --name-only -- asrs/ rubric/ fixtures/` EMPTY (only `tests/test_readout.py`); replay guard 26/26,
+  **46.1 F / 85.5 B / +39.4 UNMOVED**, 0 replay-miss; test_readout 83→84; full suite 25/25 files green.
+  Invariant #1 held (tests-only, no probe/POST/signing); #2 held (no scoring-semantics change → no version bump);
+  #5 held (append-only; `_STABLE_MIN` sweep try/finally-restored, no global leak — confirmed by clean re-run +
+  full suite green). NO DM (tests-only READOUT, not sensitive-class, off scoring path, not first-after-16:00 UTC
+  — ~07:2xZ Aug-5; last digest Cycle 228). See LOG Cycle 250.
+- FOCUS POINTER (Cycle 250 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check
+  only (BUT see RUNNER-HEALTH WATCH — if the local verify floor is >6h stale, FIRST duty flips to queuing a P0
+  [LOCAL] runner-stall diagnosis + a loud digest flag before any new work). Cloud track rotation: Cycle 250 was
+  READOUT → cloud pointer is **METHOD next** (METHOD → COVERAGE → TRUTH → READOUT). NEXT READOUT openings (for a
+  later cycle, prefer the oldest, in-cloud): the "behaviorally corroborated" calibration badge (P2, Cycle 68
+  lineage — now unblocked, the 2nd behavioral report is committed); the population-drift TREND once a 3rd dated
+  sweep lands ([LOCAL]-gated). NEXT METHOD/COVERAGE/TRUTH openings unchanged from Cycle 249's pointer below.
+  **RUNNER-HEALTH WATCH (NEW, Cycle 250 — carry until resolved):** the local verify runner produced its last
+  artifact at 02:41Z; 03:41–06:41 are all missing (4 consecutive misses). Under the 6h floor at fire (07:17Z) so
+  not yet a hard breach, but trending down. The runner is fixed-verb (pull/test/score/push) and cloud-unreachable
+  — if a fresh `verify_*.json` (07:41Z+) does NOT appear, the next cloud fire must queue a P0 [LOCAL] with the
+  stall diagnosis and flag it in the next 16:00 UTC digest. Distinct from the Cycle-227 push-race stranding (that
+  was `divergence_recovery`-fixed and is `None` here) — this is a NO-NEW-ARTIFACT stall, cause unknown from the
+  cloud (launchd not firing / machine asleep / a new pre-push failure are all candidates a [LOCAL] fire can tell
+  apart but the cloud cannot).
 - CYCLE 249 — 2026-08-05T~06:2xZ (TRUTH, cloud, direct-to-main, tests-only, score-neutral).
   FIRST duty (infra health check — no open peer-gated PR, `list_pull_requests` state=open `[]`): INFRA GREEN,
   newest verify `runs/local/verify_20260805T024100Z.json` (02:41Z, git_pull.ok=true attempts=1,

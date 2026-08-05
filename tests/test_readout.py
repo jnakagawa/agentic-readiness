@@ -33,10 +33,12 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from asrs import reliability as R  # noqa: E402  (module handle: patch _STABLE_MIN)
 from asrs import scorecard  # noqa: E402
 from asrs.reliability import panel_reliability, quotability  # noqa: E402
 from asrs.types import BehavioralRun, Report  # noqa: E402
@@ -201,6 +203,132 @@ def test_html_quotability_suppressed() -> None:
            "explicit None -> empty string (no card)")
     _check(scorecard._quotability({"quotability": {"tag": "not-scorable", "quotable": False}}) == "",
            "not-scorable tag -> no card (grade already says N/A)")
+
+
+# ---------------------------------------------------------------------------
+# 8b. CARD-SURFACE CITABILITY COHERENCE (Cycle 250, READOUT). The reliability
+#     LAYER guard (test_reliability::test_verdict_stability_is_monotone_and_
+#     shares_the_citability_threshold, part C) pins that the descriptive "stable"
+#     label and the "reproducible" citability gate share ONE _STABLE_MIN. This is
+#     that guard's MIRROR at the PUBLIC CARD surface: both pills are rendered by
+#     the real scorecard, driven by real panels, so a display refactor can never
+#     desync the SHOWN citability from the gate — nor the shown reliability band
+#     from the shown citability. Three legs:
+#       (P1) the quotability pill's class/label is a TOTAL, faithful function of
+#            the gate's `quotable` bit — good/"Citable" iff quotable, else
+#            warn|bad/"Provisional". The card can never print "Citable" on a
+#            provisional number, nor "Provisional" on a citable one.
+#       (P2) cross-pill coherence on the SAME panel, HONEST about the one real
+#            exception: an "Unstable" reliability pill never sits beside a Citable
+#            number (a number shown on an unstable panel is never presented
+#            citable); a "Stable" pill pairs with "Citable" UNLESS the trust
+#            posture split — and that lone honest Stable+Provisional cell IS
+#            exercised, so the mirror is not naive about it (it is an attribution:
+#            the ladder reproduced, the trust posture did not).
+#       (P3) THRESHOLD coherence at the surface (the direct mirror of layer part
+#            C): sweep _STABLE_MIN across the interior 0.75 operating point and
+#            assert the RENDERED "Stable" pill and the RENDERED "Citable" pill
+#            cross the boundary together — only possible because both cards read
+#            the same threshold through the real functions. Non-vacuous: the
+#            sweep straddles the boundary (both verdicts appear).
+# ---------------------------------------------------------------------------
+_PILL_RE = re.compile(r'class="pill (good|warn|bad|neutral)"')
+
+
+def _pill_class(card_html: str) -> str:
+    """Band class of a card's header pill — the ONLY ``pill`` span in a card
+    (chips carry ``chip``, status marks carry ``dot``/``mini-dot``). '' when the
+    card rendered nothing (an empty string), so an accidentally-suppressed card
+    can never vacuously satisfy a class assertion."""
+    m = _PILL_RE.search(card_html)
+    return m.group(1) if m else ""
+
+
+def _panel_n(n: int, splits: dict) -> list:
+    """n runs where checkpoint k passes in EXACTLY ``splits.get(k, 0)`` of them
+    (run i passes k iff i < that count) — the readout-side twin of
+    test_reliability._panel, used to hit a precise interior stability."""
+    return [_run(model=f"m{i}", trial=i + 1,
+                 **{k: (i < splits.get(k, 0)) for k in _KEYS})
+            for i in range(n)]
+
+
+def test_card_citability_pill_tracks_the_gate() -> None:
+    print("test_card_citability_pill_tracks_the_gate")
+    allpass = dict.fromkeys(_KEYS, True)
+
+    # Real panels spanning the three card-surface cells that matter.
+    stable_citable = [_run(trial=1, **allpass), _run(model="codex", **allpass)]
+    unstable_prov = [_run(trial=1, **allpass),
+                     _run(model="codex", **dict.fromkeys(_KEYS, False))]
+    # Ladder reproduces (both runs pass every checkpoint) but the panel SPLITS on
+    # the trust posture -> label stays "stable" yet the gate is provisional-trust-
+    # unstable: the one honest Stable+Provisional card cell.
+    trust_prov = [_run(trial=1, trust_events=["warn: unproven"], **allpass),
+                  _run(model="codex", trust_events=[], **allpass)]
+
+    seen = set()
+    for runs in (stable_citable, unstable_prov, trust_prov):
+        rep = json.loads(_report(runs).to_json())
+        q, rel = rep["quotability"], rep["panel_reliability"]
+        q_html = scorecard._quotability(rep)
+        rel_html = scorecard._reliability(rep)
+        q_cls, rel_cls = _pill_class(q_html), _pill_class(rel_html)
+
+        # (P1) the quotability pill is a faithful function of the gate bit.
+        if q["quotable"]:
+            _check("Citable" in q_html and q_cls == "good",
+                   f"quotable -> Citable/good pill, got cls={q_cls!r}")
+            _check("Provisional" not in q_html, "a citable number shows no Provisional")
+        else:
+            _check("Provisional" in q_html and q_cls in {"warn", "bad"},
+                   f"not-quotable -> Provisional/warn|bad pill, got cls={q_cls!r}")
+            _check("Citable" not in q_html, "a provisional number shows no Citable")
+
+        # (P2) cross-pill coherence on the SAME panel, honest about the exception.
+        if rel_cls == "bad":  # the "Unstable" reliability band
+            _check(not q["quotable"],
+                   "an Unstable reliability pill never sits beside a Citable number")
+        if rel["label"] == "stable" and not q["quotable"]:
+            _check(q["tag"] == "provisional-trust-unstable",
+                   "the ONLY honest Stable+Provisional card cell is a trust-posture "
+                   f"split, got tag {q['tag']!r}")
+        seen.add((rel["label"], q["quotable"], q["tag"]))
+
+    # NON-VACUOUS: the three engineered cells are distinct and all rendered.
+    _check(("stable", True, "reproducible") in seen, "the Stable+Citable cell rendered")
+    _check(("unstable", False, "provisional-unstable") in seen,
+           "the Unstable+Provisional cell rendered")
+    _check(("stable", False, "provisional-trust-unstable") in seen,
+           "the honest Stable+Provisional (trust-split) cell rendered")
+
+    # (P3) THRESHOLD coherence at the CARD surface — the mirror of layer part C.
+    # Interior-0.75 panel (checkpoint 0 split 4/4 -> minority .5, checkpoint 1
+    # 1/7 -> .125, rest unanimous, n=8), no trust flip; sweep _STABLE_MIN across
+    # 0.75 and require the rendered Stable pill and the rendered Citable pill to
+    # flip together — desync is impossible only if both cards read one threshold.
+    panel = _panel_n(8, {_KEYS[0]: 4, _KEYS[1]: 1})
+    _check(abs(panel_reliability(panel).verdict_stability - 0.75) < 1e-9,
+           "coherence panel sits at the interior operating point 0.75")
+
+    saved = R._STABLE_MIN
+    seen_citable, seen_prov = False, False
+    try:
+        for thr in (0.60, 0.70, 0.74, 0.76, 0.80, 0.90):
+            R._STABLE_MIN = thr
+            rep = json.loads(_report(panel).to_json())
+            is_stable = _pill_class(scorecard._reliability(rep)) == "good"
+            is_citable = _pill_class(scorecard._quotability(rep)) == "good"
+            _check(is_stable == is_citable,
+                   f"at _STABLE_MIN={thr}: card Stable pill ({is_stable}) and Citable "
+                   f"pill ({is_citable}) must flip together")
+            seen_citable |= is_citable
+            seen_prov |= not is_citable
+    finally:
+        R._STABLE_MIN = saved
+
+    _check(seen_citable and seen_prov,
+           "the card-surface threshold sweep straddled the boundary (both verdicts appeared)")
 
 
 # ---------------------------------------------------------------------------
@@ -2971,6 +3099,7 @@ def main() -> int:
         test_json_carries_quotability,
         test_html_renders_quotability_pill,
         test_html_quotability_suppressed,
+        test_card_citability_pill_tracks_the_gate,
         test_json_carries_battery,
         test_html_renders_battery,
         test_html_battery_single_kind_no_rollup,

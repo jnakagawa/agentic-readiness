@@ -2200,13 +2200,17 @@ design in-cloud, execute locally.
      (model,trial) and deterministically ordered in production — a guard confirming they stay deterministic if
      panel construction ever parallelizes is a small METHOD follow-up. -->
 
-- **[CANDIDATE, METHOD/in-cloud] Determinism guard for the self-labeled `by_run`/`per_model` evidence lists**
-  (residual of the Cycle-255 reproducibility sweep). The `by_run` lists in `shopper.py::_aggregate` (lines ~335/522)
-  and `per_model` in `trust_probe._build_check` are arrival-order but self-labeled by (model, trial) and today
-  deterministically ordered by the nested model×trial construction loop. Not a live hole now, but the one surface the
-  sweep left un-pinned: add a reversed-input byte-identity guard (or sort by (model, trial)) so that if panel
-  construction ever parallelizes and arrival order stops being deterministic, these citable per-run evidence lists
-  still reproduce. In-cloud, off the scoring path, score-neutral by construction.
+<!-- DONE (fully discharged): "[CANDIDATE, METHOD/in-cloud] Determinism guard for the self-labeled
+     `by_run`/`per_model` evidence lists" (residual of the Cycle-255 reproducibility sweep). Closed in two
+     legs: the `by_run` lists in `shopper.py::_aggregate` (shopper.py:335/522) were sorted by (model, trial)
+     in Cycle 257 (`test_shopper_evidence_order.py`); the `per_model` verdicts map in
+     `trust_probe._build_check` was sorted by model in Cycle 262
+     (`test_trust_panel_reproducibility.py::test_per_model_evidence_serializes_order_invariantly`). Cycle 262
+     also documented WHY the seam was un-pinned by the Cycle-255 metamorphic `cr_fwd == cr_rev` guard: Python
+     dict `==` is order-blind, so only a SERIALIZED-bytes (json.dumps) assertion catches a key-insertion-order
+     leak. All trust/shopper arrival-order evidence surfaces are now closed (Cycles 253/255/257/262);
+     score-neutral, off the scoring path (46.1 F / 85.5 B / +39.4 UNMOVED, replay 26/26). -->
+
 
 - **[CANDIDATE, COVERAGE/in-cloud] data_retrieval `lookup` false-positives on the generic "&lt;noun&gt; lookup"
   admin-search sense** (observation, LOCAL Cycle 240). While screening booking domains for the service_booking

@@ -105,10 +105,60 @@ def test_loudest_refusal_prefers_highest_confidence_over_model() -> None:
            "refusing_models lists the loudest refuser first (confidence dominates tie-break)")
 
 
+# ---------------------------------------------------------------------------
+# 3. The per-model evidence dict must serialize BYTE-identically under panel
+#    arrival-order permutation. This is the seam the Cycle-255 metamorphic
+#    `cr_fwd == cr_rev` guard could NOT see: Python dict `==` is order-blind, so
+#    `{"claude":..,"zeta":..} == {"zeta":..,"claude":..}` compares equal even
+#    though json.dumps of the two differs. Reports/transcripts commit the
+#    SERIALIZED evidence, so under "evidence or it didn't happen" the key order
+#    is a real citable surface. Fixed by building per_model in model-sorted
+#    order. Uses proceed verdicts (no refusal) so the ONLY order-sensitive
+#    surface exercised is the verdicts map itself.
+# ---------------------------------------------------------------------------
+def test_per_model_evidence_serializes_order_invariantly() -> None:
+    print("test_per_model_evidence_serializes_order_invariantly")
+    import json
+
+    def _proceed(model: str) -> ModelTrustVerdict:
+        return ModelTrustVerdict(
+            model=model, willing=True, confidence=0.8,
+            concerns=[], decision="proceed",
+        )
+
+    a = _proceed("claude")
+    z = _proceed("zeta")
+    models = ["claude", "zeta"]
+
+    cr_fwd = T._build_check("x.example", models, [a, z], codex_ok=True)
+    cr_rev = T._build_check("x.example", models, [z, a], codex_ok=True)
+
+    # THE INVARIANT: the serialized verdicts map is byte-identical (not merely
+    # dict-equal) under arrival-order reversal.
+    fwd_json = json.dumps(cr_fwd.evidence["verdicts"])
+    rev_json = json.dumps(cr_rev.evidence["verdicts"])
+    _check(fwd_json == rev_json,
+           "per-model verdicts map serializes byte-identically under panel reversal")
+    _check(list(cr_fwd.evidence["verdicts"].keys()) == ["claude", "zeta"],
+           "verdicts keys are in deterministic model-sorted order")
+
+    # TEETH: the PRE-FIX construction (iterating verdicts in arrival order)
+    # produced a DIFFERENT key order for the two arrival orders, so the byte
+    # invariant above is a real claim about the fixed code — and the Cycle-255
+    # Python-`==` guard would MISS it (the two dicts compare equal).
+    pre_fwd = {v.model: v.confidence for v in [a, z]}
+    pre_rev = {v.model: v.confidence for v in [z, a]}
+    _check(list(pre_fwd.keys()) != list(pre_rev.keys()),
+           "pre-fix arrival-order key insertion differed (guard has teeth)")
+    _check(pre_fwd == pre_rev,
+           "yet Python dict `==` sees them as equal (why the ==-guard missed it)")
+
+
 def main() -> int:
     tests = [
         test_loudest_refusal_is_order_invariant_on_confidence_ties,
         test_loudest_refusal_prefers_highest_confidence_over_model,
+        test_per_model_evidence_serializes_order_invariantly,
     ]
     failed = 0
     for t in tests:

@@ -363,6 +363,14 @@ def _build_check(
     max_points = 8.0
 
     # Per-model evidence, including which models were asked but didn't answer.
+    # Build in model-sorted order so the dict's KEY-INSERTION order — and hence
+    # the SERIALIZED JSON evidence in reports/transcripts — is byte-identical
+    # regardless of the order panelists happened to answer in. Python dict `==`
+    # is order-blind, so the arrival-order leak here was invisible to the
+    # Cycle-255 metamorphic `cr_fwd == cr_rev` guard; only the serialized bytes
+    # differ. One verdict per model in a panel, so model is a total key. This
+    # closes the last order-adjacent evidence surface after the shopper by_run /
+    # refusing_models fixes (Cycles 253/255/257).
     per_model = {
         v.model: {
             "decision": _decision_of(v),
@@ -370,7 +378,7 @@ def _build_check(
             "confidence": round(v.confidence, 3),
             "concerns": v.concerns,
         }
-        for v in verdicts
+        for v in sorted(verdicts, key=lambda v: v.model)
     }
     answered_models = {v.model for v in verdicts}
     no_answer = [m for m in models if m not in answered_models]

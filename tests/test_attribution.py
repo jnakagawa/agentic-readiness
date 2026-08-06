@@ -544,6 +544,87 @@ def test_env_block_own_tool_vocab_drift_covered() -> None:
            "the drift-blocked model is attributed in reachability evidence")
 
 
+# ---------------------------------------------------------------------------
+# 13. v0.7 Cycle 284: own-tool "interactive ACCESS ... denied" NEAR-MISS (the
+#     word "browser" DROPPED). A fresh --behavioral panel (2026-08-06) caught
+#     codex refusing the WITH-rails canonical with a phrasing one word short of
+#     the Cycle-269 v0.7(a) alternative — "Interactive access to driftflight.com
+#     was denied before the homepage loaded." (no "browser"). v0.7(a) REQUIRED
+#     "interactive BROWSER access", so _is_env_blocked returned False, the
+#     all-false refusal counted as a VALID site run (valid_runs 2->3,
+#     verdict_stability 1.0->0.333) and the WITH side's five bhv_* checks flipped
+#     unanimous-PASS -> -inconsistent, NARROWING the delta by scoring codex's OWN
+#     hosted-browser refusal as site evidence (the exact invariant-#4 leak).
+#     Fixture is the LITERAL committed transcript string (invariant #3):
+#     runs/local/behavioral_canonical_delta_20260806T064733Z/transcripts/
+#     driftflight.com_codex_t2.json. The broadening makes "browser" OPTIONAL for
+#     the "interactive access" concept while KEEPING an own-apparatus anchor
+#     ("interactive"/"browser") REQUIRED and the _NOT_SITE_ATTRIBUTED guard
+#     intact, so a bare site 403 body ("Access Denied") and any "...denied BY the
+#     firewall/server" are STILL never excused (both directions below).
+# ---------------------------------------------------------------------------
+def test_env_block_interactive_access_near_miss_covered() -> None:
+    print("test_env_block_interactive_access_near_miss_covered")
+    # The verbatim leaking transcript blocker (all checkpoints false).
+    leak = "Interactive access to driftflight.com was denied before the homepage loaded."
+
+    # TEETH: the PRE-Cycle-284 v0.7(a) alternative REQUIRED the word "browser"
+    # ("interactive BROWSER access" / "browser access permission"), so it MISSED
+    # this phrasing — the broadening is non-vacuous.
+    pre284 = re.compile(
+        r"(?:interactive browser access|browser access permission)"
+        r"(?:[^.]|\.(?=\S)){0,60}?(?:denied|declined|refused|rejected|blocked)",
+        re.I,
+    )
+    _check(pre284.search(leak) is None,
+           "pre-284 mandatory-'browser' alternative MISSED the near-miss (teeth)")
+    # The shipped broadening classifies it env-blocked, in blockers AND trust.
+    _check(S._is_env_blocked(_run(model="codex", trial=2, blockers=[leak])),
+           "near-miss own-tool blocker classified env-blocked")
+    _check(S._is_env_blocked(_run(model="codex", trial=2, trust_events=[leak])),
+           "near-miss own-tool trust_event classified env-blocked")
+
+    # ATTRIBUTION HONESTY (the other direction): the near-miss twin with SITE
+    # attribution is a real access finding, never an artifact; and a bare site
+    # 403 body carries NO own-apparatus anchor, so it never matches at all.
+    site_attributed = [
+        "Interactive access to driftflight.com was denied by the site firewall.",
+        "interactive access to the store was denied by the origin server",
+        "direct browser access was refused by the server's WAF at the edge",
+        "the site returned 403 Forbidden; access was denied",  # no interactive/browser anchor
+        "Access Denied",                                       # bare 403 body
+    ]
+    for phrase in site_attributed:
+        _check(not S._is_env_blocked(_run(model="claude", blockers=[phrase])),
+               f"site-attributed / anchorless block NOT excused: {phrase[:52]!r}")
+
+    # SCOPE BOUNDARY (mirrors #8): a same-transcript sibling that names the agent
+    # tools but frames the block as a reputation CLASSIFICATION ("classified ...
+    # as unsafe and blocked access") uses the ambiguous 'unsafe' vocabulary and
+    # stays DELIBERATELY out of scope this cycle — 'unsafe' is indistinguishable
+    # from a site-side WAF 'flagged unsafe'. Documented, not silently dropped.
+    rep = ("Both direct browser navigation and read-only web fetching "
+           "classified driftflight.com as unsafe and blocked access.")
+    _check(not S._is_env_blocked(_run(model="codex", blockers=[rep])),
+           "reputation-classification 'unsafe' phrasing stays out of scope (#8 family)")
+
+    # Denominator routing (mirrors #5/#12): one valid claude run + one near-miss
+    # blocked codex run -> outcome over n=1 (a passed checkpoint reads PASS), the
+    # blocked run surfaces as reachability, not as site evidence.
+    valid = _run(model="claude", trial=1, found_product=True)
+    blocked = _run(model="codex", trial=2, blockers=[leak])
+    checks = _by_id(S._aggregate("driftflight.com", [valid, blocked]))
+    _check(checks["bhv_found_product"].status == Status.PASS,
+           "found_product PASS — near-miss-blocked run excluded from denominator (n=1)")
+    _check(checks["bhv_found_product"].evidence["valid_runs"] == 1,
+           "outcome denominator counts only the 1 valid run")
+    reach = checks["hosted_agent_reachability"]
+    _check(reach.status == Status.PARTIAL and reach.evidence["blocked_runs"] == 1,
+           "near-miss-blocked codex run counted as reachability, not site evidence")
+    _check("codex" in reach.evidence["blocked_by_model"],
+           "the near-miss-blocked model is attributed in reachability evidence")
+
+
 def main() -> int:
     tests = [
         test_env_block_positive_phrasings,
@@ -558,6 +639,7 @@ def main() -> int:
         test_crash_run_is_invisible_to_both_denominators,
         test_reachability_evidence_is_order_invariant,
         test_env_block_own_tool_vocab_drift_covered,
+        test_env_block_interactive_access_near_miss_covered,
     ]
     failed = 0
     for t in tests:

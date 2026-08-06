@@ -1,0 +1,32 @@
+{
+ "ts": "20260806T224615Z",
+ "kind": "canonical-delta-investigation",
+ "finding": "driftflight.com (with-rails) live x402 payment handshake regressed: the agent-storefront endpoint POST agents.driftflight.com/extend that served a live HTTP 402 x402 challenge in the committed fixture now returns 401 (auth-required). Agent storefront otherwise fully reachable (llms.txt/homepage/manifest 200) -> real live-site capability regression, not an env/network artifact.",
+ "effect": {
+  "check": "x402_probe",
+  "before": "x402-live 8.0/8.0",
+  "after": "x402-documented-not-probed 4.0/8.0",
+  "transactability": "~87.5 -> 62.5",
+  "overall_com": "85.5 B -> 76.2 C",
+  "live_delta": "+39.4 -> +30.1"
+ },
+ "replay_baseline_unmoved": "static replay 26/26 = 46.1 F / 85.5 B / +39.4 (committed fixture); suite green",
+ "invariant4_attribution": "real SITE change (endpoint reachable, returns 401 not a transport error); not scored as env failure and env not excused as site",
+ "live_endpoint_status": {
+  "POST https://agents.driftflight.com/extend": 401,
+  "GET https://agents.driftflight.com/extend": 404,
+  "POST https://api.driftflight.com/v1/images/generate": 401,
+  "GET https://agents.driftflight.com/llms.txt": 200,
+  "GET https://agents.driftflight.com/": 200,
+  "GET https://agents.driftflight.com/manifest.json": 200,
+  "GET https://api.driftflight.com/openapi.json": 200,
+  "GET https://api.driftflight.com/v1/models": 200
+ },
+ "fixture_402_baseline": [
+  {
+   "method": "POST",
+   "url": "https://agents.driftflight.com/extend",
+   "status": 402
+  }
+ ]
+}

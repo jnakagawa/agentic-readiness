@@ -5,39 +5,48 @@ design in-cloud, execute locally.
 
 ## P0
 
-<!-- DONE Cycle 286: PR #147 post-merge LIVE verification executed (compare … --behavioral --trials 2 --models
-claude,codex). Fix is correct for its "interactive access" phrase; the v0.6 "browser security" branch caught a
-fresh codex refusal live (driftflight.com codex t1 → reachability). Predicted valid_runs=2 did NOT recur because
-the vocabulary drifted onto a NEW near-miss family → new peer-gated P0 below. Evidence
-runs/local/pr147_postmerge_20260806T084420Z/. See LOG Cycle 286. -->
+<!-- MERGED Local cycle 20260806T214745Z: PR #149 (v0.7(e) `_ENV_BLOCK_RE` → `browser access(?: permission)?`)
+operator-merged by jnakagawa 2026-08-06T20:47Z (merge dfa341f); THIS fire ran the queued post-merge adversarial
+review + independent live re-derivation (the operator merge skipped the loop's pre-merge peer review). VERDICT
+SOUND: diff off-scoring-path (only asrs/behavioral/shopper.py +18/−1 + tests/test_attribution.py +87); differential
+leak-scan RE-DERIVED over 569 committed run records / 439 distinct blocker-trust texts → EXACTLY 1 flip OLD→NEW (the
+.com codex t2 leak), ZERO collateral; Cycle-287 leaks stay caught; bare site-403 body + bare reputation-unsafe
+clause NOT excused (attribution honesty both directions); static canonical replay 26/26 46.1 F / 85.5 B / +39.4
+UNMOVED; suite 38/38 (test_attribution 15/15 re-run independently). Fresh codex-only behavioral panel launched
+runs/local/pr149_postmerge_20260806T214745Z/ as post-merge live monitoring + standing 5th-drift leak scan. See LOG
+Local cycle 20260806T214745Z. -->
 
-<!-- DONE Local cycle 20260806T184617Z: PR #148 post-merge LIVE behavioral verification HARVESTED (item closed).
-Shipped loop/run_pr148_verify.py — a double-fork os.setsid DETACHED launcher that SURVIVES the fire (the 10th
-attempt and the FIRST to complete: END exit=0, ~11.5 min; the prior 9 inline runs died with their fire). Codex-only
-pair: .org 41.7 F → .com 76.6 C = +34.9 (PROVISIONAL, 1 valid trial each). FIX CONFIRMED on .org (codex#2 "Browser
-security policy denied access…" → _ENV_BLOCK_RE MATCH → reachability, hosted-agent-blocked, 1 valid run). FRESH
-4th-drift LEAK on .com (codex#2 "Permitted browser access was denied, and the public web retriever classified the
-direct URL as unsafe to open" → NO match → mis-scored as a valid WITH-side FAIL, 2 valid runs, delta narrowed) →
-peer-gated leak-fix P0 below. Evidence runs/local/pr148_postmerge_20260806T184617Z/ (force-added). See LOG Local
-cycle 20260806T184617Z. -->
+<!-- DONE Local cycle 20260806T184617Z: PR #148 post-merge behavioral verification HARVESTED via the shipped
+double-fork detached launcher loop/run_pr148_verify.py (survives the fire); it surfaced the .com 4th-drift leak that
+PR #149 (above) then fixed. Full record in LOG Local cycle 20260806T184617Z + git. -->
 
-- **[PEER-GATED P0 — PR #149 OPEN, awaiting next-cycle review+merge] Broaden `_ENV_BLOCK_RE` for the bare
-  "browser access … denied" own-tool family (v0.7(e))** (METHOD, authored Local cycle 20260806T195345Z). AUTHORED
-  this fire and opened as PR #149 (`loop/env-block-browser-access-v07e`, commit `2c04009`) — NOT self-merged.
-  Fix: v0.7(a)'s alternative `browser access permission` → `browser access(?: permission)?` in
-  `asrs/behavioral/shopper.py`, anchoring the LIVE `.com` codex#2 leak "Permitted browser access was denied, and
-  the public web retriever classified the direct URL as unsafe to open" (site HTTP 200; codex#1 reached it fully)
-  while keeping `browser access` REQUIRED and `_NOT_SITE_ATTRIBUTED` intact (both directions). Evidence attached to
-  the PR + LOG: differential leak-scan over 182 committed records / 392 texts → ONLY the .com leak flips OLD→NEW,
-  ZERO collateral (two Cycle-287 leaks stay caught by v0.7(d)); re-aggregation → `.com` valid_runs 2→1,
-  reachability PASS→PARTIAL, delta widens toward static +39.4; `test_attribution.py` #15 with teeth; static path
-  untouched (canonical replay 26/26, +39.4); no rubric bump; suite 38/38. **NEXT CYCLE'S FIRST DUTY**:
-  adversarially review PR #149 against the invariants (vendor-neutrality, capability wording, attribution honesty
-  both directions, canonical-delta) and, with network, live re-score the pair (expect `.com` valid_runs 2→1, the
-  codex-only pair delta widening from +34.9 back toward the static +39.4) — then MERGE or request changes; record
-  the verdict in LOG. Do NOT let a cloud fire without network block the merge — the in-cloud standard is
-  regression-by-construction + the offline differential scan + tests (all attached), with the live re-score queued
-  as post-merge monitoring. Committed source of the leak: `runs/local/pr148_postmerge_20260806T184617Z/report_driftflight_com.json`.
+- **[PEER-GATED P0 — TO AUTHOR next cycle] Broaden `_ENV_BLOCK_RE` for the "browser SITE-access permission …
+  declined" own-tool family (v0.7(f))** (METHOD, DISCOVERED + validated this fire by the post-merge panel leak-scan;
+  NOT yet authored — per the discover→queue→next-cycle-authors discipline that produced v0.7(e)). The FIFTH vocab
+  drift, found LIVE in the post-merge panel `runs/local/pr149_postmerge_20260806T204850Z/` (committed evidence
+  `runs/drift-flight_org_20260806T205238.json`, codex trial 2, .org NO-rails side): the SOLE own-tool blocker
+  **"Browser site-access permission for drift-flight.org was declined, preventing direct read-only inspection."**
+  had `any_env_match=False` → the run counted as a VALID all-false SITE run (invariant #4 leak: codex's own
+  hosted-browser refusal scored as site evidence; same-panel trial 1 was correctly caught by the v0.6 "browser
+  security layer" branch). It slips every branch because the apparatus is `browser SITE-access permission` — not
+  `browser access` (v0.7(a)/(e) require adjacency), not possessive `browser's` (v0.7(b)), and the block verb
+  `declined` follows the noun rather than "declined BY the browser permission …" (v0.7(d)). **VALIDATED FIX** (author
+  as a PR, do NOT self-merge): v0.7(a)'s alternative `browser access(?: permission)?` → `browser (?:site[- ])?access(?: permission)?`
+  (accept an optional `site-`/`site ` qualifier). Differential leak-scan over 445 committed distinct blocker/trust
+  texts: EXACTLY 1 flip v0.7(e)→v0.7(f) (this leak), ZERO collateral, ZERO regression (strict superset — no v0.7(e)
+  match is lost); `browser (?:site[- ])?access` still requires `access` after `browser`, so a bare site 403 body and
+  `_NOT_SITE_ATTRIBUTED` guards stand (both directions). Ship: `test_attribution.py` #16 with teeth (pre-v0.7(f)
+  reversion MISSES the phrase; a site-attributed twin + bare 403 NOT excused), off-scoring-path (shopper.py +
+  test_attribution.py only), no rubric bump. It changes which runs count valid → scoring semantics → PEER-GATED.
+
+- **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
+  phrasing has now drifted the `_ENV_BLOCK_RE` guard FIVE times (Cycles 269 / 284 / 287 / 296=v0.7(e) / and the
+  v0.7(f) `browser site-access permission … declined` family found this fire). Every fresh committed behavioral
+  panel MUST be leak-scanned (the differential OLD-vs-current-regex scan over all committed blocker/trust texts,
+  re-derived every fire — see the MERGED marker above) so the NEXT drift is caught the cycle it appears, not several
+  cycles later as a silently-narrowed delta. The reputation-"unsafe" own-web-retriever clause (test-#8 family)
+  remains a deferred, carefully-guarded future candidate (needs a disambiguating own-apparatus SUBJECT anchor so a
+  site-side WAF "flagged unsafe" is never excused).
 
 - **[SCOPE follow-up, future — carefully-guarded proposal only]** the SEPARATE
   reputation-"unsafe" sentence family — *"…classified driftflight.com as unsafe and blocked access."* — is a

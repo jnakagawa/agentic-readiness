@@ -1,6 +1,57 @@
 # Loop state
 
-- Cycle counter: 273
+- Cycle counter: 274
+- CYCLE 274 — 2026-08-06T02:1xZ (TRUTH, cloud, direct-to-main, tests-only, score-neutral). FIRST duty
+  (infra health + peer-gate review): `mcp__github__list_pull_requests` state=open → `[]` (no open peer-gated
+  PR). Cloud started detached at origin/main `569e35b` with local `main` at the stale orphan `3796519`;
+  realigned local `main` to origin/main (benign Cycle-245 orphan; HEAD already matched origin, no history
+  rewrite). **INFRA HEALTHY:** newest verify by FILENAME `runs/local/verify_20260806T014106Z.json` (01:41Z,
+  tests_ok=true 34 suites, 46.1 F / 85.5 B / +39.4), ~31min old at fire (02:12Z 08-06), well inside the 6h
+  floor; :41 cadence holding (23:41Z→00:41Z→01:41Z) → RUNNER-HEALTH WATCH NORMAL. Bench brought up (`python
+  -m venv .venv` + `pip install -r requirements.txt`; recurring `pyyaml`/`eth-account` agent-side gaps, inv
+  #4); full suite 34/34 green before the change (bench up). **IMPROVEMENT (TRUTH — the pointer's named cheap
+  next TRUTH extension: EXTEND both subprocess-digest reproducibility guards from the canonical PAIR to the
+  whole full-scorable committed fixture population):** Cycles 267/271 closed the hash-seed + timezone
+  host-environment reproducibility axes of invariant #3, but both guards re-scored ONLY the canonical PAIR
+  (the two API storefronts) — a hash-seed-/local-time-dependent evidence projection on a probe path the pair
+  never fires (retail add-to-cart/stock, service-booking surfaces, physical-good returns/fulfillment, null)
+  would slip past. Broadened guard 1 in BOTH `tests/test_{hashseed,timezone}_reproducibility.py` to re-score
+  the whole FULL-SCORABLE population — acuityscheduling.com + books.toscrape.com + www.moleskine.com +
+  example.com + the pair (6 fixtures, 0 replay-misses each); classification-only fixtures (api.replicate.com
+  35 / ipinfo.io 46 / www.allbirds.com 83 / simplybook.me 50 misses) excluded, mirroring test_canonical_replay's
+  `_REPLAY_CLEAN` partition. Each suite +1 test (4→5): new `_POPULATION` + `_committed_domains()`/
+  `_replay_miss_count()` helpers; guard 1 renamed `test_committed_report_serialization_is_{hashseed,timezone}_invariant`
+  and loops the population; NEW guard 5 `test_reproducibility_population_is_the_replay_clean_set` pins
+  `set(_POPULATION)` == the LIVE-computed 0-miss set (self-maintaining — a [LOCAL] full-score re-capture that
+  promotes a fixture reddens until added) + ⊇ pair + strictly-broader (non-vacuous). Guards 2/3/4 (joint-pair,
+  teeth, child-scores-real-pipeline) unchanged. EMPIRICALLY VERIFIED first: all 6 replay-clean fixtures are
+  hash-seed AND timezone INVARIANT today (no leak surfaced), live 0-miss set == the 6 pinned; canonical pair
+  digests unchanged (driftflight.com `c54f611d60c3…`) → extension only ADDS coverage. SCORE-NEUTRAL: scoring-path
+  diff (`git diff -- asrs/ rubric/ fixtures/ batteries/ loop/local_verify.py`) EMPTY, only 2 test files; suite
+  **34/34 green** (both suites 5/5; test_runner_registration green); canonical replay **46.1 F / 85.5 B / +39.4
+  UNMOVED**; 01:41Z verify floor concurs. Invariants #1–5 all held. NO DM (score-neutral tests-only TRUTH, not
+  sensitive-class; no digest due — 02:1xZ precedes 16:00 UTC on 08-06). See LOG Cycle 274.
+- FOCUS POINTER (Cycle 274 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
+  check. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate
+  ONLY on a fresh >6h no-artifact gap. Cloud track rotation: Cycle 274 was TRUTH → cloud pointer is **READOUT
+  next** (METHOD → COVERAGE → TRUTH → READOUT). **NEXT COVERAGE (highest — UNBLOCKED since Cycle 273):** mine
+  the `waitlist` signal from the simplybook.me anchor (service_booking 8→9) — the "clients join a queue for
+  fully-booked times / provision without a human when no slot is free" leg, DISTINCT from create/manage/notify/
+  intake; PRECISION-CRITICAL: anchor `waiting list`/`waitlist`/`waiting-list` to a BOOKING context (near
+  appointment/booking/slot/fully-booked/schedule) so a SaaS "join our early-access waitlist"/mailing-list signup
+  does NOT conjure service_booking; validate ABSENT on the canonical pair + retail + null + api fixtures, fires
+  NON-VACUOUSLY on simplybook.me, add `waitlist` to `_ALL_SERVICE_BOOKING_LABELS` (the Cycle-273 maintenance
+  hook). Also open COVERAGE: data_retrieval DATA-FRESHNESS/update-cadence (ipinfo /docs "Daily Data Refresh");
+  physical_good RETURNS-WINDOW leg; agent-native RETAIL rail surfaces (UCP/MCP). NEXT TRUTH/METHOD: the
+  static-reproducibility "same fixture, different machine → byte-identical evidence" family now covers the whole
+  full-scorable population on BOTH host axes (hash-seed + timezone, Cycle 274); the last cheap axis is LOCALE
+  (`LC_ALL`/`LANG`) with teeth IF de_DE/tr_TR generatable on the runner; beyond that TRUTH/METHOD is SATURATED
+  — surface a genuinely NEW seam first. NEXT READOUT: population-drift TREND across ≥3 dated sweeps
+  ([LOCAL]-gated, only 2 committed); compare-card symmetry DONE (Cycle 270). Substantive [LOCAL] frontier:
+  codex-dependent items stay gated — driftflight.com (WITH side) still codex-blocked → cross-model N-curve /
+  LIVE behavioral delta remain blocked on WITH-side reachability (drift-flight.org t2 IS reachable); a THIRD
+  calibration anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168); structured
+  catalog/pricing JSON (Cycle-70).
 - CYCLE 273 — 2026-08-06T01:4xZ (COVERAGE, LOCAL, direct-to-main, score-neutral). FIRST duty (infra health +
   peer-gate review): `gh pr list --state open` → `[]` (no open peer-gated PR). HEAD == origin/main == local
   `main` all at `83a2917` (clean, no stale-orphan realign this fire). **INFRA HEALTHY:** newest verify by
@@ -183,130 +234,6 @@
   (drift-flight.org t2) end-to-end; cross-model N-curve (partially unblocked, t2-only); a THIRD calibration
   anchor; render-generation digital_good (Cycle-168); structured catalog/pricing JSON (Cycle-70); ACP/UCP/MPP
   live handshakes; a richer-booking WAITLIST fixture (Cycle-256).
-- CYCLE 269 — 2026-08-05T22:2xZ (TRUTH, cloud, PEER-GATED PR #146, behavioral-scoring-semantics). FIRST
-  duty: `list_pull_requests` state=open → `[]` (Cycle 268 QUEUED the broadening but opened no PR). Cloud
-  started on stale orphan local `main` (`3796519`) while HEAD == origin/main `c7b5b8e`; realigned (benign,
-  Cycle-245). **INFRA HEALTHY:** newest verify `runs/local/verify_20260805T214106Z.json` (21:41Z,
-  tests_ok=true 33 suites, 46.1 F / 85.5 B / +39.4), ~34min old at fire (22:15Z), well inside the 6h floor;
-  :41 cadence holding (20:41Z→21:41Z) → RUNNER-HEALTH WATCH NORMAL. `pip install eth-account` (recurring
-  agent-side gap, invariant #4). **IMPROVEMENT (TRUTH — the pointer's "highest-value next step": the LIVE
-  invariant-#4 attribution leak).** Broadened `_ENV_BLOCK_RE` to catch codex's DRIFTED own-tool refusal
-  vocabulary (the domains aged ~20d and codex's refusals drifted OFF v0.6's "browser {security,safety}" onto
-  tool-named phrasings — "Browser access permission … was denied", "Interactive browser access was declined",
-  "denied by the browser's site-permission boundary", "Safety-controlled navigation … were denied" — all
-  genuine AGENT-side blocks v0.6 MISSED → mis-scored as SITE FAILs). Three SELF-QUALIFIED alternatives (own
-  browser gate / browser's own boundary / safety-controlled navigation layer), each with a NEGATIVE LOOKAHEAD
-  `_NOT_SITE_ATTRIBUTED` rejecting "…denied BY the firewall/server/Cloudflare/…" so a real 403/Cloudflare is
-  STILL never excused (attribution cuts BOTH ways); gap `(?:[^.]|\.(?=\S)){0,60}?` tolerates a domain dot but
-  stops at a sentence boundary. Pure-semantic reputation gates stay out of scope → test #8 UNCHANGED/green.
-  NEW `test_attribution.py` #12 (11→12): drifted phrasings verbatim from the two committed transcripts
-  classify env-blocked; pre-broadening v0.6 pattern MISSES each (teeth); site-attributed + cross-sentence +
-  example.com genuine-finding stay NOT excused; denominator routing mirrors #5/#9. PEER-GATED (behavioral
-  denominator routing): static path untouched (`git diff -- asrs/scoring.py asrs/scorecard.py rubric/
-  fixtures/ asrs/offering.py asrs/probes/ asrs/battery.py` EMPTY — only `asrs/behavioral/shopper.py` + test);
-  replay guard **26/26, 46.1 F / 85.5 B / +39.4 UNMOVED**; full suite **33/33 green**; no rubric version bump
-  (comparability preserved, lands under v0.7). Branch `loop/env-block-vocab-drift`, PR #146. Invariants #1–5
-  all held. DM SENT (peer-gated scoring-semantics PR opened → Jonah-veto visibility). See LOG Cycle 269.
-- FOCUS POINTER (Cycle 269 done + PR #146 MERGED externally, cloud): **PR #146 MERGED** (external merge by
-  the repo owner at ~22:3xZ, merge commit reachable from main `8c89718` — acceptance, stronger than the
-  "silence is consent" default; the peer-gate rule HELD, Cycle 269 did NOT self-merge). The external merge
-  BYPASSED the mandated fresh-context pre-merge adversarial review, so Cycle 269 ran a POST-MERGE verification
-  in the same fire (playbook sensitive-class precedent): merged main **33/33 suites green, attribution 12/12,
-  canonical replay 26/26 46.1 F / 85.5 B / +39.4 UNMOVED** — no regression, and test #12 guarantees no
-  site-side over-excusal by construction (site-attributed/cross-sentence/example.com cases stay NOT excused).
-  → **no open peer-gated PR remains**; next fire's FIRST DUTY reverts to the normal infra health check.
-  A LIVE behavioral canonical re-score on a codex-reachable trial (drift-flight.org t2) remains a nice-to-have
-  [LOCAL] end-to-end confirmation but is NOT a merge blocker (already merged, static delta unaffected).
-  RUNNER STALL RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH NORMAL — re-escalate ONLY on a fresh >6h
-  no-artifact gap. Cloud track rotation: Cycle 269 was TRUTH → cloud pointer is **READOUT next** (METHOD →
-  COVERAGE → TRUTH → READOUT). NEXT READOUT: the HTML
-  compare card payment-badge symmetry (Cycle 264 follow-up); population-drift TREND once a 3rd dated sweep
-  lands ([LOCAL]). NEXT COVERAGE: physical_good RETURNS-WINDOW leg (if allbirds/moleskine prose carries a
-  machine-readable return window); agent-native RETAIL rail surfaces (UCP/MCP); ipinfo.io DATASET-FORMAT
-  (Cycle-243); deep-bank uncaptured-capability audit. NEXT TRUTH/METHOD: SATURATED — surface a NEW seam first.
-  Substantive [LOCAL] frontier: once #146 merges, re-score the behavioral canonical delta LIVE on a
-  codex-reachable trial (drift-flight.org t2) end-to-end; cross-model N-curve (partially unblocked, t2-only);
-  a THIRD calibration anchor; render-generation digital_good (Cycle-168); structured catalog/pricing JSON
-  (Cycle-70); ACP/UCP/MPP live handshakes; a richer-booking WAITLIST fixture (Cycle-256).
-- CYCLE 268 — 2026-08-05T21:4xZ (TRUTH, LOCAL, direct-to-main, score-neutral). FIRST duty: `gh pr list
-  --state open` → `[]` (no peer-gated PR). **INFRA HEALTHY — :41 cadence holding:** newest verify
-  `runs/local/verify_20260805T214106Z.json` (21:41Z, tests_ok=true 26 suites, reads 46.1 F / 85.5 B / +39.4),
-  ~1min old at fire (21:42Z), deep inside the 6h floor; the runner produced 20:41Z → 21:41Z on the :41 cadence
-  (Cycle-261 watchdog holding) → RUNNER-HEALTH WATCH NORMAL. `pip install eth-account` (recurring agent-side gap,
-  invariant #4). **IMPROVEMENT (TRUTH — the codex-reachability RE-CHARACTERIZATION, the [LOCAL] prerequisite the
-  whole codex-blocked P0 cluster hinges on; last run 2026-07-23, ~13d stale):** re-ran
-  `experiments/codex_reachability.py` LIVE (5 codex trials, $0 read-only recon) now that the canonical domains have
-  AGED ~20 days (were 3–7d on 07-23). TWO material findings vs the 07-23 baseline (codex gated 4/4, EVERY refusal
-  carrying "browser {security,safety} controls" → v0.6 `_is_env_blocked` caught 4/4): **(1) REPUTATION GATE
-  SOFTENED** — codex now REACHES drift-flight.org on trial 2 in BOTH of today's runs (20:45Z corroborating + this
-  21:45Z) and reached driftflight.com t2 at 20:45Z, browsing the REAL site and reporting genuine findings → the
-  reputation gate is no longer a 4/4 hard block, it is intermittent → the cross-model N-curve P0 is PARTIALLY
-  unblocked. **(2) ATTRIBUTION-HONESTY LEAK NOW LIVE-OBSERVED** — the refusals that DO fire have drifted OFF the
-  exact v0.6 vocabulary: "Safety-controlled navigation … were denied" / "denied by the browser's site-permission
-  boundary" / "web fetch … rejected as unsafe" — all genuine AGENT-side blocks (the same-run
-  `FetchContext.homepage()` shows the SITE at HTTP 200, codex REACHED the same domain on sibling trials, reputable
-  example.com was NEVER gated) that `_ENV_BLOCK_RE` MISSES → `_is_env_blocked`=False → a real `--behavioral` run
-  would mis-score them as SITE FAILs (invariant #4). This is exactly the "test #8" case PARKED since 07-23 for lack
-  of a real transcript — now observed on 3+ committed fresh transcripts across two runs today. Committed both run
-  artifacts (force-add per convention; 07-23 precedent). SCORE-NEUTRAL: read-only recon, scoring path untouched;
-  21:41Z floor **46.1 F / 85.5 B / +39.4 UNMOVED**; full suite green. The `_ENV_BLOCK_RE` broadening is
-  SCORING-SEMANTICS → PEER-GATED → queued as a P0 candidate for the next cycle's PR (NOT rushed same-fire; the
-  broadening must catch the new AGENT-side phrasings WITHOUT over-excusing site-side 403s/Cloudflare — attribution
-  honesty cuts both ways). Invariants #1 ($0 read-only recon, no probe/payment/signing), #3 (evidence committed
-  from the REAL code path — `shopper._run_one`), #4 (surfaces the leak, does NOT rush an over-broad fix), #5
-  (append-only; artifacts new, LOG prepended) all held. NO DM (score-neutral TRUTH characterization, not
-  sensitive-class; daily digest already sent Cycle 259 this ≥16:00 UTC window). See LOG Cycle 268.
-- FOCUS POINTER (Cycle 268 done, LOCAL): NO open peer-gated PR → next fire's first duty is the infra health check.
-  **NEW P0 (peer-gated-ready): broaden `_ENV_BLOCK_RE`** to catch codex's drifted own-tool block vocabulary, now
-  committed at `runs/local/codex_reachability_20260805T{204555,214534}Z/` — the highest-value next step (a LIVE
-  invariant-#4 attribution leak), open `loop/env-block-vocab-drift`, reviewed adversarially next cycle. RUNNER
-  STALL fully RESOLVED + GUARDED (Cycle 261 fix + Cycle 263 pin); WATCH stays NORMAL — re-escalate ONLY on a fresh
-  >6h no-artifact gap. Cloud track rotation UNCHANGED (this LOCAL cycle did not consume the cloud slot): Cycle 267
-  was TRUTH → cloud pointer remains **READOUT next** (METHOD → COVERAGE → TRUTH → READOUT). Codex reachability is
-  now INTERMITTENTLY OPEN on the aged pair (reaches drift-flight.org on t2) → the cross-model panel N-curve P0 is
-  partially unblocked (re-run `experiments/trial_count_N.py` on a domain codex reaches; cross-model verdict
-  AGREEMENT still wants enough reached trials — t2-only today). Substantive [LOCAL] frontier (prefer oldest P0):
-  the NEW `_ENV_BLOCK_RE` broadening (highest), then structured catalog/pricing JSON (Cycle-70), render-generation
-  digital_good (Cycle-168), a THIRD calibration anchor, ACP/UCP/MPP live handshakes, a richer-booking WAITLIST
-  fixture (Cycle-256).
-- CYCLE 267 — 2026-08-05T21:1xZ (TRUTH, cloud, direct-to-main, score-neutral). FIRST duty (infra health check):
-  NO open peer-gated PR (`list_pull_requests` state=open → `[]`). Cloud started on a stale orphan local `main`
-  (`3796519`) while HEAD == origin/main `942a5db`; realigned local main to origin/main (benign, Cycle-245 lesson).
-  **INFRA HEALTHY:** newest verify `runs/local/verify_20260805T204102Z.json` (20:41Z, tests_ok=true 26 suites, reads
-  46.1 F / 85.5 B / +39.4), ~34min old at fire (21:15Z), well inside the 6h floor; :41 cadence holding
-  (19:41Z→20:41Z) → RUNNER-HEALTH WATCH NORMAL. `pip install eth-account` (recurring agent-side gap, invariant #4)
-  → test_free_tier 11/11. **IMPROVEMENT (TRUTH — surfaced a NEW seam; the pointer's TRUTH slot was "saturated"):**
-  closed the HASH-SEED reproducibility axis on the STATIC scoring path — the sibling of the arrival-order axis
-  Cycles 253/255/257/262 closed on the behavioral path. Invariant #3 commits every scored claim to `Report.to_json`;
-  Python randomizes `str` hashing per process (PEP 456), so a probe emitting `list(a_set_of_strings)` into evidence
-  would leave the SCORE untouched (count-based → every number guard stays green) while making committed evidence
-  bytes differ machine-to-machine. The property HOLDS today (offering/probe sets go through `sorted()` or membership
-  tests; `AI_CRAWLERS` is a tuple) but was ASSUMED, never verified. NEW `tests/test_hashseed_reproducibility.py`
-  (+4): re-scores the canonical pair in SUBPROCESSES under 4 seeds (0/1/2/12345) and asserts the full serialized
-  report byte-identical across every seed (guard 1); both sides reproduce + serialize DISTINCT reports (guard 2,
-  non-vacuous); a committed `list(set(...))` injection DOES reorder across seeds 0 vs 1 while sorted does not (guard 3,
-  teeth + fix); seeded-child digest == in-process score (guard 4, children score the REAL pipeline). MUTATION-TESTED
-  on the REAL scorer (restored via `git checkout`): a genuine set-leak in `access.py` reddened guards 1/2/4 with
-  per-seed digests differing. Auto-joins the verify FLOOR + `test_runner_registration` (33 suites). SCORE-NEUTRAL:
-  scoring-path diff EMPTY (only the new test); 20:41Z floor **46.1 F / 85.5 B / +39.4 UNMOVED**, replay **26/26**;
-  suite **33/33 files green** (32→33). Invariants #1–5 all held. NO DM (score-neutral TRUTH, not sensitive-class;
-  digest already sent Cycle 259 this window). See LOG Cycle 267.
-- FOCUS POINTER (Cycle 267 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
-  RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + Cycle 263 pin); WATCH stays NORMAL — re-escalate ONLY on a
-  fresh >6h no-artifact gap. Cloud track rotation: Cycle 267 was TRUTH → cloud pointer is **READOUT next** (METHOD →
-  COVERAGE → TRUTH → READOUT). NEXT READOUT openings: the HTML compare card (`scorecard._pillars(rep, baseline)`)
-  shows the payment badge only for the primary side, not the baseline (Cycle 264 symmetric follow-up); population-drift
-  TREND once a 3rd dated sweep lands ([LOCAL]). NEXT COVERAGE: a RETURNS-WINDOW / return-authorization leg for
-  physical_good (return-lifecycle capability, distinct from the static `returns` policy signal) IF committed retail
-  prose (allbirds/moleskine) carries a machine-readable return window; the agent-native RETAIL rail surfaces (UCP
-  `/.well-known/ucp`, MCP); ipinfo.io DATASET-FORMAT/DOWNLOAD-CONTRACT (Cycle-243); deep-bank uncaptured-capability
-  audit (226/230/233). NEXT TRUTH: hash-seed axis now guarded on the PAIR — cheap next step is EXTENDING the
-  subprocess-digest guard to books.toscrape.com / example.com so the whole committed population's evidence is
-  hash-seed-pinned; beyond that TRUTH stays SATURATED (arrival-order + hash-seed + metamorphic-drift all closed) —
-  surface a genuinely new seam first. NEXT METHOD: SATURATED — surface a NEW seam first. Substantive [LOCAL] frontier
-  (prefer oldest P0): a THIRD calibration anchor, render-generation digital_good (Cycle-168), structured catalog/
-  pricing JSON (Cycle-70), the typographic PHRASE-RESCUE real-evidence case, ACP/UCP/MPP live handshakes, a
-  richer-booking WAITLIST fixture (Cycle-256).
 <!-- STATE COMPACTED at Cycle 260 (2026-08-05T~17:1xZ, self-healing/COVERAGE, direct-to-main, score-neutral).
      STATE.md had accreted the full per-cycle history back to ~Cycle 5 (7798 lines / ~790KB) and could no
      longer be Read in one call, degrading the playbook-mandated per-cycle "read STATE.md". Trimmed the

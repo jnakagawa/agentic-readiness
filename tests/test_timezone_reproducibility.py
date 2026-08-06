@@ -44,6 +44,7 @@ pinned zones), so the invariance above cannot vacuously pass.
 
 from __future__ import annotations
 
+import glob
 import hashlib
 import json
 import os
@@ -58,6 +59,63 @@ _FIXTURE_DIR = os.path.join(_REPO_ROOT, "fixtures", "canonical")
 # surface most likely to grow a wall-clock-backed evidence projection. Named by
 # capability role, never special-cased.
 _CANONICAL = ("driftflight.com", "drift-flight.org")
+
+# The FULL reproducibility population: every committed fixture that covers the
+# whole current probe set (0 replay-misses), so a full re-score is faithful. The
+# canonical pair is only the two API storefronts; the retail catalog
+# (books.toscrape.com), the appointment-booking SaaS (acuityscheduling.com), the
+# physical-goods retailer (www.moleskine.com) and the null storefront
+# (example.com) each fire probe paths — add-to-cart/stock, service-booking
+# surfaces, returns/fulfillment prose — that the API pair NEVER exercises. A
+# local-wall-clock-dependent evidence projection living on one of THOSE paths
+# would slip past a pair-only guard; guard 1 below re-scores every one of them.
+#
+# This mirrors the replay-integrity partition in test_canonical_replay
+# (``_REPLAY_CLEAN``): a classification-only fixture (api.replicate.com /
+# ipinfo.io / www.allbirds.com / simplybook.me) records only a SUBSET of the
+# scoring surface, so a full re-score misses dozens of requests — those are NOT
+# faithful re-scores and are excluded here. Guard 5 pins this set to the
+# LIVE-computed 0-miss set so a future [LOCAL] full-score re-capture that promotes
+# a fixture forces its inclusion here (the guard reddens until it is added),
+# never leaving reproducibility coverage silently behind the fixture population.
+_POPULATION = (
+    "acuityscheduling.com",
+    "books.toscrape.com",
+    "drift-flight.org",
+    "driftflight.com",
+    "example.com",
+    "www.moleskine.com",
+)
+
+
+def _committed_domains() -> list[str]:
+    """Every committed canonical fixture, by bare domain, sorted."""
+    return sorted(
+        os.path.basename(p)[:-5]
+        for p in glob.glob(os.path.join(_FIXTURE_DIR, "*.json"))
+    )
+
+
+def _replay_miss_count(domain: str) -> int:
+    """In-process full re-score of a committed fixture; count replay-misses.
+
+    A miss means a probe requested a URL the fixture never recorded — i.e. the
+    fixture does not cover the full scoring surface, so a full re-score of it is
+    NOT faithful. This is the same replay-miss signal test_canonical_replay uses
+    to partition the population; computed here so guard 5 is self-verifying.
+    """
+    sys.path.insert(0, _REPO_ROOT)
+    from asrs import scoring
+    from asrs.cli import _run_probes
+    from asrs.fetch import FetchContext
+
+    ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{domain}.json"))
+    checks = _run_probes(ctx)
+    scoring.score(checks, scoring.load_rubric(None), domain)
+    return sum(
+        1 for res in ctx._cache.values()
+        if res.error and "replay-miss" in res.error
+    )
 
 # Distinct timezones as POSIX ``TZ`` strings (interpreted by the C library with
 # NO tzdata dependency, so the guard runs on a minimal container). POSIX sign is
@@ -142,11 +200,14 @@ def _check_is_digest(s: str, label: str) -> None:
 # ---------------------------------------------------------------------------
 # 1. The committed static report is byte-identical across timezones — the
 #    host-environment sibling of the hash-seed reproducibility guard. Re-scoring
-#    a canonical fixture under any TZ serializes the SAME report.
+#    ANY full-scorable committed fixture under any TZ serializes the SAME report.
+#    Covers the whole replay-clean population, not just the API pair, so a
+#    local-wall-clock projection on a retail / booking / null probe path is
+#    caught too.
 # ---------------------------------------------------------------------------
-def test_canonical_report_serialization_is_timezone_invariant() -> None:
-    print("test_canonical_report_serialization_is_timezone_invariant")
-    for domain in _CANONICAL:
+def test_committed_report_serialization_is_timezone_invariant() -> None:
+    print("test_committed_report_serialization_is_timezone_invariant")
+    for domain in _POPULATION:
         digests = {tz: _report_digest(domain, tz) for tz in _ZONES}
         distinct = set(digests.values())
         _check(
@@ -261,12 +322,47 @@ def test_child_digest_matches_in_process_score() -> None:
     )
 
 
+# ---------------------------------------------------------------------------
+# 5. The reproducibility population is EXACTLY the set of committed fixtures that
+#    faithfully full-re-score (0 replay-misses), and it is strictly broader than
+#    the regression pair. This makes guard 1's coverage self-maintaining:
+#      - a NEW full-scorable fixture (or a [LOCAL] re-capture that promotes a
+#        classification-only one to full coverage) is NOT in _POPULATION → this
+#        reddens, forcing it into the timezone guarantee rather than letting
+#        coverage silently lag the fixture population;
+#      - a classification-only fixture cannot sneak in — it misses under the full
+#        scorer, so it is excluded from the live set and _POPULATION alike.
+#    Non-vacuity: _POPULATION strictly contains the canonical pair (the extension
+#    genuinely reaches beyond the two API storefronts).
+# ---------------------------------------------------------------------------
+def test_reproducibility_population_is_the_replay_clean_set() -> None:
+    print("test_reproducibility_population_is_the_replay_clean_set")
+    committed = _committed_domains()
+    live_clean = {d for d in committed if _replay_miss_count(d) == 0}
+    _check(
+        set(_POPULATION) == live_clean,
+        f"_POPULATION is exactly the committed fixtures that full-re-score "
+        f"with 0 replay-misses (pinned {sorted(_POPULATION)} vs live "
+        f"{sorted(live_clean)}) — promote/re-capture forces inclusion",
+    )
+    _check(
+        set(_CANONICAL).issubset(_POPULATION),
+        f"the regression pair {sorted(_CANONICAL)} is inside the population",
+    )
+    _check(
+        len(_POPULATION) > len(_CANONICAL),
+        f"the population ({len(_POPULATION)}) is strictly broader than the pair "
+        f"({len(_CANONICAL)}) — the extension is non-vacuous",
+    )
+
+
 def main() -> int:
     tests = [
-        test_canonical_report_serialization_is_timezone_invariant,
+        test_committed_report_serialization_is_timezone_invariant,
         test_both_regression_signal_sides_reproduce,
         test_timezone_guard_has_teeth,
         test_child_digest_matches_in_process_score,
+        test_reproducibility_population_is_the_replay_clean_set,
     ]
     failed = 0
     for t in tests:

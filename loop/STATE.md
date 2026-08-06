@@ -1,6 +1,54 @@
 # Loop state
 
-- Cycle counter: 278
+- Cycle counter: 279
+- CYCLE 279 — 2026-08-06T05:1xZ (READOUT, cloud, direct-to-main, display-only, score-neutral). FIRST duty
+  (infra health + peer-gate review): `mcp__github__list_pull_requests` state=open → `[]` (no open peer-gated
+  PR). Cloud started detached at origin/main `9cead29` with local `main` ref at stale `3e318f1`; realigned local
+  `main` to origin/main (benign, HEAD already matched, no history rewrite). **INFRA HEALTHY:** newest verify by
+  FILENAME `runs/local/verify_20260806T044102Z.json` (04:41Z, tests_ok=true 35 suites, 46.1 F / 85.5 B / +39.4),
+  ~36min old at fire (05:17Z 08-06), well inside the 6h floor; :41 cadence holding (02:41Z→03:41Z→04:41Z) →
+  RUNNER-HEALTH WATCH NORMAL. Bench brought up (venv + pip); full suite 35/35 green before the change.
+  **TRACK:** READOUT least-recently-worked (last 246/264/270) AND its long-owed item (population-drift TREND
+  across ≥3 sweeps, cloud-owed since Cycle 246) is NOW UNBLOCKED — Cycle 278 committed the 3rd dated sweep
+  (20260728/20260805/20260806). **IMPROVEMENT (READOUT — reference-pair trend sparkline):** the single-cadence
+  drift card (Cycle 246) shows only this-vs-prior; this zooms out to the WHOLE committed cadence. New
+  `asrs/scorecard.py`: `_load_all_calibration_sweeps` (reads every committed sweep oldest-first) +
+  `_anchor_trend_series` (pulls the canonical anchors — segment endswith `anchor` — keyed by DOMAIN from data,
+  not-scorable reading → gap not 0) + `_anchor_trend_svg` (fixed 0–100-overall multi-series sparkline mirroring
+  `_history_trend_svg`; line breaks at a not-scorable gap; top↔bottom anchor gap bracketed) +
+  `_calibration_anchor_trend_card` (named legend swatch per anchor so identity ≠ color-alone; gap-HELD/gap-MOVED
+  summary from first-vs-last common gap; version-isolation note). Wired into `_write_calibration_page` before the
+  drift card (new optional `sweeps=` param; production loads all, unit tests pass explicit list → hermetic). Real
+  render: **the reference gap HELD at +39.4 across all 3 v0.7 sweeps** (85.5 with-rails vs 46.1 no-rails). Design
+  honors inv #2 (only newest-version sweeps plotted; older-version counted+named-omitted) + inv #4 (not-scorable =
+  gap, never a fabricated 0), both test-pinned with teeth. **VALIDATION:** 5 new tests_readout (trend/gap-held +
+  gap-moved-flagged + not-scorable-gap-not-zero + version-isolation + <2-sweeps-no-card); test_readout 94→99;
+  suite 35/35 green. **SCORE-NEUTRAL:** scoring-path diff (`git diff -- asrs/scoring.py asrs/report.py asrs/probes
+  rubric/ fixtures/ batteries/ loop/local_verify.py`) EMPTY (only scorecard.py + test_readout.py). **CANONICAL
+  UNMOVED:** in-fire offline replay 46.1 F / 85.5 B / +39.4 (concurs 04:41Z floor). Invariants #1 ($0 — pure
+  readout of committed data, no probe)–#5 all held. NO DM (score-neutral READOUT, not sensitive-class; no digest
+  due — 05:1xZ precedes 16:00 UTC on 08-06). See LOG Cycle 279.
+- FOCUS POINTER (Cycle 279 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
+  check. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY on
+  a fresh >6h no-artifact gap. Cloud track rotation: Cycle 279 was READOUT → **COVERAGE next** (METHOD → COVERAGE →
+  TRUTH → READOUT); the long-owed READOUT population-drift TREND is now **DONE** (this cycle). NEXT in-cloud
+  COVERAGE (highest, unblocked): the `waitlist` signal on the simplybook.me anchor (service_booking 8→9) — anchor
+  `waiting list`/`waitlist`/`waiting-list` to a BOOKING context, ABSENT on the pair + retail + null + api fixtures,
+  fires NON-VACUOUSLY on simplybook.me, add `waitlist` to `_ALL_SERVICE_BOOKING_LABELS` in the same change. Also
+  open COVERAGE: a subscription PAUSE/RESUME leg (polar `subscription.paused`/uncancel, suspend-without-terminating,
+  distinct from Cycle-276's cancel) IF precision-guardable; data_retrieval DATA-FRESHNESS/update-cadence (ipinfo
+  "Daily Data Refresh"); physical_good RETURNS-WINDOW (allbirds/moleskine). NEXT METHOD: the static-evidence
+  reproducibility family is SATURATED for in-cloud host axes (hash-seed 267 + timezone 271 + default-encoding 277);
+  the remaining non-C system locale axis is [LOCAL]-gated; the next genuinely-NEW METHOD seam should move OFF
+  host-environment reproducibility (probe-order independence of the aggregate, or fixture-capture determinism).
+  NEXT calibration cadence: population now 18 (target 15–20); next broadening = a genuine ACP/UCP/MPP merchant or a
+  2nd x402-live site (scarce — record reachability as its own signal). NEXT READOUT (new candidates from this
+  cycle): a population-median/band overlay across sweeps (whole-cohort spread, not just the anchor pair) once ≥3
+  sweeps carry a stable non-anchor overlap; or surface the trend's gap-held/moved verdict as a one-line badge on
+  the main card. Substantive [LOCAL] frontier: codex-dependent items stay gated — driftflight.com (WITH side) still
+  codex-blocked → cross-model N-curve / LIVE behavioral delta blocked on WITH-side reachability (drift-flight.org
+  t2 IS reachable); a THIRD calibration anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168);
+  structured catalog/pricing JSON (Cycle-70); the LOCALE reproducibility axis.
 - CYCLE 278 — 2026-08-06T04:4xZ (TRUTH, LOCAL, direct-to-main, score-neutral). FIRST duty (infra health +
   peer-gate review): `gh pr list --state open` → `[]` (no open peer-gated PR). HEAD == origin/main == local
   `main` all at `9ab04d9` (clean, no stale-orphan realign). **INFRA HEALTHY:** newest verify by FILENAME
@@ -197,57 +245,6 @@
   population-drift TREND across ≥3 dated sweeps ([LOCAL]-gated, only 2 committed). Substantive [LOCAL] frontier:
   codex-dependent items stay gated — driftflight.com (WITH side) still codex-blocked → cross-model N-curve /
   LIVE behavioral delta blocked on WITH-side reachability (drift-flight.org t2 IS reachable); a THIRD
-  calibration anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168); structured
-  catalog/pricing JSON (Cycle-70).
-- CYCLE 274 — 2026-08-06T02:1xZ (TRUTH, cloud, direct-to-main, tests-only, score-neutral). FIRST duty
-  (infra health + peer-gate review): `mcp__github__list_pull_requests` state=open → `[]` (no open peer-gated
-  PR). Cloud started detached at origin/main `569e35b` with local `main` at the stale orphan `3796519`;
-  realigned local `main` to origin/main (benign Cycle-245 orphan; HEAD already matched origin, no history
-  rewrite). **INFRA HEALTHY:** newest verify by FILENAME `runs/local/verify_20260806T014106Z.json` (01:41Z,
-  tests_ok=true 34 suites, 46.1 F / 85.5 B / +39.4), ~31min old at fire (02:12Z 08-06), well inside the 6h
-  floor; :41 cadence holding (23:41Z→00:41Z→01:41Z) → RUNNER-HEALTH WATCH NORMAL. Bench brought up (`python
-  -m venv .venv` + `pip install -r requirements.txt`; recurring `pyyaml`/`eth-account` agent-side gaps, inv
-  #4); full suite 34/34 green before the change (bench up). **IMPROVEMENT (TRUTH — the pointer's named cheap
-  next TRUTH extension: EXTEND both subprocess-digest reproducibility guards from the canonical PAIR to the
-  whole full-scorable committed fixture population):** Cycles 267/271 closed the hash-seed + timezone
-  host-environment reproducibility axes of invariant #3, but both guards re-scored ONLY the canonical PAIR
-  (the two API storefronts) — a hash-seed-/local-time-dependent evidence projection on a probe path the pair
-  never fires (retail add-to-cart/stock, service-booking surfaces, physical-good returns/fulfillment, null)
-  would slip past. Broadened guard 1 in BOTH `tests/test_{hashseed,timezone}_reproducibility.py` to re-score
-  the whole FULL-SCORABLE population — acuityscheduling.com + books.toscrape.com + www.moleskine.com +
-  example.com + the pair (6 fixtures, 0 replay-misses each); classification-only fixtures (api.replicate.com
-  35 / ipinfo.io 46 / www.allbirds.com 83 / simplybook.me 50 misses) excluded, mirroring test_canonical_replay's
-  `_REPLAY_CLEAN` partition. Each suite +1 test (4→5): new `_POPULATION` + `_committed_domains()`/
-  `_replay_miss_count()` helpers; guard 1 renamed `test_committed_report_serialization_is_{hashseed,timezone}_invariant`
-  and loops the population; NEW guard 5 `test_reproducibility_population_is_the_replay_clean_set` pins
-  `set(_POPULATION)` == the LIVE-computed 0-miss set (self-maintaining — a [LOCAL] full-score re-capture that
-  promotes a fixture reddens until added) + ⊇ pair + strictly-broader (non-vacuous). Guards 2/3/4 (joint-pair,
-  teeth, child-scores-real-pipeline) unchanged. EMPIRICALLY VERIFIED first: all 6 replay-clean fixtures are
-  hash-seed AND timezone INVARIANT today (no leak surfaced), live 0-miss set == the 6 pinned; canonical pair
-  digests unchanged (driftflight.com `c54f611d60c3…`) → extension only ADDS coverage. SCORE-NEUTRAL: scoring-path
-  diff (`git diff -- asrs/ rubric/ fixtures/ batteries/ loop/local_verify.py`) EMPTY, only 2 test files; suite
-  **34/34 green** (both suites 5/5; test_runner_registration green); canonical replay **46.1 F / 85.5 B / +39.4
-  UNMOVED**; 01:41Z verify floor concurs. Invariants #1–5 all held. NO DM (score-neutral tests-only TRUTH, not
-  sensitive-class; no digest due — 02:1xZ precedes 16:00 UTC on 08-06). See LOG Cycle 274.
-- FOCUS POINTER (Cycle 274 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
-  check. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate
-  ONLY on a fresh >6h no-artifact gap. Cloud track rotation: Cycle 274 was TRUTH → cloud pointer is **READOUT
-  next** (METHOD → COVERAGE → TRUTH → READOUT). **NEXT COVERAGE (highest — UNBLOCKED since Cycle 273):** mine
-  the `waitlist` signal from the simplybook.me anchor (service_booking 8→9) — the "clients join a queue for
-  fully-booked times / provision without a human when no slot is free" leg, DISTINCT from create/manage/notify/
-  intake; PRECISION-CRITICAL: anchor `waiting list`/`waitlist`/`waiting-list` to a BOOKING context (near
-  appointment/booking/slot/fully-booked/schedule) so a SaaS "join our early-access waitlist"/mailing-list signup
-  does NOT conjure service_booking; validate ABSENT on the canonical pair + retail + null + api fixtures, fires
-  NON-VACUOUSLY on simplybook.me, add `waitlist` to `_ALL_SERVICE_BOOKING_LABELS` (the Cycle-273 maintenance
-  hook). Also open COVERAGE: data_retrieval DATA-FRESHNESS/update-cadence (ipinfo /docs "Daily Data Refresh");
-  physical_good RETURNS-WINDOW leg; agent-native RETAIL rail surfaces (UCP/MCP). NEXT TRUTH/METHOD: the
-  static-reproducibility "same fixture, different machine → byte-identical evidence" family now covers the whole
-  full-scorable population on BOTH host axes (hash-seed + timezone, Cycle 274); the last cheap axis is LOCALE
-  (`LC_ALL`/`LANG`) with teeth IF de_DE/tr_TR generatable on the runner; beyond that TRUTH/METHOD is SATURATED
-  — surface a genuinely NEW seam first. NEXT READOUT: population-drift TREND across ≥3 dated sweeps
-  ([LOCAL]-gated, only 2 committed); compare-card symmetry DONE (Cycle 270). Substantive [LOCAL] frontier:
-  codex-dependent items stay gated — driftflight.com (WITH side) still codex-blocked → cross-model N-curve /
-  LIVE behavioral delta remain blocked on WITH-side reachability (drift-flight.org t2 IS reachable); a THIRD
   calibration anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168); structured
   catalog/pricing JSON (Cycle-70).
 <!-- STATE COMPACTED at Cycle 260 (2026-08-05T~17:1xZ, self-healing/COVERAGE, direct-to-main, score-neutral).

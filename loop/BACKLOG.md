@@ -519,9 +519,16 @@ design in-cloud, execute locally.
   +39.4 UNMOVED). REMAINING READOUT candidate: the drift card is a
   SINGLE-cadence diff (this sweep vs the immediately prior); surface the drift TREND across ALL committed sweeps —
   a sparkline of the canonical anchors' overall across every dated dataset, the population analog of
-  canonical-history.html's per-cycle trend. **NOW UNBLOCKED as of Cycle 278** (the "needs ≥3 dated sweeps" gate is
-  satisfied: 20260728 / 20260805 / 20260806 are all committed) — an in-cloud READOUT fire can render it from each
-  sweep's `rows` (canonical anchors' `overall`).
+  canonical-history.html's per-cycle trend. **DONE Cycle 279 (READOUT, cloud, direct-to-main, display-only,
+  score-neutral):** `calibration.html` gains a **Reference-pair trend** card rendering the two canonical anchors'
+  overall across all committed dated sweeps as a fixed-0–100 multi-series sparkline (`_load_all_calibration_sweeps`
+  + `_anchor_trend_series` + `_anchor_trend_svg` + `_calibration_anchor_trend_card`, mirroring `_history_trend_svg`).
+  Real render: the reference gap HELD at +39.4 across all 3 v0.7 sweeps (85.5 with-rails vs 46.1 no-rails). Invariant
+  #2 (only newest-version sweeps plotted, older-version counted+named-omitted) + #4 (not-scorable reading = gap, never
+  a fabricated 0) test-pinned with teeth; 5 new tests (test_readout 94→99); suite 35/35; scoring-path diff EMPTY;
+  canonical replay 46.1 F / 85.5 B / +39.4 UNMOVED. NEXT READOUT candidates (new): a population-median/band overlay
+  across sweeps (whole-cohort spread, not just the anchor pair) once ≥3 sweeps carry a stable non-anchor overlap; or
+  a one-line gap-held/moved verdict badge on the main card. See LOG Cycle 279.
   PROGRESS — Cycle 278 (2026-08-06, TRUTH, LOCAL, direct-to-main, score-neutral): the cadence's increment (a)
   advanced again — POPULATION broadened 16→18 (deeper into the 15–20 target) with two more NEW storefront TYPES
   absent from every prior sweep: `simplybook.me` (`service-booking:platform`, the Cycle-273 offering anchor) +

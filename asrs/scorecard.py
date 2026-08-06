@@ -1908,6 +1908,22 @@ def _load_calibration_sweep() -> dict | None:
         return None
 
 
+def _load_all_calibration_sweeps() -> list:
+    """Read EVERY committed ``runs/local/calibration_sweep_*.json`` sweep, oldest
+    first, skipping any that will not parse. The single-cadence drift card reads only
+    the newest sweep's ``drift`` block (this-vs-prior); the population TREND across the
+    whole committed cadence needs them all. Filenames are dated (``..._<ts>.json``) so
+    sorting the glob is chronological. Same in-repo root as ``_load_calibration_sweep``."""
+    runs_dir = Path(__file__).resolve().parent.parent / "runs" / "local"
+    out = []
+    for p in sorted(runs_dir.glob("calibration_sweep_*.json")):
+        try:
+            out.append(json.loads(p.read_text(encoding="utf-8")))
+        except (OSError, json.JSONDecodeError):
+            continue
+    return out
+
+
 # Static-sweep pillar order for the leaderboard columns — the same five pillars,
 # outcome last (a static $0 sweep never runs a live shopper panel, so outcome is
 # always null here; shown as "—", never a scored 0 — attribution honesty).
@@ -2041,7 +2057,256 @@ pair&rsquo;s per-cycle regression check. {summary}</p>
 </div>"""
 
 
-def _write_calibration_page(out_dir: Path, sweep=None) -> str:
+# Categorical hues for the reference-pair trend series — a small, fixed, brand-neutral
+# palette assigned by RANK (highest-scoring anchor first), NOT by domain, so no series
+# is favored by identity. Never color-alone: every series is named in the HTML legend.
+_ANCHOR_TREND_COLORS = ("#175cd3", "#b54708", "#6941c6", "#0e7490")
+
+
+def _sweep_date(ts: str) -> str:
+    """20260728T234815Z -> '2026-07-28' (x-axis tick, display only)."""
+    ts = str(ts or "")
+    return f"{ts[0:4]}-{ts[4:6]}-{ts[6:8]}" if len(ts) >= 8 else ts
+
+
+def _anchor_trend_series(sweeps: list):
+    """From an ordered (oldest-first) list of sweeps sharing ONE rubric version, pull
+    the canonical ANCHORS' overall per sweep as aligned series.
+
+    Anchors are the rows whose ``segment`` ends in ``anchor`` (the WITH-rails and
+    no-rails reference storefronts the whole population sweep is calibrated around) —
+    keyed by DOMAIN, so the series are read from the data, never a hard-coded name. A
+    sweep in which an anchor is NOT SCORABLE contributes ``None`` at that index (a gap
+    in the line), NEVER a 0 — attribution honesty: an unreachable anchor is an
+    observation gap, not a score of zero. Returns ``(series, dates)`` where each series
+    is ``{"domain", "segment", "points": [float|None, ...]}`` ordered by the anchor's
+    LATEST scored overall descending (highest first), and ``dates`` is the per-sweep
+    x-axis label list. Anchors with fewer than 2 scored points are dropped (no trend)."""
+    dates = [_sweep_date(s.get("ts", "")) for s in sweeps]
+    # domain -> {"segment": str, "points": [float|None per sweep]}
+    by_domain: dict = {}
+    for i, s in enumerate(sweeps):
+        for r in s.get("rows", []) if isinstance(s, dict) else []:
+            seg = str(r.get("segment", ""))
+            if not seg.endswith("anchor"):
+                continue
+            dom = str(r.get("domain", ""))
+            rec = by_domain.setdefault(dom, {"segment": seg, "points": [None] * len(sweeps)})
+            ov = r.get("overall")
+            if r.get("scored") and ov is not None:
+                rec["points"][i] = float(ov)
+    series = []
+    for dom, rec in by_domain.items():
+        scored = [p for p in rec["points"] if p is not None]
+        if len(scored) < 2:
+            continue
+        latest = next((p for p in reversed(rec["points"]) if p is not None), None)
+        series.append({"domain": dom, "segment": rec["segment"],
+                       "points": rec["points"], "_latest": latest})
+    series.sort(key=lambda x: (-(x["_latest"] or 0.0), x["domain"]))
+    return series, dates
+
+
+def _anchor_trend_svg(series: list, dates: list) -> str:
+    """A multi-series overall-vs-cadence trend for the canonical anchors (y is the
+    0-100 overall scale, fixed so the gap between anchors reads honestly rather than
+    an auto-zoomed wiggle). One recessive connecting line + a dot per SCORED reading
+    per series; a not-scorable reading breaks the line (no dot). The latest scored
+    point of each series is direct-labeled; the gap between the top and bottom anchor
+    at the newest all-scored sweep is bracketed and labeled (the population-scale view
+    of the frozen reference delta). Colors identify series but the HTML legend names
+    them, so identity never rests on color alone."""
+    n = len(dates)
+    if not series or n < 2:
+        return ""
+    W, H = 780.0, 250.0
+    padL, padR, padT, padB = 46.0, 92.0, 20.0, 40.0
+    lo, hi = 0.0, 100.0
+
+    def x_of(i: int) -> float:
+        return padL + (W - padR - padL) * i / (n - 1)
+
+    def y_of(v: float) -> float:
+        return (H - padB) - (v - lo) / (hi - lo) * (H - padB - padT)
+
+    # Horizontal gridlines + y labels at 0/25/50/75/100.
+    axis = "".join(
+        f'<line x1="{padL:.1f}" y1="{y_of(t):.1f}" x2="{W - padR:.1f}" '
+        f'y2="{y_of(t):.1f}" stroke="#eef0f3" stroke-width="1"/>'
+        f'<text x="{padL - 6:.1f}" y="{y_of(t) + 3.5:.1f}" text-anchor="end" '
+        f'font-family="DM Mono,monospace" font-size="10" fill="#667085">{t:.0f}</text>'
+        for t in (0.0, 25.0, 50.0, 75.0, 100.0)
+    )
+    # X-axis: a dated tick per sweep.
+    xaxis = "".join(
+        f'<text x="{x_of(i):.1f}" y="{H - padB + 16:.1f}" text-anchor="middle" '
+        f'font-family="DM Mono,monospace" font-size="10" fill="#667085">{_esc(d)}</text>'
+        for i, d in enumerate(dates)
+    )
+
+    lines = []
+    for si, s in enumerate(series):
+        color = _ANCHOR_TREND_COLORS[si % len(_ANCHOR_TREND_COLORS)]
+        pts = s["points"]
+        # Break the polyline at every not-scorable gap so an unreachable sweep is a
+        # gap, not an interpolated straight line across missing data.
+        run: list = []
+        segs: list = []
+        for i, v in enumerate(pts):
+            if v is None:
+                if len(run) >= 2:
+                    segs.append(run)
+                run = []
+            else:
+                run.append((i, v))
+        if len(run) >= 2:
+            segs.append(run)
+        for run in segs:
+            poly = " ".join(f"{x_of(i):.1f},{y_of(v):.1f}" for i, v in run)
+            lines.append(
+                f'<polyline points="{poly}" fill="none" stroke="{color}" '
+                f'stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'
+            )
+        last_i = None
+        for i, v in enumerate(pts):
+            if v is None:
+                continue
+            last_i = i
+            lines.append(
+                f'<circle cx="{x_of(i):.1f}" cy="{y_of(v):.1f}" r="3.5" '
+                f'fill="{color}" stroke="#fff" stroke-width="2">'
+                f'<title>{_esc(s["domain"])} ({_esc(dates[i])}): overall {v:.1f}</title></circle>'
+            )
+        # Direct-label the latest scored reading, to the right of the plot.
+        if last_i is not None:
+            lv = pts[last_i]
+            lines.append(
+                f'<text x="{x_of(last_i) + 8:.1f}" y="{y_of(lv) + 3.5:.1f}" '
+                f'text-anchor="start" font-family="DM Mono,monospace" font-size="11" '
+                f'font-weight="500" fill="{color}">{lv:.1f}</text>'
+            )
+
+    # Gap bracket at the newest sweep where the top AND bottom anchors both scored —
+    # the population-scale picture of the reference delta the replay guard freezes.
+    gap_mark = ""
+    if len(series) >= 2:
+        top, bot = series[0]["points"], series[-1]["points"]
+        gi = None
+        for i in range(n - 1, -1, -1):
+            if top[i] is not None and bot[i] is not None:
+                gi = i
+                break
+        if gi is not None:
+            gx = x_of(gi)
+            ty, by = y_of(top[gi]), y_of(bot[gi])
+            gap = top[gi] - bot[gi]
+            gap_mark = (
+                f'<line x1="{gx:.1f}" y1="{ty:.1f}" x2="{gx:.1f}" y2="{by:.1f}" '
+                f'stroke="#98a2b3" stroke-width="1.5" stroke-dasharray="4 3"/>'
+                f'<text x="{gx - 6:.1f}" y="{(ty + by) / 2 + 3.5:.1f}" text-anchor="end" '
+                f'font-family="DM Mono,monospace" font-size="11" font-weight="600" '
+                f'fill="#475467">+{gap:.1f}</text>'
+            )
+
+    names = ", ".join(s["domain"] for s in series)
+    return (
+        f'<svg viewBox="0 0 {W:.0f} {H:.0f}" width="100%" '
+        f'style="max-width:{W:.0f}px;height:auto" role="img" '
+        f'aria-label="Canonical anchor overall scores across {n} dated population '
+        f'sweeps ({_esc(names)}), 0 to 100 scale">'
+        f'{axis}{xaxis}{"".join(lines)}{gap_mark}</svg>'
+    )
+
+
+def _calibration_anchor_trend_card(sweeps: list, live_version: str) -> str:
+    """Render the reference-pair TREND card for calibration.html — the population
+    analog of canonical-history.html's per-cycle delta trend.
+
+    The single-cadence drift card (``_calibration_drift_card``) shows this-sweep vs
+    the immediately prior one. This card zooms out to the WHOLE committed cadence: the
+    two canonical anchors' overall on every dated sweep, so a reader sees the
+    reference gap (the +39.4 the replay guard freezes) HOLD — or move — across the
+    population runs, not just the latest step. Scores compare only within a rubric
+    version (invariant #2), so only sweeps sharing the NEWEST sweep's rubric version
+    are plotted; older-version sweeps are counted and named, never mixed onto the same
+    axis. Display-only: reads committed ``overall`` values, moves no score. Returns ""
+    unless at least 2 same-version sweeps carry an anchor with 2+ scored points (a
+    single sweep, or a single reading, is not a trend)."""
+    dated = [s for s in sweeps if isinstance(s, dict) and s.get("rows")]
+    dated.sort(key=lambda s: str(s.get("ts", "")))
+    if len(dated) < 2:
+        return ""
+    ref_version = str(dated[-1].get("rubric_version", ""))
+    same = [s for s in dated if str(s.get("rubric_version", "")) == ref_version]
+    excluded = len(dated) - len(same)
+    if len(same) < 2:
+        return ""
+    series, dates = _anchor_trend_series(same)
+    svg = _anchor_trend_svg(series, dates)
+    if not svg:
+        return ""
+
+    # Legend: a named swatch per series (never color-alone).
+    legend = "".join(
+        f'<span style="display:inline-flex;align-items:center;gap:6px;margin-right:16px">'
+        f'<span style="width:12px;height:12px;border-radius:3px;background:'
+        f'{_ANCHOR_TREND_COLORS[si % len(_ANCHOR_TREND_COLORS)]};display:inline-block">'
+        f'</span><b>{_esc(s["domain"])}</b>'
+        f'<span class="q" style="margin:0">{_esc(s["segment"])}</span></span>'
+        for si, s in enumerate(series)
+    )
+
+    # Gap-held summary, straight from the data: the anchor delta at the first vs the
+    # last sweep where both anchors scored.
+    gap_note = ""
+    if len(series) >= 2:
+        top, bot = series[0]["points"], series[-1]["points"]
+        commons = [i for i in range(len(dates)) if top[i] is not None and bot[i] is not None]
+        if commons:
+            first_gap = top[commons[0]] - bot[commons[0]]
+            last_gap = top[commons[-1]] - bot[commons[-1]]
+            span = len(commons)
+            if abs(last_gap - first_gap) < 0.05:
+                gap_note = (
+                    f'<p><b>The reference gap held.</b> The capability delta between the '
+                    f'two anchors is <b>+{last_gap:.1f}</b> at the newest sweep and was '
+                    f'<b>+{first_gap:.1f}</b> at the oldest of {span} same-version sweeps '
+                    f'&mdash; the population-scale echo of the frozen reference delta the '
+                    f'replay guard defends, unmoved across the cadence.</p>'
+                )
+            else:
+                moved = last_gap - first_gap
+                gap_note = (
+                    f'<p><b>The reference gap moved.</b> The delta between the two anchors '
+                    f'went from <b>+{first_gap:.1f}</b> to <b>+{last_gap:.1f}</b> '
+                    f'(&Delta;&nbsp;{moved:+.1f}) across {span} same-version sweeps &mdash; a '
+                    f'move in the reference gap the LOG must explain in capability terms.</p>'
+                )
+
+    version_note = ""
+    if excluded:
+        version_note = (
+            f'<p style="margin-top:12px;font-size:13px;color:#667085">'
+            f'{excluded} committed sweep{"s" if excluded != 1 else ""} on a different '
+            f'rubric version {"are" if excluded != 1 else "is"} omitted from this trend '
+            f'&mdash; scores compare only within a rubric version.</p>'
+        )
+
+    return f"""<div class="card">
+<h2>Reference-pair trend <span style="color:#667085;font-weight:500">&middot; {len(same)} dated sweeps &middot; rubric v{_esc(ref_version)}</span></h2>
+<p>Zooming out from the single-cadence drift above: the two canonical <b>anchors</b>
+&mdash; the with-rails and no-rails reference storefronts the whole population is
+calibrated around &mdash; scored on <b>every</b> committed dated sweep. The gap between
+them is the reference delta the per-cycle regression check freezes; this shows whether
+it holds across the population cadence. Overall is the 0&ndash;100 scale; a not-scorable
+reading breaks the line (never a zero &mdash; attribution honesty).</p>
+<div style="overflow-x:auto">{svg}</div>
+<p style="margin-top:8px">{legend}</p>
+{gap_note}
+{version_note}</div>"""
+
+
+def _write_calibration_page(out_dir: Path, sweep=None, sweeps=None) -> str:
     """Render calibration.html — the population leaderboard behind the reference pair.
 
     A benchmark needs a POPULATION, not one pair. The local runner commits a dated
@@ -2065,7 +2330,13 @@ def _write_calibration_page(out_dir: Path, sweep=None) -> str:
     """
     from .scoring import load_rubric
 
-    sweep = _load_calibration_sweep() if sweep is None else sweep
+    if sweep is None:
+        sweep = _load_calibration_sweep()
+        # Production path: the multi-sweep TREND reads the whole committed cadence.
+        # When a caller passes an explicit `sweep` (unit tests) it may pass `sweeps`
+        # too to exercise the trend; otherwise the trend is simply absent.
+        if sweeps is None:
+            sweeps = _load_all_calibration_sweeps()
     rubric = load_rubric()
     live_version = str(rubric.get("version", ""))
     bands = rubric.get("grade_bands", [])
@@ -2204,9 +2475,10 @@ readiness signal, but it is not the same as a low score.</p>
     else:
         ns_card = ""
 
+    trend_card = _calibration_anchor_trend_card(sweeps or [], live_version)
     drift_card = _calibration_drift_card(sweep.get("drift"))
 
-    body = f"""{nav}{intro}{table}{ns_card}{drift_card}
+    body = f"""{nav}{intro}{table}{ns_card}{trend_card}{drift_card}
 <p class="sub" style="margin-top:16px">
 Scores are comparable only within a rubric version.
 &middot; <a href="methodology.html">How the score is measured &rarr;</a>

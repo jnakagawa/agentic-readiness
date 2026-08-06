@@ -2988,6 +2988,138 @@ def test_calibration_page_no_drift_renders_without_card() -> None:
         _check("Calibration leaderboard" in text, f"leaderboard still renders when drift is {why}")
 
 
+# Cycle 279 (READOUT): the single-cadence drift card (Cycle 246) shows this-sweep vs
+# the immediately prior one. The reference-pair TREND card zooms out to the WHOLE
+# committed cadence — the two canonical anchors' overall on EVERY dated sweep, the
+# population analog of canonical-history.html's per-cycle delta trend (owed since
+# Cycle 246, unblocked once a 3rd dated sweep landed at Cycle 278). These pin its
+# READOUT semantics (display-only; the sweep math is the [LOCAL] harness, not here):
+#   - across >=2 same-version sweeps it plots the anchors and states whether the
+#     reference gap HELD or MOVED, both numbers straight from the committed overalls;
+#   - a not-scorable anchor reading is a GAP in the line, NEVER plotted as a 0
+#     (attribution honesty — the same invariant #4 teeth as the drift card);
+#   - only sweeps sharing the NEWEST sweep's rubric version are plotted (comparability
+#     only within a version, invariant #2); older-version sweeps are named, not mixed;
+#   - fewer than 2 same-version dated sweeps => no trend card (a point is not a trend).
+
+def _anchor_sweep(ts: str, version: str, rails, norails) -> dict:
+    """A minimal sweep carrying the two canonical anchors (+ one non-anchor row so the
+    anchor filter is exercised). ``rails``/``norails`` = overall float, or None for a
+    NOT-SCORABLE reading of that anchor at this sweep."""
+    def _row(dom, seg, ov):
+        return {"domain": dom, "segment": seg,
+                "scored": ov is not None, "overall": ov,
+                "grade": "B" if (ov or 0) >= 80 else "F",
+                "pillars": None if ov is None else {"access": 100.0}, "error": None}
+    return {"ts": ts, "rubric_version": version, "rows": [
+        _row("filler.test", "control:non-storefront", 20.0),
+        _row("rails.test", "api-storefront:rails-anchor", rails),
+        _row("norails.test", "api-storefront:no-rails-anchor", norails),
+    ]}
+
+
+def test_calibration_anchor_trend_across_sweeps() -> None:
+    print("test_calibration_anchor_trend_across_sweeps")
+    sweeps = [
+        _anchor_sweep("20260728T000000Z", "0.7", 85.5, 46.1),
+        _anchor_sweep("20260805T000000Z", "0.7", 85.5, 46.1),
+        _anchor_sweep("20260806T000000Z", "0.7", 85.5, 46.1),
+    ]
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_calibration_page(
+            Path(d), sweep=_fake_sweep(), sweeps=sweeps)).read_text()
+    _check("Reference-pair trend" in text, "a Reference-pair trend card is rendered")
+    _check("3 dated sweeps" in text, "the trend names how many same-version sweeps it plots")
+    # Both anchors are named in the legend (never color-alone).
+    _check("rails.test" in text and "norails.test" in text,
+           "both canonical anchors are named in the legend")
+    # The gap-held summary comes from the DATA: 85.5 - 46.1 = +39.4 at first and last.
+    _check("reference gap held" in text.lower(), "a steady gap is called out as held")
+    _check("+39.4" in text, "the reference gap magnitude (85.5-46.1) is surfaced from data")
+    # It is an actual chart, and the y-axis is the fixed 0-100 overall scale.
+    _check("<svg" in text and 'aria-label="Canonical anchor overall' in text,
+           "the trend renders an SVG chart with an accessible label")
+
+
+def test_calibration_anchor_trend_gap_moved_is_flagged() -> None:
+    # If the reference gap MOVES across the cadence, the card must SAY so (a move the
+    # LOG must explain in capability terms) rather than silently claim it held.
+    print("test_calibration_anchor_trend_gap_moved_is_flagged")
+    sweeps = [
+        _anchor_sweep("20260728T000000Z", "0.7", 85.5, 46.1),   # gap +39.4
+        _anchor_sweep("20260806T000000Z", "0.7", 85.5, 55.5),   # gap +30.0
+    ]
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_calibration_page(
+            Path(d), sweep=_fake_sweep(), sweeps=sweeps)).read_text()
+    _check("reference gap moved" in text.lower(), "a moved gap is flagged as moved, not held")
+    _check("reference gap held" not in text.lower(), "a moved gap is NOT reported as held")
+    # From +39.4 to +30.0: both endpoints and the signed move come from the data.
+    _check("+39.4" in text and "+30.0" in text, "both gap endpoints are surfaced from data")
+
+
+def test_calibration_anchor_trend_not_scorable_is_gap_not_zero() -> None:
+    # Attribution honesty (invariant #4) on the trend surface: an anchor that was NOT
+    # SCORABLE in one sweep is a GAP in its line, never plotted as a 0 that would fake
+    # a plunge. Teeth: the not-scorable sweep contributes NO plotted reading for that
+    # anchor, and the gap-held summary reads only the SCORED readings.
+    print("test_calibration_anchor_trend_not_scorable_is_gap_not_zero")
+    sweeps = [
+        _anchor_sweep("20260728T000000Z", "0.7", 85.5, 46.1),
+        _anchor_sweep("20260805T000000Z", "0.7", 85.5, None),   # no-rails unreachable
+        _anchor_sweep("20260806T000000Z", "0.7", 85.5, 46.1),
+    ]
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_calibration_page(
+            Path(d), sweep=_fake_sweep(), sweeps=sweeps)).read_text()
+    _check("Reference-pair trend" in text, "the trend still renders with a not-scorable reading")
+    # The no-rails anchor is plotted for exactly its 2 SCORED sweeps — the tooltip
+    # (`norails.test (<date>): overall ...`) appears twice, never for the middle sweep.
+    _check(text.count("norails.test (") == 2,
+           f"not-scorable reading is a gap (2 plotted, got {text.count('norails.test (')})")
+    # The gap held at +39.4 across the SCORED endpoints — the middle miss is not a 0.
+    _check("reference gap held" in text.lower() and "+39.4" in text,
+           "the gap summary reads scored readings only, not a fabricated zero")
+    # Teeth: a naive not-scorable-as-0 impl would surface a 0.0 overall for the miss.
+    _check("20260805" not in text or "overall 0.0" not in text,
+           "the not-scorable reading is never rendered as a 0.0 overall")
+
+
+def test_calibration_anchor_trend_is_version_isolated() -> None:
+    # Invariant #2: scores compare only within a rubric version. The trend plots ONLY
+    # sweeps sharing the newest sweep's version; an older-version sweep is counted and
+    # named, never mixed onto the same axis.
+    print("test_calibration_anchor_trend_is_version_isolated")
+    sweeps = [
+        _anchor_sweep("20260728T000000Z", "0.7", 40.0, 10.0),   # old rubric — excluded
+        _anchor_sweep("20260805T000000Z", "0.8", 85.5, 46.1),
+        _anchor_sweep("20260806T000000Z", "0.8", 85.5, 46.1),
+    ]
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_calibration_page(
+            Path(d), sweep=_fake_sweep(), sweeps=sweeps)).read_text()
+    _check("Reference-pair trend" in text, "the trend renders for the current-version cohort")
+    _check("2 dated sweeps" in text, "only the 2 same-version (v0.8) sweeps are plotted")
+    _check("rubric v0.8" in text, "the trend is labeled with the current rubric version")
+    _check("different rubric version" in text and "omitted" in text,
+           "the older-version sweep is named as omitted, not silently dropped")
+
+
+def test_calibration_anchor_trend_needs_two_sweeps() -> None:
+    # A single dated sweep is not a trend — no card, no crash. (The single-cadence
+    # drift card already covers a two-sweep step; the trend is the cadence view.)
+    print("test_calibration_anchor_trend_needs_two_sweeps")
+    with tempfile.TemporaryDirectory() as d:
+        one = Path(scorecard._write_calibration_page(
+            Path(d), sweep=_fake_sweep(),
+            sweeps=[_anchor_sweep("20260728T000000Z", "0.7", 85.5, 46.1)])).read_text()
+        none = Path(scorecard._write_calibration_page(
+            Path(d), sweep=_fake_sweep(), sweeps=[])).read_text()
+    for text, why in ((one, "a single sweep"), (none, "no sweeps")):
+        _check("Reference-pair trend" not in text, f"no trend card for {why}")
+        _check("Calibration leaderboard" in text, f"leaderboard still renders for {why}")
+
+
 # ---------------------------------------------------------------------------
 # Cycle 192 (READOUT): the "earned by" pillar caption. Each pillar bar now names
 # the single capability that contributes the most raw points to its score, so
@@ -3490,6 +3622,11 @@ def main() -> int:
         test_calibration_page_surfaces_drift,
         test_calibration_drift_reachability_change_is_not_a_score_move,
         test_calibration_page_no_drift_renders_without_card,
+        test_calibration_anchor_trend_across_sweeps,
+        test_calibration_anchor_trend_gap_moved_is_flagged,
+        test_calibration_anchor_trend_not_scorable_is_gap_not_zero,
+        test_calibration_anchor_trend_is_version_isolated,
+        test_calibration_anchor_trend_needs_two_sweeps,
         test_pillar_earner_names_dominant_capability,
         test_pillar_earner_tracks_points_not_a_hardcoded_name,
         test_pillar_earner_omitted_for_na_and_unearned,

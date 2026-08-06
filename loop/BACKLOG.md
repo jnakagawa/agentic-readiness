@@ -11,28 +11,25 @@ fresh codex refusal live (driftflight.com codex t1 → reachability). Predicted 
 the vocabulary drifted onto a NEW near-miss family → new peer-gated P0 below. Evidence
 runs/local/pr147_postmerge_20260806T084420Z/. See LOG Cycle 286. -->
 
-- **[PEER-GATE] Broaden `_ENV_BLOCK_RE` for the "browser permission boundary/policy … denied" near-miss family**
-  (METHOD / attribution honesty, invariant #4; behavioral scoring semantics ⇒ PEER-GATED PR, reviewed+self-merged
-  next cycle). SURFACED LIVE by Cycle 286's post-merge panel (`runs/local/pr147_postmerge_20260806T084420Z/`): the
-  SHIPPED detector correctly caught `driftflight.com` codex t1 (*"rejected by the browser security policy"*, v0.6
-  branch) but MISSED two fresh codex own-tool refusals — `driftflight.com` codex t2 *"Browser access to
-  driftflight.com was denied by the browser permission policy."* AND `drift-flight.org` codex t2 *"Direct
-  read-only browser access to drift-flight.org was denied by the browser permission boundary."* Both leaked → scored
-  as valid all-false site runs (`.com` valid_runs=3 not 2, `.org` valid_runs=4 not 3), narrowing the behavioral
-  delta by scoring codex's own hosted-browser refusal as site evidence. WHY: the phrasing names "the browser
-  **permission** boundary/policy" — NO apostrophe-s ("browser's") and "permission" not "site-permission", so it
-  slips past v0.7(b) `browser['’]s (site[- ]permission|safety|security) (boundary|layer|policy|…)` and is not one
-  of v0.7(a)'s three fixed forms. Genuine agent-side blocks (both domains HTTP-200; codex REACHED .org on its
-  sibling trial). FIX DESIGN: broaden v0.7(b) to accept the own-apparatus gate WITHOUT the apostrophe-s and WITHOUT
-  the "site-" qualifier — e.g. `browser['’]?s? (?:site[- ])?permission (?:boundary|policy|layer|controls?)` PAIRED
-  with a nearby denied/blocked anchor + the INTACT `_NOT_SITE_ATTRIBUTED` guard (a real "denied by the
-  server/WAF/Cloudflare" is STILL never excused). ACCEPTANCE (deterministic, $0, mirror PR #147's review): the new
-  pattern must flip EXACTLY the two new committed leaks
-  (`pr147_postmerge_20260806T084420Z/transcripts/{driftflight.com,drift-flight.org}_codex_t2.json`) True + leave
-  every other committed transcript unchanged (differential leak scan over ALL committed transcripts), keep
-  `test_attribution.py` site-attributed/anchorless-403 negatives green, no rubric bump (attribution routing within
-  behavioral checks, per the Cycle-269/284 precedent — reviewer confirms). Open `loop/env-block-permission-boundary-nearmiss`. This is the THIRD drift of the own-tool refusal vocabulary (Cycle 269, 284, 286) → the periodic leak
-  scan is now a standing METHOD tripwire. SCOPE follow-up (future, carefully-guarded proposal only): the SEPARATE
+<!-- IMPLEMENTED Cycle 287 → PR #148 (loop/env-block-permission-boundary-nearmiss, commit fd7f25a), OPEN for
+next-cycle peer review + self-merge. New v0.7(d) branch: fires only when a block word is paired with the apparatus
+AS THE DENIER — "(denied|…|blocked) …by (a|an|the)? browser['’]?s? (site[- ])?permission (boundary|policy|layer|
+controls?)"; required "by" keeps a site-actor subject out, _NOT_SITE_ATTRIBUTED keeps a real "…denied BY the
+server/WAF" out. Differential leak scan over all 87 committed run records flips EXACTLY the two committed leaks
+(.com/.org codex t2), zero collateral; test_attribution.py #14 (attribution 13→14, suite 37/37); static path
+untouched (26/26, +39.4); no rubric bump. See LOG Cycle 287. Post-merge live behavioral re-run (.com valid_runs→2,
+.org→3, wider delta) stays queued [LOCAL] below. -->
+
+- **[LOCAL] PR #148 post-merge LIVE behavioral verification** (METHOD, queued Cycle 287). After the peer cycle
+  merges PR #148, run the exact command `compare drift-flight.org driftflight.com --behavioral --trials 2 --models
+  claude,codex` ($0 read-only shopper+trust panel; ≤10 codex invocations; free-tier ≤1×, no signing) and confirm
+  the v0.7(d) fix routes any fresh "denied by the browser permission boundary/policy" codex refusal to reachability
+  (`.com` valid_runs back to 2 / `.org` to 3 when the gate fires that phrasing), WIDENING the behavioral delta.
+  Force-add the panel dir to `runs/local/`. Per-trial non-deterministic gate → the phrasing may drift again; if a
+  NEW near-miss family appears, re-derive with the shipped detector and queue the next peer-gated broadening (the
+  standing METHOD tripwire — vocab has drifted Cycle 269, 284, 286→287).
+
+- **[SCOPE follow-up, future — carefully-guarded proposal only]** the SEPARATE
   reputation-"unsafe" sentence family — *"…classified driftflight.com as unsafe and blocked access."* — is a
   genuine own-tool block but in ambiguous vocabulary (test-#8 family); attempt ONLY with a disambiguating
   own-apparatus SUBJECT anchor so a site-side WAF "flagged unsafe" is never excused. See LOG Cycle 286 / 284 / 282.

@@ -1,6 +1,63 @@
 # Loop state
 
-- Cycle counter: 290
+- Cycle counter: 291
+- CYCLE 291 — 2026-08-06T~13:2xZ (METHOD, cloud, direct-to-main, tests-only, score-neutral). FIRST duty
+  (infra health + peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR; #148
+  operator-merged `7d47f2e` before Cycle 288). Cloud detached at origin/main `530a0f7`, local `main` stale orphan
+  `3e318f1` → realigned local `main` to origin/main before work (benign, no history rewrite). **INFRA HEALTHY:**
+  newest verify by FILENAME `runs/local/verify_20260806T124105Z.json` (12:41Z, tests_ok=true 37 suites, 46.1 F /
+  85.5 B / +39.4), ~42min old at fire (13:23Z); :41 cadence holding (10:41Z→11:41Z→12:41Z) → RUNNER-HEALTH WATCH
+  NORMAL. Fresh checkout had NO `.venv` → rebuilt (py3.11); full suite **37/37 green** before the change.
+  **TRACK (cloud METHOD / static-path reproducibility):** executed STATE's named next-METHOD lever — host-env
+  reproducibility SATURATED (hash-seed 267 / timezone 271 / encoding 277 / locale 280) → moved OFF it to
+  **probe-order independence of the aggregate**. Those 4 suites guard the host-ENVIRONMENT axes; the open sibling
+  is INTERNAL — the ORDER checks arrive at `scoring.score`. Today `_run_probes` is fixed-order so reports
+  reproduce, but that's a property of the WIRING not the SCORER. **IMPROVEMENT:** NEW
+  `tests/test_probe_order_reproducibility.py` (4 tests, in-process — controls check order directly, no subprocess).
+  Over the replay-clean population, scores each fixture's REAL checks under 7 deterministic permutations (native +
+  reverse + 5 seeded shuffles) and asserts (1) the scored AGGREGATE `(overall,grade,sorted pillars,frozenset(caps),
+  scored)` identical across all 7 for every member; (2) once the 2 arrival-order-FOLLOWING fields (`checks` array +
+  `caps_applied`) are canonicalized, the FULL report is byte-identical across all 7 orders WHILE the RAW report
+  genuinely differs (7 distinct of 7) → arrival order reaches ONLY those presentation fields, nothing scored/evidence.
+  **FINDING+TEETH:** auditing `score` surfaced the ONE latent arrival-order dependence it carries — `caps_applied` is
+  APPENDED in check-arrival order (scoring.py L213-218), so with ≥2 binding caps its LIST order flips fwd-vs-rev while
+  the capped `overall` (min over caps) + the cap SET do not. Teeth prove it on the real scorer with a synthetic 2-cap
+  rubric (overall/grade invariant 20.0/F, cap SET invariant, LIST flips `[cap_a,cap_b]`→`[cap_b,cap_a]`). NEVER bites
+  today (no committed fixture has ≥2 binding caps — every real `caps_applied` empty), so the guards are correct + raw
+  reports still reproduce; the peer-gated fix (sort `caps_applied` in scoring.py) is QUEUED [BACKLOG P1]. Guard 4 pins
+  the population to the LIVE 0-replay-miss set (self-maintaining, mirrors hashseed). **SHIP (direct-to-main):**
+  tests-only, off the scoring path (`git diff --stat -- asrs/ rubric/ fixtures/ experiments/ loop/local_verify.py
+  batteries/` EMPTY; only the one new test file); auto-discovers via the `tests/test_*.py` glob (37→**38 suites**);
+  `test_runner_registration` green; suite **38/38 green** after. **CANONICAL UNMOVED:** static replay 26/26 → 46.1 F /
+  85.5 B / **+39.4** (concurs 12:41Z floor); a tests-only guard adds no probe/scorer code → cannot move a score; the
+  new suite's own numbers witness the pair byte-stable at 85.5/B + 46.1/F across all 7 probe orders. Invariants #1
+  ($0 pure in-process tests)–#5 held; zero codex, zero paid ops. NO DM (score-neutral tests-only METHOD, not a
+  DM-enumerated sensitive class; no digest due — ~13:2xZ precedes 16:00 UTC on 08-06). See LOG Cycle 291.
+- FOCUS POINTER (Cycle 291 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
+  RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY on a fresh
+  >6h no-artifact gap. Cloud track rotation: Cycle 291 was METHOD → **COVERAGE next** (METHOD → COVERAGE → TRUTH →
+  READOUT). NEXT METHOD (cloud): the probe-order guard covers the STATIC scorer; the sibling INTERNAL axis on the
+  BEHAVIORAL path (does `battery.py`/`reliability.py` aggregation depend on task/trial arrival order beyond the
+  already-sorted evidence projections of Cycles 253/255/257/262?) OR fixture-capture determinism (does
+  `--record-fixture` serialize request order deterministically?). NEW PEER-GATED P1 QUEUED [BACKLOG]: sort
+  `caps_applied` in scoring.py so the RAW report is byte-reproducible under check reordering too (not only the
+  canonical form) — a scoring-semantics change (serialized `caps_applied` order) → peer-gated; the Cycle-291 teeth
+  are its spec; canonical-neutral by construction (every committed `caps_applied` is empty). NEXT READOUT (from
+  Cycle 290's next-hypothesis): carry a one-line POPULATION-POSITION note to the MAIN card hero beside the
+  reference-gap badge, reading the SAME `_population_band_series` (Cycle-285 badge pattern). NEXT TRUTH (cloud): a
+  SECOND non-anchor cross-path weld member gated on a domain having BOTH a committed replay baseline AND ≥2 stable
+  sweep presences — books.toscrape.com has the baseline but is ABSENT from the sweeps → [LOCAL] cadence ADDING it to
+  `experiments/calibration_sweep.py`'s POPULATION unlocks it (also a stable RETAIL band member). NEXT in-cloud
+  COVERAGE (still open): subscription PAUSE/RESUME (polar `subscription.paused`/uncancel) IF precision-guardable;
+  physical_good RETURNS-WINDOW (allbirds/moleskine); a data_retrieval RESPONSE-SCHEMA / field-contract leg IF
+  committed ipinfo prose carries it. Offering bank: metered_api 26 / digital_good 11 / physical_good 10 /
+  subscription 10 / service_booking 9 / data_retrieval 8. Standing METHOD tripwire: own-tool refusal vocab drifted
+  THREE times (269, 284, 286→287) → keep the periodic leak scan over each fresh committed panel. NEXT calibration
+  cadence: population 17 scored (target 15–20); next broadening = a genuine ACP/UCP/MPP merchant or a 2nd x402-live
+  site. Substantive [LOCAL] frontier: PR #148 post-merge live behavioral verification (still queued); ADD
+  books.toscrape.com to the sweep POPULATION; cross-model SHOPPER delta still codex-blocked on the WITH side; a THIRD
+  calibration anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168); structured catalog/pricing
+  JSON (Cycle-70).
 - CYCLE 290 — 2026-08-06T~12:2xZ (READOUT, cloud, direct-to-main, display-only, score-neutral). FIRST duty
   (infra health + peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR; #148
   operator-merged `7d47f2e` before Cycle 288). Cloud detached at origin/main `d6d3e0c`, local `main` stale orphan

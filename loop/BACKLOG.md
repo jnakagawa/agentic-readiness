@@ -688,6 +688,22 @@ untouched (26/26, +39.4); no rubric bump. See LOG Cycle 287. Post-merge live beh
 ## P1
 
 
+- **[PEER-GATED, opened Cycle 291] Sort `caps_applied` in `scoring.py` so the RAW report is byte-reproducible under
+  check reordering** (METHOD, scoring-semantics — serialized `caps_applied` LIST order). Cycle 291's probe-order
+  reproducibility audit found the ONE latent arrival-order dependence the static scorer still carries: `caps_applied`
+  is APPENDED in check-arrival order (`asrs/scoring.py` L213-218), so with ≥2 binding caps its list order flips under a
+  probe reordering — while the capped `overall` (min over caps) and the cap SET are invariant. It NEVER bites today
+  (no committed fixture has ≥2 binding caps; every real `caps_applied` is empty), so `test_probe_order_reproducibility`
+  neutralizes it by comparing the cap SET / sorting `caps_applied` in the canonical digest. The clean fix: sort
+  `caps_applied` deterministically before it lands in the Report (e.g. by cap value then slug, or slug alphabetically)
+  so the RAW `to_json` is byte-reproducible too, not only the canonical form. **Peer-gated** because it changes the
+  serialized report's `caps_applied` ordering (scoring semantics). Canonical-neutral BY CONSTRUCTION (every committed
+  `caps_applied` is empty → replay 26/26 / +39.4 unmoved; assert it). The Cycle-291 teeth
+  (`test_caps_applied_list_order_is_arrival_order_dependent_teeth`) are the exact spec — after the fix, replace its
+  "LIST order flips" assertion with a "LIST order is now deterministic (== sorted)" assertion. No rubric bump warranted
+  (a presentation-order determinism fix within an existing field, not a weight/cap/max_points change — reviewer to
+  confirm). Small, ~1 file + the one teeth test.
+
 - **[OBSERVATION — Cycle 267, UPDATED Cycles 271/274/277, CLOSED Cycle 280] Evidence-reproducibility: ALL host axes
   (in-cloud AND the [LOCAL] one) are now CLOSED — the family is FULLY SATURATED.** The committed `Report.to_json`
   evidence is proven invariant along every host axis a machine can vary: ARRIVAL-ORDER on the behavioral path (Cycles

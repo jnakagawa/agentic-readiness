@@ -103,7 +103,23 @@ _ENV_BLOCK_RE = re.compile(
     # counting codex's own hosted-browser refusal as a valid all-false site run
     # (invariant #4). "interactive"/"browser" stay REQUIRED as the own-apparatus
     # anchor so a bare site 403 body ("Access Denied") is never matched.
-    r"|(?:interactive(?: browser)? access|direct browser access|browser access permission)"
+    # v0.7 (e) (Cycle 296): the trailing "permission" made OPTIONAL too, so a bare
+    # "browser access ... denied" is anchored. codex's own-tool refusal drifted a
+    # FOURTH time (PR #148 post-merge panel, runs/local/pr148_postmerge_
+    # 20260806T184617Z/): driftflight.com codex t2 said "Permitted browser access
+    # was denied, and the public web retriever classified the direct URL as unsafe
+    # to open." while the SAME-run FetchContext.homepage() = HTTP 200 and codex t1
+    # reached the site in full. "browser access" ALONE — not "interactive/direct
+    # browser access", not "browser access permission", not v0.7(d)'s "denied BY
+    # the browser permission ..." — slipped every branch, so the all-false refusal
+    # counted a VALID WITH-side SITE run (.com valid_runs 1->2), NARROWING the
+    # behavioral delta by scoring codex's OWN hosted-browser refusal as site
+    # evidence (the exact invariant-#4 leak). "browser access" (not a bare
+    # "access") stays REQUIRED and _NOT_SITE_ATTRIBUTED still rejects "...denied BY
+    # the server/WAF/Cloudflare", so a site 403 body ("Access Denied") and any
+    # site-attributed block are STILL never excused. Pinned by
+    # tests/test_attribution.py #15.
+    r"|(?:interactive(?: browser)? access|direct browser access|browser access(?: permission)?)"
     r"(?:[^.]|\.(?=\S)){0,60}?"
     r"(?:denied|declined|refused|rejected|blocked)" + _NOT_SITE_ATTRIBUTED +
     # v0.7 (b): the browser's OWN site-permission / safety boundary as the gate.

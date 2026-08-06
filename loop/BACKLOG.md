@@ -6,6 +6,31 @@ design in-cloud, execute locally.
 ## P0
 
 
+- **[PEER-GATE] Broaden `_ENV_BLOCK_RE` for a NEW live own-tool refusal near-miss
+  ("interactive ACCESS … denied … before the homepage loaded")** (METHOD / attribution
+  honesty, invariant #4). Opened by the Cycle-282 [LOCAL] behavioral panel: on a fresh
+  `compare drift-flight.org driftflight.com --behavioral --trials 2 --models claude,codex`,
+  driftflight.com **codex#2** refused with *"Interactive access to driftflight.com was denied
+  before the homepage loaded."* — the Cycle-269 v0.7(a) alternative requires "interactive
+  **browser** access", and the live phrasing DROPPED "browser", so `_is_env_blocked` returned
+  False and the all-false refusal was counted as a VALID run (`valid_runs=3` not 2,
+  verdict_stability 1.0→0.333). Effect: the WITH side's five `bhv_*` outcome checks flipped
+  from unanimous-PASS to `-inconsistent`, NARROWING the behavioral delta by scoring codex's OWN
+  hosted-browser refusal as site evidence — the exact invariant-#4 leak. (drift-flight.org's two
+  codex refusals used covered phrasing → correctly caught, `valid_runs=2`.) Evidence:
+  `runs/local/behavioral_canonical_delta_20260806T064733Z/` (report_driftflight.com.json +
+  transcripts/driftflight.com_codex_t2.json). FIX (peer-gated scoring semantics — carefully):
+  add an alternative for the agent's own "interactive/direct **access** … denied/declined … (before
+  the homepage loaded)" that does NOT require the literal word "browser", KEEPING the
+  `_NOT_SITE_ATTRIBUTED` negative-lookahead so a real site-side 403 / Cloudflare / firewall block is
+  STILL never excused (attribution honesty cuts both ways); consider the symmetric "site access …
+  was denied" phrasing seen at 234505Z. Extend `tests/test_attribution.py` (#12 own-tool-drift) with
+  this exact transcript as a positive and a site-side "access denied by the firewall" as the negative
+  control; the canonical static replay stays invariant by construction (this only routes MORE codex
+  refusals to reachability, never fewer, and the pair is NA for a shopper browser gate on the static
+  path). Post-merge: re-run the Cycle-282 panel and confirm driftflight.com `valid_runs=2` + a WIDER
+  behavioral delta. See LOG Cycle 282 (RESULT 4).
+
 - **[OPERATOR DIRECTIVE — Jonah, 2026-07-23] The battery must be
   OFFERING-RELATIVE, not fixed.** Observed: the current battery judges every
   site against one static intent list — an image-generation API gets probed

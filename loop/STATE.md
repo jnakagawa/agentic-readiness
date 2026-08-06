@@ -1,6 +1,62 @@
 # Loop state
 
-- Cycle counter: 281
+- Cycle counter: 282
+- CYCLE 282 — 2026-08-06T07:1xZ (TRUTH, LOCAL, direct-to-main, evidence+docs, score-neutral). FIRST duty
+  (infra health + peer-gate review): `gh pr list --state open` → `[]` (no open peer-gated PR). HEAD ==
+  origin/main == local `main` all at `dc55ed5` (clean, no stale-orphan realign). **INFRA HEALTHY:** newest
+  verify by FILENAME `runs/local/verify_20260806T064105Z.json` (06:41Z, tests_ok=true 36 suites, 46.1 F /
+  85.5 B / +39.4), ~1min old at fire (06:42Z 08-06), deep inside the 6h floor; :41 cadence holding
+  (04:41Z→05:41Z→06:41Z) → RUNNER-HEALTH WATCH NORMAL. `codex` 0.145.0 / `zero` / `.venv` 3.12.8 resolve;
+  full suite **36/36 green** (before AND after — this cycle touched no code). **TRACK (LOCAL TRUTH):** the
+  oldest-P0 [LOCAL] item — the cross-model BEHAVIORAL acceptance/agreement run (standing #1 open question:
+  "cross-model agreement unmeasured; codex never reached the WITH site"). This morning's 00:49Z attempt was
+  INCOMPLETE (log has start, no results); domains aged ~20d + the gate is per-trial non-deterministic → a
+  fresh full pair run is in-budget and either advances the blocker or measures a fresh behavioral signal. Ran
+  `compare drift-flight.org driftflight.com --behavioral --trials 2 --models claude,codex` ($0 read-only
+  shopper+trust panel; 8 codex invocations ≤10). **RESULT 1 — behavioral delta +34.8** (drift-flight.org 42.6
+  F → driftflight.com 77.4 C; access +5.0 / legibility +54.5 / transactability +68.8 / trust +0.0 / outcome
+  +12.3): the with-rails side wins big BEHAVIORALLY too (richer than the static +39.4 — behavioral adds the
+  outcome + live-trust + reachability checks; the narrowing is fully attributable, not a capability surprise).
+  **RESULT 2 — codex own-tool gated on ALL FOUR canonical shopper trials this fire** (both sides ×2; the ~20d
+  reputation gate is back to FULLY closed vs 234505Z's t2 reach ~7h ago); claude reached both sides cleanly
+  → the SHOPPER cross-model comparison is still single-model on both sides (blocker unchanged). **RESULT 3 —
+  first MEASURED cross-model TRUST divergence (novel):** the trust panel runs via the separate `trust_probe`
+  (not the gated browser), so codex returned verdicts — and the models INVERT: NO-rails .org claude warn+go
+  (0.72) / codex refused (0.93); WITH-rails .com claude refused (0.66, flags the agent-targeting manipulation
+  copy) / codex warn+go (0.94, flags nothing). Genuine cross-model DISagreement on trust (didn't move the
+  delta — trust 48.1 both — but is the first cross-model agreement datapoint on the pair). **RESULT 4 — LIVE
+  invariant-#4 attribution LEAK (delta-narrowing, WITH side):** driftflight.com `valid_runs=3`/stability 0.333
+  vs drift-flight.org `valid_runs=2`/0.8. Re-deriving `_ENV_BLOCK_RE` over the 8 committed transcripts: exactly
+  ONE codex refusal leaked — driftflight.com codex#2 *"Interactive access to driftflight.com was denied before
+  the homepage loaded"* — the Cycle-269 v0.7(a) alt requires "interactive **browser** access" and the live
+  phrasing DROPPED "browser" → `_is_env_blocked`=False → counted as a valid all-false run → the WITH side's five
+  `bhv_*` outcome checks flipped unanimous-PASS→`-inconsistent`, NARROWING the delta by scoring codex's OWN
+  browser refusal as site evidence. NOT fixed here (peer-gated scoring semantics + a 2nd improvement) → queued
+  as a new peer-gated P0 (BACKLOG top) with the exact phrasing + `_NOT_SITE_ATTRIBUTED` guard requirement.
+  **SHIP:** evidence-only → direct-to-main; committed `runs/local/behavioral_canonical_delta_20260806T064733Z.log`
+  + `…/behavioral_canonical_delta_20260806T064733Z/{report_×2, transcripts/×8}`. STATIC canonical UNMOVED
+  (no scoring code changed; 06:41Z floor 46.1 F / 85.5 B / +39.4). Invariants #1 ($0)–#5 held; zero paid ops.
+  NO DM (score-neutral evidence/docs, not a sensitive-class PR; no digest due — 07:1xZ precedes 16:00 UTC on
+  08-06); RESULT 4 leak flagged for the next digest as the top open finding. See LOG Cycle 282.
+- FOCUS POINTER (Cycle 282 done, LOCAL): **ONE open peer-gated P0 now queued** — the `_ENV_BLOCK_RE` "interactive
+  access … denied … homepage" broadening (RESULT 4). It is a candidate for a FUTURE cycle to IMPLEMENT (peer-gated
+  scoring semantics; must keep the `_NOT_SITE_ATTRIBUTED` guard); it is NOT an open PR yet, so next fire's first
+  duty is still the infra health check (no PR to review-and-merge). RUNNER STALL fully RESOLVED + GUARDED (Cycle
+  261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY on a fresh >6h no-artifact gap. Cloud track rotation
+  UNCHANGED (this LOCAL cycle did not consume the cloud slot): cloud pointer remains **TRUTH next** per Cycle 281
+  (COVERAGE→TRUTH; METHOD→COVERAGE→TRUTH→READOUT). **CROSS-MODEL now partly answered:** the TRUST axis IS measured
+  (models DIVERGE, RESULT 3) — a READOUT surfacing per-model trust verdicts + a cross-model-agreement flag is a new
+  candidate so a single-model number is never quoted as consensus. The SHOPPER-browser cross-model reading on the
+  WITH side stays blocked on codex reachability (RESULT 2, unchanged) — a reputable agent-native control storefront
+  or marked-assisted pre-fetched content remains the only path. NEXT in-cloud COVERAGE (still open): subscription
+  PAUSE/RESUME (polar `subscription.paused`/uncancel) IF precision-guardable; data_retrieval DATA-FRESHNESS
+  (ipinfo "Daily Data Refresh"); physical_good RETURNS-WINDOW (allbirds/moleskine). NEXT METHOD: host-environment
+  reproducibility is SATURATED (hash-seed 267 / timezone 271 / encoding 277 / locale 280) — move OFF it
+  (probe-order independence of the aggregate, or fixture-capture determinism). NEXT calibration cadence: population
+  18 (target 15–20); next broadening = a genuine ACP/UCP/MPP merchant or a 2nd x402-live site (scarce — record
+  reachability as its own signal). Substantive [LOCAL] frontier: the `_ENV_BLOCK_RE` peer-gated fix (this fire);
+  cross-model SHOPPER delta still codex-blocked on the WITH side; a THIRD calibration anchor / 2nd x402-live
+  merchant; render-generation digital_good (Cycle-168); structured catalog/pricing JSON (Cycle-70).
 - CYCLE 281 — 2026-08-06T06:2xZ (COVERAGE, cloud, direct-to-main, score-neutral). FIRST duty (infra health +
   peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR). Cloud started detached at
   origin/main `3a31524` with local `main` at stale `3e318f1` (Cycle-276 tip); realigned local `main` to
@@ -333,6 +389,16 @@ web host (403 "policy denial"). Confirmed 2026-07-23 via `asrs.fetch` and
   now WARRANTED (no longer "on speculation") and queued as a peer-gated P0 (BACKLOG). Broaden
   CAREFULLY — it must NOT route site-side 403s/Cloudflare challenges to reachability (attribution
   honesty cuts both ways).
+  UPDATE (2026-08-06T07:1xZ, Cycle 282 local fire): a FRESH full behavioral pair panel confirms the gate is
+  time-varying — codex own-tool gated ALL FOUR canonical shopper trials this fire (both sides ×2; the ~20d
+  reputation gate is back to fully CLOSED, vs 234505Z's t2 reach ~7h earlier). More important: a NEW near-miss
+  leak phrasing slipped past even the Cycle-269 broadening — driftflight.com codex#2 "Interactive access to
+  driftflight.com was denied before the homepage loaded" (the v0.7(a) alt requires "interactive BROWSER
+  access"; the live phrasing dropped "browser") → counted as a valid all-false run (valid_runs=3 not 2),
+  narrowing the WITH-side behavioral delta by scoring codex's own refusal as site evidence. drift-flight.org's
+  two codex refusals used covered "browser security/permission" phrasing → correctly caught (valid_runs=2). So
+  `_ENV_BLOCK_RE` STILL leaks; a fresh peer-gated P0 (BACKLOG top) carries the exact phrasing + guard. Evidence:
+  `runs/local/behavioral_canonical_delta_20260806T064733Z/`.
 - Panel verdict variance: EMPIRICAL question — what trial count N drives
   `verdict_stability` above ~0.8 on the canonical pair — got its first LIVE
   datapoint (07:50Z fire, drift-flight.org). ANSWER (claude-only, codex fully
@@ -350,3 +416,12 @@ web host (403 "policy denial"). Confirmed 2026-07-23 via `asrs.fetch` and
   `SHOPPER_TIMEOUT_S=300`/trial; the nested first-N subsample design
   (`experiments/trial_count_N.py`) gets the whole N-curve from ONE 5-trial run
   (~5 codex + 5 claude), not 2+3+5 separate runs — reuse it for the next domain.
+  UPDATE (2026-08-06T07:1xZ, Cycle 282 local fire): the cross-model agreement question is now PARTLY answered
+  on the TRUST axis. The trust panel runs via the separate `trust_probe` (NOT the gated hosted browser), so
+  codex returned trust verdicts on BOTH canonical sides even though its shopper browser was gated 4/4. The two
+  models INVERT: NO-rails drift-flight.org — claude warn+go (0.72) / codex refused (0.93); WITH-rails
+  driftflight.com — claude refused (0.66, flags the agent-targeting manipulation copy) / codex warn+go (0.94,
+  flags nothing). So cross-model TRUST agreement is measurable AND the models genuinely DISAGREE (weighting
+  identity-verifiability vs manipulation-pattern risk differently). Still OPEN: the cross-model SHOPPER
+  (checkpoint) agreement on the WITH side, blocked on codex browser reachability (RESULT 2, unchanged).
+  Evidence: `runs/local/behavioral_canonical_delta_20260806T064733Z/report_*.json` (TRUST PANEL section).

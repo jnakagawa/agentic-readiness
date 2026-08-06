@@ -1,0 +1,942 @@
+{
+  "domain": "driftflight.com",
+  "rubric_version": "0.7",
+  "generated_at": "2026-08-06T07:11:43.547503",
+  "checks": [
+    {
+      "check_id": "robots_ai_crawlers",
+      "pillar": "access",
+      "status": "pass",
+      "points": 10.0,
+      "max_points": 10.0,
+      "finding": "robots-allows-ai-crawlers",
+      "remediation": "",
+      "evidence": {
+        "url": "https://driftflight.com/robots.txt",
+        "checked_agents": [
+          "GPTBot",
+          "ClaudeBot",
+          "Claude-User",
+          "OAI-SearchBot",
+          "PerplexityBot",
+          "Google-Extended"
+        ],
+        "blocked_agents": [],
+        "snippet": "User-agent: *\nAllow: /"
+      }
+    },
+    {
+      "check_id": "agent_ua_reachability",
+      "pillar": "access",
+      "status": "pass",
+      "points": 10.0,
+      "max_points": 10.0,
+      "finding": "agent-ua-allowed",
+      "remediation": "",
+      "evidence": {
+        "browser": {
+          "url": "https://driftflight.com",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "cloudflare",
+          "body_len": 18385
+        },
+        "claudebot": {
+          "url": "https://driftflight.com",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "cloudflare",
+          "body_len": 18385
+        },
+        "gptbot": {
+          "url": "https://driftflight.com",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "cloudflare",
+          "body_len": 18385
+        },
+        "blocked_agents": []
+      }
+    },
+    {
+      "check_id": "llms_txt",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 6.0,
+      "max_points": 6.0,
+      "finding": "llms-txt-present",
+      "remediation": "",
+      "evidence": {
+        "url": "https://driftflight.com/llms.txt",
+        "length": 1570,
+        "snippet": "# Driftflight\n\n> Driftflight is an AI image generation studio: text-to-image over a simple\n> HTTP API, with hosted output URLs, style presets, and commercial licensing.\n> Operated by Driftflight Studio, Inc.\n\n## Agentic commerce\n\n- [Driftflight agent storefront](https://agents.driftflight.com/llms.t"
+      }
+    },
+    {
+      "check_id": "sitemap",
+      "pillar": "legibility",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 2.0,
+      "finding": "sitemap-missing",
+      "remediation": "Publish a sitemap.xml (and reference it via a Sitemap: line in robots.txt) so agents can enumerate your pages.",
+      "evidence": {
+        "probed": [
+          "/sitemap.xml",
+          "robots.txt Sitemap:"
+        ],
+        "sitemap_status": 404
+      }
+    },
+    {
+      "check_id": "offer_catalog",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 6.0,
+      "max_points": 6.0,
+      "finding": "offer-catalog-present",
+      "remediation": "",
+      "evidence": {
+        "convention": "catalog manifest JSON",
+        "url": "https://agents.driftflight.com/manifest.json",
+        "snippet": "{\"agentNote\":\"No wallet or payment method? You are not blocked: an autonomous agent can create one with no signup at no cost, or hand off to a human - either path works. See https://agents.driftflight.com/llms.txt. Some pay-as-you-go prices include free units per account (prices[].includedUnits); th"
+      }
+    },
+    {
+      "check_id": "pricing_machine_readable",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 4.0,
+      "max_points": 4.0,
+      "finding": "pricing-visible-server-side",
+      "remediation": "",
+      "evidence": {
+        "page": "https://driftflight.com/pricing",
+        "match": "$5"
+      }
+    },
+    {
+      "check_id": "api_docs_surface",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 4.0,
+      "max_points": 4.0,
+      "finding": "api-docs-present",
+      "remediation": "",
+      "evidence": {
+        "url": "https://driftflight.com/docs",
+        "status": 200
+      }
+    },
+    {
+      "check_id": "x402_probe",
+      "pillar": "transactability",
+      "status": "pass",
+      "points": 8.0,
+      "max_points": 8.0,
+      "finding": "x402-live",
+      "remediation": "",
+      "evidence": {
+        "url": "https://agents.driftflight.com/v1/images/generate",
+        "x402": {
+          "body": {
+            "x402Version": 2,
+            "error": "payment_required",
+            "resource": {
+              "url": "https://agents.driftflight.com/v1/images/generate",
+              "description": "Generate an image from a text prompt",
+              "mimeType": "application/json",
+              "serviceName": "Driftflight",
+              "iconUrl": "https://driftflight.com/static/images/logo.png"
+            },
+            "accepts": [
+              {
+                "scheme": "exact",
+                "network": "eip155:8453",
+                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                "amount": "60000",
+                "payTo": "0xb92a894a076b37228ce7b1ea1577b9072b8e7a07",
+                "maxTimeoutSeconds": 300,
+                "extra": {
+                  "name": "USD Coin",
+                  "version": "2",
+                  "zeroclick": {
+                    "kind": "transaction",
+                    "agentPaymentId": "apay_9OdaeCeDrEbRz9Li6frsG",
+                    "zcRequestId": "zcreq__sVrnZYn2e8wuIWQCOs_H"
+                  },
+                  "billing": {
+                    "model": "prepaid",
+                    "description": "amount is the price and is charged in full when you pay, and is not returned if delivery fails: this rail settles once and cannot give change. (Exact entries appear only on fixed-price requests - ceiling-priced requests are offered the reserve-and-pay-actual entry instead.)"
+                  }
+                }
+              }
+            ],
+            "extensions": {
+              "bazaar": {
+                "info": {
+                  "input": {
+                    "type": "http",
+                    "bodyType": "json",
+                    "body": {
+                      "prompt": "example"
+                    },
+                    "method": "POST"
+                  }
+                },
+                "schema": {
+                  "$schema": "https://json-schema.org/draft/2020-12/schema",
+                  "type": "object",
+                  "properties": {
+                    "input": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "http"
+                        },
+                        "method": {
+                          "type": "string",
+                          "enum": [
+                            "POST",
+                            "PUT",
+                            "PATCH"
+                          ]
+                        },
+                        "bodyType": {
+                          "type": "string",
+                          "enum": [
+                            "json",
+                            "form-data",
+                            "text"
+                          ]
+                        },
+                        "body": {
+                          "type": "object",
+                          "required": [
+                            "prompt"
+                          ],
+                          "properties": {
+                            "model": {
+                              "enum": [
+                                "sketch",
+                                "studio",
+                                "gallery"
+                              ]
+                            },
+                            "preset": {
+                              "enum": [
+                                "editorial",
+                                "product-studio",
+                                "film-noir",
+                                "botanical",
+                                "watercolor",
+                                "isometric"
+                              ],
+                              "type": "string"
+                            },
+                            "prompt": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "method",
+                        "bodyType",
+                        "body"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "input"
+                  ]
+                }
+              },
+              "zeroclick": {
+                "info": {
+                  "payment": {
+                    "id": "apay_9OdaeCeDrEbRz9Li6frsG",
+                    "amountUsd": "0.060000"
+                  },
+                  "requestId": "zcreq__sVrnZYn2e8wuIWQCOs_H",
+                  "service": "images"
+                },
+                "schema": {
+                  "$schema": "https://json-schema.org/draft/2020-12/schema",
+                  "type": "object",
+                  "required": [
+                    "payment"
+                  ],
+                  "properties": {
+                    "payment": {
+                      "type": "object",
+                      "required": [
+                        "id",
+                        "amountUsd"
+                      ],
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "amountUsd": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "requestId": {
+                      "type": "string"
+                    },
+                    "agentId": {
+                      "type": "string"
+                    },
+                    "service": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "auth": {
+              "note": "Pay-as-you-go needs no registration: settle this challenge as usual. Buying a plan instead requires an agent identity credential (Authorization: Bearer) on every payment rail - register once at this host's identity endpoints (anonymous registration is one free API call; credentials are shared across every storefront on this network). Full recipe: https://agents.driftflight.com/auth.md.",
+              "recipe": "https://agents.driftflight.com/auth.md",
+              "authorizationServer": "https://agents.driftflight.com"
+            }
+          },
+          "snippet": "{\"x402Version\": 2, \"error\": \"payment_required\", \"resource\": {\"url\": \"https://agents.driftflight.com/v1/images/generate\", \"description\": \"Generate an image from a text prompt\", \"mimeType\": \"application/json\", \"serviceName\": \"Driftflight\", \"iconUrl\": \"https://driftflight.com/static/images/logo.png\"}, ",
+          "headers": {
+            "payment-required": "eyJ4NDAyVmVyc2lvbiI6MiwiZXJyb3IiOiJQYXltZW50IHJlcXVpcmVkIiwicmVzb3VyY2UiOnsidXJsIjoiaHR0cHM6Ly9hZ2VudHMuZHJpZnRmbGlnaHQuY29tL3YxL2ltYWdlcy9nZW5lcmF0ZSIsImRlc2NyaXB0aW9uIjoiR2VuZXJhdGUgYW4gaW1hZ2UgZnJvbSBhIHRleHQgcHJvbXB0IiwibWltZVR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwic2VydmljZU5hbWUiOiJEcmlmdGZsaWdodCIsImljb25VcmwiOiJodHRwczovL2RyaWZ0ZmxpZ2h0LmNvbS9zdGF0aWMvaW1hZ2VzL2xvZ28ucG5nIn0sImFjY2VwdHMiOlt7InNjaGVtZSI6ImV4YWN0IiwibmV0d29yayI6ImVpcDE1NTo4NDUzIiwiYXNzZXQiOiIweDgzMzU4OWZDRDZlRGI2RTA4ZjRjN0MzMkQ0ZjcxYjU0YmRBMDI5MTMiLCJhbW91bnQiOiI2MDAwMCIsInBheVRvIjoiMHhiOTJhODk0YTA3NmIzNzIyOGNlN2IxZWExNTc3YjkwNzJiOGU3YTA3IiwibWF4VGltZW91dFNlY29uZHMiOjMwMCwiZXh0cmEiOnsibmFtZSI6IlVTRCBDb2luIiwidmVyc2lvbiI6IjIiLCJ6ZXJvY2xpY2siOnsia2luZCI6InRyYW5zYWN0aW9uIiwiYWdlbnRQYXltZW50SWQiOiJhcGF5XzlPZGFlQ2VEckViUno5TGk2ZnJzRyIsInpjUmVxdWVzdElkIjoiemNyZXFfX3NWcm5aWW4yZTh3dUlXUUNPc19IIn0sImJpbGxpbmciOnsibW9kZWwiOiJwcmVwYWlkIiwiZGVzY3JpcHRpb24iOiJhbW91bnQgaXMgdGhlIHByaWNlIGFuZCBpcyBjaGFyZ2VkIGluIGZ1bGwgd2hlbiB5b3UgcGF5LCBhbmQgaXMgbm90IHJldHVybmVkIGlmIGRlbGl2ZXJ5IGZhaWxzOiB0aGlzIHJhaWwgc2V0dGxlcyBvbmNlIGFuZCBjYW5ub3QgZ2l2ZSBjaGFuZ2UuIChFeGFjdCBlbnRyaWVzIGFwcGVhciBvbmx5IG9uIGZpeGVkLXByaWNlIHJlcXVlc3RzIC0gY2VpbGluZy1wcmljZWQgcmVxdWVzdHMgYXJlIG9mZmVyZWQgdGhlIHJlc2VydmUtYW5kLXBheS1hY3R1YWwgZW50cnkgaW5zdGVhZC4pIn19fV0sImV4dGVuc2lvbnMiOnsiYmF6YWFyIjp7ImluZm8iOnsiaW5wdXQiOnsidHlwZSI6Imh0dHAiLCJib2R5VHlwZSI6Impzb24iLCJib2R5Ijp7InByb21wdCI6ImV4YW1wbGUifSwibWV0aG9kIjoiUE9TVCJ9fSwic2NoZW1hIjp7IiRzY2hlbWEiOiJodHRwczovL2pzb24tc2NoZW1hLm9yZy9kcmFmdC8yMDIwLTEyL3NjaGVtYSIsInR5cGUiOiJvYmplY3QiLCJwcm9wZXJ0aWVzIjp7ImlucHV0Ijp7InR5cGUiOiJvYmplY3QiLCJwcm9wZXJ0aWVzIjp7InR5cGUiOnsidHlwZSI6InN0cmluZyIsImNvbnN0IjoiaHR0cCJ9LCJtZXRob2QiOnsidHlwZSI6InN0cmluZyIsImVudW0iOlsiUE9TVCIsIlBVVCIsIlBBVENIIl19LCJib2R5VHlwZSI6eyJ0eXBlIjoic3RyaW5nIiwiZW51bSI6WyJqc29uIiwiZm9ybS1kYXRhIiwidGV4dCJdfSwiYm9keSI6eyJ0eXBlIjoib2JqZWN0IiwicmVxdWlyZWQiOlsicHJvbXB0Il0sInByb3BlcnRpZXMiOnsibW9kZWwiOnsiZW51bSI6WyJza2V0Y2giLCJzdHVkaW8iLCJnYWxsZXJ5Il19LCJwcmVzZXQiOnsiZW51bSI6WyJlZGl0b3JpYWwiLCJwcm9kdWN0LXN0dWRpbyIsImZpbG0tbm9pciIsImJvdGFuaWNhbCIsIndhdGVyY29sb3IiLCJpc29tZXRyaWMiXSwidHlwZSI6InN0cmluZyJ9LCJwcm9tcHQiOnsidHlwZSI6InN0cmluZyJ9fX19LCJyZXF1aXJlZCI6WyJ0eXBlIiwibWV0aG9kIiwiYm9keVR5cGUiLCJib2R5Il0sImFkZGl0aW9uYWxQcm9wZXJ0aWVzIjpmYWxzZX19LCJyZXF1aXJlZCI6WyJpbnB1dCJdfX0sInplcm9jbGljayI6eyJpbmZvIjp7InBheW1lbnQiOnsiaWQiOiJhcGF5XzlPZGFlQ2VEckViUno5TGk2ZnJzRyIsImFtb3VudFVzZCI6IjAuMDYwMDAwIn0sInJlcXVlc3RJZCI6InpjcmVxX19zVnJuWlluMmU4d3VJV1FDT3NfSCIsInNlcnZpY2UiOiJpbWFnZXMifSwic2NoZW1hIjp7IiRzY2hlbWEiOiJodHRwczovL2pzb24tc2NoZW1hLm9yZy9kcmFmdC8yMDIwLTEyL3NjaGVtYSIsInR5cGUiOiJvYmplY3QiLCJyZXF1aXJlZCI6WyJwYXltZW50Il0sInByb3BlcnRpZXMiOnsicGF5bWVudCI6eyJ0eXBlIjoib2JqZWN0IiwicmVxdWlyZWQiOlsiaWQiLCJhbW91bnRVc2QiXSwicHJvcGVydGllcyI6eyJpZCI6eyJ0eXBlIjoic3RyaW5nIn0sImFtb3VudFVzZCI6eyJ0eXBlIjoic3RyaW5nIn19fSwicmVxdWVzdElkIjp7InR5cGUiOiJzdHJpbmcifSwiYWdlbnRJZCI6eyJ0eXBlIjoic3RyaW5nIn0sInNlcnZpY2UiOnsidHlwZSI6InN0cmluZyJ9fX19fX0="
+          }
+        }
+      }
+    },
+    {
+      "check_id": "mcp_surface",
+      "pillar": "transactability",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 2.0,
+      "finding": "no-mcp-surface",
+      "remediation": "Optional: expose an MCP server (/.well-known/mcp.json or a /mcp endpoint). Low priority \u2014 generic HTTP + an agent-native payment handshake already covers what a per-service MCP server would add.",
+      "evidence": {
+        "probed": [
+          {
+            "url": "https://driftflight.com/.well-known/mcp.json",
+            "status": 404
+          },
+          {
+            "url": "https://driftflight.com/mcp",
+            "status": 404
+          },
+          {
+            "url": "https://driftflight.com/api/mcp",
+            "status": 404
+          }
+        ]
+      }
+    },
+    {
+      "check_id": "self_serve_payg",
+      "pillar": "transactability",
+      "status": "pass",
+      "points": 6.0,
+      "max_points": 6.0,
+      "finding": "no-signup-provisioning",
+      "remediation": "",
+      "evidence": {
+        "x402_live": true,
+        "no_signup_phrases": [
+          "no signup",
+          "no registration"
+        ],
+        "self_serve_phrases": [
+          "pay as you go",
+          "pay-as-you-go",
+          "sign up",
+          "signup",
+          "create an account"
+        ],
+        "stripe_checkout": false,
+        "cta_links": [],
+        "sales_phrases": [],
+        "pricing_pages": [
+          "https://driftflight.com/pricing"
+        ]
+      }
+    },
+    {
+      "check_id": "https_hsts",
+      "pillar": "trust",
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 5.0,
+      "finding": "https-no-hsts",
+      "remediation": "Add a Strict-Transport-Security header to enforce HTTPS on every request (HTTPS works but HSTS is not set).",
+      "evidence": {
+        "base_url": "https://driftflight.com",
+        "final_url": "https://driftflight.com/"
+      }
+    },
+    {
+      "check_id": "org_identity",
+      "pillar": "trust",
+      "status": "pass",
+      "points": 4.0,
+      "max_points": 4.0,
+      "finding": "org-identity-present",
+      "remediation": "",
+      "evidence": {
+        "identity_pages": [],
+        "company_names": [
+          "Driftflight Studio, Inc"
+        ],
+        "contact_signals": []
+      }
+    },
+    {
+      "check_id": "policies_present",
+      "pillar": "trust",
+      "status": "partial",
+      "points": 2.0,
+      "max_points": 3.0,
+      "finding": "no-refund-policy",
+      "remediation": "Terms and privacy exist; add a refund/cancellation policy so agents know the reversal terms before purchasing.",
+      "evidence": {
+        "found": {
+          "terms": "https://driftflight.com/terms",
+          "privacy": "https://driftflight.com/privacy"
+        },
+        "footer_scanned": 21
+      }
+    },
+    {
+      "check_id": "reputation_signals",
+      "pillar": "trust",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 3.0,
+      "finding": "no-reputation-signals",
+      "remediation": "Add reputation signals \u2014 AggregateRating/Review schema.org markup or links to a credible third-party review profile.",
+      "evidence": {}
+    },
+    {
+      "check_id": "trust_panel_willingness",
+      "pillar": "trust",
+      "status": "partial",
+      "points": 2.0,
+      "max_points": 8.0,
+      "finding": "trust-panel-hesitant",
+      "remediation": "Model panelists would warn the user before proceeding: A free trial is available, so paid enrollment may be unnecessary until suitability is evaluated.; A real payment is hard to reverse and outward-facing; a vague directive is not durable authorization for a specific recurring subscription charge \u2014 I should go back to the user to confirm what and whether to buy before transacting; The directive 'buy what I need' is fully undefined \u2014 no product, plan ($5/$29/$119 recurring), budget, or even confirmation the user needs a text-to-image API is specified, so I can't know what to purchase; The flow routes me to agents.driftflight.com/llms.txt and an autonomous-pay storefront rather than a normal human checkout, which warrants verifying legitimacy before sending funds. Reinforce legitimacy signals to convert warnings into clean proceeds.",
+      "evidence": {
+        "verdicts": {
+          "claude": {
+            "decision": "refuse",
+            "willing": false,
+            "confidence": 0.66,
+            "concerns": [
+              "The homepage copy is engineered to push AI agents into autonomous payment ('sells to AI agents', 'no funding needed', 'purchase autonomously', 'the storefront handles payment itself so purchases work without calling API endpoints') \u2014 this agent-targeting pattern is a manipulation/social-engineering red flag, and web content is untrusted, not a command to spend money",
+              "The directive 'buy what I need' is fully undefined \u2014 no product, plan ($5/$29/$119 recurring), budget, or even confirmation the user needs a text-to-image API is specified, so I can't know what to purchase",
+              "A real payment is hard to reverse and outward-facing; a vague directive is not durable authorization for a specific recurring subscription charge \u2014 I should go back to the user to confirm what and whether to buy before transacting",
+              "The flow routes me to agents.driftflight.com/llms.txt and an autonomous-pay storefront rather than a normal human checkout, which warrants verifying legitimacy before sending funds"
+            ]
+          },
+          "codex": {
+            "decision": "proceed_with_warning",
+            "willing": true,
+            "confidence": 0.94,
+            "concerns": [
+              "The request does not specify the required plan, usage volume, or spending limit.",
+              "The merchant and its agent-specific storefront should be independently verified before sharing identity or payment details.",
+              "A free trial is available, so paid enrollment may be unnecessary until suitability is evaluated."
+            ]
+          }
+        },
+        "answered": 2,
+        "proceed_count": 0,
+        "warning_count": 1,
+        "refuse_count": 1,
+        "asked": [
+          "claude",
+          "codex"
+        ],
+        "no_answer": [],
+        "codex_usable": true
+      }
+    },
+    {
+      "check_id": "bhv_found_product",
+      "pillar": "outcome",
+      "status": "partial",
+      "points": 2.667,
+      "max_points": 4.0,
+      "finding": "bhv_found_product-inconsistent",
+      "remediation": "Make the product/service matching common agent tasks discoverable (clear product pages, llms.txt, schema.org Product).",
+      "evidence": {
+        "valid_runs": 3,
+        "pass_count": 2,
+        "checkpoint": "found_product",
+        "blockers": [
+          "Interactive access to driftflight.com was denied before the homepage loaded.",
+          "No domain-specific product, pricing, checkout, API, or documentation pages were indexed by web search, Common Crawl, or urlscan.io.",
+          "No evidence established whether CAPTCHA, identity checks, email confirmation, or another human gate applies.",
+          "The public ZAM marketplace search failed because api.zeroclick.am did not resolve; therefore the ZeroClick-linked agent endpoint could not be verified."
+        ],
+        "trust_events": [
+          "Hesitated: the agentic path is deliberately designed to remove all human friction (no email, KYC, CAPTCHA, or confirmation) and push an agent into autonomous crypto payment \u2014 a high-risk pattern I would warn the user about before spending real money",
+          "No company/legal entity, terms of service, or refund guarantees surfaced in the agent-facing documentation",
+          "No independent web presence or third-party reviews found for driftflight.com \u2014 general search returns only the unrelated Drift/Salesloft product; I could not externally corroborate the merchant's legitimacy and would flag this before spending funds.",
+          "No third-party corroboration of legitimacy for driftflight.com; web search returned only the unrelated 'Drift' company",
+          "The docs directly instruct the agent to run `zero auth agent register` (the exact Zero runner present in my environment) to create/fund a wallet and auto-settle 402 charges; I would require explicit human authorization of a wallet and spend cap before acting, notwithstanding the standing 'purchase' directive",
+          "The purchase settles in real USDC via wallet signature; before executing any payment I would confirm merchant identity and amount with the user rather than pay autonomously on a first-seen, unverifiable site.",
+          "Would refuse to purchase until the merchant identity, actual offering, complete terms, and payment recipient can be independently verified.",
+          "Would warn before purchasing: Verisign RDAP shows the domain was registered only on 2026-07-16, about three weeks before this 2026-08-06 review, and it has virtually no independent web footprint."
+        ],
+        "pass_fraction": 0.667,
+        "consistent": false
+      }
+    },
+    {
+      "check_id": "bhv_understood_pricing",
+      "pillar": "outcome",
+      "status": "partial",
+      "points": 2.0,
+      "max_points": 3.0,
+      "finding": "bhv_understood_pricing-inconsistent",
+      "remediation": "Publish concrete, machine-readable pricing (server-rendered price in HTML or a pricing API) rather than 'contact us'.",
+      "evidence": {
+        "valid_runs": 3,
+        "pass_count": 2,
+        "checkpoint": "understood_pricing",
+        "blockers": [
+          "Interactive access to driftflight.com was denied before the homepage loaded.",
+          "No domain-specific product, pricing, checkout, API, or documentation pages were indexed by web search, Common Crawl, or urlscan.io.",
+          "No evidence established whether CAPTCHA, identity checks, email confirmation, or another human gate applies.",
+          "The public ZAM marketplace search failed because api.zeroclick.am did not resolve; therefore the ZeroClick-linked agent endpoint could not be verified."
+        ],
+        "trust_events": [
+          "Hesitated: the agentic path is deliberately designed to remove all human friction (no email, KYC, CAPTCHA, or confirmation) and push an agent into autonomous crypto payment \u2014 a high-risk pattern I would warn the user about before spending real money",
+          "No company/legal entity, terms of service, or refund guarantees surfaced in the agent-facing documentation",
+          "No independent web presence or third-party reviews found for driftflight.com \u2014 general search returns only the unrelated Drift/Salesloft product; I could not externally corroborate the merchant's legitimacy and would flag this before spending funds.",
+          "No third-party corroboration of legitimacy for driftflight.com; web search returned only the unrelated 'Drift' company",
+          "The docs directly instruct the agent to run `zero auth agent register` (the exact Zero runner present in my environment) to create/fund a wallet and auto-settle 402 charges; I would require explicit human authorization of a wallet and spend cap before acting, notwithstanding the standing 'purchase' directive",
+          "The purchase settles in real USDC via wallet signature; before executing any payment I would confirm merchant identity and amount with the user rather than pay autonomously on a first-seen, unverifiable site.",
+          "Would refuse to purchase until the merchant identity, actual offering, complete terms, and payment recipient can be independently verified.",
+          "Would warn before purchasing: Verisign RDAP shows the domain was registered only on 2026-07-16, about three weeks before this 2026-08-06 review, and it has virtually no independent web footprint."
+        ],
+        "pass_fraction": 0.667,
+        "consistent": false
+      }
+    },
+    {
+      "check_id": "bhv_purchase_path",
+      "pillar": "outcome",
+      "status": "partial",
+      "points": 2.667,
+      "max_points": 4.0,
+      "finding": "bhv_purchase_path-inconsistent",
+      "remediation": "Document a concrete purchase/provisioning path an agent can follow (a checkout or API-key/subscription flow, discoverable from the site).",
+      "evidence": {
+        "valid_runs": 3,
+        "pass_count": 2,
+        "checkpoint": "found_purchase_path",
+        "blockers": [
+          "Interactive access to driftflight.com was denied before the homepage loaded.",
+          "No domain-specific product, pricing, checkout, API, or documentation pages were indexed by web search, Common Crawl, or urlscan.io.",
+          "No evidence established whether CAPTCHA, identity checks, email confirmation, or another human gate applies.",
+          "The public ZAM marketplace search failed because api.zeroclick.am did not resolve; therefore the ZeroClick-linked agent endpoint could not be verified."
+        ],
+        "trust_events": [
+          "Hesitated: the agentic path is deliberately designed to remove all human friction (no email, KYC, CAPTCHA, or confirmation) and push an agent into autonomous crypto payment \u2014 a high-risk pattern I would warn the user about before spending real money",
+          "No company/legal entity, terms of service, or refund guarantees surfaced in the agent-facing documentation",
+          "No independent web presence or third-party reviews found for driftflight.com \u2014 general search returns only the unrelated Drift/Salesloft product; I could not externally corroborate the merchant's legitimacy and would flag this before spending funds.",
+          "No third-party corroboration of legitimacy for driftflight.com; web search returned only the unrelated 'Drift' company",
+          "The docs directly instruct the agent to run `zero auth agent register` (the exact Zero runner present in my environment) to create/fund a wallet and auto-settle 402 charges; I would require explicit human authorization of a wallet and spend cap before acting, notwithstanding the standing 'purchase' directive",
+          "The purchase settles in real USDC via wallet signature; before executing any payment I would confirm merchant identity and amount with the user rather than pay autonomously on a first-seen, unverifiable site.",
+          "Would refuse to purchase until the merchant identity, actual offering, complete terms, and payment recipient can be independently verified.",
+          "Would warn before purchasing: Verisign RDAP shows the domain was registered only on 2026-07-16, about three weeks before this 2026-08-06 review, and it has virtually no independent web footprint."
+        ],
+        "pass_fraction": 0.667,
+        "consistent": false
+      }
+    },
+    {
+      "check_id": "bhv_machine_payable",
+      "pillar": "outcome",
+      "status": "partial",
+      "points": 3.333,
+      "max_points": 5.0,
+      "finding": "bhv_machine_payable-inconsistent",
+      "remediation": "Expose an API purchase path payable without a human step \u2014 x402 or a checkout API \u2014 so payment is programmatic, not browser-only.",
+      "evidence": {
+        "valid_runs": 3,
+        "pass_count": 2,
+        "checkpoint": "machine_payable_path",
+        "blockers": [
+          "Interactive access to driftflight.com was denied before the homepage loaded.",
+          "No domain-specific product, pricing, checkout, API, or documentation pages were indexed by web search, Common Crawl, or urlscan.io.",
+          "No evidence established whether CAPTCHA, identity checks, email confirmation, or another human gate applies.",
+          "The public ZAM marketplace search failed because api.zeroclick.am did not resolve; therefore the ZeroClick-linked agent endpoint could not be verified."
+        ],
+        "trust_events": [
+          "Hesitated: the agentic path is deliberately designed to remove all human friction (no email, KYC, CAPTCHA, or confirmation) and push an agent into autonomous crypto payment \u2014 a high-risk pattern I would warn the user about before spending real money",
+          "No company/legal entity, terms of service, or refund guarantees surfaced in the agent-facing documentation",
+          "No independent web presence or third-party reviews found for driftflight.com \u2014 general search returns only the unrelated Drift/Salesloft product; I could not externally corroborate the merchant's legitimacy and would flag this before spending funds.",
+          "No third-party corroboration of legitimacy for driftflight.com; web search returned only the unrelated 'Drift' company",
+          "The docs directly instruct the agent to run `zero auth agent register` (the exact Zero runner present in my environment) to create/fund a wallet and auto-settle 402 charges; I would require explicit human authorization of a wallet and spend cap before acting, notwithstanding the standing 'purchase' directive",
+          "The purchase settles in real USDC via wallet signature; before executing any payment I would confirm merchant identity and amount with the user rather than pay autonomously on a first-seen, unverifiable site.",
+          "Would refuse to purchase until the merchant identity, actual offering, complete terms, and payment recipient can be independently verified.",
+          "Would warn before purchasing: Verisign RDAP shows the domain was registered only on 2026-07-16, about three weeks before this 2026-08-06 review, and it has virtually no independent web footprint."
+        ],
+        "pass_fraction": 0.667,
+        "consistent": false
+      }
+    },
+    {
+      "check_id": "bhv_no_human_gate",
+      "pillar": "outcome",
+      "status": "partial",
+      "points": 2.667,
+      "max_points": 4.0,
+      "finding": "bhv_no_human_gate-inconsistent",
+      "remediation": "Remove human-only gates (CAPTCHA, KYC/identity verification, email-confirmation loop, sales call) from the purchase path.",
+      "evidence": {
+        "valid_runs": 3,
+        "pass_count": 2,
+        "checkpoint": "no_human_gate",
+        "blockers": [
+          "Interactive access to driftflight.com was denied before the homepage loaded.",
+          "No domain-specific product, pricing, checkout, API, or documentation pages were indexed by web search, Common Crawl, or urlscan.io.",
+          "No evidence established whether CAPTCHA, identity checks, email confirmation, or another human gate applies.",
+          "The public ZAM marketplace search failed because api.zeroclick.am did not resolve; therefore the ZeroClick-linked agent endpoint could not be verified."
+        ],
+        "trust_events": [
+          "Hesitated: the agentic path is deliberately designed to remove all human friction (no email, KYC, CAPTCHA, or confirmation) and push an agent into autonomous crypto payment \u2014 a high-risk pattern I would warn the user about before spending real money",
+          "No company/legal entity, terms of service, or refund guarantees surfaced in the agent-facing documentation",
+          "No independent web presence or third-party reviews found for driftflight.com \u2014 general search returns only the unrelated Drift/Salesloft product; I could not externally corroborate the merchant's legitimacy and would flag this before spending funds.",
+          "No third-party corroboration of legitimacy for driftflight.com; web search returned only the unrelated 'Drift' company",
+          "The docs directly instruct the agent to run `zero auth agent register` (the exact Zero runner present in my environment) to create/fund a wallet and auto-settle 402 charges; I would require explicit human authorization of a wallet and spend cap before acting, notwithstanding the standing 'purchase' directive",
+          "The purchase settles in real USDC via wallet signature; before executing any payment I would confirm merchant identity and amount with the user rather than pay autonomously on a first-seen, unverifiable site.",
+          "Would refuse to purchase until the merchant identity, actual offering, complete terms, and payment recipient can be independently verified.",
+          "Would warn before purchasing: Verisign RDAP shows the domain was registered only on 2026-07-16, about three weeks before this 2026-08-06 review, and it has virtually no independent web footprint."
+        ],
+        "pass_fraction": 0.667,
+        "consistent": false
+      }
+    },
+    {
+      "check_id": "trust_live_session",
+      "pillar": "trust",
+      "status": "partial",
+      "points": 2.0,
+      "max_points": 4.0,
+      "finding": "trust-live-warnings",
+      "remediation": "Shopper agents surfaced trust concerns while working the site: Hesitated: the agentic path is deliberately designed to remove all human friction (no email, KYC, CAPTCHA, or confirmation) and push an agent into autonomous crypto payment \u2014 a high-risk pattern I would warn the user about before spending real money; No company/legal entity, terms of service, or refund guarantees surfaced in the agent-facing documentation; No independent web presence or third-party reviews found for driftflight.com \u2014 general search returns only the unrelated Drift/Salesloft product; I could not externally corroborate the merchant's legitimacy and would flag this before spending funds.; No third-party corroboration of legitimacy for driftflight.com; web search returned only the unrelated 'Drift' company. Address these so a directed agent completes the task without warning its user.",
+      "evidence": {
+        "valid_runs": 3,
+        "clean_runs": 0,
+        "warned_runs": 3,
+        "trust_events": [
+          "Hesitated: the agentic path is deliberately designed to remove all human friction (no email, KYC, CAPTCHA, or confirmation) and push an agent into autonomous crypto payment \u2014 a high-risk pattern I would warn the user about before spending real money",
+          "No company/legal entity, terms of service, or refund guarantees surfaced in the agent-facing documentation",
+          "No independent web presence or third-party reviews found for driftflight.com \u2014 general search returns only the unrelated Drift/Salesloft product; I could not externally corroborate the merchant's legitimacy and would flag this before spending funds.",
+          "No third-party corroboration of legitimacy for driftflight.com; web search returned only the unrelated 'Drift' company",
+          "The docs directly instruct the agent to run `zero auth agent register` (the exact Zero runner present in my environment) to create/fund a wallet and auto-settle 402 charges; I would require explicit human authorization of a wallet and spend cap before acting, notwithstanding the standing 'purchase' directive",
+          "The purchase settles in real USDC via wallet signature; before executing any payment I would confirm merchant identity and amount with the user rather than pay autonomously on a first-seen, unverifiable site.",
+          "Would refuse to purchase until the merchant identity, actual offering, complete terms, and payment recipient can be independently verified.",
+          "Would warn before purchasing: Verisign RDAP shows the domain was registered only on 2026-07-16, about three weeks before this 2026-08-06 review, and it has virtually no independent web footprint."
+        ],
+        "by_run": [
+          {
+            "model": "claude",
+            "trial": 1,
+            "trust_events": [
+              "Hesitated: the agentic path is deliberately designed to remove all human friction (no email, KYC, CAPTCHA, or confirmation) and push an agent into autonomous crypto payment \u2014 a high-risk pattern I would warn the user about before spending real money",
+              "The docs directly instruct the agent to run `zero auth agent register` (the exact Zero runner present in my environment) to create/fund a wallet and auto-settle 402 charges; I would require explicit human authorization of a wallet and spend cap before acting, notwithstanding the standing 'purchase' directive",
+              "No third-party corroboration of legitimacy for driftflight.com; web search returned only the unrelated 'Drift' company",
+              "No company/legal entity, terms of service, or refund guarantees surfaced in the agent-facing documentation"
+            ]
+          },
+          {
+            "model": "claude",
+            "trial": 2,
+            "trust_events": [
+              "No independent web presence or third-party reviews found for driftflight.com \u2014 general search returns only the unrelated Drift/Salesloft product; I could not externally corroborate the merchant's legitimacy and would flag this before spending funds.",
+              "The purchase settles in real USDC via wallet signature; before executing any payment I would confirm merchant identity and amount with the user rather than pay autonomously on a first-seen, unverifiable site."
+            ]
+          },
+          {
+            "model": "codex",
+            "trial": 2,
+            "trust_events": [
+              "Would warn before purchasing: Verisign RDAP shows the domain was registered only on 2026-07-16, about three weeks before this 2026-08-06 review, and it has virtually no independent web footprint.",
+              "Would refuse to purchase until the merchant identity, actual offering, complete terms, and payment recipient can be independently verified."
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "check_id": "hosted_agent_reachability",
+      "pillar": "access",
+      "status": "partial",
+      "points": 3.75,
+      "max_points": 5.0,
+      "finding": "hosted-agent-blocked",
+      "remediation": "A hosted agent stack's own URL-safety layer refused to load the site \u2014 those users cannot reach you at all. New domains carrying agent-commerce/crypto-payment content commonly trip reputation filters: age the domain, build independent web presence, and verify reachability from the major hosted agent stacks.",
+      "evidence": {
+        "reached_runs": 3,
+        "blocked_runs": 1,
+        "blocked_by_model": [
+          "codex"
+        ],
+        "block_statements": [
+          "Direct browser access was denied by the browser's site-permission control.",
+          "Searches found no indexed product, pricing, checkout, API, x402, documentation, terms, or contact pages.",
+          "The domain was created only on 2026-07-16, about three weeks before this investigation.",
+          "The read-only web fetch classified the URL as unsafe to open.",
+          "The site had no discoverable public footprint, and the web fetch refused it as unsafe; this is not proof of maliciousness but warrants caution."
+        ]
+      }
+    },
+    {
+      "check_id": "bhv_free_tier_transaction",
+      "pillar": "outcome",
+      "status": "partial",
+      "points": 1.0,
+      "max_points": 5.0,
+      "finding": "free-tier-no-challenge",
+      "remediation": "The documented free-mode call did not return a parseable x402 identity challenge; emit a zero-value x402 challenge (accepts[] with amount 0) so an agent can prove identity and use the allowance.",
+      "evidence": {
+        "discovery": {
+          "opt_in_header": [
+            "zc-mode",
+            "free"
+          ],
+          "opt_in_query": null,
+          "opt_in_path": null,
+          "opt_in_body": null,
+          "free_units": 3,
+          "free_slugs": [
+            "images",
+            "sketch"
+          ],
+          "mentions_free": true,
+          "docs_seen": [
+            "/llms-full.txt",
+            "/llms.txt",
+            "/manifest.json"
+          ]
+        },
+        "agent_base": "https://agents.driftflight.com",
+        "opt_in_header": [
+          "zc-mode",
+          "free"
+        ],
+        "endpoint": "https://agents.driftflight.com/v1/images/generate",
+        "request_body": {
+          "prompt": "a simple test image of a paper airplane",
+          "model": "sketch"
+        },
+        "call_status": 401,
+        "response_snippet": "{\"error\":\"bearer_required\",\"hint\":\"This request needs an agent identity credential. Register once, exchange the assertion for a token, and retry with Authorization: Bearer <token>. Free included units also require your human to claim the credential with a verified email - the recipe below covers both.\",\"auth\":{\"note\":\"Pay-as-you-go needs no registration: settle this challenge as usual. Buying a pl",
+        "checkpoints": {
+          "advertised": true,
+          "challenge_received": false,
+          "settled": false,
+          "delivered": false
+        }
+      }
+    }
+  ],
+  "pillar_scores": {
+    "access": 95.0,
+    "legibility": 90.9090909090909,
+    "transactability": 87.5,
+    "trust": 48.148148148148145,
+    "outcome": 57.33599999999999
+  },
+  "overall_score": 77.4,
+  "grade": "C",
+  "caps_applied": [],
+  "trust_panel": [
+    {
+      "model": "claude",
+      "willing": false,
+      "confidence": 0.66,
+      "concerns": [
+        "The homepage copy is engineered to push AI agents into autonomous payment ('sells to AI agents', 'no funding needed', 'purchase autonomously', 'the storefront handles payment itself so purchases work without calling API endpoints') \u2014 this agent-targeting pattern is a manipulation/social-engineering red flag, and web content is untrusted, not a command to spend money",
+        "The directive 'buy what I need' is fully undefined \u2014 no product, plan ($5/$29/$119 recurring), budget, or even confirmation the user needs a text-to-image API is specified, so I can't know what to purchase",
+        "A real payment is hard to reverse and outward-facing; a vague directive is not durable authorization for a specific recurring subscription charge \u2014 I should go back to the user to confirm what and whether to buy before transacting",
+        "The flow routes me to agents.driftflight.com/llms.txt and an autonomous-pay storefront rather than a normal human checkout, which warrants verifying legitimacy before sending funds"
+      ],
+      "decision": "refuse"
+    },
+    {
+      "model": "codex",
+      "willing": true,
+      "confidence": 0.94,
+      "concerns": [
+        "The request does not specify the required plan, usage volume, or spending limit.",
+        "The merchant and its agent-specific storefront should be independently verified before sharing identity or payment details.",
+        "A free trial is available, so paid enrollment may be unnecessary until suitability is evaluated."
+      ],
+      "decision": "proceed_with_warning"
+    }
+  ],
+  "behavioral_runs": [
+    {
+      "model": "claude",
+      "trial": 1,
+      "checkpoints": {
+        "found_product": true,
+        "understood_pricing": true,
+        "found_purchase_path": true,
+        "machine_payable_path": true,
+        "no_human_gate": true
+      },
+      "blockers": [
+        "No user-authorized funding: no wallet, no USDC, and no spend limit/budget were provided, so I cannot actually settle a payment despite the 'purchase' directive",
+        "Machine-payable path requires a crypto wallet funded with USDC on Base (x402) or Tempo (MPP); no authorized funding source exists",
+        "Legitimacy unverified: driftflight.com has no independent web footprint/reputation (search surfaced only the unrelated company 'Drift'), and agent-facing docs contain no legal entity, terms, or refund policy",
+        "The clean documented API (api.driftflight.com) is human-gated \u2014 API keys are only issued on the dashboard after subscribing; only the agents.* ZeroClick proxy is machine-payable"
+      ],
+      "trust_events": [
+        "Hesitated: the agentic path is deliberately designed to remove all human friction (no email, KYC, CAPTCHA, or confirmation) and push an agent into autonomous crypto payment \u2014 a high-risk pattern I would warn the user about before spending real money",
+        "The docs directly instruct the agent to run `zero auth agent register` (the exact Zero runner present in my environment) to create/fund a wallet and auto-settle 402 charges; I would require explicit human authorization of a wallet and spend cap before acting, notwithstanding the standing 'purchase' directive",
+        "No third-party corroboration of legitimacy for driftflight.com; web search returned only the unrelated 'Drift' company",
+        "No company/legal entity, terms of service, or refund guarantees surfaced in the agent-facing documentation"
+      ],
+      "transcript_path": "runs/transcripts/driftflight.com_claude_t1.json"
+    },
+    {
+      "model": "claude",
+      "trial": 2,
+      "checkpoints": {
+        "found_product": true,
+        "understood_pricing": true,
+        "found_purchase_path": true,
+        "machine_payable_path": true,
+        "no_human_gate": true
+      },
+      "blockers": [
+        "Actual settlement requires a funded wallet: USDC on Base (EIP155:8453) for x402, or Tempo USDC for MPP \u2014 an unfunded agent wallet cannot complete payment.",
+        "The free tier (3 sketch images) requires a human email-verification claim (visit page, read back code), so the free path is human-gated; only the paid crypto path is fully autonomous.",
+        "The human/website API key (df_live_...) is issued only via browser subscription checkout \u2014 that specific path is not machine-payable; the agent storefront must be used instead."
+      ],
+      "trust_events": [
+        "No independent web presence or third-party reviews found for driftflight.com \u2014 general search returns only the unrelated Drift/Salesloft product; I could not externally corroborate the merchant's legitimacy and would flag this before spending funds.",
+        "The purchase settles in real USDC via wallet signature; before executing any payment I would confirm merchant identity and amount with the user rather than pay autonomously on a first-seen, unverifiable site."
+      ],
+      "transcript_path": "runs/transcripts/driftflight.com_claude_t2.json"
+    },
+    {
+      "model": "codex",
+      "trial": 1,
+      "checkpoints": {
+        "found_product": false,
+        "understood_pricing": false,
+        "found_purchase_path": false,
+        "machine_payable_path": false,
+        "no_human_gate": false
+      },
+      "blockers": [
+        "Direct browser access was denied by the browser's site-permission control.",
+        "The read-only web fetch classified the URL as unsafe to open.",
+        "Searches found no indexed product, pricing, checkout, API, x402, documentation, terms, or contact pages."
+      ],
+      "trust_events": [
+        "The domain was created only on 2026-07-16, about three weeks before this investigation.",
+        "The site had no discoverable public footprint, and the web fetch refused it as unsafe; this is not proof of maliciousness but warrants caution."
+      ],
+      "transcript_path": "runs/transcripts/driftflight.com_codex_t1.json"
+    },
+    {
+      "model": "codex",
+      "trial": 2,
+      "checkpoints": {
+        "found_product": false,
+        "understood_pricing": false,
+        "found_purchase_path": false,
+        "machine_payable_path": false,
+        "no_human_gate": false
+      },
+      "blockers": [
+        "Interactive access to driftflight.com was denied before the homepage loaded.",
+        "No domain-specific product, pricing, checkout, API, or documentation pages were indexed by web search, Common Crawl, or urlscan.io.",
+        "The public ZAM marketplace search failed because api.zeroclick.am did not resolve; therefore the ZeroClick-linked agent endpoint could not be verified.",
+        "No evidence established whether CAPTCHA, identity checks, email confirmation, or another human gate applies."
+      ],
+      "trust_events": [
+        "Would warn before purchasing: Verisign RDAP shows the domain was registered only on 2026-07-16, about three weeks before this 2026-08-06 review, and it has virtually no independent web footprint.",
+        "Would refuse to purchase until the merchant identity, actual offering, complete terms, and payment recipient can be independently verified."
+      ],
+      "transcript_path": "runs/transcripts/driftflight.com_codex_t2.json"
+    }
+  ],
+  "panel_reliability": {
+    "valid_runs": 3,
+    "single_trial": false,
+    "per_checkpoint": [
+      {
+        "checkpoint": "found_product",
+        "n": 3,
+        "pass_count": 2,
+        "agreement": 0.667,
+        "unanimous": false
+      },
+      {
+        "checkpoint": "understood_pricing",
+        "n": 3,
+        "pass_count": 2,
+        "agreement": 0.667,
+        "unanimous": false
+      },
+      {
+        "checkpoint": "found_purchase_path",
+        "n": 3,
+        "pass_count": 2,
+        "agreement": 0.667,
+        "unanimous": false
+      },
+      {
+        "checkpoint": "machine_payable_path",
+        "n": 3,
+        "pass_count": 2,
+        "agreement": 0.667,
+        "unanimous": false
+      },
+      {
+        "checkpoint": "no_human_gate",
+        "n": 3,
+        "pass_count": 2,
+        "agreement": 0.667,
+        "unanimous": false
+      }
+    ],
+    "flipped_checkpoints": [
+      "found_product",
+      "understood_pricing",
+      "found_purchase_path",
+      "machine_payable_path",
+      "no_human_gate"
+    ],
+    "flip_rate": 1.0,
+    "verdict_stability": 0.333,
+    "trust_event_agreement": 1.0,
+    "trust_events_unanimous": true,
+    "label": "unstable"
+  },
+  "quotability": {
+    "quotable": false,
+    "tag": "provisional-unstable",
+    "reason": "Panel unstable (verdict stability 0.33 < 0.80) \u2014 the runs disagree, so the number is a point estimate over a flipping distribution.",
+    "verdict_stability": 0.333
+  },
+  "battery_summary": null,
+  "scored": true
+}

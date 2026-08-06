@@ -1,6 +1,56 @@
 # Loop state
 
-- Cycle counter: 288
+- Cycle counter: 289
+- CYCLE 289 — 2026-08-06T~11:1xZ (TRUTH, cloud, direct-to-main, tests-only, score-neutral). FIRST duty (infra
+  health + peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR; #148 operator-merged
+  `7d47f2e` before Cycle 288). Cloud detached at origin/main `8301012`, local `main` stale orphan `3e318f1` →
+  realigned local `main` to origin/main before work (benign, no history rewrite). **INFRA HEALTHY:** newest verify
+  by FILENAME `runs/local/verify_20260806T104102Z.json` (10:41Z, tests_ok=true 37 suites, 46.1 F / 85.5 B / +39.4),
+  <1h old at fire; :41 cadence holding (08:41Z→09:41Z→10:41Z) → RUNNER-HEALTH WATCH NORMAL. `.venv` (py3.11,
+  requirements.txt) resolves; full suite **37/37 green** before the change. **TRACK (cloud TRUTH / cross-path
+  weld):** executed STATE's named next-TRUTH lever — widen the cross-path anchor weld to a NON-anchor population
+  member — now that its gate is MET. Gate check: of the 4 domains with a committed offline replay baseline
+  (`test_canonical_replay.EXPECTED`: the 2 anchors + books.toscrape.com + example.com), **example.com is scored
+  22.5 in ALL THREE committed sweeps** (segment `control:non-storefront`, rubric v0.7) while books.toscrape.com is
+  ABSENT from every sweep → example.com is the one non-anchor member with BOTH a replay baseline AND ≥2 stable
+  reachable same-version sweep presences. **IMPROVEMENT:** `tests/test_calibration_anchor_agreement.py` generalized
+  the weld from the 2 anchors to a set of welded MEMBERS — `_ANCHORS` (still drives the +39.4 gap tests) + NEW
+  `_NON_ANCHOR_WELDED=("example.com",)` → `_WELDED_MEMBERS`; `_divergences(...)` gains a `members=` param (default
+  all welded), `_anchor_row`→`_member_row`. Baseline stays ONE source of truth (`replay.EXPECTED[dom]["overall"]`).
+  Main weld now compares 3 sweeps × 3 members = **9 pairs, 0 divergences**. **EVIDENCE (deterministic, $0):** suite
+  7→9 — NEW `test_non_anchor_member_is_welded` (isolate example.com: 3 non-anchor pairs, 0 diverge + asserts each
+  non-anchor carries a v0.7 baseline) + NEW `test_drifted_non_anchor_member_is_caught` (teeth: example.com drifted
+  22.5→30.0 caught as exactly one divergence, n_compared=1); pre-existing anchor teeth all still pass (synthetic
+  sweeps carry no example.com row → None-skip, counts unchanged). Inv #4 (not-scorable non-anchor SKIPPED) + #2
+  (off-version never diffed) inherited by construction. **SHIP (direct-to-main):** tests-only, off the scoring path
+  (`git diff --stat -- asrs/ rubric/ fixtures/ experiments/ loop/local_verify.py batteries/` EMPTY; only the one
+  test file); `test_runner_registration` green; suite **37/37 green** after. **CANONICAL UNMOVED:** static replay
+  46.1 F / 85.5 B / **+39.4** (concurs 10:41Z floor); a read-only cross-path guard touches no probe/scorer → cannot
+  move a score. The weld now witnesses the +39.4 anchors AND the 22.5 non-anchor floor agreeing across both paths.
+  Invariants #1 ($0)–#5 held; zero codex, zero paid ops. NO DM (score-neutral tests-only TRUTH, not a DM-enumerated
+  sensitive class; no digest due — ~11:1xZ precedes 16:00 UTC on 08-06). See LOG Cycle 289.
+- FOCUS POINTER (Cycle 289 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
+  RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY on a fresh
+  >6h no-artifact gap. Cloud track rotation: Cycle 289 was TRUTH → **READOUT next** (METHOD → COVERAGE → TRUTH →
+  READOUT). NEXT TRUTH (cloud): the non-anchor weld is gated on a member having BOTH a committed replay baseline AND
+  a stable sweep presence — books.toscrape.com HAS the replay baseline but is ABSENT from the sweeps, so a [LOCAL]
+  cadence ADDING books.toscrape.com to `experiments/calibration_sweep.py`'s POPULATION would let a SECOND non-anchor
+  member (a RETAIL storefront, a different site type) join the weld next fire; queued [LOCAL] below. NEXT READOUT:
+  a population-median/band overlay across sweeps (whole-cohort spread, not just anchors) now that ≥3 sweeps share
+  stable members (example.com + the 2 anchors) — surface the committed sweep population + its cadence drift trend on
+  the rubric/leaderboard page or main card. NEXT METHOD (cloud): host-environment reproducibility SATURATED
+  (hash-seed 267 / timezone 271 / encoding 277 / locale 280) — move OFF it (probe-order independence of the
+  aggregate, or fixture-capture determinism). NEXT in-cloud COVERAGE (still open): subscription PAUSE/RESUME (polar
+  `subscription.paused`/uncancel) IF precision-guardable; physical_good RETURNS-WINDOW (allbirds/moleskine); a
+  data_retrieval RESPONSE-SCHEMA / field-contract leg IF committed ipinfo prose carries it (verify vs dataset-format
+  first). Offering bank: metered_api 26 / digital_good 11 / physical_good 10 / subscription 10 / service_booking 9 /
+  data_retrieval 8. Standing METHOD tripwire: own-tool refusal vocab drifted THREE times (269, 284, 286→287) → keep
+  the periodic leak scan over each fresh committed panel. NEXT calibration cadence: population 16 (target 15–20);
+  next broadening = a genuine ACP/UCP/MPP merchant or a 2nd x402-live site. Substantive [LOCAL] frontier: PR #148
+  post-merge live behavioral verification (still queued); ADD books.toscrape.com to the sweep POPULATION (unlocks a
+  2nd non-anchor weld member); cross-model SHOPPER delta still codex-blocked on the WITH side; a THIRD calibration
+  anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168); structured catalog/pricing JSON
+  (Cycle-70).
 - CYCLE 288 — 2026-08-06T~10:1xZ (COVERAGE, cloud, direct-to-main, score-neutral). FIRST duty (infra health +
   peer-gate review): `list_pull_requests` state=open → `[]` — **PR #148 was OPERATOR-MERGED by Jonah** (`7d47f2e`,
   author j.a.nakagawa, merged 09:48Z) between Cycle 287 and this fire, so the peer-gate review+self-merge duty on

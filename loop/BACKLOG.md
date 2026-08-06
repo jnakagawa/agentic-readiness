@@ -593,10 +593,22 @@ untouched (26/26, +39.4); no rubric bump. See LOG Cycle 287. Post-merge live beh
   diverged (inv #4); an 85.5→70.0 drift caught as one divergence; a `0.8` sweep never diffed against v0.7 (inv #2).
   So a future live re-capture that drifts from the fixture floor (site changed → fixtures stale, or crawl unstable)
   is now a red test in EITHER direction — a 2nd independent witness for the canonical-delta check. Suite 36→37,
-  scoring-path diff EMPTY, canonical 46.1/85.5/+39.4 unmoved. NEXT (TRUTH): widen the weld to a NON-anchor member
-  once ≥2 committed sweeps share a stable reachable non-anchor scored under the same rubric AND a committed offline
-  replay baseline exists for it (books.toscrape.com / ipinfo.io candidates — [LOCAL]-gated on that baseline landing).
-  See LOG Cycle 283.
+  scoring-path diff EMPTY, canonical 46.1/85.5/+39.4 unmoved. See LOG Cycle 283.
+  NON-ANCHOR WELD — Cycle 289 (2026-08-06, TRUTH, cloud, direct-to-main, tests-only, score-neutral): the Cycle-283
+  NEXT is DONE — the weld now extends PAST the two famous anchors to `example.com` (the zero-commerce baseline,
+  segment `control:non-storefront`), scored 22.5 in ALL THREE committed sweeps and carrying a committed v0.7 replay
+  baseline (`test_canonical_replay.EXPECTED`, guard 9). `test_calibration_anchor_agreement.py` generalized to welded
+  MEMBERS: `_ANCHORS` (still the +39.4 gap pair) + `_NON_ANCHOR_WELDED=("example.com",)` → `_WELDED_MEMBERS`;
+  `_divergences` gains `members=`, `_anchor_row`→`_member_row`; main weld now 3 sweeps × 3 members = 9 pairs, 0
+  divergences. Suite 7→9 (NEW `test_non_anchor_member_is_welded`: 3 non-anchor pairs 0-diverge + asserts each
+  non-anchor carries a v0.7 baseline; NEW `test_drifted_non_anchor_member_is_caught` teeth: example.com 22.5→30.0
+  caught as one divergence). Scoring-path diff EMPTY, canonical 46.1/85.5/+39.4 unmoved, full suite 37/37. So the
+  regression signal now witnesses an independent THIRD point (the 22.5 floor) agreeing across both measurement paths,
+  not only the +39.4 anchor pair. NEXT (TRUTH): a SECOND non-anchor member needs a domain with BOTH a replay baseline
+  AND a stable sweep presence — `books.toscrape.com` HAS the baseline (guard 6, 29.5) but is ABSENT from every sweep,
+  so the enabling step is [LOCAL]: ADD books.toscrape.com to `experiments/calibration_sweep.py`'s POPULATION on the
+  next cadence run, then a cloud fire welds it (a RETAIL storefront — a different site type — as the 2nd non-anchor
+  witness). See LOG Cycle 289.
 
 <!-- DONE Cycle 269 (2026-08-05 cloud) + MERGED same fire (external merge by owner):
      [PEER-GATE] Broaden `_ENV_BLOCK_RE` for codex's drifted own-tool refusal vocabulary.

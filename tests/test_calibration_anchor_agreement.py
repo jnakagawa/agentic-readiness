@@ -16,12 +16,21 @@ along TWO independent paths that, until now, floated free of each other:
      runs/local/calibration_sweep_*.json; each carries the two anchors under the
      segments api-storefront:{rails,no-rails}-anchor.
 
-Nothing asserted these two paths AGREE. They are measurements of the SAME two
+Nothing asserted these two paths AGREE. They are measurements of the SAME
 storefronts: if a live re-capture ever drifts from the committed fixture floor,
 that is a real calibration signal — either the site changed (the fixtures are
 stale and owe a [LOCAL] re-capture) or the live crawl is unstable. This guard
 welds the paths together so a divergence in EITHER goes red, giving the
 canonical-delta regression check a SECOND, independent witness on live data.
+
+The weld extends PAST the two famous anchors: any population member that carries
+BOTH a committed offline replay baseline (replay.EXPECTED) AND a scored presence
+in the committed live sweeps is welded, so the cross-path agreement is witnessed
+on a NON-anchor domain too (example.com, the zero-commerce baseline, scored in
+every committed sweep). That widens the regression signal from the pair the whole
+loop already watches to an independent third point on the capability spectrum — a
+live crawl that drifted a non-anchor member from its fixture floor now goes red as
+loudly as an anchor would, so calibration decay is caught wherever it appears.
 
 Attribution honesty (invariant #4): a sweep anchor that is not-scorable
 (unreachable that cadence) is SKIPPED, never counted as a divergence — a site is
@@ -51,7 +60,17 @@ import test_canonical_replay as replay  # noqa: E402  (ONE source of truth for t
 
 # The two canonical anchors, keyed as they appear both in replay.EXPECTED and in
 # each sweep's `rows` (by `domain`). Their sweep `segment` ends with "-anchor".
+# These stay the pair for the +39.4 gap/delta tests below.
 _ANCHORS = ("drift-flight.org", "driftflight.com")
+# NON-anchor population members welded across the two measurement paths: each must
+# carry BOTH a committed offline replay baseline (replay.EXPECTED, same rubric
+# version) AND a scored presence in the committed live sweeps, so the cross-path
+# agreement is witnessed off the two famous anchors too. example.com (the
+# zero-commerce baseline — guard 9 of test_canonical_replay pins its 22.5 floor;
+# segment control:non-storefront) is scored in all three committed sweeps.
+_NON_ANCHOR_WELDED = ("example.com",)
+# Every population member welded across the offline-replay and live-sweep paths.
+_WELDED_MEMBERS = _ANCHORS + _NON_ANCHOR_WELDED
 _BASELINE_VERSION = "0.7"  # asserted == the replay baseline's version below (test 1)
 _TOL = 0.05  # overalls are rounded to 0.1 on both paths; this catches any real move
 
@@ -72,28 +91,31 @@ def _committed_sweeps() -> list:
     return out
 
 
-def _anchor_row(sweep: dict, domain: str):
+def _member_row(sweep: dict, domain: str):
+    """The sweep row for a welded member (anchor or non-anchor), matched by domain."""
     for row in sweep.get("rows", []):
         if row.get("domain") == domain:
             return row
     return None
 
 
-def _divergences(sweeps, expected, baseline_version, tol=_TOL):
+def _divergences(sweeps, expected, baseline_version, tol=_TOL, members=_WELDED_MEMBERS):
     """Pure comparison shared by the real-evidence and synthetic legs.
 
     Returns (divergences, n_compared, n_unreachable, n_offversion). A divergence
-    is a SCORED, same-version anchor whose overall differs from the fixture-replay
-    baseline by more than `tol`. Not-scorable anchors (invariant #4) and
-    off-version sweeps (invariant #2) are COUNTED, never compared."""
+    is a SCORED, same-version welded MEMBER whose overall differs from the
+    fixture-replay baseline by more than `tol`. Not-scorable members (invariant #4)
+    and off-version sweeps (invariant #2) are COUNTED, never compared. `members`
+    defaults to every welded member (the two anchors + the non-anchor members); the
+    teeth legs pass a narrower set."""
     divergences = []
     n_compared = n_unreachable = n_offversion = 0
     for label, sweep in sweeps:
         if str(sweep.get("rubric_version")) != baseline_version:
             n_offversion += 1
             continue
-        for domain in _ANCHORS:
-            row = _anchor_row(sweep, domain)
+        for domain in members:
+            row = _member_row(sweep, domain)
             if row is None:
                 continue
             if not row.get("scored") or row.get("overall") is None:
@@ -107,25 +129,33 @@ def _divergences(sweeps, expected, baseline_version, tol=_TOL):
     return divergences, n_compared, n_unreachable, n_offversion
 
 
-def _synthetic_sweep(version, org_overall, com_overall, *, com_scored=True):
-    """A minimal sweep dict carrying just the two anchor rows (for the teeth legs)."""
-    return {
-        "rubric_version": version,
-        "rows": [
+def _synthetic_sweep(version, org_overall, com_overall, *, com_scored=True, example_overall=None):
+    """A minimal sweep dict carrying the two anchor rows (for the teeth legs), plus
+    an optional example.com non-anchor row when `example_overall` is supplied."""
+    rows = [
+        {
+            "domain": "drift-flight.org",
+            "segment": "api-storefront:no-rails-anchor",
+            "scored": org_overall is not None,
+            "overall": org_overall,
+        },
+        {
+            "domain": "driftflight.com",
+            "segment": "api-storefront:rails-anchor",
+            "scored": com_scored and com_overall is not None,
+            "overall": com_overall,
+        },
+    ]
+    if example_overall is not None:
+        rows.append(
             {
-                "domain": "drift-flight.org",
-                "segment": "api-storefront:no-rails-anchor",
-                "scored": org_overall is not None,
-                "overall": org_overall,
-            },
-            {
-                "domain": "driftflight.com",
-                "segment": "api-storefront:rails-anchor",
-                "scored": com_scored and com_overall is not None,
-                "overall": com_overall,
-            },
-        ],
-    }
+                "domain": "example.com",
+                "segment": "control:non-storefront",
+                "scored": True,
+                "overall": example_overall,
+            }
+        )
+    return {"rubric_version": version, "rows": rows}
 
 
 def test_baseline_version_and_gap_match_replay_guard() -> None:
@@ -161,10 +191,10 @@ def test_committed_sweeps_carry_scored_anchors() -> None:
     for lbl, sweep in v07:
         for domain in _ANCHORS:
             _check(
-                _anchor_row(sweep, domain) is not None,
+                _member_row(sweep, domain) is not None,
                 f"{lbl} carries anchor {domain}",
             )
-        rows = [_anchor_row(sweep, d) for d in _ANCHORS]
+        rows = [_member_row(sweep, d) for d in _ANCHORS]
         if all(r.get("scored") and r.get("overall") is not None for r in rows):
             both_scored += 1
     _check(
@@ -175,20 +205,21 @@ def test_committed_sweeps_carry_scored_anchors() -> None:
 
 def test_live_sweep_anchors_agree_with_replay_baseline() -> None:
     print("test_live_sweep_anchors_agree_with_replay_baseline")
-    # THE weld: every scored, same-version live anchor equals the offline fixture
-    # floor. n_compared>=2 keeps it non-vacuous (the committed cadence carries
-    # 3 sweeps x 2 anchors today).
+    # THE weld: every scored, same-version live welded member equals the offline
+    # fixture floor. Covers the two anchors AND every non-anchor welded member
+    # (example.com), so n_compared today is 3 sweeps x 3 members = 9. n_compared>=2
+    # keeps it non-vacuous.
     sweeps = _committed_sweeps()
     divergences, n_compared, n_unreachable, n_offversion = _divergences(
         sweeps, replay.EXPECTED, _BASELINE_VERSION
     )
     _check(
         divergences == [],
-        f"no live anchor diverges from the replay floor (got {divergences})",
+        f"no live welded member diverges from the replay floor (got {divergences})",
     )
     _check(
         n_compared >= 2,
-        f"the weld is non-vacuous: >=2 (sweep, anchor) pairs compared (got {n_compared})",
+        f"the weld is non-vacuous: >=2 (sweep, member) pairs compared (got {n_compared})",
     )
     print(
         f"  .. {n_compared} compared, {n_unreachable} not-scorable (skipped), "
@@ -205,8 +236,8 @@ def test_live_sweep_gap_matches_expected_delta() -> None:
     for lbl, sweep in sweeps:
         if str(sweep.get("rubric_version")) != _BASELINE_VERSION:
             continue
-        org = _anchor_row(sweep, "drift-flight.org")
-        com = _anchor_row(sweep, "driftflight.com")
+        org = _member_row(sweep, "drift-flight.org")
+        com = _member_row(sweep, "driftflight.com")
         if not (org and com and org.get("scored") and com.get("scored")):
             continue
         gap = round(float(com["overall"]) - float(org["overall"]), 1)
@@ -247,6 +278,66 @@ def test_drifted_live_anchor_is_caught() -> None:
     _check(n_compared == 2, f"both anchors were compared (got {n_compared})")
 
 
+def test_non_anchor_member_is_welded() -> None:
+    print("test_non_anchor_member_is_welded")
+    # The weld extends PAST the two famous anchors: each non-anchor welded member
+    # (example.com, the zero-commerce baseline) is measured along the SAME two
+    # independent paths — the committed offline replay baseline (guard 9 of
+    # test_canonical_replay pins 22.5) and the live population sweeps — and they
+    # must agree, giving the cross-path weld an independent third witness that is
+    # NOT one of the anchors the whole loop already watches. Restricting `members`
+    # to _NON_ANCHOR_WELDED isolates this member from the anchor coverage above.
+    sweeps = _committed_sweeps()
+    divergences, n_compared, n_unreachable, _ = _divergences(
+        sweeps, replay.EXPECTED, _BASELINE_VERSION, members=_NON_ANCHOR_WELDED
+    )
+    _check(
+        divergences == [],
+        f"no non-anchor welded member diverges from its replay floor (got {divergences})",
+    )
+    _check(
+        n_compared >= 2,
+        f"the non-anchor weld is non-vacuous: >=2 (sweep, member) pairs compared "
+        f"(got {n_compared})",
+    )
+    # Each non-anchor welded member must actually carry a committed, same-version
+    # replay baseline (the ONE source of truth the weld reads) — a member added to
+    # _NON_ANCHOR_WELDED without an EXPECTED entry would KeyError in _divergences;
+    # assert the coupling explicitly so a future addition is caught cleanly here.
+    for domain in _NON_ANCHOR_WELDED:
+        _check(
+            domain in replay.EXPECTED
+            and str(replay.EXPECTED[domain]["rubric_version"]) == _BASELINE_VERSION,
+            f"{domain} has a committed v{_BASELINE_VERSION} replay baseline",
+        )
+    print(
+        f"  .. {n_compared} non-anchor pairs compared, "
+        f"{n_unreachable} not-scorable (skipped)"
+    )
+
+
+def test_drifted_non_anchor_member_is_caught() -> None:
+    print("test_drifted_non_anchor_member_is_caught")
+    # Teeth for the non-anchor weld: a live re-capture that drifted example.com's
+    # baseline (22.5 -> 30.0) MUST trip the weld, exactly as a drifted anchor does.
+    # Without this, extending the weld to a non-anchor member could be silently
+    # toothless. The anchor rows carry their correct values, so ONLY the drifted
+    # non-anchor member is the caught divergence.
+    synth = [
+        ("synthetic-nonanchor-drift", _synthetic_sweep("0.7", 46.1, 85.5, example_overall=30.0))
+    ]
+    divergences, n_compared, _, _ = _divergences(
+        synth, replay.EXPECTED, _BASELINE_VERSION, members=_NON_ANCHOR_WELDED
+    )
+    _check(len(divergences) == 1, f"exactly one non-anchor divergence caught (got {divergences})")
+    label, domain, got, exp = divergences[0]
+    _check(
+        domain == "example.com" and abs(got - 30.0) < 1e-9 and abs(exp - 22.5) < 1e-9,
+        f"the drifted non-anchor member is the caught divergence (got {divergences[0]})",
+    )
+    _check(n_compared == 1, f"the one non-anchor member was compared (got {n_compared})")
+
+
 def test_off_version_sweep_is_not_compared() -> None:
     print("test_off_version_sweep_is_not_compared")
     # Invariant #2 teeth: a different-rubric sweep is never diffed against the v0.7
@@ -269,6 +360,8 @@ def main() -> int:
         test_live_sweep_gap_matches_expected_delta,
         test_not_scorable_anchor_is_skipped_not_a_divergence,
         test_drifted_live_anchor_is_caught,
+        test_non_anchor_member_is_welded,
+        test_drifted_non_anchor_member_is_caught,
         test_off_version_sweep_is_not_compared,
     ]
     failed = 0

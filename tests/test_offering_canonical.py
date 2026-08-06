@@ -938,6 +938,7 @@ _DATA_MUST_BE_NA = {"physical_good", "service_booking"}
 # lookup/enrichment/dataset prose, never the excluded provenance/internals senses).
 _DATA_RETRIEVAL_LABELS = {
     "lookup", "enrich", "dataset", "data-service", "batch-retrieval", "dataset-format",
+    "data-freshness",
 }
 
 
@@ -6680,6 +6681,7 @@ _ISOLATION_EVIDENCE: dict[str, str] = {
     "query-records": "query records in bulk",
     "batch-retrieval": "bulk enrichment of your records",
     "dataset-format": "grab the database download in csv, mmdb, and parquet formats",
+    "data-freshness": "the geolocation dataset is refreshed daily",
 }
 
 

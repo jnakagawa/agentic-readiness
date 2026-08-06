@@ -1961,6 +1961,52 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"|\b(?:data|database|dataset)\s+downloads?\b(?:[^.\n]{0,60}?\b(?:formats?|csv|mmdb|parquet|ndjson|geojson)\b)"
             r"|\bdownloadable\s+datasets?\b(?:[^.\n]{0,60}?\b(?:csv|json|mmdb|parquet|ndjson|geojson|format)\b)",
             _F)),
+        # DATA-FRESHNESS / UPDATE-CADENCE — the site publishes HOW CURRENT its data
+        # corpus is: the dataset/database/feed is refreshed on a stated cadence
+        # (daily / weekly / monthly / hourly / nightly / real-time), or the site
+        # names a configurable refresh cadence, or it advertises "data freshness".
+        # This is the "complete the job — the agent can TRUST the corpus is current"
+        # leg for data_retrieval, DISTINCT from every existing signal: `dataset`
+        # proves a dataset EXISTS to query/download; `dataset-format` names the
+        # DELIVERY format; `batch-retrieval` names the CALL SHAPE; `data-service`/
+        # `lookup`/`enrich`/`query-records` describe live RECORD retrieval — NONE
+        # says how recent the underlying corpus is. An autonomous agent choosing
+        # between two IP/geo/records datasets needs the refresh cadence to know
+        # whether the answers are stale, so a data service that documents its update
+        # cadence is MORE agent-completable at the recency leg. Vendor-neutral
+        # (freshness/cadence vocabulary, never a vendor).
+        # PRECISION-CRITICAL: "updated daily" / "refreshed" / "fresh" is broad-English
+        # marketing prose — a blog "updated daily", "new arrivals updated daily",
+        # "prices updated hourly", a "menu refreshed daily", "content updated weekly",
+        # an app that "updates automatically", "fresh data delivered fast" — none of
+        # which is a data-retrieval OFFERING, and each would falsely claim data_retrieval
+        # (one of the two thinnest archetypes, so a false claim probes a records-lookup
+        # intent the site does not serve — the exact archetype pollution this module
+        # removes). The nastiest near-miss is a metered_api dashboard's "your USAGE data
+        # is updated daily" (telemetry recency, not a data product). So NEVER match a
+        # bare "updated daily": the cadence must attach to an unambiguous data-CORPUS
+        # noun — a DATASET / DATABASE / CORPUS / FEED "is updated/refreshed <cadence>",
+        # OR the fixed collocation "<cadence> data refresh/update" (the "Daily Data
+        # Refresh" product term — a leading cadence adjective keeps "usage data
+        # updated"/"analytics data refreshed" OUT because their qualifier is not a
+        # cadence word), OR the phrase "data freshness", OR a "data/dataset/database
+        # refresh|update cadence". Bare "data updated daily" (no corpus noun, no
+        # leading cadence) is deliberately EXCLUDED so a usage/analytics/dashboard
+        # "data updated" never conjures the archetype. Fires NON-VACUOUSLY on the
+        # committed data_retrieval anchor (ipinfo.io — homepage "Daily Data Refresh" +
+        # /docs "Each sample dataset is updated daily"), which ALREADY claims
+        # data_retrieval via lookup/enrich/dataset/data-service/batch-retrieval/
+        # dataset-format → no new archetype, no reorder; and on ZERO of the ten other
+        # committed fixtures (none documents a data-refresh cadence — canonical-
+        # invariant by construction, pinned by tests/test_offering_canonical.py). Off
+        # the scoring path; score-neutral.
+        ("data-freshness", re.compile(
+            r"\b(?:datasets?|databases?|corpus|feeds?)\s+(?:is\s+|are\s+|gets?\s+|being\s+)?"
+            r"(?:updated|refreshed)\s+(?:daily|weekly|monthly|hourly|nightly|in\s+real[- ]?time|continuously)\b"
+            r"|\b(?:daily|weekly|monthly|hourly|nightly|real[- ]?time)\s+data\s+(?:refresh(?:es|ed)?|updates?)\b"
+            r"|\bdata\s+freshness\b"
+            r"|\b(?:data|dataset|database)\s+(?:refresh|update)\s+cadence\b",
+            _F)),
     ],
 }
 

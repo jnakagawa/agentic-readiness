@@ -204,10 +204,19 @@ untouched (26/26, +39.4); no rubric bump. See LOG Cycle 287. Post-merge live beh
   + /docs "Database Downloads … in CSV, JSON, MMDB, or Parquet formats"), ABSENT on all 8 others, claimed
   SET+ORDER byte-identical (ipinfo already claims data_retrieval → deepens only). `test_offering.py` 105→107
   (precision-synthetic 9-fire/10-dodge + real-captured) + `_ISOLATION_EVIDENCE` row + `_DATA_RETRIEVAL_LABELS`
-  update. So data_retrieval grows 6→7 signals. NEXT in-cloud data_retrieval candidate (Cycle-272 LOG "next
-  hypothesis"): a DATA-FRESHNESS / update-cadence signal (ipinfo /docs "Daily Data Refresh" — the "how current
-  is the corpus" leg, distinct from delivery format) IF precision-guardable against generic "fresh"/"updated"
-  marketing prose. See LOG Cycle 272. **service_booking's anchor
+  update. So data_retrieval grows 6→7 signals. UPDATE Cycle 288 (COVERAGE, cloud, direct-to-main, score-neutral):
+  the Cycle-272 "next hypothesis" DATA-FRESHNESS / update-cadence signal is now SHIPPED as `data-freshness` (the
+  "how current is the corpus" recency leg — the storefront publishes its dataset/database/feed refresh cadence,
+  DISTINCT from `dataset` existence, `dataset-format` delivery, `batch-retrieval` call-shape, and live record
+  retrieval). Precision-guarded (NEVER a bare "updated daily"/"fresh" — the cadence must attach to a data-CORPUS
+  noun dataset/database/corpus/feed, be the fixed "<cadence> data refresh/update" collocation with a LEADING
+  cadence adjective that keeps the "usage/analytics data updated" dashboard-telemetry near-miss OUT, be "data
+  freshness", or a "data/dataset/database refresh|update cadence"). Fires 2 spans on ipinfo.io (homepage "Daily
+  Data Refresh" + /docs "Each sample dataset is updated daily"), 0 on ALL TEN other fixtures incl. the canonical
+  pair. `test_offering.py` 111→113 (precision-synthetic 10-fire/13-dodge + real-captured) + `_ISOLATION_EVIDENCE`
+  row + `_DATA_RETRIEVAL_LABELS` update → test_offering_canonical 70/70. So data_retrieval grows 7→8 signals, now
+  well-mined across existence / delivery-format / call-shape / record-retrieval / RECENCY legs. See LOG Cycle 288.
+  **service_booking's anchor
   (acuityscheduling.com) got its FIRST distinct signal `manage-booking` in Cycle 248** (above) — it still carries
   un-mined capabilities distinct from create+manage (reminder/notification, intake-form, waitlist). See LOG Cycle 243.
   EARLIER — LOCAL Cycle 242 (2026-08-05): **data_retrieval unblocked
@@ -230,8 +239,8 @@ untouched (26/26, +39.4); no rubric bump. See LOG Cycle 287. Post-merge live beh
   return window; secondary the agent-native RETAIL rail surfaces (UCP `/.well-known/ucp`, MCP) as classification
   evidence distinct from driftflight. The offering signal bank is metered_api-HEAVY: metered_api 26, digital_good
   11 (post-Cycle-164 `variant-selection`), physical_good 10 (post-Cycle-266 `order-tracking`), subscription 10
-  (post-Cycle-276 `subscription-cancel`), service_booking 9 (post-Cycle-281 `waitlist`), data_retrieval 7
-  (post-Cycle-272 `dataset-format`). NOTE (superseded by Cycles 240/242/243): the
+  (post-Cycle-276 `subscription-cancel`), service_booking 9 (post-Cycle-281 `waitlist`), data_retrieval 8
+  (post-Cycle-288 `data-freshness`). NOTE (superseded by Cycles 240/242/243): the
   claim below that service_booking/data_retrieval "CANNOT be strengthened non-vacuously in-cloud" held only until their
   first committed anchors landed (acuityscheduling.com / ipinfo.io) — data_retrieval has since gained `batch-retrieval`
   against real evidence; service_booking's anchor is still un-mined. The three thin archetypes originally could not be

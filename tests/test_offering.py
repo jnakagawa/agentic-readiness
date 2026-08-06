@@ -1293,6 +1293,142 @@ def test_dataset_format_fires_on_real_captured_surfaces():
     print("  ok: dataset-format is ABSENT on the api-pair / marketplace / retail / null fixtures (non-vacuous, score-neutral)")
 
 
+def test_data_freshness_precision_synthetic():
+    # A NEW data_retrieval capability signal: DATA-FRESHNESS / UPDATE-CADENCE — the site
+    # publishes HOW CURRENT its data corpus is (the dataset/database/feed is refreshed on
+    # a stated cadence, a configurable refresh cadence, or advertised "data freshness").
+    # This is the "complete the job — trust the corpus is current" leg, DISTINCT from every
+    # existing signal: `dataset` proves a dataset EXISTS; `dataset-format` names the DELIVERY
+    # format; `batch-retrieval` names the CALL SHAPE; `data-service`/`lookup`/`enrich`/
+    # `query-records` describe live RECORD retrieval — none says how recent the corpus is.
+    # Precision is the whole game: bare "updated daily"/"refreshed"/"fresh" is broad-English
+    # marketing prose (a blog updated daily, new arrivals updated daily, prices updated hourly,
+    # a menu refreshed daily, an app that updates automatically, "fresh data delivered fast").
+    # The nastiest near-miss is a metered_api dashboard's "your usage data is updated daily"
+    # (telemetry recency, not a data product). So the signal NEVER matches a bare "updated
+    # daily" — the cadence must attach to a data-CORPUS noun (dataset/database/corpus/feed),
+    # be the fixed "<cadence> data refresh/update" collocation, be "data freshness", or a
+    # "data/dataset/database refresh|update cadence". Each POSITIVE fires `data-freshness`
+    # (non-vacuous); each NEGATIVE — a non-data noun on a cadence, a usage/analytics dashboard
+    # "data updated", an app auto-update, "fresh data" — must NOT claim data_retrieval.
+    #
+    # Canonical-invariant by construction: the signal fires on the committed data_retrieval
+    # anchor (ipinfo.io — homepage "Daily Data Refresh" + /docs "Each sample dataset is updated
+    # daily"), which ALREADY claims data_retrieval via lookup/enrich/dataset/data-service/
+    # batch-retrieval/dataset-format → no new archetype, no reorder; and on ZERO of the ten
+    # other committed fixtures (none documents a data-refresh cadence — pinned by
+    # tests/test_offering_canonical.py). Off the scoring path.
+    positives = {
+        # Real captured ipinfo.io shapes (homepage tile + /docs sentence, verbatim structure).
+        "daily data refresh": "Daily Data Refresh keeps global IP data current.",
+        "sample dataset updated daily": "Each sample dataset is updated daily.",
+        # Genuine corpus-refresh vocabulary from other real data services.
+        "dataset refreshed weekly": "Our geolocation dataset is refreshed weekly for accuracy.",
+        "database updated hourly": "The threat database is updated hourly from authoritative sources.",
+        "feed updated real-time": "The IP reputation feed is updated in real-time.",
+        "corpus refreshed nightly": "The company corpus is refreshed nightly.",
+        "data freshness phrase": "We guarantee data freshness across every lookup response.",
+        "dataset refresh cadence": "Choose your dataset refresh cadence for each download.",
+        "database update cadence": "The database update cadence is configurable per tier.",
+        "real-time data refresh": "Get real-time data refresh on every enterprise plan.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("fresh.test", {"homepage": text})
+        assert prof.claims("data_retrieval"), (name, prof.archetypes)
+        fired = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "data_retrieval"
+            for s in c.signals
+        }
+        assert "data-freshness" in fired, (name, sorted(fired))  # non-vacuous
+    print(f"  ok: {len(positives)} data-refresh-cadence phrasings each fire data-freshness")
+
+    negatives = {
+        # A non-data noun on an "updated <cadence>" — content/retail/app recency, not a corpus.
+        "blog updated daily": "Our blog is updated daily with fresh articles.",
+        "arrivals updated daily": "New arrivals are updated daily in the store.",
+        "prices updated hourly": "Prices are updated hourly across the marketplace.",
+        "menu refreshed daily": "The menu is refreshed daily by our chefs.",
+        "content updated weekly": "Our content is updated weekly.",
+        "inventory updated daily": "Inventory is updated daily across all warehouses.",
+        "terms updated monthly": "We update our terms of service monthly.",
+        # An app / software auto-update — not a data corpus refresh.
+        "app auto-update": "The app updates automatically in the background.",
+        "software updates monthly": "Software updates are released monthly.",
+        # A usage / analytics DASHBOARD "data updated" — telemetry recency, not a data product.
+        "usage data updated daily": "Your usage data is updated daily in the billing dashboard.",
+        "analytics data refreshed": "Analytics data refreshed every morning in your reports.",
+        # "fresh data" is not "data freshness"; a "training dataset" has no refresh cadence.
+        "fresh data delivered": "Fresh data delivered fast to your inbox.",
+        "training dataset assembled": "The training dataset was assembled last year.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("prose.test", {"homepage": text})
+        assert not prof.claims("data_retrieval"), (name, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} content/retail/app-update / dashboard-telemetry / "
+        "provenance strings do NOT claim data_retrieval (precision)"
+    )
+
+
+def test_data_freshness_fires_on_real_captured_surfaces():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the TRUTH mirror of the synthetic precision
+    # guard. It pins that the new data-freshness signal fires on the GENUINE data-refresh
+    # prose captured live from the committed data_retrieval anchor's surfaces (ipinfo.io —
+    # the homepage "Daily Data Refresh" tile and the /docs "Each sample dataset is updated
+    # daily"), run through the REAL discovery path (from_fixture -> discover_offering)
+    # exactly as a live crawl would.
+    #
+    # SCORE-NEUTRAL by construction: ipinfo.io ALREADY claims data_retrieval (via
+    # lookup/enrich/dataset/data-service/batch-retrieval/dataset-format), so the
+    # data-freshness evidence can only DEEPEN that claim — never add an archetype or
+    # reorder. The classifier is off the scoring path; the anchor's claimed SET is
+    # unchanged (pinned by tests/test_offering_canonical.py).
+    docs = _fixture_entry_text("ipinfo.io", "/docs")
+    assert "dataset is updated daily" in docs.lower(), "ipinfo /docs lost its data-refresh prose"
+    prof = classify_offering("ipinfo.io", {"/docs": docs})
+    assert prof.claims("data_retrieval"), prof.archetypes
+    data = next(c for c in prof.claimed if c.archetype == "data_retrieval")
+    fr = [s for s in data.signals if s.label == "data-freshness"]
+    assert fr, {s.label for s in data.signals}
+    print(f"  ok: data-freshness fires on REAL captured ipinfo.io /docs — quote: {fr[0].quote!r}")
+
+    # The signal ALSO fires on the anchor's HOMEPAGE "Daily Data Refresh" tile (a second
+    # real, independent surface), so the capability is documented across two crawled
+    # surfaces, not a single recorded hit.
+    home = _fixture_entry_text("ipinfo.io", "ipinfo.io")
+    assert "daily data refresh" in home.lower(), "ipinfo homepage lost its data-refresh prose"
+    hprof = classify_offering("ipinfo.io", {"homepage": home})
+    hdata = next(c for c in hprof.claimed if c.archetype == "data_retrieval")
+    assert any(s.label == "data-freshness" for s in hdata.signals), {s.label for s in hdata.signals}
+
+    # Full-discovery claimed-SET invariance on the anchor (score-neutrality): the new
+    # signal deepens data_retrieval without adding or dropping any archetype.
+    ictx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "ipinfo.io.json"))
+    iprof = offering.discover_offering(ictx)
+    assert set(iprof.archetypes) == {
+        "metered_api", "data_retrieval", "subscription", "digital_good"
+    }, iprof.archetypes
+
+    # NON-VACUOUS negatives on REAL data: the metered_api pair + marketplace, the retail
+    # catalog, and the null site publish no data-refresh cadence — the signal must be
+    # absent and conjure or reorder no archetype.
+    for dom, expected in (
+        ("driftflight.com", ["metered_api", "digital_good", "subscription"]),
+        ("drift-flight.org", ["metered_api", "digital_good", "subscription"]),
+        ("api.replicate.com", ["metered_api"]),
+        ("books.toscrape.com", ["physical_good"]),
+        ("example.com", []),
+    ):
+        nctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        nprof = offering.discover_offering(nctx)
+        nlabels = {s.label for c in nprof.claimed for s in c.signals}
+        assert "data-freshness" not in nlabels, (dom, nlabels)
+        assert nprof.archetypes == expected, (dom, nprof.archetypes)
+    print("  ok: data-freshness is ABSENT on the api-pair / marketplace / retail / null fixtures (non-vacuous, score-neutral)")
+
+
 def test_service_booking_manage_precision_synthetic():
     # The FIRST lifecycle-management signal for service_booking (Cycle 248), the
     # DISTINCT "operate without a human" leg: reschedule or cancel an EXISTING
@@ -5884,6 +6020,8 @@ def main() -> int:
         test_batch_retrieval_fires_on_real_captured_surfaces,
         test_dataset_format_precision_synthetic,
         test_dataset_format_fires_on_real_captured_surfaces,
+        test_data_freshness_precision_synthetic,
+        test_data_freshness_fires_on_real_captured_surfaces,
         test_service_booking_manage_precision_synthetic,
         test_manage_booking_fires_on_real_captured_surfaces,
         test_physical_good_order_tracking_precision_synthetic,

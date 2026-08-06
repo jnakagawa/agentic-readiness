@@ -6662,6 +6662,7 @@ _ISOLATION_EVIDENCE: dict[str, str] = {
     "sku-inventory": "manage inventory levels",
     "returns": "see our return policy",
     "order-tracking": "track your order after checkout",
+    "return-window": "a 30-day return window applies to every order",
     "physical-descriptor": "a physical product",
     # service_booking
     "book": "book a session online",

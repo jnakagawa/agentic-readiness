@@ -1617,6 +1617,47 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"(?<!purchase )\border tracking\b"
             r"|\btrack (?:your |my |their |the )?orders?\b"
             r"|(?<!purchase )\border status\b", _F)),
+        # REVERSE THE TRANSACTION WITHIN A KNOWN WINDOW — the RETURN-lifecycle leg.
+        # An agent that buys a physical good on a user's behalf must know how long
+        # it has to reverse that purchase and act inside that window WITHOUT a human
+        # — the reverse-logistics analog of `order-tracking`'s forward lifecycle,
+        # and the physical_good sibling of subscription's cancel window. GENUINELY
+        # DISTINCT from the sibling `returns` signal, which only matches the STATIC
+        # existence of a returns/refunds POLICY page ("return policy", "returns &
+        # exchanges"); THIS keys on the machine-readable return WINDOW itself — the
+        # duration an agent must reason over ("return period", "30-day return",
+        # "return within 30 days") — a different rung of the ladder (a policy EXISTS
+        # vs the window IS N days). Mined from the committed retail anchor's real
+        # prose (www.moleskine.com homepage benefit "Extended return period: 1-month
+        # to decide").
+        # PRECISION-CRITICAL: a bare duration + "month/week/day" is a broad-English
+        # minefield on a retail surface — moleskine's own nav carries "12 Month
+        # Planner" / "18-Month Planner" (PRODUCT names), allbirds' CCPA text carries
+        # "12-month period" / "12 months preceding your request" and a "2 weeks to
+        # ship" delivery estimate, and JS carries "return window.sessionStorage" /
+        # "return window.CQuotient" (a member access, not a return-window noun). So
+        # NEVER match a bare duration and NEVER match a bare "return window" (which
+        # would trip the JS `return window.<member>` idiom). Require the token
+        # "return" TIED to a window/period noun or a duration: the fixed collocation
+        # "return period" (no JS or product-name collision — "12-month period" lacks
+        # "return"); a duration LEADING "return(s)" ("30-day return", "365-day
+        # returns"); a duration leading "return window" or "return window of N ..."
+        # (the duration/`of N` guards "window" away from the JS member-access idiom);
+        # or "return(s) [it/them/...] within N day|week|month". Broad "N-month
+        # <product>", "12-month period", "2 weeks to ship", and "return
+        # window.<member>" all dodge. No committed fixture but the moleskine retail
+        # anchor trips this (physical_good is NA on the canonical pair / api / data /
+        # booking / null per test_offering_canonical, ABSENT on allbirds and the
+        # books.toscrape catalog), and moleskine ALREADY claims physical_good via
+        # shipping — so the signal only DEEPENS an existing claim, never adds an
+        # archetype or reorders. Off the scoring path.
+        ("return-window", re.compile(
+            r"\breturns?\s+period\b"
+            r"|\b\d+[-\s]?(?:day|week|month)s?\s+returns?\b"
+            r"|\b\d+[-\s]?(?:day|week|month)s?\s+return\s+window\b"
+            r"|\breturns?\s+window\s+of\s+\d+\b"
+            r"|\breturns?\s+(?:it|them|items?|products?)?\s*within\s+\d+[-\s]?(?:day|week|month)s?\b",
+            _F)),
         ("physical-descriptor", re.compile(r"\bphysical (product|good|item)s?\b", _F)),
     ],
     "service_booking": [

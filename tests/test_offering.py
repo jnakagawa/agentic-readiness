@@ -1658,6 +1658,129 @@ def test_order_tracking_fires_on_real_captured_surfaces():
     print("  ok: order-tracking is ABSENT on the api-pair / data / booking / retail-catalog / null fixtures (non-vacuous, score-neutral)")
 
 
+def test_physical_good_return_window_precision_synthetic():
+    # A NEW physical_good capability signal: RETURN WINDOW — the REVERSE-logistics
+    # leg. An agent that buys a physical good on a user's behalf must know how long
+    # it has to reverse that purchase and act inside that window WITHOUT a human —
+    # the reverse-logistics analog of order-tracking's forward lifecycle, and the
+    # physical_good sibling of subscription's cancel window. GENUINELY DISTINCT from
+    # the sibling `returns` signal, which only matches the STATIC existence of a
+    # returns/refunds POLICY page ("return policy", "returns & exchanges"); THIS
+    # keys on the machine-readable return WINDOW itself — the duration an agent must
+    # reason over. A bare duration + month/week/day is a broad-English minefield on
+    # a retail surface (product names "12 Month Planner", CCPA "12-month period",
+    # "2 weeks to ship", and the JS idiom "return window.<member>"), so the guard
+    # NEVER matches a bare duration and NEVER matches a bare "return window" — only
+    # "return" TIED to a window/period noun or a duration ("return period"; a
+    # duration LEADING "return(s)"; a duration leading "return window" / "return
+    # window of N"; "return within N days"). Each POSITIVE fires return-window
+    # (non-vacuous); each NEGATIVE must NOT claim physical_good on its own.
+    #
+    # Canonical-invariant by construction: the signal fires on ONE committed retail
+    # anchor (www.moleskine.com homepage "Extended return period: 1-month to
+    # decide"), which ALREADY claims physical_good via shipping → no new archetype,
+    # no reorder; and on ZERO of the remaining committed fixtures (physical_good is
+    # NA on the canonical pair / api / data / booking / null — pinned by
+    # tests/test_offering_canonical.py — and ABSENT on allbirds and the
+    # books.toscrape catalog). Off the scoring path.
+    positives = {
+        # The real captured anchor shape (verbatim-faithful).
+        "extended return period": "Extended return period: 1-month to decide",
+        # Genuine return-window vocabulary from other real storefronts.
+        "30-day return": "Enjoy a 30-day return on any unworn pair.",
+        "365-day returns": "We offer 365-day returns, no questions asked.",
+        "30-day return window": "Every order has a 30-day return window.",
+        "return window of 30 days": "A return window of 30 days applies to all items.",
+        "return within 30 days": "Return within 30 days for a full refund.",
+        "return it within 14 days": "You may return it within 14 days of delivery.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("returns.test", {"homepage": text})
+        assert prof.claims("physical_good"), (name, prof.archetypes)
+        fired = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "physical_good"
+            for s in c.signals
+        }
+        assert "return-window" in fired, (name, sorted(fired))  # non-vacuous
+    print(f"  ok: {len(positives)} return-window phrasings each fire return-window")
+
+    negatives = {
+        # broad-English "N month/week/day <noun>" — never a return window.
+        "12 month planner": "The 12 Month Planner starts in January.",
+        "18-month planner": "Our 18-Month Planner has extra pages.",
+        # a privacy-law retention period, not a return window.
+        "12-month period": "collected over the preceding 12-month period, as disclosed.",
+        "12 months preceding": "the categories we collected in the 12 months preceding your request.",
+        # a shipping estimate, not a return window.
+        "2 weeks to ship": "Orders may take up to 2 weeks to ship.",
+        # the JS `return window.<member>` idiom — a member access, not a noun.
+        "return window member": "function f() { return window.sessionStorage; }",
+        "return window cquotient": "get: function() { return window.CQuotient.cqcid; }",
+        # a static returns POLICY with no window — the sibling `returns` signal's
+        # turf, not return-window's (and "returns" alone must not conjure the claim).
+        "returns policy word": "Read our returns policy before you buy.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("prose.test", {"homepage": text})
+        fired = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "physical_good"
+            for s in c.signals
+        }
+        assert "return-window" not in fired, (name, sorted(fired))
+    print(
+        f"  ok: {len(negatives)} product-name / retention-period / shipping / JS-idiom / bare-returns strings do NOT fire return-window (precision)"
+    )
+
+
+def test_return_window_fires_on_real_captured_surfaces():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the TRUTH mirror of the synthetic
+    # precision guard. It pins that return-window fires on the GENUINE return-window
+    # prose captured live from the committed retail anchor www.moleskine.com
+    # (homepage benefit "Extended return period: 1-month to decide") run through the
+    # REAL discovery path (from_fixture -> discover_offering) exactly as a live
+    # crawl would.
+    #
+    # SCORE-NEUTRAL by construction: moleskine ALREADY claims physical_good (via
+    # shipping), so the return-window evidence can only DEEPEN that claim — never
+    # add an archetype or reorder. The classifier is off the scoring path; the
+    # anchor's claimed SET is unchanged (pinned by tests/test_offering_canonical.py).
+    ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "www.moleskine.com.json"))
+    prof = offering.discover_offering(ctx)
+    assert prof.claims("physical_good"), prof.archetypes
+    phys = next(c for c in prof.claimed if c.archetype == "physical_good")
+    rw = [s for s in phys.signals if s.label == "return-window"]
+    assert rw, {s.label for s in phys.signals}
+    assert rw[0].quote and rw[0].quote.strip(), "return-window quote empty"
+    assert set(prof.archetypes) == {"physical_good", "subscription"}, prof.archetypes
+    print(f"  ok: return-window fires on REAL captured www.moleskine.com — quote: {rw[0].quote!r}")
+
+    # NON-VACUOUS negatives on REAL data: the OTHER retail anchor (allbirds — "FREE
+    # shipping & returns" is the static returns policy, NOT a window), the retail
+    # catalog (books.toscrape), the metered_api pair + marketplace, the data anchor,
+    # the booking storefront, and the null site carry no return-window prose — the
+    # signal must be absent and conjure or reorder no archetype.
+    for dom, expected in (
+        ("www.allbirds.com", ["metered_api", "physical_good"]),
+        ("books.toscrape.com", ["physical_good"]),
+        ("driftflight.com", ["digital_good", "metered_api", "subscription"]),
+        ("drift-flight.org", ["digital_good", "metered_api", "subscription"]),
+        ("api.replicate.com", ["metered_api"]),
+        ("ipinfo.io", ["data_retrieval", "digital_good", "metered_api", "subscription"]),
+        ("acuityscheduling.com", ["metered_api", "service_booking", "subscription"]),
+        ("example.com", []),
+    ):
+        nctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        nprof = offering.discover_offering(nctx)
+        nlabels = {s.label for c in nprof.claimed for s in c.signals}
+        assert "return-window" not in nlabels, (dom, nlabels)
+        assert sorted(nprof.archetypes) == expected, (dom, sorted(nprof.archetypes))
+    print("  ok: return-window is ABSENT on allbirds / retail-catalog / api-pair / data / booking / null fixtures (non-vacuous, score-neutral)")
+
+
 def test_service_booking_notification_precision_synthetic():
     # The closed-loop FOLLOW-THROUGH signal for service_booking (Cycle 252), a THIRD
     # distinct capability leg beyond the five create signals (book/appointment/
@@ -6026,6 +6149,8 @@ def main() -> int:
         test_manage_booking_fires_on_real_captured_surfaces,
         test_physical_good_order_tracking_precision_synthetic,
         test_order_tracking_fires_on_real_captured_surfaces,
+        test_physical_good_return_window_precision_synthetic,
+        test_return_window_fires_on_real_captured_surfaces,
         test_service_booking_notification_precision_synthetic,
         test_booking_notification_fires_on_real_captured_surfaces,
         test_service_booking_intake_form_precision_synthetic,

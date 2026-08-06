@@ -21,13 +21,24 @@ untouched (26/26, +39.4); no rubric bump. See LOG Cycle 287. Post-merge live beh
 .org→3, wider delta) stays queued [LOCAL] below. -->
 
 - **[LOCAL] PR #148 post-merge LIVE behavioral verification** (METHOD, queued Cycle 287). After the peer cycle
-  merges PR #148, run the exact command `compare drift-flight.org driftflight.com --behavioral --trials 2 --models
-  claude,codex` ($0 read-only shopper+trust panel; ≤10 codex invocations; free-tier ≤1×, no signing) and confirm
-  the v0.7(d) fix routes any fresh "denied by the browser permission boundary/policy" codex refusal to reachability
-  (`.com` valid_runs back to 2 / `.org` to 3 when the gate fires that phrasing), WIDENING the behavioral delta.
-  Force-add the panel dir to `runs/local/`. Per-trial non-deterministic gate → the phrasing may drift again; if a
-  NEW near-miss family appears, re-derive with the shipped detector and queue the next peer-gated broadening (the
-  standing METHOD tripwire — vocab has drifted Cycle 269, 284, 286→287).
+  merges PR #148, run `compare drift-flight.org driftflight.com --behavioral … --models codex` ($0 read-only
+  shopper+trust panel; ≤10 codex invocations; free-tier ≤1×, no signing) and confirm the v0.7(d) fix routes any
+  fresh "denied by the browser permission boundary/policy" codex refusal to reachability (valid runs preserved,
+  WIDENING the behavioral delta). Force-add the panel dir to `runs/local/`. Per-trial non-deterministic gate → the
+  phrasing may drift again; if a NEW near-miss family appears, re-derive with the shipped detector and queue the
+  next peer-gated broadening (the standing METHOD tripwire — vocab has drifted Cycle 269, 284, 286→287).
+  **WALL-CLOCK FINDING (Local cycle 20260806T175200Z, METHOD/self-healing):** the ORIGINAL full form `--trials 2
+  --models claude,codex` = 12 live model investigations ≈ 18–22 min, which EXCEEDS the local cycle wall-clock →
+  it silently stalled 8 consecutive fires today (every `runs/local/pr148_postmerge_*/compare.log` 0-byte;
+  `compare` flushes its report only at the end, so a mid-run kill leaves nothing). NOT a breakage (codex probe
+  ~18s, both anchors 200, suite 38/38). FIX shipped that fire: the run wrapper now heartbeats `START:`/`END:
+  exit=<rc>` (no longer a 0-byte mystery), and this item is RESHAPED to the completable **codex-only** form above
+  — codex is the model the v0.7(d) fix targets; the claude leg is the rarely-refusing control that doubles
+  runtime. The exact `.com`→2 / `.org`→3 valid-run counts assumed the claude,codex panel (different denominator);
+  codex-only still exercises the core routing mechanism (does a codex permission-boundary refusal count as
+  reachability, not a site-FAIL). If even codex-only clears the wall-clock unreliably, launch it DETACHED (new
+  session, `os.setsid`) so it survives the fire and the NEXT fire harvests the COMPLETED, heartbeated artifact.
+  See LOG Local cycle 20260806T175200Z.
 
 - **[SCOPE follow-up, future — carefully-guarded proposal only]** the SEPARATE
   reputation-"unsafe" sentence family — *"…classified driftflight.com as unsafe and blocked access."* — is a

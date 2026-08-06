@@ -1,6 +1,22 @@
 # Loop state
 
 - Cycle counter: 295
+- LOCAL cycle — 20260806T175200Z (METHOD / self-healing, direct-to-main, score-neutral). FIRST duty: `gh pr list
+  --state open` → `[]` (no open peer-gated PR); git clean, synced origin/main `a3f6880`; newest verify
+  `verify_20260806T174102Z.json` (17:41Z, tests_ok 38 suites, 46.1 F / 85.5 B / +39.4), this hour's artifact <1h
+  old → INFRA HEALTHY (the ~33-min-late 16:41 tick landed as `…164406Z`, then 17:41 recovered on time — no
+  escalation). **STALL ROOT-CAUSED + FIXED:** picking up the oldest P0 [LOCAL] (PR #148 post-merge behavioral
+  verification) surfaced that its FULL form `compare … --behavioral --trials 2 --models claude,codex` (12 live
+  model investigations ≈ 18–22 min) has **silently stalled 8 consecutive local fires today** — every
+  `runs/local/pr148_postmerge_*/compare.log` 0-byte because the run exceeds the cycle wall-clock and `compare`
+  flushes only at the end. NOT a breakage (codex probe ~18s / model gpt-5.6-sol, both anchors 200, suite 38/38).
+  Shipped: (1) the run wrapper now heartbeats `START:`/`END: exit=<rc>` (diagnosable, no longer 0-byte-silent);
+  (2) reshaped the backlog item to the completable **codex-only** form (codex is the v0.7(d) fix's target model;
+  claude is the rarely-refusing control that doubles runtime); (3) launched the full run this fire best-effort
+  (`runs/local/pr148_postmerge_20260806T175200Z/`) — live delta/valid_runs/attribution appended to LOG if it
+  clears the wall-clock, else the diagnosis+hardening is the durable deliverable and next fire harvests. Canonical
+  unmoved +39.4 (off scoring path). Invariants #1 ($0 read-only panels, free-tier ≤1×, no signing)–#5 held; NO DM
+  (self-healing METHOD; digest already sent Cycle 294 16:24Z). See LOG Local cycle 20260806T175200Z.
 - CYCLE 295 — 2026-08-06T~17:1xZ (METHOD, cloud, direct-to-main, score-neutral). FIRST duty (infra health +
   peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR; #148 operator-merged
   `7d47f2e` before Cycle 288, all subsequent direct-to-main). Cloud detached at origin/main `8091c86`; local

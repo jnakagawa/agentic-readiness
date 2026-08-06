@@ -19121,3 +19121,51 @@ tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4
 ## Local verification — 20260806T174102Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260806T174102Z.json
+
+## Local cycle — 20260806T175200Z — METHOD / self-healing (PR #148 behavioral-verification stall root-caused + heartbeat-hardened)
+
+**FIRST duty (infra health + peer-gate review).** `gh pr list --state open` → `[]` (no open peer-gated
+PR; #148 was operator-merged `7d47f2e` before Cycle 288). Git clean, local `main` synced to origin/main
+`a3f6880`. **INFRA HEALTHY:** newest verify by FILENAME `runs/local/verify_20260806T174102Z.json` (17:41Z,
+tests_ok=true 38 suites, 46.1 F / 85.5 B / +39.4), this hour's artifact, <1h old → WATCH NORMAL. (Aside: a
+`verify_20260806T164406Z.json` exists at 16:44Z — the ~33-min-late 16:41 tick STATE Cycle 295 flagged; the
+17:41Z tick then landed on time, so the cadence recovered — no escalation.)
+
+**THE ITEM (oldest P0 [LOCAL]): PR #148 post-merge LIVE behavioral verification** — `compare
+drift-flight.org driftflight.com --behavioral --trials 2 --models claude,codex`. Picking it up surfaced that
+it has been **SILENTLY STALLING for 8 consecutive local fires today**: every `runs/local/pr148_postmerge_*`
+dir (09:48 / 10:44 / 11:44 / 12:44 / 13:44 / 14:44 / 15:45 / 17:12Z) holds a **0-byte `compare.log`** (the
+15:45 one carries only a bare `START:` line) and empty/absent `transcripts/`. Silent failure and silent
+success look identical (playbook self-healing) — so this had read as "done 8×" when it had in fact never
+completed once.
+
+**ROOT CAUSE (not a breakage — a budget mismatch).** The full run is **12 live model investigations**:
+2 domains × [ 2-model trust panel (`TRUST_TIMEOUT_S=120`) + 2-model×2-trial shopper panel
+(`SHOPPER_TIMEOUT_S=300`) + a ≤1× free-tier probe ], run sequentially (`_cmd_compare` evaluates domain_a
+fully, then domain_b). At real per-investigation latencies (~45–150s each) that is **~18–22 min wall-clock**,
+which **exceeds the local cycle's wall-clock budget** → the launcher kills the process mid-run, and because
+`compare` prints its report ONLY at the very end, nothing is flushed → 0-byte log. Confirmed NOT broken this
+fire: codex usability probe (`codex exec --sandbox read-only … "Reply with only the word: ok"`) returns `ok`
+in **~18s** (model `gpt-5.6-sol`, codex-cli 0.145.0); both anchors reachable (`curl` 200 in 0.37s/0.51s);
+suite 38/38 green (17:41Z floor). Empirically watched this fire's run reach only trust-panel + `.org` claude-t1
+shopper by 3m14s — on pace for the ~20-min total, i.e. the same cliff the prior 8 fires fell off.
+
+**FIX (self-healing, this fire).** (1) **Heartbeat-hardened the run wrapper** — it now writes
+`START: <ts> cmd:…` before and `END: <ts> exit=<rc>` after the compare, so a killed run is DIAGNOSABLE
+(no longer a 0-byte mystery) per the playbook's "every scheduled component must heartbeat on every fire."
+(2) **Reshaped the backlog item** to prescribe a wall-clock-completable form (codex-only keeps the panel to
+the model the v0.7(d) fix actually targets and roughly halves runtime; the claude leg is the rarely-refusing
+control that doubles the run — split it off, or harvest a detached run next fire). (3) **Launched the full
+run this fire** (`runs/local/pr148_postmerge_20260806T175200Z/compare.log`, heartbeated) as best-effort — if
+it clears the wall-clock the live delta / valid_runs / attribution are appended in a follow-up; if it is
+killed like its 8 predecessors, the durable deliverable is this diagnosis + the heartbeat hardening + the
+reshaped item, and the next fire harvests the (now-heartbeated) result.
+
+**CANONICAL UNMOVED:** 46.1 F / 85.5 B / **+39.4** (17:41Z floor); a behavioral verification + a log-wrapper
+heartbeat touch NO scoring code (off the scoring path) → cannot move a score. Invariants #1 ($0 — read-only
+shopper/trust panels; free-tier probe fires ≤1× and signs nothing nonzero; zero paid ops, no nonzero
+`--max-pay`)–#5 (append-only) held. Budget: ONE behavioral pair run; codex invocations well under 10.
+**NO DM** (self-healing METHOD, not a DM-enumerated sensitive class; daily digest already sent by Cycle 294
+at 16:24Z). **Next hypothesis:** if the full run again fails to clear the wall-clock, adopt the codex-only
+scoped form as the standing PR-#148 verification command, or launch it detached (new session) so it survives
+the cycle and the next fire harvests a COMPLETED, heartbeated artifact.

@@ -1,6 +1,54 @@
 # Loop state
 
-- Cycle counter: 276
+- Cycle counter: 277
+- CYCLE 277 — 2026-08-06T04:2xZ (METHOD, cloud, direct-to-main, tests-only, score-neutral). FIRST duty (infra
+  health + peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR). Cloud started
+  detached at origin/main `6c256e9` with local `main` ref at the stale `3e318f1` (Cycle-276 tip, pre the 03:41Z
+  verify heartbeat); realigned local `main` to origin/main (benign; HEAD already matched, no history rewrite).
+  **INFRA HEALTHY:** newest verify by FILENAME `runs/local/verify_20260806T034105Z.json` (03:41Z, tests_ok=true
+  34 suites, 46.1 F / 85.5 B / +39.4), ~41min old at fire (04:22Z 08-06), well inside the 6h floor; :41 cadence
+  holding (01:41Z→02:41Z→03:41Z) → RUNNER-HEALTH WATCH NORMAL. Bench brought up (venv + pip); full suite 34/34
+  green before the change. **TRACK NOTE:** cloud pointer READOUT-owed but [LOCAL]-blocked (3rd sweep needs
+  network) and not starving → next least-recently-worked fresh track is METHOD (last Cycle 271). METHOD's named
+  frontier (LOCALE axis) CHECKED + confirmed [LOCAL]-blocked in-cloud (`locale -a` = C/C.utf8/POSIX only;
+  `setlocale(LC_ALL,'de_DE.UTF-8'|'tr_TR.UTF-8')` raises → a teeth-bearing locale test cannot be verified here),
+  so surfaced the adjacent in-cloud-testable seam. **IMPROVEMENT (METHOD — third host-environment reproducibility
+  axis):** closed the DEFAULT-ENCODING axis of the committed static evidence, the sibling of Cycle 267 (hash-seed)
+  + Cycle 271 (timezone) + Cycle 274 (population broadening). NEW `tests/test_encoding_reproducibility.py` (5
+  guards, 1:1 mirror of the timezone suite) re-scores the whole 6-fixture replay-clean population in subprocesses
+  under two host-INDEPENDENT default-encoding envs — explicit UTF-8 mode (`PYTHONUTF8=1`) vs forced ASCII default
+  (`LC_ALL=C PYTHONUTF8=0 PYTHONCOERCECLOCALE=0`, defeating PEP 540 + PEP 538) — asserting the serialized report is
+  byte-identical (`generated_at` pinned). Every population fixture carries non-ASCII (em-dash U+2014 + middot
+  U+00B7 on the pair; empirically the ASCII env makes `getpreferredencoding()`==`ANSI_X3.4-1968` and an implicit
+  `open(fixture).read()` raises `UnicodeDecodeError`). Scoring path is safe TODAY (fixture read `from_fixture:162`
+  + rubric read `load_rubric:68` both explicit `encoding="utf-8"`; `to_json` `ensure_ascii`) so all 6 are
+  INVARIANT — this VERIFIES the previously-assumed property. TEETH (guard 3): implicit read succeeds under UTF-8,
+  RAISES under ASCII; explicit utf-8 byte-identical across both. Guard 5 pins `_POPULATION` == live 0-replay-miss
+  set ⊇ pair (self-maintaining, same partition as test_canonical_replay). SCORE-NEUTRAL: scoring-path diff (`git
+  diff -- asrs/ rubric/ fixtures/ batteries/ loop/local_verify.py`) EMPTY, only the new test file (auto-discovered
+  by the runner glob; test_runner_registration green); suite **34/34 → 35/35 green**; canonical replay **46.1 F /
+  85.5 B / +39.4 UNMOVED** (fresh in-fire static re-score concurs, rubric v0.7); `driftflight.com c54f611d60c3…`
+  digest matches the Cycle-274 LOG. Invariants #1–5 all held. NO DM (score-neutral tests-only METHOD, not
+  sensitive-class; no digest due — 04:2xZ precedes 16:00 UTC on 08-06). See LOG Cycle 277.
+- FOCUS POINTER (Cycle 277 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
+  RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY on a
+  fresh >6h no-artifact gap. Cloud track rotation: Cycle 277 was METHOD → cloud pointer is **TRUTH next** (METHOD →
+  COVERAGE → TRUTH → READOUT), but **READOUT STILL OWED** the moment a 3rd dated sweep is committed [LOCAL]
+  (population-drift TREND sparkline across ≥3 sweeps). NEXT COVERAGE (still open, in-cloud): the `waitlist` signal
+  on the simplybook.me anchor (service_booking 8→9); a subscription PAUSE/RESUME leg (`subscription.paused`/uncancel
+  on the polar anchor, the suspend-without-terminating leg distinct from Cycle-276's cancel) IF precision-guardable;
+  data_retrieval DATA-FRESHNESS/update-cadence (ipinfo "Daily Data Refresh"); physical_good RETURNS-WINDOW leg
+  (allbirds/moleskine). **NEXT TRUTH/METHOD: the static-evidence reproducibility family is now SATURATED for
+  in-cloud axes — hash-seed (267) + timezone (271) + default-encoding (277) cover every host axis a minimal
+  container varies WITHOUT extra installs.** The remaining reproducibility axis (a genuine non-C system locale
+  de_DE/tr_TR — comma-decimal `{:n}` + dotless-i case-fold leaks the ASCII-codec axis cannot catch) is [LOCAL]-gated
+  (needs the locale installed to activate via setlocale). Beyond that, the next genuinely-NEW METHOD seam should
+  move OFF host-environment reproducibility (e.g. probe-order independence of the aggregate, or fixture-capture
+  determinism). NEXT READOUT: population-drift TREND across ≥3 dated sweeps ([LOCAL]-gated, only 2 committed).
+  Substantive [LOCAL] frontier: codex-dependent items stay gated — driftflight.com (WITH side) still codex-blocked
+  → cross-model N-curve / LIVE behavioral delta blocked on WITH-side reachability (drift-flight.org t2 IS
+  reachable); a THIRD calibration anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168);
+  structured catalog/pricing JSON (Cycle-70); the LOCALE reproducibility axis (this cycle's [LOCAL] spinoff).
 - CYCLE 276 — 2026-08-06T03:1xZ (COVERAGE, cloud, direct-to-main, score-neutral). FIRST duty (infra health +
   peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR). HEAD == origin/main ==
   local `main` all at `3e318f1` (clean, no stale-orphan realign). **INFRA HEALTHY:** newest verify by FILENAME
@@ -202,53 +250,6 @@
   → cross-model N-curve / LIVE behavioral delta remain blocked on WITH-side reachability (drift-flight.org t2 IS
   reachable, but the WITH side is where the delta lives); a THIRD calibration anchor / 2nd x402-live merchant;
   render-generation digital_good (Cycle-168); structured catalog/pricing JSON (Cycle-70).
-- CYCLE 272 — 2026-08-06T01:1xZ (COVERAGE, cloud, direct-to-main, score-neutral). FIRST duty (infra health +
-  peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR). Cloud started on stale
-  orphan local `main` (`3796519`) while HEAD == origin/main `7c8b60b`; realigned (benign, Cycle-245; fetch
-  showed the usual `3796519...7c8b60b (forced update)` on the tracking ref only). **INFRA HEALTHY:** newest
-  verify by FILENAME `runs/local/verify_20260806T004105Z.json` (00:41Z, tests_ok=true 34 suites, 46.1 F /
-  85.5 B / +39.4), ~33min old at fire (01:14Z 08-06), well inside the 6h floor; :41 cadence holding
-  (22:41Z→23:41Z→00:41Z) → RUNNER-HEALTH WATCH NORMAL. (`ls -t` unreliable on a fresh checkout — uniform
-  mtimes — so newest is picked by FILENAME timestamp.) Full suite 34/34 green before the change (bench up).
-  **IMPROVEMENT (COVERAGE — the pointer's named next-COVERAGE item + Cycle-243's "next hypothesis"):**
-  data_retrieval (2nd-thinnest, 6→7 signals) gains `dataset-format` — the DATASET-FORMAT / DOWNLOAD-CONTRACT
-  leg: the site delivers its data as a DOWNLOADABLE DATASET/DATABASE in a NAMED machine-consumable format
-  (CSV/JSON/MMDB/Parquet/NDJSON/GeoJSON), so an agent picks the ingest format its pipeline consumes (the
-  "complete the job — agent chooses bulk delivery format" leg). DISTINCT from all 6 existing signals
-  (`dataset`=existence, `batch-retrieval`=call-shape, `data-service`/`lookup`/`enrich`/`query-records`=live
-  record retrieval — none names the download FORMAT). Mined from the committed ipinfo.io anchor (homepage
-  "data downloads in different formats" + /docs "Database Downloads … in CSV, JSON, MMDB, or Parquet
-  formats"). PRECISION-CRITICAL (bare CSV/JSON/Parquet = worst minefield: JSON responses, `*.json`
-  specs/manifests, `Content-Type: application/json`, dashboard "export to CSV"): NEVER a bare token — three
-  anchored branches (format-named-AS-downloadable-database; "data/database/dataset download" NOUN compound
-  sentence-bounded beside a format/"formats"; "downloadable dataset" in a named format). Validated on the
-  REAL discovery path across all 9 fixtures: fires NON-VACUOUSLY on ipinfo (homepage+/docs), ABSENT on all 8
-  others, claimed SET+ORDER byte-identical everywhere. NEW `test_offering.py` +2 (105→107): precision-synthetic
-  (9 positives fire / 10 negatives — response encodings, spec/manifest filenames, dashboard export, provenance
-  — each NOT claiming data_retrieval) + real-captured (fires on REAL ipinfo /docs AND homepage, SET invariant,
-  ABSENT+set-invariant on api-pair/marketplace/retail/null). `test_offering_canonical.py`: `dataset-format`
-  added to `_DATA_RETRIEVAL_LABELS` + `_ISOLATION_EVIDENCE` (isolation completeness covers it), 68/68.
-  SCORE-NEUTRAL: classifier OFF the scoring path (drives `--battery auto` selection only); scoring-path diff
-  EMPTY (only `asrs/offering.py` + 2 tests); suite **34/34 green**; canonical replay **26/26, 46.1 F / 85.5 B
-  / +39.4 UNMOVED**; 00:41Z verify floor concurs. Invariants #1–5 all held. NO DM (score-neutral COVERAGE, not
-  sensitive-class; no digest due — 01:1xZ precedes 16:00 UTC on 08-06). See LOG Cycle 272.
-- FOCUS POINTER (Cycle 272 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
-  check. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + Cycle 263 pin); WATCH stays NORMAL —
-  re-escalate ONLY on a fresh >6h no-artifact gap. Cloud track rotation: Cycle 272 was COVERAGE → cloud pointer
-  is **TRUTH next** (METHOD → COVERAGE → TRUTH → READOUT). NEXT COVERAGE: data_retrieval DATA-FRESHNESS /
-  update-cadence signal (ipinfo /docs "Daily Data Refresh" — the "how current is the corpus" leg, distinct
-  from delivery format) IF precision-guardable against generic "fresh"/"updated" marketing; physical_good
-  RETURNS-WINDOW leg (allbirds/moleskine machine-readable return window); agent-native RETAIL rail surfaces
-  (UCP/MCP); deep-bank uncaptured-capability audit. NEXT TRUTH/METHOD: the two host-environment reproducibility
-  axes (hash-seed + timezone) close the "same fixture, different machine → byte-identical evidence" family for
-  the STATIC path; cheap next extensions are (a) EXTEND both subprocess-digest guards from the canonical PAIR
-  to the whole committed fixture population, (b) the LOCALE axis (`LC_ALL`/`LANG`) with teeth IF de_DE/tr_TR
-  generatable; beyond these METHOD/TRUTH stays SATURATED — surface a genuinely NEW seam first. NEXT READOUT:
-  population-drift TREND across ≥3 dated sweeps ([LOCAL]-gated, only 2 committed); compare-card symmetry DONE.
-  Substantive [LOCAL] frontier: re-score the behavioral canonical delta LIVE on a codex-reachable trial
-  (drift-flight.org t2) end-to-end; cross-model N-curve (partially unblocked, t2-only); a THIRD calibration
-  anchor; render-generation digital_good (Cycle-168); structured catalog/pricing JSON (Cycle-70); ACP/UCP/MPP
-  live handshakes; a richer-booking WAITLIST fixture (Cycle-256).
 <!-- STATE COMPACTED at Cycle 260 (2026-08-05T~17:1xZ, self-healing/COVERAGE, direct-to-main, score-neutral).
      STATE.md had accreted the full per-cycle history back to ~Cycle 5 (7798 lines / ~790KB) and could no
      longer be Read in one call, degrading the playbook-mandated per-cycle "read STATE.md". Trimmed the

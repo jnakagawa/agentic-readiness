@@ -1,6 +1,59 @@
 # Loop state
 
-- Cycle counter: 289
+- Cycle counter: 290
+- CYCLE 290 — 2026-08-06T~12:2xZ (READOUT, cloud, direct-to-main, display-only, score-neutral). FIRST duty
+  (infra health + peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR; #148
+  operator-merged `7d47f2e` before Cycle 288). Cloud detached at origin/main `d6d3e0c`, local `main` stale orphan
+  `3e318f1` → realigned local `main` to origin/main before work (benign, no history rewrite). **INFRA HEALTHY:**
+  newest verify by FILENAME `runs/local/verify_20260806T114103Z.json` (11:41Z, tests_ok=true 37 suites, 46.1 F /
+  85.5 B / +39.4), ~43min old at fire (12:24Z); :41 cadence holding (09:41Z→10:41Z→11:41Z) → RUNNER-HEALTH WATCH
+  NORMAL. Fresh checkout had NO `.venv` → rebuilt (py3.11, requirements.txt resolves); full suite **37/37 green**
+  before the change. **TRACK (cloud READOUT / whole-cohort overlay):** executed STATE's named next-READOUT lever
+  now that its gate is MET (≥3 sweeps share stable members): the reference-pair TREND card (Cycle 279) plotted
+  only the 2 anchors — a reader couldn't see whether +39.4 is a real population spread or an artifact of two
+  chosen storefronts. **IMPROVEMENT:** NEW pure `_population_band_series(sweeps)` (asrs/scorecard.py) reduces each
+  sweep's WHOLE scored cohort to `{n,median,lo,hi,q1,q3}` (NOT-SCORABLE excluded from n AND the band — inv #4, an
+  observation gap never a 0); `_anchor_trend_svg` gained optional `bands=` drawing BEHIND the anchor lines a shaded
+  min-max envelope polygon (gap-broken over contiguous runs) + a dashed population-median line with per-sweep dot +
+  tooltip; `_calibration_anchor_trend_card` bands the SAME same-version sweeps (version isolation inherited, inv
+  #2), adds 2 named legend swatches + a prose note. `bands=None` reproduces the anchor-only chart BYTE-FOR-BYTE
+  (backward compat, asserted). **EVIDENCE (real committed data, non-vacuous + teeth):** test_readout 103→108 — NEW
+  real-evidence (medians **[58.5, 61.3, 62.0]** rising as n grows 13→15→17 inside a stable **22.5–85.5** envelope;
+  with-rails anchor 85.5 IS the cohort max every sweep, no-rails 46.1 at/below median) + attribution teeth (a
+  not-scorable member → n=2/lo=20.0/median 52.75, NOT the 20.0 a missing-as-0 impl yields) + empty-cohort→None +
+  card-renders-band + byte-for-byte backward-compat. `test_runner_registration` green. **SHIP (direct-to-main):**
+  display-only, off the scoring path (`git diff --stat -- asrs/scoring.py asrs/report.py asrs/probes asrs/battery.py
+  asrs/reliability.py asrs/offering.py rubric/ fixtures/ experiments/ loop/local_verify.py batteries/` EMPTY; only
+  asrs/scorecard.py + test_readout.py); READOUT is the direct-to-main tier. Suite **37/37 green** after. **CANONICAL
+  UNMOVED:** static replay 26/26 → 46.1 F / 85.5 B / **+39.4** (concurs 11:41Z floor); a committed-JSON→SVG overlay
+  touches no probe/scorer → cannot move a score. The overlay's own data corroborates the gap's honesty (with-rails
+  tops the 17-member cohort, no-rails at/below its median → +39.4 is a real population spread, not two cherry-picked
+  endpoints). Invariants #1 ($0 pure read-only render)–#5 held; zero codex, zero paid ops. NO DM (score-neutral
+  display-only READOUT, not a DM-enumerated sensitive class; no digest due — ~12:2xZ precedes 16:00 UTC on 08-06).
+  See LOG Cycle 290.
+- FOCUS POINTER (Cycle 290 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
+  RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY on a fresh
+  >6h no-artifact gap. Cloud track rotation: Cycle 290 was READOUT → **METHOD next** (METHOD → COVERAGE → TRUTH →
+  READOUT). NEXT READOUT (from this cycle's next-hypothesis): the whole-cohort overlay lives only on
+  calibration.html — carry a one-line POPULATION-POSITION note to the MAIN card hero beside the reference-gap badge
+  ("this pair's no-rails side sits near the population median, the with-rails side tops it"), reading the SAME
+  `_population_band_series` so the two surfaces can't disagree (the Cycle-285 badge pattern). NEXT METHOD (cloud):
+  host-environment reproducibility SATURATED (hash-seed 267 / timezone 271 / encoding 277 / locale 280) — move OFF
+  it (probe-order independence of the aggregate, or fixture-capture determinism). NEXT TRUTH (cloud): a SECOND
+  non-anchor cross-path weld member is gated on a domain having BOTH a committed replay baseline AND ≥2 stable sweep
+  presences — books.toscrape.com has the baseline but is ABSENT from the sweeps → [LOCAL] cadence ADDING
+  books.toscrape.com to `experiments/calibration_sweep.py`'s POPULATION unlocks it (also puts a stable RETAIL member
+  in this cycle's band). NEXT in-cloud COVERAGE (still open): subscription PAUSE/RESUME (polar
+  `subscription.paused`/uncancel) IF precision-guardable; physical_good RETURNS-WINDOW (allbirds/moleskine); a
+  data_retrieval RESPONSE-SCHEMA / field-contract leg IF committed ipinfo prose carries it. Offering bank:
+  metered_api 26 / digital_good 11 / physical_good 10 / subscription 10 / service_booking 9 / data_retrieval 8.
+  Standing METHOD tripwire: own-tool refusal vocab drifted THREE times (269, 284, 286→287) → keep the periodic leak
+  scan over each fresh committed panel. NEXT calibration cadence: population 17 scored (target 15–20); next
+  broadening = a genuine ACP/UCP/MPP merchant or a 2nd x402-live site. Substantive [LOCAL] frontier: PR #148
+  post-merge live behavioral verification (still queued); ADD books.toscrape.com to the sweep POPULATION (unlocks a
+  2nd non-anchor weld member + a retail band member); cross-model SHOPPER delta still codex-blocked on the WITH side;
+  a THIRD calibration anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168); structured
+  catalog/pricing JSON (Cycle-70).
 - CYCLE 289 — 2026-08-06T~11:1xZ (TRUTH, cloud, direct-to-main, tests-only, score-neutral). FIRST duty (infra
   health + peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR; #148 operator-merged
   `7d47f2e` before Cycle 288). Cloud detached at origin/main `8301012`, local `main` stale orphan `3e318f1` →
@@ -324,116 +377,6 @@
   (scarce — record reachability as its own signal). Substantive [LOCAL] frontier: cross-model SHOPPER delta still
   codex-blocked on the WITH side (RESULT 2); a THIRD calibration anchor / 2nd x402-live merchant; render-generation
   digital_good (Cycle-168); structured catalog/pricing JSON (Cycle-70).
-- CYCLE 283 — 2026-08-06T07:2xZ (TRUTH, cloud, direct-to-main, tests-only, score-neutral). FIRST duty (infra
-  health + peer-gate review): `mcp__github__list_pull_requests` state=open → `[]` (no open peer-gated PR). Cloud
-  started detached at origin/main `dc55ed5` with local `main` at stale `3e318f1` (Cycle-276 tip); realigned local
-  `main` to origin/main (benign, HEAD already matched, no history rewrite). **INFRA HEALTHY:** newest verify by
-  FILENAME `runs/local/verify_20260806T064105Z.json` (06:41Z, tests_ok=true, 46.1 F / 85.5 B / +39.4), ~36min old
-  at fire (07:17Z 08-06), well inside the 6h floor; :41 cadence holding (04:41Z→05:41Z→06:41Z) → RUNNER-HEALTH
-  WATCH NORMAL. Bench up (venv + requests/PyYAML/eth-account); full suite 36/36 green before the change (one
-  transient red first — `test_free_tier.py::test_zero_value_signs_and_recovers` needs `eth-account`, a
-  requirements.txt dep the fresh checkout lacked; env dep not a regression, green after install). **TRACK:** cloud
-  pointer TRUTH next (Cycle 281 COVERAGE → TRUTH). In-cloud TRUTH lever = test-guarding committed calibration
-  evidence (network legs are [LOCAL]). Coupling-graph survey found the highest unpinned property: the two canonical
-  anchors are measured along TWO independent committed paths — OFFLINE fixture replay (test_canonical_replay pins
-  46.1/85.5/+39.4) and the LIVE population sweeps (`calibration_sweep_*.json`, anchors under
-  `api-storefront:{rails,no-rails}-anchor`) — and NOTHING coupled them (replay globs fixtures only; drift test is
-  pairwise; canonical_history couples history↔replay, not the live sweeps). **IMPROVEMENT (TRUTH — cross-path
-  anchor agreement):** NEW `tests/test_calibration_anchor_agreement.py` (7 guards) welds the paths: every scored,
-  same-version live anchor's `overall` must equal the fixture-replay baseline (imports `test_canonical_replay.EXPECTED`
-  as the ONE source of truth → self-maintaining on a version-bump re-capture). Shared pure comparator `_divergences`
-  drives both legs. REAL EVIDENCE (inv #3, non-vacuous): 3 committed v0.7 sweeps → **6 (sweep,anchor) pairs compared,
-  0 divergences, 0 not-scorable, 0 off-version; live com−org gap +39.4 on all three**. TEETH: (a) inv #4 —
-  not-scorable anchor COUNTED unreachable, never a divergence (naive None-as-0 would flag 85.5); (b) a drifted rails
-  anchor 85.5→70.0 caught as exactly one `driftflight.com` divergence; (c) inv #2 — a `0.8` sweep with 999.0 anchor
-  is off-version, never diffed against the v0.7 floor. Non-vacuity + baseline-version guards pin it can't silently
-  compare nothing and isn't a 2nd source of truth. **SCORE-NEUTRAL:** scoring-path diff (`git diff -- asrs/ rubric/
-  fixtures/ batteries/ experiments/ loop/local_verify.py`) EMPTY (only the new test file); auto-discovered
-  (test_runner_registration green); suite 36/36 → 37/37 green (new suite 7/7). **CANONICAL UNMOVED:** in-fire replay
-  26/26, 46.1 F / 85.5 B / +39.4 (concurs the 06:41Z floor). Invariants #1 ($0 read-only test)–#5 all held; zero
-  codex, zero paid ops. NO DM (score-neutral tests-only TRUTH, not sensitive-class; no digest due — 07:2xZ precedes
-  16:00 UTC on 08-06). See LOG Cycle 283.
-- FOCUS POINTER (Cycle 283 done, cloud): NO open peer-gated PR (a concurrent LOCAL Cycle 282 landed on origin same fire — cross-model behavioral panel,
-  +34.8; it QUEUED a peer-gated P0 in BACKLOG: the `_ENV_BLOCK_RE` "interactive access … denied … homepage"
-  broadening from its RESULT-4 attribution leak — a backlog item to IMPLEMENT, not yet an open PR) → next fire's
-  first duty is the infra health check, then pick up that peer-gated P0 or the READOUT track. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY on a fresh
-  >6h no-artifact gap. Cloud track rotation: Cycle 283 was TRUTH → **READOUT next** (METHOD → COVERAGE → TRUTH →
-  READOUT). NEXT TRUTH (from this cycle's next-hypothesis): widen the cross-path weld to a NON-anchor population
-  member once ≥2 committed sweeps share a stable, reachable non-anchor scored under the same rubric version AND a
-  committed offline fixture-replay baseline exists for it (books.toscrape.com / ipinfo.io are candidates —
-  [LOCAL]-gated on the cadence committing that baseline); adjacent: pin the anchors' `segment` labels stay
-  `api-storefront:{rails,no-rails}-anchor` in every sweep (a mislabel silently drops them from the drift card's
-  anchor-note). NEXT READOUT: a population-median/band overlay across sweeps once ≥3 sweeps carry a stable non-anchor
-  overlap; or a one-line gap-held/moved verdict badge on the main card (the Cycle-279 trend's verdict, surfaced on
-  the headline). NEXT in-cloud COVERAGE (still open): a subscription PAUSE/RESUME leg (polar
-  `subscription.paused`/uncancel — suspend-without-terminating, distinct from Cycle-276's cancel) IF
-  precision-guardable; data_retrieval DATA-FRESHNESS/update-cadence (ipinfo "Daily Data Refresh"); physical_good
-  RETURNS-WINDOW (allbirds/moleskine). NEXT METHOD: host-environment reproducibility is SATURATED across all four
-  axes (hash-seed 267 / timezone 271 / default-encoding 277 / system-locale 280) — the next NEW METHOD seam must move
-  OFF host-environment reproducibility (probe-order independence of the aggregate, or fixture-capture determinism).
-  service_booking is now well-mined across all FIVE lifecycle legs (create/manage/notify/intake/waitlist) on both
-  anchors (acuity + simplybook.me). NEXT calibration cadence: population 18 (target 15–20); next broadening = a
-  genuine ACP/UCP/MPP merchant or a 2nd x402-live site (scarce — record reachability as its own signal). Substantive
-  [LOCAL] frontier: codex-dependent items stay gated — driftflight.com (WITH side) still codex-blocked → cross-model
-  N-curve / LIVE behavioral delta blocked on WITH-side reachability (drift-flight.org t2 IS reachable); a THIRD
-  calibration anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168); structured
-  catalog/pricing JSON (Cycle-70).
-- CYCLE 282 — 2026-08-06T07:1xZ (TRUTH, LOCAL, direct-to-main, evidence+docs, score-neutral). FIRST duty
-  (infra health + peer-gate review): `gh pr list --state open` → `[]` (no open peer-gated PR). HEAD ==
-  origin/main == local `main` all at `dc55ed5` (clean, no stale-orphan realign). **INFRA HEALTHY:** newest
-  verify by FILENAME `runs/local/verify_20260806T064105Z.json` (06:41Z, tests_ok=true 36 suites, 46.1 F /
-  85.5 B / +39.4), ~1min old at fire (06:42Z 08-06), deep inside the 6h floor; :41 cadence holding
-  (04:41Z→05:41Z→06:41Z) → RUNNER-HEALTH WATCH NORMAL. `codex` 0.145.0 / `zero` / `.venv` 3.12.8 resolve;
-  full suite **36/36 green** (before AND after — this cycle touched no code). **TRACK (LOCAL TRUTH):** the
-  oldest-P0 [LOCAL] item — the cross-model BEHAVIORAL acceptance/agreement run (standing #1 open question:
-  "cross-model agreement unmeasured; codex never reached the WITH site"). This morning's 00:49Z attempt was
-  INCOMPLETE (log has start, no results); domains aged ~20d + the gate is per-trial non-deterministic → a
-  fresh full pair run is in-budget and either advances the blocker or measures a fresh behavioral signal. Ran
-  `compare drift-flight.org driftflight.com --behavioral --trials 2 --models claude,codex` ($0 read-only
-  shopper+trust panel; 8 codex invocations ≤10). **RESULT 1 — behavioral delta +34.8** (drift-flight.org 42.6
-  F → driftflight.com 77.4 C; access +5.0 / legibility +54.5 / transactability +68.8 / trust +0.0 / outcome
-  +12.3): the with-rails side wins big BEHAVIORALLY too (richer than the static +39.4 — behavioral adds the
-  outcome + live-trust + reachability checks; the narrowing is fully attributable, not a capability surprise).
-  **RESULT 2 — codex own-tool gated on ALL FOUR canonical shopper trials this fire** (both sides ×2; the ~20d
-  reputation gate is back to FULLY closed vs 234505Z's t2 reach ~7h ago); claude reached both sides cleanly
-  → the SHOPPER cross-model comparison is still single-model on both sides (blocker unchanged). **RESULT 3 —
-  first MEASURED cross-model TRUST divergence (novel):** the trust panel runs via the separate `trust_probe`
-  (not the gated browser), so codex returned verdicts — and the models INVERT: NO-rails .org claude warn+go
-  (0.72) / codex refused (0.93); WITH-rails .com claude refused (0.66, flags the agent-targeting manipulation
-  copy) / codex warn+go (0.94, flags nothing). Genuine cross-model DISagreement on trust (didn't move the
-  delta — trust 48.1 both — but is the first cross-model agreement datapoint on the pair). **RESULT 4 — LIVE
-  invariant-#4 attribution LEAK (delta-narrowing, WITH side):** driftflight.com `valid_runs=3`/stability 0.333
-  vs drift-flight.org `valid_runs=2`/0.8. Re-deriving `_ENV_BLOCK_RE` over the 8 committed transcripts: exactly
-  ONE codex refusal leaked — driftflight.com codex#2 *"Interactive access to driftflight.com was denied before
-  the homepage loaded"* — the Cycle-269 v0.7(a) alt requires "interactive **browser** access" and the live
-  phrasing DROPPED "browser" → `_is_env_blocked`=False → counted as a valid all-false run → the WITH side's five
-  `bhv_*` outcome checks flipped unanimous-PASS→`-inconsistent`, NARROWING the delta by scoring codex's OWN
-  browser refusal as site evidence. NOT fixed here (peer-gated scoring semantics + a 2nd improvement) → queued
-  as a new peer-gated P0 (BACKLOG top) with the exact phrasing + `_NOT_SITE_ATTRIBUTED` guard requirement.
-  **SHIP:** evidence-only → direct-to-main; committed `runs/local/behavioral_canonical_delta_20260806T064733Z.log`
-  + `…/behavioral_canonical_delta_20260806T064733Z/{report_×2, transcripts/×8}`. STATIC canonical UNMOVED
-  (no scoring code changed; 06:41Z floor 46.1 F / 85.5 B / +39.4). Invariants #1 ($0)–#5 held; zero paid ops.
-  NO DM (score-neutral evidence/docs, not a sensitive-class PR; no digest due — 07:1xZ precedes 16:00 UTC on
-  08-06); RESULT 4 leak flagged for the next digest as the top open finding. See LOG Cycle 282.
-- FOCUS POINTER (Cycle 282 done, LOCAL): **ONE open peer-gated P0 now queued** — the `_ENV_BLOCK_RE` "interactive
-  access … denied … homepage" broadening (RESULT 4). It is a candidate for a FUTURE cycle to IMPLEMENT (peer-gated
-  scoring semantics; must keep the `_NOT_SITE_ATTRIBUTED` guard); it is NOT an open PR yet, so next fire's first
-  duty is still the infra health check (no PR to review-and-merge). RUNNER STALL fully RESOLVED + GUARDED (Cycle
-  261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY on a fresh >6h no-artifact gap. Cloud track rotation
-  UNCHANGED (this LOCAL cycle did not consume the cloud slot): cloud pointer remains **TRUTH next** per Cycle 281
-  (COVERAGE→TRUTH; METHOD→COVERAGE→TRUTH→READOUT). **CROSS-MODEL now partly answered:** the TRUST axis IS measured
-  (models DIVERGE, RESULT 3) — a READOUT surfacing per-model trust verdicts + a cross-model-agreement flag is a new
-  candidate so a single-model number is never quoted as consensus. The SHOPPER-browser cross-model reading on the
-  WITH side stays blocked on codex reachability (RESULT 2, unchanged) — a reputable agent-native control storefront
-  or marked-assisted pre-fetched content remains the only path. NEXT in-cloud COVERAGE (still open): subscription
-  PAUSE/RESUME (polar `subscription.paused`/uncancel) IF precision-guardable; data_retrieval DATA-FRESHNESS
-  (ipinfo "Daily Data Refresh"); physical_good RETURNS-WINDOW (allbirds/moleskine). NEXT METHOD: host-environment
-  reproducibility is SATURATED (hash-seed 267 / timezone 271 / encoding 277 / locale 280) — move OFF it
-  (probe-order independence of the aggregate, or fixture-capture determinism). NEXT calibration cadence: population
-  18 (target 15–20); next broadening = a genuine ACP/UCP/MPP merchant or a 2nd x402-live site (scarce — record
-  reachability as its own signal). Substantive [LOCAL] frontier: the `_ENV_BLOCK_RE` peer-gated fix (this fire);
-  cross-model SHOPPER delta still codex-blocked on the WITH side; a THIRD calibration anchor / 2nd x402-live
-  merchant; render-generation digital_good (Cycle-168); structured catalog/pricing JSON (Cycle-70).
 <!-- STATE COMPACTED at Cycle 260 (2026-08-05T~17:1xZ, self-healing/COVERAGE, direct-to-main, score-neutral).
      STATE.md had accreted the full per-cycle history back to ~Cycle 5 (7798 lines / ~790KB) and could no
      longer be Read in one call, degrading the playbook-mandated per-cycle "read STATE.md". Trimmed the

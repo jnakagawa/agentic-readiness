@@ -2107,7 +2107,48 @@ def _anchor_trend_series(sweeps: list):
     return series, dates
 
 
-def _anchor_trend_svg(series: list, dates: list) -> str:
+def _population_band_series(sweeps: list) -> list:
+    """From an ordered (oldest-first) list of sweeps sharing ONE rubric version, reduce
+    each sweep's WHOLE scored cohort to a spread summary — the population context the
+    two-anchor trend sits inside.
+
+    For each sweep, aggregates over the rows that ACTUALLY SCORED (``scored`` true and
+    ``overall`` not None): a NOT-SCORABLE member contributes to neither ``n`` nor the
+    band (attribution honesty, invariant #4 — an unreachable member is an observation
+    gap, never a 0 that would drag the median or widen the spread). Returns a list
+    ALIGNED to ``sweeps`` (same length/order); each entry is ``None`` when that sweep
+    scored nobody, else ``{"n", "median", "lo", "hi", "q1", "q3"}`` where ``lo``/``hi``
+    are the cohort min/max (the whole-cohort spread envelope) and ``q1``/``q3`` the
+    inclusive quartiles (the robust central half, tooltip detail). Pure/deterministic:
+    reads committed ``overall`` values, moves no score."""
+    import statistics
+
+    out: list = []
+    for s in sweeps:
+        rows = s.get("rows", []) if isinstance(s, dict) else []
+        vals = sorted(
+            float(r["overall"]) for r in rows
+            if r.get("scored") and r.get("overall") is not None
+        )
+        if not vals:
+            out.append(None)
+            continue
+        if len(vals) >= 2:
+            q1, _, q3 = statistics.quantiles(vals, n=4, method="inclusive")
+        else:
+            q1 = q3 = vals[0]
+        out.append({
+            "n": len(vals),
+            "median": statistics.median(vals),
+            "lo": vals[0],
+            "hi": vals[-1],
+            "q1": q1,
+            "q3": q3,
+        })
+    return out
+
+
+def _anchor_trend_svg(series: list, dates: list, bands: list | None = None) -> str:
     """A multi-series overall-vs-cadence trend for the canonical anchors (y is the
     0-100 overall scale, fixed so the gap between anchors reads honestly rather than
     an auto-zoomed wiggle). One recessive connecting line + a dot per SCORED reading
@@ -2115,7 +2156,14 @@ def _anchor_trend_svg(series: list, dates: list) -> str:
     point of each series is direct-labeled; the gap between the top and bottom anchor
     at the newest all-scored sweep is bracketed and labeled (the population-scale view
     of the frozen reference delta). Colors identify series but the HTML legend names
-    them, so identity never rests on color alone."""
+    them, so identity never rests on color alone.
+
+    When ``bands`` (from :func:`_population_band_series`, aligned to ``dates``) is
+    given, a recessive whole-cohort overlay is drawn BEHIND the anchor lines: a shaded
+    min-max envelope + a dashed median line, so the anchor gap reads against where the
+    WHOLE scored population sits, not just the two reference storefronts. A sweep with
+    no band (nobody scored) breaks the envelope — never interpolated across a gap.
+    ``bands=None`` reproduces the anchor-only chart byte-for-byte (backward compat)."""
     n = len(dates)
     if not series or n < 2:
         return ""
@@ -2143,6 +2191,57 @@ def _anchor_trend_svg(series: list, dates: list) -> str:
         f'font-family="DM Mono,monospace" font-size="10" fill="#667085">{_esc(d)}</text>'
         for i, d in enumerate(dates)
     )
+
+    # Whole-cohort overlay (behind the anchor lines): a shaded min-max spread envelope
+    # + a dashed median line, so the two-anchor gap reads against where the WHOLE
+    # scored population sits. Drawn over contiguous runs of banded sweeps so a
+    # nobody-scored sweep is a gap, never interpolated (mirrors the anchor-line gaps).
+    band_svg = ""
+    if bands and len(bands) == n:
+        run: list = []
+        runs: list = []
+        for i, b in enumerate(bands):
+            if b is None:
+                if len(run) >= 2:
+                    runs.append(run)
+                run = []
+            else:
+                run.append((i, b))
+        if len(run) >= 2:
+            runs.append(run)
+        parts: list = []
+        for r in runs:
+            top = " ".join(f"{x_of(i):.1f},{y_of(b['hi']):.1f}" for i, b in r)
+            bot = " ".join(f"{x_of(i):.1f},{y_of(b['lo']):.1f}" for i, b in reversed(r))
+            parts.append(
+                f'<polygon points="{top} {bot}" fill="#98a2b3" fill-opacity="0.13" '
+                f'stroke="none"/>'
+            )
+            med = " ".join(f"{x_of(i):.1f},{y_of(b['median']):.1f}" for i, b in r)
+            parts.append(
+                f'<polyline points="{med}" fill="none" stroke="#667085" '
+                f'stroke-width="1.5" stroke-dasharray="5 3" stroke-linejoin="round"/>'
+            )
+        # A dot + tooltip at every banded sweep (including lone points a run skips);
+        # a lone banded sweep also gets a thin min-max whisker so its spread still reads.
+        banded_idx = {i for r in runs for i, _ in r}
+        for i, b in enumerate(bands):
+            if b is None:
+                continue
+            if i not in banded_idx:
+                parts.append(
+                    f'<line x1="{x_of(i):.1f}" y1="{y_of(b["lo"]):.1f}" '
+                    f'x2="{x_of(i):.1f}" y2="{y_of(b["hi"]):.1f}" stroke="#98a2b3" '
+                    f'stroke-width="1.5"/>'
+                )
+            parts.append(
+                f'<circle cx="{x_of(i):.1f}" cy="{y_of(b["median"]):.1f}" r="3" '
+                f'fill="#667085" stroke="#fff" stroke-width="1.5">'
+                f'<title>population median ({_esc(dates[i])}): {b["median"]:.1f} '
+                f'&mdash; {b["n"]} scored, spread {b["lo"]:.1f}&ndash;{b["hi"]:.1f} '
+                f'(IQR {b["q1"]:.1f}&ndash;{b["q3"]:.1f})</title></circle>'
+            )
+        band_svg = "".join(parts)
 
     lines = []
     for si, s in enumerate(series):
@@ -2209,12 +2308,15 @@ def _anchor_trend_svg(series: list, dates: list) -> str:
             )
 
     names = ", ".join(s["domain"] for s in series)
+    band_label = (
+        " with whole-cohort median and min-max spread band" if band_svg else ""
+    )
     return (
         f'<svg viewBox="0 0 {W:.0f} {H:.0f}" width="100%" '
         f'style="max-width:{W:.0f}px;height:auto" role="img" '
         f'aria-label="Canonical anchor overall scores across {n} dated population '
-        f'sweeps ({_esc(names)}), 0 to 100 scale">'
-        f'{axis}{xaxis}{"".join(lines)}{gap_mark}</svg>'
+        f'sweeps ({_esc(names)}){band_label}, 0 to 100 scale">'
+        f'{axis}{xaxis}{band_svg}{"".join(lines)}{gap_mark}</svg>'
     )
 
 
@@ -2320,7 +2422,8 @@ def _calibration_anchor_trend_card(sweeps: list, live_version: str) -> str:
     if len(same) < 2:
         return ""
     series, dates = _anchor_trend_series(same)
-    svg = _anchor_trend_svg(series, dates)
+    bands = _population_band_series(same)
+    svg = _anchor_trend_svg(series, dates, bands)
     if not svg:
         return ""
 
@@ -2333,6 +2436,18 @@ def _calibration_anchor_trend_card(sweeps: list, live_version: str) -> str:
         f'<span class="q" style="margin:0">{_esc(s["segment"])}</span></span>'
         for si, s in enumerate(series)
     )
+    # Two more swatches for the whole-cohort overlay (median line + spread band),
+    # only when the band actually rendered, so identity never rests on color alone.
+    if any(b is not None for b in bands):
+        legend += (
+            '<span style="display:inline-flex;align-items:center;gap:6px;margin-right:16px">'
+            '<span style="width:12px;height:0;border-top:1.5px dashed #667085;'
+            'display:inline-block"></span><b>population median</b></span>'
+            '<span style="display:inline-flex;align-items:center;gap:6px;margin-right:16px">'
+            '<span style="width:12px;height:12px;border-radius:3px;background:#98a2b3;'
+            'opacity:0.4;display:inline-block"></span>'
+            '<b>whole-cohort spread</b><span class="q" style="margin:0">min&ndash;max of scored members</span></span>'
+        )
 
     # Gap-held summary, straight from the data: the anchor delta at the first vs the
     # last sweep where both anchors scored. Shared with the main-card badge via
@@ -2357,6 +2472,30 @@ def _calibration_anchor_trend_card(sweeps: list, live_version: str) -> str:
                 f'move in the reference gap the LOG must explain in capability terms.</p>'
             )
 
+    # Whole-cohort note: where the WHOLE scored population sits behind the two anchors,
+    # and whether its median moved across the cadence — straight from the band data.
+    band_note = ""
+    banded = [(i, b) for i, b in enumerate(bands) if b is not None]
+    if len(banded) >= 2:
+        (_, first_b), (_, last_b) = banded[0], banded[-1]
+        med_move = last_b["median"] - first_b["median"]
+        moved = (
+            f'rose from <b>{first_b["median"]:.1f}</b> to <b>{last_b["median"]:.1f}</b> '
+            f'(&Delta;&nbsp;{med_move:+.1f})' if abs(med_move) >= 0.05
+            else f'held at <b>{last_b["median"]:.1f}</b>'
+        )
+        band_note = (
+            f'<p><b>The whole cohort, not just the pair.</b> The shaded band is the '
+            f'min&ndash;max spread of every <b>scored</b> member (a not-scorable member '
+            f'is an observation gap, never a 0 dragging the band); the dashed line is the '
+            f'population <b>median</b>, which {moved} across {len(banded)} same-version '
+            f'sweeps as the cohort grew to <b>{last_b["n"]}</b> scored members. The '
+            f'with-rails anchor sits at the top of that spread (<b>{last_b["hi"]:.1f}</b>, '
+            f'the cohort max) while the no-rails anchor sits near the median &mdash; the '
+            f'reference gap is a real capability spread across the population, not an '
+            f'artifact of the two chosen storefronts.</p>'
+        )
+
     version_note = ""
     if excluded:
         version_note = (
@@ -2377,6 +2516,7 @@ reading breaks the line (never a zero &mdash; attribution honesty).</p>
 <div style="overflow-x:auto">{svg}</div>
 <p style="margin-top:8px">{legend}</p>
 {gap_note}
+{band_note}
 {version_note}</div>"""
 
 

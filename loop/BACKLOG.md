@@ -571,6 +571,19 @@ untouched (26/26, +39.4); no rubric bump. See LOG Cycle 287. Post-merge live beh
   canonical replay 46.1 F / 85.5 B / +39.4 UNMOVED. NEXT READOUT candidates (new): a population-median/band overlay
   across sweeps (whole-cohort spread, not just the anchor pair) once ≥3 sweeps carry a stable non-anchor overlap; or
   a one-line gap-held/moved verdict badge on the main card. See LOG Cycle 279.
+  **DONE Cycle 285 (READOUT):** the gap-held/moved verdict badge is on the MAIN card hero (shared pure
+  `_reference_gap_verdict`, so headline + trend card can't disagree). **DONE Cycle 290 (READOUT, cloud,
+  direct-to-main, display-only, score-neutral):** the population-median/band overlay landed — `calibration.html`'s
+  Reference-pair trend now draws the WHOLE scored cohort behind the two anchors (NEW pure `_population_band_series`
+  reduces each sweep to `{n,median,lo,hi,q1,q3}` over SCORED rows only — not-scorable excluded from n AND the band,
+  inv #4; `_anchor_trend_svg` gained `bands=` drawing a shaded min-max envelope + a dashed population-median line
+  behind the anchors, `bands=None` byte-for-byte backward-compatible). Real render over the 3 committed v0.7 sweeps:
+  population medians 58.5→61.3→62.0 rising as n grows 13→15→17, inside a stable 22.5–85.5 envelope the anchors
+  bracket (with-rails 85.5 = cohort max, no-rails 46.1 at/below median → the +39.4 is a real population spread).
+  test_readout 103→108 (real-evidence + attribution teeth + empty-cohort + backward-compat); scoring-path diff
+  EMPTY; canonical replay 26/26, 46.1 F / 85.5 B / +39.4 UNMOVED. NEXT READOUT candidate: carry a one-line
+  population-POSITION note to the main card hero beside the gap badge (reading the same `_population_band_series`).
+  See LOG Cycle 290.
   PROGRESS — Cycle 278 (2026-08-06, TRUTH, LOCAL, direct-to-main, score-neutral): the cadence's increment (a)
   advanced again — POPULATION broadened 16→18 (deeper into the 15–20 target) with two more NEW storefront TYPES
   absent from every prior sweep: `simplybook.me` (`service-booking:platform`, the Cycle-273 offering anchor) +

@@ -3121,6 +3121,126 @@ def test_calibration_anchor_trend_needs_two_sweeps() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Cycle 290 (READOUT): the reference-pair trend plotted only the two anchors. This
+# overlays the WHOLE scored cohort behind them — a min-max spread band + a dashed
+# population median across the same cadence — so a reader sees the reference gap as a
+# real population spread, not an artifact of the two chosen storefronts. Display-only;
+# the band is reduced from committed `overall` values and moves no score. These pin:
+#   - the band reads ONLY scored members (a not-scorable member is excluded from n and
+#     the band, never a 0 that drags the median — attribution honesty, invariant #4);
+#   - a nobody-scored sweep yields no band (a gap, never a crash);
+#   - `bands=None` reproduces the anchor-only chart byte-for-byte (backward compat);
+#   - version isolation is inherited (the card bands only same-version sweeps).
+
+def _empty_sweep(ts: str, version: str) -> dict:
+    """A dated sweep whose every member is NOT SCORABLE (unreachable) — the cohort has
+    no scored member, so its population band must be absent, never a fabricated 0."""
+    return {"ts": ts, "rubric_version": version, "rows": [
+        {"domain": "a.test", "segment": "control:non-storefront", "scored": False,
+         "overall": None, "grade": "N/A", "pillars": None, "error": "agent-UA block"},
+        {"domain": "b.test", "segment": "retail:no-rails", "scored": False,
+         "overall": None, "grade": "N/A", "pillars": None, "error": "timeout"},
+    ]}
+
+
+def test_population_band_series_on_real_committed_sweeps() -> None:
+    # Real-evidence (invariant #3, non-vacuous): the committed v0.7 sweeps reduce to the
+    # medians/spreads the readout surfaces — a growing cohort with a rising median inside
+    # a stable min-max envelope the two anchors bracket.
+    print("test_population_band_series_on_real_committed_sweeps")
+    sweeps = [s for s in scorecard._load_all_calibration_sweeps()
+              if str(s.get("rubric_version", "")) == "0.7"]
+    sweeps.sort(key=lambda s: str(s.get("ts", "")))
+    _check(len(sweeps) >= 3, f"at least 3 committed v0.7 sweeps to band (got {len(sweeps)})")
+    bands = scorecard._population_band_series(sweeps)
+    _check(all(b is not None for b in bands), "every committed sweep scored someone -> a band")
+    ns = [b["n"] for b in bands]
+    _check(ns == sorted(ns) and ns[-1] >= 15,
+           f"the scored cohort grows across the cadence (got n={ns})")
+    meds = [b["median"] for b in bands]
+    _check(meds == [58.5, 61.3, 62.0], f"the population medians are the committed data (got {meds})")
+    _check(all(b["lo"] == 22.5 and b["hi"] == 85.5 for b in bands),
+           "the whole-cohort envelope is the committed 22.5-85.5 min-max on every sweep")
+    # The reference anchors bracket the cohort: with-rails 85.5 IS the cohort max, no-rails
+    # 46.1 sits at/below the median — the population echo of the gap, from the data.
+    _check(bands[0]["hi"] == 85.5 and bands[-1]["median"] < 85.5,
+           "the with-rails anchor tops the whole-cohort spread")
+    _check(all(b["q1"] <= b["median"] <= b["q3"] for b in bands),
+           "the IQR brackets the median on every sweep (well-formed quartiles)")
+
+
+def test_population_band_excludes_not_scorable_members() -> None:
+    # Teeth (invariant #4): a NOT-SCORABLE member is excluded from n AND the band — it
+    # never becomes a 0 that drags the median down or floors the spread. A naive
+    # count-all-rows / treat-missing-as-0 impl fails both assertions.
+    print("test_population_band_excludes_not_scorable_members")
+    # _anchor_sweep rows: filler 20.0 (scored), rails 85.5 (scored), norails NOT scorable.
+    sweep = _anchor_sweep("20260806T000000Z", "0.7", 85.5, None)
+    (band,) = scorecard._population_band_series([sweep])
+    _check(band["n"] == 2, f"only the 2 scored members counted, not the unreachable one (n={band['n']})")
+    _check(band["lo"] == 20.0, f"the spread floor is the real min 20.0, not a fabricated 0 (lo={band['lo']})")
+    _check(band["median"] == 52.75,
+           f"median of {{20.0, 85.5}} = 52.75, not the 20.0 a missing-as-0 impl yields (got {band['median']})")
+
+
+def test_population_band_empty_cohort_is_absent_not_zero() -> None:
+    # A sweep that scored NOBODY yields no band (None) — never an entry pinned at 0.
+    # And the trend card renders (with the two anchors) without a crash across the gap.
+    print("test_population_band_empty_cohort_is_absent_not_zero")
+    empty = _empty_sweep("20260805T000000Z", "0.7")
+    (band,) = scorecard._population_band_series([empty])
+    _check(band is None, "an all-not-scorable sweep has no population band")
+    # A middle empty sweep between two scored ones: envelope breaks, no interpolation,
+    # both flanking bands still render (2 median tooltips), leaderboard intact.
+    sweeps = [
+        _anchor_sweep("20260728T000000Z", "0.7", 85.5, 46.1),
+        empty,
+        _anchor_sweep("20260806T000000Z", "0.7", 85.5, 46.1),
+    ]
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_calibration_page(
+            Path(d), sweep=_fake_sweep(), sweeps=sweeps)).read_text()
+    _check("Reference-pair trend" in text, "the trend renders across a nobody-scored sweep")
+    _check(text.count("population median (") == 2,
+           f"only the 2 scored sweeps get a median dot (got {text.count('population median (')})")
+
+
+def test_calibration_trend_renders_population_band() -> None:
+    # The card draws the overlay (shaded min-max polygon + dashed median) and names it
+    # in the legend + prose, so identity never rests on color alone.
+    print("test_calibration_trend_renders_population_band")
+    sweeps = [
+        _anchor_sweep("20260728T000000Z", "0.7", 85.5, 46.1),
+        _anchor_sweep("20260805T000000Z", "0.7", 85.5, 46.1),
+        _anchor_sweep("20260806T000000Z", "0.7", 85.5, 46.1),
+    ]
+    with tempfile.TemporaryDirectory() as d:
+        text = Path(scorecard._write_calibration_page(
+            Path(d), sweep=_fake_sweep(), sweeps=sweeps)).read_text()
+    _check("<polygon" in text and 'fill-opacity="0.13"' in text, "a shaded spread band is drawn")
+    _check('stroke-dasharray="5 3"' in text, "a dashed population-median line is drawn")
+    _check("population median" in text and "whole-cohort spread" in text,
+           "both overlay swatches are named in the legend")
+    _check("The whole cohort, not just the pair" in text, "the prose names the whole-cohort overlay")
+    _check("whole-cohort median and min-max spread band" in text,
+           "the SVG aria-label names the population overlay")
+
+
+def test_anchor_trend_svg_backward_compatible_without_bands() -> None:
+    # bands=None (and the no-arg call) must reproduce the anchor-only chart byte-for-byte
+    # — the overlay is strictly additive, never a silent change to the existing trend.
+    print("test_anchor_trend_svg_backward_compatible_without_bands")
+    series = [{"domain": "a", "segment": "x", "points": [85.5, 85.5]},
+              {"domain": "b", "segment": "y", "points": [46.1, 46.1]}]
+    dates = ["2026-07-28", "2026-08-06"]
+    _check(scorecard._anchor_trend_svg(series, dates) ==
+           scorecard._anchor_trend_svg(series, dates, None),
+           "bands=None is byte-identical to the no-arg call")
+    _check("<polygon" not in scorecard._anchor_trend_svg(series, dates),
+           "no band overlay when bands are not supplied")
+
+
+# ---------------------------------------------------------------------------
 # Cycle 285 (READOUT): surface the reference-gap HELD/MOVED verdict as a one-line
 # badge on the MAIN card hero — where a reader lands first — not only on the
 # calibration page they may never open. Both surfaces read the SAME pure
@@ -3738,6 +3858,11 @@ def main() -> int:
         test_calibration_anchor_trend_not_scorable_is_gap_not_zero,
         test_calibration_anchor_trend_is_version_isolated,
         test_calibration_anchor_trend_needs_two_sweeps,
+        test_population_band_series_on_real_committed_sweeps,
+        test_population_band_excludes_not_scorable_members,
+        test_population_band_empty_cohort_is_absent_not_zero,
+        test_calibration_trend_renders_population_band,
+        test_anchor_trend_svg_backward_compatible_without_bands,
         test_reference_gap_verdict_shared_datum,
         test_reference_gap_badge_and_verdict_agree,
         test_reference_gap_badge_version_isolated_and_absent,

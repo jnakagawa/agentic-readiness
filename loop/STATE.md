@@ -1,6 +1,60 @@
 # Loop state
 
-- Cycle counter: 274
+- Cycle counter: 275
+- CYCLE 275 — 2026-08-06T02:4xZ (COVERAGE, LOCAL, direct-to-main, score-neutral). FIRST duty (infra health +
+  peer-gate review): `gh pr list --state open` → `[]` (no open peer-gated PR). HEAD == origin/main == local
+  `main` all at `d03c92d` (clean, no stale-orphan realign). **INFRA HEALTHY:** newest verify by FILENAME
+  `runs/local/verify_20260806T024103Z.json` (02:41Z, tests_ok=true 34 suites, 46.1 F / 85.5 B / +39.4), ~1min
+  old at fire (02:42Z 08-06), deep inside the 6h floor; :41 cadence holding (00:41Z→01:41Z→02:41Z) →
+  RUNNER-HEALTH WATCH NORMAL. `codex`/`zero` both resolve; bench up (venv present); full suite 34/34 green
+  before the change. **IMPROVEMENT (COVERAGE — the parked Cycle-146 [LOCAL] "subscription-CANCEL fixture", the
+  network-only enabler):** captured the FIRST subscription-CANCEL anchor `fixtures/canonical/polar.sh.json` — a
+  genuine agent-native Merchant-of-Record commerce platform (publishes llms.txt/llms-full.txt/an OpenAPI at
+  api.polar.sh + a `docs.polar.sh/.well-known/agent-card.json`) whose committed prose carries PROGRAMMATIC
+  subscription cancellation (`cancel_at_period_end` ×13, `/v1/subscriptions/` ×35, "Cancel/Revoke a subscription"
+  operation summaries) with ZERO "cancel anytime" human marketing — the exact programmatic substrate the
+  Cycle-146 mine was PARKED for (the only committed cancel prose was ipinfo's human "cancel anytime" FAQ, the
+  false-positive the future signal must dodge). Captured via `experiments/capture_offering_fixture` (66 entries,
+  1 set-cookie stripped, honest-replay verified byte-faithful + STABLE across two live crawls, inv #4).
+  subscription rests on 7 genuine bank signals; metered_api 57. Polar is a broad platform so the classifier
+  claims all six archetypes — largely genuine (subscription/metered_api/digital_good hosted-output/physical_good
+  order-fulfillment) with service_booking + some digital_good/data_retrieval on precision-noise (the KNOWN
+  exa.ai over-claim, BACKLOG P1, diagnostic-only, off scoring path); claimed SET pinned EXACTLY (honest
+  tripwire). NEW `test_polar_anchor_offering` (test_offering_canonical 69→70) pins the set + subscription
+  non-vacuity (≥3 genuine recurring signals, every label ∈ the 9-signal bank via `_ALL_SUBSCRIPTION_LABELS`) +
+  a `subscription-cancel`-not-yet-a-signal guard + THE ENABLER (fixture carries `cancel_at_period_end` + a
+  `/v1/subscriptions/{id}` revoke ENDPOINT + NO "cancel anytime" — confound-free substrate + the maintenance
+  hook for `subscription-cancel`); `test_canonical_replay.py` adds polar.sh to `_CLASSIFICATION_ONLY` (211
+  full-scorer misses → quarantined from scoring like ipinfo/allbirds/simplybook; partition green; hash-seed/
+  timezone reproducibility guard-5 self-maintains — polar is >0-miss so stays out of the replay-clean
+  population). SCORE-NEUTRAL: offering OFF the scoring path; scoring-path diff (`git diff -- asrs/ rubric/
+  batteries/ loop/local_verify.py`) EMPTY (only 2 test files + the quarantined fixture); suite **34/34 green**;
+  canonical replay **46.1 F / 85.5 B / +39.4 UNMOVED** (offline replay of the pair concurs 46.1/85.5); 02:41Z
+  verify floor concurs. Invariants #1–5 all held. NO DM (score-neutral COVERAGE, not sensitive-class; no digest
+  due — 02:4xZ precedes 16:00 UTC on 08-06). See LOG Cycle 275.
+- FOCUS POINTER (Cycle 275 done, LOCAL): NO open peer-gated PR → next fire's first duty is the infra health
+  check. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY
+  on a fresh >6h no-artifact gap. Cloud track rotation UNCHANGED (this LOCAL cycle did not consume the cloud
+  slot): Cycle 274 was TRUTH → cloud pointer remains **READOUT next** (METHOD → COVERAGE → TRUTH → READOUT).
+  **NEXT in-cloud COVERAGE (highest — now UNBLOCKED by this cycle's capture):** mine the `subscription-cancel`
+  signal from the new polar.sh anchor (subscription 9→10) — the "agent programmatically cancels/revokes its own
+  recurring plan / bounds its own spend without a human" LIFECYCLE-END leg, DISTINCT from all 9 existing
+  subscription signals (which cover plan-exists/price/evaluate/commit, never cancel). PRECISION-CRITICAL: anchor
+  to a `/subscriptions/{id}` cancel/revoke ENDPOINT PATH, a `cancel_at_period_end` parameter, or a
+  DELETE/cancel/revoke verb naming a subscription/plan resource — NOT the human "cancel anytime" of ipinfo (the
+  false-positive), NOT metered_api's job-`cancel-job`; validate ABSENT on the canonical pair + retail + null +
+  api fixtures, fires NON-VACUOUSLY on polar.sh, add `subscription-cancel` to `_ALL_SUBSCRIPTION_LABELS` in the
+  anchor test in the SAME change (the maintenance hook installed this cycle). ALSO still open (in-cloud
+  COVERAGE, from Cycle 273/274): the `waitlist` signal on the simplybook.me anchor (service_booking 8→9);
+  data_retrieval DATA-FRESHNESS/update-cadence; physical_good RETURNS-WINDOW leg (allbirds/moleskine);
+  agent-native RETAIL rail surfaces (UCP/MCP). NEXT TRUTH/METHOD: reproducibility family covers the whole
+  full-scorable population on hash-seed + timezone (Cycle 274); last cheap axis is LOCALE (`LC_ALL`/`LANG`) IF
+  de_DE/tr_TR generatable on the runner; beyond that SATURATED — surface a NEW seam. NEXT READOUT:
+  population-drift TREND across ≥3 dated sweeps ([LOCAL]-gated, only 2 committed). Substantive [LOCAL] frontier:
+  codex-dependent items stay gated — driftflight.com (WITH side) still codex-blocked → cross-model N-curve /
+  LIVE behavioral delta blocked on WITH-side reachability (drift-flight.org t2 IS reachable); a THIRD
+  calibration anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168); structured
+  catalog/pricing JSON (Cycle-70).
 - CYCLE 274 — 2026-08-06T02:1xZ (TRUTH, cloud, direct-to-main, tests-only, score-neutral). FIRST duty
   (infra health + peer-gate review): `mcp__github__list_pull_requests` state=open → `[]` (no open peer-gated
   PR). Cloud started detached at origin/main `569e35b` with local `main` at the stale orphan `3796519`;
@@ -191,49 +245,6 @@
   codex-reachable trial (drift-flight.org t2) end-to-end; cross-model N-curve (partially unblocked, t2-only);
   a THIRD calibration anchor; render-generation digital_good (Cycle-168); structured catalog/pricing JSON
   (Cycle-70); ACP/UCP/MPP live handshakes; a richer-booking WAITLIST fixture (Cycle-256).
-- CYCLE 270 — 2026-08-05T23:0xZ (READOUT, cloud, direct-to-main, display-only, score-neutral). FIRST duty
-  (infra health + peer-gate review): `list_pull_requests` state=open → `[]` (PR #146 merged externally by
-  the owner during Cycle 269, reconciled in the Cycle 269 addendum — no open peer-gated PR remains). Cloud
-  started on stale orphan local `main` (`3796519`) while HEAD == origin/main `d6bb24f`; realigned (benign,
-  Cycle-245). **INFRA HEALTHY:** newest verify `runs/local/verify_20260805T224105Z.json` (22:41Z,
-  tests_ok=true 33 suites, 46.1 F / 85.5 B / +39.4), ~10-20min old at fire (~23:0xZ), well inside the 6h
-  floor; :41 cadence holding (21:41Z→22:41Z, a fresh slot beyond Cycle 269's 21:41Z read) → RUNNER-HEALTH
-  WATCH NORMAL. LOG/STATE/git consistent (merge `8c89718` + addendum `d6bb24f` both on origin/main).
-  `pip install eth-account` (recurring agent-side gap, invariant #4). **IMPROVEMENT (READOUT — the pointer's
-  named highest-value in-cloud READOUT item, the Cycle-264 symmetric follow-up):** the HTML compare card was
-  asymmetric with the terminal — `scorecard._pillars(rep, baseline)` renders the with-side card that CARRIES
-  the transactability DELTA (the with/without pitch headline) but tagged only THAT side's payment-corroboration
-  badge; the baseline side's corroboration lived on the separate left card, never adjacent to the delta. Fixed
-  `_pillars` to ALSO surface the baseline's corroboration on the transactability row in compare mode
-  (`base_corrob = _payment_corroboration(baseline)` when a baseline is present), rendered as a
-  visually-secondary second badge (`<small class="corrob baseline {band}" title="Baseline — …">baseline:
-  {label}</small>` + `.corrob.baseline{opacity:.72;margin-left:6px}`), so a +delta over an UN-corroborated
-  baseline anchor is read with that caution without hunting to the other card — mirroring Cycle 264's terminal
-  both-sides annotation. Reads the SAME `_payment_corroboration` signal the with-side badge / terminal line /
-  calibration guard all consume; no new field, no new decision, cannot move a score; `baseline=None` is a
-  byte-for-byte no-op. NEW `test_readout.py` +2 (92→94): NON-VACUOUS on the two committed behavioral anchors
-  (driftflight.com good with-side over moleskine neutral baseline shows BOTH badges; reversed tracks) + TEETH
-  (baseline badge tracks the baseline's good/neutral/warn) + single-card NO-OP + honest-absence suppression
-  (static baseline adds no badge, inv #4) + transactability-only scoping; integration-confirmed on the REAL
-  assembled `build_scorecard` compare card (exactly one `corrob baseline` badge, on the with-side tx row).
-  SCORE-NEUTRAL: scoring-path diff EMPTY (only `asrs/scorecard.py` readout + the test); full suite **33/33
-  green**, test_readout 94/94; 22:41Z live signal **46.1 F / 85.5 B / +39.4 UNMOVED** (in-cloud network
-  blocked → by-construction + verify artifact per playbook). Invariants #1–5 all held. NO DM (score-neutral
-  display-only READOUT, not sensitive-class; digest already sent Cycle 259 this window). See LOG Cycle 270.
-- FOCUS POINTER (Cycle 270 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
-  check. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + Cycle 263 pin); WATCH stays NORMAL —
-  re-escalate ONLY on a fresh >6h no-artifact gap. Cloud track rotation: Cycle 270 was READOUT → cloud pointer
-  is **METHOD next** (METHOD → COVERAGE → TRUTH → READOUT). NEXT READOUT: the compare-card baseline
-  corroboration is now symmetric with the terminal (Cycle 264 follow-up DONE) — remaining READOUT opening is
-  the population-drift TREND across ≥3 dated sweeps ([LOCAL]-gated, only 2 committed); beyond that READOUT is
-  near-saturated → surface a NEW readout seam. NEXT METHOD/TRUTH: SATURATED (arrival-order + hash-seed +
-  metamorphic-drift all closed) — surface a genuinely NEW seam first. NEXT COVERAGE: physical_good
-  RETURNS-WINDOW leg (if allbirds/moleskine prose carries a machine-readable return window); agent-native
-  RETAIL rail surfaces (UCP/MCP); ipinfo.io DATASET-FORMAT (Cycle-243); deep-bank uncaptured-capability audit.
-  Substantive [LOCAL] frontier: re-score the behavioral canonical delta LIVE on a codex-reachable trial
-  (drift-flight.org t2) end-to-end; cross-model N-curve (partially unblocked, t2-only); a THIRD calibration
-  anchor; render-generation digital_good (Cycle-168); structured catalog/pricing JSON (Cycle-70); ACP/UCP/MPP
-  live handshakes; a richer-booking WAITLIST fixture (Cycle-256).
 <!-- STATE COMPACTED at Cycle 260 (2026-08-05T~17:1xZ, self-healing/COVERAGE, direct-to-main, score-neutral).
      STATE.md had accreted the full per-cycle history back to ~Cycle 5 (7798 lines / ~790KB) and could no
      longer be Read in one call, degrading the playbook-mandated per-cycle "read STATE.md". Trimmed the

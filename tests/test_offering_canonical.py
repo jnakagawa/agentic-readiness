@@ -707,6 +707,180 @@ def test_simplybook_anchor_offering() -> None:
 
 
 # ---------------------------------------------------------------------------
+# SUBSCRIPTION-CANCEL ANCHOR — polar.sh (captured [LOCAL] 2026-08-06 this cycle).
+#
+# The subscription bank has 9 signals (subscription / per-month-price / per-month /
+# recurring / annual-billing / seat-licensing / free-trial / plan-purchase /
+# plan-allowance) — ALL of which describe that a plan EXISTS, how it is PRICED, that
+# it can be EVALUATED at $0 (free-trial), or that it can be COMMITTED to
+# (plan-purchase). NONE covers the LIFECYCLE END: whether an autonomous agent can
+# PROGRAMMATICALLY CANCEL / revoke its own recurring plan without a human — the
+# capital-safety "bound your own recurring spend" leg, the subscription mirror of
+# metered_api's `cancel-job` and `key-rotation` (the credential/operation KILL-SWITCH).
+# That signal was [LOCAL]-blocked (BACKLOG P1, opened Cycle 146): NO committed fixture
+# carried PROGRAMMATIC cancel prose. The only cancel hits in the population were
+# ipinfo.io's TWO "you can cancel anytime you want" FAQ answers — the HUMAN
+# marketing the future signal must precisely NOT fire on. So the signal could not be
+# mined non-vacuously in-cloud; it needed a real fixture whose surfaces document a
+# cancel ENDPOINT.
+#
+# polar.sh is that anchor: a genuine agent-native "Merchant of Record" commerce
+# platform (it publishes llms.txt / llms-full.txt / an OpenAPI spec at api.polar.sh
+# AND a `/.well-known/agent-card.json` — the discovery surfaces an agent reads),
+# whose committed prose carries PROGRAMMATIC subscription cancellation: a
+# `DELETE /v1/subscriptions/{id}` resource, a `cancel_at_period_end` scheduling
+# parameter, and "Cancel / Revoke a subscription" operation summaries — with ZERO
+# "cancel anytime" human marketing to confound the future precision guard. So this
+# fixture UNBLOCKS an in-cloud COVERAGE cycle to mine a precision-guarded
+# `subscription-cancel` signal (anchor to a `/subscriptions/{id}` cancel/revoke
+# ENDPOINT or `cancel_at_period_end`, NOT the human "cancel anytime" of ipinfo),
+# pushing subscription 9 -> 10. Until then the signal is absent and this anchor pins
+# the prose so a future re-capture that loses it fails here.
+#
+# HONEST CLASSIFICATION NOTE. Polar is a broad all-in-one platform, so the
+# classifier CLAIMS all six archetypes. That claim is largely GENUINE — subscription
+# (29 signals, the anchor's purpose), metered_api (57 signals — an API-first MoR
+# with usage-based billing / webhooks / pagination / sandbox), digital_good
+# (`hosted-output`: downloadable files up to 10GB), physical_good (order
+# fulfillment + order status). It ALSO trips service_booking (`schedule` on
+# "schedule an automatic resume", `reservation` on "reserve an allocation for a
+# device") and part of digital_good (`generations`/`render`/`translation`) and
+# data_retrieval (`lookup`) on precision-noise — the known exa.ai-class over-claim
+# (BACKLOG P1: "Offering-classifier precision — the exa.ai over-claim"), diagnostic
+# only (offering is OFF the scoring path). The claimed SET is pinned EXACTLY as the
+# honest current output (regression tripwire in both directions); a future precision
+# fix that drops a noise archetype reddens this and updates the expected set in the
+# SAME PR (the documented maintenance contract). None of that noise touches the
+# subscription-cancel evidence this anchor exists for.
+#
+# Fixture captured [LOCAL] via `python -m experiments.capture_offering_fixture
+# polar.sh fixtures/canonical/polar.sh.json` — the live discover_offering
+# classification was reproduced byte-faithfully by the offline replay before
+# recording (honest ordering, invariant #4), confirmed STABLE across two independent
+# live crawls; 1 ephemeral set-cookie header stripped (sibling zero-set-cookie
+# convention). 211 full-scorer misses -> quarantined classification-only in
+# test_canonical_replay (like ipinfo/allbirds/simplybook).
+# ---------------------------------------------------------------------------
+_SUBS_ANCHOR = "polar.sh"
+# The OBSERVED claimed set, pinned exactly (honest tripwire — see the note above).
+_SUBS_ANCHOR_CLAIMED = {
+    "metered_api", "subscription", "digital_good",
+    "physical_good", "service_booking", "data_retrieval",
+}
+# The full known subscription signal bank (9 signals). Every fired label on this
+# anchor must be one of these — teeth against a spurious signal, and the MAINTENANCE
+# HOOK for the future `subscription-cancel` mine (adding it to the bank updates this
+# set in the same PR, the way Cycle 272 updated _DATA_RETRIEVAL_LABELS for
+# dataset-format and Cycle 273 installed _ALL_SERVICE_BOOKING_LABELS for waitlist).
+_ALL_SUBSCRIPTION_LABELS = {
+    "subscription", "per-month-price", "per-month", "recurring", "annual-billing",
+    "seat-licensing", "free-trial", "plan-purchase", "plan-allowance",
+}
+# The genuine recurring-commitment core — at least three must fire NON-VACUOUSLY, so
+# subscription rests on real billing-cadence evidence, not a lone marketing word.
+_SUBS_GENUINE_RECURRING = {
+    "subscription", "recurring", "per-month", "per-month-price", "annual-billing",
+    "seat-licensing", "free-trial",
+}
+
+
+def _assert_polar_anchor() -> None:
+    profile, _ = _discover(_SUBS_ANCHOR)
+    claimed = set(profile.archetypes)
+    unclaimed = set(profile.unclaimed)
+
+    _check(
+        "homepage" in profile.surfaces_seen,
+        f"{_SUBS_ANCHOR}: homepage surface was read (discovery had real evidence)",
+    )
+
+    # (a) The claimed SET is pinned EXACTLY — a spurious ADD or a DROPPED archetype
+    # both fail (regression tripwire in both directions).
+    _check(
+        claimed == _SUBS_ANCHOR_CLAIMED,
+        f"{_SUBS_ANCHOR}: claimed archetypes == {sorted(_SUBS_ANCHOR_CLAIMED)} "
+        f"(got {sorted(claimed)})",
+    )
+
+    # claimed and unclaimed partition the fixed template bank exactly (no leaks).
+    _check(
+        claimed | unclaimed == set(ARCHETYPES) and not (claimed & unclaimed),
+        f"{_SUBS_ANCHOR}: claimed+unclaimed partition the archetype bank "
+        f"(claimed {sorted(claimed)}, unclaimed {sorted(unclaimed)})",
+    )
+
+    # (b) subscription is CLAIMED — a THIRD independent subscription storefront (the
+    # canonical pair also claims it, but from flight-themed API prose; this is a real
+    # billing platform), so the signals generalize across vendors.
+    _check(
+        profile.claims("subscription"),
+        f"{_SUBS_ANCHOR}: subscription CLAIMED — an independent real recurring-billing "
+        "platform (the signals generalize across vendors)",
+    )
+
+    # (c) Non-vacuous: subscription rests on >=3 genuine recurring-commitment signals,
+    # every fired label is a KNOWN bank label (teeth + the future subscription-cancel
+    # maintenance hook), and each carries a quote.
+    subs = next(c for c in profile.claimed if c.archetype == "subscription")
+    labels = {s.label for s in subs.signals}
+    _check(
+        len(labels & _SUBS_GENUINE_RECURRING) >= 3,
+        f"{_SUBS_ANCHOR}: subscription rests on >=3 genuine recurring-commitment "
+        f"signals (got labels {sorted(labels)})",
+    )
+    _check(
+        labels <= _ALL_SUBSCRIPTION_LABELS,
+        f"{_SUBS_ANCHOR}: every subscription signal is a known bank label "
+        f"(got {sorted(labels)}, expected subset of "
+        f"{sorted(_ALL_SUBSCRIPTION_LABELS)}) — a spurious/uncontracted signal fails here",
+    )
+    _check(
+        all(s.quote and s.quote.strip() for s in subs.signals),
+        f"{_SUBS_ANCHOR}: every subscription signal carries quoted evidence",
+    )
+    # The lifecycle-END signal is NOT yet in the bank — this anchor is captured to
+    # UNBLOCK it, so it must be absent today (the mine pushes subscription 9 -> 10).
+    _check(
+        "subscription-cancel" not in labels,
+        f"{_SUBS_ANCHOR}: `subscription-cancel` is not yet a bank signal (this fixture "
+        "is the [LOCAL] enabler for that in-cloud mine; add it to _ALL_SUBSCRIPTION_LABELS "
+        "in the same PR)",
+    )
+
+    # (d) THE SUBSCRIPTION-CANCEL MINE ENABLER: the committed fixture carries genuine
+    # PROGRAMMATIC subscription-cancellation prose (a cancel/revoke ENDPOINT + the
+    # `cancel_at_period_end` scheduling parameter) and — critically — ZERO "cancel
+    # anytime" HUMAN marketing (the ipinfo.io false-positive the future precision
+    # guard must dodge). This pins the exact substrate the parked-Cycle-146 mine needs,
+    # so a future re-capture that drops it fails here.
+    raw = open(
+        os.path.join(_FIXTURE_DIR, f"{_SUBS_ANCHOR}.json"), encoding="utf-8"
+    ).read().lower()
+    _check(
+        "cancel_at_period_end" in raw,
+        f"{_SUBS_ANCHOR}: committed fixture carries the `cancel_at_period_end` "
+        "programmatic scheduled-cancellation parameter (subscription-cancel mine enabler)",
+    )
+    _check(
+        "/v1/subscriptions/" in raw and "revoke a subscription" in raw,
+        f"{_SUBS_ANCHOR}: committed fixture documents a programmatic subscription "
+        "cancel/revoke ENDPOINT (`/v1/subscriptions/{id}` + a 'revoke a subscription' "
+        "operation) — the agent-completable lifecycle-END capability",
+    )
+    _check(
+        "cancel anytime" not in raw,
+        f"{_SUBS_ANCHOR}: the cancel evidence is PURELY programmatic — no 'cancel "
+        "anytime' human marketing (the ipinfo.io false-positive), so the future mine "
+        "has a confound-free substrate",
+    )
+
+
+def test_polar_anchor_offering() -> None:
+    print("test_polar_anchor_offering")
+    _assert_polar_anchor()
+
+
+# ---------------------------------------------------------------------------
 # The data_retrieval ANCHOR — the FIRST committed fixture that CLAIMS
 # data_retrieval, the SIBLING thin archetype to service_booking. Before this
 # capture data_retrieval had ZERO committed evidence (NA on all six prior
@@ -7116,6 +7290,7 @@ def main() -> int:
         test_service_booking_anchor_offering,
         test_service_booking_partition_tracks_storefront_type,
         test_simplybook_anchor_offering,
+        test_polar_anchor_offering,
         test_data_retrieval_anchor_offering,
         test_data_retrieval_partition_tracks_storefront_type,
         test_nonstorefront_empty_offering,

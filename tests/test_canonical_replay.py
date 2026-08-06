@@ -1512,8 +1512,13 @@ _REPLAY_CLEAN = {
 # simplybook.me joins this set as the second service_booking anchor (captured via
 # the discover_offering path, 50 full-scorer misses: robots.txt, homepage under
 # claudebot/gptbot UAs, the pricing/products page sweep, cross-domain review URLs).
+# polar.sh joins as the subscription-CANCEL anchor (a Merchant-of-Record commerce
+# platform whose OpenAPI carries a programmatic `DELETE /v1/subscriptions/{id}` +
+# `cancel_at_period_end` — the [LOCAL] enabler for the subscription 9->10 mine;
+# captured via discover_offering, 211 full-scorer misses).
 _CLASSIFICATION_ONLY = {
     "api.replicate.com", "ipinfo.io", "www.allbirds.com", "simplybook.me",
+    "polar.sh",
 }
 
 

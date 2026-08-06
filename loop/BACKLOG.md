@@ -655,10 +655,30 @@ design in-cloud, execute locally.
      surface-dedup RETAIL is STRUCTURALLY EXCLUDED (no doc surface to mirror); surface-ORDER on the machine/.com
      pole; a second listing-order/endpoint-order pole. Each still needs the empirical pole-specific tooth check. -->
 
-- **[LOCAL] Capture a fixture with subscription-CANCEL / lifecycle prose, then add the signal** (COVERAGE,
+- **[LOCAL→in-cloud] Capture a fixture with subscription-CANCEL / lifecycle prose, then add the signal** (COVERAGE,
   opened Cycle 146). A real subscription capability gap: whether an agent can PROGRAMMATICALLY CANCEL /
   downgrade its own recurring plan without a human — the capital-safety lifecycle leg (bound your own
-  recurring spend), the subscription mirror of metered_api's `cancel-job`. Cannot ship in-cloud: the
+  recurring spend), the subscription mirror of metered_api's `cancel-job`.
+  **CAPTURE DONE — LOCAL Cycle 275 (2026-08-06, COVERAGE, direct-to-main, score-neutral):** the [LOCAL] capture
+  is DONE — `fixtures/canonical/polar.sh.json` landed, a genuine agent-native Merchant-of-Record commerce
+  platform (publishes llms.txt/llms-full.txt/an OpenAPI at api.polar.sh + a `docs.polar.sh/.well-known/agent-card.json`,
+  claims all six archetypes with the exa.ai over-claim on service_booking/some digital_good+data_retrieval — the
+  known BACKLOG-P1 precision issue, diagnostic-only) whose committed prose carries PROGRAMMATIC subscription
+  cancellation (`cancel_at_period_end` ×13, `/v1/subscriptions/` ×35, "Cancel/Revoke a subscription" operation
+  summaries) with ZERO "cancel anytime" human marketing — the exact confound-free substrate the mine was PARKED
+  for (the only committed cancel prose was ipinfo's human "cancel anytime" FAQ). Captured via
+  `experiments/capture_offering_fixture` (66 entries, honest-replay verified byte-faithful + STABLE across two
+  live crawls, inv #4); pinned by `test_polar_anchor_offering` (test_offering_canonical 69→70) which also asserts
+  the programmatic cancel prose present (future-mine evidence) + installs the `_ALL_SUBSCRIPTION_LABELS`
+  maintenance hook for `subscription-cancel`; polar.sh added to `_CLASSIFICATION_ONLY` in test_canonical_replay
+  (211 full-scorer misses → quarantined from scoring). So the `subscription-cancel` mine is now UNBLOCKED
+  IN-CLOUD (no longer [LOCAL]): mine a precision-guarded `subscription-cancel` signal (anchor to a
+  `/subscriptions/{id}` cancel/revoke ENDPOINT PATH, a `cancel_at_period_end` parameter, or a DELETE/cancel/revoke
+  verb naming a subscription/plan resource — NOT the human "cancel anytime" of ipinfo, NOT metered_api's
+  job-`cancel-job`); validate ABSENT on the canonical pair + retail + null + api fixtures, fires NON-VACUOUSLY on
+  polar.sh, add `subscription-cancel` to `_ALL_SUBSCRIPTION_LABELS` in the same change. Would push subscription
+  9→10. See LOG Cycle 275. Original blocker (now resolved) below.
+  Cannot ship in-cloud: the
   canonical `/cancellation` surface is NOT in any committed fixture (grep of all 5 fixtures = 0
   subscription-cancel prose; api.replicate.com's 49 "cancel" hits are all JOB-cancel, already covered by
   `cancel-job`), so a signal would be vacuous (unprovable it fires / is score-neutral). Capture the

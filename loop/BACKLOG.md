@@ -11,34 +11,36 @@ fresh codex refusal live (driftflight.com codex t1 → reachability). Predicted 
 the vocabulary drifted onto a NEW near-miss family → new peer-gated P0 below. Evidence
 runs/local/pr147_postmerge_20260806T084420Z/. See LOG Cycle 286. -->
 
-<!-- IMPLEMENTED Cycle 287 → PR #148 (loop/env-block-permission-boundary-nearmiss, commit fd7f25a), OPEN for
-next-cycle peer review + self-merge. New v0.7(d) branch: fires only when a block word is paired with the apparatus
-AS THE DENIER — "(denied|…|blocked) …by (a|an|the)? browser['’]?s? (site[- ])?permission (boundary|policy|layer|
-controls?)"; required "by" keeps a site-actor subject out, _NOT_SITE_ATTRIBUTED keeps a real "…denied BY the
-server/WAF" out. Differential leak scan over all 87 committed run records flips EXACTLY the two committed leaks
-(.com/.org codex t2), zero collateral; test_attribution.py #14 (attribution 13→14, suite 37/37); static path
-untouched (26/26, +39.4); no rubric bump. See LOG Cycle 287. Post-merge live behavioral re-run (.com valid_runs→2,
-.org→3, wider delta) stays queued [LOCAL] below. -->
+<!-- DONE Local cycle 20260806T184617Z: PR #148 post-merge LIVE behavioral verification HARVESTED (item closed).
+Shipped loop/run_pr148_verify.py — a double-fork os.setsid DETACHED launcher that SURVIVES the fire (the 10th
+attempt and the FIRST to complete: END exit=0, ~11.5 min; the prior 9 inline runs died with their fire). Codex-only
+pair: .org 41.7 F → .com 76.6 C = +34.9 (PROVISIONAL, 1 valid trial each). FIX CONFIRMED on .org (codex#2 "Browser
+security policy denied access…" → _ENV_BLOCK_RE MATCH → reachability, hosted-agent-blocked, 1 valid run). FRESH
+4th-drift LEAK on .com (codex#2 "Permitted browser access was denied, and the public web retriever classified the
+direct URL as unsafe to open" → NO match → mis-scored as a valid WITH-side FAIL, 2 valid runs, delta narrowed) →
+peer-gated leak-fix P0 below. Evidence runs/local/pr148_postmerge_20260806T184617Z/ (force-added). See LOG Local
+cycle 20260806T184617Z. -->
 
-- **[LOCAL] PR #148 post-merge LIVE behavioral verification** (METHOD, queued Cycle 287). After the peer cycle
-  merges PR #148, run `compare drift-flight.org driftflight.com --behavioral … --models codex` ($0 read-only
-  shopper+trust panel; ≤10 codex invocations; free-tier ≤1×, no signing) and confirm the v0.7(d) fix routes any
-  fresh "denied by the browser permission boundary/policy" codex refusal to reachability (valid runs preserved,
-  WIDENING the behavioral delta). Force-add the panel dir to `runs/local/`. Per-trial non-deterministic gate → the
-  phrasing may drift again; if a NEW near-miss family appears, re-derive with the shipped detector and queue the
-  next peer-gated broadening (the standing METHOD tripwire — vocab has drifted Cycle 269, 284, 286→287).
-  **WALL-CLOCK FINDING (Local cycle 20260806T175200Z, METHOD/self-healing):** the ORIGINAL full form `--trials 2
-  --models claude,codex` = 12 live model investigations ≈ 18–22 min, which EXCEEDS the local cycle wall-clock →
-  it silently stalled 8 consecutive fires today (every `runs/local/pr148_postmerge_*/compare.log` 0-byte;
-  `compare` flushes its report only at the end, so a mid-run kill leaves nothing). NOT a breakage (codex probe
-  ~18s, both anchors 200, suite 38/38). FIX shipped that fire: the run wrapper now heartbeats `START:`/`END:
-  exit=<rc>` (no longer a 0-byte mystery), and this item is RESHAPED to the completable **codex-only** form above
-  — codex is the model the v0.7(d) fix targets; the claude leg is the rarely-refusing control that doubles
-  runtime. The exact `.com`→2 / `.org`→3 valid-run counts assumed the claude,codex panel (different denominator);
-  codex-only still exercises the core routing mechanism (does a codex permission-boundary refusal count as
-  reachability, not a site-FAIL). If even codex-only clears the wall-clock unreliably, launch it DETACHED (new
-  session, `os.setsid`) so it survives the fire and the NEXT fire harvests the COMPLETED, heartbeated artifact.
-  See LOG Local cycle 20260806T175200Z.
+- **[PEER-GATED P0] Broaden `_ENV_BLOCK_RE` for the "browser access was denied … URL unsafe" own-tool family
+  (v0.7(e))** (METHOD, derived Local cycle 20260806T184617Z from the PR #148 harvest). The LIVE `.com` codex#2
+  refusal "**Permitted browser access was denied**, and the public web retriever classified the direct URL as
+  unsafe to open" (site HTTP 200; codex#1 reached it fully same fire) slipped past EVERY existing `_ENV_BLOCK_RE`
+  branch — it carries neither v0.6's "browser security/safety", nor v0.7(a)'s "interactive/direct browser access"/
+  "browser access permission", nor v0.7(b/d)'s "browser['s] permission {boundary|policy|layer|controls}" — so
+  codex's OWN hosted-browser refusal was counted as a valid all-false WITH-side SITE run (`.com` valid_runs 1→2,
+  NO `hosted-agent-blocked` finding), NARROWING the behavioral delta (inv #4 leak; the 4th vocab drift — Cycle
+  269/284/286→287, now this). Reproduced with the shipped detector: `_ENV_BLOCK_RE.search()` returns False on the
+  exact `.com` blocker, True on the `.org` sibling "Browser security policy denied access…". CANDIDATE guard: a
+  new alternative on the own apparatus — "(permitted )?browser access …{denied|blocked|refused|declined}" AND/OR
+  the own web-retriever "classified the (direct )?URL as unsafe" — each self-qualified by `_NOT_SITE_ATTRIBUTED`
+  so a real site-side 403/WAF/Cloudflare block is STILL never excused (attribution honesty, both directions).
+  This CHANGES which runs are valid → scoring semantics → **peer-gated**: open `loop/<slug>` with (i) the exact
+  live phrasing, (ii) a differential leak-scan over ALL committed run records showing it flips ONLY this new leak
+  (+ the two Cycle-287 leaks already caught), zero collateral, (iii) a `test_attribution.py` precision case (#15)
+  with teeth, (iv) static path untouched (26/26, +39.4), no rubric bump. Committed evidence:
+  `runs/local/pr148_postmerge_20260806T184617Z/{report.txt,report_driftflight_com.json}`. Next cycle re-scores the
+  pair to show `.com` valid_runs 2→1 and the delta widening back toward the static +39.4. In-cloud executable (no
+  network needed — regex + committed-record scan + test).
 
 - **[SCOPE follow-up, future — carefully-guarded proposal only]** the SEPARATE
   reputation-"unsafe" sentence family — *"…classified driftflight.com as unsafe and blocked access."* — is a

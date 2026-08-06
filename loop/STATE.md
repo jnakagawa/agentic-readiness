@@ -1,6 +1,32 @@
 # Loop state
 
 - Cycle counter: 295
+- LOCAL cycle — 20260806T184617Z (METHOD / self-healing, direct-to-main, score-neutral). FIRST duty: `gh pr list
+  --state open` → `[]` (no open peer-gated PR; #148 operator-merged before Cycle 288); repo `main` clean + synced
+  origin/main `43a856b`; newest verify `verify_20260806T184103Z.json` (18:41Z, tests_ok 38 suites, 46.1 F / 85.5
+  B / +39.4), <10min old → INFRA HEALTHY (prior-fire cadence flag RESOLVED: 17:41Z + 18:41Z both on the :41 tick).
+  **PR #148 verification UNBLOCKED via DETACHMENT.** Root: the item silently stalled 9 fires (incl. the prior
+  fire's best-effort inline run `pr148_postmerge_174736Z` — `START:` only, no `END:`/report) because an INLINE
+  codex-only pair panel (>6.5 min live, ~24 min worst-case) can't outlive the fire that spawns it; heartbeating
+  only made the death visible. Shipped `loop/run_pr148_verify.py` — a double-fork `os.setsid` daemoniser that runs
+  the fixed-verb codex-only `compare … --behavioral --trials 2 --models codex`, heartbeats `START:`/`END:
+  exit=<rc>`, and (being in its own session) SURVIVES the fire. Verified codex usable ($0 `is_codex_usable()`→True
+  6.4s), launched `runs/local/pr148_postmerge_20260806T184617Z/` (launcher rc=0 immediately, worker PID alive no
+  tty) — and it **COMPLETED within the fire** (the 10th attempt, FIRST success: `END exit=0`, ~11.5 min), so
+  HARVESTED this fire. Codex-only pair: .org 41.7 F → .com 76.6 C = **+34.9** (PROVISIONAL, 1 valid trial each;
+  static +39.4 stays the regression signal). **RESULT: fix CONFIRMED on .org, FRESH 4th-drift LEAK on .com.** .org
+  codex#2 "Browser security policy denied access…" → `_ENV_BLOCK_RE` MATCH → reachability (hosted-agent-blocked, 1
+  valid run), inv #4 held. .com codex#2 "Permitted browser access was denied, and the public web retriever
+  classified the direct URL as unsafe to open" → NO match → mis-scored as a valid WITH-side FAIL (2 valid runs,
+  delta narrowed) — a genuinely NEW near-miss family (no "browser security/safety", no "interactive/direct browser
+  access", no "browser['s] permission boundary/policy"); reproduced with the shipped detector. **QUEUED a
+  peer-gated P0** (v0.7(e) `_ENV_BLOCK_RE` broadening; in-cloud executable) at BACKLOG P0 top; PR #148 verification
+  item CLOSED (DONE marker). Canonical unmoved +39.4 (off scoring path; the leak FIX is only queued, not shipped —
+  no score moved; sole code add is a standalone launcher, not under `tests/`, not the launchd launcher →
+  runner-registration + launcher-hygiene both unaffected; STATE pruned oldest Cycle 288 to stay <600 lines).
+  Invariants #1 ($0 read-only panels, free-tier ≤1×, no signing)–#5 held; NO DM (self-healing METHOD, leak fix only
+  queued not a PR opened; digest sent Cycle 294 16:24Z) — leak flagged for next digest. See LOG Local cycle
+  20260806T184617Z.
 - LOCAL cycle — 20260806T175200Z (METHOD / self-healing, direct-to-main, score-neutral). FIRST duty: `gh pr list
   --state open` → `[]` (no open peer-gated PR); git clean, synced origin/main `a3f6880`; newest verify
   `verify_20260806T174102Z.json` (17:41Z, tests_ok 38 suites, 46.1 F / 85.5 B / +39.4), this hour's artifact <1h
@@ -405,61 +431,6 @@
   2nd non-anchor weld member); cross-model SHOPPER delta still codex-blocked on the WITH side; a THIRD calibration
   anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168); structured catalog/pricing JSON
   (Cycle-70).
-- CYCLE 288 — 2026-08-06T~10:1xZ (COVERAGE, cloud, direct-to-main, score-neutral). FIRST duty (infra health +
-  peer-gate review): `list_pull_requests` state=open → `[]` — **PR #148 was OPERATOR-MERGED by Jonah** (`7d47f2e`,
-  author j.a.nakagawa, merged 09:48Z) between Cycle 287 and this fire, so the peer-gate review+self-merge duty on
-  #148 is DISCHARGED by the operator's own merge (approval, stronger than silent consent; no LOG review verdict
-  owed — the operator merge IS the verdict). The v0.7(d) `_ENV_BLOCK_RE` change is now in main (shopper.py +
-  test_attribution.py, 111 insertions). Cloud detached at origin/main `7d47f2e`, local `main` stale orphan
-  `3e318f1` → realigned local `main` to origin/main before work (benign, no history rewrite). **INFRA HEALTHY:**
-  newest verify by FILENAME `runs/local/verify_20260806T094102Z.json` (09:41Z, tests_ok=true, 46.1 F / 85.5 B /
-  +39.4), <1h old at fire; :41 cadence holding (07:41Z→08:41Z→09:41Z) → RUNNER-HEALTH WATCH NORMAL. `.venv`
-  (py3.11, requirements.txt) resolves; full suite **37/37 green** before the change. **TRACK (cloud COVERAGE /
-  data_retrieval — the THINNEST bank):** mined the `data-freshness` signal (the UPDATE-CADENCE / "how current is
-  the corpus" leg) from the committed ipinfo.io anchor, pushing data_retrieval 7→8. DISTINCT from all 7 existing
-  legs (dataset=existence, dataset-format=delivery format, batch-retrieval=call shape, lookup/enrich/data-service/
-  query-records=live record retrieval) — NONE states corpus recency; this is the "complete the job — trust the
-  corpus is current" leg. **PRECISION-CRITICAL** (bare "updated daily"/"refreshed"/"fresh" is broad-English
-  marketing prose; the worst near-miss is a metered_api dashboard's "your USAGE data is updated daily"): NEVER a
-  bare cadence token — the freshness must attach to a data-CORPUS noun (dataset|database|corpus|feed + updated|
-  refreshed + daily|weekly|monthly|hourly|nightly|real-time), OR the fixed "<cadence> data refresh/update"
-  collocation (a LEADING cadence adjective keeps "usage/analytics data updated" OUT), OR "data freshness", OR a
-  "data/dataset/database refresh|update cadence"; bare "data updated daily" (no corpus noun, no leading cadence)
-  is deliberately EXCLUDED. **EMPIRICAL:** fires 2 spans on ipinfo.io (homepage "Daily Data Refresh" + /docs "Each
-  sample dataset is updated daily"), 0 on ALL TEN other fixtures incl. the canonical pair (data_retrieval NA there
-  by construction). Tests: NEW `test_data_freshness_precision_synthetic` (10 corpus-refresh positives fire / 13
-  content/retail/app-update/dashboard-telemetry/provenance negatives dodge) + NEW
-  `test_data_freshness_fires_on_real_captured_surfaces` (real ipinfo /docs + homepage fire; pair+api+retail+null
-  ABSENT, claimed SET+ORDER invariant) → test_offering 111→113; `_DATA_RETRIEVAL_LABELS` + `_ISOLATION_EVIDENCE`
-  += data-freshness → test_offering_canonical 70/70; runner-registration green. **SCORE-NEUTRAL:** classifier OFF
-  the scoring path (`git diff -- asrs/scoring.py asrs/report.py asrs/probes rubric/ fixtures/ asrs/battery.py
-  asrs/reliability.py` EMPTY; only asrs/offering.py + 2 tests, 186 insertions); suite **37/37 green**. **CANONICAL
-  UNMOVED:** replay 46.1 F / 85.5 B / +39.4 (concurs 09:41Z floor); data_retrieval NA on both canonical fixtures →
-  a data_retrieval signal cannot move either score; ipinfo claimed order unchanged [metered_api, data_retrieval,
-  subscription, digital_good] (deepens only, no reorder). Invariants #1 ($0 — classifier regex + read-only
-  tests)–#5 held; zero codex, zero paid ops. NO DM (score-neutral COVERAGE, not a DM-enumerated sensitive class;
-  no digest due — ~10:1xZ precedes 16:00 UTC on 08-06; PR #148 operator-merge is a flag-in-next-digest item). See
-  LOG Cycle 288.
-- FOCUS POINTER (Cycle 288 done, cloud): NO open peer-gated PR (#148 operator-merged `7d47f2e`) → next fire's
-  first duty is the infra health check. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH
-  stays NORMAL — re-escalate ONLY on a fresh >6h no-artifact gap. Cloud track rotation: Cycle 288 was COVERAGE →
-  **TRUTH next** (METHOD → COVERAGE → TRUTH → READOUT). Offering signal bank now: metered_api 26 / digital_good 11
-  / physical_good 10 / subscription 10 / service_booking 9 / data_retrieval 8 (post-Cycle-288 `data-freshness`).
-  data_retrieval is now well-mined across existence / delivery-format / call-shape / record-retrieval / RECENCY
-  legs. NEXT in-cloud COVERAGE (still open): subscription PAUSE/RESUME (polar `subscription.paused`/uncancel) IF
-  precision-guardable; physical_good RETURNS-WINDOW (allbirds/moleskine); a data_retrieval RESPONSE-SCHEMA /
-  field-contract leg IF committed ipinfo prose carries it (verify vs dataset-format first). NEXT METHOD (cloud):
-  host-environment reproducibility SATURATED (hash-seed 267 / timezone 271 / encoding 277 / locale 280) — move OFF
-  it (probe-order independence of the aggregate, or fixture-capture determinism). NEXT TRUTH (cloud): widen the
-  cross-path anchor weld to a NON-anchor population member once ≥2 committed sweeps share a stable reachable
-  non-anchor + a committed offline replay baseline. NEXT READOUT: population-median/band overlay across sweeps once
-  ≥3 sweeps share a stable non-anchor. Standing METHOD tripwire: own-tool refusal vocab drifted THREE times (Cycle
-  269, 284, 286→287) → keep the periodic leak scan over each fresh committed panel. NEXT calibration cadence:
-  population 18 (target 15–20); next broadening = a genuine ACP/UCP/MPP merchant or a 2nd x402-live site.
-  Substantive [LOCAL] frontier: PR #148 post-merge live behavioral verification (still queued — `.com`
-  valid_runs→2, `.org`→3, wider behavioral delta); cross-model SHOPPER delta still codex-blocked on the WITH side;
-  a THIRD calibration anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168); structured
-  catalog/pricing JSON (Cycle-70).
 <!-- STATE COMPACTED at Cycle 260 (2026-08-05T~17:1xZ, self-healing/COVERAGE, direct-to-main, score-neutral).
      STATE.md had accreted the full per-cycle history back to ~Cycle 5 (7798 lines / ~790KB) and could no
      longer be Read in one call, degrading the playbook-mandated per-cycle "read STATE.md". Trimmed the

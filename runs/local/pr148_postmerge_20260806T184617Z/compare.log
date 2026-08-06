@@ -1,0 +1,2 @@
+START: 2026-08-06T18:46:17Z cmd: compare drift-flight.org driftflight.com --behavioral --trials 2 --models codex
+END: 2026-08-06T18:57:45Z exit=0

@@ -2398,6 +2398,111 @@ def _reference_gap_badge_from_sweeps(sweeps: list) -> str:
     )
 
 
+def _population_position_verdict(sweeps: list) -> dict | None:
+    """Pure verdict of WHERE the two reference anchors sit INSIDE the whole scored
+    population at the newest sweep both anchors scored — the population-POSITION datum
+    the main-card note renders. The sibling of :func:`_reference_gap_verdict`: that one
+    measures the anchors' GAP, this one measures their RANK inside the cohort, so a
+    reader can tell whether the +39.4 is a real population spread or two cherry-picked
+    endpoints.
+
+    Version-isolates like the gap badge (invariant #2 — only the newest sweep's rubric
+    version). Reads the band from :func:`_population_band_series` (so this note and the
+    calibration-page band overlay can never disagree about the cohort) and the anchor
+    overalls from :func:`_anchor_trend_series` (so it can never disagree with the gap
+    badge about the anchors). Returns ``None`` unless some same-version sweep has a
+    scored population band AND both a top and bottom anchor scored at that sweep (no
+    invented position without both — a not-scorable anchor or empty band is a gap, never
+    a 0, invariant #4). Otherwise a dict: ``n`` cohort size, ``median``/``lo``/``hi``
+    the band, ``top``/``bot`` the with-/no-rails anchor overall, ``top_is_max`` (the
+    with-rails anchor equals the cohort max, i.e. tops the population), ``bot_pos``
+    ("above"/"at"/"below" the median), ``date`` the sweep label. Pure/deterministic;
+    reads committed ``overall`` values, moves no score."""
+    dated = [s for s in sweeps if isinstance(s, dict) and s.get("rows")]
+    dated.sort(key=lambda s: str(s.get("ts", "")))
+    if not dated:
+        return None
+    ref_version = str(dated[-1].get("rubric_version", ""))
+    same = [s for s in dated if str(s.get("rubric_version", "")) == ref_version]
+    series, dates = _anchor_trend_series(same)
+    if len(series) < 2:
+        return None
+    bands = _population_band_series(same)
+    top_pts, bot_pts = series[0]["points"], series[-1]["points"]
+    # Newest sweep where the cohort scored AND both anchors scored — identical to the
+    # gap badge's "last common-scored sweep" (band exists whenever anyone scored, so a
+    # both-anchors-scored sweep always has a band), so the two surfaces cannot disagree.
+    cand = [
+        i for i in range(len(same))
+        if bands[i] is not None and top_pts[i] is not None and bot_pts[i] is not None
+    ]
+    if not cand:
+        return None
+    i = cand[-1]
+    b, top, bot = bands[i], top_pts[i], bot_pts[i]
+    eps = 0.05
+    if bot > b["median"] + eps:
+        bot_pos = "above"
+    elif bot < b["median"] - eps:
+        bot_pos = "below"
+    else:
+        bot_pos = "at"
+    return {
+        "n": b["n"], "median": b["median"], "lo": b["lo"], "hi": b["hi"],
+        "top": top, "bot": bot,
+        "top_is_max": top >= b["hi"] - eps,
+        "bot_pos": bot_pos, "date": dates[i],
+    }
+
+
+def _population_position_badge_from_sweeps(sweeps: list) -> str:
+    """A one-line POPULATION-POSITION note for the MAIN card hero, beside the
+    reference-gap badge: at the newest committed sweep, where do THIS pair's two
+    reference anchors sit inside the whole scored population — is the with-rails side
+    really topping the cohort and the no-rails side around the middle, or is the gap an
+    artifact of two cherry-picked endpoints?
+
+    Reads :func:`_population_position_verdict` (which reads the SAME
+    :func:`_population_band_series` the calibration-page band overlay draws and the SAME
+    anchors the gap badge reads), so the headline note can never disagree with either.
+    The 'real spread, not cherry-picked' reassurance is DATA-GATED — it renders only
+    when the with-rails anchor genuinely tops the cohort AND the no-rails anchor sits at
+    or below the population median; if a stronger member enters the cohort or the
+    no-rails side rises above the middle, the note downgrades to a neutral position
+    report rather than an overclaim. Returns "" when there is no same-version population
+    band with both anchors scored yet (no note rather than a premature claim).
+    Display-only; reads committed ``overall`` values, moves no score."""
+    v = _population_position_verdict(sweeps)
+    if v is None:
+        return ""
+    if v["top_is_max"]:
+        top_clause = f'the with-rails side tops the {v["n"]}-member cohort'
+    else:
+        top_clause = (
+            f'the with-rails side sits high in the {v["n"]}-member cohort '
+            f'(max {v["hi"]:.1f})'
+        )
+    where = {"above": "above", "at": "at", "below": "below"}[v["bot_pos"]]
+    bot_clause = f'the no-rails side sits {where} the population median ({v["median"]:.1f})'
+    strong = v["top_is_max"] and v["bot_pos"] in ("below", "at")
+    tail = (
+        f' &mdash; the +{v["top"] - v["bot"]:.1f} gap is a real population spread, '
+        f'not two cherry-picked endpoints'
+        if strong else ''
+    )
+    bg, bd, fg = "#eff8ff", "#b2ddff", "#175cd3"
+    body = (
+        f'<b>Population position ({_esc(v["date"])}):</b> {top_clause}; '
+        f'{bot_clause}{tail}'
+    )
+    return (
+        f'<div style="margin-top:8px;padding:8px 12px;border:1px solid {bd};'
+        f'background:{bg};color:{fg};border-radius:8px;font-size:13px">'
+        f'{body} &middot; <a href="calibration.html" style="color:{fg};font-weight:600">'
+        f'population band &rarr;</a></div>'
+    )
+
+
 def _calibration_anchor_trend_card(sweeps: list, live_version: str) -> str:
     """Render the reference-pair TREND card for calibration.html — the population
     analog of canonical-history.html's per-cycle delta trend.
@@ -3526,9 +3631,13 @@ def build_scorecard(
     # committed sweep cadence, not just this pair? Auto-loads committed sweeps in
     # production; tests pass ``_sweeps`` explicitly for hermeticity. "" until a
     # multi-sweep same-version trend exists.
-    gap_badge = _reference_gap_badge_from_sweeps(
-        _load_all_calibration_sweeps() if _sweeps is None else _sweeps
-    )
+    _cal_sweeps = _load_all_calibration_sweeps() if _sweeps is None else _sweeps
+    gap_badge = _reference_gap_badge_from_sweeps(_cal_sweeps)
+    # Beside the gap badge: WHERE this pair sits inside the whole scored population, so
+    # the headline reader sees the +39.4 is a real spread (with-rails tops the cohort,
+    # no-rails around the median), not two cherry-picked endpoints. Reads the SAME
+    # committed sweeps and band series as the calibration page, so they can't disagree.
+    gap_badge += _population_position_badge_from_sweeps(_cal_sweeps)
     doc = f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">

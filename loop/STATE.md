@@ -1,6 +1,62 @@
 # Loop state
 
-- Cycle counter: 293
+- Cycle counter: 294
+- CYCLE 294 — 2026-08-06T~16:2xZ (READOUT, cloud, direct-to-main, display-only, score-neutral). FIRST duty (infra
+  health + peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR; #148 operator-merged
+  `7d47f2e` before Cycle 288, all subsequent direct-to-main). Cycle 293 `dca33c2` confirmed committed+pushed on
+  origin/main (STATE's "commit pending push" was pre-push; push succeeded); cloud HEAD at real tip `8ad53d2` (fresh
+  15:41Z verify), local `main` stale orphan `3e318f1` → realigned to origin/main before work (benign, no history
+  rewrite). **INFRA HEALTHY:** newest verify by FILENAME `runs/local/verify_20260806T154104Z.json` (15:41Z,
+  tests_ok=true 38 suites, 46.1 F / 85.5 B / +39.4), ~43min old at fire (16:24Z); :41 cadence holding
+  (13:41Z→14:41Z→15:41Z) → RUNNER-HEALTH WATCH NORMAL. Fresh checkout NO `.venv` → rebuilt (py3.11); full suite
+  **38/38 green** before the change. **TRACK (cloud READOUT / population-position on the main card):** executed STATE's
+  named next-READOUT lever — the Cycle-290 whole-cohort band overlay lives ONLY on calibration.html; the MAIN card hero
+  carries the Cycle-285 reference-gap HELD/MOVED badge but says nothing about WHERE this pair sits inside the
+  population, so a headline reader can't tell +39.4 is a real spread vs two cherry-picked endpoints without opening a
+  page they may never visit. **IMPROVEMENT:** two NEW pure fns in `asrs/scorecard.py` — `_population_position_verdict`
+  (the RANK sibling of `_reference_gap_verdict`'s GAP: version-isolated, reads the cohort band from
+  `_population_band_series` [SAME source as the calibration overlay] + anchor overalls from `_anchor_trend_series`
+  [SAME source as the gap badge], returns `{n,median,lo,hi,top,bot,top_is_max,bot_pos,date}` at the newest sweep both
+  anchors scored; a not-scorable anchor/empty band is a gap never a 0, inv #4) + `_population_position_badge_from_sweeps`
+  (a one-line hero note; the "real spread, not cherry-picked" reassurance is DATA-GATED — renders only when with-rails
+  tops the cohort AND no-rails at/below median, else downgrades to a neutral "sits high (max X)" report). Wired into
+  `build_scorecard`'s hero beside the gap badge. **EVIDENCE:** test_readout +6 tests (all registered; runner-reg green):
+  real-committed (n=17, top 85.5=cohort max, bot 46.1 below median 62.0, "real population spread" renders) +
+  shared-datum (note band IS `_population_band_series[-1]`, note gap IS gap verdict `last_gap`) + TEETH (a 90.0 member
+  above the anchor → `top_is_max` flips False, note drops "tops the", states "sits high … (max 90.0)", WITHHOLDS the
+  reassurance — data-driven) + inv-#4 teeth (newest sweep norails not-scorable → falls back to last both-scored sweep,
+  bot=46.1 never a fabricated 0) + version-isolated/absent + end-to-end hero-carries-both. Full suite **38/38 green** after.
+  **SHIP (direct-to-main):** display-only, OFF the scoring path (`git diff --stat -- asrs/scoring.py asrs/report.py
+  asrs/probes asrs/battery.py asrs/reliability.py asrs/offering.py rubric/ fixtures/ experiments/ loop/local_verify.py
+  batteries/` EMPTY; only asrs/scorecard.py +115 + test_readout.py +156); READOUT direct-to-main tier (Cycles 290/285);
+  no rubric bump. **CANONICAL UNMOVED:** static replay 26/26 → 46.1 F / 85.5 B / **+39.4** (concurs 15:41Z floor); a
+  committed-JSON→HTML note touches no probe/scorer → cannot move a score. The note's own numbers corroborate the gap's
+  honesty (with-rails tops the 17-member cohort, no-rails below its median). Invariants #1 ($0 pure render + in-process
+  tests)–#5 held; zero codex, zero paid ops. **DM SENT** — first cloud fire after 16:00 UTC on 08-06 (16:24Z) → daily
+  digest due (comms 3rd trigger); the READOUT ship itself is not a DM-enumerated sensitive class. See LOG Cycle 294.
+- FOCUS POINTER (Cycle 294 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
+  RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY on a fresh
+  >6h no-artifact gap. Cloud track rotation: Cycle 294 was READOUT → **METHOD next** (METHOD → COVERAGE → TRUTH →
+  READOUT). NEXT READOUT (from Cycle 294): the position note + gap badge now both live on the main card — next
+  increment is either a compact combined "population context" strip (cohort n + median + this pair's percentile) OR
+  carrying the note's percentile onto the TERMINAL/CLI readout so the two output surfaces match (the Cycle-192
+  terminal↔HTML parity pattern). NEXT METHOD (cloud): the probe-order guard (Cycle 291) covers the STATIC scorer; the
+  sibling INTERNAL axis on the BEHAVIORAL path (does `battery.py`/`reliability.py` aggregation depend on task/trial
+  arrival order?) OR fixture-capture determinism. NEW PEER-GATED P1 (still queued, Cycle 291): sort `caps_applied` in
+  scoring.py so the RAW report is byte-reproducible under check reordering (canonical-neutral — every committed
+  `caps_applied` empty). NEXT TRUTH (cloud): the pillar weld (Cycle 293) deepens anchor/example.com RESOLUTION; the
+  open axis is BREADTH — a 2nd non-anchor welded member (books.toscrape.com, replay baseline present, ABSENT from
+  sweeps) unlocks only once a [LOCAL] cadence run ADDS it to `experiments/calibration_sweep.py`'s POPULATION. NEXT
+  COVERAGE (cloud): physical_good now spans fulfillment / order-tracking / return-window; remaining thin-bank frontier
+  is data_retrieval (8, thinnest) RESPONSE-SCHEMA / field-contract leg IF committed ipinfo prose carries it distinct
+  from `dataset-format`; a return-AUTHORIZATION / RMA leg IF a real anchor carries it; subscription PAUSE/RESUME IF
+  precision-guardable. Standing METHOD tripwire: own-tool refusal vocab drifted THREE times (269, 284, 286→287) → keep
+  the periodic leak scan over each fresh committed panel. NEXT calibration cadence: population 17 scored (target
+  15–20); next broadening = a genuine ACP/UCP/MPP merchant or a 2nd x402-live site. Substantive [LOCAL] frontier: ADD
+  books.toscrape.com to the sweep POPULATION (unlocks the 2nd non-anchor pillar+overall weld); PR #148 post-merge live
+  behavioral verification (still queued); cross-model SHOPPER delta still codex-blocked on the WITH side; a THIRD
+  calibration anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168); structured catalog/pricing
+  JSON (Cycle-70).
 - CYCLE 293 — 2026-08-06T~15:2xZ (TRUTH, cloud, direct-to-main, tests-only, score-neutral). FIRST duty (infra
   health + peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR; #148 operator-merged
   `7d47f2e` before Cycle 288, all subsequent direct-to-main). Cloud HEAD detached at real tip `0834e37`; `git fetch

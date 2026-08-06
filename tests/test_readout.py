@@ -3352,6 +3352,156 @@ def test_build_scorecard_hero_carries_gap_badge() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Cycle 294 (READOUT): beside the reference-gap HELD/MOVED badge, a one-line
+# POPULATION-POSITION note on the MAIN card hero — WHERE this pair's two anchors
+# sit inside the whole scored cohort (with-rails tops it, no-rails around the
+# median), so a headline reader sees the +39.4 is a real population spread, not
+# two cherry-picked endpoints. Reads the SAME _population_band_series the
+# calibration-page overlay draws and the SAME anchors the gap badge reads, so the
+# three surfaces can never disagree. Display-only: reads committed `overall`
+# values, moves no score; version-isolated + not-scorable-honest; the
+# 'real spread' reassurance is DATA-GATED, never an overclaim.
+# ---------------------------------------------------------------------------
+def _anchor_sweep_plus(ts: str, version: str, rails, norails, extra) -> dict:
+    """`_anchor_sweep` plus one EXTRA scored non-anchor member at overall ``extra`` —
+    used to widen the cohort ABOVE the with-rails anchor so the position note must stop
+    claiming the anchor tops the population (data-driven, not hardcoded)."""
+    s = _anchor_sweep(ts, version, rails, norails)
+    s["rows"].append({"domain": "peer.test", "segment": "api-storefront:rails",
+                      "scored": True, "overall": extra, "grade": "A",
+                      "pillars": {"access": 100.0}, "error": None})
+    return s
+
+
+def test_population_position_verdict_on_real_committed_sweeps() -> None:
+    # Real-evidence (invariant #3, non-vacuous): at the newest committed v0.7 sweep the
+    # with-rails anchor IS the cohort max and the no-rails anchor sits BELOW the
+    # population median — the +39.4 is a real spread, read from committed data.
+    print("test_population_position_verdict_on_real_committed_sweeps")
+    sweeps = [s for s in scorecard._load_all_calibration_sweeps()
+              if str(s.get("rubric_version", "")) == "0.7"]
+    v = scorecard._population_position_verdict(sweeps)
+    _check(v is not None, "the committed cadence yields a population-position verdict")
+    _check(v["n"] >= 15 and v["top"] == 85.5 and v["bot"] == 46.1,
+           f"the anchors are the committed 85.5/46.1 inside an n>=15 cohort (got {v['n']},{v['top']},{v['bot']})")
+    _check(v["top_is_max"] and v["hi"] == 85.5,
+           "the with-rails anchor equals the cohort max (tops the population)")
+    _check(v["bot_pos"] == "below" and v["bot"] < v["median"],
+           f"the no-rails anchor sits below the population median (bot {v['bot']} < median {v['median']})")
+    badge = scorecard._population_position_badge_from_sweeps(sweeps)
+    _check("tops the" in badge and "below the population median" in badge,
+           "the note states with-rails tops the cohort, no-rails below the median")
+    _check("real population spread" in badge and "not two cherry-picked endpoints" in badge,
+           "the data-gated 'real spread' reassurance renders on the real committed cohort")
+
+
+def test_population_position_reads_same_band_and_anchors() -> None:
+    # Shared-datum (the whole point): the note's cohort numbers ARE _population_band_series'
+    # and its anchor gap IS the gap verdict's — the headline can never drift from the
+    # calibration band overlay or the gap badge it sits beside.
+    print("test_population_position_reads_same_band_and_anchors")
+    held = [
+        _anchor_sweep("20260728T000000Z", "0.7", 85.5, 46.1),
+        _anchor_sweep("20260805T000000Z", "0.7", 85.5, 46.1),
+        _anchor_sweep("20260806T000000Z", "0.7", 85.5, 46.1),
+    ]
+    v = scorecard._population_position_verdict(held)
+    bands = scorecard._population_band_series(held)
+    _check((v["median"], v["lo"], v["hi"], v["n"]) ==
+           (bands[-1]["median"], bands[-1]["lo"], bands[-1]["hi"], bands[-1]["n"]),
+           "the note's cohort band IS the newest _population_band_series entry (no second source)")
+    series, dates = scorecard._anchor_trend_series(held)
+    gap = scorecard._reference_gap_verdict(series, dates)
+    _check(abs((v["top"] - v["bot"]) - gap["last_gap"]) < 0.05,
+           "the note's anchor gap equals the gap verdict's last_gap (surfaces agree)")
+
+
+def test_population_position_downgrades_when_not_topping() -> None:
+    # Teeth (data-driven, not hardcoded): widen the cohort with a member ABOVE the
+    # with-rails anchor and the note MUST stop claiming the anchor tops the population
+    # and MUST drop the 'real spread' reassurance — an honest downgrade, not an overclaim.
+    print("test_population_position_downgrades_when_not_topping")
+    stronger = [
+        _anchor_sweep_plus("20260728T000000Z", "0.7", 85.5, 46.1, 90.0),
+        _anchor_sweep_plus("20260805T000000Z", "0.7", 85.5, 46.1, 90.0),
+        _anchor_sweep_plus("20260806T000000Z", "0.7", 85.5, 46.1, 90.0),
+    ]
+    v = scorecard._population_position_verdict(stronger)
+    _check(not v["top_is_max"] and v["hi"] == 90.0,
+           "a stronger cohort member means the with-rails anchor no longer tops the population")
+    badge = scorecard._population_position_badge_from_sweeps(stronger)
+    _check("tops the" not in badge and "sits high in the 4-member cohort (max 90.0)" in badge,
+           "the note downgrades to 'sits high (max 90.0)', naming the true cohort max")
+    _check("cherry-picked" not in badge,
+           "the data-gated reassurance is withheld once the anchor no longer tops the cohort")
+
+
+def test_population_position_not_scorable_anchor_is_gap_not_zero() -> None:
+    # Teeth (invariant #4): the newest sweep's no-rails anchor is NOT SCORABLE. The note
+    # must fall back to the newest sweep where BOTH anchors scored — never fabricate a
+    # position from a 0. A naive latest-sweep read would crash or invent a below-median 0.
+    print("test_population_position_not_scorable_anchor_is_gap_not_zero")
+    sweeps = [
+        _anchor_sweep("20260728T000000Z", "0.7", 85.5, 46.1),
+        _anchor_sweep("20260805T000000Z", "0.7", 85.5, 46.1),
+        _anchor_sweep("20260806T000000Z", "0.7", 85.5, None),
+    ]
+    v = scorecard._population_position_verdict(sweeps)
+    _check(v is not None and v["date"] == "2026-08-05" and v["bot"] == 46.1,
+           f"the verdict uses the last both-scored sweep, bot=46.1 not a fabricated 0 (got {v['date']},{v['bot']})")
+    # No sweep ever scores the no-rails anchor -> under 2 anchor series -> no verdict.
+    none_pair = [
+        _anchor_sweep("20260728T000000Z", "0.7", 85.5, None),
+        _anchor_sweep("20260806T000000Z", "0.7", 85.5, None),
+    ]
+    _check(scorecard._population_position_badge_from_sweeps(none_pair) == "",
+           "no note when the two anchors never share a scored sweep")
+
+
+def test_population_position_version_isolated_and_absent() -> None:
+    # Invariant #2 + no-premature-note: empty / single-sweep / only-1-on-newest-version
+    # all yield "" (no headline claim without a same-version cohort to place the pair in).
+    print("test_population_position_version_isolated_and_absent")
+    _check(scorecard._population_position_badge_from_sweeps([]) == "", "no sweeps -> no note")
+    _check(scorecard._population_position_badge_from_sweeps(
+        [_anchor_sweep("20260806T000000Z", "0.7", 85.5, 46.1)]) == "",
+        "a single sweep gives an anchor <2 scored points -> no trend series -> no note")
+    mixed = [
+        _anchor_sweep("20260728T000000Z", "0.7", 85.5, 46.1),
+        _anchor_sweep("20260805T000000Z", "0.7", 85.5, 46.1),
+        _anchor_sweep("20260806T000000Z", "0.8", 90.0, 46.1),
+    ]
+    _check(scorecard._population_position_badge_from_sweeps(mixed) == "",
+           "only 1 sweep on the newest rubric version -> no note (version isolation)")
+
+
+def test_build_scorecard_hero_carries_population_position() -> None:
+    # End-to-end: the main card hero surfaces BOTH the gap badge AND the position note
+    # when a same-version cohort exists, and neither when it does not. _sweeps passed
+    # explicitly so the test never depends on committed files (hermetic).
+    print("test_build_scorecard_hero_carries_population_position")
+    rep = _report([])
+    held = [
+        _anchor_sweep("20260728T000000Z", "0.7", 85.5, 46.1),
+        _anchor_sweep("20260805T000000Z", "0.7", 85.5, 46.1),
+        _anchor_sweep("20260806T000000Z", "0.7", 85.5, 46.1),
+    ]
+    with tempfile.TemporaryDirectory() as d:
+        rp = Path(d) / "rep.json"
+        rp.write_text(rep.to_json())
+        with_note = Path(scorecard.build_scorecard(
+            [str(rp)], out_path=str(Path(d) / "a.html"), _sweeps=held)).read_text()
+        without = Path(scorecard.build_scorecard(
+            [str(rp)], out_path=str(Path(d) / "b.html"), _sweeps=[])).read_text()
+    _check("Population position" in with_note and "Population check" in with_note,
+           "the hero carries both the population-position note and the gap badge")
+    _check('population band &rarr;' in with_note,
+           "the position note links to the calibration band overlay")
+    _check("Population position" not in without,
+           "no position note on the main card when there is no same-version cohort")
+
+
+# ---------------------------------------------------------------------------
 # Cycle 192 (READOUT): the "earned by" pillar caption. Each pillar bar now names
 # the single capability that contributes the most raw points to its score, so
 # the number is ATTRIBUTABLE in the readout — the Cycle-191 calibration insight
@@ -3867,6 +4017,12 @@ def main() -> int:
         test_reference_gap_badge_and_verdict_agree,
         test_reference_gap_badge_version_isolated_and_absent,
         test_build_scorecard_hero_carries_gap_badge,
+        test_population_position_verdict_on_real_committed_sweeps,
+        test_population_position_reads_same_band_and_anchors,
+        test_population_position_downgrades_when_not_topping,
+        test_population_position_not_scorable_anchor_is_gap_not_zero,
+        test_population_position_version_isolated_and_absent,
+        test_build_scorecard_hero_carries_population_position,
         test_pillar_earner_names_dominant_capability,
         test_pillar_earner_tracks_points_not_a_hardcoded_name,
         test_pillar_earner_omitted_for_na_and_unearned,

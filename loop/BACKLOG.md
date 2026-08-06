@@ -21,26 +21,23 @@ direct URL as unsafe to open" → NO match → mis-scored as a valid WITH-side F
 peer-gated leak-fix P0 below. Evidence runs/local/pr148_postmerge_20260806T184617Z/ (force-added). See LOG Local
 cycle 20260806T184617Z. -->
 
-- **[PEER-GATED P0] Broaden `_ENV_BLOCK_RE` for the "browser access was denied … URL unsafe" own-tool family
-  (v0.7(e))** (METHOD, derived Local cycle 20260806T184617Z from the PR #148 harvest). The LIVE `.com` codex#2
-  refusal "**Permitted browser access was denied**, and the public web retriever classified the direct URL as
-  unsafe to open" (site HTTP 200; codex#1 reached it fully same fire) slipped past EVERY existing `_ENV_BLOCK_RE`
-  branch — it carries neither v0.6's "browser security/safety", nor v0.7(a)'s "interactive/direct browser access"/
-  "browser access permission", nor v0.7(b/d)'s "browser['s] permission {boundary|policy|layer|controls}" — so
-  codex's OWN hosted-browser refusal was counted as a valid all-false WITH-side SITE run (`.com` valid_runs 1→2,
-  NO `hosted-agent-blocked` finding), NARROWING the behavioral delta (inv #4 leak; the 4th vocab drift — Cycle
-  269/284/286→287, now this). Reproduced with the shipped detector: `_ENV_BLOCK_RE.search()` returns False on the
-  exact `.com` blocker, True on the `.org` sibling "Browser security policy denied access…". CANDIDATE guard: a
-  new alternative on the own apparatus — "(permitted )?browser access …{denied|blocked|refused|declined}" AND/OR
-  the own web-retriever "classified the (direct )?URL as unsafe" — each self-qualified by `_NOT_SITE_ATTRIBUTED`
-  so a real site-side 403/WAF/Cloudflare block is STILL never excused (attribution honesty, both directions).
-  This CHANGES which runs are valid → scoring semantics → **peer-gated**: open `loop/<slug>` with (i) the exact
-  live phrasing, (ii) a differential leak-scan over ALL committed run records showing it flips ONLY this new leak
-  (+ the two Cycle-287 leaks already caught), zero collateral, (iii) a `test_attribution.py` precision case (#15)
-  with teeth, (iv) static path untouched (26/26, +39.4), no rubric bump. Committed evidence:
-  `runs/local/pr148_postmerge_20260806T184617Z/{report.txt,report_driftflight_com.json}`. Next cycle re-scores the
-  pair to show `.com` valid_runs 2→1 and the delta widening back toward the static +39.4. In-cloud executable (no
-  network needed — regex + committed-record scan + test).
+- **[PEER-GATED P0 — PR #149 OPEN, awaiting next-cycle review+merge] Broaden `_ENV_BLOCK_RE` for the bare
+  "browser access … denied" own-tool family (v0.7(e))** (METHOD, authored Local cycle 20260806T195345Z). AUTHORED
+  this fire and opened as PR #149 (`loop/env-block-browser-access-v07e`, commit `2c04009`) — NOT self-merged.
+  Fix: v0.7(a)'s alternative `browser access permission` → `browser access(?: permission)?` in
+  `asrs/behavioral/shopper.py`, anchoring the LIVE `.com` codex#2 leak "Permitted browser access was denied, and
+  the public web retriever classified the direct URL as unsafe to open" (site HTTP 200; codex#1 reached it fully)
+  while keeping `browser access` REQUIRED and `_NOT_SITE_ATTRIBUTED` intact (both directions). Evidence attached to
+  the PR + LOG: differential leak-scan over 182 committed records / 392 texts → ONLY the .com leak flips OLD→NEW,
+  ZERO collateral (two Cycle-287 leaks stay caught by v0.7(d)); re-aggregation → `.com` valid_runs 2→1,
+  reachability PASS→PARTIAL, delta widens toward static +39.4; `test_attribution.py` #15 with teeth; static path
+  untouched (canonical replay 26/26, +39.4); no rubric bump; suite 38/38. **NEXT CYCLE'S FIRST DUTY**:
+  adversarially review PR #149 against the invariants (vendor-neutrality, capability wording, attribution honesty
+  both directions, canonical-delta) and, with network, live re-score the pair (expect `.com` valid_runs 2→1, the
+  codex-only pair delta widening from +34.9 back toward the static +39.4) — then MERGE or request changes; record
+  the verdict in LOG. Do NOT let a cloud fire without network block the merge — the in-cloud standard is
+  regression-by-construction + the offline differential scan + tests (all attached), with the live re-score queued
+  as post-merge monitoring. Committed source of the leak: `runs/local/pr148_postmerge_20260806T184617Z/report_driftflight_com.json`.
 
 - **[SCOPE follow-up, future — carefully-guarded proposal only]** the SEPARATE
   reputation-"unsafe" sentence family — *"…classified driftflight.com as unsafe and blocked access."* — is a

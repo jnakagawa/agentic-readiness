@@ -64,6 +64,14 @@ POPULATION: list[tuple[str, str]] = [
     # appointment / service-booking SaaS storefront (the service_booking offering
     # anchor captured LOCAL Cycle 240, fixtures/canonical/acuityscheduling.com.json)
     ("acuityscheduling.com", "service-booking:saas"),
+    # the two newest agent-native offering anchors, captured LOCAL Cycles 273/275
+    # (increment (a): broaden toward the 15-20 target with genuinely new storefront
+    # TYPES). A multi-archetype agent-native booking platform, agent surfaces under
+    # agents.simplybook.me/* (fixtures/canonical/simplybook.me.json), and a
+    # Merchant-of-Record subscription commerce platform publishing llms.txt + an
+    # OpenAPI + an A2A agent-card (fixtures/canonical/polar.sh.json).
+    ("simplybook.me", "service-booking:platform"),
+    ("polar.sh", "subscription:mor-platform"),
     # retail with emerging agentic rails (llms.txt / agent manifests / agent checkout)
     ("deathwishcoffee.com", "retail:emerging-rails"),
     ("warbyparker.com", "retail:emerging-rails"),

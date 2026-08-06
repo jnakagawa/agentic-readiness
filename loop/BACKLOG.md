@@ -516,10 +516,25 @@ design in-cloud, execute locally.
   #4, test-pinned). Real render of the newest committed sweep: "2 of 13 moved (max|Δ| 6.8); 11 held steady" —
   deepai +6.8, allbirds +5.0, anchors Δ0.0, new: acuityscheduling.com + ipinfo.io. `test_readout.py` 80→83;
   score-neutral (`git diff -- asrs/scoring.py rubric/ fixtures/` EMPTY; replay guard 25/25, 46.1 F / 85.5 B /
-  +39.4 UNMOVED). REMAINING READOUT candidate (queued, not urgent — needs ≥3 dated sweeps): the drift card is a
+  +39.4 UNMOVED). REMAINING READOUT candidate: the drift card is a
   SINGLE-cadence diff (this sweep vs the immediately prior); surface the drift TREND across ALL committed sweeps —
   a sparkline of the canonical anchors' overall across every dated dataset, the population analog of
-  canonical-history.html's per-cycle trend.
+  canonical-history.html's per-cycle trend. **NOW UNBLOCKED as of Cycle 278** (the "needs ≥3 dated sweeps" gate is
+  satisfied: 20260728 / 20260805 / 20260806 are all committed) — an in-cloud READOUT fire can render it from each
+  sweep's `rows` (canonical anchors' `overall`).
+  PROGRESS — Cycle 278 (2026-08-06, TRUTH, LOCAL, direct-to-main, score-neutral): the cadence's increment (a)
+  advanced again — POPULATION broadened 16→18 (deeper into the 15–20 target) with two more NEW storefront TYPES
+  absent from every prior sweep: `simplybook.me` (`service-booking:platform`, the Cycle-273 offering anchor) +
+  `polar.sh` (`subscription:mor-platform`, the Cycle-275 anchor). This completed a working-tree change left by a
+  prior interrupted fire (the +8-line `POPULATION` broadening was already staged; nothing else). Latest dataset
+  `runs/local/calibration_sweep_20260806T044352Z.json` (rubric v0.7): 17/18 scored, 1 not-scorable (rei.com,
+  agent-UA-blocked, same as baseline), 0 error; **canonical pair byte-stable 85.5 B / 46.1 F / +39.4** (regression
+  signal unmoved, concurs the 04:41Z verify floor); the two new members score simplybook.me 64.9 D / polar.sh
+  70.3 C. Auto drift vs 2026-08-05 = 15/15 IDENTICAL over ~1 day (0 moved, max|Δ| 0.0), added [polar.sh,
+  simplybook.me] as membership (never averaged). This item STAYS OPEN as the standing cadence. NEXT broadening
+  step toward the ceiling: still a genuine ACP/UCP/MPP merchant or a 2nd x402-live site (both scarce — record
+  reachability as its own signal). Off the scoring path, score-neutral (`git diff -- asrs/ rubric/` EMPTY; only
+  `experiments/calibration_sweep.py` +8). See LOG Cycle 278.
 
 <!-- DONE Cycle 269 (2026-08-05 cloud) + MERGED same fire (external merge by owner):
      [PEER-GATE] Broaden `_ENV_BLOCK_RE` for codex's drifted own-tool refusal vocabulary.

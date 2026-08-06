@@ -712,6 +712,92 @@ def test_env_block_permission_boundary_near_miss_covered() -> None:
            "the permission-boundary-blocked model is attributed in reachability evidence")
 
 
+# ---------------------------------------------------------------------------
+# 15. v0.7 Cycle 296: own-tool "browser access ... denied" NEAR-MISS (the FOURTH
+#     drift of the codex refusal vocabulary, after 269 + 284 + 287). The PR #148
+#     post-merge panel caught codex refusing the WITH-rails canonical with
+#     "Permitted browser access was denied, and the public web retriever
+#     classified the direct URL as unsafe to open." — it names "browser access"
+#     as the gated apparatus but WITHOUT "interactive"/"direct" (v0.7(a)'s two
+#     browser-anchored forms), WITHOUT the trailing "permission" (v0.7(a)'s
+#     "browser access permission"), and it is not "denied BY the browser
+#     permission ..." (v0.7(d)) — so it slipped EVERY branch. The all-false
+#     refusal counted as a VALID WITH-side SITE run (.com valid_runs 1->2),
+#     NARROWING the behavioral delta by scoring codex's OWN hosted-browser
+#     refusal as site evidence (the exact invariant-#4 leak) while the SAME-run
+#     FetchContext.homepage() showed the SITE at HTTP 200 and codex REACHED the
+#     same domain on its sibling trial. Fixture is the LITERAL committed
+#     transcript string (invariant #3): runs/local/pr148_postmerge_
+#     20260806T184617Z/report_driftflight_com.json (codex t2 blocker).
+#
+#     The v0.7(e) broadening makes the trailing "permission" OPTIONAL, so a bare
+#     "browser access ... denied" is anchored, while KEEPING "browser access"
+#     (not a bare "access") REQUIRED and _NOT_SITE_ATTRIBUTED intact — so a bare
+#     site 403 body ("Access Denied") and any "...denied BY the server/WAF/
+#     Cloudflare" are STILL never excused (both directions below). The SECOND
+#     clause's reputation-'unsafe' vocabulary ("classified ... URL as unsafe")
+#     stays DELIBERATELY out of scope (the #8 family) — the "browser access ...
+#     denied" clause is what makes this an own-apparatus block, not 'unsafe'.
+# ---------------------------------------------------------------------------
+def test_env_block_browser_access_near_miss_covered() -> None:
+    print("test_env_block_browser_access_near_miss_covered")
+    # The verbatim leaking transcript blocker (all checkpoints false).
+    leak = ("Permitted browser access was denied, and the public web retriever "
+            "classified the direct URL as unsafe to open.")
+
+    # TEETH: the live _ENV_BLOCK_RE with ONLY the v0.7(e) broadening reverted
+    # (the trailing "permission" made mandatory again) MISSED this phrasing — so
+    # the broadening is exactly and solely load-bearing for this leak.
+    pre_e = re.compile(
+        S._ENV_BLOCK_RE.pattern.replace(
+            "browser access(?: permission)?", "browser access permission"),
+        re.I,
+    )
+    _check(pre_e.pattern != S._ENV_BLOCK_RE.pattern,
+           "the pre-v0.7(e) reversion actually changed the pattern (teeth are real)")
+    _check(pre_e.search(leak) is None,
+           "pre-v0.7(e) _ENV_BLOCK_RE MISSED the bare 'browser access ... denied' (teeth)")
+    # The shipped v0.7(e) broadening classifies it env-blocked, blockers AND trust.
+    _check(S._is_env_blocked(_run(model="codex", trial=2, blockers=[leak])),
+           "browser-access near-miss blocker classified env-blocked")
+    _check(S._is_env_blocked(_run(model="codex", trial=2, trust_events=[leak])),
+           "browser-access near-miss trust_event classified env-blocked")
+
+    # ATTRIBUTION HONESTY (the other direction): a site-attributed twin, a block
+    # word that PRECEDES "browser access" (site is the actor), a bare 403 body,
+    # and the reputation-'unsafe' clause STANDING ALONE must NEVER be excused.
+    not_env = [
+        "browser access was denied by the site firewall at the edge",   # site-attributed
+        "browser access permission was refused by the origin server",   # site-attributed
+        "Cloudflare denied browser access to the protected page",       # site is the denier (block word precedes)
+        "the server denied the browser access after a 403 Forbidden",   # site is the denier
+        "Access Denied",                                                 # bare 403 body, no browser anchor
+        "the site returned 403 Forbidden; access was denied",           # site 403, no "browser access"
+        # the leak's OWN second clause, standing alone: reputation 'unsafe'
+        # vocabulary with no "browser access ... denied" pairing -> #8 family.
+        "the public web retriever classified the direct URL as unsafe to open",
+    ]
+    for phrase in not_env:
+        _check(not S._is_env_blocked(_run(model="claude", blockers=[phrase])),
+               f"site-attributed / anchorless / reputation block NOT excused: {phrase[:52]!r}")
+
+    # Denominator routing (mirrors #5/#12/#13/#14): one valid claude run + one
+    # browser-access-blocked codex run -> outcome over n=1 (a passed checkpoint
+    # reads PASS), the blocked run surfaces as reachability, not as site evidence.
+    valid = _run(model="claude", trial=1, found_product=True)
+    blocked = _run(model="codex", trial=2, blockers=[leak])
+    checks = _by_id(S._aggregate("driftflight.com", [valid, blocked]))
+    _check(checks["bhv_found_product"].status == Status.PASS,
+           "found_product PASS — browser-access-blocked run excluded (n=1)")
+    _check(checks["bhv_found_product"].evidence["valid_runs"] == 1,
+           "outcome denominator counts only the 1 valid run")
+    reach = checks["hosted_agent_reachability"]
+    _check(reach.status == Status.PARTIAL and reach.evidence["blocked_runs"] == 1,
+           "browser-access-blocked codex run counted as reachability, not site evidence")
+    _check("codex" in reach.evidence["blocked_by_model"],
+           "the browser-access-blocked model is attributed in reachability evidence")
+
+
 def main() -> int:
     tests = [
         test_env_block_positive_phrasings,
@@ -728,6 +814,7 @@ def main() -> int:
         test_env_block_own_tool_vocab_drift_covered,
         test_env_block_interactive_access_near_miss_covered,
         test_env_block_permission_boundary_near_miss_covered,
+        test_env_block_browser_access_near_miss_covered,
     ]
     failed = 0
     for t in tests:

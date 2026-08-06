@@ -1,6 +1,66 @@
 # Loop state
 
-- Cycle counter: 294
+- Cycle counter: 295
+- CYCLE 295 — 2026-08-06T~17:1xZ (METHOD, cloud, direct-to-main, score-neutral). FIRST duty (infra health +
+  peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR; #148 operator-merged
+  `7d47f2e` before Cycle 288, all subsequent direct-to-main). Cloud detached at origin/main `8091c86`; local
+  `main` stale orphan `3e318f1` → realigned to origin/main before work (benign, no history rewrite). **INFRA
+  HEALTHY:** newest verify by FILENAME `runs/local/verify_20260806T154104Z.json` (15:41Z, tests_ok=true 38
+  suites, 46.1 F / 85.5 B / +39.4), ~1h33m old at fire (17:14Z), inside the 6h floor → WATCH NORMAL. **CADENCE
+  NOTE:** the 16:41Z artifact had NOT appeared by 17:14Z (mild ~33-min lag past the :41 tick, NOT a >6h stall —
+  no escalation); if 17:41Z ALSO slips, next fire should re-check runner health. Fresh checkout NO `.venv` →
+  rebuilt (py3.11); full suite **38/38 green** (standalone-runner pass on current tip). **TRACK (cloud METHOD /
+  fixture-capture determinism):** STATE's named METHOD lever had two axes — (i) behavioral-path probe/trial
+  arrival-order (the Cycle-291 static sibling) and (ii) fixture-capture serialization determinism. Audited (i)
+  FIRST → ALREADY GUARDED: `test_battery::test_aggregation_is_presentation_order_invariant` (aggregate_battery
+  invariant under permuted task order + reversed run lists) + `test_reliability::test_panel_reliability_is_trial_order_invariant`
+  (panel_reliability invariant under 4 run-orderings incl. valid-run SELECTION). Moved to (ii), OPEN:
+  `asrs/fetch.py::save_fixture` serialized `entries` by iterating the insertion-ordered `_cache` dict → recorded
+  entry order was probe-ARRIVAL order (deterministic today ONLY because `probes.run` crawls single-threaded/
+  fixed-order — a reordered/parallelized crawl would emit byte-DIFFERENT fixtures for identical content). The
+  recording-side sibling of the Cycle-253/255/257 `by_run` evidence-order sorts + Cycle-291 `caps_applied`
+  finding. **IMPROVEMENT:** `save_fixture` now emits `sorted(self._cache.items(), key=lambda kv: kv[0])` —
+  sorted on the total unique `(method,url,ua)` cache key → the fixture is a function of WHAT was observed, not
+  arrival order; replay (`from_fixture`) already rebuilds a dict keyed by that tuple so entry order never reached
+  a score (changes only RECORDED bytes). **EVIDENCE:** `test_fetch_replay.py` +1 registered test
+  `test_save_fixture_entry_order_is_capture_order_invariant` (suite count unchanged 38 — a test WITHIN the
+  existing suite): SAME 4 responses in 2 different insertion orders (k2/k3 differ ONLY by ua → ua must be in the
+  key), asserts (a) orders genuinely differ / (b) serialized `entries` byte-identical across orders / (c) emitted
+  order IS the canonical `(method,url,ua)` sort incl. the ua tie-break (teeth) / (d) score-neutral round-trip via
+  `from_fixture`. TEETH VERIFIED: monkeypatching back to the unsorted serializer makes the test FAIL at (b).
+  runner-registration green. **SHIP (direct-to-main):** off the scoring path (`git diff --stat -- asrs/scoring.py
+  asrs/report.py asrs/probes asrs/battery.py asrs/reliability.py asrs/offering.py rubric/ fixtures/ experiments/
+  loop/local_verify.py batteries/` EMPTY; only asrs/fetch.py +18/-1 + test_fetch_replay.py +95); recording-utility
+  serialization hardening changes NO scoring semantics → direct-to-main tier (Cycle-253/255/257 precedent); no
+  rubric bump. Suite **38/38 green** after. **CANONICAL UNMOVED:** static replay 26/26 → 46.1 F / 85.5 B /
+  **+39.4** (concurs 15:41Z floor); committed fixtures UNCHANGED (none re-recorded), `from_fixture` is dict-keyed
+  → entry order cannot move a score; off-scoring-path diff EMPTY. Invariants #1 ($0 pure in-process serialization
+  + read-only tests)–#5 held; zero codex, zero paid ops. NO DM (score-neutral METHOD, not a DM-enumerated
+  sensitive class; digest already sent by Cycle 294 at 16:24Z → none due). See LOG Cycle 295.
+- FOCUS POINTER (Cycle 295 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
+  check. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH NORMAL but WITH a fresh cadence
+  flag — the 16:41Z verify was ~33min late at 17:14Z; re-check if 17:41Z also slips (re-escalate ONLY on a fresh
+  >6h no-artifact gap). Cloud track rotation: Cycle 295 was METHOD → **COVERAGE next** (METHOD → COVERAGE → TRUTH
+  → READOUT). NEXT METHOD (cloud): the behavioral-aggregation order axis (battery + reliability) AND fixture-capture
+  serialization are now BOTH closed; the remaining static-path reproducibility sibling is the still-queued
+  PEER-GATED P1 — sort `caps_applied` in scoring.py so the RAW report is byte-reproducible under check reordering
+  (Cycle-291 teeth are its spec; canonical-neutral — every committed `caps_applied` empty); a further axis is
+  fixture-capture determinism of the HEADER dict / `--record-fixture` output for the same key (already dict-keyed,
+  likely a no-op guard). NEXT COVERAGE (cloud): remaining thin-bank frontier is data_retrieval (8, thinnest)
+  RESPONSE-SCHEMA / field-contract leg IF committed ipinfo prose carries it distinct from `dataset-format`; a
+  return-AUTHORIZATION / RMA leg IF a real anchor carries it; subscription PAUSE/RESUME IF precision-guardable.
+  NEXT TRUTH (cloud): the pillar weld (Cycle 293) deepens anchor/example.com RESOLUTION; open axis is BREADTH — a
+  2nd non-anchor welded member (books.toscrape.com, replay baseline present, ABSENT from sweeps) unlocks only once
+  a [LOCAL] cadence run ADDS it to `experiments/calibration_sweep.py`'s POPULATION. NEXT READOUT (from Cycle 294):
+  the position note + gap badge both live on the main card — next is a compact combined "population context" strip
+  (cohort n + median + this pair's percentile) OR carrying the note's percentile onto the TERMINAL/CLI readout
+  (Cycle-192 terminal↔HTML parity pattern). Standing METHOD tripwire: own-tool refusal vocab drifted THREE times
+  (269, 284, 286→287) → keep the periodic leak scan over each fresh committed panel. NEXT calibration cadence:
+  population 17 scored (target 15–20); next broadening = a genuine ACP/UCP/MPP merchant or a 2nd x402-live site.
+  Substantive [LOCAL] frontier: ADD books.toscrape.com to the sweep POPULATION (unlocks the 2nd non-anchor
+  pillar+overall weld); PR #148 post-merge live behavioral verification (still queued); cross-model SHOPPER delta
+  still codex-blocked on the WITH side; a THIRD calibration anchor / 2nd x402-live merchant; render-generation
+  digital_good (Cycle-168); structured catalog/pricing JSON (Cycle-70).
 - CYCLE 294 — 2026-08-06T~16:2xZ (READOUT, cloud, direct-to-main, display-only, score-neutral). FIRST duty (infra
   health + peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR; #148 operator-merged
   `7d47f2e` before Cycle 288, all subsequent direct-to-main). Cycle 293 `dca33c2` confirmed committed+pushed on

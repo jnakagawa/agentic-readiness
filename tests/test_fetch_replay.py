@@ -172,11 +172,106 @@ def test_end_to_end_x402_live_vs_bare() -> None:
                "x402 capability delta is the full 8.0 (rails earns it, bare does not)")
 
 
+# ---------------------------------------------------------------------------
+# 4. Fixture-capture determinism (METHOD, Cycle 295): the serialized ``entries``
+#    order must be a function of WHAT was crawled, not the ORDER it arrived in.
+#    ``self._cache`` is an insertion-ordered dict, so pre-fix ``save_fixture``
+#    emitted entries in probe-ARRIVAL order — deterministic today only because
+#    ``probes.run`` crawls single-threaded in a fixed sequence, but a re-capture
+#    under any reordering (a parallelized crawl / a reordered probe list) would
+#    emit byte-DIFFERENT fixtures for IDENTICAL content, so a recapture would
+#    diff dirty for no substantive reason and the committed regression artifact
+#    would not be byte-reproducible. The fix sorts entries on the total, unique
+#    ``(method, url, ua)`` cache key. This is the recording-side sibling of the
+#    ``by_run`` evidence-order sorts (Cycles 253/255/257) and the static
+#    ``caps_applied`` order finding (Cycle 291). Off the scoring path: replay
+#    (``from_fixture``) rebuilds a dict keyed by the same tuple, so entry order
+#    never reached any score — this only makes the RECORDED bytes reproducible.
+# ---------------------------------------------------------------------------
+def _ctx_with_cache(domain: str, base_url: str, items: list) -> FetchContext:
+    """A live-mode context whose cache is populated in the GIVEN insertion order.
+
+    ``items`` is a list of ``(method, url, ua, FetchResult)`` inserted in list
+    order, so the caller controls the dict's insertion order — the exact axis
+    ``save_fixture`` must be invariant to.
+    """
+    ctx = FetchContext(domain)
+    ctx.base_url = base_url
+    ctx._base_resolved = True
+    for method, url, ua, result in items:
+        ctx._cache[(method, url, ua)] = result
+    return ctx
+
+
+def test_save_fixture_entry_order_is_capture_order_invariant() -> None:
+    print("test_save_fixture_entry_order_is_capture_order_invariant")
+    base = "https://z.test"
+    r = lambda u, s=200, t="x": FetchResult(  # noqa: E731 - tiny local ctor
+        url=u, final_url=u, status=s, headers={}, text=t, error=None)
+    # Four keys whose SORTED (method,url,ua) order differs from any insertion
+    # order used below. k2 vs k3 differ ONLY by ua, so the ua field must be in
+    # the sort key for the order to be total — that pair is the discriminator.
+    k1 = ("GET", "https://z.test", "browser", r("https://z.test", t="home"))
+    k2 = ("GET", "https://z.test/api", "browser", r("https://z.test/api", 402, "b"))
+    k3 = ("GET", "https://z.test/api", "gptbot", r("https://z.test/api", 402, "g"))
+    k4 = ("POST", "https://z.test/api", "browser", r("https://z.test/api", 200, "p"))
+    expected_keys = [
+        ["GET", "https://z.test", "browser"],
+        ["GET", "https://z.test/api", "browser"],
+        ["GET", "https://z.test/api", "gptbot"],
+        ["POST", "https://z.test/api", "browser"],
+    ]
+
+    # Two genuinely different crawl/insertion orders of the SAME four responses.
+    order_a = [k4, k3, k1, k2]
+    order_b = [k2, k1, k3, k4]
+
+    with tempfile.TemporaryDirectory() as d:
+        fa, fb = os.path.join(d, "a.json"), os.path.join(d, "b.json")
+        _ctx_with_cache("z.test", base, order_a).save_fixture(fa)
+        _ctx_with_cache("z.test", base, order_b).save_fixture(fb)
+        with open(fa, encoding="utf-8") as fh:
+            pa = json.load(fh)
+        with open(fb, encoding="utf-8") as fh:
+            pb = json.load(fh)
+
+        # (a) NON-VACUOUS — the two insertion orders REALLY differ, so an
+        #     unsorted serializer WOULD emit different entry orders (the sort is
+        #     load-bearing, not a no-op on already-ordered input).
+        raw_a = [(m, u, ua) for (m, u, ua, _res) in order_a]
+        raw_b = [(m, u, ua) for (m, u, ua, _res) in order_b]
+        _check(raw_a != raw_b, "the two crawl orders genuinely differ (non-vacuous)")
+
+        # (b) The serialized entries are byte-IDENTICAL across the two crawl
+        #     orders — capture order does not reach the recorded fixture.
+        _check(pa["entries"] == pb["entries"],
+               "save_fixture entries are identical under a permuted crawl order")
+
+        # (c) The emitted order is the CANONICAL (method,url,ua) sort (teeth: the
+        #     insertion orders above are both non-sorted, so this only holds if
+        #     the sort fired), and the ua-only pair k2<k3 is correctly ordered.
+        got_keys = [[e["method"], e["url"], e["ua"]] for e in pa["entries"]]
+        _check(got_keys == expected_keys,
+               f"entries in canonical (method,url,ua) sort order, got {got_keys}")
+
+        # (d) SCORE-NEUTRAL round-trip — replaying either fixture reconstructs the
+        #     SAME response for every key (content preserved; replay is keyed by
+        #     the tuple, never by entry position), so no score can move.
+        rep_a = FetchContext.from_fixture(fa)
+        rep_b = FetchContext.from_fixture(fb)
+        for method, url, ua, res in (k1, k2, k3, k4):
+            ra = rep_a._cache[(method, url, ua)]
+            rb = rep_b._cache[(method, url, ua)]
+            _check(ra == rb == res,
+                   f"replayed {method} {url} {ua} is identical from both orders")
+
+
 def main() -> int:
     tests = [
         test_round_trip_fidelity,
         test_replay_miss_is_clean,
         test_end_to_end_x402_live_vs_bare,
+        test_save_fixture_entry_order_is_capture_order_invariant,
     ]
     failed = 0
     for t in tests:

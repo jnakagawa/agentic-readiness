@@ -135,10 +135,27 @@ class FetchContext:
         during a live crawl so it can be replayed offline as a deterministic
         regression signal (the in-cloud proxy for the live canonical re-score
         the network policy blocks). Call after a full scoring run.
+
+        Entries are emitted sorted by their ``(method, url, ua)`` cache key —
+        a total, unique key — so the serialized fixture is byte-reproducible
+        under any CRAWL/insertion order. ``self._cache`` is insertion-ordered
+        (dict), so without this the entry order would be an accident of the
+        probe arrival sequence: deterministic today only because ``probes.run``
+        crawls single-threaded in a fixed order, but two recaptures of the same
+        site under any reordering (a parallelized crawl, a reordered probe list)
+        would emit byte-DIFFERENT fixtures for identical content, so a
+        re-capture would diff dirty for no substantive reason. Sorting on the
+        key makes the artifact a function of WHAT was observed, not the order it
+        arrived in — the recording-side sibling of the ``by_run`` evidence-order
+        sorts. Replay is already order-independent (``from_fixture`` rebuilds a
+        dict keyed by ``(method, url, ua)``), so this changes only the recorded
+        byte order, never any score.
         """
         entries = [
             {"method": method, "url": url, "ua": ua, "result": asdict(result)}
-            for (method, url, ua), result in self._cache.items()
+            for (method, url, ua), result in sorted(
+                self._cache.items(), key=lambda kv: kv[0]
+            )
         ]
         payload = {
             "fixture_version": self.FIXTURE_VERSION,

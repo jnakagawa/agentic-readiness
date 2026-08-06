@@ -3,6 +3,80 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Cycle 271 — 2026-08-06T00:1xZ — METHOD (cloud, direct-to-main, tests-only, score-neutral) — close the TIMEZONE / wall-clock reproducibility axis of the committed static evidence (the host-environment sibling of Cycle 267's hash-seed axis)
+
+**FIRST DUTY (infra health + peer-gate review).** `list_pull_requests` state=open → `[]` (no open
+peer-gated PR; PR #146 merged externally during Cycle 269, reconciled). Cloud started on the stale
+orphan local `main` (`3796519`) while HEAD == origin/main `c6ef43b`; realigned local main to
+origin/main (benign, Cycle-245 lesson). **INFRA HEALTHY:** newest verify
+`runs/local/verify_20260805T234105Z.json` (23:41Z, tests_ok=true, 33 suites, reads
+46.1 F / 85.5 B / +39.4), ~36min old at fire (00:17Z 08-06), well inside the 6h floor; :41 cadence
+holding (22:41Z → 23:41Z, a fresh slot beyond Cycle 270's 22:41Z read) → RUNNER-HEALTH WATCH NORMAL.
+LOG/STATE/git consistent. Full test suite re-run in-cloud: **33/33 suites green** before the change
+(the bench is up). `pip install eth-account` (recurring agent-side gap, invariant #4).
+
+**IMPROVEMENT (METHOD — a genuinely NEW reproducibility seam, per STATE's "METHOD/TRUTH SATURATED —
+surface a new seam first").** Cycle 267 closed the `PYTHONHASHSEED` axis of the invariant-#3
+committed-evidence reproducibility guarantee (set-iteration order over strings, PEP 456). This cycle
+closes the SIBLING host-environment axis: the system CLOCK and TIMEZONE. The scoring path reads the
+wall clock in exactly one place per report — `scoring.score` stamps `generated_at` — and reads it as
+EXPLICIT UTC (`datetime.now(timezone.utc)`); every other clock/date read in the codebase (`report`'s
+render timestamp uses `utcnow`, `canonical_history` parses `%Y%m%dT%H%M%SZ`, `cli`'s history writer
+uses `datetime.now(timezone.utc)`) is likewise explicit-UTC. So the SCORE and all scored evidence are
+TZ-invariant today — but that was an ASSUMED property, never verified, exactly the situation the
+hash-seed suite converted for its axis. The moment a future probe derives a scored datum from LOCAL
+wall-clock instead of explicit UTC (a "freshness"/"cache-age" leg from `date.today()`, a naive
+`datetime.now()` offset/tzname string, an evidence timestamp formatted in local time), a report scored
+in `Asia/Kolkata` (+05:30) or on the +14/-12 date-line fringes would differ from one scored in UTC —
+a silent reproducibility regression the canonical NUMBERS (count-based) would not catch.
+
+NEW `tests/test_timezone_reproducibility.py` (+4), a close structural mirror of
+`test_hashseed_reproducibility.py`: re-scores the canonical pair in SUBPROCESSES under four POSIX `TZ`
+strings (`UTC0`, `IST-5:30`, `LINT-14` = UTC+14, `AoE12` = UTC-12 — no tzdata dependency; the
+fractional offset catches naive local FORMATTING, the two date-line extremes flip the calendar date so
+a `date.today()` leak is caught at nearly any UTC instant) and asserts the full serialized
+`Report.to_json` is byte-identical across every zone with the ONE intentionally time-varying field
+(`generated_at`) pinned. Guard 1 = per-domain zone-invariance; guard 2 = JOINT (both regression-signal
+sides reproduce AND serialize DISTINCT reports, non-vacuous); guard 3 = TEETH (a naive
+`datetime.now().astimezone().strftime("%z")` payload serializes DIFFERENTLY across UTC vs +14
+d81d40c0… != b9d3e201…, while the explicit-UTC `datetime.now(timezone.utc)` payload is zone-INVARIANT —
+explicit UTC is the fix the guard rewards); guard 4 = children score the REAL pipeline (in-process
+digest == seeded child's). The children call `time.tzset()` before scoring so the injected zone is LIVE
+for every clock/date read the probes make.
+
+**MUTATION-TESTED on the REAL scorer** (restored via `cp` backup, `git diff` clean after): injected a
+genuine local-wall-clock leak `datetime.now().astimezone().strftime("%z")` into the always-firing
+`llms_txt` evidence dict (`asrs/probes/legibility.py`) → guards 1 AND 2 REDDENED with four DISTINCT
+per-zone digests (3a8d51ed / a356ebed / a11c484d / 6348ecda), guards 3/4 stayed green — the guard
+catches a real leak on the committed pipeline, not just the synthetic teeth payload. (A first mutation
+into the robots `no-robots-txt-default-allow` branch did NOT redden — correctly, that branch isn't
+taken on the canonical pair, which serve robots.txt — confirming the guard only fires on evidence that
+actually reaches the serialized report.)
+
+**SCORE-NEUTRAL:** scoring-path diff (`git diff -- asrs/ rubric/ fixtures/ batteries/
+loop/local_verify.py`) EMPTY — only the new test file added. Auto-joins the verify FLOOR (globs
+`tests/test_*.py`) and `test_runner_registration` (all 4 functions registered in `main()`). Full suite
+**34/34 files green** (33→34); canonical pair static re-scored offline from the committed fixtures
+**drift-flight.org 46.1 F / driftflight.com 85.5 B / +39.4 UNMOVED**; 23:41Z live verify floor concurs
+(in-cloud external network blocked → by-construction + verify artifact per playbook). Invariants #1
+($0-only — no probes/payments/network, only local test file + subprocess re-scores of committed
+fixtures), #2 (no scoring-semantics → no rubric version bump; lands under v0.7), #3 (strengthens
+committed-evidence reproducibility along a new axis), #4 (no site scored; eth-account = agent env), #5
+(mutation on a `cp` backup restored clean; LOG prepended, past untouched) all held. NO DM (score-neutral
+tests-only METHOD, not sensitive-class; no digest due — 00:1xZ is before 16:00 UTC on 08-06, the 08-05
+digest already went Cycle 259).
+
+**Next hypothesis (METHOD):** the two host-environment reproducibility axes (hash-seed + timezone) now
+close the "same fixture, different machine → byte-identical evidence" family for the STATIC path.
+Cheap next extensions if a future METHOD slot opens: (a) EXTEND both the hash-seed AND timezone subprocess-
+digest guards from the canonical PAIR to the whole committed fixture population (books.toscrape.com /
+example.com / ipinfo.io / acuityscheduling.com / allbirds / moleskine) so every committed report's
+evidence is environment-pinned, not just the regression pair; (b) the LOCALE axis (`LC_ALL`/`LANG`) —
+Python's `str` methods are Unicode-not-locale by default so it likely holds by construction, but a
+subprocess guard under `de_DE.UTF-8`/`tr_TR.UTF-8` would pin it with teeth (a `locale.format_string`
+or `'{:n}'` payload) IF those locales are generatable on the runner. Beyond these, METHOD/TRUTH stays
+saturated — surface a genuinely new seam first.
+
 ## Cycle 270 — 2026-08-05T23:0xZ — READOUT (cloud, direct-to-main, display-only, score-neutral) — surface the BASELINE side's payment corroboration on the compare card's transactability delta row (symmetric HTML follow-up to Cycle 264's terminal render_compare annotation)
 
 **FIRST DUTY (infra health + peer-gate review).** `list_pull_requests` state=open → `[]` (PR #146

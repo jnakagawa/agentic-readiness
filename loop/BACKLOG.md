@@ -561,17 +561,24 @@ design in-cloud, execute locally.
 ## P1
 
 
-- **[OBSERVATION — Cycle 267] Evidence-reproducibility axes are now CLOSED across both paths.** The committed
-  `Report.to_json` evidence is proven order-invariant along the two axes a process can vary at startup:
-  ARRIVAL-ORDER on the behavioral path (Cycles 253/255/257/262 — every panel-arrival projection sorted) and
-  HASH-SEED on the static path (Cycle 267 — `tests/test_hashseed_reproducibility.py` re-scores the canonical pair
-  under 4 `PYTHONHASHSEED` values and asserts byte-identical serialized reports, teeth proven by a real set-leak
-  mutation). A future TRUTH cycle should NOT add another arrival-order/hash-seed guard on the pair (diminishing
-  returns). CHEAP in-cloud NEXT STEP (a genuine extension, not a new axis): widen the Cycle-267 subprocess-digest
-  guard to the third/fourth calibration fixtures (`books.toscrape.com` / `example.com`) so the WHOLE committed
-  population's evidence is hash-seed-pinned, not only the regression pair — 2 more offline subprocess pairs, still
-  score-neutral. Beyond that, reach for a genuinely new TRUTH seam (arrival-order + hash-seed + metamorphic-drift
-  families are all closed).
+- **[OBSERVATION — Cycle 267, UPDATED Cycle 271] Evidence-reproducibility axes are now CLOSED across both paths
+  AND both host-environment knobs.** The committed `Report.to_json` evidence is proven invariant along the axes a
+  process/host can vary at startup: ARRIVAL-ORDER on the behavioral path (Cycles 253/255/257/262 — every
+  panel-arrival projection sorted); HASH-SEED on the static path (Cycle 267 — `test_hashseed_reproducibility.py`,
+  4 `PYTHONHASHSEED` values, teeth by a real set-leak mutation); and TIMEZONE / wall-clock on the static path
+  (Cycle 271 — `test_timezone_reproducibility.py` re-scores the canonical pair under 4 POSIX `TZ` strings
+  `UTC0`/`IST-5:30`/`LINT-14`=+14/`AoE12`=-12 and asserts byte-identical serialized reports with `generated_at`
+  pinned, teeth by a real local-wall-clock leak mutation into `llms_txt` evidence). A future METHOD/TRUTH cycle
+  should NOT add another arrival-order / hash-seed / timezone guard on the pair (diminishing returns). CHEAP
+  in-cloud NEXT STEPS (genuine extensions, not new axes): (a) widen BOTH the hash-seed AND timezone
+  subprocess-digest guards from the canonical PAIR to the whole committed fixture population
+  (`books.toscrape.com`/`example.com`/`ipinfo.io`/`acuityscheduling.com`/`allbirds`/`moleskine`) so every
+  committed report's evidence is environment-pinned — offline subprocess pairs, still score-neutral; (b) the
+  LOCALE axis (`LC_ALL`/`LANG`) — Python `str` methods are Unicode-not-locale by default so it likely holds by
+  construction, but a subprocess guard under `de_DE.UTF-8`/`tr_TR.UTF-8` with a teeth payload
+  (`locale.format_string` / `'{:n}'`) would pin it IF those locales are generatable on the runner (check
+  `locale -a` first; in-cloud the minimal container may lack them → may be [LOCAL]). Beyond these, reach for a
+  genuinely new METHOD/TRUTH seam (arrival-order + hash-seed + timezone + metamorphic-drift families all closed).
 
 - **[OBSERVATION — Cycle 185] Canonical-drift diagnostic family metamorphic axis is EXHAUSTED in-cloud.**
   With the Cycle-185 `test_attribution_stability_is_host_relabel_invariant`, every drift diagnostic now has a

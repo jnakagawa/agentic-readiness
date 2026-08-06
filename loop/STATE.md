@@ -1,6 +1,53 @@
 # Loop state
 
-- Cycle counter: 270
+- Cycle counter: 271
+- CYCLE 271 — 2026-08-06T00:1xZ (METHOD, cloud, direct-to-main, tests-only, score-neutral). FIRST duty
+  (infra health + peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR). Cloud
+  started on stale orphan local `main` (`3796519`) while HEAD == origin/main `c6ef43b`; realigned (benign,
+  Cycle-245). **INFRA HEALTHY:** newest verify `runs/local/verify_20260805T234105Z.json` (23:41Z,
+  tests_ok=true 33 suites, 46.1 F / 85.5 B / +39.4), ~36min old at fire (00:17Z 08-06), well inside the 6h
+  floor; :41 cadence holding (22:41Z→23:41Z, a fresh slot beyond Cycle 270's 22:41Z read) → RUNNER-HEALTH
+  WATCH NORMAL. Full suite re-run 33/33 green before the change (bench up). `pip install eth-account`
+  (recurring agent-side gap, invariant #4). **IMPROVEMENT (METHOD — a genuinely NEW reproducibility seam,
+  per STATE's "METHOD/TRUTH SATURATED — surface a new seam first"):** closed the TIMEZONE / wall-clock axis
+  of the invariant-#3 committed-evidence reproducibility guarantee — the host-environment SIBLING of Cycle
+  267's `PYTHONHASHSEED` axis. The scoring path reads the wall clock in exactly ONE place per report
+  (`scoring.score` stamps `generated_at`) and reads it as EXPLICIT UTC; every other clock/date read in the
+  codebase is likewise explicit-UTC. So the SCORE + all scored evidence are TZ-invariant today — but that
+  was ASSUMED, never verified (exactly the hash-seed situation). NEW `tests/test_timezone_reproducibility.py`
+  (+4, close mirror of `test_hashseed_reproducibility.py`): re-scores the canonical pair in SUBPROCESSES
+  under four POSIX `TZ` strings (`UTC0`/`IST-5:30`/`LINT-14`=UTC+14/`AoE12`=UTC-12 — no tzdata dep; the
+  fractional offset catches naive local FORMATTING, the two date-line extremes flip the calendar date so a
+  `date.today()` leak is caught at nearly any UTC instant) and asserts the full serialized report is
+  byte-identical across every zone, `generated_at` pinned. Guard 1 zone-invariance; guard 2 JOINT
+  (both sides reproduce + serialize DISTINCT, non-vacuous); guard 3 TEETH (naive
+  `datetime.now().astimezone().strftime("%z")` differs UTC vs +14, explicit-UTC invariant); guard 4 children
+  score the REAL pipeline. Children call `time.tzset()` so the zone is LIVE for every probe clock read.
+  **MUTATION-TESTED on the REAL scorer** (`cp` backup restored, `git diff` clean): a genuine local-wall-clock
+  leak injected into the always-firing `llms_txt` evidence (`legibility.py`) reddened guards 1+2 with FOUR
+  distinct per-zone digests; guards 3/4 green. SCORE-NEUTRAL: scoring-path diff (`asrs/ rubric/ fixtures/
+  batteries/ loop/local_verify.py`) EMPTY — only the new test; full suite **34/34 green** (33→34); canonical
+  pair static re-scored offline **46.1 F / 85.5 B / +39.4 UNMOVED**; 23:41Z verify floor concurs (in-cloud
+  network blocked → by-construction + verify artifact). Invariants #1–5 all held. NO DM (score-neutral
+  tests-only METHOD, not sensitive-class; no digest due — 00:1xZ precedes 16:00 UTC on 08-06, 08-05 digest
+  already sent Cycle 259). See LOG Cycle 271.
+- FOCUS POINTER (Cycle 271 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
+  check. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + Cycle 263 pin); WATCH stays NORMAL —
+  re-escalate ONLY on a fresh >6h no-artifact gap. Cloud track rotation: Cycle 271 was METHOD → cloud pointer
+  is **COVERAGE next** (METHOD → COVERAGE → TRUTH → READOUT). NEXT COVERAGE: physical_good RETURNS-WINDOW leg
+  (if allbirds/moleskine prose carries a machine-readable return window); agent-native RETAIL rail surfaces
+  (UCP/MCP); ipinfo.io DATASET-FORMAT (Cycle-243); deep-bank uncaptured-capability audit. NEXT METHOD/TRUTH:
+  the two host-environment reproducibility axes (hash-seed + timezone) now close the "same fixture, different
+  machine → byte-identical evidence" family for the STATIC path — cheap next extensions are (a) EXTEND both
+  subprocess-digest guards from the canonical PAIR to the whole committed fixture population
+  (books.toscrape.com/example.com/ipinfo.io/acuityscheduling.com/allbirds/moleskine), (b) the LOCALE axis
+  (`LC_ALL`/`LANG`) with teeth IF de_DE/tr_TR locales are generatable on the runner; beyond these METHOD/TRUTH
+  stays SATURATED — surface a genuinely NEW seam first. NEXT READOUT: population-drift TREND across ≥3 dated
+  sweeps ([LOCAL]-gated, only 2 committed); the compare-card symmetry (Cycle 264/270) is DONE — surface a NEW
+  readout seam beyond that. Substantive [LOCAL] frontier: re-score the behavioral canonical delta LIVE on a
+  codex-reachable trial (drift-flight.org t2) end-to-end; cross-model N-curve (partially unblocked, t2-only);
+  a THIRD calibration anchor; render-generation digital_good (Cycle-168); structured catalog/pricing JSON
+  (Cycle-70); ACP/UCP/MPP live handshakes; a richer-booking WAITLIST fixture (Cycle-256).
 - CYCLE 270 — 2026-08-05T23:0xZ (READOUT, cloud, direct-to-main, display-only, score-neutral). FIRST duty
   (infra health + peer-gate review): `list_pull_requests` state=open → `[]` (PR #146 merged externally by
   the owner during Cycle 269, reconciled in the Cycle 269 addendum — no open peer-gated PR remains). Cloud
@@ -168,161 +215,6 @@
   (prefer oldest P0): a THIRD calibration anchor, render-generation digital_good (Cycle-168), structured catalog/
   pricing JSON (Cycle-70), the typographic PHRASE-RESCUE real-evidence case, ACP/UCP/MPP live handshakes, a
   richer-booking WAITLIST fixture (Cycle-256).
-- CYCLE 266 — 2026-08-05T20:1xZ (COVERAGE, cloud, direct-to-main, score-neutral). FIRST duty (infra health
-  check): NO open peer-gated PR (`list_pull_requests` state=open → `[]`). Cloud started on a stale orphan local
-  `main` (3796519) while HEAD == origin/main 4a3eb1c; realigned local main to origin/main (benign, Cycle-245
-  lesson). **INFRA HEALTHY:** newest verify `runs/local/verify_20260805T194105Z.json` (19:41Z, tests_ok=true 26
-  suites, reads 46.1 F / 85.5 B / +39.4), ~33min old at fire (20:14Z), well inside the 6h floor; :41 cadence
-  holding (18:41Z→19:41Z) → RUNNER-HEALTH WATCH NORMAL. `pip install eth-account` (recurring agent-side gap,
-  invariant #4) → test_free_tier 11/11. **IMPROVEMENT (COVERAGE):** mined physical_good's FIRST post-purchase
-  capability signal `order-tracking` from the committed retail anchors — the "complete the job / operate without
-  a human" order-lifecycle leg (query order status, watch it ship), the analog of service_booking's
-  `manage-booking` + metered_api's `payment-receipt`, DISTINCT from `fulfillment`'s static "tracking number"
-  datum. Precision-guarded (fixed collocations `order tracking`/`order status`/`track (your|my|the)? order(s)`
-  only; excludes broad "order"/"track" and the B2B procurement "PURCHASE order" via `(?<!purchase )`), fires
-  NON-VACUOUSLY on TWO real fixtures (allbirds `/llms.txt` "track orders" + "Order tracking" bullet; moleskine
-  homepage "Check Your Order Status"), ABSENT on all 6 others, both anchors ALREADY claim physical_good → DEEPENS
-  only, no reorder. physical_good grows 9→10. NEW `test_physical_good_order_tracking_precision_synthetic` (6-fire/
-  10-dodge) + `test_order_tracking_fires_on_real_captured_surfaces` (both anchors, claimed-SET invariance) +
-  isolation-matrix entry (bank 72→73) + `_MIXED_PHYSICAL_LABELS` anchor pin. MUTATION-TESTED (removal reddens all
-  4 pins). SCORE-NEUTRAL: scoring-path diff EMPTY (only `asrs/offering.py` off the scoring path + 2 test files);
-  19:41Z floor **46.1 F / 85.5 B / +39.4 UNMOVED**; suite **32/32 green** (test_offering 103→105). Invariants #1–5
-  all held. NO DM (score-neutral COVERAGE, not sensitive-class; digest already sent Cycle 259 this window). See
-  LOG Cycle 266.
-- FOCUS POINTER (Cycle 266 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
-  check. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + Cycle 263 pin); WATCH stays NORMAL — re-escalate
-  ONLY on a fresh >6h no-artifact gap. Cloud track rotation: Cycle 266 was COVERAGE → cloud pointer is **TRUTH
-  next** (METHOD → COVERAGE → TRUTH → READOUT). NEXT COVERAGE openings (physical_good order-tracking now DONE): a
-  RETURNS-WINDOW / return-authorization leg (the return-lifecycle capability, distinct from the static `returns`
-  policy-page signal) IF committed retail prose carries a machine-readable return window — check allbirds/moleskine
-  prose first; the agent-native RETAIL rail surfaces (UCP `/.well-known/ucp`, MCP endpoint) as classification
-  evidence distinct from driftflight; ipinfo.io DATASET-FORMAT/DOWNLOAD-CONTRACT (Cycle-243); deep-bank
-  uncaptured-capability audit (226/230/233). NEXT TRUTH/METHOD: SATURATED — surface a NEW seam first. NEXT READOUT:
-  the HTML compare card payment-badge symmetry (Cycle 264 follow-up); population-drift TREND once a 3rd dated sweep
-  lands ([LOCAL]). Substantive [LOCAL] frontier (prefer oldest P0): a THIRD calibration anchor, render-generation
-  digital_good (Cycle-168), structured catalog/pricing JSON (Cycle-70), the typographic PHRASE-RESCUE real-evidence
-  case, ACP/UCP/MPP live handshakes, a richer-booking WAITLIST fixture (Cycle-256).
-- LOCAL CYCLE 265 — 2026-08-05T19:4xZ (self-healing / bookkeeping, LOCAL, direct-to-main, score-neutral). FIRST
-  duty: `gh pr list --state open` → `[]` (no peer-gated PR). **INFRA HEALTHY — :41 cadence holding:** newest verify
-  `runs/local/verify_20260805T194105Z.json` (19:41Z, tests_ok=true 26 suites, reads 46.1 F / 85.5 B / +39.4), ~1min
-  old at fire (19:42Z), deep inside the 6h floor; the runner produced 18:41Z → 19:41Z on the :41 cadence (Cycle-261
-  watchdog still holding) → RUNNER-HEALTH WATCH NORMAL. This IS the 19:41Z launcher's agent step (watchdog-bounded).
-  `python3 -m pip install eth-account` (recurring agent-side gap, invariant #4) → test_free_tier 11/11. **IMPROVEMENT
-  (self-healing — a >15min repair, so it IS the cycle's item):** the three explicit infra-health triggers all PASSED,
-  but reading BACKLOG.md surfaced the SAME degradation Cycle 260 fixed for STATE — `loop/BACKLOG.md` had grown to
-  **275.7KB / 2928 lines** and could no longer be `Read` in one call (256KB Read cap), silently degrading the
-  mandated per-cycle "read BACKLOG.md". ROOT CAUSE (quantified): **60% of the file (165.5KB) was HTML comments, 154KB
-  of it 98 completed-item markers** (`<!-- DONE/PRUNED/SUPERSEDED/MERGED/EXECUTED ... -->`), each a closed item ALREADY
-  recorded in loop/LOG.md + git — the file's own "prune every cycle" header had simply lapsed. FIX (safest possible,
-  deterministic): a Python pass removed ONLY the 98 completed-item comment blocks (kept all 13 standing orientation/
-  FRONTIER notes), collapsed the blank runs, and ASSERTED every open (non-comment) bullet survived byte-for-byte + in
-  order BEFORE writing → **121KB / 1367 lines, all 54 open bullets (23 [LOCAL]) intact, P0/P1/P2 intact, readable in
-  one call.** No open work touched. Made DURABLE: NEW `tests/test_backlog_hygiene.py` (+5) — BACKLOG sibling of
-  `test_state_hygiene.py`: readable-in-one-call (byte ceiling <220KB), completed-markers-do-not-re-accrete (DONE-marker
-  bytes <24KB — the specific failure mode, trips long before the byte ceiling), P0/P1/P2 survive, + teeth.
-  MUTATION-TESTED on the REAL pre-compaction file (`git show HEAD:loop/BACKLOG.md`): both size guards FAIL (282269≥220000;
-  158122≥24000) → genuine teeth. SCORE-NEUTRAL: scoring-path diff (`asrs/ rubric/ fixtures/ batteries/ loop/local_verify.py
-  loop/asrs_local_cycle.sh`) EMPTY — only `loop/BACKLOG.md` (working state) + the new test; 19:41Z floor live **46.1 F /
-  85.5 B / +39.4 UNMOVED**; full suite **32/32 files green**. Invariants #1 ($0-only — no probes/payments/network, only
-  local file hygiene + `git show`), #2 (no scoring-semantics → no version bump), #3 (removed markers trace to LOG.md +
-  git; strengthens infra reproducibility), #4 (no site scored; eth-account gap = agent env), #5 (BACKLOG is mutable
-  working state, all removed markers preserved append-only in LOG.md + git — NOT a rewrite; LOG prepended, past
-  untouched) all held. NO DM (score-neutral self-healing, not sensitive-class, off scoring path; daily digest already
-  sent Cycle 259 this ≥16:00 UTC window). See LOG Cycle 265.
-- FOCUS POINTER (Cycle 265 done, LOCAL): NO open peer-gated PR → next fire's first duty is the infra health check.
-  Bookkeeping hygiene is now self-enforcing on BOTH mutable working files — `test_state_hygiene.py` (STATE) +
-  `test_backlog_hygiene.py` (BACKLOG); recurring policy: prune completed-item markers to LOG.md + git rather than
-  accreting them as comments. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + Cycle 263 pin); WATCH stays
-  NORMAL — re-escalate ONLY on a fresh >6h no-artifact gap. Cloud track rotation UNCHANGED (this LOCAL cycle did not
-  consume the cloud slot): Cycle 264 was READOUT → cloud pointer remains **COVERAGE next** (METHOD → COVERAGE → TRUTH
-  → READOUT). NEXT COVERAGE (allbirds anchor UNBLOCKS): a physical_good fulfillment leg (order-tracking /
-  returns-window) mined against allbirds' real fulfillment prose — physical_good is the thinnest anchored archetype;
-  secondary the agent-native RETAIL rail surfaces (UCP `/.well-known/ucp`, MCP) distinct from driftflight; also
-  ipinfo.io DATASET-FORMAT/DOWNLOAD-CONTRACT (Cycle-243), deep-bank uncaptured-capability audit (226/230/233). NEXT
-  READOUT: the HTML compare card (`scorecard._pillars(rep, baseline)`) shows the payment badge only for the primary
-  side, not the baseline (symmetric follow-up to Cycle 264); population-drift TREND once a 3rd dated sweep lands
-  ([LOCAL]-gated). NEXT TRUTH/METHOD: SATURATED — surface a NEW seam first. Substantive [LOCAL] frontier (prefer
-  oldest P0): a THIRD calibration anchor, render-generation digital_good (Cycle-168), structured catalog/pricing JSON
-  (Cycle-70), the typographic PHRASE-RESCUE real-evidence case, ACP/UCP/MPP live handshakes, a richer-booking WAITLIST
-  fixture (Cycle-256).
-- CYCLE 264 — 2026-08-05T19:1xZ (READOUT, cloud, direct-to-main, score-neutral). FIRST duty (infra health check):
-  NO open peer-gated PR (`list_pull_requests` state=open → `[]`). Cloud started detached HEAD == origin/main `12eada1`;
-  realigned local `main` to origin/main (benign, Cycle-245 lesson). **INFRA HEALTHY:** newest verify
-  `runs/local/verify_20260805T184105Z.json` (18:41Z, tests_ok=true 26 suites, reads 46.1 F / 85.5 B / +39.4), ~32min
-  old at fire (19:13Z), well inside the 6h floor; :41 cadence holding (17:47Z→18:41Z) → RUNNER-HEALTH WATCH NORMAL.
-  `pip install eth-account` (recurring agent-side gap, invariant #4) → test_free_tier 11/11. **IMPROVEMENT (READOUT):**
-  the terminal DELTA view `asrs.report.render_compare` carried the with/without pillar deltas — the headline
-  transactability **+25.0** among them — with NO behavioral corroboration for EITHER side, though the single card has
-  since Cycle 258 carried a payment-corroboration sub-line. Added a per-side corroboration line under the
-  Transactability delta row (one per side that ran a panel), so a reader sees the delta is behaviorally EARNED, not a
-  static artifact. Extracted the ONE shared decision `_payment_corroboration_state_for(report)` + `_PAYMENT_CORROB_TEXT`;
-  refactored the Cycle-258 `_payment_corroboration_line` to delegate (single-card output byte-identical). Both terminal
-  surfaces + the HTML badge + the calibration guard now read the SAME `scorecard.payment_corroboration_state`. NEW
-  `tests/test_compare_payment_corroboration.py` (+6): both-sides annotation, same-signal proof, display-only
-  (strip→un-annotated byte-for-byte), suppression (0/1/2 panels), Cycle-258-wording regression guard, distinct-states
-  teeth. MUTATION-TESTED (collapse decision→always-good reddens BOTH the compare AND single-card suites; restored
-  green). SCORE-NEUTRAL: scoring-path diff (`asrs/scoring.py asrs/scorecard.py rubric/ fixtures/ batteries/
-  asrs/offering.py asrs/probes/ loop/local_verify.py`) EMPTY — only `asrs/report.py` (readout) + the new test; replay
-  **26/26**, **46.1 F / 85.5 B / +39.4 UNMOVED**; full suite **31/31 files green**. Invariants #1 (readout reads
-  existing evidence, executes nothing), #2 (no scoring-semantics → no version bump), #3 (traces to committed report
-  fields, suppresses when nothing to corroborate), #4 (a `warn` is a display flag not a punishment; eth-account gap =
-  agent env), #5 (mutation on /tmp backup restored; LOG prepended, past untouched) all held. NO DM (score-neutral
-  READOUT, not sensitive-class, off scoring path; daily digest already sent Cycle 259 this ≥16:00 UTC window). See LOG
-  Cycle 264.
-- FOCUS POINTER (Cycle 264 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
-  RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + Cycle 263 pin) — WATCH stays NORMAL; re-escalate ONLY on a
-  fresh >6h no-artifact gap. Cloud track rotation: Cycle 264 was READOUT → cloud pointer is **COVERAGE next** (METHOD
-  → COVERAGE → TRUTH → READOUT). NEXT COVERAGE (allbirds anchor UNBLOCKS): a physical_good fulfillment leg
-  (order-tracking / returns-window) mined against allbirds' real fulfillment prose — physical_good is the thinnest
-  anchored archetype; secondary the agent-native RETAIL rail surfaces (UCP `/.well-known/ucp`, MCP) distinct from
-  driftflight; also ipinfo.io DATASET-FORMAT/DOWNLOAD-CONTRACT (Cycle-243), deep-bank uncaptured-capability audit
-  (226/230/233). NEXT READOUT openings: the HTML compare card (`scorecard._pillars(rep, baseline)`) shows the payment
-  badge only for the primary side `rep`, not the baseline — a SYMMETRIC follow-up to this cycle's terminal compare
-  annotation; the population-drift TREND once a 3rd dated sweep lands ([LOCAL]-gated, only 2 committed). NEXT TRUTH:
-  arrival-order surfaces ALL CLOSED (253/255/257/262) — surface a NEW seam first. NEXT METHOD: SATURATED — surface a
-  new seam first. Substantive [LOCAL] frontier (prefer oldest): a THIRD calibration anchor, render-generation
-  digital_good (Cycle-168), structured catalog/pricing JSON (Cycle-70), the typographic PHRASE-RESCUE real-evidence
-  case, ACP/UCP/MPP live handshakes, a richer-booking WAITLIST fixture (Cycle-256).
-- LOCAL CYCLE 263 — 2026-08-05T18:4xZ (METHOD / self-healing durability, LOCAL, direct-to-main, score-neutral).
-  FIRST duty: `gh pr list --state open` → `[]` (no peer-gated PR). **INFRA HEALTHY — :41 cadence RESUMED:** newest
-  verify `runs/local/verify_20260805T184105Z.json` (18:41Z, tests_ok=true 26 suites, reads 46.1 F / 85.5 B / +39.4),
-  ~6min old at fire (18:47Z), deep inside the 6h floor. The Cycle-261 launcher-watchdog fix is EMPIRICALLY CONFIRMED:
-  the runner produced 17:47Z → 18:41Z on the :41 cadence (two clean slots post-un-wedge) → RUNNER-HEALTH WATCH stays
-  NORMAL. **IMPROVEMENT (the cycle's [LOCAL] item — oldest active P0, the Cycle-261 durability follow-up):** PINNED the
-  Cycle-261 launcher watchdog so it can never silently regress. NEW `tests/test_launcher_hygiene.py` (+7) asserts
-  against `loop/asrs_local_cycle.sh`: (a) the verify FLOOR runs BEFORE the agent (floor-first); (b) the agent is
-  BACKGROUNDED (standalone trailing `&`, not the `&` in `2>&1`); (c) the agent is WATCHDOG-BOUNDED
-  (`ASRS_AGENT_TIMEOUT`-tunable `sleep`+`kill` on captured `$AGENT_PID`); (d) `zsh -n` clean (guarded/skips w/o zsh);
-  (e) [LOCAL] the pinned `~/.local/bin/asrs_local_cycle.sh` is byte-identical to the repo copy (self-heal-law sync,
-  the local_verify.py precedent; skips off-machine). Leg (e) verified LIVE (diff IDENTICAL 2483B, zsh -n clean).
-  Auto-joins the verify FLOOR (globs `tests/test_*.py`) + `test_runner_registration` (30 suites, all registered).
-  MUTATION-TESTED on the REAL launcher (throwaway in-memory copies): drop `&` → not-backgrounded; drop
-  watchdog lines → not-bounded; floor-after-agent → not-floor-first — each reddens ONLY its own guard, real passes
-  all three. Same self-healing move as Cycle 260's `test_state_hygiene.py`: converts a multi-hour silent outage
-  into an immediate red suite. SCORE-NEUTRAL: scoring-path diff (`asrs/ rubric/ fixtures/ batteries/ loop/local_verify.py
-  loop/asrs_local_cycle.sh`) EMPTY, only new file is the test; 18:41Z floor re-scored live **46.1 F / 85.5 B / +39.4
-  UNMOVED**; full suite **30/30 files green**. Invariants #1 ($0-only — no probes/payments, only local test files +
-  diff/zsh), #2 (no scoring-semantics → no version bump), #3 (strengthens infra reproducibility), #4 (no site scored),
-  #5 (mutation on throwaway copies; LOG prepended, past untouched) all held. NO DM (score-neutral self-healing, not
-  sensitive-class, off scoring path; daily digest already sent Cycle 259 this ≥16:00 UTC window). See LOG Cycle 263.
-- FOCUS POINTER (Cycle 263 done, LOCAL): NO open peer-gated PR → next fire's first duty is the infra health check.
-  **RUNNER STALL fully RESOLVED + now GUARDED** (Cycle 261 fix + Cycle 263 `test_launcher_hygiene.py` pin) — the
-  Cycle-261 self-healing arc is CLOSED end-to-end (root-cause → fix → pin). WATCH: confirm the 19:41Z (and next 1–2)
-  `verify_*.json` keep the :41 cadence; re-escalate ONLY on a fresh >6h no-artifact gap (would mean the watchdog is
-  not firing or a new mode). Cloud track rotation UNCHANGED (this LOCAL cycle did not consume the cloud slot): Cycle
-  262 was TRUTH → cloud pointer is **READOUT next** (METHOD → COVERAGE → TRUTH → READOUT). NEXT READOUT openings: the
-  `compare` view (`render_compare`) transactability delta carries no corroboration for EITHER side (the Cycle-254/258
-  payment-corroboration affordance could qualify the with/without transactability rows when both ran panels); the
-  population-drift TREND once a 3rd dated sweep lands ([LOCAL]-gated, only 2 committed). NEXT COVERAGE (allbirds anchor
-  UNBLOCKS): a physical_good fulfillment leg (order-tracking / returns-window) mined against allbirds' real fulfillment
-  prose — physical_good is the thinnest anchored archetype; secondary the agent-native RETAIL rail surfaces (UCP
-  `/.well-known/ucp`, MCP) distinct from driftflight; also ipinfo.io DATASET-FORMAT/DOWNLOAD-CONTRACT (Cycle-243),
-  deep-bank uncaptured-capability audit (226/230/233). NEXT TRUTH: arrival-order surfaces ALL CLOSED (Cycles
-  253/255/257/262) — surface a NEW seam first. NEXT METHOD: SATURATED — surface a new seam first (the launcher-hygiene
-  guard, its last standing candidate, is now DISCHARGED). Substantive [LOCAL] frontier (prefer oldest): a THIRD
-  calibration anchor, render-generation digital_good (Cycle-168), structured catalog/pricing JSON (Cycle-70), the
-  typographic PHRASE-RESCUE real-evidence case, ACP/UCP/MPP live handshakes, a richer-booking WAITLIST fixture
-  (Cycle-256).
 <!-- STATE COMPACTED at Cycle 260 (2026-08-05T~17:1xZ, self-healing/COVERAGE, direct-to-main, score-neutral).
      STATE.md had accreted the full per-cycle history back to ~Cycle 5 (7798 lines / ~790KB) and could no
      longer be Read in one call, degrading the playbook-mandated per-cycle "read STATE.md". Trimmed the

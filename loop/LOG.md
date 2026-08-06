@@ -19169,3 +19169,7 @@ shopper/trust panels; free-tier probe fires ≤1× and signs nothing nonzero; ze
 at 16:24Z). **Next hypothesis:** if the full run again fails to clear the wall-clock, adopt the codex-only
 scoped form as the standing PR-#148 verification command, or launch it detached (new session) so it survives
 the cycle and the next fire harvests a COMPLETED, heartbeated artifact.
+
+## Local verification — 20260806T184103Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 85.5 B | delta +39.4 | artifact runs/local/verify_20260806T184103Z.json

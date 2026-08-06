@@ -1,6 +1,52 @@
 # Loop state
 
-- Cycle counter: 280
+- Cycle counter: 281
+- CYCLE 281 — 2026-08-06T06:2xZ (COVERAGE, cloud, direct-to-main, score-neutral). FIRST duty (infra health +
+  peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR). Cloud started detached at
+  origin/main `3a31524` with local `main` at stale `3e318f1` (Cycle-276 tip); realigned local `main` to
+  origin/main (benign, HEAD already matched, no history rewrite). **INFRA HEALTHY:** newest verify by FILENAME
+  `runs/local/verify_20260806T054102Z.json` (05:41Z, tests_ok=true, 46.1 F / 85.5 B / +39.4), ~37min old at fire
+  (06:18Z 08-06), well inside the 6h floor; :41 cadence holding (03:41Z→04:41Z→05:41Z) → RUNNER-HEALTH WATCH
+  NORMAL. Bench up (venv+pip); full suite 36/36 green before the change. **TRACK:** cloud pointer COVERAGE next
+  (Cycle 279 READOUT → COVERAGE); highest unblocked = the `waitlist` signal on the simplybook.me anchor, named
+  NEXT-COVERAGE since Cycle 273 and unblocked in-cloud since that fire's real waiting-list-prose capture (the
+  Cycle-256 candidate was parked on acuity's image-only `waitlist.png`). **IMPROVEMENT (COVERAGE — service_booking
+  8→9, the scarcity-queue leg):** NEW `waitlist` signal — the FIFTH distinct service_booking leg beyond create
+  (book/appointment/reservation/schedule/availability), manage-booking, booking-notification, intake-form: "join a
+  queue for a fully-booked slot / provision without a human under contention". PRECISION-CRITICAL (bare
+  waitlist/waiting-list is the ubiquitous SaaS growth CTA "join our early-access waitlist"): NEVER a bare token —
+  requires a BOOKING NOUN (appointment/booking/reservation/slot) within a ≤40-char same-clause window either order.
+  **EMPIRICAL:** fires 26 spans on simplybook.me, 0 on all TEN other fixtures — crucially 0 on acuity (image-only
+  waitlist.png, no booking-noun context) and 0 on the canonical pair → service_booking stays NA there by
+  construction. Tests: NEW `test_service_booking_waitlist_precision_synthetic` (5 booking-context positives fire /
+  6 early-access/beta/newsletter/webinar/demo noise dodge) + NEW `test_waitlist_fires_on_real_captured_surfaces`
+  (real discover_offering on simplybook fires w/ quote; acuity does NOT fire; pair+retail+null+api ABSENT, claimed
+  SET+ORDER pinned) → test_offering 109→111. `_ALL_SERVICE_BOOKING_LABELS` += waitlist + `_BOOKING2_DISTINCT_LEGS`
+  += waitlist + `_ISOLATION_EVIDENCE["waitlist"]` (claims exactly service_booking) → test_offering_canonical 70/70.
+  Bank now metered_api 26 / digital_good 11 / physical_good 10 / subscription 10 / service_booking 9 /
+  data_retrieval 7. **SCORE-NEUTRAL:** classifier OFF the scoring path (grep-verified: offering.py not imported by
+  scoring.py/report.py/probes); scoring-path diff EMPTY (only asrs/offering.py + 2 tests); suite 36/36 green.
+  **CANONICAL UNMOVED:** in-fire replay 26/26, 46.1 F / 85.5 B / +39.4 (concurs 05:41Z floor); service_booking NA
+  on both canonical fixtures → a service_booking signal cannot move either score. Invariants #1 ($0 — classifier
+  regex + read-only tests)–#5 all held; zero codex, zero paid ops. NO DM (score-neutral COVERAGE, not
+  sensitive-class; no digest due — 06:2xZ precedes 16:00 UTC on 08-06). See LOG Cycle 281.
+- FOCUS POINTER (Cycle 281 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
+  RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY on a fresh
+  >6h no-artifact gap. Cloud track rotation: Cycle 281 was COVERAGE → **TRUTH next** (METHOD → COVERAGE → TRUTH →
+  READOUT). **service_booking is now well-mined across all FIVE lifecycle legs** (create / manage / notify / intake
+  / waitlist) on both its anchors (acuity + simplybook.me). NEXT in-cloud COVERAGE (still open): a subscription
+  PAUSE/RESUME leg (polar `subscription.paused`/uncancel — suspend-without-terminating, distinct from Cycle-276's
+  cancel) IF precision-guardable; data_retrieval DATA-FRESHNESS/update-cadence (ipinfo "Daily Data Refresh");
+  physical_good RETURNS-WINDOW (allbirds/moleskine). NEXT METHOD: host-environment reproducibility is SATURATED
+  across all four axes (hash-seed 267 / timezone 271 / default-encoding 277 / system-locale 280) — the next NEW
+  METHOD seam must move OFF host-environment reproducibility (probe-order independence of the aggregate, or
+  fixture-capture determinism). NEXT calibration cadence: population 18 (target 15–20); next broadening = a genuine
+  ACP/UCP/MPP merchant or a 2nd x402-live site (scarce — record reachability as its own signal). NEXT READOUT: a
+  population-median/band overlay across sweeps once ≥3 sweeps carry a stable non-anchor overlap; or a one-line
+  gap-held/moved verdict badge on the main card. Substantive [LOCAL] frontier: codex-dependent items stay gated —
+  driftflight.com (WITH side) still codex-blocked → cross-model N-curve / LIVE behavioral delta blocked on WITH-side
+  reachability (drift-flight.org t2 IS reachable); a THIRD calibration anchor / 2nd x402-live merchant;
+  render-generation digital_good (Cycle-168); structured catalog/pricing JSON (Cycle-70).
 - CYCLE 280 — 2026-08-06T05:5xZ (METHOD, LOCAL, direct-to-main, tests-only, score-neutral). FIRST duty
   (infra health + peer-gate review): `gh pr list --state open` → `[]` (no open peer-gated PR). HEAD ==
   origin/main == local `main` all at `b5dfcd7` (clean, no stale-orphan realign). **INFRA HEALTHY:** newest
@@ -194,57 +240,6 @@
   → cross-model N-curve / LIVE behavioral delta blocked on WITH-side reachability (drift-flight.org t2 IS
   reachable); a THIRD calibration anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168);
   structured catalog/pricing JSON (Cycle-70); the LOCALE reproducibility axis (this cycle's [LOCAL] spinoff).
-- CYCLE 276 — 2026-08-06T03:1xZ (COVERAGE, cloud, direct-to-main, score-neutral). FIRST duty (infra health +
-  peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR). HEAD == origin/main ==
-  local `main` all at `3e318f1` (clean, no stale-orphan realign). **INFRA HEALTHY:** newest verify by FILENAME
-  `runs/local/verify_20260806T024103Z.json` (02:41Z, tests_ok=true 34 suites, 46.1 F / 85.5 B / +39.4), ~32min
-  old at fire (03:13Z 08-06), well inside the 6h floor; :41 cadence holding (00:41Z→01:41Z→02:41Z) →
-  RUNNER-HEALTH WATCH NORMAL. Bench up; recurring `eth-account`/`pyyaml` agent-side gap (inv #4) cleared via
-  `pip install`; full suite 34/34 green. **TRACK NOTE:** cloud pointer read READOUT next, but READOUT's only
-  named frontier (population-drift TREND across ≥3 sweeps) is [LOCAL]-blocked (2 committed, a 3rd needs network)
-  and READOUT is NOT starving (advanced Cycles 246/264/270); the rotation guard prevents starvation, so took the
-  highest-leverage unblocked item — the COVERAGE `subscription-cancel` mine Cycle 275's polar.sh capture existed
-  to unblock. **IMPROVEMENT (COVERAGE — the parked Cycle-146 mine, unblocked by Cycle 275):** subscription
-  (thinnest deep-bank, 9→10) gains `subscription-cancel` — the LIFECYCLE-END "agent programmatically
-  cancels/revokes its own recurring plan / bounds its own spend without a human" leg, DISTINCT from all 9
-  existing signals (plan-exists/price/evaluate/commit, never lifecycle-end); the subscription mirror of
-  metered_api's `cancel-job` + `key-rotation`. Precision-first, FOUR anchored branches, NEVER a bare
-  cancel/revoke: `cancel_at_period_end` PARAMETER; dotted machine EVENT `subscription.canceled`/`.revoked`;
-  a `subscriptions/{id}/cancel|/revoke` ENDPOINT PATH; an ADJACENT `cancel|revoke subscription(s)` operation.
-  **PRECISION REFINEMENT vs the pointer:** the pointer's broad "cancel/revoke verb naming a subscription
-  resource" would false-positive on simplybook.me's HUMAN FAQ "cancel or downgrade your SimplyBook.me
-  subscription from your account settings" (subscription noun, human account-settings path — the sibling of
-  ipinfo's "cancel anytime"), so the verb-noun branch requires ADJACENCY (no article between); the human "cancel
-  your/a subscription" trips nothing. **EMPIRICAL PRECISION (inv #3):** the final regex fires **86 spans on
-  polar.sh, 0 on every other fixture** — dodges ipinfo "cancel anytime", simplybook human cancel, replicate JOB
-  cancels (`cancel-job` turf), acuity/allbirds booking/order cancels, and the canonical pair's API-key "keys are
-  revoked" + bare `/cancellation` URL → ABSENT on the pair by verified construction. Tests: NEW
-  `test_subscription_cancel_precision_synthetic` (7 programmatic positives fire / 8 noise traps dodge) + NEW
-  `test_subscription_cancel_fires_on_real_captured_polar` (real `discover_offering` fires it; ipinfo+simplybook
-  do NOT) → test_offering 107→109; `_ALL_SUBSCRIPTION_LABELS` += subscription-cancel + the anchor's
-  not-yet-a-signal guard FLIPPED to fires-non-vacuously (Cycle-275 hook activating) + `_ISOLATION_EVIDENCE` row
-  (bank 74→75), test_offering_canonical 70/70. SCORE-NEUTRAL: classifier OFF the scoring path; scoring-path diff
-  (`asrs/scoring.py asrs/report.py asrs/probes rubric/ batteries/ loop/local_verify.py`) EMPTY (only
-  `asrs/offering.py` + 2 tests); suite **34/34 green**; canonical replay **26/26, 46.1 F / 85.5 B / +39.4
-  UNMOVED**; 02:41Z verify floor concurs. Invariants #1–5 all held. NO DM (score-neutral COVERAGE, not
-  sensitive-class; no digest due — 03:1xZ precedes 16:00 UTC on 08-06). See LOG Cycle 276.
-- FOCUS POINTER (Cycle 276 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
-  check. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY
-  on a fresh >6h no-artifact gap. Cloud track rotation: Cycle 276 was COVERAGE (taken out-of-turn because
-  READOUT's only in-cloud item is [LOCAL]-blocked) → **READOUT STILL OWED** the moment a 3rd dated sweep is
-  committed [LOCAL] (population-drift TREND sparkline across ≥3 sweeps); otherwise the least-recently-worked
-  fresh track is **METHOD** (last done Cycle 271) then TRUTH (Cycle 274). NEXT COVERAGE (still open): the
-  `waitlist` signal on the simplybook.me anchor (service_booking 8→9); data_retrieval DATA-FRESHNESS/
-  update-cadence (ipinfo "Daily Data Refresh"); physical_good RETURNS-WINDOW leg (allbirds/moleskine); a distinct
-  subscription candidate — PAUSE/RESUME (`subscription.paused`/uncancel on the polar anchor), the
-  suspend-without-terminating leg distinct from cancel, IF precision-guardable. NEXT TRUTH/METHOD: reproducibility
-  family covers the whole full-scorable population on hash-seed + timezone (Cycle 274); last cheap axis is LOCALE
-  (`LC_ALL`/`LANG`) IF de_DE/tr_TR generatable on the runner; beyond that SATURATED — surface a NEW seam. NEXT
-  READOUT: population-drift TREND across ≥3 dated sweeps ([LOCAL]-gated, only 2 committed). Substantive [LOCAL]
-  frontier: codex-dependent items stay gated — driftflight.com (WITH side) still codex-blocked → cross-model
-  N-curve / LIVE behavioral delta blocked on WITH-side reachability (drift-flight.org t2 IS reachable); a THIRD
-  calibration anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168); structured
-  catalog/pricing JSON (Cycle-70).
 <!-- STATE COMPACTED at Cycle 260 (2026-08-05T~17:1xZ, self-healing/COVERAGE, direct-to-main, score-neutral).
      STATE.md had accreted the full per-cycle history back to ~Cycle 5 (7798 lines / ~790KB) and could no
      longer be Read in one call, degrading the playbook-mandated per-cycle "read STATE.md". Trimmed the

@@ -599,19 +599,23 @@ _BOOKING2_CLAIMED = {"subscription", "service_booking", "metered_api"}
 # that, like the first, does not falsely conjure its sibling thin archetypes
 # (nothing is physically fulfilled; no data-retrieval `lookup` family fires).
 _BOOKING2_MUST_BE_NA = {"physical_good", "data_retrieval"}
-# The full known service_booking signal bank (8 signals). Every fired label on this
+# The full known service_booking signal bank (9 signals). Every fired label on this
 # anchor must be one of these — teeth against a spurious signal, and the MAINTENANCE
-# HOOK for the future `waitlist` mine (adding `waitlist` to the bank updates this set
+# HOOK the `waitlist` mine used (Cycle 281 added `waitlist` to the bank and this set
 # in the same PR, the way Cycle 272 updated _DATA_RETRIEVAL_LABELS for dataset-format).
 _ALL_SERVICE_BOOKING_LABELS = {
     "book", "appointment", "reservation", "schedule", "availability",
-    "manage-booking", "booking-notification", "intake-form",
+    "manage-booking", "booking-notification", "intake-form", "waitlist",
 }
 # The distinct lifecycle legs that must fire NON-VACUOUSLY on this anchor's real
 # prose (beyond the create act) — the same "operate / complete / provision without a
-# human" legs acuity anchors, proven again on independent prose.
+# human" legs acuity anchors, proven again on independent prose, PLUS the scarcity-
+# queue `waitlist` leg (Cycle 281) which is unique to this anchor (acuity's waitlist
+# evidence is image-only, so waitlist does NOT fire there — the leg genuinely
+# generalizes only because a second, prose-bearing booking anchor exists).
 _BOOKING2_DISTINCT_LEGS = {
     "availability", "manage-booking", "booking-notification", "intake-form",
+    "waitlist",
 }
 
 
@@ -686,11 +690,14 @@ def _assert_simplybook_anchor() -> None:
         f"{_BOOKING2}: every service_booking signal carries quoted evidence",
     )
 
-    # (e) The WAITLIST-mine enabler: the committed fixture carries genuine
-    # WAITING-LIST capability prose. This is NOT yet a scored/classified signal — it
-    # pins the evidence the parked Cycle-256 `waitlist` mine needs, so a future
-    # re-capture that drops it fails here (and the eventual mine has non-vacuous real
-    # prose to fire on, unlike acuity's image-only `waitlist.png`).
+    # (e) The WAITLIST leg (Cycle 281, mined from THIS anchor) fires NON-VACUOUSLY on
+    # its real WAITING-LIST prose — the scarcity-queue "join a queue for a fully-booked
+    # slot / provision without a human under contention" leg. It is pinned in
+    # _BOOKING2_DISTINCT_LEGS above; here we additionally assert the underlying prose is
+    # committed, so a future re-capture that drops the "waiting list" text (which would
+    # silently un-fire the signal) fails LOUDLY here rather than quietly weakening the
+    # anchor. acuity's waitlist is image-only (`waitlist.png`, no booking-noun context),
+    # so waitlist does NOT fire there — this anchor's prose is what makes the leg real.
     raw = open(
         os.path.join(_FIXTURE_DIR, f"{_BOOKING2}.json"), encoding="utf-8"
     ).read().lower()
@@ -6664,6 +6671,7 @@ _ISOLATION_EVIDENCE: dict[str, str] = {
     "manage-booking": "reschedule or cancel your appointment",
     "booking-notification": "an appointment reminder is sent automatically",
     "intake-form": "fill out the intake form",
+    "waitlist": "join the waiting list for a fully-booked appointment slot",
     # data_retrieval
     "enrich": "we enrich your records",
     "dataset": "download the dataset",

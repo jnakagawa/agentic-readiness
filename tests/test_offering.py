@@ -1731,6 +1731,116 @@ def test_intake_form_fires_on_real_captured_surfaces():
     print("  ok: intake-form is ABSENT on the api-pair / marketplace / retail / null fixtures (non-vacuous, score-neutral)")
 
 
+def test_service_booking_waitlist_precision_synthetic():
+    # The scarcity-QUEUE signal for service_booking (Cycle 281), a FIFTH distinct
+    # capability leg beyond the create signals (book/appointment/reservation/schedule/
+    # availability — MAKE a booking), manage-booking (reschedule/cancel — MODIFY one),
+    # booking-notification (confirm/remind — FOLLOW THROUGH) and intake-form (collect
+    # what the job needs — the PRECONDITION): when `check availability` shows no open
+    # slot, the client (or an agent) joins a QUEUE and is booked when one frees — the
+    # "provision without a human even under contention" leg. service_booking is tied
+    # with data_retrieval for the thinnest archetype, so a FALSE claim does maximum
+    # damage — and bare "waitlist"/"waiting list" is the single most common SaaS GROWTH
+    # CTA ("join our early-access waitlist", "sign up for the beta waitlist", a
+    # newsletter/product-launch "waiting list"), none of which books a service. The
+    # guard NEVER matches a bare waitlist token — it requires an unambiguous BOOKING
+    # NOUN (appointment / booking / reservation / slot) within a short same-clause
+    # window, in either order. Each POSITIVE is genuine booking-context waitlist prose
+    # that must fire waitlist (non-vacuous); each NEGATIVE is a bare early-access/beta/
+    # newsletter/webinar waitlist that must NOT claim service_booking on its own.
+    positives = {
+        # Real captured simplybook.me shapes (verbatim-faithful).
+        "waiting list bookings": "Show all waiting list bookings for this provider.",
+        "book to waiting list slot": "When no slot is open, book to the waiting list for the next appointment.",
+        # Genuine booking-context waitlist vocabulary from other real booking services.
+        "join waiting list for appointment": "Join the waiting list for a fully-booked appointment.",
+        "waitlist when slots taken": "Clients join a waitlist when all slots are taken.",
+        "reservation waitlist": "The reservation waitlist fills before we open new tables.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("waitlist.test", {"homepage": text})
+        assert prof.claims("service_booking"), (name, prof.archetypes)
+        fired = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "service_booking"
+            for s in c.signals
+        }
+        assert "waitlist" in fired, (name, sorted(fired))  # non-vacuous
+    print(f"  ok: {len(positives)} booking-context waitlist phrasings each fire waitlist")
+
+    negatives = {
+        # bare waitlist / waiting list — no booking noun in context (SaaS growth CTAs).
+        "early-access waitlist": "Join our early-access waitlist to be the first to try it.",
+        "beta waitlist": "Sign up for the beta waitlist and we'll email you.",
+        "product-launch waiting list": "Subscribe to our product launch waiting list.",
+        "newsletter waitlist": "Our newsletter has a growing waitlist of subscribers.",
+        "webinar waiting list": "The waiting list for our webinar is full.",
+        # a waitlist for a sales DEMO — the same excluded sales-CTA object family.
+        "demo waitlist": "Join the waitlist for a demo of the new dashboard.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("prose.test", {"homepage": text})
+        assert not prof.claims("service_booking"), (name, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} bare early-access/beta/newsletter/demo waitlist strings do NOT claim service_booking (precision)"
+    )
+
+
+def test_waitlist_fires_on_real_captured_surfaces():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the TRUTH mirror of the synthetic
+    # precision guard. It pins that waitlist fires on the GENUINE waiting-list prose
+    # captured live from the SECOND committed service_booking anchor (simplybook.me —
+    # "group booking, classes, tickets & events, waiting list, recurring services";
+    # "show all waiting list bookings"; "book to waiting list"), run through the REAL
+    # discovery path (from_fixture -> discover_offering) exactly as a live crawl would.
+    #
+    # SCORE-NEUTRAL by construction: simplybook.me ALREADY claims service_booking (via
+    # book/appointment/schedule), so the waitlist evidence can only DEEPEN that claim —
+    # never add an archetype or reorder. The classifier is off the scoring path; the
+    # anchor's claimed SET is unchanged (pinned by tests/test_offering_canonical.py).
+    sctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "simplybook.me.json"))
+    sprof = offering.discover_offering(sctx)
+    assert sprof.claims("service_booking"), sprof.archetypes
+    sb = next(c for c in sprof.claimed if c.archetype == "service_booking")
+    waitlist = [s for s in sb.signals if s.label == "waitlist"]
+    assert waitlist, {s.label for s in sb.signals}
+    assert waitlist[0].quote and waitlist[0].quote.strip(), "waitlist quote empty"
+    assert "wait" in waitlist[0].quote.lower(), waitlist[0].quote
+    print(f"  ok: waitlist fires on REAL captured simplybook.me — quote: {waitlist[0].quote!r}")
+
+    # Full-discovery claimed-SET invariance on the anchor (score-neutrality): the new
+    # signal deepens service_booking without adding or dropping any archetype.
+    assert set(sprof.archetypes) == {
+        "service_booking", "subscription", "metered_api"
+    }, sprof.archetypes
+
+    # NON-VACUOUS negatives on REAL data. The CRITICAL cases:
+    # (1) acuityscheduling.com CLAIMS service_booking but its only waitlist evidence is
+    #     an image filename (`waitlist.png`, no booking-noun context) — waitlist must NOT
+    #     fire there, proving the leg rests on THIS anchor's prose, not a bare token.
+    # (2) the canonical flight pair + retail + null + api carry no booking-context
+    #     waitlist at all — the signal is absent and conjures/reorders no archetype.
+    acx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "acuityscheduling.com.json"))
+    aprof = offering.discover_offering(acx)
+    assert aprof.claims("service_booking"), aprof.archetypes  # still a booking anchor
+    alabels = {s.label for c in aprof.claimed for s in c.signals}
+    assert "waitlist" not in alabels, ("acuityscheduling.com", sorted(alabels))
+    for dom, expected in (
+        ("driftflight.com", ["metered_api", "digital_good", "subscription"]),
+        ("drift-flight.org", ["metered_api", "digital_good", "subscription"]),
+        ("api.replicate.com", ["metered_api"]),
+        ("books.toscrape.com", ["physical_good"]),
+        ("example.com", []),
+    ):
+        nctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        nprof = offering.discover_offering(nctx)
+        nlabels = {s.label for c in nprof.claimed for s in c.signals}
+        assert "waitlist" not in nlabels, (dom, nlabels)
+        assert nprof.archetypes == expected, (dom, nprof.archetypes)
+    print("  ok: waitlist is ABSENT on acuity's image-only waitlist + the api-pair / retail / null fixtures (non-vacuous, score-neutral)")
+
+
 def test_subscription_recurring_precision_synthetic():
     # The last cheap bare-word subscription signal hardened (siblings: enrich/
     # dataset/lookup for data_retrieval, book/schedule for service_booking). Bare
@@ -5782,6 +5892,8 @@ def main() -> int:
         test_booking_notification_fires_on_real_captured_surfaces,
         test_service_booking_intake_form_precision_synthetic,
         test_intake_form_fires_on_real_captured_surfaces,
+        test_service_booking_waitlist_precision_synthetic,
+        test_waitlist_fires_on_real_captured_surfaces,
         test_subscription_recurring_precision_synthetic,
         test_usage_based_metered_precision_synthetic,
         test_payment_challenge_retry_precision_synthetic,

@@ -1767,6 +1767,48 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
         # service_booking via book/appointment/schedule, so this only DEEPENS an
         # existing claim — never adds an archetype or reorders. Off the scoring path.
         ("intake-form", re.compile(r"\bintake forms?\b", _F)),
+        # JOIN A WAITLIST WHEN NO SLOT IS FREE — clients (or an agent booking on
+        # their behalf) join a queue for a FULLY-BOOKED time and are booked when a
+        # slot opens. This is a FIFTH genuinely distinct capability leg beyond the
+        # create act (book / appointment / reservation / schedule / availability),
+        # the lifecycle-management leg (manage-booking), the completion-
+        # acknowledgment leg (booking-notification) and the data-collection
+        # precondition leg (intake-form): the SCARCITY-QUEUE leg. When
+        # `check availability` reports no open slot, an agent that can still
+        # provision the job — enqueue and be booked automatically when one frees —
+        # is the "provision without a human even under contention" capability the
+        # PLAYBOOK's lens names, applied to service_booking. Mined from the SECOND
+        # committed service_booking anchor's real prose (simplybook.me — "group
+        # booking, classes, tickets & events, waiting list, recurring services";
+        # "book to waiting list"; "show all waiting list bookings"; a dedicated
+        # "Waiting list" booking feature). The Cycle-256 candidate was parked for
+        # lack of prose (acuity's waitlist was an image-only `waitlist.png` with no
+        # text); Cycle 273's simplybook.me capture unblocked it in-cloud.
+        # PRECISION-CRITICAL: bare "waitlist" / "waiting list" is a web-wide
+        # minefield — the single most common SaaS growth CTA is "join our
+        # early-access waitlist" / "sign up for the beta waitlist" / a mailing-list
+        # "product-launch waiting list", none of which is a bookable SERVICE the
+        # storefront sells to an agent; each would falsely conjure service_booking
+        # (tied-thinnest, so a false claim does maximum damage). So NEVER match a
+        # bare waitlist token: require it to sit within a short window of an
+        # unambiguous BOOKING NOUN (appointment / booking / reservation / slot), in
+        # either order — the SAME booking-noun anchoring the sibling manage-booking
+        # / booking-notification legs use, plus `slot` (a waitlist is intrinsically
+        # about scarce slots). The early-access / beta / newsletter / webinar
+        # senses carry no booking noun and trip nothing; the genuine "waiting list
+        # bookings", "join the waiting list for an appointment", "waitlist when all
+        # slots are taken" prose still fires. Verified on the 11 committed fixtures:
+        # 26 non-vacuous hits on the simplybook.me anchor, ZERO on the other ten —
+        # crucially ZERO on the acuity anchor (whose only waitlist evidence is the
+        # image-only `waitlist.png` filename, no booking-noun context) and ZERO on
+        # the canonical flight pair, so service_booking stays NA there and the
+        # classification/score is invariant (pinned by tests/test_offering_canonical.py).
+        # The anchor ALREADY claims service_booking via book/appointment/schedule,
+        # so this only DEEPENS an existing claim — never adds an archetype or
+        # reorders. Off the scoring path.
+        ("waitlist", re.compile(
+            r"\b(?:wait[- ]?list|waiting[- ]?list)s?\b[^.\n]{0,40}?\b(?:appointments?|bookings?|reservations?|slots?)\b"
+            r"|\b(?:appointments?|bookings?|reservations?|slots?)\b[^.\n]{0,40}?\b(?:wait[- ]?list|waiting[- ]?list)s?\b", _F)),
     ],
     "data_retrieval": [
         # RECORD ENRICHMENT — an agent submits records and gets structured fields

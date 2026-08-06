@@ -144,13 +144,18 @@ design in-cloud, execute locally.
   `test_simplybook_anchor_offering` (test_offering_canonical 68->69) which also asserts the `waiting list` prose is
   present (future-mine evidence) + installs the `_ALL_SERVICE_BOOKING_LABELS` maintenance hook; simplybook.me added
   to `_CLASSIFICATION_ONLY` in test_canonical_replay (50 full-scorer misses -> quarantined from scoring). So the
-  WAITLIST mine is now UNBLOCKED IN-CLOUD (no longer [LOCAL]): mine a precision-guarded `waitlist` signal (the
-  "clients join a queue for fully-booked times / provision without a human when no slot is free" leg, DISTINCT from
-  create/manage/notify/intake), anchoring `waiting list`/`waitlist`/`waiting-list` to a BOOKING context so a SaaS
-  "join our early-access waitlist"/mailing-list signup does NOT conjure service_booking; validate ABSENT on the
-  canonical pair + retail + null + api fixtures, fires NON-VACUOUSLY on simplybook.me, add `waitlist` to
-  `_ALL_SERVICE_BOOKING_LABELS` in the same change. Would push service_booking 8->9. See LOG Cycle 273.
-  See LOG Cycle 248/252/256/273.
+  WAITLIST mine SHIPPED Cycle 281 (2026-08-06, COVERAGE, cloud, direct-to-main, score-neutral): `waitlist` added to
+  service_booking (8->9) — the scarcity-QUEUE "join a queue for a fully-booked slot / provision without a human under
+  contention" leg, DISTINCT from create/manage/notify/intake. Precision-guarded (NEVER a bare token — requires a
+  BOOKING NOUN appointment/booking/reservation/slot within a <=40-char same-clause window either order), so the SaaS
+  "join our early-access waitlist" growth CTA dodges. Fires 26 spans on simplybook.me, 0 on all TEN other fixtures —
+  crucially 0 on acuity (its waitlist is image-only `waitlist.png`, no booking-noun context) and 0 on the canonical
+  pair (service_booking NA there by construction). Tests: `test_service_booking_waitlist_precision_synthetic`
+  (5 positives fire / 6 noise dodge) + `test_waitlist_fires_on_real_captured_surfaces` (real simplybook fires; acuity
+  does NOT; pair+retail+null+api ABSENT) → test_offering 109->111; `_ALL_SERVICE_BOOKING_LABELS` + `_BOOKING2_DISTINCT_LEGS`
+  + `_ISOLATION_EVIDENCE` updated → test_offering_canonical 70/70. So service_booking is now well-mined across ALL FIVE
+  lifecycle legs (create/manage/notify/intake/waitlist) on both anchors. See LOG Cycle 281.
+  See LOG Cycle 248/252/256/273/281.
   EARLIER — Cycle 243 (2026-08-05, COVERAGE, in-cloud, direct-to-main,
   score-neutral): **data_retrieval got its FIRST genuinely-distinct NEW capability signal** mined from the
   fresh ipinfo.io anchor — `batch-retrieval` (BATCH/BULK data retrieval, the "complete the job AT SCALE" leg,
@@ -196,8 +201,8 @@ design in-cloud, execute locally.
   the static `returns` policy-page signal) IF committed retail prose (allbirds/moleskine) carries a machine-readable
   return window; secondary the agent-native RETAIL rail surfaces (UCP `/.well-known/ucp`, MCP) as classification
   evidence distinct from driftflight. The offering signal bank is metered_api-HEAVY: metered_api 26, digital_good
-  11 (post-Cycle-164 `variant-selection`), physical_good 10 (post-Cycle-266 `order-tracking`), subscription 9
-  (post-Cycle-172 `plan-allowance`), service_booking 8 (post-Cycle-256 `intake-form`), data_retrieval 7
+  11 (post-Cycle-164 `variant-selection`), physical_good 10 (post-Cycle-266 `order-tracking`), subscription 10
+  (post-Cycle-276 `subscription-cancel`), service_booking 9 (post-Cycle-281 `waitlist`), data_retrieval 7
   (post-Cycle-272 `dataset-format`). NOTE (superseded by Cycles 240/242/243): the
   claim below that service_booking/data_retrieval "CANNOT be strengthened non-vacuously in-cloud" held only until their
   first committed anchors landed (acuityscheduling.com / ipinfo.io) — data_retrieval has since gained `batch-retrieval`

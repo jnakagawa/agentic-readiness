@@ -129,6 +129,54 @@ def _divergences(sweeps, expected, baseline_version, tol=_TOL, members=_WELDED_M
     return divergences, n_compared, n_unreachable, n_offversion
 
 
+def _pillar_divergences(sweeps, expected, baseline_version, tol=_TOL, members=_WELDED_MEMBERS):
+    """The PILLAR-level weld — the per-pillar sibling of `_divergences`.
+
+    `_divergences` welds only the single `overall` number. But `overall` is a
+    WEIGHTED SUM of pillars, so a capability-profile drift that moves two pillars
+    in opposite directions (e.g. more legible, less transactable) can leave the
+    weighted overall exactly where it was — passing the overall weld while the
+    site's real agent-facing profile has genuinely shifted. This function welds
+    each welded member's per-PILLAR scores (access/legibility/transactability/
+    trust) between the offline replay baseline and the live sweeps, so such a
+    cancellation goes red where the overall weld is structurally blind.
+
+    Returns (divergences, n_compared, n_unreachable, n_offversion, n_null_skipped).
+    A divergence is a (label, domain, pillar, got, exp) tuple: a SCORED,
+    same-version welded member whose sweep pillar differs from the fixture-replay
+    baseline pillar by more than `tol`. Attribution honesty (invariant #4): a
+    pillar that is null/absent on EITHER path (e.g. `outcome`, unmeasured in
+    static-replay mode) is counted `n_null_skipped` and NEVER compared — a site
+    is not punished, nor credited, for a pillar a path could not observe.
+    Versioned comparability (invariant #2): off-version sweeps are counted, never
+    diffed. Not-scorable members (invariant #4) are counted unreachable, skipped."""
+    divergences = []
+    n_compared = n_unreachable = n_offversion = n_null_skipped = 0
+    for label, sweep in sweeps:
+        if str(sweep.get("rubric_version")) != baseline_version:
+            n_offversion += 1
+            continue
+        for domain in members:
+            row = _member_row(sweep, domain)
+            if row is None:
+                continue
+            if not row.get("scored") or row.get("overall") is None:
+                n_unreachable += 1
+                continue
+            exp_pillars = expected[domain].get("pillars", {})
+            got_pillars = row.get("pillars", {})
+            for pillar in sorted(set(exp_pillars) | set(got_pillars)):
+                exp_v = exp_pillars.get(pillar)
+                got_v = got_pillars.get(pillar)
+                if exp_v is None or got_v is None:
+                    n_null_skipped += 1
+                    continue
+                n_compared += 1
+                if abs(float(got_v) - float(exp_v)) > tol:
+                    divergences.append((label, domain, pillar, float(got_v), float(exp_v)))
+    return divergences, n_compared, n_unreachable, n_offversion, n_null_skipped
+
+
 def _synthetic_sweep(version, org_overall, com_overall, *, com_scored=True, example_overall=None):
     """A minimal sweep dict carrying the two anchor rows (for the teeth legs), plus
     an optional example.com non-anchor row when `example_overall` is supplied."""
@@ -352,6 +400,131 @@ def test_off_version_sweep_is_not_compared() -> None:
     _check(n_offversion == 1, f"the off-version sweep was counted, not diffed (got {n_offversion})")
 
 
+def test_live_sweep_pillars_agree_with_replay_baseline() -> None:
+    print("test_live_sweep_pillars_agree_with_replay_baseline")
+    # THE pillar weld on real evidence: every scored, same-version welded member's
+    # per-pillar scores equal the offline fixture floor. Covers the two anchors AND
+    # example.com across every committed sweep, so n_compared today is 3 sweeps x 3
+    # members x 4 non-null pillars = 36 (outcome is null in static mode → skipped).
+    # n_compared>=8 keeps it non-vacuous even if a sweep drops a member.
+    sweeps = _committed_sweeps()
+    divergences, n_compared, n_unreachable, n_offversion, n_null = _pillar_divergences(
+        sweeps, replay.EXPECTED, _BASELINE_VERSION
+    )
+    _check(
+        divergences == [],
+        f"no live welded member's pillar diverges from the replay floor (got {divergences})",
+    )
+    _check(
+        n_compared >= 8,
+        f"the pillar weld is non-vacuous: >=8 pillar comparisons (got {n_compared})",
+    )
+    print(
+        f"  .. {n_compared} pillar comparisons, {n_unreachable} not-scorable (skipped), "
+        f"{n_null} null-pillar (skipped), {n_offversion} off-version (skipped)"
+    )
+
+
+def test_pillar_canceling_drift_passes_overall_but_is_caught_by_pillar_weld() -> None:
+    print("test_pillar_canceling_drift_passes_overall_but_is_caught_by_pillar_weld")
+    # THE reason the pillar weld exists. `overall` is a weighted sum of pillars, so
+    # a capability-profile drift that moves two pillars in opposite directions can
+    # leave the weighted overall exactly on its floor. Take drift-flight.org and
+    # shift legibility +6.0 and transactability -4.0. With the outcome-null
+    # renormalized weights (rubric v0.7: access .15 legibility .20 transactability
+    # .30 trust .15, outcome .20 dropped → /.80), the weighted overall change is
+    #   (.20*(+6.0) + .30*(-4.0)) / .80 = (1.2 - 1.2) / .80 = 0.0
+    # → the overall stays on the 46.1 floor while the site got genuinely MORE
+    # legible and LESS transactable. The overall weld is blind to this; the pillar
+    # weld must catch exactly those two pillars.
+    base = replay.EXPECTED["drift-flight.org"]["pillars"]
+    drifted = dict(base)
+    drifted["legibility"] = base["legibility"] + 6.0
+    drifted["transactability"] = base["transactability"] - 4.0
+
+    # Prove the synthetic is PHYSICALLY realizable, not a hand-set number: recompute
+    # the weighted overall from the drifted pillars with the same outcome-dropped
+    # renormalized weights (no scoring-path import — the guard stays pure). It must
+    # still round to the 46.1 floor, so a REAL sweep could land exactly here while
+    # two pillars genuinely moved.
+    weights = {"access": 0.15, "legibility": 0.20, "transactability": 0.30, "trust": 0.15}
+    wsum = sum(weights.values())
+    recomputed = round(sum(weights[k] * drifted[k] for k in weights) / wsum, 1)
+    _check(
+        recomputed == 46.1,
+        f"the drifted pillars still weight to the 46.1 overall floor (got {recomputed})",
+    )
+
+    sweep = {
+        "rubric_version": "0.7",
+        "rows": [
+            {
+                "domain": "drift-flight.org",
+                "segment": "api-storefront:no-rails-anchor",
+                "scored": True,
+                "overall": 46.1,  # genuinely on-floor, per the recompute above
+                "pillars": drifted,
+            }
+        ],
+    }
+    synth = [("synthetic-pillar-cancel", sweep)]
+
+    # The OVERALL weld is structurally blind — overall is byte-equal to the floor.
+    odiv, _, _, _ = _divergences(
+        synth, replay.EXPECTED, _BASELINE_VERSION, members=("drift-flight.org",)
+    )
+    _check(
+        odiv == [],
+        f"the overall weld does NOT catch a pillar-canceling drift (got {odiv})",
+    )
+    # The PILLAR weld catches exactly the two drifted pillars.
+    pdiv, n_cmp, _, _, _ = _pillar_divergences(
+        synth, replay.EXPECTED, _BASELINE_VERSION, members=("drift-flight.org",)
+    )
+    caught = sorted(d[2] for d in pdiv)
+    _check(
+        caught == ["legibility", "transactability"],
+        f"the pillar weld catches exactly the two drifted pillars (got {caught})",
+    )
+    _check(n_cmp == 4, f"the 4 non-null org pillars were compared (got {n_cmp})")
+
+
+def test_null_pillar_is_skipped_not_a_divergence() -> None:
+    print("test_null_pillar_is_skipped_not_a_divergence")
+    # Invariant #4 teeth for the pillar weld: the `outcome` pillar is null in
+    # static-replay mode on the baseline path. A live behavioral sweep that DID
+    # measure outcome must not be diffed against a floor that never observed it —
+    # a naive impl coercing None→0.0 would flag a huge divergence. The guard skips
+    # it (counts it null-skipped), comparing only the pillars observed on BOTH
+    # paths.
+    base = replay.EXPECTED["drift-flight.org"]["pillars"]
+    _check(base.get("outcome") is None, "precondition: the org baseline outcome pillar is null")
+    measured = dict(base)
+    measured["outcome"] = 88.0  # a value where the baseline has none
+    sweep = {
+        "rubric_version": "0.7",
+        "rows": [
+            {
+                "domain": "drift-flight.org",
+                "segment": "api-storefront:no-rails-anchor",
+                "scored": True,
+                "overall": 46.1,
+                "pillars": measured,
+            }
+        ],
+    }
+    synth = [("synthetic-null-pillar", sweep)]
+    pdiv, n_cmp, _, _, n_null = _pillar_divergences(
+        synth, replay.EXPECTED, _BASELINE_VERSION, members=("drift-flight.org",)
+    )
+    _check(
+        pdiv == [],
+        f"a pillar null on the baseline path is skipped, not a divergence (got {pdiv})",
+    )
+    _check(n_null >= 1, f"the null baseline pillar was counted null-skipped (got {n_null})")
+    _check(n_cmp == 4, f"the 4 shared non-null pillars were still compared (got {n_cmp})")
+
+
 def main() -> int:
     tests = [
         test_baseline_version_and_gap_match_replay_guard,
@@ -363,6 +536,9 @@ def main() -> int:
         test_non_anchor_member_is_welded,
         test_drifted_non_anchor_member_is_caught,
         test_off_version_sweep_is_not_compared,
+        test_live_sweep_pillars_agree_with_replay_baseline,
+        test_pillar_canceling_drift_passes_overall_but_is_caught_by_pillar_weld,
+        test_null_pillar_is_skipped_not_a_divergence,
     ]
     failed = 0
     for t in tests:

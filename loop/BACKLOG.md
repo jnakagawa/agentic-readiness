@@ -550,6 +550,14 @@ untouched (26/26, +39.4); no rubric bump. See LOG Cycle 287. Post-merge live beh
   broadening step toward the upper 15–20: a genuine ACP/UCP/MPP merchant or a 2nd x402-live site (both scarce —
   record reachability as its own signal). Off the scoring path, score-neutral (`git diff -- asrs/ rubric/`
   EMPTY; only `experiments/calibration_sweep.py`).
+  HIGH-VALUE NEXT BROADENING (TRUTH unlock, queued Cycle 293): **ADD `books.toscrape.com` to `POPULATION`** — it is
+  the ONE remaining domain with a committed offline replay baseline (`test_canonical_replay.EXPECTED`: 29.5 F,
+  pillars access 100 / legibility 18.18 / transactability 0 / trust 33.33) but ABSENT from every sweep, so it is the
+  next member the cross-path weld (`test_calibration_anchor_agreement.py`) can adopt. Once it appears SCORED in ≥1
+  committed v0.7 sweep, adding it to `_NON_ANCHOR_WELDED` welds a SECOND non-anchor member across BOTH the overall
+  weld AND the Cycle-293 per-PILLAR weld (`_pillar_divergences`) — a RETAIL storefront (different site type than
+  example.com's zero-commerce null) as an independent cross-path witness, higher-resolution than any single number.
+  It is agent-fetch reachable (it is a scraping-sandbox site) → likely scores cleanly. Static $0, same harness.
   PROGRESS — Cycle 245 (2026-08-05, TRUTH, cloud, direct-to-main, score-neutral): the Cycle-244 drift diff is now
   TEST-GUARDED — `tests/test_calibration_drift.py` (5 tests) pins `_compute_drift` against BOTH committed dated
   sweeps (real-evidence: 13 scored-in-both, 2 moved [deepai +6.8, allbirds +5.0], canonical pair delta 0.0 =

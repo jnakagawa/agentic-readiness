@@ -133,10 +133,24 @@ design in-cloud, execute locally.
   (the DATA-COLLECTION PRECONDITION "collect what the job needs / provision without a human" leg, distinct from
   create/manage/notify), 39 `\bintake forms?\b` hits on the anchor, ABSENT on all 7 others incl. the canonical pair,
   guarded against bare "form"/bare "intake" (fixed collocation only). `test_offering.py` 101->103 + isolation row
-  (bank 71->72) + `_BOOKING_INTAKE_LABELS` leg (g). service_booking grows 7->8. The last thin candidate WAITLIST is
-  IMAGE-ONLY on the anchor (`waitlist.png`, no prose) -> in-cloud service_booking mining EXHAUSTED, deferred to a
-  [LOCAL] richer-booking-fixture capture.
-  See LOG Cycle 248/252/256.
+  (bank 71->72) + `_BOOKING_INTAKE_LABELS` leg (g). service_booking grows 7->8. The last thin candidate WAITLIST was
+  IMAGE-ONLY on the acuity anchor (`waitlist.png`, no prose) -> deferred to a [LOCAL] richer-booking-fixture capture.
+  UPDATE Cycle 273 (2026-08-06, COVERAGE, LOCAL, direct-to-main, score-neutral): that [LOCAL] capture is DONE — a
+  SECOND service_booking anchor `fixtures/canonical/simplybook.me.json` landed (an agent-native multi-archetype
+  booking platform claiming {service_booking, subscription, metered_api}, agent surfaces under `agents.simplybook.me/*`)
+  whose committed prose carries a genuine WAITING-LIST capability (73 `waiting list` occurrences: "group booking,
+  classes, tickets & events, waiting list, recurring services" + a homepage "Waiting list" feature). Captured via
+  `experiments/capture_offering_fixture` (66 entries, honest-replay verified byte-faithful, inv #4); pinned by
+  `test_simplybook_anchor_offering` (test_offering_canonical 68->69) which also asserts the `waiting list` prose is
+  present (future-mine evidence) + installs the `_ALL_SERVICE_BOOKING_LABELS` maintenance hook; simplybook.me added
+  to `_CLASSIFICATION_ONLY` in test_canonical_replay (50 full-scorer misses -> quarantined from scoring). So the
+  WAITLIST mine is now UNBLOCKED IN-CLOUD (no longer [LOCAL]): mine a precision-guarded `waitlist` signal (the
+  "clients join a queue for fully-booked times / provision without a human when no slot is free" leg, DISTINCT from
+  create/manage/notify/intake), anchoring `waiting list`/`waitlist`/`waiting-list` to a BOOKING context so a SaaS
+  "join our early-access waitlist"/mailing-list signup does NOT conjure service_booking; validate ABSENT on the
+  canonical pair + retail + null + api fixtures, fires NON-VACUOUSLY on simplybook.me, add `waitlist` to
+  `_ALL_SERVICE_BOOKING_LABELS` in the same change. Would push service_booking 8->9. See LOG Cycle 273.
+  See LOG Cycle 248/252/256/273.
   EARLIER — Cycle 243 (2026-08-05, COVERAGE, in-cloud, direct-to-main,
   score-neutral): **data_retrieval got its FIRST genuinely-distinct NEW capability signal** mined from the
   fresh ipinfo.io anchor — `batch-retrieval` (BATCH/BULK data retrieval, the "complete the job AT SCALE" leg,

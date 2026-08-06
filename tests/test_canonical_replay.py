@@ -1509,7 +1509,12 @@ _REPLAY_CLEAN = {
 # (captured for offering/battery classification) — NOT eligible for any
 # score-replay guard until re-captured full-score [LOCAL]:
 #   asrs.cli score <domain> --record-fixture fixtures/canonical/<domain>.json
-_CLASSIFICATION_ONLY = {"api.replicate.com", "ipinfo.io", "www.allbirds.com"}
+# simplybook.me joins this set as the second service_booking anchor (captured via
+# the discover_offering path, 50 full-scorer misses: robots.txt, homepage under
+# claudebot/gptbot UAs, the pricing/products page sweep, cross-domain review URLs).
+_CLASSIFICATION_ONLY = {
+    "api.replicate.com", "ipinfo.io", "www.allbirds.com", "simplybook.me",
+}
 
 
 def test_committed_fixtures_are_partitioned_by_replay_integrity() -> None:

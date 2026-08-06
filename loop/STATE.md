@@ -1,6 +1,51 @@
 # Loop state
 
-- Cycle counter: 272
+- Cycle counter: 273
+- CYCLE 273 — 2026-08-06T01:4xZ (COVERAGE, LOCAL, direct-to-main, score-neutral). FIRST duty (infra health +
+  peer-gate review): `gh pr list --state open` → `[]` (no open peer-gated PR). HEAD == origin/main == local
+  `main` all at `83a2917` (clean, no stale-orphan realign this fire). **INFRA HEALTHY:** newest verify by
+  FILENAME `runs/local/verify_20260806T014106Z.json` (01:41Z, tests_ok=true 34 suites, 46.1 F / 85.5 B /
+  +39.4), ~1min old at fire (01:42Z 08-06), deep inside the 6h floor; :41 cadence holding (23:41Z→00:41Z→
+  01:41Z) → RUNNER-HEALTH WATCH NORMAL. Reviewed the recent uncommitted (gitignored) `runs/local/` artifacts
+  from prior unattended :41 fires: codex reachability 23:45Z REACHES drift-flight.org t2 but driftflight.com
+  (WITH-rails high-score side) STILL codex-gated both trials; the 00:49Z `behavioral_canonical_delta` log is
+  a 3-line silent crash → codex-dependent behavioral / cross-model N-curve NOT cleanly executable this fire.
+  Pivoted to the reliable LOCAL-network-only static item. **IMPROVEMENT (COVERAGE — the parked Cycle-256
+  [LOCAL] "richer-booking WAITLIST fixture", the network-only enabler):** captured the SECOND service_booking
+  anchor `fixtures/canonical/simplybook.me.json` — a MULTI-archetype AGENT-NATIVE booking platform (agent
+  surfaces under `agents.simplybook.me/*`; claims {service_booking, subscription, metered_api}) whose committed
+  prose carries a genuine WAITING-LIST capability (73 `waiting list` occurrences: "group booking, classes,
+  tickets & events, waiting list, recurring services" + a homepage "Waiting list" feature) — the exact prose
+  the Cycle-256 mine was PARKED for (acuity's waitlist is image-only). Captured via the reproducible
+  `experiments/capture_offering_fixture` (66 entries, 6 set-cookie stripped, honest-replay verified byte-faithful,
+  inv #4). service_booking rests on 7 genuine bank signals (appointment/availability/book/booking-notification/
+  intake-form/manage-booking/schedule); physical_good+data_retrieval NA. NEW `test_simplybook_anchor_offering`
+  (test_offering_canonical 68→69) pins the set + non-vacuity + the distinct lifecycle legs generalizing across a
+  SECOND vendor + the `waiting list` prose (future-mine evidence, with the `_ALL_SERVICE_BOOKING_LABELS`
+  maintenance hook for `waitlist`); `test_canonical_replay.py` adds simplybook.me to `_CLASSIFICATION_ONLY` (50
+  full-scorer misses → quarantined from scoring like ipinfo/allbirds; partition test green). SCORE-NEUTRAL:
+  offering is OFF the scoring path; scoring-path diff EMPTY (only 2 test files + the quarantined fixture); suite
+  **34/34 green**; canonical replay **46.1 F / 85.5 B / +39.4 UNMOVED**, and a fresh in-fire LIVE static
+  re-score of the pair concurs 46.1/85.5/+39.4; 01:41Z verify floor concurs. Invariants #1–5 all held. NO DM
+  (score-neutral COVERAGE, not sensitive-class; no digest due — 01:4xZ precedes 16:00 UTC on 08-06). See LOG
+  Cycle 273.
+- FOCUS POINTER (Cycle 273 done, LOCAL): NO open peer-gated PR → next fire's first duty is the infra health
+  check. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY
+  on a fresh >6h no-artifact gap. Cloud track rotation UNCHANGED (this LOCAL cycle did not consume the cloud
+  slot): Cycle 272 was COVERAGE → cloud pointer remains **TRUTH next** (METHOD → COVERAGE → TRUTH → READOUT).
+  **NEXT in-cloud COVERAGE (highest — now UNBLOCKED by this cycle's capture):** mine the `waitlist` signal from
+  the new simplybook.me anchor (service_booking 8→9) — the "clients join a queue for fully-booked times /
+  provision without a human when no slot is free" leg, DISTINCT from create/manage/notify/intake; PRECISION-
+  CRITICAL: anchor `waiting list`/`waitlist`/`waiting-list` to a BOOKING context (near appointment/booking/slot/
+  fully-booked/schedule) so a SaaS "join our early-access waitlist"/mailing-list signup does NOT conjure
+  service_booking; validate ABSENT on the canonical pair + retail + null + api fixtures, fires NON-VACUOUSLY on
+  simplybook.me, and add `waitlist` to `_ALL_SERVICE_BOOKING_LABELS` in the anchor test in the SAME change (the
+  maintenance hook installed this cycle). Also open: data_retrieval DATA-FRESHNESS/update-cadence (ipinfo /docs
+  "Daily Data Refresh", Cycle 272); physical_good RETURNS-WINDOW leg; agent-native RETAIL rail surfaces (UCP/MCP).
+  Substantive [LOCAL] frontier: codex-dependent items stay gated — driftflight.com (WITH side) still codex-blocked
+  → cross-model N-curve / LIVE behavioral delta remain blocked on WITH-side reachability (drift-flight.org t2 IS
+  reachable, but the WITH side is where the delta lives); a THIRD calibration anchor / 2nd x402-live merchant;
+  render-generation digital_good (Cycle-168); structured catalog/pricing JSON (Cycle-70).
 - CYCLE 272 — 2026-08-06T01:1xZ (COVERAGE, cloud, direct-to-main, score-neutral). FIRST duty (infra health +
   peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR). Cloud started on stale
   orphan local `main` (`3796519`) while HEAD == origin/main `7c8b60b`; realigned (benign, Cycle-245; fetch

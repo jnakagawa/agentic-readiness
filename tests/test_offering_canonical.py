@@ -560,6 +560,153 @@ def test_service_booking_partition_tracks_storefront_type() -> None:
 
 
 # ---------------------------------------------------------------------------
+# The SECOND service_booking anchor — a SECOND, independent real booking
+# storefront that CLAIMS service_booking. service_booking is tied-thinnest, so a
+# single committed anchor (acuityscheduling.com) left every precision guard resting
+# on ONE storefront's prose; a second independent booking site proves the signals
+# generalize across vendors, not memorize one page. Its DISTINCT value over acuity
+# is twofold: (1) it is a MULTI-archetype, AGENT-NATIVE booking platform — it
+# publishes agent surfaces under agents.simplybook.me (api-docs / reference /
+# manifest) and claims service_booking + subscription + metered_api together, the
+# richest committed booking offering; (2) its committed prose carries a genuine
+# WAITING-LIST capability ("group booking, classes, tickets & events, waiting list,
+# recurring services"; a "Waiting list" booking feature) — the exact evidence the
+# Cycle-256 waitlist candidate was PARKED for lack of (acuity's waitlist was
+# image-only, `waitlist.png`, no prose). So this fixture UNBLOCKS an in-cloud
+# COVERAGE cycle to mine a precision-guarded `waitlist` signal (the "clients join a
+# queue for fully-booked times" leg — provision without a human when no slot is
+# free) against REAL prose, pushing service_booking 8 -> 9. Until then the signal is
+# absent and this anchor pins the prose so a future re-capture that loses it fails
+# here.
+#
+# Maintenance contract mirrors the acuity/ipinfo guards: if a signal-bank change
+# LEGITIMATELY moves what this fixture claims (e.g. the future `waitlist` mine adds a
+# service_booking label), re-capture it [LOCAL] (a static $0 discover_offering crawl
+# -> save_fixture) and update the expected sets below in the SAME PR.
+#
+# Fixture captured [LOCAL] 2026-08-06 (this cycle) via
+# `python -m experiments.capture_offering_fixture simplybook.me
+# fixtures/canonical/simplybook.me.json` — the live discover_offering classification
+# was reproduced byte-faithfully by the offline replay before recording (honest
+# ordering, invariant #4); 6 ephemeral set-cookie headers stripped for determinism,
+# matching the sibling fixtures' zero-set-cookie convention.
+# ---------------------------------------------------------------------------
+_BOOKING2 = "simplybook.me"
+# What the booking platform CLAIMS: a subscription-priced booking service with an
+# agent-native API — the same three-archetype shape as acuity, from independent prose.
+_BOOKING2_CLAIMED = {"subscription", "service_booking", "metered_api"}
+# The thin archetypes this anchor does NOT claim — a second service_booking anchor
+# that, like the first, does not falsely conjure its sibling thin archetypes
+# (nothing is physically fulfilled; no data-retrieval `lookup` family fires).
+_BOOKING2_MUST_BE_NA = {"physical_good", "data_retrieval"}
+# The full known service_booking signal bank (8 signals). Every fired label on this
+# anchor must be one of these — teeth against a spurious signal, and the MAINTENANCE
+# HOOK for the future `waitlist` mine (adding `waitlist` to the bank updates this set
+# in the same PR, the way Cycle 272 updated _DATA_RETRIEVAL_LABELS for dataset-format).
+_ALL_SERVICE_BOOKING_LABELS = {
+    "book", "appointment", "reservation", "schedule", "availability",
+    "manage-booking", "booking-notification", "intake-form",
+}
+# The distinct lifecycle legs that must fire NON-VACUOUSLY on this anchor's real
+# prose (beyond the create act) — the same "operate / complete / provision without a
+# human" legs acuity anchors, proven again on independent prose.
+_BOOKING2_DISTINCT_LEGS = {
+    "availability", "manage-booking", "booking-notification", "intake-form",
+}
+
+
+def _assert_simplybook_anchor() -> None:
+    profile, _ = _discover(_BOOKING2)
+    claimed = set(profile.archetypes)
+    unclaimed = set(profile.unclaimed)
+
+    _check(
+        "homepage" in profile.surfaces_seen,
+        f"{_BOOKING2}: homepage surface was read (discovery had real evidence)",
+    )
+
+    # (a) The claimed SET is exactly {subscription, service_booking, metered_api} —
+    # exact equality is the regression signal in BOTH directions (a spurious ADD or a
+    # DROPPED archetype both fail), independently reproduced on a second booking site.
+    _check(
+        claimed == _BOOKING2_CLAIMED,
+        f"{_BOOKING2}: claimed archetypes == {sorted(_BOOKING2_CLAIMED)} "
+        f"(got {sorted(claimed)})",
+    )
+
+    # claimed and unclaimed partition the fixed template bank exactly (no leaks).
+    _check(
+        claimed | unclaimed == set(ARCHETYPES) and not (claimed & unclaimed),
+        f"{_BOOKING2}: claimed+unclaimed partition the archetype bank "
+        f"(claimed {sorted(claimed)}, unclaimed {sorted(unclaimed)})",
+    )
+
+    # (b) service_booking is CLAIMED on a SECOND, independent booking storefront —
+    # the signals generalize across vendors, not memorize acuity's page.
+    _check(
+        profile.claims("service_booking"),
+        f"{_BOOKING2}: service_booking CLAIMED — a second, independent real "
+        "appointment-booking storefront (the signals generalize across vendors)",
+    )
+
+    # (c) The sibling thin archetypes stay NA: this anchor does not falsely conjure
+    # its neighbours (no physical fulfillment, no data_retrieval `lookup`).
+    _check(
+        _BOOKING2_MUST_BE_NA <= unclaimed,
+        f"{_BOOKING2}: {sorted(_BOOKING2_MUST_BE_NA)} are all NA/unclaimed "
+        f"(got unclaimed {sorted(unclaimed)}) — a second booking anchor still does "
+        "not falsely claim its sibling thin archetypes",
+    )
+
+    # (d) Non-vacuous: service_booking rests on ANCHORED bookable-service evidence.
+    # At least two distinct genuine CREATE labels fire (book / appointment / schedule),
+    # the distinct lifecycle legs (availability / manage / notify / intake) all fire on
+    # this independent prose, every fired label is a KNOWN service_booking signal
+    # (teeth + the future-waitlist maintenance hook), and each carries a quote.
+    booking = next(c for c in profile.claimed if c.archetype == "service_booking")
+    labels = {s.label for s in booking.signals}
+    _check(
+        len(labels & {"book", "appointment", "schedule"}) >= 2,
+        f"{_BOOKING2}: service_booking rests on >=2 genuine bookable-service CREATE "
+        f"signals (got labels {sorted(labels)})",
+    )
+    _check(
+        _BOOKING2_DISTINCT_LEGS <= labels,
+        f"{_BOOKING2}: the distinct lifecycle legs {sorted(_BOOKING2_DISTINCT_LEGS)} "
+        f"all fire on this independent booking prose (got labels {sorted(labels)})",
+    )
+    _check(
+        labels <= _ALL_SERVICE_BOOKING_LABELS,
+        f"{_BOOKING2}: every service_booking signal is a known bank label "
+        f"(got {sorted(labels)}, expected subset of "
+        f"{sorted(_ALL_SERVICE_BOOKING_LABELS)}) — a spurious/uncontracted signal fails here",
+    )
+    _check(
+        all(s.quote and s.quote.strip() for s in booking.signals),
+        f"{_BOOKING2}: every service_booking signal carries quoted evidence",
+    )
+
+    # (e) The WAITLIST-mine enabler: the committed fixture carries genuine
+    # WAITING-LIST capability prose. This is NOT yet a scored/classified signal — it
+    # pins the evidence the parked Cycle-256 `waitlist` mine needs, so a future
+    # re-capture that drops it fails here (and the eventual mine has non-vacuous real
+    # prose to fire on, unlike acuity's image-only `waitlist.png`).
+    raw = open(
+        os.path.join(_FIXTURE_DIR, f"{_BOOKING2}.json"), encoding="utf-8"
+    ).read().lower()
+    _check(
+        "waiting list" in raw,
+        f"{_BOOKING2}: committed fixture carries 'waiting list' capability prose "
+        "(the parked-Cycle-256 waitlist-signal mine enabler; acuity's was image-only)",
+    )
+
+
+def test_simplybook_anchor_offering() -> None:
+    print("test_simplybook_anchor_offering")
+    _assert_simplybook_anchor()
+
+
+# ---------------------------------------------------------------------------
 # The data_retrieval ANCHOR — the FIRST committed fixture that CLAIMS
 # data_retrieval, the SIBLING thin archetype to service_booking. Before this
 # capture data_retrieval had ZERO committed evidence (NA on all six prior
@@ -6968,6 +7115,7 @@ def main() -> int:
         test_retail_sandbox_title_does_not_trip_test_mode,
         test_service_booking_anchor_offering,
         test_service_booking_partition_tracks_storefront_type,
+        test_simplybook_anchor_offering,
         test_data_retrieval_anchor_offering,
         test_data_retrieval_partition_tracks_storefront_type,
         test_nonstorefront_empty_offering,

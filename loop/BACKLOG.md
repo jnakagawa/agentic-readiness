@@ -233,14 +233,25 @@ untouched (26/26, +39.4); no rubric bump. See LOG Cycle 287. Post-merge live beh
   service_booking, metered_api}). Remaining thin gap: **physical_good** got its FIRST post-purchase signal in
   Cycle 266 — `order-tracking` (the order-lifecycle "operate without a human" leg, mined from allbirds' llms.txt
   "track orders" / "Order tracking" + moleskine's "Check Your Order Status"), DISTINCT from `fulfillment`'s static
-  "tracking number" datum. So physical_good grows 9→10. REMAINING in-cloud physical_good candidate (Cycle-266 LOG
-  "next hypothesis"): a RETURNS-WINDOW / return-authorization leg (the return-lifecycle capability, distinct from
-  the static `returns` policy-page signal) IF committed retail prose (allbirds/moleskine) carries a machine-readable
-  return window; secondary the agent-native RETAIL rail surfaces (UCP `/.well-known/ucp`, MCP) as classification
-  evidence distinct from driftflight. The offering signal bank is metered_api-HEAVY: metered_api 26, digital_good
-  11 (post-Cycle-164 `variant-selection`), physical_good 10 (post-Cycle-266 `order-tracking`), subscription 10
-  (post-Cycle-276 `subscription-cancel`), service_booking 9 (post-Cycle-281 `waitlist`), data_retrieval 8
-  (post-Cycle-288 `data-freshness`). NOTE (superseded by Cycles 240/242/243): the
+  "tracking number" datum. So physical_good grows 9→10. UPDATE Cycle 292 (COVERAGE, cloud, direct-to-main,
+  score-neutral): the RETURNS-WINDOW candidate is now SHIPPED as `return-window` (the REVERSE-logistics leg — the
+  machine-readable return WINDOW an agent reasons over to reverse a purchase without a human, the reverse-lifecycle
+  analog of `order-tracking` and the physical_good sibling of subscription's cancel window), DISTINCT from the static
+  `returns` policy-existence signal (policy EXISTS vs window IS N days). Mined from the committed www.moleskine.com
+  homepage "Extended return period: 1-month to decide". Precision-guarded against the retail duration minefield (NEVER
+  a bare duration, NEVER a bare "return window" — the JS `return window.<member>` idiom; "return" must tie to a
+  period/window noun or a duration), so moleskine's own "12 Month Planner"/"18-Month Planner" product names, allbirds'
+  CCPA "12-month period"/"12 months preceding", "2 weeks to ship", and JS "return window.CQuotient" all dodge. Fires
+  on moleskine only (deepens its physical_good claim, set unchanged {physical_good, subscription}), ABSENT on all 10
+  others incl. allbirds/books.toscrape/the canonical pair. `test_offering.py` 113→115 (precision-synthetic 7-fire/
+  8-dodge + real-captured) + `_ISOLATION_EVIDENCE` row → test_offering_canonical 70/70. So physical_good grows 10→11.
+  REMAINING in-cloud physical_good candidate: a return-AUTHORIZATION / RMA leg (distinct from the return WINDOW) IF a
+  committed anchor carries a machine-readable RMA/authorization step; secondary the agent-native RETAIL rail surfaces
+  (UCP `/.well-known/ucp`, MCP) as classification evidence distinct from driftflight. The offering signal bank is
+  metered_api-HEAVY: metered_api 26, digital_good 11 (post-Cycle-164 `variant-selection`), physical_good 11
+  (post-Cycle-292 `return-window`), subscription 10 (post-Cycle-276 `subscription-cancel`), service_booking 9
+  (post-Cycle-281 `waitlist`), data_retrieval 8 (post-Cycle-288 `data-freshness`). See LOG Cycle 292.
+  NOTE (superseded by Cycles 240/242/243): the
   claim below that service_booking/data_retrieval "CANNOT be strengthened non-vacuously in-cloud" held only until their
   first committed anchors landed (acuityscheduling.com / ipinfo.io) — data_retrieval has since gained `batch-retrieval`
   against real evidence; service_booking's anchor is still un-mined. The three thin archetypes originally could not be

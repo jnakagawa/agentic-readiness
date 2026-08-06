@@ -1,6 +1,63 @@
 # Loop state
 
-- Cycle counter: 291
+- Cycle counter: 292
+- CYCLE 292 — 2026-08-06T~14:2xZ (COVERAGE, cloud, direct-to-main, score-neutral). FIRST duty (infra health +
+  peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR; #148 operator-merged `7d47f2e`
+  before Cycle 288, all subsequent cycles direct-to-main). Cloud detached at origin/main `7303a50`, local `main`
+  stale orphan `3e318f1` → realigned local `main` to origin/main before work (benign, no history rewrite).
+  **INFRA HEALTHY:** newest verify by FILENAME `runs/local/verify_20260806T134105Z.json` (13:41Z, tests_ok=true 38
+  suites, 46.1 F / 85.5 B / +39.4), ~43min old at fire (14:24Z); :41 cadence holding (11:41Z→12:41Z→13:41Z) →
+  RUNNER-HEALTH WATCH NORMAL. Fresh checkout had NO `.venv` → rebuilt (py3.11); full suite **38/38 green** before the
+  change. **TRACK (cloud COVERAGE / physical_good — 2nd-thinnest bank):** executed STATE's named next-COVERAGE lever —
+  the physical_good RETURNS-WINDOW leg (allbirds/moleskine) — chosen over the data_retrieval RESPONSE-SCHEMA candidate
+  (that one is gated on "verify vs dataset-format first", collision-prone; return-window has CONFIRMED committed
+  evidence). **IMPROVEMENT:** NEW physical_good signal `return-window` — the REVERSE-logistics leg (the machine-readable
+  return WINDOW an agent reasons over to reverse a purchase inside the allowed window without a human), the
+  reverse-lifecycle analog of `order-tracking` and the physical_good sibling of subscription's cancel window. GENUINELY
+  DISTINCT from `returns` (that matches only the STATIC existence of a returns POLICY page; THIS keys on the window
+  DURATION — policy EXISTS vs window IS N days). Mined from the committed `www.moleskine.com` homepage benefit
+  "Extended return period: 1-month to decide". **PRECISION-CRITICAL** (bare duration+month/week/day is a retail
+  minefield): NEVER a bare duration, NEVER a bare "return window" (would trip the JS `return window.<member>` idiom in
+  both anchors' bundles) — "return" must TIE to a period/window noun or a duration (`return period`; a duration LEADING
+  `return(s)`; a duration leading `return window`/`return window of N`; `return within N day|week|month`). So moleskine's
+  own "12 Month Planner"/"18-Month Planner" product names, allbirds' CCPA "12-month period"/"12 months preceding", the
+  "2 weeks to ship" estimate, and the JS "return window.CQuotient" all dodge. **EVIDENCE:** NEW
+  `test_physical_good_return_window_precision_synthetic` (7 positives fire / 8 product-name+retention+shipping+JS-idiom+
+  bare-returns negatives dodge) + NEW `test_return_window_fires_on_real_captured_surfaces` (moleskine through
+  from_fixture→discover_offering fires, quote "Extended return period: 1-month to decide", claimed SET unchanged
+  {physical_good, subscription}; ABSENT on allbirds/books.toscrape/pair/api/data/booking/null) → test_offering 113→**115**;
+  `_ISOLATION_EVIDENCE += return-window` → test_offering_canonical 70/70; runner-registration green. physical_good
+  **10→11**; bank now metered_api 26 / digital_good 11 / **physical_good 11** / subscription 10 / service_booking 9 /
+  data_retrieval 8. **SHIP (direct-to-main):** classifier signal OFF the scoring path (`git diff --stat -- asrs/scoring.py
+  asrs/report.py asrs/probes asrs/battery.py asrs/reliability.py rubric/ fixtures/ experiments/ loop/local_verify.py
+  batteries/` EMPTY; only asrs/offering.py +41 + test_offering.py +125 + test_offering_canonical.py +1); `discover_offering`
+  feeds `--battery auto` task selection only (direct-to-main tier for offering signals, Cycles 288/281/272/266 precedent);
+  no rubric bump. Suite **38/38 green** after. **CANONICAL UNMOVED:** static replay 46.1 F / 85.5 B / **+39.4** (concurs
+  13:41Z floor); off the scoring path (diff empty) → no score can move, AND physical_good is NA on BOTH canonical fixtures
+  by construction → a physical_good signal cannot reach either score; fires on moleskine only. Invariants #1 ($0 pure regex
+  + read-only tests)–#5 held; zero codex, zero paid ops. NO DM (score-neutral COVERAGE, not a DM-enumerated sensitive
+  class; no digest due — ~14:2xZ precedes 16:00 UTC on 08-06). See LOG Cycle 292. Commit `140d26a`.
+- FOCUS POINTER (Cycle 292 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
+  RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY on a fresh
+  >6h no-artifact gap. Cloud track rotation: Cycle 292 was COVERAGE → **TRUTH next** (METHOD → COVERAGE → TRUTH →
+  READOUT). NEXT COVERAGE (cloud): physical_good now spans fulfillment / order-tracking / return-window (forward +
+  reverse lifecycle) — remaining thin-bank frontier is data_retrieval (8, thinnest) RESPONSE-SCHEMA / field-contract leg
+  IF committed ipinfo prose carries it distinct from `dataset-format` (verify first); a return-AUTHORIZATION / RMA leg
+  (distinct from the return WINDOW) IF a real anchor carries it; subscription PAUSE/RESUME (polar `subscription.paused`/
+  uncancel) IF precision-guardable. NEXT TRUTH (cloud): the non-anchor cross-path weld is gated on a member with BOTH a
+  committed replay baseline AND ≥2 stable sweep presences — books.toscrape.com has the baseline but is ABSENT from the
+  sweeps → [LOCAL] cadence ADDING it to `experiments/calibration_sweep.py`'s POPULATION unlocks it. NEXT METHOD (cloud):
+  the probe-order guard (Cycle 291) covers the STATIC scorer; the sibling INTERNAL axis on the BEHAVIORAL path (does
+  `battery.py`/`reliability.py` aggregation depend on task/trial arrival order?) OR fixture-capture determinism. NEW
+  PEER-GATED P1 (still queued, Cycle 291): sort `caps_applied` in scoring.py so the RAW report is byte-reproducible under
+  check reordering (Cycle-291 teeth are its spec; canonical-neutral — every committed `caps_applied` empty). NEXT READOUT
+  (from Cycle 290): carry a one-line POPULATION-POSITION note to the MAIN card hero beside the reference-gap badge
+  (`_population_band_series`, Cycle-285 badge pattern). Standing METHOD tripwire: own-tool refusal vocab drifted THREE
+  times (269, 284, 286→287) → keep the periodic leak scan over each fresh committed panel. NEXT calibration cadence:
+  population 17 scored (target 15–20); next broadening = a genuine ACP/UCP/MPP merchant or a 2nd x402-live site.
+  Substantive [LOCAL] frontier: PR #148 post-merge live behavioral verification (still queued); ADD books.toscrape.com to
+  the sweep POPULATION; cross-model SHOPPER delta still codex-blocked on the WITH side; a THIRD calibration anchor / 2nd
+  x402-live merchant; render-generation digital_good (Cycle-168); structured catalog/pricing JSON (Cycle-70).
 - CYCLE 291 — 2026-08-06T~13:2xZ (METHOD, cloud, direct-to-main, tests-only, score-neutral). FIRST duty
   (infra health + peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR; #148
   operator-merged `7d47f2e` before Cycle 288). Cloud detached at origin/main `530a0f7`, local `main` stale orphan
@@ -323,116 +380,6 @@
   cadence: population 18 (target 15–20); next broadening = a genuine ACP/UCP/MPP merchant or a 2nd x402-live site.
   Substantive [LOCAL] frontier: the new `_ENV_BLOCK_RE` peer-gated fix (this fire); cross-model SHOPPER delta still
   codex-blocked on the WITH side; a THIRD calibration anchor / 2nd x402-live merchant; render-generation
-  digital_good (Cycle-168); structured catalog/pricing JSON (Cycle-70).
-- CYCLE 285 — 2026-08-06T08:2xZ (READOUT, cloud, direct-to-main, display-only, score-neutral). FIRST duty
-  (infra health + peer-gate review): `list_pull_requests` state=open → **PR #147 OPEN** (opened by LOCAL Cycle
-  284) → this fresh cloud fire is the mandated reviewer. Cloud started detached at origin/main `0c98355` with
-  local `main` at stale orphan `3e318f1`; realigned local `main` to origin/main post-merge (benign, no history
-  rewrite). **INFRA HEALTHY:** newest verify by FILENAME `runs/local/verify_20260806T074106Z.json` (07:41Z,
-  tests_ok=true 37 suites, 46.1 F / 85.5 B / +39.4), ~34min old at fire (08:15Z 08-06), well inside the 6h floor;
-  :41 cadence holding (05:41Z→06:41Z→07:41Z) → RUNNER-HEALTH WATCH NORMAL. Bench up; full suite **37/37 green**.
-  **PEER-GATE REVIEW → #147 SURVIVES → MERGED (`60c1a0f`):** adversarial re-derivation — (1) teeth: pre-284
-  mandatory-"browser" regex MISSED the leak phrase; (2) an INDEPENDENT differential leak scan (OLD vs NEW
-  `_ENV_BLOCK_RE`) over ALL **19** committed transcripts flips EXACTLY `driftflight.com` codex t2 (all-false)
-  False→True, zero collateral (matches the committed re-aggregate, not just trusts it); (3) attribution honesty
-  both directions (site-attributed + anchorless 403 excluded; `test_attribution.py` #13 13/13); (4) static path
-  UNTOUCHED (`git diff dda1d89..f9b2fd5 -- asrs/scoring.py …` EMPTY; replay 26/26, +39.4 invariant — `_ENV_BLOCK_RE`
-  feeds only behavioral `battery.py`/`reliability.py`); (5) suite 37/37 on the PR branch; (6) vendor-neutral; (7)
-  invariant #2 no rubric bump (consistent with the Cycle-269 precedent — an identical env-block broadening did NOT
-  bump `BATTERY_SEMANTICS_VERSION="b1"`; this is an inv-#4 attribution fix, not battery-structure). The live
-  post-merge panel re-run (`driftflight.com valid_runs=2`) needs codex+network → stays queued [LOCAL]; deterministic
-  re-aggregation already committed. **TRACK (cloud READOUT):** surfaced the reference-gap HELD/MOVED verdict as a
-  one-line badge on the MAIN card hero (STATE's named READOUT candidate). Extracted a PURE `_reference_gap_verdict`
-  (asrs/scorecard.py) SHARED by the calibration trend card (refactored, behavior-preserving) and a new
-  `_reference_gap_badge_from_sweeps` wired into `_hero`/`build_scorecard` (auto-loads committed sweeps; `_sweeps=`
-  injectable for hermetic tests), so the headline can NEVER disagree with the page it links to. Real render over the
-  3 committed v0.7 sweeps: **"Population check: the reference gap held at +39.4 across 3 same-version sweeps"** (green;
-  moved→amber). Not-scorable = gap not 0, inherited from the shared verdict. **VALIDATION:** 4 new test_readout tests
-  (shared-verdict held/moved/not-scorable/None + badge↔card agreement + version-isolation/absent + end-to-end main-card
-  hero via `_sweeps=`) → test_readout 99→103; runner-registration green. **SCORE-NEUTRAL:** scoring/behavioral-path
-  diff EMPTY (only asrs/scorecard.py + test_readout.py); suite 37/37; in-fire replay 26/26, 46.1 F / 85.5 B / +39.4
-  (concurs 07:41Z floor). Invariants #1 ($0 pure readout)–#5 held. NO DM DUE per comms (see focus pointer). See LOG
-  Cycle 285.
-- FOCUS POINTER (Cycle 285 done, cloud): **NO open peer-gated PR** (#147 MERGED this fire, `60c1a0f`) → next fire's
-  first duty is the infra health check. **NO DM this fire (correct per the NARROW comms policy):** PR #147 is an
-  aggregation/attribution refinement, NOT a DM-enumerated sensitive class (payment/signing, weights, caps, removals) —
-  the DM list is deliberately narrower than the peer-gate list, so a merged aggregation fix does not trigger a DM; the
-  READOUT ship is display-only/score-neutral; and 08:2xZ precedes 16:00 UTC so no digest is due. #147's merge + the
-  Cycle-284 out-of-scope 2nd-sentence "unsafe" finding are QUEUED for the next 16:00 UTC daily digest (per Cycle 284). RUNNER STALL fully RESOLVED + GUARDED
-  (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY on a fresh >6h no-artifact gap. Cloud track
-  rotation: Cycle 285 was READOUT → **METHOD next** (METHOD → COVERAGE → TRUTH → READOUT). NEXT METHOD (cloud):
-  host-environment reproducibility is SATURATED (hash-seed 267 / timezone 271 / encoding 277 / locale 280) — move
-  OFF it: probe-order independence of the aggregate (reverse/shuffle the probe list, assert the serialized report is
-  invariant) or fixture-capture determinism. NEXT READOUT: a population-median/band overlay across sweeps (whole-cohort
-  spread, not just the anchor pair) once ≥3 sweeps share a stable NON-anchor overlap — [LOCAL]-gated on the cadence
-  committing that non-anchor baseline; also a self-containment cleanup (build_scorecard still hardcodes an external
-  Google-Fonts `<link>`). NEXT in-cloud COVERAGE (still open): subscription PAUSE/RESUME (polar
-  `subscription.paused`/uncancel) IF precision-guardable; data_retrieval DATA-FRESHNESS (ipinfo "Daily Data Refresh");
-  physical_good RETURNS-WINDOW (allbirds/moleskine). NEXT TRUTH (cloud): widen the cross-path anchor weld to a NON-anchor
-  population member once ≥2 committed sweeps share a stable reachable non-anchor + a committed offline replay baseline.
-  Standing METHOD tripwire: the own-tool refusal vocab has drifted TWICE (Cycle 269, 284) → keep a periodic leak scan
-  over each fresh committed panel. NEXT calibration cadence: population 18 (target 15–20); next broadening = a genuine
-  ACP/UCP/MPP merchant or a 2nd x402-live site. Substantive [LOCAL] frontier: the post-#147-merge live panel re-run
-  (verify `driftflight.com valid_runs=2` + wider behavioral delta); cross-model SHOPPER delta still codex-blocked on the
-  WITH side; a THIRD calibration anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168); structured
-  catalog/pricing JSON (Cycle-70).
-- CYCLE 284 — 2026-08-06T07:5xZ (METHOD, LOCAL, PEER-GATE PR #147, behavioral scoring semantics). FIRST duty
-  (infra health + peer-gate review): `gh pr list --state open` → `[]` (no open peer-gated PR). HEAD ==
-  origin/main == local `main` all at `dda1d89` (clean, no stale-orphan realign). **INFRA HEALTHY:** newest verify
-  by FILENAME `runs/local/verify_20260806T074106Z.json` (07:41Z, tests_ok=true 37 suites, 46.1 F / 85.5 B /
-  +39.4), ~1min old at fire (07:42Z 08-06), deep inside the 6h floor; :41 cadence holding
-  (05:41Z→06:41Z→07:41Z) → RUNNER-HEALTH WATCH NORMAL. `.venv` resolves; full suite **37/37 green** before the
-  change. **TRACK (LOCAL METHOD / attribution honesty):** executed the top-of-P0 `[LOCAL]` item — the peer-gated
-  `_ENV_BLOCK_RE` broadening queued by Cycle 282's RESULT-4 (STATE's named next-to-implement). Chosen because the
-  leaking transcript is ALREADY committed → deterministically verifiable vs real evidence (stronger than a fresh
-  per-trial-nondeterministic panel). **THE LEAK:** `driftflight.com` codex#2 refused *"Interactive access to
-  driftflight.com was denied before the homepage loaded."* — the Cycle-269 v0.7(a) alt REQUIRED "interactive
-  **browser** access", the live phrasing dropped "browser" → `_is_env_blocked`=False → all-false own-tool refusal
-  counted as a VALID site run, WITH-side `bhv_*` flipped unanimous-PASS→`-inconsistent`, narrowing the delta.
-  **FIX (peer-gated):** v0.7(a) leading alternation broadens to
-  `(?:interactive(?: browser)? access|direct browser access|browser access permission)` — "browser" OPTIONAL for
-  the "interactive access" own-apparatus concept, an own-apparatus anchor ("interactive"/"browser") stays
-  REQUIRED (bare "Access Denied" 403 body never matches) and `_NOT_SITE_ATTRIBUTED` unchanged (…denied BY the
-  firewall/server/Cloudflare STILL never excused). NEW `test_attribution.py` #13 (literal committed transcript
-  positive + pre-284 mandatory-"browser" teeth + site-attributed/anchorless-403 negatives + reputation-"unsafe"
-  kept out-of-scope, #8 family): attribution 12/12→13/13; suite stays 37/37. **EVIDENCE (deterministic, $0):**
-  (1) leak scan over ALL committed transcripts → fix flips EXACTLY ONE run (driftflight.com codex t2) False→True,
-  zero collateral, all site-side phrasings stay False; (2) faithful re-aggregation of the committed Cycle-282
-  panel through the fixed code (`runs/local/env_block_nearmiss_reaggregate_20260806T075510Z.json`, force-added):
-  `driftflight.com` WITH-side `bhv_found_product` PARTIAL(valid_runs=3)→**PASS(valid_runs=2)**, reachability
-  reached=3/blocked=1→reached=2/**blocked=2** (both codex routed to reachability); `drift-flight.org` UNCHANGED
-  (valid_runs=2, blocked=2) → behavioral delta WIDENS, capability-honest. **SHIP (peer gate):** PR #147
-  `loop/env-block-interactive-access-nearmiss` (commit `f9b2fd5`) — behavioral scoring semantics ⇒ peer-gated,
-  next cycle reviews+self-merges (NEVER this fire). Static scoring path UNTOUCHED (`git diff -- asrs/scoring.py
-  asrs/report.py asrs/probes rubric/ fixtures/` EMPTY); static replay 26/26, 46.1 F / 85.5 B / +39.4 invariant
-  by construction (`_is_env_blocked` runs only on `--behavioral` panels; concurs 07:41Z floor). Invariants #1
-  ($0)–#5 held (no rubric-version bump — attribution routing within behavioral checks, not weight/cap/max_points;
-  reviewer to confirm); zero codex, zero paid ops. NO DM (not payment/weights/caps/removals sensitive-class; no
-  digest due — 07:5xZ precedes 16:00 UTC on 08-06 → flag PR #147 + the out-of-scope 2nd-sentence "unsafe" finding
-  in the next digest). See LOG Cycle 284.
-- FOCUS POINTER (Cycle 284 done, LOCAL): **ONE open peer-gated PR now — #147** (`_ENV_BLOCK_RE` interactive-access
-  near-miss fix) → next fire's FIRST duty is to adversarially review + SELF-MERGE #147: re-run the leak scan + the
-  site-attributed negatives (the fix only routes MORE codex refusals to reachability, never fewer), confirm the
-  static delta unmoved (+39.4), and post-merge re-run the Cycle-282 panel for `driftflight.com valid_runs=2` +
-  a wider behavioral delta. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL —
-  re-escalate ONLY on a fresh >6h no-artifact gap. Cloud track rotation UNCHANGED (this LOCAL cycle did not
-  consume the cloud slot): cloud pointer remains **READOUT next** per Cycle 283 (METHOD → COVERAGE → TRUTH →
-  READOUT). NEW candidate from this cycle (METHOD): the 2nd missed sentence — *"…classified driftflight.com as
-  unsafe and blocked access."* — is a genuine own-tool block in the ambiguous reputation-"unsafe" vocabulary
-  (indistinguishable from a site-side WAF "flagged unsafe"), OUT of scope (#8 family); only a SEPARATE
-  carefully-guarded proposal that requires a disambiguating own-apparatus SUBJECT anchor should attempt it.
-  Standing METHOD tripwire: the own-tool refusal vocab has now drifted TWICE (Cycle 269, 284) → keep a periodic
-  leak scan over each fresh committed panel. NEXT in-cloud COVERAGE (still open): subscription PAUSE/RESUME (polar
-  `subscription.paused`/uncancel) IF precision-guardable; data_retrieval DATA-FRESHNESS (ipinfo "Daily Data
-  Refresh"); physical_good RETURNS-WINDOW (allbirds/moleskine). NEXT METHOD (cloud): host-environment
-  reproducibility is SATURATED (hash-seed 267 / timezone 271 / encoding 277 / locale 280) — move OFF it
-  (probe-order independence of the aggregate, or fixture-capture determinism). NEXT READOUT: population-median/band
-  overlay across sweeps once ≥3 sweeps share a stable non-anchor; or a gap-held/moved verdict badge on the main
-  card. NEXT TRUTH (cloud, from Cycle 283): widen the cross-path anchor weld to a NON-anchor population member once
-  ≥2 committed sweeps share a stable reachable non-anchor + a committed offline replay baseline. NEXT calibration
-  cadence: population 18 (target 15–20); next broadening = a genuine ACP/UCP/MPP merchant or a 2nd x402-live site
-  (scarce — record reachability as its own signal). Substantive [LOCAL] frontier: cross-model SHOPPER delta still
-  codex-blocked on the WITH side (RESULT 2); a THIRD calibration anchor / 2nd x402-live merchant; render-generation
   digital_good (Cycle-168); structured catalog/pricing JSON (Cycle-70).
 <!-- STATE COMPACTED at Cycle 260 (2026-08-05T~17:1xZ, self-healing/COVERAGE, direct-to-main, score-neutral).
      STATE.md had accreted the full per-cycle history back to ~Cycle 5 (7798 lines / ~790KB) and could no

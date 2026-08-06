@@ -1,0 +1,99 @@
+{
+ "kind": "env-block-nearmiss-reaggregate",
+ "cycle": 284,
+ "fix": "Cycle-284 _ENV_BLOCK_RE broadening: 'browser' made optional for the 'interactive access' own-tool concept (+ 'direct browser access')",
+ "source_panel": "runs/local/behavioral_canonical_delta_20260806T064733Z",
+ "leaking_phrase": "Interactive access to driftflight.com was denied before the homepage loaded.",
+ "domains": {
+  "driftflight.com": {
+   "per_run": [
+    {
+     "model": "claude",
+     "trial": 1,
+     "env_blocked_fixed": false,
+     "any_checkpoint": true
+    },
+    {
+     "model": "claude",
+     "trial": 2,
+     "env_blocked_fixed": false,
+     "any_checkpoint": true
+    },
+    {
+     "model": "codex",
+     "trial": 1,
+     "env_blocked_fixed": true,
+     "any_checkpoint": false
+    },
+    {
+     "model": "codex",
+     "trial": 2,
+     "env_blocked_fixed": true,
+     "any_checkpoint": false
+    }
+   ],
+   "fixed": {
+    "bhv_found_product_status": "PASS",
+    "valid_runs": 2,
+    "reachability_status": "PARTIAL",
+    "reached_runs": 2,
+    "blocked_runs": 2,
+    "blocked_by_model": [
+     "codex"
+    ]
+   },
+   "old_committed": {
+    "bhv_found_product_status": "partial",
+    "valid_runs": 3,
+    "reachability_status": "partial",
+    "reached_runs": 3,
+    "blocked_runs": 1
+   }
+  },
+  "drift-flight.org": {
+   "per_run": [
+    {
+     "model": "claude",
+     "trial": 1,
+     "env_blocked_fixed": false,
+     "any_checkpoint": true
+    },
+    {
+     "model": "claude",
+     "trial": 2,
+     "env_blocked_fixed": false,
+     "any_checkpoint": true
+    },
+    {
+     "model": "codex",
+     "trial": 1,
+     "env_blocked_fixed": true,
+     "any_checkpoint": false
+    },
+    {
+     "model": "codex",
+     "trial": 2,
+     "env_blocked_fixed": true,
+     "any_checkpoint": false
+    }
+   ],
+   "fixed": {
+    "bhv_found_product_status": "PASS",
+    "valid_runs": 2,
+    "reachability_status": "PARTIAL",
+    "reached_runs": 2,
+    "blocked_runs": 2,
+    "blocked_by_model": [
+     "codex"
+    ]
+   },
+   "old_committed": {
+    "bhv_found_product_status": "pass",
+    "valid_runs": 2,
+    "reachability_status": "partial",
+    "reached_runs": 2,
+    "blocked_runs": 2
+   }
+  }
+ }
+}

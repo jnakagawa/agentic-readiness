@@ -95,8 +95,15 @@ _ENV_BLOCK_RE = re.compile(
     # v0.7 (a): the agent's own browser gate declining/denying ITS access.
     # The gap tolerates a dot INSIDE a token (a domain like "driftflight.com")
     # but stops at a sentence boundary (". "), so a match can't span into an
-    # unrelated following sentence.
-    r"|(?:interactive browser access|browser access permission)"
+    # unrelated following sentence. Cycle 284: "browser" made OPTIONAL for the
+    # "interactive access" concept (+ "direct browser access") — a LIVE near-miss
+    # ("Interactive access to driftflight.com was denied before the homepage
+    # loaded.", runs/local/behavioral_canonical_delta_20260806T064733Z/) dropped
+    # the word "browser" and leaked past the mandatory-"browser" alternation,
+    # counting codex's own hosted-browser refusal as a valid all-false site run
+    # (invariant #4). "interactive"/"browser" stay REQUIRED as the own-apparatus
+    # anchor so a bare site 403 body ("Access Denied") is never matched.
+    r"|(?:interactive(?: browser)? access|direct browser access|browser access permission)"
     r"(?:[^.]|\.(?=\S)){0,60}?"
     r"(?:denied|declined|refused|rejected|blocked)" + _NOT_SITE_ATTRIBUTED +
     # v0.7 (b): the browser's OWN site-permission / safety boundary as the gate.

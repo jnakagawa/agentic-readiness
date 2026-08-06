@@ -4066,6 +4066,97 @@ def test_cancel_job_fires_on_real_captured_openapi():
     print("  ok: the retail HTML 'next' catalog link does NOT fire pagination (real-data precision)")
 
 
+def test_subscription_cancel_precision_synthetic():
+    # PROGRAMMATIC SUBSCRIPTION CANCELLATION — whether an autonomous agent can CANCEL /
+    # revoke its OWN recurring plan through an API call — is the lifecycle-END,
+    # capital-safety "bound your own recurring spend" leg for the subscription
+    # archetype: a plan an agent can start but not programmatically cancel silently
+    # accrues charges, so a documented cancel/revoke contract makes it claim
+    # subscription via the new subscription-cancel signal. Each POSITIVE is real,
+    # vendor-neutral PROGRAMMATIC cancel vocabulary (a cancel_at_period_end parameter, a
+    # subscription.canceled/.revoked machine event, a subscriptions cancel/revoke
+    # endpoint, an adjacent cancel/revoke-subscription operation); each NEGATIVE is
+    # cancel/revoke-SHAPED noise that must NOT fire it (the precision traps: the HUMAN
+    # self-service "cancel anytime" (ipinfo) and "cancel or downgrade your subscription
+    # from account settings" (simplybook), a human "cancel your subscription", an ORDER
+    # cancel, a booking cancellation POLICY, a JOB cancel — cancel-job's turf — and
+    # API-KEY revocation).
+    positives = {
+        "cancel_at_period_end param": "Set `cancel_at_period_end=true` to schedule the plan to end.",
+        "revoke subscription operation": "The `Revoke Subscription` operation ends billing immediately.",
+        "cancel-subscription path": "Call the customer_portal/cancel-subscription endpoint to stop it.",
+        "subscription.canceled webhook": "Listen for the `subscription.canceled` webhook event.",
+        "subscription.revoked event": "When retries are exhausted a `subscription.revoked` event is sent.",
+        "subscriptions cancel endpoint": "Call `subscriptions/{id}/cancel` to stop the renewal.",
+        "revoke subscriptions programmatically": "List, create, and revoke subscriptions programmatically.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("subs.test", {"homepage": text})
+        assert prof.claims("subscription"), (name, prof.archetypes)
+        labels = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "subscription"
+            for s in c.signals
+        }
+        assert "subscription-cancel" in labels, (name, labels)
+    print(f"  ok: {len(positives)} real programmatic subscription-cancel phrasings each fire subscription-cancel")
+
+    negatives = {
+        "cancel anytime": "No contracts — you can cancel anytime you want.",
+        "cancel or downgrade (human FAQ)": "Yes, you can cancel or downgrade your subscription from your account settings.",
+        "cancel your subscription (human)": "Cancel your subscription anytime from the billing page.",
+        "cancel order": "You can cancel your order within 24 hours of purchase.",
+        "cancellation policy": "Read our cancellation policy before you reserve a room.",
+        "cancel the prediction (job)": "Cancel the prediction to stop billing immediately.",
+        "keys revoked (api-key)": "Old keys are revoked immediately when you rotate.",
+        "canceled flight": "We regret that we canceled the flight due to weather.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("noise.test", {"homepage": text})
+        labels = {s.label for c in prof.claimed for s in c.signals}
+        assert "subscription-cancel" not in labels, (name, labels, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} cancel/revoke-shaped noise strings do NOT fire subscription-cancel (precision)"
+    )
+
+
+def test_subscription_cancel_fires_on_real_captured_polar():
+    # Real-evidence, NON-VACUOUS, END-TO-END: subscription-cancel fires on the GENUINE
+    # programmatic cancel/revoke contract captured live from polar.sh (a real
+    # Merchant-of-Record billing platform) — its committed surfaces document a
+    # `cancel_at_period_end` scheduling parameter, `subscription.canceled`/`.revoked`
+    # webhook events, and `Cancel/Revoke Subscription` operations, captured verbatim in
+    # the fixture. Run the REAL discovery path (from_fixture -> discover_offering) so the
+    # signal is exercised exactly as a live crawl would.
+    #
+    # SCORE-NEUTRAL by construction: polar.sh already claims subscription (among its
+    # archetypes), so a cancel contract on its spec only deepens that claim's evidence —
+    # never adds an archetype or reorders. The classifier is off the scoring path.
+    ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "polar.sh.json"))
+    prof = offering.discover_offering(ctx)
+
+    assert prof.claims("subscription"), prof.archetypes
+    subs = next(c for c in prof.claimed if c.archetype == "subscription")
+    sc = [s for s in subs.signals if s.label == "subscription-cancel"]
+    assert sc, {s.label for s in subs.signals}
+    quote = sc[0].quote.lower()
+    assert "cancel" in quote or "revoke" in quote, sc[0].quote
+    print(f"  ok: subscription-cancel fires on REAL captured polar.sh contract — quote: {sc[0].quote!r}")
+
+    # Real-data PRECISION: the HUMAN self-service cancel prose on OTHER real fixtures —
+    # ipinfo.io's "you can cancel anytime you want" FAQ and simplybook.me's "cancel or
+    # downgrade your SimplyBook.me subscription from your account settings" FAQ — is NOT
+    # a programmatic capability and must NOT fire subscription-cancel, so those sites
+    # gain no spurious lifecycle-END claim.
+    for dom in ("ipinfo.io", "simplybook.me"):
+        nctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        nprof = offering.discover_offering(nctx)
+        nlabels = {s.label for c in nprof.claimed for s in c.signals}
+        assert "subscription-cancel" not in nlabels, (dom, nlabels)
+    print("  ok: human 'cancel anytime' / 'cancel or downgrade your subscription' do NOT fire subscription-cancel (real-data precision)")
+
+
 def test_webhook_verification_precision_synthetic():
     # WEBHOOK AUTHENTICITY VERIFICATION — whether an agent can TRUST that an inbound
     # async callback is GENUINELY from the API rather than a forged/spoofed webhook
@@ -5752,6 +5843,8 @@ def main() -> int:
         test_plan_allowance_fires_on_real_captured_subscription_prose,
         test_plan_allowance_signal_is_relabel_invariant,
         test_plan_allowance_relabel_has_teeth,
+        test_subscription_cancel_precision_synthetic,
+        test_subscription_cancel_fires_on_real_captured_polar,
         test_plan_allowance_noise_surface_invariance,
         test_failure_not_billed_metering_precision_synthetic,
         test_failure_not_billed_fires_on_real_captured_api_docs,

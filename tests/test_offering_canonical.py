@@ -775,6 +775,7 @@ _SUBS_ANCHOR_CLAIMED = {
 _ALL_SUBSCRIPTION_LABELS = {
     "subscription", "per-month-price", "per-month", "recurring", "annual-billing",
     "seat-licensing", "free-trial", "plan-purchase", "plan-allowance",
+    "subscription-cancel",
 }
 # The genuine recurring-commitment core — at least three must fire NON-VACUOUSLY, so
 # subscription rests on real billing-cadence evidence, not a lone marketing word.
@@ -838,13 +839,17 @@ def _assert_polar_anchor() -> None:
         all(s.quote and s.quote.strip() for s in subs.signals),
         f"{_SUBS_ANCHOR}: every subscription signal carries quoted evidence",
     )
-    # The lifecycle-END signal is NOT yet in the bank — this anchor is captured to
-    # UNBLOCK it, so it must be absent today (the mine pushes subscription 9 -> 10).
+    # The lifecycle-END signal `subscription-cancel` was MINED from this anchor
+    # (Cycle 276, subscription 9 -> 10): it must now fire NON-VACUOUSLY here — the
+    # programmatic cancel/revoke contract is exactly what this fixture was captured
+    # for, and it is ABSENT on every other committed fixture incl. the canonical pair
+    # (the ipinfo "cancel anytime" / simplybook human "cancel or downgrade your
+    # subscription" false positives are dodged; verified 86 spans vs 0 elsewhere).
     _check(
-        "subscription-cancel" not in labels,
-        f"{_SUBS_ANCHOR}: `subscription-cancel` is not yet a bank signal (this fixture "
-        "is the [LOCAL] enabler for that in-cloud mine; add it to _ALL_SUBSCRIPTION_LABELS "
-        "in the same PR)",
+        "subscription-cancel" in labels,
+        f"{_SUBS_ANCHOR}: `subscription-cancel` fires (the programmatic cancel/revoke "
+        "lifecycle-END signal mined from this anchor — cancel_at_period_end / a "
+        "subscription.canceled event / a cancel-subscription operation)",
     )
 
     # (d) THE SUBSCRIPTION-CANCEL MINE ENABLER: the committed fixture carries genuine
@@ -6626,6 +6631,7 @@ _ISOLATION_EVIDENCE: dict[str, str] = {
     "free-trial": "start a free trial",
     "plan-purchase": "purchasable plans carry a purchase object",
     "plan-allowance": "your plan's monthly allowance resets each cycle",
+    "subscription-cancel": "cancel your subscription with the cancel_at_period_end flag",
     # digital_good
     "generation": "image generation for creators",
     "generate-media": "generate an image from a prompt",

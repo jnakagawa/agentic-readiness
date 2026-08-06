@@ -1236,6 +1236,52 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"|\bmonthly\s+(?:generation|usage|api|call|request|credit|render|token|image|video|compute|query|inference|prediction)\s+allowance\b"
             r"|\bsubscription\s+with\s+included\b"
             r"|\ballowance\s+(?:used\s+up|resets?|is\s+tracked\s+per\s+plan)\b", _F)),
+        # PROGRAMMATIC SUBSCRIPTION CANCELLATION — whether an autonomous agent can
+        # CANCEL / revoke its OWN recurring plan through an API call, without a human.
+        # This is the LIFECYCLE-END, capital-safety "bound your own recurring spend"
+        # capability the PLAYBOOK's lens names, applied to the subscription archetype,
+        # and it is currently UNCAPTURED. Every existing subscription signal describes
+        # that a plan EXISTS (`subscription`/`recurring`), how it is PRICED
+        # (`per-month`/`per-month-price`/`annual-billing`/`seat-licensing`), that it can
+        # be EVALUATED at $0 (`free-trial`), that it can be COMMITTED to (`plan-purchase`),
+        # or its bundled quota (`plan-allowance`); NONE says whether the agent can
+        # autonomously STOP the recurring commitment. A subscription an agent can start
+        # but cannot programmatically cancel silently accrues charges after the job is
+        # done, so a plan that exposes a cancel/revoke contract is MORE agent-completable
+        # — the subscription-archetype MIRROR of metered_api's `cancel-job` (abort a
+        # running job to bound spend) and `key-rotation` (the credential KILL-SWITCH),
+        # here the recurring-billing kill-switch.
+        # PRECISION-CRITICAL: bare "cancel"/"revoke" is a false-positive minefield —
+        # the HUMAN self-service "cancel anytime" of ipinfo.io, "cancel or downgrade
+        # your subscription from your account settings" (simplybook.me's human FAQ, a
+        # subscription noun but NOT a programmatic capability), a booking/order cancel
+        # (acuity/allbirds), a job cancel (`cancel-job`'s turf: replicate's
+        # `predictions/{id}/cancel` / `Cancel-After`), and API-KEY revocation ("old keys
+        # are revoked" on the canonical pair). So NEVER match a bare cancel/revoke, and
+        # NEVER a human "cancel your <subscription>" with an article between: require an
+        # unambiguously PROGRAMMATIC marker — the `cancel_at_period_end` scheduling
+        # PARAMETER, a dotted machine EVENT (`subscription.canceled`/`.revoked`), a
+        # subscription-resource cancel/revoke ENDPOINT PATH (`subscriptions/{id}/cancel`
+        # or `/revoke`), or an ADJACENT `cancel|revoke subscription(s)` operation
+        # (`Cancel Subscription`, `revoke-subscription`, "revoke subscriptions
+        # programmatically") — an API operation/path name, never the human "cancel your
+        # subscription". The ipinfo "cancel anytime", simplybook "cancel or downgrade
+        # your ... subscription", replicate job cancels, and the canonical pair's
+        # key-revocation trip NONE of these. Fires NON-VACUOUSLY on the committed
+        # polar.sh anchor (a real Merchant-of-Record billing platform — 86 spans:
+        # `cancel_at_period_end`, `subscription.canceled`/`.revoked` webhooks, a
+        # `DELETE /v1/subscriptions/{id}` + `cancel-subscription`/`revoke-subscription`
+        # operations) and ABSENT on ALL other committed fixtures incl. the canonical
+        # pair (verified 86 vs 0). polar.sh ALREADY claims subscription (via
+        # `subscription`/`per-month`/etc.), so this deepens its evidence without adding
+        # or reordering any archetype (score-neutral); it can never CONJURE a
+        # subscription claim on a site that does not already make one, and the
+        # classifier is off the scoring path.
+        ("subscription-cancel", re.compile(
+            r"\bcancel_at_period_end\b"
+            r"|\bsubscription\.(?:cancell?ed|revoked)\b"
+            r"|\bsubscriptions?/\{?[a-z0-9_]*\}?/(?:cancel|revoke)\b"
+            r"|\b(?:cancel|revoke)[- ]subscriptions?\b", _F)),
     ],
     "digital_good": [
         ("generation", re.compile(r"\b(text-to-image|image|video|audio|art)\s+generation\b", _F)),

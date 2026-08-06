@@ -31,10 +31,11 @@
   (concurs 07:41Z floor). Invariants #1 ($0 pure readout)–#5 held. NO DM DUE per comms (see focus pointer). See LOG
   Cycle 285.
 - FOCUS POINTER (Cycle 285 done, cloud): **NO open peer-gated PR** (#147 MERGED this fire, `60c1a0f`) → next fire's
-  first duty is the infra health check. **DM PENDING THIS FIRE:** PR #147 was a sensitive-class (behavioral scoring
-  semantics) PR that just MERGED → per comms policy a merged sensitive-class PR warrants a visibility DM (Jonah's
-  veto, never approval) — SEND IT. Also fold in the Cycle-284 out-of-scope 2nd-sentence "unsafe" finding + note the
-  16:00 UTC daily digest is still owed (this fire at 08:2xZ precedes it). RUNNER STALL fully RESOLVED + GUARDED
+  first duty is the infra health check. **NO DM this fire (correct per the NARROW comms policy):** PR #147 is an
+  aggregation/attribution refinement, NOT a DM-enumerated sensitive class (payment/signing, weights, caps, removals) —
+  the DM list is deliberately narrower than the peer-gate list, so a merged aggregation fix does not trigger a DM; the
+  READOUT ship is display-only/score-neutral; and 08:2xZ precedes 16:00 UTC so no digest is due. #147's merge + the
+  Cycle-284 out-of-scope 2nd-sentence "unsafe" finding are QUEUED for the next 16:00 UTC daily digest (per Cycle 284). RUNNER STALL fully RESOLVED + GUARDED
   (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY on a fresh >6h no-artifact gap. Cloud track
   rotation: Cycle 285 was READOUT → **METHOD next** (METHOD → COVERAGE → TRUTH → READOUT). NEXT METHOD (cloud):
   host-environment reproducibility is SATURATED (hash-seed 267 / timezone 271 / encoding 277 / locale 280) — move

@@ -1,0 +1,98 @@
+{
+  "ts": "pr147_postmerge_20260806T084420Z",
+  "kind": "pr147-postmerge-live-verification",
+  "command": "compare drift-flight.org driftflight.com --behavioral --trials 2 --models claude,codex",
+  "rubric": "0.7",
+  "static_canonical_delta_floor": 39.4,
+  "behavioral_delta_this_run": 35.0,
+  "domains": {
+    "drift-flight.org": {
+      "overall": null,
+      "grade": "F",
+      "valid_runs": 4,
+      "verdict_stability": 0.6,
+      "runs": [
+        {
+          "model": "claude",
+          "trial": 1,
+          "all_false": false,
+          "env_blocked_detected": false,
+          "own_tool_block_phrase": null,
+          "matched_span": null,
+          "verdict": "reached"
+        },
+        {
+          "model": "claude",
+          "trial": 2,
+          "all_false": false,
+          "env_blocked_detected": false,
+          "own_tool_block_phrase": null,
+          "matched_span": null,
+          "verdict": "reached"
+        },
+        {
+          "model": "codex",
+          "trial": 1,
+          "all_false": false,
+          "env_blocked_detected": false,
+          "own_tool_block_phrase": null,
+          "matched_span": null,
+          "verdict": "reached"
+        },
+        {
+          "model": "codex",
+          "trial": 2,
+          "all_false": true,
+          "env_blocked_detected": false,
+          "own_tool_block_phrase": "Direct read-only browser access to drift-flight.org was denied by the browser permission boundary.",
+          "matched_span": null,
+          "verdict": "LEAK_counted_as_valid_site_run"
+        }
+      ]
+    },
+    "driftflight.com": {
+      "overall": null,
+      "grade": "C",
+      "valid_runs": 3,
+      "verdict_stability": 0.333,
+      "runs": [
+        {
+          "model": "claude",
+          "trial": 1,
+          "all_false": false,
+          "env_blocked_detected": false,
+          "own_tool_block_phrase": null,
+          "matched_span": null,
+          "verdict": "reached"
+        },
+        {
+          "model": "claude",
+          "trial": 2,
+          "all_false": false,
+          "env_blocked_detected": false,
+          "own_tool_block_phrase": null,
+          "matched_span": null,
+          "verdict": "reached"
+        },
+        {
+          "model": "codex",
+          "trial": 1,
+          "all_false": true,
+          "env_blocked_detected": true,
+          "own_tool_block_phrase": "Direct read-only access to driftflight.com was rejected by the browser security policy.",
+          "matched_span": "rejected by the browser security policy",
+          "verdict": "env_blocked_caught"
+        },
+        {
+          "model": "codex",
+          "trial": 2,
+          "all_false": true,
+          "env_blocked_detected": false,
+          "own_tool_block_phrase": "Direct site fetch returned no usable content.",
+          "matched_span": null,
+          "verdict": "LEAK_counted_as_valid_site_run"
+        }
+      ]
+    }
+  }
+}

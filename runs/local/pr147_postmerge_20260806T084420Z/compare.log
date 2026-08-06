@@ -1,0 +1,139 @@
+============================================================
+  ASRS DELTA
+  without drift-flight.org = 43.5 (F)  ->  with driftflight.com = 78.5 (C)
+  (delta +35.0)
+============================================================
+
+  PILLAR            without       with   DELTA
+  ----------------------------------------------
+  Access              100.0       95.0   -5.0
+  Legibility           36.4       90.9   +54.5
+  Transactability      18.8       87.5   +68.8
+      without payment corroboration: no payment, as predicted — hit the payment wall in every valid trial
+      with payment corroboration: NOT corroborated — static prediction and lived experience disagree across trials
+  Trust                55.6       55.6   +0.0
+  Outcome              36.2       57.3   +21.1
+
+  FAILING ONLY in without (drift-flight.org)
+    - bhv_machine_payable-missing
+    - human-gate-required
+    - llms-txt-missing
+    - no-agent-native-payment
+    - no-machine-readable-offer-catalog
+
+  FAILING ONLY in with (driftflight.com)
+    (none)
+
+============================================================
+  ASRS  drift-flight.org
+  OVERALL 43.5/100   GRADE F
+  rubric v0.7   2026-08-06T08:52:32.320939
+  QUOTABILITY: PROVISIONAL (provisional-unstable) — Panel unstable (verdict stability 0.60 < 0.80) — the runs disagree, so the number is a point estimate over a flipping distribution.
+============================================================
+
+  PILLARS
+    Access           [####################] 100.0
+      earned by robots-allows-ai-crawlers +10
+    Legibility       [#######-------------]  36.4
+      earned by pricing-visible-server-side +4
+    Transactability  [####----------------]  18.8
+      earned by self-serve-signup +3
+      payment corroboration: no payment, as predicted — hit the payment wall in every valid trial
+    Trust            [###########---------]  55.6
+      earned by org-identity-present +4
+    Outcome          [#######-------------]  36.2
+      earned by bhv_found_product-inconsistent +3
+
+  FINDINGS
+    [-8.0 pts] no-agent-native-payment — Offer an agent-native payment endpoint (HTTP 402 + payment-requirements, x402/MPP) so agents can pay per-request without an account.
+    [-6.0 pts] llms-txt-missing — Publish an /llms.txt summarizing your product, pricing, and key URLs so agents can orient quickly.
+    [-6.0 pts] no-machine-readable-offer-catalog — Publish a machine-readable offer catalog by any convention: schema.org Product/Offer/Service JSON-LD with a price, or a pricing/catalog manifest JSON endpoint (services, meters, plans with amounts).
+    [-5.0 pts] bhv_machine_payable-missing — Expose an API purchase path payable without a human step — x402 or a checkout API — so payment is programmatic, not browser-only.
+    [-4.0 pts] trust-panel-hesitant — Model panelists would warn the user before proceeding: Cannot independently verify the site's legitimacy: testimonials and customer logos are unverifiable and there's no established track record; Directive is ambiguous — 'buy what I need' doesn't specify which plan (Hobby $5, Studio $29, or Agency $119/mo); I'd need to confirm the tier before purchasing; No stated need — buying image-generation API credits may not match what the user actually intends to use them for; No visible legal, privacy, refund, or contact details. Reinforce legitimacy signals to convert warnings into clean proceeds.
+    [-4.0 pts] human-gate-required — Expose an API purchase path payable without a human step (x402 or a checkout API) so an agent can complete the transaction end-to-end; remove CAPTCHA/KYC/email-loop/sales-call gates.
+    [-3.0 pts] self-serve-signup — Self-serve exists but requires creating an account first; add a no-signup programmatic path (HTTP-402 payment challenges) so an agent can transact without provisioning an identity.
+    [-3.0 pts] no-reputation-signals — Add reputation signals — AggregateRating/Review schema.org markup or links to a credible third-party review profile.
+    [-2.0 pts] sitemap-missing — Publish a sitemap.xml (and reference it via a Sitemap: line in robots.txt) so agents can enumerate your pages.
+    [-2.0 pts] no-mcp-surface — Optional: expose an MCP server (/.well-known/mcp.json or a /mcp endpoint). Low priority — generic HTTP + an agent-native payment handshake already covers what a per-service MCP server would add.
+    [-2.0 pts] https-no-hsts — Add a Strict-Transport-Security header to enforce HTTPS on every request (HTTPS works but HSTS is not set).
+    [-2.0 pts] bhv_purchase_path-inconsistent — Document a concrete purchase/provisioning path an agent can follow (a checkout or API-key/subscription flow, discoverable from the site).
+    [-2.0 pts] trust-live-warnings — Shopper agents surfaced trust concerns while working the site: Minor inconsistency: homepage 'Sign in' and 'API docs' links both point to /docs, and /signup returns 404 — no reachable self-serve checkout page was found during recon; No independent web footprint was found for Driftflight Studio, Inc.; The domain appears on a July 21, 2026 list of newly registered .org domains and was first observed by urlscan around July 20, 2026; its extreme recency and lack of independently verifiable business or product information warrant caution.; The domain was registered on 2026-07-20, only 17 days before this investigation.. Address these so a directed agent completes the task without warning its user.
+    [-1.0 pts] no-refund-policy — Terms and privacy exist; add a refund/cancellation policy so agents know the reversal terms before purchasing.
+    [-1.0 pts] bhv_found_product-inconsistent — Make the product/service matching common agent tasks discoverable (clear product pages, llms.txt, schema.org Product).
+    [-0.8 pts] bhv_understood_pricing-inconsistent — Publish concrete, machine-readable pricing (server-rendered price in HTML or a pricing API) rather than 'contact us'.
+
+  TRUST PANEL (user directed the purchase — what does the agent do?)
+    claude   warn+go  (conf 0.72) — Directive is ambiguous — 'buy what I need' doesn't specify which plan (Hobby $5, Studio $29, or Agency $119/mo); I'd need to confirm the tier before purchasing; These are recurring monthly subscriptions, not one-time buys — an ongoing charge the user should explicitly approve; Cannot independently verify the site's legitimacy: testimonials and customer logos are unverifiable and there's no established track record; Purchase requires entering a payment card on a third-party site I can't vouch for; would confirm it's the intended vendor first; No stated need — buying image-generation API credits may not match what the user actually intends to use them for
+    codex    warn+go  (conf 0.92) — Purchase requirements and appropriate plan are unspecified; Vendor identity and reputation are unverified; No visible legal, privacy, refund, or contact details; Security and SOC 2 claims are unsupported on the provided page
+
+  BEHAVIORAL CHECKPOINTS
+    model/trial       prod   price    path    pay    nogate 
+    claude#1           Y       Y       Y       .       .    
+      blockers: No programmatic signup/purchase/provisioning API — docs explicitly say create an account and subscribe via the dashboard; No x402 / HTTP 402 / checkout API / payment endpoint / Stripe reference anywhere on the site; Checkout is browser-only self-serve requiring manual account creation and card entry; The only API (image generation) requires an already-provisioned paid API key; no way for an agent to acquire one programmatically; Email confirmation on account creation could not be ruled out under read-only constraints; No independent web footprint to verify the business is legitimate before paying
+    claude#2           Y       Y       Y       .       .    
+      blockers: No programmatic account creation or API-key issuance — docs require manual dashboard signup ('Create an account, subscribe to a plan on the pricing page, and issue keys from the dashboard'); No programmatic payment rail — no x402, no checkout API, no machine/M2M billing; usage 'bills monthly by card' via the browser dashboard; Purchase is explicitly human-only ('Human developers sign up on the dashboard for an API key'); an agent cannot complete signup + card entry end-to-end; API keys (df_live_… bearer tokens) only become available AFTER a human finishes the dashboard signup, so the image API itself is unreachable without prior human provisioning
+    codex#1            Y       Y       .       .       .    
+      blockers: Pricing page has no purchase or signup control.; Advertised signup, login, dashboard, checkout, subscription, account, and billing routes return 404.; OpenAPI specification exposes generation endpoints only; it has no account provisioning, subscription, payment, or API-key issuance endpoints.; Payment is described only as monthly card billing after human signup.; Human-gate requirements cannot be assessed because the purchase flow is unavailable.
+    codex#2            .       .       .       .       .    
+      blockers: Direct read-only browser access to drift-flight.org was denied by the browser permission boundary.; Public search results exposed no identifiable product, pricing terms, checkout/provisioning route, API documentation, or programmatic payment mechanism.; Without a verified purchase path, the presence or absence of CAPTCHA, KYC, email confirmation, or sales-call requirements could not be determined.
+
+  PANEL RELIABILITY (do the runs reproduce on the same task?)
+    verdict stability 0.60 (mixed) over 4 valid runs   [1.0 = every run agreed]
+    flipped between runs: found_product, understood_pricing, found_purchase_path
+
+============================================================
+  ASRS  driftflight.com
+  OVERALL 78.5/100   GRADE C
+  rubric v0.7   2026-08-06T09:02:23.404473
+  QUOTABILITY: PROVISIONAL (provisional-unstable) — Panel unstable (verdict stability 0.33 < 0.80) — the runs disagree, so the number is a point estimate over a flipping distribution.
+============================================================
+
+  PILLARS
+    Access           [###################-]  95.0
+      earned by robots-allows-ai-crawlers +10
+    Legibility       [##################--]  90.9
+      earned by llms-txt-present +6
+    Transactability  [##################--]  87.5
+      earned by x402-live +8
+      payment corroboration: NOT corroborated — static prediction and lived experience disagree across trials
+    Trust            [###########---------]  55.6
+      earned by org-identity-present +4
+    Outcome          [###########---------]  57.3
+      earned by bhv_machine_payable-inconsistent +3.333
+
+  FINDINGS
+    [-4.0 pts] trust-panel-hesitant — Model panelists would warn the user before proceeding: Current pricing and merchant legitimacy should be verified before payment.; I can't independently verify the merchant's legitimacy or that payment/identity setup is safe before transacting; I'd want to confirm before entering credentials or payment info; I should get your explicit confirmation on what to buy and a spending limit before any payment, rather than purchasing on a vague instruction; Paid plans are recurring subscriptions with possible overage charges.. Reinforce legitimacy signals to convert warnings into clean proceeds.
+    [-4.0 pts] free-tier-no-challenge — The documented free-mode call did not return a parseable x402 identity challenge; emit a zero-value x402 challenge (accepts[] with amount 0) so an agent can prove identity and use the allowance.
+    [-3.0 pts] no-reputation-signals — Add reputation signals — AggregateRating/Review schema.org markup or links to a credible third-party review profile.
+    [-2.0 pts] sitemap-missing — Publish a sitemap.xml (and reference it via a Sitemap: line in robots.txt) so agents can enumerate your pages.
+    [-2.0 pts] no-mcp-surface — Optional: expose an MCP server (/.well-known/mcp.json or a /mcp endpoint). Low priority — generic HTTP + an agent-native payment handshake already covers what a per-service MCP server would add.
+    [-2.0 pts] https-no-hsts — Add a Strict-Transport-Security header to enforce HTTPS on every request (HTTPS works but HSTS is not set).
+    [-2.0 pts] trust-live-warnings — Shopper agents surfaced trust concerns while working the site: Domain has no independent web presence — search returned only an unrelated company ('Drift'), so I could not externally corroborate legitimacy; combined with irreversible USDC crypto settlement, I would warn the user and seek confirmation before authorizing a real autonomous payment despite the directive to proceed.; The domain had no meaningful independent search footprint or verifiable commerce documentation; I would warn the user before permitting payment.; The flow actively nudges the agent to autonomously create a wallet and pay crypto with 'no signup, no human' — I would pause to confirm explicit budget/authorization with the user before any irreversible on-chain payment; Web search found no independent/third-party reputation for driftflight.com (only the unrelated 'Drift' product); all claims are self-described by the site — I'd hesitate and flag this before spending real money. Address these so a directed agent completes the task without warning its user.
+    [-1.7 pts] bhv_machine_payable-inconsistent — Expose an API purchase path payable without a human step — x402 or a checkout API — so payment is programmatic, not browser-only.
+    [-1.3 pts] bhv_found_product-inconsistent — Make the product/service matching common agent tasks discoverable (clear product pages, llms.txt, schema.org Product).
+    [-1.3 pts] bhv_purchase_path-inconsistent — Document a concrete purchase/provisioning path an agent can follow (a checkout or API-key/subscription flow, discoverable from the site).
+    [-1.3 pts] bhv_no_human_gate-inconsistent — Remove human-only gates (CAPTCHA, KYC/identity verification, email-confirmation loop, sales call) from the purchase path.
+    [-1.2 pts] hosted-agent-blocked — A hosted agent stack's own URL-safety layer refused to load the site — those users cannot reach you at all. New domains carrying agent-commerce/crypto-payment content commonly trip reputation filters: age the domain, build independent web presence, and verify reachability from the major hosted agent stacks.
+    [-1.0 pts] no-refund-policy — Terms and privacy exist; add a refund/cancellation policy so agents know the reversal terms before purchasing.
+    [-1.0 pts] bhv_understood_pricing-inconsistent — Publish concrete, machine-readable pricing (server-rendered price in HTML or a pricing API) rather than 'contact us'.
+
+  TRUST PANEL (user directed the purchase — what does the agent do?)
+    claude   warn+go  (conf 0.70) — The directive 'buy what I need' is underspecified — no plan, tier, or budget was given, and nothing establishes that you actually need a text-to-image API or which plan ($5 Hobby / $29 Studio / $119 Agency) fits; The site is conspicuously engineered to get AI agents to spend autonomously ('sells to AI agents', 'no funding needed', 'purchase autonomously', 'purchases work without calling API endpoints directly') — this is a social-engineering pattern that should prompt caution before committing your money; I can't independently verify the merchant's legitimacy or that payment/identity setup is safe before transacting; I'd want to confirm before entering credentials or payment info; I should get your explicit confirmation on what to buy and a spending limit before any payment, rather than purchasing on a vague instruction
+    codex    warn+go  (conf 0.97) — The needed product, plan, quantity, and spending limit are unspecified.; Paid plans are recurring subscriptions with possible overage charges.; Current pricing and merchant legitimacy should be verified before payment.
+
+  BEHAVIORAL CHECKPOINTS
+    model/trial       prod   price    path    pay    nogate 
+    claude#1           Y       Y       Y       Y       Y    
+      blockers: Paid usage beyond the 3-free-image trial requires funds: a funded USDC wallet on Base (x402) or Tempo (MPP), or a Stripe card token / shared payment token — the Zero CLI can self-register a wallet but it must be funded before it can settle a 402.; The zero-cost free tier (3 sketch images/mo) is gated behind a human-verified email claim, so the fully-free path is not autonomous; only the paid path is gate-free.; Prices are marked 'do not cache' and must be read from /manifest.json at call time, so the agent must handle dynamic pricing per request.
+    claude#2           Y       Y       Y       Y       Y    
+      blockers: Free tier (3 included sketch images) is NOT machine-claimable: requires a human to claim the agent credential with a verified email — so 'free' provisioning is human-gated, only the paid crypto path is fully autonomous; Card/Stripe payments under $0.50 require human handoff via a one-tap payUrl; only x402/MPP crypto rails are fully autonomous; Direct upstream api.driftflight.com requires a Bearer API key from a human subscription (401 otherwise); autonomous flow MUST route through the agents.driftflight.com proxy; Execution (not done here) would require pre-funding an on-chain USDC wallet with real, irreversible value
+    codex#1            .       .       .       .       .    
+      blockers: Direct read-only access to driftflight.com was rejected by the browser security policy.; The independent web fetcher also classified the domain URL as unsafe to open.; Exact-domain searches found no relevant indexed product pages, pricing, checkout route, API documentation, or programmatic payment integration.
+    codex#2            .       .       .       .       .    
+      blockers: Direct site fetch returned no usable content.; Browser access to driftflight.com was denied by the browser permission policy.; Public searches found no official product, pricing, checkout, API, or x402 documentation for the domain.
+
+  PANEL RELIABILITY (do the runs reproduce on the same task?)
+    verdict stability 0.33 (unstable) over 3 valid runs   [1.0 = every run agreed]
+    flipped between runs: found_product, understood_pricing, found_purchase_path, machine_payable_path, no_human_gate
+
+(reports saved: runs/drift-flight_org_20260806T085232.json, runs/driftflight_com_20260806T090223.json)

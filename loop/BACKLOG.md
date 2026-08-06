@@ -5,21 +5,37 @@ design in-cloud, execute locally.
 
 ## P0
 
+<!-- DONE Cycle 286: PR #147 post-merge LIVE verification executed (compare … --behavioral --trials 2 --models
+claude,codex). Fix is correct for its "interactive access" phrase; the v0.6 "browser security" branch caught a
+fresh codex refusal live (driftflight.com codex t1 → reachability). Predicted valid_runs=2 did NOT recur because
+the vocabulary drifted onto a NEW near-miss family → new peer-gated P0 below. Evidence
+runs/local/pr147_postmerge_20260806T084420Z/. See LOG Cycle 286. -->
 
-- **[LOCAL] Post-merge live verification of the PR #147 `_ENV_BLOCK_RE` near-miss fix** (METHOD /
-  attribution honesty, invariant #4). PR #147 was adversarially reviewed + SELF-MERGED Cycle 285 (cloud,
-  merge `60c1a0f`) — the deterministic half is DONE (independent differential leak scan over all 19 committed
-  transcripts flips EXACTLY driftflight.com codex t2, zero collateral; committed re-aggregation
-  `runs/local/env_block_nearmiss_reaggregate_20260806T075510Z.json` confirms WITH-side `bhv_found_product`
-  valid_runs 3→2, PASS, reachability blocked 1→2). What REMAINS is the live confirmation the cloud can't run:
-  re-run `compare drift-flight.org driftflight.com --behavioral --trials 2 --models claude,codex` on Jonah's
-  machine and confirm the SHIPPED code now records `driftflight.com valid_runs=2` (own-tool codex refusals
-  routed to reachability, not scored as site evidence) and a wider behavioral delta than the pre-fix +34.8.
-  Static $0 (no signing). See LOG Cycle 285 (review+merge) / Cycle 284 (fix) / Cycle 282 (RESULT 4, origin).
-  SCOPE follow-up (future, carefully-guarded proposal only): the SECOND missed sentence in the same transcript
-  — *"…classified driftflight.com as unsafe and blocked access."* — is a genuine own-tool block but in the
-  ambiguous reputation-"unsafe" vocabulary (test-#8 family); attempt it ONLY with a disambiguating own-apparatus
-  SUBJECT anchor so a site-side WAF "flagged unsafe" is never excused.
+- **[PEER-GATE] Broaden `_ENV_BLOCK_RE` for the "browser permission boundary/policy … denied" near-miss family**
+  (METHOD / attribution honesty, invariant #4; behavioral scoring semantics ⇒ PEER-GATED PR, reviewed+self-merged
+  next cycle). SURFACED LIVE by Cycle 286's post-merge panel (`runs/local/pr147_postmerge_20260806T084420Z/`): the
+  SHIPPED detector correctly caught `driftflight.com` codex t1 (*"rejected by the browser security policy"*, v0.6
+  branch) but MISSED two fresh codex own-tool refusals — `driftflight.com` codex t2 *"Browser access to
+  driftflight.com was denied by the browser permission policy."* AND `drift-flight.org` codex t2 *"Direct
+  read-only browser access to drift-flight.org was denied by the browser permission boundary."* Both leaked → scored
+  as valid all-false site runs (`.com` valid_runs=3 not 2, `.org` valid_runs=4 not 3), narrowing the behavioral
+  delta by scoring codex's own hosted-browser refusal as site evidence. WHY: the phrasing names "the browser
+  **permission** boundary/policy" — NO apostrophe-s ("browser's") and "permission" not "site-permission", so it
+  slips past v0.7(b) `browser['’]s (site[- ]permission|safety|security) (boundary|layer|policy|…)` and is not one
+  of v0.7(a)'s three fixed forms. Genuine agent-side blocks (both domains HTTP-200; codex REACHED .org on its
+  sibling trial). FIX DESIGN: broaden v0.7(b) to accept the own-apparatus gate WITHOUT the apostrophe-s and WITHOUT
+  the "site-" qualifier — e.g. `browser['’]?s? (?:site[- ])?permission (?:boundary|policy|layer|controls?)` PAIRED
+  with a nearby denied/blocked anchor + the INTACT `_NOT_SITE_ATTRIBUTED` guard (a real "denied by the
+  server/WAF/Cloudflare" is STILL never excused). ACCEPTANCE (deterministic, $0, mirror PR #147's review): the new
+  pattern must flip EXACTLY the two new committed leaks
+  (`pr147_postmerge_20260806T084420Z/transcripts/{driftflight.com,drift-flight.org}_codex_t2.json`) True + leave
+  every other committed transcript unchanged (differential leak scan over ALL committed transcripts), keep
+  `test_attribution.py` site-attributed/anchorless-403 negatives green, no rubric bump (attribution routing within
+  behavioral checks, per the Cycle-269/284 precedent — reviewer confirms). Open `loop/env-block-permission-boundary-nearmiss`. This is the THIRD drift of the own-tool refusal vocabulary (Cycle 269, 284, 286) → the periodic leak
+  scan is now a standing METHOD tripwire. SCOPE follow-up (future, carefully-guarded proposal only): the SEPARATE
+  reputation-"unsafe" sentence family — *"…classified driftflight.com as unsafe and blocked access."* — is a
+  genuine own-tool block but in ambiguous vocabulary (test-#8 family); attempt ONLY with a disambiguating
+  own-apparatus SUBJECT anchor so a site-side WAF "flagged unsafe" is never excused. See LOG Cycle 286 / 284 / 282.
 
 - **[OPERATOR DIRECTIVE — Jonah, 2026-07-23] The battery must be
   OFFERING-RELATIVE, not fixed.** Observed: the current battery judges every

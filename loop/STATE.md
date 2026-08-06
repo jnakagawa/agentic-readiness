@@ -1,6 +1,62 @@
 # Loop state
 
-- Cycle counter: 285
+- Cycle counter: 286
+- CYCLE 286 — 2026-08-06T09:0xZ (METHOD, LOCAL, direct-to-main, evidence+docs, score-neutral). FIRST duty
+  (infra health + peer-gate review): `gh pr list --state open` → `[]` (no open peer-gated PR; #147 was
+  review+SELF-MERGED by cloud Cycle 285, `60c1a0f`). HEAD == origin/main == local `main` all at `a0e7a01`
+  (clean, no stale-orphan realign). **INFRA HEALTHY:** newest verify by FILENAME
+  `runs/local/verify_20260806T084106Z.json` (08:41Z, tests_ok=true 37 suites, 46.1 F / 85.5 B / +39.4), ~2min
+  old at fire (08:43Z 08-06), deep inside the 6h floor; :41 cadence holding (06:41Z→07:41Z→08:41Z) →
+  RUNNER-HEALTH WATCH NORMAL. `codex` 0.145.0 / `zero` / `.venv` 3.12.8 resolve; full suite **37/37 green**
+  (touched no code). **TRACK (LOCAL METHOD / attribution):** executed the top/oldest-P0 `[LOCAL]` item — the
+  post-merge LIVE verification of PR #147 (the confirmation the cloud can't run). Ran the exact queued command
+  `compare drift-flight.org driftflight.com --behavioral --trials 2 --models claude,codex` ($0 read-only
+  shopper+trust panel; 8 codex invocations ≤10; free-tier ≤1×, no signing). **RESULT — the fix HOLDS for its
+  phrase, its covered vocab CAUGHT a fresh refusal, but the vocabulary DRIFTED AGAIN (3rd time):** the backlog's
+  predicted `driftflight.com valid_runs=2` did NOT materialize this fresh run — not a #147 regression (it is
+  correct for "interactive access … denied"), but because codex's own-tool refusal phrasing drifted onto a NEW
+  near-miss the shipped `_ENV_BLOCK_RE` still misses. Ground-truth per-run re-derivation with the SHIPPED
+  detector (`runs/local/pr147_postmerge_20260806T084420Z/attribution_analysis.json`): (a) `driftflight.com`
+  codex **t1** *"rejected by the browser security policy"* → matches → **env_blocked CAUGHT** → routed to
+  reachability (the `-1.2 hosted-agent-blocked` finding); the v0.6 branch works on fresh evidence. (b)
+  `driftflight.com` codex **t2** *"Browser access … denied by the browser permission policy"* → NO match →
+  **LEAK** → valid_runs=**3** not 2 (stability 0.333). (c) `drift-flight.org` codex **t2** *"…browser access …
+  denied by the browser permission boundary"* → NO match → **LEAK** → valid_runs=**4** not 3 (stability 0.60;
+  codex REACHED .org on t1, so genuine per-trial own-tool block). **WHY:** the new phrasing names "the browser
+  **permission** boundary/policy" — NO apostrophe-s and "permission" not "site-permission" → slips past v0.7(b)
+  `browser's (site-permission|safety|security) (boundary|…)` and is not one of v0.7(a)'s three fixed forms.
+  Genuine agent-side blocks (both domains HTTP-200; `_NOT_SITE_ATTRIBUTED` still excludes real firewall/WAF
+  blocks). **SHIP:** evidence-only → direct-to-main; committed the panel dir (reports ×2 + transcripts ×8 +
+  compare.log + attribution_analysis.json, force-added). STATIC canonical UNMOVED (no scoring code changed;
+  `git diff -- asrs/ rubric/ fixtures/ experiments/ loop/local_verify.py` EMPTY; 08:41Z floor 46.1 F / 85.5 B /
+  +39.4). This run's BEHAVIORAL delta 43.5 F → 78.5 C = **+35.0** (vs pre-fix +34.8 / static +39.4), the
+  narrowing fully attributable to the two leaked own-tool refusals (capability-honest). Invariants #1 ($0)–#5
+  held; zero paid ops. NO DM (score-neutral evidence/docs, not sensitive-class PR — fix queued not shipped; no
+  digest due — 09:0xZ precedes 16:00 UTC on 08-06); the new near-miss flagged for the next digest. See LOG Cycle 286.
+- FOCUS POINTER (Cycle 286 done, LOCAL): **NO open peer-gated PR** → next fire's first duty is the infra health
+  check. **ONE new peer-gated P0 QUEUED (BACKLOG top):** the `_ENV_BLOCK_RE` "browser permission boundary/policy
+  … denied" broadening (this cycle's RESULT) — broaden v0.7(b) to accept the own-apparatus gate WITHOUT the
+  apostrophe-s and WITHOUT the "site-" qualifier, paired with a denied/blocked anchor + intact
+  `_NOT_SITE_ATTRIBUTED`; verify deterministically that it flips EXACTLY the two new committed leaks
+  (`pr147_postmerge_20260806T084420Z/transcripts/{drift-flight.org,driftflight.com}_codex_t2.json`) + nothing
+  else before shipping (mirror PR #147's review). It is a candidate to IMPLEMENT (peer-gated scoring semantics),
+  NOT yet an open PR, so next fire's first duty is still the infra health check. The PR #147 post-merge
+  live-verification P0 is now DISCHARGED (this cycle) — mark it done in BACKLOG. RUNNER STALL fully RESOLVED +
+  GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY on a fresh >6h no-artifact gap. Cloud
+  track rotation UNCHANGED (this LOCAL cycle did not consume the cloud slot): cloud pointer remains **METHOD next**
+  per Cycle 285 (METHOD → COVERAGE → TRUTH → READOUT). Standing METHOD tripwire STRENGTHENED: own-tool refusal
+  vocab has now drifted THREE times (Cycle 269, 284, 286) → keep the periodic leak scan over each fresh committed
+  panel. NEXT METHOD (cloud): host-environment reproducibility SATURATED (hash-seed 267 / timezone 271 / encoding
+  277 / locale 280) — move OFF it (probe-order independence of the aggregate, or fixture-capture determinism).
+  NEXT in-cloud COVERAGE (still open): subscription PAUSE/RESUME (polar `subscription.paused`/uncancel) IF
+  precision-guardable; data_retrieval DATA-FRESHNESS (ipinfo "Daily Data Refresh"); physical_good RETURNS-WINDOW
+  (allbirds/moleskine). NEXT READOUT: population-median/band overlay across sweeps once ≥3 sweeps share a stable
+  non-anchor. NEXT TRUTH (cloud): widen the cross-path anchor weld to a NON-anchor population member once ≥2
+  committed sweeps share a stable reachable non-anchor + a committed offline replay baseline. NEXT calibration
+  cadence: population 18 (target 15–20); next broadening = a genuine ACP/UCP/MPP merchant or a 2nd x402-live site.
+  Substantive [LOCAL] frontier: the new `_ENV_BLOCK_RE` peer-gated fix (this fire); cross-model SHOPPER delta still
+  codex-blocked on the WITH side; a THIRD calibration anchor / 2nd x402-live merchant; render-generation
+  digital_good (Cycle-168); structured catalog/pricing JSON (Cycle-70).
 - CYCLE 285 — 2026-08-06T08:2xZ (READOUT, cloud, direct-to-main, display-only, score-neutral). FIRST duty
   (infra health + peer-gate review): `list_pull_requests` state=open → **PR #147 OPEN** (opened by LOCAL Cycle
   284) → this fresh cloud fire is the mandated reviewer. Cloud started detached at origin/main `0c98355` with

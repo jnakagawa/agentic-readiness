@@ -1,6 +1,60 @@
 # Loop state
 
-- Cycle counter: 282
+- Cycle counter: 283
+- CYCLE 283 — 2026-08-06T07:2xZ (TRUTH, cloud, direct-to-main, tests-only, score-neutral). FIRST duty (infra
+  health + peer-gate review): `mcp__github__list_pull_requests` state=open → `[]` (no open peer-gated PR). Cloud
+  started detached at origin/main `dc55ed5` with local `main` at stale `3e318f1` (Cycle-276 tip); realigned local
+  `main` to origin/main (benign, HEAD already matched, no history rewrite). **INFRA HEALTHY:** newest verify by
+  FILENAME `runs/local/verify_20260806T064105Z.json` (06:41Z, tests_ok=true, 46.1 F / 85.5 B / +39.4), ~36min old
+  at fire (07:17Z 08-06), well inside the 6h floor; :41 cadence holding (04:41Z→05:41Z→06:41Z) → RUNNER-HEALTH
+  WATCH NORMAL. Bench up (venv + requests/PyYAML/eth-account); full suite 36/36 green before the change (one
+  transient red first — `test_free_tier.py::test_zero_value_signs_and_recovers` needs `eth-account`, a
+  requirements.txt dep the fresh checkout lacked; env dep not a regression, green after install). **TRACK:** cloud
+  pointer TRUTH next (Cycle 281 COVERAGE → TRUTH). In-cloud TRUTH lever = test-guarding committed calibration
+  evidence (network legs are [LOCAL]). Coupling-graph survey found the highest unpinned property: the two canonical
+  anchors are measured along TWO independent committed paths — OFFLINE fixture replay (test_canonical_replay pins
+  46.1/85.5/+39.4) and the LIVE population sweeps (`calibration_sweep_*.json`, anchors under
+  `api-storefront:{rails,no-rails}-anchor`) — and NOTHING coupled them (replay globs fixtures only; drift test is
+  pairwise; canonical_history couples history↔replay, not the live sweeps). **IMPROVEMENT (TRUTH — cross-path
+  anchor agreement):** NEW `tests/test_calibration_anchor_agreement.py` (7 guards) welds the paths: every scored,
+  same-version live anchor's `overall` must equal the fixture-replay baseline (imports `test_canonical_replay.EXPECTED`
+  as the ONE source of truth → self-maintaining on a version-bump re-capture). Shared pure comparator `_divergences`
+  drives both legs. REAL EVIDENCE (inv #3, non-vacuous): 3 committed v0.7 sweeps → **6 (sweep,anchor) pairs compared,
+  0 divergences, 0 not-scorable, 0 off-version; live com−org gap +39.4 on all three**. TEETH: (a) inv #4 —
+  not-scorable anchor COUNTED unreachable, never a divergence (naive None-as-0 would flag 85.5); (b) a drifted rails
+  anchor 85.5→70.0 caught as exactly one `driftflight.com` divergence; (c) inv #2 — a `0.8` sweep with 999.0 anchor
+  is off-version, never diffed against the v0.7 floor. Non-vacuity + baseline-version guards pin it can't silently
+  compare nothing and isn't a 2nd source of truth. **SCORE-NEUTRAL:** scoring-path diff (`git diff -- asrs/ rubric/
+  fixtures/ batteries/ experiments/ loop/local_verify.py`) EMPTY (only the new test file); auto-discovered
+  (test_runner_registration green); suite 36/36 → 37/37 green (new suite 7/7). **CANONICAL UNMOVED:** in-fire replay
+  26/26, 46.1 F / 85.5 B / +39.4 (concurs the 06:41Z floor). Invariants #1 ($0 read-only test)–#5 all held; zero
+  codex, zero paid ops. NO DM (score-neutral tests-only TRUTH, not sensitive-class; no digest due — 07:2xZ precedes
+  16:00 UTC on 08-06). See LOG Cycle 283.
+- FOCUS POINTER (Cycle 283 done, cloud): NO open peer-gated PR (a concurrent LOCAL Cycle 282 landed on origin same fire — cross-model behavioral panel,
+  +34.8; it QUEUED a peer-gated P0 in BACKLOG: the `_ENV_BLOCK_RE` "interactive access … denied … homepage"
+  broadening from its RESULT-4 attribution leak — a backlog item to IMPLEMENT, not yet an open PR) → next fire's
+  first duty is the infra health check, then pick up that peer-gated P0 or the READOUT track. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY on a fresh
+  >6h no-artifact gap. Cloud track rotation: Cycle 283 was TRUTH → **READOUT next** (METHOD → COVERAGE → TRUTH →
+  READOUT). NEXT TRUTH (from this cycle's next-hypothesis): widen the cross-path weld to a NON-anchor population
+  member once ≥2 committed sweeps share a stable, reachable non-anchor scored under the same rubric version AND a
+  committed offline fixture-replay baseline exists for it (books.toscrape.com / ipinfo.io are candidates —
+  [LOCAL]-gated on the cadence committing that baseline); adjacent: pin the anchors' `segment` labels stay
+  `api-storefront:{rails,no-rails}-anchor` in every sweep (a mislabel silently drops them from the drift card's
+  anchor-note). NEXT READOUT: a population-median/band overlay across sweeps once ≥3 sweeps carry a stable non-anchor
+  overlap; or a one-line gap-held/moved verdict badge on the main card (the Cycle-279 trend's verdict, surfaced on
+  the headline). NEXT in-cloud COVERAGE (still open): a subscription PAUSE/RESUME leg (polar
+  `subscription.paused`/uncancel — suspend-without-terminating, distinct from Cycle-276's cancel) IF
+  precision-guardable; data_retrieval DATA-FRESHNESS/update-cadence (ipinfo "Daily Data Refresh"); physical_good
+  RETURNS-WINDOW (allbirds/moleskine). NEXT METHOD: host-environment reproducibility is SATURATED across all four
+  axes (hash-seed 267 / timezone 271 / default-encoding 277 / system-locale 280) — the next NEW METHOD seam must move
+  OFF host-environment reproducibility (probe-order independence of the aggregate, or fixture-capture determinism).
+  service_booking is now well-mined across all FIVE lifecycle legs (create/manage/notify/intake/waitlist) on both
+  anchors (acuity + simplybook.me). NEXT calibration cadence: population 18 (target 15–20); next broadening = a
+  genuine ACP/UCP/MPP merchant or a 2nd x402-live site (scarce — record reachability as its own signal). Substantive
+  [LOCAL] frontier: codex-dependent items stay gated — driftflight.com (WITH side) still codex-blocked → cross-model
+  N-curve / LIVE behavioral delta blocked on WITH-side reachability (drift-flight.org t2 IS reachable); a THIRD
+  calibration anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168); structured
+  catalog/pricing JSON (Cycle-70).
 - CYCLE 282 — 2026-08-06T07:1xZ (TRUTH, LOCAL, direct-to-main, evidence+docs, score-neutral). FIRST duty
   (infra health + peer-gate review): `gh pr list --state open` → `[]` (no open peer-gated PR). HEAD ==
   origin/main == local `main` all at `dc55ed5` (clean, no stale-orphan realign). **INFRA HEALTHY:** newest
@@ -248,54 +302,6 @@
   codex-blocked → cross-model N-curve / LIVE behavioral delta blocked on WITH-side reachability (drift-flight.org
   t2 IS reachable); a THIRD calibration anchor / 2nd x402-live merchant; render-generation digital_good
   (Cycle-168); structured catalog/pricing JSON (Cycle-70); the LOCALE reproducibility axis.
-- CYCLE 277 — 2026-08-06T04:2xZ (METHOD, cloud, direct-to-main, tests-only, score-neutral). FIRST duty (infra
-  health + peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR). Cloud started
-  detached at origin/main `6c256e9` with local `main` ref at the stale `3e318f1` (Cycle-276 tip, pre the 03:41Z
-  verify heartbeat); realigned local `main` to origin/main (benign; HEAD already matched, no history rewrite).
-  **INFRA HEALTHY:** newest verify by FILENAME `runs/local/verify_20260806T034105Z.json` (03:41Z, tests_ok=true
-  34 suites, 46.1 F / 85.5 B / +39.4), ~41min old at fire (04:22Z 08-06), well inside the 6h floor; :41 cadence
-  holding (01:41Z→02:41Z→03:41Z) → RUNNER-HEALTH WATCH NORMAL. Bench brought up (venv + pip); full suite 34/34
-  green before the change. **TRACK NOTE:** cloud pointer READOUT-owed but [LOCAL]-blocked (3rd sweep needs
-  network) and not starving → next least-recently-worked fresh track is METHOD (last Cycle 271). METHOD's named
-  frontier (LOCALE axis) CHECKED + confirmed [LOCAL]-blocked in-cloud (`locale -a` = C/C.utf8/POSIX only;
-  `setlocale(LC_ALL,'de_DE.UTF-8'|'tr_TR.UTF-8')` raises → a teeth-bearing locale test cannot be verified here),
-  so surfaced the adjacent in-cloud-testable seam. **IMPROVEMENT (METHOD — third host-environment reproducibility
-  axis):** closed the DEFAULT-ENCODING axis of the committed static evidence, the sibling of Cycle 267 (hash-seed)
-  + Cycle 271 (timezone) + Cycle 274 (population broadening). NEW `tests/test_encoding_reproducibility.py` (5
-  guards, 1:1 mirror of the timezone suite) re-scores the whole 6-fixture replay-clean population in subprocesses
-  under two host-INDEPENDENT default-encoding envs — explicit UTF-8 mode (`PYTHONUTF8=1`) vs forced ASCII default
-  (`LC_ALL=C PYTHONUTF8=0 PYTHONCOERCECLOCALE=0`, defeating PEP 540 + PEP 538) — asserting the serialized report is
-  byte-identical (`generated_at` pinned). Every population fixture carries non-ASCII (em-dash U+2014 + middot
-  U+00B7 on the pair; empirically the ASCII env makes `getpreferredencoding()`==`ANSI_X3.4-1968` and an implicit
-  `open(fixture).read()` raises `UnicodeDecodeError`). Scoring path is safe TODAY (fixture read `from_fixture:162`
-  + rubric read `load_rubric:68` both explicit `encoding="utf-8"`; `to_json` `ensure_ascii`) so all 6 are
-  INVARIANT — this VERIFIES the previously-assumed property. TEETH (guard 3): implicit read succeeds under UTF-8,
-  RAISES under ASCII; explicit utf-8 byte-identical across both. Guard 5 pins `_POPULATION` == live 0-replay-miss
-  set ⊇ pair (self-maintaining, same partition as test_canonical_replay). SCORE-NEUTRAL: scoring-path diff (`git
-  diff -- asrs/ rubric/ fixtures/ batteries/ loop/local_verify.py`) EMPTY, only the new test file (auto-discovered
-  by the runner glob; test_runner_registration green); suite **34/34 → 35/35 green**; canonical replay **46.1 F /
-  85.5 B / +39.4 UNMOVED** (fresh in-fire static re-score concurs, rubric v0.7); `driftflight.com c54f611d60c3…`
-  digest matches the Cycle-274 LOG. Invariants #1–5 all held. NO DM (score-neutral tests-only METHOD, not
-  sensitive-class; no digest due — 04:2xZ precedes 16:00 UTC on 08-06). See LOG Cycle 277.
-- FOCUS POINTER (Cycle 277 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
-  RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY on a
-  fresh >6h no-artifact gap. Cloud track rotation: Cycle 277 was METHOD → cloud pointer is **TRUTH next** (METHOD →
-  COVERAGE → TRUTH → READOUT), but **READOUT STILL OWED** the moment a 3rd dated sweep is committed [LOCAL]
-  (population-drift TREND sparkline across ≥3 sweeps). NEXT COVERAGE (still open, in-cloud): the `waitlist` signal
-  on the simplybook.me anchor (service_booking 8→9); a subscription PAUSE/RESUME leg (`subscription.paused`/uncancel
-  on the polar anchor, the suspend-without-terminating leg distinct from Cycle-276's cancel) IF precision-guardable;
-  data_retrieval DATA-FRESHNESS/update-cadence (ipinfo "Daily Data Refresh"); physical_good RETURNS-WINDOW leg
-  (allbirds/moleskine). **NEXT TRUTH/METHOD: the static-evidence reproducibility family is now SATURATED for
-  in-cloud axes — hash-seed (267) + timezone (271) + default-encoding (277) cover every host axis a minimal
-  container varies WITHOUT extra installs.** The remaining reproducibility axis (a genuine non-C system locale
-  de_DE/tr_TR — comma-decimal `{:n}` + dotless-i case-fold leaks the ASCII-codec axis cannot catch) is [LOCAL]-gated
-  (needs the locale installed to activate via setlocale). Beyond that, the next genuinely-NEW METHOD seam should
-  move OFF host-environment reproducibility (e.g. probe-order independence of the aggregate, or fixture-capture
-  determinism). NEXT READOUT: population-drift TREND across ≥3 dated sweeps ([LOCAL]-gated, only 2 committed).
-  Substantive [LOCAL] frontier: codex-dependent items stay gated — driftflight.com (WITH side) still codex-blocked
-  → cross-model N-curve / LIVE behavioral delta blocked on WITH-side reachability (drift-flight.org t2 IS
-  reachable); a THIRD calibration anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168);
-  structured catalog/pricing JSON (Cycle-70); the LOCALE reproducibility axis (this cycle's [LOCAL] spinoff).
 <!-- STATE COMPACTED at Cycle 260 (2026-08-05T~17:1xZ, self-healing/COVERAGE, direct-to-main, score-neutral).
      STATE.md had accreted the full per-cycle history back to ~Cycle 5 (7798 lines / ~790KB) and could no
      longer be Read in one call, degrading the playbook-mandated per-cycle "read STATE.md". Trimmed the

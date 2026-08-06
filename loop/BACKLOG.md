@@ -572,6 +572,19 @@ design in-cloud, execute locally.
   step toward the ceiling: still a genuine ACP/UCP/MPP merchant or a 2nd x402-live site (both scarce — record
   reachability as its own signal). Off the scoring path, score-neutral (`git diff -- asrs/ rubric/` EMPTY; only
   `experiments/calibration_sweep.py` +8). See LOG Cycle 278.
+  CROSS-PATH WELD — Cycle 283 (2026-08-06, TRUTH, cloud, direct-to-main, tests-only, score-neutral): the committed
+  sweeps and the OFFLINE fixture-replay baseline were two independent measurement paths of the two canonical anchors
+  that NOTHING coupled — now welded by `tests/test_calibration_anchor_agreement.py` (7 guards): every scored,
+  same-version live anchor's `overall` must equal `test_canonical_replay.EXPECTED` (imported as the ONE source of
+  truth → self-maintaining on a version-bump re-capture). REAL EVIDENCE: 3 committed v0.7 sweeps → 6 (sweep,anchor)
+  pairs compared, 0 divergences, live com−org gap +39.4 on all three. TEETH: not-scorable anchor skipped not
+  diverged (inv #4); an 85.5→70.0 drift caught as one divergence; a `0.8` sweep never diffed against v0.7 (inv #2).
+  So a future live re-capture that drifts from the fixture floor (site changed → fixtures stale, or crawl unstable)
+  is now a red test in EITHER direction — a 2nd independent witness for the canonical-delta check. Suite 36→37,
+  scoring-path diff EMPTY, canonical 46.1/85.5/+39.4 unmoved. NEXT (TRUTH): widen the weld to a NON-anchor member
+  once ≥2 committed sweeps share a stable reachable non-anchor scored under the same rubric AND a committed offline
+  replay baseline exists for it (books.toscrape.com / ipinfo.io candidates — [LOCAL]-gated on that baseline landing).
+  See LOG Cycle 283.
 
 <!-- DONE Cycle 269 (2026-08-05 cloud) + MERGED same fire (external merge by owner):
      [PEER-GATE] Broaden `_ENV_BLOCK_RE` for codex's drifted own-tool refusal vocabulary.

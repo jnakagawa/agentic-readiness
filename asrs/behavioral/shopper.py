@@ -112,7 +112,29 @@ _ENV_BLOCK_RE = re.compile(
     # v0.7 (c): the hosted safety layer controlling the agent's navigation.
     r"|safety[- ]controlled (?:navigation|fetch(?:ing|ers?)?)"
     r"(?:[^.]|\.(?=\S)){0,60}?"
-    r"(?:denied|declined|refused|rejected|blocked)" + _NOT_SITE_ATTRIBUTED,
+    r"(?:denied|declined|refused|rejected|blocked)" + _NOT_SITE_ATTRIBUTED +
+    # v0.7 (d) (Cycle 287): the browser's OWN "permission" gate named WITHOUT the
+    # apostrophe-s AND WITHOUT the "site-" qualifier, acting as the DENIER of
+    # access. codex's own-tool vocabulary drifted a THIRD time (Cycle 286 post-#147
+    # panel, runs/local/pr147_postmerge_20260806T084420Z/): "Browser access ... was
+    # denied by the browser permission policy." / "...denied by the browser
+    # permission boundary." — no possessive "browser's", "permission" not
+    # "site-permission", so both slipped past v0.7(b) and were mis-scored as valid
+    # all-false SITE runs (.com valid_runs 2->3, .org 3->4), narrowing the
+    # behavioral delta by counting codex's OWN hosted-browser refusal as site
+    # evidence (invariant #4). This branch is TIGHTER than v0.7(b)'s standalone
+    # possessive form precisely because the bare "browser permission policy" is
+    # ambiguous (cf. "grant the browser permission to use your camera"): it fires
+    # ONLY when a block word is PAIRED with the apparatus AS THE DENIER — a literal
+    # "...denied/blocked BY (the) browser permission {boundary|policy|layer|
+    # controls}". "by" makes the browser gate the AGENT of the denial, so a
+    # site-actor subject ("the server denied the browser permission policy") never
+    # matches, and _NOT_SITE_ATTRIBUTED keeps a real "...denied BY the
+    # server/WAF/Cloudflare" out (attribution honesty, both directions). Pinned by
+    # tests/test_attribution.py #14.
+    r"|(?:denied|declined|refused|rejected|blocked)" + _NOT_SITE_ATTRIBUTED +
+    r"\s+by\s+(?:a |an |the )?"
+    r"browser['’]?s? (?:site[- ])?permission (?:boundary|policy|layer|controls?)",
     re.I,
 )
 

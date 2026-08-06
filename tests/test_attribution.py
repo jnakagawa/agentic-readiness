@@ -625,6 +625,93 @@ def test_env_block_interactive_access_near_miss_covered() -> None:
            "the near-miss-blocked model is attributed in reachability evidence")
 
 
+# ---------------------------------------------------------------------------
+# 14. v0.7 Cycle 287: own-tool "denied BY the browser permission boundary/policy"
+#     NEAR-MISS (the THIRD drift of the codex refusal vocabulary, after 269 + 284).
+#     The Cycle-286 post-#147 panel caught codex refusing BOTH canonical sides with
+#     a phrasing that names its own gate as "the browser permission policy" /
+#     "the browser permission boundary" — NO possessive "browser's" and "permission"
+#     not "site-permission", so it slipped past v0.7(b)'s standalone possessive
+#     alternative AND is none of v0.7(a)'s three fixed "...access...denied" forms.
+#     Both leaked -> _is_env_blocked False -> the all-false refusals counted as
+#     VALID site runs (.com valid_runs 2->3, .org 3->4), NARROWING the behavioral
+#     delta by scoring codex's OWN hosted-browser refusal as site evidence (the
+#     exact invariant-#4 leak). Fixtures are the LITERAL committed transcript
+#     strings (invariant #3): runs/local/pr147_postmerge_20260806T084420Z/
+#     transcripts/{driftflight.com,drift-flight.org}_codex_t2.json.
+#
+#     The v0.7(d) branch is DELIBERATELY tighter than v0.7(b)'s standalone form:
+#     bare "browser permission policy" is ambiguous (cf. a UI "grant the browser
+#     permission to use your camera"), so it fires ONLY when a block word is paired
+#     with the apparatus AS THE DENIER — "...denied/blocked BY (the) browser
+#     permission {boundary|policy|layer|controls}". The required "by" makes the
+#     browser gate the AGENT of the denial, so a site-actor SUBJECT ("the server
+#     denied the browser permission policy") never matches, and _NOT_SITE_ATTRIBUTED
+#     keeps a real "...denied BY the server/WAF/Cloudflare" out — attribution honest
+#     in BOTH directions (both halves below).
+# ---------------------------------------------------------------------------
+def test_env_block_permission_boundary_near_miss_covered() -> None:
+    print("test_env_block_permission_boundary_near_miss_covered")
+    # The two verbatim leaking transcript blockers (all checkpoints false).
+    leaks = [
+        "Browser access to driftflight.com was denied by the browser permission policy.",
+        "Direct read-only browser access to drift-flight.org was denied by the "
+        "browser permission boundary.",
+    ]
+
+    # TEETH: the PRE-Cycle-287 pattern (through v0.7(c), which REQUIRED the
+    # possessive "browser's site-permission" for the permission-gate concept)
+    # MISSED both — the broadening is non-vacuous.
+    pre287 = re.compile(
+        r"browser['’]s (?:site[- ]permission|safety|security) "
+        r"(?:boundary|layer|policy|controls?|system)"
+        r"|(?:interactive(?: browser)? access|direct browser access|browser access permission)"
+        r"(?:[^.]|\.(?=\S)){0,60}?(?:denied|declined|refused|rejected|blocked)",
+        re.I,
+    )
+    for phrase in leaks:
+        _check(pre287.search(phrase) is None,
+               f"pre-287 pattern MISSED the permission-boundary near-miss (teeth): {phrase[:52]!r}")
+        # The shipped v0.7(d) broadening classifies it env-blocked, blockers AND trust.
+        _check(S._is_env_blocked(_run(model="codex", trial=2, blockers=[phrase])),
+               f"permission-boundary near-miss blocker classified env-blocked: {phrase[:52]!r}")
+        _check(S._is_env_blocked(_run(model="codex", trial=2, trust_events=[phrase])),
+               f"permission-boundary near-miss trust_event classified env-blocked: {phrase[:52]!r}")
+
+    # ATTRIBUTION HONESTY (the other direction): the apparatus must be the DENIER
+    # (paired via "by"). A site-actor SUBJECT of the same phrase, a site-attributed
+    # "denied BY the server/WAF", a UI camera-permission grant, and a bare 403 body
+    # all carry no own-apparatus-as-denier signal and must NEVER be excused.
+    not_env = [
+        "the server denied the browser permission policy after returning 403",   # site is the denier
+        "Cloudflare denied the browser permission controls at the edge",         # site is the denier
+        "browser permission policy was denied by the firewall at the origin",    # site-attributed
+        "access was denied by the site gateway despite a permission policy",     # site-attributed
+        "You must grant the browser permission to use your camera",              # UI grant, no block-pairing
+        "Access Denied",                                                          # bare 403 body
+        "the site returned 403 Forbidden; access was denied",                    # site 403, no browser-permission gate
+    ]
+    for phrase in not_env:
+        _check(not S._is_env_blocked(_run(model="claude", blockers=[phrase])),
+               f"site-attributed / anchorless block NOT excused: {phrase[:52]!r}")
+
+    # Denominator routing (mirrors #5/#12/#13): one valid claude run + one
+    # permission-boundary-blocked codex run -> outcome over n=1 (a passed checkpoint
+    # reads PASS), the blocked run surfaces as reachability, not as site evidence.
+    valid = _run(model="claude", trial=1, found_product=True)
+    blocked = _run(model="codex", trial=2, blockers=[leaks[0]])
+    checks = _by_id(S._aggregate("driftflight.com", [valid, blocked]))
+    _check(checks["bhv_found_product"].status == Status.PASS,
+           "found_product PASS — permission-boundary-blocked run excluded (n=1)")
+    _check(checks["bhv_found_product"].evidence["valid_runs"] == 1,
+           "outcome denominator counts only the 1 valid run")
+    reach = checks["hosted_agent_reachability"]
+    _check(reach.status == Status.PARTIAL and reach.evidence["blocked_runs"] == 1,
+           "permission-boundary-blocked codex run counted as reachability, not site evidence")
+    _check("codex" in reach.evidence["blocked_by_model"],
+           "the permission-boundary-blocked model is attributed in reachability evidence")
+
+
 def main() -> int:
     tests = [
         test_env_block_positive_phrasings,
@@ -640,6 +727,7 @@ def main() -> int:
         test_reachability_evidence_is_order_invariant,
         test_env_block_own_tool_vocab_drift_covered,
         test_env_block_interactive_access_near_miss_covered,
+        test_env_block_permission_boundary_near_miss_covered,
     ]
     failed = 0
     for t in tests:

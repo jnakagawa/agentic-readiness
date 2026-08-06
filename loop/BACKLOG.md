@@ -145,11 +145,22 @@ design in-cloud, execute locally.
   firing NON-VACUOUSLY on the committed ipinfo.io `/docs` and ABSENT on all 7 other fixtures (data_retrieval
   strength 4→5, claimed SET unchanged, no reorder). `test_offering.py` 95→97 (precision-synthetic +
   real-captured guard pair) + `_ISOLATION_EVIDENCE` row + `_DATA_RETRIEVAL_LABELS` maintenance-contract update.
-  So data_retrieval now grows from 5→6 signals. NEXT in-cloud data_retrieval candidate (Cycle-243 LOG "next
-  hypothesis"): a DATASET-FORMAT / DOWNLOAD-CONTRACT signal (the machine-consumable delivery format an agent
-  receives bulk data in — CSV/MMDB/JSON/NDJSON/Parquet, all present in ipinfo /docs — distinct from `dataset`'s
-  query/download-EXISTENCE and from `batch-retrieval`'s call-shape) IF anchored precisely to a data-download
-  context (guard a generic "export to CSV" / "JSON response" any API emits). **service_booking's anchor
+  So data_retrieval now grows from 5→6 signals. UPDATE Cycle 272 (COVERAGE, in-cloud, direct-to-main,
+  score-neutral): the Cycle-243 "next hypothesis" DATASET-FORMAT / DOWNLOAD-CONTRACT signal is now SHIPPED as
+  `dataset-format` (the delivery-format leg — the site delivers data as a DOWNLOADABLE DATASET/DATABASE in a
+  NAMED machine-consumable format CSV/JSON/MMDB/Parquet/NDJSON/GeoJSON, so an agent picks the ingest format;
+  DISTINCT from `dataset` existence + `batch-retrieval` call-shape). Three anchored branches (format-named-AS-
+  downloadable-database; "data/database/dataset download" NOUN compound sentence-bounded beside a format/
+  "formats"; "downloadable dataset" in a named format) — NEVER a bare CSV/JSON/Parquet token, guarding the
+  worst minefield in the bank (JSON responses, `*.json` specs/manifests, `Content-Type: application/json`,
+  dashboard "export to CSV"). Fires NON-VACUOUSLY on ipinfo.io (homepage "data downloads in different formats"
+  + /docs "Database Downloads … in CSV, JSON, MMDB, or Parquet formats"), ABSENT on all 8 others, claimed
+  SET+ORDER byte-identical (ipinfo already claims data_retrieval → deepens only). `test_offering.py` 105→107
+  (precision-synthetic 9-fire/10-dodge + real-captured) + `_ISOLATION_EVIDENCE` row + `_DATA_RETRIEVAL_LABELS`
+  update. So data_retrieval grows 6→7 signals. NEXT in-cloud data_retrieval candidate (Cycle-272 LOG "next
+  hypothesis"): a DATA-FRESHNESS / update-cadence signal (ipinfo /docs "Daily Data Refresh" — the "how current
+  is the corpus" leg, distinct from delivery format) IF precision-guardable against generic "fresh"/"updated"
+  marketing prose. See LOG Cycle 272. **service_booking's anchor
   (acuityscheduling.com) got its FIRST distinct signal `manage-booking` in Cycle 248** (above) — it still carries
   un-mined capabilities distinct from create+manage (reminder/notification, intake-form, waitlist). See LOG Cycle 243.
   EARLIER — LOCAL Cycle 242 (2026-08-05): **data_retrieval unblocked
@@ -172,8 +183,8 @@ design in-cloud, execute locally.
   return window; secondary the agent-native RETAIL rail surfaces (UCP `/.well-known/ucp`, MCP) as classification
   evidence distinct from driftflight. The offering signal bank is metered_api-HEAVY: metered_api 26, digital_good
   11 (post-Cycle-164 `variant-selection`), physical_good 10 (post-Cycle-266 `order-tracking`), subscription 9
-  (post-Cycle-172 `plan-allowance`), service_booking 8 (post-Cycle-256 `intake-form`), data_retrieval 6
-  (post-Cycle-243 `batch-retrieval`). NOTE (superseded by Cycles 240/242/243): the
+  (post-Cycle-172 `plan-allowance`), service_booking 8 (post-Cycle-256 `intake-form`), data_retrieval 7
+  (post-Cycle-272 `dataset-format`). NOTE (superseded by Cycles 240/242/243): the
   claim below that service_booking/data_retrieval "CANNOT be strengthened non-vacuously in-cloud" held only until their
   first committed anchors landed (acuityscheduling.com / ipinfo.io) — data_retrieval has since gained `batch-retrieval`
   against real evidence; service_booking's anchor is still un-mined. The three thin archetypes originally could not be

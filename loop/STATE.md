@@ -1,6 +1,53 @@
 # Loop state
 
-- Cycle counter: 271
+- Cycle counter: 272
+- CYCLE 272 — 2026-08-06T01:1xZ (COVERAGE, cloud, direct-to-main, score-neutral). FIRST duty (infra health +
+  peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR). Cloud started on stale
+  orphan local `main` (`3796519`) while HEAD == origin/main `7c8b60b`; realigned (benign, Cycle-245; fetch
+  showed the usual `3796519...7c8b60b (forced update)` on the tracking ref only). **INFRA HEALTHY:** newest
+  verify by FILENAME `runs/local/verify_20260806T004105Z.json` (00:41Z, tests_ok=true 34 suites, 46.1 F /
+  85.5 B / +39.4), ~33min old at fire (01:14Z 08-06), well inside the 6h floor; :41 cadence holding
+  (22:41Z→23:41Z→00:41Z) → RUNNER-HEALTH WATCH NORMAL. (`ls -t` unreliable on a fresh checkout — uniform
+  mtimes — so newest is picked by FILENAME timestamp.) Full suite 34/34 green before the change (bench up).
+  **IMPROVEMENT (COVERAGE — the pointer's named next-COVERAGE item + Cycle-243's "next hypothesis"):**
+  data_retrieval (2nd-thinnest, 6→7 signals) gains `dataset-format` — the DATASET-FORMAT / DOWNLOAD-CONTRACT
+  leg: the site delivers its data as a DOWNLOADABLE DATASET/DATABASE in a NAMED machine-consumable format
+  (CSV/JSON/MMDB/Parquet/NDJSON/GeoJSON), so an agent picks the ingest format its pipeline consumes (the
+  "complete the job — agent chooses bulk delivery format" leg). DISTINCT from all 6 existing signals
+  (`dataset`=existence, `batch-retrieval`=call-shape, `data-service`/`lookup`/`enrich`/`query-records`=live
+  record retrieval — none names the download FORMAT). Mined from the committed ipinfo.io anchor (homepage
+  "data downloads in different formats" + /docs "Database Downloads … in CSV, JSON, MMDB, or Parquet
+  formats"). PRECISION-CRITICAL (bare CSV/JSON/Parquet = worst minefield: JSON responses, `*.json`
+  specs/manifests, `Content-Type: application/json`, dashboard "export to CSV"): NEVER a bare token — three
+  anchored branches (format-named-AS-downloadable-database; "data/database/dataset download" NOUN compound
+  sentence-bounded beside a format/"formats"; "downloadable dataset" in a named format). Validated on the
+  REAL discovery path across all 9 fixtures: fires NON-VACUOUSLY on ipinfo (homepage+/docs), ABSENT on all 8
+  others, claimed SET+ORDER byte-identical everywhere. NEW `test_offering.py` +2 (105→107): precision-synthetic
+  (9 positives fire / 10 negatives — response encodings, spec/manifest filenames, dashboard export, provenance
+  — each NOT claiming data_retrieval) + real-captured (fires on REAL ipinfo /docs AND homepage, SET invariant,
+  ABSENT+set-invariant on api-pair/marketplace/retail/null). `test_offering_canonical.py`: `dataset-format`
+  added to `_DATA_RETRIEVAL_LABELS` + `_ISOLATION_EVIDENCE` (isolation completeness covers it), 68/68.
+  SCORE-NEUTRAL: classifier OFF the scoring path (drives `--battery auto` selection only); scoring-path diff
+  EMPTY (only `asrs/offering.py` + 2 tests); suite **34/34 green**; canonical replay **26/26, 46.1 F / 85.5 B
+  / +39.4 UNMOVED**; 00:41Z verify floor concurs. Invariants #1–5 all held. NO DM (score-neutral COVERAGE, not
+  sensitive-class; no digest due — 01:1xZ precedes 16:00 UTC on 08-06). See LOG Cycle 272.
+- FOCUS POINTER (Cycle 272 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
+  check. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + Cycle 263 pin); WATCH stays NORMAL —
+  re-escalate ONLY on a fresh >6h no-artifact gap. Cloud track rotation: Cycle 272 was COVERAGE → cloud pointer
+  is **TRUTH next** (METHOD → COVERAGE → TRUTH → READOUT). NEXT COVERAGE: data_retrieval DATA-FRESHNESS /
+  update-cadence signal (ipinfo /docs "Daily Data Refresh" — the "how current is the corpus" leg, distinct
+  from delivery format) IF precision-guardable against generic "fresh"/"updated" marketing; physical_good
+  RETURNS-WINDOW leg (allbirds/moleskine machine-readable return window); agent-native RETAIL rail surfaces
+  (UCP/MCP); deep-bank uncaptured-capability audit. NEXT TRUTH/METHOD: the two host-environment reproducibility
+  axes (hash-seed + timezone) close the "same fixture, different machine → byte-identical evidence" family for
+  the STATIC path; cheap next extensions are (a) EXTEND both subprocess-digest guards from the canonical PAIR
+  to the whole committed fixture population, (b) the LOCALE axis (`LC_ALL`/`LANG`) with teeth IF de_DE/tr_TR
+  generatable; beyond these METHOD/TRUTH stays SATURATED — surface a genuinely NEW seam first. NEXT READOUT:
+  population-drift TREND across ≥3 dated sweeps ([LOCAL]-gated, only 2 committed); compare-card symmetry DONE.
+  Substantive [LOCAL] frontier: re-score the behavioral canonical delta LIVE on a codex-reachable trial
+  (drift-flight.org t2) end-to-end; cross-model N-curve (partially unblocked, t2-only); a THIRD calibration
+  anchor; render-generation digital_good (Cycle-168); structured catalog/pricing JSON (Cycle-70); ACP/UCP/MPP
+  live handshakes; a richer-booking WAITLIST fixture (Cycle-256).
 - CYCLE 271 — 2026-08-06T00:1xZ (METHOD, cloud, direct-to-main, tests-only, score-neutral). FIRST duty
   (infra health + peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR). Cloud
   started on stale orphan local `main` (`3796519`) while HEAD == origin/main `c6ef43b`; realigned (benign,

@@ -603,7 +603,9 @@ _DATA_CLAIMED = {"metered_api", "data_retrieval", "subscription", "digital_good"
 _DATA_MUST_BE_NA = {"physical_good", "service_booking"}
 # The genuine data-retrieval signals that make data_retrieval non-vacuous here (real
 # lookup/enrichment/dataset prose, never the excluded provenance/internals senses).
-_DATA_RETRIEVAL_LABELS = {"lookup", "enrich", "dataset", "data-service", "batch-retrieval"}
+_DATA_RETRIEVAL_LABELS = {
+    "lookup", "enrich", "dataset", "data-service", "batch-retrieval", "dataset-format",
+}
 
 
 def _assert_data_retrieval_anchor() -> None:
@@ -6342,6 +6344,7 @@ _ISOLATION_EVIDENCE: dict[str, str] = {
     "data-service": "a data feed for analysts",
     "query-records": "query records in bulk",
     "batch-retrieval": "bulk enrichment of your records",
+    "dataset-format": "grab the database download in csv, mmdb, and parquet formats",
 }
 
 

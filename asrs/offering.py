@@ -1834,6 +1834,45 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"|\b(?:batch|bulk)[- ]?(?:enrich(?:ment)?|look\s?ups?|geolocation|record[- ]retrieval|data[- ]retrieval)\b"
             r"|\b(?:enrich\w*|look\s?ups?|looking\s+up|quer(?:y|ies|ying)|retriev\w+|geolocat\w+|records?|contacts?|leads?)\b"
             r"[^.\n]{0,30}?\bin\s+(?:batch(?:es)?|bulk)\b", _F)),
+        # DATASET-FORMAT / DOWNLOAD-CONTRACT — the site delivers its data as a
+        # DOWNLOADABLE DATASET/DATABASE in a NAMED machine-consumable format
+        # (CSV / JSON / MMDB / Parquet / NDJSON / GeoJSON), so an autonomous agent
+        # can pick the ingest format its pipeline consumes and receive the whole
+        # corpus in one file. This is the "complete the job — agent chooses the bulk
+        # delivery format" leg for data_retrieval, DISTINCT from every existing
+        # signal: `dataset` proves a dataset EXISTS to query/download; `batch-retrieval`
+        # names the CALL SHAPE (many lookups in one request); `data-service`/`lookup`/
+        # `enrich`/`query-records` describe live RECORD retrieval — NONE says the agent
+        # receives the corpus as a downloadable file in a format it names. A data
+        # service that publishes named download formats is MORE agent-completable at
+        # the delivery leg (the agent ingests Parquet/MMDB directly rather than paging
+        # an API). Vendor-neutral (open file-format nouns, never a vendor).
+        # PRECISION-CRITICAL: bare "CSV"/"JSON"/"Parquet" is the single worst
+        # false-positive minefield in the whole bank — every API answers with a JSON
+        # RESPONSE, ships an `openapi.json`/`manifest.json`, sets `Content-Type:
+        # application/json`, and every dashboard "exports to CSV" — none of which is a
+        # downloadable DATASET. So the signal NEVER matches a bare format token: it
+        # requires the format to be named AS a downloadable database/dataset
+        # ("CSV Database Download"), OR a "data/database/dataset download" NOUN compound
+        # sitting (sentence-bounded) beside a named format / the word "formats"
+        # ("Database Downloads … in CSV, JSON, MMDB, or Parquet formats"; "data downloads
+        # in different formats"), OR a "downloadable dataset" delivered in a named format.
+        # A JSON/CSV RESPONSE, an `*.json` spec/manifest filename, a dashboard CSV export,
+        # and a "trained on a dataset" provenance mention all lack the download-contract
+        # anchor and stay clear (attribution honesty for tasks: never probe a records-
+        # retrieval intent a site does not serve). Fires NON-VACUOUSLY on the committed
+        # data_retrieval anchor (ipinfo.io — homepage "data downloads in different
+        # formats" + /docs "Database Downloads … in CSV, JSON, MMDB, or Parquet formats"),
+        # which ALREADY claims data_retrieval via lookup/enrich/dataset/data-service/
+        # batch-retrieval → no new archetype, no reorder; and on ZERO of the seven other
+        # committed fixtures (none publishes a dataset-download contract — canonical-
+        # invariant by construction, pinned by tests/test_offering_canonical.py). Off the
+        # scoring path; score-neutral.
+        ("dataset-format", re.compile(
+            r"\b(?:csv|json|mmdb|parquet|ndjson|geojson)\s+(?:database|dataset)\s+downloads?\b"
+            r"|\b(?:data|database|dataset)\s+downloads?\b(?:[^.\n]{0,60}?\b(?:formats?|csv|mmdb|parquet|ndjson|geojson)\b)"
+            r"|\bdownloadable\s+datasets?\b(?:[^.\n]{0,60}?\b(?:csv|json|mmdb|parquet|ndjson|geojson|format)\b)",
+            _F)),
     ],
 }
 

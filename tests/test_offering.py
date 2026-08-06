@@ -1153,6 +1153,146 @@ def test_batch_retrieval_fires_on_real_captured_surfaces():
     print("  ok: batch-retrieval is ABSENT on the api-pair / marketplace / retail / null fixtures (non-vacuous, score-neutral)")
 
 
+def test_dataset_format_precision_synthetic():
+    # A NEW data_retrieval capability signal: DATASET-FORMAT / DOWNLOAD-CONTRACT — the
+    # site delivers its data as a DOWNLOADABLE DATASET/DATABASE in a NAMED machine-
+    # consumable format (CSV / JSON / MMDB / Parquet / NDJSON / GeoJSON), so an agent
+    # can pick the ingest format its pipeline consumes and receive the whole corpus in
+    # one file. This is the "complete the job — agent chooses the bulk delivery format"
+    # leg, DISTINCT from every existing signal: `dataset` proves a dataset EXISTS to
+    # query/download; `batch-retrieval` names the CALL SHAPE (many lookups per request);
+    # `data-service`/`lookup`/`enrich`/`query-records` describe live RECORD retrieval —
+    # none names the download DELIVERY format. Precision is the whole game: bare
+    # "CSV"/"JSON"/"Parquet" is the worst minefield in the bank (every API returns a JSON
+    # RESPONSE, ships an `openapi.json`/`manifest.json`, sets `Content-Type:
+    # application/json`, and every dashboard "exports to CSV"). So the signal NEVER
+    # matches a bare format token — it requires the format named AS a downloadable
+    # database/dataset ("CSV Database Download"), a "data/database/dataset download" NOUN
+    # compound beside a named format / "formats" (sentence-bounded), or a "downloadable
+    # dataset" delivered in a named format. Each POSITIVE fires `dataset-format`
+    # (non-vacuous); each NEGATIVE — a JSON/CSV response, a `*.json` spec filename, a
+    # dashboard CSV export, a "trained on a dataset" provenance line — must NOT claim
+    # data_retrieval on that string.
+    #
+    # Canonical-invariant by construction: the signal fires on the committed
+    # data_retrieval anchor (ipinfo.io — homepage "data downloads in different formats"
+    # + /docs "Database Downloads … in CSV, JSON, MMDB, or Parquet formats"), which
+    # ALREADY claims data_retrieval via lookup/enrich/dataset/data-service/batch-retrieval
+    # → no new archetype, no reorder; and on ZERO of the seven other committed fixtures
+    # (none publishes a dataset-download contract — pinned by
+    # tests/test_offering_canonical.py). Off the scoring path.
+    positives = {
+        # Real captured ipinfo.io shapes (homepage + /docs, verbatim structure).
+        "data downloads in formats": "Choose between our API or data downloads in different formats.",
+        "database downloads + format list": (
+            "Database Downloads: download IP data in CSV, JSON, MMDB, or Parquet formats."
+        ),
+        # A format named AS a downloadable database (the ipinfo homepage download tiles).
+        "csv database download": "CSV Database Download available now.",
+        "mmdb database download": "MMDB Database Download for offline use.",
+        "parquet database download": "Parquet Database Download for warehouses.",
+        "json database download": "JSON Database Download included.",
+        # Genuine dataset-delivery vocabulary from other real data services.
+        "parquet database downloads": "Bulk exports are offered as CSV and Parquet database downloads.",
+        "dataset download gzipped csv": "Grab the full dataset download in gzipped CSV.",
+        "downloadable dataset formats": "The downloadable dataset comes in CSV and Parquet formats.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("scale.test", {"homepage": text})
+        assert prof.claims("data_retrieval"), (name, prof.archetypes)
+        fired = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "data_retrieval"
+            for s in c.signals
+        }
+        assert "dataset-format" in fired, (name, sorted(fired))  # non-vacuous
+    print(f"  ok: {len(positives)} dataset-download-format phrasings each fire dataset-format")
+
+    negatives = {
+        # A JSON/CSV RESPONSE encoding — not a downloadable dataset.
+        "return json": "All endpoints return JSON.",
+        "json response": "The API returns a JSON response for every request.",
+        "content-type json": "Send Content-Type: application/json with each request.",
+        "units as json": "Read prices and free included units as JSON.",
+        # A `*.json` spec / manifest FILENAME — a machine-contract file, not a dataset.
+        "openapi json filename": "The full OpenAPI spec is served at openapi.json.",
+        "manifest json filename": "Configuration lives in a manifest.json file.",
+        # A dashboard CSV export / an app download — not a dataset-download contract.
+        "export report to csv": "Export your usage report to CSV from the dashboard.",
+        "download csv invoices": "Download the CSV of your invoices.",
+        "download desktop app": "Download our desktop app for Mac.",
+        # A "trained on a dataset" PROVENANCE mention — no download delivery.
+        "trained on dataset": "We trained the model on a large dataset of prompts.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("prose.test", {"homepage": text})
+        assert not prof.claims("data_retrieval"), (name, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} response-encoding / spec-filename / app-export / provenance "
+        "strings do NOT claim data_retrieval (precision)"
+    )
+
+
+def test_dataset_format_fires_on_real_captured_surfaces():
+    # Real-evidence, NON-VACUOUS, END-TO-END: the TRUTH mirror of the synthetic
+    # precision guard. It pins that the new dataset-format signal fires on the GENUINE
+    # dataset-download prose captured live from the committed data_retrieval anchor's
+    # surfaces (ipinfo.io — the homepage "data downloads in different formats" and the
+    # /docs "Database Downloads … in CSV, JSON, MMDB, or Parquet formats"), run through
+    # the REAL discovery path (from_fixture -> discover_offering) exactly as a live crawl
+    # would.
+    #
+    # SCORE-NEUTRAL by construction: ipinfo.io ALREADY claims data_retrieval (via
+    # lookup/enrich/dataset/data-service/batch-retrieval), so the dataset-format evidence
+    # can only DEEPEN that claim — never add an archetype or reorder. The classifier is
+    # off the scoring path; the anchor's claimed SET is unchanged (pinned by
+    # tests/test_offering_canonical.py).
+    docs = _fixture_entry_text("ipinfo.io", "/docs")
+    assert "database downloads" in docs.lower(), "ipinfo /docs lost its dataset-download prose"
+    assert "csv, json, mmdb, or parquet" in docs.lower(), "ipinfo /docs lost its format list"
+    prof = classify_offering("ipinfo.io", {"/docs": docs})
+    assert prof.claims("data_retrieval"), prof.archetypes
+    data = next(c for c in prof.claimed if c.archetype == "data_retrieval")
+    df = [s for s in data.signals if s.label == "dataset-format"]
+    assert df, {s.label for s in data.signals}
+    print(f"  ok: dataset-format fires on REAL captured ipinfo.io /docs — quote: {df[0].quote!r}")
+
+    # The signal ALSO fires on the anchor's HOMEPAGE download prose (a second real,
+    # independent surface — the "data downloads in different formats" tiles), so the
+    # capability is documented across two crawled surfaces, not a single recorded hit.
+    home = _fixture_entry_text("ipinfo.io", "ipinfo.io")
+    assert "data downloads in different formats" in home.lower(), "ipinfo homepage lost its download prose"
+    hprof = classify_offering("ipinfo.io", {"homepage": home})
+    hdata = next(c for c in hprof.claimed if c.archetype == "data_retrieval")
+    assert any(s.label == "dataset-format" for s in hdata.signals), {s.label for s in hdata.signals}
+
+    # Full-discovery claimed-SET invariance on the anchor (score-neutrality): the new
+    # signal deepens data_retrieval without adding or dropping any archetype.
+    ictx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, "ipinfo.io.json"))
+    iprof = offering.discover_offering(ictx)
+    assert set(iprof.archetypes) == {
+        "metered_api", "data_retrieval", "subscription", "digital_good"
+    }, iprof.archetypes
+
+    # NON-VACUOUS negatives on REAL data: the metered_api pair + marketplace, the retail
+    # catalog, the booking storefront, and the null site publish no dataset-download
+    # contract — the signal must be absent and conjure or reorder no archetype.
+    for dom, expected in (
+        ("driftflight.com", ["metered_api", "digital_good", "subscription"]),
+        ("drift-flight.org", ["metered_api", "digital_good", "subscription"]),
+        ("api.replicate.com", ["metered_api"]),
+        ("books.toscrape.com", ["physical_good"]),
+        ("example.com", []),
+    ):
+        nctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        nprof = offering.discover_offering(nctx)
+        nlabels = {s.label for c in nprof.claimed for s in c.signals}
+        assert "dataset-format" not in nlabels, (dom, nlabels)
+        assert nprof.archetypes == expected, (dom, nprof.archetypes)
+    print("  ok: dataset-format is ABSENT on the api-pair / marketplace / retail / null fixtures (non-vacuous, score-neutral)")
+
+
 def test_service_booking_manage_precision_synthetic():
     # The FIRST lifecycle-management signal for service_booking (Cycle 248), the
     # DISTINCT "operate without a human" leg: reschedule or cancel an EXISTING
@@ -5541,6 +5681,8 @@ def main() -> int:
         test_data_retrieval_lookup_precision_synthetic,
         test_batch_retrieval_precision_synthetic,
         test_batch_retrieval_fires_on_real_captured_surfaces,
+        test_dataset_format_precision_synthetic,
+        test_dataset_format_fires_on_real_captured_surfaces,
         test_service_booking_manage_precision_synthetic,
         test_manage_booking_fires_on_real_captured_surfaces,
         test_physical_good_order_tracking_precision_synthetic,

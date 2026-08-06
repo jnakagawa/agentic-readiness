@@ -608,31 +608,31 @@ design in-cloud, execute locally.
 ## P1
 
 
-- **[OBSERVATION — Cycle 267, UPDATED Cycles 271/274/277] Evidence-reproducibility: ALL in-cloud host axes are now
-  CLOSED; the only remaining axis is [LOCAL].** The committed `Report.to_json` evidence is proven invariant along
-  every host axis a minimal container can vary WITHOUT extra installs: ARRIVAL-ORDER on the behavioral path (Cycles
+- **[OBSERVATION — Cycle 267, UPDATED Cycles 271/274/277, CLOSED Cycle 280] Evidence-reproducibility: ALL host axes
+  (in-cloud AND the [LOCAL] one) are now CLOSED — the family is FULLY SATURATED.** The committed `Report.to_json`
+  evidence is proven invariant along every host axis a machine can vary: ARRIVAL-ORDER on the behavioral path (Cycles
   253/255/257/262 — every panel-arrival projection sorted); and on the static path, over the whole full-scorable
-  fixture population (Cycle 274 broadened all three below from the pair to `acuityscheduling.com`/`books.toscrape.com`/
-  `example.com`/`www.moleskine.com` + the pair), HASH-SEED (Cycle 267 — `test_hashseed_reproducibility.py`, 4
-  `PYTHONHASHSEED` values, teeth by a real set-leak mutation), TIMEZONE / wall-clock (Cycle 271 —
-  `test_timezone_reproducibility.py`, 4 POSIX `TZ` strings `UTC0`/`IST-5:30`/`LINT-14`=+14/`AoE12`=-12, teeth by a
-  real local-wall-clock leak), and DEFAULT-ENCODING (Cycle 277 — `test_encoding_reproducibility.py` re-scores the
-  population under explicit UTF-8 mode `PYTHONUTF8=1` vs a forced ASCII default `LC_ALL=C PYTHONUTF8=0
-  PYTHONCOERCECLOCALE=0`, asserting byte-identical reports; teeth by an IMPLICIT `open(path).read()` that succeeds
-  under UTF-8 but raises `UnicodeDecodeError` under ASCII). A future METHOD/TRUTH cycle should NOT add another
-  arrival-order / hash-seed / timezone / encoding guard (diminishing returns; the in-cloud family is SATURATED).
-  The single remaining reproducibility axis is now **[LOCAL]-gated**: (b) a genuine non-C system LOCALE
-  (`de_DE.UTF-8` for comma-decimal `locale.format_string`/`'{:n}'`, `tr_TR.UTF-8` for the dotless-i case-fold) —
-  it would catch a locale-aware number-formatting or `.lower()`-via-`locale` leak the ASCII-codec axis cannot, BUT
-  CONFIRMED [LOCAL] at Cycle 277: in-cloud `locale -a` lists only C/C.utf8/POSIX and
-  `locale.setlocale(LC_ALL,'de_DE.UTF-8'|'tr_TR.UTF-8')` raises `locale.Error`, so a teeth-bearing locale test
-  cannot be verified in-cloud. [LOCAL] exact steps: on a machine with the locales installed (`locale-gen de_DE.UTF-8
-  tr_TR.UTF-8` / `localedef`), clone `test_timezone_reproducibility.py`'s 5-guard structure with `_ENC_ENVS`→
-  `_LOCALE_ENVS = {"C": {"LC_ALL":"C"}, "de": {"LC_ALL":"de_DE.UTF-8"}, "tr": {"LC_ALL":"tr_TR.UTF-8"}}`, the score
-  child calling `locale.setlocale(locale.LC_ALL, "")` before scoring so the env locale is ACTIVE, and a teeth child
-  whose leaky payload formats a number via `format(x, "n")` (locale comma) or lowercases "I" (Turkish dotless-ı)
-  vs a fixed payload using `f"{x:.1f}"`/explicit `str.lower()`. Beyond that, reach for a genuinely NEW METHOD/TRUTH
-  seam OFF host-environment reproducibility (probe-order independence of the aggregate; fixture-capture determinism).
+  fixture population (Cycle 274 broadened all three in-cloud axes from the pair to `acuityscheduling.com`/
+  `books.toscrape.com`/`example.com`/`www.moleskine.com` + the pair), HASH-SEED (Cycle 267 —
+  `test_hashseed_reproducibility.py`, 4 `PYTHONHASHSEED` values, teeth by a real set-leak mutation), TIMEZONE /
+  wall-clock (Cycle 271 — `test_timezone_reproducibility.py`, 4 POSIX `TZ` strings
+  `UTC0`/`IST-5:30`/`LINT-14`=+14/`AoE12`=-12, teeth by a real local-wall-clock leak), DEFAULT-ENCODING (Cycle 277 —
+  `test_encoding_reproducibility.py`, explicit UTF-8 mode `PYTHONUTF8=1` vs a forced ASCII default `LC_ALL=C
+  PYTHONUTF8=0 PYTHONCOERCECLOCALE=0`, teeth by an IMPLICIT `open(path).read()` that succeeds under UTF-8 but raises
+  `UnicodeDecodeError` under ASCII), and — the final, [LOCAL]-gated axis — SYSTEM-LOCALE (Cycle 280 —
+  `tests/test_locale_reproducibility.py`, re-scores the population under C / `de_DE.UTF-8` / `tr_TR.UTF-8` with each
+  child ACTIVATING the env locale via `setlocale(LC_ALL, "")` so `LC_NUMERIC` bites, teeth by a locale-AWARE
+  `"{:n}".format(1234567)` = `1.234.567` under de_DE ≠ `1234567` under C vs the locale-INDEPENDENT `str()` identical
+  across both). The locale suite GRACEFULLY SKIPS its three foreign-locale guards where the locales are absent (the
+  cloud container — `setlocale` raises there per Cycle 277), while its two host-independent guards
+  (child-scores-real-pipeline, population-is-replay-clean) run everywhere, so it exits 0 in-cloud AND does its real
+  teeth-bearing work on the local runner (which has the locales). A future METHOD/TRUTH cycle should NOT add another
+  host-environment reproducibility guard (arrival-order / hash-seed / timezone / encoding / locale) — the family is
+  DONE. Reach instead for a genuinely NEW METHOD/TRUTH seam OFF host-environment reproducibility: **probe-order
+  independence of the aggregate** (reverse/shuffle the probe list, assert the serialized report is invariant — a
+  determinism property of the scorer's own composition, not the host) or **fixture-capture determinism** (two live
+  captures of the same surface yield the same committed bytes modulo timestamps — the honest-replay property the
+  offering captures already assert informally). Both are in-cloud-testable (no [LOCAL] gate).
 
 - **[OBSERVATION — Cycle 185] Canonical-drift diagnostic family metamorphic axis is EXHAUSTED in-cloud.**
   With the Cycle-185 `test_attribution_stability_is_host_relabel_invariant`, every drift diagnostic now has a

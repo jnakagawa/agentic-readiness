@@ -1,6 +1,58 @@
 # Loop state
 
-- Cycle counter: 279
+- Cycle counter: 280
+- CYCLE 280 — 2026-08-06T05:5xZ (METHOD, LOCAL, direct-to-main, tests-only, score-neutral). FIRST duty
+  (infra health + peer-gate review): `gh pr list --state open` → `[]` (no open peer-gated PR). HEAD ==
+  origin/main == local `main` all at `b5dfcd7` (clean, no stale-orphan realign). **INFRA HEALTHY:** newest
+  verify by FILENAME `runs/local/verify_20260806T054102Z.json` (05:41Z, tests_ok=true 35 suites, 46.1 F /
+  85.5 B / +39.4), ~1min old at fire (05:42Z 08-06), deep inside the 6h floor; :41 cadence holding
+  (03:41Z→04:41Z→05:41Z) → RUNNER-HEALTH WATCH NORMAL. `codex`/`zero`/`.venv` resolve; full suite 35/35 green
+  before the change. **TRACK (LOCAL METHOD):** the LOCALE reproducibility axis Cycle 277 spun out as [LOCAL]
+  (cloud `locale -a` = C/C.utf8/POSIX only, `setlocale` raises for de_DE/tr_TR) — confirmed OPEN on this host
+  (`de_DE.UTF-8` + `tr_TR.UTF-8` installed, `setlocale` succeeds). Codex reachability already characterized ~6h
+  ago (four runs 20:45→23:45Z 08-05, `_ENV_BLOCK_RE` fix shipped Cycle 269) → re-run would be monitoring not
+  improvement; chose the axis that leaves a permanent teeth-bearing artifact. **IMPROVEMENT (METHOD — the FOURTH
+  host-environment reproducibility axis, after hash-seed 267 / timezone 271 / default-encoding 277):** NEW
+  `tests/test_locale_reproducibility.py` (5 guards, structural mirror of the encoding suite) re-scores the whole
+  6-fixture replay-clean population in SUBPROCESSES under C / de_DE.UTF-8 / tr_TR.UTF-8, each child ACTIVATING the
+  env locale via `setlocale(LC_ALL, "")` so `LC_NUMERIC` genuinely bites, asserting the serialized report is
+  byte-identical across all three (`generated_at` pinned). Scoring path is invariant TODAY (numbers via
+  locale-INDEPENDENT `json.dumps`/`repr(float)`/codepoint `sorted()`) — this VERIFIES the previously-assumed
+  property. TEETH (guard 3): de_DE proven active in-child (thousands|decimal `.|,` ≠ C `|.`); locale-AWARE
+  `"{:n}".format(1234567)` = `1.234.567` (de) ≠ `1234567` (C) → a leak the guard catches; locale-INDEPENDENT
+  `str()` identical. Guard 5 pins `_POPULATION` == live 0-replay-miss set ⊇ pair (self-maintaining). **GRACEFUL
+  [LOCAL] GATE:** guards 1-3 probe locale availability in a child and SKIP LOUDLY where absent (the cloud
+  container), guards 4-5 (child-scores-real-pipeline / population-replay-clean) run everywhere → file exits 0 in
+  BOTH the local run (5/5 full teeth) AND a cloud-sim (foreign locales → non-existent names → availability=False,
+  guards 1-3 SKIP, 4-5 pass, exit 0) — does NOT redden the cloud suite. **VALIDATION:** suite 35/35 → 36/36 green
+  (new suite 5/5; `test_runner_registration` green, auto-discovered by the glob). **SCORE-NEUTRAL:** scoring-path
+  diff (`git diff -- asrs/ rubric/ fixtures/ batteries/ loop/local_verify.py`) EMPTY (only the new test file).
+  **CANONICAL UNMOVED:** in-fire LIVE re-score 46.1 F / 85.5 B / +39.4 (pillars concur the 05:41Z floor); the
+  new guard's offline digests `c54f611d…`/`9bbd1027…` match the committed baseline. Invariants #1 ($0 read-only
+  test)–#5 all held; zero codex, zero paid ops. NO DM (score-neutral tests-only METHOD, not sensitive-class; no
+  digest due — 05:5xZ precedes 16:00 UTC on 08-06). See LOG Cycle 280.
+- FOCUS POINTER (Cycle 280 done, LOCAL): NO open peer-gated PR → next fire's first duty is the infra health
+  check. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY
+  on a fresh >6h no-artifact gap. Cloud track rotation UNCHANGED (this LOCAL cycle did not consume the cloud
+  slot): cloud pointer remains **COVERAGE next** per Cycle 279 (METHOD → COVERAGE → TRUTH → READOUT). **METHOD
+  host-environment reproducibility is now SATURATED across ALL FOUR axes** — hash-seed (267) + timezone (271) +
+  default-encoding (277) + system-locale (280, this cycle, the last [LOCAL]-gated member). The next genuinely-NEW
+  METHOD seam must move OFF host-environment reproducibility: candidates are probe-order independence of the
+  aggregate (reverse/shuffle the probe list, assert the serialized report is invariant — a determinism property
+  of the scorer's own composition) or fixture-capture determinism (two live captures of the same surface produce
+  the same committed bytes modulo timestamps). NEXT in-cloud COVERAGE (highest, unblocked): the `waitlist` signal
+  on the simplybook.me anchor (service_booking 8→9) — anchor `waiting list`/`waitlist`/`waiting-list` to a BOOKING
+  context, ABSENT on the pair + retail + null + api fixtures, fires NON-VACUOUSLY on simplybook.me, add `waitlist`
+  to `_ALL_SERVICE_BOOKING_LABELS` in the same change. Also open COVERAGE: a subscription PAUSE/RESUME leg (polar
+  `subscription.paused`/uncancel, distinct from Cycle-276's cancel) IF precision-guardable; data_retrieval
+  DATA-FRESHNESS/update-cadence (ipinfo "Daily Data Refresh"); physical_good RETURNS-WINDOW (allbirds/moleskine).
+  NEXT calibration cadence: population 18 (target 15–20); next broadening = a genuine ACP/UCP/MPP merchant or a
+  2nd x402-live site (scarce — record reachability as its own signal). NEXT READOUT: a population-median/band
+  overlay across sweeps once ≥3 sweeps carry a stable non-anchor overlap; or a one-line gap-held/moved verdict
+  badge on the main card. Substantive [LOCAL] frontier: codex-dependent items stay gated — driftflight.com (WITH
+  side) still codex-blocked → cross-model N-curve / LIVE behavioral delta blocked on WITH-side reachability
+  (drift-flight.org t2 IS reachable); a THIRD calibration anchor / 2nd x402-live merchant; render-generation
+  digital_good (Cycle-168); structured catalog/pricing JSON (Cycle-70). LOCALE axis is now DONE (this cycle).
 - CYCLE 279 — 2026-08-06T05:1xZ (READOUT, cloud, direct-to-main, display-only, score-neutral). FIRST duty
   (infra health + peer-gate review): `mcp__github__list_pull_requests` state=open → `[]` (no open peer-gated
   PR). Cloud started detached at origin/main `9cead29` with local `main` ref at stale `3e318f1`; realigned local
@@ -191,60 +243,6 @@
   READOUT: population-drift TREND across ≥3 dated sweeps ([LOCAL]-gated, only 2 committed). Substantive [LOCAL]
   frontier: codex-dependent items stay gated — driftflight.com (WITH side) still codex-blocked → cross-model
   N-curve / LIVE behavioral delta blocked on WITH-side reachability (drift-flight.org t2 IS reachable); a THIRD
-  calibration anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168); structured
-  catalog/pricing JSON (Cycle-70).
-- CYCLE 275 — 2026-08-06T02:4xZ (COVERAGE, LOCAL, direct-to-main, score-neutral). FIRST duty (infra health +
-  peer-gate review): `gh pr list --state open` → `[]` (no open peer-gated PR). HEAD == origin/main == local
-  `main` all at `d03c92d` (clean, no stale-orphan realign). **INFRA HEALTHY:** newest verify by FILENAME
-  `runs/local/verify_20260806T024103Z.json` (02:41Z, tests_ok=true 34 suites, 46.1 F / 85.5 B / +39.4), ~1min
-  old at fire (02:42Z 08-06), deep inside the 6h floor; :41 cadence holding (00:41Z→01:41Z→02:41Z) →
-  RUNNER-HEALTH WATCH NORMAL. `codex`/`zero` both resolve; bench up (venv present); full suite 34/34 green
-  before the change. **IMPROVEMENT (COVERAGE — the parked Cycle-146 [LOCAL] "subscription-CANCEL fixture", the
-  network-only enabler):** captured the FIRST subscription-CANCEL anchor `fixtures/canonical/polar.sh.json` — a
-  genuine agent-native Merchant-of-Record commerce platform (publishes llms.txt/llms-full.txt/an OpenAPI at
-  api.polar.sh + a `docs.polar.sh/.well-known/agent-card.json`) whose committed prose carries PROGRAMMATIC
-  subscription cancellation (`cancel_at_period_end` ×13, `/v1/subscriptions/` ×35, "Cancel/Revoke a subscription"
-  operation summaries) with ZERO "cancel anytime" human marketing — the exact programmatic substrate the
-  Cycle-146 mine was PARKED for (the only committed cancel prose was ipinfo's human "cancel anytime" FAQ, the
-  false-positive the future signal must dodge). Captured via `experiments/capture_offering_fixture` (66 entries,
-  1 set-cookie stripped, honest-replay verified byte-faithful + STABLE across two live crawls, inv #4).
-  subscription rests on 7 genuine bank signals; metered_api 57. Polar is a broad platform so the classifier
-  claims all six archetypes — largely genuine (subscription/metered_api/digital_good hosted-output/physical_good
-  order-fulfillment) with service_booking + some digital_good/data_retrieval on precision-noise (the KNOWN
-  exa.ai over-claim, BACKLOG P1, diagnostic-only, off scoring path); claimed SET pinned EXACTLY (honest
-  tripwire). NEW `test_polar_anchor_offering` (test_offering_canonical 69→70) pins the set + subscription
-  non-vacuity (≥3 genuine recurring signals, every label ∈ the 9-signal bank via `_ALL_SUBSCRIPTION_LABELS`) +
-  a `subscription-cancel`-not-yet-a-signal guard + THE ENABLER (fixture carries `cancel_at_period_end` + a
-  `/v1/subscriptions/{id}` revoke ENDPOINT + NO "cancel anytime" — confound-free substrate + the maintenance
-  hook for `subscription-cancel`); `test_canonical_replay.py` adds polar.sh to `_CLASSIFICATION_ONLY` (211
-  full-scorer misses → quarantined from scoring like ipinfo/allbirds/simplybook; partition green; hash-seed/
-  timezone reproducibility guard-5 self-maintains — polar is >0-miss so stays out of the replay-clean
-  population). SCORE-NEUTRAL: offering OFF the scoring path; scoring-path diff (`git diff -- asrs/ rubric/
-  batteries/ loop/local_verify.py`) EMPTY (only 2 test files + the quarantined fixture); suite **34/34 green**;
-  canonical replay **46.1 F / 85.5 B / +39.4 UNMOVED** (offline replay of the pair concurs 46.1/85.5); 02:41Z
-  verify floor concurs. Invariants #1–5 all held. NO DM (score-neutral COVERAGE, not sensitive-class; no digest
-  due — 02:4xZ precedes 16:00 UTC on 08-06). See LOG Cycle 275.
-- FOCUS POINTER (Cycle 275 done, LOCAL): NO open peer-gated PR → next fire's first duty is the infra health
-  check. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY
-  on a fresh >6h no-artifact gap. Cloud track rotation UNCHANGED (this LOCAL cycle did not consume the cloud
-  slot): Cycle 274 was TRUTH → cloud pointer remains **READOUT next** (METHOD → COVERAGE → TRUTH → READOUT).
-  **NEXT in-cloud COVERAGE (highest — now UNBLOCKED by this cycle's capture):** mine the `subscription-cancel`
-  signal from the new polar.sh anchor (subscription 9→10) — the "agent programmatically cancels/revokes its own
-  recurring plan / bounds its own spend without a human" LIFECYCLE-END leg, DISTINCT from all 9 existing
-  subscription signals (which cover plan-exists/price/evaluate/commit, never cancel). PRECISION-CRITICAL: anchor
-  to a `/subscriptions/{id}` cancel/revoke ENDPOINT PATH, a `cancel_at_period_end` parameter, or a
-  DELETE/cancel/revoke verb naming a subscription/plan resource — NOT the human "cancel anytime" of ipinfo (the
-  false-positive), NOT metered_api's job-`cancel-job`; validate ABSENT on the canonical pair + retail + null +
-  api fixtures, fires NON-VACUOUSLY on polar.sh, add `subscription-cancel` to `_ALL_SUBSCRIPTION_LABELS` in the
-  anchor test in the SAME change (the maintenance hook installed this cycle). ALSO still open (in-cloud
-  COVERAGE, from Cycle 273/274): the `waitlist` signal on the simplybook.me anchor (service_booking 8→9);
-  data_retrieval DATA-FRESHNESS/update-cadence; physical_good RETURNS-WINDOW leg (allbirds/moleskine);
-  agent-native RETAIL rail surfaces (UCP/MCP). NEXT TRUTH/METHOD: reproducibility family covers the whole
-  full-scorable population on hash-seed + timezone (Cycle 274); last cheap axis is LOCALE (`LC_ALL`/`LANG`) IF
-  de_DE/tr_TR generatable on the runner; beyond that SATURATED — surface a NEW seam. NEXT READOUT:
-  population-drift TREND across ≥3 dated sweeps ([LOCAL]-gated, only 2 committed). Substantive [LOCAL] frontier:
-  codex-dependent items stay gated — driftflight.com (WITH side) still codex-blocked → cross-model N-curve /
-  LIVE behavioral delta blocked on WITH-side reachability (drift-flight.org t2 IS reachable); a THIRD
   calibration anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168); structured
   catalog/pricing JSON (Cycle-70).
 <!-- STATE COMPACTED at Cycle 260 (2026-08-05T~17:1xZ, self-healing/COVERAGE, direct-to-main, score-neutral).

@@ -6,31 +6,20 @@ design in-cloud, execute locally.
 ## P0
 
 
-- **[PEER-GATE — IN REVIEW, PR #147] Broaden `_ENV_BLOCK_RE` for the live own-tool refusal
-  near-miss ("interactive ACCESS … denied … before the homepage loaded")** (METHOD / attribution
-  honesty, invariant #4). IMPLEMENTED Cycle 284 (LOCAL) → **PR #147
-  `loop/env-block-interactive-access-nearmiss`, commit `f9b2fd5`, AWAITING next-cycle adversarial
-  review + self-merge (opened 2026-08-06T07:5xZ).** NEXT FIRE'S FIRST DUTY: review + merge (or
-  request changes). THE FIX: v0.7(a) leading alternation broadened to
-  `(?:interactive(?: browser)? access|direct browser access|browser access permission)` — "browser"
-  OPTIONAL for the "interactive access" own-apparatus concept, anchor ("interactive"/"browser") kept
-  REQUIRED (bare "Access Denied" 403 body never matches), `_NOT_SITE_ATTRIBUTED` unchanged (…denied
-  BY firewall/server/Cloudflare STILL never excused). NEW `test_attribution.py` #13 (literal committed
-  transcript positive + pre-284 mandatory-"browser" teeth + site-attributed/anchorless-403 negatives +
-  reputation-"unsafe" kept out-of-scope). REVIEWER DUTIES (in PR body): re-run the leak scan over ALL
-  committed transcripts (fix must flip EXACTLY driftflight.com codex t2, zero collateral) + the
-  site-attributed negatives; confirm the static replay unmoved (26/26, +39.4, invariant by
-  construction — `_is_env_blocked` runs only on `--behavioral`); POST-MERGE re-run the Cycle-282 panel
-  for driftflight.com `valid_runs=2` + a wider behavioral delta. DETERMINISTIC EVIDENCE already
-  committed: `runs/local/env_block_nearmiss_reaggregate_20260806T075510Z.json` (re-aggregation of the
-  Cycle-282 panel through the fixed code → WITH-side `bhv_found_product` PARTIAL/valid_runs=3 →
-  PASS/valid_runs=2, reachability blocked 1→2; drift-flight.org UNCHANGED). NOTE (scope): the SYMMETRIC
-  bare "site access … was denied" phrasing (234505Z) was DELIBERATELY NOT added — "site"/"domain"
-  point at the target, not the agent's tool, making them attribution-ambiguous; all such committed
-  cases already carry "browser security" context and are caught. A SECOND missed sentence in the same
-  transcript — *"…classified driftflight.com as unsafe and blocked access."* — is a genuine own-tool
-  block but in the ambiguous reputation-"unsafe" vocabulary (test-#8 family) → out of scope, tracked as
-  a future carefully-guarded proposal. See LOG Cycle 284 (fix) + Cycle 282 (RESULT 4, origin).
+- **[LOCAL] Post-merge live verification of the PR #147 `_ENV_BLOCK_RE` near-miss fix** (METHOD /
+  attribution honesty, invariant #4). PR #147 was adversarially reviewed + SELF-MERGED Cycle 285 (cloud,
+  merge `60c1a0f`) — the deterministic half is DONE (independent differential leak scan over all 19 committed
+  transcripts flips EXACTLY driftflight.com codex t2, zero collateral; committed re-aggregation
+  `runs/local/env_block_nearmiss_reaggregate_20260806T075510Z.json` confirms WITH-side `bhv_found_product`
+  valid_runs 3→2, PASS, reachability blocked 1→2). What REMAINS is the live confirmation the cloud can't run:
+  re-run `compare drift-flight.org driftflight.com --behavioral --trials 2 --models claude,codex` on Jonah's
+  machine and confirm the SHIPPED code now records `driftflight.com valid_runs=2` (own-tool codex refusals
+  routed to reachability, not scored as site evidence) and a wider behavioral delta than the pre-fix +34.8.
+  Static $0 (no signing). See LOG Cycle 285 (review+merge) / Cycle 284 (fix) / Cycle 282 (RESULT 4, origin).
+  SCOPE follow-up (future, carefully-guarded proposal only): the SECOND missed sentence in the same transcript
+  — *"…classified driftflight.com as unsafe and blocked access."* — is a genuine own-tool block but in the
+  ambiguous reputation-"unsafe" vocabulary (test-#8 family); attempt it ONLY with a disambiguating own-apparatus
+  SUBJECT anchor so a site-side WAF "flagged unsafe" is never excused.
 
 - **[OPERATOR DIRECTIVE — Jonah, 2026-07-23] The battery must be
   OFFERING-RELATIVE, not fixed.** Observed: the current battery judges every

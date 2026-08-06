@@ -2218,6 +2218,84 @@ def _anchor_trend_svg(series: list, dates: list) -> str:
     )
 
 
+def _reference_gap_verdict(series: list, dates: list) -> dict | None:
+    """Pure verdict of whether the reference gap between the top and bottom anchor
+    HELD or MOVED across the committed cadence — the single datum both the calibration
+    trend card and the main-card headline badge render, extracted so the two surfaces
+    can never disagree about the population-scale echo of the frozen reference delta.
+
+    ``series``/``dates`` come from :func:`_anchor_trend_series` (already
+    version-isolated + oldest-first). Returns ``None`` unless there are >=2 anchor
+    series that BOTH score at >=1 common sweep (no common reading = no verdict, never
+    an invented one). Otherwise a dict: ``status`` "held" (|delta| < 0.05) or "moved",
+    ``first_gap``/``last_gap`` (top-minus-bottom anchor overall at the oldest/newest
+    COMMON-scored sweep), ``delta`` (last-first), ``span`` (count of common-scored
+    sweeps). A not-scorable reading is a gap in a line, never a 0 (attribution
+    honesty): it simply is not a common-scored index, so it can never fabricate a
+    moved verdict."""
+    if len(series) < 2:
+        return None
+    top, bot = series[0]["points"], series[-1]["points"]
+    commons = [i for i in range(len(dates)) if top[i] is not None and bot[i] is not None]
+    if not commons:
+        return None
+    first_gap = top[commons[0]] - bot[commons[0]]
+    last_gap = top[commons[-1]] - bot[commons[-1]]
+    delta = last_gap - first_gap
+    return {
+        "status": "held" if abs(delta) < 0.05 else "moved",
+        "first_gap": first_gap,
+        "last_gap": last_gap,
+        "delta": delta,
+        "span": len(commons),
+    }
+
+
+def _reference_gap_badge_from_sweeps(sweeps: list) -> str:
+    """A one-line population-cadence verdict badge for the MAIN card hero: does the
+    reference gap the per-cycle regression check freezes HOLD across the WHOLE
+    committed population cadence, not just the single pair on this card?
+
+    Mirrors the calibration trend card's version isolation (invariant #2 — only sweeps
+    on the newest sweep's rubric version are compared) and reads the SAME
+    :func:`_reference_gap_verdict`, so the headline badge can never drift from the
+    calibration page it links to. Returns "" when there is no multi-sweep same-version
+    trend yet (no badge rather than a premature verdict). Display-only; reads committed
+    ``overall`` values, moves no score."""
+    dated = [s for s in sweeps if isinstance(s, dict) and s.get("rows")]
+    dated.sort(key=lambda s: str(s.get("ts", "")))
+    if len(dated) < 2:
+        return ""
+    ref_version = str(dated[-1].get("rubric_version", ""))
+    same = [s for s in dated if str(s.get("rubric_version", "")) == ref_version]
+    if len(same) < 2:
+        return ""
+    series, dates = _anchor_trend_series(same)
+    verdict = _reference_gap_verdict(series, dates)
+    if verdict is None:
+        return ""
+    span = verdict["span"]
+    if verdict["status"] == "held":
+        bg, bd, fg = "#ecfdf3", "#abefc6", "#067647"
+        body = (
+            f'<b>Population check:</b> the reference gap held at '
+            f'<b>+{verdict["last_gap"]:.1f}</b> across {span} same-version sweeps'
+        )
+    else:
+        bg, bd, fg = "#fffaeb", "#fedf89", "#b54708"
+        body = (
+            f'<b>Population check:</b> the reference gap moved '
+            f'+{verdict["first_gap"]:.1f}&rarr;+{verdict["last_gap"]:.1f} '
+            f'(&Delta;&nbsp;{verdict["delta"]:+.1f}) across {span} same-version sweeps'
+        )
+    return (
+        f'<div style="margin-top:14px;padding:8px 12px;border:1px solid {bd};'
+        f'background:{bg};color:{fg};border-radius:8px;font-size:13px">'
+        f'{body} &middot; <a href="calibration.html" style="color:{fg};font-weight:600">'
+        f'reference-pair trend &rarr;</a></div>'
+    )
+
+
 def _calibration_anchor_trend_card(sweeps: list, live_version: str) -> str:
     """Render the reference-pair TREND card for calibration.html — the population
     analog of canonical-history.html's per-cycle delta trend.
@@ -2257,31 +2335,27 @@ def _calibration_anchor_trend_card(sweeps: list, live_version: str) -> str:
     )
 
     # Gap-held summary, straight from the data: the anchor delta at the first vs the
-    # last sweep where both anchors scored.
+    # last sweep where both anchors scored. Shared with the main-card badge via
+    # _reference_gap_verdict so the two surfaces can never disagree.
     gap_note = ""
-    if len(series) >= 2:
-        top, bot = series[0]["points"], series[-1]["points"]
-        commons = [i for i in range(len(dates)) if top[i] is not None and bot[i] is not None]
-        if commons:
-            first_gap = top[commons[0]] - bot[commons[0]]
-            last_gap = top[commons[-1]] - bot[commons[-1]]
-            span = len(commons)
-            if abs(last_gap - first_gap) < 0.05:
-                gap_note = (
-                    f'<p><b>The reference gap held.</b> The capability delta between the '
-                    f'two anchors is <b>+{last_gap:.1f}</b> at the newest sweep and was '
-                    f'<b>+{first_gap:.1f}</b> at the oldest of {span} same-version sweeps '
-                    f'&mdash; the population-scale echo of the frozen reference delta the '
-                    f'replay guard defends, unmoved across the cadence.</p>'
-                )
-            else:
-                moved = last_gap - first_gap
-                gap_note = (
-                    f'<p><b>The reference gap moved.</b> The delta between the two anchors '
-                    f'went from <b>+{first_gap:.1f}</b> to <b>+{last_gap:.1f}</b> '
-                    f'(&Delta;&nbsp;{moved:+.1f}) across {span} same-version sweeps &mdash; a '
-                    f'move in the reference gap the LOG must explain in capability terms.</p>'
-                )
+    verdict = _reference_gap_verdict(series, dates)
+    if verdict is not None:
+        first_gap, last_gap, span = verdict["first_gap"], verdict["last_gap"], verdict["span"]
+        if verdict["status"] == "held":
+            gap_note = (
+                f'<p><b>The reference gap held.</b> The capability delta between the '
+                f'two anchors is <b>+{last_gap:.1f}</b> at the newest sweep and was '
+                f'<b>+{first_gap:.1f}</b> at the oldest of {span} same-version sweeps '
+                f'&mdash; the population-scale echo of the frozen reference delta the '
+                f'replay guard defends, unmoved across the cadence.</p>'
+            )
+        else:
+            gap_note = (
+                f'<p><b>The reference gap moved.</b> The delta between the two anchors '
+                f'went from <b>+{first_gap:.1f}</b> to <b>+{last_gap:.1f}</b> '
+                f'(&Delta;&nbsp;{verdict["delta"]:+.1f}) across {span} same-version sweeps &mdash; a '
+                f'move in the reference gap the LOG must explain in capability terms.</p>'
+            )
 
     version_note = ""
     if excluded:
@@ -2523,9 +2597,9 @@ def _score_box(rep: dict, label: str | None) -> str:
     )
 
 
-def _hero(reports: list[dict], labels: list[str | None]) -> str:
+def _hero(reports: list[dict], labels: list[str | None], badge: str = "") -> str:
     if len(reports) == 1:
-        return f'<div class="card"><div class="hero single">{_score_box(reports[0], labels[0])}</div></div>'
+        return f'<div class="card"><div class="hero single">{_score_box(reports[0], labels[0])}</div>{badge}</div>'
     a, b = reports
     oa, ob = a.get("overall_score"), b.get("overall_score")
     # A delta is only meaningful between two scored domains; if either side had
@@ -2548,7 +2622,7 @@ def _hero(reports: list[dict], labels: list[str | None]) -> str:
         + _score_box(a, labels[0] or "Without")
         + f'<div class="delta-arrow"><span>&#8594;</span>{delta_pill}</div>'
         + _score_box(b, labels[1] or "With")
-        + "</div></div>"
+        + "</div>" + badge + "</div>"
     )
 
 
@@ -3290,6 +3364,7 @@ def build_scorecard(
     report_paths: list[str],
     labels: list[str | None] | None = None,
     out_path: str | None = None,
+    _sweeps: list | None = None,
 ) -> str:
     reports = [json.loads(Path(p).read_text()) for p in report_paths]
     labels = (labels or [None] * len(reports))[: len(reports)]
@@ -3307,6 +3382,13 @@ def build_scorecard(
     gen = reports[0]["generated_at"][:16].replace("T", " ")
     models = sorted({v["model"] for r in reports for v in (r.get("trust_panel") or [])})
     panel_note = f' Behavioral panel: {", ".join(models)}.' if models else ""
+    # Headline population-cadence verdict: does the reference gap hold across the whole
+    # committed sweep cadence, not just this pair? Auto-loads committed sweeps in
+    # production; tests pass ``_sweeps`` explicitly for hermeticity. "" until a
+    # multi-sweep same-version trend exists.
+    gap_badge = _reference_gap_badge_from_sweeps(
+        _load_all_calibration_sweeps() if _sweeps is None else _sweeps
+    )
     doc = f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -3317,7 +3399,7 @@ def build_scorecard(
 <body><div class="page">
 <div class="masthead">{ZERO_MARK}<div><h1>Agentic Readiness Scorecard</h1>
 <div class="sub">ZeroClick · rubric v{_esc(rv)} · {_esc(gen)} UTC</div></div></div>
-{_hero(reports, labels)}
+{_hero(reports, labels, gap_badge)}
 {columns}
 <footer>ASRS rubric v{_esc(rv)} — scores are comparable only within a rubric
 version. Grade caps apply for critical failures regardless of points.

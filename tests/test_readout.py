@@ -3121,6 +3121,117 @@ def test_calibration_anchor_trend_needs_two_sweeps() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Cycle 285 (READOUT): surface the reference-gap HELD/MOVED verdict as a one-line
+# badge on the MAIN card hero — where a reader lands first — not only on the
+# calibration page they may never open. Both surfaces read the SAME pure
+# _reference_gap_verdict, so the headline can never disagree with the trend card.
+# Display-only: reads committed `overall` values, moves no score; version-isolated
+# and not-scorable-honest, inherited from the shared verdict.
+# ---------------------------------------------------------------------------
+def test_reference_gap_verdict_shared_datum() -> None:
+    print("test_reference_gap_verdict_shared_datum")
+    # HELD: +39.4 flat across the cadence.
+    series, dates = scorecard._anchor_trend_series([
+        _anchor_sweep("20260728T000000Z", "0.7", 85.5, 46.1),
+        _anchor_sweep("20260805T000000Z", "0.7", 85.5, 46.1),
+        _anchor_sweep("20260806T000000Z", "0.7", 85.5, 46.1),
+    ])
+    v = scorecard._reference_gap_verdict(series, dates)
+    _check(v is not None and v["status"] == "held", "flat gap reads held")
+    _check(abs(v["last_gap"] - 39.4) < 0.05 and v["span"] == 3,
+           "held verdict carries the +39.4 magnitude over 3 common-scored sweeps")
+    # MOVED: +39.4 -> +30.0.
+    series, dates = scorecard._anchor_trend_series([
+        _anchor_sweep("20260728T000000Z", "0.7", 85.5, 46.1),
+        _anchor_sweep("20260806T000000Z", "0.7", 85.5, 55.5),
+    ])
+    v = scorecard._reference_gap_verdict(series, dates)
+    _check(v is not None and v["status"] == "moved" and abs(v["delta"] + 9.4) < 0.05,
+           "a moved gap reads moved with the signed delta from data")
+    # NOT-SCORABLE middle is a GAP, never a 0: the verdict reads scored endpoints only.
+    series, dates = scorecard._anchor_trend_series([
+        _anchor_sweep("20260728T000000Z", "0.7", 85.5, 46.1),
+        _anchor_sweep("20260805T000000Z", "0.7", 85.5, None),
+        _anchor_sweep("20260806T000000Z", "0.7", 85.5, 46.1),
+    ])
+    v = scorecard._reference_gap_verdict(series, dates)
+    _check(v is not None and v["status"] == "held" and abs(v["last_gap"] - 39.4) < 0.05,
+           "a not-scorable middle reading never fabricates a moved verdict (gap not 0)")
+    # Fewer than 2 anchor series (only one anchor ever scores) -> no verdict.
+    series, dates = scorecard._anchor_trend_series([
+        _anchor_sweep("20260728T000000Z", "0.7", 85.5, None),
+        _anchor_sweep("20260806T000000Z", "0.7", 85.5, None),
+    ])
+    _check(scorecard._reference_gap_verdict(series, dates) is None,
+           "no verdict when the two anchors never share a scored sweep")
+
+
+def test_reference_gap_badge_and_verdict_agree() -> None:
+    # The badge and the calibration trend card MUST render the same verdict (the
+    # whole point of the shared datum). Build both from ONE held cadence and assert
+    # each says "held" with +39.4.
+    print("test_reference_gap_badge_and_verdict_agree")
+    held = [
+        _anchor_sweep("20260728T000000Z", "0.7", 85.5, 46.1),
+        _anchor_sweep("20260805T000000Z", "0.7", 85.5, 46.1),
+        _anchor_sweep("20260806T000000Z", "0.7", 85.5, 46.1),
+    ]
+    badge = scorecard._reference_gap_badge_from_sweeps(held)
+    _check("Population check" in badge and "held" in badge and "+39.4" in badge,
+           "the badge states held at +39.4 from data")
+    _check('href="calibration.html"' in badge, "the badge links to the full trend")
+    with tempfile.TemporaryDirectory() as d:
+        card = Path(scorecard._write_calibration_page(
+            Path(d), sweep=_fake_sweep(), sweeps=held)).read_text()
+    _check("reference gap held" in card.lower() and "+39.4" in card,
+           "the calibration card renders the same held/+39.4 verdict (no disagreement)")
+
+
+def test_reference_gap_badge_version_isolated_and_absent() -> None:
+    # Invariant #2 on the badge: only the newest sweep's rubric version counts. A lone
+    # newest-version sweep (older cohort on a different version) is NOT a trend -> "".
+    # And with <2 sweeps at all -> "" (no premature headline verdict).
+    print("test_reference_gap_badge_version_isolated_and_absent")
+    _check(scorecard._reference_gap_badge_from_sweeps([]) == "", "no sweeps -> no badge")
+    _check(scorecard._reference_gap_badge_from_sweeps(
+        [_anchor_sweep("20260806T000000Z", "0.7", 85.5, 46.1)]) == "",
+        "a single sweep is not a trend -> no badge")
+    # Two older-version sweeps + one newest-version alone: newest defines the cohort,
+    # which has only 1 member -> "".
+    mixed = [
+        _anchor_sweep("20260728T000000Z", "0.7", 85.5, 46.1),
+        _anchor_sweep("20260805T000000Z", "0.7", 85.5, 46.1),
+        _anchor_sweep("20260806T000000Z", "0.8", 90.0, 46.1),
+    ]
+    _check(scorecard._reference_gap_badge_from_sweeps(mixed) == "",
+           "only 1 sweep on the newest rubric version -> no badge (version isolation)")
+
+
+def test_build_scorecard_hero_carries_gap_badge() -> None:
+    # End-to-end: the main card's hero surfaces the badge when a same-version trend
+    # exists, and omits it (byte-clean) when it does not. _sweeps is passed explicitly
+    # so the test never depends on committed sweep files (hermetic).
+    print("test_build_scorecard_hero_carries_gap_badge")
+    rep = _report([])
+    held = [
+        _anchor_sweep("20260728T000000Z", "0.7", 85.5, 46.1),
+        _anchor_sweep("20260805T000000Z", "0.7", 85.5, 46.1),
+        _anchor_sweep("20260806T000000Z", "0.7", 85.5, 46.1),
+    ]
+    with tempfile.TemporaryDirectory() as d:
+        rp = Path(d) / "rep.json"
+        rp.write_text(rep.to_json())
+        with_badge = Path(scorecard.build_scorecard(
+            [str(rp)], out_path=str(Path(d) / "a.html"), _sweeps=held)).read_text()
+        without = Path(scorecard.build_scorecard(
+            [str(rp)], out_path=str(Path(d) / "b.html"), _sweeps=[])).read_text()
+    _check("Population check" in with_badge and "+39.4" in with_badge,
+           "the main card hero carries the population-check badge when a trend exists")
+    _check("Population check" not in without,
+           "no badge on the main card when there is no multi-sweep trend")
+
+
+# ---------------------------------------------------------------------------
 # Cycle 192 (READOUT): the "earned by" pillar caption. Each pillar bar now names
 # the single capability that contributes the most raw points to its score, so
 # the number is ATTRIBUTABLE in the readout — the Cycle-191 calibration insight
@@ -3627,6 +3738,10 @@ def main() -> int:
         test_calibration_anchor_trend_not_scorable_is_gap_not_zero,
         test_calibration_anchor_trend_is_version_isolated,
         test_calibration_anchor_trend_needs_two_sweeps,
+        test_reference_gap_verdict_shared_datum,
+        test_reference_gap_badge_and_verdict_agree,
+        test_reference_gap_badge_version_isolated_and_absent,
+        test_build_scorecard_hero_carries_gap_badge,
         test_pillar_earner_names_dominant_capability,
         test_pillar_earner_tracks_points_not_a_hardcoded_name,
         test_pillar_earner_omitted_for_na_and_unearned,

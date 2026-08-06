@@ -1,6 +1,57 @@
 # Loop state
 
-- Cycle counter: 284
+- Cycle counter: 285
+- CYCLE 285 — 2026-08-06T08:2xZ (READOUT, cloud, direct-to-main, display-only, score-neutral). FIRST duty
+  (infra health + peer-gate review): `list_pull_requests` state=open → **PR #147 OPEN** (opened by LOCAL Cycle
+  284) → this fresh cloud fire is the mandated reviewer. Cloud started detached at origin/main `0c98355` with
+  local `main` at stale orphan `3e318f1`; realigned local `main` to origin/main post-merge (benign, no history
+  rewrite). **INFRA HEALTHY:** newest verify by FILENAME `runs/local/verify_20260806T074106Z.json` (07:41Z,
+  tests_ok=true 37 suites, 46.1 F / 85.5 B / +39.4), ~34min old at fire (08:15Z 08-06), well inside the 6h floor;
+  :41 cadence holding (05:41Z→06:41Z→07:41Z) → RUNNER-HEALTH WATCH NORMAL. Bench up; full suite **37/37 green**.
+  **PEER-GATE REVIEW → #147 SURVIVES → MERGED (`60c1a0f`):** adversarial re-derivation — (1) teeth: pre-284
+  mandatory-"browser" regex MISSED the leak phrase; (2) an INDEPENDENT differential leak scan (OLD vs NEW
+  `_ENV_BLOCK_RE`) over ALL **19** committed transcripts flips EXACTLY `driftflight.com` codex t2 (all-false)
+  False→True, zero collateral (matches the committed re-aggregate, not just trusts it); (3) attribution honesty
+  both directions (site-attributed + anchorless 403 excluded; `test_attribution.py` #13 13/13); (4) static path
+  UNTOUCHED (`git diff dda1d89..f9b2fd5 -- asrs/scoring.py …` EMPTY; replay 26/26, +39.4 invariant — `_ENV_BLOCK_RE`
+  feeds only behavioral `battery.py`/`reliability.py`); (5) suite 37/37 on the PR branch; (6) vendor-neutral; (7)
+  invariant #2 no rubric bump (consistent with the Cycle-269 precedent — an identical env-block broadening did NOT
+  bump `BATTERY_SEMANTICS_VERSION="b1"`; this is an inv-#4 attribution fix, not battery-structure). The live
+  post-merge panel re-run (`driftflight.com valid_runs=2`) needs codex+network → stays queued [LOCAL]; deterministic
+  re-aggregation already committed. **TRACK (cloud READOUT):** surfaced the reference-gap HELD/MOVED verdict as a
+  one-line badge on the MAIN card hero (STATE's named READOUT candidate). Extracted a PURE `_reference_gap_verdict`
+  (asrs/scorecard.py) SHARED by the calibration trend card (refactored, behavior-preserving) and a new
+  `_reference_gap_badge_from_sweeps` wired into `_hero`/`build_scorecard` (auto-loads committed sweeps; `_sweeps=`
+  injectable for hermetic tests), so the headline can NEVER disagree with the page it links to. Real render over the
+  3 committed v0.7 sweeps: **"Population check: the reference gap held at +39.4 across 3 same-version sweeps"** (green;
+  moved→amber). Not-scorable = gap not 0, inherited from the shared verdict. **VALIDATION:** 4 new test_readout tests
+  (shared-verdict held/moved/not-scorable/None + badge↔card agreement + version-isolation/absent + end-to-end main-card
+  hero via `_sweeps=`) → test_readout 99→103; runner-registration green. **SCORE-NEUTRAL:** scoring/behavioral-path
+  diff EMPTY (only asrs/scorecard.py + test_readout.py); suite 37/37; in-fire replay 26/26, 46.1 F / 85.5 B / +39.4
+  (concurs 07:41Z floor). Invariants #1 ($0 pure readout)–#5 held. NO DM DUE per comms (see focus pointer). See LOG
+  Cycle 285.
+- FOCUS POINTER (Cycle 285 done, cloud): **NO open peer-gated PR** (#147 MERGED this fire, `60c1a0f`) → next fire's
+  first duty is the infra health check. **DM PENDING THIS FIRE:** PR #147 was a sensitive-class (behavioral scoring
+  semantics) PR that just MERGED → per comms policy a merged sensitive-class PR warrants a visibility DM (Jonah's
+  veto, never approval) — SEND IT. Also fold in the Cycle-284 out-of-scope 2nd-sentence "unsafe" finding + note the
+  16:00 UTC daily digest is still owed (this fire at 08:2xZ precedes it). RUNNER STALL fully RESOLVED + GUARDED
+  (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY on a fresh >6h no-artifact gap. Cloud track
+  rotation: Cycle 285 was READOUT → **METHOD next** (METHOD → COVERAGE → TRUTH → READOUT). NEXT METHOD (cloud):
+  host-environment reproducibility is SATURATED (hash-seed 267 / timezone 271 / encoding 277 / locale 280) — move
+  OFF it: probe-order independence of the aggregate (reverse/shuffle the probe list, assert the serialized report is
+  invariant) or fixture-capture determinism. NEXT READOUT: a population-median/band overlay across sweeps (whole-cohort
+  spread, not just the anchor pair) once ≥3 sweeps share a stable NON-anchor overlap — [LOCAL]-gated on the cadence
+  committing that non-anchor baseline; also a self-containment cleanup (build_scorecard still hardcodes an external
+  Google-Fonts `<link>`). NEXT in-cloud COVERAGE (still open): subscription PAUSE/RESUME (polar
+  `subscription.paused`/uncancel) IF precision-guardable; data_retrieval DATA-FRESHNESS (ipinfo "Daily Data Refresh");
+  physical_good RETURNS-WINDOW (allbirds/moleskine). NEXT TRUTH (cloud): widen the cross-path anchor weld to a NON-anchor
+  population member once ≥2 committed sweeps share a stable reachable non-anchor + a committed offline replay baseline.
+  Standing METHOD tripwire: the own-tool refusal vocab has drifted TWICE (Cycle 269, 284) → keep a periodic leak scan
+  over each fresh committed panel. NEXT calibration cadence: population 18 (target 15–20); next broadening = a genuine
+  ACP/UCP/MPP merchant or a 2nd x402-live site. Substantive [LOCAL] frontier: the post-#147-merge live panel re-run
+  (verify `driftflight.com valid_runs=2` + wider behavioral delta); cross-model SHOPPER delta still codex-blocked on the
+  WITH side; a THIRD calibration anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168); structured
+  catalog/pricing JSON (Cycle-70).
 - CYCLE 284 — 2026-08-06T07:5xZ (METHOD, LOCAL, PEER-GATE PR #147, behavioral scoring semantics). FIRST duty
   (infra health + peer-gate review): `gh pr list --state open` → `[]` (no open peer-gated PR). HEAD ==
   origin/main == local `main` all at `dda1d89` (clean, no stale-orphan realign). **INFRA HEALTHY:** newest verify
@@ -267,99 +318,6 @@
   side) still codex-blocked → cross-model N-curve / LIVE behavioral delta blocked on WITH-side reachability
   (drift-flight.org t2 IS reachable); a THIRD calibration anchor / 2nd x402-live merchant; render-generation
   digital_good (Cycle-168); structured catalog/pricing JSON (Cycle-70). LOCALE axis is now DONE (this cycle).
-- CYCLE 279 — 2026-08-06T05:1xZ (READOUT, cloud, direct-to-main, display-only, score-neutral). FIRST duty
-  (infra health + peer-gate review): `mcp__github__list_pull_requests` state=open → `[]` (no open peer-gated
-  PR). Cloud started detached at origin/main `9cead29` with local `main` ref at stale `3e318f1`; realigned local
-  `main` to origin/main (benign, HEAD already matched, no history rewrite). **INFRA HEALTHY:** newest verify by
-  FILENAME `runs/local/verify_20260806T044102Z.json` (04:41Z, tests_ok=true 35 suites, 46.1 F / 85.5 B / +39.4),
-  ~36min old at fire (05:17Z 08-06), well inside the 6h floor; :41 cadence holding (02:41Z→03:41Z→04:41Z) →
-  RUNNER-HEALTH WATCH NORMAL. Bench brought up (venv + pip); full suite 35/35 green before the change.
-  **TRACK:** READOUT least-recently-worked (last 246/264/270) AND its long-owed item (population-drift TREND
-  across ≥3 sweeps, cloud-owed since Cycle 246) is NOW UNBLOCKED — Cycle 278 committed the 3rd dated sweep
-  (20260728/20260805/20260806). **IMPROVEMENT (READOUT — reference-pair trend sparkline):** the single-cadence
-  drift card (Cycle 246) shows only this-vs-prior; this zooms out to the WHOLE committed cadence. New
-  `asrs/scorecard.py`: `_load_all_calibration_sweeps` (reads every committed sweep oldest-first) +
-  `_anchor_trend_series` (pulls the canonical anchors — segment endswith `anchor` — keyed by DOMAIN from data,
-  not-scorable reading → gap not 0) + `_anchor_trend_svg` (fixed 0–100-overall multi-series sparkline mirroring
-  `_history_trend_svg`; line breaks at a not-scorable gap; top↔bottom anchor gap bracketed) +
-  `_calibration_anchor_trend_card` (named legend swatch per anchor so identity ≠ color-alone; gap-HELD/gap-MOVED
-  summary from first-vs-last common gap; version-isolation note). Wired into `_write_calibration_page` before the
-  drift card (new optional `sweeps=` param; production loads all, unit tests pass explicit list → hermetic). Real
-  render: **the reference gap HELD at +39.4 across all 3 v0.7 sweeps** (85.5 with-rails vs 46.1 no-rails). Design
-  honors inv #2 (only newest-version sweeps plotted; older-version counted+named-omitted) + inv #4 (not-scorable =
-  gap, never a fabricated 0), both test-pinned with teeth. **VALIDATION:** 5 new tests_readout (trend/gap-held +
-  gap-moved-flagged + not-scorable-gap-not-zero + version-isolation + <2-sweeps-no-card); test_readout 94→99;
-  suite 35/35 green. **SCORE-NEUTRAL:** scoring-path diff (`git diff -- asrs/scoring.py asrs/report.py asrs/probes
-  rubric/ fixtures/ batteries/ loop/local_verify.py`) EMPTY (only scorecard.py + test_readout.py). **CANONICAL
-  UNMOVED:** in-fire offline replay 46.1 F / 85.5 B / +39.4 (concurs 04:41Z floor). Invariants #1 ($0 — pure
-  readout of committed data, no probe)–#5 all held. NO DM (score-neutral READOUT, not sensitive-class; no digest
-  due — 05:1xZ precedes 16:00 UTC on 08-06). See LOG Cycle 279.
-- FOCUS POINTER (Cycle 279 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
-  check. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY on
-  a fresh >6h no-artifact gap. Cloud track rotation: Cycle 279 was READOUT → **COVERAGE next** (METHOD → COVERAGE →
-  TRUTH → READOUT); the long-owed READOUT population-drift TREND is now **DONE** (this cycle). NEXT in-cloud
-  COVERAGE (highest, unblocked): the `waitlist` signal on the simplybook.me anchor (service_booking 8→9) — anchor
-  `waiting list`/`waitlist`/`waiting-list` to a BOOKING context, ABSENT on the pair + retail + null + api fixtures,
-  fires NON-VACUOUSLY on simplybook.me, add `waitlist` to `_ALL_SERVICE_BOOKING_LABELS` in the same change. Also
-  open COVERAGE: a subscription PAUSE/RESUME leg (polar `subscription.paused`/uncancel, suspend-without-terminating,
-  distinct from Cycle-276's cancel) IF precision-guardable; data_retrieval DATA-FRESHNESS/update-cadence (ipinfo
-  "Daily Data Refresh"); physical_good RETURNS-WINDOW (allbirds/moleskine). NEXT METHOD: the static-evidence
-  reproducibility family is SATURATED for in-cloud host axes (hash-seed 267 + timezone 271 + default-encoding 277);
-  the remaining non-C system locale axis is [LOCAL]-gated; the next genuinely-NEW METHOD seam should move OFF
-  host-environment reproducibility (probe-order independence of the aggregate, or fixture-capture determinism).
-  NEXT calibration cadence: population now 18 (target 15–20); next broadening = a genuine ACP/UCP/MPP merchant or a
-  2nd x402-live site (scarce — record reachability as its own signal). NEXT READOUT (new candidates from this
-  cycle): a population-median/band overlay across sweeps (whole-cohort spread, not just the anchor pair) once ≥3
-  sweeps carry a stable non-anchor overlap; or surface the trend's gap-held/moved verdict as a one-line badge on
-  the main card. Substantive [LOCAL] frontier: codex-dependent items stay gated — driftflight.com (WITH side) still
-  codex-blocked → cross-model N-curve / LIVE behavioral delta blocked on WITH-side reachability (drift-flight.org
-  t2 IS reachable); a THIRD calibration anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168);
-  structured catalog/pricing JSON (Cycle-70); the LOCALE reproducibility axis.
-- CYCLE 278 — 2026-08-06T04:4xZ (TRUTH, LOCAL, direct-to-main, score-neutral). FIRST duty (infra health +
-  peer-gate review): `gh pr list --state open` → `[]` (no open peer-gated PR). HEAD == origin/main == local
-  `main` all at `9ab04d9` (clean, no stale-orphan realign). **INFRA HEALTHY:** newest verify by FILENAME
-  `runs/local/verify_20260806T044102Z.json` (04:41Z, tests_ok=true, 46.1 F / 85.5 B / +39.4), ~1min old at fire
-  (04:42Z 08-06), deep inside the 6h floor; :41 cadence holding (02:41Z→03:41Z→04:41Z) → RUNNER-HEALTH WATCH
-  NORMAL. Bench up (.venv); full suite 35/35 green before the change. **WORKING-TREE PICKUP:** the fire opened
-  with an uncommitted +8-line `POPULATION` broadening in `experiments/calibration_sweep.py` (simplybook.me
-  `service-booking:platform` + polar.sh `subscription:mor-platform`) left un-run by a prior interrupted fire —
-  the start of increment (a) of the standing [LOCAL] "Grow the calibration population" item; completed it (both
-  rows point at REAL captured offering anchors, Cycles 273/275; the backlog's named next broadening step).
-  **IMPROVEMENT (TRUTH — calibration-population cadence, increment (a): broaden the population):** ran the
-  SHIPPED static scoring path (`_run_probes → scoring.score`, NO `--behavioral`, $0) over the broadened
-  18-domain population → `runs/local/calibration_sweep_20260806T044352Z.json` (rubric v0.7): **17/18 scored, 1
-  not-scorable (rei.com, agent-UA-blocked, identical to baselines, inv #4), 0 error.** Two NEW storefront TYPES
-  land: simplybook.me **64.9 D** (service_booking platform; trust 93.3 / transactability 18.8 = no agent payment
-  rail) + polar.sh **70.3 C** (subscription MoR; transactability 50.0; the all-6-archetype claim is the KNOWN
-  exa.ai-class diagnostic over-claim, `_discover_claimed` off the scoring path). **CANONICAL UNMOVED:**
-  driftflight.com 85.5 B / drift-flight.org 46.1 F / **+39.4** (concurs the 04:41Z verify floor); auto drift
-  block vs `calibration_sweep_20260805T014754Z.json`: **15 compared, 0 moved, max|Δ| 0.0** over ~1 day, added
-  [polar.sh, simplybook.me], removed [], status_changed [] (new members reported as membership, never averaged
-  — the Cycle-245 drift guard's inv-#4 attribution). **SCORE-NEUTRAL:** harness off the scoring path;
-  scoring-path diff (`git diff -- asrs/ rubric/ fixtures/ batteries/ loop/local_verify.py`) EMPTY (only
-  calibration_sweep.py +8 + the force-added dataset); suite **35/35 green**. Invariants #1 ($0 static — no
-  free-tier probe, no zero CLI, no signing, by construction)–#5 all held. NO DM (score-neutral TRUTH, not
-  sensitive-class; no digest due — 04:4xZ precedes 16:00 UTC on 08-06). See LOG Cycle 278.
-- FOCUS POINTER (Cycle 278 done, LOCAL): NO open peer-gated PR → next fire's first duty is the infra health
-  check. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY
-  on a fresh >6h no-artifact gap. Cloud track rotation UNCHANGED (this LOCAL cycle did not consume the cloud
-  slot): cloud pointer remains **TRUTH next** per Cycle 277 (METHOD → COVERAGE → TRUTH → READOUT), **BUT READOUT
-  IS NOW UNBLOCKED** — this cycle committed the THIRD dated calibration sweep (20260728 / 20260805 / 20260806),
-  so the long-owed population-drift TREND sparkline across ≥3 sweeps (cloud-owed since Cycle 246, previously
-  [LOCAL]-blocked on "only 2 committed") can finally render in-cloud from each sweep's `rows` (canonical anchors'
-  `overall`). NEXT in-cloud COVERAGE (still open): the `waitlist` signal on the simplybook.me anchor
-  (service_booking 8→9); a subscription PAUSE/RESUME leg (polar `subscription.paused`/uncancel — suspend-without-
-  terminating, distinct from Cycle-276's cancel) IF precision-guardable; data_retrieval DATA-FRESHNESS/update-
-  cadence (ipinfo "Daily Data Refresh"); physical_good RETURNS-WINDOW (allbirds/moleskine). NEXT METHOD: the
-  static-evidence reproducibility family is SATURATED for in-cloud host axes (hash-seed 267 + timezone 271 +
-  default-encoding 277); the remaining axis (non-C system locale de_DE/tr_TR) is [LOCAL]-gated; the next genuinely-
-  NEW METHOD seam should move OFF host-environment reproducibility (probe-order independence of the aggregate, or
-  fixture-capture determinism). NEXT calibration cadence: population now 18 (target 15–20, deeper in range); next
-  broadening = a genuine ACP/UCP/MPP merchant or a 2nd x402-live site (scarce — record reachability as its own
-  signal). Substantive [LOCAL] frontier: codex-dependent items stay gated — driftflight.com (WITH side) still
-  codex-blocked → cross-model N-curve / LIVE behavioral delta blocked on WITH-side reachability (drift-flight.org
-  t2 IS reachable); a THIRD calibration anchor / 2nd x402-live merchant; render-generation digital_good
-  (Cycle-168); structured catalog/pricing JSON (Cycle-70); the LOCALE reproducibility axis.
 <!-- STATE COMPACTED at Cycle 260 (2026-08-05T~17:1xZ, self-healing/COVERAGE, direct-to-main, score-neutral).
      STATE.md had accreted the full per-cycle history back to ~Cycle 5 (7798 lines / ~790KB) and could no
      longer be Read in one call, degrading the playbook-mandated per-cycle "read STATE.md". Trimmed the

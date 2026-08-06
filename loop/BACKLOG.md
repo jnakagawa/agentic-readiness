@@ -6,30 +6,31 @@ design in-cloud, execute locally.
 ## P0
 
 
-- **[PEER-GATE] Broaden `_ENV_BLOCK_RE` for a NEW live own-tool refusal near-miss
-  ("interactive ACCESS … denied … before the homepage loaded")** (METHOD / attribution
-  honesty, invariant #4). Opened by the Cycle-282 [LOCAL] behavioral panel: on a fresh
-  `compare drift-flight.org driftflight.com --behavioral --trials 2 --models claude,codex`,
-  driftflight.com **codex#2** refused with *"Interactive access to driftflight.com was denied
-  before the homepage loaded."* — the Cycle-269 v0.7(a) alternative requires "interactive
-  **browser** access", and the live phrasing DROPPED "browser", so `_is_env_blocked` returned
-  False and the all-false refusal was counted as a VALID run (`valid_runs=3` not 2,
-  verdict_stability 1.0→0.333). Effect: the WITH side's five `bhv_*` outcome checks flipped
-  from unanimous-PASS to `-inconsistent`, NARROWING the behavioral delta by scoring codex's OWN
-  hosted-browser refusal as site evidence — the exact invariant-#4 leak. (drift-flight.org's two
-  codex refusals used covered phrasing → correctly caught, `valid_runs=2`.) Evidence:
-  `runs/local/behavioral_canonical_delta_20260806T064733Z/` (report_driftflight.com.json +
-  transcripts/driftflight.com_codex_t2.json). FIX (peer-gated scoring semantics — carefully):
-  add an alternative for the agent's own "interactive/direct **access** … denied/declined … (before
-  the homepage loaded)" that does NOT require the literal word "browser", KEEPING the
-  `_NOT_SITE_ATTRIBUTED` negative-lookahead so a real site-side 403 / Cloudflare / firewall block is
-  STILL never excused (attribution honesty cuts both ways); consider the symmetric "site access …
-  was denied" phrasing seen at 234505Z. Extend `tests/test_attribution.py` (#12 own-tool-drift) with
-  this exact transcript as a positive and a site-side "access denied by the firewall" as the negative
-  control; the canonical static replay stays invariant by construction (this only routes MORE codex
-  refusals to reachability, never fewer, and the pair is NA for a shopper browser gate on the static
-  path). Post-merge: re-run the Cycle-282 panel and confirm driftflight.com `valid_runs=2` + a WIDER
-  behavioral delta. See LOG Cycle 282 (RESULT 4).
+- **[PEER-GATE — IN REVIEW, PR #147] Broaden `_ENV_BLOCK_RE` for the live own-tool refusal
+  near-miss ("interactive ACCESS … denied … before the homepage loaded")** (METHOD / attribution
+  honesty, invariant #4). IMPLEMENTED Cycle 284 (LOCAL) → **PR #147
+  `loop/env-block-interactive-access-nearmiss`, commit `f9b2fd5`, AWAITING next-cycle adversarial
+  review + self-merge (opened 2026-08-06T07:5xZ).** NEXT FIRE'S FIRST DUTY: review + merge (or
+  request changes). THE FIX: v0.7(a) leading alternation broadened to
+  `(?:interactive(?: browser)? access|direct browser access|browser access permission)` — "browser"
+  OPTIONAL for the "interactive access" own-apparatus concept, anchor ("interactive"/"browser") kept
+  REQUIRED (bare "Access Denied" 403 body never matches), `_NOT_SITE_ATTRIBUTED` unchanged (…denied
+  BY firewall/server/Cloudflare STILL never excused). NEW `test_attribution.py` #13 (literal committed
+  transcript positive + pre-284 mandatory-"browser" teeth + site-attributed/anchorless-403 negatives +
+  reputation-"unsafe" kept out-of-scope). REVIEWER DUTIES (in PR body): re-run the leak scan over ALL
+  committed transcripts (fix must flip EXACTLY driftflight.com codex t2, zero collateral) + the
+  site-attributed negatives; confirm the static replay unmoved (26/26, +39.4, invariant by
+  construction — `_is_env_blocked` runs only on `--behavioral`); POST-MERGE re-run the Cycle-282 panel
+  for driftflight.com `valid_runs=2` + a wider behavioral delta. DETERMINISTIC EVIDENCE already
+  committed: `runs/local/env_block_nearmiss_reaggregate_20260806T075510Z.json` (re-aggregation of the
+  Cycle-282 panel through the fixed code → WITH-side `bhv_found_product` PARTIAL/valid_runs=3 →
+  PASS/valid_runs=2, reachability blocked 1→2; drift-flight.org UNCHANGED). NOTE (scope): the SYMMETRIC
+  bare "site access … was denied" phrasing (234505Z) was DELIBERATELY NOT added — "site"/"domain"
+  point at the target, not the agent's tool, making them attribution-ambiguous; all such committed
+  cases already carry "browser security" context and are caught. A SECOND missed sentence in the same
+  transcript — *"…classified driftflight.com as unsafe and blocked access."* — is a genuine own-tool
+  block but in the ambiguous reputation-"unsafe" vocabulary (test-#8 family) → out of scope, tracked as
+  a future carefully-guarded proposal. See LOG Cycle 284 (fix) + Cycle 282 (RESULT 4, origin).
 
 - **[OPERATOR DIRECTIVE — Jonah, 2026-07-23] The battery must be
   OFFERING-RELATIVE, not fixed.** Observed: the current battery judges every

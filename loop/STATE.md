@@ -1,6 +1,64 @@
 # Loop state
 
-- Cycle counter: 283
+- Cycle counter: 284
+- CYCLE 284 — 2026-08-06T07:5xZ (METHOD, LOCAL, PEER-GATE PR #147, behavioral scoring semantics). FIRST duty
+  (infra health + peer-gate review): `gh pr list --state open` → `[]` (no open peer-gated PR). HEAD ==
+  origin/main == local `main` all at `dda1d89` (clean, no stale-orphan realign). **INFRA HEALTHY:** newest verify
+  by FILENAME `runs/local/verify_20260806T074106Z.json` (07:41Z, tests_ok=true 37 suites, 46.1 F / 85.5 B /
+  +39.4), ~1min old at fire (07:42Z 08-06), deep inside the 6h floor; :41 cadence holding
+  (05:41Z→06:41Z→07:41Z) → RUNNER-HEALTH WATCH NORMAL. `.venv` resolves; full suite **37/37 green** before the
+  change. **TRACK (LOCAL METHOD / attribution honesty):** executed the top-of-P0 `[LOCAL]` item — the peer-gated
+  `_ENV_BLOCK_RE` broadening queued by Cycle 282's RESULT-4 (STATE's named next-to-implement). Chosen because the
+  leaking transcript is ALREADY committed → deterministically verifiable vs real evidence (stronger than a fresh
+  per-trial-nondeterministic panel). **THE LEAK:** `driftflight.com` codex#2 refused *"Interactive access to
+  driftflight.com was denied before the homepage loaded."* — the Cycle-269 v0.7(a) alt REQUIRED "interactive
+  **browser** access", the live phrasing dropped "browser" → `_is_env_blocked`=False → all-false own-tool refusal
+  counted as a VALID site run, WITH-side `bhv_*` flipped unanimous-PASS→`-inconsistent`, narrowing the delta.
+  **FIX (peer-gated):** v0.7(a) leading alternation broadens to
+  `(?:interactive(?: browser)? access|direct browser access|browser access permission)` — "browser" OPTIONAL for
+  the "interactive access" own-apparatus concept, an own-apparatus anchor ("interactive"/"browser") stays
+  REQUIRED (bare "Access Denied" 403 body never matches) and `_NOT_SITE_ATTRIBUTED` unchanged (…denied BY the
+  firewall/server/Cloudflare STILL never excused). NEW `test_attribution.py` #13 (literal committed transcript
+  positive + pre-284 mandatory-"browser" teeth + site-attributed/anchorless-403 negatives + reputation-"unsafe"
+  kept out-of-scope, #8 family): attribution 12/12→13/13; suite stays 37/37. **EVIDENCE (deterministic, $0):**
+  (1) leak scan over ALL committed transcripts → fix flips EXACTLY ONE run (driftflight.com codex t2) False→True,
+  zero collateral, all site-side phrasings stay False; (2) faithful re-aggregation of the committed Cycle-282
+  panel through the fixed code (`runs/local/env_block_nearmiss_reaggregate_20260806T075510Z.json`, force-added):
+  `driftflight.com` WITH-side `bhv_found_product` PARTIAL(valid_runs=3)→**PASS(valid_runs=2)**, reachability
+  reached=3/blocked=1→reached=2/**blocked=2** (both codex routed to reachability); `drift-flight.org` UNCHANGED
+  (valid_runs=2, blocked=2) → behavioral delta WIDENS, capability-honest. **SHIP (peer gate):** PR #147
+  `loop/env-block-interactive-access-nearmiss` (commit `f9b2fd5`) — behavioral scoring semantics ⇒ peer-gated,
+  next cycle reviews+self-merges (NEVER this fire). Static scoring path UNTOUCHED (`git diff -- asrs/scoring.py
+  asrs/report.py asrs/probes rubric/ fixtures/` EMPTY); static replay 26/26, 46.1 F / 85.5 B / +39.4 invariant
+  by construction (`_is_env_blocked` runs only on `--behavioral` panels; concurs 07:41Z floor). Invariants #1
+  ($0)–#5 held (no rubric-version bump — attribution routing within behavioral checks, not weight/cap/max_points;
+  reviewer to confirm); zero codex, zero paid ops. NO DM (not payment/weights/caps/removals sensitive-class; no
+  digest due — 07:5xZ precedes 16:00 UTC on 08-06 → flag PR #147 + the out-of-scope 2nd-sentence "unsafe" finding
+  in the next digest). See LOG Cycle 284.
+- FOCUS POINTER (Cycle 284 done, LOCAL): **ONE open peer-gated PR now — #147** (`_ENV_BLOCK_RE` interactive-access
+  near-miss fix) → next fire's FIRST duty is to adversarially review + SELF-MERGE #147: re-run the leak scan + the
+  site-attributed negatives (the fix only routes MORE codex refusals to reachability, never fewer), confirm the
+  static delta unmoved (+39.4), and post-merge re-run the Cycle-282 panel for `driftflight.com valid_runs=2` +
+  a wider behavioral delta. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL —
+  re-escalate ONLY on a fresh >6h no-artifact gap. Cloud track rotation UNCHANGED (this LOCAL cycle did not
+  consume the cloud slot): cloud pointer remains **READOUT next** per Cycle 283 (METHOD → COVERAGE → TRUTH →
+  READOUT). NEW candidate from this cycle (METHOD): the 2nd missed sentence — *"…classified driftflight.com as
+  unsafe and blocked access."* — is a genuine own-tool block in the ambiguous reputation-"unsafe" vocabulary
+  (indistinguishable from a site-side WAF "flagged unsafe"), OUT of scope (#8 family); only a SEPARATE
+  carefully-guarded proposal that requires a disambiguating own-apparatus SUBJECT anchor should attempt it.
+  Standing METHOD tripwire: the own-tool refusal vocab has now drifted TWICE (Cycle 269, 284) → keep a periodic
+  leak scan over each fresh committed panel. NEXT in-cloud COVERAGE (still open): subscription PAUSE/RESUME (polar
+  `subscription.paused`/uncancel) IF precision-guardable; data_retrieval DATA-FRESHNESS (ipinfo "Daily Data
+  Refresh"); physical_good RETURNS-WINDOW (allbirds/moleskine). NEXT METHOD (cloud): host-environment
+  reproducibility is SATURATED (hash-seed 267 / timezone 271 / encoding 277 / locale 280) — move OFF it
+  (probe-order independence of the aggregate, or fixture-capture determinism). NEXT READOUT: population-median/band
+  overlay across sweeps once ≥3 sweeps share a stable non-anchor; or a gap-held/moved verdict badge on the main
+  card. NEXT TRUTH (cloud, from Cycle 283): widen the cross-path anchor weld to a NON-anchor population member once
+  ≥2 committed sweeps share a stable reachable non-anchor + a committed offline replay baseline. NEXT calibration
+  cadence: population 18 (target 15–20); next broadening = a genuine ACP/UCP/MPP merchant or a 2nd x402-live site
+  (scarce — record reachability as its own signal). Substantive [LOCAL] frontier: cross-model SHOPPER delta still
+  codex-blocked on the WITH side (RESULT 2); a THIRD calibration anchor / 2nd x402-live merchant; render-generation
+  digital_good (Cycle-168); structured catalog/pricing JSON (Cycle-70).
 - CYCLE 283 — 2026-08-06T07:2xZ (TRUTH, cloud, direct-to-main, tests-only, score-neutral). FIRST duty (infra
   health + peer-gate review): `mcp__github__list_pull_requests` state=open → `[]` (no open peer-gated PR). Cloud
   started detached at origin/main `dc55ed5` with local `main` at stale `3e318f1` (Cycle-276 tip); realigned local

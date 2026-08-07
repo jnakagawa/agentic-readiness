@@ -1,18 +1,30 @@
 # Loop state
 
 - Cycle counter: 295
-- **⚠ OPEN PEER-GATED PR #151 (documented-live-drift ledger) — OPENED this fire (Local 20260807T054210Z), NOT
-  self-merged.** Branch `loop/documented-live-drift-ledger`, commit `9d77d1c`. Resolves the calibration-cadence
-  blocker (the P0 below): a teeth-first ledger `experiments/documented_live_drift.json` the cross-path weld +
-  readout goldens consult, so an honest post-regression sweep can join the cadence without reddening the floor.
-  Diff OFF the scoring path (weld/readout TEST files + the ledger data + the held sweep renamed into the series;
-  empty diff over scoring.py/report.py/probes/battery.py/reliability.py/offering.py/scorecard.py/rubric/fixtures/).
-  Frozen replay UNMOVED 26/26 = 46.1/85.5/+39.4; suite 38/38 green WITH the regressed sweep committed on the branch;
-  live corroboration `verify_20260807T054102Z.json` = 76.2 C / +30.1 == the ledgered value. **NEXT FIRE'S FIRST
-  DUTY: adversarially review #151 + re-run the live re-score; if teeth still catch a code/crawl regression + the
-  frozen floor is always accepted + the live floor is still 76.2 → MERGE, else request changes / retire the ledger
-  entry if `/extend` recovered to 402.** On main the sweep stays HELD (floor green) until #151 merges. NOT
-  DM-enumerated (regression-guard semantics, not payment/weights/caps/removals); flagged for the next digest.
+- **⚠ OPEN PEER-GATED PR #152 (books.toscrape.com 2nd non-anchor calibration weld) — OPENED this fire (Local
+  20260807T064228Z), NOT self-merged.** Branch `loop/books-toscrape-non-anchor-weld`. Welds books.toscrape.com (a
+  real RETAIL catalog, the inverse storefront type from the API anchors; physical_good) as the 2nd non-anchor member
+  of the cross-path calibration weld — deepens the regression signal from one non-anchor (example.com) to a
+  structurally-distinct 2nd witness. TEST-ONLY (`tests/test_calibration_anchor_agreement.py` +78/−9; off-scoring-path
+  diff EMPTY over scoring.py/report.py/probes/battery.py/reliability.py/offering.py/scorecard.py/rubric/fixtures/
+  experiments/). Weld suite 16→17 (new test is non-vacuous + has teeth: drift 29.5→40.0 caught vs the 29.5 floor);
+  full suite 38/38 green. **The [LOCAL] essence** (cloud can't — books.toscrape.com is NOT SCORABLE without network):
+  independent $0 static re-score THIS fire → live 29.5 == frozen 29.5, all 4 non-null pillars byte-identical.
+  **NEXT FIRE'S FIRST DUTY: adversarially review #152 + re-run the live re-score of books.toscrape.com; if it still
+  scores 29.5 live == frozen (weld holds) + the new test keeps teeth → MERGE, else request changes / HOLD if the site
+  regressed (the weld would correctly redden).** On main the weld change lives only on the branch (floor green until
+  merge). NOT DM-enumerated (regression-guard semantics, not payment/weights/caps/removals); flagged for next digest.
+- **✅ PR #151 (documented-live-drift ledger) MERGED this fire (Local 20260807T064228Z), merge `140304e`** — after
+  the owed FIRST-DUTY adversarial review + independent live re-scores. VERDICT SOUND: off-scoring-path (ledger JSON +
+  2 guard tests + pure rename of the held sweep into the series); teeth PRESERVED (frozen floor always accepted →
+  recovery never masked; documented value accepted EXACTLY within tol 0.05, never a band; further drift + per-pillar
+  further drift both caught; the ledger is LOAD-BEARING — an empty ledger reddens the same 76.2 sweep); attribution
+  honesty re-derived live ($0 re-score → driftflight.com 76.2 C, x402 `partial` 4.0/8.0, /extend STILL 402→401 so the
+  entry correctly STAYS, not retired); frozen replay UNMOVED 26/26 +39.4; readout goldens cadence-robust + badge
+  internally consistent (exa.ai 78.1 tops the cohort now → driftflight.com honestly downgrades to "sits high (max
+  78.1)"). Suite 38/38 on the branch AND on main post-merge. The held sweep is now the in-glob
+  `calibration_sweep_20260807T045843Z.json` (books.toscrape.com added, 18/19 scored). The calibration-cadence blocker
+  (the ex-P0) is RESOLVED. Review verdict recorded in LOG Local cycle 20260807T064228Z.
 - **PR #150 (v0.7(f) `_ENV_BLOCK_RE` →
   `browser (?:site[- ])?access(?: permission)?`) was OPERATOR-MERGED by jnakagawa** (merge `07cf47d`,
   2026-08-07T00:49:50Z) — SKIPPED the loop's pre-merge peer review (same as PR #149). **Local cycle 20260807T051750Z
@@ -23,24 +35,14 @@
   (46.1/85.5/+39.4 UNMOVED) re-run independently; suite 38/38. Merge stands, no revert. 5th own-tool vocab drift
   (269/284/287/296=v0.7(e)/v0.7(f)); leak-scan re-run each fire, no NEW drift this fire. STATE reconciled OPEN→MERGED
   (bookkeeping self-heal — STATE had lagged the operator merge).
-- **✅ CADENCE-UNBLOCK FIX IN FLIGHT as PR #151 (Local 20260807T054210Z)** — the documented-live-drift ledger below
-  is AUTHORED + pushed as the peer-gated PR (see the OPEN-PR banner above); the held sweep is renamed into the
-  `calibration_sweep_` series ON THE BRANCH (books.toscrape.com added, 18/19 scored) and the full suite is 38/38
-  green there. The P0 is no longer "queued" — it is opened, awaiting next-fire peer review. Below is the original
-  BLOCKED diagnosis (retained for the reviewer's context):
-- **⚠ CALIBRATION CADENCE (was) BLOCKED — now PR #151 (Local 20260807T051750Z).** The cadence sweep last fire
-  (books.toscrape.com added to `POPULATION`, 18/19 scored; books.toscrape.com **29.5 F** = its replay baseline exactly)
-  ALSO captured the persistent live x402 regression (driftflight.com 85.5→76.2), so committing an honest post-regression
-  `calibration_sweep_*.json` into the cadence series REDDENS the floor — it trips 5 assertions that hardcode the
-  pre-regression `85.5 / +39.4 / with-rails-tops-cohort` facts: `test_calibration_anchor_agreement.py` (3, the Cycle-293
-  cross-path weld) + `test_readout.py` (2, the Cycle-294 golden readout; newest cohort max is now exa.ai 78.1, not 85.5).
-  Root: the weld assumes live-sweep == frozen replay, but invariant #2 holds the fixture at +39.4 while the live site
-  DURABLY regressed — a real case the guard never modelled. Sweep HELD as evidence
-  `runs/local/held_calibration_sweep_20260807T045843Z.json` (outside the `calibration_sweep_*` glob → floor stays 38/38).
-  **FIX = the new PEER-GATED P0 (BACKLOG top): a documented-live-drift ledger** the weld/readout consult (compare a
-  ledgered member against its recorded live value, teeth preserved: undocumented/further drift still red). Then the held
-  sweep rejoins the series + books.toscrape.com's 2nd-non-anchor weld unlocks. If `/extend` returns to 402 the delta
-  recovers to +39.4 and the conflict self-resolves.
+- **✅ CALIBRATION CADENCE BLOCKER RESOLVED (was P0, PR #151 MERGED `140304e` this fire).** The honest post-regression
+  cadence sweep (books.toscrape.com added, driftflight.com's live x402 regression 85.5→76.2 captured) can now join the
+  `calibration_sweep_*` series without reddening the floor — the documented-live-drift ledger lets the weld + readout
+  goldens tolerate the DOCUMENTED live value (teeth preserved) while the frozen fixture stays +39.4 (inv #2). The held
+  sweep is now in-glob `calibration_sweep_20260807T045843Z.json`. Full diagnosis in LOG Local cycles 20260807T051750Z
+  (blocker found) + 20260807T054210Z (fix authored) + 20260807T064228Z (reviewed + merged). The 2nd-non-anchor weld it
+  unlocked is now PR #152 (see the OPEN-PR banner above). If `/extend` returns to 402 the live delta recovers to +39.4
+  and the ledger entry is retired.
 - **⚠ LIVE CANONICAL DELTA MOVED +39.4→+30.1 this hour** (22:41Z verify): driftflight.com 85.5 B→**76.2 C** —
   a REAL live-site regression, NOT a code/scoring change. The with-rails x402 handshake endpoint
   `POST agents.driftflight.com/extend` went **402→401** (auth-required now; storefront otherwise 200) → `x402_probe`
@@ -59,6 +61,22 @@
   but wrote NO LOG entry and never committed/pushed (its panel dir exists gitignored). This fire re-verified #149,
   took ownership of the reconciled banner (above), and committed. No fabricated 214745Z LOG entry. STATE pruned the
   two oldest rolling entries (cloud Cycles 290–291, preserved in LOG.md) to stay under the 600-line hygiene cap.
+- LOCAL cycle — 20260807T064228Z (TRUTH/METHOD / MERGED PR #151 + welded books.toscrape.com as 2nd non-anchor,
+  PEER-GATED PR #152 opened, NOT self-merged). FIRST duty: `gh pr list --state open` → PR #151 OPEN → adversarial
+  review + independent $0 live re-scores → VERDICT SOUND → **MERGED `140304e`** (off-scoring-path; teeth preserved
+  incl. the load-bearing empty-ledger-reddens leg; live re-derived driftflight.com 76.2 C / x402 partial / +30.1 ==
+  ledgered, /extend still 402→401 so entry stays; frozen replay +39.4 unmoved; readout badge honestly downgrades to
+  "sits high (max 78.1)"; suite 38/38 branch + main post-merge). Infra HEALTHY: `verify_20260807T064101Z.json` (06:41Z,
+  38 suites, 46.1/76.2/+30.1) ~1min old → :41 cadence holding. **Executed the ONE [LOCAL] item the merge unlocked —
+  the 2nd non-anchor calibration weld:** welded books.toscrape.com (real retail catalog, physical_good — the inverse
+  storefront type from the API anchors) into `_NON_ANCHOR_WELDED`, verified LIVE this fire that its live 29.5 ==
+  frozen 29.5 with byte-identical pillars (the [LOCAL] essence — NOT SCORABLE in cloud). TEST-ONLY
+  (`test_calibration_anchor_agreement.py` +78/−9; off-scoring-path EMPTY), weld suite 16→17 (new test non-vacuous +
+  teeth: drift 29.5→40.0 caught), full suite 38/38. PEER-GATED (regression-guard semantics, same class as #151) → PR
+  #152 opened, NOT self-merged; main floor green (weld change branch-only). Invariants #1 ($0 static recon + in-process
+  tests, no behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (neither the
+  merge nor the weld is a DM-enumerated sensitive class; 06:4xZ precedes 16:00 UTC) — #151 MERGED + #152 OPEN flagged
+  for next digest. See LOG Local cycle 20260807T064228Z.
 - LOCAL cycle — 20260807T054210Z (METHOD/TRUTH / documented-live-drift ledger, PEER-GATED PR #151 opened, NOT
   self-merged). FIRST duty: `gh pr list --state open` → `[]` at fire start (no PR to review; #150 merged `07cf47d`,
   reviewed SOUND last fire). Infra HEALTHY: newest verify `verify_20260807T054102Z.json` (05:41Z, tests_ok 38 suites,

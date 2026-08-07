@@ -53,12 +53,30 @@ over scoring.py/report.py/probes/battery.py/reliability.py/offering.py/scorecard
 `verify_20260807T054102Z.json` = 76.2 C / +30.1 == the ledgered value. DO NOT RE-AUTHOR — TRACKED by STATE's OPEN-PR
 #151 banner + next fire's first-duty adversarial review + live re-score; if `/extend` recovers to 402 the reviewer
 retires the ledger entry instead of merging. See LOG Local cycle 20260807T054210Z. -->
-- **[PEER-GATED P0 IN FLIGHT as PR #151 — METHOD] documented-live-drift ledger** — reconciles the cross-path weld +
-  readout goldens with the persistent live x402 regression so an honest post-regression sweep joins the cadence
-  without reddening the floor (frozen replay stays +39.4, invariant #2; live floor 76.2/+30.1 tolerated as a
-  DOCUMENTED drift, teeth preserved). AUTHORED + pushed this fire, awaiting next-fire peer review (see the OPENED
-  marker above + STATE's OPEN-PR banner). On merge: books.toscrape.com's 2nd-non-anchor weld unlocks next. If the
-  x402 `/extend` endpoint recovers to 402 the live delta returns to +39.4 and the ledger entry is retired.
+<!-- MERGED Local cycle 20260807T064228Z: PR #151 (documented-live-drift ledger) MERGED `140304e` after the owed
+FIRST-DUTY adversarial review + independent $0 live re-scores. VERDICT SOUND: off-scoring-path (ledger JSON + 2 guard
+tests + pure rename of the held sweep into the series); teeth PRESERVED (frozen floor always accepted; documented value
+EXACTLY within tol 0.05; further + per-pillar-further drift caught; ledger LOAD-BEARING — empty ledger reddens the same
+76.2 sweep); attribution re-derived live (driftflight.com 76.2 C, x402 partial 4.0/8.0, /extend STILL 402->401 → entry
+STAYS); frozen replay 26/26 +39.4 UNMOVED; readout goldens cadence-robust + badge internally consistent (exa.ai 78.1
+tops cohort → driftflight.com honestly "sits high (max 78.1)"). Suite 38/38 branch + main post-merge. The
+calibration-cadence blocker is RESOLVED; the held sweep is now in-glob calibration_sweep_20260807T045843Z.json. See
+LOG Local cycle 20260807T064228Z. -->
+
+<!-- OPENED Local cycle 20260807T064228Z: the 2nd-non-anchor calibration weld (books.toscrape.com) that #151 unlocked
+is AUTHORED as PEER-GATED PR #152 (branch loop/books-toscrape-non-anchor-weld), NOT self-merged. Welds
+books.toscrape.com (real retail catalog, physical_good — inverse storefront type from the API anchors) into
+`_NON_ANCHOR_WELDED`; new test_books_toscrape_second_non_anchor_is_welded_nonvacuously is non-vacuous (genuinely
+compared in >=1 committed sweep) + has teeth (drift 29.5->40.0 caught vs the 29.5 floor). TEST-ONLY
+(test_calibration_anchor_agreement.py +78/-9; off-scoring-path EMPTY), weld suite 16->17, full suite 38/38. Live↔frozen
+verified this fire ($0 static re-score: live 29.5 == frozen 29.5, all 4 non-null pillars byte-identical — the [LOCAL]
+essence the cloud can't do). DO NOT RE-AUTHOR — TRACKED by STATE's OPEN-PR #152 banner + next fire's first-duty
+adversarial review + live re-score. See LOG Local cycle 20260807T064228Z. -->
+- **[PEER-GATED P0 IN FLIGHT as PR #152 — TRUTH] books.toscrape.com 2nd non-anchor calibration weld** — deepens the
+  cross-path weld from one non-anchor (example.com) to a structurally-distinct 2nd witness (retail catalog). AUTHORED +
+  pushed this fire, awaiting next-fire peer review (see the OPENED marker above + STATE's OPEN-PR banner). On merge: a
+  3rd non-anchor member of yet another storefront type (a service_booking/data_retrieval anchor already fixtured) is
+  the next breadth axis, once it joins a cadence sweep.
 
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
   phrasing has now drifted the `_ENV_BLOCK_RE` guard FIVE times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)

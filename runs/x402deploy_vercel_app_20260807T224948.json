@@ -1,0 +1,296 @@
+{
+  "domain": "x402deploy.vercel.app",
+  "rubric_version": "0.7",
+  "generated_at": "2026-08-07T22:49:48.267667",
+  "checks": [
+    {
+      "check_id": "robots_ai_crawlers",
+      "pillar": "access",
+      "status": "pass",
+      "points": 10.0,
+      "max_points": 10.0,
+      "finding": "no-robots-txt-default-allow",
+      "remediation": "",
+      "evidence": {
+        "url": "https://x402deploy.vercel.app/robots.txt",
+        "status": 404,
+        "note": "No robots.txt present; absence means crawlers are allowed by default."
+      }
+    },
+    {
+      "check_id": "agent_ua_reachability",
+      "pillar": "access",
+      "status": "pass",
+      "points": 10.0,
+      "max_points": 10.0,
+      "finding": "agent-ua-allowed",
+      "remediation": "",
+      "evidence": {
+        "browser": {
+          "url": "https://x402deploy.vercel.app",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "Vercel",
+          "body_len": 2372
+        },
+        "claudebot": {
+          "url": "https://x402deploy.vercel.app",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "Vercel",
+          "body_len": 2372
+        },
+        "gptbot": {
+          "url": "https://x402deploy.vercel.app",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "Vercel",
+          "body_len": 2372
+        },
+        "blocked_agents": []
+      }
+    },
+    {
+      "check_id": "llms_txt",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 6.0,
+      "max_points": 6.0,
+      "finding": "llms-txt-present",
+      "remediation": "",
+      "evidence": {
+        "url": "https://x402deploy.vercel.app/llms.txt",
+        "length": 2609,
+        "snippet": "# x402 Multi-Tool API\n\n> Pay-per-request data toolkit for AI agents. 13 no-auth tools, $0.0050 USDC each, settled over the x402 micropayment protocol on Base (network base). No API key or signup \u2014 an agent wallet pays per call.\n\n## How to call\n\nEach tool is an HTTP POST endpoint. An unpaid request r"
+      }
+    },
+    {
+      "check_id": "sitemap",
+      "pillar": "legibility",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 2.0,
+      "finding": "sitemap-missing",
+      "remediation": "Publish a sitemap.xml (and reference it via a Sitemap: line in robots.txt) so agents can enumerate your pages.",
+      "evidence": {
+        "probed": [
+          "/sitemap.xml",
+          "robots.txt Sitemap:"
+        ],
+        "sitemap_status": 404
+      }
+    },
+    {
+      "check_id": "offer_catalog",
+      "pillar": "legibility",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 6.0,
+      "finding": "no-machine-readable-offer-catalog",
+      "remediation": "Publish a machine-readable offer catalog by any convention: schema.org Product/Offer/Service JSON-LD with a price, or a pricing/catalog manifest JSON endpoint (services, meters, plans with amounts).",
+      "evidence": {
+        "pages_checked": [
+          "https://x402deploy.vercel.app/"
+        ]
+      }
+    },
+    {
+      "check_id": "pricing_machine_readable",
+      "pillar": "legibility",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 4.0,
+      "finding": "pricing-requires-js-or-absent",
+      "remediation": "Render at least one concrete price in server-side HTML (current pricing appears to require JS or is absent).",
+      "evidence": {
+        "pages_checked": [
+          "https://x402deploy.vercel.app/"
+        ]
+      }
+    },
+    {
+      "check_id": "api_docs_surface",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 4.0,
+      "max_points": 4.0,
+      "finding": "api-docs-present",
+      "remediation": "",
+      "evidence": {
+        "url": "https://x402deploy.vercel.app/openapi.json",
+        "status": 200
+      }
+    },
+    {
+      "check_id": "x402_probe",
+      "pillar": "transactability",
+      "status": "pass",
+      "points": 8.0,
+      "max_points": 8.0,
+      "finding": "x402-live",
+      "remediation": "",
+      "evidence": {
+        "url": "https://x402deploy.vercel.app/api/serp",
+        "x402": {
+          "body": {
+            "x402Version": 1,
+            "error": "Payment required",
+            "serviceName": "x402 Web & Data Tools",
+            "tags": [
+              "search",
+              "web-scraping",
+              "url-reader",
+              "crypto",
+              "finance",
+              "news",
+              "weather",
+              "dns",
+              "geoip",
+              "data",
+              "agent-tools",
+              "x402"
+            ],
+            "resource": {
+              "url": "https://x402deploy.vercel.app/api/serp",
+              "description": "Web search SERP scraper. Returns organic web search results as JSON.",
+              "mimeType": "application/json"
+            },
+            "accepts": [
+              {
+                "scheme": "exact",
+                "network": "base",
+                "maxAmountRequired": "5000",
+                "resource": "https://x402deploy.vercel.app/api/serp",
+                "description": "Web search SERP scraper. Returns organic web search results as JSON.",
+                "mimeType": "application/json",
+                "payTo": "0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f",
+                "maxTimeoutSeconds": 60,
+                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                "extra": {
+                  "name": "USD Coin",
+                  "version": "2"
+                },
+                "tags": [
+                  "search",
+                  "web",
+                  "serp"
+                ]
+              }
+            ]
+          },
+          "snippet": "{\"x402Version\": 1, \"error\": \"Payment required\", \"serviceName\": \"x402 Web & Data Tools\", \"tags\": [\"search\", \"web-scraping\", \"url-reader\", \"crypto\", \"finance\", \"news\", \"weather\", \"dns\", \"geoip\", \"data\", \"agent-tools\", \"x402\"], \"resource\": {\"url\": \"https://x402deploy.vercel.app/api/serp\", \"description\"",
+          "headers": {
+            "payment-required": "eyJ4NDAyVmVyc2lvbiI6IDEsICJlcnJvciI6ICJQYXltZW50IHJlcXVpcmVkIiwgInNlcnZpY2VOYW1lIjogIng0MDIgV2ViICYgRGF0YSBUb29scyIsICJ0YWdzIjogWyJzZWFyY2giLCAid2ViLXNjcmFwaW5nIiwgInVybC1yZWFkZXIiLCAiY3J5cHRvIiwgImZpbmFuY2UiLCAibmV3cyIsICJ3ZWF0aGVyIiwgImRucyIsICJnZW9pcCIsICJkYXRhIiwgImFnZW50LXRvb2xzIiwgIng0MDIiXSwgInJlc291cmNlIjogeyJ1cmwiOiAiaHR0cHM6Ly94NDAyZGVwbG95LnZlcmNlbC5hcHAvYXBpL3NlcnAiLCAiZGVzY3JpcHRpb24iOiAiV2ViIHNlYXJjaCBTRVJQIHNjcmFwZXIuIFJldHVybnMgb3JnYW5pYyB3ZWIgc2VhcmNoIHJlc3VsdHMgYXMgSlNPTi4iLCAibWltZVR5cGUiOiAiYXBwbGljYXRpb24vanNvbiJ9LCAiYWNjZXB0cyI6IFt7InNjaGVtZSI6ICJleGFjdCIsICJuZXR3b3JrIjogImJhc2UiLCAibWF4QW1vdW50UmVxdWlyZWQiOiAiNTAwMCIsICJyZXNvdXJjZSI6ICJodHRwczovL3g0MDJkZXBsb3kudmVyY2VsLmFwcC9hcGkvc2VycCIsICJkZXNjcmlwdGlvbiI6ICJXZWIgc2VhcmNoIFNFUlAgc2NyYXBlci4gUmV0dXJucyBvcmdhbmljIHdlYiBzZWFyY2ggcmVzdWx0cyBhcyBKU09OLiIsICJtaW1lVHlwZSI6ICJhcHBsaWNhdGlvbi9qc29uIiwgInBheVRvIjogIjB4N2FFREU5QmIzQTBjMjgxMzI2NDNFRDhlNDE2ZTQ3MjhmMDNGQzE4ZiIsICJtYXhUaW1lb3V0U2Vjb25kcyI6IDYwLCAiYXNzZXQiOiAiMHg4MzM1ODlmQ0Q2ZURiNkUwOGY0YzdDMzJENGY3MWI1NGJkQTAyOTEzIiwgImV4dHJhIjogeyJuYW1lIjogIlVTRCBDb2luIiwgInZlcnNpb24iOiAiMiJ9LCAidGFncyI6IFsic2VhcmNoIiwgIndlYiIsICJzZXJwIl19XSwgImV4dGVuc2lvbnMiOiB7ImJhemFhciI6IHsic2NoZW1hIjogeyJwcm9wZXJ0aWVzIjogeyJpbnB1dCI6IHsicHJvcGVydGllcyI6IHsiYm9keSI6IHsidHlwZSI6ICJvYmplY3QiLCAicHJvcGVydGllcyI6IHsicXVlcnkiOiB7InR5cGUiOiAic3RyaW5nIiwgImRlc2NyaXB0aW9uIjogIlNlYXJjaCBxdWVyeSBzdHJpbmcifSwgIm51bV9yZXN1bHRzIjogeyJ0eXBlIjogImludGVnZXIiLCAibWluaW11bSI6IDEsICJtYXhpbXVtIjogMjAsICJkZWZhdWx0IjogMTB9LCAiY291bnRyeSI6IHsidHlwZSI6ICJzdHJpbmciLCAiZGVzY3JpcHRpb24iOiAiSVNPIGNvdW50cnkgY29kZSIsICJkZWZhdWx0IjogInVzIn19LCAicmVxdWlyZWQiOiBbInF1ZXJ5Il19fX0sICJvdXRwdXQiOiB7InByb3BlcnRpZXMiOiB7ImV4YW1wbGUiOiB7InF1ZXJ5IjogImJlc3QgdmVjdG9yIGRhdGFiYXNlIiwgImNvdW50cnkiOiAidXMiLCAidG90YWwiOiAxLCAicmVzdWx0cyI6IFt7InRpdGxlIjogIkV4YW1wbGUgcmVzdWx0IiwgInVybCI6ICJodHRwczovL2V4YW1wbGUuY29tIiwgInNuaXBwZXQiOiAiQW4gZXhhbXBsZSBzbmlwcGV0IiwgInBvc2l0aW9uIjogMX1dfX19fX19fX0="
+          }
+        }
+      }
+    },
+    {
+      "check_id": "mcp_surface",
+      "pillar": "transactability",
+      "status": "pass",
+      "points": 2.0,
+      "max_points": 2.0,
+      "finding": "mcp-server-discoverable",
+      "remediation": "",
+      "evidence": {
+        "url": "https://x402deploy.vercel.app/.well-known/mcp.json",
+        "snippet": "{\"name\":\"x402-multi-tool\",\"version\":\"2.0.0\",\"tools\":[{\"name\":\"web_search\",\"description\":\"Search the web and return organic results as structured JSON. Costs $0.0050 USDC per call via x402 micropayment.\",\"endpoint\":{\"url\":\"https://x402deploy.vercel.app/api/serp\",\"method\":\"POST\"},\"inputSchema\":{\"type\""
+      }
+    },
+    {
+      "check_id": "self_serve_payg",
+      "pillar": "transactability",
+      "status": "pass",
+      "points": 6.0,
+      "max_points": 6.0,
+      "finding": "no-signup-provisioning",
+      "remediation": "",
+      "evidence": {
+        "x402_live": true,
+        "no_signup_phrases": [],
+        "self_serve_phrases": [
+          "signup"
+        ],
+        "stripe_checkout": false,
+        "cta_links": [],
+        "sales_phrases": [],
+        "pricing_pages": []
+      }
+    },
+    {
+      "check_id": "https_hsts",
+      "pillar": "trust",
+      "status": "pass",
+      "points": 5.0,
+      "max_points": 5.0,
+      "finding": "https-hsts",
+      "remediation": "",
+      "evidence": {
+        "base_url": "https://x402deploy.vercel.app",
+        "strict_transport_security": "max-age=63072000; includeSubDomains; preload"
+      }
+    },
+    {
+      "check_id": "org_identity",
+      "pillar": "trust",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 4.0,
+      "finding": "no-org-identity",
+      "remediation": "Publish an about/contact page with a real company name and a reachable contact (email or address) so agents can verify legitimacy.",
+      "evidence": {
+        "identity_pages": [],
+        "company_names": [],
+        "contact_signals": []
+      }
+    },
+    {
+      "check_id": "policies_present",
+      "pillar": "trust",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 3.0,
+      "finding": "policies-missing",
+      "remediation": "Publish terms of service, a privacy policy, and a refund/cancellation policy (found: none).",
+      "evidence": {
+        "found": {},
+        "footer_scanned": 0
+      }
+    },
+    {
+      "check_id": "reputation_signals",
+      "pillar": "trust",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 3.0,
+      "finding": "no-reputation-signals",
+      "remediation": "Add reputation signals \u2014 AggregateRating/Review schema.org markup or links to a credible third-party review profile.",
+      "evidence": {}
+    }
+  ],
+  "pillar_scores": {
+    "access": 100.0,
+    "legibility": 45.45454545454545,
+    "transactability": 100.0,
+    "trust": 33.333333333333336,
+    "outcome": null
+  },
+  "overall_score": 73.9,
+  "grade": "C",
+  "caps_applied": [],
+  "trust_panel": [],
+  "behavioral_runs": [],
+  "panel_reliability": null,
+  "quotability": {
+    "quotable": true,
+    "tag": "static-deterministic",
+    "reason": "Static score \u2014 deterministic probes, no panel variance to reproduce.",
+    "verdict_stability": null
+  },
+  "battery_summary": null,
+  "scored": true
+}

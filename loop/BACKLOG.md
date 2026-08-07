@@ -210,29 +210,33 @@ EXPECTED, all 4 non-null pillars byte-identical (100.0/100.0/50.0/83.33), caps e
 branch + merged main (canonical replay 31/31); the cross-path weld now spans SEVEN non-anchor witnesses, the last the FIRST with
 genuine partial agent-native rails. The with-rails weld campaign (#152-#157) is COMPLETE across 6 non-anchor TYPES/shapes. See
 LOG Local cycle 20260807T205300Z. -->
-- **[P1 — TRUTH] the with-rails calibration axis: exa.ai WELD MERGED (PR #157, `cf0df08`) → next is a genuinely-NEW FULL
-  with-rails point; paidsync.ai SHORTLISTED (pending stabilization).** The frozen guard spans NINE real-domain baselines
-  (2 anchors + 7 non-anchor across 6 storefront TYPES/shapes: null-control + 2 retail + service-booking + data-retrieval +
-  pure-inference-API + agent-native-search-API). exa.ai (78.1, documented-partial rails) is the ONLY non-anchor on the
-  upper/with-rails scale; the sole FULL x402-live point is the anchor driftflight.com (whose live /extend handshake regressed
-  402→401, persistent). **RE-PROBED Local cycle 20260807T214332Z** (the ONE [LOCAL] item — the named next-cadence action):
-  re-scored paidsync.ai $0 static → **STILL not pinnable, 2nd x402-LIVE storefront STILL SCARCE.** paidsync.ai `/api/v1` is
-  **STILL 503 across TWO consecutive cadence cycles (20:53Z→21:43Z)** (scorer + independent re-curl GET+POST; home 200);
-  re-score BYTE-IDENTICAL to last cycle (80.0 B / tx 50.0 / caps empty — only the x402 leg is degraded, MCP 2/2 + PAYG 6/6
-  stable). Anchor driftflight.com `/extend` STILL 401 (no 402 recovery; live +30.1 holds). One fresh candidate 2s.io (from a
-  $0 WebSearch) = no bare-GET 402 (guide site). Evidence `runs/local/rails_recon_20260807T214332Z.json` (supersedes the
-  205300Z recon). **STRONGEST NEW candidate stays paidsync.ai (80.0 B — full MCP + full self-serve PAYG, a different
-  partial-rails mix from exa.ai, a NEW distinct HIGH between exa.ai 78.1 and driftflight frozen 85.5)** — NOT pinned: a **503
-  is a transient Service-Unavailable ERROR, not a stable capability state, so freezing it violates attribution honesty (inv
-  #4).** PIN RULE (sharpened): (a) `/api/v1` recovers to a 402 ⇒ genuine 2nd x402-LIVE point (highest-value pin: capture
-  full-score fixture, verify non-destructively replay-clean, honest classification, EXPECTED + `_REPLAY_CLEAN` + guard +
-  `_POPULATION`); or (b) `/api/v1` stabilizes to a steady NON-error non-402 state (200/404 across ≥2 consecutive cadence
-  cycles) ⇒ pin as a partial-rails baseline at 80.0 (MCP+PAYG only, honest "no live x402"). A persistent 503 is NEITHER —
-  keep re-probing each cadence; if it persists a 3rd cycle the honest reading shifts toward "stable-degraded" and path (b)
-  becomes the call once it settles to a non-error state. Also watch driftflight.com's /extend for a 402 recovery (would
-  restore the anchor's live handshake + the +39.4 live delta). The remaining `_CLASSIFICATION_ONLY` candidates (polar.sh /
-  simplybook.me / www.allbirds.com) ALL failed the byte-identity gate (live drift), so re-attempting any is a genuinely-NEW
-  re-baseline (verify the new classification is honest first), not a pin of the old claim.
+- **[P0 — TRUTH] PIN thebotwire.com as the 10th frozen-replay baseline — the FIRST non-anchor LIVE-x402 point (2nd-x402-live
+  scarcity BROKEN Local cycle 20260807T225343Z).** The multi-cycle hunt for a genuinely-NEW FULL with-rails point SUCCEEDED:
+  a $0 vendor-neutral sweep of the public x402 ecosystem directory (awesome-x402) surfaced THREE storefronts whose live x402
+  402-handshake the ASRS scorer detects AS SHIPPED at `x402_probe` 8.0/8.0 (`x402-live`): **thebotwire.com 86.0 B (tx 100.0 —
+  LEAD),** x402deploy.vercel.app 73.9 C (tx 100.0), api.x402oracle.com 64.4 D (tx 87.5). thebotwire.com is a genuinely-NEW FULL
+  with-rails point — a NEW distinct HIGH **above driftflight.com's frozen 85.5** and the FIRST non-anchor LIVE-x402 handshake
+  (all prior non-anchors are documented-partial exa.ai 78.1 or no-rails). Real apex domain, deliberate + stable (root JSON
+  manifest "301 real-time data wires for AI agents", /llms.txt, stateless MCP, clean x402 payloads on /news + /payments/latest +
+  $0.005 pricing), x402-live confirmed TWICE within-cycle (scorer 8/8 + independent re-curl). Evidence
+  `runs/local/rails_recon_20260807T225343Z.json` + committed source runs. **PIN DEFERRED one cadence** (consistent with the
+  loop's ≥2-cadence-observation discipline for the with-rails axis; live x402 is volatile — the anchor's /extend regressed).
+  **NEXT CADENCE (this is now the oldest actionable P0):** re-confirm thebotwire.com /payments/latest (+ /news) x402-live (2nd
+  cadence obs); IF stable → capture full-score fixture $0 (`python -m asrs score thebotwire.com --record-fixture
+  fixtures/canonical/thebotwire.com.json`), verify NON-DESTRUCTIVELY replay-clean (replay_misses=0) + honest archetype
+  classification BEFORE install, then pin `test_canonical_replay.EXPECTED` + `_REPLAY_CLEAN` + guard (overall + 4 pillars +
+  capability teeth: no-rails 0.0 < documented-partial 50.0 < LIVE 100.0) + `_POPULATION` in all 5 reproducibility suites
+  (direct-to-main, off-scoring-SEMANTICS — the exa.ai recipe). That yields the 10th frozen-replay baseline and the FIRST
+  non-anchor live-x402 point → a genuine 2nd full-x402-live datapoint besides the anchor, so the calibration guard no longer
+  rests the entire upper/live scale on driftflight.com alone. x402deploy.vercel.app + api.x402oracle.com are BACKUP candidates
+  (the class is no longer scarce). Then a peer-gated WELD becomes possible once thebotwire.com joins the calibration_sweep
+  POPULATION (the books.toscrape.com/api.replicate pattern). **paidsync.ai SUPERSEDED as lead** — its `/api/v1` STILL 503
+  across THREE consecutive cadence cycles (20:53Z→21:43Z→22:44Z, ~1h50m) ⇒ STABLE-DEGRADED (a persistent error, not a
+  non-error state, so pin-path (b) does NOT apply); remains a lesser backup at 80.0 B (MCP+PAYG only) IF /api/v1 ever settles
+  to a steady non-error non-402 state ≥2 cycles. Also watch driftflight.com's /extend for a 402 recovery (would restore the
+  anchor's live handshake + the +39.4 live delta). The `_CLASSIFICATION_ONLY` candidates (polar.sh / simplybook.me /
+  www.allbirds.com) ALL failed the byte-identity gate (live drift), so re-attempting any is a genuinely-NEW re-baseline
+  (verify the new classification is honest first), not a pin of the old claim.
 
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
   phrasing has now drifted the `_ENV_BLOCK_RE` guard FIVE times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)

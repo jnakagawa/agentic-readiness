@@ -1,0 +1,1633 @@
+{
+  "domain": "api.x402oracle.com",
+  "rubric_version": "0.7",
+  "generated_at": "2026-08-07T22:49:55.896176",
+  "checks": [
+    {
+      "check_id": "robots_ai_crawlers",
+      "pillar": "access",
+      "status": "pass",
+      "points": 10.0,
+      "max_points": 10.0,
+      "finding": "no-robots-txt-default-allow",
+      "remediation": "",
+      "evidence": {
+        "url": "https://api.x402oracle.com/robots.txt",
+        "status": 404,
+        "note": "No robots.txt present; absence means crawlers are allowed by default."
+      }
+    },
+    {
+      "check_id": "agent_ua_reachability",
+      "pillar": "access",
+      "status": "pass",
+      "points": 10.0,
+      "max_points": 10.0,
+      "finding": "agent-ua-allowed",
+      "remediation": "",
+      "evidence": {
+        "browser": {
+          "url": "https://api.x402oracle.com",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "railway-hikari",
+          "body_len": 616
+        },
+        "claudebot": {
+          "url": "https://api.x402oracle.com",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "railway-hikari",
+          "body_len": 616
+        },
+        "gptbot": {
+          "url": "https://api.x402oracle.com",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "railway-hikari",
+          "body_len": 616
+        },
+        "blocked_agents": []
+      }
+    },
+    {
+      "check_id": "llms_txt",
+      "pillar": "legibility",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 6.0,
+      "finding": "llms-txt-missing",
+      "remediation": "Publish an /llms.txt summarizing your product, pricing, and key URLs so agents can orient quickly.",
+      "evidence": {
+        "probed": [
+          "/llms.txt",
+          "/llms-full.txt"
+        ]
+      }
+    },
+    {
+      "check_id": "sitemap",
+      "pillar": "legibility",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 2.0,
+      "finding": "sitemap-missing",
+      "remediation": "Publish a sitemap.xml (and reference it via a Sitemap: line in robots.txt) so agents can enumerate your pages.",
+      "evidence": {
+        "probed": [
+          "/sitemap.xml",
+          "robots.txt Sitemap:"
+        ],
+        "sitemap_status": 404
+      }
+    },
+    {
+      "check_id": "offer_catalog",
+      "pillar": "legibility",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 6.0,
+      "finding": "no-machine-readable-offer-catalog",
+      "remediation": "Publish a machine-readable offer catalog by any convention: schema.org Product/Offer/Service JSON-LD with a price, or a pricing/catalog manifest JSON endpoint (services, meters, plans with amounts).",
+      "evidence": {
+        "pages_checked": [
+          "https://api.x402oracle.com/",
+          "https://api.x402oracle.com/.well-known/x402"
+        ]
+      }
+    },
+    {
+      "check_id": "pricing_machine_readable",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 4.0,
+      "max_points": 4.0,
+      "finding": "pricing-visible-server-side",
+      "remediation": "",
+      "evidence": {
+        "page": "https://api.x402oracle.com/",
+        "match": "$0.00"
+      }
+    },
+    {
+      "check_id": "api_docs_surface",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 4.0,
+      "max_points": 4.0,
+      "finding": "api-docs-present",
+      "remediation": "",
+      "evidence": {
+        "url": "https://api.x402oracle.com/openapi.json",
+        "status": 200
+      }
+    },
+    {
+      "check_id": "x402_probe",
+      "pillar": "transactability",
+      "status": "pass",
+      "points": 8.0,
+      "max_points": 8.0,
+      "finding": "x402-live",
+      "remediation": "",
+      "evidence": {
+        "url": "https://api.x402oracle.com/v1/check",
+        "x402": {
+          "body": {
+            "x402Version": 2,
+            "error": "X-PAYMENT header is required",
+            "resource": {
+              "url": "https://api.x402oracle.com/v1/check",
+              "description": "Full pre-payment trust verdict for an x402 endpoint: health, latency, drift, and monitoring history.",
+              "mimeType": "application/json",
+              "serviceName": "x402 Trust Oracle",
+              "domain": "api.x402oracle.com",
+              "providerUrl": "https://api.x402oracle.com",
+              "iconUrl": "https://api.x402oracle.com/assets/x402oracle.png",
+              "tags": [
+                "x402",
+                "trading",
+                "market-data",
+                "funding-rate",
+                "latency"
+              ]
+            },
+            "accepts": [
+              {
+                "scheme": "exact",
+                "network": "eip155:8453",
+                "maxAmountRequired": "2000",
+                "resource": "https://api.x402oracle.com/v1/check",
+                "description": "Full pre-payment trust verdict for an x402 endpoint: health, latency, drift, and monitoring history.",
+                "mimeType": "application/json",
+                "payTo": "0x2DF1AEc598a104Fc15E80C0B60e50C497559A980",
+                "maxTimeoutSeconds": 60,
+                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                "extra": {
+                  "name": "USD Coin",
+                  "version": "2"
+                },
+                "extensions": {
+                  "bazaar": {
+                    "info": {
+                      "input": {
+                        "type": "http",
+                        "method": "GET",
+                        "queryParams": {
+                          "resource": "https://api.anchor-x402.com/v1/price/token",
+                          "expectedPayTo": "0x742d35cc6634c0532925a3b844bc454e4438f44e",
+                          "maxUsdPrice": "0.01",
+                          "maxAgeSeconds": "120"
+                        }
+                      },
+                      "output": {
+                        "type": "json",
+                        "example": {
+                          "v": 1,
+                          "resource": "https://api.anchor-x402.com/v1/price/token",
+                          "decision": "allow",
+                          "score": 0.96,
+                          "observedAt": "2026-06-10T00:00:00.000Z",
+                          "ageSeconds": 78,
+                          "history": {
+                            "windowSeconds": 2592000,
+                            "targetWindowSeconds": 2592000,
+                            "complete": true
+                          },
+                          "price": {
+                            "usd": 0.001,
+                            "currency": "USDC",
+                            "changeCount": 0,
+                            "distinct": 1,
+                            "rangeRatio": 0,
+                            "vsLow": 0,
+                            "changed24h": false,
+                            "lastChangeAgeSeconds": null
+                          },
+                          "config": {
+                            "payTo": {
+                              "value": null,
+                              "changeCount": 0,
+                              "distinct": 0,
+                              "changed24h": false,
+                              "lastChangeAgeSeconds": null
+                            },
+                            "chain": {
+                              "value": "base-mainnet",
+                              "changeCount": 0,
+                              "distinct": 1,
+                              "changed24h": false,
+                              "lastChangeAgeSeconds": null
+                            },
+                            "currency": {
+                              "value": "USDC",
+                              "changeCount": 0,
+                              "distinct": 1,
+                              "changed24h": false,
+                              "lastChangeAgeSeconds": null
+                            }
+                          },
+                          "liveness": {
+                            "successRate": 0.996,
+                            "p95LatencyMs": 540,
+                            "lastLatencyMs": 410,
+                            "consecutiveFailures": 0
+                          },
+                          "subscores": {
+                            "L": 0.996,
+                            "F": 0.901,
+                            "D": 1
+                          },
+                          "stale": false,
+                          "freshnessAgeSeconds": 30,
+                          "reasons": [],
+                          "review_rating": null,
+                          "verified_reviews": 0,
+                          "weighted_review_rating": null,
+                          "review_count": 0,
+                          "last_reviewed_at": null,
+                          "has_verified_reviews": false
+                        },
+                        "schema": {
+                          "type": "object",
+                          "properties": {
+                            "v": {
+                              "type": "integer"
+                            },
+                            "resource": {
+                              "type": "string"
+                            },
+                            "decision": {
+                              "type": "string",
+                              "enum": [
+                                "allow",
+                                "warn",
+                                "block",
+                                "unknown"
+                              ]
+                            },
+                            "score": {
+                              "anyOf": [
+                                {
+                                  "type": "number"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "observedAt": {
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "ageSeconds": {
+                              "anyOf": [
+                                {
+                                  "type": "integer"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "history": {
+                              "type": "object",
+                              "properties": {
+                                "windowSeconds": {
+                                  "type": "integer"
+                                },
+                                "targetWindowSeconds": {
+                                  "type": "integer"
+                                },
+                                "complete": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "windowSeconds",
+                                "targetWindowSeconds",
+                                "complete"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "price": {
+                              "type": "object",
+                              "properties": {
+                                "usd": {
+                                  "anyOf": [
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "currency": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "changeCount": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "distinct": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "rangeRatio": {
+                                  "anyOf": [
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "vsLow": {
+                                  "anyOf": [
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "changed24h": {
+                                  "type": "boolean"
+                                },
+                                "lastChangeAgeSeconds": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "usd",
+                                "currency",
+                                "changeCount",
+                                "distinct",
+                                "rangeRatio",
+                                "vsLow",
+                                "changed24h",
+                                "lastChangeAgeSeconds"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "config": {
+                              "type": "object",
+                              "properties": {
+                                "payTo": {
+                                  "type": "object",
+                                  "properties": {
+                                    "value": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "changeCount": {
+                                      "anyOf": [
+                                        {
+                                          "type": "integer"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "distinct": {
+                                      "anyOf": [
+                                        {
+                                          "type": "integer"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "changed24h": {
+                                      "type": "boolean"
+                                    },
+                                    "lastChangeAgeSeconds": {
+                                      "anyOf": [
+                                        {
+                                          "type": "integer"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "value",
+                                    "changeCount",
+                                    "distinct",
+                                    "changed24h",
+                                    "lastChangeAgeSeconds"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "chain": {
+                                  "type": "object",
+                                  "properties": {
+                                    "value": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "changeCount": {
+                                      "anyOf": [
+                                        {
+                                          "type": "integer"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "distinct": {
+                                      "anyOf": [
+                                        {
+                                          "type": "integer"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "changed24h": {
+                                      "type": "boolean"
+                                    },
+                                    "lastChangeAgeSeconds": {
+                                      "anyOf": [
+                                        {
+                                          "type": "integer"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "value",
+                                    "changeCount",
+                                    "distinct",
+                                    "changed24h",
+                                    "lastChangeAgeSeconds"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "currency": {
+                                  "type": "object",
+                                  "properties": {
+                                    "value": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "changeCount": {
+                                      "anyOf": [
+                                        {
+                                          "type": "integer"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "distinct": {
+                                      "anyOf": [
+                                        {
+                                          "type": "integer"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "changed24h": {
+                                      "type": "boolean"
+                                    },
+                                    "lastChangeAgeSeconds": {
+                                      "anyOf": [
+                                        {
+                                          "type": "integer"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "value",
+                                    "changeCount",
+                                    "distinct",
+                                    "changed24h",
+                                    "lastChangeAgeSeconds"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "required": [
+                                "payTo",
+                                "chain",
+                                "currency"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "liveness": {
+                              "type": "object",
+                              "properties": {
+                                "successRate": {
+                                  "anyOf": [
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "p95LatencyMs": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "lastLatencyMs": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "consecutiveFailures": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "successRate",
+                                "p95LatencyMs",
+                                "lastLatencyMs",
+                                "consecutiveFailures"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "subscores": {
+                              "type": "object",
+                              "properties": {
+                                "L": {
+                                  "type": "number"
+                                },
+                                "F": {
+                                  "type": "number"
+                                },
+                                "D": {
+                                  "type": "number"
+                                }
+                              },
+                              "required": [
+                                "L",
+                                "F",
+                                "D"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "stale": {
+                              "type": "boolean"
+                            },
+                            "freshnessAgeSeconds": {
+                              "anyOf": [
+                                {
+                                  "type": "integer"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "reasons": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "review_rating": {
+                              "anyOf": [
+                                {
+                                  "type": "number"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "verified_reviews": {
+                              "type": "integer"
+                            },
+                            "weighted_review_rating": {
+                              "anyOf": [
+                                {
+                                  "type": "number"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "review_count": {
+                              "type": "integer"
+                            },
+                            "last_reviewed_at": {
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "has_verified_reviews": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "v",
+                            "resource",
+                            "decision",
+                            "score",
+                            "observedAt",
+                            "ageSeconds",
+                            "history",
+                            "price",
+                            "config",
+                            "liveness",
+                            "subscores",
+                            "stale",
+                            "freshnessAgeSeconds",
+                            "reasons",
+                            "review_rating",
+                            "verified_reviews",
+                            "weighted_review_rating",
+                            "review_count",
+                            "last_reviewed_at",
+                            "has_verified_reviews"
+                          ],
+                          "additionalProperties": false
+                        }
+                      }
+                    },
+                    "schema": {
+                      "$schema": "https://json-schema.org/draft/2020-12/schema",
+                      "type": "object",
+                      "properties": {
+                        "input": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "const": "http"
+                            },
+                            "method": {
+                              "type": "string",
+                              "enum": [
+                                "GET",
+                                "HEAD",
+                                "DELETE"
+                              ]
+                            },
+                            "queryParams": {
+                              "type": "object",
+                              "properties": {
+                                "resource": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 2048,
+                                  "pattern": "^https://",
+                                  "description": "Absolute https x402 endpoint URL to check before sending payment."
+                                },
+                                "expectedPayTo": {
+                                  "type": "string",
+                                  "pattern": "^0x[0-9a-fA-F]{40}$",
+                                  "description": "Optional expected receiving wallet address for drift checks."
+                                },
+                                "maxUsdPrice": {
+                                  "type": "string",
+                                  "description": "Optional non-negative USD price ceiling for the checked endpoint."
+                                },
+                                "maxAgeSeconds": {
+                                  "type": "string",
+                                  "description": "Optional non-negative integer freshness limit for the trust decision."
+                                }
+                              },
+                              "required": [
+                                "resource"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "method"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "output": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string"
+                            },
+                            "example": {
+                              "type": "object"
+                            },
+                            "schema": {
+                              "type": "object"
+                            }
+                          },
+                          "required": [
+                            "type"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "input"
+                      ]
+                    },
+                    "discoverable": true,
+                    "category": "trading",
+                    "tags": [
+                      "x402",
+                      "trading",
+                      "market-data",
+                      "funding-rate",
+                      "latency",
+                      "liveness",
+                      "reputation",
+                      "payment-safety",
+                      "agents"
+                    ],
+                    "description": "Pre-payment trust oracle for x402 endpoints: check health, liveness, price/payTo drift, facilitator changes, and monitoring history before an agent sends payment."
+                  }
+                },
+                "amount": "2000"
+              }
+            ],
+            "extensions": {
+              "bazaar": {
+                "info": {
+                  "input": {
+                    "type": "http",
+                    "method": "GET",
+                    "queryParams": {
+                      "resource": "https://api.anchor-x402.com/v1/price/token",
+                      "expectedPayTo": "0x742d35cc6634c0532925a3b844bc454e4438f44e",
+                      "maxUsdPrice": "0.01",
+                      "maxAgeSeconds": "120"
+                    }
+                  },
+                  "output": {
+                    "type": "json",
+                    "example": {
+                      "v": 1,
+                      "resource": "https://api.anchor-x402.com/v1/price/token",
+                      "decision": "allow",
+                      "score": 0.96,
+                      "observedAt": "2026-06-10T00:00:00.000Z",
+                      "ageSeconds": 78,
+                      "history": {
+                        "windowSeconds": 2592000,
+                        "targetWindowSeconds": 2592000,
+                        "complete": true
+                      },
+                      "price": {
+                        "usd": 0.001,
+                        "currency": "USDC",
+                        "changeCount": 0,
+                        "distinct": 1,
+                        "rangeRatio": 0,
+                        "vsLow": 0,
+                        "changed24h": false,
+                        "lastChangeAgeSeconds": null
+                      },
+                      "config": {
+                        "payTo": {
+                          "value": null,
+                          "changeCount": 0,
+                          "distinct": 0,
+                          "changed24h": false,
+                          "lastChangeAgeSeconds": null
+                        },
+                        "chain": {
+                          "value": "base-mainnet",
+                          "changeCount": 0,
+                          "distinct": 1,
+                          "changed24h": false,
+                          "lastChangeAgeSeconds": null
+                        },
+                        "currency": {
+                          "value": "USDC",
+                          "changeCount": 0,
+                          "distinct": 1,
+                          "changed24h": false,
+                          "lastChangeAgeSeconds": null
+                        }
+                      },
+                      "liveness": {
+                        "successRate": 0.996,
+                        "p95LatencyMs": 540,
+                        "lastLatencyMs": 410,
+                        "consecutiveFailures": 0
+                      },
+                      "subscores": {
+                        "L": 0.996,
+                        "F": 0.901,
+                        "D": 1
+                      },
+                      "stale": false,
+                      "freshnessAgeSeconds": 30,
+                      "reasons": [],
+                      "review_rating": null,
+                      "verified_reviews": 0,
+                      "weighted_review_rating": null,
+                      "review_count": 0,
+                      "last_reviewed_at": null,
+                      "has_verified_reviews": false
+                    },
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "v": {
+                          "type": "integer"
+                        },
+                        "resource": {
+                          "type": "string"
+                        },
+                        "decision": {
+                          "type": "string",
+                          "enum": [
+                            "allow",
+                            "warn",
+                            "block",
+                            "unknown"
+                          ]
+                        },
+                        "score": {
+                          "anyOf": [
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "observedAt": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "ageSeconds": {
+                          "anyOf": [
+                            {
+                              "type": "integer"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "history": {
+                          "type": "object",
+                          "properties": {
+                            "windowSeconds": {
+                              "type": "integer"
+                            },
+                            "targetWindowSeconds": {
+                              "type": "integer"
+                            },
+                            "complete": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "windowSeconds",
+                            "targetWindowSeconds",
+                            "complete"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "price": {
+                          "type": "object",
+                          "properties": {
+                            "usd": {
+                              "anyOf": [
+                                {
+                                  "type": "number"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "currency": {
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "changeCount": {
+                              "anyOf": [
+                                {
+                                  "type": "integer"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "distinct": {
+                              "anyOf": [
+                                {
+                                  "type": "integer"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "rangeRatio": {
+                              "anyOf": [
+                                {
+                                  "type": "number"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "vsLow": {
+                              "anyOf": [
+                                {
+                                  "type": "number"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "changed24h": {
+                              "type": "boolean"
+                            },
+                            "lastChangeAgeSeconds": {
+                              "anyOf": [
+                                {
+                                  "type": "integer"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "usd",
+                            "currency",
+                            "changeCount",
+                            "distinct",
+                            "rangeRatio",
+                            "vsLow",
+                            "changed24h",
+                            "lastChangeAgeSeconds"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "config": {
+                          "type": "object",
+                          "properties": {
+                            "payTo": {
+                              "type": "object",
+                              "properties": {
+                                "value": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "changeCount": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "distinct": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "changed24h": {
+                                  "type": "boolean"
+                                },
+                                "lastChangeAgeSeconds": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "value",
+                                "changeCount",
+                                "distinct",
+                                "changed24h",
+                                "lastChangeAgeSeconds"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "chain": {
+                              "type": "object",
+                              "properties": {
+                                "value": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "changeCount": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "distinct": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "changed24h": {
+                                  "type": "boolean"
+                                },
+                                "lastChangeAgeSeconds": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "value",
+                                "changeCount",
+                                "distinct",
+                                "changed24h",
+                                "lastChangeAgeSeconds"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "currency": {
+                              "type": "object",
+                              "properties": {
+                                "value": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "changeCount": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "distinct": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "changed24h": {
+                                  "type": "boolean"
+                                },
+                                "lastChangeAgeSeconds": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "value",
+                                "changeCount",
+                                "distinct",
+                                "changed24h",
+                                "lastChangeAgeSeconds"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "required": [
+                            "payTo",
+                            "chain",
+                            "currency"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "liveness": {
+                          "type": "object",
+                          "properties": {
+                            "successRate": {
+                              "anyOf": [
+                                {
+                                  "type": "number"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "p95LatencyMs": {
+                              "anyOf": [
+                                {
+                                  "type": "integer"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "lastLatencyMs": {
+                              "anyOf": [
+                                {
+                                  "type": "integer"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "consecutiveFailures": {
+                              "anyOf": [
+                                {
+                                  "type": "integer"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "successRate",
+                            "p95LatencyMs",
+                            "lastLatencyMs",
+                            "consecutiveFailures"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "subscores": {
+                          "type": "object",
+                          "properties": {
+                            "L": {
+                              "type": "number"
+                            },
+                            "F": {
+                              "type": "number"
+                            },
+                            "D": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "L",
+                            "F",
+                            "D"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "stale": {
+                          "type": "boolean"
+                        },
+                        "freshnessAgeSeconds": {
+                          "anyOf": [
+                            {
+                              "type": "integer"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "reasons": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "review_rating": {
+                          "anyOf": [
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "verified_reviews": {
+                          "type": "integer"
+                        },
+                        "weighted_review_rating": {
+                          "anyOf": [
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "review_count": {
+                          "type": "integer"
+                        },
+                        "last_reviewed_at": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "has_verified_reviews": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "v",
+                        "resource",
+                        "decision",
+                        "score",
+                        "observedAt",
+                        "ageSeconds",
+                        "history",
+                        "price",
+                        "config",
+                        "liveness",
+                        "subscores",
+                        "stale",
+                        "freshnessAgeSeconds",
+                        "reasons",
+                        "review_rating",
+                        "verified_reviews",
+                        "weighted_review_rating",
+                        "review_count",
+                        "last_reviewed_at",
+                        "has_verified_reviews"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "schema": {
+                  "$schema": "https://json-schema.org/draft/2020-12/schema",
+                  "type": "object",
+                  "properties": {
+                    "input": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "http"
+                        },
+                        "method": {
+                          "type": "string",
+                          "enum": [
+                            "GET",
+                            "HEAD",
+                            "DELETE"
+                          ]
+                        },
+                        "queryParams": {
+                          "type": "object",
+                          "properties": {
+                            "resource": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 2048,
+                              "pattern": "^https://",
+                              "description": "Absolute https x402 endpoint URL to check before sending payment."
+                            },
+                            "expectedPayTo": {
+                              "type": "string",
+                              "pattern": "^0x[0-9a-fA-F]{40}$",
+                              "description": "Optional expected receiving wallet address for drift checks."
+                            },
+                            "maxUsdPrice": {
+                              "type": "string",
+                              "description": "Optional non-negative USD price ceiling for the checked endpoint."
+                            },
+                            "maxAgeSeconds": {
+                              "type": "string",
+                              "description": "Optional non-negative integer freshness limit for the trust decision."
+                            }
+                          },
+                          "required": [
+                            "resource"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "method"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "output": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "example": {
+                          "type": "object"
+                        },
+                        "schema": {
+                          "type": "object"
+                        }
+                      },
+                      "required": [
+                        "type"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "input"
+                  ]
+                },
+                "discoverable": true,
+                "category": "trading",
+                "tags": [
+                  "x402",
+                  "trading",
+                  "market-data",
+                  "funding-rate",
+                  "latency",
+                  "liveness",
+                  "reputation",
+                  "payment-safety",
+                  "agents"
+                ],
+                "description": "Pre-payment trust oracle for x402 endpoints: check health, liveness, price/payTo drift, facilitator changes, and monitoring history before an agent sends payment."
+              }
+            }
+          },
+          "snippet": "{\"x402Version\": 2, \"error\": \"X-PAYMENT header is required\", \"resource\": {\"url\": \"https://api.x402oracle.com/v1/check\", \"description\": \"Full pre-payment trust verdict for an x402 endpoint: health, latency, drift, and monitoring history.\", \"mimeType\": \"application/json\", \"serviceName\": \"x402 Trust Ora",
+          "headers": {
+            "payment-required": "eyJ4NDAyVmVyc2lvbiI6MiwiZXJyb3IiOiJYLVBBWU1FTlQgaGVhZGVyIGlzIHJlcXVpcmVkIiwicmVzb3VyY2UiOnsidXJsIjoiaHR0cHM6Ly9hcGkueDQwMm9yYWNsZS5jb20vdjEvY2hlY2siLCJkZXNjcmlwdGlvbiI6IkZ1bGwgcHJlLXBheW1lbnQgdHJ1c3QgdmVyZGljdCBmb3IgYW4geDQwMiBlbmRwb2ludDogaGVhbHRoLCBsYXRlbmN5LCBkcmlmdCwgYW5kIG1vbml0b3JpbmcgaGlzdG9yeS4iLCJtaW1lVHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJzZXJ2aWNlTmFtZSI6Ing0MDIgVHJ1c3QgT3JhY2xlIiwiZG9tYWluIjoiYXBpLng0MDJvcmFjbGUuY29tIiwicHJvdmlkZXJVcmwiOiJodHRwczovL2FwaS54NDAyb3JhY2xlLmNvbSIsImljb25VcmwiOiJodHRwczovL2FwaS54NDAyb3JhY2xlLmNvbS9hc3NldHMveDQwMm9yYWNsZS5wbmciLCJ0YWdzIjpbIng0MDIiLCJ0cmFkaW5nIiwibWFya2V0LWRhdGEiLCJmdW5kaW5nLXJhdGUiLCJsYXRlbmN5Il19LCJhY2NlcHRzIjpbeyJzY2hlbWUiOiJleGFjdCIsIm5ldHdvcmsiOiJlaXAxNTU6ODQ1MyIsIm1heEFtb3VudFJlcXVpcmVkIjoiMjAwMCIsInJlc291cmNlIjoiaHR0cHM6Ly9hcGkueDQwMm9yYWNsZS5jb20vdjEvY2hlY2siLCJkZXNjcmlwdGlvbiI6IkZ1bGwgcHJlLXBheW1lbnQgdHJ1c3QgdmVyZGljdCBmb3IgYW4geDQwMiBlbmRwb2ludDogaGVhbHRoLCBsYXRlbmN5LCBkcmlmdCwgYW5kIG1vbml0b3JpbmcgaGlzdG9yeS4iLCJtaW1lVHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJwYXlUbyI6IjB4MkRGMUFFYzU5OGExMDRGYzE1RTgwQzBCNjBlNTBDNDk3NTU5QTk4MCIsIm1heFRpbWVvdXRTZWNvbmRzIjo2MCwiYXNzZXQiOiIweDgzMzU4OWZDRDZlRGI2RTA4ZjRjN0MzMkQ0ZjcxYjU0YmRBMDI5MTMiLCJleHRyYSI6eyJuYW1lIjoiVVNEIENvaW4iLCJ2ZXJzaW9uIjoiMiJ9LCJhbW91bnQiOiIyMDAwIn1dLCJleHRlbnNpb25zIjp7ImJhemFhciI6eyJpbmZvIjp7ImlucHV0Ijp7InR5cGUiOiJodHRwIiwibWV0aG9kIjoiR0VUIiwicXVlcnlQYXJhbXMiOnsicmVzb3VyY2UiOiJodHRwczovL2FwaS5hbmNob3IteDQwMi5jb20vdjEvcHJpY2UvdG9rZW4iLCJleHBlY3RlZFBheVRvIjoiMHg3NDJkMzVjYzY2MzRjMDUzMjkyNWEzYjg0NGJjNDU0ZTQ0MzhmNDRlIiwibWF4VXNkUHJpY2UiOiIwLjAxIiwibWF4QWdlU2Vjb25kcyI6IjEyMCJ9fSwib3V0cHV0Ijp7InR5cGUiOiJqc29uIiwiZXhhbXBsZSI6eyJ2IjoxLCJyZXNvdXJjZSI6Imh0dHBzOi8vYXBpLmFuY2hvci14NDAyLmNvbS92MS9wcmljZS90b2tlbiIsImRlY2lzaW9uIjoiYWxsb3ciLCJzY29yZSI6MC45Niwib2JzZXJ2ZWRBdCI6IjIwMjYtMDYtMTBUMDA6MDA6MDAuMDAwWiIsImFnZVNlY29uZHMiOjc4LCJoaXN0b3J5Ijp7IndpbmRvd1NlY29uZHMiOjI1OTIwMDAsInRhcmdldFdpbmRvd1NlY29uZHMiOjI1OTIwMDAsImNvbXBsZXRlIjp0cnVlfSwicHJpY2UiOnsidXNkIjowLjAwMSwiY3VycmVuY3kiOiJVU0RDIiwiY2hhbmdlQ291bnQiOjAsImRpc3RpbmN0IjoxLCJyYW5nZVJhdGlvIjowLCJ2c0xvdyI6MCwiY2hhbmdlZDI0aCI6ZmFsc2UsImxhc3RDaGFuZ2VBZ2VTZWNvbmRzIjpudWxsfSwiY29uZmlnIjp7InBheVRvIjp7InZhbHVlIjpudWxsLCJjaGFuZ2VDb3VudCI6MCwiZGlzdGluY3QiOjAsImNoYW5nZWQyNGgiOmZhbHNlLCJsYXN0Q2hhbmdlQWdlU2Vjb25kcyI6bnVsbH0sImNoYWluIjp7InZhbHVlIjoiYmFzZS1tYWlubmV0IiwiY2hhbmdlQ291bnQiOjAsImRpc3RpbmN0IjoxLCJjaGFuZ2VkMjRoIjpmYWxzZSwibGFzdENoYW5nZUFnZVNlY29uZHMiOm51bGx9LCJjdXJyZW5jeSI6eyJ2YWx1ZSI6IlVTREMiLCJjaGFuZ2VDb3VudCI6MCwiZGlzdGluY3QiOjEsImNoYW5nZWQyNGgiOmZhbHNlLCJsYXN0Q2hhbmdlQWdlU2Vjb25kcyI6bnVsbH19LCJsaXZlbmVzcyI6eyJzdWNjZXNzUmF0ZSI6MC45OTYsInA5NUxhdGVuY3lNcyI6NTQwLCJsYXN0TGF0ZW5jeU1zIjo0MTAsImNvbnNlY3V0aXZlRmFpbHVyZXMiOjB9LCJzdWJzY29yZXMiOnsiTCI6MC45OTYsIkYiOjAuOTAxLCJEIjoxfSwic3RhbGUiOmZhbHNlLCJmcmVzaG5lc3NBZ2VTZWNvbmRzIjozMCwicmVhc29ucyI6W10sInJldmlld19yYXRpbmciOm51bGwsInZlcmlmaWVkX3Jldmlld3MiOjAsIndlaWdodGVkX3Jldmlld19yYXRpbmciOm51bGwsInJldmlld19jb3VudCI6MCwibGFzdF9yZXZpZXdlZF9hdCI6bnVsbCwiaGFzX3ZlcmlmaWVkX3Jldmlld3MiOmZhbHNlfX19LCJzY2hlbWEiOnsiJHNjaGVtYSI6Imh0dHBzOi8vanNvbi1zY2hlbWEub3JnL2RyYWZ0LzIwMjAtMTIvc2NoZW1hIiwidHlwZSI6Im9iamVjdCIsInByb3BlcnRpZXMiOnsiaW5wdXQiOnsidHlwZSI6Im9iamVjdCIsInByb3BlcnRpZXMiOnsidHlwZSI6eyJ0eXBlIjoic3RyaW5nIiwiY29uc3QiOiJodHRwIn0sIm1ldGhvZCI6eyJ0eXBlIjoic3RyaW5nIiwiZW51bSI6WyJHRVQiLCJIRUFEIiwiREVMRVRFIl19LCJxdWVyeVBhcmFtcyI6eyJ0eXBlIjoib2JqZWN0IiwicHJvcGVydGllcyI6eyJyZXNvdXJjZSI6eyJ0eXBlIjoic3RyaW5nIiwibWluTGVuZ3RoIjoxLCJtYXhMZW5ndGgiOjIwNDgsInBhdHRlcm4iOiJeaHR0cHM6Ly8iLCJkZXNjcmlwdGlvbiI6IkFic29sdXRlIGh0dHBzIHg0MDIgZW5kcG9pbnQgVVJMIHRvIGNoZWNrIGJlZm9yZSBzZW5kaW5nIHBheW1lbnQuIn0sImV4cGVjdGVkUGF5VG8iOnsidHlwZSI6InN0cmluZyIsInBhdHRlcm4iOiJeMHhbMC05YS1mQS1GXXs0MH0kIiwiZGVzY3JpcHRpb24iOiJPcHRpb25hbCBleHBlY3RlZCByZWNlaXZpbmcgd2FsbGV0IGFkZHJlc3MgZm9yIGRyaWZ0IGNoZWNrcy4ifSwibWF4VXNkUHJpY2UiOnsidHlwZSI6InN0cmluZyIsImRlc2NyaXB0aW9uIjoiT3B0aW9uYWwgbm9uLW5lZ2F0aXZlIFVTRCBwcmljZSBjZWlsaW5nIGZvciB0aGUgY2hlY2tlZCBlbmRwb2ludC4ifSwibWF4QWdlU2Vjb25kcyI6eyJ0eXBlIjoic3RyaW5nIiwiZGVzY3JpcHRpb24iOiJPcHRpb25hbCBub24tbmVnYXRpdmUgaW50ZWdlciBmcmVzaG5lc3MgbGltaXQgZm9yIHRoZSB0cnVzdCBkZWNpc2lvbi4ifX0sInJlcXVpcmVkIjpbInJlc291cmNlIl0sImFkZGl0aW9uYWxQcm9wZXJ0aWVzIjpmYWxzZX19LCJyZXF1aXJlZCI6WyJ0eXBlIiwibWV0aG9kIl0sImFkZGl0aW9uYWxQcm9wZXJ0aWVzIjpmYWxzZX0sIm91dHB1dCI6eyJ0eXBlIjoib2JqZWN0IiwicHJvcGVydGllcyI6eyJ0eXBlIjp7InR5cGUiOiJzdHJpbmcifSwiZXhhbXBsZSI6eyJ0eXBlIjoib2JqZWN0In0sInNjaGVtYSI6eyJ0eXBlIjoib2JqZWN0In19LCJyZXF1aXJlZCI6WyJ0eXBlIl19fSwicmVxdWlyZWQiOlsiaW5wdXQiXX0sImRpc2NvdmVyYWJsZSI6dHJ1ZSwiY2F0ZWdvcnkiOiJ0cmFkaW5nIiwidGFncyI6WyJ4NDAyIiwidHJhZGluZyIsIm1hcmtldC1kYXRhIiwiZnVuZGluZy1yYXRlIiwibGF0ZW5jeSIsImxpdmVuZXNzIiwicmVwdXRhdGlvbiIsInBheW1lbnQtc2FmZXR5IiwiYWdlbnRzIl0sImRlc2NyaXB0aW9uIjoiUHJlLXBheW1lbnQgdHJ1c3Qgb3JhY2xlIGZvciB4NDAyIGVuZHBvaW50czogY2hlY2sgaGVhbHRoLCBsaXZlbmVzcywgcHJpY2UvcGF5VG8gZHJpZnQsIGZhY2lsaXRhdG9yIGNoYW5nZXMsIGFuZCBtb25pdG9yaW5nIGhpc3RvcnkgYmVmb3JlIGFuIGFnZW50IHNlbmRzIHBheW1lbnQuIn19fQ=="
+          }
+        }
+      }
+    },
+    {
+      "check_id": "mcp_surface",
+      "pillar": "transactability",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 2.0,
+      "finding": "no-mcp-surface",
+      "remediation": "Optional: expose an MCP server (/.well-known/mcp.json or a /mcp endpoint). Low priority \u2014 generic HTTP + an agent-native payment handshake already covers what a per-service MCP server would add.",
+      "evidence": {
+        "probed": [
+          {
+            "url": "https://api.x402oracle.com/.well-known/mcp.json",
+            "status": 404
+          },
+          {
+            "url": "https://api.x402oracle.com/mcp",
+            "status": 404
+          },
+          {
+            "url": "https://api.x402oracle.com/api/mcp",
+            "status": 404
+          }
+        ]
+      }
+    },
+    {
+      "check_id": "self_serve_payg",
+      "pillar": "transactability",
+      "status": "pass",
+      "points": 6.0,
+      "max_points": 6.0,
+      "finding": "no-signup-provisioning",
+      "remediation": "",
+      "evidence": {
+        "x402_live": true,
+        "no_signup_phrases": [],
+        "self_serve_phrases": [],
+        "stripe_checkout": false,
+        "cta_links": [],
+        "sales_phrases": [],
+        "pricing_pages": []
+      }
+    },
+    {
+      "check_id": "https_hsts",
+      "pillar": "trust",
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 5.0,
+      "finding": "https-no-hsts",
+      "remediation": "Add a Strict-Transport-Security header to enforce HTTPS on every request (HTTPS works but HSTS is not set).",
+      "evidence": {
+        "base_url": "https://api.x402oracle.com",
+        "final_url": "https://api.x402oracle.com/"
+      }
+    },
+    {
+      "check_id": "org_identity",
+      "pillar": "trust",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 4.0,
+      "finding": "no-org-identity",
+      "remediation": "Publish an about/contact page with a real company name and a reachable contact (email or address) so agents can verify legitimacy.",
+      "evidence": {
+        "identity_pages": [],
+        "company_names": [],
+        "contact_signals": []
+      }
+    },
+    {
+      "check_id": "policies_present",
+      "pillar": "trust",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 3.0,
+      "finding": "policies-missing",
+      "remediation": "Publish terms of service, a privacy policy, and a refund/cancellation policy (found: none).",
+      "evidence": {
+        "found": {},
+        "footer_scanned": 3
+      }
+    },
+    {
+      "check_id": "reputation_signals",
+      "pillar": "trust",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 3.0,
+      "finding": "no-reputation-signals",
+      "remediation": "Add reputation signals \u2014 AggregateRating/Review schema.org markup or links to a credible third-party review profile.",
+      "evidence": {}
+    }
+  ],
+  "pillar_scores": {
+    "access": 100.0,
+    "legibility": 36.36363636363637,
+    "transactability": 87.5,
+    "trust": 20.0,
+    "outcome": null
+  },
+  "overall_score": 64.4,
+  "grade": "D",
+  "caps_applied": [],
+  "trust_panel": [],
+  "behavioral_runs": [],
+  "panel_reliability": null,
+  "quotability": {
+    "quotable": true,
+    "tag": "static-deterministic",
+    "reason": "Static score \u2014 deterministic probes, no panel variance to reproduce.",
+    "verdict_stability": null
+  },
+  "battery_summary": null,
+  "scored": true
+}

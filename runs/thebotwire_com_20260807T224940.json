@@ -1,0 +1,264 @@
+{
+  "domain": "thebotwire.com",
+  "rubric_version": "0.7",
+  "generated_at": "2026-08-07T22:49:40.887203",
+  "checks": [
+    {
+      "check_id": "robots_ai_crawlers",
+      "pillar": "access",
+      "status": "pass",
+      "points": 10.0,
+      "max_points": 10.0,
+      "finding": "robots-allows-ai-crawlers",
+      "remediation": "",
+      "evidence": {
+        "url": "https://thebotwire.com/robots.txt",
+        "checked_agents": [
+          "GPTBot",
+          "ClaudeBot",
+          "Claude-User",
+          "OAI-SearchBot",
+          "PerplexityBot",
+          "Google-Extended"
+        ],
+        "blocked_agents": [],
+        "snippet": "# The Bot Wire \u2014 thebotwire.com\n# AI agents and AI crawlers are WELCOME here. This service exists for you.\n# Machine guides: https://thebotwire.com/llms.txt (index), https://thebotwire.com/llms-full.txt (routing\n# table), https://thebotwire.com/openapi.json (schema)\n\nUser-agent: *\nAllow: /\n\nSitemap:"
+      }
+    },
+    {
+      "check_id": "agent_ua_reachability",
+      "pillar": "access",
+      "status": "pass",
+      "points": 10.0,
+      "max_points": 10.0,
+      "finding": "agent-ua-allowed",
+      "remediation": "",
+      "evidence": {
+        "browser": {
+          "url": "https://thebotwire.com",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "Vercel",
+          "body_len": 36229
+        },
+        "claudebot": {
+          "url": "https://thebotwire.com",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "Vercel",
+          "body_len": 36229
+        },
+        "gptbot": {
+          "url": "https://thebotwire.com",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "Vercel",
+          "body_len": 36229
+        },
+        "blocked_agents": []
+      }
+    },
+    {
+      "check_id": "llms_txt",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 6.0,
+      "max_points": 6.0,
+      "finding": "llms-txt-present",
+      "remediation": "",
+      "evidence": {
+        "url": "https://thebotwire.com/llms.txt",
+        "length": 23059,
+        "snippet": "# The Bot Wire\n\n> Wiring the internet's primary sources for AI agents.\n> 301 live data wires read primary sources directly, not a crawler's index\n> of them, and answer keyword queries in about a millisecond. Pay per call via\n> x402: $0.005-$0.01 in USDC on Base, with no API key, no signup and no\n> c"
+      }
+    },
+    {
+      "check_id": "sitemap",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 2.0,
+      "max_points": 2.0,
+      "finding": "sitemap-present",
+      "remediation": "",
+      "evidence": {
+        "source": "robots.txt",
+        "sitemaps": [
+          "https://thebotwire.com/sitemap.xml"
+        ]
+      }
+    },
+    {
+      "check_id": "offer_catalog",
+      "pillar": "legibility",
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6.0,
+      "finding": "jsonld-present-no-offer",
+      "remediation": "JSON-LD is present but carries no offer/price; add a priced Product/Offer object, or publish a pricing manifest JSON.",
+      "evidence": {
+        "pages": [
+          "https://thebotwire.com/",
+          "https://thebotwire.com/openapi.json",
+          "https://thebotwire.com/resources/how-to-price-an-api-for-ai-agents",
+          "https://thebotwire.com/resources/what-is-an-agent-native-api",
+          "https://thebotwire.com/resources/federal-contract-awards-api-for-agents"
+        ]
+      }
+    },
+    {
+      "check_id": "pricing_machine_readable",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 4.0,
+      "max_points": 4.0,
+      "finding": "pricing-visible-server-side",
+      "remediation": "",
+      "evidence": {
+        "page": "https://thebotwire.com/openapi.json",
+        "match": "FREE TIER"
+      }
+    },
+    {
+      "check_id": "api_docs_surface",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 4.0,
+      "max_points": 4.0,
+      "finding": "api-docs-present",
+      "remediation": "",
+      "evidence": {
+        "url": "https://thebotwire.com/docs",
+        "status": 200
+      }
+    },
+    {
+      "check_id": "x402_probe",
+      "pillar": "transactability",
+      "status": "pass",
+      "points": 8.0,
+      "max_points": 8.0,
+      "finding": "x402-live",
+      "remediation": "",
+      "evidence": {
+        "url": "https://thebotwire.com/payments/latest",
+        "x402": {
+          "headers": {
+            "payment-required": "eyJ4NDAyVmVyc2lvbiI6MiwiZXJyb3IiOiJQYXltZW50IHJlcXVpcmVkIiwicmVzb3VyY2UiOnsidXJsIjoiaHR0cHM6Ly90aGVib3R3aXJlLmNvbS9wYXltZW50cy9sYXRlc3QiLCJkZXNjcmlwdGlvbiI6IlBheW1lbnRzIGluZHVzdHJ5ICwgcHJvY2Vzc29ycywgaW50ZXJjaGFuZ2UsIHJlYWwtdGltZSByYWlscywgbWVyY2hhbnQgYWNxdWlyaW5nLiBQYXltZW50IHByb2Nlc3NvcnMgYW5kIFBTUHMsIGZpbnRlY2ggcHJvZHVjdCB0ZWFtcywgYW5kIHg0MDItYWRqYWNlbnQgYnVpbGRlcnMgdGhlbXNlbHZlcyIsIm1pbWVUeXBlIjoiIn0sImFjY2VwdHMiOlt7InNjaGVtZSI6ImV4YWN0IiwibmV0d29yayI6ImVpcDE1NTo4NDUzIiwiYW1vdW50IjoiNTAwMCIsImFzc2V0IjoiMHg4MzM1ODlmQ0Q2ZURiNkUwOGY0YzdDMzJENGY3MWI1NGJkQTAyOTEzIiwicGF5VG8iOiIweEMxNEE0MDI1MmEzNEY3NTVFNDFlQmFmMjVEN0YzQzE4M2Q3MjBjMjAiLCJtYXhUaW1lb3V0U2Vjb25kcyI6MzAwLCJleHRyYSI6eyJuYW1lIjoiVVNEIENvaW4iLCJ2ZXJzaW9uIjoiMiJ9fV0sImV4dGVuc2lvbnMiOnsiYmF6YWFyIjp7ImluZm8iOnsiaW5wdXQiOnsidHlwZSI6Imh0dHAiLCJxdWVyeVBhcmFtcyI6eyJxIjoic2VhcmNoIHRlcm1zIiwic3JjIjoicHltbnRzIiwic2luY2UiOiIyNGgiLCJsaW1pdCI6MTB9LCJtZXRob2QiOiJHRVQifSwib3V0cHV0Ijp7InR5cGUiOiJqc29uIiwiZXhhbXBsZSI6eyJxdWVyeSI6InNlYXJjaCB0ZXJtcyIsInNpbmNlIjoiMjRoIiwiY291bnQiOjEsInRvb2tfbXMiOjEuMiwiZnJlc2hlc3QiOiIyMDI2LTA3LTI4VDEyOjAwOjAwLjAwMFoiLCJhcnRpY2xlcyI6W3sidGl0bGUiOiJFeGFtcGxlIGhlYWRsaW5lIGFib3V0IHRoZSBxdWVyeSB0b3BpYyIsInVybCI6Imh0dHBzOi8vZXhhbXBsZS5jb20vYXJ0aWNsZSIsInNvdXJjZSI6IlJldXRlcnMiLCJjYXRlZ29yeSI6Im1hcmtldHMiLCJwdWJsaXNoZWQiOiIyMDI2LTA3LTI4VDEyOjAwOjAwLjAwMFoiLCJhZ2VfbWludXRlcyI6MTIsInN1bW1hcnkiOiJPbmUtcGFyYWdyYXBoIHN1bW1hcnkgb2YgdGhlIGFydGljbGUuIiwicmVsZXZhbmNlIjowLjkxfV19fX0sInNjaGVtYSI6eyIkc2NoZW1hIjoiaHR0cHM6Ly9qc29uLXNjaGVtYS5vcmcvZHJhZnQvMjAyMC0xMi9zY2hlbWEiLCJ0eXBlIjoib2JqZWN0IiwicHJvcGVydGllcyI6eyJpbnB1dCI6eyJ0eXBlIjoib2JqZWN0IiwicHJvcGVydGllcyI6eyJ0eXBlIjp7InR5cGUiOiJzdHJpbmciLCJjb25zdCI6Imh0dHAifSwibWV0aG9kIjp7InR5cGUiOiJzdHJpbmciLCJlbnVtIjpbIkdFVCJdfSwicXVlcnlQYXJhbXMiOnsidHlwZSI6Im9iamVjdCIsInByb3BlcnRpZXMiOnsicSI6eyJ0eXBlIjoic3RyaW5nIiwiZGVzY3JpcHRpb24iOiJTZWFyY2ggdGVybXMgKG9wdGlvbmFsIOKAlCBvbWl0IGZvciBsYXRlc3QgaXRlbXMpIn0sInNyYyI6eyJ0eXBlIjoic3RyaW5nIiwiZW51bSI6WyJweW1udHMiLCJwYXltZW50c2RpdmUiXSwiZGVzY3JpcHRpb24iOiJGaWx0ZXIgYnkgc3JjIn0sInNpbmNlIjp7InR5cGUiOiJzdHJpbmciLCJkZXNjcmlwdGlvbiI6IkZyZXNobmVzcyB3aW5kb3cgbGlrZSAzMG0sIDJoLCAyNGgsIDNkIn0sImxpbWl0Ijp7InR5cGUiOiJpbnRlZ2VyIiwibWluaW11bSI6MSwibWF4aW11bSI6NTAsImRlc2NyaXB0aW9uIjoiTWF4IHJlc3VsdHMgKGRlZmF1bHQgMTApIn19fX0sInJlcXVpcmVkIjpbInR5cGUiLCJtZXRob2QiXSwiYWRkaXRpb25hbFByb3BlcnRpZXMiOmZhbHNlfSwib3V0cHV0Ijp7InR5cGUiOiJvYmplY3QiLCJwcm9wZXJ0aWVzIjp7InR5cGUiOnsidHlwZSI6InN0cmluZyJ9LCJleGFtcGxlIjp7InR5cGUiOiJvYmplY3QifX0sInJlcXVpcmVkIjpbInR5cGUiXX19LCJyZXF1aXJlZCI6WyJpbnB1dCJdfX19fQ=="
+          }
+        }
+      }
+    },
+    {
+      "check_id": "mcp_surface",
+      "pillar": "transactability",
+      "status": "pass",
+      "points": 2.0,
+      "max_points": 2.0,
+      "finding": "mcp-server-discoverable",
+      "remediation": "",
+      "evidence": {
+        "url": "https://thebotwire.com/mcp",
+        "status": 405,
+        "snippet": "{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32000,\"message\":\"Method not allowed. This server is stateless; use POST /mcp.\"},\"id\":null}"
+      }
+    },
+    {
+      "check_id": "self_serve_payg",
+      "pillar": "transactability",
+      "status": "pass",
+      "points": 6.0,
+      "max_points": 6.0,
+      "finding": "no-signup-provisioning",
+      "remediation": "",
+      "evidence": {
+        "x402_live": true,
+        "no_signup_phrases": [
+          "no signup"
+        ],
+        "self_serve_phrases": [
+          "signup"
+        ],
+        "stripe_checkout": false,
+        "cta_links": [],
+        "sales_phrases": [],
+        "pricing_pages": []
+      }
+    },
+    {
+      "check_id": "https_hsts",
+      "pillar": "trust",
+      "status": "pass",
+      "points": 5.0,
+      "max_points": 5.0,
+      "finding": "https-hsts",
+      "remediation": "",
+      "evidence": {
+        "base_url": "https://thebotwire.com",
+        "strict_transport_security": "max-age=63072000"
+      }
+    },
+    {
+      "check_id": "org_identity",
+      "pillar": "trust",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 4.0,
+      "finding": "no-org-identity",
+      "remediation": "Publish an about/contact page with a real company name and a reachable contact (email or address) so agents can verify legitimacy.",
+      "evidence": {
+        "identity_pages": [],
+        "company_names": [],
+        "contact_signals": []
+      }
+    },
+    {
+      "check_id": "policies_present",
+      "pillar": "trust",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 3.0,
+      "finding": "policies-missing",
+      "remediation": "Publish terms of service, a privacy policy, and a refund/cancellation policy (found: none).",
+      "evidence": {
+        "found": {},
+        "footer_scanned": 0
+      }
+    },
+    {
+      "check_id": "reputation_signals",
+      "pillar": "trust",
+      "status": "partial",
+      "points": 1.5,
+      "max_points": 3.0,
+      "finding": "self-reported-reputation-only",
+      "remediation": "Only self-hosted testimonials were found; add AggregateRating markup or a credible third-party profile (G2, Trustpilot).",
+      "evidence": {
+        "match": "reviews"
+      }
+    }
+  ],
+  "pillar_scores": {
+    "access": 100.0,
+    "legibility": 86.36363636363636,
+    "transactability": 100.0,
+    "trust": 43.333333333333336,
+    "outcome": null
+  },
+  "overall_score": 86.0,
+  "grade": "B",
+  "caps_applied": [],
+  "trust_panel": [],
+  "behavioral_runs": [],
+  "panel_reliability": null,
+  "quotability": {
+    "quotable": true,
+    "tag": "static-deterministic",
+    "reason": "Static score \u2014 deterministic probes, no panel variance to reproduce.",
+    "verdict_stability": null
+  },
+  "battery_summary": null,
+  "scored": true
+}

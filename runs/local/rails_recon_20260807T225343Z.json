@@ -1,0 +1,149 @@
+{
+ "ts": "20260807T225343Z",
+ "kind": "rails-reconnaissance-2nd-x402-live-found",
+ "cycle": "Local cycle 20260807T225343Z",
+ "rubric_version": "0.7",
+ "spend": "$0 (static scorer + unsigned GET/POST probes only; the x402 probe only READS the 402 challenge, never signs/fulfills; no --behavioral, no --max-pay, no zero-CLI paid ops)",
+ "purpose": "The named next-cadence action for the P1-TRUTH with-rails frontier: (a) cadence re-probe paidsync.ai (3rd cycle) for x402 recovery/stabilization; (b) anchor driftflight.com /extend 402-recovery watch; (c) BROADEN the hunt for a genuinely-NEW 2nd x402-LIVE storefront (the point scarce for many cycles) via the public x402 ecosystem directory (awesome-x402), vendor-neutral by capability TYPE = live-x402-handshake storefront.",
+ "headline": "2nd-x402-LIVE SCARCITY BROKEN. Three real storefronts return a live x402 402-handshake that the ASRS scorer detects AS SHIPPED at x402_probe 8.0/8.0 (x402-live). Lead pin candidate: thebotwire.com (86.0 B, transactability 100.0) - a genuinely-NEW FULL with-rails point, the FIRST non-anchor live-x402 handshake (all prior non-anchor members are documented-partial or no-rails).",
+ "reference_points": {
+  "driftflight.com (anchor, FULL live x402)": {
+   "frozen": 85.5,
+   "live_now": 76.2,
+   "note": "the ONLY previously-known full x402-live point; live /extend handshake regressed 402->401 (persistent), live delta +30.1 vs frozen +39.4"
+  },
+  "exa.ai (welded PR #157, PARTIAL/documented rails)": {
+   "overall": 78.1,
+   "note": "documented x402 (4/8) + MCP (2/2) + PAYG (partial) => tx 50.0; the only non-anchor on the upper/with-rails scale until now"
+  }
+ },
+ "new_x402_live_candidates": {
+  "thebotwire.com": {
+   "overall": 86.0,
+   "grade": "B",
+   "rubric": "0.7",
+   "caps": [],
+   "pillars": {
+    "access": 100.0,
+    "legibility": 86.36,
+    "transactability": 100.0,
+    "trust": 43.33,
+    "outcome": null
+   },
+   "x402_probe": {
+    "status": "pass",
+    "points": 8.0,
+    "max": 8.0,
+    "finding": "x402-live",
+    "scorer_probed_url": "https://thebotwire.com/payments/latest"
+   },
+   "direct_curl_corroboration": {
+    "/payments/latest GET": 402,
+    "/news GET": 402,
+    "/mcp GET": "405 (stateless MCP, expects POST - correct)",
+    "/ GET": 200,
+    "/llms.txt GET": 200
+   },
+   "character": "Real apex domain. Root serves a JSON manifest ('The Bot Wire - 301 real-time data wires for AI agents, read from primary sources'); proper /llms.txt agent manifest; stateless MCP server; clean x402 402 payloads with parseable payment-required header + $0.005 pricing + /mcp catalogue. A deliberate, agent-native storefront - NOT a transient error.",
+   "significance": "tx 100.0 (full x402-live + MCP + self-serve PAYG). 86.0 is a NEW distinct HIGH - ABOVE driftflight.com's frozen 85.5, making it the highest non-anchor baseline. Would be the FIRST non-anchor LIVE-x402 point.",
+   "source_run": "runs/thebotwire_com_20260807T224940.json"
+  },
+  "x402deploy.vercel.app": {
+   "overall": 73.9,
+   "grade": "C",
+   "rubric": "0.7",
+   "caps": [],
+   "pillars": {
+    "access": 100.0,
+    "legibility": 45.45,
+    "transactability": 100.0,
+    "trust": 33.33,
+    "outcome": null
+   },
+   "x402_probe": {
+    "status": "pass",
+    "points": 8.0,
+    "max": 8.0,
+    "finding": "x402-live",
+    "scorer_probed_url": "https://x402deploy.vercel.app/api/serp",
+    "x402_version": 1
+   },
+   "direct_curl_corroboration": {
+    "/api/serp GET": 402
+   },
+   "character": "'x402 Web & Data Tools' multi-tool gateway. Hosted on a *.vercel.app platform subdomain (less storefront-durable than an apex domain).",
+   "source_run": "runs/x402deploy_vercel_app_20260807T224948.json"
+  },
+  "api.x402oracle.com": {
+   "overall": 64.4,
+   "grade": "D",
+   "rubric": "0.7",
+   "caps": [],
+   "pillars": {
+    "access": 100.0,
+    "legibility": 36.36,
+    "transactability": 87.5,
+    "trust": 20.0,
+    "outcome": null
+   },
+   "x402_probe": {
+    "status": "pass",
+    "points": 8.0,
+    "max": 8.0,
+    "finding": "x402-live",
+    "scorer_probed_url": "https://api.x402oracle.com/v1/check",
+    "x402_version": 2
+   },
+   "direct_curl_corroboration": {
+    "/v1/check GET": 402,
+    "/v1/trade-check GET": 402
+   },
+   "character": "'x402 Trust Oracle' - meta/tooling (pre-trade checks for x402 endpoints). api.* subdomain; tx 87.5 (one tx leg short of full).",
+   "source_run": "runs/api_x402oracle_com_20260807T224955.json"
+  }
+ },
+ "paidsync_recheck_3rd_cycle": {
+  "domain": "paidsync.ai",
+  "overall": 80.0,
+  "grade": "B",
+  "caps": [],
+  "pillars": {
+   "access": 100.0,
+   "legibility": 100.0,
+   "transactability": 50.0,
+   "trust": 93.33
+  },
+  "direct_probe": {
+   "home GET": 200,
+   "/api/v1 GET": 503,
+   "/api/v1 POST": 503,
+   "/api GET": 404,
+   "/v1 GET": 404,
+   "/mcp GET": 401
+  },
+  "trend": "/api/v1 x402 endpoint STILL 503 across THREE consecutive cadence cycles (20:53Z -> 21:43Z -> 22:44Z, ~1h50m). Score byte-IDENTICAL (80.0 B / tx 50.0). Per the sharpened pin rule, a 3rd consecutive 503 shifts the honest reading to STABLE-DEGRADED - a persistent error, NOT a stable non-error state, so path (b) (200/404 >=2 cycles) does NOT apply. STILL NOT PINNABLE; superseded as lead candidate by thebotwire.com (a genuinely LIVE x402 handshake, not a degraded one).",
+  "source_run": "runs/paidsync_ai_20260807T224408.json"
+ },
+ "anchor_extend_watch": {
+  "domain": "agents.driftflight.com",
+  "POST /extend": 401,
+  "driftflight.com GET": 200,
+  "note": "the anchor's live x402 handshake endpoint /extend STILL 401 (persistent 402->401 auth regression) - NO recovery; live canonical delta holds at +30.1 (corroborates verify_20260807T224100Z.json)."
+ },
+ "ecosystem_source": {
+  "directory": "awesome-x402 (github.com/xpaysh/awesome-x402) + x402bazaar.org",
+  "method": "$0 WebSearch/WebFetch of the public x402 ecosystem directory; probed 14 candidates on the scorer's default target paths (/api,/api/v1,/v1) then the documented deep endpoints; scored the 3 that returned a live 402. Vendor-neutral: selected by capability TYPE (live x402 402-handshake), no domain favored.",
+  "dead_ends": {
+   "x402bazaar.org": "apex->www, /api/v1=200 directory (no 402)",
+   "gate402.com/.dev": "redirect to unrelated parked domains (mikias.io/metera.xyz)",
+   "2s.io": "guide site, no bare 402 (confirmed last cycle)"
+  }
+ },
+ "conclusion": {
+  "new_full_with_rails_point_found": true,
+  "scarcity_broken": true,
+  "lead_pin_candidate": "thebotwire.com (86.0 B, tx 100.0)",
+  "pin_deferred_reason": "Consistent with the loop's own >=2-cadence-observation discipline for the with-rails calibration axis (the same bar applied to paidsync). thebotwire.com's x402-live is confirmed TWICE WITHIN this cycle (scorer 8/8 + independent re-curl), but only ONE cadence cycle. Live x402 endpoints are volatile (the anchor's /extend just regressed), so elevate to a frozen-replay BASELINE only after a 2nd cadence confirmation - then the fixture is a durable code-regression guard captured in a confirmed-stable state.",
+  "next_cadence_action": "Re-confirm thebotwire.com /payments/latest (and /news) x402-live next cadence (2nd obs). IF stable: capture full-score fixture $0 (asrs score thebotwire.com --record-fixture fixtures/canonical/thebotwire.com.json), verify NON-DESTRUCTIVELY replay-clean (replay_misses=0) + honest archetype classification BEFORE install, then pin test_canonical_replay.EXPECTED + _REPLAY_CLEAN + guard (overall + 4 pillars + capability teeth: no-rails 0.0 < documented-partial 50.0 < LIVE 100.0) + _POPULATION in all 5 reproducibility suites (direct-to-main, off-scoring-SEMANTICS, the exa.ai recipe). This would be the 10th frozen-replay baseline and the FIRST non-anchor LIVE-x402 point. x402deploy.vercel.app + api.x402oracle.com are backup candidates (the class is no longer scarce). Keep watching driftflight.com /extend for a 402 recovery."
+ }
+}

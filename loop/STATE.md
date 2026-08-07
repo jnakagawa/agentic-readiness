@@ -20,19 +20,26 @@
   LOG Local cycle 20260807T205300Z.
 - **⏳ NO OPEN PEER-GATED PR after this fire.** PR #157 MERGED `cf0df08`; the with-rails weld campaign
   (#152–#157: books/acuity/ipinfo/api.replicate/moleskine/exa.ai) is COMPLETE across 6 non-anchor storefront
-  TYPES/shapes. Next fire's FIRST duty is the infra health check (no review owed). **NEXT with-rails frontier —
-  a genuinely-NEW FULL with-rails point — RE-PROBED this fire (Local 20260807T214332Z): paidsync.ai STILL NOT
-  pinnable.** paidsync.ai (80.0 B, full MCP 2/2 + full self-serve PAYG 6/6, a NEW distinct HIGH between exa.ai
-  78.1 and driftflight frozen 85.5) remains the strongest NEW candidate, but its marketed live x402 endpoint
-  `/api/v1` is **STILL 503 across TWO consecutive cadence cycles (20:53Z→21:43Z)** — a 503 is a transient
-  Service-Unavailable ERROR, NOT a stable capability state, so pinning would freeze a transient (attribution
-  honesty, inv #4). Score byte-IDENTICAL to last cycle (only the x402 leg is degraded; MCP+PAYG stable). **Pin
-  rule sharpened:** (a) `/api/v1` recovers to a 402 ⇒ genuine 2nd x402-LIVE pin (highest value); or (b)
-  stabilizes to a steady NON-error non-402 state (200/404 across ≥2 cycles) ⇒ partial-rails baseline pin at 80.0
-  (MCP+PAYG only). A persistent 503 is NEITHER — keep re-probing; if 503 persists a 3rd cycle the honest reading
-  shifts toward "stable-degraded." Anchor driftflight.com `/extend` STILL 401 (no 402 recovery; live +30.1). One
-  fresh candidate 2s.io = no bare-GET 402 (guide site). See LOG Local cycle 20260807T214332Z +
-  `runs/local/rails_recon_20260807T214332Z.json`.
+  TYPES/shapes. Next fire's FIRST duty is the infra health check (no review owed). **🎯 with-rails frontier —
+  2nd-x402-LIVE SCARCITY BROKEN this fire (Local 20260807T225343Z).** A $0 vendor-neutral hunt of the public
+  x402 ecosystem directory (awesome-x402) surfaced THREE real storefronts whose live x402 402-handshake the ASRS
+  scorer detects AS SHIPPED at `x402_probe` 8.0/8.0 (`x402-live`): **thebotwire.com 86.0 B (tx 100.0 — LEAD),**
+  x402deploy.vercel.app 73.9 C (tx 100.0), api.x402oracle.com 64.4 D (tx 87.5). thebotwire.com is a genuinely-NEW
+  FULL with-rails point — the FIRST non-anchor LIVE-x402 handshake (all prior non-anchors are documented-partial
+  exa.ai 78.1 or no-rails), and a NEW distinct HIGH **above driftflight.com's frozen 85.5.** Real apex domain
+  (root JSON manifest "301 real-time data wires for AI agents", proper /llms.txt, stateless MCP, clean x402
+  payloads on /news + /payments/latest + $0.005 pricing) — deliberate + stable, NOT an error state. x402-live
+  confirmed TWICE within this cycle (scorer 8/8 + independent re-curl). **PIN DEFERRED to next cadence** — same
+  ≥2-cadence-observation discipline the loop applied to paidsync; live x402 is volatile (the anchor's /extend
+  regressed), so elevate to a frozen-replay BASELINE only after a 2nd cadence confirmation, then the fixture is a
+  durable code-regression guard captured in a confirmed-stable state. **NEXT CADENCE:** re-confirm thebotwire.com
+  /payments/latest x402-live; IF stable → capture fixture $0 (`--record-fixture`), verify replay-clean +
+  honest classification NON-DESTRUCTIVELY, then pin EXPECTED + `_REPLAY_CLEAN` + guard (teeth: no-rails 0.0 <
+  documented-partial 50.0 < LIVE 100.0) + `_POPULATION` (direct-to-main, the exa.ai recipe) → 10th baseline, 1st
+  non-anchor live-x402. **paidsync.ai now SUPERSEDED as lead** — its `/api/v1` STILL 503 across THREE consecutive
+  cadence cycles (20:53Z→21:43Z→22:44Z, ~1h50m) ⇒ STABLE-DEGRADED (a persistent error, not a non-error state, so
+  path (b) does NOT apply); it remains a lesser backup. Anchor driftflight.com `/extend` STILL 401 (no 402
+  recovery; live +30.1). See LOG Local cycle 20260807T225343Z + `runs/local/rails_recon_20260807T225343Z.json`.
 - **✅ PR #156 (www.moleskine.com 6th non-anchor cross-path calibration weld — 2nd retail, retail depth)
   MERGED this fire (Local 20260807T184234Z), merge `571e4c6`** — after the owed FIRST-DUTY adversarial
   review + independent $0 live re-score. VERDICT SOUND: off-scoring-path (three-dot diff since merge-base
@@ -245,6 +252,33 @@
   but wrote NO LOG entry and never committed/pushed (its panel dir exists gitignored). This fire re-verified #149,
   took ownership of the reconciled banner (above), and committed. No fabricated 214745Z LOG entry. STATE pruned the
   two oldest rolling entries (cloud Cycles 290–291, preserved in LOG.md) to stay under the 600-line hygiene cap.
+- LOCAL cycle — 20260807T225343Z (TRUTH / 🎯 2nd-x402-LIVE scarcity BROKEN — reconnaissance found THREE genuinely-NEW
+  live-x402 storefronts the shipped scorer detects at 8/8; lead thebotwire.com 86.0 B / tx 100.0; pin deferred to
+  next cadence per the ≥2-obs discipline; direct-to-main). FIRST duty: infra health check — `gh pr list --state open`
+  → `[]` (no open PR; PR #157 MERGED `cf0df08` last real cycle 205300Z; weld campaign #152–#157 COMPLETE); newest
+  `verify_20260807T224100Z.json` (22:41Z, 38 suites, 46.1 F / 76.2 C / +30.1) ~1.5min old at fire (22:42Z) → :41
+  cadence holding (214100Z→224100Z); LOG/STATE consistent with git. No repair, no review owed. **Executed the ONE
+  [LOCAL] item — the top P1-TRUTH with-rails frontier (the named next-cadence action):** (a) cadence re-probe of
+  paidsync.ai $0 static → `/api/v1` STILL 503 across THREE consecutive cadence cycles (~1h50m) ⇒ STABLE-DEGRADED
+  (persistent error, not a non-error state ⇒ path (b) does NOT apply; STILL not pinnable); (b) anchor
+  driftflight.com `/extend` STILL 401 (no recovery; live +30.1 corroborated); (c) BROADENED the hunt — a $0
+  WebSearch/WebFetch of the public x402 ecosystem directory (awesome-x402) + probing 14 candidates on the scorer's
+  default target paths then documented deep endpoints → **THREE storefronts return a live x402 402-handshake the
+  ASRS scorer detects AS SHIPPED at `x402_probe` 8.0/8.0 (`x402-live`):** thebotwire.com **86.0 B** (tx 100.0,
+  probed /payments/latest — LEAD, a NEW distinct HIGH above driftflight frozen 85.5, the FIRST non-anchor LIVE-x402
+  point), x402deploy.vercel.app 73.9 C (tx 100.0, /api/serp), api.x402oracle.com 64.4 D (tx 87.5, /v1/check).
+  thebotwire.com is a deliberate stable agent-native storefront (root JSON manifest, /llms.txt, stateless MCP,
+  clean x402 payloads + $0.005 pricing), x402-live confirmed TWICE within-cycle (scorer 8/8 + independent re-curl).
+  **PIN DEFERRED to next cadence** (consistent with the ≥2-cadence-obs discipline applied to paidsync; live x402 is
+  volatile — the anchor regressed) — next cadence re-confirm thebotwire.com x402-live, then capture fixture $0 +
+  verify replay-clean/honest classification non-destructively + pin EXPECTED + `_REPLAY_CLEAN` + guard (teeth
+  0.0<50.0<100.0) + `_POPULATION` (direct-to-main, exa.ai recipe) → 10th baseline. Direct-to-main (pure
+  off-scoring-path recon artifact + docs; scoring-path diff EMPTY; same class as the 214332Z/205300Z recons). Full
+  suite re-run 654 passed / 38 suites. Frozen canonical delta UNMOVED +39.4; live +30.1. Evidence
+  `runs/local/rails_recon_20260807T225343Z.json` (+ committed source runs thebotwire/x402deploy/x402oracle/paidsync).
+  Invariants #1 ($0 static scorer + unsigned read-only 402 probes, no behavioral/codex/paid/zero-CLI)–#5 held; zero
+  codex, zero paid ops; stayed in-repo. NO DM (off-path recon not a DM-enumerated sensitive class; FIRST-after-16:00
+  digest posted 174235Z) — the 2nd-x402-live find flagged for next digest. See LOG Local cycle 20260807T225343Z.
 - LOCAL cycle — 20260807T214332Z (TRUTH / cadence RE-PROBE of the with-rails frontier — the named next-cadence action;
   no pin, direct-to-main). FIRST duty: `gh pr list --state open` → `[]` (no open PR; PR #157 MERGED `cf0df08` last real
   cycle 205300Z; weld campaign #152–#157 COMPLETE). Infra HEALTHY: `verify_20260807T214100Z.json` (21:41Z, 38 suites,
@@ -265,50 +299,22 @@
   zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (off-path recon re-probe not a DM-enumerated
   sensitive class; FIRST-after-16:00 digest posted 174235Z) — re-probe flagged for next digest. See LOG Local cycle
   20260807T214332Z.
-- LOCAL cycle — 20260807T205300Z (TRUTH / MERGED PR #157 [exa.ai 7th non-anchor weld] after adversarial review + live
-  re-score; then ran a live RAILS RECONNAISSANCE for a genuinely-NEW full with-rails point — none found, direct-to-main).
-  FIRST duty: `gh pr list --state open` → PR #157 OPEN → adversarial review + independent $0 live re-score → VERDICT SOUND
-  → MERGED `cf0df08` (off-scoring-path test-only +87 + evidence JSON; vendor-neutral by TYPE agent-native-search-API;
-  baseline 78.1 C v0.7 + `_REPLAY_CLEAN` re-derived present; LOAD-BEARING n_compared=5 / divergences=[] independently
-  re-derived via `_committed_sweeps()`→5; teeth 78.1→90.0; live re-derived exa.ai 78.1 live == 78.1 frozen == 78.1 EXPECTED,
-  all 4 pillars byte-identical → weld holds; weld 23/23 + canonical replay 31/31 merged main; the cross-path weld now spans
-  SEVEN non-anchor witnesses, the last the FIRST with genuine partial agent-native rails). Infra HEALTHY:
-  `verify_20260807T204104Z.json` (20:41Z, 38 suites, 46.1 F / 76.2 C / +30.1) ~1min old at fire (20:42Z) → :41 cadence
-  holding (194100Z→204104Z). **Executed the ONE [LOCAL] item — the oldest actionable P0 (with-rails calibration axis,
-  unblocked by the #157 merge):** live rails reconnaissance for a genuinely-NEW FULL with-rails point. WebSearch surfaced the
-  x402 ecosystem; probed 3 storefront candidates $0 static (the x402 probe only READS the 402 challenge, never fulfills it —
-  inv #1). FINDING: **no candidate presents a probeable live x402 402-handshake** — the 2nd x402-LIVE point remains SCARCE:
-  paidsync.ai `/api/v1` → 503 (independently re-curled GET+POST; home 200), openwebninja real API host → 403 key-gated,
-  inference.sh x402 on `app.*` / probed paths 404. STRONGEST NEW candidate **paidsync.ai (80.0 B, full MCP + full self-serve
-  PAYG** — a different partial-rails mix from exa.ai, a NEW distinct HIGH between exa.ai 78.1 and driftflight frozen 85.5) —
-  NOT pinned (its `/api/v1` 503 ⇒ transactability IN FLUX; a baseline must be stable); shortlisted for next cadence (402
-  recovery ⇒ 2nd x402-LIVE pin; stable non-402 ⇒ partial-rails pin). Direct-to-main (pure off-scoring-path recon artifact +
-  docs — scoring-path diff EMPTY; same class as the 134105Z cadence sweep). Frozen canonical delta UNMOVED +39.4; live
-  +30.1; suite 38/38. Evidence `runs/local/rails_recon_20260807T205300Z.json`. Invariants #1 ($0 static scorer + unsigned
-  probes, no behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (weld MERGE +
-  off-path recon not DM-enumerated sensitive classes; the FIRST-after-16:00 digest was posted 174235Z) — #157 MERGE + recon
-  flagged for next digest. See LOG Local cycle 20260807T205300Z.
-- LOCAL cycle — 20260807T194459Z (TRUTH / welded exa.ai as the 7th non-anchor cross-path member — the FIRST with
-  genuine partial agent-native rails, PEER-GATED PR #157 opened, NOT self-merged). FIRST duty: `gh pr list --state open`
-  → `[]` (no open PR; PR #156 MERGED `571e4c6` last real cycle 184234Z; 194100Z was a verify-only floor). Infra HEALTHY:
-  `verify_20260807T194100Z.json` (19:41Z, 38 suites, 46.1 F / 76.2 C / +30.1) ~2min old at fire (19:43Z) → :41 cadence
-  holding (184103Z→194100Z). **Executed the ONE [LOCAL] item — the 7th-non-anchor WELD the exa.ai baseline-pin teed up:**
-  welded exa.ai into `_NON_ANCHOR_WELDED` (7 members), the FIRST welded member on the upper/with-rails scale (every prior
-  non-anchor at the no-rails tx floor 0.0–25.0; exa.ai's tx 50.0 = documented x402 + MCP + PAYG, a real MIDDLE between the
-  no-rails floor 0.0 and the anchor's full x402-live handshake 87.5; at 78.1 it fills the widest upper-middle gap between
-  ipinfo 61.3 and driftflight 85.5). Non-vacuity independently RE-VERIFIED before authoring (the api.replicate lesson):
-  exa.ai scored 78.1 in ALL FIVE committed sweeps (segment api-service), keyed `exa.ai` == its EXPECTED key on both paths
-  (NO www/bare alias) → n_compared=5; pre-checked the full overall+pillar welds stay green (sweep pillars byte-identical to
-  EXPECTED). New `test_exa_ai_seventh_non_anchor_is_welded_nonvacuously` (baseline present, n_compared=5, teeth 78.1→90.0
-  caught as exactly one divergence) + runner registration. [LOCAL] essence THIS fire (19:44Z $0 static re-score): live 78.1
-  == frozen fixture-replay 78.1 == EXPECTED 78.1, all 4 non-null pillars byte-identical (access 100.0 / legibility 100.0 /
-  transactability 50.0 / trust 83.33), caps empty (NOT scorable in cloud). TEST-ONLY (`test_calibration_anchor_agreement.py`
-  +87; off-scoring-SEMANTICS EMPTY), weld suite 22→23, full suite 38/38. PEER-GATED (regression-guard semantics, same class
-  as #156) → PR #157 opened (`7ca40bb`), NOT self-merged; main floor green (weld change branch-only). Evidence
-  `runs/local/exa_ai_seventh_non_anchor_weld_20260807T194459Z.json`. Invariants #1 ($0 static re-score + in-process tests, no
-  behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (regression-guard weld PR not a
-  DM-enumerated sensitive class; the first-real-cycle-after-16:00 digest was already posted 174235Z) — PR #157 flagged for
-  next digest. Frozen canonical delta UNMOVED +39.4; live +30.1. See LOG Local cycle 20260807T194459Z.
+<!-- Rolling entry for Local cycle 20260807T205300Z (MERGED PR #157 [exa.ai 7th non-anchor weld] + a rails
+     reconnaissance that found NO new full with-rails point — 2nd x402-LIVE still scarce that cycle, paidsync.ai
+     503 shortlisted) pruned this fire (Local cycle 20260807T225343Z) to stay under the STATE 600-line cap —
+     preserved verbatim in loop/LOG.md + git history. The scarcity it reported was BROKEN this fire (see the
+     banner above + the 225343Z rolling entry). -->
+- LOCAL cycle — 20260807T205300Z through 214332Z summarized: rails reconnaissance for a genuinely-NEW full
+  with-rails point ran across three cadence cycles (205300Z none-found + paidsync 503 shortlisted; 214332Z
+  paidsync 503 2nd cycle; 225343Z **scarcity BROKEN** — thebotwire.com 86.0 B live-x402 found). Full detail in
+  loop/LOG.md.
+<!-- Rolling entry for Local cycle 20260807T194459Z (welded exa.ai as the 7th non-anchor cross-path member —
+     the FIRST with genuine partial agent-native rails; PEER-GATED PR #157 opened, later MERGED `cf0df08` in the
+     205300Z cycle) pruned this fire (Local cycle 20260807T225343Z) to stay under the STATE 600-line cap —
+     preserved verbatim in loop/LOG.md + git history. -->
+- LOCAL cycle — 20260807T194459Z summarized: welded exa.ai (78.1 C, documented-partial rails) as the 7th
+  non-anchor cross-path member (PEER-GATED PR #157, self-merged `cf0df08` the following cycle 205300Z). Full
+  detail in loop/LOG.md.
 - LOCAL cycle — 20260807T184234Z (TRUTH / MERGED PR #156 + pinned exa.ai as the 9th frozen-replay baseline, direct-to-main).
   FIRST duty: `gh pr list --state open` → PR #156 OPEN → adversarial review + independent $0 live re-score → VERDICT SOUND →
   **MERGED `571e4c6`** (off-scoring-path test-only +174/−2; vendor-neutral by TYPE; SHARED-`_member_row` safety independently

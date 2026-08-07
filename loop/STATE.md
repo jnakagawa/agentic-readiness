@@ -1,19 +1,27 @@
 # Loop state
 
 - Cycle counter: 295
-- **NO open peer-gated PR.** PR #149 (v0.7(e) `_ENV_BLOCK_RE` → `browser access(?: permission)?`) was
-  OPERATOR-MERGED by jnakagawa 2026-08-06T20:47Z (merge `dfa341f`), which SKIPPED the loop's pre-merge peer review.
-  **Local cycle 20260806T225132Z (this fire) ran that post-merge review INDEPENDENTLY → verdict SOUND** (diff
-  off-scoring-path: only `asrs/behavioral/shopper.py` +18/−1 + `tests/test_attribution.py` +87; regex change exactly
-  the documented v0.7(e), `browser access` still required so site-side 403s not excused; static replay 26/26 +39.4
-  unmoved; suite 38/38). Next fire's first duty is the infra health check.
+- **⚠ OPEN PEER-GATED PR #150** (v0.7(f) `_ENV_BLOCK_RE` → `browser (?:site[- ])?access(?: permission)?`) — OPENED
+  this fire (Local cycle 20260806T235421Z), **NOT self-merged**. **NEXT FIRE'S FIRST DUTY: adversarially review +
+  live re-score the pair, then MERGE or request changes** (never review-and-merge the authoring cycle's own PR).
+  Fixes the FIFTH own-tool vocab-drift leak (invariant #4): codex's .org refusal *"Browser site-access permission
+  for drift-flight.org was declined…"* (run record `runs/drift-flight_org_20260806T205238.json`, codex t2) was
+  counting as a valid NO-rails SITE run — the `site-` qualifier split "browser" from "access" past v0.7(a)/(e).
+  Diff off-scoring-path (only `asrs/behavioral/shopper.py` +24 + `tests/test_attribution.py` +95, off-path check
+  EMPTY); differential leak-scan over **1417 committed run-record string leaves → EXACTLY 1 flip OLD→NEW, ZERO
+  collateral, ZERO loss**; static replay 26/26 +39.4 UNMOVED; suite 38/38; test_attribution 15→16. Branch
+  `loop/env-block-browser-site-access-v07f` (commit `166d6db`). — PR #149 (v0.7(e)) was OPERATOR-MERGED `dfa341f`
+  20:47Z + independently reviewed SOUND (Local 20260806T225132Z), superseded by this line.
 - **⚠ LIVE CANONICAL DELTA MOVED +39.4→+30.1 this hour** (22:41Z verify): driftflight.com 85.5 B→**76.2 C** —
   a REAL live-site regression, NOT a code/scoring change. The with-rails x402 handshake endpoint
   `POST agents.driftflight.com/extend` went **402→401** (auth-required now; storefront otherwise 200) → `x402_probe`
   `x402-live`→`x402-documented-not-probed` (8.0→4.0) → transactability ~87.5→62.5. **Replay baseline UNMOVED at
   +39.4** (fixture frozen, NOT re-captured; test_canonical_replay 26/26) — the loop's code/regression signal is
   healthy. Evidence `runs/local/canonical_delta_x402_regression_20260806T224615Z.json`. WATCH: if `/extend` returns
-  to 402 the live delta recovers; if it persists, +30.1 is the new honest live reading. See LOG Local cycle 20260806T225132Z.
+  to 402 the live delta recovers; if it persists, +30.1 is the new honest live reading. **UPDATE (23:41Z verify,
+  Local 20260806T235421Z): STILL 76.2 C / +30.1 — the 402→401 PERSISTED across two consecutive hourly floors
+  (22:41Z→23:41Z), so +30.1 is trending toward the new honest live reading, not a one-hour blip; independent of
+  PR #150 (behavioral path).** See LOG Local cycle 20260806T225132Z + 20260806T235421Z.
 - BOOKKEEPING SELF-HEAL: the prior fire (20260806T214745Z) reviewed #149 + edited STATE/BACKLOG in the working tree
   but wrote NO LOG entry and never committed/pushed (its panel dir exists gitignored). This fire re-verified #149,
   took ownership of the reconciled banner (above), and committed. No fabricated 214745Z LOG entry. STATE pruned the

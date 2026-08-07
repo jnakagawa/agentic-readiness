@@ -20,30 +20,22 @@ Local cycle 20260806T214745Z. -->
 double-fork detached launcher loop/run_pr148_verify.py (survives the fire); it surfaced the .com 4th-drift leak that
 PR #149 (above) then fixed. Full record in LOG Local cycle 20260806T184617Z + git. -->
 
-- **[PEER-GATED P0 — TO AUTHOR next cycle] Broaden `_ENV_BLOCK_RE` for the "browser SITE-access permission …
-  declined" own-tool family (v0.7(f))** (METHOD, DISCOVERED + validated this fire by the post-merge panel leak-scan;
-  NOT yet authored — per the discover→queue→next-cycle-authors discipline that produced v0.7(e)). The FIFTH vocab
-  drift, found LIVE in the post-merge panel `runs/local/pr149_postmerge_20260806T204850Z/` (committed evidence
-  `runs/drift-flight_org_20260806T205238.json`, codex trial 2, .org NO-rails side): the SOLE own-tool blocker
-  **"Browser site-access permission for drift-flight.org was declined, preventing direct read-only inspection."**
-  had `any_env_match=False` → the run counted as a VALID all-false SITE run (invariant #4 leak: codex's own
-  hosted-browser refusal scored as site evidence; same-panel trial 1 was correctly caught by the v0.6 "browser
-  security layer" branch). It slips every branch because the apparatus is `browser SITE-access permission` — not
-  `browser access` (v0.7(a)/(e) require adjacency), not possessive `browser's` (v0.7(b)), and the block verb
-  `declined` follows the noun rather than "declined BY the browser permission …" (v0.7(d)). **VALIDATED FIX** (author
-  as a PR, do NOT self-merge): v0.7(a)'s alternative `browser access(?: permission)?` → `browser (?:site[- ])?access(?: permission)?`
-  (accept an optional `site-`/`site ` qualifier). Differential leak-scan over 445 committed distinct blocker/trust
-  texts: EXACTLY 1 flip v0.7(e)→v0.7(f) (this leak), ZERO collateral, ZERO regression (strict superset — no v0.7(e)
-  match is lost); `browser (?:site[- ])?access` still requires `access` after `browser`, so a bare site 403 body and
-  `_NOT_SITE_ATTRIBUTED` guards stand (both directions). Ship: `test_attribution.py` #16 with teeth (pre-v0.7(f)
-  reversion MISSES the phrase; a site-attributed twin + bare 403 NOT excused), off-scoring-path (shopper.py +
-  test_attribution.py only), no rubric bump. It changes which runs count valid → scoring semantics → PEER-GATED.
+<!-- OPENED Local cycle 20260806T235421Z: v0.7(f) `_ENV_BLOCK_RE` -> `browser (?:site[- ])?access(?: permission)?`
+AUTHORED as PEER-GATED PR #150 (branch loop/env-block-browser-site-access-v07f, commit 166d6db), NOT self-merged —
+fixes the 5th own-tool vocab-drift leak (codex .org "Browser site-access permission ... declined", run record
+runs/drift-flight_org_20260806T205238.json codex t2, counting as a valid NO-rails SITE run; invariant #4). Differential
+leak-scan over 1417 committed run-record string leaves: EXACTLY 1 flip OLD->NEW, ZERO collateral, ZERO loss (strict
+superset); off-scoring-path diff EMPTY (shopper.py +24 + test_attribution.py +95); static replay 26/26 +39.4 UNMOVED;
+suite 38/38; test_attribution 15->16 (#16 teeth track the LIVE pattern; #15 revert-target repaired). DO NOT RE-AUTHOR —
+TRACKED by STATE's OPEN-PR banner + next fire's first-duty adversarial review + live re-score. See LOG Local cycle
+20260806T235421Z. -->
 
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
-  phrasing has now drifted the `_ENV_BLOCK_RE` guard FIVE times (Cycles 269 / 284 / 287 / 296=v0.7(e) / and the
-  v0.7(f) `browser site-access permission … declined` family found this fire). Every fresh committed behavioral
-  panel MUST be leak-scanned (the differential OLD-vs-current-regex scan over all committed blocker/trust texts,
-  re-derived every fire — see the MERGED marker above) so the NEXT drift is caught the cycle it appears, not several
+  phrasing has now drifted the `_ENV_BLOCK_RE` guard FIVE times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)
+  `browser site-access permission … declined`, the last AUTHORED this fire as PEER-GATED PR #150). Every fresh
+  committed behavioral panel MUST be leak-scanned (the differential OLD-vs-current-regex scan over all committed
+  blocker/trust texts — this fire ran it over all 1417 committed run-record string leaves, re-derived every fire —
+  see the OPENED/MERGED markers above) so the NEXT drift is caught the cycle it appears, not several
   cycles later as a silently-narrowed delta. The reputation-"unsafe" own-web-retriever clause (test-#8 family)
   remains a deferred, carefully-guarded future candidate (needs a disambiguating own-apparatus SUBJECT anchor so a
   site-side WAF "flagged unsafe" is never excused).

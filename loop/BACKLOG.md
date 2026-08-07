@@ -161,6 +161,21 @@ and acuity's 54.0; as a 2nd retail member it pins a DIFFERENT pillar mix from bo
 29.5->49.8). Frozen-replay baselines 7->8. Off-scoring-SEMANTICS EMPTY (only test_canonical_replay.py); frozen canonical
 delta UNMOVED +39.4; suite 38/38. Evidence runs/local/moleskine_second_retail_baseline_20260807T154104Z.json. See LOG
 Local cycle 20260807T154104Z. -->
+<!-- OPENED Local cycle 20260807T174235Z: the 6th-non-anchor cross-path weld (www.moleskine.com — a 2nd retail storefront,
+retail DEPTH) is AUTHORED as PEER-GATED PR #156 (branch loop/moleskine-sixth-non-anchor-weld, commit d67cabd), NOT
+self-merged. Welds www.moleskine.com into `_NON_ANCHOR_WELDED` = (example.com, books.toscrape.com, acuityscheduling.com,
+ipinfo.io, api.replicate.com, www.moleskine.com), spanning SIX structurally-distinct non-anchor witnesses. Solved the
+www/bare key mismatch the 154104Z pin flagged: NEW `_norm_domain` (strip a single leading `www.`) in the shared
+`_member_row` so the baseline key `www.moleskine.com` matches the sweeps' `moleskine.com` rows — genuinely COMPARED
+n_compared=5 (all five committed v0.7 sweeps, segment retail:no-rails, scored 49.8 in every one), NOT vacuous. New
+test_moleskine_sixth_non_anchor_is_welded_nonvacuously (baseline present, n_compared=5, teeth 49.8->60.0 caught through
+the normalization) + test_www_bare_domain_key_is_normalized (normalization both directions + over-normalization guarded:
+internal `www`/`wwwx`/unrelated domains never collapsed). TEST-ONLY (test_calibration_anchor_agreement.py only;
+off-scoring-SEMANTICS EMPTY), weld suite 20->22, full suite 38/38. Live<->frozen verified this fire ($0 static re-score
+17:46Z: live 49.8 == frozen 49.8 == EXPECTED 49.8, all 4 non-null pillars byte-identical, caps empty — the [LOCAL]
+essence the cloud can't do). DO NOT RE-AUTHOR — TRACKED by STATE's OPEN-PR #156 banner + next fire's first-duty
+adversarial review + live re-score. Evidence runs/local/moleskine_sixth_non_anchor_weld_20260807T174235Z.json. See LOG
+Local cycle 20260807T174235Z. -->
 - **[FOLLOW-UP, P1 — TRUTH] a SIXTH distinct-TYPE baseline still needs a fresh honest fixture.** The 2nd-retail baseline
   (www.moleskine.com) is now PINNED (DONE marker above) — the frozen guard spans 8 real-domain baselines (2 anchors + 6
   non-anchor across 5 storefront TYPES, with retail depth). The remaining `_CLASSIFICATION_ONLY` candidates (polar.sh /
@@ -169,9 +184,11 @@ Local cycle 20260807T154104Z. -->
   genuinely NEW committed fixture (verify the new classification is honest first; it is a re-baseline, not a pin of the
   old claim). HIGHEST-VALUE next: capture a real ACP/UCP/MPP merchant or a 2nd x402-live storefront — a genuinely NEW
   storefront TYPE **and** a with-rails calibration point (the guard currently has only ONE with-rails member,
-  driftflight.com). Secondary: a future PEER-GATED 2nd-retail WELD could add www.moleskine.com as a cross-path member,
-  but ONLY after normalizing the www/bare domain key (its sweep rows key `moleskine.com`, the replay baseline
-  `www.moleskine.com`; a weld today is vacuous n_compared=0).
+  driftflight.com). Secondary: the PEER-GATED 2nd-retail WELD of www.moleskine.com is now DONE (PR #156 OPENED this
+  fire, Local cycle 20260807T174235Z — the www/bare normalization it required is shipped on the branch as `_norm_domain`;
+  awaiting next-fire review+merge). So the remaining P1-TRUTH frontier here is purely the genuinely-NEW with-rails /
+  new-storefront-TYPE fixture — the calibration guard still has only ONE with-rails member, and every welded non-anchor
+  member is a no-rails storefront; a real ACP/UCP/MPP merchant or 2nd x402-live storefront is the highest-value capture.
 
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
   phrasing has now drifted the `_ENV_BLOCK_RE` guard FIVE times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)

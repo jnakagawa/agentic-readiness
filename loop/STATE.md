@@ -1,6 +1,25 @@
 # Loop state
 
 - Cycle counter: 295
+- **⏳ PR #156 (www.moleskine.com 6th non-anchor cross-path calibration weld — a 2nd retail storefront,
+  retail depth) OPEN this fire (Local 20260807T174235Z), branch `loop/moleskine-sixth-non-anchor-weld`,
+  commit `d67cabd`, NOT self-merged.** Peer-gated (regression-guard semantics, same class as merged
+  PRs #152–#155). Welds `www.moleskine.com` into `_NON_ANCHOR_WELDED` (6th non-anchor member) and adds
+  `_norm_domain` (strip a single leading `www.`) to the shared `_member_row` so the replay baseline key
+  `www.moleskine.com` matches the live sweeps' `moleskine.com` rows — genuinely COMPARED n_compared=5
+  across all five committed v0.7 sweeps (segment retail:no-rails, scored 49.8 in every one), NOT vacuous.
+  [LOCAL] live $0 static re-score THIS fire (`python -m asrs score www.moleskine.com --json-only`) →
+  **live 49.8 == frozen fixture-replay 49.8 == EXPECTED 49.8**, all 4 non-null pillars byte-identical
+  (access 100.0 / legibility 40.91 / transactability 18.75 / trust 73.33), caps empty → weld HOLDS,
+  moleskine did NOT regress. Test-only (off-scoring-SEMANTICS EMPTY over asrs/rubric/fixtures/experiments/
+  loop/local_verify.py); weld suite 20→22, full suite 38/38; teeth 49.8→60.0 caught as exactly one
+  divergence THROUGH the normalization; over-normalization guarded (internal `www` / `wwwx` / unrelated
+  domains never collapsed). Frozen canonical delta +39.4 UNMOVED; live +30.1. The cross-path weld now
+  spans SIX structurally-distinct non-anchor witnesses (null-control + retail-catalog + service-booking +
+  data-retrieval + pure-inference-API + 2nd-retail-depth). **NEXT FIRE'S FIRST DUTY: adversarially review
+  + re-run the live re-score, then MERGE or request changes; do NOT review-and-merge in the authoring
+  fire.** Evidence `runs/local/moleskine_sixth_non_anchor_weld_20260807T174235Z.json`. PR #156 flagged
+  for next digest.
 - **✅ PR #155 (api.replicate.com 5th non-anchor cross-path calibration weld) MERGED this fire (Local
   20260807T154104Z), merge `7e08063`** — after the owed FIRST-DUTY adversarial review + independent $0 live re-score.
   VERDICT SOUND: off-scoring-path (three-dot diff since merge-base `4313135` is ONLY
@@ -181,6 +200,30 @@
   but wrote NO LOG entry and never committed/pushed (its panel dir exists gitignored). This fire re-verified #149,
   took ownership of the reconciled banner (above), and committed. No fabricated 214745Z LOG entry. STATE pruned the
   two oldest rolling entries (cloud Cycles 290–291, preserved in LOG.md) to stay under the 600-line hygiene cap.
+- LOCAL cycle — 20260807T174235Z (TRUTH / welded www.moleskine.com as the 6th non-anchor cross-path member, PEER-GATED
+  PR #156 opened, NOT self-merged). FIRST duty: `gh pr list --state open` → `[]` (no open PR to review; PR #155 MERGED
+  `7e08063` last real cycle, 154104Z; 164102Z/174100Z were verify-only floors). Infra HEALTHY:
+  `verify_20260807T174100Z.json` (17:41Z, 38 suites, 46.1 F / 76.2 C / +30.1) ~2min old at fire (17:42Z) → :41 cadence
+  holding (154104Z→174100Z; the 16:41Z floor `verify_20260807T164102Z.json` is present too). **Executed the oldest
+  actionable follow-up — the 2nd-retail WELD the last cycle teed up:** welded www.moleskine.com (a 2nd real retail
+  storefront — retail DEPTH) into `_NON_ANCHOR_WELDED` = (example.com, books.toscrape.com, acuityscheduling.com,
+  ipinfo.io, api.replicate.com, www.moleskine.com), so the cross-path weld spans SIX non-anchor witnesses. Solved the
+  www/bare key mismatch the pin cycle flagged: added `_norm_domain` (strip a single leading `www.`) to the shared
+  `_member_row` so the baseline key `www.moleskine.com` matches the sweeps' `moleskine.com` rows — genuinely COMPARED
+  n_compared=5 (all five committed v0.7 sweeps), NOT vacuous. New `test_moleskine_sixth_non_anchor_is_welded_nonvacuously`
+  (baseline present, n_compared=5, teeth 49.8→60.0 caught through the normalization) + `test_www_bare_domain_key_is_normalized`
+  (normalization both directions + over-normalization guarded — internal `www`/`wwwx`/unrelated never collapsed). The
+  [LOCAL] essence THIS fire (17:46Z $0 static re-score): live 49.8 == frozen fixture-replay 49.8 == EXPECTED 49.8, all 4
+  non-null pillars byte-identical, caps empty (NOT scorable in cloud). TEST-ONLY (`test_calibration_anchor_agreement.py`
+  only; off-scoring-SEMANTICS EMPTY), weld suite 20→22, full suite 38/38. PEER-GATED (regression-guard semantics, same
+  class as #155) → PR #156 opened (`d67cabd`), NOT self-merged; main floor green (weld change branch-only). Evidence
+  `runs/local/moleskine_sixth_non_anchor_weld_20260807T174235Z.json`. Invariants #1 ($0 static re-score + in-process
+  tests, no behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. **DAILY DIGEST POSTED**
+  (Slack DM D07PH9VLZEX): this is the FIRST REAL agent cycle after 16:00 UTC today (last real cycle 154104Z=15:41Z
+  precedes 16:00; the 164102Z/174100Z :41 fires were verify-only floors, no agent cycle shipped) → digest owed. Covered
+  the two real cycles since the last digest (154104Z merged #155 + pinned moleskine 8th baseline; 174235Z opened #156),
+  canonical delta trend (frozen +39.4, live +30.1 persistent x402), and the top open question (2nd with-rails calibration
+  point). Frozen canonical delta UNMOVED +39.4; live +30.1. See LOG Local cycle 20260807T174235Z.
 - LOCAL cycle — 20260807T154104Z (TRUTH / MERGED PR #155 + pinned www.moleskine.com as the 8th frozen-replay baseline /
   a 2nd retail storefront, direct-to-main). FIRST duty: `gh pr list --state open` → PR #155 OPEN → adversarial review +
   independent $0 live re-score → VERDICT SOUND → **MERGED `7e08063`** (off-scoring-path test-only +79/−4; vendor-neutral

@@ -130,17 +130,28 @@ temp-verify-then-promote: fresh 40-url full-score replays clean (35 misses->0), 
 frozen 29.5, all 4 pillars byte-identical. Off-scoring-SEMANTICS EMPTY (canonical PAIR untouched); frozen delta UNMOVED
 +39.4; suite 38/38. Evidence runs/local/api_replicate_pure_metered_api_baseline_20260807T114104Z.json. See LOG Local cycle
 20260807T114104Z. -->
-- **[FOLLOW-UP, oldest P0 — TRUTH] the FIFTH distinct-TYPE non-anchor WELD (api.replicate.com) — needs a sweep-add
-  FIRST.** api.replicate.com (a PURE single-archetype metered_api compute/inference API — a 5th storefront TYPE) is now a
-  pinned frozen-replay baseline (29.5 F v0.7, in `_REPLAY_CLEAN`, this fire). BUT unlike ipinfo.io it is ABSENT from every
-  committed `runs/local/calibration_sweep_*.json`, so it has NO genuinely-compared sweep presence — a weld test would
-  fail its `n_compared>=1` non-vacuity check. So the WELD is BLOCKED until a [LOCAL] cadence run FIRST adds
-  api.replicate.com to `experiments/calibration_sweep.py`'s POPULATION and scores it (the books.toscrape.com pattern,
-  Local cycle 20260807T051750Z): run the sweep $0 static, confirm api.replicate.com scores 29.5, commit the new
-  `calibration_sweep_*.json`. THEN a peer-gated PR can weld it into `_NON_ANCHOR_WELDED` (regression-guard class like
-  #154), so the cross-path weld spans a FIFTH structurally-distinct TYPE (pure-inference-API). NOTE the cadence sweep
-  broadening is independently on the backlog (population currently 18-19 scored; target 15-20 — adding api.replicate.com
-  both broadens the cadence AND unlocks the weld, one [LOCAL] run).
+<!-- DONE Local cycle 20260807T134105Z: the api.replicate.com sweep-add prerequisite is DISCHARGED. Added api.replicate.com
+to `experiments/calibration_sweep.py` POPULATION (segment metered-api:inference-platform) and ran the sweep $0 static (no
+--behavioral/--max-pay/codex/zero-CLI) -> `runs/local/calibration_sweep_20260807T134527Z.json` (19/20 scored, rei.com
+not-scorable, 0 errors). api.replicate.com scored 29.5 F BYTE-IDENTICAL to its frozen floor (access 100.0/legibility 18.18/
+transactability 0.0/trust 33.33, caps empty, claimed {metered_api}); drift 0/18 moved vs the prior sweep, only new member is
+api.replicate.com; every welded member on its floor. Off-scoring-SEMANTICS EMPTY (POPULATION +1 only); frozen delta UNMOVED
++39.4; suite 38/38. Direct-to-main (same class as the books.toscrape.com POPULATION-add, Local cycle 20260807T051750Z). The
+POPULATION edit was found orphaned uncommitted at fire start (12:41 agent likely died mid-item) and adopted (bookkeeping
+self-heal). See LOG Local cycle 20260807T134105Z. -->
+- **[FOLLOW-UP, oldest P0 — TRUTH] the FIFTH distinct-TYPE non-anchor WELD (api.replicate.com) — NOW UNLOCKED (sweep-add
+  discharged Local cycle 20260807T134105Z), author the PEER-GATED weld PR next fire.** api.replicate.com (a PURE
+  single-archetype metered_api compute/inference API — a 5th structurally-distinct storefront TYPE) is a pinned
+  frozen-replay baseline (29.5 F v0.7, `_REPLAY_CLEAN`) AND now carries a genuinely-compared live-sweep presence: it scored
+  29.5 in exactly ONE committed sweep (`calibration_sweep_20260807T134527Z.json`; absent from the four priors), so a weld
+  test's `n_compared>=1` non-vacuity check is satisfiable. AUTHOR a PEER-GATED PR (regression-guard class like #154,
+  TEST-ONLY in `tests/test_calibration_anchor_agreement.py`): add api.replicate.com to `_NON_ANCHOR_WELDED`, new
+  `test_api_replicate_fifth_non_anchor_is_welded_nonvacuously` (committed v0.7 baseline present, genuinely COMPARED
+  n_compared=1 in the 20260807T134527Z sweep segment metered-api:inference-platform, agrees with its 29.5 floor, teeth
+  29.5->40.0 caught). At review time run the [LOCAL] live re-score (live 29.5 == frozen 29.5, pillars byte-identical; if it
+  regressed, do NOT merge — investigate). On merge the cross-path weld spans a FIFTH structurally-distinct TYPE (pure
+  single-archetype inference API), beyond null-control + retail-catalog + service-booking + data-retrieval. Do NOT
+  self-merge the same fire (peer gate).
 - **[FOLLOW-UP, P1 — TRUTH] a SIXTH distinct-TYPE baseline is now hard to source cheaply.** The remaining
   `_CLASSIFICATION_ONLY` candidates (polar.sh / simplybook.me / www.allbirds.com) ALL failed the byte-identity gate this
   fire — their live sites have DRIFTED from their committed classification-only fixtures (polar.sh most dramatically,

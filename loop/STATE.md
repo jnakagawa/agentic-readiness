@@ -1,6 +1,21 @@
 # Loop state
 
 - Cycle counter: 295
+- **✅ CALIBRATION CADENCE SWEEP RUN this fire (Local 20260807T134105Z, direct-to-main): api.replicate.com added to
+  `experiments/calibration_sweep.py`'s POPULATION and scored $0 static → `runs/local/calibration_sweep_20260807T134527Z.json`
+  (19/20 scored, rei.com not-scorable per inv #4, 0 errors).** api.replicate.com scored **29.5 F** (segment
+  `metered-api:inference-platform`; pillars access 100.0 / legibility 18.18 / transactability 0.0 / trust 33.33; caps empty;
+  `claimed_archetypes ['metered_api']`) — BYTE-IDENTICAL to its frozen replay floor (the [LOCAL] live↔frozen agreement the
+  cloud can't produce). **Drift vs prior sweep `20260807T045843Z`: 0/18 moved, max |Δ| 0.0** — whole population stable, only
+  new member is api.replicate.com; every welded member on its floor (org 46.1 / com 76.2 documented-drift / example 22.5 /
+  books 29.5 / acuity 54.0 / ipinfo 61.3). **This UNLOCKS the 5th-non-anchor cross-path WELD** — api.replicate.com now
+  carries a genuinely-compared sweep presence (scored 29.5 in exactly ONE committed sweep, this one; absent from the four
+  priors), so a future PEER-GATED PR can weld it into `_NON_ANCHOR_WELDED` non-vacuously (n_compared=1, teeth 29.5→drift),
+  spanning a FIFTH structurally-distinct storefront TYPE (pure single-archetype inference API). Off-scoring-SEMANTICS EMPTY
+  (the sweep only READS the shipped scorer; `experiments/calibration_sweep.py` POPULATION +1 is off the scoring path);
+  frozen canonical delta UNMOVED +39.4; suite 38/38. Minor bookkeeping self-heal: the POPULATION edit was found uncommitted
+  at fire start (no LOG/branch/commit/stash — most likely the 12:41 fire's agent began this same oldest-P0 and died before
+  committing); verified byte-correct and adopted, no fabricated 124104Z LOG entry. See LOG Local cycle 20260807T134105Z.
 - **✅ PR #154 (ipinfo.io 4th non-anchor cross-path calibration weld) MERGED this fire (Local 20260807T114104Z),
   merge `ee95a0b`** — after the owed FIRST-DUTY adversarial review + independent $0 live re-score. VERDICT SOUND:
   off-scoring-path (three-dot diff since merge-base `d0f5250` is ONLY `test_calibration_anchor_agreement.py` +81/−4;
@@ -133,6 +148,20 @@
   but wrote NO LOG entry and never committed/pushed (its panel dir exists gitignored). This fire re-verified #149,
   took ownership of the reconciled banner (above), and committed. No fabricated 214745Z LOG entry. STATE pruned the
   two oldest rolling entries (cloud Cycles 290–291, preserved in LOG.md) to stay under the 600-line hygiene cap.
+- LOCAL cycle — 20260807T134105Z (TRUTH / ran the calibration cadence sweep with api.replicate.com added to POPULATION,
+  direct-to-main). FIRST duty: `gh pr list --state open` → `[]` (no open PR; PR #154 MERGED `ee95a0b` last real cycle).
+  Infra HEALTHY: `verify_20260807T134105Z.json` (13:41Z, 38 suites, 46.1 F / 76.2 C / +30.1) fresh at fire (13:43Z) → :41
+  cadence holding. Bookkeeping self-heal: adopted an orphaned uncommitted `calibration_sweep.py` POPULATION edit (no
+  LOG/branch/commit/stash; most likely the 12:41 fire's agent began this same oldest-P0 and died mid-item) — verified
+  byte-correct, completed it this fire, no fabricated 124104Z entry. **Executed the oldest P0 — the api.replicate.com
+  sweep-add prerequisite for the 5th-non-anchor weld:** ran `experiments/calibration_sweep.py` $0 static (no --behavioral/
+  --max-pay/codex/zero-CLI) → 19/20 scored, api.replicate.com **29.5 F** byte-identical to its frozen floor (access 100.0 /
+  legibility 18.18 / transactability 0.0 / trust 33.33), drift 0/18 moved vs the prior sweep, only new member is
+  api.replicate.com. Evidence `runs/local/calibration_sweep_20260807T134527Z.json` (force-added; runs/ gitignored). This
+  UNLOCKS the 5th-non-anchor cross-path weld (peer-gated PR next fire). Off-scoring-SEMANTICS EMPTY (POPULATION +1 only,
+  the sweep reads the shipped scorer); frozen canonical delta UNMOVED +39.4; live +30.1; suite 38/38. Invariants #1 ($0
+  static sweep + in-process tests)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (cadence sweep-add not a
+  DM-enumerated sensitive class; 13:4xZ precedes 16:00 UTC) — flagged for next digest. See LOG Local cycle 20260807T134105Z.
 - LOCAL cycle — 20260807T114104Z (TRUTH / MERGED PR #154 + pinned api.replicate.com as the 7th frozen-replay baseline
   / a 5th storefront TYPE: pure single-archetype metered_api, direct-to-main). FIRST duty: `gh pr list --state open` →
   PR #154 OPEN → adversarial review + independent $0 live re-score → VERDICT SOUND → **MERGED `ee95a0b`**

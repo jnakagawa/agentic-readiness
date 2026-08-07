@@ -87,6 +87,16 @@ POPULATION: list[tuple[str, str]] = [
     # replay-baseline vs sweep off the two famous anchors (see
     # tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED).
     ("books.toscrape.com", "retail:no-rails"),
+    # a PURE single-archetype metered_api compute / model-inference API storefront
+    # (a 5th structurally-distinct storefront TYPE) — carries a committed replay
+    # baseline (tests/test_canonical_replay.EXPECTED, overall 29.5, the low-legibility
+    # inference-API shape) pinned LOCAL cycle 20260807T114104Z, but was ABSENT from
+    # every prior sweep. Adding it here (LOCAL cadence, increment (a)) gives the 5th
+    # non-anchor cross-path weld candidate its first live-sweep presence, so a future
+    # TRUTH cycle can weld it replay-baseline vs sweep off the two famous anchors (the
+    # books.toscrape.com pattern; see tests/test_calibration_anchor_agreement.
+    # _NON_ANCHOR_WELDED).
+    ("api.replicate.com", "metered-api:inference-platform"),
     # non-storefront controls (zero-commerce baseline)
     ("example.com", "control:non-storefront"),
     ("wikipedia.org", "control:non-storefront"),

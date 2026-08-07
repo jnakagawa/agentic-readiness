@@ -122,12 +122,28 @@ _ANCHORS = ("drift-flight.org", "driftflight.com")
 # FIVE structurally-distinct non-anchor witnesses: null-control (example.com) + retail-catalog
 # (books.toscrape.com) + service-booking (acuityscheduling.com) + data-retrieval (ipinfo.io) +
 # pure-inference-API (api.replicate.com).
+# www.moleskine.com (a SECOND real RETAIL storefront — an established consumer-brand e-commerce
+# shop; test_canonical_replay pins its 49.8 floor) is welded here as the SIXTH non-anchor member.
+# It adds retail DEPTH rather than a new storefront TYPE: unlike books.toscrape.com's bare
+# scraping-sandbox catalog (29.5; legibility 18.18 / transactability 0.0 / trust 33.33), a real
+# brand earns higher legibility 40.91, PARTIAL transactability 18.75 (a real commerce surface but
+# NO agent-native rail), and higher trust 73.33 — a DIFFERENT pillar mix at a DIFFERENT overall,
+# so the two retail members pin a RANGE (29.5 -> 49.8), not a point, and 49.8 is a new distinct
+# datapoint between example.com's 22.5 and acuityscheduling.com's 54.0. It EXERCISES the www/bare
+# host-alias normalization (see _norm_domain): the replay baseline keys it 'www.moleskine.com'
+# while all five committed sweeps row it 'moleskine.com' (segment retail:no-rails, scored 49.8 in
+# every one) — the weld matches them as the same storefront, so this member is genuinely COMPARED
+# (n_compared=5), not silently skipped. Its live<->frozen agreement was verified this fire (Local
+# cycle 20260807T174235Z, static $0 re-score): live overall 49.8 == frozen 49.8 and all four
+# non-null pillars byte-identical, the cross-path evidence the cloud cannot produce
+# (www.moleskine.com is NOT SCORABLE without outbound network).
 _NON_ANCHOR_WELDED = (
     "example.com",
     "books.toscrape.com",
     "acuityscheduling.com",
     "ipinfo.io",
     "api.replicate.com",
+    "www.moleskine.com",
 )
 # Every population member welded across the offline-replay and live-sweep paths.
 _WELDED_MEMBERS = _ANCHORS + _NON_ANCHOR_WELDED
@@ -156,10 +172,26 @@ def _committed_sweeps() -> list:
     return out
 
 
+def _norm_domain(domain):
+    """Normalize a domain key for cross-path matching: strip a single leading 'www.'.
+
+    The offline replay baseline and the live sweeps sometimes key the SAME storefront
+    differently — the replay fixture was captured as 'www.moleskine.com' while every
+    calibration sweep rows it 'moleskine.com'. A leading 'www.' host alias resolves to
+    the same site, so the two paths are the same measurement and must weld; without this
+    the welded member would silently never compare (n_compared=0, a vacuous weld). Only a
+    LEADING 'www.' (dot-terminated) is stripped — an internal 'www' label or an unrelated
+    domain is untouched, so two DISTINCT storefronts are never collapsed."""
+    return domain[4:] if isinstance(domain, str) and domain.startswith("www.") else domain
+
+
 def _member_row(sweep: dict, domain: str):
-    """The sweep row for a welded member (anchor or non-anchor), matched by domain."""
+    """The sweep row for a welded member (anchor or non-anchor), matched by domain modulo a
+    leading-'www.' host alias (see _norm_domain) so a member keyed 'www.moleskine.com' in the
+    replay baseline matches its 'moleskine.com' sweep row (and vice versa)."""
+    target = _norm_domain(domain)
     for row in sweep.get("rows", []):
-        if row.get("domain") == domain:
+        if _norm_domain(row.get("domain")) == target:
             return row
     return None
 
@@ -764,6 +796,142 @@ def test_api_replicate_fifth_non_anchor_is_welded_nonvacuously() -> None:
     _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
 
 
+def test_moleskine_sixth_non_anchor_is_welded_nonvacuously() -> None:
+    print("test_moleskine_sixth_non_anchor_is_welded_nonvacuously")
+    # www.moleskine.com is the SIXTH non-anchor welded member (a SECOND real RETAIL
+    # storefront — an established consumer-brand e-commerce shop). It adds retail DEPTH,
+    # not a new storefront TYPE: it earns real legibility 40.91 + PARTIAL transactability
+    # 18.75 (a real commerce surface, no agent-native rail) + high trust 73.33, a DIFFERENT
+    # pillar mix at a DIFFERENT overall than books.toscrape.com's 29.5, so the two retail
+    # members pin a RANGE 29.5 -> 49.8, not a point; 49.8 is a new distinct datapoint between
+    # example.com's 22.5 and acuityscheduling.com's 54.0.
+    #
+    # This member exercises the www/bare host-alias normalization (see _norm_domain): the
+    # offline replay baseline keys it 'www.moleskine.com' while every live sweep rows it
+    # 'moleskine.com'. Both are the same storefront; the weld matches them modulo the leading
+    # 'www.', so this member is genuinely COMPARED rather than silently skipped. Prove the
+    # weld is LOAD-BEARING for it specifically: it carries a committed v0.7 replay baseline,
+    # it is genuinely COMPARED in >=1 committed sweep (all five cadence runs scored
+    # moleskine.com 49.8, segment retail:no-rails), and its live value agrees with the frozen
+    # floor. Its live<->frozen agreement was independently re-scored this fire (Local cycle
+    # 20260807T174235Z: live overall 49.8 == frozen 49.8, all four non-null pillars
+    # byte-identical), the cross-path evidence the cloud cannot produce (www.moleskine.com is
+    # NOT SCORABLE without outbound network).
+    _check(
+        "www.moleskine.com" in _NON_ANCHOR_WELDED,
+        "www.moleskine.com is a welded non-anchor member",
+    )
+    _check(
+        "www.moleskine.com" in replay.EXPECTED
+        and str(replay.EXPECTED["www.moleskine.com"]["rubric_version"]) == _BASELINE_VERSION,
+        "www.moleskine.com carries a committed v0.7 replay baseline (the weld's source of truth)",
+    )
+    # The www/bare normalization is what makes this member non-vacuous: the sweeps key it
+    # 'moleskine.com', so without _norm_domain the member 'www.moleskine.com' would match no
+    # row. Assert the alias actually resolves to a bare-keyed sweep row.
+    sweeps = _committed_sweeps()
+    resolved = [
+        _member_row(s, "www.moleskine.com") for _, s in sweeps
+        if _member_row(s, "www.moleskine.com") is not None
+    ]
+    _check(
+        len(resolved) >= 1 and all(r.get("domain") == "moleskine.com" for r in resolved),
+        f"the 'www.moleskine.com' member resolves to bare-'moleskine.com' sweep rows via "
+        f"_norm_domain (got {len(resolved)} resolved)",
+    )
+    divergences, n_compared, _, _ = _divergences(
+        sweeps, replay.EXPECTED, _BASELINE_VERSION, members=("www.moleskine.com",)
+    )
+    _check(
+        divergences == [],
+        f"www.moleskine.com's live sweeps agree with its 49.8 replay floor (got {divergences})",
+    )
+    _check(
+        n_compared >= 1,
+        f"www.moleskine.com is genuinely compared, not silently skipped (got {n_compared})",
+    )
+    # Teeth: a live re-capture that drifted moleskine 49.8 -> 60.0 MUST trip the weld,
+    # exactly as a drifted anchor or any prior non-anchor member does — welding this sixth
+    # member is not toothless. The drift row is keyed 'moleskine.com' (as the real sweeps
+    # are), so this also proves the teeth fire THROUGH the www/bare normalization.
+    drifted = {
+        "rubric_version": "0.7",
+        "rows": [
+            {
+                "domain": "moleskine.com",
+                "segment": "retail:no-rails",
+                "scored": True,
+                "overall": 60.0,
+            }
+        ],
+    }
+    dvg, n_cmp, _, _ = _divergences(
+        [("synthetic-moleskine-drift", drifted)], replay.EXPECTED, _BASELINE_VERSION,
+        members=("www.moleskine.com",),
+    )
+    _check(len(dvg) == 1, f"exactly one divergence caught (got {dvg})")
+    _check(
+        dvg[0][1] == "www.moleskine.com"
+        and abs(dvg[0][2] - 60.0) < 1e-9
+        and abs(dvg[0][3] - 49.8) < 1e-9,
+        f"the drifted moleskine is caught vs its 49.8 floor (got {dvg[0]})",
+    )
+    _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
+
+
+def test_www_bare_domain_key_is_normalized() -> None:
+    print("test_www_bare_domain_key_is_normalized")
+    # _member_row matches a welded member to its sweep row modulo a single leading 'www.'
+    # host alias, so the offline replay baseline (keyed 'www.moleskine.com') and the live
+    # sweeps (keyed 'moleskine.com') weld as the same storefront. Prove the normalization is
+    # correct in BOTH directions and does NOT over-normalize — a different domain, or an
+    # internal 'www' label, is never collapsed (attribution honesty: two DISTINCT storefronts
+    # must never weld as one).
+    sweep = {
+        "rubric_version": "0.7",
+        "rows": [
+            {"domain": "moleskine.com", "segment": "retail:no-rails", "scored": True, "overall": 49.8},
+            {"domain": "example.com", "segment": "control:non-storefront", "scored": True, "overall": 22.5},
+        ],
+    }
+    # A 'www.'-prefixed member key finds the bare sweep row ...
+    r = _member_row(sweep, "www.moleskine.com")
+    _check(
+        r is not None and r["domain"] == "moleskine.com",
+        "a 'www.'-prefixed member key matches its bare sweep row",
+    )
+    # ... and a bare member key finds a 'www.'-prefixed sweep row (the mirror direction).
+    www_sweep = {
+        "rubric_version": "0.7",
+        "rows": [
+            {"domain": "www.moleskine.com", "segment": "retail:no-rails", "scored": True, "overall": 49.8}
+        ],
+    }
+    r2 = _member_row(www_sweep, "moleskine.com")
+    _check(
+        r2 is not None and r2["domain"] == "www.moleskine.com",
+        "a bare member key matches a 'www.'-prefixed sweep row",
+    )
+    # No over-normalization: an unrelated domain never matches ...
+    _check(
+        _member_row(sweep, "www.example.org") is None,
+        "an unrelated 'www.'-prefixed member matches nothing (no false collapse)",
+    )
+    # ... and only a LEADING, dot-terminated 'www.' is stripped.
+    _check(
+        _norm_domain("wwwx.moleskine.com") == "wwwx.moleskine.com",
+        "only a leading 'www.' (dot-terminated) is stripped, not a 'wwwx' prefix",
+    )
+    _check(
+        _norm_domain("api.www.example.com") == "api.www.example.com",
+        "an internal 'www' label is never stripped",
+    )
+    _check(
+        _norm_domain("moleskine.com") == "moleskine.com" and _norm_domain("ipinfo.io") == "ipinfo.io",
+        "a bare domain is unchanged (identity)",
+    )
+
+
 def test_off_version_sweep_is_not_compared() -> None:
     print("test_off_version_sweep_is_not_compared")
     # Invariant #2 teeth: a different-rubric sweep is never diffed against the v0.7
@@ -1040,6 +1208,8 @@ def main() -> int:
         test_acuity_third_non_anchor_is_welded_nonvacuously,
         test_ipinfo_fourth_non_anchor_is_welded_nonvacuously,
         test_api_replicate_fifth_non_anchor_is_welded_nonvacuously,
+        test_moleskine_sixth_non_anchor_is_welded_nonvacuously,
+        test_www_bare_domain_key_is_normalized,
         test_off_version_sweep_is_not_compared,
         test_live_sweep_pillars_agree_with_replay_baseline,
         test_pillar_canceling_drift_passes_overall_but_is_caught_by_pillar_weld,

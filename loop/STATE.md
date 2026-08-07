@@ -1,6 +1,23 @@
 # Loop state
 
 - Cycle counter: 295
+- **⏳ PR #157 (exa.ai 7th non-anchor cross-path calibration weld — the FIRST welded member with GENUINE
+  partial agent-native rails) OPENED this fire (Local 20260807T194459Z), branch
+  `loop/exa-ai-seventh-non-anchor-weld` commit `7ca40bb`, NOT self-merged.** Welds exa.ai (an agent-native
+  web-search/content-retrieval API — Exa) into `_NON_ANCHOR_WELDED` = (example.com, books.toscrape.com,
+  acuityscheduling.com, ipinfo.io, api.replicate.com, www.moleskine.com, exa.ai), spanning SEVEN
+  structurally-distinct non-anchor witnesses. It is the FIRST welded member on the upper/with-rails scale:
+  every prior non-anchor sits at the no-rails transactability floor (0.0–25.0), but exa.ai's tx 50.0 is a
+  real MIDDLE (documented x402 `x402-agentkit-free-trial` + MCP + PAYG) strictly between the no-rails floor
+  (0.0) and the anchor's full x402-LIVE handshake (87.5); at 78.1 it fills the guard's widest upper-middle
+  gap (nothing between ipinfo 61.3 and driftflight 85.5). Non-vacuous: keyed `exa.ai` identically on both
+  paths (NO www/bare alias) and scored 78.1 in ALL FIVE committed sweeps (segment api-service) → n_compared=5.
+  New `test_exa_ai_seventh_non_anchor_is_welded_nonvacuously` (baseline present, genuinely compared, agrees
+  with 78.1 floor, teeth 78.1→90.0 caught). [LOCAL] essence THIS fire ($0 static re-score): live 78.1 ==
+  frozen fixture-replay 78.1 == EXPECTED 78.1, all 4 non-null pillars byte-identical, caps empty. TEST-ONLY
+  (`test_calibration_anchor_agreement.py` +87; off-scoring-SEMANTICS EMPTY), weld suite 22→23, full suite
+  38/38 branch. PEER-GATED (regression-guard class, same as #156) → next fire's FIRST duty adversarially
+  reviews + live-re-scores before merge. Evidence `runs/local/exa_ai_seventh_non_anchor_weld_20260807T194459Z.json`.
 - **✅ PR #156 (www.moleskine.com 6th non-anchor cross-path calibration weld — 2nd retail, retail depth)
   MERGED this fire (Local 20260807T184234Z), merge `571e4c6`** — after the owed FIRST-DUTY adversarial
   review + independent $0 live re-score. VERDICT SOUND: off-scoring-path (three-dot diff since merge-base
@@ -213,6 +230,27 @@
   but wrote NO LOG entry and never committed/pushed (its panel dir exists gitignored). This fire re-verified #149,
   took ownership of the reconciled banner (above), and committed. No fabricated 214745Z LOG entry. STATE pruned the
   two oldest rolling entries (cloud Cycles 290–291, preserved in LOG.md) to stay under the 600-line hygiene cap.
+- LOCAL cycle — 20260807T194459Z (TRUTH / welded exa.ai as the 7th non-anchor cross-path member — the FIRST with
+  genuine partial agent-native rails, PEER-GATED PR #157 opened, NOT self-merged). FIRST duty: `gh pr list --state open`
+  → `[]` (no open PR; PR #156 MERGED `571e4c6` last real cycle 184234Z; 194100Z was a verify-only floor). Infra HEALTHY:
+  `verify_20260807T194100Z.json` (19:41Z, 38 suites, 46.1 F / 76.2 C / +30.1) ~2min old at fire (19:43Z) → :41 cadence
+  holding (184103Z→194100Z). **Executed the ONE [LOCAL] item — the 7th-non-anchor WELD the exa.ai baseline-pin teed up:**
+  welded exa.ai into `_NON_ANCHOR_WELDED` (7 members), the FIRST welded member on the upper/with-rails scale (every prior
+  non-anchor at the no-rails tx floor 0.0–25.0; exa.ai's tx 50.0 = documented x402 + MCP + PAYG, a real MIDDLE between the
+  no-rails floor 0.0 and the anchor's full x402-live handshake 87.5; at 78.1 it fills the widest upper-middle gap between
+  ipinfo 61.3 and driftflight 85.5). Non-vacuity independently RE-VERIFIED before authoring (the api.replicate lesson):
+  exa.ai scored 78.1 in ALL FIVE committed sweeps (segment api-service), keyed `exa.ai` == its EXPECTED key on both paths
+  (NO www/bare alias) → n_compared=5; pre-checked the full overall+pillar welds stay green (sweep pillars byte-identical to
+  EXPECTED). New `test_exa_ai_seventh_non_anchor_is_welded_nonvacuously` (baseline present, n_compared=5, teeth 78.1→90.0
+  caught as exactly one divergence) + runner registration. [LOCAL] essence THIS fire (19:44Z $0 static re-score): live 78.1
+  == frozen fixture-replay 78.1 == EXPECTED 78.1, all 4 non-null pillars byte-identical (access 100.0 / legibility 100.0 /
+  transactability 50.0 / trust 83.33), caps empty (NOT scorable in cloud). TEST-ONLY (`test_calibration_anchor_agreement.py`
+  +87; off-scoring-SEMANTICS EMPTY), weld suite 22→23, full suite 38/38. PEER-GATED (regression-guard semantics, same class
+  as #156) → PR #157 opened (`7ca40bb`), NOT self-merged; main floor green (weld change branch-only). Evidence
+  `runs/local/exa_ai_seventh_non_anchor_weld_20260807T194459Z.json`. Invariants #1 ($0 static re-score + in-process tests, no
+  behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (regression-guard weld PR not a
+  DM-enumerated sensitive class; the first-real-cycle-after-16:00 digest was already posted 174235Z) — PR #157 flagged for
+  next digest. Frozen canonical delta UNMOVED +39.4; live +30.1. See LOG Local cycle 20260807T194459Z.
 - LOCAL cycle — 20260807T184234Z (TRUTH / MERGED PR #156 + pinned exa.ai as the 9th frozen-replay baseline, direct-to-main).
   FIRST duty: `gh pr list --state open` → PR #156 OPEN → adversarial review + independent $0 live re-score → VERDICT SOUND →
   **MERGED `571e4c6`** (off-scoring-path test-only +174/−2; vendor-neutral by TYPE; SHARED-`_member_row` safety independently
@@ -349,45 +387,10 @@
   flagged for next digest. HONEST GATE: api.replicate.com is ABSENT from all committed sweeps → the 5th-non-anchor WELD
   is NOT yet unlocked; a [LOCAL] cadence run must add it to the sweep POPULATION first (books.toscrape.com pattern). See
   LOG Local cycle 20260807T114104Z.
-- LOCAL cycle — 20260807T104102Z (TRUTH / welded ipinfo.io as the 4th non-anchor cross-path member, PEER-GATED PR
-  #154 opened, NOT self-merged). FIRST duty: `gh pr list --state open` → `[]` (no open PR to review; PR #153 MERGED
-  `7cd4fcc` last fire). Infra HEALTHY: `verify_20260807T104102Z.json` (10:41Z, 38 suites, 46.1 F / 76.2 C / +30.1)
-  ~1.5min old → :41 cadence holding (094104Z→104102Z). **Executed the oldest P0 — the 4th-non-anchor weld (last
-  fire's ipinfo.io baseline pin UNLOCKED it):** welded ipinfo.io (data_retrieval / IP-data API — a 4th distinct
-  storefront TYPE) into `_NON_ANCHOR_WELDED` = (example.com, books.toscrape.com, acuityscheduling.com, ipinfo.io),
-  so the cross-path weld spans FOUR non-anchor witnesses (null-control + retail-catalog + service-booking +
-  data-retrieval). New `test_ipinfo_fourth_non_anchor_is_welded_nonvacuously`: committed v0.7 baseline present,
-  genuinely COMPARED n_compared=3 (data-retrieval:api across the 3 committed sweeps — NOT skipped), agrees with its
-  61.3 floor, teeth (61.3→72.0 caught as exactly one divergence). The [LOCAL] essence THIS fire (10:44Z $0 static
-  re-score): live 61.3 == frozen fixture replay 61.3 (replay_misses=0) == EXPECTED 61.3, all 4 non-null pillars
-  byte-identical (NOT scorable in cloud). TEST-ONLY (`test_calibration_anchor_agreement.py` +81/−4; off-scoring-path
-  EMPTY), weld suite 18→19, full suite 38/38. PEER-GATED (regression-guard semantics, same class as #153) → PR #154
-  opened, NOT self-merged; main floor green (weld change branch-only). Evidence
-  `runs/local/ipinfo_fourth_non_anchor_weld_20260807T104102Z.json`. Invariants #1 ($0 static re-score + in-process
-  tests, no behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (regression-guard
-  weld not a DM-enumerated sensitive class; 10:4xZ precedes 16:00 UTC) — PR #154 flagged for next digest. Frozen
-  canonical delta UNMOVED +39.4; live +30.1. See LOG Local cycle 20260807T104102Z.
-- LOCAL cycle — 20260807T094104Z (TRUTH / MERGED PR #153 + promoted ipinfo.io as the 6th frozen-replay baseline /
-  4th storefront TYPE, direct-to-main). FIRST duty: `gh pr list --state open` → PR #153 OPEN → adversarial review +
-  independent $0 live re-score → VERDICT SOUND → **MERGED `7cd4fcc`** (off-scoring-path test-only +73/−1; vendor-neutral;
-  load-bearing n_compared=3; teeth 54.0→65.0; live re-derived acuity 54.0 live == 54.0 frozen, all pillars
-  byte-identical → weld holds; suite 38/38 branch + merged main; weld now spans 3 non-anchor TYPES). Infra HEALTHY:
-  `verify_20260807T094104Z.json` (09:41Z, 38 suites, 46.1/76.2/+30.1) fresh → :41 cadence holding (084101Z→094104Z).
-  **Executed the ONE [LOCAL] item the merge's own next-hypothesis named — a 4th-storefront-TYPE frozen-replay baseline:**
-  ipinfo.io (data_retrieval / IP-data API) was in the sweep POPULATION scoring 61.3 D stably ×3 sweeps but
-  classification-only (66 offering-discovery urls, dozens of full-scorer misses). Re-captured a FULL-score fixture LIVE
-  ($0 static, no --behavioral/--max-pay); verified NON-DESTRUCTIVELY in a temp path FIRST (replays clean 61.3
-  replay_misses=0; offering classification byte-identical → the 61 dropped urls were signal-less speculative subdomains);
-  then PROMOTED classification-only → `_REPLAY_CLEAN`, pinned `test_canonical_replay.EXPECTED` (61.3 D v0.7) + guard
-  `test_data_retrieval_storefront_replays_61_3` (27→28), `_POPULATION` += ipinfo.io in all 5 reproducibility suites (the
-  replay-clean-set tripwires FORCED consistent inclusion). [LOCAL] essence THIS fire (09:49Z): live 61.3 == frozen 61.3,
-  all 4 non-null pillars byte-identical. Direct-to-main (baseline addition + non-anchor fixture re-capture — no scoring
-  semantics; same class as the acuity/books baseline pins); off-scoring-SEMANTICS EMPTY (only the non-anchor ipinfo.io
-  fixture is scoring-adjacent; canonical PAIR untouched); frozen canonical delta UNMOVED +39.4; suite 38/38. Evidence
-  `runs/local/ipinfo_data_retrieval_baseline_20260807T094104Z.json`. Invariants #1 ($0 static recapture + in-process
-  tests, no behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (baseline pin not
-  a DM-enumerated sensitive class; 09:4xZ precedes 16:00 UTC) — #153 MERGE flagged for next digest. UNLOCKS the
-  4th-non-anchor cross-path weld (ipinfo.io) next fire (PEER-GATED). See LOG Local cycle 20260807T094104Z.
+<!-- Rolling entries for Local cycles 20260807T104102Z (welded ipinfo.io as 4th non-anchor, PR #154 opened) +
+     20260807T094104Z (MERGED PR #153 + promoted ipinfo.io as 6th frozen-replay baseline / 4th storefront TYPE)
+     pruned this fire (Local cycle 20260807T194459Z) to stay under the STATE 600-line cap — both preserved
+     verbatim in loop/LOG.md + git history. -->
 <!-- Rolling entries for Local cycles 20260807T084355Z (welded acuity as 3rd non-anchor, PR #153 opened) +
      20260807T074106Z (MERGED PR #152 + pinned acuity as 5th frozen-replay baseline) pruned this fire
      (Local cycle 20260807T184234Z) to stay under the STATE 600-line cap — both preserved verbatim in

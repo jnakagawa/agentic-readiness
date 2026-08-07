@@ -79,8 +79,15 @@ _ANCHORS = ("drift-flight.org", "driftflight.com")
 # version) AND a scored presence in the committed live sweeps, so the cross-path
 # agreement is witnessed off the two famous anchors too. example.com (the
 # zero-commerce baseline — guard 9 of test_canonical_replay pins its 22.5 floor;
-# segment control:non-storefront) is scored in all three committed sweeps.
-_NON_ANCHOR_WELDED = ("example.com",)
+# segment control:non-storefront) is scored in every committed sweep.
+# books.toscrape.com (a real RETAIL catalog — the inverse storefront type from the
+# API anchors, physical_good-claiming; test_canonical_replay pins its 29.5 floor) was
+# added to the calibration POPULATION in the 20260807T045843Z sweep and is welded here
+# as the SECOND non-anchor member. Its live↔frozen agreement was verified this fire
+# (Local cycle 20260807T064228Z, static $0 re-score): live overall 29.5 == frozen 29.5
+# and all four non-null pillars byte-identical, the cross-path evidence the cloud cannot
+# produce (books.toscrape.com is NOT SCORABLE without outbound network).
+_NON_ANCHOR_WELDED = ("example.com", "books.toscrape.com")
 # Every population member welded across the offline-replay and live-sweep paths.
 _WELDED_MEMBERS = _ANCHORS + _NON_ANCHOR_WELDED
 _BASELINE_VERSION = "0.7"  # asserted == the replay baseline's version below (test 1)
@@ -332,9 +339,11 @@ def test_committed_sweeps_carry_scored_anchors() -> None:
 def test_live_sweep_anchors_agree_with_replay_baseline() -> None:
     print("test_live_sweep_anchors_agree_with_replay_baseline")
     # THE weld: every scored, same-version live welded member equals the offline
-    # fixture floor. Covers the two anchors AND every non-anchor welded member
-    # (example.com), so n_compared today is 3 sweeps x 3 members = 9. n_compared>=2
-    # keeps it non-vacuous.
+    # fixture floor (or a documented-live-drift value — driftflight.com 76.2 while the
+    # x402 endpoint is regressed). Covers the two anchors AND every non-anchor welded
+    # member (example.com in every sweep; books.toscrape.com in the sweeps that scored
+    # it — the 20260807T045843Z sweep onward). n_compared>=2 keeps it non-vacuous
+    # regardless of how many sweeps carry each member.
     sweeps = _committed_sweeps()
     divergences, n_compared, n_unreachable, n_offversion = _divergences(
         sweeps, replay.EXPECTED, _BASELINE_VERSION
@@ -476,6 +485,64 @@ def test_drifted_non_anchor_member_is_caught() -> None:
     _check(n_compared == 1, f"the one non-anchor member was compared (got {n_compared})")
 
 
+def test_books_toscrape_second_non_anchor_is_welded_nonvacuously() -> None:
+    print("test_books_toscrape_second_non_anchor_is_welded_nonvacuously")
+    # books.toscrape.com is the SECOND non-anchor welded member (a real retail catalog —
+    # the inverse storefront type from the API anchors). Prove the weld is LOAD-BEARING
+    # for it specifically, not silently skipped in every sweep: it carries a committed
+    # v0.7 replay baseline, it is genuinely COMPARED in >=1 committed sweep (the
+    # 20260807T045843Z cadence run scored it 29.5), and its live value agrees with the
+    # frozen floor. Its live↔frozen agreement was independently re-scored this fire
+    # (Local cycle 20260807T064228Z: live 29.5 == frozen 29.5, all pillars byte-identical).
+    _check(
+        "books.toscrape.com" in _NON_ANCHOR_WELDED,
+        "books.toscrape.com is a welded non-anchor member",
+    )
+    _check(
+        "books.toscrape.com" in replay.EXPECTED
+        and str(replay.EXPECTED["books.toscrape.com"]["rubric_version"]) == _BASELINE_VERSION,
+        "books.toscrape.com carries a committed v0.7 replay baseline (the weld's source of truth)",
+    )
+    sweeps = _committed_sweeps()
+    divergences, n_compared, _, _ = _divergences(
+        sweeps, replay.EXPECTED, _BASELINE_VERSION, members=("books.toscrape.com",)
+    )
+    _check(
+        divergences == [],
+        f"books.toscrape.com's live sweeps agree with its 29.5 replay floor (got {divergences})",
+    )
+    _check(
+        n_compared >= 1,
+        f"books.toscrape.com is genuinely compared, not silently skipped (got {n_compared})",
+    )
+    # Teeth: a live re-capture that drifted books.toscrape.com 29.5 -> 40.0 MUST trip the
+    # weld, exactly as a drifted anchor or example.com does — so welding this second
+    # non-anchor member is not toothless.
+    drifted = {
+        "rubric_version": "0.7",
+        "rows": [
+            {
+                "domain": "books.toscrape.com",
+                "segment": "retail-catalog:non-anchor",
+                "scored": True,
+                "overall": 40.0,
+            }
+        ],
+    }
+    dvg, n_cmp, _, _ = _divergences(
+        [("synthetic-books-drift", drifted)], replay.EXPECTED, _BASELINE_VERSION,
+        members=("books.toscrape.com",),
+    )
+    _check(len(dvg) == 1, f"exactly one divergence caught (got {dvg})")
+    _check(
+        dvg[0][1] == "books.toscrape.com"
+        and abs(dvg[0][2] - 40.0) < 1e-9
+        and abs(dvg[0][3] - 29.5) < 1e-9,
+        f"the drifted books.toscrape.com is caught vs its 29.5 floor (got {dvg[0]})",
+    )
+    _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
+
+
 def test_off_version_sweep_is_not_compared() -> None:
     print("test_off_version_sweep_is_not_compared")
     # Invariant #2 teeth: a different-rubric sweep is never diffed against the v0.7
@@ -493,10 +560,11 @@ def test_off_version_sweep_is_not_compared() -> None:
 def test_live_sweep_pillars_agree_with_replay_baseline() -> None:
     print("test_live_sweep_pillars_agree_with_replay_baseline")
     # THE pillar weld on real evidence: every scored, same-version welded member's
-    # per-pillar scores equal the offline fixture floor. Covers the two anchors AND
-    # example.com across every committed sweep, so n_compared today is 3 sweeps x 3
-    # members x 4 non-null pillars = 36 (outcome is null in static mode → skipped).
-    # n_compared>=8 keeps it non-vacuous even if a sweep drops a member.
+    # per-pillar scores equal the offline fixture floor (or a documented pillar value).
+    # Covers the two anchors AND the non-anchor members (example.com in every sweep,
+    # books.toscrape.com in the sweeps that scored it) across 4 non-null pillars per
+    # member (outcome is null in static mode → skipped). n_compared>=8 keeps it
+    # non-vacuous even if a sweep drops a member.
     sweeps = _committed_sweeps()
     divergences, n_compared, n_unreachable, n_offversion, n_null = _pillar_divergences(
         sweeps, replay.EXPECTED, _BASELINE_VERSION
@@ -747,6 +815,7 @@ def main() -> int:
         test_drifted_live_anchor_is_caught,
         test_non_anchor_member_is_welded,
         test_drifted_non_anchor_member_is_caught,
+        test_books_toscrape_second_non_anchor_is_welded_nonvacuously,
         test_off_version_sweep_is_not_compared,
         test_live_sweep_pillars_agree_with_replay_baseline,
         test_pillar_canceling_drift_passes_overall_but_is_caught_by_pillar_weld,

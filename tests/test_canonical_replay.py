@@ -125,6 +125,34 @@ EXPECTED = {
             "outcome": None,
         },
     },
+    # A FIFTH real-domain calibration datapoint — a SERVICE-BOOKING SaaS storefront
+    # (an appointment-scheduling platform), a THIRD storefront TYPE distinct from the
+    # two API storefronts, the browser-checkout retail shop, and the zero-commerce
+    # baseline. Its committed fixture (captured LIVE [LOCAL] for the service_booking
+    # offering anchor, Cycle 240) is already certified replay-clean (0 misses, in
+    # _REPLAY_CLEAN) and its live score was re-verified == this frozen floor on a fresh
+    # $0 static re-score (Local cycle 20260807T074106Z: live 54.0 == frozen 54.0, all
+    # four non-null pillars byte-identical), so it is a STABLE cross-path datapoint.
+    # It broadens the frozen regression guard to a service-booking site type: a
+    # probe/scoring change that quietly moved a booking storefront's number fails here
+    # too, not only on the API storefronts / retail shop / bare page. It also earns
+    # PARTIAL transactability (25.0) from a self-serve billing surface with NO
+    # agent-native payment rail — a middle datapoint between the with-rails API
+    # storefront (87.5) and the payment-floor sites (0), so the guard spans the
+    # transactability scale, not just its endpoints. Re-capture + update together on a
+    # version bump, same contract as the domains above.
+    "acuityscheduling.com": {
+        "overall": 54.0,
+        "grade": "F",
+        "rubric_version": "0.7",
+        "pillars": {
+            "access": 100.0,
+            "legibility": 40.90909090909091,
+            "transactability": 25.0,
+            "trust": 83.33333333333333,
+            "outcome": None,
+        },
+    },
 }
 EXPECTED_DELTA = 39.4  # driftflight.com (rails) - drift-flight.org (no rails)
 
@@ -515,6 +543,25 @@ def test_canonical_delta_is_earned_dominance() -> None:
 def test_retail_storefront_replays_29_5() -> None:
     print("test_retail_storefront_replays_29_5")
     _assert_domain("books.toscrape.com")
+
+
+# ---------------------------------------------------------------------------
+# 6b. FIFTH-DOMAIN CALIBRATION — a THIRD storefront TYPE in the frozen guard. Guards
+#     1–6 pin two API storefronts, a browser-checkout retail shop, and a zero-commerce
+#     page. This replays the committed fixture for a SERVICE-BOOKING SaaS storefront
+#     (an appointment-scheduling platform) through the same real pipeline and pins its
+#     score on rubric v0.7. Its live score was re-verified == this frozen floor on a
+#     fresh $0 static re-score at pin time (Local cycle 20260807T074106Z), so it is a
+#     STABLE cross-path datapoint — a probe/scoring change that quietly moved a booking
+#     storefront's number fails here too, broadening the regression signal to a site
+#     type neither API nor retail-catalog. Its 25.0 transactability (a self-serve
+#     billing surface, NO agent-native payment rail) is a genuine MIDDLE datapoint
+#     between the with-rails API side (87.5) and the payment-floor sites (0), so the
+#     guard now spans the transactability scale rather than only its endpoints.
+# ---------------------------------------------------------------------------
+def test_service_booking_storefront_replays_54_0() -> None:
+    print("test_service_booking_storefront_replays_54_0")
+    _assert_domain("acuityscheduling.com")
 
 
 # ---------------------------------------------------------------------------
@@ -1854,6 +1901,7 @@ def main() -> int:
         test_relabeled_delta_still_39_4,
         test_canonical_delta_is_earned_dominance,
         test_retail_storefront_replays_29_5,
+        test_service_booking_storefront_replays_54_0,
         test_retail_storefront_earns_no_agent_native_payment,
         test_relabel_invariance_retail,
         test_nonstorefront_replays_22_5,

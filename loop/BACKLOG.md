@@ -72,11 +72,35 @@ compared in >=1 committed sweep) + has teeth (drift 29.5->40.0 caught vs the 29.
 verified this fire ($0 static re-score: live 29.5 == frozen 29.5, all 4 non-null pillars byte-identical — the [LOCAL]
 essence the cloud can't do). DO NOT RE-AUTHOR — TRACKED by STATE's OPEN-PR #152 banner + next fire's first-duty
 adversarial review + live re-score. See LOG Local cycle 20260807T064228Z. -->
-- **[PEER-GATED P0 IN FLIGHT as PR #152 — TRUTH] books.toscrape.com 2nd non-anchor calibration weld** — deepens the
-  cross-path weld from one non-anchor (example.com) to a structurally-distinct 2nd witness (retail catalog). AUTHORED +
-  pushed this fire, awaiting next-fire peer review (see the OPENED marker above + STATE's OPEN-PR banner). On merge: a
-  3rd non-anchor member of yet another storefront type (a service_booking/data_retrieval anchor already fixtured) is
-  the next breadth axis, once it joins a cadence sweep.
+<!-- MERGED Local cycle 20260807T074106Z: PR #152 (books.toscrape.com 2nd non-anchor calibration weld) MERGED `1310fd5`
+after the owed FIRST-DUTY adversarial review + independent $0 live re-score. VERDICT SOUND: off-scoring-path (three-dot
+diff since merge-base 140304e is ONLY test_calibration_anchor_agreement.py +78/-9; empty over scoring.py/report.py/
+probes/battery.py/reliability.py/offering.py/scorecard.py/rubric/fixtures/experiments); vendor-neutral; committed
+baseline 29.5 v0.7; LOAD-BEARING (genuinely compared n=1 in calibration_sweep_20260807T045843Z.json); teeth (29.5->40.0
+caught); existing non-anchor tests unaffected. Live re-derived THIS fire: books.toscrape.com 29.5 live == 29.5 frozen,
+all 4 non-null pillars byte-identical -> weld holds, site did NOT regress. Suite 38/38 branch + merged main; weld 17/17.
+See LOG Local cycle 20260807T074106Z. -->
+
+<!-- DONE Local cycle 20260807T074106Z: pinned acuityscheduling.com (service_booking SaaS — a 3rd storefront TYPE) as
+the FIFTH test_canonical_replay.EXPECTED frozen-replay baseline (54.0 F v0.7; access 100.0/legibility 40.91/
+transactability 25.0/trust 83.33) + guard test_service_booking_storefront_replays_54_0 (26->27, teeth verified),
+direct-to-main. It was the ONE stable clean cross-path candidate (fixture 54.0 == live-sweep 54.0, 0 replay-misses,
+already in _REPLAY_CLEAN); ipinfo.io/simplybook.me/polar.sh all stale (dozens of full-scorer misses). [LOCAL] essence:
+fresh $0 static re-score THIS fire (07:53Z) -> live 54.0 == frozen 54.0, all 4 non-null pillars byte-identical. Evidence
+runs/local/acuity_crosspath_baseline_20260807T074106Z.json. Off-scoring-path (only test_canonical_replay.py +48); frozen
+canonical delta UNMOVED +39.4; suite 38/38. See LOG Local cycle 20260807T074106Z. -->
+- **[PEER-GATED P0 — TRUTH] 3rd non-anchor calibration weld (acuityscheduling.com)** — NOW UNLOCKED: acuity is a
+  committed EXPECTED baseline (pinned Local 20260807T074106Z) AND a verified STABLE clean cross-path datapoint (live
+  54.0 == frozen 54.0 this fire). Weld it as the 3rd member of `_NON_ANCHOR_WELDED` in
+  `tests/test_calibration_anchor_agreement.py` (a PEER-GATED PR, regression-guard class like #152 — do NOT self-merge)
+  so the cross-path weld spans THREE structurally-distinct non-anchor witnesses: null-control (example.com) +
+  retail-catalog (books.toscrape.com) + service-booking (acuityscheduling.com). Add a non-vacuous + teeth test
+  mirroring `test_books_toscrape_second_non_anchor_is_welded_nonvacuously` (acuity is scored 54.0 in the committed
+  045843Z sweep, so n_compared>=1; teeth: a drifted 54.0->N is caught vs its 54.0 floor). The re-run live re-score is
+  the next fire's first-duty verification. FURTHER breadth after this: a 3rd storefront type still needs stable
+  candidates — ipinfo.io/simplybook.me/polar.sh each need a [LOCAL] FULL-score fixture re-capture first (currently
+  classification-only, dozens of replay-misses); www.moleskine.com is `_REPLAY_CLEAN` but unpinned (a 2nd retail
+  baseline candidate if a future cycle wants retail depth over type breadth).
 
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
   phrasing has now drifted the `_ENV_BLOCK_RE` guard FIVE times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)

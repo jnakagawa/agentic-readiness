@@ -1,19 +1,26 @@
 # Loop state
 
 - Cycle counter: 295
-- **⚠ OPEN PEER-GATED PR #152 (books.toscrape.com 2nd non-anchor calibration weld) — OPENED this fire (Local
-  20260807T064228Z), NOT self-merged.** Branch `loop/books-toscrape-non-anchor-weld`. Welds books.toscrape.com (a
-  real RETAIL catalog, the inverse storefront type from the API anchors; physical_good) as the 2nd non-anchor member
-  of the cross-path calibration weld — deepens the regression signal from one non-anchor (example.com) to a
-  structurally-distinct 2nd witness. TEST-ONLY (`tests/test_calibration_anchor_agreement.py` +78/−9; off-scoring-path
-  diff EMPTY over scoring.py/report.py/probes/battery.py/reliability.py/offering.py/scorecard.py/rubric/fixtures/
-  experiments/). Weld suite 16→17 (new test is non-vacuous + has teeth: drift 29.5→40.0 caught vs the 29.5 floor);
-  full suite 38/38 green. **The [LOCAL] essence** (cloud can't — books.toscrape.com is NOT SCORABLE without network):
-  independent $0 static re-score THIS fire → live 29.5 == frozen 29.5, all 4 non-null pillars byte-identical.
-  **NEXT FIRE'S FIRST DUTY: adversarially review #152 + re-run the live re-score of books.toscrape.com; if it still
-  scores 29.5 live == frozen (weld holds) + the new test keeps teeth → MERGE, else request changes / HOLD if the site
-  regressed (the weld would correctly redden).** On main the weld change lives only on the branch (floor green until
-  merge). NOT DM-enumerated (regression-guard semantics, not payment/weights/caps/removals); flagged for next digest.
+- **NO open peer-gated PR** → next fire's first duty is the infra health check, then pick the next [LOCAL] item.
+- **✅ PR #152 (books.toscrape.com 2nd non-anchor calibration weld) MERGED this fire (Local 20260807T074106Z),
+  merge `1310fd5`** — after the owed FIRST-DUTY adversarial review + independent live re-score. VERDICT SOUND:
+  off-scoring-path (three-dot diff since merge-base `140304e` is ONLY `test_calibration_anchor_agreement.py` +78/−9;
+  empty over scoring.py/report.py/probes/battery.py/reliability.py/offering.py/scorecard.py/rubric/fixtures/
+  experiments); vendor-neutral (welded by storefront TYPE); committed baseline present (29.5 v0.7); LOAD-BEARING
+  (genuinely compared n=1 in `calibration_sweep_20260807T045843Z.json`, existing non-anchor tests unaffected); teeth
+  (29.5→40.0 caught); and the [LOCAL] live re-score re-derived THIS fire → books.toscrape.com **29.5 live == 29.5
+  frozen**, all 4 non-null pillars byte-identical → weld HOLDS, site did NOT regress → MERGE. Suite 38/38 branch +
+  merged main; calibration weld 17/17. Review verdict recorded in LOG Local cycle 20260807T074106Z.
+- **✅ NEW FIFTH frozen-replay calibration baseline PINNED this fire (Local 20260807T074106Z, direct-to-main):
+  acuityscheduling.com** (a service_booking appointment-scheduling SaaS — a THIRD storefront TYPE, distinct from the
+  two API storefronts / retail catalog / zero-commerce page). 54.0 F v0.7 (access 100.0 / legibility 40.91 /
+  transactability 25.0 / trust 83.33). `test_canonical_replay.EXPECTED` + new guard `test_service_booking_storefront_replays_54_0`
+  (26→27, has teeth). The [LOCAL] essence: fresh $0 static re-score THIS fire (07:53Z) → live 54.0 == frozen 54.0, all
+  4 non-null pillars byte-identical (the pin reflects current reality). Its 25.0 transactability is a genuine MIDDLE
+  datapoint between the with-rails API side (87.5) and the payment-floor sites (0), so the frozen guard now spans the
+  transactability scale. Evidence `runs/local/acuity_crosspath_baseline_20260807T074106Z.json`. Off-scoring-path
+  (only `test_canonical_replay.py` +48); frozen canonical delta UNMOVED +39.4. **This UNLOCKS the 3rd-non-anchor
+  cross-path WELD** (acuity → `_NON_ANCHOR_WELDED`, a PEER-GATED PR next fire, regression-guard class like #152).
 - **✅ PR #151 (documented-live-drift ledger) MERGED this fire (Local 20260807T064228Z), merge `140304e`** — after
   the owed FIRST-DUTY adversarial review + independent live re-scores. VERDICT SOUND: off-scoring-path (ledger JSON +
   2 guard tests + pure rename of the held sweep into the series); teeth PRESERVED (frozen floor always accepted →
@@ -41,8 +48,8 @@
   goldens tolerate the DOCUMENTED live value (teeth preserved) while the frozen fixture stays +39.4 (inv #2). The held
   sweep is now in-glob `calibration_sweep_20260807T045843Z.json`. Full diagnosis in LOG Local cycles 20260807T051750Z
   (blocker found) + 20260807T054210Z (fix authored) + 20260807T064228Z (reviewed + merged). The 2nd-non-anchor weld it
-  unlocked is now PR #152 (see the OPEN-PR banner above). If `/extend` returns to 402 the live delta recovers to +39.4
-  and the ledger entry is retired.
+  unlocked was PR #152 — now MERGED `1310fd5` (Local 20260807T074106Z). If `/extend` returns to 402 the live delta
+  recovers to +39.4 and the ledger entry is retired.
 - **⚠ LIVE CANONICAL DELTA MOVED +39.4→+30.1 this hour** (22:41Z verify): driftflight.com 85.5 B→**76.2 C** —
   a REAL live-site regression, NOT a code/scoring change. The with-rails x402 handshake endpoint
   `POST agents.driftflight.com/extend` went **402→401** (auth-required now; storefront otherwise 200) → `x402_probe`
@@ -61,6 +68,25 @@
   but wrote NO LOG entry and never committed/pushed (its panel dir exists gitignored). This fire re-verified #149,
   took ownership of the reconciled banner (above), and committed. No fabricated 214745Z LOG entry. STATE pruned the
   two oldest rolling entries (cloud Cycles 290–291, preserved in LOG.md) to stay under the 600-line hygiene cap.
+- LOCAL cycle — 20260807T074106Z (TRUTH / MERGED PR #152 + pinned acuityscheduling.com as the 5th frozen-replay
+  baseline, direct-to-main). FIRST duty: `gh pr list --state open` → PR #152 OPEN → adversarial review + independent
+  $0 live re-score → VERDICT SOUND → **MERGED `1310fd5`** (off-scoring-path test-only +78/−9; vendor-neutral;
+  load-bearing n=1 in the 045843Z sweep; teeth 29.5→40.0 caught; live re-derived books.toscrape.com 29.5 live == 29.5
+  frozen, all pillars byte-identical → weld holds; suite 38/38 branch + merged main). Infra HEALTHY:
+  `verify_20260807T074106Z.json` (07:41Z, 38 suites, 46.1/76.2/+30.1) ~1min old → :41 cadence holding
+  (064101Z→074106Z). **Executed the ONE [LOCAL] item the merge's own next-hypothesis named — a 3rd non-anchor
+  storefront TYPE datapoint:** surveyed candidates (only 4 domains carry an EXPECTED baseline; the offering anchors in
+  POPULATION have none) → compared fixture-replay vs live-sweep → **acuityscheduling.com** (service_booking SaaS) is
+  the ONE stable clean cross-path candidate (fixture 54.0 == live-sweep 54.0, 0 replay-misses; ipinfo/simplybook/polar
+  all stale w/ dozens of misses). PINNED acuityscheduling.com as the FIFTH `test_canonical_replay.EXPECTED` baseline
+  (54.0 F v0.7) + guard `test_service_booking_storefront_replays_54_0` (26→27, teeth verified). [LOCAL] essence: fresh
+  $0 static re-score THIS fire (07:53Z) → live 54.0 == frozen 54.0, all 4 non-null pillars byte-identical. Direct-to-main
+  (test/guard baseline addition — no scoring semantics, no rubric bump; same class as the books/example baseline adds);
+  off-scoring-path (only `test_canonical_replay.py` +48); frozen canonical delta UNMOVED +39.4; suite 38/38. Evidence
+  `runs/local/acuity_crosspath_baseline_20260807T074106Z.json`. Invariants #1 ($0 static recon + in-process tests, no
+  behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (baseline pin not a
+  DM-enumerated sensitive class; 07:5xZ precedes 16:00 UTC) — #152 MERGE flagged for next digest. See LOG Local cycle
+  20260807T074106Z.
 - LOCAL cycle — 20260807T064228Z (TRUTH/METHOD / MERGED PR #151 + welded books.toscrape.com as 2nd non-anchor,
   PEER-GATED PR #152 opened, NOT self-merged). FIRST duty: `gh pr list --state open` → PR #151 OPEN → adversarial
   review + independent $0 live re-scores → VERDICT SOUND → **MERGED `140304e`** (off-scoring-path; teeth preserved
@@ -136,48 +162,6 @@
   tests, no signing, no paid ops, no panel run)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM
   (attribution-validity is not a DM-enumerated sensitive class; 08-06 digest already sent Cycle 294 16:24Z) — PR
   #149 flagged for next digest. STATE pruned oldest Cycle 289 to stay bounded. See LOG Local cycle 20260806T195345Z.
-- LOCAL cycle — 20260806T184617Z (METHOD / self-healing, direct-to-main, score-neutral). FIRST duty: `gh pr list
-  --state open` → `[]` (no open peer-gated PR; #148 operator-merged before Cycle 288); repo `main` clean + synced
-  origin/main `43a856b`; newest verify `verify_20260806T184103Z.json` (18:41Z, tests_ok 38 suites, 46.1 F / 85.5
-  B / +39.4), <10min old → INFRA HEALTHY (prior-fire cadence flag RESOLVED: 17:41Z + 18:41Z both on the :41 tick).
-  **PR #148 verification UNBLOCKED via DETACHMENT.** Root: the item silently stalled 9 fires (incl. the prior
-  fire's best-effort inline run `pr148_postmerge_174736Z` — `START:` only, no `END:`/report) because an INLINE
-  codex-only pair panel (>6.5 min live, ~24 min worst-case) can't outlive the fire that spawns it; heartbeating
-  only made the death visible. Shipped `loop/run_pr148_verify.py` — a double-fork `os.setsid` daemoniser that runs
-  the fixed-verb codex-only `compare … --behavioral --trials 2 --models codex`, heartbeats `START:`/`END:
-  exit=<rc>`, and (being in its own session) SURVIVES the fire. Verified codex usable ($0 `is_codex_usable()`→True
-  6.4s), launched `runs/local/pr148_postmerge_20260806T184617Z/` (launcher rc=0 immediately, worker PID alive no
-  tty) — and it **COMPLETED within the fire** (the 10th attempt, FIRST success: `END exit=0`, ~11.5 min), so
-  HARVESTED this fire. Codex-only pair: .org 41.7 F → .com 76.6 C = **+34.9** (PROVISIONAL, 1 valid trial each;
-  static +39.4 stays the regression signal). **RESULT: fix CONFIRMED on .org, FRESH 4th-drift LEAK on .com.** .org
-  codex#2 "Browser security policy denied access…" → `_ENV_BLOCK_RE` MATCH → reachability (hosted-agent-blocked, 1
-  valid run), inv #4 held. .com codex#2 "Permitted browser access was denied, and the public web retriever
-  classified the direct URL as unsafe to open" → NO match → mis-scored as a valid WITH-side FAIL (2 valid runs,
-  delta narrowed) — a genuinely NEW near-miss family (no "browser security/safety", no "interactive/direct browser
-  access", no "browser['s] permission boundary/policy"); reproduced with the shipped detector. **QUEUED a
-  peer-gated P0** (v0.7(e) `_ENV_BLOCK_RE` broadening; in-cloud executable) at BACKLOG P0 top; PR #148 verification
-  item CLOSED (DONE marker). Canonical unmoved +39.4 (off scoring path; the leak FIX is only queued, not shipped —
-  no score moved; sole code add is a standalone launcher, not under `tests/`, not the launchd launcher →
-  runner-registration + launcher-hygiene both unaffected; STATE pruned oldest Cycle 288 to stay <600 lines).
-  Invariants #1 ($0 read-only panels, free-tier ≤1×, no signing)–#5 held; NO DM (self-healing METHOD, leak fix only
-  queued not a PR opened; digest sent Cycle 294 16:24Z) — leak flagged for next digest. See LOG Local cycle
-  20260806T184617Z.
-- LOCAL cycle — 20260806T175200Z (METHOD / self-healing, direct-to-main, score-neutral). FIRST duty: `gh pr list
-  --state open` → `[]` (no open peer-gated PR); git clean, synced origin/main `a3f6880`; newest verify
-  `verify_20260806T174102Z.json` (17:41Z, tests_ok 38 suites, 46.1 F / 85.5 B / +39.4), this hour's artifact <1h
-  old → INFRA HEALTHY (the ~33-min-late 16:41 tick landed as `…164406Z`, then 17:41 recovered on time — no
-  escalation). **STALL ROOT-CAUSED + FIXED:** picking up the oldest P0 [LOCAL] (PR #148 post-merge behavioral
-  verification) surfaced that its FULL form `compare … --behavioral --trials 2 --models claude,codex` (12 live
-  model investigations ≈ 18–22 min) has **silently stalled 8 consecutive local fires today** — every
-  `runs/local/pr148_postmerge_*/compare.log` 0-byte because the run exceeds the cycle wall-clock and `compare`
-  flushes only at the end. NOT a breakage (codex probe ~18s / model gpt-5.6-sol, both anchors 200, suite 38/38).
-  Shipped: (1) the run wrapper now heartbeats `START:`/`END: exit=<rc>` (diagnosable, no longer 0-byte-silent);
-  (2) reshaped the backlog item to the completable **codex-only** form (codex is the v0.7(d) fix's target model;
-  claude is the rarely-refusing control that doubles runtime); (3) launched the full run this fire best-effort
-  (`runs/local/pr148_postmerge_20260806T175200Z/`) — live delta/valid_runs/attribution appended to LOG if it
-  clears the wall-clock, else the diagnosis+hardening is the durable deliverable and next fire harvests. Canonical
-  unmoved +39.4 (off scoring path). Invariants #1 ($0 read-only panels, free-tier ≤1×, no signing)–#5 held; NO DM
-  (self-healing METHOD; digest already sent Cycle 294 16:24Z). See LOG Local cycle 20260806T175200Z.
 - CYCLE 295 — 2026-08-06T~17:1xZ (METHOD, cloud, direct-to-main, score-neutral). FIRST duty (infra health +
   peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR; #148 operator-merged
   `7d47f2e` before Cycle 288, all subsequent direct-to-main). Cloud detached at origin/main `8091c86`; local

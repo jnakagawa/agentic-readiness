@@ -1,0 +1,44 @@
+{
+ "ts": "20260807T074106Z",
+ "kind": "cross-path-baseline-verification",
+ "domain": "acuityscheduling.com",
+ "storefront_type": "service_booking (appointment-scheduling SaaS)",
+ "purpose": "Pin acuityscheduling.com as the FIFTH frozen-replay calibration baseline (test_canonical_replay.EXPECTED) \u2014 a 3rd storefront TYPE. LOCAL essence: fresh live $0 static re-score == frozen fixture replay at pin time, proving the baseline reflects current reality.",
+ "live": {
+  "source": "runs/acuityscheduling_com_20260807T075352.json (fresh $0 static re-score, this fire)",
+  "overall": 54.0,
+  "grade": "F",
+  "rubric_version": "0.7",
+  "scored": true,
+  "pillars": {
+   "access": 100.0,
+   "legibility": 40.90909090909091,
+   "transactability": 25.0,
+   "trust": 83.33333333333333,
+   "outcome": null
+  }
+ },
+ "frozen": {
+  "source": "fixtures/canonical/acuityscheduling.com.json replayed via _score_fixture",
+  "overall": 54.0,
+  "grade": "F",
+  "rubric_version": "0.7",
+  "replay_misses": 0,
+  "pillars": {
+   "access": 100.0,
+   "legibility": 40.90909090909091,
+   "transactability": 25.0,
+   "trust": 83.33333333333333,
+   "outcome": null
+  }
+ },
+ "agreement": {
+  "overall_match": true,
+  "all_pillars_byte_identical": true
+ },
+ "regression_signal": {
+  "frozen_canonical_delta": 39.4,
+  "live_canonical_delta": 30.1,
+  "note": "canonical .com/.org baselines UNTOUCHED \u2014 additive pin only; live +30.1 is the persistent x402 site regression, unrelated"
+ }
+}

@@ -216,6 +216,38 @@ EXPECTED = {
             "outcome": None,
         },
     },
+    # An EIGHTH real-domain calibration datapoint — a SECOND RETAIL storefront (an
+    # established consumer-brand e-commerce shop), retail DEPTH rather than a new
+    # storefront TYPE. Its committed fixture was already certified replay-clean (0
+    # misses, in _REPLAY_CLEAN) and is present in all FIVE committed calibration
+    # sweeps scoring 49.8 stably (segment retail:no-rails), but its SCORE was never
+    # pinned — a scoring change could silently move it. This pin closes that gap; its
+    # live score was re-verified == this frozen floor on a fresh $0 static re-score
+    # this cycle (Local cycle 20260807T154104Z: live 49.8 == frozen 49.8, all four
+    # non-null pillars byte-identical), so it is a STABLE cross-path datapoint. It is
+    # the capability-lens SECOND witness to guard 7 (retail sells goods but is not
+    # agent-payable), on a DIFFERENT retail site: unlike the bare scraping-demo
+    # catalog books.toscrape.com (29.5 F: legibility 18.2 / transactability 0.0 /
+    # trust 33.3), this real brand earns MORE legibility (40.9), PARTIAL
+    # transactability (18.75 — a genuine commerce surface but NO agent-native payment
+    # rail), and much higher trust (73.3 — an established brand identity), so two
+    # retail members pin DIFFERENT pillar mixes and retail spans a RANGE (29.5 -> 49.8)
+    # in the guard, not a single point. Its 49.8 overall is a NEW distinct datapoint
+    # between the zero-commerce baseline (22.5) and the service-booking SaaS (54.0),
+    # densifying the mid-scale. Re-capture + update together on a version bump, same
+    # contract as the domains above.
+    "www.moleskine.com": {
+        "overall": 49.8,
+        "grade": "F",
+        "rubric_version": "0.7",
+        "pillars": {
+            "access": 100.0,
+            "legibility": 40.90909090909091,
+            "transactability": 18.75,
+            "trust": 73.33333333333333,
+            "outcome": None,
+        },
+    },
 }
 EXPECTED_DELTA = 39.4  # driftflight.com (rails) - drift-flight.org (no rails)
 
@@ -673,6 +705,32 @@ def test_data_retrieval_storefront_replays_61_3() -> None:
 def test_pure_metered_api_storefront_replays_29_5() -> None:
     print("test_pure_metered_api_storefront_replays_29_5")
     _assert_domain("api.replicate.com")
+
+
+# ---------------------------------------------------------------------------
+# 6e. EIGHTH-DOMAIN CALIBRATION — a SECOND RETAIL storefront (retail DEPTH, not a
+#     new TYPE). Guards 1–6d pin two API storefronts, ONE browser-checkout retail
+#     shop, a zero-commerce page, a service-booking SaaS, a data-retrieval API, and a
+#     pure-inference API. This replays the committed fixture for a SECOND retail
+#     storefront — an established consumer brand's e-commerce shop — through the same
+#     real pipeline and pins its score on rubric v0.7. The fixture was already
+#     replay-clean (0 misses, in _REPLAY_CLEAN) and appears in all five committed
+#     calibration sweeps at a stable 49.8 (segment retail:no-rails), yet its SCORE was
+#     previously UNPINNED — this guard closes that gap so a probe/scoring change that
+#     quietly moved it fails here. Its live score was re-verified == this frozen floor
+#     on a fresh $0 static re-score at pin time (Local cycle 20260807T154104Z: live
+#     49.8 == frozen 49.8, all four non-null pillars byte-identical), so it is a STABLE
+#     cross-path datapoint. Unlike the bare scraping-demo catalog (books.toscrape.com,
+#     29.5 F: legibility 18.2 / transactability 0.0 / trust 33.3), this real brand
+#     earns more legibility (40.9), PARTIAL transactability (18.75 — a genuine commerce
+#     surface but NO agent-native payment rail), and much higher trust (73.3), so two
+#     retail members pin DIFFERENT pillar mixes and retail spans a RANGE (29.5 -> 49.8),
+#     and 49.8 is a NEW distinct overall between the zero-commerce baseline (22.5) and
+#     the service-booking SaaS (54.0), densifying the mid-scale.
+# ---------------------------------------------------------------------------
+def test_second_retail_storefront_replays_49_8() -> None:
+    print("test_second_retail_storefront_replays_49_8")
+    _assert_domain("www.moleskine.com")
 
 
 # ---------------------------------------------------------------------------
@@ -2036,6 +2094,7 @@ def main() -> int:
         test_service_booking_storefront_replays_54_0,
         test_data_retrieval_storefront_replays_61_3,
         test_pure_metered_api_storefront_replays_29_5,
+        test_second_retail_storefront_replays_49_8,
         test_retail_storefront_earns_no_agent_native_payment,
         test_relabel_invariance_retail,
         test_nonstorefront_replays_22_5,

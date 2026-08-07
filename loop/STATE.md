@@ -1,23 +1,39 @@
 # Loop state
 
 - Cycle counter: 295
-- **⏳ OPEN PEER-GATED PR #155 (api.replicate.com 5th non-anchor cross-path calibration weld) — opened this fire
-  (Local 20260807T144105Z), branch `loop/api-replicate-fifth-non-anchor-weld`, commit `d25fcd2`, NOT self-merged.**
-  Welds api.replicate.com (a PURE single-archetype metered_api compute/inference API — a FIFTH structurally-distinct
-  storefront TYPE) into `_NON_ANCHOR_WELDED`, so on merge the cross-path weld spans FIVE non-anchor witnesses
-  (null-control example.com + retail-catalog books.toscrape.com + service-booking acuityscheduling.com +
-  data-retrieval ipinfo.io + pure-inference-API api.replicate.com). TEST-ONLY
-  (`tests/test_calibration_anchor_agreement.py` +79/−4; off-scoring-path diff EMPTY), weld suite 19→20, full suite
-  38/38. LOAD-BEARING: new `test_api_replicate_fifth_non_anchor_is_welded_nonvacuously` — committed v0.7 baseline
-  present (29.5 F), genuinely COMPARED n_compared=1 in `calibration_sweep_20260807T134527Z.json` (segment
-  metered-api:inference-platform; absent from the four priors), agrees with its 29.5 floor, teeth 29.5→40.0 caught.
-  The [LOCAL] essence this fire ($0 static re-score `python -m asrs score api.replicate.com --json-only`, no
-  --behavioral): **live 29.5 == frozen 29.5 == EXPECTED 29.5, all 4 non-null pillars byte-identical, caps empty →
-  weld HOLDS, api.replicate.com did NOT regress.** Evidence
-  `runs/local/api_replicate_fifth_non_anchor_weld_20260807T144105Z.json`. Frozen canonical delta UNMOVED +39.4; live
-  +30.1; suite 38/38. **NEXT FIRE'S FIRST DUTY: adversarially review PR #155 + re-run its $0 live re-score, then
-  MERGE if sound (never review-and-merge own-cycle PR).** NO DM (regression-guard weld not a DM-enumerated sensitive
-  class; 14:4xZ precedes 16:00 UTC) — flagged for next digest.
+- **✅ PR #155 (api.replicate.com 5th non-anchor cross-path calibration weld) MERGED this fire (Local
+  20260807T154104Z), merge `7e08063`** — after the owed FIRST-DUTY adversarial review + independent $0 live re-score.
+  VERDICT SOUND: off-scoring-path (three-dot diff since merge-base `4313135` is ONLY
+  `test_calibration_anchor_agreement.py` +79/−4; EMPTY over asrs/rubric/fixtures/experiments/loop/local_verify.py);
+  vendor-neutral (welded by storefront TYPE pure-inference-API); committed v0.7 baseline present (29.5 F);
+  LOAD-BEARING (independently re-derived n_compared=1 — api.replicate.com PRESENT in exactly
+  `calibration_sweep_20260807T134527Z.json` at 29.5, ABSENT from all four priors); teeth (29.5→40.0 caught as exactly
+  one divergence); and the [LOCAL] live re-score re-derived THIS fire (`python -m asrs score api.replicate.com
+  --json-only`, $0 static) → api.replicate.com **29.5 live == 29.5 frozen == 29.5 EXPECTED**, all 4 non-null pillars
+  byte-identical (access 100.0 / legibility 18.18 / transactability 0.0 / trust 33.33), caps empty → weld HOLDS,
+  api.replicate.com did NOT regress → MERGE. Weld suite 20/20 branch + merged main; the cross-path weld now spans FIVE
+  structurally-distinct non-anchor witnesses (null-control + retail-catalog + service-booking + data-retrieval +
+  pure-inference-API). Review verdict recorded in LOG Local cycle 20260807T154104Z.
+- **✅ NEW EIGHTH frozen-replay calibration baseline PINNED this fire (Local 20260807T154104Z, direct-to-main):
+  www.moleskine.com** (a SECOND retail storefront — an established consumer-brand e-commerce shop; retail DEPTH, NOT a
+  new storefront TYPE). 49.8 F v0.7 (access 100.0 / legibility 40.91 / transactability 18.75 / trust 73.33). It was
+  ALREADY certified replay-clean (0 misses, in `_REPLAY_CLEAN`) and present in ALL FIVE committed calibration sweeps at
+  a stable 49.8 (segment retail:no-rails) AND in all 5 reproducibility `_POPULATION`s — but its SCORE was never pinned,
+  so a scoring change could silently move it. This pin closes that gap: `test_canonical_replay.EXPECTED` entry + new
+  guard `test_second_retail_storefront_replays_49_8` (asserts overall + all 4 non-null pillars; teeth re-confirmed
+  in-memory 49.8→55.0 caught). NO fixture re-capture needed (cleaner than the ipinfo/api.replicate promotions — the
+  committed fixture was untouched). The [LOCAL] essence: fresh $0 static re-score THIS fire (15:5xZ,
+  `python -m asrs score www.moleskine.com --json-only`) → **live 49.8 == frozen fixture-replay 49.8 == EXPECTED 49.8,
+  all 4 non-null pillars byte-identical, caps empty** → baseline HOLDS, moleskine did NOT regress. Its 49.8 is a NEW
+  distinct overall between example.com's 22.5 and acuity's 54.0; as a 2nd retail member it pins a DIFFERENT pillar mix
+  from the bare scraping-demo catalog books.toscrape.com (29.5 F: legibility 18.2 / transactability 0.0 / trust 33.3) —
+  real brand earns more legibility, PARTIAL transactability (real commerce surface, NO agent-native rail), higher trust
+  — so retail spans a RANGE (29.5→49.8) in the frozen guard, not a point. Frozen-replay baselines 7→8. Evidence
+  `runs/local/moleskine_second_retail_baseline_20260807T154104Z.json`. Off-scoring-SEMANTICS EMPTY (only
+  `test_canonical_replay.py` — EXPECTED + guard + registration); frozen canonical delta UNMOVED +39.4; live +30.1;
+  suite 38/38 (replay 29→30). **NOTE for a future 2nd-retail WELD:** moleskine's sweep rows are keyed `moleskine.com`
+  (bare) while its replay baseline is `www.moleskine.com` — a weld today would be vacuous (n_compared=0) unless it
+  normalizes the www/bare domain key first.
 - **✅ CALIBRATION CADENCE SWEEP RUN this fire (Local 20260807T134105Z, direct-to-main): api.replicate.com added to
   `experiments/calibration_sweep.py`'s POPULATION and scored $0 static → `runs/local/calibration_sweep_20260807T134527Z.json`
   (19/20 scored, rei.com not-scorable per inv #4, 0 errors).** api.replicate.com scored **29.5 F** (segment
@@ -165,6 +181,32 @@
   but wrote NO LOG entry and never committed/pushed (its panel dir exists gitignored). This fire re-verified #149,
   took ownership of the reconciled banner (above), and committed. No fabricated 214745Z LOG entry. STATE pruned the
   two oldest rolling entries (cloud Cycles 290–291, preserved in LOG.md) to stay under the 600-line hygiene cap.
+- LOCAL cycle — 20260807T154104Z (TRUTH / MERGED PR #155 + pinned www.moleskine.com as the 8th frozen-replay baseline /
+  a 2nd retail storefront, direct-to-main). FIRST duty: `gh pr list --state open` → PR #155 OPEN → adversarial review +
+  independent $0 live re-score → VERDICT SOUND → **MERGED `7e08063`** (off-scoring-path test-only +79/−4; vendor-neutral
+  by TYPE pure-inference-API; load-bearing n_compared=1 independently re-derived — api.replicate.com PRESENT in exactly
+  the 20260807T134527Z sweep at 29.5, ABSENT from all 4 priors; teeth 29.5→40.0; live re-derived api.replicate.com 29.5
+  live == 29.5 frozen == 29.5 EXPECTED, all pillars byte-identical → weld holds; weld 20/20, suite 38/38 branch + merged
+  main; the cross-path weld now spans FIVE non-anchor TYPES). Infra HEALTHY: `verify_20260807T154104Z.json` (15:41Z, 38
+  suites, 46.1 F / 76.2 C / +30.1) ~2min old at fire → :41 cadence holding (144105Z→154104Z). **Executed the oldest
+  actionable [LOCAL] follow-up — the cheap 2nd-retail baseline pin (BACKLOG P1-TRUTH, the merged cycle's own
+  next-hypothesis):** pinned www.moleskine.com (a real consumer-brand e-commerce shop — retail DEPTH, not a new TYPE) as
+  the EIGHTH `test_canonical_replay.EXPECTED` frozen-replay baseline (49.8 F v0.7; access 100.0 / legibility 40.91 /
+  transactability 18.75 / trust 73.33) + guard `test_second_retail_storefront_replays_49_8` (asserts overall + all 4
+  pillars; teeth 49.8→55.0 caught in-memory). It was ALREADY replay-clean (0 misses, in `_REPLAY_CLEAN`) + in all 5
+  committed sweeps at 49.8 + in all 5 reproducibility `_POPULATION`s, but its SCORE was UNPINNED — a scoring change could
+  silently move it; this closes that gap. NO fixture re-capture (fixture untouched; cleaner than the ipinfo/api.replicate
+  promotions). [LOCAL] essence THIS fire (15:5xZ $0 static re-score): live 49.8 == frozen fixture-replay 49.8 == EXPECTED
+  49.8, all 4 non-null pillars byte-identical, caps empty → baseline HOLDS, moleskine did NOT regress. 49.8 is a NEW
+  distinct overall between example's 22.5 and acuity's 54.0; as a 2nd retail member it pins a DIFFERENT pillar mix from
+  books.toscrape.com's 29.5 (retail spans 29.5→49.8). Frozen-replay baselines 7→8. Direct-to-main (baseline SCORE-pin;
+  off-scoring-SEMANTICS EMPTY — only `test_canonical_replay.py`, EXPECTED + guard + registration); frozen canonical delta
+  UNMOVED +39.4; live +30.1; suite 38/38 (replay 29→30). Evidence
+  `runs/local/moleskine_second_retail_baseline_20260807T154104Z.json`. Invariants #1 ($0 static re-score + in-process
+  tests, no behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (PR #155 merge +
+  baseline pin not a DM-enumerated sensitive class; 15:4xZ precedes 16:00 UTC) — #155 MERGE flagged for next digest.
+  NOTE for a future 2nd-retail weld: moleskine sweeps key `moleskine.com` (bare) vs replay `www.moleskine.com` — a weld
+  needs www/bare normalization first (else vacuous n_compared=0). See LOG Local cycle 20260807T154104Z.
 - LOCAL cycle — 20260807T144105Z (TRUTH / welded api.replicate.com as the 5th non-anchor cross-path member, PEER-GATED
   PR #155 opened, NOT self-merged). FIRST duty: `gh pr list --state open` → `[]` (no open PR to review; 134105Z was
   direct-to-main; PR #154 MERGED `ee95a0b` on 114104Z). Infra HEALTHY: `verify_20260807T144105Z.json` (14:41Z, 38
@@ -315,42 +357,13 @@
   tests, no behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (neither the
   merge nor the weld is a DM-enumerated sensitive class; 06:4xZ precedes 16:00 UTC) — #151 MERGED + #152 OPEN flagged
   for next digest. See LOG Local cycle 20260807T064228Z.
-- LOCAL cycle — 20260807T054210Z (METHOD/TRUTH / documented-live-drift ledger, PEER-GATED PR #151 opened, NOT
-  self-merged). FIRST duty: `gh pr list --state open` → `[]` at fire start (no PR to review; #150 merged `07cf47d`,
-  reviewed SOUND last fire). Infra HEALTHY: newest verify `verify_20260807T054102Z.json` (05:41Z, tests_ok 38 suites,
-  46.1 F / **76.2 C** / **+30.1**) ~1min old at fire (05:42Z) → :41 cadence holding (this hour's floor is the live
-  re-score, 76.2 == the ledgered value, transactability 62.5). **Executed the oldest P0 — the calibration-cadence
-  blocker.** The persistent live x402 regression (driftflight.com 85.5→76.2, +39.4→+30.1, `agents.driftflight.com/extend`
-  402→401, persistent 22:41Z→05:41Z) meant an honest post-regression sweep could no longer join the cadence without
-  reddening 5 assertions (weld ×3 + readout goldens ×2) that hardcode the pre-regression 85.5/+39.4 facts, while the
-  frozen replay stays 85.5 (invariant #2). **FIX (peer-gated PR #151, teeth-first documented-live-drift ledger):**
-  (1) `experiments/documented_live_drift.json` keyed (rubric_version, domain)→{overall, pillars, since_ts, reason,
-  evidence_path}, one driftflight.com@v0.7 entry (76.2, transactability 62.5, x402 reason + evidence); (2) the weld
-  (`test_calibration_anchor_agreement.py`) accepts a member's live value at the frozen floor OR a same-version
-  documented value (overall + per-pillar), teeth PRESERVED (floor always accepted → recovery never masked; documented
-  value EXACTLY → undocumented/further drift still red), +4 teeth tests 12→16; (3) the 2 real-committed readout goldens
-  (`test_readout.py`) made cadence-robust + ledger-tied (structural + immutable oldest-anchor + newest with-rails =
-  floor-or-documented; badge asserted internally consistent with the verdict, no frozen literal); (4) held sweep
-  renamed into the series (books.toscrape.com added, 18/19 scored). OFF the scoring path (empty diff over scoring.py/
-  report.py/probes/battery.py/reliability.py/offering.py/scorecard.py/rubric/fixtures/); frozen replay UNMOVED 26/26 =
-  46.1/85.5/+39.4; full suite **38/38 green** WITH the regressed sweep committed on the branch. PEER-GATED (it changes
-  what the regression guard counts as a divergence) — PR #151 opened, NOT self-merged; main's floor stays green (sweep
-  HELD on main until merge). Invariants #1 ($0 static recon + in-process tests, no signing/paid/panel/codex)–#5 held;
-  zero codex, zero paid ops; stayed in-repo. NO DM (regression-guard semantics is not a DM-enumerated sensitive class;
-  no digest due — 05:4xZ precedes 16:00 UTC on 08-07) — PR #151 flagged for next digest. STATE pruned oldest rolling
-  Cycles 292–293 to stay bounded. See LOG Local cycle 20260807T054210Z.
-- LOCAL cycle — 20260807T051750Z (TRUTH/METHOD / calibration cadence + self-heal, direct-to-main, score-neutral).
-  FIRST duty: `gh pr list --state open` → `[]`; **PR #150 was OPERATOR-MERGED `07cf47d` (00:49Z), skipping the loop's
-  pre-merge review → ran the owed post-merge adversarial review + independent leak-scan re-derivation → VERDICT SOUND**
-  (see banner above). Infra: this fire's verify `verify_20260807T032542Z.json` recorded both anchors N/A — a TRANSIENT
-  ($0 probe: sites 200/up), not a stall; suite 38/38, verify floor UP. **Executed the [LOCAL] TRUTH cadence** — added
-  `books.toscrape.com` to the sweep `POPULATION` + ran it ($0 static): 18/19 scored (rei.com not-scorable, inv #4),
-  books.toscrape.com **29.5 F** = its replay baseline exactly, drift caught driftflight.com −9.3 (the x402 regression, a
-  3rd independent witness). **BLOCKER FOUND:** the honest post-regression sweep reddens the floor (weld + readout golden
-  guards hardcode 85.5/+39.4) → sweep HELD as evidence outside the glob, reconciliation QUEUED as PEER-GATED P0
-  (documented-live-drift ledger; see the ⚠ CADENCE-BLOCKED banner). Shipped direct-to-main: the POPULATION broadening +
-  held evidence + bookkeeping self-heal. Suite 38/38; frozen replay +39.4 UNMOVED, live +30.1. Invariants #1 ($0 static
-  recon, no behavioral/codex/paid)–#5 held. NO DM. See LOG Local cycle 20260807T051750Z.
+<!-- Rolling entries for Local cycles 20260807T054210Z (PR #151 documented-live-drift ledger opened) +
+     20260807T051750Z (calibration cadence + PR #150 post-merge review self-heal) pruned this fire
+     (Local cycle 20260807T154104Z) to stay under the STATE line cap — both preserved verbatim in loop/LOG.md
+     + git history. -->
+- LOCAL cycle — 20260807T051750Z through 064228Z summarized: the documented-live-drift ledger (PR #151 `140304e`)
+  RESOLVED the calibration-cadence blocker (persistent live x402 regression 85.5→76.2 / +39.4→+30.1), unlocking the
+  non-anchor weld + baseline-pin campaign that followed. Full detail in loop/LOG.md.
 <!-- Rolling entry for cloud CYCLE 295 (METHOD / save_fixture canonical-order serialization) pruned this fire
      (Local cycle 20260807T144105Z) to stay under the STATE line cap — preserved verbatim in loop/LOG.md
      (## Cycle 295) + git history. The FOCUS POINTER below still carries the cloud track's forward state. -->

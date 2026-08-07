@@ -1,0 +1,61 @@
+{
+  "ts": "20260807T154104Z",
+  "kind": "local-cycle-evidence",
+  "cycle": "Local 20260807T154104Z",
+  "track": "TRUTH",
+  "item": "Pin www.moleskine.com (a SECOND retail storefront — retail DEPTH, not a new TYPE) as the EIGHTH test_canonical_replay.EXPECTED frozen-replay calibration baseline (49.8 F v0.7) + guard test_second_retail_storefront_replays_49_8. It was already replay-clean (0 misses, in _REPLAY_CLEAN) and present in all 5 committed calibration sweeps scoring 49.8, but its SCORE was previously UNPINNED — a scoring change could silently move it. This pin closes that gap.",
+  "ship_class": "direct-to-main (frozen-replay baseline SCORE-pin; NO scoring semantics, NO fixture change; same class as the acuity/ipinfo/api.replicate baseline pins)",
+  "no_recapture_needed": {
+    "reason": "www.moleskine.com is ALREADY in _REPLAY_CLEAN with a committed fixture that covers the whole probe set (0 replay-misses) — unlike ipinfo.io / api.replicate.com which were promoted from _CLASSIFICATION_ONLY via a full-score re-capture. Nothing about the fixture changed; only its previously-missing EXPECTED score assertion was added.",
+    "fixture": "fixtures/canonical/www.moleskine.com.json (unchanged)"
+  },
+  "live_static_rescore_this_fire": {
+    "command": "python -m asrs score www.moleskine.com --json-only",
+    "cost": "$0 static (no --behavioral, no --max-pay, no paid/zero-CLI/codex)",
+    "overall": 49.8,
+    "grade": "F",
+    "rubric_version": "0.7",
+    "scored": true,
+    "pillars": {
+      "access": 100.0,
+      "legibility": 40.90909090909091,
+      "transactability": 18.75,
+      "trust": 73.33333333333333,
+      "outcome": null
+    },
+    "caps_applied": []
+  },
+  "replay_verification": {
+    "path": "from_fixture -> _run_probes -> scoring.score (the same offline replay pipeline test_canonical_replay uses)",
+    "overall": 49.8,
+    "replay_misses": 0,
+    "pillars_byte_identical_to_live": true,
+    "verdict": "live 49.8 == frozen fixture-replay 49.8 == EXPECTED 49.8, all 4 non-null pillars byte-identical, caps empty -> baseline HOLDS, www.moleskine.com did NOT regress"
+  },
+  "load_bearing_evidence": {
+    "in_all_5_committed_sweeps": true,
+    "sweep_domain_key": "moleskine.com (bare; the committed fixture / _REPLAY_CLEAN key it as www.moleskine.com — same site, byte-identical score)",
+    "sweep_scores": {
+      "calibration_sweep_20260728T234815Z": 49.8,
+      "calibration_sweep_20260805T014754Z": 49.8,
+      "calibration_sweep_20260806T044352Z": 49.8,
+      "calibration_sweep_20260807T045843Z": 49.8,
+      "calibration_sweep_20260807T134527Z": 49.8
+    },
+    "sweep_segment": "retail:no-rails",
+    "already_in_reproducibility_populations": "www.moleskine.com is already in _POPULATION of all 5 reproducibility suites (hashseed/timezone/encoding/locale/probe_order, n=8) and in _REPLAY_CLEAN (n=8) — the pin required NO change to those suites."
+  },
+  "calibration_context": {
+    "why_it_densifies": "49.8 is a NEW distinct overall datapoint between the zero-commerce baseline (example.com 22.5) and the service-booking SaaS (acuityscheduling.com 54.0). As a SECOND retail member it earns MORE legibility (40.9 vs books.toscrape.com 18.2), PARTIAL transactability (18.75 vs 0.0 — a real commerce surface but NO agent-native payment rail), and much higher trust (73.3 vs 33.3 — an established consumer brand vs a scraping-demo catalog), so two retail members pin DIFFERENT pillar mixes and retail spans a RANGE (29.5 -> 49.8) in the frozen guard, not a single point.",
+    "frozen_replay_baselines_now": 8,
+    "retail_members": ["books.toscrape.com (29.5)", "www.moleskine.com (49.8)"]
+  },
+  "invariants": {
+    "off_scoring_semantics_diff": "EMPTY over asrs/ rubric/ fixtures/ experiments/ loop/local_verify.py — only tests/test_canonical_replay.py changed (EXPECTED entry + guard + main() registration)",
+    "frozen_canonical_delta": "UNMOVED +39.4 (drift-flight.org 46.1 / driftflight.com 85.5; the pin does not touch the canonical pair)",
+    "live_canonical_delta_this_fire": "+30.1 (46.1 / 76.2 — persistent x402 regression, unrelated to this pin; verify_20260807T154104Z.json)",
+    "teeth": "the guard asserts overall + all 4 non-null pillars against 49.8; a synthetic drift 49.8 -> 55.0 is caught (verified in-memory this fire)",
+    "suite": "full suite 38/38 green; test_canonical_replay 29 -> 30",
+    "spend": "$0 — one static re-score + in-process tests; zero codex, zero paid ops, zero zero-CLI; stayed in-repo"
+  }
+}

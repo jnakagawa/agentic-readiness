@@ -139,26 +139,39 @@ api.replicate.com; every welded member on its floor. Off-scoring-SEMANTICS EMPTY
 +39.4; suite 38/38. Direct-to-main (same class as the books.toscrape.com POPULATION-add, Local cycle 20260807T051750Z). The
 POPULATION edit was found orphaned uncommitted at fire start (12:41 agent likely died mid-item) and adopted (bookkeeping
 self-heal). See LOG Local cycle 20260807T134105Z. -->
-<!-- OPENED Local cycle 20260807T144105Z: the FIFTH distinct-TYPE non-anchor WELD (api.replicate.com) is AUTHORED as
-PEER-GATED PR #155 (branch loop/api-replicate-fifth-non-anchor-weld, commit d25fcd2), NOT self-merged. Welds
-api.replicate.com (a PURE single-archetype metered_api compute/inference API — a 5th structurally-distinct storefront
-TYPE) into `_NON_ANCHOR_WELDED`; new test_api_replicate_fifth_non_anchor_is_welded_nonvacuously is non-vacuous (committed
-v0.7 baseline present 29.5 F; genuinely COMPARED n_compared=1 in the sole 20260807T134527Z sweep, segment
-metered-api:inference-platform, absent from the four priors) + has teeth (drift 29.5->40.0 caught as exactly one
-divergence vs the 29.5 floor). TEST-ONLY (test_calibration_anchor_agreement.py +79/-4; off-scoring-path diff EMPTY), weld
-suite 19->20, full suite 38/38. Live↔frozen verified this fire ($0 static re-score: live 29.5 == frozen 29.5 == EXPECTED
-29.5, all 4 non-null pillars byte-identical, caps empty — the [LOCAL] essence the cloud can't do). Evidence
-runs/local/api_replicate_fifth_non_anchor_weld_20260807T144105Z.json. On merge the cross-path weld spans a FIFTH
-structurally-distinct TYPE, beyond null-control + retail-catalog + service-booking + data-retrieval. DO NOT RE-AUTHOR —
-TRACKED by STATE's OPEN-PR #155 banner + next fire's first-duty adversarial review + live re-score. See LOG Local cycle
-20260807T144105Z. -->
-- **[FOLLOW-UP, P1 — TRUTH] a SIXTH distinct-TYPE baseline is now hard to source cheaply.** The remaining
-  `_CLASSIFICATION_ONLY` candidates (polar.sh / simplybook.me / www.allbirds.com) ALL failed the byte-identity gate this
-  fire — their live sites have DRIFTED from their committed classification-only fixtures (polar.sh most dramatically,
-  6->3 archetypes). Re-attempting any of them requires accepting a genuinely NEW committed fixture (which changes what the
-  site claims — verify the new classification is honest first, and note it is a re-baseline, not a pin of the old claim).
-  www.moleskine.com is already `_REPLAY_CLEAN` but unpinned — a cheap 2nd-RETAIL baseline pin if a future cycle wants
-  retail depth over a new TYPE (not a new TYPE witness).
+<!-- MERGED Local cycle 20260807T154104Z: PR #155 (api.replicate.com 5th non-anchor cross-path calibration weld) MERGED
+`7e08063` after the owed FIRST-DUTY adversarial review + independent $0 live re-score. VERDICT SOUND: off-scoring-path
+(three-dot diff since merge-base 4313135 is ONLY test_calibration_anchor_agreement.py +79/-4; empty over scoring.py/
+report.py/probes/battery.py/reliability.py/offering.py/scorecard.py/rubric/fixtures/experiments/loop/local_verify.py);
+vendor-neutral (welded by TYPE pure-inference-API); committed baseline 29.5 F v0.7; LOAD-BEARING (n_compared=1
+independently re-derived — api.replicate.com PRESENT in exactly the 20260807T134527Z sweep at 29.5, ABSENT from all 4
+priors); teeth (29.5->40.0 caught). Live re-derived THIS fire: api.replicate.com 29.5 live == 29.5 frozen == 29.5
+EXPECTED, all 4 non-null pillars byte-identical -> weld holds, did NOT regress. Suite 38/38 branch + merged main; weld
+20/20; the cross-path weld now spans FIVE non-anchor TYPES. See LOG Local cycle 20260807T154104Z. -->
+<!-- DONE Local cycle 20260807T154104Z: pinned www.moleskine.com (a SECOND retail storefront — an established
+consumer-brand e-commerce shop; retail DEPTH, NOT a new TYPE) as the EIGHTH test_canonical_replay.EXPECTED frozen-replay
+baseline (49.8 F v0.7; access 100.0/legibility 40.91/transactability 18.75/trust 73.33) + guard
+test_second_retail_storefront_replays_49_8 (29->30, asserts overall + all 4 pillars; teeth 49.8->55.0 caught in-memory),
+direct-to-main. It was ALREADY replay-clean (0 misses, in _REPLAY_CLEAN) + present in all 5 committed sweeps at 49.8
+(segment retail:no-rails) + in all 5 reproducibility _POPULATIONs, but its SCORE was UNPINNED — a scoring change could
+silently move it; this closes that gap. NO fixture re-capture (fixture untouched; cleaner than the ipinfo/api.replicate
+promotions). [LOCAL] essence: fresh $0 static re-score THIS fire (15:5xZ) -> live 49.8 == frozen fixture-replay 49.8 ==
+EXPECTED 49.8, all 4 non-null pillars byte-identical, caps empty. 49.8 is a NEW distinct overall between example's 22.5
+and acuity's 54.0; as a 2nd retail member it pins a DIFFERENT pillar mix from books.toscrape.com's 29.5 (retail spans
+29.5->49.8). Frozen-replay baselines 7->8. Off-scoring-SEMANTICS EMPTY (only test_canonical_replay.py); frozen canonical
+delta UNMOVED +39.4; suite 38/38. Evidence runs/local/moleskine_second_retail_baseline_20260807T154104Z.json. See LOG
+Local cycle 20260807T154104Z. -->
+- **[FOLLOW-UP, P1 — TRUTH] a SIXTH distinct-TYPE baseline still needs a fresh honest fixture.** The 2nd-retail baseline
+  (www.moleskine.com) is now PINNED (DONE marker above) — the frozen guard spans 8 real-domain baselines (2 anchors + 6
+  non-anchor across 5 storefront TYPES, with retail depth). The remaining `_CLASSIFICATION_ONLY` candidates (polar.sh /
+  simplybook.me / www.allbirds.com) ALL failed the byte-identity gate — their live sites DRIFTED from their committed
+  classification-only fixtures (polar.sh most dramatically, 6->3 archetypes) — so re-attempting any requires accepting a
+  genuinely NEW committed fixture (verify the new classification is honest first; it is a re-baseline, not a pin of the
+  old claim). HIGHEST-VALUE next: capture a real ACP/UCP/MPP merchant or a 2nd x402-live storefront — a genuinely NEW
+  storefront TYPE **and** a with-rails calibration point (the guard currently has only ONE with-rails member,
+  driftflight.com). Secondary: a future PEER-GATED 2nd-retail WELD could add www.moleskine.com as a cross-path member,
+  but ONLY after normalizing the www/bare domain key (its sweep rows key `moleskine.com`, the replay baseline
+  `www.moleskine.com`; a weld today is vacuous n_compared=0).
 
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
   phrasing has now drifted the `_ENV_BLOCK_RE` guard FIVE times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)

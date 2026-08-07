@@ -79,6 +79,14 @@ POPULATION: list[tuple[str, str]] = [
     # retail without agentic rails (browser-only checkout)
     ("moleskine.com", "retail:no-rails"),
     ("rei.com", "retail:no-rails"),
+    # a stable static retail catalog (scraping sandbox) — carries a committed
+    # replay baseline (tests/test_canonical_replay.EXPECTED, overall 29.5, the
+    # transactability floor) but was ABSENT from every prior sweep. Adding it here
+    # (LOCAL cadence, increment (a)) gives the 2nd non-anchor cross-path weld
+    # candidate its first live-sweep presence, so a future TRUTH cycle can weld it
+    # replay-baseline vs sweep off the two famous anchors (see
+    # tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED).
+    ("books.toscrape.com", "retail:no-rails"),
     # non-storefront controls (zero-commerce baseline)
     ("example.com", "control:non-storefront"),
     ("wikipedia.org", "control:non-storefront"),

@@ -30,6 +30,39 @@ suite 38/38; test_attribution 15->16 (#16 teeth track the LIVE pattern; #15 reve
 TRACKED by STATE's OPEN-PR banner + next fire's first-duty adversarial review + live re-score. See LOG Local cycle
 20260806T235421Z. -->
 
+<!-- MERGED: PR #150 (v0.7(f) `_ENV_BLOCK_RE` -> `browser (?:site[- ])?access(?: permission)?`) OPERATOR-MERGED by
+jnakagawa (merge 07cf47d, 2026-08-07T00:49:50Z) — SKIPPED the loop's pre-merge peer review. Local cycle 20260807T051750Z
+ran the owed post-merge adversarial review + independent live re-derivation. VERDICT SOUND: off-scoring-path (only
+shopper.py +24/-2 + test_attribution.py +95); differential leak-scan RE-DERIVED over 191 committed run JSONs / 9125
+string leaves -> NEW-only = EXACTLY the one .org "Browser site-access permission ... declined" leak, ZERO collateral,
+OLD-only 0 (strict superset, ZERO loss); test_attribution 16/16 + test_canonical_replay 26/26 (46.1/85.5/+39.4 UNMOVED)
+re-run independently; suite 38/38. Merge stands, no revert. 5th own-tool vocab drift; leak-scan re-run each fire, no NEW
+drift this fire. See LOG Local cycle 20260807T051750Z. -->
+
+- **[PEER-GATED P0 — METHOD] Reconcile the cross-path weld + readout golden guards with a PERSISTENT DOCUMENTED
+  live-site regression (the calibration cadence is BLOCKED on this).** Surfaced by the Local 20260807T051750Z cadence
+  sweep: the live x402 regression (driftflight.com `agents.driftflight.com/extend` 402->401, overall 85.5->76.2, live
+  delta +39.4->+30.1, persistent 22:41Z->05:17Z) means an HONEST post-regression `calibration_sweep_*.json` can no
+  longer be committed into the cadence series without reddening the floor — it trips FIVE assertions that ALL hardcode
+  the pre-regression `85.5 / +39.4 / with-rails-tops-cohort` facts: `test_calibration_anchor_agreement.py` (3 — the
+  Cycle-293 cross-path weld `test_live_sweep_anchors_agree_with_replay_baseline` 76.2!=85.5 / `..._gap_matches_expected_delta`
+  30.1!=39.4 / `..._pillars_agree...` transactability 62.5!=87.5) + `test_readout.py` (2 — the Cycle-294 golden readout
+  `test_population_band_series_on_real_committed_sweeps` meds `[58.5,61.3,62.0]`+`hi==85.5`, now cohort max is exa.ai 78.1
+  / `test_population_position_verdict...` anchors 85.5/46.1 -> 18,76.2,46.1). The frozen replay fixture is DELIBERATELY
+  held at +39.4 (invariant #2 — no re-capture on a live fluctuation), so the weld's assumption "live-sweep == frozen
+  replay" is now false for a REAL reason the guard never modelled. **DESIGN (documented-live-drift ledger, teeth-first):**
+  a small committed ledger keyed `(rubric_version, domain) -> {overall, pillars, since_ts, reason, evidence_path}`; the
+  weld/gap/pillar checks compare a ledgered member against its DOCUMENTED live value (capability-terms reason + evidence)
+  instead of the frozen floor, recording it as a documented-drift NOT a divergence; TEETH PRESERVED — an UNdocumented
+  divergence, or a drift PAST the documented value, still goes red (add synthetic teeth tests), and off-version/
+  not-scorable handling stays (invariants #2/#4). The readout golden tests read the ledger / are made cadence-robust
+  (assert structure + the ledgered anchor, not a frozen literal that breaks on every new sweep). Then the HELD sweep
+  `runs/local/held_calibration_sweep_20260807T045843Z.json` is renamed back into the `calibration_sweep_*` series and
+  books.toscrape.com's 2nd-non-anchor weld unlocks. PEER-GATED (it changes what the regression guard counts as a
+  divergence — regression-signal semantics; the sensitive extra rigor: the reviewer re-derives that teeth still catch a
+  code/crawl regression and a further drift). If `/extend` returns to 402 the live delta recovers to +39.4 and the
+  conflict self-resolves (then the ledger entry is retired). See LOG Local cycle 20260807T051750Z + 20260806T225132Z.
+
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
   phrasing has now drifted the `_ENV_BLOCK_RE` guard FIVE times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)
   `browser site-access permission … declined`, the last AUTHORED this fire as PEER-GATED PR #150). Every fresh
@@ -569,6 +602,13 @@ TRACKED by STATE's OPEN-PR banner + next fire's first-duty adversarial review + 
   weld AND the Cycle-293 per-PILLAR weld (`_pillar_divergences`) — a RETAIL storefront (different site type than
   example.com's zero-commerce null) as an independent cross-path witness, higher-resolution than any single number.
   It is agent-fetch reachable (it is a scraping-sandbox site) → likely scores cleanly. Static $0, same harness.
+  UPDATE — Local cycle 20260807T051750Z: `books.toscrape.com` ADDED to `POPULATION` (committed) and the sweep RAN
+  (18/19 scored; books.toscrape.com **29.5 F**, EXACTLY its replay baseline — the weld corroboration is real). BUT the
+  sweep also captured the persistent live x402 regression (driftflight.com 85.5→76.2), so committing it into the
+  `calibration_sweep_*` series REDDENS the floor (weld + readout golden guards hardcode 85.5/+39.4). The artifact is HELD
+  as evidence at `runs/local/held_calibration_sweep_20260807T045843Z.json` (outside the glob); the cadence is BLOCKED
+  until the new **PEER-GATED P0 reconciliation** (documented-live-drift ledger, top of P0) ships — then the held sweep
+  rejoins the series and books.toscrape.com's 2nd-non-anchor weld unlocks. See LOG Local cycle 20260807T051750Z.
   PROGRESS — Cycle 245 (2026-08-05, TRUTH, cloud, direct-to-main, score-neutral): the Cycle-244 drift diff is now
   TEST-GUARDED — `tests/test_calibration_drift.py` (5 tests) pins `_compute_drift` against BOTH committed dated
   sweeps (real-evidence: 13 scored-in-both, 2 moved [deepai +6.8, allbirds +5.0], canonical pair delta 0.0 =

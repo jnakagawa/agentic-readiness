@@ -1,17 +1,29 @@
 # Loop state
 
 - Cycle counter: 295
-- **⚠ OPEN PEER-GATED PR #150** (v0.7(f) `_ENV_BLOCK_RE` → `browser (?:site[- ])?access(?: permission)?`) — OPENED
-  this fire (Local cycle 20260806T235421Z), **NOT self-merged**. **NEXT FIRE'S FIRST DUTY: adversarially review +
-  live re-score the pair, then MERGE or request changes** (never review-and-merge the authoring cycle's own PR).
-  Fixes the FIFTH own-tool vocab-drift leak (invariant #4): codex's .org refusal *"Browser site-access permission
-  for drift-flight.org was declined…"* (run record `runs/drift-flight_org_20260806T205238.json`, codex t2) was
-  counting as a valid NO-rails SITE run — the `site-` qualifier split "browser" from "access" past v0.7(a)/(e).
-  Diff off-scoring-path (only `asrs/behavioral/shopper.py` +24 + `tests/test_attribution.py` +95, off-path check
-  EMPTY); differential leak-scan over **1417 committed run-record string leaves → EXACTLY 1 flip OLD→NEW, ZERO
-  collateral, ZERO loss**; static replay 26/26 +39.4 UNMOVED; suite 38/38; test_attribution 15→16. Branch
-  `loop/env-block-browser-site-access-v07f` (commit `166d6db`). — PR #149 (v0.7(e)) was OPERATOR-MERGED `dfa341f`
-  20:47Z + independently reviewed SOUND (Local 20260806T225132Z), superseded by this line.
+- **NO open peer-gated PR** (`gh pr list --state open` → `[]`). **PR #150 (v0.7(f) `_ENV_BLOCK_RE` →
+  `browser (?:site[- ])?access(?: permission)?`) was OPERATOR-MERGED by jnakagawa** (merge `07cf47d`,
+  2026-08-07T00:49:50Z) — SKIPPED the loop's pre-merge peer review (same as PR #149). **Local cycle 20260807T051750Z
+  ran the owed post-merge adversarial review + independent live re-derivation → VERDICT SOUND**: off-scoring-path
+  (only `shopper.py` +24/−2 + `test_attribution.py` +95); differential leak-scan RE-DERIVED over 191 committed run
+  JSONs / 9125 string leaves → NEW-only = EXACTLY the one `.org` "Browser site-access permission … declined" leak,
+  ZERO collateral, OLD-only 0 (strict superset, ZERO loss); `test_attribution` 16/16 + `test_canonical_replay` 26/26
+  (46.1/85.5/+39.4 UNMOVED) re-run independently; suite 38/38. Merge stands, no revert. 5th own-tool vocab drift
+  (269/284/287/296=v0.7(e)/v0.7(f)); leak-scan re-run each fire, no NEW drift this fire. STATE reconciled OPEN→MERGED
+  (bookkeeping self-heal — STATE had lagged the operator merge).
+- **⚠ CALIBRATION CADENCE BLOCKED — PEER-GATED P0 QUEUED (Local 20260807T051750Z).** The cadence sweep this fire
+  (books.toscrape.com added to `POPULATION`, 18/19 scored; books.toscrape.com **29.5 F** = its replay baseline exactly)
+  ALSO captured the persistent live x402 regression (driftflight.com 85.5→76.2), so committing an honest post-regression
+  `calibration_sweep_*.json` into the cadence series REDDENS the floor — it trips 5 assertions that hardcode the
+  pre-regression `85.5 / +39.4 / with-rails-tops-cohort` facts: `test_calibration_anchor_agreement.py` (3, the Cycle-293
+  cross-path weld) + `test_readout.py` (2, the Cycle-294 golden readout; newest cohort max is now exa.ai 78.1, not 85.5).
+  Root: the weld assumes live-sweep == frozen replay, but invariant #2 holds the fixture at +39.4 while the live site
+  DURABLY regressed — a real case the guard never modelled. Sweep HELD as evidence
+  `runs/local/held_calibration_sweep_20260807T045843Z.json` (outside the `calibration_sweep_*` glob → floor stays 38/38).
+  **FIX = the new PEER-GATED P0 (BACKLOG top): a documented-live-drift ledger** the weld/readout consult (compare a
+  ledgered member against its recorded live value, teeth preserved: undocumented/further drift still red). Then the held
+  sweep rejoins the series + books.toscrape.com's 2nd-non-anchor weld unlocks. If `/extend` returns to 402 the delta
+  recovers to +39.4 and the conflict self-resolves.
 - **⚠ LIVE CANONICAL DELTA MOVED +39.4→+30.1 this hour** (22:41Z verify): driftflight.com 85.5 B→**76.2 C** —
   a REAL live-site regression, NOT a code/scoring change. The with-rails x402 handshake endpoint
   `POST agents.driftflight.com/extend` went **402→401** (auth-required now; storefront otherwise 200) → `x402_probe`
@@ -21,11 +33,27 @@
   to 402 the live delta recovers; if it persists, +30.1 is the new honest live reading. **UPDATE (23:41Z verify,
   Local 20260806T235421Z): STILL 76.2 C / +30.1 — the 402→401 PERSISTED across two consecutive hourly floors
   (22:41Z→23:41Z), so +30.1 is trending toward the new honest live reading, not a one-hour blip; independent of
-  PR #150 (behavioral path).** See LOG Local cycle 20260806T225132Z + 20260806T235421Z.
+  PR #150 (behavioral path).** **UPDATE (Local 20260807T051750Z, ~05:17Z manual re-score): STILL 76.2 C / +30.1 —
+  the 402→401 has now persisted 22:41Z→23:41Z→00:41Z→01:41Z→05:17Z; +30.1 is the honest live reading. NOTE the
+  02:41 verify tick was ABSENT and the 03:25 verify recorded both anchors N/A — a TRANSIENT local network blip
+  (direct $0 probe this fire: all anchors 200, sites UP), NOT a site outage.** See LOG Local cycle 20260806T225132Z
+  + 20260806T235421Z + 20260807T051750Z.
 - BOOKKEEPING SELF-HEAL: the prior fire (20260806T214745Z) reviewed #149 + edited STATE/BACKLOG in the working tree
   but wrote NO LOG entry and never committed/pushed (its panel dir exists gitignored). This fire re-verified #149,
   took ownership of the reconciled banner (above), and committed. No fabricated 214745Z LOG entry. STATE pruned the
   two oldest rolling entries (cloud Cycles 290–291, preserved in LOG.md) to stay under the 600-line hygiene cap.
+- LOCAL cycle — 20260807T051750Z (TRUTH/METHOD / calibration cadence + self-heal, direct-to-main, score-neutral).
+  FIRST duty: `gh pr list --state open` → `[]`; **PR #150 was OPERATOR-MERGED `07cf47d` (00:49Z), skipping the loop's
+  pre-merge review → ran the owed post-merge adversarial review + independent leak-scan re-derivation → VERDICT SOUND**
+  (see banner above). Infra: this fire's verify `verify_20260807T032542Z.json` recorded both anchors N/A — a TRANSIENT
+  ($0 probe: sites 200/up), not a stall; suite 38/38, verify floor UP. **Executed the [LOCAL] TRUTH cadence** — added
+  `books.toscrape.com` to the sweep `POPULATION` + ran it ($0 static): 18/19 scored (rei.com not-scorable, inv #4),
+  books.toscrape.com **29.5 F** = its replay baseline exactly, drift caught driftflight.com −9.3 (the x402 regression, a
+  3rd independent witness). **BLOCKER FOUND:** the honest post-regression sweep reddens the floor (weld + readout golden
+  guards hardcode 85.5/+39.4) → sweep HELD as evidence outside the glob, reconciliation QUEUED as PEER-GATED P0
+  (documented-live-drift ledger; see the ⚠ CADENCE-BLOCKED banner). Shipped direct-to-main: the POPULATION broadening +
+  held evidence + bookkeeping self-heal. Suite 38/38; frozen replay +39.4 UNMOVED, live +30.1. Invariants #1 ($0 static
+  recon, no behavioral/codex/paid)–#5 held. NO DM. See LOG Local cycle 20260807T051750Z.
 - LOCAL cycle — 20260806T195345Z (METHOD / attribution-honesty leak fix, PEER-GATED PR #149 opened, NOT
   self-merged). FIRST duty: `gh pr list --state open` → `[]` at fire start (no PR to review); repo `main` clean +
   synced origin/main `f0a7d6c`; newest verify `verify_20260806T194105Z.json` (19:41Z, tests_ok 38 suites, 46.1 F /

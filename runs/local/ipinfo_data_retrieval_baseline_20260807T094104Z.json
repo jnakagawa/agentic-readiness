@@ -1,0 +1,65 @@
+{
+  "ts": "20260807T094104Z",
+  "kind": "local-cycle-evidence",
+  "cycle": "Local 20260807T094104Z",
+  "track": "TRUTH",
+  "item": "Promote ipinfo.io (data-retrieval API storefront) from classification-only to a frozen-replay calibration baseline via a [LOCAL] full-score LIVE re-capture; pin EXPECTED + _REPLAY_CLEAN + the 5 reproducibility populations + a guard test.",
+  "ship_class": "direct-to-main (frozen-replay baseline addition + non-anchor fixture re-capture; NO scoring semantics; same class as the acuity/books baseline pins)",
+  "recapture": {
+    "command": "python -m asrs score ipinfo.io --record-fixture fixtures/canonical/ipinfo.io.json --json-only",
+    "cost": "$0 static (no --behavioral, no --max-pay, no paid/zero-CLI/codex)",
+    "prior_fixture": "classification-only (66 recorded urls, offering-discovery subdomain sweep) — dozens of full-scorer replay-misses",
+    "new_fixture": "full-score (47 recorded urls) — covers the whole probe set, 0 replay-misses"
+  },
+  "live_full_score_this_fire": {
+    "overall": 61.3,
+    "grade": "D",
+    "rubric_version": "0.7",
+    "scored": true,
+    "pillars": {
+      "access": 100.0,
+      "legibility": 72.72727272727273,
+      "transactability": 25.0,
+      "trust": 80.0,
+      "outcome": null
+    }
+  },
+  "replay_verification": {
+    "path": "from_fixture -> _run_probes -> scoring.score (the same offline replay pipeline test_canonical_replay uses)",
+    "overall": 61.3,
+    "replay_misses": 0,
+    "pillars_byte_identical_to_live": true,
+    "verdict": "live 61.3 == frozen 61.3 == EXPECTED 61.3, all 4 non-null pillars byte-identical"
+  },
+  "offering_classification_preserved": {
+    "claimed_archetypes": ["metered_api", "data_retrieval", "subscription", "digital_good"],
+    "data_retrieval_mined_signals_present": ["lookup", "dataset-format", "data-freshness", "enrich", "dataset", "data-service", "batch-retrieval"],
+    "surfaces_seen": ["/docs", "/pricing", "homepage"],
+    "note": "classify_offering output is byte-identical between the prior classification-only fixture and the new full-score fixture — the 61 dropped urls were speculative offering-discovery subdomains (agents./api./developers./docs.ipinfo.io + .well-known/*) that contributed ZERO signals; the signal-bearing /docs (499924 chars) + /pricing (141553 chars) + homepage are present in both. test_offering 115/115, test_offering_canonical 70/70 unchanged."
+  },
+  "load_bearing_evidence": {
+    "in_sweep_POPULATION": true,
+    "sweep_scores": {
+      "calibration_sweep_20260805T014754Z": 61.3,
+      "calibration_sweep_20260806T044352Z": 61.3,
+      "calibration_sweep_20260807T045843Z": 61.3
+    },
+    "note": "ipinfo.io live-scores 61.3 D stably across all three committed cadence sweeps (segment data-retrieval:api) — a stable live datapoint already load-bearing in the sweep population."
+  },
+  "edits": {
+    "fixtures/canonical/ipinfo.io.json": "re-captured full-score (identical to the validated temp capture)",
+    "tests/test_canonical_replay.py": "EXPECTED += ipinfo.io (61.3 D v0.7); _REPLAY_CLEAN += ipinfo.io; _CLASSIFICATION_ONLY -= ipinfo.io; new guard test_data_retrieval_storefront_replays_61_3 registered",
+    "tests/test_hashseed_reproducibility.py": "_POPULATION += ipinfo.io + comment",
+    "tests/test_timezone_reproducibility.py": "_POPULATION += ipinfo.io + comment",
+    "tests/test_encoding_reproducibility.py": "_POPULATION += ipinfo.io",
+    "tests/test_locale_reproducibility.py": "_POPULATION += ipinfo.io",
+    "tests/test_probe_order_reproducibility.py": "_POPULATION += ipinfo.io"
+  },
+  "regression_signal": {
+    "frozen_canonical_delta": "+39.4 UNMOVED (drift-flight.org 46.1 / driftflight.com 85.5, replay 27->28 with the new guard)",
+    "live_canonical_delta_this_hour": "+30.1 (verify_20260807T094104Z.json: 46.1 F / 76.2 C — the persistent live x402 regression, unrelated to this change)",
+    "off_scoring_semantics": "EMPTY over asrs/scoring.py asrs/report.py asrs/probes asrs/battery.py asrs/reliability.py asrs/offering.py asrs/scorecard.py rubric/ experiments/ loop/local_verify.py batteries/ — the only scoring-adjacent file is the non-anchor ipinfo.io fixture re-capture; the canonical PAIR fixtures are untouched"
+  },
+  "full_suite": "38/38 green",
+  "unlocks": "the 4th-non-anchor cross-path WELD (ipinfo.io -> _NON_ANCHOR_WELDED as a data-retrieval TYPE witness) is now a PEER-GATED PR a future cycle can open, the same way the acuity baseline pin (074106Z) unlocked the acuity weld (PR #153, merged this fire)."
+}

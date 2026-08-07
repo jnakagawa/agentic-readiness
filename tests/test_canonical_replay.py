@@ -153,6 +153,36 @@ EXPECTED = {
             "outcome": None,
         },
     },
+    # A SIXTH real-domain calibration datapoint — a DATA-RETRIEVAL / IP-data
+    # enrichment API storefront (rich OpenAPI + /docs + /pricing surfaces), a FOURTH
+    # structurally-distinct storefront TYPE beyond the two canonical API storefronts,
+    # the browser-checkout retail shop, the zero-commerce baseline, and the
+    # service-booking SaaS. Its committed fixture was re-captured full-score LIVE
+    # [LOCAL] this cycle (Local cycle 20260807T094104Z) — promoted from
+    # classification-only to _REPLAY_CLEAN (0 misses) — and its live score was
+    # re-verified == this frozen floor on the same $0 static re-score (live 61.3 ==
+    # frozen 61.3, all four non-null pillars byte-identical), so it is a STABLE
+    # cross-path datapoint. It broadens the frozen regression guard to a
+    # data-retrieval API site type: a probe/scoring change that quietly moved a
+    # data-retrieval storefront's number fails here too. Its 72.7 legibility (the
+    # richest of the non-anchor set — a documented, machine-legible API) paired with
+    # only 25.0 transactability (self-serve billing, NO agent-native payment rail) and
+    # an overall 61.3 is a genuine UPPER-MIDDLE datapoint between the with-rails API
+    # storefront (85.5) and the service-booking / retail / null floor, so the guard
+    # spans the overall scale densely, not just its endpoints. Re-capture + update
+    # together on a version bump, same contract as the domains above.
+    "ipinfo.io": {
+        "overall": 61.3,
+        "grade": "D",
+        "rubric_version": "0.7",
+        "pillars": {
+            "access": 100.0,
+            "legibility": 72.72727272727273,
+            "transactability": 25.0,
+            "trust": 80.0,
+            "outcome": None,
+        },
+    },
 }
 EXPECTED_DELTA = 39.4  # driftflight.com (rails) - drift-flight.org (no rails)
 
@@ -562,6 +592,28 @@ def test_retail_storefront_replays_29_5() -> None:
 def test_service_booking_storefront_replays_54_0() -> None:
     print("test_service_booking_storefront_replays_54_0")
     _assert_domain("acuityscheduling.com")
+
+
+# ---------------------------------------------------------------------------
+# 6c. SIXTH-DOMAIN CALIBRATION — a FOURTH storefront TYPE in the frozen guard. Guards
+#     1–6b pin two API storefronts, a browser-checkout retail shop, a zero-commerce
+#     page, and a service-booking SaaS. This replays the committed fixture for a
+#     DATA-RETRIEVAL / IP-data enrichment API storefront through the same real
+#     pipeline and pins its score on rubric v0.7. Its fixture was re-captured
+#     full-score LIVE [LOCAL] this cycle (promoted classification-only -> replay-clean,
+#     0 misses) and its live score was re-verified == this frozen floor on a fresh $0
+#     static re-score at pin time (Local cycle 20260807T094104Z: live 61.3 == frozen
+#     61.3, all four non-null pillars byte-identical), so it is a STABLE cross-path
+#     datapoint — a probe/scoring change that quietly moved a data-retrieval
+#     storefront's number fails here too, broadening the regression signal to a fourth
+#     site type. Its 72.7 legibility (a rich, documented, machine-legible API — the
+#     highest of the non-anchor set) paired with 25.0 transactability (self-serve
+#     billing, NO agent-native payment rail) makes 61.3 a genuine UPPER-MIDDLE datapoint
+#     between the with-rails API side and the service-booking / retail / null floor.
+# ---------------------------------------------------------------------------
+def test_data_retrieval_storefront_replays_61_3() -> None:
+    print("test_data_retrieval_storefront_replays_61_3")
+    _assert_domain("ipinfo.io")
 
 
 # ---------------------------------------------------------------------------
@@ -1551,6 +1603,15 @@ _REPLAY_CLEAN = {
     "example.com",
     "www.moleskine.com",
     "acuityscheduling.com",
+    # ipinfo.io promoted from classification-only this cycle (Local cycle
+    # 20260807T094104Z) via a [LOCAL] full-score LIVE re-capture: the fresh crawl
+    # covers the whole probe set (0 misses) and replays to its pinned 61.3 D, its
+    # offering classification (metered_api + data_retrieval incl. batch-retrieval/
+    # dataset-format/data-freshness + subscription + digital_good) byte-identical to
+    # the prior classification-only fixture. It is the data-retrieval API TYPE
+    # frozen-replay baseline (a 4th distinct storefront TYPE for the cross-path
+    # regression signal).
+    "ipinfo.io",
 }
 # Fixtures whose recorded surface is a strict subset of the full scoring path
 # (captured for offering/battery classification) — NOT eligible for any
@@ -1563,8 +1624,9 @@ _REPLAY_CLEAN = {
 # platform whose OpenAPI carries a programmatic `DELETE /v1/subscriptions/{id}` +
 # `cancel_at_period_end` — the [LOCAL] enabler for the subscription 9->10 mine;
 # captured via discover_offering, 211 full-scorer misses).
+# (ipinfo.io left this set this cycle — see _REPLAY_CLEAN above.)
 _CLASSIFICATION_ONLY = {
-    "api.replicate.com", "ipinfo.io", "www.allbirds.com", "simplybook.me",
+    "api.replicate.com", "www.allbirds.com", "simplybook.me",
     "polar.sh",
 }
 
@@ -1902,6 +1964,7 @@ def main() -> int:
         test_canonical_delta_is_earned_dominance,
         test_retail_storefront_replays_29_5,
         test_service_booking_storefront_replays_54_0,
+        test_data_retrieval_storefront_replays_61_3,
         test_retail_storefront_earns_no_agent_native_payment,
         test_relabel_invariance_retail,
         test_nonstorefront_replays_22_5,

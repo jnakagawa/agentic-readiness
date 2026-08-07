@@ -85,6 +85,7 @@ _POPULATION = (
     "drift-flight.org",
     "driftflight.com",
     "example.com",
+    "ipinfo.io",
     "www.moleskine.com",
 )
 

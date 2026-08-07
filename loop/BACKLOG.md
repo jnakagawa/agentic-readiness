@@ -101,13 +101,38 @@ Live↔frozen verified this fire ($0 static re-score 08:44Z: live 54.0 == frozen
 byte-identical, replay_misses=0 — the [LOCAL] essence the cloud can't do). Evidence
 runs/local/acuity_third_non_anchor_weld_20260807T084355Z.json. DO NOT RE-AUTHOR — TRACKED by STATE's OPEN-PR banner + next
 fire's first-duty adversarial review + live re-score. See LOG Local cycle 20260807T084355Z. -->
-- **[FOLLOW-UP, future — TRUTH] a 4th non-anchor storefront TYPE for the cross-path weld.** After the acuity weld merges,
-  the cross-path weld spans null-control + retail-catalog + service-booking. A 4th distinct type (a data-retrieval API, a
-  digital-good storefront, a genuine ACP/UCP/MPP merchant) needs a stable committed baseline first: ipinfo.io /
-  simplybook.me / polar.sh each need a [LOCAL] FULL-score fixture re-capture (currently classification-only, dozens of
-  replay-misses) before they can be pinned to `test_canonical_replay.EXPECTED` AND added to the sweep POPULATION.
-  www.moleskine.com is `_REPLAY_CLEAN` but unpinned — a 2nd RETAIL baseline candidate if a future cycle wants retail depth
-  over type breadth (not a new type).
+<!-- MERGED Local cycle 20260807T094104Z: PR #153 (acuityscheduling.com 3rd non-anchor cross-path calibration weld)
+MERGED `7cd4fcc` after the owed FIRST-DUTY adversarial review + independent $0 live re-score. VERDICT SOUND:
+off-scoring-path (three-dot diff since merge-base a104c8d is ONLY test_calibration_anchor_agreement.py +73/-1; empty over
+scoring.py/report.py/probes/battery.py/reliability.py/offering.py/scorecard.py/rubric/fixtures/experiments); vendor-neutral;
+committed baseline 54.0 v0.7; LOAD-BEARING (n_compared=3 across the 3 committed sweeps, segment service-booking:saas);
+teeth (54.0->65.0 caught). Live re-derived THIS fire: acuity 54.0 live == 54.0 frozen == 54.0 EXPECTED, all 4 non-null
+pillars byte-identical -> weld holds, did NOT regress. Suite 38/38 branch + merged main; weld 18/18; the cross-path weld
+now spans THREE non-anchor TYPES. See LOG Local cycle 20260807T094104Z. -->
+<!-- DONE Local cycle 20260807T094104Z: promoted ipinfo.io (data_retrieval / IP-data API storefront — a 4th storefront
+TYPE) from _CLASSIFICATION_ONLY to a frozen-replay calibration baseline via a [LOCAL] FULL-score LIVE re-capture,
+direct-to-main. The prior fixture was classification-only (66 offering-discovery urls, dozens of full-scorer misses); the
+fresh 47-url full-score crawl replays clean (replay_misses=0) to 61.3 D. Verified NON-DESTRUCTIVELY in a temp path FIRST:
+replays clean + offering classification BYTE-IDENTICAL to the prior fixture (the 61 dropped urls were signal-less
+speculative subdomains agents./api./developers./docs.ipinfo.io) -> test_offering 115/115, test_offering_canonical 70/70
+UNCHANGED. Then pinned test_canonical_replay.EXPECTED (61.3 D v0.7) + _REPLAY_CLEAN + new guard
+test_data_retrieval_storefront_replays_61_3 (27->28) + _POPULATION in all 5 reproducibility suites (the replay-clean-set
+tripwires FORCED consistent inclusion). [LOCAL] essence: fresh $0 static re-score THIS fire (09:49Z) -> live 61.3 ==
+frozen 61.3, all 4 non-null pillars byte-identical. Off-scoring-SEMANTICS (only the non-anchor ipinfo.io fixture is
+scoring-adjacent; canonical PAIR untouched); frozen canonical delta UNMOVED +39.4; suite 38/38. Evidence
+runs/local/ipinfo_data_retrieval_baseline_20260807T094104Z.json. See LOG Local cycle 20260807T094104Z. -->
+- **[FOLLOW-UP, oldest P0 — TRUTH] the 4th-non-anchor cross-path WELD (ipinfo.io), now UNLOCKED.** ipinfo.io is now a
+  pinned frozen-replay baseline (61.3 D v0.7, in `_REPLAY_CLEAN`) AND already in the sweep POPULATION (scored 61.3 ×3
+  committed sweeps, segment data-retrieval:api) → the NEXT TRUTH fire can weld it into `_NON_ANCHOR_WELDED` as the 4th
+  member (a data-retrieval TYPE witness), so the cross-path weld spans FOUR structurally-distinct non-anchor types
+  (null-control + retail-catalog + service-booking + data-retrieval). PEER-GATED (regression-guard semantics, same class
+  as PR #153): mirror `test_data_retrieval_..._is_welded_nonvacuously` on the acuity/books test pattern (committed v0.7
+  baseline present, n_compared≥1 genuinely compared, agrees with the 61.3 floor, teeth 61.3→drift caught), and re-verify
+  the [LOCAL] live↔frozen agreement (live 61.3 == frozen 61.3) at author time. A FIFTH distinct type after that still
+  needs a stable committed baseline first: simplybook.me / polar.sh / api.replicate.com / www.allbirds.com each need a
+  [LOCAL] FULL-score fixture re-capture (currently classification-only, dozens of replay-misses) — the same non-destructive
+  temp-verify-then-promote recipe this cycle used for ipinfo.io. www.moleskine.com is `_REPLAY_CLEAN` but unpinned — a 2nd
+  RETAIL baseline candidate if a future cycle wants retail depth over type breadth (not a new type).
 
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
   phrasing has now drifted the `_ENV_BLOCK_RE` guard FIVE times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)

@@ -1,19 +1,36 @@
 # Loop state
 
 - Cycle counter: 295
-- **⏳ OPEN PEER-GATED PR #153 (acuityscheduling.com 3rd non-anchor cross-path calibration weld), opened this fire
-  (Local 20260807T084355Z), branch `loop/acuity-third-non-anchor-weld`, commit `f9769d8` — NOT self-merged.** Next
-  fire's FIRST duty (before any new work): adversarially review PR #153 from fresh context + run its independent $0
-  live re-score, then MERGE if sound. What to re-derive: off-scoring-path (three-dot diff is ONLY
+- **✅ PR #153 (acuityscheduling.com 3rd non-anchor cross-path calibration weld) MERGED this fire (Local
+  20260807T094104Z), merge `7cd4fcc`** — after the owed FIRST-DUTY adversarial review + independent $0 live re-score.
+  VERDICT SOUND: off-scoring-path (three-dot diff since merge-base `a104c8d` is ONLY
   `test_calibration_anchor_agreement.py` +73/−1; EMPTY over scoring.py/report.py/probes/battery.py/reliability.py/
-  offering.py/scorecard.py/rubric/fixtures/experiments); vendor-neutral (welded by storefront TYPE service_booking,
-  not vendor); committed baseline present (`test_canonical_replay.EXPECTED['acuityscheduling.com']` 54.0 v0.7);
-  LOAD-BEARING (n_compared=3 across the 20260805T014754Z/20260806T044352Z/20260807T045843Z sweeps, segment
-  service-booking:saas — NOT silently skipped); teeth (synthetic drift 54.0→65.0 caught as exactly one divergence);
-  and the [LOCAL] live re-score (this fire 08:44Z → live 54.0 == frozen 54.0 == EXPECTED 54.0, replay_misses=0, all 4
-  non-null pillars byte-identical → weld holds, acuity did NOT regress). Weld suite 17→18; full suite 38/38.
-  Evidence `runs/local/acuity_third_non_anchor_weld_20260807T084355Z.json`. If `/extend`-style site drift moved acuity
-  since this fire, re-verify before merging. A peer-gated PR open >3 cycles → escalate in the next digest.
+  offering.py/scorecard.py/rubric/fixtures/experiments); vendor-neutral (welded by storefront TYPE service_booking);
+  committed baseline present (54.0 v0.7); LOAD-BEARING (n_compared=3 across the 20260805T014754Z/20260806T044352Z/
+  20260807T045843Z sweeps, segment service-booking:saas — NOT silently skipped); teeth (54.0→65.0 caught as exactly
+  one divergence); and the [LOCAL] live re-score re-derived THIS fire (`python -m asrs score acuityscheduling.com
+  --json-only`) → acuity **54.0 live == 54.0 frozen == 54.0 EXPECTED**, replay_misses=0, all 4 non-null pillars
+  byte-identical → weld HOLDS, acuity did NOT regress → MERGE. Weld suite 18/18 branch + merged main; the cross-path
+  weld now spans THREE structurally-distinct non-anchor witnesses (null-control example.com + retail-catalog
+  books.toscrape.com + service-booking acuityscheduling.com). Review verdict recorded in LOG Local cycle
+  20260807T094104Z.
+- **✅ NEW SIXTH frozen-replay calibration baseline PINNED this fire (Local 20260807T094104Z, direct-to-main):
+  ipinfo.io** (a data_retrieval / IP-data enrichment API storefront — a FOURTH structurally-distinct storefront TYPE,
+  beyond the two API storefronts / retail catalog / zero-commerce page / service-booking SaaS). 61.3 D v0.7 (access
+  100.0 / legibility 72.73 / transactability 25.0 / trust 80.0). PROMOTED from classification-only to `_REPLAY_CLEAN`
+  via a [LOCAL] FULL-score LIVE re-capture (the prior fixture was 66 offering-discovery urls w/ dozens of full-scorer
+  misses; the fresh 47-url full-score crawl replays clean, replay_misses=0). `test_canonical_replay.EXPECTED` + new
+  guard `test_data_retrieval_storefront_replays_61_3` (replay 27→28, teeth); `_POPULATION` += ipinfo.io in all FIVE
+  reproducibility suites (hashseed/timezone/encoding/locale/probe_order — the replay-clean-set guards FORCED the
+  consistent inclusion). The [LOCAL] essence: fresh $0 static re-score THIS fire (09:49Z) → live 61.3 == frozen 61.3,
+  all 4 non-null pillars byte-identical; offering classification (metered_api + data_retrieval incl. batch-retrieval/
+  dataset-format/data-freshness + subscription + digital_good) BYTE-IDENTICAL to the prior fixture (test_offering
+  115/115, test_offering_canonical 70/70 unchanged — the dropped urls were signal-less speculative subdomains). Its
+  25.0 transactability + 72.7 legibility make 61.3 an UPPER-MIDDLE datapoint that densifies the frozen guard's overall
+  scale. Evidence `runs/local/ipinfo_data_retrieval_baseline_20260807T094104Z.json`. Off-scoring-SEMANTICS (only the
+  non-anchor `fixtures/canonical/ipinfo.io.json` re-capture is scoring-adjacent; canonical PAIR untouched); frozen
+  canonical delta UNMOVED +39.4. **This UNLOCKS the 4th-non-anchor cross-path WELD** (ipinfo.io → `_NON_ANCHOR_WELDED`,
+  a PEER-GATED PR next fire, regression-guard class like #153).
 - **✅ PR #152 (books.toscrape.com 2nd non-anchor calibration weld) MERGED this fire (Local 20260807T074106Z),
   merge `1310fd5`** — after the owed FIRST-DUTY adversarial review + independent live re-score. VERDICT SOUND:
   off-scoring-path (three-dot diff since merge-base `140304e` is ONLY `test_calibration_anchor_agreement.py` +78/−9;
@@ -80,6 +97,27 @@
   but wrote NO LOG entry and never committed/pushed (its panel dir exists gitignored). This fire re-verified #149,
   took ownership of the reconciled banner (above), and committed. No fabricated 214745Z LOG entry. STATE pruned the
   two oldest rolling entries (cloud Cycles 290–291, preserved in LOG.md) to stay under the 600-line hygiene cap.
+- LOCAL cycle — 20260807T094104Z (TRUTH / MERGED PR #153 + promoted ipinfo.io as the 6th frozen-replay baseline /
+  4th storefront TYPE, direct-to-main). FIRST duty: `gh pr list --state open` → PR #153 OPEN → adversarial review +
+  independent $0 live re-score → VERDICT SOUND → **MERGED `7cd4fcc`** (off-scoring-path test-only +73/−1; vendor-neutral;
+  load-bearing n_compared=3; teeth 54.0→65.0; live re-derived acuity 54.0 live == 54.0 frozen, all pillars
+  byte-identical → weld holds; suite 38/38 branch + merged main; weld now spans 3 non-anchor TYPES). Infra HEALTHY:
+  `verify_20260807T094104Z.json` (09:41Z, 38 suites, 46.1/76.2/+30.1) fresh → :41 cadence holding (084101Z→094104Z).
+  **Executed the ONE [LOCAL] item the merge's own next-hypothesis named — a 4th-storefront-TYPE frozen-replay baseline:**
+  ipinfo.io (data_retrieval / IP-data API) was in the sweep POPULATION scoring 61.3 D stably ×3 sweeps but
+  classification-only (66 offering-discovery urls, dozens of full-scorer misses). Re-captured a FULL-score fixture LIVE
+  ($0 static, no --behavioral/--max-pay); verified NON-DESTRUCTIVELY in a temp path FIRST (replays clean 61.3
+  replay_misses=0; offering classification byte-identical → the 61 dropped urls were signal-less speculative subdomains);
+  then PROMOTED classification-only → `_REPLAY_CLEAN`, pinned `test_canonical_replay.EXPECTED` (61.3 D v0.7) + guard
+  `test_data_retrieval_storefront_replays_61_3` (27→28), `_POPULATION` += ipinfo.io in all 5 reproducibility suites (the
+  replay-clean-set tripwires FORCED consistent inclusion). [LOCAL] essence THIS fire (09:49Z): live 61.3 == frozen 61.3,
+  all 4 non-null pillars byte-identical. Direct-to-main (baseline addition + non-anchor fixture re-capture — no scoring
+  semantics; same class as the acuity/books baseline pins); off-scoring-SEMANTICS EMPTY (only the non-anchor ipinfo.io
+  fixture is scoring-adjacent; canonical PAIR untouched); frozen canonical delta UNMOVED +39.4; suite 38/38. Evidence
+  `runs/local/ipinfo_data_retrieval_baseline_20260807T094104Z.json`. Invariants #1 ($0 static recapture + in-process
+  tests, no behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (baseline pin not
+  a DM-enumerated sensitive class; 09:4xZ precedes 16:00 UTC) — #153 MERGE flagged for next digest. UNLOCKS the
+  4th-non-anchor cross-path weld (ipinfo.io) next fire (PEER-GATED). See LOG Local cycle 20260807T094104Z.
 - LOCAL cycle — 20260807T084355Z (TRUTH / welded acuityscheduling.com as the 3rd non-anchor cross-path member,
   PEER-GATED PR #153 opened, NOT self-merged). FIRST duty: `gh pr list --state open` → `[]` (no open PR to review;
   PR #152 MERGED `1310fd5` last fire). Infra HEALTHY: `verify_20260807T084101Z.json` (08:41Z, 38 suites, 46.1 F /
@@ -168,29 +206,6 @@
   (documented-live-drift ledger; see the ⚠ CADENCE-BLOCKED banner). Shipped direct-to-main: the POPULATION broadening +
   held evidence + bookkeeping self-heal. Suite 38/38; frozen replay +39.4 UNMOVED, live +30.1. Invariants #1 ($0 static
   recon, no behavioral/codex/paid)–#5 held. NO DM. See LOG Local cycle 20260807T051750Z.
-- LOCAL cycle — 20260806T195345Z (METHOD / attribution-honesty leak fix, PEER-GATED PR #149 opened, NOT
-  self-merged). FIRST duty: `gh pr list --state open` → `[]` at fire start (no PR to review); repo `main` clean +
-  synced origin/main `f0a7d6c`; newest verify `verify_20260806T194105Z.json` (19:41Z, tests_ok 38 suites, 46.1 F /
-  85.5 B / +39.4), <15min old → INFRA HEALTHY (:41 cadence holding 18:41Z→19:41Z). **Executed the oldest P0 — the
-  v0.7(e) `_ENV_BLOCK_RE` broadening** derived last cycle from the PR #148 harvest. Live leak (committed
-  `runs/local/pr148_postmerge_20260806T184617Z/report_driftflight_com.json`, codex t2): "Permitted browser access
-  was denied, and the public web retriever classified the direct URL as unsafe to open." — `browser access` without
-  `interactive`/`direct` (v0.7(a)), without trailing `permission`, and not `denied BY the browser permission…`
-  (v0.7(d)) → slipped every branch → codex's OWN refusal counted a valid all-false WITH-side SITE run (.com
-  valid_runs 1→2), narrowing the delta (4th vocab drift: 269/284/287→296). FIX: v0.7(a)'s `browser access
-  permission` → `browser access(?: permission)?`; `browser access` (not bare `access`) stays REQUIRED,
-  `_NOT_SITE_ATTRIBUTED` still rejects site-attributed blocks (both directions). EVIDENCE: differential leak-scan
-  over 182 committed records / 392 distinct texts → ONLY the .com leak flips OLD→NEW, ZERO collateral (the two
-  Cycle-287 leaks stay caught by v0.7(d)); re-aggregating the committed .com runs → valid_runs 2→1, reachability
-  PASS→PARTIAL (blocked_runs 0→1), delta widens back toward static +39.4; `test_attribution.py` #15 with teeth
-  (pre-v0.7(e) reversion misses; site-attributed twin + bare 403 + reputation-`unsafe` clause NOT excused) →
-  14→15/15. PEER-GATED (which runs count valid = scoring semantics): PR #149 opened, NOT self-merged. Diff ONLY
-  `asrs/behavioral/shopper.py` (+18/−1) + `tests/test_attribution.py` (+87); off-scoring-path check EMPTY; no rubric
-  bump. Static replay UNMOVED 46.1 F / 85.5 B / **+39.4** (test_canonical_replay 26/26 — change is off the static
-  path, behavioral-only). Full suite **38/38 green**. Invariants #1 ($0 regex + committed-record scan + in-process
-  tests, no signing, no paid ops, no panel run)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM
-  (attribution-validity is not a DM-enumerated sensitive class; 08-06 digest already sent Cycle 294 16:24Z) — PR
-  #149 flagged for next digest. STATE pruned oldest Cycle 289 to stay bounded. See LOG Local cycle 20260806T195345Z.
 - CYCLE 295 — 2026-08-06T~17:1xZ (METHOD, cloud, direct-to-main, score-neutral). FIRST duty (infra health +
   peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR; #148 operator-merged
   `7d47f2e` before Cycle 288, all subsequent direct-to-main). Cloud detached at origin/main `8091c86`; local

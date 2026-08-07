@@ -1,6 +1,23 @@
 # Loop state
 
 - Cycle counter: 295
+- **⏳ OPEN PEER-GATED PR #155 (api.replicate.com 5th non-anchor cross-path calibration weld) — opened this fire
+  (Local 20260807T144105Z), branch `loop/api-replicate-fifth-non-anchor-weld`, commit `d25fcd2`, NOT self-merged.**
+  Welds api.replicate.com (a PURE single-archetype metered_api compute/inference API — a FIFTH structurally-distinct
+  storefront TYPE) into `_NON_ANCHOR_WELDED`, so on merge the cross-path weld spans FIVE non-anchor witnesses
+  (null-control example.com + retail-catalog books.toscrape.com + service-booking acuityscheduling.com +
+  data-retrieval ipinfo.io + pure-inference-API api.replicate.com). TEST-ONLY
+  (`tests/test_calibration_anchor_agreement.py` +79/−4; off-scoring-path diff EMPTY), weld suite 19→20, full suite
+  38/38. LOAD-BEARING: new `test_api_replicate_fifth_non_anchor_is_welded_nonvacuously` — committed v0.7 baseline
+  present (29.5 F), genuinely COMPARED n_compared=1 in `calibration_sweep_20260807T134527Z.json` (segment
+  metered-api:inference-platform; absent from the four priors), agrees with its 29.5 floor, teeth 29.5→40.0 caught.
+  The [LOCAL] essence this fire ($0 static re-score `python -m asrs score api.replicate.com --json-only`, no
+  --behavioral): **live 29.5 == frozen 29.5 == EXPECTED 29.5, all 4 non-null pillars byte-identical, caps empty →
+  weld HOLDS, api.replicate.com did NOT regress.** Evidence
+  `runs/local/api_replicate_fifth_non_anchor_weld_20260807T144105Z.json`. Frozen canonical delta UNMOVED +39.4; live
+  +30.1; suite 38/38. **NEXT FIRE'S FIRST DUTY: adversarially review PR #155 + re-run its $0 live re-score, then
+  MERGE if sound (never review-and-merge own-cycle PR).** NO DM (regression-guard weld not a DM-enumerated sensitive
+  class; 14:4xZ precedes 16:00 UTC) — flagged for next digest.
 - **✅ CALIBRATION CADENCE SWEEP RUN this fire (Local 20260807T134105Z, direct-to-main): api.replicate.com added to
   `experiments/calibration_sweep.py`'s POPULATION and scored $0 static → `runs/local/calibration_sweep_20260807T134527Z.json`
   (19/20 scored, rei.com not-scorable per inv #4, 0 errors).** api.replicate.com scored **29.5 F** (segment
@@ -148,6 +165,24 @@
   but wrote NO LOG entry and never committed/pushed (its panel dir exists gitignored). This fire re-verified #149,
   took ownership of the reconciled banner (above), and committed. No fabricated 214745Z LOG entry. STATE pruned the
   two oldest rolling entries (cloud Cycles 290–291, preserved in LOG.md) to stay under the 600-line hygiene cap.
+- LOCAL cycle — 20260807T144105Z (TRUTH / welded api.replicate.com as the 5th non-anchor cross-path member, PEER-GATED
+  PR #155 opened, NOT self-merged). FIRST duty: `gh pr list --state open` → `[]` (no open PR to review; 134105Z was
+  direct-to-main; PR #154 MERGED `ee95a0b` on 114104Z). Infra HEALTHY: `verify_20260807T144105Z.json` (14:41Z, 38
+  suites, 46.1 F / 76.2 C / +30.1) ~1.5min old at fire (14:42Z) → :41 cadence holding (134105Z→144105Z). **Executed the
+  oldest P0 — the 5th-non-anchor weld (last real cycle's sweep-add UNLOCKED it):** welded api.replicate.com (PURE
+  single-archetype metered_api compute/inference API — a 5th distinct storefront TYPE) into `_NON_ANCHOR_WELDED` =
+  (example.com, books.toscrape.com, acuityscheduling.com, ipinfo.io, api.replicate.com), so the cross-path weld spans
+  FIVE non-anchor witnesses. New `test_api_replicate_fifth_non_anchor_is_welded_nonvacuously`: committed v0.7 baseline
+  present (29.5 F), genuinely COMPARED n_compared=1 (metered-api:inference-platform in the sole 20260807T134527Z sweep),
+  agrees with its 29.5 floor, teeth (29.5→40.0 caught as exactly one divergence). The [LOCAL] essence THIS fire (14:44Z
+  $0 static re-score): live 29.5 == frozen fixture 29.5 == EXPECTED 29.5, all 4 non-null pillars byte-identical, caps
+  empty (NOT scorable in cloud). TEST-ONLY (`test_calibration_anchor_agreement.py` +79/−4; off-scoring-path EMPTY), weld
+  suite 19→20, full suite 38/38. PEER-GATED (regression-guard semantics, same class as #154) → PR #155 opened, NOT
+  self-merged; main floor green (weld change branch-only). Evidence
+  `runs/local/api_replicate_fifth_non_anchor_weld_20260807T144105Z.json`. Invariants #1 ($0 static re-score + in-process
+  tests, no behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (regression-guard
+  weld not a DM-enumerated sensitive class; 14:4xZ precedes 16:00 UTC) — PR #155 flagged for next digest. Frozen
+  canonical delta UNMOVED +39.4; live +30.1. See LOG Local cycle 20260807T144105Z.
 - LOCAL cycle — 20260807T134105Z (TRUTH / ran the calibration cadence sweep with api.replicate.com added to POPULATION,
   direct-to-main). FIRST duty: `gh pr list --state open` → `[]` (no open PR; PR #154 MERGED `ee95a0b` last real cycle).
   Infra HEALTHY: `verify_20260807T134105Z.json` (13:41Z, 38 suites, 46.1 F / 76.2 C / +30.1) fresh at fire (13:43Z) → :41
@@ -316,42 +351,9 @@
   (documented-live-drift ledger; see the ⚠ CADENCE-BLOCKED banner). Shipped direct-to-main: the POPULATION broadening +
   held evidence + bookkeeping self-heal. Suite 38/38; frozen replay +39.4 UNMOVED, live +30.1. Invariants #1 ($0 static
   recon, no behavioral/codex/paid)–#5 held. NO DM. See LOG Local cycle 20260807T051750Z.
-- CYCLE 295 — 2026-08-06T~17:1xZ (METHOD, cloud, direct-to-main, score-neutral). FIRST duty (infra health +
-  peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR; #148 operator-merged
-  `7d47f2e` before Cycle 288, all subsequent direct-to-main). Cloud detached at origin/main `8091c86`; local
-  `main` stale orphan `3e318f1` → realigned to origin/main before work (benign, no history rewrite). **INFRA
-  HEALTHY:** newest verify by FILENAME `runs/local/verify_20260806T154104Z.json` (15:41Z, tests_ok=true 38
-  suites, 46.1 F / 85.5 B / +39.4), ~1h33m old at fire (17:14Z), inside the 6h floor → WATCH NORMAL. **CADENCE
-  NOTE:** the 16:41Z artifact had NOT appeared by 17:14Z (mild ~33-min lag past the :41 tick, NOT a >6h stall —
-  no escalation); if 17:41Z ALSO slips, next fire should re-check runner health. Fresh checkout NO `.venv` →
-  rebuilt (py3.11); full suite **38/38 green** (standalone-runner pass on current tip). **TRACK (cloud METHOD /
-  fixture-capture determinism):** STATE's named METHOD lever had two axes — (i) behavioral-path probe/trial
-  arrival-order (the Cycle-291 static sibling) and (ii) fixture-capture serialization determinism. Audited (i)
-  FIRST → ALREADY GUARDED: `test_battery::test_aggregation_is_presentation_order_invariant` (aggregate_battery
-  invariant under permuted task order + reversed run lists) + `test_reliability::test_panel_reliability_is_trial_order_invariant`
-  (panel_reliability invariant under 4 run-orderings incl. valid-run SELECTION). Moved to (ii), OPEN:
-  `asrs/fetch.py::save_fixture` serialized `entries` by iterating the insertion-ordered `_cache` dict → recorded
-  entry order was probe-ARRIVAL order (deterministic today ONLY because `probes.run` crawls single-threaded/
-  fixed-order — a reordered/parallelized crawl would emit byte-DIFFERENT fixtures for identical content). The
-  recording-side sibling of the Cycle-253/255/257 `by_run` evidence-order sorts + Cycle-291 `caps_applied`
-  finding. **IMPROVEMENT:** `save_fixture` now emits `sorted(self._cache.items(), key=lambda kv: kv[0])` —
-  sorted on the total unique `(method,url,ua)` cache key → the fixture is a function of WHAT was observed, not
-  arrival order; replay (`from_fixture`) already rebuilds a dict keyed by that tuple so entry order never reached
-  a score (changes only RECORDED bytes). **EVIDENCE:** `test_fetch_replay.py` +1 registered test
-  `test_save_fixture_entry_order_is_capture_order_invariant` (suite count unchanged 38 — a test WITHIN the
-  existing suite): SAME 4 responses in 2 different insertion orders (k2/k3 differ ONLY by ua → ua must be in the
-  key), asserts (a) orders genuinely differ / (b) serialized `entries` byte-identical across orders / (c) emitted
-  order IS the canonical `(method,url,ua)` sort incl. the ua tie-break (teeth) / (d) score-neutral round-trip via
-  `from_fixture`. TEETH VERIFIED: monkeypatching back to the unsorted serializer makes the test FAIL at (b).
-  runner-registration green. **SHIP (direct-to-main):** off the scoring path (`git diff --stat -- asrs/scoring.py
-  asrs/report.py asrs/probes asrs/battery.py asrs/reliability.py asrs/offering.py rubric/ fixtures/ experiments/
-  loop/local_verify.py batteries/` EMPTY; only asrs/fetch.py +18/-1 + test_fetch_replay.py +95); recording-utility
-  serialization hardening changes NO scoring semantics → direct-to-main tier (Cycle-253/255/257 precedent); no
-  rubric bump. Suite **38/38 green** after. **CANONICAL UNMOVED:** static replay 26/26 → 46.1 F / 85.5 B /
-  **+39.4** (concurs 15:41Z floor); committed fixtures UNCHANGED (none re-recorded), `from_fixture` is dict-keyed
-  → entry order cannot move a score; off-scoring-path diff EMPTY. Invariants #1 ($0 pure in-process serialization
-  + read-only tests)–#5 held; zero codex, zero paid ops. NO DM (score-neutral METHOD, not a DM-enumerated
-  sensitive class; digest already sent by Cycle 294 at 16:24Z → none due). See LOG Cycle 295.
+<!-- Rolling entry for cloud CYCLE 295 (METHOD / save_fixture canonical-order serialization) pruned this fire
+     (Local cycle 20260807T144105Z) to stay under the STATE line cap — preserved verbatim in loop/LOG.md
+     (## Cycle 295) + git history. The FOCUS POINTER below still carries the cloud track's forward state. -->
 - FOCUS POINTER (Cycle 295 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
   check. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH NORMAL but WITH a fresh cadence
   flag — the 16:41Z verify was ~33min late at 17:14Z; re-check if 17:41Z also slips (re-escalate ONLY on a fresh

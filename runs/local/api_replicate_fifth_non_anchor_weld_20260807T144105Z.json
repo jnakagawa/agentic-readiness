@@ -1,0 +1,62 @@
+{
+  "ts": "20260807T144105Z",
+  "kind": "api-replicate-fifth-non-anchor-cross-path-weld",
+  "cycle": "Local 20260807T144105Z",
+  "domain": "api.replicate.com",
+  "storefront_type": "pure single-archetype metered_api compute/model-inference API (a 5th structurally-distinct TYPE)",
+  "segment": "metered-api:inference-platform",
+  "peer_gated": true,
+  "branch": "loop/api-replicate-fifth-non-anchor-weld",
+  "local_essence_live_static_rescore": {
+    "invocation": "python -m asrs score api.replicate.com --json-only  ($0 static, no --behavioral)",
+    "live_overall": 29.5,
+    "live_grade": "F",
+    "live_rubric": "0.7",
+    "live_pillars": {
+      "access": 100.0,
+      "legibility": 18.181818181818183,
+      "transactability": 0.0,
+      "trust": 33.333333333333336,
+      "outcome": null
+    },
+    "caps_applied": [],
+    "scored": true
+  },
+  "frozen_floor": {
+    "overall": 29.5,
+    "grade": "F",
+    "rubric_version": "0.7",
+    "pillars": {
+      "access": 100.0,
+      "legibility": 18.181818181818183,
+      "transactability": 0.0,
+      "trust": 33.333333333333336,
+      "outcome": null
+    }
+  },
+  "agreement": {
+    "overall_byte_identical": true,
+    "all_pillars_byte_identical": true,
+    "caps_empty": true,
+    "verdict": "live 29.5 == frozen 29.5 == EXPECTED 29.5, all 4 non-null pillars byte-identical, caps empty -> weld HOLDS, api.replicate.com did NOT regress"
+  },
+  "weld_load_bearing": {
+    "n_compared": 1,
+    "compared_in_sweep": "calibration_sweep_20260807T134527Z.json",
+    "absent_from_priors": [
+      "20260728T234815Z",
+      "20260805T014754Z",
+      "20260806T044352Z",
+      "20260807T045843Z"
+    ],
+    "teeth": "synthetic drift 29.5 -> 40.0 caught as exactly one divergence vs the 29.5 floor"
+  },
+  "off_scoring_path": "only tests/test_calibration_anchor_agreement.py changed (+79/-4); EMPTY over asrs/ rubric/ fixtures/ experiments/ loop/local_verify.py",
+  "suites": {
+    "weld": "20/20",
+    "full": "38/38"
+  },
+  "frozen_canonical_delta": "+39.4 UNMOVED (test_canonical_replay 26/26)",
+  "live_canonical_delta_this_hour": "+30.1 (verify_20260807T144105Z.json: 46.1 F / 76.2 C, persistent x402 regression)",
+  "invariants": "all held: #1 ($0 static re-score + in-process tests, no behavioral/codex/paid/zero-CLI), #2 (rubric v0.7 unchanged, no version bump), #3 (evidence committed), #4 (attribution honesty - live==frozen, not-scorable handling unchanged), #5 (append-only)"
+}

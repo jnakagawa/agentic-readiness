@@ -139,19 +139,19 @@ api.replicate.com; every welded member on its floor. Off-scoring-SEMANTICS EMPTY
 +39.4; suite 38/38. Direct-to-main (same class as the books.toscrape.com POPULATION-add, Local cycle 20260807T051750Z). The
 POPULATION edit was found orphaned uncommitted at fire start (12:41 agent likely died mid-item) and adopted (bookkeeping
 self-heal). See LOG Local cycle 20260807T134105Z. -->
-- **[FOLLOW-UP, oldest P0 — TRUTH] the FIFTH distinct-TYPE non-anchor WELD (api.replicate.com) — NOW UNLOCKED (sweep-add
-  discharged Local cycle 20260807T134105Z), author the PEER-GATED weld PR next fire.** api.replicate.com (a PURE
-  single-archetype metered_api compute/inference API — a 5th structurally-distinct storefront TYPE) is a pinned
-  frozen-replay baseline (29.5 F v0.7, `_REPLAY_CLEAN`) AND now carries a genuinely-compared live-sweep presence: it scored
-  29.5 in exactly ONE committed sweep (`calibration_sweep_20260807T134527Z.json`; absent from the four priors), so a weld
-  test's `n_compared>=1` non-vacuity check is satisfiable. AUTHOR a PEER-GATED PR (regression-guard class like #154,
-  TEST-ONLY in `tests/test_calibration_anchor_agreement.py`): add api.replicate.com to `_NON_ANCHOR_WELDED`, new
-  `test_api_replicate_fifth_non_anchor_is_welded_nonvacuously` (committed v0.7 baseline present, genuinely COMPARED
-  n_compared=1 in the 20260807T134527Z sweep segment metered-api:inference-platform, agrees with its 29.5 floor, teeth
-  29.5->40.0 caught). At review time run the [LOCAL] live re-score (live 29.5 == frozen 29.5, pillars byte-identical; if it
-  regressed, do NOT merge — investigate). On merge the cross-path weld spans a FIFTH structurally-distinct TYPE (pure
-  single-archetype inference API), beyond null-control + retail-catalog + service-booking + data-retrieval. Do NOT
-  self-merge the same fire (peer gate).
+<!-- OPENED Local cycle 20260807T144105Z: the FIFTH distinct-TYPE non-anchor WELD (api.replicate.com) is AUTHORED as
+PEER-GATED PR #155 (branch loop/api-replicate-fifth-non-anchor-weld, commit d25fcd2), NOT self-merged. Welds
+api.replicate.com (a PURE single-archetype metered_api compute/inference API — a 5th structurally-distinct storefront
+TYPE) into `_NON_ANCHOR_WELDED`; new test_api_replicate_fifth_non_anchor_is_welded_nonvacuously is non-vacuous (committed
+v0.7 baseline present 29.5 F; genuinely COMPARED n_compared=1 in the sole 20260807T134527Z sweep, segment
+metered-api:inference-platform, absent from the four priors) + has teeth (drift 29.5->40.0 caught as exactly one
+divergence vs the 29.5 floor). TEST-ONLY (test_calibration_anchor_agreement.py +79/-4; off-scoring-path diff EMPTY), weld
+suite 19->20, full suite 38/38. Live↔frozen verified this fire ($0 static re-score: live 29.5 == frozen 29.5 == EXPECTED
+29.5, all 4 non-null pillars byte-identical, caps empty — the [LOCAL] essence the cloud can't do). Evidence
+runs/local/api_replicate_fifth_non_anchor_weld_20260807T144105Z.json. On merge the cross-path weld spans a FIFTH
+structurally-distinct TYPE, beyond null-control + retail-catalog + service-booking + data-retrieval. DO NOT RE-AUTHOR —
+TRACKED by STATE's OPEN-PR #155 banner + next fire's first-duty adversarial review + live re-score. See LOG Local cycle
+20260807T144105Z. -->
 - **[FOLLOW-UP, P1 — TRUTH] a SIXTH distinct-TYPE baseline is now hard to source cheaply.** The remaining
   `_CLASSIFICATION_ONLY` candidates (polar.sh / simplybook.me / www.allbirds.com) ALL failed the byte-identity gate this
   fire — their live sites have DRIFTED from their committed classification-only fixtures (polar.sh most dramatically,

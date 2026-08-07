@@ -137,6 +137,25 @@ _ANCHORS = ("drift-flight.org", "driftflight.com")
 # cycle 20260807T174235Z, static $0 re-score): live overall 49.8 == frozen 49.8 and all four
 # non-null pillars byte-identical, the cross-path evidence the cloud cannot produce
 # (www.moleskine.com is NOT SCORABLE without outbound network).
+# exa.ai (a real AGENT-NATIVE web-search / content-retrieval API storefront — Exa; test_canonical_replay
+# pins its 78.1 floor) is welded here as the SEVENTH non-anchor member, and the FIRST welded member
+# with GENUINE partial agent-native commerce rails. Every non-anchor member above sits at the no-rails
+# floor of the transactability axis (books/api.replicate 0.0, moleskine 18.75, acuity/ipinfo 25.0) — the
+# only welded point with real programmatic-payment capability was the WITH-rails anchor driftflight.com.
+# exa.ai's 50.0 transactability is honestly earned by documented x402 (its llms.txt cites an
+# 'x402-agentkit-free-trial' surface) + an MCP surface + self-serve PAYG — a real MIDDLE strictly between
+# the no-rails floor (0.0) and the anchor's full x402-LIVE handshake (87.5). At 78.1 (legibility 100.0,
+# trust 83.33) it is the SECOND-HIGHEST baseline, filling the frozen guard's widest upper-middle gap
+# (nothing sat between ipinfo's 61.3 and driftflight's 85.5), so the cross-path regression signal now
+# reaches the upper / with-rails scale, not just the no-rails band. It is keyed 'exa.ai' identically on
+# both paths (no www/bare alias needed, unlike moleskine) and scored 78.1 in ALL FIVE committed sweeps
+# (segment api-service), so it is genuinely COMPARED (n_compared=5), not silently skipped. Its
+# live<->frozen agreement was verified this fire (Local cycle 20260807T194459Z, static $0 re-score): live
+# overall 78.1 == frozen 78.1 and all four non-null pillars byte-identical (access 100.0 / legibility
+# 100.0 / transactability 50.0 / trust 83.33), the cross-path evidence the cloud cannot produce (exa.ai
+# is NOT SCORABLE without outbound network). So the cross-path weld now spans SEVEN structurally-distinct
+# non-anchor witnesses: null-control + 2 retail + service-booking + data-retrieval + pure-inference-API +
+# agent-native-search-API (the first with partial agent-native rails).
 _NON_ANCHOR_WELDED = (
     "example.com",
     "books.toscrape.com",
@@ -144,6 +163,7 @@ _NON_ANCHOR_WELDED = (
     "ipinfo.io",
     "api.replicate.com",
     "www.moleskine.com",
+    "exa.ai",
 )
 # Every population member welded across the offline-replay and live-sweep paths.
 _WELDED_MEMBERS = _ANCHORS + _NON_ANCHOR_WELDED
@@ -879,6 +899,72 @@ def test_moleskine_sixth_non_anchor_is_welded_nonvacuously() -> None:
     _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
 
 
+def test_exa_ai_seventh_non_anchor_is_welded_nonvacuously() -> None:
+    print("test_exa_ai_seventh_non_anchor_is_welded_nonvacuously")
+    # exa.ai is the SEVENTH non-anchor welded member (a real AGENT-NATIVE web-search /
+    # content-retrieval API — Exa), and the FIRST welded member with GENUINE partial
+    # agent-native commerce rails: documented x402 (llms.txt 'x402-agentkit-free-trial')
+    # + an MCP surface + self-serve PAYG earn transactability 50.0 — a real MIDDLE strictly
+    # between the no-rails floor (0.0) and the anchor's full x402-LIVE handshake (87.5).
+    # At 78.1 it is the second-highest baseline, so the cross-path regression signal now
+    # reaches the upper / with-rails scale, not just the no-rails band every prior non-anchor
+    # member sat in. Prove the weld is LOAD-BEARING for it specifically, not silently skipped
+    # in every sweep: it carries a committed v0.7 replay baseline, it is genuinely COMPARED in
+    # >=1 committed sweep (all five cadence runs scored it 78.1, segment api-service, keyed
+    # 'exa.ai' identically on both paths — no www/bare alias needed), and its live value agrees
+    # with the frozen floor. Its live↔frozen agreement was independently re-scored this fire
+    # (Local cycle 20260807T194459Z, static $0: live 78.1 == frozen 78.1, all four non-null
+    # pillars byte-identical), the cross-path evidence the cloud cannot produce (exa.ai is NOT
+    # SCORABLE without outbound network).
+    _check(
+        "exa.ai" in _NON_ANCHOR_WELDED,
+        "exa.ai is a welded non-anchor member",
+    )
+    _check(
+        "exa.ai" in replay.EXPECTED
+        and str(replay.EXPECTED["exa.ai"]["rubric_version"]) == _BASELINE_VERSION,
+        "exa.ai carries a committed v0.7 replay baseline (the weld's source of truth)",
+    )
+    sweeps = _committed_sweeps()
+    divergences, n_compared, _, _ = _divergences(
+        sweeps, replay.EXPECTED, _BASELINE_VERSION, members=("exa.ai",)
+    )
+    _check(
+        divergences == [],
+        f"exa.ai's live sweeps agree with its 78.1 replay floor (got {divergences})",
+    )
+    _check(
+        n_compared >= 1,
+        f"exa.ai is genuinely compared, not silently skipped (got {n_compared})",
+    )
+    # Teeth: a live re-capture that drifted exa.ai 78.1 -> 90.0 MUST trip the weld, exactly as
+    # a drifted anchor or any prior non-anchor member does — so welding this seventh member (the
+    # first on the upper / with-rails scale) is not toothless.
+    drifted = {
+        "rubric_version": "0.7",
+        "rows": [
+            {
+                "domain": "exa.ai",
+                "segment": "api-service",
+                "scored": True,
+                "overall": 90.0,
+            }
+        ],
+    }
+    dvg, n_cmp, _, _ = _divergences(
+        [("synthetic-exa-drift", drifted)], replay.EXPECTED, _BASELINE_VERSION,
+        members=("exa.ai",),
+    )
+    _check(len(dvg) == 1, f"exactly one divergence caught (got {dvg})")
+    _check(
+        dvg[0][1] == "exa.ai"
+        and abs(dvg[0][2] - 90.0) < 1e-9
+        and abs(dvg[0][3] - 78.1) < 1e-9,
+        f"the drifted exa.ai is caught vs its 78.1 floor (got {dvg[0]})",
+    )
+    _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
+
+
 def test_www_bare_domain_key_is_normalized() -> None:
     print("test_www_bare_domain_key_is_normalized")
     # _member_row matches a welded member to its sweep row modulo a single leading 'www.'
@@ -1209,6 +1295,7 @@ def main() -> int:
         test_ipinfo_fourth_non_anchor_is_welded_nonvacuously,
         test_api_replicate_fifth_non_anchor_is_welded_nonvacuously,
         test_moleskine_sixth_non_anchor_is_welded_nonvacuously,
+        test_exa_ai_seventh_non_anchor_is_welded_nonvacuously,
         test_www_bare_domain_key_is_normalized,
         test_off_version_sweep_is_not_compared,
         test_live_sweep_pillars_agree_with_replay_baseline,

@@ -1,0 +1,44 @@
+{
+  "ts": "20260807T194459Z",
+  "kind": "exa-ai-seventh-non-anchor-weld",
+  "cycle": "Local 20260807T194459Z",
+  "member": "exa.ai",
+  "storefront_type": "agent-native web-search / content-retrieval API (Exa) \u2014 FIRST welded member with genuine partial agent-native rails",
+  "weld_position": "7th non-anchor cross-path welded member",
+  "peer_gated_pr": "loop/exa-ai-seventh-non-anchor-weld",
+  "live_static_rescore_this_fire": {
+    "overall": 78.1,
+    "grade": "C",
+    "rubric": "0.7",
+    "scored": true,
+    "caps_applied": [],
+    "pillars": {
+      "access": 100.0,
+      "legibility": 100.0,
+      "transactability": 50.0,
+      "trust": 83.33333333333333,
+      "outcome": null
+    }
+  },
+  "frozen_replay_EXPECTED": {
+    "overall": 78.1,
+    "grade": "C",
+    "rubric": "0.7",
+    "pillars": {
+      "access": 100.0,
+      "legibility": 100.0,
+      "transactability": 50.0,
+      "trust": 83.33333333333333,
+      "outcome": null
+    }
+  },
+  "agreement": "live 78.1 == frozen fixture-replay 78.1 == EXPECTED 78.1; all 4 non-null pillars byte-identical (access 100.0 / legibility 100.0 / transactability 50.0 / trust 83.33); caps empty",
+  "n_compared": 5,
+  "n_compared_note": "scored 78.1 in all FIVE committed calibration sweeps (segment api-service), keyed exa.ai identically on both paths (no www/bare alias)",
+  "teeth": "synthetic drift 78.1 -> 90.0 caught as exactly one divergence vs the 78.1 floor",
+  "diff": "test_calibration_anchor_agreement.py only (+87); off scoring-semantics path EMPTY",
+  "weld_suite": "22 -> 23 (branch)",
+  "full_suite": "38/38 green (branch)",
+  "frozen_canonical_delta": "+39.4 UNMOVED",
+  "live_canonical_delta": "+30.1 (persistent x402 402->401 regression, verify_20260807T194100Z)"
+}

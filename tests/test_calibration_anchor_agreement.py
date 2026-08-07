@@ -96,10 +96,26 @@ _ANCHORS = ("drift-flight.org", "driftflight.com")
 # Its live↔frozen agreement was verified this fire (Local cycle 20260807T084355Z, static
 # $0 re-score): live overall 54.0 == frozen 54.0 and all four non-null pillars
 # byte-identical, the cross-path evidence the cloud cannot produce (acuityscheduling.com
-# is NOT SCORABLE without outbound network). So the cross-path weld now spans THREE
-# structurally-distinct non-anchor witnesses: null-control (example.com) + retail-catalog
-# (books.toscrape.com) + service-booking (acuityscheduling.com).
-_NON_ANCHOR_WELDED = ("example.com", "books.toscrape.com", "acuityscheduling.com")
+# is NOT SCORABLE without outbound network).
+# ipinfo.io (a real DATA-RETRIEVAL / IP-data enrichment API storefront — a FOURTH
+# structurally-distinct storefront type, distinct from the two API storefront anchors, the
+# retail catalog, the zero-commerce page, AND the service-booking SaaS; test_canonical_replay
+# pins its 61.3 floor, whose 25.0 transactability + 72.73 legibility make it an UPPER-MIDDLE
+# datapoint that densifies the overall scale) is welded here as the FOURTH non-anchor member.
+# It is scored 61.3 in THREE committed sweeps (20260805T014754Z, 20260806T044352Z,
+# 20260807T045843Z, segment data-retrieval:api). Its live↔frozen agreement was verified this
+# fire (Local cycle 20260807T104102Z, static $0 re-score): live overall 61.3 == frozen 61.3
+# and all four non-null pillars byte-identical, the cross-path evidence the cloud cannot
+# produce (ipinfo.io is NOT SCORABLE without outbound network). So the cross-path weld now
+# spans FOUR structurally-distinct non-anchor witnesses: null-control (example.com) +
+# retail-catalog (books.toscrape.com) + service-booking (acuityscheduling.com) +
+# data-retrieval (ipinfo.io).
+_NON_ANCHOR_WELDED = (
+    "example.com",
+    "books.toscrape.com",
+    "acuityscheduling.com",
+    "ipinfo.io",
+)
 # Every population member welded across the offline-replay and live-sweep paths.
 _WELDED_MEMBERS = _ANCHORS + _NON_ANCHOR_WELDED
 _BASELINE_VERSION = "0.7"  # asserted == the replay baseline's version below (test 1)
@@ -614,6 +630,66 @@ def test_acuity_third_non_anchor_is_welded_nonvacuously() -> None:
     _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
 
 
+def test_ipinfo_fourth_non_anchor_is_welded_nonvacuously() -> None:
+    print("test_ipinfo_fourth_non_anchor_is_welded_nonvacuously")
+    # ipinfo.io is the FOURTH non-anchor welded member (a real data-retrieval / IP-data
+    # enrichment API storefront — a structurally-distinct storefront TYPE from the two API
+    # anchors, the retail catalog, the zero-commerce control, AND the service-booking SaaS).
+    # Prove the weld is LOAD-BEARING for it specifically, not silently skipped in every
+    # sweep: it carries a committed v0.7 replay baseline, it is genuinely COMPARED in >=1
+    # committed sweep (three cadence runs scored it 61.3), and its live value agrees with
+    # the frozen floor. Its live↔frozen agreement was independently re-scored this fire
+    # (Local cycle 20260807T104102Z: live 61.3 == frozen 61.3, all four non-null pillars
+    # byte-identical).
+    _check(
+        "ipinfo.io" in _NON_ANCHOR_WELDED,
+        "ipinfo.io is a welded non-anchor member",
+    )
+    _check(
+        "ipinfo.io" in replay.EXPECTED
+        and str(replay.EXPECTED["ipinfo.io"]["rubric_version"]) == _BASELINE_VERSION,
+        "ipinfo.io carries a committed v0.7 replay baseline (the weld's source of truth)",
+    )
+    sweeps = _committed_sweeps()
+    divergences, n_compared, _, _ = _divergences(
+        sweeps, replay.EXPECTED, _BASELINE_VERSION, members=("ipinfo.io",)
+    )
+    _check(
+        divergences == [],
+        f"ipinfo.io's live sweeps agree with its 61.3 replay floor (got {divergences})",
+    )
+    _check(
+        n_compared >= 1,
+        f"ipinfo.io is genuinely compared, not silently skipped (got {n_compared})",
+    )
+    # Teeth: a live re-capture that drifted ipinfo.io 61.3 -> 72.0 MUST trip the weld,
+    # exactly as a drifted anchor, example.com, books.toscrape.com, or acuityscheduling.com
+    # does — so welding this fourth non-anchor member is not toothless.
+    drifted = {
+        "rubric_version": "0.7",
+        "rows": [
+            {
+                "domain": "ipinfo.io",
+                "segment": "data-retrieval:api",
+                "scored": True,
+                "overall": 72.0,
+            }
+        ],
+    }
+    dvg, n_cmp, _, _ = _divergences(
+        [("synthetic-ipinfo-drift", drifted)], replay.EXPECTED, _BASELINE_VERSION,
+        members=("ipinfo.io",),
+    )
+    _check(len(dvg) == 1, f"exactly one divergence caught (got {dvg})")
+    _check(
+        dvg[0][1] == "ipinfo.io"
+        and abs(dvg[0][2] - 72.0) < 1e-9
+        and abs(dvg[0][3] - 61.3) < 1e-9,
+        f"the drifted ipinfo.io is caught vs its 61.3 floor (got {dvg[0]})",
+    )
+    _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
+
+
 def test_off_version_sweep_is_not_compared() -> None:
     print("test_off_version_sweep_is_not_compared")
     # Invariant #2 teeth: a different-rubric sweep is never diffed against the v0.7
@@ -888,6 +964,7 @@ def main() -> int:
         test_drifted_non_anchor_member_is_caught,
         test_books_toscrape_second_non_anchor_is_welded_nonvacuously,
         test_acuity_third_non_anchor_is_welded_nonvacuously,
+        test_ipinfo_fourth_non_anchor_is_welded_nonvacuously,
         test_off_version_sweep_is_not_compared,
         test_live_sweep_pillars_agree_with_replay_baseline,
         test_pillar_canceling_drift_passes_overall_but_is_caught_by_pillar_weld,

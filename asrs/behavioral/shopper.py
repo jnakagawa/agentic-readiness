@@ -119,7 +119,29 @@ _ENV_BLOCK_RE = re.compile(
     # the server/WAF/Cloudflare", so a site 403 body ("Access Denied") and any
     # site-attributed block are STILL never excused. Pinned by
     # tests/test_attribution.py #15.
-    r"|(?:interactive(?: browser)? access|direct browser access|browser access(?: permission)?)"
+    # v0.7 (f) (Cycle 296): the SITE-access qualifier made OPTIONAL too, so
+    # "browser SITE-access permission ... declined" is anchored. codex's own-tool
+    # refusal drifted a FIFTH time (PR #149 post-merge panel, runs/local/
+    # pr149_postmerge_20260806T204850Z/ -> run record runs/drift-flight_org_
+    # 20260806T205238.json, codex t2, .org NO-rails side): "Browser site-access
+    # permission for drift-flight.org was declined, preventing direct read-only
+    # inspection." while the SAME-run FetchContext.homepage() = HTTP 200 and codex
+    # t1 on the SAME panel was correctly caught by the v0.6 "browser security layer"
+    # branch. The apparatus is "browser SITE-access permission" -- not "browser
+    # access" (v0.7(a)/(e) require "access" ADJACENT to "browser"), not possessive
+    # "browser's" (v0.7(b)), and the block verb "declined" FOLLOWS the noun rather
+    # than "declined BY the browser permission ..." (v0.7(d)) -- so it slipped EVERY
+    # branch, and the all-false refusal counted a VALID .org SITE run, NARROWING the
+    # behavioral delta by scoring codex's OWN hosted-browser refusal as site evidence
+    # (the exact invariant-#4 leak). The OPTIONAL "(?:site[- ])?" accepts the
+    # "site-"/"site " qualifier while "browser ... access" (with "access" still
+    # REQUIRED after "browser") keeps a bare site 403 body ("Access Denied") unmatched
+    # and _NOT_SITE_ATTRIBUTED intact -- a site-attributed "...declined BY the
+    # server/WAF/Cloudflare" is STILL never excused (both directions). A strict
+    # SUPERSET of v0.7(e) (the added group is optional): a differential leak-scan over
+    # all 1417 committed run-record string leaves flips EXACTLY this one text
+    # OLD->NEW, ZERO collateral, ZERO loss. Pinned by tests/test_attribution.py #16.
+    r"|(?:interactive(?: browser)? access|direct browser access|browser (?:site[- ])?access(?: permission)?)"
     r"(?:[^.]|\.(?=\S)){0,60}?"
     r"(?:denied|declined|refused|rejected|blocked)" + _NOT_SITE_ATTRIBUTED +
     # v0.7 (b): the browser's OWN site-permission / safety boundary as the gate.

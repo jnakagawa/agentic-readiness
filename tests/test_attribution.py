@@ -748,9 +748,13 @@ def test_env_block_browser_access_near_miss_covered() -> None:
     # TEETH: the live _ENV_BLOCK_RE with ONLY the v0.7(e) broadening reverted
     # (the trailing "permission" made mandatory again) MISSED this phrasing — so
     # the broadening is exactly and solely load-bearing for this leak.
+    # (revert target tracks the LIVE pattern: v0.7(f) later inserted an optional
+    # "(?:site[- ])?" between "browser " and "access", so the revert of v0.7(e)'s
+    # optional trailing "permission" is expressed against that current substring.)
     pre_e = re.compile(
         S._ENV_BLOCK_RE.pattern.replace(
-            "browser access(?: permission)?", "browser access permission"),
+            "browser (?:site[- ])?access(?: permission)?",
+            "browser (?:site[- ])?access permission"),
         re.I,
     )
     _check(pre_e.pattern != S._ENV_BLOCK_RE.pattern,
@@ -798,6 +802,94 @@ def test_env_block_browser_access_near_miss_covered() -> None:
            "the browser-access-blocked model is attributed in reachability evidence")
 
 
+# ---------------------------------------------------------------------------
+# 16. v0.7 Cycle 296: own-tool "browser SITE-access permission ... declined"
+#     NEAR-MISS (the FIFTH drift of the codex refusal vocabulary, after
+#     269 + 284 + 287 + 296=v0.7(e)). The PR #149 post-merge panel caught codex
+#     refusing the NO-rails canonical (.org) with "Browser site-access permission
+#     for drift-flight.org was declined, preventing direct read-only inspection."
+#     — it names "browser SITE-access permission" as the gated apparatus, but the
+#     "site-" qualifier splits "browser" from "access" so v0.7(a)/(e)'s
+#     "browser access(?: permission)?" (adjacency REQUIRED) missed it; it is not
+#     possessive "browser's" (v0.7(b)); and "declined" FOLLOWS the noun rather
+#     than "declined BY the browser permission ..." (v0.7(d)) — so it slipped
+#     EVERY branch. The all-false refusal counted a VALID .org SITE run, NARROWING
+#     the behavioral delta by scoring codex's OWN hosted-browser refusal as site
+#     evidence (the exact invariant-#4 leak) while the SAME-run
+#     FetchContext.homepage() showed the SITE at HTTP 200 and codex t1 on the SAME
+#     panel was correctly caught by the v0.6 "browser security layer" branch.
+#     Fixture is the LITERAL committed transcript string (invariant #3):
+#     runs/local/pr149_postmerge_20260806T204850Z/ -> run record
+#     runs/drift-flight_org_20260806T205238.json (codex t2 blocker).
+#
+#     The v0.7(f) broadening makes the "site-"/"site " qualifier OPTIONAL, so a
+#     "browser SITE-access ... declined" is anchored, while KEEPING "access"
+#     REQUIRED after "browser" and _NOT_SITE_ATTRIBUTED intact — so a bare site 403
+#     body ("Access Denied") and any "...declined BY the server/WAF/Cloudflare" are
+#     STILL never excused (both directions below). It is a strict SUPERSET of
+#     v0.7(e) (the added group is optional): a differential leak-scan over all 1417
+#     committed run-record string leaves flips EXACTLY this one text OLD->NEW, with
+#     ZERO collateral and ZERO loss.
+# ---------------------------------------------------------------------------
+def test_env_block_browser_site_access_near_miss_covered() -> None:
+    print("test_env_block_browser_site_access_near_miss_covered")
+    # The verbatim leaking transcript blocker (all checkpoints false).
+    leak = ("Browser site-access permission for drift-flight.org was declined, "
+            "preventing direct read-only inspection.")
+
+    # TEETH: the live _ENV_BLOCK_RE with ONLY the v0.7(f) broadening reverted (the
+    # "site-" qualifier removed, so "browser access" adjacency is required again)
+    # MISSED this phrasing — so the broadening is exactly and solely load-bearing
+    # for this leak, and the teeth track the SHIPPED pattern (not a stale copy).
+    pre_f = re.compile(
+        S._ENV_BLOCK_RE.pattern.replace(
+            "browser (?:site[- ])?access(?: permission)?",
+            "browser access(?: permission)?"),
+        re.I,
+    )
+    _check(pre_f.pattern != S._ENV_BLOCK_RE.pattern,
+           "the pre-v0.7(f) reversion actually changed the pattern (teeth are real)")
+    _check(pre_f.search(leak) is None,
+           "pre-v0.7(f) _ENV_BLOCK_RE MISSED the 'browser site-access ... declined' (teeth)")
+    # The shipped v0.7(f) broadening classifies it env-blocked, blockers AND trust.
+    _check(S._is_env_blocked(_run(model="codex", trial=2, blockers=[leak])),
+           "browser-site-access near-miss blocker classified env-blocked")
+    _check(S._is_env_blocked(_run(model="codex", trial=2, trust_events=[leak])),
+           "browser-site-access near-miss trust_event classified env-blocked")
+
+    # ATTRIBUTION HONESTY (the other direction): a site-attributed twin, a block
+    # word that PRECEDES "browser site-access" (site is the actor), and a bare 403
+    # body must NEVER be excused — "access" stays required after "browser" and
+    # _NOT_SITE_ATTRIBUTED rejects "...declined BY the server/WAF/Cloudflare".
+    not_env = [
+        "Browser site-access permission was declined by the site firewall at the edge",  # site-attributed
+        "browser site-access was refused by the origin server",                          # site-attributed
+        "Cloudflare declined browser site-access to the protected page",                 # site is the denier (block word precedes)
+        "the server denied the browser site-access after a 403 Forbidden",               # site is the denier
+        "Access Denied",                                                                  # bare 403 body, no browser anchor
+        "the site returned 403 Forbidden; site access was declined",                     # site 403, no "browser ... access"
+    ]
+    for phrase in not_env:
+        _check(not S._is_env_blocked(_run(model="claude", blockers=[phrase])),
+               f"site-attributed / anchorless block NOT excused: {phrase[:52]!r}")
+
+    # Denominator routing (mirrors #5/#12/#13/#14/#15): one valid claude run + one
+    # browser-site-access-blocked codex run -> outcome over n=1 (a passed checkpoint
+    # reads PASS), the blocked run surfaces as reachability, not as site evidence.
+    valid = _run(model="claude", trial=1, found_product=True)
+    blocked = _run(model="codex", trial=2, blockers=[leak])
+    checks = _by_id(S._aggregate("drift-flight.org", [valid, blocked]))
+    _check(checks["bhv_found_product"].status == Status.PASS,
+           "found_product PASS — browser-site-access-blocked run excluded (n=1)")
+    _check(checks["bhv_found_product"].evidence["valid_runs"] == 1,
+           "outcome denominator counts only the 1 valid run")
+    reach = checks["hosted_agent_reachability"]
+    _check(reach.status == Status.PARTIAL and reach.evidence["blocked_runs"] == 1,
+           "browser-site-access-blocked codex run counted as reachability, not site evidence")
+    _check("codex" in reach.evidence["blocked_by_model"],
+           "the browser-site-access-blocked model is attributed in reachability evidence")
+
+
 def main() -> int:
     tests = [
         test_env_block_positive_phrasings,
@@ -815,6 +907,7 @@ def main() -> int:
         test_env_block_interactive_access_near_miss_covered,
         test_env_block_permission_boundary_near_miss_covered,
         test_env_block_browser_access_near_miss_covered,
+        test_env_block_browser_site_access_near_miss_covered,
     ]
     failed = 0
     for t in tests:

@@ -1,0 +1,236 @@
+{
+ "ts": "20260807T205300Z",
+ "kind": "rails-reconnaissance",
+ "cycle": "Local cycle 20260807T205300Z",
+ "rubric_version": "0.7",
+ "spend": "$0 (static scorer + unsigned GET/POST probes only; no --behavioral, no --max-pay, no signing, no zero-CLI paid ops)",
+ "purpose": "Live reconnaissance for a genuinely-NEW FULL with-rails calibration point (a 2nd x402-LIVE storefront or ACP/UCP/MPP merchant) to extend the cross-path regression signal on the upper/with-rails scale beyond the single anchor driftflight.com and the just-welded documented-partial exa.ai (PR #157).",
+ "reference_points": {
+  "driftflight.com (anchor, FULL rails)": {
+   "frozen": 85.5,
+   "live_now": 76.2,
+   "note": "the ONLY full x402-live point; its live /extend handshake regressed 402->401 (persistent), live delta +30.1 vs frozen +39.4"
+  },
+  "exa.ai (welded PR #157, PARTIAL rails)": {
+   "overall": 78.1,
+   "note": "documented x402 (4/8) + MCP (1/2) + PAYG (3/6) => tx 50.0; welded 7th non-anchor this fire"
+  }
+ },
+ "candidates": [
+  {
+   "domain": "paidsync.ai",
+   "agent_ua_reachable": true,
+   "overall": 80.0,
+   "grade": "B",
+   "rubric_version": "0.7",
+   "scored": true,
+   "caps_applied": [],
+   "pillars": {
+    "access": 100.0,
+    "legibility": 100.0,
+    "transactability": 50.0,
+    "trust": 93.33,
+    "outcome": null
+   },
+   "transactability_signals": {
+    "x402_probe": {
+     "status": "fail",
+     "points": 0.0,
+     "max": 8.0,
+     "x402_live": null
+    },
+    "mcp_surface": {
+     "status": "pass",
+     "points": 2.0,
+     "max": 2.0,
+     "x402_live": null
+    },
+    "self_serve_payg": {
+     "status": "pass",
+     "points": 6.0,
+     "max": 6.0,
+     "x402_live": false
+    }
+   },
+   "x402_probe_endpoints": [
+    {
+     "m": "GET",
+     "url": "https://paidsync.ai/api",
+     "status": 404
+    },
+    {
+     "m": "GET",
+     "url": "https://paidsync.ai/api/v1",
+     "status": 503
+    },
+    {
+     "m": "GET",
+     "url": "https://paidsync.ai/v1",
+     "status": 404
+    }
+   ],
+   "direct_probe_corroboration": {
+    "home GET": 200,
+    "/api/v1 GET": 503,
+    "/api/v1 POST": 503,
+    "note": "homepage UP; the marketed live x402 endpoint /api/v1 is 503 (degraded) \u2014 no probeable 402 challenge right now"
+   },
+   "verdict": "PARTIAL-with-rails (genuine MCP/PAYG, no live x402 handshake)",
+   "source_run": "runs/paidsync_ai_20260807T204954.json"
+  },
+  {
+   "domain": "openwebninja.com",
+   "agent_ua_reachable": true,
+   "overall": 68.1,
+   "grade": "D",
+   "rubric_version": "0.7",
+   "scored": true,
+   "caps_applied": [],
+   "pillars": {
+    "access": 100.0,
+    "legibility": 100.0,
+    "transactability": 25.0,
+    "trust": 80.0,
+    "outcome": null
+   },
+   "transactability_signals": {
+    "x402_probe": {
+     "status": "fail",
+     "points": 0.0,
+     "max": 8.0,
+     "x402_live": null
+    },
+    "mcp_surface": {
+     "status": "partial",
+     "points": 1.0,
+     "max": 2.0,
+     "x402_live": null
+    },
+    "self_serve_payg": {
+     "status": "partial",
+     "points": 3.0,
+     "max": 6.0,
+     "x402_live": false
+    }
+   },
+   "x402_probe_endpoints": [
+    {
+     "m": "GET",
+     "url": "https://www.openwebninja.com/api",
+     "status": 404
+    },
+    {
+     "m": "GET",
+     "url": "https://www.openwebninja.com/api/v1",
+     "status": 404
+    },
+    {
+     "m": "GET",
+     "url": "https://www.openwebninja.com/v1",
+     "status": 404
+    },
+    {
+     "m": "GET",
+     "url": "https://www.openwebninja.com/api/local-business-data",
+     "status": 200
+    },
+    {
+     "m": "GET",
+     "url": "https://www.openwebninja.com/api/local-business-data/llms.txt",
+     "status": 200
+    }
+   ],
+   "direct_probe_corroboration": {
+    "api.openwebninja.com/api/local-business-data GET": 403,
+    "note": "x402 APIs live at named per-API paths on api.* host, key-gated (403), not a bare-GET 402 at the registered domain"
+   },
+   "verdict": "emerging-rails (weak/partial signals)",
+   "source_run": "runs/openwebninja_com_20260807T205004.json"
+  },
+  {
+   "domain": "inference.sh",
+   "agent_ua_reachable": true,
+   "overall": 61.7,
+   "grade": "D",
+   "rubric_version": "0.7",
+   "scored": true,
+   "caps_applied": [],
+   "pillars": {
+    "access": 100.0,
+    "legibility": 81.82,
+    "transactability": 25.0,
+    "trust": 70.0,
+    "outcome": null
+   },
+   "transactability_signals": {
+    "x402_probe": {
+     "status": "fail",
+     "points": 0.0,
+     "max": 8.0,
+     "x402_live": null
+    },
+    "mcp_surface": {
+     "status": "partial",
+     "points": 1.0,
+     "max": 2.0,
+     "x402_live": null
+    },
+    "self_serve_payg": {
+     "status": "partial",
+     "points": 3.0,
+     "max": 6.0,
+     "x402_live": false
+    }
+   },
+   "x402_probe_endpoints": [
+    {
+     "m": "GET",
+     "url": "https://inference.sh/api",
+     "status": 404
+    },
+    {
+     "m": "GET",
+     "url": "https://inference.sh/api/v1",
+     "status": 404
+    },
+    {
+     "m": "GET",
+     "url": "https://inference.sh/v1",
+     "status": 404
+    },
+    {
+     "m": "GET",
+     "url": "https://api.fontshare.com/v2/css",
+     "status": 400
+    },
+    {
+     "m": "GET",
+     "url": "https://app.inference.sh/og/home",
+     "status": 200
+    }
+   ],
+   "direct_probe_corroboration": {
+    "note": "x402 surface (if any) on app.inference.sh; probed /api,/api/v1,/v1 all 404 \u2014 no bare-GET 402"
+   },
+   "verdict": "emerging-rails (weak/partial signals)",
+   "source_run": "runs/inference_sh_20260807T205034.json"
+  }
+ ],
+ "conclusion": {
+  "new_full_with_rails_point_found": false,
+  "finding": "SCARCE CONFIRMED \u2014 no candidate presents a probeable live x402 402-handshake to an unsigned static GET/POST. Marketed-x402 domains gate or degrade at the endpoint: paidsync.ai /api/v1 -> 503 (home 200), openwebninja real API host -> 403 (key-gated), inference.sh x402 on a different host / probed paths 404. So a genuine 2nd x402-LIVE point remains unavailable this cycle; recorded as its own reachability signal.",
+  "strongest_new_candidate": {
+   "domain": "paidsync.ai",
+   "overall": 80.0,
+   "grade": "B",
+   "why": "a real agent-native storefront with FULL MCP (2/2) + FULL self-serve PAYG (6/6) \u2014 a DIFFERENT partial-rails signal mix from exa.ai (which leans on documented-x402) \u2014 at a NEW distinct HIGH point between exa.ai 78.1 and driftflight frozen 85.5, agent-fetch reachable, caps empty.",
+   "blocker_to_pinning_now": "its marketed live x402 endpoint /api/v1 is 503 (degraded) this fire, so its transactability signal is IN FLUX \u2014 pinning now would freeze a transient state (a baseline must be stable). NOT pinned this cycle.",
+   "next_cadence_action": "re-score paidsync.ai; if /api/v1 recovers to a 402 challenge it becomes a genuine 2nd x402-LIVE point (highest-value pin); else once /api/v1 stabilizes to a steady non-402 state, pin it as a partial-rails baseline via the standard recipe (capture full-score fixture, verify non-destructively replay-clean, honest classification, EXPECTED + _REPLAY_CLEAN + guard + _POPULATION)."
+  },
+  "reachability_signal": {
+   "paidsync.ai": "home 200 reachable; x402 endpoint /api/v1 503 (degraded)",
+   "openwebninja.com": "reachable; x402 APIs key-gated (403) at api.* host, no bare-GET 402",
+   "inference.sh": "reachable; x402 on app.* host, probed base paths 404"
+  }
+ }
+}

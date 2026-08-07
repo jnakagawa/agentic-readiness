@@ -1,23 +1,31 @@
 # Loop state
 
 - Cycle counter: 295
-- **⏳ PR #157 (exa.ai 7th non-anchor cross-path calibration weld — the FIRST welded member with GENUINE
-  partial agent-native rails) OPENED this fire (Local 20260807T194459Z), branch
-  `loop/exa-ai-seventh-non-anchor-weld` commit `7ca40bb`, NOT self-merged.** Welds exa.ai (an agent-native
-  web-search/content-retrieval API — Exa) into `_NON_ANCHOR_WELDED` = (example.com, books.toscrape.com,
-  acuityscheduling.com, ipinfo.io, api.replicate.com, www.moleskine.com, exa.ai), spanning SEVEN
-  structurally-distinct non-anchor witnesses. It is the FIRST welded member on the upper/with-rails scale:
-  every prior non-anchor sits at the no-rails transactability floor (0.0–25.0), but exa.ai's tx 50.0 is a
-  real MIDDLE (documented x402 `x402-agentkit-free-trial` + MCP + PAYG) strictly between the no-rails floor
-  (0.0) and the anchor's full x402-LIVE handshake (87.5); at 78.1 it fills the guard's widest upper-middle
-  gap (nothing between ipinfo 61.3 and driftflight 85.5). Non-vacuous: keyed `exa.ai` identically on both
-  paths (NO www/bare alias) and scored 78.1 in ALL FIVE committed sweeps (segment api-service) → n_compared=5.
-  New `test_exa_ai_seventh_non_anchor_is_welded_nonvacuously` (baseline present, genuinely compared, agrees
-  with 78.1 floor, teeth 78.1→90.0 caught). [LOCAL] essence THIS fire ($0 static re-score): live 78.1 ==
-  frozen fixture-replay 78.1 == EXPECTED 78.1, all 4 non-null pillars byte-identical, caps empty. TEST-ONLY
-  (`test_calibration_anchor_agreement.py` +87; off-scoring-SEMANTICS EMPTY), weld suite 22→23, full suite
-  38/38 branch. PEER-GATED (regression-guard class, same as #156) → next fire's FIRST duty adversarially
-  reviews + live-re-scores before merge. Evidence `runs/local/exa_ai_seventh_non_anchor_weld_20260807T194459Z.json`.
+- **✅ PR #157 (exa.ai 7th non-anchor cross-path calibration weld — the FIRST welded member with GENUINE
+  partial agent-native rails) MERGED this fire (Local 20260807T205300Z), merge `cf0df08`** — after the owed
+  FIRST-DUTY adversarial review + independent $0 live re-score. VERDICT SOUND: off-scoring-path (three-dot diff
+  since merge-base `92f7c66` is ONLY `test_calibration_anchor_agreement.py` +87 + evidence JSON +44; EMPTY over
+  asrs/rubric/fixtures/experiments/loop); vendor-neutral (welded by TYPE agent-native-search-API); committed
+  78.1 C v0.7 baseline independently re-derived present + in `_REPLAY_CLEAN`; LOAD-BEARING (independently
+  re-derived `_committed_sweeps()`→5, `_divergences(members=("exa.ai",))` → n_compared=5, divergences=[] — scored
+  78.1 in all five committed sweeps, keyed `exa.ai` identically on both paths, NO www/bare alias); teeth
+  (78.1→90.0 caught as exactly one divergence); and the [LOCAL] live re-score re-derived THIS fire
+  (`python -m asrs score exa.ai --json-only`, $0 static) → exa.ai **78.1 live == 78.1 frozen == 78.1 EXPECTED**,
+  all 4 non-null pillars byte-identical (access 100.0 / legibility 100.0 / transactability 50.0 / trust 83.33),
+  caps empty → weld HOLDS, exa.ai did NOT regress → MERGE. Weld suite 23/23 branch + merged main (canonical
+  replay 31/31); the cross-path weld now spans SEVEN structurally-distinct non-anchor witnesses (null-control +
+  2 retail + service-booking + data-retrieval + pure-inference-API + agent-native-search-API), the LAST being
+  the FIRST welded member with genuine partial agent-native rails (documented x402 + MCP + PAYG → tx 50.0, a
+  real MIDDLE between the no-rails floor 0.0 and the anchor's full handshake 87.5). Review verdict recorded in
+  LOG Local cycle 20260807T205300Z.
+- **⏳ NO OPEN PEER-GATED PR after this fire.** PR #157 MERGED `cf0df08`; the with-rails weld campaign
+  (#152–#157: books/acuity/ipinfo/api.replicate/moleskine/exa.ai) is COMPLETE across 6 non-anchor storefront
+  TYPES/shapes. Next fire's FIRST duty is the infra health check (no review owed). **NEXT with-rails frontier —
+  a genuinely-NEW FULL with-rails point — recon'd this fire and shortlisted: paidsync.ai** (80.0 B, full MCP +
+  full self-serve PAYG, a NEW distinct HIGH between exa.ai 78.1 and driftflight frozen 85.5) is the strongest NEW
+  candidate but its marketed live x402 endpoint `/api/v1` is 503 (degraded) so its transactability is IN FLUX —
+  NOT stable enough to pin; re-probe next cadence (402 recovery ⇒ genuine 2nd x402-LIVE pin; stable non-402 ⇒
+  partial-rails baseline pin). See LOG Local cycle 20260807T205300Z + `runs/local/rails_recon_20260807T205300Z.json`.
 - **✅ PR #156 (www.moleskine.com 6th non-anchor cross-path calibration weld — 2nd retail, retail depth)
   MERGED this fire (Local 20260807T184234Z), merge `571e4c6`** — after the owed FIRST-DUTY adversarial
   review + independent $0 live re-score. VERDICT SOUND: off-scoring-path (three-dot diff since merge-base
@@ -230,6 +238,29 @@
   but wrote NO LOG entry and never committed/pushed (its panel dir exists gitignored). This fire re-verified #149,
   took ownership of the reconciled banner (above), and committed. No fabricated 214745Z LOG entry. STATE pruned the
   two oldest rolling entries (cloud Cycles 290–291, preserved in LOG.md) to stay under the 600-line hygiene cap.
+- LOCAL cycle — 20260807T205300Z (TRUTH / MERGED PR #157 [exa.ai 7th non-anchor weld] after adversarial review + live
+  re-score; then ran a live RAILS RECONNAISSANCE for a genuinely-NEW full with-rails point — none found, direct-to-main).
+  FIRST duty: `gh pr list --state open` → PR #157 OPEN → adversarial review + independent $0 live re-score → VERDICT SOUND
+  → MERGED `cf0df08` (off-scoring-path test-only +87 + evidence JSON; vendor-neutral by TYPE agent-native-search-API;
+  baseline 78.1 C v0.7 + `_REPLAY_CLEAN` re-derived present; LOAD-BEARING n_compared=5 / divergences=[] independently
+  re-derived via `_committed_sweeps()`→5; teeth 78.1→90.0; live re-derived exa.ai 78.1 live == 78.1 frozen == 78.1 EXPECTED,
+  all 4 pillars byte-identical → weld holds; weld 23/23 + canonical replay 31/31 merged main; the cross-path weld now spans
+  SEVEN non-anchor witnesses, the last the FIRST with genuine partial agent-native rails). Infra HEALTHY:
+  `verify_20260807T204104Z.json` (20:41Z, 38 suites, 46.1 F / 76.2 C / +30.1) ~1min old at fire (20:42Z) → :41 cadence
+  holding (194100Z→204104Z). **Executed the ONE [LOCAL] item — the oldest actionable P0 (with-rails calibration axis,
+  unblocked by the #157 merge):** live rails reconnaissance for a genuinely-NEW FULL with-rails point. WebSearch surfaced the
+  x402 ecosystem; probed 3 storefront candidates $0 static (the x402 probe only READS the 402 challenge, never fulfills it —
+  inv #1). FINDING: **no candidate presents a probeable live x402 402-handshake** — the 2nd x402-LIVE point remains SCARCE:
+  paidsync.ai `/api/v1` → 503 (independently re-curled GET+POST; home 200), openwebninja real API host → 403 key-gated,
+  inference.sh x402 on `app.*` / probed paths 404. STRONGEST NEW candidate **paidsync.ai (80.0 B, full MCP + full self-serve
+  PAYG** — a different partial-rails mix from exa.ai, a NEW distinct HIGH between exa.ai 78.1 and driftflight frozen 85.5) —
+  NOT pinned (its `/api/v1` 503 ⇒ transactability IN FLUX; a baseline must be stable); shortlisted for next cadence (402
+  recovery ⇒ 2nd x402-LIVE pin; stable non-402 ⇒ partial-rails pin). Direct-to-main (pure off-scoring-path recon artifact +
+  docs — scoring-path diff EMPTY; same class as the 134105Z cadence sweep). Frozen canonical delta UNMOVED +39.4; live
+  +30.1; suite 38/38. Evidence `runs/local/rails_recon_20260807T205300Z.json`. Invariants #1 ($0 static scorer + unsigned
+  probes, no behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (weld MERGE +
+  off-path recon not DM-enumerated sensitive classes; the FIRST-after-16:00 digest was posted 174235Z) — #157 MERGE + recon
+  flagged for next digest. See LOG Local cycle 20260807T205300Z.
 - LOCAL cycle — 20260807T194459Z (TRUTH / welded exa.ai as the 7th non-anchor cross-path member — the FIRST with
   genuine partial agent-native rails, PEER-GATED PR #157 opened, NOT self-merged). FIRST duty: `gh pr list --state open`
   → `[]` (no open PR; PR #156 MERGED `571e4c6` last real cycle 184234Z; 194100Z was a verify-only floor). Infra HEALTHY:
@@ -346,47 +377,10 @@
   tests, no behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (regression-guard
   weld not a DM-enumerated sensitive class; 14:4xZ precedes 16:00 UTC) — PR #155 flagged for next digest. Frozen
   canonical delta UNMOVED +39.4; live +30.1. See LOG Local cycle 20260807T144105Z.
-- LOCAL cycle — 20260807T134105Z (TRUTH / ran the calibration cadence sweep with api.replicate.com added to POPULATION,
-  direct-to-main). FIRST duty: `gh pr list --state open` → `[]` (no open PR; PR #154 MERGED `ee95a0b` last real cycle).
-  Infra HEALTHY: `verify_20260807T134105Z.json` (13:41Z, 38 suites, 46.1 F / 76.2 C / +30.1) fresh at fire (13:43Z) → :41
-  cadence holding. Bookkeeping self-heal: adopted an orphaned uncommitted `calibration_sweep.py` POPULATION edit (no
-  LOG/branch/commit/stash; most likely the 12:41 fire's agent began this same oldest-P0 and died mid-item) — verified
-  byte-correct, completed it this fire, no fabricated 124104Z entry. **Executed the oldest P0 — the api.replicate.com
-  sweep-add prerequisite for the 5th-non-anchor weld:** ran `experiments/calibration_sweep.py` $0 static (no --behavioral/
-  --max-pay/codex/zero-CLI) → 19/20 scored, api.replicate.com **29.5 F** byte-identical to its frozen floor (access 100.0 /
-  legibility 18.18 / transactability 0.0 / trust 33.33), drift 0/18 moved vs the prior sweep, only new member is
-  api.replicate.com. Evidence `runs/local/calibration_sweep_20260807T134527Z.json` (force-added; runs/ gitignored). This
-  UNLOCKS the 5th-non-anchor cross-path weld (peer-gated PR next fire). Off-scoring-SEMANTICS EMPTY (POPULATION +1 only,
-  the sweep reads the shipped scorer); frozen canonical delta UNMOVED +39.4; live +30.1; suite 38/38. Invariants #1 ($0
-  static sweep + in-process tests)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (cadence sweep-add not a
-  DM-enumerated sensitive class; 13:4xZ precedes 16:00 UTC) — flagged for next digest. See LOG Local cycle 20260807T134105Z.
-- LOCAL cycle — 20260807T114104Z (TRUTH / MERGED PR #154 + pinned api.replicate.com as the 7th frozen-replay baseline
-  / a 5th storefront TYPE: pure single-archetype metered_api, direct-to-main). FIRST duty: `gh pr list --state open` →
-  PR #154 OPEN → adversarial review + independent $0 live re-score → VERDICT SOUND → **MERGED `ee95a0b`**
-  (off-scoring-path test-only +81/−4; vendor-neutral by TYPE; load-bearing n_compared=3 independently re-derived from
-  the 3 committed sweeps; teeth 61.3→72.0; live re-derived ipinfo.io 61.3 live == 61.3 frozen == 61.3 EXPECTED, all
-  pillars byte-identical → weld holds; weld 19/19, suite 38/38 branch + merged main; the cross-path weld now spans FOUR
-  non-anchor TYPES). Infra HEALTHY: `verify_20260807T114104Z.json` (11:41Z, 38 suites, 46.1/76.2/+30.1) fresh → :41
-  cadence holding (104102Z→114104Z). **Executed the oldest P0 — a FIFTH-storefront-TYPE frozen-replay baseline the
-  #154 merge unblocked:** triaged the 4 `_CLASSIFICATION_ONLY` candidates by the recipe's hard gate (fresh full-score
-  must replay clean AND offering classification BYTE-IDENTICAL to the committed fixture). polar.sh REJECTED (fresh crawl
-  drifted 6→3 archetypes — site changed; NOT forced, inv #4); simplybook.me/www.allbirds.com REJECTED (offering
-  evidence drift). **api.replicate.com ACCEPTED** — the only passer: a PURE single-archetype metered_api compute/
-  inference API (a 5th TYPE), re-captured full-score LIVE ($0 static, 8→40 urls), verified NON-DESTRUCTIVELY (35 misses
-  →0; offering `to_dict` byte-identical → test_offering 115/115, test_offering_canonical 70/70, test_battery_instantiate_canonical
-  6/6 unchanged; the `_MACHINE_SURFACE` openapi signals still fire), then promoted `_CLASSIFICATION_ONLY`→`_REPLAY_CLEAN`,
-  pinned `test_canonical_replay.EXPECTED` (29.5 F v0.7) + guard `test_pure_metered_api_storefront_replays_29_5` (28→29)
-  + `_POPULATION` in all 5 reproducibility suites. [LOCAL] essence THIS fire: live 29.5 == frozen 29.5, all 4 non-null
-  pillars byte-identical (access 100.0 / legibility 18.18 / transactability 0.0 / trust 33.33). Its 18.18 legibility
-  (LOWEST non-anchor) + 0.0 transactability give 29.5 a pillar SHAPE distinct from books' own 29.5 → the guard now
-  spans the low scale by shape over SEVEN baselines. Direct-to-main (baseline addition + non-anchor fixture re-capture;
-  no scoring semantics); off-scoring-SEMANTICS EMPTY (canonical PAIR untouched); frozen canonical delta UNMOVED +39.4;
-  suite 38/38. Evidence `runs/local/api_replicate_pure_metered_api_baseline_20260807T114104Z.json`. Invariants #1 ($0
-  static recapture + in-process tests, no behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed
-  in-repo. NO DM (baseline pin/weld-merge not a DM-enumerated sensitive class; 11:4xZ precedes 16:00 UTC) — #154 MERGE
-  flagged for next digest. HONEST GATE: api.replicate.com is ABSENT from all committed sweeps → the 5th-non-anchor WELD
-  is NOT yet unlocked; a [LOCAL] cadence run must add it to the sweep POPULATION first (books.toscrape.com pattern). See
-  LOG Local cycle 20260807T114104Z.
+<!-- Rolling entries for Local cycles 20260807T134105Z (calibration cadence sweep, api.replicate.com added to
+     POPULATION) + 20260807T114104Z (MERGED PR #154 + pinned api.replicate.com as the 7th frozen-replay baseline /
+     5th storefront TYPE) pruned this fire (Local cycle 20260807T205300Z) to stay under the STATE 600-line cap —
+     both preserved verbatim in loop/LOG.md + git history. -->
 <!-- Rolling entries for Local cycles 20260807T104102Z (welded ipinfo.io as 4th non-anchor, PR #154 opened) +
      20260807T094104Z (MERGED PR #153 + promoted ipinfo.io as 6th frozen-replay baseline / 4th storefront TYPE)
      pruned this fire (Local cycle 20260807T194459Z) to stay under the STATE 600-line cap — both preserved

@@ -199,32 +199,36 @@ x402-live handshake (87.5). Captured full-score LIVE ($0 static, 49 fetch entrie
 byte-identical, caps empty. Frozen-replay baselines 8->9. Off-scoring-SEMANTICS EMPTY (6 test files + 1 new fixture); frozen
 canonical delta UNMOVED +39.4; suite 38/38 (replay 30->31). Evidence
 runs/local/exa_ai_agent_native_api_baseline_20260807T190030Z.json. See LOG Local cycle 20260807T184234Z. -->
-<!-- OPENED Local cycle 20260807T194459Z: the 7th-non-anchor cross-path weld (exa.ai — the FIRST welded member with genuine
-partial agent-native rails) is AUTHORED as PEER-GATED PR #157 (branch loop/exa-ai-seventh-non-anchor-weld, commit 7ca40bb),
-NOT self-merged. Welds exa.ai into `_NON_ANCHOR_WELDED` = (example.com, books.toscrape.com, acuityscheduling.com, ipinfo.io,
-api.replicate.com, www.moleskine.com, exa.ai), spanning SEVEN structurally-distinct non-anchor witnesses. It is the FIRST
-welded member on the upper/with-rails scale: every prior non-anchor sits at the no-rails transactability floor (0.0-25.0), but
-exa.ai's tx 50.0 (documented x402 x402-agentkit-free-trial + MCP + PAYG) is a real MIDDLE between the no-rails floor 0.0 and
-the anchor's full x402-LIVE handshake 87.5; at 78.1 it fills the guard's widest upper-middle gap (nothing between ipinfo 61.3
-and driftflight 85.5). Non-vacuous: keyed `exa.ai` identically on both paths (NO www/bare alias) and scored 78.1 in ALL FIVE
-committed sweeps (segment api-service) -> n_compared=5. New test_exa_ai_seventh_non_anchor_is_welded_nonvacuously (baseline
-present, n_compared=5, teeth 78.1->90.0 caught as exactly one divergence). TEST-ONLY (test_calibration_anchor_agreement.py +87;
-off-scoring-SEMANTICS EMPTY), weld suite 22->23, full suite 38/38. Live<->frozen verified this fire ($0 static re-score 19:44Z:
-live 78.1 == frozen 78.1 == EXPECTED 78.1, all 4 non-null pillars byte-identical, caps empty — the [LOCAL] essence the cloud
-can't do). DO NOT RE-AUTHOR — TRACKED by STATE's OPEN-PR #157 banner + next fire's first-duty adversarial review + live
-re-score. Evidence runs/local/exa_ai_seventh_non_anchor_weld_20260807T194459Z.json. See LOG Local cycle 20260807T194459Z. -->
-- **[FOLLOW-UP, P1 — TRUTH] the with-rails calibration axis: exa.ai WELD OPENED (PR #157, awaiting merge) → then a
-  genuinely-NEW FULL with-rails point.** The frozen guard spans NINE real-domain baselines (2 anchors + 7 non-anchor across 6
-  storefront TYPES/shapes: null-control + 2 retail + service-booking + data-retrieval + pure-inference-API +
-  agent-native-search-API). **exa.ai (78.1) is PINNED as the 9th baseline AND now WELDED as the 7th non-anchor member — the
-  FIRST welded member with GENUINE partial agent-native rails** (documented x402 + MCP + PAYG → tx 50.0), extending the
-  cross-path regression signal onto the upper/with-rails scale the guard previously had only ONE member for (driftflight.com).
-  The weld is PEER-GATED PR #157 (OPENED marker above) — next fire's first duty adversarially reviews + live-re-scores it,
-  then merges. HIGHEST-VALUE after that: a genuinely-NEW FULL with-rails point — a real ACP/UCP/MPP merchant or a 2nd x402-LIVE
-  storefront (a live handshake, not documented) — still scarce; record reachability as its own signal. The remaining
-  `_CLASSIFICATION_ONLY` candidates (polar.sh / simplybook.me / www.allbirds.com) ALL failed the byte-identity gate (live
-  drift), so re-attempting any is a genuinely-NEW re-baseline (verify the new classification is honest first), not a pin of the
-  old claim.
+<!-- MERGED Local cycle 20260807T205300Z: PR #157 (exa.ai 7th non-anchor cross-path calibration weld — the FIRST welded member
+with genuine partial agent-native rails) MERGED `cf0df08` after the owed FIRST-DUTY adversarial review + independent $0 live
+re-score. VERDICT SOUND: off-scoring-path (three-dot diff since merge-base 92f7c66 is ONLY test_calibration_anchor_agreement.py
++87 + evidence JSON +44; EMPTY over asrs/rubric/fixtures/experiments/loop); vendor-neutral (by TYPE agent-native-search-API);
+committed baseline 78.1 C v0.7 + _REPLAY_CLEAN independently re-derived present; LOAD-BEARING (n_compared=5 / divergences=[]
+independently re-derived via _committed_sweeps()->5 — scored 78.1 in all five committed sweeps, keyed exa.ai identically on both
+paths, NO www/bare alias); teeth (78.1->90.0 caught). Live re-derived THIS fire: exa.ai 78.1 live == 78.1 frozen == 78.1
+EXPECTED, all 4 non-null pillars byte-identical (100.0/100.0/50.0/83.33), caps empty -> weld holds, did NOT regress. Weld 23/23
+branch + merged main (canonical replay 31/31); the cross-path weld now spans SEVEN non-anchor witnesses, the last the FIRST with
+genuine partial agent-native rails. The with-rails weld campaign (#152-#157) is COMPLETE across 6 non-anchor TYPES/shapes. See
+LOG Local cycle 20260807T205300Z. -->
+- **[P1 — TRUTH] the with-rails calibration axis: exa.ai WELD MERGED (PR #157, `cf0df08`) → next is a genuinely-NEW FULL
+  with-rails point; paidsync.ai SHORTLISTED (pending stabilization).** The frozen guard spans NINE real-domain baselines
+  (2 anchors + 7 non-anchor across 6 storefront TYPES/shapes: null-control + 2 retail + service-booking + data-retrieval +
+  pure-inference-API + agent-native-search-API). exa.ai (78.1, documented-partial rails) is the ONLY non-anchor on the
+  upper/with-rails scale; the sole FULL x402-live point is the anchor driftflight.com (whose live /extend handshake regressed
+  402→401, persistent). **RECON DONE Local cycle 20260807T205300Z** (the ONE [LOCAL] item): probed the current x402 ecosystem
+  $0 static → **no genuinely-NEW FULL with-rails point found — the 2nd x402-LIVE storefront remains SCARCE** (marketed-x402
+  domains gate or degrade at the paid endpoint, none present a probeable bare-GET 402: paidsync.ai /api/v1 → 503, openwebninja
+  API host → 403 key-gated, inference.sh x402 on app.* / probed paths 404). Evidence
+  `runs/local/rails_recon_20260807T205300Z.json`. **STRONGEST NEW candidate: paidsync.ai (80.0 B — full MCP + full self-serve
+  PAYG, a different partial-rails mix from exa.ai, a NEW distinct HIGH between exa.ai 78.1 and driftflight frozen 85.5,
+  agent-fetch reachable, caps empty)** — NOT pinned (its /api/v1 is 503 ⇒ transactability IN FLUX; a baseline must be stable).
+  NEXT CADENCE: re-score paidsync.ai — if /api/v1 recovers to a 402 challenge it is a genuine 2nd x402-LIVE point (highest-value
+  pin); else once it stabilizes to a steady non-402 state, pin it as a partial-rails baseline via the standard recipe (capture
+  full-score fixture, verify non-destructively replay-clean, honest classification, EXPECTED + _REPLAY_CLEAN + guard +
+  _POPULATION). Also watch driftflight.com's /extend for a 402 recovery (would restore the anchor's live handshake + the +39.4
+  live delta). The remaining `_CLASSIFICATION_ONLY` candidates (polar.sh / simplybook.me / www.allbirds.com) ALL failed the
+  byte-identity gate (live drift), so re-attempting any is a genuinely-NEW re-baseline (verify the new classification is honest
+  first), not a pin of the old claim.
 
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
   phrasing has now drifted the `_ENV_BLOCK_RE` guard FIVE times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)

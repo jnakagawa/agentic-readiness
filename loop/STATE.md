@@ -1,25 +1,38 @@
 # Loop state
 
 - Cycle counter: 295
-- **⏳ PR #156 (www.moleskine.com 6th non-anchor cross-path calibration weld — a 2nd retail storefront,
-  retail depth) OPEN this fire (Local 20260807T174235Z), branch `loop/moleskine-sixth-non-anchor-weld`,
-  commit `d67cabd`, NOT self-merged.** Peer-gated (regression-guard semantics, same class as merged
-  PRs #152–#155). Welds `www.moleskine.com` into `_NON_ANCHOR_WELDED` (6th non-anchor member) and adds
-  `_norm_domain` (strip a single leading `www.`) to the shared `_member_row` so the replay baseline key
-  `www.moleskine.com` matches the live sweeps' `moleskine.com` rows — genuinely COMPARED n_compared=5
-  across all five committed v0.7 sweeps (segment retail:no-rails, scored 49.8 in every one), NOT vacuous.
-  [LOCAL] live $0 static re-score THIS fire (`python -m asrs score www.moleskine.com --json-only`) →
-  **live 49.8 == frozen fixture-replay 49.8 == EXPECTED 49.8**, all 4 non-null pillars byte-identical
-  (access 100.0 / legibility 40.91 / transactability 18.75 / trust 73.33), caps empty → weld HOLDS,
-  moleskine did NOT regress. Test-only (off-scoring-SEMANTICS EMPTY over asrs/rubric/fixtures/experiments/
-  loop/local_verify.py); weld suite 20→22, full suite 38/38; teeth 49.8→60.0 caught as exactly one
-  divergence THROUGH the normalization; over-normalization guarded (internal `www` / `wwwx` / unrelated
-  domains never collapsed). Frozen canonical delta +39.4 UNMOVED; live +30.1. The cross-path weld now
-  spans SIX structurally-distinct non-anchor witnesses (null-control + retail-catalog + service-booking +
-  data-retrieval + pure-inference-API + 2nd-retail-depth). **NEXT FIRE'S FIRST DUTY: adversarially review
-  + re-run the live re-score, then MERGE or request changes; do NOT review-and-merge in the authoring
-  fire.** Evidence `runs/local/moleskine_sixth_non_anchor_weld_20260807T174235Z.json`. PR #156 flagged
-  for next digest.
+- **✅ PR #156 (www.moleskine.com 6th non-anchor cross-path calibration weld — 2nd retail, retail depth)
+  MERGED this fire (Local 20260807T184234Z), merge `571e4c6`** — after the owed FIRST-DUTY adversarial
+  review + independent $0 live re-score. VERDICT SOUND: off-scoring-path (three-dot diff since merge-base
+  `dd5a0f0` is ONLY `test_calibration_anchor_agreement.py` +174/−2 + evidence JSON; EMPTY over asrs/rubric/
+  fixtures/experiments/loop); vendor-neutral (by TYPE, retail depth); committed 49.8 F v0.7 baseline present;
+  SHARED-`_member_row` SAFETY independently re-derived (the ONLY `www.` domain anywhere is the new member key;
+  the ONLY `_norm_domain` collision is the intended {moleskine.com, www.moleskine.com}; every existing member's
+  n_compared byte-unchanged — no distinct storefronts collapse; over-normalization guarded); LOAD-BEARING
+  (n_compared=5, all resolving to bare `moleskine.com` rows); teeth (49.8→60.0 caught THROUGH the normalization);
+  and the [LOCAL] live re-score re-derived THIS fire → moleskine **49.8 live == 49.8 frozen == 49.8 EXPECTED**,
+  all 4 non-null pillars byte-identical, caps empty → weld HOLDS, did NOT regress → MERGE. Weld suite 22/22
+  branch + merged main; the cross-path weld now spans SIX structurally-distinct non-anchor witnesses
+  (null-control + retail-catalog + service-booking + data-retrieval + pure-inference-API + 2nd-retail-depth).
+  Review verdict recorded in LOG Local cycle 20260807T184234Z.
+- **✅ NEW NINTH frozen-replay calibration baseline PINNED this fire (Local 20260807T184234Z, direct-to-main):
+  exa.ai** — an agent-native web-search / content-retrieval API (Exa), the SECOND-HIGHEST baseline (78.1 C v0.7;
+  access 100.0 / legibility 100.0 / transactability 50.0 / trust 83.33) and the FIRST non-anchor member with
+  GENUINE partial/emerging agent-native rails: a documented x402 surface (llms.txt cites `x402-agentkit-free-trial`)
+  + an MCP surface (PARTIAL) + self-serve PAYG (PARTIAL). Its 50.0 transactability is a real MIDDLE strictly
+  between the no-rails floor (books/api.replicate 0.0) and driftflight.com's full x402-live handshake (87.5); its
+  78.1 fills the frozen guard's WIDEST upper-middle gap (nothing sat between ipinfo 61.3 and driftflight 85.5).
+  Captured full-score LIVE this fire ($0 static, 49 fetch entries), verified NON-DESTRUCTIVELY replay-clean
+  (replay_misses=0) BEFORE install; honest 4-archetype classification {metered_api, data_retrieval, digital_good,
+  subscription} (physical_good/service_booking NA). `test_canonical_replay.EXPECTED` + `_REPLAY_CLEAN` + new guard
+  `test_agent_native_api_service_replays_78_1` (overall + 4 pillars + capability teeth 0.0<50.0<87.5) +
+  `_POPULATION` in all 5 reproducibility suites (the replay-clean tripwires FORCED inclusion). [LOCAL] essence:
+  fresh $0 re-score THIS fire → **live 78.1 == frozen fixture-replay 78.1 == EXPECTED 78.1**, all 4 non-null
+  pillars byte-identical, caps empty → baseline HOLDS. Frozen-replay baselines 8→9. Off-scoring-SEMANTICS EMPTY;
+  frozen canonical delta UNMOVED +39.4; live +30.1; suite 38/38 (replay 30→31). Evidence
+  `runs/local/exa_ai_agent_native_api_baseline_20260807T190030Z.json`. **UNLOCKS a trivially-non-vacuous
+  7th-non-anchor WELD** (exa.ai already in the sweep POPULATION keyed `exa.ai` == its EXPECTED key, NO www/bare
+  normalization needed) — a PEER-GATED PR next fire, the FIRST welded member with genuine partial agent-native rails.
 - **✅ PR #155 (api.replicate.com 5th non-anchor cross-path calibration weld) MERGED this fire (Local
   20260807T154104Z), merge `7e08063`** — after the owed FIRST-DUTY adversarial review + independent $0 live re-score.
   VERDICT SOUND: off-scoring-path (three-dot diff since merge-base `4313135` is ONLY
@@ -200,6 +213,33 @@
   but wrote NO LOG entry and never committed/pushed (its panel dir exists gitignored). This fire re-verified #149,
   took ownership of the reconciled banner (above), and committed. No fabricated 214745Z LOG entry. STATE pruned the
   two oldest rolling entries (cloud Cycles 290–291, preserved in LOG.md) to stay under the 600-line hygiene cap.
+- LOCAL cycle — 20260807T184234Z (TRUTH / MERGED PR #156 + pinned exa.ai as the 9th frozen-replay baseline, direct-to-main).
+  FIRST duty: `gh pr list --state open` → PR #156 OPEN → adversarial review + independent $0 live re-score → VERDICT SOUND →
+  **MERGED `571e4c6`** (off-scoring-path test-only +174/−2; vendor-neutral by TYPE; SHARED-`_member_row` safety independently
+  re-derived — only `www.` domain anywhere is the member key, only `_norm_domain` collision is the intended {moleskine.com,
+  www.moleskine.com}, no distinct storefronts collapse; load-bearing n_compared=5; teeth 49.8→60.0 THROUGH normalization; live
+  re-derived moleskine 49.8 live == 49.8 frozen == 49.8 EXPECTED → weld holds; weld 22/22 branch + merged main; cross-path weld
+  now spans SIX non-anchor witnesses). Infra HEALTHY: `verify_20260807T184103Z.json` (18:41Z, 38 suites, 46.1 F / 76.2 C /
+  +30.1) ~1min old at fire (18:42Z) → :41 cadence holding (174100Z→184103Z). **Executed the ONE [LOCAL] item — the oldest
+  P1-TRUTH frontier, a distinct-shape baseline advancing the with-rails axis:** the `_REPLAY_CLEAN`-but-unpinned clean pin is
+  EXHAUSTED (`_REPLAY_CLEAN`==`EXPECTED`, 8 each) and the 3 `_CLASSIFICATION_ONLY` members failed the byte-identity gate, so a
+  new baseline needs a FRESH clean full-score capture. Surveyed the sweep population by transactability (the with-rails tell) →
+  **exa.ai** (an agent-native web-search/retrieval API, Exa) TOPS the cohort at 78.1 and was chosen: fills the frozen guard's
+  WIDEST upper-middle gap (nothing between ipinfo 61.3 and driftflight 85.5) AND its tx 50.0 is honestly earned by GENUINE
+  partial agent-native rails (documented x402 `x402-agentkit-free-trial` + MCP surface + self-serve PAYG) — the FIRST non-anchor
+  baseline with any real agent-native commerce rail, a true MIDDLE between the no-rails floor (0.0) and the anchor's full
+  handshake (87.5). Captured full-score LIVE ($0 static, 49 fetch entries), verified NON-DESTRUCTIVELY replay-clean
+  (replay_misses=0) BEFORE install, honest 4-archetype classification. Pinned EXPECTED (78.1 C v0.7) + `_REPLAY_CLEAN` + guard
+  `test_agent_native_api_service_replays_78_1` (overall + 4 pillars + capability teeth 0.0<50.0<87.5) + `_POPULATION` in all 5
+  reproducibility suites. [LOCAL] essence: live 78.1 == frozen fixture-replay 78.1 == EXPECTED 78.1, all 4 pillars
+  byte-identical, caps empty → HOLDS. Baselines 8→9. Direct-to-main (off-scoring-SEMANTICS EMPTY — 6 test files + 1 new fixture);
+  frozen canonical delta UNMOVED +39.4; live +30.1; suite 38/38 (replay 30→31). Evidence
+  `runs/local/exa_ai_agent_native_api_baseline_20260807T190030Z.json`. Invariants #1 ($0 static capture + in-process replay,
+  no behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (weld-merge + baseline pin not a
+  DM-enumerated sensitive class; the FIRST-after-16:00 digest was posted last real cycle 174235Z) — #156 MERGE flagged for next
+  digest. UNLOCKS a trivially-non-vacuous 7th-non-anchor exa.ai WELD next fire (exa.ai already in POPULATION keyed `exa.ai` == its
+  EXPECTED key, NO www/bare normalization needed) — the FIRST welded member with genuine partial agent-native rails. See LOG
+  Local cycle 20260807T184234Z.
 - LOCAL cycle — 20260807T174235Z (TRUTH / welded www.moleskine.com as the 6th non-anchor cross-path member, PEER-GATED
   PR #156 opened, NOT self-merged). FIRST duty: `gh pr list --state open` → `[]` (no open PR to review; PR #155 MERGED
   `7e08063` last real cycle, 154104Z; 164102Z/174100Z were verify-only floors). Infra HEALTHY:
@@ -348,42 +388,10 @@
   tests, no behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (baseline pin not
   a DM-enumerated sensitive class; 09:4xZ precedes 16:00 UTC) — #153 MERGE flagged for next digest. UNLOCKS the
   4th-non-anchor cross-path weld (ipinfo.io) next fire (PEER-GATED). See LOG Local cycle 20260807T094104Z.
-- LOCAL cycle — 20260807T084355Z (TRUTH / welded acuityscheduling.com as the 3rd non-anchor cross-path member,
-  PEER-GATED PR #153 opened, NOT self-merged). FIRST duty: `gh pr list --state open` → `[]` (no open PR to review;
-  PR #152 MERGED `1310fd5` last fire). Infra HEALTHY: `verify_20260807T084101Z.json` (08:41Z, 38 suites, 46.1 F /
-  76.2 C / +30.1) ~1.5min old → :41 cadence holding (074106Z→084101Z). **Executed the oldest P0 — the acuity
-  3rd-non-anchor weld (PR #152's own next-hypothesis, now UNLOCKED):** welded acuityscheduling.com (service_booking
-  SaaS — a 3rd structurally-distinct storefront TYPE) into `_NON_ANCHOR_WELDED` = (example.com, books.toscrape.com,
-  acuityscheduling.com), so the cross-path weld spans THREE non-anchor witnesses (null-control + retail-catalog +
-  service-booking). New `test_acuity_third_non_anchor_is_welded_nonvacuously`: committed v0.7 baseline present,
-  genuinely COMPARED (n_compared=3 across 3 committed sweeps — NOT skipped), agrees with its 54.0 floor, teeth
-  (54.0→65.0 caught). The [LOCAL] essence THIS fire (08:44Z $0 static re-score): live 54.0 == frozen 54.0 == EXPECTED
-  54.0, replay_misses=0, all 4 non-null pillars byte-identical (NOT scorable in cloud). TEST-ONLY
-  (`test_calibration_anchor_agreement.py` +73/−1; off-scoring-path EMPTY), weld suite 17→18, full suite 38/38.
-  PEER-GATED (regression-guard semantics, same class as #152) → PR #153 opened, NOT self-merged; main floor green
-  (weld change branch-only). Evidence `runs/local/acuity_third_non_anchor_weld_20260807T084355Z.json`. Invariants #1
-  ($0 static recon + in-process tests, no behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed
-  in-repo. NO DM (regression-guard weld not a DM-enumerated sensitive class; 08:4xZ precedes 16:00 UTC) — PR #153
-  flagged for next digest. Frozen canonical delta UNMOVED +39.4; live +30.1. See LOG Local cycle 20260807T084355Z.
-- LOCAL cycle — 20260807T074106Z (TRUTH / MERGED PR #152 + pinned acuityscheduling.com as the 5th frozen-replay
-  baseline, direct-to-main). FIRST duty: `gh pr list --state open` → PR #152 OPEN → adversarial review + independent
-  $0 live re-score → VERDICT SOUND → **MERGED `1310fd5`** (off-scoring-path test-only +78/−9; vendor-neutral;
-  load-bearing n=1 in the 045843Z sweep; teeth 29.5→40.0 caught; live re-derived books.toscrape.com 29.5 live == 29.5
-  frozen, all pillars byte-identical → weld holds; suite 38/38 branch + merged main). Infra HEALTHY:
-  `verify_20260807T074106Z.json` (07:41Z, 38 suites, 46.1/76.2/+30.1) ~1min old → :41 cadence holding
-  (064101Z→074106Z). **Executed the ONE [LOCAL] item the merge's own next-hypothesis named — a 3rd non-anchor
-  storefront TYPE datapoint:** surveyed candidates (only 4 domains carry an EXPECTED baseline; the offering anchors in
-  POPULATION have none) → compared fixture-replay vs live-sweep → **acuityscheduling.com** (service_booking SaaS) is
-  the ONE stable clean cross-path candidate (fixture 54.0 == live-sweep 54.0, 0 replay-misses; ipinfo/simplybook/polar
-  all stale w/ dozens of misses). PINNED acuityscheduling.com as the FIFTH `test_canonical_replay.EXPECTED` baseline
-  (54.0 F v0.7) + guard `test_service_booking_storefront_replays_54_0` (26→27, teeth verified). [LOCAL] essence: fresh
-  $0 static re-score THIS fire (07:53Z) → live 54.0 == frozen 54.0, all 4 non-null pillars byte-identical. Direct-to-main
-  (test/guard baseline addition — no scoring semantics, no rubric bump; same class as the books/example baseline adds);
-  off-scoring-path (only `test_canonical_replay.py` +48); frozen canonical delta UNMOVED +39.4; suite 38/38. Evidence
-  `runs/local/acuity_crosspath_baseline_20260807T074106Z.json`. Invariants #1 ($0 static recon + in-process tests, no
-  behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (baseline pin not a
-  DM-enumerated sensitive class; 07:5xZ precedes 16:00 UTC) — #152 MERGE flagged for next digest. See LOG Local cycle
-  20260807T074106Z.
+<!-- Rolling entries for Local cycles 20260807T084355Z (welded acuity as 3rd non-anchor, PR #153 opened) +
+     20260807T074106Z (MERGED PR #152 + pinned acuity as 5th frozen-replay baseline) pruned this fire
+     (Local cycle 20260807T184234Z) to stay under the STATE 600-line cap — both preserved verbatim in
+     loop/LOG.md + git history. -->
 - LOCAL cycle — 20260807T064228Z (TRUTH/METHOD / MERGED PR #151 + welded books.toscrape.com as 2nd non-anchor,
   PEER-GATED PR #152 opened, NOT self-merged). FIRST duty: `gh pr list --state open` → PR #151 OPEN → adversarial
   review + independent $0 live re-scores → VERDICT SOUND → **MERGED `140304e`** (off-scoring-path; teeth preserved

@@ -176,19 +176,43 @@ off-scoring-SEMANTICS EMPTY), weld suite 20->22, full suite 38/38. Live<->frozen
 essence the cloud can't do). DO NOT RE-AUTHOR — TRACKED by STATE's OPEN-PR #156 banner + next fire's first-duty
 adversarial review + live re-score. Evidence runs/local/moleskine_sixth_non_anchor_weld_20260807T174235Z.json. See LOG
 Local cycle 20260807T174235Z. -->
-- **[FOLLOW-UP, P1 — TRUTH] a SIXTH distinct-TYPE baseline still needs a fresh honest fixture.** The 2nd-retail baseline
-  (www.moleskine.com) is now PINNED (DONE marker above) — the frozen guard spans 8 real-domain baselines (2 anchors + 6
-  non-anchor across 5 storefront TYPES, with retail depth). The remaining `_CLASSIFICATION_ONLY` candidates (polar.sh /
-  simplybook.me / www.allbirds.com) ALL failed the byte-identity gate — their live sites DRIFTED from their committed
-  classification-only fixtures (polar.sh most dramatically, 6->3 archetypes) — so re-attempting any requires accepting a
-  genuinely NEW committed fixture (verify the new classification is honest first; it is a re-baseline, not a pin of the
-  old claim). HIGHEST-VALUE next: capture a real ACP/UCP/MPP merchant or a 2nd x402-live storefront — a genuinely NEW
-  storefront TYPE **and** a with-rails calibration point (the guard currently has only ONE with-rails member,
-  driftflight.com). Secondary: the PEER-GATED 2nd-retail WELD of www.moleskine.com is now DONE (PR #156 OPENED this
-  fire, Local cycle 20260807T174235Z — the www/bare normalization it required is shipped on the branch as `_norm_domain`;
-  awaiting next-fire review+merge). So the remaining P1-TRUTH frontier here is purely the genuinely-NEW with-rails /
-  new-storefront-TYPE fixture — the calibration guard still has only ONE with-rails member, and every welded non-anchor
-  member is a no-rails storefront; a real ACP/UCP/MPP merchant or 2nd x402-live storefront is the highest-value capture.
+<!-- MERGED Local cycle 20260807T184234Z: PR #156 (www.moleskine.com 6th non-anchor cross-path calibration weld) MERGED
+`571e4c6` after the owed FIRST-DUTY adversarial review + independent $0 live re-score. VERDICT SOUND: off-scoring-path
+(three-dot diff since merge-base dd5a0f0 is ONLY test_calibration_anchor_agreement.py +174/-2 + evidence JSON; EMPTY over
+asrs/rubric/fixtures/experiments/loop); vendor-neutral (by TYPE, retail depth); committed 49.8 F v0.7 baseline present;
+SHARED-_member_row SAFETY independently re-derived (only `www.` domain anywhere is the member key; only _norm_domain
+collision is the intended {moleskine.com, www.moleskine.com}; every existing member's n_compared byte-unchanged — no
+distinct storefronts collapse; over-normalization guarded); LOAD-BEARING (n_compared=5, all resolving to bare moleskine.com
+rows); teeth (49.8->60.0 caught THROUGH the normalization). Live re-derived THIS fire: moleskine 49.8 live == 49.8 frozen ==
+49.8 EXPECTED, all 4 non-null pillars byte-identical -> weld holds, did NOT regress. Weld 22/22 branch + merged main; the
+cross-path weld now spans SIX non-anchor witnesses. See LOG Local cycle 20260807T184234Z. -->
+<!-- DONE Local cycle 20260807T184234Z: pinned exa.ai (an agent-native web-search / content-retrieval API, Exa) as the NINTH
+test_canonical_replay.EXPECTED frozen-replay baseline (78.1 C v0.7; access 100.0/legibility 100.0/transactability 50.0/trust
+83.33) + _REPLAY_CLEAN + guard test_agent_native_api_service_replays_78_1 (overall + 4 pillars + capability teeth
+0.0<50.0<87.5) + _POPULATION in all 5 reproducibility suites, direct-to-main. It is the SECOND-HIGHEST baseline (fills the
+frozen guard's WIDEST upper-middle gap: nothing sat between ipinfo 61.3 and driftflight 85.5) AND the FIRST non-anchor member
+with GENUINE partial agent-native rails — documented x402 (llms.txt cites x402-agentkit-free-trial) + MCP surface + self-serve
+PAYG earn tx 50.0, a real MIDDLE strictly between the no-rails floor (books/api.replicate 0.0) and driftflight.com's full
+x402-live handshake (87.5). Captured full-score LIVE ($0 static, 49 fetch entries), verified NON-DESTRUCTIVELY replay-clean
+(replay_misses=0) BEFORE install; honest 4-archetype classification {metered_api, data_retrieval, digital_good, subscription}
+(physical_good/service_booking NA). [LOCAL] essence: live 78.1 == frozen fixture-replay 78.1 == EXPECTED 78.1, all 4 pillars
+byte-identical, caps empty. Frozen-replay baselines 8->9. Off-scoring-SEMANTICS EMPTY (6 test files + 1 new fixture); frozen
+canonical delta UNMOVED +39.4; suite 38/38 (replay 30->31). Evidence
+runs/local/exa_ai_agent_native_api_baseline_20260807T190030Z.json. See LOG Local cycle 20260807T184234Z. -->
+- **[FOLLOW-UP, P1 — TRUTH] the with-rails calibration axis: a 7th-non-anchor exa.ai WELD (next), then a genuinely-NEW FULL
+  with-rails point.** The frozen guard now spans NINE real-domain baselines (2 anchors + 7 non-anchor across 6 storefront
+  TYPES/shapes: null-control + 2 retail + service-booking + data-retrieval + pure-inference-API + agent-native-search-API).
+  **exa.ai (78.1, the 2nd-highest baseline) is now PINNED (DONE marker above) — the FIRST non-anchor member with GENUINE
+  partial agent-native rails** (documented x402 + MCP surface + self-serve PAYG → tx 50.0), materially advancing the
+  with-rails axis the guard previously had only ONE member for (driftflight.com). NEXT (PEER-GATED, cheap, teed up): a
+  7th-non-anchor cross-path WELD of exa.ai into `_NON_ANCHOR_WELDED` — trivially non-vacuous because exa.ai is ALREADY in the
+  sweep POPULATION keyed `exa.ai` == its EXPECTED key (NO www/bare normalization needed, unlike moleskine), so n_compared>=1
+  immediately; it would be the FIRST welded member with genuine partial rails, extending the cross-path regression signal onto
+  the upper/with-rails scale (guard test mirrors the api.replicate/moleskine weld tests; teeth 78.1->drift). HIGHEST-VALUE
+  after that: a genuinely-NEW FULL with-rails point — a real ACP/UCP/MPP merchant or a 2nd x402-LIVE storefront (a live
+  handshake, not documented) — still scarce; record reachability as its own signal. The remaining `_CLASSIFICATION_ONLY`
+  candidates (polar.sh / simplybook.me / www.allbirds.com) ALL failed the byte-identity gate (live drift), so re-attempting
+  any is a genuinely-NEW re-baseline (verify the new classification is honest first), not a pin of the old claim.
 
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
   phrasing has now drifted the `_ENV_BLOCK_RE` guard FIVE times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)

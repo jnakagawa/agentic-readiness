@@ -1,0 +1,69 @@
+{
+ "ts": "20260807T190030Z",
+ "kind": "local-baseline-pin",
+ "cycle": "Local cycle 20260807T184234Z",
+ "track": "TRUTH",
+ "domain": "exa.ai",
+ "what": "Pinned exa.ai as the NINTH frozen-replay calibration baseline (an agent-native web-search / retrieval API service; second-highest baseline; first non-anchor member with genuine partial agent-native rails). Direct-to-main, same class as the ipinfo/api.replicate/moleskine baseline pins.",
+ "live_rescore": {
+  "source_run_file": "runs/exa_ai_20260807T185023.json",
+  "overall": 78.1,
+  "grade": "C",
+  "rubric": "0.7",
+  "pillars": {
+   "access": 100.0,
+   "legibility": 100.0,
+   "transactability": 50.0,
+   "trust": 83.33333333333333,
+   "outcome": null
+  },
+  "caps_applied": [],
+  "scored": true
+ },
+ "frozen_fixture_replay": {
+  "overall": 78.1,
+  "grade": "C",
+  "rubric": "0.7",
+  "pillars": {
+   "access": 100.0,
+   "legibility": 100.0,
+   "transactability": 50.0,
+   "trust": 83.33333333333333,
+   "outcome": null
+  },
+  "replay_misses": 0,
+  "scored": true
+ },
+ "expected_pinned": {
+  "overall": 78.1,
+  "grade": "C",
+  "rubric_version": "0.7",
+  "pillars": {
+   "access": 100.0,
+   "legibility": 100.0,
+   "transactability": 50.0,
+   "trust": 83.33333333333333,
+   "outcome": null
+  }
+ },
+ "agreement": "live 78.1 == frozen fixture-replay 78.1 == EXPECTED 78.1; all 4 non-null pillars byte-identical; replay_misses=0; caps empty",
+ "offering_claimed_archetypes": [
+  "data_retrieval",
+  "digital_good",
+  "metered_api",
+  "subscription"
+ ],
+ "offering_surfaces_seen": [
+  "/docs",
+  "/llms.txt",
+  "/pricing",
+  "homepage"
+ ],
+ "capability_note": "transactability 50.0 EARNED by genuine partial/emerging agent-native rails: documented x402 surface (llms.txt cites x402-agentkit-free-trial) + MCP surface (PARTIAL) + self-serve pay-as-you-go (PARTIAL). A real MIDDLE datapoint strictly between the no-rails floor (books/api.replicate 0.0) and the with-rails anchor's full x402-live handshake (driftflight.com 87.5). Fills the frozen guard's widest upper-middle gap (ipinfo 61.3 -> driftflight 85.5).",
+ "files_changed": [
+  "fixtures/canonical/exa.ai.json (NEW, full-score fixture, 49 fetch entries)",
+  "tests/test_canonical_replay.py (EXPECTED += exa.ai; _REPLAY_CLEAN += exa.ai; new guard test_agent_native_api_service_replays_78_1 with capability teeth; runner registration)",
+  "tests/test_{hashseed,timezone,encoding,locale,probe_order}_reproducibility.py (_POPULATION += exa.ai \u2014 the replay-clean-set tripwires forced consistent inclusion)"
+ ],
+ "invariants": "off-scoring-SEMANTICS EMPTY (git diff over asrs/ rubric/ experiments/ loop/ EMPTY); frozen canonical delta UNMOVED +39.4; suite 38/38; replay 30->31. $0 static capture + in-process replay, no behavioral/codex/paid/zero-CLI. Stayed in-repo."
+}

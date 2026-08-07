@@ -248,6 +248,41 @@ EXPECTED = {
             "outcome": None,
         },
     },
+    # A NINTH real-domain calibration datapoint — an agent-native web-search /
+    # content-retrieval API service (Exa), a general agent-facing API storefront
+    # distinct from the PURE single-archetype pay-per-inference storefront
+    # (api.replicate.com): it claims FOUR archetypes {metered_api, data_retrieval,
+    # digital_good, subscription} (physical_good / service_booking NA) across genuine
+    # agent surfaces (homepage / llms.txt / /docs / /pricing). Its fixture was
+    # captured full-score LIVE [LOCAL] this cycle (Local cycle 20260807T184234Z) and
+    # replays CLEAN (0 misses); its live score was re-verified == this frozen floor on
+    # the same $0 static re-score (live 78.1 == frozen 78.1, all four non-null pillars
+    # byte-identical). It is the SECOND-HIGHEST baseline (78.1, grade C) and fills the
+    # frozen guard's widest upper-middle gap — nothing previously sat between the
+    # data-retrieval API (ipinfo.io, 61.3) and the with-rails anchor (driftflight.com,
+    # 85.5). Crucially it is the FIRST non-anchor baseline with GENUINE (if partial /
+    # emerging) agent-native commerce rails: a documented x402 surface (its llms.txt
+    # cites an `x402-agentkit-free-trial`), an MCP surface, and self-serve
+    # pay-as-you-go — earning transactability 50.0, a real MIDDLE datapoint DISTINCT
+    # from driftflight.com's full x402-live handshake (87.5) above and from the
+    # no-rails members' floor (books/api.replicate 0.0, moleskine's browser-only
+    # commerce surface 18.75) below. Its full legibility (100.0: llms.txt +
+    # machine-readable pricing + offer catalog + API docs, all agent-facing) with high
+    # trust (83.3) rounds out a pillar SHAPE no other baseline carries. Worded by
+    # capability, never by vendor. Re-capture + update together on a version bump,
+    # same contract as the domains above.
+    "exa.ai": {
+        "overall": 78.1,
+        "grade": "C",
+        "rubric_version": "0.7",
+        "pillars": {
+            "access": 100.0,
+            "legibility": 100.0,
+            "transactability": 50.0,
+            "trust": 83.33333333333333,
+            "outcome": None,
+        },
+    },
 }
 EXPECTED_DELTA = 39.4  # driftflight.com (rails) - drift-flight.org (no rails)
 
@@ -731,6 +766,48 @@ def test_pure_metered_api_storefront_replays_29_5() -> None:
 def test_second_retail_storefront_replays_49_8() -> None:
     print("test_second_retail_storefront_replays_49_8")
     _assert_domain("www.moleskine.com")
+
+
+# ---------------------------------------------------------------------------
+# 6f. NINTH-DOMAIN CALIBRATION — an AGENT-NATIVE web-search / retrieval API service
+#     (Exa). Guards 1–6e pin two API storefronts, two retail shops, a zero-commerce
+#     page, a service-booking SaaS, a data-retrieval API, and a pure-inference API.
+#     This replays the committed exa.ai fixture through the same real pipeline and pins
+#     its 78.1 C on rubric v0.7. It is the SECOND-HIGHEST baseline and fills the frozen
+#     guard's widest upper-middle gap — nothing previously sat between the data-retrieval
+#     API (ipinfo.io, 61.3) and the with-rails anchor (driftflight.com, 85.5). Its
+#     fixture was captured full-score LIVE [LOCAL] this cycle (replays clean, 0 misses)
+#     and its live score was re-verified == this frozen floor (live 78.1 == frozen 78.1,
+#     all four non-null pillars byte-identical). Capability distinction (worded by
+#     capability, never by vendor): exa.ai is the FIRST non-anchor baseline with GENUINE
+#     partial / emerging agent-native rails — a documented x402 surface + an MCP surface +
+#     self-serve pay-as-you-go — so it earns transactability 50.0, a real MIDDLE between
+#     the with-rails anchor's full x402-live handshake (87.5) and the no-rails members'
+#     floor (0.0–18.75). That partial credit is the point: a probe that collapsed partial
+#     rails to either 0 or full would move this number and fail here.
+# ---------------------------------------------------------------------------
+def test_agent_native_api_service_replays_78_1() -> None:
+    print("test_agent_native_api_service_replays_78_1")
+    _assert_domain("exa.ai")
+    # Capability teeth: exa.ai's transactability is a genuine PARTIAL — strictly
+    # between the no-rails floor (books.toscrape.com earns 0) and the with-rails
+    # anchor's full x402-live handshake (driftflight.com earns 87.5). exa.ai's 50.0 is
+    # earned by a DOCUMENTED x402 + an MCP surface + self-serve PAYG, not a full live
+    # rail. A probe that collapsed partial rails to either endpoint would fail here.
+    exa, exa_misses = _score_fixture("exa.ai")
+    books, books_misses = _score_fixture("books.toscrape.com")
+    com, com_misses = _score_fixture("driftflight.com")
+    _check(
+        not (exa_misses or books_misses or com_misses),
+        "no replay-miss on exa.ai / books.toscrape.com / driftflight.com",
+    )
+    exa_tx = exa.pillar_scores["transactability"]
+    _check(
+        books.pillar_scores["transactability"] < exa_tx < com.pillar_scores["transactability"],
+        f"exa.ai transactability {exa_tx} is a genuine partial — strictly between the "
+        f"no-rails floor ({books.pillar_scores['transactability']}) and the with-rails "
+        f"anchor's full handshake ({com.pillar_scores['transactability']})",
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -1739,6 +1816,14 @@ _REPLAY_CLEAN = {
     # frozen-replay baseline (a 5th distinct storefront TYPE for the cross-path
     # regression signal).
     "api.replicate.com",
+    # exa.ai captured full-score LIVE this cycle (Local cycle 20260807T184234Z): the
+    # fresh crawl covers the whole probe set (0 misses) and replays to its pinned 78.1
+    # C. It is the agent-native web-search / retrieval API TYPE frozen-replay baseline
+    # — the SECOND-HIGHEST datapoint (78.1) and the FIRST non-anchor member with
+    # genuine partial agent-native rails (documented x402 + MCP surface + self-serve
+    # PAYG → transactability 50.0), filling the upper-middle gap (ipinfo 61.3 ->
+    # driftflight 85.5) for the cross-path regression signal.
+    "exa.ai",
 }
 # Fixtures whose recorded surface is a strict subset of the full scoring path
 # (captured for offering/battery classification) — NOT eligible for any
@@ -2095,6 +2180,7 @@ def main() -> int:
         test_data_retrieval_storefront_replays_61_3,
         test_pure_metered_api_storefront_replays_29_5,
         test_second_retail_storefront_replays_49_8,
+        test_agent_native_api_service_replays_78_1,
         test_retail_storefront_earns_no_agent_native_payment,
         test_relabel_invariance_retail,
         test_nonstorefront_replays_22_5,

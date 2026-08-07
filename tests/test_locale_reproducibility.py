@@ -90,6 +90,7 @@ _POPULATION = (
     "books.toscrape.com",
     "drift-flight.org",
     "driftflight.com",
+    "exa.ai",
     "example.com",
     "ipinfo.io",
     "www.moleskine.com",

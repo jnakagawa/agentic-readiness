@@ -1,7 +1,19 @@
 # Loop state
 
 - Cycle counter: 295
-- **NO open peer-gated PR** (`gh pr list --state open` → `[]`). **PR #150 (v0.7(f) `_ENV_BLOCK_RE` →
+- **⚠ OPEN PEER-GATED PR #151 (documented-live-drift ledger) — OPENED this fire (Local 20260807T054210Z), NOT
+  self-merged.** Branch `loop/documented-live-drift-ledger`, commit `9d77d1c`. Resolves the calibration-cadence
+  blocker (the P0 below): a teeth-first ledger `experiments/documented_live_drift.json` the cross-path weld +
+  readout goldens consult, so an honest post-regression sweep can join the cadence without reddening the floor.
+  Diff OFF the scoring path (weld/readout TEST files + the ledger data + the held sweep renamed into the series;
+  empty diff over scoring.py/report.py/probes/battery.py/reliability.py/offering.py/scorecard.py/rubric/fixtures/).
+  Frozen replay UNMOVED 26/26 = 46.1/85.5/+39.4; suite 38/38 green WITH the regressed sweep committed on the branch;
+  live corroboration `verify_20260807T054102Z.json` = 76.2 C / +30.1 == the ledgered value. **NEXT FIRE'S FIRST
+  DUTY: adversarially review #151 + re-run the live re-score; if teeth still catch a code/crawl regression + the
+  frozen floor is always accepted + the live floor is still 76.2 → MERGE, else request changes / retire the ledger
+  entry if `/extend` recovered to 402.** On main the sweep stays HELD (floor green) until #151 merges. NOT
+  DM-enumerated (regression-guard semantics, not payment/weights/caps/removals); flagged for the next digest.
+- **PR #150 (v0.7(f) `_ENV_BLOCK_RE` →
   `browser (?:site[- ])?access(?: permission)?`) was OPERATOR-MERGED by jnakagawa** (merge `07cf47d`,
   2026-08-07T00:49:50Z) — SKIPPED the loop's pre-merge peer review (same as PR #149). **Local cycle 20260807T051750Z
   ran the owed post-merge adversarial review + independent live re-derivation → VERDICT SOUND**: off-scoring-path
@@ -11,7 +23,12 @@
   (46.1/85.5/+39.4 UNMOVED) re-run independently; suite 38/38. Merge stands, no revert. 5th own-tool vocab drift
   (269/284/287/296=v0.7(e)/v0.7(f)); leak-scan re-run each fire, no NEW drift this fire. STATE reconciled OPEN→MERGED
   (bookkeeping self-heal — STATE had lagged the operator merge).
-- **⚠ CALIBRATION CADENCE BLOCKED — PEER-GATED P0 QUEUED (Local 20260807T051750Z).** The cadence sweep this fire
+- **✅ CADENCE-UNBLOCK FIX IN FLIGHT as PR #151 (Local 20260807T054210Z)** — the documented-live-drift ledger below
+  is AUTHORED + pushed as the peer-gated PR (see the OPEN-PR banner above); the held sweep is renamed into the
+  `calibration_sweep_` series ON THE BRANCH (books.toscrape.com added, 18/19 scored) and the full suite is 38/38
+  green there. The P0 is no longer "queued" — it is opened, awaiting next-fire peer review. Below is the original
+  BLOCKED diagnosis (retained for the reviewer's context):
+- **⚠ CALIBRATION CADENCE (was) BLOCKED — now PR #151 (Local 20260807T051750Z).** The cadence sweep last fire
   (books.toscrape.com added to `POPULATION`, 18/19 scored; books.toscrape.com **29.5 F** = its replay baseline exactly)
   ALSO captured the persistent live x402 regression (driftflight.com 85.5→76.2), so committing an honest post-regression
   `calibration_sweep_*.json` into the cadence series REDDENS the floor — it trips 5 assertions that hardcode the
@@ -42,6 +59,30 @@
   but wrote NO LOG entry and never committed/pushed (its panel dir exists gitignored). This fire re-verified #149,
   took ownership of the reconciled banner (above), and committed. No fabricated 214745Z LOG entry. STATE pruned the
   two oldest rolling entries (cloud Cycles 290–291, preserved in LOG.md) to stay under the 600-line hygiene cap.
+- LOCAL cycle — 20260807T054210Z (METHOD/TRUTH / documented-live-drift ledger, PEER-GATED PR #151 opened, NOT
+  self-merged). FIRST duty: `gh pr list --state open` → `[]` at fire start (no PR to review; #150 merged `07cf47d`,
+  reviewed SOUND last fire). Infra HEALTHY: newest verify `verify_20260807T054102Z.json` (05:41Z, tests_ok 38 suites,
+  46.1 F / **76.2 C** / **+30.1**) ~1min old at fire (05:42Z) → :41 cadence holding (this hour's floor is the live
+  re-score, 76.2 == the ledgered value, transactability 62.5). **Executed the oldest P0 — the calibration-cadence
+  blocker.** The persistent live x402 regression (driftflight.com 85.5→76.2, +39.4→+30.1, `agents.driftflight.com/extend`
+  402→401, persistent 22:41Z→05:41Z) meant an honest post-regression sweep could no longer join the cadence without
+  reddening 5 assertions (weld ×3 + readout goldens ×2) that hardcode the pre-regression 85.5/+39.4 facts, while the
+  frozen replay stays 85.5 (invariant #2). **FIX (peer-gated PR #151, teeth-first documented-live-drift ledger):**
+  (1) `experiments/documented_live_drift.json` keyed (rubric_version, domain)→{overall, pillars, since_ts, reason,
+  evidence_path}, one driftflight.com@v0.7 entry (76.2, transactability 62.5, x402 reason + evidence); (2) the weld
+  (`test_calibration_anchor_agreement.py`) accepts a member's live value at the frozen floor OR a same-version
+  documented value (overall + per-pillar), teeth PRESERVED (floor always accepted → recovery never masked; documented
+  value EXACTLY → undocumented/further drift still red), +4 teeth tests 12→16; (3) the 2 real-committed readout goldens
+  (`test_readout.py`) made cadence-robust + ledger-tied (structural + immutable oldest-anchor + newest with-rails =
+  floor-or-documented; badge asserted internally consistent with the verdict, no frozen literal); (4) held sweep
+  renamed into the series (books.toscrape.com added, 18/19 scored). OFF the scoring path (empty diff over scoring.py/
+  report.py/probes/battery.py/reliability.py/offering.py/scorecard.py/rubric/fixtures/); frozen replay UNMOVED 26/26 =
+  46.1/85.5/+39.4; full suite **38/38 green** WITH the regressed sweep committed on the branch. PEER-GATED (it changes
+  what the regression guard counts as a divergence) — PR #151 opened, NOT self-merged; main's floor stays green (sweep
+  HELD on main until merge). Invariants #1 ($0 static recon + in-process tests, no signing/paid/panel/codex)–#5 held;
+  zero codex, zero paid ops; stayed in-repo. NO DM (regression-guard semantics is not a DM-enumerated sensitive class;
+  no digest due — 05:4xZ precedes 16:00 UTC on 08-07) — PR #151 flagged for next digest. STATE pruned oldest rolling
+  Cycles 292–293 to stay bounded. See LOG Local cycle 20260807T054210Z.
 - LOCAL cycle — 20260807T051750Z (TRUTH/METHOD / calibration cadence + self-heal, direct-to-main, score-neutral).
   FIRST duty: `gh pr list --state open` → `[]`; **PR #150 was OPERATOR-MERGED `07cf47d` (00:49Z), skipping the loop's
   pre-merge review → ran the owed post-merge adversarial review + independent leak-scan re-derivation → VERDICT SOUND**
@@ -235,118 +276,6 @@
   behavioral verification (still queued); cross-model SHOPPER delta still codex-blocked on the WITH side; a THIRD
   calibration anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168); structured catalog/pricing
   JSON (Cycle-70).
-- CYCLE 293 — 2026-08-06T~15:2xZ (TRUTH, cloud, direct-to-main, tests-only, score-neutral). FIRST duty (infra
-  health + peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR; #148 operator-merged
-  `7d47f2e` before Cycle 288, all subsequent direct-to-main). Cloud HEAD detached at real tip `0834e37`; `git fetch
-  origin main` advanced origin/main `3e318f1..0834e37`, local `main` stale orphan `3e318f1` → realigned to
-  origin/main before work (benign, no history rewrite). **INFRA HEALTHY:** newest verify by FILENAME
-  `runs/local/verify_20260806T144102Z.json` (14:41Z, tests_ok=true, 46.1 F / 85.5 B / +39.4), ~46min old at fire
-  (15:27Z); :41 cadence holding (12:41Z→13:41Z→14:41Z) → RUNNER-HEALTH WATCH NORMAL. Fresh checkout had NO `.venv`
-  → rebuilt (py3.11); full suite **38/38 green** before the change. **TRACK (cloud TRUTH / cross-path weld — pillar
-  axis):** STATE's named next-TRUTH lever (weld a 2nd non-anchor, books.toscrape.com) stays [LOCAL]-gated (it has a
-  replay baseline but is ABSENT from every sweep). Chose the in-cloud lever: the cross-path weld in
-  `test_calibration_anchor_agreement.py` welded only the single `overall`, but `overall` is a WEIGHTED SUM of
-  pillars (v0.7 access .15 / legibility .20 / transactability .30 / trust .15 / outcome .20 dropped-null →
-  renorm /.80) — a profile drift that moves two pillars in OPPOSITE directions can leave overall exactly on-floor,
-  passing the weld while the real agent-facing profile shifted. Both paths already carry the full per-pillar
-  breakdown → buildable with zero new capture. **IMPROVEMENT:** NEW pure `_pillar_divergences(...)` (the per-pillar
-  sibling of `_divergences`) welds each scored same-version welded member's per-PILLAR scores replay-baseline vs
-  sweep; a pillar null on EITHER path (`outcome`, static-mode-unmeasured) is `n_null_skipped`, NEVER a divergence
-  (inv #4); off-version counted, never diffed (inv #2); reads only committed JSON + `replay.EXPECTED` (ONE source
-  of truth, no scorer import). **EVIDENCE:** suite 9→**12** — (1) `test_live_sweep_pillars_agree_with_replay_baseline`
-  (real: 3 sweeps × 3 members × 4 non-null pillars = **36 comparisons, 0 divergences, 9 null-skipped**, non-vacuous
-  ≥8); (2) `test_pillar_canceling_drift_passes_overall_but_is_caught_by_pillar_weld` (TEETH: org legibility +6.0 /
-  transactability −4.0 recomputes to the SAME 46.1 floor → overall weld returns `[]`, pillar weld catches EXACTLY
-  `['legibility','transactability']` → pillar weld strictly dominates); (3) `test_null_pillar_is_skipped_not_a_divergence`
-  (inv-#4 teeth: sweep `outcome=88.0` vs null baseline SKIPPED, 4 shared pillars still compared). 9 pre-existing
-  tests unchanged + green; `test_runner_registration` green (3 new registered). **SHIP (direct-to-main):** tests-only,
-  off the scoring path (`git diff --stat -- asrs/ rubric/ fixtures/ experiments/ loop/local_verify.py batteries/`
-  EMPTY; only the one test file); TRUTH tests-only = direct-to-main (Cycles 289/291 precedent); no rubric bump. Suite
-  **38/38 green** after. **CANONICAL UNMOVED:** static replay 46.1 F / 85.5 B / **+39.4** (concurs 14:41Z floor); a
-  read-only cross-path guard adds no probe/scorer code → cannot move a score. The weld now witnesses BOTH paths
-  agreeing on all four MEASURED pillars of each welded member, not just the overall — higher-resolution regression
-  signal on the same data. Invariants #1 ($0 pure in-process tests)–#5 held; zero codex, zero paid ops. NO DM
-  (score-neutral tests-only TRUTH, not a DM-enumerated sensitive class; no digest due — ~15:2xZ precedes 16:00 UTC on
-  08-06). See LOG Cycle 293. Commit pending push below.
-- FOCUS POINTER (Cycle 293 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
-  RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY on a fresh
-  >6h no-artifact gap. Cloud track rotation: Cycle 293 was TRUTH → **READOUT next** (METHOD → COVERAGE → TRUTH →
-  READOUT). NEXT TRUTH (cloud): the pillar weld deepens anchor/example.com RESOLUTION; the open axis is BREADTH — a
-  2nd non-anchor welded member (books.toscrape.com, replay baseline present, ABSENT from sweeps) unlocks only once a
-  [LOCAL] cadence run ADDS it to `experiments/calibration_sweep.py`'s POPULATION (queued [LOCAL]). NEXT READOUT
-  (from Cycle 290/292): carry a one-line POPULATION-POSITION note to the MAIN card hero beside the reference-gap
-  badge (`_population_band_series`, Cycle-285 badge pattern). NEXT METHOD (cloud): the probe-order guard (Cycle 291)
-  covers the STATIC scorer; the sibling INTERNAL axis on the BEHAVIORAL path (does `battery.py`/`reliability.py`
-  aggregation depend on task/trial arrival order?) OR fixture-capture determinism. NEW PEER-GATED P1 (still queued,
-  Cycle 291): sort `caps_applied` in scoring.py so the RAW report is byte-reproducible under check reordering
-  (canonical-neutral — every committed `caps_applied` empty). NEXT COVERAGE (cloud): physical_good now spans
-  fulfillment / order-tracking / return-window; remaining thin-bank frontier is data_retrieval (8, thinnest)
-  RESPONSE-SCHEMA / field-contract leg IF committed ipinfo prose carries it distinct from `dataset-format`; a
-  return-AUTHORIZATION / RMA leg IF a real anchor carries it; subscription PAUSE/RESUME IF precision-guardable.
-  Standing METHOD tripwire: own-tool refusal vocab drifted THREE times (269, 284, 286→287) → keep the periodic leak
-  scan over each fresh committed panel. NEXT calibration cadence: population 17 scored (target 15–20); next
-  broadening = a genuine ACP/UCP/MPP merchant or a 2nd x402-live site. Substantive [LOCAL] frontier: ADD
-  books.toscrape.com to the sweep POPULATION (unlocks the 2nd non-anchor pillar+overall weld); PR #148 post-merge
-  live behavioral verification (still queued); cross-model SHOPPER delta still codex-blocked on the WITH side; a
-  THIRD calibration anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168); structured
-  catalog/pricing JSON (Cycle-70).
-- CYCLE 292 — 2026-08-06T~14:2xZ (COVERAGE, cloud, direct-to-main, score-neutral). FIRST duty (infra health +
-  peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR; #148 operator-merged `7d47f2e`
-  before Cycle 288, all subsequent cycles direct-to-main). Cloud detached at origin/main `7303a50`, local `main`
-  stale orphan `3e318f1` → realigned local `main` to origin/main before work (benign, no history rewrite).
-  **INFRA HEALTHY:** newest verify by FILENAME `runs/local/verify_20260806T134105Z.json` (13:41Z, tests_ok=true 38
-  suites, 46.1 F / 85.5 B / +39.4), ~43min old at fire (14:24Z); :41 cadence holding (11:41Z→12:41Z→13:41Z) →
-  RUNNER-HEALTH WATCH NORMAL. Fresh checkout had NO `.venv` → rebuilt (py3.11); full suite **38/38 green** before the
-  change. **TRACK (cloud COVERAGE / physical_good — 2nd-thinnest bank):** executed STATE's named next-COVERAGE lever —
-  the physical_good RETURNS-WINDOW leg (allbirds/moleskine) — chosen over the data_retrieval RESPONSE-SCHEMA candidate
-  (that one is gated on "verify vs dataset-format first", collision-prone; return-window has CONFIRMED committed
-  evidence). **IMPROVEMENT:** NEW physical_good signal `return-window` — the REVERSE-logistics leg (the machine-readable
-  return WINDOW an agent reasons over to reverse a purchase inside the allowed window without a human), the
-  reverse-lifecycle analog of `order-tracking` and the physical_good sibling of subscription's cancel window. GENUINELY
-  DISTINCT from `returns` (that matches only the STATIC existence of a returns POLICY page; THIS keys on the window
-  DURATION — policy EXISTS vs window IS N days). Mined from the committed `www.moleskine.com` homepage benefit
-  "Extended return period: 1-month to decide". **PRECISION-CRITICAL** (bare duration+month/week/day is a retail
-  minefield): NEVER a bare duration, NEVER a bare "return window" (would trip the JS `return window.<member>` idiom in
-  both anchors' bundles) — "return" must TIE to a period/window noun or a duration (`return period`; a duration LEADING
-  `return(s)`; a duration leading `return window`/`return window of N`; `return within N day|week|month`). So moleskine's
-  own "12 Month Planner"/"18-Month Planner" product names, allbirds' CCPA "12-month period"/"12 months preceding", the
-  "2 weeks to ship" estimate, and the JS "return window.CQuotient" all dodge. **EVIDENCE:** NEW
-  `test_physical_good_return_window_precision_synthetic` (7 positives fire / 8 product-name+retention+shipping+JS-idiom+
-  bare-returns negatives dodge) + NEW `test_return_window_fires_on_real_captured_surfaces` (moleskine through
-  from_fixture→discover_offering fires, quote "Extended return period: 1-month to decide", claimed SET unchanged
-  {physical_good, subscription}; ABSENT on allbirds/books.toscrape/pair/api/data/booking/null) → test_offering 113→**115**;
-  `_ISOLATION_EVIDENCE += return-window` → test_offering_canonical 70/70; runner-registration green. physical_good
-  **10→11**; bank now metered_api 26 / digital_good 11 / **physical_good 11** / subscription 10 / service_booking 9 /
-  data_retrieval 8. **SHIP (direct-to-main):** classifier signal OFF the scoring path (`git diff --stat -- asrs/scoring.py
-  asrs/report.py asrs/probes asrs/battery.py asrs/reliability.py rubric/ fixtures/ experiments/ loop/local_verify.py
-  batteries/` EMPTY; only asrs/offering.py +41 + test_offering.py +125 + test_offering_canonical.py +1); `discover_offering`
-  feeds `--battery auto` task selection only (direct-to-main tier for offering signals, Cycles 288/281/272/266 precedent);
-  no rubric bump. Suite **38/38 green** after. **CANONICAL UNMOVED:** static replay 46.1 F / 85.5 B / **+39.4** (concurs
-  13:41Z floor); off the scoring path (diff empty) → no score can move, AND physical_good is NA on BOTH canonical fixtures
-  by construction → a physical_good signal cannot reach either score; fires on moleskine only. Invariants #1 ($0 pure regex
-  + read-only tests)–#5 held; zero codex, zero paid ops. NO DM (score-neutral COVERAGE, not a DM-enumerated sensitive
-  class; no digest due — ~14:2xZ precedes 16:00 UTC on 08-06). See LOG Cycle 292. Commit `140d26a`.
-- FOCUS POINTER (Cycle 292 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
-  RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY on a fresh
-  >6h no-artifact gap. Cloud track rotation: Cycle 292 was COVERAGE → **TRUTH next** (METHOD → COVERAGE → TRUTH →
-  READOUT). NEXT COVERAGE (cloud): physical_good now spans fulfillment / order-tracking / return-window (forward +
-  reverse lifecycle) — remaining thin-bank frontier is data_retrieval (8, thinnest) RESPONSE-SCHEMA / field-contract leg
-  IF committed ipinfo prose carries it distinct from `dataset-format` (verify first); a return-AUTHORIZATION / RMA leg
-  (distinct from the return WINDOW) IF a real anchor carries it; subscription PAUSE/RESUME (polar `subscription.paused`/
-  uncancel) IF precision-guardable. NEXT TRUTH (cloud): the non-anchor cross-path weld is gated on a member with BOTH a
-  committed replay baseline AND ≥2 stable sweep presences — books.toscrape.com has the baseline but is ABSENT from the
-  sweeps → [LOCAL] cadence ADDING it to `experiments/calibration_sweep.py`'s POPULATION unlocks it. NEXT METHOD (cloud):
-  the probe-order guard (Cycle 291) covers the STATIC scorer; the sibling INTERNAL axis on the BEHAVIORAL path (does
-  `battery.py`/`reliability.py` aggregation depend on task/trial arrival order?) OR fixture-capture determinism. NEW
-  PEER-GATED P1 (still queued, Cycle 291): sort `caps_applied` in scoring.py so the RAW report is byte-reproducible under
-  check reordering (Cycle-291 teeth are its spec; canonical-neutral — every committed `caps_applied` empty). NEXT READOUT
-  (from Cycle 290): carry a one-line POPULATION-POSITION note to the MAIN card hero beside the reference-gap badge
-  (`_population_band_series`, Cycle-285 badge pattern). Standing METHOD tripwire: own-tool refusal vocab drifted THREE
-  times (269, 284, 286→287) → keep the periodic leak scan over each fresh committed panel. NEXT calibration cadence:
-  population 17 scored (target 15–20); next broadening = a genuine ACP/UCP/MPP merchant or a 2nd x402-live site.
-  Substantive [LOCAL] frontier: PR #148 post-merge live behavioral verification (still queued); ADD books.toscrape.com to
-  the sweep POPULATION; cross-model SHOPPER delta still codex-blocked on the WITH side; a THIRD calibration anchor / 2nd
-  x402-live merchant; render-generation digital_good (Cycle-168); structured catalog/pricing JSON (Cycle-70).
 <!-- STATE COMPACTED at Cycle 260 (2026-08-05T~17:1xZ, self-healing/COVERAGE, direct-to-main, score-neutral).
      STATE.md had accreted the full per-cycle history back to ~Cycle 5 (7798 lines / ~790KB) and could no
      longer be Read in one call, degrading the playbook-mandated per-cycle "read STATE.md". Trimmed the

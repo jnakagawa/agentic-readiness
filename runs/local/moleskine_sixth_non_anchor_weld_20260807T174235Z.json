@@ -1,0 +1,55 @@
+{
+  "ts": "20260807T174235Z",
+  "cycle": "Local 20260807T174235Z",
+  "track": "TRUTH",
+  "item": "weld www.moleskine.com as the SIXTH non-anchor cross-path calibration member (2nd retail; retail depth) via a www/bare host-alias normalization in the weld's _member_row",
+  "peer_gated": true,
+  "branch": "loop/moleskine-sixth-non-anchor-weld",
+  "member": "www.moleskine.com",
+  "segment_in_sweeps": "retail:no-rails",
+  "sweep_row_key": "moleskine.com",
+  "replay_baseline_key": "www.moleskine.com",
+  "normalization": "_norm_domain strips a single leading 'www.'; matches member 'www.moleskine.com' to bare 'moleskine.com' sweep rows; over-normalization guarded (internal 'www' / 'wwwx' / unrelated domains never collapsed)",
+  "live_rescore_$0_static": {
+    "cmd": "python -m asrs score www.moleskine.com --json-only",
+    "domain": "www.moleskine.com",
+    "rubric_version": "0.7",
+    "overall_score": 49.8,
+    "grade": "F",
+    "scored": true,
+    "caps_applied": [],
+    "pillar_scores": {
+      "access": 100.0,
+      "legibility": 40.90909090909091,
+      "transactability": 18.75,
+      "trust": 73.33333333333333,
+      "outcome": null
+    },
+    "report_path": "runs/www_moleskine_com_20260807T174654.json"
+  },
+  "frozen_baseline": {
+    "overall": 49.8,
+    "pillars": {
+      "access": 100.0,
+      "legibility": 40.90909090909091,
+      "transactability": 18.75,
+      "trust": 73.33333333333333,
+      "outcome": null
+    }
+  },
+  "agreement": "live overall 49.8 == frozen fixture-replay 49.8 == EXPECTED 49.8; all 4 non-null pillars byte-identical; caps empty -> weld HOLDS, moleskine did NOT regress",
+  "weld_compared": {
+    "moleskine_only_n_compared": 5,
+    "overall_weld_total_pairs": 31,
+    "non_anchor_weld_pairs": 21,
+    "pillar_weld_comparisons": 124,
+    "teeth": "moleskine 49.8 -> 60.0 caught as exactly one divergence (through the www/bare normalization)"
+  },
+  "cross_path_weld_now_spans": "SIX non-anchor witnesses: null-control (example.com) + retail-catalog (books.toscrape.com) + service-booking (acuityscheduling.com) + data-retrieval (ipinfo.io) + pure-inference-API (api.replicate.com) + 2nd-retail-depth (www.moleskine.com)",
+  "diff_scope": "test-only: tests/test_calibration_anchor_agreement.py (off-scoring-SEMANTICS EMPTY over asrs/rubric/fixtures/experiments/loop/local_verify.py)",
+  "weld_suite": "20 -> 22 tests",
+  "full_suite": "38/38 passed",
+  "frozen_canonical_delta": "+39.4 UNMOVED (fixture untouched)",
+  "live_canonical_delta": "+30.1 (verify_20260807T174100Z: org 46.1 F / com 76.2 C; persistent x402 regression, unchanged)",
+  "invariants": "1-5 held: $0 static re-score + in-process tests only (no behavioral/codex/paid/zero-CLI); zero paid ops; stayed in-repo"
+}

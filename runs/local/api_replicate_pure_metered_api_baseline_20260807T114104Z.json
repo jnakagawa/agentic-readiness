@@ -1,0 +1,74 @@
+{
+  "ts": "20260807T114104Z",
+  "kind": "local-cycle-evidence",
+  "cycle": "Local 20260807T114104Z",
+  "track": "TRUTH",
+  "item": "Promote api.replicate.com (a PURE single-archetype metered_api compute / model-inference API storefront) from classification-only to a frozen-replay calibration baseline via a [LOCAL] full-score LIVE re-capture; pin EXPECTED + _REPLAY_CLEAN + the 5 reproducibility populations + a guard test.",
+  "ship_class": "direct-to-main (frozen-replay baseline addition + non-anchor fixture re-capture; NO scoring semantics; same class as the ipinfo/acuity/books baseline pins)",
+  "first_duty_this_fire": "reviewed + MERGED peer-gated PR #154 (ipinfo.io 4th non-anchor cross-path weld) after adversarial review + independent $0 live re-score (ipinfo.io 61.3 live == 61.3 frozen == 61.3 EXPECTED, all 4 pillars byte-identical -> weld holds); merge ee95a0b; merged-main suite 38/38.",
+  "candidate_selection": {
+    "target_from_backlog": "a FIFTH distinct-storefront-TYPE non-anchor frozen-replay baseline (oldest P0), from _CLASSIFICATION_ONLY = {api.replicate.com, polar.sh, simplybook.me, www.allbirds.com}",
+    "recipe_hard_gate": "fresh full-score capture must (a) replay clean (replay_misses=0) AND (b) its offering classification must be byte-identical to the committed classification-only fixture (attribution honesty — never silently rewrite what a site claims)",
+    "results": {
+      "polar.sh": "REJECTED — fresh crawl classifies {digital_good, metered_api, subscription} vs committed {+data_retrieval, physical_good, service_booking} (6->3 archetypes; 54 vs 66 surfaces): the site changed, offering NOT byte-identical -> promoting would rewrite its claim. NOT forced.",
+      "simplybook.me": "REJECTED — same archetype set {metered_api, service_booking, subscription} but offering to_dict NOT byte-identical (evidence drift).",
+      "www.allbirds.com": "REJECTED — same archetype set {metered_api, physical_good} but offering to_dict NOT byte-identical (evidence drift).",
+      "api.replicate.com": "ACCEPTED — offering byte-identical ({metered_api}), fresh fixture replays clean (35 misses -> 0), live 29.5 F == frozen 29.5 F. The only candidate passing both gates."
+    }
+  },
+  "recapture": {
+    "command": "python -m asrs score api.replicate.com --record-fixture fixtures/canonical/api.replicate.com.json --json-only",
+    "cost": "$0 static (no --behavioral, no --max-pay, no paid/zero-CLI/codex)",
+    "prior_fixture": "classification-only (8 recorded urls, offering-discovery subset) — 35 full-scorer replay-misses",
+    "new_fixture": "full-score (40 recorded urls) — covers the whole probe set, 0 replay-misses"
+  },
+  "live_full_score_this_fire": {
+    "overall": 29.5,
+    "grade": "F",
+    "rubric_version": "0.7",
+    "scored": true,
+    "pillars": {
+      "access": 100.0,
+      "legibility": 18.181818181818183,
+      "transactability": 0.0,
+      "trust": 33.333333333333336,
+      "outcome": null
+    }
+  },
+  "replay_verification": {
+    "path": "from_fixture -> _run_probes -> scoring.score (the same offline replay pipeline test_canonical_replay uses)",
+    "overall": 29.5,
+    "replay_misses": 0,
+    "pillars_byte_identical_to_live": true,
+    "verdict": "live 29.5 == frozen 29.5 == EXPECTED 29.5, all 4 non-null pillars byte-identical"
+  },
+  "offering_classification_preserved": {
+    "claimed_archetypes": ["metered_api"],
+    "note": "classify_offering().to_dict() is byte-identical between the prior classification-only fixture and the new full-score fixture — api.replicate.com is a PURE single-archetype metered_api storefront (its only claim is pay-per-prediction inference). The _MACHINE_SURFACE openapi signals it anchors in test_offering_canonical (cursor-pagination contract, Cancel-After deadline, stream field, etc.) still fire on the fresh /openapi.json. test_offering 115/115, test_offering_canonical 70/70, test_battery_instantiate_canonical 6/6 unchanged."
+  },
+  "distinct_type_rationale": {
+    "why_a_5th_type": "the 4 non-anchor welded TYPES are null-control (example.com) + retail-catalog (books.toscrape.com) + service-booking (acuityscheduling.com) + data-retrieval (ipinfo.io); the two anchors are MULTI-archetype API storefronts (metered_api + digital_good + subscription). api.replicate.com is the PURE, SINGLE-archetype metered_api compute/inference storefront — a structurally-distinct 5th type: no digital_good/subscription/data_retrieval bundled.",
+    "pillar_shape_vs_retail_at_same_overall": "api.replicate.com 29.5 (access 100.0 / legibility 18.18 / transactability 0.0 / trust 33.33) has the SAME overall as books.toscrape.com 29.5 but a DISTINCT pillar mix (retail earns transactability from a real browser cart but lower access/legibility; the pure API earns zero transactability but full access). Two same-overall members now pin different pillar shapes — the guard spans the low scale by shape, not just the endpoints. api.replicate.com's 18.18 legibility is the LOWEST of the non-anchor set."
+  },
+  "sweep_presence_HONEST": {
+    "in_committed_calibration_sweeps": false,
+    "checked": ["calibration_sweep_20260728T234815Z", "calibration_sweep_20260805T014754Z", "calibration_sweep_20260806T044352Z", "calibration_sweep_20260807T045843Z"],
+    "consequence": "UNLIKE ipinfo.io (already sweep-present x3 at pin time, so its weld was immediately unlockable), api.replicate.com is ABSENT from every committed sweep. So this baseline pin does NOT immediately unlock the 5th-non-anchor cross-path WELD: a future [LOCAL] cadence run must FIRST add api.replicate.com to experiments/calibration_sweep.py's POPULATION and score it (the books.toscrape.com pattern, Local cycle 20260807T051750Z), THEN a peer-gated weld PR can add it to _NON_ANCHOR_WELDED with n_compared>=1. Queued in BACKLOG."
+  },
+  "edits": {
+    "fixtures/canonical/api.replicate.com.json": "re-captured full-score (identical to the validated temp capture; 8 -> 40 urls)",
+    "tests/test_canonical_replay.py": "EXPECTED += api.replicate.com (29.5 F v0.7); _REPLAY_CLEAN += api.replicate.com; _CLASSIFICATION_ONLY -= api.replicate.com; new guard test_pure_metered_api_storefront_replays_29_5 registered; stale partition prose (FIVE->SEVEN pinned domains; classification-only examples) refreshed",
+    "tests/test_hashseed_reproducibility.py": "_POPULATION += api.replicate.com + comment",
+    "tests/test_timezone_reproducibility.py": "_POPULATION += api.replicate.com + comment",
+    "tests/test_encoding_reproducibility.py": "_POPULATION += api.replicate.com",
+    "tests/test_locale_reproducibility.py": "_POPULATION += api.replicate.com",
+    "tests/test_probe_order_reproducibility.py": "_POPULATION += api.replicate.com"
+  },
+  "regression_signal": {
+    "frozen_canonical_delta": "+39.4 UNMOVED (drift-flight.org 46.1 / driftflight.com 85.5; replay guard 28->29 with the new guard)",
+    "live_canonical_delta_this_hour": "+30.1 (verify_20260807T114104Z.json: 46.1 F / 76.2 C — the persistent live x402 regression, unrelated to this change)",
+    "off_scoring_semantics": "EMPTY over asrs/scoring.py asrs/report.py asrs/probes asrs/battery.py asrs/reliability.py asrs/offering.py asrs/scorecard.py rubric/ experiments/ — the only scoring-adjacent file is the non-anchor api.replicate.com fixture re-capture; the canonical PAIR fixtures are untouched"
+  },
+  "full_suite": "38/38 green",
+  "invariants": "#1 ($0 static re-capture + in-process tests, no --behavioral/--max-pay/codex/zero-CLI) through #5 held; zero codex, zero paid ops; stayed in-repo checkout"
+}

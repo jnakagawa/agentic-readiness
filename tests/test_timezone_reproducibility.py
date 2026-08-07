@@ -71,17 +71,18 @@ _CANONICAL = ("driftflight.com", "drift-flight.org")
 # would slip past a pair-only guard; guard 1 below re-scores every one of them.
 #
 # This mirrors the replay-integrity partition in test_canonical_replay
-# (``_REPLAY_CLEAN``): a classification-only fixture (api.replicate.com /
-# www.allbirds.com / simplybook.me / polar.sh) records only a SUBSET of the
+# (``_REPLAY_CLEAN``): a classification-only fixture (www.allbirds.com /
+# simplybook.me / polar.sh) records only a SUBSET of the
 # scoring surface, so a full re-score misses dozens of requests — those are NOT
 # faithful re-scores and are excluded here. Guard 5 pins this set to the
 # LIVE-computed 0-miss set so a future [LOCAL] full-score re-capture that promotes
 # a fixture forces its inclusion here (the guard reddens until it is added),
 # never leaving reproducibility coverage silently behind the fixture population.
-# ipinfo.io was promoted this way (Local cycle 20260807T094104Z): re-captured
-# full-score and added below.
+# ipinfo.io (Local cycle 20260807T094104Z) and api.replicate.com (Local cycle
+# 20260807T114104Z) were promoted this way: re-captured full-score and added below.
 _POPULATION = (
     "acuityscheduling.com",
+    "api.replicate.com",
     "books.toscrape.com",
     "drift-flight.org",
     "driftflight.com",

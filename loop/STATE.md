@@ -1,22 +1,42 @@
 # Loop state
 
 - Cycle counter: 295
-- **⏳ OPEN peer-gated PR #154 (ipinfo.io 4th non-anchor cross-path calibration weld) — opened this fire (Local
-  20260807T104102Z), branch `loop/ipinfo-fourth-non-anchor-weld` commit `ac4f0b7`, NOT self-merged.** Welds
-  ipinfo.io (data_retrieval / IP-data enrichment API storefront — a FOURTH structurally-distinct storefront TYPE)
-  into `_NON_ANCHOR_WELDED` = (example.com, books.toscrape.com, acuityscheduling.com, ipinfo.io), so the cross-path
-  weld now spans FOUR non-anchor witnesses (null-control + retail-catalog + service-booking + data-retrieval). New
-  `test_ipinfo_fourth_non_anchor_is_welded_nonvacuously` (mirrors the acuity/books tests): committed v0.7 baseline
-  present (61.3 D), genuinely COMPARED n_compared=3 (segment data-retrieval:api across the three committed sweeps —
-  NOT silently skipped), agrees with its 61.3 floor, teeth (synthetic drift 61.3→72.0 caught as exactly one
-  divergence). The [LOCAL] essence THIS fire (10:44Z $0 static re-score, no --behavioral/--max-pay): live 61.3 ==
-  frozen fixture replay 61.3 (replay_misses=0) == EXPECTED 61.3, all 4 non-null pillars byte-identical (access 100.0
-  / legibility 72.73 / transactability 25.0 / trust 80.0) → ipinfo.io did NOT regress; the weld pins a currently-true
-  fact (inv #4). TEST-ONLY (`test_calibration_anchor_agreement.py` +81/−4; off-scoring-path diff EMPTY), weld suite
-  18→19, full suite 38/38. PEER-GATED (regression-guard semantics, same class as #153) → NOT self-merged; main floor
-  green (weld change branch-only). Evidence `runs/local/ipinfo_fourth_non_anchor_weld_20260807T104102Z.json`. Frozen
-  canonical delta UNMOVED +39.4; live +30.1. **NEXT FIRE'S FIRST DUTY: adversarially review + live re-score ipinfo.io,
-  then MERGE if SOUND.** See LOG Local cycle 20260807T104102Z.
+- **✅ PR #154 (ipinfo.io 4th non-anchor cross-path calibration weld) MERGED this fire (Local 20260807T114104Z),
+  merge `ee95a0b`** — after the owed FIRST-DUTY adversarial review + independent $0 live re-score. VERDICT SOUND:
+  off-scoring-path (three-dot diff since merge-base `d0f5250` is ONLY `test_calibration_anchor_agreement.py` +81/−4;
+  EMPTY over scoring.py/report.py/probes/battery.py/reliability.py/offering.py/scorecard.py/rubric/fixtures/
+  experiments); vendor-neutral (welded by storefront TYPE data-retrieval); committed baseline present (61.3 D v0.7);
+  LOAD-BEARING (independently re-derived n_compared=3 — ipinfo.io scored 61.3 in the 20260805T014754Z/20260806T044352Z/
+  20260807T045843Z sweeps, segment data-retrieval:api; the 20260728 sweep legitimately ABSENT); teeth (61.3→72.0 caught
+  as exactly one divergence); and the [LOCAL] live re-score re-derived THIS fire (`python -m asrs score ipinfo.io
+  --json-only`, $0 static) → ipinfo.io **61.3 live == 61.3 frozen == 61.3 EXPECTED**, all 4 non-null pillars
+  byte-identical (access 100.0 / legibility 72.73 / transactability 25.0 / trust 80.0), caps empty → weld HOLDS,
+  ipinfo.io did NOT regress → MERGE. Weld suite 19/19 branch + merged main; the cross-path weld now spans FOUR
+  structurally-distinct non-anchor witnesses (null-control + retail-catalog + service-booking + data-retrieval).
+  Review verdict recorded in LOG Local cycle 20260807T114104Z.
+- **✅ NEW SEVENTH frozen-replay calibration baseline PINNED this fire (Local 20260807T114104Z, direct-to-main):
+  api.replicate.com** (a PURE, SINGLE-archetype metered_api compute / model-inference API storefront — a FIFTH
+  structurally-distinct storefront TYPE, beyond the two MULTI-archetype API anchors / retail catalog / zero-commerce
+  page / service-booking SaaS / data-retrieval API). 29.5 F v0.7 (access 100.0 / legibility 18.18 / transactability
+  0.0 / trust 33.33). PROMOTED from classification-only to `_REPLAY_CLEAN` via a [LOCAL] FULL-score LIVE re-capture
+  (prior fixture 8 urls / 35 full-scorer misses; fresh 40-url full-score replays clean, replay_misses=0). Chosen by
+  the recipe's hard gate over polar.sh/simplybook.me/www.allbirds.com — it is the ONLY `_CLASSIFICATION_ONLY` candidate
+  whose fresh crawl is offering-classification BYTE-IDENTICAL to its committed fixture ({metered_api}); polar.sh (the
+  intended full-spectrum merchant TYPE) DRIFTED 6→3 archetypes (site changed) so promoting it would rewrite its claim
+  (inv #4) — NOT forced. `test_canonical_replay.EXPECTED` + new guard `test_pure_metered_api_storefront_replays_29_5`
+  + `_REPLAY_CLEAN` + `_POPULATION` in all 5 reproducibility suites (the replay-clean-set tripwires FORCED consistent
+  inclusion). The [LOCAL] essence: fresh $0 static re-score THIS fire (11:5xZ) → live 29.5 == frozen 29.5, all 4
+  non-null pillars byte-identical; offering `to_dict` byte-identical (test_offering 115/115, test_offering_canonical
+  70/70, test_battery_instantiate_canonical 6/6 unchanged — its `_MACHINE_SURFACE` openapi signals still fire). Its
+  18.18 legibility (LOWEST of the non-anchor set) + 0.0 transactability make 29.5 a LOWER datapoint with a pillar SHAPE
+  DISTINCT from books.toscrape.com's own 29.5 (retail earns transactability but less legibility; the pure API the
+  inverse) → the frozen guard now spans the low scale by shape, over SEVEN real-domain baselines. Evidence
+  `runs/local/api_replicate_pure_metered_api_baseline_20260807T114104Z.json`. Off-scoring-SEMANTICS EMPTY (only the
+  non-anchor api.replicate.com fixture is scoring-adjacent; canonical PAIR untouched); frozen canonical delta UNMOVED
+  +39.4; suite 38/38. **HONEST GATE: this does NOT immediately unlock the 5th-non-anchor WELD** — unlike ipinfo.io,
+  api.replicate.com is ABSENT from every committed calibration sweep, so a future [LOCAL] cadence run must FIRST add it
+  to `experiments/calibration_sweep.py`'s POPULATION (n_compared≥1) before a peer-gated weld PR (the books.toscrape.com
+  pattern). See LOG Local cycle 20260807T114104Z.
 - **✅ PR #153 (acuityscheduling.com 3rd non-anchor cross-path calibration weld) MERGED this fire (Local
   20260807T094104Z), merge `7cd4fcc`** — after the owed FIRST-DUTY adversarial review + independent $0 live re-score.
   VERDICT SOUND: off-scoring-path (three-dot diff since merge-base `a104c8d` is ONLY
@@ -113,6 +133,33 @@
   but wrote NO LOG entry and never committed/pushed (its panel dir exists gitignored). This fire re-verified #149,
   took ownership of the reconciled banner (above), and committed. No fabricated 214745Z LOG entry. STATE pruned the
   two oldest rolling entries (cloud Cycles 290–291, preserved in LOG.md) to stay under the 600-line hygiene cap.
+- LOCAL cycle — 20260807T114104Z (TRUTH / MERGED PR #154 + pinned api.replicate.com as the 7th frozen-replay baseline
+  / a 5th storefront TYPE: pure single-archetype metered_api, direct-to-main). FIRST duty: `gh pr list --state open` →
+  PR #154 OPEN → adversarial review + independent $0 live re-score → VERDICT SOUND → **MERGED `ee95a0b`**
+  (off-scoring-path test-only +81/−4; vendor-neutral by TYPE; load-bearing n_compared=3 independently re-derived from
+  the 3 committed sweeps; teeth 61.3→72.0; live re-derived ipinfo.io 61.3 live == 61.3 frozen == 61.3 EXPECTED, all
+  pillars byte-identical → weld holds; weld 19/19, suite 38/38 branch + merged main; the cross-path weld now spans FOUR
+  non-anchor TYPES). Infra HEALTHY: `verify_20260807T114104Z.json` (11:41Z, 38 suites, 46.1/76.2/+30.1) fresh → :41
+  cadence holding (104102Z→114104Z). **Executed the oldest P0 — a FIFTH-storefront-TYPE frozen-replay baseline the
+  #154 merge unblocked:** triaged the 4 `_CLASSIFICATION_ONLY` candidates by the recipe's hard gate (fresh full-score
+  must replay clean AND offering classification BYTE-IDENTICAL to the committed fixture). polar.sh REJECTED (fresh crawl
+  drifted 6→3 archetypes — site changed; NOT forced, inv #4); simplybook.me/www.allbirds.com REJECTED (offering
+  evidence drift). **api.replicate.com ACCEPTED** — the only passer: a PURE single-archetype metered_api compute/
+  inference API (a 5th TYPE), re-captured full-score LIVE ($0 static, 8→40 urls), verified NON-DESTRUCTIVELY (35 misses
+  →0; offering `to_dict` byte-identical → test_offering 115/115, test_offering_canonical 70/70, test_battery_instantiate_canonical
+  6/6 unchanged; the `_MACHINE_SURFACE` openapi signals still fire), then promoted `_CLASSIFICATION_ONLY`→`_REPLAY_CLEAN`,
+  pinned `test_canonical_replay.EXPECTED` (29.5 F v0.7) + guard `test_pure_metered_api_storefront_replays_29_5` (28→29)
+  + `_POPULATION` in all 5 reproducibility suites. [LOCAL] essence THIS fire: live 29.5 == frozen 29.5, all 4 non-null
+  pillars byte-identical (access 100.0 / legibility 18.18 / transactability 0.0 / trust 33.33). Its 18.18 legibility
+  (LOWEST non-anchor) + 0.0 transactability give 29.5 a pillar SHAPE distinct from books' own 29.5 → the guard now
+  spans the low scale by shape over SEVEN baselines. Direct-to-main (baseline addition + non-anchor fixture re-capture;
+  no scoring semantics); off-scoring-SEMANTICS EMPTY (canonical PAIR untouched); frozen canonical delta UNMOVED +39.4;
+  suite 38/38. Evidence `runs/local/api_replicate_pure_metered_api_baseline_20260807T114104Z.json`. Invariants #1 ($0
+  static recapture + in-process tests, no behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed
+  in-repo. NO DM (baseline pin/weld-merge not a DM-enumerated sensitive class; 11:4xZ precedes 16:00 UTC) — #154 MERGE
+  flagged for next digest. HONEST GATE: api.replicate.com is ABSENT from all committed sweeps → the 5th-non-anchor WELD
+  is NOT yet unlocked; a [LOCAL] cadence run must add it to the sweep POPULATION first (books.toscrape.com pattern). See
+  LOG Local cycle 20260807T114104Z.
 - LOCAL cycle — 20260807T104102Z (TRUTH / welded ipinfo.io as the 4th non-anchor cross-path member, PEER-GATED PR
   #154 opened, NOT self-merged). FIRST duty: `gh pr list --state open` → `[]` (no open PR to review; PR #153 MERGED
   `7cd4fcc` last fire). Infra HEALTHY: `verify_20260807T104102Z.json` (10:41Z, 38 suites, 46.1 F / 76.2 C / +30.1)
@@ -300,62 +347,6 @@
   pillar+overall weld); PR #148 post-merge live behavioral verification (still queued); cross-model SHOPPER delta
   still codex-blocked on the WITH side; a THIRD calibration anchor / 2nd x402-live merchant; render-generation
   digital_good (Cycle-168); structured catalog/pricing JSON (Cycle-70).
-- CYCLE 294 — 2026-08-06T~16:2xZ (READOUT, cloud, direct-to-main, display-only, score-neutral). FIRST duty (infra
-  health + peer-gate review): `list_pull_requests` state=open → `[]` (no open peer-gated PR; #148 operator-merged
-  `7d47f2e` before Cycle 288, all subsequent direct-to-main). Cycle 293 `dca33c2` confirmed committed+pushed on
-  origin/main (STATE's "commit pending push" was pre-push; push succeeded); cloud HEAD at real tip `8ad53d2` (fresh
-  15:41Z verify), local `main` stale orphan `3e318f1` → realigned to origin/main before work (benign, no history
-  rewrite). **INFRA HEALTHY:** newest verify by FILENAME `runs/local/verify_20260806T154104Z.json` (15:41Z,
-  tests_ok=true 38 suites, 46.1 F / 85.5 B / +39.4), ~43min old at fire (16:24Z); :41 cadence holding
-  (13:41Z→14:41Z→15:41Z) → RUNNER-HEALTH WATCH NORMAL. Fresh checkout NO `.venv` → rebuilt (py3.11); full suite
-  **38/38 green** before the change. **TRACK (cloud READOUT / population-position on the main card):** executed STATE's
-  named next-READOUT lever — the Cycle-290 whole-cohort band overlay lives ONLY on calibration.html; the MAIN card hero
-  carries the Cycle-285 reference-gap HELD/MOVED badge but says nothing about WHERE this pair sits inside the
-  population, so a headline reader can't tell +39.4 is a real spread vs two cherry-picked endpoints without opening a
-  page they may never visit. **IMPROVEMENT:** two NEW pure fns in `asrs/scorecard.py` — `_population_position_verdict`
-  (the RANK sibling of `_reference_gap_verdict`'s GAP: version-isolated, reads the cohort band from
-  `_population_band_series` [SAME source as the calibration overlay] + anchor overalls from `_anchor_trend_series`
-  [SAME source as the gap badge], returns `{n,median,lo,hi,top,bot,top_is_max,bot_pos,date}` at the newest sweep both
-  anchors scored; a not-scorable anchor/empty band is a gap never a 0, inv #4) + `_population_position_badge_from_sweeps`
-  (a one-line hero note; the "real spread, not cherry-picked" reassurance is DATA-GATED — renders only when with-rails
-  tops the cohort AND no-rails at/below median, else downgrades to a neutral "sits high (max X)" report). Wired into
-  `build_scorecard`'s hero beside the gap badge. **EVIDENCE:** test_readout +6 tests (all registered; runner-reg green):
-  real-committed (n=17, top 85.5=cohort max, bot 46.1 below median 62.0, "real population spread" renders) +
-  shared-datum (note band IS `_population_band_series[-1]`, note gap IS gap verdict `last_gap`) + TEETH (a 90.0 member
-  above the anchor → `top_is_max` flips False, note drops "tops the", states "sits high … (max 90.0)", WITHHOLDS the
-  reassurance — data-driven) + inv-#4 teeth (newest sweep norails not-scorable → falls back to last both-scored sweep,
-  bot=46.1 never a fabricated 0) + version-isolated/absent + end-to-end hero-carries-both. Full suite **38/38 green** after.
-  **SHIP (direct-to-main):** display-only, OFF the scoring path (`git diff --stat -- asrs/scoring.py asrs/report.py
-  asrs/probes asrs/battery.py asrs/reliability.py asrs/offering.py rubric/ fixtures/ experiments/ loop/local_verify.py
-  batteries/` EMPTY; only asrs/scorecard.py +115 + test_readout.py +156); READOUT direct-to-main tier (Cycles 290/285);
-  no rubric bump. **CANONICAL UNMOVED:** static replay 26/26 → 46.1 F / 85.5 B / **+39.4** (concurs 15:41Z floor); a
-  committed-JSON→HTML note touches no probe/scorer → cannot move a score. The note's own numbers corroborate the gap's
-  honesty (with-rails tops the 17-member cohort, no-rails below its median). Invariants #1 ($0 pure render + in-process
-  tests)–#5 held; zero codex, zero paid ops. **DM SENT** — first cloud fire after 16:00 UTC on 08-06 (16:24Z) → daily
-  digest due (comms 3rd trigger); the READOUT ship itself is not a DM-enumerated sensitive class. See LOG Cycle 294.
-- FOCUS POINTER (Cycle 294 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health check.
-  RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH stays NORMAL — re-escalate ONLY on a fresh
-  >6h no-artifact gap. Cloud track rotation: Cycle 294 was READOUT → **METHOD next** (METHOD → COVERAGE → TRUTH →
-  READOUT). NEXT READOUT (from Cycle 294): the position note + gap badge now both live on the main card — next
-  increment is either a compact combined "population context" strip (cohort n + median + this pair's percentile) OR
-  carrying the note's percentile onto the TERMINAL/CLI readout so the two output surfaces match (the Cycle-192
-  terminal↔HTML parity pattern). NEXT METHOD (cloud): the probe-order guard (Cycle 291) covers the STATIC scorer; the
-  sibling INTERNAL axis on the BEHAVIORAL path (does `battery.py`/`reliability.py` aggregation depend on task/trial
-  arrival order?) OR fixture-capture determinism. NEW PEER-GATED P1 (still queued, Cycle 291): sort `caps_applied` in
-  scoring.py so the RAW report is byte-reproducible under check reordering (canonical-neutral — every committed
-  `caps_applied` empty). NEXT TRUTH (cloud): the pillar weld (Cycle 293) deepens anchor/example.com RESOLUTION; the
-  open axis is BREADTH — a 2nd non-anchor welded member (books.toscrape.com, replay baseline present, ABSENT from
-  sweeps) unlocks only once a [LOCAL] cadence run ADDS it to `experiments/calibration_sweep.py`'s POPULATION. NEXT
-  COVERAGE (cloud): physical_good now spans fulfillment / order-tracking / return-window; remaining thin-bank frontier
-  is data_retrieval (8, thinnest) RESPONSE-SCHEMA / field-contract leg IF committed ipinfo prose carries it distinct
-  from `dataset-format`; a return-AUTHORIZATION / RMA leg IF a real anchor carries it; subscription PAUSE/RESUME IF
-  precision-guardable. Standing METHOD tripwire: own-tool refusal vocab drifted THREE times (269, 284, 286→287) → keep
-  the periodic leak scan over each fresh committed panel. NEXT calibration cadence: population 17 scored (target
-  15–20); next broadening = a genuine ACP/UCP/MPP merchant or a 2nd x402-live site. Substantive [LOCAL] frontier: ADD
-  books.toscrape.com to the sweep POPULATION (unlocks the 2nd non-anchor pillar+overall weld); PR #148 post-merge live
-  behavioral verification (still queued); cross-model SHOPPER delta still codex-blocked on the WITH side; a THIRD
-  calibration anchor / 2nd x402-live merchant; render-generation digital_good (Cycle-168); structured catalog/pricing
-  JSON (Cycle-70).
 <!-- STATE COMPACTED at Cycle 260 (2026-08-05T~17:1xZ, self-healing/COVERAGE, direct-to-main, score-neutral).
      STATE.md had accreted the full per-cycle history back to ~Cycle 5 (7798 lines / ~790KB) and could no
      longer be Read in one call, degrading the playbook-mandated per-cycle "read STATE.md". Trimmed the

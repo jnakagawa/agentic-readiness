@@ -183,6 +183,39 @@ EXPECTED = {
             "outcome": None,
         },
     },
+    # A SEVENTH real-domain calibration datapoint — a PURE, SINGLE-ARCHETYPE
+    # metered_api compute / model-inference storefront (its only claimed archetype is
+    # metered_api: pay-per-prediction inference, no digital_good / subscription /
+    # data_retrieval bundled), a FIFTH structurally-distinct storefront TYPE beyond the
+    # two MULTI-archetype canonical API storefronts, the browser-checkout retail shop,
+    # the zero-commerce baseline, the service-booking SaaS, and the data-retrieval API.
+    # Its committed fixture was re-captured full-score LIVE [LOCAL] this cycle (Local
+    # cycle 20260807T114104Z) — promoted from classification-only to _REPLAY_CLEAN
+    # (35 misses -> 0) — and its live score was re-verified == this frozen floor on the
+    # same $0 static re-score (live 29.5 == frozen 29.5, all four non-null pillars
+    # byte-identical), so it is a STABLE cross-path datapoint. It broadens the frozen
+    # regression guard to a pure-inference-API site type: a probe/scoring change that
+    # quietly moved a single-archetype metered_api storefront's number fails here too.
+    # Its 18.2 legibility (the LOWEST of the non-anchor set — a thin homepage + machine
+    # OpenAPI, little agent-facing prose) paired with 0.0 transactability (self-serve
+    # billing, NO agent-native payment rail) and 33.3 trust makes 29.5 a genuine
+    # LOWER datapoint with a pillar shape DISTINCT from the retail shop's own 29.5
+    # (retail earns transactability from a real cart; this earns none but more access),
+    # so two same-overall members pin different pillar mixes and the guard spans the
+    # low scale by shape, not just the endpoints. Re-capture + update together on a
+    # version bump, same contract as the domains above.
+    "api.replicate.com": {
+        "overall": 29.5,
+        "grade": "F",
+        "rubric_version": "0.7",
+        "pillars": {
+            "access": 100.0,
+            "legibility": 18.181818181818183,
+            "transactability": 0.0,
+            "trust": 33.333333333333336,
+            "outcome": None,
+        },
+    },
 }
 EXPECTED_DELTA = 39.4  # driftflight.com (rails) - drift-flight.org (no rails)
 
@@ -614,6 +647,32 @@ def test_service_booking_storefront_replays_54_0() -> None:
 def test_data_retrieval_storefront_replays_61_3() -> None:
     print("test_data_retrieval_storefront_replays_61_3")
     _assert_domain("ipinfo.io")
+
+
+# ---------------------------------------------------------------------------
+# 6d. SEVENTH-DOMAIN CALIBRATION — a FIFTH storefront TYPE in the frozen guard.
+#     Guards 1–6c pin two MULTI-archetype API storefronts, a browser-checkout retail
+#     shop, a zero-commerce page, a service-booking SaaS, and a data-retrieval API.
+#     This replays the committed fixture for a PURE, SINGLE-ARCHETYPE metered_api
+#     compute / model-inference storefront (its only claimed archetype is metered_api)
+#     through the same real pipeline and pins its score on rubric v0.7. Its fixture was
+#     re-captured full-score LIVE [LOCAL] this cycle (promoted classification-only ->
+#     replay-clean, 35 misses -> 0) and its live score was re-verified == this frozen
+#     floor on a fresh $0 static re-score at pin time (Local cycle 20260807T114104Z:
+#     live 29.5 == frozen 29.5, all four non-null pillars byte-identical), so it is a
+#     STABLE cross-path datapoint — a probe/scoring change that quietly moved a
+#     single-archetype metered_api storefront's number fails here too, broadening the
+#     regression signal to a fifth site type. Its 18.2 legibility (the LOWEST of the
+#     non-anchor set — a thin homepage plus a machine OpenAPI, little agent-facing
+#     prose) paired with 0.0 transactability (self-serve billing, NO agent-native
+#     payment rail) makes 29.5 a genuine LOWER datapoint whose pillar shape is DISTINCT
+#     from the retail shop's own 29.5 (retail earns transactability from a real cart
+#     but less legibility; this earns none but more), so two same-overall members pin
+#     different pillar mixes.
+# ---------------------------------------------------------------------------
+def test_pure_metered_api_storefront_replays_29_5() -> None:
+    print("test_pure_metered_api_storefront_replays_29_5")
+    _assert_domain("api.replicate.com")
 
 
 # ---------------------------------------------------------------------------
@@ -1574,15 +1633,15 @@ def test_population_check_layer_negative_control() -> None:
 #
 #     WHY THIS IS A TRUTH GUARD. A score-replay is only a faithful re-score when
 #     the fixture covers every probe request — the _assert_domain (a)-leg pins
-#     this for the FIVE pinned score domains, but nothing pinned the fixtures
-#     committed for OTHER purposes. Two of them silently CANNOT replay-score:
-#     api.replicate.com (35 misses) and ipinfo.io (46 misses), both captured via
-#     the classification path (they miss the full scorer's robots.txt, homepage
+#     this for the SEVEN pinned score domains, but nothing pinned the fixtures
+#     committed for OTHER purposes. Three of them silently CANNOT replay-score:
+#     www.allbirds.com, simplybook.me, and polar.sh, all captured via the
+#     classification path (they miss the full scorer's robots.txt, homepage
 #     under claudebot/gptbot UAs, the trust/legal surface sweep, sitemap,
-#     pricing.json/catalog.json, cross-domain review URLs). The standing backlog
-#     proposal to add a SECOND API storefront (api.replicate.com) to
-#     _CAPABILITY_SPECTRUM would, done blindly, explode every population guard with
-#     a cryptic replay-miss rather than a clear "re-capture first" signal. This
+#     pricing.json/catalog.json, cross-domain review URLs). A standing backlog
+#     proposal to add such a classification-only fixture to _CAPABILITY_SPECTRUM
+#     would, done blindly, explode every population guard with a cryptic
+#     replay-miss rather than a clear "re-capture first" signal. This
 #     partition makes fixture faithfulness an EXPLICIT, self-maintaining invariant:
 #       - a NEW committed fixture that is neither clean nor quarantined FAILS here,
 #         forcing an eligibility decision before any guard can trust it;
@@ -1612,6 +1671,16 @@ _REPLAY_CLEAN = {
     # frozen-replay baseline (a 4th distinct storefront TYPE for the cross-path
     # regression signal).
     "ipinfo.io",
+    # api.replicate.com promoted from classification-only this cycle (Local cycle
+    # 20260807T114104Z) via a [LOCAL] full-score LIVE re-capture: the fresh crawl
+    # covers the whole probe set (35 misses -> 0) and replays to its pinned 29.5 F, its
+    # offering classification (a PURE single-archetype metered_api compute /
+    # model-inference API) byte-identical to the prior classification-only fixture
+    # (test_offering 115/115 + test_offering_canonical 70/70 unchanged — its
+    # _MACHINE_SURFACE openapi signals still fire). It is the pure-inference-API TYPE
+    # frozen-replay baseline (a 5th distinct storefront TYPE for the cross-path
+    # regression signal).
+    "api.replicate.com",
 }
 # Fixtures whose recorded surface is a strict subset of the full scoring path
 # (captured for offering/battery classification) — NOT eligible for any
@@ -1624,9 +1693,10 @@ _REPLAY_CLEAN = {
 # platform whose OpenAPI carries a programmatic `DELETE /v1/subscriptions/{id}` +
 # `cancel_at_period_end` — the [LOCAL] enabler for the subscription 9->10 mine;
 # captured via discover_offering, 211 full-scorer misses).
-# (ipinfo.io left this set this cycle — see _REPLAY_CLEAN above.)
+# (ipinfo.io left this set in Local cycle 20260807T094104Z; api.replicate.com left
+# this cycle (Local cycle 20260807T114104Z) — see _REPLAY_CLEAN above.)
 _CLASSIFICATION_ONLY = {
-    "api.replicate.com", "www.allbirds.com", "simplybook.me",
+    "www.allbirds.com", "simplybook.me",
     "polar.sh",
 }
 
@@ -1965,6 +2035,7 @@ def main() -> int:
         test_retail_storefront_replays_29_5,
         test_service_booking_storefront_replays_54_0,
         test_data_retrieval_storefront_replays_61_3,
+        test_pure_metered_api_storefront_replays_29_5,
         test_retail_storefront_earns_no_agent_native_payment,
         test_relabel_invariance_retail,
         test_nonstorefront_replays_22_5,

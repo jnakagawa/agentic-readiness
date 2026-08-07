@@ -1,0 +1,21 @@
+{
+  "kind": "documented-live-drift-ledger",
+  "note": "Curated, hand-maintained ledger of PERSISTENT, DOCUMENTED live-site regressions that the cross-path calibration weld (tests/test_calibration_anchor_agreement.py) and the population readout (tests/test_readout.py) must tolerate WITHOUT losing teeth. Rationale: the offline replay fixture is DELIBERATELY frozen (invariant #2 - no fixture re-capture on a live fluctuation), so once a real site durably regresses, an honest live calibration_sweep_*.json no longer equals the frozen floor and would redden the weld. Each entry records the DOCUMENTED live value the weld may accept for a (rubric_version, domain), in capability terms, with committed evidence. Teeth preserved: a live value matching NEITHER the frozen floor NOR the documented value here (an undocumented regression, or drift PAST the documented value) still goes red. When the site recovers to its floor, retire the entry (the weld already accepts the floor).",
+  "entries": [
+    {
+      "domain": "driftflight.com",
+      "rubric_version": "0.7",
+      "overall": 76.2,
+      "pillars": {
+        "access": 100.0,
+        "legibility": 90.9090909090909,
+        "transactability": 62.5,
+        "trust": 60.0,
+        "outcome": null
+      },
+      "since_ts": "20260806T224615Z",
+      "reason": "Live x402 payment handshake regressed: the agent-storefront endpoint POST agents.driftflight.com/extend that served a live HTTP 402 x402 challenge in the committed fixture now returns 401 (auth-required). The storefront is otherwise fully reachable (llms.txt/homepage/manifest 200), so this is a REAL live capability regression, not an env/network artifact (invariant #4: real site change, correctly attributed). Effect: x402_probe x402-live (8.0/8.0) -> x402-documented-not-probed (4.0/8.0) -> transactability 87.5 -> 62.5 -> overall 85.5 B -> 76.2 C, live delta +39.4 -> +30.1. Persisted across consecutive hourly floors 22:41Z -> 05:41Z on 2026-08-06/07. The frozen replay fixture stays 85.5 per invariant #2; this ledger documents the live value the weld tolerates. If POST /extend returns to 402, the delta recovers to +39.4 and this entry is retired (the weld already accepts the frozen floor).",
+      "evidence_path": "runs/local/canonical_delta_x402_regression_20260806T224615Z.json"
+    }
+  ]
+}

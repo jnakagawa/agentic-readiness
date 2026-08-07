@@ -38,6 +38,18 @@ never punished for what could not be observed. Versioned comparability
 (invariant #2): only sweeps at the baseline's rubric version are compared; a
 different-version sweep is never diffed against a v0.7 floor.
 
+Documented live drift (experiments/documented_live_drift.json): the offline replay
+fixture is DELIBERATELY frozen (invariant #2 — no re-capture on a live fluctuation),
+so once a real site DURABLY regresses, an honest live sweep no longer equals the
+frozen floor and would redden this weld for a real reason it never modelled. The
+ledger records the DOCUMENTED live value (in capability terms, with committed
+evidence) the weld may ACCEPT for a (rubric_version, domain), so a documented
+regression reads as a documented drift, not a divergence. Teeth are preserved — the
+frozen floor is ALWAYS accepted (a recovery is never masked) AND the documented
+value is accepted EXACTLY (never an open-ended band): a live value matching NEITHER
+(an undocumented regression, or drift PAST the documented one) still goes red. When
+the site recovers, the entry is retired.
+
 Pure guard: reads committed JSON + imports the replay baseline constants (ONE
 source of truth — a legitimate version-bump re-capture that moves
 test_canonical_replay.EXPECTED moves this guard's target in lockstep). No
@@ -73,6 +85,11 @@ _NON_ANCHOR_WELDED = ("example.com",)
 _WELDED_MEMBERS = _ANCHORS + _NON_ANCHOR_WELDED
 _BASELINE_VERSION = "0.7"  # asserted == the replay baseline's version below (test 1)
 _TOL = 0.05  # overalls are rounded to 0.1 on both paths; this catches any real move
+# The documented-live-drift ledger: curated, evidenced entries recording a PERSISTENT
+# live-site regression the weld must tolerate without losing teeth (see docstring).
+# Loaded once as the default the weld consults; every comparison helper still takes an
+# explicit `ledger` so the teeth legs drive the acceptance logic with synthetic entries.
+_LEDGER_PATH = os.path.join(_REPO, "experiments", "documented_live_drift.json")
 
 
 def _check(cond: bool, msg: str) -> None:
@@ -99,15 +116,71 @@ def _member_row(sweep: dict, domain: str):
     return None
 
 
-def _divergences(sweeps, expected, baseline_version, tol=_TOL, members=_WELDED_MEMBERS):
+def _load_drift_ledger(path=_LEDGER_PATH) -> list:
+    """The committed documented-live-drift entries (or [] if absent/unparseable)."""
+    try:
+        with open(path) as fh:
+            data = json.load(fh)
+    except (OSError, ValueError):
+        return []
+    entries = data.get("entries", []) if isinstance(data, dict) else []
+    return [e for e in entries if isinstance(e, dict)]
+
+
+# The real committed ledger — the default the weld consults. None of the pre-existing
+# synthetic teeth legs use any ledgered value, so defaulting to the real ledger is
+# score-neutral for them; the new teeth legs pass an explicit synthetic ledger.
+_LEDGER = _load_drift_ledger()
+
+
+def _ledger_entry(domain, baseline_version, ledger):
+    """The same-version (invariant #2) documented-drift entry for `domain`, or None."""
+    for e in ledger or ():
+        if e.get("domain") == domain and str(e.get("rubric_version")) == str(baseline_version):
+            return e
+    return None
+
+
+def _accepted_overalls(domain, expected, baseline_version, ledger):
+    """The overall values the weld ACCEPTS for a welded member: the frozen replay floor
+    ALWAYS, plus the documented live value if this member carries a same-version ledger
+    entry. A live overall matching NONE of these is a divergence — teeth: an undocumented
+    value or drift PAST the documented one still fires, and a RECOVERY to the frozen floor
+    is always accepted so the ledger never masks a fix."""
+    accepted = [float(expected[domain]["overall"])]
+    e = _ledger_entry(domain, baseline_version, ledger)
+    if e is not None and e.get("overall") is not None:
+        accepted.append(float(e["overall"]))
+    return accepted
+
+
+def _accepted_pillars(domain, expected, baseline_version, ledger):
+    """Per-pillar sibling of `_accepted_overalls`: pillar -> [accepted values] (the frozen
+    floor pillar ALWAYS, plus the documented pillar if ledgered). Null pillars are omitted
+    (the caller null-skips them)."""
+    floor = expected[domain].get("pillars", {})
+    out = {p: [float(v)] for p, v in floor.items() if v is not None}
+    e = _ledger_entry(domain, baseline_version, ledger)
+    if e is not None:
+        for p, v in (e.get("pillars") or {}).items():
+            if v is not None:
+                out.setdefault(p, []).append(float(v))
+    return out
+
+
+def _divergences(sweeps, expected, baseline_version, tol=_TOL, members=_WELDED_MEMBERS, ledger=None):
     """Pure comparison shared by the real-evidence and synthetic legs.
 
     Returns (divergences, n_compared, n_unreachable, n_offversion). A divergence
-    is a SCORED, same-version welded MEMBER whose overall differs from the
-    fixture-replay baseline by more than `tol`. Not-scorable members (invariant #4)
-    and off-version sweeps (invariant #2) are COUNTED, never compared. `members`
-    defaults to every welded member (the two anchors + the non-anchor members); the
-    teeth legs pass a narrower set."""
+    is a SCORED, same-version welded MEMBER whose overall matches NEITHER the
+    fixture-replay baseline NOR any same-version documented-live-drift value in
+    `ledger` (within `tol`) — an undocumented regression, or drift PAST the documented
+    value. Not-scorable members (invariant #4) and off-version sweeps (invariant #2)
+    are COUNTED, never compared. `members` defaults to every welded member (the two
+    anchors + the non-anchor members); the teeth legs pass a narrower set. `ledger`
+    defaults to the real committed ledger; the teeth legs pass a synthetic one. The
+    recorded divergence tuple keeps the frozen floor as `exp` (its historical shape)."""
+    led = _LEDGER if ledger is None else ledger
     divergences = []
     n_compared = n_unreachable = n_offversion = 0
     for label, sweep in sweeps:
@@ -121,15 +194,15 @@ def _divergences(sweeps, expected, baseline_version, tol=_TOL, members=_WELDED_M
             if not row.get("scored") or row.get("overall") is None:
                 n_unreachable += 1
                 continue
-            exp = float(expected[domain]["overall"])
+            accepted = _accepted_overalls(domain, expected, baseline_version, led)
             got = float(row["overall"])
             n_compared += 1
-            if abs(got - exp) > tol:
-                divergences.append((label, domain, got, exp))
+            if all(abs(got - a) > tol for a in accepted):
+                divergences.append((label, domain, got, float(expected[domain]["overall"])))
     return divergences, n_compared, n_unreachable, n_offversion
 
 
-def _pillar_divergences(sweeps, expected, baseline_version, tol=_TOL, members=_WELDED_MEMBERS):
+def _pillar_divergences(sweeps, expected, baseline_version, tol=_TOL, members=_WELDED_MEMBERS, ledger=None):
     """The PILLAR-level weld — the per-pillar sibling of `_divergences`.
 
     `_divergences` welds only the single `overall` number. But `overall` is a
@@ -149,7 +222,10 @@ def _pillar_divergences(sweeps, expected, baseline_version, tol=_TOL, members=_W
     static-replay mode) is counted `n_null_skipped` and NEVER compared — a site
     is not punished, nor credited, for a pillar a path could not observe.
     Versioned comparability (invariant #2): off-version sweeps are counted, never
-    diffed. Not-scorable members (invariant #4) are counted unreachable, skipped."""
+    diffed. Not-scorable members (invariant #4) are counted unreachable, skipped.
+    Documented drift: a ledgered member's pillar accepts the frozen floor pillar OR
+    the documented pillar value (same teeth as `_divergences`, per pillar)."""
+    led = _LEDGER if ledger is None else ledger
     divergences = []
     n_compared = n_unreachable = n_offversion = n_null_skipped = 0
     for label, sweep in sweeps:
@@ -165,6 +241,7 @@ def _pillar_divergences(sweeps, expected, baseline_version, tol=_TOL, members=_W
                 continue
             exp_pillars = expected[domain].get("pillars", {})
             got_pillars = row.get("pillars", {})
+            accepted_by_pillar = _accepted_pillars(domain, expected, baseline_version, led)
             for pillar in sorted(set(exp_pillars) | set(got_pillars)):
                 exp_v = exp_pillars.get(pillar)
                 got_v = got_pillars.get(pillar)
@@ -172,7 +249,8 @@ def _pillar_divergences(sweeps, expected, baseline_version, tol=_TOL, members=_W
                     n_null_skipped += 1
                     continue
                 n_compared += 1
-                if abs(float(got_v) - float(exp_v)) > tol:
+                accepted = accepted_by_pillar.get(pillar, [float(exp_v)])
+                if all(abs(float(got_v) - a) > tol for a in accepted):
                     divergences.append((label, domain, pillar, float(got_v), float(exp_v)))
     return divergences, n_compared, n_unreachable, n_offversion, n_null_skipped
 
@@ -277,9 +355,21 @@ def test_live_sweep_anchors_agree_with_replay_baseline() -> None:
 
 def test_live_sweep_gap_matches_expected_delta() -> None:
     print("test_live_sweep_gap_matches_expected_delta")
-    # The +39.4 regression delta, seen through the LIVE population path: for every
-    # same-version sweep with BOTH anchors scored, com - org == EXPECTED_DELTA.
+    # The reference delta seen through the LIVE population path: for every same-version
+    # sweep with BOTH anchors scored, com - org equals a DOCUMENTED gap — the frozen
+    # +39.4 floor delta when both anchors are at their fixture baseline, OR a gap implied
+    # by a same-version documented-live-drift entry (e.g. +30.1 while the with-rails x402
+    # endpoint is regressed to 76.2). Teeth: a gap matching NEITHER still fails (an
+    # undocumented anchor value is already a `_divergences` divergence — this is the
+    # second, gap-level witness). The frozen +39.4 must always be one of the accepted gaps.
     sweeps = _committed_sweeps()
+    com_ok = _accepted_overalls("driftflight.com", replay.EXPECTED, _BASELINE_VERSION, _LEDGER)
+    org_ok = _accepted_overalls("drift-flight.org", replay.EXPECTED, _BASELINE_VERSION, _LEDGER)
+    documented_gaps = sorted({round(c - o, 1) for c in com_ok for o in org_ok})
+    _check(
+        any(abs(replay.EXPECTED_DELTA - dg) <= _TOL for dg in documented_gaps),
+        f"the frozen +{replay.EXPECTED_DELTA} floor delta is a documented gap (got {documented_gaps})",
+    )
     checked = 0
     for lbl, sweep in sweeps:
         if str(sweep.get("rubric_version")) != _BASELINE_VERSION:
@@ -290,8 +380,8 @@ def test_live_sweep_gap_matches_expected_delta() -> None:
             continue
         gap = round(float(com["overall"]) - float(org["overall"]), 1)
         _check(
-            abs(gap - replay.EXPECTED_DELTA) <= _TOL,
-            f"{lbl}: live gap {gap} == EXPECTED_DELTA {replay.EXPECTED_DELTA}",
+            any(abs(gap - dg) <= _TOL for dg in documented_gaps),
+            f"{lbl}: live gap {gap} is a documented gap {documented_gaps}",
         )
         checked += 1
     _check(checked >= 1, f"at least one live sweep had both anchors scored (got {checked})")
@@ -525,6 +615,128 @@ def test_null_pillar_is_skipped_not_a_divergence() -> None:
     _check(n_cmp == 4, f"the 4 shared non-null pillars were still compared (got {n_cmp})")
 
 
+# A synthetic ledger for the teeth legs below — isolates the acceptance LOGIC from the
+# committed ledger's exact contents. Mirrors the real driftflight.com x402-regression
+# entry (overall 76.2, transactability 62.5, other pillars = frozen floor).
+_SYNTH_LEDGER = [
+    {
+        "domain": "driftflight.com",
+        "rubric_version": "0.7",
+        "overall": 76.2,
+        "pillars": {
+            "access": 100.0,
+            "legibility": 90.9090909090909,
+            "transactability": 62.5,
+            "trust": 60.0,
+            "outcome": None,
+        },
+    }
+]
+
+
+def test_documented_drift_is_accepted_not_a_divergence() -> None:
+    print("test_documented_drift_is_accepted_not_a_divergence")
+    # A live sweep at the DOCUMENTED value (driftflight.com 76.2, per a same-version
+    # ledger entry) is NOT a divergence — the weld tolerates a documented, evidenced live
+    # regression while the frozen fixture stays 85.5 (invariant #2). The ledger is
+    # LOAD-BEARING: with an EMPTY ledger the SAME sweep goes red, so a documented drift is
+    # never a silent free pass.
+    synth = [("synthetic-documented", _synthetic_sweep("0.7", 46.1, 76.2))]
+    div_led, n_cmp, _, _ = _divergences(
+        synth, replay.EXPECTED, _BASELINE_VERSION, ledger=_SYNTH_LEDGER
+    )
+    _check(div_led == [], f"the documented 76.2 drift is accepted, not a divergence (got {div_led})")
+    _check(n_cmp == 2, f"both anchors were compared (got {n_cmp})")
+    div_none, _, _, _ = _divergences(synth, replay.EXPECTED, _BASELINE_VERSION, ledger=[])
+    _check(
+        len(div_none) == 1 and div_none[0][1] == "driftflight.com",
+        f"with NO ledger the same 76.2 sweep IS a divergence — the ledger is load-bearing (got {div_none})",
+    )
+
+
+def test_drift_past_documented_value_is_caught() -> None:
+    print("test_drift_past_documented_value_is_caught")
+    # Teeth: a live value that is NEITHER the frozen floor (85.5) NOR the documented drift
+    # (76.2) — here 60.0, a FURTHER regression past the documented one — still goes red even
+    # with the ledger active. The ledger accepts EXACTLY the documented value, never a band.
+    synth = [("synthetic-further-drift", _synthetic_sweep("0.7", 46.1, 60.0))]
+    div, n_cmp, _, _ = _divergences(
+        synth, replay.EXPECTED, _BASELINE_VERSION, ledger=_SYNTH_LEDGER
+    )
+    _check(len(div) == 1, f"exactly one divergence caught (got {div})")
+    _check(
+        div[0][1] == "driftflight.com" and abs(div[0][2] - 60.0) < 1e-9,
+        f"the further-drifted anchor is the caught divergence (got {div[0]})",
+    )
+    _check(n_cmp == 2, f"both anchors compared (got {n_cmp})")
+
+
+def test_recovery_to_floor_is_accepted_even_with_ledger() -> None:
+    print("test_recovery_to_floor_is_accepted_even_with_ledger")
+    # A RECOVERY — driftflight.com back at its frozen 85.5 floor — is accepted even while
+    # the ledger still documents the 76.2 drift, so the ledger can never mask a site healing
+    # back to its fixture baseline (the frozen floor is ALWAYS accepted).
+    synth = [("synthetic-recovered", _synthetic_sweep("0.7", 46.1, 85.5))]
+    div, n_cmp, _, _ = _divergences(
+        synth, replay.EXPECTED, _BASELINE_VERSION, ledger=_SYNTH_LEDGER
+    )
+    _check(div == [], f"a recovery to the frozen floor is accepted (got {div})")
+    _check(n_cmp == 2, f"both anchors compared (got {n_cmp})")
+
+
+def test_documented_pillar_drift_accepted_further_pillar_drift_caught() -> None:
+    print("test_documented_pillar_drift_accepted_further_pillar_drift_caught")
+    # The PILLAR weld consults the ledger too: driftflight.com's DOCUMENTED transactability
+    # 62.5 (the x402 regression's per-pillar effect) is accepted, while every other pillar
+    # still welds to the frozen floor. Teeth: a FURTHER transactability drop (50.0, past the
+    # documented 62.5) still goes red — and ONLY that pillar.
+    floor = replay.EXPECTED["driftflight.com"]["pillars"]
+    documented = dict(floor)
+    documented["transactability"] = 62.5
+    ok_sweep = {
+        "rubric_version": "0.7",
+        "rows": [
+            {
+                "domain": "driftflight.com",
+                "segment": "api-storefront:rails-anchor",
+                "scored": True,
+                "overall": 76.2,
+                "pillars": documented,
+            }
+        ],
+    }
+    pdiv, n_cmp, _, _, _ = _pillar_divergences(
+        [("synthetic-doc-pillar", ok_sweep)], replay.EXPECTED, _BASELINE_VERSION,
+        members=("driftflight.com",), ledger=_SYNTH_LEDGER,
+    )
+    _check(pdiv == [], f"the documented transactability 62.5 is accepted (got {pdiv})")
+    _check(n_cmp == 4, f"the 4 non-null pillars were compared (got {n_cmp})")
+
+    further = dict(floor)
+    further["transactability"] = 50.0
+    bad_sweep = {
+        "rubric_version": "0.7",
+        "rows": [
+            {
+                "domain": "driftflight.com",
+                "segment": "api-storefront:rails-anchor",
+                "scored": True,
+                "overall": 70.0,
+                "pillars": further,
+            }
+        ],
+    }
+    pdiv2, _, _, _, _ = _pillar_divergences(
+        [("synthetic-further-pillar", bad_sweep)], replay.EXPECTED, _BASELINE_VERSION,
+        members=("driftflight.com",), ledger=_SYNTH_LEDGER,
+    )
+    caught = sorted(d[2] for d in pdiv2)
+    _check(
+        caught == ["transactability"],
+        f"a further transactability drop past the documented value is caught, alone (got {caught})",
+    )
+
+
 def main() -> int:
     tests = [
         test_baseline_version_and_gap_match_replay_guard,
@@ -539,6 +751,10 @@ def main() -> int:
         test_live_sweep_pillars_agree_with_replay_baseline,
         test_pillar_canceling_drift_passes_overall_but_is_caught_by_pillar_weld,
         test_null_pillar_is_skipped_not_a_divergence,
+        test_documented_drift_is_accepted_not_a_divergence,
+        test_drift_past_documented_value_is_caught,
+        test_recovery_to_floor_is_accepted_even_with_ledger,
+        test_documented_pillar_drift_accepted_further_pillar_drift_caught,
     ]
     failed = 0
     for t in tests:

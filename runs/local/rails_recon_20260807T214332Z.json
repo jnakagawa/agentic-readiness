@@ -1,0 +1,122 @@
+{
+ "ts": "20260807T214332Z",
+ "kind": "rails-reconnaissance-recheck",
+ "cycle": "Local cycle 20260807T214332Z",
+ "rubric_version": "0.7",
+ "spend": "$0 (static scorer + unsigned GET/POST probes only; no --behavioral, no --max-pay, no signing, no zero-CLI paid ops)",
+ "purpose": "Cadence re-probe of the with-rails calibration frontier: the named next-cadence action for the P1-TRUTH shortlist (re-score paidsync.ai for /api/v1 x402 recovery or stabilization) + the anchor driftflight.com /extend 402-recovery watch + one fresh candidate (2s.io) for a bare-GET 402 handshake.",
+ "reference_points": {
+  "driftflight.com (anchor, FULL rails)": {
+   "frozen": 85.5,
+   "live_now": 76.2,
+   "note": "the ONLY full x402-live point; live /extend handshake regressed 402->401 (persistent), live delta +30.1 vs frozen +39.4"
+  },
+  "exa.ai (welded PR #157, PARTIAL rails)": {
+   "overall": 78.1,
+   "note": "documented x402 (4/8) + MCP (2/2) + PAYG (3/6 partial) => tx 50.0; welded 7th non-anchor last real cycle"
+  }
+ },
+ "paidsync_recheck": {
+  "domain": "paidsync.ai",
+  "overall": 80.0,
+  "grade": "B",
+  "rubric_version": "0.7",
+  "caps_applied": [],
+  "pillars": {
+   "access": 100.0,
+   "legibility": 100.0,
+   "transactability": 50.0,
+   "trust": 93.33,
+   "outcome": null
+  },
+  "transactability_signals": {
+   "x402_probe": {
+    "status": "fail",
+    "points": 0.0,
+    "max": 8.0,
+    "x402_live": null,
+    "probed": [
+     {
+      "m": "GET",
+      "url": "https://paidsync.ai/api",
+      "status": 404
+     },
+     {
+      "m": "GET",
+      "url": "https://paidsync.ai/api/v1",
+      "status": 503
+     },
+     {
+      "m": "GET",
+      "url": "https://paidsync.ai/v1",
+      "status": 404
+     }
+    ]
+   },
+   "mcp_surface": {
+    "status": "pass",
+    "points": 2.0,
+    "max": 2.0
+   },
+   "self_serve_payg": {
+    "status": "pass",
+    "points": 6.0,
+    "max": 6.0,
+    "x402_live": false
+   }
+  },
+  "direct_probe_corroboration": {
+   "home GET": 200,
+   "/api/v1 GET": 503,
+   "/api/v1 POST": 503,
+   "note": "homepage UP; marketed live x402 endpoint /api/v1 STILL 503 (degraded) \u2014 identical to last cycle 20260807T205300Z; no probeable 402 challenge"
+  },
+  "trend": "the /api/v1 x402 endpoint has now been 503 across TWO consecutive cadence cycles (20:53Z -> 21:43Z, ~50 min). Score byte-IDENTICAL to last cycle (80.0 B / tx 50.0 / caps empty) \u2014 the stable NON-x402 rails (full MCP 2/2 + full self-serve PAYG 6/6) hold; only the x402 leg is degraded.",
+  "verdict": "STILL PARTIAL-with-rails, x402 endpoint degraded (503); STILL NOT PINNABLE",
+  "source_run": "runs/paidsync_ai_20260807T214336.json"
+ },
+ "anchor_extend_watch": {
+  "domain": "agents.driftflight.com",
+  "POST /extend": 401,
+  "driftflight.com GET": 200,
+  "note": "the anchor's live x402 handshake endpoint /extend STILL 401 (the persistent 402->401 auth regression) \u2014 NO recovery; live canonical delta holds at +30.1 (corroborates verify_20260807T214100Z.json)."
+ },
+ "fresh_candidate_2s_io": {
+  "domain": "2s.io",
+  "probed": [
+   {
+    "m": "GET",
+    "url": "https://2s.io/",
+    "status": 200
+   },
+   {
+    "m": "GET",
+    "url": "https://2s.io/api",
+    "status": 404
+   },
+   {
+    "m": "GET",
+    "url": "https://2s.io/api/v1",
+    "status": 404
+   },
+   {
+    "m": "GET",
+    "url": "https://2s.io/v1",
+    "status": 404
+   },
+   {
+    "m": "GET",
+    "url": "https://api.2s.io/",
+    "status": "000 (no resolve)"
+   }
+  ],
+  "verdict": "no bare-GET 402 handshake \u2014 a guide/learn surface (2s.io/learn/x402), not a probeable live x402 storefront; api.* host does not resolve."
+ },
+ "conclusion": {
+  "new_full_with_rails_point_found": false,
+  "paidsync_pinnable": false,
+  "finding": "SCARCE STILL CONFIRMED. The named next-cadence re-probe found paidsync.ai /api/v1 STILL 503 (2 consecutive cycles) \u2014 a 503 is a transient Service-Unavailable ERROR, NOT a stable capability state, so pinning it now would freeze a transient (attribution honesty, inv #4). The anchor driftflight.com /extend is STILL 401 (no 402 recovery). One fresh candidate (2s.io) presents no bare-GET 402. So the 2nd x402-LIVE storefront remains unavailable this cycle.",
+  "decision_rule_sharpened": "paidsync.ai stays SHORTLISTED, NOT pinned. Pin ONLY when its x402 leg leaves the 503 error state into a STABLE reading: (a) /api/v1 recovers to a 402 challenge => genuine 2nd x402-LIVE point (highest-value pin, capture fixture + verify replay-clean + EXPECTED + _REPLAY_CLEAN + guard + _POPULATION); or (b) /api/v1 stabilizes to a steady NON-error non-402 state (200/404 across >=2 consecutive cadence cycles) => pin as a partial-rails baseline at 80.0 (MCP+PAYG only, honest 'no live x402' claim). A persistent 503 is NEITHER \u2014 keep watching, do not freeze the error.",
+  "next_cadence_action": "re-score paidsync.ai again next cadence; also keep watching driftflight.com /extend for a 402 recovery (would restore the anchor's full live handshake + the +39.4 live delta)."
+ }
+}

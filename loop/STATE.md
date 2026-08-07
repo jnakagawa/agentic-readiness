@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 295
+- Cycle counter: 296
 - **✅ PR #157 (exa.ai 7th non-anchor cross-path calibration weld — the FIRST welded member with GENUINE
   partial agent-native rails) MERGED this fire (Local 20260807T205300Z), merge `cf0df08`** — after the owed
   FIRST-DUTY adversarial review + independent $0 live re-score. VERDICT SOUND: off-scoring-path (three-dot diff
@@ -21,11 +21,18 @@
 - **⏳ NO OPEN PEER-GATED PR after this fire.** PR #157 MERGED `cf0df08`; the with-rails weld campaign
   (#152–#157: books/acuity/ipinfo/api.replicate/moleskine/exa.ai) is COMPLETE across 6 non-anchor storefront
   TYPES/shapes. Next fire's FIRST duty is the infra health check (no review owed). **NEXT with-rails frontier —
-  a genuinely-NEW FULL with-rails point — recon'd this fire and shortlisted: paidsync.ai** (80.0 B, full MCP +
-  full self-serve PAYG, a NEW distinct HIGH between exa.ai 78.1 and driftflight frozen 85.5) is the strongest NEW
-  candidate but its marketed live x402 endpoint `/api/v1` is 503 (degraded) so its transactability is IN FLUX —
-  NOT stable enough to pin; re-probe next cadence (402 recovery ⇒ genuine 2nd x402-LIVE pin; stable non-402 ⇒
-  partial-rails baseline pin). See LOG Local cycle 20260807T205300Z + `runs/local/rails_recon_20260807T205300Z.json`.
+  a genuinely-NEW FULL with-rails point — RE-PROBED this fire (Local 20260807T214332Z): paidsync.ai STILL NOT
+  pinnable.** paidsync.ai (80.0 B, full MCP 2/2 + full self-serve PAYG 6/6, a NEW distinct HIGH between exa.ai
+  78.1 and driftflight frozen 85.5) remains the strongest NEW candidate, but its marketed live x402 endpoint
+  `/api/v1` is **STILL 503 across TWO consecutive cadence cycles (20:53Z→21:43Z)** — a 503 is a transient
+  Service-Unavailable ERROR, NOT a stable capability state, so pinning would freeze a transient (attribution
+  honesty, inv #4). Score byte-IDENTICAL to last cycle (only the x402 leg is degraded; MCP+PAYG stable). **Pin
+  rule sharpened:** (a) `/api/v1` recovers to a 402 ⇒ genuine 2nd x402-LIVE pin (highest value); or (b)
+  stabilizes to a steady NON-error non-402 state (200/404 across ≥2 cycles) ⇒ partial-rails baseline pin at 80.0
+  (MCP+PAYG only). A persistent 503 is NEITHER — keep re-probing; if 503 persists a 3rd cycle the honest reading
+  shifts toward "stable-degraded." Anchor driftflight.com `/extend` STILL 401 (no 402 recovery; live +30.1). One
+  fresh candidate 2s.io = no bare-GET 402 (guide site). See LOG Local cycle 20260807T214332Z +
+  `runs/local/rails_recon_20260807T214332Z.json`.
 - **✅ PR #156 (www.moleskine.com 6th non-anchor cross-path calibration weld — 2nd retail, retail depth)
   MERGED this fire (Local 20260807T184234Z), merge `571e4c6`** — after the owed FIRST-DUTY adversarial
   review + independent $0 live re-score. VERDICT SOUND: off-scoring-path (three-dot diff since merge-base
@@ -238,6 +245,26 @@
   but wrote NO LOG entry and never committed/pushed (its panel dir exists gitignored). This fire re-verified #149,
   took ownership of the reconciled banner (above), and committed. No fabricated 214745Z LOG entry. STATE pruned the
   two oldest rolling entries (cloud Cycles 290–291, preserved in LOG.md) to stay under the 600-line hygiene cap.
+- LOCAL cycle — 20260807T214332Z (TRUTH / cadence RE-PROBE of the with-rails frontier — the named next-cadence action;
+  no pin, direct-to-main). FIRST duty: `gh pr list --state open` → `[]` (no open PR; PR #157 MERGED `cf0df08` last real
+  cycle 205300Z; weld campaign #152–#157 COMPLETE). Infra HEALTHY: `verify_20260807T214100Z.json` (21:41Z, 38 suites,
+  46.1 F / 76.2 C / +30.1) ~1.5min old at fire (21:42Z) → :41 cadence holding (204104Z→214100Z). **Executed the ONE
+  [LOCAL] item — the oldest actionable P1-TRUTH, the LITERAL `next_cadence_action` from the 205300Z recon:** re-probed
+  paidsync.ai $0 static (`score paidsync.ai --json-only` — x402 probe only READS the 402 challenge, inv #1). FINDING:
+  paidsync.ai `/api/v1` **STILL 503** (scorer + independent re-curl GET+POST; home 200) — **2 consecutive cadence
+  cycles degraded** (20:53Z→21:43Z); re-score BYTE-IDENTICAL (80.0 B / access 100 / legibility 100 / tx 50.0 / trust
+  93.33 / caps empty) so only the x402 leg is in flux, MCP 2/2 + PAYG 6/6 stable. Anchor `POST agents.driftflight.com/
+  extend` STILL 401 (no 402 recovery; storefront 200) → live +30.1 holds, corroborates the 21:41Z floor. One fresh
+  candidate 2s.io (from a $0 WebSearch of the x402 ecosystem) = no bare-GET 402 (`/api`,`/api/v1`,`/v1` 404; api.* no
+  resolve; a guide site). **paidsync.ai STILL NOT pinned** — a 503 is a transient ERROR, not a stable capability state;
+  freezing it violates attribution honesty (inv #4). Pin rule sharpened: (a) 402 recovery ⇒ 2nd x402-LIVE pin; (b)
+  steady non-error non-402 (≥2 cycles) ⇒ partial-rails pin at 80.0. Direct-to-main (pure off-scoring-path recon
+  re-probe + docs; scoring-path diff EMPTY; same class as the 205300Z recon). Full suite re-run 654 passed / 38 suites.
+  Frozen canonical delta UNMOVED +39.4; live +30.1. Evidence `runs/local/rails_recon_20260807T214332Z.json` +
+  `runs/paidsync_ai_20260807T214336.json`. Invariants #1 ($0 static scorer + unsigned probes, no behavioral/codex/paid/
+  zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (off-path recon re-probe not a DM-enumerated
+  sensitive class; FIRST-after-16:00 digest posted 174235Z) — re-probe flagged for next digest. See LOG Local cycle
+  20260807T214332Z.
 - LOCAL cycle — 20260807T205300Z (TRUTH / MERGED PR #157 [exa.ai 7th non-anchor weld] after adversarial review + live
   re-score; then ran a live RAILS RECONNAISSANCE for a genuinely-NEW full with-rails point — none found, direct-to-main).
   FIRST duty: `gh pr list --state open` → PR #157 OPEN → adversarial review + independent $0 live re-score → VERDICT SOUND
@@ -359,24 +386,9 @@
   baseline pin not a DM-enumerated sensitive class; 15:4xZ precedes 16:00 UTC) — #155 MERGE flagged for next digest.
   NOTE for a future 2nd-retail weld: moleskine sweeps key `moleskine.com` (bare) vs replay `www.moleskine.com` — a weld
   needs www/bare normalization first (else vacuous n_compared=0). See LOG Local cycle 20260807T154104Z.
-- LOCAL cycle — 20260807T144105Z (TRUTH / welded api.replicate.com as the 5th non-anchor cross-path member, PEER-GATED
-  PR #155 opened, NOT self-merged). FIRST duty: `gh pr list --state open` → `[]` (no open PR to review; 134105Z was
-  direct-to-main; PR #154 MERGED `ee95a0b` on 114104Z). Infra HEALTHY: `verify_20260807T144105Z.json` (14:41Z, 38
-  suites, 46.1 F / 76.2 C / +30.1) ~1.5min old at fire (14:42Z) → :41 cadence holding (134105Z→144105Z). **Executed the
-  oldest P0 — the 5th-non-anchor weld (last real cycle's sweep-add UNLOCKED it):** welded api.replicate.com (PURE
-  single-archetype metered_api compute/inference API — a 5th distinct storefront TYPE) into `_NON_ANCHOR_WELDED` =
-  (example.com, books.toscrape.com, acuityscheduling.com, ipinfo.io, api.replicate.com), so the cross-path weld spans
-  FIVE non-anchor witnesses. New `test_api_replicate_fifth_non_anchor_is_welded_nonvacuously`: committed v0.7 baseline
-  present (29.5 F), genuinely COMPARED n_compared=1 (metered-api:inference-platform in the sole 20260807T134527Z sweep),
-  agrees with its 29.5 floor, teeth (29.5→40.0 caught as exactly one divergence). The [LOCAL] essence THIS fire (14:44Z
-  $0 static re-score): live 29.5 == frozen fixture 29.5 == EXPECTED 29.5, all 4 non-null pillars byte-identical, caps
-  empty (NOT scorable in cloud). TEST-ONLY (`test_calibration_anchor_agreement.py` +79/−4; off-scoring-path EMPTY), weld
-  suite 19→20, full suite 38/38. PEER-GATED (regression-guard semantics, same class as #154) → PR #155 opened, NOT
-  self-merged; main floor green (weld change branch-only). Evidence
-  `runs/local/api_replicate_fifth_non_anchor_weld_20260807T144105Z.json`. Invariants #1 ($0 static re-score + in-process
-  tests, no behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (regression-guard
-  weld not a DM-enumerated sensitive class; 14:4xZ precedes 16:00 UTC) — PR #155 flagged for next digest. Frozen
-  canonical delta UNMOVED +39.4; live +30.1. See LOG Local cycle 20260807T144105Z.
+<!-- Rolling entry for Local cycle 20260807T144105Z (welded api.replicate.com as the 5th non-anchor cross-path member,
+     PEER-GATED PR #155 opened) pruned this fire (Local cycle 20260807T214332Z) to stay under the STATE 600-line cap —
+     preserved verbatim in loop/LOG.md + git history. -->
 <!-- Rolling entries for Local cycles 20260807T134105Z (calibration cadence sweep, api.replicate.com added to
      POPULATION) + 20260807T114104Z (MERGED PR #154 + pinned api.replicate.com as the 7th frozen-replay baseline /
      5th storefront TYPE) pruned this fire (Local cycle 20260807T205300Z) to stay under the STATE 600-line cap —

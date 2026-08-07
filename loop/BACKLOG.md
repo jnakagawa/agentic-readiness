@@ -215,20 +215,24 @@ LOG Local cycle 20260807T205300Z. -->
   (2 anchors + 7 non-anchor across 6 storefront TYPES/shapes: null-control + 2 retail + service-booking + data-retrieval +
   pure-inference-API + agent-native-search-API). exa.ai (78.1, documented-partial rails) is the ONLY non-anchor on the
   upper/with-rails scale; the sole FULL x402-live point is the anchor driftflight.com (whose live /extend handshake regressed
-  402→401, persistent). **RECON DONE Local cycle 20260807T205300Z** (the ONE [LOCAL] item): probed the current x402 ecosystem
-  $0 static → **no genuinely-NEW FULL with-rails point found — the 2nd x402-LIVE storefront remains SCARCE** (marketed-x402
-  domains gate or degrade at the paid endpoint, none present a probeable bare-GET 402: paidsync.ai /api/v1 → 503, openwebninja
-  API host → 403 key-gated, inference.sh x402 on app.* / probed paths 404). Evidence
-  `runs/local/rails_recon_20260807T205300Z.json`. **STRONGEST NEW candidate: paidsync.ai (80.0 B — full MCP + full self-serve
-  PAYG, a different partial-rails mix from exa.ai, a NEW distinct HIGH between exa.ai 78.1 and driftflight frozen 85.5,
-  agent-fetch reachable, caps empty)** — NOT pinned (its /api/v1 is 503 ⇒ transactability IN FLUX; a baseline must be stable).
-  NEXT CADENCE: re-score paidsync.ai — if /api/v1 recovers to a 402 challenge it is a genuine 2nd x402-LIVE point (highest-value
-  pin); else once it stabilizes to a steady non-402 state, pin it as a partial-rails baseline via the standard recipe (capture
-  full-score fixture, verify non-destructively replay-clean, honest classification, EXPECTED + _REPLAY_CLEAN + guard +
-  _POPULATION). Also watch driftflight.com's /extend for a 402 recovery (would restore the anchor's live handshake + the +39.4
-  live delta). The remaining `_CLASSIFICATION_ONLY` candidates (polar.sh / simplybook.me / www.allbirds.com) ALL failed the
-  byte-identity gate (live drift), so re-attempting any is a genuinely-NEW re-baseline (verify the new classification is honest
-  first), not a pin of the old claim.
+  402→401, persistent). **RE-PROBED Local cycle 20260807T214332Z** (the ONE [LOCAL] item — the named next-cadence action):
+  re-scored paidsync.ai $0 static → **STILL not pinnable, 2nd x402-LIVE storefront STILL SCARCE.** paidsync.ai `/api/v1` is
+  **STILL 503 across TWO consecutive cadence cycles (20:53Z→21:43Z)** (scorer + independent re-curl GET+POST; home 200);
+  re-score BYTE-IDENTICAL to last cycle (80.0 B / tx 50.0 / caps empty — only the x402 leg is degraded, MCP 2/2 + PAYG 6/6
+  stable). Anchor driftflight.com `/extend` STILL 401 (no 402 recovery; live +30.1 holds). One fresh candidate 2s.io (from a
+  $0 WebSearch) = no bare-GET 402 (guide site). Evidence `runs/local/rails_recon_20260807T214332Z.json` (supersedes the
+  205300Z recon). **STRONGEST NEW candidate stays paidsync.ai (80.0 B — full MCP + full self-serve PAYG, a different
+  partial-rails mix from exa.ai, a NEW distinct HIGH between exa.ai 78.1 and driftflight frozen 85.5)** — NOT pinned: a **503
+  is a transient Service-Unavailable ERROR, not a stable capability state, so freezing it violates attribution honesty (inv
+  #4).** PIN RULE (sharpened): (a) `/api/v1` recovers to a 402 ⇒ genuine 2nd x402-LIVE point (highest-value pin: capture
+  full-score fixture, verify non-destructively replay-clean, honest classification, EXPECTED + `_REPLAY_CLEAN` + guard +
+  `_POPULATION`); or (b) `/api/v1` stabilizes to a steady NON-error non-402 state (200/404 across ≥2 consecutive cadence
+  cycles) ⇒ pin as a partial-rails baseline at 80.0 (MCP+PAYG only, honest "no live x402"). A persistent 503 is NEITHER —
+  keep re-probing each cadence; if it persists a 3rd cycle the honest reading shifts toward "stable-degraded" and path (b)
+  becomes the call once it settles to a non-error state. Also watch driftflight.com's /extend for a 402 recovery (would
+  restore the anchor's live handshake + the +39.4 live delta). The remaining `_CLASSIFICATION_ONLY` candidates (polar.sh /
+  simplybook.me / www.allbirds.com) ALL failed the byte-identity gate (live drift), so re-attempting any is a genuinely-NEW
+  re-baseline (verify the new classification is honest first), not a pin of the old claim.
 
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
   phrasing has now drifted the `_ENV_BLOCK_RE` guard FIVE times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)

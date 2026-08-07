@@ -1,0 +1,301 @@
+{
+  "domain": "paidsync.ai",
+  "rubric_version": "0.7",
+  "generated_at": "2026-08-07T21:43:36.317347",
+  "checks": [
+    {
+      "check_id": "robots_ai_crawlers",
+      "pillar": "access",
+      "status": "pass",
+      "points": 10.0,
+      "max_points": 10.0,
+      "finding": "robots-allows-ai-crawlers",
+      "remediation": "",
+      "evidence": {
+        "url": "https://paidsync.ai/robots.txt",
+        "checked_agents": [
+          "GPTBot",
+          "ClaudeBot",
+          "Claude-User",
+          "OAI-SearchBot",
+          "PerplexityBot",
+          "Google-Extended"
+        ],
+        "blocked_agents": [],
+        "snippet": "User-agent: *\nAllow: /\nDisallow: /dashboard\nDisallow: /billing\nDisallow: /app\nDisallow: /consent-preview\nDisallow: /consent-v1\nDisallow: /consent-v2\nDisallow: /consent-v3\nDisallow: /affiliate-terms\nDisallow: /affiliate-terms.html\n\nSitemap: https://paidsync.ai/sitemap.xml\nSitemap: https://paidsync.ai"
+      }
+    },
+    {
+      "check_id": "agent_ua_reachability",
+      "pillar": "access",
+      "status": "pass",
+      "points": 10.0,
+      "max_points": 10.0,
+      "finding": "agent-ua-allowed",
+      "remediation": "",
+      "evidence": {
+        "browser": {
+          "url": "https://paidsync.ai",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "Vercel",
+          "body_len": 190497
+        },
+        "claudebot": {
+          "url": "https://paidsync.ai",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "Vercel",
+          "body_len": 190497
+        },
+        "gptbot": {
+          "url": "https://paidsync.ai",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "Vercel",
+          "body_len": 190497
+        },
+        "blocked_agents": []
+      }
+    },
+    {
+      "check_id": "llms_txt",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 6.0,
+      "max_points": 6.0,
+      "finding": "llms-txt-present",
+      "remediation": "",
+      "evidence": {
+        "url": "https://paidsync.ai/llms.txt",
+        "length": 65424,
+        "snippet": "# PaidSync.ai\n\n## Canonical Definition\n\nPaidSync is the MCP server for managing Google Ads, Meta Ads, LinkedIn Ads, and TikTok Ads from Claude, ChatGPT, Gemini, Perplexity, and any AI agent. 430+ tools across 13 platforms. Every change is drafted for your approval \u2014 nothing applies until you confirm"
+      }
+    },
+    {
+      "check_id": "sitemap",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 2.0,
+      "max_points": 2.0,
+      "finding": "sitemap-present",
+      "remediation": "",
+      "evidence": {
+        "source": "robots.txt",
+        "sitemaps": [
+          "https://paidsync.ai/sitemap.xml",
+          "https://paidsync.ai/sitemap-index.xml"
+        ]
+      }
+    },
+    {
+      "check_id": "offer_catalog",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 6.0,
+      "max_points": 6.0,
+      "finding": "offer-catalog-present",
+      "remediation": "",
+      "evidence": {
+        "convention": "schema.org JSON-LD",
+        "page": "https://paidsync.ai/",
+        "type": "SoftwareApplication",
+        "snippet": "{\"@context\": \"https://schema.org\", \"@type\": \"SoftwareApplication\", \"name\": \"PaidSync.ai\", \"url\": \"https://paidsync.ai\", \"applicationCategory\": \"BusinessApplication\", \"applicationSubCategory\": \"AI Advertising / MCP Server\", \"operatingSystem\": \"Web\", \"brand\": {\"@type\": \"Brand\", \"name\": \"PaidSync.ai\"},"
+      }
+    },
+    {
+      "check_id": "pricing_machine_readable",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 4.0,
+      "max_points": 4.0,
+      "finding": "pricing-visible-server-side",
+      "remediation": "",
+      "evidence": {
+        "page": "https://paidsync.ai/pricing",
+        "match": "$0"
+      }
+    },
+    {
+      "check_id": "api_docs_surface",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 4.0,
+      "max_points": 4.0,
+      "finding": "api-docs-present",
+      "remediation": "",
+      "evidence": {
+        "url": "https://paidsync.ai/docs",
+        "status": 200
+      }
+    },
+    {
+      "check_id": "x402_probe",
+      "pillar": "transactability",
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 8.0,
+      "finding": "no-agent-native-payment",
+      "remediation": "Offer an agent-native payment endpoint (HTTP 402 + payment-requirements, x402/MPP) so agents can pay per-request without an account.",
+      "evidence": {
+        "probed": [
+          {
+            "url": "https://paidsync.ai/api",
+            "status": 404,
+            "method": "GET"
+          },
+          {
+            "url": "https://paidsync.ai/api/v1",
+            "status": 503,
+            "method": "GET"
+          },
+          {
+            "url": "https://paidsync.ai/v1",
+            "status": 404,
+            "method": "GET"
+          }
+        ]
+      }
+    },
+    {
+      "check_id": "mcp_surface",
+      "pillar": "transactability",
+      "status": "pass",
+      "points": 2.0,
+      "max_points": 2.0,
+      "finding": "mcp-server-discoverable",
+      "remediation": "",
+      "evidence": {
+        "url": "https://paidsync.ai/.well-known/mcp.json",
+        "snippet": "{\n  \"serverInfo\": {\n    \"name\": \"PaidSync\",\n    \"version\": \"1.0.0\"\n  },\n  \"description\": \"Autonomous paid media operator. 430+ tools across 13 platforms (Google Ads, Meta Ads, LinkedIn Ads, TikTok Ads, Snapchat Ads, Reddit Ads, Pinterest Ads, Microsoft Ads, GTM, GA4, Search Console, Merchant Center,"
+      }
+    },
+    {
+      "check_id": "self_serve_payg",
+      "pillar": "transactability",
+      "status": "pass",
+      "points": 6.0,
+      "max_points": 6.0,
+      "finding": "no-signup-provisioning",
+      "remediation": "",
+      "evidence": {
+        "x402_live": false,
+        "no_signup_phrases": [
+          "no signup"
+        ],
+        "self_serve_phrases": [
+          "no credit card required",
+          "sign up",
+          "signup",
+          "sign-up",
+          "get started"
+        ],
+        "stripe_checkout": false,
+        "cta_links": [
+          "https://paidsync.ai/signup",
+          "https://paidsync.ai/signup?plan=pro_v2_600"
+        ],
+        "sales_phrases": [
+          "contact sales",
+          "book a demo",
+          "talk to sales"
+        ],
+        "pricing_pages": [
+          "https://paidsync.ai/pricing"
+        ]
+      }
+    },
+    {
+      "check_id": "https_hsts",
+      "pillar": "trust",
+      "status": "pass",
+      "points": 5.0,
+      "max_points": 5.0,
+      "finding": "https-hsts",
+      "remediation": "",
+      "evidence": {
+        "base_url": "https://paidsync.ai",
+        "strict_transport_security": "max-age=63072000; includeSubDomains; preload"
+      }
+    },
+    {
+      "check_id": "org_identity",
+      "pillar": "trust",
+      "status": "pass",
+      "points": 4.0,
+      "max_points": 4.0,
+      "finding": "org-identity-present",
+      "remediation": "",
+      "evidence": {
+        "identity_pages": [
+          "https://paidsync.ai/about",
+          "https://www.linkedin.com/company/paidsync-ai/?utm_source=website&utm_medium=footer&utm_campaign=social"
+        ],
+        "company_names": [
+          "Advanced Technology Labs LLC",
+          "PaidSync.ai",
+          "PaidSync"
+        ],
+        "contact_signals": [
+          "alex@yourstore.com",
+          "support@paidsync.ai"
+        ]
+      }
+    },
+    {
+      "check_id": "policies_present",
+      "pillar": "trust",
+      "status": "partial",
+      "points": 2.0,
+      "max_points": 3.0,
+      "finding": "no-refund-policy",
+      "remediation": "Terms and privacy exist; add a refund/cancellation policy so agents know the reversal terms before purchasing.",
+      "evidence": {
+        "found": {
+          "terms": "https://paidsync.ai/terms",
+          "privacy": "https://paidsync.ai/privacy"
+        },
+        "footer_scanned": 58
+      }
+    },
+    {
+      "check_id": "reputation_signals",
+      "pillar": "trust",
+      "status": "pass",
+      "points": 3.0,
+      "max_points": 3.0,
+      "finding": "reputation-signals-present",
+      "remediation": "",
+      "evidence": {
+        "source": "third-party",
+        "links": [
+          "https://www.trustpilot.com/review/paidsync.ai"
+        ]
+      }
+    }
+  ],
+  "pillar_scores": {
+    "access": 100.0,
+    "legibility": 100.0,
+    "transactability": 50.0,
+    "trust": 93.33333333333333,
+    "outcome": null
+  },
+  "overall_score": 80.0,
+  "grade": "B",
+  "caps_applied": [],
+  "trust_panel": [],
+  "behavioral_runs": [],
+  "panel_reliability": null,
+  "quotability": {
+    "quotable": true,
+    "tag": "static-deterministic",
+    "reason": "Static score \u2014 deterministic probes, no panel variance to reproduce.",
+    "verdict_stability": null
+  },
+  "battery_summary": null,
+  "scored": true
+}

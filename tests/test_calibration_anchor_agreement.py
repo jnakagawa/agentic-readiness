@@ -87,7 +87,19 @@ _ANCHORS = ("drift-flight.org", "driftflight.com")
 # (Local cycle 20260807T064228Z, static $0 re-score): live overall 29.5 == frozen 29.5
 # and all four non-null pillars byte-identical, the cross-path evidence the cloud cannot
 # produce (books.toscrape.com is NOT SCORABLE without outbound network).
-_NON_ANCHOR_WELDED = ("example.com", "books.toscrape.com")
+# acuityscheduling.com (a real SERVICE-BOOKING appointment-scheduling SaaS — a THIRD
+# structurally-distinct storefront type, neither an API storefront nor a retail catalog
+# nor a zero-commerce page; test_canonical_replay pins its 54.0 floor, whose 25.0
+# transactability is a genuine MIDDLE datapoint on the transactability scale) is welded
+# here as the THIRD non-anchor member. It is scored 54.0 in THREE committed sweeps
+# (20260805T014754Z, 20260806T044352Z, 20260807T045843Z, segment service-booking:saas).
+# Its live↔frozen agreement was verified this fire (Local cycle 20260807T084355Z, static
+# $0 re-score): live overall 54.0 == frozen 54.0 and all four non-null pillars
+# byte-identical, the cross-path evidence the cloud cannot produce (acuityscheduling.com
+# is NOT SCORABLE without outbound network). So the cross-path weld now spans THREE
+# structurally-distinct non-anchor witnesses: null-control (example.com) + retail-catalog
+# (books.toscrape.com) + service-booking (acuityscheduling.com).
+_NON_ANCHOR_WELDED = ("example.com", "books.toscrape.com", "acuityscheduling.com")
 # Every population member welded across the offline-replay and live-sweep paths.
 _WELDED_MEMBERS = _ANCHORS + _NON_ANCHOR_WELDED
 _BASELINE_VERSION = "0.7"  # asserted == the replay baseline's version below (test 1)
@@ -543,6 +555,65 @@ def test_books_toscrape_second_non_anchor_is_welded_nonvacuously() -> None:
     _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
 
 
+def test_acuity_third_non_anchor_is_welded_nonvacuously() -> None:
+    print("test_acuity_third_non_anchor_is_welded_nonvacuously")
+    # acuityscheduling.com is the THIRD non-anchor welded member (a real service-booking
+    # appointment-scheduling SaaS — a structurally-distinct storefront TYPE from both the
+    # API anchors AND the retail catalog). Prove the weld is LOAD-BEARING for it
+    # specifically, not silently skipped in every sweep: it carries a committed v0.7 replay
+    # baseline, it is genuinely COMPARED in >=1 committed sweep (three cadence runs scored
+    # it 54.0), and its live value agrees with the frozen floor. Its live↔frozen agreement
+    # was independently re-scored this fire (Local cycle 20260807T084355Z: live 54.0 ==
+    # frozen 54.0, all four non-null pillars byte-identical).
+    _check(
+        "acuityscheduling.com" in _NON_ANCHOR_WELDED,
+        "acuityscheduling.com is a welded non-anchor member",
+    )
+    _check(
+        "acuityscheduling.com" in replay.EXPECTED
+        and str(replay.EXPECTED["acuityscheduling.com"]["rubric_version"]) == _BASELINE_VERSION,
+        "acuityscheduling.com carries a committed v0.7 replay baseline (the weld's source of truth)",
+    )
+    sweeps = _committed_sweeps()
+    divergences, n_compared, _, _ = _divergences(
+        sweeps, replay.EXPECTED, _BASELINE_VERSION, members=("acuityscheduling.com",)
+    )
+    _check(
+        divergences == [],
+        f"acuityscheduling.com's live sweeps agree with its 54.0 replay floor (got {divergences})",
+    )
+    _check(
+        n_compared >= 1,
+        f"acuityscheduling.com is genuinely compared, not silently skipped (got {n_compared})",
+    )
+    # Teeth: a live re-capture that drifted acuityscheduling.com 54.0 -> 65.0 MUST trip the
+    # weld, exactly as a drifted anchor, example.com, or books.toscrape.com does — so
+    # welding this third non-anchor member is not toothless.
+    drifted = {
+        "rubric_version": "0.7",
+        "rows": [
+            {
+                "domain": "acuityscheduling.com",
+                "segment": "service-booking:saas",
+                "scored": True,
+                "overall": 65.0,
+            }
+        ],
+    }
+    dvg, n_cmp, _, _ = _divergences(
+        [("synthetic-acuity-drift", drifted)], replay.EXPECTED, _BASELINE_VERSION,
+        members=("acuityscheduling.com",),
+    )
+    _check(len(dvg) == 1, f"exactly one divergence caught (got {dvg})")
+    _check(
+        dvg[0][1] == "acuityscheduling.com"
+        and abs(dvg[0][2] - 65.0) < 1e-9
+        and abs(dvg[0][3] - 54.0) < 1e-9,
+        f"the drifted acuityscheduling.com is caught vs its 54.0 floor (got {dvg[0]})",
+    )
+    _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
+
+
 def test_off_version_sweep_is_not_compared() -> None:
     print("test_off_version_sweep_is_not_compared")
     # Invariant #2 teeth: a different-rubric sweep is never diffed against the v0.7
@@ -816,6 +887,7 @@ def main() -> int:
         test_non_anchor_member_is_welded,
         test_drifted_non_anchor_member_is_caught,
         test_books_toscrape_second_non_anchor_is_welded_nonvacuously,
+        test_acuity_third_non_anchor_is_welded_nonvacuously,
         test_off_version_sweep_is_not_compared,
         test_live_sweep_pillars_agree_with_replay_baseline,
         test_pillar_canceling_drift_passes_overall_but_is_caught_by_pillar_weld,

@@ -1,6 +1,22 @@
 # Loop state
 
 - Cycle counter: 295
+- **⏳ OPEN peer-gated PR #154 (ipinfo.io 4th non-anchor cross-path calibration weld) — opened this fire (Local
+  20260807T104102Z), branch `loop/ipinfo-fourth-non-anchor-weld` commit `ac4f0b7`, NOT self-merged.** Welds
+  ipinfo.io (data_retrieval / IP-data enrichment API storefront — a FOURTH structurally-distinct storefront TYPE)
+  into `_NON_ANCHOR_WELDED` = (example.com, books.toscrape.com, acuityscheduling.com, ipinfo.io), so the cross-path
+  weld now spans FOUR non-anchor witnesses (null-control + retail-catalog + service-booking + data-retrieval). New
+  `test_ipinfo_fourth_non_anchor_is_welded_nonvacuously` (mirrors the acuity/books tests): committed v0.7 baseline
+  present (61.3 D), genuinely COMPARED n_compared=3 (segment data-retrieval:api across the three committed sweeps —
+  NOT silently skipped), agrees with its 61.3 floor, teeth (synthetic drift 61.3→72.0 caught as exactly one
+  divergence). The [LOCAL] essence THIS fire (10:44Z $0 static re-score, no --behavioral/--max-pay): live 61.3 ==
+  frozen fixture replay 61.3 (replay_misses=0) == EXPECTED 61.3, all 4 non-null pillars byte-identical (access 100.0
+  / legibility 72.73 / transactability 25.0 / trust 80.0) → ipinfo.io did NOT regress; the weld pins a currently-true
+  fact (inv #4). TEST-ONLY (`test_calibration_anchor_agreement.py` +81/−4; off-scoring-path diff EMPTY), weld suite
+  18→19, full suite 38/38. PEER-GATED (regression-guard semantics, same class as #153) → NOT self-merged; main floor
+  green (weld change branch-only). Evidence `runs/local/ipinfo_fourth_non_anchor_weld_20260807T104102Z.json`. Frozen
+  canonical delta UNMOVED +39.4; live +30.1. **NEXT FIRE'S FIRST DUTY: adversarially review + live re-score ipinfo.io,
+  then MERGE if SOUND.** See LOG Local cycle 20260807T104102Z.
 - **✅ PR #153 (acuityscheduling.com 3rd non-anchor cross-path calibration weld) MERGED this fire (Local
   20260807T094104Z), merge `7cd4fcc`** — after the owed FIRST-DUTY adversarial review + independent $0 live re-score.
   VERDICT SOUND: off-scoring-path (three-dot diff since merge-base `a104c8d` is ONLY
@@ -97,6 +113,24 @@
   but wrote NO LOG entry and never committed/pushed (its panel dir exists gitignored). This fire re-verified #149,
   took ownership of the reconciled banner (above), and committed. No fabricated 214745Z LOG entry. STATE pruned the
   two oldest rolling entries (cloud Cycles 290–291, preserved in LOG.md) to stay under the 600-line hygiene cap.
+- LOCAL cycle — 20260807T104102Z (TRUTH / welded ipinfo.io as the 4th non-anchor cross-path member, PEER-GATED PR
+  #154 opened, NOT self-merged). FIRST duty: `gh pr list --state open` → `[]` (no open PR to review; PR #153 MERGED
+  `7cd4fcc` last fire). Infra HEALTHY: `verify_20260807T104102Z.json` (10:41Z, 38 suites, 46.1 F / 76.2 C / +30.1)
+  ~1.5min old → :41 cadence holding (094104Z→104102Z). **Executed the oldest P0 — the 4th-non-anchor weld (last
+  fire's ipinfo.io baseline pin UNLOCKED it):** welded ipinfo.io (data_retrieval / IP-data API — a 4th distinct
+  storefront TYPE) into `_NON_ANCHOR_WELDED` = (example.com, books.toscrape.com, acuityscheduling.com, ipinfo.io),
+  so the cross-path weld spans FOUR non-anchor witnesses (null-control + retail-catalog + service-booking +
+  data-retrieval). New `test_ipinfo_fourth_non_anchor_is_welded_nonvacuously`: committed v0.7 baseline present,
+  genuinely COMPARED n_compared=3 (data-retrieval:api across the 3 committed sweeps — NOT skipped), agrees with its
+  61.3 floor, teeth (61.3→72.0 caught as exactly one divergence). The [LOCAL] essence THIS fire (10:44Z $0 static
+  re-score): live 61.3 == frozen fixture replay 61.3 (replay_misses=0) == EXPECTED 61.3, all 4 non-null pillars
+  byte-identical (NOT scorable in cloud). TEST-ONLY (`test_calibration_anchor_agreement.py` +81/−4; off-scoring-path
+  EMPTY), weld suite 18→19, full suite 38/38. PEER-GATED (regression-guard semantics, same class as #153) → PR #154
+  opened, NOT self-merged; main floor green (weld change branch-only). Evidence
+  `runs/local/ipinfo_fourth_non_anchor_weld_20260807T104102Z.json`. Invariants #1 ($0 static re-score + in-process
+  tests, no behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (regression-guard
+  weld not a DM-enumerated sensitive class; 10:4xZ precedes 16:00 UTC) — PR #154 flagged for next digest. Frozen
+  canonical delta UNMOVED +39.4; live +30.1. See LOG Local cycle 20260807T104102Z.
 - LOCAL cycle — 20260807T094104Z (TRUTH / MERGED PR #153 + promoted ipinfo.io as the 6th frozen-replay baseline /
   4th storefront TYPE, direct-to-main). FIRST duty: `gh pr list --state open` → PR #153 OPEN → adversarial review +
   independent $0 live re-score → VERDICT SOUND → **MERGED `7cd4fcc`** (off-scoring-path test-only +73/−1; vendor-neutral;

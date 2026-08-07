@@ -1,0 +1,78 @@
+{
+    "ts": "20260807T104102Z",
+    "kind": "cross-path-weld-verification",
+    "cycle": "Local cycle 20260807T104102Z",
+    "domain": "ipinfo.io",
+    "storefront_type": "data_retrieval (IP-data enrichment API storefront) — a FOURTH structurally-distinct storefront TYPE (distinct from the two API storefront anchors, the retail catalog, the zero-commerce control page, AND the service-booking SaaS)",
+    "purpose": "Weld ipinfo.io as the FOURTH member of _NON_ANCHOR_WELDED in tests/test_calibration_anchor_agreement.py (a PEER-GATED regression-guard change, class of PR #153). The cross-path weld now spans FOUR structurally-distinct non-anchor witnesses: null-control (example.com) + retail-catalog (books.toscrape.com) + service-booking (acuityscheduling.com) + data-retrieval (ipinfo.io). LOCAL essence: a fresh live $0 static re-score THIS fire proves live == frozen fixture replay == committed EXPECTED baseline before welding, so the weld pins a currently-true fact — the cross-path evidence the cloud CANNOT produce (ipinfo.io is NOT SCORABLE without outbound network).",
+    "live": {
+        "source": "runs/ipinfo_io_20260807T104400.json (fresh $0 static re-score, this fire; no --behavioral, no --max-pay)",
+        "overall": 61.3,
+        "grade": "D",
+        "rubric_version": "0.7",
+        "scored": true,
+        "pillars": {
+            "access": 100.0,
+            "legibility": 72.72727272727273,
+            "transactability": 25.0,
+            "trust": 80.0,
+            "outcome": null
+        }
+    },
+    "frozen": {
+        "source": "fixtures/canonical/ipinfo.io.json replayed via test_canonical_replay._score_fixture",
+        "overall": 61.3,
+        "grade": "D",
+        "rubric_version": "0.7",
+        "replay_misses": 0,
+        "pillars": {
+            "access": 100.0,
+            "legibility": 72.72727272727273,
+            "transactability": 25.0,
+            "trust": 80.0,
+            "outcome": null
+        }
+    },
+    "expected_constant": {
+        "source": "tests/test_canonical_replay.EXPECTED['ipinfo.io'] (pinned Local cycle 20260807T094104Z)",
+        "overall": 61.3,
+        "grade": "D",
+        "rubric_version": "0.7",
+        "pillars": {
+            "access": 100.0,
+            "legibility": 72.72727272727273,
+            "transactability": 25.0,
+            "trust": 80.0,
+            "outcome": null
+        }
+    },
+    "triple_agreement": "live 61.3 == frozen replay 61.3 (replay_misses=0) == EXPECTED 61.3; all four non-null pillars byte-identical across all three paths (access 100.0 / legibility 72.727... / transactability 25.0 / trust 80.0; outcome null).",
+    "committed_sweep_presence": {
+        "scored_61_3_in_sweeps": [
+            "runs/local/calibration_sweep_20260805T014754Z.json",
+            "runs/local/calibration_sweep_20260806T044352Z.json",
+            "runs/local/calibration_sweep_20260807T045843Z.json"
+        ],
+        "segment": "data-retrieval:api",
+        "n_compared_for_ipinfo_alone": 3,
+        "note": "ipinfo.io is genuinely COMPARED (not silently skipped) in three committed cadence sweeps -> the weld is load-bearing (n_compared>=1)."
+    },
+    "weld_guard": {
+        "file": "tests/test_calibration_anchor_agreement.py",
+        "member_added_to": "_NON_ANCHOR_WELDED = (example.com, books.toscrape.com, acuityscheduling.com, ipinfo.io)",
+        "new_test": "test_ipinfo_fourth_non_anchor_is_welded_nonvacuously",
+        "weld_suite": "18 -> 19 tests, all pass",
+        "teeth": "a synthetic live drift ipinfo.io 61.3 -> 72.0 is caught as exactly one divergence vs its 61.3 floor"
+    },
+    "ship": {
+        "tier": "PEER-GATED (regression-guard semantics — what the weld counts as a divergence; same class as PR #153); NOT self-merged this fire",
+        "diff": "tests/test_calibration_anchor_agreement.py +81/-4 only",
+        "off_scoring_path_diff": "EMPTY over asrs/scoring.py, report.py, probes, battery.py, reliability.py, offering.py, scorecard.py, rubric/, fixtures/, experiments/, loop/local_verify.py, batteries/",
+        "full_suite": "38/38 green"
+    },
+    "regression_signal": {
+        "frozen_canonical_delta": 39.4,
+        "live_canonical_delta": 30.1,
+        "note": "canonical .com/.org baselines UNTOUCHED — additive non-anchor weld only; frozen replay 46.1/85.5/+39.4 UNMOVED; live +30.1 is the persistent x402 site regression (driftflight.com 76.2 C, /extend 402->401), unrelated to this change."
+    }
+}

@@ -5,20 +5,9 @@ design in-cloud, execute locally.
 
 ## P0
 
-<!-- MERGED Local cycle 20260806T214745Z: PR #149 (v0.7(e) `_ENV_BLOCK_RE` → `browser access(?: permission)?`)
-operator-merged by jnakagawa 2026-08-06T20:47Z (merge dfa341f); THIS fire ran the queued post-merge adversarial
-review + independent live re-derivation (the operator merge skipped the loop's pre-merge peer review). VERDICT
-SOUND: diff off-scoring-path (only asrs/behavioral/shopper.py +18/−1 + tests/test_attribution.py +87); differential
-leak-scan RE-DERIVED over 569 committed run records / 439 distinct blocker-trust texts → EXACTLY 1 flip OLD→NEW (the
-.com codex t2 leak), ZERO collateral; Cycle-287 leaks stay caught; bare site-403 body + bare reputation-unsafe
-clause NOT excused (attribution honesty both directions); static canonical replay 26/26 46.1 F / 85.5 B / +39.4
-UNMOVED; suite 38/38 (test_attribution 15/15 re-run independently). Fresh codex-only behavioral panel launched
-runs/local/pr149_postmerge_20260806T214745Z/ as post-merge live monitoring + standing 5th-drift leak scan. See LOG
-Local cycle 20260806T214745Z. -->
-
-<!-- DONE Local cycle 20260806T184617Z: PR #148 post-merge behavioral verification HARVESTED via the shipped
-double-fork detached launcher loop/run_pr148_verify.py (survives the fire); it surfaced the .com 4th-drift leak that
-PR #149 (above) then fixed. Full record in LOG Local cycle 20260806T184617Z + git. -->
+<!-- Two older closed-item markers (PR #148 post-merge verify 20260806T184617Z, PR #149 v0.7(e) env-block
+20260806T214745Z) pruned this fire (Local cycle 20260807T104102Z) — both fully preserved in loop/LOG.md + git
+history; removing them keeps the completed-marker byte budget bounded. -->
 
 <!-- OPENED Local cycle 20260806T235421Z: v0.7(f) `_ENV_BLOCK_RE` -> `browser (?:site[- ])?access(?: permission)?`
 AUTHORED as PEER-GATED PR #150 (branch loop/env-block-browser-site-access-v07f, commit 166d6db), NOT self-merged —
@@ -121,18 +110,30 @@ tripwires FORCED consistent inclusion). [LOCAL] essence: fresh $0 static re-scor
 frozen 61.3, all 4 non-null pillars byte-identical. Off-scoring-SEMANTICS (only the non-anchor ipinfo.io fixture is
 scoring-adjacent; canonical PAIR untouched); frozen canonical delta UNMOVED +39.4; suite 38/38. Evidence
 runs/local/ipinfo_data_retrieval_baseline_20260807T094104Z.json. See LOG Local cycle 20260807T094104Z. -->
-- **[FOLLOW-UP, oldest P0 — TRUTH] the 4th-non-anchor cross-path WELD (ipinfo.io), now UNLOCKED.** ipinfo.io is now a
-  pinned frozen-replay baseline (61.3 D v0.7, in `_REPLAY_CLEAN`) AND already in the sweep POPULATION (scored 61.3 ×3
-  committed sweeps, segment data-retrieval:api) → the NEXT TRUTH fire can weld it into `_NON_ANCHOR_WELDED` as the 4th
-  member (a data-retrieval TYPE witness), so the cross-path weld spans FOUR structurally-distinct non-anchor types
-  (null-control + retail-catalog + service-booking + data-retrieval). PEER-GATED (regression-guard semantics, same class
-  as PR #153): mirror `test_data_retrieval_..._is_welded_nonvacuously` on the acuity/books test pattern (committed v0.7
-  baseline present, n_compared≥1 genuinely compared, agrees with the 61.3 floor, teeth 61.3→drift caught), and re-verify
-  the [LOCAL] live↔frozen agreement (live 61.3 == frozen 61.3) at author time. A FIFTH distinct type after that still
-  needs a stable committed baseline first: simplybook.me / polar.sh / api.replicate.com / www.allbirds.com each need a
-  [LOCAL] FULL-score fixture re-capture (currently classification-only, dozens of replay-misses) — the same non-destructive
-  temp-verify-then-promote recipe this cycle used for ipinfo.io. www.moleskine.com is `_REPLAY_CLEAN` but unpinned — a 2nd
-  RETAIL baseline candidate if a future cycle wants retail depth over type breadth (not a new type).
+<!-- OPENED Local cycle 20260807T104102Z: the 4th-non-anchor calibration weld (ipinfo.io — data_retrieval / IP-data
+API, a 4th storefront TYPE) is AUTHORED as a PEER-GATED PR (branch loop/ipinfo-fourth-non-anchor-weld, commit ac4f0b7,
+PR #154), NOT self-merged. Welds ipinfo.io into `_NON_ANCHOR_WELDED` = (example.com, books.toscrape.com,
+acuityscheduling.com, ipinfo.io), so the cross-path weld spans FOUR structurally-distinct non-anchor witnesses
+(null-control + retail-catalog + service-booking + data-retrieval). New test_ipinfo_fourth_non_anchor_is_welded_nonvacuously
+(mirrors the acuity/books tests): committed v0.7 baseline present (61.3 D), genuinely COMPARED n_compared=3 across the
+three committed sweeps (segment data-retrieval:api — NOT silently skipped), agrees with its 61.3 floor, teeth (synthetic
+drift 61.3->72.0 caught as exactly one divergence). TEST-ONLY (test_calibration_anchor_agreement.py +81/-4;
+off-scoring-path diff EMPTY), weld suite 18->19, full suite 38/38. Live↔frozen verified this fire ($0 static re-score
+10:44Z: live 61.3 == frozen fixture replay 61.3 == EXPECTED 61.3, replay_misses=0, all 4 non-null pillars byte-identical —
+the [LOCAL] essence the cloud can't do). Evidence runs/local/ipinfo_fourth_non_anchor_weld_20260807T104102Z.json. DO NOT
+RE-AUTHOR — TRACKED by STATE's OPEN-PR banner + next fire's first-duty adversarial review + live re-score. See LOG Local
+cycle 20260807T104102Z. -->
+- **[FOLLOW-UP, oldest P0 — TRUTH] a FIFTH distinct-storefront-TYPE non-anchor weld member (once its baseline lands).**
+  The cross-path weld spans FOUR non-anchor TYPES once PR #154 (ipinfo.io) merges (null-control + retail-catalog +
+  service-booking + data-retrieval). A FIFTH distinct type needs a stable committed frozen-replay baseline FIRST:
+  simplybook.me / polar.sh / api.replicate.com / www.allbirds.com are each in `_CLASSIFICATION_ONLY` (dozens of
+  full-scorer replay-misses) → each needs a [LOCAL] FULL-score fixture re-capture via the same non-destructive
+  temp-verify-then-promote recipe the ipinfo.io pin used (Local cycle 20260807T094104Z): score `--record-fixture` into a
+  TEMP path, verify it replays clean (replay_misses=0) AND its offering classification is byte-identical to the committed
+  classification-only fixture, THEN promote to `_REPLAY_CLEAN` + pin `test_canonical_replay.EXPECTED` + add to `_POPULATION`
+  in all 5 reproducibility suites. Only after a TYPE carries a pinned baseline AND a genuinely-compared sweep presence can
+  it be welded (PEER-GATED, regression-guard class like #154). www.moleskine.com is already `_REPLAY_CLEAN` but unpinned —
+  a 2nd RETAIL baseline candidate if a future cycle wants retail depth over a new type (not a new TYPE witness).
 
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
   phrasing has now drifted the `_ENV_BLOCK_RE` guard FIVE times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)

@@ -106,15 +106,28 @@ _ANCHORS = ("drift-flight.org", "driftflight.com")
 # 20260807T045843Z, segment data-retrieval:api). Its live↔frozen agreement was verified this
 # fire (Local cycle 20260807T104102Z, static $0 re-score): live overall 61.3 == frozen 61.3
 # and all four non-null pillars byte-identical, the cross-path evidence the cloud cannot
-# produce (ipinfo.io is NOT SCORABLE without outbound network). So the cross-path weld now
-# spans FOUR structurally-distinct non-anchor witnesses: null-control (example.com) +
-# retail-catalog (books.toscrape.com) + service-booking (acuityscheduling.com) +
-# data-retrieval (ipinfo.io).
+# produce (ipinfo.io is NOT SCORABLE without outbound network).
+# api.replicate.com (a real PURE single-archetype metered_api compute / model-inference API
+# storefront — a FIFTH structurally-distinct storefront TYPE, distinct from the two multi-archetype
+# API storefront anchors, the retail catalog, the zero-commerce page, the service-booking SaaS,
+# AND the data-retrieval API; test_canonical_replay pins its 29.5 floor, whose 18.18 legibility
+# — the LOWEST of the non-anchor set — plus 0.0 transactability give 29.5 a pillar SHAPE distinct
+# from books.toscrape.com's own 29.5 overall, so two same-overall members pin different pillar
+# mixes) is welded here as the FIFTH non-anchor member. It is scored 29.5 in exactly ONE committed
+# sweep (20260807T134527Z, segment metered-api:inference-platform — the cadence run that first
+# added it to the POPULATION; absent from the four priors). Its live↔frozen agreement was verified
+# this fire (Local cycle 20260807T144105Z, static $0 re-score): live overall 29.5 == frozen 29.5
+# and all four non-null pillars byte-identical, the cross-path evidence the cloud cannot produce
+# (api.replicate.com is NOT SCORABLE without outbound network). So the cross-path weld now spans
+# FIVE structurally-distinct non-anchor witnesses: null-control (example.com) + retail-catalog
+# (books.toscrape.com) + service-booking (acuityscheduling.com) + data-retrieval (ipinfo.io) +
+# pure-inference-API (api.replicate.com).
 _NON_ANCHOR_WELDED = (
     "example.com",
     "books.toscrape.com",
     "acuityscheduling.com",
     "ipinfo.io",
+    "api.replicate.com",
 )
 # Every population member welded across the offline-replay and live-sweep paths.
 _WELDED_MEMBERS = _ANCHORS + _NON_ANCHOR_WELDED
@@ -690,6 +703,67 @@ def test_ipinfo_fourth_non_anchor_is_welded_nonvacuously() -> None:
     _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
 
 
+def test_api_replicate_fifth_non_anchor_is_welded_nonvacuously() -> None:
+    print("test_api_replicate_fifth_non_anchor_is_welded_nonvacuously")
+    # api.replicate.com is the FIFTH non-anchor welded member (a real PURE single-archetype
+    # metered_api compute / model-inference API storefront — a structurally-distinct storefront
+    # TYPE from the two multi-archetype API anchors, the retail catalog, the zero-commerce
+    # control, the service-booking SaaS, AND the data-retrieval API). Prove the weld is
+    # LOAD-BEARING for it specifically, not silently skipped in every sweep: it carries a
+    # committed v0.7 replay baseline, it is genuinely COMPARED in >=1 committed sweep (the
+    # 20260807T134527Z cadence run — the first to add it to the POPULATION — scored it 29.5),
+    # and its live value agrees with the frozen floor. Its live↔frozen agreement was
+    # independently re-scored this fire (Local cycle 20260807T144105Z: live 29.5 == frozen 29.5,
+    # all four non-null pillars byte-identical).
+    _check(
+        "api.replicate.com" in _NON_ANCHOR_WELDED,
+        "api.replicate.com is a welded non-anchor member",
+    )
+    _check(
+        "api.replicate.com" in replay.EXPECTED
+        and str(replay.EXPECTED["api.replicate.com"]["rubric_version"]) == _BASELINE_VERSION,
+        "api.replicate.com carries a committed v0.7 replay baseline (the weld's source of truth)",
+    )
+    sweeps = _committed_sweeps()
+    divergences, n_compared, _, _ = _divergences(
+        sweeps, replay.EXPECTED, _BASELINE_VERSION, members=("api.replicate.com",)
+    )
+    _check(
+        divergences == [],
+        f"api.replicate.com's live sweeps agree with its 29.5 replay floor (got {divergences})",
+    )
+    _check(
+        n_compared >= 1,
+        f"api.replicate.com is genuinely compared, not silently skipped (got {n_compared})",
+    )
+    # Teeth: a live re-capture that drifted api.replicate.com 29.5 -> 40.0 MUST trip the weld,
+    # exactly as a drifted anchor, example.com, books.toscrape.com, acuityscheduling.com, or
+    # ipinfo.io does — so welding this fifth non-anchor member is not toothless.
+    drifted = {
+        "rubric_version": "0.7",
+        "rows": [
+            {
+                "domain": "api.replicate.com",
+                "segment": "metered-api:inference-platform",
+                "scored": True,
+                "overall": 40.0,
+            }
+        ],
+    }
+    dvg, n_cmp, _, _ = _divergences(
+        [("synthetic-api-replicate-drift", drifted)], replay.EXPECTED, _BASELINE_VERSION,
+        members=("api.replicate.com",),
+    )
+    _check(len(dvg) == 1, f"exactly one divergence caught (got {dvg})")
+    _check(
+        dvg[0][1] == "api.replicate.com"
+        and abs(dvg[0][2] - 40.0) < 1e-9
+        and abs(dvg[0][3] - 29.5) < 1e-9,
+        f"the drifted api.replicate.com is caught vs its 29.5 floor (got {dvg[0]})",
+    )
+    _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
+
+
 def test_off_version_sweep_is_not_compared() -> None:
     print("test_off_version_sweep_is_not_compared")
     # Invariant #2 teeth: a different-rubric sweep is never diffed against the v0.7
@@ -965,6 +1039,7 @@ def main() -> int:
         test_books_toscrape_second_non_anchor_is_welded_nonvacuously,
         test_acuity_third_non_anchor_is_welded_nonvacuously,
         test_ipinfo_fourth_non_anchor_is_welded_nonvacuously,
+        test_api_replicate_fifth_non_anchor_is_welded_nonvacuously,
         test_off_version_sweep_is_not_compared,
         test_live_sweep_pillars_agree_with_replay_baseline,
         test_pillar_canceling_drift_passes_overall_but_is_caught_by_pillar_weld,

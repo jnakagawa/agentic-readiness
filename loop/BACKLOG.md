@@ -89,18 +89,25 @@ already in _REPLAY_CLEAN); ipinfo.io/simplybook.me/polar.sh all stale (dozens of
 fresh $0 static re-score THIS fire (07:53Z) -> live 54.0 == frozen 54.0, all 4 non-null pillars byte-identical. Evidence
 runs/local/acuity_crosspath_baseline_20260807T074106Z.json. Off-scoring-path (only test_canonical_replay.py +48); frozen
 canonical delta UNMOVED +39.4; suite 38/38. See LOG Local cycle 20260807T074106Z. -->
-- **[PEER-GATED P0 — TRUTH] 3rd non-anchor calibration weld (acuityscheduling.com)** — NOW UNLOCKED: acuity is a
-  committed EXPECTED baseline (pinned Local 20260807T074106Z) AND a verified STABLE clean cross-path datapoint (live
-  54.0 == frozen 54.0 this fire). Weld it as the 3rd member of `_NON_ANCHOR_WELDED` in
-  `tests/test_calibration_anchor_agreement.py` (a PEER-GATED PR, regression-guard class like #152 — do NOT self-merge)
-  so the cross-path weld spans THREE structurally-distinct non-anchor witnesses: null-control (example.com) +
-  retail-catalog (books.toscrape.com) + service-booking (acuityscheduling.com). Add a non-vacuous + teeth test
-  mirroring `test_books_toscrape_second_non_anchor_is_welded_nonvacuously` (acuity is scored 54.0 in the committed
-  045843Z sweep, so n_compared>=1; teeth: a drifted 54.0->N is caught vs its 54.0 floor). The re-run live re-score is
-  the next fire's first-duty verification. FURTHER breadth after this: a 3rd storefront type still needs stable
-  candidates — ipinfo.io/simplybook.me/polar.sh each need a [LOCAL] FULL-score fixture re-capture first (currently
-  classification-only, dozens of replay-misses); www.moleskine.com is `_REPLAY_CLEAN` but unpinned (a 2nd retail
-  baseline candidate if a future cycle wants retail depth over type breadth).
+<!-- OPENED Local cycle 20260807T084355Z: the 3rd-non-anchor calibration weld (acuityscheduling.com — service_booking
+SaaS, a 3rd storefront TYPE) is AUTHORED as a PEER-GATED PR (branch loop/acuity-third-non-anchor-weld), NOT self-merged.
+Welds acuityscheduling.com into `_NON_ANCHOR_WELDED` = (example.com, books.toscrape.com, acuityscheduling.com), so the
+cross-path weld spans THREE structurally-distinct non-anchor witnesses (null-control + retail-catalog + service-booking).
+New test_acuity_third_non_anchor_is_welded_nonvacuously (mirrors the books test): committed v0.7 baseline present, genuinely
+COMPARED (n_compared=3 across the 20260805T014754Z/20260806T044352Z/20260807T045843Z sweeps, segment service-booking:saas —
+NOT silently skipped), agrees with its 54.0 floor, teeth (synthetic drift 54.0->65.0 caught as exactly one divergence).
+TEST-ONLY (test_calibration_anchor_agreement.py +73/-1; off-scoring-path diff EMPTY), weld suite 17->18, full suite 38/38.
+Live↔frozen verified this fire ($0 static re-score 08:44Z: live 54.0 == frozen 54.0 == EXPECTED 54.0, all 4 non-null pillars
+byte-identical, replay_misses=0 — the [LOCAL] essence the cloud can't do). Evidence
+runs/local/acuity_third_non_anchor_weld_20260807T084355Z.json. DO NOT RE-AUTHOR — TRACKED by STATE's OPEN-PR banner + next
+fire's first-duty adversarial review + live re-score. See LOG Local cycle 20260807T084355Z. -->
+- **[FOLLOW-UP, future — TRUTH] a 4th non-anchor storefront TYPE for the cross-path weld.** After the acuity weld merges,
+  the cross-path weld spans null-control + retail-catalog + service-booking. A 4th distinct type (a data-retrieval API, a
+  digital-good storefront, a genuine ACP/UCP/MPP merchant) needs a stable committed baseline first: ipinfo.io /
+  simplybook.me / polar.sh each need a [LOCAL] FULL-score fixture re-capture (currently classification-only, dozens of
+  replay-misses) before they can be pinned to `test_canonical_replay.EXPECTED` AND added to the sweep POPULATION.
+  www.moleskine.com is `_REPLAY_CLEAN` but unpinned — a 2nd RETAIL baseline candidate if a future cycle wants retail depth
+  over type breadth (not a new type).
 
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
   phrasing has now drifted the `_ENV_BLOCK_RE` guard FIVE times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)

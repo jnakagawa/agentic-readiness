@@ -1,7 +1,19 @@
 # Loop state
 
 - Cycle counter: 295
-- **NO open peer-gated PR** → next fire's first duty is the infra health check, then pick the next [LOCAL] item.
+- **⏳ OPEN PEER-GATED PR #153 (acuityscheduling.com 3rd non-anchor cross-path calibration weld), opened this fire
+  (Local 20260807T084355Z), branch `loop/acuity-third-non-anchor-weld`, commit `f9769d8` — NOT self-merged.** Next
+  fire's FIRST duty (before any new work): adversarially review PR #153 from fresh context + run its independent $0
+  live re-score, then MERGE if sound. What to re-derive: off-scoring-path (three-dot diff is ONLY
+  `test_calibration_anchor_agreement.py` +73/−1; EMPTY over scoring.py/report.py/probes/battery.py/reliability.py/
+  offering.py/scorecard.py/rubric/fixtures/experiments); vendor-neutral (welded by storefront TYPE service_booking,
+  not vendor); committed baseline present (`test_canonical_replay.EXPECTED['acuityscheduling.com']` 54.0 v0.7);
+  LOAD-BEARING (n_compared=3 across the 20260805T014754Z/20260806T044352Z/20260807T045843Z sweeps, segment
+  service-booking:saas — NOT silently skipped); teeth (synthetic drift 54.0→65.0 caught as exactly one divergence);
+  and the [LOCAL] live re-score (this fire 08:44Z → live 54.0 == frozen 54.0 == EXPECTED 54.0, replay_misses=0, all 4
+  non-null pillars byte-identical → weld holds, acuity did NOT regress). Weld suite 17→18; full suite 38/38.
+  Evidence `runs/local/acuity_third_non_anchor_weld_20260807T084355Z.json`. If `/extend`-style site drift moved acuity
+  since this fire, re-verify before merging. A peer-gated PR open >3 cycles → escalate in the next digest.
 - **✅ PR #152 (books.toscrape.com 2nd non-anchor calibration weld) MERGED this fire (Local 20260807T074106Z),
   merge `1310fd5`** — after the owed FIRST-DUTY adversarial review + independent live re-score. VERDICT SOUND:
   off-scoring-path (three-dot diff since merge-base `140304e` is ONLY `test_calibration_anchor_agreement.py` +78/−9;
@@ -68,6 +80,23 @@
   but wrote NO LOG entry and never committed/pushed (its panel dir exists gitignored). This fire re-verified #149,
   took ownership of the reconciled banner (above), and committed. No fabricated 214745Z LOG entry. STATE pruned the
   two oldest rolling entries (cloud Cycles 290–291, preserved in LOG.md) to stay under the 600-line hygiene cap.
+- LOCAL cycle — 20260807T084355Z (TRUTH / welded acuityscheduling.com as the 3rd non-anchor cross-path member,
+  PEER-GATED PR #153 opened, NOT self-merged). FIRST duty: `gh pr list --state open` → `[]` (no open PR to review;
+  PR #152 MERGED `1310fd5` last fire). Infra HEALTHY: `verify_20260807T084101Z.json` (08:41Z, 38 suites, 46.1 F /
+  76.2 C / +30.1) ~1.5min old → :41 cadence holding (074106Z→084101Z). **Executed the oldest P0 — the acuity
+  3rd-non-anchor weld (PR #152's own next-hypothesis, now UNLOCKED):** welded acuityscheduling.com (service_booking
+  SaaS — a 3rd structurally-distinct storefront TYPE) into `_NON_ANCHOR_WELDED` = (example.com, books.toscrape.com,
+  acuityscheduling.com), so the cross-path weld spans THREE non-anchor witnesses (null-control + retail-catalog +
+  service-booking). New `test_acuity_third_non_anchor_is_welded_nonvacuously`: committed v0.7 baseline present,
+  genuinely COMPARED (n_compared=3 across 3 committed sweeps — NOT skipped), agrees with its 54.0 floor, teeth
+  (54.0→65.0 caught). The [LOCAL] essence THIS fire (08:44Z $0 static re-score): live 54.0 == frozen 54.0 == EXPECTED
+  54.0, replay_misses=0, all 4 non-null pillars byte-identical (NOT scorable in cloud). TEST-ONLY
+  (`test_calibration_anchor_agreement.py` +73/−1; off-scoring-path EMPTY), weld suite 17→18, full suite 38/38.
+  PEER-GATED (regression-guard semantics, same class as #152) → PR #153 opened, NOT self-merged; main floor green
+  (weld change branch-only). Evidence `runs/local/acuity_third_non_anchor_weld_20260807T084355Z.json`. Invariants #1
+  ($0 static recon + in-process tests, no behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed
+  in-repo. NO DM (regression-guard weld not a DM-enumerated sensitive class; 08:4xZ precedes 16:00 UTC) — PR #153
+  flagged for next digest. Frozen canonical delta UNMOVED +39.4; live +30.1. See LOG Local cycle 20260807T084355Z.
 - LOCAL cycle — 20260807T074106Z (TRUTH / MERGED PR #152 + pinned acuityscheduling.com as the 5th frozen-replay
   baseline, direct-to-main). FIRST duty: `gh pr list --state open` → PR #152 OPEN → adversarial review + independent
   $0 live re-score → VERDICT SOUND → **MERGED `1310fd5`** (off-scoring-path test-only +78/−9; vendor-neutral;

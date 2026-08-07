@@ -1,0 +1,82 @@
+{
+  "ts": "20260807T084355Z",
+  "kind": "cross-path-weld-verification",
+  "cycle": "Local cycle 20260807T084355Z",
+  "domain": "acuityscheduling.com",
+  "storefront_type": "service_booking (appointment-scheduling SaaS) — a THIRD structurally-distinct storefront TYPE (neither the API storefront anchors, nor the retail catalog, nor the zero-commerce control page)",
+  "purpose": "Weld acuityscheduling.com as the THIRD member of _NON_ANCHOR_WELDED in tests/test_calibration_anchor_agreement.py (a PEER-GATED regression-guard change, class of PR #152). The cross-path weld now spans THREE structurally-distinct non-anchor witnesses: null-control (example.com) + retail-catalog (books.toscrape.com) + service-booking (acuityscheduling.com). LOCAL essence: a fresh live $0 static re-score THIS fire proves live == frozen fixture replay == committed EXPECTED baseline before welding, so the weld pins a currently-true fact — the cross-path evidence the cloud CANNOT produce (acuityscheduling.com is NOT SCORABLE without outbound network).",
+  "live": {
+    "source": "runs/acuityscheduling_com_20260807T084406.json (fresh $0 static re-score, this fire; no --behavioral, no --max-pay)",
+    "overall": 54.0,
+    "grade": "F",
+    "rubric_version": "0.7",
+    "scored": true,
+    "pillars": {
+      "access": 100.0,
+      "legibility": 40.90909090909091,
+      "transactability": 25.0,
+      "trust": 83.33333333333333,
+      "outcome": null
+    }
+  },
+  "frozen": {
+    "source": "fixtures/canonical/acuityscheduling.com.json replayed via test_canonical_replay._score_fixture",
+    "overall": 54.0,
+    "grade": "F",
+    "rubric_version": "0.7",
+    "replay_misses": 0,
+    "pillars": {
+      "access": 100.0,
+      "legibility": 40.90909090909091,
+      "transactability": 25.0,
+      "trust": 83.33333333333333,
+      "outcome": null
+    }
+  },
+  "expected_constant": {
+    "source": "tests/test_canonical_replay.EXPECTED['acuityscheduling.com'] (pinned Local cycle 20260807T074106Z)",
+    "overall": 54.0,
+    "pillars": {
+      "access": 100.0,
+      "legibility": 40.90909090909091,
+      "transactability": 25.0,
+      "trust": 83.33333333333333,
+      "outcome": null
+    }
+  },
+  "agreement": {
+    "overall_live_eq_frozen": true,
+    "frozen_eq_expected_constant": true,
+    "all_4_nonnull_pillars_byte_identical": true,
+    "note": "live 54.0 == frozen 54.0 == EXPECTED 54.0; access/legibility/transactability/trust all byte-identical across live, frozen, and the committed constant. acuityscheduling.com did NOT regress this fire."
+  },
+  "committed_sweep_presence": {
+    "scored_54_0_in_sweeps": [
+      "runs/local/calibration_sweep_20260805T014754Z.json",
+      "runs/local/calibration_sweep_20260806T044352Z.json",
+      "runs/local/calibration_sweep_20260807T045843Z.json"
+    ],
+    "segment": "service-booking:saas",
+    "n_compared_for_acuity_alone": 3,
+    "note": "acuity is genuinely COMPARED (not silently skipped) in three committed cadence sweeps -> the weld is load-bearing (n_compared>=1)."
+  },
+  "weld_guard": {
+    "file": "tests/test_calibration_anchor_agreement.py",
+    "member_added_to": "_NON_ANCHOR_WELDED = (example.com, books.toscrape.com, acuityscheduling.com)",
+    "new_test": "test_acuity_third_non_anchor_is_welded_nonvacuously",
+    "weld_suite": "17 -> 18 tests, all pass",
+    "teeth": "a synthetic live drift acuityscheduling.com 54.0 -> 65.0 is caught as exactly one divergence vs its 54.0 floor",
+    "pillar_weld_comparisons": 64
+  },
+  "ship": {
+    "tier": "PEER-GATED (regression-guard semantics — what the weld counts as a divergence; same class as PR #152); NOT self-merged this fire",
+    "diff": "tests/test_calibration_anchor_agreement.py +73/-1 only",
+    "off_scoring_path_diff": "EMPTY over asrs/scoring.py, report.py, probes, battery.py, reliability.py, offering.py, scorecard.py, rubric/, fixtures/, experiments/, loop/local_verify.py, batteries/",
+    "full_suite": "38/38 green"
+  },
+  "regression_signal": {
+    "frozen_canonical_delta": 39.4,
+    "live_canonical_delta": 30.1,
+    "note": "canonical .com/.org baselines UNTOUCHED — additive non-anchor weld only; frozen replay 46.1/85.5/+39.4 UNMOVED; live +30.1 is the persistent x402 site regression, unrelated to this change."
+  }
+}

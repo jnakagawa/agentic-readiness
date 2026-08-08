@@ -203,6 +203,28 @@ _ANCHORS = ("drift-flight.org", "driftflight.com")
 # non-anchor witnesses: null-control + 2 retail + service-booking + data-retrieval + pure-inference-API +
 # agent-native-search-API + THREE live-x402 storefronts + ONE live-UCP commerce-protocol storefront (the first
 # welded member on a rail TYPE other than x402).
+# gymshark.com (62.4) is welded here as the TWELFTH non-anchor member, and the SECOND welded member on the LIVE
+# UCP commerce-protocol rail — retail DEPTH on that rail rather than a new rail TYPE. It is a mainstream consumer
+# APPAREL brand (a distinct storefront TYPE from the coffee-merchant checkout.coffeecircle.com), claiming exactly
+# {metered_api, physical_good}. GET /.well-known/ucp (served on us.checkout.gymshark.com) answers a $0 read with a
+# valid `dev.ucp.*` service manifest (version 2026-04-08), so the shipped scorer's `x402_probe` reads
+# `commerce-protocol-live` PARTIAL 4.0/8.0 — the SAME UCP middle rung as coffeecircle, earning transactability 50.0.
+# Its calibration value is a CONTROLLED single-pillar isolation against coffeecircle (57.4): the two share the
+# IDENTICAL rail at the IDENTICAL access 100.0 / legibility 54.55 / transactability 50.0 (all three byte-identical)
+# and separate PURELY on trust (coffeecircle 33.33 -> gymshark 60.0), lifting overall 57.4 -> 62.4. That is the
+# "the UCP rail is NECESSARY but not SUFFICIENT" statement made cleanest — two storefronts on the same rail at the
+# same legibility, distinguished by trust alone — the commerce-protocol analog of the x402deploy/thebotwire tx-100
+# pair. It is keyed 'gymshark.com' identically on both paths (no www/bare alias needed) and scored at its 62.4 floor
+# in exactly ONE committed sweep so far (20260808T144423Z, segment ucp-live:apparel-retail — the cadence run that
+# first added it to the POPULATION; absent from every prior sweep), so it is genuinely COMPARED (n_compared=1), not
+# silently skipped. Because the UCP rail is LIVE (a served manifest, volatile), its live/frozen agreement was
+# independently re-confirmed by the authoring cycle (Local cycle 20260808T154553Z, static $0 re-score: live 62.4 ==
+# frozen 62.4, all four non-null pillars byte-identical, caps empty, x402_probe partial 4.0/8.0
+# commerce-protocol-live), the cross-path evidence the cloud cannot produce (it is NOT SCORABLE without outbound
+# network) — and MUST be re-confirmed at review time, since a divergence here would be REAL UCP-manifest drift
+# (re-capture that member, do not weld it). So the cross-path weld now spans TWELVE structurally-distinct non-anchor
+# witnesses: null-control + 2 retail + service-booking + data-retrieval + pure-inference-API + agent-native-search-API
+# + THREE live-x402 storefronts + TWO live-UCP commerce-protocol storefronts (coffee-merchant + apparel-retail).
 _NON_ANCHOR_WELDED = (
     "example.com",
     "books.toscrape.com",
@@ -215,6 +237,7 @@ _NON_ANCHOR_WELDED = (
     "api.x402oracle.com",
     "x402deploy.vercel.app",
     "checkout.coffeecircle.com",
+    "gymshark.com",
 )
 # Every population member welded across the offline-replay and live-sweep paths.
 _WELDED_MEMBERS = _ANCHORS + _NON_ANCHOR_WELDED
@@ -1280,6 +1303,73 @@ def test_coffeecircle_eleventh_non_anchor_is_welded_nonvacuously() -> None:
     _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
 
 
+def test_gymshark_twelfth_non_anchor_is_welded_nonvacuously() -> None:
+    print("test_gymshark_twelfth_non_anchor_is_welded_nonvacuously")
+    # gymshark.com is the TWELFTH non-anchor welded member (a mainstream consumer APPAREL brand on the
+    # LIVE UCP commerce-protocol rail — {metered_api, physical_good}) and the SECOND welded member on that
+    # rail, adding retail DEPTH rather than a new rail TYPE. GET /.well-known/ucp (served on
+    # us.checkout.gymshark.com) answers a $0 read with a valid dev.ucp.* manifest, so the shipped scorer's
+    # x402_probe reads `commerce-protocol-live` PARTIAL 4.0/8.0 — the SAME UCP middle rung as
+    # checkout.coffeecircle.com, earning transactability 50.0. Its calibration value is a CONTROLLED
+    # single-pillar isolation vs coffeecircle (57.4): the two hold access 100.0 / legibility 54.55 /
+    # transactability 50.0 BYTE-IDENTICAL and separate PURELY on trust (33.33 -> 60.0), lifting overall
+    # 57.4 -> 62.4 — the "the UCP rail is NECESSARY but not SUFFICIENT" statement made cleanest. Prove the
+    # weld is LOAD-BEARING for it specifically, not silently skipped in every sweep: it carries a committed
+    # v0.7 replay baseline, it is genuinely COMPARED in >=1 committed sweep (the 20260808T144423Z cadence
+    # run scored it 62.4, segment ucp-live:apparel-retail), and its live value agrees with the frozen floor.
+    # Because its rail is LIVE (volatile), its live<->frozen agreement was independently re-confirmed by the
+    # authoring cycle (Local cycle 20260808T154553Z, static $0: live 62.4 == frozen 62.4, all four non-null
+    # pillars byte-identical, caps empty, x402_probe partial 4.0/8.0 commerce-protocol-live) — a divergence
+    # here at review time would be REAL UCP-manifest drift, not a code regression.
+    _check(
+        "gymshark.com" in _NON_ANCHOR_WELDED,
+        "gymshark.com is a welded non-anchor member",
+    )
+    _check(
+        "gymshark.com" in replay.EXPECTED
+        and str(replay.EXPECTED["gymshark.com"]["rubric_version"]) == _BASELINE_VERSION,
+        "gymshark.com carries a committed v0.7 replay baseline (the weld's source of truth)",
+    )
+    sweeps = _committed_sweeps()
+    divergences, n_compared, _, _ = _divergences(
+        sweeps, replay.EXPECTED, _BASELINE_VERSION, members=("gymshark.com",)
+    )
+    _check(
+        divergences == [],
+        f"gymshark.com's live sweeps agree with its 62.4 replay floor (got {divergences})",
+    )
+    _check(
+        n_compared >= 1,
+        f"gymshark.com is genuinely compared, not silently skipped (got {n_compared})",
+    )
+    # Teeth: a live re-capture that drifted gymshark.com 62.4 -> 75.0 (e.g. the UCP manifest upgrading
+    # commerce-protocol-live PARTIAL -> a full handshake, or a trust gain) MUST trip the weld, exactly as a
+    # drifted anchor or any prior non-anchor member does — so welding this twelfth member is not toothless.
+    drifted = {
+        "rubric_version": "0.7",
+        "rows": [
+            {
+                "domain": "gymshark.com",
+                "segment": "ucp-live:apparel-retail",
+                "scored": True,
+                "overall": 75.0,
+            }
+        ],
+    }
+    dvg, n_cmp, _, _ = _divergences(
+        [("synthetic-gymshark-drift", drifted)], replay.EXPECTED, _BASELINE_VERSION,
+        members=("gymshark.com",),
+    )
+    _check(len(dvg) == 1, f"exactly one divergence caught (got {dvg})")
+    _check(
+        dvg[0][1] == "gymshark.com"
+        and abs(dvg[0][2] - 75.0) < 1e-9
+        and abs(dvg[0][3] - 62.4) < 1e-9,
+        f"the drifted gymshark.com is caught vs its 62.4 floor (got {dvg[0]})",
+    )
+    _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
+
+
 def test_www_bare_domain_key_is_normalized() -> None:
     print("test_www_bare_domain_key_is_normalized")
     # _member_row matches a welded member to its sweep row modulo a single leading 'www.'
@@ -1615,6 +1705,7 @@ def main() -> int:
         test_x402oracle_ninth_non_anchor_is_welded_nonvacuously,
         test_x402deploy_tenth_non_anchor_is_welded_nonvacuously,
         test_coffeecircle_eleventh_non_anchor_is_welded_nonvacuously,
+        test_gymshark_twelfth_non_anchor_is_welded_nonvacuously,
         test_www_bare_domain_key_is_normalized,
         test_off_version_sweep_is_not_compared,
         test_live_sweep_pillars_agree_with_replay_baseline,

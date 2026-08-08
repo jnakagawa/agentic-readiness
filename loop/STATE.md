@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 297
+- Cycle counter: 298
 - **✅ PR #157 (exa.ai 7th non-anchor cross-path calibration weld — the FIRST welded member with GENUINE
   partial agent-native rails) MERGED this fire (Local 20260807T205300Z), merge `cf0df08`** — after the owed
   FIRST-DUTY adversarial review + independent $0 live re-score. VERDICT SOUND: off-scoring-path (three-dot diff
@@ -38,8 +38,11 @@
   polar.sh/simplybook/allbirds for lesser issues); a score-only pin was considered (86.0 is off the offering path)
   and rejected for consistency. **RE-SCOPED P0 — pin is BLOCKED on offering precision, not on the score.** NEXT (A,
   preferred, in-cloud COVERAGE): harden the 4 FP families against a data/news API's content-catalog topic words —
-  clearest single sub-item is the subscription NEGATION guard ("no subscription"/"no monthly" ≠ a subscription claim);
-  then physical_good (fulfillment/shipping-noun tie to the storefront's OWN fulfillment), service_booking (gerund
+  **✅ subscription NEGATION guard SHIPPED Local 20260808T005504Z (`_NEG_DISCLAIMER`, direct-to-main): "no
+  subscription"/"no monthly"/"without a subscription"/"not a subscription" no longer claim subscription; on
+  thebotwire's quoted spans classify → `['metered_api']`; test_offering 115→117, canonical 70/70, suite 38/38 →
+  1 of 4 FP families CLOSED.** REMAINING 3: physical_good (fulfillment/shipping-noun tie to the storefront's OWN
+  fulfillment, not a news-category enumeration), service_booking (gerund
   "booking" + personnel/arts "appointment"), digital_good (generations/render = an offered good, not a news topic) —
   each precision-synthetic guarded so anchors stay green (moleskine/allbirds/acuity/simplybook/polar). THEN [LOCAL]:
   re-capture, re-verify honest {metered_api, data_retrieval}, pin (the exa.ai recipe) → 10th baseline, 1st non-anchor
@@ -259,6 +262,30 @@
   but wrote NO LOG entry and never committed/pushed (its panel dir exists gitignored). This fire re-verified #149,
   took ownership of the reconciled banner (above), and committed. No fabricated 214745Z LOG entry. STATE pruned the
   two oldest rolling entries (cloud Cycles 290–291, preserved in LOG.md) to stay under the 600-line hygiene cap.
+- LOCAL cycle — 20260808T005504Z (COVERAGE / thebotwire.com pin UNBLOCK sub-item A.1 — the SUBSCRIPTION NEGATION
+  guard SHIPPED direct-to-main, closing 1 of the 4 blocking FP families). FIRST duty: `gh pr list --state open` →
+  `[]` (no open PR; PR #157 MERGED `cf0df08`; weld campaign #152–#157 COMPLETE); newest
+  `verify_20260808T004106Z.json` (00:41Z, 38/38 suites, 46.1 F / 76.2 C / +30.1) this hour's floor, fresh at fire
+  (~00:55Z) → :41 cadence holding (234102Z→004106Z); LOG/STATE consistent with git. No repair, no review owed.
+  **Executed the ONE item — the oldest actionable step of the oldest P0 (UNBLOCK thebotwire.com pin), its named
+  "clearest single sub-item":** narrowed the two cheapest subscription signals (`subscription`, `per-month`) with a
+  new `_NEG_DISCLAIMER` constant (a stack of word-boundaried fixed-width negative lookbehinds:
+  no/no-/not/not a/not an/zero/without/without a/without an) so a site's own recurring-billing DISCLAIMER no longer
+  conjures a subscription claim. `.search()`'s left-to-right scan makes the lookbehind SKIP a disclaimed occurrence
+  and STILL fire on a genuine one later in the surface. On thebotwire.com's exact quoted spans ("No subscription, no
+  minimum, no signup"; "no monthly floor") `classify_offering` now → `['metered_api']` (subscription GONE), while the
+  driftflight pair STILL claims subscription (non-negated evidence) and books/api.replicate/example stay NA. Tests:
+  `test_subscription_negation_disclaimer_precision_synthetic` (9 positives fire incl. word-boundary casino/kimono +
+  skip-to-next; 10 disclaimer negatives dodge incl. the 3 exact thebotwire spans) + `test_subscription_negation_guard_is_canonical_invariant_on_real_fixtures`
+  → test_offering 115→117, test_offering_canonical 70/70. Off scoring-SEMANTICS (scoring.py doesn't import offering;
+  the report/scorecard refs are the NA READOUT strip); score-neutral, no rubric bump; full suite 38/38. Direct-to-main
+  (same class as the Cycles 186/190/194/198/288/292 precision guards). Frozen canonical delta UNMOVED +39.4 (replay
+  31/31); live +30.1. Evidence `runs/local/subscription_negation_guard_20260808T005504Z.json`. Invariants #1 ($0
+  in-process classifier + unit tests; no --behavioral/--max-pay/zero-CLI/codex/live-capture)–#5 held (#4 ADVANCED —
+  the guard removes a dishonest over-claim); zero codex, zero paid ops; stayed in-repo. NO DM (offering-precision guard
+  not a DM-enumerated sensitive class; not the first-after-16:00 fire). **Pin STILL BLOCKED on 3 FP families**
+  (physical_good, service_booking, digital_good) — each a subsequent in-cloud COVERAGE precision pass, then [LOCAL]
+  re-capture + pin. See LOG Local cycle 20260808T005504Z.
 - LOCAL cycle — 20260807T235210Z (TRUTH / thebotwire.com pin ATTEMPTED + BLOCKED — 2nd-cadence x402-live CONFIRMED
   STABLE (score precondition MET) but the fixture's offering classification is DISHONEST (over-claims 4/6 archetypes
   via news-catalog topic-word FPs); NOT installed, re-scoped as an in-cloud precision-guard blocker; direct-to-main).
@@ -346,56 +373,22 @@
   tx 50.0) via a NON-DESTRUCTIVE full-score LIVE capture (replay-clean, honest 4-archetype classification), guard
   `test_agent_native_api_service_replays_78_1` + `_REPLAY_CLEAN` + `_POPULATION` ×5. Direct-to-main; frozen delta
   UNMOVED +39.4; suite 38/38. Full detail in loop/LOG.md.
-- LOCAL cycle — 20260807T174235Z (TRUTH / welded www.moleskine.com as the 6th non-anchor cross-path member, PEER-GATED
-  PR #156 opened, NOT self-merged). FIRST duty: `gh pr list --state open` → `[]` (no open PR to review; PR #155 MERGED
-  `7e08063` last real cycle, 154104Z; 164102Z/174100Z were verify-only floors). Infra HEALTHY:
-  `verify_20260807T174100Z.json` (17:41Z, 38 suites, 46.1 F / 76.2 C / +30.1) ~2min old at fire (17:42Z) → :41 cadence
-  holding (154104Z→174100Z; the 16:41Z floor `verify_20260807T164102Z.json` is present too). **Executed the oldest
-  actionable follow-up — the 2nd-retail WELD the last cycle teed up:** welded www.moleskine.com (a 2nd real retail
-  storefront — retail DEPTH) into `_NON_ANCHOR_WELDED` = (example.com, books.toscrape.com, acuityscheduling.com,
-  ipinfo.io, api.replicate.com, www.moleskine.com), so the cross-path weld spans SIX non-anchor witnesses. Solved the
-  www/bare key mismatch the pin cycle flagged: added `_norm_domain` (strip a single leading `www.`) to the shared
-  `_member_row` so the baseline key `www.moleskine.com` matches the sweeps' `moleskine.com` rows — genuinely COMPARED
-  n_compared=5 (all five committed v0.7 sweeps), NOT vacuous. New `test_moleskine_sixth_non_anchor_is_welded_nonvacuously`
-  (baseline present, n_compared=5, teeth 49.8→60.0 caught through the normalization) + `test_www_bare_domain_key_is_normalized`
-  (normalization both directions + over-normalization guarded — internal `www`/`wwwx`/unrelated never collapsed). The
-  [LOCAL] essence THIS fire (17:46Z $0 static re-score): live 49.8 == frozen fixture-replay 49.8 == EXPECTED 49.8, all 4
-  non-null pillars byte-identical, caps empty (NOT scorable in cloud). TEST-ONLY (`test_calibration_anchor_agreement.py`
-  only; off-scoring-SEMANTICS EMPTY), weld suite 20→22, full suite 38/38. PEER-GATED (regression-guard semantics, same
-  class as #155) → PR #156 opened (`d67cabd`), NOT self-merged; main floor green (weld change branch-only). Evidence
-  `runs/local/moleskine_sixth_non_anchor_weld_20260807T174235Z.json`. Invariants #1 ($0 static re-score + in-process
-  tests, no behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. **DAILY DIGEST POSTED**
-  (Slack DM D07PH9VLZEX): this is the FIRST REAL agent cycle after 16:00 UTC today (last real cycle 154104Z=15:41Z
-  precedes 16:00; the 164102Z/174100Z :41 fires were verify-only floors, no agent cycle shipped) → digest owed. Covered
-  the two real cycles since the last digest (154104Z merged #155 + pinned moleskine 8th baseline; 174235Z opened #156),
-  canonical delta trend (frozen +39.4, live +30.1 persistent x402), and the top open question (2nd with-rails calibration
-  point). Frozen canonical delta UNMOVED +39.4; live +30.1. See LOG Local cycle 20260807T174235Z.
-- LOCAL cycle — 20260807T154104Z (TRUTH / MERGED PR #155 + pinned www.moleskine.com as the 8th frozen-replay baseline /
-  a 2nd retail storefront, direct-to-main). FIRST duty: `gh pr list --state open` → PR #155 OPEN → adversarial review +
-  independent $0 live re-score → VERDICT SOUND → **MERGED `7e08063`** (off-scoring-path test-only +79/−4; vendor-neutral
-  by TYPE pure-inference-API; load-bearing n_compared=1 independently re-derived — api.replicate.com PRESENT in exactly
-  the 20260807T134527Z sweep at 29.5, ABSENT from all 4 priors; teeth 29.5→40.0; live re-derived api.replicate.com 29.5
-  live == 29.5 frozen == 29.5 EXPECTED, all pillars byte-identical → weld holds; weld 20/20, suite 38/38 branch + merged
-  main; the cross-path weld now spans FIVE non-anchor TYPES). Infra HEALTHY: `verify_20260807T154104Z.json` (15:41Z, 38
-  suites, 46.1 F / 76.2 C / +30.1) ~2min old at fire → :41 cadence holding (144105Z→154104Z). **Executed the oldest
-  actionable [LOCAL] follow-up — the cheap 2nd-retail baseline pin (BACKLOG P1-TRUTH, the merged cycle's own
-  next-hypothesis):** pinned www.moleskine.com (a real consumer-brand e-commerce shop — retail DEPTH, not a new TYPE) as
-  the EIGHTH `test_canonical_replay.EXPECTED` frozen-replay baseline (49.8 F v0.7; access 100.0 / legibility 40.91 /
-  transactability 18.75 / trust 73.33) + guard `test_second_retail_storefront_replays_49_8` (asserts overall + all 4
-  pillars; teeth 49.8→55.0 caught in-memory). It was ALREADY replay-clean (0 misses, in `_REPLAY_CLEAN`) + in all 5
-  committed sweeps at 49.8 + in all 5 reproducibility `_POPULATION`s, but its SCORE was UNPINNED — a scoring change could
-  silently move it; this closes that gap. NO fixture re-capture (fixture untouched; cleaner than the ipinfo/api.replicate
-  promotions). [LOCAL] essence THIS fire (15:5xZ $0 static re-score): live 49.8 == frozen fixture-replay 49.8 == EXPECTED
-  49.8, all 4 non-null pillars byte-identical, caps empty → baseline HOLDS, moleskine did NOT regress. 49.8 is a NEW
-  distinct overall between example's 22.5 and acuity's 54.0; as a 2nd retail member it pins a DIFFERENT pillar mix from
-  books.toscrape.com's 29.5 (retail spans 29.5→49.8). Frozen-replay baselines 7→8. Direct-to-main (baseline SCORE-pin;
-  off-scoring-SEMANTICS EMPTY — only `test_canonical_replay.py`, EXPECTED + guard + registration); frozen canonical delta
-  UNMOVED +39.4; live +30.1; suite 38/38 (replay 29→30). Evidence
-  `runs/local/moleskine_second_retail_baseline_20260807T154104Z.json`. Invariants #1 ($0 static re-score + in-process
-  tests, no behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (PR #155 merge +
-  baseline pin not a DM-enumerated sensitive class; 15:4xZ precedes 16:00 UTC) — #155 MERGE flagged for next digest.
-  NOTE for a future 2nd-retail weld: moleskine sweeps key `moleskine.com` (bare) vs replay `www.moleskine.com` — a weld
-  needs www/bare normalization first (else vacuous n_compared=0). See LOG Local cycle 20260807T154104Z.
+<!-- Rolling entry for Local cycle 20260807T174235Z (welded www.moleskine.com as the 6th non-anchor cross-path member
+     via a new `_norm_domain` www/bare key normalization; PEER-GATED PR #156 opened, later MERGED `571e4c6`; DAILY
+     DIGEST posted) pruned this fire (Local cycle 20260808T005504Z) to stay under the STATE 600-line cap — preserved
+     verbatim in loop/LOG.md (## Local cycle — 20260807T174235Z) + git history. -->
+- LOCAL cycle — 20260807T174235Z summarized: welded www.moleskine.com (a 2nd retail storefront — retail DEPTH) as the
+  6th non-anchor cross-path member, solving the www/bare key mismatch with a new `_norm_domain` in the shared
+  `_member_row` (n_compared=5, NOT vacuous); PEER-GATED PR #156 opened (`d67cabd`, later self-merged `571e4c6`). Daily
+  digest posted (first real cycle after 16:00 UTC). Frozen delta UNMOVED +39.4; suite 38/38. Full detail in loop/LOG.md.
+<!-- Rolling entry for Local cycle 20260807T154104Z (MERGED PR #155 [api.replicate.com 5th non-anchor weld, `7e08063`]
+     after adversarial review + live re-score; then pinned www.moleskine.com as the 8th frozen-replay baseline / 2nd
+     retail storefront, direct-to-main) pruned this fire (Local cycle 20260808T005504Z) to stay under the STATE 600-line
+     cap — preserved verbatim in loop/LOG.md (## Local cycle — 20260807T154104Z) + git history. -->
+- LOCAL cycle — 20260807T154104Z summarized: MERGED PR #155 (api.replicate.com 5th non-anchor weld, `7e08063`) after
+  the owed FIRST-DUTY review + live re-score (29.5 live==frozen==EXPECTED); then pinned www.moleskine.com (49.8 F, a
+  2nd retail storefront — retail DEPTH) as the 8th frozen-replay baseline, closing its clean-but-UNPINNED score gap.
+  Direct-to-main; frozen delta UNMOVED +39.4; suite 38/38. Full detail in loop/LOG.md.
 <!-- Rolling entry for Local cycle 20260807T144105Z (welded api.replicate.com as the 5th non-anchor cross-path member,
      PEER-GATED PR #155 opened) pruned this fire (Local cycle 20260807T214332Z) to stay under the STATE 600-line cap —
      preserved verbatim in loop/LOG.md + git history. -->

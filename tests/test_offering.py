@@ -2162,6 +2162,105 @@ def test_subscription_recurring_precision_synthetic():
     )
 
 
+def test_subscription_negation_disclaimer_precision_synthetic():
+    # NEGATION guard for the two cheapest subscription billing signals
+    # (`subscription`, `per-month`). A site that does NOT run a recurring plan says
+    # so in the very tokens those signals key on — "No subscription, no minimum, no
+    # signup", "per-call charges with no monthly floor", "use it without a
+    # subscription". A bare .search() fires on that DISCLAIMER and CONJURES a
+    # subscription claim on a site that renounces one (the thebotwire.com pin
+    # blocker: a multi-vertical data/news-wire API whose llms.txt disclaims both).
+    # The _NEG_DISCLAIMER lookbehind rejects an immediately-preceding negation cue,
+    # so the scan skips the disclaimer and only a GENUINE occurrence claims. Each
+    # POSITIVE fires via the guarded `subscription`/`per-month` branch (no sibling
+    # signal rescuing it), so it exercises the narrowed branch directly; each
+    # NEGATIVE is a negation/topic-word disclaimer that must NOT claim subscription.
+    positives = {
+        # genuine claims — the negation cue is ABSENT or not adjacent
+        "subscription": "Subscription plans start today.",
+        "subscribe": "Subscribe to unlock the full library.",
+        "per month": "Access is billed per month.",
+        "monthly": "Your card is charged monthly.",
+        "slash mo": "The Pro tier is $20/mo.",
+        # word-boundary precision: a negation buried INSIDE a word must NOT block
+        "casino not a negation": "The casino subscription tier adds live tables.",
+        "kimono not a negation": "The kimono monthly club ships a new print each cycle.",
+        # skip-to-next: a disclaimer THEN a genuine claim in the SAME surface still fires
+        "disclaimer then genuine": (
+            "No subscription is required to try it, but subscribe to our monthly plan "
+            "for unlimited access."
+        ),
+        # non-adjacent negation: "no" separated from the token by other words still fires
+        "no fluff then subscription": "We offer no fluff, just a straightforward subscription.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("sub.test", {"homepage": text})
+        assert prof.claims("subscription"), (name, prof.archetypes)
+        fired = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "subscription"
+            for s in c.signals
+        }
+        assert fired & {"subscription", "per-month"}, (name, sorted(fired))
+    print(
+        f"  ok: {len(positives)} genuine subscription/monthly phrasings each claim "
+        f"subscription (word-boundary + skip-to-next precision)"
+    )
+
+    negatives = {
+        # the exact thebotwire.com false-positive disclaimers (quoted from the pin attempt)
+        "no subscription list": "no API key, no signup, no subscription, no minimum.",
+        "No subscription lead": "No subscription, no minimum, no signup — just pay per call.",
+        "no monthly floor": "Per-call API charges per request with no monthly floor.",
+        # other natural billing disclaimers the guard family covers
+        "without a subscription": "Use the wire API without a subscription.",
+        "without subscription": "Full access without subscription or lock-in.",
+        "no-subscription hyphen": "A no-subscription model: you only pay for what you call.",
+        "not a subscription": "This is not a subscription — it is a one-time credit purchase.",
+        "zero subscription": "Zero subscription, zero commitment, metered by the request.",
+        "no monthly": "There is no monthly fee for the free tier.",
+        "annual not monthly": "Billing is annual, not monthly.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("wire.test", {"homepage": text})
+        assert not prof.claims("subscription"), (name, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} negation/disclaimer strings do NOT claim subscription (precision)"
+    )
+
+
+def test_subscription_negation_guard_is_canonical_invariant_on_real_fixtures():
+    # NON-VACUOUS score-neutrality: the negation guard is a NARROWING of two existing
+    # signals, so the only risk is a FALSE NEGATIVE on a committed anchor — a genuine
+    # subscription claim disappearing because its evidence happened to sit right after
+    # a negation cue. Replay every committed canonical fixture through the REAL
+    # discovery path and pin that the claimed archetype SET is unchanged: the two
+    # subscription anchors (the driftflight pair) STILL claim subscription (their
+    # evidence is non-negated `subscription`/`per-month`/`annual-billing`/`free-trial`),
+    # and no NA fixture gains or loses an archetype. This is the guard's canonical
+    # tripwire — the exact property test_offering_canonical.py asserts, restated here
+    # against the fixtures that carry (or renounce) subscription so a future edit that
+    # broke it is caught in this file too.
+    expect = {
+        "driftflight.com": True,   # claims subscription (non-negated evidence)
+        "drift-flight.org": True,  # claims subscription (non-negated evidence)
+        "books.toscrape.com": False,
+        "api.replicate.com": False,
+        "example.com": False,
+    }
+    for dom, claims_sub in expect.items():
+        ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        prof = offering.discover_offering(ctx)
+        assert prof.claims("subscription") == claims_sub, (
+            dom, claims_sub, prof.archetypes
+        )
+    print(
+        "  ok: negation guard leaves the canonical subscription claims invariant "
+        "(driftflight pair still claims; retail/api/null still NA)"
+    )
+
+
 def test_usage_based_metered_precision_synthetic():
     # The metered_api bank's last cheap bare-word signal hardened (siblings:
     # enrich/dataset/lookup for data_retrieval, book/schedule for service_booking,
@@ -6158,6 +6257,8 @@ def main() -> int:
         test_service_booking_waitlist_precision_synthetic,
         test_waitlist_fires_on_real_captured_surfaces,
         test_subscription_recurring_precision_synthetic,
+        test_subscription_negation_disclaimer_precision_synthetic,
+        test_subscription_negation_guard_is_canonical_invariant_on_real_fixtures,
         test_usage_based_metered_precision_synthetic,
         test_payment_challenge_retry_precision_synthetic,
         test_payment_challenge_retry_fires_on_real_captured_surfaces,

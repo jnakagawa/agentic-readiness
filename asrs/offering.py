@@ -226,6 +226,32 @@ _HYPHEN_NORMALIZE = {ord(c): "-" for c in "‐‑‒–−﹣－"}
 # invariant by construction (tests/test_offering_canonical.py).
 _INVISIBLE_STRIP = {cp: None for cp in (0x00AD, 0x200B, 0x2060, 0xFEFF)}
 
+# NEGATION / DISCLAIMER guard for the two cheapest subscription billing signals
+# (`subscription` and `per-month`). A storefront that does NOT bill on a recurring
+# plan routinely SAYS SO in exactly the tokens those signals key on — "No
+# subscription, no minimum, no signup", "per-call charges with no monthly floor",
+# "use the API without a subscription". A bare `\bsubscription\b` / `\bmonthly\b`
+# .search() fires on that DISCLAIMER and CONJURES a subscription claim on a site
+# that explicitly renounces one — the mirror of the "recurring theme" / "trial by
+# fire" over-claims already guarded, here for the negation family a data/news API's
+# self-description makes (the thebotwire.com pin blocker: a multi-vertical wire API
+# whose llms.txt reads "No subscription, no minimum" and "no monthly floor").
+# Reject an IMMEDIATELY-preceding negation cue (word-boundaried, so a token buried
+# inside a word — "casiNO subscription", "kimoNO monthly" — is NOT blocked). Because
+# .search() scans left-to-right and tries each start position, this lookbehind makes
+# the scan SKIP a disclaimed occurrence and still fire on a GENUINE one later in the
+# same surface ("No subscription required, but subscribe to our monthly plan" still
+# claims subscription). Fixed-width per alternative (Python's lookbehind constraint):
+# each cue is its own `(?<!...)`. Narrowing only — canonical-invariant by
+# construction (the driftflight pair claims subscription via non-negated
+# `subscription`/`per-month`/`annual-billing`/`free-trial`, so removing negated
+# matches cannot change any committed CLAIMED set; pinned by
+# tests/test_offering_canonical.py). Off the scoring path.
+_NEG_DISCLAIMER = (
+    r"(?<!\bno )(?<!\bno-)(?<!\bnot )(?<!\bnot a )(?<!\bnot an )(?<!\bzero )"
+    r"(?<!\bwithout )(?<!\bwithout a )(?<!\bwithout an )"
+)
+
 
 # Signal bank: archetype -> [(label, pattern), ...]. Each pattern is anchored to
 # high-precision, vendor-neutral language. A match records the archetype, the
@@ -1048,9 +1074,15 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"\bbefore\s+(?:any\s+)?(?:money|funding|paying)\b", _F)),
     ],
     "subscription": [
-        ("subscription", re.compile(r"\bsubscription\b|\bsubscribe\b", _F)),
+        # `subscription` and `per-month` carry the _NEG_DISCLAIMER lookbehind so a
+        # site DISCLAIMING recurring billing ("No subscription, no minimum", "no
+        # monthly floor", "without a subscription") does NOT conjure a subscription
+        # claim; a genuine occurrence elsewhere in the surface still fires (see
+        # _NEG_DISCLAIMER). `per-month-price` ("$10/month") is a concrete price, never
+        # negated, so it stays bare.
+        ("subscription", re.compile(_NEG_DISCLAIMER + r"(?:\bsubscription\b|\bsubscribe\b)", _F)),
         ("per-month-price", re.compile(r"\$\s?\d[\d,.]*\s*(?:/|per)\s*month\b", _F)),
-        ("per-month", re.compile(r"\bper month\b|\b/mo\b|\bmonthly\b", _F)),
+        ("per-month", re.compile(_NEG_DISCLAIMER + r"(?:\bper month\b|\b/mo\b|\bmonthly\b)", _F)),
         # A RECURRING BILLING commitment — the plan renews and re-charges each
         # period. PRECISION-CRITICAL: bare "\brecurring\b" is a broad-English
         # false-positive minefield — "a recurring theme", "a recurring dream/

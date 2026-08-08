@@ -1,0 +1,41 @@
+{
+ "ts": "20260808T005504Z",
+ "kind": "offering-precision-guard-subscription-negation-disclaimer",
+ "cycle": "Local cycle 20260808T005504Z",
+ "track": "COVERAGE (offering-precision narrowing; score-neutral, off scoring path)",
+ "rubric_version": "0.7",
+ "spend": "$0 (in-process classifier + unit tests only; no --behavioral, no --max-pay, no zero-CLI, no codex, no live capture)",
+ "purpose": "Execute the oldest actionable step of the oldest P0 (UNBLOCK the thebotwire.com pin): the in-cloud COVERAGE precision pass, sub-item A's clearest single unit — the SUBSCRIPTION NEGATION guard. thebotwire.com's fixture over-claimed subscription because the bare `\\bsubscription\\b`/`\\bmonthly\\b` signals fire on the site's own DISCLAIMER prose ('No subscription, no minimum, no signup'; 'no monthly floor'). This narrows those two signals so a negation/disclaimer does NOT conjure a subscription claim.",
+ "change": {
+  "file_offering": "asrs/offering.py",
+  "new_constant": "_NEG_DISCLAIMER — a stack of fixed-width negative lookbehinds (?<!\\bno )(?<!\\bno-)(?<!\\bnot )(?<!\\bnot a )(?<!\\bnot an )(?<!\\bzero )(?<!\\bwithout )(?<!\\bwithout a )(?<!\\bwithout an ) — word-boundaried so a cue buried inside a word (casiNO, kimoNO) never blocks",
+  "signals_guarded": ["subscription (\\bsubscription\\b|\\bsubscribe\\b)", "per-month (\\bper month\\b|\\b/mo\\b|\\bmonthly\\b)"],
+  "signals_left_bare": "per-month-price ($10/month — a concrete price, never negated)",
+  "mechanism": ".search() scans left-to-right and tries each start position, so the lookbehind makes the scan SKIP a disclaimed occurrence and STILL fire on a genuine one later in the same surface (verified: 'No subscription required, but subscribe to our monthly plan' still claims subscription).",
+  "file_tests": "tests/test_offering.py",
+  "tests_added": [
+   "test_subscription_negation_disclaimer_precision_synthetic (9 genuine positives fire incl. word-boundary casino/kimono + skip-to-next; 10 negation/disclaimer negatives dodge incl. the 3 exact thebotwire.com quoted spans)",
+   "test_subscription_negation_guard_is_canonical_invariant_on_real_fixtures (driftflight pair STILL claims subscription; books/api.replicate/example still NA — the guard's false-negative tripwire)"
+  ]
+ },
+ "goal_reproduction_on_real_disclaimer_prose": {
+  "input_surfaces_quoted_from_pin_attempt": {
+   "/llms.txt": "Pay per call via x402. No subscription, no minimum, no signup. per-call API charges per request with no monthly floor.",
+   "openapi": "no API key, no signup, no subscription, no minimum."
+  },
+  "classified_archetypes_after_guard": ["metered_api"],
+  "subscription_claimed_after_guard": false,
+  "note": "Before this guard, that same disclaimer prose claimed subscription (one of the 4 over-claimed archetypes blocking the thebotwire.com pin). metered_api still fires (genuine: 'Pay per call via x402'). This closes 1 of the 4 FP families; physical_good / service_booking / digital_good remain for subsequent COVERAGE cycles before the pin can proceed."
+ },
+ "verification": {
+  "test_offering.py": "117/117 (was 115/115; +2 new)",
+  "test_offering_canonical.py": "70/70 (claimed sets invariant — canonical-invariant by construction, narrowing only)",
+  "full_suite": "38/38 suites fully passed",
+  "off_scoring_path": "confirmed — scoring.py does NOT import offering; the report.py/scorecard.py references are the NA-archetype READOUT strip (which archetypes were assessed vs 'not offered'), not a scoring input",
+  "frozen_canonical_delta": "+39.4 UNMOVED (test_canonical_replay 31/31: driftflight.com 85.5 - drift-flight.org 46.1)",
+  "live_canonical_delta": "+30.1 (per verify_20260808T004106Z.json: 46.1 F / 76.2 C; driftflight.com /extend still 401)"
+ },
+ "ship_class": "direct-to-main (offering-precision narrowing, score-neutral, off scoring-SEMANTICS — same class as the Cycles 186/190/194/198/288/292 precision guards); no rubric version bump (not a scoring-semantics change, inv #2 N/A)",
+ "invariants": "#1 $0 in-process only; #2 no scoring-semantics change (rubric v0.7 unmoved); #3 evidence committed + tests pass; #4 attribution honesty ADVANCED (the guard removes a dishonest over-claim); #5 append-only. Zero codex, zero paid ops, stayed in-repo.",
+ "next": "The pin is still BLOCKED on 3 remaining FP families (physical_good fulfillment/shipping-noun on news categories; service_booking gerund 'booking'/personnel 'appointment'; digital_good generations/render as news topics). Each is a subsequent in-cloud COVERAGE precision pass with the same precision-synthetic guard-pair discipline; then [LOCAL] re-capture thebotwire.com $0, re-verify honest {metered_api, data_retrieval}, and pin as the 10th frozen-replay baseline (the exa.ai recipe)."
+}

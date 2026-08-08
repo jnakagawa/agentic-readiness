@@ -224,15 +224,21 @@ LOG Local cycle 20260807T205300Z. -->
   (a negation). Honest set = **{metered_api, data_retrieval}**. Full per-archetype diagnosis with quoted spans:
   `runs/local/thebotwire_pin_attempt_20260807T235210Z.json`. Installing it would make thebotwire.com the FIRST canonical fixture
   with a dishonest classification (inv #4) — the loop rejected polar.sh/simplybook/allbirds for *lesser* issues; a score-only pin
-  was considered (the 86.0 is off the offering path) and rejected for consistency. **NEXT (A, preferred — an in-cloud COVERAGE
-  precision pass, the oldest actionable step):** guard the 4 FP families against a data/news API's content-catalog topic words —
-  the clearest single sub-item is the **subscription NEGATION guard** ("no subscription"/"no monthly floor" must NOT claim
-  subscription); then physical_good (fulfillment/shipping-noun must tie to the storefront's OWN fulfillment, not a news-category
-  enumeration), service_booking (guard the gerund "booking" + personnel/arts "appointment"), digital_good (generations/render must
-  be an offered good, not a news topic) — each with a precision-synthetic guard pair (synthetic multi-vertical news-catalog prose
-  does NOT fire; genuine capability prose still fires) so the existing anchors stay green (moleskine/allbirds physical_good,
-  acuity/simplybook service_booking, polar subscription). Designable+executable IN-CLOUD (the synthetic half needs no live
-  capture — offering discovery is off the network path). **THEN (TRUTH, [LOCAL]):** re-capture thebotwire.com $0, re-verify it
+  was considered (the 86.0 is off the offering path) and rejected for consistency. **PROGRESS (A, in-cloud COVERAGE precision
+  pass): ✅ 1 of 4 FP families CLOSED — the subscription NEGATION guard SHIPPED Local cycle 20260808T005504Z (direct-to-main).**
+  New `asrs/offering._NEG_DISCLAIMER` (word-boundaried fixed-width negative lookbehinds no/no-/not/not a/not an/zero/without/
+  without a/without an) prepended to the `subscription` + `per-month` signals; `.search()`'s scan skips a disclaimed occurrence
+  and still fires on a genuine one later. On thebotwire's quoted spans `classify_offering` → `['metered_api']` (subscription
+  gone); driftflight pair STILL claims subscription; test_offering 115→117 (`test_subscription_negation_disclaimer_precision_synthetic`
+  + `..._is_canonical_invariant_on_real_fixtures`), test_offering_canonical 70/70, suite 38/38; off scoring path, no rubric bump.
+  Evidence `runs/local/subscription_negation_guard_20260808T005504Z.json`. **REMAINING 3 FP families (each a subsequent in-cloud
+  COVERAGE precision pass, same guard-pair discipline):** physical_good (fulfillment/shipping-noun must tie to the storefront's OWN
+  fulfillment, not a news-category enumeration), service_booking (guard the gerund "booking" + personnel/arts "appointment"),
+  digital_good (generations/render must be an offered good, not a news topic) — each with a precision-synthetic guard pair
+  (synthetic multi-vertical news-catalog prose does NOT fire; genuine capability prose still fires) so the existing anchors stay
+  green (moleskine/allbirds physical_good, acuity/simplybook service_booking, polar subscription). Designable+executable IN-CLOUD
+  (the synthetic half needs no live capture — offering discovery is off the network path). **THEN (TRUTH, [LOCAL], after all 4
+  classify honestly):** re-capture thebotwire.com $0, re-verify it
   classifies honestly to {metered_api, data_retrieval}, then pin `test_canonical_replay.EXPECTED` + `_REPLAY_CLEAN` + guard
   (overall + 4 pillars + capability teeth: no-rails 0.0 < documented-partial 50.0 < LIVE 100.0) + `_POPULATION` in all 5
   reproducibility suites (direct-to-main, off-scoring-SEMANTICS — the exa.ai recipe) → 10th baseline, the FIRST non-anchor

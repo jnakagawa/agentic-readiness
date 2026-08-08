@@ -265,21 +265,18 @@ kith.com would've been 17.8MB, allbirds AVOIDED per its recorded offering-drift 
 Evidence runs/local/gymshark_ucp_retail_baseline_20260808T140228Z.json. See LOG Local cycle 20260808T140228Z. -->
 
 - **[P2 — TRUTH, LOCAL, candidate] BROADEN further / DEEPEN the UCP rail / UNLOCK a NEW rail TYPE.** The UCP rail now
-  has TWO pinned baselines: checkout.coffeecircle.com (57.4 F, coffee merchant, Local cycle 20260808T104105Z, WELDED via
-  MERGED PR #159 as the 11th non-anchor member) and gymshark.com (62.4 D, mainstream apparel brand — retail DEPTH, Local
-  cycle 20260808T140228Z), both UCP `commerce-protocol-live` at tx 50.0. Next steps, in order:
-  (1) ✅ DONE — the coffeecircle sweep-add + PEER-GATED weld are COMPLETE (**PR #159 MERGED `0d5d6d4`** this fire; the
-  whole #152-#159 weld campaign is done).
-  (2) **UCP-retail WELD of gymshark.com** (the 12th non-anchor member / 2nd on the UCP rail): ↪ AUTHORED this fire as
-  PEER-GATED **PR #160** (Local cycle 20260808T154553Z, branch loop/gymshark-ucp-retail-non-anchor-weld, tip 561290d),
-  NOT self-merged — welds gymshark.com into `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` non-vacuously
-  (committed 62.4 floor present + genuinely COMPARED n_compared=1 in `calibration_sweep_20260808T144423Z.json`, segment
-  ucp-live:apparel-retail + teeth = synthetic drift 62.4→75.0 caught), keyed identically both paths (no www/bare alias).
-  Its calibration value is the "UCP rail necessary but not sufficient" statement (same tx 50.0 as coffeecircle 57.4;
-  gymshark 62.4 separates PURELY on trust). $0 live<->frozen re-confirmed at author time (live 62.4 == frozen 62.4, all
-  4 non-null pillars byte-identical, x402_probe partial 4.0/8.0 commerce-protocol-live). DO NOT RE-AUTHOR — TRACKED by
-  STATE's OPEN-PR #160 banner + next fire's first-duty adversarial review + $0 live re-score (a divergence = REAL
-  UCP-manifest drift → re-capture, don't merge, inv #4). Merging it completes the #152–#160 weld campaign at 12 witnesses.
+  has THREE pinned baselines, all UCP `commerce-protocol-live` at the tx-50.0 rung: checkout.coffeecircle.com (57.4 F,
+  coffee merchant, WELDED via MERGED PR #159 as the 11th non-anchor member), gymshark.com (62.4 D, apparel brand, WELDED
+  via MERGED PR #160 as the 12th member), and hardgraft.com (66.9 D, leather-goods merchant — PINNED this fire Local cycle
+  20260808T165732Z, the THIRD UCP point, NOT yet welded). The three span a 2-D (legibility × trust) region at the fixed tx
+  rung: coffeecircle+gymshark share legibility 54.55 (separate on trust 33.33→60.0); hardgraft sits at a DISTINCT
+  legibility 50.0 AND the highest trust 90.0 — the "UCP necessary but not SUFFICIENT" statement generalized from a line
+  to a plane. Next steps, in order:
+  (1) ✅ DONE — the coffeecircle sweep-add + PEER-GATED weld are COMPLETE (**PR #159 MERGED `0d5d6d4`**).
+  (2) ✅ DONE — the **UCP-retail WELD of gymshark.com** (12th non-anchor member / 2nd on the UCP rail) is COMPLETE: **PR
+  #160 MERGED `c091c4c`** this fire (Local cycle 20260808T165732Z) after the owed FIRST-DUTY adversarial review + $0 live
+  UCP re-score (live 62.4 == frozen 62.4, all 4 pillars byte-identical, x402_probe partial 4.0/8.0 commerce-protocol-live;
+  weld 28/28). **The whole #152–#160 non-anchor weld campaign is COMPLETE at 12 witnesses.**
   (3) A genuinely-NEW rail TYPE (ACP/MPP) remains the higher prize but is currently **UN-pinnable $0** — the Local cycle
   20260808T140228Z ACP recon FINDING (recorded, inv #4): the scorer already supports ACP (`asrs/probes/protocols.py`
   `_COMMERCE_WELL_KNOWN` probes `/.well-known/agentic-commerce` + validates `_ACP_PAYLOAD_KEYS` -> `commerce-protocol-live`),
@@ -288,11 +285,17 @@ Evidence runs/local/gymshark_ucp_retail_baseline_20260808T140228Z.json. See LOG 
   peer-gated re-pathing of the scorer's ACP well-known would need 2+ live ACP surfaces to validate (inv #3) — none exist
   today. Re-scan the ecosystem for a live ACP/MPP surface at a future cadence; if `/.well-known/acp/manifest.json` becomes
   common, the well-known-path fix + 2-domain validation is the peer-gated unit.
-  (4) MORE UCP retail witnesses are ABUNDANT (glossier/spanx/skims/allbirds[drifted, avoid]/kith[17.8MB]/hardgraft all
-  serve valid `/.well-known/ucp`) — cheap direct-to-main pins IF a distinct calibration value + honest classification +
-  lean fixture. `joinhexagon.com` is a DOCUMENTED live-UCP lead but needs a precision-guard unblock FIRST (4 llms-full.txt
-  FP families, inv #4) — prefer clean merchant witnesses over infra profiles. WATCH driftflight.com /extend for a 402
-  recovery (restores the anchor's live handshake + the +39.4 live delta).
+  (4) MORE UCP retail witnesses: hardgraft.com (66.9) was PINNED this fire as the 3rd UCP baseline (the distinct-legibility
+  point). Its natural forward step is a PEER-GATED **UCP-retail WELD of hardgraft** (the 13th non-anchor member) — but it
+  needs a $0 cadence-sweep POPULATION-add FIRST (the gymshark recipe: add `("hardgraft.com", "ucp-live:leather-goods")` to
+  `experiments/calibration_sweep.py` + a $0 static sweep for a genuinely-compared presence, n_compared≥1) before the weld
+  is non-vacuous. Other candidates surveyed this fire but NOT pinned: glossier.com 64.9 (legibility 54.55 — same as the
+  pair, only densifies trust) and skims.com 60.4 (legibility 40.91 but tx 43.75 — a DIFFERENT tx rung, conflates two axes,
+  not a clean single-rung comparison). Remaining ABUNDANT candidates (spanx/allbirds[drifted, avoid]/kith[17.8MB]) are
+  cheap direct-to-main pins IF a distinct calibration value + honest classification + lean fixture. `joinhexagon.com` is a
+  DOCUMENTED live-UCP lead but needs a precision-guard unblock FIRST (4 llms-full.txt FP families, inv #4) — prefer clean
+  merchant witnesses over infra profiles. WATCH driftflight.com /extend for a 402 recovery (restores the anchor's live
+  handshake + the +39.4 live delta).
 
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
   phrasing has now drifted the `_ENV_BLOCK_RE` guard FIVE times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)

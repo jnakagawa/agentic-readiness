@@ -20210,3 +20210,79 @@ all serve valid /.well-known/ucp) as cheap direct-to-main pins IF a distinct cal
 ## Local verification — 20260808T164103Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260808T164103Z.json
+
+## Local cycle — 20260808T165732Z
+
+Track: TRUTH/COVERAGE (LOCAL, direct-to-main). FIRST DUTY: reviewed + MERGED peer-gated PR #160
+(gymshark UCP-retail weld). ONE item: pinned hardgraft.com (66.9 D) as the FIFTEENTH frozen-replay
+calibration baseline — the THIRD non-anchor point on the LIVE UCP rail — generalizing the "UCP
+necessary but not SUFFICIENT" calibration from a LINE to a PLANE.
+
+FIRST DUTY (peer-gated review + merge). `gh pr list --state open` -> PR #160 OPEN (gymshark.com
+62.4 weld, the 12th non-anchor member / 2nd on the UCP rail), owed its adversarial review +
+independent $0 live re-score before any new work. Infra health GREEN: newest
+`runs/local/verify_20260808T164103Z.json` fresh (< 6h), `tests_ok` 38/38, live delta +30.1
+(drift-flight.org 46.1 / driftflight.com 76.2), git clean + up to date (`ddf320e`). Adversarial
+review — VERDICT SOUND: (a) off-scoring-path — three-dot diff since merge-base `c63c715` is ONLY
+`test_calibration_anchor_agreement.py` +91 + evidence JSON +53; EMPTY over
+asrs/rubric/fixtures/experiments/loop. (b) vendor-neutral — welded by the UCP-rail TYPE; no
+gymshark special-casing in asrs/rubric. (c) load-bearing — committed 62.4 v0.7 floor present in
+`replay.EXPECTED` + `_REPLAY_CLEAN`; genuinely COMPARED n_compared=1 (present in EXACTLY
+`calibration_sweep_20260808T144423Z.json` at 62.4, segment ucp-live:apparel-retail; absent from
+every other committed sweep — independently re-derived); keyed `gymshark.com` identically both
+paths (no www/bare alias). (d) teeth — synthetic drift 62.4->75.0 caught as exactly one
+divergence. (e) VOLATILE-RAIL $0 live re-score re-run THIS fire
+(`.venv/bin/python -m asrs score gymshark.com --json-only`, no --behavioral/--max-pay/codex/zero
+CLI, no payment, inv #1) -> live 62.4 == frozen 62.4 == EXPECTED 62.4, all four non-null pillars
+byte-identical (access 100.0 / legibility 54.545 / transactability 50.0 / trust 60.0), caps empty,
+`x402_probe` PARTIAL 4.0/8.0 `commerce-protocol-live` (UCP rail UP, no manifest drift) -> MERGE.
+Merge `c091c4c`, branch deleted; weld suite 28/28 on merged main; no open PRs remain. The
+cross-path weld now spans TWELVE non-anchor witnesses — the #152-#160 weld campaign is COMPLETE.
+
+THE ITEM (BACKLOG P2 step 4: more UCP-retail witnesses with a DISTINCT calibration value). The
+UCP rail had TWO pinned baselines (checkout.coffeecircle.com 57.4, gymshark.com 62.4), both at the
+IDENTICAL legibility 54.55 / tx 50.0, separating ONLY on trust — a one-axis calibration. A $0
+static recon of the recorded candidates (glossier/skims/hardgraft, all serve valid /.well-known/ucp)
+found the cleanest DISTINCT point:
+- glossier.com 64.9 (legibility 54.55 — same as the pair; only densifies trust -> passed over);
+- skims.com 60.4 (legibility 40.91 but tx 43.75 — a DIFFERENT tx rung, conflates two axes -> passed
+  over, not a clean single-rung comparison);
+- **hardgraft.com 66.9 D** (access 100.0 / **legibility 50.0** / transactability 50.0 / **trust 90.0**)
+  — holds the SAME UCP tx-50.0 rung but at a DISTINCT legibility (50.0, not 54.55) AND the HIGHEST
+  trust of the three. Honest classification EXACTLY `{metered_api, physical_good}` (metered_api from
+  its /llms.txt UCP agent-commerce endpoints; physical_good from genuine shipping/order-tracking
+  prose; the other 4 NA -> NO topic-word over-claim, NO FP-guards needed — the same clean profile
+  as gymshark).
+
+Calibration value = the UCP "necessary but not SUFFICIENT" statement GENERALIZED from a LINE to a
+PLANE: the three UCP storefronts all sit on the fixed tx-50.0 rung, yet coffeecircle+gymshark share
+legibility 54.55 (separate only on trust) while hardgraft introduces a NEW legibility (50.0) and a
+NEW trust high (90.0) -> the three span a 2-D region (legibility 50.0->54.55, trust 33.33->90.0) at
+the fixed rung, proving the rail fixes transactability while overall varies with BOTH legibility and
+trust independently of the rail, not trust alone.
+
+[LOCAL] essence + gate (cross-path evidence the cloud cannot produce; $0 static, no payment inv #1).
+UCP manifest STABLE across TWO direct $0 observations at capture time
+(`runs/hardgraft_com_20260808T164854.json` + `...165120.json`: both 66.9, all pillars byte-identical,
+`x402_probe` partial 4.0/8.0 both — a static versioned well-known JSON, not a volatile endpoint).
+Captured full-score LIVE with `--record-fixture fixtures/canonical/hardgraft.com.json` (33 entries,
+4.6 MB — leaner than a kith would have been at 17.8 MB). Verified NON-DESTRUCTIVELY: offline replay
+via `_score_fixture` -> replay_misses 0, live 66.9 == fixture-replay 66.9 == EXPECTED 66.9, all four
+non-null pillars byte-identical, caps empty.
+
+Installed `fixtures/canonical/hardgraft.com.json` (NEW) + `replay.EXPECTED` entry (capability-worded
+comment) + `_REPLAY_CLEAN` + guard `test_ucp_retail_third_storefront_replays_66_9` (teeth: all three
+UCP points share tx 4.0/50.0; coffeecircle+gymshark share ONE legibility while hardgraft is DISTINCT
+-> plane-not-line; hardgraft highest trust) + `_POPULATION` in all 5 reproducibility suites.
+Off-scoring-SEMANTICS EMPTY (only test files + the new non-anchor fixture; canonical PAIR untouched;
+asrs/rubric untouched). canonical_replay 36->37; frozen canonical delta UNMOVED +39.4; live +30.1;
+full suite 38/38; frozen-replay baselines 14->15. Evidence
+`runs/local/hardgraft_ucp_retail_third_baseline_20260808T165732Z.json`.
+
+Next hypothesis: the UCP rail now has THREE pinned baselines spanning a 2-D (legibility x trust)
+region at the fixed tx rung. Remaining UCP frontier is either (a) a UCP point at a DIFFERENT tx rung
+(a full UCP handshake -> tx > 50.0, if a live storefront exposes an HTTP-402 payment endpoint atop
+its UCP manifest — none found so far; the partial 4.0/8.0 is the ceiling for a manifest-only surface),
+or (b) welding hardgraft.com into `_NON_ANCHOR_WELDED` (peer-gated) once it has a genuinely-compared
+sweep presence (a $0 cadence-sweep POPULATION-add first, the gymshark recipe). The genuinely-NEW
+rail TYPE (ACP/MPP) remains the higher prize but is still UN-pinnable $0 (ACP well-known scarce).

@@ -90,6 +90,7 @@ _POPULATION = (
     "exa.ai",
     "example.com",
     "gymshark.com",
+    "hardgraft.com",
     "ipinfo.io",
     "thebotwire.com",
     "www.moleskine.com",

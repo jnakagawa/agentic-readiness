@@ -476,6 +476,48 @@ EXPECTED = {
             "outcome": None,
         },
     },
+    # A FIFTEENTH real-domain calibration datapoint — and the THIRD non-anchor
+    # baseline on the LIVE UCP (Universal Commerce Protocol) rail, further retail
+    # DEPTH: hardgraft.com is a real premium leather-goods merchant whose
+    # GET /.well-known/ucp answers a $0 read with a valid `dev.ucp.*` service
+    # manifest, so the scorer's `x402_probe` reads `commerce-protocol-live`
+    # PARTIAL 4.0/8.0 — the SAME UCP middle rung as checkout.coffeecircle.com and
+    # gymshark.com (transactability 50.0). It claims exactly TWO archetypes
+    # {metered_api, physical_good} (metered_api from its published UCP
+    # agent-commerce endpoints in /llms.txt; physical_good from genuine shipping /
+    # order-tracking fulfillment prose — data_retrieval / digital_good /
+    # service_booking / subscription all NA, NO topic-word over-claim, so NO
+    # FP-family guards were needed — the same clean profile as gymshark.com). Its
+    # calibration value GENERALIZES the "UCP necessary but not SUFFICIENT" story
+    # from a line to a PLANE: coffeecircle.com (57.4) and gymshark.com (62.4) share
+    # the IDENTICAL legibility 54.55 and separate PURELY on trust; hardgraft.com
+    # holds the SAME tx-50.0 UCP rung but sits at a DISTINCT legibility (50.0, vs
+    # 54.55) AND the HIGHEST trust of the three (90.0), scoring 66.9. So the three
+    # UCP points now span a 2-D region (legibility 50.0 -> 54.55, trust 33.33 ->
+    # 90.0) at the fixed tx rung — proving the rail fixes transactability while
+    # overall varies with BOTH legibility and trust independently of the rail,
+    # not just trust. Fixture captured full-score LIVE [LOCAL] this cycle with the
+    # UCP manifest confirmed stable across >=2 direct $0 observations at capture
+    # time (a static versioned JSON well-known, not a volatile endpoint) and
+    # replays CLEAN (0 misses); its live score was re-verified == this frozen floor
+    # on the same $0 static re-score (live 66.9 == frozen 66.9, all four non-null
+    # pillars byte-identical, caps empty). Worded by capability, never by vendor.
+    # Because the UCP rail is LIVE (served, volatile), a future manifest
+    # removal/invalidation reddens the replay-clean guard (fixture frozen) and
+    # flags a re-capture. NO payment was ever signed (inv #1 — the well-known GET
+    # is a $0 read).
+    "hardgraft.com": {
+        "overall": 66.9,
+        "grade": "D",
+        "rubric_version": "0.7",
+        "pillars": {
+            "access": 100.0,
+            "legibility": 50.0,
+            "transactability": 50.0,
+            "trust": 90.0,
+            "outcome": None,
+        },
+    },
 }
 EXPECTED_DELTA = 39.4  # driftflight.com (rails) - drift-flight.org (no rails)
 
@@ -1284,6 +1326,85 @@ def test_ucp_retail_storefront_replays_62_4() -> None:
         gym.overall_score > ucp.overall_score,
         f"higher trust on the identical UCP rail lifts the overall "
         f"(gymshark {gym.overall_score} > coffeecircle {ucp.overall_score})",
+    )
+
+
+# ---------------------------------------------------------------------------
+# 6l. FIFTEENTH-DOMAIN CALIBRATION — the THIRD non-anchor baseline on the LIVE UCP
+#     rail (further retail DEPTH: a premium leather-goods merchant, hardgraft.com).
+#     Its teeth GENERALIZE the "UCP necessary but not SUFFICIENT" story from a LINE
+#     to a PLANE. The first two UCP points (checkout.coffeecircle.com 57.4 and
+#     gymshark.com 62.4) share the IDENTICAL legibility 54.55 and separate PURELY on
+#     trust — a one-axis result. hardgraft.com holds the SAME tx-50.0 UCP rung
+#     (x402_probe commerce-protocol-live PARTIAL 4.0/8.0) but sits at a DISTINCT
+#     legibility (50.0, NOT the 54.55 the other two share) and the HIGHEST trust of
+#     the three (90.0). So the three UCP storefronts span a genuine 2-D region
+#     (legibility AND trust both vary) at the fixed transactability rung — proving
+#     the rail fixes transactability while the overall varies with BOTH legibility
+#     and trust independently of the rail, not trust alone. A scoring change that let
+#     the rail credit leak into the overall independent of the other pillars, that
+#     collapsed the UCP points back onto a single-legibility line, or that stopped
+#     reading hardgraft's UCP manifest as commerce-protocol-live, FLIPS this guard.
+#     Worded by capability, never by vendor. Because the manifest is LIVE (served,
+#     volatile), a future removal/invalidation reddens the replay-clean guard
+#     (fixture frozen) and flags a re-capture.
+# ---------------------------------------------------------------------------
+def test_ucp_retail_third_storefront_replays_66_9() -> None:
+    print("test_ucp_retail_third_storefront_replays_66_9")
+    _assert_domain("hardgraft.com")
+    hard, hard_misses = _score_fixture("hardgraft.com")
+    gym, gym_misses = _score_fixture("gymshark.com")  # the second UCP point
+    ucp, ucp_misses = _score_fixture("checkout.coffeecircle.com")  # the first UCP point
+    _check(
+        not (hard_misses or gym_misses or ucp_misses),
+        "no replay-miss on hardgraft.com / gymshark.com / checkout.coffeecircle.com",
+    )
+    # Same rail: hardgraft earns the UCP partial (commerce-protocol-live), the same
+    # rung as the first two UCP baselines.
+    hard_probe = _by_id(hard, "x402_probe")
+    gym_probe = _by_id(gym, "x402_probe")
+    ucp_probe = _by_id(ucp, "x402_probe")
+    _check(
+        hard_probe.status is Status.PARTIAL and hard_probe.finding == "commerce-protocol-live",
+        f"hardgraft.com: x402_probe is a validated LIVE UCP manifest "
+        f"(commerce-protocol-live, got {hard_probe.finding!r} {hard_probe.status})",
+    )
+    _check(
+        hard_probe.points == gym_probe.points == ucp_probe.points == 4.0,
+        f"all three UCP storefronts sit on the identical UCP rung (x402_probe 4.0, "
+        f"got hardgraft {hard_probe.points} / gymshark {gym_probe.points} / "
+        f"coffeecircle {ucp_probe.points})",
+    )
+    h = hard.pillar_scores
+    g = gym.pillar_scores
+    c = ucp.pillar_scores
+    # The rail FIXES transactability: all three share the identical tx (50.0).
+    _check(
+        abs(h["transactability"] - g["transactability"]) < 1e-9
+        and abs(h["transactability"] - c["transactability"]) < 1e-9,
+        f"the UCP rail fixes transactability across all three storefronts "
+        f"(hardgraft {h['transactability']} == gymshark {g['transactability']} == "
+        f"coffeecircle {c['transactability']})",
+    )
+    # LINE -> PLANE: the first two UCP points share ONE legibility; hardgraft sits at
+    # a DISTINCT legibility, so legibility genuinely VARIES on the fixed rail — the
+    # UCP calibration is a 2-D region, not a single-legibility line.
+    _check(
+        abs(g["legibility"] - c["legibility"]) < 1e-9,
+        f"gymshark and coffeecircle share one legibility on the UCP rail "
+        f"(gymshark {g['legibility']} == coffeecircle {c['legibility']})",
+    )
+    _check(
+        abs(h["legibility"] - g["legibility"]) > 1e-9,
+        f"hardgraft sits at a DISTINCT legibility on the SAME UCP rail — the calibration "
+        f"is a plane, not a line (hardgraft {h['legibility']} != {g['legibility']})",
+    )
+    # hardgraft carries the HIGHEST trust of the three UCP points, extending the trust
+    # axis upward on the fixed rail.
+    _check(
+        h["trust"] > g["trust"] and h["trust"] > c["trust"],
+        f"hardgraft carries the highest trust of the three UCP points "
+        f"(hardgraft {h['trust']} > gymshark {g['trust']}, coffeecircle {c['trust']})",
     )
 
 
@@ -2365,6 +2486,22 @@ _REPLAY_CLEAN = {
     # removal/invalidation reddens this replay guard (fixture frozen) and flags a
     # re-capture — the honest signal, not a silent drift.
     "gymshark.com",
+    # hardgraft.com captured full-score LIVE this cycle (Local cycle
+    # 20260808T164103Z fire): the fresh crawl covers the whole probe set (0 misses)
+    # and replays to its pinned 66.9 D. It is the THIRD non-anchor member on the
+    # LIVE UCP rail (further retail DEPTH — a premium leather-goods merchant): GET
+    # /.well-known/ucp serves a valid `dev.ucp.*` service manifest → x402_probe
+    # reads `commerce-protocol-live` PARTIAL 4.0/8.0, the SAME UCP middle rung as
+    # checkout.coffeecircle.com and gymshark.com (tx 50.0). Honestly classified
+    # {metered_api, physical_good} (no topic-word over-claim, the same clean profile
+    # as gymshark.com). It GENERALIZES the UCP calibration from a line to a plane:
+    # it holds the tx-50.0 rung but sits at a DISTINCT legibility (50.0, vs the
+    # 54.55 the other two share) and the HIGHEST trust of the three (90.0), so the
+    # three UCP points span a 2-D region (legibility + trust) at the fixed tx rung.
+    # Because the manifest is LIVE (served, volatile), a future removal/invalidation
+    # reddens this replay guard (fixture frozen) and flags a re-capture — the honest
+    # signal, not a silent drift.
+    "hardgraft.com",
 }
 # Fixtures whose recorded surface is a strict subset of the full scoring path
 # (captured for offering/battery classification) — NOT eligible for any
@@ -2727,6 +2864,7 @@ def main() -> int:
         test_second_full_live_x402_replays_73_9,
         test_ucp_commerce_protocol_storefront_replays_57_4,
         test_ucp_retail_storefront_replays_62_4,
+        test_ucp_retail_third_storefront_replays_66_9,
         test_retail_storefront_earns_no_agent_native_payment,
         test_relabel_invariance_retail,
         test_nonstorefront_replays_22_5,

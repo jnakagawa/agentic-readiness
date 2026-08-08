@@ -1,0 +1,106 @@
+{
+ "ts": "20260808T165732Z",
+ "cycle": "Local cycle 20260808T165732Z",
+ "kind": "ucp-retail-third-baseline-pin",
+ "track": "TRUTH/COVERAGE",
+ "domain": "hardgraft.com",
+ "summary": "Pinned hardgraft.com (premium leather-goods merchant on the LIVE UCP rail) as the FIFTEENTH frozen-replay calibration baseline / THIRD non-anchor UCP point. Direct-to-main. Generalizes the UCP 'necessary but not sufficient' calibration from a LINE to a PLANE.",
+ "first_duty": "Reviewed + MERGED peer-gated PR #160 (gymshark UCP-retail weld, 12th non-anchor member) after independent $0 live UCP re-score (live 62.4 == frozen 62.4, all 4 pillars byte-identical, x402_probe partial 4.0/8.0 commerce-protocol-live). Merge c091c4c. Weld 28/28.",
+ "spend": "$0 \u2014 static scores only, no --behavioral, no --max-pay, no codex/zero CLI, no payment signed (inv #1). UCP well-known GET is a $0 read.",
+ "gate": {
+  "ucp_manifest_stable_ge2_obs": true,
+  "obs1_ts": "20260808T164854Z",
+  "obs1_overall": 66.9,
+  "obs1_pillars": {
+   "access": 100.0,
+   "legibility": 50.0,
+   "transactability": 50.0,
+   "trust": 90.0,
+   "outcome": null
+  },
+  "obs1_ucp_probe": {
+   "status": "partial",
+   "points": 4.0,
+   "max": 8.0,
+   "finding": "commerce-protocol-live"
+  },
+  "obs2_ts": "20260808T165120Z",
+  "obs2_overall": 66.9,
+  "obs2_pillars": {
+   "access": 100.0,
+   "legibility": 50.0,
+   "transactability": 50.0,
+   "trust": 90.0,
+   "outcome": null
+  },
+  "obs2_ucp_probe": {
+   "status": "partial",
+   "points": 4.0,
+   "max": 8.0,
+   "finding": "commerce-protocol-live"
+  },
+  "obs_match": true,
+  "honest_classification": {
+   "claimed": [
+    "metered_api",
+    "physical_good"
+   ],
+   "unclaimed_NA": [
+    "data_retrieval",
+    "digital_good",
+    "service_booking",
+    "subscription"
+   ],
+   "fp_guards_needed": false
+  },
+  "fixture_entries": 33,
+  "fixture_bytes": 4865819,
+  "replay_clean": true,
+  "replay_misses": 0,
+  "live_eq_frozen_eq_expected": {
+   "live": 66.9,
+   "frozen": 66.9,
+   "expected": 66.9,
+   "pillars_byte_identical": true,
+   "caps_empty": true
+  }
+ },
+ "calibration_value": {
+  "statement": "UCP rail necessary but not SUFFICIENT, generalized line->plane",
+  "ucp_points": {
+   "checkout.coffeecircle.com": {
+    "overall": 57.4,
+    "legibility": 54.545454545,
+    "tx": 50.0,
+    "trust": 33.33
+   },
+   "gymshark.com": {
+    "overall": 62.4,
+    "legibility": 54.545454545,
+    "tx": 50.0,
+    "trust": 60.0
+   },
+   "hardgraft.com": {
+    "overall": 66.9,
+    "legibility": 50.0,
+    "tx": 50.0,
+    "trust": 90.0
+   }
+  },
+  "note": "All three share tx 50.0 (the UCP commerce-protocol-live PARTIAL rung fixes transactability). coffeecircle+gymshark share legibility 54.55 (separate only on trust). hardgraft holds the tx rung but at DISTINCT legibility 50.0 AND highest trust 90.0 -> the three span a 2-D region (legibility x trust) at the fixed tx rung."
+ },
+ "installed": {
+  "fixture": "fixtures/canonical/hardgraft.com.json",
+  "expected_entry": true,
+  "replay_clean_set": true,
+  "guard": "test_ucp_retail_third_storefront_replays_66_9",
+  "population_x5": true
+ },
+ "off_scoring_semantics": "EMPTY (only test files + the new non-anchor fixture; canonical PAIR untouched; asrs/rubric untouched)",
+ "frozen_canonical_delta": 39.4,
+ "live_canonical_delta": 30.1,
+ "baselines": "14 -> 15",
+ "canonical_replay_tests": "36 -> 37",
+ "full_suite": "38/38",
+ "verify_artifact": "runs/local/verify_20260808T164103Z.json"
+}

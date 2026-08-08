@@ -1,34 +1,43 @@
 # Loop state
 
-- Cycle counter: 312
-- **↪ PEER-GATED PR #160 OPENED this fire (Local 20260808T154553Z, TRUTH): WELD gymshark.com (62.4) into
-  `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` as the TWELFTH non-anchor member / SECOND on the LIVE
-  UCP commerce-protocol rail (retail DEPTH), NOT self-merged.** Branch `loop/gymshark-ucp-retail-non-anchor-weld`
-  (tip `561290d`). FIRST duty this fire GREEN (`gh pr list --state open` EMPTY at fire start — PR #159 merged two fires
-  ago, last fire's sweep-add direct-to-main so no peer-gated review was owed). Added `"gymshark.com"` to
-  `_NON_ANCHOR_WELDED` (11→12) + member comment + `test_gymshark_twelfth_non_anchor_is_welded_nonvacuously` + main()
-  registration. LOAD-BEARING/non-vacuous: committed v0.7 floor present (62.4, in `_REPLAY_CLEAN`); genuinely COMPARED
-  n_compared=1 in `calibration_sweep_20260808T144423Z.json` (segment ucp-live:apparel-retail); keyed identically both
-  paths (no www/bare alias); teeth = synthetic drift 62.4→75.0 caught as exactly one divergence vs floor. Calibration
-  value = CONTROLLED single-pillar isolation vs coffeecircle (57.4): access 100.0 / legibility 54.55 / transactability
-  50.0 BYTE-IDENTICAL, separating PURELY on trust (33.33→60.0), lifting 57.4→62.4 — "UCP rail NECESSARY but not
-  SUFFICIENT" made cleanest. [LOCAL] essence: $0 static re-score this fire (no --behavioral/--max-pay/codex/zero CLI,
-  no payment signed inv #1) → live 62.4 == frozen 62.4 == EXPECTED 62.4, all 4 non-null pillars byte-identical, caps
-  empty, `x402_probe` partial 4.0/8.0 `commerce-protocol-live` from `https://us.checkout.gymshark.com/.well-known/ucp`
-  (ucp manifest v2026-04-08, UCP rail UP, no drift). Off-scoring-SEMANTICS EMPTY (three-dot diff =
-  `test_calibration_anchor_agreement.py` +91 + evidence JSON +53; EMPTY over asrs/rubric/fixtures/experiments/loop);
-  weld suite 27→28; full suite 38/38; frozen delta UNMOVED **+39.4**; live **+30.1**. Evidence
-  `runs/local/gymshark_ucp_retail_non_anchor_weld_20260808T154553Z.json`; LOG Local cycle 20260808T154553Z. **The NEXT
-  fire OWES its first-duty adversarial review + independent $0 live re-score BEFORE picking new work** (the REVIEWER
-  re-runs the volatile-rail live re-score; a divergence = REAL UCP-manifest drift → re-capture that member, do NOT
-  merge, inv #4). Merging #160 completes the #152–#160 non-anchor weld campaign at TWELVE witnesses.
-- **✅ gymshark.com's UCP-retail WELD PREREQUISITE was DISCHARGED (Local 20260808T145709Z, TRUTH, direct-to-main):**
-  `("gymshark.com", "ucp-live:apparel-retail")` added to `experiments/calibration_sweep.py` POPULATION (24→25) + a $0
-  static cadence sweep → `runs/local/calibration_sweep_20260808T144423Z.json` (25 total, 24 scored, rei.com
-  not-scorable per inv #4, 0 errors). gymshark.com scored **62.4 D BYTE-IDENTICAL to its frozen floor** (access
-  100.0/legibility 54.55/tx 50.0/trust 60.0, caps empty, honest `{metered_api, physical_good}`); drift vs
-  `20260808T114436Z` **0/23 moved, max |Δ| 0.0**. That first genuinely-compared sweep presence (n_compared=1) is what
-  made PR #160 above authorable. See LOG Local cycle 20260808T145709Z.
+- Cycle counter: 313
+- **✅ PEER-GATED PR #160 (gymshark.com UCP-retail weld — the TWELFTH non-anchor member / 2nd on the UCP commerce-protocol
+  rail, retail DEPTH) MERGED this fire (Local 20260808T165732Z), merge `c091c4c`** — after the owed FIRST-DUTY adversarial
+  review + independent $0 live UCP re-score. VERDICT SOUND: off-scoring-path (three-dot diff since merge-base `c63c715` is
+  ONLY `test_calibration_anchor_agreement.py` +91 + evidence JSON +53; EMPTY over asrs/rubric/fixtures/experiments/loop);
+  vendor-neutral (welded by the UCP rail TYPE, no gymshark special-casing in asrs/rubric); committed v0.7 floor present in
+  `_REPLAY_CLEAN` (62.4); LOAD-BEARING (n_compared=1 independently re-derived in `calibration_sweep_20260808T144423Z.json`
+  at 62.4, divergences=[], present in EXACTLY that one sweep); teeth (synthetic 62.4→75.0 caught as exactly one
+  divergence); volatile-rail live re-score re-run THIS fire (`python -m asrs score gymshark.com --json-only`, $0 static,
+  no payment inv #1) → **live 62.4 == frozen 62.4 == EXPECTED 62.4**, all 4 non-null pillars byte-identical, caps empty,
+  `x402_probe` PARTIAL 4.0/8.0 `commerce-protocol-live` (UCP rail UP, no manifest drift) → MERGE. Weld suite 28/28 branch
+  + merged main; the cross-path weld now spans TWELVE non-anchor witnesses (2nd on the UCP rail). **The #152–#160
+  non-anchor weld campaign is COMPLETE.** No open PRs remain. Review verdict recorded in LOG Local cycle 20260808T165732Z.
+- **✅ NEW FIFTEENTH frozen-replay calibration baseline PINNED this fire (Local 20260808T165732Z, direct-to-main):
+  hardgraft.com — the THIRD non-anchor point on the LIVE UCP rail (further retail DEPTH: a premium leather-goods
+  merchant).** 66.9 D v0.7 (access 100.0 / **legibility 50.0** / transactability 50.0 / **trust 90.0**). `GET
+  /.well-known/ucp` serves a valid `dev.ucp.*` service manifest (STABLE across ≥2 direct $0 obs at capture, static
+  versioned JSON; no payment signed, inv #1) → `x402_probe` PARTIAL 4.0/8.0 `commerce-protocol-live`, the SAME UCP
+  tx-50.0 rung as coffeecircle (57.4) and gymshark (62.4). Honest classification EXACTLY `{metered_api, physical_good}`
+  (the same clean profile as gymshark; the other 4 NA → NO topic-word over-claim, NO FP-guards). **Calibration value =
+  the UCP "necessary but not SUFFICIENT" statement GENERALIZED from a LINE to a PLANE:** coffeecircle+gymshark share
+  legibility 54.55 (separate PURELY on trust); hardgraft holds the SAME tx-50.0 rung but at a DISTINCT legibility (50.0)
+  AND the HIGHEST trust of the three (90.0) → the three UCP points span a 2-D region (legibility 50.0→54.55, trust
+  33.33→90.0) at the fixed tx rung — proving the rail fixes transactability while overall varies with BOTH legibility and
+  trust independently of the rail, not trust alone. Fresh full-score LIVE capture verified NON-DESTRUCTIVELY →
+  replay_misses 0, live 66.9 == fixture 66.9 == EXPECTED 66.9, all 4 non-null pillars byte-identical, caps empty.
+  Installed `fixtures/canonical/hardgraft.com.json` (NEW, 4.6 MB, 33 entries) + EXPECTED + `_REPLAY_CLEAN` + guard
+  `test_ucp_retail_third_storefront_replays_66_9` (line→plane teeth) + `_POPULATION` ×5. Off-scoring-SEMANTICS EMPTY
+  (tests + the new non-anchor fixture; canonical PAIR untouched); frozen delta UNMOVED **+39.4** (canonical replay
+  36→37); live **+30.1**; suite 38/38; baselines **14→15**. Evidence
+  `runs/local/hardgraft_ucp_retail_third_baseline_20260808T165732Z.json`; LOG Local cycle 20260808T165732Z. A future
+  UCP-retail WELD of hardgraft (peer-gated, 13th non-anchor member) needs a $0 cadence-sweep POPULATION-add first (the
+  gymshark recipe) for a genuinely-compared sweep presence.
+<!-- gymshark.com's UCP-retail WELD PREREQUISITE DISCHARGED banner (Local 20260808T145709Z — POPULATION 24→25 + $0
+     cadence sweep calibration_sweep_20260808T144423Z.json, 62.4 == floor, n_compared=1, which made PR #160 authorable)
+     pruned this fire (Local cycle 20260808T165732Z) — fully superseded now that PR #160 is MERGED; preserved verbatim
+     in loop/LOG.md (## Local cycle — 20260808T145709Z) + git history. -->
+- **✅ PEER-GATED PR #159 (coffeecircle UCP weld — the ELEVENTH non-anchor member, FIRST on the UCP commerce-protocol
 - **✅ PEER-GATED PR #159 (coffeecircle UCP weld — the ELEVENTH non-anchor member, FIRST on the UCP commerce-protocol
   rail) MERGED this fire (Local 20260808T140228Z), merge `0d5d6d4`** — after the owed FIRST-DUTY adversarial review +
   independent $0 live UCP re-score. VERDICT SOUND: off-scoring-path (three-dot diff since merge-base `ef43392` is ONLY
@@ -42,29 +51,11 @@
   `commerce-protocol-live` (UCP rail UP, no manifest drift) → MERGE. Weld suite 27/27 branch + merged main; the cross-path
   weld now spans ELEVEN non-anchor witnesses (the coffeecircle one the FIRST on the UCP rail). No open PRs remain. Review
   verdict recorded in LOG Local cycle 20260808T140228Z.
-- **✅ NEW FOURTEENTH frozen-replay calibration baseline PINNED this fire (Local 20260808T140228Z, direct-to-main):
-  gymshark.com — the SECOND non-anchor point on the LIVE UCP rail (retail DEPTH: a mainstream consumer apparel brand, a
-  distinct storefront TYPE from the coffee-merchant checkout.coffeecircle.com).** 62.4 D v0.7 (access 100.0 / legibility
-  54.55 / **transactability 50.0** / trust 60.0). `GET /.well-known/ucp` serves a valid `dev.ucp.*` service manifest
-  (v2026-04-08, re-observed ≥2× $0 at capture, static versioned JSON; no payment signed, inv #1) → `x402_probe` reads
-  **`commerce-protocol-live` PARTIAL 4.0/8.0**, the SAME UCP middle rung as coffeecircle (tx 50.0). Honest classification
-  exactly **{metered_api, physical_good}** (metered_api from its `/llms.txt` UCP agent-commerce endpoints — Discovery
-  `GET /.well-known/ucp` + `update_checkout`/`complete`; physical_good from real shipping/fulfillment prose; the other 4
-  NA → NO topic-word over-claim, NO FP-guards needed). **Calibration value = a CONTROLLED single-pillar isolation:** vs
-  coffeecircle (57.4) it holds access 100.0, legibility 54.55, AND transactability 50.0 **BYTE-IDENTICAL** and moves ONLY
-  trust (33.33 → 60.0), lifting overall 57.4 → 62.4 — the **"UCP rail necessary but not SUFFICIENT"** statement (two
-  storefronts on the identical rail at the identical legibility separate PURELY on trust; mirrors the x402deploy/thebotwire
-  tx-100 pair, now on the UCP rail). Fresh full-score LIVE capture verified NON-DESTRUCTIVELY BEFORE install →
-  **replay_misses 0, live 62.4 == fixture 62.4 == EXPECTED 62.4**, all 4 non-null pillars byte-identical, caps empty.
-  Installed `fixtures/canonical/gymshark.com.json` (NEW, 2.1 MB — leanest candidate; kith.com would've been 17.8 MB,
-  allbirds AVOIDED per its recorded offering-drift, inv #4) + EXPECTED + `_REPLAY_CLEAN` + guard
-  `test_ucp_retail_storefront_replays_62_4` (trust-isolation teeth) + `_POPULATION` ×5. Off-scoring-SEMANTICS EMPTY
-  (tests + the new non-anchor fixture; canonical PAIR untouched); frozen delta UNMOVED **+39.4** (canonical replay 35→36);
-  live **+30.1**; suite 38/38; baselines **13→14**. Evidence
-  `runs/local/gymshark_ucp_retail_baseline_20260808T140228Z.json`; LOG Local cycle 20260808T140228Z. **NOTE for a future
-  UCP-retail WELD:** gymshark's sweep prerequisite is now ✅ DISCHARGED (Local 20260808T145709Z — POPULATION 24→25 + $0
-  cadence sweep `calibration_sweep_20260808T144423Z.json`, n_compared=1, 62.4 == floor; see the top banner) → the
-  peer-gated weld is now authorable next fire.
+<!-- The FOURTEENTH frozen-replay baseline gymshark.com PINNED banner (Local 20260808T140228Z, 62.4 D — the 2nd
+     non-anchor point on the LIVE UCP rail, retail DEPTH, trust-isolation vs coffeecircle) is pruned this fire (Local
+     cycle 20260808T165732Z) — gymshark is now BOTH pinned AND welded (PR #160 MERGED, top banner), so the pin banner
+     is fully historical; preserved verbatim in loop/LOG.md (## Local cycle — 20260808T140228Z) + git history. Its
+     guard `test_ucp_retail_storefront_replays_62_4` + fixture `fixtures/canonical/gymshark.com.json` remain live. -->
 - **🔎 ACP-rail recon FINDING (Local 20260808T140228Z, TRUTH — recorded, NOT shipped, inv #4).** The pointer's step-2
   "genuinely NEW rail TYPE" (ACP) is currently UN-pinnable $0: the scorer already supports ACP
   (`asrs/probes/protocols.py` `_COMMERCE_WELL_KNOWN` probes `/.well-known/agentic-commerce` + validates

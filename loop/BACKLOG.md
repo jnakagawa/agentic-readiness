@@ -49,23 +49,27 @@ class as the checkout.coffeecircle.com / api.replicate.com / three-x402 POPULATI
 UCP-retail weld: a future PEER-GATED PR can weld gymshark.com into _NON_ANCHOR_WELDED non-vacuously (n_compared=1, agrees
 with floor, teeth = synthetic drift caught) — the 12th non-anchor member / 2nd on the UCP rail. See LOG Local cycle
 20260808T145709Z. -->
-<!-- OPENED Local cycle 20260808T154553Z: the P2 (2) UCP-retail weld of gymshark.com (62.4, the 12th non-anchor member /
-2nd on the UCP commerce-protocol rail — retail DEPTH) is AUTHORED as PEER-GATED PR #160 (branch
-loop/gymshark-ucp-retail-non-anchor-weld, tip 561290d), NOT self-merged. Adds "gymshark.com" to
-tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED (11->12) + member comment +
-test_gymshark_twelfth_non_anchor_is_welded_nonvacuously + main() registration. Non-vacuous/load-bearing: committed v0.7
-floor present (62.4, in _REPLAY_CLEAN); genuinely COMPARED n_compared=1 in calibration_sweep_20260808T144423Z.json
-(segment ucp-live:apparel-retail); keyed identically both paths (no www/bare alias); teeth = synthetic drift 62.4->75.0
-caught as exactly one divergence. Calibration value = CONTROLLED single-pillar isolation vs coffeecircle (57.4):
-access 100.0/legibility 54.55/tx 50.0 BYTE-IDENTICAL, separating PURELY on trust (33.33->60.0), lifting 57.4->62.4.
-TEST-ONLY (test_calibration_anchor_agreement.py +91 + evidence JSON; off-scoring-SEMANTICS EMPTY over
-asrs/rubric/fixtures/experiments/loop), weld suite 27->28, full suite 38/38. Live<->frozen re-confirmed this fire ($0
-static, no --behavioral/--max-pay/codex/zero CLI: live 62.4 == frozen 62.4 == EXPECTED 62.4, all 4 non-null pillars
-byte-identical, caps empty, x402_probe partial 4.0/8.0 commerce-protocol-live from
-https://us.checkout.gymshark.com/.well-known/ucp; no payment signed, inv #1). DO NOT RE-AUTHOR — TRACKED by STATE's
-OPEN-PR #160 banner + next fire's first-duty adversarial review + $0 live re-score (a divergence = REAL UCP-manifest
-drift -> re-capture that member, do not merge, inv #4). Evidence
-runs/local/gymshark_ucp_retail_non_anchor_weld_20260808T154553Z.json. See LOG Local cycle 20260808T154553Z. -->
+<!-- The gymshark.com PR #160 OPENED marker (Local cycle 20260808T154553Z) is pruned this fire (Local cycle
+     20260808T194406Z) — PR #160 is long-MERGED `c091c4c` and fully recorded in loop/LOG.md (## Local cycle —
+     20260808T154553Z / 20260808T165732Z) + git history; the OPENED-marker slot is reused below for PR #161. -->
+<!-- OPENED Local cycle 20260808T194406Z: the P2 step (4) UCP-retail weld of hardgraft.com (66.9 D, the 13th non-anchor
+member / 3rd on the LIVE UCP commerce-protocol rail — a premium leather-goods merchant, further retail DEPTH) is
+AUTHORED as PEER-GATED PR #161 (branch loop/hardgraft-ucp-retail-non-anchor-weld, tip 2f33bea), NOT self-merged. Adds
+"hardgraft.com" to tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED (12->13) + member comment +
+test_hardgraft_thirteenth_non_anchor_is_welded_nonvacuously + main() registration. Non-vacuous/load-bearing: committed
+v0.7 floor present (66.9, in _REPLAY_CLEAN); genuinely COMPARED n_compared=1 in calibration_sweep_20260808T184442Z.json
+(segment ucp-live:leather-goods, the sweep-add prerequisite discharged last fire Local 20260808T184442Z); keyed
+"hardgraft.com" identically both paths (no www/bare alias); teeth = synthetic drift 66.9->78.0 caught as exactly one
+divergence. Calibration value = LINE->PLANE: coffeecircle (57.4) + gymshark (62.4) share legibility 54.55 and separate
+PURELY on trust (one axis); hardgraft holds the SAME tx-50.0 rung at a DISTINCT legibility 50.0 AND the highest trust
+of the three (90.0) -> the three UCP points span a 2-D legibility x trust region at the fixed tx rung. TEST-ONLY
+(test_calibration_anchor_agreement.py +91 + evidence JSON; off-scoring-SEMANTICS EMPTY over
+asrs/rubric/fixtures/experiments/loop), weld suite 28->29, full suite 38/38. Live<->frozen re-confirmed this fire ($0
+static, no --behavioral/--max-pay/codex/zero CLI: live 66.9 == frozen 66.9 == EXPECTED 66.9, all 4 non-null pillars
+byte-identical (100.0/50.0/50.0/90.0), caps empty, x402_probe partial 4.0/8.0 commerce-protocol-live; no payment
+signed, inv #1). DO NOT RE-AUTHOR — TRACKED by STATE's OPEN-PR #161 banner + next fire's first-duty adversarial review
++ $0 live UCP re-score (a divergence = REAL UCP-manifest drift -> re-capture that member, do not merge, inv #4).
+Evidence runs/local/hardgraft_ucp_retail_non_anchor_weld_20260808T194406Z.json. See LOG Local cycle 20260808T194406Z. -->
 <!-- Two fully-superseded api.replicate.com markers (DONE 20260807T114104Z: pinned as the 7th frozen-replay baseline 29.5 F;
 DONE 20260807T134105Z: its sweep-add prerequisite discharged) pruned this fire (Local cycle 20260808T140228Z) to keep
 completed-marker bytes under the hygiene cap — both preserved verbatim in loop/LOG.md + git history. -->
@@ -273,8 +277,9 @@ prior-ts LOG entry. See LOG Local cycle 20260808T184442Z. -->
 - **[P2 — TRUTH, LOCAL, candidate] BROADEN further / DEEPEN the UCP rail / UNLOCK a NEW rail TYPE.** The UCP rail now
   has THREE pinned baselines, all UCP `commerce-protocol-live` at the tx-50.0 rung: checkout.coffeecircle.com (57.4 F,
   coffee merchant, WELDED via MERGED PR #159 as the 11th non-anchor member), gymshark.com (62.4 D, apparel brand, WELDED
-  via MERGED PR #160 as the 12th member), and hardgraft.com (66.9 D, leather-goods merchant — PINNED this fire Local cycle
-  20260808T165732Z, the THIRD UCP point, NOT yet welded). The three span a 2-D (legibility × trust) region at the fixed tx
+  via MERGED PR #160 as the 12th member), and hardgraft.com (66.9 D, leather-goods merchant — PINNED Local cycle
+  20260808T165732Z, the THIRD UCP point, WELD OPENED as PEER-GATED PR #161 this fire Local 20260808T194406Z, awaiting
+  next-fire review). The three span a 2-D (legibility × trust) region at the fixed tx
   rung: coffeecircle+gymshark share legibility 54.55 (separate on trust 33.33→60.0); hardgraft sits at a DISTINCT
   legibility 50.0 AND the highest trust 90.0 — the "UCP necessary but not SUFFICIENT" statement generalized from a line
   to a plane. Next steps, in order:
@@ -291,16 +296,18 @@ prior-ts LOG entry. See LOG Local cycle 20260808T184442Z. -->
   peer-gated re-pathing of the scorer's ACP well-known would need 2+ live ACP surfaces to validate (inv #3) — none exist
   today. Re-scan the ecosystem for a live ACP/MPP surface at a future cadence; if `/.well-known/acp/manifest.json` becomes
   common, the well-known-path fix + 2-domain validation is the peer-gated unit.
-  (4) ⭐ NEXT — the PEER-GATED **UCP-retail WELD of hardgraft.com** (66.9 D, the 13th non-anchor member / 3rd on the UCP
-  rail) is now UNLOCKED non-vacuously: its $0 cadence-sweep POPULATION-add prerequisite was DISCHARGED Local cycle
-  20260808T184442Z (`experiments/calibration_sweep.py` POPULATION += `("hardgraft.com", "ucp-live:leather-goods")`; sweep
-  `runs/local/calibration_sweep_20260808T184442Z.json` scored it 66.9 == floor, n_compared=1, segment
-  ucp-live:leather-goods). A future fire authors the peer-gated weld PR (the gymshark PR #160 recipe): add `hardgraft.com`
-  to `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` (12->13) + a `test_hardgraft_thirteenth_non_anchor_is_
-  welded_nonvacuously` (committed 66.9 v0.7 floor present in `_REPLAY_CLEAN`; genuinely COMPARED n_compared=1 in the
-  20260808T184442Z sweep; keyed identically both paths, no www/bare alias; teeth = synthetic drift 66.9->drift caught),
-  then next fire's first-duty adversarial review + $0 live UCP re-score before merge (a divergence = REAL UCP-manifest
-  drift -> re-capture, do not merge, inv #4). Other candidates surveyed but NOT pinned: glossier.com 64.9 (legibility 54.55 — same as the
+  (4) ⏳ OPENED this fire (Local 20260808T194406Z) — the PEER-GATED **UCP-retail WELD of hardgraft.com** (66.9 D, the
+  13th non-anchor member / 3rd on the UCP rail) is AUTHORED as **PR #161** (branch
+  `loop/hardgraft-ucp-retail-non-anchor-weld`, tip `2f33bea`), NOT self-merged. Its $0 cadence-sweep POPULATION-add
+  prerequisite was DISCHARGED Local cycle 20260808T184442Z (sweep `calibration_sweep_20260808T184442Z.json` scored it
+  66.9 == floor, n_compared=1, segment ucp-live:leather-goods), so the weld is non-vacuous: adds `hardgraft.com` to
+  `_NON_ANCHOR_WELDED` (12->13) + `test_hardgraft_thirteenth_non_anchor_is_welded_nonvacuously` + `main()` registration
+  (committed 66.9 v0.7 floor in `_REPLAY_CLEAN`; keyed identically both paths, no www/bare alias; teeth = synthetic
+  drift 66.9->78.0 caught). TEST-ONLY, off-scoring-SEMANTICS EMPTY; weld 28->29, suite 38/38; live 66.9 == frozen ==
+  EXPECTED re-confirmed $0 static this fire (x402_probe partial 4.0/8.0 commerce-protocol-live). **NEXT FIRE OWES the
+  first-duty adversarial review + independent $0 live UCP re-score before merge** (a divergence = REAL UCP-manifest
+  drift -> re-capture, do not merge, inv #4); merging COMPLETES the UCP-rail weld campaign at 3 witnesses. Other
+  candidates surveyed but NOT pinned: glossier.com 64.9 (legibility 54.55 — same as the
   pair, only densifies trust) and skims.com 60.4 (legibility 40.91 but tx 43.75 — a DIFFERENT tx rung, conflates two axes,
   not a clean single-rung comparison). Remaining ABUNDANT candidates (spanx/allbirds[drifted, avoid]/kith[17.8MB]) are
   cheap direct-to-main pins IF a distinct calibration value + honest classification + lean fixture. `joinhexagon.com` is a

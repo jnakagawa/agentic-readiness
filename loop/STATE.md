@@ -1,25 +1,23 @@
 # Loop state
 
-- Cycle counter: 314
-- **✅ hardgraft.com's UCP-retail WELD PREREQUISITE DISCHARGED this fire (Local 20260808T184442Z, direct-to-main) —
-  the gymshark recipe, one member later.** Added `("hardgraft.com", "ucp-live:leather-goods")` to
-  `experiments/calibration_sweep.py` POPULATION (25→26) + ran a $0 static cadence sweep (no
-  `--behavioral`/`--max-pay`/codex/zero CLI → NO free-tier probe, NO signing path, inv #1 by construction) →
-  `runs/local/calibration_sweep_20260808T184442Z.json` (26 total, 25 scored, rei.com not-scorable per inv #4, 0
-  errors). hardgraft.com scored **66.9 D BYTE-IDENTICAL to its frozen floor** (access 100.0 / legibility 50.0 / tx
-  50.0 / trust 90.0, caps empty, honest `{metered_api, physical_good}`); drift vs `20260808T144423Z` **0/24 moved,
-  max |Δ| 0.0** — every prior member + both anchors byte-stable on floor (driftflight.com 76.2 / drift-flight.org
-  46.1 / coffeecircle 57.4 / gymshark 62.4 / exa.ai 78.1 / thebotwire 86.0 …); the ONLY population change is the
-  ADDED hardgraft.com. This UNLOCKS the P2 step (4) **UCP-retail WELD of hardgraft** (peer-gated, the 13th
-  non-anchor member / 3rd on the UCP rail): a future PR can weld it into `_NON_ANCHOR_WELDED` non-vacuously
-  (n_compared=1 in this sweep at 66.9, agrees with floor, teeth = synthetic drift caught). BOOKKEEPING SELF-HEAL:
-  the POPULATION edit was found UNCOMMITTED at fire start (the api.replicate.com 20260807T134105Z pattern) —
-  verified byte-correct + adopted, no fabricated prior-ts LOG entry. Off-scoring-SEMANTICS EMPTY (POPULATION +1
-  only); frozen delta UNMOVED **+39.4**; live **+30.1**; suite 38/38. See LOG Local cycle 20260808T184442Z.
-<!-- PR #160 (gymshark.com UCP-retail weld — 12th non-anchor member / 2nd on the UCP rail) MERGED banner (Local cycle
-     20260808T165732Z, merge `c091c4c`; the #152–#160 non-anchor weld campaign COMPLETE at 12 witnesses) pruned this
-     fire (Local cycle 20260808T184442Z) to stay under the STATE 600-line cap — preserved verbatim in loop/LOG.md
-     (## Local cycle — 20260808T165732Z) + git history. No open PRs remain. -->
+- Cycle counter: 315
+- **⏳ OPEN PEER-GATED PR #161 (this fire, Local 20260808T194406Z) — WELD hardgraft.com (66.9 D) as the 13th
+  non-anchor member / 3rd on the LIVE UCP rail.** Branch `loop/hardgraft-ucp-retail-non-anchor-weld` (tip `2f33bea`),
+  NOT self-merged. Adds `hardgraft.com` to `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` (12→13) +
+  member comment + `test_hardgraft_thirteenth_non_anchor_is_welded_nonvacuously` + `main()` registration. Non-vacuous:
+  committed v0.7 floor 66.9 present (in `_REPLAY_CLEAN`); genuinely COMPARED n_compared=1 in
+  `calibration_sweep_20260808T184442Z.json` (segment `ucp-live:leather-goods` — the prerequisite DISCHARGED last fire
+  Local 20260808T184442Z, POPULATION 25→26, byte-identical to floor); keyed `hardgraft.com` identically both paths (no
+  www/bare alias); teeth = synthetic drift 66.9→78.0 caught as exactly one divergence. Calibration = **LINE→PLANE**
+  (coffeecircle 57.4 + gymshark 62.4 share legibility 54.55, separate on trust; hardgraft distinct legibility 50.0 +
+  highest trust 90.0 at the SAME tx-50.0 rung → the three UCP points span a 2-D legibility×trust region). TEST-ONLY,
+  off-scoring-SEMANTICS EMPTY (only `tests/test_calibration_anchor_agreement.py` + evidence JSON); weld 28→29, full
+  suite 38/38. Live↔frozen re-confirmed this fire ($0 static, no `--behavioral`/`--max-pay`/codex/zero CLI: live 66.9
+  == frozen 66.9 == EXPECTED 66.9, all 4 non-null pillars byte-identical (100.0/50.0/50.0/90.0), caps empty,
+  `x402_probe` partial 4.0/8.0 commerce-protocol-live; no payment signed inv #1). **NEXT FIRE OWES the first-duty
+  adversarial review + independent $0 live UCP re-score before merge** (a divergence = REAL UCP-manifest drift →
+  re-capture, do not merge, inv #4; merging COMPLETES the UCP-rail weld campaign at 3 witnesses). Evidence
+  `runs/local/hardgraft_ucp_retail_non_anchor_weld_20260808T194406Z.json`; LOG Local cycle 20260808T194406Z.
 - **✅ NEW FIFTEENTH frozen-replay calibration baseline PINNED this fire (Local 20260808T165732Z, direct-to-main):
   hardgraft.com — the THIRD non-anchor point on the LIVE UCP rail (further retail DEPTH: a premium leather-goods
   merchant).** 66.9 D v0.7 (access 100.0 / **legibility 50.0** / transactability 50.0 / **trust 90.0**). `GET

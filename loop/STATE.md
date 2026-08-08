@@ -1,38 +1,36 @@
 # Loop state
 
-- Cycle counter: 316
-- **✅ PEER-GATED PR #161 MERGED this fire (Local 20260808T204601Z), merge `5020895`** — after the owed FIRST-DUTY
-  adversarial review + independent $0 live UCP re-score. It welds hardgraft.com (66.9 D) into
-  `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` as the 13th non-anchor member / 3rd on the LIVE UCP
-  rail. VERDICT SOUND: off-scoring-path (three-dot diff since merge-base `46e5263` is ONLY
-  `test_calibration_anchor_agreement.py` +94 + evidence JSON +67; EMPTY over asrs/rubric/fixtures/experiments/loop);
-  vendor-neutral (welded by TYPE, a UCP leather-goods merchant; no `hardgraft` special-casing in scoring code);
-  committed v0.7 floor 66.9 present in `_REPLAY_CLEAN` (independently re-derived); LOAD-BEARING (n_compared=1 /
-  divergences=[] re-derived — scored 66.9 in EXACTLY `calibration_sweep_20260808T184442Z.json`, segment
-  `ucp-live:leather-goods`, all 4 pillars byte-identical); teeth (66.9→78.0 caught as one divergence). Volatile-rail
-  live re-score re-run THIS fire ($0 static, no `--behavioral`/`--max-pay`/payment/codex/zero CLI, inv #1): live 66.9
-  == frozen 66.9 == EXPECTED 66.9, all 4 non-null pillars byte-identical (100.0/50.0/50.0/90.0), caps empty,
-  `x402_probe` partial 4.0/8.0 commerce-protocol-live → UCP manifest UP, no drift → MERGE. Weld 29/29 branch + merged
-  main; full suite 38/38. **No open PRs remain. The whole non-anchor weld campaign (#152–#161) is COMPLETE at 13
-  witnesses**; the UCP rail spans THREE welded points (coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9) — the "UCP
-  necessary but not SUFFICIENT" statement generalized from a LINE to a 2-D legibility×trust PLANE at the fixed tx-50.0
-  rung. Review verdict recorded in LOG Local cycle 20260808T204601Z.
+- Cycle counter: 317
+- **🔎 SIXTH `_ENV_BLOCK_RE` own-tool refusal vocab drift CAUGHT this fire (Local 20260808T215647Z, METHOD — the ONE
+  [LOCAL] item; recorded + QUEUED as a peer-gated P0, scorer UNCHANGED this fire).** Rotated off the ~15-cycle
+  TRUTH/calibration run (the #152–#161 UCP weld campaign is COMPLETE at 13 witnesses; NO open PRs) onto the starving
+  METHOD track. Ran `experiments/codex_reachability.py` (5 codex hosted-browser trials via the REAL scorer path
+  `shopper._run_one` — byte-faithful, inv #4; $0 read-only recon, NO free-tier probe / NO zero CLI / NO signing, inv #1)
+  to re-validate the SHIPPED v0.7(f) `_ENV_BLOCK_RE` against FRESH live refusal vocab (last such run ~29h stale). All 3
+  sites HTTP 200 (UP). **FINDING — the 6th drift:** driftflight.com codex t2 refused with **"Live-site access was denied
+  at the browser permission boundary."** — site UP, codex saw nothing, yet `_is_env_blocked` = **False** (v0.7(f) misses
+  it) → left unfixed a real behavioral panel counts codex's OWN refusal as a valid WITH-side all-false SITE run,
+  narrowing the delta (invariant-#4 leak). Slips EVERY branch because the order is VERB-then-apparatus ("denied AT the
+  browser permission boundary") with subject "Live-site access", not the "browser access" adjacency v0.7(a)/(e)/(f)
+  require; own-apparatus confirmed (contains "browser permission boundary", NOT "by the server/WAF/Cloudflare"). Controls
+  SOUND: driftflight.com t1 + drift-flight.org t1 correctly CAUGHT by the v0.6 security branch; the `example.com`
+  control's browser WORKED (honest "no storefront" — a FALSE `leak_candidate` of the recon's coarse filter, NOT a drift);
+  drift-flight.org t2 codex REACHED the site (gate intermittent/time-varying). The `_ENV_BLOCK_RE` broadening is
+  peer-gated scoring semantics (inv #2), so NOT authored this fire — QUEUED as the v0.7(g) **[P0 — METHOD, PEER-GATED]**
+  at BACKLOG top with the EXACT phrasing + guard spec (must NEVER route a site 403/Cloudflare to reachability). Suite
+  38/38; frozen delta UNMOVED **+39.4**; live **+30.1**. Direct-to-main (off the scoring path). Evidence
+  `runs/local/codex_reachability_20260808T214615Z/{summary.json,transcripts/}`; LOG Local cycle 20260808T215647Z.
+<!-- PR #161 MERGED banner (Local 20260808T204601Z, merge `5020895` — hardgraft.com 66.9 D welded as the 13th
+     non-anchor / 3rd UCP-rail member after the owed first-duty review + $0 live re-score; the whole #152–#161 weld
+     campaign COMPLETE at 13 witnesses, UCP rail welded at 3 points coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9)
+     compressed to this pointer this fire (Local cycle 20260808T215647Z) to stay under the STATE 600-line cap — preserved
+     verbatim in loop/LOG.md (## Local cycle — 20260808T204601Z) + git history. No open PRs remain. -->
 - **🔎 ACP-rail recon FINDING (Local 20260808T204601Z, TRUTH — recorded, NOT shipped as a scoring change; scorer
-  UNCHANGED).** The ONE `[LOCAL]` item this fire (P2 step (3), the "genuinely-NEW rail TYPE" prize): a $0
-  well-known recon (`experiments/acp_wellknown_recon.py`, 20 real domains × 3 paths, read-only GETs, byte-faithful via
-  the scorer's own `_parse_commerce_manifest`) tested the prior recon's tentative lead that the real ACP manifest sits
-  at `/.well-known/acp/manifest.json` (a path the scorer does NOT probe). **Lead FALSIFIED at $0:** ACP valid at the
-  scorer's path `/.well-known/agentic-commerce` = **0/20** (all REACHABLE, all 404 — stripe/openai/agenticcommerce.dev/
-  etsy/instacart/shop.app/shopify/crossmint); ACP valid at `/.well-known/acp/manifest.json` = **0/20** (all 404 too,
-  INCLUDING the ACP co-authors + the spec home) → re-pathing `_COMMERCE_WELL_KNOWN` would gain NOTHING (no live surface
-  to validate against, inv #3 unsatisfiable) — lead CLOSED, DO NOT re-open without ≥2 live ACP surfaces. Positive
-  control: UCP valid at `/.well-known/ucp` on **6/6** UCP merchant controls (gymshark/hardgraft/coffeecircle/allbirds/
-  skims/glossier parse as real `dev.ucp.*` manifests) → the ACP null is REAL scarcity, not a broken probe (attribution
-  honesty). Bonus: skyfire.xyz's bare-200 at the scorer path (non-JSON body) is correctly REJECTED by
-  `_parse_commerce_manifest` → LIVE confirmation the v0.7 well-known tightening blocks the catch-all-index FP.
-  Direct-to-main; frozen +39.4 / live +30.1; suite 38/38. Evidence
-  `runs/local/acp_wellknown_recon_20260808T205138Z.json`; LOG Local cycle 20260808T204601Z. UCP DEPTH remains the only
-  $0-pinnable commerce-protocol broadening; re-run this recon at a future cadence.
+  UNCHANGED, superseded pointer):** the $0 ACP well-known recon FALSIFIED the ecosystem-path re-pathing lead (ACP
+  valid 0/20 at BOTH the scorer's `/.well-known/agentic-commerce` and the ecosystem `/.well-known/acp/manifest.json`;
+  UCP positive control 6/6) → re-pathing `_COMMERCE_WELL_KNOWN` gains nothing (inv #3 unsatisfiable), lead CLOSED. Full
+  detail folded into BACKLOG P2 step (3) + LOG Local cycle 20260808T204601Z; evidence
+  `runs/local/acp_wellknown_recon_20260808T205138Z.json`.
 - **✅ NEW FIFTEENTH frozen-replay calibration baseline PINNED this fire (Local 20260808T165732Z, direct-to-main):
   hardgraft.com — the THIRD non-anchor point on the LIVE UCP rail (further retail DEPTH: a premium leather-goods
   merchant).** 66.9 D v0.7 (access 100.0 / **legibility 50.0** / transactability 50.0 / **trust 90.0**). `GET

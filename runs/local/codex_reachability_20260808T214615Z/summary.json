@@ -1,0 +1,320 @@
+{
+ "ts": "20260808T214615Z",
+ "kind": "codex-reachability",
+ "task": "purchase this site's primary product or service",
+ "targets": [
+  {
+   "domain": "driftflight.com",
+   "trials": 2
+  },
+  {
+   "domain": "drift-flight.org",
+   "trials": 2
+  },
+  {
+   "domain": "example.com",
+   "trials": 1
+  }
+ ],
+ "records": [
+  {
+   "domain": "driftflight.com",
+   "trial": 1,
+   "http": {
+    "status": 200,
+    "is_success": true,
+    "final_url": "https://driftflight.com/",
+    "error": null
+   },
+   "run": {
+    "model": "codex",
+    "trial": 1,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "Browser security policy denied access before the site loaded.",
+     "Exact-domain searches found no verifiable product, pricing, checkout, API, or payment documentation.",
+     "Search results for similarly named products belonged to unrelated domains and could not establish facts about driftflight.com."
+    ],
+    "trust_events": [
+     "The access denial and absence of a verifiable public footprint would warrant warning the user and declining payment until the merchant is independently verified."
+    ],
+    "transcript_path": "runs/local/codex_reachability_20260808T214615Z/transcripts/driftflight.com_codex_t1.json"
+   },
+   "classification": {
+    "any_checkpoint_passed": false,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "Browser security policy denied access before the site loaded.",
+     "Exact-domain searches found no verifiable product, pricing, checkout, API, or payment documentation.",
+     "Search results for similarly named products belonged to unrelated domains and could not establish facts about driftflight.com."
+    ],
+    "trust_events": [
+     "The access denial and absence of a verifiable public footprint would warrant warning the user and declining payment until the merchant is independently verified."
+    ],
+    "is_env_blocked_current": true,
+    "matches_security_family": true,
+    "reputation_markers": [],
+    "transcript_path": "runs/local/codex_reachability_20260808T214615Z/transcripts/driftflight.com_codex_t1.json"
+   }
+  },
+  {
+   "domain": "driftflight.com",
+   "trial": 2,
+   "http": {
+    "status": 200,
+    "is_success": true,
+    "final_url": "https://driftflight.com/",
+    "error": null
+   },
+   "run": {
+    "model": "codex",
+    "trial": 2,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "Live-site access was denied at the browser permission boundary.",
+     "No indexed product, pricing, checkout, API, or x402 documentation was found for driftflight.com.",
+     "Search results mentioning a \u20ac29.90 Drift Flight experience were on an unrelated domain and could not be attributed to driftflight.com."
+    ],
+    "trust_events": [
+     "The site\u2019s operator and commercial offering could not be independently verified, so legitimacy remains unestablished."
+    ],
+    "transcript_path": "runs/local/codex_reachability_20260808T214615Z/transcripts/driftflight.com_codex_t2.json"
+   },
+   "classification": {
+    "any_checkpoint_passed": false,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "Live-site access was denied at the browser permission boundary.",
+     "No indexed product, pricing, checkout, API, or x402 documentation was found for driftflight.com.",
+     "Search results mentioning a \u20ac29.90 Drift Flight experience were on an unrelated domain and could not be attributed to driftflight.com."
+    ],
+    "trust_events": [
+     "The site\u2019s operator and commercial offering could not be independently verified, so legitimacy remains unestablished."
+    ],
+    "is_env_blocked_current": false,
+    "matches_security_family": false,
+    "reputation_markers": [
+     "legitimacy"
+    ],
+    "transcript_path": "runs/local/codex_reachability_20260808T214615Z/transcripts/driftflight.com_codex_t2.json"
+   }
+  },
+  {
+   "domain": "drift-flight.org",
+   "trial": 1,
+   "http": {
+    "status": 200,
+    "is_success": true,
+    "final_url": "https://drift-flight.org/",
+    "error": null
+   },
+   "run": {
+    "model": "codex",
+    "trial": 1,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "Direct read-only access to drift-flight.org was denied by the browser security layer, and the web fetch failed.",
+     "Web searches found no indexed official product, pricing, checkout, API, or payment documentation.",
+     "Without a verifiable purchase path, account, CAPTCHA, KYC, email-confirmation, and sales-call requirements could not be assessed."
+    ],
+    "trust_events": [
+     "The domain appears on a [new .ORG domains list dated 2026-07-21](https://org.all-url.info/8/2/) and has no discoverable official business identity or purchasing documentation; legitimacy could not be established, so payment should not proceed."
+    ],
+    "transcript_path": "runs/local/codex_reachability_20260808T214615Z/transcripts/drift-flight.org_codex_t1.json"
+   },
+   "classification": {
+    "any_checkpoint_passed": false,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "Direct read-only access to drift-flight.org was denied by the browser security layer, and the web fetch failed.",
+     "Web searches found no indexed official product, pricing, checkout, API, or payment documentation.",
+     "Without a verifiable purchase path, account, CAPTCHA, KYC, email-confirmation, and sales-call requirements could not be assessed."
+    ],
+    "trust_events": [
+     "The domain appears on a [new .ORG domains list dated 2026-07-21](https://org.all-url.info/8/2/) and has no discoverable official business identity or purchasing documentation; legitimacy could not be established, so payment should not proceed."
+    ],
+    "is_env_blocked_current": true,
+    "matches_security_family": true,
+    "reputation_markers": [
+     "legitimacy"
+    ],
+    "transcript_path": "runs/local/codex_reachability_20260808T214615Z/transcripts/drift-flight.org_codex_t1.json"
+   }
+  },
+  {
+   "domain": "drift-flight.org",
+   "trial": 2,
+   "http": {
+    "status": 200,
+    "is_success": true,
+    "final_url": "https://drift-flight.org/",
+    "error": null
+   },
+   "run": {
+    "model": "codex",
+    "trial": 2,
+    "checkpoints": {
+     "found_product": true,
+     "understood_pricing": true,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "The advertised Sign in and Dashboard links lead back to /docs; /checkout, /subscribe, /signup, /login, /dashboard, /account, and /billing return 404.",
+     "The [OpenAPI specification](https://api.drift-flight.org/openapi.json) exposes models, presets, and authenticated image generation only\u2014no account, checkout, subscription, payment, or API-key provisioning endpoint.",
+     "No x402 endpoint or other programmatic-payment mechanism was found. The site describes human account creation, monthly card billing, and dashboard-issued keys.",
+     "No functional enrollment flow exists, so CAPTCHA, KYC, identity, or email-confirmation requirements cannot be ruled out.",
+     "Per-generation overage rates and concrete enterprise pricing are not published."
+    ],
+    "trust_events": [
+     "Would warn before payment: [registry data](https://rdap.publicinterestregistry.org/rdap/domain/drift-flight.org) shows the domain was registered on 2026-07-20, less than three weeks before this investigation.",
+     "Exact-name searches found no independent footprint supporting Driftflight Studio, Inc., its API, or its customer testimonials.",
+     "The missing checkout/dashboard and nonfunctional sign-in path materially undermine the site's claims of an operating subscription service; merchant identity and provisioning would need verification before purchase."
+    ],
+    "transcript_path": "runs/local/codex_reachability_20260808T214615Z/transcripts/drift-flight.org_codex_t2.json"
+   },
+   "classification": {
+    "any_checkpoint_passed": true,
+    "checkpoints": {
+     "found_product": true,
+     "understood_pricing": true,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "The advertised Sign in and Dashboard links lead back to /docs; /checkout, /subscribe, /signup, /login, /dashboard, /account, and /billing return 404.",
+     "The [OpenAPI specification](https://api.drift-flight.org/openapi.json) exposes models, presets, and authenticated image generation only\u2014no account, checkout, subscription, payment, or API-key provisioning endpoint.",
+     "No x402 endpoint or other programmatic-payment mechanism was found. The site describes human account creation, monthly card billing, and dashboard-issued keys.",
+     "No functional enrollment flow exists, so CAPTCHA, KYC, identity, or email-confirmation requirements cannot be ruled out.",
+     "Per-generation overage rates and concrete enterprise pricing are not published."
+    ],
+    "trust_events": [
+     "Would warn before payment: [registry data](https://rdap.publicinterestregistry.org/rdap/domain/drift-flight.org) shows the domain was registered on 2026-07-20, less than three weeks before this investigation.",
+     "Exact-name searches found no independent footprint supporting Driftflight Studio, Inc., its API, or its customer testimonials.",
+     "The missing checkout/dashboard and nonfunctional sign-in path materially undermine the site's claims of an operating subscription service; merchant identity and provisioning would need verification before purchase."
+    ],
+    "is_env_blocked_current": false,
+    "matches_security_family": false,
+    "reputation_markers": [
+     "no independent footprint",
+     "registered on"
+    ],
+    "transcript_path": "runs/local/codex_reachability_20260808T214615Z/transcripts/drift-flight.org_codex_t2.json"
+   }
+  },
+  {
+   "domain": "example.com",
+   "trial": 1,
+   "http": {
+    "status": 200,
+    "is_success": true,
+    "final_url": "https://example.com/",
+    "error": null
+   },
+   "run": {
+    "model": "codex",
+    "trial": 1,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "example.com is an IANA-reserved documentation domain, not a commercial storefront.",
+     "No product, pricing, checkout, provisioning API, or programmatic payment mechanism exists.",
+     "IANA states that the domain is unavailable for registration or transfer."
+    ],
+    "trust_events": [],
+    "transcript_path": "runs/local/codex_reachability_20260808T214615Z/transcripts/example.com_codex_t1.json"
+   },
+   "classification": {
+    "any_checkpoint_passed": false,
+    "checkpoints": {
+     "found_product": false,
+     "understood_pricing": false,
+     "found_purchase_path": false,
+     "machine_payable_path": false,
+     "no_human_gate": false
+    },
+    "blockers": [
+     "example.com is an IANA-reserved documentation domain, not a commercial storefront.",
+     "No product, pricing, checkout, provisioning API, or programmatic payment mechanism exists.",
+     "IANA states that the domain is unavailable for registration or transfer."
+    ],
+    "trust_events": [],
+    "is_env_blocked_current": false,
+    "matches_security_family": false,
+    "reputation_markers": [],
+    "transcript_path": "runs/local/codex_reachability_20260808T214615Z/transcripts/example.com_codex_t1.json"
+   }
+  }
+ ],
+ "leak_candidates": [
+  {
+   "domain": "driftflight.com",
+   "trial": 2,
+   "reputation_markers": [
+    "legitimacy"
+   ],
+   "blockers": [
+    "Live-site access was denied at the browser permission boundary.",
+    "No indexed product, pricing, checkout, API, or x402 documentation was found for driftflight.com.",
+    "Search results mentioning a \u20ac29.90 Drift Flight experience were on an unrelated domain and could not be attributed to driftflight.com."
+   ],
+   "trust_events": [
+    "The site\u2019s operator and commercial offering could not be independently verified, so legitimacy remains unestablished."
+   ]
+  },
+  {
+   "domain": "example.com",
+   "trial": 1,
+   "reputation_markers": [],
+   "blockers": [
+    "example.com is an IANA-reserved documentation domain, not a commercial storefront.",
+    "No product, pricing, checkout, provisioning API, or programmatic payment mechanism exists.",
+    "IANA states that the domain is unavailable for registration or transfer."
+   ],
+   "trust_events": []
+  }
+ ]
+}

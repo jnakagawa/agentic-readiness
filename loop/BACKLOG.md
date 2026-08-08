@@ -254,6 +254,31 @@ lead CLOSED. Positive control UCP 6/6 (real scarcity, not a broken probe); skyfi
 FP-guard confirmed live). Scorer UNCHANGED; direct-to-main; frozen +39.4 / live +30.1; suite 38/38. Detail folded into the
 P2 item step (3) below. Evidence runs/local/acp_wellknown_recon_20260808T205138Z.json. See LOG Local cycle 20260808T204601Z. -->
 
+- **[P0 — METHOD, PEER-GATED] Author v0.7(g) `_ENV_BLOCK_RE` for the SIXTH own-tool refusal vocab drift (the
+  verb-then-apparatus "denied AT the browser permission boundary" order).** FOUND by this fire's $0 codex reachability
+  recon (Local cycle 20260808T215647Z, `experiments/codex_reachability.py`, byte-faithful via the REAL scorer path
+  `shopper._run_one`): driftflight.com codex t2 refused with the EXACT phrasing **"Live-site access was denied at the
+  browser permission boundary."** while the SAME-run `FetchContext.homepage()` = HTTP 200 (site UP) and codex saw
+  nothing → shipped v0.7(f) `_is_env_blocked` = **False** (leak) → left unfixed, a real behavioral panel counts codex's
+  OWN hosted-browser refusal as a valid WITH-side all-false SITE run, NARROWING the delta (the invariant-#4 leak this
+  tripwire exists to catch). WHY it slips EVERY branch: the block verb PRECEDES the apparatus ("denied AT the browser
+  permission boundary") and the subject is "Live-site access", so v0.6 (needs a security/safety word — absent),
+  v0.7(a)/(e)/(f) (need "browser"+"access" ADJACENT and BEFORE the verb — here "access" binds to "Live-site"; "browser"
+  only appears in the trailing "browser permission boundary"), and v0.7(b) (possessive "browser's" — absent) all miss.
+  Own-apparatus confirmed: blocker contains "browser permission boundary", NOT "by the server/WAF/Cloudflare". THE UNIT
+  (peer-gated scoring semantics, inv #2 — a rubric-adjacent regex change, NOT authored this fire): add ONE own-tool
+  branch matching a block verb (denied|declined|refused|rejected|blocked) FOLLOWED within a bounded, sentence-stopped
+  gap by an own-apparatus phrase "browser (permission|access) boundary", still `+ _NOT_SITE_ATTRIBUTED` so
+  "…denied BY the server/WAF/Cloudflare … boundary" is NEVER excused (attribution honesty both directions). PIN with a
+  new `tests/test_attribution.py` case using the EXACT committed t2 phrasing + a synthetic-precision guard: a bare site
+  "Access Denied" body AND a site-side "denied at the firewall boundary" block must NOT match. A strict SUPERSET check
+  (the added branch is a new alternation) + differential leak-scan over the committed run-record leaves should flip
+  EXACTLY this text OLD→NEW, ZERO collateral. Evidence
+  `runs/local/codex_reachability_20260808T214615Z/{summary.json,transcripts/driftflight.com_codex_t2.json}`; LOG Local
+  cycle 20260808T215647Z. (The `example.com` t1 second "leak candidate" in that summary is a FALSE positive of the
+  recon's coarse filter — codex's browser WORKED and honestly reported the non-commercial IANA domain; NOT a drift, do
+  NOT regex it.)
+
 - **[P2 — TRUTH, LOCAL, candidate] BROADEN further / DEEPEN the UCP rail / UNLOCK a NEW rail TYPE.** The UCP rail now
   has THREE pinned baselines, all UCP `commerce-protocol-live` at the tx-50.0 rung: checkout.coffeecircle.com (57.4 F,
   coffee merchant, WELDED via MERGED PR #159 as the 11th non-anchor member), gymshark.com (62.4 D, apparel brand, WELDED
@@ -299,14 +324,17 @@ P2 item step (3) below. Evidence runs/local/acp_wellknown_recon_20260808T205138Z
   handshake + the +39.4 live delta).
 
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
-  phrasing has now drifted the `_ENV_BLOCK_RE` guard FIVE times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)
-  `browser site-access permission … declined`, the last AUTHORED this fire as PEER-GATED PR #150). Every fresh
-  committed behavioral panel MUST be leak-scanned (the differential OLD-vs-current-regex scan over all committed
-  blocker/trust texts — this fire ran it over all 1417 committed run-record string leaves, re-derived every fire —
-  see the OPENED/MERGED markers above) so the NEXT drift is caught the cycle it appears, not several
-  cycles later as a silently-narrowed delta. The reputation-"unsafe" own-web-retriever clause (test-#8 family)
-  remains a deferred, carefully-guarded future candidate (needs a disambiguating own-apparatus SUBJECT anchor so a
-  site-side WAF "flagged unsafe" is never excused).
+  phrasing has now drifted the `_ENV_BLOCK_RE` guard SIX times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)
+  `browser site-access permission … declined` / **the 6th this fire, Local cycle 20260808T215647Z: "…denied AT the
+  browser permission boundary" — the verb-then-apparatus order — queued as the v0.7(g) P0 above**). The tripwire
+  works: run `experiments/codex_reachability.py` (or leak-scan any fresh committed behavioral panel) each cadence so
+  the NEXT drift is caught the cycle it appears, not several cycles later as a silently-narrowed delta — the recon's
+  per-run `is_env_blocked_current` flag IS the differential scan against the SHIPPED regex, with the `example.com`
+  reputable control proving the browser is functional (so a null is a real refusal, not a broken probe). NOTE the recon's
+  coarse `leak_candidates` filter FALSE-POSITIVES on the control's honest "no storefront" non-observation — always read
+  the actual blocker text before treating a candidate as a drift. The reputation-"unsafe" own-web-retriever clause
+  (test-#8 family) remains a deferred, carefully-guarded future candidate (needs a disambiguating own-apparatus SUBJECT
+  anchor so a site-side WAF "flagged unsafe" is never excused).
 
 - **[SCOPE follow-up, future — carefully-guarded proposal only]** the SEPARATE
   reputation-"unsafe" sentence family — *"…classified driftflight.com as unsafe and blocked access."* — is a

@@ -3,6 +3,79 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Local cycle — 20260808T215647Z — METHOD (LOCAL) — codex hosted-browser reachability recon: CAUGHT the SIXTH `_ENV_BLOCK_RE` own-tool refusal vocab drift the cycle it appeared (queued the peer-gated fix; scorer UNCHANGED this fire)
+
+**Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260808T214103Z.json`
+fresh at fire start (< 6h floor), `tests_ok:true` (all 38 suites green); live canonical
+drift-flight.org 46.1 F / driftflight.com 76.2 C → live delta **+30.1** (the persistent x402
+`/extend` 402→401 regression; frozen replay UNMOVED **+39.4**). Git clean + up to date
+(HEAD == origin/main `ab4b032`). Cycle counter 316→317.
+
+**FIRST DUTY — no open peer-gated PR.** `gh pr list --state open` → empty; PR #161 MERGED two
+fires ago (`5020895`), last fire's ACP recon was direct-to-main, so no peer-gated review was
+owed. First duty discharged trivially.
+
+**THE ONE [LOCAL] ITEM (METHOD) — codex reachability recon, discharging the standing
+`_ENV_BLOCK_RE` leak-scan tripwire.** The recent local history is ~15 straight TRUTH/calibration
+cycles (the #152–#161 UCP weld campaign, COMPLETE at 13 witnesses); rotated to the starving
+METHOD track. Ran `experiments/codex_reachability.py` (5 codex hosted-browser trials via the REAL
+scorer path `shopper._run_one` — byte-faithful, inv #4; a $0 read-only recon, NO free-tier probe /
+NO zero CLI / NO signing, inv #1). It re-validates the SHIPPED v0.7(f) `_ENV_BLOCK_RE` against
+FRESH live refusal vocabulary. The last such run was ~29h stale (`20260807T164537Z`); the
+reputation gate is time-varying and the canonical domains keep aging (~19–20d).
+
+Result (all three sites answered HTTP 200 = UP):
+
+| domain | trial | observed | env_blk (v0.7f) | sec_family | rep_markers |
+|--------|-------|----------|-----------------|------------|-------------|
+| driftflight.com | 1 | no | **True** | True | – |
+| driftflight.com | 2 | no | **False** | False | legitimacy |
+| drift-flight.org | 1 | no | **True** | True | legitimacy |
+| drift-flight.org | 2 | **yes** | – | – | no independent footprint, registered on |
+| example.com (control) | 1 | no | False | False | – |
+
+**FINDING — the SIXTH own-tool refusal vocab drift, CAUGHT the cycle it appeared.** driftflight.com
+codex t2 refused with **"Live-site access was denied at the browser permission boundary."** — the
+SAME-run `FetchContext.homepage()` = HTTP 200 (site UP) and codex saw nothing, yet
+`_is_env_blocked` = **False** (v0.7(f) misses it). Left unfixed, a real behavioral panel would
+count this as a valid WITH-side all-false SITE run, NARROWING the behavioral delta by scoring
+codex's OWN hosted-browser refusal as site evidence — the exact invariant-#4 leak the tripwire
+exists to catch. It slips EVERY existing branch because the order is **verb-then-apparatus**
+("denied AT the browser permission boundary") and the grammatical subject is "Live-site access"
+(not the required "browser access" adjacency): v0.6 needs a security/safety word (absent);
+v0.7(a)/(e)/(f) need "browser"+"access" adjacent BEFORE the verb (here "access" binds to
+"Live-site"; "browser" appears only in the trailing "browser permission boundary"); v0.7(b) needs
+possessive "browser's" (absent). Own-apparatus confirmed programmatically: the blocker contains
+"browser permission boundary" and NOT "by the server/WAF/Cloudflare" (so `_NOT_SITE_ATTRIBUTED`
+would not excuse a genuine site block).
+
+**Controls sound (attribution honesty both ways).** (a) The `example.com` t1 second "leak
+candidate" is a FALSE positive of the recon's coarse filter, NOT an attribution leak: codex's
+browser WORKED and honestly reported "IANA-reserved documentation domain, not a commercial
+storefront" (no refusal to mis-score) — it only trips the filter because an up-site with
+nothing-observed + no security-family match qualifies. This is the control PROVING the browser is
+functional, so driftflight.com's refusal is codex's own reputation/permission gate, not a broken
+browser. (b) driftflight.com t1 + drift-flight.org t1 were both correctly CAUGHT by the v0.6
+security branch (`env_blk` True). (c) drift-flight.org t2 codex REACHED the site (observed=yes) →
+the reputation gate remains intermittent/time-varying, consistent with prior fires.
+
+**Scorer UNCHANGED this fire; peer-gated fix QUEUED.** The `_ENV_BLOCK_RE` broadening is peer-gated
+scoring semantics (inv #2) and must be designed so it never routes a site-side 403 / Cloudflare
+challenge to reachability — so per the recon's own contract (docstring) and the PR #148/#149/#150
+pattern, this fire produces ONLY the committed transcript + summary; the v0.7(g) broadening + its
+`test_attribution.py` guard is queued as a fresh P0 (BACKLOG top). Direct-to-main (the recon is off
+the scoring path — no `asrs/rubric/fixtures` touched). Suite 38/38; frozen delta UNMOVED **+39.4**;
+live **+30.1**. Evidence `runs/local/codex_reachability_20260808T214615Z/{summary.json,transcripts/}`.
+
+**Next hypothesis.** Author v0.7(g): add an own-tool branch for the verb-then-apparatus order — an
+apparatus phrase like "browser (permission|access) boundary" occurring AFTER the block verb
+("denied|declined|refused|rejected|blocked … at/by the browser … boundary"), still gated by
+`_NOT_SITE_ATTRIBUTED` so "denied by the server/WAF" is never excused, with a synthetic-precision
+guard (a bare site "Access Denied" body and a "denied at the firewall boundary" site block must NOT
+match). Pin with a new `test_attribution.py` case using the EXACT committed t2 phrasing. Re-run
+this $0 recon each cadence — the own-tool vocab has now drifted SIX times
+(269/284/287/296=v0.7(e)/v0.7(f)/this).
+
 ## Local cycle — 20260808T204601Z — TRUTH (LOCAL) — MERGED peer-gated PR #161 (hardgraft.com 13th non-anchor / 3rd UCP-rail weld) after the owed first-duty review + $0 live UCP re-score; then a $0 ACP-well-known recon that FALSIFIED the ecosystem-path re-pathing lead (ACP still un-pinnable, scorer UNCHANGED)
 
 **Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260808T204101Z.json`

@@ -435,6 +435,47 @@ EXPECTED = {
             "outcome": None,
         },
     },
+    # A FOURTEENTH real-domain calibration datapoint — and the SECOND non-anchor
+    # baseline on the LIVE UCP (Universal Commerce Protocol) rail, retail DEPTH on
+    # a NEW storefront TYPE for that rail: a mainstream consumer apparel brand
+    # (Gymshark), where checkout.coffeecircle.com (the first UCP point) is a niche
+    # coffee merchant. gymshark.com is a real Shopify storefront whose
+    # GET /.well-known/ucp answers a $0 read with a valid `dev.ucp.*` service
+    # manifest (version 2026-04-08), so the scorer's `x402_probe` reads
+    # `commerce-protocol-live` PARTIAL 4.0/8.0 — the SAME UCP middle rung as
+    # checkout.coffeecircle.com (transactability 50.0). It claims exactly TWO
+    # archetypes {metered_api, physical_good} (metered_api from its published
+    # /llms.txt UCP agent-commerce endpoints — Discovery GET /.well-known/ucp +
+    # update_checkout/complete; physical_good from genuine shipping/fulfillment
+    # prose — data_retrieval / digital_good / service_booking / subscription all
+    # NA, NO topic-word over-claim, so NO FP-family guards were needed). Its
+    # calibration value is a CONTROLLED single-pillar isolation on the UCP rail:
+    # vs checkout.coffeecircle.com (57.4) it holds access 100.0, legibility 54.55,
+    # and transactability 50.0 BYTE-IDENTICAL and moves ONLY trust (33.33 -> 60.0),
+    # lifting overall 57.4 -> 62.4 — so the UCP rail (tx 50.0) is NECESSARY but not
+    # SUFFICIENT: two storefronts on the identical rail, at the identical
+    # legibility, score differently PURELY on trust. Fixture captured full-score
+    # LIVE [LOCAL] this cycle with the UCP manifest confirmed stable across >=2
+    # direct $0 observations at capture time (a static versioned JSON well-known,
+    # not a volatile endpoint) and replays CLEAN (0 misses); its live score was
+    # re-verified == this frozen floor on the same $0 static re-score (live 62.4 ==
+    # frozen 62.4, all four non-null pillars byte-identical, caps empty). Worded by
+    # capability, never by vendor. Because the UCP rail is LIVE (served, volatile),
+    # a future manifest removal/invalidation reddens the replay-clean guard
+    # (fixture frozen) and flags a re-capture. NO payment was ever signed (inv #1 —
+    # the well-known GET is a $0 read).
+    "gymshark.com": {
+        "overall": 62.4,
+        "grade": "D",
+        "rubric_version": "0.7",
+        "pillars": {
+            "access": 100.0,
+            "legibility": 54.54545454545455,
+            "transactability": 50.0,
+            "trust": 60.0,
+            "outcome": None,
+        },
+    },
 }
 EXPECTED_DELTA = 39.4  # driftflight.com (rails) - drift-flight.org (no rails)
 
@@ -1178,6 +1219,71 @@ def test_ucp_commerce_protocol_storefront_replays_57_4() -> None:
         r_pts == 0.0 < u_pts < x_pts == 8.0,
         f"commerce-protocol rail is the middle rung: no-rail retail {r_pts} < "
         f"UCP manifest {u_pts} < live-x402 handshake {x_pts}",
+    )
+
+
+# ---------------------------------------------------------------------------
+# 6k. FOURTEENTH-DOMAIN CALIBRATION — the SECOND non-anchor baseline on the LIVE
+#     UCP rail (retail DEPTH: a mainstream consumer apparel brand, Gymshark, a
+#     distinct storefront TYPE from the coffee merchant checkout.coffeecircle.com).
+#     gymshark.com is a real Shopify storefront whose GET /.well-known/ucp serves a
+#     valid `dev.ucp.*` service manifest, so x402_probe reads `commerce-protocol-
+#     live` PARTIAL 4.0/8.0 — the SAME UCP middle rung as checkout.coffeecircle.com.
+#     Its teeth are a CONTROLLED single-pillar isolation that pins the UCP rail as
+#     NECESSARY but not SUFFICIENT: gymshark.com and checkout.coffeecircle.com share
+#     access, legibility, AND transactability BYTE-IDENTICAL (both on the UCP rail
+#     at the identical legibility), and differ ONLY in trust — so the overall gap
+#     (57.4 -> 62.4) is attributable to trust ALONE, on the identical rail. A
+#     scoring change that let the rail credit leak into the overall independent of
+#     the other pillars, or that stopped reading gymshark's UCP manifest as
+#     commerce-protocol-live, FLIPS this guard. Worded by capability, never by
+#     vendor: it asks "do two storefronts on the identical UCP rail + identical
+#     legibility separate purely on trust?", never "is this domain X?". Because the
+#     manifest is LIVE (served, volatile), a future removal/invalidation reddens the
+#     replay-clean guard (fixture frozen) and flags a re-capture.
+# ---------------------------------------------------------------------------
+def test_ucp_retail_storefront_replays_62_4() -> None:
+    print("test_ucp_retail_storefront_replays_62_4")
+    _assert_domain("gymshark.com")
+    gym, gym_misses = _score_fixture("gymshark.com")
+    ucp, ucp_misses = _score_fixture("checkout.coffeecircle.com")  # the first UCP point
+    _check(
+        not (gym_misses or ucp_misses),
+        "no replay-miss on gymshark.com / checkout.coffeecircle.com",
+    )
+    # Same rail: gymshark earns the UCP partial (commerce-protocol-live), the same
+    # rung as the first UCP baseline.
+    gym_probe = _by_id(gym, "x402_probe")
+    ucp_probe = _by_id(ucp, "x402_probe")
+    _check(
+        gym_probe.status is Status.PARTIAL and gym_probe.finding == "commerce-protocol-live",
+        f"gymshark.com: x402_probe is a validated LIVE UCP manifest "
+        f"(commerce-protocol-live, got {gym_probe.finding!r} {gym_probe.status})",
+    )
+    _check(
+        gym_probe.points == ucp_probe.points == 4.0,
+        f"gymshark.com and checkout.coffeecircle.com sit on the identical UCP rung "
+        f"(both x402_probe 4.0, got {gym_probe.points} / {ucp_probe.points})",
+    )
+    # Controlled trust-isolation: access, legibility, transactability BYTE-IDENTICAL
+    # across the two UCP storefronts; ONLY trust differs; gymshark's higher trust
+    # lifts the overall — the UCP rail is necessary but not sufficient.
+    g = gym.pillar_scores
+    c = ucp.pillar_scores
+    for pillar in ("access", "legibility", "transactability"):
+        _check(
+            abs(g[pillar] - c[pillar]) < 1e-9,
+            f"{pillar} is identical across the two UCP storefronts "
+            f"(gymshark {g[pillar]} == coffeecircle {c[pillar]})",
+        )
+    _check(
+        g["trust"] > c["trust"],
+        f"trust is the ONLY moving pillar (gymshark {g['trust']} > coffeecircle {c['trust']})",
+    )
+    _check(
+        gym.overall_score > ucp.overall_score,
+        f"higher trust on the identical UCP rail lifts the overall "
+        f"(gymshark {gym.overall_score} > coffeecircle {ucp.overall_score})",
     )
 
 
@@ -2245,6 +2351,20 @@ _REPLAY_CLEAN = {
     # (fixture frozen) and flags a re-capture — the honest signal, not a silent
     # drift.
     "checkout.coffeecircle.com",
+    # gymshark.com captured full-score LIVE this cycle: the fresh crawl covers the
+    # whole probe set (0 misses) and replays to its pinned 62.4 D. It is the SECOND
+    # non-anchor member on the LIVE UCP rail (retail DEPTH — a mainstream consumer
+    # apparel brand, distinct storefront TYPE from the coffee merchant): GET
+    # /.well-known/ucp serves a valid `dev.ucp.*` service manifest → x402_probe
+    # reads `commerce-protocol-live` PARTIAL 4.0/8.0, the SAME UCP middle rung as
+    # checkout.coffeecircle.com (tx 50.0). Honestly classified {metered_api,
+    # physical_good} (metered_api from its /llms.txt UCP agent-commerce endpoints;
+    # no topic-word over-claim). A controlled trust-isolation on the UCP rail: same
+    # access/legibility/transactability as checkout.coffeecircle.com, higher trust →
+    # higher overall. Because the manifest is LIVE (served, volatile), a future
+    # removal/invalidation reddens this replay guard (fixture frozen) and flags a
+    # re-capture — the honest signal, not a silent drift.
+    "gymshark.com",
 }
 # Fixtures whose recorded surface is a strict subset of the full scoring path
 # (captured for offering/battery classification) — NOT eligible for any
@@ -2606,6 +2726,7 @@ def main() -> int:
         test_pure_metered_api_live_x402_replays_64_4,
         test_second_full_live_x402_replays_73_9,
         test_ucp_commerce_protocol_storefront_replays_57_4,
+        test_ucp_retail_storefront_replays_62_4,
         test_retail_storefront_earns_no_agent_native_payment,
         test_relabel_invariance_retail,
         test_nonstorefront_replays_22_5,

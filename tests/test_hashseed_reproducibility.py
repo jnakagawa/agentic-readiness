@@ -86,6 +86,7 @@ _POPULATION = (
     "driftflight.com",
     "exa.ai",
     "example.com",
+    "gymshark.com",
     "ipinfo.io",
     "thebotwire.com",
     "www.moleskine.com",

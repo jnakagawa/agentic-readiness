@@ -1,26 +1,51 @@
 # Loop state
 
-- Cycle counter: 309
-- **⏳ PEER-GATED PR #159 OPENED this fire (Local 20260808T124101Z, branch
-  `loop/coffeecircle-ucp-non-anchor-weld`, commit 37cdea1, NOT self-merged): weld checkout.coffeecircle.com (57.4 F)
-  into `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` as the ELEVENTH non-anchor cross-path member — the
-  FIRST welded member on a NEW agent-native rail TYPE, the UCP (Universal Commerce Protocol) commerce-protocol rail
-  (all ten prior welded witnesses are x402 / no-rail).** `x402_probe` reads `commerce-protocol-live` PARTIAL 4.0/8.0 →
-  transactability 50.0, a genuine MIDDLE rung (books.toscrape.com `x402_probe` 0.0 < coffeecircle 4.0 < thebotwire 8.0);
-  honest {metered_api, physical_good}. Committed v0.7 floor present; genuinely COMPARED **n_compared=1** in
-  `calibration_sweep_20260808T114436Z.json` (segment `ucp-live:coffee-merchant`); keyed identically both paths (no
-  www/bare alias); teeth = synthetic drift 57.4→68.0 caught as exactly one divergence. TEST-ONLY
-  (`test_calibration_anchor_agreement.py`: +member/+comment/+test/+registration); off-scoring-SEMANTICS EMPTY over
-  asrs/rubric/fixtures/experiments/loop; canonical PAIR untouched. Weld suite **26→27**; full suite **38/38**. **[LOCAL]
-  live↔frozen re-confirmed THIS fire** ($0 static, no --behavioral/--max-pay/codex/zero CLI; no payment signed, inv #1 —
-  the `/.well-known/ucp` GET is a $0 read): live 57.4 == frozen 57.4 == EXPECTED 57.4, all 4 non-null pillars
-  byte-identical (access 100.0 / legibility 54.55 / tx 50.0 / trust 33.33), caps empty, `x402_probe` partial 4.0/8.0
-  commerce-protocol-live → UCP rail UP, no manifest drift → weld sound to author. **DO NOT RE-AUTHOR — TRACKED by this
-  OPEN-PR #159 banner + next fire's first-duty adversarial review + independent $0 live re-score** (the REVIEWER re-runs
-  the volatile-rail live re-score; a divergence = REAL UCP-manifest drift → re-capture that member, do not merge, inv
-  #4). Frozen delta UNMOVED **+39.4**; live **+30.1**. The sweep-add prerequisite (n_compared=1) was DISCHARGED last
-  fire (Local 20260808T114105Z). Evidence `runs/local/coffeecircle_ucp_non_anchor_weld_20260808T124101Z.json`; LOG Local
-  cycle 20260808T124101Z.
+- Cycle counter: 310
+- **✅ PEER-GATED PR #159 (coffeecircle UCP weld — the ELEVENTH non-anchor member, FIRST on the UCP commerce-protocol
+  rail) MERGED this fire (Local 20260808T140228Z), merge `0d5d6d4`** — after the owed FIRST-DUTY adversarial review +
+  independent $0 live UCP re-score. VERDICT SOUND: off-scoring-path (three-dot diff since merge-base `ef43392` is ONLY
+  `test_calibration_anchor_agreement.py` +89 + evidence JSON +50; EMPTY over asrs/rubric/fixtures/experiments/loop);
+  vendor-neutral (welded by TYPE, the UCP rail; no coffeecircle special-casing in asrs/rubric — only the
+  `experiments/calibration_sweep.py` POPULATION enumeration, off the scoring path); committed v0.7 floor present in
+  `_REPLAY_CLEAN` (57.4); LOAD-BEARING (n_compared=1 independently re-derived in `calibration_sweep_20260808T114436Z.json`
+  at 57.4, divergences=[]); teeth (synthetic 57.4→68.0 caught as exactly one divergence); volatile-rail live re-score
+  re-run THIS fire (`python -m asrs score checkout.coffeecircle.com --json-only`, $0 static, no payment inv #1) → **live
+  57.4 == frozen 57.4 == EXPECTED 57.4**, all 4 non-null pillars byte-identical, caps empty, `x402_probe` PARTIAL 4.0/8.0
+  `commerce-protocol-live` (UCP rail UP, no manifest drift) → MERGE. Weld suite 27/27 branch + merged main; the cross-path
+  weld now spans ELEVEN non-anchor witnesses (the coffeecircle one the FIRST on the UCP rail). No open PRs remain. Review
+  verdict recorded in LOG Local cycle 20260808T140228Z.
+- **✅ NEW FOURTEENTH frozen-replay calibration baseline PINNED this fire (Local 20260808T140228Z, direct-to-main):
+  gymshark.com — the SECOND non-anchor point on the LIVE UCP rail (retail DEPTH: a mainstream consumer apparel brand, a
+  distinct storefront TYPE from the coffee-merchant checkout.coffeecircle.com).** 62.4 D v0.7 (access 100.0 / legibility
+  54.55 / **transactability 50.0** / trust 60.0). `GET /.well-known/ucp` serves a valid `dev.ucp.*` service manifest
+  (v2026-04-08, re-observed ≥2× $0 at capture, static versioned JSON; no payment signed, inv #1) → `x402_probe` reads
+  **`commerce-protocol-live` PARTIAL 4.0/8.0**, the SAME UCP middle rung as coffeecircle (tx 50.0). Honest classification
+  exactly **{metered_api, physical_good}** (metered_api from its `/llms.txt` UCP agent-commerce endpoints — Discovery
+  `GET /.well-known/ucp` + `update_checkout`/`complete`; physical_good from real shipping/fulfillment prose; the other 4
+  NA → NO topic-word over-claim, NO FP-guards needed). **Calibration value = a CONTROLLED single-pillar isolation:** vs
+  coffeecircle (57.4) it holds access 100.0, legibility 54.55, AND transactability 50.0 **BYTE-IDENTICAL** and moves ONLY
+  trust (33.33 → 60.0), lifting overall 57.4 → 62.4 — the **"UCP rail necessary but not SUFFICIENT"** statement (two
+  storefronts on the identical rail at the identical legibility separate PURELY on trust; mirrors the x402deploy/thebotwire
+  tx-100 pair, now on the UCP rail). Fresh full-score LIVE capture verified NON-DESTRUCTIVELY BEFORE install →
+  **replay_misses 0, live 62.4 == fixture 62.4 == EXPECTED 62.4**, all 4 non-null pillars byte-identical, caps empty.
+  Installed `fixtures/canonical/gymshark.com.json` (NEW, 2.1 MB — leanest candidate; kith.com would've been 17.8 MB,
+  allbirds AVOIDED per its recorded offering-drift, inv #4) + EXPECTED + `_REPLAY_CLEAN` + guard
+  `test_ucp_retail_storefront_replays_62_4` (trust-isolation teeth) + `_POPULATION` ×5. Off-scoring-SEMANTICS EMPTY
+  (tests + the new non-anchor fixture; canonical PAIR untouched); frozen delta UNMOVED **+39.4** (canonical replay 35→36);
+  live **+30.1**; suite 38/38; baselines **13→14**. Evidence
+  `runs/local/gymshark_ucp_retail_baseline_20260808T140228Z.json`; LOG Local cycle 20260808T140228Z. **NOTE for a future
+  UCP-retail WELD:** gymshark's sweep prerequisite is un-discharged (add to `experiments/calibration_sweep.py` POPULATION
+  + a $0 cadence run for n_compared≥1 before a peer-gated weld, the coffeecircle recipe).
+- **🔎 ACP-rail recon FINDING (Local 20260808T140228Z, TRUTH — recorded, NOT shipped, inv #4).** The pointer's step-2
+  "genuinely NEW rail TYPE" (ACP) is currently UN-pinnable $0: the scorer already supports ACP
+  (`asrs/probes/protocols.py` `_COMMERCE_WELL_KNOWN` probes `/.well-known/agentic-commerce` + validates
+  `_ACP_PAYLOAD_KEYS` → `commerce-protocol-live`), BUT the recon found **ACP well-known is SCARCE** — 0 of ~20 probed
+  candidates serve `/.well-known/agentic-commerce`; ecosystem sources place the real ACP manifest at
+  `/.well-known/acp/manifest.json` (NOT the scorer's path), and OpenAI Instant Checkout shut down 2026-03 → live ACP
+  surfaces are scarce. Re-pathing the scorer's ACP well-known is a PEER-GATED scoring change that needs 2+ live ACP
+  surfaces to validate (inv #3) — which do not currently exist. Meanwhile **UCP well-known is WIDESPREAD on Shopify**
+  (glossier / spanx / skims / allbirds / gymshark / kith / hardgraft all serve valid `/.well-known/ucp`) — the source of
+  this fire's gymshark pin. See LOG Local cycle 20260808T140228Z + BACKLOG P2.
 - LOCAL cycle — 20260808T104105Z summarized: reviewed + MERGED PR #158 (three live-x402 non-anchor welds thebotwire.com
   86.0 / api.x402oracle.com 64.4 / x402deploy.vercel.app 73.9 as the 8th/9th/10th members, merge `3fc5b5b`) after the
   owed FIRST-DUTY review + $0 live re-scores (all live==frozen==floor, each `x402_probe` 8.0/8.0; weld 26/26); the weld
@@ -64,74 +89,19 @@
   + PAYG, no MCP) is the same shape as the with-rails anchor AND the controlled complement of the no-rails
   api.replicate.com (tx 0.0), isolating the rail's tx contribution. Direct-to-main; frozen +39.4 / live +30.1;
   baselines 10→11. Full detail in loop/LOG.md.
-- **✅ PR #157 (exa.ai 7th non-anchor cross-path calibration weld — the FIRST welded member with GENUINE
-  partial agent-native rails) MERGED this fire (Local 20260807T205300Z), merge `cf0df08`** — after the owed
-  FIRST-DUTY adversarial review + independent $0 live re-score. VERDICT SOUND: off-scoring-path (three-dot diff
-  since merge-base `92f7c66` is ONLY `test_calibration_anchor_agreement.py` +87 + evidence JSON +44; EMPTY over
-  asrs/rubric/fixtures/experiments/loop); vendor-neutral (welded by TYPE agent-native-search-API); committed
-  78.1 C v0.7 baseline independently re-derived present + in `_REPLAY_CLEAN`; LOAD-BEARING (independently
-  re-derived `_committed_sweeps()`→5, `_divergences(members=("exa.ai",))` → n_compared=5, divergences=[] — scored
-  78.1 in all five committed sweeps, keyed `exa.ai` identically on both paths, NO www/bare alias); teeth
-  (78.1→90.0 caught as exactly one divergence); and the [LOCAL] live re-score re-derived THIS fire
-  (`python -m asrs score exa.ai --json-only`, $0 static) → exa.ai **78.1 live == 78.1 frozen == 78.1 EXPECTED**,
-  all 4 non-null pillars byte-identical (access 100.0 / legibility 100.0 / transactability 50.0 / trust 83.33),
-  caps empty → weld HOLDS, exa.ai did NOT regress → MERGE. Weld suite 23/23 branch + merged main (canonical
-  replay 31/31); the cross-path weld now spans SEVEN structurally-distinct non-anchor witnesses (null-control +
-  2 retail + service-booking + data-retrieval + pure-inference-API + agent-native-search-API), the LAST being
-  the FIRST welded member with genuine partial agent-native rails (documented x402 + MCP + PAYG → tx 50.0, a
-  real MIDDLE between the no-rails floor 0.0 and the anchor's full handshake 87.5). Review verdict recorded in
-  LOG Local cycle 20260807T205300Z.
+<!-- PR #157 (exa.ai 7th non-anchor weld — FIRST welded member with genuine partial agent-native rails, merge `cf0df08`,
+     Local 20260807T205300Z) MERGED-banner pruned this fire (Local cycle 20260808T140228Z) to stay under the STATE
+     600-line cap — full VERDICT SOUND detail preserved verbatim in loop/LOG.md + git history. -->
 - LOCAL cycle — 20260808T054613Z summarized: pinned thebotwire.com as the TENTH frozen-replay baseline (86.0 B, the
   HIGHEST + FIRST non-anchor LIVE-x402 point, {metered_api, data_retrieval}) via the exa.ai recipe after clearing all
   five offering-classification FP families (005504Z/020353Z/024315Z/034105Z/045337Z) — the oldest P0, CLOSED; later
   welded via merged PR #158 (banner above). Live 86.0 == frozen == EXPECTED, replay-clean; direct-to-main; frozen +39.4
   / live +30.1; baselines 9→10. Full detail in loop/LOG.md. Anchor driftflight.com `/extend` STILL 401 (WATCH for a
   402 recovery → restores the anchor's live handshake + +39.4 live delta).
-- **✅ PR #156 (www.moleskine.com 6th non-anchor cross-path calibration weld — 2nd retail, retail depth)
-  MERGED this fire (Local 20260807T184234Z), merge `571e4c6`** — after the owed FIRST-DUTY adversarial
-  review + independent $0 live re-score. VERDICT SOUND: off-scoring-path (three-dot diff since merge-base
-  `dd5a0f0` is ONLY `test_calibration_anchor_agreement.py` +174/−2 + evidence JSON; EMPTY over asrs/rubric/
-  fixtures/experiments/loop); vendor-neutral (by TYPE, retail depth); committed 49.8 F v0.7 baseline present;
-  SHARED-`_member_row` SAFETY independently re-derived (the ONLY `www.` domain anywhere is the new member key;
-  the ONLY `_norm_domain` collision is the intended {moleskine.com, www.moleskine.com}; every existing member's
-  n_compared byte-unchanged — no distinct storefronts collapse; over-normalization guarded); LOAD-BEARING
-  (n_compared=5, all resolving to bare `moleskine.com` rows); teeth (49.8→60.0 caught THROUGH the normalization);
-  and the [LOCAL] live re-score re-derived THIS fire → moleskine **49.8 live == 49.8 frozen == 49.8 EXPECTED**,
-  all 4 non-null pillars byte-identical, caps empty → weld HOLDS, did NOT regress → MERGE. Weld suite 22/22
-  branch + merged main; the cross-path weld now spans SIX structurally-distinct non-anchor witnesses
-  (null-control + retail-catalog + service-booking + data-retrieval + pure-inference-API + 2nd-retail-depth).
-  Review verdict recorded in LOG Local cycle 20260807T184234Z.
-- **✅ NEW NINTH frozen-replay calibration baseline PINNED this fire (Local 20260807T184234Z, direct-to-main):
-  exa.ai** — an agent-native web-search / content-retrieval API (Exa), the SECOND-HIGHEST baseline (78.1 C v0.7;
-  access 100.0 / legibility 100.0 / transactability 50.0 / trust 83.33) and the FIRST non-anchor member with
-  GENUINE partial/emerging agent-native rails: a documented x402 surface (llms.txt cites `x402-agentkit-free-trial`)
-  + an MCP surface (PARTIAL) + self-serve PAYG (PARTIAL). Its 50.0 transactability is a real MIDDLE strictly
-  between the no-rails floor (books/api.replicate 0.0) and driftflight.com's full x402-live handshake (87.5); its
-  78.1 fills the frozen guard's WIDEST upper-middle gap (nothing sat between ipinfo 61.3 and driftflight 85.5).
-  Captured full-score LIVE this fire ($0 static, 49 fetch entries), verified NON-DESTRUCTIVELY replay-clean
-  (replay_misses=0) BEFORE install; honest 4-archetype classification {metered_api, data_retrieval, digital_good,
-  subscription} (physical_good/service_booking NA). `test_canonical_replay.EXPECTED` + `_REPLAY_CLEAN` + new guard
-  `test_agent_native_api_service_replays_78_1` (overall + 4 pillars + capability teeth 0.0<50.0<87.5) +
-  `_POPULATION` in all 5 reproducibility suites (the replay-clean tripwires FORCED inclusion). [LOCAL] essence:
-  fresh $0 re-score THIS fire → **live 78.1 == frozen fixture-replay 78.1 == EXPECTED 78.1**, all 4 non-null
-  pillars byte-identical, caps empty → baseline HOLDS. Frozen-replay baselines 8→9. Off-scoring-SEMANTICS EMPTY;
-  frozen canonical delta UNMOVED +39.4; live +30.1; suite 38/38 (replay 30→31). Evidence
-  `runs/local/exa_ai_agent_native_api_baseline_20260807T190030Z.json`. **UNLOCKS a trivially-non-vacuous
-  7th-non-anchor WELD** (exa.ai already in the sweep POPULATION keyed `exa.ai` == its EXPECTED key, NO www/bare
-  normalization needed) — a PEER-GATED PR next fire, the FIRST welded member with genuine partial agent-native rails.
-- **✅ PR #155 (api.replicate.com 5th non-anchor cross-path calibration weld) MERGED this fire (Local
-  20260807T154104Z), merge `7e08063`** — after the owed FIRST-DUTY adversarial review + independent $0 live re-score.
-  VERDICT SOUND: off-scoring-path (three-dot diff since merge-base `4313135` is ONLY
-  `test_calibration_anchor_agreement.py` +79/−4; EMPTY over asrs/rubric/fixtures/experiments/loop/local_verify.py);
-  vendor-neutral (welded by storefront TYPE pure-inference-API); committed v0.7 baseline present (29.5 F);
-  LOAD-BEARING (independently re-derived n_compared=1 — api.replicate.com PRESENT in exactly
-  `calibration_sweep_20260807T134527Z.json` at 29.5, ABSENT from all four priors); teeth (29.5→40.0 caught as exactly
-  one divergence); and the [LOCAL] live re-score re-derived THIS fire (`python -m asrs score api.replicate.com
-  --json-only`, $0 static) → api.replicate.com **29.5 live == 29.5 frozen == 29.5 EXPECTED**, all 4 non-null pillars
-  byte-identical (access 100.0 / legibility 18.18 / transactability 0.0 / trust 33.33), caps empty → weld HOLDS,
-  api.replicate.com did NOT regress → MERGE. Weld suite 20/20 branch + merged main; the cross-path weld now spans FIVE
-  structurally-distinct non-anchor witnesses (null-control + retail-catalog + service-booking + data-retrieval +
-  pure-inference-API). Review verdict recorded in LOG Local cycle 20260807T154104Z.
+<!-- Three fully-superseded 2026-08-07 banners — PR #156 (moleskine 6th non-anchor weld, `571e4c6`) MERGED, the NINTH
+     frozen-replay baseline exa.ai (78.1 C) PINNED, and PR #155 (api.replicate.com 5th non-anchor weld, `7e08063`)
+     MERGED — pruned this fire (Local cycle 20260808T140228Z) to stay under the STATE 600-line cap; all preserved
+     verbatim in loop/LOG.md + git history. The whole non-anchor weld campaign (#152-#159) is complete. -->
 - **✅ NEW EIGHTH frozen-replay calibration baseline PINNED this fire (Local 20260807T154104Z, direct-to-main):
   www.moleskine.com** (a SECOND retail storefront — an established consumer-brand e-commerce shop; retail DEPTH, NOT a
   new storefront TYPE). 49.8 F v0.7 (access 100.0 / legibility 40.91 / transactability 18.75 / trust 73.33). It was

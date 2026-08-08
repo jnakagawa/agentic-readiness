@@ -1,25 +1,24 @@
 # Loop state
 
-- Cycle counter: 317
-- **🔎 SIXTH `_ENV_BLOCK_RE` own-tool refusal vocab drift CAUGHT this fire (Local 20260808T215647Z, METHOD — the ONE
-  [LOCAL] item; recorded + QUEUED as a peer-gated P0, scorer UNCHANGED this fire).** Rotated off the ~15-cycle
-  TRUTH/calibration run (the #152–#161 UCP weld campaign is COMPLETE at 13 witnesses; NO open PRs) onto the starving
-  METHOD track. Ran `experiments/codex_reachability.py` (5 codex hosted-browser trials via the REAL scorer path
-  `shopper._run_one` — byte-faithful, inv #4; $0 read-only recon, NO free-tier probe / NO zero CLI / NO signing, inv #1)
-  to re-validate the SHIPPED v0.7(f) `_ENV_BLOCK_RE` against FRESH live refusal vocab (last such run ~29h stale). All 3
-  sites HTTP 200 (UP). **FINDING — the 6th drift:** driftflight.com codex t2 refused with **"Live-site access was denied
-  at the browser permission boundary."** — site UP, codex saw nothing, yet `_is_env_blocked` = **False** (v0.7(f) misses
-  it) → left unfixed a real behavioral panel counts codex's OWN refusal as a valid WITH-side all-false SITE run,
-  narrowing the delta (invariant-#4 leak). Slips EVERY branch because the order is VERB-then-apparatus ("denied AT the
-  browser permission boundary") with subject "Live-site access", not the "browser access" adjacency v0.7(a)/(e)/(f)
-  require; own-apparatus confirmed (contains "browser permission boundary", NOT "by the server/WAF/Cloudflare"). Controls
-  SOUND: driftflight.com t1 + drift-flight.org t1 correctly CAUGHT by the v0.6 security branch; the `example.com`
-  control's browser WORKED (honest "no storefront" — a FALSE `leak_candidate` of the recon's coarse filter, NOT a drift);
-  drift-flight.org t2 codex REACHED the site (gate intermittent/time-varying). The `_ENV_BLOCK_RE` broadening is
-  peer-gated scoring semantics (inv #2), so NOT authored this fire — QUEUED as the v0.7(g) **[P0 — METHOD, PEER-GATED]**
-  at BACKLOG top with the EXACT phrasing + guard spec (must NEVER route a site 403/Cloudflare to reachability). Suite
-  38/38; frozen delta UNMOVED **+39.4**; live **+30.1**. Direct-to-main (off the scoring path). Evidence
-  `runs/local/codex_reachability_20260808T214615Z/{summary.json,transcripts/}`; LOG Local cycle 20260808T215647Z.
+- Cycle counter: 318
+- **🚦 OPEN PEER-GATED PR #162 (Local 20260808T225133Z, METHOD — v0.7(g) `_ENV_BLOCK_RE`, the SIXTH own-tool refusal
+  vocab drift fix AUTHORED, NOT self-merged this fire).** The queued P0 is now EXECUTED: one new own-tool alternation in
+  `asrs/behavioral/shopper.py` covering **"Live-site access was denied at the browser permission boundary."**
+  (driftflight.com codex t2, `runs/local/codex_reachability_20260808T214615Z/`; SAME-run homepage HTTP 200, so a
+  behavioral panel counted codex's OWN refusal as a valid all-false SITE run → invariant-#4 leak). The branch anchors a
+  browser-NAMED **boundary** governed by a LOCUS/AGENT preposition (`at|by|behind|within|under|via`) after the block verb
+  `+ _NOT_SITE_ATTRIBUTED` — strictly tighter than the plain form yet a strict SUPERSET of the shipped regex. Pinned by
+  `tests/test_attribution.py` **#17** (verbatim fixture + 8 precision guards + revert-teeth); differential leak-scan over
+  295 committed run-record JSONs / 32,278 leaves flips **EXACTLY** this one text OLD→NEW (0 collateral, 0 loss).
+  Behavioral-only (off the static scoring path) → frozen delta **+39.4 UNMOVED** by construction (`test_canonical_replay`
+  37/37); live **+30.1** (`verify_20260808T224104Z`); suite **38/38**; $0 (inv #1). Branch
+  `loop/env-block-v07g-denied-at-boundary`, commit `0f51dde`. **NEXT FIRE OWES its first-duty adversarial review + MERGE**
+  (re-derive the leak-scan 0-collateral/0-loss, the 8 precision guards, and the behavioral-only frozen-delta invariance)
+  BEFORE picking new work; NOT reviewed-and-merged in the same fire it was authored. Evidence
+  `runs/local/env_block_v07g_authoring_20260808T225133Z.json`; LOG Local cycle 20260808T225133Z. (The recon that CAUGHT
+  the drift last fire: `experiments/codex_reachability.py`, 5 codex trials via the REAL scorer path `shopper._run_one`,
+  byte-faithful $0 read-only; controls sound — t1 both domains caught by v0.6, .org t2 genuinely reached, example.com an
+  honest non-observation; full detail in LOG Local cycle 20260808T215647Z.)
 <!-- PR #161 MERGED banner (Local 20260808T204601Z, merge `5020895` — hardgraft.com 66.9 D welded as the 13th
      non-anchor / 3rd UCP-rail member after the owed first-duty review + $0 live re-score; the whole #152–#161 weld
      campaign COMPLETE at 13 witnesses, UCP rail welded at 3 points coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9)

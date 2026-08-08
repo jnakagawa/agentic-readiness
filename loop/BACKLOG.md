@@ -75,44 +75,10 @@ independently re-derived — api.replicate.com PRESENT in exactly the 20260807T1
 priors); teeth (29.5->40.0 caught). Live re-derived THIS fire: api.replicate.com 29.5 live == 29.5 frozen == 29.5
 EXPECTED, all 4 non-null pillars byte-identical -> weld holds, did NOT regress. Suite 38/38 branch + merged main; weld
 20/20; the cross-path weld now spans FIVE non-anchor TYPES. See LOG Local cycle 20260807T154104Z. -->
-<!-- DONE Local cycle 20260807T154104Z: pinned www.moleskine.com (a SECOND retail storefront — an established
-consumer-brand e-commerce shop; retail DEPTH, NOT a new TYPE) as the EIGHTH test_canonical_replay.EXPECTED frozen-replay
-baseline (49.8 F v0.7; access 100.0/legibility 40.91/transactability 18.75/trust 73.33) + guard
-test_second_retail_storefront_replays_49_8 (29->30, asserts overall + all 4 pillars; teeth 49.8->55.0 caught in-memory),
-direct-to-main. It was ALREADY replay-clean (0 misses, in _REPLAY_CLEAN) + present in all 5 committed sweeps at 49.8
-(segment retail:no-rails) + in all 5 reproducibility _POPULATIONs, but its SCORE was UNPINNED — a scoring change could
-silently move it; this closes that gap. NO fixture re-capture (fixture untouched; cleaner than the ipinfo/api.replicate
-promotions). [LOCAL] essence: fresh $0 static re-score THIS fire (15:5xZ) -> live 49.8 == frozen fixture-replay 49.8 ==
-EXPECTED 49.8, all 4 non-null pillars byte-identical, caps empty. 49.8 is a NEW distinct overall between example's 22.5
-and acuity's 54.0; as a 2nd retail member it pins a DIFFERENT pillar mix from books.toscrape.com's 29.5 (retail spans
-29.5->49.8). Frozen-replay baselines 7->8. Off-scoring-SEMANTICS EMPTY (only test_canonical_replay.py); frozen canonical
-delta UNMOVED +39.4; suite 38/38. Evidence runs/local/moleskine_second_retail_baseline_20260807T154104Z.json. See LOG
-Local cycle 20260807T154104Z. -->
-<!-- OPENED Local cycle 20260807T174235Z: the 6th-non-anchor cross-path weld (www.moleskine.com — a 2nd retail storefront,
-retail DEPTH) is AUTHORED as PEER-GATED PR #156 (branch loop/moleskine-sixth-non-anchor-weld, commit d67cabd), NOT
-self-merged. Welds www.moleskine.com into `_NON_ANCHOR_WELDED` = (example.com, books.toscrape.com, acuityscheduling.com,
-ipinfo.io, api.replicate.com, www.moleskine.com), spanning SIX structurally-distinct non-anchor witnesses. Solved the
-www/bare key mismatch the 154104Z pin flagged: NEW `_norm_domain` (strip a single leading `www.`) in the shared
-`_member_row` so the baseline key `www.moleskine.com` matches the sweeps' `moleskine.com` rows — genuinely COMPARED
-n_compared=5 (all five committed v0.7 sweeps, segment retail:no-rails, scored 49.8 in every one), NOT vacuous. New
-test_moleskine_sixth_non_anchor_is_welded_nonvacuously (baseline present, n_compared=5, teeth 49.8->60.0 caught through
-the normalization) + test_www_bare_domain_key_is_normalized (normalization both directions + over-normalization guarded:
-internal `www`/`wwwx`/unrelated domains never collapsed). TEST-ONLY (test_calibration_anchor_agreement.py only;
-off-scoring-SEMANTICS EMPTY), weld suite 20->22, full suite 38/38. Live<->frozen verified this fire ($0 static re-score
-17:46Z: live 49.8 == frozen 49.8 == EXPECTED 49.8, all 4 non-null pillars byte-identical, caps empty — the [LOCAL]
-essence the cloud can't do). DO NOT RE-AUTHOR — TRACKED by STATE's OPEN-PR #156 banner + next fire's first-duty
-adversarial review + live re-score. Evidence runs/local/moleskine_sixth_non_anchor_weld_20260807T174235Z.json. See LOG
-Local cycle 20260807T174235Z. -->
-<!-- MERGED Local cycle 20260807T184234Z: PR #156 (www.moleskine.com 6th non-anchor cross-path calibration weld) MERGED
-`571e4c6` after the owed FIRST-DUTY adversarial review + independent $0 live re-score. VERDICT SOUND: off-scoring-path
-(three-dot diff since merge-base dd5a0f0 is ONLY test_calibration_anchor_agreement.py +174/-2 + evidence JSON; EMPTY over
-asrs/rubric/fixtures/experiments/loop); vendor-neutral (by TYPE, retail depth); committed 49.8 F v0.7 baseline present;
-SHARED-_member_row SAFETY independently re-derived (only `www.` domain anywhere is the member key; only _norm_domain
-collision is the intended {moleskine.com, www.moleskine.com}; every existing member's n_compared byte-unchanged — no
-distinct storefronts collapse; over-normalization guarded); LOAD-BEARING (n_compared=5, all resolving to bare moleskine.com
-rows); teeth (49.8->60.0 caught THROUGH the normalization). Live re-derived THIS fire: moleskine 49.8 live == 49.8 frozen ==
-49.8 EXPECTED, all 4 non-null pillars byte-identical -> weld holds, did NOT regress. Weld 22/22 branch + merged main; the
-cross-path weld now spans SIX non-anchor witnesses. See LOG Local cycle 20260807T184234Z. -->
+<!-- Three fully-superseded www.moleskine.com markers (DONE 20260807T154104Z: pinned as the 8th frozen-replay baseline
+49.8 F / 2nd retail storefront; OPENED 20260807T174235Z: 6th-non-anchor weld PR #156 authored w/ the `_norm_domain`
+www/bare key fix; MERGED 20260807T184234Z: PR #156 `571e4c6`) pruned this fire (Local cycle 20260808T225133Z) to keep
+completed-marker bytes under the 24000 hygiene cap — all three preserved verbatim in loop/LOG.md + git history. -->
 <!-- DONE Local cycle 20260807T184234Z: pinned exa.ai (an agent-native web-search / content-retrieval API, Exa) as the NINTH
 test_canonical_replay.EXPECTED frozen-replay baseline (78.1 C v0.7; access 100.0/legibility 100.0/transactability 50.0/trust
 83.33) + _REPLAY_CLEAN + guard test_agent_native_api_service_replays_78_1 (overall + 4 pillars + capability teeth
@@ -254,8 +220,26 @@ lead CLOSED. Positive control UCP 6/6 (real scarcity, not a broken probe); skyfi
 FP-guard confirmed live). Scorer UNCHANGED; direct-to-main; frozen +39.4 / live +30.1; suite 38/38. Detail folded into the
 P2 item step (3) below. Evidence runs/local/acp_wellknown_recon_20260808T205138Z.json. See LOG Local cycle 20260808T204601Z. -->
 
-- **[P0 — METHOD, PEER-GATED] Author v0.7(g) `_ENV_BLOCK_RE` for the SIXTH own-tool refusal vocab drift (the
-  verb-then-apparatus "denied AT the browser permission boundary" order).** FOUND by this fire's $0 codex reachability
+<!-- OPENED Local cycle 20260808T225133Z: the P0 v0.7(g) `_ENV_BLOCK_RE` fix for the SIXTH own-tool refusal vocab drift
+is AUTHORED as PEER-GATED PR #162 (branch loop/env-block-v07g-denied-at-boundary, commit 0f51dde), NOT self-merged.
+Added ONE own-tool alternation to asrs/behavioral/shopper.py: a block verb + _NOT_SITE_ATTRIBUTED, then within a bounded
+sentence-stopped gap (<=40) a browser-NAMED "boundary" GOVERNED BY a locus/agent preposition (at|by|behind|within|under|
+via) — covering the verbatim "Live-site access was denied at the browser permission boundary." (driftflight.com codex t2,
+runs/local/codex_reachability_20260808T214615Z/; SAME-run homepage HTTP 200). The locus-preposition governance is strictly
+tighter than a plain gap (kills the contrived subject-before-verb "…denied; retry FROM the browser permission boundary"
+case AND site-side "denied at the FIREWALL boundary") yet still a strict SUPERSET of the shipped regex. Pinned by
+tests/test_attribution.py #17 (verbatim fixture + 8 precision guards + revert-teeth against the SHIPPED pattern +
+denominator routing; 17/17). Differential leak-scan over 295 committed run-record JSONs / 32278 string leaves flips
+EXACTLY this one text OLD->NEW, 0 collateral / 0 loss. Behavioral-only (off the static scoring path) -> frozen delta +39.4
+UNMOVED by construction (test_canonical_replay 37/37); live +30.1 (verify_20260808T224104Z); suite 38/38; $0 (inv #1).
+DO NOT RE-AUTHOR — TRACKED by STATE's OPEN-PR #162 banner + next fire's first-duty adversarial review + MERGE (re-derive
+the leak-scan 0-collateral/0-loss, the 8 precision guards, and the behavioral-only frozen-delta invariance). Evidence
+runs/local/env_block_v07g_authoring_20260808T225133Z.json. See LOG Local cycle 20260808T225133Z. The original P0
+diagnosis is preserved verbatim below (now historical) + in git history + LOG Local cycle 20260808T215647Z. -->
+
+<!-- [SUPERSEDED — AUTHORED as PR #162, see the OPENED marker above]
+  [P0 — METHOD, PEER-GATED] Author v0.7(g) `_ENV_BLOCK_RE` for the SIXTH own-tool refusal vocab drift (the
+  verb-then-apparatus "denied AT the browser permission boundary" order). FOUND by this fire's $0 codex reachability
   recon (Local cycle 20260808T215647Z, `experiments/codex_reachability.py`, byte-faithful via the REAL scorer path
   `shopper._run_one`): driftflight.com codex t2 refused with the EXACT phrasing **"Live-site access was denied at the
   browser permission boundary."** while the SAME-run `FetchContext.homepage()` = HTTP 200 (site UP) and codex saw
@@ -277,7 +261,7 @@ P2 item step (3) below. Evidence runs/local/acp_wellknown_recon_20260808T205138Z
   `runs/local/codex_reachability_20260808T214615Z/{summary.json,transcripts/driftflight.com_codex_t2.json}`; LOG Local
   cycle 20260808T215647Z. (The `example.com` t1 second "leak candidate" in that summary is a FALSE positive of the
   recon's coarse filter — codex's browser WORKED and honestly reported the non-commercial IANA domain; NOT a drift, do
-  NOT regex it.)
+  NOT regex it.) -->
 
 - **[P2 — TRUTH, LOCAL, candidate] BROADEN further / DEEPEN the UCP rail / UNLOCK a NEW rail TYPE.** The UCP rail now
   has THREE pinned baselines, all UCP `commerce-protocol-live` at the tx-50.0 rung: checkout.coffeecircle.com (57.4 F,

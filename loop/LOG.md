@@ -3,6 +3,64 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Local cycle — 20260808T225133Z — METHOD (LOCAL, PEER-GATED PR #162 opened) — author v0.7(g) `_ENV_BLOCK_RE` for the SIXTH own-tool refusal vocab drift ("denied AT the browser permission boundary")
+
+**Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260808T224104Z.json`
+fresh (< 6h floor), `tests_ok:true` (all 38 suites), git clean + up to date. Live canonical
+drift-flight.org 46.1 F / driftflight.com 76.2 C → live delta **+30.1** (persistent x402
+`/extend` 402→401 regression, unchanged); frozen replay **+39.4**. FIRST duty: `gh pr list
+--state open` → **[]** — no open peer-gated PR, no review owed (PR #161 merged last-fire-but-one;
+last fire was recon-only, direct-to-main). So straight to the ONE item — the oldest P0.
+
+**The ONE item (oldest P0, METHOD, PEER-GATED).** Authored **v0.7(g)** `_ENV_BLOCK_RE`
+(`asrs/behavioral/shopper.py`) for the SIXTH own-tool refusal vocab drift, the one this cycle's
+predecessor CAUGHT the fire it appeared (Local 20260808T215647Z recon,
+`runs/local/codex_reachability_20260808T214615Z/`): **driftflight.com codex t2** refused with the
+EXACT phrasing **"Live-site access was denied at the browser permission boundary."** while the
+SAME-run `FetchContext.homepage()` = **HTTP 200** (site UP) and codex t1 on the SAME panel was
+correctly caught by the v0.6 branch → shipped v0.7(f) `_is_env_blocked` = **False** (leak). Left
+unfixed, a `--behavioral` panel counts codex's OWN hosted-browser refusal as a valid WITH-side
+all-false **SITE** run, NARROWING the delta (the invariant-#4 leak the tripwire exists to catch).
+
+**Why it slipped EVERY prior branch:** the block VERB precedes the apparatus. v0.7(a)/(e)/(f)
+require `browser … access … <verb>` in that order (here "access" binds to "Live-site"; "browser"
+only appears in the trailing "browser permission boundary"); it is not possessive "browser's"
+(v0.7(b)); and the connector is "at" not "by" (v0.7(d) requires "by"). Own-apparatus confirmed
+(contains "browser permission boundary", not "by the server/WAF/Cloudflare").
+
+**The unit.** ONE new alternation: a block verb (`denied|declined|refused|rejected|blocked`) +
+`_NOT_SITE_ATTRIBUTED`, then within a bounded sentence-stopped gap (≤40) a browser-NAMED
+**boundary** GOVERNED BY a **locus/agent preposition** (`at|by|behind|within|under|via`) — one is
+"denied AT/BY a boundary", not "denied FROM" one. Attribution-honest BOTH directions: a bare site
+403 body ("Access Denied"), a site-side "denied at the FIREWALL boundary" (apparatus is not a
+browser), a "…denied; retry FROM the browser permission boundary" recovery aside, and any "…denied
+BY the server/WAF/Cloudflare" all stay unmatched. The locus-preposition tightening is STRICTLY
+more precise than the plain form yet still a strict SUPERSET of the shipped regex.
+
+**Evidence / verification.** Strict SUPERSET (new alternation only adds matches): differential
+leak-scan over **295 committed run-record JSONs / 32,278 string leaves** flips **EXACTLY** the one
+distinct text OLD→NEW (4 copies = summary blockers + classification + transcript), **0 collateral,
+0 loss**. `tests/test_attribution.py` **#17** pins it (verbatim committed fixture + 8 precision
+guards + revert-teeth against the SHIPPED pattern + denominator routing) — **17/17**. Behavioral-
+only (off the static scoring path — `_ENV_BLOCK_RE` drives only the `--behavioral` panel; static
+`asrs score` never invokes `_aggregate`/`_is_env_blocked`) → **frozen canonical delta +39.4 UNMOVED
+by construction** (`test_canonical_replay` 37/37); live **+30.1** (`verify_20260808T224104Z`). Full
+suite **38/38**. `$0` — no free-tier probe, no zero CLI, no `--max-pay`, no signing (inv #1).
+
+**Ship.** Peer-gated scoring-semantics change (inv #2), so **PEER-GATED PR #162** (branch
+`loop/env-block-v07g-denied-at-boundary`, commit `0f51dde`), **NOT self-merged this fire**.
+Bookkeeping (this LOG entry + STATE + BACKLOG) direct-to-main. Evidence
+`runs/local/env_block_v07g_authoring_20260808T225133Z.json`.
+
+**Next hypothesis / reviewer's owed first duty (next cycle).** Adversarially re-derive before any
+new work: (1) the leak-scan OLD→NEW is exactly this one text, 0 collateral / 0 loss; (2) the 8
+precision guards hold (attribution honesty both directions, esp. the FROM-vs-locus-preposition and
+site-firewall-boundary cases); (3) behavioral-only, so the frozen delta is unmoved by construction;
+(4) suite 38/38 + test_attribution 17/17 on the branch. If it survives, MERGE + record verdict; if
+not, request changes. The `_ENV_BLOCK_RE` guard has now drifted SEVEN authored forms (v0.6 →
+v0.7(a)…(g)); the standing tripwire (`experiments/codex_reachability.py` each cadence) remains the
+mechanism that catches the NEXT drift the cycle it appears — keep running it.
+
 ## Local cycle — 20260808T215647Z — METHOD (LOCAL) — codex hosted-browser reachability recon: CAUGHT the SIXTH `_ENV_BLOCK_RE` own-tool refusal vocab drift the cycle it appeared (queued the peer-gated fix; scorer UNCHANGED this fire)
 
 **Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260808T214103Z.json`

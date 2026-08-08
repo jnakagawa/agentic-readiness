@@ -1,0 +1,95 @@
+{
+ "ts": "20260807T235210Z",
+ "kind": "thebotwire-pin-attempt-BLOCKED-on-offering-precision",
+ "cycle": "Local cycle 20260807T235210Z",
+ "rubric_version": "0.7",
+ "spend": "$0 (static scorer + unsigned GET reads of the 402 challenge + non-destructive fixture capture to /tmp; no --behavioral, no --max-pay, no zero-CLI paid ops, no codex)",
+ "purpose": "Execute the oldest actionable P0 [LOCAL] item: the next-cadence action for the thebotwire.com pin. (a) 2nd-cadence re-confirmation of thebotwire.com's live x402 handshake (1st obs was Local cycle 20260807T225343Z, ~22:53Z; this is ~23:43Z, a genuine 2nd cadence ~50 min later). (b) IF stable, capture the full-score fixture $0 and verify NON-DESTRUCTIVELY replay-clean + honest archetype classification BEFORE install, then pin as the 10th frozen-replay baseline.",
+ "headline": "SCORE precondition MET (2nd-cadence x402-live STABLE, fixture replay-clean, score exact) BUT the PIN IS BLOCKED: the fixture's offering classification is DISHONEST - it over-claims 4 of 6 archetypes (physical_good, service_booking, digital_good, subscription) via news/data-API catalog TOPIC-WORD false positives. Per the P0's own acceptance gate (replay-clean AND honest classification BEFORE install) and inv #4 (attribution honesty), thebotwire.com is NOT installed into the canonical corpus this cycle. Its honest offering is {metered_api, data_retrieval}.",
+ "cadence_2nd_confirmation": {
+  "domain": "thebotwire.com",
+  "observed_at": "~20260807T234300Z",
+  "curl_corroboration_unsigned_reads": {
+   "/payments/latest GET": 402,
+   "/news GET": 402,
+   "/ GET": 200,
+   "/llms.txt GET": 200,
+   "/mcp GET": 405
+  },
+  "matches_1st_cadence": "byte-identical to the 20260807T225343Z observation (/payments/latest 402, /news 402, / 200, /llms.txt 200, /mcp 405); the live x402 handshake is STABLE across 2 cadence cycles ~50 min apart.",
+  "x402_challenge_body_excerpt": "{\"error\":\"payment_required\",\"message\":\"This route is paid. The x402 offer is in the PAYMENT-REQUIRED header.\",\"price\":\"$0.005\",...\"how_to_pay\":{\"protocol\":\"x402 v2\",\"network\":\"eip155:8453\",\"asset\":\"USDC\",\"steps\":\"Sign an 'exact' scheme USDC transfer authorization...\"}}",
+  "static_scorer": {
+   "command": "python -m asrs score thebotwire.com --json-only  (then read the run record)",
+   "overall": 86.0,
+   "grade": "B",
+   "rubric": "0.7",
+   "caps_applied": [],
+   "pillars": {"access": 100.0, "legibility": 86.36363636363636, "transactability": 100.0, "trust": 43.333333333333336, "outcome": null},
+   "x402_probe": {"status": "pass", "points": 8.0, "max": 8.0, "finding": "x402-live"},
+   "self_serve_payg_x402_live_evidence": true,
+   "note": "byte-identical to the 20260807T225343Z recon (86.0 B, tx 100.0, x402-live 8/8)."
+  }
+ },
+ "nondestructive_capture_and_replay": {
+  "capture_command": "python -m asrs score thebotwire.com --record-fixture /tmp/thebotwire.com.json --json-only",
+  "capture_location": "/tmp/thebotwire.com.json (OUT of repo - non-destructive; NOT committed to fixtures/canonical/)",
+  "fetch_entries": 38,
+  "replay_through_real_pipeline": "FetchContext.from_fixture -> _run_probes -> scoring.score",
+  "replay_misses": 0,
+  "replay_overall": 86.0,
+  "replay_grade": "B",
+  "replay_pillars": {"access": 100.0, "legibility": 86.36363636363636, "transactability": 100.0, "trust": 43.333333333333336, "outcome": null},
+  "replay_caps_applied": [],
+  "replay_x402_probe": {"status": "pass", "points": 8.0, "max": 8.0},
+  "verdict": "REPLAY-CLEAN (0 misses) and score-EXACT (live 86.0 == replay 86.0, all 4 non-null pillars byte-identical). The fixture would be eligible for _REPLAY_CLEAN on the SCORING axis."
+ },
+ "BLOCKER_offering_classification_dishonest": {
+  "classifier": "asrs.offering.discover_offering (OFF the scoring path - the 86.0 score does NOT depend on this; but a canonical fixture with a dishonest classification is an inv #4 hazard the loop has never committed)",
+  "claimed_by_classifier": ["data_retrieval", "digital_good", "metered_api", "physical_good", "service_booking", "subscription"],
+  "honest_claimed_set": ["metered_api", "data_retrieval"],
+  "genuine": {
+   "metered_api": "21 signals - x402 pay-per-call, $0.005-$0.01 USDC on Base, 'Pay per call via x402', 402 error-contract, self-provisioning ('no API key, no signup'). UNAMBIGUOUSLY genuine.",
+   "data_retrieval": "1 signal 'data-service' - 'RSS vs a data API for real-time agent data'. Genuine (thin, 1 signal)."
+  },
+  "false_positives_topic_word_pollution": {
+   "physical_good": [
+    "[fulfillment] homepage: 'commerce operations trade, marketplaces, fulfillment, conversion, DTC brand NEWS' - a NEWS CATEGORY, not fulfillment thebotwire.com performs",
+    "[shipping-noun] openapi: 'news (FreightWaves, Supply Chain Dive). Shipping rates, port congestion, carrier and logistics' - logistics NEWS",
+    "[fulfillment] openapi/docs: 'Robotics integrators, warehouse-automation vendors' / repeated DTC-commerce news category"
+   ],
+   "service_booking": [
+    "[book] homepage/docs: 'hospitality industry NEWS (airlines, hotels, booking)' - a NEWS CATEGORY; the signal fires on the gerund 'booking' (unguarded; the existing guard targets 'book a <X>')",
+    "[appointment] homepage/docs: 'Classical music and opera: appointments, seasons, house news' - arts NEWS",
+    "[appointment] openapi: 'creative-director appointment, or retail move' - a PERSONNEL news event, not a bookable slot"
+   ],
+   "digital_good": [
+    "[generations] openapi: 'Social-content GENERATION agents, celebrity news' - refers to content-generation AI agents (a news audience/topic), not a digital good thebotwire.com generates",
+    "[render] openapi: 'ad-tech tracking RENDERING changes','Browser engines' - a browser/ad-tech NEWS topic"
+   ],
+   "subscription": [
+    "[subscription] llms.txt: 'No SUBSCRIPTION, no minimum, no signup' - fires INSIDE an explicit NEGATION (the site disclaims subscriptions)",
+    "[subscription] openapi: 'no API key, no signup, no SUBSCRIPTION, no minimum' - same negation",
+    "[per-month] llms.txt: 'per-call API charges per request with NO MONTHLY floor' - a negation of monthly billing"
+   ]
+  },
+  "root_cause": "thebotwire.com is a MULTI-VERTICAL data/news-wire API. Its manifest/OpenAPI enumerate the industries its news wires COVER (commerce, logistics, hospitality, arts, fashion, ad-tech). Vertical-specific archetype signals (fulfillment, shipping-noun, book, appointment, generations, render) collide with these CONTENT-CATALOG topic words. Distinct from prior guarded minefields ('book a demo' CTA, 'trained on a dataset'): here the collision is a storefront REPORTING ON an industry vs OPERATING IN it. The subscription false positive is the classic negation collision ('No subscription')."
+ },
+ "decision": {
+  "pin": false,
+  "reason": "The P0's acceptance gate requires replay-clean AND honest classification before install. Replay-clean: PASS. Honest classification: FAIL (4 over-claimed archetypes). The loop rejected polar.sh (6->3 drift), simplybook.me, and www.allbirds.com for lesser classification issues; installing thebotwire.com would make it the FIRST canonical fixture with a dishonest classification (inv #4). The SCORE (86.0, live-x402) is genuine and confirmed stable, so the pin is blocked SPECIFICALLY on the offering-precision pollution, not on the score.",
+  "score_only_pin_considered_and_rejected": "The 86.0 is off the offering path and no committed test would assert the dishonest classification, so a score-only pin is technically clean. Rejected for consistency with the loop's demonstrated attribution-honesty standard: a canonical fixture whose classifier attributes physical_good/service_booking to a news API is a latent trap for future offering-mining cycles, and every existing baseline fixture classifies honestly. Truth outranks the pitch (playbook capability lens)."
+ },
+ "next_actions": {
+  "unblock_path_A_preferred_in_cloud_COVERAGE": "Harden the archetype signals against a data/news API's CONTENT-CATALOG topic words: physical_good (fulfillment / shipping-noun must tie to the storefront's OWN fulfillment, not a news-category enumeration), service_booking (guard the gerund 'booking' + 'appointment' as personnel/arts news), digital_good (generations/render must be an offered good, not an audience/topic), subscription (the NEGATION guard: 'no subscription' / 'no monthly' must NOT claim subscription - the clearest single sub-item). Each with a precision-synthetic guard pair (synthetic multi-vertical news-catalog prose does NOT fire; genuine capability prose still fires) so the existing anchors (moleskine/allbirds physical_good, acuity/simplybook service_booking, polar subscription) stay green. This is designable+executable IN-CLOUD (offering discovery is off the network path - the synthetic half needs no live capture).",
+  "then": "Re-verify thebotwire.com re-classifies to {metered_api, data_retrieval} honestly (re-capture $0 [LOCAL] against the live site), then pin as the 10th frozen-replay baseline + FIRST non-anchor live-x402 point (the exa.ai recipe: EXPECTED + _REPLAY_CLEAN + guard with capability teeth no-rails 0.0 < documented-partial 50.0 < LIVE 100.0 + _POPULATION in all 5 reproducibility suites).",
+  "backup_candidates": "x402deploy.vercel.app (73.9 C) and api.x402oracle.com (64.4 D) are live-x402 backups; check whether their (thinner, tool-gateway) classifications are cleaner than thebotwire.com's before preferring them - a tool gateway may not enumerate verticals.",
+  "watch": "driftflight.com /extend for a 402 recovery (would restore the anchor's live handshake + the +39.4 live delta; STILL 401 as of 20260807T225343Z)."
+ },
+ "invariants_and_signals": {
+  "canonical_frozen_delta": "+39.4 (UNMOVED; test_canonical_replay pins driftflight.com 85.5 - drift-flight.org 46.1)",
+  "canonical_live_delta": "+30.1 (driftflight.com 76.2 C live, /extend 402->401 persistent; per verify_20260807T234102Z.json)",
+  "offering_suites": "test_offering.py 115/115, test_offering_canonical.py 70/70 (no code changed - confirms the FPs are a genuine gap in the CURRENT honest guards, not a stale-code artifact)",
+  "ship_class": "direct-to-main (docs + this evidence JSON only; NO fixture committed, NO test/scoring change; scoring-path diff EMPTY)",
+  "spend": "$0; zero codex; zero zero-CLI; stayed in-repo (fixture captured to /tmp only)"
+ }
+}

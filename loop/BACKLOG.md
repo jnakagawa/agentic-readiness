@@ -210,33 +210,40 @@ EXPECTED, all 4 non-null pillars byte-identical (100.0/100.0/50.0/83.33), caps e
 branch + merged main (canonical replay 31/31); the cross-path weld now spans SEVEN non-anchor witnesses, the last the FIRST with
 genuine partial agent-native rails. The with-rails weld campaign (#152-#157) is COMPLETE across 6 non-anchor TYPES/shapes. See
 LOG Local cycle 20260807T205300Z. -->
-- **[P0 — TRUTH] PIN thebotwire.com as the 10th frozen-replay baseline — the FIRST non-anchor LIVE-x402 point (2nd-x402-live
-  scarcity BROKEN Local cycle 20260807T225343Z).** The multi-cycle hunt for a genuinely-NEW FULL with-rails point SUCCEEDED:
-  a $0 vendor-neutral sweep of the public x402 ecosystem directory (awesome-x402) surfaced THREE storefronts whose live x402
-  402-handshake the ASRS scorer detects AS SHIPPED at `x402_probe` 8.0/8.0 (`x402-live`): **thebotwire.com 86.0 B (tx 100.0 —
-  LEAD),** x402deploy.vercel.app 73.9 C (tx 100.0), api.x402oracle.com 64.4 D (tx 87.5). thebotwire.com is a genuinely-NEW FULL
-  with-rails point — a NEW distinct HIGH **above driftflight.com's frozen 85.5** and the FIRST non-anchor LIVE-x402 handshake
-  (all prior non-anchors are documented-partial exa.ai 78.1 or no-rails). Real apex domain, deliberate + stable (root JSON
-  manifest "301 real-time data wires for AI agents", /llms.txt, stateless MCP, clean x402 payloads on /news + /payments/latest +
-  $0.005 pricing), x402-live confirmed TWICE within-cycle (scorer 8/8 + independent re-curl). Evidence
-  `runs/local/rails_recon_20260807T225343Z.json` + committed source runs. **PIN DEFERRED one cadence** (consistent with the
-  loop's ≥2-cadence-observation discipline for the with-rails axis; live x402 is volatile — the anchor's /extend regressed).
-  **NEXT CADENCE (this is now the oldest actionable P0):** re-confirm thebotwire.com /payments/latest (+ /news) x402-live (2nd
-  cadence obs); IF stable → capture full-score fixture $0 (`python -m asrs score thebotwire.com --record-fixture
-  fixtures/canonical/thebotwire.com.json`), verify NON-DESTRUCTIVELY replay-clean (replay_misses=0) + honest archetype
-  classification BEFORE install, then pin `test_canonical_replay.EXPECTED` + `_REPLAY_CLEAN` + guard (overall + 4 pillars +
-  capability teeth: no-rails 0.0 < documented-partial 50.0 < LIVE 100.0) + `_POPULATION` in all 5 reproducibility suites
-  (direct-to-main, off-scoring-SEMANTICS — the exa.ai recipe). That yields the 10th frozen-replay baseline and the FIRST
-  non-anchor live-x402 point → a genuine 2nd full-x402-live datapoint besides the anchor, so the calibration guard no longer
-  rests the entire upper/live scale on driftflight.com alone. x402deploy.vercel.app + api.x402oracle.com are BACKUP candidates
-  (the class is no longer scarce). Then a peer-gated WELD becomes possible once thebotwire.com joins the calibration_sweep
-  POPULATION (the books.toscrape.com/api.replicate pattern). **paidsync.ai SUPERSEDED as lead** — its `/api/v1` STILL 503
-  across THREE consecutive cadence cycles (20:53Z→21:43Z→22:44Z, ~1h50m) ⇒ STABLE-DEGRADED (a persistent error, not a
-  non-error state, so pin-path (b) does NOT apply); remains a lesser backup at 80.0 B (MCP+PAYG only) IF /api/v1 ever settles
-  to a steady non-error non-402 state ≥2 cycles. Also watch driftflight.com's /extend for a 402 recovery (would restore the
-  anchor's live handshake + the +39.4 live delta). The `_CLASSIFICATION_ONLY` candidates (polar.sh / simplybook.me /
-  www.allbirds.com) ALL failed the byte-identity gate (live drift), so re-attempting any is a genuinely-NEW re-baseline
-  (verify the new classification is honest first), not a pin of the old claim.
+- **[P0 — COVERAGE, then TRUTH] UNBLOCK the thebotwire.com pin: harden the archetype signals against a data/news API's
+  CONTENT-CATALOG topic words (in-cloud precision guard), THEN re-verify + pin.** The 2nd-cadence x402-live confirmation
+  SUCCEEDED (Local cycle 20260807T235210Z): thebotwire.com's live x402 handshake is STABLE across 2 cadence cycles ~50 min
+  apart (`/payments/latest` 402, `/news` 402 both cadences; scorer **86.0 B**, tx 100.0, `x402_probe` 8.0/8.0 `x402-live`;
+  non-destructive /tmp fixture capture replays CLEAN, replay_misses=0, score-exact) — so the **SCORE precondition is MET**.
+  **BUT the pin is BLOCKED on the honest-classification gate:** `discover_offering` on the fixture over-claims **4 of 6
+  archetypes** (physical_good, service_booking, digital_good, subscription) via TOPIC-WORD false positives — thebotwire.com is a
+  multi-vertical data/news-wire API whose manifest/OpenAPI enumerate the industries its wires COVER, so vertical signals collide
+  with content-catalog prose: physical_good `[fulfillment]`/`[shipping-noun]` on commerce/logistics NEWS; service_booking
+  `[book]` on the gerund "booking" in "hotels, booking" + `[appointment]` on a "creative-director appointment" news event;
+  digital_good `[generations]`/`[render]` on a news audience/topic; subscription `[subscription]` fires INSIDE **"No subscription"**
+  (a negation). Honest set = **{metered_api, data_retrieval}**. Full per-archetype diagnosis with quoted spans:
+  `runs/local/thebotwire_pin_attempt_20260807T235210Z.json`. Installing it would make thebotwire.com the FIRST canonical fixture
+  with a dishonest classification (inv #4) — the loop rejected polar.sh/simplybook/allbirds for *lesser* issues; a score-only pin
+  was considered (the 86.0 is off the offering path) and rejected for consistency. **NEXT (A, preferred — an in-cloud COVERAGE
+  precision pass, the oldest actionable step):** guard the 4 FP families against a data/news API's content-catalog topic words —
+  the clearest single sub-item is the **subscription NEGATION guard** ("no subscription"/"no monthly floor" must NOT claim
+  subscription); then physical_good (fulfillment/shipping-noun must tie to the storefront's OWN fulfillment, not a news-category
+  enumeration), service_booking (guard the gerund "booking" + personnel/arts "appointment"), digital_good (generations/render must
+  be an offered good, not a news topic) — each with a precision-synthetic guard pair (synthetic multi-vertical news-catalog prose
+  does NOT fire; genuine capability prose still fires) so the existing anchors stay green (moleskine/allbirds physical_good,
+  acuity/simplybook service_booking, polar subscription). Designable+executable IN-CLOUD (the synthetic half needs no live
+  capture — offering discovery is off the network path). **THEN (TRUTH, [LOCAL]):** re-capture thebotwire.com $0, re-verify it
+  classifies honestly to {metered_api, data_retrieval}, then pin `test_canonical_replay.EXPECTED` + `_REPLAY_CLEAN` + guard
+  (overall + 4 pillars + capability teeth: no-rails 0.0 < documented-partial 50.0 < LIVE 100.0) + `_POPULATION` in all 5
+  reproducibility suites (direct-to-main, off-scoring-SEMANTICS — the exa.ai recipe) → 10th baseline, the FIRST non-anchor
+  live-x402 point, so the calibration guard no longer rests the entire upper/live scale on driftflight.com alone. **BACKUP
+  candidates:** x402deploy.vercel.app (73.9 C) / api.x402oracle.com (64.4 D) are live-x402 too — check whether their thinner
+  tool-gateway classifications are CLEANER than thebotwire.com's before preferring them (a tool gateway may not enumerate
+  verticals). **paidsync.ai** superseded — `/api/v1` 503 across 3 cadence cycles = STABLE-DEGRADED (a lesser backup at 80.0 B,
+  MCP+PAYG only, IF /api/v1 ever settles to a steady non-error non-402 state ≥2 cycles). **WATCH** driftflight.com's `/extend` for
+  a 402 recovery (would restore the anchor's live handshake + the +39.4 live delta; STILL 401). The `_CLASSIFICATION_ONLY`
+  candidates (polar.sh / simplybook.me / www.allbirds.com) ALL failed the byte-identity gate (live drift), so re-attempting any is
+  a genuinely-NEW re-baseline (verify the new classification is honest first), not a pin of the old claim.
 
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
   phrasing has now drifted the `_ENV_BLOCK_RE` guard FIVE times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)

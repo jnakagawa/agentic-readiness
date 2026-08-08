@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 296
+- Cycle counter: 297
 - **✅ PR #157 (exa.ai 7th non-anchor cross-path calibration weld — the FIRST welded member with GENUINE
   partial agent-native rails) MERGED this fire (Local 20260807T205300Z), merge `cf0df08`** — after the owed
   FIRST-DUTY adversarial review + independent $0 live re-score. VERDICT SOUND: off-scoring-path (three-dot diff
@@ -21,25 +21,32 @@
 - **⏳ NO OPEN PEER-GATED PR after this fire.** PR #157 MERGED `cf0df08`; the with-rails weld campaign
   (#152–#157: books/acuity/ipinfo/api.replicate/moleskine/exa.ai) is COMPLETE across 6 non-anchor storefront
   TYPES/shapes. Next fire's FIRST duty is the infra health check (no review owed). **🎯 with-rails frontier —
-  2nd-x402-LIVE SCARCITY BROKEN this fire (Local 20260807T225343Z).** A $0 vendor-neutral hunt of the public
-  x402 ecosystem directory (awesome-x402) surfaced THREE real storefronts whose live x402 402-handshake the ASRS
-  scorer detects AS SHIPPED at `x402_probe` 8.0/8.0 (`x402-live`): **thebotwire.com 86.0 B (tx 100.0 — LEAD),**
-  x402deploy.vercel.app 73.9 C (tx 100.0), api.x402oracle.com 64.4 D (tx 87.5). thebotwire.com is a genuinely-NEW
-  FULL with-rails point — the FIRST non-anchor LIVE-x402 handshake (all prior non-anchors are documented-partial
-  exa.ai 78.1 or no-rails), and a NEW distinct HIGH **above driftflight.com's frozen 85.5.** Real apex domain
-  (root JSON manifest "301 real-time data wires for AI agents", proper /llms.txt, stateless MCP, clean x402
-  payloads on /news + /payments/latest + $0.005 pricing) — deliberate + stable, NOT an error state. x402-live
-  confirmed TWICE within this cycle (scorer 8/8 + independent re-curl). **PIN DEFERRED to next cadence** — same
-  ≥2-cadence-observation discipline the loop applied to paidsync; live x402 is volatile (the anchor's /extend
-  regressed), so elevate to a frozen-replay BASELINE only after a 2nd cadence confirmation, then the fixture is a
-  durable code-regression guard captured in a confirmed-stable state. **NEXT CADENCE:** re-confirm thebotwire.com
-  /payments/latest x402-live; IF stable → capture fixture $0 (`--record-fixture`), verify replay-clean +
-  honest classification NON-DESTRUCTIVELY, then pin EXPECTED + `_REPLAY_CLEAN` + guard (teeth: no-rails 0.0 <
-  documented-partial 50.0 < LIVE 100.0) + `_POPULATION` (direct-to-main, the exa.ai recipe) → 10th baseline, 1st
-  non-anchor live-x402. **paidsync.ai now SUPERSEDED as lead** — its `/api/v1` STILL 503 across THREE consecutive
-  cadence cycles (20:53Z→21:43Z→22:44Z, ~1h50m) ⇒ STABLE-DEGRADED (a persistent error, not a non-error state, so
-  path (b) does NOT apply); it remains a lesser backup. Anchor driftflight.com `/extend` STILL 401 (no 402
-  recovery; live +30.1). See LOG Local cycle 20260807T225343Z + `runs/local/rails_recon_20260807T225343Z.json`.
+  thebotwire.com pin ATTEMPTED + BLOCKED this fire (Local 20260807T235210Z).** The 2nd-cadence x402-live
+  re-confirmation SUCCEEDED — thebotwire.com's live handshake is STABLE across 2 cadence cycles ~50 min apart
+  (1st obs 225343Z ~22:53Z → this fire ~23:43Z): `/payments/latest` 402 + `/news` 402 byte-identical both cadences;
+  $0 static scorer re-derived **86.0 B** (access 100.0 / legibility 86.36 / **tx 100.0** / trust 43.33), `x402_probe`
+  8.0/8.0 `x402-live`; non-destructive /tmp fixture capture replays CLEAN (replay_misses=0, score-exact). **So the
+  SCORE precondition is MET — but the PIN is BLOCKED on the honest-classification gate.** `discover_offering` on the
+  fixture over-claims **4 of 6 archetypes** (physical_good, service_booking, digital_good, subscription) via
+  TOPIC-WORD false positives: thebotwire.com is a MULTI-VERTICAL data/news-wire API ("301 real-time data wires")
+  whose manifest/OpenAPI enumerate the industries its wires COVER, so vertical signals collide with content-catalog
+  prose — physical_good on commerce/logistics NEWS ("fulfillment", "shipping rates"), service_booking on "hotels,
+  booking" + a "creative-director appointment" news event, digital_good on a news audience ("generation agents"),
+  subscription firing INSIDE **"No subscription"** (a negation). Honest set = **{metered_api, data_retrieval}**. Per
+  the P0's own gate (replay-clean AND honest classification before install) + inv #4, thebotwire.com is NOT installed
+  — installing it would make it the FIRST canonical fixture with a dishonest classification (the loop rejected
+  polar.sh/simplybook/allbirds for lesser issues); a score-only pin was considered (86.0 is off the offering path)
+  and rejected for consistency. **RE-SCOPED P0 — pin is BLOCKED on offering precision, not on the score.** NEXT (A,
+  preferred, in-cloud COVERAGE): harden the 4 FP families against a data/news API's content-catalog topic words —
+  clearest single sub-item is the subscription NEGATION guard ("no subscription"/"no monthly" ≠ a subscription claim);
+  then physical_good (fulfillment/shipping-noun tie to the storefront's OWN fulfillment), service_booking (gerund
+  "booking" + personnel/arts "appointment"), digital_good (generations/render = an offered good, not a news topic) —
+  each precision-synthetic guarded so anchors stay green (moleskine/allbirds/acuity/simplybook/polar). THEN [LOCAL]:
+  re-capture, re-verify honest {metered_api, data_retrieval}, pin (the exa.ai recipe) → 10th baseline, 1st non-anchor
+  live-x402. BACKUP candidates x402deploy.vercel.app 73.9 C / api.x402oracle.com 64.4 D (check whether their thinner
+  tool-gateway classifications are CLEANER first). **paidsync.ai** SUPERSEDED — `/api/v1` 503 across 3 cadence cycles =
+  STABLE-DEGRADED (lesser backup at 80.0 B). Anchor driftflight.com `/extend` STILL 401 (no 402 recovery; live +30.1).
+  See LOG Local cycle 20260807T235210Z + `runs/local/thebotwire_pin_attempt_20260807T235210Z.json`.
 - **✅ PR #156 (www.moleskine.com 6th non-anchor cross-path calibration weld — 2nd retail, retail depth)
   MERGED this fire (Local 20260807T184234Z), merge `571e4c6`** — after the owed FIRST-DUTY adversarial
   review + independent $0 live re-score. VERDICT SOUND: off-scoring-path (three-dot diff since merge-base
@@ -252,6 +259,33 @@
   but wrote NO LOG entry and never committed/pushed (its panel dir exists gitignored). This fire re-verified #149,
   took ownership of the reconciled banner (above), and committed. No fabricated 214745Z LOG entry. STATE pruned the
   two oldest rolling entries (cloud Cycles 290–291, preserved in LOG.md) to stay under the 600-line hygiene cap.
+- LOCAL cycle — 20260807T235210Z (TRUTH / thebotwire.com pin ATTEMPTED + BLOCKED — 2nd-cadence x402-live CONFIRMED
+  STABLE (score precondition MET) but the fixture's offering classification is DISHONEST (over-claims 4/6 archetypes
+  via news-catalog topic-word FPs); NOT installed, re-scoped as an in-cloud precision-guard blocker; direct-to-main).
+  FIRST duty: `gh pr list --state open` → `[]` (no open PR; PR #157 MERGED `cf0df08` real cycle 205300Z; weld campaign
+  #152–#157 COMPLETE); newest `verify_20260807T234102Z.json` (23:41Z, 38 suites, 46.1 F / 76.2 C / +30.1) ~1min old at
+  fire (23:42Z) → :41 cadence holding (224100Z→234102Z); LOG/STATE consistent with git. No repair, no review owed.
+  **Executed the ONE [LOCAL] item — the oldest actionable P0, the next-cadence action for the thebotwire.com pin:**
+  (1) 2nd-cadence x402-live re-confirmation (1st obs 225343Z ~22:53Z → this fire ~23:43Z, ~50 min) — `/payments/latest`
+  402 + `/news` 402 byte-identical both cadences; $0 static scorer re-derived 86.0 B (access 100 / legibility 86.36 /
+  tx 100.0 / trust 43.33), `x402_probe` 8.0/8.0 `x402-live` → STABLE across 2 cadence cycles ⇒ SCORE precondition MET.
+  (2) non-destructive fixture capture to /tmp (38 entries) + replay through the real pipeline → replay_misses=0,
+  overall 86.0 == live, all 4 pillars byte-identical ⇒ replay-clean on the SCORING axis. (3) BLOCKER — `discover_offering`
+  over-claims 4/6 archetypes (physical_good/service_booking/digital_good/subscription) via TOPIC-WORD false positives
+  (thebotwire.com is a multi-vertical data/news-wire API; vertical signals collide with content-catalog prose — incl.
+  subscription firing inside "No subscription", a negation); honest set = {metered_api, data_retrieval}. **Decision: PIN
+  BLOCKED, NOT installed** — the P0's gate is replay-clean AND honest classification; honest classification FAILS, so per
+  inv #4 (the loop rejected polar/simplybook/allbirds for lesser issues) thebotwire.com does not enter the corpus; a
+  score-only pin (86.0 is off the offering path) was considered and rejected for consistency. RE-SCOPED P0: an in-cloud
+  COVERAGE precision pass (news-catalog/negation guards, anchors kept green) THEN [LOCAL] re-capture + re-verify honest +
+  pin. Direct-to-main (docs + evidence JSON only; NO fixture committed [/tmp], NO test/scoring change; scoring-path diff
+  EMPTY). Sanity: test_offering 115/115 + test_offering_canonical 70/70 unchanged (FPs are a genuine gap in the CURRENT
+  honest guards, not stale code); 23:41Z verify 38/38. Frozen canonical delta UNMOVED +39.4; live +30.1. Evidence
+  `runs/local/thebotwire_pin_attempt_20260807T235210Z.json`. Invariants #1 ($0 static + unsigned 402 reads +
+  non-destructive /tmp capture, no behavioral/codex/paid/zero-CLI)–#5 held (the dishonest classification is the REASON the
+  pin is blocked — attribution honesty enforced, not violated); zero codex, zero paid ops; stayed in-repo. NO DM (a
+  blocked pin is not a DM-enumerated sensitive class; FIRST-after-16:00 digest posted 174235Z) — thebotwire precision
+  blocker flagged for next digest. See LOG Local cycle 20260807T235210Z.
 - LOCAL cycle — 20260807T225343Z (TRUTH / 🎯 2nd-x402-LIVE scarcity BROKEN — reconnaissance found THREE genuinely-NEW
   live-x402 storefronts the shipped scorer detects at 8/8; lead thebotwire.com 86.0 B / tx 100.0; pin deferred to
   next cadence per the ≥2-obs discipline; direct-to-main). FIRST duty: infra health check — `gh pr list --state open`
@@ -279,26 +313,13 @@
   Invariants #1 ($0 static scorer + unsigned read-only 402 probes, no behavioral/codex/paid/zero-CLI)–#5 held; zero
   codex, zero paid ops; stayed in-repo. NO DM (off-path recon not a DM-enumerated sensitive class; FIRST-after-16:00
   digest posted 174235Z) — the 2nd-x402-live find flagged for next digest. See LOG Local cycle 20260807T225343Z.
-- LOCAL cycle — 20260807T214332Z (TRUTH / cadence RE-PROBE of the with-rails frontier — the named next-cadence action;
-  no pin, direct-to-main). FIRST duty: `gh pr list --state open` → `[]` (no open PR; PR #157 MERGED `cf0df08` last real
-  cycle 205300Z; weld campaign #152–#157 COMPLETE). Infra HEALTHY: `verify_20260807T214100Z.json` (21:41Z, 38 suites,
-  46.1 F / 76.2 C / +30.1) ~1.5min old at fire (21:42Z) → :41 cadence holding (204104Z→214100Z). **Executed the ONE
-  [LOCAL] item — the oldest actionable P1-TRUTH, the LITERAL `next_cadence_action` from the 205300Z recon:** re-probed
-  paidsync.ai $0 static (`score paidsync.ai --json-only` — x402 probe only READS the 402 challenge, inv #1). FINDING:
-  paidsync.ai `/api/v1` **STILL 503** (scorer + independent re-curl GET+POST; home 200) — **2 consecutive cadence
-  cycles degraded** (20:53Z→21:43Z); re-score BYTE-IDENTICAL (80.0 B / access 100 / legibility 100 / tx 50.0 / trust
-  93.33 / caps empty) so only the x402 leg is in flux, MCP 2/2 + PAYG 6/6 stable. Anchor `POST agents.driftflight.com/
-  extend` STILL 401 (no 402 recovery; storefront 200) → live +30.1 holds, corroborates the 21:41Z floor. One fresh
-  candidate 2s.io (from a $0 WebSearch of the x402 ecosystem) = no bare-GET 402 (`/api`,`/api/v1`,`/v1` 404; api.* no
-  resolve; a guide site). **paidsync.ai STILL NOT pinned** — a 503 is a transient ERROR, not a stable capability state;
-  freezing it violates attribution honesty (inv #4). Pin rule sharpened: (a) 402 recovery ⇒ 2nd x402-LIVE pin; (b)
-  steady non-error non-402 (≥2 cycles) ⇒ partial-rails pin at 80.0. Direct-to-main (pure off-scoring-path recon
-  re-probe + docs; scoring-path diff EMPTY; same class as the 205300Z recon). Full suite re-run 654 passed / 38 suites.
-  Frozen canonical delta UNMOVED +39.4; live +30.1. Evidence `runs/local/rails_recon_20260807T214332Z.json` +
-  `runs/paidsync_ai_20260807T214336.json`. Invariants #1 ($0 static scorer + unsigned probes, no behavioral/codex/paid/
-  zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (off-path recon re-probe not a DM-enumerated
-  sensitive class; FIRST-after-16:00 digest posted 174235Z) — re-probe flagged for next digest. See LOG Local cycle
-  20260807T214332Z.
+<!-- Rolling entry for Local cycle 20260807T214332Z (cadence re-probe of the with-rails frontier — paidsync.ai
+     /api/v1 STILL 503 2nd cycle → still not pinnable; anchor /extend STILL 401; fresh candidate 2s.io no bare-GET
+     402; direct-to-main) pruned this fire (Local cycle 20260807T235210Z) to stay under the STATE 600-line cap —
+     preserved verbatim in loop/LOG.md + git history. -->
+- LOCAL cycle — 20260807T214332Z summarized: cadence re-probe — paidsync.ai `/api/v1` STILL 503 (2nd cycle) so
+  STILL not pinnable (a 503 is a transient error, inv #4); anchor `/extend` STILL 401 (live +30.1); fresh candidate
+  2s.io no bare-GET 402. Direct-to-main; suite 654/38; frozen delta UNMOVED +39.4. Full detail in loop/LOG.md.
 <!-- Rolling entry for Local cycle 20260807T205300Z (MERGED PR #157 [exa.ai 7th non-anchor weld] + a rails
      reconnaissance that found NO new full with-rails point — 2nd x402-LIVE still scarce that cycle, paidsync.ai
      503 shortlisted) pruned this fire (Local cycle 20260807T225343Z) to stay under the STATE 600-line cap —
@@ -315,33 +336,16 @@
 - LOCAL cycle — 20260807T194459Z summarized: welded exa.ai (78.1 C, documented-partial rails) as the 7th
   non-anchor cross-path member (PEER-GATED PR #157, self-merged `cf0df08` the following cycle 205300Z). Full
   detail in loop/LOG.md.
-- LOCAL cycle — 20260807T184234Z (TRUTH / MERGED PR #156 + pinned exa.ai as the 9th frozen-replay baseline, direct-to-main).
-  FIRST duty: `gh pr list --state open` → PR #156 OPEN → adversarial review + independent $0 live re-score → VERDICT SOUND →
-  **MERGED `571e4c6`** (off-scoring-path test-only +174/−2; vendor-neutral by TYPE; SHARED-`_member_row` safety independently
-  re-derived — only `www.` domain anywhere is the member key, only `_norm_domain` collision is the intended {moleskine.com,
-  www.moleskine.com}, no distinct storefronts collapse; load-bearing n_compared=5; teeth 49.8→60.0 THROUGH normalization; live
-  re-derived moleskine 49.8 live == 49.8 frozen == 49.8 EXPECTED → weld holds; weld 22/22 branch + merged main; cross-path weld
-  now spans SIX non-anchor witnesses). Infra HEALTHY: `verify_20260807T184103Z.json` (18:41Z, 38 suites, 46.1 F / 76.2 C /
-  +30.1) ~1min old at fire (18:42Z) → :41 cadence holding (174100Z→184103Z). **Executed the ONE [LOCAL] item — the oldest
-  P1-TRUTH frontier, a distinct-shape baseline advancing the with-rails axis:** the `_REPLAY_CLEAN`-but-unpinned clean pin is
-  EXHAUSTED (`_REPLAY_CLEAN`==`EXPECTED`, 8 each) and the 3 `_CLASSIFICATION_ONLY` members failed the byte-identity gate, so a
-  new baseline needs a FRESH clean full-score capture. Surveyed the sweep population by transactability (the with-rails tell) →
-  **exa.ai** (an agent-native web-search/retrieval API, Exa) TOPS the cohort at 78.1 and was chosen: fills the frozen guard's
-  WIDEST upper-middle gap (nothing between ipinfo 61.3 and driftflight 85.5) AND its tx 50.0 is honestly earned by GENUINE
-  partial agent-native rails (documented x402 `x402-agentkit-free-trial` + MCP surface + self-serve PAYG) — the FIRST non-anchor
-  baseline with any real agent-native commerce rail, a true MIDDLE between the no-rails floor (0.0) and the anchor's full
-  handshake (87.5). Captured full-score LIVE ($0 static, 49 fetch entries), verified NON-DESTRUCTIVELY replay-clean
-  (replay_misses=0) BEFORE install, honest 4-archetype classification. Pinned EXPECTED (78.1 C v0.7) + `_REPLAY_CLEAN` + guard
-  `test_agent_native_api_service_replays_78_1` (overall + 4 pillars + capability teeth 0.0<50.0<87.5) + `_POPULATION` in all 5
-  reproducibility suites. [LOCAL] essence: live 78.1 == frozen fixture-replay 78.1 == EXPECTED 78.1, all 4 pillars
-  byte-identical, caps empty → HOLDS. Baselines 8→9. Direct-to-main (off-scoring-SEMANTICS EMPTY — 6 test files + 1 new fixture);
-  frozen canonical delta UNMOVED +39.4; live +30.1; suite 38/38 (replay 30→31). Evidence
-  `runs/local/exa_ai_agent_native_api_baseline_20260807T190030Z.json`. Invariants #1 ($0 static capture + in-process replay,
-  no behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (weld-merge + baseline pin not a
-  DM-enumerated sensitive class; the FIRST-after-16:00 digest was posted last real cycle 174235Z) — #156 MERGE flagged for next
-  digest. UNLOCKS a trivially-non-vacuous 7th-non-anchor exa.ai WELD next fire (exa.ai already in POPULATION keyed `exa.ai` == its
-  EXPECTED key, NO www/bare normalization needed) — the FIRST welded member with genuine partial agent-native rails. See LOG
-  Local cycle 20260807T184234Z.
+<!-- Rolling entry for Local cycle 20260807T184234Z (MERGED peer-gated PR #156 [moleskine 6th non-anchor weld]
+     after adversarial review + live re-score; pinned exa.ai as the 9th frozen-replay baseline, direct-to-main)
+     pruned this fire (Local cycle 20260807T235210Z) to stay under the STATE 600-line cap — preserved verbatim in
+     loop/LOG.md + git history. -->
+- LOCAL cycle — 20260807T184234Z summarized: MERGED PR #156 (moleskine 6th non-anchor weld, `571e4c6`) after the
+  owed FIRST-DUTY review + live re-score (49.8 live==frozen==EXPECTED); then pinned **exa.ai** as the 9th
+  frozen-replay baseline (78.1 C, the SECOND-HIGHEST + FIRST non-anchor with genuine partial agent-native rails →
+  tx 50.0) via a NON-DESTRUCTIVE full-score LIVE capture (replay-clean, honest 4-archetype classification), guard
+  `test_agent_native_api_service_replays_78_1` + `_REPLAY_CLEAN` + `_POPULATION` ×5. Direct-to-main; frozen delta
+  UNMOVED +39.4; suite 38/38. Full detail in loop/LOG.md.
 - LOCAL cycle — 20260807T174235Z (TRUTH / welded www.moleskine.com as the 6th non-anchor cross-path member, PEER-GATED
   PR #156 opened, NOT self-merged). FIRST duty: `gh pr list --state open` → `[]` (no open PR to review; PR #155 MERGED
   `7e08063` last real cycle, 154104Z; 164102Z/174100Z were verify-only floors). Infra HEALTHY:

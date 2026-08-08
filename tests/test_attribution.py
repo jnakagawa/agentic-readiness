@@ -890,6 +890,99 @@ def test_env_block_browser_site_access_near_miss_covered() -> None:
            "the browser-site-access-blocked model is attributed in reachability evidence")
 
 
+# ---------------------------------------------------------------------------
+# 17. v0.7 Cycle 317: own-tool "denied AT the browser permission boundary"
+#     NEAR-MISS (the SIXTH drift of the codex refusal vocabulary, after
+#     269 + 284 + 287 + 296=v0.7(e) + v0.7(f)). This fire's $0 codex-reachability
+#     recon caught codex refusing the WITH-rails canonical (.com) with
+#     "Live-site access was denied at the browser permission boundary." — the block
+#     VERB precedes the own-apparatus, joined by "at" (not "by"). v0.7(a)/(e)/(f)
+#     REQUIRE "browser ... access ... <verb>" in that order (here "access" binds to
+#     "Live-site" and "browser" only appears in the trailing apparatus); it is not
+#     possessive "browser's" (v0.7(b)); and "denied AT" is not v0.7(d)'s "denied BY
+#     the browser permission ..." — so it slipped EVERY branch. The all-false refusal
+#     would count a VALID .com SITE run, NARROWING the behavioral delta by scoring
+#     codex's OWN hosted-browser refusal as site evidence (the exact invariant-#4
+#     leak) while the SAME-run FetchContext.homepage() showed the SITE at HTTP 200
+#     and codex t1 on the SAME panel was correctly caught by v0.6. Fixture is the
+#     LITERAL committed transcript string (invariant #3): runs/local/
+#     codex_reachability_20260808T214615Z/transcripts/driftflight.com_codex_t2.json.
+#
+#     The v0.7(g) branch anchors a browser-NAMED "boundary" governed by a LOCUS/AGENT
+#     preposition (at|by|behind|within|under|via) after the block verb — one is
+#     "denied AT/BY a boundary", not "denied FROM" one — while KEEPING
+#     _NOT_SITE_ATTRIBUTED intact, so a bare site 403 body ("Access Denied"), a
+#     site-side "denied at the FIREWALL boundary" (apparatus is not a browser), a
+#     "...denied; retry FROM the browser permission boundary" recovery aside, and any
+#     "...denied BY the server/WAF/Cloudflare" are STILL never excused (both
+#     directions below). It is a strict SUPERSET (a new alternation): a differential
+#     leak-scan over the committed run-record string leaves flips EXACTLY this one
+#     text OLD->NEW, ZERO collateral.
+# ---------------------------------------------------------------------------
+def test_env_block_denied_at_boundary_near_miss_covered() -> None:
+    print("test_env_block_denied_at_boundary_near_miss_covered")
+    # The verbatim leaking transcript blocker (all checkpoints false).
+    leak = "Live-site access was denied at the browser permission boundary."
+
+    # TEETH: the live _ENV_BLOCK_RE with ONLY the v0.7(g) branch reverted (the whole
+    # new alternation removed) MISSED this phrasing — so the branch is exactly and
+    # solely load-bearing for this leak, and the teeth track the SHIPPED pattern.
+    v0_7_g = (
+        r"|(?:denied|declined|refused|rejected|blocked)" + S._NOT_SITE_ATTRIBUTED +
+        r"(?:[^.]|\.(?=\S)){0,40}?"
+        r"\b(?:at|by|behind|within|under|via)\s+(?:a |an |the )?"
+        r"browser (?:permission|access) boundary"
+    )
+    _check(v0_7_g in S._ENV_BLOCK_RE.pattern,
+           "the v0.7(g) branch is present in the shipped pattern")
+    pre_g = re.compile(S._ENV_BLOCK_RE.pattern.replace(v0_7_g, ""), re.I)
+    _check(pre_g.pattern != S._ENV_BLOCK_RE.pattern,
+           "the pre-v0.7(g) reversion actually changed the pattern (teeth are real)")
+    _check(pre_g.search(leak) is None,
+           "pre-v0.7(g) _ENV_BLOCK_RE MISSED the 'denied AT the browser ... boundary' (teeth)")
+    # The shipped v0.7(g) branch classifies it env-blocked, blockers AND trust.
+    _check(S._is_env_blocked(_run(model="codex", trial=2, blockers=[leak])),
+           "denied-at-boundary near-miss blocker classified env-blocked")
+    _check(S._is_env_blocked(_run(model="codex", trial=2, trust_events=[leak])),
+           "denied-at-boundary near-miss trust_event classified env-blocked")
+
+    # ATTRIBUTION HONESTY (the other direction): a site-attributed twin, a site-side
+    # "firewall boundary" (apparatus is not a browser), a bare 403 body, a block word
+    # PRECEDING via "by the server", and a "retry FROM the browser ... boundary"
+    # recovery aside must NEVER be excused — the apparatus must be a browser-named
+    # boundary governed by a LOCUS preposition, and _NOT_SITE_ATTRIBUTED rejects
+    # "...denied BY the server/WAF/Cloudflare".
+    not_env = [
+        "Access Denied",                                                          # bare 403 body, no browser anchor
+        "the site returned 403 Forbidden; access was denied",                     # site 403, no browser boundary
+        "access was denied at the firewall boundary",                             # site-side apparatus (not a browser)
+        "Cloudflare denied the browser permission controls at the edge",          # 'controls', not 'boundary'; site denier
+        "access was denied by the server before the browser permission boundary", # site-attributed via 'by the server'
+        "the request was denied by the origin's WAF at the browser access boundary",  # site-attributed
+        "the server denied access; retry from the browser permission boundary panel",  # 'from' is not a locus preposition
+        "You must grant the browser permission to use your camera",               # UI grant, no block verb
+    ]
+    for phrase in not_env:
+        _check(not S._is_env_blocked(_run(model="claude", blockers=[phrase])),
+               f"site-attributed / anchorless block NOT excused: {phrase[:52]!r}")
+
+    # Denominator routing (mirrors #5/#12/#13/#14/#15/#16): one valid claude run +
+    # one denied-at-boundary-blocked codex run -> outcome over n=1 (a passed
+    # checkpoint reads PASS), the blocked run surfaces as reachability, not site evidence.
+    valid = _run(model="claude", trial=1, found_product=True)
+    blocked = _run(model="codex", trial=2, blockers=[leak])
+    checks = _by_id(S._aggregate("driftflight.com", [valid, blocked]))
+    _check(checks["bhv_found_product"].status == Status.PASS,
+           "found_product PASS — denied-at-boundary-blocked run excluded (n=1)")
+    _check(checks["bhv_found_product"].evidence["valid_runs"] == 1,
+           "outcome denominator counts only the 1 valid run")
+    reach = checks["hosted_agent_reachability"]
+    _check(reach.status == Status.PARTIAL and reach.evidence["blocked_runs"] == 1,
+           "denied-at-boundary-blocked codex run counted as reachability, not site evidence")
+    _check("codex" in reach.evidence["blocked_by_model"],
+           "the denied-at-boundary-blocked model is attributed in reachability evidence")
+
+
 def main() -> int:
     tests = [
         test_env_block_positive_phrasings,
@@ -908,6 +1001,7 @@ def main() -> int:
         test_env_block_permission_boundary_near_miss_covered,
         test_env_block_browser_access_near_miss_covered,
         test_env_block_browser_site_access_near_miss_covered,
+        test_env_block_denied_at_boundary_near_miss_covered,
     ]
     failed = 0
     for t in tests:

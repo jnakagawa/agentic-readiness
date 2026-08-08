@@ -172,7 +172,35 @@ _ENV_BLOCK_RE = re.compile(
     # tests/test_attribution.py #14.
     r"|(?:denied|declined|refused|rejected|blocked)" + _NOT_SITE_ATTRIBUTED +
     r"\s+by\s+(?:a |an |the )?"
-    r"browser['’]?s? (?:site[- ])?permission (?:boundary|policy|layer|controls?)",
+    r"browser['’]?s? (?:site[- ])?permission (?:boundary|policy|layer|controls?)"
+    # v0.7 (g) (Cycle 317 / Local 20260808T230000Z): the block verb PRECEDES the
+    # own-apparatus, joined by a LOCUS/AGENT preposition other than v0.7(d)'s "by",
+    # so "...denied AT the browser permission boundary" is anchored. codex's own-tool
+    # refusal drifted a SIXTH time (this fire's $0 codex-reachability recon,
+    # runs/local/codex_reachability_20260808T214615Z/): driftflight.com codex t2 said
+    # "Live-site access was denied at the browser permission boundary." while the
+    # SAME-run FetchContext.homepage() = HTTP 200 (site UP) and codex t1 on the SAME
+    # panel was correctly caught by the v0.6 "browser security policy" branch. It
+    # slipped EVERY branch because the VERB precedes the apparatus: v0.7(a)/(e)/(f)
+    # need "browser ... access ... <verb>" in that order (here "access" binds to
+    # "Live-site" and "browser" only appears trailing), it is not possessive
+    # "browser's" (v0.7(b)), and the connector is "at" not "by" (v0.7(d) requires
+    # "by"). The all-false refusal would count a VALID .com SITE run, NARROWING the
+    # behavioral delta by scoring codex's OWN hosted-browser refusal as site evidence
+    # (the exact invariant-#4 leak). The own-apparatus anchor is a browser-NAMED
+    # "boundary" GOVERNED by a locus/agent preposition (at|by|behind|within|under|via)
+    # — one is "denied AT/BY a boundary", not "denied FROM" one — so a site 403 body
+    # ("Access Denied"), a site-side "denied at the firewall boundary" (apparatus is
+    # NOT a browser), and a "...denied; retry FROM the browser permission boundary"
+    # recovery aside all stay unmatched, and _NOT_SITE_ATTRIBUTED keeps a real
+    # "...denied BY the server/WAF/Cloudflare ... boundary" out (attribution honesty,
+    # both directions). A strict SUPERSET (a new alternation): a differential leak-scan
+    # over the committed run-record string leaves flips EXACTLY this one text OLD->NEW,
+    # ZERO collateral. Pinned by tests/test_attribution.py #17.
+    r"|(?:denied|declined|refused|rejected|blocked)" + _NOT_SITE_ATTRIBUTED +
+    r"(?:[^.]|\.(?=\S)){0,40}?"
+    r"\b(?:at|by|behind|within|under|via)\s+(?:a |an |the )?"
+    r"browser (?:permission|access) boundary",
     re.I,
 )
 

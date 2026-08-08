@@ -1,0 +1,37 @@
+{
+ "ts": "20260808T225133Z",
+ "kind": "env-block-v0.7g-authoring",
+ "track": "METHOD",
+ "peer_gated": true,
+ "drift": "the SIXTH _ENV_BLOCK_RE own-tool refusal vocab drift (verb-then-apparatus: \"denied AT the browser permission boundary\")",
+ "exact_committed_text": "Live-site access was denied at the browser permission boundary.",
+ "source_transcript": "runs/local/codex_reachability_20260808T214615Z/transcripts/driftflight.com_codex_t2.json",
+ "shipped_v0_7f_matched_leak": false,
+ "v0_7g_matches_leak": true,
+ "diff_leak_scan": {
+  "committed_json_files": 295,
+  "string_leaves": 32278,
+  "new_only_distinct": [
+   "Live-site access was denied at the browser permission boundary."
+  ],
+  "new_only_count_incl_dupes": 4,
+  "old_only_distinct": []
+ },
+ "superset_zero_collateral": true,
+ "tests": {
+  "test_attribution.py": "17/17",
+  "full_suite": "38/38 suites"
+ },
+ "canonical": {
+  "frozen_delta": "+39.4 (UNMOVED \u2014 behavioral-only change, off the static scoring path)",
+  "live_delta": "+30.1",
+  "frozen_source": "test_canonical_replay 37/37",
+  "live_source": "runs/local/verify_20260808T224104Z.json"
+ },
+ "invariants": {
+  "inv1_zero_spend": "no free-tier probe / no zero CLI / no --max-pay / no signing",
+  "inv2_versioned": "v0.7(g) branch, peer-gated",
+  "inv3_evidence": "literal committed transcript fixture",
+  "inv4_attribution": "own-apparatus anchor + _NOT_SITE_ATTRIBUTED, both directions"
+ }
+}

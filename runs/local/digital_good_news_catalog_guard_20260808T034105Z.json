@@ -1,0 +1,25 @@
+{
+  "ts": "20260808T034105Z_cycle",
+  "item": "thebotwire.com pin UNBLOCK sub-item A.4 \u2014 digital_good NEWS-CATALOG guard (4th/last planned FP family)",
+  "track": "COVERAGE",
+  "change": "asrs/offering.py digital_good bank: `generations` gains a negative lookahead (?![\\s-]+(agents?|bots?|assistants?)) so 'generation agents/bots' (AI-actor audience) no longer claims; `render` splits so noun `renders?` stays unconditional but the `rendering` gerund now needs a visual-output collocation (rendering of an image/video/frame/\u2026).",
+  "live_thebotwire_claimed_after": [
+    "metered_api",
+    "subscription",
+    "data_retrieval"
+  ],
+  "live_thebotwire_digital_good_gone": true,
+  "exa_ai_fixture_digital_good_signals": [
+    [
+      "generations"
+    ]
+  ],
+  "exa_ai_still_claims_digital_good": true,
+  "remaining_blocker_for_pin": "subscription still claimed LIVE via COMPARISON spans ('cheaper than a subscription?','pay-per-call-api-vs-subscription' URL slug,'against a subscription') \u2014 an UNCOVERED FP distinct from the 'No subscription' negation the 005504Z _NEG_DISCLAIMER already guards; honest set is NOT yet {metered_api,data_retrieval}. Queue a subscription-COMPARISON guard as the next A-sub-item before the [LOCAL] pin.",
+  "canonical_frozen_delta": "+39.4 (test_canonical_replay passed, unmoved; offering off the scoring path)",
+  "canonical_live_delta": "+30.1 (verify_20260808T034105Z: driftflight.com 76.2 C / drift-flight.org 46.1 F; /extend still 401)",
+  "test_offering": "121 -> 123",
+  "test_offering_canonical": "70/70",
+  "full_suite": "38/38",
+  "spend": "$0; zero codex; zero zero-CLI/paid ops; in-repo; live reads $0 static GETs only"
+}

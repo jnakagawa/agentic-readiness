@@ -1,18 +1,34 @@
 # Loop state
 
-- Cycle counter: 311
-- **✅ gymshark.com's UCP-retail WELD PREREQUISITE DISCHARGED this fire (Local 20260808T145709Z, TRUTH, direct-to-main).**
-  First duty GREEN (`gh pr list --state open` EMPTY — PR #159 merged last fire, no review owed). The ONE item: added
-  `("gymshark.com", "ucp-live:apparel-retail")` to `experiments/calibration_sweep.py` POPULATION (24→25) + ran a $0 static
-  cadence sweep (no `--behavioral`/`--max-pay`/codex/zero-CLI, inv #1 by construction) →
-  `runs/local/calibration_sweep_20260808T144423Z.json` (25 total, 24 scored, 1 not-scorable=rei.com per inv #4, 0 errors).
-  gymshark.com scored **62.4 D BYTE-IDENTICAL to its frozen floor** (access 100.0/legibility 54.55/tx 50.0/trust 60.0, caps
-  empty, honest `{metered_api, physical_good}`); drift vs `20260808T114436Z` **0/23 moved, max |Δ| 0.0** (every prior member
-  + both anchors + coffeecircle 57.4 byte-stable on floor; only added member gymshark.com). So gymshark now carries a first
-  genuinely-compared sweep presence AGREEING with its floor. Off-scoring-SEMANTICS EMPTY (POPULATION +1 only, off the scoring
-  path); frozen delta UNMOVED **+39.4**; live **+30.1**; suite 38/38. This UNLOCKS the FIRST forward step of the P2 item: a
-  future PEER-GATED weld of gymshark.com into `_NON_ANCHOR_WELDED` (the 12th non-anchor member / 2nd on the UCP rail,
-  n_compared=1, teeth = synthetic drift caught). See LOG Local cycle 20260808T145709Z + BACKLOG P2 (2).
+- Cycle counter: 312
+- **↪ PEER-GATED PR #160 OPENED this fire (Local 20260808T154553Z, TRUTH): WELD gymshark.com (62.4) into
+  `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` as the TWELFTH non-anchor member / SECOND on the LIVE
+  UCP commerce-protocol rail (retail DEPTH), NOT self-merged.** Branch `loop/gymshark-ucp-retail-non-anchor-weld`
+  (tip `561290d`). FIRST duty this fire GREEN (`gh pr list --state open` EMPTY at fire start — PR #159 merged two fires
+  ago, last fire's sweep-add direct-to-main so no peer-gated review was owed). Added `"gymshark.com"` to
+  `_NON_ANCHOR_WELDED` (11→12) + member comment + `test_gymshark_twelfth_non_anchor_is_welded_nonvacuously` + main()
+  registration. LOAD-BEARING/non-vacuous: committed v0.7 floor present (62.4, in `_REPLAY_CLEAN`); genuinely COMPARED
+  n_compared=1 in `calibration_sweep_20260808T144423Z.json` (segment ucp-live:apparel-retail); keyed identically both
+  paths (no www/bare alias); teeth = synthetic drift 62.4→75.0 caught as exactly one divergence vs floor. Calibration
+  value = CONTROLLED single-pillar isolation vs coffeecircle (57.4): access 100.0 / legibility 54.55 / transactability
+  50.0 BYTE-IDENTICAL, separating PURELY on trust (33.33→60.0), lifting 57.4→62.4 — "UCP rail NECESSARY but not
+  SUFFICIENT" made cleanest. [LOCAL] essence: $0 static re-score this fire (no --behavioral/--max-pay/codex/zero CLI,
+  no payment signed inv #1) → live 62.4 == frozen 62.4 == EXPECTED 62.4, all 4 non-null pillars byte-identical, caps
+  empty, `x402_probe` partial 4.0/8.0 `commerce-protocol-live` from `https://us.checkout.gymshark.com/.well-known/ucp`
+  (ucp manifest v2026-04-08, UCP rail UP, no drift). Off-scoring-SEMANTICS EMPTY (three-dot diff =
+  `test_calibration_anchor_agreement.py` +91 + evidence JSON +53; EMPTY over asrs/rubric/fixtures/experiments/loop);
+  weld suite 27→28; full suite 38/38; frozen delta UNMOVED **+39.4**; live **+30.1**. Evidence
+  `runs/local/gymshark_ucp_retail_non_anchor_weld_20260808T154553Z.json`; LOG Local cycle 20260808T154553Z. **The NEXT
+  fire OWES its first-duty adversarial review + independent $0 live re-score BEFORE picking new work** (the REVIEWER
+  re-runs the volatile-rail live re-score; a divergence = REAL UCP-manifest drift → re-capture that member, do NOT
+  merge, inv #4). Merging #160 completes the #152–#160 non-anchor weld campaign at TWELVE witnesses.
+- **✅ gymshark.com's UCP-retail WELD PREREQUISITE was DISCHARGED (Local 20260808T145709Z, TRUTH, direct-to-main):**
+  `("gymshark.com", "ucp-live:apparel-retail")` added to `experiments/calibration_sweep.py` POPULATION (24→25) + a $0
+  static cadence sweep → `runs/local/calibration_sweep_20260808T144423Z.json` (25 total, 24 scored, rei.com
+  not-scorable per inv #4, 0 errors). gymshark.com scored **62.4 D BYTE-IDENTICAL to its frozen floor** (access
+  100.0/legibility 54.55/tx 50.0/trust 60.0, caps empty, honest `{metered_api, physical_good}`); drift vs
+  `20260808T114436Z` **0/23 moved, max |Δ| 0.0**. That first genuinely-compared sweep presence (n_compared=1) is what
+  made PR #160 above authorable. See LOG Local cycle 20260808T145709Z.
 - **✅ PEER-GATED PR #159 (coffeecircle UCP weld — the ELEVENTH non-anchor member, FIRST on the UCP commerce-protocol
   rail) MERGED this fire (Local 20260808T140228Z), merge `0d5d6d4`** — after the owed FIRST-DUTY adversarial review +
   independent $0 live UCP re-score. VERDICT SOUND: off-scoring-path (three-dot diff since merge-base `ef43392` is ONLY
@@ -283,11 +299,8 @@
 <!-- Rolling entry for Local cycle 20260808T054613Z (TRUTH / thebotwire.com PINNED as the TENTH frozen-replay
      calibration baseline — the oldest P0, CLOSED) pruned this fire (Local cycle 20260808T065659Z) to stay under the
      STATE 600-line cap — preserved verbatim in loop/LOG.md + git history; the persistent pin banner above retains its
-     essence. -->
-- LOCAL cycle — 20260808T054613Z summarized: pinned thebotwire.com as the TENTH frozen-replay baseline (86.0 B, the
-  HIGHEST + FIRST non-anchor LIVE-x402 point) via the exa.ai recipe after clearing all five offering-classification FP
-  families over the prior five cycles; live 86.0 == frozen == EXPECTED, replay-clean, {metered_api, data_retrieval}.
-  Direct-to-main; frozen +39.4 / live +30.1; baselines 9→10. Full detail in loop/LOG.md.
+     essence. A duplicate 054613Z summary line was pruned this fire (Local cycle 20260808T154553Z) — the surviving copy
+     is above (near the 065659Z region). -->
 <!-- Rolling entry for Local cycle 20260808T045337Z (COVERAGE / thebotwire.com pin UNBLOCK sub-item A.5, FINAL — the
      subscription-COMPARISON guard `_SUB_COMPARISON`, clearing the LAST classification blocker) pruned this fire (Local
      cycle 20260808T054613Z) to stay under the STATE 600-line cap — preserved verbatim in loop/LOG.md + git history. -->

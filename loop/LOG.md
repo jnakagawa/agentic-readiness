@@ -20151,3 +20151,58 @@ tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1
 ## Local verification — 20260808T154104Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260808T154104Z.json
+
+## Local cycle — 20260808T154553Z
+
+Track: TRUTH (peer-gated). One item: WELD gymshark.com (62.4) into
+`tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` as the TWELFTH non-anchor member
+and the SECOND welded member on the LIVE UCP commerce-protocol rail (retail DEPTH) — authored as
+PEER-GATED PR #160, NOT self-merged.
+
+FIRST DUTY (GREEN): `gh pr list --state open` EMPTY at fire start (PR #159 merged two fires ago;
+last fire's sweep-add was direct-to-main, so no peer-gated review was owed). Infra health check
+GREEN: newest `runs/local/verify_20260808T154104Z.json` fresh (~2 min old, << 6h), `tests_ok`
+38/38, live delta +30.1 (drift-flight.org 46.1 / driftflight.com 76.2), git clean + up to date,
+last push landed (`c63c715`).
+
+THE ITEM (BACKLOG P2 step 2). The gymshark.com sweep-add prerequisite was DISCHARGED last fire
+(Local cycle 20260808T145709Z — POPULATION 24->25 + `calibration_sweep_20260808T144423Z.json`,
+gymshark 62.4 == floor, n_compared=1). This fire executes the forward step: the peer-gated weld.
+- Added `"gymshark.com"` to `_NON_ANCHOR_WELDED` (11 -> 12 members) + a member comment block +
+  `test_gymshark_twelfth_non_anchor_is_welded_nonvacuously` (mirrors the coffeecircle test) +
+  main() registration.
+- Non-vacuous / load-bearing: committed v0.7 replay floor present (62.4, in `_REPLAY_CLEAN`);
+  genuinely COMPARED n_compared=1 in `calibration_sweep_20260808T144423Z.json`
+  (segment ucp-live:apparel-retail); keyed identically both paths (no www/bare alias); teeth =
+  synthetic drift 62.4 -> 75.0 caught as exactly one divergence vs its 62.4 floor.
+- Calibration value = a CONTROLLED single-pillar isolation vs coffeecircle (57.4): access 100.0 /
+  legibility 54.55 / transactability 50.0 BYTE-IDENTICAL on both (same UCP commerce-protocol-live
+  PARTIAL 4.0/8.0 rung), separating PURELY on trust (33.33 -> 60.0), lifting overall 57.4 -> 62.4
+  — the "UCP rail NECESSARY but not SUFFICIENT" statement made cleanest.
+
+[LOCAL] essence (cross-path evidence the cloud cannot produce). $0 static re-score this fire
+(`.venv/bin/python -m asrs score gymshark.com --json-only`, no --behavioral/--max-pay/codex/zero
+CLI, no payment signed, inv #1) -> run record `runs/gymshark_com_20260808T154447.json`: live 62.4
+== frozen fixture-replay 62.4 == EXPECTED 62.4, all four non-null pillars byte-identical
+(access 100.0 / legibility 54.545 / transactability 50.0 / trust 60.0), caps empty, `x402_probe`
+partial 4.0/8.0 `commerce-protocol-live` from `https://us.checkout.gymshark.com/.well-known/ucp`
+(valid ucp manifest v2026-04-08) — UCP rail UP, no manifest drift.
+
+Off-scoring-SEMANTICS EMPTY (three-dot diff main...branch = `test_calibration_anchor_agreement.py`
++91 + evidence JSON +53; EMPTY over asrs/rubric/fixtures/experiments/loop). Weld suite 27 -> 28
+(overall weld now compares 59 non-anchor pairs, pillar weld 300 comparisons, 0 divergences); full
+suite 38/38. Frozen canonical delta UNMOVED +39.4; live +30.1. Evidence
+`runs/local/gymshark_ucp_retail_non_anchor_weld_20260808T154553Z.json`.
+
+PEER-GATED: PR #160 (branch loop/gymshark-ucp-retail-non-anchor-weld, tip 561290d), NOT
+self-merged. The NEXT fire's FIRST duty is the adversarial review + independent $0 live re-score
+(the REVIEWER re-runs the volatile-rail live re-score; a divergence = REAL UCP-manifest drift ->
+re-capture that member, do not merge, inv #4). The cross-path weld would then span TWELVE
+structurally-distinct non-anchor witnesses: null-control + 2 retail + service-booking +
+data-retrieval + pure-inference-API + agent-native-search-API + THREE live-x402 storefronts +
+TWO live-UCP commerce-protocol storefronts (coffee-merchant + apparel-retail).
+
+Next hypothesis: the #152-#160 non-anchor weld campaign is complete once #160 merges (12 witnesses).
+Forward P2 frontier = a genuinely-NEW rail TYPE (ACP/MPP), currently UN-pinnable $0 (ACP well-known
+scarce; re-scan at a future cadence) OR more UCP-retail witnesses (glossier/spanx/skims/hardgraft
+all serve valid /.well-known/ucp) as cheap direct-to-main pins IF a distinct calibration value.

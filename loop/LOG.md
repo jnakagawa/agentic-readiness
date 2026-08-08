@@ -3,6 +3,92 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Local cycle — 20260808T204601Z — TRUTH (LOCAL) — MERGED peer-gated PR #161 (hardgraft.com 13th non-anchor / 3rd UCP-rail weld) after the owed first-duty review + $0 live UCP re-score; then a $0 ACP-well-known recon that FALSIFIED the ecosystem-path re-pathing lead (ACP still un-pinnable, scorer UNCHANGED)
+
+**Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260808T204101Z.json`
+fresh at fire start (< 6h floor), `tests_ok:true` (all 38 suites green); live canonical
+drift-flight.org 46.1 F / driftflight.com 76.2 C → live delta **+30.1** (the persistent x402
+`/extend` 402→401 regression; frozen replay UNMOVED **+39.4**). Git clean + up to date
+(HEAD == origin/main `d89531a`). Cycle counter 315→316.
+
+**FIRST DUTY — reviewed + MERGED peer-gated PR #161 (`5020895`).** PR #161 (branch
+`loop/hardgraft-ucp-retail-non-anchor-weld`, tip `2f33bea`) was authored by the PRIOR fire
+(Local 20260808T194406Z), so this fire owed its adversarial review + independent $0 live UCP
+re-score. **VERDICT SOUND** →merged:
+- **Off-scoring-path**: three-dot diff since merge-base `46e5263` is ONLY
+  `tests/test_calibration_anchor_agreement.py` (+94) + evidence JSON (+67). EMPTY over
+  asrs/rubric/fixtures/experiments/loop.
+- **Vendor-neutral**: welded by TYPE (a UCP leather-goods merchant); no `hardgraft` special-casing
+  anywhere in scoring code — only the `_NON_ANCHOR_WELDED` tuple (12→13) + a test + `main()`
+  registration.
+- **Committed floor present**: `replay.EXPECTED["hardgraft.com"]` = 66.9 D v0.7 (access 100.0 /
+  legibility 50.0 / transactability 50.0 / trust 90.0), in `_REPLAY_CLEAN` — independently
+  re-derived on main.
+- **LOAD-BEARING / non-vacuous**: independently re-derived — hardgraft.com scored 66.9 in EXACTLY
+  the committed sweep `calibration_sweep_20260808T184442Z.json` (segment `ucp-live:leather-goods`,
+  all 4 pillars byte-identical) → n_compared=1, divergences=[]. Teeth: synthetic drift 66.9→78.0
+  caught as exactly one divergence.
+- **Volatile-rail live $0 re-score re-run THIS fire** (`python -m asrs score hardgraft.com`,
+  static, no `--behavioral`/`--max-pay`/payment/codex/zero CLI; inv #1): **live 66.9 == frozen
+  66.9 == EXPECTED 66.9**, all 4 non-null pillars byte-identical (100.0/50.0/50.0/90.0), caps
+  empty, `x402_probe` **partial 4.0/8.0 commerce-protocol-live** → the served `dev.ucp.*` manifest
+  is UP, NO manifest drift, no divergence → MERGE (a divergence would have been REAL UCP drift →
+  re-capture, not merge, inv #4).
+- Weld suite **29/29** (28→29) on branch + merged main; full suite **38/38** on branch. No open
+  PRs remain. The whole non-anchor weld campaign (#152–#161) is **COMPLETE at 13 witnesses**; the
+  UCP rail spans THREE welded points (coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9) — the
+  "UCP NECESSARY but not SUFFICIENT" statement generalized from a LINE to a 2-D
+  (legibility × trust) PLANE at the fixed tx-50.0 rung.
+
+**ONE `[LOCAL]` ITEM (TRUTH) — $0 ACP-well-known recon; the P2 step (3) "new rail TYPE" prize.**
+After the campaign completed, the item was the forward step (3): re-scan the ecosystem for a LIVE
+ACP surface. The prior recon (Local 20260808T140228Z) probed only the scorer's path
+`/.well-known/agentic-commerce` (0/~20) and left a tentative lead — ecosystem sources place the
+real ACP discovery manifest at `/.well-known/acp/manifest.json`, a path the shipped scorer does
+NOT probe. This fire tested that lead directly with the scorer's OWN fetch + validator
+(byte-faithful): new `experiments/acp_wellknown_recon.py` probes 20 real domains (ACP co-authors
+stripe/openai + spec-home agenticcommerce.dev + announced merchants etsy/instacart + Shopify
+platform + agent-commerce infra + 6 known-UCP merchant controls) at three well-known paths
+(`/.well-known/agentic-commerce`, `/.well-known/acp/manifest.json`, `/.well-known/ucp`),
+validating each 200 body with the real `asrs.probes.protocols._parse_commerce_manifest`
+(`_ACP_PAYLOAD_KEYS` / `_UCP_MANIFEST_KEYS`). Read-only GETs only; no payment/POST/behavioral;
+inv #1 by construction.
+
+**FINDING (the ecosystem-path re-pathing lead is FALSIFIED at $0).**
+- **ACP valid at the scorer's path `/.well-known/agentic-commerce`: 0/20.** Every ACP candidate is
+  REACHABLE and returns **404** (stripe/openai/chatgpt/agenticcommerce.dev/etsy/instacart/shop.app/
+  shopify/crossmint all 404) — path genuinely absent, not a transport error.
+- **ACP valid at the ecosystem path `/.well-known/acp/manifest.json`: 0/20** — all 404 too,
+  INCLUDING the ACP co-authors and the spec home itself. So `/.well-known/acp/manifest.json` is NOT
+  "common"; re-pathing the scorer's `_COMMERCE_WELL_KNOWN` to add it would gain the benchmark
+  NOTHING (no live surface exists to validate the change against, inv #3 unsatisfiable). Lead CLOSED
+  as a pinning avenue.
+- **skyfire.xyz** returned a bare **200** at the scorer's ACP path but the body is NOT a JSON dict
+  (`json_top_keys: None`) → `_parse_commerce_manifest` → **None** (correctly rejected). A LIVE
+  confirmation that the v0.7 well-known tightening prevents the "catch-all index that 200s a
+  well-known path" false positive.
+- **Positive control: UCP valid at `/.well-known/ucp` on 6/6 of the UCP merchant controls**
+  (gymshark / hardgraft / checkout.coffeecircle / allbirds / skims / glossier all parse as real
+  `dev.ucp.*` service manifests). So the ACP null is REAL scarcity, not a broken probe (attribution
+  honesty: the recon machinery sees every UCP manifest and zero ACP ones). UCP remains the ONLY
+  live commerce-protocol rail with $0-pinnable surfaces.
+
+**Ship class: DIRECT-TO-MAIN.** Off-scoring-SEMANTICS EMPTY — a new read-only experiment +
+evidence JSON + bookkeeping; the scorer is UNCHANGED (correctly — re-pathing is not warranted).
+Frozen canonical delta UNMOVED **+39.4**; live **+30.1**; suite 38/38. Evidence
+`runs/local/acp_wellknown_recon_20260808T205138Z.json` + `experiments/acp_wellknown_recon.py`.
+
+**Next hypothesis.** ACP/MPP as a genuinely-NEW rail TYPE stays deferred, but the specific
+ecosystem-path re-pathing lead is now pruned with evidence — DO NOT re-open it without a fresh
+finding of ≥2 live ACP surfaces. Re-run this $0 recon at a future cadence (the ecosystem is
+young; OpenAI Instant Checkout shut down 2026-03); if `/.well-known/acp/manifest.json` (or the
+scorer's path) ever answers a valid ACP payload on ≥2 domains, the well-known-path fix + 2-domain
+validation becomes the peer-gated unit. Meanwhile UCP DEPTH (a 4th clean legibility×trust point)
+remains the only $0-pinnable commerce-protocol broadening — but the surveyed candidates
+(glossier 64.9 same-legibility, skims 60.4 different-tx-rung) do not add clean calibration value,
+so hold for a distinct-value merchant. WATCH driftflight.com `/extend` for a 402 recovery
+(restores the anchor's live handshake + the +39.4 live delta).
+
 ## Local cycle — 20260808T194406Z — TRUTH (LOCAL, PEER-GATED PR #161 opened) — weld hardgraft.com (66.9 D) into `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` as the THIRTEENTH non-anchor member / THIRD on the LIVE UCP rail; live↔frozen re-verified this fire (line→plane UCP calibration)
 
 **Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260808T194104Z.json`

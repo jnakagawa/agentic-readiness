@@ -52,24 +52,17 @@ with floor, teeth = synthetic drift caught) — the 12th non-anchor member / 2nd
 <!-- The gymshark.com PR #160 OPENED marker (Local cycle 20260808T154553Z) is pruned this fire (Local cycle
      20260808T194406Z) — PR #160 is long-MERGED `c091c4c` and fully recorded in loop/LOG.md (## Local cycle —
      20260808T154553Z / 20260808T165732Z) + git history; the OPENED-marker slot is reused below for PR #161. -->
-<!-- OPENED Local cycle 20260808T194406Z: the P2 step (4) UCP-retail weld of hardgraft.com (66.9 D, the 13th non-anchor
-member / 3rd on the LIVE UCP commerce-protocol rail — a premium leather-goods merchant, further retail DEPTH) is
-AUTHORED as PEER-GATED PR #161 (branch loop/hardgraft-ucp-retail-non-anchor-weld, tip 2f33bea), NOT self-merged. Adds
-"hardgraft.com" to tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED (12->13) + member comment +
-test_hardgraft_thirteenth_non_anchor_is_welded_nonvacuously + main() registration. Non-vacuous/load-bearing: committed
-v0.7 floor present (66.9, in _REPLAY_CLEAN); genuinely COMPARED n_compared=1 in calibration_sweep_20260808T184442Z.json
-(segment ucp-live:leather-goods, the sweep-add prerequisite discharged last fire Local 20260808T184442Z); keyed
-"hardgraft.com" identically both paths (no www/bare alias); teeth = synthetic drift 66.9->78.0 caught as exactly one
-divergence. Calibration value = LINE->PLANE: coffeecircle (57.4) + gymshark (62.4) share legibility 54.55 and separate
-PURELY on trust (one axis); hardgraft holds the SAME tx-50.0 rung at a DISTINCT legibility 50.0 AND the highest trust
-of the three (90.0) -> the three UCP points span a 2-D legibility x trust region at the fixed tx rung. TEST-ONLY
-(test_calibration_anchor_agreement.py +91 + evidence JSON; off-scoring-SEMANTICS EMPTY over
-asrs/rubric/fixtures/experiments/loop), weld suite 28->29, full suite 38/38. Live<->frozen re-confirmed this fire ($0
-static, no --behavioral/--max-pay/codex/zero CLI: live 66.9 == frozen 66.9 == EXPECTED 66.9, all 4 non-null pillars
-byte-identical (100.0/50.0/50.0/90.0), caps empty, x402_probe partial 4.0/8.0 commerce-protocol-live; no payment
-signed, inv #1). DO NOT RE-AUTHOR — TRACKED by STATE's OPEN-PR #161 banner + next fire's first-duty adversarial review
-+ $0 live UCP re-score (a divergence = REAL UCP-manifest drift -> re-capture that member, do not merge, inv #4).
-Evidence runs/local/hardgraft_ucp_retail_non_anchor_weld_20260808T194406Z.json. See LOG Local cycle 20260808T194406Z. -->
+<!-- MERGED Local cycle 20260808T204601Z: PR #161 (hardgraft.com 13th non-anchor / 3rd UCP-rail weld) MERGED `5020895`
+after the owed FIRST-DUTY adversarial review + independent $0 live UCP re-score. VERDICT SOUND: off-scoring-path
+(three-dot diff since merge-base 46e5263 is ONLY test_calibration_anchor_agreement.py +94 + evidence JSON +67; EMPTY
+over asrs/rubric/fixtures/experiments/loop); vendor-neutral (by TYPE, a UCP leather-goods merchant); committed 66.9 v0.7
+floor in _REPLAY_CLEAN (re-derived); LOAD-BEARING (n_compared=1 / divergences=[] re-derived — scored 66.9 in EXACTLY
+calibration_sweep_20260808T184442Z.json, segment ucp-live:leather-goods, all 4 pillars byte-identical); teeth (66.9->78.0
+caught). Volatile-rail live re-score re-run THIS fire ($0 static, no --behavioral/--max-pay/payment/codex/zero CLI, inv
+#1): live 66.9 == frozen 66.9 == EXPECTED 66.9, all 4 non-null pillars byte-identical (100.0/50.0/50.0/90.0), caps empty,
+x402_probe partial 4.0/8.0 commerce-protocol-live -> UCP manifest UP, no drift -> MERGE. Weld 29/29 branch + merged main;
+full suite 38/38. The whole #152-#161 non-anchor weld campaign is COMPLETE at 13 witnesses (UCP rail welded at 3 points).
+See LOG Local cycle 20260808T204601Z. -->
 <!-- Two fully-superseded api.replicate.com markers (DONE 20260807T114104Z: pinned as the 7th frozen-replay baseline 29.5 F;
 DONE 20260807T134105Z: its sweep-add prerequisite discharged) pruned this fire (Local cycle 20260808T140228Z) to keep
 completed-marker bytes under the hygiene cap — both preserved verbatim in loop/LOG.md + git history. -->
@@ -162,22 +155,10 @@ non-anchor LIVE-x402 point. Off-scoring-SEMANTICS EMPTY; frozen delta UNMOVED +3
 20260808T145709Z) to keep closed-marker bytes under the 24000 hygiene cap — preserved verbatim in loop/LOG.md
 (## Local cycle — 20260808T065659Z) + git history. -->
 
-<!-- DONE Local cycle 20260808T074103Z: the P2 "A THIRD non-anchor LIVE-x402 calibration point" is EXECUTED — pinned
-x402deploy.vercel.app as the TWELFTH frozen-replay baseline (73.9 C v0.7; access 100.0/legibility 45.45/tx 100.0/trust
-33.33), a purpose-built agent-native x402 "Web & Data Tools" gateway ({metered_api, data_retrieval}) and the THIRD
-non-anchor baseline with a GENUINE LIVE x402 handshake / SECOND tx-100 witness. Its calibration value is the second tx-100
-point: with tx held at its 100.0 ceiling on BOTH x402deploy (73.9) and thebotwire (86.0), the overall gap is forced onto
-legibility (45.5 vs 86.4) + trust (33.3 vs 43.3) — the "live rail NECESSARY but not SUFFICIENT" statement, non-trivial only
-with >=2 same-tx points at distinct overalls. GATE cleared on a FRESH capture: (a) live x402 STABLE across >=2 $0 obs
-(GET /api/serp 402 body + 402 payment-required header + scorer x402_probe 8.0/8.0 x402-live; offer USDC on Base, $0.005;
-NO payment signed, inv #1); (b) HONEST classification exactly {metered_api, data_retrieval} (thin single-vertical gateway,
-no over-claim, NO FP-family guards needed); (c) fresh full-score capture -> live 73.9 == frozen fixture-replay 73.9 ==
-EXPECTED 73.9, all 4 non-null pillars byte-identical, replay_misses=0, caps empty. Installed
-fixtures/canonical/x402deploy.vercel.app.json (NEW, 49 entries) + EXPECTED + _REPLAY_CLEAN + guard
-test_second_full_live_x402_replays_73_9 (necessary-but-not-sufficient teeth: x402deploy tx == thebotwire tx == 100.0 YET
-x402deploy overall 73.9 < thebotwire 86.0, gap in legibility/trust) + _POPULATION x5 (11->12). Off-scoring-SEMANTICS EMPTY;
-frozen delta UNMOVED +39.4 (replay 33->34); live +30.1; suite 38/38; baselines 11->12. Direct-to-main. Evidence
-runs/local/x402deploy_third_live_x402_baseline_20260808T074103Z.json; LOG Local cycle 20260808T074103Z. -->
+<!-- The x402deploy.vercel.app pin marker (Local cycle 20260808T074103Z: 12th frozen-replay baseline, 73.9 C, 3rd
+live-x402 point / 2nd tx-100 witness) is pruned this fire (Local cycle 20260808T204601Z) to keep completed-marker bytes
+under the 24000 hygiene cap — x402deploy is now BOTH pinned AND welded (PR #158); full text in loop/LOG.md
+(## Local cycle — 20260808T074103Z) + git history. -->
 
 <!-- DONE Local cycle 20260808T084106Z: the P2 prerequisite (give the three live-x402 witnesses a genuinely-compared
 calibration-sweep presence) is DISCHARGED. Added thebotwire.com / api.x402oracle.com / x402deploy.vercel.app to
@@ -215,20 +196,10 @@ calibration_sweep_20260808T084504Z.json at floor, keyed identically both paths, 
 73.9->85 each caught as one divergence; weld 23->26). Volatile-rail $0 live re-score re-run THIS fire: ALL THREE live ==
 frozen == floor, all 4 non-null pillars byte-identical, caps empty, each x402_probe 8.0/8.0 x402-live -> rails UP + agree
 -> MERGE. Weld 26/26 branch + merged main (canonical replay 34/34). See LOG Local cycle 20260808T104105Z. -->
-<!-- DONE Local cycle 20260808T104105Z: pinned checkout.coffeecircle.com (a REAL coffee merchant's UCP checkout surface —
-the FIRST baseline carrying a genuine LIVE UCP commerce-protocol rail, a structurally NEW agent-native rail TYPE) as the
-THIRTEENTH test_canonical_replay.EXPECTED frozen-replay baseline (57.4 F v0.7; access 100.0/legibility 54.55/tx 50.0/trust
-33.33) + _REPLAY_CLEAN + guard test_ucp_commerce_protocol_storefront_replays_57_4 (teeth: books 0.0 < UCP 4.0 <
-thebotwire 8.0) + _POPULATION x5, direct-to-main. GET /.well-known/ucp serves a valid dev.ucp.* capability manifest
-(version 2026-04-08) -> x402_probe reads commerce-protocol-live PARTIAL 4.0/8.0 (the MIDDLE rung between no-rail 0.0 and a
-full live-x402 handshake 8.0). Found by a $0 UCP recon this fire: joinhexagon.com ALSO serves a valid UCP manifest (-> 78.4
-C) but OVER-CLAIMS all 6 archetypes (161KB marketing site + huge llms-full.txt topic-word FPs) -> BLOCKED (inv #4, thebotwire
-pattern); checkout.coffeecircle.com is CLEAN — honest {metered_api, physical_good} (the other 4 NA), NO FP-guards needed.
-Gate: UCP manifest STABLE across >=2 $0 obs (static well-known JSON, NO payment signed inv #1); fresh full-score capture ->
-live 57.4 == frozen 57.4 == EXPECTED, all 4 pillars byte-identical, replay_misses=0, caps empty. Off-scoring-SEMANTICS EMPTY
-(tests + new non-anchor fixture; canonical PAIR untouched); frozen delta UNMOVED +39.4 (canonical replay 34->35); suite
-38/38; baselines 12->13. Evidence runs/local/ucp_rail_new_type_baseline_20260808T104105Z.json. See LOG Local cycle
-20260808T104105Z. -->
+<!-- The checkout.coffeecircle.com pin DONE marker (Local cycle 20260808T104105Z: FIRST live-UCP frozen-replay baseline,
+57.4 F, the 13th baseline) is pruned this fire (Local cycle 20260808T204601Z) to keep completed-marker bytes under the
+24000 hygiene cap — coffeecircle is now BOTH pinned AND welded (PR #159 MERGED); preserved verbatim in loop/LOG.md
+(## Local cycle — 20260808T104105Z) + git history. -->
 
 <!-- MERGED Local cycle 20260808T140228Z: PR #159 (weld checkout.coffeecircle.com 57.4 into _NON_ANCHOR_WELDED as the
 ELEVENTH member / FIRST on the UCP commerce-protocol rail) MERGED `0d5d6d4` after the owed FIRST-DUTY adversarial review +
@@ -274,12 +245,21 @@ drift caught) — the 13th non-anchor member / 3rd on the UCP rail. BOOKKEEPING 
 uncommitted at fire start (the api.replicate.com 20260807T134105Z pattern) — verified byte-correct + adopted, no fabricated
 prior-ts LOG entry. See LOG Local cycle 20260808T184442Z. -->
 
+<!-- DONE Local cycle 20260808T204601Z: the P2 step (3) "new rail TYPE" forward move — a $0 ACP-well-known recon
+(experiments/acp_wellknown_recon.py, 20 real domains x 3 well-known paths, read-only GETs, byte-faithful via the
+scorer's own _parse_commerce_manifest) — FALSIFIED the ecosystem-path re-pathing lead: ACP valid at the scorer's path
+/.well-known/agentic-commerce = 0/20 (all reachable, all 404) AND at the ecosystem /.well-known/acp/manifest.json = 0/20
+(all 404, incl. the ACP co-authors + spec home) -> re-pathing _COMMERCE_WELL_KNOWN gains nothing (inv #3 unsatisfiable),
+lead CLOSED. Positive control UCP 6/6 (real scarcity, not a broken probe); skyfire.xyz bare-200 correctly rejected (v0.7
+FP-guard confirmed live). Scorer UNCHANGED; direct-to-main; frozen +39.4 / live +30.1; suite 38/38. Detail folded into the
+P2 item step (3) below. Evidence runs/local/acp_wellknown_recon_20260808T205138Z.json. See LOG Local cycle 20260808T204601Z. -->
+
 - **[P2 — TRUTH, LOCAL, candidate] BROADEN further / DEEPEN the UCP rail / UNLOCK a NEW rail TYPE.** The UCP rail now
   has THREE pinned baselines, all UCP `commerce-protocol-live` at the tx-50.0 rung: checkout.coffeecircle.com (57.4 F,
   coffee merchant, WELDED via MERGED PR #159 as the 11th non-anchor member), gymshark.com (62.4 D, apparel brand, WELDED
   via MERGED PR #160 as the 12th member), and hardgraft.com (66.9 D, leather-goods merchant — PINNED Local cycle
-  20260808T165732Z, the THIRD UCP point, WELD OPENED as PEER-GATED PR #161 this fire Local 20260808T194406Z, awaiting
-  next-fire review). The three span a 2-D (legibility × trust) region at the fixed tx
+  20260808T165732Z, the THIRD UCP point, WELDED via **MERGED PR #161 `5020895`** Local cycle 20260808T204601Z as the
+  13th non-anchor member). The three span a 2-D (legibility × trust) region at the fixed tx
   rung: coffeecircle+gymshark share legibility 54.55 (separate on trust 33.33→60.0); hardgraft sits at a DISTINCT
   legibility 50.0 AND the highest trust 90.0 — the "UCP necessary but not SUFFICIENT" statement generalized from a line
   to a plane. Next steps, in order:
@@ -288,25 +268,28 @@ prior-ts LOG entry. See LOG Local cycle 20260808T184442Z. -->
   #160 MERGED `c091c4c`** this fire (Local cycle 20260808T165732Z) after the owed FIRST-DUTY adversarial review + $0 live
   UCP re-score (live 62.4 == frozen 62.4, all 4 pillars byte-identical, x402_probe partial 4.0/8.0 commerce-protocol-live;
   weld 28/28). **The whole #152–#160 non-anchor weld campaign is COMPLETE at 12 witnesses.**
-  (3) A genuinely-NEW rail TYPE (ACP/MPP) remains the higher prize but is currently **UN-pinnable $0** — the Local cycle
-  20260808T140228Z ACP recon FINDING (recorded, inv #4): the scorer already supports ACP (`asrs/probes/protocols.py`
-  `_COMMERCE_WELL_KNOWN` probes `/.well-known/agentic-commerce` + validates `_ACP_PAYLOAD_KEYS` -> `commerce-protocol-live`),
-  BUT ACP well-known is SCARCE (0 of ~20 candidates serve `/.well-known/agentic-commerce`; ecosystem sources place the real
-  ACP manifest at `/.well-known/acp/manifest.json`, NOT the scorer's path; OpenAI Instant Checkout shut down 2026-03). A
-  peer-gated re-pathing of the scorer's ACP well-known would need 2+ live ACP surfaces to validate (inv #3) — none exist
-  today. Re-scan the ecosystem for a live ACP/MPP surface at a future cadence; if `/.well-known/acp/manifest.json` becomes
-  common, the well-known-path fix + 2-domain validation is the peer-gated unit.
-  (4) ⏳ OPENED this fire (Local 20260808T194406Z) — the PEER-GATED **UCP-retail WELD of hardgraft.com** (66.9 D, the
-  13th non-anchor member / 3rd on the UCP rail) is AUTHORED as **PR #161** (branch
-  `loop/hardgraft-ucp-retail-non-anchor-weld`, tip `2f33bea`), NOT self-merged. Its $0 cadence-sweep POPULATION-add
-  prerequisite was DISCHARGED Local cycle 20260808T184442Z (sweep `calibration_sweep_20260808T184442Z.json` scored it
-  66.9 == floor, n_compared=1, segment ucp-live:leather-goods), so the weld is non-vacuous: adds `hardgraft.com` to
-  `_NON_ANCHOR_WELDED` (12->13) + `test_hardgraft_thirteenth_non_anchor_is_welded_nonvacuously` + `main()` registration
-  (committed 66.9 v0.7 floor in `_REPLAY_CLEAN`; keyed identically both paths, no www/bare alias; teeth = synthetic
-  drift 66.9->78.0 caught). TEST-ONLY, off-scoring-SEMANTICS EMPTY; weld 28->29, suite 38/38; live 66.9 == frozen ==
-  EXPECTED re-confirmed $0 static this fire (x402_probe partial 4.0/8.0 commerce-protocol-live). **NEXT FIRE OWES the
-  first-duty adversarial review + independent $0 live UCP re-score before merge** (a divergence = REAL UCP-manifest
-  drift -> re-capture, do not merge, inv #4); merging COMPLETES the UCP-rail weld campaign at 3 witnesses. Other
+  (3) A genuinely-NEW rail TYPE (ACP/MPP) remains the higher prize but is **UN-pinnable $0** — and the specific
+  ecosystem-path re-pathing lead is now **FALSIFIED at $0** (Local cycle 20260808T204601Z ACP recon,
+  `experiments/acp_wellknown_recon.py`, 20 real domains × 3 well-known paths, read-only GETs, byte-faithful via the
+  scorer's own `_parse_commerce_manifest`). The scorer already supports ACP (`asrs/probes/protocols.py`
+  `_COMMERCE_WELL_KNOWN` probes `/.well-known/ucp` + `/.well-known/agentic-commerce` + validates `_ACP_PAYLOAD_KEYS` ->
+  `commerce-protocol-live`), but: ACP valid at the scorer's path `/.well-known/agentic-commerce` = **0/20** (all
+  REACHABLE, all 404 — stripe/openai/agenticcommerce.dev/etsy/instacart/shop.app/shopify/crossmint); ACP valid at the
+  ecosystem-documented `/.well-known/acp/manifest.json` = **0/20** (all 404 too, INCLUDING the ACP co-authors + the
+  spec home) → re-pathing `_COMMERCE_WELL_KNOWN` would gain NOTHING (no live surface to validate against, inv #3
+  unsatisfiable). LEAD CLOSED — DO NOT re-open the re-pathing without a fresh finding of ≥2 live ACP surfaces. Positive
+  control: UCP valid at `/.well-known/ucp` on **6/6** UCP merchant controls (the recon machinery is sound; the ACP null
+  is REAL scarcity, not a broken probe); bonus: skyfire.xyz's bare-200 non-JSON body is correctly REJECTED by
+  `_parse_commerce_manifest` (live confirmation the v0.7 well-known tightening blocks the catch-all-index FP). Evidence
+  `runs/local/acp_wellknown_recon_20260808T205138Z.json`; LOG Local cycle 20260808T204601Z. Re-run this $0 recon at a
+  future cadence (OpenAI Instant Checkout shut down 2026-03; the ecosystem is young); if the scorer's path OR the
+  ecosystem path ever answers a valid ACP payload on ≥2 domains, the well-known-path fix + 2-domain validation is the
+  peer-gated unit.
+  (4) ✅ DONE — the PEER-GATED **UCP-retail WELD of hardgraft.com** (66.9 D, the 13th non-anchor member / 3rd on the UCP
+  rail) is COMPLETE: **PR #161 MERGED `5020895`** this fire (Local cycle 20260808T204601Z) after the owed FIRST-DUTY
+  adversarial review + independent $0 live UCP re-score (live 66.9 == frozen 66.9 == EXPECTED 66.9, all 4 pillars
+  byte-identical 100.0/50.0/50.0/90.0, caps empty, x402_probe partial 4.0/8.0 commerce-protocol-live; weld 29/29). **The
+  whole #152–#161 non-anchor weld campaign is COMPLETE at 13 witnesses** (the UCP rail welded at 3 points). Other UCP-DEPTH
   candidates surveyed but NOT pinned: glossier.com 64.9 (legibility 54.55 — same as the
   pair, only densifies trust) and skims.com 60.4 (legibility 40.91 but tx 43.75 — a DIFFERENT tx rung, conflates two axes,
   not a clean single-rung comparison). Remaining ABUNDANT candidates (spanx/allbirds[drifted, avoid]/kith[17.8MB]) are

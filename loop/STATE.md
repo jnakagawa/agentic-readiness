@@ -1,23 +1,38 @@
 # Loop state
 
-- Cycle counter: 315
-- **⏳ OPEN PEER-GATED PR #161 (this fire, Local 20260808T194406Z) — WELD hardgraft.com (66.9 D) as the 13th
-  non-anchor member / 3rd on the LIVE UCP rail.** Branch `loop/hardgraft-ucp-retail-non-anchor-weld` (tip `2f33bea`),
-  NOT self-merged. Adds `hardgraft.com` to `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` (12→13) +
-  member comment + `test_hardgraft_thirteenth_non_anchor_is_welded_nonvacuously` + `main()` registration. Non-vacuous:
-  committed v0.7 floor 66.9 present (in `_REPLAY_CLEAN`); genuinely COMPARED n_compared=1 in
-  `calibration_sweep_20260808T184442Z.json` (segment `ucp-live:leather-goods` — the prerequisite DISCHARGED last fire
-  Local 20260808T184442Z, POPULATION 25→26, byte-identical to floor); keyed `hardgraft.com` identically both paths (no
-  www/bare alias); teeth = synthetic drift 66.9→78.0 caught as exactly one divergence. Calibration = **LINE→PLANE**
-  (coffeecircle 57.4 + gymshark 62.4 share legibility 54.55, separate on trust; hardgraft distinct legibility 50.0 +
-  highest trust 90.0 at the SAME tx-50.0 rung → the three UCP points span a 2-D legibility×trust region). TEST-ONLY,
-  off-scoring-SEMANTICS EMPTY (only `tests/test_calibration_anchor_agreement.py` + evidence JSON); weld 28→29, full
-  suite 38/38. Live↔frozen re-confirmed this fire ($0 static, no `--behavioral`/`--max-pay`/codex/zero CLI: live 66.9
+- Cycle counter: 316
+- **✅ PEER-GATED PR #161 MERGED this fire (Local 20260808T204601Z), merge `5020895`** — after the owed FIRST-DUTY
+  adversarial review + independent $0 live UCP re-score. It welds hardgraft.com (66.9 D) into
+  `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` as the 13th non-anchor member / 3rd on the LIVE UCP
+  rail. VERDICT SOUND: off-scoring-path (three-dot diff since merge-base `46e5263` is ONLY
+  `test_calibration_anchor_agreement.py` +94 + evidence JSON +67; EMPTY over asrs/rubric/fixtures/experiments/loop);
+  vendor-neutral (welded by TYPE, a UCP leather-goods merchant; no `hardgraft` special-casing in scoring code);
+  committed v0.7 floor 66.9 present in `_REPLAY_CLEAN` (independently re-derived); LOAD-BEARING (n_compared=1 /
+  divergences=[] re-derived — scored 66.9 in EXACTLY `calibration_sweep_20260808T184442Z.json`, segment
+  `ucp-live:leather-goods`, all 4 pillars byte-identical); teeth (66.9→78.0 caught as one divergence). Volatile-rail
+  live re-score re-run THIS fire ($0 static, no `--behavioral`/`--max-pay`/payment/codex/zero CLI, inv #1): live 66.9
   == frozen 66.9 == EXPECTED 66.9, all 4 non-null pillars byte-identical (100.0/50.0/50.0/90.0), caps empty,
-  `x402_probe` partial 4.0/8.0 commerce-protocol-live; no payment signed inv #1). **NEXT FIRE OWES the first-duty
-  adversarial review + independent $0 live UCP re-score before merge** (a divergence = REAL UCP-manifest drift →
-  re-capture, do not merge, inv #4; merging COMPLETES the UCP-rail weld campaign at 3 witnesses). Evidence
-  `runs/local/hardgraft_ucp_retail_non_anchor_weld_20260808T194406Z.json`; LOG Local cycle 20260808T194406Z.
+  `x402_probe` partial 4.0/8.0 commerce-protocol-live → UCP manifest UP, no drift → MERGE. Weld 29/29 branch + merged
+  main; full suite 38/38. **No open PRs remain. The whole non-anchor weld campaign (#152–#161) is COMPLETE at 13
+  witnesses**; the UCP rail spans THREE welded points (coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9) — the "UCP
+  necessary but not SUFFICIENT" statement generalized from a LINE to a 2-D legibility×trust PLANE at the fixed tx-50.0
+  rung. Review verdict recorded in LOG Local cycle 20260808T204601Z.
+- **🔎 ACP-rail recon FINDING (Local 20260808T204601Z, TRUTH — recorded, NOT shipped as a scoring change; scorer
+  UNCHANGED).** The ONE `[LOCAL]` item this fire (P2 step (3), the "genuinely-NEW rail TYPE" prize): a $0
+  well-known recon (`experiments/acp_wellknown_recon.py`, 20 real domains × 3 paths, read-only GETs, byte-faithful via
+  the scorer's own `_parse_commerce_manifest`) tested the prior recon's tentative lead that the real ACP manifest sits
+  at `/.well-known/acp/manifest.json` (a path the scorer does NOT probe). **Lead FALSIFIED at $0:** ACP valid at the
+  scorer's path `/.well-known/agentic-commerce` = **0/20** (all REACHABLE, all 404 — stripe/openai/agenticcommerce.dev/
+  etsy/instacart/shop.app/shopify/crossmint); ACP valid at `/.well-known/acp/manifest.json` = **0/20** (all 404 too,
+  INCLUDING the ACP co-authors + the spec home) → re-pathing `_COMMERCE_WELL_KNOWN` would gain NOTHING (no live surface
+  to validate against, inv #3 unsatisfiable) — lead CLOSED, DO NOT re-open without ≥2 live ACP surfaces. Positive
+  control: UCP valid at `/.well-known/ucp` on **6/6** UCP merchant controls (gymshark/hardgraft/coffeecircle/allbirds/
+  skims/glossier parse as real `dev.ucp.*` manifests) → the ACP null is REAL scarcity, not a broken probe (attribution
+  honesty). Bonus: skyfire.xyz's bare-200 at the scorer path (non-JSON body) is correctly REJECTED by
+  `_parse_commerce_manifest` → LIVE confirmation the v0.7 well-known tightening blocks the catch-all-index FP.
+  Direct-to-main; frozen +39.4 / live +30.1; suite 38/38. Evidence
+  `runs/local/acp_wellknown_recon_20260808T205138Z.json`; LOG Local cycle 20260808T204601Z. UCP DEPTH remains the only
+  $0-pinnable commerce-protocol broadening; re-run this recon at a future cadence.
 - **✅ NEW FIFTEENTH frozen-replay calibration baseline PINNED this fire (Local 20260808T165732Z, direct-to-main):
   hardgraft.com — the THIRD non-anchor point on the LIVE UCP rail (further retail DEPTH: a premium leather-goods
   merchant).** 66.9 D v0.7 (access 100.0 / **legibility 50.0** / transactability 50.0 / **trust 90.0**). `GET
@@ -71,10 +86,10 @@
   surfaces to validate (inv #3) — which do not currently exist. Meanwhile **UCP well-known is WIDESPREAD on Shopify**
   (glossier / spanx / skims / allbirds / gymshark / kith / hardgraft all serve valid `/.well-known/ucp`) — the source of
   this fire's gymshark pin. See LOG Local cycle 20260808T140228Z + BACKLOG P2.
-- LOCAL cycle — 20260808T104105Z summarized: reviewed + MERGED PR #158 (three live-x402 non-anchor welds thebotwire.com
-  86.0 / api.x402oracle.com 64.4 / x402deploy.vercel.app 73.9 as the 8th/9th/10th members, merge `3fc5b5b`) after the
-  owed FIRST-DUTY review + $0 live re-scores (all live==frozen==floor, each `x402_probe` 8.0/8.0; weld 26/26); the weld
-  spans TEN non-anchor witnesses, the last three the FIRST with a genuine live x402 handshake. Full detail in loop/LOG.md.
+<!-- Rolling entry for Local cycle 20260808T104105Z (reviewed + MERGED PR #158 — three live-x402 non-anchor welds
+     thebotwire 86.0 / api.x402oracle 64.4 / x402deploy 73.9 as the 8th/9th/10th members, merge `3fc5b5b`) pruned this
+     fire (Local cycle 20260808T204601Z) to stay under the STATE 600-line cap — preserved verbatim in loop/LOG.md + git
+     history. -->
 - **✅ NEW THIRTEENTH frozen-replay calibration baseline PINNED this fire (Local 20260808T104105Z, direct-to-main):
   checkout.coffeecircle.com — the FIRST baseline carrying a genuine LIVE UCP (Universal Commerce Protocol) rail, a
   structurally NEW agent-native rail TYPE distinct from every x402/no-rail witness.** 57.4 F v0.7 (access 100.0 /
@@ -104,23 +119,19 @@
   +30.1). The ONE item (UCP-rail weld) was authored as **PEER-GATED PR #159**, so the NEXT fire OWES its first-duty
   adversarial review + independent $0 live re-score BEFORE picking new work (the REVIEWER re-runs the volatile-rail live
   re-score; a divergence = UCP-manifest drift → re-capture, do not merge, inv #4).
-- LOCAL cycle — 20260808T074103Z summarized: pinned x402deploy.vercel.app as the TWELFTH frozen-replay baseline
-  (73.9 C, {metered_api, data_retrieval}) — the THIRD non-anchor LIVE-x402 point and the SECOND tx-100 witness; with
-  tx held at 100.0 on BOTH x402deploy (73.9) and thebotwire (86.0), the overall gap is forced onto legibility+trust
-  (the "live rail NECESSARY but not SUFFICIENT" statement). Live 73.9 == frozen == EXPECTED, replay-clean. Direct-to-main;
-  frozen +39.4 / live +30.1; baselines 11→12. Full detail in loop/LOG.md.
+<!-- Rolling entry for Local cycle 20260808T074103Z (x402deploy.vercel.app pinned as the TWELFTH frozen-replay
+     baseline, 73.9 C — 3rd non-anchor live-x402 point / 2nd tx-100 witness) pruned this fire (Local cycle
+     20260808T204601Z) to stay under the STATE 600-line cap — preserved verbatim in loop/LOG.md + git history. -->
 <!-- Rolling entry for Local cycle 20260808T065659Z (api.x402oracle.com pinned as the ELEVENTH frozen-replay baseline,
      64.4 D) pruned this fire (Local cycle 20260808T145709Z) to stay under the STATE 600-line cap — preserved verbatim in
      loop/LOG.md + git history. -->
 <!-- PR #157 (exa.ai 7th non-anchor weld — FIRST welded member with genuine partial agent-native rails, merge `cf0df08`,
      Local 20260807T205300Z) MERGED-banner pruned this fire (Local cycle 20260808T140228Z) to stay under the STATE
      600-line cap — full VERDICT SOUND detail preserved verbatim in loop/LOG.md + git history. -->
-- LOCAL cycle — 20260808T054613Z summarized: pinned thebotwire.com as the TENTH frozen-replay baseline (86.0 B, the
-  HIGHEST + FIRST non-anchor LIVE-x402 point, {metered_api, data_retrieval}) via the exa.ai recipe after clearing all
-  five offering-classification FP families (005504Z/020353Z/024315Z/034105Z/045337Z) — the oldest P0, CLOSED; later
-  welded via merged PR #158 (banner above). Live 86.0 == frozen == EXPECTED, replay-clean; direct-to-main; frozen +39.4
-  / live +30.1; baselines 9→10. Full detail in loop/LOG.md. Anchor driftflight.com `/extend` STILL 401 (WATCH for a
-  402 recovery → restores the anchor's live handshake + +39.4 live delta).
+<!-- Rolling entry for Local cycle 20260808T054613Z (thebotwire.com pinned as the TENTH frozen-replay baseline, 86.0 B
+     — HIGHEST + FIRST non-anchor live-x402 point; the oldest P0 CLOSED; later welded via merged PR #158) pruned this
+     fire (Local cycle 20260808T204601Z) to stay under the STATE 600-line cap — preserved verbatim in loop/LOG.md + git
+     history. Anchor driftflight.com `/extend` STILL 401 (WATCH for a 402 recovery → restores +39.4 live delta). -->
 <!-- Three fully-superseded 2026-08-07 banners — PR #156 (moleskine 6th non-anchor weld, `571e4c6`) MERGED, the NINTH
      frozen-replay baseline exa.ai (78.1 C) PINNED, and PR #155 (api.replicate.com 5th non-anchor weld, `7e08063`)
      MERGED — pruned this fire (Local cycle 20260808T140228Z) to stay under the STATE 600-line cap; all preserved
@@ -409,14 +420,9 @@
      POPULATION) + 20260807T114104Z (MERGED PR #154 + pinned api.replicate.com as the 7th frozen-replay baseline /
      5th storefront TYPE) pruned this fire (Local cycle 20260807T205300Z) to stay under the STATE 600-line cap —
      both preserved verbatim in loop/LOG.md + git history. -->
-<!-- Rolling entries for Local cycles 20260807T104102Z (welded ipinfo.io as 4th non-anchor, PR #154 opened) +
-     20260807T094104Z (MERGED PR #153 + promoted ipinfo.io as 6th frozen-replay baseline / 4th storefront TYPE)
-     pruned this fire (Local cycle 20260807T194459Z) to stay under the STATE 600-line cap — both preserved
-     verbatim in loop/LOG.md + git history. -->
-<!-- Rolling entries for Local cycles 20260807T084355Z (welded acuity as 3rd non-anchor, PR #153 opened) +
-     20260807T074106Z (MERGED PR #152 + pinned acuity as 5th frozen-replay baseline) pruned this fire
-     (Local cycle 20260807T184234Z) to stay under the STATE 600-line cap — both preserved verbatim in
-     loop/LOG.md + git history. -->
+<!-- Nine older cloud/local prune-trail comment blocks (2026-08-07 cycles 20260807T104102Z / 094104Z / 084355Z /
+     074106Z and the cloud CYCLE 295 note) further compacted away this fire (Local cycle 20260808T204601Z) to stay
+     under the STATE 600-line cap — all fully preserved in loop/LOG.md + git history. -->
 <!-- Rolling entry for Local cycle 20260807T064228Z (TRUTH/METHOD / MERGED PR #151 documented-live-drift ledger +
      welded books.toscrape.com as the 2nd non-anchor cross-path member, PEER-GATED PR #152 opened) pruned this fire
      (Local cycle 20260808T024315Z) to stay under the STATE 600-line cap — preserved verbatim in loop/LOG.md

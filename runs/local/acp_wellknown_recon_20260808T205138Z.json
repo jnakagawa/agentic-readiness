@@ -1,0 +1,542 @@
+{
+ "ts": "20260808T205138Z",
+ "kind": "acp-wellknown-recon",
+ "spend": "$0 (read-only GETs; no payment/POST/behavioral/zero-CLI)",
+ "scorer_acp_path": "/.well-known/agentic-commerce",
+ "ecosystem_acp_path": "/.well-known/acp/manifest.json",
+ "acp_payload_keys": [
+  "checkout_session",
+  "checkout_session_id",
+  "checkout_sessions",
+  "line_items",
+  "payment_provider"
+ ],
+ "ucp_manifest_keys": [
+  "capabilities",
+  "endpoints",
+  "payment",
+  "payments",
+  "services"
+ ],
+ "n_candidates": 20,
+ "acp_at_scorer_path": [],
+ "acp_at_ecosystem_path_valid": [],
+ "ucp_at_scorer_path": [
+  "gymshark.com",
+  "hardgraft.com",
+  "checkout.coffeecircle.com",
+  "allbirds.com",
+  "skims.com",
+  "glossier.com"
+ ],
+ "results": {
+  "stripe.com": {
+   "tag": "acp-coauthor",
+   "paths": {
+    "/.well-known/agentic-commerce": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/acp/manifest.json": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/ucp": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    }
+   }
+  },
+  "openai.com": {
+   "tag": "acp-coauthor",
+   "paths": {
+    "/.well-known/agentic-commerce": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/acp/manifest.json": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/ucp": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    }
+   }
+  },
+  "chatgpt.com": {
+   "tag": "acp-surface",
+   "paths": {
+    "/.well-known/agentic-commerce": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/acp/manifest.json": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/ucp": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    }
+   }
+  },
+  "agenticcommerce.dev": {
+   "tag": "acp-spec-home",
+   "paths": {
+    "/.well-known/agentic-commerce": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/acp/manifest.json": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/ucp": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    }
+   }
+  },
+  "etsy.com": {
+   "tag": "acp-announced-merchant",
+   "paths": {
+    "/.well-known/agentic-commerce": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/acp/manifest.json": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/ucp": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    }
+   }
+  },
+  "instacart.com": {
+   "tag": "acp-announced-merchant",
+   "paths": {
+    "/.well-known/agentic-commerce": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/acp/manifest.json": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/ucp": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    }
+   }
+  },
+  "walmart.com": {
+   "tag": "retail-longshot",
+   "paths": {
+    "/.well-known/agentic-commerce": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/acp/manifest.json": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/ucp": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    }
+   }
+  },
+  "target.com": {
+   "tag": "retail-longshot",
+   "paths": {
+    "/.well-known/agentic-commerce": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/acp/manifest.json": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/ucp": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    }
+   }
+  },
+  "bestbuy.com": {
+   "tag": "retail-longshot",
+   "paths": {
+    "/.well-known/agentic-commerce": {
+     "status": null,
+     "error": "ReadTimeout: HTTPSConnectionPool(host='www.bestbuy.com', port=443): Read timed out. (read timeout=8.0)",
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/acp/manifest.json": {
+     "status": null,
+     "error": "ReadTimeout: HTTPSConnectionPool(host='www.bestbuy.com', port=443): Read timed out. (read timeout=8.0)",
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/ucp": {
+     "status": null,
+     "error": "ReadTimeout: HTTPSConnectionPool(host='www.bestbuy.com', port=443): Read timed out. (read timeout=8.0)",
+     "json_top_keys": null,
+     "scorer_manifest": null
+    }
+   }
+  },
+  "wayfair.com": {
+   "tag": "retail-longshot",
+   "paths": {
+    "/.well-known/agentic-commerce": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/acp/manifest.json": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/ucp": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    }
+   }
+  },
+  "shop.app": {
+   "tag": "shopify-platform",
+   "paths": {
+    "/.well-known/agentic-commerce": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/acp/manifest.json": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/ucp": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    }
+   }
+  },
+  "shopify.com": {
+   "tag": "shopify-platform",
+   "paths": {
+    "/.well-known/agentic-commerce": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/acp/manifest.json": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/ucp": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    }
+   }
+  },
+  "crossmint.com": {
+   "tag": "agent-commerce-infra",
+   "paths": {
+    "/.well-known/agentic-commerce": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/acp/manifest.json": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/ucp": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    }
+   }
+  },
+  "skyfire.xyz": {
+   "tag": "agent-commerce-infra",
+   "paths": {
+    "/.well-known/agentic-commerce": {
+     "status": 200,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/acp/manifest.json": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/ucp": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    }
+   }
+  },
+  "gymshark.com": {
+   "tag": "ucp-merchant-control",
+   "paths": {
+    "/.well-known/agentic-commerce": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/acp/manifest.json": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/ucp": {
+     "status": 200,
+     "error": null,
+     "json_top_keys": [
+      "ucp"
+     ],
+     "scorer_manifest": {
+      "protocol": "ucp",
+      "fields": [
+       "capabilities"
+      ],
+      "snippet": "{\"ucp\": {\"version\": \"2026-04-08\", \"supported_versions\": {\"2026-04-08\": \"https://gymsharkusa.myshopify.com/.well-known/ucp/2026-04-08\", \"2026-01-23\": \"https://gymsharkusa.myshopify.com/.well-known/ucp/2026-01-23\"}, \"services\": {\"dev.ucp.shopping\": [{\"version\": \"2026-04-08\", \"spec\": \"https://ucp.dev/2"
+     }
+    }
+   }
+  },
+  "hardgraft.com": {
+   "tag": "ucp-merchant-control",
+   "paths": {
+    "/.well-known/agentic-commerce": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/acp/manifest.json": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/ucp": {
+     "status": 200,
+     "error": null,
+     "json_top_keys": [
+      "ucp"
+     ],
+     "scorer_manifest": {
+      "protocol": "ucp",
+      "fields": [
+       "capabilities"
+      ],
+      "snippet": "{\"ucp\": {\"version\": \"2026-04-08\", \"supported_versions\": {\"2026-04-08\": \"https://hardgraft.myshopify.com/.well-known/ucp/2026-04-08\", \"2026-01-23\": \"https://hardgraft.myshopify.com/.well-known/ucp/2026-01-23\"}, \"services\": {\"dev.ucp.shopping\": [{\"version\": \"2026-04-08\", \"spec\": \"https://ucp.dev/2026-"
+     }
+    }
+   }
+  },
+  "checkout.coffeecircle.com": {
+   "tag": "ucp-merchant-control",
+   "paths": {
+    "/.well-known/agentic-commerce": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/acp/manifest.json": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/ucp": {
+     "status": 200,
+     "error": null,
+     "json_top_keys": [
+      "ucp"
+     ],
+     "scorer_manifest": {
+      "protocol": "ucp",
+      "fields": [
+       "capabilities"
+      ],
+      "snippet": "{\"ucp\": {\"version\": \"2026-04-08\", \"supported_versions\": {\"2026-04-08\": \"https://coffeecircle-shop.myshopify.com/.well-known/ucp/2026-04-08\", \"2026-01-23\": \"https://coffeecircle-shop.myshopify.com/.well-known/ucp/2026-01-23\"}, \"services\": {\"dev.ucp.shopping\": [{\"version\": \"2026-04-08\", \"spec\": \"https"
+     }
+    }
+   }
+  },
+  "allbirds.com": {
+   "tag": "ucp-merchant-control",
+   "paths": {
+    "/.well-known/agentic-commerce": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/acp/manifest.json": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/ucp": {
+     "status": 200,
+     "error": null,
+     "json_top_keys": [
+      "ucp"
+     ],
+     "scorer_manifest": {
+      "protocol": "ucp",
+      "fields": [
+       "capabilities"
+      ],
+      "snippet": "{\"ucp\": {\"version\": \"2026-04-08\", \"supported_versions\": {\"2026-04-08\": \"https://weareallbirds.myshopify.com/.well-known/ucp/2026-04-08\", \"2026-01-23\": \"https://weareallbirds.myshopify.com/.well-known/ucp/2026-01-23\"}, \"services\": {\"dev.ucp.shopping\": [{\"version\": \"2026-04-08\", \"spec\": \"https://ucp.d"
+     }
+    }
+   }
+  },
+  "skims.com": {
+   "tag": "ucp-merchant-control",
+   "paths": {
+    "/.well-known/agentic-commerce": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/acp/manifest.json": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/ucp": {
+     "status": 200,
+     "error": null,
+     "json_top_keys": [
+      "ucp"
+     ],
+     "scorer_manifest": {
+      "protocol": "ucp",
+      "fields": [
+       "capabilities"
+      ],
+      "snippet": "{\"ucp\": {\"version\": \"2026-04-08\", \"supported_versions\": {\"2026-04-08\": \"https://skimsbody.myshopify.com/.well-known/ucp/2026-04-08\", \"2026-01-23\": \"https://skimsbody.myshopify.com/.well-known/ucp/2026-01-23\"}, \"services\": {\"dev.ucp.shopping\": [{\"version\": \"2026-04-08\", \"spec\": \"https://ucp.dev/2026-"
+     }
+    }
+   }
+  },
+  "glossier.com": {
+   "tag": "ucp-merchant-control",
+   "paths": {
+    "/.well-known/agentic-commerce": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/acp/manifest.json": {
+     "status": 404,
+     "error": null,
+     "json_top_keys": null,
+     "scorer_manifest": null
+    },
+    "/.well-known/ucp": {
+     "status": 200,
+     "error": null,
+     "json_top_keys": [
+      "ucp"
+     ],
+     "scorer_manifest": {
+      "protocol": "ucp",
+      "fields": [
+       "capabilities"
+      ],
+      "snippet": "{\"ucp\": {\"version\": \"2026-04-08\", \"supported_versions\": {\"2026-04-08\": \"https://glossier-admin.myshopify.com/.well-known/ucp/2026-04-08\", \"2026-01-23\": \"https://glossier-admin.myshopify.com/.well-known/ucp/2026-01-23\"}, \"services\": {\"dev.ucp.shopping\": [{\"version\": \"2026-04-08\", \"spec\": \"https://ucp"
+     }
+    }
+   }
+  }
+ }
+}

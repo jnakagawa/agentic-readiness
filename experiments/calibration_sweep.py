@@ -151,6 +151,28 @@ POPULATION: list[tuple[str, str]] = [
     # score DIVERGES from its frozen floor this run is an honest manifest-drift
     # signal, not silently averaged in.
     ("gymshark.com", "ucp-live:apparel-retail"),
+    # a premium leather-goods merchant on the SAME live UCP rail, pinned as the
+    # FIFTEENTH frozen-replay baseline LOCAL cycle 20260808T165732Z (hardgraft.com
+    # 66.9 D). It is the THIRD non-anchor point on the UCP rail and adds further
+    # retail DEPTH: GET /.well-known/ucp answers a $0 read with a valid dev.ucp.*
+    # service manifest, so the scorer's x402_probe reads commerce-protocol-live
+    # PARTIAL 4.0/8.0 — the SAME UCP middle rung as checkout.coffeecircle.com and
+    # gymshark.com (honest {metered_api, physical_good}, no over-claim). Its
+    # calibration value GENERALIZES the "UCP necessary but not SUFFICIENT" story
+    # from a LINE to a PLANE: coffeecircle (57.4) and gymshark (62.4) share the
+    # IDENTICAL legibility 54.55 and separate PURELY on trust; hardgraft holds the
+    # SAME tx-50.0 rung but sits at a DISTINCT legibility (50.0) AND the HIGHEST
+    # trust of the three (90.0), scoring 66.9 — so the three UCP points span a 2-D
+    # (legibility x trust) region at the fixed tx rung. It carries a committed
+    # replay baseline but was ABSENT from every prior sweep. Adding it here (LOCAL
+    # cadence, the gymshark.com prerequisite pattern) gives it its first live-sweep
+    # presence, so a future TRUTH cycle can weld it into
+    # tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED non-vacuously — the
+    # THIRD welded member on the UCP commerce-protocol rail. Because the UCP
+    # manifest is LIVE (a served well-known JSON, volatile), a member whose live
+    # score DIVERGES from its frozen floor this run is an honest manifest-drift
+    # signal, not silently averaged in.
+    ("hardgraft.com", "ucp-live:leather-goods"),
     # non-storefront controls (zero-commerce baseline)
     ("example.com", "control:non-storefront"),
     ("wikipedia.org", "control:non-storefront"),

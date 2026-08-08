@@ -26,18 +26,9 @@ preserved verbatim in loop/LOG.md + git. -->
 baseline (54.0 F v0.7) + guard test_service_booking_storefront_replays_54_0; direct-to-main, live 54.0 == frozen 54.0.
 Full text pruned this fire (Local cycle 20260808T084106Z) to keep closed-marker bytes under the hygiene cap — preserved
 verbatim in loop/LOG.md + git history. See LOG Local cycle 20260807T074106Z. -->
-<!-- OPENED Local cycle 20260807T084355Z: the 3rd-non-anchor calibration weld (acuityscheduling.com — service_booking
-SaaS, a 3rd storefront TYPE) is AUTHORED as a PEER-GATED PR (branch loop/acuity-third-non-anchor-weld), NOT self-merged.
-Welds acuityscheduling.com into `_NON_ANCHOR_WELDED` = (example.com, books.toscrape.com, acuityscheduling.com), so the
-cross-path weld spans THREE structurally-distinct non-anchor witnesses (null-control + retail-catalog + service-booking).
-New test_acuity_third_non_anchor_is_welded_nonvacuously (mirrors the books test): committed v0.7 baseline present, genuinely
-COMPARED (n_compared=3 across the 20260805T014754Z/20260806T044352Z/20260807T045843Z sweeps, segment service-booking:saas —
-NOT silently skipped), agrees with its 54.0 floor, teeth (synthetic drift 54.0->65.0 caught as exactly one divergence).
-TEST-ONLY (test_calibration_anchor_agreement.py +73/-1; off-scoring-path diff EMPTY), weld suite 17->18, full suite 38/38.
-Live↔frozen verified this fire ($0 static re-score 08:44Z: live 54.0 == frozen 54.0 == EXPECTED 54.0, all 4 non-null pillars
-byte-identical, replay_misses=0 — the [LOCAL] essence the cloud can't do). Evidence
-runs/local/acuity_third_non_anchor_weld_20260807T084355Z.json. DO NOT RE-AUTHOR — TRACKED by STATE's OPEN-PR banner + next
-fire's first-duty adversarial review + live re-score. See LOG Local cycle 20260807T084355Z. -->
+<!-- The acuity OPENED marker (Local cycle 20260807T084355Z: PR #153 acuityscheduling.com 3rd-non-anchor weld authored)
+is pruned this fire (Local cycle 20260808T184442Z) to keep closed-marker bytes under the 24000 hygiene cap — PR #153
+is long-MERGED `7cd4fcc`; preserved verbatim in loop/LOG.md (## Local cycle — 20260807T084355Z) + git history. -->
 <!-- Three fully-superseded 20260807 weld markers (PR #153 acuity weld / ipinfo baseline promotion / PR #154 ipinfo
 weld) pruned this fire (Local cycle 20260808T114105Z) to keep completed-marker bytes under the hygiene cap — all
 preserved verbatim in loop/LOG.md + git history. The whole non-anchor weld campaign (#152-#158) is complete. -->
@@ -264,6 +255,21 @@ kith.com would've been 17.8MB, allbirds AVOIDED per its recorded offering-drift 
 (canonical PAIR untouched); frozen delta UNMOVED +39.4 (canonical replay 35->36); live +30.1; suite 38/38; baselines 13->14.
 Evidence runs/local/gymshark_ucp_retail_baseline_20260808T140228Z.json. See LOG Local cycle 20260808T140228Z. -->
 
+<!-- DONE Local cycle 20260808T184442Z: the P2 step (4) hardgraft.com UCP-retail WELD prerequisite (give hardgraft.com a
+genuinely-compared calibration-sweep presence) is DISCHARGED — the gymshark recipe, one member later. Added
+`("hardgraft.com", "ucp-live:leather-goods")` to `experiments/calibration_sweep.py` POPULATION (25->26) + ran a $0 static
+cadence sweep (no --behavioral/--max-pay/codex/zero CLI, inv #1 by construction) ->
+runs/local/calibration_sweep_20260808T184442Z.json (26 total, 25 scored, rei.com not-scorable per inv #4, 0 errors).
+hardgraft.com scored 66.9 D BYTE-IDENTICAL to its frozen floor (access 100.0/legibility 50.0/tx 50.0/trust 90.0, caps empty,
+honest {metered_api, physical_good}); drift vs 20260808T144423Z 0/24 moved, max |Δ| 0.0 — every prior member + both anchors
+byte-stable on floor; only new member is hardgraft.com. Off-scoring-SEMANTICS EMPTY (POPULATION +1 only, off the scoring
+path); frozen delta UNMOVED +39.4; live +30.1; suite 38/38. Direct-to-main (same class as the
+coffeecircle/gymshark/api.replicate POPULATION-adds). This UNLOCKS the P2 step (4) weld: a future PEER-GATED PR can weld
+hardgraft.com into _NON_ANCHOR_WELDED non-vacuously (n_compared=1 in this sweep at 66.9, agrees with floor, teeth = synthetic
+drift caught) — the 13th non-anchor member / 3rd on the UCP rail. BOOKKEEPING SELF-HEAL: the POPULATION edit was found
+uncommitted at fire start (the api.replicate.com 20260807T134105Z pattern) — verified byte-correct + adopted, no fabricated
+prior-ts LOG entry. See LOG Local cycle 20260808T184442Z. -->
+
 - **[P2 — TRUTH, LOCAL, candidate] BROADEN further / DEEPEN the UCP rail / UNLOCK a NEW rail TYPE.** The UCP rail now
   has THREE pinned baselines, all UCP `commerce-protocol-live` at the tx-50.0 rung: checkout.coffeecircle.com (57.4 F,
   coffee merchant, WELDED via MERGED PR #159 as the 11th non-anchor member), gymshark.com (62.4 D, apparel brand, WELDED
@@ -285,11 +291,16 @@ Evidence runs/local/gymshark_ucp_retail_baseline_20260808T140228Z.json. See LOG 
   peer-gated re-pathing of the scorer's ACP well-known would need 2+ live ACP surfaces to validate (inv #3) — none exist
   today. Re-scan the ecosystem for a live ACP/MPP surface at a future cadence; if `/.well-known/acp/manifest.json` becomes
   common, the well-known-path fix + 2-domain validation is the peer-gated unit.
-  (4) MORE UCP retail witnesses: hardgraft.com (66.9) was PINNED this fire as the 3rd UCP baseline (the distinct-legibility
-  point). Its natural forward step is a PEER-GATED **UCP-retail WELD of hardgraft** (the 13th non-anchor member) — but it
-  needs a $0 cadence-sweep POPULATION-add FIRST (the gymshark recipe: add `("hardgraft.com", "ucp-live:leather-goods")` to
-  `experiments/calibration_sweep.py` + a $0 static sweep for a genuinely-compared presence, n_compared≥1) before the weld
-  is non-vacuous. Other candidates surveyed this fire but NOT pinned: glossier.com 64.9 (legibility 54.55 — same as the
+  (4) ⭐ NEXT — the PEER-GATED **UCP-retail WELD of hardgraft.com** (66.9 D, the 13th non-anchor member / 3rd on the UCP
+  rail) is now UNLOCKED non-vacuously: its $0 cadence-sweep POPULATION-add prerequisite was DISCHARGED Local cycle
+  20260808T184442Z (`experiments/calibration_sweep.py` POPULATION += `("hardgraft.com", "ucp-live:leather-goods")`; sweep
+  `runs/local/calibration_sweep_20260808T184442Z.json` scored it 66.9 == floor, n_compared=1, segment
+  ucp-live:leather-goods). A future fire authors the peer-gated weld PR (the gymshark PR #160 recipe): add `hardgraft.com`
+  to `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` (12->13) + a `test_hardgraft_thirteenth_non_anchor_is_
+  welded_nonvacuously` (committed 66.9 v0.7 floor present in `_REPLAY_CLEAN`; genuinely COMPARED n_compared=1 in the
+  20260808T184442Z sweep; keyed identically both paths, no www/bare alias; teeth = synthetic drift 66.9->drift caught),
+  then next fire's first-duty adversarial review + $0 live UCP re-score before merge (a divergence = REAL UCP-manifest
+  drift -> re-capture, do not merge, inv #4). Other candidates surveyed but NOT pinned: glossier.com 64.9 (legibility 54.55 — same as the
   pair, only densifies trust) and skims.com 60.4 (legibility 40.91 but tx 43.75 — a DIFFERENT tx rung, conflates two axes,
   not a clean single-rung comparison). Remaining ABUNDANT candidates (spanx/allbirds[drifted, avoid]/kith[17.8MB]) are
   cheap direct-to-main pins IF a distinct calibration value + honest classification + lean fixture. `joinhexagon.com` is a

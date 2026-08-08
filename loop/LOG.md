@@ -20294,3 +20294,58 @@ tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1
 ## Local verification — 20260808T184105Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260808T184105Z.json
+
+## Local cycle — 20260808T184442Z
+
+Track: TRUTH (LOCAL, direct-to-main). ONE item: DISCHARGED hardgraft.com's UCP-retail WELD
+prerequisite — added it to `experiments/calibration_sweep.py` POPULATION (25->26) + ran a $0 static
+cadence sweep for a first genuinely-compared sweep presence (agrees with its 66.9 frozen floor),
+UNLOCKING a future PEER-GATED UCP-retail weld (the 13th non-anchor member / 3rd on the UCP rail).
+
+FIRST DUTY (peer-gated review + merge). `gh pr list --state open` -> EMPTY (PR #160 MERGED last
+fire `c091c4c`; the whole #152-#160 non-anchor weld campaign is COMPLETE) — no review owed, so the
+fire proceeds directly to ONE `[LOCAL]` item. Infra health check GREEN: newest
+`runs/local/verify_20260808T184105Z.json` ~2 min old at fire start (18:43Z vs 18:41Z, < 6h floor),
+`tests_ok:true` (all 38 suites green); live canonical drift-flight.org 46.1 F / driftflight.com
+76.2 C -> live delta **+30.1** (the persistent x402 `/extend` 402->401 regression; frozen replay
+UNMOVED **+39.4**). BOOKKEEPING SELF-HEAL (the api.replicate.com 20260807T134105Z pattern): the
+`calibration_sweep.py` POPULATION edit adding `("hardgraft.com", "ucp-live:leather-goods")` was
+found UNCOMMITTED in the working tree at fire start (no LOG/branch/commit/stash) — most likely a
+prior fire began this same forward step and died before committing. Verified byte-correct (a lone
+POPULATION +1 with a capability-worded comment, off the scoring path) and ADOPTED, no fabricated
+prior-ts LOG entry.
+
+THE ITEM (BACKLOG P2 step 4: the hardgraft.com weld prerequisite — the gymshark recipe, one member
+later). hardgraft.com was PINNED as the FIFTEENTH frozen-replay baseline last fire (Local cycle
+20260808T165732Z, 66.9 D — the THIRD non-anchor point on the LIVE UCP rail, the distinct-legibility
+plane point) but was ABSENT from every committed calibration sweep, so a peer-gated weld would be
+VACUOUS (n_compared=0). This fire gives it its first genuinely-compared sweep presence.
+
+[LOCAL] essence (cross-path live<->frozen agreement the cloud cannot produce; $0 static, no
+`--behavioral`/`--max-pay`/codex/zero CLI -> NO free-tier probe, NO signing path, inv #1 holds by
+construction). Ran `PYTHONPATH=. .venv/bin/python experiments/calibration_sweep.py` ->
+`runs/local/calibration_sweep_20260808T184442Z.json` (26 total, 25 scored, rei.com not-scorable per
+inv #4, 0 errors). hardgraft.com scored **66.9 D** BYTE-IDENTICAL to its frozen floor: access 100.0
+/ legibility 50.0 / transactability 50.0 / trust 90.0, caps empty, honest `{metered_api,
+physical_good}` (the same clean profile as gymshark — no over-claim). Drift vs the prior sweep
+`20260808T144423Z`: **0/24 moved, max |Δ| 0.0** — every prior member + both anchors byte-stable on
+floor (driftflight.com 76.2, drift-flight.org 46.1, coffeecircle 57.4, gymshark 62.4, exa.ai 78.1,
+thebotwire.com 86.0, ...); the ONLY population change is the ADDED hardgraft.com. Because the UCP
+manifest is LIVE (a served, volatile well-known JSON), the sweep row doubles as a manifest-drift
+tripwire: a live divergence from the 66.9 floor would be an honest drift signal, not silently
+averaged in — this run shows the rail UP and in agreement.
+
+Off-scoring-SEMANTICS EMPTY (POPULATION +1 only, off the scoring path — `discover_offering`/`score`
+untouched; canonical PAIR untouched); frozen canonical delta UNMOVED +39.4; live +30.1; full suite
+38/38. Direct-to-main (same class as the checkout.coffeecircle.com / gymshark.com / api.replicate.com
+/ three-x402 POPULATION-adds). Evidence `runs/local/calibration_sweep_20260808T184442Z.json`.
+
+Next hypothesis: the hardgraft.com UCP-retail WELD is now UNLOCKED non-vacuously — a future
+PEER-GATED PR can weld `hardgraft.com` into `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED`
+as the 13th non-anchor member / 3rd on the UCP commerce-protocol rail (committed 66.9 v0.7 floor
+present in `_REPLAY_CLEAN`; genuinely COMPARED n_compared=1 in `calibration_sweep_20260808T184442Z.json`
+at 66.9, segment ucp-live:leather-goods; keyed identically both paths, no www/bare alias; teeth =
+synthetic drift 66.9->drift caught). Beyond that: a UCP point at a DIFFERENT tx rung (a full UCP
+handshake, tx > 50.0 — none found so far), or the genuinely-NEW rail TYPE (ACP/MPP, still UN-pinnable
+$0 — ACP well-known scarce). WATCH driftflight.com `/extend` for a 402 recovery (restores the anchor's
+live handshake + the +39.4 live delta).

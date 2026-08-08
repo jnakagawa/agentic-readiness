@@ -210,97 +210,31 @@ EXPECTED, all 4 non-null pillars byte-identical (100.0/100.0/50.0/83.33), caps e
 branch + merged main (canonical replay 31/31); the cross-path weld now spans SEVEN non-anchor witnesses, the last the FIRST with
 genuine partial agent-native rails. The with-rails weld campaign (#152-#157) is COMPLETE across 6 non-anchor TYPES/shapes. See
 LOG Local cycle 20260807T205300Z. -->
-- **[P0 — COVERAGE, then TRUTH] UNBLOCK the thebotwire.com pin: harden the archetype signals against a data/news API's
-  CONTENT-CATALOG topic words (in-cloud precision guard), THEN re-verify + pin.** The 2nd-cadence x402-live confirmation
-  SUCCEEDED (Local cycle 20260807T235210Z): thebotwire.com's live x402 handshake is STABLE across 2 cadence cycles ~50 min
-  apart (`/payments/latest` 402, `/news` 402 both cadences; scorer **86.0 B**, tx 100.0, `x402_probe` 8.0/8.0 `x402-live`;
-  non-destructive /tmp fixture capture replays CLEAN, replay_misses=0, score-exact) — so the **SCORE precondition is MET**.
-  **BUT the pin is BLOCKED on the honest-classification gate:** `discover_offering` on the fixture over-claims **4 of 6
-  archetypes** (physical_good, service_booking, digital_good, subscription) via TOPIC-WORD false positives — thebotwire.com is a
-  multi-vertical data/news-wire API whose manifest/OpenAPI enumerate the industries its wires COVER, so vertical signals collide
-  with content-catalog prose: physical_good `[fulfillment]`/`[shipping-noun]` on commerce/logistics NEWS; service_booking
-  `[book]` on the gerund "booking" in "hotels, booking" + `[appointment]` on a "creative-director appointment" news event;
-  digital_good `[generations]`/`[render]` on a news audience/topic; subscription `[subscription]` fires INSIDE **"No subscription"**
-  (a negation). Honest set = **{metered_api, data_retrieval}**. Full per-archetype diagnosis with quoted spans:
-  `runs/local/thebotwire_pin_attempt_20260807T235210Z.json`. Installing it would make thebotwire.com the FIRST canonical fixture
-  with a dishonest classification (inv #4) — the loop rejected polar.sh/simplybook/allbirds for *lesser* issues; a score-only pin
-  was considered (the 86.0 is off the offering path) and rejected for consistency. **PROGRESS (A, in-cloud COVERAGE precision
-  pass): ✅ ALL 4 PLANNED FP families CLOSED. (1) subscription NEGATION guard SHIPPED Local cycle 20260808T005504Z (direct-to-main):**
-  `asrs/offering._NEG_DISCLAIMER` (word-boundaried fixed-width negative lookbehinds no/no-/not/not a/not an/zero/without/
-  without a/without an) prepended to the `subscription` + `per-month` signals; `.search()`'s scan skips a disclaimed occurrence
-  and still fires on a genuine one later. On thebotwire's quoted spans `classify_offering` → `['metered_api']` (subscription
-  gone); driftflight pair STILL claims subscription; test_offering 115→117, test_offering_canonical 70/70, suite 38/38; off
-  scoring path, no rubric bump. Evidence `runs/local/subscription_negation_guard_20260808T005504Z.json`. **(2) physical_good
-  NEWS-CATALOG guard SHIPPED Local cycle 20260808T020353Z (direct-to-main):** the two bare physical_good signals `fulfillment`
-  (`\bfulfil?lment\b`/`\bwarehouse\b`) + `shipping-noun` (`shipping rates|cost`) narrowed with the file's positive-collocation
-  discipline — `fulfillment` now requires a genuine fulfillment collocation (order/self/for/… + fulfillment; fulfillment +
-  center/service/…; our/the/from/… + warehouse with a `\b(?!-)` tail dropping the "warehouse-automation" compound; warehouse +
-  inventory/stock/…), and `shipping-noun` keeps the concrete checkout sub-nouns (address/options/method/fee/policy) UNCONDITIONAL
-  while gating the freight-market `rates`/`cost` to a shopping context. On thebotwire's 3 exact quoted FP spans ("marketplaces,
-  fulfillment, conversion"; "warehouse-automation vendors"; "Shipping rates, port congestion, carrier and logistics") physical_good
-  is now NA; allbirds ("shipping address/method") / moleskine / books / polar ("data you need for fulfillment") STILL claim it; a
-  bare "data warehouse"/a "warehouse-automation" vertical no longer FP (precision BONUS). test_offering 117→119
-  (`test_physical_good_news_catalog_precision_synthetic` + `..._is_canonical_invariant_on_real_fixtures`), test_offering_canonical
-  70/70, suite 38/38; off scoring path, no rubric bump. Evidence `runs/local/physical_good_news_catalog_guard_20260808T020353Z.json`.
-  **(3) service_booking NEWS-CATALOG guard SHIPPED Local cycle 20260808T024315Z (direct-to-main):** new module-level
-  `asrs/offering._BOOKING_SVC_CTX` (a NARROW scheduling/reservation context class — schedul*/reschedul*/book*/reservation/
-  availability/reminder/calendar/(time)slot/cancel*/walk-in/no-show/check-in/consultation/session) + positive-collocation
-  narrowing of the two cheapest service_booking signals — the noun-`booking` alt of `book` (was bare `\bbooking\b`) now needs a
-  service qualifier before ("online/appointment/group … booking"), a booking-ACTION/possessive before ("make/complete/… [+det]
-  booking"; "your/my booking"), or a booking-system compound noun after ("booking system/software/website/…"); `appointment` (was
-  bare `\bappointments?\b`) now needs a `_BOOKING_SVC_CTX` token within a 30-char `[^.\n]` window either order. On thebotwire's 3
-  exact quoted FP spans ("airlines, hotels, booking" hospitality-news; "Classical music and opera: appointments, seasons…" arts-
-  news; "creative-director appointment" personnel-news) service_booking is now NA; acuity/simplybook STILL claim it, polar STILL
-  claims it via the UNTOUCHED reservation/schedule signals; the pre-existing "Complete your booking" positive is preserved via the
-  booking-ACTION/possessive branch. Confirmed LIVE ($0 static `discover_offering('thebotwire.com')`: live service_booking=NA,
-  physical_good HOLDS NA). test_offering 119→121 (`test_service_booking_news_catalog_precision_synthetic` +
-  `..._is_canonical_invariant_on_real_fixtures`), test_offering_canonical 70/70, suite 38/38; off scoring path, no rubric bump.
-  Evidence `runs/local/service_booking_news_catalog_guard_20260808T024315Z.json`.
-  **(4) digital_good NEWS-CATALOG guard SHIPPED Local cycle 20260808T034105Z (direct-to-main), CLOSING the 4th and LAST
-  planned FP family:** the two cheapest bare digital_good signals narrowed. `generations` (was bare `\bgenerations?\b`) gains a
-  negative lookahead `(?![\s-]+(?:agents?|bots?|assistants?)\b)` so thebotwire's "Social-content generation **agents**" /
-  "playlist-generation **bots**" (an AI-actor AUDIENCE the news serves, not a deliverable) no longer claim; `render` splits so
-  the deliverable-NOUN `\brenders?\b` ("Client-ready renders") stays UNCONDITIONAL while the ambiguous `rendering` gerund is gated
-  to a visual-OUTPUT collocation (`rendering (of) (a/the/your) image/video/frame/scene/asset/…`), dropping thebotwire's "ad-tech
-  tracking **rendering** changes" (a browser process). **CAUTION HONORED — exa.ai's digital_good rests SOLELY on `generations`
-  ("Lead Generation"/"code generation", a pinned baseline #9 + welded #157): a whole-fixture pre-flight simulation + a live
-  re-derivation with the shipped code confirmed exa.ai STILL claims digital_good via `['generations']`** (its "generation" is a
-  HEAD noun followed by `]`/`with`, never an AI-actor noun); the canonical pair / ipinfo.io / polar.sh all keep their exact
-  claimed set. Confirmed LIVE ($0 static, shipped code): live thebotwire → {metered_api, subscription, data_retrieval}
-  (digital_good GONE). test_offering 121→123 (`test_digital_good_news_catalog_precision_synthetic` +
-  `..._is_canonical_invariant_on_real_fixtures`, exa.ai load-bearing), test_offering_canonical 70/70, suite 38/38; off scoring
-  path, no rubric bump. Evidence `runs/local/digital_good_news_catalog_guard_20260808T034105Z.json`.
-  **(5/FINAL) subscription-COMPARISON guard SHIPPED Local cycle 20260808T045337Z (direct-to-main), clearing the LAST
-  classification blocker:** `asrs/offering._SUB_COMPARISON` — a SIBLING of `_NEG_DISCLAIMER` for a DISTINCT FP family. A
-  pay-per-call API CONTRASTS its model AGAINST subscriptions ("when is it cheaper **than a** subscription?", the
-  `pay-per-call-api-**vs**-subscription` slug, "the break-even math **against a** subscription"), and that comparison prose kept
-  the `subscription` label firing after the negation guard. The fix is a fixed-width negative-lookbehind stack
-  (than/vs/versus/against [+a/an], + the hyphenated `…-vs-subscription` slug) prepended to the `subscription` and `per-month`
-  signals alongside `_NEG_DISCLAIMER`; precision by ADJACENCY — only the degenerate `<cue> [a|an] subscription` idiom is
-  rejected, so a real plan comparison keeps its claim ("Basic **vs Pro** subscription" → preceded by "Pro "), and .search()
-  skip-to-next still fires a genuine occurrence later in the surface. A live occurrence-sweep first ($0 static) confirmed the
-  comparison family was the SOLE survivor (every other `subscription`/`monthly` hit already dodged: `no subscription`/`no monthly
-  floor` by `_NEG_DISCLAIMER`; `golfmonthly` source-name by word boundary). CANONICAL SAFETY re-derived: the driftflight pair +
-  the load-bearing baselines exa.ai (#9/#157) / simplybook.me / polar.sh / ipinfo.io ALL still claim subscription; retail/api/null
-  NA. Confirmed LIVE (shipped code, $0 static): live thebotwire → **{metered_api, data_retrieval}** (subscription GONE).
-  test_offering 123→125 (`test_subscription_comparison_precision_synthetic` 9-fire/8-dodge incl. the 3 exact thebotwire spans +
-  `..._is_canonical_invariant_on_real_fixtures`), test_offering_canonical 70/70, suite 38/38; off scoring path, no rubric bump.
-  Evidence `runs/local/subscription_comparison_guard_20260808T045337Z.json`.
-  **✅ CLASSIFICATION BLOCKER RESOLVED — thebotwire.com now classifies HONESTLY to exactly {metered_api, data_retrieval} (all 4
-  over-claim families + the comparison FP cleared); the score precondition was already MET (86.0 B, x402-live 8.0/8.0, stable ≥2
-  cadence cycles, /tmp fixture replays score-clean). NEXT (TRUTH, [LOCAL], the very next fire's item — the PIN itself, now fully
-  unblocked):** re-capture thebotwire.com $0, re-verify honest classification + replay-clean on the FRESH capture, re-confirm the
-  live x402 is STILL stable at capture time (≥2-obs), then pin `test_canonical_replay.EXPECTED` + `_REPLAY_CLEAN` + guard
-  (overall + 4 pillars + capability teeth: no-rails 0.0 < documented-partial 50.0 < LIVE 100.0) + `_POPULATION` in all 5
-  reproducibility suites (direct-to-main, off-scoring-SEMANTICS — the exa.ai recipe) → 10th baseline, the FIRST non-anchor
-  live-x402 point, so the calibration guard no longer rests the entire upper/live scale on driftflight.com alone. **BACKUP
-  candidates:** x402deploy.vercel.app (73.9 C) / api.x402oracle.com (64.4 D) are live-x402 too — check whether their thinner
-  tool-gateway classifications are CLEANER than thebotwire.com's before preferring them (a tool gateway may not enumerate
-  verticals). **paidsync.ai** superseded — `/api/v1` 503 across 3 cadence cycles = STABLE-DEGRADED (a lesser backup at 80.0 B,
-  MCP+PAYG only, IF /api/v1 ever settles to a steady non-error non-402 state ≥2 cycles). **WATCH** driftflight.com's `/extend` for
-  a 402 recovery (would restore the anchor's live handshake + the +39.4 live delta; STILL 401). The `_CLASSIFICATION_ONLY`
-  candidates (polar.sh / simplybook.me / www.allbirds.com) ALL failed the byte-identity gate (live drift), so re-attempting any is
-  a genuinely-NEW re-baseline (verify the new classification is honest first), not a pin of the old claim.
+<!-- DONE Local cycle 20260808T054613Z: the oldest P0 (UNBLOCK + PIN thebotwire.com) is CLOSED. All five offering-
+classification FP families were cleared over Local cycles 005504Z/020353Z/024315Z/034105Z/045337Z; this fire executed the
+PIN itself (the exa.ai recipe). Live x402 re-confirmed STABLE at capture time across 3 independent $0 obs (/payments/latest
+402 + /news 402, valid x402-v2 payment-required offer [USDC on Base, $0.005], + scorer x402_probe 8.0/8.0 x402-live; NO
+payment signed, inv #1); fresh full-score capture -> live 86.0 B == frozen fixture-replay 86.0 == EXPECTED 86.0, all 4
+non-null pillars byte-identical, replay_misses=0; honest classification on the fresh capture = exactly {metered_api,
+data_retrieval}. Installed fixtures/canonical/thebotwire.com.json (NEW) + EXPECTED + _REPLAY_CLEAN + guard
+test_live_x402_storefront_replays_86_0 (capability teeth: books 0.0 < exa.ai 50.0 < thebotwire 100.0) + _POPULATION x5.
+The TENTH frozen-replay baseline (9->10), the HIGHEST (a hair above the driftflight.com anchor frozen 85.5) + the FIRST
+non-anchor LIVE-x402 point. Off-scoring-SEMANTICS EMPTY; frozen delta UNMOVED +39.4 (replay 31->32); live +30.1; suite
+38/38. Direct-to-main. Evidence runs/local/thebotwire_live_x402_baseline_20260808T054613Z.json; LOG Local cycle
+20260808T054613Z. -->
+
+- **[P1 — TRUTH/COVERAGE, LOCAL, candidate] A SECOND non-anchor LIVE-x402 calibration point**, so the frozen guard's
+  live/upper scale rests on >=2 non-anchor live-x402 witnesses (thebotwire.com 86.0 B is now the first; the anchor
+  driftflight.com is the only other live-x402 point and its /extend is currently regressed 402->401). Candidates from the
+  225343Z recon: **x402deploy.vercel.app** (73.9 C) / **api.x402oracle.com** (64.4 D) — both returned a live x402
+  handshake the shipped scorer detects at 8/8. GATE before pinning either (the thebotwire.com discipline): (a) re-confirm
+  the live x402 is STABLE across >=2 observations at capture time ($0 GETs); (b) verify the offering classification is
+  HONEST on a FRESH capture (a thin tool-gateway may enumerate fewer verticals -> likely CLEANER than thebotwire's news
+  catalog, but VERIFY, do not assume); (c) fresh full-score capture replays CLEAN (0 misses) and live == frozen ==
+  EXPECTED; then pin as the exa.ai/thebotwire recipe (EXPECTED + _REPLAY_CLEAN + guard + _POPULATION x5), direct-to-main,
+  off-scoring-SEMANTICS. A future PEER-GATED weld can cross-path-weld thebotwire.com once it carries a genuinely-compared
+  calibration-sweep presence (add it to experiments/calibration_sweep.py POPULATION first — the books.toscrape.com
+  pattern). WATCH driftflight.com /extend for a 402 recovery (restores the anchor's live handshake + the +39.4 live delta).
 
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
   phrasing has now drifted the `_ENV_BLOCK_RE` guard FIVE times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)

@@ -283,6 +283,44 @@ EXPECTED = {
             "outcome": None,
         },
     },
+    # A TENTH real-domain calibration datapoint — a purpose-built agent-native
+    # x402 news/data-wire API storefront (thebotwire.com), and the FIRST non-anchor
+    # baseline with a GENUINE LIVE x402 handshake (not merely documented): every
+    # priced route (`/payments/latest`, `/news`, …) answers a $0 GET with HTTP 402
+    # and a valid x402-v2 `payment-required` offer header (USDC on Base, $0.005),
+    # so the scorer's `x402_probe` reads `x402-live` 8.0/8.0 and transactability
+    # maxes at 100.0. It claims exactly TWO archetypes {metered_api, data_retrieval}
+    # (physical_good / service_booking / digital_good / subscription all NA — the
+    # multi-vertical content-catalog topic-word false positives that blocked this
+    # pin for five cycles were closed by the offering precision guards, so the
+    # classification is honest, not manufactured). Its fixture was captured
+    # full-score LIVE [LOCAL] this cycle (Local cycle 20260808T054613Z) with the
+    # live x402 confirmed stable across ≥2 direct observations at capture time, and
+    # replays CLEAN (0 misses); its live score was re-verified == this frozen floor
+    # on the same $0 static re-score (live 86.0 == frozen 86.0, all four non-null
+    # pillars byte-identical). At 86.0 (grade B) it is the HIGHEST baseline — a hair
+    # above the with-rails anchor (driftflight.com frozen 85.5) — which is HONEST,
+    # not a rig: a bare purpose-built x402 storefront maxes transactability (100.0
+    # vs the anchor's 87.5) while carrying LOW trust (43.3, thin policy/reputation
+    # surface), a pillar SHAPE no other baseline holds. This does NOT touch the
+    # canonical PAIR delta (+39.4, unmoved). Its 100.0 transactability is the TOP
+    # rung of the capability ladder — strictly above exa.ai's documented-partial
+    # 50.0, which is strictly above the no-rails floor (books/api.replicate 0.0).
+    # Worded by capability, never by vendor. Because its rail is LIVE (volatile),
+    # a future drop to 402→other reddens the replay-clean guard (fixture frozen) and
+    # flags a re-capture — the same contract as the domains above.
+    "thebotwire.com": {
+        "overall": 86.0,
+        "grade": "B",
+        "rubric_version": "0.7",
+        "pillars": {
+            "access": 100.0,
+            "legibility": 86.36363636363636,
+            "transactability": 100.0,
+            "trust": 43.333333333333336,
+            "outcome": None,
+        },
+    },
 }
 EXPECTED_DELTA = 39.4  # driftflight.com (rails) - drift-flight.org (no rails)
 
@@ -807,6 +845,54 @@ def test_agent_native_api_service_replays_78_1() -> None:
         f"exa.ai transactability {exa_tx} is a genuine partial — strictly between the "
         f"no-rails floor ({books.pillar_scores['transactability']}) and the with-rails "
         f"anchor's full handshake ({com.pillar_scores['transactability']})",
+    )
+
+
+# ---------------------------------------------------------------------------
+# 6g. TENTH-DOMAIN CALIBRATION — a purpose-built agent-native x402 news/data-wire
+#     API storefront (thebotwire.com), the FIRST non-anchor baseline with a GENUINE
+#     LIVE x402 handshake. Guards 1–6f pin two API storefronts, two retail shops, a
+#     zero-commerce page, a service-booking SaaS, a data-retrieval API, a pure-
+#     inference API, and an agent-native-search API. This replays the committed
+#     thebotwire.com fixture through the same real pipeline and pins its 86.0 B on
+#     rubric v0.7. It is the HIGHEST baseline — a hair above the with-rails anchor
+#     (driftflight.com, 85.5) — which is HONEST, not a rig: a bare purpose-built
+#     x402 storefront maxes transactability (100.0 vs the anchor's 87.5) while
+#     carrying LOW trust (43.3, thin policy/reputation surface). Its fixture was
+#     captured full-score LIVE [LOCAL] this cycle with the live x402 confirmed
+#     stable across ≥2 direct observations at capture time (replays clean, 0 misses)
+#     and its live score was re-verified == this frozen floor (live 86.0 == frozen
+#     86.0, all four non-null pillars byte-identical). Capability distinction
+#     (worded by capability, never by vendor): thebotwire.com's transactability is
+#     the TOP rung of the ladder — a LIVE x402 handshake (100.0) strictly ABOVE
+#     exa.ai's DOCUMENTED-partial rails (50.0), which is strictly above the no-rails
+#     floor (0.0). That three-rung ordering is the point: a probe that collapsed the
+#     live/documented/absent rail distinction would move one of these and fail here.
+# ---------------------------------------------------------------------------
+def test_live_x402_storefront_replays_86_0() -> None:
+    print("test_live_x402_storefront_replays_86_0")
+    _assert_domain("thebotwire.com")
+    # Capability teeth: the full LIVE-x402 rung (thebotwire.com 100.0) is strictly
+    # ABOVE the DOCUMENTED-partial rung (exa.ai 50.0), which is strictly above the
+    # no-rails floor (books.toscrape.com 0.0) — the live > documented > absent
+    # capability ladder the benchmark exists to defend, pinned offline. A probe that
+    # credited a documented-only or absent rail as a full live handshake (or vice
+    # versa) would collapse a rung and redden here.
+    tbw, tbw_misses = _score_fixture("thebotwire.com")
+    exa, exa_misses = _score_fixture("exa.ai")
+    books, books_misses = _score_fixture("books.toscrape.com")
+    _check(
+        not (tbw_misses or exa_misses or books_misses),
+        "no replay-miss on thebotwire.com / exa.ai / books.toscrape.com",
+    )
+    tbw_tx = tbw.pillar_scores["transactability"]
+    exa_tx = exa.pillar_scores["transactability"]
+    books_tx = books.pillar_scores["transactability"]
+    _check(
+        books_tx < exa_tx < tbw_tx,
+        f"thebotwire.com transactability {tbw_tx} (LIVE x402) is the top rung — "
+        f"strictly above exa.ai's documented-partial {exa_tx}, which is strictly "
+        f"above the no-rails floor {books_tx}",
     )
 
 
@@ -1824,6 +1910,17 @@ _REPLAY_CLEAN = {
     # PAYG → transactability 50.0), filling the upper-middle gap (ipinfo 61.3 ->
     # driftflight 85.5) for the cross-path regression signal.
     "exa.ai",
+    # thebotwire.com captured full-score LIVE this cycle (Local cycle
+    # 20260808T054613Z): the fresh crawl covers the whole probe set (0 misses) and
+    # replays to its pinned 86.0 B. It is the purpose-built agent-native x402
+    # news/data-wire API TYPE frozen-replay baseline — the HIGHEST datapoint (86.0)
+    # and the FIRST non-anchor member with a GENUINE LIVE x402 handshake (every
+    # priced route answers a $0 GET with HTTP 402 + a valid x402-v2 payment-required
+    # offer → x402_probe x402-live 8.0/8.0 → transactability 100.0), the TOP rung of
+    # the live > documented > absent capability ladder. Because its rail is LIVE
+    # (volatile), a future 402→other drop reddens this replay guard (fixture frozen)
+    # and flags a re-capture — the honest signal, not a silent drift.
+    "thebotwire.com",
 }
 # Fixtures whose recorded surface is a strict subset of the full scoring path
 # (captured for offering/battery classification) — NOT eligible for any
@@ -2181,6 +2278,7 @@ def main() -> int:
         test_pure_metered_api_storefront_replays_29_5,
         test_second_retail_storefront_replays_49_8,
         test_agent_native_api_service_replays_78_1,
+        test_live_x402_storefront_replays_86_0,
         test_retail_storefront_earns_no_agent_native_payment,
         test_relabel_invariance_retail,
         test_nonstorefront_replays_22_5,

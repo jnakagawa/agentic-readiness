@@ -156,6 +156,32 @@ _ANCHORS = ("drift-flight.org", "driftflight.com")
 # is NOT SCORABLE without outbound network). So the cross-path weld now spans SEVEN structurally-distinct
 # non-anchor witnesses: null-control + 2 retail + service-booking + data-retrieval + pure-inference-API +
 # agent-native-search-API (the first with partial agent-native rails).
+# thebotwire.com (86.0) / api.x402oracle.com (64.4) / x402deploy.vercel.app (73.9) are welded here as the
+# EIGHTH, NINTH, and TENTH non-anchor members, and — crucially — the FIRST welded members that carry a GENUINE
+# LIVE x402 handshake (every prior welded witness carries NO live rail; exa.ai's rail is documented-not-probed).
+# Each is a purpose-built agent-native x402 storefront the shipped scorer probes at x402_probe 8.0/8.0 x402-live,
+# so their transactability sits at or near the ceiling (thebotwire 100.0 / oracle 87.5 / x402deploy 100.0) — the
+# cross-path regression signal now reaches the LIVE upper / with-rails scale on non-anchor domains, not just the
+# frozen 78.1 documented-rail point exa.ai contributes. They pin three distinct capability SHAPES: thebotwire.com
+# (86.0, {metered_api, data_retrieval}, the HIGHEST baseline — a hair above the driftflight.com anchor's frozen
+# 85.5) maxes transactability while carrying thin trust 43.33; api.x402oracle.com (64.4, PURE {metered_api}) is
+# the controlled complement of the no-rails api.replicate.com — same single archetype, opposite rail, so its
+# transactability 87.5 vs api.replicate's 0.0 isolates the rail's transactability contribution, AND its 87.5 is
+# the IDENTICAL shape as the with-rails anchor; x402deploy.vercel.app (73.9, {metered_api, data_retrieval}) is a
+# SECOND transactability-100 witness — with tx pinned at its ceiling on BOTH thebotwire (86.0) and x402deploy
+# (73.9), the overall gap is forced onto legibility + trust, the "a live rail is NECESSARY but not SUFFICIENT"
+# statement (non-trivial only with >=2 same-tx points at distinct overalls). Each is keyed identically on both
+# paths (no www/bare alias needed) and scored at its floor in exactly ONE committed sweep so far
+# (20260808T084504Z, segment x402-live:{news-data-wire,trust-oracle,web-data-tools} — the cadence run that first
+# added all three to the POPULATION; absent from every prior sweep), so each is genuinely COMPARED (n_compared=1),
+# not silently skipped. Because these rails are LIVE (volatile), each member's live/frozen agreement was
+# independently re-confirmed by the authoring cycle (Local cycle 20260808T094101Z, static $0 re-score: live
+# 86.0 / 64.4 / 73.9 == frozen 86.0 / 64.4 / 73.9, all four non-null pillars byte-identical, caps empty), the
+# cross-path evidence the cloud cannot produce (none is SCORABLE without outbound network) — and MUST be
+# re-confirmed at review time, since a divergence here would be REAL live-rail drift (re-capture that member, do
+# not weld it). So the cross-path weld now spans TEN structurally-distinct non-anchor witnesses: null-control +
+# 2 retail + service-booking + data-retrieval + pure-inference-API + agent-native-search-API + THREE live-x402
+# storefronts (the first welded members with a genuine live payment handshake).
 _NON_ANCHOR_WELDED = (
     "example.com",
     "books.toscrape.com",
@@ -164,6 +190,9 @@ _NON_ANCHOR_WELDED = (
     "api.replicate.com",
     "www.moleskine.com",
     "exa.ai",
+    "thebotwire.com",
+    "api.x402oracle.com",
+    "x402deploy.vercel.app",
 )
 # Every population member welded across the offline-replay and live-sweep paths.
 _WELDED_MEMBERS = _ANCHORS + _NON_ANCHOR_WELDED
@@ -965,6 +994,204 @@ def test_exa_ai_seventh_non_anchor_is_welded_nonvacuously() -> None:
     _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
 
 
+def test_thebotwire_eighth_non_anchor_is_welded_nonvacuously() -> None:
+    print("test_thebotwire_eighth_non_anchor_is_welded_nonvacuously")
+    # thebotwire.com is the EIGHTH non-anchor welded member (a purpose-built agent-native
+    # x402 news/data storefront — {metered_api, data_retrieval}), and the FIRST welded member
+    # with a GENUINE LIVE x402 handshake: the shipped scorer probes it at x402_probe 8.0/8.0
+    # x402-live, so its transactability sits at the 100.0 ceiling and its 86.0 is the HIGHEST
+    # baseline (a hair above the driftflight.com anchor's frozen 85.5). Every prior welded
+    # witness sits below on the transactability axis (exa.ai's rail is documented-not-probed,
+    # 50.0; all others no-rails), so this member pushes the cross-path regression signal onto
+    # the LIVE upper / with-rails scale for the first time on a non-anchor domain. Prove the
+    # weld is LOAD-BEARING for it specifically, not silently skipped in every sweep: it carries
+    # a committed v0.7 replay baseline, it is genuinely COMPARED in >=1 committed sweep (the
+    # 20260808T084504Z cadence run — the first to add it to the POPULATION — scored it 86.0,
+    # segment x402-live:news-data-wire), and its live value agrees with the frozen floor. Because
+    # its rail is LIVE (volatile), its live<->frozen agreement was independently re-confirmed by
+    # the authoring cycle (Local cycle 20260808T094101Z, static $0: live 86.0 == frozen 86.0, all
+    # four non-null pillars byte-identical, caps empty) — a divergence here at review time would be
+    # REAL live-rail drift, not a code regression.
+    _check(
+        "thebotwire.com" in _NON_ANCHOR_WELDED,
+        "thebotwire.com is a welded non-anchor member",
+    )
+    _check(
+        "thebotwire.com" in replay.EXPECTED
+        and str(replay.EXPECTED["thebotwire.com"]["rubric_version"]) == _BASELINE_VERSION,
+        "thebotwire.com carries a committed v0.7 replay baseline (the weld's source of truth)",
+    )
+    sweeps = _committed_sweeps()
+    divergences, n_compared, _, _ = _divergences(
+        sweeps, replay.EXPECTED, _BASELINE_VERSION, members=("thebotwire.com",)
+    )
+    _check(
+        divergences == [],
+        f"thebotwire.com's live sweeps agree with its 86.0 replay floor (got {divergences})",
+    )
+    _check(
+        n_compared >= 1,
+        f"thebotwire.com is genuinely compared, not silently skipped (got {n_compared})",
+    )
+    # Teeth: a live re-capture that drifted thebotwire.com 86.0 -> 95.0 MUST trip the weld,
+    # exactly as a drifted anchor or any prior non-anchor member does — so welding this eighth
+    # member (the first on the LIVE with-rails scale) is not toothless.
+    drifted = {
+        "rubric_version": "0.7",
+        "rows": [
+            {
+                "domain": "thebotwire.com",
+                "segment": "x402-live:news-data-wire",
+                "scored": True,
+                "overall": 95.0,
+            }
+        ],
+    }
+    dvg, n_cmp, _, _ = _divergences(
+        [("synthetic-thebotwire-drift", drifted)], replay.EXPECTED, _BASELINE_VERSION,
+        members=("thebotwire.com",),
+    )
+    _check(len(dvg) == 1, f"exactly one divergence caught (got {dvg})")
+    _check(
+        dvg[0][1] == "thebotwire.com"
+        and abs(dvg[0][2] - 95.0) < 1e-9
+        and abs(dvg[0][3] - 86.0) < 1e-9,
+        f"the drifted thebotwire.com is caught vs its 86.0 floor (got {dvg[0]})",
+    )
+    _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
+
+
+def test_x402oracle_ninth_non_anchor_is_welded_nonvacuously() -> None:
+    print("test_x402oracle_ninth_non_anchor_is_welded_nonvacuously")
+    # api.x402oracle.com is the NINTH non-anchor welded member (a PURE single-archetype
+    # {metered_api} x402 "trust oracle" gateway) and the SECOND welded member with a GENUINE
+    # LIVE x402 handshake (x402_probe 8.0/8.0 x402-live). Its calibration value is a controlled
+    # complement: it shares the pure-{metered_api} archetype with the no-rails api.replicate.com
+    # (the FIFTH welded member) but carries the OPPOSITE rail, so its transactability 87.5 vs
+    # api.replicate's 0.0 isolates the rail's transactability contribution against a fixed archetype
+    # — AND its 87.5 is the IDENTICAL transactability shape as the with-rails anchor driftflight.com.
+    # Prove the weld is LOAD-BEARING for it specifically, not silently skipped in every sweep: it
+    # carries a committed v0.7 replay baseline, it is genuinely COMPARED in >=1 committed sweep (the
+    # 20260808T084504Z cadence run scored it 64.4, segment x402-live:trust-oracle), and its live
+    # value agrees with the frozen floor. Because its rail is LIVE (volatile), its live<->frozen
+    # agreement was independently re-confirmed by the authoring cycle (Local cycle 20260808T094101Z,
+    # static $0: live 64.4 == frozen 64.4, all four non-null pillars byte-identical, caps empty) — a
+    # divergence here at review time would be REAL live-rail drift, not a code regression.
+    _check(
+        "api.x402oracle.com" in _NON_ANCHOR_WELDED,
+        "api.x402oracle.com is a welded non-anchor member",
+    )
+    _check(
+        "api.x402oracle.com" in replay.EXPECTED
+        and str(replay.EXPECTED["api.x402oracle.com"]["rubric_version"]) == _BASELINE_VERSION,
+        "api.x402oracle.com carries a committed v0.7 replay baseline (the weld's source of truth)",
+    )
+    sweeps = _committed_sweeps()
+    divergences, n_compared, _, _ = _divergences(
+        sweeps, replay.EXPECTED, _BASELINE_VERSION, members=("api.x402oracle.com",)
+    )
+    _check(
+        divergences == [],
+        f"api.x402oracle.com's live sweeps agree with its 64.4 replay floor (got {divergences})",
+    )
+    _check(
+        n_compared >= 1,
+        f"api.x402oracle.com is genuinely compared, not silently skipped (got {n_compared})",
+    )
+    # Teeth: a live re-capture that drifted api.x402oracle.com 64.4 -> 75.0 MUST trip the weld,
+    # exactly as a drifted anchor or any prior non-anchor member does — so welding this ninth
+    # member is not toothless.
+    drifted = {
+        "rubric_version": "0.7",
+        "rows": [
+            {
+                "domain": "api.x402oracle.com",
+                "segment": "x402-live:trust-oracle",
+                "scored": True,
+                "overall": 75.0,
+            }
+        ],
+    }
+    dvg, n_cmp, _, _ = _divergences(
+        [("synthetic-x402oracle-drift", drifted)], replay.EXPECTED, _BASELINE_VERSION,
+        members=("api.x402oracle.com",),
+    )
+    _check(len(dvg) == 1, f"exactly one divergence caught (got {dvg})")
+    _check(
+        dvg[0][1] == "api.x402oracle.com"
+        and abs(dvg[0][2] - 75.0) < 1e-9
+        and abs(dvg[0][3] - 64.4) < 1e-9,
+        f"the drifted api.x402oracle.com is caught vs its 64.4 floor (got {dvg[0]})",
+    )
+    _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
+
+
+def test_x402deploy_tenth_non_anchor_is_welded_nonvacuously() -> None:
+    print("test_x402deploy_tenth_non_anchor_is_welded_nonvacuously")
+    # x402deploy.vercel.app is the TENTH non-anchor welded member (a purpose-built agent-native
+    # x402 "Web & Data Tools" gateway — {metered_api, data_retrieval}) and the THIRD welded member
+    # with a GENUINE LIVE x402 handshake (x402_probe 8.0/8.0 x402-live). Its calibration value is a
+    # SECOND transactability-100 witness: with transactability pinned at its 100.0 ceiling on BOTH
+    # thebotwire.com (86.0) and x402deploy.vercel.app (73.9), the overall gap between them is forced
+    # entirely onto legibility (45.45 vs 86.36) + trust (33.33 vs 43.33) — the "a live rail is
+    # NECESSARY but not SUFFICIENT" statement, which is non-trivial only with >=2 same-tx points at
+    # distinct overalls. Prove the weld is LOAD-BEARING for it specifically, not silently skipped in
+    # every sweep: it carries a committed v0.7 replay baseline, it is genuinely COMPARED in >=1
+    # committed sweep (the 20260808T084504Z cadence run scored it 73.9, segment
+    # x402-live:web-data-tools), and its live value agrees with the frozen floor. Because its rail is
+    # LIVE (volatile), its live<->frozen agreement was independently re-confirmed by the authoring
+    # cycle (Local cycle 20260808T094101Z, static $0: live 73.9 == frozen 73.9, all four non-null
+    # pillars byte-identical, caps empty) — a divergence here at review time would be REAL live-rail
+    # drift, not a code regression.
+    _check(
+        "x402deploy.vercel.app" in _NON_ANCHOR_WELDED,
+        "x402deploy.vercel.app is a welded non-anchor member",
+    )
+    _check(
+        "x402deploy.vercel.app" in replay.EXPECTED
+        and str(replay.EXPECTED["x402deploy.vercel.app"]["rubric_version"]) == _BASELINE_VERSION,
+        "x402deploy.vercel.app carries a committed v0.7 replay baseline (the weld's source of truth)",
+    )
+    sweeps = _committed_sweeps()
+    divergences, n_compared, _, _ = _divergences(
+        sweeps, replay.EXPECTED, _BASELINE_VERSION, members=("x402deploy.vercel.app",)
+    )
+    _check(
+        divergences == [],
+        f"x402deploy.vercel.app's live sweeps agree with its 73.9 replay floor (got {divergences})",
+    )
+    _check(
+        n_compared >= 1,
+        f"x402deploy.vercel.app is genuinely compared, not silently skipped (got {n_compared})",
+    )
+    # Teeth: a live re-capture that drifted x402deploy.vercel.app 73.9 -> 85.0 MUST trip the weld,
+    # exactly as a drifted anchor or any prior non-anchor member does — so welding this tenth member
+    # is not toothless.
+    drifted = {
+        "rubric_version": "0.7",
+        "rows": [
+            {
+                "domain": "x402deploy.vercel.app",
+                "segment": "x402-live:web-data-tools",
+                "scored": True,
+                "overall": 85.0,
+            }
+        ],
+    }
+    dvg, n_cmp, _, _ = _divergences(
+        [("synthetic-x402deploy-drift", drifted)], replay.EXPECTED, _BASELINE_VERSION,
+        members=("x402deploy.vercel.app",),
+    )
+    _check(len(dvg) == 1, f"exactly one divergence caught (got {dvg})")
+    _check(
+        dvg[0][1] == "x402deploy.vercel.app"
+        and abs(dvg[0][2] - 85.0) < 1e-9
+        and abs(dvg[0][3] - 73.9) < 1e-9,
+        f"the drifted x402deploy.vercel.app is caught vs its 73.9 floor (got {dvg[0]})",
+    )
+    _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
+
+
 def test_www_bare_domain_key_is_normalized() -> None:
     print("test_www_bare_domain_key_is_normalized")
     # _member_row matches a welded member to its sweep row modulo a single leading 'www.'
@@ -1296,6 +1523,9 @@ def main() -> int:
         test_api_replicate_fifth_non_anchor_is_welded_nonvacuously,
         test_moleskine_sixth_non_anchor_is_welded_nonvacuously,
         test_exa_ai_seventh_non_anchor_is_welded_nonvacuously,
+        test_thebotwire_eighth_non_anchor_is_welded_nonvacuously,
+        test_x402oracle_ninth_non_anchor_is_welded_nonvacuously,
+        test_x402deploy_tenth_non_anchor_is_welded_nonvacuously,
         test_www_bare_domain_key_is_normalized,
         test_off_version_sweep_is_not_compared,
         test_live_sweep_pillars_agree_with_replay_baseline,

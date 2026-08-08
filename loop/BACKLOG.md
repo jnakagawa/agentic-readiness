@@ -38,34 +38,21 @@ Live↔frozen verified this fire ($0 static re-score 08:44Z: live 54.0 == frozen
 byte-identical, replay_misses=0 — the [LOCAL] essence the cloud can't do). Evidence
 runs/local/acuity_third_non_anchor_weld_20260807T084355Z.json. DO NOT RE-AUTHOR — TRACKED by STATE's OPEN-PR banner + next
 fire's first-duty adversarial review + live re-score. See LOG Local cycle 20260807T084355Z. -->
-<!-- MERGED Local cycle 20260807T094104Z: PR #153 (acuityscheduling.com 3rd non-anchor cross-path calibration weld)
-MERGED `7cd4fcc` after the owed FIRST-DUTY adversarial review + independent $0 live re-score. VERDICT SOUND:
-off-scoring-path (three-dot diff since merge-base a104c8d is ONLY test_calibration_anchor_agreement.py +73/-1; empty over
-scoring.py/report.py/probes/battery.py/reliability.py/offering.py/scorecard.py/rubric/fixtures/experiments); vendor-neutral;
-committed baseline 54.0 v0.7; LOAD-BEARING (n_compared=3 across the 3 committed sweeps, segment service-booking:saas);
-teeth (54.0->65.0 caught). Live re-derived THIS fire: acuity 54.0 live == 54.0 frozen == 54.0 EXPECTED, all 4 non-null
-pillars byte-identical -> weld holds, did NOT regress. Suite 38/38 branch + merged main; weld 18/18; the cross-path weld
-now spans THREE non-anchor TYPES. See LOG Local cycle 20260807T094104Z. -->
-<!-- DONE Local cycle 20260807T094104Z: promoted ipinfo.io (data_retrieval / IP-data API storefront — a 4th storefront
-TYPE) from _CLASSIFICATION_ONLY to a frozen-replay calibration baseline via a [LOCAL] FULL-score LIVE re-capture,
-direct-to-main. The prior fixture was classification-only (66 offering-discovery urls, dozens of full-scorer misses); the
-fresh 47-url full-score crawl replays clean (replay_misses=0) to 61.3 D. Verified NON-DESTRUCTIVELY in a temp path FIRST:
-replays clean + offering classification BYTE-IDENTICAL to the prior fixture (the 61 dropped urls were signal-less
-speculative subdomains agents./api./developers./docs.ipinfo.io) -> test_offering 115/115, test_offering_canonical 70/70
-UNCHANGED. Then pinned test_canonical_replay.EXPECTED (61.3 D v0.7) + _REPLAY_CLEAN + new guard
-test_data_retrieval_storefront_replays_61_3 (27->28) + _POPULATION in all 5 reproducibility suites (the replay-clean-set
-tripwires FORCED consistent inclusion). [LOCAL] essence: fresh $0 static re-score THIS fire (09:49Z) -> live 61.3 ==
-frozen 61.3, all 4 non-null pillars byte-identical. Off-scoring-SEMANTICS (only the non-anchor ipinfo.io fixture is
-scoring-adjacent; canonical PAIR untouched); frozen canonical delta UNMOVED +39.4; suite 38/38. Evidence
-runs/local/ipinfo_data_retrieval_baseline_20260807T094104Z.json. See LOG Local cycle 20260807T094104Z. -->
-<!-- MERGED Local cycle 20260807T114104Z: PR #154 (ipinfo.io 4th non-anchor cross-path calibration weld) MERGED
-`ee95a0b` after the owed FIRST-DUTY adversarial review + independent $0 live re-score. VERDICT SOUND: off-scoring-path
-(three-dot diff since merge-base d0f5250 is ONLY test_calibration_anchor_agreement.py +81/-4; empty over scoring.py/
-report.py/probes/battery.py/reliability.py/offering.py/scorecard.py/rubric/fixtures/experiments); vendor-neutral (by TYPE
-data-retrieval); committed baseline 61.3 D v0.7; LOAD-BEARING (n_compared=3 independently re-derived across the 3 committed
-sweeps, segment data-retrieval:api); teeth (61.3->72.0 caught). Live re-derived THIS fire: ipinfo.io 61.3 live == 61.3
-frozen == 61.3 EXPECTED, all 4 non-null pillars byte-identical -> weld holds, did NOT regress. Suite 38/38 branch + merged
-main; weld 19/19; the cross-path weld now spans FOUR non-anchor TYPES. See LOG Local cycle 20260807T114104Z. -->
+<!-- Three fully-superseded 20260807 weld markers (PR #153 acuity weld / ipinfo baseline promotion / PR #154 ipinfo
+weld) pruned this fire (Local cycle 20260808T114105Z) to keep completed-marker bytes under the hygiene cap — all
+preserved verbatim in loop/LOG.md + git history. The whole non-anchor weld campaign (#152-#158) is complete. -->
+<!-- DONE Local cycle 20260808T114105Z: the P2 UCP-rail-weld prerequisite (give checkout.coffeecircle.com a
+genuinely-compared calibration-sweep presence) is DISCHARGED. Added checkout.coffeecircle.com to
+`experiments/calibration_sweep.py` POPULATION (23->24, segment ucp-live:coffee-merchant) and ran a $0 static cadence
+sweep (no --behavioral/--max-pay/codex/zero-CLI) -> runs/local/calibration_sweep_20260808T114436Z.json (23/24 scored,
+rei.com not-scorable per inv #4, 0 errors). checkout.coffeecircle.com scored 57.4 F BYTE-IDENTICAL to its frozen floor
+(access 100.0/legibility 54.55/tx 50.0/trust 33.33, caps empty, {metered_api, physical_good}); drift 0/22 moved vs the
+prior sweep, max |Δ| 0.0, only new member is checkout.coffeecircle.com; every welded member + both anchors + all 13
+baselines byte-stable on floor. Off-scoring-SEMANTICS EMPTY (POPULATION +1 only); frozen delta UNMOVED +39.4; live +30.1;
+suite 38/38. Direct-to-main (same class as the books.toscrape.com / api.replicate.com / three-x402 POPULATION-adds). This
+UNLOCKS the FIRST UCP-rail cross-path weld: a future PEER-GATED PR can weld checkout.coffeecircle.com into
+_NON_ANCHOR_WELDED non-vacuously (n_compared=1, agrees with floor, teeth = synthetic drift caught) — the ELEVENTH
+non-anchor member and the FIRST on the UCP commerce-protocol rail. See LOG Local cycle 20260808T114105Z. -->
 <!-- DONE Local cycle 20260807T114104Z: pinned api.replicate.com (a PURE single-archetype metered_api compute/inference
 API — a 5th storefront TYPE) as the SEVENTH test_canonical_replay.EXPECTED frozen-replay baseline (29.5 F v0.7; access
 100.0/legibility 18.18/transactability 0.0/trust 33.33) + guard test_pure_metered_api_storefront_replays_29_5 (28->29,
@@ -258,9 +245,12 @@ live 57.4 == frozen 57.4 == EXPECTED, all 4 pillars byte-identical, replay_misse
 - **[P2 — TRUTH, LOCAL, candidate] BROADEN further / UNLOCK the UCP-rail WELD.** The NEW-rail-TYPE broadening is now
   UNDERWAY: checkout.coffeecircle.com (57.4 F, UCP `commerce-protocol-live`) is the FIRST pinned baseline on the UCP
   commerce-protocol rail (Local cycle 20260808T104105Z), a rail SHAPE distinct from all ten x402/no-rail witnesses. Next
-  steps, in order: (1) a [LOCAL] cadence sweep ADDS checkout.coffeecircle.com to `experiments/calibration_sweep.py`
-  POPULATION (n_compared≥1), then a PEER-GATED PR welds it into `_NON_ANCHOR_WELDED` as the FIRST welded member on the UCP
-  rail (the api.replicate.com/books.toscrape pattern). (2) Broaden to STILL-open rail TYPES — a live ACP checkout surface
+  steps, in order: (1) ✅ DONE (Local cycle 20260808T114105Z): the [LOCAL] cadence sweep ADDED checkout.coffeecircle.com to
+  `experiments/calibration_sweep.py` POPULATION (23→24) and scored it 57.4 == frozen floor (n_compared=1 in
+  `calibration_sweep_20260808T114436Z.json`, drift 0/22 moved) — so the NEXT step is now a PEER-GATED PR that welds it into
+  `_NON_ANCHOR_WELDED` as the FIRST welded member on the UCP rail (the api.replicate.com/books.toscrape pattern;
+  re-confirm live==floor at author time — a divergence = manifest drift, re-capture, inv #4). (2) Broaden to STILL-open
+  rail TYPES — a live ACP checkout surface
   (`/.well-known/agentic-commerce` or a `checkout_sessions` payload) or an MPP handshake the scorer detects. (3)
   `joinhexagon.com` is a DOCUMENTED live-UCP lead but needs a precision-guard unblock FIRST (clear the 4 llms-full.txt FP
   families digital_good/physical_good/service_booking/data_retrieval before its fixture can be pinned honestly, inv #4) —

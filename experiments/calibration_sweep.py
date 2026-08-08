@@ -113,6 +113,23 @@ POPULATION: list[tuple[str, str]] = [
     ("thebotwire.com", "x402-live:news-data-wire"),
     ("api.x402oracle.com", "x402-live:trust-oracle"),
     ("x402deploy.vercel.app", "x402-live:web-data-tools"),
+    # a REAL coffee merchant's UCP (Universal Commerce Protocol) checkout surface,
+    # pinned as the THIRTEENTH frozen-replay baseline LOCAL cycle 20260808T104105Z
+    # (checkout.coffeecircle.com 57.4 F). It is the FIRST non-anchor point on a
+    # structurally NEW agent-native rail TYPE: GET /.well-known/ucp answers a $0
+    # read with a valid dev.ucp.* capability manifest, so the scorer's x402_probe
+    # reads commerce-protocol-live PARTIAL 4.0/8.0 — the MIDDLE rung of the
+    # commerce-protocol ladder, distinct from every x402/no-rail witness above
+    # (honest {metered_api, physical_good}, no over-claim). It carries a committed
+    # replay baseline but was ABSENT from every prior sweep. Adding it here (LOCAL
+    # cadence, the api.replicate.com / three-x402-witnesses prerequisite pattern)
+    # gives it its first live-sweep presence, so a future TRUTH cycle can weld it
+    # into tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED
+    # non-vacuously — the FIRST welded member on the UCP commerce-protocol rail.
+    # Because the UCP manifest is LIVE (a served well-known JSON, volatile), a
+    # member whose live score DIVERGES from its frozen floor this run is an honest
+    # manifest-drift signal, not silently averaged in.
+    ("checkout.coffeecircle.com", "ucp-live:coffee-merchant"),
     # non-storefront controls (zero-commerce baseline)
     ("example.com", "control:non-storefront"),
     ("wikipedia.org", "control:non-storefront"),

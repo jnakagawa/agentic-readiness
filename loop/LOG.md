@@ -20349,3 +20349,7 @@ synthetic drift 66.9->drift caught). Beyond that: a UCP point at a DIFFERENT tx 
 handshake, tx > 50.0 — none found so far), or the genuinely-NEW rail TYPE (ACP/MPP, still UN-pinnable
 $0 — ACP well-known scarce). WATCH driftflight.com `/extend` for a 402 recovery (restores the anchor's
 live handshake + the +39.4 live delta).
+
+## Local verification — 20260808T194104Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260808T194104Z.json

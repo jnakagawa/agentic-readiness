@@ -20206,3 +20206,7 @@ Next hypothesis: the #152-#160 non-anchor weld campaign is complete once #160 me
 Forward P2 frontier = a genuinely-NEW rail TYPE (ACP/MPP), currently UN-pinnable $0 (ACP well-known
 scarce; re-scan at a future cadence) OR more UCP-retail witnesses (glossier/spanx/skims/hardgraft
 all serve valid /.well-known/ucp) as cheap direct-to-main pins IF a distinct calibration value.
+
+## Local verification — 20260808T164103Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260808T164103Z.json

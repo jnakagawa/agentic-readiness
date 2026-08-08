@@ -182,6 +182,27 @@ _ANCHORS = ("drift-flight.org", "driftflight.com")
 # not weld it). So the cross-path weld now spans TEN structurally-distinct non-anchor witnesses: null-control +
 # 2 retail + service-booking + data-retrieval + pure-inference-API + agent-native-search-API + THREE live-x402
 # storefronts (the first welded members with a genuine live payment handshake).
+# checkout.coffeecircle.com (57.4) is welded here as the ELEVENTH non-anchor member, and — crucially — the
+# FIRST welded member on a NEW agent-native rail TYPE: the UCP (Universal Commerce Protocol) commerce-protocol
+# rail, structurally distinct from every x402 / no-rail witness above. It is a REAL coffee merchant's UCP
+# checkout surface: GET /.well-known/ucp answers a $0 read with a valid `dev.ucp.*` capability manifest (version
+# 2026-04-08), so the shipped scorer's `x402_probe` reads `commerce-protocol-live` PARTIAL 4.0/8.0 — the MIDDLE
+# rung of the commerce-protocol ladder, strictly ABOVE a no-rail retail floor (books.toscrape.com x402_probe
+# FAIL 0.0) and strictly BELOW a full live-x402 handshake (thebotwire.com x402_probe PASS 8.0) — earning
+# transactability 50.0 (a genuine MIDDLE between the no-rails floor 0.0 and the anchor's full handshake 87.5).
+# It claims exactly {metered_api, physical_good} (an honest coffee-merchant checkout API, NO topic-word
+# over-claim), keyed identically on both paths (no www/bare alias needed), and scored at its 57.4 floor in
+# exactly ONE committed sweep so far (20260808T114436Z, segment ucp-live:coffee-merchant — the cadence run that
+# first added it to the POPULATION; absent from every prior sweep), so it is genuinely COMPARED (n_compared=1),
+# not silently skipped. Because the UCP rail is LIVE (a served manifest, volatile), its live/frozen agreement was
+# independently re-confirmed by the authoring cycle (Local cycle 20260808T124101Z, static $0 re-score: live 57.4
+# == frozen 57.4, all four non-null pillars byte-identical, caps empty, x402_probe partial 4.0/8.0
+# commerce-protocol-live), the cross-path evidence the cloud cannot produce (it is NOT SCORABLE without outbound
+# network) — and MUST be re-confirmed at review time, since a divergence here would be REAL UCP-manifest drift
+# (re-capture that member, do not weld it). So the cross-path weld now spans ELEVEN structurally-distinct
+# non-anchor witnesses: null-control + 2 retail + service-booking + data-retrieval + pure-inference-API +
+# agent-native-search-API + THREE live-x402 storefronts + ONE live-UCP commerce-protocol storefront (the first
+# welded member on a rail TYPE other than x402).
 _NON_ANCHOR_WELDED = (
     "example.com",
     "books.toscrape.com",
@@ -193,6 +214,7 @@ _NON_ANCHOR_WELDED = (
     "thebotwire.com",
     "api.x402oracle.com",
     "x402deploy.vercel.app",
+    "checkout.coffeecircle.com",
 )
 # Every population member welded across the offline-replay and live-sweep paths.
 _WELDED_MEMBERS = _ANCHORS + _NON_ANCHOR_WELDED
@@ -1192,6 +1214,72 @@ def test_x402deploy_tenth_non_anchor_is_welded_nonvacuously() -> None:
     _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
 
 
+def test_coffeecircle_eleventh_non_anchor_is_welded_nonvacuously() -> None:
+    print("test_coffeecircle_eleventh_non_anchor_is_welded_nonvacuously")
+    # checkout.coffeecircle.com is the ELEVENTH non-anchor welded member (a REAL coffee merchant's
+    # UCP checkout surface — {metered_api, physical_good}) and the FIRST welded member on a NEW
+    # agent-native rail TYPE: the UCP (Universal Commerce Protocol) commerce-protocol rail, distinct
+    # from every x402 / no-rail witness. GET /.well-known/ucp answers a $0 read with a valid dev.ucp.*
+    # manifest, so the shipped scorer's x402_probe reads `commerce-protocol-live` PARTIAL 4.0/8.0 — the
+    # MIDDLE rung of the commerce-protocol ladder, earning transactability 50.0, strictly above the
+    # no-rail retail floor (books.toscrape.com x402_probe 0.0) and strictly below a full live-x402
+    # handshake (thebotwire.com x402_probe 8.0). Prove the weld is LOAD-BEARING for it specifically, not
+    # silently skipped in every sweep: it carries a committed v0.7 replay baseline, it is genuinely
+    # COMPARED in >=1 committed sweep (the 20260808T114436Z cadence run scored it 57.4, segment
+    # ucp-live:coffee-merchant), and its live value agrees with the frozen floor. Because its rail is
+    # LIVE (volatile), its live<->frozen agreement was independently re-confirmed by the authoring cycle
+    # (Local cycle 20260808T124101Z, static $0: live 57.4 == frozen 57.4, all four non-null pillars
+    # byte-identical, caps empty, x402_probe partial 4.0/8.0 commerce-protocol-live) — a divergence here
+    # at review time would be REAL UCP-manifest drift, not a code regression.
+    _check(
+        "checkout.coffeecircle.com" in _NON_ANCHOR_WELDED,
+        "checkout.coffeecircle.com is a welded non-anchor member",
+    )
+    _check(
+        "checkout.coffeecircle.com" in replay.EXPECTED
+        and str(replay.EXPECTED["checkout.coffeecircle.com"]["rubric_version"]) == _BASELINE_VERSION,
+        "checkout.coffeecircle.com carries a committed v0.7 replay baseline (the weld's source of truth)",
+    )
+    sweeps = _committed_sweeps()
+    divergences, n_compared, _, _ = _divergences(
+        sweeps, replay.EXPECTED, _BASELINE_VERSION, members=("checkout.coffeecircle.com",)
+    )
+    _check(
+        divergences == [],
+        f"checkout.coffeecircle.com's live sweeps agree with its 57.4 replay floor (got {divergences})",
+    )
+    _check(
+        n_compared >= 1,
+        f"checkout.coffeecircle.com is genuinely compared, not silently skipped (got {n_compared})",
+    )
+    # Teeth: a live re-capture that drifted checkout.coffeecircle.com 57.4 -> 68.0 (e.g. the UCP manifest
+    # upgrading commerce-protocol-live PARTIAL -> a full handshake) MUST trip the weld, exactly as a
+    # drifted anchor or any prior non-anchor member does — so welding this eleventh member is not toothless.
+    drifted = {
+        "rubric_version": "0.7",
+        "rows": [
+            {
+                "domain": "checkout.coffeecircle.com",
+                "segment": "ucp-live:coffee-merchant",
+                "scored": True,
+                "overall": 68.0,
+            }
+        ],
+    }
+    dvg, n_cmp, _, _ = _divergences(
+        [("synthetic-coffeecircle-drift", drifted)], replay.EXPECTED, _BASELINE_VERSION,
+        members=("checkout.coffeecircle.com",),
+    )
+    _check(len(dvg) == 1, f"exactly one divergence caught (got {dvg})")
+    _check(
+        dvg[0][1] == "checkout.coffeecircle.com"
+        and abs(dvg[0][2] - 68.0) < 1e-9
+        and abs(dvg[0][3] - 57.4) < 1e-9,
+        f"the drifted checkout.coffeecircle.com is caught vs its 57.4 floor (got {dvg[0]})",
+    )
+    _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
+
+
 def test_www_bare_domain_key_is_normalized() -> None:
     print("test_www_bare_domain_key_is_normalized")
     # _member_row matches a welded member to its sweep row modulo a single leading 'www.'
@@ -1526,6 +1614,7 @@ def main() -> int:
         test_thebotwire_eighth_non_anchor_is_welded_nonvacuously,
         test_x402oracle_ninth_non_anchor_is_welded_nonvacuously,
         test_x402deploy_tenth_non_anchor_is_welded_nonvacuously,
+        test_coffeecircle_eleventh_non_anchor_is_welded_nonvacuously,
         test_www_bare_domain_key_is_normalized,
         test_off_version_sweep_is_not_compared,
         test_live_sweep_pillars_agree_with_replay_baseline,

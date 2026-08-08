@@ -1,0 +1,67 @@
+{
+  "ts": "20260808T194406Z",
+  "kind": "non-anchor-weld",
+  "track": "TRUTH",
+  "cycle": "Local cycle 20260808T194406Z",
+  "member": "hardgraft.com",
+  "weld_position": 13,
+  "rail": "ucp-live (commerce-protocol-live PARTIAL 4.0/8.0)",
+  "claimed_archetypes": [
+    "metered_api",
+    "physical_good"
+  ],
+  "peer_gated": true,
+  "pr_branch": "loop/hardgraft-ucp-retail-non-anchor-weld",
+  "frozen_floor": {
+    "overall": 66.9,
+    "grade": "D",
+    "rubric_version": "0.7",
+    "pillars": {
+      "access": 100.0,
+      "legibility": 50.0,
+      "transactability": 50.0,
+      "trust": 90.0,
+      "outcome": null
+    }
+  },
+  "expected_replay": 66.9,
+  "live_rescore": {
+    "overall": 66.9,
+    "grade": "D",
+    "rubric_version": "0.7",
+    "pillars": {
+      "access": 100.0,
+      "legibility": 50.0,
+      "transactability": 50.0,
+      "trust": 90.0,
+      "outcome": null
+    },
+    "caps_applied": [],
+    "x402_probe": {
+      "check_id": "x402_probe",
+      "status": "partial",
+      "points": 4.0,
+      "max_points": 8.0
+    }
+  },
+  "agreement": {
+    "overall_live_eq_frozen_eq_expected": true,
+    "all_four_pillars_byte_identical": true,
+    "caps_empty": true,
+    "ucp_rail_up": true
+  },
+  "genuinely_compared": {
+    "sweep": "runs/local/calibration_sweep_20260808T184442Z.json",
+    "segment": "ucp-live:leather-goods",
+    "n_compared": 1,
+    "sweep_overall": 66.9
+  },
+  "teeth": "synthetic drift 66.9 -> 78.0 caught as exactly one divergence vs the 66.9 floor",
+  "calibration_value": "line -> plane: coffeecircle(57.4)+gymshark(62.4) share legibility 54.55 and separate purely on trust (one axis); hardgraft holds the same tx-50.0 UCP rung at a DISTINCT legibility 50.0 AND the highest trust (90.0) -> the three UCP points span a 2-D legibility x trust region at the fixed transactability rung",
+  "off_scoring_semantics": "EMPTY (only tests/test_calibration_anchor_agreement.py touched)",
+  "weld_suite": "29/29 (was 28)",
+  "full_suite": "38/38 modules",
+  "frozen_canonical_delta": 39.4,
+  "live_canonical_delta": 30.1,
+  "invariant_1": "no --behavioral/--max-pay -> free-tier probe never ran, no signing path; x402_probe is a static $0 read of /.well-known/ucp"
+}

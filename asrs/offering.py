@@ -253,6 +253,39 @@ _NEG_DISCLAIMER = (
 )
 
 
+# COMPARISON guard for the same two cheapest subscription billing signals
+# (`subscription` and `per-month`). A SIBLING of _NEG_DISCLAIMER for a DISTINCT
+# false-positive family: a pay-per-call / metered storefront that does NOT run a
+# recurring plan routinely CONTRASTS its model AGAINST subscriptions to make the
+# pitch — "when is it cheaper than a subscription?", the
+# "pay-per-call-api-vs-subscription" resources slug, "the break-even math against
+# a subscription". That is the alternative-TO-a-subscription idiom, not an offer,
+# yet a bare `\bsubscription\b` .search() fires on it and CONJURES the claim (the
+# thebotwire.com pin blocker that SURVIVED the negation guard: its remaining live
+# `subscription` hits are all this comparison family — "cheaper THAN a
+# subscription" + the "…-vs-subscription" slug — none a genuine plan). Reject an
+# IMMEDIATELY-preceding comparison cue — than / vs / versus / against, optionally
+# with an "a"/"an" between the cue and the token, plus the hyphenated URL-slug
+# form "…-vs-subscription". Word-boundaried like _NEG_DISCLAIMER, so a cue buried
+# inside a word is not blocked, and .search()'s left-to-right scan still fires on
+# a GENUINE non-compared occurrence later in the same surface. Precision: only the
+# DEGENERATE "<cue> [a|an] subscription" adjacency (the against-subscriptions
+# idiom) is rejected — a real plan comparison keeps its claim because the token is
+# NOT adjacent to the cue ("Basic vs Pro subscription" is preceded by "Pro ",
+# "monthly vs annual subscription" by "annual "). Fixed-width per alternative
+# (Python's lookbehind constraint). Narrowing only — canonical-invariant by
+# construction (the driftflight pair / exa.ai / simplybook claim subscription via
+# non-compared subscription/per-month/annual-billing/free-trial, so removing
+# compared matches cannot change any committed CLAIMED set; pinned by
+# tests/test_offering_canonical.py). Off the scoring path.
+_SUB_COMPARISON = (
+    r"(?<!\bthan )(?<!\bthan a )(?<!\bthan an )"
+    r"(?<!\bvs )(?<!\bvs a )(?<!\bvs an )(?<!\bvs\. )(?<!-vs-)"
+    r"(?<!\bversus )(?<!\bversus a )(?<!\bversus an )"
+    r"(?<!\bagainst )(?<!\bagainst a )(?<!\bagainst an )"
+)
+
+
 # NEWS-CATALOG guard for service_booking's two cheapest bare signals (`appointment`
 # and the noun-`booking` alternation of `book`). A multi-vertical data/news-wire API
 # ENUMERATES the industries its wires cover, so a bare booking/appointment topic word
@@ -1099,15 +1132,17 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
             r"\bbefore\s+(?:any\s+)?(?:money|funding|paying)\b", _F)),
     ],
     "subscription": [
-        # `subscription` and `per-month` carry the _NEG_DISCLAIMER lookbehind so a
+        # `subscription` and `per-month` carry TWO sibling lookbehinds so neither a
         # site DISCLAIMING recurring billing ("No subscription, no minimum", "no
-        # monthly floor", "without a subscription") does NOT conjure a subscription
-        # claim; a genuine occurrence elsewhere in the surface still fires (see
-        # _NEG_DISCLAIMER). `per-month-price` ("$10/month") is a concrete price, never
-        # negated, so it stays bare.
-        ("subscription", re.compile(_NEG_DISCLAIMER + r"(?:\bsubscription\b|\bsubscribe\b)", _F)),
+        # monthly floor", "without a subscription" — _NEG_DISCLAIMER) NOR a site
+        # CONTRASTING its pay-per-call model against one ("cheaper than a
+        # subscription", "…-vs-subscription", "against a subscription" —
+        # _SUB_COMPARISON) conjures a claim; a genuine occurrence elsewhere in the
+        # surface still fires (both scan skip-to-next). `per-month-price`
+        # ("$10/month") is a concrete price, never negated/compared, so it stays bare.
+        ("subscription", re.compile(_NEG_DISCLAIMER + _SUB_COMPARISON + r"(?:\bsubscription\b|\bsubscribe\b)", _F)),
         ("per-month-price", re.compile(r"\$\s?\d[\d,.]*\s*(?:/|per)\s*month\b", _F)),
-        ("per-month", re.compile(_NEG_DISCLAIMER + r"(?:\bper month\b|\b/mo\b|\bmonthly\b)", _F)),
+        ("per-month", re.compile(_NEG_DISCLAIMER + _SUB_COMPARISON + r"(?:\bper month\b|\b/mo\b|\bmonthly\b)", _F)),
         # A RECURRING BILLING commitment — the plan renews and re-charges each
         # period. PRECISION-CRITICAL: bare "\brecurring\b" is a broad-English
         # false-positive minefield — "a recurring theme", "a recurring dream/

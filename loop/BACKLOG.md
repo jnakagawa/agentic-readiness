@@ -270,16 +270,27 @@ LOG Local cycle 20260807T205300Z. -->
   (digital_good GONE). test_offering 121→123 (`test_digital_good_news_catalog_precision_synthetic` +
   `..._is_canonical_invariant_on_real_fixtures`, exa.ai load-bearing), test_offering_canonical 70/70, suite 38/38; off scoring
   path, no rubric bump. Evidence `runs/local/digital_good_news_catalog_guard_20260808T034105Z.json`.
-  **REMAINING blocker for the pin (re-scoped from the 024315Z observation, pinpointed by the digital_good-pass live capture):**
-  the live thebotwire STILL claims **subscription**, but via **COMPARISON prose** — 3 of 5 `subscription` hits are "when is it
-  cheaper than a **subscription**?", the `pay-per-call-api-vs-**subscription**` URL slug, and "the break-even math **against a
-  subscription**" (thebotwire CONTRASTING its pay-per-call model against subscriptions — i.e. it does NOT offer one). This is an
-  UNCOVERED FP DISTINCT from the "No subscription" NEGATION the 005504Z `_NEG_DISCLAIMER` guards. **NEXT (A, in-cloud COVERAGE,
-  the SINGLE remaining sub-item, same guard-pair discipline):** a subscription-COMPARISON guard ("cheaper than / vs / against a
-  subscription") that keeps the driftflight pair's genuine subscription claim green — designable+executable IN-CLOUD (offering
-  discovery is off the network path). **THEN (TRUTH, [LOCAL], after the subscription-comparison guard closes):**
-  re-capture thebotwire.com $0, re-verify it
-  classifies honestly to {metered_api, data_retrieval}, then pin `test_canonical_replay.EXPECTED` + `_REPLAY_CLEAN` + guard
+  **(5/FINAL) subscription-COMPARISON guard SHIPPED Local cycle 20260808T045337Z (direct-to-main), clearing the LAST
+  classification blocker:** `asrs/offering._SUB_COMPARISON` — a SIBLING of `_NEG_DISCLAIMER` for a DISTINCT FP family. A
+  pay-per-call API CONTRASTS its model AGAINST subscriptions ("when is it cheaper **than a** subscription?", the
+  `pay-per-call-api-**vs**-subscription` slug, "the break-even math **against a** subscription"), and that comparison prose kept
+  the `subscription` label firing after the negation guard. The fix is a fixed-width negative-lookbehind stack
+  (than/vs/versus/against [+a/an], + the hyphenated `…-vs-subscription` slug) prepended to the `subscription` and `per-month`
+  signals alongside `_NEG_DISCLAIMER`; precision by ADJACENCY — only the degenerate `<cue> [a|an] subscription` idiom is
+  rejected, so a real plan comparison keeps its claim ("Basic **vs Pro** subscription" → preceded by "Pro "), and .search()
+  skip-to-next still fires a genuine occurrence later in the surface. A live occurrence-sweep first ($0 static) confirmed the
+  comparison family was the SOLE survivor (every other `subscription`/`monthly` hit already dodged: `no subscription`/`no monthly
+  floor` by `_NEG_DISCLAIMER`; `golfmonthly` source-name by word boundary). CANONICAL SAFETY re-derived: the driftflight pair +
+  the load-bearing baselines exa.ai (#9/#157) / simplybook.me / polar.sh / ipinfo.io ALL still claim subscription; retail/api/null
+  NA. Confirmed LIVE (shipped code, $0 static): live thebotwire → **{metered_api, data_retrieval}** (subscription GONE).
+  test_offering 123→125 (`test_subscription_comparison_precision_synthetic` 9-fire/8-dodge incl. the 3 exact thebotwire spans +
+  `..._is_canonical_invariant_on_real_fixtures`), test_offering_canonical 70/70, suite 38/38; off scoring path, no rubric bump.
+  Evidence `runs/local/subscription_comparison_guard_20260808T045337Z.json`.
+  **✅ CLASSIFICATION BLOCKER RESOLVED — thebotwire.com now classifies HONESTLY to exactly {metered_api, data_retrieval} (all 4
+  over-claim families + the comparison FP cleared); the score precondition was already MET (86.0 B, x402-live 8.0/8.0, stable ≥2
+  cadence cycles, /tmp fixture replays score-clean). NEXT (TRUTH, [LOCAL], the very next fire's item — the PIN itself, now fully
+  unblocked):** re-capture thebotwire.com $0, re-verify honest classification + replay-clean on the FRESH capture, re-confirm the
+  live x402 is STILL stable at capture time (≥2-obs), then pin `test_canonical_replay.EXPECTED` + `_REPLAY_CLEAN` + guard
   (overall + 4 pillars + capability teeth: no-rails 0.0 < documented-partial 50.0 < LIVE 100.0) + `_POPULATION` in all 5
   reproducibility suites (direct-to-main, off-scoring-SEMANTICS — the exa.ai recipe) → 10th baseline, the FIRST non-anchor
   live-x402 point, so the calibration guard no longer rests the entire upper/live scale on driftflight.com alone. **BACKUP

@@ -2261,6 +2261,113 @@ def test_subscription_negation_guard_is_canonical_invariant_on_real_fixtures():
     )
 
 
+def test_subscription_comparison_precision_synthetic():
+    # COMPARISON guard for the two cheapest subscription billing signals
+    # (`subscription`, `per-month`) — a SIBLING of the negation guard for a DISTINCT
+    # false-positive family. A pay-per-call / metered storefront that does NOT run a
+    # recurring plan CONTRASTS its model AGAINST subscriptions to make the pitch —
+    # "cheaper than a subscription", the "pay-per-call-api-vs-subscription" slug,
+    # "the break-even math against a subscription". Those are the alternative-TO-a-
+    # subscription idiom, not an offer, yet a bare .search() fires on them and
+    # CONJURES the claim (the thebotwire.com pin blocker that SURVIVED the negation
+    # guard). The _SUB_COMPARISON lookbehind rejects an immediately-preceding
+    # comparison cue (than / vs / versus / against, optionally + a/an, plus the
+    # hyphenated "…-vs-subscription" slug), so the scan skips the compared occurrence
+    # and only a GENUINE one claims. Each POSITIVE fires via the guarded
+    # `subscription`/`per-month` branch (no sibling rescuing it); each NEGATIVE is a
+    # comparison idiom that must NOT claim subscription.
+    positives = {
+        # genuine claims — no comparison cue adjacent
+        "subscription": "Subscription plans start today.",
+        "subscribe": "Subscribe to unlock the full library.",
+        "per month": "Access is billed per month.",
+        "monthly": "Your card is charged monthly.",
+        # NON-adjacent comparison that genuinely OFFERS a subscription: the token is
+        # preceded by the plan word, not the cue, so the claim survives
+        "plan-vs-plan subscription": "Compare Basic vs Pro subscription tiers.",
+        "monthly-vs-annual subscription": "Choose monthly vs annual subscription billing.",
+        # word-boundary precision: a cue buried inside a word must NOT block
+        "thanks not than": "Our Thanksgiving subscription box ships in November.",
+        # skip-to-next: a comparison THEN a genuine claim in the SAME surface fires
+        "compared then genuine": (
+            "Our API is cheaper than a subscription, yet we also offer a subscription "
+            "for teams that want unlimited seats."
+        ),
+    }
+    for name, text in positives.items():
+        prof = classify_offering("sub.test", {"homepage": text})
+        assert prof.claims("subscription"), (name, prof.archetypes)
+        fired = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "subscription"
+            for s in c.signals
+        }
+        assert fired & {"subscription", "per-month"}, (name, sorted(fired))
+    print(
+        f"  ok: {len(positives)} genuine subscription phrasings each claim "
+        f"subscription (adjacency + word-boundary + skip-to-next precision)"
+    )
+
+    negatives = {
+        # the exact thebotwire.com false-positive spans (quoted from the live capture)
+        "cheaper than a subscription": (
+            "Call the pay-per-call API, and when is it cheaper than a subscription?"
+        ),
+        "vs-subscription slug": (
+            "See /resources/pay-per-call-api-vs-subscription for the break-even math."
+        ),
+        "against a subscription": "Here is the break-even math against a subscription.",
+        # the rest of the comparison-cue family the guard covers
+        "vs subscription": "Pay-per-call vs subscription: which wins for an agent?",
+        "vs. subscription": "Metered vs. subscription pricing, compared line by line.",
+        "versus a subscription": "Weigh per-call billing versus a subscription.",
+        "than subscription": "Per request is cheaper than subscription pricing.",
+        # per-month arm of the guard: a comparison against a monthly plan
+        "than a monthly plan": "The metered tier is cheaper than a monthly plan.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("wire.test", {"homepage": text})
+        assert not prof.claims("subscription"), (name, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} comparison-against-a-subscription idioms do NOT "
+        f"claim subscription (precision)"
+    )
+
+
+def test_subscription_comparison_guard_is_canonical_invariant_on_real_fixtures():
+    # NON-VACUOUS score-neutrality: the comparison guard is a NARROWING of the same
+    # two signals, so the only risk is a FALSE NEGATIVE on a committed anchor — a
+    # genuine subscription claim disappearing because its evidence sat right after a
+    # comparison cue. Replay every committed subscription-claiming fixture through the
+    # REAL discovery path and pin the claim is unchanged: the driftflight pair AND the
+    # load-bearing non-anchor baselines exa.ai (#9) / simplybook.me / ipinfo.io STILL
+    # claim subscription (their evidence is non-compared subscription/per-month/
+    # annual-billing/free-trial), and the NA fixtures stay NA. This is the guard's
+    # canonical tripwire in this file, complementing test_offering_canonical.py's
+    # full-set pin — sharpened onto the fixtures the guard could most plausibly break.
+    expect = {
+        "driftflight.com": True,     # claims subscription (non-compared evidence)
+        "drift-flight.org": True,    # claims subscription (non-compared evidence)
+        "exa.ai": True,              # load-bearing baseline #9 + welded member #157
+        "simplybook.me": True,       # service-booking anchor also claiming subscription
+        "ipinfo.io": True,           # data-retrieval baseline also claiming subscription
+        "books.toscrape.com": False,
+        "api.replicate.com": False,
+        "example.com": False,
+    }
+    for dom, claims_sub in expect.items():
+        ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        prof = offering.discover_offering(ctx)
+        assert prof.claims("subscription") == claims_sub, (
+            dom, claims_sub, prof.archetypes
+        )
+    print(
+        "  ok: comparison guard leaves the canonical subscription claims invariant "
+        "(driftflight pair + exa.ai/simplybook/ipinfo still claim; retail/api/null NA)"
+    )
+
+
 def test_physical_good_news_catalog_precision_synthetic():
     # NEWS-CATALOG guard for the two bare physical_good signals `fulfillment`
     # (\bfulfillment\b / \bwarehouse\b) and `shipping-noun` (\bshipping rates/cost\b).
@@ -6593,6 +6700,8 @@ def main() -> int:
         test_subscription_recurring_precision_synthetic,
         test_subscription_negation_disclaimer_precision_synthetic,
         test_subscription_negation_guard_is_canonical_invariant_on_real_fixtures,
+        test_subscription_comparison_precision_synthetic,
+        test_subscription_comparison_guard_is_canonical_invariant_on_real_fixtures,
         test_physical_good_news_catalog_precision_synthetic,
         test_physical_good_news_catalog_guard_is_canonical_invariant_on_real_fixtures,
         test_service_booking_news_catalog_precision_synthetic,

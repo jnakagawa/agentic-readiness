@@ -1,0 +1,52 @@
+{
+  "ts": "20260808T024315Z",
+  "kind": "service-booking-news-catalog-precision-guard",
+  "cycle": "Local cycle 20260808T024315Z",
+  "track": "COVERAGE",
+  "rubric_version": "0.7",
+  "spend": "$0 (in-process classifier + unit tests + ONE live $0 static discover_offering GET of thebotwire.com surfaces; no --behavioral, no --max-pay, no zero-CLI paid ops, no codex)",
+  "purpose": "thebotwire.com pin UNBLOCK sub-item A.3 — close the 3rd of the 4 blocking offering FP families (service_booking). A multi-vertical data/news-wire API enumerates the industries its wires cover, so its two cheapest bare service_booking signals (the noun-`booking` alternation of `book`, and bare `appointment`) fired on coverage-list topic words, over-claiming service_booking on a storefront that books nothing.",
+  "headline": "SERVICE_BOOKING news-catalog guard SHIPPED direct-to-main. `_BOOKING_SVC_CTX` scheduling-context class + positive-collocation narrowing of the `book` noun-branch and the `appointment` signal. On thebotwire's 3 exact quoted FP spans service_booking is now NA; acuity/simplybook/polar STILL claim it. Confirmed LIVE ($0 static): thebotwire.com discover_offering no longer claims service_booking. 3 of 4 FP families now closed.",
+  "change": {
+    "file": "asrs/offering.py",
+    "new_constant": "_BOOKING_SVC_CTX (scheduling/reservation-specific context tokens: schedul*/reschedul*/book*/reservation/availability/reminder/calendar/(time)slot/cancel*/walk-in/no-show/check-in/consultation/session — deliberately NARROW, no generic staff/client a personnel-news sentence could carry)",
+    "book_signal": "noun-`booking` alternation narrowed from bare \\bbooking\\b to (a) a SERVICE-qualifier immediately before (online/appointment/group/instant/recurring/mobile/class/event/room/table/service/self/client + booking), (b) a booking-ACTION or possessive before (make/manage/confirm/complete/finish/change/modify/create/cancel/view [+ det] booking; your/my/their booking), or (c) a booking-system compound noun immediately after (booking system/software/website/web/page/widget/calendar/form/flow/engine/tool/platform/service/app/link/management/confirmation/reminder/notification/setting/process/button/plugin/feature/solution/scheduler/schedule/number/reference/status). `book a/an/your <svc>` and `book now/online` unchanged.",
+    "appointment_signal": "narrowed from bare \\bappointments?\\b to requiring a _BOOKING_SVC_CTX token within a 30-char [^.\\n]-bounded window, either order.",
+    "manage_booking_booking_notification_waitlist": "UNTOUCHED — those legs carry their own appointment/booking windows and are independent of the narrowed standalone signals."
+  },
+  "thebotwire_fp_spans_now_dodge": [
+    "[book] 'hospitality industry news (airlines, hotels, booking)' — hospitality NEWS category; the bare gerund 'booking' no longer fires (no service qualifier / action / compound adjacent)",
+    "[appointment] 'Classical music and opera: appointments, seasons, house news' — arts NEWS; no scheduling context within 30 chars",
+    "[appointment] 'creative-director appointment, or retail move' — a PERSONNEL news event; no scheduling context within 30 chars"
+  ],
+  "anchors_stay_green": {
+    "acuityscheduling.com": "service_booking YES (labels book/appointment/schedule/manage-booking/booking-notification/intake-form — 'Online Booking' + 'appointment booking software' + 'Appointment Scheduling' + 'book appointments online' all keep firing)",
+    "simplybook.me": "service_booking YES (labels book/appointment/availability/schedule/manage-booking/booking-notification/intake-form/waitlist — 'Appointment Booking System' + 'Online booking system. Booking web[site]' + 'schedule appointments' keep firing)",
+    "polar.sh": "service_booking YES via the UNTOUCHED reservation/schedule signals (book/appointment not among its labels)",
+    "all_others": "service_booking NA unchanged (driftflight pair, books.toscrape, allbirds, moleskine, api.replicate, ipinfo, exa.ai, example.com)"
+  },
+  "recall_tradeoff": "A bare nav-item 'Bookings' with no adjacent service word / action / possessive now slips, but such a site trips book-a-<svc>/appointment/schedule/reservation anyway; the same recall-conscious tradeoff the Cycle-190 `book` and Cycle-292 physical_good narrowings took. Documented in-code.",
+  "live_validation": {
+    "command": "FetchContext('thebotwire.com'); offering.discover_offering(ctx)  ($0 static GETs, SIGALRM-bounded)",
+    "surfaces_seen": ["/docs", "/llms-full.txt", "/llms.txt", "/openapi.json", "homepage"],
+    "archetypes_live": ["data_retrieval", "digital_good", "metered_api", "subscription"],
+    "service_booking": "NA (claimed=False) — the guard drops it on the REAL site text, not just the synthetic spans",
+    "physical_good": "NA — last cycle's news-catalog guard HOLDS live",
+    "note_for_next_cycle": "digital_good STILL claimed live via labels ['generations','render'] (the planned 4th FP family — CAUTION: exa.ai claims digital_good via the SOLE bare `generations` signal, a pinned baseline #9 + welded #157, so that guard MUST keep exa.ai firing). subscription ALSO STILL claimed live via a non-negated `subscription` occurrence (the negation guard skips only the disclaimer spans and fires on a genuine-looking one later) — so the eventual honest set is NOT yet {metered_api, data_retrieval}; re-examine the live subscription occurrence when the digital_good family is closed, before the [LOCAL] re-capture + pin."
+  },
+  "tests": {
+    "test_service_booking_news_catalog_precision_synthetic": "10 genuine booking/appointment positives each claim service_booking via the narrowed book/appointment branch; 8 news-catalog/personnel/cross-topic negatives (incl. the 3 exact thebotwire spans) dodge",
+    "test_service_booking_news_catalog_guard_is_canonical_invariant_on_real_fixtures": "12 committed fixtures replayed — acuity/simplybook/polar still claim service_booking, pair/retail/api/null NA",
+    "pre_existing_book_test_preserved": "test_service_booking_book_precision_synthetic 'booking noun' case ('Complete your booking') still fires via the new booking-ACTION/possessive branch",
+    "test_offering": "119 -> 121",
+    "test_offering_canonical": "70/70",
+    "full_suite": "38/38"
+  },
+  "invariants_and_signals": {
+    "score_neutral": "offering is OFF the scoring path (scoring.py does not import asrs.offering; report/scorecard references are the NA READOUT strip, not a code import) — grep-verified; no rubric bump, no version change",
+    "frozen_canonical_delta": "UNMOVED +39.4 (replay 31/31)",
+    "live_delta": "+30.1 (verify_20260808T024104Z: drift-flight.org 46.1 F / driftflight.com 76.2 C; driftflight.com /extend still 401)",
+    "invariant_4": "ADVANCED — the guard removes 3 dishonest over-claims (service_booking on a storefront that books nothing)"
+  },
+  "next_actions": "REMAINING 1 FP family: digital_good (generations/render must be an offered good, not a news topic — the guard MUST keep exa.ai's SOLE `generations` signal firing). PLUS a NEW observation: the live subscription occurrence is non-negated — re-examine whether it is a genuine claim or an uncovered FP before the [LOCAL] re-capture. THEN [LOCAL]: re-capture thebotwire.com $0, re-verify honest classification, pin (the exa.ai recipe) -> 10th baseline / 1st non-anchor live-x402."
+}

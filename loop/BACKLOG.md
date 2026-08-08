@@ -225,7 +225,7 @@ LOG Local cycle 20260807T205300Z. -->
   `runs/local/thebotwire_pin_attempt_20260807T235210Z.json`. Installing it would make thebotwire.com the FIRST canonical fixture
   with a dishonest classification (inv #4) — the loop rejected polar.sh/simplybook/allbirds for *lesser* issues; a score-only pin
   was considered (the 86.0 is off the offering path) and rejected for consistency. **PROGRESS (A, in-cloud COVERAGE precision
-  pass): ✅ 2 of 4 FP families CLOSED. (1) subscription NEGATION guard SHIPPED Local cycle 20260808T005504Z (direct-to-main):**
+  pass): ✅ 3 of 4 FP families CLOSED. (1) subscription NEGATION guard SHIPPED Local cycle 20260808T005504Z (direct-to-main):**
   `asrs/offering._NEG_DISCLAIMER` (word-boundaried fixed-width negative lookbehinds no/no-/not/not a/not an/zero/without/
   without a/without an) prepended to the `subscription` + `per-month` signals; `.search()`'s scan skips a disclaimed occurrence
   and still fires on a genuine one later. On thebotwire's quoted spans `classify_offering` → `['metered_api']` (subscription
@@ -242,16 +242,31 @@ LOG Local cycle 20260807T205300Z. -->
   bare "data warehouse"/a "warehouse-automation" vertical no longer FP (precision BONUS). test_offering 117→119
   (`test_physical_good_news_catalog_precision_synthetic` + `..._is_canonical_invariant_on_real_fixtures`), test_offering_canonical
   70/70, suite 38/38; off scoring path, no rubric bump. Evidence `runs/local/physical_good_news_catalog_guard_20260808T020353Z.json`.
-  **REMAINING 2 FP families (each a subsequent in-cloud COVERAGE precision pass, same guard-pair discipline):** service_booking
-  (guard the gerund "booking" as a hospitality-news list item + personnel/arts "appointment"; acuity/simplybook carry 6–8 signals
-  so the archetype survives), digital_good (generations/render must be an offered good, not a news topic — **CAUTION: exa.ai claims
-  digital_good via the SOLE bare `generations` signal, a pinned baseline #9 + welded member #157, so the guard MUST keep exa.ai
-  firing**) — each with a precision-synthetic guard pair
-  (synthetic multi-vertical news-catalog prose does NOT fire; genuine capability prose still fires) so the existing anchors stay
-  green (moleskine/allbirds physical_good, acuity/simplybook service_booking, polar subscription, exa.ai digital_good).
-  Designable+executable IN-CLOUD
-  (the synthetic half needs no live capture — offering discovery is off the network path). **THEN (TRUTH, [LOCAL], after all 4
-  classify honestly):** re-capture thebotwire.com $0, re-verify it
+  **(3) service_booking NEWS-CATALOG guard SHIPPED Local cycle 20260808T024315Z (direct-to-main):** new module-level
+  `asrs/offering._BOOKING_SVC_CTX` (a NARROW scheduling/reservation context class — schedul*/reschedul*/book*/reservation/
+  availability/reminder/calendar/(time)slot/cancel*/walk-in/no-show/check-in/consultation/session) + positive-collocation
+  narrowing of the two cheapest service_booking signals — the noun-`booking` alt of `book` (was bare `\bbooking\b`) now needs a
+  service qualifier before ("online/appointment/group … booking"), a booking-ACTION/possessive before ("make/complete/… [+det]
+  booking"; "your/my booking"), or a booking-system compound noun after ("booking system/software/website/…"); `appointment` (was
+  bare `\bappointments?\b`) now needs a `_BOOKING_SVC_CTX` token within a 30-char `[^.\n]` window either order. On thebotwire's 3
+  exact quoted FP spans ("airlines, hotels, booking" hospitality-news; "Classical music and opera: appointments, seasons…" arts-
+  news; "creative-director appointment" personnel-news) service_booking is now NA; acuity/simplybook STILL claim it, polar STILL
+  claims it via the UNTOUCHED reservation/schedule signals; the pre-existing "Complete your booking" positive is preserved via the
+  booking-ACTION/possessive branch. Confirmed LIVE ($0 static `discover_offering('thebotwire.com')`: live service_booking=NA,
+  physical_good HOLDS NA). test_offering 119→121 (`test_service_booking_news_catalog_precision_synthetic` +
+  `..._is_canonical_invariant_on_real_fixtures`), test_offering_canonical 70/70, suite 38/38; off scoring path, no rubric bump.
+  Evidence `runs/local/service_booking_news_catalog_guard_20260808T024315Z.json`.
+  **REMAINING 1 PLANNED FP family (an in-cloud COVERAGE precision pass, same guard-pair discipline):** digital_good
+  (generations/render must be an offered good, not a news topic — **CAUTION: exa.ai claims digital_good via the SOLE bare
+  `generations` signal, a pinned baseline #9 + welded member #157, so the guard MUST keep exa.ai firing**) — with a
+  precision-synthetic guard pair (synthetic multi-vertical news-catalog prose does NOT fire; genuine capability prose still fires)
+  so the existing anchors stay green (moleskine/allbirds physical_good, acuity/simplybook service_booking, polar subscription,
+  exa.ai digital_good). Designable+executable IN-CLOUD (offering discovery is off the network path). **PLUS a NEW LIVE OBSERVATION
+  (Local cycle 20260808T024315Z):** the live thebotwire STILL claims **subscription** via a NON-negated `subscription` occurrence
+  (the 005504Z negation guard skips only the disclaimer spans + fires on a genuine-looking one later), so the eventual honest set
+  is NOT yet {metered_api, data_retrieval} — re-examine that live occurrence (genuine claim vs uncovered FP) alongside the
+  digital_good pass BEFORE the [LOCAL] pin. **THEN (TRUTH, [LOCAL], after digital_good closes + the subscription re-exam):**
+  re-capture thebotwire.com $0, re-verify it
   classifies honestly to {metered_api, data_retrieval}, then pin `test_canonical_replay.EXPECTED` + `_REPLAY_CLEAN` + guard
   (overall + 4 pillars + capability teeth: no-rails 0.0 < documented-partial 50.0 < LIVE 100.0) + `_POPULATION` in all 5
   reproducibility suites (direct-to-main, off-scoring-SEMANTICS — the exa.ai recipe) → 10th baseline, the FIRST non-anchor

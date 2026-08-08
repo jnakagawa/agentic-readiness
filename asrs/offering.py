@@ -253,6 +253,31 @@ _NEG_DISCLAIMER = (
 )
 
 
+# NEWS-CATALOG guard for service_booking's two cheapest bare signals (`appointment`
+# and the noun-`booking` alternation of `book`). A multi-vertical data/news-wire API
+# ENUMERATES the industries its wires cover, so a bare booking/appointment topic word
+# collides with the archetype: "hospitality industry news (airlines, hotels, booking)"
+# (a NEWS CATEGORY), "Classical music and opera: appointments, seasons, house news"
+# (arts news), "creative-director appointment, or retail move" (a PERSONNEL event, not
+# a bookable slot) — the thebotwire.com pin blocker, the service_booking FP family. The
+# discriminator is the file's positive-collocation discipline: a GENUINE bookable-
+# service surface sits its appointment beside an unambiguous SCHEDULING/BOOKING context
+# token (Acuity's "Appointment Scheduling", "book appointments online", "online
+# appointments, online scheduler"; SimplyBook's "schedule appointments"), while a news
+# vertical topic word does not. `_BOOKING_SVC_CTX` is that scheduling-domain context
+# class — deliberately NARROW (only scheduling/reservation-specific tokens, no generic
+# "staff"/"client" that a personnel-news sentence could carry). Narrowing only —
+# canonical-invariant by construction (the acuity/simplybook anchors keep firing
+# appointment/book via these collocations; polar.sh claims service_booking via the
+# untouched reservation/schedule signals; the pair/retail/api/null stay NA), pinned by
+# tests/test_offering_canonical.py. Off the scoring path.
+_BOOKING_SVC_CTX = (
+    r"schedul\w*|reschedul\w*|book\w*|reservations?|availabilit\w+|reminders?|"
+    r"calendars?|time ?slots?|slots?|cancel\w*|walk[- ]?ins?|no[- ]?shows?|"
+    r"check[- ]?ins?|consultations?|sessions?"
+)
+
+
 # Signal bank: archetype -> [(label, pattern), ...]. Each pattern is anchored to
 # high-precision, vendor-neutral language. A match records the archetype, the
 # surface, the matched phrase (with a little surrounding context) and the label,
@@ -1770,11 +1795,41 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
         # fixture trips this signal (service_booking is NA on all five per
         # test_offering_canonical), so the narrowing is canonical-invariant by
         # construction; the classifier is off the scoring path.
+        # NEWS-CATALOG NARROWING of the noun-`booking` alternation (see _BOOKING_SVC_CTX
+        # above): the prior bare `\bbooking\b` fired on a data/news-wire API's hospitality
+        # vertical topic word ("airlines, hotels, booking" — a news category, not a
+        # service the site sells), conjuring service_booking (tied-thinnest, so a false
+        # claim does maximum damage) on the thebotwire.com pin candidate. So require the
+        # booking NOUN to sit in a genuine booking-SERVICE collocation: a scheduling/
+        # service qualifier immediately before ("online booking", "appointment booking",
+        # "group booking") OR a booking-system compound noun immediately after ("booking
+        # system/software/website/page/widget/calendar/…"). Both anchors keep firing —
+        # Acuity "Online Booking"/"appointment booking software", SimplyBook "Appointment
+        # Booking System"/"Online booking system. Booking web[site]". "book a/an/your <svc>"
+        # and "book now/online" are unchanged. Recall-conscious per the thin-archetype
+        # caution: a bare nav-item "Bookings" with no adjacent service word now slips, but
+        # such a site trips book-a-<svc>/appointment/schedule/reservation anyway; the same
+        # tradeoff the Cycle-190 `book` and Cycle-292 physical_good narrowings took.
         ("book", re.compile(
             r"\bbook (?:a|an|your) (?!(?:demo|call|walk[- ]?through|briefing|meeting)s?\b)\w+"
             r"|\bbook (?:now|online)\b"
-            r"|\bbooking\b", _F)),
-        ("appointment", re.compile(r"\bappointments?\b", _F)),
+            r"|\b(?:online|appointment|instant|group|recurring|mobile|class|event|room|table|service|self|client)\s+bookings?\b"
+            r"|\b(?:make|makes|making|manage|manages|managing|confirm|confirms|complete|completes|completing|finish|finishes|change|changes|modify|create|creates|cancel|cancels|view)\s+(?:a |an |the |your |my |their |online )?bookings?\b"
+            r"|\b(?:your|my|their)\s+bookings?\b"
+            r"|\bbookings?\s+(?:systems?|software|websites?|web|pages?|widgets?|calendars?|forms?|flows?|engines?|tools?|platforms?|services?|apps?|links?|management|confirmations?|reminders?|notifications?|settings?|process|buttons?|plugins?|features?|solutions?|schedulers?|schedule|numbers?|references?|status)\b", _F)),
+        # NEWS-CATALOG NARROWING of the bare `appointment` signal (see _BOOKING_SVC_CTX):
+        # the prior `\bappointments?\b` fired on a news-wire API's arts-calendar topic word
+        # ("Classical music and opera: appointments, seasons, house news") and a personnel
+        # news event ("creative-director appointment, or retail move"), neither a bookable
+        # slot the site sells. So require `appointment` to sit within a short window of a
+        # SCHEDULING/BOOKING context token, in either order — the acuity/simplybook anchors
+        # carry it ("Appointment Scheduling", "book appointments online", "online
+        # appointments, online scheduler", "schedule appointments"), the news topic words
+        # do not. The manage-booking/booking-notification legs use their OWN appointment
+        # windows and are unaffected.
+        ("appointment", re.compile(
+            r"\bappointments?\b[^.\n]{0,30}?\b(?:" + _BOOKING_SVC_CTX + r")\b"
+            r"|\b(?:" + _BOOKING_SVC_CTX + r")\b[^.\n]{0,30}?\bappointments?\b", _F)),
         ("reservation", re.compile(r"\breservations?\b|\breserve (a|an|your|now)\b", _F)),
         # SCHEDULE A SERVICE — the DIRECT SIBLING of the `book` signal above, and its
         # precision gap was identical. Bare "schedule a/an/your <x>" collided with the

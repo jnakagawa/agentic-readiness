@@ -2367,6 +2367,116 @@ def test_physical_good_news_catalog_guard_is_canonical_invariant_on_real_fixture
     )
 
 
+def test_service_booking_news_catalog_precision_synthetic():
+    # NEWS-CATALOG guard for service_booking's two cheapest bare signals — the
+    # noun-`booking` alternation of `book` (was bare \bbooking\b) and `appointment`
+    # (was bare \bappointments?\b). A multi-vertical data/news-wire API ENUMERATES the
+    # industries its wires cover, so those bare tokens fired on coverage-list topic
+    # words — "airlines, hotels, booking" (a hospitality NEWS category), "Classical
+    # music and opera: appointments, seasons, house news" (arts NEWS), "creative-
+    # director appointment, or retail move" (a PERSONNEL event) — CONJURING
+    # service_booking (tied-thinnest, so a false claim does maximum damage) on a
+    # storefront that books nothing (the thebotwire.com pin blocker: the
+    # service_booking family, the 3rd of the 4 FP families, after the subscription
+    # negation + physical_good news-catalog guards). The narrowing requires the
+    # booking NOUN to sit in a genuine booking-SERVICE collocation and `appointment`
+    # to sit near a scheduling/booking context token (_BOOKING_SVC_CTX). Each POSITIVE
+    # fires service_booking via the narrowed `book`/`appointment` branch (no sibling
+    # rescuing it); each NEGATIVE is a coverage-enumeration / personnel / cross-topic
+    # word that must NOT claim service_booking.
+    positives = {
+        # genuine booking-service prose (the storefront's OWN offering)
+        "online booking": "Online booking for your salon.",
+        "appointment booking software": "An appointment booking software for clinics.",
+        "booking system": "Our booking system syncs to your calendar.",
+        "booking website": "A booking website builder for studios.",
+        "group booking": "Group booking and classes supported.",
+        "book appointments online": "Let clients book appointments online.",
+        "appointment scheduling": "Appointment Scheduling made simple.",
+        "schedule appointments": "Let clients schedule appointments and get reminders.",
+        "online appointments scheduler": "online appointments, online scheduler included.",
+        "reschedule appointments": "Reschedule appointments anytime from the portal.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("shop.test", {"homepage": text})
+        assert prof.claims("service_booking"), (name, prof.archetypes)
+        fired = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "service_booking"
+            for s in c.signals
+        }
+        assert fired & {"book", "appointment"}, (name, sorted(fired))
+    print(
+        f"  ok: {len(positives)} genuine booking/appointment phrasings each claim "
+        f"service_booking via the narrowed book/appointment branch"
+    )
+
+    negatives = {
+        # the exact thebotwire.com false-positive spans (quoted from the pin attempt)
+        "tbw booking vertical": "Hospitality industry news: airlines, hotels, booking.",
+        "tbw arts appointments": (
+            "Classical music and opera: appointments, seasons, house news."
+        ),
+        "tbw personnel appointment": (
+            "Executive moves: creative-director appointment, or retail move."
+        ),
+        # other news-catalog / personnel / cross-topic words the guard covers
+        "board appointment news": "The board announced a new CFO appointment today.",
+        "cabinet appointments": "Cabinet appointments dominated this week's politics news.",
+        "booking industry news": "The flight booking sector saw record demand this quarter.",
+        "travel-and-booking vertical": "We cover the online travel and booking industry.",
+        "opera season appointments": "Opera appointments and season announcements.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("wire.test", {"homepage": text})
+        assert not prof.claims("service_booking"), (name, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} news-catalog/personnel/cross-topic strings do NOT "
+        f"claim service_booking (precision)"
+    )
+
+
+def test_service_booking_news_catalog_guard_is_canonical_invariant_on_real_fixtures():
+    # NON-VACUOUS score-neutrality: the news-catalog guard is a NARROWING of two
+    # existing service_booking signals, so the only risk is a FALSE NEGATIVE on a
+    # committed anchor — a genuine service_booking claim disappearing because its
+    # booking/appointment evidence sat in a form the narrowed branch no longer
+    # matches. Replay every committed service_booking-relevant fixture through the
+    # REAL discovery path and pin that the claim is unchanged: the two booking anchors
+    # (acuityscheduling.com "Online Booking"/"Appointment Scheduling", simplybook.me
+    # "Appointment Booking System") STILL claim service_booking, polar.sh STILL claims
+    # it via the UNTOUCHED reservation/schedule signals, and no NA fixture (the
+    # flight-API pair / retail / api / null) gains it. This is the guard's canonical
+    # tripwire — the exact property test_offering_canonical.py asserts, restated here
+    # against the fixtures that carry (or renounce) service_booking so a future edit
+    # that broke it is caught in this file too.
+    expect = {
+        "acuityscheduling.com": True,   # Online Booking + Appointment Scheduling + schedule
+        "simplybook.me": True,          # Appointment Booking System + schedule + waitlist
+        "polar.sh": True,               # reservation + schedule (signals not touched)
+        "driftflight.com": False,
+        "drift-flight.org": False,
+        "books.toscrape.com": False,
+        "www.allbirds.com": False,
+        "www.moleskine.com": False,
+        "api.replicate.com": False,
+        "ipinfo.io": False,
+        "exa.ai": False,
+        "example.com": False,
+    }
+    for dom, claims_sb in expect.items():
+        ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        prof = offering.discover_offering(ctx)
+        assert prof.claims("service_booking") == claims_sb, (
+            dom, claims_sb, prof.archetypes
+        )
+    print(
+        "  ok: news-catalog guard leaves the canonical service_booking claims "
+        "invariant (acuity/simplybook/polar still claim; pair/retail/api/null NA)"
+    )
+
+
 def test_usage_based_metered_precision_synthetic():
     # The metered_api bank's last cheap bare-word signal hardened (siblings:
     # enrich/dataset/lookup for data_retrieval, book/schedule for service_booking,
@@ -6367,6 +6477,8 @@ def main() -> int:
         test_subscription_negation_guard_is_canonical_invariant_on_real_fixtures,
         test_physical_good_news_catalog_precision_synthetic,
         test_physical_good_news_catalog_guard_is_canonical_invariant_on_real_fixtures,
+        test_service_booking_news_catalog_precision_synthetic,
+        test_service_booking_news_catalog_guard_is_canonical_invariant_on_real_fixtures,
         test_usage_based_metered_precision_synthetic,
         test_payment_challenge_retry_precision_synthetic,
         test_payment_challenge_retry_fires_on_real_captured_surfaces,

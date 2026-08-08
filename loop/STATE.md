@@ -38,21 +38,27 @@
   polar.sh/simplybook/allbirds for lesser issues); a score-only pin was considered (86.0 is off the offering path)
   and rejected for consistency. **RE-SCOPED P0 — pin is BLOCKED on offering precision, not on the score.** NEXT (A,
   preferred, in-cloud COVERAGE): harden the 4 FP families against a data/news API's content-catalog topic words —
-  **✅ 2 of 4 FP families CLOSED. (1) subscription NEGATION guard SHIPPED Local 20260808T005504Z (`_NEG_DISCLAIMER`,
-  direct-to-main): "no subscription"/"no monthly"/"without a subscription" no longer claim subscription. (2)
-  physical_good NEWS-CATALOG guard SHIPPED Local 20260808T020353Z (direct-to-main): the two bare physical_good signals
-  `fulfillment` (`\bfulfillment\b`/`\bwarehouse\b`) + `shipping-noun` (`shipping rates|cost`) narrowed with the file's
-  positive-collocation discipline so thebotwire's coverage enumerations ("marketplaces, fulfillment, conversion";
-  "warehouse-automation vendors"; "Shipping rates, port congestion, carrier and logistics") no longer claim
-  physical_good; allbirds/moleskine/books/polar STILL claim it; test_offering 117→119, canonical 70/70, suite 38/38;
-  precision BONUS — a bare "data warehouse"/a "warehouse-automation" vertical no longer FP physical_good. Evidence
-  `runs/local/physical_good_news_catalog_guard_20260808T020353Z.json`.** REMAINING 2: service_booking (gerund
-  "booking" as a hospitality-news list item + personnel/arts "appointment"; anchors acuity/simplybook carry 6–8
-  signals so the archetype survives), digital_good (generations/render = an offered good, not a news topic — CAUTION:
+  **✅ 3 of 4 FP families CLOSED. (1) subscription NEGATION guard SHIPPED Local 20260808T005504Z (`_NEG_DISCLAIMER`,
+  direct-to-main). (2) physical_good NEWS-CATALOG guard SHIPPED Local 20260808T020353Z (direct-to-main): the two bare
+  physical_good signals `fulfillment`/`shipping-noun` narrowed with positive-collocation so thebotwire's coverage
+  enumerations no longer claim physical_good; allbirds/moleskine/books/polar STILL claim it; evidence
+  `runs/local/physical_good_news_catalog_guard_20260808T020353Z.json`. (3) service_booking NEWS-CATALOG guard SHIPPED
+  Local 20260808T024315Z (direct-to-main): new module-level `_BOOKING_SVC_CTX` scheduling-context class + positive-
+  collocation narrowing of the noun-`booking` alt of `book` and bare `appointment`, so thebotwire's "airlines, hotels,
+  booking" (hospitality-news list), "Classical music and opera: appointments, seasons…" (arts-news) + "creative-
+  director appointment" (personnel-news) no longer claim service_booking; acuity/simplybook STILL claim it (book/
+  appointment/schedule/…), polar STILL claims it via the UNTOUCHED reservation/schedule signals; the pre-existing
+  "Complete your booking" positive is preserved via a booking-ACTION/possessive branch; test_offering 119→121,
+  canonical 70/70, suite 38/38. Confirmed LIVE ($0 static discover_offering: live thebotwire service_booking=NA,
+  physical_good HOLDS NA). Evidence `runs/local/service_booking_news_catalog_guard_20260808T024315Z.json`.**
+  REMAINING 1 PLANNED FP family: digital_good (generations/render = an offered good, not a news topic — CAUTION:
   exa.ai claims digital_good via the SOLE bare `generations` signal, a pinned baseline #9 + welded member #157, so that
-  guard MUST keep exa.ai firing) — each precision-synthetic guarded so anchors stay green
-  (moleskine/allbirds/acuity/simplybook/polar/exa). THEN [LOCAL]:
-  re-capture, re-verify honest {metered_api, data_retrieval}, pin (the exa.ai recipe) → 10th baseline, 1st non-anchor
+  guard MUST keep exa.ai firing) — precision-synthetic guarded so anchors stay green
+  (moleskine/allbirds/acuity/simplybook/polar/exa). **NEW LIVE OBSERVATION (024315Z, flag not yet acted on):** the live
+  thebotwire STILL claims **subscription** via a NON-negated `subscription` occurrence (the 005504Z negation guard skips
+  only the disclaimer spans + fires on a genuine-looking one later) — so the eventual honest set is NOT yet
+  {metered_api, data_retrieval}; re-examine (genuine claim vs uncovered FP) alongside the digital_good pass. THEN
+  [LOCAL]: re-capture, re-verify the honest classification, pin (the exa.ai recipe) → 10th baseline, 1st non-anchor
   live-x402. BACKUP candidates x402deploy.vercel.app 73.9 C / api.x402oracle.com 64.4 D (check whether their thinner
   tool-gateway classifications are CLEANER first). **paidsync.ai** SUPERSEDED — `/api/v1` 503 across 3 cadence cycles =
   STABLE-DEGRADED (lesser backup at 80.0 B). Anchor driftflight.com `/extend` STILL 401 (no 402 recovery; live +30.1).
@@ -269,6 +275,29 @@
   but wrote NO LOG entry and never committed/pushed (its panel dir exists gitignored). This fire re-verified #149,
   took ownership of the reconciled banner (above), and committed. No fabricated 214745Z LOG entry. STATE pruned the
   two oldest rolling entries (cloud Cycles 290–291, preserved in LOG.md) to stay under the 600-line hygiene cap.
+- LOCAL cycle — 20260808T024315Z (COVERAGE / thebotwire.com pin UNBLOCK sub-item A.3 — the SERVICE_BOOKING NEWS-CATALOG
+  guard SHIPPED direct-to-main, closing the 3rd of the 4 blocking FP families). FIRST duty: `gh pr list --state open` →
+  `[]` (no open PR; PR #157 MERGED `cf0df08`; weld campaign #152–#157 COMPLETE); newest `verify_20260808T024104Z.json`
+  (02:41Z, 38/38 suites, 46.1 F / 76.2 C / +30.1) this hour's floor, fresh at fire (~02:43Z) → :41 cadence holding
+  (014103Z→024104Z); LOG/STATE consistent with git. No repair, no review owed. **Executed the ONE item — the next
+  actionable step of the oldest P0 (UNBLOCK thebotwire.com pin), the service_booking FP family:** new module-level
+  `_BOOKING_SVC_CTX` (a NARROW scheduling/reservation context class) + positive-collocation narrowing of the two
+  cheapest service_booking signals — the noun-`booking` alt of `book` (was bare `\bbooking\b`) now needs a service
+  qualifier/booking-action/possessive/system-compound; `appointment` (was bare `\bappointments?\b`) now needs a
+  `_BOOKING_SVC_CTX` token within a 30-char `[^.\n]` window either order. On thebotwire's 3 exact quoted FP spans
+  ("airlines, hotels, booking" hospitality-news; "Classical music and opera: appointments, seasons…" arts-news;
+  "creative-director appointment" personnel-news) service_booking is now NA; acuity/simplybook STILL claim it,
+  polar STILL claims it via the UNTOUCHED reservation/schedule signals; the pre-existing "Complete your booking"
+  positive is preserved via the booking-ACTION/possessive branch. Tests:
+  `test_service_booking_news_catalog_precision_synthetic` (10 positives fire / 8 news-catalog/personnel negatives dodge
+  incl. the 3 exact thebotwire spans) + `..._is_canonical_invariant_on_real_fixtures` → test_offering 119→121, canonical
+  70/70, full suite 38/38. Off scoring-SEMANTICS (scoring.py doesn't import offering) → score-neutral, no rubric bump.
+  **LOCAL bonus:** confirmed LIVE ($0 static `discover_offering('thebotwire.com')`) — live service_booking=NA,
+  physical_good HOLDS NA; NEW observation flagged (live STILL claims digital_good [planned 4th family] + subscription
+  via a NON-negated occurrence → re-examine before pin). Frozen delta UNMOVED +39.4 (replay 31/31); live +30.1
+  (verify_20260808T024104Z; /extend still 401). Pin STILL BLOCKED on 1 planned FP family (digital_good — must keep
+  exa.ai's SOLE `generations` firing) + the live subscription re-exam. Evidence
+  `runs/local/service_booking_news_catalog_guard_20260808T024315Z.json`. $0, zero codex/paid ops, in-repo; NO DM.
 - LOCAL cycle — 20260808T020353Z (COVERAGE / thebotwire.com pin UNBLOCK sub-item A.2 — the PHYSICAL_GOOD NEWS-CATALOG
   guard SHIPPED direct-to-main, closing the 2nd of the 4 blocking FP families). FIRST duty: `gh pr list --state open` →
   `[]` (no open PR; PR #157 MERGED `cf0df08`; weld campaign #152–#157 COMPLETE); newest `verify_20260808T014103Z.json`
@@ -315,33 +344,16 @@
   not a DM-enumerated sensitive class; not the first-after-16:00 fire). **Pin STILL BLOCKED on 3 FP families**
   (physical_good, service_booking, digital_good) — each a subsequent in-cloud COVERAGE precision pass, then [LOCAL]
   re-capture + pin. See LOG Local cycle 20260808T005504Z.
-- LOCAL cycle — 20260807T235210Z (TRUTH / thebotwire.com pin ATTEMPTED + BLOCKED — 2nd-cadence x402-live CONFIRMED
-  STABLE (score precondition MET) but the fixture's offering classification is DISHONEST (over-claims 4/6 archetypes
-  via news-catalog topic-word FPs); NOT installed, re-scoped as an in-cloud precision-guard blocker; direct-to-main).
-  FIRST duty: `gh pr list --state open` → `[]` (no open PR; PR #157 MERGED `cf0df08` real cycle 205300Z; weld campaign
-  #152–#157 COMPLETE); newest `verify_20260807T234102Z.json` (23:41Z, 38 suites, 46.1 F / 76.2 C / +30.1) ~1min old at
-  fire (23:42Z) → :41 cadence holding (224100Z→234102Z); LOG/STATE consistent with git. No repair, no review owed.
-  **Executed the ONE [LOCAL] item — the oldest actionable P0, the next-cadence action for the thebotwire.com pin:**
-  (1) 2nd-cadence x402-live re-confirmation (1st obs 225343Z ~22:53Z → this fire ~23:43Z, ~50 min) — `/payments/latest`
-  402 + `/news` 402 byte-identical both cadences; $0 static scorer re-derived 86.0 B (access 100 / legibility 86.36 /
-  tx 100.0 / trust 43.33), `x402_probe` 8.0/8.0 `x402-live` → STABLE across 2 cadence cycles ⇒ SCORE precondition MET.
-  (2) non-destructive fixture capture to /tmp (38 entries) + replay through the real pipeline → replay_misses=0,
-  overall 86.0 == live, all 4 pillars byte-identical ⇒ replay-clean on the SCORING axis. (3) BLOCKER — `discover_offering`
-  over-claims 4/6 archetypes (physical_good/service_booking/digital_good/subscription) via TOPIC-WORD false positives
-  (thebotwire.com is a multi-vertical data/news-wire API; vertical signals collide with content-catalog prose — incl.
-  subscription firing inside "No subscription", a negation); honest set = {metered_api, data_retrieval}. **Decision: PIN
-  BLOCKED, NOT installed** — the P0's gate is replay-clean AND honest classification; honest classification FAILS, so per
-  inv #4 (the loop rejected polar/simplybook/allbirds for lesser issues) thebotwire.com does not enter the corpus; a
-  score-only pin (86.0 is off the offering path) was considered and rejected for consistency. RE-SCOPED P0: an in-cloud
-  COVERAGE precision pass (news-catalog/negation guards, anchors kept green) THEN [LOCAL] re-capture + re-verify honest +
-  pin. Direct-to-main (docs + evidence JSON only; NO fixture committed [/tmp], NO test/scoring change; scoring-path diff
-  EMPTY). Sanity: test_offering 115/115 + test_offering_canonical 70/70 unchanged (FPs are a genuine gap in the CURRENT
-  honest guards, not stale code); 23:41Z verify 38/38. Frozen canonical delta UNMOVED +39.4; live +30.1. Evidence
-  `runs/local/thebotwire_pin_attempt_20260807T235210Z.json`. Invariants #1 ($0 static + unsigned 402 reads +
-  non-destructive /tmp capture, no behavioral/codex/paid/zero-CLI)–#5 held (the dishonest classification is the REASON the
-  pin is blocked — attribution honesty enforced, not violated); zero codex, zero paid ops; stayed in-repo. NO DM (a
-  blocked pin is not a DM-enumerated sensitive class; FIRST-after-16:00 digest posted 174235Z) — thebotwire precision
-  blocker flagged for next digest. See LOG Local cycle 20260807T235210Z.
+<!-- Rolling entry for Local cycle 20260807T235210Z (TRUTH / thebotwire.com pin ATTEMPTED + BLOCKED — 2nd-cadence
+     x402-live CONFIRMED STABLE [score precondition MET] but the fixture over-claims 4/6 archetypes via news-catalog
+     topic-word FPs; NOT installed, re-scoped as an in-cloud precision-guard blocker) pruned this fire (Local cycle
+     20260808T024315Z) to stay under the STATE 600-line cap — preserved verbatim in loop/LOG.md
+     (## Local cycle — 20260807T235210Z) + git history. The RE-SCOPED P0 it opened is now 3/4 FP families closed
+     (subscription 005504Z / physical_good 020353Z / service_booking 024315Z; digital_good + a live subscription
+     re-examination remain) per the P0 banner above. -->
+- LOCAL cycle — 20260807T235210Z summarized: thebotwire.com's 2nd-cadence x402-live handshake CONFIRMED STABLE (86.0 B)
+  + the /tmp fixture replays score-clean (SCORE precondition MET) — but the PIN is BLOCKED because `discover_offering`
+  over-claimed 4/6 archetypes via news-API topic-word FPs; NOT installed (inv #4), RE-SCOPED. Full detail in loop/LOG.md.
 <!-- Rolling entry for Local cycle 20260807T225343Z (TRUTH / 2nd-x402-LIVE scarcity BROKEN — recon found THREE
      genuinely-NEW live-x402 storefronts the shipped scorer detects at 8/8; lead thebotwire.com 86.0 B; pin deferred
      to next cadence) pruned this fire (Local cycle 20260808T020353Z) to stay under the STATE 600-line cap —
@@ -414,22 +426,14 @@
      20260807T074106Z (MERGED PR #152 + pinned acuity as 5th frozen-replay baseline) pruned this fire
      (Local cycle 20260807T184234Z) to stay under the STATE 600-line cap — both preserved verbatim in
      loop/LOG.md + git history. -->
-- LOCAL cycle — 20260807T064228Z (TRUTH/METHOD / MERGED PR #151 + welded books.toscrape.com as 2nd non-anchor,
-  PEER-GATED PR #152 opened, NOT self-merged). FIRST duty: `gh pr list --state open` → PR #151 OPEN → adversarial
-  review + independent $0 live re-scores → VERDICT SOUND → **MERGED `140304e`** (off-scoring-path; teeth preserved
-  incl. the load-bearing empty-ledger-reddens leg; live re-derived driftflight.com 76.2 C / x402 partial / +30.1 ==
-  ledgered, /extend still 402→401 so entry stays; frozen replay +39.4 unmoved; readout badge honestly downgrades to
-  "sits high (max 78.1)"; suite 38/38 branch + main post-merge). Infra HEALTHY: `verify_20260807T064101Z.json` (06:41Z,
-  38 suites, 46.1/76.2/+30.1) ~1min old → :41 cadence holding. **Executed the ONE [LOCAL] item the merge unlocked —
-  the 2nd non-anchor calibration weld:** welded books.toscrape.com (real retail catalog, physical_good — the inverse
-  storefront type from the API anchors) into `_NON_ANCHOR_WELDED`, verified LIVE this fire that its live 29.5 ==
-  frozen 29.5 with byte-identical pillars (the [LOCAL] essence — NOT SCORABLE in cloud). TEST-ONLY
-  (`test_calibration_anchor_agreement.py` +78/−9; off-scoring-path EMPTY), weld suite 16→17 (new test non-vacuous +
-  teeth: drift 29.5→40.0 caught), full suite 38/38. PEER-GATED (regression-guard semantics, same class as #151) → PR
-  #152 opened, NOT self-merged; main floor green (weld change branch-only). Invariants #1 ($0 static recon + in-process
-  tests, no behavioral/codex/paid/zero-CLI)–#5 held; zero codex, zero paid ops; stayed in-repo. NO DM (neither the
-  merge nor the weld is a DM-enumerated sensitive class; 06:4xZ precedes 16:00 UTC) — #151 MERGED + #152 OPEN flagged
-  for next digest. See LOG Local cycle 20260807T064228Z.
+<!-- Rolling entry for Local cycle 20260807T064228Z (TRUTH/METHOD / MERGED PR #151 documented-live-drift ledger +
+     welded books.toscrape.com as the 2nd non-anchor cross-path member, PEER-GATED PR #152 opened) pruned this fire
+     (Local cycle 20260808T024315Z) to stay under the STATE 600-line cap — preserved verbatim in loop/LOG.md
+     (## Local cycle — 20260807T064228Z) + git history. -->
+- LOCAL cycle — 20260807T064228Z summarized: reviewed + MERGED PR #151 (documented-live-drift ledger, `140304e`) after
+  the owed FIRST-DUTY adversarial review + live re-scores (VERDICT SOUND, teeth preserved, +39.4 frozen / +30.1 live);
+  then welded books.toscrape.com (retail catalog) as the 2nd non-anchor cross-path member (PEER-GATED PR #152, later
+  merged `1310fd5`). Full detail in loop/LOG.md.
 <!-- Rolling entries for Local cycles 20260807T054210Z (PR #151 documented-live-drift ledger opened) +
      20260807T051750Z (calibration cadence + PR #150 post-merge review self-heal) pruned this fire
      (Local cycle 20260807T154104Z) to stay under the STATE line cap — both preserved verbatim in loop/LOG.md

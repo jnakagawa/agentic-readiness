@@ -244,7 +244,7 @@ live 57.4 == frozen 57.4 == EXPECTED, all 4 pillars byte-identical, replay_misse
 
 <!-- OPENED Local cycle 20260808T124101Z: the UCP-rail weld (checkout.coffeecircle.com — the FIRST welded member on the
 UCP commerce-protocol rail, a NEW agent-native rail TYPE) is AUTHORED as PEER-GATED PR #159 (branch
-loop/coffeecircle-ucp-non-anchor-weld, commit c76a0da), NOT self-merged. Welds checkout.coffeecircle.com into
+loop/coffeecircle-ucp-non-anchor-weld, commit 37cdea1), NOT self-merged. Welds checkout.coffeecircle.com into
 tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED as the ELEVENTH member (10->11 non-anchor witnesses) — the
 FIRST on a rail TYPE OTHER than x402/no-rail. New test_coffeecircle_eleventh_non_anchor_is_welded_nonvacuously: committed
 v0.7 floor present + genuinely COMPARED (n_compared=1 in calibration_sweep_20260808T114436Z.json, segment

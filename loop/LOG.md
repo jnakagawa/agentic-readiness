@@ -43,7 +43,7 @@ both paths, no www/bare alias; teeth = synthetic drift 57.4→68.0 caught as exa
 untouched. Weld suite **26→27** (all pass); full suite **38/38**.
 
 **Ship.** Peer-gated (a cross-path calibration-weld class change, same as #152–#158) → authored on
-branch `loop/coffeecircle-ucp-non-anchor-weld` (commit c76a0da: test + evidence JSON) → PR #159,
+branch `loop/coffeecircle-ucp-non-anchor-weld` (commit 37cdea1: test + evidence JSON) → PR #159,
 NOT self-merged. Bookkeeping (this LOG + STATE OPEN-PR banner + counter 308→309 + BACKLOG OPENED
 marker) direct-to-main. Frozen canonical delta UNMOVED **+39.4**; live **+30.1**.
 

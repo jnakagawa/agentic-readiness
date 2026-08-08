@@ -91,6 +91,7 @@ _POPULATION = (
     "ipinfo.io",
     "thebotwire.com",
     "www.moleskine.com",
+    "x402deploy.vercel.app",
 )
 
 

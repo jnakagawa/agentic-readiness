@@ -1,0 +1,1153 @@
+{
+ "fixture_version": 1,
+ "domain": "x402deploy.vercel.app",
+ "base_url": "https://x402deploy.vercel.app",
+ "entries": [
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app",
+    "final_url": "https://x402deploy.vercel.app/",
+    "status": 200,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-encoding": "gzip",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:23 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::xcm5p-1786175156273-6892682b8353",
+     "transfer-encoding": "chunked"
+    },
+    "text": "{\"name\":\"x402 Data API\",\"description\":\"Pay-per-call HTTP data API for autonomous agents. Each tool is gated behind an HTTP-402 payment flow settled in USDC on Base — no API key, no account, no custodian. Call any endpoint, get a 402 with payment terms, pay via an x402 client, retry with the payment header, get JSON.\",\"x402Version\":1,\"network\":\"base\",\"price_usdc\":0.005,\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\",\"tool_count\":13,\"tools\":[{\"path\":\"/api/serp\",\"description\":\"Web search SERP scraper. Returns organic web search results as JSON.\"},{\"path\":\"/api/read\",\"description\":\"URL reader. Fetches a web page and returns its cleaned main text as JSON.\"},{\"path\":\"/api/price\",\"description\":\"Crypto price lookup. Live USD price + 24h change by CoinGecko id.\"},{\"path\":\"/api/wiki\",\"description\":\"Wikipedia summary. Lead extract, description and URL for an article title.\"},{\"path\":\"/api/news\",\"description\":\"News headlines. Fresh articles (title, source, link, date) for a query.\"},{\"path\":\"/api/weather\",\"description\":\"Current weather by place name. Temperature, humidity, wind, conditions.\"},{\"path\":\"/api/fx\",\"description\":\"Foreign-exchange rates from a base currency to all or selected currencies.\"},{\"path\":\"/api/geoip\",\"description\":\"IP geolocation. Maps an IP address to city, country, coordinates, org and timezone.\"},{\"path\":\"/api/dns\",\"description\":\"DNS lookup. Resolves a domain's A/AAAA/MX/TXT/NS/CNAME records over DNS-over-HTTPS.\"},{\"path\":\"/api/trending\",\"description\":\"Trending crypto. Top trending coins right now by CoinGecko search volume.\"},{\"path\":\"/api/stock\",\"description\":\"Stock quote. Live price, previous close, day change and market state for a ticker symbol.\"},{\"path\":\"/api/domain\",\"description\":\"Domain WHOIS/RDAP. Registrar, registration & expiry dates, status and nameservers.\"},{\"path\":\"/api/markets\",\"description\":\"Crypto markets. Top coins by market cap with price, rank and 24h change.\"}],\"discovery\":{\"x402_manifest\":\"/.well-known/x402\",\"mcp_manifest\":\"/.well-known/mcp.json\",\"llms_txt\":\"/llms.txt\",\"health\":\"/api/health\"},\"how_to_pay\":\"Use an x402-capable client (e.g. x402-fetch). POST to any /api/* path; on the 402 response, sign the EIP-3009 USDC authorization for the quoted amount and resend with the X-PAYMENT header.\",\"example\":\"curl -X POST https://x402deploy.vercel.app/api/serp -d '{\\\"query\\\":\\\"x402 protocol\\\"}'\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app",
+   "ua": "claudebot",
+   "result": {
+    "url": "https://x402deploy.vercel.app",
+    "final_url": "https://x402deploy.vercel.app/",
+    "status": 200,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-encoding": "gzip",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:23 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::hgll9-1786175156578-bdc0b5eedb49",
+     "transfer-encoding": "chunked"
+    },
+    "text": "{\"name\":\"x402 Data API\",\"description\":\"Pay-per-call HTTP data API for autonomous agents. Each tool is gated behind an HTTP-402 payment flow settled in USDC on Base — no API key, no account, no custodian. Call any endpoint, get a 402 with payment terms, pay via an x402 client, retry with the payment header, get JSON.\",\"x402Version\":1,\"network\":\"base\",\"price_usdc\":0.005,\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\",\"tool_count\":13,\"tools\":[{\"path\":\"/api/serp\",\"description\":\"Web search SERP scraper. Returns organic web search results as JSON.\"},{\"path\":\"/api/read\",\"description\":\"URL reader. Fetches a web page and returns its cleaned main text as JSON.\"},{\"path\":\"/api/price\",\"description\":\"Crypto price lookup. Live USD price + 24h change by CoinGecko id.\"},{\"path\":\"/api/wiki\",\"description\":\"Wikipedia summary. Lead extract, description and URL for an article title.\"},{\"path\":\"/api/news\",\"description\":\"News headlines. Fresh articles (title, source, link, date) for a query.\"},{\"path\":\"/api/weather\",\"description\":\"Current weather by place name. Temperature, humidity, wind, conditions.\"},{\"path\":\"/api/fx\",\"description\":\"Foreign-exchange rates from a base currency to all or selected currencies.\"},{\"path\":\"/api/geoip\",\"description\":\"IP geolocation. Maps an IP address to city, country, coordinates, org and timezone.\"},{\"path\":\"/api/dns\",\"description\":\"DNS lookup. Resolves a domain's A/AAAA/MX/TXT/NS/CNAME records over DNS-over-HTTPS.\"},{\"path\":\"/api/trending\",\"description\":\"Trending crypto. Top trending coins right now by CoinGecko search volume.\"},{\"path\":\"/api/stock\",\"description\":\"Stock quote. Live price, previous close, day change and market state for a ticker symbol.\"},{\"path\":\"/api/domain\",\"description\":\"Domain WHOIS/RDAP. Registrar, registration & expiry dates, status and nameservers.\"},{\"path\":\"/api/markets\",\"description\":\"Crypto markets. Top coins by market cap with price, rank and 24h change.\"}],\"discovery\":{\"x402_manifest\":\"/.well-known/x402\",\"mcp_manifest\":\"/.well-known/mcp.json\",\"llms_txt\":\"/llms.txt\",\"health\":\"/api/health\"},\"how_to_pay\":\"Use an x402-capable client (e.g. x402-fetch). POST to any /api/* path; on the 402 response, sign the EIP-3009 USDC authorization for the quoted amount and resend with the X-PAYMENT header.\",\"example\":\"curl -X POST https://x402deploy.vercel.app/api/serp -d '{\\\"query\\\":\\\"x402 protocol\\\"}'\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app",
+   "ua": "gptbot",
+   "result": {
+    "url": "https://x402deploy.vercel.app",
+    "final_url": "https://x402deploy.vercel.app/",
+    "status": 200,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-encoding": "gzip",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:23 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::8jg2s-1786175156710-3e675212a1e7",
+     "transfer-encoding": "chunked"
+    },
+    "text": "{\"name\":\"x402 Data API\",\"description\":\"Pay-per-call HTTP data API for autonomous agents. Each tool is gated behind an HTTP-402 payment flow settled in USDC on Base — no API key, no account, no custodian. Call any endpoint, get a 402 with payment terms, pay via an x402 client, retry with the payment header, get JSON.\",\"x402Version\":1,\"network\":\"base\",\"price_usdc\":0.005,\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\",\"tool_count\":13,\"tools\":[{\"path\":\"/api/serp\",\"description\":\"Web search SERP scraper. Returns organic web search results as JSON.\"},{\"path\":\"/api/read\",\"description\":\"URL reader. Fetches a web page and returns its cleaned main text as JSON.\"},{\"path\":\"/api/price\",\"description\":\"Crypto price lookup. Live USD price + 24h change by CoinGecko id.\"},{\"path\":\"/api/wiki\",\"description\":\"Wikipedia summary. Lead extract, description and URL for an article title.\"},{\"path\":\"/api/news\",\"description\":\"News headlines. Fresh articles (title, source, link, date) for a query.\"},{\"path\":\"/api/weather\",\"description\":\"Current weather by place name. Temperature, humidity, wind, conditions.\"},{\"path\":\"/api/fx\",\"description\":\"Foreign-exchange rates from a base currency to all or selected currencies.\"},{\"path\":\"/api/geoip\",\"description\":\"IP geolocation. Maps an IP address to city, country, coordinates, org and timezone.\"},{\"path\":\"/api/dns\",\"description\":\"DNS lookup. Resolves a domain's A/AAAA/MX/TXT/NS/CNAME records over DNS-over-HTTPS.\"},{\"path\":\"/api/trending\",\"description\":\"Trending crypto. Top trending coins right now by CoinGecko search volume.\"},{\"path\":\"/api/stock\",\"description\":\"Stock quote. Live price, previous close, day change and market state for a ticker symbol.\"},{\"path\":\"/api/domain\",\"description\":\"Domain WHOIS/RDAP. Registrar, registration & expiry dates, status and nameservers.\"},{\"path\":\"/api/markets\",\"description\":\"Crypto markets. Top coins by market cap with price, rank and 24h change.\"}],\"discovery\":{\"x402_manifest\":\"/.well-known/x402\",\"mcp_manifest\":\"/.well-known/mcp.json\",\"llms_txt\":\"/llms.txt\",\"health\":\"/api/health\"},\"how_to_pay\":\"Use an x402-capable client (e.g. x402-fetch). POST to any /api/* path; on the 402 response, sign the EIP-3009 USDC authorization for the quoted amount and resend with the X-PAYMENT header.\",\"example\":\"curl -X POST https://x402deploy.vercel.app/api/serp -d '{\\\"query\\\":\\\"x402 protocol\\\"}'\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/.well-known/mcp.json",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/.well-known/mcp.json",
+    "final_url": "https://x402deploy.vercel.app/.well-known/mcp.json",
+    "status": 200,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-encoding": "gzip",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:46:00 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::7xsqj-1786175160883-d496a7c69f79",
+     "transfer-encoding": "chunked"
+    },
+    "text": "{\"name\":\"x402-multi-tool\",\"version\":\"2.0.0\",\"tools\":[{\"name\":\"web_search\",\"description\":\"Search the web and return organic results as structured JSON. Costs $0.0050 USDC per call via x402 micropayment.\",\"endpoint\":{\"url\":\"https://x402deploy.vercel.app/api/serp\",\"method\":\"POST\"},\"inputSchema\":{\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\",\"description\":\"Search query string\"},\"num_results\":{\"type\":\"integer\",\"minimum\":1,\"maximum\":20,\"default\":10},\"country\":{\"type\":\"string\",\"description\":\"ISO country code\",\"default\":\"us\"}},\"required\":[\"query\"]},\"payment\":{\"required\":true,\"protocol\":\"x402\",\"amount\":\"$0.0050\",\"currency\":\"USDC\",\"network\":\"base\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}},{\"name\":\"read_url\",\"description\":\"Fetch a web page and return its cleaned main text as JSON. Costs $0.0050 USDC per call via x402 micropayment.\",\"endpoint\":{\"url\":\"https://x402deploy.vercel.app/api/read\",\"method\":\"POST\"},\"inputSchema\":{\"type\":\"object\",\"properties\":{\"url\":{\"type\":\"string\",\"description\":\"Absolute http(s) URL of the page to read\"},\"max_chars\":{\"type\":\"integer\",\"minimum\":500,\"maximum\":40000,\"default\":8000}},\"required\":[\"url\"]},\"payment\":{\"required\":true,\"protocol\":\"x402\",\"amount\":\"$0.0050\",\"currency\":\"USDC\",\"network\":\"base\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}},{\"name\":\"crypto_price\",\"description\":\"Live crypto USD price + 24h change by CoinGecko id. Costs $0.0050 USDC per call via x402 micropayment.\",\"endpoint\":{\"url\":\"https://x402deploy.vercel.app/api/price\",\"method\":\"POST\"},\"inputSchema\":{\"type\":\"object\",\"properties\":{\"ids\":{\"type\":\"string\",\"description\":\"Comma-separated CoinGecko coin ids, e.g. 'bitcoin,ethereum,solana'\"},\"vs\":{\"type\":\"string\",\"description\":\"Fiat/crypto vs-currency\",\"default\":\"usd\"}},\"required\":[\"ids\"]},\"payment\":{\"required\":true,\"protocol\":\"x402\",\"amount\":\"$0.0050\",\"currency\":\"USDC\",\"network\":\"base\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}},{\"name\":\"wikipedia_summary\",\"description\":\"Wikipedia lead extract, description and URL for an article title. Costs $0.0050 USDC per call via x402 micropayment.\",\"endpoint\":{\"url\":\"https://x402deploy.vercel.app/api/wiki\",\"method\":\"POST\"},\"inputSchema\":{\"type\":\"object\",\"properties\":{\"title\":{\"type\":\"string\",\"description\":\"Wikipedia article title, e.g. 'Ethereum'\"},\"lang\":{\"type\":\"string\",\"description\":\"Wikipedia language edition\",\"default\":\"en\"}},\"required\":[\"title\"]},\"payment\":{\"required\":true,\"protocol\":\"x402\",\"amount\":\"$0.0050\",\"currency\":\"USDC\",\"network\":\"base\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}},{\"name\":\"news_headlines\",\"description\":\"Fresh news articles (title, source, link, date) for a query. Costs $0.0050 USDC per call via x402 micropayment.\",\"endpoint\":{\"url\":\"https://x402deploy.vercel.app/api/news\",\"method\":\"POST\"},\"inputSchema\":{\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\",\"description\":\"News search query, e.g. 'AI agents'\"},\"limit\":{\"type\":\"integer\",\"minimum\":1,\"maximum\":25,\"default\":10},\"lang\":{\"type\":\"string\",\"description\":\"Language/region, e.g. 'en-US'\",\"default\":\"en-US\"}},\"required\":[\"query\"]},\"payment\":{\"required\":true,\"protocol\":\"x402\",\"amount\":\"$0.0050\",\"currency\":\"USDC\",\"network\":\"base\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}},{\"name\":\"current_weather\",\"description\":\"Current weather by place name: temperature, humidity, wind, conditions. Costs $0.0050 USDC per call via x402 micropayment.\",\"endpoint\":{\"url\":\"https://x402deploy.vercel.app/api/weather\",\"method\":\"POST\"},\"inputSchema\":{\"type\":\"object\",\"properties\":{\"location\":{\"type\":\"string\",\"description\":\"Place name, e.g. 'London' or 'Tokyo, JP'\"},\"units\":{\"type\":\"string\",\"description\":\"'metric' (°C) or 'imperial' (°F)\",\"default\":\"metric\"}},\"required\":[\"location\"]},\"payment\":{\"required\":true,\"protocol\":\"x402\",\"amount\":\"$0.0050\",\"currency\":\"USDC\",\"network\":\"base\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}},{\"name\":\"fx_rates\",\"description\":\"Foreign-exchange rates from a base currency to all or selected currencies. Costs $0.0050 USDC per call via x402 micropayment.\",\"endpoint\":{\"url\":\"https://x402deploy.vercel.app/api/fx\",\"method\":\"POST\"},\"inputSchema\":{\"type\":\"object\",\"properties\":{\"base\":{\"type\":\"string\",\"description\":\"Base currency ISO code, e.g. 'USD'\",\"default\":\"USD\"},\"symbols\":{\"type\":\"string\",\"description\":\"Comma-separated target codes to filter, e.g. 'EUR,VND,JPY'. Empty = all.\"}},\"required\":[]},\"payment\":{\"required\":true,\"protocol\":\"x402\",\"amount\":\"$0.0050\",\"currency\":\"USDC\",\"network\":\"base\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}},{\"name\":\"ip_geolocation\",\"description\":\"Map an IP address to city, country, coordinates, org and timezone. Costs $0.0050 USDC per call via x402 micropayment.\",\"endpoint\":{\"url\":\"https://x402deploy.vercel.app/api/geoip\",\"method\":\"POST\"},\"inputSchema\":{\"type\":\"object\",\"properties\":{\"ip\":{\"type\":\"string\",\"description\":\"IPv4/IPv6 address to look up, e.g. '8.8.8.8'\"}},\"required\":[\"ip\"]},\"payment\":{\"required\":true,\"protocol\":\"x402\",\"amount\":\"$0.0050\",\"currency\":\"USDC\",\"network\":\"base\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}},{\"name\":\"dns_lookup\",\"description\":\"Resolve a domain's A/AAAA/MX/TXT/NS/CNAME records over DNS-over-HTTPS. Costs $0.0050 USDC per call via x402 micropayment.\",\"endpoint\":{\"url\":\"https://x402deploy.vercel.app/api/dns\",\"method\":\"POST\"},\"inputSchema\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\",\"description\":\"Domain name to resolve, e.g. 'example.com'\"},\"type\":{\"type\":\"string\",\"description\":\"Record type: A, AAAA, MX, TXT, NS, CNAME\",\"default\":\"A\"}},\"required\":[\"name\"]},\"payment\":{\"required\":true,\"protocol\":\"x402\",\"amount\":\"$0.0050\",\"currency\":\"USDC\",\"network\":\"base\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}},{\"name\":\"trending_crypto\",\"description\":\"Top trending coins right now by CoinGecko search volume. Costs $0.0050 USDC per call via x402 micropayment.\",\"endpoint\":{\"url\":\"https://x402deploy.vercel.app/api/trending\",\"method\":\"POST\"},\"inputSchema\":{\"type\":\"object\",\"properties\":{\"limit\":{\"type\":\"integer\",\"minimum\":1,\"maximum\":15,\"default\":7}},\"required\":[]},\"payment\":{\"required\":true,\"protocol\":\"x402\",\"amount\":\"$0.0050\",\"currency\":\"USDC\",\"network\":\"base\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}},{\"name\":\"stock_quote\",\"description\":\"Live stock quote: price, previous close, day change and market state for a ticker. Costs $0.0050 USDC per call via x402 micropayment.\",\"endpoint\":{\"url\":\"https://x402deploy.vercel.app/api/stock\",\"method\":\"POST\"},\"inputSchema\":{\"type\":\"object\",\"properties\":{\"symbol\":{\"type\":\"string\",\"description\":\"Ticker symbol, e.g. 'AAPL', 'MSFT', 'TSLA'\"}},\"required\":[\"symbol\"]},\"payment\":{\"required\":true,\"protocol\":\"x402\",\"amount\":\"$0.0050\",\"currency\":\"USDC\",\"network\":\"base\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}},{\"name\":\"domain_whois\",\"description\":\"Domain WHOIS/RDAP: registrar, registration & expiry dates, status, nameservers. Costs $0.0050 USDC per call via x402 micropayment.\",\"endpoint\":{\"url\":\"https://x402deploy.vercel.app/api/domain\",\"method\":\"POST\"},\"inputSchema\":{\"type\":\"object\",\"properties\":{\"domain\":{\"type\":\"string\",\"description\":\"Domain name to look up, e.g. 'example.com'\"}},\"required\":[\"domain\"]},\"payment\":{\"required\":true,\"protocol\":\"x402\",\"amount\":\"$0.0050\",\"currency\":\"USDC\",\"network\":\"base\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}},{\"name\":\"crypto_markets\",\"description\":\"Top coins by market cap with price, rank and 24h change. Costs $0.0050 USDC per call via x402 micropayment.\",\"endpoint\":{\"url\":\"https://x402deploy.vercel.app/api/markets\",\"method\":\"POST\"},\"inputSchema\":{\"type\":\"object\",\"properties\":{\"vs\":{\"type\":\"string\",\"description\":\"Quote currency\",\"default\":\"usd\"},\"limit\":{\"type\":\"integer\",\"minimum\":1,\"maximum\":50,\"default\":10}},\"required\":[]},\"payment\":{\"required\":true,\"protocol\":\"x402\",\"amount\":\"$0.0050\",\"currency\":\"USDC\",\"network\":\"base\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}}]}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/about",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/about",
+    "final_url": "https://x402deploy.vercel.app/about",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:46:00 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::8dqc4-1786175161040-87cad2a206bb"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/api",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/api",
+    "final_url": "https://x402deploy.vercel.app/api",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:58 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::8dqc4-1786175159639-2ec4d25b55b3"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/api/dns",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/api/dns",
+    "final_url": "https://x402deploy.vercel.app/api/dns",
+    "status": 402,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "1292",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:57 GMT",
+     "payment-required": "eyJ4NDAyVmVyc2lvbiI6IDEsICJlcnJvciI6ICJQYXltZW50IHJlcXVpcmVkIiwgInNlcnZpY2VOYW1lIjogIng0MDIgV2ViICYgRGF0YSBUb29scyIsICJ0YWdzIjogWyJzZWFyY2giLCAid2ViLXNjcmFwaW5nIiwgInVybC1yZWFkZXIiLCAiY3J5cHRvIiwgImZpbmFuY2UiLCAibmV3cyIsICJ3ZWF0aGVyIiwgImRucyIsICJnZW9pcCIsICJkYXRhIiwgImFnZW50LXRvb2xzIiwgIng0MDIiXSwgInJlc291cmNlIjogeyJ1cmwiOiAiaHR0cHM6Ly94NDAyZGVwbG95LnZlcmNlbC5hcHAvYXBpL2RucyIsICJkZXNjcmlwdGlvbiI6ICJETlMgbG9va3VwLiBSZXNvbHZlcyBhIGRvbWFpbidzIEEvQUFBQS9NWC9UWFQvTlMvQ05BTUUgcmVjb3JkcyBvdmVyIEROUy1vdmVyLUhUVFBTLiIsICJtaW1lVHlwZSI6ICJhcHBsaWNhdGlvbi9qc29uIn0sICJhY2NlcHRzIjogW3sic2NoZW1lIjogImV4YWN0IiwgIm5ldHdvcmsiOiAiYmFzZSIsICJtYXhBbW91bnRSZXF1aXJlZCI6ICI1MDAwIiwgInJlc291cmNlIjogImh0dHBzOi8veDQwMmRlcGxveS52ZXJjZWwuYXBwL2FwaS9kbnMiLCAiZGVzY3JpcHRpb24iOiAiRE5TIGxvb2t1cC4gUmVzb2x2ZXMgYSBkb21haW4ncyBBL0FBQUEvTVgvVFhUL05TL0NOQU1FIHJlY29yZHMgb3ZlciBETlMtb3Zlci1IVFRQUy4iLCAibWltZVR5cGUiOiAiYXBwbGljYXRpb24vanNvbiIsICJwYXlUbyI6ICIweDdhRURFOUJiM0EwYzI4MTMyNjQzRUQ4ZTQxNmU0NzI4ZjAzRkMxOGYiLCAibWF4VGltZW91dFNlY29uZHMiOiA2MCwgImFzc2V0IjogIjB4ODMzNTg5ZkNENmVEYjZFMDhmNGM3QzMyRDRmNzFiNTRiZEEwMjkxMyIsICJleHRyYSI6IHsibmFtZSI6ICJVU0QgQ29pbiIsICJ2ZXJzaW9uIjogIjIifSwgInRhZ3MiOiBbImRucyIsICJkb21haW4iLCAibmV0d29yayJdfV0sICJleHRlbnNpb25zIjogeyJiYXphYXIiOiB7InNjaGVtYSI6IHsicHJvcGVydGllcyI6IHsiaW5wdXQiOiB7InByb3BlcnRpZXMiOiB7ImJvZHkiOiB7InR5cGUiOiAib2JqZWN0IiwgInByb3BlcnRpZXMiOiB7Im5hbWUiOiB7InR5cGUiOiAic3RyaW5nIiwgImRlc2NyaXB0aW9uIjogIkRvbWFpbiBuYW1lIHRvIHJlc29sdmUsIGUuZy4gJ2V4YW1wbGUuY29tJyJ9LCAidHlwZSI6IHsidHlwZSI6ICJzdHJpbmciLCAiZGVzY3JpcHRpb24iOiAiUmVjb3JkIHR5cGU6IEEsIEFBQUEsIE1YLCBUWFQsIE5TLCBDTkFNRSIsICJkZWZhdWx0IjogIkEifX0sICJyZXF1aXJlZCI6IFsibmFtZSJdfX19LCAib3V0cHV0IjogeyJwcm9wZXJ0aWVzIjogeyJleGFtcGxlIjogeyJuYW1lIjogImV4YW1wbGUuY29tIiwgInR5cGUiOiAiQSIsICJzdGF0dXMiOiAwLCAicmVjb3JkcyI6IFsiOTMuMTg0LjIxNi4zNCJdLCAidG90YWwiOiAxfX19fX19fX0=",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::jmxtr-1786175158148-a561ea7b04a9"
+    },
+    "text": "{\"x402Version\":1,\"error\":\"Payment required\",\"serviceName\":\"x402 Web & Data Tools\",\"tags\":[\"search\",\"web-scraping\",\"url-reader\",\"crypto\",\"finance\",\"news\",\"weather\",\"dns\",\"geoip\",\"data\",\"agent-tools\",\"x402\"],\"resource\":{\"url\":\"https://x402deploy.vercel.app/api/dns\",\"description\":\"DNS lookup. Resolves a domain's A/AAAA/MX/TXT/NS/CNAME records over DNS-over-HTTPS.\",\"mimeType\":\"application/json\"},\"accepts\":[{\"scheme\":\"exact\",\"network\":\"base\",\"maxAmountRequired\":\"5000\",\"resource\":\"https://x402deploy.vercel.app/api/dns\",\"description\":\"DNS lookup. Resolves a domain's A/AAAA/MX/TXT/NS/CNAME records over DNS-over-HTTPS.\",\"mimeType\":\"application/json\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\",\"maxTimeoutSeconds\":60,\"asset\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"extra\":{\"name\":\"USD Coin\",\"version\":\"2\"},\"tags\":[\"dns\",\"domain\",\"network\"]}],\"extensions\":{\"bazaar\":{\"schema\":{\"properties\":{\"input\":{\"properties\":{\"body\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\",\"description\":\"Domain name to resolve, e.g. 'example.com'\"},\"type\":{\"type\":\"string\",\"description\":\"Record type: A, AAAA, MX, TXT, NS, CNAME\",\"default\":\"A\"}},\"required\":[\"name\"]}}},\"output\":{\"properties\":{\"example\":{\"name\":\"example.com\",\"type\":\"A\",\"status\":0,\"records\":[\"93.184.216.34\"],\"total\":1}}}}}}}}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/api/domain",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/api/domain",
+    "final_url": "https://x402deploy.vercel.app/api/domain",
+    "status": 402,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "1431",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:58 GMT",
+     "payment-required": "eyJ4NDAyVmVyc2lvbiI6IDEsICJlcnJvciI6ICJQYXltZW50IHJlcXVpcmVkIiwgInNlcnZpY2VOYW1lIjogIng0MDIgV2ViICYgRGF0YSBUb29scyIsICJ0YWdzIjogWyJzZWFyY2giLCAid2ViLXNjcmFwaW5nIiwgInVybC1yZWFkZXIiLCAiY3J5cHRvIiwgImZpbmFuY2UiLCAibmV3cyIsICJ3ZWF0aGVyIiwgImRucyIsICJnZW9pcCIsICJkYXRhIiwgImFnZW50LXRvb2xzIiwgIng0MDIiXSwgInJlc291cmNlIjogeyJ1cmwiOiAiaHR0cHM6Ly94NDAyZGVwbG95LnZlcmNlbC5hcHAvYXBpL2RvbWFpbiIsICJkZXNjcmlwdGlvbiI6ICJEb21haW4gV0hPSVMvUkRBUC4gUmVnaXN0cmFyLCByZWdpc3RyYXRpb24gJiBleHBpcnkgZGF0ZXMsIHN0YXR1cyBhbmQgbmFtZXNlcnZlcnMgZm9yIGEgZG9tYWluLiIsICJtaW1lVHlwZSI6ICJhcHBsaWNhdGlvbi9qc29uIn0sICJhY2NlcHRzIjogW3sic2NoZW1lIjogImV4YWN0IiwgIm5ldHdvcmsiOiAiYmFzZSIsICJtYXhBbW91bnRSZXF1aXJlZCI6ICI1MDAwIiwgInJlc291cmNlIjogImh0dHBzOi8veDQwMmRlcGxveS52ZXJjZWwuYXBwL2FwaS9kb21haW4iLCAiZGVzY3JpcHRpb24iOiAiRG9tYWluIFdIT0lTL1JEQVAuIFJlZ2lzdHJhciwgcmVnaXN0cmF0aW9uICYgZXhwaXJ5IGRhdGVzLCBzdGF0dXMgYW5kIG5hbWVzZXJ2ZXJzIGZvciBhIGRvbWFpbi4iLCAibWltZVR5cGUiOiAiYXBwbGljYXRpb24vanNvbiIsICJwYXlUbyI6ICIweDdhRURFOUJiM0EwYzI4MTMyNjQzRUQ4ZTQxNmU0NzI4ZjAzRkMxOGYiLCAibWF4VGltZW91dFNlY29uZHMiOiA2MCwgImFzc2V0IjogIjB4ODMzNTg5ZkNENmVEYjZFMDhmNGM3QzMyRDRmNzFiNTRiZEEwMjkxMyIsICJleHRyYSI6IHsibmFtZSI6ICJVU0QgQ29pbiIsICJ2ZXJzaW9uIjogIjIifSwgInRhZ3MiOiBbImRvbWFpbiIsICJ3aG9pcyIsICJuZXR3b3JrIl19XSwgImV4dGVuc2lvbnMiOiB7ImJhemFhciI6IHsic2NoZW1hIjogeyJwcm9wZXJ0aWVzIjogeyJpbnB1dCI6IHsicHJvcGVydGllcyI6IHsiYm9keSI6IHsidHlwZSI6ICJvYmplY3QiLCAicHJvcGVydGllcyI6IHsiZG9tYWluIjogeyJ0eXBlIjogInN0cmluZyIsICJkZXNjcmlwdGlvbiI6ICJEb21haW4gbmFtZSB0byBsb29rIHVwLCBlLmcuICdleGFtcGxlLmNvbScifX0sICJyZXF1aXJlZCI6IFsiZG9tYWluIl19fX0sICJvdXRwdXQiOiB7InByb3BlcnRpZXMiOiB7ImV4YW1wbGUiOiB7ImRvbWFpbiI6ICJleGFtcGxlLmNvbSIsICJyZWdpc3RyYXIiOiAiUkVTRVJWRUQtSW50ZXJuZXQgQXNzaWduZWQgTnVtYmVycyBBdXRob3JpdHkiLCAicmVnaXN0ZXJlZCI6ICIxOTk1LTA4LTE0VDA0OjAwOjAwWiIsICJleHBpcmVzIjogIjIwMjYtMDgtMTNUMDQ6MDA6MDBaIiwgInVwZGF0ZWQiOiAiMjAyNS0wOC0xNFQwNzowMTo0NFoiLCAic3RhdHVzIjogWyJjbGllbnQgZGVsZXRlIHByb2hpYml0ZWQiXSwgIm5hbWVzZXJ2ZXJzIjogWyJBLklBTkEtU0VSVkVSUy5ORVQiLCAiQi5JQU5BLVNFUlZFUlMuTkVUIl19fX19fX19fQ==",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::97hj2-1786175158593-b1dfa85e3f39"
+    },
+    "text": "{\"x402Version\":1,\"error\":\"Payment required\",\"serviceName\":\"x402 Web & Data Tools\",\"tags\":[\"search\",\"web-scraping\",\"url-reader\",\"crypto\",\"finance\",\"news\",\"weather\",\"dns\",\"geoip\",\"data\",\"agent-tools\",\"x402\"],\"resource\":{\"url\":\"https://x402deploy.vercel.app/api/domain\",\"description\":\"Domain WHOIS/RDAP. Registrar, registration & expiry dates, status and nameservers for a domain.\",\"mimeType\":\"application/json\"},\"accepts\":[{\"scheme\":\"exact\",\"network\":\"base\",\"maxAmountRequired\":\"5000\",\"resource\":\"https://x402deploy.vercel.app/api/domain\",\"description\":\"Domain WHOIS/RDAP. Registrar, registration & expiry dates, status and nameservers for a domain.\",\"mimeType\":\"application/json\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\",\"maxTimeoutSeconds\":60,\"asset\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"extra\":{\"name\":\"USD Coin\",\"version\":\"2\"},\"tags\":[\"domain\",\"whois\",\"network\"]}],\"extensions\":{\"bazaar\":{\"schema\":{\"properties\":{\"input\":{\"properties\":{\"body\":{\"type\":\"object\",\"properties\":{\"domain\":{\"type\":\"string\",\"description\":\"Domain name to look up, e.g. 'example.com'\"}},\"required\":[\"domain\"]}}},\"output\":{\"properties\":{\"example\":{\"domain\":\"example.com\",\"registrar\":\"RESERVED-Internet Assigned Numbers Authority\",\"registered\":\"1995-08-14T04:00:00Z\",\"expires\":\"2026-08-13T04:00:00Z\",\"updated\":\"2025-08-14T07:01:44Z\",\"status\":[\"client delete prohibited\"],\"nameservers\":[\"A.IANA-SERVERS.NET\",\"B.IANA-SERVERS.NET\"]}}}}}}}}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/api/fx",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/api/fx",
+    "final_url": "https://x402deploy.vercel.app/api/fx",
+    "status": 402,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "1386",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:57 GMT",
+     "payment-required": "eyJ4NDAyVmVyc2lvbiI6IDEsICJlcnJvciI6ICJQYXltZW50IHJlcXVpcmVkIiwgInNlcnZpY2VOYW1lIjogIng0MDIgV2ViICYgRGF0YSBUb29scyIsICJ0YWdzIjogWyJzZWFyY2giLCAid2ViLXNjcmFwaW5nIiwgInVybC1yZWFkZXIiLCAiY3J5cHRvIiwgImZpbmFuY2UiLCAibmV3cyIsICJ3ZWF0aGVyIiwgImRucyIsICJnZW9pcCIsICJkYXRhIiwgImFnZW50LXRvb2xzIiwgIng0MDIiXSwgInJlc291cmNlIjogeyJ1cmwiOiAiaHR0cHM6Ly94NDAyZGVwbG95LnZlcmNlbC5hcHAvYXBpL2Z4IiwgImRlc2NyaXB0aW9uIjogIkZvcmVpZ24tZXhjaGFuZ2UgcmF0ZXMuIExpdmUgY29udmVyc2lvbiByYXRlcyBmcm9tIGEgYmFzZSBjdXJyZW5jeSB0byBhbGwgKG9yIHNlbGVjdGVkKSBjdXJyZW5jaWVzLiIsICJtaW1lVHlwZSI6ICJhcHBsaWNhdGlvbi9qc29uIn0sICJhY2NlcHRzIjogW3sic2NoZW1lIjogImV4YWN0IiwgIm5ldHdvcmsiOiAiYmFzZSIsICJtYXhBbW91bnRSZXF1aXJlZCI6ICI1MDAwIiwgInJlc291cmNlIjogImh0dHBzOi8veDQwMmRlcGxveS52ZXJjZWwuYXBwL2FwaS9meCIsICJkZXNjcmlwdGlvbiI6ICJGb3JlaWduLWV4Y2hhbmdlIHJhdGVzLiBMaXZlIGNvbnZlcnNpb24gcmF0ZXMgZnJvbSBhIGJhc2UgY3VycmVuY3kgdG8gYWxsIChvciBzZWxlY3RlZCkgY3VycmVuY2llcy4iLCAibWltZVR5cGUiOiAiYXBwbGljYXRpb24vanNvbiIsICJwYXlUbyI6ICIweDdhRURFOUJiM0EwYzI4MTMyNjQzRUQ4ZTQxNmU0NzI4ZjAzRkMxOGYiLCAibWF4VGltZW91dFNlY29uZHMiOiA2MCwgImFzc2V0IjogIjB4ODMzNTg5ZkNENmVEYjZFMDhmNGM3QzMyRDRmNzFiNTRiZEEwMjkxMyIsICJleHRyYSI6IHsibmFtZSI6ICJVU0QgQ29pbiIsICJ2ZXJzaW9uIjogIjIifSwgInRhZ3MiOiBbImZvcmV4IiwgImN1cnJlbmN5IiwgImZpbmFuY2UiXX1dLCAiZXh0ZW5zaW9ucyI6IHsiYmF6YWFyIjogeyJzY2hlbWEiOiB7InByb3BlcnRpZXMiOiB7ImlucHV0IjogeyJwcm9wZXJ0aWVzIjogeyJib2R5IjogeyJ0eXBlIjogIm9iamVjdCIsICJwcm9wZXJ0aWVzIjogeyJiYXNlIjogeyJ0eXBlIjogInN0cmluZyIsICJkZXNjcmlwdGlvbiI6ICJCYXNlIGN1cnJlbmN5IElTTyBjb2RlLCBlLmcuICdVU0QnIiwgImRlZmF1bHQiOiAiVVNEIn0sICJzeW1ib2xzIjogeyJ0eXBlIjogInN0cmluZyIsICJkZXNjcmlwdGlvbiI6ICJDb21tYS1zZXBhcmF0ZWQgdGFyZ2V0IGNvZGVzIHRvIGZpbHRlciwgZS5nLiAnRVVSLFZORCxKUFknLiBFbXB0eSA9IGFsbC4ifX0sICJyZXF1aXJlZCI6IFtdfX19LCAib3V0cHV0IjogeyJwcm9wZXJ0aWVzIjogeyJleGFtcGxlIjogeyJiYXNlIjogIlVTRCIsICJyYXRlcyI6IHsiRVVSIjogMC44NzUzLCAiVk5EIjogMjYyMDguMTEsICJKUFkiOiAxNjEuMzN9LCAidXBkYXRlZCI6ICJGcmksIDAzIEp1bCAyMDI2IDAwOjAwOjAxICswMDAwIiwgInRvdGFsIjogM319fX19fX19",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::6fxl9-1786175157888-241affbaf4f0"
+    },
+    "text": "{\"x402Version\":1,\"error\":\"Payment required\",\"serviceName\":\"x402 Web & Data Tools\",\"tags\":[\"search\",\"web-scraping\",\"url-reader\",\"crypto\",\"finance\",\"news\",\"weather\",\"dns\",\"geoip\",\"data\",\"agent-tools\",\"x402\"],\"resource\":{\"url\":\"https://x402deploy.vercel.app/api/fx\",\"description\":\"Foreign-exchange rates. Live conversion rates from a base currency to all (or selected) currencies.\",\"mimeType\":\"application/json\"},\"accepts\":[{\"scheme\":\"exact\",\"network\":\"base\",\"maxAmountRequired\":\"5000\",\"resource\":\"https://x402deploy.vercel.app/api/fx\",\"description\":\"Foreign-exchange rates. Live conversion rates from a base currency to all (or selected) currencies.\",\"mimeType\":\"application/json\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\",\"maxTimeoutSeconds\":60,\"asset\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"extra\":{\"name\":\"USD Coin\",\"version\":\"2\"},\"tags\":[\"forex\",\"currency\",\"finance\"]}],\"extensions\":{\"bazaar\":{\"schema\":{\"properties\":{\"input\":{\"properties\":{\"body\":{\"type\":\"object\",\"properties\":{\"base\":{\"type\":\"string\",\"description\":\"Base currency ISO code, e.g. 'USD'\",\"default\":\"USD\"},\"symbols\":{\"type\":\"string\",\"description\":\"Comma-separated target codes to filter, e.g. 'EUR,VND,JPY'. Empty = all.\"}},\"required\":[]}}},\"output\":{\"properties\":{\"example\":{\"base\":\"USD\",\"rates\":{\"EUR\":0.8753,\"VND\":26208.11,\"JPY\":161.33},\"updated\":\"Fri, 03 Jul 2026 00:00:01 +0000\",\"total\":3}}}}}}}}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/api/geoip",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/api/geoip",
+    "final_url": "https://x402deploy.vercel.app/api/geoip",
+    "status": 402,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "1286",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:57 GMT",
+     "payment-required": "eyJ4NDAyVmVyc2lvbiI6IDEsICJlcnJvciI6ICJQYXltZW50IHJlcXVpcmVkIiwgInNlcnZpY2VOYW1lIjogIng0MDIgV2ViICYgRGF0YSBUb29scyIsICJ0YWdzIjogWyJzZWFyY2giLCAid2ViLXNjcmFwaW5nIiwgInVybC1yZWFkZXIiLCAiY3J5cHRvIiwgImZpbmFuY2UiLCAibmV3cyIsICJ3ZWF0aGVyIiwgImRucyIsICJnZW9pcCIsICJkYXRhIiwgImFnZW50LXRvb2xzIiwgIng0MDIiXSwgInJlc291cmNlIjogeyJ1cmwiOiAiaHR0cHM6Ly94NDAyZGVwbG95LnZlcmNlbC5hcHAvYXBpL2dlb2lwIiwgImRlc2NyaXB0aW9uIjogIklQIGdlb2xvY2F0aW9uLiBNYXBzIGFuIElQIGFkZHJlc3MgdG8gY2l0eSwgY291bnRyeSwgY29vcmRpbmF0ZXMsIG9yZyBhbmQgdGltZXpvbmUuIiwgIm1pbWVUeXBlIjogImFwcGxpY2F0aW9uL2pzb24ifSwgImFjY2VwdHMiOiBbeyJzY2hlbWUiOiAiZXhhY3QiLCAibmV0d29yayI6ICJiYXNlIiwgIm1heEFtb3VudFJlcXVpcmVkIjogIjUwMDAiLCAicmVzb3VyY2UiOiAiaHR0cHM6Ly94NDAyZGVwbG95LnZlcmNlbC5hcHAvYXBpL2dlb2lwIiwgImRlc2NyaXB0aW9uIjogIklQIGdlb2xvY2F0aW9uLiBNYXBzIGFuIElQIGFkZHJlc3MgdG8gY2l0eSwgY291bnRyeSwgY29vcmRpbmF0ZXMsIG9yZyBhbmQgdGltZXpvbmUuIiwgIm1pbWVUeXBlIjogImFwcGxpY2F0aW9uL2pzb24iLCAicGF5VG8iOiAiMHg3YUVERTlCYjNBMGMyODEzMjY0M0VEOGU0MTZlNDcyOGYwM0ZDMThmIiwgIm1heFRpbWVvdXRTZWNvbmRzIjogNjAsICJhc3NldCI6ICIweDgzMzU4OWZDRDZlRGI2RTA4ZjRjN0MzMkQ0ZjcxYjU0YmRBMDI5MTMiLCAiZXh0cmEiOiB7Im5hbWUiOiAiVVNEIENvaW4iLCAidmVyc2lvbiI6ICIyIn0sICJ0YWdzIjogWyJnZW9pcCIsICJpcCIsICJnZW8iXX1dLCAiZXh0ZW5zaW9ucyI6IHsiYmF6YWFyIjogeyJzY2hlbWEiOiB7InByb3BlcnRpZXMiOiB7ImlucHV0IjogeyJwcm9wZXJ0aWVzIjogeyJib2R5IjogeyJ0eXBlIjogIm9iamVjdCIsICJwcm9wZXJ0aWVzIjogeyJpcCI6IHsidHlwZSI6ICJzdHJpbmciLCAiZGVzY3JpcHRpb24iOiAiSVB2NC9JUHY2IGFkZHJlc3MgdG8gbG9vayB1cCwgZS5nLiAnOC44LjguOCcifX0sICJyZXF1aXJlZCI6IFsiaXAiXX19fSwgIm91dHB1dCI6IHsicHJvcGVydGllcyI6IHsiZXhhbXBsZSI6IHsiaXAiOiAiOC44LjguOCIsICJjaXR5IjogIk1vdW50YWluIFZpZXciLCAicmVnaW9uIjogIkNhbGlmb3JuaWEiLCAiY291bnRyeSI6ICJVbml0ZWQgU3RhdGVzIiwgImxhdGl0dWRlIjogMzcuNDIsICJsb25naXR1ZGUiOiAtMTIyLjA3LCAib3JnIjogIkdvb2dsZSBMTEMiLCAidGltZXpvbmUiOiAiQW1lcmljYS9Mb3NfQW5nZWxlcyJ9fX19fX19fQ==",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::d9qmr-1786175158028-1d477d04fbf6"
+    },
+    "text": "{\"x402Version\":1,\"error\":\"Payment required\",\"serviceName\":\"x402 Web & Data Tools\",\"tags\":[\"search\",\"web-scraping\",\"url-reader\",\"crypto\",\"finance\",\"news\",\"weather\",\"dns\",\"geoip\",\"data\",\"agent-tools\",\"x402\"],\"resource\":{\"url\":\"https://x402deploy.vercel.app/api/geoip\",\"description\":\"IP geolocation. Maps an IP address to city, country, coordinates, org and timezone.\",\"mimeType\":\"application/json\"},\"accepts\":[{\"scheme\":\"exact\",\"network\":\"base\",\"maxAmountRequired\":\"5000\",\"resource\":\"https://x402deploy.vercel.app/api/geoip\",\"description\":\"IP geolocation. Maps an IP address to city, country, coordinates, org and timezone.\",\"mimeType\":\"application/json\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\",\"maxTimeoutSeconds\":60,\"asset\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"extra\":{\"name\":\"USD Coin\",\"version\":\"2\"},\"tags\":[\"geoip\",\"ip\",\"geo\"]}],\"extensions\":{\"bazaar\":{\"schema\":{\"properties\":{\"input\":{\"properties\":{\"body\":{\"type\":\"object\",\"properties\":{\"ip\":{\"type\":\"string\",\"description\":\"IPv4/IPv6 address to look up, e.g. '8.8.8.8'\"}},\"required\":[\"ip\"]}}},\"output\":{\"properties\":{\"example\":{\"ip\":\"8.8.8.8\",\"city\":\"Mountain View\",\"region\":\"California\",\"country\":\"United States\",\"latitude\":37.42,\"longitude\":-122.07,\"org\":\"Google LLC\",\"timezone\":\"America/Los_Angeles\"}}}}}}}}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/api/markets",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/api/markets",
+    "final_url": "https://x402deploy.vercel.app/api/markets",
+    "status": 402,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "1274",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:58 GMT",
+     "payment-required": "eyJ4NDAyVmVyc2lvbiI6IDEsICJlcnJvciI6ICJQYXltZW50IHJlcXVpcmVkIiwgInNlcnZpY2VOYW1lIjogIng0MDIgV2ViICYgRGF0YSBUb29scyIsICJ0YWdzIjogWyJzZWFyY2giLCAid2ViLXNjcmFwaW5nIiwgInVybC1yZWFkZXIiLCAiY3J5cHRvIiwgImZpbmFuY2UiLCAibmV3cyIsICJ3ZWF0aGVyIiwgImRucyIsICJnZW9pcCIsICJkYXRhIiwgImFnZW50LXRvb2xzIiwgIng0MDIiXSwgInJlc291cmNlIjogeyJ1cmwiOiAiaHR0cHM6Ly94NDAyZGVwbG95LnZlcmNlbC5hcHAvYXBpL21hcmtldHMiLCAiZGVzY3JpcHRpb24iOiAiQ3J5cHRvIG1hcmtldHMuIFRvcCBjb2lucyBieSBtYXJrZXQgY2FwIHdpdGggcHJpY2UsIHJhbmsgYW5kIDI0aCBjaGFuZ2UuIiwgIm1pbWVUeXBlIjogImFwcGxpY2F0aW9uL2pzb24ifSwgImFjY2VwdHMiOiBbeyJzY2hlbWUiOiAiZXhhY3QiLCAibmV0d29yayI6ICJiYXNlIiwgIm1heEFtb3VudFJlcXVpcmVkIjogIjUwMDAiLCAicmVzb3VyY2UiOiAiaHR0cHM6Ly94NDAyZGVwbG95LnZlcmNlbC5hcHAvYXBpL21hcmtldHMiLCAiZGVzY3JpcHRpb24iOiAiQ3J5cHRvIG1hcmtldHMuIFRvcCBjb2lucyBieSBtYXJrZXQgY2FwIHdpdGggcHJpY2UsIHJhbmsgYW5kIDI0aCBjaGFuZ2UuIiwgIm1pbWVUeXBlIjogImFwcGxpY2F0aW9uL2pzb24iLCAicGF5VG8iOiAiMHg3YUVERTlCYjNBMGMyODEzMjY0M0VEOGU0MTZlNDcyOGYwM0ZDMThmIiwgIm1heFRpbWVvdXRTZWNvbmRzIjogNjAsICJhc3NldCI6ICIweDgzMzU4OWZDRDZlRGI2RTA4ZjRjN0MzMkQ0ZjcxYjU0YmRBMDI5MTMiLCAiZXh0cmEiOiB7Im5hbWUiOiAiVVNEIENvaW4iLCAidmVyc2lvbiI6ICIyIn0sICJ0YWdzIjogWyJjcnlwdG8iLCAibWFya2V0cyIsICJmaW5hbmNlIl19XSwgImV4dGVuc2lvbnMiOiB7ImJhemFhciI6IHsic2NoZW1hIjogeyJwcm9wZXJ0aWVzIjogeyJpbnB1dCI6IHsicHJvcGVydGllcyI6IHsiYm9keSI6IHsidHlwZSI6ICJvYmplY3QiLCAicHJvcGVydGllcyI6IHsidnMiOiB7InR5cGUiOiAic3RyaW5nIiwgImRlc2NyaXB0aW9uIjogIlF1b3RlIGN1cnJlbmN5IiwgImRlZmF1bHQiOiAidXNkIn0sICJsaW1pdCI6IHsidHlwZSI6ICJpbnRlZ2VyIiwgIm1pbmltdW0iOiAxLCAibWF4aW11bSI6IDUwLCAiZGVmYXVsdCI6IDEwfX0sICJyZXF1aXJlZCI6IFtdfX19LCAib3V0cHV0IjogeyJwcm9wZXJ0aWVzIjogeyJleGFtcGxlIjogeyJ2cyI6ICJ1c2QiLCAiY29pbnMiOiBbeyJzeW1ib2wiOiAiQlRDIiwgIm5hbWUiOiAiQml0Y29pbiIsICJwcmljZSI6IDYyMDgwLCAibWFya2V0X2NhcF9yYW5rIjogMSwgImNoYW5nZV8yNGhfcGVyY2VudCI6IDEuNH1dLCAidG90YWwiOiAxfX19fX19fX0=",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::tml48-1786175158775-b1ee5f11bd24"
+    },
+    "text": "{\"x402Version\":1,\"error\":\"Payment required\",\"serviceName\":\"x402 Web & Data Tools\",\"tags\":[\"search\",\"web-scraping\",\"url-reader\",\"crypto\",\"finance\",\"news\",\"weather\",\"dns\",\"geoip\",\"data\",\"agent-tools\",\"x402\"],\"resource\":{\"url\":\"https://x402deploy.vercel.app/api/markets\",\"description\":\"Crypto markets. Top coins by market cap with price, rank and 24h change.\",\"mimeType\":\"application/json\"},\"accepts\":[{\"scheme\":\"exact\",\"network\":\"base\",\"maxAmountRequired\":\"5000\",\"resource\":\"https://x402deploy.vercel.app/api/markets\",\"description\":\"Crypto markets. Top coins by market cap with price, rank and 24h change.\",\"mimeType\":\"application/json\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\",\"maxTimeoutSeconds\":60,\"asset\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"extra\":{\"name\":\"USD Coin\",\"version\":\"2\"},\"tags\":[\"crypto\",\"markets\",\"finance\"]}],\"extensions\":{\"bazaar\":{\"schema\":{\"properties\":{\"input\":{\"properties\":{\"body\":{\"type\":\"object\",\"properties\":{\"vs\":{\"type\":\"string\",\"description\":\"Quote currency\",\"default\":\"usd\"},\"limit\":{\"type\":\"integer\",\"minimum\":1,\"maximum\":50,\"default\":10}},\"required\":[]}}},\"output\":{\"properties\":{\"example\":{\"vs\":\"usd\",\"coins\":[{\"symbol\":\"BTC\",\"name\":\"Bitcoin\",\"price\":62080,\"market_cap_rank\":1,\"change_24h_percent\":1.4}],\"total\":1}}}}}}}}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/api/news",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/api/news",
+    "final_url": "https://x402deploy.vercel.app/api/news",
+    "status": 402,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "1454",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:57 GMT",
+     "payment-required": "eyJ4NDAyVmVyc2lvbiI6IDEsICJlcnJvciI6ICJQYXltZW50IHJlcXVpcmVkIiwgInNlcnZpY2VOYW1lIjogIng0MDIgV2ViICYgRGF0YSBUb29scyIsICJ0YWdzIjogWyJzZWFyY2giLCAid2ViLXNjcmFwaW5nIiwgInVybC1yZWFkZXIiLCAiY3J5cHRvIiwgImZpbmFuY2UiLCAibmV3cyIsICJ3ZWF0aGVyIiwgImRucyIsICJnZW9pcCIsICJkYXRhIiwgImFnZW50LXRvb2xzIiwgIng0MDIiXSwgInJlc291cmNlIjogeyJ1cmwiOiAiaHR0cHM6Ly94NDAyZGVwbG95LnZlcmNlbC5hcHAvYXBpL25ld3MiLCAiZGVzY3JpcHRpb24iOiAiTmV3cyBoZWFkbGluZXMuIFJldHVybnMgZnJlc2ggbmV3cyBhcnRpY2xlcyAodGl0bGUsIHNvdXJjZSwgbGluaywgZGF0ZSkgZm9yIGEgcXVlcnkuIiwgIm1pbWVUeXBlIjogImFwcGxpY2F0aW9uL2pzb24ifSwgImFjY2VwdHMiOiBbeyJzY2hlbWUiOiAiZXhhY3QiLCAibmV0d29yayI6ICJiYXNlIiwgIm1heEFtb3VudFJlcXVpcmVkIjogIjUwMDAiLCAicmVzb3VyY2UiOiAiaHR0cHM6Ly94NDAyZGVwbG95LnZlcmNlbC5hcHAvYXBpL25ld3MiLCAiZGVzY3JpcHRpb24iOiAiTmV3cyBoZWFkbGluZXMuIFJldHVybnMgZnJlc2ggbmV3cyBhcnRpY2xlcyAodGl0bGUsIHNvdXJjZSwgbGluaywgZGF0ZSkgZm9yIGEgcXVlcnkuIiwgIm1pbWVUeXBlIjogImFwcGxpY2F0aW9uL2pzb24iLCAicGF5VG8iOiAiMHg3YUVERTlCYjNBMGMyODEzMjY0M0VEOGU0MTZlNDcyOGYwM0ZDMThmIiwgIm1heFRpbWVvdXRTZWNvbmRzIjogNjAsICJhc3NldCI6ICIweDgzMzU4OWZDRDZlRGI2RTA4ZjRjN0MzMkQ0ZjcxYjU0YmRBMDI5MTMiLCAiZXh0cmEiOiB7Im5hbWUiOiAiVVNEIENvaW4iLCAidmVyc2lvbiI6ICIyIn0sICJ0YWdzIjogWyJuZXdzIiwgImhlYWRsaW5lcyIsICJjdXJyZW50LWV2ZW50cyJdfV0sICJleHRlbnNpb25zIjogeyJiYXphYXIiOiB7InNjaGVtYSI6IHsicHJvcGVydGllcyI6IHsiaW5wdXQiOiB7InByb3BlcnRpZXMiOiB7ImJvZHkiOiB7InR5cGUiOiAib2JqZWN0IiwgInByb3BlcnRpZXMiOiB7InF1ZXJ5IjogeyJ0eXBlIjogInN0cmluZyIsICJkZXNjcmlwdGlvbiI6ICJOZXdzIHNlYXJjaCBxdWVyeSwgZS5nLiAnQUkgYWdlbnRzJyJ9LCAibGltaXQiOiB7InR5cGUiOiAiaW50ZWdlciIsICJtaW5pbXVtIjogMSwgIm1heGltdW0iOiAyNSwgImRlZmF1bHQiOiAxMH0sICJsYW5nIjogeyJ0eXBlIjogInN0cmluZyIsICJkZXNjcmlwdGlvbiI6ICJMYW5ndWFnZS9yZWdpb24sIGUuZy4gJ2VuLVVTJyIsICJkZWZhdWx0IjogImVuLVVTIn19LCAicmVxdWlyZWQiOiBbInF1ZXJ5Il19fX0sICJvdXRwdXQiOiB7InByb3BlcnRpZXMiOiB7ImV4YW1wbGUiOiB7InF1ZXJ5IjogIkFJIGFnZW50cyIsICJhcnRpY2xlcyI6IFt7InRpdGxlIjogIkV4YW1wbGUgaGVhZGxpbmUiLCAidXJsIjogImh0dHBzOi8vbmV3cy5leGFtcGxlLmNvbS9hIiwgInNvdXJjZSI6ICJFeGFtcGxlIE5ld3MiLCAicHVibGlzaGVkIjogIlRodSwgMDMgSnVsIDIwMjYgMDk6MDA6MDAgR01UIn1dLCAidG90YWwiOiAxfX19fX19fX0=",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::xcm5p-1786175157639-fa41dce857d0"
+    },
+    "text": "{\"x402Version\":1,\"error\":\"Payment required\",\"serviceName\":\"x402 Web & Data Tools\",\"tags\":[\"search\",\"web-scraping\",\"url-reader\",\"crypto\",\"finance\",\"news\",\"weather\",\"dns\",\"geoip\",\"data\",\"agent-tools\",\"x402\"],\"resource\":{\"url\":\"https://x402deploy.vercel.app/api/news\",\"description\":\"News headlines. Returns fresh news articles (title, source, link, date) for a query.\",\"mimeType\":\"application/json\"},\"accepts\":[{\"scheme\":\"exact\",\"network\":\"base\",\"maxAmountRequired\":\"5000\",\"resource\":\"https://x402deploy.vercel.app/api/news\",\"description\":\"News headlines. Returns fresh news articles (title, source, link, date) for a query.\",\"mimeType\":\"application/json\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\",\"maxTimeoutSeconds\":60,\"asset\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"extra\":{\"name\":\"USD Coin\",\"version\":\"2\"},\"tags\":[\"news\",\"headlines\",\"current-events\"]}],\"extensions\":{\"bazaar\":{\"schema\":{\"properties\":{\"input\":{\"properties\":{\"body\":{\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\",\"description\":\"News search query, e.g. 'AI agents'\"},\"limit\":{\"type\":\"integer\",\"minimum\":1,\"maximum\":25,\"default\":10},\"lang\":{\"type\":\"string\",\"description\":\"Language/region, e.g. 'en-US'\",\"default\":\"en-US\"}},\"required\":[\"query\"]}}},\"output\":{\"properties\":{\"example\":{\"query\":\"AI agents\",\"articles\":[{\"title\":\"Example headline\",\"url\":\"https://news.example.com/a\",\"source\":\"Example News\",\"published\":\"Thu, 03 Jul 2026 09:00:00 GMT\"}],\"total\":1}}}}}}}}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/api/price",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/api/price",
+    "final_url": "https://x402deploy.vercel.app/api/price",
+    "status": 402,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "1296",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:57 GMT",
+     "payment-required": "eyJ4NDAyVmVyc2lvbiI6IDEsICJlcnJvciI6ICJQYXltZW50IHJlcXVpcmVkIiwgInNlcnZpY2VOYW1lIjogIng0MDIgV2ViICYgRGF0YSBUb29scyIsICJ0YWdzIjogWyJzZWFyY2giLCAid2ViLXNjcmFwaW5nIiwgInVybC1yZWFkZXIiLCAiY3J5cHRvIiwgImZpbmFuY2UiLCAibmV3cyIsICJ3ZWF0aGVyIiwgImRucyIsICJnZW9pcCIsICJkYXRhIiwgImFnZW50LXRvb2xzIiwgIng0MDIiXSwgInJlc291cmNlIjogeyJ1cmwiOiAiaHR0cHM6Ly94NDAyZGVwbG95LnZlcmNlbC5hcHAvYXBpL3ByaWNlIiwgImRlc2NyaXB0aW9uIjogIkNyeXB0byBwcmljZSBsb29rdXAuIExpdmUgVVNEIHByaWNlICsgMjRoIGNoYW5nZSBmb3IgYW55IGNvaW5zIGJ5IENvaW5HZWNrbyBpZC4iLCAibWltZVR5cGUiOiAiYXBwbGljYXRpb24vanNvbiJ9LCAiYWNjZXB0cyI6IFt7InNjaGVtZSI6ICJleGFjdCIsICJuZXR3b3JrIjogImJhc2UiLCAibWF4QW1vdW50UmVxdWlyZWQiOiAiNTAwMCIsICJyZXNvdXJjZSI6ICJodHRwczovL3g0MDJkZXBsb3kudmVyY2VsLmFwcC9hcGkvcHJpY2UiLCAiZGVzY3JpcHRpb24iOiAiQ3J5cHRvIHByaWNlIGxvb2t1cC4gTGl2ZSBVU0QgcHJpY2UgKyAyNGggY2hhbmdlIGZvciBhbnkgY29pbnMgYnkgQ29pbkdlY2tvIGlkLiIsICJtaW1lVHlwZSI6ICJhcHBsaWNhdGlvbi9qc29uIiwgInBheVRvIjogIjB4N2FFREU5QmIzQTBjMjgxMzI2NDNFRDhlNDE2ZTQ3MjhmMDNGQzE4ZiIsICJtYXhUaW1lb3V0U2Vjb25kcyI6IDYwLCAiYXNzZXQiOiAiMHg4MzM1ODlmQ0Q2ZURiNkUwOGY0YzdDMzJENGY3MWI1NGJkQTAyOTEzIiwgImV4dHJhIjogeyJuYW1lIjogIlVTRCBDb2luIiwgInZlcnNpb24iOiAiMiJ9LCAidGFncyI6IFsiY3J5cHRvIiwgInByaWNlIiwgImZpbmFuY2UiXX1dLCAiZXh0ZW5zaW9ucyI6IHsiYmF6YWFyIjogeyJzY2hlbWEiOiB7InByb3BlcnRpZXMiOiB7ImlucHV0IjogeyJwcm9wZXJ0aWVzIjogeyJib2R5IjogeyJ0eXBlIjogIm9iamVjdCIsICJwcm9wZXJ0aWVzIjogeyJpZHMiOiB7InR5cGUiOiAic3RyaW5nIiwgImRlc2NyaXB0aW9uIjogIkNvbW1hLXNlcGFyYXRlZCBDb2luR2Vja28gY29pbiBpZHMsIGUuZy4gJ2JpdGNvaW4sZXRoZXJldW0sc29sYW5hJyJ9LCAidnMiOiB7InR5cGUiOiAic3RyaW5nIiwgImRlc2NyaXB0aW9uIjogIkZpYXQvY3J5cHRvIHZzLWN1cnJlbmN5IiwgImRlZmF1bHQiOiAidXNkIn19LCAicmVxdWlyZWQiOiBbImlkcyJdfX19LCAib3V0cHV0IjogeyJwcm9wZXJ0aWVzIjogeyJleGFtcGxlIjogeyJ2cyI6ICJ1c2QiLCAicHJpY2VzIjogeyJiaXRjb2luIjogeyJwcmljZSI6IDYxMjM0LjAsICJjaGFuZ2VfMjRoX3BjdCI6IDEuODN9fSwgInRvdGFsIjogMX19fX19fX19",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::lf528-1786175157318-ba4396267454"
+    },
+    "text": "{\"x402Version\":1,\"error\":\"Payment required\",\"serviceName\":\"x402 Web & Data Tools\",\"tags\":[\"search\",\"web-scraping\",\"url-reader\",\"crypto\",\"finance\",\"news\",\"weather\",\"dns\",\"geoip\",\"data\",\"agent-tools\",\"x402\"],\"resource\":{\"url\":\"https://x402deploy.vercel.app/api/price\",\"description\":\"Crypto price lookup. Live USD price + 24h change for any coins by CoinGecko id.\",\"mimeType\":\"application/json\"},\"accepts\":[{\"scheme\":\"exact\",\"network\":\"base\",\"maxAmountRequired\":\"5000\",\"resource\":\"https://x402deploy.vercel.app/api/price\",\"description\":\"Crypto price lookup. Live USD price + 24h change for any coins by CoinGecko id.\",\"mimeType\":\"application/json\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\",\"maxTimeoutSeconds\":60,\"asset\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"extra\":{\"name\":\"USD Coin\",\"version\":\"2\"},\"tags\":[\"crypto\",\"price\",\"finance\"]}],\"extensions\":{\"bazaar\":{\"schema\":{\"properties\":{\"input\":{\"properties\":{\"body\":{\"type\":\"object\",\"properties\":{\"ids\":{\"type\":\"string\",\"description\":\"Comma-separated CoinGecko coin ids, e.g. 'bitcoin,ethereum,solana'\"},\"vs\":{\"type\":\"string\",\"description\":\"Fiat/crypto vs-currency\",\"default\":\"usd\"}},\"required\":[\"ids\"]}}},\"output\":{\"properties\":{\"example\":{\"vs\":\"usd\",\"prices\":{\"bitcoin\":{\"price\":61234.0,\"change_24h_pct\":1.83}},\"total\":1}}}}}}}}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/api/read",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/api/read",
+    "final_url": "https://x402deploy.vercel.app/api/read",
+    "status": 402,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "1340",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:57 GMT",
+     "payment-required": "eyJ4NDAyVmVyc2lvbiI6IDEsICJlcnJvciI6ICJQYXltZW50IHJlcXVpcmVkIiwgInNlcnZpY2VOYW1lIjogIng0MDIgV2ViICYgRGF0YSBUb29scyIsICJ0YWdzIjogWyJzZWFyY2giLCAid2ViLXNjcmFwaW5nIiwgInVybC1yZWFkZXIiLCAiY3J5cHRvIiwgImZpbmFuY2UiLCAibmV3cyIsICJ3ZWF0aGVyIiwgImRucyIsICJnZW9pcCIsICJkYXRhIiwgImFnZW50LXRvb2xzIiwgIng0MDIiXSwgInJlc291cmNlIjogeyJ1cmwiOiAiaHR0cHM6Ly94NDAyZGVwbG95LnZlcmNlbC5hcHAvYXBpL3JlYWQiLCAiZGVzY3JpcHRpb24iOiAiVVJMIHJlYWRlci4gRmV0Y2hlcyBhIHdlYiBwYWdlIGFuZCByZXR1cm5zIGl0cyBjbGVhbmVkIG1haW4gdGV4dCBhcyBKU09OLiIsICJtaW1lVHlwZSI6ICJhcHBsaWNhdGlvbi9qc29uIn0sICJhY2NlcHRzIjogW3sic2NoZW1lIjogImV4YWN0IiwgIm5ldHdvcmsiOiAiYmFzZSIsICJtYXhBbW91bnRSZXF1aXJlZCI6ICI1MDAwIiwgInJlc291cmNlIjogImh0dHBzOi8veDQwMmRlcGxveS52ZXJjZWwuYXBwL2FwaS9yZWFkIiwgImRlc2NyaXB0aW9uIjogIlVSTCByZWFkZXIuIEZldGNoZXMgYSB3ZWIgcGFnZSBhbmQgcmV0dXJucyBpdHMgY2xlYW5lZCBtYWluIHRleHQgYXMgSlNPTi4iLCAibWltZVR5cGUiOiAiYXBwbGljYXRpb24vanNvbiIsICJwYXlUbyI6ICIweDdhRURFOUJiM0EwYzI4MTMyNjQzRUQ4ZTQxNmU0NzI4ZjAzRkMxOGYiLCAibWF4VGltZW91dFNlY29uZHMiOiA2MCwgImFzc2V0IjogIjB4ODMzNTg5ZkNENmVEYjZFMDhmNGM3QzMyRDRmNzFiNTRiZEEwMjkxMyIsICJleHRyYSI6IHsibmFtZSI6ICJVU0QgQ29pbiIsICJ2ZXJzaW9uIjogIjIifSwgInRhZ3MiOiBbInVybC1yZWFkZXIiLCAid2ViIiwgInNjcmFwaW5nIl19XSwgImV4dGVuc2lvbnMiOiB7ImJhemFhciI6IHsic2NoZW1hIjogeyJwcm9wZXJ0aWVzIjogeyJpbnB1dCI6IHsicHJvcGVydGllcyI6IHsiYm9keSI6IHsidHlwZSI6ICJvYmplY3QiLCAicHJvcGVydGllcyI6IHsidXJsIjogeyJ0eXBlIjogInN0cmluZyIsICJkZXNjcmlwdGlvbiI6ICJBYnNvbHV0ZSBodHRwKHMpIFVSTCBvZiB0aGUgcGFnZSB0byByZWFkIn0sICJtYXhfY2hhcnMiOiB7InR5cGUiOiAiaW50ZWdlciIsICJtaW5pbXVtIjogNTAwLCAibWF4aW11bSI6IDQwMDAwLCAiZGVmYXVsdCI6IDgwMDB9fSwgInJlcXVpcmVkIjogWyJ1cmwiXX19fSwgIm91dHB1dCI6IHsicHJvcGVydGllcyI6IHsiZXhhbXBsZSI6IHsidXJsIjogImh0dHBzOi8vZXhhbXBsZS5jb20vYXJ0aWNsZSIsICJ0aXRsZSI6ICJBbiBFeGFtcGxlIEFydGljbGUiLCAidGV4dCI6ICJDbGVhbmVkIG1haW4gdGV4dCBjb250ZW50IG9mIHRoZSBwYWdlLCB3aXRoIG5hdmlnYXRpb24vc2NyaXB0cy9hZHMgc3RyaXBwZWQuLi4iLCAiY2hhcnMiOiAxMjM0fX19fX19fX0=",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::pdv5w-1786175157158-49fba12077ec"
+    },
+    "text": "{\"x402Version\":1,\"error\":\"Payment required\",\"serviceName\":\"x402 Web & Data Tools\",\"tags\":[\"search\",\"web-scraping\",\"url-reader\",\"crypto\",\"finance\",\"news\",\"weather\",\"dns\",\"geoip\",\"data\",\"agent-tools\",\"x402\"],\"resource\":{\"url\":\"https://x402deploy.vercel.app/api/read\",\"description\":\"URL reader. Fetches a web page and returns its cleaned main text as JSON.\",\"mimeType\":\"application/json\"},\"accepts\":[{\"scheme\":\"exact\",\"network\":\"base\",\"maxAmountRequired\":\"5000\",\"resource\":\"https://x402deploy.vercel.app/api/read\",\"description\":\"URL reader. Fetches a web page and returns its cleaned main text as JSON.\",\"mimeType\":\"application/json\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\",\"maxTimeoutSeconds\":60,\"asset\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"extra\":{\"name\":\"USD Coin\",\"version\":\"2\"},\"tags\":[\"url-reader\",\"web\",\"scraping\"]}],\"extensions\":{\"bazaar\":{\"schema\":{\"properties\":{\"input\":{\"properties\":{\"body\":{\"type\":\"object\",\"properties\":{\"url\":{\"type\":\"string\",\"description\":\"Absolute http(s) URL of the page to read\"},\"max_chars\":{\"type\":\"integer\",\"minimum\":500,\"maximum\":40000,\"default\":8000}},\"required\":[\"url\"]}}},\"output\":{\"properties\":{\"example\":{\"url\":\"https://example.com/article\",\"title\":\"An Example Article\",\"text\":\"Cleaned main text content of the page, with navigation/scripts/ads stripped...\",\"chars\":1234}}}}}}}}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/api/s",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/api/s",
+    "final_url": "https://x402deploy.vercel.app/api/s",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:46:00 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::7xsqj-1786175160739-483b4dd1cb26"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/api/serp",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/api/serp",
+    "final_url": "https://x402deploy.vercel.app/api/serp",
+    "status": 402,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "1377",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:23 GMT",
+     "payment-required": "eyJ4NDAyVmVyc2lvbiI6IDEsICJlcnJvciI6ICJQYXltZW50IHJlcXVpcmVkIiwgInNlcnZpY2VOYW1lIjogIng0MDIgV2ViICYgRGF0YSBUb29scyIsICJ0YWdzIjogWyJzZWFyY2giLCAid2ViLXNjcmFwaW5nIiwgInVybC1yZWFkZXIiLCAiY3J5cHRvIiwgImZpbmFuY2UiLCAibmV3cyIsICJ3ZWF0aGVyIiwgImRucyIsICJnZW9pcCIsICJkYXRhIiwgImFnZW50LXRvb2xzIiwgIng0MDIiXSwgInJlc291cmNlIjogeyJ1cmwiOiAiaHR0cHM6Ly94NDAyZGVwbG95LnZlcmNlbC5hcHAvYXBpL3NlcnAiLCAiZGVzY3JpcHRpb24iOiAiV2ViIHNlYXJjaCBTRVJQIHNjcmFwZXIuIFJldHVybnMgb3JnYW5pYyB3ZWIgc2VhcmNoIHJlc3VsdHMgYXMgSlNPTi4iLCAibWltZVR5cGUiOiAiYXBwbGljYXRpb24vanNvbiJ9LCAiYWNjZXB0cyI6IFt7InNjaGVtZSI6ICJleGFjdCIsICJuZXR3b3JrIjogImJhc2UiLCAibWF4QW1vdW50UmVxdWlyZWQiOiAiNTAwMCIsICJyZXNvdXJjZSI6ICJodHRwczovL3g0MDJkZXBsb3kudmVyY2VsLmFwcC9hcGkvc2VycCIsICJkZXNjcmlwdGlvbiI6ICJXZWIgc2VhcmNoIFNFUlAgc2NyYXBlci4gUmV0dXJucyBvcmdhbmljIHdlYiBzZWFyY2ggcmVzdWx0cyBhcyBKU09OLiIsICJtaW1lVHlwZSI6ICJhcHBsaWNhdGlvbi9qc29uIiwgInBheVRvIjogIjB4N2FFREU5QmIzQTBjMjgxMzI2NDNFRDhlNDE2ZTQ3MjhmMDNGQzE4ZiIsICJtYXhUaW1lb3V0U2Vjb25kcyI6IDYwLCAiYXNzZXQiOiAiMHg4MzM1ODlmQ0Q2ZURiNkUwOGY0YzdDMzJENGY3MWI1NGJkQTAyOTEzIiwgImV4dHJhIjogeyJuYW1lIjogIlVTRCBDb2luIiwgInZlcnNpb24iOiAiMiJ9LCAidGFncyI6IFsic2VhcmNoIiwgIndlYiIsICJzZXJwIl19XSwgImV4dGVuc2lvbnMiOiB7ImJhemFhciI6IHsic2NoZW1hIjogeyJwcm9wZXJ0aWVzIjogeyJpbnB1dCI6IHsicHJvcGVydGllcyI6IHsiYm9keSI6IHsidHlwZSI6ICJvYmplY3QiLCAicHJvcGVydGllcyI6IHsicXVlcnkiOiB7InR5cGUiOiAic3RyaW5nIiwgImRlc2NyaXB0aW9uIjogIlNlYXJjaCBxdWVyeSBzdHJpbmcifSwgIm51bV9yZXN1bHRzIjogeyJ0eXBlIjogImludGVnZXIiLCAibWluaW11bSI6IDEsICJtYXhpbXVtIjogMjAsICJkZWZhdWx0IjogMTB9LCAiY291bnRyeSI6IHsidHlwZSI6ICJzdHJpbmciLCAiZGVzY3JpcHRpb24iOiAiSVNPIGNvdW50cnkgY29kZSIsICJkZWZhdWx0IjogInVzIn19LCAicmVxdWlyZWQiOiBbInF1ZXJ5Il19fX0sICJvdXRwdXQiOiB7InByb3BlcnRpZXMiOiB7ImV4YW1wbGUiOiB7InF1ZXJ5IjogImJlc3QgdmVjdG9yIGRhdGFiYXNlIiwgImNvdW50cnkiOiAidXMiLCAidG90YWwiOiAxLCAicmVzdWx0cyI6IFt7InRpdGxlIjogIkV4YW1wbGUgcmVzdWx0IiwgInVybCI6ICJodHRwczovL2V4YW1wbGUuY29tIiwgInNuaXBwZXQiOiAiQW4gZXhhbXBsZSBzbmlwcGV0IiwgInBvc2l0aW9uIjogMX1dfX19fX19fX0=",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::6fxl9-1786175157013-10251097d2f7"
+    },
+    "text": "{\"x402Version\":1,\"error\":\"Payment required\",\"serviceName\":\"x402 Web & Data Tools\",\"tags\":[\"search\",\"web-scraping\",\"url-reader\",\"crypto\",\"finance\",\"news\",\"weather\",\"dns\",\"geoip\",\"data\",\"agent-tools\",\"x402\"],\"resource\":{\"url\":\"https://x402deploy.vercel.app/api/serp\",\"description\":\"Web search SERP scraper. Returns organic web search results as JSON.\",\"mimeType\":\"application/json\"},\"accepts\":[{\"scheme\":\"exact\",\"network\":\"base\",\"maxAmountRequired\":\"5000\",\"resource\":\"https://x402deploy.vercel.app/api/serp\",\"description\":\"Web search SERP scraper. Returns organic web search results as JSON.\",\"mimeType\":\"application/json\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\",\"maxTimeoutSeconds\":60,\"asset\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"extra\":{\"name\":\"USD Coin\",\"version\":\"2\"},\"tags\":[\"search\",\"web\",\"serp\"]}],\"extensions\":{\"bazaar\":{\"schema\":{\"properties\":{\"input\":{\"properties\":{\"body\":{\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\",\"description\":\"Search query string\"},\"num_results\":{\"type\":\"integer\",\"minimum\":1,\"maximum\":20,\"default\":10},\"country\":{\"type\":\"string\",\"description\":\"ISO country code\",\"default\":\"us\"}},\"required\":[\"query\"]}}},\"output\":{\"properties\":{\"example\":{\"query\":\"best vector database\",\"country\":\"us\",\"total\":1,\"results\":[{\"title\":\"Example result\",\"url\":\"https://example.com\",\"snippet\":\"An example snippet\",\"position\":1}]}}}}}}}}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/api/stock",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/api/stock",
+    "final_url": "https://x402deploy.vercel.app/api/stock",
+    "status": 402,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "1289",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:57 GMT",
+     "payment-required": "eyJ4NDAyVmVyc2lvbiI6IDEsICJlcnJvciI6ICJQYXltZW50IHJlcXVpcmVkIiwgInNlcnZpY2VOYW1lIjogIng0MDIgV2ViICYgRGF0YSBUb29scyIsICJ0YWdzIjogWyJzZWFyY2giLCAid2ViLXNjcmFwaW5nIiwgInVybC1yZWFkZXIiLCAiY3J5cHRvIiwgImZpbmFuY2UiLCAibmV3cyIsICJ3ZWF0aGVyIiwgImRucyIsICJnZW9pcCIsICJkYXRhIiwgImFnZW50LXRvb2xzIiwgIng0MDIiXSwgInJlc291cmNlIjogeyJ1cmwiOiAiaHR0cHM6Ly94NDAyZGVwbG95LnZlcmNlbC5hcHAvYXBpL3N0b2NrIiwgImRlc2NyaXB0aW9uIjogIlN0b2NrIHF1b3RlLiBMaXZlIHByaWNlLCBwcmV2aW91cyBjbG9zZSwgZGF5IGNoYW5nZSBhbmQgbWFya2V0IHN0YXRlIGZvciBhIHRpY2tlciBzeW1ib2wuIiwgIm1pbWVUeXBlIjogImFwcGxpY2F0aW9uL2pzb24ifSwgImFjY2VwdHMiOiBbeyJzY2hlbWUiOiAiZXhhY3QiLCAibmV0d29yayI6ICJiYXNlIiwgIm1heEFtb3VudFJlcXVpcmVkIjogIjUwMDAiLCAicmVzb3VyY2UiOiAiaHR0cHM6Ly94NDAyZGVwbG95LnZlcmNlbC5hcHAvYXBpL3N0b2NrIiwgImRlc2NyaXB0aW9uIjogIlN0b2NrIHF1b3RlLiBMaXZlIHByaWNlLCBwcmV2aW91cyBjbG9zZSwgZGF5IGNoYW5nZSBhbmQgbWFya2V0IHN0YXRlIGZvciBhIHRpY2tlciBzeW1ib2wuIiwgIm1pbWVUeXBlIjogImFwcGxpY2F0aW9uL2pzb24iLCAicGF5VG8iOiAiMHg3YUVERTlCYjNBMGMyODEzMjY0M0VEOGU0MTZlNDcyOGYwM0ZDMThmIiwgIm1heFRpbWVvdXRTZWNvbmRzIjogNjAsICJhc3NldCI6ICIweDgzMzU4OWZDRDZlRGI2RTA4ZjRjN0MzMkQ0ZjcxYjU0YmRBMDI5MTMiLCAiZXh0cmEiOiB7Im5hbWUiOiAiVVNEIENvaW4iLCAidmVyc2lvbiI6ICIyIn0sICJ0YWdzIjogWyJzdG9ja3MiLCAiZXF1aXRpZXMiLCAiZmluYW5jZSJdfV0sICJleHRlbnNpb25zIjogeyJiYXphYXIiOiB7InNjaGVtYSI6IHsicHJvcGVydGllcyI6IHsiaW5wdXQiOiB7InByb3BlcnRpZXMiOiB7ImJvZHkiOiB7InR5cGUiOiAib2JqZWN0IiwgInByb3BlcnRpZXMiOiB7InN5bWJvbCI6IHsidHlwZSI6ICJzdHJpbmciLCAiZGVzY3JpcHRpb24iOiAiVGlja2VyIHN5bWJvbCwgZS5nLiAnQUFQTCcsICdNU0ZUJywgJ1RTTEEnIn19LCAicmVxdWlyZWQiOiBbInN5bWJvbCJdfX19LCAib3V0cHV0IjogeyJwcm9wZXJ0aWVzIjogeyJleGFtcGxlIjogeyJzeW1ib2wiOiAiQUFQTCIsICJwcmljZSI6IDMwOC42MywgImN1cnJlbmN5IjogIlVTRCIsICJwcmV2aW91c19jbG9zZSI6IDMwNS4xLCAiY2hhbmdlIjogMy41MywgImNoYW5nZV9wZXJjZW50IjogMS4xNiwgIm1hcmtldF9zdGF0ZSI6ICJSRUdVTEFSIiwgImV4Y2hhbmdlIjogIk5NUyJ9fX19fX19fQ==",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::tml48-1786175158454-464242a61265"
+    },
+    "text": "{\"x402Version\":1,\"error\":\"Payment required\",\"serviceName\":\"x402 Web & Data Tools\",\"tags\":[\"search\",\"web-scraping\",\"url-reader\",\"crypto\",\"finance\",\"news\",\"weather\",\"dns\",\"geoip\",\"data\",\"agent-tools\",\"x402\"],\"resource\":{\"url\":\"https://x402deploy.vercel.app/api/stock\",\"description\":\"Stock quote. Live price, previous close, day change and market state for a ticker symbol.\",\"mimeType\":\"application/json\"},\"accepts\":[{\"scheme\":\"exact\",\"network\":\"base\",\"maxAmountRequired\":\"5000\",\"resource\":\"https://x402deploy.vercel.app/api/stock\",\"description\":\"Stock quote. Live price, previous close, day change and market state for a ticker symbol.\",\"mimeType\":\"application/json\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\",\"maxTimeoutSeconds\":60,\"asset\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"extra\":{\"name\":\"USD Coin\",\"version\":\"2\"},\"tags\":[\"stocks\",\"equities\",\"finance\"]}],\"extensions\":{\"bazaar\":{\"schema\":{\"properties\":{\"input\":{\"properties\":{\"body\":{\"type\":\"object\",\"properties\":{\"symbol\":{\"type\":\"string\",\"description\":\"Ticker symbol, e.g. 'AAPL', 'MSFT', 'TSLA'\"}},\"required\":[\"symbol\"]}}},\"output\":{\"properties\":{\"example\":{\"symbol\":\"AAPL\",\"price\":308.63,\"currency\":\"USD\",\"previous_close\":305.1,\"change\":3.53,\"change_percent\":1.16,\"market_state\":\"REGULAR\",\"exchange\":\"NMS\"}}}}}}}}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/api/trending",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/api/trending",
+    "final_url": "https://x402deploy.vercel.app/api/trending",
+    "status": 402,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "1190",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:57 GMT",
+     "payment-required": "eyJ4NDAyVmVyc2lvbiI6IDEsICJlcnJvciI6ICJQYXltZW50IHJlcXVpcmVkIiwgInNlcnZpY2VOYW1lIjogIng0MDIgV2ViICYgRGF0YSBUb29scyIsICJ0YWdzIjogWyJzZWFyY2giLCAid2ViLXNjcmFwaW5nIiwgInVybC1yZWFkZXIiLCAiY3J5cHRvIiwgImZpbmFuY2UiLCAibmV3cyIsICJ3ZWF0aGVyIiwgImRucyIsICJnZW9pcCIsICJkYXRhIiwgImFnZW50LXRvb2xzIiwgIng0MDIiXSwgInJlc291cmNlIjogeyJ1cmwiOiAiaHR0cHM6Ly94NDAyZGVwbG95LnZlcmNlbC5hcHAvYXBpL3RyZW5kaW5nIiwgImRlc2NyaXB0aW9uIjogIlRyZW5kaW5nIGNyeXB0by4gVG9wIHRyZW5kaW5nIGNvaW5zIHJpZ2h0IG5vdyBieSBDb2luR2Vja28gc2VhcmNoIHZvbHVtZS4iLCAibWltZVR5cGUiOiAiYXBwbGljYXRpb24vanNvbiJ9LCAiYWNjZXB0cyI6IFt7InNjaGVtZSI6ICJleGFjdCIsICJuZXR3b3JrIjogImJhc2UiLCAibWF4QW1vdW50UmVxdWlyZWQiOiAiNTAwMCIsICJyZXNvdXJjZSI6ICJodHRwczovL3g0MDJkZXBsb3kudmVyY2VsLmFwcC9hcGkvdHJlbmRpbmciLCAiZGVzY3JpcHRpb24iOiAiVHJlbmRpbmcgY3J5cHRvLiBUb3AgdHJlbmRpbmcgY29pbnMgcmlnaHQgbm93IGJ5IENvaW5HZWNrbyBzZWFyY2ggdm9sdW1lLiIsICJtaW1lVHlwZSI6ICJhcHBsaWNhdGlvbi9qc29uIiwgInBheVRvIjogIjB4N2FFREU5QmIzQTBjMjgxMzI2NDNFRDhlNDE2ZTQ3MjhmMDNGQzE4ZiIsICJtYXhUaW1lb3V0U2Vjb25kcyI6IDYwLCAiYXNzZXQiOiAiMHg4MzM1ODlmQ0Q2ZURiNkUwOGY0YzdDMzJENGY3MWI1NGJkQTAyOTEzIiwgImV4dHJhIjogeyJuYW1lIjogIlVTRCBDb2luIiwgInZlcnNpb24iOiAiMiJ9LCAidGFncyI6IFsidHJlbmRpbmciLCAic2VhcmNoIiwgInNpZ25hbHMiXX1dLCAiZXh0ZW5zaW9ucyI6IHsiYmF6YWFyIjogeyJzY2hlbWEiOiB7InByb3BlcnRpZXMiOiB7ImlucHV0IjogeyJwcm9wZXJ0aWVzIjogeyJib2R5IjogeyJ0eXBlIjogIm9iamVjdCIsICJwcm9wZXJ0aWVzIjogeyJsaW1pdCI6IHsidHlwZSI6ICJpbnRlZ2VyIiwgIm1pbmltdW0iOiAxLCAibWF4aW11bSI6IDE1LCAiZGVmYXVsdCI6IDd9fSwgInJlcXVpcmVkIjogW119fX0sICJvdXRwdXQiOiB7InByb3BlcnRpZXMiOiB7ImV4YW1wbGUiOiB7ImNvaW5zIjogW3sibmFtZSI6ICJQdWRneSBQZW5ndWlucyIsICJzeW1ib2wiOiAiUEVOR1UiLCAibWFya2V0X2NhcF9yYW5rIjogNDIsICJpZCI6ICJwdWRneS1wZW5ndWlucyJ9XSwgInRvdGFsIjogMX19fX19fX19",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::tml48-1786175158286-baa996df5379"
+    },
+    "text": "{\"x402Version\":1,\"error\":\"Payment required\",\"serviceName\":\"x402 Web & Data Tools\",\"tags\":[\"search\",\"web-scraping\",\"url-reader\",\"crypto\",\"finance\",\"news\",\"weather\",\"dns\",\"geoip\",\"data\",\"agent-tools\",\"x402\"],\"resource\":{\"url\":\"https://x402deploy.vercel.app/api/trending\",\"description\":\"Trending crypto. Top trending coins right now by CoinGecko search volume.\",\"mimeType\":\"application/json\"},\"accepts\":[{\"scheme\":\"exact\",\"network\":\"base\",\"maxAmountRequired\":\"5000\",\"resource\":\"https://x402deploy.vercel.app/api/trending\",\"description\":\"Trending crypto. Top trending coins right now by CoinGecko search volume.\",\"mimeType\":\"application/json\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\",\"maxTimeoutSeconds\":60,\"asset\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"extra\":{\"name\":\"USD Coin\",\"version\":\"2\"},\"tags\":[\"trending\",\"search\",\"signals\"]}],\"extensions\":{\"bazaar\":{\"schema\":{\"properties\":{\"input\":{\"properties\":{\"body\":{\"type\":\"object\",\"properties\":{\"limit\":{\"type\":\"integer\",\"minimum\":1,\"maximum\":15,\"default\":7}},\"required\":[]}}},\"output\":{\"properties\":{\"example\":{\"coins\":[{\"name\":\"Pudgy Penguins\",\"symbol\":\"PENGU\",\"market_cap_rank\":42,\"id\":\"pudgy-penguins\"}],\"total\":1}}}}}}}}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/api/v1",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/api/v1",
+    "final_url": "https://x402deploy.vercel.app/api/v1",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:46:00 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::pdv5w-1786175160488-435235a99dd2"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/api/weather",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/api/weather",
+    "final_url": "https://x402deploy.vercel.app/api/weather",
+    "status": 402,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "1482",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:57 GMT",
+     "payment-required": "eyJ4NDAyVmVyc2lvbiI6IDEsICJlcnJvciI6ICJQYXltZW50IHJlcXVpcmVkIiwgInNlcnZpY2VOYW1lIjogIng0MDIgV2ViICYgRGF0YSBUb29scyIsICJ0YWdzIjogWyJzZWFyY2giLCAid2ViLXNjcmFwaW5nIiwgInVybC1yZWFkZXIiLCAiY3J5cHRvIiwgImZpbmFuY2UiLCAibmV3cyIsICJ3ZWF0aGVyIiwgImRucyIsICJnZW9pcCIsICJkYXRhIiwgImFnZW50LXRvb2xzIiwgIng0MDIiXSwgInJlc291cmNlIjogeyJ1cmwiOiAiaHR0cHM6Ly94NDAyZGVwbG95LnZlcmNlbC5hcHAvYXBpL3dlYXRoZXIiLCAiZGVzY3JpcHRpb24iOiAiQ3VycmVudCB3ZWF0aGVyIGJ5IHBsYWNlIG5hbWUuIEdlb2NvZGVzIHRoZSBsb2NhdGlvbiBhbmQgcmV0dXJucyB0ZW1wZXJhdHVyZSwgaHVtaWRpdHksIHdpbmQsIGFuZCBjb25kaXRpb25zLiIsICJtaW1lVHlwZSI6ICJhcHBsaWNhdGlvbi9qc29uIn0sICJhY2NlcHRzIjogW3sic2NoZW1lIjogImV4YWN0IiwgIm5ldHdvcmsiOiAiYmFzZSIsICJtYXhBbW91bnRSZXF1aXJlZCI6ICI1MDAwIiwgInJlc291cmNlIjogImh0dHBzOi8veDQwMmRlcGxveS52ZXJjZWwuYXBwL2FwaS93ZWF0aGVyIiwgImRlc2NyaXB0aW9uIjogIkN1cnJlbnQgd2VhdGhlciBieSBwbGFjZSBuYW1lLiBHZW9jb2RlcyB0aGUgbG9jYXRpb24gYW5kIHJldHVybnMgdGVtcGVyYXR1cmUsIGh1bWlkaXR5LCB3aW5kLCBhbmQgY29uZGl0aW9ucy4iLCAibWltZVR5cGUiOiAiYXBwbGljYXRpb24vanNvbiIsICJwYXlUbyI6ICIweDdhRURFOUJiM0EwYzI4MTMyNjQzRUQ4ZTQxNmU0NzI4ZjAzRkMxOGYiLCAibWF4VGltZW91dFNlY29uZHMiOiA2MCwgImFzc2V0IjogIjB4ODMzNTg5ZkNENmVEYjZFMDhmNGM3QzMyRDRmNzFiNTRiZEEwMjkxMyIsICJleHRyYSI6IHsibmFtZSI6ICJVU0QgQ29pbiIsICJ2ZXJzaW9uIjogIjIifSwgInRhZ3MiOiBbIndlYXRoZXIiLCAiZm9yZWNhc3QiLCAiZ2VvIl19XSwgImV4dGVuc2lvbnMiOiB7ImJhemFhciI6IHsic2NoZW1hIjogeyJwcm9wZXJ0aWVzIjogeyJpbnB1dCI6IHsicHJvcGVydGllcyI6IHsiYm9keSI6IHsidHlwZSI6ICJvYmplY3QiLCAicHJvcGVydGllcyI6IHsibG9jYXRpb24iOiB7InR5cGUiOiAic3RyaW5nIiwgImRlc2NyaXB0aW9uIjogIlBsYWNlIG5hbWUsIGUuZy4gJ0xvbmRvbicgb3IgJ1Rva3lvLCBKUCcifSwgInVuaXRzIjogeyJ0eXBlIjogInN0cmluZyIsICJkZXNjcmlwdGlvbiI6ICInbWV0cmljJyAoXHUwMGIwQykgb3IgJ2ltcGVyaWFsJyAoXHUwMGIwRikiLCAiZGVmYXVsdCI6ICJtZXRyaWMifX0sICJyZXF1aXJlZCI6IFsibG9jYXRpb24iXX19fSwgIm91dHB1dCI6IHsicHJvcGVydGllcyI6IHsiZXhhbXBsZSI6IHsibG9jYXRpb24iOiAiTG9uZG9uLCBVbml0ZWQgS2luZ2RvbSIsICJsYXRpdHVkZSI6IDUxLjUxLCAibG9uZ2l0dWRlIjogLTAuMTMsICJ1bml0cyI6ICJtZXRyaWMiLCAiY3VycmVudCI6IHsidGVtcGVyYXR1cmUiOiAyNS45LCAiaHVtaWRpdHkiOiAzMSwgIndpbmRfc3BlZWQiOiA3LjYsICJjb25kaXRpb24iOiAiTWFpbmx5IGNsZWFyIiwgInRpbWUiOiAiMjAyNi0wNy0wM1QxNDozMCJ9fX19fX19fX0=",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::6fxl9-1786175157758-48fc276c38e8"
+    },
+    "text": "{\"x402Version\":1,\"error\":\"Payment required\",\"serviceName\":\"x402 Web & Data Tools\",\"tags\":[\"search\",\"web-scraping\",\"url-reader\",\"crypto\",\"finance\",\"news\",\"weather\",\"dns\",\"geoip\",\"data\",\"agent-tools\",\"x402\"],\"resource\":{\"url\":\"https://x402deploy.vercel.app/api/weather\",\"description\":\"Current weather by place name. Geocodes the location and returns temperature, humidity, wind, and conditions.\",\"mimeType\":\"application/json\"},\"accepts\":[{\"scheme\":\"exact\",\"network\":\"base\",\"maxAmountRequired\":\"5000\",\"resource\":\"https://x402deploy.vercel.app/api/weather\",\"description\":\"Current weather by place name. Geocodes the location and returns temperature, humidity, wind, and conditions.\",\"mimeType\":\"application/json\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\",\"maxTimeoutSeconds\":60,\"asset\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"extra\":{\"name\":\"USD Coin\",\"version\":\"2\"},\"tags\":[\"weather\",\"forecast\",\"geo\"]}],\"extensions\":{\"bazaar\":{\"schema\":{\"properties\":{\"input\":{\"properties\":{\"body\":{\"type\":\"object\",\"properties\":{\"location\":{\"type\":\"string\",\"description\":\"Place name, e.g. 'London' or 'Tokyo, JP'\"},\"units\":{\"type\":\"string\",\"description\":\"'metric' (°C) or 'imperial' (°F)\",\"default\":\"metric\"}},\"required\":[\"location\"]}}},\"output\":{\"properties\":{\"example\":{\"location\":\"London, United Kingdom\",\"latitude\":51.51,\"longitude\":-0.13,\"units\":\"metric\",\"current\":{\"temperature\":25.9,\"humidity\":31,\"wind_speed\":7.6,\"condition\":\"Mainly clear\",\"time\":\"2026-07-03T14:30\"}}}}}}}}}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/api/wiki",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/api/wiki",
+    "final_url": "https://x402deploy.vercel.app/api/wiki",
+    "status": 402,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "1419",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:57 GMT",
+     "payment-required": "eyJ4NDAyVmVyc2lvbiI6IDEsICJlcnJvciI6ICJQYXltZW50IHJlcXVpcmVkIiwgInNlcnZpY2VOYW1lIjogIng0MDIgV2ViICYgRGF0YSBUb29scyIsICJ0YWdzIjogWyJzZWFyY2giLCAid2ViLXNjcmFwaW5nIiwgInVybC1yZWFkZXIiLCAiY3J5cHRvIiwgImZpbmFuY2UiLCAibmV3cyIsICJ3ZWF0aGVyIiwgImRucyIsICJnZW9pcCIsICJkYXRhIiwgImFnZW50LXRvb2xzIiwgIng0MDIiXSwgInJlc291cmNlIjogeyJ1cmwiOiAiaHR0cHM6Ly94NDAyZGVwbG95LnZlcmNlbC5hcHAvYXBpL3dpa2kiLCAiZGVzY3JpcHRpb24iOiAiV2lraXBlZGlhIHN1bW1hcnkuIFJldHVybnMgdGhlIGxlYWQgZXh0cmFjdCwgZGVzY3JpcHRpb24gYW5kIFVSTCBmb3IgYW4gYXJ0aWNsZSB0aXRsZS4iLCAibWltZVR5cGUiOiAiYXBwbGljYXRpb24vanNvbiJ9LCAiYWNjZXB0cyI6IFt7InNjaGVtZSI6ICJleGFjdCIsICJuZXR3b3JrIjogImJhc2UiLCAibWF4QW1vdW50UmVxdWlyZWQiOiAiNTAwMCIsICJyZXNvdXJjZSI6ICJodHRwczovL3g0MDJkZXBsb3kudmVyY2VsLmFwcC9hcGkvd2lraSIsICJkZXNjcmlwdGlvbiI6ICJXaWtpcGVkaWEgc3VtbWFyeS4gUmV0dXJucyB0aGUgbGVhZCBleHRyYWN0LCBkZXNjcmlwdGlvbiBhbmQgVVJMIGZvciBhbiBhcnRpY2xlIHRpdGxlLiIsICJtaW1lVHlwZSI6ICJhcHBsaWNhdGlvbi9qc29uIiwgInBheVRvIjogIjB4N2FFREU5QmIzQTBjMjgxMzI2NDNFRDhlNDE2ZTQ3MjhmMDNGQzE4ZiIsICJtYXhUaW1lb3V0U2Vjb25kcyI6IDYwLCAiYXNzZXQiOiAiMHg4MzM1ODlmQ0Q2ZURiNkUwOGY0YzdDMzJENGY3MWI1NGJkQTAyOTEzIiwgImV4dHJhIjogeyJuYW1lIjogIlVTRCBDb2luIiwgInZlcnNpb24iOiAiMiJ9LCAidGFncyI6IFsid2lraXBlZGlhIiwgInJlZmVyZW5jZSIsICJrbm93bGVkZ2UiXX1dLCAiZXh0ZW5zaW9ucyI6IHsiYmF6YWFyIjogeyJzY2hlbWEiOiB7InByb3BlcnRpZXMiOiB7ImlucHV0IjogeyJwcm9wZXJ0aWVzIjogeyJib2R5IjogeyJ0eXBlIjogIm9iamVjdCIsICJwcm9wZXJ0aWVzIjogeyJ0aXRsZSI6IHsidHlwZSI6ICJzdHJpbmciLCAiZGVzY3JpcHRpb24iOiAiV2lraXBlZGlhIGFydGljbGUgdGl0bGUsIGUuZy4gJ0V0aGVyZXVtJyJ9LCAibGFuZyI6IHsidHlwZSI6ICJzdHJpbmciLCAiZGVzY3JpcHRpb24iOiAiV2lraXBlZGlhIGxhbmd1YWdlIGVkaXRpb24iLCAiZGVmYXVsdCI6ICJlbiJ9fSwgInJlcXVpcmVkIjogWyJ0aXRsZSJdfX19LCAib3V0cHV0IjogeyJwcm9wZXJ0aWVzIjogeyJleGFtcGxlIjogeyJ0aXRsZSI6ICJFdGhlcmV1bSIsICJkZXNjcmlwdGlvbiI6ICJPcGVuLXNvdXJjZSBibG9ja2NoYWluIHBsYXRmb3JtIiwgImV4dHJhY3QiOiAiRXRoZXJldW0gaXMgYSBkZWNlbnRyYWxpemVkIGJsb2NrY2hhaW4gd2l0aCBzbWFydC1jb250cmFjdCBmdW5jdGlvbmFsaXR5Li4uIiwgInVybCI6ICJodHRwczovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9FdGhlcmV1bSJ9fX19fX19fQ==",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::6fxl9-1786175157479-ad081a513c2d"
+    },
+    "text": "{\"x402Version\":1,\"error\":\"Payment required\",\"serviceName\":\"x402 Web & Data Tools\",\"tags\":[\"search\",\"web-scraping\",\"url-reader\",\"crypto\",\"finance\",\"news\",\"weather\",\"dns\",\"geoip\",\"data\",\"agent-tools\",\"x402\"],\"resource\":{\"url\":\"https://x402deploy.vercel.app/api/wiki\",\"description\":\"Wikipedia summary. Returns the lead extract, description and URL for an article title.\",\"mimeType\":\"application/json\"},\"accepts\":[{\"scheme\":\"exact\",\"network\":\"base\",\"maxAmountRequired\":\"5000\",\"resource\":\"https://x402deploy.vercel.app/api/wiki\",\"description\":\"Wikipedia summary. Returns the lead extract, description and URL for an article title.\",\"mimeType\":\"application/json\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\",\"maxTimeoutSeconds\":60,\"asset\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"extra\":{\"name\":\"USD Coin\",\"version\":\"2\"},\"tags\":[\"wikipedia\",\"reference\",\"knowledge\"]}],\"extensions\":{\"bazaar\":{\"schema\":{\"properties\":{\"input\":{\"properties\":{\"body\":{\"type\":\"object\",\"properties\":{\"title\":{\"type\":\"string\",\"description\":\"Wikipedia article title, e.g. 'Ethereum'\"},\"lang\":{\"type\":\"string\",\"description\":\"Wikipedia language edition\",\"default\":\"en\"}},\"required\":[\"title\"]}}},\"output\":{\"properties\":{\"example\":{\"title\":\"Ethereum\",\"description\":\"Open-source blockchain platform\",\"extract\":\"Ethereum is a decentralized blockchain with smart-contract functionality...\",\"url\":\"https://en.wikipedia.org/wiki/Ethereum\"}}}}}}}}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/cancellation",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/cancellation",
+    "final_url": "https://x402deploy.vercel.app/cancellation",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:46:03 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::pdv5w-1786175163110-3ec64060a00d"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/catalog.json",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/catalog.json",
+    "final_url": "https://x402deploy.vercel.app/catalog.json",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:58 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::m7hr7-1786175159359-2449af82bfa7"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/company",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/company",
+    "final_url": "https://x402deploy.vercel.app/company",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:46:00 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::dvmn4-1786175161306-a76dc0480c86"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/contact",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/contact",
+    "final_url": "https://x402deploy.vercel.app/contact",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:46:00 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::7xsqj-1786175161178-4367272b11bf"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/developers",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/developers",
+    "final_url": "https://x402deploy.vercel.app/developers",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:46:00 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::dvmn4-1786175160036-48e0c7ca0fc4"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/docs",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/docs",
+    "final_url": "https://x402deploy.vercel.app/docs",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:58 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::72gkm-1786175159498-9670bf83df54"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/docs/api",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/docs/api",
+    "final_url": "https://x402deploy.vercel.app/docs/api",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:58 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::tml48-1786175159758-4a840e5b08da"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/imprint",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/imprint",
+    "final_url": "https://x402deploy.vercel.app/imprint",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:46:01 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::6b8hr-1786175161613-eeb775f216f5"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/legal",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/legal",
+    "final_url": "https://x402deploy.vercel.app/legal",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:46:01 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::4jvh7-1786175161446-526ef3cf7767"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/llms.txt",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/llms.txt",
+    "final_url": "https://x402deploy.vercel.app/llms.txt",
+    "status": 200,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-encoding": "gzip",
+     "content-type": "text/plain; charset=utf-8",
+     "date": "Sat, 08 Aug 2026 07:45:23 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::8jg2s-1786175156864-c3f49995d937",
+     "transfer-encoding": "chunked"
+    },
+    "text": "# x402 Multi-Tool API\n\n> Pay-per-request data toolkit for AI agents. 13 no-auth tools, $0.0050 USDC each, settled over the x402 micropayment protocol on Base (network base). No API key or signup — an agent wallet pays per call.\n\n## How to call\n\nEach tool is an HTTP POST endpoint. An unpaid request returns HTTP 402 with an x402 payment challenge (the `accepts` array names the asset, amount and payTo address); resend with the `X-PAYMENT` header to receive the JSON result. Payments go to 0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f as USDC on Base.\n\n## Tools\n\n- [web_search](https://x402deploy.vercel.app/api/serp): Search the web and return organic results as structured JSON. (required: query)\n- [read_url](https://x402deploy.vercel.app/api/read): Fetch a web page and return its cleaned main text as JSON. (required: url)\n- [crypto_price](https://x402deploy.vercel.app/api/price): Live crypto USD price + 24h change by CoinGecko id. (required: ids)\n- [wikipedia_summary](https://x402deploy.vercel.app/api/wiki): Wikipedia lead extract, description and URL for an article title. (required: title)\n- [news_headlines](https://x402deploy.vercel.app/api/news): Fresh news articles (title, source, link, date) for a query. (required: query)\n- [current_weather](https://x402deploy.vercel.app/api/weather): Current weather by place name: temperature, humidity, wind, conditions. (required: location)\n- [fx_rates](https://x402deploy.vercel.app/api/fx): Foreign-exchange rates from a base currency to all or selected currencies.\n- [ip_geolocation](https://x402deploy.vercel.app/api/geoip): Map an IP address to city, country, coordinates, org and timezone. (required: ip)\n- [dns_lookup](https://x402deploy.vercel.app/api/dns): Resolve a domain's A/AAAA/MX/TXT/NS/CNAME records over DNS-over-HTTPS. (required: name)\n- [trending_crypto](https://x402deploy.vercel.app/api/trending): Top trending coins right now by CoinGecko search volume.\n- [stock_quote](https://x402deploy.vercel.app/api/stock): Live stock quote: price, previous close, day change and market state for a ticker. (required: symbol)\n- [domain_whois](https://x402deploy.vercel.app/api/domain): Domain WHOIS/RDAP: registrar, registration & expiry dates, status, nameservers. (required: domain)\n- [crypto_markets](https://x402deploy.vercel.app/api/markets): Top coins by market cap with price, rank and 24h change.\n\n## Discovery\n\n- [x402 manifest](https://x402deploy.vercel.app/.well-known/x402): machine-readable service list with bazaar schemas.\n- [MCP manifest](https://x402deploy.vercel.app/.well-known/mcp.json): Model Context Protocol tool catalog.\n",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/manifest.json",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/manifest.json",
+    "final_url": "https://x402deploy.vercel.app/manifest.json",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:58 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::jmxtr-1786175159082-73f1263848b2"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/openapi.json",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/openapi.json",
+    "final_url": "https://x402deploy.vercel.app/openapi.json",
+    "status": 200,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-encoding": "gzip",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:58 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::tml48-1786175159883-388527e123a5",
+     "transfer-encoding": "chunked"
+    },
+    "text": "{\"openapi\":\"3.1.0\",\"info\":{\"title\":\"x402 Multi-Tool Data API\",\"version\":\"2.0.0\",\"contact\":{\"name\":\"x402 Data API\",\"url\":\"https://x402deploy.vercel.app\"},\"description\":\"Pay-per-call HTTP data toolkit for autonomous AI agents. 13 no-auth tools (web search, page read, crypto/stock/FX market data, weather, news, DNS/WHOIS/GeoIP), each 0.005 USDC per call settled over the x402 micropayment protocol on base. No API key, no account, no custodian — an agent wallet pays per request.\",\"x-guidance\":\"Every path is a paid POST. Call with a JSON body matching the operation's requestBody schema. On the 402 response, sign the quoted EIP-3009 USDC authorization and resend with the X-PAYMENT header (use an x402-capable client such as x402-fetch). All tools share one price and one payTo address.\"},\"servers\":[{\"url\":\"https://x402deploy.vercel.app\"}],\"x-payment-info\":{\"price\":{\"mode\":\"fixed\",\"amount\":\"0.005\",\"currency\":\"USD\"},\"protocols\":[{\"x402\":{\"version\":1,\"scheme\":\"exact\",\"network\":\"base\",\"asset\":\"USDC\",\"assetAddress\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"maxAmountRequired\":\"5000\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}}]},\"paths\":{\"/api/serp\":{\"post\":{\"operationId\":\"web_search\",\"summary\":\"Search the web and return organic results as structured JSON.\",\"description\":\"Search the web and return organic results as structured JSON. Pay-per-call: 0.005 USDC via the x402 micropayment protocol on base (no API key, no account). An unpaid request returns HTTP 402 with payment terms; sign the EIP-3009 USDC authorization and resend with the X-PAYMENT header to receive JSON.\",\"requestBody\":{\"required\":true,\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\",\"description\":\"Search query string\"},\"num_results\":{\"type\":\"integer\",\"minimum\":1,\"maximum\":20,\"default\":10},\"country\":{\"type\":\"string\",\"description\":\"ISO country code\",\"default\":\"us\"}},\"required\":[\"query\"]}}}},\"responses\":{\"200\":{\"description\":\"Successful result (payment accepted).\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\"},\"country\":{\"type\":\"string\"},\"total\":{\"type\":\"integer\"},\"results\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"title\":{\"type\":\"string\"},\"url\":{\"type\":\"string\"},\"snippet\":{\"type\":\"string\"},\"position\":{\"type\":\"integer\"}}}}},\"required\":[\"query\",\"results\",\"total\"]}}}},\"402\":{\"description\":\"Payment Required. Body carries the x402 challenge (accepts[]: asset, amount, network, payTo). Pay and retry with X-PAYMENT.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\"}}}},\"400\":{\"description\":\"Invalid request parameters.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"error\":{\"type\":\"string\"}}}}}}},\"x-payment-info\":{\"price\":{\"mode\":\"fixed\",\"amount\":\"0.005\",\"currency\":\"USD\"},\"protocols\":[{\"x402\":{\"version\":1,\"scheme\":\"exact\",\"network\":\"base\",\"asset\":\"USDC\",\"assetAddress\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"maxAmountRequired\":\"5000\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}}]}}},\"/api/read\":{\"post\":{\"operationId\":\"read_url\",\"summary\":\"Fetch a web page and return its cleaned main text as JSON.\",\"description\":\"Fetch a web page and return its cleaned main text as JSON. Pay-per-call: 0.005 USDC via the x402 micropayment protocol on base (no API key, no account). An unpaid request returns HTTP 402 with payment terms; sign the EIP-3009 USDC authorization and resend with the X-PAYMENT header to receive JSON.\",\"requestBody\":{\"required\":true,\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"url\":{\"type\":\"string\",\"description\":\"Absolute http(s) URL of the page to read\"},\"max_chars\":{\"type\":\"integer\",\"minimum\":500,\"maximum\":40000,\"default\":8000}},\"required\":[\"url\"]}}}},\"responses\":{\"200\":{\"description\":\"Successful result (payment accepted).\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"url\":{\"type\":\"string\"},\"title\":{\"type\":\"string\"},\"text\":{\"type\":\"string\"},\"chars\":{\"type\":\"integer\"}},\"required\":[\"url\",\"text\",\"chars\"]}}}},\"402\":{\"description\":\"Payment Required. Body carries the x402 challenge (accepts[]: asset, amount, network, payTo). Pay and retry with X-PAYMENT.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\"}}}},\"400\":{\"description\":\"Invalid request parameters.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"error\":{\"type\":\"string\"}}}}}}},\"x-payment-info\":{\"price\":{\"mode\":\"fixed\",\"amount\":\"0.005\",\"currency\":\"USD\"},\"protocols\":[{\"x402\":{\"version\":1,\"scheme\":\"exact\",\"network\":\"base\",\"asset\":\"USDC\",\"assetAddress\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"maxAmountRequired\":\"5000\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}}]}}},\"/api/price\":{\"post\":{\"operationId\":\"crypto_price\",\"summary\":\"Live crypto USD price + 24h change by CoinGecko id.\",\"description\":\"Live crypto USD price + 24h change by CoinGecko id. Pay-per-call: 0.005 USDC via the x402 micropayment protocol on base (no API key, no account). An unpaid request returns HTTP 402 with payment terms; sign the EIP-3009 USDC authorization and resend with the X-PAYMENT header to receive JSON.\",\"requestBody\":{\"required\":true,\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"ids\":{\"type\":\"string\",\"description\":\"Comma-separated CoinGecko coin ids, e.g. 'bitcoin,ethereum,solana'\"},\"vs\":{\"type\":\"string\",\"description\":\"Fiat/crypto vs-currency\",\"default\":\"usd\"}},\"required\":[\"ids\"]}}}},\"responses\":{\"200\":{\"description\":\"Successful result (payment accepted).\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"vs\":{\"type\":\"string\"},\"total\":{\"type\":\"integer\"},\"source\":{\"type\":\"string\"},\"prices\":{\"type\":\"object\",\"additionalProperties\":{\"type\":\"object\",\"properties\":{\"price\":{\"type\":[\"number\",\"null\"]},\"change_24h_pct\":{\"type\":[\"number\",\"null\"]}}}}},\"required\":[\"vs\",\"prices\",\"total\"]}}}},\"402\":{\"description\":\"Payment Required. Body carries the x402 challenge (accepts[]: asset, amount, network, payTo). Pay and retry with X-PAYMENT.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\"}}}},\"400\":{\"description\":\"Invalid request parameters.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"error\":{\"type\":\"string\"}}}}}}},\"x-payment-info\":{\"price\":{\"mode\":\"fixed\",\"amount\":\"0.005\",\"currency\":\"USD\"},\"protocols\":[{\"x402\":{\"version\":1,\"scheme\":\"exact\",\"network\":\"base\",\"asset\":\"USDC\",\"assetAddress\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"maxAmountRequired\":\"5000\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}}]}}},\"/api/wiki\":{\"post\":{\"operationId\":\"wikipedia_summary\",\"summary\":\"Wikipedia lead extract, description and URL for an article title.\",\"description\":\"Wikipedia lead extract, description and URL for an article title. Pay-per-call: 0.005 USDC via the x402 micropayment protocol on base (no API key, no account). An unpaid request returns HTTP 402 with payment terms; sign the EIP-3009 USDC authorization and resend with the X-PAYMENT header to receive JSON.\",\"requestBody\":{\"required\":true,\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"title\":{\"type\":\"string\",\"description\":\"Wikipedia article title, e.g. 'Ethereum'\"},\"lang\":{\"type\":\"string\",\"description\":\"Wikipedia language edition\",\"default\":\"en\"}},\"required\":[\"title\"]}}}},\"responses\":{\"200\":{\"description\":\"Successful result (payment accepted).\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"title\":{\"type\":\"string\"},\"description\":{\"type\":\"string\"},\"extract\":{\"type\":\"string\"},\"url\":{\"type\":\"string\"}},\"required\":[\"title\",\"extract\"]}}}},\"402\":{\"description\":\"Payment Required. Body carries the x402 challenge (accepts[]: asset, amount, network, payTo). Pay and retry with X-PAYMENT.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\"}}}},\"400\":{\"description\":\"Invalid request parameters.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"error\":{\"type\":\"string\"}}}}}}},\"x-payment-info\":{\"price\":{\"mode\":\"fixed\",\"amount\":\"0.005\",\"currency\":\"USD\"},\"protocols\":[{\"x402\":{\"version\":1,\"scheme\":\"exact\",\"network\":\"base\",\"asset\":\"USDC\",\"assetAddress\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"maxAmountRequired\":\"5000\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}}]}}},\"/api/news\":{\"post\":{\"operationId\":\"news_headlines\",\"summary\":\"Fresh news articles (title, source, link, date) for a query.\",\"description\":\"Fresh news articles (title, source, link, date) for a query. Pay-per-call: 0.005 USDC via the x402 micropayment protocol on base (no API key, no account). An unpaid request returns HTTP 402 with payment terms; sign the EIP-3009 USDC authorization and resend with the X-PAYMENT header to receive JSON.\",\"requestBody\":{\"required\":true,\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\",\"description\":\"News search query, e.g. 'AI agents'\"},\"limit\":{\"type\":\"integer\",\"minimum\":1,\"maximum\":25,\"default\":10},\"lang\":{\"type\":\"string\",\"description\":\"Language/region, e.g. 'en-US'\",\"default\":\"en-US\"}},\"required\":[\"query\"]}}}},\"responses\":{\"200\":{\"description\":\"Successful result (payment accepted).\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\"},\"total\":{\"type\":\"integer\"},\"articles\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"title\":{\"type\":\"string\"},\"url\":{\"type\":\"string\"},\"source\":{\"type\":\"string\"},\"published\":{\"type\":\"string\"}}}}},\"required\":[\"query\",\"articles\",\"total\"]}}}},\"402\":{\"description\":\"Payment Required. Body carries the x402 challenge (accepts[]: asset, amount, network, payTo). Pay and retry with X-PAYMENT.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\"}}}},\"400\":{\"description\":\"Invalid request parameters.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"error\":{\"type\":\"string\"}}}}}}},\"x-payment-info\":{\"price\":{\"mode\":\"fixed\",\"amount\":\"0.005\",\"currency\":\"USD\"},\"protocols\":[{\"x402\":{\"version\":1,\"scheme\":\"exact\",\"network\":\"base\",\"asset\":\"USDC\",\"assetAddress\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"maxAmountRequired\":\"5000\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}}]}}},\"/api/weather\":{\"post\":{\"operationId\":\"current_weather\",\"summary\":\"Current weather by place name: temperature, humidity, wind, conditions.\",\"description\":\"Current weather by place name: temperature, humidity, wind, conditions. Pay-per-call: 0.005 USDC via the x402 micropayment protocol on base (no API key, no account). An unpaid request returns HTTP 402 with payment terms; sign the EIP-3009 USDC authorization and resend with the X-PAYMENT header to receive JSON.\",\"requestBody\":{\"required\":true,\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"location\":{\"type\":\"string\",\"description\":\"Place name, e.g. 'London' or 'Tokyo, JP'\"},\"units\":{\"type\":\"string\",\"description\":\"'metric' (°C) or 'imperial' (°F)\",\"default\":\"metric\"}},\"required\":[\"location\"]}}}},\"responses\":{\"200\":{\"description\":\"Successful result (payment accepted).\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"location\":{\"type\":\"string\"},\"latitude\":{\"type\":[\"number\",\"null\"]},\"longitude\":{\"type\":[\"number\",\"null\"]},\"units\":{\"type\":\"string\"},\"current\":{\"type\":\"object\",\"properties\":{\"temperature\":{\"type\":[\"number\",\"null\"]},\"humidity\":{\"type\":[\"number\",\"null\"]},\"wind_speed\":{\"type\":[\"number\",\"null\"]},\"condition\":{\"type\":\"string\"},\"time\":{\"type\":[\"string\",\"null\"]}}}},\"required\":[\"location\",\"current\"]}}}},\"402\":{\"description\":\"Payment Required. Body carries the x402 challenge (accepts[]: asset, amount, network, payTo). Pay and retry with X-PAYMENT.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\"}}}},\"400\":{\"description\":\"Invalid request parameters.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"error\":{\"type\":\"string\"}}}}}}},\"x-payment-info\":{\"price\":{\"mode\":\"fixed\",\"amount\":\"0.005\",\"currency\":\"USD\"},\"protocols\":[{\"x402\":{\"version\":1,\"scheme\":\"exact\",\"network\":\"base\",\"asset\":\"USDC\",\"assetAddress\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"maxAmountRequired\":\"5000\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}}]}}},\"/api/fx\":{\"post\":{\"operationId\":\"fx_rates\",\"summary\":\"Foreign-exchange rates from a base currency to all or selected currencies.\",\"description\":\"Foreign-exchange rates from a base currency to all or selected currencies. Pay-per-call: 0.005 USDC via the x402 micropayment protocol on base (no API key, no account). An unpaid request returns HTTP 402 with payment terms; sign the EIP-3009 USDC authorization and resend with the X-PAYMENT header to receive JSON.\",\"requestBody\":{\"required\":true,\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"base\":{\"type\":\"string\",\"description\":\"Base currency ISO code, e.g. 'USD'\",\"default\":\"USD\"},\"symbols\":{\"type\":\"string\",\"description\":\"Comma-separated target codes to filter, e.g. 'EUR,VND,JPY'. Empty = all.\"}},\"required\":[]}}}},\"responses\":{\"200\":{\"description\":\"Successful result (payment accepted).\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"base\":{\"type\":\"string\"},\"updated\":{\"type\":\"string\"},\"total\":{\"type\":\"integer\"},\"rates\":{\"type\":\"object\",\"additionalProperties\":{\"type\":\"number\"}}},\"required\":[\"base\",\"rates\",\"total\"]}}}},\"402\":{\"description\":\"Payment Required. Body carries the x402 challenge (accepts[]: asset, amount, network, payTo). Pay and retry with X-PAYMENT.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\"}}}},\"400\":{\"description\":\"Invalid request parameters.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"error\":{\"type\":\"string\"}}}}}}},\"x-payment-info\":{\"price\":{\"mode\":\"fixed\",\"amount\":\"0.005\",\"currency\":\"USD\"},\"protocols\":[{\"x402\":{\"version\":1,\"scheme\":\"exact\",\"network\":\"base\",\"asset\":\"USDC\",\"assetAddress\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"maxAmountRequired\":\"5000\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}}]}}},\"/api/geoip\":{\"post\":{\"operationId\":\"ip_geolocation\",\"summary\":\"Map an IP address to city, country, coordinates, org and timezone.\",\"description\":\"Map an IP address to city, country, coordinates, org and timezone. Pay-per-call: 0.005 USDC via the x402 micropayment protocol on base (no API key, no account). An unpaid request returns HTTP 402 with payment terms; sign the EIP-3009 USDC authorization and resend with the X-PAYMENT header to receive JSON.\",\"requestBody\":{\"required\":true,\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"ip\":{\"type\":\"string\",\"description\":\"IPv4/IPv6 address to look up, e.g. '8.8.8.8'\"}},\"required\":[\"ip\"]}}}},\"responses\":{\"200\":{\"description\":\"Successful result (payment accepted).\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"ip\":{\"type\":\"string\"},\"city\":{\"type\":[\"string\",\"null\"]},\"region\":{\"type\":[\"string\",\"null\"]},\"country\":{\"type\":[\"string\",\"null\"]},\"latitude\":{\"type\":[\"number\",\"null\"]},\"longitude\":{\"type\":[\"number\",\"null\"]},\"org\":{\"type\":[\"string\",\"null\"]},\"timezone\":{\"type\":[\"string\",\"null\"]}},\"required\":[\"ip\"]}}}},\"402\":{\"description\":\"Payment Required. Body carries the x402 challenge (accepts[]: asset, amount, network, payTo). Pay and retry with X-PAYMENT.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\"}}}},\"400\":{\"description\":\"Invalid request parameters.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"error\":{\"type\":\"string\"}}}}}}},\"x-payment-info\":{\"price\":{\"mode\":\"fixed\",\"amount\":\"0.005\",\"currency\":\"USD\"},\"protocols\":[{\"x402\":{\"version\":1,\"scheme\":\"exact\",\"network\":\"base\",\"asset\":\"USDC\",\"assetAddress\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"maxAmountRequired\":\"5000\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}}]}}},\"/api/dns\":{\"post\":{\"operationId\":\"dns_lookup\",\"summary\":\"Resolve a domain's A/AAAA/MX/TXT/NS/CNAME records over DNS-over-HTTPS.\",\"description\":\"Resolve a domain's A/AAAA/MX/TXT/NS/CNAME records over DNS-over-HTTPS. Pay-per-call: 0.005 USDC via the x402 micropayment protocol on base (no API key, no account). An unpaid request returns HTTP 402 with payment terms; sign the EIP-3009 USDC authorization and resend with the X-PAYMENT header to receive JSON.\",\"requestBody\":{\"required\":true,\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\",\"description\":\"Domain name to resolve, e.g. 'example.com'\"},\"type\":{\"type\":\"string\",\"description\":\"Record type: A, AAAA, MX, TXT, NS, CNAME\",\"default\":\"A\"}},\"required\":[\"name\"]}}}},\"responses\":{\"200\":{\"description\":\"Successful result (payment accepted).\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"type\":{\"type\":\"string\"},\"status\":{\"type\":[\"integer\",\"null\"]},\"total\":{\"type\":\"integer\"},\"records\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}},\"required\":[\"name\",\"type\",\"records\",\"total\"]}}}},\"402\":{\"description\":\"Payment Required. Body carries the x402 challenge (accepts[]: asset, amount, network, payTo). Pay and retry with X-PAYMENT.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\"}}}},\"400\":{\"description\":\"Invalid request parameters.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"error\":{\"type\":\"string\"}}}}}}},\"x-payment-info\":{\"price\":{\"mode\":\"fixed\",\"amount\":\"0.005\",\"currency\":\"USD\"},\"protocols\":[{\"x402\":{\"version\":1,\"scheme\":\"exact\",\"network\":\"base\",\"asset\":\"USDC\",\"assetAddress\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"maxAmountRequired\":\"5000\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}}]}}},\"/api/trending\":{\"post\":{\"operationId\":\"trending_crypto\",\"summary\":\"Top trending coins right now by CoinGecko search volume.\",\"description\":\"Top trending coins right now by CoinGecko search volume. Pay-per-call: 0.005 USDC via the x402 micropayment protocol on base (no API key, no account). An unpaid request returns HTTP 402 with payment terms; sign the EIP-3009 USDC authorization and resend with the X-PAYMENT header to receive JSON.\",\"requestBody\":{\"required\":true,\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"limit\":{\"type\":\"integer\",\"minimum\":1,\"maximum\":15,\"default\":7}},\"required\":[]}}}},\"responses\":{\"200\":{\"description\":\"Successful result (payment accepted).\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"total\":{\"type\":\"integer\"},\"coins\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"symbol\":{\"type\":\"string\"},\"market_cap_rank\":{\"type\":[\"integer\",\"null\"]},\"id\":{\"type\":\"string\"}}}}},\"required\":[\"coins\",\"total\"]}}}},\"402\":{\"description\":\"Payment Required. Body carries the x402 challenge (accepts[]: asset, amount, network, payTo). Pay and retry with X-PAYMENT.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\"}}}},\"400\":{\"description\":\"Invalid request parameters.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"error\":{\"type\":\"string\"}}}}}}},\"x-payment-info\":{\"price\":{\"mode\":\"fixed\",\"amount\":\"0.005\",\"currency\":\"USD\"},\"protocols\":[{\"x402\":{\"version\":1,\"scheme\":\"exact\",\"network\":\"base\",\"asset\":\"USDC\",\"assetAddress\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"maxAmountRequired\":\"5000\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}}]}}},\"/api/stock\":{\"post\":{\"operationId\":\"stock_quote\",\"summary\":\"Live stock quote: price, previous close, day change and market state for a ticker.\",\"description\":\"Live stock quote: price, previous close, day change and market state for a ticker. Pay-per-call: 0.005 USDC via the x402 micropayment protocol on base (no API key, no account). An unpaid request returns HTTP 402 with payment terms; sign the EIP-3009 USDC authorization and resend with the X-PAYMENT header to receive JSON.\",\"requestBody\":{\"required\":true,\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"symbol\":{\"type\":\"string\",\"description\":\"Ticker symbol, e.g. 'AAPL', 'MSFT', 'TSLA'\"}},\"required\":[\"symbol\"]}}}},\"responses\":{\"200\":{\"description\":\"Successful result (payment accepted).\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"symbol\":{\"type\":\"string\"},\"price\":{\"type\":[\"number\",\"null\"]},\"currency\":{\"type\":[\"string\",\"null\"]},\"previous_close\":{\"type\":[\"number\",\"null\"]},\"change\":{\"type\":[\"number\",\"null\"]},\"change_percent\":{\"type\":[\"number\",\"null\"]},\"market_state\":{\"type\":[\"string\",\"null\"]},\"exchange\":{\"type\":[\"string\",\"null\"]}},\"required\":[\"symbol\"]}}}},\"402\":{\"description\":\"Payment Required. Body carries the x402 challenge (accepts[]: asset, amount, network, payTo). Pay and retry with X-PAYMENT.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\"}}}},\"400\":{\"description\":\"Invalid request parameters.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"error\":{\"type\":\"string\"}}}}}}},\"x-payment-info\":{\"price\":{\"mode\":\"fixed\",\"amount\":\"0.005\",\"currency\":\"USD\"},\"protocols\":[{\"x402\":{\"version\":1,\"scheme\":\"exact\",\"network\":\"base\",\"asset\":\"USDC\",\"assetAddress\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"maxAmountRequired\":\"5000\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}}]}}},\"/api/domain\":{\"post\":{\"operationId\":\"domain_whois\",\"summary\":\"Domain WHOIS/RDAP: registrar, registration & expiry dates, status, nameservers.\",\"description\":\"Domain WHOIS/RDAP: registrar, registration & expiry dates, status, nameservers. Pay-per-call: 0.005 USDC via the x402 micropayment protocol on base (no API key, no account). An unpaid request returns HTTP 402 with payment terms; sign the EIP-3009 USDC authorization and resend with the X-PAYMENT header to receive JSON.\",\"requestBody\":{\"required\":true,\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"domain\":{\"type\":\"string\",\"description\":\"Domain name to look up, e.g. 'example.com'\"}},\"required\":[\"domain\"]}}}},\"responses\":{\"200\":{\"description\":\"Successful result (payment accepted).\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"domain\":{\"type\":\"string\"},\"registrar\":{\"type\":[\"string\",\"null\"]},\"registered\":{\"type\":[\"string\",\"null\"]},\"expires\":{\"type\":[\"string\",\"null\"]},\"updated\":{\"type\":[\"string\",\"null\"]},\"status\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"nameservers\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}},\"required\":[\"domain\"]}}}},\"402\":{\"description\":\"Payment Required. Body carries the x402 challenge (accepts[]: asset, amount, network, payTo). Pay and retry with X-PAYMENT.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\"}}}},\"400\":{\"description\":\"Invalid request parameters.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"error\":{\"type\":\"string\"}}}}}}},\"x-payment-info\":{\"price\":{\"mode\":\"fixed\",\"amount\":\"0.005\",\"currency\":\"USD\"},\"protocols\":[{\"x402\":{\"version\":1,\"scheme\":\"exact\",\"network\":\"base\",\"asset\":\"USDC\",\"assetAddress\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"maxAmountRequired\":\"5000\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}}]}}},\"/api/markets\":{\"post\":{\"operationId\":\"crypto_markets\",\"summary\":\"Top coins by market cap with price, rank and 24h change.\",\"description\":\"Top coins by market cap with price, rank and 24h change. Pay-per-call: 0.005 USDC via the x402 micropayment protocol on base (no API key, no account). An unpaid request returns HTTP 402 with payment terms; sign the EIP-3009 USDC authorization and resend with the X-PAYMENT header to receive JSON.\",\"requestBody\":{\"required\":true,\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"vs\":{\"type\":\"string\",\"description\":\"Quote currency\",\"default\":\"usd\"},\"limit\":{\"type\":\"integer\",\"minimum\":1,\"maximum\":50,\"default\":10}},\"required\":[]}}}},\"responses\":{\"200\":{\"description\":\"Successful result (payment accepted).\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"vs\":{\"type\":\"string\"},\"total\":{\"type\":\"integer\"},\"source\":{\"type\":\"string\"},\"coins\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"symbol\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"price\":{\"type\":[\"number\",\"null\"]},\"market_cap_rank\":{\"type\":[\"integer\",\"null\"]},\"change_24h_pct\":{\"type\":[\"number\",\"null\"]}}}}},\"required\":[\"vs\",\"coins\",\"total\"]}}}},\"402\":{\"description\":\"Payment Required. Body carries the x402 challenge (accepts[]: asset, amount, network, payTo). Pay and retry with X-PAYMENT.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\"}}}},\"400\":{\"description\":\"Invalid request parameters.\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"error\":{\"type\":\"string\"}}}}}}},\"x-payment-info\":{\"price\":{\"mode\":\"fixed\",\"amount\":\"0.005\",\"currency\":\"USD\"},\"protocols\":[{\"x402\":{\"version\":1,\"scheme\":\"exact\",\"network\":\"base\",\"asset\":\"USDC\",\"assetAddress\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"maxAmountRequired\":\"5000\",\"payTo\":\"0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f\"}}]}}}}}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/plans",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/plans",
+    "final_url": "https://x402deploy.vercel.app/plans",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:46:00 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::qdth9-1786175160343-4a18f6b55c6f"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/pricing",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/pricing",
+    "final_url": "https://x402deploy.vercel.app/pricing",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:46:00 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::p7kcg-1786175160185-9fbf9d8191a2"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/pricing.json",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/pricing.json",
+    "final_url": "https://x402deploy.vercel.app/pricing.json",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:58 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::pdv5w-1786175159225-2cb68887c9d2"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/privacy",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/privacy",
+    "final_url": "https://x402deploy.vercel.app/privacy",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:46:01 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::zxq25-1786175162333-e2eeeba86a33"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/privacy-policy",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/privacy-policy",
+    "final_url": "https://x402deploy.vercel.app/privacy-policy",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:46:01 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::l8mgz-1786175162518-bbe87520d0fd"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/refund",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/refund",
+    "final_url": "https://x402deploy.vercel.app/refund",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:46:01 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::m7hr7-1786175162649-6f26647ad567"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/refund-policy",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/refund-policy",
+    "final_url": "https://x402deploy.vercel.app/refund-policy",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:46:03 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::pdv5w-1786175162953-1f60eeb4824d"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/refunds",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/refunds",
+    "final_url": "https://x402deploy.vercel.app/refunds",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:46:01 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::pdv5w-1786175162785-362439a733cf"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/returns",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/returns",
+    "final_url": "https://x402deploy.vercel.app/returns",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:46:03 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::kdqdn-1786175163253-06f8624f9e0f"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/robots.txt",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/robots.txt",
+    "final_url": "https://x402deploy.vercel.app/robots.txt",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:23 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::9cw47-1786175156439-100211abbed0"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/sitemap.xml",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/sitemap.xml",
+    "final_url": "https://x402deploy.vercel.app/sitemap.xml",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:45:58 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::pdv5w-1786175158913-2dfc731092e8"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/terms",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/terms",
+    "final_url": "https://x402deploy.vercel.app/terms",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:46:01 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::d9qmr-1786175161747-65e5d281790b"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/terms-and-conditions",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/terms-and-conditions",
+    "final_url": "https://x402deploy.vercel.app/terms-and-conditions",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:46:01 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::qdth9-1786175162199-e58951e73317"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/terms-of-service",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/terms-of-service",
+    "final_url": "https://x402deploy.vercel.app/terms-of-service",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:46:01 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::qdth9-1786175162064-4763ccfdc5ab"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/tos",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/tos",
+    "final_url": "https://x402deploy.vercel.app/tos",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:46:01 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::gwvtx-1786175161890-510c2a690a85"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  },
+  {
+   "method": "GET",
+   "url": "https://x402deploy.vercel.app/v1",
+   "ua": "browser",
+   "result": {
+    "url": "https://x402deploy.vercel.app/v1",
+    "final_url": "https://x402deploy.vercel.app/v1",
+    "status": 404,
+    "headers": {
+     "age": "0",
+     "cache-control": "public, max-age=0, must-revalidate",
+     "content-length": "22",
+     "content-type": "application/json",
+     "date": "Sat, 08 Aug 2026 07:46:00 GMT",
+     "server": "Vercel",
+     "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+     "x-vercel-cache": "MISS",
+     "x-vercel-id": "sfo1::iad1::pdv5w-1786175160603-9f51052f888e"
+    },
+    "text": "{\"detail\":\"Not Found\"}",
+    "error": null
+   }
+  }
+ ]
+}

@@ -1,0 +1,57 @@
+{
+  "ts": "20260808T074103Z",
+  "kind": "local-baseline-pin",
+  "cycle": "Local cycle 20260808T074103Z",
+  "track": "TRUTH",
+  "domain": "x402deploy.vercel.app",
+  "what": "Pinned x402deploy.vercel.app as the TWELFTH frozen-replay calibration baseline (73.9 C v0.7) — the THIRD non-anchor baseline with a GENUINE LIVE x402 handshake (thebotwire.com and api.x402oracle.com are the first two), and the SECOND tx-100 live-x402 witness. Direct-to-main, same class as the thebotwire/api.x402oracle/exa.ai/ipinfo/api.replicate/moleskine baseline pins. Executes the standing P2 [LOCAL] candidate 'A THIRD non-anchor LIVE-x402 calibration point'.",
+  "live_x402_confirmation_at_capture_time": {
+    "endpoint": "https://x402deploy.vercel.app/api/serp",
+    "obs_1": {
+      "GET /api/serp": "HTTP 402",
+      "body": "x402 payment-required JSON (serviceName 'x402 Web & Data Tools', accepts[] scheme exact, network base, maxAmountRequired 5000 = $0.005, asset USDC 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913, payTo 0x7aEDE9Bb3A0c28132643ED8e416e4728f03FC18f)"
+    },
+    "obs_2": {
+      "GET /api/serp": "HTTP 402",
+      "payment_required_header": "present (base64 x402 offer, decoded == obs_1 terms: scheme exact, network base, amount 5000, asset USDC)"
+    },
+    "obs_3_scorer_x402_probe": "x402_probe PASS 8.0/8.0 = x402-live (live 402 at https://x402deploy.vercel.app/api/serp with a parseable x402 payload)",
+    "note": "Two independent direct $0 GET observations (obs_1 + obs_2) at capture time both returned HTTP 402 with a valid x402 offer, plus the scorer's x402-live read (obs_3), confirming the live rail is stable, not a one-shot fluke. $0-compliant: only $0 GETs returning 402 were observed; NO X-PAYMENT header was ever sent, NO payment was ever signed or funded (invariant #1)."
+  },
+  "live_rescore": {
+    "source_run_file": "runs/x402deploy_vercel_app_20260808T074603.json",
+    "overall": 73.9,
+    "grade": "C",
+    "rubric": "0.7",
+    "pillars": {"access": 100.0, "legibility": 45.45454545454545, "transactability": 100.0, "trust": 33.333333333333336, "outcome": null},
+    "caps_applied": [],
+    "scored": true
+  },
+  "frozen_fixture_replay": {
+    "overall": 73.9,
+    "grade": "C",
+    "rubric": "0.7",
+    "pillars": {"access": 100.0, "legibility": 45.45454545454545, "transactability": 100.0, "trust": 33.333333333333336, "outcome": null},
+    "replay_misses": 0,
+    "scored": true
+  },
+  "expected_pinned": {
+    "overall": 73.9,
+    "grade": "C",
+    "rubric_version": "0.7",
+    "pillars": {"access": 100.0, "legibility": 45.45454545454545, "transactability": 100.0, "trust": 33.333333333333336, "outcome": null}
+  },
+  "agreement": "live 73.9 == frozen fixture-replay 73.9 == EXPECTED 73.9; all 4 non-null pillars byte-identical; replay_misses=0; caps empty",
+  "offering_claimed_archetypes": ["data_retrieval", "metered_api"],
+  "offering_na_archetypes": ["digital_good", "physical_good", "service_booking", "subscription"],
+  "offering_surfaces_seen": ["/llms.txt", "/openapi.json", "homepage"],
+  "honest_classification_note": "Classified HONESTLY to exactly {metered_api, data_retrieval} on the FRESH live capture — a thin single-vertical x402 Web & Data Tools gateway (SERP scraper + crypto price + weather + geoip + dns + news). metered_api signals (17): x402 + pay-per + post-endpoint + api-auth (USDC on Base, no API key) + per-unit-rate + payment-challenge-retry + error-contract, all genuine x402/API evidence. data_retrieval signals (4): lookup ('Crypto price lookup ... by CoinGecko') + data-service ('x402 Data API ... HTTP data API'). No multi-vertical topic-word prose to over-claim, so NO FP-family guards were needed (unlike thebotwire's news catalog, which needed five). Not manufactured.",
+  "capability_note": "transactability 100.0 = x402-live (8/8, a GENUINE live handshake) + per-service MCP (2/2) + self-serve PAYG (6/6) — the SAME maxed shape as thebotwire.com (100.0). This is the THIRD non-anchor live-x402 witness and the SECOND at tx=100. Its calibration value is the 'live rail NECESSARY but not SUFFICIENT' statement, which needs >=2 same-tx points at different overalls to make non-trivially: with transactability tied at its 100.0 ceiling on both x402deploy (73.9) and thebotwire (86.0), the 12.1-point overall gap is forced entirely onto legibility (45.5 vs 86.4) and trust (33.3 vs 43.3) — proof a maxed agent-native rail does not by itself buy a high score, the honest counterweight to the +39.4 pair. Worded by capability, never by vendor. Does NOT touch the canonical PAIR delta (+39.4, unmoved).",
+  "third_non_anchor_live_x402_point": "This is the THIRD non-anchor LIVE-x402 calibration witness (thebotwire.com 86.0 B tx 100.0 is the first, api.x402oracle.com 64.4 D tx 87.5 is the second). The live/upper scale now carries THREE non-anchor points across two tx shapes: two at tx=100 (thebotwire 86.0, x402deploy 73.9 — distinct overalls prove the rail is necessary-not-sufficient) and one at tx=87.5 (oracle 64.4 — no MCP bonus).",
+  "files_changed": [
+    "fixtures/canonical/x402deploy.vercel.app.json (NEW, full-score fixture, 49 fetch entries)",
+    "tests/test_canonical_replay.py (EXPECTED += x402deploy.vercel.app; _REPLAY_CLEAN += x402deploy.vercel.app; new guard test_second_full_live_x402_replays_73_9 with necessary-but-not-sufficient teeth: x402deploy tx == thebotwire tx == 100.0 YET x402deploy overall 73.9 < thebotwire 86.0, gap located in legibility/trust; runner registration)",
+    "tests/test_{hashseed,timezone,encoding,locale,probe_order}_reproducibility.py (_POPULATION += x402deploy.vercel.app — the replay-clean-set completeness tripwires forced consistent inclusion; population 11->12)"
+  ],
+  "invariants": "off-scoring-SEMANTICS EMPTY (git diff over asrs/ rubric/ experiments/ EMPTY); frozen canonical delta UNMOVED +39.4 (46.1/85.5); live +30.1 (/extend still 401); suite 38/38; test_canonical_replay 33->34 (guard registered); frozen-replay baselines 11->12. $0 static capture + in-process replay + $0 GET x402 probes, NO behavioral/codex/paid/zero-CLI, NO payment signed. Stayed in-repo."
+}

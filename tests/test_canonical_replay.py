@@ -359,6 +359,44 @@ EXPECTED = {
             "outcome": None,
         },
     },
+    # A TWELFTH real-domain calibration datapoint — a purpose-built agent-native
+    # x402 "Web & Data Tools" gateway (x402deploy.vercel.app, a SERP / crypto-price
+    # / weather / geoip data API), and the THIRD non-anchor baseline with a GENUINE
+    # LIVE x402 handshake (thebotwire.com and api.x402oracle.com are the first two):
+    # GET /api/serp answers a $0 GET with HTTP 402 and a valid x402
+    # `payment-required` offer header (USDC on Base, $0.005), so the scorer's
+    # `x402_probe` reads `x402-live` 8.0/8.0. It claims exactly TWO archetypes
+    # {metered_api, data_retrieval} (digital_good / physical_good / service_booking
+    # / subscription all NA — a thin single-vertical data gateway, no topic-word
+    # over-claim, so no FP-family guards were needed). Its fixture was captured
+    # full-score LIVE [LOCAL] this cycle (Local cycle 20260808T074103Z) with the live
+    # x402 confirmed stable across ≥2 direct observations at capture time (obs_1 GET
+    # body 402 + obs_2 `payment-required` header 402 + the scorer's x402-live), and
+    # replays CLEAN (0 misses); its live score was re-verified == this frozen floor on
+    # the same $0 static re-score (live 73.9 == frozen 73.9, all four non-null pillars
+    # byte-identical). Its transactability is 100.0 — x402-live (8) + per-service MCP
+    # (2) + self-serve PAYG (6) — the SAME maxed shape as thebotwire.com (100.0), yet
+    # its overall (73.9) sits WELL BELOW thebotwire's (86.0): the SECOND tx-100
+    # live-x402 witness at a DISTINCT overall makes the "live rail is NECESSARY but
+    # not SUFFICIENT" statement non-trivial — with transactability held at its
+    # ceiling on both, the overall gap (86.0 vs 73.9) is driven entirely by
+    # legibility (45.5 vs 86.4) and trust (33.3 vs 43.3), so a maxed agent-native
+    # rail does not by itself buy a high score. Worded by capability, never by
+    # vendor. Because its rail is LIVE (volatile), a future 402→other drop reddens
+    # the replay-clean guard (fixture frozen) and flags a re-capture — the same
+    # contract as the domains above.
+    "x402deploy.vercel.app": {
+        "overall": 73.9,
+        "grade": "C",
+        "rubric_version": "0.7",
+        "pillars": {
+            "access": 100.0,
+            "legibility": 45.45454545454545,
+            "transactability": 100.0,
+            "trust": 33.333333333333336,
+            "outcome": None,
+        },
+    },
 }
 EXPECTED_DELTA = 39.4  # driftflight.com (rails) - drift-flight.org (no rails)
 
@@ -988,6 +1026,67 @@ def test_pure_metered_api_live_x402_replays_64_4() -> None:
         r_tx == 0.0 < o_tx,
         f"the live x402 rail moves transactability off the floor: pure-metered_api "
         f"WITH a rail {o_tx} > WITHOUT a rail {r_tx} (== 0.0)",
+    )
+
+
+# ---------------------------------------------------------------------------
+# 6i. TWELFTH-DOMAIN CALIBRATION — a purpose-built agent-native x402 "Web & Data
+#     Tools" gateway (x402deploy.vercel.app), the THIRD non-anchor baseline
+#     carrying a live rail (thebotwire.com and api.x402oracle.com are the first
+#     two). This replays the committed x402deploy.vercel.app fixture through the
+#     same real pipeline and pins its 73.9 C on rubric v0.7. Its teeth state the
+#     "live rail is NECESSARY but not SUFFICIENT" property that no single-witness
+#     guard can: x402deploy.vercel.app and thebotwire.com BOTH earn a full live
+#     x402 handshake and BOTH max transactability at 100.0 (the rail is at its
+#     ceiling on both), YET x402deploy's overall (73.9) sits strictly BELOW
+#     thebotwire's (86.0). With the heaviest pillar held equal, the overall gap is
+#     forced onto legibility and trust — proof that a maxed agent-native rail does
+#     not by itself buy a high score, the honest counterweight to the +39.4 pair.
+#     A probe/scoring change that let transactability alone drive the overall (e.g.
+#     collapsed legibility/trust into the transactability signal) would tie these
+#     two and redden here. Worded by capability, never by vendor: it asks "with the
+#     rail maxed on both, does the rest of the offer still move the score?", never
+#     "is this domain X?". Because the rail is LIVE (volatile), a future 402→other
+#     drop reddens the replay-clean guard (fixture frozen) and flags a re-capture.
+# ---------------------------------------------------------------------------
+def test_second_full_live_x402_replays_73_9() -> None:
+    print("test_second_full_live_x402_replays_73_9")
+    _assert_domain("x402deploy.vercel.app")
+    # Necessary-but-not-sufficient teeth: two GENUINE live-x402 storefronts BOTH
+    # max transactability at 100.0, yet the one with thinner legibility/trust scores
+    # strictly lower overall — the maxed rail is necessary for the top tier but not
+    # sufficient on its own.
+    x402d, x402d_misses = _score_fixture("x402deploy.vercel.app")
+    tbw, tbw_misses = _score_fixture("thebotwire.com")
+    _check(
+        not (x402d_misses or tbw_misses),
+        "no replay-miss on x402deploy.vercel.app / thebotwire.com",
+    )
+    _check(
+        _by_id(x402d, "x402_probe").status is Status.PASS
+        and _by_id(x402d, "x402_probe").finding == "x402-live",
+        "x402deploy.vercel.app: x402_probe passes with a LIVE handshake (x402-live)",
+    )
+    x_tx = x402d.pillar_scores["transactability"]
+    t_tx = tbw.pillar_scores["transactability"]
+    _check(
+        x_tx == t_tx == 100.0,
+        f"both live-x402 storefronts max transactability (x402deploy {x_tx} == "
+        f"thebotwire {t_tx} == 100.0)",
+    )
+    _check(
+        x402d.overall_score < tbw.overall_score,
+        f"the maxed rail is NOT sufficient: with transactability tied at 100.0, "
+        f"x402deploy.vercel.app overall {x402d.overall_score} < thebotwire.com "
+        f"{tbw.overall_score} (driven by legibility/trust, not the rail)",
+    )
+    _check(
+        x402d.pillar_scores["legibility"] < tbw.pillar_scores["legibility"]
+        and x402d.pillar_scores["trust"] < tbw.pillar_scores["trust"],
+        f"the overall gap is located in the non-rail pillars: x402deploy legibility "
+        f"{x402d.pillar_scores['legibility']} < thebotwire "
+        f"{tbw.pillar_scores['legibility']} AND x402deploy trust "
+        f"{x402d.pillar_scores['trust']} < thebotwire {tbw.pillar_scores['trust']}",
     )
 
 
@@ -2029,6 +2128,18 @@ _REPLAY_CLEAN = {
     # 402→other drop reddens this replay guard (fixture frozen) and flags a
     # re-capture — the honest signal, not a silent drift.
     "api.x402oracle.com",
+    # x402deploy.vercel.app captured full-score LIVE this cycle (Local cycle
+    # 20260808T074103Z): the fresh crawl covers the whole probe set (0 misses) and
+    # replays to its pinned 73.9 C. It is the THIRD non-anchor member with a GENUINE
+    # LIVE x402 handshake (GET /api/serp → HTTP 402 + a valid x402 payment-required
+    # offer → x402_probe x402-live 8.0/8.0 → transactability 100.0) and the SECOND
+    # tx-100 witness (thebotwire.com is the first): with the rail maxed on both, its
+    # LOWER overall (73.9 vs 86.0) isolates the legibility/trust contribution, so the
+    # live/upper calibration scale now carries two same-tx points at distinct
+    # overalls. Because its rail is LIVE (volatile), a future 402→other drop reddens
+    # this replay guard (fixture frozen) and flags a re-capture — the honest signal,
+    # not a silent drift.
+    "x402deploy.vercel.app",
 }
 # Fixtures whose recorded surface is a strict subset of the full scoring path
 # (captured for offering/battery classification) — NOT eligible for any
@@ -2388,6 +2499,7 @@ def main() -> int:
         test_agent_native_api_service_replays_78_1,
         test_live_x402_storefront_replays_86_0,
         test_pure_metered_api_live_x402_replays_64_4,
+        test_second_full_live_x402_replays_73_9,
         test_retail_storefront_earns_no_agent_native_payment,
         test_relabel_invariance_retail,
         test_nonstorefront_replays_22_5,

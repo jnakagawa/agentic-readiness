@@ -96,6 +96,7 @@ _POPULATION = (
     "ipinfo.io",
     "thebotwire.com",
     "www.moleskine.com",
+    "x402deploy.vercel.app",
 )
 
 # Deterministic shuffle seeds (NOT unseeded randomness — the permutations must be

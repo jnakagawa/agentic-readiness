@@ -96,6 +96,7 @@ _POPULATION = (
     "ipinfo.io",
     "thebotwire.com",
     "www.moleskine.com",
+    "x402deploy.vercel.app",
 )
 
 # The three system-locale environments. ``C`` is always present; the two foreign

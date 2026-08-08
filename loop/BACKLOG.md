@@ -9,24 +9,9 @@ design in-cloud, execute locally.
 20260806T214745Z) pruned this fire (Local cycle 20260807T104102Z) — both fully preserved in loop/LOG.md + git
 history; removing them keeps the completed-marker byte budget bounded. -->
 
-<!-- OPENED Local cycle 20260806T235421Z: v0.7(f) `_ENV_BLOCK_RE` -> `browser (?:site[- ])?access(?: permission)?`
-AUTHORED as PEER-GATED PR #150 (branch loop/env-block-browser-site-access-v07f, commit 166d6db), NOT self-merged —
-fixes the 5th own-tool vocab-drift leak (codex .org "Browser site-access permission ... declined", run record
-runs/drift-flight_org_20260806T205238.json codex t2, counting as a valid NO-rails SITE run; invariant #4). Differential
-leak-scan over 1417 committed run-record string leaves: EXACTLY 1 flip OLD->NEW, ZERO collateral, ZERO loss (strict
-superset); off-scoring-path diff EMPTY (shopper.py +24 + test_attribution.py +95); static replay 26/26 +39.4 UNMOVED;
-suite 38/38; test_attribution 15->16 (#16 teeth track the LIVE pattern; #15 revert-target repaired). DO NOT RE-AUTHOR —
-TRACKED by STATE's OPEN-PR banner + next fire's first-duty adversarial review + live re-score. See LOG Local cycle
-20260806T235421Z. -->
-
-<!-- MERGED: PR #150 (v0.7(f) `_ENV_BLOCK_RE` -> `browser (?:site[- ])?access(?: permission)?`) OPERATOR-MERGED by
-jnakagawa (merge 07cf47d, 2026-08-07T00:49:50Z) — SKIPPED the loop's pre-merge peer review. Local cycle 20260807T051750Z
-ran the owed post-merge adversarial review + independent live re-derivation. VERDICT SOUND: off-scoring-path (only
-shopper.py +24/-2 + test_attribution.py +95); differential leak-scan RE-DERIVED over 191 committed run JSONs / 9125
-string leaves -> NEW-only = EXACTLY the one .org "Browser site-access permission ... declined" leak, ZERO collateral,
-OLD-only 0 (strict superset, ZERO loss); test_attribution 16/16 + test_canonical_replay 26/26 (46.1/85.5/+39.4 UNMOVED)
-re-run independently; suite 38/38. Merge stands, no revert. 5th own-tool vocab drift; leak-scan re-run each fire, no NEW
-drift this fire. See LOG Local cycle 20260807T051750Z. -->
+<!-- Two fully-superseded PR #150 markers (v0.7(f) `_ENV_BLOCK_RE` OPENED 20260806T235421Z + MERGED/post-merge-review
+20260807T051750Z) pruned this fire (Local cycle 20260808T074103Z) to keep closed-marker bytes under the hygiene cap —
+both preserved verbatim in loop/LOG.md + git history. -->
 
 <!-- OPENED Local cycle 20260807T054210Z: the documented-live-drift-ledger P0 (reconcile the cross-path weld +
 readout goldens with the persistent live x402 regression) is AUTHORED as PEER-GATED PR #151 (branch
@@ -239,20 +224,32 @@ check set) + _POPULATION x5 (10->11). Off-scoring-SEMANTICS EMPTY; frozen delta 
 suite 38/38; baselines 10->11. Direct-to-main. Evidence
 runs/local/x402oracle_second_live_x402_baseline_20260808T065659Z.json; LOG Local cycle 20260808T065659Z. -->
 
-- **[P2 — TRUTH/COVERAGE, LOCAL, candidate] A THIRD non-anchor LIVE-x402 calibration point**, so the live/upper scale keeps
-  densifying (thebotwire.com 86.0 B tx 100 + api.x402oracle.com 64.4 D tx 87.5 are the first two non-anchor live-x402
-  witnesses). Lead candidate: **x402deploy.vercel.app** (73.9 C; {metered_api, data_retrieval}; access 100.0/legibility
-  45.45/**tx 100.0**/trust 33.33) — GATE-clean this fire (Local cycle 20260808T065659Z): live x402 handshake at `/api/serp`
-  (HTTP 402, x402-v2 "x402 Web & Data Tools" gateway, x402_probe 8.0/8.0), HONEST classification {metered_api,
-  data_retrieval}, fresh /tmp fixture replays CLEAN (0 misses) live 73.9 == frozen 73.9. NOT pinned this fire (one item per
-  cycle; the oracle was the higher-value pick — see the DONE marker above). To pin next cadence: re-confirm the live x402
-  STABLE across >=2 fresh $0 obs at capture time (its rail is LIVE/volatile), re-capture the fixture full-score, then pin
-  as the exa.ai/thebotwire recipe (EXPECTED + _REPLAY_CLEAN + guard + _POPULATION x5), direct-to-main, off-scoring-SEMANTICS.
-  It duplicates thebotwire's tx-100 shape at a distinct overall (73.9), so its calibration value is "live rail necessary but
-  not sufficient — legibility/trust still move the overall." A future PEER-GATED weld can cross-path-weld thebotwire.com /
-  api.x402oracle.com / x402deploy.vercel.app once each carries a genuinely-compared calibration-sweep presence (add to
-  experiments/calibration_sweep.py POPULATION first — the books.toscrape.com pattern). WATCH driftflight.com /extend for a
-  402 recovery (restores the anchor's live handshake + the +39.4 live delta).
+<!-- DONE Local cycle 20260808T074103Z: the P2 "A THIRD non-anchor LIVE-x402 calibration point" is EXECUTED — pinned
+x402deploy.vercel.app as the TWELFTH frozen-replay baseline (73.9 C v0.7; access 100.0/legibility 45.45/tx 100.0/trust
+33.33), a purpose-built agent-native x402 "Web & Data Tools" gateway ({metered_api, data_retrieval}) and the THIRD
+non-anchor baseline with a GENUINE LIVE x402 handshake / SECOND tx-100 witness. Its calibration value is the second tx-100
+point: with tx held at its 100.0 ceiling on BOTH x402deploy (73.9) and thebotwire (86.0), the overall gap is forced onto
+legibility (45.5 vs 86.4) + trust (33.3 vs 43.3) — the "live rail NECESSARY but not SUFFICIENT" statement, non-trivial only
+with >=2 same-tx points at distinct overalls. GATE cleared on a FRESH capture: (a) live x402 STABLE across >=2 $0 obs
+(GET /api/serp 402 body + 402 payment-required header + scorer x402_probe 8.0/8.0 x402-live; offer USDC on Base, $0.005;
+NO payment signed, inv #1); (b) HONEST classification exactly {metered_api, data_retrieval} (thin single-vertical gateway,
+no over-claim, NO FP-family guards needed); (c) fresh full-score capture -> live 73.9 == frozen fixture-replay 73.9 ==
+EXPECTED 73.9, all 4 non-null pillars byte-identical, replay_misses=0, caps empty. Installed
+fixtures/canonical/x402deploy.vercel.app.json (NEW, 49 entries) + EXPECTED + _REPLAY_CLEAN + guard
+test_second_full_live_x402_replays_73_9 (necessary-but-not-sufficient teeth: x402deploy tx == thebotwire tx == 100.0 YET
+x402deploy overall 73.9 < thebotwire 86.0, gap in legibility/trust) + _POPULATION x5 (11->12). Off-scoring-SEMANTICS EMPTY;
+frozen delta UNMOVED +39.4 (replay 33->34); live +30.1; suite 38/38; baselines 11->12. Direct-to-main. Evidence
+runs/local/x402deploy_third_live_x402_baseline_20260808T074103Z.json; LOG Local cycle 20260808T074103Z. -->
+
+- **[P2 — TRUTH/COVERAGE, LOCAL, candidate] The three non-anchor live-x402 witnesses can now be CROSS-PATH WELDED**
+  (thebotwire.com 86.0 / api.x402oracle.com 64.4 / x402deploy.vercel.app 73.9), the exa.ai/moleskine weld pattern — but each
+  must FIRST carry a genuinely-compared calibration-sweep presence: add all three to `experiments/calibration_sweep.py`
+  POPULATION and run a $0 static cadence sweep (the books.toscrape.com prerequisite pattern, Local cycle 20260807T134105Z),
+  THEN a PEER-GATED PR welds them into `_NON_ANCHOR_WELDED` non-vacuously (n_compared>=1, teeth). This would extend the
+  cross-path weld to live-x402 storefront TYPES (currently 7 non-anchor witnesses, none with a LIVE rail). The live/upper
+  scale is now well-densified by three witnesses across two tx shapes, so the next TRUTH BROADENING should prefer a
+  genuinely NEW rail TYPE (a live ACP/UCP/MPP handshake merchant) over a fourth x402 point. WATCH driftflight.com /extend for
+  a 402 recovery (restores the anchor's live handshake + the +39.4 live delta).
 
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
   phrasing has now drifted the `_ENV_BLOCK_RE` guard FIVE times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)

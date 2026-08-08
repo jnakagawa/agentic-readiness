@@ -1,30 +1,33 @@
 # Loop state
 
-- Cycle counter: 303
-- **✅ api.x402oracle.com PINNED as the ELEVENTH frozen-replay calibration baseline this fire (Local
-  20260808T065659Z, direct-to-main) — the SECOND non-anchor baseline with a GENUINE LIVE x402 handshake,
-  executing the standing P1 [LOCAL] candidate.** With thebotwire.com (the FIRST non-anchor live-x402 point)
-  closed last fire, the guard's live/upper scale rested on a single non-anchor witness; this adds a second.
-  **64.4 D v0.7** (access 100.0 / legibility 36.36 / **tx 87.5** / trust 20.0) — a PURE `{metered_api}` x402
-  "trust oracle" (returns a pre-payment trust verdict for other x402 endpoints). Chosen over x402deploy.vercel.app
-  (73.9 C) for the stronger, non-redundant science: its **tx 87.5** = x402-live (8) + self-serve PAYG (6) with
-  NO MCP bonus (0/2) is the IDENTICAL transactability SHAPE as the with-rails anchor (driftflight.com 87.5) — so
-  the anchor's 87.5 is a capability fact, not an anchor quirk — AND it is the CONTROLLED complement of the no-rails
-  api.replicate.com (also pure `{metered_api}` but NO rail → tx 0.0): same archetype, opposite rail, IDENTICAL
-  check set, so the tx gap **0.0 → 87.5** is isolated to the agent-native rail (the cleanest single-variable
-  statement of the +39.4 delta's cause on two same-type witnesses). GATE cleared on a FRESH capture: (a) live x402
-  STABLE across 3 independent $0 obs (`GET /v1/check` 402 body + 402 `payment-required` header + scorer `x402_probe`
-  8.0/8.0 `x402-live`; offer USDC on Base, $0.002; **NO payment signed, inv #1**); (b) HONEST classification exactly
-  `{metered_api}` (thin single-purpose gateway, no over-claim); (c) fresh full-score capture → live **64.4 == frozen
-  fixture-replay 64.4 == EXPECTED 64.4**, all 4 non-null pillars byte-identical, replay_misses=0, caps empty.
-  Installed `fixtures/canonical/api.x402oracle.com.json` (NEW, 42 entries) + `EXPECTED` + `_REPLAY_CLEAN` + guard
-  `test_pure_metered_api_live_x402_replays_64_4` (rail-isolation teeth: api.replicate 0.0 < oracle 87.5) +
-  `_POPULATION` ×5 (10→11). Off-scoring-SEMANTICS EMPTY (6 test files + 1 fixture); frozen delta UNMOVED **+39.4**;
-  live **+30.1** (/extend still 401); suite 38/38 (replay 32→33); frozen-replay baselines **10→11**. Because its
-  rail is LIVE (volatile), the replay-clean guard doubles as a live-rail drift tripwire. Evidence
-  `runs/local/x402oracle_second_live_x402_baseline_20260808T065659Z.json`; LOG Local cycle 20260808T065659Z.
-  **NEXT live-x402 broadening candidate (a THIRD point):** x402deploy.vercel.app (73.9 C, {metered_api,
-  data_retrieval}, tx 100.0) — GATE-clean this fire, pinnable next cadence (P2).
+- Cycle counter: 304
+- **✅ x402deploy.vercel.app PINNED as the TWELFTH frozen-replay calibration baseline this fire (Local
+  20260808T074103Z, direct-to-main) — the THIRD non-anchor baseline with a GENUINE LIVE x402 handshake and the
+  SECOND tx-100 witness, executing the standing P2 [LOCAL] candidate.** **73.9 C v0.7** (access 100.0 / legibility
+  45.45 / **tx 100.0** / trust 33.33) — a purpose-built agent-native x402 "Web & Data Tools" gateway (SERP scraper
+  + crypto price + weather + geoip + dns + news), `{metered_api, data_retrieval}`. Its calibration value is the
+  SECOND tx-100 witness: with transactability held at its **100.0 ceiling on BOTH** x402deploy (73.9) and
+  thebotwire (86.0), the 12.1-pt overall gap is forced entirely onto legibility (45.5 vs 86.4) and trust (33.3 vs
+  43.3) — the **"live rail is NECESSARY but not SUFFICIENT"** statement, non-trivial only because ≥2 same-tx points
+  now sit at distinct overalls (the honest counterweight to the +39.4 pair). GATE cleared on a FRESH capture:
+  (a) live x402 STABLE across ≥2 independent $0 obs (`GET /api/serp` 402 body + 402 `payment-required` header +
+  scorer `x402_probe` 8.0/8.0 `x402-live`; offer USDC on Base, $0.005; **NO payment signed, inv #1**); (b) HONEST
+  classification exactly `{metered_api, data_retrieval}` (thin single-vertical data gateway, no over-claim, NO
+  FP-family guards needed); (c) fresh full-score capture → live **73.9 == frozen fixture-replay 73.9 == EXPECTED
+  73.9**, all 4 non-null pillars byte-identical, replay_misses=0, caps empty. Installed
+  `fixtures/canonical/x402deploy.vercel.app.json` (NEW, 49 entries) + `EXPECTED` + `_REPLAY_CLEAN` + guard
+  `test_second_full_live_x402_replays_73_9` (necessary-but-not-sufficient teeth: x402deploy tx == thebotwire tx ==
+  100.0 YET x402deploy overall 73.9 < thebotwire 86.0, gap in legibility/trust) + `_POPULATION` ×5 (11→12).
+  Off-scoring-SEMANTICS EMPTY (6 test files + 1 fixture); frozen delta UNMOVED **+39.4**; live **+30.1** (/extend
+  still 401); suite 38/38 (replay 33→34); frozen-replay baselines **11→12**. Because its rail is LIVE (volatile),
+  the replay-clean guard doubles as a live-rail drift tripwire. The live/upper scale now carries THREE non-anchor
+  witnesses across two tx shapes (thebotwire 86.0/tx100, x402deploy 73.9/tx100, oracle 64.4/tx87.5). Evidence
+  `runs/local/x402deploy_third_live_x402_baseline_20260808T074103Z.json`; LOG Local cycle 20260808T074103Z.
+- LOCAL cycle — 20260808T065659Z summarized: pinned api.x402oracle.com as the ELEVENTH frozen-replay baseline
+  (64.4 D, a PURE {metered_api} x402 "trust oracle" and the SECOND non-anchor LIVE-x402 point) — tx 87.5 (x402-live
+  + PAYG, no MCP) is the same shape as the with-rails anchor AND the controlled complement of the no-rails
+  api.replicate.com (tx 0.0), isolating the rail's tx contribution. Direct-to-main; frozen +39.4 / live +30.1;
+  baselines 10→11. Full detail in loop/LOG.md.
 - **⏳ NO OPEN PEER-GATED PR after this fire.** No open PR at fire start (`gh pr list --state open` → `[]`); this
   cycle's item was direct-to-main (a non-anchor baseline pin, off-scoring-SEMANTICS). Next fire's FIRST duty is the
   infra health check (no review owed).

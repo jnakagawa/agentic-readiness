@@ -1,0 +1,57 @@
+{
+ "ts": "20260808T020353Z",
+ "kind": "physical-good-news-catalog-precision-guard",
+ "cycle": "Local cycle 20260808T020353Z",
+ "track": "COVERAGE",
+ "rubric_version": "0.7",
+ "spend": "$0 (in-process offering classifier + unit tests only; no --behavioral, no --max-pay, no zero-CLI, no codex, no live capture)",
+ "purpose": "Execute the oldest actionable P0 [LOCAL] item: UNBLOCK the thebotwire.com pin. The subscription NEGATION guard (Local cycle 20260808T005504Z) closed 1 of 4 blocking FP families. This cycle closes the physical_good FP family (1 of the 3 remaining) via a news-catalog precision guard on its two bare signals, so a data/news-wire API's content-catalog topic words no longer conjure physical_good.",
+ "headline": "physical_good FP family CLOSED. The two bare physical_good signals `fulfillment` (\\bfulfillment\\b / \\bwarehouse\\b) and `shipping-noun` (\\bshipping rates|cost\\b) are narrowed with the file's standard positive-collocation discipline so thebotwire.com's coverage-enumeration topic words ('marketplaces, fulfillment, conversion', 'warehouse-automation vendors', 'Shipping rates, port congestion, carrier and logistics') no longer claim physical_good, while every committed physical_good anchor stays green. 2 of 4 FP families now closed (subscription + physical_good); service_booking and digital_good remain.",
+ "change": {
+  "files": ["asrs/offering.py", "tests/test_offering.py"],
+  "ship_class": "direct-to-main (offering-precision guard, off scoring-SEMANTICS; same class as the subscription negation guard 20260808T005504Z and Cycles 186/190/194/198/288/292 precision guards). scoring.py does not import offering (grep-verified) so the guard is score-neutral; no rubric version bump.",
+  "fulfillment_signal": {
+   "before": "\\bfulfil?lment\\b|\\bwarehouse\\b|\\bdelivery address\\b|\\bhome delivery\\b|\\btracking number\\b",
+   "after": "positive-collocation branches: order/goods/self/for/handle/ship/... + fulfillment; fulfillment + center/service/network/status/...; fulfil(l) your/the/an/orders; our/the/from/distribution/... + warehouse (with \\b(?!-) to drop the 'warehouse-automation' compound modifier); warehouse + inventory/stock/fulfillment/...; the three already-precise collocations (delivery address / home delivery / tracking number) unchanged.",
+   "why": "The bare \\bfulfillment\\b / \\bwarehouse\\b fired on thebotwire's coverage-list items ('marketplaces, fulfillment, conversion, DTC brand'; 'warehouse-automation vendors' -> a REPORTING-ON-an-industry collision, not OPERATING-IN it)."
+  },
+  "shipping_noun_signal": {
+   "before": "\\bshipping (address|cost|rates?|options?|method|fee|policy)\\b",
+   "after": "concrete checkout sub-nouns (address/options/method/fee/policy) UNCONDITIONAL; the two freight-market sub-nouns rates/cost GATED to a shopping context (calculate/estimate/flat/free/standard/... lead-in, or apply/calculated/at-checkout/per-order/and-taxes follow-on).",
+   "why": "The bare `shipping rates` fired on thebotwire's freight-news enumeration 'Shipping rates, port congestion, carrier and logistics'. allbirds (the only shipping-noun anchor) keys on 'shipping address and method' (concrete checkout controls -> unconditional), and NO committed fixture uses the rates/cost sub-noun, so the gate is a pure precision add."
+  }
+ },
+ "thebotwire_fp_spans_now_dodge": {
+  "fulfillment": [
+   "commerce operations trade, marketplaces, fulfillment, conversion, DTC brand NEWS -> NO physical_good (coverage-list item, no fulfillment collocation)",
+   "Robotics integrators, warehouse-automation vendors -> NO physical_good (warehouse-automation compound dropped by \\b(?!-))"
+  ],
+  "shipping-noun": [
+   "Shipping rates, port congestion, carrier and logistics -> NO physical_good (rates followed by a comma + freight topic, no shopping context)"
+  ]
+ },
+ "anchors_stay_green": {
+  "www.allbirds.com": "physical_good=['free-shipping','order-tracking','shipping-noun'] UNCHANGED (shipping-noun via 'shipping address and method')",
+  "www.moleskine.com": "physical_good=['free-shipping','order-tracking','return-window'] UNCHANGED",
+  "books.toscrape.com": "physical_good=['add-to-cart','priced-listing','stock'] UNCHANGED",
+  "polar.sh": "physical_good=['fulfillment','order-tracking'] UNCHANGED (fulfillment via 'data you need for fulfillment' -> for-collocation)",
+  "isolation_evidence": "fulfillment='ships from our warehouse' and shipping-noun='choose a shipping method' both still fire and still isolate to physical_good (test_cross_signal_archetype_isolation)"
+ },
+ "precision_bonus": "A bare 'data warehouse' and a 'warehouse-automation' vertical no longer falsely claim physical_good (latent cross-archetype FPs on the data-retrieval / news fixtures removed).",
+ "tests": {
+  "test_offering.py": "115 (pre-subscription-guard) -> 117 (post-subscription) -> 119: added test_physical_good_news_catalog_precision_synthetic (11 genuine positives each claim physical_good via the narrowed branch; 8 news-catalog/cross-archetype negatives incl. the 3 exact thebotwire spans do NOT) + test_physical_good_news_catalog_guard_is_canonical_invariant_on_real_fixtures (allbirds/moleskine/books/polar still claim; pair/api/booking/null NA)",
+  "test_offering_canonical.py": "70/70 UNCHANGED",
+  "full_suite": "38/38 suites pass"
+ },
+ "invariants_and_signals": {
+  "canonical_frozen_delta": "+39.4 UNMOVED (test_canonical_replay: drift-flight.org 46.1, driftflight.com 85.5; replay 31/31)",
+  "canonical_live_delta": "+30.1 (per verify_20260808T014103Z.json: 46.1 F / 76.2 C; driftflight.com /extend still 401)",
+  "off_scoring_semantics": "EMPTY (scoring.py does not import offering; report/scorecard offering refs are the NA READOUT strip). Score-neutral, no rubric bump.",
+  "spend": "$0; zero codex; zero zero-CLI; stayed in-repo (no fixture captured, no network)"
+ },
+ "next_actions": {
+  "remaining_fp_families": "2 of 4 still open: service_booking (guard the gerund 'booking' as a hospitality-news list item + 'appointment' as a personnel/arts-news event, keeping acuity/simplybook green) and digital_good (guard 'generations'/'render' as a news audience/topic, keeping the drift pair / polar green -- NOTE exa.ai claims digital_good via the SOLE bare `generations` signal, a pinned baseline #9 + welded member #157, so that guard must keep exa.ai's 'generations' usage firing).",
+  "then_LOCAL": "once all 4 families classify honestly, re-capture thebotwire.com $0 [LOCAL], re-verify {metered_api, data_retrieval}, and pin as the 10th frozen-replay baseline + FIRST non-anchor live-x402 point (the exa.ai recipe).",
+  "backup_candidates": "x402deploy.vercel.app (73.9 C) / api.x402oracle.com (64.4 D) -- check whether their thinner tool-gateway classifications are cleaner first."
+ }
+}

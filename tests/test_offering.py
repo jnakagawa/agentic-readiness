@@ -2261,6 +2261,112 @@ def test_subscription_negation_guard_is_canonical_invariant_on_real_fixtures():
     )
 
 
+def test_physical_good_news_catalog_precision_synthetic():
+    # NEWS-CATALOG guard for the two bare physical_good signals `fulfillment`
+    # (\bfulfillment\b / \bwarehouse\b) and `shipping-noun` (\bshipping rates/cost\b).
+    # A multi-vertical data/news-wire API ENUMERATES the commerce/logistics topics
+    # its wires COVER — "marketplaces, fulfillment, conversion, DTC brand",
+    # "warehouse-automation vendors", "Shipping rates, port congestion, carrier and
+    # logistics" — and the bare tokens fired on those coverage-list items, CONJURING
+    # physical_good on a storefront that fulfills/ships nothing (the thebotwire.com
+    # pin blocker: the physical_good family, 1 of the 3 FP families left after the
+    # subscription negation guard). The narrowing requires a genuine fulfillment
+    # collocation (the file's positive-collocation discipline) and gates the
+    # freight-market sub-nouns `rates`/`cost` to a shopping context. Each POSITIVE
+    # fires physical_good via the narrowed `fulfillment`/`shipping-noun` branch (no
+    # sibling rescuing it); each NEGATIVE is a coverage-enumeration / cross-archetype
+    # topic word that must NOT claim physical_good.
+    positives = {
+        # genuine fulfillment prose (the storefront's OWN operation)
+        "order fulfillment": "We handle order fulfillment end to end.",
+        "for fulfillment (polar form)": "Attach the custom data you need for fulfillment.",
+        "fulfillment center": "Our fulfillment center ships worldwide.",
+        "fulfill orders": "We fulfill orders from three regional hubs.",
+        "ships from our warehouse": "Orders ship from our warehouse within 24 hours.",
+        "warehouse inventory": "Live warehouse inventory syncs to your store.",
+        # genuine shipping prose (concrete checkout controls + gated rates/cost)
+        "shipping address": "Enter your shipping address at checkout.",
+        "shipping method": "Choose a shipping method.",
+        "calculate shipping rates": "Calculate shipping rates at checkout.",
+        "flat shipping rate": "Flat shipping rate on all orders.",
+        "shipping costs calculated": "Shipping costs are calculated at checkout.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("shop.test", {"homepage": text})
+        assert prof.claims("physical_good"), (name, prof.archetypes)
+        fired = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "physical_good"
+            for s in c.signals
+        }
+        assert fired & {"fulfillment", "shipping-noun"}, (name, sorted(fired))
+    print(
+        f"  ok: {len(positives)} genuine fulfillment/shipping phrasings each claim "
+        f"physical_good via the narrowed fulfillment/shipping-noun branch"
+    )
+
+    negatives = {
+        # the exact thebotwire.com false-positive spans (quoted from the pin attempt)
+        "tbw fulfillment list": (
+            "Commerce operations trade, marketplaces, fulfillment, conversion, DTC brand news."
+        ),
+        "tbw warehouse compound": "Robotics integrators, warehouse-automation vendors.",
+        "tbw shipping list": "Shipping rates, port congestion, carrier and logistics.",
+        # other coverage-enumeration / cross-archetype topic words the guard covers
+        "data warehouse": "Our data warehouse ingests billions of events nightly.",
+        "fulfillment costs news": "The logistics sector saw fulfillment costs rise this quarter.",
+        "freight rates news": "Shipping rates hit record highs across freight markets.",
+        "warehouse-automation sector": "The warehouse-automation sector is booming.",
+        "coverage verticals": "Verticals we cover: retail, logistics, fulfillment, and warehousing.",
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("wire.test", {"homepage": text})
+        assert not prof.claims("physical_good"), (name, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} news-catalog/cross-archetype strings do NOT claim "
+        f"physical_good (precision)"
+    )
+
+
+def test_physical_good_news_catalog_guard_is_canonical_invariant_on_real_fixtures():
+    # NON-VACUOUS score-neutrality: the news-catalog guard is a NARROWING of two
+    # existing physical_good signals, so the only risk is a FALSE NEGATIVE on a
+    # committed anchor — a genuine physical_good claim disappearing because its
+    # fulfillment/shipping evidence sat in a form the narrowed branch no longer
+    # matches. Replay every committed physical_good-relevant fixture through the REAL
+    # discovery path and pin that the claim is unchanged: the three physical_good
+    # anchors (books.toscrape retail catalog, www.allbirds mixed-retail via
+    # "shipping address/method", www.moleskine retail) STILL claim physical_good, the
+    # polar.sh full-spectrum merchant STILL claims it via "data you need for
+    # fulfillment", and no NA fixture (the flight-API pair / api / booking / null)
+    # gains it. This is the guard's canonical tripwire — the exact property
+    # test_offering_canonical.py asserts, restated here against the fixtures that
+    # carry (or renounce) physical_good so a future edit that broke it is caught in
+    # this file too.
+    expect = {
+        "www.allbirds.com": True,   # shipping address/method + free-shipping + order-tracking
+        "www.moleskine.com": True,  # free-shipping + order-tracking + return-window
+        "books.toscrape.com": True, # add-to-cart + priced-listing + stock
+        "polar.sh": True,           # "data you need for fulfillment" (for-collocation)
+        "driftflight.com": False,
+        "drift-flight.org": False,
+        "acuityscheduling.com": False,
+        "api.replicate.com": False,
+        "example.com": False,
+    }
+    for dom, claims_pg in expect.items():
+        ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        prof = offering.discover_offering(ctx)
+        assert prof.claims("physical_good") == claims_pg, (
+            dom, claims_pg, prof.archetypes
+        )
+    print(
+        "  ok: news-catalog guard leaves the canonical physical_good claims "
+        "invariant (retail anchors + polar still claim; pair/api/booking/null NA)"
+    )
+
+
 def test_usage_based_metered_precision_synthetic():
     # The metered_api bank's last cheap bare-word signal hardened (siblings:
     # enrich/dataset/lookup for data_retrieval, book/schedule for service_booking,
@@ -6259,6 +6365,8 @@ def main() -> int:
         test_subscription_recurring_precision_synthetic,
         test_subscription_negation_disclaimer_precision_synthetic,
         test_subscription_negation_guard_is_canonical_invariant_on_real_fixtures,
+        test_physical_good_news_catalog_precision_synthetic,
+        test_physical_good_news_catalog_guard_is_canonical_invariant_on_real_fixtures,
         test_usage_based_metered_precision_synthetic,
         test_payment_challenge_retry_precision_synthetic,
         test_payment_challenge_retry_fires_on_real_captured_surfaces,

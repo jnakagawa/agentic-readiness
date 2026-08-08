@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 298
+- Cycle counter: 299
 - **✅ PR #157 (exa.ai 7th non-anchor cross-path calibration weld — the FIRST welded member with GENUINE
   partial agent-native rails) MERGED this fire (Local 20260807T205300Z), merge `cf0df08`** — after the owed
   FIRST-DUTY adversarial review + independent $0 live re-score. VERDICT SOUND: off-scoring-path (three-dot diff
@@ -38,13 +38,20 @@
   polar.sh/simplybook/allbirds for lesser issues); a score-only pin was considered (86.0 is off the offering path)
   and rejected for consistency. **RE-SCOPED P0 — pin is BLOCKED on offering precision, not on the score.** NEXT (A,
   preferred, in-cloud COVERAGE): harden the 4 FP families against a data/news API's content-catalog topic words —
-  **✅ subscription NEGATION guard SHIPPED Local 20260808T005504Z (`_NEG_DISCLAIMER`, direct-to-main): "no
-  subscription"/"no monthly"/"without a subscription"/"not a subscription" no longer claim subscription; on
-  thebotwire's quoted spans classify → `['metered_api']`; test_offering 115→117, canonical 70/70, suite 38/38 →
-  1 of 4 FP families CLOSED.** REMAINING 3: physical_good (fulfillment/shipping-noun tie to the storefront's OWN
-  fulfillment, not a news-category enumeration), service_booking (gerund
-  "booking" + personnel/arts "appointment"), digital_good (generations/render = an offered good, not a news topic) —
-  each precision-synthetic guarded so anchors stay green (moleskine/allbirds/acuity/simplybook/polar). THEN [LOCAL]:
+  **✅ 2 of 4 FP families CLOSED. (1) subscription NEGATION guard SHIPPED Local 20260808T005504Z (`_NEG_DISCLAIMER`,
+  direct-to-main): "no subscription"/"no monthly"/"without a subscription" no longer claim subscription. (2)
+  physical_good NEWS-CATALOG guard SHIPPED Local 20260808T020353Z (direct-to-main): the two bare physical_good signals
+  `fulfillment` (`\bfulfillment\b`/`\bwarehouse\b`) + `shipping-noun` (`shipping rates|cost`) narrowed with the file's
+  positive-collocation discipline so thebotwire's coverage enumerations ("marketplaces, fulfillment, conversion";
+  "warehouse-automation vendors"; "Shipping rates, port congestion, carrier and logistics") no longer claim
+  physical_good; allbirds/moleskine/books/polar STILL claim it; test_offering 117→119, canonical 70/70, suite 38/38;
+  precision BONUS — a bare "data warehouse"/a "warehouse-automation" vertical no longer FP physical_good. Evidence
+  `runs/local/physical_good_news_catalog_guard_20260808T020353Z.json`.** REMAINING 2: service_booking (gerund
+  "booking" as a hospitality-news list item + personnel/arts "appointment"; anchors acuity/simplybook carry 6–8
+  signals so the archetype survives), digital_good (generations/render = an offered good, not a news topic — CAUTION:
+  exa.ai claims digital_good via the SOLE bare `generations` signal, a pinned baseline #9 + welded member #157, so that
+  guard MUST keep exa.ai firing) — each precision-synthetic guarded so anchors stay green
+  (moleskine/allbirds/acuity/simplybook/polar/exa). THEN [LOCAL]:
   re-capture, re-verify honest {metered_api, data_retrieval}, pin (the exa.ai recipe) → 10th baseline, 1st non-anchor
   live-x402. BACKUP candidates x402deploy.vercel.app 73.9 C / api.x402oracle.com 64.4 D (check whether their thinner
   tool-gateway classifications are CLEANER first). **paidsync.ai** SUPERSEDED — `/api/v1` 503 across 3 cadence cycles =
@@ -262,6 +269,28 @@
   but wrote NO LOG entry and never committed/pushed (its panel dir exists gitignored). This fire re-verified #149,
   took ownership of the reconciled banner (above), and committed. No fabricated 214745Z LOG entry. STATE pruned the
   two oldest rolling entries (cloud Cycles 290–291, preserved in LOG.md) to stay under the 600-line hygiene cap.
+- LOCAL cycle — 20260808T020353Z (COVERAGE / thebotwire.com pin UNBLOCK sub-item A.2 — the PHYSICAL_GOOD NEWS-CATALOG
+  guard SHIPPED direct-to-main, closing the 2nd of the 4 blocking FP families). FIRST duty: `gh pr list --state open` →
+  `[]` (no open PR; PR #157 MERGED `cf0df08`; weld campaign #152–#157 COMPLETE); newest `verify_20260808T014103Z.json`
+  (01:41Z, 38/38 suites, 46.1 F / 76.2 C / +30.1) this hour's floor, fresh at fire (~02:04Z) → :41 cadence holding
+  (004106Z→014103Z); LOG/STATE consistent with git. No repair, no review owed. **Executed the ONE item — the next
+  actionable step of the oldest P0 (UNBLOCK thebotwire.com pin), the physical_good FP family:** narrowed the two bare
+  physical_good signals with the file's positive-collocation discipline. `fulfillment` (`\bfulfil?lment\b`/`\bwarehouse\b`)
+  now requires a genuine fulfillment collocation (order/self/for/… + fulfillment; fulfillment + center/service/…; our/the/from/…
+  + warehouse with a `\b(?!-)` tail dropping the "warehouse-automation" compound; warehouse + inventory/stock/…), and
+  `shipping-noun` keeps the concrete checkout sub-nouns (address/options/method/fee/policy) UNCONDITIONAL while gating the
+  freight-market `rates`/`cost` to a shopping context. On thebotwire's 3 exact quoted FP spans ("marketplaces, fulfillment,
+  conversion"; "warehouse-automation vendors"; "Shipping rates, port congestion, carrier and logistics") physical_good is
+  now NA; allbirds ("shipping address/method") / moleskine / books / polar ("data you need for fulfillment") STILL claim it;
+  a bare "data warehouse"/a "warehouse-automation" vertical no longer FP (precision BONUS). Tests:
+  `test_physical_good_news_catalog_precision_synthetic` (11 positives fire / 8 news-catalog negatives dodge incl. the 3 exact
+  thebotwire spans) + `test_physical_good_news_catalog_guard_is_canonical_invariant_on_real_fixtures` → test_offering 117→119,
+  test_offering_canonical 70/70, full suite 38/38. Off scoring-SEMANTICS (scoring.py doesn't import offering) → score-neutral,
+  no rubric bump. Frozen canonical delta UNMOVED +39.4 (replay 31/31); live +30.1 (verify_20260808T014103Z; driftflight.com
+  /extend still 401). Pin STILL BLOCKED on 2 FP families (service_booking, digital_good — the latter must keep exa.ai's SOLE
+  `generations` signal firing, a pinned baseline #9 + welded #157) — each a subsequent in-cloud COVERAGE precision pass, then
+  [LOCAL] re-capture + pin. Evidence `runs/local/physical_good_news_catalog_guard_20260808T020353Z.json`. $0, zero codex,
+  zero paid ops, stayed in-repo. NO DM (offering-precision guard, not a DM-enumerated sensitive class; not first-after-16:00).
 - LOCAL cycle — 20260808T005504Z (COVERAGE / thebotwire.com pin UNBLOCK sub-item A.1 — the SUBSCRIPTION NEGATION
   guard SHIPPED direct-to-main, closing 1 of the 4 blocking FP families). FIRST duty: `gh pr list --state open` →
   `[]` (no open PR; PR #157 MERGED `cf0df08`; weld campaign #152–#157 COMPLETE); newest
@@ -313,33 +342,14 @@
   pin is blocked — attribution honesty enforced, not violated); zero codex, zero paid ops; stayed in-repo. NO DM (a
   blocked pin is not a DM-enumerated sensitive class; FIRST-after-16:00 digest posted 174235Z) — thebotwire precision
   blocker flagged for next digest. See LOG Local cycle 20260807T235210Z.
-- LOCAL cycle — 20260807T225343Z (TRUTH / 🎯 2nd-x402-LIVE scarcity BROKEN — reconnaissance found THREE genuinely-NEW
-  live-x402 storefronts the shipped scorer detects at 8/8; lead thebotwire.com 86.0 B / tx 100.0; pin deferred to
-  next cadence per the ≥2-obs discipline; direct-to-main). FIRST duty: infra health check — `gh pr list --state open`
-  → `[]` (no open PR; PR #157 MERGED `cf0df08` last real cycle 205300Z; weld campaign #152–#157 COMPLETE); newest
-  `verify_20260807T224100Z.json` (22:41Z, 38 suites, 46.1 F / 76.2 C / +30.1) ~1.5min old at fire (22:42Z) → :41
-  cadence holding (214100Z→224100Z); LOG/STATE consistent with git. No repair, no review owed. **Executed the ONE
-  [LOCAL] item — the top P1-TRUTH with-rails frontier (the named next-cadence action):** (a) cadence re-probe of
-  paidsync.ai $0 static → `/api/v1` STILL 503 across THREE consecutive cadence cycles (~1h50m) ⇒ STABLE-DEGRADED
-  (persistent error, not a non-error state ⇒ path (b) does NOT apply; STILL not pinnable); (b) anchor
-  driftflight.com `/extend` STILL 401 (no recovery; live +30.1 corroborated); (c) BROADENED the hunt — a $0
-  WebSearch/WebFetch of the public x402 ecosystem directory (awesome-x402) + probing 14 candidates on the scorer's
-  default target paths then documented deep endpoints → **THREE storefronts return a live x402 402-handshake the
-  ASRS scorer detects AS SHIPPED at `x402_probe` 8.0/8.0 (`x402-live`):** thebotwire.com **86.0 B** (tx 100.0,
-  probed /payments/latest — LEAD, a NEW distinct HIGH above driftflight frozen 85.5, the FIRST non-anchor LIVE-x402
-  point), x402deploy.vercel.app 73.9 C (tx 100.0, /api/serp), api.x402oracle.com 64.4 D (tx 87.5, /v1/check).
-  thebotwire.com is a deliberate stable agent-native storefront (root JSON manifest, /llms.txt, stateless MCP,
-  clean x402 payloads + $0.005 pricing), x402-live confirmed TWICE within-cycle (scorer 8/8 + independent re-curl).
-  **PIN DEFERRED to next cadence** (consistent with the ≥2-cadence-obs discipline applied to paidsync; live x402 is
-  volatile — the anchor regressed) — next cadence re-confirm thebotwire.com x402-live, then capture fixture $0 +
-  verify replay-clean/honest classification non-destructively + pin EXPECTED + `_REPLAY_CLEAN` + guard (teeth
-  0.0<50.0<100.0) + `_POPULATION` (direct-to-main, exa.ai recipe) → 10th baseline. Direct-to-main (pure
-  off-scoring-path recon artifact + docs; scoring-path diff EMPTY; same class as the 214332Z/205300Z recons). Full
-  suite re-run 654 passed / 38 suites. Frozen canonical delta UNMOVED +39.4; live +30.1. Evidence
-  `runs/local/rails_recon_20260807T225343Z.json` (+ committed source runs thebotwire/x402deploy/x402oracle/paidsync).
-  Invariants #1 ($0 static scorer + unsigned read-only 402 probes, no behavioral/codex/paid/zero-CLI)–#5 held; zero
-  codex, zero paid ops; stayed in-repo. NO DM (off-path recon not a DM-enumerated sensitive class; FIRST-after-16:00
-  digest posted 174235Z) — the 2nd-x402-live find flagged for next digest. See LOG Local cycle 20260807T225343Z.
+<!-- Rolling entry for Local cycle 20260807T225343Z (TRUTH / 2nd-x402-LIVE scarcity BROKEN — recon found THREE
+     genuinely-NEW live-x402 storefronts the shipped scorer detects at 8/8; lead thebotwire.com 86.0 B; pin deferred
+     to next cadence) pruned this fire (Local cycle 20260808T020353Z) to stay under the STATE 600-line cap —
+     preserved verbatim in loop/LOG.md (## Local cycle — 20260807T225343Z) + git history. -->
+- LOCAL cycle — 20260807T225343Z summarized: a $0 x402-ecosystem recon BROKE the 2nd-x402-live scarcity — thebotwire.com
+  86.0 B (tx 100.0, /payments/latest), x402deploy.vercel.app 73.9 C, api.x402oracle.com 64.4 D all return a live x402
+  handshake the shipped scorer detects at 8/8; thebotwire.com became the pin LEAD (pin deferred to next cadence per the
+  ≥2-obs discipline). Direct-to-main; frozen delta UNMOVED +39.4; live +30.1. Full detail in loop/LOG.md.
 <!-- Rolling entry for Local cycle 20260807T214332Z (cadence re-probe of the with-rails frontier — paidsync.ai
      /api/v1 STILL 503 2nd cycle → still not pinnable; anchor /extend STILL 401; fresh candidate 2s.io no bare-GET
      402; direct-to-main) pruned this fire (Local cycle 20260807T235210Z) to stay under the STATE 600-line cap —

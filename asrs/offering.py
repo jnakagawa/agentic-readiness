@@ -1562,7 +1562,32 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
         # PRECISION-CRITICAL: bare "ship" is metaphorical on many agent-native
         # sites ("every image you ship"); require unambiguous fulfillment nouns.
         ("free-shipping", re.compile(r"\bfree shipping\b", _F)),
-        ("shipping-noun", re.compile(r"\bshipping (address|cost|rates?|options?|method|fee|policy)\b", _F)),
+        # NEWS-CATALOG guard (the thebotwire.com pin blocker, physical_good family,
+        # `shipping-noun` half — see the `fulfillment` guard below for the other):
+        # a multi-vertical data/news-wire API ENUMERATES the freight-market topics
+        # its wires cover — "Shipping rates, port congestion, carrier and logistics"
+        # — and the bare `shipping rates?`/`shipping cost` sub-noun fired on that
+        # coverage-list item, CONJURING physical_good on a storefront that ships
+        # nothing. The concrete CHECKOUT sub-nouns (address / options / method /
+        # fee / policy) never read as a news topic — a storefront that documents a
+        # `shipping address` or `shipping method` is operating a checkout — so they
+        # stay UNCONDITIONAL (the committed MIXED-retail anchor www.allbirds.com
+        # keys physical_good here on "shipping address and method", pinned by
+        # tests/test_offering_canonical.py). Only the two that DO read as a
+        # freight-market topic — `rates`/`cost` — are gated to a shopping context: a
+        # calculate/estimate/flat/free/standard/express/… lead-in, or a
+        # apply/calculated/at-checkout/per-order/and-taxes follow-on. So a real
+        # shop's "calculate shipping rates at checkout" / "flat shipping rate" still
+        # fires, while a wire's "Shipping rates, port congestion, …" (rates as a
+        # comma-delimited coverage item, no shopping context) does not. No committed
+        # fixture uses the rates/cost sub-noun, so the gate is a pure precision add;
+        # a real store trips add-to-cart / stock / free-shipping anyway. Off the
+        # scoring path.
+        ("shipping-noun", re.compile(
+            r"\bshipping\s+(?:address|options?|method|fee|policy)\b"
+            r"|\b(?:calculate[ds]?|estimate[ds]?|view|see|check|flat|free|standard|express|domestic|international|reduced|discounted|low|order|checkout)\s+shipping\s+(?:rates?|costs?)\b"
+            r"|\bshipping\s+(?:rates?|costs?)\s+(?:apply|applies|are\s+calculated|is\s+calculated|calculated|shown|displayed|added|included|estimated|at\s+checkout|per\s+order|per\s+item|and\s+(?:taxes|tax|fees|fee|delivery|handling|duties))\b",
+            _F)),
         ("add-to-cart", re.compile(r"\badd to (cart|bag|basket)\b|\bshopping cart\b", _F)),
         ("stock", re.compile(r"\b(in|out of|back in) stock\b", _F)),
         # PRICED CATALOG LISTING — the "understand the offer" price leg for a
@@ -1594,7 +1619,40 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
         # driftflight.com), or null (example.com) fixtures.
         ("priced-listing", re.compile(
             r"\d+[.,]\d{2}\s+(?:in stock\b|add to (?:cart|basket|bag)\b)", _F)),
-        ("fulfillment", re.compile(r"\bfulfil?lment\b|\bwarehouse\b|\bdelivery address\b|\bhome delivery\b|\btracking number\b", _F)),
+        # NEWS-CATALOG guard (the thebotwire.com pin blocker, physical_good family,
+        # `fulfillment` half — the `shipping-noun` guard above is the other half;
+        # physical_good is 1 of the 3 FP families left after the subscription
+        # negation guard, with service_booking and digital_good still to harden):
+        # a multi-vertical data/news-wire API ENUMERATES the commerce/logistics
+        # verticals its wires cover — "marketplaces, fulfillment, conversion, DTC
+        # brand" / "warehouse-automation vendors" — and the bare `\bfulfillment\b`
+        # and `\bwarehouse\b` tokens fired on those coverage-list items, CONJURING
+        # physical_good on a storefront that fulfills nothing itself. Distinct from
+        # a prior guarded minefield: the collision is a storefront REPORTING ON an
+        # industry vs OPERATING IN it. Fix = the file's standard positive-collocation
+        # discipline (cf. order-tracking / return-window / sku-inventory): NEVER
+        # match the bare token; require a genuine fulfillment collocation.
+        # `fulfillment` must be governed by an order/goods/self/for/handle/…
+        # lead-in ("order fulfillment", "data you need for fulfillment") or lead a
+        # fulfillment noun ("fulfillment center/service/network/status/…"), or the
+        # verb "fulfil(l) your/the/an/orders"; `warehouse` must carry a
+        # our/the/from/distribution/… retail lead-in ("ships from our warehouse")
+        # or lead a warehouse noun ("warehouse inventory/stock/…"), and the
+        # `warehouses?\b(?!-)` tail drops the "warehouse-automation" compound
+        # modifier. The concrete `delivery address` / `home delivery` /
+        # `tracking number` collocations were already precise and stay. Keeps the
+        # committed anchors green — polar.sh "custom data you need for fulfillment"
+        # and the isolation snippet "ships from our warehouse" both still fire (a
+        # bare "data warehouse" / a "warehouse-automation" vertical no longer do,
+        # a precision BONUS) — pinned by tests/test_offering_canonical.py. Off the
+        # scoring path.
+        ("fulfillment", re.compile(
+            r"\b(?:order|orders|goods?|products?|self|automated?|automates|handles?|manages?|completes?|completed|your|our|its|for|drop[- ]?ship|dropship|ships?|shipping|delivery)\s+fulfil?lment\b"
+            r"|\bfulfil?lment\s+(?:cent(?:er|re)s?|services?|providers?|networks?|process(?:es)?|status|partners?|teams?|warehouses?|options?|methods?|data|fields?|api|automation)\b"
+            r"|\bfulfil?l\s+(?:your|the|an?|orders?)\b"
+            r"|\b(?:our|the|from(?:\s+the|\s+our)?|distribution|fulfil?lment|central|local|regional|nearest|company|main)\s+warehouses?\b(?!-)"
+            r"|\bwarehouses?\s+(?:inventory|stock|fulfil?lment|shipping|ship|floor|team|staff|location|receives?|ships?)\b"
+            r"|\bdelivery address\b|\bhome delivery\b|\btracking number\b", _F)),
         # SKU / inventory, RETAIL sense only. A bare "\bSKU\b" over-matched the
         # COMPUTE sense — an inference API's OpenAPI spec says "The SKU for the
         # hardware used to run the model" (a GPU/hardware SKU), and bare

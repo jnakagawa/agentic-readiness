@@ -1,6 +1,18 @@
 # Loop state
 
-- Cycle counter: 310
+- Cycle counter: 311
+- **✅ gymshark.com's UCP-retail WELD PREREQUISITE DISCHARGED this fire (Local 20260808T145709Z, TRUTH, direct-to-main).**
+  First duty GREEN (`gh pr list --state open` EMPTY — PR #159 merged last fire, no review owed). The ONE item: added
+  `("gymshark.com", "ucp-live:apparel-retail")` to `experiments/calibration_sweep.py` POPULATION (24→25) + ran a $0 static
+  cadence sweep (no `--behavioral`/`--max-pay`/codex/zero-CLI, inv #1 by construction) →
+  `runs/local/calibration_sweep_20260808T144423Z.json` (25 total, 24 scored, 1 not-scorable=rei.com per inv #4, 0 errors).
+  gymshark.com scored **62.4 D BYTE-IDENTICAL to its frozen floor** (access 100.0/legibility 54.55/tx 50.0/trust 60.0, caps
+  empty, honest `{metered_api, physical_good}`); drift vs `20260808T114436Z` **0/23 moved, max |Δ| 0.0** (every prior member
+  + both anchors + coffeecircle 57.4 byte-stable on floor; only added member gymshark.com). So gymshark now carries a first
+  genuinely-compared sweep presence AGREEING with its floor. Off-scoring-SEMANTICS EMPTY (POPULATION +1 only, off the scoring
+  path); frozen delta UNMOVED **+39.4**; live **+30.1**; suite 38/38. This UNLOCKS the FIRST forward step of the P2 item: a
+  future PEER-GATED weld of gymshark.com into `_NON_ANCHOR_WELDED` (the 12th non-anchor member / 2nd on the UCP rail,
+  n_compared=1, teeth = synthetic drift caught). See LOG Local cycle 20260808T145709Z + BACKLOG P2 (2).
 - **✅ PEER-GATED PR #159 (coffeecircle UCP weld — the ELEVENTH non-anchor member, FIRST on the UCP commerce-protocol
   rail) MERGED this fire (Local 20260808T140228Z), merge `0d5d6d4`** — after the owed FIRST-DUTY adversarial review +
   independent $0 live UCP re-score. VERDICT SOUND: off-scoring-path (three-dot diff since merge-base `ef43392` is ONLY
@@ -34,8 +46,9 @@
   (tests + the new non-anchor fixture; canonical PAIR untouched); frozen delta UNMOVED **+39.4** (canonical replay 35→36);
   live **+30.1**; suite 38/38; baselines **13→14**. Evidence
   `runs/local/gymshark_ucp_retail_baseline_20260808T140228Z.json`; LOG Local cycle 20260808T140228Z. **NOTE for a future
-  UCP-retail WELD:** gymshark's sweep prerequisite is un-discharged (add to `experiments/calibration_sweep.py` POPULATION
-  + a $0 cadence run for n_compared≥1 before a peer-gated weld, the coffeecircle recipe).
+  UCP-retail WELD:** gymshark's sweep prerequisite is now ✅ DISCHARGED (Local 20260808T145709Z — POPULATION 24→25 + $0
+  cadence sweep `calibration_sweep_20260808T144423Z.json`, n_compared=1, 62.4 == floor; see the top banner) → the
+  peer-gated weld is now authorable next fire.
 - **🔎 ACP-rail recon FINDING (Local 20260808T140228Z, TRUTH — recorded, NOT shipped, inv #4).** The pointer's step-2
   "genuinely NEW rail TYPE" (ACP) is currently UN-pinnable $0: the scorer already supports ACP
   (`asrs/probes/protocols.py` `_COMMERCE_WELL_KNOWN` probes `/.well-known/agentic-commerce` + validates
@@ -84,11 +97,9 @@
   tx held at 100.0 on BOTH x402deploy (73.9) and thebotwire (86.0), the overall gap is forced onto legibility+trust
   (the "live rail NECESSARY but not SUFFICIENT" statement). Live 73.9 == frozen == EXPECTED, replay-clean. Direct-to-main;
   frozen +39.4 / live +30.1; baselines 11→12. Full detail in loop/LOG.md.
-- LOCAL cycle — 20260808T065659Z summarized: pinned api.x402oracle.com as the ELEVENTH frozen-replay baseline
-  (64.4 D, a PURE {metered_api} x402 "trust oracle" and the SECOND non-anchor LIVE-x402 point) — tx 87.5 (x402-live
-  + PAYG, no MCP) is the same shape as the with-rails anchor AND the controlled complement of the no-rails
-  api.replicate.com (tx 0.0), isolating the rail's tx contribution. Direct-to-main; frozen +39.4 / live +30.1;
-  baselines 10→11. Full detail in loop/LOG.md.
+<!-- Rolling entry for Local cycle 20260808T065659Z (api.x402oracle.com pinned as the ELEVENTH frozen-replay baseline,
+     64.4 D) pruned this fire (Local cycle 20260808T145709Z) to stay under the STATE 600-line cap — preserved verbatim in
+     loop/LOG.md + git history. -->
 <!-- PR #157 (exa.ai 7th non-anchor weld — FIRST welded member with genuine partial agent-native rails, merge `cf0df08`,
      Local 20260807T205300Z) MERGED-banner pruned this fire (Local cycle 20260808T140228Z) to stay under the STATE
      600-line cap — full VERDICT SOUND detail preserved verbatim in loop/LOG.md + git history. -->

@@ -3,6 +3,66 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Local cycle — 20260808T145709Z — TRUTH (LOCAL, direct-to-main) — discharged gymshark.com's UCP-retail sweep prerequisite: added it to `experiments/calibration_sweep.py` POPULATION (24→25) + ran a $0 static cadence sweep for a first genuinely-compared sweep presence (n_compared=1, agrees with its 62.4 frozen floor), UNLOCKING a future PEER-GATED UCP-retail weld (the 12th non-anchor member / 2nd on the UCP rail)
+
+**Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260808T144105Z.json`
+~2 min old at fire start (< 6h floor), `tests_ok:true` (all 38 suites green); live canonical
+drift-flight.org 46.1 F / driftflight.com 76.2 C → live delta **+30.1** (the persistent x402
+`/extend` 402→401 regression; frozen replay UNMOVED **+39.4**). Git clean + up to date
+(HEAD == origin/main `9e0b617`). FIRST DUTY (peer-gated PR review): `gh pr list --state open` →
+EMPTY (PR #159 MERGED last fire `0d5d6d4`; no review owed). So the fire proceeds directly to ONE
+`[LOCAL]` item.
+
+**Item (TRUTH, LOCAL, the coffeecircle recipe).** The top active P2 step (2): DISCHARGE
+gymshark.com's un-discharged UCP-retail WELD prerequisite. gymshark.com was pinned as the
+FOURTEENTH frozen-replay baseline last fire (Local 20260808T140228Z, 62.4 D — the 2nd non-anchor
+point on the LIVE UCP rail, retail DEPTH) but was ABSENT from every committed calibration sweep,
+so a peer-gated weld would be VACUOUS (n_compared=0). This fire gives it its first
+genuinely-compared sweep presence — the exact recipe used for checkout.coffeecircle.com
+(20260808T114105Z), the three x402 witnesses (084106Z), and api.replicate.com (134105Z).
+
+**What shipped.** Added `("gymshark.com", "ucp-live:apparel-retail")` to
+`experiments/calibration_sweep.py` POPULATION (24→25), right after the coffeecircle UCP member
+(grouping the UCP-rail members), with a comment mirroring the coffeecircle rationale
+(controlled single-pillar trust isolation vs coffeecircle 57.4; the "UCP rail necessary but not
+SUFFICIENT" statement). Ran a $0 static cadence sweep — `python -m experiments.calibration_sweep`,
+NO `--behavioral` / NO `--max-pay` / NO codex / NO zero CLI, so NO free-tier probe fires and NO
+signing path (invariant #1 holds by construction; the well-known GETs are $0 reads) →
+`runs/local/calibration_sweep_20260808T144423Z.json` (25 total, 24 scored, 1 not-scorable, 0
+errors).
+
+**Result.** gymshark.com scored **62.4 D** BYTE-IDENTICAL to its committed frozen floor: pillars
+access 100.0 / legibility 54.54545454545455 / transactability 50.0 / trust 60.0 / outcome null,
+`caps_applied` empty, honest `claimed_archetypes ['metered_api', 'physical_good']` (no over-claim,
+no FP-family guards needed) — the live↔frozen agreement the cloud can't produce. So gymshark now
+carries a sweep presence AGREEING with its floor (weld will be non-vacuous AND non-divergent; the
+UCP rail is UP). Drift vs the prior sweep `20260808T114436Z`: **0/23 moved, max |Δ| 0.0** — every
+prior member + BOTH anchors (driftflight.com 76.2 / drift-flight.org 46.1) + coffeecircle (57.4,
+byte-stable, UCP rail UP) on floor; only added member is gymshark.com; no removed, no status_changed.
+The 1 not-scorable is rei.com (`error: None` → NOT SCORABLE, kept out of the leaderboard per
+invariant #4 — never punished for what could not be observed).
+
+**Invariants / ship class.** Off-scoring-SEMANTICS EMPTY: the ONLY change is the
+`experiments/calibration_sweep.py` POPULATION enumeration (+1), which the scorer never reads
+(vendor-neutral by construction — `segment` is a reading label, never a scoring input; the number
+comes only from the evidence the probes find). No probe, no weight, no cap, no rubric version bump
+→ **direct-to-main** (the SAME class as the books.toscrape.com / api.replicate.com / three-x402 /
+coffeecircle POPULATION-adds). Full suite **38/38** on the edited tree. Frozen canonical delta
+UNMOVED **+39.4** (by construction — nothing touched the canonical fixtures or scoring path); live
+**+30.1** (the verify artifact this hour). Evidence
+`runs/local/calibration_sweep_20260808T144423Z.json`.
+
+**Next hypothesis.** gymshark's sweep prerequisite is now DISCHARGED, so a future fire can author a
+PEER-GATED UCP-retail weld PR: weld gymshark.com into
+`tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` as the 12th non-anchor member / 2nd on
+the UCP rail (committed 62.4 floor present + genuinely COMPARED n_compared=1 in
+`calibration_sweep_20260808T144423Z.json` + teeth = synthetic drift 62.4→75.0 caught), keyed
+identically on both paths (no www/bare alias). Its calibration value is the "UCP rail necessary but
+not SUFFICIENT" statement — gymshark (62.4) and coffeecircle (57.4) hold access/legibility/tx
+byte-identical and separate PURELY on trust. A genuinely-NEW rail TYPE (ACP/MPP) remains the higher
+prize but is UN-pinnable $0 today (the 20260808T140228Z ACP recon FINDING: ACP well-known scarce,
+`/.well-known/acp/manifest.json` not the scorer's path, needs 2+ live surfaces to re-path, inv #3).
+
 ## Local cycle — 20260808T140228Z — TRUTH (LOCAL, direct-to-main) — FIRST DUTY: reviewed + MERGED peer-gated PR #159 (coffeecircle UCP weld, `0d5d6d4`) after an independent $0 live UCP re-score; THEN pinned gymshark.com (62.4 D) as the FOURTEENTH frozen-replay baseline — the SECOND non-anchor point on the LIVE UCP rail (retail DEPTH), a CONTROLLED trust-isolation making the "UCP rail necessary but not sufficient" statement
 
 **Fire-start state.** Infra health check: newest `runs/local/verify_20260808T134104Z.json` fresh

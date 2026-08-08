@@ -130,6 +130,27 @@ POPULATION: list[tuple[str, str]] = [
     # member whose live score DIVERGES from its frozen floor this run is an honest
     # manifest-drift signal, not silently averaged in.
     ("checkout.coffeecircle.com", "ucp-live:coffee-merchant"),
+    # a mainstream consumer apparel brand (Shopify storefront) on the SAME live UCP
+    # rail, pinned as the FOURTEENTH frozen-replay baseline LOCAL cycle
+    # 20260808T140228Z (gymshark.com 62.4 D). It is the SECOND non-anchor point on
+    # the UCP rail and adds retail DEPTH (a distinct storefront TYPE from the
+    # coffee-merchant checkout.coffeecircle.com): GET /.well-known/ucp answers a $0
+    # read with a valid dev.ucp.* service manifest, so the scorer's x402_probe reads
+    # commerce-protocol-live PARTIAL 4.0/8.0 — the SAME UCP middle rung as
+    # coffeecircle (honest {metered_api, physical_good}, no over-claim). Its
+    # calibration value is a CONTROLLED single-pillar isolation: vs coffeecircle
+    # (57.4) it holds access/legibility/transactability BYTE-IDENTICAL and moves
+    # ONLY trust (33.33 -> 60.0), lifting overall 57.4 -> 62.4 — the "UCP rail
+    # necessary but not SUFFICIENT" statement. It carries a committed replay
+    # baseline but was ABSENT from every prior sweep. Adding it here (LOCAL cadence,
+    # the checkout.coffeecircle.com prerequisite pattern) gives it its first
+    # live-sweep presence, so a future TRUTH cycle can weld it into
+    # tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED non-vacuously — the
+    # SECOND welded member on the UCP commerce-protocol rail. Because the UCP
+    # manifest is LIVE (a served well-known JSON, volatile), a member whose live
+    # score DIVERGES from its frozen floor this run is an honest manifest-drift
+    # signal, not silently averaged in.
+    ("gymshark.com", "ucp-live:apparel-retail"),
     # non-storefront controls (zero-commerce baseline)
     ("example.com", "control:non-storefront"),
     ("wikipedia.org", "control:non-storefront"),

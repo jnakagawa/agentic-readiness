@@ -41,18 +41,23 @@ fire's first-duty adversarial review + live re-score. See LOG Local cycle 202608
 <!-- Three fully-superseded 20260807 weld markers (PR #153 acuity weld / ipinfo baseline promotion / PR #154 ipinfo
 weld) pruned this fire (Local cycle 20260808T114105Z) to keep completed-marker bytes under the hygiene cap — all
 preserved verbatim in loop/LOG.md + git history. The whole non-anchor weld campaign (#152-#158) is complete. -->
-<!-- DONE Local cycle 20260808T114105Z: the P2 UCP-rail-weld prerequisite (give checkout.coffeecircle.com a
-genuinely-compared calibration-sweep presence) is DISCHARGED. Added checkout.coffeecircle.com to
-`experiments/calibration_sweep.py` POPULATION (23->24, segment ucp-live:coffee-merchant) and ran a $0 static cadence
-sweep (no --behavioral/--max-pay/codex/zero-CLI) -> runs/local/calibration_sweep_20260808T114436Z.json (23/24 scored,
-rei.com not-scorable per inv #4, 0 errors). checkout.coffeecircle.com scored 57.4 F BYTE-IDENTICAL to its frozen floor
-(access 100.0/legibility 54.55/tx 50.0/trust 33.33, caps empty, {metered_api, physical_good}); drift 0/22 moved vs the
-prior sweep, max |Δ| 0.0, only new member is checkout.coffeecircle.com; every welded member + both anchors + all 13
-baselines byte-stable on floor. Off-scoring-SEMANTICS EMPTY (POPULATION +1 only); frozen delta UNMOVED +39.4; live +30.1;
-suite 38/38. Direct-to-main (same class as the books.toscrape.com / api.replicate.com / three-x402 POPULATION-adds). This
-UNLOCKS the FIRST UCP-rail cross-path weld: a future PEER-GATED PR can weld checkout.coffeecircle.com into
-_NON_ANCHOR_WELDED non-vacuously (n_compared=1, agrees with floor, teeth = synthetic drift caught) — the ELEVENTH
-non-anchor member and the FIRST on the UCP commerce-protocol rail. See LOG Local cycle 20260808T114105Z. -->
+<!-- The coffeecircle sweep-add prerequisite DONE marker (Local cycle 20260808T114105Z: POPULATION 23->24 + $0 cadence
+sweep calibration_sweep_20260808T114436Z.json, 57.4==floor, unlocked the FIRST UCP-rail weld PR #159) is pruned this fire
+(Local cycle 20260808T145709Z) to make closed-marker room for its gymshark successor below — preserved verbatim in
+loop/LOG.md (## Local cycle — 20260808T114105Z) + git history. -->
+<!-- DONE Local cycle 20260808T145709Z: the P2 UCP-retail-weld prerequisite (give gymshark.com a genuinely-compared
+calibration-sweep presence) is DISCHARGED — the coffeecircle recipe, one member later. Added
+`("gymshark.com", "ucp-live:apparel-retail")` to `experiments/calibration_sweep.py` POPULATION (24->25) + ran a $0 static
+cadence sweep (no --behavioral/--max-pay/codex/zero-CLI, inv #1 by construction) ->
+runs/local/calibration_sweep_20260808T144423Z.json (25 total, 24 scored, rei.com not-scorable per inv #4, 0 errors).
+gymshark.com scored 62.4 D BYTE-IDENTICAL to its frozen floor (access 100.0/legibility 54.55/tx 50.0/trust 60.0, caps
+empty, honest {metered_api, physical_good}); drift vs 20260808T114436Z 0/23 moved, max |Δ| 0.0 — every prior member +
+both anchors + coffeecircle 57.4 byte-stable on floor; only new member is gymshark.com. Off-scoring-SEMANTICS EMPTY
+(POPULATION +1 only, off the scoring path); frozen delta UNMOVED +39.4; live +30.1; suite 38/38. Direct-to-main (same
+class as the checkout.coffeecircle.com / api.replicate.com / three-x402 POPULATION-adds). This UNLOCKS the P2 step (2)
+UCP-retail weld: a future PEER-GATED PR can weld gymshark.com into _NON_ANCHOR_WELDED non-vacuously (n_compared=1, agrees
+with floor, teeth = synthetic drift caught) — the 12th non-anchor member / 2nd on the UCP rail. See LOG Local cycle
+20260808T145709Z. -->
 <!-- Two fully-superseded api.replicate.com markers (DONE 20260807T114104Z: pinned as the 7th frozen-replay baseline 29.5 F;
 DONE 20260807T134105Z: its sweep-add prerequisite discharged) pruned this fire (Local cycle 20260808T140228Z) to keep
 completed-marker bytes under the hygiene cap — both preserved verbatim in loop/LOG.md + git history. -->
@@ -140,21 +145,10 @@ non-anchor LIVE-x402 point. Off-scoring-SEMANTICS EMPTY; frozen delta UNMOVED +3
 38/38. Direct-to-main. Evidence runs/local/thebotwire_live_x402_baseline_20260808T054613Z.json; LOG Local cycle
 20260808T054613Z. -->
 
-<!-- DONE Local cycle 20260808T065659Z: the P1 "A SECOND non-anchor LIVE-x402 calibration point" is EXECUTED — pinned
-api.x402oracle.com as the ELEVENTH frozen-replay baseline (64.4 D v0.7; access 100.0/legibility 36.36/tx 87.5/trust 20.0),
-a PURE {metered_api} x402 "trust oracle" and the SECOND non-anchor baseline with a GENUINE LIVE x402 handshake. Chosen over
-x402deploy.vercel.app (73.9 C) for non-redundant science: its tx 87.5 (x402-live + PAYG, NO MCP) is the IDENTICAL shape as
-the with-rails anchor (driftflight.com 87.5) AND it is the CONTROLLED complement of the no-rails api.replicate.com (same pure
-{metered_api} archetype, opposite rail -> tx 0.0 vs 87.5, isolating the rail's transactability contribution). GATE cleared on
-a FRESH capture: (a) live x402 STABLE across 3 $0 obs (GET /v1/check 402 body + 402 payment-required header + scorer x402_probe
-8.0/8.0 x402-live; offer USDC on Base, $0.002; NO payment signed, inv #1); (b) HONEST classification exactly {metered_api}
-(thin single-purpose gateway, no over-claim, no FP-family guards needed); (c) fresh full-score capture -> live 64.4 == frozen
-fixture-replay 64.4 == EXPECTED 64.4, all 4 non-null pillars byte-identical, replay_misses=0, caps empty. Installed
-fixtures/canonical/api.x402oracle.com.json (NEW, 42 entries) + EXPECTED + _REPLAY_CLEAN + guard
-test_pure_metered_api_live_x402_replays_64_4 (rail-isolation teeth: api.replicate 0.0 < oracle 87.5, same archetype + identical
-check set) + _POPULATION x5 (10->11). Off-scoring-SEMANTICS EMPTY; frozen delta UNMOVED +39.4 (replay 32->33); live +30.1;
-suite 38/38; baselines 10->11. Direct-to-main. Evidence
-runs/local/x402oracle_second_live_x402_baseline_20260808T065659Z.json; LOG Local cycle 20260808T065659Z. -->
+<!-- The api.x402oracle.com pin DONE marker (Local cycle 20260808T065659Z: pinned as the ELEVENTH frozen-replay baseline
+64.4 D, the 2nd non-anchor LIVE-x402 point; later welded via MERGED PR #158) is pruned this fire (Local cycle
+20260808T145709Z) to keep closed-marker bytes under the 24000 hygiene cap — preserved verbatim in loop/LOG.md
+(## Local cycle — 20260808T065659Z) + git history. -->
 
 <!-- DONE Local cycle 20260808T074103Z: the P2 "A THIRD non-anchor LIVE-x402 calibration point" is EXECUTED — pinned
 x402deploy.vercel.app as the TWELFTH frozen-replay baseline (73.9 C v0.7; access 100.0/legibility 45.45/tx 100.0/trust
@@ -259,10 +253,15 @@ Evidence runs/local/gymshark_ucp_retail_baseline_20260808T140228Z.json. See LOG 
   cycle 20260808T140228Z), both UCP `commerce-protocol-live` at tx 50.0. Next steps, in order:
   (1) ✅ DONE — the coffeecircle sweep-add + PEER-GATED weld are COMPLETE (**PR #159 MERGED `0d5d6d4`** this fire; the
   whole #152-#159 weld campaign is done).
-  (2) **UCP-retail WELD of gymshark.com** (the 12th non-anchor member / 2nd on the UCP rail): un-discharged prerequisite —
-  add gymshark.com to `experiments/calibration_sweep.py` POPULATION + a $0 cadence run for n_compared>=1 (the coffeecircle
-  recipe), THEN a PEER-GATED weld PR. Its calibration value is the "UCP rail necessary but not sufficient" statement (same
-  tx 50.0 as coffeecircle, overall separates purely on trust).
+  (2) **UCP-retail WELD of gymshark.com** (the 12th non-anchor member / 2nd on the UCP rail): the sweep-add prerequisite
+  is now ✅ DISCHARGED (Local cycle 20260808T145709Z — gymshark.com added to `experiments/calibration_sweep.py` POPULATION
+  24→25 + a $0 cadence sweep `calibration_sweep_20260808T144423Z.json`, gymshark 62.4 == floor, n_compared=1 present,
+  drift 0/23 moved; see the DONE marker above). So the NEXT forward step is the PEER-GATED weld PR itself: weld
+  gymshark.com into `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` non-vacuously (committed 62.4 floor
+  present + genuinely COMPARED n_compared=1 in `calibration_sweep_20260808T144423Z.json` + teeth = synthetic drift
+  62.4→75.0 caught), keyed identically both paths (no www/bare alias). Its calibration value is the "UCP rail necessary
+  but not sufficient" statement (same tx 50.0 as coffeecircle 57.4; gymshark 62.4 separates PURELY on trust — the
+  test_ucp_retail_storefront_replays_62_4 trust-isolation already pins this).
   (3) A genuinely-NEW rail TYPE (ACP/MPP) remains the higher prize but is currently **UN-pinnable $0** — the Local cycle
   20260808T140228Z ACP recon FINDING (recorded, inv #4): the scorer already supports ACP (`asrs/probes/protocols.py`
   `_COMMERCE_WELL_KNOWN` probes `/.well-known/agentic-commerce` + validates `_ACP_PAYLOAD_KEYS` -> `commerce-protocol-live`),

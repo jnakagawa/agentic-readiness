@@ -55,14 +55,10 @@ caught); existing non-anchor tests unaffected. Live re-derived THIS fire: books.
 all 4 non-null pillars byte-identical -> weld holds, site did NOT regress. Suite 38/38 branch + merged main; weld 17/17.
 See LOG Local cycle 20260807T074106Z. -->
 
-<!-- DONE Local cycle 20260807T074106Z: pinned acuityscheduling.com (service_booking SaaS — a 3rd storefront TYPE) as
-the FIFTH test_canonical_replay.EXPECTED frozen-replay baseline (54.0 F v0.7; access 100.0/legibility 40.91/
-transactability 25.0/trust 83.33) + guard test_service_booking_storefront_replays_54_0 (26->27, teeth verified),
-direct-to-main. It was the ONE stable clean cross-path candidate (fixture 54.0 == live-sweep 54.0, 0 replay-misses,
-already in _REPLAY_CLEAN); ipinfo.io/simplybook.me/polar.sh all stale (dozens of full-scorer misses). [LOCAL] essence:
-fresh $0 static re-score THIS fire (07:53Z) -> live 54.0 == frozen 54.0, all 4 non-null pillars byte-identical. Evidence
-runs/local/acuity_crosspath_baseline_20260807T074106Z.json. Off-scoring-path (only test_canonical_replay.py +48); frozen
-canonical delta UNMOVED +39.4; suite 38/38. See LOG Local cycle 20260807T074106Z. -->
+<!-- DONE Local cycle 20260807T074106Z: pinned acuityscheduling.com (service_booking SaaS) as the FIFTH frozen-replay
+baseline (54.0 F v0.7) + guard test_service_booking_storefront_replays_54_0; direct-to-main, live 54.0 == frozen 54.0.
+Full text pruned this fire (Local cycle 20260808T084106Z) to keep closed-marker bytes under the hygiene cap — preserved
+verbatim in loop/LOG.md + git history. See LOG Local cycle 20260807T074106Z. -->
 <!-- OPENED Local cycle 20260807T084355Z: the 3rd-non-anchor calibration weld (acuityscheduling.com — service_booking
 SaaS, a 3rd storefront TYPE) is AUTHORED as a PEER-GATED PR (branch loop/acuity-third-non-anchor-weld), NOT self-merged.
 Welds acuityscheduling.com into `_NON_ANCHOR_WELDED` = (example.com, books.toscrape.com, acuityscheduling.com), so the
@@ -241,15 +237,29 @@ x402deploy overall 73.9 < thebotwire 86.0, gap in legibility/trust) + _POPULATIO
 frozen delta UNMOVED +39.4 (replay 33->34); live +30.1; suite 38/38; baselines 11->12. Direct-to-main. Evidence
 runs/local/x402deploy_third_live_x402_baseline_20260808T074103Z.json; LOG Local cycle 20260808T074103Z. -->
 
-- **[P2 — TRUTH/COVERAGE, LOCAL, candidate] The three non-anchor live-x402 witnesses can now be CROSS-PATH WELDED**
-  (thebotwire.com 86.0 / api.x402oracle.com 64.4 / x402deploy.vercel.app 73.9), the exa.ai/moleskine weld pattern — but each
-  must FIRST carry a genuinely-compared calibration-sweep presence: add all three to `experiments/calibration_sweep.py`
-  POPULATION and run a $0 static cadence sweep (the books.toscrape.com prerequisite pattern, Local cycle 20260807T134105Z),
-  THEN a PEER-GATED PR welds them into `_NON_ANCHOR_WELDED` non-vacuously (n_compared>=1, teeth). This would extend the
-  cross-path weld to live-x402 storefront TYPES (currently 7 non-anchor witnesses, none with a LIVE rail). The live/upper
-  scale is now well-densified by three witnesses across two tx shapes, so the next TRUTH BROADENING should prefer a
-  genuinely NEW rail TYPE (a live ACP/UCP/MPP handshake merchant) over a fourth x402 point. WATCH driftflight.com /extend for
-  a 402 recovery (restores the anchor's live handshake + the +39.4 live delta).
+<!-- DONE Local cycle 20260808T084106Z: the P2 prerequisite (give the three live-x402 witnesses a genuinely-compared
+calibration-sweep presence) is DISCHARGED. Added thebotwire.com / api.x402oracle.com / x402deploy.vercel.app to
+`experiments/calibration_sweep.py` POPULATION (20->23; segments x402-live:{news-data-wire,trust-oracle,web-data-tools}) and
+ran a $0 static cadence sweep (no --behavioral/--max-pay/codex/zero-CLI) -> runs/local/calibration_sweep_20260808T084504Z.json
+(22/23 scored, rei.com not-scorable per inv #4, 0 errors). All three scored live == frozen (thebotwire 86.0 B / oracle 64.4 D /
+x402deploy 73.9 C, overall + all 4 non-null pillars byte-identical, caps empty, honest archetypes unchanged) -> each now carries
+a first genuinely-compared sweep presence AGREEING with its floor (weld non-vacuous AND non-divergent; the live rails are all
+UP). Drift vs 20260807T134527Z: 1/19 moved, max |Δ| 4.6 (only the wikipedia.org control 41.1->45.7; every welded member + both
+anchors on floor). Off-scoring-SEMANTICS EMPTY (POPULATION +3 only); frozen delta UNMOVED +39.4; live +30.1; suite 38/38.
+Direct-to-main (same class as the books.toscrape.com / api.replicate.com POPULATION-adds). See LOG Local cycle 20260808T084106Z. -->
+
+- **[P2 — TRUTH/COVERAGE, LOCAL, candidate] WELD the three non-anchor live-x402 witnesses into `_NON_ANCHOR_WELDED`**
+  (thebotwire.com 86.0 / api.x402oracle.com 64.4 / x402deploy.vercel.app 73.9) — the calibration-sweep prerequisite is now
+  DISCHARGED (Local cycle 20260808T084106Z: all three added to the POPULATION and present in the committed
+  `calibration_sweep_20260808T084504Z.json` at their floors, n_compared>=1). A PEER-GATED PR now welds them into
+  `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` non-vacuously (teeth = synthetic drift caught; the
+  exa.ai/moleskine weld pattern), extending the cross-path weld to LIVE-rail storefront TYPES (the seven current welded
+  witnesses all carry NO live rail — these would be the FIRST). Prefer welding all three in one PR (each independently
+  non-vacuous). Because the rails are LIVE (volatile), the weld author MUST re-confirm each still scores == its floor at
+  review time (a divergence = real live-rail drift -> re-capture that member, don't weld it). The live/upper scale is now
+  well-densified across three witnesses / two tx shapes, so the next TRUTH BROADENING should prefer a genuinely NEW rail TYPE
+  (a live ACP/UCP/MPP handshake merchant) over a fourth x402 point. WATCH driftflight.com /extend for a 402 recovery
+  (restores the anchor's live handshake + the +39.4 live delta).
 
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
   phrasing has now drifted the `_ENV_BLOCK_RE` guard FIVE times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)

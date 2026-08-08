@@ -97,6 +97,22 @@ POPULATION: list[tuple[str, str]] = [
     # books.toscrape.com pattern; see tests/test_calibration_anchor_agreement.
     # _NON_ANCHOR_WELDED).
     ("api.replicate.com", "metered-api:inference-platform"),
+    # the three non-anchor storefronts with a GENUINE LIVE x402 handshake, pinned as
+    # frozen-replay baselines LOCAL cycles 20260808T054613Z / 065659Z / 074103Z
+    # (thebotwire.com 86.0, api.x402oracle.com 64.4, x402deploy.vercel.app 73.9 — the
+    # first non-anchor points on the live/upper scale, spanning two transactability
+    # shapes: tx 100.0 on thebotwire/x402deploy, tx 87.5 on the oracle). They carry a
+    # committed replay baseline but were ABSENT from every prior sweep. Adding them
+    # here (LOCAL cadence, the books.toscrape.com / api.replicate.com prerequisite
+    # pattern) gives each its first live-sweep presence, so a future TRUTH cycle can
+    # weld them into tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED
+    # non-vacuously — extending the cross-path weld to LIVE-rail storefront TYPES
+    # (the seven current welded witnesses all carry NO live rail). Because the rails
+    # are LIVE (volatile), a member whose live score DIVERGES from its frozen floor
+    # this run is an honest live-rail-drift signal, not silently averaged in.
+    ("thebotwire.com", "x402-live:news-data-wire"),
+    ("api.x402oracle.com", "x402-live:trust-oracle"),
+    ("x402deploy.vercel.app", "x402-live:web-data-tools"),
     # non-storefront controls (zero-commerce baseline)
     ("example.com", "control:non-storefront"),
     ("wikipedia.org", "control:non-storefront"),

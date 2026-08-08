@@ -1,0 +1,50 @@
+{
+ "ts": "20260808T124101Z",
+ "cycle": "Local cycle 20260808T124101Z",
+ "track": "TRUTH",
+ "item": "WELD checkout.coffeecircle.com into _NON_ANCHOR_WELDED as the ELEVENTH non-anchor member and the FIRST welded member on the UCP commerce-protocol rail (peer-gated PR)",
+ "branch": "loop/coffeecircle-ucp-non-anchor-weld",
+ "invariants": {
+  "spend": "$0 static re-score only (no --behavioral / --max-pay / codex / zero CLI); no payment signed (inv #1 — the /.well-known/ucp GET is a $0 read)",
+  "off_scoring_semantics": "diff is tests/test_calibration_anchor_agreement.py ONLY (+member +comment +test +registration); EMPTY over asrs/rubric/fixtures/experiments/loop; the canonical PAIR and every scoring surface untouched",
+  "versioned_comparability": "checkout.coffeecircle.com carries a committed v0.7 replay floor (test_canonical_replay.EXPECTED); only v0.7 sweeps compared (inv #2)",
+  "vendor_neutrality": "welded by storefront/rail TYPE (live-UCP commerce-protocol merchant checkout), never by domain identity",
+  "attribution_honesty": "live UCP rail re-confirmed UP + agreeing with the frozen floor at author time; a divergence at review time = REAL UCP-manifest drift -> re-capture, do NOT weld (inv #4)"
+ },
+ "live_reconfirm_static_0usd": {
+  "domain": "checkout.coffeecircle.com",
+  "command": "python -m asrs score checkout.coffeecircle.com --json-only",
+  "run_file": "runs/checkout_coffeecircle_com_20260808T124459.json",
+  "overall": 57.4,
+  "grade": "F",
+  "rubric_version": "0.7",
+  "pillars": {"access": 100.0, "legibility": 54.54545454545455, "transactability": 50.0, "trust": 33.333333333333336, "outcome": null},
+  "caps_applied": [],
+  "claimed_archetypes": ["metered_api", "physical_good"],
+  "x402_probe": {"check_id": "x402_probe", "status": "partial", "points": 4.0, "max_points": 8.0, "finding": "commerce-protocol-live"}
+ },
+ "live_equals_frozen": {
+  "live_overall": 57.4,
+  "frozen_replay_overall": 57.4,
+  "expected_overall": 57.4,
+  "all_four_non_null_pillars_byte_identical": true,
+  "caps_empty": true,
+  "verdict": "live == frozen == EXPECTED -> UCP rail UP, no manifest drift; weld is sound to author"
+ },
+ "weld_nonvacuous": {
+  "in_NON_ANCHOR_WELDED": true,
+  "committed_v0_7_baseline_present": true,
+  "genuinely_compared_n_compared": 1,
+  "compared_in_sweep": "calibration_sweep_20260808T114436Z.json",
+  "segment": "ucp-live:coffee-merchant",
+  "keyed_identically_both_paths": true,
+  "www_bare_alias_needed": false,
+  "teeth": "synthetic drift 57.4 -> 68.0 caught as exactly one divergence vs its 57.4 floor"
+ },
+ "weld_suite": "26 -> 27 (all pass)",
+ "full_suite": "38/38 test files pass",
+ "cross_path_weld_span": "ELEVEN structurally-distinct non-anchor witnesses: null-control + 2 retail + service-booking + data-retrieval + pure-inference-API + agent-native-search-API + THREE live-x402 storefronts + ONE live-UCP commerce-protocol storefront (the FIRST welded member on a rail TYPE other than x402)",
+ "frozen_canonical_delta": 39.4,
+ "live_canonical_delta": 30.1,
+ "peer_gated": "authored as a peer-gated PR, NOT self-merged; next cycle's first duty is the adversarial review + independent $0 live re-score (a divergence = UCP-manifest drift, re-capture, do not merge)"
+}

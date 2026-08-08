@@ -248,18 +248,29 @@ UP). Drift vs 20260807T134527Z: 1/19 moved, max |Δ| 4.6 (only the wikipedia.org
 anchors on floor). Off-scoring-SEMANTICS EMPTY (POPULATION +3 only); frozen delta UNMOVED +39.4; live +30.1; suite 38/38.
 Direct-to-main (same class as the books.toscrape.com / api.replicate.com POPULATION-adds). See LOG Local cycle 20260808T084106Z. -->
 
-- **[P2 — TRUTH/COVERAGE, LOCAL, candidate] WELD the three non-anchor live-x402 witnesses into `_NON_ANCHOR_WELDED`**
-  (thebotwire.com 86.0 / api.x402oracle.com 64.4 / x402deploy.vercel.app 73.9) — the calibration-sweep prerequisite is now
-  DISCHARGED (Local cycle 20260808T084106Z: all three added to the POPULATION and present in the committed
-  `calibration_sweep_20260808T084504Z.json` at their floors, n_compared>=1). A PEER-GATED PR now welds them into
-  `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` non-vacuously (teeth = synthetic drift caught; the
-  exa.ai/moleskine weld pattern), extending the cross-path weld to LIVE-rail storefront TYPES (the seven current welded
-  witnesses all carry NO live rail — these would be the FIRST). Prefer welding all three in one PR (each independently
-  non-vacuous). Because the rails are LIVE (volatile), the weld author MUST re-confirm each still scores == its floor at
-  review time (a divergence = real live-rail drift -> re-capture that member, don't weld it). The live/upper scale is now
-  well-densified across three witnesses / two tx shapes, so the next TRUTH BROADENING should prefer a genuinely NEW rail TYPE
-  (a live ACP/UCP/MPP handshake merchant) over a fourth x402 point. WATCH driftflight.com /extend for a 402 recovery
-  (restores the anchor's live handshake + the +39.4 live delta).
+<!-- OPENED Local cycle 20260808T094101Z: the P2 weld of the three non-anchor LIVE-x402 witnesses (thebotwire.com 86.0 /
+api.x402oracle.com 64.4 / x402deploy.vercel.app 73.9) is AUTHORED as PEER-GATED PR #158 (branch
+loop/live-x402-non-anchor-weld, commit e4c2bae), NOT self-merged. Welds all three into
+tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED as the EIGHTH/NINTH/TENTH members (7->10 non-anchor witnesses) —
+the FIRST welded members carrying a GENUINE LIVE x402 handshake (every prior welded witness carries NO live rail; exa.ai's is
+documented-not-probed). Three new tests (test_thebotwire_eighth / test_x402oracle_ninth / test_x402deploy_tenth
+_non_anchor_is_welded_nonvacuously): committed v0.7 floor present + genuinely COMPARED (n_compared=1 in
+calibration_sweep_20260808T084504Z.json, segment x402-live:{news-data-wire,trust-oracle,web-data-tools}) + teeth (drift
+86.0->95.0 / 64.4->75.0 / 73.9->85.0 caught). Keyed identically on both paths (no www/bare alias). TEST-ONLY
+(test_calibration_anchor_agreement.py +230; off-scoring-SEMANTICS EMPTY over asrs/rubric/fixtures/experiments/loop), weld
+suite 23->26, full suite 38/38. Live<->frozen re-confirmed this fire ($0 static, no --behavioral/--max-pay/codex/zero CLI:
+live 86.0 / 64.4 / 73.9 == frozen, all 4 non-null pillars byte-identical, caps empty; no payment signed, inv #1). DO NOT
+RE-AUTHOR — TRACKED by STATE's OPEN-PR #158 banner + next fire's first-duty adversarial review + live re-score (REVIEWER
+re-runs the $0 live re-scores; a divergence = REAL live-rail drift -> re-capture that member, don't weld it, inv #4).
+Evidence runs/local/live_x402_non_anchor_weld_20260808T094101Z.json. See LOG Local cycle 20260808T094101Z. -->
+
+- **[P2 — TRUTH, LOCAL, candidate] BROADEN to a genuinely NEW rail TYPE (a live ACP/UCP/MPP handshake merchant).** With
+  PR #158 the cross-path weld spans TEN non-anchor witnesses and the live/upper scale is well-densified across THREE x402
+  witnesses / two tx shapes (thebotwire 100.0 / oracle 87.5 / x402deploy 100.0), so a FOURTH x402 point adds little. The
+  next TRUTH broadening should find a live storefront exposing a DIFFERENT agent-native rail (ACP `/.well-known/*`, UCP
+  `/.well-known/ucp`, or an MPP handshake) that the shipped scorer detects, pin it as a frozen-replay baseline (the exa.ai
+  recipe: verify replay-clean + honest offering classification on a FRESH $0 capture FIRST), then sweep-add (n_compared>=1)
+  and weld. WATCH driftflight.com /extend for a 402 recovery (restores the anchor's live handshake + the +39.4 live delta).
 
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
   phrasing has now drifted the `_ENV_BLOCK_RE` guard FIVE times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)

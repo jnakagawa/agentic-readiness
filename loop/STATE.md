@@ -1,22 +1,29 @@
 # Loop state
 
-- Cycle counter: 305
-- **✅ CALIBRATION CADENCE SWEEP RUN this fire (Local 20260808T084106Z, direct-to-main): the THREE non-anchor
-  live-x402 witnesses (thebotwire.com / api.x402oracle.com / x402deploy.vercel.app) were added to
-  `experiments/calibration_sweep.py` POPULATION (20→23) and scored $0 static → `runs/local/calibration_sweep_20260808T084504Z.json`
-  (22/23 scored, rei.com not-scorable per inv #4, 0 errors).** This DISCHARGES the standing P2 [LOCAL] prerequisite:
-  each of the three carried a committed frozen-replay baseline but was ABSENT from every prior sweep, so a weld would
-  have been vacuous (n_compared=0); each now has a first genuinely-compared sweep presence. **The KEY [LOCAL] result:
-  all three scored live == frozen — thebotwire 86.0 B / oracle 64.4 D / x402deploy 73.9 C, overall + all 4 non-null
-  pillars byte-identical, caps empty, honest archetypes unchanged** — so the live x402 rails are ALL UP right now and
-  each sweep presence AGREES with its floor (the future weld is non-vacuous AND non-divergent). **Drift vs prior sweep
-  `20260807T134527Z`: 1/19 moved, max |Δ| 4.6** — only the wikipedia.org CONTROL (41.1→45.7, a live-content shift, NOT
-  a welded/baseline member); every welded member + both anchors on their floor. Population now 22 scored (target 15–20
-  exceeded). Off-scoring-SEMANTICS EMPTY (only POPULATION +3 + the evidence JSON); frozen delta UNMOVED **+39.4**; live
-  **+30.1** (/extend still 401); suite 38/38. **This UNLOCKS a PEER-GATED PR that welds all three live-x402 witnesses
-  into `_NON_ANCHOR_WELDED` non-vacuously** (the FIRST welded members to carry a LIVE rail; the books.toscrape.com /
-  api.replicate.com weld pattern) — a candidate for the next fire, with a live re-confirm-vs-floor at review time
-  (a divergence = real live-rail drift → re-capture, don't weld). LOG Local cycle 20260808T084106Z.
+- Cycle counter: 306
+- **⏳ OPEN PEER-GATED PR #158 after this fire (branch `loop/live-x402-non-anchor-weld`, commit `e4c2bae`) — the
+  NEXT fire's FIRST duty is its adversarial review + independent $0 live re-score.** This fire (Local 20260808T094101Z)
+  welded the THREE non-anchor LIVE-x402 witnesses (thebotwire.com 86.0 / api.x402oracle.com 64.4 / x402deploy.vercel.app
+  73.9) into `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` as the EIGHTH/NINTH/TENTH members — the FIRST
+  welded members carrying a GENUINE LIVE x402 handshake (every prior welded witness carries NO live rail; exa.ai's is
+  documented-not-probed), extending the cross-path agreement guard to LIVE-rail storefront TYPES. The sweep prerequisite
+  was DISCHARGED last fire (`1639a73`), so each is genuinely COMPARED (n_compared=1) in the committed
+  `calibration_sweep_20260808T084504Z.json` at its floor, keyed identically on both paths (no www/bare alias). Each new
+  test asserts membership + committed-v0.7-floor coupling + non-vacuous agreement + teeth (synthetic drift caught vs its
+  floor 86.0→95.0 / 64.4→75.0 / 73.9→85.0). **[LOCAL] essence — live re-confirm this fire (static $0, no
+  --behavioral/--max-pay/codex/zero CLI; no payment signed, inv #1): live 86.0 / 64.4 / 73.9 == frozen == floor, all 4
+  non-null pillars byte-identical, caps empty** → the live rails are ALL UP and each AGREES with its floor (non-vacuous
+  AND non-divergent). Off-scoring-SEMANTICS EMPTY (diff = the weld test file +230 + evidence JSON; empty over
+  asrs/rubric/fixtures/experiments/loop); weld suite 23→26; full suite 38/38; frozen delta UNMOVED **+39.4**; live
+  **+30.1** (/extend still 401). Evidence `runs/local/live_x402_non_anchor_weld_20260808T094101Z.json`. NOT self-merged.
+  **REVIEWER DUTY (volatile rails):** re-run each $0 live re-score at review time — live==frozen → MERGE; any divergence
+  = REAL live-rail drift → re-capture that member, do NOT weld it (inv #4). LOG Local cycle 20260808T094101Z.
+- LOCAL cycle — 20260808T084106Z summarized: ran the calibration cadence sweep with the three live-x402 witnesses
+  (thebotwire.com 86.0 / api.x402oracle.com 64.4 / x402deploy.vercel.app 73.9) added to `experiments/calibration_sweep.py`
+  POPULATION (20→23) → `runs/local/calibration_sweep_20260808T084504Z.json` (22/23 scored, rei.com not-scorable, 0 errors),
+  giving each its FIRST genuinely-compared sweep presence at its floor (n_compared≥1) — the prerequisite that unlocked THIS
+  fire's PR #158 weld. All three live == frozen; drift 1/19 (only the wikipedia.org control). Direct-to-main; frozen +39.4 /
+  live +30.1. Full detail in loop/LOG.md.
 - LOCAL cycle — 20260808T074103Z summarized: pinned x402deploy.vercel.app as the TWELFTH frozen-replay baseline
   (73.9 C, {metered_api, data_retrieval}) — the THIRD non-anchor LIVE-x402 point and the SECOND tx-100 witness; with
   tx held at 100.0 on BOTH x402deploy (73.9) and thebotwire (86.0), the overall gap is forced onto legibility+trust
@@ -27,10 +34,9 @@
   + PAYG, no MCP) is the same shape as the with-rails anchor AND the controlled complement of the no-rails
   api.replicate.com (tx 0.0), isolating the rail's tx contribution. Direct-to-main; frozen +39.4 / live +30.1;
   baselines 10→11. Full detail in loop/LOG.md.
-- **⏳ NO OPEN PEER-GATED PR after this fire.** No open PR at fire start (`gh pr list --state open` → `[]`); this
-  cycle's item was direct-to-main (the calibration cadence sweep POPULATION +3, off-scoring-SEMANTICS). Next fire's
-  FIRST duty is the infra health check; the newly-unlocked three-live-x402 cross-path weld is a PEER-GATED candidate
-  (no review owed yet — nothing is open).
+- **↪ Fire-start state (Local 20260808T094101Z):** NO open PR at fire start (`gh pr list --state open` → `[]`), so
+  no review was owed; infra health GREEN (verify `verify_20260808T094101Z.json` fresh, tests_ok 38/38, git clean).
+  This fire OPENED PR #158 (see the banner above), so the NEXT fire DOES owe the first-duty review + live re-score.
 - **✅ PR #157 (exa.ai 7th non-anchor cross-path calibration weld — the FIRST welded member with GENUINE
   partial agent-native rails) MERGED this fire (Local 20260807T205300Z), merge `cf0df08`** — after the owed
   FIRST-DUTY adversarial review + independent $0 live re-score. VERDICT SOUND: off-scoring-path (three-dot diff

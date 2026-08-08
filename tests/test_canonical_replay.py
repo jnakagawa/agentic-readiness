@@ -397,6 +397,44 @@ EXPECTED = {
             "outcome": None,
         },
     },
+    # A THIRTEENTH real-domain calibration datapoint — and the FIRST non-anchor
+    # baseline carrying a genuine LIVE UCP (Universal Commerce Protocol) rail, a
+    # structurally NEW agent-native rail TYPE distinct from every x402/no-rail
+    # witness above. checkout.coffeecircle.com is a REAL coffee merchant's UCP
+    # checkout surface: GET /.well-known/ucp answers a $0 read with a valid UCP
+    # service manifest (a `dev.ucp.*` capability profile, version 2026-04-08), so
+    # the scorer's `x402_probe` reads `commerce-protocol-live` PARTIAL 4.0/8.0 —
+    # the MIDDLE rung of the live > documented > absent ladder for the commerce-
+    # protocol rail, strictly above a no-rail retail floor (books.toscrape.com
+    # x402_probe FAIL 0.0) and strictly below a full live-x402 handshake
+    # (thebotwire.com x402_probe PASS 8.0). It claims exactly TWO archetypes
+    # {metered_api, physical_good} (data_retrieval / digital_good / service_booking
+    # / subscription all NA — an honest coffee-merchant checkout API, NO topic-word
+    # over-claim, so NO FP-family guards were needed, unlike the discovery-only
+    # infrastructure profiles that over-claim). Its fixture was captured full-score
+    # LIVE [LOCAL] this cycle (Local cycle 20260808T104105Z) with the UCP manifest
+    # confirmed stable across ≥2 direct $0 observations at capture time (a static
+    # JSON well-known, not a volatile endpoint), and replays CLEAN (0 misses); its
+    # live score was re-verified == this frozen floor on the same $0 static re-score
+    # (live 57.4 == frozen 57.4, all four non-null pillars byte-identical, caps
+    # empty). Worded by capability, never by vendor: it asks "does a validated UCP
+    # commerce manifest earn the middle transactability rung?", never "is this
+    # domain X?". Because the UCP rail is LIVE (a served manifest, volatile), a
+    # future manifest removal / invalidation reddens the replay-clean guard
+    # (fixture frozen) and flags a re-capture — the same contract as the domains
+    # above. NO payment was ever signed (inv #1 — the well-known GET is a $0 read).
+    "checkout.coffeecircle.com": {
+        "overall": 57.4,
+        "grade": "F",
+        "rubric_version": "0.7",
+        "pillars": {
+            "access": 100.0,
+            "legibility": 54.54545454545455,
+            "transactability": 50.0,
+            "trust": 33.333333333333336,
+            "outcome": None,
+        },
+    },
 }
 EXPECTED_DELTA = 39.4  # driftflight.com (rails) - drift-flight.org (no rails)
 
@@ -1087,6 +1125,59 @@ def test_second_full_live_x402_replays_73_9() -> None:
         f"{x402d.pillar_scores['legibility']} < thebotwire "
         f"{tbw.pillar_scores['legibility']} AND x402deploy trust "
         f"{x402d.pillar_scores['trust']} < thebotwire {tbw.pillar_scores['trust']}",
+    )
+
+
+# ---------------------------------------------------------------------------
+# 6j. THIRTEENTH-DOMAIN CALIBRATION — the FIRST non-anchor baseline carrying a
+#     genuine LIVE UCP (Universal Commerce Protocol) rail, a structurally NEW
+#     agent-native rail TYPE distinct from every x402/no-rail witness above.
+#     checkout.coffeecircle.com is a real coffee merchant's UCP checkout surface:
+#     GET /.well-known/ucp serves a valid `dev.ucp.*` capability manifest, so the
+#     scorer's x402_probe reads `commerce-protocol-live` PARTIAL 4.0/8.0. Its teeth
+#     pin the commerce-protocol rail as the MIDDLE rung of the live > documented >
+#     absent ladder, wired to REAL committed neighbours: a no-rail retail floor
+#     (books.toscrape.com x402_probe FAIL 0.0) sits strictly BELOW it, and a full
+#     live-x402 handshake (thebotwire.com x402_probe PASS 8.0) sits strictly ABOVE
+#     — so a validated UCP manifest is a real agent-native commerce rail worth
+#     partial credit, neither ignored (collapsed to the no-rail floor) nor conflated
+#     with a full 402 handshake. A probe change that stopped validating the UCP
+#     manifest (crediting a bare 200 at the well-known path, or dropping the finding
+#     to no-agent-native-payment) FLIPS this guard. Worded by capability, never by
+#     vendor: it asks "does a validated UCP commerce manifest earn the middle rung?",
+#     never "is this domain X?". Because the manifest is LIVE (served, volatile), a
+#     future removal/invalidation reddens the replay-clean guard (fixture frozen) and
+#     flags a re-capture.
+# ---------------------------------------------------------------------------
+def test_ucp_commerce_protocol_storefront_replays_57_4() -> None:
+    print("test_ucp_commerce_protocol_storefront_replays_57_4")
+    _assert_domain("checkout.coffeecircle.com")
+    # The NEW rail is a validated live UCP manifest: x402_probe earns the PARTIAL
+    # commerce-protocol rung with the distinct `commerce-protocol-live` finding
+    # (NOT `x402-live` — a different rail shape).
+    ucp, ucp_misses = _score_fixture("checkout.coffeecircle.com")
+    retail, retail_misses = _score_fixture("books.toscrape.com")  # no-rail floor
+    live_x402, lx_misses = _score_fixture("thebotwire.com")       # full 402 handshake
+    _check(
+        not (ucp_misses or retail_misses or lx_misses),
+        "no replay-miss on checkout.coffeecircle.com / books.toscrape.com / thebotwire.com",
+    )
+    ucp_probe = _by_id(ucp, "x402_probe")
+    _check(
+        ucp_probe.status is Status.PARTIAL and ucp_probe.finding == "commerce-protocol-live",
+        f"checkout.coffeecircle.com: x402_probe is a validated LIVE UCP manifest "
+        f"(commerce-protocol-live, got {ucp_probe.finding!r} {ucp_probe.status})",
+    )
+    # Capability teeth: the commerce-protocol rung is a genuine MIDDLE — strictly
+    # above the no-rail retail floor and strictly below a full live-x402 handshake,
+    # measured on the x402_probe POINTS over three REAL committed domains.
+    u_pts = ucp_probe.points
+    r_pts = _by_id(retail, "x402_probe").points
+    x_pts = _by_id(live_x402, "x402_probe").points
+    _check(
+        r_pts == 0.0 < u_pts < x_pts == 8.0,
+        f"commerce-protocol rail is the middle rung: no-rail retail {r_pts} < "
+        f"UCP manifest {u_pts} < live-x402 handshake {x_pts}",
     )
 
 
@@ -2140,6 +2231,20 @@ _REPLAY_CLEAN = {
     # this replay guard (fixture frozen) and flags a re-capture — the honest signal,
     # not a silent drift.
     "x402deploy.vercel.app",
+    # checkout.coffeecircle.com captured full-score LIVE this cycle (Local cycle
+    # 20260808T104105Z): the fresh crawl covers the whole probe set (0 misses) and
+    # replays to its pinned 57.4 F. It is the FIRST non-anchor member carrying a
+    # genuine LIVE UCP (Universal Commerce Protocol) rail — a structurally NEW
+    # agent-native rail TYPE: GET /.well-known/ucp serves a valid `dev.ucp.*`
+    # capability manifest → x402_probe reads `commerce-protocol-live` PARTIAL
+    # 4.0/8.0, the MIDDLE rung between a no-rail retail floor (books.toscrape.com
+    # 0.0) and a full live-x402 handshake (thebotwire.com 8.0). A real coffee
+    # merchant's UCP checkout surface, honestly classified {metered_api,
+    # physical_good} (no topic-word over-claim). Because the manifest is LIVE
+    # (served, volatile), a future removal/invalidation reddens this replay guard
+    # (fixture frozen) and flags a re-capture — the honest signal, not a silent
+    # drift.
+    "checkout.coffeecircle.com",
 }
 # Fixtures whose recorded surface is a strict subset of the full scoring path
 # (captured for offering/battery classification) — NOT eligible for any
@@ -2500,6 +2605,7 @@ def main() -> int:
         test_live_x402_storefront_replays_86_0,
         test_pure_metered_api_live_x402_replays_64_4,
         test_second_full_live_x402_replays_73_9,
+        test_ucp_commerce_protocol_storefront_replays_57_4,
         test_retail_storefront_earns_no_agent_native_payment,
         test_relabel_invariance_retail,
         test_nonstorefront_replays_22_5,

@@ -13,47 +13,14 @@ history; removing them keeps the completed-marker byte budget bounded. -->
 20260807T051750Z) pruned this fire (Local cycle 20260808T074103Z) to keep closed-marker bytes under the hygiene cap —
 both preserved verbatim in loop/LOG.md + git history. -->
 
-<!-- OPENED Local cycle 20260807T054210Z: the documented-live-drift-ledger P0 (reconcile the cross-path weld +
-readout goldens with the persistent live x402 regression) is AUTHORED as PEER-GATED PR #151 (branch
-loop/documented-live-drift-ledger, commit 9d77d1c), NOT self-merged. `experiments/documented_live_drift.json`
-(driftflight.com@v0.7 76.2, transactability 62.5, x402 402->401 evidence) is the teeth-first ledger the weld
-(`test_calibration_anchor_agreement.py`, +4 teeth tests 12->16) + the 2 real-committed readout goldens
-(`test_readout.py`) consult: a member's live value is accepted at the frozen floor OR a same-version documented value
-(overall + per-pillar); teeth PRESERVED — floor ALWAYS accepted (recovery never masked), documented value EXACTLY
-(undocumented / further drift still red); off-version + not-scorable handling unchanged (invariants #2/#4). Held sweep
-renamed into the `calibration_sweep_` series (books.toscrape.com added, 18/19 scored). OFF the scoring path (empty diff
-over scoring.py/report.py/probes/battery.py/reliability.py/offering.py/scorecard.py/rubric/fixtures/); frozen replay
-26/26 UNMOVED 46.1/85.5/+39.4; suite 38/38 green WITH the regressed sweep committed on the branch; live corroboration
-`verify_20260807T054102Z.json` = 76.2 C / +30.1 == the ledgered value. DO NOT RE-AUTHOR — TRACKED by STATE's OPEN-PR
-#151 banner + next fire's first-duty adversarial review + live re-score; if `/extend` recovers to 402 the reviewer
-retires the ledger entry instead of merging. See LOG Local cycle 20260807T054210Z. -->
-<!-- MERGED Local cycle 20260807T064228Z: PR #151 (documented-live-drift ledger) MERGED `140304e` after the owed
-FIRST-DUTY adversarial review + independent $0 live re-scores. VERDICT SOUND: off-scoring-path (ledger JSON + 2 guard
-tests + pure rename of the held sweep into the series); teeth PRESERVED (frozen floor always accepted; documented value
-EXACTLY within tol 0.05; further + per-pillar-further drift caught; ledger LOAD-BEARING — empty ledger reddens the same
-76.2 sweep); attribution re-derived live (driftflight.com 76.2 C, x402 partial 4.0/8.0, /extend STILL 402->401 → entry
-STAYS); frozen replay 26/26 +39.4 UNMOVED; readout goldens cadence-robust + badge internally consistent (exa.ai 78.1
-tops cohort → driftflight.com honestly "sits high (max 78.1)"). Suite 38/38 branch + main post-merge. The
-calibration-cadence blocker is RESOLVED; the held sweep is now in-glob calibration_sweep_20260807T045843Z.json. See
-LOG Local cycle 20260807T064228Z. -->
+<!-- PR #151 (documented-live-drift ledger, OPENED 20260807T054210Z / MERGED `140304e` 20260807T064228Z) markers pruned
+this fire (Local cycle 20260808T104105Z) to keep completed-marker bytes under the hygiene cap — both preserved verbatim in
+loop/LOG.md + git. It RESOLVED the calibration-cadence blocker (persistent live x402 regression 85.5->76.2 / +39.4->+30.1)
+and unlocked the non-anchor weld + baseline-pin campaign (#152-#158). -->
 
-<!-- OPENED Local cycle 20260807T064228Z: the 2nd-non-anchor calibration weld (books.toscrape.com) that #151 unlocked
-is AUTHORED as PEER-GATED PR #152 (branch loop/books-toscrape-non-anchor-weld), NOT self-merged. Welds
-books.toscrape.com (real retail catalog, physical_good — inverse storefront type from the API anchors) into
-`_NON_ANCHOR_WELDED`; new test_books_toscrape_second_non_anchor_is_welded_nonvacuously is non-vacuous (genuinely
-compared in >=1 committed sweep) + has teeth (drift 29.5->40.0 caught vs the 29.5 floor). TEST-ONLY
-(test_calibration_anchor_agreement.py +78/-9; off-scoring-path EMPTY), weld suite 16->17, full suite 38/38. Live↔frozen
-verified this fire ($0 static re-score: live 29.5 == frozen 29.5, all 4 non-null pillars byte-identical — the [LOCAL]
-essence the cloud can't do). DO NOT RE-AUTHOR — TRACKED by STATE's OPEN-PR #152 banner + next fire's first-duty
-adversarial review + live re-score. See LOG Local cycle 20260807T064228Z. -->
-<!-- MERGED Local cycle 20260807T074106Z: PR #152 (books.toscrape.com 2nd non-anchor calibration weld) MERGED `1310fd5`
-after the owed FIRST-DUTY adversarial review + independent $0 live re-score. VERDICT SOUND: off-scoring-path (three-dot
-diff since merge-base 140304e is ONLY test_calibration_anchor_agreement.py +78/-9; empty over scoring.py/report.py/
-probes/battery.py/reliability.py/offering.py/scorecard.py/rubric/fixtures/experiments); vendor-neutral; committed
-baseline 29.5 v0.7; LOAD-BEARING (genuinely compared n=1 in calibration_sweep_20260807T045843Z.json); teeth (29.5->40.0
-caught); existing non-anchor tests unaffected. Live re-derived THIS fire: books.toscrape.com 29.5 live == 29.5 frozen,
-all 4 non-null pillars byte-identical -> weld holds, site did NOT regress. Suite 38/38 branch + merged main; weld 17/17.
-See LOG Local cycle 20260807T074106Z. -->
+<!-- PR #152 (books.toscrape.com 2nd non-anchor weld, OPENED 20260807T064228Z / MERGED `1310fd5` 20260807T074106Z)
+markers pruned this fire (Local cycle 20260808T104105Z) to keep completed-marker bytes under the hygiene cap — both
+preserved verbatim in loop/LOG.md + git. -->
 
 <!-- DONE Local cycle 20260807T074106Z: pinned acuityscheduling.com (service_booking SaaS) as the FIFTH frozen-replay
 baseline (54.0 F v0.7) + guard test_service_booking_storefront_replays_54_0; direct-to-main, live 54.0 == frozen 54.0.
@@ -263,14 +230,42 @@ live 86.0 / 64.4 / 73.9 == frozen, all 4 non-null pillars byte-identical, caps e
 RE-AUTHOR — TRACKED by STATE's OPEN-PR #158 banner + next fire's first-duty adversarial review + live re-score (REVIEWER
 re-runs the $0 live re-scores; a divergence = REAL live-rail drift -> re-capture that member, don't weld it, inv #4).
 Evidence runs/local/live_x402_non_anchor_weld_20260808T094101Z.json. See LOG Local cycle 20260808T094101Z. -->
+<!-- MERGED Local cycle 20260808T104105Z: PR #158 (weld the three non-anchor LIVE-x402 witnesses thebotwire.com 86.0 /
+api.x402oracle.com 64.4 / x402deploy.vercel.app 73.9 into _NON_ANCHOR_WELDED as the 8th/9th/10th members) MERGED `3fc5b5b`
+after the owed FIRST-DUTY adversarial review + independent $0 live re-scores. VERDICT SOUND: off-scoring-path (three-dot
+diff since merge-base ab66698 is ONLY test_calibration_anchor_agreement.py +230 + evidence JSON +99; EMPTY over
+asrs/rubric/fixtures/experiments/loop); vendor-neutral (by TYPE live-x402 storefront); committed v0.7 floors present
+(86.0/64.4/73.9); LOAD-BEARING (n_compared=1 each independently re-derived — each in EXACTLY
+calibration_sweep_20260808T084504Z.json at floor, keyed identically both paths, no alias); teeth (86->95 / 64.4->75 /
+73.9->85 each caught as one divergence; weld 23->26). Volatile-rail $0 live re-score re-run THIS fire: ALL THREE live ==
+frozen == floor, all 4 non-null pillars byte-identical, caps empty, each x402_probe 8.0/8.0 x402-live -> rails UP + agree
+-> MERGE. Weld 26/26 branch + merged main (canonical replay 34/34). See LOG Local cycle 20260808T104105Z. -->
+<!-- DONE Local cycle 20260808T104105Z: pinned checkout.coffeecircle.com (a REAL coffee merchant's UCP checkout surface —
+the FIRST baseline carrying a genuine LIVE UCP commerce-protocol rail, a structurally NEW agent-native rail TYPE) as the
+THIRTEENTH test_canonical_replay.EXPECTED frozen-replay baseline (57.4 F v0.7; access 100.0/legibility 54.55/tx 50.0/trust
+33.33) + _REPLAY_CLEAN + guard test_ucp_commerce_protocol_storefront_replays_57_4 (teeth: books 0.0 < UCP 4.0 <
+thebotwire 8.0) + _POPULATION x5, direct-to-main. GET /.well-known/ucp serves a valid dev.ucp.* capability manifest
+(version 2026-04-08) -> x402_probe reads commerce-protocol-live PARTIAL 4.0/8.0 (the MIDDLE rung between no-rail 0.0 and a
+full live-x402 handshake 8.0). Found by a $0 UCP recon this fire: joinhexagon.com ALSO serves a valid UCP manifest (-> 78.4
+C) but OVER-CLAIMS all 6 archetypes (161KB marketing site + huge llms-full.txt topic-word FPs) -> BLOCKED (inv #4, thebotwire
+pattern); checkout.coffeecircle.com is CLEAN — honest {metered_api, physical_good} (the other 4 NA), NO FP-guards needed.
+Gate: UCP manifest STABLE across >=2 $0 obs (static well-known JSON, NO payment signed inv #1); fresh full-score capture ->
+live 57.4 == frozen 57.4 == EXPECTED, all 4 pillars byte-identical, replay_misses=0, caps empty. Off-scoring-SEMANTICS EMPTY
+(tests + new non-anchor fixture; canonical PAIR untouched); frozen delta UNMOVED +39.4 (canonical replay 34->35); suite
+38/38; baselines 12->13. Evidence runs/local/ucp_rail_new_type_baseline_20260808T104105Z.json. See LOG Local cycle
+20260808T104105Z. -->
 
-- **[P2 — TRUTH, LOCAL, candidate] BROADEN to a genuinely NEW rail TYPE (a live ACP/UCP/MPP handshake merchant).** With
-  PR #158 the cross-path weld spans TEN non-anchor witnesses and the live/upper scale is well-densified across THREE x402
-  witnesses / two tx shapes (thebotwire 100.0 / oracle 87.5 / x402deploy 100.0), so a FOURTH x402 point adds little. The
-  next TRUTH broadening should find a live storefront exposing a DIFFERENT agent-native rail (ACP `/.well-known/*`, UCP
-  `/.well-known/ucp`, or an MPP handshake) that the shipped scorer detects, pin it as a frozen-replay baseline (the exa.ai
-  recipe: verify replay-clean + honest offering classification on a FRESH $0 capture FIRST), then sweep-add (n_compared>=1)
-  and weld. WATCH driftflight.com /extend for a 402 recovery (restores the anchor's live handshake + the +39.4 live delta).
+- **[P2 — TRUTH, LOCAL, candidate] BROADEN further / UNLOCK the UCP-rail WELD.** The NEW-rail-TYPE broadening is now
+  UNDERWAY: checkout.coffeecircle.com (57.4 F, UCP `commerce-protocol-live`) is the FIRST pinned baseline on the UCP
+  commerce-protocol rail (Local cycle 20260808T104105Z), a rail SHAPE distinct from all ten x402/no-rail witnesses. Next
+  steps, in order: (1) a [LOCAL] cadence sweep ADDS checkout.coffeecircle.com to `experiments/calibration_sweep.py`
+  POPULATION (n_compared≥1), then a PEER-GATED PR welds it into `_NON_ANCHOR_WELDED` as the FIRST welded member on the UCP
+  rail (the api.replicate.com/books.toscrape pattern). (2) Broaden to STILL-open rail TYPES — a live ACP checkout surface
+  (`/.well-known/agentic-commerce` or a `checkout_sessions` payload) or an MPP handshake the scorer detects. (3)
+  `joinhexagon.com` is a DOCUMENTED live-UCP lead but needs a precision-guard unblock FIRST (clear the 4 llms-full.txt FP
+  families digital_good/physical_good/service_booking/data_retrieval before its fixture can be pinned honestly, inv #4) —
+  prefer clean merchant witnesses over infra profiles. WATCH driftflight.com /extend for a 402 recovery (restores the
+  anchor's live handshake + the +39.4 live delta).
 
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
   phrasing has now drifted the `_ENV_BLOCK_RE` guard FIVE times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)

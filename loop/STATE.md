@@ -1,23 +1,49 @@
 # Loop state
 
-- Cycle counter: 306
-- **⏳ OPEN PEER-GATED PR #158 after this fire (branch `loop/live-x402-non-anchor-weld`, commit `e4c2bae`) — the
-  NEXT fire's FIRST duty is its adversarial review + independent $0 live re-score.** This fire (Local 20260808T094101Z)
-  welded the THREE non-anchor LIVE-x402 witnesses (thebotwire.com 86.0 / api.x402oracle.com 64.4 / x402deploy.vercel.app
-  73.9) into `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` as the EIGHTH/NINTH/TENTH members — the FIRST
-  welded members carrying a GENUINE LIVE x402 handshake (every prior welded witness carries NO live rail; exa.ai's is
-  documented-not-probed), extending the cross-path agreement guard to LIVE-rail storefront TYPES. The sweep prerequisite
-  was DISCHARGED last fire (`1639a73`), so each is genuinely COMPARED (n_compared=1) in the committed
-  `calibration_sweep_20260808T084504Z.json` at its floor, keyed identically on both paths (no www/bare alias). Each new
-  test asserts membership + committed-v0.7-floor coupling + non-vacuous agreement + teeth (synthetic drift caught vs its
-  floor 86.0→95.0 / 64.4→75.0 / 73.9→85.0). **[LOCAL] essence — live re-confirm this fire (static $0, no
-  --behavioral/--max-pay/codex/zero CLI; no payment signed, inv #1): live 86.0 / 64.4 / 73.9 == frozen == floor, all 4
-  non-null pillars byte-identical, caps empty** → the live rails are ALL UP and each AGREES with its floor (non-vacuous
-  AND non-divergent). Off-scoring-SEMANTICS EMPTY (diff = the weld test file +230 + evidence JSON; empty over
-  asrs/rubric/fixtures/experiments/loop); weld suite 23→26; full suite 38/38; frozen delta UNMOVED **+39.4**; live
-  **+30.1** (/extend still 401). Evidence `runs/local/live_x402_non_anchor_weld_20260808T094101Z.json`. NOT self-merged.
-  **REVIEWER DUTY (volatile rails):** re-run each $0 live re-score at review time — live==frozen → MERGE; any divergence
-  = REAL live-rail drift → re-capture that member, do NOT weld it (inv #4). LOG Local cycle 20260808T094101Z.
+- Cycle counter: 307
+- **✅ PR #158 (weld the THREE non-anchor LIVE-x402 witnesses thebotwire.com 86.0 / api.x402oracle.com 64.4 /
+  x402deploy.vercel.app 73.9 into `_NON_ANCHOR_WELDED` as the 8th/9th/10th members) MERGED this fire (Local
+  20260808T104105Z), merge `3fc5b5b`** — after the owed FIRST-DUTY adversarial review + independent $0 live re-scores.
+  VERDICT SOUND: off-scoring-path (three-dot diff since merge-base `ab66698` is ONLY
+  `test_calibration_anchor_agreement.py` +230 + evidence JSON +99; EMPTY over asrs/rubric/fixtures/experiments/loop);
+  vendor-neutral (welded by TYPE live-x402 storefront); committed v0.7 floors independently re-derived present
+  (86.0/64.4/73.9); LOAD-BEARING (n_compared=1 each — independently re-derived: each in EXACTLY
+  `calibration_sweep_20260808T084504Z.json` at floor, keyed identically both paths, no www/bare alias); teeth (synthetic
+  drift 86→95 / 64.4→75 / 73.9→85 each caught as exactly one divergence; weld suite 23→26); and the **volatile-rail $0
+  live re-score re-run THIS fire** (static, no --behavioral/--max-pay/codex/zero CLI; no payment signed, inv #1) → **ALL
+  THREE live == frozen == floor** (86.0/64.4/73.9), all 4 non-null pillars byte-identical, caps empty, each `x402_probe`
+  8.0/8.0 `x402-live` → the live rails are ALL UP and each AGREES with its floor (non-vacuous AND non-divergent) → MERGE.
+  Weld suite 26/26 branch + merged main (canonical replay 34/34). The cross-path weld now spans TEN non-anchor witnesses,
+  the last three the FIRST welded members with a genuine live x402 handshake. Review verdict recorded in LOG Local cycle
+  20260808T104105Z.
+- **✅ NEW THIRTEENTH frozen-replay calibration baseline PINNED this fire (Local 20260808T104105Z, direct-to-main):
+  checkout.coffeecircle.com — the FIRST baseline carrying a genuine LIVE UCP (Universal Commerce Protocol) rail, a
+  structurally NEW agent-native rail TYPE distinct from every x402/no-rail witness.** 57.4 F v0.7 (access 100.0 /
+  legibility 54.55 / **transactability 50.0** / trust 33.33). It is a REAL coffee merchant's UCP checkout surface:
+  `GET /.well-known/ucp` serves a valid `dev.ucp.*` capability manifest (version 2026-04-08) → the shipped scorer's
+  `x402_probe` reads **`commerce-protocol-live` PARTIAL 4.0/8.0** — the MIDDLE rung of the commerce-protocol ladder,
+  strictly ABOVE a no-rail retail floor (books.toscrape.com `x402_probe` 0.0) and strictly BELOW a full live-x402
+  handshake (thebotwire.com 8.0). The forward P2 "genuinely NEW rail TYPE" candidate, EXECUTED. Found by a $0 UCP recon
+  this fire: `joinhexagon.com` also serves a valid UCP manifest (→ 78.4 C) but its 161KB AI-commerce marketing site +
+  huge llms-full.txt make `discover_offering` OVER-CLAIM all 6 archetypes (topic-word FPs) → BLOCKED from pin (inv #4,
+  the thebotwire.com pattern); `checkout.coffeecircle.com` is CLEAN — honest classification exactly **{metered_api,
+  physical_good}** (order-tracking/shipping + UCP checkout API; the other 4 NA), so NO FP-family guards were needed.
+  Gate cleared on a FRESH $0 capture: (a) UCP manifest STABLE across ≥2 direct obs (a static well-known JSON, not a
+  volatile endpoint; NO payment signed, inv #1); (b) honest {metered_api, physical_good}; (c) fresh full-score capture →
+  **live 57.4 == frozen fixture-replay 57.4 == EXPECTED 57.4**, all 4 non-null pillars byte-identical, replay_misses=0,
+  caps empty. Installed `fixtures/canonical/checkout.coffeecircle.com.json` (NEW, 3.5 MB) + EXPECTED + `_REPLAY_CLEAN` +
+  guard `test_ucp_commerce_protocol_storefront_replays_57_4` (capability teeth: no-rail 0.0 < **UCP 4.0** < live-x402
+  8.0) + `_POPULATION` ×5. Off-scoring-SEMANTICS EMPTY (only tests + the new non-anchor fixture; canonical PAIR
+  untouched); frozen delta UNMOVED **+39.4** (canonical replay 34→35); live **+30.1**; suite 38/38; baselines 12→13.
+  Because the UCP rail is LIVE (served, volatile), the replay-clean guard doubles as a manifest-drift tripwire (a future
+  removal/invalidation flips it → re-capture). Evidence `runs/local/ucp_rail_new_type_baseline_20260808T104105Z.json`;
+  LOG Local cycle 20260808T104105Z. **UNLOCK for a future WELD:** a [LOCAL] cadence run must FIRST add
+  checkout.coffeecircle.com to `experiments/calibration_sweep.py` POPULATION (n_compared≥1), then a peer-gated PR welds
+  it as the FIRST welded member on the UCP commerce-protocol rail (the api.replicate.com/books.toscrape pattern).
+- **↪ Fire-start state (Local 20260808T104105Z):** open PR #158 owed a first-duty review (opened by the prior fire
+  094101Z) → reviewed + MERGED (banner above). Infra health GREEN (verify `verify_20260808T104105Z.json` fresh 38/38,
+  git clean). No PR opened this fire (the pin is direct-to-main), so the NEXT fire owes NO peer-gated review — its first
+  duty is the infra health check.
 - LOCAL cycle — 20260808T084106Z summarized: ran the calibration cadence sweep with the three live-x402 witnesses
   (thebotwire.com 86.0 / api.x402oracle.com 64.4 / x402deploy.vercel.app 73.9) added to `experiments/calibration_sweep.py`
   POPULATION (20→23) → `runs/local/calibration_sweep_20260808T084504Z.json` (22/23 scored, rei.com not-scorable, 0 errors),
@@ -34,9 +60,6 @@
   + PAYG, no MCP) is the same shape as the with-rails anchor AND the controlled complement of the no-rails
   api.replicate.com (tx 0.0), isolating the rail's tx contribution. Direct-to-main; frozen +39.4 / live +30.1;
   baselines 10→11. Full detail in loop/LOG.md.
-- **↪ Fire-start state (Local 20260808T094101Z):** NO open PR at fire start (`gh pr list --state open` → `[]`), so
-  no review was owed; infra health GREEN (verify `verify_20260808T094101Z.json` fresh, tests_ok 38/38, git clean).
-  This fire OPENED PR #158 (see the banner above), so the NEXT fire DOES owe the first-duty review + live re-score.
 - **✅ PR #157 (exa.ai 7th non-anchor cross-path calibration weld — the FIRST welded member with GENUINE
   partial agent-native rails) MERGED this fire (Local 20260807T205300Z), merge `cf0df08`** — after the owed
   FIRST-DUTY adversarial review + independent $0 live re-score. VERDICT SOUND: off-scoring-path (three-dot diff
@@ -54,31 +77,12 @@
   the FIRST welded member with genuine partial agent-native rails (documented x402 + MCP + PAYG → tx 50.0, a
   real MIDDLE between the no-rails floor 0.0 and the anchor's full handshake 87.5). Review verdict recorded in
   LOG Local cycle 20260807T205300Z.
-- **✅ thebotwire.com PINNED as the TENTH frozen-replay calibration baseline this fire (Local 20260808T054613Z,
-  direct-to-main) — the oldest P0 is now CLOSED.** After five cycles of offering-precision unblocking (all five FP
-  families cleared: subscription-negation 005504Z / physical_good 020353Z / service_booking 024315Z / digital_good
-  034105Z / subscription-comparison 045337Z), this fire executed the PIN itself — the exa.ai recipe — after
-  re-verifying every precondition LIVE on a FRESH capture. **86.0 B v0.7** (access 100.0 / legibility 86.36 / **tx
-  100.0** / trust 43.33); the **HIGHEST baseline** (a hair above the driftflight.com anchor frozen 85.5) and the FIRST
-  non-anchor baseline with a **GENUINE LIVE x402 handshake** — HONEST, not a rig: a bare purpose-built agent-native
-  x402 storefront maxes transactability (100.0 vs the anchor's 87.5) while carrying LOW trust (43.3, thin
-  policy/reputation surface), a pillar SHAPE no other baseline holds; does NOT touch the canonical PAIR. **Live x402
-  re-confirmed STABLE at capture time across 3 independent obs** ($0 GETs: `/payments/latest` 402 ×2 + `/news` 402 ×2,
-  both carrying a valid x402-v2 payment-required offer [USDC on Base, $0.005], + the scorer's `x402_probe` 8.0/8.0
-  `x402-live`) — **$0-compliant, NO payment ever signed (inv #1).** Fresh full-score capture (38 fetch entries) →
-  live **86.0 == frozen fixture-replay 86.0 == EXPECTED 86.0**, all 4 non-null pillars byte-identical, replay_misses=0,
-  caps empty. Honest classification on the fresh capture = exactly **{metered_api, data_retrieval}** (4 over-claim
-  families + comparison FP all NA). Installed: `fixtures/canonical/thebotwire.com.json` (NEW) + `EXPECTED` +
-  `_REPLAY_CLEAN` + guard `test_live_x402_storefront_replays_86_0` (capability teeth: no-rails 0.0 < documented-partial
-  50.0 < **LIVE 100.0**) + `_POPULATION` ×5. Frozen-replay baselines **9→10**; the FIRST non-anchor LIVE-x402 point, so
-  the calibration guard's upper/live scale no longer rests on driftflight.com alone. Off-scoring-SEMANTICS EMPTY
-  (only 6 test files + 1 fixture); frozen delta UNMOVED **+39.4**; live **+30.1** (`/extend` still 401); suite 38/38
-  (replay 31→32). Because its rail is LIVE (volatile), the replay-clean guard now doubles as a live-rail drift
-  tripwire (a future 402→other flips it → re-capture). Evidence
-  `runs/local/thebotwire_live_x402_baseline_20260808T054613Z.json`; see LOG Local cycle 20260808T054613Z. **NEXT
-  broadening candidates for a SECOND non-anchor live-x402 point** (so the live scale rests on ≥2): x402deploy.vercel.app
-  73.9 C / api.x402oracle.com 64.4 D (verify their thinner tool-gateway classifications are CLEAN first). Anchor
-  driftflight.com `/extend` STILL 401 (WATCH for a 402 recovery → restores the anchor's live handshake + +39.4 live delta).
+- LOCAL cycle — 20260808T054613Z summarized: pinned thebotwire.com as the TENTH frozen-replay baseline (86.0 B, the
+  HIGHEST + FIRST non-anchor LIVE-x402 point, {metered_api, data_retrieval}) via the exa.ai recipe after clearing all
+  five offering-classification FP families (005504Z/020353Z/024315Z/034105Z/045337Z) — the oldest P0, CLOSED; later
+  welded via merged PR #158 (banner above). Live 86.0 == frozen == EXPECTED, replay-clean; direct-to-main; frozen +39.4
+  / live +30.1; baselines 9→10. Full detail in loop/LOG.md. Anchor driftflight.com `/extend` STILL 401 (WATCH for a
+  402 recovery → restores the anchor's live handshake + +39.4 live delta).
 - **✅ PR #156 (www.moleskine.com 6th non-anchor cross-path calibration weld — 2nd retail, retail depth)
   MERGED this fire (Local 20260807T184234Z), merge `571e4c6`** — after the owed FIRST-DUTY adversarial
   review + independent $0 live re-score. VERDICT SOUND: off-scoring-path (three-dot diff since merge-base

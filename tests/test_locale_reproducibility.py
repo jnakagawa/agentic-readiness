@@ -89,6 +89,7 @@ _POPULATION = (
     "api.replicate.com",
     "api.x402oracle.com",
     "books.toscrape.com",
+    "checkout.coffeecircle.com",
     "drift-flight.org",
     "driftflight.com",
     "exa.ai",

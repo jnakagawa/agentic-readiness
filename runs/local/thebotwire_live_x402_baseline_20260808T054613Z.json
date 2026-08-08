@@ -1,0 +1,81 @@
+{
+ "ts": "20260808T054613Z",
+ "kind": "local-baseline-pin",
+ "cycle": "Local cycle 20260808T054613Z",
+ "track": "TRUTH",
+ "domain": "thebotwire.com",
+ "what": "Pinned thebotwire.com as the TENTH frozen-replay calibration baseline — a purpose-built agent-native x402 news/data-wire API storefront and the FIRST non-anchor baseline with a GENUINE LIVE x402 handshake (not merely documented). The oldest P0, fully unblocked after all five offering-classification FP families were closed over Local cycles 20260808T005504Z..045337Z. Direct-to-main, same class as the exa.ai/ipinfo/api.replicate/moleskine baseline pins.",
+ "live_x402_confirmation_at_capture_time": {
+  "obs_1": {"/payments/latest": "HTTP 402", "/news": "HTTP 402", "payment_required_header": "present (x402Version 2)"},
+  "obs_2": {"/payments/latest": "HTTP 402", "/news": "HTTP 402"},
+  "obs_3_scorer_x402_probe": "x402_probe PASS 8.0/8.0 = x402-live (payment-required header on /payments/latest)",
+  "offer_decoded": {"x402Version": 2, "scheme": "exact", "network": "eip155:8453 (Base)", "amount": "5000", "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 (USDC)", "price": "$0.005"},
+  "note": "Three independent observations at capture time confirm the live rail is stable, not a one-shot fluke. $0-compliant: only $0 GETs returning 402 were observed; NO payment was ever signed or funded (invariant #1)."
+ },
+ "live_rescore": {
+  "source_run_file": "runs/thebotwire_com_20260808T054619.json",
+  "overall": 86.0,
+  "grade": "B",
+  "rubric": "0.7",
+  "pillars": {
+   "access": 100.0,
+   "legibility": 86.36363636363636,
+   "transactability": 100.0,
+   "trust": 43.333333333333336,
+   "outcome": null
+  },
+  "caps_applied": [],
+  "scored": true
+ },
+ "frozen_fixture_replay": {
+  "overall": 86.0,
+  "grade": "B",
+  "rubric": "0.7",
+  "pillars": {
+   "access": 100.0,
+   "legibility": 86.36363636363636,
+   "transactability": 100.0,
+   "trust": 43.333333333333336,
+   "outcome": null
+  },
+  "replay_misses": 0,
+  "scored": true
+ },
+ "expected_pinned": {
+  "overall": 86.0,
+  "grade": "B",
+  "rubric_version": "0.7",
+  "pillars": {
+   "access": 100.0,
+   "legibility": 86.36363636363636,
+   "transactability": 100.0,
+   "trust": 43.333333333333336,
+   "outcome": null
+  }
+ },
+ "agreement": "live 86.0 == frozen fixture-replay 86.0 == EXPECTED 86.0; all 4 non-null pillars byte-identical; replay_misses=0; caps empty",
+ "offering_claimed_archetypes": [
+  "data_retrieval",
+  "metered_api"
+ ],
+ "offering_na_archetypes": [
+  "digital_good",
+  "physical_good",
+  "service_booking",
+  "subscription"
+ ],
+ "offering_surfaces_seen": [
+  "/docs",
+  "/llms.txt",
+  "/openapi.json",
+  "homepage"
+ ],
+ "honest_classification_note": "Classified HONESTLY to exactly {metered_api, data_retrieval} on the FRESH live capture — the four over-claim families (physical_good/service_booking/digital_good/subscription) that blocked this pin for five cycles all stay NA under the offering precision guards shipped Local cycles 20260808T005504Z (subscription negation) / 020353Z (physical_good news-catalog) / 024315Z (service_booking news-catalog) / 034105Z (digital_good news-catalog) / 045337Z (subscription comparison). Not manufactured: the guards were verified canonical-invariant on the load-bearing fixtures before this capture.",
+ "capability_note": "transactability 100.0 EARNED by a GENUINE LIVE x402 handshake: every priced route answers a $0 GET with HTTP 402 + a valid x402-v2 payment-required offer header (USDC on Base, $0.005). The TOP rung of the live > documented > absent capability ladder — strictly above exa.ai's documented-partial rails (50.0), which is strictly above the no-rails floor (books/api.replicate 0.0). At 86.0 B it is the HIGHEST baseline, a hair above the with-rails anchor (driftflight.com frozen 85.5): HONEST, not a rig — a bare purpose-built x402 storefront maxes transactability (100.0 vs the anchor's 87.5) while carrying LOW trust (43.3, thin policy/reputation surface), a pillar SHAPE no other baseline holds. Does NOT touch the canonical PAIR delta (+39.4, unmoved).",
+ "files_changed": [
+  "fixtures/canonical/thebotwire.com.json (NEW, full-score fixture, 38 fetch entries)",
+  "tests/test_canonical_replay.py (EXPECTED += thebotwire.com; _REPLAY_CLEAN += thebotwire.com; new guard test_live_x402_storefront_replays_86_0 with capability teeth books 0.0 < exa 50.0 < thebotwire 100.0; runner registration)",
+  "tests/test_{hashseed,timezone,encoding,locale,probe_order}_reproducibility.py (_POPULATION += thebotwire.com — the replay-clean-set completeness tripwires forced consistent inclusion)"
+ ],
+ "invariants": "off-scoring-SEMANTICS EMPTY (git diff over asrs/ rubric/ experiments/ EMPTY); frozen canonical delta UNMOVED +39.4; suite 38/38; test_canonical_replay 31->32 (guard registered); frozen-replay baselines 9->10. $0 static capture + in-process replay + $0 GET x402 probes, NO behavioral/codex/paid/zero-CLI, NO payment signed. Stayed in-repo."
+}

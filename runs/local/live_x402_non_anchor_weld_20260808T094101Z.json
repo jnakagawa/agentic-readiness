@@ -1,0 +1,99 @@
+{
+ "ts": "20260808T094101Z",
+ "cycle": "Local cycle 20260808T094101Z",
+ "track": "TRUTH/COVERAGE",
+ "item": "WELD the three non-anchor LIVE-x402 witnesses into _NON_ANCHOR_WELDED (peer-gated PR)",
+ "branch": "loop/live-x402-non-anchor-weld",
+ "invariants": {
+  "spend": "$0 static re-scores only (no --behavioral / --max-pay / codex / zero CLI); no payment signed (inv #1)",
+  "off_scoring_semantics": "diff is tests/test_calibration_anchor_agreement.py ONLY (+230); empty over asrs/rubric/fixtures/experiments/loop",
+  "versioned_comparability": "all three carry committed v0.7 replay floors; only v0.7 sweeps compared (inv #2)",
+  "attribution_honesty": "live re-score confirms live==frozen; a review-time divergence = REAL live-rail drift -> re-capture, do not weld (inv #4)"
+ },
+ "live_reconfirm_static_0usd": {
+  "thebotwire.com": {
+   "frozen_floor_overall": 86.0,
+   "live_overall": 86.0,
+   "grade": "B",
+   "rubric_version": "0.7",
+   "overall_matches_floor": true,
+   "frozen_pillars": {
+    "access": 100.0,
+    "legibility": 86.36363636363636,
+    "transactability": 100.0,
+    "trust": 43.333333333333336,
+    "outcome": null
+   },
+   "live_pillars": {
+    "access": 100.0,
+    "legibility": 86.36363636363636,
+    "transactability": 100.0,
+    "trust": 43.333333333333336,
+    "outcome": null
+   },
+   "pillars_byte_identical": true,
+   "caps_applied": [],
+   "scored": true,
+   "genuinely_compared_in_sweep": "calibration_sweep_20260808T084504Z.json",
+   "sweep_segment": "x402-live:news-data-wire"
+  },
+  "api.x402oracle.com": {
+   "frozen_floor_overall": 64.4,
+   "live_overall": 64.4,
+   "grade": "D",
+   "rubric_version": "0.7",
+   "overall_matches_floor": true,
+   "frozen_pillars": {
+    "access": 100.0,
+    "legibility": 36.36363636363637,
+    "transactability": 87.5,
+    "trust": 20.0,
+    "outcome": null
+   },
+   "live_pillars": {
+    "access": 100.0,
+    "legibility": 36.36363636363637,
+    "transactability": 87.5,
+    "trust": 20.0,
+    "outcome": null
+   },
+   "pillars_byte_identical": true,
+   "caps_applied": [],
+   "scored": true,
+   "genuinely_compared_in_sweep": "calibration_sweep_20260808T084504Z.json",
+   "sweep_segment": "x402-live:trust-oracle"
+  },
+  "x402deploy.vercel.app": {
+   "frozen_floor_overall": 73.9,
+   "live_overall": 73.9,
+   "grade": "C",
+   "rubric_version": "0.7",
+   "overall_matches_floor": true,
+   "frozen_pillars": {
+    "access": 100.0,
+    "legibility": 45.45454545454545,
+    "transactability": 100.0,
+    "trust": 33.333333333333336,
+    "outcome": null
+   },
+   "live_pillars": {
+    "access": 100.0,
+    "legibility": 45.45454545454545,
+    "transactability": 100.0,
+    "trust": 33.333333333333336,
+    "outcome": null
+   },
+   "pillars_byte_identical": true,
+   "caps_applied": [],
+   "scored": true,
+   "genuinely_compared_in_sweep": "calibration_sweep_20260808T084504Z.json",
+   "sweep_segment": "x402-live:web-data-tools"
+  }
+ },
+ "all_three_live_equal_frozen": true,
+ "weld_suite": "tests/test_calibration_anchor_agreement.py 23 -> 26 tests, all pass",
+ "full_suite": "38/38 modules green (exit 0)",
+ "cross_path_weld_span": "now TEN structurally-distinct non-anchor witnesses; the LAST THREE are the FIRST welded members carrying a GENUINE LIVE x402 handshake",
+ "frozen_canonical_delta": "+39.4 (UNMOVED; test_canonical_replay)",
+ "live_canonical_delta": "+30.1 (driftflight.com 76.2 C, /extend still 401 per verify_20260808T094101Z.json)"
+}

@@ -20286,3 +20286,7 @@ its UCP manifest — none found so far; the partial 4.0/8.0 is the ceiling for a
 or (b) welding hardgraft.com into `_NON_ANCHOR_WELDED` (peer-gated) once it has a genuinely-compared
 sweep presence (a $0 cadence-sweep POPULATION-add first, the gymshark recipe). The genuinely-NEW
 rail TYPE (ACP/MPP) remains the higher prize but is still UN-pinnable $0 (ACP well-known scarce).
+
+## Local verification — 20260808T174101Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260808T174101Z.json

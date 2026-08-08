@@ -321,6 +321,44 @@ EXPECTED = {
             "outcome": None,
         },
     },
+    # An ELEVENTH real-domain calibration datapoint — a PURE single-archetype
+    # metered_api storefront (api.x402oracle.com, an x402 "trust oracle" that
+    # returns a pre-payment trust verdict for other x402 endpoints), and the SECOND
+    # non-anchor baseline with a GENUINE LIVE x402 handshake (thebotwire.com is the
+    # first): GET /v1/check answers a $0 GET with HTTP 402 and a valid x402-v2
+    # payment-required offer (USDC on Base eip155:8453, $0.002), so the scorer's
+    # `x402_probe` reads `x402-live` 8.0/8.0. It claims exactly ONE archetype
+    # {metered_api} (data_retrieval / digital_good / physical_good / service_booking
+    # / subscription all NA — a thin single-purpose gateway, no multi-vertical topic
+    # words to over-claim). Its fixture was captured full-score LIVE [LOCAL] this
+    # cycle (Local cycle 20260808T065659Z) with the live x402 confirmed stable
+    # across 3 direct observations at capture time (obs_1 GET body 402 + obs_2
+    # `payment-required` header 402 + the scorer's x402-live), and replays CLEAN
+    # (0 misses); its live score was re-verified == this frozen floor on the same
+    # $0 static re-score (live 64.4 == frozen 64.4, all four non-null pillars
+    # byte-identical). Its transactability is 87.5 — x402-live (8) + self-serve
+    # PAYG (6) but NO per-service MCP bonus (2) — the IDENTICAL transactability
+    # SHAPE as the with-rails anchor (driftflight.com), which shows the anchor's
+    # 87.5 is a capability fact, not an anchor quirk. Because it is a PURE
+    # {metered_api} storefront WITH a live rail, it is the CONTROLLED complement of
+    # api.replicate.com (also pure {metered_api} but with NO agent-native rail →
+    # transactability 0.0): same archetype, opposite rail, so the transactability
+    # gap (0.0 → 87.5) is a rail-capability fact isolated from storefront type.
+    # Worded by capability, never by vendor. Because its rail is LIVE (volatile),
+    # a future 402→other drop reddens the replay-clean guard (fixture frozen) and
+    # flags a re-capture — the same contract as the domains above.
+    "api.x402oracle.com": {
+        "overall": 64.4,
+        "grade": "D",
+        "rubric_version": "0.7",
+        "pillars": {
+            "access": 100.0,
+            "legibility": 36.36363636363637,
+            "transactability": 87.5,
+            "trust": 20.0,
+            "outcome": None,
+        },
+    },
 }
 EXPECTED_DELTA = 39.4  # driftflight.com (rails) - drift-flight.org (no rails)
 
@@ -893,6 +931,63 @@ def test_live_x402_storefront_replays_86_0() -> None:
         f"thebotwire.com transactability {tbw_tx} (LIVE x402) is the top rung — "
         f"strictly above exa.ai's documented-partial {exa_tx}, which is strictly "
         f"above the no-rails floor {books_tx}",
+    )
+
+
+# ---------------------------------------------------------------------------
+# 6h. ELEVENTH-DOMAIN CALIBRATION — a PURE single-archetype metered_api storefront
+#     with a GENUINE LIVE x402 handshake (api.x402oracle.com, an x402 "trust
+#     oracle"), the SECOND non-anchor baseline carrying a live rail (thebotwire.com
+#     is the first). This replays the committed api.x402oracle.com fixture through
+#     the same real pipeline and pins its 64.4 D on rubric v0.7. Its teeth are a
+#     CONTROLLED capability contrast that holds the storefront TYPE fixed:
+#     api.x402oracle.com and api.replicate.com are BOTH pure {metered_api}
+#     storefronts scored over the IDENTICAL check set, but one exposes a live x402
+#     rail (x402-live, transactability 87.5) and the other none
+#     (no-agent-native-payment, transactability 0.0). The transactability gap
+#     (0.0 → 87.5) is therefore isolated to the agent-native rail, not to archetype
+#     or denominator — the cleanest single-variable statement of the +39.4 delta's
+#     cause, on two same-type witnesses. Its 87.5 transactability is x402-live (8)
+#     + self-serve PAYG (6) with NO per-service MCP bonus (2) — the IDENTICAL shape
+#     as the with-rails anchor (driftflight.com), so the anchor's 87.5 is a
+#     capability fact, not an anchor quirk. Worded by capability, never by vendor:
+#     it asks "same archetype, does a live rail move transactability?", never "is
+#     this domain X?". Because the rail is LIVE (volatile), a future 402→other drop
+#     reddens the replay-clean guard (fixture frozen) and flags a re-capture.
+# ---------------------------------------------------------------------------
+def test_pure_metered_api_live_x402_replays_64_4() -> None:
+    print("test_pure_metered_api_live_x402_replays_64_4")
+    _assert_domain("api.x402oracle.com")
+    # Controlled capability teeth: two PURE {metered_api} storefronts scored over
+    # the IDENTICAL check set differ ONLY in the agent-native rail — the live-x402
+    # oracle earns transactability off the floor, the no-rails inference API earns
+    # exactly 0.0. Same archetype, opposite rail: the gap is a rail fact.
+    oracle, oracle_misses = _score_fixture("api.x402oracle.com")
+    repl, repl_misses = _score_fixture("api.replicate.com")
+    _check(
+        not (oracle_misses or repl_misses),
+        "no replay-miss on api.x402oracle.com / api.replicate.com",
+    )
+    _check(
+        _by_id(oracle, "x402_probe").status is Status.PASS
+        and _by_id(oracle, "x402_probe").finding == "x402-live",
+        "api.x402oracle.com: x402_probe passes with a LIVE handshake (x402-live)",
+    )
+    _check(
+        _by_id(repl, "x402_probe").status is not Status.PASS,
+        "api.replicate.com: x402_probe does NOT pass — no agent-native rail",
+    )
+    _check(
+        {c.check_id for c in oracle.checks} == {c.check_id for c in repl.checks},
+        "both pure-metered_api storefronts scored over the identical check set "
+        "(like-for-like transactability comparison)",
+    )
+    o_tx = oracle.pillar_scores["transactability"]
+    r_tx = repl.pillar_scores["transactability"]
+    _check(
+        r_tx == 0.0 < o_tx,
+        f"the live x402 rail moves transactability off the floor: pure-metered_api "
+        f"WITH a rail {o_tx} > WITHOUT a rail {r_tx} (== 0.0)",
     )
 
 
@@ -1921,6 +2016,19 @@ _REPLAY_CLEAN = {
     # (volatile), a future 402→other drop reddens this replay guard (fixture frozen)
     # and flags a re-capture — the honest signal, not a silent drift.
     "thebotwire.com",
+    # api.x402oracle.com captured full-score LIVE this cycle (Local cycle
+    # 20260808T065659Z): the fresh crawl covers the whole probe set (0 misses) and
+    # replays to its pinned 64.4 D. It is the SECOND non-anchor member with a
+    # GENUINE LIVE x402 handshake (GET /v1/check → HTTP 402 + a valid x402-v2
+    # payment-required offer → x402_probe x402-live 8.0/8.0) and a PURE
+    # {metered_api} storefront — the controlled complement of the no-rails
+    # api.replicate.com (same archetype, opposite rail → transactability 0.0 vs
+    # 87.5). Its 87.5 transactability (x402-live + PAYG, NO MCP bonus) is the same
+    # shape as the with-rails anchor, so the live/upper calibration scale no longer
+    # rests on thebotwire.com alone. Because its rail is LIVE (volatile), a future
+    # 402→other drop reddens this replay guard (fixture frozen) and flags a
+    # re-capture — the honest signal, not a silent drift.
+    "api.x402oracle.com",
 }
 # Fixtures whose recorded surface is a strict subset of the full scoring path
 # (captured for offering/battery classification) — NOT eligible for any
@@ -2279,6 +2387,7 @@ def main() -> int:
         test_second_retail_storefront_replays_49_8,
         test_agent_native_api_service_replays_78_1,
         test_live_x402_storefront_replays_86_0,
+        test_pure_metered_api_live_x402_replays_64_4,
         test_retail_storefront_earns_no_agent_native_payment,
         test_relabel_invariance_retail,
         test_nonstorefront_replays_22_5,

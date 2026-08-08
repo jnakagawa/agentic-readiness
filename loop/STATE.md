@@ -1,6 +1,33 @@
 # Loop state
 
-- Cycle counter: 302
+- Cycle counter: 303
+- **✅ api.x402oracle.com PINNED as the ELEVENTH frozen-replay calibration baseline this fire (Local
+  20260808T065659Z, direct-to-main) — the SECOND non-anchor baseline with a GENUINE LIVE x402 handshake,
+  executing the standing P1 [LOCAL] candidate.** With thebotwire.com (the FIRST non-anchor live-x402 point)
+  closed last fire, the guard's live/upper scale rested on a single non-anchor witness; this adds a second.
+  **64.4 D v0.7** (access 100.0 / legibility 36.36 / **tx 87.5** / trust 20.0) — a PURE `{metered_api}` x402
+  "trust oracle" (returns a pre-payment trust verdict for other x402 endpoints). Chosen over x402deploy.vercel.app
+  (73.9 C) for the stronger, non-redundant science: its **tx 87.5** = x402-live (8) + self-serve PAYG (6) with
+  NO MCP bonus (0/2) is the IDENTICAL transactability SHAPE as the with-rails anchor (driftflight.com 87.5) — so
+  the anchor's 87.5 is a capability fact, not an anchor quirk — AND it is the CONTROLLED complement of the no-rails
+  api.replicate.com (also pure `{metered_api}` but NO rail → tx 0.0): same archetype, opposite rail, IDENTICAL
+  check set, so the tx gap **0.0 → 87.5** is isolated to the agent-native rail (the cleanest single-variable
+  statement of the +39.4 delta's cause on two same-type witnesses). GATE cleared on a FRESH capture: (a) live x402
+  STABLE across 3 independent $0 obs (`GET /v1/check` 402 body + 402 `payment-required` header + scorer `x402_probe`
+  8.0/8.0 `x402-live`; offer USDC on Base, $0.002; **NO payment signed, inv #1**); (b) HONEST classification exactly
+  `{metered_api}` (thin single-purpose gateway, no over-claim); (c) fresh full-score capture → live **64.4 == frozen
+  fixture-replay 64.4 == EXPECTED 64.4**, all 4 non-null pillars byte-identical, replay_misses=0, caps empty.
+  Installed `fixtures/canonical/api.x402oracle.com.json` (NEW, 42 entries) + `EXPECTED` + `_REPLAY_CLEAN` + guard
+  `test_pure_metered_api_live_x402_replays_64_4` (rail-isolation teeth: api.replicate 0.0 < oracle 87.5) +
+  `_POPULATION` ×5 (10→11). Off-scoring-SEMANTICS EMPTY (6 test files + 1 fixture); frozen delta UNMOVED **+39.4**;
+  live **+30.1** (/extend still 401); suite 38/38 (replay 32→33); frozen-replay baselines **10→11**. Because its
+  rail is LIVE (volatile), the replay-clean guard doubles as a live-rail drift tripwire. Evidence
+  `runs/local/x402oracle_second_live_x402_baseline_20260808T065659Z.json`; LOG Local cycle 20260808T065659Z.
+  **NEXT live-x402 broadening candidate (a THIRD point):** x402deploy.vercel.app (73.9 C, {metered_api,
+  data_retrieval}, tx 100.0) — GATE-clean this fire, pinnable next cadence (P2).
+- **⏳ NO OPEN PEER-GATED PR after this fire.** No open PR at fire start (`gh pr list --state open` → `[]`); this
+  cycle's item was direct-to-main (a non-anchor baseline pin, off-scoring-SEMANTICS). Next fire's FIRST duty is the
+  infra health check (no review owed).
 - **✅ PR #157 (exa.ai 7th non-anchor cross-path calibration weld — the FIRST welded member with GENUINE
   partial agent-native rails) MERGED this fire (Local 20260807T205300Z), merge `cf0df08`** — after the owed
   FIRST-DUTY adversarial review + independent $0 live re-score. VERDICT SOUND: off-scoring-path (three-dot diff
@@ -18,8 +45,6 @@
   the FIRST welded member with genuine partial agent-native rails (documented x402 + MCP + PAYG → tx 50.0, a
   real MIDDLE between the no-rails floor 0.0 and the anchor's full handshake 87.5). Review verdict recorded in
   LOG Local cycle 20260807T205300Z.
-- **⏳ NO OPEN PEER-GATED PR after this fire.** PR #157 MERGED `cf0df08`; the with-rails weld campaign
-  (#152–#157) is COMPLETE. Next fire's FIRST duty is the infra health check (no review owed).
 - **✅ thebotwire.com PINNED as the TENTH frozen-replay calibration baseline this fire (Local 20260808T054613Z,
   direct-to-main) — the oldest P0 is now CLOSED.** After five cycles of offering-precision unblocking (all five FP
   families cleared: subscription-negation 005504Z / physical_good 020353Z / service_booking 024315Z / digital_good
@@ -257,26 +282,14 @@
   but wrote NO LOG entry and never committed/pushed (its panel dir exists gitignored). This fire re-verified #149,
   took ownership of the reconciled banner (above), and committed. No fabricated 214745Z LOG entry. STATE pruned the
   two oldest rolling entries (cloud Cycles 290–291, preserved in LOG.md) to stay under the 600-line hygiene cap.
-- LOCAL cycle — 20260808T054613Z (TRUTH / **thebotwire.com PINNED as the TENTH frozen-replay calibration baseline** —
-  the oldest P0, now CLOSED). FIRST duty: `gh pr list --state open` → `[]` (no open PR; PR #157 MERGED `cf0df08`); newest
-  `verify_20260808T054102Z.json` (05:41Z, 38/38 suites, 46.1 F / 76.2 C / +30.1) this hour's floor, fresh at fire
-  (~05:46Z) → :41 cadence holding (044101Z→054102Z); LOG/STATE consistent with git (HEAD `35dfb6b`). No repair, no
-  review owed. **Executed the ONE item — the PIN itself (the exa.ai recipe), all five classification FP families having
-  been cleared over the prior five cycles.** (1) **Live x402 re-confirmed STABLE at capture time across 3 independent
-  obs** ($0 GETs — obs1/obs2 `/payments/latest` 402 + `/news` 402 both carrying a valid x402-v2 payment-required offer
-  [x402Version 2, USDC on Base eip155:8453, $0.005], + the scorer's `x402_probe` 8.0/8.0 `x402-live`); **$0-compliant,
-  NO payment ever signed (inv #1)**. (2) Fresh full-score capture ($0 static, `--record-fixture`, 38 fetch entries) →
-  live **86.0 B** (access 100.0 / legibility 86.36 / **tx 100.0** / trust 43.33), caps empty. (3) Honest classification
-  on the FRESH capture = exactly **{metered_api, data_retrieval}** (all 4 over-claim families + comparison FP NA). (4)
-  Replay-clean + score-exact: **live 86.0 == frozen fixture-replay 86.0 == EXPECTED 86.0**, all 4 non-null pillars
-  byte-identical, replay_misses=0. Installed: `fixtures/canonical/thebotwire.com.json` (NEW) + `EXPECTED` +
-  `_REPLAY_CLEAN` + guard `test_live_x402_storefront_replays_86_0` (capability teeth: books 0.0 < exa.ai 50.0 <
-  thebotwire **100.0**, the live > documented > absent ladder) + `_POPULATION` ×5. **HIGHEST baseline** (a hair above
-  the driftflight.com anchor frozen 85.5) + the FIRST non-anchor LIVE-x402 point — HONEST (a bare purpose-built x402
-  storefront maxes tx while carrying low trust 43.3), does NOT touch the canonical PAIR. Off-scoring-SEMANTICS EMPTY
-  (6 test files + 1 fixture); frozen delta UNMOVED **+39.4** (replay 31→32); live **+30.1** (/extend still 401); suite
-  38/38; baselines **9→10**. Evidence `runs/local/thebotwire_live_x402_baseline_20260808T054613Z.json`. $0, zero
-  codex/paid ops, in-repo; NO DM.
+<!-- Rolling entry for Local cycle 20260808T054613Z (TRUTH / thebotwire.com PINNED as the TENTH frozen-replay
+     calibration baseline — the oldest P0, CLOSED) pruned this fire (Local cycle 20260808T065659Z) to stay under the
+     STATE 600-line cap — preserved verbatim in loop/LOG.md + git history; the persistent pin banner above retains its
+     essence. -->
+- LOCAL cycle — 20260808T054613Z summarized: pinned thebotwire.com as the TENTH frozen-replay baseline (86.0 B, the
+  HIGHEST + FIRST non-anchor LIVE-x402 point) via the exa.ai recipe after clearing all five offering-classification FP
+  families over the prior five cycles; live 86.0 == frozen == EXPECTED, replay-clean, {metered_api, data_retrieval}.
+  Direct-to-main; frozen +39.4 / live +30.1; baselines 9→10. Full detail in loop/LOG.md.
 <!-- Rolling entry for Local cycle 20260808T045337Z (COVERAGE / thebotwire.com pin UNBLOCK sub-item A.5, FINAL — the
      subscription-COMPARISON guard `_SUB_COMPARISON`, clearing the LAST classification blocker) pruned this fire (Local
      cycle 20260808T054613Z) to stay under the STATE 600-line cap — preserved verbatim in loop/LOG.md + git history. -->

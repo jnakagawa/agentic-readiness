@@ -1,0 +1,80 @@
+{
+ "ts": "20260808T065659Z",
+ "kind": "local-baseline-pin",
+ "cycle": "Local cycle 20260808T065659Z",
+ "track": "TRUTH",
+ "domain": "api.x402oracle.com",
+ "what": "Pinned api.x402oracle.com as the ELEVENTH frozen-replay calibration baseline — a PURE single-archetype {metered_api} x402 'trust oracle' storefront and the SECOND non-anchor baseline with a GENUINE LIVE x402 handshake (thebotwire.com is the first). Direct-to-main, same class as the thebotwire/exa.ai/ipinfo/api.replicate/moleskine baseline pins. Executes the standing P1 [LOCAL] candidate 'A SECOND non-anchor LIVE-x402 calibration point'.",
+ "live_x402_confirmation_at_capture_time": {
+  "obs_1": {"GET /v1/check": "HTTP 402", "body": "x402-v2 payment-required JSON (x402Version 2, accepts[] scheme exact, network eip155:8453 Base, asset USDC, maxAmountRequired 2000)"},
+  "obs_2": {"GET /v1/check": "HTTP 402", "payment_required_header": "present (base64 x402-v2 offer, decoded == obs_1 terms, payTo 0x2DF1AEc598a104Fc15E80C0B60e50C497559A980)"},
+  "obs_3_scorer_x402_probe": "x402_probe PASS 8.0/8.0 = x402-live (live 402 at https://api.x402oracle.com/v1/check with a parseable x402 payload)",
+  "offer_decoded": {"x402Version": 2, "scheme": "exact", "network": "eip155:8453 (Base)", "amount": "2000", "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 (USDC)", "price": "$0.002"},
+  "note": "Three independent observations at capture time confirm the live rail is stable, not a one-shot fluke. $0-compliant: only $0 GETs returning 402 were observed; NO X-PAYMENT header was ever sent, NO payment was ever signed or funded (invariant #1)."
+ },
+ "live_rescore": {
+  "source_run_file": "runs/api_x402oracle_com_20260808T064445.json",
+  "overall": 64.4,
+  "grade": "D",
+  "rubric": "0.7",
+  "pillars": {
+   "access": 100.0,
+   "legibility": 36.36363636363637,
+   "transactability": 87.5,
+   "trust": 20.0,
+   "outcome": null
+  },
+  "caps_applied": [],
+  "scored": true
+ },
+ "frozen_fixture_replay": {
+  "overall": 64.4,
+  "grade": "D",
+  "rubric": "0.7",
+  "pillars": {
+   "access": 100.0,
+   "legibility": 36.36363636363637,
+   "transactability": 87.5,
+   "trust": 20.0,
+   "outcome": null
+  },
+  "replay_misses": 0,
+  "scored": true
+ },
+ "expected_pinned": {
+  "overall": 64.4,
+  "grade": "D",
+  "rubric_version": "0.7",
+  "pillars": {
+   "access": 100.0,
+   "legibility": 36.36363636363637,
+   "transactability": 87.5,
+   "trust": 20.0,
+   "outcome": null
+  }
+ },
+ "agreement": "live 64.4 == frozen fixture-replay 64.4 == EXPECTED 64.4; all 4 non-null pillars byte-identical; replay_misses=0; caps empty",
+ "offering_claimed_archetypes": [
+  "metered_api"
+ ],
+ "offering_na_archetypes": [
+  "data_retrieval",
+  "digital_good",
+  "physical_good",
+  "service_booking",
+  "subscription"
+ ],
+ "offering_surfaces_seen": [
+  "/openapi.json",
+  "homepage"
+ ],
+ "honest_classification_note": "Classified HONESTLY to exactly {metered_api} on the FRESH live capture — a thin single-purpose x402 trust-oracle gateway with no multi-vertical topic-word prose to over-claim (unlike thebotwire's news catalog, which needed five FP-family guards to unblock). metered_api signals: x402 + post-endpoint + error-contract + payment-challenge-retry, all genuine x402/API evidence. Not manufactured.",
+ "capability_note": "transactability 87.5 EARNED by a GENUINE LIVE x402 handshake (x402_probe x402-live 8.0/8.0) + self-serve PAYG (6.0/6.0), with NO per-service MCP bonus (0/2) — the IDENTICAL transactability SHAPE as the with-rails anchor (driftflight.com frozen 87.5), which shows the anchor's 87.5 is a capability fact, not an anchor quirk. As a PURE {metered_api} storefront WITH a live rail, it is the CONTROLLED complement of api.replicate.com (also pure {metered_api} but with NO agent-native rail -> transactability 0.0): same archetype, opposite rail, so the transactability gap 0.0 -> 87.5 is isolated to the agent-native rail, not to storefront type or denominator — the cleanest single-variable statement of the +39.4 delta's cause on two same-type witnesses. Worded by capability, never by vendor. Does NOT touch the canonical PAIR delta (+39.4, unmoved).",
+ "second_non_anchor_live_x402_point": "This is the SECOND non-anchor LIVE-x402 calibration witness (thebotwire.com 86.0 B is the first), so the frozen guard's live/upper scale no longer rests on a single non-anchor point. tx-shape spread across the two: thebotwire 100.0 (x402-live + MCP + PAYG) vs oracle 87.5 (x402-live + PAYG, no MCP), demonstrating that the live rail is necessary but the MCP bonus and legibility/trust still move the overall (86.0 vs 64.4).",
+ "files_changed": [
+  "fixtures/canonical/api.x402oracle.com.json (NEW, full-score fixture, 42 fetch entries)",
+  "tests/test_canonical_replay.py (EXPECTED += api.x402oracle.com; _REPLAY_CLEAN += api.x402oracle.com; new guard test_pure_metered_api_live_x402_replays_64_4 with CONTROLLED rail-isolation teeth: api.replicate 0.0 no-rail vs oracle 87.5 live-rail, same archetype + identical check set; runner registration)",
+  "tests/test_{hashseed,timezone,encoding,locale,probe_order}_reproducibility.py (_POPULATION += api.x402oracle.com — the replay-clean-set completeness tripwires forced consistent inclusion; population 10->11)"
+ ],
+ "invariants": "off-scoring-SEMANTICS EMPTY (git diff over asrs/ rubric/ experiments/ EMPTY); frozen canonical delta UNMOVED +39.4; live +30.1 (/extend still 401); suite 38/38; test_canonical_replay 32->33 (guard registered); frozen-replay baselines 10->11. $0 static capture + in-process replay + $0 GET x402 probes, NO behavioral/codex/paid/zero-CLI, NO payment signed. Stayed in-repo."
+}

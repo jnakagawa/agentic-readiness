@@ -223,18 +223,36 @@ non-anchor LIVE-x402 point. Off-scoring-SEMANTICS EMPTY; frozen delta UNMOVED +3
 38/38. Direct-to-main. Evidence runs/local/thebotwire_live_x402_baseline_20260808T054613Z.json; LOG Local cycle
 20260808T054613Z. -->
 
-- **[P1 — TRUTH/COVERAGE, LOCAL, candidate] A SECOND non-anchor LIVE-x402 calibration point**, so the frozen guard's
-  live/upper scale rests on >=2 non-anchor live-x402 witnesses (thebotwire.com 86.0 B is now the first; the anchor
-  driftflight.com is the only other live-x402 point and its /extend is currently regressed 402->401). Candidates from the
-  225343Z recon: **x402deploy.vercel.app** (73.9 C) / **api.x402oracle.com** (64.4 D) — both returned a live x402
-  handshake the shipped scorer detects at 8/8. GATE before pinning either (the thebotwire.com discipline): (a) re-confirm
-  the live x402 is STABLE across >=2 observations at capture time ($0 GETs); (b) verify the offering classification is
-  HONEST on a FRESH capture (a thin tool-gateway may enumerate fewer verticals -> likely CLEANER than thebotwire's news
-  catalog, but VERIFY, do not assume); (c) fresh full-score capture replays CLEAN (0 misses) and live == frozen ==
-  EXPECTED; then pin as the exa.ai/thebotwire recipe (EXPECTED + _REPLAY_CLEAN + guard + _POPULATION x5), direct-to-main,
-  off-scoring-SEMANTICS. A future PEER-GATED weld can cross-path-weld thebotwire.com once it carries a genuinely-compared
-  calibration-sweep presence (add it to experiments/calibration_sweep.py POPULATION first — the books.toscrape.com
-  pattern). WATCH driftflight.com /extend for a 402 recovery (restores the anchor's live handshake + the +39.4 live delta).
+<!-- DONE Local cycle 20260808T065659Z: the P1 "A SECOND non-anchor LIVE-x402 calibration point" is EXECUTED — pinned
+api.x402oracle.com as the ELEVENTH frozen-replay baseline (64.4 D v0.7; access 100.0/legibility 36.36/tx 87.5/trust 20.0),
+a PURE {metered_api} x402 "trust oracle" and the SECOND non-anchor baseline with a GENUINE LIVE x402 handshake. Chosen over
+x402deploy.vercel.app (73.9 C) for non-redundant science: its tx 87.5 (x402-live + PAYG, NO MCP) is the IDENTICAL shape as
+the with-rails anchor (driftflight.com 87.5) AND it is the CONTROLLED complement of the no-rails api.replicate.com (same pure
+{metered_api} archetype, opposite rail -> tx 0.0 vs 87.5, isolating the rail's transactability contribution). GATE cleared on
+a FRESH capture: (a) live x402 STABLE across 3 $0 obs (GET /v1/check 402 body + 402 payment-required header + scorer x402_probe
+8.0/8.0 x402-live; offer USDC on Base, $0.002; NO payment signed, inv #1); (b) HONEST classification exactly {metered_api}
+(thin single-purpose gateway, no over-claim, no FP-family guards needed); (c) fresh full-score capture -> live 64.4 == frozen
+fixture-replay 64.4 == EXPECTED 64.4, all 4 non-null pillars byte-identical, replay_misses=0, caps empty. Installed
+fixtures/canonical/api.x402oracle.com.json (NEW, 42 entries) + EXPECTED + _REPLAY_CLEAN + guard
+test_pure_metered_api_live_x402_replays_64_4 (rail-isolation teeth: api.replicate 0.0 < oracle 87.5, same archetype + identical
+check set) + _POPULATION x5 (10->11). Off-scoring-SEMANTICS EMPTY; frozen delta UNMOVED +39.4 (replay 32->33); live +30.1;
+suite 38/38; baselines 10->11. Direct-to-main. Evidence
+runs/local/x402oracle_second_live_x402_baseline_20260808T065659Z.json; LOG Local cycle 20260808T065659Z. -->
+
+- **[P2 — TRUTH/COVERAGE, LOCAL, candidate] A THIRD non-anchor LIVE-x402 calibration point**, so the live/upper scale keeps
+  densifying (thebotwire.com 86.0 B tx 100 + api.x402oracle.com 64.4 D tx 87.5 are the first two non-anchor live-x402
+  witnesses). Lead candidate: **x402deploy.vercel.app** (73.9 C; {metered_api, data_retrieval}; access 100.0/legibility
+  45.45/**tx 100.0**/trust 33.33) — GATE-clean this fire (Local cycle 20260808T065659Z): live x402 handshake at `/api/serp`
+  (HTTP 402, x402-v2 "x402 Web & Data Tools" gateway, x402_probe 8.0/8.0), HONEST classification {metered_api,
+  data_retrieval}, fresh /tmp fixture replays CLEAN (0 misses) live 73.9 == frozen 73.9. NOT pinned this fire (one item per
+  cycle; the oracle was the higher-value pick — see the DONE marker above). To pin next cadence: re-confirm the live x402
+  STABLE across >=2 fresh $0 obs at capture time (its rail is LIVE/volatile), re-capture the fixture full-score, then pin
+  as the exa.ai/thebotwire recipe (EXPECTED + _REPLAY_CLEAN + guard + _POPULATION x5), direct-to-main, off-scoring-SEMANTICS.
+  It duplicates thebotwire's tx-100 shape at a distinct overall (73.9), so its calibration value is "live rail necessary but
+  not sufficient — legibility/trust still move the overall." A future PEER-GATED weld can cross-path-weld thebotwire.com /
+  api.x402oracle.com / x402deploy.vercel.app once each carries a genuinely-compared calibration-sweep presence (add to
+  experiments/calibration_sweep.py POPULATION first — the books.toscrape.com pattern). WATCH driftflight.com /extend for a
+  402 recovery (restores the anchor's live handshake + the +39.4 live delta).
 
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
   phrasing has now drifted the `_ENV_BLOCK_RE` guard FIVE times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)

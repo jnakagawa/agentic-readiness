@@ -87,6 +87,7 @@ _CANONICAL = ("driftflight.com", "drift-flight.org")
 _POPULATION = (
     "acuityscheduling.com",
     "api.replicate.com",
+    "api.x402oracle.com",
     "books.toscrape.com",
     "drift-flight.org",
     "driftflight.com",

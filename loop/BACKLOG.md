@@ -225,7 +225,7 @@ LOG Local cycle 20260807T205300Z. -->
   `runs/local/thebotwire_pin_attempt_20260807T235210Z.json`. Installing it would make thebotwire.com the FIRST canonical fixture
   with a dishonest classification (inv #4) — the loop rejected polar.sh/simplybook/allbirds for *lesser* issues; a score-only pin
   was considered (the 86.0 is off the offering path) and rejected for consistency. **PROGRESS (A, in-cloud COVERAGE precision
-  pass): ✅ 3 of 4 FP families CLOSED. (1) subscription NEGATION guard SHIPPED Local cycle 20260808T005504Z (direct-to-main):**
+  pass): ✅ ALL 4 PLANNED FP families CLOSED. (1) subscription NEGATION guard SHIPPED Local cycle 20260808T005504Z (direct-to-main):**
   `asrs/offering._NEG_DISCLAIMER` (word-boundaried fixed-width negative lookbehinds no/no-/not/not a/not an/zero/without/
   without a/without an) prepended to the `subscription` + `per-month` signals; `.search()`'s scan skips a disclaimed occurrence
   and still fires on a genuine one later. On thebotwire's quoted spans `classify_offering` → `['metered_api']` (subscription
@@ -256,16 +256,28 @@ LOG Local cycle 20260807T205300Z. -->
   physical_good HOLDS NA). test_offering 119→121 (`test_service_booking_news_catalog_precision_synthetic` +
   `..._is_canonical_invariant_on_real_fixtures`), test_offering_canonical 70/70, suite 38/38; off scoring path, no rubric bump.
   Evidence `runs/local/service_booking_news_catalog_guard_20260808T024315Z.json`.
-  **REMAINING 1 PLANNED FP family (an in-cloud COVERAGE precision pass, same guard-pair discipline):** digital_good
-  (generations/render must be an offered good, not a news topic — **CAUTION: exa.ai claims digital_good via the SOLE bare
-  `generations` signal, a pinned baseline #9 + welded member #157, so the guard MUST keep exa.ai firing**) — with a
-  precision-synthetic guard pair (synthetic multi-vertical news-catalog prose does NOT fire; genuine capability prose still fires)
-  so the existing anchors stay green (moleskine/allbirds physical_good, acuity/simplybook service_booking, polar subscription,
-  exa.ai digital_good). Designable+executable IN-CLOUD (offering discovery is off the network path). **PLUS a NEW LIVE OBSERVATION
-  (Local cycle 20260808T024315Z):** the live thebotwire STILL claims **subscription** via a NON-negated `subscription` occurrence
-  (the 005504Z negation guard skips only the disclaimer spans + fires on a genuine-looking one later), so the eventual honest set
-  is NOT yet {metered_api, data_retrieval} — re-examine that live occurrence (genuine claim vs uncovered FP) alongside the
-  digital_good pass BEFORE the [LOCAL] pin. **THEN (TRUTH, [LOCAL], after digital_good closes + the subscription re-exam):**
+  **(4) digital_good NEWS-CATALOG guard SHIPPED Local cycle 20260808T034105Z (direct-to-main), CLOSING the 4th and LAST
+  planned FP family:** the two cheapest bare digital_good signals narrowed. `generations` (was bare `\bgenerations?\b`) gains a
+  negative lookahead `(?![\s-]+(?:agents?|bots?|assistants?)\b)` so thebotwire's "Social-content generation **agents**" /
+  "playlist-generation **bots**" (an AI-actor AUDIENCE the news serves, not a deliverable) no longer claim; `render` splits so
+  the deliverable-NOUN `\brenders?\b` ("Client-ready renders") stays UNCONDITIONAL while the ambiguous `rendering` gerund is gated
+  to a visual-OUTPUT collocation (`rendering (of) (a/the/your) image/video/frame/scene/asset/…`), dropping thebotwire's "ad-tech
+  tracking **rendering** changes" (a browser process). **CAUTION HONORED — exa.ai's digital_good rests SOLELY on `generations`
+  ("Lead Generation"/"code generation", a pinned baseline #9 + welded #157): a whole-fixture pre-flight simulation + a live
+  re-derivation with the shipped code confirmed exa.ai STILL claims digital_good via `['generations']`** (its "generation" is a
+  HEAD noun followed by `]`/`with`, never an AI-actor noun); the canonical pair / ipinfo.io / polar.sh all keep their exact
+  claimed set. Confirmed LIVE ($0 static, shipped code): live thebotwire → {metered_api, subscription, data_retrieval}
+  (digital_good GONE). test_offering 121→123 (`test_digital_good_news_catalog_precision_synthetic` +
+  `..._is_canonical_invariant_on_real_fixtures`, exa.ai load-bearing), test_offering_canonical 70/70, suite 38/38; off scoring
+  path, no rubric bump. Evidence `runs/local/digital_good_news_catalog_guard_20260808T034105Z.json`.
+  **REMAINING blocker for the pin (re-scoped from the 024315Z observation, pinpointed by the digital_good-pass live capture):**
+  the live thebotwire STILL claims **subscription**, but via **COMPARISON prose** — 3 of 5 `subscription` hits are "when is it
+  cheaper than a **subscription**?", the `pay-per-call-api-vs-**subscription**` URL slug, and "the break-even math **against a
+  subscription**" (thebotwire CONTRASTING its pay-per-call model against subscriptions — i.e. it does NOT offer one). This is an
+  UNCOVERED FP DISTINCT from the "No subscription" NEGATION the 005504Z `_NEG_DISCLAIMER` guards. **NEXT (A, in-cloud COVERAGE,
+  the SINGLE remaining sub-item, same guard-pair discipline):** a subscription-COMPARISON guard ("cheaper than / vs / against a
+  subscription") that keeps the driftflight pair's genuine subscription claim green — designable+executable IN-CLOUD (offering
+  discovery is off the network path). **THEN (TRUTH, [LOCAL], after the subscription-comparison guard closes):**
   re-capture thebotwire.com $0, re-verify it
   classifies honestly to {metered_api, data_retrieval}, then pin `test_canonical_replay.EXPECTED` + `_REPLAY_CLEAN` + guard
   (overall + 4 pillars + capability teeth: no-rails 0.0 < documented-partial 50.0 < LIVE 100.0) + `_POPULATION` in all 5

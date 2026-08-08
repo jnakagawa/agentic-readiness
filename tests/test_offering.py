@@ -2477,6 +2477,124 @@ def test_service_booking_news_catalog_guard_is_canonical_invariant_on_real_fixtu
     )
 
 
+def test_digital_good_news_catalog_precision_synthetic():
+    # NEWS-CATALOG guard for digital_good's two cheapest bare signals — the
+    # `generations` catch-all (was bare \bgenerations?\b) and the `rendering`
+    # gerund alt of `render`. A multi-vertical data/news-wire API ENUMERATES the
+    # AI-agent audiences its wires serve and the browser/ad-tech processes it
+    # reports on, so those bare tokens fired on coverage prose — "Social-content
+    # generation agents" / "playlist-generation bots" (a category of AI CONSUMER,
+    # not a deliverable) and "ad-tech tracking rendering changes" (a browser tech
+    # PROCESS) — CONJURING digital_good on a storefront that generates no media
+    # (the thebotwire.com pin blocker: the 4th of the 4 FP families, after the
+    # subscription-negation + physical_good + service_booking news-catalog guards).
+    # `generations` now carries a negative lookahead (NOT a modifier of an AI-actor
+    # entity noun agents/bots/assistants), the noun-`renders?` sense stays
+    # unconditional, and the `rendering` gerund is gated to a visual-OUTPUT
+    # collocation. Each POSITIVE fires digital_good via the narrowed
+    # `generations`/`render` branch (asserted in the fired set); each NEGATIVE is a
+    # news-audience / tech-process word that must NOT claim digital_good.
+    positives = {
+        # exa.ai's genuine HEAD-noun sense — its SOLE digital_good signal, a pinned
+        # baseline #9 + welded member #157 that MUST keep firing (followed by ]/with,
+        # never an actor noun)
+        "lead generation skill": "Lead Generation: generate enriched lead lists.",
+        "code generation": "Ground code generation with current package references.",
+        # drift-flight's usage-count + capability senses
+        "generations per month": "3,000 generations / month on the studio tier.",
+        "per generation billing": "Overage billed per generation at your tier rate.",
+        # genuine render-deliverable prose (noun sense + gerund WITH a media output)
+        "client-ready renders": "Client-ready renders, hosted URLs, commercial licence.",
+        "your renders hosted": "Your renders are delivered as downloadable hosted URLs.",
+        "rendering of your video": "Fast rendering of your video in 4K, ready to download.",
+        "rendering an image": "Rendering an image from a prompt in seconds.",
+    }
+    for name, text in positives.items():
+        prof = classify_offering("studio.test", {"homepage": text})
+        assert prof.claims("digital_good"), (name, prof.archetypes)
+        fired = {
+            s.label
+            for c in prof.claimed
+            if c.archetype == "digital_good"
+            for s in c.signals
+        }
+        assert fired & {"generations", "render"}, (name, sorted(fired))
+    print(
+        f"  ok: {len(positives)} genuine generation/render phrasings each claim "
+        f"digital_good via the narrowed generations/render branch (exa.ai stays green)"
+    )
+
+    negatives = {
+        # the exact thebotwire.com false-positive spans (quoted from the live capture)
+        "tbw content-generation agents": (
+            "Ask when the question is about Social-content generation agents, "
+            "celebrity news."
+        ),
+        "tbw playlist-generation bots": (
+            "Music-discovery agents and playlist-generation bots that need release "
+            "news, not just charts."
+        ),
+        "tbw ad-tech rendering": (
+            "Coverage: hosting vendors, extension developers, ad-tech tracking "
+            "rendering changes."
+        ),
+        # other news-audience / tech-process collocations the guard covers
+        "generation assistants audience": (
+            "Our wire serves next-generation assistants across every vertical."
+        ),
+        "browser rendering topic": (
+            "This week in browser news: rendering engines and layout shifts."
+        ),
+    }
+    for name, text in negatives.items():
+        prof = classify_offering("wire.test", {"homepage": text})
+        assert not prof.claims("digital_good"), (name, prof.archetypes)
+    print(
+        f"  ok: {len(negatives)} news-audience/tech-process strings do NOT claim "
+        f"digital_good (precision)"
+    )
+
+
+def test_digital_good_news_catalog_guard_is_canonical_invariant_on_real_fixtures():
+    # NON-VACUOUS score-neutrality: the news-catalog guard is a NARROWING of two
+    # existing digital_good signals, so the only risk is a FALSE NEGATIVE on a
+    # committed claimant — a genuine digital_good claim disappearing because its
+    # generation/render evidence sat in a form the narrowed branch no longer
+    # matches. The load-bearing case is exa.ai: its digital_good rests SOLELY on
+    # `generations` ("Lead Generation" / "code generation"), and it is a pinned
+    # frozen-replay baseline #9 + welded member #157 — if the lookahead over-reached
+    # and dropped it, exa.ai's claimed set would silently change (inv #2/#4). Replay
+    # every committed fixture through the REAL discovery path and pin that the
+    # digital_good claim is unchanged: the canonical pair / exa.ai / ipinfo.io /
+    # polar.sh STILL claim it, and no NA fixture gains it. This is the guard's
+    # canonical tripwire, restated here against the fixtures that carry (or renounce)
+    # digital_good so a future edit that broke it is caught in this file too.
+    expect = {
+        "drift-flight.org": True,       # generate-media + generation(hi) + render + …
+        "driftflight.com": True,        # same, many digital_good signals
+        "exa.ai": True,                 # SOLE signal `generations` — must stay green
+        "ipinfo.io": True,              # hosted-output + output-license (untouched)
+        "polar.sh": True,               # hosted-output + translation (untouched)
+        "acuityscheduling.com": False,
+        "simplybook.me": False,
+        "books.toscrape.com": False,
+        "www.allbirds.com": False,
+        "www.moleskine.com": False,
+        "api.replicate.com": False,
+        "example.com": False,
+    }
+    for dom, claims_dg in expect.items():
+        ctx = FetchContext.from_fixture(os.path.join(_FIXTURE_DIR, f"{dom}.json"))
+        prof = offering.discover_offering(ctx)
+        assert prof.claims("digital_good") == claims_dg, (
+            dom, claims_dg, prof.archetypes
+        )
+    print(
+        "  ok: news-catalog guard leaves the canonical digital_good claims "
+        "invariant (pair/exa/ipinfo/polar still claim; retail/booking/api/null NA)"
+    )
+
+
 def test_usage_based_metered_precision_synthetic():
     # The metered_api bank's last cheap bare-word signal hardened (siblings:
     # enrich/dataset/lookup for data_retrieval, book/schedule for service_booking,
@@ -6479,6 +6597,8 @@ def main() -> int:
         test_physical_good_news_catalog_guard_is_canonical_invariant_on_real_fixtures,
         test_service_booking_news_catalog_precision_synthetic,
         test_service_booking_news_catalog_guard_is_canonical_invariant_on_real_fixtures,
+        test_digital_good_news_catalog_precision_synthetic,
+        test_digital_good_news_catalog_guard_is_canonical_invariant_on_real_fixtures,
         test_usage_based_metered_precision_synthetic,
         test_payment_challenge_retry_precision_synthetic,
         test_payment_challenge_retry_fires_on_real_captured_surfaces,

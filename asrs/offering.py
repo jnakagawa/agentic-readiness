@@ -1363,8 +1363,40 @@ _SIGNALS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
         # nouns). Vendor-neutral: only the media-category nouns, never a product name.
         ("generate-media", re.compile(
             r"\bgenerat(?:e|es|ed|ing)\s+(?:an?\s+|your\s+|the\s+)?(?:image|video|audio|art)s?\b", _F)),
-        ("generations", re.compile(r"\bgenerations?\b", _F)),
-        ("render", re.compile(r"\brenders?\b|\brendering\b", _F)),
+        # NEWS-CATALOG NARROWING of the two cheapest bare digital_good signals —
+        # `generations` (was bare \bgenerations?\b) and the `rendering` gerund alt
+        # of `render`. A multi-vertical data/news-wire API ENUMERATES the AI-agent
+        # AUDIENCES its wires serve and the browser/ad-tech PROCESSES it reports on,
+        # so those bare tokens fired on coverage prose — "Social-content GENERATION
+        # agents", "playlist-GENERATION bots" (a category of AI CONSUMER the news
+        # covers, not a deliverable the site vends) and "ad-tech tracking RENDERING
+        # changes" / "Browser engines" (a browser tech PROCESS, a news topic) —
+        # CONJURING digital_good on a storefront that generates no media (the
+        # thebotwire.com pin blocker: the digital_good family, the 4th of the 4 FP
+        # families, after the subscription-negation + physical_good + service_booking
+        # news-catalog guards). `generations` now carries a negative lookahead so it
+        # does NOT fire when the word is a MODIFIER of an AI-actor entity noun
+        # (generation agents/bots/assistants) — the audience, not the output; the
+        # HEAD-noun senses stay green (exa.ai's SOLE digital_good signal is
+        # `generations` on "Lead Generation"/"code generation", followed by "]"/"with",
+        # never an actor noun — a pinned baseline #9 + welded member #157 that MUST
+        # keep firing; drift-flight's "100 generations / month" / "per generation"
+        # count and "image generation" all keep firing; polar.sh's "new generation of
+        # software" / "next generation unicorns" are followed by "of"/"unicorns", not
+        # an actor noun). The noun-`renders?` deliverable sense ("client-ready renders",
+        # "Renders a single image") stays UNCONDITIONAL; only the ambiguous `rendering`
+        # gerund is gated to a genuine visual-OUTPUT collocation (rendering OF an
+        # image/video/frame/scene/asset/…), so the browser/ad-tech "rendering changes"
+        # process prose no longer claims digital_good while a real "rendering of your
+        # video" still does. Score-neutral by construction: every committed
+        # digital_good claimant (the canonical pair / exa.ai / ipinfo.io / polar.sh)
+        # keeps its exact claimed set (verified live + on all fixtures).
+        ("generations", re.compile(
+            r"\bgenerations?\b(?![\s-]+(?:agents?|bots?|assistants?)\b)", _F)),
+        ("render", re.compile(
+            r"\brenders?\b"
+            r"|\brendering\s+(?:of\s+)?(?:an?\s+|the\s+|your\s+|its\s+)?"
+            r"(?:images?|videos?|frames?|scenes?|assets?|graphics?|outputs?|art|3d|thumbnails?|previews?)\b", _F)),
         ("translation", re.compile(r"\btranslat(e|es|ion|ing)\b", _F)),
         ("hosted-output", re.compile(r"\bhosted (output )?URLs?\b|\bimageUrls?\b|\bdownloadable\b", _F)),
         # Output USAGE-RIGHTS / license — the "complete the job" RIGHTS leg of a

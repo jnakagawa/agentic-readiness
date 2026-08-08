@@ -1,6 +1,6 @@
 # Loop state
 
-- Cycle counter: 299
+- Cycle counter: 300
 - **✅ PR #157 (exa.ai 7th non-anchor cross-path calibration weld — the FIRST welded member with GENUINE
   partial agent-native rails) MERGED this fire (Local 20260807T205300Z), merge `cf0df08`** — after the owed
   FIRST-DUTY adversarial review + independent $0 live re-score. VERDICT SOUND: off-scoring-path (three-dot diff
@@ -38,28 +38,30 @@
   polar.sh/simplybook/allbirds for lesser issues); a score-only pin was considered (86.0 is off the offering path)
   and rejected for consistency. **RE-SCOPED P0 — pin is BLOCKED on offering precision, not on the score.** NEXT (A,
   preferred, in-cloud COVERAGE): harden the 4 FP families against a data/news API's content-catalog topic words —
-  **✅ 3 of 4 FP families CLOSED. (1) subscription NEGATION guard SHIPPED Local 20260808T005504Z (`_NEG_DISCLAIMER`,
-  direct-to-main). (2) physical_good NEWS-CATALOG guard SHIPPED Local 20260808T020353Z (direct-to-main): the two bare
-  physical_good signals `fulfillment`/`shipping-noun` narrowed with positive-collocation so thebotwire's coverage
-  enumerations no longer claim physical_good; allbirds/moleskine/books/polar STILL claim it; evidence
-  `runs/local/physical_good_news_catalog_guard_20260808T020353Z.json`. (3) service_booking NEWS-CATALOG guard SHIPPED
-  Local 20260808T024315Z (direct-to-main): new module-level `_BOOKING_SVC_CTX` scheduling-context class + positive-
-  collocation narrowing of the noun-`booking` alt of `book` and bare `appointment`, so thebotwire's "airlines, hotels,
-  booking" (hospitality-news list), "Classical music and opera: appointments, seasons…" (arts-news) + "creative-
-  director appointment" (personnel-news) no longer claim service_booking; acuity/simplybook STILL claim it (book/
-  appointment/schedule/…), polar STILL claims it via the UNTOUCHED reservation/schedule signals; the pre-existing
-  "Complete your booking" positive is preserved via a booking-ACTION/possessive branch; test_offering 119→121,
-  canonical 70/70, suite 38/38. Confirmed LIVE ($0 static discover_offering: live thebotwire service_booking=NA,
-  physical_good HOLDS NA). Evidence `runs/local/service_booking_news_catalog_guard_20260808T024315Z.json`.**
-  REMAINING 1 PLANNED FP family: digital_good (generations/render = an offered good, not a news topic — CAUTION:
-  exa.ai claims digital_good via the SOLE bare `generations` signal, a pinned baseline #9 + welded member #157, so that
-  guard MUST keep exa.ai firing) — precision-synthetic guarded so anchors stay green
-  (moleskine/allbirds/acuity/simplybook/polar/exa). **NEW LIVE OBSERVATION (024315Z, flag not yet acted on):** the live
-  thebotwire STILL claims **subscription** via a NON-negated `subscription` occurrence (the 005504Z negation guard skips
-  only the disclaimer spans + fires on a genuine-looking one later) — so the eventual honest set is NOT yet
-  {metered_api, data_retrieval}; re-examine (genuine claim vs uncovered FP) alongside the digital_good pass. THEN
-  [LOCAL]: re-capture, re-verify the honest classification, pin (the exa.ai recipe) → 10th baseline, 1st non-anchor
-  live-x402. BACKUP candidates x402deploy.vercel.app 73.9 C / api.x402oracle.com 64.4 D (check whether their thinner
+  **✅ ALL 4 PLANNED FP families CLOSED. (1) subscription NEGATION guard SHIPPED Local 20260808T005504Z
+  (`_NEG_DISCLAIMER`, direct-to-main). (2) physical_good NEWS-CATALOG guard SHIPPED Local 20260808T020353Z (the two
+  bare physical_good signals `fulfillment`/`shipping-noun` narrowed with positive-collocation;
+  `runs/local/physical_good_news_catalog_guard_20260808T020353Z.json`). (3) service_booking NEWS-CATALOG guard SHIPPED
+  Local 20260808T024315Z (`_BOOKING_SVC_CTX` scheduling-context class + positive-collocation narrowing of the noun-
+  `booking` alt of `book` and bare `appointment`; `runs/local/service_booking_news_catalog_guard_20260808T024315Z.json`).
+  (4) digital_good NEWS-CATALOG guard SHIPPED Local 20260808T034105Z (direct-to-main): `generations` gains a negative
+  lookahead `(?![\s-]+(?:agents?|bots?|assistants?))` so thebotwire's "Social-content generation **agents**"/"playlist-
+  generation **bots**" (an AI-actor AUDIENCE the news serves) no longer claim; `render` splits so the deliverable-NOUN
+  `renders?` stays unconditional but the ambiguous `rendering` gerund needs a visual-OUTPUT collocation, dropping "ad-tech
+  tracking **rendering** changes" (a browser process). Live-confirmed ($0 static, shipped code): live thebotwire →
+  {metered_api, subscription, data_retrieval} (digital_good GONE); the LOAD-BEARING exa.ai fixture STILL claims
+  digital_good via its SOLE `generations` signal ("Lead Generation"/"code generation"); pair/ipinfo/polar all keep their
+  exact set; test_offering 121→123, canonical 70/70, suite 38/38. Evidence
+  `runs/local/digital_good_news_catalog_guard_20260808T034105Z.json`.**
+  **REMAINING blocker (re-scoped from the 024315Z observation, pinpointed by the digital_good-pass live capture):** the
+  live thebotwire STILL claims **subscription** via **COMPARISON prose** — 3 of 5 `subscription` hits are "when is it
+  cheaper than a **subscription**?", the `pay-per-call-api-vs-**subscription**` URL slug, and "the break-even math
+  **against a subscription**" (thebotwire CONTRASTING its pay-per-call model against subscriptions — i.e. it does NOT
+  offer one). This is an UNCOVERED FP distinct from the "No subscription" NEGATION the 005504Z `_NEG_DISCLAIMER` guards.
+  NEXT (A, in-cloud COVERAGE, the SINGLE remaining sub-item): a subscription-COMPARISON guard ("cheaper than / vs /
+  against a subscription") keeping the driftflight pair's genuine subscription claim green. THEN
+  [LOCAL]: re-capture, re-verify the honest classification is exactly {metered_api, data_retrieval}, pin (the exa.ai
+  recipe) → 10th baseline, 1st non-anchor live-x402. BACKUP candidates x402deploy.vercel.app 73.9 C / api.x402oracle.com 64.4 D (check whether their thinner
   tool-gateway classifications are CLEANER first). **paidsync.ai** SUPERSEDED — `/api/v1` 503 across 3 cadence cycles =
   STABLE-DEGRADED (lesser backup at 80.0 B). Anchor driftflight.com `/extend` STILL 401 (no 402 recovery; live +30.1).
   See LOG Local cycle 20260807T235210Z + `runs/local/thebotwire_pin_attempt_20260807T235210Z.json`.
@@ -275,6 +277,31 @@
   but wrote NO LOG entry and never committed/pushed (its panel dir exists gitignored). This fire re-verified #149,
   took ownership of the reconciled banner (above), and committed. No fabricated 214745Z LOG entry. STATE pruned the
   two oldest rolling entries (cloud Cycles 290–291, preserved in LOG.md) to stay under the 600-line hygiene cap.
+- LOCAL cycle — 20260808T034105Z (COVERAGE / thebotwire.com pin UNBLOCK sub-item A.4 — the DIGITAL_GOOD NEWS-CATALOG
+  guard SHIPPED direct-to-main, CLOSING the 4th and LAST planned FP family). FIRST duty: `gh pr list --state open` →
+  `[]` (no open PR; PR #157 MERGED `cf0df08`; weld campaign #152–#157 COMPLETE); newest `verify_20260808T034105Z.json`
+  (03:41Z, 38/38 suites, 46.1 F / 76.2 C / +30.1) this hour's floor, fresh at fire (~03:43Z) → :41 cadence holding
+  (024104Z→034105Z); LOG/STATE consistent with git. No repair, no review owed. **Executed the ONE item — the next
+  actionable step of the oldest P0 (UNBLOCK thebotwire.com pin), the digital_good FP family (held for last: exa.ai
+  claims digital_good via the SOLE bare `generations` signal, a pinned baseline #9 + welded #157 that MUST stay green).**
+  Live-captured the exact FP spans first ($0 static): `generations` × "Social-content generation **agents**"/"playlist-
+  generation **bots**" (an AI-actor AUDIENCE the news serves) + `render` × "ad-tech tracking **rendering** changes"
+  (a browser PROCESS). Fix: `generations` gains a negative lookahead `(?![\s-]+(?:agents?|bots?|assistants?))` (the
+  HEAD-noun senses — exa's "Lead Generation"/"code generation" followed by `]`/`with`, drift's "generations / month"
+  count — all stay green); `render` splits so the deliverable-NOUN `renders?` stays unconditional but the ambiguous
+  `rendering` gerund needs a visual-OUTPUT collocation. Confirmed LIVE with the shipped code ($0 static): live
+  thebotwire → {metered_api, subscription, data_retrieval} (digital_good GONE); the exa.ai fixture STILL claims
+  digital_good via `['generations']`; pair/ipinfo/polar keep their exact sets. Tests:
+  `test_digital_good_news_catalog_precision_synthetic` (8 positives incl. exa "Lead Generation"/"code generation" +
+  drift "3,000 generations / month" + "rendering of your video" / 5 news-audience/tech-process negatives dodge incl. the
+  3 exact thebotwire spans) + `..._is_canonical_invariant_on_real_fixtures` (exa.ai load-bearing) → test_offering 121→123,
+  canonical 70/70, full suite 38/38. Off scoring-SEMANTICS (scoring.py doesn't import offering) → score-neutral, no rubric
+  bump. **ALL 4 planned FP families now CLOSED.** REMAINING blocker (pinpointed this fire): the live thebotwire STILL claims
+  **subscription** via COMPARISON prose (3/5 hits: "cheaper than a subscription?", `pay-per-call-api-vs-subscription` slug,
+  "against a subscription" — it does NOT offer one), an UNCOVERED FP distinct from the 005504Z "No subscription" negation
+  → a subscription-COMPARISON guard is the SINGLE remaining A-sub-item before the [LOCAL] re-capture + pin. Frozen delta
+  UNMOVED +39.4 (replay 31/31); live +30.1 (verify_20260808T034105Z; /extend still 401). Evidence
+  `runs/local/digital_good_news_catalog_guard_20260808T034105Z.json`. $0, zero codex/paid ops, in-repo; NO DM.
 - LOCAL cycle — 20260808T024315Z (COVERAGE / thebotwire.com pin UNBLOCK sub-item A.3 — the SERVICE_BOOKING NEWS-CATALOG
   guard SHIPPED direct-to-main, closing the 3rd of the 4 blocking FP families). FIRST duty: `gh pr list --state open` →
   `[]` (no open PR; PR #157 MERGED `cf0df08`; weld campaign #152–#157 COMPLETE); newest `verify_20260808T024104Z.json`
@@ -298,52 +325,20 @@
   (verify_20260808T024104Z; /extend still 401). Pin STILL BLOCKED on 1 planned FP family (digital_good — must keep
   exa.ai's SOLE `generations` firing) + the live subscription re-exam. Evidence
   `runs/local/service_booking_news_catalog_guard_20260808T024315Z.json`. $0, zero codex/paid ops, in-repo; NO DM.
-- LOCAL cycle — 20260808T020353Z (COVERAGE / thebotwire.com pin UNBLOCK sub-item A.2 — the PHYSICAL_GOOD NEWS-CATALOG
-  guard SHIPPED direct-to-main, closing the 2nd of the 4 blocking FP families). FIRST duty: `gh pr list --state open` →
-  `[]` (no open PR; PR #157 MERGED `cf0df08`; weld campaign #152–#157 COMPLETE); newest `verify_20260808T014103Z.json`
-  (01:41Z, 38/38 suites, 46.1 F / 76.2 C / +30.1) this hour's floor, fresh at fire (~02:04Z) → :41 cadence holding
-  (004106Z→014103Z); LOG/STATE consistent with git. No repair, no review owed. **Executed the ONE item — the next
-  actionable step of the oldest P0 (UNBLOCK thebotwire.com pin), the physical_good FP family:** narrowed the two bare
-  physical_good signals with the file's positive-collocation discipline. `fulfillment` (`\bfulfil?lment\b`/`\bwarehouse\b`)
-  now requires a genuine fulfillment collocation (order/self/for/… + fulfillment; fulfillment + center/service/…; our/the/from/…
-  + warehouse with a `\b(?!-)` tail dropping the "warehouse-automation" compound; warehouse + inventory/stock/…), and
-  `shipping-noun` keeps the concrete checkout sub-nouns (address/options/method/fee/policy) UNCONDITIONAL while gating the
-  freight-market `rates`/`cost` to a shopping context. On thebotwire's 3 exact quoted FP spans ("marketplaces, fulfillment,
-  conversion"; "warehouse-automation vendors"; "Shipping rates, port congestion, carrier and logistics") physical_good is
-  now NA; allbirds ("shipping address/method") / moleskine / books / polar ("data you need for fulfillment") STILL claim it;
-  a bare "data warehouse"/a "warehouse-automation" vertical no longer FP (precision BONUS). Tests:
-  `test_physical_good_news_catalog_precision_synthetic` (11 positives fire / 8 news-catalog negatives dodge incl. the 3 exact
-  thebotwire spans) + `test_physical_good_news_catalog_guard_is_canonical_invariant_on_real_fixtures` → test_offering 117→119,
-  test_offering_canonical 70/70, full suite 38/38. Off scoring-SEMANTICS (scoring.py doesn't import offering) → score-neutral,
-  no rubric bump. Frozen canonical delta UNMOVED +39.4 (replay 31/31); live +30.1 (verify_20260808T014103Z; driftflight.com
-  /extend still 401). Pin STILL BLOCKED on 2 FP families (service_booking, digital_good — the latter must keep exa.ai's SOLE
-  `generations` signal firing, a pinned baseline #9 + welded #157) — each a subsequent in-cloud COVERAGE precision pass, then
-  [LOCAL] re-capture + pin. Evidence `runs/local/physical_good_news_catalog_guard_20260808T020353Z.json`. $0, zero codex,
-  zero paid ops, stayed in-repo. NO DM (offering-precision guard, not a DM-enumerated sensitive class; not first-after-16:00).
-- LOCAL cycle — 20260808T005504Z (COVERAGE / thebotwire.com pin UNBLOCK sub-item A.1 — the SUBSCRIPTION NEGATION
-  guard SHIPPED direct-to-main, closing 1 of the 4 blocking FP families). FIRST duty: `gh pr list --state open` →
-  `[]` (no open PR; PR #157 MERGED `cf0df08`; weld campaign #152–#157 COMPLETE); newest
-  `verify_20260808T004106Z.json` (00:41Z, 38/38 suites, 46.1 F / 76.2 C / +30.1) this hour's floor, fresh at fire
-  (~00:55Z) → :41 cadence holding (234102Z→004106Z); LOG/STATE consistent with git. No repair, no review owed.
-  **Executed the ONE item — the oldest actionable step of the oldest P0 (UNBLOCK thebotwire.com pin), its named
-  "clearest single sub-item":** narrowed the two cheapest subscription signals (`subscription`, `per-month`) with a
-  new `_NEG_DISCLAIMER` constant (a stack of word-boundaried fixed-width negative lookbehinds:
-  no/no-/not/not a/not an/zero/without/without a/without an) so a site's own recurring-billing DISCLAIMER no longer
-  conjures a subscription claim. `.search()`'s left-to-right scan makes the lookbehind SKIP a disclaimed occurrence
-  and STILL fire on a genuine one later in the surface. On thebotwire.com's exact quoted spans ("No subscription, no
-  minimum, no signup"; "no monthly floor") `classify_offering` now → `['metered_api']` (subscription GONE), while the
-  driftflight pair STILL claims subscription (non-negated evidence) and books/api.replicate/example stay NA. Tests:
-  `test_subscription_negation_disclaimer_precision_synthetic` (9 positives fire incl. word-boundary casino/kimono +
-  skip-to-next; 10 disclaimer negatives dodge incl. the 3 exact thebotwire spans) + `test_subscription_negation_guard_is_canonical_invariant_on_real_fixtures`
-  → test_offering 115→117, test_offering_canonical 70/70. Off scoring-SEMANTICS (scoring.py doesn't import offering;
-  the report/scorecard refs are the NA READOUT strip); score-neutral, no rubric bump; full suite 38/38. Direct-to-main
-  (same class as the Cycles 186/190/194/198/288/292 precision guards). Frozen canonical delta UNMOVED +39.4 (replay
-  31/31); live +30.1. Evidence `runs/local/subscription_negation_guard_20260808T005504Z.json`. Invariants #1 ($0
-  in-process classifier + unit tests; no --behavioral/--max-pay/zero-CLI/codex/live-capture)–#5 held (#4 ADVANCED —
-  the guard removes a dishonest over-claim); zero codex, zero paid ops; stayed in-repo. NO DM (offering-precision guard
-  not a DM-enumerated sensitive class; not the first-after-16:00 fire). **Pin STILL BLOCKED on 3 FP families**
-  (physical_good, service_booking, digital_good) — each a subsequent in-cloud COVERAGE precision pass, then [LOCAL]
-  re-capture + pin. See LOG Local cycle 20260808T005504Z.
+<!-- Rolling entry for Local cycle 20260808T020353Z (COVERAGE / thebotwire.com pin UNBLOCK sub-item A.2 — the
+     PHYSICAL_GOOD NEWS-CATALOG guard, 2nd of 4 FP families) pruned this fire (Local cycle 20260808T034105Z) to stay
+     under the STATE 600-line cap — preserved verbatim in loop/LOG.md + git history. -->
+- LOCAL cycle — 20260808T020353Z summarized: shipped the PHYSICAL_GOOD NEWS-CATALOG guard — narrowed the two bare
+  physical_good signals (`fulfillment`, `shipping-noun`) with positive-collocation so thebotwire's coverage
+  enumerations no longer claim physical_good (allbirds/moleskine/books/polar STILL claim it); 2nd of the 4 FP families.
+  Direct-to-main; test_offering 117→119; frozen +39.4 / live +30.1. Full detail in loop/LOG.md.
+<!-- Rolling entry for Local cycle 20260808T005504Z (COVERAGE / thebotwire.com pin UNBLOCK sub-item A.1 — the
+     SUBSCRIPTION NEGATION guard `_NEG_DISCLAIMER`, 1st of 4 FP families) pruned this fire (Local cycle
+     20260808T034105Z) to stay under the STATE 600-line cap — preserved verbatim in loop/LOG.md + git history. -->
+- LOCAL cycle — 20260808T005504Z summarized: shipped the SUBSCRIPTION NEGATION guard (`_NEG_DISCLAIMER`, a stack of
+  fixed-width negative lookbehinds) narrowing `subscription`/`per-month` so a site's own "No subscription"/"no monthly"
+  disclaimer no longer conjures the claim; 1st of the 4 blocking FP families. Direct-to-main; test_offering 115→117;
+  frozen +39.4 / live +30.1. Full detail in loop/LOG.md.
 <!-- Rolling entry for Local cycle 20260807T235210Z (TRUTH / thebotwire.com pin ATTEMPTED + BLOCKED — 2nd-cadence
      x402-live CONFIRMED STABLE [score precondition MET] but the fixture over-claims 4/6 archetypes via news-catalog
      topic-word FPs; NOT installed, re-scoped as an in-cloud precision-guard blocker) pruned this fire (Local cycle

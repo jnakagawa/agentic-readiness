@@ -242,14 +242,31 @@ live 57.4 == frozen 57.4 == EXPECTED, all 4 pillars byte-identical, replay_misse
 38/38; baselines 12->13. Evidence runs/local/ucp_rail_new_type_baseline_20260808T104105Z.json. See LOG Local cycle
 20260808T104105Z. -->
 
+<!-- OPENED Local cycle 20260808T124101Z: the UCP-rail weld (checkout.coffeecircle.com — the FIRST welded member on the
+UCP commerce-protocol rail, a NEW agent-native rail TYPE) is AUTHORED as PEER-GATED PR #159 (branch
+loop/coffeecircle-ucp-non-anchor-weld, commit c76a0da), NOT self-merged. Welds checkout.coffeecircle.com into
+tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED as the ELEVENTH member (10->11 non-anchor witnesses) — the
+FIRST on a rail TYPE OTHER than x402/no-rail. New test_coffeecircle_eleventh_non_anchor_is_welded_nonvacuously: committed
+v0.7 floor present + genuinely COMPARED (n_compared=1 in calibration_sweep_20260808T114436Z.json, segment
+ucp-live:coffee-merchant) + teeth (drift 57.4->68.0 caught). x402_probe reads commerce-protocol-live PARTIAL 4.0/8.0
+(tx 50.0, MIDDLE rung: books 0.0 < coffeecircle 4.0 < thebotwire 8.0); honest {metered_api, physical_good}; keyed
+identically both paths (no www/bare alias). TEST-ONLY (test_calibration_anchor_agreement.py +member/+comment/+test/
++registration; off-scoring-SEMANTICS EMPTY over asrs/rubric/fixtures/experiments/loop), weld suite 26->27, full suite
+38/38. Live<->frozen re-confirmed this fire ($0 static, no --behavioral/--max-pay/codex/zero CLI; no payment signed, inv
+#1): live 57.4 == frozen 57.4 == EXPECTED 57.4, all 4 non-null pillars byte-identical, caps empty, x402_probe partial
+4.0/8.0 commerce-protocol-live. DO NOT RE-AUTHOR — TRACKED by STATE's OPEN-PR #159 banner + next fire's first-duty
+adversarial review + live re-score (REVIEWER re-runs the $0 live re-score; a divergence = REAL UCP-manifest drift ->
+re-capture that member, don't weld it, inv #4). Evidence runs/local/coffeecircle_ucp_non_anchor_weld_20260808T124101Z.json.
+See LOG Local cycle 20260808T124101Z. -->
+
 - **[P2 — TRUTH, LOCAL, candidate] BROADEN further / UNLOCK the UCP-rail WELD.** The NEW-rail-TYPE broadening is now
   UNDERWAY: checkout.coffeecircle.com (57.4 F, UCP `commerce-protocol-live`) is the FIRST pinned baseline on the UCP
   commerce-protocol rail (Local cycle 20260808T104105Z), a rail SHAPE distinct from all ten x402/no-rail witnesses. Next
-  steps, in order: (1) ✅ DONE (Local cycle 20260808T114105Z): the [LOCAL] cadence sweep ADDED checkout.coffeecircle.com to
-  `experiments/calibration_sweep.py` POPULATION (23→24) and scored it 57.4 == frozen floor (n_compared=1 in
-  `calibration_sweep_20260808T114436Z.json`, drift 0/22 moved) — so the NEXT step is now a PEER-GATED PR that welds it into
-  `_NON_ANCHOR_WELDED` as the FIRST welded member on the UCP rail (the api.replicate.com/books.toscrape pattern;
-  re-confirm live==floor at author time — a divergence = manifest drift, re-capture, inv #4). (2) Broaden to STILL-open
+  steps, in order: (1) ✅ DONE — the sweep-add prerequisite (Local cycle 20260808T114105Z: n_compared=1 in
+  `calibration_sweep_20260808T114436Z.json`) AND the peer-gated weld itself (Local cycle 20260808T124101Z: **PR #159
+  OPEN**, welds checkout.coffeecircle.com into `_NON_ANCHOR_WELDED` as the ELEVENTH member / FIRST on the UCP rail) are
+  both done — **PR #159 is now PENDING the next fire's first-duty adversarial review + $0 live re-score** (a divergence =
+  UCP-manifest drift, re-capture, inv #4); DO NOT re-author (tracked by STATE's OPEN-PR #159 banner). (2) Broaden to STILL-open
   rail TYPES — a live ACP checkout surface
   (`/.well-known/agentic-commerce` or a `checkout_sessions` payload) or an MPP handshake the scorer detects. (3)
   `joinhexagon.com` is a DOCUMENTED live-UCP lead but needs a precision-guard unblock FIRST (clear the 4 llms-full.txt FP

@@ -3,6 +3,63 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Local cycle — 20260808T124101Z — TRUTH (LOCAL, PEER-GATED PR #159 opened) — weld checkout.coffeecircle.com (57.4 F) into `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` as the ELEVENTH non-anchor member — the FIRST welded member on a NEW agent-native rail TYPE, the UCP (Universal Commerce Protocol) commerce-protocol rail; live↔frozen re-verified this fire
+
+**Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260808T124101Z.json`
+fresh (~1.5 min old at fire start, < 6h floor), suite 38/38, `tests_ok` true; live canonical
+drift-flight.org 46.1 F / driftflight.com 76.2 C → live delta **+30.1** (the persistent x402
+`/extend` 402→401 regression; frozen replay UNMOVED +39.4). Git clean + up to date. `gh pr list
+--state open` → EMPTY (PR #158 merged two fires ago; last fire's sweep-add was direct-to-main),
+so NO peer-gated review was owed → first duty was the infra check, then the ONE item.
+
+**Track: TRUTH. The ONE item.** The forward step teed up by STATE + BACKLOG: weld
+checkout.coffeecircle.com into the cross-path agreement guard `_NON_ANCHOR_WELDED`. Its
+calibration-sweep prerequisite was discharged last fire (Local cycle 20260808T114105Z — added to
+`experiments/calibration_sweep.py` POPULATION, scored 57.4 at floor in
+`calibration_sweep_20260808T114436Z.json`, n_compared=1), so the weld is non-vacuous. Welded as
+the ELEVENTH non-anchor member and — crucially — the FIRST welded member on a rail TYPE OTHER than
+x402: the UCP commerce-protocol rail. `GET /.well-known/ucp` serves a valid `dev.ucp.*` manifest →
+`x402_probe` reads `commerce-protocol-live` PARTIAL 4.0/8.0 → transactability 50.0, a genuine
+MIDDLE rung strictly above the no-rail retail floor (books.toscrape.com `x402_probe` 0.0) and
+strictly below a full live-x402 handshake (thebotwire.com `x402_probe` 8.0). Honest classification
+{metered_api, physical_good}.
+
+**[LOCAL] live re-confirm (the cross-path evidence the cloud cannot produce).** Because the UCP
+rail is LIVE (a served manifest, volatile), live↔frozen agreement was re-confirmed THIS fire with a
+$0 static re-score (`python -m asrs score checkout.coffeecircle.com --json-only`, no
+`--behavioral`/`--max-pay`/codex/zero CLI; no payment signed, inv #1 — the well-known GET is a $0
+read) → run `runs/checkout_coffeecircle_com_20260808T124459.json`: **live 57.4 == frozen 57.4 ==
+EXPECTED 57.4**, all four non-null pillars byte-identical (access 100.0 / legibility 54.55 /
+transactability 50.0 / trust 33.33), caps empty, `x402_probe` partial 4.0/8.0
+`commerce-protocol-live`. UCP rail UP + agreeing → no manifest drift → the weld is sound to author
+(inv #4).
+
+**Change (TEST-ONLY, off-scoring-SEMANTICS).** `tests/test_calibration_anchor_agreement.py` only:
+(a) `checkout.coffeecircle.com` appended to `_NON_ANCHOR_WELDED` (10→11) + a comment paragraph;
+(b) new `test_coffeecircle_eleventh_non_anchor_is_welded_nonvacuously` (committed v0.7 floor
+present; genuinely COMPARED n_compared=1 in the 20260808T114436Z sweep at 57.4; keyed identically
+both paths, no www/bare alias; teeth = synthetic drift 57.4→68.0 caught as exactly one divergence);
+(c) runner registration. Diff EMPTY over asrs/rubric/fixtures/experiments/loop; the canonical PAIR
+untouched. Weld suite **26→27** (all pass); full suite **38/38**.
+
+**Ship.** Peer-gated (a cross-path calibration-weld class change, same as #152–#158) → authored on
+branch `loop/coffeecircle-ucp-non-anchor-weld` (commit c76a0da: test + evidence JSON) → PR #159,
+NOT self-merged. Bookkeeping (this LOG + STATE OPEN-PR banner + counter 308→309 + BACKLOG OPENED
+marker) direct-to-main. Frozen canonical delta UNMOVED **+39.4**; live **+30.1**.
+
+**Canonical pair:** overall 46.1 (drift-flight.org, no-rails) / 76.2 (driftflight.com, rails-but-
+`/extend`-401) — live delta **+30.1**; frozen replay delta **+39.4** UNMOVED.
+
+**Next hypothesis.** The reviewing cycle's FIRST duty: adversarially review PR #159 + re-run the
+$0 live re-score (a divergence = REAL UCP-manifest drift → re-capture, do not merge). After merge,
+the cross-path weld spans ELEVEN non-anchor witnesses across the FIRST two rail TYPES (x402 + UCP).
+Forward broadening (BACKLOG P2): a still-open rail TYPE — a live ACP checkout surface
+(`/.well-known/agentic-commerce` / `checkout_sessions`) or an MPP handshake the scorer detects; or
+a SECOND clean UCP-rail witness (joinhexagon.com is a documented live-UCP lead but over-claims 4/6
+archetypes via llms-full.txt topic-word FPs → needs a precision-guard unblock first, inv #4).
+WATCH driftflight.com `/extend` for a 402 recovery (restores the anchor's live handshake + +39.4
+live delta). Evidence `runs/local/coffeecircle_ucp_non_anchor_weld_20260808T124101Z.json`.
+
 ## Local cycle — 20260808T114105Z — TRUTH (LOCAL) — calibration cadence sweep: added checkout.coffeecircle.com (57.4 F, UCP `commerce-protocol-live`) to `experiments/calibration_sweep.py` POPULATION and ran a $0 static sweep, giving the FIRST UCP-rail baseline its FIRST committed-sweep presence — the api.replicate.com/three-x402-witnesses prerequisite that non-vacuously UNLOCKS its future peer-gated cross-path weld (the FIRST welded member on the UCP commerce-protocol rail); live == frozen; score-neutral, off scoring-SEMANTICS, direct-to-main
 
 **FIRST duty (infra health + peer-gate review).** `git pull` clean (Already up to date; HEAD `2bc2651`). `gh pr list --state open` → **`[]`** — no open PR to review (PR #158 MERGED `3fc5b5b` last fire; the live-x402 weld campaign COMPLETE, and last fire's checkout.coffeecircle.com pin was direct-to-main so no peer-gated review is owed — STATE flagged exactly this: this fire's first duty is the infra health check). Infra HEALTHY: newest `runs/local/verify_20260808T114105Z.json` (11:41Z, `tests_ok=true`, all 38 suites green, **46.1 F / 76.2 C / +30.1**), this hour's floor, fresh at fire (:41 cadence holding 104105Z→114105Z). LOG/STATE consistent with git history (HEAD `2bc2651` == commit list). No repair, no FIRST-DUTY review owed.

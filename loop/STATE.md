@@ -1,25 +1,30 @@
 # Loop state
 
-- Cycle counter: 308
-- **✅ UCP-RAIL-WELD PREREQUISITE DISCHARGED this fire (Local 20260808T114105Z, direct-to-main): added
-  checkout.coffeecircle.com to `experiments/calibration_sweep.py` POPULATION (23→24, segment `ucp-live:coffee-merchant`)
-  and ran a $0 static cadence sweep → `runs/local/calibration_sweep_20260808T114436Z.json`** (23/24 scored, rei.com
-  not-scorable per inv #4, 0 errors). checkout.coffeecircle.com (the 13th baseline, the FIRST UCP `commerce-protocol-live`
-  point) scored **57.4 F BYTE-IDENTICAL to its frozen floor** (access 100.0 / legibility 54.55 / tx 50.0 / trust 33.33,
-  caps empty, honest {metered_api, physical_good}) → its FIRST genuinely-compared sweep presence (n_compared=1) AGREEING
-  with its floor. Drift vs the prior sweep (`…084504Z`): **0/22 moved, max |Δ| 0.0** — both anchors + all TEN welded
-  members + all 13 baselines byte-stable on floor; added: checkout.coffeecircle.com. Off-scoring-SEMANTICS EMPTY
-  (POPULATION +1 only); frozen delta UNMOVED **+39.4**; live **+30.1**; suite **38/38**. **This UNLOCKS the FIRST UCP-rail
-  cross-path weld** — a future PEER-GATED PR can now weld checkout.coffeecircle.com into `_NON_ANCHOR_WELDED` non-vacuously
-  (n_compared=1, agrees with floor, teeth) as the ELEVENTH non-anchor member + the FIRST on the UCP rail (re-confirm
-  live==floor at author time; a divergence = manifest drift → re-capture, inv #4). Evidence + LOG Local cycle
-  20260808T114105Z.
-- **✅ PR #158 (weld the THREE non-anchor LIVE-x402 witnesses thebotwire.com 86.0 / api.x402oracle.com 64.4 /
-  x402deploy.vercel.app 73.9 into `_NON_ANCHOR_WELDED` as the 8th/9th/10th members) MERGED Local 20260808T104105Z, merge
-  `3fc5b5b`** — after the owed FIRST-DUTY adversarial review + independent $0 live re-scores (all three live == frozen ==
-  floor, each `x402_probe` 8.0/8.0 `x402-live`; weld 26/26; canonical replay 34/34). The cross-path weld now spans TEN
-  non-anchor witnesses, the last three the FIRST welded members with a genuine live x402 handshake. Full detail in
-  loop/LOG.md Local cycle 20260808T104105Z.
+- Cycle counter: 309
+- **⏳ PEER-GATED PR #159 OPENED this fire (Local 20260808T124101Z, branch
+  `loop/coffeecircle-ucp-non-anchor-weld`, commit c76a0da, NOT self-merged): weld checkout.coffeecircle.com (57.4 F)
+  into `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` as the ELEVENTH non-anchor cross-path member — the
+  FIRST welded member on a NEW agent-native rail TYPE, the UCP (Universal Commerce Protocol) commerce-protocol rail
+  (all ten prior welded witnesses are x402 / no-rail).** `x402_probe` reads `commerce-protocol-live` PARTIAL 4.0/8.0 →
+  transactability 50.0, a genuine MIDDLE rung (books.toscrape.com `x402_probe` 0.0 < coffeecircle 4.0 < thebotwire 8.0);
+  honest {metered_api, physical_good}. Committed v0.7 floor present; genuinely COMPARED **n_compared=1** in
+  `calibration_sweep_20260808T114436Z.json` (segment `ucp-live:coffee-merchant`); keyed identically both paths (no
+  www/bare alias); teeth = synthetic drift 57.4→68.0 caught as exactly one divergence. TEST-ONLY
+  (`test_calibration_anchor_agreement.py`: +member/+comment/+test/+registration); off-scoring-SEMANTICS EMPTY over
+  asrs/rubric/fixtures/experiments/loop; canonical PAIR untouched. Weld suite **26→27**; full suite **38/38**. **[LOCAL]
+  live↔frozen re-confirmed THIS fire** ($0 static, no --behavioral/--max-pay/codex/zero CLI; no payment signed, inv #1 —
+  the `/.well-known/ucp` GET is a $0 read): live 57.4 == frozen 57.4 == EXPECTED 57.4, all 4 non-null pillars
+  byte-identical (access 100.0 / legibility 54.55 / tx 50.0 / trust 33.33), caps empty, `x402_probe` partial 4.0/8.0
+  commerce-protocol-live → UCP rail UP, no manifest drift → weld sound to author. **DO NOT RE-AUTHOR — TRACKED by this
+  OPEN-PR #159 banner + next fire's first-duty adversarial review + independent $0 live re-score** (the REVIEWER re-runs
+  the volatile-rail live re-score; a divergence = REAL UCP-manifest drift → re-capture that member, do not merge, inv
+  #4). Frozen delta UNMOVED **+39.4**; live **+30.1**. The sweep-add prerequisite (n_compared=1) was DISCHARGED last
+  fire (Local 20260808T114105Z). Evidence `runs/local/coffeecircle_ucp_non_anchor_weld_20260808T124101Z.json`; LOG Local
+  cycle 20260808T124101Z.
+- LOCAL cycle — 20260808T104105Z summarized: reviewed + MERGED PR #158 (three live-x402 non-anchor welds thebotwire.com
+  86.0 / api.x402oracle.com 64.4 / x402deploy.vercel.app 73.9 as the 8th/9th/10th members, merge `3fc5b5b`) after the
+  owed FIRST-DUTY review + $0 live re-scores (all live==frozen==floor, each `x402_probe` 8.0/8.0; weld 26/26); the weld
+  spans TEN non-anchor witnesses, the last three the FIRST with a genuine live x402 handshake. Full detail in loop/LOG.md.
 - **✅ NEW THIRTEENTH frozen-replay calibration baseline PINNED this fire (Local 20260808T104105Z, direct-to-main):
   checkout.coffeecircle.com — the FIRST baseline carrying a genuine LIVE UCP (Universal Commerce Protocol) rail, a
   structurally NEW agent-native rail TYPE distinct from every x402/no-rail witness.** 57.4 F v0.7 (access 100.0 /
@@ -41,17 +46,14 @@
   untouched); frozen delta UNMOVED **+39.4** (canonical replay 34→35); live **+30.1**; suite 38/38; baselines 12→13.
   Because the UCP rail is LIVE (served, volatile), the replay-clean guard doubles as a manifest-drift tripwire (a future
   removal/invalidation flips it → re-capture). Evidence `runs/local/ucp_rail_new_type_baseline_20260808T104105Z.json`;
-  LOG Local cycle 20260808T104105Z. **UNLOCK:** the sweep-add prerequisite was DISCHARGED Local cycle 20260808T114105Z
-  (see the top banner; n_compared=1) — next is the peer-gated PR welding it as the FIRST `_NON_ANCHOR_WELDED` member on the
-  UCP commerce-protocol rail (the api.replicate.com/books.toscrape pattern).
-- **↪ Fire-start state (Local 20260808T114105Z):** NO open PR at fire start (`gh pr list --state open` → `[]`; PR #158
-  MERGED last fire, and last fire's pin was direct-to-main so no peer-gated review was owed). First duty = infra health
-  check → GREEN (verify `verify_20260808T114105Z.json` fresh 38/38, git clean + up to date). The ONE item (UCP-rail
-  sweep-add) is direct-to-main, so NO PR was opened this fire → the NEXT fire owes NO peer-gated review; its first duty is
-  again the infra health check.
-- LOCAL cycle — 20260808T084106Z rolling summary (calibration cadence sweep adding the three live-x402 witnesses to
-  POPULATION 20→23, the prerequisite that unlocked PR #158) pruned this fire to stay under the STATE line cap — full
-  detail in loop/LOG.md + git history.
+  LOG Local cycle 20260808T104105Z. This baseline is now being WELDED into `_NON_ANCHOR_WELDED` via PEER-GATED PR #159
+  (see the top banner).
+- **↪ Fire-start state (Local 20260808T124101Z):** NO open PR at fire start (`gh pr list --state open` → `[]`; PR #158
+  MERGED two fires ago, last fire's sweep-add direct-to-main so no peer-gated review was owed). First duty = infra health
+  check → GREEN (verify `verify_20260808T124101Z.json` fresh 38/38 + `tests_ok`, git clean + up to date, live delta
+  +30.1). The ONE item (UCP-rail weld) was authored as **PEER-GATED PR #159**, so the NEXT fire OWES its first-duty
+  adversarial review + independent $0 live re-score BEFORE picking new work (the REVIEWER re-runs the volatile-rail live
+  re-score; a divergence = UCP-manifest drift → re-capture, do not merge, inv #4).
 - LOCAL cycle — 20260808T074103Z summarized: pinned x402deploy.vercel.app as the TWELFTH frozen-replay baseline
   (73.9 C, {metered_api, data_retrieval}) — the THIRD non-anchor LIVE-x402 point and the SECOND tx-100 witness; with
   tx held at 100.0 on BOTH x402deploy (73.9) and thebotwire (86.0), the overall gap is forced onto legibility+trust

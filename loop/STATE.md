@@ -1,43 +1,37 @@
 # Loop state
 
-- Cycle counter: 323
-- **✅ CALIBRATION CADENCE SWEEP RUN GREEN + kith.com SWEEP-ADD (the SIXTEENTH baseline's weld
-  prerequisite) DISCHARGED this fire (Local 20260809T064456Z, TRUTH, direct-to-main — the ONE [LOCAL]
-  item).** Adopted the uncommitted `experiments/calibration_sweep.py` POPULATION += `("kith.com",
-  "ucp-live:apparel-lifestyle")` found at fire start (the api.replicate/hardgraft "edit uncommitted at
-  fire start" self-heal pattern — verified byte-correct, off the scoring path) and ran a $0 static
-  cadence sweep over the full 27-member POPULATION (no `--behavioral`/`--max-pay`/codex/zero CLI, inv
-  #1 by construction) → `runs/local/calibration_sweep_20260809T064456Z.json` (26/27 scored, rei.com
-  not-scorable per inv #4, 0 errors). **kith.com 70.3 C BYTE-ON-FLOOR** (access 100.0 / legibility
-  86.36 / tx 50.0 / trust 60.0, caps empty, honest {metered_api, physical_good}) — its FIRST
-  genuinely-compared sweep presence (n_compared≥1, ABSENT from all priors), so the FOURTH UCP-rail
-  weld (kith → `_NON_ANCHOR_WELDED`, the 14th non-anchor member) is now authorable non-vacuously via a
-  future PEER-GATED PR. **Drift vs 20260809T014508Z: 0/25 moved, max |Δ| 0.0** — sole change
-  `added: kith.com`; ALL 15 pinned/welded members byte-on-floor + caps empty (canonical pair 46.1/76.2
-  + all 3 UCP rails coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9 + all 3 x402 rails thebotwire
-  86.0 / oracle 64.4 / x402deploy 73.9 + exa.ai 78.1 / ipinfo 61.3 / acuity 54.0 / books 29.5 /
-  api.replicate 29.5 / moleskine 49.8), every volatile live rail UP, NO weld invalidated, NO baseline
-  regressed (wikipedia.org control held at 41.1). Off-scoring-SEMANTICS EMPTY (POPULATION +1 only, off
-  the scoring path); frozen +39.4 / live +30.1; suite 38/38. NO open PRs. Evidence
-  `runs/local/calibration_sweep_20260809T064456Z.json`; LOG Local cycle 20260809T064456Z.
-- **✅ SIXTEENTH frozen-replay baseline PINNED — kith.com 70.3 C, the FOURTH UCP-rail point + the HIGH-LEGIBILITY
-  corner of the UCP plane (Local 20260809T040201Z, TRUTH/COVERAGE, direct-to-main — the ONE [LOCAL] item).** $0
-  static-scored the fresh live-UCP cohort (last cycle's recon finds spanx/brooklinen/kith) on the SCORER path
-  (`python -m asrs score --json-only`; no `--behavioral`/`--max-pay`/codex/zero CLI, inv #1 by construction) and pinned
-  the ONE genuinely-distinct honest candidate. **kith.com 70.3 C** (access 100.0 / **legibility 86.36** / tx 50.0 /
-  trust 60.0): a NEW high-legibility region that nearly DOUBLES the UCP plane's legibility span (coffeecircle 57.4 /
-  gymshark 62.4 / hardgraft 66.9 all cluster at leg 50.0→54.55; kith 86.36), the HIGHEST UCP overall, on the SAME clean
-  UCP-50 rung (`x402_probe commerce-protocol-live` PARTIAL 4.0/8.0), honest **{metered_api, physical_good}** (no
-  topic-word over-claim, no FP-guards — the gymshark/hardgraft clean profile). Replay-clean (live 70.3 == frozen ==
-  EXPECTED, all 4 non-null pillars byte-identical, misses=0, caps empty); fixture 17MB / **59 GET / 0 POST** (inv #1 —
-  well-known GET is a $0 read; kith is the only lean-less distinct point, so its weight is justified — no lean equivalent
-  exists). The leaner fresh cohort is NON-distinct: **spanx.com 60.0** (tx 43.75 — the skims.com tx-conflation) +
-  **brooklinen.com 59.9** (leg 54.55 already occupied → the glossier.com "only densifies trust" case). Installed fixture
-  + EXPECTED + guard `test_ucp_retail_fourth_storefront_replays_70_3` (registered) + `_REPLAY_CLEAN` + `_POPULATION` ×5.
-  Baselines 15→16; UCP rail 4 points. Off-scoring-SEMANTICS EMPTY (canonical PAIR untouched, no rubric bump); frozen
-  +39.4 / live +30.1; suite 38/38. NO open PRs. A future PEER-GATED weld into `_NON_ANCHOR_WELDED` needs a `[LOCAL]`
-  sweep-add first (n_compared≥1, the coffeecircle/gymshark/hardgraft recipe). Evidence
-  `runs/local/kith_ucp_highlegibility_baseline_20260809T040201Z.json`; LOG Local cycle 20260809T040201Z.
+- Cycle counter: 324
+- **🔶 OPEN PEER-GATED PR #163 (`loop/kith-ucp-weld`, commit `8b305fc`) — the NEXT cycle's FIRST DUTY is
+  to adversarially review + self-merge it (re-run its $0 live UCP re-score) BEFORE picking new work.**
+  Authored this fire (Local 20260809T074319Z, TRUTH/COVERAGE — the ONE [LOCAL] item): WELD **kith.com
+  70.3 C** into `_NON_ANCHOR_WELDED` as the **14th non-anchor cross-path member / 4th on the LIVE UCP
+  commerce-protocol rail** — the HIGH-LEGIBILITY corner of the UCP plane. The #152–#161 recipe one member
+  later (its n_compared≥1 sweep-add prerequisite was discharged last fire, 20260809T064456Z). kith holds
+  the IDENTICAL tx-50.0 UCP rung (`x402_probe` PARTIAL 4.0/8.0 `commerce-protocol-live`) as
+  coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9 but at a DISTINCT far-HIGHER legibility 86.36 (vs
+  their 50.0→54.55 cluster) → the UCP plane is now well-spanned on legibility (50.0→86.36) at the fixed
+  tx-50.0 rung. **Off-scoring-SEMANTICS EMPTY** (diff = ONLY `tests/test_calibration_anchor_agreement.py`
+  + evidence JSON; asrs/rubric/fixtures/experiments UNCHANGED). LOAD-BEARING (n_compared=1 in
+  `calibration_sweep_20260809T064456Z.json`, teeth 70.3→82.0 caught). Volatile-rail **$0 live re-score
+  this fire**: live 70.3 == frozen 70.3 == EXPECTED 70.3, all 4 non-null pillars byte-identical, caps
+  empty, `x402_probe` PARTIAL 4.0/8.0 (inv #1 — `/.well-known/ucp` is a $0 GET). Weld suite 29→30; full
+  suite 38/38; frozen +39.4 / live +30.1. **Reviewer MUST re-run the live re-score — a divergence = REAL
+  UCP-manifest drift → re-capture, do NOT merge.** Evidence `runs/local/kith_ucp_weld_20260809T074319Z.json`;
+  LOG Local cycle 20260809T074319Z.
+- **✅ kith.com SWEEP-ADD DISCHARGED (Local 20260809T064456Z, TRUTH, direct-to-main) — the weld
+  prerequisite PR #163 (above) consumed this fire.** $0 static cadence sweep over the full 27-member
+  POPULATION → `runs/local/calibration_sweep_20260809T064456Z.json` (26/27 scored, rei.com not-scorable
+  inv #4, 0 errors): kith.com 70.3 C byte-on-floor (n_compared=1, its first genuinely-compared presence);
+  drift vs 20260809T014508Z 0/25 moved, max |Δ| 0.0, every pinned/welded member on floor + caps empty, no
+  weld invalidated, no baseline regressed. Off-scoring-SEMANTICS EMPTY. Full detail in loop/LOG.md (## Local
+  cycle — 20260809T064456Z).
+- **✅ SIXTEENTH frozen-replay baseline PINNED — kith.com 70.3 C (Local 20260809T040201Z, direct-to-main) — now
+  BOTH pinned AND being welded (PR #163, top banner).** The FOURTH UCP-rail point / high-legibility corner of the
+  UCP plane (access 100.0 / legibility 86.36 / tx 50.0 / trust 60.0, honest {metered_api, physical_good}, clean
+  replay 0 misses); guard `test_ucp_retail_fourth_storefront_replays_70_3` + `_REPLAY_CLEAN` + `_POPULATION` ×5.
+  Baselines 15→16. The leaner fresh cohort was NON-distinct (spanx.com 60.0 tx-conflation / brooklinen.com 59.9 leg
+  54.55 already occupied). Full detail in loop/LOG.md (## Local cycle — 20260809T040201Z); evidence
+  `runs/local/kith_ucp_highlegibility_baseline_20260809T040201Z.json`.
 - **✅ ACP/COMMERCE-PROTOCOL WELL-KNOWN RECON RE-RUN GREEN, BROADENED 20→32 candidates (Local 20260809T024925Z,
   COVERAGE/TRUTH, direct-to-main — the ONE [LOCAL] item).** Re-ran `experiments/acp_wellknown_recon.py` ($0 read-only
   GETs via the scorer's own `FetchContext.get` + byte-faithful `_parse_commerce_manifest`; no payment/POST/`--behavioral`/

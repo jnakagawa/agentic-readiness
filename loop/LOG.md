@@ -3,6 +3,50 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Local cycle — 20260809T074319Z — TRUTH/COVERAGE (LOCAL) — PEER-GATED PR #163: WELD kith.com (70.3 C) as the 14th non-anchor / 4th UCP-rail cross-path member (the high-legibility corner of the UCP plane)
+
+**Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260809T074104Z.json`
+fresh (~2 min old at fire start, well under the 6h floor), `tests_ok=true` (all 38 modules), git clean
++ `main == origin/main == HEAD`, **NO open PRs** (`gh pr list --state open` → empty) so no first-duty
+peer review was owed. Live canonical delta **+30.1** (org 46.1 F / com 76.2 C — persistent `/extend`
+402→401), frozen replay **+39.4**.
+
+**What / why (the ONE [LOCAL] item — the P2 step-(5) weld, PEER-GATED).** kith.com was pinned as the
+SIXTEENTH frozen-replay baseline (Local 20260809T040201Z, 70.3 C — the FOURTH UCP-rail point / the
+high-legibility corner of the UCP plane) and its weld prerequisite was discharged last cycle (Local
+20260809T064456Z — kith scored 70.3 byte-on-floor in `calibration_sweep_20260809T064456Z.json`, segment
+`ucp-live:apparel-lifestyle`, n_compared=1). So the cross-path weld into `_NON_ANCHOR_WELDED` is now
+authorable NON-vacuously. Authored as **PEER-GATED PR #163** (`loop/kith-ucp-weld`, commit `8b305fc`),
+the #152–#161 recipe one member later: kith.com added to `_NON_ANCHOR_WELDED` (13→14) + the docstring
+block + `test_kith_fourteenth_non_anchor_is_welded_nonvacuously` + registered in `main()`.
+
+**Calibration value.** kith holds the IDENTICAL tx-50.0 UCP rung (`x402_probe` PARTIAL 4.0/8.0
+`commerce-protocol-live`) as the first three UCP baselines but sits at a DISTINCT, far HIGHER
+legibility 86.36 (vs the 50.0→54.55 coffeecircle/gymshark/hardgraft cluster) with trust 60.0 → 70.3,
+the HIGHEST UCP overall of the four. The rail fixes transactability while overall tracks
+legibility+trust independently of the rail; the UCP plane is now well-spanned on legibility
+(50.0→86.36) at the fixed tx-50.0 rung, not just on trust. Vendor-neutral (welded by storefront TYPE
+on the UCP rail; no kith special-casing on the scoring path).
+
+**Verification.** Off scoring-SEMANTICS EMPTY — diff touches ONLY
+`tests/test_calibration_anchor_agreement.py` (+ evidence JSON); asrs/rubric/fixtures/experiments
+UNCHANGED. LOAD-BEARING: n_compared=1 (the 20260809T064456Z sweep at 70.3), teeth 70.3→82.0 caught as
+exactly one divergence. Volatile-rail **$0 live re-score this fire** (`python -m asrs score kith.com
+--json-only`; inv #1 — `/.well-known/ucp` is a $0 GET, no `--behavioral`/`--max-pay`/payment/codex/zero
+CLI): live **70.3 == frozen 70.3 == EXPECTED 70.3**, all 4 non-null pillars byte-identical (access
+100.0 / legibility 86.36363636363636 / tx 50.0 / trust 60.0), caps empty, `x402_probe` PARTIAL 4.0/8.0
+`commerce-protocol-live` (UCP rail UP, no manifest drift). Weld suite **29→30**; full suite **38/38**.
+frozen **+39.4** / live **+30.1** (`runs/local/verify_20260809T074104Z.json`). Evidence
+`runs/local/kith_ucp_weld_20260809T074319Z.json`.
+
+**Next hypothesis.** The NEXT cycle's FIRST duty: adversarially review PR #163 + re-run the $0 live UCP
+re-score (a divergence = REAL UCP-manifest drift → re-capture, do NOT merge), then self-merge if sound
+and record the verdict here. After that, the #152–#163 non-anchor weld campaign is COMPLETE at 14
+witnesses (UCP rail welded at 4 points). The forward UCP-depth prize is a DISTINCT tx rung (a UCP
+merchant that clears the sub-check spanx fails → tx > 50.0) or a genuinely-NEW rail TYPE (ACP/MPP —
+still $0-un-pinnable; keep re-running the 32-candidate ACP recon at cadence). Standing tripwire:
+re-run `experiments/codex_reachability.py` (last GREEN 20260809T010020Z).
+
 ## Local cycle — 20260809T064456Z — TRUTH (LOCAL) — calibration cadence sweep: kith.com sweep-add (the SIXTEENTH baseline's weld prerequisite discharged), whole population re-scored $0 static — 0/25 drift, kith 70.3 on floor
 
 **Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260809T064105Z.json`

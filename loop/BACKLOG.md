@@ -238,8 +238,19 @@ UNMOVED +39.4; live +30.1; suite 38/38. This UNLOCKS the P2 step (5) weld: a fut
 into _NON_ANCHOR_WELDED non-vacuously (n_compared=1 in this sweep at 70.3, agrees with floor, teeth = synthetic drift
 caught) — the 14th non-anchor member / 4th on the UCP rail. See LOG Local cycle 20260809T064456Z. -->
 
-<!-- No open P0 items. No open PRs. The whole #152-#161 non-anchor weld campaign is COMPLETE at 13 witnesses; PR #162
-(v0.7(g)) MERGED + reviewed (above). Forward candidates are the P2 UCP-depth / new-rail item below. -->
+- **[P0 — OPEN PEER-GATED PR #163, review owed NEXT cycle] WELD kith.com (70.3 C) as the 14th non-anchor / 4th
+  UCP-rail cross-path member.** Authored Local cycle 20260809T074319Z (`loop/kith-ucp-weld`, commit `8b305fc`) —
+  the #152–#161 recipe one member later (its n_compared≥1 sweep-add prerequisite was discharged 20260809T064456Z).
+  Off-scoring-SEMANTICS EMPTY (diff = ONLY `tests/test_calibration_anchor_agreement.py` + evidence JSON). The NEXT
+  cycle's FIRST duty: adversarially review + re-run the $0 live UCP re-score (live 70.3 == frozen 70.3, all 4
+  pillars byte-identical, caps empty, `x402_probe` PARTIAL 4.0/8.0 `commerce-protocol-live` this fire) — a
+  divergence = REAL UCP-manifest drift → re-capture, do NOT merge; if sound, self-merge + record the verdict in
+  LOG.md. Weld suite 29→30; full suite 38/38; frozen +39.4 / live +30.1. Evidence
+  `runs/local/kith_ucp_weld_20260809T074319Z.json`; LOG Local cycle 20260809T074319Z.
+
+<!-- The whole #152-#161 non-anchor weld campaign is COMPLETE at 13 witnesses; PR #162 (v0.7(g)) MERGED + reviewed
+(above). PR #163 (kith weld, 14th member) is the ONE open PR (above). Forward candidates are the P2 UCP-depth /
+new-rail item below. -->
 
 - **[P2 — TRUTH, LOCAL, candidate] BROADEN further / DEEPEN the UCP rail / UNLOCK a NEW rail TYPE.** The UCP rail now
   has THREE pinned baselines, all UCP `commerce-protocol-live` at the tx-50.0 rung: checkout.coffeecircle.com (57.4 F,
@@ -299,8 +310,9 @@ caught) — the 14th non-anchor member / 4th on the UCP rail. See LOG Local cycl
   `runs/local/kith_ucp_highlegibility_baseline_20260809T040201Z.json`; LOG Local cycle 20260809T040201Z. The
   `[LOCAL]` sweep-add prerequisite is now ✅ DONE (Local cycle 20260809T064456Z — kith.com added to the
   `experiments/calibration_sweep.py` POPULATION + scored 70.3 BYTE-ON-FLOOR in
-  `calibration_sweep_20260809T064456Z.json`, n_compared=1, drift 0/25), so a future PEER-GATED PR can now weld kith
-  into `_NON_ANCHOR_WELDED` NON-vacuously — the 14th non-anchor member / 4th on the UCP rail. **FORWARD
+  `calibration_sweep_20260809T064456Z.json`, n_compared=1, drift 0/25). The PEER-GATED weld is now ✅ AUTHORED as
+  **OPEN PR #163** (Local cycle 20260809T074319Z — kith → `_NON_ANCHOR_WELDED`, the 14th non-anchor member / 4th on
+  the UCP rail; review + self-merge owed NEXT cycle, see the P0 item above). **FORWARD
   frontier** (surveyed + NOT pinned): glossier.com 64.9 / skims.com 60.4 conflate axes (see above); the UCP plane is now
   well-spanned on legibility (50.0→86.36) at the fixed tx-50 rung, so the remaining UCP-depth prize is a DISTINCT tx
   rung (a UCP merchant that CLEARS the sub-check spanx fails → tx > 50.0) OR a genuinely-NEW rail TYPE (ACP/MPP — still

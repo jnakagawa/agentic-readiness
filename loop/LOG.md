@@ -3,6 +3,82 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Local cycle — 20260809T105834Z — COVERAGE/TRUTH (LOCAL) — UCP transactability-rung recon: the UCP retail rail is structurally CAPPED at tx=50.0 (no merchant clears tx>50), the tx axis is BIMODAL {50.0, 43.75} split SOLELY by mcp_surface
+
+**Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260809T104103Z.json` fresh
+(~40 min old at fire start, well under the 6h floor), `tests_ok=true` (all 38 modules), git clean +
+`main == origin/main == HEAD`, `gh pr list --state open` → **empty (NO open PR)**. Live canonical delta
+**+30.1** (org 46.1 F / com 76.2 C — persistent `/extend` 402→401), frozen replay **+39.4**. No repair
+needed; no self-heal.
+
+**First duty — peer-gated PR review.** NONE owed: no open PR (PR #163 was operator-merged + post-merge
+reviewed SOUND last fire). Proceeded straight to the ONE `[LOCAL]` item.
+
+**The ONE `[LOCAL]` item (COVERAGE/TRUTH, direct-to-main) — UCP transactability-rung recon.** The P2
+UCP-depth forward frontier asks whether any live UCP merchant clears a DISTINCT transactability rung
+(**tx > 50.0**), or whether the UCP plane's tx axis is structurally pinned at 50.0. Rotated off the
+recently-dominant METHOD tripwire / TRUTH cadence sweeps to HUNT this with a fresh live population.
+New experiment `experiments/ucp_transactability_recon.py`: for each candidate a $0 `GET /.well-known/ucp`
+validated byte-faithfully via the scorer's OWN `_parse_commerce_manifest`, then every UCP-serving domain
+STATIC-scored through the shipped path (`asrs.cli._run_probes` → `asrs.scoring.score`, no `--behavioral`),
+extracting the transactability CHECK breakdown (x402_probe / mcp_surface / self_serve_payg). **$0 by
+construction** (inv #1): static only — no `--behavioral` (so NO free-tier probe fires), no zero CLI, no
+signing path, never a nonzero `--max-pay`. Ran 18 candidates (7 known UCP + 10 fresh DTC scouts + 1
+NEGATIVE control) → `runs/local/ucp_transactability_recon_20260809T105012Z.json`.
+
+**Findings.**
+- **UCP served 14/18.** SEVEN genuinely-NEW live UCP merchants discovered by the fresh scouts:
+  rothys.com / mejuri.com / everlane.com / aloyoga.com / outdoorvoices.com / tecovas.com /
+  chubbiesshorts.com. Non-UCP (404): bombas.com, vuori.com, mizzenandmain.com. Negative control
+  **ruggable.com correctly served NO UCP** → the probe DISCRIMINATES (a null is a real negative, not a
+  broken probe; the acp-recon positive-control discipline, applied to UCP).
+- **NO UCP merchant clears tx > 50.0** — across the whole live UCP population (14, incl. 7 fresh), the
+  forward-frontier question is answered **NO**. The UCP retail rail is structurally CAPPED at tx=50.0.
+- **The tx axis is BIMODAL — exactly two rungs, {tx=50.0 (9), tx=43.75 (5)}** — and the SOLE discriminant
+  is `mcp_surface`. Every UCP merchant scores IDENTICALLY on the other two tx checks: `x402_probe`
+  **4.0/8.0 `commerce-protocol-live`** (the valid `/.well-known/ucp` manifest) + `self_serve_payg`
+  **3.0/6.0 `self-serve-signup`** (cart/signup CTAs) = 7.0. The ONLY variable is `mcp_surface`:
+  **1.0/2.0 `mcp-documented-only`** (site documents an MCP surface) → 8.0/16 = **tx 50.0**; vs
+  **0.0/2.0 `no-mcp-surface`** → 7.0/16 = **tx 43.75**. This PINS (and corrects) STATE's earlier
+  "spanx 43.75 — a sub-check 0.0/2.0 drags it off the rung" hypothesis: the culprit is EXACTLY
+  `mcp_surface`, and it is a whole CLASS (spanx / skims / mejuri / tecovas / chubbiesshorts), not a
+  spanx one-off.
+- **Capability reading (why tx>50 is $0-un-reachable for retail UCP):** tx > 50 needs one of —
+  `x402_probe` → `x402-live` 8.0 (a live HTTP-402 handshake, i.e. the *x402* rail, not pure UCP);
+  `self_serve_payg` > 3.0 (a fuller pay-as-you-go / no-account provisioning path a retail cart does not
+  expose); or `mcp_surface` 2.0 (a LIVE MCP surface, not merely documented). All three move the merchant
+  OFF the pure-UCP-retail shape. So the "UCP tx > 50" prize is structurally off-shape — a real scarcity
+  truth about the rail, confirmed on a fresh 14-merchant population, not a probe artifact.
+- **Live-manifest drift tripwire GREEN:** all 7 known UCP merchants (incl. the pinned kith 70.3 /
+  hardgraft 66.9) still serve a valid UCP manifest → no pinned UCP rail silently invalidated.
+
+**Pin leads for a FUTURE cycle (NOT pinned here — ≥2-obs discipline + honest-classification gate):**
+`aloyoga.com` **81.2 B** (access 100.0 / legibility 100.0 / **trust 100.0** / tx 50.0) — the HIGHEST UCP
+overall observed, well above kith's 70.3; a candidate high-corner UCP baseline. Also tecovas.com 73.6
+(tx 43.75, leg 86.4, trust 90.0 — a high-legibility 43.75-rung witness), rothys.com 69.5,
+chubbiesshorts.com 67.1, outdoorvoices.com 65.0, mejuri.com 65.7, everlane.com 62.4. **CAVEAT (inv #4):**
+several claim `metered_api` on a clothing brand (aloyoga `{physical_good, metered_api}`, tecovas
+`{metered_api, physical_good, subscription}`) — an UNVERIFIED classification that may be a topic-word
+over-claim (the joinhexagon / thebotwire pattern); each needs the honest-classification + replay-clean +
+≥2-obs gate before any pin. These are recon observations only.
+
+**Ship.** Scorer UNCHANGED — recon reads the shipped path only; no probe/rubric/fixture/scoring-semantics
+change (`experiments/ucp_transactability_recon.py` is off the scoring path, the calibration_sweep /
+acp_wellknown_recon class). Vendor-neutral (every candidate through the SAME path; the `tag` is a reading
+label, never a scorer input). Frozen replay **+39.4** / live **+30.1**; suite **38/38**
+(`verify_20260809T104103Z`). Direct-to-main. Evidence
+`runs/local/ucp_transactability_recon_20260809T105012Z.json`.
+
+**Next hypothesis.** The UCP-depth "distinct tx rung" prize is confirmed **$0-un-reachable for retail**
+(tx capped at 50.0; the only lever, mcp_surface, tops at the 1.0 documented-only rung across the whole
+population). The remaining UCP-plane frontiers are (a) a NEW high-corner OVERALL point — pin aloyoga.com
+81.2 IF its `metered_api` claim survives honest-classification vetting; (b) the `mcp_surface`
+1.0-vs-0.0 split is itself a candidate calibration axis (an MCP-documented UCP merchant isolates that
+single sub-check vs a bare one, the coffeecircle↔gymshark single-pillar-isolation pattern applied to
+tx); (c) a genuinely-NEW rail TYPE (ACP/MPP — keep the 32-candidate acp recon at cadence). Re-run this
+recon at a future cadence with fresh scouts so a UCP merchant that EVER lights a live MCP surface or
+x402 handshake (tx > 50) is caught the cycle it appears.
+
 ## Local cycle — 20260809T094408Z — METHOD (LOCAL) — POST-MERGE review of operator-merged PR #163 (kith.com weld) SOUND + own-tool-drift tripwire cadence GREEN (no 7th drift)
 
 **Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260809T094101Z.json` fresh

@@ -1,0 +1,930 @@
+{
+ "ts": "20260809T105012Z",
+ "kind": "ucp-transactability-recon",
+ "spend": "$0 (read-only GETs + static score; no --behavioral/--max-pay/payment/zero-CLI)",
+ "ucp_path": "/.well-known/ucp",
+ "tx_pillar_checks": {
+  "x402_probe": 8.0,
+  "mcp_surface": 2.0,
+  "self_serve_payg": 6.0
+ },
+ "question": "Does any live UCP merchant clear transactability > 50.0 (a DISTINCT tx rung), and by which capability?",
+ "summary": {
+  "n_candidates": 18,
+  "n_ucp_served": 14,
+  "n_scored": 14,
+  "ucp_served_domains": [
+   "kith.com",
+   "hardgraft.com",
+   "spanx.com",
+   "skims.com",
+   "glossier.com",
+   "brooklinen.com",
+   "allbirds.com",
+   "rothys.com",
+   "mejuri.com",
+   "everlane.com",
+   "aloyoga.com",
+   "outdoorvoices.com",
+   "tecovas.com",
+   "chubbiesshorts.com"
+  ],
+  "fresh_ucp_domains": [
+   "rothys.com",
+   "mejuri.com",
+   "everlane.com",
+   "aloyoga.com",
+   "outdoorvoices.com",
+   "tecovas.com",
+   "chubbiesshorts.com"
+  ],
+  "tx_above_50": [],
+  "tx_at_50": [
+   "kith.com",
+   "hardgraft.com",
+   "glossier.com",
+   "brooklinen.com",
+   "allbirds.com",
+   "rothys.com",
+   "everlane.com",
+   "aloyoga.com",
+   "outdoorvoices.com"
+  ],
+  "tx_below_50": [
+   {
+    "domain": "spanx.com",
+    "tx": 43.75
+   },
+   {
+    "domain": "skims.com",
+    "tx": 43.75
+   },
+   {
+    "domain": "mejuri.com",
+    "tx": 43.75
+   },
+   {
+    "domain": "tecovas.com",
+    "tx": 43.75
+   },
+   {
+    "domain": "chubbiesshorts.com",
+    "tx": 43.75
+   }
+  ]
+ },
+ "rows": [
+  {
+   "domain": "kith.com",
+   "tag": "ucp-known:pinned-baseline",
+   "ucp": {
+    "status": 200,
+    "error": null,
+    "served": true,
+    "manifest": {
+     "protocol": "ucp",
+     "fields": [
+      "capabilities"
+     ],
+     "snippet": "{\"ucp\": {\"version\": \"2026-04-08\", \"supported_versions\": {\"2026-04-08\": \"https://kithnyc.myshopify.com/.well-known/ucp/2026-04-08\", \"2026-01-23\": \"https://kithnyc.myshopify.com/.well-known/ucp/2026-01-23\"}, \"services\": {\"dev.ucp.shopping\": [{\"version\": \"2026-04-08\", \"spec\": \"https://ucp.dev/2026-04-0"
+    }
+   },
+   "score": {
+    "scored": true,
+    "overall": 70.3,
+    "grade": "C",
+    "rubric_version": "0.7",
+    "pillars": {
+     "access": 100.0,
+     "legibility": 86.36363636363636,
+     "transactability": 50.0,
+     "trust": 60.0,
+     "outcome": null
+    },
+    "transactability": 50.0,
+    "tx_checks": {
+     "x402_probe": {
+      "status": "partial",
+      "points": 4.0,
+      "max_points": 8.0,
+      "finding": "commerce-protocol-live"
+     },
+     "mcp_surface": {
+      "status": "partial",
+      "points": 1.0,
+      "max_points": 2.0,
+      "finding": "mcp-documented-only"
+     },
+     "self_serve_payg": {
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6.0,
+      "finding": "self-serve-signup"
+     }
+    },
+    "caps_applied": [],
+    "claimed_archetypes": [
+     "metered_api",
+     "physical_good"
+    ]
+   },
+   "error": null,
+   "elapsed_s": 25.8
+  },
+  {
+   "domain": "hardgraft.com",
+   "tag": "ucp-known:pinned-baseline",
+   "ucp": {
+    "status": 200,
+    "error": null,
+    "served": true,
+    "manifest": {
+     "protocol": "ucp",
+     "fields": [
+      "capabilities"
+     ],
+     "snippet": "{\"ucp\": {\"version\": \"2026-04-08\", \"supported_versions\": {\"2026-04-08\": \"https://hardgraft.myshopify.com/.well-known/ucp/2026-04-08\", \"2026-01-23\": \"https://hardgraft.myshopify.com/.well-known/ucp/2026-01-23\"}, \"services\": {\"dev.ucp.shopping\": [{\"version\": \"2026-04-08\", \"spec\": \"https://ucp.dev/2026-"
+    }
+   },
+   "score": {
+    "scored": true,
+    "overall": 66.9,
+    "grade": "D",
+    "rubric_version": "0.7",
+    "pillars": {
+     "access": 100.0,
+     "legibility": 50.0,
+     "transactability": 50.0,
+     "trust": 90.0,
+     "outcome": null
+    },
+    "transactability": 50.0,
+    "tx_checks": {
+     "x402_probe": {
+      "status": "partial",
+      "points": 4.0,
+      "max_points": 8.0,
+      "finding": "commerce-protocol-live"
+     },
+     "mcp_surface": {
+      "status": "partial",
+      "points": 1.0,
+      "max_points": 2.0,
+      "finding": "mcp-documented-only"
+     },
+     "self_serve_payg": {
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6.0,
+      "finding": "self-serve-signup"
+     }
+    },
+    "caps_applied": [],
+    "claimed_archetypes": [
+     "metered_api",
+     "physical_good"
+    ]
+   },
+   "error": null,
+   "elapsed_s": 18.31
+  },
+  {
+   "domain": "spanx.com",
+   "tag": "ucp-known:sub-rung",
+   "ucp": {
+    "status": 200,
+    "error": null,
+    "served": true,
+    "manifest": {
+     "protocol": "ucp",
+     "fields": [
+      "capabilities"
+     ],
+     "snippet": "{\"ucp\": {\"version\": \"2026-04-08\", \"supported_versions\": {\"2026-04-08\": \"https://spanx-com.myshopify.com/.well-known/ucp/2026-04-08\", \"2026-01-23\": \"https://spanx-com.myshopify.com/.well-known/ucp/2026-01-23\"}, \"services\": {\"dev.ucp.shopping\": [{\"version\": \"2026-04-08\", \"spec\": \"https://ucp.dev/2026-"
+    }
+   },
+   "score": {
+    "scored": true,
+    "overall": 60.0,
+    "grade": "D",
+    "rubric_version": "0.7",
+    "pillars": {
+     "access": 100.0,
+     "legibility": 54.54545454545455,
+     "transactability": 43.75,
+     "trust": 60.0,
+     "outcome": null
+    },
+    "transactability": 43.75,
+    "tx_checks": {
+     "x402_probe": {
+      "status": "partial",
+      "points": 4.0,
+      "max_points": 8.0,
+      "finding": "commerce-protocol-live"
+     },
+     "mcp_surface": {
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 2.0,
+      "finding": "no-mcp-surface"
+     },
+     "self_serve_payg": {
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6.0,
+      "finding": "self-serve-signup"
+     }
+    },
+    "caps_applied": [],
+    "claimed_archetypes": [
+     "physical_good"
+    ]
+   },
+   "error": null,
+   "elapsed_s": 178.63
+  },
+  {
+   "domain": "skims.com",
+   "tag": "ucp-known:surveyed",
+   "ucp": {
+    "status": 200,
+    "error": null,
+    "served": true,
+    "manifest": {
+     "protocol": "ucp",
+     "fields": [
+      "capabilities"
+     ],
+     "snippet": "{\"ucp\": {\"version\": \"2026-04-08\", \"supported_versions\": {\"2026-04-08\": \"https://skimsbody.myshopify.com/.well-known/ucp/2026-04-08\", \"2026-01-23\": \"https://skimsbody.myshopify.com/.well-known/ucp/2026-01-23\"}, \"services\": {\"dev.ucp.shopping\": [{\"version\": \"2026-04-08\", \"spec\": \"https://ucp.dev/2026-"
+    }
+   },
+   "score": {
+    "scored": true,
+    "overall": 60.4,
+    "grade": "D",
+    "rubric_version": "0.7",
+    "pillars": {
+     "access": 100.0,
+     "legibility": 40.90909090909091,
+     "transactability": 43.75,
+     "trust": 80.0,
+     "outcome": null
+    },
+    "transactability": 43.75,
+    "tx_checks": {
+     "x402_probe": {
+      "status": "partial",
+      "points": 4.0,
+      "max_points": 8.0,
+      "finding": "commerce-protocol-live"
+     },
+     "mcp_surface": {
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 2.0,
+      "finding": "no-mcp-surface"
+     },
+     "self_serve_payg": {
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6.0,
+      "finding": "self-serve-signup"
+     }
+    },
+    "caps_applied": [],
+    "claimed_archetypes": [
+     "physical_good",
+     "digital_good"
+    ]
+   },
+   "error": null,
+   "elapsed_s": 16.79
+  },
+  {
+   "domain": "glossier.com",
+   "tag": "ucp-known:surveyed",
+   "ucp": {
+    "status": 200,
+    "error": null,
+    "served": true,
+    "manifest": {
+     "protocol": "ucp",
+     "fields": [
+      "capabilities"
+     ],
+     "snippet": "{\"ucp\": {\"version\": \"2026-04-08\", \"supported_versions\": {\"2026-04-08\": \"https://glossier-admin.myshopify.com/.well-known/ucp/2026-04-08\", \"2026-01-23\": \"https://glossier-admin.myshopify.com/.well-known/ucp/2026-01-23\"}, \"services\": {\"dev.ucp.shopping\": [{\"version\": \"2026-04-08\", \"spec\": \"https://ucp"
+    }
+   },
+   "score": {
+    "scored": true,
+    "overall": 64.9,
+    "grade": "D",
+    "rubric_version": "0.7",
+    "pillars": {
+     "access": 100.0,
+     "legibility": 54.54545454545455,
+     "transactability": 50.0,
+     "trust": 73.33333333333333,
+     "outcome": null
+    },
+    "transactability": 50.0,
+    "tx_checks": {
+     "x402_probe": {
+      "status": "partial",
+      "points": 4.0,
+      "max_points": 8.0,
+      "finding": "commerce-protocol-live"
+     },
+     "mcp_surface": {
+      "status": "partial",
+      "points": 1.0,
+      "max_points": 2.0,
+      "finding": "mcp-documented-only"
+     },
+     "self_serve_payg": {
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6.0,
+      "finding": "self-serve-signup"
+     }
+    },
+    "caps_applied": [],
+    "claimed_archetypes": [
+     "physical_good",
+     "metered_api"
+    ]
+   },
+   "error": null,
+   "elapsed_s": 16.72
+  },
+  {
+   "domain": "brooklinen.com",
+   "tag": "ucp-known:surveyed",
+   "ucp": {
+    "status": 200,
+    "error": null,
+    "served": true,
+    "manifest": {
+     "protocol": "ucp",
+     "fields": [
+      "capabilities"
+     ],
+     "snippet": "{\"ucp\": {\"version\": \"2026-04-08\", \"supported_versions\": {\"2026-04-08\": \"https://brooklinen2.myshopify.com/.well-known/ucp/2026-04-08\", \"2026-01-23\": \"https://brooklinen2.myshopify.com/.well-known/ucp/2026-01-23\"}, \"services\": {\"dev.ucp.shopping\": [{\"version\": \"2026-04-08\", \"spec\": \"https://ucp.dev/2"
+    }
+   },
+   "score": {
+    "scored": true,
+    "overall": 59.9,
+    "grade": "F",
+    "rubric_version": "0.7",
+    "pillars": {
+     "access": 100.0,
+     "legibility": 54.54545454545455,
+     "transactability": 50.0,
+     "trust": 46.666666666666664,
+     "outcome": null
+    },
+    "transactability": 50.0,
+    "tx_checks": {
+     "x402_probe": {
+      "status": "partial",
+      "points": 4.0,
+      "max_points": 8.0,
+      "finding": "commerce-protocol-live"
+     },
+     "mcp_surface": {
+      "status": "partial",
+      "points": 1.0,
+      "max_points": 2.0,
+      "finding": "mcp-documented-only"
+     },
+     "self_serve_payg": {
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6.0,
+      "finding": "self-serve-signup"
+     }
+    },
+    "caps_applied": [],
+    "claimed_archetypes": [
+     "physical_good",
+     "metered_api"
+    ]
+   },
+   "error": null,
+   "elapsed_s": 13.72
+  },
+  {
+   "domain": "allbirds.com",
+   "tag": "ucp-known:surveyed",
+   "ucp": {
+    "status": 200,
+    "error": null,
+    "served": true,
+    "manifest": {
+     "protocol": "ucp",
+     "fields": [
+      "capabilities"
+     ],
+     "snippet": "{\"ucp\": {\"version\": \"2026-04-08\", \"supported_versions\": {\"2026-04-08\": \"https://weareallbirds.myshopify.com/.well-known/ucp/2026-04-08\", \"2026-01-23\": \"https://weareallbirds.myshopify.com/.well-known/ucp/2026-01-23\"}, \"services\": {\"dev.ucp.shopping\": [{\"version\": \"2026-04-08\", \"spec\": \"https://ucp.d"
+    }
+   },
+   "score": {
+    "scored": true,
+    "overall": 66.9,
+    "grade": "D",
+    "rubric_version": "0.7",
+    "pillars": {
+     "access": 100.0,
+     "legibility": 72.72727272727273,
+     "transactability": 50.0,
+     "trust": 60.0,
+     "outcome": null
+    },
+    "transactability": 50.0,
+    "tx_checks": {
+     "x402_probe": {
+      "status": "partial",
+      "points": 4.0,
+      "max_points": 8.0,
+      "finding": "commerce-protocol-live"
+     },
+     "mcp_surface": {
+      "status": "partial",
+      "points": 1.0,
+      "max_points": 2.0,
+      "finding": "mcp-documented-only"
+     },
+     "self_serve_payg": {
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6.0,
+      "finding": "self-serve-signup"
+     }
+    },
+    "caps_applied": [],
+    "claimed_archetypes": [
+     "physical_good",
+     "metered_api"
+    ]
+   },
+   "error": null,
+   "elapsed_s": 13.6
+  },
+  {
+   "domain": "rothys.com",
+   "tag": "ucp-scout:apparel-footwear",
+   "ucp": {
+    "status": 200,
+    "error": null,
+    "served": true,
+    "manifest": {
+     "protocol": "ucp",
+     "fields": [
+      "capabilities"
+     ],
+     "snippet": "{\"ucp\": {\"version\": \"2026-04-08\", \"supported_versions\": {\"2026-04-08\": \"https://rothys.myshopify.com/.well-known/ucp/2026-04-08\", \"2026-01-23\": \"https://rothys.myshopify.com/.well-known/ucp/2026-01-23\"}, \"services\": {\"dev.ucp.shopping\": [{\"version\": \"2026-04-08\", \"spec\": \"https://ucp.dev/2026-04-08/"
+    }
+   },
+   "score": {
+    "scored": true,
+    "overall": 69.5,
+    "grade": "D",
+    "rubric_version": "0.7",
+    "pillars": {
+     "access": 100.0,
+     "legibility": 68.18181818181819,
+     "transactability": 50.0,
+     "trust": 80.0,
+     "outcome": null
+    },
+    "transactability": 50.0,
+    "tx_checks": {
+     "x402_probe": {
+      "status": "partial",
+      "points": 4.0,
+      "max_points": 8.0,
+      "finding": "commerce-protocol-live"
+     },
+     "mcp_surface": {
+      "status": "partial",
+      "points": 1.0,
+      "max_points": 2.0,
+      "finding": "mcp-documented-only"
+     },
+     "self_serve_payg": {
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6.0,
+      "finding": "self-serve-signup"
+     }
+    },
+    "caps_applied": [],
+    "claimed_archetypes": [
+     "metered_api",
+     "physical_good"
+    ]
+   },
+   "error": null,
+   "elapsed_s": 14.24
+  },
+  {
+   "domain": "mejuri.com",
+   "tag": "ucp-scout:jewelry",
+   "ucp": {
+    "status": 200,
+    "error": null,
+    "served": true,
+    "manifest": {
+     "protocol": "ucp",
+     "fields": [
+      "capabilities"
+     ],
+     "snippet": "{\"ucp\": {\"version\": \"2026-04-08\", \"supported_versions\": {\"2026-04-08\": \"https://77123f.myshopify.com/.well-known/ucp/2026-04-08\", \"2026-01-23\": \"https://77123f.myshopify.com/.well-known/ucp/2026-01-23\"}, \"services\": {\"dev.ucp.shopping\": [{\"version\": \"2026-04-08\", \"spec\": \"https://ucp.dev/2026-04-08/"
+    }
+   },
+   "score": {
+    "scored": true,
+    "overall": 65.7,
+    "grade": "D",
+    "rubric_version": "0.7",
+    "pillars": {
+     "access": 100.0,
+     "legibility": 54.54545454545455,
+     "transactability": 43.75,
+     "trust": 90.0,
+     "outcome": null
+    },
+    "transactability": 43.75,
+    "tx_checks": {
+     "x402_probe": {
+      "status": "partial",
+      "points": 4.0,
+      "max_points": 8.0,
+      "finding": "commerce-protocol-live"
+     },
+     "mcp_surface": {
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 2.0,
+      "finding": "no-mcp-surface"
+     },
+     "self_serve_payg": {
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6.0,
+      "finding": "self-serve-signup"
+     }
+    },
+    "caps_applied": [],
+    "claimed_archetypes": [
+     "physical_good",
+     "service_booking",
+     "data_retrieval"
+    ]
+   },
+   "error": null,
+   "elapsed_s": 29.18
+  },
+  {
+   "domain": "everlane.com",
+   "tag": "ucp-scout:apparel",
+   "ucp": {
+    "status": 200,
+    "error": null,
+    "served": true,
+    "manifest": {
+     "protocol": "ucp",
+     "fields": [
+      "capabilities"
+     ],
+     "snippet": "{\"ucp\": {\"version\": \"2026-04-08\", \"supported_versions\": {\"2026-04-08\": \"https://m34kzg-ke.myshopify.com/.well-known/ucp/2026-04-08\", \"2026-01-23\": \"https://m34kzg-ke.myshopify.com/.well-known/ucp/2026-01-23\"}, \"services\": {\"dev.ucp.shopping\": [{\"version\": \"2026-04-08\", \"spec\": \"https://ucp.dev/2026-"
+    }
+   },
+   "score": {
+    "scored": true,
+    "overall": 62.4,
+    "grade": "D",
+    "rubric_version": "0.7",
+    "pillars": {
+     "access": 100.0,
+     "legibility": 54.54545454545455,
+     "transactability": 50.0,
+     "trust": 60.0,
+     "outcome": null
+    },
+    "transactability": 50.0,
+    "tx_checks": {
+     "x402_probe": {
+      "status": "partial",
+      "points": 4.0,
+      "max_points": 8.0,
+      "finding": "commerce-protocol-live"
+     },
+     "mcp_surface": {
+      "status": "partial",
+      "points": 1.0,
+      "max_points": 2.0,
+      "finding": "mcp-documented-only"
+     },
+     "self_serve_payg": {
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6.0,
+      "finding": "self-serve-signup"
+     }
+    },
+    "caps_applied": [],
+    "claimed_archetypes": [
+     "physical_good",
+     "metered_api"
+    ]
+   },
+   "error": null,
+   "elapsed_s": 24.43
+  },
+  {
+   "domain": "bombas.com",
+   "tag": "ucp-scout:apparel",
+   "ucp": {
+    "status": 404,
+    "error": null,
+    "served": false,
+    "manifest": null
+   },
+   "score": null,
+   "error": null,
+   "elapsed_s": 0.53
+  },
+  {
+   "domain": "vuori.com",
+   "tag": "ucp-scout:activewear",
+   "ucp": {
+    "status": 404,
+    "error": null,
+    "served": false,
+    "manifest": null
+   },
+   "score": null,
+   "error": null,
+   "elapsed_s": 0.57
+  },
+  {
+   "domain": "aloyoga.com",
+   "tag": "ucp-scout:activewear",
+   "ucp": {
+    "status": 200,
+    "error": null,
+    "served": true,
+    "manifest": {
+     "protocol": "ucp",
+     "fields": [
+      "capabilities"
+     ],
+     "snippet": "{\"ucp\": {\"version\": \"2026-04-08\", \"supported_versions\": {\"2026-04-08\": \"https://alo-yoga.myshopify.com/.well-known/ucp/2026-04-08\", \"2026-01-23\": \"https://alo-yoga.myshopify.com/.well-known/ucp/2026-01-23\"}, \"services\": {\"dev.ucp.shopping\": [{\"version\": \"2026-04-08\", \"spec\": \"https://ucp.dev/2026-04"
+    }
+   },
+   "score": {
+    "scored": true,
+    "overall": 81.2,
+    "grade": "B",
+    "rubric_version": "0.7",
+    "pillars": {
+     "access": 100.0,
+     "legibility": 100.0,
+     "transactability": 50.0,
+     "trust": 100.0,
+     "outcome": null
+    },
+    "transactability": 50.0,
+    "tx_checks": {
+     "x402_probe": {
+      "status": "partial",
+      "points": 4.0,
+      "max_points": 8.0,
+      "finding": "commerce-protocol-live"
+     },
+     "mcp_surface": {
+      "status": "partial",
+      "points": 1.0,
+      "max_points": 2.0,
+      "finding": "mcp-documented-only"
+     },
+     "self_serve_payg": {
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6.0,
+      "finding": "self-serve-signup"
+     }
+    },
+    "caps_applied": [],
+    "claimed_archetypes": [
+     "physical_good",
+     "metered_api"
+    ]
+   },
+   "error": null,
+   "elapsed_s": 12.78
+  },
+  {
+   "domain": "outdoorvoices.com",
+   "tag": "ucp-scout:activewear",
+   "ucp": {
+    "status": 200,
+    "error": null,
+    "served": true,
+    "manifest": {
+     "protocol": "ucp",
+     "fields": [
+      "capabilities"
+     ],
+     "snippet": "{\"ucp\": {\"version\": \"2026-04-08\", \"supported_versions\": {\"2026-04-08\": \"https://outdoor-voices.myshopify.com/.well-known/ucp/2026-04-08\", \"2026-01-23\": \"https://outdoor-voices.myshopify.com/.well-known/ucp/2026-01-23\"}, \"services\": {\"dev.ucp.shopping\": [{\"version\": \"2026-04-08\", \"spec\": \"https://ucp"
+    }
+   },
+   "score": {
+    "scored": true,
+    "overall": 65.0,
+    "grade": "D",
+    "rubric_version": "0.7",
+    "pillars": {
+     "access": 100.0,
+     "legibility": 50.0,
+     "transactability": 50.0,
+     "trust": 80.0,
+     "outcome": null
+    },
+    "transactability": 50.0,
+    "tx_checks": {
+     "x402_probe": {
+      "status": "partial",
+      "points": 4.0,
+      "max_points": 8.0,
+      "finding": "commerce-protocol-live"
+     },
+     "mcp_surface": {
+      "status": "partial",
+      "points": 1.0,
+      "max_points": 2.0,
+      "finding": "mcp-documented-only"
+     },
+     "self_serve_payg": {
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6.0,
+      "finding": "self-serve-signup"
+     }
+    },
+    "caps_applied": [],
+    "claimed_archetypes": [
+     "physical_good",
+     "metered_api"
+    ]
+   },
+   "error": null,
+   "elapsed_s": 11.6
+  },
+  {
+   "domain": "tecovas.com",
+   "tag": "ucp-scout:footwear",
+   "ucp": {
+    "status": 200,
+    "error": null,
+    "served": true,
+    "manifest": {
+     "protocol": "ucp",
+     "fields": [
+      "capabilities"
+     ],
+     "snippet": "{\"ucp\": {\"version\": \"2026-04-08\", \"supported_versions\": {\"2026-04-08\": \"https://tecovas-3.myshopify.com/.well-known/ucp/2026-04-08\", \"2026-01-23\": \"https://tecovas-3.myshopify.com/.well-known/ucp/2026-01-23\"}, \"services\": {\"dev.ucp.shopping\": [{\"version\": \"2026-04-08\", \"spec\": \"https://ucp.dev/2026-"
+    }
+   },
+   "score": {
+    "scored": true,
+    "overall": 73.6,
+    "grade": "C",
+    "rubric_version": "0.7",
+    "pillars": {
+     "access": 100.0,
+     "legibility": 86.36363636363636,
+     "transactability": 43.75,
+     "trust": 90.0,
+     "outcome": null
+    },
+    "transactability": 43.75,
+    "tx_checks": {
+     "x402_probe": {
+      "status": "partial",
+      "points": 4.0,
+      "max_points": 8.0,
+      "finding": "commerce-protocol-live"
+     },
+     "mcp_surface": {
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 2.0,
+      "finding": "no-mcp-surface"
+     },
+     "self_serve_payg": {
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6.0,
+      "finding": "self-serve-signup"
+     }
+    },
+    "caps_applied": [],
+    "claimed_archetypes": [
+     "metered_api",
+     "physical_good",
+     "subscription"
+    ]
+   },
+   "error": null,
+   "elapsed_s": 21.69
+  },
+  {
+   "domain": "mizzenandmain.com",
+   "tag": "ucp-scout:apparel",
+   "ucp": {
+    "status": 404,
+    "error": null,
+    "served": false,
+    "manifest": null
+   },
+   "score": null,
+   "error": null,
+   "elapsed_s": 0.79
+  },
+  {
+   "domain": "chubbiesshorts.com",
+   "tag": "ucp-scout:apparel",
+   "ucp": {
+    "status": 200,
+    "error": null,
+    "served": true,
+    "manifest": {
+     "protocol": "ucp",
+     "fields": [
+      "capabilities"
+     ],
+     "snippet": "{\"ucp\": {\"version\": \"2026-04-08\", \"supported_versions\": {\"2026-04-08\": \"https://chubbies.myshopify.com/.well-known/ucp/2026-04-08\", \"2026-01-23\": \"https://chubbies.myshopify.com/.well-known/ucp/2026-01-23\"}, \"services\": {\"dev.ucp.shopping\": [{\"version\": \"2026-04-08\", \"spec\": \"https://ucp.dev/2026-04"
+    }
+   },
+   "score": {
+    "scored": true,
+    "overall": 67.1,
+    "grade": "D",
+    "rubric_version": "0.7",
+    "pillars": {
+     "access": 100.0,
+     "legibility": 72.72727272727273,
+     "transactability": 43.75,
+     "trust": 73.33333333333333,
+     "outcome": null
+    },
+    "transactability": 43.75,
+    "tx_checks": {
+     "x402_probe": {
+      "status": "partial",
+      "points": 4.0,
+      "max_points": 8.0,
+      "finding": "commerce-protocol-live"
+     },
+     "mcp_surface": {
+      "status": "fail",
+      "points": 0.0,
+      "max_points": 2.0,
+      "finding": "no-mcp-surface"
+     },
+     "self_serve_payg": {
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6.0,
+      "finding": "self-serve-signup"
+     }
+    },
+    "caps_applied": [],
+    "claimed_archetypes": [
+     "physical_good",
+     "metered_api",
+     "subscription"
+    ]
+   },
+   "error": null,
+   "elapsed_s": 35.97
+  },
+  {
+   "domain": "ruggable.com",
+   "tag": "ucp-scout:home-NEGATIVE-control",
+   "ucp": {
+    "status": 404,
+    "error": null,
+    "served": false,
+    "manifest": null
+   },
+   "score": null,
+   "error": null,
+   "elapsed_s": 0.66
+  }
+ ]
+}

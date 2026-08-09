@@ -315,14 +315,35 @@ new-rail item below. -->
   `experiments/calibration_sweep.py` POPULATION + scored 70.3 BYTE-ON-FLOOR in
   `calibration_sweep_20260809T064456Z.json`, n_compared=1, drift 0/25). The PEER-GATED weld is now ✅ AUTHORED as
   **OPEN PR #163** (Local cycle 20260809T074319Z — kith → `_NON_ANCHOR_WELDED`, the 14th non-anchor member / 4th on
-  the UCP rail; review + self-merge owed NEXT cycle, see the P0 item above). **FORWARD
-  frontier** (surveyed + NOT pinned): glossier.com 64.9 / skims.com 60.4 conflate axes (see above); the UCP plane is now
-  well-spanned on legibility (50.0→86.36) at the fixed tx-50 rung, so the remaining UCP-depth prize is a DISTINCT tx
-  rung (a UCP merchant that CLEARS the sub-check spanx fails → tx > 50.0) OR a genuinely-NEW rail TYPE (ACP/MPP — still
-  $0-un-pinnable; keep re-running the 32-candidate recon at cadence). `joinhexagon.com` is a DOCUMENTED live-UCP lead
-  but needs a precision-guard unblock FIRST (4 llms-full.txt FP families, inv #4) — prefer clean merchant witnesses over
-  infra profiles. WATCH driftflight.com /extend for a 402 recovery (restores the anchor's live handshake + the +39.4
-  live delta).
+  the UCP rail; review + self-merge owed NEXT cycle, see the P0 item above). PR #163 is now ✅ MERGED (operator) +
+  post-merge-reviewed SOUND (Local cycle 20260809T094408Z).
+  (6) ✅ RESOLVED — the "DISTINCT tx rung (a UCP merchant that clears tx > 50.0)" prize is confirmed **$0-un-reachable
+  for retail UCP** by a fresh-population recon (Local cycle 20260809T105834Z, `experiments/ucp_transactability_recon.py`,
+  18 candidates $0 static via `_run_probes`→`scoring.score`, no `--behavioral`/`--max-pay`/payment/zero-CLI, inv #1 by
+  construction → `runs/local/ucp_transactability_recon_20260809T105012Z.json`). **UCP served 14/18** (SEVEN genuinely-NEW
+  UCP merchants found — rothys/mejuri/everlane/aloyoga/outdoorvoices/tecovas/chubbiesshorts; ruggable NEGATIVE control
+  correctly no-UCP → probe discriminates). **NO merchant clears tx > 50.0**; the tx axis is BIMODAL {tx=50.0 ×9,
+  tx=43.75 ×5} and the SOLE discriminant is `mcp_surface` — every UCP merchant is byte-identical on `x402_probe` 4.0/8.0
+  `commerce-protocol-live` + `self_serve_payg` 3.0/6.0 `self-serve-signup` (=7.0); the only variable is `mcp_surface`
+  1.0/2.0 `mcp-documented-only` (→ tx 50.0) vs 0.0/2.0 `no-mcp-surface` (→ tx 43.75). tx > 50 needs `x402_probe`→x402-live
+  8.0 (a LIVE 402 handshake = the *x402* rail, off pure UCP), `self_serve_payg` > 3.0 (a fuller PAYG path retail carts
+  lack), or a LIVE `mcp_surface` 2.0 — all move OFF the retail-UCP shape → the "UCP tx > 50" prize is structurally
+  off-shape, a REAL scarcity truth (not a probe artifact). Drift tripwire GREEN: all 7 known UCP rails (incl. pinned
+  kith/hardgraft) still serve a valid manifest. DO NOT re-open the "tx>50 UCP retail" hunt without a fresh finding of a
+  UCP merchant lighting a live MCP surface or x402 handshake; re-run the recon at cadence with fresh scouts so any such
+  merchant is caught the cycle it appears.
+  **FORWARD frontier** (surveyed + NOT pinned): the UCP plane is well-spanned on legibility (50.0→86.36) at the fixed
+  tx-50 rung AND the tx axis is now KNOWN structurally bounded (step 6). The live UCP-plane frontiers left are:
+  (a) a NEW **high-corner OVERALL** point — **aloyoga.com 81.2 B** (access/legibility/trust all 100.0, tx 50.0 — the
+  HIGHEST UCP overall observed, above kith 70.3) is a strong candidate baseline IF its `metered_api` claim survives
+  honest-classification vetting (inv #4 — a clothing brand claiming metered_api risks a topic-word over-claim, the
+  joinhexagon/thebotwire pattern); tecovas.com 73.6 / rothys.com 69.5 / chubbiesshorts.com 67.1 are lesser leads with
+  the same classification caveat; (b) the **`mcp_surface` 1.0-vs-0.0 split** is itself a candidate calibration axis (an
+  MCP-documented UCP merchant vs a bare one isolates that single sub-check — the coffeecircle↔gymshark single-pillar
+  isolation applied to tx); (c) a genuinely-NEW rail TYPE (ACP/MPP — still $0-un-pinnable; keep re-running the
+  32-candidate recon at cadence). `joinhexagon.com` is a DOCUMENTED live-UCP lead but needs a precision-guard unblock
+  FIRST (4 llms-full.txt FP families, inv #4) — prefer clean merchant witnesses over infra profiles. WATCH
+  driftflight.com /extend for a 402 recovery (restores the anchor's live handshake + the +39.4 live delta).
 
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
   phrasing has now drifted the `_ENV_BLOCK_RE` guard SIX times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)

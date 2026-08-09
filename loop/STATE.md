@@ -1,6 +1,25 @@
 # Loop state
 
-- Cycle counter: 325
+- Cycle counter: 326
+- **✅ UCP TRANSACTABILITY-RUNG RECON — the UCP retail rail is structurally CAPPED at tx=50.0 (Local 20260809T105834Z,
+  COVERAGE/TRUTH, direct-to-main — the ONE [LOCAL] item; NO open PRs at fire start → no review owed).** New experiment
+  `experiments/ucp_transactability_recon.py` ($0 static: `GET /.well-known/ucp` validated byte-faithfully via the
+  scorer's own `_parse_commerce_manifest`, then every UCP-serving domain full-scored via `_run_probes`→`scoring.score`;
+  no `--behavioral`/`--max-pay`/payment/zero-CLI, inv #1 by construction) → `runs/local/ucp_transactability_recon_20260809T105012Z.json`.
+  **UCP served 14/18** (SEVEN genuinely-NEW UCP merchants found by fresh scouts — rothys/mejuri/everlane/aloyoga/
+  outdoorvoices/tecovas/chubbiesshorts; ruggable NEGATIVE control correctly no-UCP → probe discriminates). **NO merchant
+  clears tx > 50.0** — the P2 "distinct tx rung" prize is confirmed $0-un-reachable for retail. The tx axis is BIMODAL
+  {tx=50.0 ×9, tx=43.75 ×5} and the SOLE discriminant is `mcp_surface`: every UCP merchant is byte-identical on
+  `x402_probe` 4.0/8.0 `commerce-protocol-live` + `self_serve_payg` 3.0/6.0 `self-serve-signup` (=7.0); the only variable
+  is `mcp_surface` 1.0/2.0 `mcp-documented-only` (→ tx 50.0) vs 0.0/2.0 `no-mcp-surface` (→ tx 43.75). This PINS+corrects
+  STATE's old "spanx 43.75 sub-check" hypothesis (the culprit is EXACTLY mcp_surface, a whole CLASS spanx/skims/mejuri/
+  tecovas/chubbies). tx > 50 needs x402-live 8.0 / self_serve_payg > 3.0 / a LIVE mcp_surface 2.0 — all OFF the retail-UCP
+  shape (a real scarcity truth). Drift tripwire GREEN (all 7 known UCP rails incl. pinned kith/hardgraft still serve a
+  valid manifest). **Pin lead for a FUTURE cycle (NOT pinned — ≥2-obs + classification gate): aloyoga.com 81.2 B**
+  (access/legibility/trust all 100.0, tx 50.0 — HIGHEST UCP overall observed, above kith 70.3), IF its `metered_api`
+  claim survives honest-classification vetting (inv #4 topic-word-over-claim risk). Scorer UNCHANGED (recon off the
+  scoring path); frozen +39.4 / live +30.1; suite 38/38 (`verify_20260809T104103Z`). See LOG Local cycle 20260809T105834Z
+  + BACKLOG P2 step (6).
 - **✅ PR #163 MERGED (operator) + owed POST-MERGE review SOUND — NO open PRs (Local 20260809T094408Z, METHOD).**
   PR #163 (`loop/kith-ucp-weld`, WELD **kith.com 70.3 C** as the 14th non-anchor / 4th UCP-rail cross-path member —
   the high-legibility corner of the UCP plane) was **OPERATOR-MERGED by jnakagawa** (merge `0536356`,
@@ -16,27 +35,14 @@
   / live +30.1. STATE reconciled OPEN→MERGED (bookkeeping self-heal). The #152–#163 non-anchor weld campaign is
   COMPLETE at 14 witnesses (UCP rail welded at 4 points; plane well-spanned on legibility 50.0→86.36 at tx-50.0).
   Evidence `runs/local/postmerge163_tripwire_cadence_20260809T094408Z.json`; LOG Local cycle 20260809T094408Z.
-- **✅ OWN-TOOL-DRIFT TRIPWIRE CADENCE RAN GREEN this fire (Local 20260809T094408Z — the ONE [LOCAL] item, METHOD).**
-  Re-ran `experiments/codex_reachability.py` ($0 read-only via the REAL scorer path `shopper._run_one`, 5 codex
-  trials, `runs/local/codex_reachability_20260809T094954Z/`): **NO seventh drift.** Both canonical own-tool refusals
-  CAUGHT by the shipped v0.7(g) `_ENV_BLOCK_RE` (`is_env_blocked_current=True` → reachability, not site evidence):
-  driftflight.com t1 *"denied by the browser permission layer"* (v0.7(g)) + drift-flight.org t1 *"denied by the
-  browser security layer"* (v0.6). Sole raw `leak_candidate` = **example.com t1** (the KNOWN coarse-filter FP:
-  up-site honest non-observation, `reputation_markers=[]`, zero refusal phrasing), NOT a drift. NEW: the ~24d-aged
-  reputation gate is now INTERMITTENT — both domains REACHED on t2 (found the offer + machine-payable path, with
-  reputation trust warnings), no longer the 07-23 4/4 hard block. test-#8 own-web-retriever "unsafe" phrasing fired
-  on both t1 but CO-OCCURRED with a caught phrase → no leak; stays deferred. codex vocabulary is non-deterministic —
-  the 7th drift WILL come; re-run each cadence.
-<!-- The two kith.com precursor banners — the SIXTEENTH frozen-replay baseline PIN (Local 20260809T040201Z, 70.3 C,
-     the FOURTH UCP-rail point / high-legibility corner of the plane, guard test_ucp_retail_fourth_storefront_replays_70_3
-     + _REPLAY_CLEAN + _POPULATION ×5, baselines 15→16) and the weld-prerequisite SWEEP-ADD DISCHARGED (Local
-     20260809T064456Z, n_compared=1 byte-on-floor in calibration_sweep_20260809T064456Z.json, drift 0/25) — are
-     compressed to this pointer this fire (Local cycle 20260809T094408Z) now that kith is pinned AND welded AND the
-     weld PR #163 is MERGED+reviewed (top banner), to hold the STATE 600-line cap. Both preserved verbatim in
-     loop/LOG.md (## Local cycle — 20260809T040201Z / 20260809T064456Z) + git history. -->
-- kith.com is now the 16th frozen-replay baseline AND the 14th welded non-anchor / 4th UCP-rail member (70.3 C, access
-  100.0 / legibility 86.36 / tx 50.0 / trust 60.0, honest {metered_api, physical_good}) — PR #163 MERGED+reviewed SOUND
-  (top banner). The leaner fresh cohort was NON-distinct (spanx.com 60.0 tx-conflation / brooklinen.com 59.9 leg 54.55).
+- OWN-TOOL-DRIFT TRIPWIRE CADENCE RAN GREEN last fire (Local 20260809T094408Z, METHOD — `codex_reachability.py`, 5
+  trials, `runs/local/codex_reachability_20260809T094954Z/`): NO seventh drift, both canonical own-tool refusals CAUGHT
+  by the shipped v0.7(g) `_ENV_BLOCK_RE`; sole raw candidate = the KNOWN example.com honest-non-observation FP. The
+  ~24d reputation gate is now INTERMITTENT (both reached on t2). Detail in the BACKLOG STANDING TRIPWIRE item + LOG
+  Local cycle 20260809T094408Z; codex vocab is non-deterministic — re-run each cadence, the 7th drift WILL come.
+<!-- kith.com precursor banners (SIXTEENTH baseline PIN 20260809T040201Z, guard
+     test_ucp_retail_fourth_storefront_replays_70_3 + _REPLAY_CLEAN + _POPULATION ×5; weld-prerequisite SWEEP-ADD
+     20260809T064456Z) — kith now pinned+welded+MERGED (PR #163, top banner); verbatim in loop/LOG.md + git history. -->
 - **✅ ACP/COMMERCE-PROTOCOL WELL-KNOWN RECON RE-RUN GREEN, BROADENED 20→32 candidates (Local 20260809T024925Z,
   COVERAGE/TRUTH, direct-to-main — the ONE [LOCAL] item).** Re-ran `experiments/acp_wellknown_recon.py` ($0 read-only
   GETs via the scorer's own `FetchContext.get` + byte-faithful `_parse_commerce_manifest`; no payment/POST/`--behavioral`/

@@ -3,6 +3,65 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Local cycle — 20260809T015714Z — TRUTH (LOCAL) — calibration cadence sweep: population-wide $0 static regression net GREEN (all 15 pinned/welded members byte-on-floor, 6 volatile live rails UP; sole mover a bistable non-storefront control)
+
+**Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260809T014104Z.json`
+fresh (~16min old at fire start, < 6h floor), `tests_ok:true` (all 38 suites, 0 failing), git
+clean + up to date on main. Live canonical drift-flight.org 46.1 F / driftflight.com 76.2 C → live
+delta **+30.1** (persistent x402 `/extend` 402→401 regression, unchanged); frozen replay **+39.4**.
+`gh pr list --state open` → **[]** — NO open peer-gated PR, so no first-duty review owed (last fire
+merged/reviewed PR #162 + ran the own-tool-drift tripwire GREEN). The #152–#161 non-anchor weld
+campaign is COMPLETE at 13 witnesses.
+
+**The ONE [LOCAL] item — TRUTH-track population regression net.** Last fire ran the own-tool-drift
+tripwire (codex); the broadest UN-checked blind spot this fire is population-wide drift across the
+pinned baselines + live-rail welds. The hourly `local_verify` re-scores only the canonical PAIR
+(2 of 26 members); the whole weld campaign depends on the volatile live UCP + x402 rails staying UP,
+and the last full cadence sweep was ~7h ago (`calibration_sweep_20260808T184442Z.json`, hardgraft
+add). So I re-ran `experiments/calibration_sweep.py` — the SHIPPED static scoring path
+(`_run_probes` → `scoring.score`, exactly what `asrs score <domain>` runs) across the full 26-member
+POPULATION. **$0 by construction:** no `--behavioral` ⇒ no free-tier probe fires, no zero CLI, no
+signing path (inv #1 holds; the free-tier transaction only runs in behavioral mode). Ran with the
+repo root on `PYTHONPATH` (the script's own dir is otherwise `sys.path[0]`, so bare `python3
+experiments/…` can't import `asrs`).
+
+**Result → `runs/local/calibration_sweep_20260809T014508Z.json` (25/26 scored, rei.com NOT SCORABLE
+per inv #4, 0 errors). GREEN.**
+- **All 15 pinned/welded members BYTE-ON-FLOOR + `caps_applied` empty** (independently re-derived vs
+  the `test_canonical_replay.EXPECTED` floors): canonical pair (drift-flight.org 46.1 / driftflight.com
+  76.2) + all 13 non-anchor witnesses — exa.ai 78.1, ipinfo.io 61.3, acuityscheduling.com 54.0,
+  moleskine.com 49.8, books.toscrape.com 29.5, api.replicate.com 29.5, example.com 22.5, and the SIX
+  volatile live rails below.
+- **Every volatile live rail is UP** (the assets the pair-only hourly verify can't see):
+  - 3 LIVE UCP rails, all tx-50.0 `commerce-protocol-live` PARTIAL, honest {metered_api, physical_good}:
+    checkout.coffeecircle.com 57.4 (leg 54.55 / trust 33.33), gymshark.com 62.4 (leg 54.55 / trust
+    60.0), hardgraft.com 66.9 (leg 50.0 / trust 90.0) — the 2-D legibility×trust UCP plane at the fixed
+    tx rung is intact, byte-for-byte.
+  - 3 LIVE x402 rails: thebotwire.com 86.0 (tx 100.0), api.x402oracle.com 64.4 (tx 87.5),
+    x402deploy.vercel.app 73.9 (tx 100.0).
+  So NO weld is silently invalidated, NO pinned baseline regressed — a stronger reproducibility
+  statement than the hourly canonical-pair signal (whole population, not 2 of 26).
+- **Drift vs `20260808T184442Z`: 1/25 moved, max |Δ| 4.6.** The SOLE mover is `wikipedia.org`
+  (45.7 → 41.1), a **non-storefront control** — neither pinned nor welded. Its across-sweep history is
+  a **bistable 41.1 ↔ 45.7 oscillation band**: 41.1 for 5 consecutive sweeps (20260728→20260807T134527),
+  45.7 for the next 4 (20260808T084504→184442), now back to 41.1 — a reachability/probe-signal flip on a
+  general encyclopedia, known control noise, NOT a capability move. This is exactly why wikipedia.org is
+  an unpinned control and not a scored baseline (attribution honesty, inv #4 — its ±4.6 is measured
+  noise, never averaged into any pinned asset).
+
+**Canonical numbers:** frozen replay delta **+39.4** UNMOVED (off scoring semantics — the sweep only
+READS the shipped scorer; canonical PAIR both byte-on-floor); live **+30.1**; suite **38/38**
+(`verify_20260809T014104Z`). Ship: **direct-to-main** — score-neutral, adds no probe, bumps no rubric
+version (same class as every prior cadence sweep: 084504Z / 144423Z / 184442Z).
+
+**Next hypothesis.** The population net is GREEN and the campaign is complete; forward TRUTH leverage
+is either (a) a NEW rail TYPE (ACP/MPP) — still un-pinnable $0, the ecosystem-path re-pathing lead
+FALSIFIED (re-run the $0 `acp_wellknown_recon.py` at cadence; unlock only on ≥2 live ACP surfaces), or
+(b) a UCP-DEPTH witness at a DISTINCT tx rung (skims.com 60.4 sits at tx 43.75 — a genuinely different
+UCP rung than the trio's 50.0; note it conflates legibility too, so weigh calibration cleanliness). The
+standing own-tool-drift tripwire (codex) remains a per-cadence METHOD run; the 7th drift WILL come.
+Alternate the population sweep and the tripwire so neither regression net goes stale.
+
 ## Local cycle — 20260809T010020Z — METHOD/TRUTH (LOCAL) — owed POST-MERGE review of operator-merged PR #162 (VERDICT SOUND) + standing own-tool-drift tripwire cadence run (GREEN, no 7th drift)
 
 **Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260809T004103Z.json`

@@ -1,7 +1,20 @@
 # Loop state
 
-- Cycle counter: 319
-- **✅ PR #162 MERGED (operator) + owed POST-MERGE review SOUND this fire (Local 20260809T010020Z, METHOD/TRUTH).**
+- Cycle counter: 320
+- **✅ CALIBRATION CADENCE SWEEP RUN GREEN this fire (Local 20260809T015714Z, TRUTH, direct-to-main — the ONE
+  [LOCAL] item).** Re-ran `experiments/calibration_sweep.py` ($0 static; no `--behavioral`/`--max-pay`/codex/zero
+  CLI, inv #1 by construction) over the full 26-member POPULATION → `runs/local/calibration_sweep_20260809T014508Z.json`
+  (25/26 scored, rei.com not-scorable per inv #4, 0 errors). **ALL 15 pinned/welded members BYTE-ON-FLOOR + caps
+  empty** — canonical pair (46.1/76.2) + all 13 non-anchor witnesses, incl. all 3 LIVE UCP rails (coffeecircle 57.4 /
+  gymshark 62.4 / hardgraft 66.9, each tx-50.0 `commerce-protocol-live`; the 2-D legibility×trust plane intact:
+  leg 54.55/54.55/50.0 × trust 33.33/60.0/90.0) + all 3 LIVE x402 rails (thebotwire 86.0 / oracle 64.4 / x402deploy
+  73.9, tx 100/87.5/100) — so every volatile live rail is UP, NO weld silently invalidated, NO baseline regressed.
+  **Drift vs 20260808T184442Z: 1/25 moved, max |Δ| 4.6 — the SOLE mover is the `wikipedia.org` non-storefront control
+  (45.7→41.1), a BISTABLE 41.1↔45.7 oscillation band (41.1 ×5 sweeps → 45.7 ×4 → 41.1 now), known control noise, NOT a
+  capability move and NOT a pinned/welded asset** (inv #4 — its ±4.6 never averaged into any pinned baseline). Broadens
+  the hourly canonical-PAIR regression signal to the whole population. Frozen +39.4 / live +30.1; suite 38/38. NO open
+  PRs. Evidence `runs/local/calibration_sweep_20260809T014508Z.json`; LOG Local cycle 20260809T015714Z.
+- **✅ PR #162 MERGED (operator) + owed POST-MERGE review SOUND (Local 20260809T010020Z, METHOD/TRUTH).**
   PR #162 (v0.7(g) `_ENV_BLOCK_RE`, the SIXTH own-tool refusal vocab drift "denied AT the browser permission boundary")
   was **OPERATOR-MERGED by jnakagawa** (merge `36822c1`, 2026-08-08T23:51:40Z) — SKIPPED the loop's pre-merge peer review
   (same class as PR #149/#150). This fire ran the owed **post-merge adversarial review + independent re-derivation →
@@ -36,26 +49,13 @@
   UCP positive control 6/6) → re-pathing `_COMMERCE_WELL_KNOWN` gains nothing (inv #3 unsatisfiable), lead CLOSED. Full
   detail folded into BACKLOG P2 step (3) + LOG Local cycle 20260808T204601Z; evidence
   `runs/local/acp_wellknown_recon_20260808T205138Z.json`.
-- **✅ NEW FIFTEENTH frozen-replay calibration baseline PINNED this fire (Local 20260808T165732Z, direct-to-main):
-  hardgraft.com — the THIRD non-anchor point on the LIVE UCP rail (further retail DEPTH: a premium leather-goods
-  merchant).** 66.9 D v0.7 (access 100.0 / **legibility 50.0** / transactability 50.0 / **trust 90.0**). `GET
-  /.well-known/ucp` serves a valid `dev.ucp.*` service manifest (STABLE across ≥2 direct $0 obs at capture, static
-  versioned JSON; no payment signed, inv #1) → `x402_probe` PARTIAL 4.0/8.0 `commerce-protocol-live`, the SAME UCP
-  tx-50.0 rung as coffeecircle (57.4) and gymshark (62.4). Honest classification EXACTLY `{metered_api, physical_good}`
-  (the same clean profile as gymshark; the other 4 NA → NO topic-word over-claim, NO FP-guards). **Calibration value =
-  the UCP "necessary but not SUFFICIENT" statement GENERALIZED from a LINE to a PLANE:** coffeecircle+gymshark share
-  legibility 54.55 (separate PURELY on trust); hardgraft holds the SAME tx-50.0 rung but at a DISTINCT legibility (50.0)
-  AND the HIGHEST trust of the three (90.0) → the three UCP points span a 2-D region (legibility 50.0→54.55, trust
-  33.33→90.0) at the fixed tx rung — proving the rail fixes transactability while overall varies with BOTH legibility and
-  trust independently of the rail, not trust alone. Fresh full-score LIVE capture verified NON-DESTRUCTIVELY →
-  replay_misses 0, live 66.9 == fixture 66.9 == EXPECTED 66.9, all 4 non-null pillars byte-identical, caps empty.
-  Installed `fixtures/canonical/hardgraft.com.json` (NEW, 4.6 MB, 33 entries) + EXPECTED + `_REPLAY_CLEAN` + guard
-  `test_ucp_retail_third_storefront_replays_66_9` (line→plane teeth) + `_POPULATION` ×5. Off-scoring-SEMANTICS EMPTY
-  (tests + the new non-anchor fixture; canonical PAIR untouched); frozen delta UNMOVED **+39.4** (canonical replay
-  36→37); live **+30.1**; suite 38/38; baselines **14→15**. Evidence
-  `runs/local/hardgraft_ucp_retail_third_baseline_20260808T165732Z.json`; LOG Local cycle 20260808T165732Z. Its
-  UCP-retail WELD prerequisite (a genuinely-compared sweep presence) is now DISCHARGED this fire (Local cycle
-  20260808T184442Z, top banner) → the peer-gated 13th-non-anchor weld is UNLOCKED.
+<!-- The hardgraft.com FIFTEENTH frozen-replay baseline PIN banner (Local 20260808T165732Z — 66.9 D, the THIRD UCP
+     point, generalizing the "UCP necessary but not SUFFICIENT" story from a LINE to a 2-D legibility×trust PLANE;
+     guard `test_ucp_retail_third_storefront_replays_66_9` + `fixtures/canonical/hardgraft.com.json` live) compressed
+     to this pointer this fire (Local cycle 20260809T015714Z) to stay under the STATE 600-line cap — hardgraft is now
+     BOTH pinned AND welded (PR #161 MERGED `5020895`) and this fire's cadence sweep re-confirmed it 66.9 byte-on-floor;
+     the 2-D-plane essence lives in the P2 UCP item + loop/LOG.md (## Local cycle — 20260808T165732Z) + git history. -->
+<!-- (The three UCP baselines' 2-D legibility×trust plane at tx-50.0 — coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9, all WELDED PR #159/#160/#161 — lives in the P2 UCP item below.) -->
 <!-- gymshark.com's UCP-retail WELD PREREQUISITE DISCHARGED banner (Local 20260808T145709Z — POPULATION 24→25 + $0
      cadence sweep calibration_sweep_20260808T144423Z.json, 62.4 == floor, n_compared=1, which made PR #160 authorable)
      pruned this fire (Local cycle 20260808T165732Z) — fully superseded now that PR #160 is MERGED; preserved verbatim

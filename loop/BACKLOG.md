@@ -79,19 +79,11 @@ EXPECTED, all 4 non-null pillars byte-identical -> weld holds, did NOT regress. 
 49.8 F / 2nd retail storefront; OPENED 20260807T174235Z: 6th-non-anchor weld PR #156 authored w/ the `_norm_domain`
 www/bare key fix; MERGED 20260807T184234Z: PR #156 `571e4c6`) pruned this fire (Local cycle 20260808T225133Z) to keep
 completed-marker bytes under the 24000 hygiene cap — all three preserved verbatim in loop/LOG.md + git history. -->
-<!-- DONE Local cycle 20260807T184234Z: pinned exa.ai (an agent-native web-search / content-retrieval API, Exa) as the NINTH
-test_canonical_replay.EXPECTED frozen-replay baseline (78.1 C v0.7; access 100.0/legibility 100.0/transactability 50.0/trust
-83.33) + _REPLAY_CLEAN + guard test_agent_native_api_service_replays_78_1 (overall + 4 pillars + capability teeth
-0.0<50.0<87.5) + _POPULATION in all 5 reproducibility suites, direct-to-main. It is the SECOND-HIGHEST baseline (fills the
-frozen guard's WIDEST upper-middle gap: nothing sat between ipinfo 61.3 and driftflight 85.5) AND the FIRST non-anchor member
-with GENUINE partial agent-native rails — documented x402 (llms.txt cites x402-agentkit-free-trial) + MCP surface + self-serve
-PAYG earn tx 50.0, a real MIDDLE strictly between the no-rails floor (books/api.replicate 0.0) and driftflight.com's full
-x402-live handshake (87.5). Captured full-score LIVE ($0 static, 49 fetch entries), verified NON-DESTRUCTIVELY replay-clean
-(replay_misses=0) BEFORE install; honest 4-archetype classification {metered_api, data_retrieval, digital_good, subscription}
-(physical_good/service_booking NA). [LOCAL] essence: live 78.1 == frozen fixture-replay 78.1 == EXPECTED 78.1, all 4 pillars
-byte-identical, caps empty. Frozen-replay baselines 8->9. Off-scoring-SEMANTICS EMPTY (6 test files + 1 new fixture); frozen
-canonical delta UNMOVED +39.4; suite 38/38 (replay 30->31). Evidence
-runs/local/exa_ai_agent_native_api_baseline_20260807T190030Z.json. See LOG Local cycle 20260807T184234Z. -->
+<!-- The exa.ai NINTH frozen-replay baseline PIN marker (Local cycle 20260807T184234Z: 78.1 C, the SECOND-HIGHEST +
+FIRST non-anchor with genuine partial agent-native rails, tx 50.0; guard test_agent_native_api_service_replays_78_1 +
+fixture live) pruned this fire (Local cycle 20260809T015714Z) to keep closed-marker bytes under the 24000 hygiene cap —
+exa.ai is now BOTH pinned AND welded (PR #157 MERGED cf0df08) and this fire's cadence sweep re-confirmed it 78.1
+byte-on-floor; preserved verbatim in loop/LOG.md (## Local cycle — 20260807T184234Z) + git history. -->
 <!-- MERGED Local cycle 20260807T205300Z: PR #157 (exa.ai 7th non-anchor cross-path calibration weld — the FIRST welded member
 with genuine partial agent-native rails) MERGED `cf0df08` after the owed FIRST-DUTY adversarial review + independent $0 live
 re-score. VERDICT SOUND: off-scoring-path (three-dot diff since merge-base 92f7c66 is ONLY test_calibration_anchor_agreement.py
@@ -244,6 +236,19 @@ honest non-observation on the IANA control: browser WORKED, cited IANA, "documen
 ZERO browser-refusal phrasing), NOT a drift. codex vocabulary is non-deterministic (this run did NOT reproduce last fire's
 exact t2 wording — pinned by test_attribution.py #17's verbatim fixture + the re-derived leak-scan). Direct-to-main;
 frozen +39.4 / live +30.1; suite 38/38. See LOG Local cycle 20260809T010020Z. -->
+
+<!-- DONE Local cycle 20260809T015714Z (the ONE [LOCAL] item — TRUTH, direct-to-main): calibration cadence sweep — the
+full 26-member POPULATION re-scored $0 static via experiments/calibration_sweep.py (no --behavioral/--max-pay/codex/zero
+CLI, inv #1 by construction) -> runs/local/calibration_sweep_20260809T014508Z.json (25/26 scored, rei.com not-scorable
+per inv #4, 0 errors). ALL 15 pinned/welded members BYTE-ON-FLOOR + caps empty (canonical pair 46.1/76.2 + 13 non-anchor
+witnesses incl. all 3 live UCP rails coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9, each tx-50.0
+commerce-protocol-live, the 2-D legibility x trust plane intact + all 3 live x402 rails thebotwire 86.0 / oracle 64.4 /
+x402deploy 73.9) -> every volatile live rail UP, NO weld silently invalidated, NO baseline regressed (broadens the hourly
+canonical-PAIR regression signal to the whole population). Drift vs 20260808T184442Z: 1/25 moved, max |delta| 4.6 -> the
+SOLE mover is the wikipedia.org non-storefront control 45.7->41.1, a BISTABLE 41.1<->45.7 oscillation band (41.1 x5 sweeps
+-> 45.7 x4 -> 41.1 now; known control noise, NOT a capability move, NOT a pinned/welded asset, inv #4). Off-scoring-SEMANTICS
+EMPTY (reads-only the shipped scorer; no probe/version change); frozen +39.4 / live +30.1; suite 38/38. Same class as every
+prior cadence sweep (direct-to-main). See LOG Local cycle 20260809T015714Z. -->
 
 <!-- No open P0 items. No open PRs. The whole #152-#161 non-anchor weld campaign is COMPLETE at 13 witnesses; PR #162
 (v0.7(g)) MERGED + reviewed (above). Forward candidates are the P2 UCP-depth / new-rail item below. -->

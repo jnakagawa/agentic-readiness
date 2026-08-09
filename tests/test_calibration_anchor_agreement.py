@@ -247,6 +247,31 @@ _ANCHORS = ("drift-flight.org", "driftflight.com")
 # cross-path weld now spans THIRTEEN structurally-distinct non-anchor witnesses: null-control + 2 retail +
 # service-booking + data-retrieval + pure-inference-API + agent-native-search-API + THREE live-x402 storefronts +
 # THREE live-UCP commerce-protocol storefronts (coffee-merchant + apparel-retail + leather-goods).
+# kith.com (70.3) is welded here as the FOURTEENTH non-anchor member, and the FOURTH welded member on the LIVE UCP
+# commerce-protocol rail — the HIGH-LEGIBILITY corner of the UCP plane (a curated apparel/lifestyle merchant, a
+# distinct storefront TYPE from the coffee-merchant checkout.coffeecircle.com, the athletic-apparel brand gymshark.com,
+# and the leather-goods merchant hardgraft.com), claiming exactly {metered_api, physical_good}. GET /.well-known/ucp
+# answers a $0 read with a valid `dev.ucp.*` merchant manifest, so the shipped scorer's x402_probe reads
+# `commerce-protocol-live` PARTIAL 4.0/8.0 — the SAME UCP middle rung as the first three UCP baselines, earning
+# transactability 50.0. Its calibration value EXTENDS the UCP plane's legibility axis: the first three UCP points all
+# cluster at legibility 50.0 -> 54.55 (coffeecircle 54.55 / gymshark 54.55 / hardgraft 50.0), so the plane was NARROW
+# on legibility; kith holds the IDENTICAL tx-50.0 UCP rung but sits at a DISTINCT, far HIGHER legibility 86.36 (a
+# richly self-describing storefront) with trust 60.0, scoring 70.3 — the HIGHEST UCP overall of the four. So a UCP
+# merchant can ALSO be highly legible: the rail fixes transactability at its middle rung while overall tracks
+# legibility + trust independently of the rail, and the plane is now well-spanned on legibility (50.0 -> 86.36) at the
+# fixed tx-50.0 rung, not just on trust. It is keyed 'kith.com' identically on both paths (no www/bare alias needed)
+# and scored at its 70.3 floor in exactly ONE committed sweep so far (20260809T064456Z, segment
+# ucp-live:apparel-lifestyle — the cadence run that first added it to the POPULATION; absent from every prior sweep),
+# so it is genuinely COMPARED (n_compared=1), not silently skipped. Because the UCP rail is LIVE (a served manifest,
+# volatile), its live/frozen agreement was independently re-confirmed by the authoring cycle (Local cycle
+# 20260809T074319Z, static $0: live 70.3 == frozen 70.3, all four non-null pillars byte-identical, caps empty,
+# x402_probe partial 4.0/8.0 commerce-protocol-live), the cross-path evidence the cloud cannot produce (it is NOT
+# SCORABLE without outbound network) — and MUST be re-confirmed at review time, since a divergence here would be REAL
+# UCP-manifest drift (re-capture that member, do not weld it). So the cross-path weld now spans FOURTEEN
+# structurally-distinct non-anchor witnesses: null-control + 2 retail + service-booking + data-retrieval +
+# pure-inference-API + agent-native-search-API + THREE live-x402 storefronts + FOUR live-UCP commerce-protocol
+# storefronts (coffee-merchant + apparel-retail + leather-goods + apparel-lifestyle, the last the high-legibility
+# corner of the UCP plane).
 _NON_ANCHOR_WELDED = (
     "example.com",
     "books.toscrape.com",
@@ -261,6 +286,7 @@ _NON_ANCHOR_WELDED = (
     "checkout.coffeecircle.com",
     "gymshark.com",
     "hardgraft.com",
+    "kith.com",
 )
 # Every population member welded across the offline-replay and live-sweep paths.
 _WELDED_MEMBERS = _ANCHORS + _NON_ANCHOR_WELDED
@@ -1463,6 +1489,74 @@ def test_hardgraft_thirteenth_non_anchor_is_welded_nonvacuously() -> None:
     _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
 
 
+def test_kith_fourteenth_non_anchor_is_welded_nonvacuously() -> None:
+    print("test_kith_fourteenth_non_anchor_is_welded_nonvacuously")
+    # kith.com is the FOURTEENTH non-anchor welded member (a curated apparel/lifestyle merchant on the LIVE UCP
+    # commerce-protocol rail — {metered_api, physical_good}) and the FOURTH welded member on that rail, the
+    # HIGH-LEGIBILITY corner of the UCP plane (a distinct storefront TYPE from the coffee-merchant
+    # checkout.coffeecircle.com, the athletic-apparel brand gymshark.com, and the leather-goods merchant
+    # hardgraft.com). GET /.well-known/ucp answers a $0 read with a valid dev.ucp.* merchant manifest, so the shipped
+    # scorer's x402_probe reads `commerce-protocol-live` PARTIAL 4.0/8.0 — the SAME UCP middle rung as the first three
+    # UCP baselines, earning transactability 50.0. Its calibration value EXTENDS the plane's legibility axis: the
+    # first three UCP points cluster at legibility 50.0 -> 54.55, so the plane was narrow on legibility; kith holds
+    # the IDENTICAL tx-50.0 rung but at a DISTINCT, far HIGHER legibility 86.36 with trust 60.0, scoring 70.3 — the
+    # HIGHEST UCP overall of the four, so a UCP merchant can ALSO be highly legible and the plane is now well-spanned
+    # on legibility (50.0 -> 86.36) at the fixed tx-50.0 rung. Prove the weld is LOAD-BEARING for it specifically, not
+    # silently skipped in every sweep: it carries a committed v0.7 replay baseline, it is genuinely COMPARED in >=1
+    # committed sweep (the 20260809T064456Z cadence run scored it 70.3, segment ucp-live:apparel-lifestyle), and its
+    # live value agrees with the frozen floor. Because its rail is LIVE (volatile), its live<->frozen agreement was
+    # independently re-confirmed by the authoring cycle (Local cycle 20260809T074319Z, static $0: live 70.3 == frozen
+    # 70.3, all four non-null pillars byte-identical, caps empty, x402_probe partial 4.0/8.0 commerce-protocol-live) —
+    # a divergence here at review time would be REAL UCP-manifest drift, not a code regression.
+    _check(
+        "kith.com" in _NON_ANCHOR_WELDED,
+        "kith.com is a welded non-anchor member",
+    )
+    _check(
+        "kith.com" in replay.EXPECTED
+        and str(replay.EXPECTED["kith.com"]["rubric_version"]) == _BASELINE_VERSION,
+        "kith.com carries a committed v0.7 replay baseline (the weld's source of truth)",
+    )
+    sweeps = _committed_sweeps()
+    divergences, n_compared, _, _ = _divergences(
+        sweeps, replay.EXPECTED, _BASELINE_VERSION, members=("kith.com",)
+    )
+    _check(
+        divergences == [],
+        f"kith.com's live sweeps agree with its 70.3 replay floor (got {divergences})",
+    )
+    _check(
+        n_compared >= 1,
+        f"kith.com is genuinely compared, not silently skipped (got {n_compared})",
+    )
+    # Teeth: a live re-capture that drifted kith.com 70.3 -> 82.0 (e.g. the UCP manifest upgrading
+    # commerce-protocol-live PARTIAL -> a full handshake, or a legibility/trust gain) MUST trip the weld, exactly as a
+    # drifted anchor or any prior non-anchor member does — so welding this fourteenth member is not toothless.
+    drifted = {
+        "rubric_version": "0.7",
+        "rows": [
+            {
+                "domain": "kith.com",
+                "segment": "ucp-live:apparel-lifestyle",
+                "scored": True,
+                "overall": 82.0,
+            }
+        ],
+    }
+    dvg, n_cmp, _, _ = _divergences(
+        [("synthetic-kith-drift", drifted)], replay.EXPECTED, _BASELINE_VERSION,
+        members=("kith.com",),
+    )
+    _check(len(dvg) == 1, f"exactly one divergence caught (got {dvg})")
+    _check(
+        dvg[0][1] == "kith.com"
+        and abs(dvg[0][2] - 82.0) < 1e-9
+        and abs(dvg[0][3] - 70.3) < 1e-9,
+        f"the drifted kith.com is caught vs its 70.3 floor (got {dvg[0]})",
+    )
+    _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
+
+
 def test_www_bare_domain_key_is_normalized() -> None:
     print("test_www_bare_domain_key_is_normalized")
     # _member_row matches a welded member to its sweep row modulo a single leading 'www.'
@@ -1800,6 +1894,7 @@ def main() -> int:
         test_coffeecircle_eleventh_non_anchor_is_welded_nonvacuously,
         test_gymshark_twelfth_non_anchor_is_welded_nonvacuously,
         test_hardgraft_thirteenth_non_anchor_is_welded_nonvacuously,
+        test_kith_fourteenth_non_anchor_is_welded_nonvacuously,
         test_www_bare_domain_key_is_normalized,
         test_off_version_sweep_is_not_compared,
         test_live_sweep_pillars_agree_with_replay_baseline,

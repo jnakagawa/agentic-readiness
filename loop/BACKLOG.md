@@ -117,33 +117,19 @@ DONE marker (three-x402 sweep-add prerequisite, POPULATION 20->23, all live==fro
 (PR #158 MERGED `3fc5b5b`, all three x402 rails re-confirmed byte-on-floor in the 20260809T014508Z cadence sweep);
 preserved verbatim in loop/LOG.md (## Local cycle — 20260808T084106Z) + git history. -->
 
-<!-- MERGED Local cycle 20260808T104105Z: PR #158 (weld the three non-anchor LIVE-x402 witnesses thebotwire.com 86.0 /
-api.x402oracle.com 64.4 / x402deploy.vercel.app 73.9 into _NON_ANCHOR_WELDED as the 8th/9th/10th members) MERGED `3fc5b5b`
-after the owed FIRST-DUTY adversarial review + independent $0 live re-scores. VERDICT SOUND: off-scoring-path (three-dot
-diff since merge-base ab66698 is ONLY test_calibration_anchor_agreement.py +230 + evidence JSON +99; EMPTY over
-asrs/rubric/fixtures/experiments/loop); vendor-neutral (by TYPE live-x402 storefront); committed v0.7 floors present
-(86.0/64.4/73.9); LOAD-BEARING (n_compared=1 each independently re-derived — each in EXACTLY
-calibration_sweep_20260808T084504Z.json at floor, keyed identically both paths, no alias); teeth (86->95 / 64.4->75 /
-73.9->85 each caught as one divergence; weld 23->26). Volatile-rail $0 live re-score re-run THIS fire: ALL THREE live ==
-frozen == floor, all 4 non-null pillars byte-identical, caps empty, each x402_probe 8.0/8.0 x402-live -> rails UP + agree
--> MERGE. Weld 26/26 branch + merged main (canonical replay 34/34). See LOG Local cycle 20260808T104105Z. -->
+<!-- MERGED PR #158 (three LIVE-x402 welds thebotwire 86.0 / api.x402oracle 64.4 / x402deploy 73.9 as the 8th/9th/10th
+     members, `3fc5b5b`, Local cycle 20260808T104105Z) VERDICT-SOUND marker compressed to this pointer this fire (Local
+     cycle 20260809T094408Z) to hold the closed-marker byte cap under the merged PR #163 marker — preserved verbatim in
+     loop/LOG.md (## Local cycle — 20260808T104105Z) + git history. -->
 <!-- The checkout.coffeecircle.com pin DONE marker (Local cycle 20260808T104105Z: FIRST live-UCP frozen-replay baseline,
 57.4 F, the 13th baseline) is pruned this fire (Local cycle 20260808T204601Z) to keep completed-marker bytes under the
 24000 hygiene cap — coffeecircle is now BOTH pinned AND welded (PR #159 MERGED); preserved verbatim in loop/LOG.md
 (## Local cycle — 20260808T104105Z) + git history. -->
 
-<!-- MERGED Local cycle 20260808T140228Z: PR #159 (weld checkout.coffeecircle.com 57.4 into _NON_ANCHOR_WELDED as the
-ELEVENTH member / FIRST on the UCP commerce-protocol rail) MERGED `0d5d6d4` after the owed FIRST-DUTY adversarial review +
-independent $0 live UCP re-score. VERDICT SOUND: off-scoring-path (three-dot diff since merge-base ef43392 is ONLY
-test_calibration_anchor_agreement.py +89 + evidence JSON +50; EMPTY over asrs/rubric/fixtures/experiments/loop);
-vendor-neutral (by TYPE, the UCP rail; no coffeecircle special-casing in asrs/rubric — only the calibration_sweep.py
-POPULATION enumeration, off the scoring path); committed v0.7 floor present in _REPLAY_CLEAN (57.4); LOAD-BEARING
-(n_compared=1 independently re-derived in calibration_sweep_20260808T114436Z.json at 57.4, divergences=[]); teeth (57.4->68.0
-caught). Volatile-rail live re-score re-run THIS fire (python -m asrs score checkout.coffeecircle.com --json-only, $0 static,
-no payment inv #1): live 57.4 == frozen 57.4 == EXPECTED 57.4, all 4 non-null pillars byte-identical, caps empty, x402_probe
-PARTIAL 4.0/8.0 commerce-protocol-live (UCP rail UP, no manifest drift) -> MERGE. Weld 27/27 branch + merged main; the
-cross-path weld now spans ELEVEN non-anchor witnesses (coffeecircle the FIRST on the UCP rail). The whole non-anchor weld
-campaign (#152-#159) is complete. See LOG Local cycle 20260808T140228Z. -->
+<!-- MERGED PR #159 (weld checkout.coffeecircle.com 57.4 as the 11th member / FIRST on the UCP commerce-protocol rail,
+     `0d5d6d4`, Local cycle 20260808T140228Z) VERDICT-SOUND marker compressed to this pointer this fire (Local cycle
+     20260809T094408Z) to hold the closed-marker byte cap under the merged PR #163 marker — preserved verbatim in
+     loop/LOG.md (## Local cycle — 20260808T140228Z) + git history. -->
 
 <!-- DONE Local cycle 20260808T140228Z: pinned gymshark.com (a mainstream consumer apparel brand on the LIVE UCP rail —
 retail DEPTH, a distinct storefront TYPE from the coffee-merchant checkout.coffeecircle.com) as the FOURTEENTH
@@ -238,18 +224,35 @@ UNMOVED +39.4; live +30.1; suite 38/38. This UNLOCKS the P2 step (5) weld: a fut
 into _NON_ANCHOR_WELDED non-vacuously (n_compared=1 in this sweep at 70.3, agrees with floor, teeth = synthetic drift
 caught) — the 14th non-anchor member / 4th on the UCP rail. See LOG Local cycle 20260809T064456Z. -->
 
-- **[P0 — OPEN PEER-GATED PR #163, review owed NEXT cycle] WELD kith.com (70.3 C) as the 14th non-anchor / 4th
-  UCP-rail cross-path member.** Authored Local cycle 20260809T074319Z (`loop/kith-ucp-weld`, commit `8b305fc`) —
-  the #152–#161 recipe one member later (its n_compared≥1 sweep-add prerequisite was discharged 20260809T064456Z).
-  Off-scoring-SEMANTICS EMPTY (diff = ONLY `tests/test_calibration_anchor_agreement.py` + evidence JSON). The NEXT
-  cycle's FIRST duty: adversarially review + re-run the $0 live UCP re-score (live 70.3 == frozen 70.3, all 4
-  pillars byte-identical, caps empty, `x402_probe` PARTIAL 4.0/8.0 `commerce-protocol-live` this fire) — a
-  divergence = REAL UCP-manifest drift → re-capture, do NOT merge; if sound, self-merge + record the verdict in
-  LOG.md. Weld suite 29→30; full suite 38/38; frozen +39.4 / live +30.1. Evidence
-  `runs/local/kith_ucp_weld_20260809T074319Z.json`; LOG Local cycle 20260809T074319Z.
+<!-- MERGED (operator) + POST-MERGE REVIEW SOUND Local cycle 20260809T094408Z: PR #163 (WELD kith.com 70.3 C as the
+14th non-anchor / 4th UCP-rail cross-path member — the high-legibility corner of the UCP plane) was OPERATOR-MERGED by
+jnakagawa (merge `0536356`, 2026-08-09T08:48:27Z) — SKIPPED the loop's pre-merge peer review (PR #149/#150/#162 class).
+This fire ran the owed post-merge adversarial review + independent re-derivation -> VERDICT SOUND, merge STANDS, no
+revert: off-scoring-SEMANTICS EMPTY (diff 3b8c53b..8b305fc = ONLY tests/test_calibration_anchor_agreement.py + evidence
+JSON; asrs/rubric/fixtures/experiments UNCHANGED); vendor-neutral (grep 'kith' asrs/ rubric* EMPTY -> welded by TYPE, the
+LIVE UCP rail); committed v0.7 floor present (EXPECTED 70.3); LOAD-BEARING (n_compared=1 re-derived in
+calibration_sweep_20260809T064456Z.json at 70.3, divergences=[], teeth 70.3->82.0 caught, weld suite 30/30); volatile-rail
+$0 live UCP re-score re-run THIS fire (inv #1 -- /.well-known/ucp is a $0 GET, no --behavioral/--max-pay/payment/codex/zero
+CLI): live 70.3 == frozen 70.3 == EXPECTED 70.3 == sweep 70.3, all 4 non-null pillars byte-identical (100.0/86.36/50.0/
+60.0), caps empty, x402_probe partial 4.0/8.0 commerce-protocol-live -> UCP manifest UP, no drift. Full suite 38/38;
+frozen +39.4 / live +30.1. The #152-#163 non-anchor weld campaign is COMPLETE at 14 witnesses (UCP rail welded at 4
+points; plane well-spanned on legibility 50.0->86.36 at tx-50.0). Evidence
+runs/local/postmerge163_tripwire_cadence_20260809T094408Z.json. See LOG Local cycle 20260809T094408Z. -->
 
-<!-- The whole #152-#161 non-anchor weld campaign is COMPLETE at 13 witnesses; PR #162 (v0.7(g)) MERGED + reviewed
-(above). PR #163 (kith weld, 14th member) is the ONE open PR (above). Forward candidates are the P2 UCP-depth /
+<!-- DONE Local cycle 20260809T094408Z (the ONE [LOCAL] item — METHOD, own-tool-drift TRIPWIRE cadence): re-ran
+experiments/codex_reachability.py ($0 read-only via the REAL scorer path shopper._run_one, 5 codex trials,
+runs/local/codex_reachability_20260809T094954Z/) -> TRIPWIRE GREEN, NO seventh drift. Both canonical own-tool refusals
+CAUGHT by the shipped v0.7(g) _ENV_BLOCK_RE (is_env_blocked_current=True -> reachability, not site evidence):
+driftflight.com t1 "denied by the browser permission layer" (v0.7(g)) + drift-flight.org t1 "denied by the browser
+security layer" (v0.6). Sole raw leak_candidate = example.com t1 (the KNOWN coarse-filter FP: up-site honest
+non-observation, reputation_markers=[], zero refusal phrasing), NOT a drift. NEW: the ~24d-aged reputation gate is now
+INTERMITTENT — both domains REACHED on t2 (found the offer + machine-payable path, reputation trust warnings), no longer
+the 07-23 4/4 hard block. test-#8 own-web-retriever "unsafe" phrasing fired on both t1 but CO-OCCURRED with a caught
+phrase -> no leak; stays deferred. Detail folded into the STANDING TRIPWIRE item below. See LOG Local cycle
+20260809T094408Z. -->
+
+<!-- The #152-#163 non-anchor weld campaign is COMPLETE at 14 witnesses (UCP rail welded at 4 points). PR #162 (v0.7(g))
+and PR #163 (kith weld) are both MERGED + post-merge-reviewed. NO open PRs remain. Forward candidate is the P2 UCP-depth /
 new-rail item below. -->
 
 - **[P2 — TRUTH, LOCAL, candidate] BROADEN further / DEEPEN the UCP rail / UNLOCK a NEW rail TYPE.** The UCP rail now
@@ -325,11 +328,15 @@ new-rail item below. -->
   phrasing has now drifted the `_ENV_BLOCK_RE` guard SIX times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)
   `browser site-access permission … declined` / the 6th Local cycle 20260808T215647Z: "…denied AT the browser permission
   boundary" — the verb-then-apparatus order — **fixed as v0.7(g), PR #162 MERGED + POST-MERGE-reviewed SOUND Local cycle
-  20260809T010020Z**). **CADENCE RE-RUN Local cycle 20260809T010020Z → GREEN, NO seventh drift**
-  (`runs/local/codex_reachability_20260809T004746Z/`): driftflight.com t1's live refusal "denied by the browser
-  security/permission layer" was CAUGHT (`is_env_blocked_current=True`, v0.6 family) → routed to reachability; the sole
-  raw `leak_candidate` was the KNOWN example.com honest-non-observation false positive (verified: zero browser-refusal
-  phrasing), NOT a drift. codex vocabulary is non-deterministic run-to-run — the 7th drift WILL come; re-run each
+  20260809T010020Z**). **CADENCE RE-RUN Local cycle 20260809T094408Z → GREEN, NO seventh drift**
+  (`runs/local/codex_reachability_20260809T094954Z/`): BOTH canonical own-tool refusals were CAUGHT
+  (`is_env_blocked_current=True` → routed to reachability) — driftflight.com t1 "denied by the browser permission
+  layer" (v0.7(g) family) + drift-flight.org t1 "denied by the browser security layer" (v0.6 family); the sole raw
+  `leak_candidate` was the KNOWN example.com honest-non-observation false positive (`reputation_markers=[]`, zero
+  browser-refusal phrasing), NOT a drift. NEW this fire: the ~24d-aged reputation gate is now INTERMITTENT (both
+  domains env-blocked on t1 but REACHED on t2), no longer a 4/4 hard block; and the deferred test-#8 own-web-retriever
+  "unsafe" phrasing fired on both t1 but CO-OCCURRED with a caught phrase → no leak. codex vocabulary is
+  non-deterministic run-to-run — the 7th drift WILL come; re-run each
   drift-hunt. The tripwire works: run `experiments/codex_reachability.py` (or leak-scan any fresh committed behavioral
   panel) each cadence so the NEXT drift is caught the cycle it appears, not several cycles later as a silently-narrowed
   delta — the recon's per-run `is_env_blocked_current` flag IS the differential scan against the SHIPPED regex, with the

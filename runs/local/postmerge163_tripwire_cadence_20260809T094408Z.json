@@ -1,0 +1,109 @@
+{
+ "ts": "20260809T094408Z",
+ "kind": "post_merge_review_plus_tripwire_cadence",
+ "track": "METHOD",
+ "cycle": 325,
+ "pr_163": {
+  "title": "WELD kith.com (70.3 C) as the 14th non-anchor / 4th UCP-rail cross-path member (high-legibility corner of the UCP plane)",
+  "branch": "loop/kith-ucp-weld",
+  "merged_by": "jnakagawa (operator)",
+  "merged_at": "2026-08-09T08:48:27Z",
+  "merge_commit": "0536356",
+  "authoring_commit": "8b305fc",
+  "merge_base": "3b8c53b",
+  "state_at_fire_start": "STATE top banner said OPEN peer-gated PR #163; git showed it MERGED -> operator-merge (PR #149/#150/#162 pattern) -> owed POST-MERGE adversarial review + independent re-derivation",
+  "verdict": "SOUND",
+  "off_scoring_semantics_empty": "git diff --stat 3b8c53b..8b305fc = ONLY tests/test_calibration_anchor_agreement.py (+95) + runs/local/kith_ucp_weld_20260809T074319Z.json (+58); asrs/rubric/fixtures/experiments UNCHANGED",
+  "vendor_neutral": "grep 'kith' asrs/ rubric* -> EMPTY; kith.com appears only in tests/fixtures/experiments (off the scoring path), never in the scorer or rubric",
+  "committed_v07_floor": "test_canonical_replay.EXPECTED['kith.com'] = 70.3 C rubric 0.7 (access 100.0 / legibility 86.36363636363636 / tx 50.0 / trust 60.0)",
+  "load_bearing": "n_compared=1 independently re-derived: kith.com scored 70.3 in EXACTLY calibration_sweep_20260809T064456Z.json (segment ucp-live:apparel-lifestyle); divergences=[]",
+  "teeth": "synthetic drift 70.3->82.0 caught as exactly one divergence vs the 70.3 floor (weld test passes)",
+  "live_ucp_rescore": {
+   "cmd": "python -m asrs score kith.com --json-only",
+   "dollar_zero": "inv #1 -- /.well-known/ucp is a $0 GET; no --behavioral / --max-pay / payment / codex / zero CLI",
+   "overall": 70.3,
+   "grade": "C",
+   "rubric_version": "0.7",
+   "pillars": {"access": 100.0, "legibility": 86.36363636363636, "transactability": 50.0, "trust": 60.0, "outcome": null},
+   "caps_applied": [],
+   "x402_probe": "partial 4.0/8.0 commerce-protocol-live",
+   "agreement": "live 70.3 == frozen 70.3 == EXPECTED 70.3 == sweep 70.3, all 4 non-null pillars byte-identical -> UCP manifest UP, NO drift -> weld HOLDS, merge STANDS, no revert"
+  },
+  "weld_suite": "test_calibration_anchor_agreement.py 30/30 (incl. test_kith_fourteenth_non_anchor_is_welded_nonvacuously)",
+  "frozen_replay": "test_canonical_replay.py 38/38 (kith.com no replay-miss); frozen delta +39.4 UNMOVED",
+  "full_suite": "38/38 modules green this fire (own run) + verify_20260809T094101Z (tests_ok, all 38)",
+  "live_canonical": {"drift-flight.org": 46.1, "driftflight.com": 76.2, "delta": 30.1, "note": "/extend 402->401 persists; +30.1 honest live reading"},
+  "dollar_zero": true,
+  "weld_span": "the cross-path weld now spans FOURTEEN non-anchor witnesses / FOUR on the UCP rail; the UCP plane is well-spanned on legibility (50.0->86.36) at the fixed tx-50.0 rung"
+ },
+ "tripwire_cadence": {
+  "experiment": "experiments/codex_reachability.py",
+  "artifact": "runs/local/codex_reachability_20260809T094954Z/",
+  "codex_trials": 5,
+  "dollar_zero": true,
+  "runs": [
+   {
+    "domain": "driftflight.com",
+    "trial": 1,
+    "http": 200,
+    "observed": false,
+    "env_blocked_current": true,
+    "security_family": false,
+    "reputation_markers": ["legitimacy", "unsafe"],
+    "blocker": "Browser access to driftflight.com was denied by the browser permission layer. | The public web retriever classified the direct URL as unsafe and would not fetch it.",
+    "note": "GENUINE own-tool browser refusal, CORRECTLY caught (v0.7(g) 'browser permission ... denied' family) -> routed to reachability, not site evidence. Also carried the deferred test-#8 'web retriever ... unsafe' phrasing, but it CO-OCCURS with the caught browser-permission phrase, so the run is correctly env-blocked (no leak)."
+   },
+   {
+    "domain": "driftflight.com",
+    "trial": 2,
+    "http": 200,
+    "observed": true,
+    "env_blocked_current": false,
+    "reputation_markers": ["registered on"],
+    "note": "codex REACHED the site (found_product/pricing/purchase/machine-payable all true) with a trust warning about the 2026-07-16 registration + no footprint -> gate SOFTENED, not a block"
+   },
+   {
+    "domain": "drift-flight.org",
+    "trial": 1,
+    "http": 200,
+    "observed": false,
+    "env_blocked_current": true,
+    "security_family": true,
+    "reputation_markers": ["legitimacy", "safety", "unsafe"],
+    "blocker": "Direct access to drift-flight.org was denied by the browser security layer and the public web fetcher marked the URL unsafe to open.",
+    "note": "GENUINE own-tool browser refusal, CORRECTLY caught (v0.6 browser-security family) -> routed to reachability. Same test-#8 co-occurrence as driftflight.com t1; no leak."
+   },
+   {
+    "domain": "drift-flight.org",
+    "trial": 2,
+    "http": 200,
+    "observed": true,
+    "env_blocked_current": false,
+    "reputation_markers": ["no independent footprint", "registered on"],
+    "note": "codex REACHED the site with reputation trust warnings -> gate SOFTENED, not a block"
+   },
+   {
+    "domain": "example.com",
+    "trial": 1,
+    "http": 200,
+    "observed": false,
+    "env_blocked_current": false,
+    "reputation_markers": [],
+    "note": "control: browser WORKED (HTTP 200), 'site offers no purchasable product', 'reserved permanently for documentation' -> honest non-observation, ZERO browser-refusal phrasing"
+   }
+  ],
+  "leak_candidates_raw": 1,
+  "leak_candidates_genuine": 0,
+  "leak_candidate_explanation": "the sole raw candidate is example.com t1 -- the KNOWN coarse-filter false positive (up-site honest non-observation on the non-commercial IANA control, reputation_markers=[]), NOT a browser refusal.",
+  "new_finding": "the ~24d-aged canonical reputation gate is INTERMITTENT this fire: both domains were env-blocked on t1 (caught) but REACHED on t2 (found the offer + machine-payable path, with reputation trust warnings). Not the 07-23 4/4 hard block; consistent with domain aging.",
+  "test_8_status": "the deferred test-#8 own-web-retriever 'classified the URL as unsafe' clause fired on BOTH t1 refusals but CO-OCCURRED with a caught browser-permission/security phrase each time -> did NOT leak this fire; remains a carefully-guarded future candidate (needs a disambiguating own-apparatus SUBJECT anchor).",
+  "verdict": "TRIPWIRE GREEN -- no seventh drift; shipped v0.7(g) _ENV_BLOCK_RE correctly attributed BOTH live canonical browser refusals to reachability; target phrasing remains pinned by test_attribution.py #17 + the per-run is_env_blocked_current differential scan"
+ },
+ "invariants": {
+  "i1_zero_dollar": true,
+  "i2_versioned": "no scoring-semantics change this fire (post-merge review + $0 recon only)",
+  "i3_evidence": "committed transcripts + this artifact + the merged PR #163 diff",
+  "i4_attribution": "both browser refusals routed to reachability; control non-observation is NOT a drift; live UCP re-score attributes kith's 70.3 to the served manifest",
+  "i5_no_history_rewrite": true
+ }
+}

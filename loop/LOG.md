@@ -3,6 +3,70 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Local cycle — 20260809T094408Z — METHOD (LOCAL) — POST-MERGE review of operator-merged PR #163 (kith.com weld) SOUND + own-tool-drift tripwire cadence GREEN (no 7th drift)
+
+**Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260809T094101Z.json` fresh
+(~3 min old at fire start, well under the 6h floor), `tests_ok=true` (all 38 modules), git clean +
+`main == origin/main == HEAD`. Live canonical delta **+30.1** (org 46.1 F / com 76.2 C — persistent
+`/extend` 402→401), frozen replay **+39.4**. Two self-heals: (a) an ORPHANED EMPTY run dir
+`runs/local/codex_reachability_20260809T085020Z/` (a codex attempt ~08:50Z that died before writing any
+transcript/summary) was removed; (b) STATE's top banner still said PR #163 OPEN while git showed it
+MERGED — reconciled below.
+
+**First duty — POST-MERGE adversarial review of PR #163 (operator-merged).** PR #163
+(`loop/kith-ucp-weld`, WELD kith.com 70.3 C as the 14th non-anchor / 4th UCP-rail cross-path member) was
+**OPERATOR-MERGED by jnakagawa** (merge `0536356`, 2026-08-09T08:48:27Z) — it SKIPPED the loop's
+pre-merge peer review (same class as PR #149/#150/#162). Ran the owed post-merge adversarial review +
+independent re-derivation → **VERDICT SOUND, merge STANDS, no revert**:
+- **Off scoring-SEMANTICS EMPTY** — `git diff --stat 3b8c53b..8b305fc` = ONLY
+  `tests/test_calibration_anchor_agreement.py` (+95) + `runs/local/kith_ucp_weld_20260809T074319Z.json`
+  (+58); asrs/rubric/fixtures/experiments UNCHANGED.
+- **Vendor-neutral** — `grep 'kith' asrs/ rubric*` → EMPTY; kith.com appears only in
+  tests/fixtures/experiments (off the scoring path), never in the scorer or rubric. Welded by storefront
+  TYPE (the LIVE UCP commerce-protocol rail), capability-worded.
+- **Committed v0.7 floor present** — `test_canonical_replay.EXPECTED['kith.com']` = 70.3 C rubric 0.7.
+- **LOAD-BEARING** — n_compared=1 independently re-derived: kith.com scored 70.3 in EXACTLY
+  `calibration_sweep_20260809T064456Z.json` (segment `ucp-live:apparel-lifestyle`), divergences=[]; and
+  teeth 70.3→82.0 caught as exactly one divergence (weld suite 30/30).
+- **Volatile-rail $0 live UCP re-score re-run THIS fire** (`python -m asrs score kith.com --json-only`;
+  inv #1 — `/.well-known/ucp` is a $0 GET, no `--behavioral`/`--max-pay`/payment/codex/zero CLI): live
+  **70.3 == frozen 70.3 == EXPECTED 70.3 == sweep 70.3**, all 4 non-null pillars byte-identical (access
+  100.0 / legibility 86.36363636363636 / tx 50.0 / trust 60.0), `caps_applied` empty, `x402_probe`
+  PARTIAL 4.0/8.0 `commerce-protocol-live` → UCP manifest UP, NO drift.
+- Full suite **38/38** modules green this fire (own run) + `verify_20260809T094101Z` (`tests_ok`, all
+  38); frozen **+39.4** / live **+30.1**. STATE reconciled OPEN→MERGED (bookkeeping self-heal). The
+  cross-path weld now spans FOURTEEN non-anchor witnesses / FOUR on the UCP rail; the #152–#163 campaign
+  is COMPLETE at 14 witnesses, the UCP plane well-spanned on legibility (50.0→86.36) at the fixed tx-50.0
+  rung.
+
+**What / why (the ONE [LOCAL] item — METHOD, own-tool-drift tripwire cadence).** Re-ran
+`experiments/codex_reachability.py` ($0 read-only via the REAL scorer path `shopper._run_one`, 5 codex
+trials, `runs/local/codex_reachability_20260809T094954Z/`) — the standing attribution-honesty tripwire,
+last GREEN 20260809T010020Z (~9h prior; the local-only codex capability the cloud cannot run). **VERDICT:
+TRIPWIRE GREEN — NO seventh drift.** Both genuine canonical own-tool refusals were CAUGHT by the shipped
+v0.7(g) `_ENV_BLOCK_RE` (`is_env_blocked_current=True` → routed to reachability, NOT scored as site
+evidence): driftflight.com t1 *"Browser access to driftflight.com was denied by the browser permission
+layer"* (v0.7(g) browser-permission family) and drift-flight.org t1 *"denied by the browser security
+layer …"* (v0.6 browser-security family). The sole raw `leak_candidate` is **example.com t1** — the KNOWN
+coarse-filter false positive (up-site honest non-observation on the IANA control: browser WORKED, "site
+offers no purchasable product", "reserved permanently for documentation"; reputation_markers=[], ZERO
+browser-refusal phrasing), NOT a drift. **New finding:** the ~24d-aged reputation gate is INTERMITTENT —
+both domains were env-blocked on t1 but REACHED on t2 (found the offer + machine-payable path, with
+reputation trust warnings about the registration date / no footprint), so it is no longer the 07-23 4/4
+hard block. **test-#8 note:** both t1 refusals ALSO carried the deferred own-web-retriever "classified
+the URL as unsafe" phrasing (NOT in the regex), but each CO-OCCURRED with a caught browser-permission/
+security phrase → the runs were correctly env-blocked, so test-#8 did NOT leak this fire; it stays a
+carefully-guarded future candidate. Evidence
+`runs/local/postmerge163_tripwire_cadence_20260809T094408Z.json` +
+`runs/local/codex_reachability_20260809T094954Z/`.
+
+**Next hypothesis.** No open PRs remain. codex vocabulary is non-deterministic run-to-run — the 7th drift
+WILL come; keep re-running `experiments/codex_reachability.py` each cadence so it is caught the cycle it
+appears. Watch driftflight.com `/extend` for a 402 recovery (restores the anchor's live handshake + the
++39.4 live delta). Forward frontier is the P2 UCP-depth prize: a DISTINCT tx rung (a UCP merchant that
+clears the sub-check spanx fails → tx > 50.0) or a genuinely-NEW rail TYPE (ACP/MPP — still
+$0-un-pinnable; keep re-running the 32-candidate ACP recon at cadence).
+
 ## Local cycle — 20260809T074319Z — TRUTH/COVERAGE (LOCAL) — PEER-GATED PR #163: WELD kith.com (70.3 C) as the 14th non-anchor / 4th UCP-rail cross-path member (the high-legibility corner of the UCP plane)
 
 **Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260809T074104Z.json`

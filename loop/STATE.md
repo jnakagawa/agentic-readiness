@@ -1,37 +1,42 @@
 # Loop state
 
-- Cycle counter: 324
-- **🔶 OPEN PEER-GATED PR #163 (`loop/kith-ucp-weld`, commit `8b305fc`) — the NEXT cycle's FIRST DUTY is
-  to adversarially review + self-merge it (re-run its $0 live UCP re-score) BEFORE picking new work.**
-  Authored this fire (Local 20260809T074319Z, TRUTH/COVERAGE — the ONE [LOCAL] item): WELD **kith.com
-  70.3 C** into `_NON_ANCHOR_WELDED` as the **14th non-anchor cross-path member / 4th on the LIVE UCP
-  commerce-protocol rail** — the HIGH-LEGIBILITY corner of the UCP plane. The #152–#161 recipe one member
-  later (its n_compared≥1 sweep-add prerequisite was discharged last fire, 20260809T064456Z). kith holds
-  the IDENTICAL tx-50.0 UCP rung (`x402_probe` PARTIAL 4.0/8.0 `commerce-protocol-live`) as
-  coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9 but at a DISTINCT far-HIGHER legibility 86.36 (vs
-  their 50.0→54.55 cluster) → the UCP plane is now well-spanned on legibility (50.0→86.36) at the fixed
-  tx-50.0 rung. **Off-scoring-SEMANTICS EMPTY** (diff = ONLY `tests/test_calibration_anchor_agreement.py`
-  + evidence JSON; asrs/rubric/fixtures/experiments UNCHANGED). LOAD-BEARING (n_compared=1 in
-  `calibration_sweep_20260809T064456Z.json`, teeth 70.3→82.0 caught). Volatile-rail **$0 live re-score
-  this fire**: live 70.3 == frozen 70.3 == EXPECTED 70.3, all 4 non-null pillars byte-identical, caps
-  empty, `x402_probe` PARTIAL 4.0/8.0 (inv #1 — `/.well-known/ucp` is a $0 GET). Weld suite 29→30; full
-  suite 38/38; frozen +39.4 / live +30.1. **Reviewer MUST re-run the live re-score — a divergence = REAL
-  UCP-manifest drift → re-capture, do NOT merge.** Evidence `runs/local/kith_ucp_weld_20260809T074319Z.json`;
-  LOG Local cycle 20260809T074319Z.
-- **✅ kith.com SWEEP-ADD DISCHARGED (Local 20260809T064456Z, TRUTH, direct-to-main) — the weld
-  prerequisite PR #163 (above) consumed this fire.** $0 static cadence sweep over the full 27-member
-  POPULATION → `runs/local/calibration_sweep_20260809T064456Z.json` (26/27 scored, rei.com not-scorable
-  inv #4, 0 errors): kith.com 70.3 C byte-on-floor (n_compared=1, its first genuinely-compared presence);
-  drift vs 20260809T014508Z 0/25 moved, max |Δ| 0.0, every pinned/welded member on floor + caps empty, no
-  weld invalidated, no baseline regressed. Off-scoring-SEMANTICS EMPTY. Full detail in loop/LOG.md (## Local
-  cycle — 20260809T064456Z).
-- **✅ SIXTEENTH frozen-replay baseline PINNED — kith.com 70.3 C (Local 20260809T040201Z, direct-to-main) — now
-  BOTH pinned AND being welded (PR #163, top banner).** The FOURTH UCP-rail point / high-legibility corner of the
-  UCP plane (access 100.0 / legibility 86.36 / tx 50.0 / trust 60.0, honest {metered_api, physical_good}, clean
-  replay 0 misses); guard `test_ucp_retail_fourth_storefront_replays_70_3` + `_REPLAY_CLEAN` + `_POPULATION` ×5.
-  Baselines 15→16. The leaner fresh cohort was NON-distinct (spanx.com 60.0 tx-conflation / brooklinen.com 59.9 leg
-  54.55 already occupied). Full detail in loop/LOG.md (## Local cycle — 20260809T040201Z); evidence
-  `runs/local/kith_ucp_highlegibility_baseline_20260809T040201Z.json`.
+- Cycle counter: 325
+- **✅ PR #163 MERGED (operator) + owed POST-MERGE review SOUND — NO open PRs (Local 20260809T094408Z, METHOD).**
+  PR #163 (`loop/kith-ucp-weld`, WELD **kith.com 70.3 C** as the 14th non-anchor / 4th UCP-rail cross-path member —
+  the high-legibility corner of the UCP plane) was **OPERATOR-MERGED by jnakagawa** (merge `0536356`,
+  2026-08-09T08:48:27Z) — SKIPPED the loop's pre-merge peer review (PR #149/#150/#162 class). This fire ran the
+  owed post-merge adversarial review + independent re-derivation → **VERDICT SOUND, merge STANDS, no revert**:
+  off-scoring-SEMANTICS EMPTY (diff `3b8c53b..8b305fc` = ONLY `tests/test_calibration_anchor_agreement.py` +
+  evidence JSON; asrs/rubric/fixtures/experiments UNCHANGED); vendor-neutral (`grep kith asrs/ rubric*` EMPTY —
+  welded by TYPE, the LIVE UCP rail); committed v0.7 floor present (EXPECTED 70.3); LOAD-BEARING (n_compared=1
+  re-derived in `calibration_sweep_20260809T064456Z.json` at 70.3, teeth 70.3→82.0 caught, weld suite 30/30);
+  **volatile-rail $0 live UCP re-score re-run this fire** (inv #1 — `/.well-known/ucp` is a $0 GET): live **70.3 ==
+  frozen 70.3 == EXPECTED 70.3**, all 4 non-null pillars byte-identical (100.0/86.36/50.0/60.0), caps empty,
+  `x402_probe` PARTIAL 4.0/8.0 `commerce-protocol-live` (UCP manifest UP, no drift). Full suite 38/38; frozen +39.4
+  / live +30.1. STATE reconciled OPEN→MERGED (bookkeeping self-heal). The #152–#163 non-anchor weld campaign is
+  COMPLETE at 14 witnesses (UCP rail welded at 4 points; plane well-spanned on legibility 50.0→86.36 at tx-50.0).
+  Evidence `runs/local/postmerge163_tripwire_cadence_20260809T094408Z.json`; LOG Local cycle 20260809T094408Z.
+- **✅ OWN-TOOL-DRIFT TRIPWIRE CADENCE RAN GREEN this fire (Local 20260809T094408Z — the ONE [LOCAL] item, METHOD).**
+  Re-ran `experiments/codex_reachability.py` ($0 read-only via the REAL scorer path `shopper._run_one`, 5 codex
+  trials, `runs/local/codex_reachability_20260809T094954Z/`): **NO seventh drift.** Both canonical own-tool refusals
+  CAUGHT by the shipped v0.7(g) `_ENV_BLOCK_RE` (`is_env_blocked_current=True` → reachability, not site evidence):
+  driftflight.com t1 *"denied by the browser permission layer"* (v0.7(g)) + drift-flight.org t1 *"denied by the
+  browser security layer"* (v0.6). Sole raw `leak_candidate` = **example.com t1** (the KNOWN coarse-filter FP:
+  up-site honest non-observation, `reputation_markers=[]`, zero refusal phrasing), NOT a drift. NEW: the ~24d-aged
+  reputation gate is now INTERMITTENT — both domains REACHED on t2 (found the offer + machine-payable path, with
+  reputation trust warnings), no longer the 07-23 4/4 hard block. test-#8 own-web-retriever "unsafe" phrasing fired
+  on both t1 but CO-OCCURRED with a caught phrase → no leak; stays deferred. codex vocabulary is non-deterministic —
+  the 7th drift WILL come; re-run each cadence.
+<!-- The two kith.com precursor banners — the SIXTEENTH frozen-replay baseline PIN (Local 20260809T040201Z, 70.3 C,
+     the FOURTH UCP-rail point / high-legibility corner of the plane, guard test_ucp_retail_fourth_storefront_replays_70_3
+     + _REPLAY_CLEAN + _POPULATION ×5, baselines 15→16) and the weld-prerequisite SWEEP-ADD DISCHARGED (Local
+     20260809T064456Z, n_compared=1 byte-on-floor in calibration_sweep_20260809T064456Z.json, drift 0/25) — are
+     compressed to this pointer this fire (Local cycle 20260809T094408Z) now that kith is pinned AND welded AND the
+     weld PR #163 is MERGED+reviewed (top banner), to hold the STATE 600-line cap. Both preserved verbatim in
+     loop/LOG.md (## Local cycle — 20260809T040201Z / 20260809T064456Z) + git history. -->
+- kith.com is now the 16th frozen-replay baseline AND the 14th welded non-anchor / 4th UCP-rail member (70.3 C, access
+  100.0 / legibility 86.36 / tx 50.0 / trust 60.0, honest {metered_api, physical_good}) — PR #163 MERGED+reviewed SOUND
+  (top banner). The leaner fresh cohort was NON-distinct (spanx.com 60.0 tx-conflation / brooklinen.com 59.9 leg 54.55).
 - **✅ ACP/COMMERCE-PROTOCOL WELL-KNOWN RECON RE-RUN GREEN, BROADENED 20→32 candidates (Local 20260809T024925Z,
   COVERAGE/TRUTH, direct-to-main — the ONE [LOCAL] item).** Re-ran `experiments/acp_wellknown_recon.py` ($0 read-only
   GETs via the scorer's own `FetchContext.get` + byte-faithful `_parse_commerce_manifest`; no payment/POST/`--behavioral`/

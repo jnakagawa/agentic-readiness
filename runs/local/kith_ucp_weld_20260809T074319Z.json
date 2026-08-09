@@ -1,0 +1,58 @@
+{
+ "ts": "20260809T074319Z",
+ "kind": "kith-ucp-weld-authoring",
+ "cycle": "Local 20260809T074319Z",
+ "track": "TRUTH/COVERAGE",
+ "pr": "loop/kith-ucp-weld (PEER-GATED)",
+ "member": "kith.com",
+ "role": "FOURTEENTH non-anchor welded member / FOURTH on the LIVE UCP commerce-protocol rail (high-legibility corner of the UCP plane)",
+ "invariant_1": "$0 static re-score only \u2014 GET /.well-known/ucp is a $0 read; no --behavioral, no --max-pay, no payment/POST, no codex/zero CLI",
+ "live_rescore": {
+  "domain": "kith.com",
+  "overall_score": 70.3,
+  "grade": "C",
+  "rubric_version": "0.7",
+  "scored": true,
+  "pillar_scores": {
+   "access": 100.0,
+   "legibility": 86.36363636363636,
+   "transactability": 50.0,
+   "trust": 60.0,
+   "outcome": null
+  },
+  "caps_applied": [],
+  "x402_probe": {
+   "status": "partial",
+   "finding": "commerce-protocol-live",
+   "points": 4.0,
+   "max_points": 8.0
+  }
+ },
+ "frozen_floor": {
+  "overall": 70.3,
+  "pillars": {
+   "access": 100.0,
+   "legibility": 86.36363636363636,
+   "transactability": 50.0,
+   "trust": 60.0,
+   "outcome": null
+  }
+ },
+ "live_equals_frozen": {
+  "overall": true,
+  "access": true,
+  "legibility": true,
+  "transactability": true,
+  "trust": true,
+  "caps_empty": true
+ },
+ "compared_sweep": "runs/local/calibration_sweep_20260809T064456Z.json (segment ucp-live:apparel-lifestyle, scored 70.3, n_compared=1)",
+ "weld_suite": "tests/test_calibration_anchor_agreement.py 30/30 (was 29/29); test_kith_fourteenth_non_anchor_is_welded_nonvacuously n_compared=1, teeth 70.3->82.0 caught",
+ "full_suite": "38/38 test_*.py modules green",
+ "canonical_delta": {
+  "frozen": 39.4,
+  "live": 30.1,
+  "source": "runs/local/verify_20260809T074104Z.json"
+ },
+ "off_scoring_semantics": "EMPTY \u2014 diff touches ONLY tests/test_calibration_anchor_agreement.py + this evidence JSON; asrs/rubric/fixtures/experiments UNCHANGED"
+}

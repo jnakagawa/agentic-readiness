@@ -289,19 +289,28 @@ prior cadence sweep (direct-to-main). See LOG Local cycle 20260809T015714Z. -->
   rail) is COMPLETE: **PR #161 MERGED `5020895`** this fire (Local cycle 20260808T204601Z) after the owed FIRST-DUTY
   adversarial review + independent $0 live UCP re-score (live 66.9 == frozen 66.9 == EXPECTED 66.9, all 4 pillars
   byte-identical 100.0/50.0/50.0/90.0, caps empty, x402_probe partial 4.0/8.0 commerce-protocol-live; weld 29/29). **The
-  whole #152–#161 non-anchor weld campaign is COMPLETE at 13 witnesses** (the UCP rail welded at 3 points). Other UCP-DEPTH
-  candidates surveyed but NOT pinned: glossier.com 64.9 (legibility 54.55 — same as the
-  pair, only densifies trust) and skims.com 60.4 (legibility 40.91 but tx 43.75 — a DIFFERENT tx rung, conflates two axes,
-  not a clean single-rung comparison). Remaining ABUNDANT candidates (spanx/allbirds[drifted, avoid]/kith[17.8MB]) are
-  cheap direct-to-main pins IF a distinct calibration value + honest classification + lean fixture. **UCP-liveness
-  CONFIRMED $0 this fire (Local cycle 20260809T024925Z recon): spanx.com / kith.com / brooklinen.com each serve a valid
-  live `dev.ucp.*` manifest at `/.well-known/ucp` (200, protocol=ucp) — spanx+kith as flagged, brooklinen a NEW find;
-  ruggable.com does NOT (404).** A future pin still needs a full-score capture at a DISTINCT (legibility × trust) point +
-  honest classification (inv #4) + lean fixture — kith's fixture is large; spanx/brooklinen are the leaner leads.
-  `joinhexagon.com` is a
-  DOCUMENTED live-UCP lead but needs a precision-guard unblock FIRST (4 llms-full.txt FP families, inv #4) — prefer clean
-  merchant witnesses over infra profiles. WATCH driftflight.com /extend for a 402 recovery (restores the anchor's live
-  handshake + the +39.4 live delta).
+  whole #152–#161 non-anchor weld campaign is COMPLETE at 13 witnesses** (the UCP rail welded at 3 points).
+  (5) ✅ DONE — the HIGH-LEGIBILITY corner of the UCP plane is PINNED: **kith.com 70.3 C** as the FOURTH UCP-rail
+  frozen-replay baseline / SIXTEENTH baseline overall (Local cycle 20260809T040201Z, direct-to-main). The fresh
+  live-UCP cohort (last cycle's recon finds) was $0 static-scored on the SCORER path and only kith cleared the
+  DISTINCT-point + honest-classification gate: **kith.com** access 100.0 / **legibility 86.36** (a NEW high region,
+  nearly doubling the plane's legibility span vs the 50.0→54.55 cluster) / tx 50.0 (clean UCP rung
+  `commerce-protocol-live` 4.0/8.0) / trust 60.0 → the HIGHEST UCP overall; honest **{metered_api, physical_good}** (no
+  over-claim, no FP-guards); replay-clean (live 70.3 == frozen == EXPECTED, 4 pillars byte-identical, misses=0); fixture
+  17MB / 59 GET / 0 POST (inv #1; justified — no lean equivalent for the distinct point exists). The leaner fresh leads
+  are NON-distinct: **spanx.com 60.0** (tx 43.75 — the skims.com tx-conflation, a sub-check 0.0/2.0 drags it off the
+  UCP rung) + **brooklinen.com 59.9** (leg 54.55 already occupied → the glossier.com "only densifies trust" case).
+  Installed fixture + EXPECTED + guard `test_ucp_retail_fourth_storefront_replays_70_3` (registered) + `_REPLAY_CLEAN` +
+  `_POPULATION` ×5; suite 38/38; frozen +39.4 / live +30.1. Evidence
+  `runs/local/kith_ucp_highlegibility_baseline_20260809T040201Z.json`; LOG Local cycle 20260809T040201Z. A future
+  PEER-GATED weld of kith into `_NON_ANCHOR_WELDED` needs a `[LOCAL]` sweep-add first (n_compared≥1). **FORWARD
+  frontier** (surveyed + NOT pinned): glossier.com 64.9 / skims.com 60.4 conflate axes (see above); the UCP plane is now
+  well-spanned on legibility (50.0→86.36) at the fixed tx-50 rung, so the remaining UCP-depth prize is a DISTINCT tx
+  rung (a UCP merchant that CLEARS the sub-check spanx fails → tx > 50.0) OR a genuinely-NEW rail TYPE (ACP/MPP — still
+  $0-un-pinnable; keep re-running the 32-candidate recon at cadence). `joinhexagon.com` is a DOCUMENTED live-UCP lead
+  but needs a precision-guard unblock FIRST (4 llms-full.txt FP families, inv #4) — prefer clean merchant witnesses over
+  infra profiles. WATCH driftflight.com /extend for a 402 recovery (restores the anchor's live handshake + the +39.4
+  live delta).
 
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
   phrasing has now drifted the `_ENV_BLOCK_RE` guard SIX times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)

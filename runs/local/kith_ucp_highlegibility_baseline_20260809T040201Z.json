@@ -1,0 +1,101 @@
+{
+ "ts": "20260809T040201Z",
+ "kind": "ucp-depth-scout+pin",
+ "track": "TRUTH/COVERAGE",
+ "cycle": "Local 20260809T034104Z",
+ "spend": "$0 static (python -m asrs score; --record-fixture); NO --behavioral/--max-pay/codex/zero-CLI; inv#1 by construction",
+ "context": "Last cycle's ACP/UCP recon freshly confirmed spanx/brooklinen/kith serve valid live dev.ucp.* manifests. This cycle characterizes the fresh live-UCP cohort on the SCORER path and pins the one genuinely-distinct honest candidate.",
+ "existing_ucp_pins": {
+  "checkout.coffeecircle.com": {
+   "overall": 57.4,
+   "legibility": 54.55,
+   "trust": 33.33,
+   "tx": 50.0
+  },
+  "gymshark.com": {
+   "overall": 62.4,
+   "legibility": 54.55,
+   "trust": 60.0,
+   "tx": 50.0
+  },
+  "hardgraft.com": {
+   "overall": 66.9,
+   "legibility": 50.0,
+   "trust": 90.0,
+   "tx": 50.0
+  }
+ },
+ "cohort_scored_this_fire": {
+  "spanx.com": {
+   "overall": 60.0,
+   "grade": "D",
+   "pillars": {
+    "access": 100.0,
+    "legibility": 54.54545454545455,
+    "transactability": 43.75,
+    "trust": 60.0,
+    "outcome": null
+   },
+   "run": "spanx_com_20260809T034607.json"
+  },
+  "brooklinen.com": {
+   "overall": 59.9,
+   "grade": "F",
+   "pillars": {
+    "access": 100.0,
+    "legibility": 54.54545454545455,
+    "transactability": 50.0,
+    "trust": 46.666666666666664,
+    "outcome": null
+   },
+   "run": "brooklinen_com_20260809T034615.json"
+  },
+  "kith.com": {
+   "overall": 70.3,
+   "grade": "C",
+   "pillars": {
+    "access": 100.0,
+    "legibility": 86.36363636363636,
+    "transactability": 50.0,
+    "trust": 60.0,
+    "outcome": null
+   },
+   "run": "kith_com_20260809T035053.json"
+  }
+ },
+ "findings": {
+  "spanx.com": "NOT a clean pin \u2014 tx 43.75 (a partial-failing sub-check 0.0/2.0 drags it off the clean UCP-50 rung); leg 54.55 + trust 60.0 collides with gymshark on (leg,trust). The skims.com tx-conflation pattern.",
+  "brooklinen.com": "clean tx-50 UCP rung but leg 54.55 is ALREADY occupied (coffeecircle/gymshark) -> only densifies trust (interior 33.33<46.67<60.0). The glossier.com 'only densifies trust' case the backlog already passed over.",
+  "kith.com": "PINNED. Genuinely DISTINCT: leg 86.36 (new HIGH-legibility region, nearly doubling the plane's legibility span from the 50-54.55 cluster), clean tx-50 UCP rung, trust 60.0 -> 70.3 (HIGHEST UCP overall). Honest {metered_api, physical_good} (no over-claim, no FP-guards). Replay-clean (0 misses, live==frozen==70.3, all 4 pillars byte-identical, caps empty). Fixture 17MB / 59 GET / 0 POST."
+ },
+ "kith_pin": {
+  "overall": 70.3,
+  "grade": "C",
+  "rubric": "0.7",
+  "pillars": {
+   "access": 100.0,
+   "legibility": 86.36363636363636,
+   "transactability": 50.0,
+   "trust": 60.0,
+   "outcome": null
+  },
+  "x402_probe": "commerce-protocol-live PARTIAL 4.0/8.0 (UCP rung)",
+  "offering": [
+   "metered_api",
+   "physical_good"
+  ],
+  "replay_misses": 0,
+  "fixture": "fixtures/canonical/kith.com.json",
+  "fixture_bytes": 17586062,
+  "requests": "59 GET / 0 POST (inv#1)"
+ },
+ "install": "test_canonical_replay.EXPECTED + guard test_ucp_retail_fourth_storefront_replays_70_3 (registered) + _REPLAY_CLEAN; _POPULATION += kith.com in all 5 reproducibility suites",
+ "regression": {
+  "frozen_delta": 39.4,
+  "live_delta": 30.1,
+  "frozen_note": "canonical PAIR untouched; test_canonical_replay incl. delta guard 38/38",
+  "live_note": "from verify_20260809T034104Z (org 46.1 / com 76.2; persistent /extend 402->401, unrelated to this change)"
+ },
+ "suite": "38/38 modules green",
+ "ship": "direct-to-main (non-anchor baseline pin, off scoring-SEMANTICS)"
+}

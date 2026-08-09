@@ -1,6 +1,24 @@
 # Loop state
 
-- Cycle counter: 321
+- Cycle counter: 322
+- **✅ SIXTEENTH frozen-replay baseline PINNED — kith.com 70.3 C, the FOURTH UCP-rail point + the HIGH-LEGIBILITY
+  corner of the UCP plane (Local 20260809T040201Z, TRUTH/COVERAGE, direct-to-main — the ONE [LOCAL] item).** $0
+  static-scored the fresh live-UCP cohort (last cycle's recon finds spanx/brooklinen/kith) on the SCORER path
+  (`python -m asrs score --json-only`; no `--behavioral`/`--max-pay`/codex/zero CLI, inv #1 by construction) and pinned
+  the ONE genuinely-distinct honest candidate. **kith.com 70.3 C** (access 100.0 / **legibility 86.36** / tx 50.0 /
+  trust 60.0): a NEW high-legibility region that nearly DOUBLES the UCP plane's legibility span (coffeecircle 57.4 /
+  gymshark 62.4 / hardgraft 66.9 all cluster at leg 50.0→54.55; kith 86.36), the HIGHEST UCP overall, on the SAME clean
+  UCP-50 rung (`x402_probe commerce-protocol-live` PARTIAL 4.0/8.0), honest **{metered_api, physical_good}** (no
+  topic-word over-claim, no FP-guards — the gymshark/hardgraft clean profile). Replay-clean (live 70.3 == frozen ==
+  EXPECTED, all 4 non-null pillars byte-identical, misses=0, caps empty); fixture 17MB / **59 GET / 0 POST** (inv #1 —
+  well-known GET is a $0 read; kith is the only lean-less distinct point, so its weight is justified — no lean equivalent
+  exists). The leaner fresh cohort is NON-distinct: **spanx.com 60.0** (tx 43.75 — the skims.com tx-conflation) +
+  **brooklinen.com 59.9** (leg 54.55 already occupied → the glossier.com "only densifies trust" case). Installed fixture
+  + EXPECTED + guard `test_ucp_retail_fourth_storefront_replays_70_3` (registered) + `_REPLAY_CLEAN` + `_POPULATION` ×5.
+  Baselines 15→16; UCP rail 4 points. Off-scoring-SEMANTICS EMPTY (canonical PAIR untouched, no rubric bump); frozen
+  +39.4 / live +30.1; suite 38/38. NO open PRs. A future PEER-GATED weld into `_NON_ANCHOR_WELDED` needs a `[LOCAL]`
+  sweep-add first (n_compared≥1, the coffeecircle/gymshark/hardgraft recipe). Evidence
+  `runs/local/kith_ucp_highlegibility_baseline_20260809T040201Z.json`; LOG Local cycle 20260809T040201Z.
 - **✅ ACP/COMMERCE-PROTOCOL WELL-KNOWN RECON RE-RUN GREEN, BROADENED 20→32 candidates (Local 20260809T024925Z,
   COVERAGE/TRUTH, direct-to-main — the ONE [LOCAL] item).** Re-ran `experiments/acp_wellknown_recon.py` ($0 read-only
   GETs via the scorer's own `FetchContext.get` + byte-faithful `_parse_commerce_manifest`; no payment/POST/`--behavioral`/
@@ -157,26 +175,14 @@
      frozen-replay baseline exa.ai (78.1 C) PINNED, and PR #155 (api.replicate.com 5th non-anchor weld, `7e08063`)
      MERGED — pruned this fire (Local cycle 20260808T140228Z) to stay under the STATE 600-line cap; all preserved
      verbatim in loop/LOG.md + git history. The whole non-anchor weld campaign (#152-#159) is complete. -->
-- **✅ NEW EIGHTH frozen-replay calibration baseline PINNED this fire (Local 20260807T154104Z, direct-to-main):
-  www.moleskine.com** (a SECOND retail storefront — an established consumer-brand e-commerce shop; retail DEPTH, NOT a
-  new storefront TYPE). 49.8 F v0.7 (access 100.0 / legibility 40.91 / transactability 18.75 / trust 73.33). It was
-  ALREADY certified replay-clean (0 misses, in `_REPLAY_CLEAN`) and present in ALL FIVE committed calibration sweeps at
-  a stable 49.8 (segment retail:no-rails) AND in all 5 reproducibility `_POPULATION`s — but its SCORE was never pinned,
-  so a scoring change could silently move it. This pin closes that gap: `test_canonical_replay.EXPECTED` entry + new
-  guard `test_second_retail_storefront_replays_49_8` (asserts overall + all 4 non-null pillars; teeth re-confirmed
-  in-memory 49.8→55.0 caught). NO fixture re-capture needed (cleaner than the ipinfo/api.replicate promotions — the
-  committed fixture was untouched). The [LOCAL] essence: fresh $0 static re-score THIS fire (15:5xZ,
-  `python -m asrs score www.moleskine.com --json-only`) → **live 49.8 == frozen fixture-replay 49.8 == EXPECTED 49.8,
-  all 4 non-null pillars byte-identical, caps empty** → baseline HOLDS, moleskine did NOT regress. Its 49.8 is a NEW
-  distinct overall between example.com's 22.5 and acuity's 54.0; as a 2nd retail member it pins a DIFFERENT pillar mix
-  from the bare scraping-demo catalog books.toscrape.com (29.5 F: legibility 18.2 / transactability 0.0 / trust 33.3) —
-  real brand earns more legibility, PARTIAL transactability (real commerce surface, NO agent-native rail), higher trust
-  — so retail spans a RANGE (29.5→49.8) in the frozen guard, not a point. Frozen-replay baselines 7→8. Evidence
-  `runs/local/moleskine_second_retail_baseline_20260807T154104Z.json`. Off-scoring-SEMANTICS EMPTY (only
-  `test_canonical_replay.py` — EXPECTED + guard + registration); frozen canonical delta UNMOVED +39.4; live +30.1;
-  suite 38/38 (replay 29→30). **NOTE for a future 2nd-retail WELD:** moleskine's sweep rows are keyed `moleskine.com`
-  (bare) while its replay baseline is `www.moleskine.com` — a weld today would be vacuous (n_compared=0) unless it
-  normalizes the www/bare domain key first.
+<!-- The www.moleskine.com EIGHTH frozen-replay baseline PIN banner (Local 20260807T154104Z — 49.8 F, a 2nd retail
+     storefront, guard test_second_retail_storefront_replays_49_8) compressed to this pointer this fire (Local cycle
+     20260809T040201Z) to stay under the STATE 600-line cap after adding the kith.com banner — moleskine is now BOTH
+     pinned AND welded (PR #156 MERGED `571e4c6`, via the `_norm_domain` www/bare key fix) and remains byte-on-floor in
+     every cadence sweep; preserved verbatim in loop/LOG.md (## Local cycle — 20260807T154104Z) + git history. -->
+- LOCAL cycle — 20260807T154104Z summarized: pinned www.moleskine.com as the 8th frozen-replay baseline (49.8 F, a 2nd
+  retail storefront — retail DEPTH), later WELDED as the 6th non-anchor member (PR #156 `571e4c6`). Full detail in
+  loop/LOG.md.
 - **✅ CALIBRATION CADENCE SWEEP RUN this fire (Local 20260807T134105Z, direct-to-main): api.replicate.com added to
   `experiments/calibration_sweep.py`'s POPULATION and scored $0 static → `runs/local/calibration_sweep_20260807T134527Z.json`
   (19/20 scored, rei.com not-scorable per inv #4, 0 errors).** api.replicate.com scored **29.5 F** (segment

@@ -3,6 +3,74 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Local cycle — 20260809T040201Z — TRUTH/COVERAGE (LOCAL) — SIXTEENTH frozen-replay baseline PINNED: kith.com 70.3 C, the FOURTH UCP-rail point and the HIGH-LEGIBILITY corner of the UCP plane; the leaner fresh cohort (spanx/brooklinen) characterized non-distinct
+
+**Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260809T034104Z.json`
+fresh (~2 min old at fire start, < 6h floor), `tests_ok=true` (all 38 modules), git clean + up to
+date with origin/main, **NO open PRs** (first-duty peer review discharged — nothing owed). Live
+canonical delta **+30.1** (org 46.1 F / com 76.2 C — persistent `/extend` 402→401), frozen replay
+**+39.4**.
+
+**Track rotation.** Last three fires were TRUTH (sweep 015714Z), COVERAGE/TRUTH (ACP/UCP recon
+024925Z), METHOD (own-tool-drift tripwire ran ~2.7h ago at 010020Z). Re-running the tripwire now
+would repeat last cycle under-cadence; the highest-leverage move that ADVANCES rather than re-checks
+is the P2 UCP-depth frontier — last cycle's recon freshly confirmed spanx/brooklinen/kith serve
+valid live `dev.ucp.*` manifests but none was scored/characterized.
+
+**What / why (the ONE [LOCAL] item).** $0 static-scored the fresh live-UCP cohort on the SCORER
+path (`python -m asrs score <d> --json-only`; no `--behavioral`/`--max-pay`/codex/zero CLI — inv #1
+by construction) and pinned the ONE genuinely-distinct honest candidate as the FOURTH UCP-rail
+frozen-replay baseline:
+- **spanx.com → 60.0 D** (leg 54.55, **tx 43.75**, trust 60.0): NOT a clean pin — a partial-failing
+  sub-check (0.0/2.0) drags tx off the clean UCP-50 rung, and (leg 54.55, trust 60.0) collides with
+  gymshark. The **skims.com tx-conflation** pattern.
+- **brooklinen.com → 59.9 F** (leg 54.55, tx 50.0, trust 46.67): clean UCP-50 rung but legibility
+  54.55 is ALREADY occupied (coffeecircle/gymshark) → only densifies trust (an interior point
+  33.33 < 46.67 < 60.0). The **glossier.com "only densifies trust"** case the backlog already
+  passed over.
+- **kith.com → 70.3 C — PINNED** (access 100.0 / **legibility 86.36** / tx 50.0 / trust 60.0).
+  Genuinely DISTINCT: a NEW high-legibility region that nearly DOUBLES the UCP plane's legibility
+  span (the first three UCP points all cluster at leg 50.0→54.55; kith is 86.36), the HIGHEST UCP
+  overall of the four, on the SAME clean UCP-50 rung (`x402_probe commerce-protocol-live` PARTIAL
+  4.0/8.0). Honest classification exactly **{metered_api, physical_good}** (metered_api from its
+  published `/llms.txt` UCP/MCP agent-commerce endpoints; physical_good from genuine `update_checkout`
+  shipping + order-tracking prose; other 4 NA → NO topic-word over-claim, NO FP-guards needed — the
+  gymshark/hardgraft clean profile, NOT the joinhexagon failure). So a UCP merchant can ALSO be
+  highly legible: the rail fixes transactability while legibility ranges widely (50.0→86.36) at the
+  fixed rung, and overall tracks legibility+trust independently of the rail.
+
+**Why kith despite its 17MB fixture.** The gymshark-over-kith precedent was "prefer lean WHEN an
+equivalent point exists" — and here NO lean equivalent for the distinct high-legibility point exists
+(spanx/brooklinen are non-distinct). kith is the only confirmed way to extend the plane's legibility
+axis. Corpus 45MB → 62MB; moleskine (8.1MB) / exa.ai (5.7MB) already accepted; 59 GET / **0 POST**
+(inv #1 — the well-known GET is a $0 read).
+
+**Gate cleared.** Fresh $0 full-score capture replays CLEAN: **live 70.3 == frozen fixture-replay
+70.3 == EXPECTED 70.3**, all 4 non-null pillars byte-identical, `replay_misses=0`, caps empty.
+Installed `fixtures/canonical/kith.com.json` (NEW, 17MB, 59 GET/0 POST) + `EXPECTED` + guard
+`test_ucp_retail_fourth_storefront_replays_70_3` (registered; teeth = same UCP rung x402_probe 4.0
+across all four, tx fixed 50.0, kith legibility STRICTLY > all three priors, kith HIGHEST UCP
+overall) + `_REPLAY_CLEAN` + `_POPULATION` += kith.com in all 5 reproducibility suites (forced by
+`test_reproducibility_population_is_the_replay_clean_set`). Frozen-replay baselines 15→16; UCP rail
+4 points.
+
+**Regression / ship.** Off-scoring-SEMANTICS EMPTY (only `test_canonical_replay.py` + the 5
+reproducibility `_POPULATION`s + the new non-anchor fixture; asrs/scoring/rubric/probes/offering +
+the canonical PAIR UNTOUCHED, NO rubric bump) → frozen canonical delta UNMOVED **+39.4**
+(`test_canonical_replay` incl. the delta guard 38/38); live **+30.1**. Suite **38/38** modules
+green. **Direct-to-main** (same class as every prior baseline pin
+coffeecircle/gymshark/hardgraft/…). A future PEER-GATED PR can WELD kith into `_NON_ANCHOR_WELDED`
+once a `[LOCAL]` cadence sweep gives it a genuinely-compared `calibration_sweep` presence
+(n_compared≥1) — the coffeecircle/gymshark/hardgraft weld recipe.
+
+**Evidence** `runs/local/kith_ucp_highlegibility_baseline_20260809T040201Z.json`. **Canonical pair:**
+org 46.1 F / com 76.2 C live (+30.1) from `verify_20260809T034104Z`; frozen +39.4. **Next
+hypothesis:** the UCP plane is now well-spanned on legibility (50.0→86.36) at the fixed tx-50 rung —
+the remaining UCP-depth frontier is a DISTINCT tx rung (a UCP merchant that clears the sub-check
+spanx fails, lifting tx above 50.0) OR a genuinely-NEW rail TYPE (ACP/MPP — still $0-un-pinnable,
+re-run the 32-candidate recon at cadence). Because kith's rail is LIVE, its replay-clean guard
+doubles as a manifest-drift tripwire.
+
 ## Local cycle — 20260809T024925Z — COVERAGE/TRUTH (LOCAL) — ACP/commerce-protocol well-known recon RE-RUN, broadened 20→32 candidates: ACP STILL 0/32 (lead stays closed), UCP positive control held + GREW 6→9 (3 fresh scouts spanx/kith/brooklinen)
 
 **Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260809T024102Z.json` fresh

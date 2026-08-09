@@ -89,6 +89,7 @@ _POPULATION = (
     "gymshark.com",
     "hardgraft.com",
     "ipinfo.io",
+    "kith.com",
     "thebotwire.com",
     "www.moleskine.com",
     "x402deploy.vercel.app",

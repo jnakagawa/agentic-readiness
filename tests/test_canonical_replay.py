@@ -518,6 +518,45 @@ EXPECTED = {
             "outcome": None,
         },
     },
+    # A SIXTEENTH real-domain calibration datapoint — and the FOURTH non-anchor
+    # baseline on the LIVE UCP rail, the HIGH-LEGIBILITY corner of the UCP plane:
+    # kith.com is a real curated apparel/lifestyle merchant whose
+    # GET /.well-known/ucp answers a $0 read with a valid `dev.ucp.*` merchant
+    # manifest, so the scorer's `x402_probe` reads `commerce-protocol-live`
+    # PARTIAL 4.0/8.0 — the SAME UCP middle rung as checkout.coffeecircle.com /
+    # gymshark.com / hardgraft.com (transactability 50.0). It claims exactly TWO
+    # archetypes {metered_api, physical_good} (metered_api from its published UCP /
+    # MCP agent-commerce endpoints in /llms.txt; physical_good from genuine
+    # update_checkout shipping + order-tracking fulfillment prose — the other four
+    # archetypes NA, NO topic-word over-claim, so NO FP-family guards were needed —
+    # the same clean profile as gymshark.com / hardgraft.com). Its calibration value
+    # EXTENDS the UCP plane along the legibility axis: the first three UCP points all
+    # cluster at legibility 50.0 -> 54.55, so the plane was narrow on legibility;
+    # kith.com holds the SAME tx-50.0 UCP rung but sits at a DISTINCT, far HIGHER
+    # legibility (86.36 — a richly self-describing storefront) with trust 60.0,
+    # scoring 70.3 — the HIGHEST UCP overall of the four. So a UCP merchant can ALSO
+    # be highly legible: the rail fixes transactability while legibility ranges
+    # widely (50.0 -> 86.36) at the fixed rung, and overall tracks legibility+trust,
+    # not the rail. Fixture captured full-score LIVE [LOCAL] this cycle with the UCP
+    # manifest read on the scorer's own path and replays CLEAN (0 misses); its live
+    # score was re-verified == this frozen floor on the same $0 static re-score
+    # (live 70.3 == frozen 70.3, all four non-null pillars byte-identical, caps
+    # empty). Worded by capability, never by vendor. Because the UCP rail is LIVE
+    # (served, volatile), a future manifest removal/invalidation reddens the
+    # replay-clean guard (fixture frozen) and flags a re-capture. NO payment was ever
+    # signed (inv #1 — the well-known GET is a $0 read).
+    "kith.com": {
+        "overall": 70.3,
+        "grade": "C",
+        "rubric_version": "0.7",
+        "pillars": {
+            "access": 100.0,
+            "legibility": 86.36363636363636,
+            "transactability": 50.0,
+            "trust": 60.0,
+            "outcome": None,
+        },
+    },
 }
 EXPECTED_DELTA = 39.4  # driftflight.com (rails) - drift-flight.org (no rails)
 
@@ -1405,6 +1444,89 @@ def test_ucp_retail_third_storefront_replays_66_9() -> None:
         h["trust"] > g["trust"] and h["trust"] > c["trust"],
         f"hardgraft carries the highest trust of the three UCP points "
         f"(hardgraft {h['trust']} > gymshark {g['trust']}, coffeecircle {c['trust']})",
+    )
+
+
+# ---------------------------------------------------------------------------
+# 6m. SIXTEENTH-DOMAIN CALIBRATION — the FOURTH non-anchor baseline on the LIVE UCP
+#     rail (kith.com), the HIGH-LEGIBILITY corner of the UCP plane. The first three
+#     UCP points cluster at legibility 50.0 -> 54.55, so the plane was narrow on
+#     that axis. kith.com holds the SAME tx-50.0 UCP rung (x402_probe
+#     commerce-protocol-live PARTIAL 4.0/8.0) but sits at a DISTINCT, far HIGHER
+#     legibility (86.36) — nearly doubling the plane's legibility span — and scores
+#     the HIGHEST UCP overall of the four (70.3). So the teeth prove a UCP merchant
+#     can ALSO be highly legible: the rail fixes transactability while legibility
+#     ranges widely at the fixed rung, and the overall tracks legibility (and trust)
+#     independently of the rail — NOT rail credit leaking into the overall. A scoring
+#     change that let the rail credit leak into the overall, that collapsed kith back
+#     onto the low-legibility cluster, or that stopped reading kith's UCP manifest as
+#     commerce-protocol-live, FLIPS this guard. Worded by capability, never by
+#     vendor. Because the manifest is LIVE (served, volatile), a future
+#     removal/invalidation reddens the replay-clean guard (fixture frozen) and flags
+#     a re-capture.
+# ---------------------------------------------------------------------------
+def test_ucp_retail_fourth_storefront_replays_70_3() -> None:
+    print("test_ucp_retail_fourth_storefront_replays_70_3")
+    _assert_domain("kith.com")
+    kith, kith_misses = _score_fixture("kith.com")
+    hard, hard_misses = _score_fixture("hardgraft.com")  # the third UCP point
+    gym, gym_misses = _score_fixture("gymshark.com")  # the second UCP point
+    ucp, ucp_misses = _score_fixture("checkout.coffeecircle.com")  # the first UCP point
+    _check(
+        not (kith_misses or hard_misses or gym_misses or ucp_misses),
+        "no replay-miss on kith.com / hardgraft.com / gymshark.com / "
+        "checkout.coffeecircle.com",
+    )
+    # Same rail: kith earns the UCP partial (commerce-protocol-live), the same rung
+    # as the first three UCP baselines.
+    kith_probe = _by_id(kith, "x402_probe")
+    hard_probe = _by_id(hard, "x402_probe")
+    gym_probe = _by_id(gym, "x402_probe")
+    ucp_probe = _by_id(ucp, "x402_probe")
+    _check(
+        kith_probe.status is Status.PARTIAL and kith_probe.finding == "commerce-protocol-live",
+        f"kith.com: x402_probe is a validated LIVE UCP manifest "
+        f"(commerce-protocol-live, got {kith_probe.finding!r} {kith_probe.status})",
+    )
+    _check(
+        kith_probe.points == hard_probe.points == gym_probe.points == ucp_probe.points == 4.0,
+        f"all four UCP storefronts sit on the identical UCP rung (x402_probe 4.0, "
+        f"got kith {kith_probe.points} / hardgraft {hard_probe.points} / "
+        f"gymshark {gym_probe.points} / coffeecircle {ucp_probe.points})",
+    )
+    k = kith.pillar_scores
+    h = hard.pillar_scores
+    g = gym.pillar_scores
+    c = ucp.pillar_scores
+    # The rail FIXES transactability: all four share the identical tx (50.0).
+    _check(
+        abs(k["transactability"] - h["transactability"]) < 1e-9
+        and abs(k["transactability"] - g["transactability"]) < 1e-9
+        and abs(k["transactability"] - c["transactability"]) < 1e-9,
+        f"the UCP rail fixes transactability across all four storefronts "
+        f"(kith {k['transactability']} == hardgraft {h['transactability']} == "
+        f"gymshark {g['transactability']} == coffeecircle {c['transactability']})",
+    )
+    # HIGH-LEGIBILITY corner: kith sits at a DISTINCT legibility STRICTLY ABOVE all
+    # three prior UCP points, extending the plane's legibility axis to a new high
+    # region on the fixed rail.
+    _check(
+        k["legibility"] > h["legibility"]
+        and k["legibility"] > g["legibility"]
+        and k["legibility"] > c["legibility"],
+        f"kith sits at the HIGHEST legibility of the four UCP points, extending the "
+        f"plane upward on the SAME rail (kith {k['legibility']} > hardgraft "
+        f"{h['legibility']}, gymshark {g['legibility']}, coffeecircle {c['legibility']})",
+    )
+    # The high-legibility UCP merchant is the HIGHEST UCP overall of the four — the
+    # rail fixes transactability while legibility+trust lift the overall.
+    _check(
+        kith.overall_score > hard.overall_score
+        and kith.overall_score > gym.overall_score
+        and kith.overall_score > ucp.overall_score,
+        f"kith is the highest UCP overall of the four points "
+        f"(kith {kith.overall_score} > hardgraft {hard.overall_score}, "
+        f"gymshark {gym.overall_score}, coffeecircle {ucp.overall_score})",
     )
 
 
@@ -2502,6 +2624,22 @@ _REPLAY_CLEAN = {
     # reddens this replay guard (fixture frozen) and flags a re-capture — the honest
     # signal, not a silent drift.
     "hardgraft.com",
+    # kith.com captured full-score LIVE this cycle (Local cycle 20260809T034104Z):
+    # the fresh crawl covers the whole probe set (0 misses) and replays to its
+    # pinned 70.3 C. It is the FOURTH non-anchor member on the LIVE UCP rail and the
+    # HIGH-LEGIBILITY corner of the UCP plane (a richly self-describing curated
+    # apparel/lifestyle merchant): GET /.well-known/ucp serves a valid `dev.ucp.*`
+    # merchant manifest → x402_probe reads `commerce-protocol-live` PARTIAL 4.0/8.0,
+    # the SAME UCP middle rung as the other three (tx 50.0). Honestly classified
+    # {metered_api, physical_good} (no topic-word over-claim, the same clean profile
+    # as gymshark.com / hardgraft.com). It holds the tx-50.0 rung but sits at a
+    # DISTINCT, far HIGHER legibility (86.36, vs the 50.0 -> 54.55 the other three
+    # cluster at) with trust 60.0, scoring the HIGHEST UCP overall of the four
+    # (70.3) — extending the UCP calibration plane along the legibility axis.
+    # Because the manifest is LIVE (served, volatile), a future removal/invalidation
+    # reddens this replay guard (fixture frozen) and flags a re-capture — the honest
+    # signal, not a silent drift.
+    "kith.com",
 }
 # Fixtures whose recorded surface is a strict subset of the full scoring path
 # (captured for offering/battery classification) — NOT eligible for any
@@ -2865,6 +3003,7 @@ def main() -> int:
         test_ucp_commerce_protocol_storefront_replays_57_4,
         test_ucp_retail_storefront_replays_62_4,
         test_ucp_retail_third_storefront_replays_66_9,
+        test_ucp_retail_fourth_storefront_replays_70_3,
         test_retail_storefront_earns_no_agent_native_payment,
         test_relabel_invariance_retail,
         test_nonstorefront_replays_22_5,

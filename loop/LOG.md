@@ -3,6 +3,77 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Local cycle — 20260809T010020Z — METHOD/TRUTH (LOCAL) — owed POST-MERGE review of operator-merged PR #162 (VERDICT SOUND) + standing own-tool-drift tripwire cadence run (GREEN, no 7th drift)
+
+**Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260809T004103Z.json`
+fresh (~19min old at fire start, < 6h floor), `tests_ok:true` (all 38 suites, 0 failing), git
+clean + up to date. Live canonical drift-flight.org 46.1 F / driftflight.com 76.2 C → live delta
+**+30.1** (persistent x402 `/extend` 402→401 regression, unchanged); frozen replay **+39.4**.
+
+**FIRST DUTY — bookkeeping reconcile + owed post-merge review.** STATE's top banner said PR #162
+was still **OPEN** (next fire owes its first-duty adversarial review + MERGE). Git history + `gh pr
+view 162` show it was **OPERATOR-MERGED by jnakagawa** (merge `36822c1`, mergedAt
+2026-08-08T23:51:40Z), SKIPPING the loop's pre-merge peer review — the SAME class as PR #149/#150.
+So the owed work this fire = the **POST-MERGE adversarial review + independent re-derivation**, then
+reconcile STATE OPEN→MERGED (self-heal). `gh pr list --state open` → **[]** (no other open PR).
+
+**POST-MERGE REVIEW of PR #162 (v0.7(g) `_ENV_BLOCK_RE`, the SIXTH own-tool refusal vocab drift
+"denied AT the browser permission boundary") → VERDICT SOUND, merge STANDS, no revert.**
+- **Off the static scoring path** — the merged three-dot diff (`848790f`→`0f51dde`) over code is
+  ONLY `asrs/behavioral/shopper.py` (+30/−1, the behavioral attribution regex) + `tests/test_attribution.py`
+  (+94, case #17) + an evidence JSON; EMPTY over `asrs/scoring`/`rubric`/`fixtures`/`experiments`.
+  Behavioral-only ⇒ **frozen canonical delta +39.4 UNMOVED by construction** (`test_canonical_replay`
+  37/37 re-run this fire).
+- **Strict SUPERSET independently re-derived** — reconstructed OLD (v0.7(f), the shipped alternation
+  string removed verbatim) vs NEW (shipped) and scanned **849 committed run-record JSONs / 95,983
+  string leaves**: **OLD-only (loss) = 0** (strict superset confirmed), NEW-only distinct = 2. The
+  ONLY genuine run-record flip is the target leak `"Live-site access was denied at the browser
+  permission boundary."` (the driftflight.com codex t2 transcript + recon summaries); the single
+  extra match is the PR's own authoring-evidence JSON `.drift` narrative *quoting* the target phrase
+  — NOT a consumed `blockers`/`trust_events` field, a benign self-reference. So **0 genuine collateral,
+  0 loss** — the authoring cycle's claim holds (its 295/32,278 count was a narrower glob that excluded
+  its own authoring JSON; broadening the glob only surfaces that self-quote).
+- **8 precision guards + revert-teeth** all pass (`test_attribution.py` #17, suite 17/17): bare-403
+  body, site-403, site-side "firewall boundary", "controls"-not-"boundary", `by the server`, origin
+  WAF, "retry FROM …" recovery aside, and camera-permission UI grant are all NOT excused;
+  `_NOT_SITE_ATTRIBUTED` keeps site-attributed "by the server/WAF/Cloudflare" out (attribution honesty
+  both directions). Vendor-neutral (browser-named boundary governed by a locus preposition; no domain).
+- **Full suite 38/38** on merged main (`verify_20260809T004103Z`, `tests_ok:true`); **$0** (inv #1 —
+  a regex + tests, no payment/signing path touched). Live canonical **+30.1**.
+
+**ONE [LOCAL] ITEM — standing own-tool-refusal-vocab-drift TRIPWIRE cadence (the recon that CAUGHT
+this very drift last fire).** Re-ran `experiments/codex_reachability.py` ($0 read-only through the
+REAL scorer path `shopper._run_one`; 5 codex trials; artifact
+`runs/local/codex_reachability_20260809T004746Z/`). Result — **TRIPWIRE GREEN**:
+- **v0.7(g)/v0.6 validated LIVE**: driftflight.com t1 refused with *"Direct navigation to
+  driftflight.com was denied by the browser security/permission layer."* → `is_env_blocked_current
+  = True` (caught by the v0.6 "browser security" family) — codex's own hosted-browser refusal is
+  CORRECTLY routed to reachability, NOT counted as a valid all-false SITE run. The behavioral delta
+  is NOT narrowed by codex's own-tool refusal.
+- **NO seventh drift**: the sole raw `leak_candidate` is **example.com t1** — the KNOWN coarse-filter
+  false positive (up-site honest non-observation on the non-commercial IANA control). Its transcript
+  shows codex's browser WORKED, cited IANA, and reported *"example.com is a documentation-only
+  placeholder and offers no product or service"* — ZERO browser-refusal phrasing (blockers +
+  trust_events both empty; every leaf `_ENV_BLOCK_RE`-negative). Read the actual text before treating
+  it as a drift, per the standing caveat — genuine drifts this run = 0.
+- codex's refusal vocabulary is non-deterministic: this run's driftflight.com refusal used the v0.6
+  phrasing (t1) and codex actually OBSERVED on t2 — it did NOT reproduce last fire's exact "denied AT
+  the browser permission boundary" t2 wording. That expected run-to-run variance is precisely why the
+  cadence tripwire exists; the v0.7(g) target phrasing stays pinned by `test_attribution.py` #17's
+  verbatim fixture + the re-derived leak-scan above.
+
+**Canonical numbers.** Frozen replay +39.4 UNMOVED (37/37); live delta drift-flight.org 46.1 /
+driftflight.com 76.2 = **+30.1** (`verify_20260809T004103Z`). Suite 38/38. $0 (inv #1).
+
+**Ship.** No scoring-semantics change this fire (post-merge review + $0 recon only) → direct-to-main:
+STATE reconcile OPEN→MERGED, BACKLOG prune, LOG, evidence JSON
+`runs/local/postmerge162_tripwire_cadence_20260809T010020Z.json`. No Slack DM (PR #162 already
+operator-merged — Jonah knows; not a payment/weights/caps/removal sensitive class; not the daily-digest
+first-cycle-after-16:00Z slot). **Next hypothesis:** cadence the codex recon again next drift-hunt; the
+own-tool refusal has drifted 6× — the 7th will come. Forward frontier otherwise stays the P2 UCP-depth
+pins (marginal calibration value per BACKLOG) or a genuinely-new rail TYPE (ACP falsified $0 last fire,
+re-run recon at a future cadence). WATCH driftflight.com `/extend` for a 402 recovery (restores +39.4 live).
+
 ## Local cycle — 20260808T225133Z — METHOD (LOCAL, PEER-GATED PR #162 opened) — author v0.7(g) `_ENV_BLOCK_RE` for the SIXTH own-tool refusal vocab drift ("denied AT the browser permission boundary")
 
 **Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260808T224104Z.json`

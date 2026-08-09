@@ -1,24 +1,30 @@
 # Loop state
 
-- Cycle counter: 318
-- **🚦 OPEN PEER-GATED PR #162 (Local 20260808T225133Z, METHOD — v0.7(g) `_ENV_BLOCK_RE`, the SIXTH own-tool refusal
-  vocab drift fix AUTHORED, NOT self-merged this fire).** The queued P0 is now EXECUTED: one new own-tool alternation in
-  `asrs/behavioral/shopper.py` covering **"Live-site access was denied at the browser permission boundary."**
-  (driftflight.com codex t2, `runs/local/codex_reachability_20260808T214615Z/`; SAME-run homepage HTTP 200, so a
-  behavioral panel counted codex's OWN refusal as a valid all-false SITE run → invariant-#4 leak). The branch anchors a
-  browser-NAMED **boundary** governed by a LOCUS/AGENT preposition (`at|by|behind|within|under|via`) after the block verb
-  `+ _NOT_SITE_ATTRIBUTED` — strictly tighter than the plain form yet a strict SUPERSET of the shipped regex. Pinned by
-  `tests/test_attribution.py` **#17** (verbatim fixture + 8 precision guards + revert-teeth); differential leak-scan over
-  295 committed run-record JSONs / 32,278 leaves flips **EXACTLY** this one text OLD→NEW (0 collateral, 0 loss).
-  Behavioral-only (off the static scoring path) → frozen delta **+39.4 UNMOVED** by construction (`test_canonical_replay`
-  37/37); live **+30.1** (`verify_20260808T224104Z`); suite **38/38**; $0 (inv #1). Branch
-  `loop/env-block-v07g-denied-at-boundary`, commit `0f51dde`. **NEXT FIRE OWES its first-duty adversarial review + MERGE**
-  (re-derive the leak-scan 0-collateral/0-loss, the 8 precision guards, and the behavioral-only frozen-delta invariance)
-  BEFORE picking new work; NOT reviewed-and-merged in the same fire it was authored. Evidence
-  `runs/local/env_block_v07g_authoring_20260808T225133Z.json`; LOG Local cycle 20260808T225133Z. (The recon that CAUGHT
-  the drift last fire: `experiments/codex_reachability.py`, 5 codex trials via the REAL scorer path `shopper._run_one`,
-  byte-faithful $0 read-only; controls sound — t1 both domains caught by v0.6, .org t2 genuinely reached, example.com an
-  honest non-observation; full detail in LOG Local cycle 20260808T215647Z.)
+- Cycle counter: 319
+- **✅ PR #162 MERGED (operator) + owed POST-MERGE review SOUND this fire (Local 20260809T010020Z, METHOD/TRUTH).**
+  PR #162 (v0.7(g) `_ENV_BLOCK_RE`, the SIXTH own-tool refusal vocab drift "denied AT the browser permission boundary")
+  was **OPERATOR-MERGED by jnakagawa** (merge `36822c1`, 2026-08-08T23:51:40Z) — SKIPPED the loop's pre-merge peer review
+  (same class as PR #149/#150). This fire ran the owed **post-merge adversarial review + independent re-derivation →
+  VERDICT SOUND, merge STANDS, no revert**: off the static scoring path (code diff `848790f`→`0f51dde` is ONLY
+  `asrs/behavioral/shopper.py` +30/−1 + `test_attribution.py` +94 + evidence JSON; EMPTY over
+  asrs/scoring/rubric/fixtures/experiments) → frozen delta **+39.4 UNMOVED** (`test_canonical_replay` 37/37); strict
+  SUPERSET RE-DERIVED over **849 committed run JSONs / 95,983 leaves** — OLD-only (loss) **0**, the ONE genuine run-record
+  flip = the target t2 leak (the only "extra" NEW-only match is the PR's own authoring-evidence `.drift` narrative QUOTING
+  the phrase, NOT a consumed run-record → 0 genuine collateral; the authoring cycle's 295/32,278 was a narrower glob);
+  `test_attribution` **17/17** (#17 = 8 precision guards + revert-teeth), `_NOT_SITE_ATTRIBUTED` intact both directions;
+  suite **38/38** (`verify_20260809T004103Z`); live **+30.1**; $0 (inv #1). STATE reconciled OPEN→MERGED (bookkeeping
+  self-heal — STATE lagged the operator merge, the PR #149/#150 pattern). Own-tool vocab drift count 269/284/287/296=
+  v0.7(e)/v0.7(f)/**v0.7(g)**.
+- **✅ OWN-TOOL-DRIFT TRIPWIRE CADENCE RAN GREEN this fire (Local 20260809T010020Z — the ONE [LOCAL] item).** Re-ran
+  `experiments/codex_reachability.py` ($0 read-only via the REAL scorer path `shopper._run_one`, 5 codex trials,
+  `runs/local/codex_reachability_20260809T004746Z/`): **NO seventh drift**. driftflight.com t1 refused *"Direct navigation
+  to driftflight.com was denied by the browser security/permission layer."* → `is_env_blocked_current=True` (v0.6 family
+  CAUGHT it live → routed to reachability, NOT scored as a valid SITE run: the shipped regex correctly attributes codex's
+  own-tool refusal). The sole raw `leak_candidate` is **example.com t1** — the KNOWN coarse-filter false positive (up-site
+  honest non-observation on the IANA control: browser WORKED, "documentation-only placeholder offers no product", ZERO
+  browser-refusal phrasing), NOT a drift. codex vocabulary is non-deterministic (this run did NOT reproduce last fire's
+  exact "denied AT the browser permission boundary" t2 wording — pinned by `test_attribution.py` #17's verbatim fixture +
+  the re-derived leak-scan). Evidence `runs/local/postmerge162_tripwire_cadence_20260809T010020Z.json`. NO open PRs remain.
 <!-- PR #161 MERGED banner (Local 20260808T204601Z, merge `5020895` — hardgraft.com 66.9 D welded as the 13th
      non-anchor / 3rd UCP-rail member after the owed first-duty review + $0 live re-score; the whole #152–#161 weld
      campaign COMPLETE at 13 witnesses, UCP rail welded at 3 points coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9)

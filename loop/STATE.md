@@ -1,6 +1,25 @@
 # Loop state
 
-- Cycle counter: 322
+- Cycle counter: 323
+- **✅ CALIBRATION CADENCE SWEEP RUN GREEN + kith.com SWEEP-ADD (the SIXTEENTH baseline's weld
+  prerequisite) DISCHARGED this fire (Local 20260809T064456Z, TRUTH, direct-to-main — the ONE [LOCAL]
+  item).** Adopted the uncommitted `experiments/calibration_sweep.py` POPULATION += `("kith.com",
+  "ucp-live:apparel-lifestyle")` found at fire start (the api.replicate/hardgraft "edit uncommitted at
+  fire start" self-heal pattern — verified byte-correct, off the scoring path) and ran a $0 static
+  cadence sweep over the full 27-member POPULATION (no `--behavioral`/`--max-pay`/codex/zero CLI, inv
+  #1 by construction) → `runs/local/calibration_sweep_20260809T064456Z.json` (26/27 scored, rei.com
+  not-scorable per inv #4, 0 errors). **kith.com 70.3 C BYTE-ON-FLOOR** (access 100.0 / legibility
+  86.36 / tx 50.0 / trust 60.0, caps empty, honest {metered_api, physical_good}) — its FIRST
+  genuinely-compared sweep presence (n_compared≥1, ABSENT from all priors), so the FOURTH UCP-rail
+  weld (kith → `_NON_ANCHOR_WELDED`, the 14th non-anchor member) is now authorable non-vacuously via a
+  future PEER-GATED PR. **Drift vs 20260809T014508Z: 0/25 moved, max |Δ| 0.0** — sole change
+  `added: kith.com`; ALL 15 pinned/welded members byte-on-floor + caps empty (canonical pair 46.1/76.2
+  + all 3 UCP rails coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9 + all 3 x402 rails thebotwire
+  86.0 / oracle 64.4 / x402deploy 73.9 + exa.ai 78.1 / ipinfo 61.3 / acuity 54.0 / books 29.5 /
+  api.replicate 29.5 / moleskine 49.8), every volatile live rail UP, NO weld invalidated, NO baseline
+  regressed (wikipedia.org control held at 41.1). Off-scoring-SEMANTICS EMPTY (POPULATION +1 only, off
+  the scoring path); frozen +39.4 / live +30.1; suite 38/38. NO open PRs. Evidence
+  `runs/local/calibration_sweep_20260809T064456Z.json`; LOG Local cycle 20260809T064456Z.
 - **✅ SIXTEENTH frozen-replay baseline PINNED — kith.com 70.3 C, the FOURTH UCP-rail point + the HIGH-LEGIBILITY
   corner of the UCP plane (Local 20260809T040201Z, TRUTH/COVERAGE, direct-to-main — the ONE [LOCAL] item).** $0
   static-scored the fresh live-UCP cohort (last cycle's recon finds spanx/brooklinen/kith) on the SCORER path
@@ -437,36 +456,14 @@
      the api.replicate.com / www.moleskine.com baseline pins) compacted to this pointer this fire (Local cycle
      20260809T024925Z) to make room for the ACP-recon banner under the STATE 600-line cap — all preserved verbatim in
      loop/LOG.md (## Local cycle — 20260807T051750Z … 174235Z) + git history. -->
-- LOCAL cycle — 20260807T051750Z→174235Z summarized: the documented-live-drift ledger (PR #151 `140304e`) RESOLVED the
-  calibration-cadence blocker (persistent live x402 regression 85.5→76.2 / +39.4→+30.1), unlocking the non-anchor weld +
-  baseline-pin campaign (#152–#156) that followed. Full detail in loop/LOG.md.
-<!-- Rolling entry for cloud CYCLE 295 (METHOD / save_fixture canonical-order serialization) pruned this fire
-     (Local cycle 20260807T144105Z) to stay under the STATE line cap — preserved verbatim in loop/LOG.md
-     (## Cycle 295) + git history. The FOCUS POINTER below still carries the cloud track's forward state. -->
-- FOCUS POINTER (Cycle 295 done, cloud): NO open peer-gated PR → next fire's first duty is the infra health
-  check. RUNNER STALL fully RESOLVED + GUARDED (Cycle 261 fix + 263 pin); WATCH NORMAL but WITH a fresh cadence
-  flag — the 16:41Z verify was ~33min late at 17:14Z; re-check if 17:41Z also slips (re-escalate ONLY on a fresh
-  >6h no-artifact gap). Cloud track rotation: Cycle 295 was METHOD → **COVERAGE next** (METHOD → COVERAGE → TRUTH
-  → READOUT). NEXT METHOD (cloud): the behavioral-aggregation order axis (battery + reliability) AND fixture-capture
-  serialization are now BOTH closed; the remaining static-path reproducibility sibling is the still-queued
-  PEER-GATED P1 — sort `caps_applied` in scoring.py so the RAW report is byte-reproducible under check reordering
-  (Cycle-291 teeth are its spec; canonical-neutral — every committed `caps_applied` empty); a further axis is
-  fixture-capture determinism of the HEADER dict / `--record-fixture` output for the same key (already dict-keyed,
-  likely a no-op guard). NEXT COVERAGE (cloud): remaining thin-bank frontier is data_retrieval (8, thinnest)
-  RESPONSE-SCHEMA / field-contract leg IF committed ipinfo prose carries it distinct from `dataset-format`; a
-  return-AUTHORIZATION / RMA leg IF a real anchor carries it; subscription PAUSE/RESUME IF precision-guardable.
-  NEXT TRUTH (cloud): the pillar weld (Cycle 293) deepens anchor/example.com RESOLUTION; open axis is BREADTH — a
-  2nd non-anchor welded member (books.toscrape.com, replay baseline present, ABSENT from sweeps) unlocks only once
-  a [LOCAL] cadence run ADDS it to `experiments/calibration_sweep.py`'s POPULATION. NEXT READOUT (from Cycle 294):
-  the position note + gap badge both live on the main card — next is a compact combined "population context" strip
-  (cohort n + median + this pair's percentile) OR carrying the note's percentile onto the TERMINAL/CLI readout
-  (Cycle-192 terminal↔HTML parity pattern). Standing METHOD tripwire: own-tool refusal vocab drifted THREE times
-  (269, 284, 286→287) → keep the periodic leak scan over each fresh committed panel. NEXT calibration cadence:
-  population 17 scored (target 15–20); next broadening = a genuine ACP/UCP/MPP merchant or a 2nd x402-live site.
-  Substantive [LOCAL] frontier: ADD books.toscrape.com to the sweep POPULATION (unlocks the 2nd non-anchor
-  pillar+overall weld); PR #148 post-merge live behavioral verification (still queued); cross-model SHOPPER delta
-  still codex-blocked on the WITH side; a THIRD calibration anchor / 2nd x402-live merchant; render-generation
-  digital_good (Cycle-168); structured catalog/pricing JSON (Cycle-70).
+- FOCUS POINTER (cloud track — compacted Local cycle 20260809T064456Z to hold the STATE line cap; the full
+  Cycle-295 pointer AND the 20260807T051750Z→174235Z ledger/campaign summary [PR #151 `140304e` RESOLVED the
+  calibration-cadence blocker, unlocking the #152–#161 non-anchor weld + baseline-pin campaign] are preserved
+  verbatim in loop/LOG.md + git history): NO open cloud peer-gated PR. Cloud rotation METHOD → COVERAGE → TRUTH →
+  READOUT (Cycle 295 was METHOD → COVERAGE next). The LOCAL loop has carried the work for many cycles; if a cloud
+  fire resumes, its first duty is the infra health check. The stale Cycle-295 "[LOCAL] frontier" list (add
+  books.toscrape.com to the sweep, etc.) is long SUPERSEDED — the live frontier is the P2 UCP-depth / new-rail item
+  in BACKLOG.
 <!-- STATE COMPACTED at Cycle 260 (2026-08-05T~17:1xZ, self-healing/COVERAGE, direct-to-main, score-neutral).
      STATE.md had accreted the full per-cycle history back to ~Cycle 5 (7798 lines / ~790KB) and could no
      longer be Read in one call, degrading the playbook-mandated per-cycle "read STATE.md". Trimmed the

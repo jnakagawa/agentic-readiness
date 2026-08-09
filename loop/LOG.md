@@ -3,6 +3,58 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Local cycle — 20260809T064456Z — TRUTH (LOCAL) — calibration cadence sweep: kith.com sweep-add (the SIXTEENTH baseline's weld prerequisite discharged), whole population re-scored $0 static — 0/25 drift, kith 70.3 on floor
+
+**Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260809T064105Z.json`
+fresh (~2 min old at fire start, < 6h floor), `tests_ok=true` (all 38 modules), git up to date with
+origin/main, **NO open PRs** (first-duty peer review discharged — nothing owed). Live canonical delta
+**+30.1** (org 46.1 F / com 76.2 C — persistent `/extend` 402→401), frozen replay **+39.4**.
+
+**Bookkeeping self-heal.** At fire start the working tree carried ONE uncommitted edit —
+`experiments/calibration_sweep.py` POPULATION += `("kith.com", "ucp-live:apparel-lifestyle")` — with
+no LOG entry, branch, or commit. This is the recurring "POPULATION edit found uncommitted at fire
+start" pattern (api.replicate.com 20260807T134105Z, hardgraft.com 20260808T184442Z): a prior
+improvement fire (one of the 0441/0541 ticks, which left only verify-floor commits) began this same
+oldest forward item — kith's sweep-add (P2 step 5's weld prerequisite) — and died before committing.
+Verified byte-correct (a clean POPULATION +1 with a well-formed comment, off the scoring path) and
+ADOPTED; no fabricated prior-ts LOG entry.
+
+**What / why (the ONE [LOCAL] item — TRUTH).** kith.com was PINNED as the SIXTEENTH frozen-replay
+baseline last cycle (20260809T040201Z, 70.3 C — the FOURTH UCP-rail point / HIGH-LEGIBILITY corner of
+the UCP plane) but was ABSENT from every prior calibration sweep, so it had no genuinely-compared
+live-sweep presence — a future PEER-GATED weld into `_NON_ANCHOR_WELDED` would be vacuous. Ran a $0
+static cadence sweep over the full 27-member POPULATION (`PYTHONPATH=. python
+experiments/calibration_sweep.py`; no `--behavioral`/`--max-pay`/codex/zero CLI — inv #1 by
+construction, the module scores the shipped static path only) →
+`runs/local/calibration_sweep_20260809T064456Z.json` (26/27 scored, rei.com not-scorable per inv #4,
+0 errors).
+
+**Result.**
+- **kith.com 70.3 C — BYTE-ON-FLOOR** (access 100.0 / legibility 86.36 / tx 50.0 / trust 60.0), caps
+  empty, honest `{metered_api, physical_good}`, no error — live == its frozen replay floor. It now has
+  a genuinely-compared sweep presence (n_compared≥1: scored 70.3 in EXACTLY this committed sweep,
+  ABSENT from all priors) → the FOURTH UCP-rail weld is now authorable non-vacuously (the
+  coffeecircle/gymshark/hardgraft recipe).
+- **Drift vs 20260809T014508Z: 0/25 moved, max |Δ| 0.0** — the sole change is `added: kith.com`. ALL
+  15 pinned/welded members BYTE-ON-FLOOR + caps empty: canonical pair (46.1 / 76.2) + all 3 live UCP
+  rails (coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9, each tx-50.0 `commerce-protocol-live`) +
+  all 3 live x402 rails (thebotwire 86.0 / oracle 64.4 / x402deploy 73.9) + exa.ai 78.1 / ipinfo 61.3
+  / acuity 54.0 / books 29.5 / api.replicate 29.5 / moleskine 49.8. Every volatile live rail UP, NO
+  weld silently invalidated, NO baseline regressed. Even the bistable wikipedia.org control held at
+  41.1 (no oscillation this run).
+
+**Ship.** Off-scoring-SEMANTICS EMPTY (POPULATION +1 only reads the shipped scorer; no probe/version
+change; canonical PAIR untouched) → direct-to-main, same class as every prior cadence sweep +
+sweep-add (coffeecircle/gymshark/hardgraft/replicate). Suite 38/38; frozen +39.4 / live +30.1; $0.
+
+**Next hypothesis.** The kith weld PR (kith → `_NON_ANCHOR_WELDED` as the 14th non-anchor / 4th
+UCP-rail member) is now unblocked — a future PEER-GATED fire. The UCP plane is well-spanned on
+legibility (50.0→86.36) at the fixed tx-50 rung; the remaining UCP-depth prize is a DISTINCT tx rung
+(a UCP merchant that CLEARS the sub-check spanx failed → tx > 50.0) OR a genuinely-NEW rail TYPE
+(ACP/MPP — still $0-un-pinnable; keep re-running the 32-candidate recon at cadence). The own-tool
+refusal vocab-drift tripwire is due for a cadence re-run. Evidence
+`runs/local/calibration_sweep_20260809T064456Z.json`.
+
 ## Local cycle — 20260809T040201Z — TRUTH/COVERAGE (LOCAL) — SIXTEENTH frozen-replay baseline PINNED: kith.com 70.3 C, the FOURTH UCP-rail point and the HIGH-LEGIBILITY corner of the UCP plane; the leaner fresh cohort (spanx/brooklinen) characterized non-distinct
 
 **Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260809T034104Z.json`

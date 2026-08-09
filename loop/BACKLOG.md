@@ -66,15 +66,9 @@ See LOG Local cycle 20260808T204601Z. -->
 <!-- Two fully-superseded api.replicate.com markers (DONE 20260807T114104Z: pinned as the 7th frozen-replay baseline 29.5 F;
 DONE 20260807T134105Z: its sweep-add prerequisite discharged) pruned this fire (Local cycle 20260808T140228Z) to keep
 completed-marker bytes under the hygiene cap — both preserved verbatim in loop/LOG.md + git history. -->
-<!-- MERGED Local cycle 20260807T154104Z: PR #155 (api.replicate.com 5th non-anchor cross-path calibration weld) MERGED
-`7e08063` after the owed FIRST-DUTY adversarial review + independent $0 live re-score. VERDICT SOUND: off-scoring-path
-(three-dot diff since merge-base 4313135 is ONLY test_calibration_anchor_agreement.py +79/-4; empty over scoring.py/
-report.py/probes/battery.py/reliability.py/offering.py/scorecard.py/rubric/fixtures/experiments/loop/local_verify.py);
-vendor-neutral (welded by TYPE pure-inference-API); committed baseline 29.5 F v0.7; LOAD-BEARING (n_compared=1
-independently re-derived — api.replicate.com PRESENT in exactly the 20260807T134527Z sweep at 29.5, ABSENT from all 4
-priors); teeth (29.5->40.0 caught). Live re-derived THIS fire: api.replicate.com 29.5 live == 29.5 frozen == 29.5
-EXPECTED, all 4 non-null pillars byte-identical -> weld holds, did NOT regress. Suite 38/38 branch + merged main; weld
-20/20; the cross-path weld now spans FIVE non-anchor TYPES. See LOG Local cycle 20260807T154104Z. -->
+<!-- MERGED PR #155 (api.replicate.com 5th non-anchor weld, `7e08063`, Local cycle 20260807T154104Z) — compacted
+this fire (Local cycle 20260809T064456Z) to hold the closed-marker byte cap; full VERDICT-SOUND detail in loop/LOG.md
+(## Local cycle — 20260807T154104Z) + git history. -->
 <!-- Three fully-superseded www.moleskine.com markers (DONE 20260807T154104Z: pinned as the 8th frozen-replay baseline
 49.8 F / 2nd retail storefront; OPENED 20260807T174235Z: 6th-non-anchor weld PR #156 authored w/ the `_norm_domain`
 www/bare key fix; MERGED 20260807T184234Z: PR #156 `571e4c6`) pruned this fire (Local cycle 20260808T225133Z) to keep
@@ -123,21 +117,6 @@ DONE marker (three-x402 sweep-add prerequisite, POPULATION 20->23, all live==fro
 (PR #158 MERGED `3fc5b5b`, all three x402 rails re-confirmed byte-on-floor in the 20260809T014508Z cadence sweep);
 preserved verbatim in loop/LOG.md (## Local cycle — 20260808T084106Z) + git history. -->
 
-<!-- OPENED Local cycle 20260808T094101Z: the P2 weld of the three non-anchor LIVE-x402 witnesses (thebotwire.com 86.0 /
-api.x402oracle.com 64.4 / x402deploy.vercel.app 73.9) is AUTHORED as PEER-GATED PR #158 (branch
-loop/live-x402-non-anchor-weld, commit e4c2bae), NOT self-merged. Welds all three into
-tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED as the EIGHTH/NINTH/TENTH members (7->10 non-anchor witnesses) —
-the FIRST welded members carrying a GENUINE LIVE x402 handshake (every prior welded witness carries NO live rail; exa.ai's is
-documented-not-probed). Three new tests (test_thebotwire_eighth / test_x402oracle_ninth / test_x402deploy_tenth
-_non_anchor_is_welded_nonvacuously): committed v0.7 floor present + genuinely COMPARED (n_compared=1 in
-calibration_sweep_20260808T084504Z.json, segment x402-live:{news-data-wire,trust-oracle,web-data-tools}) + teeth (drift
-86.0->95.0 / 64.4->75.0 / 73.9->85.0 caught). Keyed identically on both paths (no www/bare alias). TEST-ONLY
-(test_calibration_anchor_agreement.py +230; off-scoring-SEMANTICS EMPTY over asrs/rubric/fixtures/experiments/loop), weld
-suite 23->26, full suite 38/38. Live<->frozen re-confirmed this fire ($0 static, no --behavioral/--max-pay/codex/zero CLI:
-live 86.0 / 64.4 / 73.9 == frozen, all 4 non-null pillars byte-identical, caps empty; no payment signed, inv #1). DO NOT
-RE-AUTHOR — TRACKED by STATE's OPEN-PR #158 banner + next fire's first-duty adversarial review + live re-score (REVIEWER
-re-runs the $0 live re-scores; a divergence = REAL live-rail drift -> re-capture that member, don't weld it, inv #4).
-Evidence runs/local/live_x402_non_anchor_weld_20260808T094101Z.json. See LOG Local cycle 20260808T094101Z. -->
 <!-- MERGED Local cycle 20260808T104105Z: PR #158 (weld the three non-anchor LIVE-x402 witnesses thebotwire.com 86.0 /
 api.x402oracle.com 64.4 / x402deploy.vercel.app 73.9 into _NON_ANCHOR_WELDED as the 8th/9th/10th members) MERGED `3fc5b5b`
 after the owed FIRST-DUTY adversarial review + independent $0 live re-scores. VERDICT SOUND: off-scoring-path (three-dot
@@ -244,6 +223,21 @@ SOLE mover is the wikipedia.org non-storefront control 45.7->41.1, a BISTABLE 41
 EMPTY (reads-only the shipped scorer; no probe/version change); frozen +39.4 / live +30.1; suite 38/38. Same class as every
 prior cadence sweep (direct-to-main). See LOG Local cycle 20260809T015714Z. -->
 
+<!-- DONE Local cycle 20260809T064456Z (the ONE [LOCAL] item — TRUTH, direct-to-main): the P2 step (5) kith.com
+UCP-retail WELD prerequisite (give kith.com a genuinely-compared calibration-sweep presence) is DISCHARGED — the
+gymshark/hardgraft recipe, one baseline later. ADOPTED the uncommitted `experiments/calibration_sweep.py` POPULATION
++= `("kith.com", "ucp-live:apparel-lifestyle")` found at fire start (the api.replicate.com 20260807T134105Z /
+hardgraft.com 20260808T184442Z "edit uncommitted at fire start" self-heal — verified byte-correct, off the scoring
+path, no fabricated prior-ts LOG entry) + ran a $0 static cadence sweep (no --behavioral/--max-pay/codex/zero CLI,
+inv #1 by construction) -> runs/local/calibration_sweep_20260809T064456Z.json (27 total, 26 scored, rei.com
+not-scorable per inv #4, 0 errors). kith.com scored 70.3 C BYTE-IDENTICAL to its frozen floor (access 100.0 /
+legibility 86.36 / tx 50.0 / trust 60.0, caps empty, honest {metered_api, physical_good}); drift vs 20260809T014508Z
+0/25 moved, max |Δ| 0.0 — every prior member + both anchors + all 3 UCP + all 3 x402 rails byte-stable on floor;
+only new member is kith.com. Off-scoring-SEMANTICS EMPTY (POPULATION +1 only, off the scoring path); frozen delta
+UNMOVED +39.4; live +30.1; suite 38/38. This UNLOCKS the P2 step (5) weld: a future PEER-GATED PR can weld kith.com
+into _NON_ANCHOR_WELDED non-vacuously (n_compared=1 in this sweep at 70.3, agrees with floor, teeth = synthetic drift
+caught) — the 14th non-anchor member / 4th on the UCP rail. See LOG Local cycle 20260809T064456Z. -->
+
 <!-- No open P0 items. No open PRs. The whole #152-#161 non-anchor weld campaign is COMPLETE at 13 witnesses; PR #162
 (v0.7(g)) MERGED + reviewed (above). Forward candidates are the P2 UCP-depth / new-rail item below. -->
 
@@ -302,8 +296,11 @@ prior cadence sweep (direct-to-main). See LOG Local cycle 20260809T015714Z. -->
   UCP rung) + **brooklinen.com 59.9** (leg 54.55 already occupied → the glossier.com "only densifies trust" case).
   Installed fixture + EXPECTED + guard `test_ucp_retail_fourth_storefront_replays_70_3` (registered) + `_REPLAY_CLEAN` +
   `_POPULATION` ×5; suite 38/38; frozen +39.4 / live +30.1. Evidence
-  `runs/local/kith_ucp_highlegibility_baseline_20260809T040201Z.json`; LOG Local cycle 20260809T040201Z. A future
-  PEER-GATED weld of kith into `_NON_ANCHOR_WELDED` needs a `[LOCAL]` sweep-add first (n_compared≥1). **FORWARD
+  `runs/local/kith_ucp_highlegibility_baseline_20260809T040201Z.json`; LOG Local cycle 20260809T040201Z. The
+  `[LOCAL]` sweep-add prerequisite is now ✅ DONE (Local cycle 20260809T064456Z — kith.com added to the
+  `experiments/calibration_sweep.py` POPULATION + scored 70.3 BYTE-ON-FLOOR in
+  `calibration_sweep_20260809T064456Z.json`, n_compared=1, drift 0/25), so a future PEER-GATED PR can now weld kith
+  into `_NON_ANCHOR_WELDED` NON-vacuously — the 14th non-anchor member / 4th on the UCP rail. **FORWARD
   frontier** (surveyed + NOT pinned): glossier.com 64.9 / skims.com 60.4 conflate axes (see above); the UCP plane is now
   well-spanned on legibility (50.0→86.36) at the fixed tx-50 rung, so the remaining UCP-depth prize is a DISTINCT tx
   rung (a UCP merchant that CLEARS the sub-check spanx fails → tx > 50.0) OR a genuinely-NEW rail TYPE (ACP/MPP — still

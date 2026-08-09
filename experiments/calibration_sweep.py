@@ -173,6 +173,28 @@ POPULATION: list[tuple[str, str]] = [
     # score DIVERGES from its frozen floor this run is an honest manifest-drift
     # signal, not silently averaged in.
     ("hardgraft.com", "ucp-live:leather-goods"),
+    # a curated apparel/lifestyle merchant on the SAME live UCP rail, pinned as the
+    # SIXTEENTH frozen-replay baseline LOCAL cycle 20260809T040201Z (kith.com 70.3 C).
+    # It is the FOURTH non-anchor point on the UCP rail and the HIGH-LEGIBILITY corner
+    # of the UCP plane: GET /.well-known/ucp answers a $0 read with a valid dev.ucp.*
+    # merchant manifest, so the scorer's x402_probe reads commerce-protocol-live
+    # PARTIAL 4.0/8.0 — the SAME UCP middle rung as coffeecircle / gymshark / hardgraft
+    # (transactability 50.0, honest {metered_api, physical_good}, no over-claim). Its
+    # calibration value EXTENDS the UCP plane along the legibility axis: the first
+    # three UCP points cluster at legibility 50.0 -> 54.55, but kith holds the SAME
+    # tx-50.0 rung at a DISTINCT, far HIGHER legibility (86.36) with trust 60.0,
+    # scoring 70.3 — the HIGHEST UCP overall of the four, showing a UCP merchant can
+    # ALSO be highly legible (the rail fixes transactability while legibility ranges
+    # 50.0 -> 86.36 at the fixed rung). It carries a committed replay baseline but was
+    # ABSENT from every prior sweep. Adding it here (LOCAL cadence, the
+    # gymshark.com / hardgraft.com prerequisite pattern) gives it its first live-sweep
+    # presence, so a future TRUTH cycle can weld it into
+    # tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED non-vacuously — the
+    # FOURTH welded member on the UCP commerce-protocol rail. Because the UCP manifest
+    # is LIVE (a served well-known JSON, volatile), a member whose live score DIVERGES
+    # from its frozen floor this run is an honest manifest-drift signal, not silently
+    # averaged in.
+    ("kith.com", "ucp-live:apparel-lifestyle"),
     # non-storefront controls (zero-commerce baseline)
     ("example.com", "control:non-storefront"),
     ("wikipedia.org", "control:non-storefront"),

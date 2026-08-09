@@ -3,6 +3,62 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Local cycle — 20260809T024925Z — COVERAGE/TRUTH (LOCAL) — ACP/commerce-protocol well-known recon RE-RUN, broadened 20→32 candidates: ACP STILL 0/32 (lead stays closed), UCP positive control held + GREW 6→9 (3 fresh scouts spanx/kith/brooklinen)
+
+**Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260809T024102Z.json` fresh
+(~2 min old at fire start, ≪ 6h floor), `tests_ok:true` (all 38 suites, 0 failing), git clean + up to
+date on main (HEAD `ba68ebf`). Live canonical drift-flight.org 46.1 F / driftflight.com 76.2 C → live
+delta **+30.1** (persistent x402 `/extend` 402→401 regression, unchanged); frozen replay **+39.4**.
+`gh pr list --state open` → **[]** — NO open peer-gated PR, so no first-duty review owed (last fire ran
+the calibration cadence sweep GREEN; the fire before merged/reviewed PR #162 + ran the own-tool-drift
+tripwire GREEN). The #152–#161 non-anchor weld campaign is COMPLETE at 13 witnesses.
+
+**Track choice.** The last two fires ran TRUTH (calibration sweep, 015714Z) and METHOD (codex own-tool
+tripwire, 010020Z) — both routine cadence items are fresh. COVERAGE is the starving track. The
+highest-leverage $0/low-risk COVERAGE forward move is the P2 step-(3) new-rail-TYPE hunt (ACP/UCP/MPP) —
+the explicit "higher prize" for the north-star "many payment rails" flexibility axis, which the backlog
+says to re-run at cadence. Re-running the identical 20-domain list 6h after the last 0/20 null would be
+near-worthless, so I BROADENED the candidate set with 12 fresh domains to make the re-run genuinely hunt.
+
+**The ONE [LOCAL] item — broadened ACP/commerce-protocol well-known recon.** Added to
+`experiments/acp_wellknown_recon.py`'s `CANDIDATES` (20→32): big-retail ACP long-shots
+nike/sephora/lululemon/chewy; agentic-announced long-shots doordash/expedia; fresh Shopify/UCP scouts
+spanx/kith/brooklinen/ruggable; x402 infra coinbase/x402.org. Then ran it — **$0 read-only GETs** through
+the scorer's own `FetchContext.get` (`ua="browser"`) + byte-faithful `_parse_commerce_manifest`; no
+payment, no POST, no `--behavioral`, no zero CLI (inv #1 by construction). Off the scoring path
+(experiment + evidence only; `asrs/`, rubric, fixtures, scoring UNCHANGED — grep-clean), score-neutral,
+direct-to-main (same class as the calibration-sweep POPULATION adds and the prior 20260808T204601Z recon).
+
+**Result → `runs/local/acp_wellknown_recon_20260809T024720Z.json` (32 candidates, 0 exceptions — every
+domain reachable). GREEN.**
+- **ACP STILL 0/32 at BOTH paths** — the scorer path `/.well-known/agentic-commerce` AND the
+  ecosystem-documented `/.well-known/acp/manifest.json`. Every fresh long-shot returns 404 at both ACP
+  paths (nike/sephora/lululemon/chewy/doordash/expedia/coinbase/x402.org/ruggable), as do the original 20.
+  → the P2 step-(3) re-pathing lead STAYS CLOSED (inv #3 unsatisfiable: 0 < 2 live ACP surfaces), scorer
+  UNCHANGED. Re-confirmed on a broader/fresher set incl. big retail + agentic-announced partners = a
+  higher-confidence scarcity truth-signal (OpenAI Instant Checkout shut down 2026-03; the ecosystem is
+  young and, as of this fire, still publishes no live ACP well-known).
+- **UCP positive control HELD + GREW 6→9** — the 6 originals (gymshark/hardgraft/coffeecircle/allbirds/
+  skims/glossier) PLUS 3 FRESH genuine `dev.ucp.*` manifests validated by the scorer (200,
+  protocol=ucp, fields=[capabilities]): **spanx.com / kith.com / brooklinen.com**. So the ACP null is
+  REAL scarcity, not a broken probe — and the recon doubled as a UCP-depth SCOUT: spanx+kith were already
+  flagged abundant candidates; brooklinen is a NEW live-UCP find. All three are P2 step-(4) pin leads
+  (still need a distinct (legibility × trust) point + honest classification + a lean fixture before pinning).
+- **Honest negatives:** ruggable.com (a Shopify-adjacent store) serves NO UCP (404) → not every Shopify
+  merchant publishes the manifest; coinbase.com / x402.org publish NO commerce well-known (404 all paths)
+  → x402 is a 402-response rail, not a well-known-manifest rail (as expected — a completeness probe).
+
+**Canonical pair (unchanged this fire — scorer untouched):** drift-flight.org 46.1 F / driftflight.com
+76.2 C, live delta **+30.1**; frozen replay **+39.4** (`test_canonical_replay` unchanged). Full suite 38/38.
+
+**Next hypothesis.** ACP remains un-pinnable $0; keep re-running the now-32-candidate recon at cadence —
+the broader list is a more sensitive tripwire for the first live ACP surface (which unlocks the peer-gated
+`_COMMERCE_WELL_KNOWN` re-pathing + 2-domain validation the moment ≥2 answer). Meanwhile the fresh UCP
+scouts (spanx/brooklinen leanest) are the concrete forward COVERAGE lever: a future cycle can full-score
+one whose (legibility × trust) lands at a DISTINCT point on the UCP plane and pin/weld it as the 14th
+baseline. WATCH driftflight.com `/extend` for a 402 recovery (restores the anchor's live handshake + +39.4
+live delta). Evidence `runs/local/acp_wellknown_recon_20260809T024720Z.json`.
+
 ## Local cycle — 20260809T015714Z — TRUTH (LOCAL) — calibration cadence sweep: population-wide $0 static regression net GREEN (all 15 pinned/welded members byte-on-floor, 6 volatile live rails UP; sole mover a bistable non-storefront control)
 
 **Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260809T014104Z.json`

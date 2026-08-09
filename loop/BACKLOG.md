@@ -118,16 +118,10 @@ live-x402 point / 2nd tx-100 witness) is pruned this fire (Local cycle 20260808T
 under the 24000 hygiene cap — x402deploy is now BOTH pinned AND welded (PR #158); full text in loop/LOG.md
 (## Local cycle — 20260808T074103Z) + git history. -->
 
-<!-- DONE Local cycle 20260808T084106Z: the P2 prerequisite (give the three live-x402 witnesses a genuinely-compared
-calibration-sweep presence) is DISCHARGED. Added thebotwire.com / api.x402oracle.com / x402deploy.vercel.app to
-`experiments/calibration_sweep.py` POPULATION (20->23; segments x402-live:{news-data-wire,trust-oracle,web-data-tools}) and
-ran a $0 static cadence sweep (no --behavioral/--max-pay/codex/zero-CLI) -> runs/local/calibration_sweep_20260808T084504Z.json
-(22/23 scored, rei.com not-scorable per inv #4, 0 errors). All three scored live == frozen (thebotwire 86.0 B / oracle 64.4 D /
-x402deploy 73.9 C, overall + all 4 non-null pillars byte-identical, caps empty, honest archetypes unchanged) -> each now carries
-a first genuinely-compared sweep presence AGREEING with its floor (weld non-vacuous AND non-divergent; the live rails are all
-UP). Drift vs 20260807T134527Z: 1/19 moved, max |Δ| 4.6 (only the wikipedia.org control 41.1->45.7; every welded member + both
-anchors on floor). Off-scoring-SEMANTICS EMPTY (POPULATION +3 only); frozen delta UNMOVED +39.4; live +30.1; suite 38/38.
-Direct-to-main (same class as the books.toscrape.com / api.replicate.com POPULATION-adds). See LOG Local cycle 20260808T084106Z. -->
+<!-- PRUNED (Local cycle 20260809T024925Z) to keep closed-marker bytes under the 24000 hygiene cap: the 20260808T084106Z
+DONE marker (three-x402 sweep-add prerequisite, POPULATION 20->23, all live==frozen; unlocked PR #158) — fully superseded
+(PR #158 MERGED `3fc5b5b`, all three x402 rails re-confirmed byte-on-floor in the 20260809T014508Z cadence sweep);
+preserved verbatim in loop/LOG.md (## Local cycle — 20260808T084106Z) + git history. -->
 
 <!-- OPENED Local cycle 20260808T094101Z: the P2 weld of the three non-anchor LIVE-x402 witnesses (thebotwire.com 86.0 /
 api.x402oracle.com 64.4 / x402deploy.vercel.app 73.9) is AUTHORED as PEER-GATED PR #158 (branch
@@ -283,7 +277,14 @@ prior cadence sweep (direct-to-main). See LOG Local cycle 20260809T015714Z. -->
   `runs/local/acp_wellknown_recon_20260808T205138Z.json`; LOG Local cycle 20260808T204601Z. Re-run this $0 recon at a
   future cadence (OpenAI Instant Checkout shut down 2026-03; the ecosystem is young); if the scorer's path OR the
   ecosystem path ever answers a valid ACP payload on ≥2 domains, the well-known-path fix + 2-domain validation is the
-  peer-gated unit.
+  peer-gated unit. **CADENCE RE-RUN Local cycle 20260809T024925Z — the recon was BROADENED 20→32 candidates (12 FRESH:
+  big-retail ACP long-shots nike/sephora/lululemon/chewy; agentic-announced doordash/expedia; fresh Shopify/UCP scouts
+  spanx/kith/brooklinen/ruggable; x402 infra coinbase/x402.org) so each re-run hunts a NEW surface, not a rote repeat.
+  Result `runs/local/acp_wellknown_recon_20260809T024720Z.json` (0 exceptions, all reachable): ACP STILL 0/32 at BOTH
+  paths (every long-shot 404 both paths, incl. nike/sephora/doordash/expedia) → lead STAYS CLOSED, scorer UNCHANGED, now
+  re-confirmed on a broader/fresher set. UCP positive control held + GREW 6→9 (fresh genuine `dev.ucp.*` at
+  spanx.com/kith.com/brooklinen.com — see step (4)). DO NOT re-open the re-pathing without ≥2 live ACP surfaces; keep
+  re-running the (now 32-candidate) recon at cadence.**
   (4) ✅ DONE — the PEER-GATED **UCP-retail WELD of hardgraft.com** (66.9 D, the 13th non-anchor member / 3rd on the UCP
   rail) is COMPLETE: **PR #161 MERGED `5020895`** this fire (Local cycle 20260808T204601Z) after the owed FIRST-DUTY
   adversarial review + independent $0 live UCP re-score (live 66.9 == frozen 66.9 == EXPECTED 66.9, all 4 pillars
@@ -292,7 +293,12 @@ prior cadence sweep (direct-to-main). See LOG Local cycle 20260809T015714Z. -->
   candidates surveyed but NOT pinned: glossier.com 64.9 (legibility 54.55 — same as the
   pair, only densifies trust) and skims.com 60.4 (legibility 40.91 but tx 43.75 — a DIFFERENT tx rung, conflates two axes,
   not a clean single-rung comparison). Remaining ABUNDANT candidates (spanx/allbirds[drifted, avoid]/kith[17.8MB]) are
-  cheap direct-to-main pins IF a distinct calibration value + honest classification + lean fixture. `joinhexagon.com` is a
+  cheap direct-to-main pins IF a distinct calibration value + honest classification + lean fixture. **UCP-liveness
+  CONFIRMED $0 this fire (Local cycle 20260809T024925Z recon): spanx.com / kith.com / brooklinen.com each serve a valid
+  live `dev.ucp.*` manifest at `/.well-known/ucp` (200, protocol=ucp) — spanx+kith as flagged, brooklinen a NEW find;
+  ruggable.com does NOT (404).** A future pin still needs a full-score capture at a DISTINCT (legibility × trust) point +
+  honest classification (inv #4) + lean fixture — kith's fixture is large; spanx/brooklinen are the leaner leads.
+  `joinhexagon.com` is a
   DOCUMENTED live-UCP lead but needs a precision-guard unblock FIRST (4 llms-full.txt FP families, inv #4) — prefer clean
   merchant witnesses over infra profiles. WATCH driftflight.com /extend for a 402 recovery (restores the anchor's live
   handshake + the +39.4 live delta).

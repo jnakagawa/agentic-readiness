@@ -1,6 +1,24 @@
 # Loop state
 
-- Cycle counter: 320
+- Cycle counter: 321
+- **✅ ACP/COMMERCE-PROTOCOL WELL-KNOWN RECON RE-RUN GREEN, BROADENED 20→32 candidates (Local 20260809T024925Z,
+  COVERAGE/TRUTH, direct-to-main — the ONE [LOCAL] item).** Re-ran `experiments/acp_wellknown_recon.py` ($0 read-only
+  GETs via the scorer's own `FetchContext.get` + byte-faithful `_parse_commerce_manifest`; no payment/POST/`--behavioral`/
+  zero CLI, inv #1 by construction) after adding 12 FRESH candidates — big-retail ACP long-shots (nike/sephora/lululemon/
+  chewy), agentic-announced long-shots (doordash/expedia), fresh Shopify/UCP scouts (spanx/kith/brooklinen/ruggable),
+  x402 infra (coinbase/x402.org) — so the cadence re-run genuinely HUNTS a new surface, not a rote 6h repeat →
+  `runs/local/acp_wellknown_recon_20260809T024720Z.json` (32 candidates, **0 exceptions — all reachable**). **ACP STILL
+  0/32 at BOTH the scorer path `/.well-known/agentic-commerce` AND the ecosystem path `/.well-known/acp/manifest.json`**
+  (every long-shot 404 both paths, incl. nike/sephora/doordash/expedia) → the P2 step-(3) re-pathing lead STAYS CLOSED
+  (inv #3 unsatisfiable, <2 live ACP surfaces), scorer UNCHANGED — re-confirmed on a broader/fresher set = a
+  higher-confidence scarcity truth-signal. **UCP positive control HELD + GREW 6→9**: the 6 originals PLUS 3 FRESH genuine
+  `dev.ucp.*` manifests (200, protocol=ucp, fields=[capabilities]) — **spanx.com / kith.com / brooklinen.com** — so the
+  ACP null is REAL scarcity (not a broken probe) AND 3 fresh UCP-depth pin candidates are now scouted for the P2 item
+  (spanx+kith were flagged abundant; brooklinen is NEW). Honest negatives: ruggable.com serves NO UCP (404 — not every
+  Shopify store publishes it); coinbase.com/x402.org publish NO commerce well-known (x402 is a 402-response rail, not a
+  manifest). Off-scoring-path (experiment + evidence only; asrs/rubric/fixtures/scoring UNCHANGED); frozen +39.4 / live
+  +30.1; suite 38/38. NO open PRs. Evidence `runs/local/acp_wellknown_recon_20260809T024720Z.json`; LOG Local cycle
+  20260809T024925Z.
 - **✅ CALIBRATION CADENCE SWEEP RUN GREEN this fire (Local 20260809T015714Z, TRUTH, direct-to-main — the ONE
   [LOCAL] item).** Re-ran `experiments/calibration_sweep.py` ($0 static; no `--behavioral`/`--max-pay`/codex/zero
   CLI, inv #1 by construction) over the full 26-member POPULATION → `runs/local/calibration_sweep_20260809T014508Z.json`
@@ -408,39 +426,14 @@
   6th non-anchor cross-path member, solving the www/bare key mismatch with a new `_norm_domain` in the shared
   `_member_row` (n_compared=5, NOT vacuous); PEER-GATED PR #156 opened (`d67cabd`, later self-merged `571e4c6`). Daily
   digest posted (first real cycle after 16:00 UTC). Frozen delta UNMOVED +39.4; suite 38/38. Full detail in loop/LOG.md.
-<!-- Rolling entry for Local cycle 20260807T154104Z (MERGED PR #155 [api.replicate.com 5th non-anchor weld, `7e08063`]
-     after adversarial review + live re-score; then pinned www.moleskine.com as the 8th frozen-replay baseline / 2nd
-     retail storefront, direct-to-main) pruned this fire (Local cycle 20260808T005504Z) to stay under the STATE 600-line
-     cap — preserved verbatim in loop/LOG.md (## Local cycle — 20260807T154104Z) + git history. -->
-- LOCAL cycle — 20260807T154104Z summarized: MERGED PR #155 (api.replicate.com 5th non-anchor weld, `7e08063`) after
-  the owed FIRST-DUTY review + live re-score (29.5 live==frozen==EXPECTED); then pinned www.moleskine.com (49.8 F, a
-  2nd retail storefront — retail DEPTH) as the 8th frozen-replay baseline, closing its clean-but-UNPINNED score gap.
-  Direct-to-main; frozen delta UNMOVED +39.4; suite 38/38. Full detail in loop/LOG.md.
-<!-- Rolling entry for Local cycle 20260807T144105Z (welded api.replicate.com as the 5th non-anchor cross-path member,
-     PEER-GATED PR #155 opened) pruned this fire (Local cycle 20260807T214332Z) to stay under the STATE 600-line cap —
-     preserved verbatim in loop/LOG.md + git history. -->
-<!-- Rolling entries for Local cycles 20260807T134105Z (calibration cadence sweep, api.replicate.com added to
-     POPULATION) + 20260807T114104Z (MERGED PR #154 + pinned api.replicate.com as the 7th frozen-replay baseline /
-     5th storefront TYPE) pruned this fire (Local cycle 20260807T205300Z) to stay under the STATE 600-line cap —
-     both preserved verbatim in loop/LOG.md + git history. -->
-<!-- Nine older cloud/local prune-trail comment blocks (2026-08-07 cycles 20260807T104102Z / 094104Z / 084355Z /
-     074106Z and the cloud CYCLE 295 note) further compacted away this fire (Local cycle 20260808T204601Z) to stay
-     under the STATE 600-line cap — all fully preserved in loop/LOG.md + git history. -->
-<!-- Rolling entry for Local cycle 20260807T064228Z (TRUTH/METHOD / MERGED PR #151 documented-live-drift ledger +
-     welded books.toscrape.com as the 2nd non-anchor cross-path member, PEER-GATED PR #152 opened) pruned this fire
-     (Local cycle 20260808T024315Z) to stay under the STATE 600-line cap — preserved verbatim in loop/LOG.md
-     (## Local cycle — 20260807T064228Z) + git history. -->
-- LOCAL cycle — 20260807T064228Z summarized: reviewed + MERGED PR #151 (documented-live-drift ledger, `140304e`) after
-  the owed FIRST-DUTY adversarial review + live re-scores (VERDICT SOUND, teeth preserved, +39.4 frozen / +30.1 live);
-  then welded books.toscrape.com (retail catalog) as the 2nd non-anchor cross-path member (PEER-GATED PR #152, later
-  merged `1310fd5`). Full detail in loop/LOG.md.
-<!-- Rolling entries for Local cycles 20260807T054210Z (PR #151 documented-live-drift ledger opened) +
-     20260807T051750Z (calibration cadence + PR #150 post-merge review self-heal) pruned this fire
-     (Local cycle 20260807T154104Z) to stay under the STATE line cap — both preserved verbatim in loop/LOG.md
-     + git history. -->
-- LOCAL cycle — 20260807T051750Z through 064228Z summarized: the documented-live-drift ledger (PR #151 `140304e`)
-  RESOLVED the calibration-cadence blocker (persistent live x402 regression 85.5→76.2 / +39.4→+30.1), unlocking the
-  non-anchor weld + baseline-pin campaign that followed. Full detail in loop/LOG.md.
+<!-- The dense 2026-08-07 rolling-entry block (Local cycles 20260807T051750Z→174235Z: PR #151 documented-live-drift
+     ledger MERGED `140304e` → RESOLVED the calibration-cadence blocker; then the #152/#154/#155/#156 non-anchor welds +
+     the api.replicate.com / www.moleskine.com baseline pins) compacted to this pointer this fire (Local cycle
+     20260809T024925Z) to make room for the ACP-recon banner under the STATE 600-line cap — all preserved verbatim in
+     loop/LOG.md (## Local cycle — 20260807T051750Z … 174235Z) + git history. -->
+- LOCAL cycle — 20260807T051750Z→174235Z summarized: the documented-live-drift ledger (PR #151 `140304e`) RESOLVED the
+  calibration-cadence blocker (persistent live x402 regression 85.5→76.2 / +39.4→+30.1), unlocking the non-anchor weld +
+  baseline-pin campaign (#152–#156) that followed. Full detail in loop/LOG.md.
 <!-- Rolling entry for cloud CYCLE 295 (METHOD / save_fixture canonical-order serialization) pruned this fire
      (Local cycle 20260807T144105Z) to stay under the STATE line cap — preserved verbatim in loop/LOG.md
      (## Cycle 295) + git history. The FOCUS POINTER below still carries the cloud track's forward state. -->

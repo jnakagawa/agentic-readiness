@@ -72,6 +72,27 @@ CANDIDATES = [
     ("allbirds.com", "ucp-merchant-control"),
     ("skims.com", "ucp-merchant-control"),
     ("glossier.com", "ucp-merchant-control"),
+    # --- Cadence broadening (Local cycle 20260809T02xxxxZ): FRESH candidates so
+    # each re-run genuinely hunts for a NEW live ACP surface instead of repeating
+    # the same 20-domain null. A per-domain exception is caught, so a
+    # non-resolving domain records an error and never kills the sweep. ---
+    # Big-retail ACP long-shots (would announce an Instant-Checkout surface).
+    ("nike.com", "retail-longshot"),
+    ("sephora.com", "retail-longshot"),
+    ("lululemon.com", "retail-longshot"),
+    ("chewy.com", "retail-longshot"),
+    # Named in agentic-commerce / ChatGPT-commerce announcements — ACP long-shots.
+    ("doordash.com", "agentic-announced-longshot"),
+    ("expedia.com", "agentic-announced-longshot"),
+    # Fresh Shopify/UCP merchant scouts (hunt a new UCP (legibility×trust) point
+    # AND catch any merchant that flips to ACP).
+    ("spanx.com", "ucp-merchant-scout"),
+    ("kith.com", "ucp-merchant-scout"),
+    ("brooklinen.com", "ucp-merchant-scout"),
+    ("ruggable.com", "ucp-merchant-scout"),
+    # x402 infra long-shots — do they ALSO publish a commerce well-known manifest?
+    ("coinbase.com", "x402-infra-longshot"),
+    ("x402.org", "x402-infra-longshot"),
 ]
 
 

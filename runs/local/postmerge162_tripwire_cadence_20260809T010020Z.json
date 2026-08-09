@@ -1,0 +1,98 @@
+{
+ "ts": "20260809T010020Z",
+ "kind": "post_merge_review_plus_tripwire_cadence",
+ "track": "METHOD/TRUTH",
+ "cycle": 319,
+ "pr_162": {
+  "merged_by": "jnakagawa (operator)",
+  "merged_at": "2026-08-08T23:51:40Z",
+  "merge_commit": "36822c1",
+  "authoring_commit": "0f51dde",
+  "state_at_fire_start": "STATE banner said OPEN; git showed MERGED -> operator-merge (PR #149/#150 pattern) -> owed POST-MERGE review",
+  "verdict": "SOUND",
+  "off_static_scoring_path": true,
+  "frozen_delta": "+39.4 UNMOVED (test_canonical_replay 37/37, behavioral-only change in asrs/behavioral/shopper.py)",
+  "leak_scan": {
+   "files_scanned": 849,
+   "string_leaves": 95983,
+   "old_only_loss": 0,
+   "new_only_distinct": 2,
+   "new_only_texts": [
+    "Live-site access was denied at the browser permission boundary.  (GENUINE target: driftflight.com codex t2 transcript + recon summaries)",
+    "authoring-evidence JSON .drift narrative QUOTING the target phrase (NOT a consumed run-record blocker/trust_event; benign self-reference)"
+   ],
+   "genuine_run_record_flips": 1,
+   "strict_superset": true
+  },
+  "precision_guards": "test_attribution.py #17: 8 precision guards + revert-teeth all pass (17/17)",
+  "suite": "38/38 on merged main (verify_20260809T004103Z)",
+  "live_canonical": {
+   "drift-flight.org": 46.1,
+   "driftflight.com": 76.2,
+   "delta": 30.1,
+   "note": "/extend 402->401 persists; +30.1 honest live reading"
+  },
+  "dollar_zero": true
+ },
+ "tripwire_cadence": {
+  "experiment": "experiments/codex_reachability.py",
+  "artifact": "runs/local/codex_reachability_20260809T004746Z/",
+  "codex_trials": 5,
+  "dollar_zero": true,
+  "runs": [
+   {
+    "domain": "driftflight.com",
+    "trial": 1,
+    "http": 200,
+    "observed": false,
+    "env_blocked_current": true,
+    "security_family": true,
+    "blocker": "Direct navigation to driftflight.com was denied by the browser security/permission layer.",
+    "note": "GENUINE own-tool browser refusal, CORRECTLY caught (v0.6 family) -> routed to reachability, not site evidence"
+   },
+   {
+    "domain": "driftflight.com",
+    "trial": 2,
+    "http": 200,
+    "observed": true,
+    "env_blocked_current": false,
+    "note": "codex OBSERVED the site; not a block"
+   },
+   {
+    "domain": "drift-flight.org",
+    "trial": 1,
+    "http": 200,
+    "observed": true,
+    "env_blocked_current": false,
+    "note": "OBSERVED"
+   },
+   {
+    "domain": "drift-flight.org",
+    "trial": 2,
+    "http": 200,
+    "observed": true,
+    "env_blocked_current": false,
+    "note": "OBSERVED"
+   },
+   {
+    "domain": "example.com",
+    "trial": 1,
+    "http": 200,
+    "observed": false,
+    "env_blocked_current": false,
+    "note": "control: browser WORKED, cited IANA, 'documentation-only placeholder offers no product' -> honest non-observation, ZERO browser-refusal phrasing"
+   }
+  ],
+  "leak_candidates_raw": 1,
+  "leak_candidates_genuine": 0,
+  "leak_candidate_explanation": "the sole raw candidate is example.com t1 \u2014 the KNOWN coarse-filter false positive (up-site honest non-observation on the non-commercial IANA control), NOT a browser refusal. Blocker/trust text carries zero browser-refusal phrasing.",
+  "verdict": "TRIPWIRE GREEN \u2014 no seventh drift; shipped regex correctly attributed the live driftflight.com browser refusal; v0.7(g) target phrasing remains pinned by test #17 + the re-derived leak-scan"
+ },
+ "invariants": {
+  "i1_zero_dollar": true,
+  "i2_versioned": "no scoring-semantics change this fire (review+recon only)",
+  "i3_evidence": "committed transcripts + artifact",
+  "i4_attribution": "browser refusal routed to reachability, control non-observation NOT a drift",
+  "i5_no_history_rewrite": true
+ }
+}

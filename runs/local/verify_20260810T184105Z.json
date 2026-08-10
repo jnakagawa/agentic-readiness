@@ -1,0 +1,195 @@
+{
+ "ts": "20260810T184105Z",
+ "kind": "local-verify",
+ "git_pull": {
+  "ok": true,
+  "attempts": 1,
+  "tail": "Already up to date.\nFrom https://github.com/jnakagawa/agentic-readiness\n * branch            main       -> FETCH_HEAD\n"
+ },
+ "tests": {
+  "test_attribution.py": {
+   "ok": true,
+   "tail": "1 valid run\n  ok: denied-at-boundary-blocked codex run counted as reachability, not site evidence\n  ok: the denied-at-boundary-blocked model is attributed in reachability evidence\n\n17/17 tests passed\n"
+  },
+  "test_backlog_hygiene.py": {
+   "ok": true,
+   "tail": "cklog_exists_and_nonempty\n  ok: test_backlog_stays_readable_in_one_call\n  ok: test_completed_markers_do_not_accrete\n  ok: test_priority_sections_survive\n  ok: test_guards_have_teeth\n\n5/5 tests passed\n"
+  },
+  "test_battery.py": {
+   "ok": true,
+   "tail": "variant\n  ok: NA audit record identical (same attempted-run count, no completion)\n  ok: between_kind_spread is real (>0.2), got 0.25\n  ok: cross_task_spread is real (>0), got 0.25\n\n14/14 tests passed\n"
+  },
+  "test_battery_instantiate.py": {
+   "ok": true,
+   "tail": " guard has teeth)\n  ok: the real descriptor stays invariant on the same relabel pair the stub flips\n  ok: instantiate_battery yields a Battery of BatteryTask (task selection only)\n\n14/14 tests passed\n"
+  },
+  "test_battery_instantiate_canonical.py": {
+   "ok": true,
+   "tail": "ous agent, without a human in the loop\"\n    \"invoke the service's metered API once and pay for that single call programmatically as an autonomous agent, without a human in the loop\"\n\n6/6 tests passed\n"
+  },
+  "test_battery_wiring.py": {
+   "ok": true,
+   "tail": "t without --behavioral (static probes are task-independent) \u2014 ignored\n[asrs] warning: --battery auto discovered no offering archetypes for 'shop.example' \u2014 empty battery (every archetype recorded NA)\n"
+  },
+  "test_calibration.py": {
+   "ok": true,
+   "tail": "\u2014 absent (pillar max shrinks)\nrubric check 'hosted_agent_reachability' has no result \u2014 absent (pillar max shrinks)\nrubric check 'hosted_agent_reachability' has no result \u2014 absent (pillar max shrinks)\n"
+  },
+  "test_calibration_anchor_agreement.py": {
+   "ok": true,
+   "tail": "5 is accepted (got [])\n  ok: the 4 non-null pillars were compared (got 4)\n  ok: a further transactability drop past the documented value is caught, alone (got ['transactability'])\n\n30/30 tests passed\n"
+  },
+  "test_calibration_drift.py": {
+   "ok": true,
+   "tail": "ft signature invariant\n  ok: baseline ordering 1: drift signature invariant\n  ok: baseline ordering 2: drift signature invariant\n  ok: baseline ordering 3: drift signature invariant\n\n6/6 tests passed\n"
+  },
+  "test_canonical_history.py": {
+   "ok": true,
+   "tail": "d_series\n  ok: the committed series has points, got 181\n  ok: there is a latest point\n  ok: latest lands in a known band, got diverged\n  ok: real render is substantive, 2405 chars\n\n71/71 tests passed\n"
+  },
+  "test_canonical_replay.py": {
+   "ok": true,
+   "tail": "\u2014 absent (pillar max shrinks)\nrubric check 'hosted_agent_reachability' has no result \u2014 absent (pillar max shrinks)\nrubric check 'hosted_agent_reachability' has no result \u2014 absent (pillar max shrinks)\n"
+  },
+  "test_compare_payment_corroboration.py": {
+   "ok": true,
+   "tail": "lid trial'\n  ok: single card and compare share one decision source\ntest_states_render_distinct_compare_lines\n  ok: the three corroboration states render three DISTINCT compare lines\n\n6/6 tests passed\n"
+  },
+  "test_encoding_reproducibility.py": {
+   "ok": true,
+   "tail": "\u2014 absent (pillar max shrinks)\nrubric check 'hosted_agent_reachability' has no result \u2014 absent (pillar max shrinks)\nrubric check 'hosted_agent_reachability' has no result \u2014 absent (pillar max shrinks)\n"
+  },
+  "test_fetch_replay.py": {
+   "ok": true,
+   "tail": "is identical from both orders\n  ok: replayed GET https://z.test/api gptbot is identical from both orders\n  ok: replayed POST https://z.test/api browser is identical from both orders\n\n4/4 tests passed\n"
+  },
+  "test_free_tier.py": {
+   "ok": true,
+   "tail": " 2.0\ntest_full_delivery_passes\n  ok: full delivery => PASS\n  ok: full credit = 5.0, got 5.0\n  ok: content field surfaced in evidence\n  ok: steering to free meter via openapi enums\n\n11/11 tests passed\n"
+  },
+  "test_hashseed_reproducibility.py": {
+   "ok": true,
+   "tail": "\u2014 absent (pillar max shrinks)\nrubric check 'hosted_agent_reachability' has no result \u2014 absent (pillar max shrinks)\nrubric check 'hosted_agent_reachability' has no result \u2014 absent (pillar max shrinks)\n"
+  },
+  "test_launcher_hygiene.py": {
+   "ok": true,
+   "tail": "a synchronous, unbounded agent (has teeth)\n  ok: detector flags a floor-after-agent ordering (has teeth)\n  ok: the real launcher passes all three semantic guards (no false positive)\n\n7/7 tests passed\n"
+  },
+  "test_local_verify.py": {
+   "ok": true,
+   "tail": "got 'preserving 2 un-pushed non-heartbeat commit(s); not ours to discard'\n  ok: no recovery when we are not ahead of origin\n  ok: never resets when the divergence is not our commits\n\n8/8 tests passed\n"
+  },
+  "test_locale_reproducibility.py": {
+   "ok": true,
+   "tail": "\u2014 absent (pillar max shrinks)\nrubric check 'hosted_agent_reachability' has no result \u2014 absent (pillar max shrinks)\nrubric check 'hosted_agent_reachability' has no result \u2014 absent (pillar max shrinks)\n"
+  },
+  "test_offering.py": {
+   "ok": true,
+   "tail": "g \u2014 quote: 'e no real meaning. A Light in the ... \u00c2\u00a351.77 In stock Add to basket Tipping the Velvet \u00c2\u00a353.7'\n  ok: strip_html removes script/style/tags, passes plain text through\n\n125/125 tests passed\n"
+  },
+  "test_offering_canonical.py": {
+   "ok": true,
+   "tail": "l_good']) \u2014 the isolation check has teeth\n  ok: the poaching surface trips >1 archetype (['metered_api', 'physical_good']), so single-archetype isolation is a falsifiable property\n\n70/70 tests passed\n"
+  },
+  "test_probe_order_reproducibility.py": {
+   "ok": true,
+   "tail": "\u2014 absent (pillar max shrinks)\nrubric check 'hosted_agent_reachability' has no result \u2014 absent (pillar max shrinks)\nrubric check 'hosted_agent_reachability' has no result \u2014 absent (pillar max shrinks)\n"
+  },
+  "test_protocols.py": {
+   "ok": true,
+   "tail": "st_reverse_domain_capability_ids\n  ok: reverse-domain cap -> ucp, got {'protocol': 'ucp', 'fields': ['capabilities'], 'snippet': '{\"data\": {\"caps\": [\"dev.ucp.shopping.checkout\"]}}'}\n\n7/7 tests passed\n"
+  },
+  "test_quotability.py": {
+   "ok": true,
+   "tail": "le-trial card shows the PROVISIONAL verdict\n  ok: behavioral overall score unchanged too\ntest_cli_trials_default_is_two\n  ok: default --trials is 2 (multi-trial by default), got 2\n\n11/11 tests passed\n"
+  },
+  "test_readout.py": {
+   "ok": true,
+   "tail": "\u2014 absent (pillar max shrinks)\nrubric check 'hosted_agent_reachability' has no result \u2014 absent (pillar max shrinks)\nrubric check 'hosted_agent_reachability' has no result \u2014 absent (pillar max shrinks)\n"
+  },
+  "test_readout_wording.py": {
+   "ok": true,
+   "tail": "(78471 chars) \u2014 an empty render can't vacuously pass the neutrality scan\n  ok: card.html is substantive (14238 chars)\n  ok: the denylist is non-empty and every entry is a real token\n\n4/4 tests passed\n"
+  },
+  "test_reliability.py": {
+   "ok": true,
+   "tail": "nanimity invariant\n  ok: k=5: no_human_gate n/pass_count scale k-fold (non-vacuous)\n  ok: adding a DISSENTING run moves the metric (invariance is to replication only): 0.7 -> 0.68\n\n12/12 tests passed\n"
+  },
+  "test_report_payment_corroboration.py": {
+   "ok": true,
+   "tail": " corroboration line\n  ok: paneled card with no x402 prediction prints no corroboration line\ntest_states_are_distinct\n  ok: the three corroboration states render three DISTINCT lines\n\n7/7 tests passed\n"
+  },
+  "test_rubric_wording.py": {
+   "ok": true,
+   "tail": "\n4/4 tests passed\n"
+  },
+  "test_runner_registration.py": {
+   "ok": true,
+   "tail": "gs a defined-but-unregistered test (has teeth)\n  ok: detector does NOT fire on a fully-registered module (no false positive)\n  ok: detector flags a ghost registered name (has teeth)\n\n4/4 tests passed\n"
+  },
+  "test_scoring.py": {
+   "ok": true,
+   "tail": "' has no result \u2014 absent (pillar max shrinks)\nrubric check 'policies_present' has no result \u2014 absent (pillar max shrinks)\nrubric check 'reputation_signals' has no result \u2014 absent (pillar max shrinks)\n"
+  },
+  "test_shopper_evidence_order.py": {
+   "ok": true,
+   "tail": "yte-identical under panel-order reversal\n  ok: trust by_run rows are ordered by the (model, trial) label\n  ok: pre-fix arrival-order projection was order-sensitive (guard has teeth)\n\n2/2 tests passed\n"
+  },
+  "test_shopper_hermetic.py": {
+   "ok": true,
+   "tail": "ust probe still runs `claude -p`\n  ok: the trust-probe prompt is still passed through\n  ok: trust probe still requests --output-format json\n  ok: trust probe still pins --model opus\n\n4/4 tests passed\n"
+  },
+  "test_state_hygiene.py": {
+   "ok": true,
+   "tail": "\n4/4 tests passed\n"
+  },
+  "test_timezone_reproducibility.py": {
+   "ok": true,
+   "tail": "\u2014 absent (pillar max shrinks)\nrubric check 'hosted_agent_reachability' has no result \u2014 absent (pillar max shrinks)\nrubric check 'hosted_agent_reachability' has no result \u2014 absent (pillar max shrinks)\n"
+  },
+  "test_trial_stability_v06.py": {
+   "ok": true,
+   "tail": "2 unchanged by the fix (both 0.8)\n  ok: N>=3 readings moved after the fix (committed curve superseded), moved=[3, 4, 5]\n  ok: committed pre-v0.6 N=3 was mixed (0.6 < 0.8) \u2014 the leak\n\n4/4 tests passed\n"
+  },
+  "test_trust_panel_reproducibility.py": {
+   "ok": true,
+   "tail": "e in deterministic model-sorted order\n  ok: pre-fix arrival-order key insertion differed (guard has teeth)\n  ok: yet Python dict `==` sees them as equal (why the ==-guard missed it)\n\n3/3 tests passed\n"
+  },
+  "test_x402_proxy_discovery.py": {
+   "ok": true,
+   "tail": "\n  ok: stays documented-not-probed, got 'x402-documented-not-probed'\n  ok: partial 4.0, got Status.PARTIAL 4.0\n  ok: the proxy path was probed even when it did not 402 (non-vacuous)\n\n4/4 tests passed\n"
+  }
+ },
+ "tests_ok": true,
+ "scores": {
+  "drift-flight.org": {
+   "ok": true,
+   "overall": 46.1,
+   "grade": "F",
+   "rubric": "0.7",
+   "scored": true,
+   "pillars": {
+    "access": 100.0,
+    "legibility": 36.36363636363637,
+    "transactability": 18.75,
+    "trust": 60.0,
+    "outcome": null
+   }
+  },
+  "driftflight.com": {
+   "ok": true,
+   "overall": 76.2,
+   "grade": "C",
+   "rubric": "0.7",
+   "scored": true,
+   "pillars": {
+    "access": 100.0,
+    "legibility": 90.9090909090909,
+    "transactability": 62.5,
+    "trust": 60.0,
+    "outcome": null
+   }
+  }
+ },
+ "delta": 30.1
+}

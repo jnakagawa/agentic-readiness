@@ -21490,3 +21490,7 @@ split as a single-sub-check calibration axis (b); the tiered-volume free-shippin
 32-candidate ACP/MPP recon + own-tool-drift TRIPWIRE at cadence. WATCH driftflight.com `/extend` for a 402 recovery
 (restores the anchor handshake + the +39.4 live delta). Meta: keep confirming no fresh floor-only stall > 3h at each
 fire's infra step.
+
+## Local verification — 20260810T184105Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260810T184105Z.json

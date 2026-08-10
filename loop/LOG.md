@@ -21349,3 +21349,7 @@ launchd job is scheduled/healthy (queued as a BACKLOG WATCH; not diagnosable pur
 frontier is unchanged: the P2 UCP-depth / new-rail item (aloyoga.com 81.2 high-corner candidate pending honest-
 classification vetting; the 32-candidate ACP/MPP recon at cadence; the own-tool-drift TRIPWIRE cadence — the 7th drift
 will come). WATCH driftflight.com `/extend` for a 402 recovery (restores the anchor handshake + the +39.4 live delta).
+
+## Local verification — 20260810T154105Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260810T154105Z.json

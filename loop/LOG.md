@@ -21748,3 +21748,7 @@ at each fire's infra step. Evidence `runs/local/thebotwire_persistence_confirm_2
 ## Local verification — 20260810T224104Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260810T224104Z.json
+
+## Local verification — 20260810T234105Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260810T234105Z.json

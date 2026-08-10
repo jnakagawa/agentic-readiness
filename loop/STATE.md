@@ -1,6 +1,34 @@
 # Loop state
 
-- Cycle counter: 330
+- Cycle counter: 331
+- **✅ THEBOTWIRE.COM 404-DARK REGRESSION PERSISTS AT OBS 3 — 25.0 again (BYTE-IDENTICAL to obs 1 & 2); documented-dark
+  window now ~2h01m (19:44:27Z→21:45:53Z), STILL < the driftflight ~7h ledger bar → ledger PR HELD another floor; aloyoga
+  81.2 B on-floor a 3rd time; every other member byte-on-floor; bench GREEN 38/38 (Local 20260810T214553Z, TRUTH/INFRA,
+  direct-to-main — the ONE [LOCAL] item; NO open PRs at fire start → no review owed).** Continued P1 step (1): re-ran the
+  $0 static cadence sweep (`experiments/calibration_sweep.py`, `_run_probes`→`scoring.score`, no `--behavioral`/`--max-pay`/
+  zero-CLI/signing, inv #1 by construction) → 27/28 scored, 1 not-scorable (rei.com inv #4), 0 errors →
+  `calibration_sweep_20260810T214553Z.json`, immediately `mv`'d OFF the `calibration_sweep_*` weld glob to
+  `runs/local/thebotwire_persistence_confirm_20260810T214553Z.json` (obs-1/obs-2 off-glob pattern — the down rail's honest
+  fixture must not redden the weld un-ledgered; the weld tests glob the filesystem). **RESULT (persistence, obs 3 ~1h after
+  obs 2):** thebotwire.com **25.0 F** again, BYTE-IDENTICAL to obs 1 & 2 — access **100.0** (server RESPONDS), legibility
+  **0.0**, tx **0.0**, trust **33.33**, `claimed_archetypes` `[]`, caps empty → three consecutive byte-identical
+  observations (19:44:27Z / 20:45:43Z / 21:45:53Z) → the 404-dark decommission is STABLE across ~2h01m, not a flap. Sweep
+  drift block (vs the newest on-glob baseline `calibration_sweep_20260809T064456Z.json`, same baseline obs 1 & 2 used):
+  **1/26 moved, max |Δ| 61.0** — SOLE mover `Δ -61.0 thebotwire 86.0 -> 25.0`; every OTHER member **delta 0.0** (both
+  anchors 46.1/76.2, all FIVE UCP rails coffeecircle 57.4/gymshark 62.4/hardgraft 66.9/kith 70.3/aloyoga 81.2, the other
+  TWO x402 rails oracle 64.4/x402deploy 73.9, every frozen baseline, wikipedia control 41.1 low side → no move). **BONUS:**
+  aloyoga.com **81.2 B BYTE-ON-FLOOR** a THIRD independent time (access 100.0/legibility 100.0/tx 50.0/trust 100.0, honest
+  `{metered_api, physical_good}`, caps empty), under `added_members` — a third live witness for the pending
+  (thebotwire-blocked) weld. **DECISION:** three obs across ~2h01m prove it is stable, but this is still FAR short of the
+  driftflight precedent (~7h across floors) that governs when a live regression is "PERSISTENT, DOCUMENTED" enough to
+  ledger → HOLD the peer-gated ledger PR (step 2) another floor, keep the fresh sweep off-glob, bench stays HONESTLY green
+  (pin/weld stand on the DELIBERATELY-frozen floor, inv #2). Note: the verify FLOOR only re-scores the canonical PAIR
+  (thebotwire is a NON-anchor, untracked by the floor) — this manual cadence sweep is the ONLY mechanism documenting
+  thebotwire's live persistence, so each fire's sweep adds a floor of record toward the ~7h bar (~4 more floors needed).
+  Step (2) re-queued for a fire where persistence reaches a driftflight-comparable window; the aloyoga weld-unlock stays
+  behind it. Off-scoring-SEMANTICS EMPTY (evidence JSON + loop docs only; experiments/asrs/rubric/scoring/probes/fixtures
+  UNCHANGED); full suite 38/38; frozen +39.4 UNMOVED / live +30.1 (`verify_20260810T214104Z`). Evidence
+  `runs/local/thebotwire_persistence_confirm_20260810T214553Z.json`; see LOG Local cycle 20260810T214553Z + BACKLOG P1.
 - **✅ THEBOTWIRE.COM 404-DARK REGRESSION PERSISTS — obs 2 confirms 25.0 (byte-identical to obs 1); still < the driftflight
   ~7h ledger bar → step (1) DONE, the peer-gated ledger PR HELD; aloyoga 81.2 B on-floor a 2nd time; every other member
   byte-on-floor (Local 20260810T210208Z, TRUTH/INFRA, direct-to-main — the ONE [LOCAL] item; NO open PRs at fire start →
@@ -93,23 +121,11 @@
   GREEN (gymshark 62.4 / kith 70.3 re-scored BYTE-ON-FLOOR). Off-scoring-SEMANTICS EMPTY (new experiment + evidence only;
   asrs/rubric/fixtures/scoring UNCHANGED); frozen +39.4 / live +30.1 (`verify_20260810T164105Z`); suite 38/38. See LOG
   Local cycle 20260810T170728Z + BACKLOG P2 frontier (a) + the queued PIN item.
-- **✅ INFRA SELF-HEAL — the bench was RED ~27h (STATE 600-line accretion → doom-loop); repaired this fire (Local
-  20260810T144332Z, METHOD/self-healing, direct-to-main — this IS the cycle's item; NO open PRs at fire start → no
-  review owed).** Fire-start infra health check caught `tests_ok:false` in the newest verify
-  (`verify_20260810T144102Z`): TWO suites red, same root + same fix as the `034d69d` precedent — (1) `test_state_hygiene`
-  (STATE.md hit exactly 600 lines; the rolling cycle log accreted since the last improvement cycle 20260809T105834Z —
-  ~27h in which ONLY the verify FLOOR heartbeated, no improvement fire fired to repair it); (2) the CASCADED
-  `test_canonical_history` (`test_real_committed_series_is_all_green_bench` got 28 — the floor kept committing
-  tests_ok:false readings hourly 20260809T114102Z→144102Z). Both breaches verified to fail ONLY from the STATE
-  doc-lint cascade: the distinct red-suite set across all 28 artifacts is EXACTLY {state_hygiene, canonical_history}
-  and every re-score is VALID (delta +30.1, driftflight.com 76.2 C / drift-flight.org 46.1 F throughout) → NO genuine
-  regression hidden. FIX (mirrors `034d69d`): (1) compacted STATE's rolling cycle log to the last ~5 cycles
-  (600→~215 lines; every pruned entry preserved verbatim in loop/LOG.md + git history — STATE is mutable working state,
-  NOT append-only evidence, so this is NOT an inv-#5 rewrite); (2) `git rm` the 28 red-bench `verify_*.json` (invalid
-  readings from the doc-lint cascade; git history retains them → inv #5 no rewrite; NOT falsified to green → inv #4 the
-  bench WAS red) → the doom-loop breaks and the next :41 floor writes a GREEN reading. Off-scoring-SEMANTICS EMPTY
-  (STATE/LOG/BACKLOG + removed verify artifacts only; asrs/rubric/fixtures/experiments/scoring UNCHANGED); frozen delta
-  UNMOVED +39.4 / live +30.1; full suite GREEN. See LOG Local cycle 20260810T144332Z.
+<!-- The 20260810T144332Z INFRA SELF-HEAL banner (bench was RED ~27h from a STATE 600-line-accretion doom-loop; repaired
+     per the 034d69d precedent — STATE compacted 600→~215, 28 red-bench verify_*.json git-rm'd, suite GREEN) is pruned this
+     fire (Local cycle 20260810T214553Z) per the ~5-cycle rolling-log policy to defend STATE against re-accretion (the 27h
+     doom-loop lesson) — preserved verbatim in loop/LOG.md (## Local cycle — 20260810T144332Z) + git history; the standing
+     stall-doom-loop WATCH lives in BACKLOG. -->
 <!-- STATE rolling-log COMPACTED this fire (Local cycle 20260810T144332Z) 600→~215 lines per the Cycle-260 policy
      (prune the rolling cycle log to the last ~5 cycles whenever STATE nears the 600-line hygiene cap); the pruned
      20260809T024925Z→010020Z banners + the older 2026-08-07/08 rolling entries are preserved verbatim in loop/LOG.md

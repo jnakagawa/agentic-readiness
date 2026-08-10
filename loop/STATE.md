@@ -1,6 +1,28 @@
 # Loop state
 
-- Cycle counter: 327
+- Cycle counter: 328
+- **✅ ALOYOGA.COM 81.2 B PINNED — the SEVENTEENTH frozen-replay baseline / FIFTH UCP-rail point / HIGH CORNER of the UCP
+  plane (Local 20260810T174412Z, COVERAGE, direct-to-main — the ONE [LOCAL] item; NO open PRs at fire start → no review
+  owed).** The oldest unblocked P2 [LOCAL]: last cycle discharged the inv-#4 honest-classification precondition (aloyoga's
+  `metered_api` is HONEST, the same `{post-endpoint, rate-limited}` UCP class as the accepted pins gymshark/kith), so the
+  pin was UNBLOCKED. Captured `fixtures/canonical/aloyoga.com.json` via `asrs.cli score aloyoga.com --record-fixture`
+  ($0 static: 33 entries / 6.5MB — leaner than kith's 17.6MB; no `--behavioral`/`--max-pay`/payment/zero-CLI, inv #1 by
+  construction, no payment ever signed — the `/.well-known/ucp` GET is a $0 read) → installed `EXPECTED["aloyoga.com"]=81.2 B`
+  + `_REPLAY_CLEAN` add + guard `test_ucp_retail_highcorner_storefront_replays_81_2` (isolation teeth) + `aloyoga.com`
+  added to `_POPULATION` ×5 (locale/encoding/probe_order/hashseed/timezone). Verified NON-DESTRUCTIVELY: live static
+  re-score == frozen fixture replay == EXPECTED == **81.2 B**, all 4 non-null pillars byte-identical (access 100.0 /
+  **legibility 100.0** / tx 50.0 / **trust 100.0**), replay_misses 0, caps empty. The HIGH CORNER: aloyoga earns the SAME
+  UCP rung (x402_probe PARTIAL `commerce-protocol-live` 4.0/8.0, tx 50.0) as all four prior UCP points (coffeecircle 57.4 /
+  gymshark 62.4 / hardgraft 66.9 / kith 70.3) but MAXES BOTH non-rail pillars — legibility AND trust each STRICTLY above
+  all four — scoring the HIGHEST UCP overall of the five (81.2 > kith 70.3): a UCP merchant can be maximally legible AND
+  maximally trusted while earning only the PARTIAL commerce-protocol rung (overall tracks legibility+trust, NOT rail credit
+  leaking into the overall). Honest {metered_api, physical_good} (no topic-word over-claim, caps empty). Off-scoring-
+  SEMANTICS EMPTY (6 test files + new fixture + evidence JSON only; asrs/rubric/scoring/probes UNCHANGED); full suite 38/38
+  (test_canonical_replay 38→39, new guard registered); frozen delta **+39.4 UNMOVED** (a new non-anchor baseline is off the
+  canonical PAIR) / live **+30.1** (`verify_20260810T174103Z`). NEXT [LOCAL]: the `calibration_sweep` POPULATION sweep-add
+  prerequisite → a future peer-gated weld (15th non-anchor / 5th UCP-rail member). Evidence
+  `runs/local/aloyoga_ucp_highcorner_baseline_20260810T174412Z.json`; see LOG Local cycle 20260810T174412Z + BACKLOG P2
+  frontier (a) + the queued sweep-add item.
 - **✅ ALOYOGA.COM 81.2 B METERED_API HONEST-CLASSIFICATION VETTING — CLEARS the inv-#4 gate → the high-corner UCP PIN is
   UNBLOCKED (Local 20260810T170728Z, COVERAGE/TRUTH, direct-to-main — the ONE [LOCAL] item; NO open PRs at fire start → no
   review owed).** New experiment `experiments/ucp_metered_api_vetting.py` ($0 static: `discover_offering` + shipped
@@ -83,24 +105,11 @@
 <!-- kith.com precursor banners (SIXTEENTH baseline PIN 20260809T040201Z, guard
      test_ucp_retail_fourth_storefront_replays_70_3 + _REPLAY_CLEAN + _POPULATION ×5; weld-prerequisite SWEEP-ADD
      20260809T064456Z) — kith now pinned+welded+MERGED (PR #163, top banner); verbatim in loop/LOG.md + git history. -->
-- **✅ ACP/COMMERCE-PROTOCOL WELL-KNOWN RECON RE-RUN GREEN, BROADENED 20→32 candidates (Local 20260809T024925Z,
-  COVERAGE/TRUTH, direct-to-main — the ONE [LOCAL] item).** Re-ran `experiments/acp_wellknown_recon.py` ($0 read-only
-  GETs via the scorer's own `FetchContext.get` + byte-faithful `_parse_commerce_manifest`; no payment/POST/`--behavioral`/
-  zero CLI, inv #1 by construction) after adding 12 FRESH candidates — big-retail ACP long-shots (nike/sephora/lululemon/
-  chewy), agentic-announced long-shots (doordash/expedia), fresh Shopify/UCP scouts (spanx/kith/brooklinen/ruggable),
-  x402 infra (coinbase/x402.org) — so the cadence re-run genuinely HUNTS a new surface, not a rote 6h repeat →
-  `runs/local/acp_wellknown_recon_20260809T024720Z.json` (32 candidates, **0 exceptions — all reachable**). **ACP STILL
-  0/32 at BOTH the scorer path `/.well-known/agentic-commerce` AND the ecosystem path `/.well-known/acp/manifest.json`**
-  (every long-shot 404 both paths, incl. nike/sephora/doordash/expedia) → the P2 step-(3) re-pathing lead STAYS CLOSED
-  (inv #3 unsatisfiable, <2 live ACP surfaces), scorer UNCHANGED — re-confirmed on a broader/fresher set = a
-  higher-confidence scarcity truth-signal. **UCP positive control HELD + GREW 6→9**: the 6 originals PLUS 3 FRESH genuine
-  `dev.ucp.*` manifests (200, protocol=ucp, fields=[capabilities]) — **spanx.com / kith.com / brooklinen.com** — so the
-  ACP null is REAL scarcity (not a broken probe) AND 3 fresh UCP-depth pin candidates are now scouted for the P2 item
-  (spanx+kith were flagged abundant; brooklinen is NEW). Honest negatives: ruggable.com serves NO UCP (404 — not every
-  Shopify store publishes it); coinbase.com/x402.org publish NO commerce well-known (x402 is a 402-response rail, not a
-  manifest). Off-scoring-path (experiment + evidence only; asrs/rubric/fixtures/scoring UNCHANGED); frozen +39.4 / live
-  +30.1; suite 38/38. NO open PRs. Evidence `runs/local/acp_wellknown_recon_20260809T024720Z.json`; LOG Local cycle
-  20260809T024925Z.
+<!-- The 20260809T024925Z ACP/commerce-protocol well-known recon RE-RUN banner (COVERAGE/TRUTH, direct-to-main; ACP still
+     0/32 at both well-known paths → the re-pathing lead stays CLOSED, UCP positive control held + grew 6→9 with fresh
+     spanx/kith/brooklinen manifests) is pruned this fire (Local cycle 20260810T174412Z) per the ~5-cycle rolling-log
+     policy to defend STATE against re-accretion (the 27h doom-loop lesson) — preserved verbatim in loop/LOG.md
+     (## Local cycle — 20260809T024925Z) + git history. -->
 <!-- The 20260809T015714Z CALIBRATION CADENCE SWEEP rolling banner (TRUTH, direct-to-main; all 15 pinned/welded members
      byte-on-floor, sole mover the wikipedia.org control's known 41.1↔45.7 oscillation) is pruned this fire (Local cycle
      20260810T170728Z) per the ~5-cycle rolling-log policy to defend STATE against re-accretion (the 27h doom-loop lesson)

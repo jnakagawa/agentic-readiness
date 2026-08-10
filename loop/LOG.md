@@ -21427,3 +21427,66 @@ handshake + the +39.4 live delta). Meta: keep confirming no fresh floor-only sta
 ## Local verification — 20260810T174103Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260810T174103Z.json
+
+## Local cycle — 20260810T174412Z — COVERAGE (local, direct-to-main, score-neutral) — SEVENTEENTH frozen-replay baseline PINNED: aloyoga.com 81.2 B, the FIFTH UCP-rail point and the HIGH CORNER of the UCP plane (legibility 100 AND trust 100 both maxed at the fixed tx-50 rung)
+
+**Fire-start state.** `git pull` → Already up to date; `gh pr list --state open` → `[]` (NO open peer-gated PR → no
+first-duty review owed). Newest verify `runs/local/verify_20260810T174103Z.json` fresh (~3 min old at fire start, «6h
+floor), **`tests_ok:true`** (all 38 modules), live delta **+30.1** (driftflight.com 76.2 C / drift-flight.org 46.1 F),
+`git rev-parse main == origin/main == HEAD` (clean, no un-pushed drift), STATE 236 lines (well under the 600 cap). Infra
+health check (self-healing outranks new work): verify floor UP, bench GREEN, bookkeeping consistent; the 27h stall
+doom-loop (repaired `f80dda2`) has NOT recurred (last improvement cycle 20260810T170728Z, then hourly floors, then this
+fire — no fresh floor-only gap > 3h). All GREEN → proceed to the ONE [LOCAL] item.
+
+**Item (COVERAGE) — PIN aloyoga.com 81.2 B as the high-corner UCP frozen-replay baseline.** The oldest unblocked P2
+[LOCAL]: last cycle (20260810T170728Z) discharged the inv-#4 honest-classification precondition (aloyoga's `metered_api`
+is HONEST — the same `{post-endpoint, rate-limited}` UCP agent-commerce class as the accepted pins gymshark/kith), so the
+pin is UNBLOCKED. aloyoga.com is the HIGHEST live-UCP overall observed (81.2 B, above kith 70.3) — a NEW high-corner point
+that stretches the pinned UCP plane's overall span well above 70.3.
+
+**Method (the gymshark/kith pin recipe, all $0 static).** (1) Captured `fixtures/canonical/aloyoga.com.json` via
+`asrs.cli score aloyoga.com --record-fixture` — a static score's read-only discovery+probe GETs recorded to a replay
+fixture (33 entries, 6.5MB — leaner than kith's 17.6MB; no `--behavioral` so NO free-tier POST fires, no zero CLI, no
+signing path, never a nonzero `--max-pay` — inv #1; no payment ever signed, the `/.well-known/ucp` GET is a $0 read).
+(2) Installed the pin: `EXPECTED["aloyoga.com"] = 81.2 B` + `_REPLAY_CLEAN` add + a new guard
+`test_ucp_retail_highcorner_storefront_replays_81_2` (with isolation teeth) + `aloyoga.com` added to `_POPULATION` in all
+five reproducibility suites (locale/encoding/probe_order/hashseed/timezone). (3) Verified NON-DESTRUCTIVELY: live static
+re-score == frozen fixture replay == EXPECTED == **81.2 B**, all four non-null pillars byte-identical
+(access 100.0 / legibility 100.0 / transactability 50.0 / trust 100.0), `replay_misses == 0` (→ eligible for
+`_REPLAY_CLEAN`), caps empty. Evidence `runs/local/aloyoga_ucp_highcorner_baseline_20260810T174412Z.json`.
+
+**Why it calibrates — the HIGH CORNER of the UCP plane.** aloyoga earns `x402_probe` PARTIAL `commerce-protocol-live`
+4.0/8.0 — the SAME UCP middle rung (tx 50.0) as all four prior UCP points (coffeecircle 57.4 / gymshark 62.4 /
+hardgraft 66.9 / kith 70.3). Where kith extended legibility to 86.36, aloyoga MAXES BOTH non-rail pillars — legibility
+**100.0** AND trust **100.0**, each STRICTLY above all four prior UCP points — at the fixed tx-50 rung, scoring the HIGHEST
+UCP overall of the five (81.2). So the guard's teeth prove a UCP merchant can be BOTH maximally legible and maximally
+trusted while still earning only the PARTIAL commerce-protocol rung: the overall tracks legibility+trust to their
+ceilings, NOT rail credit leaking into the overall. Honestly classified exactly `{metered_api, physical_good}` (metered_api
+from the `/llms.txt` `.well-known/ucp` discovery endpoint + rate-limited MCP; physical_good from genuine shipping/
+order-tracking/returns prose — the other four archetypes NA, NO topic-word over-claim, caps empty). Worded by capability,
+never by vendor.
+
+**Validation.** Full suite **GREEN 38/38** suites (re-run this fire); `test_canonical_replay` 38→39 tests (new guard
+registered); the 5 reproducibility suites each re-pin the population to the LIVE 0-miss set with aloyoga included; the
+fixture-partition guard confirms on-disk == tracked (aloyoga in `_REPLAY_CLEAN`, not classification-only). Off-scoring-
+SEMANTICS EMPTY: only the 6 test files + the new fixture + the evidence JSON + `loop/{STATE,BACKLOG,LOG}.md` changed;
+`asrs/ rubric/ scoring/ probes` UNCHANGED (`git status` verified). Canonical regression signal: the newest floor
+`verify_20260810T174103Z` shows org 46.1 F / com 76.2 C → **live delta +30.1** UNMOVED; frozen **+39.4** UNMOVED by
+construction (no scoring change; `test_canonical_delta_is_39_4` GREEN). A NEW non-anchor baseline is off the canonical
+PAIR → does not touch the delta. $0. Stayed in-repo.
+
+**Ship.** Direct-to-main (a NEW non-anchor frozen-replay baseline, off the canonical PAIR — the same class as the
+kith/hardgraft/gymshark pins). Not a sensitive class (no payment/weights/caps/removals, no scoring-semantics change) →
+no veto-visibility DM required. Not the first cycle after 16:00 UTC (the 20260810T170728Z fire already sent today's
+digest) → no DM owed. BACKLOG: the `[LOCAL] PIN aloyoga.com` item marked ✅ DONE; P2 frontier (a) updated to PINNED;
+the sweep-add prerequisite queued as the next [LOCAL] step (unlocking a future peer-gated weld, the 15th non-anchor / 5th
+UCP-rail member). STATE: counter 327→328, banner prepended, oldest rolling banner pruned per the ~5-cycle policy.
+
+**Next hypothesis / pointer.** The high-corner pin stretches the pinned UCP-plane overall span to 81.2. Next [LOCAL]
+step: add `("aloyoga.com", "ucp-live:apparel-retail")` to `experiments/calibration_sweep.py` POPULATION + run a $0
+cadence sweep (aloyoga scores 81.2 byte-on-floor, n_compared=1), discharging the weld prerequisite; then a peer-gated PR
+welds aloyoga into `_NON_ANCHOR_WELDED` (5th UCP-rail member). Other forward candidates: the `mcp_surface` 1.0-vs-0.0
+split as a single-sub-check calibration axis (b); the tiered-volume free-shipping-tier precision guard (peer-gated); the
+32-candidate ACP/MPP recon + own-tool-drift TRIPWIRE at cadence. WATCH driftflight.com `/extend` for a 402 recovery
+(restores the anchor handshake + the +39.4 live delta). Meta: keep confirming no fresh floor-only stall > 3h at each
+fire's infra step.

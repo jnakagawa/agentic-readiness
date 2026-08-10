@@ -1,0 +1,57 @@
+{
+ "ts": "20260810T174412Z",
+ "kind": "ucp-highcorner-baseline-pin",
+ "domain": "aloyoga.com",
+ "spend": "$0 (static score --record-fixture: read-only discovery+probe GETs; no --behavioral/--max-pay/payment/zero-CLI; no payment ever signed \u2014 inv #1 the /.well-known/ucp GET is a $0 read)",
+ "pin": "FIFTH UCP-rail non-anchor baseline / SEVENTEENTH frozen-replay baseline overall \u2014 the HIGH CORNER of the UCP plane (legibility 100.0 AND trust 100.0 both maxed at the fixed tx-50.0 rung; highest live-UCP overall observed)",
+ "fixture": {
+  "path": "fixtures/canonical/aloyoga.com.json",
+  "entries": 33,
+  "bytes": 6466737,
+  "replay_misses": 0
+ },
+ "live_static_rescore": {
+  "overall": 81.2,
+  "grade": "B",
+  "rubric_version": "0.7",
+  "scored": true,
+  "pillars": {
+   "access": 100.0,
+   "legibility": 100.0,
+   "transactability": 50.0,
+   "trust": 100.0,
+   "outcome": null
+  },
+  "caps_applied": []
+ },
+ "x402_probe": {
+  "status": "PARTIAL",
+  "finding": "commerce-protocol-live",
+  "points": 4.0,
+  "max_points": 8.0
+ },
+ "honest_classification": {
+  "archetypes": [
+   "physical_good",
+   "metered_api"
+  ],
+  "signals": {
+   "physical_good": [
+    "order-tracking",
+    "returns",
+    "shipping-noun"
+   ],
+   "metered_api": [
+    "post-endpoint",
+    "rate-limited"
+   ]
+  },
+  "verdict": "HONEST \u2014 metered_api from {post-endpoint, rate-limited} on /llms.txt (real GET https://www.aloyoga.com/.well-known/ucp discovery endpoint + rate-limited MCP endpoint), the SAME agent-commerce class as the accepted pins gymshark.com + kith.com; physical_good from genuine shipping/order-tracking/returns prose. NO topic-word over-claim, caps empty."
+ },
+ "verified": {
+  "live_eq_frozen_eq_expected": true,
+  "replay_clean": true,
+  "expected": 81.2
+ },
+ "canonical_drift_tripwire": "off-scoring-SEMANTICS EMPTY (fixture + test additions only; asrs/rubric/probes UNCHANGED) -> frozen delta +39.4 unmoved by construction; live +30.1 per verify_20260810T174103Z"
+}

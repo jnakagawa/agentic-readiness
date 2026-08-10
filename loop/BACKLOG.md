@@ -324,9 +324,12 @@ new-rail item below. -->
   merchant is caught the cycle it appears.
   **FORWARD frontier** (surveyed + NOT pinned): the UCP plane is well-spanned on legibility (50.0→86.36) at the fixed
   tx-50 rung AND the tx axis is now KNOWN structurally bounded (step 6). The live UCP-plane frontiers left are:
-  (a) ✅ VETTED (Local cycle 20260810T170728Z, COVERAGE/TRUTH, direct-to-main — the ONE [LOCAL] item) — the NEW
+  (a) ✅ PINNED (Local cycle 20260810T174412Z — aloyoga.com is now the SEVENTEENTH frozen-replay baseline / 5th UCP-rail
+  point, the HIGH CORNER of the UCP plane: legibility 100.0 AND trust 100.0 both maxed at tx-50, highest UCP overall of
+  the five 81.2 > kith 70.3; see the DONE marker + sweep-add item below + LOG Local cycle 20260810T174412Z). Earlier ✅
+  VETTED (Local cycle 20260810T170728Z, COVERAGE/TRUTH, direct-to-main — the ONE [LOCAL] item) — the NEW
   **high-corner OVERALL** candidate **aloyoga.com 81.2 B** (access/legibility/trust all 100.0, tx 50.0 — HIGHEST UCP
-  overall observed, above kith 70.3) **CLEARS the inv-#4 honest-classification gate**. `experiments/ucp_metered_api_vetting.py`
+  overall observed, above kith 70.3) **CLEARED the inv-#4 honest-classification gate**. `experiments/ucp_metered_api_vetting.py`
   ($0 static, `discover_offering` + shipped `_run_probes`→`scoring.score`, no `--behavioral`/payment/zero-CLI) surfaced the
   exact firing evidence (surface/label/quote per signal): aloyoga's `metered_api` fires from `{post-endpoint, rate-limited}`
   on `/llms.txt` — **TEXTUALLY the SAME agent-commerce class as the ACCEPTED pins** gymshark.com + kith.com (both identical
@@ -345,18 +348,28 @@ new-rail item below. -->
   FIRST (4 llms-full.txt FP families, inv #4) — prefer clean merchant witnesses over infra profiles. WATCH
   driftflight.com /extend for a 402 recovery (restores the anchor's live handshake + the +39.4 live delta).
 
-- **[P2 — COVERAGE, LOCAL, UNBLOCKED] PIN aloyoga.com 81.2 B as the high-corner UCP frozen-replay baseline.** The inv-#4
-  honest-classification precondition is now ✅ DISCHARGED (Local cycle 20260810T170728Z vetting, above): aloyoga's
-  `metered_api` is HONEST (same `{post-endpoint, rate-limited}` agent-commerce class as the accepted pins gymshark/kith),
-  and its 81.2 B is the HIGHEST live-UCP overall observed — a NEW high-corner point (access/legibility/trust all 100.0,
-  tx 50.0) that stretches the pinned UCP plane's overall span well above kith's 70.3. Recipe (the gymshark/kith pin, all
-  direct-to-main — a NEW non-anchor baseline is off the canonical PAIR): (1) capture `fixtures/canonical/aloyoga.com.json`
-  via `experiments/capture_offering_fixture.py` ($0, read-only GETs — inv #1; prefer the leanest capture, mind fixture
-  size); (2) install EXPECTED + `_REPLAY_CLEAN` + a guard `test_ucp_retail_highcorner_storefront_replays_81_2` (with
-  isolation teeth) + `_POPULATION` ×5; (3) verify NON-DESTRUCTIVELY live == fixture == EXPECTED, all pillars byte-identical,
-  replay_misses 0; (4) then the `experiments/calibration_sweep.py` POPULATION sweep-add prerequisite, unlocking a future
-  PEER-GATED weld (the 15th non-anchor member / 5th on the UCP rail). Honest-classification is already vetted, so the pin
-  is unblocked; do it as a future [LOCAL] cycle.
+<!-- DONE Local cycle 20260810T174412Z: the [P2 — COVERAGE, LOCAL] PIN of aloyoga.com 81.2 B (the SEVENTEENTH frozen-replay
+baseline / FIFTH UCP-rail point / HIGH CORNER of the UCP plane) is CLOSED. Captured fixtures/canonical/aloyoga.com.json via
+`asrs.cli score aloyoga.com --record-fixture` ($0 static, 33 entries / 6.5MB — leaner than kith's 17.6MB; inv #1 by
+construction — no --behavioral/--max-pay/payment/zero-CLI, no payment ever signed). Installed EXPECTED 81.2 B + _REPLAY_CLEAN
++ guard test_ucp_retail_highcorner_storefront_replays_81_2 (isolation teeth) + _POPULATION ×5 (locale/encoding/probe_order/
+hashseed/timezone). Verified NON-DESTRUCTIVELY: live static re-score == frozen fixture replay == EXPECTED == 81.2 B, all 4
+non-null pillars byte-identical (access 100.0 / legibility 100.0 / tx 50.0 / trust 100.0), replay_misses 0, caps empty;
+honest {metered_api, physical_good} (no over-claim). The HIGH CORNER: same UCP rung (x402_probe PARTIAL commerce-protocol-live
+4.0, tx 50.0) as the four prior UCP points but legibility 100.0 AND trust 100.0 both STRICTLY above all four → highest UCP
+overall of the five (81.2 > kith 70.3). Full suite 38/38 (test_canonical_replay 38→39); frozen +39.4 UNMOVED (new non-anchor
+baseline is off the canonical PAIR) / live +30.1; off-scoring-SEMANTICS EMPTY (asrs/rubric/scoring/probes UNCHANGED).
+Direct-to-main. Evidence runs/local/aloyoga_ucp_highcorner_baseline_20260810T174412Z.json; LOG Local cycle 20260810T174412Z.
+The sweep-add prerequisite is queued below. -->
+
+- **[P2 — COVERAGE, LOCAL, UNBLOCKED] Sweep-add aloyoga.com (the high-corner UCP baseline's weld prerequisite).** The pin
+  is now ✅ DONE (above). Give aloyoga.com a genuinely-compared calibration-sweep presence so a future PEER-GATED PR can
+  weld it into `_NON_ANCHOR_WELDED` non-vacuously (the gymshark/hardgraft/kith recipe, one baseline later). Add
+  `("aloyoga.com", "ucp-live:apparel-retail")` to `experiments/calibration_sweep.py` POPULATION + run a $0 static cadence
+  sweep (no `--behavioral`/`--max-pay`/codex/zero-CLI, inv #1 by construction) → expect aloyoga 81.2 B BYTE-ON-FLOOR
+  (n_compared=1, drift 0/prior-members) with every prior member + both anchors + all UCP/x402 rails byte-stable on floor.
+  This UNLOCKS the peer-gated weld: aloyoga → `_NON_ANCHOR_WELDED` as the 15th non-anchor member / 5th on the UCP rail
+  (the high corner of the welded UCP plane). Do it as a future [LOCAL] cycle.
 
 - **[SCOPE follow-up, METHOD, precision-guard candidate — peer-gated]** the `metered_api` `tiered-volume` signal
   FALSE-POSITIVES on a retail FREE-SHIPPING tier. Found Local cycle 20260810T170728Z: chubbiesshorts.com's `metered_api`

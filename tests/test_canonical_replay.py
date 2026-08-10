@@ -557,6 +557,47 @@ EXPECTED = {
             "outcome": None,
         },
     },
+    # A SEVENTEENTH real-domain calibration datapoint — and the FIFTH non-anchor
+    # baseline on the LIVE UCP rail, the HIGH CORNER of the UCP plane: aloyoga.com
+    # is a real athletic-apparel merchant whose GET /.well-known/ucp answers a $0
+    # read with a valid `dev.ucp.*` merchant manifest, so the scorer's `x402_probe`
+    # reads `commerce-protocol-live` PARTIAL 4.0/8.0 — the SAME UCP middle rung as
+    # checkout.coffeecircle.com / gymshark.com / hardgraft.com / kith.com
+    # (transactability 50.0). It claims exactly TWO archetypes {metered_api,
+    # physical_good} (metered_api from its published UCP agent-commerce endpoints in
+    # /llms.txt — a real `GET https://www.aloyoga.com/.well-known/ucp` discovery
+    # endpoint + a rate-limited MCP endpoint, the SAME {post-endpoint, rate-limited}
+    # class as gymshark.com / kith.com; physical_good from genuine shipping /
+    # order-tracking / returns fulfillment prose — the other four archetypes NA, NO
+    # topic-word over-claim, so NO FP-family guards were needed and caps are empty).
+    # Its calibration value is the HIGH CORNER of the UCP plane: where kith.com
+    # extended legibility to 86.36, aloyoga.com MAXES BOTH non-rail pillars —
+    # legibility 100.0 AND trust 100.0, each STRICTLY above all four prior UCP points
+    # — at the fixed tx-50.0 rung, scoring the HIGHEST UCP overall of the five (81.2).
+    # So the rail fixes transactability while legibility and trust range all the way
+    # to their ceilings independently of the rail, and the overall tracks THOSE, not
+    # rail credit: a UCP merchant can be both maximally legible and maximally trusted
+    # while still earning only the PARTIAL commerce-protocol rung. Fixture captured
+    # full-score LIVE [LOCAL] this cycle (Local cycle 20260810T174412Z) with the UCP
+    # manifest read on the scorer's own path and replays CLEAN (0 misses); its live
+    # score was re-verified == this frozen floor on the same $0 static re-score (live
+    # 81.2 == frozen 81.2, all four non-null pillars byte-identical, caps empty).
+    # Worded by capability, never by vendor. Because the manifest is LIVE (served,
+    # volatile), a future removal/invalidation reddens the replay-clean guard
+    # (fixture frozen) and flags a re-capture. NO payment was ever signed (inv #1 —
+    # the well-known GET is a $0 read).
+    "aloyoga.com": {
+        "overall": 81.2,
+        "grade": "B",
+        "rubric_version": "0.7",
+        "pillars": {
+            "access": 100.0,
+            "legibility": 100.0,
+            "transactability": 50.0,
+            "trust": 100.0,
+            "outcome": None,
+        },
+    },
 }
 EXPECTED_DELTA = 39.4  # driftflight.com (rails) - drift-flight.org (no rails)
 
@@ -1527,6 +1568,107 @@ def test_ucp_retail_fourth_storefront_replays_70_3() -> None:
         f"kith is the highest UCP overall of the four points "
         f"(kith {kith.overall_score} > hardgraft {hard.overall_score}, "
         f"gymshark {gym.overall_score}, coffeecircle {ucp.overall_score})",
+    )
+
+
+# ---------------------------------------------------------------------------
+# 6n. SEVENTEENTH-DOMAIN CALIBRATION — the FIFTH non-anchor baseline on the LIVE
+#     UCP rail (aloyoga.com), the HIGH CORNER of the UCP plane. The first four UCP
+#     points established that the rail FIXES transactability (all tx-50.0) while
+#     legibility (50.0 -> 86.36) and trust (33.33 -> 90.0) range independently.
+#     aloyoga.com holds the SAME tx-50.0 UCP rung (x402_probe commerce-protocol-live
+#     PARTIAL 4.0/8.0) but MAXES BOTH non-rail pillars — legibility 100.0 AND trust
+#     100.0, each STRICTLY above all four prior UCP points — scoring the HIGHEST UCP
+#     overall of the five (81.2). So the teeth prove a UCP merchant can be BOTH
+#     maximally legible and maximally trusted while still earning only the PARTIAL
+#     commerce-protocol rung: the overall tracks legibility+trust to their ceilings,
+#     NOT rail credit leaking into the overall. A scoring change that let the rail
+#     credit leak into the overall, that collapsed aloyoga back toward the cluster,
+#     or that stopped reading aloyoga's UCP manifest as commerce-protocol-live, FLIPS
+#     this guard. Worded by capability, never by vendor. Because the manifest is LIVE
+#     (served, volatile), a future removal/invalidation reddens the replay-clean guard
+#     (fixture frozen) and flags a re-capture.
+# ---------------------------------------------------------------------------
+def test_ucp_retail_highcorner_storefront_replays_81_2() -> None:
+    print("test_ucp_retail_highcorner_storefront_replays_81_2")
+    _assert_domain("aloyoga.com")
+    alo, alo_misses = _score_fixture("aloyoga.com")
+    kith, kith_misses = _score_fixture("kith.com")  # the fourth UCP point
+    hard, hard_misses = _score_fixture("hardgraft.com")  # the third UCP point
+    gym, gym_misses = _score_fixture("gymshark.com")  # the second UCP point
+    ucp, ucp_misses = _score_fixture("checkout.coffeecircle.com")  # the first UCP point
+    _check(
+        not (alo_misses or kith_misses or hard_misses or gym_misses or ucp_misses),
+        "no replay-miss on aloyoga.com / kith.com / hardgraft.com / gymshark.com / "
+        "checkout.coffeecircle.com",
+    )
+    # Same rail: aloyoga earns the UCP partial (commerce-protocol-live), the same rung
+    # as the first four UCP baselines.
+    alo_probe = _by_id(alo, "x402_probe")
+    kith_probe = _by_id(kith, "x402_probe")
+    hard_probe = _by_id(hard, "x402_probe")
+    gym_probe = _by_id(gym, "x402_probe")
+    ucp_probe = _by_id(ucp, "x402_probe")
+    _check(
+        alo_probe.status is Status.PARTIAL and alo_probe.finding == "commerce-protocol-live",
+        f"aloyoga.com: x402_probe is a validated LIVE UCP manifest "
+        f"(commerce-protocol-live, got {alo_probe.finding!r} {alo_probe.status})",
+    )
+    _check(
+        alo_probe.points == kith_probe.points == hard_probe.points
+        == gym_probe.points == ucp_probe.points == 4.0,
+        f"all five UCP storefronts sit on the identical UCP rung (x402_probe 4.0, "
+        f"got aloyoga {alo_probe.points} / kith {kith_probe.points} / "
+        f"hardgraft {hard_probe.points} / gymshark {gym_probe.points} / "
+        f"coffeecircle {ucp_probe.points})",
+    )
+    a = alo.pillar_scores
+    k = kith.pillar_scores
+    h = hard.pillar_scores
+    g = gym.pillar_scores
+    c = ucp.pillar_scores
+    # The rail FIXES transactability: all five share the identical tx (50.0).
+    _check(
+        abs(a["transactability"] - k["transactability"]) < 1e-9
+        and abs(a["transactability"] - h["transactability"]) < 1e-9
+        and abs(a["transactability"] - g["transactability"]) < 1e-9
+        and abs(a["transactability"] - c["transactability"]) < 1e-9,
+        f"the UCP rail fixes transactability across all five storefronts "
+        f"(aloyoga {a['transactability']} == kith {k['transactability']} == "
+        f"hardgraft {h['transactability']} == gymshark {g['transactability']} == "
+        f"coffeecircle {c['transactability']})",
+    )
+    # HIGH CORNER: aloyoga MAXES BOTH non-rail pillars — its legibility AND its trust
+    # each sit STRICTLY ABOVE all four prior UCP points, at the fixed tx rung.
+    _check(
+        a["legibility"] > k["legibility"]
+        and a["legibility"] > h["legibility"]
+        and a["legibility"] > g["legibility"]
+        and a["legibility"] > c["legibility"],
+        f"aloyoga sits at the HIGHEST legibility of the five UCP points "
+        f"(aloyoga {a['legibility']} > kith {k['legibility']}, hardgraft "
+        f"{h['legibility']}, gymshark {g['legibility']}, coffeecircle {c['legibility']})",
+    )
+    _check(
+        a["trust"] > k["trust"]
+        and a["trust"] > h["trust"]
+        and a["trust"] > g["trust"]
+        and a["trust"] > c["trust"],
+        f"aloyoga sits at the HIGHEST trust of the five UCP points "
+        f"(aloyoga {a['trust']} > kith {k['trust']}, hardgraft {h['trust']}, "
+        f"gymshark {g['trust']}, coffeecircle {c['trust']})",
+    )
+    # The maxed-non-rail UCP merchant is the HIGHEST UCP overall of the five — the
+    # rail fixes transactability while legibility+trust lift the overall to its top.
+    _check(
+        alo.overall_score > kith.overall_score
+        and alo.overall_score > hard.overall_score
+        and alo.overall_score > gym.overall_score
+        and alo.overall_score > ucp.overall_score,
+        f"aloyoga is the highest UCP overall of the five points "
+        f"(aloyoga {alo.overall_score} > kith {kith.overall_score}, hardgraft "
+        f"{hard.overall_score}, gymshark {gym.overall_score}, coffeecircle "
+        f"{ucp.overall_score})",
     )
 
 
@@ -2640,6 +2782,23 @@ _REPLAY_CLEAN = {
     # reddens this replay guard (fixture frozen) and flags a re-capture — the honest
     # signal, not a silent drift.
     "kith.com",
+    # aloyoga.com captured full-score LIVE this cycle (Local cycle 20260810T174412Z):
+    # the fresh crawl covers the whole probe set (0 misses) and replays to its pinned
+    # 81.2 B. It is the FIFTH non-anchor member on the LIVE UCP rail and the HIGH
+    # CORNER of the UCP plane (a real athletic-apparel merchant): GET /.well-known/ucp
+    # serves a valid `dev.ucp.*` merchant manifest → x402_probe reads
+    # `commerce-protocol-live` PARTIAL 4.0/8.0, the SAME UCP middle rung as the other
+    # four (tx 50.0). Honestly classified {metered_api, physical_good} (metered_api
+    # from its /llms.txt UCP agent-commerce endpoints, the same {post-endpoint,
+    # rate-limited} class as gymshark.com / kith.com; no topic-word over-claim, caps
+    # empty). Where kith.com extended legibility to 86.36, aloyoga.com MAXES BOTH
+    # non-rail pillars — legibility 100.0 AND trust 100.0, each strictly above all
+    # four prior UCP points — at the fixed tx-50.0 rung, scoring the HIGHEST UCP
+    # overall of the five (81.2): the high corner of the plane. Because the manifest
+    # is LIVE (served, volatile), a future removal/invalidation reddens this replay
+    # guard (fixture frozen) and flags a re-capture — the honest signal, not a silent
+    # drift.
+    "aloyoga.com",
 }
 # Fixtures whose recorded surface is a strict subset of the full scoring path
 # (captured for offering/battery classification) — NOT eligible for any
@@ -3004,6 +3163,7 @@ def main() -> int:
         test_ucp_retail_storefront_replays_62_4,
         test_ucp_retail_third_storefront_replays_66_9,
         test_ucp_retail_fourth_storefront_replays_70_3,
+        test_ucp_retail_highcorner_storefront_replays_81_2,
         test_retail_storefront_earns_no_agent_native_payment,
         test_relabel_invariance_retail,
         test_nonstorefront_replays_22_5,

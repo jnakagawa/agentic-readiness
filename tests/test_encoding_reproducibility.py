@@ -81,6 +81,7 @@ _CANONICAL = ("driftflight.com", "drift-flight.org")
 # re-capture that promotes a fixture forces its inclusion here.
 _POPULATION = (
     "acuityscheduling.com",
+    "aloyoga.com",
     "api.replicate.com",
     "api.x402oracle.com",
     "books.toscrape.com",

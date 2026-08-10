@@ -82,6 +82,7 @@ _CANONICAL = ("driftflight.com", "drift-flight.org")
 # 20260807T114104Z) were promoted this way: re-captured full-score and added below.
 _POPULATION = (
     "acuityscheduling.com",
+    "aloyoga.com",
     "api.replicate.com",
     "api.x402oracle.com",
     "books.toscrape.com",

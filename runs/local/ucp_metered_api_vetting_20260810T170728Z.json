@@ -1,0 +1,524 @@
+{
+ "ts": "20260810T170728Z",
+ "kind": "ucp-metered-api-vetting",
+ "spend": "$0 (read-only discovery GETs + static score; no --behavioral/--max-pay/payment/zero-CLI)",
+ "target_archetype": "metered_api",
+ "question": "Does aloyoga.com's metered_api evidence come from the same class of surface/signal as the accepted UCP pins (a real agent-commerce/API surface), or from a flimsier topic-word match on a retail marketing page?",
+ "summary": {
+  "n_candidates": 6,
+  "vetting_targets": {
+   "aloyoga.com": {
+    "overall": 81.2,
+    "claims_metered_api": true,
+    "metered_api_labels": [
+     "post-endpoint",
+     "rate-limited"
+    ],
+    "metered_api_surfaces": [
+     "/llms-full.txt",
+     "/llms.txt"
+    ]
+   },
+   "tecovas.com": {
+    "overall": 73.6,
+    "claims_metered_api": true,
+    "metered_api_labels": [
+     "api-reference",
+     "post-endpoint"
+    ],
+    "metered_api_surfaces": [
+     "/llms-full.txt"
+    ]
+   },
+   "rothys.com": {
+    "overall": 69.5,
+    "claims_metered_api": true,
+    "metered_api_labels": [
+     "post-endpoint",
+     "rate-limited"
+    ],
+    "metered_api_surfaces": [
+     "/llms-full.txt",
+     "/llms.txt"
+    ]
+   },
+   "chubbiesshorts.com": {
+    "overall": 67.1,
+    "claims_metered_api": true,
+    "metered_api_labels": [
+     "tiered-volume"
+    ],
+    "metered_api_surfaces": [
+     "homepage"
+    ]
+   }
+  },
+  "accepted_pin_reference": {
+   "gymshark.com": {
+    "overall": 62.4,
+    "metered_api_labels": [
+     "post-endpoint",
+     "rate-limited"
+    ],
+    "metered_api_surfaces": [
+     "/llms-full.txt",
+     "/llms.txt"
+    ]
+   },
+   "kith.com": {
+    "overall": 70.3,
+    "metered_api_labels": [
+     "post-endpoint",
+     "rate-limited"
+    ],
+    "metered_api_surfaces": [
+     "/llms-full.txt",
+     "/llms.txt"
+    ]
+   }
+  }
+ },
+ "rows": [
+  {
+   "domain": "aloyoga.com",
+   "tag": "vet:high-corner-candidate-81.2",
+   "surfaces_seen": [
+    "homepage",
+    "/llms.txt",
+    "/llms-full.txt"
+   ],
+   "archetypes": [
+    "physical_good",
+    "metered_api"
+   ],
+   "all_claims": {
+    "physical_good": {
+     "strength": 3,
+     "labels": [
+      "order-tracking",
+      "returns",
+      "shipping-noun"
+     ]
+    },
+    "metered_api": {
+     "strength": 2,
+     "labels": [
+      "post-endpoint",
+      "rate-limited"
+     ]
+    }
+   },
+   "metered_api_evidence": [
+    {
+     "surface": "/llms.txt",
+     "label": "post-endpoint",
+     "quote": "o endpoints to know: - **Discovery** \u2014 `GET https://www.aloyoga.com/.well-known/ucp` returns the store's UCP merchant profil"
+    },
+    {
+     "surface": "/llms.txt",
+     "label": "rate-limited",
+     "quote": "e through Shop Pay instead. - **Respect rate limits.** The MCP endpoint is rate-limited per"
+    },
+    {
+     "surface": "/llms-full.txt",
+     "label": "post-endpoint",
+     "quote": "o endpoints to know: - **Discovery** \u2014 `GET https://www.aloyoga.com/.well-known/ucp` returns the store's UCP merchant profil"
+    },
+    {
+     "surface": "/llms-full.txt",
+     "label": "rate-limited",
+     "quote": "e through Shop Pay instead. - **Respect rate limits.** The MCP endpoint is rate-limited per"
+    }
+   ],
+   "metered_api_labels": [
+    "post-endpoint",
+    "rate-limited"
+   ],
+   "metered_api_surfaces": [
+    "/llms-full.txt",
+    "/llms.txt"
+   ],
+   "claims_metered_api": true,
+   "score": {
+    "scored": true,
+    "overall": 81.2,
+    "grade": "B",
+    "pillars": {
+     "access": 100.0,
+     "legibility": 100.0,
+     "transactability": 50.0,
+     "trust": 100.0,
+     "outcome": null
+    },
+    "caps_applied": []
+   },
+   "error": null,
+   "elapsed_s": 13.19
+  },
+  {
+   "domain": "tecovas.com",
+   "tag": "vet:lesser-lead-73.6",
+   "surfaces_seen": [
+    "homepage",
+    "/llms.txt",
+    "/llms-full.txt"
+   ],
+   "archetypes": [
+    "metered_api",
+    "physical_good",
+    "subscription"
+   ],
+   "all_claims": {
+    "metered_api": {
+     "strength": 2,
+     "labels": [
+      "api-reference",
+      "post-endpoint"
+     ]
+    },
+    "physical_good": {
+     "strength": 2,
+     "labels": [
+      "free-shipping",
+      "returns"
+     ]
+    },
+    "subscription": {
+     "strength": 1,
+     "labels": [
+      "subscription"
+     ]
+    }
+   },
+   "metered_api_evidence": [
+    {
+     "surface": "/llms-full.txt",
+     "label": "post-endpoint",
+     "quote": "-only, unauthenticated GET requests. - `GET https://www.tecovas.com/api/productdetail/:slug` \u00e2\u0080\u0094 Full product detail by slug - `GET"
+    },
+    {
+     "surface": "/llms-full.txt",
+     "label": "api-reference",
+     "quote": "catalog) \u00e2\u0080\u0094 RFC 9727 linkset of public API endpoints - [Agent Skills](https://www.tecovas.c"
+    }
+   ],
+   "metered_api_labels": [
+    "api-reference",
+    "post-endpoint"
+   ],
+   "metered_api_surfaces": [
+    "/llms-full.txt"
+   ],
+   "claims_metered_api": true,
+   "score": {
+    "scored": true,
+    "overall": 73.6,
+    "grade": "C",
+    "pillars": {
+     "access": 100.0,
+     "legibility": 86.36363636363636,
+     "transactability": 43.75,
+     "trust": 90.0,
+     "outcome": null
+    },
+    "caps_applied": []
+   },
+   "error": null,
+   "elapsed_s": 29.22
+  },
+  {
+   "domain": "rothys.com",
+   "tag": "vet:lesser-lead-69.5",
+   "surfaces_seen": [
+    "homepage",
+    "/llms.txt",
+    "/llms-full.txt"
+   ],
+   "archetypes": [
+    "metered_api",
+    "physical_good"
+   ],
+   "all_claims": {
+    "metered_api": {
+     "strength": 2,
+     "labels": [
+      "post-endpoint",
+      "rate-limited"
+     ]
+    },
+    "physical_good": {
+     "strength": 2,
+     "labels": [
+      "order-tracking",
+      "shipping-noun"
+     ]
+    }
+   },
+   "metered_api_evidence": [
+    {
+     "surface": "/llms.txt",
+     "label": "post-endpoint",
+     "quote": "o endpoints to know: - **Discovery** \u2014 `GET https://rothys.com/.well-known/ucp` returns the store's UCP merchant profil"
+    },
+    {
+     "surface": "/llms.txt",
+     "label": "rate-limited",
+     "quote": "e through Shop Pay instead. - **Respect rate limits.** The MCP endpoint is rate-limited per"
+    },
+    {
+     "surface": "/llms-full.txt",
+     "label": "post-endpoint",
+     "quote": "o endpoints to know: - **Discovery** \u2014 `GET https://rothys.com/.well-known/ucp` returns the store's UCP merchant profil"
+    },
+    {
+     "surface": "/llms-full.txt",
+     "label": "rate-limited",
+     "quote": "e through Shop Pay instead. - **Respect rate limits.** The MCP endpoint is rate-limited per"
+    }
+   ],
+   "metered_api_labels": [
+    "post-endpoint",
+    "rate-limited"
+   ],
+   "metered_api_surfaces": [
+    "/llms-full.txt",
+    "/llms.txt"
+   ],
+   "claims_metered_api": true,
+   "score": {
+    "scored": true,
+    "overall": 69.5,
+    "grade": "D",
+    "pillars": {
+     "access": 100.0,
+     "legibility": 68.18181818181819,
+     "transactability": 50.0,
+     "trust": 80.0,
+     "outcome": null
+    },
+    "caps_applied": []
+   },
+   "error": null,
+   "elapsed_s": 14.04
+  },
+  {
+   "domain": "chubbiesshorts.com",
+   "tag": "vet:lesser-lead-67.1",
+   "surfaces_seen": [
+    "homepage",
+    "/.well-known/ai-plugin.json",
+    "/.well-known/agent.json",
+    "/.well-known/agent-card.json",
+    "/.well-known/openapi.json"
+   ],
+   "archetypes": [
+    "physical_good",
+    "metered_api",
+    "subscription"
+   ],
+   "all_claims": {
+    "physical_good": {
+     "strength": 5,
+     "labels": [
+      "free-shipping",
+      "return-window",
+      "returns",
+      "shipping-noun",
+      "stock"
+     ]
+    },
+    "metered_api": {
+     "strength": 1,
+     "labels": [
+      "tiered-volume"
+     ]
+    },
+    "subscription": {
+     "strength": 1,
+     "labels": [
+      "subscription"
+     ]
+    }
+   },
+   "metered_api_evidence": [
+    {
+     "surface": "homepage",
+     "label": "tiered-volume",
+     "quote": "ollective Members get FREE SHIPPING\\\",\\\"Tier 1 - $50 Free Standard Shipping\\\",\\\"cartTitle\\"
+    }
+   ],
+   "metered_api_labels": [
+    "tiered-volume"
+   ],
+   "metered_api_surfaces": [
+    "homepage"
+   ],
+   "claims_metered_api": true,
+   "score": {
+    "scored": true,
+    "overall": 67.1,
+    "grade": "D",
+    "pillars": {
+     "access": 100.0,
+     "legibility": 72.72727272727273,
+     "transactability": 43.75,
+     "trust": 73.33333333333333,
+     "outcome": null
+    },
+    "caps_applied": []
+   },
+   "error": null,
+   "elapsed_s": 42.03
+  },
+  {
+   "domain": "gymshark.com",
+   "tag": "ref:accepted-pin-62.4",
+   "surfaces_seen": [
+    "homepage",
+    "/llms.txt",
+    "/llms-full.txt"
+   ],
+   "archetypes": [
+    "metered_api",
+    "physical_good"
+   ],
+   "all_claims": {
+    "metered_api": {
+     "strength": 2,
+     "labels": [
+      "post-endpoint",
+      "rate-limited"
+     ]
+    },
+    "physical_good": {
+     "strength": 2,
+     "labels": [
+      "order-tracking",
+      "shipping-noun"
+     ]
+    }
+   },
+   "metered_api_evidence": [
+    {
+     "surface": "/llms.txt",
+     "label": "post-endpoint",
+     "quote": "o endpoints to know: - **Discovery** \u2014 `GET https://us.checkout.gymshark.com/.well-known/ucp` returns the store's UCP merchant profil"
+    },
+    {
+     "surface": "/llms.txt",
+     "label": "rate-limited",
+     "quote": "e through Shop Pay instead. - **Respect rate limits.** The MCP endpoint is rate-limited per"
+    },
+    {
+     "surface": "/llms-full.txt",
+     "label": "post-endpoint",
+     "quote": "o endpoints to know: - **Discovery** \u2014 `GET https://us.checkout.gymshark.com/.well-known/ucp` returns the store's UCP merchant profil"
+    },
+    {
+     "surface": "/llms-full.txt",
+     "label": "rate-limited",
+     "quote": "e through Shop Pay instead. - **Respect rate limits.** The MCP endpoint is rate-limited per"
+    }
+   ],
+   "metered_api_labels": [
+    "post-endpoint",
+    "rate-limited"
+   ],
+   "metered_api_surfaces": [
+    "/llms-full.txt",
+    "/llms.txt"
+   ],
+   "claims_metered_api": true,
+   "score": {
+    "scored": true,
+    "overall": 62.4,
+    "grade": "D",
+    "pillars": {
+     "access": 100.0,
+     "legibility": 54.54545454545455,
+     "transactability": 50.0,
+     "trust": 60.0,
+     "outcome": null
+    },
+    "caps_applied": []
+   },
+   "error": null,
+   "elapsed_s": 14.65
+  },
+  {
+   "domain": "kith.com",
+   "tag": "ref:accepted-pin-70.3",
+   "surfaces_seen": [
+    "homepage",
+    "/llms.txt",
+    "/llms-full.txt"
+   ],
+   "archetypes": [
+    "metered_api",
+    "physical_good"
+   ],
+   "all_claims": {
+    "metered_api": {
+     "strength": 2,
+     "labels": [
+      "post-endpoint",
+      "rate-limited"
+     ]
+    },
+    "physical_good": {
+     "strength": 2,
+     "labels": [
+      "order-tracking",
+      "shipping-noun"
+     ]
+    }
+   },
+   "metered_api_evidence": [
+    {
+     "surface": "/llms.txt",
+     "label": "post-endpoint",
+     "quote": "o endpoints to know: - **Discovery** \u2014 `GET https://kith.com/.well-known/ucp` returns the store's UCP merchant profil"
+    },
+    {
+     "surface": "/llms.txt",
+     "label": "rate-limited",
+     "quote": "e through Shop Pay instead. - **Respect rate limits.** The MCP endpoint is rate-limited per"
+    },
+    {
+     "surface": "/llms-full.txt",
+     "label": "post-endpoint",
+     "quote": "o endpoints to know: - **Discovery** \u2014 `GET https://kith.com/.well-known/ucp` returns the store's UCP merchant profil"
+    },
+    {
+     "surface": "/llms-full.txt",
+     "label": "rate-limited",
+     "quote": "e through Shop Pay instead. - **Respect rate limits.** The MCP endpoint is rate-limited per"
+    }
+   ],
+   "metered_api_labels": [
+    "post-endpoint",
+    "rate-limited"
+   ],
+   "metered_api_surfaces": [
+    "/llms-full.txt",
+    "/llms.txt"
+   ],
+   "claims_metered_api": true,
+   "score": {
+    "scored": true,
+    "overall": 70.3,
+    "grade": "C",
+    "pillars": {
+     "access": 100.0,
+     "legibility": 86.36363636363636,
+     "transactability": 50.0,
+     "trust": 60.0,
+     "outcome": null
+    },
+    "caps_applied": []
+   },
+   "error": null,
+   "elapsed_s": 26.99
+  }
+ ]
+}

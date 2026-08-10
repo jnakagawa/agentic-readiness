@@ -131,21 +131,11 @@ preserved verbatim in loop/LOG.md (## Local cycle — 20260808T084106Z) + git hi
      20260809T094408Z) to hold the closed-marker byte cap under the merged PR #163 marker — preserved verbatim in
      loop/LOG.md (## Local cycle — 20260808T140228Z) + git history. -->
 
-<!-- DONE Local cycle 20260808T140228Z: pinned gymshark.com (a mainstream consumer apparel brand on the LIVE UCP rail —
-retail DEPTH, a distinct storefront TYPE from the coffee-merchant checkout.coffeecircle.com) as the FOURTEENTH
-test_canonical_replay.EXPECTED frozen-replay baseline (62.4 D v0.7; access 100.0/legibility 54.55/transactability 50.0/
-trust 60.0) + _REPLAY_CLEAN + guard test_ucp_retail_storefront_replays_62_4 (trust-isolation teeth) + _POPULATION x5,
-direct-to-main. GET /.well-known/ucp serves a valid dev.ucp.* service manifest (v2026-04-08, re-observed >=2x $0 at
-capture, static versioned JSON; no payment signed inv #1) -> x402_probe reads commerce-protocol-live PARTIAL 4.0/8.0, the
-SAME UCP middle rung as coffeecircle (tx 50.0). Honest {metered_api, physical_good} (metered_api from its /llms.txt UCP
-agent-commerce endpoints; physical_good from real shipping prose; other 4 NA -> NO topic-word over-claim, NO FP-guards).
-Calibration value = CONTROLLED single-pillar isolation vs coffeecircle (57.4): access/legibility/transactability
-BYTE-IDENTICAL (100.0/54.55/50.0), ONLY trust moves (33.33->60.0) -> overall 57.4->62.4 = the "UCP rail necessary but not
-SUFFICIENT" statement. Fresh full-score capture verified NON-DESTRUCTIVELY: replay_misses 0, live 62.4 == fixture 62.4 ==
-EXPECTED 62.4, all 4 non-null pillars byte-identical. fixtures/canonical/gymshark.com.json (NEW, 2.1MB — leanest candidate;
-kith.com would've been 17.8MB, allbirds AVOIDED per its recorded offering-drift inv #4). Off-scoring-SEMANTICS EMPTY
-(canonical PAIR untouched); frozen delta UNMOVED +39.4 (canonical replay 35->36); live +30.1; suite 38/38; baselines 13->14.
-Evidence runs/local/gymshark_ucp_retail_baseline_20260808T140228Z.json. See LOG Local cycle 20260808T140228Z. -->
+<!-- The gymshark.com pin note (Local cycle 20260808T140228Z: 62.4 D, the UCP-retail frozen-replay baseline, honest
+     {metered_api, physical_good}) is pruned this fire (Local cycle 20260810T170728Z) to restore closed-marker headroom
+     (the cap was at 23976/24000) — gymshark is now BOTH pinned AND welded (PR #160 c091c4c), and this fire's
+     ucp_metered_api_vetting re-confirmed it 62.4 byte-on-floor with its metered_api {post-endpoint, rate-limited} the
+     honest reference class; preserved verbatim in loop/LOG.md (## Local cycle — 20260808T140228Z) + git history. -->
 
 <!-- DONE Local cycle 20260808T184442Z: the P2 step (4) hardgraft.com UCP-retail WELD prerequisite (give hardgraft.com a
 genuinely-compared calibration-sweep presence) is DISCHARGED — the gymshark recipe, one member later. Added
@@ -334,16 +324,49 @@ new-rail item below. -->
   merchant is caught the cycle it appears.
   **FORWARD frontier** (surveyed + NOT pinned): the UCP plane is well-spanned on legibility (50.0→86.36) at the fixed
   tx-50 rung AND the tx axis is now KNOWN structurally bounded (step 6). The live UCP-plane frontiers left are:
-  (a) a NEW **high-corner OVERALL** point — **aloyoga.com 81.2 B** (access/legibility/trust all 100.0, tx 50.0 — the
-  HIGHEST UCP overall observed, above kith 70.3) is a strong candidate baseline IF its `metered_api` claim survives
-  honest-classification vetting (inv #4 — a clothing brand claiming metered_api risks a topic-word over-claim, the
-  joinhexagon/thebotwire pattern); tecovas.com 73.6 / rothys.com 69.5 / chubbiesshorts.com 67.1 are lesser leads with
-  the same classification caveat; (b) the **`mcp_surface` 1.0-vs-0.0 split** is itself a candidate calibration axis (an
+  (a) ✅ VETTED (Local cycle 20260810T170728Z, COVERAGE/TRUTH, direct-to-main — the ONE [LOCAL] item) — the NEW
+  **high-corner OVERALL** candidate **aloyoga.com 81.2 B** (access/legibility/trust all 100.0, tx 50.0 — HIGHEST UCP
+  overall observed, above kith 70.3) **CLEARS the inv-#4 honest-classification gate**. `experiments/ucp_metered_api_vetting.py`
+  ($0 static, `discover_offering` + shipped `_run_probes`→`scoring.score`, no `--behavioral`/payment/zero-CLI) surfaced the
+  exact firing evidence (surface/label/quote per signal): aloyoga's `metered_api` fires from `{post-endpoint, rate-limited}`
+  on `/llms.txt` — **TEXTUALLY the SAME agent-commerce class as the ACCEPTED pins** gymshark.com + kith.com (both identical
+  `{post-endpoint, rate-limited}`): a real `GET https://www.aloyoga.com/.well-known/ucp` discovery endpoint + "the MCP
+  endpoint is rate-limited", NOT a login/marketing topic-word → HONEST, a CLEAN pin candidate (the PIN is queued `[LOCAL]`
+  below). Lesser leads: **tecovas.com 73.6 HONEST** (real `GET /api/productdetail/:slug` + RFC-9727 API linkset) and
+  **rothys.com 69.5 HONEST** (same UCP `{post-endpoint, rate-limited}` class); **chubbiesshorts.com 67.1 DISQUALIFIED** —
+  its `metered_api` is a genuine topic-word over-claim (`tiered-volume` firing on the HOMEPAGE from "Tier 1 - $50 Free
+  Standard Shipping", a SHIPPING tier misread as an API volume-tier — see the precision-guard candidate below). Drift
+  tripwire GREEN (gymshark 62.4 / kith 70.3 re-scored byte-on-floor). Evidence
+  `runs/local/ucp_metered_api_vetting_20260810T170728Z.json`; LOG Local cycle 20260810T170728Z.
+  (b) the **`mcp_surface` 1.0-vs-0.0 split** is itself a candidate calibration axis (an
   MCP-documented UCP merchant vs a bare one isolates that single sub-check — the coffeecircle↔gymshark single-pillar
   isolation applied to tx); (c) a genuinely-NEW rail TYPE (ACP/MPP — still $0-un-pinnable; keep re-running the
   32-candidate recon at cadence). `joinhexagon.com` is a DOCUMENTED live-UCP lead but needs a precision-guard unblock
   FIRST (4 llms-full.txt FP families, inv #4) — prefer clean merchant witnesses over infra profiles. WATCH
   driftflight.com /extend for a 402 recovery (restores the anchor's live handshake + the +39.4 live delta).
+
+- **[P2 — COVERAGE, LOCAL, UNBLOCKED] PIN aloyoga.com 81.2 B as the high-corner UCP frozen-replay baseline.** The inv-#4
+  honest-classification precondition is now ✅ DISCHARGED (Local cycle 20260810T170728Z vetting, above): aloyoga's
+  `metered_api` is HONEST (same `{post-endpoint, rate-limited}` agent-commerce class as the accepted pins gymshark/kith),
+  and its 81.2 B is the HIGHEST live-UCP overall observed — a NEW high-corner point (access/legibility/trust all 100.0,
+  tx 50.0) that stretches the pinned UCP plane's overall span well above kith's 70.3. Recipe (the gymshark/kith pin, all
+  direct-to-main — a NEW non-anchor baseline is off the canonical PAIR): (1) capture `fixtures/canonical/aloyoga.com.json`
+  via `experiments/capture_offering_fixture.py` ($0, read-only GETs — inv #1; prefer the leanest capture, mind fixture
+  size); (2) install EXPECTED + `_REPLAY_CLEAN` + a guard `test_ucp_retail_highcorner_storefront_replays_81_2` (with
+  isolation teeth) + `_POPULATION` ×5; (3) verify NON-DESTRUCTIVELY live == fixture == EXPECTED, all pillars byte-identical,
+  replay_misses 0; (4) then the `experiments/calibration_sweep.py` POPULATION sweep-add prerequisite, unlocking a future
+  PEER-GATED weld (the 15th non-anchor member / 5th on the UCP rail). Honest-classification is already vetted, so the pin
+  is unblocked; do it as a future [LOCAL] cycle.
+
+- **[SCOPE follow-up, METHOD, precision-guard candidate — peer-gated]** the `metered_api` `tiered-volume` signal
+  FALSE-POSITIVES on a retail FREE-SHIPPING tier. Found Local cycle 20260810T170728Z: chubbiesshorts.com's `metered_api`
+  fires SOLELY from `tiered-volume` on the homepage quote "Tier 1 - $50 Free Standard Shipping" — a shipping-threshold
+  tier, NOT an API volume-tier billing construction → a topic-word over-claim (the joinhexagon/thebotwire family, applied
+  to a NEW signal). The guard should require `tiered-volume` to sit near an unambiguous API/usage/request noun (not a
+  bare "Tier N" beside "shipping"/"order"), mirroring the existing precision guards. Peer-gated (a scoring-semantics
+  narrowing → rubric changelog + canonical-delta by construction). LOW-urgency: it only mis-classifies a lesser lead we
+  are NOT pinning (chubbies is DISQUALIFIED); attempt only with a real over-claim fixture + a negative control so a
+  genuine API tiered-volume claim is never dropped. Evidence `runs/local/ucp_metered_api_vetting_20260810T170728Z.json`.
 
 - **[WATCH — INFRA/METHOD] Improvement-loop stall doom-loop (opened Local cycle 20260810T144332Z).** The bench went
   RED for ~27h (STATE.md accreted to exactly 600 lines → `test_state_hygiene` red → the verify FLOOR committed 28

@@ -21357,3 +21357,69 @@ tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1
 ## Local verification — 20260810T164105Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260810T164105Z.json
+
+## Local cycle — 20260810T170728Z — COVERAGE / TRUTH (local, direct-to-main, score-neutral)
+
+**Fire-start state.** `git pull` → Already up to date; `gh pr list --state open` → `[]` (NO open peer-gated PR → no
+first-duty review owed; git protocol reached origin, one transient `api.github.com` blip cleared on retry). Newest
+verify `runs/local/verify_20260810T164105Z.json` fresh (~22 min old, <6h floor), **`tests_ok:true`**, live delta
+**+30.1** (driftflight.com 76.2 C / drift-flight.org 46.1 F). Infra health check (self-healing outranks new work): verify
+floor UP, bench GREEN, `git rev-parse main == origin/main` (clean, no un-pushed drift), STATE 227 lines (well under the
+600 cap). The 27h stall doom-loop (repaired last cycle `f80dda2`) has **NOT recurred**: the last improvement cycle was
+20260810T144332Z, then hourly verify FLOORS (15:41, 16:41), then this fire — no fresh floor-only gap > 3h. All infra
+GREEN → proceed to the ONE [LOCAL] item.
+
+**Item (track rotation: METHOD self-heal last cycle → COVERAGE/TRUTH now).** Discharge the BACKLOG P2 forward-frontier
+(a) precondition: is the flagged high-corner UCP baseline candidate **aloyoga.com 81.2 B** an HONEST classification, or
+is its `metered_api` claim a topic-word over-claim (inv #4 — a clothing brand claiming a metered API is the
+joinhexagon/thebotwire risk)? Truth outranks the pitch: we do NOT pin a high number propped up by an over-claim.
+
+**Method.** New reusable experiment `experiments/ucp_metered_api_vetting.py` ($0 by construction: `asrs.offering.discover_offering`
+read-only surface GETs + the shipped static score `asrs.cli._run_probes`→`asrs.scoring.score`; NO `--behavioral` so no
+free-tier probe fires, no zero CLI, no signing path, never a nonzero `--max-pay` — inv #1). For each domain it surfaces
+the FULL per-signal `metered_api` evidence — every firing `ArchetypeSignal` (surface, label, quoted text) — so a skeptic
+reads EXACTLY which signal fired on WHICH surface with WHAT text, and static-scores to confirm the overall reproduces.
+The already-merged UCP pins gymshark.com + kith.com are the honest reference distribution. Evidence
+`runs/local/ucp_metered_api_vetting_20260810T170728Z.json`.
+
+**Result — VERDICT: aloyoga.com metered_api is HONEST → the pin is UNBLOCKED.**
+
+| domain | overall | metered_api labels | metered_api surface | verdict |
+|---|---|---|---|---|
+| aloyoga.com | **81.2 B** | `{post-endpoint, rate-limited}` | /llms.txt, /llms-full.txt | **HONEST** — real `GET https://www.aloyoga.com/.well-known/ucp` discovery endpoint + "the MCP endpoint is rate-limited" |
+| gymshark.com (accepted pin) | 62.4 D | `{post-endpoint, rate-limited}` | /llms.txt | reference — `GET …/.well-known/ucp` + rate-limited MCP |
+| kith.com (accepted pin) | 70.3 C | `{post-endpoint, rate-limited}` | /llms.txt | reference — `GET kith.com/.well-known/ucp` + rate-limited MCP |
+| tecovas.com | 73.6 C | `{api-reference, post-endpoint}` | /llms-full.txt | HONEST — real `GET /api/productdetail/:slug` + RFC-9727 API linkset |
+| rothys.com | 69.5 D | `{post-endpoint, rate-limited}` | /llms.txt | HONEST — same UCP class as aloyoga/gymshark/kith |
+| chubbiesshorts.com | 67.1 D | `{tiered-volume}` | homepage | **OVER-CLAIM** — `tiered-volume` on "Tier 1 - $50 Free Standard Shipping" (a shipping tier, not an API volume tier) |
+
+aloyoga's `metered_api` evidence is TEXTUALLY the SAME agent-commerce class as the two already-accepted pins (byte-identical
+`{post-endpoint, rate-limited}` labels, both firing on the agent-facing `/llms.txt` from a `.well-known/ucp` discovery GET
++ a rate-limited MCP endpoint) — NOT a login/marketing/footer topic-word. The inv-#4 over-claim risk is REFUTED for aloyoga
+→ 81.2 B is honest, and it is the HIGHEST live-UCP overall observed (above kith 70.3), a genuine NEW high-corner point.
+BONUS inv-#4 CATCH: chubbiesshorts.com is DISQUALIFIED as a clean pin — its lone `metered_api` signal `tiered-volume`
+false-positives on a retail free-shipping tier ("Tier 1 - $50 Free Standard Shipping"), a real precision-guard candidate
+(queued peer-gated). Drift tripwire GREEN: the two accepted pins re-scored BYTE-ON-FLOOR (gymshark 62.4, kith 70.3).
+
+**Validation.** Full suite **GREEN 38/38** suites (re-run this fire; the change is a NEW experiment file, off the
+scoring + test import paths). Off-scoring-SEMANTICS EMPTY: only `experiments/ucp_metered_api_vetting.py` (new),
+`runs/local/ucp_metered_api_vetting_20260810T170728Z.json` (new evidence), and `loop/{STATE,BACKLOG,LOG}.md` changed;
+`asrs/ rubric/ fixtures/ scoring` UNCHANGED. Canonical regression signal: the newest floor `verify_20260810T164105Z`
+shows drift-flight.org 46.1 F / driftflight.com 76.2 C → **live delta +30.1** UNMOVED; frozen **+39.4** UNMOVED (no
+scoring change). $0 — read-only discovery + static score only; no probes-with-payment, no codex, no zero CLI (inv #1).
+Stayed in-repo.
+
+**Ship.** Direct-to-main (a vetting experiment + evidence + bookkeeping, off scoring semantics — same class as the
+`ucp_transactability_recon` / `acp_wellknown_recon` cadence cycles). Not a sensitive class (no payment/weights/caps/removals)
+→ no veto-visibility DM required for the change itself. This IS the first improvement cycle after 16:00 UTC today → the
+daily digest DM is owed (Comms). BACKLOG: P2 frontier (a) marked ✅ VETTED; a new `[LOCAL] PIN aloyoga.com` item queued
+(now unblocked); a `[SCOPE follow-up] tiered-volume free-shipping-tier` precision-guard candidate queued; the fully-superseded
+gymshark pin marker pruned (closed-marker budget was 23976/24000 → restored). STATE: counter 326→327, banner prepended,
+oldest rolling banner (20260809T015714Z) pruned per the ~5-cycle policy (doom-loop defense).
+
+**Next hypothesis / pointer.** The high-corner UCP pin is unblocked — next [LOCAL] cycle can capture
+`fixtures/canonical/aloyoga.com.json` and pin 81.2 B (the gymshark/kith recipe), stretching the pinned UCP-plane overall
+span above 70.3, then sweep-add + peer-gated weld (15th non-anchor / 5th UCP-rail member). Watch fixture size (kith was
+17.8MB; prefer the leanest capture). Standing cadence work still pending: the own-tool-drift TRIPWIRE (the 7th drift will
+come) and the 32-candidate ACP/MPP recon. WATCH driftflight.com `/extend` for a 402 recovery (restores the anchor
+handshake + the +39.4 live delta). Meta: keep confirming no fresh floor-only stall > 3h at each fire's infra step.

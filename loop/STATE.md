@@ -1,6 +1,24 @@
 # Loop state
 
-- Cycle counter: 326
+- Cycle counter: 327
+- **✅ ALOYOGA.COM 81.2 B METERED_API HONEST-CLASSIFICATION VETTING — CLEARS the inv-#4 gate → the high-corner UCP PIN is
+  UNBLOCKED (Local 20260810T170728Z, COVERAGE/TRUTH, direct-to-main — the ONE [LOCAL] item; NO open PRs at fire start → no
+  review owed).** New experiment `experiments/ucp_metered_api_vetting.py` ($0 static: `discover_offering` + shipped
+  `_run_probes`→`scoring.score`; no `--behavioral`/`--max-pay`/payment/zero-CLI, inv #1 by construction) →
+  `runs/local/ucp_metered_api_vetting_20260810T170728Z.json`. The BACKLOG P2 forward-frontier (a) flagged **aloyoga.com
+  81.2 B** (access/legibility/trust all 100.0, tx 50.0 — the HIGHEST live-UCP overall observed, above kith 70.3) as a pin
+  candidate IFF its `metered_api` survives honest-classification (a clothing brand claiming metered_api = topic-word
+  over-claim risk, the joinhexagon/thebotwire pattern). VERDICT **HONEST**: aloyoga's metered_api fires from
+  `{post-endpoint, rate-limited}` on `/llms.txt` — TEXTUALLY the SAME agent-commerce class as the ACCEPTED pins
+  gymshark.com + kith.com (both byte-identical `{post-endpoint, rate-limited}`): a real `GET
+  https://www.aloyoga.com/.well-known/ucp` discovery endpoint + "the MCP endpoint is rate-limited", NOT a login/marketing
+  topic-word → a CLEAN pin candidate; the PIN is queued `[LOCAL]` (gymshark/kith recipe). BONUS inv-#4 CATCH:
+  **chubbiesshorts.com 67.1 DISQUALIFIED** — its metered_api is a genuine over-claim (`tiered-volume` firing on the
+  homepage from "Tier 1 - $50 Free Standard Shipping", a shipping tier misread as API volume-tier billing) → a
+  precision-guard candidate queued. Lesser leads tecovas 73.6 / rothys 69.5 = HONEST (real API endpoints). Drift tripwire
+  GREEN (gymshark 62.4 / kith 70.3 re-scored BYTE-ON-FLOOR). Off-scoring-SEMANTICS EMPTY (new experiment + evidence only;
+  asrs/rubric/fixtures/scoring UNCHANGED); frozen +39.4 / live +30.1 (`verify_20260810T164105Z`); suite 38/38. See LOG
+  Local cycle 20260810T170728Z + BACKLOG P2 frontier (a) + the queued PIN item.
 - **✅ INFRA SELF-HEAL — the bench was RED ~27h (STATE 600-line accretion → doom-loop); repaired this fire (Local
   20260810T144332Z, METHOD/self-healing, direct-to-main — this IS the cycle's item; NO open PRs at fire start → no
   review owed).** Fire-start infra health check caught `tests_ok:false` in the newest verify
@@ -83,19 +101,10 @@
   manifest). Off-scoring-path (experiment + evidence only; asrs/rubric/fixtures/scoring UNCHANGED); frozen +39.4 / live
   +30.1; suite 38/38. NO open PRs. Evidence `runs/local/acp_wellknown_recon_20260809T024720Z.json`; LOG Local cycle
   20260809T024925Z.
-- **✅ CALIBRATION CADENCE SWEEP RUN GREEN this fire (Local 20260809T015714Z, TRUTH, direct-to-main — the ONE
-  [LOCAL] item).** Re-ran `experiments/calibration_sweep.py` ($0 static; no `--behavioral`/`--max-pay`/codex/zero
-  CLI, inv #1 by construction) over the full 26-member POPULATION → `runs/local/calibration_sweep_20260809T014508Z.json`
-  (25/26 scored, rei.com not-scorable per inv #4, 0 errors). **ALL 15 pinned/welded members BYTE-ON-FLOOR + caps
-  empty** — canonical pair (46.1/76.2) + all 13 non-anchor witnesses, incl. all 3 LIVE UCP rails (coffeecircle 57.4 /
-  gymshark 62.4 / hardgraft 66.9, each tx-50.0 `commerce-protocol-live`; the 2-D legibility×trust plane intact:
-  leg 54.55/54.55/50.0 × trust 33.33/60.0/90.0) + all 3 LIVE x402 rails (thebotwire 86.0 / oracle 64.4 / x402deploy
-  73.9, tx 100/87.5/100) — so every volatile live rail is UP, NO weld silently invalidated, NO baseline regressed.
-  **Drift vs 20260808T184442Z: 1/25 moved, max |Δ| 4.6 — the SOLE mover is the `wikipedia.org` non-storefront control
-  (45.7→41.1), a BISTABLE 41.1↔45.7 oscillation band (41.1 ×5 sweeps → 45.7 ×4 → 41.1 now), known control noise, NOT a
-  capability move and NOT a pinned/welded asset** (inv #4 — its ±4.6 never averaged into any pinned baseline). Broadens
-  the hourly canonical-PAIR regression signal to the whole population. Frozen +39.4 / live +30.1; suite 38/38. NO open
-  PRs. Evidence `runs/local/calibration_sweep_20260809T014508Z.json`; LOG Local cycle 20260809T015714Z.
+<!-- The 20260809T015714Z CALIBRATION CADENCE SWEEP rolling banner (TRUTH, direct-to-main; all 15 pinned/welded members
+     byte-on-floor, sole mover the wikipedia.org control's known 41.1↔45.7 oscillation) is pruned this fire (Local cycle
+     20260810T170728Z) per the ~5-cycle rolling-log policy to defend STATE against re-accretion (the 27h doom-loop lesson)
+     — preserved verbatim in loop/LOG.md (## Local cycle — 20260809T015714Z) + git history. -->
 
 - FOCUS POINTER (cloud track — compacted Local cycle 20260809T064456Z to hold the STATE line cap; the full
   Cycle-295 pointer AND the 20260807T051750Z→174235Z ledger/campaign summary [PR #151 `140304e` RESOLVED the

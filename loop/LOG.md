@@ -21585,3 +21585,77 @@ anchor handshake + the +39.4 live delta). Meta: keep confirming no fresh floor-o
 ## Local verification — 20260810T204104Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260810T204104Z.json
+
+## Local cycle — 20260810T210208Z — TRUTH / INFRA (local, direct-to-main, score-neutral) — thebotwire.com 404-dark regression PERSISTS: a second cadence-sweep observation confirms 25.0 (byte-identical to obs 1), still < the driftflight ~7h ledger bar → step (1) done, ledger PR held; aloyoga 81.2 B on-floor a 2nd time; every other member byte-on-floor
+
+**Fire-start state.** `git pull` → Already up to date; `gh pr list --state open` → `[]` (NO open peer-gated PR → no
+first-duty review owed). Newest verify `runs/local/verify_20260810T204104Z.json` fresh (~2 min old at fire start, «6h
+floor), **`tests_ok:true`** (all 38 modules), live delta **+30.1** (driftflight.com 76.2 C / drift-flight.org 46.1 F),
+`git rev-parse main == origin/main == HEAD` (`b399d1e`, clean, no un-pushed drift), STATE 258 lines (well under the 600
+cap). Infra health check (self-healing outranks new work): verify floor UP, bench GREEN, bookkeeping consistent; the 27h
+stall doom-loop (repaired `f80dda2`) has NOT recurred — last improvement cycle 20260810T200452Z, then the :41 floor, then
+this fire (~1h later, no fresh floor-only gap > 3h). All GREEN → proceed to the ONE [LOCAL] item.
+
+**The ONE [LOCAL] item (TRUTH/INFRA) — P1 step (1): re-run the $0 cadence sweep to CONFIRM the thebotwire.com regression
+is PERSISTENT.** Last cycle (20260810T200452Z) found thebotwire.com — BOTH a pinned frozen-replay baseline (`EXPECTED`
+86.0, `test_live_x402_storefront_replays_86_0`) AND a welded member (`_NON_ANCHOR_WELDED`, PR #158) — collapsed to
+25.0 (all agent-native rails 404-dark), confirmed by an independent `curl`, and correctly attributed to the SITE. That
+was obs 1 (sweep ts 20260810T194427Z). The documented-live-drift ledger is for **PERSISTENT** regressions — the sole
+existing entry (driftflight.com) waited ~7h of floors before ledgering — so a single fire's observation cannot be
+ledgered. This fire re-runs the sweep to gather obs 2. Ran `PYTHONPATH=. python experiments/calibration_sweep.py`
+(the shipped static path `_run_probes`→`scoring.score`; no `--behavioral` so NO free-tier probe fires, no zero CLI, no
+signing path, never a nonzero `--max-pay`; inv #1 by construction) → 27/28 scored, 1 not-scorable (rei.com per inv #4),
+0 errors → `runs/local/calibration_sweep_20260810T204543Z.json`, immediately `mv`'d off the `calibration_sweep_*` weld
+glob to `runs/local/thebotwire_persistence_confirm_20260810T204543Z.json` (the last-cycle off-glob pattern — the down
+rail's fixture is honest capture-time evidence but must not redden the weld un-ledgered).
+
+**Result — PERSISTENCE CONFIRMED (obs 2, ~50 min after obs 1).** thebotwire.com scored **25.0 F** again — BYTE-IDENTICAL
+to obs 1: access **100.0** (server still RESPONDS), legibility **0.0**, transactability **0.0**, trust **33.33**,
+`claimed_archetypes` `[]`, caps empty. The 404-dark decommission is stable, not a transient flap. The sweep's own drift
+block (vs the newest committed on-glob baseline `calibration_sweep_20260809T064456Z.json`) reports **1/26 moved, max |Δ|
+61.0** — the SOLE mover is `Δ -61.0 thebotwire.com 86.0 -> 25.0`; every other compared member is **delta 0.0**: both
+anchors (drift-flight.org 46.1 / driftflight.com 76.2), all FIVE UCP rails (coffeecircle 57.4 / gymshark 62.4 /
+hardgraft 66.9 / kith 70.3 / aloyoga 81.2), the other TWO live x402 rails (oracle 64.4 / x402deploy 73.9), every frozen
+baseline, AND the bistable `wikipedia.org` control (41.1, on the low side this fire → no move). **Bonus:** aloyoga.com
+scored **81.2 B BYTE-ON-FLOOR** a SECOND independent time (access 100.0 / legibility 100.0 / transactability 50.0 /
+trust 100.0, honest `{metered_api, physical_good}`, caps empty), listed under `added_members` — a second live witness
+that the SEVENTEENTH baseline scores at its EXPECTED floor (strengthening the pending, thebotwire-blocked weld).
+
+**Decision — still below the ledger bar; hold the peer-gated ledger PR, keep the bench honestly green.** Two observations
+~50 min apart confirm the collapse is not a flap, but this is still far short of the driftflight precedent (~7h across
+consecutive floors) that governs when a live regression is "PERSISTENT, DOCUMENTED" enough to ledger. Opening the
+peer-gated ledger PR now would (a) undershoot that discipline on a ~1h window and (b) is not the smallest meaningful unit
+for this fire. So the fresh 25.0 sweep stays OFF the weld glob (evidence preserved, bench honest — the pin/weld stand on
+the DELIBERATELY-frozen floor per inv #2, not on a falsified reading), and step (2) — the `documented_live_drift.json`
+ledger PR (the PR #151 pattern) — is re-queued for a fire where persistence has reached a driftflight-comparable window.
+The aloyoga weld-unlock stays blocked behind it (unchanged from last cycle).
+
+**Validation.** Full suite **GREEN 38/38** suites (re-run this fire AFTER the off-glob move; the weld's
+`_committed_sweeps()` globs the filesystem, so the move is what keeps `test_calibration_anchor_agreement` /
+`test_non_anchor_member_is_welded` / `test_readout` green — every on-disk `calibration_sweep_*.json` carries thebotwire
+ABSENT or 86.0). Off-scoring-SEMANTICS EMPTY: only the evidence JSON + `loop/{STATE,BACKLOG,LOG}.md` changed;
+`experiments/` (the POPULATION already carries aloyoga from last cycle — no edit this fire), `asrs/ rubric/ scoring/
+probes` and every fixture/EXPECTED UNCHANGED. Canonical regression signal UNMOVED: floor `verify_20260810T204104Z` org
+46.1 F / com 76.2 C → **live +30.1**; frozen **+39.4** by construction (no scoring change). thebotwire is a NON-anchor →
+off the canonical PAIR → does not touch the delta. $0 (inv #1). Stayed in-repo.
+
+**Ship.** Direct-to-main (a cadence-sweep re-observation + evidence + bookkeeping — the same class as every prior cadence
+sweep; NO scoring-semantics change, so no peer gate). Not a sensitive class (no payment/weights/caps/removals) → no
+veto-visibility DM. thebotwire remains a WATCH pending the ledger bar, not a shipped score/capability change → held
+quiet per "otherwise no DM"; today's digest already went out (the 20260810T170728Z fire) → none owed. When persistence
+reaches the driftflight window and the peer-gated ledger PR opens, THAT opens with visibility.
+
+**Next hypothesis / pointer.** thebotwire.com is stably 404-dark across two observations (~50 min). Next [LOCAL] step
+(queued P1): the :41 floors + next improvement fire keep observing; once persistence spans a driftflight-comparable
+window (~several floors, still 25.0), open the PEER-GATED `documented_live_drift.json` ledger PR (overall 25.0 + the
+collapsed pillars {legibility 0.0, tx 0.0, trust 33.33} + this evidence + a capability-term reason: total-content 404
+decommission, all agent-native rails gone, server reachable), so the weld ACCEPTS the documented live value while keeping
+teeth (drift PAST 25.0 or any non-floor/non-documented value still fires; a recovery to 86.0 always accepted) — the PR's
+review is the third persistence observation. THEN a clean weld-visible sweep re-run carries aloyoga 81.2 on-floor + the
+now-ledgered thebotwire → commit it as a `calibration_sweep_*` → unlocks the aloyoga weld (15th non-anchor / 5th
+UCP-rail member). If instead thebotwire RECOVERS to 86.0, the weld already accepts the floor → skip the ledger, just
+re-run the sweep clean. Other forward candidates unchanged: the `mcp_surface` 1.0-vs-0.0 single-sub-check axis; the
+tiered-volume free-shipping-tier precision guard (peer-gated); the 32-candidate ACP/MPP recon + own-tool-drift TRIPWIRE
+at cadence. WATCH driftflight.com `/extend` for a 402 recovery (restores the anchor handshake + the +39.4 live delta).
+Meta: keep confirming no fresh floor-only stall > 3h at each fire's infra step. Evidence
+`runs/local/thebotwire_persistence_confirm_20260810T204543Z.json`.

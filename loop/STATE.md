@@ -1,6 +1,30 @@
 # Loop state
 
-- Cycle counter: 329
+- Cycle counter: 330
+- **✅ THEBOTWIRE.COM 404-DARK REGRESSION PERSISTS — obs 2 confirms 25.0 (byte-identical to obs 1); still < the driftflight
+  ~7h ledger bar → step (1) DONE, the peer-gated ledger PR HELD; aloyoga 81.2 B on-floor a 2nd time; every other member
+  byte-on-floor (Local 20260810T210208Z, TRUTH/INFRA, direct-to-main — the ONE [LOCAL] item; NO open PRs at fire start →
+  no review owed).** Executed P1 step (1): re-ran the $0 static cadence sweep (`experiments/calibration_sweep.py`,
+  `_run_probes`→`scoring.score`, no `--behavioral`/`--max-pay`/zero-CLI/signing, inv #1 by construction) → 27/28 scored,
+  1 not-scorable (rei.com inv #4), 0 errors → `calibration_sweep_20260810T204543Z.json`, immediately `mv`'d OFF the
+  `calibration_sweep_*` weld glob to `runs/local/thebotwire_persistence_confirm_20260810T204543Z.json` (last cycle's
+  off-glob pattern — the down rail's honest fixture must not redden the weld un-ledgered). **RESULT (persistence, obs 2 ~50
+  min after obs 1 at 194427Z):** thebotwire.com **25.0 F** again, BYTE-IDENTICAL to obs 1 — access **100.0** (server
+  RESPONDS), legibility **0.0**, tx **0.0**, trust **33.33**, `claimed_archetypes` `[]`, caps empty → the 404-dark
+  decommission is STABLE, not a transient flap. Sweep drift block (vs the newest on-glob baseline
+  `calibration_sweep_20260809T064456Z.json`): **1/26 moved, max |Δ| 61.0** — SOLE mover `Δ -61.0 thebotwire 86.0 -> 25.0`;
+  every OTHER member **delta 0.0** (both anchors 46.1/76.2, all FIVE UCP rails coffeecircle 57.4/gymshark 62.4/hardgraft
+  66.9/kith 70.3/aloyoga 81.2, the other TWO x402 rails oracle 64.4/x402deploy 73.9, every frozen baseline, wikipedia
+  control 41.1 on the low side → no move). **BONUS:** aloyoga.com **81.2 B BYTE-ON-FLOOR** a SECOND independent time
+  (access 100.0/legibility 100.0/tx 50.0/trust 100.0, honest `{metered_api, physical_good}`, caps empty), under
+  `added_members` — a second live witness for the pending (thebotwire-blocked) weld. **DECISION:** two obs ~50 min apart
+  prove it is not a flap, but this is still FAR short of the driftflight precedent (~7h across floors) that governs when a
+  live regression is "PERSISTENT, DOCUMENTED" enough to ledger → HOLD the peer-gated ledger PR (step 2), keep the fresh
+  sweep off-glob, bench stays HONESTLY green (pin/weld stand on the DELIBERATELY-frozen floor, inv #2). Step (2) re-queued
+  for a fire where persistence reaches a driftflight-comparable window; the aloyoga weld-unlock stays behind it. Off-scoring-
+  SEMANTICS EMPTY (evidence JSON + loop docs only; experiments/asrs/rubric/scoring/probes/fixtures UNCHANGED); full suite
+  38/38; frozen +39.4 UNMOVED / live +30.1 (`verify_20260810T204104Z`). Evidence
+  `runs/local/thebotwire_persistence_confirm_20260810T204543Z.json`; see LOG Local cycle 20260810T210208Z + BACKLOG P1.
 - **⚠️ ALOYOGA SWEEP-ADD RAN (81.2 B BYTE-ON-FLOOR) — but the cadence sweep CAUGHT a REAL live-rail regression on a WELDED
   member: THEBOTWIRE.COM 86.0 → 25.0 (total content 404). POPULATION add shipped; the weld-visible sweep + ledger DEFERRED;
   bench kept HONESTLY GREEN (Local 20260810T200452Z, COVERAGE/TRUTH, direct-to-main — the ONE [LOCAL] item; NO open PRs at
@@ -91,25 +115,12 @@
      20260809T024925Z→010020Z banners + the older 2026-08-07/08 rolling entries are preserved verbatim in loop/LOG.md
      + git history. STATE is mutable working state (counter + focus pointer + open questions), NOT an append-only
      LOG/evidence file, so this compaction is NOT an invariant-#5 rewrite. -->
-- **✅ UCP TRANSACTABILITY-RUNG RECON — the UCP retail rail is structurally CAPPED at tx=50.0 (Local 20260809T105834Z,
-  COVERAGE/TRUTH, direct-to-main — the ONE [LOCAL] item; NO open PRs at fire start → no review owed).** New experiment
-  `experiments/ucp_transactability_recon.py` ($0 static: `GET /.well-known/ucp` validated byte-faithfully via the
-  scorer's own `_parse_commerce_manifest`, then every UCP-serving domain full-scored via `_run_probes`→`scoring.score`;
-  no `--behavioral`/`--max-pay`/payment/zero-CLI, inv #1 by construction) → `runs/local/ucp_transactability_recon_20260809T105012Z.json`.
-  **UCP served 14/18** (SEVEN genuinely-NEW UCP merchants found by fresh scouts — rothys/mejuri/everlane/aloyoga/
-  outdoorvoices/tecovas/chubbiesshorts; ruggable NEGATIVE control correctly no-UCP → probe discriminates). **NO merchant
-  clears tx > 50.0** — the P2 "distinct tx rung" prize is confirmed $0-un-reachable for retail. The tx axis is BIMODAL
-  {tx=50.0 ×9, tx=43.75 ×5} and the SOLE discriminant is `mcp_surface`: every UCP merchant is byte-identical on
-  `x402_probe` 4.0/8.0 `commerce-protocol-live` + `self_serve_payg` 3.0/6.0 `self-serve-signup` (=7.0); the only variable
-  is `mcp_surface` 1.0/2.0 `mcp-documented-only` (→ tx 50.0) vs 0.0/2.0 `no-mcp-surface` (→ tx 43.75). This PINS+corrects
-  STATE's old "spanx 43.75 sub-check" hypothesis (the culprit is EXACTLY mcp_surface, a whole CLASS spanx/skims/mejuri/
-  tecovas/chubbies). tx > 50 needs x402-live 8.0 / self_serve_payg > 3.0 / a LIVE mcp_surface 2.0 — all OFF the retail-UCP
-  shape (a real scarcity truth). Drift tripwire GREEN (all 7 known UCP rails incl. pinned kith/hardgraft still serve a
-  valid manifest). **Pin lead for a FUTURE cycle (NOT pinned — ≥2-obs + classification gate): aloyoga.com 81.2 B**
-  (access/legibility/trust all 100.0, tx 50.0 — HIGHEST UCP overall observed, above kith 70.3), IF its `metered_api`
-  claim survives honest-classification vetting (inv #4 topic-word-over-claim risk). Scorer UNCHANGED (recon off the
-  scoring path); frozen +39.4 / live +30.1; suite 38/38 (`verify_20260809T104103Z`). See LOG Local cycle 20260809T105834Z
-  + BACKLOG P2 step (6).
+<!-- The 20260809T105834Z UCP TRANSACTABILITY-RUNG RECON banner (COVERAGE/TRUTH, direct-to-main; UCP served 14/18, NO
+     merchant clears tx>50.0 — the tx axis is BIMODAL {50.0/43.75} on the sole `mcp_surface` sub-check, so the "distinct
+     UCP tx rung" prize is $0-un-reachable for retail; surfaced aloyoga.com 81.2 B as a FUTURE pin lead — since PINNED +
+     welded-pending) is pruned this fire (Local cycle 20260810T210208Z) per the ~5-cycle rolling-log policy to defend
+     STATE against re-accretion (the 27h doom-loop lesson) — preserved verbatim in loop/LOG.md
+     (## Local cycle — 20260809T105834Z) + git history; the structural finding lives in BACKLOG P2 step (6). -->
 <!-- The two 20260809T094408Z banners (PR #163 kith-weld POST-MERGE review SOUND + the OWN-TOOL-DRIFT TRIPWIRE cadence
      GREEN, no 7th drift) are pruned this fire (Local cycle 20260810T200452Z) per the ~5-cycle rolling-log policy to
      defend STATE against re-accretion (the 27h doom-loop lesson) — both preserved verbatim in loop/LOG.md

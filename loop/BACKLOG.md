@@ -362,14 +362,39 @@ baseline is off the canonical PAIR) / live +30.1; off-scoring-SEMANTICS EMPTY (a
 Direct-to-main. Evidence runs/local/aloyoga_ucp_highcorner_baseline_20260810T174412Z.json; LOG Local cycle 20260810T174412Z.
 The sweep-add prerequisite is queued below. -->
 
-- **[P2 — COVERAGE, LOCAL, UNBLOCKED] Sweep-add aloyoga.com (the high-corner UCP baseline's weld prerequisite).** The pin
-  is now ✅ DONE (above). Give aloyoga.com a genuinely-compared calibration-sweep presence so a future PEER-GATED PR can
-  weld it into `_NON_ANCHOR_WELDED` non-vacuously (the gymshark/hardgraft/kith recipe, one baseline later). Add
-  `("aloyoga.com", "ucp-live:apparel-retail")` to `experiments/calibration_sweep.py` POPULATION + run a $0 static cadence
-  sweep (no `--behavioral`/`--max-pay`/codex/zero-CLI, inv #1 by construction) → expect aloyoga 81.2 B BYTE-ON-FLOOR
-  (n_compared=1, drift 0/prior-members) with every prior member + both anchors + all UCP/x402 rails byte-stable on floor.
-  This UNLOCKS the peer-gated weld: aloyoga → `_NON_ANCHOR_WELDED` as the 15th non-anchor member / 5th on the UCP rail
-  (the high corner of the welded UCP plane). Do it as a future [LOCAL] cycle.
+- **[P1 — TRUTH/INFRA, LOCAL] THEBOTWIRE.COM LIVE-RAIL REGRESSION — a welded member went 404-dark (86.0 → 25.0); confirm
+  persistence → peer-gated ledger → clean weld-visible sweep re-run (which also unlocks the aloyoga weld).** Found Local
+  cycle 20260810T200452Z: the aloyoga cadence sweep flagged `Δ -61.0 thebotwire.com 86.0 -> 25.0` — the sole non-control
+  mover. thebotwire.com is BOTH a pinned frozen-replay baseline (`EXPECTED` 86.0, `test_live_x402_storefront_replays_86_0`)
+  AND a welded member (`_NON_ANCHOR_WELDED`, PR #158). Live row collapsed legibility 86.36→0.0, tx 100.0→0.0,
+  `claimed_archetypes` `[]`, access still 100.0. ATTRIBUTION CONFIRMED (inv #4): re-scored twice (stable 25.0) + INDEPENDENT
+  `curl` — every path (`/`, `/llms.txt`, `/.well-known/ucp`, `/payments/latest`, `/news`) returns HTTP 404 → the server
+  RESPONDS (reachable) but the whole deployment/app + all agent-native rails (the live x402 402 handshake, llms.txt, commerce
+  manifest) are GONE: a REAL total-content decommission since the last sweep (20260809T064456Z, ~1.3d), correctly attributed
+  to the SITE. The frozen-replay PIN + the WELD STAND on the deliberately-frozen floor (inv #2). The fresh sweep was
+  preserved OFF the `calibration_sweep_*` weld glob (`runs/local/aloyoga_sweepadd_thebotwire_drift_20260810T194427Z.json`)
+  so the bench stays honestly GREEN (committing it un-ledgered reddens the weld 4 ways — empirically 26/30 → 30/30 after the
+  move). NEXT [LOCAL] STEPS, in order: (1) re-run the $0 cadence sweep to CONFIRM persistence (the ledger is for PERSISTENT
+  drift — the driftflight precedent waited ~7h; the fresh sweep will re-observe thebotwire). (2) IF still down: open a
+  PEER-GATED ledger PR adding a `thebotwire.com` entry to `experiments/documented_live_drift.json` (the PR #151 pattern:
+  overall 25.0 + the collapsed pillars + evidence + capability-term reason), so the weld ACCEPTS the documented live value
+  while keeping teeth (a drift PAST 25.0 or a non-floor/non-documented value still fires; a recovery to 86.0 always
+  accepted) — the review step is the second persistence observation; DM visibility on open (a weld-teeth change). (3) THEN
+  the same clean weld-visible sweep re-run carries aloyoga 81.2 on-floor + the now-ledgered thebotwire → commit it as a
+  `calibration_sweep_*` and it UNLOCKS the aloyoga weld too (see the sweep-add item below). IF instead thebotwire RECOVERS
+  to 86.0, the weld already accepts the floor → skip the ledger, just re-run the sweep clean. Evidence
+  `runs/local/aloyoga_sweepadd_thebotwire_drift_20260810T194427Z.json`; LOG Local cycle 20260810T200452Z.
+
+- **[P2 — COVERAGE, LOCAL, PARTIAL — POPULATION add ✅ DONE; weld-visible sweep re-BLOCKED by the thebotwire regression
+  above] Sweep-add aloyoga.com (the high-corner UCP baseline's weld prerequisite).** The pin is ✅ DONE; the POPULATION add
+  is now ✅ DONE (Local cycle 20260810T200452Z — `("aloyoga.com", "ucp-live:apparel-retail")` committed to
+  `experiments/calibration_sweep.py`, off the scoring path, so all future sweeps include aloyoga) and the sweep RAN with
+  aloyoga scoring **81.2 B BYTE-ON-FLOOR** (all 4 pillars byte-identical to `EXPECTED`, in `added_members`). But the
+  DELIVERABLE — a COMMITTED weld-visible `calibration_sweep_*` with aloyoga on-floor, which UNLOCKS the peer-gated weld
+  (aloyoga → `_NON_ANCHOR_WELDED`, the 15th non-anchor / 5th UCP-rail member) — is BLOCKED: any full-POPULATION cadence
+  sweep now includes the down thebotwire rail and would redden the weld un-ledgered. So the weld-unlock is re-queued BEHIND
+  the thebotwire ledger (P1 above): once thebotwire is ledgered (persistent) OR recovers, the clean weld-visible sweep
+  re-run carries aloyoga on-floor and a future PEER-GATED PR welds it. Do it as a future [LOCAL] cycle, after P1.
 
 - **[SCOPE follow-up, METHOD, precision-guard candidate — peer-gated]** the `metered_api` `tiered-volume` signal
   FALSE-POSITIVES on a retail FREE-SHIPPING tier. Found Local cycle 20260810T170728Z: chubbiesshorts.com's `metered_api`

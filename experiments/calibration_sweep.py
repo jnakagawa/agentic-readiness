@@ -195,6 +195,29 @@ POPULATION: list[tuple[str, str]] = [
     # from its frozen floor this run is an honest manifest-drift signal, not silently
     # averaged in.
     ("kith.com", "ucp-live:apparel-lifestyle"),
+    # a curated apparel/yoga-lifestyle merchant on the SAME live UCP rail, pinned as
+    # the SEVENTEENTH frozen-replay baseline LOCAL cycle 20260810T174412Z
+    # (aloyoga.com 81.2 B). It is the FIFTH non-anchor point on the UCP rail and the
+    # HIGH CORNER of the UCP plane: GET /.well-known/ucp answers a $0 read with a valid
+    # dev.ucp.* merchant manifest, so the scorer's x402_probe reads commerce-protocol-live
+    # PARTIAL 4.0/8.0 — the SAME UCP middle rung as coffeecircle / gymshark / hardgraft /
+    # kith (transactability 50.0, honest {metered_api, physical_good}, no over-claim). Its
+    # calibration value CAPS the UCP plane at the high corner: the first four UCP points
+    # span legibility 50.0 -> 86.36 and trust 33.33 -> 90.0 at the fixed tx-50.0 rung, but
+    # aloyoga holds that SAME rung while MAXING BOTH non-rail pillars — legibility 100.0
+    # AND trust 100.0, each STRICTLY above all four prior points — scoring 81.2, the
+    # HIGHEST UCP overall of the five (81.2 > kith 70.3). It shows a UCP merchant can be
+    # maximally legible AND maximally trusted while earning only the PARTIAL
+    # commerce-protocol rung: overall tracks legibility+trust, NOT rail credit leaking
+    # into the overall. It carries a committed replay baseline but was ABSENT from every
+    # prior sweep. Adding it here (LOCAL cadence, the kith.com prerequisite pattern) gives
+    # it its first live-sweep presence, so a future TRUTH cycle can weld it into
+    # tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED non-vacuously — the FIFTH
+    # welded member on the UCP commerce-protocol rail (the high corner of the welded UCP
+    # plane). Because the UCP manifest is LIVE (a served well-known JSON, volatile), a
+    # member whose live score DIVERGES from its frozen floor this run is an honest
+    # manifest-drift signal, not silently averaged in.
+    ("aloyoga.com", "ucp-live:apparel-retail"),
     # non-storefront controls (zero-commerce baseline)
     ("example.com", "control:non-storefront"),
     ("wikipedia.org", "control:non-storefront"),

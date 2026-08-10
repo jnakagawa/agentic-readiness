@@ -21744,3 +21744,7 @@ unchanged: the `mcp_surface` 1.0-vs-0.0 single-sub-check axis; the tiered-volume
 at each fire's infra step. Evidence `runs/local/thebotwire_persistence_confirm_20260810T214553Z.json` (obs 3) /
 `runs/local/thebotwire_persistence_confirm_20260810T204543Z.json` (obs 2) /
 `runs/local/aloyoga_sweepadd_thebotwire_drift_20260810T194427Z.json` (obs 1).
+
+## Local verification — 20260810T224104Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260810T224104Z.json

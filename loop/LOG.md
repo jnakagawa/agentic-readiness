@@ -21659,3 +21659,7 @@ tiered-volume free-shipping-tier precision guard (peer-gated); the 32-candidate 
 at cadence. WATCH driftflight.com `/extend` for a 402 recovery (restores the anchor handshake + the +39.4 live delta).
 Meta: keep confirming no fresh floor-only stall > 3h at each fire's infra step. Evidence
 `runs/local/thebotwire_persistence_confirm_20260810T204543Z.json`.
+
+## Local verification — 20260810T214104Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260810T214104Z.json

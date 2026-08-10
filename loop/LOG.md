@@ -21581,3 +21581,7 @@ floor and the aloyoga sweep-add re-runs cleanly with no ledger. Other forward ca
 1.0-vs-0.0 single-sub-check axis; the tiered-volume free-shipping-tier precision guard (peer-gated); the 32-candidate
 ACP/MPP recon + own-tool-drift TRIPWIRE at cadence. WATCH driftflight.com `/extend` for a 402 recovery (restores the
 anchor handshake + the +39.4 live delta). Meta: keep confirming no fresh floor-only stall > 3h at each fire's infra step.
+
+## Local verification — 20260810T204104Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260810T204104Z.json

@@ -21423,3 +21423,7 @@ span above 70.3, then sweep-add + peer-gated weld (15th non-anchor / 5th UCP-rai
 17.8MB; prefer the leanest capture). Standing cadence work still pending: the own-tool-drift TRIPWIRE (the 7th drift will
 come) and the 32-candidate ACP/MPP recon. WATCH driftflight.com `/extend` for a 402 recovery (restores the anchor
 handshake + the +39.4 live delta). Meta: keep confirming no fresh floor-only stall > 3h at each fire's infra step.
+
+## Local verification — 20260810T174103Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260810T174103Z.json

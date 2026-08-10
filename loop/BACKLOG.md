@@ -345,6 +345,18 @@ new-rail item below. -->
   FIRST (4 llms-full.txt FP families, inv #4) — prefer clean merchant witnesses over infra profiles. WATCH
   driftflight.com /extend for a 402 recovery (restores the anchor's live handshake + the +39.4 live delta).
 
+- **[WATCH — INFRA/METHOD] Improvement-loop stall doom-loop (opened Local cycle 20260810T144332Z).** The bench went
+  RED for ~27h (STATE.md accreted to exactly 600 lines → `test_state_hygiene` red → the verify FLOOR committed 28
+  hourly `tests_ok:false` readings → cascaded `test_canonical_history` red) because the IMPROVEMENT loop (launchd :41
+  Opus) did not fire/complete for that window while ONLY the verify FLOOR heartbeated (LOG 20260810T07→14 all
+  `## Local verification`, no `## Local cycle`). Repaired this fire per the `034d69d` precedent (STATE compacted
+  600→227; 28 red-bench `verify_*.json` git-rm'd; suite 38/38 green). ROOT-of-root is unconfirmed from the repo alone:
+  verify whether the improvement launchd job is scheduled/healthy on Jonah's machine (a floor-only period longer than a
+  couple hours should not recur). If it recurs, the fix is likely operational (launchd plist / agent runner), not code.
+  Meanwhile the two hygiene tripwires (`test_state_hygiene` 600-line cap + the green-bench guard) WORK — they caught it;
+  the gap was only that nothing repaired them for 27h. Re-check at each fire's infra health step; escalate in the next
+  digest if a fresh floor-only gap > ~3h appears.
+
 - **[STANDING TRIPWIRE — METHOD] Own-tool refusal vocab drift leak-scan.** codex's hosted-browser own-refusal
   phrasing has now drifted the `_ENV_BLOCK_RE` guard SIX times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)
   `browser site-access permission … declined` / the 6th Local cycle 20260808T215647Z: "…denied AT the browser permission

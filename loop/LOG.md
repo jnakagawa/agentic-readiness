@@ -21291,3 +21291,61 @@ tests_ok=False | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.
 ## Local verification — 20260810T144102Z
 
 tests_ok=False | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260810T144102Z.json
+
+## Local cycle — 20260810T144332Z — METHOD / SELF-HEALING (local, direct-to-main, score-neutral)
+
+**Fire-start state.** `git pull` up to date; `gh pr list --state open` → `[]` (NO open PR → no first-duty peer
+review owed). Newest verify `runs/local/verify_20260810T144102Z.json` fresh (<3 min), live delta **+30.1**
+(driftflight.com 76.2 C / drift-flight.org 46.1 F). Infra health check (playbook "self-healing outranks new work")
+caught the newest verify at **`tests_ok:false`** — the bench was RED. This self-heal IS the cycle's one item (a
+repair larger than ~15 min IS the item).
+
+**Diagnosis (root cause + cascade).** TWO suites red, one root:
+- `test_state_hygiene.py` FAIL — `loop/STATE.md` had accreted to **exactly 600 lines** (the rolling cycle log grew
+  past the Cycle-260 hygiene cap). First red at `verify_20260809T114102Z` — i.e. right after the last improvement
+  cycle (20260809T105834Z, UCP transactability recon).
+- `test_canonical_history.py` FAIL (69/71) — CASCADED: `test_real_committed_series_is_all_green_bench` +
+  `test_load_accounting_clean_series_reports_zero_excluded` both got **28**. The verify FLOOR (launchd :41) kept
+  heartbeating hourly and committing a `verify_*.json` each fire; because the STATE doc-lint made every one
+  `tests_ok:false`, 28 committed readings (20260809T114102Z → 20260810T144102Z) were "scored on a red bench",
+  tripping the green-bench integrity guard. First red at `verify_20260809T124102Z`.
+
+The ROOT is a stalled improvement loop: for ~27h ONLY the verify floor fired (LOG tail 20260810T07→14 is all
+`## Local verification` heartbeats, no `## Local cycle`), so nothing repaired the 600-line STATE — and the floor's
+own red-bench readings accreted into the second failure. Verified NON-DESTRUCTIVELY that both breaches fail ONLY from
+the doc-lint cascade: the distinct red-suite set across all 28 artifacts is EXACTLY `{state_hygiene, canonical_history}`
+and every re-score is VALID (delta +30.1, driftflight.com 76.2 / drift-flight.org 46.1 throughout) — **NO genuine
+regression is hidden** by the repair.
+
+**Fix (mirrors the `034d69d` precedent exactly — same root, same two-part heal).**
+1. **Compacted STATE.md** rolling cycle log to the last ~5 cycles: **600 → 227 lines / 21.2KB** (`test_state_hygiene`
+   4/4). Kept the 5 most-recent cycle banners (20260809T105834Z UCP-tx recon … 20260809T015714Z cadence sweep), the
+   FOCUS POINTER, and the stable sections (Git bookkeeping note / Environment constraint / Open questions —
+   byte-unchanged; all 4 `_REQUIRED_MARKERS` present). Prepended this fire's self-heal banner. Every pruned rolling
+   entry is preserved verbatim in this LOG.md + git history — STATE is mutable working state (counter + focus pointer +
+   open questions), NOT an append-only LOG/evidence file, so this compaction is NOT an invariant-#5 rewrite (the
+   Cycle-260 policy).
+2. **`git rm` the 28 red-bench `verify_*.json`** (20260809T114102Z → 20260810T144102Z). They are invalid readings
+   (scored on a red bench; the loader EXCLUDES them from the trend by design), retained in git history (inv #5 — a new
+   commit removing working-tree files is NOT a history rewrite / force-push / amend), and NOT falsified to green (inv #4
+   — the bench genuinely WAS red). 209 → 181 committed verify artifacts, all green-bench; newest remaining is the last
+   pre-accretion green reading `verify_20260809T104103Z.json`. This BREAKS the doom-loop: the next :41 floor fire pulls
+   this green tree, runs a green suite, and writes a fresh GREEN reading.
+
+**Validation.** Full suite **GREEN 38/38** suites (`test_state_hygiene` 4/4, `test_canonical_history` 71/71,
+`test_backlog_hygiene` 5/5, `test_canonical_replay` — frozen fixtures 46.1 / 85.5 → **frozen delta UNMOVED +39.4**).
+Off-scoring-SEMANTICS EMPTY: only `loop/STATE.md`, `loop/LOG.md`, `loop/BACKLOG.md` and removed `runs/local/verify_*.json`
+changed; `asrs/ rubric/ fixtures/ experiments/ scoring` UNCHANGED. Frozen +39.4 / live +30.1 (this hour's verify).
+$0 — no probes, no codex, no zero CLI, no payment (inv #1). Stayed in-repo.
+
+**Ship.** Direct-to-main (bookkeeping / infra self-heal, off scoring semantics — same class as `034d69d` and the
+Cycle-260 STATE compaction). No sensitive-class change → per Comms, NO DM required (not payment/weights/caps/removals;
+no digest owed — this fire is not the first after 16:00 UTC by cadence). BACKLOG gains a WATCH note on the 27h
+loop-stall doom-loop.
+
+**Next hypothesis / pointer.** The bench is green and the doom-loop is broken, but the META concern remains: the
+IMPROVEMENT loop (launchd :41 Opus) did not fire for ~27h while the verify FLOOR did — worth confirming the improvement
+launchd job is scheduled/healthy (queued as a BACKLOG WATCH; not diagnosable purely from the repo). Forward substantive
+frontier is unchanged: the P2 UCP-depth / new-rail item (aloyoga.com 81.2 high-corner candidate pending honest-
+classification vetting; the 32-candidate ACP/MPP recon at cadence; the own-tool-drift TRIPWIRE cadence — the 7th drift
+will come). WATCH driftflight.com `/extend` for a 402 recovery (restores the anchor handshake + the +39.4 live delta).

@@ -362,47 +362,37 @@ baseline is off the canonical PAIR) / live +30.1; off-scoring-SEMANTICS EMPTY (a
 Direct-to-main. Evidence runs/local/aloyoga_ucp_highcorner_baseline_20260810T174412Z.json; LOG Local cycle 20260810T174412Z.
 The sweep-add prerequisite is queued below. -->
 
-- **[P1 — TRUTH/INFRA, LOCAL] THEBOTWIRE.COM LIVE-RAIL REGRESSION — a welded member went 404-dark (86.0 → 25.0); confirm
-  persistence → peer-gated ledger → clean weld-visible sweep re-run (which also unlocks the aloyoga weld).** Found Local
-  cycle 20260810T200452Z: the aloyoga cadence sweep flagged `Δ -61.0 thebotwire.com 86.0 -> 25.0` — the sole non-control
-  mover. thebotwire.com is BOTH a pinned frozen-replay baseline (`EXPECTED` 86.0, `test_live_x402_storefront_replays_86_0`)
-  AND a welded member (`_NON_ANCHOR_WELDED`, PR #158). Live row collapsed legibility 86.36→0.0, tx 100.0→0.0,
-  `claimed_archetypes` `[]`, access still 100.0. ATTRIBUTION CONFIRMED (inv #4): re-scored twice (stable 25.0) + INDEPENDENT
-  `curl` — every path (`/`, `/llms.txt`, `/.well-known/ucp`, `/payments/latest`, `/news`) returns HTTP 404 → the server
-  RESPONDS (reachable) but the whole deployment/app + all agent-native rails (the live x402 402 handshake, llms.txt, commerce
-  manifest) are GONE: a REAL total-content decommission since the last sweep (20260809T064456Z, ~1.3d), correctly attributed
-  to the SITE. The frozen-replay PIN + the WELD STAND on the deliberately-frozen floor (inv #2). The obs-1 sweep was
-  preserved OFF the `calibration_sweep_*` weld glob (`runs/local/aloyoga_sweepadd_thebotwire_drift_20260810T194427Z.json`)
-  so the bench stays honestly GREEN (committing it un-ledgered reddens the weld 4 ways — empirically 26/30 → 30/30 after the
-  move). **STEP (1) ✅ IN PROGRESS — persistence CONFIRMED across FIVE observations; obs 5 this fire (Local cycle
-  20260811T021733Z, direct-to-main — the ONE [LOCAL] item).** Re-ran the $0 static cadence sweep a fifth time →
-  thebotwire.com **25.0 F again, BYTE-IDENTICAL to obs 1–4** (access 100.0 / legibility 0.0 / tx 0.0 / trust 33.33,
-  `claimed_archetypes` `[]`, caps empty) → five consecutive byte-identical observations at 19:44:27Z / 20:45:43Z /
-  21:45:53Z / 23:45:00Z / 02:17:33Z → the 404-dark decommission is STABLE across a **~6h33m documented-dark window** (NOW
-  within ~27m of the ~7h bar), not a flap; sole non-control mover (`Δ -61.0`, every other member delta 0.0, incl. aloyoga
-  81.2 B on-floor a 5th time). The fresh sweep is preserved OFF-glob as
-  `runs/local/thebotwire_persistence_confirm_20260811T021733Z.json`. **HELD — do NOT ledger yet (ONE more floor):** five
-  obs across ~6h33m prove it is stable and monotonic, but this is still ~27m short of the driftflight ledger precedent (~7h
-  across consecutive floors) → ONE more floor (with fires landing ~2.5h apart, the NEXT fire's obs 6 almost certainly
-  crosses ~7h and becomes the trigger). NOTE: the verify FLOOR only re-scores the canonical PAIR (thebotwire is a
-  NON-anchor, untracked by the floor), so this manual cadence sweep is the ONLY mechanism documenting thebotwire's live
-  persistence — each improvement fire that runs one adds a floor toward the ~7h bar. REMAINING [LOCAL] STEPS, in order:
-  (1b) re-run the $0 cadence sweep off-glob ONE more fire (obs 6) — the window should cross ~7h; (2) THEN (this same fire
-  or the next, once persistence reaches a driftflight-comparable window, still 25.0): open a PEER-GATED ledger PR adding a
-  `thebotwire.com` entry to `experiments/documented_live_drift.json` (the PR #151 pattern: overall 25.0 + the collapsed
-  pillars {legibility 0.0, tx 0.0, trust 33.33} + evidence + a capability-term reason — total-content 404 decommission, all
-  agent-native rails gone, server reachable), so the weld ACCEPTS the documented live value while keeping teeth (a drift
-  PAST 25.0 or a non-floor/non-documented value still fires; a recovery to 86.0 always accepted) — the review step is a
-  further persistence observation; DM visibility on open (a weld-teeth change). (3) THEN the same clean weld-visible sweep
-  re-run carries aloyoga 81.2 on-floor + the now-ledgered thebotwire → commit it as a `calibration_sweep_*` and it UNLOCKS
-  the aloyoga weld too (see the sweep-add item below). IF instead thebotwire RECOVERS to 86.0, the weld already accepts the
-  floor → skip the ledger, just re-run the sweep clean. Evidence (obs 5)
-  `runs/local/thebotwire_persistence_confirm_20260811T021733Z.json` / (obs 4)
-  `runs/local/thebotwire_persistence_confirm_20260810T234500Z.json` / (obs 3)
-  `runs/local/thebotwire_persistence_confirm_20260810T214553Z.json` / (obs 2)
-  `runs/local/thebotwire_persistence_confirm_20260810T204543Z.json` / (obs 1)
-  `runs/local/aloyoga_sweepadd_thebotwire_drift_20260810T194427Z.json`; LOG Local cycles 20260811T021733Z /
-  20260810T234500Z / 20260810T214553Z / 20260810T210208Z / 20260810T200452Z.
+- **[P1 — TRUTH/INFRA, LOCAL] THEBOTWIRE.COM LIVE-RAIL REGRESSION — a welded member went 404-dark (86.0 → 25.0); STEPS
+  (1)+(1b)+(2) ✅ DONE (persistence confirmed across 6 obs / ~7h01m → PEER-GATED ledger PR #164 OPEN); remaining: review+merge
+  #164 (next cycle's FIRST duty) → clean weld-visible sweep re-run (which also unlocks the aloyoga weld).** Found Local cycle
+  20260810T200452Z: the aloyoga cadence sweep flagged `Δ -61.0 thebotwire.com 86.0 -> 25.0` — the sole non-control mover.
+  thebotwire.com is BOTH a pinned frozen-replay baseline (`EXPECTED` 86.0, `test_live_x402_storefront_replays_86_0`) AND a
+  welded member (`_NON_ANCHOR_WELDED`, PR #158). Live row collapsed legibility 86.36→0.0, tx 100.0→0.0, `claimed_archetypes`
+  `[]`, access still 100.0. ATTRIBUTION CONFIRMED (inv #4): re-scored + INDEPENDENT `curl` — every path (`/`, `/llms.txt`,
+  `/.well-known/ucp`, `/payments/latest`, `/news`) returns HTTP 404 → the server RESPONDS (reachable) but the whole
+  deployment + all agent-native rails (the live x402 402 handshake, llms.txt, commerce manifest) are GONE: a REAL
+  total-content decommission since the last on-glob sweep (20260809T064456Z, ~1.3d), correctly attributed to the SITE. Each
+  obs sweep is preserved OFF the `calibration_sweep_*` weld glob (renamed `thebotwire_persistence_confirm_*.json`) so the
+  bench stays honestly GREEN (the frozen-replay PIN + the WELD stand on the deliberately-frozen floor, inv #2). **STEP (1)+(1b)
+  ✅ DONE — persistence CONFIRMED across SIX byte-identical observations spanning ~7h01m:** 25.0 F (access 100.0 / legibility
+  0.0 / tx 0.0 / trust 33.33, caps empty) at 19:44:27Z / 20:45:43Z / 21:45:53Z / 23:45:00Z (2026-08-10) then 02:17:33Z /
+  02:45:55Z (2026-08-11) → the ~7h01m window MATCHES the driftflight ledger precedent (~7h across floors); sole non-control
+  mover (`Δ -61.0`, every other member delta 0.0, incl. aloyoga 81.2 B on-floor a 6th time). **STEP (2) ✅ DONE — opened
+  PEER-GATED ledger PR #164** (`loop/thebotwire-drift-ledger`, Local cycle 20260811T024555Z): added a `thebotwire.com` entry
+  to `experiments/documented_live_drift.json` (the PR #151 pattern — overall 25.0 + collapsed pillars {legibility 0.0, tx 0.0,
+  trust 33.33} + `since_ts` 20260810T194427Z + a capability-term reason [total-content 404, all agent-native rails gone,
+  server reachable, inv #4] + obs-6 evidence). Re-derived `_accepted_overalls('thebotwire.com')` → [86.0, 25.0]; teeth intact
+  (a drift PAST 25.0 still fires; a recovery to 86.0 always accepted); branch suite 38/38. NOT self-merged this fire (peer
+  gate); DM sent (weld-teeth change). **REMAINING [LOCAL] STEPS, in order:** (review) NEXT cycle's FIRST duty is to
+  adversarially review PR #164 — re-run a fresh $0 cadence sweep (confirm STILL 25.0 = persistence holds; if RECOVERED to
+  86.0, close #164 unmerged since the weld already accepts the floor), confirm off-scoring-path (only
+  `documented_live_drift.json` + evidence JSON), re-derive teeth with a synthetic drift past 25.0 → if sound, MERGE + record
+  the verdict; (3) THEN a clean weld-visible sweep re-run carries aloyoga 81.2 on-floor + the now-ledgered thebotwire →
+  commit it as a `calibration_sweep_*` and it UNLOCKS the aloyoga weld too (see the sweep-add item below). Evidence (obs 6)
+  `runs/local/thebotwire_persistence_confirm_20260811T024555Z.json` / (obs 5) `..._20260811T021733Z.json` / (obs 4)
+  `..._20260810T234500Z.json` / (obs 3) `..._20260810T214553Z.json` / (obs 2) `..._20260810T204543Z.json` / (obs 1)
+  `runs/local/aloyoga_sweepadd_thebotwire_drift_20260810T194427Z.json`; PR #164; LOG Local cycles 20260811T024555Z /
+  20260811T021733Z / 20260810T234500Z / 20260810T214553Z / 20260810T210208Z / 20260810T200452Z.
 
 - **[P2 — COVERAGE, LOCAL, PARTIAL — POPULATION add ✅ DONE; weld-visible sweep re-BLOCKED by the thebotwire regression
   above] Sweep-add aloyoga.com (the high-corner UCP baseline's weld prerequisite).** The pin is ✅ DONE; the POPULATION add

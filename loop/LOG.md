@@ -21919,3 +21919,74 @@ the floor-only-stall WATCH closely and escalate in the next digest if a gap > ~3
 ## Local verification — 20260811T024104Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260811T024104Z.json
+
+## Local cycle — 20260811T024555Z — TRUTH / INFRA (local; obs-6 sweep direct-to-main, score-neutral; ledger PR #164 PEER-GATED) — thebotwire.com 404-dark regression persistence CROSSES the ~7h ledger bar at obs 6 (25.0 byte-identical to obs 1–5, window ~7h01m 19:44:27Z→02:45:55Z) → opened the PEER-GATED documented_live_drift.json ledger PR #164 (the PR #151 pattern); aloyoga 81.2 B on-floor a 6th time; every other member byte-on-floor; bench GREEN 38/38
+
+**Fire-start state.** `git pull` → Already up to date; `gh pr list --state open` → `[]` (NO open peer-gated PR at fire start → no
+first-duty review owed this fire). Newest verify `runs/local/verify_20260811T024104Z.json` fresh (~3 min old at fire start, «
+6h), **`tests_ok:true`** (all 38 modules), live delta **+30.1** (driftflight.com 76.2 C / drift-flight.org 46.1 F),
+`git rev-parse main == origin/main == HEAD` (`8004739`, clean, no un-pushed drift), STATE well under the 600-line cap. Infra
+health check (self-healing outranks new work): verify floor UP (0.05h), bench GREEN, bookkeeping consistent. FLOOR-ONLY note:
+the 00:41 & 01:41 fires produced only `## Local verification` floors (`aa58c0c`/`8535d9c`), ~2h32m between improvement cycles
+(20260810T234500Z → 20260811T021733Z), UNDER the ~3h escalation bar, both `tests_ok:true` → the 27h stall doom-loop has NOT
+recurred. All GREEN → proceed to the ONE [LOCAL] item.
+
+**The ONE [LOCAL] item (TRUTH/INFRA) — P1 the thebotwire.com regression: obs 6 crosses the ~7h ledger bar → open the peer-gated
+ledger PR (exactly the step the prior fire's Next-hypothesis scripted).** thebotwire.com — BOTH a pinned frozen-replay baseline
+(`EXPECTED` 86.0, `test_live_x402_storefront_replays_86_0`) AND a welded member (`_NON_ANCHOR_WELDED`, PR #158) — went 404-dark
+86.0 → 25.0 (all agent-native rails gone), caught obs 1 (20260810T194427Z) and re-confirmed byte-identical obs 2–5. The
+`documented_live_drift.json` ledger is for **PERSISTENT** regressions — the sole existing entry (driftflight.com) waited ~7h of
+consecutive floors before ledgering — so prior fires HELD the ledger PR until the documented window is comparable. This fire
+gathers obs 6. Ran `PYTHONPATH=. .venv/bin/python -m experiments.calibration_sweep` (the shipped static path
+`_run_probes`→`scoring.score`; no `--behavioral` so NO free-tier probe fires, no zero CLI, no signing path, never a nonzero
+`--max-pay`; inv #1 by construction) → 27/28 scored, 1 not-scorable (rei.com per inv #4), 0 errors →
+`runs/local/calibration_sweep_20260811T024555Z.json`, immediately `mv`'d off the `calibration_sweep_*` weld glob to
+`runs/local/thebotwire_persistence_confirm_20260811T024555Z.json` (the obs-1..5 off-glob pattern — the down rail's fixture is
+honest capture-time evidence but must not redden the weld un-ledgered; committing it on-glob would go red on thebotwire
+25.0-vs-86.0).
+
+**Result — PERSISTENCE CROSSES ~7h (obs 6, ~28 min after obs 5).** thebotwire.com scored **25.0 F** again — BYTE-IDENTICAL to
+obs 1–5 (re-derived leaf-by-leaf against the obs-5 fixture: `scored`/`overall`/`grade`/`rubric_version`/`pillars`/`caps_applied`/
+`claimed_archetypes` all equal): access **100.0** (server still RESPONDS), legibility **0.0**, transactability **0.0**, trust
+**33.33**, `claimed_archetypes` `[]`, caps empty. Six consecutive byte-identical observations (19:44:27Z / 20:45:43Z / 21:45:53Z
+/ 23:45:00Z on 2026-08-10; 02:17:33Z / 02:45:55Z on 2026-08-11) span a **~7h01m documented-dark window** — the collapse is
+stable and monotonic and NOW MATCHES the driftflight ledger precedent (~7h across floors). The sweep's own drift block (vs the
+newest committed on-glob baseline `calibration_sweep_20260809T064456Z.json`) reports **1/26 moved, max |Δ| 61.0** — the SOLE
+mover is `Δ -61.0 thebotwire.com 86.0 -> 25.0`; every other compared member is **delta 0.0** (both anchors 46.1/76.2, all FIVE
+UCP rails coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9 / kith 70.3 / aloyoga 81.2, the other TWO x402 rails oracle 64.4 /
+x402deploy 73.9, every frozen baseline, the example.com 22.5 and wikipedia.org 41.1 controls); `status_changed` empty. **Bonus:**
+aloyoga.com scored **81.2 B BYTE-ON-FLOOR** a SIXTH independent time (access 100.0 / legibility 100.0 / transactability 50.0 /
+trust 100.0, honest `{physical_good, metered_api}`, caps empty), under `added_members`.
+
+**Action — opened the PEER-GATED ledger PR #164 (weld-teeth change; NOT self-merged this fire).** Persistence now matches the
+driftflight precedent, so step (2) fires. Branch `loop/thebotwire-drift-ledger`: added a `thebotwire.com` entry to
+`experiments/documented_live_drift.json` (the PR #151 pattern) — `overall` 25.0 + the collapsed pillars `{access 100.0,
+legibility 0.0, transactability 0.0, trust 33.33}` + `since_ts` 20260810T194427Z + a capability-term `reason` (total-content 404
+decommission, all agent-native rails — the live x402 402 handshake at POST /payments/latest & /news, llms.txt, the commerce
+manifest — gone; server reachable; attributed to the SITE per inv #4) + `evidence_path`
+`runs/local/thebotwire_persistence_confirm_20260811T024555Z.json`. Re-derived the weld's acceptance on the committed ledger:
+`_accepted_overalls('thebotwire.com')` → **[86.0, 25.0]** and per-pillar accepts cover the live values, so live 25.0 + its
+pillars are ACCEPTED; **teeth intact** — a drift PAST 25.0 (tested 20.0) is NOT accepted (still fires), and a RECOVERY to 86.0 is
+always accepted (never masks a fix). Full suite **38/38** on the branch (the ledger add is safe: the committed on-glob sweep
+still carries thebotwire 86.0 == floor, and the teeth legs use synthetic ledgers). PR: https://github.com/jnakagawa/agentic-readiness/pull/164
+— review + self-merge owed the NEXT cycle (a further persistence observation is the review's live re-score); Slack DM sent for
+veto visibility (a weld-teeth change).
+
+**Ship split.** Direct-to-main (this entry): the obs-6 evidence JSON (off-glob) + LOG/STATE/BACKLOG — score-neutral, the same
+class as obs 1–5's cadence-observation commits (asrs/rubric/scoring/probes/fixtures UNCHANGED on main; main's
+`documented_live_drift.json` still carries ONLY the driftflight entry — the thebotwire entry lives on the PR branch until the
+peer gate merges it). Verified main's bench stays honestly GREEN with the fresh sweep off-glob: full suite **38/38**. Frozen
+delta **+39.4 UNMOVED** / live **+30.1** (`verify_20260811T024104Z`).
+
+**Next hypothesis / pointer.** thebotwire.com is stably 404-dark across SIX observations (~7h01m) → PR #164 (peer-gated ledger)
+is OPEN. NEXT cycle's FIRST duty: adversarially review PR #164 — re-run a fresh $0 cadence sweep (confirm STILL 25.0, i.e.
+persistence holds; if it RECOVERED to 86.0, close #164 unmerged since the weld already accepts the floor), confirm off-scoring-
+path (only `documented_live_drift.json` + evidence JSON), re-derive teeth with a synthetic drift past 25.0 → if sound, MERGE +
+record the verdict. THEN a clean weld-visible sweep re-run carries aloyoga 81.2 on-floor + the now-ledgered thebotwire → commit
+it as a `calibration_sweep_*` → unlocks the aloyoga weld (15th non-anchor / 5th UCP-rail member; see the sweep-add item in
+BACKLOG). Other forward candidates unchanged: the `mcp_surface` 1.0-vs-0.0 single-sub-check axis; the tiered-volume
+free-shipping-tier precision guard (peer-gated); the 32-candidate ACP/MPP recon + own-tool-drift TRIPWIRE at cadence. WATCH
+driftflight.com `/extend` for a 402 recovery (restores the anchor handshake + the +39.4 live delta). Evidence
+`runs/local/thebotwire_persistence_confirm_20260811T024555Z.json` (obs 6) / `..._20260811T021733Z.json` (obs 5) /
+`..._20260810T234500Z.json` (obs 4) / `..._20260810T214553Z.json` (obs 3) / `..._20260810T204543Z.json` (obs 2) /
+`runs/local/aloyoga_sweepadd_thebotwire_drift_20260810T194427Z.json` (obs 1). PR #164.

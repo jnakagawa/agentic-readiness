@@ -294,6 +294,34 @@ _ANCHORS = ("drift-flight.org", "driftflight.com")
 # data-retrieval + pure-inference-API + agent-native-search-API + THREE live-x402 storefronts + FIVE live-UCP
 # commerce-protocol storefronts (coffee-merchant + apparel-retail + leather-goods + apparel-lifestyle + apparel-lifestyle
 # high-corner, the last both plane axes maxed at the fixed tx-50.0 rung).
+# spanx.com (60.0) is welded here as the SIXTEENTH non-anchor welded member, and the SIXTH welded member on the LIVE UCP
+# commerce-protocol rail — the FIRST at the LOWER mode of the bimodal UCP transactability axis (a real athletic-apparel
+# shapewear merchant, a distinct storefront TYPE from the coffee-merchant checkout.coffeecircle.com, the athletic-apparel
+# brand gymshark.com, the leather-goods merchant hardgraft.com, the curated apparel/lifestyle merchant kith.com, and the
+# high-corner apparel brand aloyoga.com). Every prior UCP baseline sits at transactability 50.0 (x402_probe
+# commerce-protocol-live PARTIAL 4.0 + mcp_surface documented-only 1.0 + self_serve_payg 3.0 = 8.0/16.0); spanx serves a
+# valid dev.ucp.* manifest at GET /.well-known/ucp (x402_probe commerce-protocol-live PARTIAL 4.0, the SAME UCP rung) but
+# publishes NO MCP surface (mcp_surface no-mcp-surface FAIL 0.0/2.0, /.well-known/mcp.json + /mcp + /api/mcp all 404), so
+# transactability lands at 43.75 (7.0/16.0) — the LOWER mode of the bimodal UCP tx axis (recon LOG 20260809T105834Z: the
+# retail-UCP tx axis is {50.0, 43.75}, split SOLELY by mcp_surface), previously UNWITNESSED in the weld. Its calibration
+# value is a CONTROLLED single-SUB-CHECK isolation of `mcp_surface` against the pinned gymshark.com (62.4): the two match
+# EXACTLY on access 100.0 / legibility 54.55 / trust 60.0 AND share the OTHER two transactability sub-checks (x402_probe
+# 4.0 + self_serve_payg 3.0), differing SOLELY in mcp_surface (spanx FAIL 0.0 vs gymshark PARTIAL 1.0) → the whole tx
+# 50.0 -> 43.75 and overall 62.4 -> 60.0 delta is that ONE sub-check and nothing else (the coffeecircle<->gymshark
+# single-pillar isolation applied one level deeper, to a transactability SUB-CHECK). It claims exactly {physical_good}
+# (honest, from unambiguous free-shipping prose; NO topic-word over-claim, caps empty), keyed 'spanx.com' identically on
+# both paths (no www/bare alias needed), and scored at its 60.0 floor in exactly ONE committed sweep so far
+# (20260811T084450Z, segment ucp-live:apparel-lowtx — the cadence run that first added it to the POPULATION; absent from
+# every prior sweep), so it is genuinely COMPARED (n_compared=1), not silently skipped. Because the UCP rail is LIVE (a
+# served manifest, volatile), its live<->frozen agreement was independently re-confirmed by the authoring cycle (Local
+# cycle 20260811T094457Z, static $0: live 60.0 == frozen 60.0, all four non-null pillars byte-identical access 100.0 /
+# legibility 54.5454... / transactability 43.75 / trust 60.0, caps empty, x402_probe partial 4.0/8.0
+# commerce-protocol-live + mcp_surface fail 0.0/2.0 no-mcp-surface) — a divergence here at review time would be REAL
+# UCP-manifest drift, not a code regression. So the cross-path weld now spans SIXTEEN structurally-distinct non-anchor
+# witnesses: null-control + 2 retail + service-booking + data-retrieval + pure-inference-API + agent-native-search-API +
+# THREE live-x402 storefronts + SIX live-UCP commerce-protocol storefronts (coffee-merchant + apparel-retail +
+# leather-goods + apparel-lifestyle + apparel-lifestyle high-corner + apparel shapewear low-tx, the last the FIRST at the
+# lower tx-43.75 mode of the bimodal UCP transactability axis).
 _NON_ANCHOR_WELDED = (
     "example.com",
     "books.toscrape.com",
@@ -310,6 +338,7 @@ _NON_ANCHOR_WELDED = (
     "hardgraft.com",
     "kith.com",
     "aloyoga.com",
+    "spanx.com",
 )
 # Every population member welded across the offline-replay and live-sweep paths.
 _WELDED_MEMBERS = _ANCHORS + _NON_ANCHOR_WELDED
@@ -1649,6 +1678,76 @@ def test_aloyoga_fifteenth_non_anchor_is_welded_nonvacuously() -> None:
     _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
 
 
+def test_spanx_sixteenth_non_anchor_is_welded_nonvacuously() -> None:
+    print("test_spanx_sixteenth_non_anchor_is_welded_nonvacuously")
+    # spanx.com is the SIXTEENTH non-anchor welded member (a real athletic-apparel shapewear merchant on the LIVE UCP
+    # commerce-protocol rail — {physical_good}) and the SIXTH welded member on that rail, the FIRST at the LOWER mode of
+    # the bimodal UCP transactability axis. Every prior UCP baseline sits at transactability 50.0; spanx serves a valid
+    # dev.ucp.* manifest (x402_probe commerce-protocol-live PARTIAL 4.0, the SAME UCP rung) but publishes NO MCP surface
+    # (mcp_surface no-mcp-surface FAIL 0.0/2.0), so transactability lands at 43.75 — the lower mode of the bimodal UCP tx
+    # axis, split SOLELY by mcp_surface (recon LOG 20260809T105834Z). Its calibration value is a CONTROLLED single-SUB-CHECK
+    # isolation against the pinned gymshark.com (62.4): the two match EXACTLY on access 100.0 / legibility 54.55 / trust
+    # 60.0 AND share the other two tx sub-checks (x402_probe 4.0 + self_serve_payg 3.0), differing SOLELY in mcp_surface
+    # (spanx FAIL 0.0 vs gymshark PARTIAL 1.0) → the whole tx 50.0 -> 43.75 and overall 62.4 -> 60.0 delta is that ONE
+    # sub-check. Prove the weld is LOAD-BEARING for it specifically, not silently skipped in every sweep: it carries a
+    # committed v0.7 replay baseline, it is genuinely COMPARED in >=1 committed sweep (the 20260811T084450Z cadence run
+    # scored it 60.0, segment ucp-live:apparel-lowtx), and its live value agrees with the frozen floor. Because its rail is
+    # LIVE (volatile), its live<->frozen agreement was independently re-confirmed by the authoring cycle (Local cycle
+    # 20260811T094457Z, static $0: live 60.0 == frozen 60.0, all four non-null pillars byte-identical access 100.0 /
+    # legibility 54.5454... / transactability 43.75 / trust 60.0, caps empty, x402_probe partial 4.0/8.0
+    # commerce-protocol-live + mcp_surface fail 0.0/2.0 no-mcp-surface) — a divergence here at review time would be REAL
+    # UCP-manifest drift, not a code regression.
+    _check(
+        "spanx.com" in _NON_ANCHOR_WELDED,
+        "spanx.com is a welded non-anchor member",
+    )
+    _check(
+        "spanx.com" in replay.EXPECTED
+        and str(replay.EXPECTED["spanx.com"]["rubric_version"]) == _BASELINE_VERSION,
+        "spanx.com carries a committed v0.7 replay baseline (the weld's source of truth)",
+    )
+    sweeps = _committed_sweeps()
+    divergences, n_compared, _, _ = _divergences(
+        sweeps, replay.EXPECTED, _BASELINE_VERSION, members=("spanx.com",)
+    )
+    _check(
+        divergences == [],
+        f"spanx.com's live sweeps agree with its 60.0 replay floor (got {divergences})",
+    )
+    _check(
+        n_compared >= 1,
+        f"spanx.com is genuinely compared, not silently skipped (got {n_compared})",
+    )
+    # Teeth: a live re-capture that drifted spanx.com 60.0 -> 62.4 (e.g. the merchant publishing an MCP surface, flipping
+    # mcp_surface FAIL 0.0 -> documented-only 1.0, lifting transactability off the tx-43.75 rung back onto the tx-50.0 mode
+    # — the EXACT gymshark shape) MUST trip the weld, exactly as a drifted anchor or any prior non-anchor member does — so
+    # welding this sixteenth member is not toothless. The 2.4-point drift is well above _TOL (0.05), and it is the very
+    # capability move (a live MCP surface appearing) the low-tx isolation exists to catch.
+    drifted = {
+        "rubric_version": "0.7",
+        "rows": [
+            {
+                "domain": "spanx.com",
+                "segment": "ucp-live:apparel-lowtx",
+                "scored": True,
+                "overall": 62.4,
+            }
+        ],
+    }
+    dvg, n_cmp, _, _ = _divergences(
+        [("synthetic-spanx-drift", drifted)], replay.EXPECTED, _BASELINE_VERSION,
+        members=("spanx.com",),
+    )
+    _check(len(dvg) == 1, f"exactly one divergence caught (got {dvg})")
+    _check(
+        dvg[0][1] == "spanx.com"
+        and abs(dvg[0][2] - 62.4) < 1e-9
+        and abs(dvg[0][3] - 60.0) < 1e-9,
+        f"the drifted spanx.com is caught vs its 60.0 floor (got {dvg[0]})",
+    )
+    _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
+
+
 def test_www_bare_domain_key_is_normalized() -> None:
     print("test_www_bare_domain_key_is_normalized")
     # _member_row matches a welded member to its sweep row modulo a single leading 'www.'
@@ -1988,6 +2087,7 @@ def main() -> int:
         test_hardgraft_thirteenth_non_anchor_is_welded_nonvacuously,
         test_kith_fourteenth_non_anchor_is_welded_nonvacuously,
         test_aloyoga_fifteenth_non_anchor_is_welded_nonvacuously,
+        test_spanx_sixteenth_non_anchor_is_welded_nonvacuously,
         test_www_bare_domain_key_is_normalized,
         test_off_version_sweep_is_not_compared,
         test_live_sweep_pillars_agree_with_replay_baseline,

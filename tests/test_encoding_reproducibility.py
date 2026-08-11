@@ -94,6 +94,7 @@ _POPULATION = (
     "hardgraft.com",
     "ipinfo.io",
     "kith.com",
+    "spanx.com",
     "thebotwire.com",
     "www.moleskine.com",
     "x402deploy.vercel.app",

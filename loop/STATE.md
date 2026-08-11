@@ -1,6 +1,34 @@
 # Loop state
 
-- Cycle counter: 337
+- Cycle counter: 338
+- **✅ NO PEER-GATED PR OPEN (first duty = infra health GREEN only); THEN the ONE [LOCAL] item = PIN spanx.com 60.0 D
+  as the 18th real-domain baseline / 6th UCP-rail point — the FIRST at the LOWER mode of the bimodal UCP tx axis
+  (tx 43.75), a controlled single-sub-check isolation of `mcp_surface` vs pinned gymshark; bench GREEN 38/38 (Local
+  20260811T080116Z, COVERAGE — direct-to-main, score-neutral).** FIRST DUTY: infra health GREEN — main == origin/main
+  (clean `07834a9`), newest verify `verify_20260811T074103Z.json` ~2 min old (< 6h bar), tests_ok=True (38/38), live
+  delta +30.1 (org 46.1 / com 76.2); `gh pr list` EMPTY → no review owed (the UCP-rail weld campaign closed last fire,
+  PR #165 `932c006`). **THE ONE [LOCAL] ITEM (COVERAGE, direct-to-main) — the P2 UCP-plane forward frontier step (b):**
+  the retail-UCP tx axis is BIMODAL {50.0, 43.75} split SOLELY by the `mcp_surface` sub-check (recon LOG 20260809T105834Z);
+  all FIVE prior UCP pins (coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9 / kith 70.3 / aloyoga 81.2) sit at tx-50.0,
+  so the tx-43.75 mode was COMPLETELY UNCOVERED. PINNED **spanx.com 60.0 D** (a real athletic-apparel shapewear merchant;
+  GET /.well-known/ucp serves a valid `dev.ucp.*` manifest → x402_probe commerce-protocol-live PARTIAL 4.0, but NO MCP
+  surface → mcp_surface FAIL 0.0 → tx **43.75**) as the FIRST tx-43.75 UCP baseline. It is a CONTROLLED single-sub-check
+  isolation of `mcp_surface`: spanx matches the pinned **gymshark.com** EXACTLY on access 100.0 / legibility 54.5454... /
+  trust 60.0, shares gymshark's other two tx sub-checks (x402_probe 4.0 + self_serve_payg 3.0), and differs SOLELY in
+  `mcp_surface` (spanx FAIL 0.0 vs gymshark PARTIAL 1.0) → the whole tx 50.0→43.75 and overall 62.4→60.0 delta is that ONE
+  sub-check and nothing else (the coffeecircle↔gymshark single-pillar isolation applied to a tx SUB-CHECK). Honest (inv #4):
+  physical_good ONLY, from unambiguous `free-shipping` prose; metered_api + 4 others NA, NO topic-word over-claim, caps
+  empty. CAPTURE `asrs.cli score spanx.com --record-fixture …` ($0 static, inv #1 — no --behavioral/--max-pay/codex/zero-CLI/
+  signing; 41 entries / 18M, within the kith 17.6M precedent): live == frozen replay == EXPECTED == 60.0, all 4 pillars
+  byte-identical (100.0/54.54545454545455/43.75/60.0), 0 misses, caps empty. Installed EXPECTED + _REPLAY_CLEAN + guard
+  `test_ucp_retail_mcp_isolation_storefront_replays_60_0` + _POPULATION ×5; test_canonical_replay 39→40; full suite 38/38.
+  Off-scoring-SEMANTICS EMPTY (6 TEST files + fixture only; asrs/rubric/scoring/probes/experiments UNCHANGED); frozen +39.4
+  UNMOVED (spanx off the pair) / live +30.1 (`verify_20260811T074103Z`). BOOKKEEPING: pruned the STALE P1 "capture a
+  data_retrieval fixture" item — data_retrieval now has FIVE committed witnesses (exa.ai/ipinfo.io/polar.sh/thebotwire.com/
+  x402deploy). NEXT: a future fire can discharge the [LOCAL] sweep-add prerequisite (spanx → calibration_sweep POPULATION,
+  60.0 byte-on-floor) then open a PEER-GATED weld of spanx into `_NON_ANCHOR_WELDED` (16th member / 1st tx-43.75-mode point,
+  teeth = synthetic drift). Evidence `runs/local/spanx_ucp_lowtx_isolation_baseline_20260811T080116Z.json`; see LOG Local
+  cycle 20260811T080116Z + BACKLOG P2 frontier (b).
 - **✅ FIRST DUTY DONE — PEER-GATED PR #165 (aloyoga.com 81.2 B UCP weld) REVIEWED SOUND + MERGED (`932c006`); THEN
   the ONE [LOCAL] item = the own-tool-drift TRIPWIRE cadence re-run → GREEN, no seventh drift; bench GREEN 38/38 (Local
   20260811T054101Z, METHOD — merge is the peer-gated first duty; tripwire direct-to-main).** FIRST DUTY: adversarially
@@ -139,37 +167,14 @@
   Off-scoring-SEMANTICS EMPTY (evidence JSON + loop docs only; experiments/asrs/rubric/scoring/probes/fixtures UNCHANGED);
   full suite 38/38; frozen +39.4 UNMOVED / live +30.1 (`verify_20260811T014104Z`). Evidence
   `runs/local/thebotwire_persistence_confirm_20260811T021733Z.json`; see LOG Local cycle 20260811T021733Z + BACKLOG P1.
-- **✅ THEBOTWIRE.COM 404-DARK REGRESSION PERSISTS AT OBS 4 — 25.0 again (BYTE-IDENTICAL to obs 1, 2 & 3); documented-dark
-  window now ~4h01m (19:44:27Z→23:45:00Z), STILL < the driftflight ~7h ledger bar → ledger PR HELD another floor; aloyoga
-  81.2 B on-floor a 4th time; every other member byte-on-floor; bench GREEN 38/38 (Local 20260810T234500Z, TRUTH/INFRA,
-  direct-to-main — the ONE [LOCAL] item; NO open PRs at fire start → no review owed).** Continued P1 step (1b): re-ran the
-  $0 static cadence sweep (`experiments/calibration_sweep.py`, `_run_probes`→`scoring.score`, no `--behavioral`/`--max-pay`/
-  zero-CLI/signing, inv #1 by construction) → 27/28 scored, 1 not-scorable (rei.com inv #4), 0 errors →
-  `calibration_sweep_20260810T234500Z.json`, immediately `mv`'d OFF the `calibration_sweep_*` weld glob to
-  `runs/local/thebotwire_persistence_confirm_20260810T234500Z.json` (the obs-1/2/3 off-glob pattern — the down rail's honest
-  fixture must not redden the weld un-ledgered; the weld tests glob the filesystem). **RESULT (persistence, obs 4 ~2h after
-  obs 3 — the 22:41 improvement fire was skipped so the gap is ~2h not ~1h):** thebotwire.com **25.0 F** again,
-  BYTE-IDENTICAL to obs 1, 2 & 3 — access **100.0** (server RESPONDS), legibility **0.0**, tx **0.0**, trust **33.33**,
-  `claimed_archetypes` `[]`, caps empty → four consecutive byte-identical observations (19:44:27Z / 20:45:43Z / 21:45:53Z /
-  23:45:00Z) → the 404-dark decommission is STABLE across ~4h01m, not a flap, now past halfway to the ~7h bar. Sweep drift
-  block (vs the newest on-glob baseline `calibration_sweep_20260809T064456Z.json`, same baseline obs 1–3 used): **1/26 moved,
-  max |Δ| 61.0** — SOLE mover `Δ -61.0 thebotwire 86.0 -> 25.0`; every OTHER member **delta 0.0** (both anchors 46.1/76.2,
-  all FIVE UCP rails coffeecircle 57.4/gymshark 62.4/hardgraft 66.9/kith 70.3/aloyoga 81.2, the other TWO x402 rails oracle
-  64.4/x402deploy 73.9, every frozen baseline, wikipedia control 41.1 low side → no move). **BONUS:** aloyoga.com **81.2 B
-  BYTE-ON-FLOOR** a FOURTH independent time (access 100.0/legibility 100.0/tx 50.0/trust 100.0, honest `{metered_api,
-  physical_good}`, caps empty), under `added_members` — a fourth live witness for the pending (thebotwire-blocked) weld.
-  **DECISION:** four obs across ~4h01m prove it is stable and monotonic, but still short of the driftflight precedent
-  (~7h across floors) → HOLD the peer-gated ledger PR (step 2) another floor (~3 more at this cadence), keep the fresh sweep
-  off-glob, bench stays HONESTLY green (pin/weld stand on the DELIBERATELY-frozen floor, inv #2). Note: the verify FLOOR only
-  re-scores the canonical PAIR (thebotwire is a NON-anchor, untracked by the floor) — this manual cadence sweep is the ONLY
-  mechanism documenting thebotwire's live persistence, so each fire's sweep adds a floor of record toward the ~7h bar.
-  INFRA note: the 22:41 fire produced ONLY a verify floor (`e1b0215`), no `## Local cycle` — a single skipped improvement
-  fire (~2h between improvement cycles), still UNDER the ~3h floor-only escalation bar; both intervening floors are
-  `tests_ok:true` (no red accretion) → the 27h doom-loop has NOT recurred; noted, watch at each fire's infra step. Step (2)
-  re-queued for a fire where persistence reaches a driftflight-comparable window; the aloyoga weld-unlock stays behind it.
-  Off-scoring-SEMANTICS EMPTY (evidence JSON + loop docs only; experiments/asrs/rubric/scoring/probes/fixtures UNCHANGED);
-  full suite 38/38; frozen +39.4 UNMOVED / live +30.1 (`verify_20260810T234105Z`). Evidence
-  `runs/local/thebotwire_persistence_confirm_20260810T234500Z.json`; see LOG Local cycle 20260810T234500Z + BACKLOG P1.
+<!-- The 20260810T234500Z thebotwire OBS-4 persistence banner (25.0 byte-identical to obs 1–3, documented-dark
+     window ~4h01m, aloyoga 81.2 B on-floor a 4th time, every other member byte-on-floor, ledger PR HELD another
+     floor) is pruned this fire (Local cycle 20260811T080116Z) per the ~5-cycle rolling-log policy to defend STATE
+     against re-accretion (the 27h doom-loop lesson) — preserved verbatim in loop/LOG.md
+     (## Local cycle — 20260810T234500Z) + git history. The thebotwire regression is now MERGED-ledgered via PR #164
+     across seven byte-identical observations (~8h02m); obs 5–7 banners remain above (obs 5/6 in the rolling log,
+     obs 7 folded into the PR #164 merge banner). STATE is mutable working state, NOT an append-only LOG/evidence
+     file, so this compaction is not an invariant-#5 rewrite. -->
 <!-- The 20260810T214553Z thebotwire OBS-3 persistence banner (25.0 byte-identical to obs 1 & 2, documented-dark
      window ~2h01m, aloyoga 81.2 B on-floor a 3rd time, every other member byte-on-floor, ledger PR HELD another
      floor) is pruned this fire (Local cycle 20260811T044102Z) per the ~5-cycle rolling-log policy to defend STATE

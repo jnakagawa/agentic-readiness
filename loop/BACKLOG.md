@@ -326,9 +326,26 @@ new-rail item below. -->
   Standard Shipping", a SHIPPING tier misread as an API volume-tier — see the precision-guard candidate below). Drift
   tripwire GREEN (gymshark 62.4 / kith 70.3 re-scored byte-on-floor). Evidence
   `runs/local/ucp_metered_api_vetting_20260810T170728Z.json`; LOG Local cycle 20260810T170728Z.
-  (b) the **`mcp_surface` 1.0-vs-0.0 split** is itself a candidate calibration axis (an
-  MCP-documented UCP merchant vs a bare one isolates that single sub-check — the coffeecircle↔gymshark single-pillar
-  isolation applied to tx); (c) a genuinely-NEW rail TYPE (ACP/MPP — still $0-un-pinnable; keep re-running the
+  (b) ✅ PINNED (Local cycle 20260811T080116Z, COVERAGE, direct-to-main — the ONE [LOCAL] item): the **`mcp_surface`
+  1.0-vs-0.0 split** is now a pinned calibration axis. **spanx.com 60.0 D** is the EIGHTEENTH frozen-replay baseline /
+  6th UCP-rail point and the FIRST at the LOWER mode of the bimodal UCP tx axis (tx **43.75**) — a real athletic-apparel
+  shapewear merchant whose GET /.well-known/ucp serves a valid `dev.ucp.*` manifest (x402_probe commerce-protocol-live
+  PARTIAL 4.0) but publishes NO MCP surface (mcp_surface FAIL 0.0 no-mcp-surface). It is a CONTROLLED single-sub-check
+  isolation of `mcp_surface` vs the pinned **gymshark.com**: matched EXACTLY on access 100.0 / legibility 54.5454... /
+  trust 60.0, sharing gymshark's other two tx sub-checks (x402_probe 4.0 + self_serve_payg 3.0), differing SOLELY in
+  `mcp_surface` (spanx FAIL 0.0 vs gymshark PARTIAL 1.0) → the whole tx 50.0→43.75 and overall 62.4→60.0 delta is that
+  ONE sub-check (the coffeecircle↔gymshark single-pillar move applied to a tx SUB-CHECK). Honest (inv #4): physical_good
+  ONLY from unambiguous `free-shipping` prose; metered_api + 4 others NA, NO topic-word over-claim, caps empty. Captured
+  full-score LIVE ($0 static, inv #1 — no --behavioral/--max-pay/codex/zero-CLI/signing; 41 entries / 18M, within the
+  kith 17.6M precedent); live == frozen replay == EXPECTED == 60.0, 4 pillars byte-identical, 0 misses. Installed
+  EXPECTED + _REPLAY_CLEAN + guard `test_ucp_retail_mcp_isolation_storefront_replays_60_0` + _POPULATION ×5;
+  test_canonical_replay 39→40; suite 38/38; frozen +39.4 UNMOVED / live +30.1. Evidence
+  `runs/local/spanx_ucp_lowtx_isolation_baseline_20260811T080116Z.json`; LOG Local cycle 20260811T080116Z. **NEXT (the forward move for a future fire):**
+  (b-i) `[LOCAL]` sweep-add prerequisite — add `("spanx.com", "ucp-live:apparel-lowtx")` to
+  `experiments/calibration_sweep.py` POPULATION + run a $0 cadence sweep (spanx 60.0 byte-on-floor, n_compared=1), the
+  gymshark/kith/aloyoga recipe; then (b-ii) a PEER-GATED weld of spanx.com into `_NON_ANCHOR_WELDED` (the 16th non-anchor
+  member / FIRST tx-43.75-mode point; teeth = synthetic drift caught) — the load-bearing cross-path form of this
+  isolation. (c) a genuinely-NEW rail TYPE (ACP/MPP — still $0-un-pinnable; keep re-running the
   32-candidate recon at cadence). `joinhexagon.com` is a DOCUMENTED live-UCP lead but needs a precision-guard unblock
   FIRST (4 llms-full.txt FP families, inv #4) — prefer clean merchant witnesses over infra profiles. WATCH
   driftflight.com /extend for a 402 recovery (restores the anchor's live handshake + the +39.4 live delta).
@@ -1244,31 +1261,18 @@ runs/local/aloyoga_ucp_weld_review_rescore_20260811T054101Z.json; PR #165 (MERGE
        its guard. No further work — this is the closed form of the hygiene concern. -->
 
 
-- **[LOCAL] Capture a fixture that CLAIMS data_retrieval** (COVERAGE enabler, from
-  Cycle 114's audit). **SERVICE_BOOKING HALF DONE — LOCAL Cycle 240 (2026-08-05T00:06Z, COVERAGE, direct-to-main,
-  score-neutral): `fixtures/canonical/acuityscheduling.com.json` (NEW) is the FIRST committed fixture that CLAIMS
-  service_booking** — a real appointment-booking storefront (claims {subscription, service_booking, metered_api};
-  service_booking on 3 genuine signals book/appointment/schedule), chosen by a $0 static screen of 7 booking domains
-  (`experiments/probe_service_booking_candidates.py`) that rejected cal.com (false data_retrieval on "deployment lookup"
-  + noisy digital_good) and simplybook.me (soft-404 boilerplate). Pinned by `test_offering_canonical.py::
-  test_service_booking_anchor_offering` + `...partition_tracks_storefront_type` (62→64). So a future in-cloud COVERAGE
-  cycle CAN now add a genuinely distinct service_booking leg (confirmation/booking-reference or reschedule/availability
-  control) against real evidence. See LOG Cycle 240. **REMAINING: data_retrieval still has ZERO committed evidence** —
-  its 5 legs (enrich / dataset / lookup / data-service / query-records) still
-  cannot get a NEW capability-worded signal added in-cloud, because NO
-  committed fixture claims it (the canonical pair + api.replicate claim metered_api/subscription/
-  digital_good; books.toscrape claims physical_good; example.com claims nothing). Adding a signal to a
-  never-claimed archetype is UNVERIFIABLE here (a vacuous case — cannot prove it fires non-vacuously or is
-  score-neutral). Capture a fixture LIVE from a real data-enrichment/lookup API (a records-enrichment or
-  dataset-query service that genuinely claims data_retrieval) — via
-  `asrs.cli score <domain> --record-fixture fixtures/canonical/<domain>.json` (static $0, needs network →
-  [LOCAL]). Then a future COVERAGE cycle can add ONE capability leg to the claimed archetype (e.g.
-  data_retrieval: a `bulk-export`/structured-output-format or a `filter`/query-parameter leg) with the same
-  non-vacuous read-live guard the metered_api signals got. Off the scoring path, score-neutral. NOTE (Cycle 240):
-  the 7 booking domains screened for the service_booking capture (cal.com/cronofy/acuity/savvycal/setmore/
-  fresha/simplybook) claim data_retrieval NOT at all (cal.com's was a FALSE `lookup` on "deployment lookup"), so
-  a DEDICATED data-API domain is needed — screen records-enrichment / dataset-marketplace / reverse-lookup APIs
-  (e.g. a WHOIS/company-enrichment or a dataset-feed service) with the same probe tool.
+- **[✅ ENABLER DONE — both halves] Capture fixtures that CLAIM service_booking AND data_retrieval** (COVERAGE
+  enabler, from Cycle 114's audit). **SERVICE_BOOKING ✅ (LOCAL Cycle 240): `acuityscheduling.com.json` claims
+  {subscription, service_booking, metered_api}. DATA_RETRIEVAL ✅ — the "ZERO committed evidence" premise is now
+  SUPERSEDED: FIVE committed fixtures claim data_retrieval (verified Local cycle 20260811T080116Z via a
+  `discover_offering` pass over all fixtures) — `ipinfo.io` (the data_retrieval frozen-replay baseline,
+  `test_data_retrieval_storefront_replays_61_3`, with batch-retrieval/dataset-format/data-freshness), `exa.ai`,
+  `polar.sh`, `thebotwire.com`, `x402deploy.vercel.app`.** So the [LOCAL] fixture-capture that once blocked
+  BOTH archetypes is DONE for both. **REMAINING (a NEW, non-[LOCAL], in-cloud COVERAGE candidate — NOT this item's
+  original blocker):** a future in-cloud COVERAGE cycle CAN now add ONE genuinely-distinct capability leg to
+  data_retrieval (e.g. a `bulk-export`/structured-output-format or a `filter`/query-parameter leg) OR to
+  service_booking (confirmation/booking-reference or reschedule/availability), against the real committed evidence,
+  with the same non-vacuous read-live guard the metered_api signals got. Off the scoring path, score-neutral.
 
 
 - **[in-cloud] frontier note (post-Cycle-124): all four CLAIMED archetypes now span COVERAGE→TRUTH→READOUT.**

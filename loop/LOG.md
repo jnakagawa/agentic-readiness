@@ -22210,3 +22210,58 @@ tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1
 ## Local verification — 20260811T074103Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260811T074103Z.json
+
+## Local cycle — 20260811T080116Z — COVERAGE (LOCAL, direct-to-main, score-neutral) — PIN spanx.com (60.0 D) as the 18th real-domain baseline / 6th UCP-rail point — the FIRST at the LOWER mode of the bimodal UCP tx axis (tx 43.75), a controlled single-sub-check isolation of `mcp_surface` vs the pinned gymshark.com
+
+FIRST DUTY (infra + peer gate): infra health GREEN — main == origin/main (clean, `07834a9`), newest verify
+`verify_20260811T074103Z.json` ~2 min old (well under the 6h bar), tests_ok=True (38/38 suites), live canonical
+delta +30.1 (org 46.1 / com 76.2). NO open peer-gated PRs (`gh pr list` empty) → no review owed. The UCP-rail
+weld campaign closed last fire (PR #165 merged `932c006`).
+
+WHAT / WHY (the ONE [LOCAL] item — COVERAGE, the P2 UCP-plane forward frontier step (b)): the tx axis of the
+retail-UCP shape is BIMODAL {50.0, 43.75} and the SOLE discriminant is the `mcp_surface` sub-check (recon LOG
+20260809T105834Z: every UCP merchant is byte-identical on x402_probe 4.0/8.0 commerce-protocol-live +
+self_serve_payg 3.0/6.0; the only variable is mcp-documented-only 1.0/2.0 → tx 50.0 vs no-mcp-surface 0.0/2.0 →
+tx 43.75). All FIVE prior UCP pins (coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9 / kith 70.3 / aloyoga
+81.2) sit at tx-50.0 — the tx-43.75 mode was COMPLETELY UNCOVERED. Pinned spanx.com as the FIRST tx-43.75 UCP
+baseline: a real athletic-apparel shapewear merchant whose GET /.well-known/ucp serves a valid `dev.ucp.*`
+manifest (x402_probe commerce-protocol-live PARTIAL 4.0) but publishes NO MCP surface (mcp_surface FAIL 0.0
+no-mcp-surface) → tx 43.75. Its calibration value is a CONTROLLED single-sub-check isolation of `mcp_surface`:
+spanx.com matches the already-pinned gymshark.com EXACTLY on access (100.0) / legibility (54.5454...) / trust
+(60.0), shares gymshark's other two tx sub-checks (x402_probe 4.0 + self_serve_payg 3.0), and differs SOLELY in
+`mcp_surface` — so the whole tx 50.0→43.75 and overall 62.4→60.0 delta is attributable to that ONE sub-check and
+nothing else (the coffeecircle↔gymshark single-pillar isolation applied to a transactability SUB-CHECK). Honest
+classification (inv #4): physical_good ONLY, fired from unambiguous `free-shipping` fulfillment prose ("FREE
+SHIPPING ON ORDERS $75+"); metered_api and the other four archetypes NA — NO topic-word over-claim (unlike the
+chubbiesshorts.com tiered-volume FP), caps empty.
+
+CAPTURE + VERIFY: `asrs.cli score spanx.com --record-fixture fixtures/canonical/spanx.com.json` ($0 static, inv
+#1 by construction — NO --behavioral / --max-pay / codex / zero CLI / signing; the well-known GET is a $0 read),
+41 fetch entries / 18M (within the kith 17.6M precedent). Live static re-score == frozen fixture replay ==
+EXPECTED == 60.0 D, all 4 non-null pillars byte-identical (access 100.0 / legibility 54.54545454545455 /
+transactability 43.75 / trust 60.0), replay_misses 0, caps empty. Installed EXPECTED 60.0 D + _REPLAY_CLEAN +
+the isolation guard `test_ucp_retail_mcp_isolation_storefront_replays_60_0` (asserts same-rail x402_probe 4.0,
+shared self_serve_payg 3.0, the SOLE mcp_surface diff [spanx FAIL 0.0 vs gymshark PARTIAL 1.0], matched
+access/legibility/trust, and the whole tx/overall delta from that one sub-check) + _POPULATION ×5
+(encoding/hashseed/probe_order/locale/timezone — required: each file's `_POPULATION` must == the 0-miss committed
+fixtures). test_canonical_replay 39→40; full suite 38/38 suites GREEN.
+
+OFF SCORING-SEMANTICS: only 6 TEST files + the new fixture changed; asrs/rubric/scoring/probes/experiments
+UNCHANGED (grep-verified). Score-neutral for the canonical PAIR (a new NON-anchor baseline is off the pair):
+frozen +39.4 UNMOVED (test_canonical_delta_is_39_4 green) / live +30.1 (`verify_20260811T074103Z`; org 46.1 /
+com 76.2). Direct-to-main (same class as every prior baseline pin — tests + fixture, no scoring change).
+
+BOOKKEEPING FINDING: the P1 "[LOCAL] capture a fixture that CLAIMS data_retrieval" item is STALE — data_retrieval
+now has FIVE committed witnesses (exa.ai / ipinfo.io / polar.sh / thebotwire.com / x402deploy.vercel.app), the gap
+is closed; pruned in BACKLOG this fire.
+
+CANONICAL: frozen org 46.1 / com 76.2 (fixture floor) — delta +39.4 frozen / +30.1 live; UNMOVED (spanx is off
+the pair). NEXT HYPOTHESIS: the mcp_surface isolation is now pinnable both ways — a FUTURE fire can (a) discharge
+the [LOCAL] sweep-add prerequisite (add spanx.com to experiments/calibration_sweep.py POPULATION + a $0 cadence
+sweep at 60.0 byte-on-floor, n_compared=1) then (b) open a PEER-GATED weld of spanx.com into _NON_ANCHOR_WELDED
+(the 16th non-anchor / 1st tx-43.75-mode member; teeth = synthetic drift caught) — the load-bearing
+cross-path form of this isolation. Evidence (committed, force-added):
+`runs/local/spanx_ucp_lowtx_isolation_baseline_20260811T080116Z.json` (live re-score + replay + the vs-gymshark
+isolation numbers + honest classification); `runs/local/ucp_transactability_recon_20260809T105012Z.json` (the
+bimodal-split recon this pin realizes); raw CLI run `runs/spanx_com_20260811T075053.json` (gitignored). See
+BACKLOG P2 frontier (b).

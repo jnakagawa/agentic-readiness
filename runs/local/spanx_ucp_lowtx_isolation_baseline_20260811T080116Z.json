@@ -1,0 +1,132 @@
+{
+ "ts": "20260811T080116Z",
+ "kind": "ucp-lowtx-mcp-isolation-baseline",
+ "spend": "$0-static-inv1",
+ "domain": "spanx.com",
+ "pinned_overall": 60.0,
+ "role": "18th real-domain baseline / 6th UCP-rail point / FIRST tx-43.75 mode",
+ "claim": "controlled single-sub-check isolation of mcp_surface vs pinned gymshark.com (matched leg+trust, sole diff mcp_surface -> tx)",
+ "spanx": {
+  "overall": 60.0,
+  "grade": "D",
+  "rubric": "0.7",
+  "pillars": {
+   "access": 100.0,
+   "legibility": 54.54545454545455,
+   "transactability": 43.75,
+   "trust": 60.0,
+   "outcome": null
+  },
+  "caps_applied": [],
+  "replay_misses": 0,
+  "tx_subchecks": {
+   "x402_probe": {
+    "status": "Status.PARTIAL",
+    "points": 4.0,
+    "max": 8.0,
+    "finding": "commerce-protocol-live"
+   },
+   "mcp_surface": {
+    "status": "Status.FAIL",
+    "points": 0.0,
+    "max": 2.0,
+    "finding": "no-mcp-surface"
+   },
+   "self_serve_payg": {
+    "status": "Status.PARTIAL",
+    "points": 3.0,
+    "max": 6.0,
+    "finding": "self-serve-signup"
+   }
+  }
+ },
+ "gymshark": {
+  "overall": 62.4,
+  "grade": "D",
+  "rubric": "0.7",
+  "pillars": {
+   "access": 100.0,
+   "legibility": 54.54545454545455,
+   "transactability": 50.0,
+   "trust": 60.0,
+   "outcome": null
+  },
+  "caps_applied": [],
+  "replay_misses": 0,
+  "tx_subchecks": {
+   "x402_probe": {
+    "status": "Status.PARTIAL",
+    "points": 4.0,
+    "max": 8.0,
+    "finding": "commerce-protocol-live"
+   },
+   "mcp_surface": {
+    "status": "Status.PARTIAL",
+    "points": 1.0,
+    "max": 2.0,
+    "finding": "mcp-documented-only"
+   },
+   "self_serve_payg": {
+    "status": "Status.PARTIAL",
+    "points": 3.0,
+    "max": 6.0,
+    "finding": "self-serve-signup"
+   }
+  }
+ },
+ "isolation": {
+  "matched_pillars": {
+   "access": true,
+   "legibility": true,
+   "trust": true
+  },
+  "shared_tx_subchecks": {
+   "x402_probe": true,
+   "self_serve_payg": true
+  },
+  "sole_differing_subcheck": "mcp_surface",
+  "spanx_mcp_surface": {
+   "status": "Status.FAIL",
+   "points": 0.0,
+   "max": 2.0,
+   "finding": "no-mcp-surface"
+  },
+  "gymshark_mcp_surface": {
+   "status": "Status.PARTIAL",
+   "points": 1.0,
+   "max": 2.0,
+   "finding": "mcp-documented-only"
+  },
+  "tx_delta": {
+   "spanx": 43.75,
+   "gymshark": 50.0
+  },
+  "overall_delta": {
+   "spanx": 60.0,
+   "gymshark": 62.4
+  }
+ },
+ "honest_classification_inv4": {
+  "claimed": [
+   "physical_good"
+  ],
+  "unclaimed": [
+   "data_retrieval",
+   "digital_good",
+   "metered_api",
+   "service_booking",
+   "subscription"
+  ],
+  "evidence": {
+   "physical_good": [
+    {
+     "label": "free-shipping",
+     "surface": "homepage",
+     "quote": "ountry and currency United States | USD FREE SHIPPING ON ORDERS $75+ | FREE SHIPPING ON ORDER"
+    }
+   ]
+  }
+ },
+ "live_rescore_run": "runs/spanx_com_20260811T075053.json",
+ "replay_clean": true
+}

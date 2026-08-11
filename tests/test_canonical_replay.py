@@ -598,6 +598,44 @@ EXPECTED = {
             "outcome": None,
         },
     },
+    # An EIGHTEENTH real-domain calibration datapoint — and the SIXTH non-anchor
+    # baseline on the LIVE UCP rail: spanx.com, the FIRST point at the LOWER mode
+    # of the bimodal UCP transactability axis (tx 43.75). A fresh-population recon
+    # (LOG Local cycle 20260809T105834Z) established the UCP retail tx axis is
+    # BIMODAL {50.0, 43.75} and the SOLE discriminant is the `mcp_surface`
+    # sub-check: every UCP merchant is byte-identical on x402_probe (4.0/8.0
+    # commerce-protocol-live) and self_serve_payg (3.0/6.0), and the only variable
+    # is whether the merchant documents an MCP surface (mcp-documented-only 1.0/2.0
+    # -> tx 50.0) or not (no-mcp-surface 0.0/2.0 -> tx 43.75). The five prior UCP
+    # pins all documented an MCP surface (tx-50.0); spanx.com is a real
+    # athletic-apparel shapewear merchant whose GET /.well-known/ucp answers a $0
+    # read with a valid `dev.ucp.*` manifest (x402_probe commerce-protocol-live)
+    # but publishes NO MCP surface, so it sits at tx-43.75. Its calibration value
+    # is a CONTROLLED single-sub-check isolation of `mcp_surface` — the
+    # coffeecircle<->gymshark single-pillar move applied to a transactability
+    # SUB-CHECK: spanx.com matches the pinned gymshark.com EXACTLY on legibility
+    # (54.5454...) AND trust (60.0) and shares gymshark's other two tx sub-checks
+    # (x402_probe 4.0 + self_serve_payg 3.0), differing SOLELY in `mcp_surface`, so
+    # the tx 50.0 -> 43.75 (and the overall 62.4 -> 60.0) is attributable to that
+    # one sub-check and nothing else — a real scarcity truth about the rail.
+    # Honestly classified physical_good ONLY (fired from unambiguous `free-shipping`
+    # fulfillment prose; metered_api and the other four archetypes NA — NO
+    # topic-word over-claim, caps empty). Because the manifest is LIVE (served,
+    # volatile), a future removal/invalidation reddens the replay-clean guard
+    # (fixture frozen) and flags a re-capture. NO payment was ever signed (inv #1 —
+    # the well-known GET is a $0 read).
+    "spanx.com": {
+        "overall": 60.0,
+        "grade": "D",
+        "rubric_version": "0.7",
+        "pillars": {
+            "access": 100.0,
+            "legibility": 54.54545454545455,
+            "transactability": 43.75,
+            "trust": 60.0,
+            "outcome": None,
+        },
+    },
 }
 EXPECTED_DELTA = 39.4  # driftflight.com (rails) - drift-flight.org (no rails)
 
@@ -1669,6 +1707,105 @@ def test_ucp_retail_highcorner_storefront_replays_81_2() -> None:
         f"(aloyoga {alo.overall_score} > kith {kith.overall_score}, hardgraft "
         f"{hard.overall_score}, gymshark {gym.overall_score}, coffeecircle "
         f"{ucp.overall_score})",
+    )
+
+
+# ---------------------------------------------------------------------------
+# 6o. EIGHTEENTH-DOMAIN CALIBRATION — the SIXTH non-anchor baseline on the LIVE
+#     UCP rail (spanx.com), the FIRST point at the LOWER mode of the bimodal UCP
+#     transactability axis (tx 43.75). The five prior UCP points all sat at
+#     tx-50.0; a fresh-population recon (LOG Local cycle 20260809T105834Z) found
+#     the UCP retail tx axis is BIMODAL {50.0, 43.75} with the SOLE discriminant
+#     the `mcp_surface` sub-check (an MCP-documented merchant earns 1.0/2.0 -> tx
+#     50.0; a bare one earns 0.0/2.0 -> tx 43.75), every UCP merchant being
+#     byte-identical on x402_probe (4.0) and self_serve_payg (3.0). spanx.com pins
+#     that lower mode as a CONTROLLED single-sub-check isolation against the
+#     already-pinned gymshark.com — the coffeecircle<->gymshark single-pillar
+#     isolation applied to a transactability SUB-CHECK: matched EXACTLY on
+#     legibility AND trust, sharing the other two tx sub-checks, differing SOLELY
+#     in `mcp_surface`, so tx 43.75 (and overall 60.0 vs gymshark's 62.4) is
+#     attributable to that one sub-check and NOTHING else. A scoring change that
+#     stopped reading spanx's UCP manifest as commerce-protocol-live, that
+#     reweighted mcp_surface, or that let any other credit move, FLIPS this guard.
+#     Worded by capability, never by vendor. Because the manifest is LIVE (served,
+#     volatile), a future removal/invalidation reddens the replay-clean guard
+#     (fixture frozen) and flags a re-capture.
+# ---------------------------------------------------------------------------
+def test_ucp_retail_mcp_isolation_storefront_replays_60_0() -> None:
+    print("test_ucp_retail_mcp_isolation_storefront_replays_60_0")
+    _assert_domain("spanx.com")
+    spanx, spanx_misses = _score_fixture("spanx.com")
+    gym, gym_misses = _score_fixture("gymshark.com")  # the matched tx-50.0 UCP point
+    _check(
+        not (spanx_misses or gym_misses),
+        "no replay-miss on spanx.com / gymshark.com",
+    )
+    # Same rail: spanx earns the UCP partial (commerce-protocol-live), the same
+    # x402_probe rung as the tx-50.0 UCP baselines.
+    sp_probe = _by_id(spanx, "x402_probe")
+    gy_probe = _by_id(gym, "x402_probe")
+    _check(
+        sp_probe.status is Status.PARTIAL and sp_probe.finding == "commerce-protocol-live",
+        f"spanx.com: x402_probe is a validated LIVE UCP manifest "
+        f"(commerce-protocol-live, got {sp_probe.finding!r} {sp_probe.status})",
+    )
+    _check(
+        sp_probe.points == gy_probe.points == 4.0,
+        f"spanx and gymshark share the identical UCP x402_probe rung (4.0, "
+        f"got spanx {sp_probe.points} / gymshark {gy_probe.points})",
+    )
+    # The two tx sub-checks they SHARE are byte-identical...
+    sp_payg = _by_id(spanx, "self_serve_payg")
+    gy_payg = _by_id(gym, "self_serve_payg")
+    _check(
+        sp_payg.points == gy_payg.points == 3.0,
+        f"spanx and gymshark share the identical self_serve_payg partial (3.0, "
+        f"got spanx {sp_payg.points} / gymshark {gy_payg.points})",
+    )
+    # ...and the SOLE differing tx sub-check is mcp_surface: spanx FAILS it where
+    # gymshark earns the documented-only partial.
+    sp_mcp = _by_id(spanx, "mcp_surface")
+    gy_mcp = _by_id(gym, "mcp_surface")
+    _check(
+        sp_mcp.status is Status.FAIL and sp_mcp.points == 0.0
+        and sp_mcp.finding == "no-mcp-surface",
+        f"spanx.com mcp_surface FAILS (no-mcp-surface 0.0, got "
+        f"{sp_mcp.finding!r} {sp_mcp.status} {sp_mcp.points})",
+    )
+    _check(
+        gy_mcp.status is Status.PARTIAL and gy_mcp.points == 1.0,
+        f"gymshark.com mcp_surface is the documented-only partial (1.0, got "
+        f"{gy_mcp.finding!r} {gy_mcp.status} {gy_mcp.points})",
+    )
+    s = spanx.pillar_scores
+    g = gym.pillar_scores
+    # Matched non-tx pillars: access, legibility AND trust are byte-identical to
+    # gymshark, so the isolation holds everything but mcp_surface fixed.
+    _check(
+        abs(s["access"] - g["access"]) < 1e-9
+        and abs(s["legibility"] - g["legibility"]) < 1e-9
+        and abs(s["trust"] - g["trust"]) < 1e-9,
+        f"spanx matches gymshark on access/legibility/trust "
+        f"(access {s['access']}=={g['access']}, legibility "
+        f"{s['legibility']}=={g['legibility']}, trust {s['trust']}=={g['trust']})",
+    )
+    # The single mcp_surface point is the WHOLE transactability difference: spanx
+    # sits at the LOWER UCP tx mode (43.75) vs gymshark's (50.0).
+    _check(
+        abs(s["transactability"] - 43.75) < 1e-9
+        and abs(g["transactability"] - 50.0) < 1e-9
+        and s["transactability"] < g["transactability"],
+        f"spanx sits at the LOWER UCP tx mode "
+        f"(spanx {s['transactability']} < gymshark {g['transactability']})",
+    )
+    # And that one sub-check is the WHOLE overall difference — spanx strictly below
+    # gymshark, with every other pillar matched.
+    _check(
+        spanx.overall_score < gym.overall_score
+        and abs(spanx.overall_score - 60.0) < 1e-9
+        and abs(gym.overall_score - 62.4) < 1e-9,
+        f"the sole mcp_surface sub-check moves the overall "
+        f"(spanx {spanx.overall_score} < gymshark {gym.overall_score})",
     )
 
 
@@ -2799,6 +2936,23 @@ _REPLAY_CLEAN = {
     # guard (fixture frozen) and flags a re-capture — the honest signal, not a silent
     # drift.
     "aloyoga.com",
+    # spanx.com captured full-score LIVE this cycle (Local cycle 20260811T074103Z):
+    # the fresh crawl covers the whole probe set (0 misses) and replays to its
+    # pinned 60.0 D. It is the SIXTH non-anchor member on the LIVE UCP rail and the
+    # FIRST at the LOWER mode of the bimodal UCP transactability axis (tx 43.75): a
+    # real athletic-apparel shapewear merchant whose GET /.well-known/ucp serves a
+    # valid `dev.ucp.*` manifest (x402_probe commerce-protocol-live PARTIAL 4.0/8.0)
+    # but publishes NO MCP surface (mcp_surface no-mcp-surface 0.0/2.0), so tx is
+    # 43.75 not 50.0. It is the CONTROLLED single-sub-check isolation of the
+    # `mcp_surface` discriminant against the pinned gymshark.com — matched exactly on
+    # legibility (54.5454...) AND trust (60.0), sharing x402_probe (4.0) and
+    # self_serve_payg (3.0), differing SOLELY in mcp_surface -> the whole tx (50.0 ->
+    # 43.75) and overall (62.4 -> 60.0) delta. Honestly classified physical_good ONLY
+    # (unambiguous free-shipping prose; no topic-word over-claim, caps empty).
+    # Because the manifest is LIVE (served, volatile), a future removal/invalidation
+    # reddens this replay guard (fixture frozen) and flags a re-capture — the honest
+    # signal, not a silent drift.
+    "spanx.com",
 }
 # Fixtures whose recorded surface is a strict subset of the full scoring path
 # (captured for offering/battery classification) — NOT eligible for any
@@ -3164,6 +3318,7 @@ def main() -> int:
         test_ucp_retail_third_storefront_replays_66_9,
         test_ucp_retail_fourth_storefront_replays_70_3,
         test_ucp_retail_highcorner_storefront_replays_81_2,
+        test_ucp_retail_mcp_isolation_storefront_replays_60_0,
         test_retail_storefront_earns_no_agent_native_payment,
         test_relabel_invariance_retail,
         test_nonstorefront_replays_22_5,

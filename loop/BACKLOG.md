@@ -374,19 +374,21 @@ The sweep-add prerequisite is queued below. -->
   to the SITE. The frozen-replay PIN + the WELD STAND on the deliberately-frozen floor (inv #2). The obs-1 sweep was
   preserved OFF the `calibration_sweep_*` weld glob (`runs/local/aloyoga_sweepadd_thebotwire_drift_20260810T194427Z.json`)
   so the bench stays honestly GREEN (committing it un-ledgered reddens the weld 4 ways — empirically 26/30 → 30/30 after the
-  move). **STEP (1) ✅ IN PROGRESS — persistence CONFIRMED across THREE observations; obs 3 this fire (Local cycle
-  20260810T214553Z, direct-to-main — the ONE [LOCAL] item).** Re-ran the $0 static cadence sweep a third time →
-  thebotwire.com **25.0 F again, BYTE-IDENTICAL to obs 1 & obs 2** (access 100.0 / legibility 0.0 / tx 0.0 / trust 33.33,
-  `claimed_archetypes` `[]`, caps empty) → three consecutive byte-identical observations at 19:44:27Z / 20:45:43Z /
-  21:45:53Z → the 404-dark decommission is STABLE across a **~2h01m documented-dark window**, not a flap; sole non-control
-  mover (`Δ -61.0`, every other member delta 0.0, incl. aloyoga 81.2 B on-floor a 3rd time). The fresh sweep is preserved
-  OFF-glob as `runs/local/thebotwire_persistence_confirm_20260810T214553Z.json`. **HELD — do NOT ledger yet:** three obs
-  across ~2h01m prove it is stable, but this is still FAR short of the driftflight ledger precedent (~7h across consecutive
-  floors) → need ~4 more floors of record. NOTE: the verify FLOOR only re-scores the canonical PAIR (thebotwire is a
+  move). **STEP (1) ✅ IN PROGRESS — persistence CONFIRMED across FOUR observations; obs 4 this fire (Local cycle
+  20260810T234500Z, direct-to-main — the ONE [LOCAL] item).** Re-ran the $0 static cadence sweep a fourth time →
+  thebotwire.com **25.0 F again, BYTE-IDENTICAL to obs 1, 2 & 3** (access 100.0 / legibility 0.0 / tx 0.0 / trust 33.33,
+  `claimed_archetypes` `[]`, caps empty) → four consecutive byte-identical observations at 19:44:27Z / 20:45:43Z /
+  21:45:53Z / 23:45:00Z → the 404-dark decommission is STABLE across a **~4h01m documented-dark window** (now past halfway
+  to the ~7h bar), not a flap; sole non-control mover (`Δ -61.0`, every other member delta 0.0, incl. aloyoga 81.2 B
+  on-floor a 4th time). The fresh sweep is preserved OFF-glob as
+  `runs/local/thebotwire_persistence_confirm_20260810T234500Z.json`. **HELD — do NOT ledger yet:** four obs across ~4h01m
+  prove it is stable and monotonic, but this is still short of the driftflight ledger precedent (~7h across consecutive
+  floors) → need ~3 more floors of record (fewer if a fire lands ≥2h after the last — obs 4 came ~2h after obs 3 because
+  the 22:41 improvement fire was skipped). NOTE: the verify FLOOR only re-scores the canonical PAIR (thebotwire is a
   NON-anchor, untracked by the floor), so this manual cadence sweep is the ONLY mechanism documenting thebotwire's live
   persistence — each improvement fire that runs one adds a floor toward the ~7h bar. REMAINING [LOCAL] STEPS, in order:
   (1b) keep re-running the $0 cadence sweep each fire (off-glob) until the documented-dark window reaches ~7h; (2) once
-  persistence reaches a driftflight-comparable window (~4 more floors, still 25.0): open a PEER-GATED ledger PR adding a
+  persistence reaches a driftflight-comparable window (~3 more floors, still 25.0): open a PEER-GATED ledger PR adding a
   `thebotwire.com` entry to `experiments/documented_live_drift.json` (the PR #151 pattern: overall 25.0 + the collapsed
   pillars {legibility 0.0, tx 0.0, trust 33.33} + evidence + a capability-term reason — total-content 404 decommission, all
   agent-native rails gone, server reachable), so the weld ACCEPTS the documented live value while keeping teeth (a drift
@@ -394,11 +396,12 @@ The sweep-add prerequisite is queued below. -->
   further persistence observation; DM visibility on open (a weld-teeth change). (3) THEN the same clean weld-visible sweep
   re-run carries aloyoga 81.2 on-floor + the now-ledgered thebotwire → commit it as a `calibration_sweep_*` and it UNLOCKS
   the aloyoga weld too (see the sweep-add item below). IF instead thebotwire RECOVERS to 86.0, the weld already accepts the
-  floor → skip the ledger, just re-run the sweep clean. Evidence (obs 3)
+  floor → skip the ledger, just re-run the sweep clean. Evidence (obs 4)
+  `runs/local/thebotwire_persistence_confirm_20260810T234500Z.json` / (obs 3)
   `runs/local/thebotwire_persistence_confirm_20260810T214553Z.json` / (obs 2)
   `runs/local/thebotwire_persistence_confirm_20260810T204543Z.json` / (obs 1)
-  `runs/local/aloyoga_sweepadd_thebotwire_drift_20260810T194427Z.json`; LOG Local cycles 20260810T214553Z /
-  20260810T210208Z / 20260810T200452Z.
+  `runs/local/aloyoga_sweepadd_thebotwire_drift_20260810T194427Z.json`; LOG Local cycles 20260810T234500Z /
+  20260810T214553Z / 20260810T210208Z / 20260810T200452Z.
 
 - **[P2 — COVERAGE, LOCAL, PARTIAL — POPULATION add ✅ DONE; weld-visible sweep re-BLOCKED by the thebotwire regression
   above] Sweep-add aloyoga.com (the high-corner UCP baseline's weld prerequisite).** The pin is ✅ DONE; the POPULATION add

@@ -417,9 +417,9 @@ The sweep-add prerequisite is queued below. -->
 - **[WATCH — TRUTH/INFRA, LOCAL] THEBOTWIRE.COM 404-DARK REGRESSION — LEDGERED (PR #164 MERGED `9b33da1`); watch for a
   content/402 recovery to retire the entry.** A welded member + pinned baseline went 404-dark (86.0 → 25.0): a total-content
   decommission (every path HTTP 404 from a live host — server RESPONDS, all agent-native rails gone; correctly attributed to
-  the SITE, inv #4). Confirmed across ~NINE byte-identical $0 cadence-sweep observations spanning ~16h+ (obs 1–7 19:44:27Z /
+  the SITE, inv #4). Confirmed across ~TEN byte-identical $0 cadence-sweep observations spanning ~21h+ (obs 1–7 19:44:27Z /
   20:45:43Z / 21:45:53Z / 23:45:00Z on 2026-08-10 + 02:17:33Z / 02:45:55Z / 03:46:27Z on 2026-08-11; obs 8 the
-  20260811T084450Z sweep; obs 9 the 20260811T114905Z sweep this fire), 25.0 F each (access
+  20260811T084450Z sweep; obs 9 the 20260811T114905Z sweep; obs 10 the 20260811T170652Z sweep this fire), 25.0 F each (access
   100.0 / legibility 0.0 / tx 0.0 / trust 33.33) — STILL dark, NO recovery to 86.0. ✅ RESOLVED via the PR #151 pattern: **PR #164 MERGED** (Local cycle
   20260811T040401Z) after the owed first-duty adversarial review (off-path; live obs-7 re-score still 25.0; teeth re-derived
   `_accepted_overalls('thebotwire.com')` → [86.0, 25.0], drift-past-25 + undocumented values still fire) — a `thebotwire.com`

@@ -3,6 +3,65 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Local cycle — 20260811T170652Z — TRUTH (LOCAL, direct-to-main, score-neutral) — calibration cadence sweep: the full 29-member POPULATION re-scored $0 static → drift 0/28 moved, max |Δ| 0.0 (EVERY compared member byte-on-floor, all caps empty); thebotwire.com WATCH re-observed still 25.0 (~10th consecutive dark obs, no recovery)
+
+**Fire-start state / FIRST DUTY.** Infra health GREEN: newest `runs/local/verify_20260811T164135Z.json`
+(ts 16:41Z, ~24 min old at fire start 17:05Z, well under the 6h floor), `tests_ok=true` (all 38 modules;
+`test_canonical_history` 72/72, 203 committed points), git clean + `main == origin/main == HEAD`
+(`e172133`, the subsequent verify heartbeat). Live canonical delta **+30.1** (org 46.1 F / com 76.2 C) vs
+the pinned-fixture baseline **+39.4** (DIVERGED, reference SOFTENED — the standing documented live drift, a
+driftflight.com /extend 402 that has not recovered, not a fixture problem). `gh pr list --state open` EMPTY
+→ **no peer-gated PR to review** (first duty discharged). LOG head == STATE top (both cycle 145327Z) and the
+two commits above it are verify heartbeats (154102Z / 164135Z, not improvement cycles) → bookkeeping
+consistent. No self-heal needed.
+
+**Track choice — anti-starvation.** Recent order (newest first): COVERAGE (145327Z, ACP recon) → READOUT
+(135051Z, sparkline honesty) → METHOD (125733Z, own-tool tripwire) → TRUTH (114801Z, postmerge #166 +
+cadence sweep). **TRUTH was the most starved forward track** (last ran ~6h ago at 114801Z; the four
+intervening cycles were COVERAGE/READOUT/METHOD/COVERAGE), so this fire is TRUTH (playbook step 2: "rotate
+so none starves"). The canonical TRUTH item is the population-wide calibration cadence sweep — the $0 static
+regression net that broadens the hourly canonical-PAIR signal to the whole curated population.
+
+**THE ONE [LOCAL] ITEM (TRUTH, direct-to-main) — calibration cadence sweep.** Ran the shipped static scoring
+path (`experiments/calibration_sweep.py`: `_run_probes`→`scoring.score`, the exact pipeline
+`asrs score <domain>` uses, NO `--behavioral` → no free-tier probe fires, no payment / signing / codex /
+zero-CLI; inv #1 holds by construction) across the 29-member POPULATION →
+`runs/local/calibration_sweep_20260811T170652Z.json` (**28/29 scored, 1 not-scorable, 0 error**).
+
+**FINDING — the population is byte-stable.**
+- **Drift vs `calibration_sweep_20260811T114905Z.json`: 0/28 moved, max |Δ| 0.0** — EVERY one of the 28
+  compared members is byte-identical to its prior-sweep value; `moved(nonzero)` EMPTY, `status_changed`
+  EMPTY, `added_members`/`removed_members` EMPTY (no population change this fire). **All caps empty** across
+  every scored member (no penalty cap triggered anywhere).
+- **Every pinned/welded member BYTE-ON-FLOOR** (caps empty): both anchors (com 76.2 / org 46.1 → the +30.1
+  live delta), all SIX UCP-rail welds (coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9 / kith 70.3 /
+  aloyoga 81.2 / **spanx 60.0** welded-on-floor, pillars 100.0/54.55/43.75/60.0, honest `['physical_good']`),
+  all THREE x402 rails (oracle 64.4 / x402deploy 73.9 / **thebotwire 25.0 ledgered**), exa.ai 78.1, and
+  every offering anchor (ipinfo 61.3 / acuity 54.0 / simplybook 64.9 / polar 70.3 / replicate 29.5 /
+  books.toscrape 29.5). → no weld silently invalidated, no baseline regressed, every volatile live rail UP.
+- **rei.com** again NOT SCORABLE (`error=None`, honest non-observation — kept OUT of the leaderboard per
+  inv #4, identical to the prior sweep; a site is never punished for what could not be observed).
+- **thebotwire.com WATCH re-observed: still 25.0 F** (access 100.0 / legibility 0.0 / tx 0.0 / trust 33.33)
+  — byte-identical to the merged ledger, NO recovery to 86.0. This is the ~10th consecutive dark observation
+  spanning ~21h+; the PR #164 `documented_live_drift.json` ledger still holds and keeps its teeth (the
+  frozen-replay PIN stays 86.0, inv #2). WATCH stays open; retire only on a re-score back to 86.0.
+
+**Ship / regression.** Diff = ONLY the evidence JSON on-glob (`git add -f runs/local/calibration_sweep_
+20260811T170652Z.json`, the standard cadence pattern) — grep over
+`asrs/scoring|asrs/rubric|asrs/probes|fixtures/|asrs/cli.py|tests/|experiments/` EMPTY → off-scoring-
+SEMANTICS, the sweep only READS the shipped scorer (no probe/version change). Full suite **38/38** WITH the
+sweep on-glob; frozen +39.4 UNMOVED / live +30.1 (`verify_20260811T164135Z`). Direct-to-main (same class as
+every prior cadence sweep). This is the FIRST improvement cycle after 16:00 UTC → **daily-digest Slack DM
+sent** (cycles run, shipped items, canonical delta trend, top open question — visibility, not an approval
+request); no sensitive-class change (score-neutral TRUTH cadence).
+
+**NEXT hypothesis.** (a) Vet the 4 fresh live UCP surfaces (elfcosmetics/reebok/sezane/scheels, found the
+prior fire) as pin LEADS — hunt a DISTINCT-point honest witness, esp. a SECOND tx-43.75 witness to make
+spanx's lower mode a range not a point (COVERAGE). (b) The own-tool-drift TRIPWIRE (METHOD) is due again
+(codex vocab is non-deterministic; the 7th drift WILL come). (c) The thebotwire WATCH — retire the ledger
+entry the cycle it re-scores 86.0. Evidence `runs/local/calibration_sweep_20260811T170652Z.json`; BACKLOG
+thebotwire WATCH + P2 UCP-leads item.
+
 ## Local cycle — 20260811T145327Z — COVERAGE (LOCAL, direct-to-main, score-neutral) — ACP/commerce-protocol well-known recon RE-RUN, broadened 32→44 with a FRESH 2026 live-announcement cohort: ACP STILL 0/44 both paths (lead stays CLOSED, scorer UNCHANGED); UCP positive control GREW 9→13 (4 fresh live surfaces: elfcosmetics + reebok [Google UCP pilots] + sezane + scheels [Adyen Agentic partners])
 
 **Fire-start state / FIRST DUTY.** Infra health GREEN: newest `runs/local/verify_20260811T144101Z.json`

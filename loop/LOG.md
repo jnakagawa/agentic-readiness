@@ -21994,3 +21994,63 @@ driftflight.com `/extend` for a 402 recovery (restores the anchor handshake + th
 ## Local verification — 20260811T034105Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260811T034105Z.json
+
+## Local cycle — 20260811T040401Z — TRUTH / INFRA (local) — FIRST DUTY: reviewed + MERGED peer-gated PR #164 (thebotwire.com 404-dark ledger) after a fresh $0 live re-score (obs 7 STILL 25.0) + teeth re-derivation; THEN committed the clean weld-visible cadence sweep (obs 7) ON-glob (thebotwire ledgered, aloyoga 81.2 on-floor) → UNLOCKS the aloyoga weld
+
+**Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260811T034105Z.json` fresh
+(~23 min old at fire start, well under the 6h floor), `tests_ok=true` (all 38 modules), git clean +
+`main == origin/main == HEAD` (`74dd5ac`). Live canonical delta **+30.1** (org 46.1 F / com 76.2 C —
+persistent `/extend` 402→401), frozen replay **+39.4**. `gh pr list --state open` → **ONE open PR: #164**
+(`loop/thebotwire-drift-ledger`, opened LAST fire 20260811T024555Z — so eligible for this fire's
+first-duty review, not a same-cycle self-merge). No repair needed; no self-heal.
+
+**First duty — peer-gated PR #164 review (adversarial, all three checklist legs).** PR #164 adds a
+`thebotwire.com` entry to `experiments/documented_live_drift.json` (the PR #151 pattern) so the cross-path
+calibration weld tolerates the persistent 404-dark regression WITHOUT losing teeth.
+1. **Off the static scoring path.** Three-dot diff since merge-base `8004739` = ONLY
+   `experiments/documented_live_drift.json` (+15) + the obs-6 evidence JSON (+1024); `asrs/ rubric/
+   scoring/ probes/ fixtures` **UNCHANGED** (`git diff --stat 8004739..origin/loop/thebotwire-drift-ledger`).
+2. **Live re-score (the networked leg the authoring cycle owed).** Ran a fresh $0 static cadence sweep
+   (`experiments/calibration_sweep.py`, `_run_probes`→`scoring.score`, no `--behavioral`/`--max-pay`/
+   zero-CLI/signing — inv #1 by construction) → `runs/local/calibration_sweep_20260811T034627Z.json`
+   (27/28 scored, rei.com not-scorable inv #4, 0 errors). **thebotwire.com 25.0 F (obs 7)** — access 100.0 /
+   legibility 0.0 / tx 0.0 / trust 33.33, `claimed_archetypes` `[]`, caps empty — **BYTE-IDENTICAL to
+   obs 1–6** → persistence HOLDS (NOT recovered), documented-dark window now **~8h02m** (19:44:27Z→03:46:27Z),
+   comfortably past the driftflight ~7h ledger precedent → the PR is correct to MERGE (not close-unmerged).
+3. **Teeth re-derived on the BRANCH ledger via the REAL committed helpers** (`_accepted_overalls` /
+   `_accepted_pillars` / `_divergences` from `tests/test_calibration_anchor_agreement.py`, against
+   `git show origin/loop/thebotwire-drift-ledger:experiments/documented_live_drift.json`): thebotwire
+   accepts EXACTLY **[86.0 floor, 25.0 documented]**; live 25.0 accepted + genuinely compared
+   (n_compared=1); a RECOVERY to 86.0 accepted (never masks a fix); a drift PAST 25.0 (tested 20.0)
+   **STILL FIRES**; an undocumented value (tested 60.0) **STILL FIRES**. Teeth intact.
+   → **VERDICT SOUND → MERGED** (`gh pr merge 164 --merge`, merge commit `9b33da1`, 2026-08-11T03:59:47Z).
+   Main ledger now `{driftflight.com 76.2, thebotwire.com 25.0}`. Slack DM sent (merge visibility — a
+   weld-teeth / scoring-acceptance change; Jonah's veto, never a gate).
+
+**The ONE `[LOCAL]` item (TRUTH, direct-to-main) — P1 step (3): the clean weld-visible cadence sweep.**
+With thebotwire now ledgered on main, the fresh obs-7 sweep can be committed **ON the `calibration_sweep_*`
+weld glob** (it no longer reddens the weld un-ledgered — the whole reason obs 1–6 were kept off-glob).
+Committed `runs/local/calibration_sweep_20260811T034627Z.json` (force-add; `runs/` is gitignored) as the
+weld-visible deliverable: **thebotwire.com 25.0** (ledger-tolerated), **driftflight.com 76.2**
+(ledger-tolerated), **aloyoga.com 81.2 B BYTE-ON-FLOOR** (access 100.0 / legibility 100.0 / tx 50.0 /
+trust 100.0, honest `{physical_good, metered_api}`, caps empty) under `added_members`. Sweep drift vs the
+prior on-glob baseline `calibration_sweep_20260809T064456Z.json`: **2/26 moved, max |Δ| 61.0** — the
+ledgered `Δ -61.0 thebotwire 86.0→25.0` + `Δ +4.6 wikipedia.org 41.1→45.7` (the KNOWN bistable
+41.1↔45.7 non-storefront-control oscillation, not a pinned/welded asset, inv #4); every OTHER member
+**delta 0.0** (both anchors, all five UCP rails, the other two x402 rails, every frozen baseline, controls),
+`status_changed` empty, `removed` empty. **Full suite 38/38 WITH the on-glob sweep present** (the weld
+tolerates both ledgered rails; aloyoga is on-floor as a non-welded witness). This DISCHARGES the P2
+aloyoga sweep-add DELIVERABLE (a committed weld-visible `calibration_sweep_*` with aloyoga on-floor +
+thebotwire ledgered) → **UNLOCKS a future PEER-GATED aloyoga weld** (aloyoga → `_NON_ANCHOR_WELDED`, the
+15th non-anchor / 5th UCP-rail member; n_compared=1 at 81.2 in this sweep, teeth = synthetic drift caught).
+
+**Off-scoring-SEMANTICS this fire:** the MERGED ledger entry (peer-gated, reviewed above) + the weld-visible
+sweep (evidence). `asrs/ rubric/ scoring/ probes/ fixtures` UNCHANGED on main. Canonical: frozen **+39.4**
+UNMOVED / live **+30.1** (`verify_20260811T034105Z`; org 46.1 / com 76.2).
+
+**Next hypothesis.** NEXT cycle — author the PEER-GATED aloyoga weld PR now that its weld-visible sweep is
+committed (review + self-merge owed the cycle after). Keep WATCHING thebotwire for a 402/content recovery
+(on recovery, re-score 86.0 and retire the ledger entry — the weld already accepts the frozen floor). Keep
+the own-tool-drift tripwire cadence (`experiments/codex_reachability.py`) so the 7th `_ENV_BLOCK_RE` drift
+is caught the cycle it appears. Evidence `runs/local/calibration_sweep_20260811T034627Z.json`; PR #164
+(MERGED `9b33da1`).

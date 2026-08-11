@@ -377,20 +377,24 @@ The sweep-add prerequisite is queued below. -->
   would mask a real future re-regression). Evidence `runs/local/calibration_sweep_20260811T034627Z.json`; PR #164 (MERGED
   `9b33da1`); LOG Local cycle 20260811T040401Z.
 
-- **[P1 — COVERAGE, LOCAL — the weld-visible sweep prerequisite is ✅ DONE; the PEER-GATED aloyoga weld is now the forward
-  item] WELD aloyoga.com (81.2 B) into `_NON_ANCHOR_WELDED` — the 15th non-anchor / 5th UCP-rail member.** All prerequisites
-  are now discharged: the PIN is ✅ DONE (Local cycle 20260810T174412Z — the 17th frozen-replay baseline, the HIGH CORNER of
-  the UCP plane, legibility 100.0 AND trust 100.0 both maxed at tx-50); the POPULATION add is ✅ DONE (Local cycle
-  20260810T200452Z); and the **weld-visible `calibration_sweep_*` is ✅ COMMITTED** (Local cycle 20260811T040401Z —
-  `calibration_sweep_20260811T034627Z.json`, on-glob now that thebotwire is ledger-tolerated), with aloyoga **81.2 B
-  BYTE-ON-FLOOR** (access 100.0/legibility 100.0/tx 50.0/trust 100.0, honest `{physical_good, metered_api}`, caps empty) as a
-  genuinely-compared witness. **FORWARD [LOCAL] item (PEER-GATED, next cycle):** author a PR that adds `"aloyoga.com"` to
-  `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` (+ its guard/EXPECTED/`_REPLAY_CLEAN` as the gymshark/hardgraft/
-  kith weld recipe) — non-vacuous (n_compared=1 at 81.2 in `calibration_sweep_20260811T034627Z.json`, agrees with the frozen
-  floor, teeth = a synthetic drift past 81.2 caught); review + self-merge owed the cycle after. This closes the UCP-rail weld
-  campaign at 5 points (coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9 / kith 70.3 / aloyoga 81.2 — the plane spanned on
-  legibility 50.0→100.0 and trust 33.33→100.0 at the fixed tx-50 rung). Evidence
-  `runs/local/calibration_sweep_20260811T034627Z.json`; LOG Local cycle 20260811T040401Z.
+- **[P0 — first-duty NEXT cycle] REVIEW + SELF-MERGE the PEER-GATED aloyoga weld PR #165.** ✅ AUTHORED this fire
+  (Local cycle 20260811T044102Z) as **OPEN PR #165** (`loop/aloyoga-ucp-weld`,
+  https://github.com/jnakagawa/agentic-readiness/pull/165): welds `aloyoga.com` (81.2 B) into
+  `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` as the 15th non-anchor / 5th UCP-rail member (the HIGH
+  CORNER of the UCP plane — legibility 100.0 AND trust 100.0 both maxed at the fixed tx-50.0 rung, the highest UCP overall
+  of the five). Branch carries ONLY the test edit (member + docstring + `test_aloyoga_fifteenth_non_anchor_is_welded_nonvacuously`
+  + registration) + the evidence JSON; off the static scoring path (`asrs/rubric/scoring/probes/fixtures` UNCHANGED). Weld
+  31/31, full suite 38/38. Authoring live $0 re-confirm: live 81.2 == frozen 81.2 == EXPECTED 81.2, all four non-null pillars
+  byte-identical (100.0/100.0/50.0/100.0), caps empty, honest `{metered_api, physical_good}`. **NEXT cycle's FIRST DUTY**
+  (before new work): adversarially review PR #165 from a fresh context — off-scoring-path check (three-dot diff since
+  merge-base = ONLY the test file + evidence JSON), vendor-neutrality (welded by TYPE, the live UCP rail), teeth re-derivation
+  (`_divergences(members=("aloyoga.com",))` → n_compared=1 at 81.2; the synthetic 81.2→92.0 drift still fires), AND a fresh
+  **$0 live aloyoga re-score** (the UCP rail is volatile — a live divergence is REAL manifest drift → re-capture, do NOT
+  merge). If sound → `gh pr merge 165 --merge` + record the verdict in LOG; if not → request changes / close with reasons.
+  Never review-and-merge in the same fire it was authored. MERGE closes the UCP-rail weld campaign at 5 points (coffeecircle
+  57.4 / gymshark 62.4 / hardgraft 66.9 / kith 70.3 / aloyoga 81.2 — the plane spanned on legibility 50.0→100.0 and trust
+  33.33→100.0 at the fixed tx-50.0 rung). Evidence `runs/local/aloyoga_ucp_weld_confirm_20260811T044102Z.json`; PR #165; LOG
+  Local cycle 20260811T044102Z.
 
 - **[SCOPE follow-up, METHOD, precision-guard candidate — peer-gated]** the `metered_api` `tiered-volume` signal
   FALSE-POSITIVES on a retail FREE-SHIPPING tier. Found Local cycle 20260810T170728Z: chubbiesshorts.com's `metered_api`

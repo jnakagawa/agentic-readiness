@@ -22058,3 +22058,61 @@ is caught the cycle it appears. Evidence `runs/local/calibration_sweep_20260811T
 ## Local verification — 20260811T044102Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260811T044102Z.json
+
+## Local cycle — 20260811T044102Z — COVERAGE (LOCAL) — PEER-GATED PR #165: WELD aloyoga.com (81.2 B) as the 15th non-anchor / 5th UCP-rail cross-path member (the HIGH CORNER of the UCP plane — legibility 100.0 AND trust 100.0 both maxed at the fixed tx-50.0 rung)
+
+**Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260811T044102Z.json` fresh
+(this hour's floor, well under the 6h bar), `tests_ok=true` (all 38 modules), `git pull` → already up to
+date, `main == origin/main == HEAD` (`997a16f`). Live canonical delta **+30.1** (org 46.1 F / com 76.2 C —
+persistent `/extend` 402→401), frozen replay **+39.4**. `gh pr list --state open` → **empty (NO open PR)**.
+No floor-only stall (obs-7 sweep 034627Z landed ~1h after obs-6 024555Z — normal improvement cadence). No
+repair needed; no self-heal.
+
+**First duty — peer-gated PR review.** NONE owed: no open PR at fire start (PR #164, the thebotwire
+404-dark ledger, was reviewed + MERGED `9b33da1` LAST fire). Proceeded straight to the ONE `[LOCAL]` item.
+
+**The ONE `[LOCAL]` item (COVERAGE, PEER-GATED PR authored) — weld aloyoga.com.** The P1 forward item:
+all prerequisites were discharged over prior fires (PIN Local cycle 20260810T174412Z — the 17th
+frozen-replay baseline, the HIGH CORNER of the UCP plane; POPULATION add 20260810T200452Z; and the
+weld-visible on-glob `calibration_sweep_20260811T034627Z.json` committed LAST fire, with aloyoga **81.2 B
+byte-on-floor** as a genuinely-compared witness). This fire authored the weld itself (the gymshark/
+hardgraft/kith recipe):
+- **Load-bearing facts verified.** `replay.EXPECTED['aloyoga.com']` = 81.2 v0.7 (pillars access 100.0 /
+  legibility 100.0 / transactability 50.0 / trust 100.0 / outcome None); the on-glob sweep 034627Z rows it
+  `scored=True overall=81.2` under segment `ucp-live:apparel-retail`, pillars byte-identical → the weld is
+  non-vacuous (`n_compared=1`, agrees with the frozen floor).
+- **Authoring-cycle live $0 re-confirm (volatile UCP rail).** `python3 -m asrs.cli score aloyoga.com
+  --json-only` — static, **no** `--behavioral`/`--max-pay`/codex/zero-CLI (inv #1 by construction, nothing
+  signed) → `runs/aloyoga_com_20260811T044511.json`: **live 81.2 B == frozen 81.2 == EXPECTED 81.2**, all
+  four non-null pillars byte-identical (100.0 / 100.0 / 50.0 / 100.0), `caps_applied` empty, `scored=True`,
+  rubric 0.7. Honest `{metered_api, physical_good}` (vetted 20260810T170728Z — the same honest
+  `{post-endpoint, rate-limited}` UCP class as the accepted gymshark/kith pins).
+- **Change.** Added `"aloyoga.com"` to `_NON_ANCHOR_WELDED` (14→15 members) + its docstring block + a
+  load-bearing `test_aloyoga_fifteenth_non_anchor_is_welded_nonvacuously` (teeth: a synthetic drift
+  81.2→92.0, the UCP manifest upgrading PARTIAL→a full x402 handshake off the tx-50 rung, is caught vs the
+  81.2 floor) + registration. **Off the static scoring path** — `asrs/rubric/scoring/probes/fixtures`
+  UNCHANGED (test-file-only edit + one evidence JSON); grep-verified.
+- **Verification (on the branch).** `tests/test_calibration_anchor_agreement.py` **31/31** (was 30/30);
+  full suite **38/38** modules green; `test_runner_registration.py` green (the new test is registered).
+
+**Ship (peer gate).** Opened **PR #165** (`loop/aloyoga-ucp-weld`,
+https://github.com/jnakagawa/agentic-readiness/pull/165): branch carries ONLY the test edit + the
+evidence JSON. Review + self-merge owed **NEXT cycle** — because the UCP rail is LIVE/volatile, the
+reviewing cycle re-runs the $0 live re-score as the regression check (a divergence there is REAL
+UCP-manifest drift, not a code regression; re-capture, don't weld). **Direct-to-main this fire:** loop
+docs (LOG/STATE/BACKLOG) + the evidence JSON ONLY — main's weld test stays at 30/30 (14 non-anchor
+members) until the peer gate merges; `asrs/rubric/scoring/probes/fixtures` UNCHANGED on main; full suite
+38/38; frozen +39.4 UNMOVED / live +30.1 (`verify_20260811T044102Z`; org 46.1 / com 76.2). Slack DM sent
+for veto visibility (a weld = scoring-semantics change; visibility, not a gate).
+
+**Canonical pair.** org 46.1 F / com 76.2 C / live delta +30.1; frozen replay +39.4 UNMOVED (a new
+non-anchor weld is off the canonical PAIR).
+
+**Next hypothesis.** NEXT fire's first duty: adversarially review + (if sound) self-merge PR #165 with a
+fresh $0 live aloyoga re-score. That MERGE closes the UCP-rail weld campaign at 5 points (coffeecircle
+57.4 / gymshark 62.4 / hardgraft 66.9 / kith 70.3 / aloyoga 81.2 — the plane spanned on legibility
+50.0→100.0 and trust 33.33→100.0 at the fixed tx-50.0 rung). Forward after that: the `mcp_surface`
+1.0-vs-0.0 split as a single-sub-check calibration axis, or re-run the 32-candidate ACP recon at cadence
+(still $0-un-pinnable). Standing WATCHES: thebotwire 404-dark recovery (retire the ledger entry if it
+re-scores 86.0), the own-tool-drift tripwire, the floor-only stall doom-loop. Evidence
+`runs/local/aloyoga_ucp_weld_confirm_20260811T044102Z.json`; PR #165.

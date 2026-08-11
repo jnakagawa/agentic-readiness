@@ -22265,3 +22265,7 @@ cross-path form of this isolation. Evidence (committed, force-added):
 isolation numbers + honest classification); `runs/local/ucp_transactability_recon_20260809T105012Z.json` (the
 bimodal-split recon this pin realizes); raw CLI run `runs/spanx_com_20260811T075053.json` (gitignored). See
 BACKLOG P2 frontier (b).
+
+## Local verification — 20260811T084105Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260811T084105Z.json

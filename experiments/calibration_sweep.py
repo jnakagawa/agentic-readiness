@@ -218,6 +218,35 @@ POPULATION: list[tuple[str, str]] = [
     # member whose live score DIVERGES from its frozen floor this run is an honest
     # manifest-drift signal, not silently averaged in.
     ("aloyoga.com", "ucp-live:apparel-retail"),
+    # a real athletic-apparel shapewear merchant on the SAME live UCP rail, pinned
+    # as the EIGHTEENTH frozen-replay baseline LOCAL cycle 20260811T080116Z
+    # (spanx.com 60.0 D). It is the SIXTH non-anchor point on the UCP rail and the
+    # FIRST at the LOWER mode of the bimodal UCP transactability axis (tx 43.75): a
+    # fresh-population recon (LOG Local cycle 20260809T105834Z) established the UCP
+    # retail tx axis is BIMODAL {50.0, 43.75} and the SOLE discriminant is the
+    # `mcp_surface` sub-check — every UCP merchant is byte-identical on x402_probe
+    # (4.0/8.0 commerce-protocol-live) and self_serve_payg (3.0/6.0), the only
+    # variable being whether the merchant documents an MCP surface (mcp-documented-
+    # only 1.0/2.0 -> tx 50.0) or not (no-mcp-surface 0.0/2.0 -> tx 43.75). The five
+    # prior UCP pins all documented an MCP surface (tx-50.0); spanx.com's GET
+    # /.well-known/ucp answers a $0 read with a valid dev.ucp.* manifest (x402_probe
+    # commerce-protocol-live PARTIAL 4.0) but publishes NO MCP surface, so it sits at
+    # tx-43.75, scoring 60.0 (honest physical_good ONLY, no over-claim). Its
+    # calibration value is a CONTROLLED single-SUB-CHECK isolation of `mcp_surface`
+    # (the coffeecircle<->gymshark single-pillar move applied to a transactability
+    # sub-check): spanx matches the pinned gymshark.com EXACTLY on legibility
+    # (54.55) AND trust (60.0) and shares gymshark's other two tx sub-checks, so the
+    # whole tx 50.0 -> 43.75 (and overall 62.4 -> 60.0) is attributable to that one
+    # sub-check and nothing else — extending the welded UCP plane DOWN onto the
+    # lower tx mode. It carries a committed replay baseline but was ABSENT from every
+    # prior sweep. Adding it here (LOCAL cadence, the aloyoga.com prerequisite
+    # pattern) gives it its first live-sweep presence, so a future TRUTH cycle can
+    # weld it into tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED
+    # non-vacuously — the SIXTH welded member on the UCP commerce-protocol rail and
+    # the FIRST tx-43.75-mode point. Because the UCP manifest is LIVE (a served
+    # well-known JSON, volatile), a member whose live score DIVERGES from its frozen
+    # floor this run is an honest manifest-drift signal, not silently averaged in.
+    ("spanx.com", "ucp-live:apparel-lowtx"),
     # non-storefront controls (zero-commerce baseline)
     ("example.com", "control:non-storefront"),
     ("wikipedia.org", "control:non-storefront"),

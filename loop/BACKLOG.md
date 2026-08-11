@@ -340,12 +340,21 @@ new-rail item below. -->
   kith 17.6M precedent); live == frozen replay == EXPECTED == 60.0, 4 pillars byte-identical, 0 misses. Installed
   EXPECTED + _REPLAY_CLEAN + guard `test_ucp_retail_mcp_isolation_storefront_replays_60_0` + _POPULATION ×5;
   test_canonical_replay 39→40; suite 38/38; frozen +39.4 UNMOVED / live +30.1. Evidence
-  `runs/local/spanx_ucp_lowtx_isolation_baseline_20260811T080116Z.json`; LOG Local cycle 20260811T080116Z. **NEXT (the forward move for a future fire):**
-  (b-i) `[LOCAL]` sweep-add prerequisite — add `("spanx.com", "ucp-live:apparel-lowtx")` to
-  `experiments/calibration_sweep.py` POPULATION + run a $0 cadence sweep (spanx 60.0 byte-on-floor, n_compared=1), the
-  gymshark/kith/aloyoga recipe; then (b-ii) a PEER-GATED weld of spanx.com into `_NON_ANCHOR_WELDED` (the 16th non-anchor
-  member / FIRST tx-43.75-mode point; teeth = synthetic drift caught) — the load-bearing cross-path form of this
-  isolation. (c) a genuinely-NEW rail TYPE (ACP/MPP — still $0-un-pinnable; keep re-running the
+  `runs/local/spanx_ucp_lowtx_isolation_baseline_20260811T080116Z.json`; LOG Local cycle 20260811T080116Z.
+  (b-i) ✅ DONE (Local cycle 20260811T090431Z, COVERAGE, direct-to-main) — the `[LOCAL]` sweep-add prerequisite is
+  DISCHARGED: added `("spanx.com", "ucp-live:apparel-lowtx")` to `experiments/calibration_sweep.py` POPULATION
+  (28→29) + ran a $0 static cadence sweep (`_run_probes`→`scoring.score`, no `--behavioral`/`--max-pay`/codex/
+  zero-CLI/signing, inv #1 by construction) → `runs/local/calibration_sweep_20260811T084450Z.json` (29 total, 28
+  scored, rei.com not-scorable inv #4, 0 errors). **spanx.com 60.0 D BYTE-ON-FLOOR** (access 100.0 / legibility
+  54.54545454545455 / tx 43.75 / trust 60.0, caps empty, honest `['physical_good']`), listed under `added_members`
+  (its first live-sweep presence). Drift vs baseline `calibration_sweep_20260811T034627Z.json`: 2/27 moved, max |Δ|
+  4.6 — BOTH movers NON-pinned (`wikipedia.org 45.7→41.1` the known bistable control oscillation inv #4 + `openai.com
+  64.5→62.0` honest live drift on a floor-less api-service spread member); every OTHER of the 27 compared members
+  delta 0.0 (both anchors, all 6 UCP rails incl. spanx, all 3 x402 rails, every frozen baseline, controls). Full
+  suite 38/38 WITH the sweep on-glob. **NEXT (the forward move for a future fire):** (b-ii) a PEER-GATED weld of
+  spanx.com into `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` (the 16th non-anchor member / FIRST
+  tx-43.75-mode point; n_compared=1 at 60.0 via the committed sweep; teeth = synthetic drift caught) — the
+  load-bearing cross-path form of this mcp_surface isolation. (c) a genuinely-NEW rail TYPE (ACP/MPP — still $0-un-pinnable; keep re-running the
   32-candidate recon at cadence). `joinhexagon.com` is a DOCUMENTED live-UCP lead but needs a precision-guard unblock
   FIRST (4 llms-full.txt FP families, inv #4) — prefer clean merchant witnesses over infra profiles. WATCH
   driftflight.com /extend for a 402 recovery (restores the anchor's live handshake + the +39.4 live delta).

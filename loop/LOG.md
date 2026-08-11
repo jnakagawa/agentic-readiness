@@ -22269,3 +22269,62 @@ BACKLOG P2 frontier (b).
 ## Local verification — 20260811T084105Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260811T084105Z.json
+
+## Local cycle — 20260811T090431Z — COVERAGE (LOCAL, direct-to-main, score-neutral) — spanx.com sweep-add: the (b-i) weld prerequisite for the 18th baseline DISCHARGED — added spanx.com to the calibration POPULATION + a $0 static cadence sweep re-scored the whole population, spanx 60.0 D BYTE-ON-FLOOR (added_members), 2/27 drift (both movers non-pinned), thebotwire WATCH re-observed still 25.0
+
+FIRST DUTY (infra + peer gate): infra health GREEN — main == origin/main (clean, `c767b7b`), newest verify
+`verify_20260811T084105Z.json` ~2 min old at fire start (well under the 6h bar), tests_ok=True (38/38 suites),
+live canonical delta +30.1 (org 46.1 / com 76.2). NO open peer-gated PRs (`gh pr list --state open` empty) → no
+review owed (the UCP-rail weld campaign closed with PR #165 `932c006`; the spanx PIN landed last fire
+`28ec476`). No infra repair needed; no self-heal (the sweep POPULATION edit was NOT pre-staged this fire —
+working tree was clean at fire start, so I authored the edit fresh, no fabricated prior-ts LOG).
+
+WHAT / WHY (the ONE [LOCAL] item — COVERAGE, the P2 UCP-plane frontier step (b-i), direct-to-main): spanx.com
+was PINNED last fire (60.0 D, the 18th frozen-replay baseline / 6th UCP-rail point / FIRST at the lower tx-43.75
+mode of the bimodal UCP tx axis — a controlled single-sub-check `mcp_surface` isolation vs the pinned
+gymshark.com) but was ABSENT from every calibration sweep. The weld of spanx into
+`tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` (the load-bearing cross-path form of the isolation)
+needs a genuinely-compared calibration-sweep presence FIRST — the gymshark / hardgraft / kith / aloyoga
+prerequisite recipe, one baseline later. Added `("spanx.com", "ucp-live:apparel-lowtx")` to
+`experiments/calibration_sweep.py` POPULATION (28→29 entries) with the isolation rationale in the comment (first
+tx-43.75-mode point; mcp_surface FAIL 0.0 vs gymshark PARTIAL 1.0 the sole tx difference).
+
+RUN + RESULT: ran the $0 static cadence sweep (`python -m experiments.calibration_sweep`,
+`_normalize_domain`→`_run_probes`→`scoring.score`, the exact `asrs score <domain>` pipeline; NO `--behavioral`
+so NO free-tier probe fires, no `--max-pay`, no codex, no zero CLI, no signing — inv #1 holds BY CONSTRUCTION) →
+`runs/local/calibration_sweep_20260811T084450Z.json` (29 total, 28 scored, 1 not-scorable [rei.com, inv #4], 0
+errors). **spanx.com scored 60.0 D BYTE-ON-FLOOR** — all 4 non-null pillars byte-identical to its frozen
+EXPECTED floor (access 100.0 / legibility 54.54545454545455 / transactability 43.75 / trust 60.0), caps empty,
+honest `claimed_archetypes` `['physical_good']` only — listed under `added_members` (its first live-sweep
+presence; n_compared for it is next cycle's weld). **Drift vs the prior on-glob baseline
+`calibration_sweep_20260811T034627Z.json`: 2/27 moved, max |Δ| 4.6** — BOTH movers are NON-pinned population
+members, NOT a pinned/welded/anchor asset: `Δ -4.6 wikipedia.org 45.7→41.1` (the KNOWN bistable 41.1↔45.7
+non-storefront control oscillation band, control noise, inv #4) + `Δ -2.5 openai.com 64.5→62.0` (honest live
+drift on a general api-service spread member — openai.com carries NO committed replay floor, so a small
+legibility/trust ripple is expected live movement, not silently averaged into any pinned number). Every OTHER of
+the 27 compared members **delta 0.0**: both anchors (driftflight.com 76.2 / drift-flight.org 46.1), all SIX UCP
+rails (coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9 / kith 70.3 / aloyoga 81.2 — and spanx 60.0 new
+on-floor), all THREE x402 rails (thebotwire 25.0 ledgered / api.x402oracle 64.4 / x402deploy 73.9), every frozen
+baseline (exa.ai 78.1 / ipinfo 61.3 / acuity 54.0 / api.replicate 29.5 / books.toscrape 29.5 / moleskine 49.8 /
+polar 70.3 / simplybook 64.9), controls (example.com 22.5). `status_changed` empty, `removed_members` empty.
+
+WATCH re-observed (thebotwire.com 404-dark, PR #164 ledgered): this sweep re-scores thebotwire.com **25.0**
+(byte-identical to the merged-ledger obs — access 100.0 / legibility 0.0 / tx 0.0 / trust 33.33), NO recovery to
+the 86.0 floor → the `documented_live_drift.json` ledger entry STAYS (retire only on a re-score to 86.0). The
+404-dark decommission now persists across an ~8th cadence observation.
+
+OFF SCORING-SEMANTICS: the tracked diff is ONLY `experiments/calibration_sweep.py` (+29 lines: one POPULATION
+tuple + its comment); `asrs/` `rubric*` `scoring*` `probes*` `fixtures/` `tests/` all UNCHANGED (grep-verified).
+This only READS the shipped scorer — no probe, no weight, no rubric-version change. Full suite **38/38 GREEN WITH
+the new sweep committed on-glob** (the weld tests glob `calibration_sweep_*.json`; the weld tolerates the
+ledgered thebotwire 25.0 + spanx as a non-welded on-floor witness). Direct-to-main — same class as every prior
+sweep-add (coffeecircle / gymshark / hardgraft / kith / aloyoga).
+
+CANONICAL: frozen org 46.1 / com 76.2 (fixture floor) — delta +39.4 frozen / +30.1 live; UNMOVED (spanx is a
+NON-anchor, off the canonical pair). NEXT HYPOTHESIS: with the (b-i) prerequisite DISCHARGED, the forward move
+for a future fire is (b-ii) — open a PEER-GATED weld of spanx.com into `_NON_ANCHOR_WELDED` (the 16th non-anchor
+member / FIRST tx-43.75-mode point; n_compared=1 in a fresh sweep at 60.0; teeth = a synthetic 60.0→<lower>
+drift caught vs the floor), the load-bearing cross-path form of the mcp_surface isolation. Evidence (committed,
+force-added): `runs/local/calibration_sweep_20260811T084450Z.json` (the full sweep + spanx on-floor + drift
+block); the spanx PIN's `runs/local/spanx_ucp_lowtx_isolation_baseline_20260811T080116Z.json` (last fire). See
+BACKLOG P2 frontier (b).

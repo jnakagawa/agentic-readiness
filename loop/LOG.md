@@ -22116,3 +22116,7 @@ fresh $0 live aloyoga re-score. That MERGE closes the UCP-rail weld campaign at 
 (still $0-un-pinnable). Standing WATCHES: thebotwire 404-dark recovery (retire the ledger entry if it
 re-scores 86.0), the own-tool-drift tripwire, the floor-only stall doom-loop. Evidence
 `runs/local/aloyoga_ucp_weld_confirm_20260811T044102Z.json`; PR #165.
+
+## Local verification — 20260811T054101Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260811T054101Z.json

@@ -3,6 +3,74 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Local cycle — 20260811T114801Z — TRUTH (LOCAL) — POST-MERGE review of operator-merged PR #166 (spanx.com UCP-lowtx weld) SOUND + calibration cadence sweep GREEN (all pinned/welded members byte-on-floor, spanx welded-on-floor, thebotwire WATCH still 25.0)
+
+**Fire-start state.** Infra health GREEN: newest `runs/local/verify_20260811T114103Z.json` (ts 11:41Z,
+~7 min old at fire start, well under the 6h floor), `tests_ok=true` (all 38 modules), git clean +
+`main == origin/main == HEAD` (`1d5a333`). Live canonical delta **+30.1** (org 46.1 F / com 76.2 C —
+persistent `/extend` 402→401), frozen replay **+39.4**.
+
+**First duty — peer-gated PR review (owed post-merge review).** `gh pr list --state open` → empty, BUT
+**PR #166 was OPERATOR-MERGED by Jonah** (`0d4bdb4`, mergedBy `jnakagawa`, mergedAt 2026-08-11T10:47:01Z) —
+the PR #162/#163 operator-merge pattern: the owed adversarial review had NOT been recorded in LOG/STATE
+(LOG head was still the 09:44Z authoring cycle; no review commit, only verify-floor heartbeats between).
+Ran the owed **POST-MERGE adversarial review** from this fresh cycle (authored 20260811T094457Z, a DIFFERENT
+fire — legitimate). Four legs: **(1) off the static scoring path** — three-dot diff since merge-base
+`7284e4d` = ONLY `tests/test_calibration_anchor_agreement.py` (+100) + the authoring evidence JSON (+55);
+`asrs/rubric/scoring/probes/fixtures/experiments` UNCHANGED. **(2) vendor-neutral** — `spanx.com` added to
+the test-only `_NON_ANCHOR_WELDED` tuple; scorer UNCHANGED (welded by TYPE, an athletic-apparel UCP
+merchant). **(3) teeth** — weld **32/32** on main; `test_spanx_sixteenth_non_anchor_is_welded_nonvacuously`
+asserts a committed v0.7 replay floor + `divergences==[]` with `n_compared>=1` vs committed sweeps AND a
+synthetic **60.0→62.4** drift (an MCP surface appearing → back onto the tx-50.0 gymshark shape) fires
+EXACTLY one divergence vs the 60.0 floor. **(4) volatile-rail live $0 re-score** (inv #1 — static,
+no --behavioral/--max-pay/codex/zero-CLI/signing) → `runs/spanx_com_20260811T114605.json`: **live 60.0 D ==
+frozen 60.0 == EXPECTED 60.0**, four non-null pillars byte-identical (access 100.0 / legibility 54.5454… /
+transactability 43.75 / trust 60.0), caps empty, tx sub-check findings `commerce-protocol-live`
+(x402_probe PARTIAL) + `no-mcp-surface` (mcp_surface FAIL — the isolation sub-check confirmed absent) +
+`self-serve-signup` → manifest UP, no drift. **VERDICT SOUND → merge STANDS, no revert.** The UCP-rail weld
+campaign now spans SIX points over BOTH modes of the bimodal UCP tx axis (tx-50.0 ×5 + tx-43.75 ×1); the
+`mcp_surface` 1.0-vs-0.0 split is a load-bearing welded calibration axis. Evidence
+`runs/local/postmerge166_spanx_weld_review_rescore_20260811T114801Z.json`. No Slack DM (Jonah merged it
+himself → he already has veto visibility; noted for the next digest).
+
+**Bookkeeping self-heal (STATE/git reconcile).** STATE's top banner (from the 09:44Z authoring cycle) said
+"review + self-merge owed NEXT cycle" while git already had the operator merge — reconciled OPEN→MERGED+
+reviewed. Also observed a gitignored EMPTY `runs/local/codex_reachability_20260811T105128Z/` (10:51Z, no
+summary/transcripts) — a crashed codex-tripwire attempt from the 10:41 fire that never committed a Local-cycle
+entry (verify floor kept heartbeating; not a stall — this fire completed normally). Harmless cruft (gitignored,
+never commits); left in place as the record of that crashed attempt. RISK SIGNAL: the last codex-tripwire
+attempt died before output → chose the deterministic $0-static sweep over the tripwire this fire.
+
+**The ONE `[LOCAL]` item (TRUTH, direct-to-main) — calibration cadence sweep.** With the spanx weld just
+merged, ran the population-wide $0 static regression net (`experiments/calibration_sweep.py`,
+`_run_probes`→`scoring.score`, no --behavioral/--max-pay/codex/zero-CLI/signing, inv #1 by construction) →
+`runs/local/calibration_sweep_20260811T114905Z.json` (29 total, 28 scored, rei.com not-scorable inv #4, 0
+errors). **Every pinned/welded member BYTE-ON-FLOOR, caps empty:** both anchors (drift-flight.org 46.1 /
+driftflight.com 76.2), all SIX UCP rails (coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9 / kith 70.3 /
+aloyoga 81.2 / **spanx.com 60.0** — the just-welded member confirmed on-floor as a WELDED member), all THREE
+x402 rails (thebotwire 25.0 ledgered / oracle 64.4 / x402deploy 73.9), exa.ai 78.1. **Drift vs the prior
+on-glob baseline `calibration_sweep_20260811T084450Z.json`: 1/28 moved, max |Δ| 2.5** — the SOLE mover is
+`Δ +2.5 openai.com 62.0→64.5`, a NON-pinned floorless api-service spread member oscillating in its ~62–64.5
+band (it moved the OPPOSITE way −2.5 last sweep; honest live drift, NOT a pinned/welded asset); every OTHER
+of the 28 compared members delta 0.0. `added_members`/`removed_members`/`status_changed` all empty.
+**WATCH re-observed:** thebotwire.com re-scored **25.0** again (byte-identical to the merged ledger, access
+100.0/legibility 0.0/tx 0.0/trust 33.33), NO recovery to 86.0 → ledger entry STAYS (~9th consecutive dark
+observation). Committed the sweep on-glob (`git add -f`, the cadence-sweep pattern) → it gives spanx.com a
+SECOND committed on-floor sweep presence (n_compared 1→2), strengthening the just-merged weld.
+
+**Ship.** Off-scoring-SEMANTICS EMPTY (tracked diff = ONLY loop docs + the two evidence JSONs on-glob;
+asrs/rubric/scoring/probes/fixtures/tests UNCHANGED). Full suite **38/38** WITH the new sweep on-glob (weld
+tolerates ledgered thebotwire + spanx welded-on-floor). Direct-to-main (same class as every prior cadence
+sweep). Frozen +39.4 UNMOVED / live +30.1 (`verify_20260811T114103Z`).
+
+**Next hypothesis.** The forward frontier is unchanged: a genuinely-NEW rail TYPE (ACP/MPP, still
+$0-un-pinnable — re-run the 32-candidate recon at cadence) or a SECOND tx-43.75 UCP witness to make that
+lower mode a range not a point. The own-tool-drift TRIPWIRE (METHOD) is due next (codex last ran 05:41Z; the
+10:51Z attempt crashed — verify codex health before re-picking it). Evidence
+`runs/local/calibration_sweep_20260811T114905Z.json` +
+`runs/local/postmerge166_spanx_weld_review_rescore_20260811T114801Z.json`; PR #166 (MERGED `0d4bdb4`);
+BACKLOG P2 frontier (b-ii) + thebotwire WATCH.
+
 ## Local cycle — 20260811T094457Z — COVERAGE (LOCAL, PEER-GATED) — weld spanx.com 60.0 D into _NON_ANCHOR_WELDED (16th non-anchor / 6th UCP-rail / FIRST tx-43.75-mode point) → PR #166 AUTHORED
 
 **Fire-start state.** Infra health GREEN: newest `runs/local/verify_20260811T094103Z.json` (ts 09:41Z,

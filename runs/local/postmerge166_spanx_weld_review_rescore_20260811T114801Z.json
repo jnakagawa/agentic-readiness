@@ -1,0 +1,57 @@
+{
+ "ts": "20260811T114801Z",
+ "kind": "postmerge-review-spanx-ucp-lowtx-weld",
+ "pr": 166,
+ "pr_url": "https://github.com/jnakagawa/agentic-readiness/pull/166",
+ "merge_commit": "0d4bdb45b53f6caeae798f3eb39f2ee0412eabf9",
+ "merged_by": "jnakagawa (operator)",
+ "merged_at": "2026-08-11T10:47:01Z",
+ "review_context": "Operator-merged by Jonah (PR #162/#163 pattern) — the owed adversarial review had NOT been recorded in LOG/STATE. This is the owed POST-MERGE review from a fresh cycle context (authored Local cycle 20260811T094457Z; NOT the same fire). Independently re-derived on all four legs; a divergence at review time would be REAL UCP-manifest drift (revert + investigate), not a code regression.",
+ "verdict": "SOUND — merge STANDS, no revert",
+ "legs": {
+  "off_scoring_path": {
+   "ok": true,
+   "detail": "three-dot diff since merge-base 7284e4d = ONLY tests/test_calibration_anchor_agreement.py (+100) + runs/local/spanx_ucp_lowtx_weld_review_rescore_20260811T094457Z.json (+55). asrs/rubric/scoring/probes/fixtures/experiments UNCHANGED (grep-verified: no off-path file)."
+  },
+  "vendor_neutral": {
+   "ok": true,
+   "detail": "spanx.com added to the test-only _NON_ANCHOR_WELDED tuple; scorer UNCHANGED. Welded by TYPE (a real athletic-apparel shapewear UCP merchant), no domain special-casing in the scoring path."
+  },
+  "teeth": {
+   "ok": true,
+   "detail": "test_calibration_anchor_agreement.py 32/32 on main. test_spanx_sixteenth_non_anchor_is_welded_nonvacuously asserts a committed v0.7 replay floor + divergences==[] with n_compared>=1 vs committed sweeps, and a synthetic 60.0->62.4 drift (an MCP surface appearing, back onto the tx-50.0 gymshark shape) fires EXACTLY one divergence vs the 60.0 floor."
+  },
+  "volatile_rail_live_rescore": {
+   "ok": true,
+   "detail": "Reviewer live $0 static re-score (inv #1: no --behavioral/--max-pay/codex/zero-CLI/signing). live 60.0 D == frozen 60.0 == EXPECTED 60.0.",
+   "src_run": "runs/spanx_com_20260811T114605.json",
+   "live": {
+    "overall": 60.0,
+    "grade": "D",
+    "scored": true,
+    "rubric_version": "0.7",
+    "pillars": {
+     "access": 100.0,
+     "legibility": 54.54545454545455,
+     "transactability": 43.75,
+     "trust": 60.0,
+     "outcome": null
+    },
+    "caps_applied": [],
+    "tx_subcheck_findings": {
+     "x402_probe": "commerce-protocol-live (PARTIAL 4.0/8.0)",
+     "mcp_surface": "no-mcp-surface (FAIL 0.0/2.0) — the isolation sub-check confirmed absent",
+     "self_serve_payg": "self-serve-signup (PARTIAL 3.0/6.0)"
+    }
+   }
+  }
+ },
+ "mcp_surface_isolation_confirmed": "live pillars byte-identical to frozen; mcp_surface no-mcp-surface FAIL 0.0 vs gymshark's mcp-documented-only 1.0 is the SOLE differing sub-check -> tx 43.75 vs 50.0 -> overall 60.0 vs 62.4. The single-sub-check isolation holds live.",
+ "campaign_status": "The UCP-rail weld campaign now spans SIX points over BOTH modes of the bimodal UCP tx axis: tx-50.0 x5 (coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9 / kith 70.3 / aloyoga 81.2) + tx-43.75 x1 (spanx 60.0). The mcp_surface 1.0-vs-0.0 split is now a load-bearing welded calibration axis.",
+ "canonical_pair_at_review": {
+  "source": "runs/local/verify_20260811T114103Z.json",
+  "drift-flight.org": 46.1,
+  "driftflight.com": 76.2,
+  "delta": 30.1
+ }
+}

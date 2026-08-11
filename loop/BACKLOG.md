@@ -352,19 +352,25 @@ new-rail item below. -->
   64.5→62.0` honest live drift on a floor-less api-service spread member); every OTHER of the 27 compared members
   delta 0.0 (both anchors, all 6 UCP rails incl. spanx, all 3 x402 rails, every frozen baseline, controls). Full
   suite 38/38 WITH the sweep on-glob.
-  (b-ii) ✅ AUTHORED (Local cycle 20260811T094457Z, COVERAGE, PEER-GATED) — the weld of spanx.com into
-  `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` (the 16th non-anchor member / 6th UCP-rail / FIRST
-  tx-43.75-mode point) is OPEN as **PR #166** (`loop/spanx-ucp-lowtx-weld`, `f9d4ce1`,
-  https://github.com/jnakagawa/agentic-readiness/pull/166). Off the scoring path (diff = ONLY the test +100 + evidence
-  JSON +55; asrs/rubric/scoring/probes/fixtures/experiments UNCHANGED). n_compared=1 at 60.0 via committed sweep
-  `calibration_sweep_20260811T084450Z.json`; teeth = weld 32/32, synthetic **60.0→62.4** drift (an MCP surface
-  appearing → back onto the tx-50.0 gymshark shape) fires exactly one divergence vs the 60.0 floor. Authoring live $0
-  static re-score: live 60.0 == frozen 60.0 == EXPECTED 60.0, 4 pillars byte-identical, caps empty, x402_probe partial
-  4.0/8.0 commerce-protocol-live + mcp_surface fail 0.0/2.0 no-mcp-surface
-  (`runs/local/spanx_ucp_lowtx_weld_review_rescore_20260811T094457Z.json`). **Review + self-merge owed the NEXT cycle
-  (FIRST DUTY)** — re-run the live $0 re-score (a divergence = REAL UCP-manifest drift, re-capture not merge); NEVER
-  review-and-merge the same fire that authored it. Once merged: the UCP-rail weld campaign spans SIX points over BOTH
-  modes of the bimodal tx axis (tx-50.0 ×5 + tx-43.75 ×1), the mcp_surface split a load-bearing calibration axis.
+  (b-ii) ✅ MERGED (operator) + POST-MERGE REVIEWED SOUND (Local cycle 20260811T114801Z, COVERAGE→reviewed as
+  TRUTH first-duty) — the weld of spanx.com into `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` (16th
+  non-anchor / 6th UCP-rail / FIRST tx-43.75-mode point) was AUTHORED as PR #166 (Local cycle 20260811T094457Z) then
+  **OPERATOR-MERGED by Jonah** (`0d4bdb4`, mergedBy `jnakagawa`, 2026-08-11T10:47:01Z — the PR #162/#163 pattern,
+  SKIPPING the loop's pre-merge peer review). The owed POST-MERGE adversarial review ran this fire from a fresh cycle
+  context → VERDICT SOUND, merge STANDS, no revert: (1) OFF the static scoring path (three-dot diff since merge-base
+  `7284e4d` = ONLY the test +100 + evidence JSON +55; asrs/rubric/scoring/probes/fixtures/experiments UNCHANGED);
+  (2) VENDOR-NEUTRAL (welded by TYPE, scorer UNCHANGED); (3) TEETH (weld 32/32 on main; n_compared=1 at 60.0 via
+  committed sweep `calibration_sweep_20260811T084450Z.json`; synthetic **60.0→62.4** drift fires exactly one
+  divergence vs the 60.0 floor); (4) VOLATILE-RAIL LIVE $0 RE-SCORE (inv #1, static, no
+  --behavioral/--max-pay/codex/zero-CLI/signing → `runs/spanx_com_20260811T114605.json`: live 60.0 == frozen 60.0 ==
+  EXPECTED 60.0, 4 pillars byte-identical 100.0/54.5454…/43.75/60.0, caps empty, findings commerce-protocol-live +
+  no-mcp-surface FAIL + self-serve-signup → manifest UP, no drift). Evidence
+  `runs/local/postmerge166_spanx_weld_review_rescore_20260811T114801Z.json`; PR #166 (MERGED `0d4bdb4`). The
+  **UCP-rail weld campaign is COMPLETE at SIX points** spanning BOTH modes of the bimodal tx axis (tx-50.0 ×5:
+  coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9 / kith 70.3 / aloyoga 81.2 + tx-43.75 ×1: spanx 60.0) — the
+  `mcp_surface` 1.0-vs-0.0 split is a load-bearing welded calibration axis. This fire's cadence sweep
+  (`calibration_sweep_20260811T114905Z.json`) re-confirmed spanx 60.0 byte-on-floor as a welded member (committed
+  on-glob → n_compared 1→2). NO open PRs remain.
   (c) a genuinely-NEW rail TYPE (ACP/MPP — still $0-un-pinnable; keep re-running the
   32-candidate recon at cadence). `joinhexagon.com` is a DOCUMENTED live-UCP lead but needs a precision-guard unblock
   FIRST (4 llms-full.txt FP families, inv #4) — prefer clean merchant witnesses over infra profiles. WATCH
@@ -387,9 +393,10 @@ The sweep-add prerequisite is queued below. -->
 - **[WATCH — TRUTH/INFRA, LOCAL] THEBOTWIRE.COM 404-DARK REGRESSION — LEDGERED (PR #164 MERGED `9b33da1`); watch for a
   content/402 recovery to retire the entry.** A welded member + pinned baseline went 404-dark (86.0 → 25.0): a total-content
   decommission (every path HTTP 404 from a live host — server RESPONDS, all agent-native rails gone; correctly attributed to
-  the SITE, inv #4). Confirmed across SEVEN byte-identical $0 cadence-sweep observations spanning ~8h02m (19:44:27Z /
-  20:45:43Z / 21:45:53Z / 23:45:00Z on 2026-08-10; 02:17:33Z / 02:45:55Z / 03:46:27Z on 2026-08-11), 25.0 F each (access
-  100.0 / legibility 0.0 / tx 0.0 / trust 33.33). ✅ RESOLVED via the PR #151 pattern: **PR #164 MERGED** (Local cycle
+  the SITE, inv #4). Confirmed across ~NINE byte-identical $0 cadence-sweep observations spanning ~16h+ (obs 1–7 19:44:27Z /
+  20:45:43Z / 21:45:53Z / 23:45:00Z on 2026-08-10 + 02:17:33Z / 02:45:55Z / 03:46:27Z on 2026-08-11; obs 8 the
+  20260811T084450Z sweep; obs 9 the 20260811T114905Z sweep this fire), 25.0 F each (access
+  100.0 / legibility 0.0 / tx 0.0 / trust 33.33) — STILL dark, NO recovery to 86.0. ✅ RESOLVED via the PR #151 pattern: **PR #164 MERGED** (Local cycle
   20260811T040401Z) after the owed first-duty adversarial review (off-path; live obs-7 re-score still 25.0; teeth re-derived
   `_accepted_overalls('thebotwire.com')` → [86.0, 25.0], drift-past-25 + undocumented values still fire) — a `thebotwire.com`
   entry now sits in `experiments/documented_live_drift.json` so the cross-path weld tolerates the live 25.0 WITHOUT losing

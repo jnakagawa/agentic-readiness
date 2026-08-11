@@ -39,10 +39,16 @@ import re
 import sys
 from dataclasses import asdict
 from datetime import datetime, timezone
+from pathlib import Path
 
-from asrs.behavioral.shopper import _is_env_blocked, _run_one
-from asrs.behavioral.trust_probe import is_codex_usable
-from asrs.fetch import FetchContext
+# Make the worktree's asrs importable when run as a bare script (matches the
+# sibling experiments + tests): without it `python experiments/codex_reachability.py`
+# puts experiments/ on sys.path[0], not the repo root -> ModuleNotFoundError: asrs.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from asrs.behavioral.shopper import _is_env_blocked, _run_one  # noqa: E402
+from asrs.behavioral.trust_probe import is_codex_usable  # noqa: E402
+from asrs.fetch import FetchContext  # noqa: E402
 
 TASK = "purchase this site's primary product or service"
 

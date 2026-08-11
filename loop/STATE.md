@@ -1,6 +1,57 @@
 # Loop state
 
-- Cycle counter: 345
+- Cycle counter: 346
+- **✅ NO PEER-GATED PR OPEN (first duty = infra health GREEN + bookkeeping consistent); THEN the ONE [LOCAL]
+  item = the own-tool-drift TRIPWIRE cadence re-run → GREEN, NO seventh `_ENV_BLOCK_RE` drift (all 3 canonical
+  own-tool refusals CAUGHT by shipped v0.7(g); sole leak_candidate = the KNOWN example.com reached-and-empty
+  FP); + a tiny off-path tooling self-heal (bare-script `sys.path` bootstrap for the tripwire experiment);
+  bench GREEN 38/38 (Local 20260811T180111Z, METHOD — read-only recon + import plumbing, scorer UNCHANGED →
+  direct-to-main).** FIRST DUTY: infra health GREEN — main == origin/main == HEAD (clean `44954fc`, the
+  subsequent verify heartbeat), newest verify `verify_20260811T174105Z.json` (ts 17:41Z, ~2 min old at fire
+  start 17:43Z, < 6h bar), tests_ok=True (38/38), live delta +30.1 (org 46.1 / com 76.2) vs frozen +39.4;
+  `gh pr list --state open` EMPTY → no review owed (LOG head 170652Z == STATE top; the three commits above
+  HEAD's parent are verify heartbeats 154102Z/164135Z/174105Z, not cycles → bookkeeping consistent). No
+  self-heal needed at the infra level. **TRACK CHOICE (anti-starvation):** recent order newest-first TRUTH
+  (170652Z) → COVERAGE (145327Z) → READOUT (135051Z) → METHOD (125733Z) → TRUTH (114801Z) → METHOD was the
+  most starved forward track (3 intervening non-METHOD cycles) AND STATE NEXT (b) flagged the tripwire due,
+  so this fire is METHOD (playbook step 2 "rotate so none starves"); the tripwire is a load-bearing
+  attribution-honesty guard (inv #4). **CODEX HEALTH GATE:** cheap `is_codex_usable()` throwaway (read-only,
+  $0, no --max-pay/signing/zero-CLI) → **True in ~8s**, `codex-cli 0.145.0` on PATH → the earlier transient
+  10:51Z crash cleared, codex GREEN → safe to run. **THE ONE [LOCAL] ITEM (METHOD, direct-to-main):** re-ran
+  `experiments/codex_reachability.py` ($0 read-only via the REAL scorer path `shopper._run_one`, 5 codex
+  trials, no --behavioral/--max-pay/zero-CLI/signing, inv #1) →
+  `runs/local/codex_reachability_20260811T174603Z/` (summary + 5 transcripts, committed on-glob `git add -f`).
+  All 5 targets HTTP 200 (sites up → any refusal is codex's OWN gate). **FINDING — TRIPWIRE GREEN, NO seventh
+  drift:** all 3 canonical own-tool refusals CAUGHT by v0.7(g) `_ENV_BLOCK_RE` (`is_env_blocked_current=True`
+  → reachability, NOT site FAILs): driftflight.com t1 "denied by the browser permission layer … classified
+  the URL as unsafe" (caught via the v0.7(g) permission-layer branch, security_family=False; the test-#8
+  "unsafe" clause rode along, correctly env_blk=True), drift-flight.org t1 "denied by browser security policy
+  … independent web retrieval marked the domain unsafe" + t2 "Browser security policy denied access" (both
+  caught via the v0.6 browser-security family). driftflight.com t2 REACHED (OBSERVED, no refusal) +
+  example.com control REACHED-AND-EMPTY (honest "no product or service … IANA-reserved documentation domain",
+  reputation_markers=[], zero refusal phrasing). Sole raw `leak_candidate` (1) = the KNOWN example.com
+  honest-non-observation FALSE POSITIVE (reached-and-empty NOT blocked-and-empty → env_blk=False CORRECT; read
+  the blocker text per the BACKLOG warning). NO pure-semantic reputation refusal lacking own-apparatus vocab
+  captured → NO regex broadening warranted (inv #4 cuts both ways). **NEW datapoint — gate stays
+  intermittent:** 3/4 canonical trials REFUSED (driftflight.com 1/2, drift-flight.org 2/2), 1 REACHED —
+  same 3/4 shape as 125733Z ~5h ago; the ~26d reputation gate remains time-varying; BOTH regex branches
+  exercised (com-t1 v0.7(g) permission-layer, org via v0.6 browser-security) → robust across the swing.
+  **OFF-PATH TOOLING SELF-HEAL (same fire, ≤15-min allowance):** the FIRST bare-script invocation failed
+  `ModuleNotFoundError: asrs` (running the file as a script puts `experiments/` on sys.path[0], not repo root;
+  this file — unlike its 4 sibling experiments + every test — had NO sys.path bootstrap). Re-ran with
+  `PYTHONPATH=<repo>` (clean, the FINDING) AND added the IDENTICAL sibling bootstrap
+  `sys.path.insert(0, str(Path(__file__).resolve().parent.parent))` (+ `# noqa: E402`) so the tripwire is
+  bare-script-runnable; VERIFIED (not assumed) via importlib with repo root stripped from sys.path +
+  experiments/ on path[0] → the in-file bootstrap resolved asrs, module loaded fully. Off the scoring path
+  (experiment harness, not a probe/scorer). Off-scoring-SEMANTICS EMPTY (diff = ONLY
+  `experiments/codex_reachability.py` +9/-3 + the tripwire evidence dir on-glob + loop docs; grep over
+  `asrs/scoring|asrs/rubric|asrs/probes|fixtures/|asrs/cli.py|tests/` EMPTY); full suite 38/38 (re-run after
+  the edit); frozen +39.4 UNMOVED / live +30.1 (`verify_20260811T174105Z`). NO Slack DM (score-neutral METHOD
+  cadence, no sensitive-class change; daily digest already sent by the 170652Z fire). **NEXT:** (a) the 7th
+  drift WILL come — keep re-running the tripwire each cadence; (b) vet the 4 fresh live UCP surfaces
+  (elfcosmetics/reebok/sezane/scheels) as pin LEADS, esp. a SECOND tx-43.75 witness (COVERAGE); (c) retire the
+  thebotwire ledger the cycle it re-scores 86.0. Evidence: LOG Local cycle 20260811T180111Z +
+  `runs/local/codex_reachability_20260811T174603Z/summary.json` + BACKLOG STANDING TRIPWIRE.
 - **✅ NO PEER-GATED PR OPEN (first duty = infra health GREEN + bookkeeping consistent); THEN the ONE [LOCAL]
   item = a TRUTH calibration cadence sweep → the 29-member POPULATION re-scored $0 static, drift 0/28 moved /
   max |Δ| 0.0 (EVERY compared member byte-on-floor, all caps empty, no status/member change); thebotwire.com
@@ -146,51 +197,17 @@
   SECOND tx-43.75 UCP witness to make spanx's lower-mode a range not a point). Evidence
   `runs/local/codex_reachability_20260811T124558Z/summary.json` + transcripts; see LOG Local cycle
   20260811T125733Z + BACKLOG STANDING TRIPWIRE.
-- **✅ FIRST DUTY DONE — operator-merged PEER-GATED PR #166 (spanx.com 60.0 D UCP-lowtx weld) POST-MERGE
-  REVIEWED SOUND, merge STANDS; THEN the ONE [LOCAL] item = a calibration cadence sweep → GREEN (all
-  pinned/welded members byte-on-floor incl. spanx welded-on-floor, thebotwire WATCH still 25.0); bench GREEN
-  38/38 (Local 20260811T114801Z, TRUTH — post-merge review is the peer-gated first duty; cadence sweep
-  direct-to-main).** FIRST DUTY: `gh pr list --state open` EMPTY, but **PR #166 was OPERATOR-MERGED by Jonah**
-  (`0d4bdb4`, mergedBy `jnakagawa`, 2026-08-11T10:47:01Z — the PR #162/#163 pattern), the owed adversarial
-  review NOT yet recorded (LOG head was still the 09:44Z authoring cycle; only verify-floor heartbeats between).
-  Ran the owed POST-MERGE review from this fresh cycle (authored 20260811T094457Z, a DIFFERENT fire) on all four
-  legs. (1) OFF the static scoring path — three-dot diff since merge-base `7284e4d` = ONLY
-  `tests/test_calibration_anchor_agreement.py` (+100) + the authoring evidence JSON (+55);
-  `asrs/rubric/scoring/probes/fixtures/experiments` UNCHANGED. (2) VENDOR-NEUTRAL — `spanx.com` welded by TYPE
-  into the test-only `_NON_ANCHOR_WELDED`; scorer UNCHANGED. (3) TEETH — weld **32/32** on main;
-  `test_spanx_sixteenth_non_anchor_is_welded_nonvacuously` asserts committed v0.7 floor + `divergences==[]`
-  (`n_compared>=1`) AND a synthetic **60.0→62.4** drift (an MCP surface appearing) fires EXACTLY one divergence
-  vs the 60.0 floor. (4) VOLATILE-RAIL LIVE $0 RE-SCORE (inv #1 — static, no
-  --behavioral/--max-pay/codex/zero-CLI/signing) → `runs/spanx_com_20260811T114605.json`: **live 60.0 == frozen
-  60.0 == EXPECTED 60.0**, 4 pillars byte-identical (100.0/54.5454…/43.75/60.0), caps empty, tx findings
-  `commerce-protocol-live` (x402_probe PARTIAL) + `no-mcp-surface` (mcp_surface FAIL, the isolation confirmed) +
-  `self-serve-signup` → manifest UP, no drift. **VERDICT SOUND → merge STANDS, no revert**
-  (`runs/local/postmerge166_spanx_weld_review_rescore_20260811T114801Z.json`). The UCP-rail weld campaign now
-  spans SIX points over BOTH modes of the bimodal tx axis (tx-50.0 ×5 + tx-43.75 ×1); the `mcp_surface`
-  1.0-vs-0.0 split is a load-bearing welded calibration axis. NO Slack DM (Jonah merged it himself → already has
-  veto visibility; noted for next digest). BOOKKEEPING self-heal: reconciled STATE #166 OPEN→MERGED+reviewed;
-  noted a gitignored EMPTY `runs/local/codex_reachability_20260811T105128Z/` (10:51Z) = a crashed codex-tripwire
-  attempt from the 10:41 fire (verify floor kept heartbeating; not a stall) — harmless cruft, left in place; a
-  RISK SIGNAL against re-picking the tripwire this fire. **THE ONE [LOCAL] ITEM (TRUTH, direct-to-main) —
-  calibration cadence sweep:** with the spanx weld just merged, ran the population-wide $0 static regression net
-  (`experiments/calibration_sweep.py`, `_run_probes`→`scoring.score`, inv #1 by construction) →
-  `runs/local/calibration_sweep_20260811T114905Z.json` (29 total, 28 scored, rei.com not-scorable inv #4, 0
-  errors). Every pinned/welded member BYTE-ON-FLOOR, caps empty: both anchors (46.1 / 76.2), all SIX UCP rails
-  (coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9 / kith 70.3 / aloyoga 81.2 / **spanx 60.0** welded-on-floor),
-  all THREE x402 rails (thebotwire 25.0 ledgered / oracle 64.4 / x402deploy 73.9), exa.ai 78.1. **Drift vs
-  `calibration_sweep_20260811T084450Z.json`: 1/28 moved, max |Δ| 2.5** — sole mover `Δ +2.5 openai.com 62.0→64.5`,
-  a NON-pinned floorless api-service member oscillating in its ~62–64.5 band (moved −2.5 the opposite way last
-  sweep, inv #4); every OTHER of the 28 compared members delta 0.0; `added_members`/`removed_members`/
-  `status_changed` empty. **WATCH re-observed:** thebotwire.com **25.0** again (byte-identical to the merged
-  ledger, no recovery to 86.0 → ledger STAYS, ~9th consecutive dark obs). Committed the sweep on-glob (`git add
-  -f`, the cadence-sweep pattern) → gives spanx.com a SECOND committed on-floor sweep presence (n_compared 1→2),
-  strengthening the just-merged weld. Off-scoring-SEMANTICS EMPTY (tracked diff = ONLY loop docs + the two
-  evidence JSONs on-glob; asrs/rubric/scoring/probes/fixtures/tests UNCHANGED); full suite **38/38** WITH the new
-  sweep on-glob; frozen +39.4 UNMOVED / live +30.1 (`verify_20260811T114103Z`). **NEXT:** the own-tool-drift
-  TRIPWIRE (METHOD) is due (codex last ran 05:41Z; the 10:51Z attempt crashed — verify codex health BEFORE
-  re-picking it), or a SECOND tx-43.75 UCP witness to make that lower mode a range not a point. Evidence
-  `runs/local/calibration_sweep_20260811T114905Z.json` + the postmerge-166 review JSON; PR #166 (MERGED
-  `0d4bdb4`); see LOG Local cycle 20260811T114801Z + BACKLOG P2 frontier (b-ii) + thebotwire WATCH.
+<!-- The 20260811T114801Z banner (TRUTH — FIRST DUTY = the owed POST-MERGE adversarial review of operator-merged
+     PEER-GATED PR #166 [spanx.com 60.0 D UCP-lowtx weld, `0d4bdb4`] VERDICT SOUND on all four legs [off-path /
+     vendor-neutral / weld 32/32 teeth incl. synthetic 60.0→62.4 drift / volatile-rail live $0 re-score 60.0==frozen
+     ==EXPECTED], merge STANDS; THEN the ONE [LOCAL] item = a calibration cadence sweep GREEN, all pinned/welded members
+     byte-on-floor incl. spanx welded-on-floor + thebotwire WATCH still 25.0, sole drift-mover the openai.com non-pinned
+     band-oscillation) is pruned this fire (Local cycle 20260811T180111Z) per the ~5-cycle rolling-log policy to defend
+     STATE against re-accretion (the 27h doom-loop lesson) — preserved verbatim in loop/LOG.md
+     (## Local cycle — 20260811T114801Z) + git history. PR #166 is long-MERGED + post-merge-reviewed SOUND; the UCP-rail
+     weld campaign stands COMPLETE at 6 points; spanx 60.0 was re-confirmed byte-on-floor in later cadence sweeps
+     (114905Z/170652Z). STATE is mutable working state, NOT an append-only LOG/evidence file, so this compaction is not
+     an invariant-#5 rewrite. -->
 <!-- The 20260811T094457Z banner (COVERAGE — the ONE [LOCAL] item = the P2 (b-ii) PEER-GATED WELD of spanx.com 60.0 D
      into `_NON_ANCHOR_WELDED` as the 16th non-anchor / 6th UCP-rail / FIRST tx-43.75-mode point, a CONTROLLED
      single-SUB-CHECK `mcp_surface` isolation vs pinned gymshark 62.4; PR #166 AUTHORED, weld 32/32, live 60.0==frozen==

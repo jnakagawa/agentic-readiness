@@ -471,22 +471,28 @@ runs/local/aloyoga_ucp_weld_review_rescore_20260811T054101Z.json; PR #165 (MERGE
   phrasing has now drifted the `_ENV_BLOCK_RE` guard SIX times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)
   `browser site-access permission … declined` / the 6th Local cycle 20260808T215647Z: "…denied AT the browser permission
   boundary" — the verb-then-apparatus order — **fixed as v0.7(g), PR #162 MERGED + POST-MERGE-reviewed SOUND Local cycle
-  20260809T010020Z**). **CADENCE RE-RUN Local cycle 20260811T125733Z → GREEN, NO seventh drift**
-  (`runs/local/codex_reachability_20260811T124558Z/`, 5 codex trials via the REAL scorer path; codex health
-  pre-verified via `is_codex_usable()`=True in 6.8s after STATE flagged a transient 10:51Z crash): all 3 canonical
-  own-tool refusals that fired were CAUGHT by the shipped v0.7(g) `_ENV_BLOCK_RE` (`is_env_blocked_current=True` →
-  routed to reachability, NOT scored as site FAILs, all on HTTP-200 up sites): driftflight.com t1 "rejected by browser
-  and web safety controls", drift-flight.org t1 "denied by the browser security/permission gate", drift-flight.org t2
-  "Interactive browser security policy denied access". **NEW datapoint — the gate RE-TIGHTENED to intermittent**: 3/4
-  canonical trials REFUSED this fire (driftflight.com 1/2, drift-flight.org 2/2) vs 0/4 (all reached) at 055014Z ~7h
-  earlier → the ~26d reputation gate is time-varying, swinging softened↔tightened; the regex proved robust across the
-  swing. The sole raw `leak_candidate` was again the KNOWN example.com honest-non-observation false positive
-  (reached-and-empty: browser worked, "no purchasable product … reserved for documentation", `reputation_markers=[]`,
-  zero browser-refusal phrasing → `env_blk=False` CORRECT), NOT a drift. drift-flight.org t2's SECOND blocker was the
-  deferred test-#8 own-web-retriever phrasing "The direct read-only web retriever independently classified the URL as
-  unsafe and refused access" but it CO-OCCURRED with the caught browser-security phrase → correctly `env_blk=True`, no
-  leak. codex vocabulary is
-  non-deterministic run-to-run — the 7th drift WILL come; re-run each
+  20260809T010020Z**). **CADENCE RE-RUN Local cycle 20260811T180111Z → GREEN, NO seventh drift**
+  (`runs/local/codex_reachability_20260811T174603Z/`, 5 codex trials via the REAL scorer path; codex health
+  pre-verified via `is_codex_usable()`=True in ~8s, `codex-cli 0.145.0`): all 3 canonical own-tool refusals that
+  fired were CAUGHT by the shipped v0.7(g) `_ENV_BLOCK_RE` (`is_env_blocked_current=True` → routed to reachability,
+  NOT scored as site FAILs, all on HTTP-200 up sites): driftflight.com t1 "denied by the browser permission layer …
+  classified the URL as unsafe" (caught via the v0.7(g) permission-layer branch, `security_family=False`),
+  drift-flight.org t1 "denied by browser security policy … independent web retrieval marked the domain unsafe" +
+  t2 "Browser security policy denied access" (both caught via the v0.6 browser-security family). **NEW datapoint —
+  gate stays intermittent, BOTH regex branches exercised in one fire**: 3/4 canonical trials REFUSED
+  (driftflight.com 1/2, drift-flight.org 2/2), 1 REACHED (driftflight.com t2 OBSERVED) — the SAME 3/4 shape as the
+  125733Z fire ~5h earlier; the ~26d reputation gate remains time-varying, and the com-t1 v0.7(g) permission-layer
+  hit alongside the two org v0.6 browser-security hits shows the shipped regex is robust across the phrasing swing.
+  The sole raw `leak_candidate` was again the KNOWN example.com honest-non-observation false positive
+  (reached-and-empty: browser worked, "no product or service … IANA-reserved documentation domain",
+  `reputation_markers=[]`, zero browser-refusal phrasing → `env_blk=False` CORRECT), NOT a drift. On BOTH
+  driftflight.com t1 and drift-flight.org t1 the deferred test-#8 own-web-retriever "unsafe" phrasing appeared but
+  CO-OCCURRED with a caught browser-permission/security phrase → correctly `env_blk=True`, no leak. **OFF-PATH
+  TOOLING SELF-HEAL this fire**: the tripwire experiment lacked the `sys.path` bootstrap its 4 sibling experiments
+  + all tests have, so a bare-script `python experiments/codex_reachability.py` died `ModuleNotFoundError: asrs`;
+  added the identical `sys.path.insert(0, str(Path(__file__).resolve().parent.parent))` (+ `# noqa: E402`) so the
+  tripwire is bare-script-runnable (off the scoring path; verified via importlib with repo root stripped). codex
+  vocabulary is non-deterministic run-to-run — the 7th drift WILL come; re-run each
   drift-hunt. The tripwire works: run `experiments/codex_reachability.py` (or leak-scan any fresh committed behavioral
   panel) each cadence so the NEXT drift is caught the cycle it appears, not several cycles later as a silently-narrowed
   delta — the recon's per-run `is_env_blocked_current` flag IS the differential scan against the SHIPPED regex, with the

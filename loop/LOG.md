@@ -3,6 +3,97 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Local cycle — 20260811T180111Z — METHOD (LOCAL, direct-to-main, score-neutral) — own-tool-drift TRIPWIRE cadence re-run: GREEN, NO seventh `_ENV_BLOCK_RE` drift (all 3 canonical own-tool refusals CAUGHT by shipped v0.7(g); sole leak_candidate = the KNOWN example.com reached-and-empty FP); + a tiny off-path tooling self-heal (bare-script `sys.path` bootstrap for the tripwire experiment)
+
+**Fire-start state / FIRST DUTY.** Infra health GREEN: newest `runs/local/verify_20260811T174105Z.json`
+(ts 17:41Z, ~2 min old at fire start 17:43Z, well under the 6h floor), `tests_ok=true` (all 38 modules;
+`test_canonical_history` 72/72, 204 committed points), git clean + `main == origin/main == HEAD`
+(`44954fc`, the subsequent verify heartbeat). Live canonical delta **+30.1** (org 46.1 F / com 76.2 C) vs
+the pinned-fixture baseline **+39.4** (DIVERGED, reference SOFTENED — the standing documented live drift, a
+driftflight.com /extend 402 that has not recovered, not a fixture problem). `gh pr list --state open` EMPTY
+→ **no peer-gated PR to review** (first duty discharged). LOG head == STATE top (both cycle 170652Z) and the
+commits above HEAD's parent are verify heartbeats (154102Z / 164135Z / 174105Z, not improvement cycles) →
+bookkeeping consistent. No self-heal needed at the infra level.
+
+**Track choice — anti-starvation.** Recent order (newest first): TRUTH (170652Z, cadence sweep) → COVERAGE
+(145327Z, ACP recon) → READOUT (135051Z, sparkline honesty) → METHOD (125733Z, own-tool tripwire) → TRUTH
+(114801Z). **METHOD was the most starved forward track** (3 intervening non-METHOD cycles since 125733Z),
+and STATE NEXT (b) explicitly flagged the own-tool-drift TRIPWIRE as due ("the 7th drift WILL come"), so
+this fire is METHOD (playbook step 2: "rotate so none starves"). The tripwire is a load-bearing
+attribution-honesty guard (inv #4): a silent 7th vocab drift would score codex's OWN hosted-browser refusal
+as SITE evidence, narrowing the WITH-side delta.
+
+**CODEX HEALTH GATE (STATE precedent — a transient 10:51Z codex crash was noted earlier today).** Ran the
+cheap `is_codex_usable()` throwaway (read-only, $0, no `--max-pay`/signing/zero-CLI) → **True in ~8s**,
+`codex-cli 0.145.0` on PATH → the earlier crash was transient, codex GREEN → tripwire safe to run.
+
+**THE ONE [LOCAL] ITEM (METHOD, direct-to-main) — own-tool-drift TRIPWIRE cadence.** Re-ran
+`experiments/codex_reachability.py` ($0 read-only via the REAL scorer path `shopper._run_one`, 5 codex
+trials, no `--behavioral`/`--max-pay`/zero-CLI/signing, inv #1) →
+`runs/local/codex_reachability_20260811T174603Z/` (summary + 5 transcripts, committed on-glob `git add -f`).
+All 5 targets HTTP 200 (sites up → any refusal is codex's OWN gate, not a site block).
+
+**FINDING — TRIPWIRE GREEN, NO seventh drift.** All 3 canonical own-tool refusals that fired were CAUGHT by
+the shipped v0.7(g) `_ENV_BLOCK_RE` (`is_env_blocked_current=True` → routed to reachability, NOT scored as
+site FAILs):
+- **driftflight.com t1** — "Direct site access was denied by the browser permission layer and the read-only
+  fetch service classified the URL as unsafe to open." Caught via the **v0.7(g) "denied by the browser
+  permission layer"** branch (`matches_security_family=False` — NOT the older browser-security family). The
+  co-occurring "read-only fetch service classified the URL as unsafe" (the deferred test-#8 own-web-retriever
+  family) rode along but correctly `env_blk=True`, no leak.
+- **drift-flight.org t1** — "Direct browser access was denied by browser security policy, and independent web
+  retrieval marked the domain unsafe to open." Caught via the **v0.6 browser-security** family
+  (`security_family=True`); the "independent web retrieval marked the domain unsafe" (test-#8 family)
+  co-occurred with the caught phrase → correctly `env_blk=True`, no leak.
+- **drift-flight.org t2** — "Browser security policy denied access to drift-flight.org…" Caught
+  (`security_family=True`).
+- **driftflight.com t2 REACHED** (OBSERVED, checkpoint passed, no refusal — codex's browser worked this
+  trial, found the offering; `env_blk=False` correct, its lone reputation_marker "registered on" is a TRUST
+  warning, not a refusal). **example.com control REACHED-AND-EMPTY** (honest "example.com offers no product
+  or service; it is an IANA-reserved documentation domain", `reputation_markers=[]`, zero refusal phrasing).
+
+Sole raw `leak_candidate` (1) = the **KNOWN example.com honest-non-observation FALSE POSITIVE** (the coarse
+filter fires on "up-site + nothing-observed + not-env-blocked + not-security-family"; reading the actual
+blocker text per the BACKLOG warning shows it is **reached-and-empty, NOT blocked-and-empty** → `env_blk=False`
+is CORRECT, not a masked refusal). NO pure-semantic reputation refusal lacking own-apparatus vocab was
+captured → **NO regex broadening warranted** (inv #4 cuts both ways — broadening blindly would risk excusing
+a real site-side block).
+
+**NEW datapoint — the reputation gate stays intermittent.** 3/4 canonical trials REFUSED this fire
+(driftflight.com 1/2, drift-flight.org 2/2), 1 REACHED (driftflight.com t2) — the SAME 3/4 shape as the
+125733Z fire ~5h earlier; the ~26d-aged reputation gate remains time-varying (softened↔tightened). BOTH
+regex branches were exercised in one fire (com-t1 via the v0.7(g) permission-layer phrasing; both org trials
+via the v0.6 browser-security family) → the shipped `_ENV_BLOCK_RE` is robust across the phrasing swing.
+
+**Off-path tooling self-heal (same fire, ≤15-min allowance, off scoring semantics).** The FIRST bare-script
+invocation `python experiments/codex_reachability.py` failed at import (`ModuleNotFoundError: No module named
+'asrs'`) — running the file as a script puts `experiments/` on `sys.path[0]`, not the repo root, and unlike
+its 4 sibling experiments (`acp_wellknown_recon.py`, `ucp_transactability_recon.py`,
+`diag_transactability_drop.py`, `ucp_metered_api_vetting.py`) — and every `tests/test_*.py` — this file had
+NO `sys.path` bootstrap. I re-ran the tripwire with `PYTHONPATH=<repo>` (clean, the FINDING above) AND added
+the IDENTICAL sibling bootstrap `sys.path.insert(0, str(Path(__file__).resolve().parent.parent))` (+ `# noqa:
+E402` on the asrs imports) so the tripwire is bare-script-runnable like the rest. VERIFIED the repair ran
+(not assumed): loaded the module via importlib with the repo root stripped from `sys.path` and
+`experiments/` on `path[0]` (the exact failure condition) → the in-file bootstrap resolved `asrs` and the
+module loaded fully (main + is_codex_usable present). This is an EXPERIMENT-HARNESS change (off the scoring
+path), not a probe/scorer change.
+
+**Ship / regression.** Diff = ONLY `experiments/codex_reachability.py` (+9/-3, the sys.path bootstrap) + the
+tripwire evidence dir on-glob (summary + 5 transcripts) + these loop docs. Grep over
+`asrs/scoring|asrs/rubric|asrs/probes|fixtures/|asrs/cli.py|tests/` EMPTY → off-scoring-SEMANTICS (the recon
+READS the scorer, never modifies it; the bootstrap is import plumbing). Full suite **38/38** (re-run after
+the edit); frozen +39.4 UNMOVED / live +30.1 (`verify_20260811T174105Z`). Direct-to-main (same class as
+every prior tripwire cadence + a probe-adjacent bug-fix that does not change scoring semantics). NO Slack DM
+(score-neutral METHOD cadence, no sensitive-class change; the daily digest was already sent by the prior
+170652Z fire, the first improvement cycle after 16:00 UTC).
+
+**NEXT hypothesis.** (a) The 7th drift WILL come — codex vocab is non-deterministic run-to-run — so keep
+re-running the tripwire each cadence; the recon's per-run `is_env_blocked_current` flag IS the differential
+scan against the shipped regex, with example.com as the functional-browser control. (b) The STATE-named
+COVERAGE alternative: vet the 4 fresh live UCP surfaces (elfcosmetics / reebok / sezane / scheels, found
+145327Z) as pin LEADS — hunt a DISTINCT-point honest witness, esp. a SECOND tx-43.75 witness to make spanx's
+lower mode a range not a point. (c) Retire the thebotwire.com ledger the cycle it re-scores 86.0.
+
 ## Local cycle — 20260811T170652Z — TRUTH (LOCAL, direct-to-main, score-neutral) — calibration cadence sweep: the full 29-member POPULATION re-scored $0 static → drift 0/28 moved, max |Δ| 0.0 (EVERY compared member byte-on-floor, all caps empty); thebotwire.com WATCH re-observed still 25.0 (~10th consecutive dark obs, no recovery)
 
 **Fire-start state / FIRST DUTY.** Infra health GREEN: newest `runs/local/verify_20260811T164135Z.json`

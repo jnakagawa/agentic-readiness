@@ -3,6 +3,60 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Local cycle — 20260811T094457Z — COVERAGE (LOCAL, PEER-GATED) — weld spanx.com 60.0 D into _NON_ANCHOR_WELDED (16th non-anchor / 6th UCP-rail / FIRST tx-43.75-mode point) → PR #166 AUTHORED
+
+**Fire-start state.** Infra health GREEN: newest `runs/local/verify_20260811T094103Z.json` (ts 09:41Z,
+~2.5 min old at fire start, well under the 6h floor), `tests_ok=true` (all 38 modules), git clean +
+`main == origin/main == HEAD` (`7284e4d`). Live canonical delta **+30.1** (org 46.1 F / com 76.2 C —
+persistent `/extend` 402→401), frozen replay **+39.4**. No repair / no self-heal (working tree clean at
+fire start → authored the weld fresh).
+
+**First duty — peer-gated PR review.** NONE owed: `gh pr list --state open` → empty (the UCP-rail weld
+campaign closed at PR #165 `932c006`; spanx PIN `28ec476` + sweep-add `ab9503c` landed the last two fires
+direct-to-main). Proceeded straight to the ONE `[LOCAL]` item.
+
+**The ONE `[LOCAL]` item (COVERAGE, PEER-GATED) — the P2 UCP frontier step (b-ii).** Last fire discharged
+the (b-i) sweep-add prerequisite (spanx.com → `experiments/calibration_sweep.py` POPULATION, scored 60.0
+BYTE-ON-FLOOR in `calibration_sweep_20260811T084450Z.json`, segment `ucp-live:apparel-lowtx`), so the
+forward move — welding spanx into `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` — is now
+unlocked (the gymshark/hardgraft/kith/aloyoga recipe). spanx.com is the **16th non-anchor welded member /
+6th on the LIVE UCP commerce-protocol rail / FIRST witness at the LOWER mode of the bimodal UCP
+transactability axis (tx 43.75)**. It is a CONTROLLED single-SUB-CHECK isolation of `mcp_surface` vs the
+pinned gymshark.com (62.4): matched EXACTLY on access 100.0 / legibility 54.55 / trust 60.0 AND sharing the
+other two tx sub-checks (`x402_probe` 4.0 + `self_serve_payg` 3.0), differing SOLELY in `mcp_surface`
+(spanx FAIL 0.0 no-mcp-surface vs gymshark PARTIAL 1.0) → the whole tx 50.0→43.75 and overall 62.4→60.0
+delta is that ONE sub-check (the coffeecircle↔gymshark single-pillar move applied one level deeper).
+
+**Authoring-cycle live re-score (inv #1 — static $0, no --behavioral/--max-pay/codex/zero-CLI/signing).**
+`asrs.cli score spanx.com --json-only` → `runs/spanx_com_20260811T094518.json`: **live 60.0 D == frozen
+60.0 == EXPECTED 60.0**, four non-null pillars byte-identical (access 100.0 / legibility 54.5454… /
+transactability 43.75 / trust 60.0), caps empty, `scored=True`, rubric 0.7; tx sub-checks `x402_probe`
+partial 4.0/8.0 commerce-protocol-live (`spanx-com.myshopify.com` dev.ucp.* manifest UP) + `mcp_surface`
+fail 0.0/2.0 no-mcp-surface + `self_serve_payg` partial 3.0/6.0 → manifest UP, no drift. Evidence preserved
+`runs/local/spanx_ucp_lowtx_weld_review_rescore_20260811T094457Z.json`.
+
+**Edit + teeth.** `tests/test_calibration_anchor_agreement.py`: added `"spanx.com"` to `_NON_ANCHOR_WELDED`
+(15→16) + a docstring block + `test_spanx_sixteenth_non_anchor_is_welded_nonvacuously` (registered in
+`main()`). Weld **32/32** on branch (was 31/31): asserts `divergences==[]` vs committed sweeps
+(**n_compared=1** at 60.0 via `calibration_sweep_20260811T084450Z.json`) AND a synthetic **60.0→62.4** drift
+(an MCP surface appearing → back onto the tx-50.0 gymshark shape, the exact capability move this low-tx
+isolation exists to catch) fires EXACTLY one divergence vs the 60.0 floor.
+
+**Ship.** Off the scoring path: `git diff --stat` = ONLY the test (+100) + evidence JSON (+55);
+`asrs/rubric/scoring/probes/fixtures/experiments` UNCHANGED. This is a calibration-teeth / scoring-semantics
+change → **PEER-GATED**: opened **PR #166** (`loop/spanx-ucp-lowtx-weld`, commit `f9d4ce1`,
+https://github.com/jnakagawa/agentic-readiness/pull/166); review + self-merge owed the NEXT cycle (a further
+live re-score IS the review's teeth). Slack DM sent (weld = scoring-semantics change → veto visibility, not a
+gate). This fire direct-to-main = loop docs (LOG/STATE/BACKLOG) only. Full suite **38/38**; frozen +39.4
+UNMOVED / live +30.1 (`verify_20260811T094103Z`).
+
+**Next hypothesis.** Once PR #166 merges, the UCP-rail weld campaign stands at SIX points spanning BOTH
+modes of the bimodal tx axis (tx-50.0 ×5 + tx-43.75 ×1) — the mcp_surface split is then a load-bearing
+calibration axis. Forward frontier: a genuinely-NEW rail TYPE (ACP/MPP, still $0-un-pinnable — keep
+re-running the 32-candidate recon at cadence) or a SECOND tx-43.75 witness to make that mode a range not a
+point. Evidence `runs/local/spanx_ucp_lowtx_weld_review_rescore_20260811T094457Z.json`; PR #166; BACKLOG P2
+frontier (b-ii).
+
 ## Local cycle — 20260809T105834Z — COVERAGE/TRUTH (LOCAL) — UCP transactability-rung recon: the UCP retail rail is structurally CAPPED at tx=50.0 (no merchant clears tx>50), the tx axis is BIMODAL {50.0, 43.75} split SOLELY by mcp_surface
 
 **Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260809T104103Z.json` fresh

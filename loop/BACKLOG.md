@@ -351,10 +351,21 @@ new-rail item below. -->
   4.6 — BOTH movers NON-pinned (`wikipedia.org 45.7→41.1` the known bistable control oscillation inv #4 + `openai.com
   64.5→62.0` honest live drift on a floor-less api-service spread member); every OTHER of the 27 compared members
   delta 0.0 (both anchors, all 6 UCP rails incl. spanx, all 3 x402 rails, every frozen baseline, controls). Full
-  suite 38/38 WITH the sweep on-glob. **NEXT (the forward move for a future fire):** (b-ii) a PEER-GATED weld of
-  spanx.com into `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` (the 16th non-anchor member / FIRST
-  tx-43.75-mode point; n_compared=1 at 60.0 via the committed sweep; teeth = synthetic drift caught) — the
-  load-bearing cross-path form of this mcp_surface isolation. (c) a genuinely-NEW rail TYPE (ACP/MPP — still $0-un-pinnable; keep re-running the
+  suite 38/38 WITH the sweep on-glob.
+  (b-ii) ✅ AUTHORED (Local cycle 20260811T094457Z, COVERAGE, PEER-GATED) — the weld of spanx.com into
+  `tests/test_calibration_anchor_agreement._NON_ANCHOR_WELDED` (the 16th non-anchor member / 6th UCP-rail / FIRST
+  tx-43.75-mode point) is OPEN as **PR #166** (`loop/spanx-ucp-lowtx-weld`, `f9d4ce1`,
+  https://github.com/jnakagawa/agentic-readiness/pull/166). Off the scoring path (diff = ONLY the test +100 + evidence
+  JSON +55; asrs/rubric/scoring/probes/fixtures/experiments UNCHANGED). n_compared=1 at 60.0 via committed sweep
+  `calibration_sweep_20260811T084450Z.json`; teeth = weld 32/32, synthetic **60.0→62.4** drift (an MCP surface
+  appearing → back onto the tx-50.0 gymshark shape) fires exactly one divergence vs the 60.0 floor. Authoring live $0
+  static re-score: live 60.0 == frozen 60.0 == EXPECTED 60.0, 4 pillars byte-identical, caps empty, x402_probe partial
+  4.0/8.0 commerce-protocol-live + mcp_surface fail 0.0/2.0 no-mcp-surface
+  (`runs/local/spanx_ucp_lowtx_weld_review_rescore_20260811T094457Z.json`). **Review + self-merge owed the NEXT cycle
+  (FIRST DUTY)** — re-run the live $0 re-score (a divergence = REAL UCP-manifest drift, re-capture not merge); NEVER
+  review-and-merge the same fire that authored it. Once merged: the UCP-rail weld campaign spans SIX points over BOTH
+  modes of the bimodal tx axis (tx-50.0 ×5 + tx-43.75 ×1), the mcp_surface split a load-bearing calibration axis.
+  (c) a genuinely-NEW rail TYPE (ACP/MPP — still $0-un-pinnable; keep re-running the
   32-candidate recon at cadence). `joinhexagon.com` is a DOCUMENTED live-UCP lead but needs a precision-guard unblock
   FIRST (4 llms-full.txt FP families, inv #4) — prefer clean merchant witnesses over infra profiles. WATCH
   driftflight.com /extend for a 402 recovery (restores the anchor's live handshake + the +39.4 live delta).

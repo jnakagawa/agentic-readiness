@@ -21915,3 +21915,7 @@ the floor-only-stall WATCH closely and escalate in the next digest if a gap > ~3
 `runs/local/thebotwire_persistence_confirm_20260810T214553Z.json` (obs 3) /
 `runs/local/thebotwire_persistence_confirm_20260810T204543Z.json` (obs 2) /
 `runs/local/aloyoga_sweepadd_thebotwire_drift_20260810T194427Z.json` (obs 1).
+
+## Local verification — 20260811T024104Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260811T024104Z.json

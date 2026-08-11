@@ -1,32 +1,48 @@
 # Loop state
 
-- Cycle counter: 336
-- **✅ PEER-GATED PR #165 AUTHORED — WELD aloyoga.com (81.2 B) as the 15th non-anchor / 5th UCP-rail cross-path member
-  (the HIGH CORNER of the UCP plane); no first-duty review owed (NO open PR at fire start); bench GREEN 38/38 (Local
-  20260811T044102Z, COVERAGE — weld PR peer-gated, loop docs direct-to-main).** FIRST DUTY: none owed — `gh pr list
-  --state open` empty (PR #164 merged LAST fire). Executed the ONE `[LOCAL]` item = the P1 forward weld. All
-  prerequisites were discharged over prior fires (PIN 20260810T174412Z / POPULATION add 20260810T200452Z / the
-  weld-visible on-glob `calibration_sweep_20260811T034627Z.json` committed LAST fire, aloyoga 81.2 byte-on-floor).
-  **Verified load-bearing:** `replay.EXPECTED['aloyoga.com']` = 81.2 v0.7 (100.0/100.0/50.0/100.0); the on-glob sweep
-  034627Z rows it `scored=True overall=81.2` seg `ucp-live:apparel-retail`, pillars byte-identical → non-vacuous
-  (`n_compared=1`, agrees with the frozen floor). **Authoring live $0 re-confirm** (`asrs.cli score aloyoga.com
-  --json-only`, static, NO `--behavioral`/`--max-pay`/codex/zero-CLI/signing — inv #1 by construction) →
-  `runs/aloyoga_com_20260811T044511.json`: **live 81.2 B == frozen 81.2 == EXPECTED 81.2**, all four non-null pillars
-  byte-identical (100.0/100.0/50.0/100.0), `caps_applied` empty, honest `{metered_api, physical_good}`. **Change:**
-  added `"aloyoga.com"` to `_NON_ANCHOR_WELDED` (14→15) + docstring + load-bearing
-  `test_aloyoga_fifteenth_non_anchor_is_welded_nonvacuously` (teeth: synthetic drift 81.2→92.0 caught vs the 81.2
-  floor) + registration — **off the static scoring path** (`asrs/rubric/scoring/probes/fixtures` UNCHANGED, grep-verified;
-  test-file-only edit + one evidence JSON). Branch suite: weld **31/31** (was 30/30), full **38/38**, runner-registration
-  green. **Opened PEER-GATED PR #165** (`loop/aloyoga-ucp-weld`, https://github.com/jnakagawa/agentic-readiness/pull/165);
-  branch carries ONLY the test edit + evidence JSON; **review + self-merge owed NEXT cycle** (the UCP rail is volatile → the
-  reviewing cycle re-runs the $0 live re-score as the regression check; a divergence there is REAL UCP-manifest drift, not a
-  code regression). **Direct-to-main this fire:** loop docs + the evidence JSON ONLY — **main's weld test stays 30/30 (14
-  members) until the peer gate merges**; `asrs/rubric/scoring/probes/fixtures` UNCHANGED on main; full suite 38/38; frozen
-  +39.4 UNMOVED / live +30.1 (`verify_20260811T044102Z`; org 46.1 / com 76.2). Slack DM sent (weld = scoring-semantics
-  change → veto visibility, not a gate). This MERGE (next fire) closes the UCP-rail weld campaign at 5 points (coffeecircle
-  57.4 / gymshark 62.4 / hardgraft 66.9 / kith 70.3 / aloyoga 81.2 — the plane spanned on legibility 50.0→100.0 and trust
-  33.33→100.0 at the fixed tx-50.0 rung). Evidence `runs/local/aloyoga_ucp_weld_confirm_20260811T044102Z.json`; PR #165;
-  see LOG Local cycle 20260811T044102Z + BACKLOG P1.
+- Cycle counter: 337
+- **✅ FIRST DUTY DONE — PEER-GATED PR #165 (aloyoga.com 81.2 B UCP weld) REVIEWED SOUND + MERGED (`932c006`); THEN
+  the ONE [LOCAL] item = the own-tool-drift TRIPWIRE cadence re-run → GREEN, no seventh drift; bench GREEN 38/38 (Local
+  20260811T054101Z, METHOD — merge is the peer-gated first duty; tripwire direct-to-main).** FIRST DUTY: adversarially
+  reviewed PR #165 (opened LAST fire, eligible now) on all four legs. (1) OFF the static scoring path — three-dot diff
+  since merge-base `997a16f` = ONLY `tests/test_calibration_anchor_agreement.py` (+93) + the aloyoga weld-confirm evidence
+  JSON (+53); `asrs/rubric/scoring/probes/fixtures/experiments` UNCHANGED. (2) VENDOR-NEUTRAL — welded by TYPE (a
+  mainstream athletic-apparel/lifestyle UCP merchant; scorer UNCHANGED, `_NON_ANCHOR_WELDED` is a test-only calibration
+  construct). (3) TEETH — weld **31/31** on branch; the new `test_aloyoga_fifteenth_non_anchor_is_welded_nonvacuously`
+  asserts `divergences==[]` vs committed sweeps (`n_compared=1` via 034627Z at 81.2) AND the synthetic 81.2→92.0 drift
+  fires EXACTLY one divergence caught vs the 81.2 floor. (4) VOLATILE-RAIL LIVE $0 RE-SCORE (inv #1, static, NO
+  `--behavioral`/`--max-pay`/codex/zero-CLI/signing) → `runs/aloyoga_com_20260811T054429.json` (preserved
+  `runs/local/aloyoga_ucp_weld_review_rescore_20260811T054101Z.json`): **live 81.2 B == frozen 81.2 == EXPECTED 81.2**,
+  four non-null pillars byte-identical (100.0/100.0/50.0/100.0), caps empty, tx rung byte-identical (x402_probe PARTIAL
+  4.0/8.0 commerce-protocol-live) → manifest UP, no drift. **VERDICT SOUND → MERGED** (`gh pr merge 165 --merge`); main
+  ff'd, weld **31/31** on main (15 members), canonical replay 39/39, full suite 38/38. **The UCP-rail weld campaign is
+  COMPLETE at 5 points** (coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9 / kith 70.3 / aloyoga 81.2 — the plane
+  spanned on legibility 50.0→100.0 and trust 33.33→100.0 at the fixed tx-50.0 rung). Slack DM sent (weld = scoring-semantics
+  change → veto visibility, not a gate). **THE ONE [LOCAL] ITEM (METHOD, direct-to-main) — own-tool-drift TRIPWIRE cadence:**
+  METHOD was the starved track (last METHOD fire 20260809T094408Z; the intervening ~8 cycles all TRUTH/COVERAGE
+  thebotwire/aloyoga work). Re-ran `experiments/codex_reachability.py` ($0 read-only via the REAL scorer path
+  `shopper._run_one`, 5 codex trials, no `--max-pay`/zero-CLI/signing, inv #1) → `runs/local/codex_reachability_20260811T055014Z/`
+  (summary + 5 transcripts). **TRIPWIRE GREEN, NO seventh drift:** all 4 canonical trials REACHED (`is_env_blocked_current=False`,
+  checkpoints passed) — the ~26d reputation gate has SOFTENED FURTHER (codex now browses BOTH canonical domains on every
+  trial, vs the 20260809 t1-blocked/t2-reached), raising only domain-age trust caveats → NO own-tool refusal fired on the
+  canonical domains → nothing for the regex to mis-attribute. Sole `leak_candidate` = the KNOWN example.com honest-non-
+  observation FP (IANA placeholder "not a commercial storefront", `reputation_markers=[]`, zero refusal phrasing → NOT a
+  drift). drift-flight.org t2 surfaced the deferred test-#8 phrasing "the automated safety fetcher rejected the domain as
+  unsafe" but the run REACHED (found_product/understood_pricing True with real site-capability findings) → the secondary
+  caveat CO-OCCURRED with a genuine reach, did NOT mask an own-tool refusal → `env_blk=False` correct; stays the carefully-
+  guarded deferred candidate. Shipped v0.7(g) `_ENV_BLOCK_RE` sufficient for every refusal observed; attribution honesty
+  holds BOTH directions. Scorer UNCHANGED → direct-to-main. Off-scoring-SEMANTICS EMPTY; frozen +39.4 UNMOVED / live +30.1
+  (`verify_20260811T054101Z`; org 46.1 / com 76.2); full suite 38/38. NEXT-HYPOTHESIS: the gate softening may finally
+  unblock the long-deferred cross-model SHOPPER-agreement panel on the WITH side. Evidence
+  `runs/local/codex_reachability_20260811T055014Z/summary.json`; PR #165 (MERGED `932c006`); see LOG Local cycle
+  20260811T054101Z + BACKLOG STANDING TRIPWIRE.
+<!-- The 20260811T044102Z PR #165 AUTHORED banner (COVERAGE — weld aloyoga.com 81.2 B as the 15th non-anchor / 5th
+     UCP-rail member; branch = test edit + evidence JSON, review+self-merge owed next fire) is pruned this fire (Local
+     cycle 20260811T054101Z) per the ~5-cycle rolling-log policy to defend STATE against re-accretion (the 27h doom-loop
+     lesson) — preserved verbatim in loop/LOG.md (## Local cycle — 20260811T044102Z) + git history. PR #165 is now MERGED
+     `932c006` (top banner), closing the UCP-rail weld campaign at 5 points. -->
+<!-- STATE mutable-working-state note: this compaction prunes a rolling cycle banner (NOT an append-only LOG/evidence
+     file), so it is not an invariant-#5 rewrite. -->
 - **✅ FIRST DUTY DONE — PEER-GATED PR #164 (thebotwire.com 404-dark ledger) REVIEWED SOUND + MERGED (`9b33da1`,
   2026-08-11T03:59:47Z); THEN the ONE [LOCAL] item committed the clean weld-visible cadence sweep ON-glob →
   UNLOCKS the aloyoga weld; bench GREEN 38/38 (Local 20260811T040401Z, TRUTH/INFRA — merge is the peer-gated

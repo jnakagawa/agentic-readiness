@@ -1,0 +1,309 @@
+{
+  "domain": "aloyoga.com",
+  "rubric_version": "0.7",
+  "generated_at": "2026-08-11T05:44:29.656619",
+  "checks": [
+    {
+      "check_id": "robots_ai_crawlers",
+      "pillar": "access",
+      "status": "pass",
+      "points": 10.0,
+      "max_points": 10.0,
+      "finding": "robots-allows-ai-crawlers",
+      "remediation": "",
+      "evidence": {
+        "url": "https://www.aloyoga.com/robots.txt",
+        "checked_agents": [
+          "GPTBot",
+          "ClaudeBot",
+          "Claude-User",
+          "OAI-SearchBot",
+          "PerplexityBot",
+          "Google-Extended"
+        ],
+        "blocked_agents": [],
+        "snippet": "# Shopify storefront. Public product, collection, page, blog, policy, cart, and localized HTML is crawlable.\n# Agent instructions: https://www.aloyoga.com/agents.md\n# UCP discovery: https://www.aloyoga.com/.well-known/ucp\n# UCP/MCP endpoint: https://www.aloyoga.com/api/ucp/mcp\n# Agents should use UC"
+      }
+    },
+    {
+      "check_id": "agent_ua_reachability",
+      "pillar": "access",
+      "status": "pass",
+      "points": 10.0,
+      "max_points": 10.0,
+      "finding": "agent-ua-allowed",
+      "remediation": "",
+      "evidence": {
+        "browser": {
+          "url": "https://www.aloyoga.com",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "cloudflare",
+          "body_len": 397018
+        },
+        "claudebot": {
+          "url": "https://www.aloyoga.com",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "cloudflare",
+          "body_len": 397018
+        },
+        "gptbot": {
+          "url": "https://www.aloyoga.com",
+          "status": 200,
+          "error": null,
+          "cf_mitigated": null,
+          "server": "cloudflare",
+          "body_len": 397018
+        },
+        "blocked_agents": []
+      }
+    },
+    {
+      "check_id": "llms_txt",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 6.0,
+      "max_points": 6.0,
+      "finding": "llms-txt-present",
+      "remediation": "",
+      "evidence": {
+        "url": "https://www.aloyoga.com/llms.txt",
+        "length": 4273,
+        "snippet": "# Agent Instructions \u2014 Alo Yoga\n\nThis document describes how AI agents can interact with Alo Yoga's online store at https://www.aloyoga.com.\n\n## For Personal Shopping Assistants and Agents Acting On Behalf of a User\n\nIf you are reading this on behalf of your user and you act as a personal assistant "
+      }
+    },
+    {
+      "check_id": "sitemap",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 2.0,
+      "max_points": 2.0,
+      "finding": "sitemap-present",
+      "remediation": "",
+      "evidence": {
+        "source": "robots.txt",
+        "sitemaps": [
+          "https://www.aloyoga.com/sitemap.xml"
+        ]
+      }
+    },
+    {
+      "check_id": "offer_catalog",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 6.0,
+      "max_points": 6.0,
+      "finding": "offer-catalog-present",
+      "remediation": "",
+      "evidence": {
+        "convention": "schema.org JSON-LD",
+        "page": "https://www.aloyoga.com/",
+        "type": "SoftwareApplication",
+        "snippet": "{\"@type\": \"SoftwareApplication\", \"name\": \"Alo Yoga\", \"operatingSystem\": \"iOS 11.1+\", \"installUrl\": \"https://apps.apple.com/app/alo-yoga/id1503741784\", \"applicationCategory\": \"ShoppingApplication\", \"aggregateRating\": {\"@type\": \"AggregateRating\", \"ratingValue\": \"4.9\", \"ratingCount\": \"6700\"}, \"offers\":"
+      }
+    },
+    {
+      "check_id": "pricing_machine_readable",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 4.0,
+      "max_points": 4.0,
+      "finding": "pricing-visible-server-side",
+      "remediation": "",
+      "evidence": {
+        "page": "https://www.aloyoga.com/cdn/shop/t/5426/assets/latinotype_-_arquitectathin-webfont.woff2?v=163815346538380974561786141997",
+        "match": "$5"
+      }
+    },
+    {
+      "check_id": "api_docs_surface",
+      "pillar": "legibility",
+      "status": "pass",
+      "points": 4.0,
+      "max_points": 4.0,
+      "finding": "api-docs-present",
+      "remediation": "",
+      "evidence": {
+        "url": "https://www.aloyoga.com/cdn/shop/t/5426/assets/template.page.preference-center.0ec46bdd.chunk.js?v=18600604325453340791786142060",
+        "status": 200
+      }
+    },
+    {
+      "check_id": "x402_probe",
+      "pillar": "transactability",
+      "status": "partial",
+      "points": 4.0,
+      "max_points": 8.0,
+      "finding": "commerce-protocol-live",
+      "remediation": "A commerce-protocol surface exists but there is no agent-native payment handshake; expose an HTTP-402 payment-requirements endpoint (x402/MPP) so agents can pay per-request.",
+      "evidence": {
+        "url": "https://www.aloyoga.com/.well-known/ucp",
+        "manifest": {
+          "protocol": "ucp",
+          "fields": [
+            "capabilities"
+          ],
+          "snippet": "{\"ucp\": {\"version\": \"2026-04-08\", \"supported_versions\": {\"2026-04-08\": \"https://alo-yoga.myshopify.com/.well-known/ucp/2026-04-08\", \"2026-01-23\": \"https://alo-yoga.myshopify.com/.well-known/ucp/2026-01-23\"}, \"services\": {\"dev.ucp.shopping\": [{\"version\": \"2026-04-08\", \"spec\": \"https://ucp.dev/2026-04"
+        },
+        "probed": [
+          {
+            "url": "https://www.aloyoga.com/api",
+            "status": 503,
+            "method": "GET"
+          },
+          {
+            "url": "https://www.aloyoga.com/api/v1",
+            "status": 404,
+            "method": "GET"
+          },
+          {
+            "url": "https://www.aloyoga.com/v1",
+            "status": 404,
+            "method": "GET"
+          }
+        ]
+      }
+    },
+    {
+      "check_id": "mcp_surface",
+      "pillar": "transactability",
+      "status": "partial",
+      "points": 1.0,
+      "max_points": 2.0,
+      "finding": "mcp-documented-only",
+      "remediation": "MCP is referenced in your docs but no MCP endpoint was discoverable; publish /.well-known/mcp.json or a live /mcp handshake.",
+      "evidence": {
+        "probed": [
+          {
+            "url": "https://www.aloyoga.com/.well-known/mcp.json",
+            "status": 404
+          },
+          {
+            "url": "https://www.aloyoga.com/mcp",
+            "status": 404
+          },
+          {
+            "url": "https://www.aloyoga.com/api/mcp",
+            "status": 404
+          }
+        ],
+        "mention": "e\"></script>\n<script>\n  window.Shopify = window.Shopify || {};\n  window.Shopify.MCP = window.Shopify.MCP || {};\n  window.Shopify.MCP.enabled = true;\n  window.Shopify.MCP.shop = \"alo-yoga.myshopify.com"
+      }
+    },
+    {
+      "check_id": "self_serve_payg",
+      "pillar": "transactability",
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6.0,
+      "finding": "self-serve-signup",
+      "remediation": "Self-serve exists but requires creating an account first; add a no-signup programmatic path (HTTP-402 payment challenges) so an agent can transact without provisioning an identity.",
+      "evidence": {
+        "x402_live": false,
+        "no_signup_phrases": [],
+        "self_serve_phrases": [
+          "sign up",
+          "subscribe"
+        ],
+        "stripe_checkout": false,
+        "cta_links": [
+          "https://www.aloyoga.com/cdn/shopifycloud/portable-wallets/latest/accelerated-checkout-backwards-compat.css"
+        ],
+        "sales_phrases": [],
+        "pricing_pages": [
+          "https://www.aloyoga.com/cdn/shop/t/5426/assets/latinotype_-_arquitectathin-webfont.woff2?v=163815346538380974561786141997",
+          "https://www.aloyoga.com/cdn/shop/t/5426/assets/latinotype_-_arquitecta-webfont.woff2?v=6997927752184387461786141993"
+        ]
+      }
+    },
+    {
+      "check_id": "https_hsts",
+      "pillar": "trust",
+      "status": "pass",
+      "points": 5.0,
+      "max_points": 5.0,
+      "finding": "https-hsts",
+      "remediation": "",
+      "evidence": {
+        "base_url": "https://www.aloyoga.com",
+        "strict_transport_security": "max-age=7889238"
+      }
+    },
+    {
+      "check_id": "org_identity",
+      "pillar": "trust",
+      "status": "pass",
+      "points": 4.0,
+      "max_points": 4.0,
+      "finding": "org-identity-present",
+      "remediation": "",
+      "evidence": {
+        "identity_pages": [
+          "https://www.aloyoga.com/pages/we-are-alo?traffic_type=internal_redirect",
+          "https://www.aloyoga.com/cdn/shop/t/5426/assets/template.page.cs-contact-form.9fdd32a6.chunk.js?v=11690644846809094671786142049",
+          "https://www.aloyoga.com/cdn/shop/t/5426/assets/template.page.cs-contact-form.601d3e46.chunk.css?v=119282883727722386161786142049"
+        ],
+        "company_names": [
+          "ALO, LLC"
+        ],
+        "contact_signals": [
+          "compliance@aloyoga.com"
+        ]
+      }
+    },
+    {
+      "check_id": "policies_present",
+      "pillar": "trust",
+      "status": "pass",
+      "points": 3.0,
+      "max_points": 3.0,
+      "finding": "policies-present",
+      "remediation": "",
+      "evidence": {
+        "found": {
+          "terms": "https://www.aloyoga.com/pages/terms-of-use",
+          "privacy": "https://www.aloyoga.com/pages/privacy-policy",
+          "refund": "https://www.aloyoga.com/\\/pages\\/returns-support"
+        },
+        "footer_scanned": 609
+      }
+    },
+    {
+      "check_id": "reputation_signals",
+      "pillar": "trust",
+      "status": "pass",
+      "points": 3.0,
+      "max_points": 3.0,
+      "finding": "reputation-signals-present",
+      "remediation": "",
+      "evidence": {
+        "source": "jsonld",
+        "snippet": "{\"@type\": \"SoftwareApplication\", \"name\": \"Alo Yoga\", \"operatingSystem\": \"iOS 11.1+\", \"installUrl\": \"https://apps.apple.com/app/alo-yoga/id1503741784\", \"applicationCategory\": \"ShoppingApplication\", \"aggregateRating\": {\"@type\": \"AggregateRating\", \"ratingValue\": \"4.9\", \"ratingCount\": \"6700\"}, \"offers\":"
+      }
+    }
+  ],
+  "pillar_scores": {
+    "access": 100.0,
+    "legibility": 100.0,
+    "transactability": 50.0,
+    "trust": 100.0,
+    "outcome": null
+  },
+  "overall_score": 81.2,
+  "grade": "B",
+  "caps_applied": [],
+  "trust_panel": [],
+  "behavioral_runs": [],
+  "panel_reliability": null,
+  "quotability": {
+    "quotable": true,
+    "tag": "static-deterministic",
+    "reason": "Static score \u2014 deterministic probes, no panel variance to reproduce.",
+    "verdict_stability": null
+  },
+  "battery_summary": null,
+  "scored": true
+}

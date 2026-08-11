@@ -22120,3 +22120,85 @@ re-scores 86.0), the own-tool-drift tripwire, the floor-only stall doom-loop. Ev
 ## Local verification — 20260811T054101Z
 
 tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260811T054101Z.json
+
+## Local cycle — 20260811T054101Z — METHOD (local, direct-to-main, score-neutral) — FIRST DUTY: reviewed + MERGED peer-gated PR #165 (aloyoga.com 81.2 B UCP weld) after a fresh $0 live re-score (live 81.2 == frozen 81.2) + teeth re-derivation → CLOSES the UCP-rail weld campaign at 5 points; THEN the own-tool-drift TRIPWIRE cadence re-run → GREEN, no seventh drift (all 4 canonical trials REACHED — the ~26d reputation gate softened further)
+
+**Fire-start state.** Infra health check GREEN: newest `runs/local/verify_20260811T054101Z.json` fresh (this
+hour's floor, well under the 6h bar), `tests_ok=true` (all 38 modules), `git pull` → already up to date,
+`main == origin/main == HEAD` (`f99052e`). Live canonical delta **+30.1** (org 46.1 F / com 76.2 C), frozen
+replay **+39.4**. `gh pr list --state open` → **PR #165 open** (authored LAST fire) → first-duty review owed.
+No floor-only stall (this hour's floor 054101Z landed ~1h after 044102Z — normal improvement cadence). No
+repair/self-heal needed.
+
+**First duty — peer-gated PR review + MERGE (PR #165, aloyoga.com UCP weld).** Adversarially reviewed on all
+four checklist legs from a fresh context:
+- **(1) Off the static scoring path.** Three-dot diff since merge-base `997a16f` = ONLY
+  `tests/test_calibration_anchor_agreement.py` (+93) + `runs/local/aloyoga_ucp_weld_confirm_20260811T044102Z.json`
+  (+53, evidence); `asrs/rubric/scoring/probes/fixtures/experiments` path check EMPTY.
+- **(2) Vendor-neutral.** Welded by TYPE (a mainstream athletic-apparel/lifestyle UCP merchant, a distinct
+  storefront TYPE from the four prior UCP points); the scorer is UNCHANGED and `_NON_ANCHOR_WELDED` is a
+  test-only calibration construct — no domain special-casing.
+- **(3) Teeth / load-bearing.** Weld suite **31/31** on the branch; the new
+  `test_aloyoga_fifteenth_non_anchor_is_welded_nonvacuously` asserts `divergences==[]` against committed sweeps
+  (`n_compared=1` via the 034627Z on-glob cadence run at 81.2, segment `ucp-live:apparel-retail`) AND a synthetic
+  81.2→92.0 drift fires EXACTLY one divergence caught vs the 81.2 floor — non-vacuous.
+- **(4) Volatile-rail live $0 re-score (inv #1).** `.venv/bin/python -m asrs.cli score aloyoga.com --json-only`
+  — static, **no** `--behavioral`/`--max-pay`/codex/zero-CLI (nothing signed) → `runs/aloyoga_com_20260811T054429.json`
+  (preserved as `runs/local/aloyoga_ucp_weld_review_rescore_20260811T054101Z.json`): **live 81.2 B == frozen
+  81.2 == EXPECTED 81.2**, all four non-null pillars byte-identical (access 100.0 / legibility 100.0 /
+  transactability 50.0 / trust 100.0), `caps_applied` empty, rubric 0.7; the tx rung is byte-identical
+  (`x402_probe` PARTIAL 4.0/8.0 commerce-protocol-live, `mcp_surface` 1.0/2.0, `self_serve_payg` 3.0/6.0) → UCP
+  manifest UP, no drift.
+**VERDICT SOUND → MERGED** (`gh pr merge 165 --merge`, `932c006`). Main fast-forwarded; weld **31/31** on main
+(15 non-anchor members), canonical replay **39/39**, full suite **38/38** post-merge. **The UCP-rail weld campaign
+is COMPLETE at 5 points** (coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9 / kith 70.3 / aloyoga 81.2 — the
+plane spanned on legibility 50.0→100.0 and trust 33.33→100.0 at the fixed tx-50.0 rung).
+
+**The ONE `[LOCAL]` item (METHOD, direct-to-main) — own-tool-drift TRIPWIRE cadence re-run.** METHOD was the
+starved track (last METHOD fire 20260809T094408Z; the intervening ~8 cycles were all TRUTH/COVERAGE
+thebotwire/aloyoga work) and the STANDING TRIPWIRE item is explicit that the drift-hunt must run at cadence so
+the 7th `_ENV_BLOCK_RE` vocab drift is caught the cycle it appears, not several cycles later as a silently-narrowed
+delta. Re-ran `experiments/codex_reachability.py` ($0 read-only via the REAL scorer path `shopper._run_one` →
+`_codex_cmd`, 5 codex trials [canonical pair ×2 + example.com control ×1], no `--max-pay`/zero-CLI/signing, inv #1)
+→ `runs/local/codex_reachability_20260811T055014Z/` (summary + 5 transcripts). **TRIPWIRE GREEN, NO seventh
+drift:**
+- **All 4 canonical trials REACHED** (`reached=True`, `is_env_blocked_current=False`) — codex's hosted browser
+  browsed BOTH driftflight.com and drift-flight.org successfully (HTTP 200 each), passing shopper checkpoints
+  (found_product / understood_pricing / …). The ~26-day-aged reputation gate has **softened further** this fire
+  (vs the 20260809 run's t1-env-blocked / t2-reached): codex now reaches on EVERY canonical trial, raising
+  domain-age trust caveats ("registered on 2026-07-16/20", "no independent web presence") while still finding
+  the offer + machine-payable path. **No own-tool refusal fired on the canonical domains → nothing for the regex
+  to mis-attribute → no leak is possible from a refusal.**
+- **Sole `leak_candidate` = example.com t1** (`reached=False`): the KNOWN coarse-filter false positive — an
+  honest IANA-placeholder non-observation ("example.com is an IANA-reserved documentation domain, not a
+  commercial storefront"; "No product or service, pricing, checkout, provisioning API, or payment API exists"),
+  `reputation_markers=[]`, ZERO browser-refusal phrasing → `env_blk=False` is CORRECT (a genuine "no storefront
+  here" SITE finding, not an own-tool refusal). NOT a drift.
+- **drift-flight.org t2 surfaced the deferred test-#8 family** — trust_event "The automated safety fetcher
+  rejected the domain as unsafe" (`reputation_markers=['registered on','safety','unsafe']`) — but the run REACHED
+  (`found_product`+`understood_pricing` True) with genuine SITE-capability findings (no reachable checkout;
+  OpenAPI exposes only model listing + authenticated image-gen, no billing/x402 endpoint; API keys require a
+  prior paid human subscription; overage rates undisclosed) → the SECONDARY safety-fetcher caveat CO-OCCURRED
+  with a real hosted-browser reach; it did NOT mask an own-tool refusal as a site FAIL, so `env_blk=False` is
+  correct. Stays the carefully-guarded deferred candidate (broadening the regex to catch "safety fetcher…unsafe"
+  would risk EXCUSING a site-side WAF "flagged unsafe" — attribution honesty cuts both ways — and this run reached
+  anyway).
+So the shipped v0.7(g) `_ENV_BLOCK_RE` is sufficient for every refusal observed this fire (there were none on the
+canonical domains), and attribution honesty holds BOTH directions: no genuine reach was env-blocked, no own-tool
+refusal was scored as site evidence. Scorer UNCHANGED (read-only diagnostic, no scoring-semantics change) →
+direct-to-main.
+
+**Canonical pair.** org 46.1 F / com 76.2 C / live delta +30.1; frozen replay +39.4 UNMOVED (the merged weld is
+a non-anchor, off the canonical PAIR).
+
+**Next hypothesis.** The reputation-gate softening (codex now REACHES both canonical domains on every trial) may
+finally UNBLOCK the long-deferred cross-model SHOPPER (checkpoint) agreement measurement on the WITH side — a
+candidate METHOD/TRUTH item for a future fire: run ONE full behavioral pair panel (`SHOPPER_TIMEOUT_S=300`, the
+nested first-N subsample `experiments/trial_count_N.py`) now that codex's browser reaches, for the first
+cross-model shopper-agreement datapoint (the TRUST-axis cross-model disagreement is already characterized;
+the SHOPPER-axis has been blocked on reachability). Forward COVERAGE frontiers unchanged: the `mcp_surface`
+1.0-vs-0.0 single-sub-check calibration axis, or re-run the 32-candidate ACP recon at cadence (still
+$0-un-pinnable). Standing WATCHES: thebotwire 404-dark recovery (retire the ledger entry if it re-scores 86.0),
+the own-tool-drift tripwire (re-run next drift-hunt; the 7th drift will come), the floor-only stall doom-loop.
+Evidence `runs/local/codex_reachability_20260811T055014Z/summary.json`; PR #165 (MERGED `932c006`); review
+re-score `runs/local/aloyoga_ucp_weld_review_rescore_20260811T054101Z.json`.

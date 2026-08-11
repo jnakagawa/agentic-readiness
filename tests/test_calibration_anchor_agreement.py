@@ -272,6 +272,28 @@ _ANCHORS = ("drift-flight.org", "driftflight.com")
 # pure-inference-API + agent-native-search-API + THREE live-x402 storefronts + FOUR live-UCP commerce-protocol
 # storefronts (coffee-merchant + apparel-retail + leather-goods + apparel-lifestyle, the last the high-legibility
 # corner of the UCP plane).
+# aloyoga.com (81.2) is welded here as the FIFTEENTH non-anchor welded member, and the FIFTH welded member on the LIVE
+# UCP commerce-protocol rail — the HIGH CORNER of the UCP plane (a mainstream athletic-apparel/lifestyle brand, a
+# distinct storefront TYPE from the coffee-merchant checkout.coffeecircle.com, the athletic-apparel brand gymshark.com,
+# the leather-goods merchant hardgraft.com, and the curated apparel/lifestyle merchant kith.com), claiming exactly
+# {metered_api, physical_good}. GET /.well-known/ucp answers a $0 read with a valid dev.ucp.* merchant manifest, so the
+# shipped scorer's x402_probe reads `commerce-protocol-live` PARTIAL 4.0/8.0 — the SAME UCP middle rung as the first four
+# UCP baselines, earning transactability 50.0. Its calibration value pins the HIGH CORNER of the UCP plane: the prior
+# four UCP points span legibility 50.0 -> 86.36 and trust 33.33 -> 60.0 but NONE maxes either axis; aloyoga holds the
+# IDENTICAL tx-50.0 rung yet sits at legibility 100.0 AND trust 100.0 — BOTH plane axes maxed at once — scoring 81.2, the
+# HIGHEST UCP overall of the five (81.2 > kith 70.3). So the UCP plane is now cornered: the rail fixes transactability at
+# its middle rung while a merchant can be simultaneously fully legible AND fully trusted, and the five UCP points span
+# legibility 50.0 -> 100.0 and trust 33.33 -> 100.0 at the fixed tx-50.0 rung. Prove the weld is LOAD-BEARING for it
+# specifically, not silently skipped in every sweep: it carries a committed v0.7 replay baseline, it is genuinely
+# COMPARED in >=1 committed sweep (the 20260811T034627Z cadence run scored it 81.2, segment ucp-live:apparel-retail),
+# and its live value agrees with the frozen floor. Because its rail is LIVE (volatile), its live<->frozen agreement was
+# independently re-confirmed by the authoring cycle (Local cycle 20260811T044102Z, static $0: live 81.2 == frozen 81.2,
+# all four non-null pillars byte-identical access 100.0 / legibility 100.0 / transactability 50.0 / trust 100.0, caps
+# empty) — a divergence here at review time would be REAL UCP-manifest drift, not a code regression. So the cross-path
+# weld now spans FIFTEEN structurally-distinct non-anchor witnesses: null-control + 2 retail + service-booking +
+# data-retrieval + pure-inference-API + agent-native-search-API + THREE live-x402 storefronts + FIVE live-UCP
+# commerce-protocol storefronts (coffee-merchant + apparel-retail + leather-goods + apparel-lifestyle + apparel-lifestyle
+# high-corner, the last both plane axes maxed at the fixed tx-50.0 rung).
 _NON_ANCHOR_WELDED = (
     "example.com",
     "books.toscrape.com",
@@ -287,6 +309,7 @@ _NON_ANCHOR_WELDED = (
     "gymshark.com",
     "hardgraft.com",
     "kith.com",
+    "aloyoga.com",
 )
 # Every population member welded across the offline-replay and live-sweep paths.
 _WELDED_MEMBERS = _ANCHORS + _NON_ANCHOR_WELDED
@@ -1557,6 +1580,75 @@ def test_kith_fourteenth_non_anchor_is_welded_nonvacuously() -> None:
     _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
 
 
+def test_aloyoga_fifteenth_non_anchor_is_welded_nonvacuously() -> None:
+    print("test_aloyoga_fifteenth_non_anchor_is_welded_nonvacuously")
+    # aloyoga.com is the FIFTEENTH non-anchor welded member (a mainstream athletic-apparel/lifestyle brand on the LIVE
+    # UCP commerce-protocol rail — {metered_api, physical_good}) and the FIFTH welded member on that rail, the HIGH
+    # CORNER of the UCP plane (a distinct storefront TYPE from the coffee-merchant checkout.coffeecircle.com, the
+    # athletic-apparel brand gymshark.com, the leather-goods merchant hardgraft.com, and the curated apparel/lifestyle
+    # merchant kith.com). GET /.well-known/ucp answers a $0 read with a valid dev.ucp.* merchant manifest, so the shipped
+    # scorer's x402_probe reads `commerce-protocol-live` PARTIAL 4.0/8.0 — the SAME UCP middle rung as the first four UCP
+    # baselines, earning transactability 50.0. Its calibration value pins the HIGH CORNER of the plane: the prior four
+    # UCP points span legibility 50.0 -> 86.36 and trust 33.33 -> 60.0 but NONE maxes either axis; aloyoga holds the
+    # IDENTICAL tx-50.0 rung yet sits at legibility 100.0 AND trust 100.0 — BOTH axes maxed at once — scoring 81.2, the
+    # HIGHEST UCP overall of the five (81.2 > kith 70.3), so the plane is now well-spanned on legibility (50.0 -> 100.0)
+    # AND trust (33.33 -> 100.0) at the fixed tx-50.0 rung. Prove the weld is LOAD-BEARING for it specifically, not
+    # silently skipped in every sweep: it carries a committed v0.7 replay baseline, it is genuinely COMPARED in >=1
+    # committed sweep (the 20260811T034627Z cadence run scored it 81.2, segment ucp-live:apparel-retail), and its live
+    # value agrees with the frozen floor. Because its rail is LIVE (volatile), its live<->frozen agreement was
+    # independently re-confirmed by the authoring cycle (Local cycle 20260811T044102Z, static $0: live 81.2 == frozen
+    # 81.2, all four non-null pillars byte-identical, caps empty, x402_probe partial 4.0/8.0 commerce-protocol-live) — a
+    # divergence here at review time would be REAL UCP-manifest drift, not a code regression.
+    _check(
+        "aloyoga.com" in _NON_ANCHOR_WELDED,
+        "aloyoga.com is a welded non-anchor member",
+    )
+    _check(
+        "aloyoga.com" in replay.EXPECTED
+        and str(replay.EXPECTED["aloyoga.com"]["rubric_version"]) == _BASELINE_VERSION,
+        "aloyoga.com carries a committed v0.7 replay baseline (the weld's source of truth)",
+    )
+    sweeps = _committed_sweeps()
+    divergences, n_compared, _, _ = _divergences(
+        sweeps, replay.EXPECTED, _BASELINE_VERSION, members=("aloyoga.com",)
+    )
+    _check(
+        divergences == [],
+        f"aloyoga.com's live sweeps agree with its 81.2 replay floor (got {divergences})",
+    )
+    _check(
+        n_compared >= 1,
+        f"aloyoga.com is genuinely compared, not silently skipped (got {n_compared})",
+    )
+    # Teeth: a live re-capture that drifted aloyoga.com 81.2 -> 92.0 (e.g. the UCP manifest upgrading
+    # commerce-protocol-live PARTIAL -> a full x402 handshake, lifting transactability off the tx-50 rung) MUST trip the
+    # weld, exactly as a drifted anchor or any prior non-anchor member does — so welding this fifteenth member is not
+    # toothless.
+    drifted = {
+        "rubric_version": "0.7",
+        "rows": [
+            {
+                "domain": "aloyoga.com",
+                "segment": "ucp-live:apparel-retail",
+                "scored": True,
+                "overall": 92.0,
+            }
+        ],
+    }
+    dvg, n_cmp, _, _ = _divergences(
+        [("synthetic-aloyoga-drift", drifted)], replay.EXPECTED, _BASELINE_VERSION,
+        members=("aloyoga.com",),
+    )
+    _check(len(dvg) == 1, f"exactly one divergence caught (got {dvg})")
+    _check(
+        dvg[0][1] == "aloyoga.com"
+        and abs(dvg[0][2] - 92.0) < 1e-9
+        and abs(dvg[0][3] - 81.2) < 1e-9,
+        f"the drifted aloyoga.com is caught vs its 81.2 floor (got {dvg[0]})",
+    )
+    _check(n_cmp == 1, f"the one member was compared (got {n_cmp})")
+
+
 def test_www_bare_domain_key_is_normalized() -> None:
     print("test_www_bare_domain_key_is_normalized")
     # _member_row matches a welded member to its sweep row modulo a single leading 'www.'
@@ -1895,6 +1987,7 @@ def main() -> int:
         test_gymshark_twelfth_non_anchor_is_welded_nonvacuously,
         test_hardgraft_thirteenth_non_anchor_is_welded_nonvacuously,
         test_kith_fourteenth_non_anchor_is_welded_nonvacuously,
+        test_aloyoga_fifteenth_non_anchor_is_welded_nonvacuously,
         test_www_bare_domain_key_is_normalized,
         test_off_version_sweep_is_not_compared,
         test_live_sweep_pillars_agree_with_replay_baseline,

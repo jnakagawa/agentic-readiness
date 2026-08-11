@@ -22202,3 +22202,7 @@ $0-un-pinnable). Standing WATCHES: thebotwire 404-dark recovery (retire the ledg
 the own-tool-drift tripwire (re-run next drift-hunt; the 7th drift will come), the floor-only stall doom-loop.
 Evidence `runs/local/codex_reachability_20260811T055014Z/summary.json`; PR #165 (MERGED `932c006`); review
 re-score `runs/local/aloyoga_ucp_weld_review_rescore_20260811T054101Z.json`.
+
+## Local verification — 20260811T064101Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260811T064101Z.json

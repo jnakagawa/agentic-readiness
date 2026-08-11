@@ -22054,3 +22054,7 @@ committed (review + self-merge owed the cycle after). Keep WATCHING thebotwire f
 the own-tool-drift tripwire cadence (`experiments/codex_reachability.py`) so the 7th `_ENV_BLOCK_RE` drift
 is caught the cycle it appears. Evidence `runs/local/calibration_sweep_20260811T034627Z.json`; PR #164
 (MERGED `9b33da1`).
+
+## Local verification — 20260811T044102Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260811T044102Z.json

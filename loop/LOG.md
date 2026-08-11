@@ -21990,3 +21990,7 @@ driftflight.com `/extend` for a 402 recovery (restores the anchor handshake + th
 `runs/local/thebotwire_persistence_confirm_20260811T024555Z.json` (obs 6) / `..._20260811T021733Z.json` (obs 5) /
 `..._20260810T234500Z.json` (obs 4) / `..._20260810T214553Z.json` (obs 3) / `..._20260810T204543Z.json` (obs 2) /
 `runs/local/aloyoga_sweepadd_thebotwire_drift_20260810T194427Z.json` (obs 1). PR #164.
+
+## Local verification — 20260811T034105Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260811T034105Z.json

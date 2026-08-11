@@ -3,6 +3,68 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Local cycle — 20260811T145327Z — COVERAGE (LOCAL, direct-to-main, score-neutral) — ACP/commerce-protocol well-known recon RE-RUN, broadened 32→44 with a FRESH 2026 live-announcement cohort: ACP STILL 0/44 both paths (lead stays CLOSED, scorer UNCHANGED); UCP positive control GREW 9→13 (4 fresh live surfaces: elfcosmetics + reebok [Google UCP pilots] + sezane + scheels [Adyen Agentic partners])
+
+**Fire-start state / FIRST DUTY.** Infra health GREEN: newest `runs/local/verify_20260811T144101Z.json`
+(ts 14:41Z, ~2 min old at fire start 14:43Z, well under the 6h floor), `tests_ok=true` (all 38 modules),
+git clean + `main == origin/main == HEAD` (`0e8f9a8`, the subsequent verify heartbeat). Live canonical
+delta **+30.1** (org 46.1 F / com 76.2 C) vs the pinned-fixture baseline **+39.4** (DIVERGED, reference
+SOFTENED — the standing documented live drift, not a fixture problem). `gh pr list --state open` EMPTY →
+**no peer-gated PR to review** (first duty discharged). LOG head == STATE top (both cycle 135051Z) and
+HEAD is the verify heartbeat above it → bookkeeping consistent. No self-heal needed.
+
+**Track choice — anti-starvation.** Recent order (newest first): READOUT (135051Z, just ran) → METHOD
+(125733Z) → TRUTH (114801Z) → COVERAGE (094457Z, the spanx weld PR #166 — the campaign it served is now
+COMPLETE). **COVERAGE was the most starved forward track** (its last distinct new item was ~4 cycles /
+~5h ago and its campaign closed), so this fire is COVERAGE (playbook step 2: "rotate so none starves").
+
+**THE ONE [LOCAL] ITEM (COVERAGE, direct-to-main) — ACP well-known recon re-run, freshly broadened.** The
+standing BACKLOG cadence hunt for a genuinely-NEW rail TYPE (frontier item (c): "keep re-running the
+32-candidate recon at cadence") was last run ~2 days ago (20260809T024720Z, 0/32). To make this a genuine
+forward move and not a rote null, first researched CURRENT (2026) live agentic-commerce announcements
+(WebSearch + WebFetch) and sourced a FRESH cohort of named-live merchant candidates, added to
+`experiments/acp_wellknown_recon.py` CANDIDATES (32→44):
+- **Google UCP checkout pilot retailers** (named live on Search + the Gemini app): petco / elfcosmetics /
+  samsonite / lowes / michaels / poshmark / reebok — a big-retail UCP cohort never before probed.
+- **Fresh ACP-announced merchants** (Instant-Checkout / ChatGPT-commerce): vuoriclothing / fanatics / quince.
+- **Adyen Agentic launch partners**: sezane / scheels.
+**AP2 deliberately NOT probed** — the research confirmed AP2 (the 3rd stack rail) defines NO merchant-side
+well-known discovery path (payment-authorization only); probing a non-existent path would be 404 noise, not
+signal (attribution honesty applied to reconnaissance). Ran the recon $0 read-only (byte-faithful via the
+scorer's own `_parse_commerce_manifest`; no payment / POST / --behavioral / codex / zero-CLI, inv #1 by
+construction) → `runs/local/acp_wellknown_recon_20260811T144847Z.json` (44 candidates, 0 exceptions).
+
+**FINDING.**
+- **ACP: STILL 0/44 live surfaces** at BOTH paths (`/.well-known/agentic-commerce` = 0, ecosystem
+  `/.well-known/acp/manifest.json` = 0) — including the ACP co-authors (stripe/openai/agenticcommerce.dev)
+  AND every fresh ACP-announced merchant (etsy/instacart/vuori/fanatics/quince). → the re-pathing lead
+  STAYS CLOSED, scorer UNCHANGED, now re-confirmed on a broader + fresher set (inv #3 unsatisfiable: <2
+  live surfaces to validate against). DO NOT re-open the re-pathing without ≥2 live ACP surfaces.
+- **UCP positive control GREW 9→13** — FOUR genuinely-new live UCP surfaces caught among the fresh cohort:
+  **elfcosmetics.com** + **reebok.com** (Google UCP pilots) and **sezane.com** + **scheels.com** (Adyen
+  Agentic partners), each serving a valid `dev.ucp.*` manifest (`UCP=ucp:capabilities`) at
+  `/.well-known/ucp`. The recon machinery is sound (the ACP null is REAL scarcity, not a broken probe), and
+  these are 4 FRESH UCP witness LEADS for future pins.
+- **Honest datapoint:** 5 of 7 named Google-UCP-pilot retailers (petco/samsonite/lowes/michaels/poshmark)
+  do NOT self-host UCP at `/.well-known/ucp` → "Google-pilot" ≠ "self-hosts the well-known manifest" (they
+  likely route through Google's infra / gate / region-lock the manifest). walmart/target/nike/sephora/
+  lululemon/chewy/doordash/expedia still null both paths (consistent with prior runs).
+
+**Ship / regression.** Diff = ONLY `experiments/acp_wellknown_recon.py` (+21, the fresh-candidate block)
++ the evidence JSON on-glob (`git add -f`, the cadence pattern) — grep over
+`asrs/scoring|asrs/rubric|asrs/probes|fixtures/|asrs/cli.py|tests/` EMPTY → off-scoring-SEMANTICS, the
+recon is a research probe that never touches the scorer. Full suite **38/38**; frozen +39.4 UNMOVED /
+live +30.1 (`verify_20260811T144101Z`). Direct-to-main (same class as every prior recon re-run). NO Slack
+DM (score-neutral COVERAGE recon, no sensitive-class change; not the daily-digest window).
+
+**NEXT hypothesis.** (a) The 4 fresh live UCP surfaces (elfcosmetics/reebok/sezane/scheels) are pin LEADS
+— run the `ucp_metered_api_vetting`/transactability recon on them to find a DISTINCT-point honest witness
+(esp. any that clears a new tx rung or occupies an unfilled legibility×trust cell); esp. a SECOND tx-43.75
+witness to make spanx's lower mode a range not a point. (b) Keep re-running this recon at cadence with
+fresh scouts so any merchant that flips to a live ACP surface is caught the cycle it appears. (c) METHOD
+own-tool-drift tripwire is due again in a couple cycles. Evidence
+`runs/local/acp_wellknown_recon_20260811T144847Z.json`; BACKLOG P2 frontier (c) + the new UCP-leads note.
+
 ## Local cycle — 20260811T135051Z — READOUT (LOCAL, direct-to-main, score-neutral) — canonical-history delta-trend sparkline: a FLAT (deterministic) window now renders at a neutral MID height instead of bottom-pinned ▁▁▁ (which mis-read as "the delta collapsed to its minimum")
 
 **Fire-start state / FIRST DUTY.** Infra health GREEN: newest `runs/local/verify_20260811T134105Z.json`

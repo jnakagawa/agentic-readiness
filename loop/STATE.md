@@ -1,6 +1,44 @@
 # Loop state
 
-- Cycle counter: 343
+- Cycle counter: 344
+- **✅ NO PEER-GATED PR OPEN (first duty = infra health GREEN + bookkeeping consistent); THEN the ONE [LOCAL]
+  item = a COVERAGE ACP/commerce well-known recon RE-RUN, freshly broadened 32→44 with a 2026 live-announcement
+  cohort → ACP STILL 0/44 both paths (lead stays CLOSED, scorer UNCHANGED); UCP positive control GREW 9→13 (4
+  FRESH live surfaces: elfcosmetics + reebok [Google UCP pilots] + sezane + scheels [Adyen Agentic partners]);
+  bench GREEN 38/38 (Local 20260811T145327Z, COVERAGE — read-only research probe, scorer UNCHANGED →
+  direct-to-main).** FIRST DUTY: infra health GREEN — main == origin/main == HEAD (clean `0e8f9a8`, the
+  subsequent verify heartbeat), newest verify `verify_20260811T144101Z.json` (ts 14:41Z, ~2 min old at fire
+  start 14:43Z, < 6h bar), tests_ok=True (38/38), live delta +30.1 (org 46.1 / com 76.2) vs frozen +39.4; `gh
+  pr list --state open` EMPTY → no review owed (spanx PR #166 post-merge review discharged; LOG head 135051Z ==
+  STATE top == git HEAD parent → bookkeeping consistent). No self-heal needed. **TRACK CHOICE (anti-starvation):**
+  recent order newest-first READOUT (135051Z, just ran) → METHOD (125733Z) → TRUTH (114801Z) → COVERAGE
+  (094457Z, the spanx weld campaign now COMPLETE) → COVERAGE was the most starved forward track, so this fire is
+  COVERAGE (playbook step 2 "rotate so none starves"). **THE ONE [LOCAL] ITEM (COVERAGE, direct-to-main):** the
+  standing new-rail cadence hunt (BACKLOG P2 frontier (c), last run ~2d ago 0/32). To make it a genuine forward
+  move not a rote null, researched CURRENT (2026) live agentic-commerce announcements (WebSearch/WebFetch) and
+  added a FRESH named-live cohort to `experiments/acp_wellknown_recon.py` CANDIDATES (32→44): 7 Google UCP
+  checkout pilots (petco/elfcosmetics/samsonite/lowes/michaels/poshmark/reebok), 3 fresh ACP merchants
+  (vuoriclothing/fanatics/quince), 2 Adyen Agentic partners (sezane/scheels). **AP2 deliberately NOT probed** —
+  research confirmed it defines NO merchant-side well-known path (payment-auth only), so probing it = 404 noise
+  not signal (attribution honesty applied to recon). Ran $0 read-only via the scorer's own
+  `_parse_commerce_manifest` (no payment/POST/--behavioral/codex/zero-CLI, inv #1) →
+  `runs/local/acp_wellknown_recon_20260811T144847Z.json` (44 candidates, 0 exceptions). **FINDING:** ACP STILL
+  **0/44** live surfaces at BOTH paths — incl. the co-authors (stripe/openai/agenticcommerce.dev) AND every
+  fresh ACP merchant (etsy/instacart/vuori/fanatics/quince) → re-pathing lead STAYS CLOSED, scorer UNCHANGED,
+  inv #3 unsatisfiable (<2 live surfaces). **UCP positive control GREW 9→13** — 4 genuinely-new live surfaces
+  caught: **elfcosmetics.com + reebok.com** (Google pilots) + **sezane.com + scheels.com** (Adyen partners),
+  each a valid `dev.ucp.*` manifest at `/.well-known/ucp` → the recon machinery is SOUND (ACP null is real
+  scarcity) AND 4 FRESH UCP witness LEADS surfaced. HONEST datapoint: 5/7 named Google pilots
+  (petco/samsonite/lowes/michaels/poshmark) do NOT self-host UCP at that path → "Google-pilot" ≠ "self-hosts the
+  well-known manifest". Off-scoring-SEMANTICS EMPTY (diff = ONLY `experiments/acp_wellknown_recon.py` +21 + the
+  evidence JSON on-glob `git add -f`; grep over `asrs/scoring|rubric|probes|fixtures/|cli.py|tests/` EMPTY →
+  recon never touches the scorer); full suite 38/38; frozen +39.4 UNMOVED / live +30.1
+  (`verify_20260811T144101Z`). NO Slack DM (score-neutral COVERAGE recon, no sensitive-class change). **NEXT:**
+  (a) vet the 4 fresh live UCP surfaces (elfcosmetics/reebok/sezane/scheels) as pin LEADS — hunt a DISTINCT-point
+  honest witness (esp. a SECOND tx-43.75 witness to make spanx's lower mode a range not a point); (b) keep
+  re-running this recon at cadence with fresh scouts so any ACP flip is caught the cycle it appears; (c) the
+  METHOD own-tool-drift tripwire is due again in a couple cycles. Evidence: LOG Local cycle 20260811T145327Z +
+  BACKLOG P2 frontier (c) + the new UCP-leads note.
 - **✅ NO PEER-GATED PR OPEN (first duty = infra health GREEN + bookkeeping consistent); THEN the ONE [LOCAL]
   item = a READOUT flat-sparkline HONESTY fix in `asrs/canonical_history._spark` → a deterministic-flat
   delta-trend window now renders at a neutral MID height (`▅▅▅…`) instead of bottom-pinned (`▁▁▁…`); bench
@@ -145,38 +183,15 @@
   **NEXT:** the FIRST DUTY of the next cycle is to adversarially review + self-merge PR #166 (run the live re-score
   again — a divergence = REAL UCP-manifest drift). Once merged, the UCP-rail weld campaign spans SIX points over BOTH
   tx modes (tx-50.0 ×5 + tx-43.75 ×1). Evidence + PR #166; see LOG Local cycle 20260811T094457Z + BACKLOG P2 frontier (b-ii).
-- **✅ NO PEER-GATED PR OPEN (first duty = infra health GREEN only); THEN the ONE [LOCAL] item = spanx.com SWEEP-ADD
-  — the (b-i) weld prerequisite for the 18th baseline DISCHARGED: added `("spanx.com", "ucp-live:apparel-lowtx")` to
-  `experiments/calibration_sweep.py` POPULATION (28→29) + ran a $0 static cadence sweep; spanx.com **60.0 D
-  BYTE-ON-FLOOR** (4 pillars identical to the frozen floor, caps empty, honest `['physical_good']`, `added_members`);
-  bench GREEN 38/38 (Local 20260811T090431Z, COVERAGE — direct-to-main, score-neutral).** FIRST DUTY: infra health
-  GREEN — main == origin/main (clean `c767b7b`), newest verify `verify_20260811T084105Z.json` ~2 min old (< 6h bar),
-  tests_ok=True (38/38), live delta +30.1 (org 46.1 / com 76.2); `gh pr list --state open` EMPTY → no review owed
-  (the UCP-rail weld campaign closed at PR #165 `932c006`; spanx PIN landed last fire `28ec476`). No repair/self-heal
-  (working tree clean at fire start → authored the POPULATION edit fresh, no fabricated prior-ts LOG). **THE ONE
-  [LOCAL] ITEM (COVERAGE, direct-to-main) — the P2 UCP-plane frontier step (b-i):** spanx.com (PINNED last fire as
-  the FIRST tx-43.75-mode UCP baseline, the `mcp_surface` single-sub-check isolation vs gymshark) was ABSENT from
-  every sweep → its weld into `_NON_ANCHOR_WELDED` needs a genuinely-compared sweep presence FIRST (the
-  gymshark/hardgraft/kith/aloyoga recipe). Ran `python -m experiments.calibration_sweep`
-  (`_run_probes`→`scoring.score`, NO `--behavioral`/`--max-pay`/codex/zero-CLI/signing → inv #1 BY CONSTRUCTION) →
-  `runs/local/calibration_sweep_20260811T084450Z.json` (29 total, 28 scored, rei.com not-scorable inv #4, 0 errors).
-  **spanx.com 60.0 D byte-on-floor** (access 100.0 / legibility 54.54545454545455 / tx 43.75 / trust 60.0, caps
-  empty, `['physical_good']`), listed under `added_members` (first live-sweep presence). **Drift vs the prior
-  on-glob baseline `calibration_sweep_20260811T034627Z.json`: 2/27 moved, max |Δ| 4.6** — BOTH movers NON-pinned:
-  `Δ -4.6 wikipedia.org 45.7→41.1` (the KNOWN bistable 41.1↔45.7 non-storefront control oscillation, inv #4) +
-  `Δ -2.5 openai.com 64.5→62.0` (honest live drift on a general api-service spread member with NO committed floor);
-  every OTHER of the 27 compared members **delta 0.0** — both anchors, all SIX UCP rails (coffeecircle 57.4 /
-  gymshark 62.4 / hardgraft 66.9 / kith 70.3 / aloyoga 81.2 + spanx 60.0 new), all THREE x402 rails (thebotwire 25.0
-  ledgered / oracle 64.4 / x402deploy 73.9), every frozen baseline, controls; `status_changed`/`removed_members`
-  empty. **WATCH re-observed** (thebotwire.com 404-dark, PR #164): re-scored **25.0** again (byte-identical to the
-  merged ledger, access 100.0/legibility 0.0/tx 0.0/trust 33.33), NO recovery to 86.0 → ledger entry STAYS (~8th
-  consecutive dark observation). Off-scoring-SEMANTICS EMPTY (tracked diff = ONLY `experiments/calibration_sweep.py`
-  +29; asrs/rubric/scoring/probes/fixtures/tests UNCHANGED, grep-verified); full suite 38/38 WITH the sweep on-glob
-  (weld tolerates ledgered thebotwire + spanx non-welded on-floor witness); frozen +39.4 UNMOVED (spanx off the pair)
-  / live +30.1 (`verify_20260811T084105Z`). **NEXT:** the forward move is (b-ii) — a PEER-GATED weld of spanx.com
-  into `_NON_ANCHOR_WELDED` (16th non-anchor / FIRST tx-43.75-mode member; n_compared=1 at 60.0; teeth = synthetic
-  drift caught). Evidence `runs/local/calibration_sweep_20260811T084450Z.json`; see LOG Local cycle 20260811T090431Z
-  + BACKLOG P2 frontier (b).
+<!-- The 20260811T090431Z banner (COVERAGE, direct-to-main — the ONE [LOCAL] item = the spanx.com SWEEP-ADD, the
+     (b-i) weld prerequisite: added `("spanx.com","ucp-live:apparel-lowtx")` to experiments/calibration_sweep.py
+     POPULATION 28→29 + a $0 static cadence sweep calibration_sweep_20260811T084450Z.json; spanx 60.0 D byte-on-floor
+     in added_members, drift 2/27 both NON-pinned [wikipedia bistable + openai spread], every pinned member delta 0.0)
+     is pruned this fire (Local cycle 20260811T145327Z) per the ~5-cycle rolling-log policy to defend STATE against
+     re-accretion (the 27h doom-loop lesson) — preserved verbatim in loop/LOG.md (## Local cycle — 20260811T090431Z)
+     + git history. The spanx weld it unlocked is long-MERGED (PR #166 `0d4bdb4`, post-merge-reviewed SOUND); the
+     UCP-rail weld campaign stands COMPLETE at 6 points. STATE is mutable working state, NOT an append-only
+     LOG/evidence file, so this compaction is not an invariant-#5 rewrite. -->
 <!-- The 20260811T080116Z banner (COVERAGE — PINNED spanx.com 60.0 D as the 18th real-domain baseline / 6th UCP-rail
      point, the FIRST at the LOWER mode of the bimodal UCP tx axis [tx 43.75], a controlled single-sub-check `mcp_surface`
      isolation vs pinned gymshark; guard test_ucp_retail_mcp_isolation_storefront_replays_60_0 + EXPECTED + _REPLAY_CLEAN

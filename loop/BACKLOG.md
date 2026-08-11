@@ -371,10 +371,34 @@ new-rail item below. -->
   `mcp_surface` 1.0-vs-0.0 split is a load-bearing welded calibration axis. This fire's cadence sweep
   (`calibration_sweep_20260811T114905Z.json`) re-confirmed spanx 60.0 byte-on-floor as a welded member (committed
   on-glob → n_compared 1→2). NO open PRs remain.
-  (c) a genuinely-NEW rail TYPE (ACP/MPP — still $0-un-pinnable; keep re-running the
-  32-candidate recon at cadence). `joinhexagon.com` is a DOCUMENTED live-UCP lead but needs a precision-guard unblock
-  FIRST (4 llms-full.txt FP families, inv #4) — prefer clean merchant witnesses over infra profiles. WATCH
-  driftflight.com /extend for a 402 recovery (restores the anchor's live handshake + the +39.4 live delta).
+  (c) a genuinely-NEW rail TYPE (ACP/MPP — still $0-un-pinnable; keep re-running the recon at cadence with FRESH
+  scouts). **CADENCE RE-RUN Local cycle 20260811T145327Z** — the recon was broadened 32→44 with a FRESH 2026
+  live-announcement cohort (7 Google UCP checkout pilots petco/elfcosmetics/samsonite/lowes/michaels/poshmark/reebok
+  + 3 fresh ACP merchants vuoriclothing/fanatics/quince + 2 Adyen Agentic partners sezane/scheels), so each re-run
+  hunts a NEW surface, not a rote repeat. Result `runs/local/acp_wellknown_recon_20260811T144847Z.json` (0
+  exceptions): **ACP STILL 0/44 at BOTH paths** — incl. the co-authors (stripe/openai/agenticcommerce.dev) AND every
+  fresh ACP merchant (etsy/instacart/vuori/fanatics/quince) → lead STAYS CLOSED, scorer UNCHANGED, re-confirmed on a
+  broader/fresher set (inv #3 unsatisfiable: <2 live surfaces). DO NOT re-open the re-pathing without ≥2 live ACP
+  surfaces. **AP2 (the 3rd stack rail) deliberately NOT probed** — research (2026 WebSearch/WebFetch) confirmed it
+  defines NO merchant-side well-known discovery path (payment-authorization only); probing a non-existent path = 404
+  noise, not signal (attribution honesty applied to recon). **UCP positive control GREW 9→13** — 4 genuinely-new
+  live surfaces caught: **elfcosmetics.com + reebok.com** (Google pilots) + **sezane.com + scheels.com** (Adyen
+  partners), each a valid `dev.ucp.*` manifest at `/.well-known/ucp` → 4 FRESH UCP witness LEADS (see the new
+  UCP-leads note below). HONEST datapoint: 5/7 named Google pilots (petco/samsonite/lowes/michaels/poshmark) do NOT
+  self-host UCP at that path → "Google-pilot" ≠ "self-hosts the well-known manifest". `joinhexagon.com` is a
+  DOCUMENTED live-UCP lead but needs a precision-guard unblock FIRST (4 llms-full.txt FP families, inv #4) — prefer
+  clean merchant witnesses over infra profiles. WATCH driftflight.com /extend for a 402 recovery (restores the
+  anchor's live handshake + the +39.4 live delta).
+
+- **[P2 — COVERAGE, LOCAL, candidate] Vet the 4 FRESH live UCP surfaces as pin LEADS** (found Local cycle
+  20260811T145327Z, `runs/local/acp_wellknown_recon_20260811T144847Z.json`): **elfcosmetics.com** + **reebok.com**
+  (Google UCP checkout pilots) and **sezane.com** + **scheels.com** (Adyen Agentic partners) each serve a valid
+  `dev.ucp.*` manifest at `/.well-known/ucp`. Run `experiments/ucp_transactability_recon.py` + `ucp_metered_api_vetting.py`
+  on them ($0 static, inv #1 by construction) to (i) confirm each scores byte-stable + honest (inv #4 — no topic-word
+  over-claim, mind the chubbies `tiered-volume` FP family), and (ii) find a DISTINCT calibration point — esp. a **SECOND
+  tx-43.75 witness** (to make spanx's lower mode a range not a point) or an unfilled legibility×trust cell / new tx rung.
+  A clean distinct witness → PIN (direct-to-main: fixture + EXPECTED + guard + _POPULATION, the aloyoga/spanx recipe) →
+  sweep-add → PEER-GATED weld. Prefer a controlled single-sub-check isolation (the spanx-vs-gymshark shape) where possible.
 
 <!-- DONE Local cycle 20260810T174412Z: the [P2 — COVERAGE, LOCAL] PIN of aloyoga.com 81.2 B (the SEVENTEENTH frozen-replay
 baseline / FIFTH UCP-rail point / HIGH CORNER of the UCP plane) is CLOSED. Captured fixtures/canonical/aloyoga.com.json via

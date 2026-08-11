@@ -93,6 +93,28 @@ CANDIDATES = [
     # x402 infra long-shots — do they ALSO publish a commerce well-known manifest?
     ("coinbase.com", "x402-infra-longshot"),
     ("x402.org", "x402-infra-longshot"),
+    # --- Cadence broadening (Local cycle 20260811T144xxxZ): a FRESH cohort sourced
+    # from CURRENT (2026) live agentic-commerce announcements, so this re-run hunts
+    # NEW surfaces instead of repeating the 32-domain null. Two named-live cohorts:
+    # Google's UCP checkout pilot retailers (live on Search/Gemini) and fresh ACP /
+    # Adyen-Agentic announced merchants. AP2 (the 3rd stack rail) deliberately NOT
+    # probed: it defines NO merchant-side well-known discovery path (payment-auth
+    # only) — probing a non-existent path would be 404 noise, not signal. ---
+    # Google UCP checkout pilot retailers (named live on Search + the Gemini app).
+    ("petco.com", "ucp-google-pilot"),
+    ("elfcosmetics.com", "ucp-google-pilot"),
+    ("samsonite.com", "ucp-google-pilot"),
+    ("lowes.com", "ucp-google-pilot"),
+    ("michaels.com", "ucp-google-pilot"),
+    ("poshmark.com", "ucp-google-pilot"),
+    ("reebok.com", "ucp-google-pilot"),
+    # Fresh ACP-announced merchants (Instant-Checkout / ChatGPT-commerce cohort).
+    ("vuoriclothing.com", "acp-announced-merchant"),
+    ("fanatics.com", "acp-announced-merchant"),
+    ("quince.com", "acp-announced-merchant"),
+    # Adyen Agentic launch partners — do they self-publish a commerce well-known?
+    ("sezane.com", "adyen-agentic-partner"),
+    ("scheels.com", "adyen-agentic-partner"),
 ]
 
 

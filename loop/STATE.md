@@ -1,6 +1,41 @@
 # Loop state
 
-- Cycle counter: 342
+- Cycle counter: 343
+- **✅ NO PEER-GATED PR OPEN (first duty = infra health GREEN + bookkeeping consistent); THEN the ONE [LOCAL]
+  item = a READOUT flat-sparkline HONESTY fix in `asrs/canonical_history._spark` → a deterministic-flat
+  delta-trend window now renders at a neutral MID height (`▅▅▅…`) instead of bottom-pinned (`▁▁▁…`); bench
+  GREEN 38/38 (Local 20260811T135051Z, READOUT — pure presentation, off the scoring path → direct-to-main).**
+  FIRST DUTY: infra health GREEN — main == origin/main == HEAD (clean `e63e5b5`, the subsequent verify
+  heartbeat), newest verify `verify_20260811T134105Z.json` (ts 13:41Z, ~2 min old at fire start 13:43Z, < 6h
+  bar), tests_ok=True (38/38), live delta +30.1 (org 46.1 / com 76.2) vs frozen +39.4; `gh pr list --state
+  open` EMPTY → no review owed (PR #166 post-merge review discharged `9db0752`; LOG head 125733Z == STATE top
+  == git HEAD parent → bookkeeping consistent). No self-heal needed. **TRACK CHOICE (anti-starvation):** the
+  last ~14 local cycles were ALL METHOD/COVERAGE/TRUTH (tripwire / UCP welds+pins / cadence sweeps) — READOUT
+  had gone 14+ cycles UNSERVED while the north star names "readout clarity" one of the three legs a cycle must
+  move; METHOD ran the prior fire (125733Z), COVERAGE ×3 before that, TRUTH 114801Z → READOUT was the sole
+  starved track (playbook step 2 "rotate so none starves"). **THE ONE [LOCAL] ITEM (READOUT, direct-to-main):**
+  rendered the real `asrs canonical-history` terminal readout on the live committed 201-re-score series (the
+  "[LOCAL] Eyeball the canonical-history card" backlog family) — it reads richly on real data EXCEPT `delta
+  trend (last 24): ▁▁▁…▁`. Root cause in `_spark`: a perfectly-flat window (`hi-lo < 1e-9`) returned
+  `_SPARK[0]*len` = the LOWEST block; but the live +30.1 at-rest delta is DETERMINISTIC (noise floor σ=0.00 →
+  the last-24 deltas byte-identical every fire) so the trend is flat *every* fire, and bottom-pinning it
+  falsely reads as "the delta collapsed to its minimum". A sparkline encodes SHAPE not absolute level (level
+  lives in the `latest`/`baseline` lines) → the honest "no trend" rendering is a level-agnostic NEUTRAL mid.
+  FIX: flat → `_SPARK[len(_SPARK)//2]` (▅); live readout now prints `delta trend (last 24): ▅▅▅…▅`. **TEETH**
+  (the sparkline was previously UNTESTED — zero prior `tests/` references): added
+  `test_spark_flat_series_reads_as_mid_not_bottom` (registered, `test_runner_registration` green) — flat→all-mid
+  (bottom absent); LEVEL-AGNOSTIC (flat-low `[9,9]` == flat-high `[80,80]`); TEETH a rising `[0,25,50,75,100]`
+  still spans min→▁/max→█ NOT collapsed; empty→"". `test_canonical_history` 71→72. Off-scoring-SEMANTICS EMPTY
+  (diff = ONLY `asrs/canonical_history.py` +8/-1 + its test +27; grep over
+  `asrs/scoring|asrs/rubric|asrs/probes|fixtures/|asrs/cli.py` EMPTY; `canonical_history` imports no scoring code
+  → delta CANNOT move by construction); full suite 38/38; frozen +39.4 UNMOVED / live +30.1
+  (`verify_20260811T134105Z`). NO Slack DM (score-neutral READOUT, no sensitive-class change). **NEXT:** (a) a
+  SEPARATE larger readout gap logged as a BACKLOG candidate — `_spark`'s *varying* branch AMPLIFIES a near-flat
+  window (span 0.05 → full-height swings, min/max-normalized); not manifesting now (series exactly flat), needs
+  a magnitude-aware floor + a real near-flat artifact; (b) the STATE-named frontiers stand — a SECOND tx-43.75
+  UCP witness (COVERAGE), the own-tool-drift tripwire (METHOD, 7th drift will come), or a calibration cadence
+  sweep (TRUTH, thebotwire WATCH obs-10). Evidence: LOG Local cycle 20260811T135051Z + BACKLOG READOUT eyeball
+  item + the new near-flat candidate.
 - **✅ NO PEER-GATED PR OPEN (first duty = infra health GREEN + bookkeeping consistent only); THEN the ONE
   [LOCAL] item = the own-tool-drift TRIPWIRE cadence re-run → GREEN, NO seventh `_ENV_BLOCK_RE` drift; bench
   GREEN 38/38 (Local 20260811T125733Z, METHOD — read-only recon, scorer UNCHANGED → direct-to-main).** FIRST
@@ -142,34 +177,16 @@
   into `_NON_ANCHOR_WELDED` (16th non-anchor / FIRST tx-43.75-mode member; n_compared=1 at 60.0; teeth = synthetic
   drift caught). Evidence `runs/local/calibration_sweep_20260811T084450Z.json`; see LOG Local cycle 20260811T090431Z
   + BACKLOG P2 frontier (b).
-- **✅ NO PEER-GATED PR OPEN (first duty = infra health GREEN only); THEN the ONE [LOCAL] item = PIN spanx.com 60.0 D
-  as the 18th real-domain baseline / 6th UCP-rail point — the FIRST at the LOWER mode of the bimodal UCP tx axis
-  (tx 43.75), a controlled single-sub-check isolation of `mcp_surface` vs pinned gymshark; bench GREEN 38/38 (Local
-  20260811T080116Z, COVERAGE — direct-to-main, score-neutral).** FIRST DUTY: infra health GREEN — main == origin/main
-  (clean `07834a9`), newest verify `verify_20260811T074103Z.json` ~2 min old (< 6h bar), tests_ok=True (38/38), live
-  delta +30.1 (org 46.1 / com 76.2); `gh pr list` EMPTY → no review owed (the UCP-rail weld campaign closed last fire,
-  PR #165 `932c006`). **THE ONE [LOCAL] ITEM (COVERAGE, direct-to-main) — the P2 UCP-plane forward frontier step (b):**
-  the retail-UCP tx axis is BIMODAL {50.0, 43.75} split SOLELY by the `mcp_surface` sub-check (recon LOG 20260809T105834Z);
-  all FIVE prior UCP pins (coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9 / kith 70.3 / aloyoga 81.2) sit at tx-50.0,
-  so the tx-43.75 mode was COMPLETELY UNCOVERED. PINNED **spanx.com 60.0 D** (a real athletic-apparel shapewear merchant;
-  GET /.well-known/ucp serves a valid `dev.ucp.*` manifest → x402_probe commerce-protocol-live PARTIAL 4.0, but NO MCP
-  surface → mcp_surface FAIL 0.0 → tx **43.75**) as the FIRST tx-43.75 UCP baseline. It is a CONTROLLED single-sub-check
-  isolation of `mcp_surface`: spanx matches the pinned **gymshark.com** EXACTLY on access 100.0 / legibility 54.5454... /
-  trust 60.0, shares gymshark's other two tx sub-checks (x402_probe 4.0 + self_serve_payg 3.0), and differs SOLELY in
-  `mcp_surface` (spanx FAIL 0.0 vs gymshark PARTIAL 1.0) → the whole tx 50.0→43.75 and overall 62.4→60.0 delta is that ONE
-  sub-check and nothing else (the coffeecircle↔gymshark single-pillar isolation applied to a tx SUB-CHECK). Honest (inv #4):
-  physical_good ONLY, from unambiguous `free-shipping` prose; metered_api + 4 others NA, NO topic-word over-claim, caps
-  empty. CAPTURE `asrs.cli score spanx.com --record-fixture …` ($0 static, inv #1 — no --behavioral/--max-pay/codex/zero-CLI/
-  signing; 41 entries / 18M, within the kith 17.6M precedent): live == frozen replay == EXPECTED == 60.0, all 4 pillars
-  byte-identical (100.0/54.54545454545455/43.75/60.0), 0 misses, caps empty. Installed EXPECTED + _REPLAY_CLEAN + guard
-  `test_ucp_retail_mcp_isolation_storefront_replays_60_0` + _POPULATION ×5; test_canonical_replay 39→40; full suite 38/38.
-  Off-scoring-SEMANTICS EMPTY (6 TEST files + fixture only; asrs/rubric/scoring/probes/experiments UNCHANGED); frozen +39.4
-  UNMOVED (spanx off the pair) / live +30.1 (`verify_20260811T074103Z`). BOOKKEEPING: pruned the STALE P1 "capture a
-  data_retrieval fixture" item — data_retrieval now has FIVE committed witnesses (exa.ai/ipinfo.io/polar.sh/thebotwire.com/
-  x402deploy). NEXT: a future fire can discharge the [LOCAL] sweep-add prerequisite (spanx → calibration_sweep POPULATION,
-  60.0 byte-on-floor) then open a PEER-GATED weld of spanx into `_NON_ANCHOR_WELDED` (16th member / 1st tx-43.75-mode point,
-  teeth = synthetic drift). Evidence `runs/local/spanx_ucp_lowtx_isolation_baseline_20260811T080116Z.json`; see LOG Local
-  cycle 20260811T080116Z + BACKLOG P2 frontier (b).
+<!-- The 20260811T080116Z banner (COVERAGE — PINNED spanx.com 60.0 D as the 18th real-domain baseline / 6th UCP-rail
+     point, the FIRST at the LOWER mode of the bimodal UCP tx axis [tx 43.75], a controlled single-sub-check `mcp_surface`
+     isolation vs pinned gymshark; guard test_ucp_retail_mcp_isolation_storefront_replays_60_0 + EXPECTED + _REPLAY_CLEAN
+     + _POPULATION ×5) is pruned this fire (Local cycle 20260811T135051Z) per the ~5-cycle rolling-log policy to defend
+     STATE against re-accretion (the 27h doom-loop lesson) — preserved verbatim in loop/LOG.md
+     (## Local cycle — 20260811T080116Z) + git history. spanx is now pinned + sweep-added + welded + POST-MERGE-reviewed
+     (PR #166 `0d4bdb4`), re-confirmed 60.0 byte-on-floor in the 20260811T114905Z sweep. STATE is mutable working state,
+     NOT an append-only LOG/evidence file, so this compaction is not an invariant-#5 rewrite. -->
+- STATE mutable-working-state note (this fire): the compaction above prunes a rolling cycle banner, not an append-only
+  LOG/evidence file — not an invariant-#5 rewrite.
 <!-- The 20260811T054101Z banner (METHOD — FIRST DUTY reviewed + MERGED peer-gated PR #165 aloyoga.com 81.2 B UCP weld
      `932c006` on all four legs [off-path / vendor-neutral / teeth weld 31/31 / live 81.2==frozen==EXPECTED], CLOSING the
      UCP-rail weld campaign at 5 points; THEN the own-tool-drift TRIPWIRE cadence GREEN, no seventh drift — that fire all 4

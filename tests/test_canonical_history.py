@@ -591,6 +591,32 @@ def test_render_substantive_and_empty_safe() -> None:
         _check(ch.CANONICAL_WITH_RAILS in out, "render shows the reference pair")
 
 
+def test_spark_flat_series_reads_as_mid_not_bottom() -> None:
+    print("test_spark_flat_series_reads_as_mid_not_bottom")
+    mid = ch._SPARK[len(ch._SPARK) // 2]
+    bottom, top = ch._SPARK[0], ch._SPARK[-1]
+    # 1) A flat window renders at a neutral MID height, NOT bottom-pinned:
+    #    the live +30.1 at-rest delta is deterministic (σ=0), so the trend
+    #    sparkline is flat every fire; rendering it all-▁ mis-signals "the
+    #    delta collapsed to its minimum".
+    flat = ch._spark([30.1, 30.1, 30.1, 30.1])
+    _check(flat == mid * 4, f"flat series is all mid ({mid!r}), got {flat!r}")
+    _check(bottom not in flat, "a flat, stable delta does not read as the bottom/minimum")
+    # 2) Level-agnostic: a flat-HIGH and a flat-LOW window look identical — a
+    #    sparkline encodes shape, never absolute level (that lives in the
+    #    'latest'/'baseline' lines), so neither is biased high or low.
+    _check(ch._spark([9.0, 9.0]) == ch._spark([80.0, 80.0]),
+           "flat-low and flat-high windows render identically (shape, not level)")
+    # 3) TEETH: the mid-for-flat change did NOT flatten a genuinely-varying
+    #    window — a rising series still spans bottom→top with min at ▁, max at █.
+    rising = ch._spark([0.0, 25.0, 50.0, 75.0, 100.0])
+    _check(rising[0] == bottom and rising[-1] == top,
+           f"varying series still maps min->{bottom!r}, max->{top!r}, got {rising!r}")
+    _check(len(set(rising)) > 1, "varying series is not collapsed to one block (teeth)")
+    # 4) Empty stays empty (no crash on a cold series).
+    _check(ch._spark([]) == "", "empty series -> empty sparkline")
+
+
 def test_baseline_cannot_drift_from_replay_guard() -> None:
     print("test_baseline_cannot_drift_from_replay_guard")
     # Single source of truth: the history baseline MUST equal what the in-cloud
@@ -2722,6 +2748,7 @@ def main() -> int:
         test_sustained_run_none_on_unparseable_ts,
         test_sustained_run_on_real_series_is_coherent,
         test_render_substantive_and_empty_safe,
+        test_spark_flat_series_reads_as_mid_not_bottom,
         test_baseline_cannot_drift_from_replay_guard,
         test_attribution_names_the_moving_pillar,
         test_attribution_none_when_in_band,

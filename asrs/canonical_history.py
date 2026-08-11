@@ -1342,7 +1342,13 @@ def _spark(values: list[float]) -> str:
         return ""
     lo, hi = min(values), max(values)
     if hi - lo < 1e-9:
-        return _SPARK[0] * len(values)
+        # A perfectly flat window (e.g. the deterministic +30.1 at-rest delta)
+        # has NO relative variation to show. Rendering it at the lowest block
+        # (_SPARK[0]) falsely reads as "the delta collapsed to its minimum";
+        # the honest rendering of "no trend" is a neutral MID height, which is
+        # level-agnostic (a flat-high and a flat-low window look identical,
+        # because a sparkline only encodes shape, never absolute level).
+        return _SPARK[len(_SPARK) // 2] * len(values)
     span = hi - lo
     out = []
     for v in values:

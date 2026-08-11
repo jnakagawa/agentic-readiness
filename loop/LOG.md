@@ -3,6 +3,57 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Local cycle — 20260811T135051Z — READOUT (LOCAL, direct-to-main, score-neutral) — canonical-history delta-trend sparkline: a FLAT (deterministic) window now renders at a neutral MID height instead of bottom-pinned ▁▁▁ (which mis-read as "the delta collapsed to its minimum")
+
+**Fire-start state / FIRST DUTY.** Infra health GREEN: newest `runs/local/verify_20260811T134105Z.json`
+(ts 13:41Z, ~2 min old at fire start 13:43Z, well under the 6h floor), `tests_ok=true` (all 38 modules),
+git clean + `main == origin/main == HEAD` (`e63e5b5`, the subsequent verify heartbeat). Live canonical
+delta **+30.1** (org 46.1 F / com 76.2 C) vs the pinned-fixture baseline **+39.4** (DIVERGED, reference
+SOFTENED — the standing documented live drift, not a fixture problem). `gh pr list --state open` EMPTY →
+**no peer-gated PR to review** (first duty discharged). LOG head == STATE top (both cycle 125733Z) and
+HEAD is the verify heartbeat above it → bookkeeping consistent. No self-heal needed.
+
+**Track choice — anti-starvation.** The last ~14 local cycles were ALL METHOD/COVERAGE/TRUTH (tripwire,
+UCP welds/pins, cadence sweeps); **READOUT had gone 14+ cycles unserved** while the north star names
+"readout clarity" as one of the three legs a cycle must move. METHOD ran the prior fire (125733Z),
+COVERAGE ran ×3 just before, TRUTH ran 114801Z — READOUT was the ONLY starved track, so this fire is
+READOUT (playbook step 2: "rotate across four tracks so none starves").
+
+**THE ONE [LOCAL] ITEM (READOUT, direct-to-main) — flat-sparkline honesty fix.** Rendered the real
+`asrs canonical-history` terminal readout on the live committed 201-re-score series (the "[LOCAL] Eyeball
+the canonical-history card" backlog family) — it reads richly and correctly on real data EXCEPT one line:
+`delta trend (last 24): ▁▁▁…▁`. Root cause in `asrs/canonical_history._spark`: a perfectly-flat window
+(`hi - lo < 1e-9`) returned `_SPARK[0] * len` — the LOWEST block. But the live +30.1 at-rest delta is
+DETERMINISTIC (noise floor σ=0.00, so the last-24 deltas are byte-identical every fire) → the trend
+sparkline is flat *every* fire, and bottom-pinning it falsely reads as "the delta collapsed to its
+minimum". A sparkline encodes SHAPE, never absolute level (level lives in the `latest`/`baseline` lines),
+so the honest rendering of "no trend" is a level-agnostic NEUTRAL mid height. **Fix:** flat window →
+`_SPARK[len(_SPARK)//2]` (▅). The live readout now prints `delta trend (last 24): ▅▅▅…▅`.
+
+**Teeth (the sparkline was previously UNTESTED — zero prior references in `tests/`).** Added
+`test_spark_flat_series_reads_as_mid_not_bottom` (registered; `test_runner_registration` green): (1) a
+flat window is all-mid, bottom block absent; (2) level-agnostic — a flat-LOW `[9,9]` and a flat-HIGH
+`[80,80]` window render IDENTICALLY (shape not level); (3) TEETH — a rising `[0,25,50,75,100]` still
+spans min→▁ / max→█ and is NOT collapsed to one block (the mid-for-flat branch didn't flatten genuine
+variation); (4) empty → "" (no crash). `test_canonical_history` **71→72**.
+
+**Ship / regression.** Diff = ONLY `asrs/canonical_history.py` (+8/-1, the `_spark` presentation helper)
++ `tests/test_canonical_history.py` (+27, test + registration). Off the scoring path — grep of the diff
+over `asrs/scoring|asrs/rubric|asrs/probes|fixtures/|asrs/cli.py` is EMPTY; `canonical_history` imports no
+scoring code (module docstring: "no score moves") and `_spark` is pure presentation → the canonical delta
+CANNOT move by construction. Full suite **38/38**; frozen +39.4 UNMOVED / live +30.1
+(`verify_20260811T134105Z`). Direct-to-main (READOUT presentation, same class as the Cycle-32/40 readout
+ships). No Slack DM (score-neutral READOUT, no sensitive-class change).
+
+**NEXT.** (a) A SEPARATE, larger readout gap left as a BACKLOG candidate: `_spark`'s *varying* branch
+amplifies a NEAR-flat window (span 0.05 → full-height swings) because it normalizes to the window's own
+min/max — not currently manifesting (the live series is exactly flat), so out of scope for this minimal
+unit; a fix needs a magnitude-aware floor + a real near-flat artifact. (b) The STATE-named forward
+frontiers remain: a SECOND tx-43.75 UCP witness (COVERAGE, make spanx's lower mode a range not a point),
+the own-tool-drift tripwire cadence (METHOD, the 7th drift will come), or a calibration cadence sweep
+(TRUTH, thebotwire WATCH obs-10). Evidence: the re-rendered `delta trend` line above;
+`asrs/canonical_history._spark`; see BACKLOG READOUT eyeball item + the new near-flat candidate.
+
 ## Local cycle — 20260811T125733Z — METHOD (LOCAL, direct-to-main, score-neutral) — own-tool-drift TRIPWIRE cadence re-run → GREEN, NO seventh drift (all 3 canonical own-tool refusals CAUGHT by the shipped v0.7(g) _ENV_BLOCK_RE; sole leak_candidate = the KNOWN example.com honest-non-observation FP); the ~26d reputation gate RE-TIGHTENED to intermittent (3/4 canonical trials refused, vs 0/4 refused at 055014Z)
 
 **Fire-start state.** Infra health GREEN: newest `runs/local/verify_20260811T124104Z.json` (ts 12:41Z,

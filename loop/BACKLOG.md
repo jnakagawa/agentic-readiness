@@ -1917,7 +1917,22 @@ runs/local/aloyoga_ucp_weld_review_rescore_20260811T054101Z.json; PR #165 (MERGE
 - **[LOCAL] Eyeball the canonical-history card on the operator's hosted deploy** (READOUT, Cycle-40 follow-up,
   optional): the HTML canonical-history page renders correctly in-cloud (Chromium screenshot, real committed
   series). A next visual check would confirm it reads well hosted next to a real published scorecard, and that
-  the footer cross-link resolves. No new code — a render + visual check.
+  the footer cross-link resolves. No new code — a render + visual check. **PROGRESS Local cycle 20260811T135051Z
+  (READOUT, direct-to-main):** rendered the TERMINAL `asrs canonical-history` readout on the live committed
+  201-re-score series — reads richly/correctly on real data, and CAUGHT + fixed one clarity bug: the
+  `delta trend (last 24)` sparkline bottom-pinned a deterministic-FLAT window (`_spark` returned `_SPARK[0]*len`
+  = `▁▁▁…`), which mis-reads as "the delta collapsed to its minimum". Fixed → flat renders at a neutral MID
+  height (`▅▅▅…`, level-agnostic); added `test_spark_flat_series_reads_as_mid_not_bottom` (the sparkline was
+  previously untested); `test_canonical_history` 71→72, suite 38/38. The HTML/hosted eyeball remains.
+- **[READOUT, candidate — Local cycle 20260811T135051Z observation] `_spark` near-flat amplification.** The
+  `_spark` *varying* branch normalizes each window to its OWN min/max, so a NEAR-flat window (e.g. span 0.05)
+  would render as full-height swings — amplifying trivial noise into a dramatic-looking trend. NOT currently
+  manifesting (the live delta series is EXACTLY flat, σ=0.00 → the mid-for-flat branch handles it), so this is
+  out of scope for the minimal flat-fix that shipped. A real fix needs a magnitude-aware floor (a window whose
+  total span is below the ±2.0 in-band noise band should render flat/mid, not full-swing) AND a committed
+  near-flat artifact to test against — attempt only when the live series next carries a small-but-nonzero
+  spread. Score-neutral READOUT, direct-to-main. Evidence: `asrs/canonical_history._spark`; LOG Local cycle
+  20260811T135051Z.
 - **[LOCAL] Decide on canonical fixture re-capture once driftflight.com settles**
   (TRUTH, Cycle-36 follow-up to the LIVE CANONICAL DRIFT). The live `.com`
   score has drifted below the pinned fixture (85.5 B → ~78.7 C, legibility

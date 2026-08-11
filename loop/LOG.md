@@ -22328,3 +22328,7 @@ drift caught vs the floor), the load-bearing cross-path form of the mcp_surface 
 force-added): `runs/local/calibration_sweep_20260811T084450Z.json` (the full sweep + spanx on-floor + drift
 block); the spanx PIN's `runs/local/spanx_ucp_lowtx_isolation_baseline_20260811T080116Z.json` (last fire). See
 BACKLOG P2 frontier (b).
+
+## Local verification — 20260811T094103Z
+
+tests_ok=True | drift-flight.org: 46.1 F | driftflight.com: 76.2 C | delta +30.1 | artifact runs/local/verify_20260811T094103Z.json

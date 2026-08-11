@@ -1,0 +1,53 @@
+{
+ "ts": "20260811T044102Z",
+ "kind": "aloyoga-ucp-weld-authoring-confirm",
+ "cycle": "Local cycle 20260811T044102Z",
+ "track": "COVERAGE",
+ "member": "aloyoga.com",
+ "weld_position": "15th non-anchor welded member / 5th UCP commerce-protocol-rail member (HIGH CORNER of the UCP plane)",
+ "pr_branch": "loop/aloyoga-ucp-weld",
+ "ship_class": "PEER-GATED (scoring-semantics: _NON_ANCHOR_WELDED addition) \u2014 review + self-merge owed NEXT cycle",
+ "authoring_live_rescore": {
+  "method": "python3 -m asrs.cli score aloyoga.com --json-only ($0 static, no --behavioral/--max-pay/codex/zero-CLI; inv #1 by construction)",
+  "source_run": "runs/aloyoga_com_20260811T044511.json",
+  "overall": 81.2,
+  "grade": "B",
+  "rubric_version": "0.7",
+  "scored": true,
+  "pillars": {
+   "access": 100.0,
+   "legibility": 100.0,
+   "transactability": 50.0,
+   "trust": 100.0,
+   "outcome": null
+  },
+  "caps_applied": []
+ },
+ "frozen_floor": {
+  "overall": 81.2,
+  "rubric_version": "0.7",
+  "pillars": {
+   "access": 100.0,
+   "legibility": 100.0,
+   "transactability": 50.0,
+   "trust": 100.0,
+   "outcome": null
+  }
+ },
+ "agreement": "live 81.2 == frozen 81.2 == EXPECTED 81.2; all four non-null pillars byte-identical (access 100.0 / legibility 100.0 / transactability 50.0 / trust 100.0); caps empty",
+ "honest_classification": "{metered_api, physical_good} (vetted Local cycle 20260810T170728Z \u2014 metered_api fires from the honest {post-endpoint, rate-limited} UCP class, same as accepted gymshark/kith pins; no over-claim)",
+ "n_compared_basis": {
+  "committed_sweep": "runs/local/calibration_sweep_20260811T034627Z.json",
+  "segment": "ucp-live:apparel-retail",
+  "sweep_overall": 81.2,
+  "n_compared": 1,
+  "note": "genuinely compared, not silently skipped; agrees with the frozen floor"
+ },
+ "teeth": "synthetic drift 81.2 -> 92.0 caught vs the 81.2 floor (test_aloyoga_fifteenth_non_anchor_is_welded_nonvacuously)",
+ "suite": {
+  "weld_module": "31/31 (was 30/30)",
+  "full_modules": "38/38 green"
+ },
+ "ucp_plane": "five UCP points span legibility 50.0->100.0 and trust 33.33->100.0 at the fixed tx-50.0 rung: coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9 / kith 70.3 / aloyoga 81.2",
+ "invariants": "inv #1 ($0, no signing) by construction; inv #2 (v0.7, off-version sweeps skipped); inv #4 (honest classification, not-scorable skipped); off the static scoring path (test-file-only edit, asrs/rubric/scoring/probes/fixtures UNCHANGED)"
+}

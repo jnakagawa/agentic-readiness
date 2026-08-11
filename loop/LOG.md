@@ -3,6 +3,69 @@
 Format per entry: `## Cycle N — <UTC timestamp> — <track>` then: what/why,
 evidence paths, canonical-pair numbers (overall a/b, delta), next hypothesis.
 
+## Local cycle — 20260811T125733Z — METHOD (LOCAL, direct-to-main, score-neutral) — own-tool-drift TRIPWIRE cadence re-run → GREEN, NO seventh drift (all 3 canonical own-tool refusals CAUGHT by the shipped v0.7(g) _ENV_BLOCK_RE; sole leak_candidate = the KNOWN example.com honest-non-observation FP); the ~26d reputation gate RE-TIGHTENED to intermittent (3/4 canonical trials refused, vs 0/4 refused at 055014Z)
+
+**Fire-start state.** Infra health GREEN: newest `runs/local/verify_20260811T124104Z.json` (ts 12:41Z,
+~2 min old at fire start, well under the 6h floor), `tests_ok=true` (all 38 modules), git clean +
+`main == origin/main == HEAD` (`1ae82d1`). Live canonical delta **+30.1** (org 46.1 F / com 76.2 C —
+persistent `/extend` 402→401), frozen replay **+39.4**.
+
+**First duty — peer-gated PR review.** `gh pr list --state open` → EMPTY; STATE top banner (114801Z) is
+the last recorded cycle and its owed PR #166 post-merge review is already discharged (VERDICT SOUND,
+`0d4bdb4`). No review owed this fire. Bookkeeping consistent (LOG head 114801Z == STATE top banner == git
+HEAD's parent cycle commit `9db0752`). No repair/self-heal beyond confirming the gitignored EMPTY
+`runs/local/codex_reachability_20260811T105128Z/` is the 10:51Z crashed-codex-attempt cruft STATE flagged
+(harmless; a RISK SIGNAL to verify codex health before re-picking the tripwire — heeded below).
+
+**Codex health gate (STATE's explicit precondition).** STATE flagged the 10:51Z tripwire attempt as CRASHED
+(empty output dir) → "verify codex health BEFORE re-picking it." Ran the cheap `is_codex_usable()` throwaway
+`codex exec` (read-only, $0, no `--max-pay`/signing/zero-CLI) → **True in 6.8s**; `codex-cli 0.145.0` on PATH.
+The 10:51Z crash was TRANSIENT (a blip, not a degraded CLI) → codex health GREEN → the tripwire is safe to run.
+
+**THE ONE [LOCAL] ITEM (METHOD, direct-to-main) — own-tool-drift TRIPWIRE cadence.** METHOD was the starved
+track between the two STATE-named NEXT candidates (last METHOD fire 054101Z ~7h ago; the intervening cycles
+all COVERAGE/TRUTH spanx/weld/sweep work), and the tripwire is a load-bearing attribution-honesty guard
+(invariant #4). Re-ran `experiments/codex_reachability.py` ($0 read-only via the REAL scorer path
+`shopper._run_one` → `_codex_cmd` → `run_cli`, 5 codex trials, no `--max-pay`/zero-CLI/signing, inv #1) →
+`runs/local/codex_reachability_20260811T124558Z/` (summary + 5 transcripts, committed on-glob via `git add -f`).
+All 5 targets HTTP 200 (sites up → any refusal is codex's own gate, not a site block). Results:
+
+- driftflight.com t1 — REFUSED "Direct access to driftflight.com was rejected by browser and web safety
+  controls." → `is_env_blocked_current=True` (CAUGHT → routed to reachability, NOT scored as a site FAIL).
+- driftflight.com t2 — REACHED (OBSERVED the offer; `env_blk=False`, no refusal) — the gate's intermittency.
+- drift-flight.org t1 — REFUSED "denied by the browser security/permission gate." → CAUGHT (`env_blk=True`,
+  security-family).
+- drift-flight.org t2 — REFUSED "Interactive browser security policy denied access to drift-flight.org." →
+  CAUGHT (`env_blk=True`); the SECOND blocker sentence was the deferred test-#8 own-web-retriever phrasing
+  "The direct read-only web retriever independently classified the URL as unsafe and refused access." — but
+  it CO-OCCURRED with the caught browser-security phrase → the run is correctly `env_blk=True`, no leak, no
+  drift (same pattern STATE noted at 055014Z; test-#8 stays the carefully-guarded deferred candidate).
+- example.com t1 (reputable control) — REACHED-AND-EMPTY (`env_blk=False`): browser WORKED, codex read the
+  page and honestly reported "Example.com offers no purchasable product or service … reserved for
+  documentation" (IANA-cited), `reputation_markers=[]`, ZERO own-tool-refusal phrasing.
+
+**TRIPWIRE GREEN — NO seventh `_ENV_BLOCK_RE` drift.** Every genuine own-tool refusal that fired (3/4 canonical
+trials) was CAUGHT by the shipped v0.7(g) regex → attribution honesty holds. The tool's coarse
+`leak_candidates` filter (up-site + nothing-observed + not-env-blocked) reported **1 candidate = example.com** —
+the KNOWN honest-non-observation FALSE POSITIVE (BACKLOG explicitly warns to read the blocker text: it is
+"reached-and-empty," not "blocked-and-empty," so `env_blk=False` is the CORRECT attribution, not a masked
+refusal). NO pure-semantic reputation refusal lacking own-apparatus vocabulary was captured → no regex
+broadening warranted (broadening blindly would risk excusing real site-side blocks — inv #4 cuts both ways).
+
+**NEW observation — the reputation gate RE-TIGHTENED.** The prior tripwire (055014Z, ~7h earlier) had ALL FOUR
+canonical trials REACH (gate fully softened). THIS fire: 3/4 canonical trials REFUSED (driftflight.com 1/2,
+drift-flight.org 2/2), only driftflight.com t2 reached. So the ~26d-aged reputation gate is time-varying and
+has partially re-closed since 05:50Z — the known non-determinism, NOT a scorer/site change. Every refusal
+still caught → the regex is robust across the softened↔tightened swing.
+
+Scorer UNCHANGED (read-only recon; NO `_ENV_BLOCK_RE` edit) → direct-to-main (same class as every prior
+tripwire cadence run). Off-scoring-SEMANTICS EMPTY (tracked diff = ONLY loop docs + the tripwire evidence dir
+on-glob; asrs/rubric/scoring/probes/fixtures/tests UNCHANGED). Full suite **38/38**; frozen +39.4 UNMOVED /
+live +30.1 (`verify_20260811T124104Z`). **NEXT:** the 7th drift WILL come (codex vocab is non-deterministic) —
+keep re-running the tripwire each cadence so it is caught the cycle it appears; OR the STATE-named COVERAGE
+alternative (a SECOND tx-43.75 UCP witness to make spanx's lower-mode a range not a point). Evidence
+`runs/local/codex_reachability_20260811T124558Z/summary.json` + transcripts; see BACKLOG STANDING TRIPWIRE.
+
 ## Local cycle — 20260811T114801Z — TRUTH (LOCAL) — POST-MERGE review of operator-merged PR #166 (spanx.com UCP-lowtx weld) SOUND + calibration cadence sweep GREEN (all pinned/welded members byte-on-floor, spanx welded-on-floor, thebotwire WATCH still 25.0)
 
 **Fire-start state.** Infra health GREEN: newest `runs/local/verify_20260811T114103Z.json` (ts 11:41Z,

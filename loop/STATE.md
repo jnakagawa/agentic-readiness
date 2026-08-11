@@ -1,6 +1,44 @@
 # Loop state
 
-- Cycle counter: 341
+- Cycle counter: 342
+- **✅ NO PEER-GATED PR OPEN (first duty = infra health GREEN + bookkeeping consistent only); THEN the ONE
+  [LOCAL] item = the own-tool-drift TRIPWIRE cadence re-run → GREEN, NO seventh `_ENV_BLOCK_RE` drift; bench
+  GREEN 38/38 (Local 20260811T125733Z, METHOD — read-only recon, scorer UNCHANGED → direct-to-main).** FIRST
+  DUTY: infra health GREEN — main == origin/main == HEAD (clean `1ae82d1`), newest verify
+  `verify_20260811T124104Z.json` (ts 12:41Z, ~2 min old at fire start, < 6h bar), tests_ok=True (38/38), live
+  delta +30.1 (org 46.1 / com 76.2); `gh pr list --state open` EMPTY → no review owed (PR #166 post-merge
+  review already discharged last fire `9db0752`; LOG head 114801Z == STATE top == git HEAD parent → bookkeeping
+  consistent). Confirmed the gitignored EMPTY `runs/local/codex_reachability_20260811T105128Z/` is the 10:51Z
+  crashed-codex cruft STATE flagged (harmless; heeded its "verify codex health" RISK SIGNAL below). **CODEX
+  HEALTH GATE (STATE's explicit precondition):** ran cheap `is_codex_usable()` throwaway `codex exec` (read-only,
+  $0, no --max-pay/signing/zero-CLI) → **True in 6.8s**, `codex-cli 0.145.0` on PATH → the 10:51Z crash was
+  TRANSIENT, codex GREEN → tripwire safe to run. **THE ONE [LOCAL] ITEM (METHOD, direct-to-main) — own-tool-drift
+  TRIPWIRE cadence:** METHOD was the starved track between the two STATE-named NEXT candidates (last METHOD fire
+  054101Z ~7h ago; intervening cycles all COVERAGE/TRUTH); the tripwire is a load-bearing attribution-honesty
+  guard (inv #4). Re-ran `experiments/codex_reachability.py` ($0 read-only via the REAL scorer path
+  `shopper._run_one`, 5 codex trials, no --max-pay/zero-CLI/signing, inv #1) →
+  `runs/local/codex_reachability_20260811T124558Z/` (summary + 5 transcripts, committed on-glob `git add -f`).
+  All 5 targets HTTP 200 (sites up → any refusal is codex's OWN gate). **All 3 canonical own-tool refusals
+  CAUGHT by the shipped v0.7(g) `_ENV_BLOCK_RE`** (`is_env_blocked_current=True` → routed to reachability, NOT
+  scored as site FAILs): driftflight.com t1 "rejected by browser and web safety controls", drift-flight.org t1
+  "denied by the browser security/permission gate", drift-flight.org t2 "Interactive browser security policy
+  denied access" (its 2nd blocker = the deferred test-#8 own-web-retriever "unsafe" phrasing, but CO-OCCURRED
+  with the caught browser-security phrase → correctly `env_blk=True`, no leak). driftflight.com t2 REACHED
+  (OBSERVED, no refusal) + example.com control REACHED-AND-EMPTY (browser worked, honest "no purchasable
+  product … reserved for documentation", `reputation_markers=[]`, zero refusal phrasing). **TRIPWIRE GREEN — NO
+  seventh drift.** Sole raw `leak_candidate` (1) = the KNOWN example.com honest-non-observation FALSE POSITIVE
+  (read the blocker text per the BACKLOG warning: "reached-and-empty" not "blocked-and-empty" → `env_blk=False`
+  is CORRECT, not a masked refusal). NO pure-semantic reputation refusal lacking own-apparatus vocab captured →
+  NO regex broadening warranted (inv #4 cuts both ways). **NEW:** the ~26d reputation gate RE-TIGHTENED to
+  intermittent — 3/4 canonical trials REFUSED this fire vs 0/4 (all reached) at 055014Z ~7h ago → time-varying,
+  NOT a scorer/site change; the regex is robust across the softened↔tightened swing. Off-scoring-SEMANTICS
+  EMPTY (tracked diff = ONLY loop docs + the tripwire evidence dir on-glob; asrs/rubric/scoring/probes/fixtures/
+  tests UNCHANGED); full suite 38/38; frozen +39.4 UNMOVED / live +30.1 (`verify_20260811T124104Z`). NO Slack DM
+  (score-neutral METHOD cadence, no sensitive-class change). **NEXT:** the 7th drift WILL come (codex vocab is
+  non-deterministic) — keep re-running the tripwire each cadence; OR the STATE-named COVERAGE alternative (a
+  SECOND tx-43.75 UCP witness to make spanx's lower-mode a range not a point). Evidence
+  `runs/local/codex_reachability_20260811T124558Z/summary.json` + transcripts; see LOG Local cycle
+  20260811T125733Z + BACKLOG STANDING TRIPWIRE.
 - **✅ FIRST DUTY DONE — operator-merged PEER-GATED PR #166 (spanx.com 60.0 D UCP-lowtx weld) POST-MERGE
   REVIEWED SOUND, merge STANDS; THEN the ONE [LOCAL] item = a calibration cadence sweep → GREEN (all
   pinned/welded members byte-on-floor incl. spanx welded-on-floor, thebotwire WATCH still 25.0); bench GREEN
@@ -132,41 +170,14 @@
   60.0 byte-on-floor) then open a PEER-GATED weld of spanx into `_NON_ANCHOR_WELDED` (16th member / 1st tx-43.75-mode point,
   teeth = synthetic drift). Evidence `runs/local/spanx_ucp_lowtx_isolation_baseline_20260811T080116Z.json`; see LOG Local
   cycle 20260811T080116Z + BACKLOG P2 frontier (b).
-- **✅ FIRST DUTY DONE — PEER-GATED PR #165 (aloyoga.com 81.2 B UCP weld) REVIEWED SOUND + MERGED (`932c006`); THEN
-  the ONE [LOCAL] item = the own-tool-drift TRIPWIRE cadence re-run → GREEN, no seventh drift; bench GREEN 38/38 (Local
-  20260811T054101Z, METHOD — merge is the peer-gated first duty; tripwire direct-to-main).** FIRST DUTY: adversarially
-  reviewed PR #165 (opened LAST fire, eligible now) on all four legs. (1) OFF the static scoring path — three-dot diff
-  since merge-base `997a16f` = ONLY `tests/test_calibration_anchor_agreement.py` (+93) + the aloyoga weld-confirm evidence
-  JSON (+53); `asrs/rubric/scoring/probes/fixtures/experiments` UNCHANGED. (2) VENDOR-NEUTRAL — welded by TYPE (a
-  mainstream athletic-apparel/lifestyle UCP merchant; scorer UNCHANGED, `_NON_ANCHOR_WELDED` is a test-only calibration
-  construct). (3) TEETH — weld **31/31** on branch; the new `test_aloyoga_fifteenth_non_anchor_is_welded_nonvacuously`
-  asserts `divergences==[]` vs committed sweeps (`n_compared=1` via 034627Z at 81.2) AND the synthetic 81.2→92.0 drift
-  fires EXACTLY one divergence caught vs the 81.2 floor. (4) VOLATILE-RAIL LIVE $0 RE-SCORE (inv #1, static, NO
-  `--behavioral`/`--max-pay`/codex/zero-CLI/signing) → `runs/aloyoga_com_20260811T054429.json` (preserved
-  `runs/local/aloyoga_ucp_weld_review_rescore_20260811T054101Z.json`): **live 81.2 B == frozen 81.2 == EXPECTED 81.2**,
-  four non-null pillars byte-identical (100.0/100.0/50.0/100.0), caps empty, tx rung byte-identical (x402_probe PARTIAL
-  4.0/8.0 commerce-protocol-live) → manifest UP, no drift. **VERDICT SOUND → MERGED** (`gh pr merge 165 --merge`); main
-  ff'd, weld **31/31** on main (15 members), canonical replay 39/39, full suite 38/38. **The UCP-rail weld campaign is
-  COMPLETE at 5 points** (coffeecircle 57.4 / gymshark 62.4 / hardgraft 66.9 / kith 70.3 / aloyoga 81.2 — the plane
-  spanned on legibility 50.0→100.0 and trust 33.33→100.0 at the fixed tx-50.0 rung). Slack DM sent (weld = scoring-semantics
-  change → veto visibility, not a gate). **THE ONE [LOCAL] ITEM (METHOD, direct-to-main) — own-tool-drift TRIPWIRE cadence:**
-  METHOD was the starved track (last METHOD fire 20260809T094408Z; the intervening ~8 cycles all TRUTH/COVERAGE
-  thebotwire/aloyoga work). Re-ran `experiments/codex_reachability.py` ($0 read-only via the REAL scorer path
-  `shopper._run_one`, 5 codex trials, no `--max-pay`/zero-CLI/signing, inv #1) → `runs/local/codex_reachability_20260811T055014Z/`
-  (summary + 5 transcripts). **TRIPWIRE GREEN, NO seventh drift:** all 4 canonical trials REACHED (`is_env_blocked_current=False`,
-  checkpoints passed) — the ~26d reputation gate has SOFTENED FURTHER (codex now browses BOTH canonical domains on every
-  trial, vs the 20260809 t1-blocked/t2-reached), raising only domain-age trust caveats → NO own-tool refusal fired on the
-  canonical domains → nothing for the regex to mis-attribute. Sole `leak_candidate` = the KNOWN example.com honest-non-
-  observation FP (IANA placeholder "not a commercial storefront", `reputation_markers=[]`, zero refusal phrasing → NOT a
-  drift). drift-flight.org t2 surfaced the deferred test-#8 phrasing "the automated safety fetcher rejected the domain as
-  unsafe" but the run REACHED (found_product/understood_pricing True with real site-capability findings) → the secondary
-  caveat CO-OCCURRED with a genuine reach, did NOT mask an own-tool refusal → `env_blk=False` correct; stays the carefully-
-  guarded deferred candidate. Shipped v0.7(g) `_ENV_BLOCK_RE` sufficient for every refusal observed; attribution honesty
-  holds BOTH directions. Scorer UNCHANGED → direct-to-main. Off-scoring-SEMANTICS EMPTY; frozen +39.4 UNMOVED / live +30.1
-  (`verify_20260811T054101Z`; org 46.1 / com 76.2); full suite 38/38. NEXT-HYPOTHESIS: the gate softening may finally
-  unblock the long-deferred cross-model SHOPPER-agreement panel on the WITH side. Evidence
-  `runs/local/codex_reachability_20260811T055014Z/summary.json`; PR #165 (MERGED `932c006`); see LOG Local cycle
-  20260811T054101Z + BACKLOG STANDING TRIPWIRE.
+<!-- The 20260811T054101Z banner (METHOD — FIRST DUTY reviewed + MERGED peer-gated PR #165 aloyoga.com 81.2 B UCP weld
+     `932c006` on all four legs [off-path / vendor-neutral / teeth weld 31/31 / live 81.2==frozen==EXPECTED], CLOSING the
+     UCP-rail weld campaign at 5 points; THEN the own-tool-drift TRIPWIRE cadence GREEN, no seventh drift — that fire all 4
+     canonical trials REACHED, gate fully softened, contrast with THIS fire's re-tightening to 3/4 refused) is pruned this
+     fire (Local cycle 20260811T125733Z) per the ~5-cycle rolling-log policy to defend STATE against re-accretion (the 27h
+     doom-loop lesson) — preserved verbatim in loop/LOG.md (## Local cycle — 20260811T054101Z) + git history. PR #165 is
+     long-MERGED; the standing own-tool-drift TRIPWIRE detail lives in BACKLOG. STATE is mutable working state, NOT an
+     append-only LOG/evidence file, so this compaction is not an invariant-#5 rewrite. -->
 <!-- The 20260811T044102Z PR #165 AUTHORED banner (COVERAGE — weld aloyoga.com 81.2 B as the 15th non-anchor / 5th
      UCP-rail member; branch = test edit + evidence JSON, review+self-merge owed next fire) is pruned this fire (Local
      cycle 20260811T054101Z) per the ~5-cycle rolling-log policy to defend STATE against re-accretion (the 27h doom-loop

@@ -447,17 +447,21 @@ runs/local/aloyoga_ucp_weld_review_rescore_20260811T054101Z.json; PR #165 (MERGE
   phrasing has now drifted the `_ENV_BLOCK_RE` guard SIX times (Cycles 269 / 284 / 287 / 296=v0.7(e) / v0.7(f)
   `browser site-access permission … declined` / the 6th Local cycle 20260808T215647Z: "…denied AT the browser permission
   boundary" — the verb-then-apparatus order — **fixed as v0.7(g), PR #162 MERGED + POST-MERGE-reviewed SOUND Local cycle
-  20260809T010020Z**). **CADENCE RE-RUN Local cycle 20260811T054101Z → GREEN, NO seventh drift**
-  (`runs/local/codex_reachability_20260811T055014Z/`, 5 codex trials via the REAL scorer path): ALL FOUR canonical
-  trials REACHED (`is_env_blocked_current=False`, checkpoints passed) — the ~26d-aged reputation gate has SOFTENED
-  FURTHER (codex now browses BOTH driftflight.com and drift-flight.org on EVERY trial, vs the 20260809 t1-blocked/
-  t2-reached; only domain-age trust caveats raised) → NO own-tool refusal fired on the canonical domains this fire, so
-  nothing for the regex to mis-attribute and no leak is possible from a refusal. The sole raw `leak_candidate` was again
-  the KNOWN example.com honest-non-observation false positive (IANA placeholder "not a commercial storefront",
-  `reputation_markers=[]`, zero browser-refusal phrasing), NOT a drift. drift-flight.org t2 surfaced the deferred
-  test-#8 own-web-retriever phrasing "the automated safety fetcher rejected the domain as unsafe" but the run REACHED
-  (found_product/understood_pricing True + real site-capability findings) → the secondary caveat CO-OCCURRED with a
-  genuine reach, did NOT mask an own-tool refusal → `env_blk=False` correct, no leak. codex vocabulary is
+  20260809T010020Z**). **CADENCE RE-RUN Local cycle 20260811T125733Z → GREEN, NO seventh drift**
+  (`runs/local/codex_reachability_20260811T124558Z/`, 5 codex trials via the REAL scorer path; codex health
+  pre-verified via `is_codex_usable()`=True in 6.8s after STATE flagged a transient 10:51Z crash): all 3 canonical
+  own-tool refusals that fired were CAUGHT by the shipped v0.7(g) `_ENV_BLOCK_RE` (`is_env_blocked_current=True` →
+  routed to reachability, NOT scored as site FAILs, all on HTTP-200 up sites): driftflight.com t1 "rejected by browser
+  and web safety controls", drift-flight.org t1 "denied by the browser security/permission gate", drift-flight.org t2
+  "Interactive browser security policy denied access". **NEW datapoint — the gate RE-TIGHTENED to intermittent**: 3/4
+  canonical trials REFUSED this fire (driftflight.com 1/2, drift-flight.org 2/2) vs 0/4 (all reached) at 055014Z ~7h
+  earlier → the ~26d reputation gate is time-varying, swinging softened↔tightened; the regex proved robust across the
+  swing. The sole raw `leak_candidate` was again the KNOWN example.com honest-non-observation false positive
+  (reached-and-empty: browser worked, "no purchasable product … reserved for documentation", `reputation_markers=[]`,
+  zero browser-refusal phrasing → `env_blk=False` CORRECT), NOT a drift. drift-flight.org t2's SECOND blocker was the
+  deferred test-#8 own-web-retriever phrasing "The direct read-only web retriever independently classified the URL as
+  unsafe and refused access" but it CO-OCCURRED with the caught browser-security phrase → correctly `env_blk=True`, no
+  leak. codex vocabulary is
   non-deterministic run-to-run — the 7th drift WILL come; re-run each
   drift-hunt. The tripwire works: run `experiments/codex_reachability.py` (or leak-scan any fresh committed behavioral
   panel) each cadence so the NEXT drift is caught the cycle it appears, not several cycles later as a silently-narrowed
